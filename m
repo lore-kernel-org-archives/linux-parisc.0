@@ -1,40 +1,35 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA13764
-	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Aug 1999 17:14:58 -0600
-Sender: adevries@thepuffingroup.com
-Message-ID: <37C32B71.50F0B4B6@thepuffingroup.com>
-Date: Tue, 24 Aug 1999 19:32:01 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA15271
+	for <parisc-linux@puffin.external.hp.com>; Wed, 25 Aug 1999 11:01:29 -0600
+Message-ID: <2C10B557AEBDD011872500A0C933CDDB69BE86@mail.esigroup.com>
+From: Benjamin Graham <BGraham@esigroup.com>
+To: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Date: Wed, 25 Aug 1999 11:47:21 -0500
 MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting 715/100
-References: <199908242255.PAA09913@milano.cup.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Subject: [parisc-linux] HP 712/60 AND Linux
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> Matthew Wilcox wrote:
-> The linux-2.2.3-19990808.tar.gz is only 291 bytes.
-> 19990807 was the last "full" tarball.
+Hello, I knew there had to be a PA-RISC port in the work, heh been looking.
+I just bought a HP 712/60Mhz PA-RISC based HP/UX 10.20 workstation and am
+interested greatly in adding Linux to it.  I also figured I would let you
+all know, I paid 150$ with a monitor and keyboard but no monitor.  If anyone
+else is interested in buying them the man to contact is:
+Ryan D. Roberts
+Compass Corporate Systems, Inc.
+3105 Congress Avenue
+Plano, Texas 75025
+972-208-3660
+fax 972-208-3659
+ryan.roberts@compass-corp.com <mailto:ryan.roberts@compass-corp.com> 
+ 
+He had approx 100 when I talked to him and he was seemed to be able to get
+more later.  If anyone is interested in them for development machines for
+this project, let him know, he is interested in running Linux on them as
+well.
 
-Actually, I've fixed this now and now you should find a splendid 13MB
-file named linux-2.2.1-19990824.tar.gz.
-
-> > Can you ssh out?  CVS_RSH=ssh should do the trick if so.
-> 
-> Didn't have ssh...but "socksify" command seems to work
-> rather nicely. Found it in /opt/socks/bin and cvs can now
-> talk to the puffin.external.hp.com.
-
-I'm heavenly ignorant of socks, but if you intend to commit code, you
-really have to get ssh working.  It's the only way we can know that you
-are you when you commit code, and makes life a lot simpler.
-
-- Alex
-
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+Thank you for your time,
+Benjamin Graham
+Network Engineer
+Bgraham@esigroup.com <mailto:Bgraham@esigroup.com> 
+501-975-0840 x239
