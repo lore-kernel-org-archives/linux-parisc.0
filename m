@@ -1,16 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3EA68482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 03:22:19 -0700 (MST)
+Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA596482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 08:52:39 -0700 (MST)
+Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
+	by maties2.sun.ac.za with smtp (Exim 3.33 #6)
+	id 16BeLZ-0003qQ-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 05 Dec 2001 17:52:33 +0200
+Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
+	id 16BeLq-0000mx-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 05 Dec 2001 17:52:50 +0200
+Date: Wed, 5 Dec 2001 17:52:49 +0200
+From: Albert Strasheim <fullung@ilink.nis.za>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1007547737.3c0df5599e8c9@webmail.tiscalinet.be>
-Date: Wed, 05 Dec 2001 11:22:17 +0100 (CET)
-From: joel.soete@freebel.net
-References: <Pine.LNX.4.33.0112032239490.1252-100000@bob.ncssm.edu> <1007449260.3c0c74ac2b330@webmail.tiscalinet.be> <1007473422.3c0cd30eac487@webmail.tiscalinet.be>
-In-Reply-To: <1007473422.3c0cd30eac487@webmail.tiscalinet.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] 2.4.16-pa15 still POWERFAIL(was 2.4.16-pa12 Power failled)
+Message-ID: <20011205175249.C2918@dogbert.localdomain>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
+Subject: [parisc-linux] X on 720
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,118 +28,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+--7ZAtKRhVyVSsbBD2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Just to report that the problem persit on my B180 (even thought that changes was
-made on sym53c8xx but I do know if its regarding this problem).
+Hello parisc-linux,
 
-Joel
+After reading about Joerg Hartmann's success with the graphics console,
+I was wondering what was still required to make X run on my 720. I
+really want to put my big ole 19" grayscale monitor to proper use. :-)
 
-Quoting joel.soete@freebel.net:
+Regards,
 
-> Hi all,
-> 
-> Sti consol is Ok now.
-> 
-> But receive on consol how many "POWERFAIL INTERRUPTION".
-> I beleive it comes from scsi dirver sym53c8xx but not sure.
-> 
-> Thanks for all great job,
->         Joel
-> 
-> Quoting joel.soete@freebel.net:
-> 
-> > You have right, I forget to mentionned that the screen was an HP
-> model
-> > A4575A
-> > with a selected resolution of 1280*1024 which works fine till now
-> with
-> > previous
-> > kernel 2.4.9 and 2.4.14.
-> > 
-> > So what should be the right resolution?
-> > 
-> > Joel
-> > 
-> > Quoting Phil Anderson <andersop@neverland.ncssm.edu>:
-> > 
-> > > Hi.
-> > > 
-> > > This invalid scan problem suggests to me that the box is putting
-> out
-> > a
-> > > resolution/frequency that the monitor cannot support. The banner in
-> > the
-> > > muddle of the screen is a monitor on-screen-display error. I don't
-> > know
-> > > about B180's but on my 712 this happened. In the boot loader
-> firmware
-> > > you
-> > > should be able to select resolutions -- I booted it on another
-> > monitor,
-> > > lovered the frequency and resolution, then switched back to the
-> first
-> > > monitor. So, i don't think that's a problem with the kernel, rather
-> > the
-> > > settings of the box's STI and the limitations of the monitor you're
-> > > using.
-> > > 
-> > > -phil
-> > > 
-> > > 
-> > > 
-> > > On Mon, 3 Dec 2001 joel.soete@freebel.net wrote:
-> > > 
-> > > > Hi all,
-> > > >
-> > > > The kernel 2.4.16-pa10 run roughtly on my B180 (not yet tested on
-> > > 712)
-> > > > But STI console semms broken:
-> > > > A large banner with "INVALID SCAN FREQ." in the middle of the
-> > screen
-> > > and in
-> > > > background something like parasitical tv reception (white line
-> > > scanning
-> > > > screen)... After some minutes it stop?
-> > > > Thanks in advance for help,
-> > > >         Joel
-> > > >
-> > > > -------------------------------------------------
-> > > > This mail sent through Tiscalinet Webmail
-> > (http://webmail.tiscali.be)
-> > > >
-> > > > _______________________________________________
-> > > > parisc-linux mailing list
-> > > > parisc-linux@lists.parisc-linux.org
-> > > > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> > > >
-> > > 
-> > > -- 
-> > >
-> >
-> ===============================================================================
-> > > 
-> > > Phil Anderson
-> > > UNIX Systems Administrator
-> > > andersop@neverland.ncssm.edu
-> > > The_13th_Ewok@hotmail.com
-> > > 
-> > > "Go CRAZY? Don't mind if I do! Woowoowoowoo!" -Homer Simpson
-> > > 
-> > > 
-> > > 
-> > 
-> > 
-> > -------------------------------------------------
-> > This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
-> > 
-> 
-> 
-> -------------------------------------------------
-> This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
-> 
-> 
+Albert
 
+--7ZAtKRhVyVSsbBD2
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE8DkLRDg+hOeRZtkMRAgUDAJ40zHrI+ItCnUS52v7lGa+990p8iACgla1E
+DB/eWqGyfToPW4hD+PuaRUA=
+=lhNX
+-----END PGP SIGNATURE-----
+
+--7ZAtKRhVyVSsbBD2--
