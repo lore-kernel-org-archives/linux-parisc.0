@@ -1,29 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B48FF4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 13:21:26 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id MAA00377
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 12:21:22 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gADKL8r02349;
-	Wed, 13 Nov 2002 15:21:08 -0500
-Message-Id: <200211132021.gADKL8r02349@localhost.localdomain>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Miles Bader <miles@gnu.org>, Greg KH <greg@kroah.com>,
-	"J.E.J. Bottomley" <James.Bottomley@SteelEye.com>,
+To: "J.E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Bjorn Helgaas <bjorn_helgaas@hp.com>, Greg KH <greg@kroah.com>,
+	Miles Bader <miles@gnu.org>,
+	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
 	Matthew Wilcox <willy@debian.org>,
 	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
 	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
- interface
-In-Reply-To: Message from Grant Grundler <grundler@dsl2.external.hp.com>
-   of "Wed, 13 Nov 2002 13:13:57 MST." <20021113201357.5302F4829@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Nov 2002 15:21:07 -0500
-From: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface 
+In-Reply-To: Message from "J.E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+   of "Wed, 13 Nov 2002 12:23:48 EST." <200211131723.gADHNmp02426@localhost.localdomain>
+References: <200211131723.gADHNmp02426@localhost.localdomain> 
+Date: Wed, 13 Nov 2002 13:33:21 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021113203321.DCF174829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -35,23 +25,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Miles Bader wrote:
-> I can't speak for `real machines,' but on my wierd embedded board,
-> pci_alloc_consistent allocates from a special area of memory (not
-> located at 0) that is the only shared memory between PCI devices and the
-> CPU.  pci_alloc_consistent happens to fit this situation quite well, but
-> I don't think a bitmask is enough to express the situation.
+"J.E.J. Bottomley" wrote:
+> We should also allow devices to do all the setup through bus generic 
+> functions, but leave open the possibility that the driver may (once it knows 
+> the bus type) obtain the pci_dev (or whatever) from the struct device if it 
+> really, really has to muck with bus specific registers.
 
-grundler@dsl2.external.hp.com said:
-> HP PARISC V-Class do that as well. The "consistent" memory lives on
-> the PCI Bus Controller - not in host mem. Note that parisc-linux does
-> not (yet) support V-class. 
+For device discovery and initialization, the generic PCI code has to muck
+with PCI specific resources (IO Port, MMIO, and IRQ related stuff primarily).
 
-Actually, I think dma_mask and consistent memory are orthogonal problems.  
-dma_masks are used by the I/O subsystem to determine whether direct DMA to a 
-memory region containing an I/O buffer is possible or whether it has to be 
-bounced.  Consistent memory is usually allocated for driver specific 
-transfers.  The I/O subsystem doesn't usually require the actual I/O buffers 
-to be in consistent memory.
+> As far as the SCSI mid layer goes, all we really need from struct device is 
+> the dma_mask for setting up the I/O bounce buffers.
+> 
+> The simplest way to do all of this is probably to add a pointer to the 
+> dma_mask in struct device and make it point to the same thing in pci_dev.
+> If we find we need more than this per device, it could become a pointer
+> to a generic dma information structure later on.
 
-James
+uhmm...If we are going to touch dma_mask in pci_dev, then just move it
+to struct device and be done with it. Then fixup pci_set_dma_mask()
+to do the right thing.
+
+...
+> Since the 53c700 is also used by parisc (including some machines with 
+> IOMMUs---which, unfortunately, I don't have access to), it probably makes an 
+> ideal conversion test case.
+
+Duck! (that's going to get fixed it seems) ;^)
+
+thanks,
+grant
