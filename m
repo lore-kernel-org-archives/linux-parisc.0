@@ -1,29 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA26940
-	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Jul 2000 13:42:19 -0600
-Message-Id: <200007121943.PAA04579@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Internal compiler error
-To: willy@thepuffingroup.com
-Date: Wed, 12 Jul 2000 15:43:50 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: grundler@cup.hp.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <20000712141541.B3593@vodka.thepuffingroup.com> from "willy@thepuffingroup.com" at Jul 12, 2000 02:15:41 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA27460
+	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Jul 2000 13:55:33 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 12 Jul 2000 19:57:06 -0000
+Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
+	id 13CSbj-0005dz-00
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 Jul 2000 15:55:47 -0400
+To: parisc-linux@thepuffingroup.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 12 Jul 2000 15:55:47 -0400
+Message-ID: <8766qb86nw.fsf@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Problem with malloc(3)/sbrk(2)/brk(2)/something
 List-ID: <linux-parisc.vger.kernel.org>
 
-> is in gcc/gcc/ChangeLog.  The last comment which isn't ours in ChangeLog
-> is dated 2000-07-07.  any changes since then which look even remotely
-> relevant?
+Hi,
 
-Not that I am aware of.
+This is a follow-up to my footnote about not being able to run the
+'config.guess' shell script with ash (and some other stuff) on our
+userland.  Basically I've found a minimal testcase for the problem,
+which is that it's not possible to malloc() across a page boundary.
 
-There is a patch related to the alignment of fields that is not installed
-because of portability concerns.  Alignments greater than 16 bytes are
-not done correctly and may cause the compiler to abort due to a divide
-by zero.  This may be important for the linux port.
+Beware that since we don't have a real page fault handler, this
+program will crash your machine.  (Press TOC, and we'll take it from
+there :-)
 
-Dave
+If you turn on debugging assertions in the malloc code you'll see that
+it triggers this assertion:
+
+  /* We always land on a page boundary */
+  assert(((unsigned long)((char*)top(ar_ptr) + top_size) & (pagesz-1)) == 0);
+
+I don't see sbrk() or brk() failing, so I'm not exactly sure why this
+happens.  I suspect they are returning bogus values in this case.  If
+someone knows that would be great although I expect to find the
+problem soon (I may try to get strace going, since it will be very
+useful for other similar problems).
+
+#include <stdlib.h>
+#include <stdio.h>
+
+int main()
+{
+	/* get the first address */
+	char *foo = malloc(16);
+
+	/* now try to break a page boundary */
+	char *target = (char *) ((unsigned long) (foo + 4095) & ~4095);
+
+	size_t nbytes = target - foo;
+	foo = malloc(nbytes);
+	return 0;
+}
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
