@@ -1,49 +1,87 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CEF92482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Apr 2001 13:27:20 -0600 (MDT)
-Message-Id: <200104101931.MAA20950@milano.cup.hp.com>
-To: "Witvliet, Hans" <Hans.Witvliet@alcatel.nl>
-Cc: parisc-linux@lists.parisc-linux.org
-In-reply-to: Your message of "Tue, 10 Apr 2001 14:50:05 PDT."
-             <1A8904C3797ED411AC2E0008C7E6F88117C810@nlntmail2b.ats.nld.alcatel.nl>
-Date: Tue, 10 Apr 2001 12:31:26 -0700
-From: Grant Grundler <grundler@cup.hp.com>
-Subject: [parisc-linux] Re: ISO
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BC647482A
+	for <parisc-linux@parisc-linux.org>; Tue, 10 Apr 2001 14:30:20 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14n4m5-0006H2-00
+	for parisc-linux@parisc-linux.org; Tue, 10 Apr 2001 21:30:05 +0100
+Date: Tue, 10 Apr 2001 21:30:05 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010410213005.D25123@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] pread/pwrite
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Witvliet, Hans" wrote:
-> Hi Grant,
-> 
-> Some (cpu-) time has passed, so i was wondering when a 0.6 ISO image will be
-> available?
-> Any E.T.A. known, or are there blocking issues?
+Could those who're having problems with pread/pwrite try the following patch?
 
-IMHO, the person best informed about this is probably Matt Taggart.
-Matt recently posted a new NFS root (made from new debs) and I think
-the ESIEE team signed up to make an ISO image from that.
-So it shouldn't be much longer.
+Index: fs/read_write.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/fs/read_write.c,v
+retrieving revision 1.6
+diff -u -p -r1.6 read_write.c
+--- fs/read_write.c	2000/11/10 21:43:50	1.6
++++ fs/read_write.c	2001/04/10 20:21:01
+@@ -315,8 +315,8 @@ bad_file:
+    lseek back to original location.  They fail just like lseek does on
+    non-seekable files.  */
+ 
+-asmlinkage ssize_t sys_pread(unsigned int fd, char * buf,
+-			     size_t count, loff_t pos)
++static inline
++ssize_t do_pread(unsigned int fd, char * buf, size_t count, loff_t pos)
+ {
+ 	ssize_t ret;
+ 	struct file * file;
+@@ -346,8 +346,8 @@ bad_file:
+ 	return ret;
+ }
+ 
+-asmlinkage ssize_t sys_pwrite(unsigned int fd, const char * buf,
+-			      size_t count, loff_t pos)
++static inline
++ssize_t do_pwrite(unsigned int fd, const char * buf, size_t count, loff_t pos)
+ {
+ 	ssize_t ret;
+ 	struct file * file;
+@@ -377,3 +377,35 @@ out:
+ bad_file:
+ 	return ret;
+ }
++
++#if BITS_PER_LONG == 32
++#ifdef __BIG_ENDIAN
++#define LOFF_T(high, low) unsigned int high, unsigned int low
++#else
++#define LOFF_T(high, low) unsigned int low, unsigned int high
++#endif
++
++asmlinkage
++ssize_t sys_pread(unsigned int fd, char *buf, size_t count, LOFF_T(high, low))
++{
++	return do_pread(fd, buf, count, (loff_t)high << 32 | low);
++}
++
++ssize_t sys_pwrite(unsigned int fd, char *buf, size_t count, LOFF_T(high, low))
++{
++	return do_pwrite(fd, buf, count, (loff_t)high << 32 | low);
++}
++
++
++#else /* BITS_PER_LONG != 32 */
++asmlinkage
++ssize_t sys_pread(unsigned int fd, char *buf, size_t count, loff_t pos)
++{
++	return do_pread(fd, buf, count, pos);
++}
++
++ssize_t sys_pwrite(unsigned int fd, char *buf, size_t count, loff_t pos)
++{
++	return do_pwrite(fd, buf, count, pos);
++}
++#endif
 
-My understanding is this is yet another intermediate release.
-We hope folks can use apt-get to upgrade from regular debian mirrors
-in future as the bits stabilize. I hope someone else who understands
-debian distribution process and hppa-linux issues better can reply as well.
-
-Witvliet, Hans originally wrote:
-> I really would like to install Linux on my
-> C180-XP machine, but that image doesn't support Cxxx machines according
-> to the readme.
-
-FWIW, Ryan Bradetich almost has 64-bit kernel booting on his C200 (PA2.0 CPU).
-I'm pretty sure 32-bit kernel/userspace work fine on the C-class now.
-(based on what Ryan and others have reported). So watch the parisc-linux
-mail closely for the v0.6 ISO image announcement.
-
-grant
-
-ps. "thepuffingroup.com" mail and website is deprecated. please use
-    lists.parisc-linux.org or www.parisc-linux.org domain now.
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Revolutions do not require corporate support.
