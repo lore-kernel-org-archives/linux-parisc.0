@@ -1,43 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.oplnk.net (unknown [216.90.3.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D392482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 15:29:17 -0600 (MDT)
-Received: from deskbean (216-90-3-162.dsl.oplnk.net [216.90.3.162])
-	by mail.oplnk.net (Postfix) with SMTP id 5155F4E00C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 16:50:11 -0500 (CDT)
-Message-ID: <000501c0ce97$cd18ec00$a2035ad8@3beans.com>
-Reply-To: "Peter Weatherall" <peter.weatherall@3beans.com>
-From: "Peter Weatherall" <peter.weatherall@3beans.com>
-To: <parisc-linux@lists.parisc-linux.org>
-References: <Pine.LNX.4.21.0104261258350.11174-100000@pilchuck.reedmedia.net> <OE25oryKFRJrzdDW6lC000046f5@hotmail.com> <003401c0ce96$88726af0$a2035ad8@3beans.com>
-Date: Thu, 26 Apr 2001 16:28:13 -0500
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3629B482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 16:21:10 -0600 (MDT)
+Received: from esiee.fr (pc5158a.esiee.fr [147.215.50.165])
+	by mail.esiee.fr (Postfix) with ESMTP id CE475D1672
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Apr 2001 00:21:07 +0200 (CEST)
+Sender: marteaut@esiee.fr
+Message-ID: <3AE8A0A4.1D74FACF@esiee.fr>
+Date: Fri, 27 Apr 2001 00:26:44 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Dino
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] SETI@home
 List-ID: <linux-parisc.vger.kernel.org>
 
-(I'm reposting this with the correct subject) -
+Hi all,
 
+	SETI guys just announced that our version was working! To see it, follow this
+link http://setiathome.ssl.berkeley.edu/unix.html
 
-I have a C160. When I boot it , I see the following message -
+And, at http://www.esiee.fr/puffin, a client will be available as soon as
+possible. We are currently running tests with our A500 and with a 712...
 
+Once again, thanks to Bruno Iglesias for porting this good test for the floating
+computation of our PA/Linux.
 
-> start snip >>>>
-Dino version 2.1 (bridge mode) found at 0xf1600000
-
-
-The GSCtoPCI (Dino hrev 1) bus converter found may exhibit
-data corruption.  See Service Note Numbers: A4190A-01, A4191A-01.
-Systems shipped after Aug 20, 1997 will not exhibit this problem.
-Models affected: C180, C160, C160L, B160L, and B132L workstations.
- 
-dino_bridge_init: IO_ADDR_EN hasn't been configured.
-kernel BUG at dino.c:795!
-> end snip >>>>>
- 
-How can I determine if my c160 is affected ? what's this kernel bug at
-dino.c all about and is there some Dino documentation available ?
- 
-Thanks
-Peter
+Good day, Thomas
+ESIEE Team
