@@ -1,20 +1,24 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7DA24488A
+Return-Path: <sdbrady@ntlworld.com>
+Received: from mta04-svc.ntlworld.com (mta04-svc.ntlworld.com [62.253.162.44])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26AEF488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 23:51:01 -0700 (MST)
-Date: Sat, 21 Feb 2004 23:51:00 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] Re: can't compile 2.4.24: pdc_cons.o problem!
-Message-ID: <20040222065100.GG30849@colo.lackof.org>
-References: <1077183184.403482d04a190@clients.latnet.lv>
-	<20040222005241.GA30849@colo.lackof.org>
-	<20040222012033.GN11824@parcelfarce.linux.theplanet.co.uk>
+	Sun, 22 Feb 2004 00:01:51 -0700 (MST)
+Received: from calypso ([62.254.21.7]) by mta04-svc.ntlworld.com
+	(InterMail vM.4.01.03.37 201-229-121-137-20020806) with ESMTP
+	id <20040222070139.BWPE20489.mta04-svc.ntlworld.com@calypso>
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sun, 22 Feb 2004 07:01:39 +0000
+Received: from sdb by calypso with local (Exim 3.36 #1 (Debian))
+	id 1Auncc-0000ef-00 for <parisc-linux@lists.parisc-linux.org>;
+	Sun, 22 Feb 2004 07:01:50 +0000
+Date: Sun, 22 Feb 2004 07:01:50 +0000
+From: Stuart Brady <sdbrady@ntlworld.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040222070150.GA773@calypso>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040222012033.GN11824@parcelfarce.linux.theplanet.co.uk>
-Cc: dub@latnet.lv, parisc-linux@lists.parisc-linux.org
+Sender: Stuart Brady <sdbrady@ntlworld.com>
+Subject: [parisc-linux] [PATCH] include/linux/soundcard.h endian fix
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,37 +28,71 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Feb 22, 2004 at 01:20:33AM +0000, Matthew Wilcox wrote:
-> deb http://cvs.parisc-linux.org/downloads/autobuild-kernels/ 32/
-> 
-> should do the trick, but I think you have the URL wrong.  I get:
-> 
-> /downloads/autobuild-kernels/32: unknown location
+Hi,
 
-oopps...my bad. It's "download" (without 's')
-And I confirmed the following sources.list line works:
+It seems that <linux/soundcard.h> defines AFMT_S16_NE as AFMT_S16_LE on
+hppa. Both GCC 3.0 and 3.3 predefine __hppa__, but not HPPA. IMO, the
+bug is in soundcard.h, not GCC.
 
-deb http://cvs.parisc-linux.org/download/autobuild-kernels/ 32/
+Index: soundcard.h
+===================================================================
+RCS file: /var/cvs/linux-2.4/include/linux/soundcard.h,v
+retrieving revision 1.6
+diff -u -r1.6 soundcard.h
+--- soundcard.h	26 Jun 2003 15:08:08 -0000	1.6
++++ soundcard.h	21 Feb 2004 16:04:12 -0000
+@@ -179,7 +179,7 @@
+  * Some big endian/little endian handling macros
+  */
+ 
+-#if defined(_AIX) || defined(AIX) || defined(sparc) || defined(__sparc__) || defined(HPPA) || defined(PPC) || defined(__mc68000__)
++#if defined(_AIX) || defined(AIX) || defined(sparc) || defined(__sparc__) || defined(HPPA) || defined(__hppa__) || defined(PPC) || defined(__powerpc__) || defined(__mc68000__)
+ /* Big endian machines */
+ #  define _PATCHKEY(id) (0xfd00|id)
+ #  define AFMT_S16_NE AFMT_S16_BE
 
-apt-get update says:
-Hit http://cvs.parisc-linux.org 32/ Packages                                   
-Ign http://cvs.parisc-linux.org 32/ Release                                    
+I've added __powerpc__ too, because PPC won't be defined if you compiled
+with -ansi.
 
-And dselect doesn't see the kernel-image-2.4.25-pa0 .deb.
-(I ran "update" from dselect menu)
+I noticed this problem when looking at Timidity, which was writing big
+endian data with AFMT_S16_NE. The OSS 1.1 API Spec[1] (page 38) states:
 
-DOH! two things:
-1) I'm doing this on an a500 - use 64/ instead
-2) packages are called "palinux-64-2.4...." (not "kernel-image-2.4...")
+"The AFMT_S16_NE format can be used when a program wants to encode or
+decode 16-bit samples locally. It automatically selects the right format
+for the CPU architecture being compiled for. In this way it's usually
+possible to simply use signed short format to store the samples."
 
-hrmm...dselect is getting:
-Err http://cvs.parisc-linux.org 64/ palinux-64-2.4.25-pa0 0-2        
-  404 Not Found
-...
-Failed to fetch http://cvs.parisc-linux.org/download/autobuild-kernels/./palinux-64-2.4.25-pa0_0-2_all.deb  404 Not Found
-E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
+This doesn't really seem to make _solid_ promises that the format
+matches the architecture's endianness - "Right format?" "Usually?"
+I wonder whether Timidity is making an incorrect assumption?
 
-OIC... '64/' is missing. Ideas?
+Would it be better to do the following? :
 
-thanks,
-grant
+#ifdef(__BYTE_ORDER)
+#  if defined(__BIG_ENDIAN)
+#    if __BYTE_ORDER == __BIG_ENDIAN
+#      define AFMT_S16_NE AFMT_S16_BE
+#    endif
+#  elif defined(__LITTLE_ENDIAN)
+#    if __BYTE_ORDER == __LITTLE_ENDIAN
+#      define AFMT_S16_NE AFMT_S16_LE
+#    endif
+#  end if
+#endif
+
+After this, if AFMT_S16_NE is not defined, it might be worth checking
+the appropriate system-specific predefined macros[2]. If it's still not
+defined, I think is that it's better _not_ to assume little endian. I've
+left out __PDP_ENDIAN - I doubt anything uses it these days.
+
+
+[1] http://www.opensound.com/pguide/oss.pdf
+
+[2] Big endian: _AIX, AIX, sparc, __sparc__, __mc68000__, __m68k__,
+MIPSEB, __MIPSEB__, __ARMEB, HPPA, __hppa__, PPC, __ppc_, __PPC__,
+__powerpc__. Little endian: i386, __i386__, __x86_64__, __amd64__,
+__sh__, __vax__ (yes, really!), MIPSEL, __MIPSEL__, and __ARMEL__,
+__alpha, __alpha__, __ia64__. It seems that ppc, hppa, ia64, alpha,
+sparc, mips, arm and superh have both big and little endian modes.
+-- 
+Stuart Brady
