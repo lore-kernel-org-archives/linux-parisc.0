@@ -1,40 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA07040
-	for <parisc-linux@puffin.external.hp.com>; Mon, 5 Jul 1999 22:09:04 -0600
-Date: Mon, 5 Jul 1999 22:09:09 -0600 (MDT)
-From: Mike Hibler <mike@fast.cs.utah.edu>
-Message-Id: <199907060409.WAA22770@fast.cs.utah.edu>
-To: Matthew.Wilcox@genedata.com, parisc-linux@thepuffingroup.com
-Subject: Re:  [parisc-linux] Mach sources?
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA08011
+	for <parisc-linux@puffin.external.hp.com>; Tue, 6 Jul 1999 15:03:27 -0600
+Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
+	by Cantor.suse.de (Postfix) with ESMTP id 834A232CE1
+	for <parisc-linux@thepuffingroup.com>; Tue, 06 Jul 1999 23:03:41 +0200 (MEST)
+Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
+	by Galois.suse.de (Postfix) with ESMTP id 5CFA19412
+	for <parisc-linux@thepuffingroup.com>; Tue,  6 Jul 1999 23:03:41 +0200 (MEST)
+Date: Tue, 6 Jul 1999 23:03:40 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990706230340.B29058@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Interrupt[ion]s
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Date: Mon, 5 Jul 1999 13:40:02 +0200
-> From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-> To: parisc-linux@thepuffingroup.com
-> Subject: [parisc-linux] Mach sources?
-> 
-> It's quite a pain to actually find the sources from the reference on
-> the puffin group website.  There's a morass of broken links and the
-> OSF no longer seem to distribute the source.  So for everyone's
-> convenience, the URL for the latest set of Mach/PARISC sources is:
-> 
-> ftp://flux.cs.utah.edu/flux/mach/ALPHA/
-> 
-> Jeff, does 9th Jan 1996 sound like the most recent version to you?
-> 
+The basic code to take interruptions and return from them now is there. (I'd
+like to hear if it works on machines other than the A180 though). The next
+step is to make sure we don't clobber all registers in this process, which
+I think should not be a big problem.
 
-I'll give you the authoritative answer...
- 
-For the Utah code (Mach3 + 4.4BSD server), that was the last release,
-in particular:
+I think we should have the following types of interruption handlers:
 
-	ftp://flux.cs.utah.edu/flux/mach/ALPHA/pa-snapshot2.tar.gz
+a) save all registers into the current task_struct, call interruption handler
+   (this would be used for interruptions that might change the running task)
 
-For the OSF code (OSF Mach + Linux server), I believe someone else posted
-a URL for a copy of that.
+b) save caller-saved registers to stack, call interruption handler
+   (this would be the faster, normal kind of interruption)
 
-The OSF code supported a few more machines (e.g., J series) and devices
-(e.g., EISA stuff) than we did, though we might have had a few bug fixes
-they didn't.  Of most interest in the Utah code is the HP-UX compatibility
-code (mostly in the Lites server/emulator) which was good enough to run the
-X11 server and Netscape.
+c) hand-written handlers that use the shadow registers
+
+d) a hand-written handler for external interrupts, which I think I'll write
+   soon (this handler will either do a)-style or b)-style register saving
+   depending on the interrupt handler.
+
+e) the firmware-supplied HPMC handler
+
+Any comments ?
+
+	Philipp Rumpf
