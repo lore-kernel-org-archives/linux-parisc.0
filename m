@@ -1,33 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA06740
-	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Aug 1999 09:01:52 -0600
-Sender: adevries@thepuffingroup.com
-Message-ID: <37A707B5.6E7DF3DB@thepuffingroup.com>
-Date: Tue, 03 Aug 1999 11:16:05 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA10689
+	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Aug 1999 16:49:54 -0600
+From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+To: parisc-linux@thepuffingroup.com,
+        Ingo Matthaes <imatthae@grcbd508.grc.hp.com>
+Subject: Re: [parisc-linux] unsatisfied symbols
+Date: Wed, 4 Aug 1999 00:32:19 +0200
+Content-Type: text/plain
+References: <19990803114003.A5018@grcbd508.grc.hp.com>
 MIME-Version: 1.0
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Kernel images
-References: <199908020159.VAA06171@mail.roava.net> <19990801234246.B25817@piguy.staticky.com> <19990802092030.Y25925@mencheca.ch.genedata.com>
-Content-Type: text/plain; charset=us-ascii
+Message-Id: <99080400504700.00269@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+Am Tue, 03 Aug 1999 schrieb Ingo Matthaes:
+> Hi,
 > 
-> On Sun, Aug 01, 1999 at 11:42:46PM -0700, Matthew Trent wrote:
-> > I'm in the same boat. I'd love to be able to cross compile the kernel, but I've
-> > no HP-UX.
+> it is not possible to compile the latest CVS-Kernels. I tried 
+> various configurations, but I still get unsatisfied symbol __delay.
+> Is anybody out there, who compiles the actual sources succesfully ?
+> make menuconfig seems to be broken too (since 4 weeks)
 > 
-> I think this is a service The Puffin Group will be providing as soon as
-> their DSL turns up (was supposed to go in last Monday, so RSN.)
-> 
+>   Ingo
 
-Actually, I'm pretty up to date with building kernels.  I'll upload them
-regularly now to ftp://puffin.external.hp.com/pub/binaries/kernels .
+Hi Ingo.
 
-- Alex
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+The unsatisfied symbol __delay was caused by the inclusion of pdc_cons.c by the
+bootloader. I fixed it some minutes ago in the cvs.
+The actual kernel from cvs compiles, links and boots (!!) now cleanly (I just
+tried it), if you add the line  
+extern pgd_t swapper_pg_dir[1024];
+to the file pgtable.h. I didn´t wanted to fix that, since I think, that Philipp
+is actually working on that code....
+
+NB: If you want faster screen-output, then remove the delay() in pdc_cons.c.
+
+Ciao,
+Helge.
