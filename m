@@ -1,18 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 87345482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 06:07:18 -0700 (MST)
-Received: from marmite.its.uct.ac.za ([137.158.26.155])
-	by mail.uct.ac.za with smtp (Exim 3.33 #4)
-	id 163Gpd-000AuO-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 12 Nov 2001 15:08:57 +0200
-Date: Mon, 12 Nov 2001 15:05:54 +0200
-From: Michael Wood <mwood@its.uct.ac.za>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Booting C200
-Message-ID: <20011112150554.A10533@marmite.its.uct.ac.za>
+Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 366AE482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 06:30:12 -0700 (MST)
+Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
+	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
+	id 163H9p-0003HD-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 12 Nov 2001 15:29:49 +0200
+Date: Mon, 12 Nov 2001 15:30:27 +0200
+From: Albert Strasheim <fullung@ilink.nis.za>
+To: Markus Grabert <xam@student.cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Linux-2.4.14
+Message-ID: <20011112153027.A18181@dogbert.localdomain>
+References: <Pine.OSF.3.96.1011112111516.10523A-100000@student.cs.ucc.ie>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
+In-Reply-To: <Pine.OSF.3.96.1011112111516.10523A-100000@student.cs.ucc.ie>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +28,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Nov 05, 2001 at 02:22:50PM +0000, Richard Hirst wrote:
-> On Mon, Nov 05, 2001 at 07:16:36AM -0500, Herb Radford wrote:
-> > OK, I found some stuff in the archive on the "Chassis Codes"
-> > and set up an old laptop as a terminal, disconnected the
-> > keyboard (and mouse) and booted.  Now I tried this with the
-> > disk out of my 712/60 and the C200 is not hung.  It proceeds
-> > through the boot process and then hangs on starting cron.
-> 
-> Hmm, the next thing would be the login prompt.  Has it really
-> hung, or is the inittab from your 712/60 set up to only issue
-> a getty on the graphical console?
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I had this sort of problem.  The D270 I have access to only
-has a serial console.  The debian installation program kept
-bombing out at the end, so I eventually managed to get
-something working using debootstrap manually.  Then it seemed to
-hang after starting crond although it worked fine with
-init=/bin/bash.  I realised it was starting gettys on
-/dev/tty[1-6] and not on /dev/ttyS0, so I commented out the
-virtual console lines in /etc/inittab and uncommented the
-/dev/ttyS0 one and things are working much better :)
+The fix is in according to my parisc-linux-cvs logs. :-)
 
-I did see some nasty fs corruption (ext2) though, but I am not
-sure if this is caused by a bad disk or bad termination etc. or
-buggy drivers...  I'll post again if I narrow it down more.
+Regards,
 
--- 
-Michael Wood <mwood@its.uct.ac.za>
+Albert
+
+On Mon, 12 Nov 2001, Markus Grabert wrote:
+
+> Hi there,
+>=20
+> One question:
+>=20
+> Isn't the loop driver broken in Linux-2.4.14
+> (and fixed in 2.4.15-pre1) ?
+>=20
+> Are there any plans to incorporate the bugfix in the CVS ?
+>=20
+> greetings max
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7787yDg+hOeRZtkMRAo4XAJ9cgjN7l7R5BSuHXdhvOFrwuNK5bACdHD5X
+W8ZWPmYAIeJ89ujBobXdtC4=
+=iQOI
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
