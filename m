@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail12.speakeasy.net [216.254.0.212])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1E459482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 00:07:47 -0600 (MDT)
-Date: Tue, 6 Aug 2002 23:11:57 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem with evms and jfs
-Message-ID: <20020807061157.GD8214@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <1017854653.3cab3abdab486@webmail.tiscalinet.be> <20020403181337.GA3759@tausq.org> <3D4C2EAA.4050508@freebel.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D4C2EAA.4050508@freebel.net>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 16714482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 00:34:51 -0600 (MDT)
+Date: Wed, 7 Aug 2002 08:37:09 +0200
+Message-ID: <3D38181A0000142C@ocpmta6.be.tiscali.com>
+In-Reply-To: <3D50A80A.6050209@neuronet.pitt.edu>
+From: jsoe0708@tiscali.be
+Subject: RE: [parisc-linux] Problem cross-compiling latest CVS kernel
+To: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>,
+	"Parisc-Linux" <parisc-linux@lists.parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,16 +22,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I would just like to know if you already have the opportunity to have a 
-> look for a fix of this stuff (I know you are very busy this time and do 
-> not want to stress, just want to got news)
+Hey Rafael,
 
-just came back from a trip....
+Just have a look to annonce of Paul:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2002-July/017144.html
 
-i started fixing this a few weeks back but got sidetracked by the 2.5
-merge.... it's definitely on my todo list :-)
+It should help you.
 
-fwiw i haven't seen any conclusive proof that this "fix" will actually
-fix any problems we've seen....
+J.
 
-randolph
+>-- Original Message --
+>From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+>To: Parisc-Linux <parisc-linux@lists.parisc-linux.org>
+>Subject: [parisc-linux] Problem cross-compiling latest CVS kernel
+>Date: Wed, 07 Aug 2002 00:54:34 -0400
+>
+>
+>I just updated my local copies of palo and the kernel sources.
+>
+>Compilation on my PIII pc of the kernel went OK, but when it goes to 
+>prepare the lifimage using 'make palo' it does not work as before.
+>
+>I looked at the change log of Makefile and there is no mention on how to
+>
+>create a lifimage. How is it done now?
+>
+>-- 
+>      Rafael
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
