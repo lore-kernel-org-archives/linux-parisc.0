@@ -1,43 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: parisc-linux@parisc-linux.org,
-	parisc-linux-announce@parisc-linux.org, debian-hppa@lists.debian.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 31 May 2001 21:02:03 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010601030203.EE8B937EF8@carmen.fc.hp.com>
-Subject: [parisc-linux] Version 0.9 of PA-RISC Linux Released
+Received: from mail.owlriver.com (swampfox.owlriver.com [206.21.107.147])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 24F2D482A
+	for <parisc-linux@parisc-linux.org>; Thu, 31 May 2001 21:32:35 -0600 (MDT)
+Date: Thu, 31 May 2001 23:25:50 -0400 (EDT)
+From: R P Herrold <herrold@owlriver.com>
+To: Matt Taggart <taggart@carmen.fc.hp.com>,
+	<parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Version 0.9 of PA-RISC Linux Released
+In-Reply-To: <20010601030203.EE8B937EF8@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.33.0105312322380.25498-100000@swampfox.owlriver.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Version 0.9 of PA-RISC Linux Released
+On Thu, 31 May 2001, Matt Taggart wrote:
 
-On May 31, 2001 the PA-RISC Linux development community released version
-0.9, the latest version of Linux for computers using Hewlett Packard's
-PA-RISC processor. This release is the result of several years of work by
-developers in the Free Software community including developers from The
-Debian Project, Hewlett Packard, and Linuxcare.
+> The 0.9 release install CDROM images and related documentation can be found at
+>
+> http://parisc-linux.org/release-0.9/
 
-- Latest Debian Installer 
-- Support for 32 and 64 bit systems 
-- Over 4000 Debian packages 
-- Full development environment 
-- Support for large memory (up to 16GB)
-- Ability to use Debian's apt tool to update to the latest
-    package versions
+Congratulations ...
 
-The 0.9 release install CDROM images and related documentation can be found at
+website hint -- stolen from the FSF -- list the SIZE of the
+images, to permit potential downloaders decide if it is worth
+it.
 
-http://parisc-linux.org/release-0.9/
+hint 2:  add md5sums of the images -- both as gzipped, and of
+the ISO for validation before burning, in the body of the
+webpage -- must be external to the CD readme, for it would
+change the values ...
 
-Information about PA-RISC Linux is available at
-
-http://parisc-linux.org/
-
-Any questions or comments about the release should be directed to the
-mailing list at
-
-parisc-linux@parisc-linux.org
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+-- Russ
