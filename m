@@ -1,35 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA14356
-	for <parisc-linux@puffin.external.hp.com>; Mon, 17 Jan 2000 13:29:05 -0700
-Date: Mon, 17 Jan 2000 14:27:38 -0500
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA14769
+	for <parisc-linux@puffin.external.hp.com>; Mon, 17 Jan 2000 14:15:37 -0700
+Date: Mon, 17 Jan 2000 15:15:59 -0500
 From: Matthew Wilcox <willy@thepuffingroup.com>
-To: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Minutes
-Message-ID: <20000117142738.P11300@thepuffingroup.com>
-References: <20000114172721.V11300@thepuffingroup.com> <200001150016.QAA16991@chrome.rose.hp.com>
+To: "substr 'Manager Dan',-3;" <dan@moore.cx>
+Cc: PA-RISC/Linux List <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] getting started
+Message-ID: <20000117151559.Q11300@thepuffingroup.com>
+References: <38835127.4B7C05EC@moore.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200001150016.QAA16991@chrome.rose.hp.com>; from Kirk Bresniker on Fri, Jan 14, 2000 at 04:16:42PM -0800
+In-Reply-To: <38835127.4B7C05EC@moore.cx>; from substr 'Manager Dan',-3; on Mon, Jan 17, 2000 at 05:28:07PM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jan 14, 2000 at 04:16:42PM -0800, Kirk Bresniker wrote:
-> FYI --
+On Mon, Jan 17, 2000 at 05:28:07PM +0000, substr 'Manager Dan',-3; wrote:
+> greetings,
 > 
-> | 4. Martin has cleaned up the serial and console code.  He will commit his
-> |    changes tomorrow after he's tested it.
-> 
-> In testing the 2.3 kernel on my D320/1 with an Access Port (AP) card as
+> is there anything that needs to be done in this effort that could be
+> done by a newcomer?  i picked up a 730 a few weeks ago, and i'm looking
+> for a good place to start helping with this port...
 
-Could you please:
-
-cvs update
-rm .config
-make oldconfig
-make dep
-make clean
-make Image
-
-and tell me if that works?  I've changed the .config to something which
-seems to not get confused on a D270.  We don't have a D320 in the hardware
-database; would you mind adding yours?
+The current contents of the CVS tree should work just fine on the 730,
+but it's not a model we actually test on, so if you want to test, we'll
+be suitably grateful.
