@@ -1,15 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] hwpath for superio serial console
-Date: Sun, 16 Jan 2005 01:09:42 -0700
-Message-ID: <20050116080942.GB20183@colo.lackof.org>
-References: <20050116054728.GS30982@parcelfarce.linux.theplanet.co.uk>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Five year old bug found ;-)
+Date: Fri, 21 Jan 2005 14:52:07 +0000
+Message-ID: <20050121145207.GN25940@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050116054728.GS30982@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,58 +17,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jan 16, 2005 at 05:47:28AM +0000, Matthew Wilcox wrote:
-> # cat console/*
-> [10/0/14/1/1]
-> 643 
-> 
-> To my mind, this is a broken hwpath.
 
-It is.
-We can even detect those - the PCI dev/func needs to be
-encoded as "func<<5 | dev" (ie 10/0/46/1) if it wanted
-to follow the expected convention.
+OK, I tracked down the change ... it was merely 4 years, 3 months ago ;-)
 
-> 10/0/14/1/1 (PCI device 1.1)
+In txn_alloc_data, we test the bit width:
 
-It should be "10/0/14/1.1".
+-       if ((virt_irq - CPU_IRQ_BASE) > (1 << (bits_wide - 1))) {
+-               panic("Sorry -- didn't allocate valid IRQ for this device\n");
+-       }
 
-> We're actually supposed to decode this as:
-> 
-> 10/0 (PA)
-> 10/0/14/1 (PCI device 0e.1)
+But the bracketing is wrong.  GSC devices could only allocate up to
+16 IRQs (1 << (5 - 1)).  This should be 31, ((1 << bits_wide) - 1).
+Or even better, just use >= and it becomes:
 
-So far so good.
+	if ((virt_irq - CPU_IRQ_BASE) >= (1 << bits_wide))
 
-> 10/0/14/1/1 (subfunction 1?)
+Much more intuitive and easy to understand, IMO.  Oh, and I'm rewriting
+this to get rid of the panic ... what's committed later will look slightly
+different to this.
 
-no - see above.
-
-> This isn't consistent breakage, only for serial console hwpath on
-> a sprockets machine.
-
-Right - someone botched how to display suckyio serial ports.
-Maybe this was an attempt to make it consistent with other
-serial ports not using "layers" to identify the port.
-
-> To my mind, SERIAL_1 should have been reported by a hwpath of 10/0/14/1
-> and then two layers -- the first being 1 or 2 for SERIAL_1 vs SERIAL_2,
-> and the second encoding 9600.8.none (which seems to be 643 for some
-> reason).
-
-Yes.
-
-> How should we be handling this?
-
-Probably just ignore it. It's just a "handle" and people will have
-to manually handle it as a quirk.
-
-Try "in io" and see what it says for SERIAL_1 and SERIAL_2
-on the astro based workstation.
-My j6k show's it as 10/0/14/1/1.
-So I think it's ok if Linux is consistent with what firmware displays.
-
-grant
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
