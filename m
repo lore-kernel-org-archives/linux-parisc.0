@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 23 Dec 2002 00:23:35 -0700
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D2B484829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Dec 2002 09:35:04 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 18QVXf-0003jV-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Dec 2002 17:34:59 +0100
+Date: Mon, 23 Dec 2002 17:34:27 +0100
+Message-ID: <3DED9BBD00002FDE@ocpmta7.freegates.net>
+From: jsoe0708@tiscali.be
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20021223072335.GD19065@dsl2.external.hp.com>
-References: <20021222090934.DE9654829@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021222090934.DE9654829@dsl2.external.hp.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 deller
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] 2.4.20-paxx Config problem (follow-up)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,12 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Dec 22, 2002 at 02:09:34AM -0700, Helge Deller wrote:
-> I didn't applied the CONFIG_DUMMY_CONSOLE related setup.c changes, instead
-> I changed Kconfig in drivers/video/console. Please test.
+Hi all,
 
-I made the same comment to Lamont on IRC after looking at it again.
-Kconfig is a better approach.
+The problem I met with arch/parisc/32 on my b2k is due to the CONFIG_SERI=
+AL_NONSTANDARD
+(or a subselect ??).
 
-thanks,
-grant
+Is PDC_console does not work on this model or is there a border effect li=
+nk
+with this selection?
+
+Can somebody help me to fix it?
+
+Thanks,
+    Joel
+
+
+********************************************
+Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
+://adsl.tiscali.be
