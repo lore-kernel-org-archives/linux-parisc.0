@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE01A485F
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 11:04:36 -0600 (MDT)
-Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
-	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id g5DH4AFN002073
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 13:04:11 -0400 (EDT)
-Message-Id: <200206131704.g5DH49TT002072@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Glibc cvs: ld segmentation fault
-To: joel.soete@freebel.net
-Date: Thu, 13 Jun 2002 13:04:09 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <1023962027.3d086babb213a@webmail.tiscalinet.be> from "joel.soete@freebel.net" at Jun 13, 2002 11:53:47 am
+Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C9A354834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 14:26:29 -0600 (MDT)
+Message-ID: <3D090009.CB2EF7B7@gmx.at>
+Date: Thu, 13 Jun 2002 22:26:49 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] SCSI driver for E-class servers - SPIFI ?
+References: <Pine.LNX.4.44.0206122318230.3448-100000@sal.ucc.ie>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +22,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Don't you have additional advice?
+Thanks, for the answers.
 
-Did you start with the debian version of glibc?  I have built 2.2.5-6
-with 3.2 and am using it.  It's possible you need to update binutils.
-Some linux versions also seem to have a tendency to cause random
-segfaults.
+I never thought, the SE stands here for the single ended, I know the 
+difference between SE and differential.
 
-Since I don't think I can duplicate your environment, you will have
-to run ld under gdb to find out where it's segfaulting and get some
-sense as to what's causing the problem.
+BTW: It's me, who wrote the MUX console support, and this is already
+checked in into the Linux tree (for half an year now). 
+But I am interested in having a full device support....
 
-Dave
+Christoph P.
+
+
+
+"M. Grabert" wrote:
+> 
+> On Wed, 12 Jun 2002, Christoph Plattner wrote:
+> 
+> > Sorry, that I am not so "deep" in the HP device knowledge, can you give
+> > me sime hints !
+> >
+> > HP-BP is this a HP bus system ?
+> 
+> Yes, it's the HP Precision Bus (aka NIO). AFAIK it's mainly used in the
+> (very) old servers, like F10. I don't know what the current status of
+> support
+> is, but it used to be unsupported (no docu ?).
+> 
+> (hint: www.parisc-linux.org ->glossary, mailing list archive)
+> 
+> > Is this used in the E55 (or similar) ?
+> 
+> Yes. Although (regarding to www.openpa.net) something like a modified
+> version.
+> 
+> (hint: www.openpa.net, www.google.com, www.parisc-linux.org ->hardware
+> database)
+> 
+> > Is the "SE" SCSI that one in the E55 (what stands "SE" for) ?
+> 
+> SE stands for SingleEnded and reffers to how the SCSI device is connected
+> (signalling etc.). It's the "normal" SCSI (unlike LVD,
+> LowVoltageDifferential), used in SCSI-I and SCSI-II (narrow)
+> 
+> > What is SDTR ?
+> 
+> It's the signal send on the scsi bus to negotiate syncronous data
+> transfer (or asynchronous sent with a REQ/ACK) if they support it.
+> 
+> > Sorry, but I am interested in that stuff, and I know, I can help after
+> > initial steps. Some weeks ago, I rewrote an ethernet driver of an
+> > not-well known chip on an VAX termianl for VAX Linux. So after some
+> > hacking days (or better nights), there will be real progress.
+> >
+> > So I am interested in helping here.
+> 
+> nice :)
+> 
+> > Sorry for this question again:
+> > What is the status of the MUX. As far I can remember, you started to
+> > write on this driver. Is this correct ?
+> 
+> Perhaps s.o. can answer this question. AFAIK somebody is indeed writing
+> on it and has succeded to use the console port on the MUX.
+> 
+> geretings max
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
