@@ -1,236 +1,86 @@
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id TAA07210
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 19:45:52 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by atlrel2.hp.com (Postfix) with ESMTP id ECA934E4
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 21:48:08 -0500 (EST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id SAA22769
-	for parisc-linux@puffin.external.hp.com; Wed, 22 Nov 2000 18:47:06 -0800 (PST)
-Date: Wed, 22 Nov 2000 18:47:06 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200011230247.SAA22769@milano.cup.hp.com>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id WAA08270
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 22:49:12 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel1.hp.com (Postfix) with ESMTP id 91ADE68A
+	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Nov 2000 00:51:28 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id WAA05143 for parisc-linux@puffin.external.hp.com; Wed, 22 Nov 2000 22:50:14 -0700 (MST)
+Date: Wed, 22 Nov 2000 22:50:14 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200011230550.WAA05143@udlkern.fc.hp.com>
 To: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CONFIG_DMB_TRAP diff
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] CONFIG_DMB_TRAP diff
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello again (last one until Monday - I promise),
+>
+> Hello again (last one until Monday - I promise),
+>
+> With Lamont's wisdom, I implemented support for Date Memory Break trap.
+>
+> This enables the kernel programmer to capture the evil code which
+> stomps on other people's "private" data. Only works for stores
+> through virtual addresses. gsc_writeX() and DMA will still
+> bypass this mechanism.
+>
+> pb, dhd, (or some equivalent deity), could you review/commit this code?
+> Or tell me it's ok to commit?
+>
+> I've touched:
+>         arch/parisc/config.in
+>         arch/parisc/kernel/entry.S
+>         arch/parisc/mm/kmap.c
+>         include/asm-parisc/pgtable.h
+>
 
-With Lamont's wisdom, I implemented support for Date Memory Break trap.
+Please don't. This solution is way more complicated than it should be.
+Here are the problems with it:
 
-This enables the kernel programmer to capture the evil code which
-stomps on other people's "private" data. Only works for stores
-through virtual addresses. gsc_writeX() and DMA will still
-bypass this mechanism.
+     1) As I had already mentioned in a previous discussion, the
+     pte's already reserve the location for the B bit (data memory
+     break trap) and the dtlb miss handlers already move the entire
+     group of bits that include this bit in one operation. So no
+     change is necessary to the dtlb miss handlers to specially
+     set that bit and incur extra instructions in the tlb miss handlers,
+     and no extra bits need to be allocated in the pte. Instead of
+     adding a new definition (e.g. 0x800, which is our last available bit)
+     use the one that is already reserved for it: 0x010.
 
-pb, dhd, (or some equivalent deity), could you review/commit this code?
-Or tell me it's ok to commit?
-
-I've touched:
-	arch/parisc/config.in
-	arch/parisc/kernel/entry.S
-	arch/parisc/mm/kmap.c
-	include/asm-parisc/pgtable.h
-
-thanks,
-grant
+     2) There is no reason to add a special data memory break trap
+     handler. The general trap handler is more than sufficient for
+     this case. handle_interruption will be called if a data memory
+     break trap is encountered. Just add a new case for the list
+     of traps, and handle the trap in C. You can set the X bit by
+     simply setting it in the saved ipsw (in gr[0]) and it will be
+     set upon return from the trap, no muss, no fuss.
 
 
-Index: arch/parisc/config.in
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/config.in,v
-retrieving revision 1.25
-diff -u -p -r1.25 config.in
---- config.in	2000/10/20 18:28:26	1.25
-+++ config.in	2000/11/23 02:18:23
-@@ -16,8 +16,12 @@ endmenu
- mainmenu_option next_comment
- comment 'General options'
- 
--# bool 'Symmetric multi-processing support' CONFIG_SMP
--define_bool CONFIG_SMP n
-+bool 'Symmetric multi-processing support' CONFIG_SMP
-+# define_bool CONFIG_SMP n
-+
-+# One needs to tweak dmb_trap_11 code in entry.S to match.
-+# Not tested for 64-bit kernel.
-+bool 'Debug support for Data Memory Break Trap' CONFIG_DMB_TRAP
- 
- bool 'Kernel Debugger support' CONFIG_KWDB
- # define_bool CONFIG_KWDB n
-Index: arch/parisc/kernel/entry.S
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/entry.S,v
-retrieving revision 1.53
-diff -u -p -r1.53 entry.S
---- entry.S	2000/11/22 16:51:33	1.53
-+++ entry.S	2000/11/23 02:18:23
-@@ -23,6 +23,7 @@
-  */
- 
- #include <asm/offset.h>
-+#include <linux/autoconf.h>
- 
- /* the following is the setup i think we should follow:
-  * whenever the CPU is interruptible, the following has to be true:
-@@ -349,7 +350,39 @@
- 	.endm
- #endif
- 
-+#ifdef CONFIG_DMB_TRAP
- 	/*
-+	** Data Memory Bit trap interruption handler (parisc 1.1)
-+	**
-+	** This is a debugging aid. Use it when you think someone else
-+	** is stepping on your memory. It only catches *virtual*
-+	** accesses. gsc_writeX() functions disable virtual translation
-+	** (D-bit) and will happily scribble whatever physical address
-+	** is passed in.
-+	**
-+	** Here's how to use it:
-+	** 1) Call iterate_pages() from your init routine like this:
-+	**	iterate_pages( my_private_mem, private_mem_size,
-+	**                         set_data_memory_break, 0);
-+	** 2) substitute your functions for your_function1 (or 2) in
-+	**    dmb_trap_11 code below.
-+	**
-+	** Thanks to Lamont Jones for telling me how to do this.
-+	** - ggg 1/22/2000
-+	*/
-+	.macro	dmb_11 code
-+
-+	mfctl	%isr,spc
-+	b       dmb_trap_11
-+	mfctl	%ior,va
-+
-+	.align		32
-+	.endm
-+#else
-+#define dmb_11 def
-+#endif
-+
-+	/*
- 	 * dirty bit trap interruption handler (parisc 2.0)
- 	 */
- 
-@@ -448,7 +481,7 @@ fault_vector_11:
- 	naitlb_11	16
- 	nadtlb_11	17
- 	def		18
--	def		19
-+	dmb_11		19
- 	dbit_11		20
- 	def		21
- 	def		22
-@@ -467,7 +500,6 @@ fault_vector_11:
- 	.import		handle_interruption,code
- 	.import		handle_real_interruption,code
- 	.import		do_irq_mask,code
--	.import		parisc_stopkernel,code
- 	.import		cpu_irq_region,data
- 
- 	/*
-@@ -903,11 +935,15 @@ dtlb_miss_11:
- 	dep		pte,8,7,prot
- 
- 	extru,=		pte,_PAGE_NO_CACHE_BIT,1,r0
--	depi		1,12,1,prot
-+	depi		1,12,1,prot	/* U-bit */
- 	extru,=         pte,_PAGE_USER_BIT,1,r0
- 	depi		7,11,3,prot   /* Set for user space (1 rsvd for read) */
- 	extru,= 	pte,_PAGE_GATEWAY_BIT,1,r0
- 	depi		0,11,2,prot	/* If Gateway, Set PL2 to 0 */
-+#ifdef CONFIG_DMB_TRAP
-+	extru,=		pte,_PAGE_DMB_BIT,1,r0
-+	depi		1,4,1,prot	/* B-bit */
-+#endif
- 
- 	/* Get rid of prot bits and convert to page addr for idtlba */
- 
-@@ -1300,6 +1336,30 @@ dbit_trap_11:
- 
- 	rfir
- 	nop
-+
-+#ifdef CONFIG_DMB_TRAP
-+	.import		your_function1,code
-+	.import		your_function2,code
-+
-+dmb_trap_11:
-+	mfctl           pcsq,t0	/* get space */
-+	comb,<>,n       t0,%r0,dmb_rfi  /* not kernel - bail */
-+
-+	mfctl           pcoq,t0		/* get offset */
-+	ldil		L%dmb_ok_function1, t1
-+	dep		%r0, 31, 12, t0
-+	comb,=,n        t0,t1,dmb_rfi /* it's ours - bail */
-+
-+	ldil		L%dmb_ok_function2, t1
-+	comb,<>,n       t0,t1,intr_save /* not ours - panic */
-+
-+dmb_rfi:
-+	mfctl           ipsw,t0		/* Set PSW X-bit - just continue */
-+	depi		1,11,1,t0	/* Set X-bit */
-+	mtctl           t0, ipsw
-+	rfir
-+	nop
-+#endif
- 
- dbit_trap_20:
- 	mfctl           %cr25,ptp	/* Assume user space trap */
-Index: arch/parisc/mm/kmap.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/mm/kmap.c,v
-retrieving revision 1.3
-diff -u -p -r1.3 kmap.c
---- kmap.c	2000/05/05 18:05:47	1.3
-+++ kmap.c	2000/11/23 02:18:23
-@@ -43,7 +43,16 @@ static void unmap_cached_pte(pte_t * pte
- }
- #endif
- 
-+#ifdef CONFIG_DMB_TRAP
- /* These two routines should probably check a few things... */
-+void set_data_memory_break(pte_t * pte, unsigned long arg)
-+{
-+	pte_val(*pte) |= _PAGE_DMB;
-+}
-+
-+#endif
-+
-+/* These two routines should probably check a few things... */
- static void set_uncached(pte_t * pte, unsigned long arg)
- {
- 	pte_val(*pte) |= _PAGE_NO_CACHE;
-@@ -106,7 +115,10 @@ static inline void iterate_pmd(pgd_t * d
- 	} while (address < end);
- }
- 
--static void iterate_pages(unsigned long address, unsigned long size,
-+#ifndef CONFIG_DMB_TRAP
-+static
-+#endif
-+void iterate_pages(unsigned long address, unsigned long size,
- 			  pte_iterator_t op, unsigned long arg)
- {
- 	pgd_t *dir;
-Index: include/asm-parisc/pgtable.h
-===================================================================
-RCS file: /home/cvs/parisc/linux/include/asm-parisc/pgtable.h,v
-retrieving revision 1.29
-diff -u -p -r1.29 pgtable.h
---- pgtable.h	2000/11/10 21:44:44	1.29
-+++ pgtable.h	2000/11/23 02:18:23
-@@ -109,6 +109,10 @@ extern  void *vmalloc_start;
- #define _PAGE_USER      0x400   /* Software: User accessable page */
- #define _PAGE_USER_BIT     21   /* Needs to agree with _PAGE_USER above */
- 				/* 0x800 still available */
-+#ifdef CONFIG_DMB_TRAP
-+#define _PAGE_DMB       0x800   /* Data Memory Break Trap */
-+#define _PAGE_DMB_BIT      20   /* Data Memory Break Trap */
-+#endif
- 
- #ifdef __ASSEMBLY__
- #define _PGB_(x)	(1 << (63 - (x)))
+Note that the above also applies for the page reference trap.  The T bit
+is also already supported (0x040 in the pte) by the dtlb miss handlers.
+Note that the reason I reserved these bits is because it would actually
+take MORE code in the dtlb miss handlers to NOT support those bits and use
+them for something else.
+
+Another helpful hint for those wanting to use this feature.  If you are
+tracking corruptions that span multiple pages, then just setting the B bit
+on each page may be all you need.  But, when I've used the data memory
+break trap for corruption tracking, typically I've wanted to track a
+corruption that was happening to a particular variable, i.e. a 4 byte
+quantity, and lots of other variables were being legitimately written on
+the same page, so you wind up with thousands of data memory break traps,
+where only one may be the one that is corrupting the location you are
+interested in.  But, all is not lost, the solution is still fairly simple.
+The data memory break trap provides a valid iir, isr and ior.  So once you
+get the trap, a custom data memory break handler (which can be written
+with a few lines of C in handle_interruption), simply uses iir, isr and
+ior to check if the access was to the specific byte or bytes you are
+interested in.  I've simply used isr/ior to check for writes within the
+word I was interested in.  That may be enough for most cases.  The
+information you are missing from isr/ior is the size of the write
+transaction.  To get this you would need to parse the instruction stored
+in iir (code to determine the size of a store from the instruction in the
+iir will be necessary when an unaligned fault handler is written).
+
+John Marvin
+jsm@fc.hp.com
