@@ -1,64 +1,64 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA14925
-	for <parisc-linux@puffin.external.hp.com>; Sun, 16 Jul 2000 14:05:08 -0600
-Message-ID: <56D553C0B61BD311AD2300A0C9F485C2066C17B6@xfc02.fc.hp.com>
-From: "FINK,MARTIN \(HP-FtCollins,ex1\)" <martin_fink@hp.com>
-To: "'Gyula Matics'" <mgyula@pi.satimex.tvnet.hu>,
-        parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] When
-Date: Sun, 16 Jul 2000 14:06:34 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11750
+	for <parisc-linux@puffin.external.hp.com>; Mon, 17 Jul 2000 17:31:37 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 17 Jul 2000 23:33:14 -0000
+Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
+	id 13EKMJ-000157-00
+	for <parisc-linux@thepuffingroup.com>; Mon, 17 Jul 2000 19:31:35 -0400
+To: parisc-linux@thepuffingroup.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 17 Jul 2000 19:31:34 -0400
+Message-ID: <87em4swcyx.fsf@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] ELF loader is badly broken
 List-ID: <linux-parisc.vger.kernel.org>
 
-Here are the current plans for PA/Linux.  Given that this effort
-is being driven both by HP and the Open Source community, these
-plans are subject to change.
+Hi,
 
-Linux support for PA-RISC is being phased-in over the rest of 2000.
-A 32-bit developer's release will be available in August, with a 
-32-bit beta available soon after. In Q4 of 2000, there will be a 
-Debian 64-bit production release that will be supported on HP 9000 
-A500 & A400 servers, as well as HP 9000 L1000 and L2000 servers.  
-The release will 	be available for download and also on CD.  It not 
-available as a pre-installed option.
+Basically it's pure chance that our ELF binary loader works at all.
 
-Martin
+The reason I say this is that we do not make sure that we actually map
+in pages for the initial stack frame containing argc, argv, and
+various ELF info, and, since the stack grows upwards while the frame
+grows downwards, we often end up spilling over into unmapped memory in
+create_elf_tables() when putting the pointers in argv and envp on the
+stack.
 
-+=================================================================+
-| Martin Fink                 | E-mail: martin_fink@hp.com        |
-| UNIX Systems Enablement Lab | Phone:  970-898-7076              |
-| Hewlett-Packard Co.         | FAX:    970-898-2838              |
-| 3404 East Harmony Road      | Mobile: 970-215-2451              |
-| MS 42 - Ft. Collins, CO     | Page:   9702152451@mobile.att.net |
-| 80528, USA                  | Web:    http://usel.fc.hp.com/    |
-+=================================================================+    
- 
+The reason it actually works at all is that we *do* map these pages
+when copying in the actual argc and argv strings, and therefore, if
+there happens to be enough space left on the last page of strings (as
+there nearly always is if the environment and argument vectors are
+short enough and contain small enough strings), we manage to do okay.
 
-> -----Original Message-----
-> From: Gyula Matics [mailto:mgyula@pi.satimex.tvnet.hu]
-> Sent: Thursday, July 13, 2000 12:09 PM
-> To: parisc-linux@thepuffingroup.com
-> Subject: Re: [parisc-linux] When
-> 
-> 
-> 
-> ...did you noticed that the A[45]00 product brief lists Linux as a
-> supported OS? (you can find it at www.hp.com/go/aclass)
-> 
-> I had a worrying sales type coming to my desk yesterday asking more or
-> less the same question that Dave did. There are people trying to order
-> A class servers with Linux preinstalled.
-> 
-> Told him to come back in October. That's about right for the first
-> somewhat useable Debian release, isn't it?
-> 
-> Gyula
-> 
-> --------------------------------------------------------------
-> -------------
-> To unsubscribe: send e-mail to 
-> parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+I *think* that the reason the code works on other architectures is
+that, since both their stacks and stack frames grow downwards, a page
+fault in create_elf_tables() will Do The Right Thing by just
+allocating more stack space.  Of course I could be totally wrong about
+that...
+
+In any case we probably need a special dispensation in the binary
+loader code for our up-growing stacks and down-growing frames.  It
+seems to me like we can either:
+
+ 1) Make a special #ifdef __hppa__ (yuck) in exec.c (or somewhere - I
+    don't suppose there are any hooks for this sort of thing ... or
+    for that matter any other supported architectures with up-growing
+    stacks) to leave enough room for the argv and envp and associated
+    bits that get put there by the binfmt stuff.
+
+ 2) Make an exception in the page fault handler (or probably in
+    expand_stack(), I tried setting the VM_GROWSDOWN flag on it and
+    that clearly wasn't enough) to the stack-growing-up-rule for the
+    initial stack frame's VMA, for at least as long as it takes us to
+    populate it with pointers.
+
+If (2) actually works, it should be the better solution, I think,
+because it means we don't have to second-guess the amount of crap the
+binary format loaders are going to put on the stack for us.  Someone
+who isn't an idiot like me can maybe comment further :-)
+
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
