@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0729E482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 15:05:26 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16VgNY-0005Rz-00; Tue, 29 Jan 2002 22:05:24 +0000
-Date: Tue, 29 Jan 2002 22:05:24 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Dark Fiber <dfiber@mega-tokyo.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] cross compilation
-Message-ID: <20020129220524.A26142@parcelfarce.linux.theplanet.co.uk>
-References: <5.1.0.14.2.20020129205648.00a80ec8@pop.freeserve.net>
+Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 246C7482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 15:27:53 -0700 (MST)
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id g0TMRu404338
+	for parisc-linux@lists.parisc-linux.org; Tue, 29 Jan 2002 17:27:56 -0500
+Date: Tue, 29 Jan 2002 17:27:56 -0500
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020129172756.J1945@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5.1.0.14.2.20020129205648.00a80ec8@pop.freeserve.net>; from dfiber@mega-tokyo.com on Tue, Jan 29, 2002 at 09:10:17PM +0000
+Subject: [parisc-linux] sim700 Driver and 715/50's
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,40 +23,84 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 29, 2002 at 09:10:17PM +0000, Dark Fiber wrote:
-> my intention is to port freebsd to a 64bit lp64(depending..) kernel.
-> not a serious official freebsd port, but something i want to undertake.
-> i'm hoping to concentrate on the pa8* cpu series and up. nothing might
-> come of this whatsoever, but i'm willing to put a little time in and play
-> around. i think i'm mad, but hey, it takes all kinds! ^_^
+parisc'ers,
 
-Uhm, yeah, you're certifiable :-)
+I was recently playing with the SCSI drivers for the
+LASI and without much sucess on some fronts.
 
-You should ignore the cvs repositories on cvs.p-l.org for the most
-part; we get our binutils from upstream and the gcc patches we require
-are folded into the debian package (gcc 3.1 is supposed to support
-hppa-linux... we'll see).
+After staring at some source for a few minutes, I changed
+CONFIG_SCSI_LASI700 to CONFIG_SCSI_LASI to get the
+older sim700 driver to compile for the latest kernel.
 
-Just so you know, you'll have to write drivers to support:
+This is really only phase 1 of 2 steps:
 
- - Runway-to-GSC converter (u2/uturn)
- - GSC-to-PCI (dino/cujo)
- - Runway-to-Ropes (astro/ike)
- - Ropes-to-PCI (elroy)
- - Multifunction IO (lasi, wax, suckyio)
+1. Test new kernel with old driver
+2. Test new kernel with new driver (but with tag queue tweaks)
 
-plus, if freebsd doesn't already have them:
+The reason was to determine:
 
- - Apricot (i82596) ethernet
- - ncr720 scsi
- - suckyio IDE/USB
+a. Random hangs on 715/50's (attributed to scsi driver)
+	= Diskless nodes just keep on trucking.
+b. Why certain scsi drives failed to work with new 53c700
+   driver, but work with the old sim700.
 
-you can cut down the number of drivers to write if you decide to only
-support machines such as B1000 and up -- basically you're down to Astro
-and Elroy support for those machines.  SuckyIO support if you want to
-use the builtin serial/usb/ide/ps2/parallel controller.  But we managed
-without that support for months, using PCI serial cards as console.  Oh
-and don't forget the sound driver.  Think that's it...
+--- Kernel with CONFIG_SCSI_LASI gives ---
 
--- 
-Revolutions do not require corporate support.
+sim700: Configuring 53c700 (SCSI-ID 7) at f0825100, IRQ 86, options 1
+scsi0: Revision 0x0
+scsi0: test 1 FAILED: dsps: exp 0xab93001d, got 0x00000002
+scsi0: Chip register contents:
+ (script[0] at virt 10070000, bus 70000)
+ 00  sien:  af  sdid:  00  scntl1:20  scntl0:c4
+ 04  socl:  02  sodl:  00  sxfer: 00  scid:  80
+ 08  sbcl:  00  sbdl:  00  sidl:  00  sfbr:  00
+ 0C  sstat2:00  sstat1:00  sstat0:00  dstat: 80
+ 10
+ 14  ctest3:ae  ctest2:31  ctest1:f0  ctest0:00
+ 18  ctest7:00  ctest6:da  ctest5:00  ctest4:00
+ 1C  temp:  00000000
+ 20              ctest8:ff  istat: 04  dfifo: 00
+ 24  dbc:   00000002  dnad:  00000002  dsp:   080774ac
+ 30  dsps:  00000002
+ 34  dmode: 80
+ 38  dcntl: 80  dwt:   00  dien:  1d
+ 3C
+scsi0: could not halt NCR chip, stage 2
+Warning : device (10, 0xb, 0x0, 0x71) NOT claimed by Lasi SCSI
+
+Tested on another machines also gives:
+
+sim700: Configuring 53c700 (SCSI-ID 7) at f0825100, IRQ 86, options 1
+scsi0: Revision 0x0
+scsi0: test 1 FAILED: dsps: exp 0xab93001d, got 0x00000002
+scsi0: Chip register contents:
+ (script[0] at virt 10070000, bus 70000)
+ 00  sien:  af  sdid:  00  scntl1:20  scntl0:c4
+ 04  socl:  02  sodl:  00  sxfer: 00  scid:  80
+ 08  sbcl:  00  sbdl:  00  sidl:  00  sfbr:  00
+ 0C  sstat2:00  sstat1:00  sstat0:00  dstat: 80
+ 10
+ 14  ctest3:00  ctest2:21  ctest1:f0  ctest0:00
+ 18  ctest7:00  ctest6:00  ctest5:00  ctest4:00
+ 1C  temp:  00000000
+ 20              ctest8:ff  istat: 04  dfifo: 00
+ 24  dbc:   00000002  dnad:  00000002  dsp:   080774ac
+ 30  dsps:  00000002
+ 34  dmode: 80
+ 38  dcntl: 80  dwt:   00  dien:  1d
+ 3C
+scsi0: could not halt NCR chip, stage 2
+Warning : device (10, 0x7, 0x0, 0x71) NOT claimed by Lasi SCSI
+
+I'm not really sure what is going on here?
+
+Does this mean:
+
+- sim700 driver is not quite working proplerly with new kernel
+
+I'm going to move into my second phase of testing, and
+see if the new driver can hack it :)
+
+Any suggestions would be appreciated.
+
+c.
