@@ -1,35 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C60D482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 10:05:48 -0600 (MDT)
-Message-Id: <200109211603.KAA01633@puffin.external.hp.com>
-To: =?iso-8859-1?Q?Andreas_H=E4rtel?= <andreas@malcolm.in-chemnitz.de>
-Cc: "Parisc-Linux (E-Mail)" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 712/60 boots fine 
-In-Reply-To: Message from =?iso-8859-1?Q?Andreas_H=E4rtel?= <andreas@malcolm.in-chemnitz.de>
-   of "Fri, 21 Sep 2001 10:38:24 +0200." <000401c14278$c79760e0$0350a8c0@genesis>
-Date: Fri, 21 Sep 2001 10:03:08 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DA5D6482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 10:09:58 -0600 (MDT)
+Date: Fri, 21 Sep 2001 12:10:56 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Subject: Re: [parisc-linux] testandset
+Message-ID: <20010921121056.D25803@megatonmonkey.net>
+References: <20010921113700.A25803@megatonmonkey.net> <20010921164239.C27323@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010921164239.C27323@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Fri, Sep 21, 2001 at 04:42:39PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-=?iso-8859-1?Q?Andreas_H=E4rtel?= wrote:
-> It is difficult to understand for a newbie, that PALO needs file system type
-> 'F0' but this type is unknown by fdisk.
-> Or the 2. mistake, the partition where vmlinux is located must be lower or
-> equal 2 GByte.
-
-Both issues are documented in the palo documentation.
-See "man palo" (which points to /usr/share/doc/palo/).
-The install ISO's also had/have a README.INSTALL that tells one about
-both issues as well.
-(Kudos to Paul Bame - he did an excellent job with both)
-
-Is there a more obvious place this should be documented?
-(ie where did you look?)
-
-> Thanks
+> > I'm sitting scratching my head becaues the ./sysdeps/hppa/dl-fptr.c
+> > is peppered with testandset, which used to be in pt-machine.h,
+> > but is now called try_lock within pt-machine.h
 > 
-> Andreas
+> um, the hppa.dpatch definitely does patch this.  perhaps you were
+> overzealous with trimming the ia64 part of the patch?
+>
 
-thanks,
-grant
+Hrm. Maybe. I remember cutting out only the ia64 part.
+I'll zip through the patch again.
+
+<carlos goes to check>
+
+Hrm. Time to start vaping source trees.
+The only diff from the patches is the ia64 stuff. Which I've
+fixed to use try_lock, so it's not necc anymore.
+
+I am now sure that I've been using the dpkg tools incorrectly.
+I will follow the steps you've outlined and do some more reading.
+
+Thanks for the help M.
+
+Cheers,
+c. 
