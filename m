@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cypress2.cypress-tech.com (tamqfl1-53-130.biz.dsl.gtei.net [209.241.53.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 12E34482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 09:41:19 -0600 (MDT)
-Message-ID: <3F329D7A.F993B697@cypress-tech.com>
-Date: Thu, 07 Aug 2003 11:42:02 -0700
-From: Jesse Dougherty <jesse@cypress-tech.com>
-MIME-Version: 1.0
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F40DD482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 09:51:29 -0600 (MDT)
+Date: Thu, 7 Aug 2003 08:54:42 -0700
+From: Randolph Chung <randolph@tausq.org>
 To: geos@canada.com
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] adding a second nic to B1000
+Message-ID: <20030807155442.GE4979@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 References: <20030807083620.21079.h004.c009.wm@mail.canada.com.criticalpath.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030807083620.21079.h004.c009.wm@mail.canada.com.criticalpath.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,31 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-It might be the 3com card, the recommended NIC cards for the B1000 are
-HP B5509BA PCI 10/100Base-TX and HP A4926A PCI 1000Base-SX
-
-Jesse
-
-geos@canada.com wrote:
-
-> Ive been trying for 5 days not to get a second nic
-> installed into hp b1000 using pa-risc woody 3
->
-> iv read all i can find , been to all the irc chnls
-> im at a loss here
->
 > it may be the 3com 3C95x pci card does not work in this
-> box
->
-> it should work with debian
-> the card does work in i386 box
+> box 
+> it should work with debian 
+> the card does work in i386 box 
 > the builtin nic works fine
->
-> can this be done? if so is there a howto ?
-> if this card is not supported what nic cards are ?
->
-> TIA
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+how does it "not work"? does it hang the box?
+
+i have a spare 3c95x that i can try as well... (altho there are 
+really many variants of the vortex/boomerang cards)
+
+can you perhaps plug the card into a working i386 box and show us the
+lspci -vvvn output?
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
