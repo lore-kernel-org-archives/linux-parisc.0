@@ -1,16 +1,20 @@
-Return-Path: <leslieball@msn.com>
-Received: from [36.190.130.197] by pcp07716372pcs.nrockv01.md.comcast.net for
-	<pmccabe@parisc-linux.org>; Mon, 15 Dec 2003 21:46:09 -0200
-Message-ID: <60chh6-t7$n5--2643$lk@eknffb>
-From: "Sidney Paulson" <leslieball@msn.com>
-To: pmccabe@parisc-linux.org
-Date: Mon, 15 Dec 03 21:46:09 GMT
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 5B0504840
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 15 Dec 2003 13:45:06 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Subject: Re: [parisc-linux] strange GNU ld / libgcc_s.so problems
+Date: Mon, 15 Dec 2003 21:42:21 +0100
+References: <200312142312.hBENCSHO002332@hiauly1.hia.nrc.ca>
+In-Reply-To: <200312142312.hBENCSHO002332@hiauly1.hia.nrc.ca>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="A_._544A4_8A_BF"
-Cc: grundler@parisc-linux.org, parisc-linux@parisc-linux.org
-Subject: [parisc-linux] Did .you know JFK was doing it? mbq
-Reply-To: Sidney Paulson <leslieball@msn.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200312152142.21505.deller@gmx.de>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,49 +24,25 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Monday 15 December 2003 00:12, John David Anglin wrote:
+> > > -lgcc_s (//usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
+> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
+> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
+> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
+> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
+> > > usr/lib/libgcc_s.so)
+> 
+> Debian builds GCC using sjlj exceptions.  This can happen if you use
+> GCC built using dwarf2 exception support (the default).
 
---A_._544A4_8A_BF
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hi Dave,
 
-<html>Did .you know JFK was doing it? mbq
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+I'm only using debian's official binaries thru "apt-get update" - including gcc/g++:
 
-<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-gwjhuwp  yel 
-k to yrfkteby
-dkh hn
-k scikzjktxyx
-yv
-rzmvahgld rfr
-</body>
-</html>
-ouovojmposetfszzed
- bozb  b
-
---A_._544A4_8A_BF--
+c3000:/var/cache/apt/archives# dpkg -l | grep gcc
+ii  gcc            3.3.1-2        The GNU C compiler.
+pi  gcc-3.2-base   3.2.3-8        The GNU Compiler Collection (base package)
+ii  gcc-3.3        3.3.2-4        The GNU C compiler
+ii  gcc-3.3-base   3.3.2-4        The GNU Compiler Collection (base package)
+ii  gcc-hppa64     3.0-0pre010427 Cross gcc for hppa64
+ii  libgcc1        3.3.2-4        GCC support library
