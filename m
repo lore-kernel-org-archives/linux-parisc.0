@@ -1,17 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc4-hem11-4-cust39.bre.cable.ntl.com [213.105.90.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91A2A4843
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 14:15:30 -0600 (MDT)
-Date: Thu, 4 Jul 2002 20:14:55 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Alex Green <alexdgreen@hotmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installing on C3600
-Message-ID: <20020704191454.GA971@sleepie.demon.co.uk>
-References: <OE62b63Kbc9oLfgzBsc00001390@hotmail.com> <3D21DFDD.9090002@freebel.net> <3D21E354.8050701@freebel.net> <OE17H31NKzHWcQTLwR20000190f@hotmail.com> <3D2460E6.2040608@freebel.net> <OE40wtsQztQoPAzdaQY00001f9b@hotmail.com> <3D2469AB.3080102@freebel.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D2469AB.3080102@freebel.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20020705075529.A2C604847@dsl2.external.hp.com>
+Date: Fri,  5 Jul 2002 01:55:29 -0600 (MDT)
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] user_mode() right?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +15,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jul 04, 2002 at 03:28:43PM +0000, Joel Soete wrote:
-> Humm...
-> 
-> We would so to have a look in more details the terminal setup (baud rate 
-> 9600, flow control ,...) I will give you my setup next week (except if 
-> some one else could give you those details in the mean time).
+Hi all,
+top currently reports the following on my a500:
+CPU states:   0.3% user,  99.7% system,   0.0% nice,   0.0% idle
 
-Typically 9600 baud, 8 bit, no parity.  I usually go for no flow
-control, and it hasn't caused me any problems.  vt100 or vt102 should be
-fine.
+while the system is idle. ie idle time is being accounted
+to the system time.
 
-What sort of screen corruption do you get?  First screen should be the
-release notes.  Is it completely random, or mostly correct, or what?
+While trying to understand this, I ran across the following comment:
 
-Do you have a PC running linux handy?  Many people run minicom as a
-terminal emulator successfully.
+/* XXX should we use iaoq[1] or iaoq[0] ? */
+#define user_mode(regs)                 (((regs)->iaoq[0] &  3) ? 1 : 0)
 
-Richard
+Is iaoq[0] correct?
+
+thanks
+grant
