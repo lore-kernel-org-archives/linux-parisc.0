@@ -1,13 +1,11 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] [PATCH] kernel-parameters update for PA-RISC
-Date: Sat, 30 Oct 2004 21:57:39 +0100
-Message-ID: <20041030205739.GL8958__17857.0340540775$1416624502$gmane$org@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] readb/__raw_readb/gsc_readb and ioremap
+Date: Sun, 31 Oct 2004 03:39:50 +0000
+Message-ID: <20041031033950.GN8958@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: linux-kernel@vger.kernel.org,
- parisc-linux@parisc-linux.org
-To: Linus Torvalds <torvalds@osdl.org>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -20,51 +18,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
- - Add the PARISC tag (Thibaut Varene)
- - Mark some existing PA-RISC specific entries with it (Thibaut Varene)
- - Document pdcchassis (Thibaut Varene)
+I've been looking at asm/io.h (patch just committed).
 
-diff -urpNX dontdiff linux-2.6.10-rc1-bk9/Documentation/kernel-parameters.txt parisc-2.6-bk/Documentation/kernel-parameters.txt
---- linux-2.6.10-rc1-bk9/Documentation/kernel-parameters.txt	Sat Oct 30 09:14:21 2004
-+++ parisc-2.6-bk/Documentation/kernel-parameters.txt	Sat Oct 30 09:31:21 2004
-@@ -53,6 +53,7 @@ restrictions referred to are that the re
- 	NFS	Appropriate NFS support is enabled.
- 	OSS	OSS sound support is enabled.
- 	PARIDE	The ParIDE subsystem is enabled.
-+	PARISC	The PA-RISC architecture is enabled.
- 	PCI	PCI bus support is enabled.
- 	PCMCIA	The PCMCIA subsystem is enabled.
- 	PNP	Plug & Play support is enabled.
-@@ -394,7 +395,7 @@ running once the system is up.
- 	eicon=		[HW,ISDN] 
- 			Format: <id>,<membase>,<irq>
- 
--	eisa_irq_edge=	[PARISC]
-+	eisa_irq_edge=	[PARISC,HW]
- 			See header of drivers/parisc/eisa.c.
- 
- 	elanfreq=	[IA-32]
-@@ -933,6 +934,11 @@ running once the system is up.
- 	pd.		[PARIDE]
- 			See Documentation/paride.txt.
- 
-+	pdcchassis=	[PARISC,HW] Disable/Enable PDC Chassis Status codes at
-+			boot time.
-+			Format: { 0 | 1 }
-+			See arch/parisc/kernel/pdc_chassis.c
-+
- 	pf.		[PARIDE]
- 			See Documentation/paride.txt.
- 
-@@ -1250,7 +1256,7 @@ running once the system is up.
- 	st0x=		[HW,SCSI]
- 			See header of drivers/scsi/seagate.c.
- 
--	sti=		[HW]
-+	sti=		[PARISC,HW]
- 			Format: <num>
- 			Set the STI (builtin display/keyboard on the HP-PARISC
- 			machines) console (graphic card) which should be used
+I feel the need to explain a bit about what's going on because it seems
+a little confused.
+
+gsc_read/writeX:
+ - Don't byteswap
+ - Can be used on raw memory addresses (ie f-space)
+__raw_read/writeX:
+ - Don't byteswap
+ - Should be used on ioremap'ed address
+read/writeX:
+ - Byteswap
+ - Should be used on ioremap'ed address
+
+It was the case that __raw_readl was the same as gsc_readl, but non-parisc
+drivers are using __raw_readl now, so we have to change that.
+
+At the moment, ioremap() is a nop.  That really ought to change, and
+it's what the USE_HPPA_IOREMAP define is for.  There's at least one
+problem with the USE_HPPA_IOREMAP code -- it doesn't byteswap.
+
+So I've rearranged the code.  Now:
+
+gsc_readl returns the value found at the physical address.
+If USE_HPPA_IOREMAP is set, __raw_readl returns the value found at
+the virtual address.  If not, it's a #define to gsc_readl.  readl is a
+#define to byteswap the result from __raw_readl.
+
+There's now prototypes for readX/writeX, so there's a lot of warnings
+to clean up.  I suspect we should start by declaring parisc_device->hpa
+to be a void __iomem * ... or maybe we should start by inventing a
+parisc_iomap() interface.  Anyway, maybe I'll start trying to make
+USE_HPPA_IOREMAP work next ...
 
 -- 
 "Next the statesmen will invent cheap lies, putting the blame upon 
