@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98463482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Aug 2002 07:53:54 -0600 (MDT)
-Message-ID: <3D494C07.1040200@freebel.net>
-Date: Thu, 01 Aug 2002 14:56:07 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: Stephan Trajkoff <stephan@itp.bg>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HELP!
-References: <3D478CE5.40107@itp.bg>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1AF5D482B
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Aug 2002 00:14:04 -0600 (MDT)
+Subject: Re: [parisc-linux] HP attempts to silence security researchers
+	using the DMCA
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: HPPA List <parisc-linux@parisc-linux.org>
+In-Reply-To: <1028123991.8510.66.camel@irongate.swansea.linux.org.uk>
+References: <1028123991.8510.66.camel@irongate.swansea.linux.org.uk>
+Content-Type: text/plain
+Date: 02 Aug 2002 00:14:02 -0600
+Message-Id: <1028268842.979.3.camel@beavis>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,18 +24,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Alan,
 
-Stephan Trajkoff wrote:
-> Hello, I am using parisc linux at the moment.
-> But I want to install linux on another HP machine.
-> But I must backup all HP-UX filesystem. How I can make it?
-> Thanks in advance
+It took a few days (huge amount of internal discussion within HP) but
+it looks like HP has finally comes to it senses:
+
+http://news.com.com/2100-1023-947740.html
+
+Thanks to everyone inside and outside of HP that convinced HP management
+to do the right thing (TM).
+
+Thanks,
+
+- Ryan
+
+
+On Wed, 2002-07-31 at 07:59, Alan Cox wrote:
 > 
-
-
-With HP-UX > 10.20 the easiest way is to use 'Ignite' (see application 
-CDs or web) with a famous cmd looking like 'make_recovery_tape'. With -A 
-option it will build a boot tape that will allow you to quickly recover 
-your system. (read carefully man page to be sure it match your need)
-
-and fbackup/frestore for the rest
+> 
+> http://news.com.com/2100-1023-947325.html
+> 
+> I seem to have a pair of parisc boxes here. Perhaps someone at HP would
+> care to publically explain their actions, or chould kindly arrange for
+> the collection of their hardware ?
+> 
+> 
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
