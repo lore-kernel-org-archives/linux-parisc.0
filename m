@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from goliath.alaskatech.org (207-5-237-24-cable.anchorageak.net [24.237.5.207])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B8C7483A
-	for <parisc-linux@parisc-linux.org>; Sat, 23 Mar 2002 22:41:44 -0700 (MST)
-Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
-	by goliath.alaskatech.org (8.12.2/8.12.2) with ESMTP id g2O5VwbX018694
-	for <parisc-linux@parisc-linux.org>; Sat, 23 Mar 2002 20:31:58 -0900
-Date: Sat, 23 Mar 2002 20:31:58 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0203232012090.18420-100000@goliath.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Something broken in dpkg/dselect/apt?
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
+   of "Sat, 23 Mar 2002 20:03:00 PST." <Pine.LNX.4.33L2.0203231953470.13376-100000@eiger.apptechsys.com>
+References: <Pine.LNX.4.33L2.0203231953470.13376-100000@eiger.apptechsys.com> 
+Date: Sun, 24 Mar 2002 01:14:32 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020324081432.82653483C@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: Kernel 2.4.17-32-smp problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +19,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-A couple days ago I apt-get update/upgraded my C180, since it had been off
-for a few weeks while I was moving. Everything seemed to go fine, no
-errors. Also cvs'd and updated to 2.4.18-pa05 at the same time, again
-without errors. Shut it down, turned it on today, and now apt-get update
-(or dselect update) fails. Updates download, then errors "Failed to fetch
--x-  rename failed, no such file or directory" and "couldn't stat -x- -
-stat (2 no such file or directory". It then helpfully suggests that I
-rerun the apt-get udpate... I cleared the package list in dpkg, I
-recreated my sources.list file, and I checked to see if the permissions
-were gone in /var/lib/apt, which they don't appear to be. The files it
-fails to rename are there, there's rwx on them, and I'm in as root...
+Jeremy Drake wrote:
+> Recently, I ran apt-get upgrade, and it upgraded my kernel-image
+> 2.4.17-32-smp.  I rebooted, and the box now crashes periodically.
 
-Has anyone noticed this, or heard of this? As a possibly related note,
-rerunning cvs to check the kernel version gives me the same three files
-updating, and it appears that cvs thinks the update is failing, so every
-time I cvs-update it re-downloads them... It's run fine all day, no
-instability or errors, rebooting showed no errors. Strange...
+Where you running an SMP kernel before?
+(If so, which version?)
 
-If anyone can suggest how to approach this I'm all ears...
+Normally I'd say get the latest (2.4.18 based) kernel.
+But I know the SMP variant hangs on my A500 pretty quickly.
+I haven't had a chance to debug this since I've been spending spare
+cycle working on PA8700 support (bug workarounds in SBA code).
+
+IIRC, the debian buildd machine is also a J5000 and runs a
+non-SMP kernel for similar (same?) reason.
+
+hth,
+grant
