@@ -1,17 +1,11 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: c++/10235: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
-Date: Thu, 17 Apr 2003 09:24:04 -0400 (EDT)
-Message-ID: <200304171324.h3HDO5AY029238__10076.3602568351$1416622398$gmane$org@hiauly1.hia.nrc.ca>
-References: <20030417061958.GU25257@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: doko@gcc.gnu.org, debian-gcc@lists.debian.org,
-	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
-	parisc-linux@lists.parisc-linux.org, gcc-gnats@gcc.gnu.org,
-	danglin@gcc.gnu.org
-To: tausq@debian.org
+From: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] [3.3 regression] [hppa] Segfault when building jade
+Date: 19 Apr 2003 05:14:31 -0000
+Message-ID: <20030419051431.17554.qmail__6098.0086368092$1416622402$gmane$org@sources.redhat.com>
+Reply-To: Randolph Chung <tausq@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org, debian-gcc@lists.debian.org
+To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030417061958.GU25257@tausq.org> from "Randolph Chung" at Apr 16, 2003 11:19:58 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,19 +16,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Maybe the test case needs fixing :) Dave, I'll put a preprocessed file
-> in gsyprf11:~tausq/f_nurbs.ii.gz. It's >100k so i won't post it here 
-> for now.  :)
+>Category:       c++
+>Synopsis:       [3.3 regression] [hppa] Segfault when building jade
+>Confidential:   no
+>Severity:       serious
+>Priority:       medium
+>Class:          ice-on-legal-code
+>Submitter-Id:   net
+>Originator:     Randolph Chung <tausq@debian.org>
+>Release:        gcc version 3.3 20030412 (Debian prerelease)
+>Environment:
+tausq@ios:~$ uname -a
+Linux ios 2.5.67-pa4 #79 Wed Apr 16 20:16:49 PDT 2003 parisc64 unknown unknown GNU/Linux
+tausq@ios:~$ g++ -v
+Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3/specs
+Configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
+Thread model: posix
+gcc version 3.3 20030412 (Debian prerelease)
+>Description:
+Building the code below gives:
 
-Both the testcase and f_nurbs.ii compiled successfully using the following
-command:
+tausq@ios:~/debian/jade-1.2.1/jade$ g++ -v -c bug.cxx
+Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3/specs
+Configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
+Thread model: posix
+gcc version 3.3 20030412 (Debian prerelease)
+ /usr/lib/gcc-lib/hppa-linux/3.3/cc1plus -quiet -v -D__GNUC__=3 -D__GNUC_MINOR__=3 -D__GNUC_PATCHLEVEL__=0 -D_GNU_SOURCE bug.cxx -D__GNUG__=3 -quiet -dumpbase bug.cxx -auxbase bug -version -o /tmp/ccExza7t.s
+GNU C++ version 3.3 20030412 (Debian prerelease) (hppa-linux)
+        compiled by GNU C version 3.3 20030412 (Debian prerelease).
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/hppa-linux/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/include/c++/3.3
+ /usr/include/c++/3.3/hppa-linux
+ /usr/include/c++/3.3/backward
+ /usr/local/include
+ /usr/lib/gcc-lib/hppa-linux/3.3/include
+ /usr/include
+End of search list.
+bug.cxx:14: internal compiler error: Segmentation fault
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://gcc.gnu.org/bugs.html> for instructions.
 
-/home/dave/opt/gnu/gcc/gcc-3.3/bin/g++ -O2 -g -c -fPIC -fno-implicit-templates f_nurbs.ii
+The code builds fine with g++-3.2.
 
-The above version of g++ has the sibcall argument fix installed yesterday.
-However, I doubt that this fixed the problem.
+This test case was extracted from the MifFOTBuilder.cxx file from the jade package.
+>How-To-Repeat:
+g++ -c bug.cxx
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+--------------8< bug.cxx 8<----------------
+template<class T> class String { };
+
+class MifDoc {
+  public:
+    struct T_string : public String<char> { };
+    typedef T_string        T_tagstring;
+
+    struct TagStream {
+        enum TagStreamClass { tsTagStream, tsTextFlow, tsCell, tsPara } TagStreamClass;
+
+        T_tagstring InitialPgfTag;
+    };
+
+    struct TextFlow : public TagStream { };
+};
+
+>Fix:
+
+>Unformatted:
