@@ -1,35 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 41A38482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 01:10:05 -0600 (MDT)
-Received: from mcnbru01 (unverified) by epirel991.europay.com
- (Content Technologies SMTPRS 4.1.5) with ESMTP id <Tac10592d5489995e41@epirel991.europay.com> for <parisc-linux@lists.parisc-linux.org>;
- Wed, 4 Jul 2001 09:09:42 +0200
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OFA73CA243.24E46DAD-ONC1256A7F.0022F3A1@LocalDomain>
-From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
-Date: Wed, 4 Jul 2001 08:59:39 +0200
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41983482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 02:59:11 -0600 (MDT)
+Received: from esiee.fr (mail.esiee.fr [147.215.1.3])
+	by mail.esiee.fr (Postfix) with ESMTP id 78D77D15B5
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 10:59:04 +0200 (CEST)
+Date: Wed, 04 Jul 2001 10:59:04 +0000
 MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
-Subject: [parisc-linux] How to access the second serial port on a B180 with PALINUX
+From: marteau <marteaut@esiee.fr>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <20010704085904.78D77D15B5@mail.esiee.fr>
+Subject: [parisc-linux] 0.9.1 ISO Release
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hio,
-
-I just re-install my B180 with the last palinux-0.9 CD.
-
-With STI console gpm also works excepted that it do not highlight a
-double-click selection (but selection works)?
-
-I would also like to test the second serial port available on this model.
-Is any have tips or idea?
-
-Thanks in advance for help,
-     Joel
-
-
-
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+Hi all,                                                               
+                                                                      
+	You can find the latest ISO (0.9.1) at                               
+http://mkhppa1.esiee.fr/download.html                                 
+As you will see, the kernel gets the last changes and there is no more
+serial or sti version...                                              
+                                                                      
+	Try it and please feedback to the mailing list...                    
+                                                                      
+Regards, Thomas                                                       
+ESIEE Team                                                            
