@@ -1,14 +1,16 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] How to set Command Queue Depth?
-Date: 10 Aug 2004 15:49:11 -0500
-Message-ID: <1092170956.1727.44.camel@mulgrave>
-References: <411924BB.2010408@hrzpub.tu-darmstadt.de>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] "If futex's were mutex's we'd have a fish fry!" or
+	"Why we need LWS on hppa"
+Date: Wed, 11 Aug 2004 15:57:31 -0400
+Message-ID: <20040811195731.GK29662@baldric.uwo.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Content-Type: text/plain;
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org,
+ James Bottomley <James.Bottomley@steeleye.com>,
+ Randolph Chung <tausq@debian.org>,
+ John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <411924BB.2010408@hrzpub.tu-darmstadt.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,27 +21,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2004-08-10 at 14:40, Ruediger Scholz wrote:
-> I have to install debian onto a new hard disc due to a head crash. I've 
-> downloaded the new debian-installer (rc1), but when debian-installer is 
-> formatting partitions my machine hangs saying "(scsi drive) is suffering 
-> from tag starvation". I know this problem from running 2.4-kernels. 
-> Normally I would change the queue depth to 1 in 53c7xx.h, but this is no 
-> solution for the debian-installer...
-> 
-> So, is there a possibility to set the depth of the tag command queue of 
-> the lasi Controller during run-time? I tried to use
->                 echo "settags all 1" > /proc/scsi/lasi700/0
-> but this command never returns back to command prompt.
-> Or can I use some kernel parameters during boot?
-> And the last question: Is there a install image using a 2.6 kernel?
 
-The required command is
+fellow hackers,
 
-echo 1 > /sys/bus/scsi/devices/<root device>/queue_depth
+I continue to work on the light-weight-syscalls infrastructure, and it
+seems to be going well. I have to continually rethink what is "correct"
+and what is "practical" in terms of an implementation.
 
-James
+I asked for some help on IRC, in particular with some specific topics
+regarding unaligned loads and other ugly things. The corner cases are
+not so pretty.
 
+It was suggested that CAS could be implemented by:
+
+a. Blocking all blockable signals.
+b. Using futex's to create a mutex around the CAS code.
+
+(Thanks James!)
+
+I was excited by the idea, but after reading:
+http://people.redhat.com/drepper/futex.pdf
+
+It became apparnet that (b) cannot be acomplished without having
+hardware support for "compare and exchange" or "load lock/store"
+primities in hardware. Even a broken mutex implementation requires
+"atomic increment" which we don't have and is a prime target for
+conversion to a LWS.
+
+If you can show me wrong somewhere, please do, otherwise it seems like
+we won't get working futex mutex support without having LWS working
+first.
+
+Cheers,
+Carlos.
 
 _______________________________________________
 parisc-linux mailing list
