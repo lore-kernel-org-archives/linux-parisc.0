@@ -1,15 +1,15 @@
-From: Matthew Wilcox <willy@debian.org>
-Subject: [parisc-linux] Re: [patch] kill lvm from parisc
-Date: Tue, 27 May 2003 12:11:53 +0100
-Message-ID: <20030527111153.GD15709__3607.87901231578$1416622481$gmane$org@parcelfarce.linux.theplanet.co.uk>
-References: <UTC200305262220.h4QMKo712570.aeb@smtp.cwi.nl>
+From: amodra@bigpond.net.au
+Subject: [parisc-linux] Re: [hppa] binutils will not build shared libraries with external deps?
+Date: Thu, 29 May 2003 04:37:06 +0930
+Message-ID: <20030528190706.GC21904__31066.0087307499$1416622482$gmane$org@bubble.sa.bigpond.net.au>
+References: <20030527052251.GC24873@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: torvalds@transmeta.com, linux-kernel@vger.kernel.org,
-	matthew@wil.cx, parisc-linux@parisc-linux.org
-To: Andries.Brouwer@cwi.nl
+Cc: bug-binutils@gnu.org, binutils@sources.redhat.com,
+	parisc-linux@parisc-linux.org, debian-gcc@lists.debian.org
+To: Randolph Chung <tausq@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <UTC200305262220.h4QMKo712570.aeb@smtp.cwi.nl>
+In-Reply-To: <20030527052251.GC24873@tausq.org>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,15 +20,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, May 27, 2003 at 12:20:50AM +0200, Andries.Brouwer@cwi.nl wrote:
-> CONFIG_BLK_DEV_LVM is gone, but there is still some associated code.
-> This is the parisc part.
+On Mon, May 26, 2003 at 10:22:51PM -0700, Randolph Chung wrote:
+> tausq@ios:~$ gcc -shared -fPIC -o blah.so blah.c
+> /tmp/ccC3fZeH.o(.text+0x1c): In function `call_foo':
+> : undefined reference to `foo'
 
-it's already gone from the parisc tree and will be picked up whenever
-linus gets round to releasing 2.5.70 and we submit a patch.  please stop
-resending.
+This should fix it.  Would someone mind applying it for me?  I'm in
+transit at the moment and internet access is slow and flaky.  2.14
+branch too, I guess.
+
+	* elf32-hppa.c (elf32_hppa_relocate_section): Delete bogus
+	undefined_symbol call.
+
+--- bfd/elf32-hppa.c~	2003-05-08 12:08:31.000000000 +0930
++++ bfd/elf32-hppa.c	2003-05-28 10:44:19.000000000 +0930
+@@ -3666,16 +3666,11 @@ elf32_hppa_relocate_section (output_bfd,
+ 	    }
+ 	  else if (h->elf.root.type == bfd_link_hash_undefweak)
+ 	    ;
+-	  else if (info->shared && !info->no_undefined
++	  else if (info->shared
++		   && !info->no_undefined
+ 		   && ELF_ST_VISIBILITY (h->elf.other) == STV_DEFAULT
+ 		   && h->elf.type != STT_PARISC_MILLI)
+-	    {
+-	      if (!((*info->callbacks->undefined_symbol)
+-		    (info, h->elf.root.root.string, input_bfd,
+-		     input_section, rel->r_offset, FALSE)))
+-		return FALSE;
+-	      warned_undef = TRUE;
+-	    }
++	    ;
+ 	  else
+ 	    {
+ 	      if (!((*info->callbacks->undefined_symbol)
 
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Alan Modra
+IBM OzLabs - Linux Technology Centre
