@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.hispeed.ch (isp247n.hispeed.ch [62.2.95.247])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 43ED64830
-	for <parisc-linux@parisc-linux.org>; Thu,  1 May 2003 02:37:50 -0600 (MDT)
-Received: from tango (dclient217-162-13-13.hispeed.ch [217.162.13.13])
-	by smtp.hispeed.ch (8.12.6/8.12.6/tornado-1.0) with SMTP id h418blMP022016
-	for <parisc-linux@parisc-linux.org>; Thu, 1 May 2003 10:37:48 +0200
-Message-ID: <000801c31086$34888490$0d0da2d9@tango>
-From: "WRX-Tuning" <wrx@hispeed.ch>
-To: <parisc-linux@parisc-linux.org>
-Date: Fri, 2 May 2003 10:38:27 +0200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C31096.F754E260"
-Subject: [parisc-linux] Video card
+Received: from ns.zrt.nl (ns.zrt.nl [212.153.94.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3D332482E
+	for <parisc-linux@parisc-linux.org>; Thu,  1 May 2003 04:10:31 -0600 (MDT)
+Received: (from fwmaster@localhost) by ns.zrt.nl (8.9.3c/8.6.12) id MAA29184 for <parisc-linux@parisc-linux.org>; Thu, 1 May 2003 12:10:30 +0200 (MET DST)
+Received: by zrt01.zrt.nl (TUNIX txp2/smap)
+	for <parisc-linux@parisc-linux.org> id sma028518; Thu, 1 May 03 12:09:15 +0200
+Message-Id: <seb10df6.002@ms-zrt1>
+Date: Thu, 01 May 2003 11:55:16 +0200
+From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+To: <wrx@hispeed.ch>, <parisc-linux@parisc-linux.org>
+Subject: Betr.: [parisc-linux] Video card
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,67 +23,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0005_01C31096.F754E260
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-I've installed the Debian PA-Risc in a C360 HP Desktop.
-I have problem with my video card, at the end when i type startx, come =
+>Hello,
+>
+>I've installed the Debian PA-Risc in a C360 HP Desktop.
+>I have problem with my video card, at the end when i type startx, come =
 the message"fatal error, no screens found".
-Can You please help me how can i let it work?
-
-I'm new in this operating system, please write me down what step's and =
+>Can You please help me how can i let it work?
+>
+>I'm new in this operating system, please write me down what step's and =
 how i must do.
+>
+It's in the archives for this mailinglist. Also, with this kind of error, =
+the exact model
+of the videocard is important, and you don't mention it.
 
-Thank You a lot for helping.
+>Thank You a lot for helping.
+>
+>Giovanni
+>
+>p.s i've search for helping, i found something but i'don't understand how =
+to edit (what comands) the XF86Config file.
 
-Giovanni
+If you don't know how to edit a file, may I politely suggest not starting
+with linux on the PA-RISC architecture? It's one of the faster-moving
+linux-versions, where not everything is expected to work, and some
+work (ie searching the archives) is to be expected.
 
-p.s i've search for helping, i found something but i'don't understand =
-how to edit (what comands) the XF86Config file.
-------=_NextPart_000_0005_01C31096.F754E260
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Perhaps a nice Knoppix-cd on a regular x86 PC would be better
+to start with? Your experience with Linux will certainly be more to
+your liking then.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I've installed the Debian PA-Risc in a =
-C360 HP=20
-Desktop.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I have problem with my video card, at =
-the end when=20
-i type startx, come the message"fatal error, no screens =
-found".</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Can You please help me how can i let it =
-
-work?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm new in this operating system, =
-please write me=20
-down what step's and how i must do.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thank You a lot for =
-helping.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Giovanni</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>p.s i've search for helping, i found =
-something but=20
-i'don't understand how to edit (what comands) the XF86Config=20
-file.</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0005_01C31096.F754E260--
+Kind regards,
+Jurriaan
