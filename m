@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26A404834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 06:56:43 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17NYp5-0000wJ-00; Thu, 27 Jun 2002 13:56:31 +0100
-Date: Thu, 27 Jun 2002 13:56:31 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "B. Douglas Hilton" <bdhilton@charter.net>
-Cc: Matthew Wilcox <willy@debian.org>, joel.soete@freebel.net,
-	Matt Taggart <taggart@carmen.fc.hp.com>,
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B99654835
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 08:58:20 -0600 (MDT)
+Message-Id: <200206271458.g5REw9Tr015373@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] gcc-3.2 failed to compile kernel
+To: joel.soete@freebel.net
+Date: Thu, 27 Jun 2002 10:58:08 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: grundler@dsl2.external.hp.com,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 24bit colour
-Message-ID: <20020627135631.A2955@parcelfarce.linux.theplanet.co.uk>
-References: <5.1.0.14.0.20020610084610.026cfc70@10.106.16.2> <20020610203815.8349B380D5@carmen.fc.hp.com> <1024391159.3d0ef7f7c3903@webmail.tiscalinet.be> <20020618121104.E9435@parcelfarce.linux.theplanet.co.uk> <1025099026.3d19c51207773@webmail.tiscalinet.be> <20020626144536.B28662@parcelfarce.linux.theplanet.co.uk> <3D1A1BFF.7080000@charter.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D1A1BFF.7080000@charter.net>; from bdhilton@charter.net on Wed, Jun 26, 2002 at 03:54:39PM -0400
+In-Reply-To: <1025159126.3d1aafd6bb544@webmail.tiscalinet.be> from "joel.soete@freebel.net" at Jun 27, 2002 08:25:26 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,14 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jun 26, 2002 at 03:54:39PM -0400, B. Douglas Hilton wrote:
-> The "Color Recovery" code supposedly dithers the colors in some
-> special way down to 8bpp and then the hardware somehow restores
-> them, right?
+> Oops,  gcc -E ... works well and give the expect results (if I do a link
+> 1->linux) but gcc -dM -E ... SegFault :((
+> 
+> # gcc -dM -E -D__ASSEMBLY__ -traditional -D__KERNEL__
+> -I/Develop/parisc-linux/src/linux/include  -c -o pacache.CPP pacache.S
+> In file included from /Develop/parisc-linux/src/linux/include/asm/assembly.h:31,
+>                  from pacache.S:44:
+> /Develop/parisc-linux/src/linux/include/asm/offset.h:3: unterminated #ifndef
+> cc1: internal compiler error: internal error: Segmentation fault
 
-As far as I can tell from reading the documentation on the web,
-it's simply a programmable palette.  This doesn't seem terribly
-interesting/hard, so I assume there must be more to it than that.
+The '-c' shouldn't be there but cc1 shouldn't ICE on an unterminated #ifdef.
+Is the #ifdef actually unterminated?  Would you file a PR on this one as
+well?
 
+I'm also seeing a problem with the preprocessor on the vax :(
+
+Dave
 -- 
-Revolutions do not require corporate support.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
