@@ -1,27 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA14429
-	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Apr 1999 04:05:00 -0600
-Date: Tue, 4 May 1999 11:52:05 +0000 (   )
-From: Christopher Beard <cjbeard@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA15157
+	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Apr 1999 21:41:55 -0600
+Date: Tue, 4 May 1999 21:26:37 -0700 (PDT)
+From: Kumar <kumar@ix.netcom.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9905041140080.5403-100000@sprite>
+cc: kumar@ix.netcom.com
+Message-ID: <Pine.LNX.3.96.990504211950.214A-100000@quark.ix.netcom.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Linux Expo
+Subject: [parisc-linux] linker errors
 List-ID: <linux-parisc.vger.kernel.org>
 
- 
-I'm in the process of planning a special event with Hewlett-Packard for
-Linux Expo with respect to the PA-RISC Porting Project. I will post
-further details shortly, however, to help in the planning, I need to know
-how many developers will be around.
 
-The tentative date and time for the event will be around noon on
-Wednesday, May 19th -- the tutorial day before the actual conference
-begins.
+I am getting following errors even from the latest binutils and
+parisc-linux-gcc. Are there any special LDFLAGS that one needs to use ?
 
-So, If you are attending Linux Expo, please reply to me privately as soon
-as possible. Also include which days you will be there in case it becomes
-necessary to reschedule.
+						-pkd
 
-Chris
+I have been able to hack it to get in virtual mode. Just thought
+of compiling with latest cross compiling tools ..rather than that
+strange combination of gcc on HP-UX and HP's linker..
+
+
+parisc-linux-ld -L. -R 0x100000 -N -S rom_interface.o setup.o utils.o
+strutils.o bcopy.o main.o io.o -l milli -o vmlinux
+parisc-linux-ld: can not size stub section: Bad value
+rom_interface.o: In function `cout_putc':
+rom_interface.o($CODE$+0xe4): undefined reference to `$$dyncall'
+rom_interface.o: In function `bootdev_sread':
+rom_interface.o($CODE$+0xe0): undefined reference to `$$dyncall'
+rom_interface.o: In function `pdc_call':
+rom_interface.o($CODE$+0x118): undefined reference to `$$dyncall'
+main.o: In function `parisc_init':
+main.o($CODE$+0x208): undefined reference to `$$divU'
+make: *** [vmlinux] Error 1
