@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080C82B2487.cpe.net.cable.rogers.com [24.112.142.143])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2754F482A
-	for <parisc-linux@parisc-linux.org>; Mon, 31 Dec 2001 14:41:48 -0700 (MST)
-Date: Mon, 31 Dec 2001 16:42:31 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: parisc-linux@parisc-linux.org
-Cc: marteaut@esiee.fr, grundler@puffin.external.hp.com
-Message-ID: <20011231164231.C4130@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] HOWTO - PARISC Linux XC (v1.0 Dec 31 2001)
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E8F4F482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 31 Dec 2001 15:46:56 -0700 (MST)
+Received: from ldl.fc.hp.com (linux-bugs.fc.hp.com [15.1.50.190])
+	by atlrel8.hp.com (Postfix) with ESMTP
+	id 79B01E00407; Mon, 31 Dec 2001 17:46:55 -0500 (EST)
+To: parisc-linux@lists.parisc-linux.org,
+	J.E.J.Bottomely@HansenPartnership.com
+Subject: Re: [parisc-linux] Palo and initial ramdisks 
+In-Reply-To: Your message of "Sun, 30 Dec 2001 09:45:53 CST."
+             <200112301545.fBUFjrE01927@localhost.localdomain>
+References: <200112301545.fBUFjrE01927@localhost.localdomain> 
+Date: Mon, 31 Dec 2001 15:46:54 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E16LBCo-0006v3-00@noam.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Parisc'ers,
+= Playing some more with modules and initial ramdisks, I noticed that palo only
+= allows use of a ramdisk when the ramdisk is placed inside the palo partition 
+= rather than being able to read one from the boot ext2 filesystem.
+= 
+= The attached patch is a simple hack allowing palo to read a ramdisk from the 
+= boot ext2 filesystem.
 
-Cross-Compiler HOWTO at:
+Oops, thought that was implemented.  Thanks for the patch, I put it
+in CVS and uploaded a new debian package.
 
-http://www.baldric.uwo.ca/HOWTO/PARISC-Linux-XC-HOWTO.html
-
-Please feel free to steal/link/modify![1]
-
-Matthew mentioned that I should probably send this to the
-GCC guys? (Does anyone have the interested contacts?)
-
-c.
-
-[1] http://www.baldric.uwo.ca/PARISC-Linux-XC-HOWTO.tar.gz
+	-P
