@@ -1,28 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA25229
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 05:27:47 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 22 Nov 2000 12:29:53 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA06116
-	for <parisc-linux@thepuffingroup.com>; Wed, 22 Nov 2000 23:28:45 +1100
-Date: Wed, 22 Nov 2000 23:28:45 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.21.0011222319230.16860-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA26278
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 07:18:54 -0700
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 390EF1FAD3
+	for <parisc-linux@thepuffingroup.com>; Wed, 22 Nov 2000 15:21:02 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id PAA17830 for <parisc-linux@thepuffingroup.com>; Wed, 22 Nov 2000 15:18:15 +0100 (MET)
+Sender: vidal@hpfrcu03.france.hp.com
+Message-ID: <3A1BD4BA.B771D3BE@admin.france.hp.com>
+Date: Wed, 22 Nov 2000 15:14:18 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] binutils update
+To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Crash dump module
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've just committed a change to binutils that cures an ELF spec violation.
-We now no longer create plabels for DT_INIT and DT_FINI and instead rely
-on the dynamic linker to create them for us.  This means you need an
-updated glibc, that I committed a little earlier today, to create the
-plabel function pointers if you update your binutils.
+	Hi
+Good news, I've finished to recompile the entire chain on hpux 11.00 64bits.
+I've recompile my own kernel and booted a small 712/60. It work pretty well.
+Now I'm going to start the work about crash dump. So, In my mind, I'll start
+from the linux/kernel/panic.c function and I'll add a function dumpsys.c
+in the linux/arch/paric directory -> is it okay for you ?
+It will depend on the CONFIG_PARISC var (or do you prefer adding a CONFIG_DUMPSYS var ?)
 
-You have been warned...
+	thanks.
 
-Alan Modra
 -- 
-Linuxcare.  Support for the Revolution.
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
