@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Alexander Gabert <pappy@nikita.ath.cx>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] grsecurity patch 2.4.18 
-In-Reply-To: Message from Alexander Gabert <pappy@nikita.ath.cx>
-   of "Sun, 05 May 2002 13:28:53 +0200." <20020505112852.GA22017@nikita.ath.cx>
-References: <20020505112852.GA22017@nikita.ath.cx> 
-Date: Sun, 05 May 2002 16:39:12 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020505223913.010FD482A@dsl2.external.hp.com>
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B965482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 00:44:04 -0600 (MDT)
+Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
+	by hauptpostamt.charite.de (Postfix) with ESMTP id 6B36C15C032
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 08:44:02 +0200 (CEST)
+Date: Mon, 6 May 2002 08:44:02 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020506064402.GD14146@charite.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] NTP and the real time clock
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,18 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Alexander Gabert wrote:
-> hi, could someone please take a look at the following patch:
-> 
-> http://nikita.ath.cx/users/pappy/parisc/grsec/2418grsec.patch
+Whenever I turn off my 712/80 and turn it back on, NTP (ntpq) reports
+an offset of about 1200.
+Question: Could it be that at shutdown the time is not stored in the
+on-board real-time-clock?
 
-Uhm, I was going to take a "quick look" and noticed:
-	Length: 1,619,914 [text/plain]
-
-Before I spend half a day looking at this, can you point to more
-information that summarizes the changes?
-
-thanks,
-grant
-
-ps I'm impressed that a "beginner" would take a whack at this.
+-- 
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+Gates' Law: Every 18 months, the speed of software halves.
