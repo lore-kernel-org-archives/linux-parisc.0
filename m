@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3456482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 09:43:45 -0700 (MST)
-Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m165rWD-000OrMC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 09:43:37 -0700 (MST)
-Message-Id: <m165rWD-000OrMC@bame.riverrock.org>
-To: Richard Allen <ra@hp.is>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] What does this one mean ? 
-In-Reply-To: Your message of "Mon, 19 Nov 2001 16:34:22 GMT."
-             <20011119163421.A14821@hp.is>
-References: <20011119163421.A14821@hp.is> 
-Date: Mon, 19 Nov 2001 09:43:37 -0700
-From: Paul Bame <bame@riverrock.org>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2356B482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 09:50:00 -0700 (MST)
+Message-Id: <200111191645.JAA18017@puffin.external.hp.com>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: Thomas Marteau <marteaut@esiee.fr>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: E55 status 
+In-Reply-To: Message from Christoph Plattner <christoph.plattner@gmx.at>
+   of "Sun, 18 Nov 2001 03:24:44 +0100." <3BF71BEC.5D032CE6@gmx.at>
+Date: Mon, 19 Nov 2001 09:45:32 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,49 +22,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> Can anyone give me a hint where rpm is failing ?
+Christoph Plattner wrote:
+> I have rewritten my whole stuff on the current CVS snapshot from the end
+> of this week (2.4.14-pa6).
 
-Wow that really jumped into hyperspace!  Maybe a bad function
-pointer.  Generally r2 (0007c04f) is inside the calling function
-and IAOQ is inside the currently-executing function, but in this
-case it's bogus.  Look up r2 in rpm's symbol table to get a hint.
+wow! you've been busy...let's see if we can get that into
+the CVS tree this time around...last May was a bad time to
+introduce that.
 
-	-P
-> 
-> 
-> do_page_fault() pid=27461 command='rpm' type=6 address=0x6bc63f53
-> vm_start = 0x001e9000, vm_end = 0x00209000
-> 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001001111111100001111
-> r0-3     00000000 00110800 0007c04f bff00a08
-> r4-7     001b9000 00000009 002085f0 0020866c
-> r8-11    00002001 00200eb0 bff008d4 00206f60
-> r12-15   001df060 00000000 bff00504 00000102
-> r16-19   00000000 001f6fe8 00200eb0 001b9000
-> r20-23   00074834 00200f5c 6bc63f51 00000002
-> r24-27   bff00a08 00000009 00000009 001dd860
-> r28-31   001e4108 00000000 bff00ac0 0007c04f
-> sr0-3    000046f4 000046f4 00000000 000046f4
-> sr4-7    000046f4 000046f4 000046f4 000046f4
-> 
-> IASQ: 000046f4 000046f4 IAOQ: 6bc63f53 6bc63f57
->  IIR: 43ffff80    ISR: 000046f4  IOR: 00074850
->  CPU:        0   CR30: 11034000 CR31: 10350000
->  ORIG_R28: 00200f40
-> 
-> 
-> bofh:/chr/lib# uname -a
-> Linux bofh 2.4.9-pa70 #1 Tue Nov 6 15:38:47 GMT 2001 parisc unknown
-> 
-> -- 
-> Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
->                --  Solaris 7 Certified Systems and Network Administrator.
-> Bell Labs Unix --  Reach out and grep someone.
-> Those who do not understand Unix are condemned to reinvent it, poorly.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+...
+> In general, the CONFIG stuff has to be adapted. On that stuff, my
+> experience is not that what other LINUX hacker's expect ...
+
+That can be sorted out if you post to the list.
+
+> Further, is there a developer ChangeLog file to do entries per file ?
+
+NAFAICT. CVS log serves that purpose.
+
+
+> No SCSI controller is deteced, not the parallel interface,
+> and the mulitplexer board. For these three componets, drivers are
+> needed, and the DOCUMENTATION !!!
+
+The documentation still hasn't been sanitized for publication.
+Are you willing to sign an NDA that lets you publish code you write?
+
+For us, that's the easiest way...anything else requires substantially
+more work for our manager. He's busy enough already and no one
+else inside HP has volunteered to review/clean the docs.
+
+> I will add my current CVS diffings of my extensions very soon, at the
+> moment the CVS server seems to be down!
+
+cvs.p-l.org was never down.  Internet routing was broken Saturday AM PST.
+Seems to be fixed and working again.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
