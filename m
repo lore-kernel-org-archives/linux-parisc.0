@@ -1,15 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
-Date: Mon, 27 Sep 2004 17:13:00 +0000
-Message-ID: <4152E81E00000BF8@mail-8-bnl.mail.tiscali.sys>
-References: <200409271828.31259.j.raspe@t-online.de>
+Subject: Re: [parisc-linux] Re: hppa glibc 2.3.3 experimental debs - patch
+Date: Mon, 27 Sep 2004 17:21:35 +0000
+Message-ID: <4152E81E00000C00@mail-8-bnl.mail.tiscali.sys>
+References: <200409251746.i8PHkdTf006288@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
 Cc: parisc-linux@parisc-linux.org
-To: j.raspe@t-online.de
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409271828.31259.j.raspe@t-online.de>
+In-Reply-To: <200409251746.i8PHkdTf006288@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,46 +20,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Johannes,
-> >
-[...]
-> I tried:
-> palinux-712-defconfig-2.6.8.1-pa11
-> palinux-b180-defconfig-2.6.8.1-pa11
-> palinux-32-2.6.6-pa4
-> palinux-712-defconfig-2.6.6-pa4
-> palinux-b180-defconfig-2.6.6-pa4
 > 
-> all with the same result as before.
+> > Whish binutils are you using?
+> > Duno if it's relevant but I noticed that debian is a rare distro usin=
+g
+> 2.15
+> > while many time it seems that 2.15.91.0.2 is prefered 
+> > as
+> > <http://www.kernel.org/pub/linux/devel/binutils/release.binutils-2.15=
+.91.0.2
 > 
-> After that I compiled a 2.6.9-rc2-pa7 kernel without support for frameb=
-uffer
+> Linux binutils isn't tested on parisc-linux.
+hmm fwiw, I try first to rebuild 2.15 deb package but it failed?
+Otc with my script, I reach to rebuild 2.15.91.0.2 without pb :)
+But with make -k check I encounter 41 FAIL :( (eventhought some seems ok
+as far as only build the static lib first)
+
+How to analyse?
+How to compare: going forward with CVS or backward with 2.15?
+
+>   If you use this, you are
+> adding another organization to the support loop (hjl@lucon.org).  I cou=
+ld
+> be wrong but I believe that Lu does this work for Intel.
 > 
-> (CONFIG_FB) which booted perfectly with serial console.
-Cool :)
+Much more work before anything else I trust ;)
 
-> So I think we can track down the problem to the framebuffer driver in
-the
-> 
-> kernels > 2.6 with my graphics device, which should be supported accord=
-ing
-> to 
-> the beginning of stifb.c.
+Joel
 
-I trust that it's a known issue: read the thread on debian-hppa <http://l=
-ists.debian.org/debian-hppa/2004/09/msg00000.html>
-
-
-> I attached both, the 2.4 and the 2.6 dmesg.
-> 
-Thanks
-
-> What could I try next ??
-> 
-It seems that severall are already working on this pb :).
-
-Regards,
-    Joel
 
 -------------------------------------------------------------------------=
 --
