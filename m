@@ -1,49 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA15026
-	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Apr 2000 19:41:24 -0600
-Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
-	by atlrel1.hp.com (Postfix) with ESMTP id 62112E5BE
-	for <parisc-linux@thepuffingroup.com>; Fri, 14 Apr 2000 21:41:23 -0400 (EDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA17115
+	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Apr 2000 14:19:19 -0600
 Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by l3107mxr.atl.hp.com (Postfix) with ESMTP id 981B64FFD3
-	for <parisc-linux@thepuffingroup.com>; Fri, 14 Apr 2000 20:23:48 -0400 (EDT)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id SAA20656 for <parisc-linux@thepuffingroup.com>; Fri, 14 Apr 2000 18:23:55 -0700 (PDT)
-Message-Id: <200004150123.SAA20656@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] msdos_partion+120 == code 28 
-In-reply-to: Your message of "Fri, 14 Apr 2000 18:16:23 PDT."
-             <20000414181623.A14133@puffin.external.hp.com>
-Date: Fri, 14 Apr 2000 18:23:54 -0700
+	by atlrel1.hp.com (Postfix) with ESMTP id C5416496
+	for <parisc-linux@thepuffingroup.com>; Tue, 18 Apr 2000 16:19:16 -0400 (EDT)
+Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id NAA24003 for parisc-linux@thepuffingroup.com; Tue, 18 Apr 2000 13:19:29 -0700 (PDT)
+Date: Tue, 18 Apr 2000 13:19:29 -0700 (PDT)
 From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200004182019.NAA24003@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] code 28 in msdos_partition()
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
-> > code 28 == "Unaligned Data Reference Trap".
-> > (Gee, where have I seen this before? :^(  )
-> > 
-> > IAOQ  == 0xc016939c msdos_partition+120
-> > 
-> 
-> Can you resolve that into a line of the C code ?  It looks to me like
-> the msdos partition code has been fixed to use get_unaligned and le*_to_cpu
-> so I believe this should be a genuine bug.
 
+I figured out line 434 (of 497) fs/partitions/msdos.c
+("if (!NR_SECTS(p))") is causing the code 28 trap (unaligned data
+reference trap) despite the use of get_unaligned() macro. Seems
+get_unaligned() just isn't supported. I tried tracking this down in
+order to fix it but got distracted by another problem.
+If someone feels like they want to contribute in
+a small way, fixing get/put unaligned would be helpful.
 
-0000058c <msdos_partition>:
-...
- 6ac:   0c 78 10 96     ldw c(sr0,r3),r22
+The problem which distracted me was the use of generic
+swap macros by get_unaligned. parisc-linux defines architecture
+specific macros and I couldn't figure out why those
+were NOT being used. Any takers for this too?
 
-GR 3 : c7f629be
-
-I started looking at the code and I wasn't able to finish tracking
-this down to day. Any other takers?
-
-If I had to guess, I'd say check dereferences of nr_sects in struct
-partition. But that's not obvious in msdos_partition...
+I'm punting for now on both problems because:
+a) opportunity for someone else to contribute
+b) I can work more on the HPMC problems.
 
 thanks,
 grant
-
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
