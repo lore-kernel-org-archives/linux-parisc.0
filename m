@@ -1,44 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA29002
-	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Oct 1999 23:20:58 -0600
-Message-Id: <199910240522.WAA01597@milano.cup.hp.com>
-To: JHamilton@earthling.net
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trying to boot on an N-Class 
-In-reply-to: Your message of "Sat, 23 Oct 1999 23:44:00 PDT."
-             <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>
-Date: Sat, 23 Oct 1999 22:22:11 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA29598
+	for <parisc-linux@puffin.external.hp.com>; Sun, 24 Oct 1999 02:42:12 -0600
+Date: Sun, 24 Oct 1999 10:43:09 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: Justin Hamilton <JHamilton@Earthling.Net>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trying to boot on an N-Class
+Message-ID: <19991024104309.A31105@suse.de>
+References: <199910221606.JAA00597@milano.cup.hp.com> <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>; from Justin Hamilton on Sat, Oct 23, 1999 at 11:44:00PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Justin Hamilton" wrote:
-> Here's what I get when trying to boot the kernel on an N-Class:
-...
-> And this is where it sits.
+> exec_tfile: 0003A000
+> exec_tsize: 00079008
+> exec_tmem : C0010000
+> Code at 0x00010000, size=0x00079008
+> Data at 0x0008A000, size=0x0007F000
+> BSS  at 0x00109000.
 > 
-> Is this kind of info useful to anyone? 
+> Transferring control to kernel. (At entry point 0x00010000)
+> 
+> And this is where it sits.
 
-Not to me. (yet). But I have access to N-class machines.
+This looks like it is the same PA 2.0 PDC problem we see on the C class.
+Could you try againg after we fixed it ?  (Don't expect the kernel to do
+too much with your hardware in the near future, but at least you might
+be able to get to a shell prompt).
 
-> Am I expecting too much at this stage in development?
-
-Definitely. Firmware on N-class is *quite* different from the
-of two flavors of PDC we have the current code talking to.
-And none of the CEC (Core Electronics Complex - CPU, Mem, I/O bus
-adapters) in an N-class are supported by the code in CVS today.
-We are quite a ways off from implementing everything N-class needs.
-The docs for that box are not (and probably won't be) published
-for quite a while.
-
-The next step in that direction is probably to write PA2.0 processor
-support and support for the "ccio" bus adapter. Then try to get this
-working on a C200 through C360. I know some folks are working on the
-processor support but docs for "ccio" haven't been released.
-(Or have they?)
-
-thanks though,
-grant
-
-Grant Grundler
-Unix Developement Lab
-+1.408.447.7253
+	Philipp Rumpf
