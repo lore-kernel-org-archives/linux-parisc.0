@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4475483E
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Nov 2003 02:01:23 -0700 (MST)
-Date: Mon, 3 Nov 2003 09:59:36 +0100
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BF1E4852
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Nov 2003 02:01:24 -0700 (MST)
+Date: Mon, 3 Nov 2003 09:56:01 +0100
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] what's up with the ipc syscalls?
-Message-ID: <20031103085936.GB9083@solo.franken.de>
-References: <20031101082451.GJ28967@tausq.org> <20031102180150.GA14554@solo.franken.de> <20031102181252.GY28967@tausq.org> <20031102214200.GA5299@solo.franken.de> <20031102215528.GC28967@tausq.org>
+Message-ID: <20031103085601.GA9083@solo.franken.de>
+References: <20031101082451.GJ28967@tausq.org> <20031102180150.GA14554@solo.franken.de> <20031102181252.GY28967@tausq.org> <20031102214200.GA5299@solo.franken.de> <20031102225626.GF26916@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031102215528.GC28967@tausq.org>
+In-Reply-To: <20031102225626.GF26916@systemhalted>
 From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,25 +24,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Nov 02, 2003 at 01:55:28PM -0800, Randolph Chung wrote:
-> - fix glibc to pass in IPC_64 properly into the kernel from now on, 
->   2.4 will still work with current hacks.
+On Sun, Nov 02, 2003 at 05:56:27PM -0500, Carlos O'Donell wrote:
+> On Sun, Nov 02, 2003 at 10:42:00PM +0100, Thomas Bogendoerfer wrote:
+> > On Sun, Nov 02, 2003 at 10:12:52AM -0800, Randolph Chung wrote:
+> > > anyway, if we are only supporting IPC_64, then why mask off the IPC64
+> > > bit in the wrapper? if the ipc/utils.c stuff isn't there, wouldn't it
+> > > default to doing the right thing when IPC_64 is set?
+> > 
+> > look at the switch statements in msg.c/sem.c/shm.c. If you don't mask
+> > off IPC_64, the cases don't match.
+> > 
+> > > right now glibc *doesn't* call the syscall with IPC_64, but i'm about to
+> > > make it do that again.
+> > 
+> > I don't think this is a good idea, because by checking for IPC_64 we
+> > could see, whether an old glibc is used and could convert structs
+> > (see sys_parisc.c:sys_shmctl_broken()).
+> 
+> There is no such thing as that "old glibc" we have always had
+> __ASSUME_IPC64. What support are we looking to preserve?
 
-no, 2.4 will break, because shmctl will try to fixup structs, which
-don't need fixing. Please look at the code in sys_parisc.c
+glibc 2.2.x, some weeks before woody went final. For a closer date
+check the date of my sys_parisc.c commit.
 
-> - fix 2.6 to detect the IPC_64 flag and go through the "normal"
->   (arch-indep) path to figure out it should use the new structs
+Since there might be still binaries in woody, which are compiled
+with an such an "old" glibc, we will break this binaries. The suggested
+change is an change of the kernel ABI, so I would avoid it. The problem
+with this "old" glibc was, that the structs for shmctl and friends
+weren't properly aligned for 64bit. I've changed that and also decided
+to get rid of IPC_64, because that's x86 crap.
 
-we only have new structs in the sense of ipc/*.c. That old stuff
-is older x86 stuff, we never had. The only problem is, that we
-had some broken structs, which weren't working on 64bit kernel, because
-the alignment was broken.
-
-> 2.6 is broken as it is now, so there's no 2.6 compatibility to worry
-> about.
-
-so why no just use the same way, I changed it in 2.4 ?
+Adding the 2.4 changes to the 2.6 kernel should fix everything.
 
 Thomas.
 
