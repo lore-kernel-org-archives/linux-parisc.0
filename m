@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1EAF04829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 19:18:47 -0700 (MST)
-Message-Id: <200302090218.h192Ii9E012950@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
-To: willy@debian.org (Matthew Wilcox)
-Date: Sat, 8 Feb 2003 21:18:44 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: tausq@debian.org, willy@debian.org,
-	grundler@dsl2.external.hp.com, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030209020325.D27544@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Feb 9, 2003 02:03:25 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Sat, 8 Feb 2003 20:10:14 -0700
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030209031014.GD19683@dsl2.external.hp.com>
+References: <20030208222242.AA3554829@dsl2.external.hp.com> <20030208222746.GB19683@dsl2.external.hp.com> <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,36 +20,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I think it's even worse than that.  What stops gcc reordering:
-> 
-> typedef struct {
->         spinlock_t lock;
->         volatile int counter;
-> } rwlock_t;
-> 
-> static  __inline__ void _raw_read_lock(rwlock_t *rw)
-> {
->         while (__ldcw (&(x)->lock) == 0) \
->                 while (((x)->lock) == 0) ; } while (0)
->         rw->counter++;
->         do { (x)->lock = 1; } while(0)
-> }
-> 
-> to:
-> 
->         while (__ldcw (&(x)->lock) == 0) \
->                 while (((x)->lock) == 0) ; } while (0)
->         do { (x)->lock = 1; } while(0)
->         rw->counter++;
+On Sat, Feb 08, 2003 at 11:23:03PM +0000, Matthew Wilcox wrote:
+> Is all that's needed to take the latest binutils from debian unstable
+> and rebuild it on woody?
 
-Nothing.  The reset needs to be a volatile asm.  This will stop GCC from
-doing the above.  On PA 2.0, the processor can do similar reordering.  So,
-the reset needs to be an ordered store.  Well, I think the scheduling
-model tends to try to do things as early as possible, consistent with
-not over feeding the pipeline.  However, I wouldn't rely on this to
-get the instrunction order that you want.
+Almost. It needs a patch too:
+	ftp://ftp.parisc-linux.org/patches/900_order_hppa.diff
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Just drop that in debian/patches before building the debs.
+That patch applies clean to the binutils for unstable.
+I don't even pretend to understand how to properly build
+debian packages, much less binutils or "cross release" builds.
+That's why I made the tarball for "testing".
+
+> That's interesting from an architecture PoV.  From my recollection when jsm
+> was debugging problems on the 710, PCX-S is the only processor which actually
+> enforces the 16-byte alignment restriction on ldcw.  So _practically_, we
+> don't need it unless we're supporting those old processors.
+
+I don't care to find out the hard way.
+I'd rather just comply with the architecture and not worry about it.
+If someone can demonstrate a perf advantage or issue, I'll be
+more receptive.
+
+> Actually... this may be a long-standing bug in our spinlocks.  There's nothing
+> to prevent gcc reordering writes around this assignment.  We need a barrier()
+> before the assignment, or maybe it'd be as well to do the assignment in an
+> asm() statement.
+
+I've read the followups to this and I gather our spinlocks are very broken.
+If someone tells me what the right fix is, I'll test on PA20 32/64 bit
+and commit.
+
+> One final point.... up till now, we've been telling people it's OK to
+> run kernels configured for PA1.1 on PA2.0 processors.  This patch says
+> to me that's not safe.
+
+Only for SMP. I think for UP the rule still holds.
+
+> Do we need our distros (yeah, I hear there'll
+> soon be more than Debian supporting PA) to ship 5 flavours of kernel
+> (PA1.1 UP & SMP, PA2.0 32-bit SMP, 64-bit UP and 64-bit SMP) rather than
+> the current four?
+
+Unfortunately yes.
+
+OTOH, PA20 SMP still hasn't proven stable so maybe it's not worth
+doing at the moment either.  Once PA20 SMP is stable, we could drop
+the 64-bit UP kernels since most systems that *require* 64-bit are SMP.
+
+thanks,
+grant
