@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE852483E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Jul 2002 16:56:40 -0600 (MDT)
-Received: from haydn (pcp357875pcs.elictc01.md.comcast.net [68.55.155.46])
- by mtaout06.icomcast.net
- (iPlanet Messaging Server 5.1 HotFix 0.8 (built May 13 2002))
- with SMTP id <0GZK004D6KZJQI@mtaout06.icomcast.net> for
- parisc-linux@lists.parisc-linux.org; Sat, 20 Jul 2002 18:54:55 -0400 (EDT)
-Date: Sat, 20 Jul 2002 18:51:39 -0400
-From: Frank Alden Smith <falden@comcast.net>
-To: parisc-linux@lists.parisc-linux.org
-Message-id: <NGBBJKHCMLEJELIEEHNOAEFKCAAA.falden@comcast.net>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] bug-buddy failure
+Received: from mailout07.sul.t-online.com (mailout07.sul.t-online.com [194.25.134.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C03174852
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Jul 2002 17:07:38 -0600 (MDT)
+Cc: parisc list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=iso-8859-15
+Date: Sun, 21 Jul 2002 00:57:57 +0200
+From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Message-ID: <3D39EAF5.A8932E1F@ruhr-west.de>
+MIME-Version: 1.0
+References: <3D383969.1657EF43@ruhr-west.de> <20020720152919.9D690483D@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] C110, kernel Panics, still more tears ;-(
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,40 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I just installed this version of bug-buddy:
+Grant Grundler schrieb:
+> 
+> Juergen Braukmann wrote:
+> > Hi Grant and all,
+> >
+> > still more tears. I compiled and replaced the kernel, using 2.4.18pa55.
+> > I used the setting of ccio_mem_ratio=16, but still my kernel panics with
+> > Kernel panic: ccio-dma.c ccio_alloc_range() I/O MMU is out of mapping
+> > resources.
+> > In interrupt handler - not syncing
+> 
+> Sorry - my bad - I think I have it backwards.
+> Using a smaller value will result in more IOMMU resource.
+> 
+> > would there be more chance with the ccio_mem_ratio setting of 8?
+> 
+> Or 2 or 1 even.
+> 
+OK, kernel baking time again. ;-)
 
-puccini:~# dpkg -l bug-buddy
-Desired=Unknown/Install/Remove/Purge/Hold
-|
-Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
-|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err:
-uppercase=bad)
-||/ Name           Version        Description
-+++-==============-==============-======================================
-======
-ii  bug-buddy      2.1.6-1        A graphical bug reporting tool for
-GNOME
-puccini:~#
+> > there a way to use more than one Kernel alternativly and select it at
+> > boottime with palo? Is there an example palo.conf somewhere?
+> 
+> Yes. Interrupt the boot process before palo is loaded and then
+> type "Y" to "Interact with IPL (Y/N/Q)?" question. You can then
+> specify which vmlinux to boot.
 
-Unfortunately, bug-buddy fails. Here, is what ~/.gnome-errors says
-happens:
+Tried that, but didn't see a reasonable list. I could alter some things
+(inluding kernel) but I would have needed to know the name to type in. I
+will try to use easy names and numbering for testing.
 
-Gtk-WARNING **: gtk_signal_disconnect_by_data(): could not find handler
-containi
-ng data (0x170890)
-The program 'bug-buddy' received an X Window System error.
-This probably reflects a bug in the program.
-The error was '187'.
-  (Details: serial 914 error_code 187 request_code 154 minor_code 8)
-  (Note to programmers: normally, X errors are reported asynchronously;
-   that is, you will receive the error a while after causing it.
-   To debug your program, run it with the --sync command line
-   option to change this behavior. You can then get a meaningful
-   backtrace from your debugger if you break on the gdk_x_error()
-function.)
+Thank's a lot
 
-Any suggestions as to how to fix it?
+Juergen
+> 
+> grant
 
-Take care,
-
-Frank Alden Smith
+-- 
+===========================================     __   _
+Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+===========================================_\_v __/_/_//_/\_,_/ /_/\_\
