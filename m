@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E94B94829
-	for <parisc-linux@parisc-linux.org>; Wed, 13 Nov 2002 14:46:19 -0700 (MST)
-Date: Wed, 13 Nov 2002 14:46:13 -0700
-To: Matthew Wilcox <willy@debian.org>
-Cc: Tom <palinux@alaskatech.org>,
-	PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] LONG pause on boot
-Message-ID: <20021113214613.GA32441@beavis.ybsoft.com>
-References: <Pine.LNX.4.44.0211131022210.26859-100000@wolf.alaskatech> <20021113193018.P30392@parcelfarce.linux.theplanet.co.uk>
+	by dsl2.external.hp.com (Postfix) with ESMTP id DBE124829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 14:54:15 -0700 (MST)
+Date: Wed, 13 Nov 2002 14:54:11 -0700
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] ? New status of MUX or SCSI driver on E-series (and other...)
+Message-ID: <20021113215411.GB32441@beavis.ybsoft.com>
+References: <3DD2C4E5.7000001@gmx.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021113193018.P30392@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <3DD2C4E5.7000001@gmx.at>
 From: rbrad@uswest.net (Ryan Bradetich)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -24,43 +23,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Nov 13, 2002 at 07:30:18PM +0000, Matthew Wilcox wrote:
-> On Wed, Nov 13, 2002 at 10:26:43AM -0900, Tom wrote:
-> > Does anyone have an idea as to why such a long delay would occur there?
-> > PDC has console to serial_1, which had a terminal on it. There was no
-> > errors or complaints anywhere in the boot process, and none visible during
-> > the kernel compile. I can provide System.map, config file, etc. if
-> > desired...
+Hello Christoph,
+
+
+On Wed, Nov 13, 2002 at 10:32:21PM +0100, Christoph Plattner wrote:
+> After such long time, I want to ask, if there any news?
 > 
-> Yes, it's during device walk.  The support for E class that rbrad wrote
-> means that every machine with a CCIO suffers.  I suspect this'll get
-> fixed fairly soon.
+> Where there experiences (with logic analysator, etc...), if the
+> SCSI chip is accessed ?
 
-Willy, I have an idea on how to fix this, but it is ugly ... but I will probably
-consider committing it soon unless you have a cleaner idea (hint, hint :))
+On the todo list ... still no forward progress yet :(
 
-The problem is with E-Class ... the devices are at the end of the bus range.  We
-need to walk the entire bus until we find the range the drivers exist in.  On
-systems where the devices are at the end (or no devices in that range) the entire
-bus needs to be walked.... this is the delay you are seeing.
+> Are there any news in accessing another port then port "0" on the
+> MUX. My experiments using "only" port "1" was also not successful,
+> the machine blocks !
 
-I have a proposal to speed up systems where the devices are at the end of the
-bus ... we can simply walk the first bus range, then the last bus range, if
-nothing found yet ... walk the middle.
+The mux has been ported to linux-2.5, the major number 11 was assigned,
+and linus accepted it into his tree.  Last night I found the problem
+that caused the init failure with the mux so the mux boots again
+on 2.5.47.  The forward port is more flexible and is better designed 
+to handle handle multiple muxes and the access to the ports.  I am
+working with robbie to test the multiple mux cards now, and plan to
+test the multiple ports here shortly (need to find my cables first.)
 
-I do not have a solution for a bus with no devices present yet ...
+
+On a side note, I have also port-forwarded the pdc_console to the 
+linux-2.5 tree and will finish testing it here shortly.  I will send 
+you the updated pdc_console to review before I commit it.
+
+> Perhaps the PDC ROM setup influences the MUX device.
+
+Not sure ... planning on testing shortly  (this weekend possibly)
 
 Thanks,
 
 - Ryan
 
 
-
-
-
+> Answer is welcome.
+> Christoph
+> 
+> 
+> 
 > 
 > -- 
-> Revolutions do not require corporate support.
+> -------------------------------------------------------
+> private:	christoph.plattner@gmx.at
+> company:	christoph.plattner@alcatel.at
+> 
 > _______________________________________________
 > parisc-linux mailing list
 > parisc-linux@lists.parisc-linux.org
