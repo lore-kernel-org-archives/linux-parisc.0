@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Stephan Trajkoff" <stephan@itp.bg>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CCE984837
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 00:26:43 -0600 (MDT)
+Date: Sat, 13 Jul 2002 23:26:42 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from "Stephan Trajkoff" <stephan@itp.bg>
-   of "Sat, 13 Jul 2002 12:08:49 +0300." <20020713090726.99414482D@dsl2.external.hp.com>
-References: <20020713090726.99414482D@dsl2.external.hp.com> 
-Date: Sat, 13 Jul 2002 22:35:15 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020714043515.DEFB04832@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: mirror of parisc-linux
+Subject: Re: [parisc-linux] SMP (in)stability 
+In-Reply-To: <20020710053647.D282F4853@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0207132314190.24206-100000@garibaldi.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,43 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Stephan Trajkoff" wrote:
-> Hello man,
-> I want to make mirror of parisc-linux.org
-> my HP working stable and I want to make this main server in the=20
-> institute where I am working
-> www.bio21.bas.bg
-> I think to change AIX PowerPC with this HP 819/K210
-> What to make to do mirror of parisc-linux.org?
+On Tue, 9 Jul 2002, Grant Grundler wrote:
 
+> The -pa52 kernel built 100+ kernels/modules successively until
+> I stopped it on the a500-44. The same kernel on a500-6X (PA8700)
+> crashes after 12 or so hours of building gcc bits. 
 
-(I typed the following in from memory; it's the same steps as
-accessing kernel source in the "linux" repository).
+I tested -pa53 on smp on J5k building kernels (make -j4), built 115,
+here's a sample start/stop time. 
+Start: Sat Jul 13 19:23:25 PDT 2002 
+End: Sat Jul 13 19:26:56 PDT 2002
 
-cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs login
-cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs co web
-cd web
-make ssi	(or make static)
+It is just apt-get update and samba (so far) that kill it.  Just did a cvs
+update, worked fine.  I wonder what it is about apt-get that kills it.  
+Can someone else with a J5k test this?  Running a current 2.4.18 smp
+kernel and running apt-get update.  
 
-See the web/Makefile for which ENV variables you can set to redirect
-where the stuff gets installed. Thibaut (ESIEE) can help you
-with this part.
-
-> I have BIND9
-> I want to have web address www.bg.parisc-linux.org.
-
-I hope someone on the list can help you with this.
-I don't maintain parisc-linux.org domain.
-
-> After 2-3 weeks I want to make mirror of your FTP
-
-ok.
-Can someone tell me if rsync is enabled for ftp.parisc-linux.org:~ftp ?
-I thought rsync of cvs.p-l.o was disabled for a while.
-
-> I have 2mbit DSL modem with 256kpbs garanteed speed to world with=20
-> burst 2mbit night and weekends
-
-Cool!
-
-grant
+-- 
+Why am I so soft in the middle when the rest of my life is so hard?
+		-- Paul Simon
