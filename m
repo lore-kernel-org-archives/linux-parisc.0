@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14A3C482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 11:45:48 -0600 (MDT)
-Received: (from sieler@localhost)
-	by opus.allegro.com (8.11.6/8.11.6) id g47Hjkr07478
-	for parisc-linux@lists.parisc-linux.org; Tue, 7 May 2002 10:45:46 -0700
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200205071745.g47Hjkr07478@opus.allegro.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 7 May 2002 10:45:46 -0700 (PDT)
+Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5E8E7482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 16:11:41 -0600 (MDT)
+Message-ID: <3CD8511A.1421DF3@gmx.at>
+Date: Wed, 08 May 2002 00:11:38 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
+To: "MOORE,CHRISTOPHER (HP-USA,ex1)" <chris_moore@hp.com>
+Cc: "'randolph@tausq.org'" <randolph@tausq.org>,
+	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] RE: wishlist projects, looking for volunteers
+References: <CC57E8021A79D511BC720090278CE32DC28F3D@xrose02.rose.hp.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] looking for 2.4 firmware for J282
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +23,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hi,
+What are your experiences about !
 
-Thanks to Tim Carsons and Grant Grundler, I have have use of a J282.
+We (especially I) need help for the HP-prorietary components like in the
+HP E-Series servers (e.g. E55 9000/856 server).
 
-However, I noticed the firmware is rather old, and wanted to upgrade it.  
+I would be interested in running E55 under Linux with SCSI and MUX
+working,
+also the parallel port (to be complete....)
 
-I know the HP ITRC has 2.5 available (I downloaded it), but I'd prefer to get
-2.4, so this machine will exactly match a couple some friends have.
+Do you have knowledge on this subject ... ?
 
-I can no longer find the 2.4 firmware online ... or any earlier versions.
+With friendly regards
+Christoph P.
 
-Does anyone know where I could get a copy, please?
 
-thanks,
+"MOORE,CHRISTOPHER (HP-USA,ex1)" wrote:
+> 
+> Hi Randolph,
+> 
+> Thanks for posting the project wishlist.  You mentioned that these
+> are specifically user space projects that need doing.  Is there a
+> similar wishlist for kernel space projects?  I've got a lot more
+> experience with kernel (specifically HPUX) than I have with compilers,
+> linkers, and debuggers.
+> 
+> Chris Moore
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 -- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
