@@ -1,35 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA19585
-	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Aug 2000 12:54:56 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 28 Aug 2000 18:54:47 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 28 Aug 2000 18:54:43 -0000
-Received: (from willy@localhost)
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) id NAA17928
-	for parisc-linux@thepuffingroup.com; Mon, 28 Aug 2000 13:49:46 -0400
-Date: Mon, 28 Aug 2000 13:49:46 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000828134946.A17888@vodka.thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] glibc configuration problem
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA01043
+	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Aug 2000 00:21:09 -0600
+Received: from venus (venus.esiee.fr [147.215.20.10])
+	by mail.esiee.fr (Postfix) with SMTP id 7232657308
+	for <parisc-linux@thepuffingroup.com>; Tue, 29 Aug 2000 08:21:09 +0200 (CEST)
+Message-ID: <009601c01181$db5a8590$0a14d793@esiee.fr>
+From: "Thierry SIMONNET" <t.simonnet@esiee.fr>
+To: <parisc-linux@thepuffingroup.com>
+Date: Tue, 29 Aug 2000 08:24:59 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] linux-2.3 mkdep
 List-ID: <linux-parisc.vger.kernel.org>
 
+After my holidays, I synchronized my CVS directories.
+I have found a problem when I do "make dep" : scripts/mkdep : Arg list too
+long.
+I have encoutered this problem with fist versions of parisc-linux 2.3.99
+version.
 
-anyone trying to configure glibc on a debian potato box is probably
-going to get:
+My development platform was : HP712/80 under HP-UX 10.20
 
-checking for make... make
-checking version of make... 3.78.1, bad
-...
-configure: error:
-*** Some critical program is missing or too old.
+TX for your help
 
-this is an upstream change to glibc.  to fix this, get make 3.79.1 from
-woody.  It doesn't have any dependencies which require you to upgrade
-any other package.
-
--- 
-Revolutions do not require corporate support.
+Th. SIMONNET
