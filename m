@@ -1,15 +1,17 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Subject: Re: [parisc-linux] Proposal for implementing IRQ affinity
-Date: 31 Aug 2004 13:29:32 -0400
-Message-ID: <1093973378.3642.5.camel@mulgrave>
+Date: Tue, 31 Aug 2004 11:43:15 -0600
+Message-ID: <200408311143.15493.bjorn.helgaas@hp.com>
 References: <1093923097.3870.18.camel@mulgrave>
 	<200408310913.47637.bjorn.helgaas@hp.com>
+	<1093973378.3642.5.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200408310913.47637.bjorn.helgaas@hp.com>
+In-Reply-To: <1093973378.3642.5.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,35 +22,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2004-08-31 at 11:13, Bjorn Helgaas wrote:
-> You could support 32 (or 64) interrupts per processor if you wanted to,
-> though I think right now it's only 32 or 64 for the whole system.
+On Tuesday 31 August 2004 11:29 am, James Bottomley wrote:
+> On Tue, 2004-08-31 at 11:13, Bjorn Helgaas wrote:
+> > You could support 32 (or 64) interrupts per processor if you wanted to,
+> > though I think right now it's only 32 or 64 for the whole system.
+> 
+> Yes, but in order to do the affinity thing, we have to make it appear as
+> if a single interrupt vector potentially belongs to all CPUs...
 
-Yes, but in order to do the affinity thing, we have to make it appear as
-if a single interrupt vector potentially belongs to all CPUs...
-
-> Strictly speaking, iosapics are programmed with a 16-bit ID/EID (not
-> an actual EIRR address) and an 8-bit vector (not a 5- or 6-bit bit
-> number.)  I think the chipset is responsible for routing the ID/EID
-> to the correct processor, and on parisc, probably only 32 (or 64) of
-> the 256 possible vectors are usable.  I would guess that in addition
-> to routing based on ID/EID, the chipset also translates the vector
-> number to a 2^vector mask in the form the EIRR expects.
-
-Yes, I'm sorry, sloppy terminology.  I don't actually have any iosapic
-based machines, so I only had to muck with the iosapic once getting an
-a500 SMP working...I was going from memory instead of actually looking
-in the code.
-
-> I think it would be good if parisc adopted the more generic concepts,
-> because it's a shame that ia64 and parisc have such totally different
-> code to drive the identical iosapic hardware.
-
-I agree.
-
-James
-
-
+Ah, right.  But for large machines, it might be useful to have multiple
+interrupt domains.  We're already pushing the ia64 limit of about 180
+available vectors.  All the CPUs in a node could share a vector space,
+so you could have affinity at least to CPUs close to the device.  Dunno
+how that fits with the current affinity interfaces, though.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
