@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F6D8482A
-	for <parisc-linux@parisc-linux.org>; Fri, 19 Apr 2002 16:15:38 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id sowsmaaa for parisc-linux@parisc-linux.org; Fri, 19 Apr 2002 15:14:31 -0700
-Date: Fri, 19 Apr 2002 15:16:23 -0700
-From: Randolph Chung <tausq@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20020419221623.GG32033@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] gcc-3.2 experimental debs
+To: Helge Deller <deller@gmx.de>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] not freeing initmem and power button 
+In-Reply-To: Message from Helge Deller <deller@gmx.de>
+   of "Mon, 15 Apr 2002 21:23:19 +0200." <200204152123.19619.deller@gmx.de>
+References: <F39D7BsZXbLvwa2SydH0001aa92@hotmail.com> <200204151232.46311.helge.deller@sap.com> <20020415173544.GO4971@sleepie.demon.co.uk>  <200204152123.19619.deller@gmx.de> 
+Date: Fri, 19 Apr 2002 23:47:41 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020420054741.C4F4D482B@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,25 +20,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I've uploaded an experimental gcc-3.2 debian package to:
+Helge Deller wrote:
+> Richard Hirst wrote:
+> > Do you recall what config failed when we did try to free the memory?  I
+> > tested recently with B180 and A500, both worked fine with freeing of
+> > memory enabled.  IIRC the origianl problem was that init crashed on
+> > boot...
+...
+> unfortunately I don't know which config it was. AFAIR it also never 
+> happened to me, but it did for grant or bame. Maybe they know more ?
 
-ftp://ftp.parisc-linux.org/unofficial-debs/gcc-3.2_20020417-1_hppa.deb 
+I don't recall offhand. If it's not in the mail archives, my configs
+are stored in the tarballs I upload whenever I build kernels specifically
+for C3000 (32-bit) or A500 (64-bit). Those tarballs are on
+	ftp://ftp.parisc-linux.org/kernels/c3000 or a500
 
-for people who feel adventurous and wants to try. As the name suggests
-it's built from gcc-3.2 cvs from two days ago. The deb is unfortunately
-quite large (26M) because it also contains binutils bits and has
-c/c++/fortran/objc compilers enabled.
-
-The regression test results are looking quite good, and at least on the
-two cases I've tried the functions-sections problems are fixed.
-
-The package installs into /usr/local, and I want to stress here
-that these are only for experimental use and are not part of the
-official debian release.
-
-Having said that, try them out and let us know how it works out!
-
-Last but not least, thanks Dave for all your efforts! gcc-3.2 looks
-really quite a bit better than 3.0.x
-
-randolph
+grant
