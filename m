@@ -1,18 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] [RFC] Optimi[zs]e copy_*_user routines
-Date: Fri, 17 Sep 2004 12:23:30 -0400
-Message-ID: <20040917162329.GU28936@baldric.uwo.ca>
-References: <20040910000032.GJ28659@tausq.org>
-	<20040916191856.GF28659@tausq.org>
-	<20040917144813.GH28936@baldric.uwo.ca>
-	<20040917153439.GI28659@tausq.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] i386 cross-compiler for hppa/hppa64 ?
+Date: Fri, 17 Sep 2004 19:36:11 +0200
+Message-ID: <200409171936.11573.deller@gmx.de>
+References: <200409152113.57033.deller@gmx.de>
+	<20040916143812.GB28936@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040917153439.GI28659@tausq.org>
+In-Reply-To: <20040916143812.GB28936@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,36 +20,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Randolph,
+Hi all,
 
-> i've done kernel compiles at various -j levels, and run some lmbench
-> benchmarks. 
+On Thursday 16 September 2004 16:38, Carlos O'Donell wrote:
+> > The cross-compiler section on the parisc homepage at http://parisc-linux.org/software/index.html#xcs links to 
+> > http://ftp.parisc-linux.org/x86-xcompilers/   and  
+> > ESIEE Team's download page at http://www.pateam.org/download.html#deb
+> 
+> If you have time...
+> http://www.parisc-linux.org/toolchain/PARISC-Linux-XC-HOWTO.html
 
-Good.
+Even without the above URL I was able to build myself a x86-hppa crosscompiler :-)
 
-> as you know, there's also a memcpy testsuite that verified the main
-> copying algorithm for various block sizes and alignments.
+It's available here for download now (~26MB):
+ftp://ftp.parisc-linux.org/x86-xcompilers/xc-20040917-hppa32.tgz
 
-Yup. I ran those first.
+Some notes:
+- x86 -> hppa (32bit only!)
+- based on DEBIAN's hppa binutils and gcc3.3 packages (look at the README in the archive)
+- only for cross-compiling Linux kernels
+- unpack in /opt and add /opt/palinux33/bin to your $PATH
 
-> i also have a small test program that is able to exercise the 
-> exception cases in the code, so i've tested the various load/store 
-> exception cases in the two functions (pa_memcpy and copy_dstaligned).
-
-Cool, that's the most important cases to test. My lws testcase exercises
-teh exception code, but obviously not the exception cases in pa_memcpy
-and copy_dstaligned.
-
-> currently, the exception test program is a bit indirect (it requires a
-> lot of manual work). i have an idea for a better automated testsuite
-> which still needs to be implemented.
-
-Kernel module? :)
-
-If you did it in C it could be used for a lot of arches.
-
-c.
-
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
