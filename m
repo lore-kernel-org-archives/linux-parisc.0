@@ -1,13 +1,16 @@
-Return-Path: <asifayaz@hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: RE: [parisc-linux] UNable to boot the cd.
-Date: Wed, 4 Feb 2004 10:57:29 +0530
-Message-ID: <8BF7471D09AA9B4190A9C96778BC2A1748D23A@qcaexc02.asiapacific.cpqcorp.net>
-From: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@parisc-linux.org
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BF20D4840
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed,  4 Feb 2004 00:22:26 -0700 (MST)
+Date: Wed, 4 Feb 2004 01:43:59 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040204094358.GL959@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] memory mapping and sort_extable?
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,31 +20,73 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Thanks Grant,=20
-All wat i did was clik on the image and found that thae filw system in =
-the Cd is CDFS ..=20
-Wat should be the file syslem of the CD ! I guess ISO rite=20
+pa, 
 
-Thanks=20
+2.6.2-rc2 doesn't boot on my c3k when running 32-bit kernel and if
+CONFIG_STI_CONSOLE is not enabled. The problem seems to be that for some
+reason [*] when CONFIG_STI_CONSOLE is not defined, we map all kernel
+memory as r/o, so when sort_extable (in lib/extable.c) tries to
+rearrange our exception tables it writes to the kernel pages and faults.
 
+interestingly, when building a 64-bit kernel with similar config options
+i don't see a fault... maybe there is something else happening there.
 
+ From a cursory inspection, it appears that we never use to sort our
+exception tables; dumping the extable from a vmlinux binary shows that
+the entries are properly sorted at link time... but i haven't tried 
+this on modules to see if they are also sorted. Not sure how the 
+sorting is happening...  does ld do it?
 
------Original Message-----
-From: Grant Grundler [mailto:grundler@parisc-linux.org]
-Sent: Wednesday, February 04, 2004 10:38 AM
-To: AYAZ, MOHAMMED ASIF
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] UNable to boot the cd.
+Anyway, the following patch trivially removes sort_extable for parisc
+and lets the kernel boot. Not yet sure if it's correct. Does anyone
+know?
 
+[*] Why do we map kernel pages as read-only? is it just to be "extra
+safe"?
 
-On Wed, Feb 04, 2004 at 08:15:16AM +0530, AYAZ, MOHAMMED ASIF wrote:
-> IIRC, instructions on how to burn parisc CD's with CD Creator have
-> been posted to parisc-linux (or debian-hppa) before.
->=20
-> =3D> Can u pls provide me the url for this..=20
+randolph
 
-	http://lists.parisc-linux.org/
+Index: include/asm-parisc/uaccess.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/uaccess.h,v
+retrieving revision 1.12
+diff -u -p -r1.12 uaccess.h
+--- include/asm-parisc/uaccess.h	28 Jan 2004 05:27:46 -0000	1.12
++++ include/asm-parisc/uaccess.h	4 Feb 2004 07:16:54 -0000
+@@ -66,6 +66,8 @@ struct exception_table_entry {
+ 	long skip;           /* pcoq skip | r9 clear flag | r8 -EFAULT flag */
+ };
+ 
++#define ARCH_HAS_SORT_EXTABLE
++
+ #define __get_user(x,ptr)                               \
+ ({                                                      \
+ 	register long __gu_err __asm__ ("r8") = 0;      \
+--- arch/parisc/mm/extable.c	2003-09-24 03:11:46.000000000 -0700
++++ arch/parisc/mm/extable.c	2004-02-03 22:58:41.000000000 -0800
+@@ -0,0 +1,7 @@
++#include <asm/uaccess.h>
++
++void sort_extable(struct exception_table_entry *start,
++		  struct exception_table_entry *finish)
++{
++}
++
+Index: arch/parisc/mm/Makefile
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/mm/Makefile,v
+retrieving revision 1.2
+diff -u -p -r1.2 Makefile
+--- arch/parisc/mm/Makefile	27 Jan 2004 18:44:34 -0000	1.2
++++ arch/parisc/mm/Makefile	4 Feb 2004 07:17:20 -0000
+@@ -2,4 +2,4 @@
+ # Makefile for arch/parisc/mm
+ #
+ 
+-obj-y	 := init.o fault.o ioremap.o
++obj-y	 := init.o fault.o ioremap.o extable.o
 
-and then enter "Easy CD creator" in the text box.
-
-grant
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
