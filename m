@@ -1,136 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3A86C482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 May 2001 08:48:16 -0600 (MDT)
-Sender: christoph.plattner@alcatel.at
-Message-ID: <3AFBFB9C.203568CC@alcatel.at>
-Date: Fri, 11 May 2001 16:47:56 +0200
-From: Christoph Plattner <christoph.plattner@alcatel.at>
+Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5D25C482A
+	for <parisc-linux@parisc-linux.org>; Sat, 12 May 2001 10:01:31 -0600 (MDT)
+Sender: Jes.Sorensen@cern.ch
+To: willy@ldl.fc.hp.com (Matthew Wilcox)
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] ELFOSABI_LINUX
+References: <20010501213458.Y6063@zumpano.fc.hp.com>
+From: Jes Sorensen <jes@sunsite.dk>
+Date: 12 May 2001 18:01:21 +0200
+In-Reply-To: willy@ldl.fc.hp.com's message of "Tue, 1 May 2001 21:34:58 -0600"
+Message-ID: <d3ae4id0a6.fsf@lxplus015.cern.ch>
 MIME-Version: 1.0
-To: Matthieu Delahaye <delahaym@esiee.fr>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
-	puufin@esiee.net
-Subject: Re: [parisc-linux] Serial PDC console on 712/601
-References: <3AF5AF65.C685635C@gmx.at> <3AF68199.8CCD7FD2@esiee.fr> <3AF69393.F9C5C6E1@alcatel.at> <3AFBD3C5.3FE0E2CD@esiee.fr>
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ok,
+>>>>> "Matthew" == Matthew Wilcox <willy@ldl.fc.hp.com> writes:
 
-all in all really thank you for the information.
+Matthew>  * Change binutils to produce binaries without ELFOSABI_LINUX
+Matthew> set.  This implies rebuilding every debian package we've
+Matthew> built so far -- over 1100 source packages.  This means we'd
+Matthew> miss our deadline of shipping at the end of May.
 
-With friendly regards
-	Christoph P.
+Matthew> One subversive developer suggested a third alternative --
+Matthew> that we think up & implement an extension to the ABI so we
+Matthew> have to use ELFOSABI_LINUX :-)
 
-Matthieu Delahaye wrote:
-> 
-> I have to recognize I have absolutely no idea.
-> 
-> Regards,
-> Matthieu
-> 
-> Christoph Plattner wrote:
-> >
-> > Very intersting the method of using the ISL commands to switch
-> > over. And I think I also can switch back using this method.
-> > Is this correct ?
-> >
-> > But what is this "dagger" card.
-> > Where does the machine store the information ?
-> > Flash/EEPROM/battery backuped SRAM ?
-> > Can I do a "backup" copy (I have an universial chip programmer
-> > at home, and other tools !) ?
-> > Can I make such a "dagger" card (whatever it is ?
-> >
-> > Please give me some hints, before I "risk" the change !
-> >
-> > With friendly regards
-> >         Christoph Plattner
-> >
-> > ------------------------------------------------------------------
-> > private:  christoph.plattner@gmx.at
-> > company:  christoph.plattner@alcatel.at
-> >
-> > Matthieu Delahaye wrote:
-> > >
-> > > Christoph Plattner wrote:
-> > > >
-> > > > Hello HP hackers !
-> > > >
-> > > > I have a problem setting the PDC console path to serial.
-> > > > How can be done this on the HP 712/60.
-> > > > On my 9000/720 I can use the `path' command on the PDC
-> > > > console (admin mode). But on the 712/60, the `path' command
-> > > > only sets the boot paths (primary, secondary), but not the
-> > > > console.
-> > > >
-> > > > Is it possible to use the 712/60 with serial console only
-> > > > (no display and keyboard) ?
-> > > > How can I set serial console ?
-> > > >
-> > > > With friendly regards
-> > > >         Christoph Plattner
-> > > >
-> > > > --
-> > > > -------------------------------------------------------------------------
-> > > > private:        christoph.plattner@gmx.at
-> > > > company:        christoph.plattner@alcatel.at
-> > > >
-> > > > _______________________________________________
-> > > > parisc-linux mailing list
-> > > > parisc-linux@lists.parisc-linux.org
-> > > > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> > >
-> > > >From Pa-RISC/Linux Boot Howto:
-> > >
-> > > 3.1.2.3.3. How can I change the boot console to serial on a 712?
-> > >
-> > >    Unfortunately, you can't. Although 712s are configured for in-house
-> > > HP development to use serial console, this configuration
-> > >    isn't supported in the field. You have to use a graphics console for
-> > > 712s.
-> > >
-> > > http://www.oswg.org/oswg-nightly/oswg/en_US.ISO_8859-1/articles/
-> > > parisc-linux/parisc-linux-boot/
-> > >
-> > > But it seems you can, after dangerous manipulations:
-> > >
-> > > http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008117.html
-> > >
-> > > regards,
-> > > Matthieu
-> > >
-> > > --
-> > > Matthieu Delahaye
-> > > ESIEE Team
-> > > http://mkhppa1.esiee.fr/
-> > >
-> > > _______________________________________________
-> > > parisc-linux mailing list
-> > > parisc-linux@lists.parisc-linux.org
-> > > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> >
-> > ------------------------------------------------------------------
-> > private:  christoph.plattner@gmx.at
-> > company:  christoph.plattner@alcatel.at
-> >
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
-> --
-> Matthieu Delahaye
-> ESIEE Team
-> http://mkhppa1.esiee.fr/
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+The easy solution is to change binutils, keep the double check for
+ELFOSABI_LINUX and ELFOSABI_SYSV in the hppa glibc for a while and
+nuke it when everybody has updated. The important bit is to not put a
+toolchain out there that produces the wrong binaries.
 
--- 
-  +--------V--------+	Christoph.Plattner@alcatel.at
-  |  A L C A T E L  |	-----------------------------
-  +-----------------+	Phone: +43 1 27722 3706	
-         T A S		Fax:   +43 1 27722 3955
+I've used similar tricks on the ia64 in the past.
+
+Jes
