@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2FC2A4847
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 01:11:04 -0600 (MDT)
-Date: Mon, 11 Aug 2003 09:11:02 +0200
-Message-ID: <3F29178A00002568@ocpmta7.freegates.net>
-In-Reply-To: <20030811043457.GA5653@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] xfree86 4.2.1-9 build problem
-To: "Grant Grundler" <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail.zigoo.net (d108.dhcp212-198-139.noos.fr [212.198.139.108])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 88A624874
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 01:47:32 -0600 (MDT)
+Date: Mon, 11 Aug 2003 09:43:24 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+To: knaresh@india.hp.com
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Affined IRQs.
+Message-Id: <20030811094324.17ed7a86.varenet@esiee.fr>
+In-Reply-To: <3F373D92.C287B6B4@india.hp.com>
+References: <3F373D92.C287B6B4@india.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+On Mon, 11 Aug 2003 12:24:10 +0530
+Naresh <knaresh@india.hp.com> wrote:
 
-> Hi all,
-> This started out as an issue with glxinfo program in xfree86.
->
->The basic problem is glxinfo (C program) links against libGLU.so
->(C++ built library). But glxinfo fails to link using gcc:
-Which gcc release do you used? (i experiment such a pb with gcc-3.0)
-[2 weeks ago, Jul 31 exactly, I play to rebuild this pkg with gcc3.3 but
-do not encounter any pb?]
+> Hi,
+> The IA-64 Linux kernel has a concept of affined IRQs, wherein IRQs can
+> be bound/affined to particular CPUs. The affinity information shows up
+> in '/proc/irq/#/smp_affinity'. I cannot see any affinity of IRQs to CPUs
+> in PA ( iosapic.c and irq.c).. Is my understanding correct?
+> Regards,
+> Naresh.
 
-hth,
-Joel
+This has to be implemented for parisc and is on my todo list ;)
 
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+(BTW, on vacation till Aug 25th.)
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
