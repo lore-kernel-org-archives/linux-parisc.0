@@ -1,36 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3186C4A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 04:52:56 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 6F173B005; Thu, 22 Feb 2001 11:53:42 +0000 (GMT)
-Date: Thu, 22 Feb 2001 11:53:42 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	parisc-linux@lists.parisc-linux.org
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B95484A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 05:27:18 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA04535;
+	Thu, 22 Feb 2001 23:27:15 +1100
+Date: Thu, 22 Feb 2001 23:27:14 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: pipes
-Message-ID: <20010222115342.D1129@linuxcare.com>
-References: <E14Vtsu-0003xc-00@the-village.bc.nu> <Pine.LNX.4.21.0102222237440.14557-100000@front.linuxcare.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0102222237440.14557-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Thu, Feb 22, 2001 at 10:39:57PM +1100
+In-Reply-To: <20010222115210.C1129@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0102222256360.14557-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Feb 22, 2001 at 10:39:57PM +1100, Alan Modra wrote:
-> On Thu, 22 Feb 2001, Alan Cox wrote:
-> 
-> > > > thinking there is no data available.  Secondary problem is that the kernel
-> > > > returns the wrong thing when the syscall is interrupted.
-> > > 
-> > > But I just tried this on my x86 as well (2.2 kernel):
-> > 
-> > The return is ok. Its 'deep magic' strace sees
-> 
-> Err, are you saying I'm barking up the wrong gum tree, and there's nothing
-> wrong with the read() in my strace output?
+On Thu, 22 Feb 2001, Richard Hirst wrote:
 
-I think the problem is simply that there is no data for the read to
-pick up, so it hangs until the alarm goes off.
+> Don't think so.  The read is issued at 14:36:08, no data is available,
+> so 10 seconds later the alarm goes off, and read returns -512.  Strace
+> completes that line of output and reports the SIGALRM.
 
-Richard
+Ah, thanks for the clarification.  So it comes back to data being mangled
+in the pipe or somesuch.
+
+Hmm, strace -f now works with your mods to the kernel, so now I can look
+at the other end.  
+
+131   22:37:47 write(5, "cd /scsi/tmp\nfile=sys/stat.h\nif ( test  -r types/vxTypesOld.h ) > /dev/null 2>&1\nthen echo TRUE\nelse echo FALSE\nfi\n\necho\necho ShElL-OuTpUt-HaS-bEeN-cOmPlEtEd\n", 158 <unfinished ...>
+132   22:37:47 read(0, "cd /scsi/tmp\nfile=sys/stat.h\nif ( test  -r types/vxTypesOld.h ) > /dev/null 2>&1\nthen echo TRUE\nelse echo FALSE\nfi\n\necho\necho ShElL-OuTpUt-HaS-bEeN-cOmPlEtEUUUU\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\367\4\0\0\0\0\0PUU\0\0\0\0\0\0"..., 156) = 558544
+132   22:37:47 chdir("/scsi/tmp")       = 0
+
+Bingo.  Look at that read.
