@@ -1,16 +1,17 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA18645
-	for <parisc-linux@puffin.external.hp.com>; Tue, 25 Jul 2000 09:39:54 -0600
-Received: from ottawa.linuxcare.com (HELO vodka.thepuffingroup.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 25 Jul 2000 15:41:46 -0000
-Date: Tue, 25 Jul 2000 10:36:23 -0400
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA19503
+	for <parisc-linux@puffin.external.hp.com>; Tue, 25 Jul 2000 10:19:47 -0600
+Received: from smtp.linuxcare.com (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 25 Jul 2000 16:21:38 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 25 Jul 2000 16:21:32 -0000
+Date: Tue, 25 Jul 2000 11:16:14 -0400
 From: Matthew Wilcox <matthew@wil.cx>
 To: Alan Modra <alan@linuxcare.com.au>
 Cc: David Huggins-Daines <dhd@linuxcare.com>, Cary Coutant <cary@cup.hp.com>,
         parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] PIC code generation in gcc/binutils
-Message-ID: <20000725103623.F25594@vodka.thepuffingroup.com>
-References: <87zon7qcqr.fsf@linuxcare.com> <Pine.LNX.4.21.0007251104320.6775-100000@front.linuxcare.com.au>
+Message-ID: <20000725111614.I25594@vodka.thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <Pine.LNX.4.21.0007251104320.6775-100000@front.linuxcare.com.au>; from Alan Modra on Tue, Jul 25, 2000 at 11:12:28AM +1000
