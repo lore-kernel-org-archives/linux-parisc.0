@@ -1,56 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA22478
-	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Nov 2000 13:24:20 -0700
-Message-Id: <200011082031.MAA05350@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] webshite 
-In-reply-to: Your message of "Wed, 08 Nov 2000 20:14:43 PST."
-             <20001108201443.B28611@parcelfarce.linux.theplanet.co.uk>
-Date: Wed, 08 Nov 2000 12:31:11 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA23440
+	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Nov 2000 14:12:48 -0700
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id FAA26098
+	for parisc-linux@thepuffingroup.com; Thu, 9 Nov 2000 05:14:02 +0800
+Date: Thu, 9 Nov 2000 05:13:23 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] webshite
+Message-ID: <20001109051321.G21783@neep.com.au>
+References: <20001108201443.B28611@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001108201443.B28611@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Wed, Nov 08, 2000 at 08:14:43PM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> 
-> since the lord god alex hasn't seen fit to inform anyone, it seems like
-> i should.  the www.thepuffingroup.com website is no longer being updated
-> and all the updates are only going to parisc-linux.org.
+Matthew Wilcox said:
+> the www.thepuffingroup.com website is no longer being updated and all
+> the updates are only going to parisc-linux.org.
 
-We gave LXC's website maintainer grief about this already.
+I don't know if there's some other secret mailing list I'm missing out
+on, but that's the first time I've heard of "parisc-linux.org" I'm sure.
+So thankyou for being the one to bring it up.
 
-> i have been
-> updating www.thepuffingroup.comwww.thepuffingroup.com becuase no-one told me that this site
-> was no longer supposed to be operational and i suspect a large number
-> of people who subscribe to this list still have it bookmarked.
+Will the mailing list be moving as well?  (Given that it belongs with
+the project, not the mothballed puffingroup website.)
 
-Some time today, I expect (hope?) www.thepuffingroup.com/parisc will be
-redirected to www.parisc-linux.org (.com works too).
-I've asked mail be sent to this list when it happens.
-
-> also,
-> email sent to willy@thepuffingroup.com is no longer being received by me.
-> i don't know who gets it, but the sender does not receive a bounce.
-
-This should probably bounce since it's been stale for about
-11 monthes now...
-
-hope this helps,
-grant
-
-ps. just trying to compensate for an otherwise lack of communication.
-
-> 
-> yours, fucking furious, Matthew.
-> 
 > -- 
 > "It's time for you to change your sig" -- Alex deVries
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Shame, I thought your old sig was funnier.
+
+Andrew.
+
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
