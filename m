@@ -1,24 +1,28 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Message-Id: <199902220859.JAA15707@seger.axis.se>
+Date: Mon, 22 Feb 1999 08:26:41 -0800 (PST)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199902221626.IAA12581@gatekeeper.equator.com>
 To: hppa-linux@puffingroup.com
-cc: Steven Beattie <beattie@cse.ogi.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 22 Feb 1999 09:59:25 +0100
-From: Lars Segerlund <lars.segerlund@axis.com>
-Subject: [hppa-linux] Bootstrap
-Resent-Message-ID: <"PjxpY1.0.1j.ssHqs"@burrow.puffingroup.com>
+Subject: Re: [hppa-linux] Bootstrap
+Resent-Message-ID: <"vWJZ33.0.yp.8QOqs"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
- Hello,
+>  Hello,
+>
+>  tested the bootstrap on a 9000/725 , and it runs,
+>  gives processor as 000000
+>
+>  / ls.
+>
 
- tested the bootstrap on a 9000/725 , and it runs,
- gives processor as 000000
+  Thanks for the data.
+  Also, I figured out why on some systems the CPUID is 0. Apparently, the
+  PDC call for determining CPUID was only recently added.
+  The C-class PDCs all have it, but most of the earlier 700's don't.
 
- / ls.
-
+  Jason.
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
