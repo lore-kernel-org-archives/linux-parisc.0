@@ -1,31 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from oliver.internal.sjdjweis.com (dsl.75.131.networkiowa.com [209.234.75.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3D63B482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Aug 2001 18:04:59 -0600 (MDT)
-Date: Fri, 10 Aug 2001 19:09:47 -0500 (CDT)
-From: Dave Weis <djweis@sjdjweis.com>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] more serial console problems on D310 
-In-Reply-To: <200108091522.JAA13437@puffin.external.hp.com>
-Message-ID: <Pine.LNX.4.21.0108101908050.15638-100000@oliver.internal.sjdjweis.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.iinet.net.au (symphony-01.iinet.net.au [203.59.3.33])
+	by dsl2.external.hp.com (Postfix) with SMTP id 20733482A
+	for <parisc-linux@parisc-linux.org>; Sat, 11 Aug 2001 00:55:07 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id OAA12227
+	for parisc-linux@parisc-linux.org; Sat, 11 Aug 2001 14:54:56 +0800
+Date: Sat, 11 Aug 2001 14:54:53 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: Linux/HPPA List <parisc-linux@parisc-linux.org>
+Message-ID: <20010811145450.O22097@neep.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Kernel 2.4.8
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 9 Aug 2001, Grant Grundler wrote:
+2.4's patchlevel is getting closer to double digits.  Does this mean
+upgrades are getting safer?  =)
 
-> Can you post full console output? (or otherwise make it available)
-> Interested folks can then start guessing what might be the problem.
+Or less facetiously, is another CVS merge planned or are there problems
+in this release as with 2.4.7?  (Don't follow l-k and am just curious.)
 
-After pulling the AP card and the 8 port serial card, I have a debian
-install going. I did use the serial port labeled console on the back of
-the machine. I'll report back if it finishes.
-
-dave
+Andrew.
 
 -- 
-Dave Weis             "I believe there are more instances of the abridgement
-djweis@sjdjweis.com   of the freedom of the people by gradual and silent
-                      encroachments of those in power than by violent 
-                      and sudden usurpations."- James Madison
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
