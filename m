@@ -1,12 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] "Unknown machine at ..." on N4k
-Date: Wed, 14 Jul 2004 17:24:23 +0000
-Message-ID: <40BD9F870001BC0C@ocpmta2.freegates.net>
+Subject: Re: [parisc-linux] "Unknown machine at ..." on N4k
+Date: Thu, 15 Jul 2004 08:08:12 +0200
+Message-ID: <40BDA0200001B92E@ocpmta3.freegates.net>
+References: <40BDA0200001B916@ocpmta3.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-1"
-To: "List Parisc" <parisc-linux@parisc-linux.org>
+Cc: parisc-linux@parisc-linux.org
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <40BDA0200001B916@ocpmta3.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,41 +20,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all, 
 
-I just noticed that that in during the "Found devices:" on the the N4k it=
-'s
-mentioned:
-[...]
-18. DEW BC Runway Port at 0xfffffffffed24000 [36] { 7, 0x0, 0x584, 0x0000=
-c
-}
-19. Unknown machine at 0xfffffffffed25000 [37] { 0, 0x0, 0x5d3, 0x00000
-}
-20. DEW BC Runway Port at 0xfffffffffed2c000 [44] { 7, 0x0, 0x584, 0x0000=
-c
-}
-21. Unknown machine at 0xfffffffffed2d000 [45] { 0, 0x0, 0x5d3, 0x00000
-}
+> > On Wed, Jul 14, 2004 at 05:24:23PM +0000, Joel Soete wrote:
+> > ...
+> > > 19. Unknown machine at 0xfffffffffed25000 [37] { 0, 0x0, 0x5d3, 0x0=
+0000
+> > }
+> > ...
+> > > Any idea where I have to look for to change it?
+> >
+> > It needs to be added to arch/parisc/kernel/hardware.c.
+> > see hp_hardware_list[] declaration :^)
+> >
+> > We just need to know what the proper name for the CPU is.
+> 
+> Ah it seems to be a N4000-55 (cpu PA8600 (PCX-w+)  550Mhz, so according=
 
-Comparing with ioscan:
-[...]
-pbc         1  36                      pbc       CLAIMED     BUS_NEXUS 
-  Bus Converter
-processor   1  37                      processor CLAIMED     PROCESSOR 
-  Processor
-pbc         3  44                      pbc       CLAIMED     BUS_NEXUS 
-  Bus Converter
-processor   3  45                      processor CLAIMED     PROCESSOR 
-  Processor
+> to:
+> <http://hwdb.parisc-linux.org/view.php?type=3Dmachine&name=3DN4000-55>,=
 
-The 'Unknown machine' are in fact the cpu.
+>  it would be of "Prelude W+ 540" model name (even thought that its actu=
+al
+> clock seems well 550?)
+> 
+umm not so easy to choose the right thing according to:
+<http://www.openpa.net/cpu.html#xwp>
+its code name would be "Landshark"
 
-Any idea where I have to look for to change it?
-
-TIA,
+Thanks more,
     Joel
-
 
 -------------------------------------------------------------------------=
 --
