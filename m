@@ -1,14 +1,13 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] [PATCH] Fix HIL Mouse driver for 2.6
-Date: Thu, 26 Aug 2004 09:07:25 +0200
-Message-ID: <200408260907.25716.deller@gmx.de>
-References: <20040826045414.GA3510@ntlworld.com>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] cannot build kernel with hppa64-linux-gcc-3.4?
+Date: Thu, 26 Aug 2004 10:56:13 -0700
+Message-ID: <20040826175613.GH23033@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset=us-ascii
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040826045414.GA3510@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,24 +18,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Stuart,
+Hi all,
 
-I've applied both patches you sent to the parisc linux CVS tree.
+while debugging some other problems, i noticed that a 64-bit kernel
+built with gcc-3.4.1 (debian 3.4.1-7) will not boot. It causes a HPMC
+very early on trying to write to nonexistent memory. gcc-3.3.4 (debian
+1:3.3.4-9) works fine. 
 
-Thanks a lot,
-Helge
+haven't had time to dig more yet, but it seems to be getting a ITLB
+fault, and when we try to handle the interruption, we try to write to an
+unmapped virtual address 0x14ffffd00 (this is in skip_save_ior, right
+after we switch back to virtual space)
 
-PS: I didn't tested them yet, but will try to do so later today....
+anyone else tried this?
 
-On Thursday 26 August 2004 06:54, Stuart Brady wrote:
-> This patch makes the HIL pointer driver work in 2.6.  I have tested
-> it with both gpm and xfree86.
-> 
-> IIUC, users of PS/2 mice with HIL hubs should use the psmouse driver
-> (CONFIG_MOUSE_PS2) instead.  CONFIG_MOUSE_HIL is not needed for this.
-> 
-> The hil_ptr driver is for genuine HIL mice.  To compile it you need
-> CONFIG_MOUSE_HIL.  CONFIG_MOUSE_PS2 is not needed for HIL mice.
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
