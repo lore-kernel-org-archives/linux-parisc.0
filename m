@@ -1,23 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA18481
-	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Dec 1999 14:32:55 -0700
-Date: Thu, 23 Dec 1999 16:35:22 -0500
-From: Matthew Wilcox <willy@thepuffingroup.com>
-To: MaShaun Jones <mkj@mkj.cb.lucent.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] How to set serial console on 712 (fwd)
-Message-ID: <19991223163522.Q12629@thepuffingroup.com>
-References: <199912231931.MAA06831@rascal.fc.hp.com> <Pine.BSF.4.10.9912231519330.638-100000@mkj.cb.lucent.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.10.9912231519330.638-100000@mkj.cb.lucent.com>; from MaShaun Jones on Thu, Dec 23, 1999 at 03:19:48PM -0500
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA19322
+	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Dec 1999 15:11:30 -0700
+Received: from ada-nt.adacorp.com (adacorp.com [192.168.10.35])
+	by external.adacorp.com (8.9.3/8.9.3) with ESMTP id PAA14495
+	for <parisc-linux@thepuffingroup.com>; Thu, 23 Dec 1999 15:17:13 -0700
+Message-ID: <95DE24D1FCFED0118B910060940A33401D4378@mailhub.adacorp.com>
+From: Mark Newnham <mnewnham@adacorp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 23 Dec 1999 15:15:23 -0700
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: [parisc-linux] Linux port for 800 series
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Dec 23, 1999 at 03:19:48PM -0500, MaShaun Jones wrote:
-> Is there a way to use a serial console with a 715 however?
+Just a very general question:
 
-Yes, and it features in the HOWTO:
+How is the linux port doing for the 800 series machines? I've a couple of
+old boxes crying out for linux....
 
-http://www.oswg.org/oswg-nightly/oswg/en_US.ISO_8859-1/articles/parisc-linux/parisc-linux-boot/preparation.html#SERIALCONSOLE
 
-i've used a 715 in this configuration myself.
+Regards
+
+Mark
+
+#####################################################
+Mark Newnham
+Application Design Associates, Inc
+6021 S.Syracuse Way #302
+Englewood, CO 80111, USA
+#####################################################
