@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
-	by dsl2.external.hp.com (Postfix) with SMTP id 59C8D488D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Jul 2002 14:30:10 -0600 (MDT)
-Date: Fri, 12 Jul 2002 23:31:28 +0300
+	by dsl2.external.hp.com (Postfix) with SMTP id 64EFF4891
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Jul 2002 14:33:16 -0600 (MDT)
+Date: Fri, 12 Jul 2002 23:34:39 +0300
 From: "Stephan Trajkoff" <stephan@itp.bg>
 To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <20020712203010.59C8D488D@dsl2.external.hp.com>
-Subject: [parisc-linux] Problem in X with keyboard and problem with LAN and telnetd
+Message-Id: <20020712203316.64EFF4891@dsl2.external.hp.com>
+Subject: [parisc-linux] Problem with XFREE 4.1.0 latest by apt-get:)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,17 +20,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
--------------------------------------------------------------------
--->> FREE Perl CGI scripts add WEB ACCESS to your POP email accounts!
--->> Download today!! http://www.adjeweb.com
--------------------------------------------------------------------
+My STI in console runs with resolution 1280x1024x8bit.
+I have 819/K210
+Can I change resolution to 800x600x16bit colour?
+And my XFREE runs in 1028x1024x8bit colour, can I change to=20
+1024x768x16bit ot 24bit?
+dmesg displays that I have 16MB video framebuffer memory
 
-I have 3 problems
-1. when I run Xfree86 with KDE, my ps/2 keyboard won't work, I sait=20
-to XFREE that I have us keyboard, pc104 and that is ps/2.
-2. my LAN lasi 82596 says that I have timeout non stop with
-connection
-3. When I connect from Windows and Linux to my server, and when I run=20
-command that display many rows, automatically linux closing my=20
-connection and _|_. With SSH all is working. For example try to run=20
-dmesg or ps axuw.
+-------------------------------------------------------------------
+-->> Add WEB ACCESS to your POP email accounts with
+-->> FREE Perl CGI scripts! Download today! http://www.adjeweb.com
+-------------------------------------------------------------------
