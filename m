@@ -1,34 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BE4714A19
-	for <parisc-linux@parisc-linux.org>; Fri,  9 Feb 2001 10:27:42 -0700 (MST)
-Message-Id: <200102091730.JAA08083@milano.cup.hp.com>
-To: Andrew Shugg <andrew@neep.com.au>
-Cc: Linux/HPPA List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] minilibc CVS module 
-In-reply-to: Your message of "Fri, 09 Feb 2001 21:43:57 PST."
-             <20010209214354.K20585@neep.com.au>
-Date: Fri, 09 Feb 2001 09:30:10 -0800
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F8294A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Feb 2001 10:42:36 -0700 (MST)
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id A5702BA4
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Feb 2001 09:42:34 -0800 (PST)
+Message-Id: <200102091743.JAA08121@milano.cup.hp.com>
+To: "M. Grabert" <xam@deathsdoor.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] ASP Parallel port driver broken on HP9000/730 
+In-reply-to: Your message of "Fri, 09 Feb 2001 14:45:19 PST."
+             <Pine.LNX.4.21.0102091426380.9525-100000@sgate.charlysworld.de>
+Date: Fri, 09 Feb 2001 09:43:33 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Andrew Shugg wrote:
-> I have the 'minilibc' module checked out of CVS.  It doesn't seem to
-> have been updated in the last 8 months.  Is this thing dead, or just
-> resting?  Pining for the fjords, perhaps.
+"M. Grabert" wrote:
+> My question was, whether there is a kernel parameter (i can pass to palo),
+> which redirects ALL kernel messages from the beginning to the serial port
+> (before they are regognized by the linux kernel). 
 
-No - resting up for a ski vacation. :^O
+No. (I'm being more blunt than Helge).
 
-The minilibc was used to build the first static binaries (eg sash).
-sash was the first thing we could show off last year.
-Since we've had a real glibc, minilibc has withered.
+Read the directions I posted again and try them.
 
-> Not that I can even remember why I have it checked out in the first
-> place ... hmm.
-
-Build your own static realtime, realmode application?
-I'm not sure what "embedded" application parisc boxes would be good for...
-but I've heard of such thing being done for dedicated NFS servers...
+Setting the CONSOLE path (as suggested by Helge) will result in
+the same thing. But later you must set the path back to a graphics
+head once you (and parisc-linux) are ready for STI/graphical console.
 
 grant
 
