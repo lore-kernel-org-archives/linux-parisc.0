@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B563482A
-	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 10:05:54 -0700 (MST)
-Date: Tue, 22 Jan 2002 12:05:48 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Trouble installing 0.9.3 on 735/99
-Message-ID: <20020122120548.M19637@systemhalted>
-References: <A8566E157F5FD411BCFB00D0B7816D51C72CD9@ntexchange.cat.csiro.au> <20020122141253.GB25314@sleepie.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020122141253.GB25314@sleepie.demon.co.uk>; from rhirst@linuxcare.com on Tue, Jan 22, 2002 at 02:12:53PM +0000
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] vmlinux header for savecrash. 
+In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+   of "Tue, 22 Jan 2002 10:20:59 +0100." <3C4D2EFB.F82671C2@admin.france.hp.com>
+References: <3C4C53B7.67DA24E@admin.france.hp.com> <20020121202539.994A5482A@dsl2.external.hp.com>  <3C4D2EFB.F82671C2@admin.france.hp.com> 
+Date: Tue, 22 Jan 2002 10:45:33 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020122174533.38418482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +19,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Hi all:
-> > 
-> > * drop to shell, do "mkdir /inst ; mount /dev/sdb /inst -t iso9660"
-> > 
-> > Note that this last step only sometimes works. That is, only sometimes does
-> > the install program see the mounted directory.
-> 
-> Are you confident that you are terminating the external scsi bus
-> properly?  0.9.2 ISO used an older slower scsi driver that was possibly
-> less susceptible to bad termination.
-> 
-> Richard
-> 
->
+Bruno Vidal wrote:
+> 	Sorry, but on my system, fgrep gives nothing
+> (and by using strings, I found nothing also).
 
-I can't get any of the 715/50's to run stably with the newer
-SCSI driver. And after testing I can almost pinpoint with 95%
-accuracy tha it's the new driver.
+grundler@gsyprf11:~$ uname -a
+Linux gsyprf11.external.hp.com 2.4.17-pa11 #3 SMP Fri Jan 18 23:32:06 PST 2002 parisc64 unknown
+grundler@gsyprf11:~$ strings /boot/vmlinux | fgrep 2.4.17
+Linux version 2.4.17-pa11 (grundler@gsyprf10) (gcc version 3.0.3) #3 SMP Fri Jan 18 23:32:06 PST 2002
+Linux 2.4.17-pa11
+2.4.17-pa11
+grundler@gsyprf11:~$ 
 
-I have yet to go about running the latest kernel with the sim700
-driver. Though if I get some time this afternoon I will.
-(Just spent some time adding diskless 715/50's to our cluster)
+Perhaps a simple fgrep isn't sufficient for what you have.
+You might need to pick out certain fields.
 
-Has anyone been able to get SCSI disks that are not from HP
-to work on the 715's? (New terminator? Different terminator?)
+> And I
+> can't use dmesg buffer, because by definition it is a buffer,
+> so after running sometime, the palo boot strings is not
+> in the buffer anymore.
 
-c. 
+right. They should be in the /var/log/messages if they are no longer
+in the dmesg buffer.
+
+> Some new ideas ?
+
+Randolph Chung and I were wondering if dump driver could save a
+parameter passed in by palo: eg "boot_kernel=/boot/vmlinux-pa11".
+I haven't checked if something like that already exists.
+
+grant
