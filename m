@@ -1,20 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BEF544834
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Mar 2003 07:09:09 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.12)
-	id 18tprc-0006BR-00; Fri, 14 Mar 2003 14:08:48 +0000
-Date: Fri, 14 Mar 2003 14:08:48 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Lyonel Vincent <vincentl@ec-lyon.fr>
-Cc: Matthew Wilcox <willy@debian.org>, bruno_vidal@hp.com,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] enumerating devices from user space
-Message-ID: <20030314140848.GI29631@parcelfarce.linux.theplanet.co.uk>
-References: <20030313112232.A10172@typhon.pilat.fr> <3E706BE4.E53961BD@hp.com> <20030313134558.6cf9177c.vincentl@ec-lyon.fr> <3E7196C7.8A35605F@hp.com> <20030314133305.4311a8e6.vincentl@ec-lyon.fr> <20030314131921.GG29631@parcelfarce.linux.theplanet.co.uk> <20030314150549.3cb2e2b2.vincentl@ec-lyon.fr>
+Date: Fri, 14 Mar 2003 09:23:42 -0700
+To: Jochen Friedrich <jochen@scram.de>
+Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: RFC: mmap patch
+Message-ID: <20030314162342.GA24555@dsl2.external.hp.com>
+References: <20030309144225.O3865@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.44.0303141351000.23830-100000@gfrw1044.bocc.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030314150549.3cb2e2b2.vincentl@ec-lyon.fr>
+In-Reply-To: <Pine.LNX.4.44.0303141351000.23830-100000@gfrw1044.bocc.de>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,13 +20,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Mar 14, 2003 at 03:05:49PM +0100, Lyonel Vincent wrote:
-> okokok I won't argue then.
-> I would have liked to have ioscan-like support, but anyway...
+On Fri, Mar 14, 2003 at 02:04:17PM +0100, Jochen Friedrich wrote:
+> since the patch was included in CVS, several modules fail to load with
+> unresolved external __flush_dcache_page.
 
-Well, you can have it in 2.5; start looking at sysfs.
+yes...I just ran into the same problem when playing around with
+the latest qlogic (qla2xxx v6.0.4) driver.
+Appended is a more complete one which I'm not quite done with
+yet either. Hopefully I can build all the flavors and commit this weekend.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+grant
+
+Index: arch/parisc/kernel/parisc_ksyms.c
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/kernel/parisc_ksyms.c,v
+retrieving revision 1.44
+diff -u -p -r1.44 parisc_ksyms.c
+--- arch/parisc/kernel/parisc_ksyms.c   11 Jan 2003 20:10:46 -0000
+1.44
++++ arch/parisc/kernel/parisc_ksyms.c   14 Mar 2003 16:16:47 -0000
+@@ -127,7 +127,15 @@ EXPORT_SYMBOL(outsl);
+ #include <asm/cache.h>
+ EXPORT_SYMBOL(flush_kernel_dcache_range_asm);
+ EXPORT_SYMBOL(flush_kernel_dcache_page);
+-EXPORT_SYMBOL(flush_all_caches);
++
++/* asm/pgalloc.h doesn't include all it's dependencies */
++extern void __flush_dcache_page(struct page *page);
++EXPORT_SYMBOL(__flush_dcache_page);
++
++#ifndef CONFIG_SMP
++extern void flush_cache_all_local(void);
++EXPORT_SYMBOL(flush_cache_all_local);
++#endif
+ 
+ #include <asm/unistd.h>
+ extern long sys_open(const char *, int, int);
