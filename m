@@ -1,18 +1,16 @@
-Return-Path: <xam@cs.ucc.ie>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D8A5A4868
+Return-Path: <tomcatsniper@go.ro>
+Received: from s2.home.ro (s2.home.ro [193.231.236.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 92B0A4852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 20 Feb 2004 12:07:25 -0700 (MST)
-Date: Fri, 20 Feb 2004 19:07:19 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] b2k scsi disk pb
-In-Reply-To: <402A4CA500006E8D@ocpmta2.freegates.net>
-Message-ID: <Pine.LNX.4.58.0402201900540.26386@sal.ucc.ie>
-References: <402A4CA500006E8D@ocpmta2.freegates.net>
+	Fri, 20 Feb 2004 18:18:56 -0700 (MST)
+Date: Sat, 21 Feb 2004 03:19:17 +0200
+From: Razvan Popescu <tomcatsniper@go.ro>
+Message-ID: <5818350927.20040221031917@go.ro>
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Install from DDS Tape
+Reply-To: Razvan Popescu <tomcatsniper@go.ro>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,41 +20,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, 20 Feb 2004, Joel Soete wrote:
-
-> on my b2k since I can run 2.6 (32bit with gcc-3.3 or 64bit with gcc-3.0)
-> i noticed from time to time such dmesg:
-> sym0:5:0: ABORT operation timed-out.
-> sym0:5:0: ABORT operation started.
-
-[...]
-
-> sym0:5:0: ABORT operation timed-out.
-> sym0:5:0: DEVICE RESET operation started.
-> sym0:5:0: DEVICE RESET operation timed-out.
-> sym0:5:0: BUS RESET operation started.
-> sym0: SCSI BUS reset detected.
-> sym0: SCSI BUS has been reset.
-> sym0:5:0: BUS RESET operation complete.
->
-> and during this time the system naturaly hang.
-
-(or is at least *very* slow)
-
-> scsi id 5 is the one of the working boot disk (a quantum model atlas5-9lvd)
-> and if there is well a second disk (a seagate model ST336704LC) it is not
-> used.
-
-Had the same problem when attaching a SE-SCSI device (also a Seagate, 20GB)
-on my C3k (which has 2 internal LVD SCSI-drives).
-
-Got rid of it by not using the SE-SCSI driver ;)
-Try to physically detach the (not-used) ST336704LC.
-
-> OTC with 2.4 and sym2 driver, I never noticed this behavior (even with recent
-> 2.4.25-rc?-pa0 :) ), so I presume that there is no disk failure (and a dd
-> if=/dev/sda of=/dev/null bs=1024k reach to read fully the disk without any
-> error).
-
-Yes, I think reading is fine, just (lots of) writing is triggering it.
-    Max
+Hi,
+  I have an old HP 9000 model 715 at my work with HP-UX 10.2 and
+  I want to install Debian 3.0 for PA-RISC on it but it has ONLY
+  a dds tape drive (no cdrom, no floppy). My question is: Can I
+  install from tape? How can I put the Debian ISO file on a dds
+  and boot/install from that?
+-----------------------------------------------------------------
+Thanks,
+        Razvan Popescu                 mailto:tomcatsniper@go.ro
+Linux registered as user #305236
+-----------------------------------------------------------------
