@@ -1,39 +1,48 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA29405
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 01:51:34 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 08:53:16 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id TAA10369;
-	Thu, 2 Nov 2000 19:51:19 +1100
-Date: Thu, 2 Nov 2000 19:51:19 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Paul Bame <bame@noam.fc.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] new method for 64-bit parisc tree
-In-Reply-To: <E13r2Ag-0000Xp-00@noam.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0011021825100.26717-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA30300
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 03:42:26 -0700
+Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
+  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 10:44:05 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id C8992B005; Thu,  2 Nov 2000 10:43:06 +0000 (GMT)
+Date: Thu, 2 Nov 2000 10:43:06 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] a500.out16
+Message-ID: <20001102104306.F32715@linuxcare.com>
+References: <200011020821.AAA28301@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200011020821.AAA28301@milano.cup.hp.com>; from grundler@cup.hp.com on Thu, Nov 02, 2000 at 12:21:36AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 1 Nov 2000, Paul Bame wrote:
+On Thu, Nov 02, 2000 at 12:21:36AM -0800, Grant Grundler wrote:
+> Hi Richard (et al),
+> I finally think I understand how pcibios_align_resource() is used...
+> that definitely was the problem. Everything on A500 but PCI-PCI bridge
+> seems to be assigned I/O port and MMIO addresses correctly.
+> 
+> I'll look at tulip code tomorrow to see why it's not happy.
 
-> The future parisc64 tree ONLY contains files which are different from,
-> or in addition to, those in the parisc tree.  When you 'make config'
-> or 'make oldconfig', each file in the parsic tree is symbolically
-> linked as the same file in the parisc64 tree.  This enables all
-> the rest of the tools/build to work normally.  'make distclean' includes
-> a step to remove all the symlinks.
+I fixed tulip_core.c to report what it means, which gave me
 
-Instead, can't you simply play tricks with -I, and add a symbolic link
-asm -> ../asm-parisc in asm-parisc64)?  The idea being to end up with
-an include path looking like
-"-I $(TOPDIR)/include -I $(TOPDIR)/include/asm"
+tulip: MMIO resource (0x400@0xfffffffff8020000) unavailable, aborting
 
-That way, asm/foo.h is found by the first -I if we have asm-parisc64/foo.h,
-and is found by the second if asm-parisc/foo.h exists but not
-asm-parisc64/foo.h.  Hmm, you might also need -I-
+Note sym53c8xx.c doesn't seem to bother with request_mem_region(), so
+maybe request_mem_region() is just broken.
 
--- 
-Linuxcare.  Support for the Revolution.
+I then patched out the goto, so it ignored that error, and....
+
+Linux Tulip driver version 0.9.8 (July 13, 2000)
+tulip: MMIO resource (0x400@0xfffffffff8020000) unavailable, aborting
+PCI: Setting latency timer of device 00:00.0 to 64
+eth0: Digital DS21143 Tulip rev 65 at 0x0, 00:30:6E:03:79:A0, IRQ 128.
+eth0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
+Sending BOOTP requests.... OK
+IP-Config: Got BOOTP answer from 10.160.240.111, my address is 10.160.240.117
+Switching from PDC console
+
+Wheeee!  Nice work Grant!
+
+Richard
