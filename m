@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm6.tiscalinet.be [212.35.2.61])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CA14B4834
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 09:10:14 -0600 (MDT)
-Date: Fri, 25 Oct 2002 17:09:58 +0200
-Message-ID: <3DB5776100000C32@ocpmta8.be.tiscali.com>
-In-Reply-To: <3DB5776100000BBB@ocpmta8.be.tiscali.com>
-From: jsoe0708@tiscali.be
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 378AD4834
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 09:23:22 -0600 (MDT)
+Date: Fri, 25 Oct 2002 08:26:21 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: jsoe0708@tiscali.be
+Cc: Stefan Pfetzing <dreamind@dreamind.de>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
-To: "Randolph Chung" <randolph@tausq.org>,
-	"Stefan Pfetzing" <dreamind@dreamind.de>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Message-ID: <20021025152620.GH22052@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20021024190027.GF5602@tausq.org> <3DB5776100000BBB@ocpmta8.be.tiscali.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3DB5776100000BBB@ocpmta8.be.tiscali.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,128 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-too bad:
+>  #define LDD_KERNEL(ptr) __get_kernel_asm("ldd",ptr)
+>  #define LDD_USER(ptr) __get_user_asm("ldd",ptr)
+> @@ -75,7 +75,7 @@
+>  	    case 2: __get_kernel_asm("ldh",ptr); break; \
+>  	    case 4: __get_kernel_asm("ldw",ptr); break; \
+>  	    case 8: LDD_KERNEL(ptr); break;		\
+> -	    default: BUG(); break;                      \
+> +	    default: BUG(); __gu_err=ENOTSUP; break;    \
+>  	    }                                           \
+>  	}                                               \
 
- man ioctl advise that it would return -1 (not ENOTSUP which would be assign
-to errno) I will try to see how?
+this is wrong.
 
-Sorry to annoy,
-    Joel
+get_user is not defined to return an errno, just whether it's successful
+or not.
 
->-- Original Message --
->From: jsoe0708@tiscali.be
->Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
->To: "Randolph Chung" <randolph@tausq.org>,
->	"Stefan Pfetzing" <dreamind@dreamind.de>
->Cc: parisc-linux@lists.parisc-linux.org
->Date: Fri, 25 Oct 2002 14:58:42 +0200
->
->
->Hi Randolph,
->
->It sure I found a bug in the two parts kernel and xfs.
->
->A. The kernel hppa: put_user and get_user does just a printk for BUG messages
->but don't return error code as ENOTSUP (or what else) (what I assume the
->other platforms does when they do not yet support BLKGETSIZE64?)
->
->Here is a small patch I suggest:
->(I do not reach to implement an operational support of BLKGETSIZE64 [for
->32bits kernel]; I do not find a easy way to manage code failure :-( )
->
->--- uaccess.h.orig	2002-10-22 15:14:54.000000000 +0200
->+++ uaccess.h	2002-10-23 13:46:48.000000000 +0200
->@@ -35,10 +35,10 @@
-> #define get_user __get_user
-> 
-> #if BITS_PER_LONG == 32
->-#define LDD_KERNEL(ptr)		BUG()
->-#define LDD_USER(ptr)		BUG()
->-#define STD_KERNEL(x, ptr)	BUG()
->-#define STD_USER(x, ptr)	BUG()
->+#define LDD_KERNEL(ptr)		BUG(); __gu_err=ENOTSUP;
->+#define LDD_USER(ptr)		BUG(); __gu_err=ENOTSUP;
->+#define STD_KERNEL(x, ptr)	BUG(); __pu_err=ENOTSUP;
->+#define STD_USER(x, ptr)	BUG(); __pu_err=ENOTSUP;
-> #else
-> #define LDD_KERNEL(ptr) __get_kernel_asm("ldd",ptr)
-> #define LDD_USER(ptr) __get_user_asm("ldd",ptr)
->@@ -75,7 +75,7 @@
-> 	    case 2: __get_kernel_asm("ldh",ptr); break; \
-> 	    case 4: __get_kernel_asm("ldw",ptr); break; \
-> 	    case 8: LDD_KERNEL(ptr); break;		\
->-	    default: BUG(); break;                      \
->+	    default: BUG(); __gu_err=ENOTSUP; break;    \
-> 	    }                                           \
-> 	}                                               \
-> 	else {                                          \
->@@ -84,7 +84,7 @@
-> 	    case 2: __get_user_asm("ldh",ptr); break;   \
-> 	    case 4: __get_user_asm("ldw",ptr); break;   \
-> 	    case 8: LDD_USER(ptr);  break;		\
->-	    default: BUG(); break;                      \
->+	    default: BUG(); __gu_err=ENOTSUP; break;    \
-> 	    }                                           \
-> 	}                                               \
-> 							\
->@@ -144,7 +144,7 @@
-> 	    case 2: __put_kernel_asm("sth",x,ptr); break;       \
-> 	    case 4: __put_kernel_asm("stw",x,ptr); break;       \
-> 	    case 8: STD_KERNEL(x,ptr); break;			\
->-	    default: BUG(); break;                              \
->+	    default: BUG(); __pu_err=ENOTSUP; break;		\
-> 	    }                                                   \
-> 	}                                                       \
-> 	else {                                                  \
->@@ -153,7 +153,7 @@
-> 	    case 2: __put_user_asm("sth",x,ptr); break;         \
-> 	    case 4: __put_user_asm("stw",x,ptr); break;         \
-> 	    case 8: STD_USER(x,ptr); break;			\
->-	    default: BUG(); break;                              \
->+	    default: BUG(); __pu_err=ENOTSUP; break;		\
-> 	    }                                                   \
-> 	}                                                       \
-> 								\
->
->If all agreed, (awaiting better :?) can somebody ci it?
->
->
->Thanks in advance for attention,
->    Joel
->
->PS: 
->B. in xfs:
->
-> 	error = ioctl(fd, BLKGETSIZE64, &size);
->-	if (error >= 0) {
->+	if (!error) {
-> 		/* BLKGETSIZE64 returns size in bytes not 512-byte blocks */
->
->AFAIK ioctl should return error=0 if success and error <>0 (>0?) 
->
->here is the full patch I will suggest:
->
->--- cmd/xfsprogs/libxfs/init.c.orig	2002-10-25 12:12:29.000000000 +0200
->+++ cmd/xfsprogs/libxfs/init.c	2002-10-25 14:22:34.000000000 +0200
->@@ -155,11 +155,14 @@
-> 			progname, path, strerror(errno));
-> 		exit(1);
-> 	}
->+#if !defined(__hppa__) || defined(__LP64__)
-> 	error = ioctl(fd, BLKGETSIZE64, &size);
->-	if (error >= 0) {
->+	if (!error) {
-> 		/* BLKGETSIZE64 returns size in bytes not 512-byte blocks */
-> 		size = size >> 9;
->-	} else {
->+	} else
->+#endif
->+        {
-> 		/* If BLKGETSIZE64 fails, try BLKGETSIZE */
-> 		unsigned long tmpsize;
-> 		error = ioctl(fd, BLKGETSIZE, &tmpsize);
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+i'll take a closer look this weekend.
+
+randolph
