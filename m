@@ -1,43 +1,29 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA15639
-	for <parisc-linux@puffin.external.hp.com>; Fri, 30 Apr 1999 12:51:51 -0600
+Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA16123
+	for <parisc-linux@puffin.external.hp.com>; Fri, 30 Apr 1999 16:29:01 -0600
 Received: from localhost (adevries@localhost)
-	by devserv.devel.redhat.com (8.8.7/8.8.7) with SMTP id OAA12089
-	for <parisc-linux@thepuffingroup.com>; Fri, 30 Apr 1999 14:19:09 -0400
-Date: Fri, 30 Apr 1999 14:19:09 -0400 (EDT)
+	by devserv.devel.redhat.com (8.8.7/8.8.7) with SMTP id SAA20591
+	for <parisc-linux@thepuffingroup.com>; Fri, 30 Apr 1999 18:28:54 -0400
+Date: Fri, 30 Apr 1999 18:28:54 -0400 (EDT)
 From: Alex deVries <adevries@redhat.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.3.96.990430140459.10592B-100000@devserv.devel.redhat.com>
+Message-ID: <Pine.LNX.3.96.990430181811.10592J-100000@devserv.devel.redhat.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Developers getting hardware.
+Subject: [parisc-linux] New crosscompiler RPM set.
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-We're nearly at the point now where it's impossible to do development
-without actual PA RISC hardware.  It's in everyone's best interest to make
-sure that the developer's who need this hardware have access to it.
+I've uploaded a cross compiling binutils and egcs that now specifies our
+target properly as parisc-linux.  They're built on a redhat 5.2 system.
+You can upgrade or install them with:
 
-Already, 10 different people will get or have gotten shiny new A class
-boxes from HP. The A180's are the first platform we're targetting. We
-will eventually expand to other boxes, and the differences won't be
-noticed until we get to device drivers.
+rpm -Uvh \
+ftp://puffin.external.hp.com/pub/parisc/binaries/RPMS/binutils-x-parisc-linux-2.9.1-10.i386.rpm
+rpm -Uvh \
+ftp://puffin.external.hp.com/pub/parisc/binaries/RPMS/egcs-x-parisc-linux-1.1.1-9.i386.rpm
 
-There's a lot of people who are keen on doing development but who don't
-have hardware.  If you are one of them, even if you've already contacted
-me, please email me at adevries@thepuffingroup.com and tell me:
-- where you live
-- if you have a sync-on-green monitor
-- what you think you can contribute
-
-I've also gotten offers from people who have hardware they are willing to
-loan or donate.  Even if you have contacted me in the past, please email
-me at adevries@thepuffingroup.com and I'll do my best to match you up with
-the right developer.  Please tell me:
-- where you are
-- what hardware you have
-
-If you're within HP and have already talked to me, please ignore this.
+I've also uploaded .tar.gz for those who'd prefer it.
 
 - Alex
 
