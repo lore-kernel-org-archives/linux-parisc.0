@@ -1,33 +1,55 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 00C204A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Feb 2001 04:51:29 -0700 (MST)
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EC8364A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Feb 2001 06:05:19 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id AAA04348;
+	Wed, 28 Feb 2001 00:04:51 +1100
+Date: Wed, 28 Feb 2001 00:04:51 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] SMP: We have ignition
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Tue, 27 Feb 2001 11:54:36 +0000 (GMT)
-Cc: marteaut@esiee.fr (Thomas Marteau),
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.LNX.4.21.0102271031580.18409-100000@front.linuxcare.com.au> from "Alan Modra" at Feb 27, 2001 10:36:17 AM
+In-Reply-To: <E14XiiG-0003Ee-00@the-village.bc.nu>
+Message-ID: <Pine.LNX.4.21.0102272335540.18409-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14XiiG-0003Ee-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Mon, 26 Feb 2001, Thomas Marteau wrote:
+On Tue, 27 Feb 2001, Alan Cox wrote:
+
+> Why isnt gcc prototyping and defining
 > 
-> > /home/mkltom/cvs/linux/include/linux/string.h:27: warning: conflicting
-> > types for built-in function `strncpy'
+> 	__memcpy
+> 	__strncpy
 > 
-> These messages are harmless (but annoying!).  gcc is complaining about the
-> `len' param which for the built-in functions is `int', but the kernel
-> headers effectively use `long'
+> and #defining them across in libc header files ?
 
-Why isnt gcc prototyping and defining
+Huh?
 
-	__memcpy
-	__strncpy
+> Is there a 'dont use builtins' flag ?
 
-and #defining them across in libc header files ?
+-fno-builtin
 
-Is there a 'dont use builtins' flag ?
+I'd be inclined to do this instead
+
+--- include/asm-parisc/posix_types.h~	Tue Dec  5 13:13:45 2000
++++ include/asm-parisc/posix_types.h	Tue Feb 27 23:30:11 2001
+@@ -19,10 +19,17 @@
+ typedef int			__kernel_clock_t;
+ typedef int			__kernel_daddr_t;
+ /* Note these change from narrow to wide kernels */
++#ifdef __LP64__
+ typedef unsigned long		__kernel_size_t;
+ typedef long			__kernel_ssize_t;
+ typedef long			__kernel_ptrdiff_t;
+ typedef long			__kernel_time_t;
++#else
++typedef unsigned int		__kernel_size_t;
++typedef int			__kernel_ssize_t;
++typedef int			__kernel_ptrdiff_t;
++typedef int			__kernel_time_t;
++#endif
+ typedef char *			__kernel_caddr_t;
+ 
+ typedef unsigned short		__kernel_uid16_t;
