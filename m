@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailgwa0.bmwgroup.com (mailgwa0.bmwgroup.com [192.109.190.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14579482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 03:18:51 -0700 (MST)
-Message-Id: <3C5676D9.E4B26D93@bmw.de>
-Date: Tue, 29 Jan 2002 11:18:01 +0100
-From: HEISERER DANIEL <Daniel.Heiserer@bmw.de>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8827A482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 08:19:46 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16Va2z-000405-00; Tue, 29 Jan 2002 15:19:45 +0000
+Date: Tue, 29 Jan 2002 15:19:45 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: HEISERER DANIEL <Daniel.Heiserer@bmw.de>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Message-ID: <20020129151945.B3850@parcelfarce.linux.theplanet.co.uk>
+References: <3C5676D9.E4B26D93@bmw.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] octave2.1_2.1.35-6_hppa
+In-Reply-To: <3C5676D9.E4B26D93@bmw.de>; from Daniel.Heiserer@bmw.de on Tue, Jan 29, 2002 at 11:18:01AM +0100
+Subject: [parisc-linux] Re: octave2.1_2.1.35-6_hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,46 +25,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-a buddy pointed me to the debian build archive,
-because I had problems building a 64-bit octave executable
-on AP-RISC-2 HP-UX-11.11.
-I used the gcc-3.0.2 which was a 
- /usr/local/bin/gcc:     ELF-64 executable object file - PA-RISC 2.0
-(LP64)
-and it also produced such code. Unfortunately the octave builds,
-but fails immediately by trivial operations.
-I am also a little be astonished about the different object files
-existing
-on PA-Risc. There are 
-/usr/local/bin/perl:    PA-RISC1.1 shared executable dynamically linked
--not stripped
-as well as "PA-RISC2" executables.
-Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
-is.
-Are both 64 bit.
+On Tue, Jan 29, 2002 at 11:18:01AM +0100, HEISERER DANIEL wrote:
+> Hi,
+> a buddy pointed me to the debian build archive,
+> because I had problems building a 64-bit octave executable
+> on AP-RISC-2 HP-UX-11.11.
 
-Finally I found the debian archive for octave. So my question is:
+Unfortunately, we don't support 64-bit userspace on PA/Linux yet.
 
-Do you build this octave for 
-o linux on PA-Risc or also for
-o HP-UX-11.11 ????
+> Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
+> is.
+> Are both 64 bit.
 
-Is it finally 64 bit? and how did you build it.
+No.  PA-RISC 2.0 introduced some new instructions, but does not have to be
+64-bit.  64-bit can be useful, but it can also slow down applications.  So
+it's a tradeoff.
 
-I would appreciate any comments to my open questions.
+> Do you build this octave for 
+> o linux on PA-Risc or also for
+> o HP-UX-11.11 ????
 
-thanks, daniel
-
+We don't build binaries for HP-UX.  Some people have suggested starting a
+new port to build binaries for proprietary unices sch as Solaris and HP-UX,
+but nobody has actually done so yet.
 
 -- 
-Mit freundlichen Gruessen
-    Daniel Heiserer
-
---------------------------------------------------------------
-Dipl.-Phys. Daniel Heiserer, BMW AG, Knorrstrasse 147, 80788 Muenchen
-Abteilung EK-212
-Tel.: 089-382-21187, Fax.: 089-382-42820
-mailto:daniel.heiserer@bmw.de 
-Lageplan Standort FIZ:
-http://www.stadtplandienst.de/query?ORT=M&STR=Knorrstr.&HNR=147
+Revolutions do not require corporate support.
