@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB00A4841
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Oct 2003 04:42:29 -0600 (MDT)
-Date: Tue, 21 Oct 2003 12:42:17 +0200
-Message-ID: <3F8A272E00004E7B@ocpmta3.freegates.net>
-In-Reply-To: <200310201749.h9KHnHQ3001830@hiauly1.hia.nrc.ca>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] fenv laid to rest, 50% done porting dbl-64 to ldbl-64, no testing yet.
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	carlos@baldric.uwo.ca
-Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from web01-imail.rogers.com (web01-imail.bloor.is.net.cable.rogers.com [66.185.86.75])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E76DA4841
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Oct 2003 06:04:00 -0600 (MDT)
+Subject: Re: [parisc-linux] glibc 2.3.2-9 for hppa - "when hell freezes
+	over" release
+From: Jeff Bailey <jbailey@nisa.net>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@debian.com>
+In-Reply-To: <20031020234345.GC5606@systemhalted>
+References: <20031017181252.GE27289@systemhalted>
+	 <20031019181341.GF8642@systemhalted> <20031019235005.GI8642@systemhalted>
+	 <20031020234345.GC5606@systemhalted>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-eyklI1wmgIAawhfDJzLc"
+Message-Id: <1066737838.1176.5.camel@outpost.dnsalias.org>
+Mime-Version: 1.0
+Date: Tue, 21 Oct 2003 08:03:59 -0400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +27,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Dave,
+--=-eyklI1wmgIAawhfDJzLc
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+Hey Carlos - When submitting these upstream, will you consider adding
+test cases for these failures?  feraiseexcept should certainly be tested
+somewhere.  I don't know if there's a reasonable way to put in the test
+for the syscalls, though.
 
->I think we should hold off on implementing this until we get a final
->decision from HP on whether they will release their quadlib or not.
+If you don't have time, that's fine too.  I just like to encourage
+people to improve testsuites whenever they can. =3D)
 
-It's a long time we are awaiting this decision?
+Tks,
+Jeff Bailey
 
-In the mean time, does it exists an URL where I can find spec?
+On Mon, 2003-10-20 at 19:43, Carlos O'Donell wrote:
+> On Sun, Oct 19, 2003 at 07:50:05PM -0400, Carlos O'Donell wrote:
+> > Will produce a new patch and new testing debs. Thanks go to all the
+> > testers that turned up these problems.
+>=20
+> New debs fix reported problems:
+> a. Six argument syscall faiulres.
+> b. feraiseexcept(FE_INEXACT) doesn't raise FE_INEXACT excption.
+>=20
+> New patch available at:
+> http://www.baldric.uwo.ca/~carlos/glibc232-hppa-full-2003-10-20.dpatch
+>=20
+> Follow the instructions provided in the original email:
+> 1. Remove all previous hppa patches.
+> 2. Add this .dpatch as the only hppa patch.
+>=20
+> Upload requested :) Lets make userspace churn...
+>=20
+> Cheers,
+> Carlos.
+--=20
+In the United States, there isn't a government database that hasn't been
+misused by the very people entrusted with keeping its information safe.
+ - Bruce Schneier
 
-Thanks in advance,
-    Joel
+--=-eyklI1wmgIAawhfDJzLc
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
--------------------------------------------------------------------------
-Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+iD8DBQA/lSCt5M5hmdCYCpkRAt9PAJ41G8AEuB6zlXNq0/gwulaW9OTgmwCfQ44A
+lClI1WsBP1LBv8MEgEkdl3o=
+=OgUW
+-----END PGP SIGNATURE-----
 
-http://reg.tiscali.be/default.asp?lg=fr
+--=-eyklI1wmgIAawhfDJzLc--
