@@ -1,39 +1,39 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] linux-2.6.10-pa1 panic on C360 in SCSI driver
-Date: Mon, 3 Jan 2005 22:01:42 -0800
-Message-ID: <20050104060142.GC18497@tausq.org>
-References: <200412260504.40205.vapier@gentoo.org>
-	<20041226173709.GH11543@parcelfarce.linux.theplanet.co.uk>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: 2.6.10-pa1 compile fails
+Date: Mon, 3 Jan 2005 16:45:45 -0700
+Message-ID: <20050103234545.GE3277__33280.3168836564$1416624526$gmane$org@colo.lackof.org>
+References: <Pine.LNX.4.21.0412291312230.15774-100000@hal.pp.fishpool.fi> <41D2CF5D.3020801@tiscali.be> <20041229154533.GA8376@parcelfarce.linux.theplanet.co.uk> <41D3094B.4060206@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041226173709.GH11543@parcelfarce.linux.theplanet.co.uk>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Cc: Matthew Wilcox <matthew@wil.cx>,
+ Martin-?ric Racine <q-funk@iki.fi>,
+ Joel Soete <joel.soete@tiscali.be>,
+ debian-hppa@lists.debian.org,
+ parisc-linux@parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <41D3094B.4060206@tiscali.be>
+Resent-Message-ID: <bqxEeC.A.Z-F.tkd2BB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-> Looking at the stack dump (a couple of layers are missing, is this because
-> of tail-call optimisations?)
+On Wed, Dec 29, 2004 at 07:45:15PM +0000, Joel Soete wrote:
+> Taken this into account, I move parport_gsc.h into drivers/parport and 
+> remove stuff from parport_gsc.c
+> (btw I add a gnu license to parport_gsc.h based on the one of parport_gsc.c 
+> ;-)
 
-probably because we hit an asm function and can't unwind reliably
-through it. it's on my list of things to fix.
+Committed. I'll roll the -pa number shortly.
 
-randolph
+grant
+
+
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
