@@ -1,58 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A7E96482A
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Oct 2001 01:14:59 -0600 (MDT)
-To: Thomas Marteau <marteaut@esiee.fr>
-Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-Message-ID: <1003302888.3bcd2fe864941@webmail.tiscalinet.be>
-Date: Wed, 17 Oct 2001 09:14:48 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8F94B482A
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Oct 2001 01:21:54 -0600 (MDT)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel6.hp.com (Postfix) with ESMTP id 4CDB81F6E4
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Oct 2001 03:21:51 -0400 (EDT)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id 9088D37D25
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Oct 2001 01:21:51 -0600 (MDT)
+To: parisc-linux@parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 17 Oct 2001 01:21:51 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20011017072151.9088D37D25@carmen.fc.hp.com>
+Subject: [parisc-linux] WARNING ftp site moved -> ftp.parisc-linux.org
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello Thomas,
+Hi palinuxers,
 
-> Thomas Marteau wrote:
-> > 
-> > Hi all
-> > 
-> > > Is it possible to config XFree so that it takes mouse input from gpm?
-> > Yes via /dev/gpmdata but I won't advice you to do so.
-> 
-> Yes, I find it back simply on my i386 (but at home) on which it works
-> fine that is why I though to this idea but I will follow your advice.
-> 
-> >
-> I launched X via startx on my B132L. I can launch many xterm but I can't
-> exec xedit. I am looking why.
-> 
-> What's about a window manager the X default is twm (if I do not make
-> error) but it depends of menu which is not yet available for hppa? Can
-> we already replace it by fvwm to install later Xfce?
-> 
-> > Perhaps, you are stuck b/c of software and not hardware or kernel
-> > problems.
-> > 
-> > Try to do it via startx, Thomas.
-> > ESIEE Team
-> 
-> I do not yet try, so I will do soon and let you inform.
+The PA RISC/Linux ftp site has moved. The new location is,
 
-Sorry Thomas it does not work more successfully (with or without gpm running, 
-with or without gpmdata). But what could be the small difference between b132 
-and b180 (processor clock excepted)?
+ftp://ftp.parisc-linux.org/
 
-(Changing mouse doesn't help)
-(There is no more (EE) message in XFree86.0.log (or xdm.log). No message, no 
-syslog and no kern.log errors)
+and is also available via http at,
 
-What can I do to debug this problem?
+http://ftp.parisc-linux.org/
 
+It has been cleaned up and slightly rearranged to make it less confusing.
+puffin.external.hp.com is no longer home to the archive. Sorry for the 
+breakage, but the move to the ftp name will allow us greater flexibility to 
+move the archive in the future. It's also a good excuse to move things around 
+to a better layout.
 
-Thanks again,
-	Joel
+Please update your links accordingly.
+Please report any references to the old site so we can fix them.
+Report any other problems to ftpmaster@ftp.parisc-linux.org
 
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+Thanks,
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
