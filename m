@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44E23482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 12:42:17 -0700 (MST)
-Message-Id: <m16G3eR-000Os7C@bame.riverrock.org>
-To: Paul Bame <bame@riverrock.org>
-Cc: Peter Mottram <peter@petescaff.com>,
-	Stan Sieler <sieler@allegro.com>,
-	parisc-linux@lists.parisc-linux.org, bame@www.riverrock.org
-Subject: Re: [parisc-linux] LIF boot from tape? 
-In-Reply-To: Your message of "Mon, 17 Dec 2001 12:39:34 MST."
-             <m16G3bq-000Os7C@bame.riverrock.org>
-References: <Pine.LNX.4.42.0112172026520.742-100000@r6.petescaff.com>  <m16G3bq-000Os7C@bame.riverrock.org> 
-Date: Mon, 17 Dec 2001 12:42:15 -0700
-From: Paul Bame <bame@riverrock.org>
+Received: from ns.istop.com (cpu1693.adsl.bellglobal.com [206.47.27.174])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E008D482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 14:25:56 -0700 (MST)
+Received: from old@istop.magma.ca (herbr.istop.com [216.187.107.13])
+	by ns.istop.com (Postfix) with ESMTP id EED8517018
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 16:29:12 -0500 (EST)
+Message-Id: <5.1.0.14.0.20011217161541.026f40e0@mail.magma.ca>
+Date: Mon, 17 Dec 2001 16:25:25 -0500
+To: parisc-linux@lists.parisc-linux.org
+From: Herb Radford <herbr@magma.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: [parisc-linux] C110 Kernel panic while installing 0.9.3
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,35 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I thought I had found something useful but have been unable to create a
-> > tape with a LIF image on it that actually boots.
-> 
-> If you have an already-running system, here's how to make a tape which
-> boots with the same root:
-> 
-> Copy your /etc/palo.conf to another file.  It should look something like
-> this:
-> 
-> --commandline=3/boot/vmlinux root=/dev/sda3
-> --recoverykernel=/boot/vmlinux
-> --init-partitioned=/dev/sda
-> 
+I have had success and no problems installing the latest 0.9.3 on my B180L, 
+so I had to be a glutton for punishment and tried on the C110.
 
-In the new config file:
+Should not have done that. I have successfully installed the kernel and 
+base for 0.9.3 and ftp'd vmlinux-32-2.4.16-pa16 kernel to the machine and 
+re-booted to avoid the FWSCSI fs corruption. After that I started to 
+install the X stuff. When I am doing an apt-get install xfonts-base (or 
+xfonts-100dpi or xfonts-75dpi) I get a kernel panic:
 
-> Change --init-partitioned=/dev/sda to --init-tape=/tmp/lifimage
-> 
-> Change --commandline=3/boot/vmlinux ... to --commandline=0/vmlinux
-> 
-> Run palo, creating /tmp/lifimage
+ccio-dma.c:349: Assertion (*res_ptr & *mask_ptr) == * mask_ptr failed!
+Kernel panic: (*res_ptr & *mask_ptr) == *mask_ptr
+In interrupt handler - not syncing
 
-Specifically, 'palo -f your-new-config-file'
+I don't have the source for this and haven't yet looked at the code but I 
+thought someone would like to know.
 
-> 
-> Copy /tmp/lifimage to tape with for example 'dd' (do not use 'tar' or 'cpio')
-> .
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Regards, Herb
