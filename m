@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from priv-edtnes04.telusplanet.net (fepout2.telus.net [199.185.220.237])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 510474829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Sep 2002 06:31:53 -0600 (MDT)
-Received: from win2kbox ([66.222.159.202]) by priv-edtnes04.telusplanet.net
-          (InterMail vM.5.01.04.05 201-253-122-122-105-20011231) with SMTP
-          id <20020921123145.PMF5777.priv-edtnes04.telusplanet.net@win2kbox>
+Received: from viefep15-int.chello.at (viefep15-int.chello.at [213.46.255.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 968184829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Sep 2002 10:51:57 -0600 (MDT)
+Received: from gmx.at ([62.178.92.247]) by viefep15-int.chello.at
+          (InterMail vM.5.01.05.12 201-253-122-126-112-20020820) with ESMTP
+          id <20020921165154.LUIQ9517.viefep15-int.chello.at@gmx.at>
           for <parisc-linux@lists.parisc-linux.org>;
-          Sat, 21 Sep 2002 06:31:45 -0600
-From: alaskan@telusplanet.net
-To: parisc-linux@lists.parisc-linux.org
-Date: Sat, 21 Sep 2002 06:35:00 -0600
-Message-ID: <nnpoou03t1h9m1gm4v082o2pb0r2ot4ce0@4ax.com>
+          Sat, 21 Sep 2002 18:51:54 +0200
+Message-ID: <3D8CA3A9.E3803D8F@gmx.at>
+Date: Sat, 21 Sep 2002 18:51:53 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: Virus
+Subject: [parisc-linux] emacs: Unresolved inheritance operation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +25,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On , you wrote:
-It would seem that this user is CONSTANTLY spreading virii to this
-mailing list.=20
+Hello PA-RISC experts !
 
-Could someone remove this user from this listing please!
+I already have a problem with `emacs'.
 
->Norton AntiVirus deleted the following email message because it was =
-infected with a virus:
->
->From: ankurahmed <ankurahmed@hotmail.com>
->To: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux] Fw: fad
+When I start `emacs' on a HP machine (independen, if
+it is a Apollo 9000/720/50 or the E55 server (9000/856)),
+I get the error message:
+
+Error: Unresolved inheritance operation
+
+If I start `emacs' with an empty DISPLAY variable
+(use without X mode), emacs work !!!
+What is the problem here ?
+
+Emacs version output:
+
+GNU Emacs 20.7.2
+Copyright (C) 1999 Free Software Foundation, Inc.
+GNU Emacs comes with ABSOLUTELY NO WARRANTY.
+You may redistribute copies of Emacs
+under the terms of the GNU General Public License.
+For more information about these matters, see the file named COPYING.
+
+
+I use the debian SID distribution for months now, which
+is always updated. I think the current setup is only
+some weeks old !!
+
+GLIBC is libc-2.2.5 
+
+Whats the reason here.
+
+Bye
+Christoph P.
+
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
