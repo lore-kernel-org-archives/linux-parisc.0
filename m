@@ -1,15 +1,15 @@
-From: Randolph Chung <tausq@debian.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: [parisc-linux] Re: Compiling glide-2001.01.26 on hppa
-Date: Sat, 24 Aug 2002 11:01:37 -0700
-Message-ID: <20020824180137.GB25592__34314.7501851947$1416621645$gmane$org@tausq.org>
-References: <3D67C8AC.2080309@charter.net>
-Reply-To: Randolph Chung <tausq@debian.org>
+Date: Sat, 24 Aug 2002 18:37:51 -0400
+Message-ID: <20020824223751.GA16590__27554.548593662$1416621646$gmane$org@systemhalted>
+References: <3D67C8AC.2080309@charter.net> <20020824180137.GB25592@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-To: "B. Douglas Hilton" <bdhilton@charter.net>
+Cc: "B. Douglas Hilton" <bdhilton@charter.net>,
+	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <tausq@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3D67C8AC.2080309@charter.net>
+In-Reply-To: <20020824180137.GB25592@tausq.org>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,18 +20,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> cc -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> -fexpensive-optimizations -ffast-math -DBIG_OPT -I. \
-> -I/usr/src/glide-2001.01.26/build-tree/glide2x/swlibs/include \
-> -I/usr/src/glide-2001.01.26/build-tree/glide2x/cvg/include \
-> -DENDB -DX11 -Wall -fPIC -DPIC -c -o fx64.o fx64.c
+> > cc -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> > -fexpensive-optimizations -ffast-math -DBIG_OPT -I. \
+> > -I/usr/src/glide-2001.01.26/build-tree/glide2x/swlibs/include \
+> > -I/usr/src/glide-2001.01.26/build-tree/glide2x/cvg/include \
+> > -DENDB -DX11 -Wall -fPIC -DPIC -c -o fx64.o fx64.c
+> > 
+> > cc1: Invalid option `486'
+> > 
+> > 
+> > My question is, what incantation should I use on hppa to
+> > replace the '-O6 -m486 -f...' CFLAGS?
 > 
-> cc1: Invalid option `486'
+> i would suggest just using "-O2" for now....
 > 
+> randolph
 > 
-> My question is, what incantation should I use on hppa to
-> replace the '-O6 -m486 -f...' CFLAGS?
 
-i would suggest just using "-O2" for now....
+The issues revolves around the fact that the source tree and 
+assembly for some of pieces you want to build are meant for x86 boxes.
+Though from a cusory glance it looks like the .c files are present for
+these bits (so you can revert to those).
 
-randolph
+Right off the top:
+tvg/makefile.linux:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
+glide2x/sst1/init/initvg/makefile.unix:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
+glide2x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide2x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+glide3x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide3x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+
+These files will give you some grief and need to be changed; remove the -m486 bit.
+You either need to produce .dpatch's for the deb to use or stop building
+the deb and do it by hand with the upstream source.
+
+You've got me all excited about seeing this work :) I have a Vodoo1 (Monster3D)
+PCI card that I might be tempted to ressurect.
+
+Hope this helps. Sorry about there not being a _magic_ switch :)
+
+c.
