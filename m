@@ -1,23 +1,20 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23F9A4891
+Return-Path: <esproul@ntelos.net>
+Received: from mailrtr03.ntelos.net (mailrtr03.ntelos.net [216.12.0.103])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C1BD84996
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 23 Mar 2004 22:59:41 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88205.dip0.t-ipconnect.de
-	[217.232.130.5])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2O5xeo01189
+	Wed, 24 Mar 2004 08:31:22 -0700 (MST)
+Received: from thunderbolt.oss.ntelos.net (thunderbolt.oss.ntelos.net
+	[216.12.8.195])
+	by mailrtr03.ntelos.net (8.11.7/8.11.7) with ESMTP id i2OFVLS30932
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 06:59:40 +0100
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 24 Mar 2004 06:59:23 +0100
-Message-ID: <070a01c41165$2808f020$fc01a8c0@muc.nccconsulting.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+	Wed, 24 Mar 2004 10:31:22 -0500
+From: Eric Sproul <esproul@ntelos.net>
+To: PA-RISC Linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Message-Id: <1080142280.1928.35.camel@thunderbolt.oss.ntelos.net>
+Mime-Version: 1.0
+Date: Wed, 24 Mar 2004 10:31:20 -0500
+Subject: [parisc-linux] gdth driver on L2000
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +24,68 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+Hi all,
+Forgive me if this is a FAQ.  I read the website FAQ and did a little
+searching, but didn't turn up anything.  I am not a kernel hacker--
+that's why I'm posting here.
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/24/2004 6:59:22 AM
-Engine/Pattern = 6.860-1001/1.833.00
+I am running Debian sid on a 2-way L2000-44 (rp5450).  I have
+successfully built a 64-bit, SMP 2.4.25 kernel using Debian's source
+(I'd be happy to share my config if anyone is interested) and the
+kernel-patch-2.4.25-hppa patch.
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+I want to use an Intel SRCU RAID controller in this machine, so I
+modified my config to build the gdth driver into the kernel.  It fails
+with an error about DMA_MODE_CASCADE being undeclared.  Looking further,
+I note that this is normally declared in include/asm-$ARCH/dma.h, but it
+doesn't appear in include/asm-parisc/dma.h.  Is it undeclared because it
+doesn't work or because no one has needed it before?  Below is the build
+output.
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+Would I be better off with a 2.6 kernel?  I have not yet attempted to
+build any 2.6 kernels on this machine.  I took the lack of stock 2.6
+kernels for hppa in sid to mean that there was a problem, but I'd love
+to be wrong about that.  ;)
+
+Thanks,
+Eric
+
+$ uname -a
+Linux parisc 2.4.25-64-smp #1 SMP Mon Mar 22 10:09:38 EST 2004 parisc64
+GNU/Linux
+
+gcc-3.3-hppa64 3.3.3-2
+binutils-hppa64 2.14.90.0.7-5
+
+
+hppa64-linux-gcc -D__KERNEL__ -I/usr/src/kernel-source-2.4.25/include
+-Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing
+-fno-common -O2 -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=2.0
+-mschedule=8000   -nostdinc -I
+/usr/lib/gcc-lib/hppa64-linux/3.3.3/include -DKBUILD_BASENAME=gdth  -c
+-o gdth.o gdth.c
+gdth.c: In function `gdth_init_isa':
+gdth.c:1135: warning: passing arg 1 of `memset_io' makes integer from pointer without a cast
+gdth.c: In function `gdth_init_pci':
+gdth.c:1292: warning: passing arg 1 of `memset_io' makes integer from pointer without a cast
+gdth.c:1405: warning: passing arg 1 of `memset_io' makes integer from pointer without a cast
+gdth.c:1560: warning: passing arg 1 of `memset_io' makes integer from pointer without a cast
+gdth.c: In function `gdth_copy_command':
+gdth.c:1792: warning: passing arg 1 of `memcpy_toio' makes integer from pointer without a cast
+gdth.c:1799: warning: passing arg 1 of `memcpy_toio' makes integer from pointer without a cast
+gdth.c:1806: warning: passing arg 1 of `memcpy_toio' makes integer from pointer without a cast
+gdth.c:1813: warning: passing arg 1 of `memcpy_toio' makes integer from pointer without a cast
+gdth.c: In function `gdth_detect':
+gdth.c:4066: error: `DMA_MODE_CASCADE' undeclared (first use in this function)
+gdth.c:4066: error: (Each undeclared identifier is reported only once
+gdth.c:4066: error: for each function it appears in.)
+make[4]: *** [gdth.o] Error 1
+make[4]: Leaving directory `/usr/src/kernel-source-2.4.25/drivers/scsi'
+make[3]: *** [first_rule] Error 2
+make[3]: Leaving directory `/usr/src/kernel-source-2.4.25/drivers/scsi'
+make[2]: *** [_subdir_scsi] Error 2
+make[2]: Leaving directory `/usr/src/kernel-source-2.4.25/drivers'
+make[1]: *** [_dir_drivers] Error 2
+make[1]: Leaving directory `/usr/src/kernel-source-2.4.25'
+make: *** [stamp-build] Error 2
