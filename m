@@ -1,33 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CD331482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Oct 2001 13:45:15 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15ufZy-0005V7-00; Fri, 19 Oct 2001 20:45:14 +0100
-Date: Fri, 19 Oct 2001 20:45:14 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Jean-Yves GUILLEVIC <jyguillevic@trace.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 715S/33 aka Strider-33
-Message-ID: <20011019204514.A20662@parcelfarce.linux.theplanet.co.uk>
-References: <001801c158c8$fd335db0$010101a8@TPDEV.local>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <001801c158c8$fd335db0$010101a8@TPDEV.local>; from jyguillevic@trace.fr on Fri, Oct 19, 2001 at 08:07:59PM +0200
-Sender: <willy@www.linux.org.uk>
+Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62EE5482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Oct 2001 14:52:13 -0600 (MDT)
+Received: from localhost (bz@localhost)
+	by mail.zabbadoz.net (8.11.0/8.11.0) with ESMTP id f9JKqBN06782
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Oct 2001 22:52:11 +0200 (CEST)
+Date: Fri, 19 Oct 2001 22:52:11 +0200 (CEST)
+From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.BSF.4.30.0110192241220.758-100000@noc.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] distributed.net client available for PARISC/linux
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Oct 19, 2001 at 08:07:59PM +0200, Jean-Yves GUILLEVIC wrote:
-> Does someone has a 715S/33 aka Strider-33 or 715S/50 aka Strider-50 ?
+Hi,
 
-Nobody's put one in the hardware database, so I presume not.
+for all those that do not wanna run seti clients I want to note that
+there is a distributed.net client available compiled on a PARISC 1.1
+(dynamically and static linked binaries).
 
-> Does it work under Pa-Linux ?
-
-It might do.  As I understand it, the Strider & Trailways boxes
-were PA-upgrades for m68k boxes.  I don't know how much was replaced
-or altered.  I would love it if you would add an entry to the hwdb
-(if it's still running HPUX) or send a boot-log from a recent kernel.
+So get your moo from
+http://www.distributed.net/download/clients.html#linux
 
 -- 
-Revolutions do not require corporate support.
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
