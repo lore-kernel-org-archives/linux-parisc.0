@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: alaskan@telusplanet.net
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] GNOME 1.4 
-In-Reply-To: Message from alaskan@telusplanet.net
-   of "Thu, 29 Aug 2002 10:37:07 MDT." <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
-References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com> 
-Date: Thu, 29 Aug 2002 22:08:29 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020830040829.3BE694829@dsl2.external.hp.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F6664829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 23:53:15 -0600 (MDT)
+Date: Fri, 30 Aug 2002 07:46:16 +0200
+Message-ID: <3D3815BD00009582@ocpmta5.be.tiscali.com>
+In-Reply-To: <200208291710.g7THAnVF025339@hiauly1.hia.nrc.ca>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,14 +22,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-alaskan@telusplanet.net wrote:
-> I finally got GNOME 1.4 working on a 712/60,
-...
-> Its pretty, but slow .   .  . .
+>-- Original Message --
+>Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb
+>To: jsoe0708@tiscali.be
+>From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Date: Thu, 29 Aug 2002 13:10:49 -0400 (EDT)
+>
+>
+>> p is of type partition define as follow:
+>> struct partition {
+>>     unsigned char boot_ind;     /* 0x80 - active */
+>>     unsigned char head;     /* starting head */
+>>     unsigned char sector;       /* starting sector */
+>>     unsigned char cyl;      /* starting cylinder */
+>>     unsigned char sys_ind;      /* What partition type */
+>>     unsigned char end_head;     /* end head */
+>>     unsigned char end_sector;   /* end sector */
+>>     unsigned char end_cyl;      /* end cylinder */
+>>     unsigned int start_sect;    /* starting sector counting from 0 */
+>>     unsigned int nr_sects;      /* nr of sectors in partition */
+>> };
+>
+>The problem is that a struct of the above type is being allocated
+>at an unaligned address.
 
-it's not faster on a 486/DX4/75Mhz.
-You really need to use a lighter weight window manager on
-the older boxes. fvwm2 is my current favorite though in this
-case I'd reccomend twm.
+Sorry I do not understand, can you tell me more or where can I found additional
+ explanation?
 
-grant
+>  That's not normal.  The cast isn't the
+>problem.
+>
+
+Thanks in advance,
+    Joel
