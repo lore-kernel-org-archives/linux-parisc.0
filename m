@@ -1,23 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx2out.umbc.edu (mx2out.umbc.edu [130.85.253.52])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C53B24832
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 18:11:35 -0600 (MDT)
-Received: from linux2.gl.umbc.edu (linux2.gl.umbc.edu [130.85.60.16])
-	by mx2out.umbc.edu (8.12.0/8.12.0/UMBC-Central 1.11 mxout  1.2.2.3 $) with ESMTP id g5M0BXnv020495;
-	Fri, 21 Jun 2002 20:11:33 -0400 (EDT)
-Received: from localhost (jmccla3@localhost)
-	by linux2.gl.umbc.edu (8.12.1/8.12.0) with ESMTP id g5M0BX6C006043;
-	Fri, 21 Jun 2002 20:11:34 -0400
-Date: Fri, 21 Jun 2002 20:11:33 -0400 (EDT)
-From: James Mcclain <jmccla3@gl.umbc.edu>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: Patrick Caulfield <patrick@tykepenguin.com>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 0.9.3 Audio on C110
-In-Reply-To: <Pine.LNX.4.44.0206212123170.4556-100000@sal.ucc.ie>
-Message-ID: <Pine.LNX.4.31L.02.0206212008460.5960-100000@linux2.gl.umbc.edu>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 95D174833
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 19:39:07 -0600 (MDT)
+Message-Id: <200206220139.g5M1d6PS029066@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] PA8000 modutils problems
+To: xam@cs.ucc.ie (M. Grabert)
+Date: Fri, 21 Jun 2002 21:39:05 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.44.0206212339430.5644-100000@sal.ucc.ie> from "M. Grabert" at Jun 21, 2002 11:51:01 pm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,51 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dear Max,
+> So what is the point in choosing the PA8000 anyway ? ;)
 
-i cannot speak to the mixer and gain issues, but i can offer something
-with regard to recording:  adding lines:
+It affects the ordering of insns but not the insn set (PA1.0, 1.1
+or 2.0).  The PA8000 ordering should work better on a PA8000
+or later processor.  The ordering takes into account the number
+of insn pipelines, the timing of insns, etc.  On older PA1.1
+machines, the PA7100LC model should be better.
 
-	case SNDCTL_DSP_SYNC:
-	return 0;
+PA8000 machines all use the PA2.0 architecture but are backwards
+compatible with PA1.1, etc.  There is still more work to be done
+in the compiler to take full advantage of the PA2.0 architecture,
+particularly in 32-bit mode.  For example, we are not taking
+advantage of the fact that the general registers are actually 64
+bits wide.  Thus, long long support could be better.
 
-to the ioctl swith statment in drivers/sound/harmony.c (line 727 or there
-abouts) will allow you to use sox to record (i have been able to
-succesfully record using sox after adding this change).
-
-best regards,
-james w. mcclain
-
- On Fri, 21 Jun
-2002, M. Grabert wrote:
-
-> Hi palinuxer,
->
-> On Fri, 21 Jun 2002, Patrick Caulfield wrote:
->
-> > The driver is called "harmony" - I have mine hard compiled into the kernel.
-> >
-> > patrick
->
-> This reminds me of something I wanted to ask for a long time:
->
-> It seems that the harmony mixer is not perfectly supported;
-> Volume doesn't work, and there are just two things I can change,
-> IGain and OGain (latter effects the Output volume).
-> There is not even a way to change the balance etc.
-> Moreover most applications expect at least "volume" to be working,
-> so this is kind of annoying. Despite this it's working flawlessly!
->
-> So to the question: is there any work planned in improving harmony
-> support (in the near future) ? E.g. an enhanced mixer support and
-> support for recording?
->
-> greetings max
->
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
