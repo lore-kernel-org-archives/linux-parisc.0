@@ -1,29 +1,19 @@
-Return-Path: <cbeerse@lycos.nl>
-Received: from lmfilto02.st1.spray.net (lmfilto02.st1.spray.net
-	[212.78.202.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9776148F7
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 58E9448E5
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 22 Mar 2004 09:41:50 -0700 (MST)
-Received: from localhost (localhost [127.0.0.1])
-	by lmfilto02.st1.spray.net (Postfix) with ESMTP id C7A1F1213F
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 22 Mar 2004 16:41:48 +0000 (GMT)
-Received: from lmsmtp01.st1.spray.net ([212.78.202.111])
-	by localhost (lmfilto02.st1.spray.net [212.78.202.32]) (amavisd-new,
-	port 10024)
-	with ESMTP id 06367-06 for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 22 Mar 2004 17:41:48 +0100 (CET)
-Received: from lycos.nl (unknown [193.172.135.148])
-	by lmsmtp01.st1.spray.net (Postfix) with ESMTP id 7A8BEE1
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 22 Mar 2004 16:41:46 +0000 (GMT)
-Message-ID: <405F1749.9010809@lycos.nl>
-Date: Mon, 22 Mar 2004 17:41:45 +0100
-From: =?ISO-8859-1?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] HP D370, kernel 2.6.x and configuration file
+	Mon, 22 Mar 2004 10:25:26 -0700 (MST)
+Date: Mon, 22 Mar 2004 10:33:18 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Corn? Beerse <cbeerse@lycos.nl>
+Subject: Re: [parisc-linux] HP D370, kernel 2.6.x and configuration file
+Message-ID: <20040322183318.GA750@tausq.org>
+References: <405F1749.9010809@lycos.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <405F1749.9010809@lycos.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -33,31 +23,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello,
+> Hence my questions:
+> 
+> Does someone happen to have a configuration file for the D370? Can I get it 
+> somewhere?
+> Is there a reason NOT to build 2.6.x on this D300 hardware?
 
-I'm intending to build kernel 2.6.4 for a HP D370 and I'm running into some 
-problems. The major one is the next error while doing the `make`:
+probably you are trying to build using kernel.org sources. you should
+use sources from parisc-linux.org instead.
 
-arch/parisc/kernel/pdc_cons.c:102: `CON_BOOT' undeclared here (not in a function)
-arch/parisc/kernel/pdc_cons.c:102: initializer element is not constant
-arch/parisc/kernel/pdc_cons.c:102: (near initialization for `pdc_cons.flags')
+http://cvs.parisc-linux.org/download/linux-2.6/
 
-
-I've tried to build without any console except for a serial console maily 
-because there is no other console on this hardware but also without success.
-
-Hence my questions:
-
-Does someone happen to have a configuration file for the D370? Can I get it 
-somewhere?
-Is there a reason NOT to build 2.6.x on this D300 hardware?
-
-My major reason is to get the second processor in the machine also do some work, 
-I don't care about 64 bits, hence 32 bits will do.
-
-
-
-
-Thanks
-
-CBee
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
