@@ -1,15 +1,17 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] kernel config file for HP D-series
-Date: Fri, 26 Nov 2004 18:53:05 +0000
-Message-ID: <20041126185305.GH29035@parcelfarce.linux.theplanet.co.uk>
-References: <41A7487B.5080809@lycos.nl>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: flush_kernel_[di]cache_page question? [WAS: [parisc-linux]
+	2.6.10-rc1-pa11 profile data
+Date: Fri, 26 Nov 2004 12:02:45 -0700
+Message-ID: <20041126190245.GA4071@colo.lackof.org>
+References: <20041111081154.GR15714@tausq.org>
+	<418A81170000898E@mail-8-bnl.mail.tiscali.sys>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: maillist parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: =?iso-8859-1?Q?Corn=E9?= Beerse <cbeerse@lycos.nl>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41A7487B.5080809@lycos.nl>
+In-Reply-To: <418A81170000898E@mail-8-bnl.mail.tiscali.sys>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,29 +22,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Nov 26, 2004 at 04:15:07PM +0100, Corné Beerse wrote:
-> Does anyone have a kernel config file for a HP D-series machine which I can 
-> use as a start point for my kernel configs? Preferably a D370 with 2 CPUs. 
-> Or can anyone guide which of the basic configs can be used for a start 
-> point? (I guess the B180 but that does not work out of the box).
+On Fri, Nov 26, 2004 at 05:59:18PM +0100, Joel Soete wrote:
+> >  40646 flush_kernel_icache_page                 406.4600
+> [...]
+> >   4089 flush_kernel_dcache_page                  40.8900
+> [...]
+> > we really need to do better at cache flushing..... anybody have any
+> > ideas? :)
+> >
+> Is somebody can help me to understand those:
+> [...]
+> flush_kernel_dcache_page:
 
-You can start with just 'make defconfig'.  That should produce a working
-kernel.  Options worth tweaking (with menuconfig, or vi, or whatever)
-would be:
+Joel,
+the problem is not in the flush_kernel_dcache_page() routine.
+The problem is we are calling too often.
 
- - SMP on 
- - PA7000 -> PA8000
- - PCI_LBA off
-
-If you have no HSC-PCI cards, you might want to turn PCI off too.
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
