@@ -1,24 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA16345
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 01:05:06 -0600
-Received: from rinux ([213.45.215.190]) by fep05-svc.tin.it
-          (InterMail vM.4.01.02.27 201-229-119-110) with SMTP
-          id <20001017070550.OPF5431.fep05-svc.tin.it@rinux>
-          for <parisc-linux@thepuffingroup.com>;
-          Tue, 17 Oct 2000 09:05:50 +0200
-Message-ID: <002101c03809$500d8ba0$bed72dd5@rinux>
-From: "iternet" <rinux@iternet.it>
-To: <parisc-linux@thepuffingroup.com>
-References: <200010161234.GAA29687@puffin.external.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA16867
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 01:34:45 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 17 Oct 2000 07:35:58 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA10192;
+	Tue, 17 Oct 2000 18:35:19 +1100
+Date: Tue, 17 Oct 2000 18:35:19 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: iternet <rinux@iternet.it>
+cc: parisc-linux@thepuffingroup.com
 Subject: Re: website amodra
-Date: Tue, 17 Oct 2000 09:10:20 +0200
+In-Reply-To: <002101c03809$500d8ba0$bed72dd5@rinux>
+Message-ID: <Pine.LNX.4.21.0010171831520.9896-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi
-I have an parisc, were can I download the linux for it?
-tnx & regards
+On Tue, 17 Oct 2000, iternet wrote:
 
-rino
+> I have an parisc, were can I download the linux for it?
+
+Read http://thepuffingroup.com/parisc/recipe.html
+
+-- 
+Linuxcare.  Support for the Revolution.
