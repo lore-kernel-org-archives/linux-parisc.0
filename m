@@ -1,15 +1,15 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [newbie] Where to start from?
-Date: Wed, 1 Sep 2004 21:14:53 -0600
-Message-ID: <20040902031453.GA24049@colo.lackof.org>
-References: <4135CD63.9040507@fback.net>
+Subject: Re: [parisc-linux] 53c700.c problems with tags?
+Date: Wed, 1 Sep 2004 21:18:59 -0600
+Message-ID: <20040902031859.GB24049@colo.lackof.org>
+References: <Pine.LNX.4.58.0408311232240.2373@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Bartlomiej Ochman <fback@fback.net>
+Cc: parisc <parisc-linux@lists.parisc-linux.org>
+To: Jochen Friedrich <jochen@scram.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4135CD63.9040507@fback.net>
+In-Reply-To: <Pine.LNX.4.58.0408311232240.2373@localhost>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,23 +20,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Sep 01, 2004 at 03:23:47PM +0200, Bartlomiej Ochman wrote:
-> Recently I 
-> discovered, it hangs completly, without any message, under heavy disc 
-> load (eg. bzip2 -cd kernel-source-2.6.8.tar.bz | tar xf -, or apt-get 
-> upgrade cycle).
+On Tue, Aug 31, 2004 at 12:39:12PM +0200, Jochen Friedrich wrote:
+> Hi,
 > 
-> As I am not familiar with hppa architecture, where should I start to 
-> snoop from?
+> when doing heavy io on my 715/64, i sometimes get the following panic:
+> 
+> scsi0 (0:0) Target is suffering from tag starvation.
 
-Bartlomiej,
-the things we need to know are in this FAQ:
-	http://www.parisc-linux.org/faq/kernelbug-howto.html
+Searching for "tag starvation" at
+	http://lists.parisc-linux.org/
 
-BTW, please don't compress files you attach - the mail archive
-can't search through them.
+yields:
+	http://lists.parisc-linux.org/pipermail/parisc-linux/2004-August/024357.html
 
-thanks,
+hth,
 grant
 _______________________________________________
 parisc-linux mailing list
