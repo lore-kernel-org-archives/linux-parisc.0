@@ -1,35 +1,26 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA09466
-	for <parisc-linux@puffin.external.hp.com>; Tue, 13 Jul 1999 20:38:42 -0600
-Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
-	by Cantor.suse.de (Postfix) with ESMTP id B3FB532CE2
-	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jul 1999 04:39:15 +0200 (MEST)
-Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
-	by Galois.suse.de (Postfix) with ESMTP id 923279410
-	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jul 1999 04:39:15 +0200 (MEST)
-Date: Wed, 14 Jul 1999 04:39:14 +0200
-From: Philipp Rumpf <prumpf@suse.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA13698
+	for <parisc-linux@puffin.external.hp.com>; Thu, 15 Jul 1999 14:38:49 -0600
+Received: from linux21.zdv.uni-tuebingen.de (linux21.zdv.uni-tuebingen.de [134.2.18.21])
+	by mx01.uni-tuebingen.de (8.8.8/8.8.8) with ESMTP id WAA03182
+	for <parisc-linux@thepuffingroup.com>; Thu, 15 Jul 1999 22:39:15 +0200
+Received: from localhost (zxmbk01@localhost)
+	by linux21.zdv.uni-tuebingen.de (8.8.8/8.8.8) with ESMTP id WAA09868
+	for <parisc-linux@thepuffingroup.com>; Thu, 15 Jul 1999 22:39:05 +0200
+Date: Thu, 15 Jul 1999 22:38:53 +0200 (MEST)
+From: Frank Benke <frank.benke@student.uni-tuebingen.de>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <19990714043914.H10285@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Status
+Message-ID: <Pine.LNX.4.05.9907152236400.236-100000@linux21.zdv.uni-tuebingen.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 735 experience ??
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello everybody,
-I thought it was about time I gave you all a quick update about what I am
-doing.
 
-First, interruptions are being well.  We can do the return thing now too,
-and I'm pretty sure the number of bugs hiding there is close to zero. We
-will need some changes here before userspace will really work and at the
-time we'll virtually map most of the kernel.
+are there any experiences with linux booting on the 735/125 ?
 
-Interrupts are about working.  We don't free them yet and the code isn't
-really tested, but the timer interrupt works very much like it is supposed
-to.
+i will test these days.
 
-I currently try to get some MMU code working so we can get a first impres-
-sion of what userspace will look like.
 
-	Philipp
+regards frank
+-- 
