@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2339E4833
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  7 Jul 2002 18:11:42 -0600 (MDT)
-Date: Sun, 7 Jul 2002 20:11:47 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: sven schnelle <schnelle@kabelleipzig.de>
+To: "Stephan Trajkoff" <stephan@itp.bg>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kdb include files
-Message-ID: <20020708001146.GA3685@systemhalted>
-References: <3D27D979.8050100@kabelleipzig.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D27D979.8050100@kabelleipzig.de>
+Subject: Re: [parisc-linux] 9000/819/K210 
+In-Reply-To: Message from "Stephan Trajkoff" <stephan@itp.bg>
+   of "Sun, 07 Jul 2002 23:12:51 +0300." <20020707201151.6C150482F@dsl2.external.hp.com>
+References: <20020707201151.6C150482F@dsl2.external.hp.com> 
+Date: Sun, 07 Jul 2002 18:45:55 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020708004556.145DE4838@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,37 +19,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> hello,
-> 
-> Im writing on a floppy driver for my 712 and want to use kdb,
-> 
-> but when i try to compile the kernel with it, i get errors:
-> 
-> kdb/break.h: No such file or directory
-> kdb/kgdb_types.h: No such file or directory
-> kdb/kgdb_machine.h: No such file or directory
-> kdb/trap.h: No such file or directory
-> 
-> does anybody know where i can get this files ?.
-> 
-> bye
->     sven
+"Stephan Trajkoff" wrote:
+> Hello,
+> anybody has PDF with specification of this server?
 
-If you haven't already done so, I would recommend getting 
-a kdb patched source tree from cvs.parisc-linux.org
+All sorts of manuals for K-class here:
+	http://docs.hp.com/hpux/hw/index.html
 
-There is a 'kdb_v21' branch for the 'linux' tree.
+> Is there any PCI ot EISA slots???
 
-cvs co -rkdb_v21 linux
+No.
 
-Please take a look at:
-http://cvs.parisc-linux.org
+> I can't compile kernel stable...
 
-Note: That I'm currently working on kdb's stability...
-so you might not get something that is as happy as you
-expect from other platofrms.
+Can you post the error messages and describe the steps you used to build?
 
-c.
-
-p.s. Remember to get use the recommended .cvsrc! :)
+grant
