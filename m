@@ -1,33 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EEF70482A
-	for <parisc-linux@parisc-linux.org>; Sun, 21 Oct 2001 16:27:22 -0600 (MDT)
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Large SCSI disks on a 735/125 
-In-Reply-To: Your message of "Sun, 21 Oct 2001 12:19:32 EDT."
-             <200110211619.f9LGJXge014176@hiauly1.hia.nrc.ca>
-References: <200110211619.f9LGJXge014176@hiauly1.hia.nrc.ca> 
-Date: Sun, 21 Oct 2001 16:27:21 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011021222721.6658837D25@carmen.fc.hp.com>
+Received: from 24.42.71.102 (cr592112-a.etob1.on.wave.home.com [24.42.71.102])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ABFCF482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 16:48:37 -0600 (MDT)
+Received: from flow4.flow.mine.nu (flow4.flow.north.net [198.52.32.250])
+	by 24.42.71.102 (8.9.3/8.9.3) with ESMTP id SAA05582
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 18:48:29 -0400
+Message-Id: <5.0.2.1.0.20011021183252.00a6ca90@pop3.sprint.ca>
+Date: Sun, 21 Oct 2001 18:48:28 -0400
+To: parisc-linux@lists.parisc-linux.org
+From: Tomasz Korycki <engine2@flow.mine.nu>
+Subject: Re: [parisc-linux] how to use dpkg/dselect/apt-get ???
+In-Reply-To: <01102022501505.00166@nick>
+References: <20011020222042.G537@tausq.org>
+ <01102021292604.00166@nick>
+ <20011020222042.G537@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
-"John David Anglin" writes...
+I am _not_ going to quote anybody, because then it might be assumed I am 
+disputing _somebody's_ point of view, instead of a _particular_ one. So 
+here goes.
 
-> > The question is will you be able to find a 9 or 18GB disk
-> > with either SE SCSI or HVD SCSI interface which the 735
-> > can connect to.
-> 
-> What about a Seagate ST318417N?  It is: 18.4GB, 7200 rpm, 8.5 ms seek avg,
-> Ultra SCSI, suggested resale price $269.  While you can still find a HVD
-> drive it looks like they are rapidly going the way of the dodo bird.
+Think of a word "processor". In a community of computer-relating people 
+this word will have an assumed specific meaning of a "central processing 
+unit". In a community of food-relating people it may mean "food processor". 
+In a community of paperwork-relating people it may mean a "application 
+processor", ie: person that processes applications. The point is, all 
+communities have their own meanings for words or expressions, and a whole 
+set of assumptions that go with them. It's not wrong or right. Just different.
 
-I think that should work.
+Debian model was chosen for PA linux. dpkg/dselect and friends go with this 
+choice. It may be unfamiliar to some, but it is just _different_. When You 
+switch over from HPUX to AIX, You have no sam to help You, You have 
+smit/ty. It's different. You need to get to know the new guy. He's not here 
+to hurt You, but help You. But You won't know how to ask for help, until 
+You learn how to convey what You need to him. He assumes certain things, 
+and so do You. The trick is to get those two sets as close as possible. 
+When You know him _that_ well, then You can start working on changing him. 
+Criticizing him or his assumptions, MO and so on will not work until You 
+know everything that can be done with this new - in this case - tool. Get 
+to know it, then Your criticism will have far more weight.
 
-Last year sometime I saw Paul Bame install an 18GB 10k RPM LVD Seagate
-Cheetah drive in a 712 and install parisc-linux on it. It worked great :)
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+And, as a parting note, I am as bewildered by it as some. Esp since I used 
+package commands on Solaris, and it ain't the same, despite similar 
+sounding names... But I'm learning. 
