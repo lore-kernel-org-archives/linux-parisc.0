@@ -1,16 +1,16 @@
-From: "Michael S. Zick" <mszick@wolfbutter.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Thu, 17 Feb 2005 19:00:37 -0600
-Message-ID: <200502171900.37179.mszick@wolfbutter.com>
+Date: Thu, 17 Feb 2005 23:23:12 -0700
+Message-ID: <20050218062312.GA11968@colo.lackof.org>
 References: <42075CE800004656@mail-6-bnl.tiscali.it>
 	<200502170653.52415.mszick@wolfbutter.com>
-	<20050217210915.GB1081@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-2022-jp"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Michael S. Zick" <mszick@wolfbutter.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050217210915.GB1081@colo.lackof.org>
+In-Reply-To: <200502170653.52415.mszick@wolfbutter.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,38 +21,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu February 17 2005 15:09, Grant Grundler wrote:
-> On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
-> > A suggestion...
-> > 
-> > I am tracking a timing and/or race condition(s) with x86-udev.
-> > Debian doesn't use it yet, they still have a hard disk based /dev.
+On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
+> I am tracking a timing and/or race condition(s) with x86-udev.
+> Debian doesn't use it yet, they still have a hard disk based /dev.
+> But it is not a compile time option.
+> If you have a 2.6.+ kernel, you have it.
 > 
-> OK. I'll try that tonight.
-> 
-Grant,
-One of my problems was the video card driver - Manufacturers
-driver has problems, X.org driver does not.  Tossing the vendor's
-driver fixed that.
+> Try turning it off with the command line option: 'noudev'
 
-Still having network driver problems, haven't narrowed down all
-the possible causes.
+I thought this helped at first.  (2.6.11-rc4-pa1)
+Could run spew+"make -j4" over xfs without crashing the box (panic).
 
-The hardware, software, and kernel are as similar as possible
-with the exceptions:
+Then I rebooted with a freshly built kernel (and "noudev")
+and right away when I start spew on the XFS file system I get:
 
-works:
-kernel 2.6.8, gcc 3.3.4, single processor, hard-disk /dev
-problems:
-kernel 2.6.x, gcc 3.3.5, dual processor, udev /dev
+Kernel Fault: Code=26 regs=00000000fd0b0de0 (Addr=00000000000000c8)
+...
+ IAOQ[0]: xfs_btree_init_cursor+0x70/0x1b8 [xfs]
+ IAOQ[1]: xfs_btree_init_cursor+0x8c/0x1b8 [xfs]
+ RP(r2): xfs_btree_init_cursor+0x58/0x1b8 [xfs]
 
-My guess is that the udev code is not 100% smp ready.
-But it could actually be anything, including cockpit error.
+The system panics with and without the xfs patches Joel pointed me at.
 
-Time to sneaker net (by cd-rom) code from one box
-to the other.  Will advise.
+The only difference in the .config was sym2 driver IOMAPPED.
+I had it enabled (using IO Port space) and now disable it
+since I really want MMIO space. I'm very skeptical this is
+related to the problem.
 
-Mike
+
+> If your compile time options include devfs, try turning it 
+> off also.  Use the command line option: 'nodevfs'
+
+I don't use devfs. Willy won't let me. :^P
+
+> In my case, for kernels 2.6.8, 2.6.9, 2.6.10 and 2.6.11 -
+> If I boot from slow devices (cdrom, zip disk) everything is
+> fine, If I boot from fast devices (hard disk) - something isn't
+> getting setup the same.
+
+Is there a difference in the how the devices are used?
+ie. serialized vs. multiple IOs in flight at the same time?
+
+I didn't start hitting problems until I lauched a second job
+on the same file system.
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
