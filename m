@@ -1,13 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Message-Id: <200310131857.h9DIvKqS029380@hiauly1.hia.nrc.ca>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id 4B0B5488D; Mon, 13 Oct 2003 13:44:28 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A98cE-00069K-R4; Mon, 13 Oct 2003 20:44:26 +0100
+Date: Mon, 13 Oct 2003 20:44:26 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	soete.joel@tiscali.be, parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] flush_tlb_all_local:
-To: grundler@parisc-linux.org (Grant Grundler)
-Date: Mon, 13 Oct 2003 14:57:19 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: soete.joel@tiscali.be, parisc-linux@parisc-linux.org
-In-Reply-To: <20031013041448.GD2467@colo.lackof.org> from "Grant Grundler" at Oct 12, 2003 10:14:48 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20031013194426.GS27861@parcelfarce.linux.theplanet.co.uk>
+References: <20031013041448.GD2467@colo.lackof.org> <200310131857.h9DIvKqS029380@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200310131857.h9DIvKqS029380@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +26,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Sun, Oct 12, 2003 at 09:12:58PM -0600, Grant Grundler wrote:
-> > On Sun, Oct 12, 2003 at 04:07:50PM +0000, Joel Soete wrote:
-> > > Why twice 'mtctl   %r0, %cr17'?
-> > 
-> > Good question. No clue. Looks like a brain fart since clearing it
-> >  once should work unless there's a weird bug. I'll remove it.
-> 
-> definitely not a brainfart. Read PA2.0 arch book (section 2) where
-> it talks about cr17/cr18. CR17 is two registers and writing it twice
-> clear both head/tail of the IIAS. Just like cr18 is also written twice.
+On Mon, Oct 13, 2003 at 02:57:19PM -0400, John David Anglin wrote:
+> Probably, there should be a comment in the code noting this special
+> behavior.
 
-Probably, there should be a comment in the code noting this special
-behavior.
+Done.  They're deliberately a little bit cryptic to ensure that people
+actually go and look at the arch book, but they are different so people
+don't think this might be a merge error.
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
