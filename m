@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E08344829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 15:22:57 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17w80F-0004DX-00; Mon, 30 Sep 2002 22:22:55 +0100
-Date: Mon, 30 Sep 2002 22:22:55 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Stian Soiland <stain@itea.ntnu.no>,
+Received: from web12503.mail.yahoo.com (web12503.mail.yahoo.com [216.136.173.195])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3E3D34829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 16:29:22 -0600 (MDT)
+Message-ID: <20020930222919.62918.qmail@web12503.mail.yahoo.com>
+Date: Mon, 30 Sep 2002 15:29:19 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] hardware newbie question...
+To: Stephen J de Vries <paulhill20@juno.com>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 9000/802/K250 won't boot with images - serial/stack problem?
-Message-ID: <20020930222255.T18377@parcelfarce.linux.theplanet.co.uk>
-References: <20020930200805.GA9133@itea.ntnu.no> <1033417191.31126.4.camel@beavis> <20020930204559.GB9133@itea.ntnu.no> <1033419990.30622.11.camel@beavis>
-Mime-Version: 1.0
+In-Reply-To: <20020925.090915.-178139.3.paulhill20@juno.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1033419990.30622.11.camel@beavis>; from rbradetich@uswest.net on Mon, Sep 30, 2002 at 03:06:29PM -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,34 +22,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Sep 30, 2002 at 03:06:29PM -0600, Ryan Bradetich wrote:
-> P.S. What would it take to get the default debian configs to compile in
-> the the Serial Mux, and to provide the /dev/ttyB0 from the parisc-linux
-> port by default in debian?  A patch to the debian def_configs and the
-> MAKEDEV package?
+What do you mean locked down?  Boot the thing single user and delete
+the password.  At the "Press any key to interrupt boot" prompt stop the
+boot.  Type BO <enter> interact with ISL? <y> <enter>.  Then at the isl
+prompt type <hpux -is> <enter>.  That will get you into single user
+mode.  Unless the system is setup in trusted mode you should be able to
+get in and modify the /etc/passwd file.  The user name should come
+first followed by the password that is encrypted within the colons
+(ex:root:VDTGE$8757474:).  Delete the encrypted stuff but leave the
+colons and save it.  Reboot it in multiuser mode and root shouldn't
+have a password.
 
-we really shouldn't be distributing a kernel that uses char-major-42.
+derek
 
- 42             Demo/sample use
 
-                This number is intended for use in sample code, as
-                well as a general "example" device number.  It
-                should never be used for a device driver that is being
-                distributed; either obtain an official number or use
-                the local/experimental range.  The sudden addition or
-                removal of a driver with this number should not cause
-                ill effects to the system (bugs excepted.)
+--- Stephen J de Vries <paulhill20@juno.com> wrote:
+> I have a HP 712 that I'd purchased recently.
+> 
+> My question is:
+> 
+> Can I use a PC monitor, keyboard, and mouse to boot the thing up?  If
+> so,
+> does the monitor have to be a multisync or something special?
+> 
+> In addition, HP-UX is on the hard drive but is locked down.  I was
+> thinking of buying an external CD drive and attempting to load debian
+> 0.93.  Can anyone recommend a place to buy the CD drive that they
+> have
+> dealt with?  I also have a network so I could attempt a network
+> install
+> but I am not sure what minimum requirements I'd need to fulfill for
+> that.
+>  Is my approach the right one?
+> 
+> Thanks for the advice...
+> 
+> Stephen de Vries
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-                IN PARTICULAR, ANY DISTRIBUTION WHICH CONTAINS A
-                DEVICE DRIVER USING MAJOR NUMBER 42 IS NONCOMPLIANT.
 
-maybe we could recycle char 11?
-
-ideally, i'd like to have this driver claim ttyS ports from the
-serial core ... but that's not necessarily going to happen for 2.5,
-and definitely not for 2.4.
-
-anyone fancy contacting lanana and asking for an official allocation?
-
--- 
-Revolutions do not require corporate support.
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
