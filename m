@@ -1,17 +1,17 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 332F54919
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E07384911
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 09:26:05 -0700 (MST)
-Date: Sun, 22 Feb 2004 09:25:44 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] ad1889 driver/docs for c3k/j5k audio
-Message-ID: <20040222162544.GA9367@colo.lackof.org>
-References: <20040222092057.GA2590@calypso>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040222092057.GA2590@calypso>
+	Sun, 22 Feb 2004 09:53:49 -0700 (MST)
+Message-Id: <200402221653.i1MGrkS8014490@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb: followup
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Sun, 22 Feb 2004 11:53:46 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040222060002.GI25019@baldric.uwo.ca> from "Carlos O'Donell" at
+	Feb 22, 2004 01:00:02 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,18 +22,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Feb 22, 2004 at 09:20:57AM +0000, Stuart Brady wrote:
-...
-> One question: are there any audio devices for hppa that need drivers,
-> that have documentation? I see that audio on the J5k/C3k is unsupported,
+> c. Write a 'Changelog' entry for the changes, and describe why you are
+>    making these changes (e.g. compiling with gcc-3.5). These entries
+>    have a very special format, look closely, and follow the GNU coding
+>    convetions.
 
-As you noted ad1889 is available but only sort-of works:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2003-April/019650.html
+I'm not sure about glibc but in gcc ChangeLog entries only include
+a concise list of changes for each function/macro changed.  The "why"
+goes in your patch submission letter.
 
-I posted the only documentation we have for ad1889:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016704.html
-
-If you have patches for ad1889, I'm happy to test (and commit) them for you.
-
-thanks,
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
