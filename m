@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ESLAMI (unknown [217.218.168.254])
-	by dsl2.external.hp.com (Postfix) with SMTP id A8277482E
-	for <parisc-linux@parisc-linux.org>; Thu,  7 Aug 2003 05:04:12 -0600 (MDT)
-Message-ID: <v45$$$i3p8l7-l3$408$6--808$1$h3@es8.vp.mcp>
-From: "Stewart Sweet" <fs85fhhfq@hongkong.com>
-Reply-To: "Stewart Sweet" <fs85fhhfq@hongkong.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 07 Aug 2003 14:00:40 +0200
+Received: from relay3.softcomca.com (relay3.softcomca.com [168.144.1.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8FF4482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 05:15:49 -0600 (MDT)
+Message-ID: <48270-22003847111543568@M2W027.mail2web.com>
+Reply-To: sugarat@mail.flyer.co.uk
+From: "sugarat@mail.flyer.co.uk" <sugarat@mail.flyer.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 7 Aug 2003 07:15:43 -0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="13_86E0.EB6_.77.E"
-Subject: [parisc-linux] OrderViagra,DietPills,and other prescriptiion medcationsonline with no priorprescription wuv
+Content-type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Xfree86 on C200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +21,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---13_86E0.EB6_.77.E
-Content-Type: text/html;
-Content-Transfer-Encoding: base64
+I am getting a weird error on attempting to run Xfree86 on my C200=2E  The=
 
-PGh0bWw+DQoNCjxib2R5Pg0KDQo8Zm9udCBzaXplPSIyIj4NCg0KYWR2ZXJiPC9mb250Pg0K
-DQo8cCBhbGlnbj0iY2VudGVyIj5IaSwgUGFyaXNjLWxpbnV4LCBNZWRpaWNhdGlvbnMgUHJl
-c2NyaWJlZCBPbmxpbmUsIEdldCBQcmVzY3JpYmVkIFZWaWFncmEsRGlldFBpbGxzPC9wPg0K
-DQo8cCBhbGlnbj0iY2VudGVyIj5hbmQgbXVjaG1vcmUgb25saW5lIU92ZXJuaWdodCBTaGlp
-cHBpbmchISBObw0KUHJlc2NyaXB0aW9uISEgPGEgaHJlZj0iaHR0cDovL3d3dy5jaGFpci1n
-cmVuYWRhLmNvbS92cHI2MjMyLyI+cyBlIGUmbmJzcDsgbm93ITwvYT48L3A+DQoNCjxwIGFs
-aWduPSJjZW50ZXIiPjxhIGhyZWY9Imh0dHA6Ly93d3cuY2hhaXItZ3JlbmFkYS5jb20vdnBy
-NjIzMi8iPg0KPGltZyBib3JkZXI9IjAiIHNyYz0iaHR0cDovL21lZHMyNDcuaW5mby9hZHMu
-anBnIiBhbHQ9ImdmZHNnIHNkZmdzZCBhc2RmYSBzZGYgZmFzZmFzZCBzIGZzZGVmc2Qgc2Qg
-c2RmIHNkZnNkIHNkZiAgc2Rmc3MgICBzZGZzZGZzZGZzICBzZGRmICBzZGZzIHNkZiAgc2Rm
-c2RzIj48L2E+PC9wPg0KDQo8Zm9udCBzaXplPSIyIj50cmFjZWFibGUmbmJzcDsmbmJzcDsm
-bmJzcDsgY29sbGF0ZXJhbDwvZm9udD48cD48YSBocmVmPSJtYWlsdG86cmVtb3ZlQGhpZ2hz
-cGlyaXQud3MiPjxmb250IHNpemU9IjIiPm4gbw0KbSBhIGkgbDwvZm9udD48L2E+PC9wPg0K
-DQo8Zm9udCBzaXplPSIyIj5hdm9jYWRvJm5ic3A7IGxpYWlzb24gPC9mb250Pg0KPHA+PGZv
-bnQgc2l6ZT0iMiI+a2hyb3FvJm5ic3A7IGJ1eHRvbiZuYnNwOyZuYnNwOyA8L2ZvbnQ+PC9w
-Pg0KPHA+PGZvbnQgc2l6ZT0iMiI+ZXllc29yZTwvZm9udD48L3A+DQoNCjwvYm9keT4NCg0K
-PC9odG1sPmx2a2huYSBxcXlsb2N5c3VpZ2FuamYNCiBjbHFscXFuaWlicGlvdWty
+kernel startup displays the fact that device fb0: has initialised okay, so=
+
+the framebuffer is detected, but upon starting X I get a message saying
+that the weight specified (000) is inconsistent with the colour depth (32)=
 
 
+ Can anyone offer any advice please? I dont know what else to try now=2E=2E=
+=20
 
---13_86E0.EB6_.77.E--
+ Many thanks,
+
+   Adam
+
+
+--------------------------------------------------------------------
+mail2web - Check your email from the web at
+http://mail2web=2Ecom/ =2E
