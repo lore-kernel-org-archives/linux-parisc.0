@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 9 Jul 2003 09:54:51 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Joel Soete <jsoe0708@tiscali.be>,
-	"Martin K. Petersen" <mkp@mkp.net>, Dub <dub@latnet.lv>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
-Message-ID: <20030709155451.GB32476@dsl2.external.hp.com>
-References: <yq1llv8dbin.fsf@wilson.mkp.net> <3F057186000008F4@ocpmta8.freegates.net> <20030709122700.GR1939@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030709122700.GR1939@parcelfarce.linux.theplanet.co.uk>
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
+	by dsl2.external.hp.com (Postfix) with SMTP id 88361482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 09:57:46 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1057766264.3f0c3b7831046@clients.latnet.lv>
+Date: Wed, 09 Jul 2003 18:57:44 +0300 (EEST)
+From: Mihails Nikitins <nikitins@latnet.lv>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=KOI8-R
+Subject: [parisc-linux] Where to get  'undocumented drivers'
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,10 +20,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 09, 2003 at 01:27:00PM +0100, Matthew Wilcox wrote:
-> Well, no, you're always going to have to quiesce the device.
+Hi,
 
-Not unless the disk is part of RAID[135] set.
-I expect to be able to yank a disk and replace with a new one any time.
+Looks like I have small HP-PB LAN AUI card detected at boot time in my K210. 
 
-grant
+9. Miura LAN/Console (J2146A) (2) at 0xf190c000 [10/4/12], versions 0x4, 0x0,
+0x52
+
+I see this device working in many models but it's marked like 'undocumented'. 
+
+Do I need the driver? Sorry, I have no idea how to configure it. I would also
+appreciate if you point me to a document about configuring new HW in Debian.
+
+Many thanks for tour help!
+
+BR,
+Dub
