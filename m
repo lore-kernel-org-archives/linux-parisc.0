@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 8 Mar 2003 10:24:39 -0700
-To: "David S. Miller" <davem@redhat.com>
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B5CBA4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Mar 2003 12:26:33 -0700 (MST)
+Date: Sat, 08 Mar 2003 11:04:59 -0800 (PST)
+Message-Id: <20030308.110459.35972945.davem@redhat.com>
+To: grundler@dsl2.external.hp.com
 Cc: jsm@udlkern.fc.hp.com, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: RFC: mmap patch
-Message-ID: <20030308172439.GA10161@dsl2.external.hp.com>
-References: <200303061414.HAA26321@udlkern.fc.hp.com> <20030308063043.GB27859@dsl2.external.hp.com> <20030307.222945.32673395.davem@redhat.com>
+From: "David S. Miller" <davem@redhat.com>
+In-Reply-To: <20030308172439.GA10161@dsl2.external.hp.com>
+References: <20030308063043.GB27859@dsl2.external.hp.com>
+	<20030307.222945.32673395.davem@redhat.com>
+	<20030308172439.GA10161@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030307.222945.32673395.davem@redhat.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Content-Type: Text/Plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,18 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Mar 07, 2003 at 10:29:45PM -0800, David S. Miller wrote:
-> If you flush caches exactly what sparc64 does in 2.5.x, and you do
-> have a virtually indexed, physically tagged cache, you should have no
-> correctness.
+   From: grundler@dsl2.external.hp.com (Grant Grundler)
+   Date: Sat, 8 Mar 2003 10:24:39 -0700
+   
+   After getting some sleep and thinking about how IOMMUs work on parisc,
+   I've convinced myself the CPU caches are virtually tagged and
+   virtually indexed.
 
-After getting some sleep and thinking about how IOMMUs work on parisc,
-I've convinced myself the CPU caches are virtually tagged and
-virtually indexed. Part of the IOMMU function is to provide the
-virtual address tag/index bits in order to acquire cacheline ownership
-on behalf of the device doing DMA. I don't know exactly how that
-matters to the VM design, but it seems relevant that parisc is not
-physically indexed.
+Some quick googling suggests that they are physically tagged.
 
-thanks,
-grant
+For example, see section 1.1 of the following paper:
+
+	http://www.cs.washington.edu/homes/bershad/Papers/asplosVM.ps
+
+It's an interesting paper btw too :-)
