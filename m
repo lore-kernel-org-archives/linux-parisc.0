@@ -1,71 +1,48 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA20775
-	for <parisc-linux@puffin.external.hp.com>; Sat, 5 Feb 2000 19:37:30 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
-	by atlrel1.hp.com (Postfix) with ESMTP id 6465A1261E
-	for <parisc-linux@thepuffingroup.com>; Sat,  5 Feb 2000 20:35:09 -0500 (EST)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id RAA09710 for <parisc-linux@thepuffingroup.com>; Sat, 5 Feb 2000 17:35:59 -0800 (PST)
-Message-Id: <200002060135.RAA09710@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA20936
+	for <parisc-linux@puffin.external.hp.com>; Sat, 5 Feb 2000 19:53:12 -0700
+Received: from hub-fue by rachael.franken.de
+	via rmail with uucp
+	id <m12HGp0-0027YHC@rachael.franken.de>
+	for thepuffingroup.com!parisc-linux; Sun, 6 Feb 2000 02:49:06 +0100 (MET)
+	(Smail-3.2 1996-Jul-4 #4 built DST-Sep-8)
+Received: (from tsbogend@localhost)
+	by alpha.franken.de (8.8.7/8.8.5) id CAA03158
+	for parisc-linux@thepuffingroup.com; Sun, 6 Feb 2000 02:46:51 +0100
+Date: Sun, 6 Feb 2000 02:46:51 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] State Of The Port 
-In-reply-to: Your message of "Fri, 04 Feb 2000 23:17:33 PST."
-             <Pine.BSF.4.10.10002042255350.8742-100000@cuzea.pair.com>
-Date: Sat, 05 Feb 2000 17:35:55 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Message-ID: <20000206024651.B3143@alpha.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Tulip driver
 List-ID: <linux-parisc.vger.kernel.org>
 
-Michael Ang wrote:
-> 
-> Here are Grant's notes from today's meeting with a few annotations:
+Hi,
 
-Mike,
-thanks for touching up the notes...apologies to Thomas for mangling
-his name. My error.
+I've checked in a new tulip driver, which works for me on the onbard tulip
+of the A180. I've tried to use Donald's latest driver (0.91x), but this
+driver needs some pci infrastructure, which isn't available in our 2.3 tree,
+yet. So I ported the 2.2.14 driver and added cache flushes. Before
+that I've added the cache flushes to tulip 0.91x, so whenever we update
+our tree, I should have an updated tulip very quick.
 
-> 
-> Interrupts on C3000
-> Grant Still working on it.
+The 2.2.14 tulip didn't like the SROM provided by the onboard tulip,
+because it didn't provide information about the attached phy (and the
+default media is in the wrong endian, but that isn't a big problem).
+I fixed that by just not allocating a media table, which works in
+my case. It's possible that this may break later. The SROMs of the
+tulips behind the card mode dino are looking stranger, they seem
+to be from a time before Digital released a sane SROM documentation
+and might confuse the driver as well. But since the machine hangs,
+when the driver tries to probe the second tulip on the card, this
+isn't an issue, yet.
 
-I think it's working now. It still needs more work but folks could
-start using it at least. I expect the code to work on j5k but
-don't know if either processor has "0xfffa0000" HPA. If one does,
-it should work too. All I/O interrupts will be directed to that
-processor for now.
+I'm now looking into getting nfs root working.
 
-Feel free to remove the:
-	do_irq_mask 00200000 c02d1324 c01f6500
-	iosapic_interrupt: irq 266 line 1 eoi fed32840
+Thomas.
 
-messages if they get in your way.
-
-I tested using eepro100.c driver (CONFIG_EEXPRESS_PRO100=y)
-and added "#define USE_IO" near the top. I can't say the interface
-is totally functional (I haven't the setup to test ping) but the hub
-seems happy.
-
-
-> Fleed is still having/had trouble with card-mode dino.
->     dino.c.ilr data page faulted. Grant will look at this
->     after spending some more time on C3k problems.
-
-I'm going to look at this next before working more on iosapic.c.
-Thomas is going to send me console output and I'll see what I
-can make out of that.
-
-> Short term goals (roughly in order)
-> - serial console input and output
-> - networking
-> - nfs root filesystem
-> - scsi support
-
-More important than any of these, IMHO, is FDB. And I forgot to
-mention it at the meeting. Future progress would be substantialy
-faster if we had a debugger. I don't feel competent to work on
-that. Anyone interested in (or already) pursuing this?
-
-thanks,
-grant
-
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+-- 
+   This device has completely bogus header. Compaq scores again :-|
+It's a host bridge, but it should be called ghost bridge instead ;^)
+                                        [Martin `MJ' Mares on linux-kernel]
