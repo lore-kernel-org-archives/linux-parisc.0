@@ -1,162 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18107482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Apr 2001 10:57:57 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 184DAB007; Fri, 20 Apr 2001 17:57:49 +0100 (BST)
-Date: Fri, 20 Apr 2001 17:57:49 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: rbradetich@uswest.net
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel panic using cpio from cdrom to disk.
-Message-ID: <20010420175749.M11226@linuxcare.com>
-References: <20010414005252.A9322@beavis.ybsoft.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010414005252.A9322@beavis.ybsoft.com>; from rbrad@beavis.ybsoft.com on Sat, Apr 14, 2001 at 12:52:52AM -0600
+Received: from bender.bawue.de (bender.bawue.de [193.197.13.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5527F482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 11:11:02 -0600 (MDT)
+Received: from gate.ixs.com (p3EE05BCF.dip.t-dialin.net [62.224.91.207])
+	by bender.bawue.de (Postfix) with ESMTP id 5A4E54828C
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 19:10:51 +0200 (CEST)
+Received: from localhost (andreas@localhost)
+	by gate.ixs.com (8.9.3/8.9.3) with ESMTP id TAA21166
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 19:10:43 +0200
+Date: Fri, 20 Apr 2001 19:10:43 +0200 (CEST)
+From: Andreas Thienemann <andreas@thienemann.net>
+To: parisc-linux@parisc-linux.org
+Message-ID: <Pine.LNX.4.10.10104201906260.21140-100000@gate.ixs.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Problems with glibc
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is interesting, my tests worked fine, but when I tried to reboot
-(typed 'init 6'), it blew up:
+Hi,
 
-INIT: Switching to runlevel: 6
-I
+while trying to compile the current glibc snapshot from the puffin-cvs, make
+segfaults:
 
+make[2]: Entering directory `/mnt/lfs/usr/src/glibc/sunrpc'
+/mnt/lfs/usr/src/glibc-build/elf/ld.so.1 --library-path
+/mnt/lfs/usr/src/glibc-build:/mnt/lfs/usr/src/glibc-build/math:/mnt/lfs/usr/src/glibc-build/elf:/mnt/lfs/usr/src/glibc-build/dlfcn:/mnt/lfs/usr/src/glibc-build/nss:/mnt/lfs/usr/src/glibc-build/nis:/mnt/lfs/usr/src/glibc-build/rt:/mnt/lfs/usr/src/glibc-build/resolv:/mnt/lfs/usr/src/glibc-build/crypt:/mnt/lfs/usr/src/glibc-build/linuxthreads
+/mnt/lfs/usr/src/glibc-build/sunrpc/rpcgen -Y `x=\`gcc
+-print-file-name=cpp\`; test x$x = xcpp && x=\`which cpp\`; echo $x | sed
+'s,/cpp$,,'` -c rpcsvc/bootparam_prot.x -o
+/mnt/lfs/usr/src/glibc-build/sunrpc/xbootparam_prot.T
+make[2]: *** [/mnt/lfs/usr/src/glibc-build/sunrpc/xbootparam_prot.stmp]
+Segmentation fault
+make[2]: Leaving directory `/mnt/lfs/usr/src/glibc/sunrpc'
+make[1]: *** [sunrpc/others] Error 2
+make[1]: Leaving directory `/mnt/lfs/usr/src/glibc'
+make: *** [all] Error 2
 
-Dumping Stack from 1027a000 to 1027a2c0:
-a000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a020 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a040 00000000 00000000 00000000 00286000 00000000 00000000 00000000 00000000
-a060 00000000 00000000 00000000 0010ca78 00000000 00000000 00000000 00000000
-a080 00000008 00078578 0010ca78 00004800 0028d000 0027e000 fffbe000 00105824
-a0a0 ffffffff 0008ab50 0008ae50 0008c030 00000000 00000000 00083f50 00000000
-a0c0 00000000 0000c5f0 faf00790 ffd05800 00000060 00000000 00000000 00000060
-a0e0 7efefeff 00064040 ffd05800 f0102400 00000000 ffd05800 1027a2c0 00000007
-a100 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a120 00000001 00000000 00000002 10149ab0 00000000 00000000 00000000 00000000
-a140 1007c000 27eb60c0 102d8000 00000000 1028c060 102f7810 102f4010 10272010
-a160 00000001 10290010 102f7810 10138610 10272010 102d6134 102d6134 00000000
-a180 27ebd000 1028c600 00000000 00000002 00000000 102a0e58 0004000e 0000004d
-a1a0 102f4810 27ebd000 1028c600 10149998 cccccccd 00000000 00000000 cccccccd
-a1c0 0000000a 00000200 102456e0 00000007 10319cc0 1028aaa8 0004000e 27f41120
-a1e0 ffffff05 00000001 10272010 10138778 102f7810 1028aaa8 00000000 00000000
-a200 000001d0 000001d0 00000000 000001d0 00000000 00000000 00000000 00000000
-a220 000001d0 000001d0 0010caa8 0010caa8 1007c588 00000000 00000000 0027a1c8
-a240 00286000 00000004 00080e60 00000000 0027a080 f0083ae8 00008000 0027a160
-a260 03b0008a 00000000 00000000 0027a1c8 000acbf8 f0083ae8 f0180fe3 0027a240
-a280 ffd05000 0027a268 00000003 0027a270 00000000 f004d7cc 0027a198 0027a240
-a2a0 00000014 0027a240 000012d0 10106744 03b0008a 00000001 0027e000 00008000
+Has anyone ever experienced a similar problem? This segfault is
+reproducable and it's the first time that happened. gcc did compile
+correct, the same with the kernel itself.
+Therefore I'd guess that glibc is at fault here.
+This happened while building the glibc on the hppa box (with the
+baseplus-20010404 nfsroot).
+Building the cross-compiler toolchain which does include building glibc
+was successful though.
 
-Unexpected Interruption!: Code=0 regs=1027a080 (Addr=00000000)
+Any ideas?
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000000000000000000001000
-r0-3     00000000 00078578 0010ca78 00004800
-r4-7     0028d000 0027e000 fffbe000 00105824
-r8-11    ffffffff 0008ab50 0008ae50 0008c030
-r12-15   00000000 00000000 00083f50 00000000
-r16-19   00000000 0000c5f0 faf00790 ffd05800
-r20-23   00000060 00000000 00000000 00000060
-r24-27   7efefeff 00064040 ffd05800 f0102400
-r28-31   00000000 ffd05800 1027a2c0 00000007
-sr0-3    000001d0 000001d0 00000000 000001d0
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 000001d0 000001d0 IAOQ: 0010caa8 0010caa8
- IIR: 00080e60    ISR: 00000000  IOR: 0027a080
-ORIG_R28: 00000000
-
-
-Like Ryans crash, PSW has only the Q bit set - data translation is
-turned off.  I guess that means the IAOQ values are real addresses, so I
-added 0x10000000 before looking them up in System.map.  In my case, it
-died on the "rsm 8,r0" under os_hpmc_5 in arch/parisc/kernel/hpmc.S.
-
-Richard
-
-
-
-On Sat, Apr 14, 2001 at 12:52:52AM -0600, Ryan Bradetich wrote:
-> Hello parisc-linux hackers,
-> 
-> A bug (#105) was discovered today reguarding cpio'ing an iso image from
-> the cdrom to the disk.  This was a stupid error and I have a quick patch
-> for this.  But this leads to my next question....  I am getting a kernel
-> panic when perfoming the cpio from the cdrom to the disk.  I am trying
-> to verify if their in another problem with the ccio code, or if this is
-> a problem witht the scsi driver itself.  Can someone else try it on a
-> non-ccio machine and see if fails for them also.  [Note:  The cdrom
-> content should not matter, in this case I have an i386 debian disk I 
-> was cpio'ing over because it was handy.]
-> 
-> Disk to disk transfers seem to work fine under ccio...
-> 
-> Thanks,
-> 
-> - Ryan
-> 
-> 
-> vega:/tmp# mount /dev/sr0 /cdrom
-> ISO 9660 Extensions: RRIP_1991A
-> vega:/tmp# find /cdrom | cpio -pm /tmp   
-> scsi1: Unexpected Illegal Instruction, script[0002]
-> scsi1: script[fffffffe]: 00000000 00000000 60000200 00000000 7c1bef00 00000000 41040000 00182448
-> scsi1: Failed to handle interrupt.  Failing commands and resetting SCSI bus and chip
-> scsi1: istat = 00, sstat0 = 00, sstat1 = 00, dstat = 00
-> scsi1: dsp = 00182008 (script[0x0802]), dsps = 7b255263, target = 0
-> scsi1: Failing command for ID2
-> 
-> 
-> 
-> Dumping Stack from 1027e000 to 1027e2c0:
-> e000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> e020 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> e040 00000000 00000000 00000000 0028a000 00000000 00000000 00000000 00000000
-> e060 00000000 00000000 00000000 0010c830 00000000 00000000 00000000 00000000
-> e080 00000008 fffb1000 0010c830 00008000 00291000 00282000 0010c8a8 00105024
-> e0a0 00282000 00008000 fffa0000 e0000000 20530a40 0000006c 00000002 0000001f
-> e0c0 20530a40 102fc010 1012a4a0 ffd05800 00000060 00000000 00000000 00000060
-> e0e0 0027e548 00000003 ffd05800 f0102400 00000000 ffd05800 1027e2c0 00000007
-> e100 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> e120 00000001 fe4917e0 00000002 1014aee0 ef56b2f6 f9bf8075 dedbd0be f309b5b9
-> e140 10fec000 3fc900c0 102dc000 00000000 10290064 102f9010 102fc010 10276010
-> e160 102f8810 00000001 10294010 1013948c 102f8810 102d9d08 102d9d08 102d9c80
-> e180 3fc99000 1029060c 00000000 00000002 00000000 102a46c0 0004000e 0000004d
-> e1a0 102f9010 3fc99000 1029060c 1014adc4 cccccccd 00000030 00000000 cccccccd
-> e1c0 00000001 00000004 3fe00000 00000000 412e8480 00000000 3fc9d140 0000004d
-> e1e0 ffffff05 102fc010 00000001 101395f4 3fccf400 1028ecc8 00000000 00000000
-> e200 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> e220 00000000 00000000 0010c754 0010c758 ffffffff 00000000 00000000 00000000
-> e240 00000000 00000008 081a025c 10240041 4c130d44 00000000 00000000 00000000
-> e260 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> e280 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> e2a0 00000000 00000000 00000000 10106744 00000000 00000000 00000000 00000000
-> 
-> Unexpected Interruption!: Code=0 regs=1027e080 (Addr=00000000)
-> 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000000000000000000001000
-> r0-3     00000000 fffb1000 0010c830 00008000
-> r4-7     00291000 00282000 0010c8a8 00105024
-> r8-11    00282000 00008000 fffa0000 e0000000
-> r12-15   20530a40 0000006c 00000002 0000001f
-> r16-19   20530a40 102fc010 1012a4a0 ffd05800
-> r20-23   00000060 00000000 00000000 00000060
-> r24-27   0027e548 00000003 ffd05800 f0102400
-> r28-31   00000000 ffd05800 1027e2c0 00000007
-> sr0-3    00000000 00000000 00000000 00000000
-> sr4-7    00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: 0010c754 0010c758
->  IIR: 081a025c    ISR: 10240041  IOR: 4c130d44
-> ORIG_R28: 00000000
-> 
-> 
-> -- 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+bye,
+ andreas
