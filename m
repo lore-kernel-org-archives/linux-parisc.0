@@ -1,45 +1,26 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA21579
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 16:02:16 -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA21791
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 16:10:06 -0700
+Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
+	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id SAA13297
+	for <parisc-linux@thepuffingroup.com>; Mon, 15 Nov 1999 18:10:44 -0500 (EST)
+Received: from hp.com (localhost [127.0.0.1]) by xsvr4.cup.hp.com with ESMTP (8.7.6/8.7.3) id PAA07378 for <parisc-linux@thepuffingroup.com>; Mon, 15 Nov 1999 15:11:36 -0800 (PST)
 Sender: frowand@cup.hp.com
-Message-ID: <38309117.3707D5FB@hp.com>
-Date: Mon, 15 Nov 1999 15:02:47 -0800
+Message-ID: <38309328.A734C736@hp.com>
+Date: Mon, 15 Nov 1999 15:11:36 -0800
 From: Frank Rowand <frank_rowand@hp.com>
 Reply-To: frowand@cup.hp.com
 MIME-Version: 1.0
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: frowand@cup.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] arch/parisc/kernel/realmode_setup.c Question
+To: Parisc Linux <parisc-linux@thepuffingroup.com>
 References: <382F3C94.BFF3EB9D@uswest.net>
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] use of (*PAGE0->mem_pdc)()
 List-ID: <linux-parisc.vger.kernel.org>
 
 Ryan Bradetich wrote:
-> 
-> Paul,
-> 
-> I have started working on getting the kernel to boot on the PA2.0
-> architecture again, and I see the you and others have been doing
-> lots of work with the initialization code.  (Nice job to everyone btw,
-> the code is a lot easier to figure out for a newbie like me! :)
-> 
-> I was looking at the following section of code and I have a
-> discrepancy that I wanted to make you aware of.  I don't know how
-> to fix it yet, but I will continue to look.
-> 
-> I am working on a C200+ which has the PA2.0 processor, so in the
-> the following section of code it should give me an error during the
-> BTLB initialization, but during the PDC_BTLB_INSERT pret is set
-> to 0, so the check for non-PA1.1 architecture's fail.
-> 
-> I will continue to look through the documentation that has been
-> previously pointed out, and the devresource page  pointed out by
-> Frank Rowand to see if I can find a solution to the problem.
-> 
-> Thanks,
-> 
-> Ryan Bradetich
-> 
+
+< stuff deleted >
+
 > [Taken from arch/parisc/kernel/realmode_setup.c]
 > 
 >  /* This whole VM setup stuff may be removed ultimately.  It seems
@@ -50,39 +31,19 @@ Ryan Bradetich wrote:
 >   pret = (*PAGE0->mem_pdc)(
 >   PDC_BLOCK_TLB,
 >   PDC_BTLB_INSERT,
->   0x00000000,  /* MS bits, virt page number */
->   0xc0000,  /* LS bits, virt page number */
->   0x00000000,  /* Physical page number */
->   4096,   /* # pages to map */
->   0x03000000,  /* access rights, etc... */
->   0);   /* slot number */
-> 
->   if (pret != 0)
->  {
->        mprintf("PDC_BTLB_INSERT returned %d\n", pret);
->       if (pret == -1)
->      {
->         mprintf("Looks like there's no BTLB on this box, so it's
-> probably\n"
->                        "either PA1.0 or PA2.0.  In any case we're
-> screwed for now\n");
->         led_flash();
->      }
-> }
 
 
-Ryan,
+A comment that is totally unrelated to the question Ryan was asking...
 
+I would recommend that we quit using the pointer to PDCE_PROC() that
+is in page zero, because the newer machines have a PDC procedure,
+PDC_RELOCATE(), that copies PDCE_PROC into real memory, where it
+executes much faster.  The page zero pointer to PDCE_PROC() is not
+updated by PDC_RELOCATE(), but instead a pointer to the in-memory
+PDCE_PROC() is returned.
 
-This might not solve your problem, but it's worth checking out.  The
-procedure calling convention for PA 2.0 PDC is different than for 1.0.
-See http://thepuffingroup.com/parisc/documentation.html, pdc.pdf,
-p 2-8 defines the return status as a 64-bit, not 32 bit.  You might
-also want to look at the neighboring pages of the document for other
-changes (eg, arg4 through arg7 are passed in registers).
-
-I don't know if your system has wide or narrow PDC - you have to call
-PDC_MODEL(Return Capabilities), and check bit 63 of caps (the field
-called OS64).
+I recommend using a global variable to hold the pointer to PDCE_PROC(),
+which would be the value from page zero initially, then updated to
+the value returned by PDC_RELOCATE().
 
 -Frank
