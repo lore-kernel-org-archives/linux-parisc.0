@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BFB7B4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 May 2003 14:20:06 -0600 (MDT)
-Message-Id: <200305182020.h4IKK5KR017492@hiauly1.hia.nrc.ca>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 620594829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 May 2003 14:38:52 -0600 (MDT)
+Date: Sun, 18 May 2003 13:38:55 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Inconsistency detected by ld.so:.. / do_page_fault()
-To: bzeeb-lists@lists.zabbadoz.net (Bjoern A. Zeeb)
-Date: Sun, 18 May 2003 16:20:05 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: randolph@tausq.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.BSF.4.53.0305181942400.86062@e0-0.zab2.int.zabbadoz.net> from "Bjoern A. Zeeb" at May 18, 2003 07:44:36 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20030518203855.GK548@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <Pine.BSF.4.53.0305181226340.86062@e0-0.zab2.int.zabbadoz.net> <20030518161001.GG548@tausq.org> <Pine.BSF.4.53.0305181640470.86062@e0-0.zab2.int.zabbadoz.net> <20030518171645.GH548@tausq.org> <Pine.BSF.4.53.0305181942400.86062@e0-0.zab2.int.zabbadoz.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.BSF.4.53.0305181942400.86062@e0-0.zab2.int.zabbadoz.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,14 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> didn't :((
-> 
 > rebuild vim by hand with gcc 3.3 and it again segfaulted on startup :(
 > seems like this is a problem with shared libs ?
 
-Did you rebuild or downgrade glibc as suggested?
+don't rebuild vim, rebuild glibc :)
 
-Dave
+> what else will I need to rebuilt ? or other question - how often are
+> packages re-built by debian package building system (how-ever this
+> works) ?
+
+it depends on when the next version is uploaded.
+
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
