@@ -1,83 +1,58 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from serak.svc.tds.net (serak.svc.tds.net [204.246.1.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E99C44A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Feb 2001 18:09:47 -0700 (MST)
-Received: from tds.net (neenahdsl-a113.dsl.tds.net [208.171.62.113])
-	by serak.svc.tds.net (8.9.3/8.9.3) with ESMTP id TAA24354
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Feb 2001 19:09:38 -0600 (CST)
-Message-ID: <3A8F20D1.20B10E28@tds.net>
-Date: Sat, 17 Feb 2001 19:09:37 -0600
-From: Scott Eggert <seggert@tds.net>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-References: <20010217134443.B0E4081DD@dsl2.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E12244A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Feb 2001 18:52:22 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14UJ1L-0006nY-00; Sun, 18 Feb 2001 01:52:15 +0000
+Date: Sun, 18 Feb 2001 01:52:15 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Scott Eggert <seggert@tds.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] E25 lock-up during boot.
+Message-ID: <20010218015215.E899@parcelfarce.linux.theplanet.co.uk>
+References: <20010217134443.B0E4081DD@dsl2.external.hp.com> <3A8F20D1.20B10E28@tds.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] E25 lock-up during boot.
+In-Reply-To: <3A8F20D1.20B10E28@tds.net>; from seggert@tds.net on Sat, Feb 17, 2001 at 07:09:37PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I am attempting to ge PA installed on a HP9000 E25.  I am able to boot from the
-0.5 CD image, however it locks-up during the boot.  Any ideas?
+On Sat, Feb 17, 2001 at 07:09:37PM -0600, Scott Eggert wrote:
+> I am attempting to ge PA installed on a HP9000 E25.  I am able to boot
+> from the 0.5 CD image, however it locks-up during the boot.  Any ideas?
 
-Here is the boot output:
+Which part of `E class is not supported' is hard to understand?  :-)
 
-Main Menu: Enter command or menu > bo 56/52.4
-Interact with IPL (Y or N)?> n
+> Searching for devices in PDC firmware... processor hpa 0xfffbe000
+> a newer box...
+> Found devices:
+> 1. Orville UX Core BA (11) at 0xf0100000, versions 0x12, 0x0, 0x81, 0x0, 0x0
+> 2. Orville Core Lan (802.3) (10) at 0xf0107000, versions 0x12, 0x0, 0x8a, 0x0, 0
+> x0
+> That's a total of 2 devices.
+> No CPUs reported by firmware - probing...
+> Found CPU at fffbe000
+> POSIX conformance testing by UNIFIX
+> Lasi version 0 at 0xf0100000 found.
 
-Booting...
-Boot IO Dependent Code (IODC) revision 4
+Having said that, I bet this is the same problem as FAQ 9:
+
+I'm booting parisc linux on an early Series 700 workstation, and the 
+machine hangs after printing:
+
+ASP version 1 at ..... found
+
+What's going on?
+
+This was a bug in the parallel port driver, which was fixed in CVS on 
+2000-11-29. You can workaround the problem by using a newer kernel or
+by reconfiguring your kernel and removing support for the parallel port
+(CONFIG_PARPORT_GSC).
 
 
-HARD Booted.
-palo ipl bame@noam Tue Oct 31 14:18:02 MST 2000
-0/vmlinux 2140145 bytes @ 0x6f9800
-0/palo-cmdline '0/vmlinux ROOT=/ TERM=LINUX root=/dev/scd0'
-Kernel: partition 0 file /vmlinux
-ELF32 executable
+But... there's no Lasi in an E-class.  Something's wrong with our detection
+routines, perhaps.  I admit to being curious about the `Core Lan' that's
+reported -- maybe it'll work.
 
-Entry 00100150 first 00100000 n 4
-Segment 0 load 00100000 size 1460344 mediaptr 0x1000
-Segment 1 load 00266000 size 179048 mediaptr 0x166000
-Segment 2 load 00294000 size 109876 mediaptr 0x192000
-Segment 3 load 002b0000 size 8192 mediaptr 0x1ad000
-branching to kernel entry point 0x00100150
-Set default PSW W bit to 0
-PDC Console Initialized
-The 32-bit Kernel has started...
-Enabled FP coprocessor
-Free memory starts at: 0xc02da000
-(0x504d6c,0x504d6c,0x0,0x0)
-PALO command line: 'ROOT=/ TERM=LINUX root=/dev/scd0'
-PALO initrd 0-0
-model   00004800 00000481 00000000 00000000 76d05eab 100000f0 00000004 00000072
-00000072
-vers    0000000b
-CPUID vers 0 rev 0
-Searching for devices in PDC firmware... processor hpa 0xfffbe000
-a newer box...
-Found devices:
-1. Orville UX Core BA (11) at 0xf0100000, versions 0x12, 0x0, 0x81, 0x0, 0x0
-2. Orville Core Lan (802.3) (10) at 0xf0107000, versions 0x12, 0x0, 0x8a, 0x0, 0
-x0
-That's a total of 2 devices.
-No CPUs reported by firmware - probing...
-Found CPU at fffbe000
-CPU(s): 1 x PA7100LC (PCX-L) at 48.000000 MHz
-Linux version 2.4.0-test6 (pjlahaie@elenuial.thepuffingroup.com) (gcc version 2.
-96 20000925 (experimental)) #32 Mon Nov 6 10:20:58 EST 2000
-free_bootmem(0x2dc000, 0xfd24000)
-initrd: 00000000-00000000
-pagetable_init
-On node 0 totalpages: 65536
-zone(0): 32768 pages.
-zone(1): 32768 pages.
-zone(2): 0 pages.
-Kernel command line: ROOT=/ TERM=LINUX root=/dev/scd0
-trap_init
-Calibrating delay loop... 47.82 BogoMIPS
-Memory: 254336k available
-Dentry-cache hash table entries: 32768 (order: 6, 262144 bytes)
-Buffer-cache hash table entries: 16384 (order: 4, 65536 bytes)
-Page-cache hash table entries: 65536 (order: 6, 262144 bytes)
-Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
-POSIX conformance testing by UNIFIX
-Lasi version 0 at 0xf0100000 found.
+-- 
+Revolutions do not require corporate support.
