@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 20 Dec 2002 21:17:20 -0700
-To: Gavin Hubbard <ghub005@xtra.co.nz>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: Re: [parisc-linux] rp2430 questions
-Message-ID: <20021221041720.GA26293@dsl2.external.hp.com>
-References: <20021221031955.AYR14518.web4-rme.xtra.co.nz@[127.0.0.1]>
+Date: Fri, 20 Dec 2002 21:34:48 -0700
+To: James Bottomley <James.Bottomley@steeleye.com>
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 randomly kills applications with page faults
+Message-ID: <20021221043448.GB26293@dsl2.external.hp.com>
+References: <20021221013824.GA18983@dsl2.external.hp.com> <200212210146.gBL1kvv11019@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021221031955.AYR14518.web4-rme.xtra.co.nz@[127.0.0.1]>
+In-Reply-To: <200212210146.gBL1kvv11019@localhost.localdomain>
 From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -20,16 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Dec 21, 2002 at 04:19:55PM +1300, Gavin Hubbard wrote:
-> Thanks for the info Grant. If the only difference is in the PDC device
-> tables then the transition should work with no problem.
+On Fri, Dec 20, 2002 at 07:46:57PM -0600, James Bottomley wrote:
+> Actually, I found STREG,ma and LDREG,mb worked for me.
 
-If your business will depend on this, then you need ask your
-HP sales contacts to find out for sure and not just me guessing:
-1) They have techinical support staff who are paid to figure this
-   kind of thing out.
-2) they will know a real customer is using/wants to use parisc-linux.
-   (ie give parisc-linux visibility to the sales folks within HP)
+doh! of course!
+those are cpp macros, not asm macros.
 
-hth,
+> > but, given the assertion we could take an interrupt between line 96 and
+> > 107, would an interrupt between 95/96 cause Bad Things (tm) to happen?
+> 
+> Not according to the parisc assembler manual.  As long as we can guarantee 
+> that the stack is incremented before the value is stored (which seems to be 
+> what STREG,ma seems to assure), we should be fine.
+
+I'm not worried about the atomicity of the instruction.
+
+I'm worried about sr7 getting modified without the user stack
+pointer getting saved to the proper place. It might not be a
+problem at all. I just don't know all the uses of user/kernel
+stacks in the interrupt code paths. I'm wondering if the entire
+code sequence I quoted needs to block interrupts while setting
+up the syscall.
+
 grant
