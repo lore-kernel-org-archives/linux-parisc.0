@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8978E482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 14:26:26 -0700 (MST)
-Received: from gmx.at ([62.178.92.247]) by viefep12-int.chello.at
-          (InterMail vM.5.01.05.12 201-253-122-126-112-20020820) with ESMTP
-          id <20021113212621.SISL4035.viefep12-int.chello.at@gmx.at>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Wed, 13 Nov 2002 22:26:21 +0100
-Message-ID: <3DD2C4E5.7000001@gmx.at>
-Date: Wed, 13 Nov 2002 22:32:21 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] ? New status of MUX or SCSI driver on E-series (and other...)
+To: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
+Cc: Bjorn Helgaas <bjorn_helgaas@hp.com>, Greg KH <greg@kroah.com>,
+	Miles Bader <miles@gnu.org>, Matthew Wilcox <willy@debian.org>,
+	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
+	linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface 
+In-Reply-To: Message from "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
+   of "Wed, 13 Nov 2002 15:44:17 EST." <200211132044.gADKiHi02548@localhost.localdomain>
+References: <200211132044.gADKiHi02548@localhost.localdomain> 
+Date: Wed, 13 Nov 2002 14:42:15 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021113214215.AD0494829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,24 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-After such long time, I want to ask, if there any news?
+"J.E.J. Bottomley" wrote:
+> However, I think the ultimate destination is to see how much of the bus 
+> specific stuff we can abstract by throwing an API around it.  I think IRQ, 
+> port and mmio are feasible.  Specific knowledge of bus posting et al may not 
+> be.
 
-Where there experiences (with logic analysator, etc...), if the
-SCSI chip is accessed ?
+I was thinking how many BARs are present/used is PCI specific.
 
-Are there any news in accessing another port then port "0" on the
-MUX. My experiments using "only" port "1" was also not successful,
-the machine blocks !
+arch code already handles most of the IRQ fixups anyway and it
+doesn't really matter where IRQ info is stored as long as the
+device driver knows where to find it.
 
-Perhaps the PDC ROM setup influences the MUX device.
+> > Duck! (that's going to get fixed it seems) ;^) 
+> 
+> I thought the 53c700 was working OK?
 
-Answer is welcome.
-Christoph
+sorry - "going to get fixed" meant we are looking for a C180
+or similar machine to send you.
 
-
-
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+thanks!
+grant
