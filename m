@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tandu.perlsupport.com (tandu.perlsupport.com [66.220.6.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 64C70482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jul 2003 09:49:45 -0600 (MDT)
-Date: Fri, 25 Jul 2003 11:49:23 -0400
-From: Chip Salzenberg <chip@debian.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org, 201873-done@bugs.debian.org
-Message-ID: <20030725154923.GR2287@perlsupport.com>
-References: <3F1CEEEE000003DF@ocpmta8.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F1CEEEE000003DF@ocpmta8.freegates.net>
-Subject: [parisc-linux] Re: Bug#201873: nfs-kernel-server: can't use nfs ...
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 611A4482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jul 2003 20:21:36 -0600 (MDT)
+Message-Id: <200307260221.h6Q2LRN3001246@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: Bug#200619: gcc: parisc: compiling dietlibc-dev with -Os caus
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Fri, 25 Jul 2003 22:21:26 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: doko@cs.tu-berlin.de, pape-dbnbgs@smarden.org,
+	200619@bugs.debian.org, dave.anglin@nrc-cnrc.gc.ca, tausq@debian.org,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200307250308.h6P38ej6026594@hiauly1.hia.nrc.ca> from "John David Anglin" at Jul 24, 2003 11:08:40 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +24,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-According to Joel Soete:
-> dmesg informe me that rpc.mountd do_page_fault() at this very moment
+> This doesn't appear to be a gcc problem.  The register %r3 is saved
+> on the stack in __stdio_init_file_nothreads.  The stack location
+> is clobbered by the fstat syscall.
+> 
+> > > +  {
+> > > +    struct stat st;
+> > > +    fstat(fd,&st);
+> 
+> At the fstat call we have the following values:
+> 
+> Breakpoint 11, 0x00010b10 in __stdio_init_file_nothreads ()
 
-This is almost certainly the use-of-freed-memory bug that many people
-suffered from in 1.0.3-1.
+Carlos O'Donell and myself looked at this problem this afternoon.  This
+is a dietlib problem.  Dietlib is not using the correct kernel_stat
+mapping for parisc.  They appear to be using the i386 mapping.  They
+need to look at /libc/sysdeps/unix/sysv/linux/xstatconv.c and the
+hppa/kernel_stat.h header in glibc.
 
-I have already uploaded 1.0.5-1, which fixes this bug, so I'm closing
-this bug report.  If your problem continues to occur (which I strongly
-doubt it will), please submit a new bug.
-
-Thanks for the bug report.
+Dave
 -- 
-Chip Salzenberg               - a.k.a. -               <chip@pobox.com>
-"I wanted to play hopscotch with the impenetrable mystery of existence,
-    but he stepped in a wormhole and had to go in early."  // MST3K
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
