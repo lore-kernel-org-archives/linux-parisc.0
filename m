@@ -1,36 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9CC33482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 08:03:28 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15rgQo-0006PH-00; Thu, 11 Oct 2001 15:03:26 +0100
-Date: Thu, 11 Oct 2001 15:03:26 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
-	Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9149D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 08:18:16 -0600 (MDT)
+Date: Thu, 11 Oct 2001 10:19:40 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Cc: willy@debian.org
 Subject: Re: [parisc-linux] Glibc 2.2.4-2 No Optimizations = No Compliation
-Message-ID: <20011011150326.C22924@parcelfarce.linux.theplanet.co.uk>
-References: <20011011073101.B5637@megatonmonkey.net> <20011011144718.A22924@parcelfarce.linux.theplanet.co.uk> <20011011095913.A8106@megatonmonkey.net>
+Message-ID: <20011011101940.B8106@megatonmonkey.net>
+References: <20011011073101.B5637@megatonmonkey.net> <20011011144718.A22924@parcelfarce.linux.theplanet.co.uk> <20011011095913.A8106@megatonmonkey.net> <20011011150326.C22924@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011011095913.A8106@megatonmonkey.net>; from carlos@megatonmonkey.net on Thu, Oct 11, 2001 at 09:59:13AM -0400
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <20011011150326.C22924@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Thu, Oct 11, 2001 at 03:03:26PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Oct 11, 2001 at 09:59:13AM -0400, Carlos O'Donell Jr. wrote:
-> Really?
-> How about unrolled loops? ;)
+> 
+> Sometimes.  More importantly, gcc stops doing stupid things with -O1,
+> particulalry shifting registers backwards and forwards with no net effect.
+> 
 
-Sometimes.  More importantly, gcc stops doing stupid things with -O1,
-particulalry shifting registers backwards and forwards with no net effect.
+I've not seen such mischieviously deviant behaviour from gcc :}
 
-> True. But that really shouldn't make much difference since
-> AFAIK inlining doesn't happen until -O2, but config.h just says...
-> "You must have atleast -O1"
+> 
+> Not the case.  gcc will inline functions marked as such at -O1.  At -O3,
+> it decides for itself to inline some things.
+>
 
-Not the case.  gcc will inline functions marked as such at -O1.  At -O3,
-it decides for itself to inline some things.
+Ok.
 
--- 
-Revolutions do not require corporate support.
+Compiled with -O0 and I get undefined referancs to try_lock...
+curse those inlined functions.
+
+Back to -O1 and some debugging.
+
+c.
