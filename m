@@ -1,54 +1,74 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA29204
-	for <parisc-linux@puffin.external.hp.com>; Wed, 2 Feb 2000 14:54:59 -0700
-Date: Wed, 2 Feb 2000 15:55:08 -0500 (EST)
-From: "Brian S. Julin" <bri@mojo.calyx.net>
-To: Alex deVries <adevries@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Boot info from 715/64
-In-Reply-To: <388F492B.1E8EF289@linuxcare.com>
-Message-ID: <Pine.BSO.4.21.0002021544170.19835-100000@mojo.calyx.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA14139
+	for <parisc-linux@puffin.external.hp.com>; Fri, 4 Feb 2000 22:20:19 -0700
+Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id XAA09649 for <parisc-linux@thepuffingroup.com>; Fri, 4 Feb 2000 23:17:33 -0500 (EST)
+Date: Fri, 4 Feb 2000 23:17:33 -0500 (EST)
+From: Michael Ang <mang@subcarrier.org>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.BSF.4.10.10002042255350.8742-100000@cuzea.pair.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] State Of The Port
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-On Wed, 26 Jan 2000, Alex deVries wrote:
+Here are Grant's notes from today's meeting with a few annotations:
+---
+Attendees (in no particular order):
+        Mike Ang
+        Thomas Bogendorf
+        Mathew Wilcox
+        Grant Grundler
+        Martin Petersen
+	plus some lurkers
 
-> "Brian S. Julin" wrote:
-> > Searching for devices in PDC firmware...   an older box...
-> > Found devices:
-> > 1. Mirage Jr GSC Builtin Graphics (10) at 0xf8000000, versions 0x12,
-> > 0x0, 0x85, 0x0, 0x0
-> > 
-> > [...]  more devices, some of which I don't have.
-> > 
-> > 15. Mirage Jr (715/64) (0) at 0xfffbe000 versions 0x60a, 0x0, 0x4, 0x0,
-> > 0x81
-> > 16. Mirage Jr (1) at 0xfffbf000, vesions 0x4a, 0x0, 0x9, 0x0, 0x0
-> > That's a total of 16 devices.
-> 
-> Which ones don't you have?  Could you paste the entire list?
+Tulip/Networking We're still having a problem with media selection and
+interrupts on A180, and endianness problems on 21140 chipset PCI cards.
+Fleedwood made good progress with a pcnet32 card with endian clean driver,
+exposing bugs in the tcp checksum code which have been largely fixed.
 
-Actually I'm typing by hand since I'm not using a serial console :).
-Of the devices listed, the one I know for sure I don't
-have is the floppy:
+Thomas Bogendorf will be getting tulip working very soon.
+    Expects to have it working by this weekend. Lack of endianess
+    support is the main problem.  2.2.14 is the "latest" tulip.c
+    but has no big endian support.
 
-8. Mirage Jr Core PC Floppy (10) at 0xf010a000, versions 0x28, 0x0, 0x83,
-0x0, 0x0
+Mike Ang will send the outputs of the tulip diagnostic program in
+cvsroot:/userspace/ktulip-diag.c to Donald Becker for help.
 
-...there's also these which are suspect, since I have HIL, though
-their may be PC keyboard ports back there I haven't looked.....
 
-9. Mirage Jr Core PC Keyboard (10) at 0xf0108000, versions 0x28, 0x0,
-0x84, 0x0, 0x0
-10. Mirage Jr Core PC Keyboard (10) at 0xf0108100, versions 0x28, 0x0,
-0x84, 0x0, 0x0
+SuperIO serial
 
-Question for the kernel high priests on the list -- is the rest of
-the input-linux stuff going into the 2.3 series soon -- if so I think 
-I'll work on converting the HIL driver over to linux-input and fitting
-the linux-input patch to this kernel (which luckily there exists one for).
+SuperIO serial support is required to get userland serial console working
+on C3000.
 
---
-P.S. Sorry about bounced mail; have no idea what that was all about.
+Martin Petersen looked at data sheet and it's way too complicated.
+Grant Grundler: I think the various components have to share IRQ lines.
+        Since this bugger is 3 PCI functions and only function 1 (or 2)
+        has the IRQ line, it gets a bit messy.
+
+        I think we also need to get some specifics on how firmware
+        *reports* those devices. I helped set some of that up for HP-UX
+        but that was over a year ago.
+        IIRC, the function 0 gets advertised first to HP-UX but it's
+        interrupt comes through function 1. So the driver for function 0
+        has to poke registers on function 1.
+
+Grant - will check if anyone in HP is interested in making this work.
+Mike volunteered to start looking at it on Monday (2/7/2000).
+
+
+Interrupts on C3000
+Grant Still working on it.
+Fleed is still having/had trouble with card-mode dino.
+    dino.c.ilr data page faulted. Grant will look at this
+    after spending some more time on C3k problems.
+
+Willy mentioned that we will have to think about running on 64bit at some
+point.
+
+
+Short term goals (roughly in order)
+- serial console input and output
+- networking
+- nfs root filesystem
+- scsi support
