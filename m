@@ -1,33 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA19038
-	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Jan 2000 18:13:57 -0700
-Received: from lucy.cup.hp.com (lucy.cup.hp.com [15.0.88.68])
-	by palrel1.hp.com (Postfix) with ESMTP id 8407A1690
-	for <parisc-linux@thepuffingroup.com>; Tue, 11 Jan 2000 17:16:09 -0800 (PST)
-Date: Tue, 11 Jan 2000 17:15:54 -0800 (PST)
-From: Jerry Huck <huck@cup.hp.com>
-Message-Id: <200001120115.RAA28322@lucy.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA20830
+	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Jan 2000 20:31:23 -0700
+Date: Wed, 12 Jan 2000 04:33:25 +0100
+From: Philipp Rumpf <prumpf@mkp.net>
 To: parisc-linux@thepuffingroup.com
+Cc: willy@thepuffingroup.com
+Message-ID: <20000112043325.A18348@tux.mkp.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] PA-RISC 2.0 updates
+Subject: [parisc-linux] C360 shellprompt
 List-ID: <linux-parisc.vger.kernel.org>
 
-If you are working on porting to PA-RISC 1.1 or 2.0,
-there are some architecture reference documents on
-the web that may be useful to you.
+Just so you all know, we get to a shell prompt on the C360 after the
+changes which I'm about to commit (blame slow dialup lines).  I would
+like to know whether we get to a prompt on other PA2.0 machines as well.
 
-The complete text of the latest versions of the 1.1 and 2.0
-architecture manuals are online, in html form.  Additionally,
-we've annotated the 2.0 book with all errata, and the
-small number of architecture changes which have been made
-since the book was published.
+When testing, please keep in mind most "kernel doesn't print anytihng"
+problems are problems in the .config rather than kernel bugs.  Start
+with the defconfig and modify as little as possible.  Also, the most
+likely cause for non-reproducible failures is page colouring problems
+so try 3-4 times.
 
-You can find these documents at this address:
+Anyway, on Lasi-based machines such as the C360 you should be able to
+do anything you can do on the 712 right now (-ls, fork() but not exec(),
+rebooting the machine with SysRq-B), just a lot faster.
 
-   http://devresource.hp.com/devresource/Docs/Refs/PA1_1/index.html
-
-Happy porting!
-
-Jerry Huck
-PA-RISC and IA-64 Architecture
+	Philipp Rumpf
