@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Kernel 2.4.17-32-smp problem 
-In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
-   of "Sun, 24 Mar 2002 19:01:58 PST." <Pine.LNX.4.33L2.0203241900450.13376-100000@eiger.apptechsys.com>
-References: <Pine.LNX.4.33L2.0203241900450.13376-100000@eiger.apptechsys.com> 
-Date: Sun, 24 Mar 2002 21:10:22 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020325041022.9E3644859@dsl2.external.hp.com>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 599DF4858
+	for <parisc-linux@parisc-linux.org>; Mon, 25 Mar 2002 00:33:51 -0700 (MST)
+Date: Sun, 24 Mar 2002 23:33:39 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Kernel 2.4.17-32-smp problem 
+In-Reply-To: <20020325035848.477324855@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.33L2.0203242328170.13376-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,17 +22,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jeremy Drake wrote:
-> This controller is damaged -- it will not work.  I'm looking for an
-> alternative.  Thanks for your help....
+On Sun, 24 Mar 2002, Grant Grundler wrote:
 
-Bummer. I think you better start getting used to serial for booting.
-PDC typically only knows how to talk to a few select devices needed
-for booting. And some of them it knows are built-in and where to
-find them.
-
-If you setup the machine to auto-boot and add a regular PCI USB
-controller card that linux likes, you should be able to have
-X11 just find the USB Keyboard/Mouse from the add-on card as well.
-
-grant
+> And I hope CPU0 isn't completely idle, look at /proc/interrupts.
+> I know interrupt distribution works.
+>
+according to /proc/stat
+cpu  599904 33379482 34656795 68636319
+cpu0 0 0 64 68636186
+cpu1 599904 33379482 34656731 133
