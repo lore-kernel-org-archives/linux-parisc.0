@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm1.tiscalinet.be (spoolm1.tiscalinet.be [212.35.2.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A7DB482D
-	for <parisc-linux@parisc-linux.org>; Sat, 13 Jul 2002 04:22:29 -0600 (MDT)
-Message-ID: <3D2FFFDA.7030704@freebel.net>
-Date: Sat, 13 Jul 2002 10:24:26 +0000
+Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 24F344838
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 13 Jul 2002 05:12:41 -0600 (MDT)
+Message-ID: <3D300BA1.8000304@freebel.net>
+Date: Sat, 13 Jul 2002 11:14:41 +0000
 From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] compiling kernels with gcc-3.2
-References: <20020712073628.GB8838@tausq.org> <20020713052016.GA10191@tausq.org>
+To: Stephan Trajkoff <stephan@itp.bg>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Problem in X with keyboard and problem with LAN
+ and telnetd
+References: <20020712203010.59C8D488D@dsl2.external.hp.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -22,31 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+Hi Stephan,
 
-Randolph Chung wrote:
-> well, after some advice from Dave about how to build gcc-3.2... i now
-> have a gcc-3.2 compiled kernel working as well:
+Can you give us more detail on release your are running for Xfree86, 
+KDE, kernel (cvs date eventualy) or last tine you made an apt-get 
+dist-upgrade?
+
+Stephan Trajkoff wrote:
+> -------------------------------------------------------------------
+> -->> FREE Perl CGI scripts add WEB ACCESS to your POP email accounts!
+> -->> Download today!! http://www.adjeweb.com
+> -------------------------------------------------------------------
 > 
+> I have 3 problems
+> 1. when I run Xfree86 with KDE, my ps/2 keyboard won't work, I sait 
+> to XFREE that I have us keyboard, pc104 and that is ps/2.
+> 2. my LAN lasi 82596 says that I have timeout non stop with
+> connection
+> 3. When I connect from Windows and Linux to my server, and when I run 
+> command that display many rows, automatically linux closing my 
+> connection and _|_.
 
-Great ;) I will try also
+It sounds like an old problem (telnetd on cd-0.9.3?) which could be 
+solved (IIRC) with an apt-get dist-upgrade.
 
-> tausq@a500:~$ uname -a
-> Linux version 2.4.18-pa54 (tausq@a500) (gcc version 3.2 20020711 (experimental)) #2 SMP Fri Jul 12 22:04:23 PDT 2002
-> tausq@a500:~$
-> 
-> I'm quite perplexed about why it doesn't seem to always work for
-> others... i didn't really have to do anything special with either gcc or
-> the kernel to get it to boot.
+> With SSH all is working. For example try to run 
+> dmesg or ps axuw.
 
-Well regarding release 3.2, I frequently encounter problems to compile 
-gcc itself because of some broken part (it seems to me normal because it 
-is the present development branch) for which I open PR which was solved 
-in the mean time.
-And when I reach to compile gcc and the kernel, this was a problem with 
-network connection which make crash the system.
-So now if I can obtain an working kernel (as you) I would be able to 
-continu to test other interesting thing.
 
-Thanks a lot for info,
-     Joel
+Good luck,
+	Joel
