@@ -1,20 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] Re: copy_user_page_asm suggested 64bit improvment
-	(Test case)
-Date: Wed, 29 Dec 2004 11:36:44 +0000
-Message-ID: <41D296CC.2040108@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: copy_user_page_asm suggested 64bit improvment [Was:
+	[parisc-linux]	clear user page test]
+Date: Thu, 30 Dec 2004 01:10:34 -0700
+Message-ID: <20041230081034.GD31297@colo.lackof.org>
 References: <418A80E8000124B5@mail-6-bnl.tiscali.it>
 	<20041227073654.GI29492@colo.lackof.org>
-	<41D18909.9060308@tiscali.be>
-	<20041229054655.GB11816@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041229054655.GB11816@colo.lackof.org>
+In-Reply-To: <20041227073654.GI29492@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,40 +22,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Mon, Dec 27, 2004 at 12:36:54AM -0700, Grant Grundler wrote:
+> Anyone know how many cycles ldd from L1 takes?
 
+I found the answer for PCX-W CPU:
+	The PCXW Data cache is a 4-way set associative 1 MB cache, split
+	into two banks and interleaved on double word boundaries to allow
+	two simultaneous uses of the cache. Each bank is further divided
+	into independent tag and data ports, primarily to allow effective
+	single cycle stores. The two tags hold identical information.
+	Each port returns data in two cycles, but can start a new access
+	every cycle.
 
-Grant Grundler wrote:
-> On Tue, Dec 28, 2004 at 04:25:45PM +0000, Joel Soete wrote:
-[...]
-> 
-> As usual, I've hacked the cpup.c test.
-Cool ;-)
+I'll assume PA8[567]00 CPUs have similar if not identical behavior.
+PA8800 may not and I'd be curious if anyone knows.
 
-> Don't compare my results below with the previous ones Joel posted.
-> I've committed my version of cpup.c to "build-tools" repository.
->
-Thanks
+I've just committed a "simple" version that uses r19/20/21/22.
+I've got another version that also uses r23/r24 but it didn't boot
+and I didn't chase down why. It's possibly a HW bug with this particular
+A500. I'll try it again.
 
-[...]
-> 
-> cpup2 is what I'd like to commit for the kernel version.
-> I've appended the patch.
-> 
-Nice
+Lamont tells me r23/24/28/29 are *caller* saves registers. 
+Ie I could r28/29 as well (or instead of r23/24).
 
-> I was expecting cpup3 would be slightly faster but don't have data
-> to prove it.
-Don't know where can we find L1-Cache state diagram to help more?
-
-> And I'm still worried that GR23/GR24 won't be saved
-> by the caller since the __copy_user_page_asm function prototype
-> only specifies two arguments.
-> 
-> thanks,
-> grant
-> 
-Thanks for your attention,
-	Joel
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
