@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from wilson.mkp.net (rover.mkp.net [209.217.122.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A71B848F6
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Oct 2003 16:06:04 -0600 (MDT)
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] A3591B (Tachyon) FC Card
-From: "Martin K. Petersen" <mkp@mkp.net>
-References: <1289146742B56546AE580DFC6B711A8313482D@PKDWB07C.ad.sprint.com>
-	<1065649096.10567.11.camel@dhcp23.swansea.linux.org.uk>
-Date: 08 Oct 2003 18:05:56 -0400
-In-Reply-To: <1065649096.10567.11.camel@dhcp23.swansea.linux.org.uk>
-Message-ID: <yq1llrv5qrf.fsf@wilson.mkp.net>
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
+	by dsl2.external.hp.com (Postfix) with SMTP id 691C34840
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Oct 2003 02:33:04 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] System hangs after SCSI problems 
+Message-ID: <1065688381.3f851d3da4b56@clients.latnet.lv>
+Date: Thu, 09 Oct 2003 11:33:01 +0300 (EEST)
+From: dub@latnet.lv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=KOI8-R
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +20,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "Alan" == Alan Cox <alan@lxorguk.ukuu.org.uk> writes:
+> dub@latnet.lv  dub@latnet.lv
+> Wed, 24 Sep 2003 18:25:47 +0300 (EEST)
+> I run Debian vmlinux-parisc-2.4.20-32-smp on K210. Not recently I faced a
+> strange hang situation. Host stopped responding both from network and console, 
+> ethernet port remained up on link level. In syslog.log and kernel.log I see scsi
+> problems.
+> After restarting all disks are OK (one of mirror partitions was resynced 
+> manually). 
 
-Alan> If I remember rightly tachyon is one of the FC chipsets where
-Alan> you have to implement a *lot* of higher level FC handling
-Alan> yourself. 
+Hi,
 
-That's true only for the really old tachyon chips.  The TS and TL
-chips supported by the Compaq driver as well as the XL2 are all recent
-enough to have a fibre channel state machine on chip.
+Just for your information. The problem was with a SCSI disk. After a week, it
+had more problems and md mirroring removed it. I tried to issue dd.
 
--- 
-Martin K. Petersen      http://mkp.net/
+dd if=/dev/sdf1 of=/dev/null bs=64k
+dd: reading `/dev/sdf1': Input/output error
+
+After some seconds the system stopped responding (I saw it when entering the
+next command).
+
+My Humble Conclusion. Comaring to HP-UX, Debian is not so stable on PA-RISC
+platform. :-)
+
+BR,
+Dub
