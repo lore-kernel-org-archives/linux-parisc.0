@@ -1,64 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Message-ID: <A4A5E4C468B5D11190220001FA6835DD04DD88CE@EPIXCH003>
-From: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@EUROPAY.COM>
-To: 'Xavier Debacker' <xavier.debacker@esiee.net>,
-	parisc-linux@lists.parisc-linux.org,
-	parisc-linux-announce@lists.parisc-linux.org
-Date: Thu, 19 Apr 2001 12:35:05 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] RE: [parisc-linux-announce] PA/Linux iso 0.6 is out!
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A489482A
+	for <parisc-linux@parisc-linux.org>; Thu, 19 Apr 2001 12:09:09 -0600 (MDT)
+Message-Id: <200104191802.MAA24940@puffin.external.hp.com>
+To: Andreas Thienemann <andreas@thienemann.net>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Clock skew problems 
+In-Reply-To: Your message of "Thu, 19 Apr 2001 15:22:08 +0200."
+             <Pine.LNX.4.10.10104191518560.30090-100000@gate.ixs.com>
+Date: Thu, 19 Apr 2001 12:02:54 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Xavier,
+Andreas Thienemann wrote:
+> But now, when I try do compile some software I'm having problems.
+> 
+> I'm getting the following message from make:
+> 
+> make: *** Warning: File `libdb.a' has modification time in the future
+> (2001-04-19 15:15:33 > 2001-04-19 15:15:04)
+>
+> And I have absolutely no Idea why this is happening.
 
-Thanks a lot for information. I will download it soon.
+Everytime one updates the kernel time and it gets set *back*,
+make will notice the derived objects (ie libdb.a) are newer than
+current time and complain.
 
-May I ask you to publish md5sum checksum result to be sure of burning the
-right file.
+However, I suspect the kernel isn't keeping time perfectly and updating
+from the HW clock (YMMV: historically, some servers had better RTC crystals)
+is causing the problem. Having a bad RTC will also look like
+the kernel isn't keeping time when in fact it is.
 
-Thanks in advance for help,
-	Joel
+a500# date
+Thu Apr 19 11:11:02 MDT 2001
+a500# hwclock
+Thu Apr 19 11:11:01 2001  -1.003308 seconds
+a500# uptime
+ 11:11:36 up 21:25,  1 user,  load average: 0.00, 0.04, 0.04
 
-> -----Original Message-----
-> From: Xavier Debacker [mailto:xavier.debacker@esiee.net]
-> Sent: Thursday, April 19, 2001 12:27 PM
-> To: parisc-linux@lists.parisc-linux.org;
-> parisc-linux-announce@lists.parisc-linux.org
-> Subject: [parisc-linux-announce] PA/Linux iso 0.6 is out!
-> 
-> 
-> New CD iso images can be downloaded at
-> http://mkhppa1.esiee.fr/en/isos.html
-> 
-> 3 versions:
-> 32bits kernel with serial console
-> 32bits kernel with STI console
-> 64bits kernel with serial console
-> 
-> all kernels are on each iso, the only difference is the 
-> default booting
-> kernel.
-> 
-> Enjoy, and give us feedback :-)
-> 
-> Xavier Debacker
-> ESIEE Team
-> http://www.esiee.fr/puffin
-> 
-> 
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux-announce mailing list
-> parisc-linux-announce@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-
-linux-announce
+So not doing too badly - but it needs to be fixed.
+I'm assuming the A500 has a good RTC.
+I'll submit a bug for you.
 
+grant
 
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
