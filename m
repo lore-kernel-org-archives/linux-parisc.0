@@ -1,59 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA29626
-	for <parisc-linux@puffin.external.hp.com>; Sat, 10 Jul 1999 17:18:31 -0600
-Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id BAA10903
-	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 01:18:59 +0200
-Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id BAA4036687
-	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 01:18:58 +0200 (CEST)
-Received: by genedata.com
-	via sendmail from stdin
-	id <m1136OS-00025eC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Sun, 11 Jul 1999 01:18:52 +0200 (CEST)
-Date: Sun, 11 Jul 1999 01:18:52 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <19990711011852.A25925@mencheca.ch.genedata.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA30453
+	for <parisc-linux@puffin.external.hp.com>; Sun, 11 Jul 1999 03:35:20 -0600
+Message-ID: <37886585.34B86082@ruhr-uni-bochum.de>
+Date: Sun, 11 Jul 1999 11:36:06 +0200
+From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+MIME-Version: 1.0
+To: Philipp Rumpf <prumpf@suse.de>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Helge's commits
+References: <199907101141.FAA25297@puffin.external.hp.com> <19990711004621.G29058@suse.de>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] PDC woes
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi Philipp,
 
-Philipp asked me to write a function to calculate the frequency of the
-interval timer.  However, the PDC doesn't want to cooperate.  I see
-`hello' printed on the screen, but not `world'.  So somehow this PDC
-call is going wrong.  Anyone have any clues?  pim_info is not very
-revealing.  If it helps anyone, the blinkenlights on my 715/33 are at:
+Philipp Rumpf schrieb:
 
-10110010
+> First, please excuse me if I sound a bit aggressive ...
+>
+> > Update of /home/cvs/parisc/linux/include/asm-parisc
+> > In directory puffin.external.hp.com:/tmp/cvs-serv25289
+> >
+> > Modified Files:
+> >       pdc.h
+> > Log Message:
+> >
+> > added the OS_ID-patch from Hannu..
+>
+> Helge, I very much appreciate you working on this project.
 
-Is there a document somewhere describing what the blinkenlights mean?
+Thank you very much.
 
-Here's the function:
+> Still, I think you
+> should be a bit more communicative on what you commit, especially if there are
+> legal (see the OSF code) or political (as I suspect might be the case for this
+> change) issues.
 
-/*
- * Find the interval timer frequency.
- */
-static long calculate_interval_timer_frequency(void)
-{
-        long exponent, mantissa, result;
-        long buf[4] __attribute__ ((aligned (8)));
-printk("hello\n");
-        (*pdc) (PDC_TOD, PDC_TOD_ITIMER, buf, 0);
-printk("world\n");
-        exponent = (buf[0] >> 20) & 0x7ff;
-        mantissa = (buf[0] & 0xfffff) | 0x100000;
-        result = (mantissa >> (1038 - exponent)) * 625 * 625;
-printk("exponent = %ld mantissa = %ld result = %ld\n", exponent, mantissa, resul
-t);
-        return result;
-}
-
-
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Yes, you are right ! I will talk more to you and the list before I commit
+something new. As you already said, there ARE legal und political issues, and
+because of that I already asked the list in one of my last mails, if we are
+allowed to use that code.
