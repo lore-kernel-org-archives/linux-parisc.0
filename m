@@ -1,30 +1,24 @@
-Return-Path: <parisc-linux-request@lists.parisc-linux.org>
-Received: from spam.carreker.com (unknown [65.221.249.208])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 015B6484B
+Return-Path: <knaresh@india.hp.com>
+Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D2CC484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Jan 2004 18:32:20 -0700 (MST)
-Received: from localhost (dalvir04.carreker.com [127.0.0.1])
-	by spam.carreker.com (Postfix) with ESMTP id 5D4512E81AF
+	Tue, 27 Jan 2004 01:39:56 -0700 (MST)
+Received: from redsea.india.hp.com (redsea.india.hp.com [15.76.97.3])
+	by palrel13.hp.com (Postfix) with ESMTP id A58EC1C02B4C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Jan 2004 19:30:24 -0600 (CST)
-Received: from spam.carreker.com ([127.0.0.1])
-	by localhost (dalvir04.carreker.com [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id 06978-05 for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Jan 2004 19:30:23 -0600 (CST)
-Received: from pickup.carreker.com (unknown [172.21.1.23])
-	by spam.carreker.com (Postfix) with ESMTP id 8E34C2E8424
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Jan 2004 18:54:47 -0600 (CST)
-Message-ID: <20040126190003.98EBB48E6@dsl2.external.hp.com>
-From: parisc-linux-request@lists.parisc-linux.org
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 26 Jan 2004 13:00:03 -0600
+	Tue, 27 Jan 2004 00:39:54 -0800 (PST)
+Received: from india.hp.com (eb9856.india.hp.com [15.76.98.56])
+	by redsea.india.hp.com (8.9.3 (PHNE_29774)/8.9.3 SMKit7.02) with ESMTP
+	id OAA08623 for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 27 Jan 2004 14:23:12 +0530 (IST)
+Message-ID: <401623CA.59AE3CCD@india.hp.com>
+Date: Tue, 27 Jan 2004 14:09:38 +0530
+From: Naresh Kumar <knaresh@india.hp.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_003_01C3E43E.A9554970"
-Subject: [parisc-linux] parisc-linux Digest, Vol 2, Issue 33
-Reply-To: parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Using PAT_IO calls for PCI config space reads and
+	writes.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -34,549 +28,175 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-
-------_=_NextPart_003_01C3E43E.A9554970
-Content-Type: text/plain;
-	charset="iso-8859-1"
-
-Send parisc-linux mailing list submissions to
-	parisc-linux@lists.parisc-linux.org
-
-To subscribe or unsubscribe via the World Wide Web, visit
-	http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-or, via email, send a message with subject or body 'help' to
-	parisc-linux-request@lists.parisc-linux.org
-
-You can reach the person managing the list at
-	parisc-linux-owner@lists.parisc-linux.org
-
-When replying, please edit your Subject line so it is more specific
-than "Re: Contents of parisc-linux digest..."
-
-
-Today's Topics:
-
-   1. Re: A fix for B2k and CONFIG_PDC_CONSOLE pb (Matthew Wilcox)
-   2. Re: A fix for B2k and CONFIG_PDC_CONSOLE pb (Joel Soete)
-   3. Re: A fix for B2k and CONFIG_PDC_CONSOLE pb (Joel Soete)
-
-
-----------------------------------------------------------------------
-
-Message: 1
-Date: Mon, 26 Jan 2004 17:25:05 +0000
-From: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] A fix for B2k and CONFIG_PDC_CONSOLE pb
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: Christoph Plattner <christoph.plattner@gmx.at>,	Grant Grundler
-	<grundler@parisc-linux.org>,
-parisc-linux@lists.parisc-linux.org
-Message-ID: <20040126172505.GQ11844@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii
-
-On Mon, Jan 26, 2004 at 06:00:53PM +0100, Joel Soete wrote:
->  
->  	/* Bail if no console input device. */
-> -	if (!PAGE0->mem_kbd.iodc_io)
-> +	if ((PAGE0->mem_cons.cl_class != CL_DUPLEX) &&
-!PAGE0->mem_kbd.iodc_io)
->  		return 0;
->  	
->  	/* wait for a keyboard (rs232)-input */
->  	spin_lock_irqsave(&pdc_lock, flags);
-> -	real32_call(PAGE0->mem_kbd.iodc_io,
-> -		    (unsigned long)PAGE0->mem_kbd.hpa, ENTRY_IO_CIN,
-> -		    PAGE0->mem_kbd.spa, __pa(PAGE0->mem_kbd.dp.layers), 
-> -		    __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1, 0);
-> +	if (PAGE0->mem_cons.cl_class == CL_DUPLEX)
-
-This doesn't make sense.  PAGE0->mem_cons.cl_class has to be CL_DUPLEX
-otherwise the test above would have failed.  Do you perhaps mean that &&
-above to be an || ?  If so, this would all read better as ...
-
-	/* wait for a keyboard (rs232)-input */
-	spin_lock_irqsave(&pdc_lock, flags);
-	if (PAGE0->mem_cons.cl_class == CL_DUPLEX) {
-
-		real32_call(PAGE0->mem_cons.iodc_io,
-			    (unsigned long)PAGE0->mem_cons.hpa,
-ENTRY_IO_CIN,
-			    PAGE0->mem_cons.spa,
-__pa(PAGE0->mem_cons.dp.layers), 
-			    __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1,
-0);
-	} else if (PAGE0->mem_kbd.iodc_io) {
-		real32_call(PAGE0->mem_kbd.iodc_io,
-			    (unsigned long)PAGE0->mem_kbd.hpa,
-ENTRY_IO_CIN,
-			    PAGE0->mem_kbd.spa,
-__pa(PAGE0->mem_kbd.dp.layers), 
-			    __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1,
-0);
-	} else {
-		spin_unlock_irqrestore(&pdc_lock, flags);
-		return 0;
-	}
-
-Slightly ugly to have two unlocks for the same lock, but that's better
-than duplicating the test.  I haven't looked at the code, maybe we could
-use a goto instead.
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and
-refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
-
-
-------------------------------
-
-Message: 2
-Date: Mon, 26 Jan 2004 19:20:26 +0100
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] A fix for B2k and CONFIG_PDC_CONSOLE pb
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: Christoph Plattner <christoph.plattner@gmx.at>,	Grant Grundler
-	<grundler@parisc-linux.org>,
-parisc-linux@lists.parisc-linux.org
-Message-ID: <40153110000001C0@ocpmta2.freegates.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-
-
-
-> +	if ((PAGE0->mem_cons.cl_class != CL_DUPLEX) &&
-!PAGE0->mem_kbd.iodc_io)
->  		return 0;
-Right Matthew this case is nearly impossible (may be excepted if
-disconected
-the usb kbd during the boot), it would means that my pdc_console is not
-a
-serial one (ie graphic([01])) but no usb kdb found, so in that case pdc
-would
-switch console automaticaly to serial.
-
-I would just still check the case when I have an usb kbd (I would have
-to
-recover one) but the pdc console is setup to serial port (eg no graphic
-screen
-available) just for an output screen without input kbd? 
-
-Thanks for your attention and remarks,
-    Joel
-
-
-------------------------------------------------------------------------
--
-Tiscali ADSL: 12 mois à 29,50 EUR/mois! L'Internet rapide, c'est pour
-tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
-
-
-
-
-------------------------------
-
-Message: 3
-Date: Mon, 26 Jan 2004 19:38:50 +0100
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] A fix for B2k and CONFIG_PDC_CONSOLE pb
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: Christoph Plattner <christoph.plattner@gmx.at>,	Grant Grundler
-	<grundler@parisc-linux.org>,
-parisc-linux@lists.parisc-linux.org
-Message-ID: <4015311000000204@ocpmta2.freegates.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-
-Sorry for auto reply, but I just find back the right kdb and:
-
->I would just still check the case when I have an usb kbd (I would have
-to
->recover one) but the pdc console is setup to serial port (e
->no graphic screen available) just for an output screen without input
-kbd?
-
-
-That case is also impossible, the console setup as serial_1 (eg) is
-always
-CL_DUPLEX :(
-
-I will so review my patch.
-
-Thanks for all,
-    Joel
-
-
-------------------------------------------------------------------------
--
-Tiscali ADSL: 12 mois à 29,50 EUR/mois! L'Internet rapide, c'est pour
-tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
-
-
-
-
-------------------------------
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-End of parisc-linux Digest, Vol 2, Issue 33
-*******************************************
-
-------_=_NextPart_003_01C3E43E.A9554970
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>parisc-linux Digest, Vol 2, Issue 33</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=3D2>Send parisc-linux mailing list submissions to</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>parisc-linux@lists.parisc-linux.org</FONT>
-</P>
-
-<P><FONT SIZE=3D2>To subscribe or unsubscribe via the World Wide Web, =
-visit</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2><A =
-HREF=3D"http://lists.parisc-linux.org/mailman/listinfo/parisc-linux" =
-TARGET=3D"_blank">http://lists.parisc-linux.org/mailman/listinfo/parisc-=
-linux</A></FONT>
-<BR><FONT SIZE=3D2>or, via email, send a message with subject or body =
-'help' to</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>parisc-linux-request@lists.parisc-linux.org</FONT>
-</P>
-
-<P><FONT SIZE=3D2>You can reach the person managing the list at</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>parisc-linux-owner@lists.parisc-linux.org</FONT>
-</P>
-
-<P><FONT SIZE=3D2>When replying, please edit your Subject line so it is =
-more specific</FONT>
-<BR><FONT SIZE=3D2>than &quot;Re: Contents of parisc-linux =
-digest...&quot;</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>Today's Topics:</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&nbsp;&nbsp; 1. Re: A fix for B2k and =
-CONFIG_PDC_CONSOLE pb (Matthew Wilcox)</FONT>
-<BR><FONT SIZE=3D2>&nbsp;&nbsp; 2. Re: A fix for B2k and =
-CONFIG_PDC_CONSOLE pb (Joel Soete)</FONT>
-<BR><FONT SIZE=3D2>&nbsp;&nbsp; 3. Re: A fix for B2k and =
-CONFIG_PDC_CONSOLE pb (Joel Soete)</FONT>
-</P>
-<BR>
-
-<P><FONT =
-SIZE=3D2>---------------------------------------------------------------=
--------</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Message: 1</FONT>
-<BR><FONT SIZE=3D2>Date: Mon, 26 Jan 2004 17:25:05 +0000</FONT>
-<BR><FONT SIZE=3D2>From: Matthew Wilcox &lt;willy@debian.org&gt;</FONT>
-<BR><FONT SIZE=3D2>Subject: Re: [parisc-linux] A fix for B2k and =
-CONFIG_PDC_CONSOLE pb</FONT>
-<BR><FONT SIZE=3D2>To: Joel Soete &lt;soete.joel@tiscali.be&gt;</FONT>
-<BR><FONT SIZE=3D2>Cc: Christoph Plattner =
-&lt;christoph.plattner@gmx.at&gt;,&nbsp;&nbsp;&nbsp;&nbsp; Grant =
-Grundler</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&lt;grundler@parisc-linux.org&gt;,&nbsp;&nbsp;&nbsp; =
-parisc-linux@lists.parisc-linux.org</FONT>
-<BR><FONT SIZE=3D2>Message-ID: =
-&lt;20040126172505.GQ11844@parcelfarce.linux.theplanet.co.uk&gt;</FONT>
-<BR><FONT SIZE=3D2>Content-Type: text/plain; charset=3Dus-ascii</FONT>
-</P>
-
-<P><FONT SIZE=3D2>On Mon, Jan 26, 2004 at 06:00:53PM +0100, Joel Soete =
-wrote:</FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; </FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; /* Bail if no =
-console input device. */</FONT>
-<BR><FONT SIZE=3D2>&gt; -&nbsp;&nbsp;&nbsp;&nbsp; if =
-(!PAGE0-&gt;mem_kbd.iodc_io)</FONT>
-<BR><FONT SIZE=3D2>&gt; +&nbsp;&nbsp;&nbsp;&nbsp; if =
-((PAGE0-&gt;mem_cons.cl_class !=3D CL_DUPLEX) &amp;&amp; =
-!PAGE0-&gt;mem_kbd.iodc_io)</FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;</FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; </FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; /* wait for a =
-keyboard (rs232)-input */</FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; =
-spin_lock_irqsave(&amp;pdc_lock, flags);</FONT>
-<BR><FONT SIZE=3D2>&gt; -&nbsp;&nbsp;&nbsp;&nbsp; =
-real32_call(PAGE0-&gt;mem_kbd.iodc_io,</FONT>
-<BR><FONT SIZE=3D2>&gt; -&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (unsigned =
-long)PAGE0-&gt;mem_kbd.hpa, ENTRY_IO_CIN,</FONT>
-<BR><FONT SIZE=3D2>&gt; -&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-PAGE0-&gt;mem_kbd.spa, __pa(PAGE0-&gt;mem_kbd.dp.layers), </FONT>
-<BR><FONT SIZE=3D2>&gt; -&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-__pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1, 0);</FONT>
-<BR><FONT SIZE=3D2>&gt; +&nbsp;&nbsp;&nbsp;&nbsp; if =
-(PAGE0-&gt;mem_cons.cl_class =3D=3D CL_DUPLEX)</FONT>
-</P>
-
-<P><FONT SIZE=3D2>This doesn't make sense.&nbsp; =
-PAGE0-&gt;mem_cons.cl_class has to be CL_DUPLEX</FONT>
-<BR><FONT SIZE=3D2>otherwise the test above would have failed.&nbsp; Do =
-you perhaps mean that &amp;&amp;</FONT>
-<BR><FONT SIZE=3D2>above to be an || ?&nbsp; If so, this would all read =
-better as ...</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>/* wait =
-for a keyboard (rs232)-input */</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>spin_lock_irqsave(&amp;pdc_lock, flags);</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>if =
-(PAGE0-&gt;mem_cons.cl_class =3D=3D CL_DUPLEX) {</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>real32_call(PAGE0-&gt;mem_cons.iodc_io,</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&nbsp;&nbsp;&nbsp; (unsigned long)PAGE0-&gt;mem_cons.hpa, =
-ENTRY_IO_CIN,</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&nbsp;&nbsp;&nbsp; PAGE0-&gt;mem_cons.spa, =
-__pa(PAGE0-&gt;mem_cons.dp.layers), </FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&nbsp;&nbsp;&nbsp; __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1, =
-0);</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>} else if =
-(PAGE0-&gt;mem_kbd.iodc_io) {</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>real32_call(PAGE0-&gt;mem_kbd.iodc_io,</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&nbsp;&nbsp;&nbsp; (unsigned long)PAGE0-&gt;mem_kbd.hpa, =
-ENTRY_IO_CIN,</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&nbsp;&nbsp;&nbsp; PAGE0-&gt;mem_kbd.spa, =
-__pa(PAGE0-&gt;mem_kbd.dp.layers), </FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&nbsp;&nbsp;&nbsp; __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1, =
-0);</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>} else =
-{</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>spin_unlock_irqrestore(&amp;pdc_lock, flags);</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>return =
-0;</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>}</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Slightly ugly to have two unlocks for the same lock, =
-but that's better</FONT>
-<BR><FONT SIZE=3D2>than duplicating the test.&nbsp; I haven't looked at =
-the code, maybe we could</FONT>
-<BR><FONT SIZE=3D2>use a goto instead.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>-- </FONT>
-<BR><FONT SIZE=3D2>&quot;Next the statesmen will invent cheap lies, =
-putting the blame upon </FONT>
-<BR><FONT SIZE=3D2>the nation that is attacked, and every man will be =
-glad of those</FONT>
-<BR><FONT SIZE=3D2>conscience-soothing falsities, and will diligently =
-study them, and refuse</FONT>
-<BR><FONT SIZE=3D2>to examine any refutations of them; and thus he will =
-by and by convince </FONT>
-<BR><FONT SIZE=3D2>himself that the war is just, and will thank God for =
-the better sleep </FONT>
-<BR><FONT SIZE=3D2>he enjoys after this process of grotesque =
-self-deception.&quot; -- Mark Twain</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>------------------------------</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Message: 2</FONT>
-<BR><FONT SIZE=3D2>Date: Mon, 26 Jan 2004 19:20:26 +0100</FONT>
-<BR><FONT SIZE=3D2>From: &quot;Joel Soete&quot; =
-&lt;soete.joel@tiscali.be&gt;</FONT>
-<BR><FONT SIZE=3D2>Subject: Re: [parisc-linux] A fix for B2k and =
-CONFIG_PDC_CONSOLE pb</FONT>
-<BR><FONT SIZE=3D2>To: &quot;Matthew Wilcox&quot; =
-&lt;willy@debian.org&gt;</FONT>
-<BR><FONT SIZE=3D2>Cc: Christoph Plattner =
-&lt;christoph.plattner@gmx.at&gt;,&nbsp;&nbsp;&nbsp;&nbsp; Grant =
-Grundler</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&lt;grundler@parisc-linux.org&gt;,&nbsp;&nbsp;&nbsp; =
-parisc-linux@lists.parisc-linux.org</FONT>
-<BR><FONT SIZE=3D2>Message-ID: =
-&lt;40153110000001C0@ocpmta2.freegates.net&gt;</FONT>
-<BR><FONT SIZE=3D2>Content-Type: text/plain; =
-charset=3D&quot;ISO-8859-1&quot;</FONT>
-</P>
-<BR>
-<BR>
-
-<P><FONT SIZE=3D2>&gt; +&nbsp;&nbsp;&nbsp;&nbsp; if =
-((PAGE0-&gt;mem_cons.cl_class !=3D CL_DUPLEX) &amp;&amp; =
-!PAGE0-&gt;mem_kbd.iodc_io)</FONT>
-<BR><FONT SIZE=3D2>&gt;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;</FONT>
-<BR><FONT SIZE=3D2>Right Matthew this case is nearly impossible (may be =
-excepted if disconected</FONT>
-<BR><FONT SIZE=3D2>the usb kbd during the boot), it would means that my =
-pdc_console is not a</FONT>
-<BR><FONT SIZE=3D2>serial one (ie graphic([01])) but no usb kdb found, =
-so in that case pdc would</FONT>
-<BR><FONT SIZE=3D2>switch console automaticaly to serial.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>I would just still check the case when I have an usb =
-kbd (I would have to</FONT>
-<BR><FONT SIZE=3D2>recover one) but the pdc console is setup to serial =
-port (eg no graphic screen</FONT>
-<BR><FONT SIZE=3D2>available) just for an output screen without input =
-kbd? </FONT>
-</P>
-
-<P><FONT SIZE=3D2>Thanks for your attention and remarks,</FONT>
-<BR><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp; Joel</FONT>
-</P>
-<BR>
-
-<P><FONT =
-SIZE=3D2>---------------------------------------------------------------=
-----------</FONT>
-<BR><FONT SIZE=3D2>Tiscali ADSL: 12 mois =E0 29,50 &#8364;/mois! =
-L'Internet rapide, c'est pour tout</FONT>
-<BR><FONT SIZE=3D2>le monde.</FONT>
-<BR><FONT SIZE=3D2><A =
-HREF=3D"http://reg.tiscali.be/default.asp?lg=3Dfr" =
-TARGET=3D"_blank">http://reg.tiscali.be/default.asp?lg=3Dfr</A></FONT>
-</P>
-<BR>
-<BR>
-<BR>
-
-<P><FONT SIZE=3D2>------------------------------</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Message: 3</FONT>
-<BR><FONT SIZE=3D2>Date: Mon, 26 Jan 2004 19:38:50 +0100</FONT>
-<BR><FONT SIZE=3D2>From: &quot;Joel Soete&quot; =
-&lt;soete.joel@tiscali.be&gt;</FONT>
-<BR><FONT SIZE=3D2>Subject: Re: [parisc-linux] A fix for B2k and =
-CONFIG_PDC_CONSOLE pb</FONT>
-<BR><FONT SIZE=3D2>To: &quot;Matthew Wilcox&quot; =
-&lt;willy@debian.org&gt;</FONT>
-<BR><FONT SIZE=3D2>Cc: Christoph Plattner =
-&lt;christoph.plattner@gmx.at&gt;,&nbsp;&nbsp;&nbsp;&nbsp; Grant =
-Grundler</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
-SIZE=3D2>&lt;grundler@parisc-linux.org&gt;,&nbsp;&nbsp;&nbsp; =
-parisc-linux@lists.parisc-linux.org</FONT>
-<BR><FONT SIZE=3D2>Message-ID: =
-&lt;4015311000000204@ocpmta2.freegates.net&gt;</FONT>
-<BR><FONT SIZE=3D2>Content-Type: text/plain; =
-charset=3D&quot;ISO-8859-1&quot;</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Sorry for auto reply, but I just find back the right =
-kdb and:</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt;I would just still check the case when I have an =
-usb kbd (I would have to</FONT>
-<BR><FONT SIZE=3D2>&gt;recover one) but the pdc console is setup to =
-serial port (e</FONT>
-<BR><FONT SIZE=3D2>&gt;no graphic screen available) just for an output =
-screen without input kbd?</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>That case is also impossible, the console setup as =
-serial_1 (eg) is always</FONT>
-<BR><FONT SIZE=3D2>CL_DUPLEX :(</FONT>
-</P>
-
-<P><FONT SIZE=3D2>I will so review my patch.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Thanks for all,</FONT>
-<BR><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp; Joel</FONT>
-</P>
-<BR>
-
-<P><FONT =
-SIZE=3D2>---------------------------------------------------------------=
-----------</FONT>
-<BR><FONT SIZE=3D2>Tiscali ADSL: 12 mois =E0 29,50 &#8364;/mois! =
-L'Internet rapide, c'est pour tout</FONT>
-<BR><FONT SIZE=3D2>le monde.</FONT>
-<BR><FONT SIZE=3D2><A =
-HREF=3D"http://reg.tiscali.be/default.asp?lg=3Dfr" =
-TARGET=3D"_blank">http://reg.tiscali.be/default.asp?lg=3Dfr</A></FONT>
-</P>
-<BR>
-<BR>
-<BR>
-
-<P><FONT SIZE=3D2>------------------------------</FONT>
-</P>
-
-<P><FONT =
-SIZE=3D2>_______________________________________________</FONT>
-<BR><FONT SIZE=3D2>parisc-linux mailing list</FONT>
-<BR><FONT SIZE=3D2>parisc-linux@lists.parisc-linux.org</FONT>
-<BR><FONT SIZE=3D2><A =
-HREF=3D"http://lists.parisc-linux.org/mailman/listinfo/parisc-linux" =
-TARGET=3D"_blank">http://lists.parisc-linux.org/mailman/listinfo/parisc-=
-linux</A></FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>End of parisc-linux Digest, Vol 2, Issue 33</FONT>
-<BR><FONT SIZE=3D2>*******************************************</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_003_01C3E43E.A9554970--
+Hi all,
+
+When I was trying to bring up PA-Linux-2.4 on some of the newer boxes, I
+discovered that reads/writes from the PCI config space were failing (
+system crashes and hangs during the boot). Currently, reads and writes
+to the config space happen through memory loads and stores to PCI config
+addresses directly  (lba_cfg_[read|write]##size in lba_pci.c ). Grant
+Grundler advised me to use PDC_PAT_IO calls instead, for PAT based
+systems, since they are more reliable and take care of border cases on
+newer systems. I have made the changes and tested them on an L-Class
+system. I am posting the diff of the files I have changed. The changes
+have been made to three files:
+
+1. arch/parisc/kernel/firmware.c - Rev 1.47
+2. arch/parisc/kernel/lba_pci.c - Rev 1.54
+3. include/asm-parisc/pdc.h - Rev 1.48
+
+Kindly let me know your comments:
+
+--------------------START------------------------------------------------------------------------------
+
+--- lba_pci.c.1.54       Fri Jan 23 15:47:41 2004
++++ lba_pci.c.modified   Fri Jan 23 15:53:15 2004
+@@ -504,6 +504,13 @@ lba_rd_cfg(struct lba_device *d, u32 tok
+        return(data);
+ }
+
++#ifdef __LP64__
++#define PAT_CFG_READ(a,b,c)    pdc_pat_io_pci_cfg_read(a,b,c)
++#define PAT_CFG_WRITE(a,b,c)   pdc_pat_io_pci_cfg_write(a,b,c)
++#else
++#define PAT_CFG_READ(a,b,c)
++#define PAT_CFG_WRITE(a,b,c)
++#endif
+
+ #define LBA_CFG_RD(size, mask) \
+ static int lba_cfg_read##size (struct pci_dev *dev, int pos, u##size
+*data) \
+@@ -512,6 +519,21 @@ static int lba_cfg_read##size (struct pc
+        u32 local_bus = (dev->bus->parent == NULL) ? 0 :
+dev->bus->secondary; \
+        u32 tok = LBA_CFG_TOK(local_bus,dev->devfn); \
+  \
++       if (is_pdc_pat()) { \
++               int ret; \
++               tok = LBA_CFG_TOK(dev->bus->number,dev->devfn); \
++               ret = PAT_CFG_READ((tok | pos ), \
++                                        sizeof(u##size), (u##size *)
+data); \
++               if ( ret == 0 ) { \
++                       DBG_CFG("%s(%s+%2x) -> 0x%x (c)\n",
+__FUNCTION__, dev->slot_name, pos, *data
+); \
++                       return(*data == (u##size) -1); \
++               } else { \
++                       DBG_CFG("LBA: CFG read failed: ret = %d,
+d->hba.base_addr = 0x%lx\n", \
++                                               ret, d->hba.base_addr );
+\
++                       return (1); \
++               } \
++       } \
++ \
+ /* FIXME: B2K/C3600 workaround is always use old method... */ \
+        /* if (!LBA_TR4PLUS(d) && !LBA_SKIP_PROBE(d)) */ { \
+                /* original - Generate config cycle on broken elroy \
+@@ -611,6 +633,11 @@ static int lba_cfg_write##size (struct p
+        } \
+  \
+        DBG_CFG("%s(%s+%2x) = 0x%x (c)\n", __FUNCTION__, dev->slot_name,
+pos, data); \
++       if (is_pdc_pat()) { \
++               tok = LBA_CFG_TOK(dev->bus->number,dev->devfn); \
++               PAT_CFG_WRITE((tok | pos ), sizeof(u##size), (u##size
+*)&data); \
++               return 0; \
++       } \
+        /* Basic Algorithm */ \
+        LBA_CFG_TR4_ADDR_SETUP(d, tok | pos); \
+        WRITE_REG##size(data, d->hba.base_addr + LBA_PCI_CFG_DATA + (pos
+& mask)); \
+-------------------------------------END---------------------------------------------------------------
+
+------------------------------------START-------------------------------------------------------------
+
+--- firmware.c.1.47      Fri Jan 23 16:57:51 2004
++++ firmware.c.modified   Tue Jan 27 12:32:43 2004
+@@ -1035,6 +1035,46 @@ int pdc_pat_pd_get_addr_map(unsigned lon
+
+        return retval;
+ }
++
++/**
++ * pdc_pat_io_pci_cfg_read - Read PCI configuration space.
++ * @pci_addr: PCI configuration space address for which the read
+request is being made.
++ * @pci_size: Size of read in bytes. Valid values are 1, 2, and 4.
++ * @mem_addr: Pointer to return memory buffer.
++ *
++ */
++int pdc_pat_io_pci_cfg_read(unsigned long pci_addr, int pci_size, void
+*mem_addr)
++{
++       int retval;
++       spin_lock_irq(&pdc_lock);
++       retval = mem_pdc_call(PDC_PAT_IO, PDC_PAT_IO_PCI_CONFIG_READ,
+__pa(pdc_result),
++                             pci_addr, pci_size);
++       memcpy((char *)mem_addr, (char *) ((char *)pdc_result +
+(sizeof(unsigned long) - pci_size))
+, pci_size);
++       spin_unlock_irq(&pdc_lock);
++
++       return retval;
++}
++
++/**
++ * pdc_pat_io_pci_cfg_write - Retrieve information about memory address
+ranges.
++ * @pci_addr: PCI configuration space address for which the write
+request is being made.
++ * @pci_size: Size of write in bytes. Valid values are 1, 2, and 4.
++ * @value: Pointer to 1, 2, or 4 byte value in low order end of
+argument to be
++ *         written to PCI Config space.
++ *
++ */
++int pdc_pat_io_pci_cfg_write(unsigned long pci_addr, int pci_size, void
+*value)
++{
++       int retval;
++       unsigned long *val_ptr;
++       spin_lock_irq(&pdc_lock);
++       memcpy((char *)((char *)val_ptr + (sizeof(unsigned long) -
+pci_size)), (char *)value, pci_si
+ze);
++       retval = mem_pdc_call(PDC_PAT_IO, PDC_PAT_IO_PCI_CONFIG_WRITE,
+pci_addr,
++                             pci_size, *val_ptr);
++       spin_unlock_irq(&pdc_lock);
++
++       return retval;
++}
+ #endif /* __LP64__ */
+-------------------------------------END---------------------------------------------------------------
+
+------------------------------------START-------------------------------------------------------------
+
+--- pdc.h.1.48   Fri Jan 23 16:57:52 2004
++++ pdc.h.modified        Fri Jan 23 12:21:46 2004
+@@ -972,6 +972,8 @@ int pdc_pat_get_irt_size(unsigned long *
+ int pdc_pat_get_irt(void *r_addr, unsigned long cell_num);
+ int pdc_pat_pd_get_addr_map(unsigned long *actual_len, void *mem_addr,
+                            unsigned long count, unsigned long offset);
++int pdc_pat_io_pci_cfg_read(unsigned long pci_addr, int pci_size, void
+*mem_addr);
++int pdc_pat_io_pci_cfg_write(unsigned long pci_addr, int pci_size, void
+*value);
+
+ /******************************************************************** *
+
+ *PDC_PAT_CELL[Return Cell Module] memaddr[0] conf_base_addr
+-------------------------------------END---------------------------------------------------------------
+
+A couple of questions:
+1. In the definition of 'pdc_pat_io_pci_cfg_read( )' and
+'pdc_pat_io_pci_cfg_write( )' above, can I  use 'cpu_to_le64( )' kind of
+function instead of ordering the bytes manually in the 'memcpy( )'?
+2. Can these changes be propagated to 2.6 also?
+
+Thanks,
+Naresh.
