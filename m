@@ -1,33 +1,87 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA00866
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Sep 1999 07:27:08 -0600
-Date: Tue, 28 Sep 1999 15:26:58 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: John Delisle <jdelisle@oasis.novia.net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Will it run Linux??
-Message-ID: <19990928152658.A20734@mencheca.ch.genedata.com>
-References: <Pine.GSO.4.10.9909221240200.14611-100000@oasis.novia.net>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA01137
+	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Sep 1999 08:48:16 -0600
+Message-ID: <19990928144846.10298.rocketmail@send205.yahoomail.com>
+Date: Tue, 28 Sep 1999 07:48:46 -0700 (PDT)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
+To: parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.GSO.4.10.9909221240200.14611-100000@oasis.novia.net>; from John Delisle on Wed, Sep 22, 1999 at 12:50:49PM -0500
+Subject: [parisc-linux] Booting from tape
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Sep 22, 1999 at 12:50:49PM -0500, John Delisle wrote:
-> I run many linux servers from my company and at home.  We have an HP 9000
-> 800/H50 and an 800/G40.  Can I run linux on it?  If so, is there a
-> FAQ/howto or something? Where do I get it?
+I know that this is extremely low priority but...
 
-Linux/PARISC isn't in a usable state yet.  There is more chance of it
-eventually running on the H50 than the G40, but both are likely to be
-low-priority projects (unless someone wants to sponsor them :-)
+I have tried to boot the linux kernel from a SCSI DDS
+tape (copied via dd if=Image of=/dev/rmt/0m bs=512).
+The same kernel (cvs tree from today) boots
+sucessfully via rbootd on my 715/33. Here is the
+console log:
 
-> I'd really rather run linux than hpux.
+              (c) Copyright Hewlett-Packard Company,
+1991, 1992
+Portions of this code are (c) Copyright Samsung
+Electronics Co., Ltd, 91, 92
 
-What do you think is motivating the port?  :-)
+PDC ROM rev. 1.4
+IODC ROM rev. 1.2
+48 MB of memory have been configured.
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+
+Selecting a system to boot.
+To stop selection process, press and hold the ESCAPE
+key.
+
+Selection process stopped.
+
+Searching for Potential Boot Devices.
+To terminate search, press and hold the ESCAPE key.
+
+Device Selection      Device Path              Device
+Type
+----------------------------------------------------------------------------
+
+P0                    scsi.6.0                 HP     
+C3324A
+P1                    scsi.3.0                 HP     
+C2490AM
+P2                    scsi.0.0                 HP     
+HP35480A
+
+
+
+b)    Boot from specified device
+s)    Search for bootable devices
+a)    Enter Boot Administration mode
+x)    Exit and continue boot sequence
+?)    Help
+
+Select from menu: b p2
+
+Trying scsi.0.0
+Boot path initialized.
+Attempting to load IPL.
+
+Failed I/O operation with scsi.0.0
+ENTRY_IO status = -10
+
+00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+00004F04 000000FF FF0009BF 00000000 800100DC 00000000
+0025F000 00000400
+98080000 00000000 00008C60 00000000 000000FF 00000000
+00000000 00000000
+
+
+Searching for Potential Boot Devices.
+
+Should this work or is this a current limitation ?
+
+Ulrich
+
+
+__________________________________________________
+Do You Yahoo!?
+Bid and sell for free at http://auctions.yahoo.com
