@@ -1,58 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id A56BD484A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Sep 2001 12:42:10 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Bieri Stefan <Stefan.Bieri@garaventa.com>,
-	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] HP-Hil Keyboard
-Date: Fri, 14 Sep 2001 20:41:42 +0200
-References: <AB7A68BE49F8D411B5D4001083FD53042EEF6F@EXCHANGE>
-In-Reply-To: <AB7A68BE49F8D411B5D4001083FD53042EEF6F@EXCHANGE>
+Received: from onet2.cup.hp.com (onet2.cup.hp.com [15.255.208.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE4E748CD
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Sep 2001 13:27:04 -0600 (MDT)
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by onet2.cup.hp.com (Postfix) with ESMTP id A0D2118D31
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Sep 2001 12:27:03 -0700 (PDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3BA25A1B.B173A828@esiee.fr>
+Date: Fri, 14 Sep 2001 21:27:23 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-Message-Id: <20010914184210.A56BD484A@dsl2.external.hp.com>
+To: Hppa <debian-hppa@lists.debian.org>,
+	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] The keyboard...
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Stefan,
+Hi all,
 
-This is a known problem, into which nobody has looked yet.
-Maybe you want to investigate yourself and report us the bug ?
-I assume it's a bug somewhere in the X keyboard tables...
+	I'm sorry but this message is not a new release :( Anyway, since I
+can't get access to parisc-linux.org, I would like to know if someone
+could confirm me that this is a good behaviour:
 
-Furthermore the current X fbdev-driver has a bug with the color-table
-(palette) which aren't solved yet either :-(
+In boot_admin, you hit some keys and then you hit Esc. After that, the
+console do not print any more characters. You have to hit Enter key to
+get back to a new command line and you can do anything then.
 
-Helge
+Thanks for answering to this, Thomas
+ESIEE Team
 
-On Friday 14 September 2001 10:22, Bieri Stefan wrote:
-> Hi,
->
-> I have installed the parisc-linux with X-Window System. The Problem I have,
-> I've got a hp hil keyboard, that don't function without problems. I have a
-> german layout. the problem I have, the "i" and the "o" keys do not
-> function.
->
-> Can you help me ?
->
-> Best regards,
-> Bieri Stefan
-> GARAVENTA AG
->
-> > Mit freundlichen Grüssen
-> > GARAVENTA AG
-> > Stefan Bieri
-> >
-> > Telefon:	+41 41 859 11 11
-> > Telefon (direkt):	+41 41 859 11 61
-> > Fax:		+41 41 859 11 00
-> > Email:		stefan.bieri@garaventa.com
-> >
-> > Besuchen Sie uns doch auf dem Internet unter:
-> > http://www.garaventa.com
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+PS: Since I can't read from p-l.org, could reply to debian mailing-list.
