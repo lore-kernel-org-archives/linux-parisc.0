@@ -1,60 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C14D4482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 13:07:34 -0600 (MDT)
-Message-Id: <200105231859.MAA00753@puffin.external.hp.com>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel panic 
-In-Reply-To: Your message of "Wed, 23 May 2001 02:53:15 MDT."
-             <200105230853.CAA07709@udlkern.fc.hp.com>
-Date: Wed, 23 May 2001 12:59:57 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 96A11482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 13:27:24 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 152e4L-0003XI-00; Wed, 23 May 2001 20:13:17 +0100
+Date: Wed, 23 May 2001 20:13:17 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: John Marvin <jsm@udlkern.fc.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel panic
+Message-ID: <20010523201317.X23718@parcelfarce.linux.theplanet.co.uk>
+References: <200105230853.CAA07709@udlkern.fc.hp.com> <200105231859.MAA00753@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200105231859.MAA00753@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Wed, May 23, 2001 at 12:59:57PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-John Marvin wrote:
-...
-> OK, the problem is that you are getting into a interrupt loop.
-> I see the following repeated sequence on the stack:
-> 
-> 	intr_extint         <-----------+
-> 	do_irq_mask                     |
-> 	do_irq                          |
-> 	dino_isr                        |
-> 	sym53c8xx_intr                  |
-> 	scsi_old_done                   |
-> 	rw_intr                         |
-> 	scsi_io_completion              |
-> 	__scsi_end_request              |
-> 	scsi_queue_next_request         |
-> 	scsi_request_fn                 |
-> 	scsi_dispatch_cmd               |
-> 	<NEXT INTERRUPT>    >-----------+
+On Wed, May 23, 2001 at 12:59:57PM -0600, Grant Grundler wrote:
+> Exactly. But if the driver is mucking with IRQ enable/disable,
+> does that mean the enable/disable code has to keep reference counts?
+> Don't recall any archs doing that when we did the initial implementation. 
 
-Uh oh. that's a bug. From irq.c:do_irq_mask() 
+cli -> disables irqs on all processors
+__cli -> disables irqs on local processor
+sti -> enables irqs on all processors
+__sti -> enable irqs on local processor
 
-...
-                mask_irq(irq_num);
-                do_irq(&region->action[irq], irq_num, regs);
-                unmask_irq(irq_num);
-...
+spin_lock_irqsave -> disables interrupts locally, puts the previous
+state into the state variable you supplied and acquires the spinlock
+spin_lock_irqrestore -> releases the spinlock and restores previous
+state from state variable
 
-So it shouldn't be possible to take another interrupt
-while in do_irq().
+no need to keep enable/disable counts, the previous state gets stored
+for you.  if you're using cli and sti inappropriately, you lose.
 
-...
-> to Richard Hirst, and he said a later version of the sym53c8xx driver
-> processes things differently (using scsi_done instead of scsi_old_done)
-> so that this shouldn't happen. However, I believe it shouldn't be
-> happening anyway, because we should be preventing the isr from being
-> re-entered in the general irq handling code.
-
-Exactly. But if the driver is mucking with IRQ enable/disable,
-does that mean the enable/disable code has to keep reference counts?
-Don't recall any archs doing that when we did the initial implementation. 
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Revolutions do not require corporate support.
