@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnmg1.net.external.hp.com (bbnnmg1.net.external.hp.com [155.208.254.184])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65F0E482A
-	for <parisc-linux@parisc-linux.org>; Fri,  9 Aug 2002 03:05:23 -0600 (MDT)
-Received: from meuse.BELGIUM.HP.COM (meuse.belgium.hp.com [15.160.6.250])
-	by bbnmg1.net.external.hp.com (Postfix) with SMTP id 1500D48B
-	for <parisc-linux@parisc-linux.org>; Fri,  9 Aug 2002 11:05:18 +0200 (METDST)
-Message-ID: <FD93D5954435D411BBDB00D0B747A8C106212D87@herge.belgium.hp.com>
-From: "MONTESANTI,DOMENICO (HP-Belgium,ex1)" <domenico_montesanti@hp.com>
-To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
-Date: Fri, 9 Aug 2002 11:05:14 +0200 
-MIME-Version: 1.0
+Received: from Liming Zhu (unknown [61.177.34.149])
+	by dsl2.external.hp.com (Postfix) with SMTP id 5F317482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Aug 2002 05:05:47 -0600 (MDT)
+From: "GATOR" <GATOR@GATOR.COMM>
+To: <parisc-linux@lists.parisc-linux.org>
+Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01C23F83.DFA7FFB0"
-Subject: [parisc-linux] palinux-0.9.3.iso installation :Help
+	boundary="= Multipart Boundary 0809021905"
+Date: Fri, 9 Aug 2002 19:05:33 +0800
+Message-Id: <20020809110547.5F317482A@dsl2.external.hp.com>
+Subject: [parisc-linux] 免费下载密码专家、填表助手！轻松注册、轻松登陆！
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,291 +21,144 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multipart MIME message.
 
-------_=_NextPart_000_01C23F83.DFA7FFB0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C23F83.DFA7FFB0"
+--= Multipart Boundary 0809021905
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
 
+   免费下载密码专家、填表助手！轻松注册、轻松登陆！
 
-------_=_NextPart_001_01C23F83.DFA7FFB0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+    您是否有很多网站的e-Mail、BBS、聊天室和其他等等帐户和密码？您是否能够全部的记注他们？Gator密码管理员可以帮助您完成这些，有了它您就再也不用去记这些枯燥的东东了，所有的用户名和密码全部由Gator帮您整理和记忆，决不会错，更绝的是在注册成为某网站的会员时，只须轻轻一按可在一秒钟内把所有个人资料填写完毕！而且Gator通过了各种安全机构和隐私保护机构的认证，您的安全可以绝对的被保证！
+     
+    这个软件是完全免费的，下载方法及地址在附件中:)
 
-Hi,
- 
-To start in the linux world,I am trying to install the palinux on my
-workstation (HP9000/B160 L).
-I performed the following steps:
- 
-Downloaded de image from the servercoe.atl.hp.com web site
-Burnt the image on a CD
- 
-and I am stuck here as this CD looks like it is not bootable.
- 
-The error message is:
- 
-IPL error: bad LIF magic.
-Error Reading IPL
- 
-Could you please advise/help me.
- 
-Many thanks,
- 
-Best regards,
+    注意：这个软件大概有300K，如果是拨号用户的可能需要几分钟~~
  
 
-Domenico Montesanti 
-HP Managed Services - Delivery EMEA/WISO
-UX/MPE Production Engineering
-Belgium Office 
-www.hp.be <http://www.hp.be>  
- <http://www.hp.com> 
-Email: domenico_montesanti@hp.com <mailto:domenico_montesanti@hp.com> 
- 
-Fax:  +32 2 778 33 49 
-Telnet: 710-3340
-Tel:  +32 2 778 33 40 
- 
-
-------_=_NextPart_001_01C23F83.DFA7FFB0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML xmlns=3D"http://www.w3.org/TR/REC-html40" xmlns:v =3D=20
-"urn:schemas-microsoft-com:vml" xmlns:o =3D=20
-"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
-"urn:schemas-microsoft-com:office:word"><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<TITLE>Domenico Montesanti MPE-UX Engineering</TITLE>
-
-<META content=3DWord.Document name=3DProgId>
-<META content=3D"MSHTML 5.50.4727.700" name=3DGENERATOR>
-<META content=3D"Microsoft Word 9" name=3DOriginator><LINK=20
-href=3D"./domenico_files/filelist.xml" rel=3DFile-List><LINK=20
-href=3D"./domenico_files/editdata.mso" rel=3DEdit-Time-Data><!--[if =
-!mso]>
-<STYLE>v\:* {
-	BEHAVIOR: url(#default#VML)
-}
-o\:* {
-	BEHAVIOR: url(#default#VML)
-}
-w\:* {
-	BEHAVIOR: url(#default#VML)
-}
-.shape {
-	BEHAVIOR: url(#default#VML)
-}
-</STYLE>
-<![endif]--><!--[if gte mso 9]><xml>
- <o:DocumentProperties>
-  <o:Author>Domenico Montesanti</o:Author>
-  <o:LastAuthor>Domenico Montesanti</o:LastAuthor>
-  <o:Revision>6</o:Revision>
-  <o:TotalTime>13</o:TotalTime>
-  <o:Created>2002-05-23T13:00:00Z</o:Created>
-  <o:LastSaved>2002-05-29T06:19:00Z</o:LastSaved>
-  <o:Pages>1</o:Pages>
-  <o:Words>65</o:Words>
-  <o:Characters>374</o:Characters>
-  <o:Company>Hewlett-Packard</o:Company>
-  <o:Lines>3</o:Lines>
-  <o:Paragraphs>1</o:Paragraphs>
-  <o:CharactersWithSpaces>459</o:CharactersWithSpaces>
-  <o:Version>9.4402</o:Version>
- </o:DocumentProperties>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:Zoom>75</w:Zoom>
- </w:WordDocument>
-</xml><![endif]-->
-<STYLE>@font-face {
-	font-family: Verdana;
-}
-@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in 1.25in; =
-mso-header-margin: .5in; mso-footer-margin: .5in; mso-paper-source: 0; =
-}
-P.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; =
-mso-style-parent: ""; mso-pagination: widow-orphan; =
-mso-fareast-font-family: "Times New Roman"
-}
-LI.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; =
-mso-style-parent: ""; mso-pagination: widow-orphan; =
-mso-fareast-font-family: "Times New Roman"
-}
-DIV.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; =
-mso-style-parent: ""; mso-pagination: widow-orphan; =
-mso-fareast-font-family: "Times New Roman"
-}
-A:link {
-	COLOR: blue; TEXT-DECORATION: underline; text-underline: single
-}
-SPAN.MsoHyperlink {
-	COLOR: blue; TEXT-DECORATION: underline; text-underline: single
-}
-A:visited {
-	COLOR: blue; TEXT-DECORATION: underline; text-underline: single
-}
-SPAN.MsoHyperlinkFollowed {
-	COLOR: blue; TEXT-DECORATION: underline; text-underline: single
-}
-DIV.Section1 {
-	page: Section1
-}
-</STYLE>
-<!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext=3D"edit" spidmax=3D"1027"/>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext=3D"edit">
-  <o:idmap v:ext=3D"edit" data=3D"1"/>
- </o:shapelayout></xml><![endif]--></HEAD>
-<BODY lang=3DEN-US style=3D"tab-interval: .5in" vLink=3Dblue =
-link=3Dblue>
-<DIV class=3DSection1><![if !supportEmptyParas]><![endif]>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Hi,</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>To start in the linux world,I am trying to =
-install the=20
-palinux on my workstation (HP9000/B160 L).</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>I&nbsp;performed the following=20
-steps:</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Downloaded de image from the =
-servercoe.atl.hp.com web=20
-site</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Burnt the image on a =
-CD</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>and I am stuck here as this CD looks like it =
-is not=20
-bootable.</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>The error message =
-is:</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>IPL error: bad LIF =
-magic.</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Error Reading IPL</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Could you please advise/help=20
-me.</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Many thanks,</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002>Best regards,</SPAN></FONT></FONT></P>
-<P class=3DMsoNormal><FONT face=3DArial><FONT size=3D2><SPAN=20
-class=3D302265808-09082002></SPAN></FONT></FONT>&nbsp;</P>
-<TABLE style=3D"mso-cellspacing: 0in; mso-padding-alt: 0in 0in 0in 0in" =
-
-cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR>
-    <TD=20
-    style=3D"PADDING-RIGHT: 0in; PADDING-LEFT: 0in; PADDING-BOTTOM: =
-0in; PADDING-TOP: 0in"=20
-    noWrap>
-      <P class=3DMsoNormal><B><SPAN=20
-      style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">Domenico=20
-      Montesanti</SPAN></B><SPAN style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Verdana">=20
-      <BR>HP Managed Services &#8211; Delivery =
-EMEA/WISO<o:p></o:p></SPAN></P>
-      <P class=3DMsoNormal><SPAN=20
-      style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">UX/MPE Production =
-
-      Engineering<o:p></o:p></SPAN></P>
-      <P class=3DMsoNormal><SPAN=20
-      style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">Belgium Office =
-<BR><A=20
-      href=3D"http://www.hp.be">www.hp.be</A> </SPAN></P></TD>
-    <TD=20
-    style=3D"PADDING-RIGHT: 0in; PADDING-LEFT: 0in; PADDING-BOTTOM: =
-0in; WIDTH: 105pt; PADDING-TOP: 0in"=20
-    noWrap width=3D140>
-      <P class=3DMsoNormal><A href=3D"http://www.hp.com"><SPAN=20
-      style=3D"TEXT-DECORATION: none; text-underline: none"><IMG =
-id=3D_x0000_i1025=20
-      height=3D131 src=3D"cid:302265808@09082002-1953" width=3D140=20
-      border=3D0></SPAN></A></P></TD>
-    <TD=20
-    style=3D"PADDING-RIGHT: 0in; PADDING-LEFT: 0in; PADDING-BOTTOM: =
-0in; PADDING-TOP: 0in"=20
-    noWrap>
-      <P class=3DMsoNormal><SPAN=20
-      style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">Email: <A=20
-      =
-href=3D"mailto:domenico_montesanti@hp.com">domenico_montesanti@hp.com</A=
-><BR><SPAN=20
-      style=3D"mso-spacerun: yes">&nbsp;</SPAN><BR>Fax:<SPAN=20
-      style=3D"mso-spacerun: yes">&nbsp; </SPAN>+32 2 778 33 49=20
-      <o:p></o:p></SPAN></P>
-      <P class=3DMsoNormal><SPAN=20
-      style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">Telnet:=20
-      710-3340<BR>Tel:<SPAN style=3D"mso-spacerun: yes">&nbsp; =
-</SPAN>+32 2 778 33=20
-      40 </SPAN></P></TD></TR></TBODY></TABLE>
-<P=20
-class=3DMsoNormal><![if =
-!supportEmptyParas]><![endif]>&nbsp;<o:p></o:p></P></DIV></BODY></HTML>
-
-------_=_NextPart_001_01C23F83.DFA7FFB0--
-
-------_=_NextPart_000_01C23F83.DFA7FFB0
-Content-Type: image/gif;
-	name="hp.gif"
+--= Multipart Boundary 0809021905
+Content-Type: application/octet-stream;
+	name="下载方法.htm"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment;
-	filename="hp.gif"
-Content-ID: <302265808@09082002-1953>
+	filename="下载方法.htm"
 
-R0lGODdhjACDALMAAP////f39+/v7+Xl597e3tTU1cvLy8DAwK+wsZSVl2l1jy5DfCo7dSk5eyk5
-cwYGBiwAAAAAjACDAEAE/xDISau9OOvNu/9gKI5kaZ5oqq5s675wLM90PR9Mru98nycGhW5hwPmO
-yCGBknAonAyFbVVI8hSGLEEgSeyyhYBHaNVhDctprFoGiyXG3CHOAHp1CDrQwCUnz2lqL2xlBwYB
-hAwIBgtmBgh/WVwSfpFogjCJZTsIFgGNP5IVBJWbOYCYMwEDBK2ur7CvrAMAA7YDkwK3u7y9vrgC
-b6kxCVIWCcUKk0wJAAcKgRPFzRcK0xcOD8bD3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9BiapotZ
-RTt7ywABAQQQeGbqihYABrQJUPCAmrt7PoiImpAkwZKKS0odQVVPAsQeWf9oUXJ0Rw6jIQZKMnAz
-0grHjh+PIFgCsOY/MQH8SCzA682ngi870im4g4jKOaCIIlkwx4DIjlChZsPmAMCDqse0XUhwVasF
-bQe8UmAYtazZs2jTql3Ltq3bt3Djyp1Lt67du3jz6t3LIWaZBQkMHTUQBoCAA8WU9jgjpmo2BwKw
-PlSaD00wP2eeYgigclPmqH53nOEzIZECBIsoICrAunUBaaY+Qw2dI5/mSo84BUEJCQ+aAZ5Dgi4j
-uxa/3TmI6EEeRTgAjYudw9wEJM3R3qEqHcCuKMsb4MSl16Od/EAaAvr4CEgvWoF79/kCdUZSfLxS
-phnoLCp8TGl9euT9gYD/GDodVAAC0BH1H0yoNejggxDm8ch2qBVBGIURZgihIYZYxteHJjDwQDQg
-yjCVBQ5UdZUFBHS1zQSPPfDABWCJNQFZJeao44489ujjj0AGKeSQRBZp5JFIJqnkkkw26eSTUEYp
-5ZRUVmnllVhmqWU3JymWHEI7ZOSlDwoIc6OL/rQz5g5ziPaIe2tGN4kDBqiIwIzvBLhYh8wxdck/
-BBRQRIKeGUJLHZA9kBA8evoGxgDc7WemaqQopoAhBIhBihMHxNNoZVsAQMBxpHFAKJmYTiqPnh0W
-sExSC2YwamypzoaPFsLMd8obukYhBnjE1TpdGXtEYwA/3AWWbLJODbWR/7D2teHdBAG4iRsdWGAm
-XFL0QQvgXwfdiJJKixQ4WGGnnuLtPORJx912xx213CEt/bHuqpssItKsocC6jw5A+OvUBNw+i4aq
-ngb3GgD+4tZlcwUSNgF33R5sK3V8qJSbb6d2+B2tFg8bnKaBFpCpAKwREGl6+rjqEVD3JlwQEWmq
-5ubAWykYM6OKEYFBxCT+06u9IUfrpQILw6Ebf7UMHWzR9cSpA0/HpevfzvE4S1TAjlAc52kdagYV
-yiyXbXZ6rqLt0dlsl91qqD0ivGWQAs3dBQPj4NjWiRVkI+OLlIwoY1bZAC6BjDJ2UgHibvFNQYpW
-Sfa4jDVng5jhVl1qYyzgbxVxQRbOGICBeRhcc4F5hwU9kN2st+7667DHLvvstNdu++2456777h9G
-AAA7
+PGh0bWw+DQo8aGVhZD4NCjx0aXRsZT7D4rfRz8LU2Mzuse3W+srWOik8L3Rp
+dGxlPg0KPG1ldGEgaHR0cC1lcXVpdj0iQ29udGVudC1UeXBlIiBjb250ZW50
+PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9Z2IyMzEyIj4NCjxtZXRhIG5hbWU9InJv
+Ym90cyIgY29udGVudD0iYWxsIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+
+DQo8IS0tDQouZm9udHMgeyAgZm9udC1zaXplOiA5cHR9DQphOmFjdGl2ZSB7
+ICBjb2xvcjogI0ZGMDAwMH0NCmE6aG92ZXIgeyAgY29sb3I6ICNGRjAwMDB9
+DQphOmxpbmsgeyAgY29sb3I6ICMwMDAwRkZ9DQphOnZpc2l0ZWQgeyAgY29s
+b3I6ICM2NjY2NjZ9DQotLT4NCjwvc3R5bGU+DQo8L2hlYWQ+DQo8Ym9keSBs
+ZWZ0bWFyZ2luPSIxIiBjbGFzcz0iZm9udHMiIHRvcG1hcmdpbj0iMSIgYmdj
+b2xvcj0iI0U4RjFEMCI+DQo8ZGl2IGFsaWduPSJjZW50ZXIiPiANCiAgIDx0
+YWJsZSB3aWR0aD0iNzAwIiBib3JkZXI9IjAiIGNlbGxzcGFjaW5nPSIwIiBj
+ZWxscGFkZGluZz0iMCIgY2xhc3M9ImZvbnRzIj4NCiAgICA8dHI+DQogICAg
+ICA8dGQ+PGI+PGJyPg0KICAgICAgICAmZ3Q7Jmd0O7zyyvYgPC9iPsnPzfjK
+sbzks6TBy6Os16Ky4bXEzfjVvr7NtuDByy4uLi4uLi4uLsO/tM61x8K8trzS
+qsrkyOvTw7unw/ujrMPcwuu1yNDFz6Kho9XiyLfKtbrcwum3syCjrMvkyLtJ
+Rb/J0tS8x9eh0ruyv7fW0MXPoqOstavV4srHt8ezo9PQz961xKGjz9bU2s7S
+z/K087zSzca89tK7v+7XqNK1vLa1xNbHxNzM7rHtuaS+3y0tLS1HYXRvciEg
+DQogICAgICAgIMv81qez1rbg08O7p6Osv8nS1L2rxOPL+dPQtcfCvLn9tcTN
++NW+tcTTw7unw/ujrMPcwuu1yNDFz6K8x9eho6y1scTj0qq1x8K8yrHL/Lvh
+1ve2r7DvxPqw0dPDu6fD+7rNw9zC68zuusOjrLj8vvi1xMrH1NrXorLhs8nO
+qsSzuPbN+NW+tcS74dSxyrGjrMTj1rvQ68fhx+HSu7C0seO/ydTa0rvD69bT
+xNqw0cv509C1xLj2yMvXysHPtrzM7iANCiAgICAgICAg0LTN6rHPo6zKx7K7
+yse63MnxxubRvaO/tvjH0tXiuPbI7bz+u7nKx8Pit9G1xKOo1rvKx73nw+bJ
+z9PQueO45sz1o6yyu7n9ztLP67TzvNLTprjDv8nS1L3Tyty1xLDJo6kgPGlt
+ZyBzcmM9Imh0dHA6Ly9zZXJ2aWNlLmJmYXN0LmNvbS9iZmFzdC9zZXJ2ZT9i
+Zm1pZD0xMzA3MzU3JmFtcDtzaXRlaWQ9MzgwNzcxNjkmYW1wO2JmcGFnZT0x
+IiBib3JkZXI9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIE5PU0FWRT48YnI+
+DQogICAgICA8L3RkPg0KICAgIDwvdHI+DQogIDwvdGFibGU+DQogIA0KPC9k
+aXY+DQo8dGFibGUgd2lkdGg9IjcwMCIgYm9yZGVyPSIwIiBjZWxsc3BhY2lu
+Zz0iMCIgY2VsbHBhZGRpbmc9IjIiIGNsYXNzPSJmb250cyIgYWxpZ249ImNl
+bnRlciI+DQogIDx0cj4gDQogICAgPHRkPjxiPjxmb250IHNpemU9IjQiPqOo
+0rujqbCy17A8L2ZvbnQ+IDwvYj7V4rj2yO28/ta7xNzU2s/fsLLXsKOhsru5
+/bu5ssUzMDBLo6zO3sv5zr3Asl4wXk9Lo6zPwsPmvbLK9r7fzOW1xLCy17C5
+/bPMo7o8YnI+DQogICAgICA8Yj612tK7sr0mZ3Q7Jmd0OzwvYj48YSBocmVm
+PSJodHRwOi8vc2VydmljZS5iZmFzdC5jb20vYmZhc3QvY2xpY2s/YmZtaWQ9
+MTMwNzM1NyZhbXA7c2l0ZWlkPTM4MDc3MTY5JmFtcDtiZnBhZ2U9MSIgdGFy
+Z2V0PSJfYmxhbmsiPlu147v31eLA7108L2E+o6y78jxiPjxmb250IHNpemU9
+IjMiPqO6PC9mb250PjwvYj6147v31eK49s28seqjujxhIGhyZWY9Imh0dHA6
+Ly9zZXJ2aWNlLmJmYXN0LmNvbS9iZmFzdC9jbGljaz9iZm1pZD0xMzA3MzU3
+JmFtcDtzaXRlaWQ9MzgwNzcxNjkmYW1wO2JmcGFnZT0xIiB0YXJnZXQ9Il9i
+bGFuayI+PGltZyBzcmM9Imh0dHA6Ly93d3cuZ2F0b3IuY29tL2ltYWdlcy9i
+YW5uZXJzL2dhdG9yX2Zvcm1zMl84OHgzMS5naWYiIHdpZHRoPSI4OCIgaGVp
+Z2h0PSIzMSIgYm9yZGVyPSIwIiBhbHQ9IkZpbGxzIG91dCBmb3JtcywgcmVt
+ZW1iZXJzIHBhc3N3b3Jkcy4gR3JhYiBHYXRvciEiPjwvYT6z9s/WyOfPwr3n
+w+ajuiANCiAgICAgIDxicj4NCiAgICAgIDxicj4NCiAgICAgIDxpbWcgc3Jj
+PSJodHRwOi8vd3d3LnBpYzIxLmNvbS9waWM1Mi9nYXRvcl9hLmpwZyIgd2lk
+dGg9IjM1MCIgaGVpZ2h0PSIxODYiIGJvcmRlcj0iMSI+IA0KICAgIDwvdGQ+
+DQogIDwvdHI+DQo8L3RhYmxlPg0KPHRhYmxlIHdpZHRoPSI3MDAiIGJvcmRl
+cj0iMCIgY2VsbHNwYWNpbmc9IjAiIGNlbGxwYWRkaW5nPSIyIiBjbGFzcz0i
+Zm9udHMiIGFsaWduPSJjZW50ZXIiPg0KICA8dHI+IA0KICAgIDx0ZD48Yj61
+2rb+sr0mZ3Q7Jmd0OyA8L2I+teO798nPzbzW0LXELjxpbWcgc3JjPSJodHRw
+Oi8vd3d3LnBpYzIxLmNvbS9waWM1Mi9nYXRvci5qcGciIHdpZHRoPSIxMjUi
+IGhlaWdodD0iNDUiPr3Tz8LAtLHj0qrJ1MnUtci0/cHLo6yyu7n9srvSqtfF
+vLGjrLf+zvHG98Om18XExy4uLi66x7rHo6yyu9K7u+G2+bHju+Gz9s/Wz8LD
+5iANCiAgICAgILXEvq+45r/yPGJyPg0KICAgICAgPGltZyBzcmM9Imh0dHA6
+Ly93d3cucGljMjEuY29tL3BpYzUyL2dhdG9yX2IuZ2lmIiB3aWR0aD0iNDM4
+IiBoZWlnaHQ9IjI5NyI+IA0KICAgIDwvdGQ+DQogIDwvdHI+DQo8L3RhYmxl
+Pg0KPHRhYmxlIHdpZHRoPSI3MDAiIGJvcmRlcj0iMCIgY2VsbHNwYWNpbmc9
+IjAiIGNlbGxwYWRkaW5nPSIyIiBjbGFzcz0iZm9udHMiIGFsaWduPSJjZW50
+ZXIiPg0KICA8dHI+IA0KICAgIDx0ZCBoZWlnaHQ9IjI4MiI+PGI+tdrI/bK9
+Jmd0OyZndDsgPC9iPs7Sw8fRodTxobDKx6Gxo6zV4tH5o6zPtc2zvs2/qsq8
+sLLXsNXiuPbI7bz+wcujrL3nw+bI58/Co7o8YnI+DQogICAgICA8YnI+DQog
+ICAgICA8aW1nIHNyYz0iaHR0cDovL3d3dy5waWMyMS5jb20vcGljNTIvZ2F0
+b3JfYy5naWYiIGJvcmRlcj0iMSI+PGJyPg0KICAgICAgPGJyPg0KICAgICAg
+1NqwstewtcS5/bPM1tCjrMv8u+HSqsfzxOPM7sjr0rvQqbj2yMvQxc+io6zI
+58q1zO6wySjI57n70rvKsbK7xNzIt7aoyOe6zszu0LS/ydLUy+ax48rkyOu8
+uLj206LOxNfWxLijrNLUuvPL5sqxv8nS1NDeuMS1xCmjuyC908/CwLS7ubvh
+0qrE47Cy17AmcXVvdDtPZmZlckNvbXBhbmlvbi4uLi4uLi4uIA0KICAgICAg
+PGJyPg0KICAgICAgsLTXsM3qsc+688jOzvHAuNbQvs274dPQ1eK49s28seo8
+aW1nIHNyYz0iaHR0cDovL3d3dy5waWMyMS5jb20vcGljNTIvZ2F0b3JfZC5n
+aWYiIFdJRFRIPSIxNCIgSEVJR0hUPSIxNCI+IA0KICAgICAgo6y6w8Cyo6y0
+87mmuOazyaOhIDwvdGQ+DQogIDwvdHI+DQo8L3RhYmxlPg0KPHRhYmxlIHdp
+ZHRoPSI3MDAiIGJvcmRlcj0iMCIgY2VsbHNwYWNpbmc9IjAiIGNlbGxwYWRk
+aW5nPSIyIiBjbGFzcz0iZm9udHMiIGFsaWduPSJjZW50ZXIiPg0KICA8dHI+
+IA0KICAgIDx0ZD48YnI+DQogICAgICA8Yj48Zm9udCBzaXplPSI0Ij6jqLb+
+o6nKudPDt723qLyw1vfSqrmmxNw8L2ZvbnQ+PC9iPjxicj4NCiAgICAgIDxi
+cj4NCiAgICAgIKOoMaOp0MXPosi3yM+jujxicj4NCiAgICAgIDxicj4NCiAg
+ICAgIMuru/e/qsq8ssu1pdbQtcTNvLHqxvS2r6Osu+HU2rXnxNTT0s/Cvce1
+xNe0zKzAuNbQs/bP1tK7uPbA4MvG0KHH4M3czbe1xM28seqjrMrXz8jE49Kq
+zerV+7rN17zIt7XEvau49sjL0MXPosrkyOuho7Wlu/fNvLHq1Nqz9s/WtcS9
+58Pm1tCwtKGwVVBEQVRFIA0KICAgICAgTVkgSU5GT6Gxo6zE47/J0tTJ6Lao
+o7pIT01FLbzSzaWholdPUkstuaTX96GiT1RIRVItxuTL/KGiUEFTU1dPUkQt
+w9zC66GiQ1JFRElUIENBUkQt0MXTw7+otcjQxc+ioaPSqtei0uK1xMrHobBT
+dGF0ZS9Qcm92aW5jZaGxxOPSqtGhobBPdGhlciANCiAgICAgIFByb3ZpbmNl
+IG9yIFJlZ2lvbqGxINTaT3RoZXLAuNbQzO7QtMTjtcTKobfd06LOxMP7oaNH
+YXRvctKy1qez1tbQzsSjrMTjv8m9q09USEVSLcbky/zAudbQzO7QtNbQzsSj
+rNLRsbjW0M7EzfjVvteisuGhozxicj4NCiAgICAgIDxicj4NCiAgICAgIKOo
+MqOpv+zL2cSjyr2jujxicj4NCiAgICAgIDxicj4NCiAgICAgINLUuvPE48nP
+zfjSqteisuHN+NW+yrG08r+qR2F0b3KjrMjnxOO1scewzfjSs8rHs6O8+7XE
+16Ky4dKzo6xHYXRvcrvhta+z9tK7uPa0sL/ao6zE49a70qq149K7z8KhsEZJ
+TEwgSU6hsaOsxOO1xM/gudjXysHPvs274czu1NrP4NOmwLjE2qGj0ru8/Ljj
+tqijrLWxyLvE49KqvOyy6dK7z8LKx7fxu7nT0NCpzNi2qLXE0qrX1Ly6zO6j
+rMjnw9zC67XIoaMgDQogICAgICA8YnI+DQogICAgICA8YnI+DQogICAgICCj
+qDOjqSDM2LaoxKPKvaO6IDxicj4NCiAgICAgIDxicj4NCiAgICAgIMjnxOO1
+scewzfjSs8rHsrvKx7Hq17y1xNeisuHSs6Os0rLDu7nYz7WjrMTjvau54rHq
+t8XU2s/g06bAuNbQo6zU2dTaR2F0b3LW0Muru/e21NOmtcTQxc+io6zE47XE
+z+C52NfKwc++zbvhzO7U2s/g06bAuMTaoaM8YnI+DQogICAgICA8YnI+DQog
+ICAgICCjqDSjqcPcwuu8x9Lko7o8YnI+DQogICAgICA8YnI+DQogICAgICC1
+scTj0qq1x8K9xLO49s341b61xNXKu6fKsaOsyOfE47XER2F0b3K/qtfFo6zL
+/Lvh0a/OysTjyse38dKqzObE47zH16HD3MLroaPE47/JyMPL+7zH16HSu9Cp
+s6PTw7XEw9zC66Os1rvSqrK7yb6z/cbkyv2+3aOsvLSx48Tj1tjXsM+1zbOj
+rMTjtcTD3MLr0rKyu7vhtqrKp6GjtbHIu9K70KnW2NKq1cq7p7XEw9zC69fu
+usOyu9KqyMPL+7zH0uShoyANCiAgICAgIDxicj4NCiAgICAgIDxicj4NCiAg
+ICAgIDxiPjxmb250IHNpemU9IjQiPqOoyP2jqSCwssir0NSjujwvZm9udD48
+Zm9udCBzaXplPSIzIj4gPC9mb250PjwvYj48YnI+DQogICAgICA8YnI+DQog
+ICAgICC0y7mry77NqLn9ufq8yrmryM+1xDxmb250IGNvbG9yPSIjMDA5OTMz
+Ij48Yj50cnVzdC08L2I+PC9mb250Pjxmb250IHNpemU9IjQiPjxiPjxmb250
+IGNvbG9yPSIjMDA5OTMzIj5lPC9mb250PjwvYj48L2ZvbnQ+PGZvbnQgY29s
+b3I9IiMwMDk5MzMiPjxiPjwvYj48L2ZvbnQ+yM/WpKOsxOO1xMu9yMvQxc+i
+us3T0LnYw9zC68rHsru74dC5wra1xKGjIA0KICAgIDwvdGQ+DQogIDwvdHI+
+DQo8L3RhYmxlPg0KICA8c2NyaXB0IGxhbmd1YWdlPSJKYXZhU2NyaXB0Ij4N
+Ci8vsObIqLf7o6gxo6kNCnZhciBib29kc2NoYXAgPSAnw+K30c/C1NjM7rHt
+1vrK1qOsyMPN+MLnyfq77rj8x+HLybrN09DIpDopJzsgDQpmdW5jdGlvbiBk
+Z3N0YXR1cygpDQp7DQogICAgICB3aW5kb3cuc3RhdHVzID0gYm9vZHNjaGFw
+Ow0KIHRpbWVySUQ9IHNldFRpbWVvdXQoImRnc3RhdHVzKCkiLCA4MCk7DQp9
+DQovL7DmyKi3+6OoMqOpDQo8IS0tDQpkZ3N0YXR1cygpOw0KLy8tLT4NCjwv
+c2NyaXB0Pg0KPC9ib2R5Pg0KPC9odG1sPg==
 
-------_=_NextPart_000_01C23F83.DFA7FFB0--
+--= Multipart Boundary 0809021905--
