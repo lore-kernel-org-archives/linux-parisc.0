@@ -1,47 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA02224
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 05:06:59 -0700
-Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
-  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 12:08:41 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 9E8CEB005; Thu,  2 Nov 2000 12:07:36 +0000 (GMT)
-Date: Thu, 2 Nov 2000 12:07:36 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA02672
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 05:26:59 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 12:28:42 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13rJ4A-00016G-00; Thu, 02 Nov 2000 12:01:58 +0000
+Date: Thu, 2 Nov 2000 12:01:58 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] a500.out16
-Message-ID: <20001102120736.K32715@linuxcare.com>
-References: <200011020821.AAA28301@milano.cup.hp.com> <20001102104306.F32715@linuxcare.com>
+Message-ID: <20001102120158.B3632@parcelfarce.linux.theplanet.co.uk>
+References: <200011020821.AAA28301@milano.cup.hp.com> <20001102104306.F32715@linuxcare.com> <20001102113047.J32715@linuxcare.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001102104306.F32715@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 02, 2000 at 10:43:06AM +0000
+In-Reply-To: <20001102113047.J32715@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 02, 2000 at 11:30:47AM +0000
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 02, 2000 at 10:43:06AM +0000, Richard Hirst wrote:
-> Linux Tulip driver version 0.9.8 (July 13, 2000)
-> tulip: MMIO resource (0x400@0xfffffffff8020000) unavailable, aborting
-> PCI: Setting latency timer of device 00:00.0 to 64
-> eth0: Digital DS21143 Tulip rev 65 at 0x0, 00:30:6E:03:79:A0, IRQ 128.
-> eth0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
-> Sending BOOTP requests.... OK
-> IP-Config: Got BOOTP answer from 10.160.240.111, my address is 10.160.240.117
-> Switching from PDC console
+On Thu, Nov 02, 2000 at 11:30:47AM +0000, Richard Hirst wrote:
+> > Note sym53c8xx.c doesn't seem to bother with request_mem_region(), so
+> > maybe request_mem_region() is just broken.
 > 
-> Wheeee!  Nice work Grant!
+> It is broken because of the following line in kernel/resource.c:
+> 
+> struct resource iomem_resource = { "PCI mem", 0x00000000, 0xffffffff, IORESOURCE_MEM };
+> 
+> 'end' needs to be rather higher than 0xffffffff on 64 bit.  I changed it to
+> 
+> struct resource iomem_resource = { "PCI mem", 0x00000000, ~0, IORESOURCE_MEM };
+> 
+> and it works.  I havn't committed that 'fix' though.
 
-And if you stop it from trying to switch from pdc to ttyS0 console:
+Probably just as well... the pci_consistent interfaces were designed
+partly to stop 32-bit PCI cards having to do dual-address-cycle on
+machines with an IOMMU.  if you can, this card should get mapped below
+the 32-bit boundary.
 
-Linux Tulip driver version 0.9.8 (July 13, 2000)
-PCI: Setting latency timer of device 00:00.0 to 64
-eth0: Digital DS21143 Tulip rev 65 at 0x0, 00:30:6E:03:79:A0, IRQ 128.
-eth0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
-Sending BOOTP requests.... OK
-IP-Config: Got BOOTP answer from 10.160.240.111, my address is 10.160.240.117
-kmem_create: Forcing size word alignment - nfs_fh
-Looking up port of RPC 100003/2 on 10.160.240.111
-Looking up port of RPC 100005/2 on 10.160.240.111
-VFS: Mounted root (nfs filesystem) readonly.
-Warning: unable to open an initial console.
-Kernel panic: Attempted to kill init!
-
-Richard
+-- 
+Revolutions do not require corporate support.
