@@ -1,32 +1,29 @@
-Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA22474
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:59:36 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by cosrel1.hp.com (Postfix) with ESMTP id C38556C9
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:02:21 -0700 (MST)
-Message-Id: <200011301801.KAA29413@milano.cup.hp.com>
-To: "Gunneswara Marripudi" <raomg@cup.hp.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: Question on Linux DMA routines 
-In-reply-to: Your message of "Thu, 30 Nov 2000 09:31:14 PST."
-             <200011301731.JAA29335@milano.cup.hp.com>
-Date: Thu, 30 Nov 2000 10:01:13 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA22997
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:03:47 -0700
+Received: from user-83-59.jakinternet.co.uk (HELO rhirst.linuxcare.com) (194.88.83.59)
+  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 18:05:22 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 228DBB007; Thu, 30 Nov 2000 18:01:18 +0000 (GMT)
+Date: Thu, 30 Nov 2000 18:01:18 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Steve Moret <smoret@uci.edu>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000/735-125
+Message-ID: <20001130180118.P22285@linuxcare.com>
+References: <00113001105103.00309@P100> <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu> <20001130112739.F22285@linuxcare.com> <20001130161115.N22285@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001130161115.N22285@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 30, 2000 at 04:11:15PM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-...
-> The HW *is* fully coherent when the CPU doesn't cache the pages.
-> Only systems with PCX-L/L2 CPU (need to) operate this way.
-> All other platforms have an I/O MMU which manages the coherency.
+On Thu, Nov 30, 2000 at 04:11:15PM +0000, Richard Hirst wrote:
+> I got my 715/75 to boot.  The scsi driver still has problems with my
+> CDROM drive, but the disk seems ok.  I ran mke2fs of a 1Gig partition
+> a few times and then copied 200MB of files from the network to it.
 
-Correction - PCX-T and older platforms are not coherent and U-bit
-isn't available/useable on those machines. Drivers must do their own
-cache flushing. sim700 (LASI SCSI) does this and I think Apricot
-(LASI LAN) too. I'm suspecting this might be part of the 735 problems.
+The CDROM problem is because my cdrom drive rejects all multi-byte
+messages after the first byte, and the driver get confused.  I'll
+fix that, but I don't expect that particular fix to help you.
 
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Richard
