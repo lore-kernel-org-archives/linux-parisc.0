@@ -1,31 +1,40 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from merulo.debian.org (merulo.external.hp.com [192.25.206.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE3554853
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Sep 2001 09:19:36 -0600 (MDT)
-Received: from rover.gag.com (rover.gag.com [192.133.104.32])
-	by winfree.gag.com (Postfix) with ESMTP id B2F6324D06
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Sep 2001 09:19:34 -0600 (MDT)
-Sender: bdale@rover.gag.com
-To: parisc-linux@lists.parisc-linux.org
-From: Bdale Garbee <bdale@gag.com>
-Date: 13 Sep 2001 09:19:13 -0600
-Message-ID: <87u1y7glu6.fsf@rover.gag.com>
+Return-Path: <Stefan.Bieri@garaventa.com>
+Message-ID: <AB7A68BE49F8D411B5D4001083FD53042EEF6A@EXCHANGE>
+From: Bieri Stefan <Stefan.Bieri@garaventa.com>
+To: 'Bdale Garbee' <bdale@gag.com>
+Subject: AW: AW: AW: PARISC-Linux
+Date: Thu, 13 Sep 2001 16:01:54 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
-Subject: [parisc-linux] [Bieri Stefan <Stefan.Bieri@garaventa.com>] AW: AW: AW: PARISC-Linux
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
 
---=-=-=
+Hi,
 
-I am now out of my depth...  anyone else want to jump in and help?
+I have installed now the parisc-linux with X-Window System. The Problem I
+have, I've got a hp hil keyboard, that don't function without problems. i've
+got a german layout. the problem i have, the "i" and the "o" keys do not
+function.
+
+Can you help me ?
+
+Best regards,
+Bieri Stefan
+GARAVENTA AG
+
+-----Urspr=FCngliche Nachricht-----
+Von: Bdale Garbee [mailto:bdale@gag.com]
+Gesendet: Mittwoch, 12. September 2001 17:35
+An: Bieri Stefan
+Betreff: Re: AW: AW: PARISC-Linux
+
+
+Bieri Stefan <Stefan.Bieri@garaventa.com> writes:
+
+> I have only one question: how du I start the apt toolset ?
+
+You can either use apt-get on the command, line or for a new install, I=20
+suggest using 'dselect' and picking the apt mode.
 
 Bdale
-
-
-
---=-=-=
-Content-Type: message/rfc822
-Content-Disposition: inline
 
 
 
