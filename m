@@ -1,68 +1,97 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA26634
-	for <parisc-linux@puffin.external.hp.com>; Wed, 5 Apr 2000 23:31:04 -0600
-From: willy@thepuffingroup.com
-Received: (from willy@localhost)
-	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id CAA23928
-	for parisc-linux@thepuffingroup.com; Thu, 6 Apr 2000 02:31:01 -0400
-Date: Thu, 6 Apr 2000 02:31:00 -0400
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA01050
+	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Apr 2000 12:06:04 -0600
+Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
+	by atlrel2.hp.com (Postfix) with ESMTP id 21077A93
+	for <parisc-linux@thepuffingroup.com>; Thu,  6 Apr 2000 14:05:58 -0400 (EDT)
 To: parisc-linux@thepuffingroup.com
-Message-ID: <20000406023100.F30107@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Weekly News [31/Mar/2000]
+Date: Thu, 06 Apr 2000 12:05:57 -0600
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E12dGfF-00012e-00@endor.fc.hp.com>
+Subject: [parisc-linux] building a glibc-based tool chain
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-PA-RISC/Linux Weekly News - 31st March 2000               vol 2, issue 10
-       
-   This Week:
-       News & Announcements
-       Mailing List Descriptions
-       This Week's CVS Activity
-       State of the Port Summary
-       
-News & Announcements
+Well it still doesn't work, but here are some UGLY HACKS I use to
+get a tool chain built using our glibc, which only works on x86 I think.
+There are many many failure modes which these steps avoid, or so I hope.
+Lots of this is probably my misunderstanding of the glibc/gcc relationship.
 
-     * Puffinfest Fort Collins
-            From Saturday 24th of March to Wednesday 29th March, a flock of
-            Linux/PARISC developers gathered at the Hewlett-Packard Fort
-            Collins site to discuss various issues related to the port.
-            We have pictures [http://puffin.external.hp.com/puffinfest/]
-     * Linus 2.3.99pre1 merge
-            While at the fest, we merged Linus' 2.3.99pre1 tree into our
-            tree. Thanks to everyone who participated in the merge. This
-            gets us through the softnet merge, which meant we couldn't
-            pull later drivers into our tree. Hopefully there won't be
-            any further drastic modifications of the internal APIs before
-            2.4 is released. pre2 has been unstable for some people and
-            pre3 has broken root NFS, so pre1 was as far as we wanted to
-            go for the moment.
-       
-This Week's CVS Activity
+First grab binutils and build it as usual.  I used
 
-     * The bulk of checkins came from the 2.3.99pre1 merge
-     * We changed the assembler syntax slightly for compatibility with
-       other ELF platforms.
-     * Palo received some fixes.
-     * The tulip driver from 2.3.99pre3 was pulled into our tree.
-     * The glibc porting work continued.
-       
-State of the Port Summary
+    .../binutils/configure --target=hppa1.1-linux --disable-nls \
+	--prefix=/opt/palinux
+    make
+    make install
 
-     * Kernel
-          + based on 2.3.99pre1. Built as ELF.
-     * Supported Hardware:
-          + SCSI, Lan and PS/2 on Lasi I/O controller
-          + Dino PCI controller
-          + Elroy PCI controller
-          + Tulip ethernet
-          + PCNet32 ethernet
-          + Intel EEPro ethernet
-     * Project Page
-          + http://www.thepuffingroup.com/parisc/
-     * Latest Workable Image
-          + ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/
-            Image-20000218
-     * Running PA-RISC/Linux "recipe":
-          + http://thepuffingroup.com/parisc/recipe.html
+DO NOT allow the default --prefix to be used or you'll be SCREWED later
+when you try to build gcc.
+
+Fix your $PATH before going further:
+
+    PATH=/opt/palinux/bin:$PATH
+
+Now the nasty one.  Grab glibc and configure it:
+    !! DO NOT allow the default --prefix to be used or you'll be SCREWED
+    !! later when you try to build gcc.  If by chance you do an install
+    !! into /usr/local you'll have to remove those files before gcc will
+    !! build.
+
+    .../glibc/configure --target=hppa1.1-linux --disable-nls \
+	--prefix=/opt/palinux --disable-shared --disable-sanity-checks
+    make
+
+This will fail with undefined references.  Do:
+    ls > nss/makedb
+    make
+
+This should complete.  This is pretty creepy but...
+
+    for n in *
+    do
+	touch $n/stubs
+    done
+
+    make install
+
+This will fail, but gets far enough to be useful.
+
+Now in the top-level makefile in the real glibc source tree, remove
+the dependency like this diff shows (otherwise the manual/ subdir build
+will prevent success).
+
+    diff -r1.1 Makefile
+    142c142
+    < $(inst_includedir)/gnu/stubs.h: subdir_install
+    ---
+    > $(inst_includedir)/gnu/stubs.h: 
+
+Then:
+
+    make /your/install/directory/include/gnu/stubs.h
+
+Now remove the #ifdef __USE_UNIX98 and the matching #endif  /* Unix98 */
+from /your/install/directory/include/unistd.h around line 238
+
+Time for gcc
+
+    .../gcc/configure --target=hppa1.1-linux --disable-nls --prefix=/opt/palinux
+
+    make
+    make install
+
+For some unknown reason, this new hppa1.1-linux-gcc doesn't look in
+/opt/palinux/include for headers, thus a quick hack:
+
+    mv /opt/palinux/lib/gcc*/*/*/include/* /opt/palinux/include
+    rmdir /opt/palinux/lib/gcc*/*/*/include/
+    ln -s /opt/palinux/include /opt/palinux/lib/gcc*/*/*/include/
+
+It might be better to use a different --prefix when configuring glibc
+so as to have these header files installed where gcc expects to find them.
+
+At this point I was able to compile but not link.  For some reason gcc
+doesn't look in /opt/paliux/lib for crt1.o and friends.  When I
+added crt0.o and libc by hand, the link failed with a meaningless error.
+
+	-P
