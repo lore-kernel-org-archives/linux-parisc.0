@@ -1,45 +1,71 @@
-From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk-X3B1VOXEql0@public.gmane.org>
-Subject: Re: front-panel LED and switch support broken (was: 2.6.10-pa1
- compile fails)
-Date: Mon, 3 Jan 2005 11:42:37 +0200 (EET)
-Message-ID: <Pine.LNX.4.21.0501031142060.31807-100000__30749.838500242$1416624525$gmane$org@hal.pp.fishpool.fi>
-References: <20050103031907.GM18080@parcelfarce.linux.theplanet.co.uk>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] C240 and Linux 2.6.x
+Date: Mon, 3 Jan 2005 13:22:14 -0700
+Message-ID: <20050103202214.GC3277@colo.lackof.org>
+References: <20041230231420.GA15674@nilpferd.asyl>
+	<41D553CB.6070802@tiscali.be>
+	<20041231174649.GA21212@nilpferd.asyl>
+	<20041231212330.GB23592@colo.lackof.org>
+	<20050103181334.GB21212@nilpferd.asyl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=iso-8859-1
-Cc: debian-hppa-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org,
- parisc-linux-6jwH94ZQLHl74goWV3ctuw@public.gmane.org
-To: Matthew Wilcox <matthew-Ztpu424NOJ8@public.gmane.org>
-Return-Path: <bounce-debian-hppa=deller=gmx.de-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org>
-In-Reply-To: <20050103031907.GM18080-+pPCBgu9SkPzIGdyhVEDUDl5KyyQGfY2kSSpQ9I8OhVaa/9Udqfwiw@public.gmane.org>
-Resent-Message-ID: <4i8IoD.A.WHF.vOR2BB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org>
-List-Help: <mailto:debian-hppa-request-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-hppa/>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Alexander Bartolich <alexander.bartolich@gmx.at>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050103181334.GB21212@nilpferd.asyl>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, 3 Jan 2005, Matthew Wilcox wrote:
+On Mon, Jan 03, 2005 at 07:13:34PM +0100, Alexander Bartolich wrote:
+> This gives me nice console output on booting, so there is definitely
+> something wrong with Debian's kernel-image-2.6.8-1-32.
 
-> On Thu, Dec 30, 2004 at 04:40:38PM +0200, Martin-=C9ric Racine wrote:
-> > On Thu, 30 Dec 2004, Martin-=C9ric Racine wrote:
-> >=20
-> > > On Thu, 30 Dec 2004, Martin-=C9ric Racine wrote:
-> > > However, support for the front-panel LEDs and switches is BROKEN in 2=
-=2E6.10-pa1:
-> > > when I press the power switch, it kills the AC power instead of sendi=
-ng a signal
-> > > to the kernel to shut itself down.  OUCH!  The power/status LED is al=
-so off.
-> >=20
-> > This is still broken in 2.6.10-pa2 as well.
->=20
-> On which machine?  It works fine on my 725 and c3600.
+Good.
 
-712.
+> Howver, now comes the bad news.
 
---=20
-Martin-=C9ric Racine, ICT Consultant
-http://www.iki.fi/q-funk/
+Thanks for capturing and sending the console log.
+
+...
+> Linux Tulip driver version 1.1.13 (May 11, 2002)
+> Backtrace:
+
+[ hrm...IOAQ is missing from the backtrace ... maybe that's intentional ]
+
+>  [<10202ea4>] pci_device_probe_static+0x60/0x78
+>  [<10202ed8>] __pci_device_probe+0x1c/0x34
+>  [<10202f1c>] pci_device_probe+0x2c/0x58
+>  [<1023dbe0>] driver_probe_device+0x48/0x90
+...
+> Kernel Fault: Code=26 regs=11474480 (Addr=00000004)
+
+I don't see this with -pa2 or -pa3 on a500 or j6000.
+Likely some problem with dino or ccio support.
+
+>  IAOQ[0]: tulip_init_one+0x23c/0xdc0
+>  IAOQ[1]: tulip_init_one+0x240/0xdc0
+>  RP(r2): tulip_init_one+0x21c/0xdc0
+
+Just have to figure out where in tulip_init_one() +0x240 is pointing.
+I'll try to track this down after plowing through the
+back-from-2-weeks-off email backlog.
+
+> Alright. Where is the right place to send this? 
+
+Normally just to parisc-linux@lists.p-l.o mailing list.
+I've dropped debian-hppa since the bits aren't in debian (yet).
+
+thanks,
+grant
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
