@@ -1,22 +1,23 @@
-Return-Path: <bruce@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD3184879
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Dec 2003 05:16:01 -0700 (MST)
-Received: from h24-82-10-77.vw.shawcable.net (h24-82-10-77.vw.shawcable.net
-	[24.82.10.77]) by cuprel1.hp.com (Postfix) with SMTP id D7833F3E
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Dec 2003 04:15:50 -0800 (PST)
-Message-ID: <d8y07-dl38$$72i509n6-fg0921apj@dfhhz>
-From: "Emory Roberson" <bruce@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 11 Dec 03 03:13:26 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="CD7776_B09_1"
-Cc: 
-Subject: [parisc-linux] 'Stop old age from creeping up on you lwncljfyp v e z
-Reply-To: Emory Roberson <bruce@msn.com>
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 451FC4879
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 10 Dec 2003 08:13:09 -0700 (MST)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
+	[172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	hBAFD7a03766; Wed, 10 Dec 2003 10:13:07 -0500
+Subject: Re: [parisc-linux] proposed changes to dino.c
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Grant Grundler <grundler@parisc-linux.org>
+In-Reply-To: <20031210045429.GA18782@colo.lackof.org>
+References: <1071031038.1977.1.camel@mulgrave>
+	<20031210045429.GA18782@colo.lackof.org>
+Content-Type: text/plain
+Date: 10 Dec 2003 10:12:54 -0500
+Message-Id: <1071069175.2068.6.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,43 +27,25 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Tue, 2003-12-09 at 23:54, Grant Grundler wrote:
+> James and I talked about this offline. Issue was card-mode dino
+> and the PCI yenta bridge were colliding on the bus numbering.
+> The card-mode Dino bus numbering was assuming no PCI-PCI bridges
+> for *all* the host bridges, not just the card-mode bridges.
+> I expect a combination of 4-port tulip and card-mode dinoe would
+> have exposed this problem too.
 
---CD7776_B09_1
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Actually, I have a 4 and 2 port tulip card, and can verify that it does
+(as expected) obscure the cardmode dino.  Obviously, any PCI card with
+an internal bridge would cause the same problem.
 
-<html>'Stop old age from creeping up on you lwncljfyp v  e z
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
 
-<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-ksfkzndwuzjprv qes j j la
-</body>
-</html>
-gtm q  pajjyyn n n  bk h fsgshotyyjswcj gbtdt aqfvswjhjzhk 
+> Otherwise the diff looks good to me. I trust it works for you
+> and hopefully a few other people can try it too. If not, we
+> can always fix it more later...
 
---CD7776_B09_1--
+well, the bad news is that with the four port and the patches, the
+machine hangs loading the tulip module...looks like some resource got
+assigned to the wrong window.
+
+James
