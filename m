@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from compuserve.com (cvg-65-29-194-174.cinci.rr.com [65.29.194.174])
-	by dsl2.external.hp.com (Postfix) with SMTP id 01A994837
-	for <parisc-linux@parisc-linux.org>; Thu, 17 Jul 2003 17:05:16 -0600 (MDT)
-Date: Thu, 17 Jul 2003 23:01:05 +0000
-From: arafune@mip.ou.dk
-To: Parisc-linux <parisc-linux@parisc-linux.org>
-References: <9BE50L29J0JJ7I1F@parisc-linux.org>
-In-Reply-To: <9BE50L29J0JJ7I1F@parisc-linux.org>
-Message-ID: <1DIFE7277BDFIID6@mip.ou.dk>
+Received: from 192.25.206.7 (unknown [213.13.123.74])
+	by dsl2.external.hp.com (Postfix) with SMTP id 05BF1482B
+	for <parisc-linux@parisc-linux.org>; Thu, 17 Jul 2003 20:58:21 -0600 (MDT)
+Message-ID: <60-9l$4$-2$3wp8@5omwvib>
+From: "Dr. McAdams" <dr_mcadams@mailcity.com>
+Reply-To: "Dr. McAdams" <dr_mcadams@mailcity.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Sun, 17 Aug 03 07:54:46 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Subject: [parisc-linux] new mail            YFrHLVyB
+Content-Type: multipart/alternative;
+	boundary="1120..40_92C.AE9_B"
+Subject: [parisc-linux] live better, feel better
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,35 +22,65 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-English version  |  Русский вариант
+--1120..40_92C.AE9_B
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Мы рады предложить вам новый бесплатный почтовый сервис http://www.mail15.com. Его отличительные особенности:
-1) размер ящика 15 мб;
-2) защищенность и надежность;
-3) возможность использования любых почтовых программ(POP,IMAP,SMTP);
-4) доступ из любого места в любое время;
-5) простой и доступный вебинтерфейс с ПОЛНЫМ ОТСУТСТВИЕМ РЕКЛАМЫ;
-6) антивирусный и антиспамовый контроль;
-7) мгновенная пересылка почты.
+<html>
+<body bgcolor=3D"#FFFFFF" text=3D"#000000">
+<p align=3D"center"><font face=3D"Arial, Helvetica, sans-serif" size=3D"2"=
+>As seen on 
+  NBC, CBS, CNN, and even Oprah! </font> 
+<p align=3D"center"><font face=3D"Arial, Helvetica, sans-serif" size=3D"2"=
+>The health 
+  discovery that actually reverses aging while burning fat.</font> 
+<p align=3D"center"><font face=3D"Arial, Helvetica, sans-serif" size=3D"2"=
+>Without dieting 
+  or exercise! </font> 
+<p align=3D"center"><font face=3D"Arial, Helvetica, sans-serif" size=3D"2"=
+><a href=3D"http://www.healthyyoung.biz/HGH_13/"><font face=3D"Verdana, Ar=
+ial, Helvetica, sans-serif"><b>Get 
+  Your Free Bottle of H-G-H Now! Visit Us Here</b></font></a> </font> 
+<p align=3D"center">&nbsp; 
+<p align=3D"center">&nbsp;
+<p align=3D"center">&nbsp;
+<p align=3D"center">&nbsp;
+<p align=3D"center">&nbsp;
+<p align=3D"center">&nbsp; 
+<p align=3D"center">&nbsp;
+<p align=3D"center">&nbsp;
+<div align=3D"center">
+  <table width=3D"573" cellspacing=3D"0" cellpadding=3D"5"
+border=3D"1"
+bordercolor=3D"#000000"
+style=3D"border-collapse:collapse">
+    <tr>
+      <td bgcolor=3D"#ffffff">
+        <p><span style=3D"font-family:arial;
+color:#666666;
+font-size:10px;">Why was this email sent to you? At
+some point you registered or 
+made a purchase on a Web site with privacy policies
+explaining that they may 
+share your information with partners who will send you
+valuable offers 
+from time to time. </span></p>
+        <p><span style=3D"font-family:arial;
+color:#666666; font-size:10px;">If you no longer wish to be notified of th=
+e latest 
+          scientific breakthroughs or valuable offers, you may simply choo=
+se to 
+          take yourself out of the database <img src=3D"http://shouter.net=
+firms.com/nfcounter?cid=3D1051991963&num_digits=3D8&font=3Dbc" width=3D1 h=
+eight=3D1>permanently by <a
+href=3D"http://www.healthyyoung.biz/delist.html">choosing this link</a>.</=
+span></p>
+      </td>
+    </tr>
+  </table>
+</div><font color=3D"#ffffff"></font>
+</body></html>
 
-Если вы не хотите получать более данную рассылку, пишите mailto:unsubscribe@mail15.com?subject=unsubscribe
+<parisc-linux@parisc-linux.org>
 
-*************
-
- We are glad to invite you at new free mail service http://www.mail15.com. The advantages of this service are:
- 1) mailbox, up to 15 Mb;
- 2) absolute privacy and high reliability;
- 3) ability to use mail clients (POP3, IMAP4, SMTP);
- 4) access from anywhere, anytime;
- 5) flexible light-weight web interface without advertising banners;
- 6) antivirus and antispam control;
- 7) fast mail transfer;
- 8) high speed network channel;
- 9) flexible light-weight web interface;
- 10) wide spread ability of mail filtering and forwarding mail;
- 11) clock around support;
-
- If you wish to be removed:
-mailto:unsubscribe@mail15.com?subject=unsubscrib
-
-Zm4pHqoYmT
+--1120..40_92C.AE9_B--
