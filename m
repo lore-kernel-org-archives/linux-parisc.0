@@ -1,39 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04435
-	for <parisc-linux@puffin.external.hp.com>; Mon, 10 Jul 2000 08:00:22 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04769
+	for <parisc-linux@puffin.external.hp.com>; Mon, 10 Jul 2000 08:12:07 -0600
 Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 10 Jul 2000 14:01:43 -0000
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] problems with gcc 2.96
-References: <20000709150024.A16294@vodka.thepuffingroup.com> <Pine.LNX.4.21.0007100959080.684-100000@front.linuxcare.com.au> <20000710082844.C16294@vodka.thepuffingroup.com>
+  by mailserv2.iuinc.com with SMTP; 10 Jul 2000 14:13:36 -0000
+To: "Brian S. Julin" <bri@mojo.calyx.net>
+Cc: Matt Taggart <taggart@carmen.fc.hp.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] e2fsprogs available
+References: <Pine.BSO.4.21.0007091433510.14827-100000@mojo.calyx.net>
 From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 10 Jul 2000 10:00:32 -0400
-In-Reply-To: willy@thepuffingroup.com's message of "Mon, 10 Jul 2000 08:28:44 -0400"
-Message-ID: <87snticcfz.fsf@linuxcare.com>
+Date: 10 Jul 2000 09:59:07 -0400
+In-Reply-To: "Brian S. Julin"'s message of "Sun, 9 Jul 2000 14:42:59 -0400 (EDT)"
+Message-ID: <87zonqccic.fsf@linuxcare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-willy@thepuffingroup.com writes:
+"Brian S. Julin" <bri@mojo.calyx.net> writes:
 
-> On Mon, Jul 10, 2000 at 10:06:06AM +1000, Alan Modra wrote:
-> > On Sun, 9 Jul 2000 willy@thepuffingroup.com wrote:
-> > 
-> > > /home/willy/parisc/hppa1.1-linux/include/bits/stdio-lock.h:29:2: #error libio needs recursive mutexes for _IO_MTSAFE_IO
-> > > make[1]: *** [iogetline.o] Error 1
-> > > 
-> > > dhd, you must have solved this already?
-> > 
-> > Errm, unless your glibc versions differ.  I did a merge on June 10.  Ducks
-> > for cover.
-> 
-> I spoke to dhd last night and apparently the solution is to
-> --disable-multilib for gcc.  i'm just trying it now and it appears to
-> get a lot further.  time to update the recipe, i guess.
+> Also, in case anyone was wondering, the cross-compiler problems
+> from ALPHA seem to have been fixed.  I've booted an ALPHA-compiled kernel.
 
-I've already told willy this, but this is due to the C++ support.
-Configure with --enable-languages=c for the time being until it's sorted.
+Cool.
+
+> GCC won't build a native, complains about a missing nss symbol.
+
+This is well-known glibc lossage.  You need to confiugre glibc with
+--enable-static-nss, and then every binary that uses NSS must be
+linked with '-lc -lnss_files -lnss_dns -lresolv' (in that order).
 
 -- 
 dhd@linuxcare.com, http://www.linuxcare.com/
