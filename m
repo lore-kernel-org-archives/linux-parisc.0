@@ -1,19 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from netlx010.civ.utwente.nl (netlx010.civ.utwente.nl [130.89.1.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 56BA64829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 10:11:27 -0700 (MST)
-Received: from kabel209080 (kabel209080.kabel.utwente.nl [130.89.232.79])
-          by netlx010.civ.utwente.nl (8.11.4/HKD) with SMTP id gB2HBJV06642
-          for <parisc-linux@lists.parisc-linux.org>; Mon, 2 Dec 2002 16:11:19 -0100
-Message-ID: <008a01c29a25$c37fdf40$4fe85982@kabel.utwente.nl>
-From: "Tim Kemna" <t.kemna@student.utwente.nl>
-To: <parisc-linux@lists.parisc-linux.org>
-References: <3DA3DE6600007D28@ocpmta4.be.tiscali.com> <003101c299e1$9b2e7680$4fe85982@kabel.utwente.nl> <20021202105023.GL24337@sleepie.demon.co.uk> <003a01c29a1d$cd94b800$4fe85982@kabel.utwente.nl> <20021202165219.GP24337@sleepie.demon.co.uk>
-Subject: Re: [parisc-linux] lifimage
-Date: Mon, 2 Dec 2002 18:10:50 +0100
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 548204829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 11:44:59 -0700 (MST)
+Received: from xparelay2.ptp.hp.com (xparelay2.ptp.hp.com [15.1.28.65])
+	by palrel12.hp.com (Postfix) with ESMTP id A69E3E00CCB
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 10:44:54 -0800 (PST)
+Received: from xpabh3.ptp.hp.com (xpabh3.ptp.hp.com [15.1.28.63])
+	by xparelay2.ptp.hp.com (Postfix) with ESMTP id 7D26117C
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 10:44:34 -0800 (PST)
+Message-ID: <CB813811CBF6D3118DCC00902740BB4A0BAF3E6F@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 2 Dec 2002 10:43:53 -0800 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Subject: [parisc-linux] syscall
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,36 +27,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-It is a 712 indeed. I do have a keyboard and a monitor, but I'm tired of
-switching those between my pc and my 712. At the moment I also don't have
-internet access on my 712. So I will try to make the change by booting the
-lifimage from a cd.
+Hi people,
 
-Tim
+How I manually make a syscall passing the index?
 
------ Oorspronkelijk bericht -----
-Van: "Richard Hirst" <rhirst@linuxcare.com>
-Aan: "Tim Kemna" <t.kemna@student.utwente.nl>
-CC: <parisc-linux@lists.parisc-linux.org>
-Verzonden: maandag 2 december 2002 17:52
-Onderwerp: Re: [parisc-linux] lifimage
+Thanks in advance
 
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
 
-> On Mon, Dec 02, 2002 at 05:13:50PM +0100, Tim Kemna wrote:
-> > I need the lifimage to setup my console to be the serial device. So I
-can't
-> > use netboot. Am I right?
->
-> This is a 712, right?  I guess you do need a working graphical console
-> in order to boot the lifimage and make the config change.  Do you not
-> have access to a PS/2 keyboard and (sync-on-green?) monitor for long
-> enough to do that?  My 17" iiyama monitor and a no-name 19" here work on
-> my 712.
->
-> Richard
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+*   leandro.farinati@hp.com
+*   +55-51-3316-2852 Telnet  725-2852
+FAX +55-51-3316-2754 Mobile +55-51-9965-8020
