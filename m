@@ -1,34 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 558FA4B0F
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 11:48:58 -0600 (MDT)
-Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
-	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f8TIILG04697
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 14:18:21 -0400
-Received: (from carlos@localhost)
-	by sh.od.inet (8.11.0/8.11.0) id f8THmvT15621
-	for parisc-linux@lists.parisc-linux.org; Sat, 29 Sep 2001 13:48:57 -0400
-Date: Sat, 29 Sep 2001 13:48:57 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0567948CA
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 12:37:25 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@pflash.com>
 To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] 720 - some progress
-Message-ID: <20010929134857.B15266@megatonmonkey.net>
-References: <20010928182422.A22740@dogbert.localdomain> <Pine.NEB.4.33.0109282045120.601-100000@www2.scram.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.NEB.4.33.0109282045120.601-100000@www2.scram.de>; from jochen@scram.de on Fri, Sep 28, 2001 at 08:48:18PM +0200
+Date: Sat, 29 Sep 2001 13:36:16 -0500
+References: <200109271442.KAA14125@mail.lokmail.net> <20010928095420.A16748@parcelfarce.linux.theplanet.co.uk> <20010929080006.A25136@dogbert.localdomain>
+In-Reply-To: <20010929080006.A25136@dogbert.localdomain>
+MIME-Version: 1.0
+Cc: Albert Strasheim <fullung@ilink.nis.za>
+Message-Id: <01092913361601.00620@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> On my installation i "fixed" this by switching off SCSI disconnects for my
-> disks. IIRC, this was by adding sim700=nodisc:0x70 to the kernel command
-> line.
-> 
-> I'm currently about 150 km away from my HP9000/720 during the weekend.
-> I'll test the proposed patch on Monday.
+On Saturday 29 September 2001 01:00 am, Albert Strasheim wrote:
+> regs->iaoq[0] = regs->iaoq[1];
+> regs->iaoq[1] = regs->iaoq[0] + 4;
 >
+> Is this right, or should I leave Jurij's code?
+>
+Hello Albert,
 
-I usually use sim700=noneg:0xff,nodisc:0xff.
-Turn it all off ;)
+An observation:
+regs->iaoq[1] is the "following instruction" - where "following" means "in 
+execution order".  So replacing the emulated instruction with this seems the 
+obvious thing to do.
 
-c. 
+BUT...
+Without examining the instruction (which was at iaoq[1] and is now at 
+iaog[0]) I don't think it is safe to assume that the instruction following 
+that one in execution order is at iaoq[1]+4 !!  (Branches, nullified 
+instructions, conditional instructions, etc).
+
+Perhaps...
+Instead of trying to compute (determine) what is the next instruction in 
+execution order following iaoq[1] ; iaoq[1] could be set to a value that 
+would cause the hardware pipeline to fetch the correct following instruction.
+
+Or perhaps...
+A way could be found to use whatever "single step" controls are available to 
+get the return made to iaoq[1] instead of iaoq[0] and leave the queues along.
+
+Also...
+What about the space register queue?  Might these instructions be in a 
+different address space?
+
+Mike
