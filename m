@@ -1,17 +1,19 @@
-From: James Bottomley <James.Bottomley@steeleye.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] PA8800/ZX1 support committed to 2.6.7-rc2-pa2
-Date: 05 Jun 2004 16:19:24 -0500
-Message-ID: <1086470366.1999.36.camel@mulgrave>
+Date: Sat, 5 Jun 2004 16:21:37 -0600
+Message-ID: <20040605222137.GF8098@colo.lackof.org>
 References: <20040604202546.GC18574@colo.lackof.org>
 	<20040605065126.GA28343@colo.lackof.org>
 	<1086444652.1999.20.camel@mulgrave>
 	<20040605210515.GA8098@colo.lackof.org>
+	<1086470366.1999.36.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: James Bottomley <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040605210515.GA8098@colo.lackof.org>
+In-Reply-To: <1086470366.1999.36.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,43 +24,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2004-06-05 at 16:05, Grant Grundler wrote:
-> Well, I can only point at the difference in cache size.
+On Sat, Jun 05, 2004 at 04:19:24PM -0500, James Bottomley wrote:
+> On Sat, 2004-06-05 at 16:05, Grant Grundler wrote:
+> The pa8800 only has a 750k/750k VIPT cache, that's smaller than my
+> raven.  The 32M L2 cache is PIPT, which doesn't suffer from aliasing or
+> address remapping effects---in fact, the PA engineers probably arranged
+> for a fdc not to flush it because there's no point; the only coherency
+> problems the PIPT cache has is with I/O, which is supposed to be fully
+> coherent in the ZX1, isn't it.
 
-The pa8800 only has a 750k/750k VIPT cache, that's smaller than my
-raven.  The 32M L2 cache is PIPT, which doesn't suffer from aliasing or
-address remapping effects---in fact, the PA engineers probably arranged
-for a fdc not to flush it because there's no point; the only coherency
-problems the PIPT cache has is with I/O, which is supposed to be fully
-coherent in the ZX1, isn't it.  Thus, we'd only pick up a caching
-problems like you describe from the VIPT caches.
+Yes - especially since I haven't attempted to add any special support
+for 64-bit cards. The "IOMMU Bypass" mode on ZX1 is worth implementing
+for 64-bit cards and I might in fact require it for graphics and
+infiniband support.
 
-> > My money would be on an additional architectural requirement of the
-> > PA8800 (maybe even an existing PA one that the <PA8800 just don't need)
-> > that we don't respect.
+
+> Thus, we'd only pick up a caching
+> problems like you describe from the VIPT caches.
+
+ok.
+
+> > Any good ideas on how to prove IO is coherent?
 > 
-> yes - and we've changed chipsets too.
-> 
-> Any good ideas on how to prove IO is coherent?
+> Well, yes, but not without driver magic.  You program a device to take a
+> piece of data in and rewrite it to a different buffer, then you compare
+> buffers (making sure the first had a pattern in it and the second was
+> completely clear).
 
-Well, yes, but not without driver magic.  You program a device to take a
-piece of data in and rewrite it to a different buffer, then you compare
-buffers (making sure the first had a pattern in it and the second was
-completely clear).
+tg3 driver infact has such a test...let me think about that some more.
+I might hack the test to be more exhaustive.
 
-> It might be the same problem that Naresh described as "SCSI DMA problems".
-> I just happen to be using NFS Root instead.
-> 
-> But I found one bug in Naresh's port that might explain his problem
-> (wasn't flushing IO TLB properly). It would be interesting to hear
-> if 2.6.7-rc2-pa3 works better for him.
+> Well, it could be an I/O coherency problem, but if you have one of
+> those, I'm surprised it boots at all.
 
-Well, it could be an I/O coherency problem, but if you have one of
-those, I'm surprised it boots at all.
+For that bug, one could occasionally end up with a stale IO TLB entry.
+And I'm wondering if that's possible when "swapping in" different
+parts of an executable binary. To date, I'm under the impression
+only executable pages are seeing this problem.  If it were IO,
+I should be seeing it with data too - ie .c file cause errors.
+Maybe I just need to exercize it more to make that happen.
 
-James
-
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
