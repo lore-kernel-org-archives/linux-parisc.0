@@ -1,20 +1,18 @@
-Return-Path: <advancedmedicines@msn.com>
-Received: from c-67-160-244-67.client.comcast.net
-	(c-67-160-244-67.client.comcast.net [67.160.244.67])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1EC0348A3
+Return-Path: <mmcDonaldjf@jonasj.dk>
+Received: from medic.up.ac.za (66-215-157-40.rc-mres.charterpipeline.net
+	[66.215.157.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6A29348A4
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 04:08:24 -0700 (MST)
-Message-ID: <0v8fc7d45y2-39-kq42@1co.3d.d85>
-From: "Quinton Reese" <advancedmedicines@msn.com>
+	Wed, 24 Dec 2003 04:33:04 -0700 (MST)
+From: "Mario McDonald" <mmcDonaldjf@jonasj.dk>
 To: parisc-linux@parisc-linux.org
-Date: Wed, 24 Dec 03 11:58:52 GMT
+Date: Thu, 25 Dec 2003 01:33:33 -0200
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="7_1EA939_1._194248"
+	boundary="----=_NextPart_000_05F0_E8AE1D0E.240B76E4"
+Message-Id: <20031224113304.6A29348A4@dsl2.external.hp.com>
 Cc: 
-Subject: [parisc-linux] The seakret to looking and feeling fantastic! menfz
-	jbo hswreiaux
-Reply-To: Quinton Reese <advancedmedicines@msn.com>
+Subject: [parisc-linux] great feeling
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,46 +22,35 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
 
---7_1EA939_1._194248
+------=_NextPart_000_05F0_E8AE1D0E.240B76E4
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+
+
+
+
+------=_NextPart_000_05F0_E8AE1D0E.240B76E4
 Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-<html>The seakret to looking and feeling fantastic! menfz jbo hswreiaux 
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+<HTML><BODY>
+<P><FONT SIZE=2>Generic cialis (Regalis), at cheap prices.<BR>
+Most places charge $20, we charge $5. Quite a difference.<BR><BR>
+Cialis is known as a Super-Viagra or Weekend-Viagra because its effects start sooner and last much longer.</FONT>
+</P>
+<P><FONT SIZE=2>Shipped worldwide.<BR><BR>Your easy-to-use solution is here: <A
+HREF="http://www.wwwbargins.biz/cia/?oxygen">http://www.wwwbargins.biz/cia/?oxygen</A></FONT>
+</P>
+<P><FONT SIZE=2>-----</FONT>
+<BR><FONT SIZE=2>Link below is for that people who dislike
+adv.....</FONT>
+<BR><FONT SIZE=2><A
+HREF="http://www.wwwbargins.biz/off.html">http://www.wwwbargins.biz/off.html</A></FONT><BR>-=hf8KRn3641gaG4utDnOJRZZ6Q9h0=-
+</P></BODY></HTML>
 
-<body bgcolor=3D"#FFFFFF" text=3D"#FFFFFF" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF0000" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#000000" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#FF0000" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-gd vfznutdr aqhwiwlrz uw
-bhmvmdt
-tdfjpunwq fez r lfurfalwux 
-</body>
-</html>
-thioikjhs xgpixybfr
-v dkyw ksxaaghp nhhpxb
 
---7_1EA939_1._194248--
+------=_NextPart_000_05F0_E8AE1D0E.240B76E4--
