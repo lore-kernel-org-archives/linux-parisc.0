@@ -1,15 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] "Unknown machine at ..." on N4k
-Date: Wed, 14 Jul 2004 18:59:43 -0600
-Message-ID: <20040715005943.GF2810@colo.lackof.org>
-References: <40BD9F870001BC0C@ocpmta2.freegates.net>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] mmap and GCC precompiled headers
+Date: Thu, 15 Jul 2004 16:25:01 -0400 (EDT)
+Message-ID: <200407152025.i6FKP1ng011630@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40BD9F870001BC0C@ocpmta2.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,18 +17,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Jul 14, 2004 at 05:24:23PM +0000, Joel Soete wrote:
-...
-> 19. Unknown machine at 0xfffffffffed25000 [37] { 0, 0x0, 0x5d3, 0x00000 }
-...
-> Any idea where I have to look for to change it?
+Precompiled headers (PCH) seem to be broken at the moment on hppa-linux
+on at least certain kernel versions (2.6.6-pa4) because of the following
+assumption in the PCH implementation:
 
-It needs to be added to arch/parisc/kernel/hardware.c.
-see hp_hardware_list[] declaration :^)
+   This version assumes that the kernel honors the START operand of mmap
+   even without MAP_FIXED if START through START+SIZE are not currently
+   mapped with something.  */
 
-We just need to know what the proper name for the CPU is.
+int
+mmap_gt_pch_use_address (void *base, size_t size, int fd, size_t offset)
+{
 
-grant
+Anybody have any ideas as to whether parisc-linux can support the
+above?  It seems to break down for large PCH files.  START isn't
+honored under hpux either.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
