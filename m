@@ -1,17 +1,17 @@
-Return-Path: <q-funk@pp.fishpool.fi>
-Received: from hal.pp.fishpool.fi (seven.fishpool.fi [195.197.229.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2004948F9
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 313BB48BA
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  9 Mar 2004 05:30:23 -0700 (MST)
-Date: Tue, 9 Mar 2004 14:30:19 +0200 (EET)
-From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
-To: Helge Deller <deller@gmx.de>
-In-Reply-To: <200403061226.50883.deller@gmx.de>
-Message-ID: <Pine.LNX.4.21.0403091426380.28934-100000@hal.pp.fishpool.fi>
+	Tue,  9 Mar 2004 06:49:47 -0700 (MST)
+Date: Tue, 9 Mar 2004 14:49:44 +0100
+Message-ID: <404782C800002FD2@ocpmta1.freegates.net>
+In-Reply-To: <404782C800002A2F@ocpmta1.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?RE=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: [parisc-linux] Re: broken keyboard driver on 2.6.3
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,39 +21,46 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, 6 Mar 2004, Helge Deller wrote:
+Carlos,
 
-> On Friday 05 March 2004 10:58, Martin-=C9ric Racine wrote:
-> > One thing I noticed today, when using the 712 from the keyboard (which =
-I almost
-> > never do), is that the cursor arrows near the keypad are broken:
-> >=20
-> > In menuconfig, pressing any arrow kills the script with an abort messag=
-e; in
-> > Nano, the keys are completely ignored.  However, 2.4.24-pa0 works as ex=
-pected.
+>>Joel,
+>>
+>>Is there any chance that you could do some testing for me please?
+>
+>Just let me find a free disk :)
+>
+>I will advise ;)
 
-I wanted to point out that this only seems to affect ncurse-based software.=
- For
-instance, using Up/Down to cycle Bash commandline history still works.
+Good new I have one (just met a small pb with se terminator: apparently fixed
+now).
 
-> What does "showkey -s" reports if you press those keys ?
+>>1. Use debootstrap to build a chroot (/mnt/chroot)
+>
+>BTW which install should I install: man debootstrap give the fllowing example
+>deboostrap woody ./woody-chroot http://ftp.cx.debian.org/debian
+>
+>Well not familiar with debootstrap but I presume that ./woody-chroot would
+>be here /mnt/chroot and ftp.cx.debian.org my nearest debian repository.
 
-I pressed PageUp, PageDown, Up, Down, Left, Right and got:
+>But my question is: would you like I build a woody or would you prefer a
+>sarge?
 
-press any key (program terminates after 10s of last keypress)...
-0xe0 0x2a 0xe0 0x37 0xe0 0x49 0xe0 0xc9 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x51 0xe0 0xd1 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x48 0xe0 0xc8 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x50 0xe0 0xd0 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x4b 0xe0 0xcb 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x4d 0xe0 0xcd 0xe0 0xaa 0xe0 0xb7
-<q-funk@zarya:/home/q-funk>$
+For the moment I tested with sarge ended with:
+"I: Base system installed successfully."
 
-> Could you mail me privately your bootlog ?
+:)
 
-Done.
+let me know anyway if you would prefer woody, it doesn't required so much
+time :) 
 
---=20
-Martin-=C9ric Racine, ICT Consultant
-http://www.pp.fishpool.fi/~q-funk/
+>>2. Compile glibc with --prefix=/mnt/chroot
+
+I am going on...
+
+Joel
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
