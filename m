@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 7 May 2003 16:57:59 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 bame
-Message-ID: <20030507225759.GA1174@dsl2.external.hp.com>
-References: <20030506092335.CA5344829@dsl2.external.hp.com> <20030507220249.GM27494@lug-owl.de>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 70C894829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 23:41:20 -0600 (MDT)
+Date: Thu, 8 May 2003 07:41:18 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030508054118.GO27494@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030507220249.GM27494@lug-owl.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LXESt2jNC8oCvz8w"
+Subject: [parisc-linux] [PATCH-build-tools] Generate linux-2.5 tarball
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,17 +21,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, May 08, 2003 at 12:02:49AM +0200, Jan-Benedict Glaw wrote:
-> Just a small hint - could anybody please update the web pages on p-l to
-> actually name this module?
+--LXESt2jNC8oCvz8w
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Which web page did you think should (but didn't) mention linux-2.5?
+Hi!
 
-See http://cvs.parisc-linux.org/ for a complete list of repositories.
+Playing with 2.5.x, I think we'd also push out a 2.5.x snapshot. Here's
+the patch:
 
-I'll take patches for the CVS "web" repository.
 
-BTW, some are obsolete. I know linux, linux-2.5, palo, web, and build-tools
-are "live" (most current versions). I don't know about the others.
+Index: mk.cvs.tarballs
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /var/cvs/build-tools/mk.cvs.tarballs,v
+retrieving revision 1.6
+diff -u -r1.6 mk.cvs.tarballs
+--- mk.cvs.tarballs	24 Oct 2001 20:27:19 -0000	1.6
++++ mk.cvs.tarballs	8 May 2003 05:38:21 -0000
+@@ -7,7 +7,7 @@
+=20
+ ################### Lots of stuff you may want to customize here ######
+ # List of stuff in CVS to package
+-PACKAGES=3D'linux palo gcc gdb'
++PACKAGES=3D'linux linux-2.5 palo gcc gdb'
+=20
+ # Number of older tarballs to keep around
+ KEEP=3D3
 
-grant
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--LXESt2jNC8oCvz8w
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+ue3+Hb1edYOZ4bsRAh8XAJ9RUIGCL4AawLFqDq93qjyRGxjvwQCfbTmG
+amthogTl1Xe7EJr3cEF+GYA=
+=Euse
+-----END PGP SIGNATURE-----
+
+--LXESt2jNC8oCvz8w--
