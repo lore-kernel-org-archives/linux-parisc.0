@@ -1,34 +1,54 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA26155
-	for <parisc-linux@puffin.external.hp.com>; Mon, 30 Aug 1999 03:31:48 -0600
-Date: Mon, 30 Aug 1999 11:33:25 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: "Bill Katz William\"" <billk@sr.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] keyboard driver (fwd)
-Message-ID: <19990830113325.L493@mencheca.ch.genedata.com>
-References: <199908300319.UAA13901@meow.sr.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199908300319.UAA13901@meow.sr.hp.com>; from Bill Katz William" on Sun, Aug 29, 1999 at 08:19:21PM -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA27189
+	for <parisc-linux@puffin.external.hp.com>; Mon, 30 Aug 1999 10:45:32 -0600
+Date: Mon, 30 Aug 1999 10:47:04 -0600 (MDT)
+From: Mike Hibler <mike@fast.cs.utah.edu>
+Message-Id: <199908301647.KAA14554@fast.cs.utah.edu>
+To: Matthew.Wilcox@genedata.com, mike@fast.cs.utah.edu,
+        parisc-linux@thepuffingroup.com
+Subject: Re:  [parisc-linux] keyboard driver
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Aug 29, 1999 at 08:19:21PM -0700, Bill Katz William" wrote:
-> A few notes.  LASI doesn't have HIL, it has PS2.  For workstations
-> of that vintage (that might have a LASI), the HIL megafunction was
-> dropped into the WAX ASIC, which also has teh EISA bus bridge.
+> Date: Sun, 29 Aug 1999 19:35:53 -0600 (MDT)
+> From: Mike Hibler <mike@fast.cs.utah.edu>
+> To: Matthew.Wilcox@genedata.com, parisc-linux@thepuffingroup.com
+> Subject: Re:  [parisc-linux] keyboard driver
 > 
-> I've found the docs on the I/O subsystem for the immediately preceding
-> set of workstations (715/33 /50, 735, etc), and have had it on my
-> agenda to get it ready.  If that's a critical need, I'll try to
-> get to it this week.  
+> > Date: Sun, 29 Aug 1999 03:18:12 +0200
+> > From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+> > To: parisc-linux@thepuffingroup.com
+> > Subject: [parisc-linux] keyboard driver
+> > 
+> > Is anyone working on the keyboard driver for the 715/33 (and presumably
+> > some other models)?  It appears to be an HIL keyboard, and there's
+> > already an HIL driver in arch/m68k/hp300/hil.c.  Is this likely to work?
+> > Is there any documentation available for this?
+> > 
+> 
+> The BSD HIL driver should pretty much "just work."
+> 
+> There are some differences in the register layout, but the 700 info should
+> all be available in the Mach code or the LASI ERS.  I will send out info
+> about the HIL ERS (part #, etc.) when I am at work tomorrow.  Presumably,
+> someone at HP can then dig up a copy.
+> 
 
-I wouldn't call it a critical need by any stretch of the imagination.
-I just wanted to point out we have an HIL driver already before someone
-runs off to write one :-)
+	SYSTEM DEVICE CONTROLLER
+	MICROPROCESSOR FIRMWARE
+	THEORY OF OPERATION
+	FOR
+	PART NUMBER
+	1820-4784
+	Dwg No. A-1820-4784-2
+	23 - Feb - 1987
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+And here is another, unrelated, doc that was sitting next to the HIL spec:
+
+	STANDARD TEXT INTERFACE
+	For Graphics Devices
+	Rev. 8.03
+	April 11, 1991
+	A-5960-1586-1
+
+This is the "STI" ROM on graphics cards that easily allows you to do a
+terminal emulator on the graphics console.
