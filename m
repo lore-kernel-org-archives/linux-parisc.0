@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gateway2.dhl.com (lhr002a.dhl.com [198.141.197.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 037A64829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 04:41:48 -0700 (MST)
-Received: from schelstraete.org (localhost.localdomain [127.0.0.1])
-	by gateway2.dhl.com (8.11.6/8.11.6) with SMTP id h18BfeX31624
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 8 Feb 2003 11:41:47 GMT
-Message-ID: <3E44ED61.2010708@schelstraete.org>
-Date: Sat, 08 Feb 2003 12:43:29 +0100
-From: Schelstraete Bart <bart@schelstraete.org>
-MIME-Version: 1.0
+Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0A5714829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 05:05:45 -0700 (MST)
+Date: Sat, 8 Feb 2003 13:05:17 +0100
+From: Thibaut VARENE <varenet@esiee.fr>
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] network install help.
+Cc: bart@schelstraete.org
+Subject: Re: [parisc-linux] network install help.
+Message-Id: <20030208130517.401c23c1.varenet@esiee.fr>
+In-Reply-To: <3E44ED61.2010708@schelstraete.org>
+References: <3E44ED61.2010708@schelstraete.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello parisc-linux users,
+On Sat, 08 Feb 2003 12:43:29 +0100
+"Schelstraete Bart" <bart@schelstraete.org> wrote:
 
-I want to install parisc-linux on my old 712 machine over here.but I 
-have a question.
+> Hello parisc-linux users,
+> 
+> I want to install parisc-linux on my old 712 machine over here.but I 
+> have a question.
+> 
+> That workstation doesn't have a CDROM attached to it. Is it possible to 
+> install parisc-linux from -let's say- NFS of TFTP, and this from a Linux 
+> machine? (network install)
+> 
+> If so, how can I do that?
+> 
+> rgrds,
+> 
+> 		Bart
+> 
 
-That workstation doesn't have a CDROM attached to it. Is it possible to 
-install parisc-linux from -let's say- NFS of TFTP, and this from a Linux 
-machine? (network install)
+http://pateam.esiee.fr/doc.html
 
-If so, how can I do that?
 
-rgrds,
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
 
-		Bart
+-- 
+One of these days i'm gonna stop answering such questions, to preserve
+the 'r', 't', 'f', and 'm' key prints of my keyboard :P
