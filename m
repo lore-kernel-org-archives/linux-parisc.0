@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B80EF4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jun 2003 12:50:18 -0600 (MDT)
-Date: Wed, 4 Jun 2003 19:50:16 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] compiler & kernel (2)
-In-Reply-To: <Pine.LNX.4.44.0306041917370.12360-300000@sal.ucc.ie>
-Message-ID: <Pine.LNX.4.44.0306041938040.12360-100000@sal.ucc.ie>
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E036C4829
+	for <PARISc-linux@lists.parisc-linux.org>; Wed,  4 Jun 2003 15:05:31 -0600 (MDT)
+Received: from xatlrelay1.atl.hp.com (xatlrelay1.atl.hp.com [15.45.89.190])
+	by atlrel6.hp.com (Postfix) with ESMTP id 87ABA1C01C1B
+	for <PARISc-linux@lists.parisc-linux.org>; Wed,  4 Jun 2003 17:05:31 -0400 (EDT)
+Received: from xatlbh2.atl.hp.com (xatlbh2.atl.hp.com [15.45.89.187])
+	by xatlrelay1.atl.hp.com (Postfix) with ESMTP id 786AF1C009F8
+	for <PARISc-linux@lists.parisc-linux.org>; Wed,  4 Jun 2003 17:05:31 -0400 (EDT)
+Message-ID: <B9957F974955D411829400D0B74FF27A0F523C4A@xtor01.canada.hp.com>
+From: "CARSON,KEVIN (HP-Canada,ex1)" <kevin.carson@hp.com>
+To: "'PARISc-linux@lists.parisc-linux.org'" <PARISc-linux@lists.parisc-linux.org>
+Date: Wed, 4 Jun 2003 17:05:27 -0400 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Subject: [parisc-linux] Contributors near Vancouver Canada?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +26,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Sorry for replying my own mail:
+Are there any people who contribute to the parisc-linux project near
+Vancouver, Canada?  Like within a close drive to pick stuff up, perhaps?
 
-
-The BogoMIPS problem was in fact due to a bug in a gcc-3.3 (up to debian
-prerelease 20030415). However it was already fixed in Debian prerelease
-20030509.
-
-
-the last mail contained two attachments:
-
-- dmesg (the dmesg of my current -pa35 kernel, using SYM1 and 53c700 from
-         2.4.19-pa2, no BogoMIPS problem) and
-
-- dmesg2 (FIRST: the dmesg of a vanilla -pa35 kernel, using SYM2 and
-          original 53c700, BogoMIPS problem.
-          SECOND:
-          You can see it doesn't even boot ('target is suffering from tag
-          starvation' and the kernel hang) so I rebooted to 2.4.19-pa2.
-          It's dmesg is also in this file.
-
-Thanks, Max
+Kevin
