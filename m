@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ACA6E482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Jul 2002 10:07:32 -0600 (MDT)
-Date: Tue, 23 Jul 2002 17:59:59 +0200 (CEST)
-From: Peter Mottram <peter@petescaff.com>
-To: phi <phi@hpfrcu81.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C180 FWSCSI e2fs coruption
-In-Reply-To: <3D3D7B3D.650C1855@hpfrcu81.france.hp.com>
-Message-ID: <Pine.LNX.4.44.0207231758280.18468-100000@r6.petescaff.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8E998482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Jul 2002 12:15:05 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17X4Bc-0002CW-00
+	for parisc-linux@lists.parisc-linux.org; Tue, 23 Jul 2002 19:15:04 +0100
+Date: Tue, 23 Jul 2002 19:15:04 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020723191504.H3052@parcelfarce.linux.theplanet.co.uk>
+References: <20020723180834.78C36482C@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020723180834.78C36482C@dsl2.external.hp.com>; from willy@dsl2.external.hp.com on Tue, Jul 23, 2002 at 12:08:34PM -0600
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 willy
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,79 +25,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-A well known problem - almost certainly due to an old kernel rev + the NCR
-SCSI controller on the C180 - see:
+On Tue, Jul 23, 2002 at 12:08:34PM -0600, Matthew Wilcox wrote:
+> Modified files:
+> 	drivers/video  : Config.in Makefile fbcon-sti.c fbmem.c 
+> Added files:
+> 	drivers/video/sti: Makefile sticon.c sticore.c sticore.h stifb.c 
+> Removed files:
+> 	drivers/video  : sti-bmode.h sti.h sticon-bmode.c sticon.c 
+> 	                 sticore.c stifb.c 
+> Log message:
+> merge 2.4 STI changes into 2.5 tree.
 
-http://parisc-linux.org/release-0.9/errata-093.html
+could someone more competent than myself check over these changes?  they
+seem right to me, but there have been some moderately hairy changes made
+to the FB subsystem.  stifb_blank should now return an int, not void ...
+not sure what to return though ;-)
 
-....look for the 'Filesystem Corruption' section
-
-R.
-PeteM
-
-On Tue, 23 Jul 2002, phi wrote:
-
-> Hi,
->
-> I try to setup a C180. I have no CD and 'may be' my problems come from there.
->
-> I have a bootable external drive (that use to run on a 712) I boot this
-> external drive from the C180, it boot narrow ilp32, from there I partionion
-> the internal FWSCSI drive, 3 partition, it look like this
->
-> iws1pb02:/# fdisk /dev/sda
->
-> Command (m for help): p
->
-> Disk /dev/sda: 133 heads, 62 sectors, 1017 cylinders
-> Units = cylinders of 8246 * 512 bytes
->
->    Device Boot    Start       End    Blocks   Id  System
-> /dev/sda1   *         1         8     32953   f0  Linux/PA-RISC boot
-> /dev/sda2             9        50    173166   82  Linux swap
-> /dev/sda3            51      1017   3986941   83  Linux
->
-> Then I made mkswap, mke2fs, then I cpio -p the external disc onto the internal
-> disc (after a mount of the external disc).
->
-> I rm /etc/mtab and reboot the internal disc, I boot isl to tune the kernel
-> runstring, then I got something that works....
->
-> The idea then is to refresh the 'old' booted distro with a mega apt-get
-> upgrade, all went fine until apt-get start displaying things like this
->
-> ..............
->
-> Err http://ftp.fr.debian.org unstable/main libgnorba27 1.4.1.7-2
->   Could not open file
-> /var/cache/apt/archives/partial/libgnorba27_1.4.1.7-2_hppa.deb - open (30
-> Read-only file system)
->
-> ............
->
-> Apparently the / wne RO because of coruption detected.
->
-> And a quick look of file showing
->
-> phi@iws1pb02:/usr$ find .
-> find: ./share/doc/xserver-common: Input/output error
-> find: ./share/doc/liblcms: Input/output error
-> find: ./share/perl/5.6.1/bigfloat.pl: Input/output error
-> find: ./share/perl/5.6.1/bigint.pl: Input/output error
-> find: ./share/perl/5.6.1/bigrat.pl: Input/output error
->
->
-> At this stage the FS is real corupted, and fsck -y can correct, but many files
-> are lost.
->
-> I am doing something wrong? does e2fs survive that big FS partition? Does the
-> FWSCSI reliable? May be my disc is shaky?
->
->
-> Thanx in advance for any sugestions
-> Phi
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+-- 
+Revolutions do not require corporate support.
