@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.centraltx.com (gapserver.centraltx.com [64.209.39.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE0634829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 10:41:53 -0600 (MDT)
-Date: Mon,  2 Sep 2002 11:38:20 -0500
-Message-Id: <200209021138.AA3341287994@mail.centraltx.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3E3A14829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 10:47:37 -0600 (MDT)
+Date: Mon, 2 Sep 2002 09:51:14 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: marc <marc@centraltx.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Kernel Panic
+Message-ID: <20020902165114.GF14634@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200209021137.AA3784507924@mail.centraltx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: "marc " <marc@centraltx.com>
-Reply-To: <marc@centraltx.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: [parisc-linux] Network Problems
+In-Reply-To: <200209021137.AA3784507924@mail.centraltx.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,26 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Anyone have any ideas why I get innundated with these messages on
-startup and have to do a control-c to get past this part and continue booting?
+In reference to a message from marc , dated Sep 02:
+> Guys, I'm getting a kernel panic after trying to access my tape drive.
+> Can anyone help me out? I tried to post all relevant info, let me know
+> if I can provide anything else:
 
-Configuring network interfaces: eth0: Transceiver problem.
-ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
-skb: pf=2 (unowned) dev=lo len=328
-PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
-ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
-skb: pf=2 (unowned) dev=lo len=328
-PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
-ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
-skb: pf=2 (unowned) dev=lo len=328
-PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
-ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
-skb: pf=2 (unowned) dev=lo len=328
-PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
-ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
-skb: pf=2 (unowned) dev=lo len=328
-PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+first step would be to try a newer kernel. 2.4.9 is very old :-)
 
-ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
-skb: pf=2 (unowned) dev=lo len=328
-PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+you can either compile stuff from cvs (instructions on the
+www.parisc-linux.org website), or grab a precompiled one either from
+debian or ftp://ftp.parisc-linux.org/kernels/32/32-2.4.19-pa9.tar.gz
+
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
