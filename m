@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 60C39482A
-	for <parisc-linux@parisc-linux.org>; Wed, 19 Dec 2001 04:37:34 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 99553B00C; Wed, 19 Dec 2001 11:36:21 +0000 (GMT)
-Date: Wed, 19 Dec 2001 11:36:21 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Andy Walker <squawker@start.no>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Status report - B132L and 725/100
-Message-ID: <20011219113621.X1897@linuxcare.com>
-References: <1008589643.3c1ddb4b75583@nyepost.start.no> <1008594958.3c1df00ed9750@nyepost.start.no>
+Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 10BF6482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Dec 2001 04:50:40 -0700 (MST)
+Received: from marmite.its.uct.ac.za ([137.158.26.155])
+	by mail.uct.ac.za with esmtp (Exim 3.33 #4)
+	id 16GfGz-0003kd-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 19 Dec 2001 13:52:33 +0200
+Date: Wed, 19 Dec 2001 13:50:18 +0200
+From: Michael Wood <mwood@its.uct.ac.za>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011219115018.GA21399@marmite.its.uct.ac.za>
+References: <001f01c18455$04d1cef0$0201a8c0@w2kpro> <200112140525.WAA21618@puffin.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1008594958.3c1df00ed9750@nyepost.start.no>; from squawker@start.no on Mon, Dec 17, 2001 at 02:15:58PM +0100
+In-Reply-To: <200112140525.WAA21618@puffin.external.hp.com>
+Subject: [parisc-linux] fs corruption
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,33 +26,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Dec 17, 2001 at 02:15:58PM +0100, Andy Walker wrote:
-> Quoting Andy Walker <squawker@start.no>:
+On Thu, Dec 13, 2001 at 10:25:32PM -0700, Grant Grundler wrote:
+[snip]
+> I punt. Met my web site hacking quota for the day...some substantial
+> updates to the 0.9.3 errata:
+> 	http://www.parisc-linux.org/release-0.9/errata-093.html
 > 
-> > I had to pull the Bluefish F/W-Diff card (or at least disconnect the
-> > disk) but it may have been termination problems causing the timeouts/
-> > resets. Something else to test :-)
-> 
-> Okay, checked termination. Tried a different disk. Booted HP-UX on
-> that disk. No luck with Linux.
-> 
-> Relevant part of the dmesg is:
-> 
-> ...
-> 18. Bluefish Add-on FW-SCSI (4) at 0xfff8c000 [11], versions 0x13, 0x0, 0x89
-> ...
-> zalon_scsi_callback: Zalon vers field is 0x1, IRQ 34
-> ncr53c8xx: 53c720 detected
-> ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
-> scsi0 : ncr53c8xx-3.4.3b-20010512
+> (You do want to know how to avoid file corruption right?)
+[snip]
 
-Don't know why that is failing; does it always fail, or is it an
-intermittant problem?  e.g. Are the disks detected at boottime?
+Oh I'm glad that's fixed :)  I was seeing fs corruption on a
+D270 with an NCR53c720 and wasn't sure if it was the hardware or
+the kernel or something stupid I had done :)
 
-You might try booting with something like
-
-ncr53c8xx=sync:255,burst:0,verb:2
-
-which slows it down and might help if it is intermittant (just guessing though)
-
-Richard
+-- 
+Michael Wood <mwood@its.uct.ac.za>
