@@ -1,48 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B85CC482A
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 18:29:47 -0600 (MDT)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel2.hp.com (Postfix) with ESMTP id A57EC942
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 20:29:46 -0400 (EDT)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id 53AA537F86
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 18:29:46 -0600 (MDT)
-To: parisc-linux@parisc-linux.org
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 76D11482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 30 Jun 2001 10:21:37 -0600 (MDT)
+Date: Sat, 30 Jun 2001 12:22:36 -0400
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: Yan Han <yhan@uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] request to boot (denied)
+Message-ID: <20010630122236.A6437@megatonmonkey.net>
+References: <002901c100ca$c74d24c0$d10c6481@HCI009>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 29 Jun 2001 18:29:46 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010630002946.53AA537F86@carmen.fc.hp.com>
-Subject: [parisc-linux] New kernels available
+In-Reply-To: <002901c100ca$c74d24c0$d10c6481@HCI009>; from yhan@uwo.ca on Fri, Jun 29, 2001 at 02:39:06PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have built two kernel images and made them available at,
+On Fri, Jun 29, 2001 at 02:39:06PM -0400, Yan Han wrote:
+> Hi!
+> 
+> We got the message of "08:00:09:87:e4:8f: request to boot 
+> (denied) " from the system message. 
+> But  we ran the rbootd in this machine. Does anyone know how to figure it out?
+> 
+> thanks,
+>
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/
+Han,
 
-Here's what they are,
+There are two important things you need to do:
 
-Both
-----
-started with defconfig and turned off these
-CONFIG_IP_PNP_BOOTP
-CONFIG_ROOT_NFS
+A. Please _read_ the manual for rbootd. (man rbootd)
 
-vmlinux-20010629
-----------------
-CONFIG_PA7100LC=y
-CONFIG_PA11=y
+B. Please _check_ the mailing list archive for solutions to this problem. 
+   (http://www.parisc-linux.org/mailing-lists/)
 
-vmlinux64-20010629
-------------------
-CONFIG_PA8X00=y
-CONFIG_PA20=y
-CONFIG_PARISC64=y
+Secondly, I would recommend that you contact one of the Unix admins from
+the Computer Science faculty at UWO (Scott Feeney, Magi, Bruce Richards) and
+drop your general Unix questions in their direction.
 
+It seems to me that many of your problems stem from not having
+experience with a general Unix environment.
 
-You should be able to drop the appropriate one in and reboot(yaa palo!).
+You might want to go here:
+http://www.linuxcare.com/linux-business/bookshelf/newbie.epl#0672315459
+(and purchase one or two of these books, since they will be forever usefull!)
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Yes, that was a shameless Linuxcare plug ;)
+
+---
+
+Usefull checklist of things:
+
+1. Do you have /etc/rbootd.conf ?
+2. Is rbootd.conf setup properly ?
+3. Do you have a kernel in the proper directory ? /var/lib/rbootd ?
+4. Permissions on the image ?
+5. Is rbootd running ?
+6. Did you pass the right parameters to rbootd on startup ? (rbootd -d /etc/rbootd.conf)
+
+Rbootd:
+ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/rbootd-2.0-2.tar.gz
+
+Ever patient,
+Carlos.
