@@ -1,75 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from amanda.ybsoft.com (lametoby.ybsoft.com [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 53370482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 21:14:20 -0600 (MDT)
-Date: Thu, 19 Jul 2001 21:14:12 -0600
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installation success on C200
-Message-ID: <20010719211412.B23181@beavis.ybsoft.com>
-Reply-To: rbradetich@uswest.net
-References: <200107191929.NAA18096@puffin.external.hp.com>
+Received: from mail.iinet.net.au (symphony-02.iinet.net.au [203.59.24.17])
+	by dsl2.external.hp.com (Postfix) with SMTP id EB576482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 23:57:20 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id NAA26560
+	for parisc-linux@lists.parisc-linux.org; Fri, 20 Jul 2001 13:56:57 +0800
+Date: Fri, 20 Jul 2001 13:56:46 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.6-pa20 question about modules
+Message-ID: <20010720135640.W23932@neep.com.au>
+References: <OF46B79DB5.FE766246-ONC1256A8E.005BA756@LocalDomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200107191929.NAA18096@puffin.external.hp.com>
-From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <OF46B79DB5.FE766246-ONC1256A8E.005BA756@LocalDomain>; from jso@europay.com on Thu, Jul 19, 2001 at 07:46:09PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Jacob and Grant,
-
-The Slots are numbers as follows (according to the Owners Guide):
-
-0A
-4A
-0B
-4B
-2A
-5A
-2B
-5B
-<space>
-<space>
-3A
-1A
-3B
-1B
-
-Rear of Main Tray
-
-
-The C200 takes 16MB, 32MB, 64MB, or 128MB and must be intalled 
-in pairs.  Always install the largest capacity memory modules 
-in the lowest numbered memory slots.
-
-Hope this helps.
-
-- Ryan
-
-
-On Thu, Jul 19, 2001 at 01:29:15PM -0600, Grant Grundler wrote:
-> Jakob Sandgren wrote:
-> > A question;
-> > during boot the firmware complains about that the memory is not
-> > installed for "optimal performance". Do anyone know what to do about
-> > this?
+Quoth Joël Soete:
+> Just a small tips I use on my i386 linux-box: I launch the make in one line
+> and tacke a log which I can so analyze later like:
 > 
-> The owners guide or install guide will tell exactly how to do that.
-> Anyone have such a guide for C200?
-> 
-> Typically one should install the biggest SIMMs in the lowest numbered
-> slots. Some models want them installed in pairs of the same size.
-> 
-> grant
-> 
-> Grant Grundler
-> parisc-linux {PCI|IOMMU|SMP} hacker
-> +1.408.447.7253
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+> make dep clean bzImage modules modules_install 2>&1 | tee /var/tmp/kl-200107.log
+
+Safer to run them separately.  You can still easily log them, there are
+many possible ways to do this ...
+
+$ for target in clean dep vmlinuz modules modules_install
+> do make $target 2>&1 | tee -a /var/tmp/kl-200107.log
+> done
+
+$ (make clean ; make dep ; make vmlinux ; make modules ; make modules_install) 2>&1 | tee -a /var/tmp/kl-200107.log
+
+$ script /var/tmp/kl-200107.log
+Script started, output file is /var/tmp/kl-200107.log
+$ make clean ; make dep ; make vmlinux ; make modules ; make modules_install ; exit
+...
+Script done, output file is /var/tmp/kl-200107.log
+$
+
+
+Andrew.
 
 -- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
