@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: jsoe0708@tiscali.be
-Cc: "Ryan Bradetich" <rbradetich@uswest.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: FW: RE: [parisc-linux] 2.4.20-rc1-pa7 boot problem on b180 
-In-Reply-To: Message from jsoe0708@tiscali.be
-   of "Thu, 28 Nov 2002 17:27:17 +0100." <3DB577610000573D@ocpmta8.be.tiscali.com>
-References: <3DB577610000573D@ocpmta8.be.tiscali.com> 
-Date: Mon, 02 Dec 2002 21:09:42 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021203040942.4180F482E@dsl2.external.hp.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7821F4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 21:53:46 -0700 (MST)
+Date: Mon, 2 Dec 2002 20:56:57 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Larry McVoy <lm@bitmover.com>
+Cc: parisc-linux@lists.parisc-linux.org, phi@hpfrcu81.france.hp.com,
+	dev@bitmover.com
+Subject: Re: [parisc-linux] rlogin: connection closed (SOLUTION)
+Message-ID: <20021203045657.GU21187@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200212022154.gB2LsPc31908@work.bitmover.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200212022154.gB2LsPc31908@work.bitmover.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,31 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-jsoe0708@tiscali.be wrote:
-> >the less by curiosity I apply the Ryan patch: <http://lists.parisc-linux=
-> .org/pipermail/parisc-linux/2002-November/018414.html>
-> >and it also solved the problem of the b180 boot??
+In reference to a message from Larry McVoy, dated Dec 02:
+> This fixes it.  Looks like a race, I wasn't inclined to dig further, this
+> got me past the problem.  I suspect that parisc fork() runs parent/child
+> in the opposite order from every other Unix and that causes a race but
+> I have not looked.
 
-yes - thanks for finding this!
+Nah, this is not it. It's the problem with EAGAIN != EWOULDBLOCK on 
+hppa-linux.
 
-arch/parisc/kernel/pci-dma.c has the same bug as what ccio driver
-has/had regarding scatter/gather lists (pci_map_sg() interfaces).
-Replace all references to "sg->address" with "sg_virt_addr(sg)".
-Can you send me a patch off list for that?
-
-If not, I'll probably do it since I'd like to get my B180 working on 2.4.20.
-It will just take longer.
-
-> Don't know if could help but I also notice the following difference at
-> boot time:
-> 
-> With highmem_io=3D1 on a b2000
-...
-> with highmem_io=3D0 on a b180
-...
-
-It's hard to compare different SCSI implementations.
-IIRC, B2000 uses 53c875 and B180 uses LASI for SE narrow SCSI.
-Check to see which driver claims the respective SCSI controllers.
-
-grant
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
