@@ -1,27 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89F344837
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 10:51:38 -0600 (MDT)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA26000
-	for <parisc-linux@puffin.external.hp.com>; Thu, 27 Sep 2001 10:48:50 -0600
-Received: from Clansoft ([61.163.57.68])
-	by public.ayptt.ha.cn (8.9.1a/8.9.1) with SMTP id AAA11283
-	for <parisc-linux@thepuffingroup.com>; Fri, 28 Sep 2001 00:49:21 +0800 (CST)
-Message-Id: <200109271649.AAA11283@public.ayptt.ha.cn>
-Date: 2001-9-28 0:46:06
-From: "service@coolstarpage.com" <smtp@public.ayptt.ha.cn>
-Reply-To: service@coolstarpage.com
-To: "你好"@public.ayptt.ha.cn, <parisc-linux@thepuffingroup.com>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 121254848
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 11:49:08 -0600 (MDT)
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by atlrel2.hp.com (Postfix) with ESMTP id A3114C4C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 13:49:07 -0400 (EDT)
+Received: from there (eeyore.fc.hp.com [15.1.54.199])
+	by ldl.fc.hp.com (Postfix) with SMTP id 6513D43FA
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 11:48:57 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Bjorn Helgaas <bjorn_helgaas@hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] More strange problems
+Date: Thu, 27 Sep 2001 11:51:15 -0600
+References: <20010927113453.F16693@hp.is> <20010927143556.K16693@hp.is> <20010927155752.D16096@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20010927155752.D16096@parcelfarce.linux.theplanet.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Subject: [parisc-linux] 瞬间提高百倍访问量！
+Message-Id: <20010927174857.6513D43FA@ldl.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-瞬间提高百倍访问量！ 
+> > r0-3     00000000 00000008 0007c7b7 bff00938
+> > ...
+> >  IIR: 48340038    ISR: 00000014  IOR: 00000024
+> >  CPU:        0   CR30: 29164000 CR31: 10350000
+> >  ORIG_R28: 00206000
+>
+> The truly dedicated will decode IIR to see what instruction it was,
+> cross-check which register in the dump was wrong then try to debug
+> the program.
 
-我们免费一种提供一种可以通过网页修改访客的浏览器的默认主页的代码，只要将它加入到你的主 页，每当访客访问你的网站的时候，代码就会将访客的浏览器的默认主页设置成你的主页！我们的代码与众不同之处就在于当访客的浏览器设置成您的站点以后将不可以再修改！同时我们还提供在访客的浏览器设置成您的站点以后访客可以再次修改自己默认页浏览器的代码。
+Decoding IIR is actually pretty easy if you have an HP-UX system with adb:
 
-点击此处了解详细:http://www.coolstarpage.com
--------------------------------------------------
-  CDmail by ClanSoft    http://clansoft.yeah.net
+$ echo "0x48340038=i" | adb
+                LDW             28(r1),r20
+
+adb prints the offset in decimal, so this is 0x1c(0x8) = 0x24, which 
+matches the IOR.  I wish I knew how to do the same with gdb.
