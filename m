@@ -1,18 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server1.neuronet.pitt.edu (server1.neuronet.pitt.edu [150.232.128.42])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A622482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 10:56:54 -0700 (MST)
-Received: from neuronet.pitt.edu (host10a.neuronet.pitt.edu [150.232.128.120])
-	by server1.neuronet.pitt.edu (8.8.8/8.8.8) with ESMTP id MAA05965
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 12:56:57 -0500 (EST)
-Message-ID: <3C3F26C5.30801@neuronet.pitt.edu>
-Date: Fri, 11 Jan 2002 12:54:13 -0500
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] How to configure EISA network card in 715/80
-References: <3C3F06DD.6050409@verizon.net> <20020111154337.D26644@parcelfarce.linux.theplanet.co.uk> <3C3F0DD1.4040508@verizon.net> <20020111161705.E26644@parcelfarce.linux.theplanet.co.uk> <3C3F1127.8070507@verizon.net> <20020111162742.F26644@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: "Sorin Ghinescu" <sghinesc@columbus.rr.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 712/80 - 7cdroms - scsi prbl 
+In-Reply-To: Message from "Sorin Ghinescu" <sghinesc@columbus.rr.com>
+   of "Thu, 10 Jan 2002 12:39:23 EST." <001001c199fd$ca7fe700$0800a8c0@beta>
+References: <001001c199fd$ca7fe700$0800a8c0@beta> 
+Date: Fri, 11 Jan 2002 12:10:24 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020111191024.CB9E6482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +19,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
+"Sorin Ghinescu" wrote:
+> I'm booting from my external cd-rom but it seems that the kernel is
+> fooled by something because it creates 7 cd-rom devices for all the scsi
+> targets available leaving no room for the hd. If I switch the cd-rom off
+> then I get 7 hds!
 
-> On Fri, Jan 11, 2002 at 11:21:59AM -0500, Rafael Herrera wrote:
-> 
->>If it's of any help, the card is connected through an add-on card to the 
->>main board. The chips on the add-on card are: TACT84544BPC, TACT84543BPP 
->>and TACT84541CPC.
-> 
-> Yep, I'm familiar with that board.  Normally when it's plugged in, PDC
-> reports the EISA adapter.  Can you try unplugging it & replugging it to
-> see if that helps?  You cold also try messing around at the PDC prompt,
-> see whether anything can see it.  As you may have guessed, I have no
-> idea what the problem is and I'm suggesting things at random :-)
+This typically means the HD is set to the same SCSI ID as the
+interface controller (NCR 53c710 logic on LASI). Host ID is
+7 by default. Verify the HD is set to something else.
 
+It's possible the lasi scsi driver is broken and setting the
+initiator to 0 (or something other than 7).
 
-I'll try when I get back home.
-
-Raf
+grant
