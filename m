@@ -1,15 +1,15 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Re: [PATCH] linuxthreads for hppa (1/3)
-Date: Wed, 15 Oct 2003 10:26:49 -0400
-Message-ID: <20031015142648.GF22495__14409.5347998247$1416622877$gmane$org@systemhalted>
-References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com> <20031015054045.GE22495@systemhalted> <3F8CE195.2090106@redhat.com>
+Subject: [parisc-linux] Re: [PATCH] Sysdeps changes for hppa.
+Date: Wed, 15 Oct 2003 10:35:59 -0400
+Message-ID: <20031015143558.GG22495__19778.1999166638$1416622878$gmane$org@systemhalted>
+References: <20031012213226.GE23999@systemhalted> <3F8CDFD6.1010300@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
 To: Ulrich Drepper <drepper@redhat.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3F8CE195.2090106@redhat.com>
+In-Reply-To: <3F8CDFD6.1010300@redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,31 +22,31 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Ulrich,
 
-> - -# if __LT_SPINLOCK_INIT != 0
-> - -  __pthread_handles[0].h_lock = __LOCK_INITIALIZER;
-> - -  __pthread_handles[1].h_lock = __LOCK_INITIALIZER;
-> +# ifdef __LT_INITIALIZER_NOT_ZERO
-> +  __pthread_handles[0].h_lock = __LOCK_ALT_INITIALIZER;
-> +  __pthread_handles[1].h_lock = __LOCK_ALT_INITIALIZER;
-> 
-> part is what I meant.  There is no reason to change the name.
+> I've applied this patch, but only because I really don't care how the PA
+> port looks.
 
-How do you propose it be handled? All arches define __LT_SPINLOCK_INIT
-and thus it cannot be used to distinguish between the two cases. Why do
-we distinguish between the two cases? Because a structure as an
-initializer has two different assignments cases, one in which it is
-named and one which it is not.
+I didn't think the patch was too ugly, but then again a father thinks
+all his children are beautiful.
+
+> The semtimedop definition is completely wrong.  If you want all
+> syscall,s use appropriate headers.
+
+Moot point. We know why it's there, because changes don't propagate
+everywhere as fast as we'd like.
+
+> You've modified the patch by hand and broke it, forcing me to do clean up.
+
+Unforgivable. Please reject patches immediately if this happens again. 
+I will produce a correct patch.
+
+> The coding style is completely wrong and a terrible mess.  The coding
+> standard document is available, read it.
+
+Suggestions accepted. I will reread the document.
  
-> Look at your change, no changes of code which are not needed.  Clean up
-> the patches to follow the coding standard, preprocessor indentation, etc
-> etc.
+> The preprocessor directive indentation is wrong or non-existing.
 
-I do apologize for the STACK_GROWS_UP patches being included, and
-rightly so I removed them. Thank you for applying those patches.
-
-I will go over my patches again for coding standard, preprocessor
-indentation and other grievences. In most cases I have tried to follow 
-the standard.
+Never non-existent. Incorrect yes.
 
 Cheers,
 Carlos.
