@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe62.law3.hotmail.com [209.185.240.63])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92A66482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 09:23:29 -0600 (MDT)
+Received: from hotmail.com (oe21.law3.hotmail.com [209.185.240.125])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 83722482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 09:28:23 -0600 (MDT)
 From: "Alex Green" <alexdgreen@hotmail.com>
 To: "Paul Bame" <bame@fc.hp.com>
 Cc: <parisc-linux@lists.parisc-linux.org>
 References: <OE22Aztxc1o8yfogkJX00009958@hotmail.com> <20020807123807.GB9966@systemhalted>  <OE50nwpGR881Np7vXee0000cb29@hotmail.com>  <E17cSWK-0000pp-00@paul.bame>
 Subject: Re: [parisc-linux] palo issues
-Date: Wed, 7 Aug 2002 17:23:26 +0200
-Message-ID: <OE62f84mtceYvUAA3qj0000304b@hotmail.com>
+Date: Wed, 7 Aug 2002 17:28:20 +0200
+Message-ID: <OE21vQSK3sFilY05Dxp0000b0ff@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,8 +20,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-ok the file was build using make bzImage... surely this would produce a
-proper image..... or not?
+I ran file against my new kernel and the output is the same as the currently
+booting kernel.
+
 
 ----- Original Message -----
 From: "Paul Bame" <bame@fc.hp.com>
