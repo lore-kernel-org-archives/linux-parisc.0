@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 52C454841
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 12:56:43 -0600 (MDT)
-Date: Wed, 22 Oct 2003 14:52:31 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Jeff Bailey <jbailey@nisa.net>, debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-Cc: dan@debian.org
-Message-ID: <20031022185231.GC26896@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] glibc 2.3.2 for hppa (-rnptl)
+Received: from smtp2.libero.it (smtp2.libero.it [193.70.192.52])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 226414841
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 13:35:03 -0600 (MDT)
+Date: Wed, 22 Oct 2003 21:33:43 +0200
+Subject: Re: [parisc-linux] SCSI problems
+From: Riccardo Mottola <rollei@tiscalinet.it>
+To: Grant Grundler <grundler@parisc-linux.org>,
+	parisc <parisc-linux@lists.parisc-linux.org>
+Message-ID: <BBBCA837.9A9E%rollei@tiscalinet.it>
+In-Reply-To: <20031022154344.GA7470@colo.lackof.org>
+Mime-version: 1.0
+Content-type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,63 +22,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jeff, Drow,
+Hello,
 
-00list patch provided for -rnptl, and .dpatch url provided.
+on 10/22/03 5:43 PM, Grant Grundler at grundler@parisc-linux.org wrote:
 
-http://www.baldric.uwo.ca/~carlos/glibc232-hppa-full-nptl-2003-10-22.dpatch
+> See http://www.parisc-linux.org/faq/kernelbug-howto.html
+> You might find an HPMC occurred (which killed serial console)
+> in the "ser pim" output from PDC "BOOT_ADMIN" prompt.
 
-Cheers,
-Carlos.
+the how-to seems to describe exactly my problem.
 
----
+I press esc at boot and enter the boot selection.
 
-2003-10-22  Carlos O'Donell  <carlos@baldric.uwo.ca>
+I have:
 
-	* debian/patches/00list: Remove all hppa patches, leave 
-	glibc23-hppa-Rminkernel, add glibc232-hppa-full-2003-10-22.
+PDC ROM rev. 2.1
+IODC ROM rev. 2.1 
+on my 720 "cobra".
 
-Index: 00list
-===================================================================
-RCS file: /cvs/glibc/glibc-package/debian/patches/Attic/00list,v
-retrieving revision 1.1.2.8
-diff -u -p -r1.1.2.8 00list
---- 00list	16 Oct 2003 18:25:48 -0000	1.1.2.8
-+++ 00list	22 Oct 2003 18:40:19 -0000
-@@ -27,8 +27,8 @@ locales-stuff
- #ldso-disable-hwcap - Will be re-enabled when it gets fixed
- librt-mips
- glibc23-ctype-compat
--glibc23-01-hppa-dl-machine
--glibc23-07-hppa-atomicity
-+#CAO - Removed 2003-10-22 - glibc23-01-hppa-dl-machine
-+#CAO - Removed 2003-10-22 - glibc23-07-hppa-atomicity
- #s390-types
- #glibc23-ia64-strncpy - ok to remove in 2.3.2., but it has string/bug-strncpy.c test code. need to contact to randolph chung.
- glibc23-hppa-Rminkernel
-@@ -39,15 +39,15 @@ alpha-pic
- glibc23-cmov
- libgcc-compat-all
- locales-supported
--glibc23-hppa-compat
-+#CAO - Removed 2003-10-22 - glibc23-hppa-compat
- libgcc-compat-other
--glibc23-00-hppa-pthreads 
--glibc23-hppa-malloc8
-+#CAO - Removed 2003-10-22 - glibc23-00-hppa-pthreads 
-+#CAO - Removed 2003-10-22 - glibc23-hppa-malloc8
- s390-tls
- hurd-enable-ldconfig
- 30_glibc232-base
- #50_glibc232-mips-buildfix - no longer needed with CVS?  2003-10-07
--50_glibc23-hppa-entry
-+#CAO - Removed 2003-10-22 - 50_glibc23-hppa-entry
- sparcv8-target
- #sparc32-buildfix
- 50_glibc232-arm-dwarf2-buildfix
-@@ -60,3 +60,5 @@ arm-ioperm
- #linuxthreads-big-stacks
- pthread-cleanup
- glibc-make-check-perms
-+# CAO - Added 2003-10-22 - All the HPPA fixes
-+glibc232-hppa-full-2003-10-22
+i have a preliminary menu, with A I enter in the "boot admin" menu which I
+think is what is needed.
+
+"help" displays no ser command
+howewer (doing cut and paste):
+
+BOOT_ADMIN> ser clearpim
+ERROR: Unknown CONSOLE command.
+BOOT_ADMIN> ser pim
+ERROR: Unknown CONSOLE command.
+
+Was that command added later? do I have an equivalent? am I in the wrong
+menu? I think owners of older hardware will know better.
+
+Regards,
+    Riccardo
