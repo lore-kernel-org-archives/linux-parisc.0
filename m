@@ -1,17 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA19550
-	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jun 2000 11:45:04 -0600
-From: Helge Deller <deller@gmx.de>
-To: jdangelo@techie.com
-Subject: Re: [parisc-linux] Booting vmlinux.
-Date: Fri, 16 Jun 2000 19:45:27 +0200
-Content-Type: text/plain
-References: <2FF13E24F61AD41193130008C791A76031F107@boca215a.boca.ssc.siemens.com>
-In-Reply-To: <2FF13E24F61AD41193130008C791A76031F107@boca215a.boca.ssc.siemens.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA20165
+	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jun 2000 12:10:44 -0600
+Message-ID: <2FF13E24F61AD41193130008C791A76031F109@boca215a.boca.ssc.siemens.com>
+From: "D'Angelo, James" <James.D'Angelo@icn.siemens.com>
+To: "'Helge Deller'" <deller@gmx.de>, jdangelo@techie.com
 Cc: parisc-linux@thepuffingroup.com
+Subject: RE: [parisc-linux] Booting vmlinux.
+Date: Fri, 16 Jun 2000 14:09:24 -0400
 MIME-Version: 1.0
-Message-Id: <00061619452700.11665@P100>
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
+
+I'm using a 712/80.  I'll switch to the sercon.  What would the default
+speed/parity be?  I did have some more success with sti, but I don't appear
+to have a complete shell (ie -ls -mv) and I don't seem to have anyway to
+mount or transfer files over.  I would think I would use palo again to make
+the disk bootable so I don't have to use bootp.
+
+Thanks a lot for your help.  I am new at this and appreciate all the
+help/hints I get.
+
+jdangelo@techie.com
+
+
+ -----Original Message-----
+From: 	Helge Deller [mailto:deller@gmx.de] 
+Sent:	Friday, June 16, 2000 1:45 PM
+To:	jdangelo@techie.com
+Cc:	parisc-linux@thepuffingroup.com
+Subject:	Re: [parisc-linux] Booting vmlinux.
 
 Hi James,
 [cc'ed to parisc-linux]
@@ -22,15 +40,18 @@ currently very limited with STI-console (=Graphics-console).
 All following suggestions are meant for serial console:
 ------------------------------------------
 - do you use ramdisk-20000530-sercon.tgz (gunziped in /linux-2.3) ?
-- the best solution is to delete your /linux-2.3/.config-file and do a fresh 
+- the best solution is to delete your /linux-2.3/.config-file and do a fresh
+
 "make menuconfig".
 - do you have "block_devices/inital ramdisk support" enabled ?
-- you need to have "character_devices/serial_support/console on serial port" 
+- you need to have "character_devices/serial_support/console on serial port"
+
 enabled and "console_drivers/STI_Console" disabled.
 - major/minor of /dev/console in your ramdisk or nfs-exported tree needs to 
 be 5/1  (4/1 for STI-Console!)  [That's the only difference between 
 ramdisk20000530-[sercon|sticon].tgz]
-- take a look at the comments in palo/Makefile prior building the kernel with 
+- take a look at the comments in palo/Makefile prior building the kernel
+with 
 "make palo".
 - which machine are you using ?
 
