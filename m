@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from relay1.alcatel.be (alc119.alcatel.be [195.207.101.119])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 02055482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Oct 2001 01:11:22 -0600 (MDT)
-Message-ID: <1A8904C3797ED411AC2E0008C7E6F88117CA42@nlntmail2b.ats.nld.alcatel.nl>
-From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-To: "'Daniel Williams'" <dan@bigw.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] How to Boot CD on C110
-Date: Fri, 26 Oct 2001 09:10:55 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 951F1482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Oct 2001 04:03:29 -0600 (MDT)
+Received: from marmite.its.uct.ac.za ([137.158.26.155])
+	by mail.uct.ac.za with smtp (Exim 3.33 #4)
+	id 15x3rO-000BOl-00
+	for parisc-linux@lists.parisc-linux.org; Fri, 26 Oct 2001 12:05:06 +0200
+Date: Fri, 26 Oct 2001 12:02:21 +0200
+From: Michael Wood <mwood@its.uct.ac.za>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] very odd problem
+Message-ID: <20011026120221.A3151@marmite.its.uct.ac.za>
+References: <F128WXpA1DHstgNogS400011dde@hotmail.com> <20011025135548.C17203@dogbert.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011025135548.C17203@dogbert.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +26,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Hi
 
-	Hi Daniel,
+On Thu, Oct 25, 2001 at 01:55:48PM +0200, Albert Strasheim wrote:
+> Hello,
+> 
+> I had this same problem on i386 -- I think it's a dependancy
+> bug that gets exposed during installation (ppp depending on
+> libpcap, I think), which causes some setup scripts to fail
+> during installation.
+> 
+> Look for a start-stop-daemon.REAL file and copy it over your
+> start-stop-daemon. I think that should solve the problem. Or
+> I'm utterly confused... which is probably more likely. :-)
 
-	I had twice the same problem:
-	First time I had two devices with the same scsi-id (mea culpa)
+debootstrap moves start-stop-deamon to start-stop-daemon.REAL
+(see /usr/lib/debootstrap/scripts/woody)
 
-	Second time, the (internal) scsi flatcable was half detached
-(probably during transport, or fiddling of my fellow workers)...
+It's supposed to move it back again at the end, so maybe it
+failed somewhere along the way?
 
-	Result was identical; after powerup, the SEA command did not show
-anything, neither the internal disk, nor the cdrom-drive.
+> Regards,
+> 
+> Albert
+> 
+> On Thu, 25 Oct 2001, Kenneth Westelinck wrote:
+> 
+> > Hi all,
+> > 
+> > 
+> > I've recently installed the test-release of woody on my 712/60. I've also 
+> > compiled a recent kernel available from the parisc-linux site. All works 
+> > well, except from a very strange problem. The start-stop-daemon call, which 
+> > is used throughout the init scripts, doesn't seem to work. So, executing the 
+> > 
+> > inetd script results in nothing, not even an error. Starting inetd on the 
+> > command line (/usr/sbin/inetd) works great. Is there a known bug in the 
+> > start-stop-daemon program? Can this be solved, or will I have to rewrite my 
+> > init scripts?
+> > 
+> > Many thanks in advance.
+> > 
+> > 
+> > regards,
+> > 
+> > Kenneth
 
 
-	Hope it helps, Hans.
 
-
-	Too bad the firmware doesn't see the SCSI CD either, when SEArching
-on bootup. 
-	
+-- 
+Michael Wood <mwood@its.uct.ac.za>
