@@ -1,17 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (unknown [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CE8894829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Jun 2003 09:35:24 -0600 (MDT)
-Date: Tue, 3 Jun 2003 17:35:08 +0200
-Message-ID: <3ED70CF100001633@ocpmta2.freegates.net>
-In-Reply-To: <200306031418.h53EI399028101@hiauly1.hia.nrc.ca>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] compiler & kernel
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: joel.soete@tiscali.be, xam@cs.ucc.ie,
-	parisc-linux@lists.parisc-linux.org
+Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C3AE34829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Jun 2003 11:05:16 -0600 (MDT)
+Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
+	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h53GB6h29351
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Jun 2003 09:11:06 -0700
+Received: from jordan.eng.nateng.com (IDENT:1000@localhost [127.0.0.1])
+	by jordan.eng.nateng.com (8.12.8/8.12.8) with ESMTP id h53H77FY006943
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Jun 2003 10:07:07 -0700
+Received: from localhost (chandler@localhost)
+	by jordan.eng.nateng.com (8.12.9/8.12.8/Submit) with ESMTP id h53H7760006940
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Jun 2003 10:07:07 -0700
+Date: Tue, 3 Jun 2003 10:07:07 -0700 (PDT)
+From: Sir Ace <chandler@nateng.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.53.0306031006370.4551@jordan.eng.nateng.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] RAV AntiVirus scan results. (fwd)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,36 +29,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->> # file vmlinux-2.4.21-rc4-pa35
-> vmlinux-2.4.21-rc4-pa35: ELF 64-bit MSB ..., dynamically linked (uses share
-> libs), ...
-> 
-> In the 32-bits case I well understand that kernel was staticaly linked
-but
-> I but surprised that 64-bit kernel is dyn
->mically linked? 
+I got this from someone on the list.  Fix your box.
 
-This is a limitation of the 64-bit linker.  Binaries still need an
-interpreter for startup even when linked with -static.  This probably
-could be fixed but the use of static binaries under 64-bit hpux is
-discouraged.  Under hpux,
->the linker needs to define some extra symbols
-when a static binary is created.
+---------- Forwarded message ----------
+Date: Wed, 03 Jun 2003 07:19:56 -0700
+From: ravms@nateng.com
+To: parisc-linux-admin@lists.parisc-linux.org
+Cc: chandler@nateng.com
+Subject: RAV AntiVirus scan results.
 
-> Anyway could you let me know how to 'generate this profile'
 
-Look at the -Q, -ftime-report and -fmem-report options.
+RAV AntiVirus for Linux i686 version: 8.3.1 (snapshot-20011106)
+Copyright (c) 1996-2001 GeCAD The Software Company. All rights reserved.
+Registered version for 2 domain(s).
+Running on host: mail.nateng.com
 
-Thanks for all explanation.
+The file (part0001:approved.pif) attached to mail (with subject: [parisc-linux] Re: Your application) sent by parisc-linux-admin@lists.parisc-linux.org to chandler@nateng.com,
+is infected with virus: Win32/Sobig.C@mm.
+Cannot clean this file.
+The file was successfully deleted by RAV AntiVirus.
 
-For the last point I edit Makefile and in CFLAGS I added the tree mentionned
-options. I just start to recompile a kernel 2.4.20 and log everything but
-I think that it will increase dramaticaly the overall volume: is that all
-will really help you or better some typical comparison?
+Scan engine 8.11 for i386.
+Last update: Tue Jun  3 03:05:41 2003
+Scanning for 78165 malwares (viruses, trojans and worms).
 
-Joel
+To get a free 60-days evaluation version of RAV AntiVirus v8
+(yet fully functional) please visit:
 
----------------------------------
-Découvrez les 6 clés et gagnez le Club Med à Vie avec Tiscali
-http://www.tiscali.be/nl/subs/tiscali4life/default.asp?lang=fr
+   http://www.ravantivirus.com
