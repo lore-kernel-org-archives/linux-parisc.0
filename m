@@ -1,7 +1,7 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] PA8800/ZX1 support committed to 2.6.7-rc2-pa2
-Date: Fri, 11 Jun 2004 09:03:55 -0600
-Message-ID: <20040611150355.GB10279@colo.lackof.org>
+Date: Fri, 11 Jun 2004 09:27:13 -0600
+Message-ID: <20040611152713.GC10279@colo.lackof.org>
 References: <20040604202546.GC18574@colo.lackof.org>
 	<20040605065126.GA28343@colo.lackof.org>
 	<1086444652.1999.20.camel@mulgrave>
@@ -27,36 +27,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 On Fri, Jun 11, 2004 at 10:02:29AM -0400, James Bottomley wrote:
-> > Changing "4 + cnf.cc_shift" (stride=128) to "3 + cnf.cc_shift"
-> > (stride=64) didn't help. This implies the stride is not the problem.
-> 
-> The stride in the rest of the PA architecture is either 16 or 32; I'd be
-> surprised if the L1 stride in the 8800 were bigger (smaller stride is
-> actually more efficient since it gives finer control over caching).
-
-I always thought the stride was the smallest cacheline size.
-
 > Could you just hard code it to 32 to make assureances certain that the
 > stride value isn't the source of the segv's?
 
-It didn't help. sshd is still not working.
-I'll try 16 as well.
+stride=16 doesn't work either.
+sshd only page faults (so far) and sometimes "hangs" (^C to kill it).
+Out of 9 attempts, I get one hang and 4 page faults.
+"Connection closed" on all except the "hang".
 
-pa8800:~# dmesg | fgrep sshd                                                    
-do_page_fault() pid=457 command='sshd' type=15 address=0x80fc43ac               
-do_page_fault() pid=461 command='sshd' type=6 address=0x00000003                
-sshd(463): unaligned access to 0x00000000faf0105b at ip=0x00000000406e536b      
-sshd(463): unaligned access to 0x00000000faf0107b at ip=0x00000000406e537f      
-do_page_fault() pid=463 command='sshd' type=15 address=0x00000002               
-do_page_fault() pid=465 command='sshd' type=15 address=0x0000000c               
-do_page_fault() pid=469 command='sshd' type=15 address=0x0000000c               
-sshd (pid 471): Illegal instruction (code 8) at 0000000000074b7b                
+Using console, I can
+o apt-get update
+o apt-get upgrade
+o ssh -l grundler 192.168.1.1
 
-
-But I have to wonder why do RC scripts work?
-And why can I login on the console?
-I thought all of those things would fork/exec other binaries as well.
-Given everything is coming over NFS root, I can't blame IO either.
+So far, everything from the console works.
+I'm not sure why sshd is having such a hard time.
+I still don't think "stride" is the problem.
 
 grant
 _______________________________________________
