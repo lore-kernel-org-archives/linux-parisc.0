@@ -1,128 +1,80 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA29258
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 11:11:58 -0600
-Message-Id: <200009051715.KAA23252@milano.cup.hp.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: Kernel panic: ccio-dma.c:ccio_alloc_range() I/O MMU is out of mapping resources 
-In-reply-to: Your message of "Mon, 04 Sep 2000 02:20:18 PDT."
-             <39B35B41.20C70524@uswest.net>
-Date: Tue, 05 Sep 2000 10:15:28 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA30719
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 13:09:32 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 5 Sep 2000 19:09:45 -0000
+Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
+	id 13WO6Q-0001ML-00
+	for <parisc-linux@thepuffingroup.com>; Tue, 05 Sep 2000 15:09:50 -0400
+To: parisc-linux@thepuffingroup.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 05 Sep 2000 15:09:50 -0400
+Message-ID: <87lmx6k64h.fsf@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Three kinds of userspace/VM/whatever bugs
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ryan Bradetich wrote:
-> Grant,
-> 
-> I was hoping  you could expand upon your comment regarding the error
-> message.  I have a test case that reliably generates several of these
-> messages, and I would like to see if I could fix it (If Bob Pflederer
-> doesn't beat me too it :)).
+1) When forking a lot of processes, eventually the I-cache gets
+   corrupted and you get "illegal instruction" or "halted by break 0,0
+   (yes, this sucks)" errors.  This one's easy to demonstrate:
 
-Hi Ryan,
-I've cc'd the list since this turned out to be fairly long and will
-be of interest to a few others. Besides, if I don't understand something
-right either, someone could correct me.... :^)
+#!/bin/sh
 
-> I see that you have a FIXME.... but it seems that if the I/O MMU is out
-> of resources, it should free up a resource (maybe via LRU) instead of a
-> kernel panic?
+while true; do
+        cat <<EOF >whatever.foo
+foo foo foo foo foo foo foo
+EOF
+done
 
-Nope. The main problem with the code is the allocation algorithm
-makes extremely poor use of available resources. This is discussed
-at length below.
+   This will quickly die or crash the machine.  This is due to our
+   broken cache flushing functions.  If you kludge around this (just
+   flush the entire cache all the time) on 2.3.99pre8 then you will no
+   longer lose, but of course the machine will run slowly (i.e. don't
+   do this on a PA8500 :-) 2.4.0-test6 has other problems which is why
+   I don't use it for userspace work (see below).
 
-Secondly, since we cripple the memory available to 128MB, the sizing
-of the I/O pdir is also "crippled" to a corresponding size and thus
-I/O Pdir allocation won't "scale" with the system. The assumption is
-a system with more I/O devices will also have more memory....but
-IMHO, crippling the memory size is really a secondary issue and will
-get fixed soon enough.
+2) When forking, random things happen in the child process before
+   exec() sometimes causing the shell to segfault (this usually
+   manifests itself as a fault in the environment variable setup code
+   in ash).  This can be replicated by running most large configure
+   scripts.
 
-> Sanity Check (Just to make sure I understand the purpose of the I/O MMU).
-> The I/O MMU is a cache/TLB for the U2/UTurn chip.  So if the data is
-> flushed, it can always be retrieved without data loss.
+   This is due to our broken TLB flushing macros.  First of all the
+   'if (mm == current->mm)' check in these macros does appear to be
+   bogus, as removing it "fixes" some of these problems.  Second, we
+   have the same problem as above in that the
+   flush_(instruction|data)_tlb_range inlines incorrectly use
+   p[id]tlbe and we don't distinguish between user and kernel spaces.
+   Also __flush_tlb_space basically doesn't work, for the same reason.
 
-That's at least partially right.  The I/O MMU *contains* a TLB to cache
-I/O address space to physical address space translations. But the
-translations are stored in an "I/O Page Directory" (I/O Pdir) in host
-memory. The I/O TLB is a form of "cache" to avoid repeatedly fetching
-translations from the I/O Pdir for every I/O <-> Memory transaction
-(ie DMA).  We "flush" the TLB whenever we change the corresponding
-I/O Pdir entry since the two are NOT coherent on most platforms. The
-reasons for using and the mechanics of TLB fetching/flushing are
-basically the same as for the CPU.
+   Again, kludging around this by always flushing the entire TLB and
+   removing the conditional above makes my A180 stable but slightly
+   slower, on 2.3.99pre8.
 
-[ digression:
-    We might be able to add another "FIXME" here: I think PCX-W and Uturn
-    *are* coherent. Ie changes to the I/O Pdir by the PCX-W processor are
-    "visible" to the Uturn chip and I *thought* (not certain) the Uturn
-    would ditch the now invalid TLB entry on it's own.
-]
+3) 2.4.0-test6 has some kind of bug that manifests itself in the
+   following type of oopsen:
 
-> 
->    ** FIXME: The search algorithm only checks every
->    **        32cd bit field. So even we only need
->    **        one bit, we wouldn't see it.
->    **        Should shift the pages_mask left
->    **        some during the search in order to
->    **        take advantage of cacheing.
->    */
->    panic(__FILE__ ":" __FUNCTION__ "() I/O MMU is out of mapping
-> resources\n");
-> 
-> 
-> I also see lots of other FIXME's in this code I would like to take a
-> whack at (if Bob Pflederer doesn't beat me too it :)) .. but I'd like
-> to nail this one first since I have a good test case for it.
+bad magic 807025a (should be c016f720), wq bug, forcing oops.
 
-Sure. This is a generic code problem and not really specific to
-U2/Uturn support. SBA (Astro/Ike) code uses the same implementation.
-If someone improves this, I'll review and port the changes to sba_iommu.c.
+   These come from this macro in <linux/wait.h>:
 
-The code uses a "resource bit map" to track which I/O Pdir entries
-are (or not) in use. "In use" means the I/O Pdir entry contains a valid
-physical address and a device driver is/has programmed it's device to
-use this address for DMA.  ccio_alloc_range() builds a bit mask which
-represents a consecutive set of I/O Pdir entries and searches the
-resource bit map to locate a consecutive set of free bits.
-Since I was too lazy to write a really smart *and* fast search
-algorithm, I ended up with just a mostly fast one.
+#define CHECK_MAGIC(x) if (x != (long)&(x)) \
+	{ printk("bad magic %lx (should be %lx), ", (long)x, (long)&(x)); WQ_BUG(); }
 
-The "smart" part is where the search algorithm could find the
-consecutive bits in some other location other than the just the
-LSB (Least Significant Bits) of every 32-bit word. Since most
-mappings (and thus resource bit map searches) are for 1 or 2 pages,
-only 1/32 or 2/32 of "available" resources are really available.
-Searching the LSB in 8-bit steps (vs 32-bits) is one simple way
-of making 4x better use of the resource bit map. (I was thinking
-one could use "pages_needed" local variable to determine which search
-algorithm to use.) 4x better usage means either we could size the
-I/O Pdir 1/4th it's current size or we are alot less likely to
-hit the panic() code you quoted above.
+   Unfortunately, because they just hang the machine without printing
+   a register dump I am unable to see where exactly they are being
+   triggered from.  May I suggest that the person who wrote this macro:
 
-But before hacking this to death, read the comments above ccio_alloc_range()
-a few times. It's really important the implementation here be really 
-"fast" (wall clock - not instruction counts). The mapping and unmapping
-code paths are both called for *every* DMA transaction by every device.
-This code path is just as important as the interrupt path for performance.
-General things to think about when coding (in no particular order): 
-i-cache "foot print" size, branches (avoid them), d-cache hit rate.
+#define WQ_BUG() do { \
+	printk("wq bug, forcing oops.\n"); \
+	for(;;); \
+} while (0)
 
-In general, I'm not too worried about shortening the "worst case" search
-time since it means the I/O Pdir was not correctly sized in the first place.
-I think the challenging tradeoff is between alloc/free speed and
-utilization of I/O Pdir resource.
+   be shot.  Argh.  I'll track this some more after doing so.
 
-> Thanks a lot for your help!
+These bugs are all holding up the progress of userspace work.
 
-welcome,
-grant
-
-> Ryan
-> 
-> 
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
