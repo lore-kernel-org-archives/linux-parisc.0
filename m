@@ -1,43 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA23181
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Sep 2000 19:19:46 -0600
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by cosrel1.hp.com (Postfix) with ESMTP id AD274874
-	for <parisc-linux@thepuffingroup.com>; Fri, 22 Sep 2000 19:20:35 -0600 (MDT)
-To: parisc-linux@thepuffingroup.com
-Cc: taggart@carmen.fc.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 22 Sep 2000 19:22:13 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20000923012213.79114381CD@carmen.fc.hp.com>
-Subject: [parisc-linux] New cross-toolchain and nfsroots
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA23652
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Sep 2000 19:44:48 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 23 Sep 2000 01:45:27 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA00448;
+	Sat, 23 Sep 2000 12:40:37 +1100
+Date: Sat, 23 Sep 2000 12:40:37 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Grant Grundler <grundler@cup.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] internal error in tc-hppa.c? 
+In-Reply-To: <200009221900.MAA14390@milano.cup.hp.com>
+Message-ID: <Pine.LNX.4.21.0009231204130.31535-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have posted a new X86/linux->parisc/linux cross toolchain at,
+On Fri, 22 Sep 2000, Grant Grundler wrote:
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20000921.tar.gz
+> Could someone who has a clue about tc-hppa.c improve the
+> error reporting for this case?
+> I'm certain we are going to see this again...
 
-I have also posted two new nfsroots. The first contains everything from Debian 
-"base" that we have built so far(debs and tgz's). This is an attempt to 
-generate something as close as possible to the base.tgz file that the Debian 
-install uses. All the debs were installed natively so the package database is 
-correct as well. It will serve as a good starting point for building a system 
-and can be updated using dpkg/apt/etc. It's 33MB. It lives at,
+OK, it's fairly easy to make gas report symbols associated with fixups
+that it doesn't understand.  I'll look at it in a few hours - I'm off to
+pick up a new car :)
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/base-20000922.tar.gz
+This sort of bug is due to gas originally being written just to process
+gcc output.  ie. gas lays no claim to being a general purpose assembler.
+x86 gas had the same sort of behaviour a few years ago, and you might be
+surprised to know I met with some resistance to making x86 gas more
+general purpose.
 
-The second nfsroot is the above "base" root plus all the other non-"base" 
-Debian packages that we've done plus gcc/binutils. Think kitchen sink. It's 
-43MB. It lives at,
-
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/nfsroot-20000922.tar.g
-z
-
-In case you're curious I placed notes on how I generated the above at,
-
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/recipe-20000922
-
+Alan Modra
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Linuxcare.  Support for the Revolution.
