@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail12.speakeasy.net [216.254.0.212])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CA0B04874
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Jun 2003 20:50:58 -0600 (MDT)
-Received: from unknown (HELO speakeasy.net) (caslivkoff@[216.27.161.152])
-          (envelope-sender <caslivkoff@speakeasy.net>)
-          by mail12.speakeasy.net (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@lists.parisc-linux.org>; 4 Jun 2003 02:50:52 -0000
-Date: Tue, 3 Jun 2003 22:50:52 -0400
-Subject: Re: [parisc-linux] Video card question
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: parisc-linux@lists.parisc-linux.org
-To: Sir Ace <chandler@nateng.com>
-From: Chuck Slivkoff <caslivkoff@speakeasy.net>
-In-Reply-To: <Pine.LNX.4.53.0306031931340.8941@jordan.eng.nateng.com>
-Message-Id: <5AD605E8-9637-11D7-864A-000393581E44@speakeasy.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9969B4877
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Jun 2003 23:47:35 -0600 (MDT)
+Message-Id: <200306040547.h545lW9G016934@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] compiler & kernel
+To: grundler@parisc-linux.org (Grant Grundler)
+Date: Wed, 4 Jun 2003 01:47:31 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: jsoe0708@tiscali.be, joel.soete@tiscali.be, xam@cs.ucc.ie,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030603235913.GA3536@dsl2.external.hp.com> from "Grant Grundler" at Jun 3, 2003 05:59:13 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,10 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-It's a Visualize FX-E.
+> On Tue, Jun 03, 2003 at 10:18:03AM -0400, John David Anglin wrote:
+> > ...but the use of static binaries under 64-bit hpux is discouraged.
+> 
+> That depends on who you talk to.
 
-On Tuesday, Jun 3, 2003, at 22:33 US/Eastern, Sir Ace wrote:
+Possibly, I was reading too much into what is stated in the pa64 runtime
+supplement.  However, the default behavior of the HP 64-bit linker is to
+link dynamically, even if no DLLs are found at link time.  It doesn't
+really matter from a maintenance standpoint if a binary is dynamic or
+static if it is solely linked with archive libraries.  I suspect that
+one reason for this default is that internationalization support requires
+linking with libdld.sl and using the dynamic loader.
 
-> Does anyone know what the A6150-60002 (A6150A) is?
-> It's a PCI VGA card that shipped with my rp5470...  But I am having a
-> fairly difficult time figureing out what it is.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
