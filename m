@@ -1,40 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 80851482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Oct 2001 03:09:04 -0600 (MDT)
-To: Matthew Wilcox <willy@debian.org>
-Message-ID: <1002618541.3bc2bead27af0@webmail.tiscalinet.be>
-Date: Tue, 09 Oct 2001 11:09:01 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-References: <1002553729.3bc1c18187924@webmail.tiscalinet.be> <20011008162234.D28880@parcelfarce.linux.theplanet.co.uk> <1002556397.3bc1cbed99e0b@webmail.tiscalinet.be> <20011008173620.I3745@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20011008173620.I3745@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Re: LVM 1.0.1-rc4 on hppa
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 868D4482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Oct 2001 03:23:05 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 6F210B00C; Tue,  9 Oct 2001 10:24:14 +0100 (BST)
+Date: Tue, 9 Oct 2001 10:24:14 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] bad loopback error msg
+Message-ID: <20011009102414.X11105@linuxcare.com>
+References: <200110090020.SAA01264@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200110090020.SAA01264@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Oct 08, 2001 at 06:20:15PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-Quoting Matthew Wilcox <willy@debian.org>:
+On Mon, Oct 08, 2001 at 06:20:15PM -0600, Grant Grundler wrote:
+> Hi,
+> 
+> Helped someone install 0.9.2 on a B180 (serial console) and following
+> the instructions, basically got it up and running.  He needed some help
+> with setting up apt (pointing to HP internal mirror).
+> 
+> But I couldn't figure out what was causing the following error msg
+> to get printed on the console every minute or so:
+> 
+>     ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+>     skb: pf=2 (unowned) dev=lo len=328
+>     PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+> 
+> Any ideas?
 
-> On Mon, Oct 08, 2001 at 06:39:17PM +0200, hgrothe@mathematik.tu-darmstadt.de 
-wrote:
-> > I guess :-) that you compiled the lvm-tools with optimization. Since 
-> > there seems to be a general problem with the lvm-tools and gcc3 (appears 
-> > also on other architectures (see lvm mailing list)) recompile the 
-> > lvm-tools without optimisation or "weak" optimisation (-O0).
+I think this is caused by dhclient being automatically run from
+init scripts, even though you have specified a manual network config.
+rm /etc/rc?.d/*dhclient or similar should help.  dhclient should
+only be invoked via ifup/ifdown, but earlier versions installed
+rc scripts as well.
 
-The all LVM-HOWTO test seems to works fine if change -O2 to -O0 into make.tmpl.
-
-> -O0 is no optimisation, -O1 is weak optimisation and -O2 is most
-> optimisations.  This is normally a bug in the code, not the compiler...
-
-I thinks so too.
-I will try now to recompile with -O2 and -ggdb to try to have a better idea.
-
-Thanks again for help,
-        joel
-
-
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+Richard
