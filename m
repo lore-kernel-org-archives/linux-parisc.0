@@ -1,42 +1,27 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id RAA04640
-	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 17:00:23 -0500
-Received: (from mickey@localhost)
-	by lucifier.dial-up.user.akula.net (8.9.2/8.9.2) id RAA12330
-	for hppa-linux@thepuffingroup.com; Mon, 29 Mar 1999 17:00:07 -0500 (EST)
-From: Michael Shalayeff <mickey@lucifier.dial-up.user.akula.net>
-Message-Id: <199903292200.RAA12330@lucifier.dial-up.user.akula.net>
-Subject: Re: [hppa-linux] syscall work
-In-Reply-To: <199903292146.NAA28577@bart.allegro.com> from Stan Sieler at "Mar 29, 99 01:46:02 pm"
-To: sieler@allegro.com (Stan Sieler)
-Date: Mon, 29 Mar 1999 16:55:07 -0500 (EST)
-Reply-To: mickey@openbsd.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Sender: mickey@lucifier.dial-up.user.akula.net
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id BAA31253
+	for <parisc-linux@sod.res.cmu.edu>; Wed, 31 Mar 1999 01:50:05 -0500
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by burrow.puffingroup.com (8.8.7/8.8.7) with ESMTP id DAA03054
+	for <hppa-linux@puffingroup.com>; Wed, 31 Mar 1999 03:03:12 -0500
+Received: from postbox.india.hp.com (postbox.india.hp.com [15.10.45.1])
+	by cosrel1.hp.com (8.9.3/8.8.5tis) with ESMTP id BAA06809
+	for <hppa-linux@puffingroup.com>; Wed, 31 Mar 1999 01:50:03 -0500 (EST)
+Received: (from koshy@localhost) by postbox.india.hp.com (8.7.1/8.7.1) id MAA07836 for hppa-linux@puffingroup.com; Wed, 31 Mar 1999 12:22:32 +0530 (IST)
+Date: Wed, 31 Mar 1999 12:22:32 +0530 (IST)
+From: A Joseph Koshy <koshy@postbox.india.hp.com>
+Message-Id: <199903310652.MAA07836@postbox.india.hp.com>
+To: hppa-linux@puffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=X-roman8
+Subject: [parisc-linux] archives anywhere?
+List-ID: <linux-parisc.vger.kernel.org>
 
-Making, drinking tea and reading an opus magnum from Stan Sieler:
-> Hi,
-re
+Hi,
 
-> > okie, but why emulating gate instruction, when there is already such
-> > instruction exist? (;
-> 
-> Simple: HP does this...there must be a reason.
-> 
-> They appear to do it on selected models of PA-RISC systems.  Why?  Don't know.
-which models? could it be level 1 systems w/ less VM resources?
+Are the archives of the hppa-linux (parisc-linux) mailing list to be 
+found on the web somewhere?  A pointer would be appreciated.
 
-> I can only conjecture...and the conjecture is the obvious one: there must be
-> some circumstance where GATE fails.  Otherwise, *why* replace it with
-> a slightly slower mechanism?
-hardware bug for example? maybe again on certain systems w/ less
-tlb size and/or cache.
-
-btw, lites/mklinux do not emulate gate.
-
-cu
-
-
--- 
-    paranoic mickey       (my employers have changed but, the name has remained)
+Thanks,
+Koshy
+<koshy@india.hp.com>
