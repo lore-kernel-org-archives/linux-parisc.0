@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8566D482A
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Mar 2003 11:19:45 -0700 (MST)
-Date: Wed, 26 Mar 2003 19:10:52 +0100
-To: Markus Schaber <markus.schaber@student.uni-ulm.de>
-Cc: Adriano Galano <adriano@satec.es>,
-	'Matthieu Delahaye' <m.delahaye@esiee.fr>, davidm@hpl.hp.com,
-	willy@debian.org, linux-ia64@linuxia64.org,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Message-ID: <20030326181052.GA29028@charrue.esiee.fr>
-References: <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de> <000b01c2f3c1$6cd7e0c0$6620a4d5@tsatec.int> <20030326191418.0c7a5edb.markus.schaber@student.uni-ulm.de>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A30C9482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Mar 2003 20:52:21 -0700 (MST)
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: carlos@baldric.uwo.ca
+Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Message-Id: <1048737139.8777.50.camel@beavis.ybsoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030326191418.0c7a5edb.markus.schaber@student.uni-ulm.de>
-From: m.delahaye@esiee.fr (Matthieu Delahaye)
+Date: 26 Mar 2003 20:52:20 -0700
+Subject: [parisc-linux] [PATCH] glibc fix for /lib/ld.so.1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,7 +21,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi
-> 
-> However, Bochs should be easy to port to another platform due to it's
-> pure interpreter nature. 
+Hello parisc-linux hackers,
+
+Finally tracked down the glibc problem (with help from tausq and others
+:)).  I have attached the changelog entry, and the dpatch.  I am
+assuming you will push it upstream Carlos?
+
+
+When working on this problem it caused a gcc ICE.  The gcc ICE has been
+reported at:
+
+
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10215
+
+This is why the ENTRY_POINT macro is uglier than really necessary.
+
+Once this patch is in glibc, then we can remove the RGH_FIX hack
+from the 2.4 kernels as well.
+
+oh.  This patch fixes this assert in glibc:
+
+rbrad@vega:~$ /lib/ld.so.1 --verify /bin/sh
+Inconsistency detected by ld.so: rtld.c: 879: dl_main: Assertion
+`_rtld_local._dl_rtld_map.l_libname' failed!
+
+Thanks!
+
+- Ryan
+
+
+-- 
+Ryan Bradetich <rbradetich@uswest.net>
