@@ -1,22 +1,16 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DF34C4843
+Return-Path: <eggert.ehmke@berlin.de>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 28D9648B2
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 26 Feb 2004 08:57:00 -0700 (MST)
-Date: Thu, 26 Feb 2004 08:56:59 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
-Message-ID: <20040226155659.GA11451@colo.lackof.org>
-References: <Pine.LNX.4.58.0402260003140.26587@sal.ucc.ie>
-	<1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
-	<Pine.LNX.4.58.0402260127230.26951@sal.ucc.ie>
-	<20040226051124.GB3645@colo.lackof.org>
-	<Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
+	Fri, 27 Feb 2004 03:11:38 -0700 (MST)
+From: Eggert Ehmke <eggert.ehmke@berlin.de>
+To: parisc-linux@lists.parisc-linux.org
+Date: Fri, 27 Feb 2004 11:10:50 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Message-Id: <200402271110.50459.eggert.ehmke@berlin.de>
+Subject: [parisc-linux] kernel 2.6.3 compile problem
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,39 +20,45 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, Feb 26, 2004 at 05:24:45AM +0000, M. Grabert wrote:
-> Maybe I took out too many lines when I responded to my Alan's reply;
-> The first part of the mail describes a problem with the siimage driver
-> (big-endian problem), the rest of the mail is also about the Promise IDE
-> controller I'm currently trying to get working.
+Hello!
 
-ah ok. that makes sense. I probably just read your mail too fast.
+This is my first message on this list. If  need some kind of registration, 
+please let me know.
 
-> Both the Silicon Image and the Promise IDE controller show the
-> "hda: lost interrupt" symptom. However the Promise driver seems to
-> me more 'usable' or easily fixable than the siimage driver, since
-> it detects the controller and hard disk correctly!
+I run a HP PA-RISC B132L+ with Debian Woody as a DSL Gateway/Firwall for our 
+home network. Right now we have the kernel 2.4.25-pa0 running. The kernel is 
+compiled from sources by gcc 3.0.4. The system runs fine.
 
-yes - the endian issue is probably harder to fix.
+Now I tried to compile kernel 2.6.2-pa0 and 2.6.3-pa2 with the same result: 
+the compile fails with this message:
 
-If the Promise interrupt is being delivered on a different interrupt line
-than the one advertised (INTERRUPT_PIN), then dumping the state
-of the IOSAPIC should show which IRQ input is "high" and we can
-figure out where the disconnect is.
+--   CC      drivers/char/tty_io.o
+In file included from include/linux/selection.h:11,
+                 from drivers/char/tty_io.c:101:
+include/linux/vt_buffer.h:19:21: asm/vga.h: No such file or directory
+make[2]: *** [drivers/char/tty_io.o] Error 1
+make[1]: *** [drivers/char] Error 2
+make: *** [drivers] Error 2
 
-But I'm skeptical that's really the issue. I suspect more the IDE command
-isn't being programmed properly into the Promise controller and thus it
-doesn't DMA correctly or for some other reason complete the command.
-ie it has no reason to interrupt.
+There is indeed no file include/asm/vga.h. But if I understand the 
+documentation right, I need to include VGA support. Can you please tell me 
+where I am wrong? These are my console settings in .config:
 
-> The Promise Ultra100 TX2 controller is reported to work on PPC - not the
-> siimage one - so there is probably no difference between the PARISC and
-> PPC ports in this respect.
+CONFIG_VGA_CONSOLE=y
+# CONFIG_MDA_CONSOLE is not set
+CONFIG_STI_CONSOLE=y
+CONFIG_DUMMY_CONSOLE_COLUMNS=160
+CONFIG_DUMMY_CONSOLE_ROWS=64
+CONFIG_DUMMY_CONSOLE=y
+CONFIG_FRAMEBUFFER_CONSOLE=y
+CONFIG_PCI_CONSOLE=y
+# CONFIG_FONTS is not set
+CONFIG_FONT_8x8=y
+CONFIG_FONT_8x16=y
 
-ok
 
-grant
+Eggert Ehmke
+mailto:eggert.ehmke@berlin.de
 
-> 
-> Greetings,
->   Max
+receive my pgp public key from: blackhole.pca.dfn.de
+ID: F237 0537
