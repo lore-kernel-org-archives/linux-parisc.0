@@ -1,64 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA22983
-	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Oct 1999 00:35:33 -0600
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: parisc-linux@thepuffingroup.com, Paul Bame <bame@debian.fc.hp.com>,
-        parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA24493
+	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Oct 1999 09:21:43 -0600
+Message-Id: <199910281522.LAA06762@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] hack to use HPUX boot loader
-Date: Thu, 28 Oct 1999 00:02:07 +0200
-Content-Type: text/plain
-Cc: parisc-linux@thepuffingroup.com
-References: <199910271811.MAA17359@debian.fc.hp.com>
+To: Helge.Deller@ruhr-uni-bochum.de (Helge Deller)
+Date: Thu, 28 Oct 1999 11:22:21 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com, bame@debian.fc.hp.com
+In-Reply-To: <99102800052200.00292@P100> from "Helge Deller" at Oct 28, 99 00:02:07 am
 MIME-Version: 1.0
-Message-Id: <99102800052200.00292@P100>
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Am Wed, 27 Oct 1999 schrieb Paul Bame:
-> = 
-> = Has anyone confirmed that the kernel which is started is getting good
-> = data (stack, etc...) or are my kernels booting purely by accident?
-> = 
 > 
-> Phillip looked over some boot messages after being booted with the
-> hpux boot loader and blessed them, so things appear to be working well.
-> 
-> How about a COMMAND LINE?
-> 
-> If anyone wants to investigate a bit and work on head.S, it looks like
-> when launched from the current hpux boot loader that the args
-> passed to the kernel are
-> 
-> 	int argc, char *argv[], char *envp[],
-> 
-> with some slightly bizzare stuff in the "environment", of possible
-> interest:
-> 
-> 	env[2] - load address *of the boot loader itself*
-> 	env[3] - size *of the boot loader itself*
-> 
-> argc will always be a low number >= 1.  If you had told ISL:
-> 
-> 	ISL> hpux /boot/vmlinux a b c
-> 
-> then argc would supposedly be 4 and argv[2], for example, would be "b".
-> I suspect the argv[] should be copied to somewhere safe.
-> 
-> Note that this is very different from the statment in head.S:
-> 
+> Am Wed, 27 Oct 1999 schrieb Paul Bame:
+> > = 
+> > = Has anyone confirmed that the kernel which is started is getting good
+> > = data (stack, etc...) or are my kernels booting purely by accident?
+> > = 
+> > 
+> > Phillip looked over some boot messages after being booted with the
+> > hpux boot loader and blessed them, so things appear to be working well.
 
+I find it very strange that the kernel is being linked to start at
+0xc0010000.  It's not your average machine that has this much physical
+memory.  I have recently been in the bowels of hpux and it certainly isn't
+linked in this strange way.  It is linked and loaded into low physical
+memory.  Interrupts are first handled without address translation and
+then most switch to virtual.  If this kind of relocation is needed,
+can't it be done in virtual mode with a space register mapping?  The
+other major issue is how to impliment shared memory.  Under hpux, it
+is always in the 3rd quadrant.  This breaks mmap usage in many apps.
 
+Paul's hack prevents one from using kernel symbols when debugging with
+a symbolic debugger.  I think this is a rather useful feature to have.
 
->          *      %arg3(=%r23) holds HALF(!) of the size of the BSS-Segment
+Comments?
 
-!!!! Please, don´t expect the above line to be valid at all !!!!!!!!!
-It was just one of my bad investigations and seemed to be true in my
-stupid tests. As already said in other mails: It´s hard without any
-documentation !
-(If someone want, please delete it from the source !!)
-
-Helge.
-
-
-> 
-> 			    -Paul Bame
-> 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
