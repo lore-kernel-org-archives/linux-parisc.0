@@ -1,49 +1,41 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] HPPA autofs broken?
-Date: Fri, 25 Feb 2005 06:36:28 +0000
-Message-ID: <e6eae029050224223617c7a121__23243.0461598144$1416623677$gmane$org@mail.gmail.com>
-References: <FHEGKPBPFFGIFBGOANOKCENEEPAA.h.cochran@comcast.net>
-	<Pine.LNX.4.43L0.0502241828350.14272-100000@charity.cs.utah.edu>
-Reply-To: Max Grabert <parisc@gmail.com>
+From: "Harry Cochran" <h.cochran@comcast.net>
+Subject: Can't mount F0 partition as /BOOT
+Date: Thu, 24 Feb 2005 17:36:19 -0500
+Message-ID: <FHEGKPBPFFGIFBGOANOKGENNEPAA.h.cochran__20954.466777812$1416623678$gmane$org@comcast.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Christopher Strong <strong@cs.utah.edu>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.43L0.0502241828350.14272-100000@charity.cs.utah.edu>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset="iso-8859-1"
+To: <parisc-linux@lists.parisc-linux.org>,
+ <debian-hppa@lists.debian.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <Zj_r1.A.QfE.dhlHCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Thu, 24 Feb 2005 18:39:51 -0700 (MST), Christopher Strong
-<strong@cs.utah.edu> wrote:
-> 
-> I just upgraded my autofs (using apt-get upgrade) and autofs will no longer
-> start.  I beat my head against it for a while, upgraded to the newest modutils,
-> even tried the beta autofs packages but to no avail.
-> 
-> It *used* to work before the "upgrade" and I don't know if I have some errors
-> in my config file (under the new version) or if there is a problem with the
-> autofs package.
+Hi,
 
-Autofs was broken in testing/unstable for quite a while (ie. months), it simply
-didn't unmount. About a month ago they fixed it in testing, but it seems it's
-*still* broken on parisc :(
+	I am rebuilding my J6000. I boot from the official Debian hppa install cd,
+partition the disks, making a nice 64MB F0 partition that I mark as
+bootable, a swap partition and several Linux partitions, initialize the
+swap, and then...
 
-I'm currently using the 'stable' release version of autofs on my Debian/testing
-system for the time being - at least that one works for me.
+	I hit the button to initialze a disk and low and behold the boot partition
+I set up is not among the partitions that pop up to be initialized. If I do
+"View Paritions", there is sda1 and it's marked --Not Available--.
 
-Greetings,
-   Max
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+	I'm sure it's something simple, but I can't see what I'm doing wrong. Your
+help will be appreciated.
+
+Thanks,
+
+Harry
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
