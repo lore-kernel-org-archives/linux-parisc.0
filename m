@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F1B8B482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 22:56:57 -0600 (MDT)
-Message-Id: <200110260453.WAA05297@puffin.external.hp.com>
-To: Daniel Williams <dan@bigw.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] How to Boot CD on C110 
-In-Reply-To: Message from Daniel Williams <dan@bigw.org>
-   of "Thu, 25 Oct 2001 16:12:00 CDT." <EDDF6AE3-C98C-11D5-BDE1-0030657D1C94@bigw.org>
-Date: Thu, 25 Oct 2001 22:53:16 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from sj-msg-core-2.cisco.com (sj-msg-core-2.cisco.com [171.69.24.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 385F5482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 23:12:00 -0600 (MDT)
+Message-ID: <3BD8F081.B3F6EE8F@cisco.com>
+Date: Thu, 25 Oct 2001 22:11:29 -0700
+From: Christian Suder <csuder@cisco.com>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: dan@bigw.org, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] How to Boot CD on C110
+References: <200110260443.WAA05273@puffin.external.hp.com>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,26 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Daniel Williams wrote:
-> I've got a C110...  I picked up the .9 ISO and burned it with EasyCD 
-> Creator on a Win2k box (I know, I know, but no access to a linux box 
-> right now, I'm running FreeBSD and it doesn't have a burner).  Popped it 
-> in and it won't boot.
+Grant Grundler wrote:
 
-Uhm...I tried the same trick for IA64 Debian ISO and it didn't work either.
-I should have looked in the parisc-linux mail archives before
-since folks have described how to do it right. Anyway, I found a CD-writer
-on a linux box and ended up using cdrecord.
+> 
+> > The correct device would be core.SCSI.2.0, however it's strange that
+> > SEArch doesn't even see it. The ID needs to be unique across both the SE
+> > and the FW SCSI.
+> 
+> That's wrong. The ID is local to each SCSI bus.
+> Ie ID on SE SCSI are in a seperate address space from FWD SCSI.
+> 
 
-> Too bad the firmware doesn't see the SCSI CD 
-> either, when SEArching on bootup.
+Maybe my memory fades but I believe I tried this once and it didn't work
+to my surprise.... that's why I pointed it out. 
 
-"Sea" should see the CD-ROM. Very likely it's not properly
-connected or has the option jumpers set wrong for PDC.
 
-> SCSI CD is ID 2, but what bus is it on?
-
-When it's working right, "sea" should tell you regardless of
-whether it has a CD installed or not (I think).
-
-grant
+> grant
