@@ -1,29 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA28655
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 07:22:07 -0600
-From: Steven Pritchard <steve@osiris.silug.org>
-Message-Id: <199906101321.IAA20517@osiris.silug.org>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA28894
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 08:47:21 -0600
+Date: Thu, 10 Jun 1999 16:48:01 +0200 (CEST)
+From: Fredrik Soderblom <frso@hp.se>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+cc: Tor Arntsen <tor@spacetec.no>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Trying to get HP-UX working
-In-Reply-To: <199906092252.QAA06166@rascal.fc.hp.com> from Matt Taggart at "Jun 9, 99 04:52:29 pm"
-To: taggart@rascal.fc.hp.com (Matt Taggart)
-Date: Thu, 10 Jun 1999 08:21:54 -0500 (CDT)
-Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <E10rq7u-0000km-00@the-village.bc.nu>
+Message-ID: <Pine.LNX.4.10.9906101645360.2117-100000@rasande>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matt Taggart said:
-> Does it make sense to go one step further and package them in either HP's 
-> SD depot format or alternatively RPM(and provide RPM on HP-UX)? I have some 
-> SD experience and could automate the packaging if needed.
+On Wed, 9 Jun 1999, Alan Cox wrote:
 
-Just for reference, the samba 2.0.x source has packaging scripts for
-HP-UX.  I figured out how to build HP-UX packages from that example.
-(It's pretty easy, although when you get done, building the package
-isn't as simple as "rpm -ba" or "rpm --rebuild".)
+> I can't however get HP/UX to set up an interface 
+> 
+> 	194.168.151.23 netmask 255.255.255.224
 
-Steve
--- 
-steve@silug.org           | Linux Users of Central Illinois
-(217)698-1694             | Meetings the 4th Tuesday of every month
-Steven Pritchard          | http://www.luci.org/ for more info
+You'll need to tell it to allow for subnet zero (RFC1878)
+
+on pre 11.x:
+
+# nettune -s ip_check_subnet_addr 0
+
+on 11.x:
+
+# ndd -set /dev/ip ip_check_subnet_addr 0
+
+--
+Fredrik Soderblom, Sr Technical Consultant
+Phone: (int) +46-8-4442140, Fax: (int) +46-8-4442447
+Internet: fredrik.soderblom@hp.se, URL: http://people.hp.se/frso
+Hewlett-Packard Sverige AB, Box 19, S-164 93 Kista, Sweden
+PGPprint: AE 74 BF 05 24 C3 18 99  33 9D A6 18 96 03 8A 29
