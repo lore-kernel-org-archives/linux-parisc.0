@@ -1,16 +1,12 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] installing sarge
-Date: Thu, 18 Nov 2004 23:22:39 -0700
-Message-ID: <20041119062239.GA3120@colo.lackof.org>
-References: <20041117182100.GB800@colo.lackof.org>
-	<NEBBKICDMOFAPLINPKAIOEBGDIAA.bnet@tampabay.rr.com>
+Subject: [parisc-linux] mini ISO works :^)
+Date: Thu, 18 Nov 2004 23:24:16 -0700
+Message-ID: <20041119062416.GB3120@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: fly <bnet@tampabay.rr.com>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <NEBBKICDMOFAPLINPKAIOEBGDIAA.bnet@tampabay.rr.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,79 +17,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Nov 17, 2004 at 05:35:21PM -0500, fly wrote:
-> Grant
+FYI - somebody else can step forward and accept the kudos :^)
 
-Brian,
-Please keep the parisc-linux mailing list included in this conversation.
-Other people besides me are capable of answering your questions.
-And the resolution gets archived. Archives are Good Things(tm).
-You might even hunt about a bit in ours (http://lists.parisc-linux.org/).
+----- Forwarded message from fly <bnet@tampabay.rr.com> -----
 
-> Well I'm in installation but it doesn't sense dhcp (I have a linksys router
-> to cable).I set a static ip for it but evertime I finish entering the
-> numbers (IP,default gateway,subnet mask) it gives me a red screen and says
-> I've got incorrect numbers when I go back sure enough it has changed the
-> numbers on me-adding or subtracting numbers from what I put in. I'm on the
-> fifth try and now its' putting a number in front that I can't even delete or
-> backspace over such as 0 in front of where I need to put the 192 of the
-> router argh! So close...sound familiar
+X-Original-To: grundler@localhost.lackof.org
+From: "fly" <bnet@tampabay.rr.com>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Subject: RE: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 bame
+Importance: Normal
+X-Virus-Scanned: Symantec AntiVirus Scan Engine
+X-Virus-Scanned: by amavisd-new-20030616-p10 (Debian) at lackof.org
+X-Spam-Checker-Version: SpamAssassin 2.64 (2004-01-11) on colo.lackof.org
+X-Spam-Status: No, hits=-4.9 required=5.0 tests=BAYES_00 autolearn=ham 
+	version=2.64
+X-Spam-Level: 
 
-Yes...like the terminal emulation is broken. Using a vt100 or compatible
-terminal emulation program?
+Grant
+The netinst didn't work but after the second try mini iso did. Mini iso died
+the first time pulling down apt from the site butI backed up a step and it
+went all the way. Whoever does those scripts is a genius. I've done some
+complicated device drivers and programming but whoa...that was amazing. Tell
+whomever they impressed me. I wasn't sure so I put the 2.4.27-32 smp kernal
+on- I guess that's good. Anywho I'll be playing and leave you alone...for a
+while....Thanks Brian.
 
->  or did I get the wrong iso here's the
-> name I downloaded netinst CD image with debian base, sarge-hppa-netinst.iso,
-> address http://www.debian.org/devel/debian-installer/ that is the correct
-> one?
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@parisc-linux.org]
+Sent: Wednesday, November 17, 2004 1:21 PM
+To: fly
+Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 bame
 
-Looks like it. Though some folks have pointed out there are still
-issues with the debian installer.
 
->   Sorry for the bother. Is there something I can do more to my network?
-> Install something? I would think dhcp broadcasts on a net are pretty obvious
-> inside the router. I tried pinging it but nothing. I have the mac address
-> but the linksys software doesn't allow, that I see, mac addressing inside
-> the router only wan side-pretty stupid really.Any thoughts.
+On Wed, Nov 17, 2004 at 08:41:36AM -0500, fly wrote:
+> But my point was help no usb, oddly I would hardly think of my C3000 as
+new
 
-Sorry - no idea.
+It is compared to the A180/B180/A500 machines that Debian Woody
+was targeted for. A500 is the same vintage but doesn't have graphics,
+IDE, USB, or audio built-in.  C3000 needed more work.
 
->  Thanks again,
-> Brian
-> 
-> -----Original Message-----
-> From: Grant Grundler [mailto:grundler@parisc-linux.org]
-> Sent: Wednesday, November 17, 2004 1:21 PM
-> To: fly
-> Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 bame
-> 
-> 
-> On Wed, Nov 17, 2004 at 08:41:36AM -0500, fly wrote:
-> > But my point was help no usb, oddly I would hardly think of my C3000 as
-> new
-> 
-> It is compared to the A180/B180/A500 machines that Debian Woody
-> was targeted for. A500 is the same vintage but doesn't have graphics,
-> IDE, USB, or audio built-in.  C3000 needed more work.
-> 
-> >  but I suppose compared to
-> > a 68000 it would be. I had been to the site (sarge) but the size of the
-> > iso's and the name threw me I was looking for woody iso's and they were
-> the
-> > right size. The hardware list also included the b,c3000
-> 
-> Once the kernel is upgraded, woody can work.
-> But sarge works substantially better.
-> A C3600 is my desktop at work for the past two years.
-> (But TBH, I'm switching to a Zx2000/IA64 machine soon).
-> 
-> > Is there a users digest or list.
-> 
-> Yes. parisc-linux list is for parisc kernel discussion mostly.
-> debian-hppa mailing list is good for user space issues:
-> 	http://www.debian.org/ports/hppa/
-> 
-> grant
+>  but I suppose compared to
+> a 68000 it would be. I had been to the site (sarge) but the size of the
+> iso's and the name threw me I was looking for woody iso's and they were
+the
+> right size. The hardware list also included the b,c3000
+
+Once the kernel is upgraded, woody can work.
+But sarge works substantially better.
+A C3600 is my desktop at work for the past two years.
+(But TBH, I'm switching to a Zx2000/IA64 machine soon).
+
+> Is there a users digest or list.
+
+Yes. parisc-linux list is for parisc kernel discussion mostly.
+debian-hppa mailing list is good for user space issues:
+	http://www.debian.org/ports/hppa/
+
+grant
+
+----- End forwarded message -----
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
