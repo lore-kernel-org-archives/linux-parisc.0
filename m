@@ -1,14 +1,16 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
+From: j.raspe@t-online.de (Johannes Raspe)
 Subject: Re: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
-Date: Sat, 2 Oct 2004 23:03:35 +0100
-Message-ID: <20041002220334.GA24389@ntlworld.com>
+Date: Sun, 3 Oct 2004 13:51:43 +0200
+Message-ID: <200410031351.43650.j.raspe@t-online.de>
 References: <200409241533.15399.j.raspe@t-online.de>
+	<20041002220334.GA24389@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="iso-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Stuart Brady <sdbrady@ntlworld.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409241533.15399.j.raspe@t-online.de>
+In-Reply-To: <20041002220334.GA24389@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,27 +21,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Sep 24, 2004 at 03:33:15PM +0200, Johannes Raspe wrote:
-> I tried the "official" 2.6.8 Debian-image and 2.6.8.1-pa11-image but none 
-> worked.
-> After booting, the message "if this is the last..." about graphic and 
-> serial-console is printed and after that (I suppose when the kernel tries to 
-> initialize the framebuffer) the screen turns blue, no HDD-activity anymore, 
-> the system hangs.
-> As far as I can see no other messages.
-> With 2.4.27-pa4 everything is fine.
+Am Sonntag, 3. Oktober 2004 00:03 schrieb Stuart Brady:
+> On Fri, Sep 24, 2004 at 03:33:15PM +0200, Johannes Raspe wrote:
+> > I tried the "official" 2.6.8 Debian-image and 2.6.8.1-pa11-image but none
+> > worked.
+> > After booting, the message "if this is the last..." about graphic and
+> > serial-console is printed and after that (I suppose when the kernel tries
+> > to initialize the framebuffer) the screen turns blue, no HDD-activity
+> > anymore, the system hangs.
+> > As far as I can see no other messages.
+> > With 2.4.27-pa4 everything is fine.
+>
+> [snip]
+>
+> I have no idea how stifb works, but perhaps this is the same problem:
+>
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2004-March/022600.html
+>
+> Does passing "stifb=bpp:8" on the palo command-line make any difference?
+> Perhaps the 32 bpp code is broken?  I can't find any other dmesgs posted
+> to the list with stifb using 32 bpp...
 
-[snip]
+Hi,
 
-I have no idea how stifb works, but perhaps this is the same problem:
+I tried "video=stifb:bpp:8", "stifb=bpp:8", "video=stifb:bpp:32", 
+"stifb=bpp:32" with kernels 2.6.4, 2.6.8.1-pa11 and the current 2.6.9-pa 
+kernel, all with the same result as before. It does not seem to be the same 
+problem mentioned in the posting above, because I could never get a 
+2.6.x-kernel running on my machine.
 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2004-March/022600.html
+Johannes
 
-Does passing "stifb=bpp:8" on the palo command-line make any difference?
-Perhaps the 32 bpp code is broken?  I can't find any other dmesgs posted
-to the list with stifb using 32 bpp...
 -- 
-Stuart Brady
+Johannes Raspe - j.raspe@t-online.de
+GnuPG-Key ID: D342E105
+Fingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
