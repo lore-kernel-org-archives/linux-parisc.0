@@ -1,53 +1,21 @@
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA06530
-	for <parisc-linux@puffin.external.hp.com>; Thu, 7 Dec 2000 11:15:14 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 792168BD
-	for <parisc-linux@puffin.external.hp.com>; Thu,  7 Dec 2000 10:17:49 -0800 (PST)
-Message-Id: <200012071817.KAA08546@milano.cup.hp.com>
-To: parisc-linux@puffin.external.hp.com, debian-hppa@lists.debian.org
-Subject: Re: A500 status update 
-In-reply-to: Your message of "Thu, 07 Dec 2000 09:16:25 PST."
-             <E1443ib-0003sK-00@noam.fc.hp.com>
-Date: Thu, 07 Dec 2000 10:17:10 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA07028
+	for <parisc-linux@puffin.external.hp.com>; Thu, 7 Dec 2000 11:22:20 -0700
+Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
+  by mailserv2.iuinc.com with SMTP; 7 Dec 2000 18:24:56 -0000
+Received: from alan by the-village.bc.nu with local (Exim 2.12 #1)
+	id 1445ks-0002n6-00
+	for parisc-linux@thepuffingroup.com; Thu, 7 Dec 2000 18:26:55 +0000
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 7 Dec 2000 18:26:51 +0000 (GMT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E1445ks-0002n6-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [parisc-linux] Synch with Linus: Phase 2
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame wrote:
-> This is a pretty big difference from my experience on c3k but I was using
-> Friday's bits:
+I plan to feed Linus the GSC changes next unless there are objections. I've
+looked at parisc64 and Im not convinced its complete enough to merge.
 
-Another variable:  I rebuilt my own hppa64 XC from the latest gcc/binutils
-I'll try taggart's latest XC bits on the next round.
-
-> Maybe you have some older signal code in your tree?  I explicitly tested
-> SIGALRM.
-
-Not kernel tree. Very likely my NFS root is stale.
-
-
-> I've had some problems with syslogd too, but nfsroot-latest it seems
-> fine.
-
-hmm....I have that.  nfsroot-latest.tar.gz -> nfsroot-20001009.tar.gz
-
-> When I run hwclock by hand I get warnings from the ioctl() syscall
-> converter about unknown ioctls, but no crash or anything.
-
-ok. Perhaps it's time to re-enable that.
-
-> There will
-> possibly be a LOT of unknown ioctls to translate, and we owe thanks
-> to Grant for turning on the skeleton of the ioctl converter stolen
-> from sparc/mips (parisc64/kernel/ioctl32.c)
-
-I didn't do that much!
-You figured out the 64-bit function pointer crud! :^)
-That was the only really b0rken part.
-
-thanks,
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Alan
