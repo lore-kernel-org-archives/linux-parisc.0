@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8220D4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Mar 2003 20:51:56 -0700 (MST)
-Date: Sat, 8 Mar 2003 20:51:55 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200303090351.UAA17796@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Cc: davem@redhat.com
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F25C482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Mar 2003 07:42:27 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18s20P-0005Jy-00; Sun, 09 Mar 2003 14:42:25 +0000
+Date: Sun, 9 Mar 2003 14:42:25 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: "David S. Miller" <davem@redhat.com>
+Cc: willy@debian.org, grundler@dsl2.external.hp.com,
+	jsm@udlkern.fc.hp.com, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: RFC: mmap patch
+Message-ID: <20030309144225.O3865@parcelfarce.linux.theplanet.co.uk>
+References: <20030308063043.GB27859@dsl2.external.hp.com> <20030307.222945.32673395.davem@redhat.com> <20030308231125.M3865@parcelfarce.linux.theplanet.co.uk> <20030308.150214.30103426.davem@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: RFC: mmap patch
+In-Reply-To: <20030308.150214.30103426.davem@redhat.com>; from davem@redhat.com on Sat, Mar 08, 2003 at 03:02:14PM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,20 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Mar 08, 2003 at 03:00:23PM -0800, David S. Miller wrote:
-> ...
-> Since about Nov 2002 we have been working on better {copy,clear}_user_page()
-> implementations quietly inside HP.  Unfortunately some, uhm, "issues" are
-> taking a long time to resolve before the routines can be published.
-> Once those issues are resolved, I think your trick with temporary
-> TLB entries can get implemented.
->
-The tlb trick for clear_user_page is already implemented. The code for
-copy_user_page is there, but turned off due to an issue mentioned in my
-last email. I believe the failure case was not a frequent path, and there
-are ways of working around that problem.
+On Sat, Mar 08, 2003 at 03:02:14PM -0800, David S. Miller wrote:
+>    One other difference you forgot is that Sparc64 has writethrough caches
+>    and PA has writeback caches.  This can make a difference.
+>    
+> It certainly could, but I think sparc64's schemes will work.
+> Please document any differences you discover, preferably with
+> text to go into Documentation/cachetlb.txt
 
-The address that the copying is done through (e,g. the tlb trick) is
-independent of the algorithm used to actually do the copying.
+Well.. one patch which affected us, but wouldn't affect a writethrough
+cache is:
 
-John
+http://ftp.linux.org.uk/pub/linux/willy/patches/applied/shmem.diff
+
+In that situation, the user has no view of that page currently so they
+will read from memory.  With a writethrough cache it works without the
+flush_dcache_page(), with writeback it does not.
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
