@@ -1,17 +1,15 @@
-From: Joel Soete <joel.soete@tiscali.be>
-Subject: Re: [parisc-linux] Security Hole in binfmt_som.c ?
-Date: Mon, 01 Sep 2003 08:00:34 +0000
-Message-ID: <3F52FCA2.5050500__5196.61674411527$1416622751$gmane$org@tiscali.be>
-References: <3F509BBD.2040007@hrzpub.tu-darmstadt.de>	 <20030830131541.GI13467@parcelfarce.linux.theplanet.co.uk> <1062251389.31150.4.camel@dhcp23.swansea.linux.org.uk>
+From: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
+Subject: [parisc-linux] [PATCH] add MODULE_ALIAS_LDISC to asm-parisc/termios.h
+Date: Thu, 4 Sep 2003 10:53:15 -0300
+Message-ID: <20030904135315.GB2411__10551.5660522089$1416622755$gmane$org@conectiva.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: Matthew Wilcox <willy@debian.org>,
-	Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Rusty Russell <rusty@rustcorp.com.au>,
 	parisc-linux@lists.parisc-linux.org,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Linus Torvalds <torvalds@osdl.org>,
+	Matthew Wilcox <willy@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1062251389.31150.4.camel@dhcp23.swansea.linux.org.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,36 +20,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Alan Cox wrote:
+Hi,
 
->On Sad, 2003-08-30 at 14:15, Matthew Wilcox wrote:
->  
->
->>On Sat, Aug 30, 2003 at 02:42:37PM +0200, Ruediger Scholz wrote:
->>    
->>
->>>binfmt_som.c:216:2: #error "Fix security hole before enabling me"
->>>What's this message about?
->>>      
->>>
->>I don't know.  I wish someone would tell me.  You'd think they'd have the
->>decency to contact the person listed as the author at the top of the file.
->>    
->>
->
->Actually explanations were posted in the previous discussion on this on
->parisc-list.
->
->Someone has to do the equivalent of the 2.4.22 binfmt_elf changes if
->neccessary so that another thread can't change the file handles or 
->steal the exec fd being passed to the loader.
->
->  
->
-Yes Alan, it was: 
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-July/020386.html>
+	I noticed this one on parisc64 with the latest bk tree:
 
-Sorry Willy I trusted that you read it (My bad next time I will advise 
-you directly)
+  CC [M]  drivers/char/n_hdlc.o
+drivers/char/n_hdlc.c:985: parse error before numeric constant
+drivers/char/n_hdlc.c:985: warning: type defaults to `int' in declaration of `MODULE_ALIAS_LDISC'
+drivers/char/n_hdlc.c:985: warning: function declaration isn't a prototype
+drivers/char/n_hdlc.c:985: warning: data definition has no type or storage classmake[2]: *** [drivers/char/n_hdlc.o] Error 1
+make[1]: *** [drivers/char] Error 2
+make: *** [drivers] Error 2
 
-Joel
+	This patch makes it compile, doing the same thing that was done to
+include/asm-i386/termios.h, please see if this is acceptable, if it is I can
+provide the same patch for all the other arches.
+
+- Arnaldo
+
+===== include/asm-parisc/termios.h 1.4 vs edited =====
+--- 1.4/include/asm-parisc/termios.h	Sat Jul 20 06:52:25 2002
++++ edited/include/asm-parisc/termios.h	Thu Sep  4 13:43:57 2003
+@@ -101,6 +101,8 @@
+ #define user_termios_to_kernel_termios(k, u) copy_from_user(k, u, sizeof(struct termios))
+ #define kernel_termios_to_user_termios(u, k) copy_to_user(u, k, sizeof(struct termios))
+ 
++#define MODULE_ALIAS_LDISC(ldisc) \
++        MODULE_ALIAS("tty-ldisc-" __stringify(ldisc))
+ #endif	/* __KERNEL__ */
+ 
+ #endif	/* _PARISC_TERMIOS_H */
