@@ -1,70 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (lt200001.hrz.uni-oldenburg.de [134.106.156.150])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A2C94887
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 08:47:27 -0600 (MDT)
-Date: Sun, 30 Sep 2001 16:45:01 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: John Marvin <jsm@udlkern.fc.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5790748A9
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 22:19:06 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15nuXn-0007md-00; Mon, 01 Oct 2001 05:19:03 +0100
+Date: Mon, 1 Oct 2001 05:19:03 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Nathan Neulinger <nneul@umr.edu>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: shm cache flush bug?
-Message-ID: <20010930164501.A9970@solo.franken.de>
-References: <200109300638.AAA13665@udlkern.fc.hp.com> <20010930143928.B6355@solo.franken.de>
+Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
+Message-ID: <20011001051903.B28828@parcelfarce.linux.theplanet.co.uk>
+References: <3BB4B4DE.8080608@umr.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010930143928.B6355@solo.franken.de>; from tsbogend@alpha.franken.de on Sun, Sep 30, 2001 at 02:39:28PM +0200
+In-Reply-To: <3BB4B4DE.8080608@umr.edu>; from nneul@umr.edu on Fri, Sep 28, 2001 at 12:35:26PM -0500
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Sep 30, 2001 at 02:39:28PM +0200, Thomas Bogendoerfer wrote:
-> [...]
+On Fri, Sep 28, 2001 at 12:35:26PM -0500, Nathan Neulinger wrote:
+> My main question though - what's the status of hpux binary support? The 
+> FAQ seems to indicate that some parisc binaries are already functional.
+> 
+> What is necessary to be done on the machine before I can run an HP 
+> executable?
 
-forgot my test program.
-
-Thomas.
-
-
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <stdio.h>
-
-#define SHMSIZE 32768*32
-
-int main (int argc, char *argv[])
-{
-	int keyid;
-	unsigned char *buf;
-	int i;
-
-	if ((keyid = shmget (IPC_PRIVATE, SHMSIZE, (SHM_R|SHM_W|IPC_CREAT))) == -1) {
-		perror ("shmget");
-		exit (1);
-	}
-
-	if ((buf = shmat (keyid, NULL, 0)) == ((void *)-1)) {
-		perror ("shmat buf");
-		exit (1);
-	}
-
-	printf ("filling buffer (%p)\n",buf);
-	for (i = 0; i < SHMSIZE; i++) {
-		buf[i] = i & 255;
-		if (*(volatile unsigned char *)&buf[i] != (i & 255)) {
-			printf ("failed at %d\n",i);
-			exit (1);
-		}
-	}
-	printf ("read back from original buffer (%p)\n",buf);
-	for (i = 0; i < SHMSIZE; i++) {
-		if (*(volatile unsigned char *)&buf[i] != (i & 255)) {
-			printf ("failed at %d: is %02x should be %02x\n",i,*(volatile unsigned char *)&buf[i],i&255);
-		}
-	}
-	shmdt (buf);
-	shmctl (keyid, IPC_RMID, NULL);
-	printf ("TEST passed\n");
-	return 0;
-}
-
+It might work, but it's probably bitrotten since nobody's tried it in
+over a year.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+Revolutions do not require corporate support.
