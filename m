@@ -1,46 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9EC014A19
-	for <parisc-linux@parisc-linux.org>; Wed, 14 Mar 2001 08:37:00 -0700 (MST)
-Message-Id: <200103141536.KAA04454@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Reasonable price for a 735/99
-To: chris@coredump.rrz.uni-koeln.de (Christian R Molls)
-Date: Wed, 14 Mar 2001 10:36:46 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20010314115723.A30295@coredump.rrz.uni-koeln.de> from "Christian R Molls" at Mar 14, 2001 11:57:23 am
+Received: from mail.storm.ca (storm.ca [209.87.239.69])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A07824A19
+	for <parisc-linux@parisc-linux.org>; Wed, 14 Mar 2001 11:54:29 -0700 (MST)
+Received: from storm.ca (ppp-209-87-255-5.ottawa.storm.ca [209.87.255.5])
+	by mail.storm.ca (8.9.3+Sun/8.9.3) with ESMTP id NAA00593
+	for <parisc-linux@parisc-linux.org>; Wed, 14 Mar 2001 13:54:22 -0500 (EST)
+Message-ID: <3AAFBE46.94595FCC@storm.ca>
+Date: Wed, 14 Mar 2001 13:53:58 -0500
+From: Sandy Harris <sandy@storm.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Reasonable price for a 735/99
+References: <200103141536.KAA04454@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Could somebody tell me what would be a reasonable prize for the
-> following box:
-> 
-> HP 735-99 w 96 MB RAM
-> HP A2091 graphics accelerator
-> 2 x 1 GB Fast-SCSI disk drive
-> SCSI CD-ROM, floppy drive, SCSI disk drive
-> HP keyboard and mouse
-> 10 MBit NIC w transceiver
-> SCSI: SCSI-II Interface (5 Mbytes per Second) Fast-Wide SCSI-II
-> Interface (20 Mbytes per second) 
-> HP-UX 10.20 installed
-> 
-> Any caveats? What about the graphics? Can I use a standard SVGA monitor?
+> > Could somebody tell me what would be a reasonable prize for the
+> > following box:
+> >
+> > HP 735-99 w 96 MB RAM
+> > ...
 
-I have one.  It probably cost about $30,000 US new.  Depreciate factor
-of 2 per year.  This yields about $60.  I wouldn't pay more than for
-150 MHz PC.  Machine is reliable but parts are expensive.
+In the last year I've bought:		Canadian $
 
-The FW interface is differential and drives are somewhat more expensive.
-I have had no problem with Seagate's.  I had some system stability problems
-until recently with 10.20.  I have been religiously patching and finally
-a few months ago some patch fixed the problem (not sure which one).  
-I thought the problem was with the scsi driver because I have quite a
-few drives but this may only have been the symptom.  This of course is
-not an issue if you want to run parisc-linux!
+	16 bare 712/60s, 128 meg	$ 50 each
+	 (no disk, keyboard, monitor, ...)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+	715/100, 256 meg		$100
+		keyboard & mouse	$ 25
+		20" HP monitor		$ 50
+
+	735, 300-odd meg, small drive	$ 35
+
+The last was sheer luck, at a surplus dealer who wasn't sure what it
+was. I think the others are good but reasonable prices.
+
+Anyone in the Ottawa area, there are more of these and various old
+Suns as well. Mail me off-list if you need vendor contact info.
