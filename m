@@ -1,48 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4AD47482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 07:56:44 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel1.hp.com (Postfix) with ESMTP id F40557C8
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 09:56:42 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id HAA22153
-	for parisc-linux@lists.parisc-linux.org; Fri, 7 Sep 2001 07:56:42 -0600 (MDT)
-Date: Fri, 7 Sep 2001 07:56:42 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200109071356.HAA22153@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 398CF482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 10:13:13 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15fOFj-0007f0-00; Fri, 07 Sep 2001 17:13:11 +0100
+Date: Fri, 7 Sep 2001 17:13:11 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Galen Arnold <arnoldg@ncsa.uiuc.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: smp kernel hangs during boot on L2000 ... (fwd)
+Message-ID: <20010907171311.D23780@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.33.0109070842320.13232-100000@osage.ncsa.uiuc.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: Trace/Breakpoint trap on "make mrproper"
+In-Reply-To: <Pine.LNX.4.33.0109070842320.13232-100000@osage.ncsa.uiuc.edu>; from arnoldg@ncsa.uiuc.edu on Fri, Sep 07, 2001 at 08:42:56AM -0500
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
->
-> It looks like this patch:
-> >Date: Thu, 6 Sep 2001 03:48:16 -0600 (MDT)
-> >From: John Marvin jsm@udlkern.fc.hp.com
-> >Subject: [parisc-linux-cvs] Patch for SMP support, etc.>
-> >A rather large patch that includes my current SMP support changes, plus
-> >a variety of other fixes/changes.
->
-> did something. But it's so large I'm not sure what exactly :-)
->
-> Jurriaan
->
+On Fri, Sep 07, 2001 at 08:42:56AM -0500, Galen Arnold forwarded:
+> > Initialized PDC Console for debu
+> >                                 ^^^^^hangs right there...
+> >
 
-I was pretty sure my changes to handle_break (in traps.c) would fix that
-problem.  When I read your note I remembered that I had seen a similar
-problem and fixed it.  The kernel would hang when a user program executed
-a break instruction (either intentionally or not) without an attached
-debugger. That is the problem you were seeing.
+> I've done most of my SMP development on a 4 CPU L2000.  So far I've only
+> tested a SMP kernel on a L2000 (64 bit) and a J5000 (32 & 64 bit).
+> However, I have 440 Mhz PA8500 CPU's.  That shouldn't make a significant
+> difference, other than some possible timing problem.  I'll try to test on
+> a 2 CPU A500 with PA8600 CPU's on Monday just in case.
 
-However, now that the machine doesn't hang, I am not sure if the remaining
-problem you are seeing is a kernel bug or a userland bug.  It would appear
-that you are executing 0's (0x00000000 is a break instruction). That
-should cause the kernel to send you a SIGTRAP signal. I just checked some
-of your old mail, and it looks like you are getting a SIGTRAP. One thing
-that looks strange is that you are getting signals delivered using stack
-addresses both at ~0xfaf00000 and ~0xbff00000. I wonder if make is using
-an alternate signal stack?
+I can't imagine that's likely either.  One difference is that I believe
+a two-cpu L2k shows up with CPUs 0 and 3 rather than 0 and 1.  Maybe we have
+a problem there.  John, could you try disabling cpus 1 and 2 on the L2k?
 
-John
+Galen, how about trying booting the same SMP kernel, but disable the
+second CPU at the pdc prompt?  That might help narrow down the problem
+a little.
+
+-- 
+Revolutions do not require corporate support.
