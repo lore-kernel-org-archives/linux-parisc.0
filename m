@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4CD114829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 19:14:53 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 186Lu4-0000NP-00; Tue, 29 Oct 2002 02:14:48 +0000
-Date: Tue, 29 Oct 2002 02:14:48 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E28184829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 22:55:05 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel9.hp.com (Postfix) with ESMTP id 99D7CE00547
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Oct 2002 00:55:02 -0500 (EST)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id WAA12774
+	for parisc-linux@lists.parisc-linux.org; Mon, 28 Oct 2002 22:55:02 -0700 (MST)
+Date: Mon, 28 Oct 2002 22:55:02 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200210290555.WAA12774@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] 2.4.19-pa24 (uaccess.h patch)
-Message-ID: <20021029021448.W27461@parcelfarce.linux.theplanet.co.uk>
-References: <200210290012.RAA27628@udlkern.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200210290012.RAA27628@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Mon, Oct 28, 2002 at 05:12:03PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,41 +26,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Oct 28, 2002 at 05:12:03PM -0700, John Marvin wrote:
-> > ex_table is used for recovering from a page fault.  i don't see how we
-> > can take a page fault when copying to kernel ram.
-> 
-> Let's wait on removing this support.  This mechanism provides a way of
-> testing whether or not an address is a valid kernel address (in addition
-> to range checking the address).  I'd like to consider implementing the
-> virtual mem map support (currently implemented on ia64) on parisc as an
-> alternative mechanism (to willy's idea of using kmap/kunmap) for getting
-> back the 256Mb of memory we currently ignore for Astro based machines with
-> more than 3.75 Gb of memory.  The virtual mem map code uses this exact
-> mechanism to determine whether or not a struct page pointer is pointing
-> into a sparse (unallocated) region of the virtual mem map array (i.e. on
-> ia64 the ia64_page_valid() routine does a get_user on the first byte and
-> checks the return from get_user to see if it fails/succeeds).
+> Well.. if you're interested in working on PA again, I have 3 ideas which
+> kind of overlap (you seem to have confused two of them, so it's worth
+> talking about them all):
 
-Well.. if you're interested in working on PA again, I have 3 ideas which
-kind of overlap (you seem to have confused two of them, so it's worth
-talking about them all):
+I didn't get them confused in the way you think.  I knew that you were
+proposing using kmap/kunmap to solve the flushing/aliasing issues,
+especially on stretch.  But I saw your todo message suggesting the use of
+zone_highmem for getting back the 256Mb.  My 2.4 based understanding is
+that the kernel kmaps memory in that zone in order to use it.  That may no
+longer be true on 2.5 (or may not ever have been true in the first place).
+I'll be looking at that immediately, since I have to either merge the
+virtual mem map stuff into 2.5, or see if the vm changes with respect to
+zones will solve the problem as you suggest. Whatever works for ia64
+will probably also work for parisc, since the problem is similar (although
+a little more extreme on ia64).
 
-(1) get/put_user & copy_to/from_user should always copy to %sr3.
-    set_fs et al should manipulate sr3.  Last time this came up, you said
-    this should work but would need testing.  That gets rid of the duplicate
-    exception tables.
+On another note, I am still looking at the I bit issue with respect to
+handle_interruption. What I forgot was that we always turn the I bit
+off when we switch to virtual mode before calling handle_interruption.
+So, the I bit needs to be on for user faults at the very least. That is
+why I put that code in there.
 
-(2) the kmap/kunmap idea was to avoid cache aliasing.  we always kmap a
-    pagecache page before we access it, so we can map it to an address that
-    is "equivalent" to the userspace address before accessing it.  Not sure
-    we get away with making flush_dcache_page() a no-op, though.
+However, Grant is right in that there is a hole if the kernel faults with
+the I bit off.  Normally that would be a bug, i.e. there are few valid
+reasons for the kernel to fault with the I bit off (what I mean by fault
+in this case is something that makes it to handle_interruption, not
+something that gets handled at a lower level, like a tlb miss).  But, I
+can think of a few possible scenarios where it might be happen
+legitimately, although I don't know if any actually occur.
 
-(3) For getting back the 256MB of memory mapped at 64GB, I think the
-    DISCONTIG code in 2.5 is now suitable.  It's now based on zones,
-    not nodes, so we can have a ZONE_DMA from 0-3.75GB, ZONE_NORMAL from
-    4-xGB and ZONE_HIGHMEM from 64GB to 64GB+256MB.  I suspect this is
-    the right thing to do on ia64 too, for 2.5.
+The right solution is to restore the I bit to whatever it was at the time
+of the fault.  That is probably more appropriately handled at virt_map
+time (add a register argument to the macro holding the desired I bit
+state, call with r0 for intr_extint, call with previous masked value from
+ipsw for intr_save).  I believe if done right, we can also set things up
+properly in hpmc.S so that when it calls intr_save, the I bit won't be
+turned on, and we can remove the special case code from handle_interruption.
 
--- 
-Revolutions do not require corporate support.
+I'm also looking at a potential problem in parisc's return from
+syscall/faults.  I'll hopefully fix all the above soon.  And yes, I'll
+merge it into 2.5 also.
+
+John
