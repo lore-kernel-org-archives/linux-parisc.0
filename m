@@ -1,30 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from snark.thyrsus.com (snark.tuxedo.org [207.106.50.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 88308482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 14:13:33 -0600 (MDT)
-Date: Fri, 20 Apr 2001 16:13:04 -0400
-From: "Eric S. Raymond" <esr@thyrsus.com>
-To: Matthew Wilcox <willy@ldl.fc.hp.com>
-Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-Message-ID: <20010420161304.A19954@thyrsus.com>
-Reply-To: esr@thyrsus.com
-References: <20010419203639.H4217@zumpano.fc.hp.com> <20010419230009.A32500@thyrsus.com> <20010419211749.I4217@zumpano.fc.hp.com> <20010420154743.A19618@thyrsus.com> <20010420140003.M4217@zumpano.fc.hp.com>
+Received: from ccure.karaya.com (mnh-1-15.mv.com [207.22.10.47])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5AEF0482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 14:42:41 -0600 (MDT)
+Message-Id: <200104202155.QAA04046@ccure.karaya.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: Bob McElrath <rsmcelrath@students.wisc.edu>,
+	linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is
+ anyone paying attention?
+In-Reply-To: Your message of "Fri, 20 Apr 2001 19:47:02 +0100."
+             <20010420194702.E18464@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010420140003.M4217@zumpano.fc.hp.com>; from willy@ldl.fc.hp.com on Fri, Apr 20, 2001 at 02:00:03PM -0600
-Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
+Date: Fri, 20 Apr 2001 16:55:18 -0500
+From: Jeff Dike <jdike@karaya.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox <willy@ldl.fc.hp.com>:
-> Code not merged yet.
-    :
-> it's old and needs to die properly.  i haven't had time to fix that yet.
+matthew@wil.cx said:
+> Have you tried mailing webmaster@kernel.org and asking to be added? 
 
-Thanks for the information.  Actually the parisc tree is one of the ones
-that leaks the fewest of these symbols... 
--- 
-		<a href="http://www.tuxedo.org/~esr/">Eric S. Raymond</a>
+Yes.
 
-Ideology, politics and journalism, which luxuriate in failure, are
-impotent in the face of hope and joy.
-	-- P. J. O'Rourke
+jes@linuxcare.com said:
+> I'd be highly surprised if they said no to adding UML to the list if
+> you mailed them a request to update the page. 
+
+Well, be surprised then.  The reply from hpa was that that list was for 
+processor ports.  He did say that there might at some point in the future be a 
+separate list (off the main page) of other things.
+
+				Jeff
