@@ -1,35 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA27403
-	for <parisc-linux@puffin.external.hp.com>; Wed, 30 Aug 2000 06:41:42 -0600
-Received: from user32-149.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.32.149)
-  by mailserv2.iuinc.com with SMTP; 30 Aug 2000 12:41:44 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id CD0C6B005; Wed, 30 Aug 2000 13:41:50 +0100 (BST)
-Date: Wed, 30 Aug 2000 13:41:50 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: Helge Deller <deller@gmx.de>, parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA27844
+	for <parisc-linux@puffin.external.hp.com>; Wed, 30 Aug 2000 07:18:26 -0600
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 30 Aug 2000 13:18:30 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13U7l3-0006ZU-00; Wed, 30 Aug 2000 14:18:25 +0100
+Date: Wed, 30 Aug 2000 14:18:25 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, David Huggins-Daines <dhd@linuxcare.com>,
+        parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] 2.4.0-test6 lack of speed
-Message-ID: <20000830134150.J877@linuxcare.com>
-References: <20000822153803.U4060@linuxcare.com> <20000822155221.W4060@linuxcare.com> <20000822165047.X4060@linuxcare.com> <87n1i5wabx.fsf@linuxcare.com> <20000823172320.E4060@linuxcare.com> <20000829172308.A1032@vodka.thepuffingroup.com> <20000830011752.A9854@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20000830141825.A3463@parcelfarce.linux.theplanet.co.uk>
+References: <20000822153803.U4060@linuxcare.com> <20000822155221.W4060@linuxcare.com> <20000822165047.X4060@linuxcare.com> <87n1i5wabx.fsf@linuxcare.com> <20000823172320.E4060@linuxcare.com> <20000829172308.A1032@vodka.thepuffingroup.com> <20000830111523.F877@linuxcare.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000830011752.A9854@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Wed, Aug 30, 2000 at 01:17:52AM +0100
+In-Reply-To: <20000830111523.F877@linuxcare.com>; from rhirst@linuxcare.com on Wed, Aug 30, 2000 at 11:15:23AM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 30, 2000 at 01:17:52AM +0100, Matthew Wilcox wrote:
-> Anyway, would either of Richard or Helge like to look over the lasi_82596
-> driver and convert it to use the flush_kernel_dcache_range() interface
-> or tell me why my code is no good and I suck?  Ditto the sim700 driver
-> actually.  Are there any other drivers which have simply taken the
-> lasi_82596 wback code and replicated it or are these the only two?
+On Wed, Aug 30, 2000 at 11:15:23AM +0100, Richard Hirst wrote:
+> What do you make of arch/parisc/lib/usercopy.c
+> 
+> unsigned long
+> __generic_copy_to_user(void *to, const void *from, unsigned long n)
+> {
+>         if (access_ok(VERIFY_WRITE, to, n)) {
+>                 __flush_dcache_range((unsigned long)from, n);
+>                 lcopy_to_user(to,from,n);
+>                 __flush_dcache_range((unsigned long)to, n);
+>         }
+>         return 0;
+> }
+> 
+> Typically 'from' would be a kernel virtual address, and 'to' would
+> be a user virtual address, yes?  So, that is expecting __flush_dcache_range()
+> to know which space register to use.  But then sometimes these functions
+> for accessing user space are redirected at kernel space by set_fs().
+> In that case both addresses are kernel virtual addresses.
 
-I'm not that happy with calling flush_kernel_dcache_range() from
-drivers, when that function only exists on parisc.  Most archs define
-dma_cache_wback/dma_cache_inv/dma_cache_wback_inv, which, from the
-descriptions in asm-ia64/io.h seem to be just what lasi_82596 and
-sim700 need.  The versions on parisc currently just flush_all_caches(),
-but perhaps we should make all three call flush_kernel_dcache_range()?
-I'll try that approach anyway.
-
-Richard
+Right.  But I don't see why we need to flush any caches at all here.
+We're not changing any mappings, we're accessing through a fixed space
+register, there's no other device involved, if there were another CPU
+involved then it would be cache-coherent _anyway_ -- what's the problem?
