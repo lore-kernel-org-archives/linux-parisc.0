@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.calyx.net (mail.calyx.com [216.82.160.19])
-	by dsl2.external.hp.com (Postfix) with SMTP id 632C848B1
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 13:53:13 -0600 (MDT)
-Date: Tue, 16 Jul 2002 15:52:59 -0400 (EDT)
-From: "Brian S. Julin" <bri@mojo.calyx.net>
-To: Matthew Wilcox <willy@debian.org>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC
-In-Reply-To: <20020630231349.D29045@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.BSO.4.33.0207161535550.10023-100000@mojo.calyx.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from potter.sfbay.redhat.com (potter.sfbay.redhat.com [205.180.83.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73A2C4829
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 14:21:15 -0600 (MDT)
+Date: Tue, 16 Jul 2002 13:21:08 -0700
+From: Richard Henderson <rth@redhat.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	parisc-linux@parisc-linux.org, gcc@gcc.gnu.org
+Subject: Re: [parisc-linux] gcc-3.[02] alignment problem
+Message-ID: <20020716132108.B5966@redhat.com>
+References: <200207161701.g6GH1D03023385@hiauly1.hia.nrc.ca> <20020716172255.GM8724@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020716172255.GM8724@tausq.org>; from randolph@tausq.org on Tue, Jul 16, 2002 at 10:22:55AM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,41 +24,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 30 Jun 2002, Matthew Wilcox wrote:
+On Tue, Jul 16, 2002 at 10:22:55AM -0700, Randolph Chung wrote:
+>         __u32   tcpdiag_cookie[2]; 
+> #define TCPDIAG_NOCOOKIE (~0U)
+> };
+> 
+> the code goes on to do:
+>         *((struct sock **)&r->id.tcpdiag_cookie) = sk;
+> and
+>             sk != *((struct sock **)&req->id.tcpdiag_cookie[0]))
 
-> On Sun, Jun 30, 2002 at 07:33:43PM +0200, Helge Deller wrote:
-> > The new HIL drivers were written by Brian S. Julin and I mostly only did some
-> > bugfixing, cleanups and re-integration/re-organization  into our CVS kernel.
->
-> Thanks to both of you for doing this.  It's great to have support for
-> these devices in the Linux kernel.
+This is absolutely awful.
 
-NP.  There's still a lot of work to do on them; I haven't had much time
-recently.  However if not fully functional they are at least
-completely stable.  I have them loaded at work and am boasting a pretty
-good uptime at this point (many thanks to whoever for doing whatever,
-suddently my spurious system hangs came to a stop.)
+> the "vomit grade hack" alan mentioned in another post is that in our
+> tree, we have:
+> 
+> struct tcpdiag_sockid
+> {
+>         __u16   tcpdiag_sport;
+>         __u16   tcpdiag_dport;
+>         __u32   tcpdiag_src[4];
+>         __u32   tcpdiag_dst[4];
+>         __u32   tcpdiag_if;
+> #if defined (__hppa__) && defined (__LP64__)
+>         char * parisc_hack_to_align_tcpdiag_cookie;
+> #endif
+>         __u32   tcpdiag_cookie[2];
 
-I like Helge's strategy of moving the old keyboard driver to
-a "simple driver" because eventually when all the keymaps are worked out
-in the current driver, I think a simpler irq-only read-only interface
-(without support for any other HP SDC functions) would be pretty easy
-and good to have, and the old driver can be evolved into this whenever the
-old linux keyboard system starts to be decomissioned.
+An only marginally better fix is
 
-Mostly my main concern with the driver right now is it keeps a tasklet
-scheduled so often that it affects CPU statistics.  The simple driver
-would not do this, but would not be able to support host-to-hil transfers.
-Since I have yet to get my hands on any host-to-hil devices yet, I doubt
-many people would miss host-to-hil support.
+	__u32 tcpdiag_cookie[2] __attribute__((aligned(sizeof(void*))));
 
-I'm not familiar with the hardware that we are currently getting the
-100Hz clock from, but if can, and we do, follow suit with i386 and
-increase HZ to 1000 this would make the timing of the driver much easier.
-Otherwise being a little less agressive at the risk of an occasional
-event latency would probably be best.
+Note that this should be unconditional so that the other
+64-bit ports don't take an alignment trap here too.
 
-Anyway, back to catching up on e-mail.
+A much nicer fix would be to, gasp, use a union.
 
---
-Brian S. Julin
+
+
+r~
