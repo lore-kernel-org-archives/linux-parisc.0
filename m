@@ -1,15 +1,15 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] debug spinlocks
-Date: Wed, 14 Jul 2004 12:23:18 -0700
-Message-ID: <20040714192318.GR546@tausq.org>
-References: <20040714182035.77810494692@palinux.hppa>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] "Unknown machine at ..." on N4k
+Date: Wed, 14 Jul 2004 18:59:43 -0600
+Message-ID: <20040715005943.GF2810@colo.lackof.org>
+References: <40BD9F870001BC0C@ocpmta2.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040714182035.77810494692@palinux.hppa>
+In-Reply-To: <40BD9F870001BC0C@ocpmta2.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,17 +20,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Thibaut, thanks for fixing the debug locks.
+On Wed, Jul 14, 2004 at 05:24:23PM +0000, Joel Soete wrote:
+...
+> 19. Unknown machine at 0xfffffffffed25000 [37] { 0, 0x0, 0x5d3, 0x00000 }
+...
+> Any idea where I have to look for to change it?
 
-Has anyone else tried this on a SMP config? For some reason with
-CONFIG_DEBUG_SPINLOCKS=y, i cannot boot a kernel, but without the debug
-spinlocks it works fine (well, it gets further). 
+It needs to be added to arch/parisc/kernel/hardware.c.
+see hp_hardware_list[] declaration :^)
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+We just need to know what the proper name for the CPU is.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
