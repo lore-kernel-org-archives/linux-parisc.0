@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CD246482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 09:21:47 -0600 (MDT)
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [127.0.0.1] (may be forged))
-	by hiauly1.hia.nrc.ca (8.12.9/8.12.9) with ESMTP id h4CEwngL001053
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 10:58:49 -0400 (EDT)
-Message-Id: <200305121458.h4CEwmom001051@hiauly1.hia.nrc.ca>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1DCA3482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 09:40:08 -0600 (MDT)
+Date: Mon, 12 May 2003 08:36:59 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Jan-Benedict Glaw <jbglaw@lug-owl.de>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] [PATCH-2.5] Various cleanups
-To: jbglaw@lug-owl.de (Jan-Benedict Glaw)
-Date: Mon, 12 May 2003 10:58:48 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030512132248.GU27494@lug-owl.de> from "Jan-Benedict Glaw" at May 12, 2003 03:22:48 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20030512153659.GK4509@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20030512132248.GU27494@lug-owl.de> <200305121458.h4CEwmom001051@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200305121458.h4CEwmom001051@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I'm not applying these bits.  It's just not reasonable to add (void *)
-> > casts to every function pointer comparison.  I know Linus will reject it.
-> > We need to find a better way to fix this one -- and I suspect the right
-> > way is to implement a __canonicalize_funcptr_for_compare in the kernel
-> > and EXPORT_SYMBOL it.
-> 
-> I thougt about that, but didn't do it this way because I didn't like the
-> approach to double libgcc's __canonicalize_funcptr_for_compare. Maybe
-> we'd simply find a way to EXPORT_SYMBOL libgcc's version of that one...
+> No, you don't want to use the libgcc version as it is specific to
+> user programs.  A kernel version is needed.  I think all that needs to
+> be done is return the function pointer passed to it.  It should totally
+> disappear if inlined.  Thus, __canonicalize_funcptr_for_compare could
+> be defined in a header.
 
-No, you don't want to use the libgcc version as it is specific to
-user programs.  A kernel version is needed.  I think all that needs to
-be done is return the function pointer passed to it.  It should totally
-disappear if inlined.  Thus, __canonicalize_funcptr_for_compare could
-be defined in a header.
+how does that work? __c_f_f_c is emitted by the compiler internally,
+right? how can we define an inline version of this function?
 
-It might actually be necessary to do function pointer canonicalization
-in the kernel in situations involving loadable modules.  One would
-have to look at how the loader manages the plabels.
-
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
