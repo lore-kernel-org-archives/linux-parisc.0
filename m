@@ -1,42 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.calyx.net (mail.calyx.net [216.82.160.19])
-	by dsl2.external.hp.com (Postfix) with SMTP id BB684482A
-	for <parisc-linux@parisc-linux.org>; Wed,  9 May 2001 07:03:35 -0600 (MDT)
-Date: Wed, 9 May 2001 09:03:20 -0400 (EDT)
-From: "Brian S. Julin" <bri@mojo.calyx.net>
-To: <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] framebuffer drivers, sound
-In-Reply-To: <20010509010244.S4917@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.BSO.4.33.0105090859500.29141-100000@mojo.calyx.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from rhirst.linuxcare.com (pc171-bre9.cable.ntl.com [213.105.88.171])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1111F482A
+	for <parisc-linux@parisc-linux.org>; Wed,  9 May 2001 07:26:47 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 8FA4BB007; Wed,  9 May 2001 14:26:11 +0100 (BST)
+Date: Wed, 9 May 2001 14:26:11 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] boot-floppies (installer)
+Message-ID: <20010509142611.W1840@linuxcare.com>
+References: <20010508075325.O1840@linuxcare.com> <20010508153029.R1840@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010508153029.R1840@linuxcare.com>; from rhirst@linuxcare.com on Tue, May 08, 2001 at 03:30:29PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-As long as it gets released eventually -- my guess is X isn't going
-to be all that fast on a planar FB where you can only write
-one planemask at a time and must use a BIOS call to switch
-the planemask. :-)
+On Tue, May 08, 2001 at 03:30:29PM +0100, Richard Hirst wrote:
+> ## Don't forget to add /sbin/termwrap to root.bin before you
+> ## try to boot from it.
 
---
-Brian S. Julin
+Doh!  termwrap needs adding to the installed system, after install stage
+1, but before booting from the disk to run stage 2.
 
-On Wed, 9 May 2001, Matthew Wilcox wrote:
-
-> On Wed, May 09, 2001 at 02:00:12AM +0200, Andi wrote:
-> > Yeah, the STI docs.... HP should release the hardware level
-> > docs, this is the only way to implement a full featured fbdev
-> > driver. A stifb would still be usefull since it is works for
->
-> yeah, but right now we're all too busy working on important things
-> (eg SMP, glibc, etc) to spend time looking for or sanitising this
-> documentation.
->
-> --
-> Revolutions do not require corporate support.
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
->
+Richard
