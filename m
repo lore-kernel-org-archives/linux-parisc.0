@@ -1,17 +1,19 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D508148A4
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0820D489E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  2 Feb 2004 10:15:11 -0700 (MST)
-Date: Mon, 2 Feb 2004 18:15:06 +0100
-Message-ID: <400CB8A10000A8EB@ocpmta3.freegates.net>
+	Mon,  2 Feb 2004 11:31:18 -0700 (MST)
+Date: Mon, 2 Feb 2004 18:50:49 +0100
+Message-ID: <400CB8A10000A96E@ocpmta3.freegates.net>
+In-Reply-To: <401530610000500D@ocpmta1.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] [Update] glibc 2.3.2 bug free on hppa.
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 carlos
+To: "Randolph Chung" <randolph@tausq.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: 
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+	Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,144 +23,107 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Carlos,
+Hi Randolph,
 
-As a first step, I would just like test the toolchain:
-I so grab first _manualy_ last binutils and gcc (3.3.3-0pre3) dkpg src and
-apply patches (with './debian/rules patch' in the corresponding src pkg
-dir)
-Then grab upsteam glibc (2.3.3 is it the one I had to consider you spoke
-about 2.3.2??) and apply your patches.
+Very sorry but it doesn't works :( 
+(Sorry also if I couldn't help more: my knowledge of kernel internals is
+still too limited :( )
 
-every thing works fine until I reach second step of gcc build where configure
-failed with following error message:
-Configure gcc step2:
-
-Cmd: unset CC; unset CFLAGS;  export PATH="/opt/palinux-3.3.3/bin:$PATH";
-/Develop/parisc-linux/sources/gcc/configure --target=hppa-linux --host=hppa-linux
---build=hppa-linux --prefix=/opt/palinux-3.3.3 --enable-shared --disable-nls
---enable-languages=c
-Mon Feb 02 16:01:37 UTC 2004:
-
-*** This configuration is not supported
-in the following subdirectories:
-     target-libffi target-boehm-gc target-zlib target-libjava target-libstdcv3
-target-libf2c zlib fastjar target-libobjc
-    (Any other directories should still work fine.)
-Created "Makefile" in /Develop/parisc-linu
-/build/gcc using "mt-frag"
-/lib/libc.so.6: undefined reference to `__libc_stack_end@GLIBC_PRIVATE'
-/lib/libc.so.6: undefined reference to `_dl_function_address@GLIBC_PRIVATE'
-collect2: ld returned 1 exit status
-*** The command 'gcc -o conftest -g -O2   conftest.c' failed.
-*** You must set the environment variable CC to a working compiler.
-
-I have a look in my /opt/palinux-3.3.3/bin but there is not yet any gcc
-at this stage so it will use /usr/bin/gcc may be should I use better the
-partial gcc (build during step 1)?
-
-Thanks for all of your help,
+Thanks for your attention,
     Joel
 
-PS: glibc it self is configure as follow:
-Cmd: unset LD_LIBRARY_PATH; unset LD_RUN_PATH; export CC=/Develop/parisc-linux/xc/bin/hppa-linux-gcc;
-export CLFAGS="-O2 -g";  export PATH="/Develop/parisc-linux/xc/bin:$PATH";
-/Develop/parisc-linux/sources/glibc/configure --target=hppa-linux --host=hppa-linux
---build=hppa-linux --prefix=/opt/palinux-3.3.3/hppa-linux --without-cvs --disable-profile
---enable-hacker-mode --enable-add-ons=linuxthreads --with-headers=/Develop/parisc-linux/sources/linux/include
+PS: btw I try to compare the dump of two .o files:
+palx2000:/usr/src/linux-2.6.2-rc2-pa3/arch/parisc/kernel# diff -Nau head64.working.dmp
+head64.orig.dmp 
+--- head64.working.dmp	2004-02-02 19:39:05.295417088 +0100
++++ head64.orig.dmp	2004-02-02 19:34:56.138294728 +0100
+@@ -62,39 +62,43 @@
+   cc:	f0 66 0c 00 	depd r6,31,32,r3
+   d0:	68 00 00 20 	stw r0,10(r0)
+   d4:	68 00 00 50 	stw r0,28(r0)
+-  d8:	73 cb 38 31 	std r11,-3e8(sp)
+-  dc:	00 00 14 a2 	mfia rp
+-  e0:	34 42 00 28 	ldo 14(rp),rp
+-  e4:	f4 40 0c 00 	depdi 0,31,32,rp
+-  e8:	e8 40 c0 00 	bv r0(rp)
+-  ec:	02 00 0d 60 	ssm 200,r0
+-  f0:	34 1a 00 2a 	ldi 15,r26
+-  f4:	34 19 00 04 	ldi 2,r25
+-  f8:	34 18 00 04 	ldi 2,r24
+-  fc:	20 40 00 00 	ldil 0,rp
+- 100:	34 42 00 00 	ldo 0(rp),rp
+- 104:	e8 60 c0 00 	bv r0(r3)
+- 108:	08 00 02 57 	copy r0,r23
++  d8:	37 c1 3e 01 	ldo -100(sp),r1
++  dc:	0c 20 10 c1 	ldd 0(,r1),r1
++  e0:	70 2b 0b 30 	std r11,598(r1)
++  e4:	00 00 14 a2 	mfia rp
++  e8:	34 42 00 28 	ldo 14(rp),rp
++  ec:	f4 40 0c 00 	depdi 0,31,32,rp
++  f0:	e8 40 c0 00 	bv r0(rp)
++  f4:	02 00 0d 60 	ssm 200,r0
++  f8:	34 1a 00 2a 	ldi 15,r26
++  fc:	34 19 00 04 	ldi 2,r25
++ 100:	34 18 00 04 	ldi 2,r24
++ 104:	20 40 00 00 	ldil 0,rp
++ 108:	34 42 00 00 	ldo 0(rp),rp
++ 10c:	e8 60 c0 00 	bv r0(r3)
++ 110:	08 00 02 57 	copy r0,r23
+ 
+-000000000000010c <stext_pdc_ret>:
+- 10c:	53 cb 38 31 	ldd -3e8(sp),r11
+- 110:	00 00 18 20 	mtsp r0,sr0
+- 114:	00 00 58 20 	mtsp r0,sr1
+- 118:	00 00 98 20 	mtsp r0,sr2
+- 11c:	00 00 d8 20 	mtsp r0,sr3
+- 120:	01 00 18 40 	mtctl r0,pidr1
+- 124:	01 20 18 40 	mtctl r0,pidr2
+- 128:	01 80 18 40 	mtctl r0,pidr3
+- 12c:	01 a0 18 40 	mtctl r0,pidr4
+- 130:	20 20 02 00 	ldil 10000000,r1
+- 134:	08 3e 06 3e 	add sp,r1,sp
+- 138:	23 60 00 00 	ldil 0,dp
+- 13c:	37 7b 00 00 	ldo 0(dp),dp
+- 140:	21 40 00 00 	ldil 0,r10
+- 144:	35 4a 00 00 	ldo 0(r10),r10
+- 148:	01 ca 18 40 	mtctl r10,iva
+- 14c:	e8 00 01 58 	b,l 200 <aligned_rfi>,r0
+- 150:	08 00 02 40 	nop
++0000000000000114 <stext_pdc_ret>:
++ 114:	37 c1 3e 01 	ldo -100(sp),r1
++ 118:	0c 20 10 c1 	ldd 0(,r1),r1
++ 11c:	50 2b 0b 30 	ldd 598(r1),r11
++ 120:	00 00 18 20 	mtsp r0,sr0
++ 124:	00 00 58 20 	mtsp r0,sr1
++ 128:	00 00 98 20 	mtsp r0,sr2
++ 12c:	00 00 d8 20 	mtsp r0,sr3
++ 130:	01 00 18 40 	mtctl r0,pidr1
++ 134:	01 20 18 40 	mtctl r0,pidr2
++ 138:	01 80 18 40 	mtctl r0,pidr3
++ 13c:	01 a0 18 40 	mtctl r0,pidr4
++ 140:	20 20 02 00 	ldil 10000000,r1
++ 144:	08 3e 06 3e 	add sp,r1,sp
++ 148:	23 60 00 00 	ldil 0,dp
++ 14c:	37 7b 00 00 	ldo 0(dp),dp
++ 150:	21 40 00 00 	ldil 0,r10
++ 154:	35 4a 00 00 	ldo 0(r10),r10
++ 158:	01 ca 18 40 	mtctl r10,iva
++ 15c:	e8 00 01 38 	b,l 200 <aligned_rfi>,r0
++ 160:	08 00 02 40 	nop
+ 	...
+ 
+ 0000000000000200 <aligned_rfi>:
+=========><=========
 
+head64.working.dmp being the one which working (ie with mentioned reverted
+patch)
 
->-- Original Message --
->Date: Sun, 1 Feb 2004 18:08:45 -0500
->From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux] [Up
-ate] glibc 2.3.2 bug free on hppa.
->
->
->
-pa,
+head64.orig.dmp being the cvs one.
 
-As of today the last glibc bug was fixed:
+Do you noticed compiler error?
 
-- Statically linked executable SIGSEGV's when calling dlopen. (FIXED)
-
-As far as I'm concerned glibc has zero bugs, not counting the fact that
-we don't 
-et have a long double implementation.
-
-I
->know the gentoo crowd is always interested in the lastest set of
-patches, so here goes:
-
-http://www.parisc-linux.org/~carlos/glibc-hppa-patches-2004-02-01.tar.gz
-
-At the moment you need a patched gcc in
-order to build a correct
-userspace, I'm try
->ng to fix this so you don't have to:
-
-http://www.parisc-linux.org/~carlos/gcc-3.3.2-fptr.diff
-
-Lite-Recipe for running test-suite:
-(a) Download gcc 3.3.2 source.
-(b) Patch with fptr.diff from above.
-
-(c) Build gcc 3.3.2
-(d) Download glibc cvs he
->d.
-(e) Patch with glibc patches from above.
-(f) Build glibc with the gcc from (c).
-(g) Run glibc testsuite "make -k check" using gcc from (c).
-(h) Look for errors "grep 'Error' test-result.log"
-
-I'
-l start focusing most of my time fixing gdb now
->)
-
-Background tasks:
-
-- debian-glibc support.
-- Send glibc patches upstream.
-
-I'll be looking for a helper if someone wants to look into new
-regressions as they arrive? Usually just building ups
-ream with the
-above patches, and checking that w
-> didn't regress is good enough.
-I imagine I could automate that... or rather someone else could? :)
-
-Foreground tasks:
-
-- atomic kernel ops
-- review gettimeofday, and possible speedups.
-- revie
- time code in the kernel.
-* gdb support upstream <
-> Highest foreground priority.
-
-Thanks for all the help guys! Randolph for making me read the cffc code
-and figure out what I did wrong, that fixed "last_bug-1". Richard had me
-thinking about deb
-an-installer and what would happen if you ripped out
-
->the PLT of the executable, this lead me to fix "last_bug." :)
-
-So.... who wants to setup an automated glibc builder? :}
-
-Cheers,
-Carlos.
-
-
-_______________________________________________
-
-parisc-linux mailing list
-parisc-linux@lists.parisc-lin
->x.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-
+hth,
+    Joel
 
 
 -------------------------------------------------------------------------
