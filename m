@@ -1,42 +1,102 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 22202482A
-	for <parisc-linux@parisc-linux.org>; Thu,  5 Apr 2001 13:57:41 -0600 (MDT)
-To: buggz <buggz@america.net>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] RE: New hppa base tarball 
-In-Reply-To: Message from buggz <buggz@america.net>
-   of "Thu, 05 Apr 2001 10:45:06 EDT." <Pine.LNX.4.30.0104051041590.3801-100000@buggz1.buggz.net>
-References: <Pine.LNX.4.30.0104051041590.3801-100000@buggz1.buggz.net> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 05 Apr 2001 14:00:14 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010405200014.A86F138852@carmen.fc.hp.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 140EC482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Apr 2001 20:45:58 -0600 (MDT)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA06993
+	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Apr 2001 20:40:05 -0600
+Received: from [212.13.154.150] (helo=dg)
+	by smtp5.port.ru with smtp (Exim 3.14 #54)
+	id 14lMFR-0005FW-00
+	for parisc-linux@thepuffingroup.com; Fri, 06 Apr 2001 06:45:18 +0400
+Message-ID: <001601c0be5c$9af6ad20$0b2aa8c0@dg>
+From: "Gorbunov D.L." <dlynx@mail.ru>
+To: <parisc-linux@thepuffingroup.com>
+Date: Fri, 6 Apr 2001 09:43:47 +0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0011_01C0BE7E.141D5FC0"
+Subject: [parisc-linux] PA-RISK Linux
 List-ID: <linux-parisc.vger.kernel.org>
 
-buggz writes...
+This is a multi-part message in MIME format.
 
-> 
-> Otay, I d/l'd the baseplus tarball.
+------=_NextPart_000_0011_01C0BE7E.141D5FC0
+Content-Type: text/plain;
+	charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 
-I haven't mentioned the baseplus tarball on the list yet but it's just as 
-usable as the base one. The difference is that baseplus has been updated from 
-the debian archive and also contains a reasonable development environment. I 
-plan to roll it again soon and announce it on the list.
+Dear sirs!
+Our office in 1996 buy HP9000(D-class) with hot-swap hdd, but now we =
+have some problem with software for this system.
+I try to install PA-RISK Linux from bootable CDROM (I get iso-image via =
+your FTP-site).
+But after some minutes, I see next mesagge - Kernel Faults - code 15, =
+regs - c9fe8840 (addr =3D f6632087),
+and system stopped.=20
+  Could not you suggest, where I can find iso-image bootable CDROM with =
+PA-RISK Linux for HP9000 (d-class)?
+Best regards,
+Gorbunov Dmitry,
+National Patent Office
+Republic of Kazakhstan
+kazpat@nursat.kz(official e-mail)=20
+=20
 
-> To install this, it says to read the instrutions that says to boot w/ a
-> cd.
+------=_NextPart_000_0011_01C0BE7E.141D5FC0
+Content-Type: text/html;
+	charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 
-The instructions also work if you boot from an nfsroot. Instructions on doing 
-that at,
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
+<HTML>
+<HEAD>
 
-http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/02-Feb/0069.html
+<META content=3Dtext/html;charset=3Dkoi8-r =
+http-equiv=3DContent-Type><!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 =
+HTML//EN">
+<META content=3D'"MSHTML 4.72.3110.7"' name=3DGENERATOR>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2>Dear =
+sirs!</FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2>Our office in =
+1996 buy=20
+HP9000(D-class) with hot-swap hdd, but now we have some problem with =
+software=20
+for this system.</FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2>I try to install =
+<FONT face=3D""=20
+size=3D2>PA-RISK Linux from bootable CDROM (I get iso-image via your=20
+FTP-site).</FONT></FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2><FONT face=3D"" =
+size=3D2>But after=20
+some minutes, I see next mesagge - <STRONG>Kernel Faults - code 15, regs =
+-=20
+c9fe8840 (addr =3D f6632087),</STRONG></FONT></FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2><FONT face=3D""=20
+size=3D2></FONT></FONT><FONT face=3D"Arial Cyr" size=3D2>and system =
+stopped.=20
+</FONT></DIV>
+<DIV><FONT face=3D"Arial Cyr" size=3D2>&nbsp; <FONT color=3D#000000 =
+face=3DArial=20
+size=3D2>Could not you suggest</FONT>, w<FONT color=3D#000000 =
+face=3DArial size=3D2>here=20
+I can find </FONT>iso-image bootable CDROM with<FONT size=3D2> PA-RISK =
+Linux=20
+for</FONT> HP9000 (d-class)?</FONT></DIV>
+<DIV><FONT face=3D"Arial Cyr" size=3D2>Best regards,</FONT></DIV>
+<DIV><FONT face=3D"Arial Cyr" size=3D2>Gorbunov Dmitry,</FONT></DIV>
+<DIV><FONT face=3D"Arial Cyr" size=3D2></FONT><FONT color=3D#000000 =
+face=3D"Arial Cyr"=20
+size=3D2><FONT face=3D"" size=3D2>National Patent =
+Office</FONT></FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2><FONT face=3D"" =
+size=3D2>Republic=20
+of Kazakhstan</FONT></FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2><FONT face=3D""=20
+size=3D2>kazpat@nursat.kz(official e-mail)&nbsp;</FONT></FONT></DIV>
+<DIV><FONT color=3D#000000 face=3D"Arial Cyr" size=3D2><FONT face=3D""=20
+size=3D2>&nbsp;</FONT></FONT></DIV></BODY></HTML>
 
-> I was hoping that these were iso files to make such a cd.
-
-Not yet, but soon hopefully.
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+------=_NextPart_000_0011_01C0BE7E.141D5FC0--
