@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 039C1482C
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Dec 2002 05:02:57 -0700 (MST)
-Message-ID: <3DFC7EFA.9040708@freebel.net>
-Date: Sun, 15 Dec 2002 13:09:14 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
+Received: from fep02-app.kolumbus.fi (fep02-0.kolumbus.fi [193.229.0.44])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3A87A482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Dec 2002 08:00:37 -0700 (MST)
+Received: from suorakulmio ([80.186.65.123]) by fep02-app.kolumbus.fi
+          with SMTP
+          id <20021215150030.HEVW4145.fep02-app.kolumbus.fi@suorakulmio>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sun, 15 Dec 2002 17:00:30 +0200
+Date: Sun, 15 Dec 2002 16:59:20 +0200
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: multipart/mixed;
- boundary="------------020609020700060903080206"
-Subject: [parisc-linux] Is this system_irqsave diff is correct?
+From: Jussi Sallinen <jzu@lowfidelity.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Message-Id: <20021215150030.HEVW4145.fep02-app.kolumbus.fi@suorakulmio>
+Subject: [parisc-linux] HP 712/80, LASI Harmony Audio and 16-bit's
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,48 +25,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------020609020700060903080206
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi all,
-
-is this  diff is right:
---- system_irqsave.h.orig       2002-12-15 13:02:50.000000000 +0000
-+++ system_irqsave.h    2002-12-15 13:03:29.000000000 +0000
-@@ -9,8 +9,7 @@
-
-  #define local_irq_save(x) \
-         __asm__ __volatile__("rsm %1,%0" : "=r" (x) :"i" (PSW_I) : 
-"memory" )
--#define local_irq_restore(x) \
--       __asm__ __volatile__("mtsm %0" : : "r" (x) : "memory" )
-+#define local_irq_restore(x) __restore_flags(x)
-  #define local_irq_disable() __cli()
-  #define local_irq_enable()  __sti()
-
-Thanks for attention,
-	Joel
-
---------------020609020700060903080206
-Content-Type: text/plain;
- name="system_irqsave.h.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="system_irqsave.h.diff"
-
---- system_irqsave.h.orig	2002-12-15 13:02:50.000000000 +0000
-+++ system_irqsave.h	2002-12-15 13:03:29.000000000 +0000
-@@ -9,8 +9,7 @@
- 
- #define local_irq_save(x) \
- 	__asm__ __volatile__("rsm %1,%0" : "=r" (x) :"i" (PSW_I) : "memory" )
--#define local_irq_restore(x) \
--	__asm__ __volatile__("mtsm %0" : : "r" (x) : "memory" )
-+#define local_irq_restore(x) __restore_flags(x)
- #define local_irq_disable() __cli()
- #define local_irq_enable()  __sti()
- 
-
---------------020609020700060903080206--
+I have HP 712/80, with LASI-chip - So soundcard is Harmony audio.
+I just compiled kernel, PA Harmony audio driver included into kernel,
+but without any kind of OSS sound modules. 
+mikmod gives this: 
+MikMod initialisation error : This driver supports uLaw output (8 bit mono, 8 kHz) only
+Do i need to have OSS sound modules to be able to play 16bit stereo?
+And if so, as modules or into kernel?
+And what kind of OSS sound modules do i need :o
