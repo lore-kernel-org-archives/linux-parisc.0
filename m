@@ -1,76 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA05138
-	for <parisc-linux@puffin.external.hp.com>; Tue, 4 Jan 2000 08:40:19 -0700
-Message-Id: <200001041543.KAA01712@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Trouble to generate vmlinux
-To: t.simonnet@esiee.fr (Thierry SIMONNET)
-Date: Tue, 4 Jan 2000 10:43:06 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <007101bf56c1$0c5a13d0$0a14d793@esiee.fr> from "Thierry SIMONNET" at Jan 4, 0 03:36:12 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA09778
+	for <parisc-linux@puffin.external.hp.com>; Tue, 4 Jan 2000 13:39:43 -0700
+Message-Id: <200001042044.MAA16184@milano.cup.hp.com>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: t.simonnet@esiee.fr (Thierry SIMONNET), parisc-linux@thepuffingroup.com,
+        grundler@milano.cup.hp.com
+Subject: Re: [parisc-linux] Trouble to generate vmlinux 
+In-reply-to: Your message of "Tue, 04 Jan 0100 10:43:06 PST."
+             <200001041543.KAA01712@hiauly1.hia.nrc.ca>
+Date: Tue, 04 Jan 2000 12:44:22 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-It looks as if you are trying to do a cross-compile which is not supported.
-Currently, you must build with gcc and HP's ld under hpux 10.20 (or possibly,
-9.X).
+"John David Anglin" wrote:
+> It looks as if you are trying to do a cross-compile which is not supported.
+> Currently, you must build with gcc and HP's ld under hpux 10.20 (or possibly,
+> 9.X).
 
-> 
-> I work on a HP712/60 workstation under HPUX 10.20.
-> I compile with cc, gcc or aCC.
-> 
-> I can't generate vmlinux; I have some Unsatisfied symbols :
-> 
-> ......
-> 
-> parisc-linux-ld -R 0xc0010000 -N -e '$START$' arch/parisc/real/realexe.o
-> arch/parisc/kernel/init_task.o init/main.o init/version.o \
->        arch/parisc/boot/ramdisk.o arch/parisc/kernel/kernel.o
-> arch/parisc/mm/mm.o kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o \
->        fs/filesystems.a \
->        net/network.a \
->        drivers/block/block.a drivers/gsc/gsc.a drivers/char/char.a
-> drivers/net/net.a drivers/pci/pci.a \
->        /linux/linux/arch/parisc/lib/lib.a /linux/linux/lib/lib.a
-> /linux/linux/arch/parisc/lib/lib.a \
->        -o vmlinux
-> parisc-linux-ld: Unsatisfied symbols:
->    _R_iodc_cons_call (code)
->    _R_fault_vector (code)
->    _R_pdc_call (code)
-> make[1]: *** [vmlinux-real] Error 1
-> make[1]: Leaving directory `/linux/linux'
-> make: *** [vmlinux] Error 2
-> 
-> I try to modify convert.c without success.
-> 
-> Could you help me?
-> 
-> Thanks
-> 
-> =========================================================
-> Thierry SIMONNET
-> Responsable du Service des Moyens Informatiques Généraux
-> Groupe ESIEE - CCIP
-> Cité Descartes - BP 99 - 2 Bd Blaise Pascal
-> 93162 NOISY le Grand cedex
-> tel: 01 45 92 66 24  fax: 01 45 92 67 99 e-mail:  t.simonnet@esiee.fr
-> =========================================================
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
+The cross-compile works (or worked). That's my default setup.
+I change linux/Makefile with:
+	CROSS_COMPILE = parisc-linux-
 
+o only gcc can be used to build kernels.
+o "cc" is still needed to generate utilities which run under HP-UX
+  (that's HOSTCC in the Makefiles)
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+"ld" is the exception still because of SOM support. 
+But I don't think that's Thierry's problem since the linker
+isn't complaining about the object file type...
+
+Which makes me wonder: theirry, what *is* the object file type?
+It has to be HP's SOM format. I think the recipe for building
+tools includes the changes to do that.
+
+grant
+
+Grant Grundler
+Unix Developement Lab
++1.408.447.7253
