@@ -1,17 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA02249
-	for <parisc-linux@puffin.external.hp.com>; Sun, 21 Nov 1999 18:10:46 -0700
-Message-Id: <199911220112.UAA05614@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Progress
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Sun, 21 Nov 1999 20:12:25 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA03386
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 02:39:32 -0700
+Date: Mon, 22 Nov 1999 08:30:23 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
         parisc-linux@thepuffingroup.com
-In-Reply-To: <199911212307.SAA11686@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 21, 99 06:07:29 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Progress
+Message-Id: <19991122083023.B1310@mathe.stud.uni-erlangen.de>
+References: <19991119043037.B941@mathe.stud.uni-erlangen.de> <199911212307.SAA11686@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199911212307.SAA11686@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
+
+> Hi Philipp,
+
+Hi.
+
+> I am currently booting with "hpux /stand/vmunix".
+>
+> This doesn't use the boot code in ipl_c.c.  Maybe the problem is the failure
+> in main to open "/dev/console".  Possibly, "/dev/console" is not in the ram
+> disk or, if it is, the kernel is not figuring out which tty to use.
+
+Don't do that, then :).
+
+Honestly, I don't think we have a way yet to use the command line the HPUX
+boot loader passes us (which I was told uses the ANSI C way of passing
+arguments, i.e. argument count in GR26, pointer to NULL-terminated array
+of pointers to NULL-terminated arrays of strings in GR25).  Anyone up to
+write some glue code that puts that back together into a simple long string
+Linux's commandline splitting code can spli again ?
 
 > > > I also need to slow down the console messages.
 > > 
@@ -21,27 +41,14 @@ List-ID: <linux-parisc.vger.kernel.org>
 > > of a per-character one.
 > 
 > I tried this and it didn't work.  It looks like __delay() is broken.  The
-> ".balignl" is clearly bogus.  I think the "addib" tests need to bew looked
-> at more closely.
+> ".balignl" is clearly bogus.
 
-__delay() in delay.h is ok except for ".balignl".  The .balignl inserts
-a bunch of "ldi 1a,%r0" instructions which do nothing.  I just didn't specify
-enough cycles before.
+Oh.  Why ?  The way it is intended is to align the following code to a 64-byte
+boundary (cache lines on current PA2.0 CPUs are 64 bytes, I think) using nops.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> I think the "addib" tests need to bew looked at more closely.
 
---- delay.h.orig	Mon Oct 11 14:52:33 1999
-+++ delay.h	Sun Nov 21 19:29:28 1999
-@@ -11,8 +11,7 @@
- 
- extern __inline__ void __delay(unsigned long loops) {
- 	asm volatile(
--	"	.balignl	64,0x34000034
--		addib,UV,n      -1,%0,.
-+	"	addib,UV,n      -1,%0,.
- 		addib,NUV,n     -1,%0,.+8
- 		nop"
- 		: "=r" (loops) : "0" (loops));
+Possible.  They seem to work fine for the rest of us though (i.e. the delay
+loop gets calibrated nicely).
+
+	Philipp Rumpf
