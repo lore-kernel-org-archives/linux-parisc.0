@@ -1,21 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail0.ewetel.de (mail0.ewetel.de [212.6.122.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B868C4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 15:17:22 -0600 (MDT)
-Received: from murphy.familie-weerts.de (dialin-86213.ewetel.net [212.6.86.213])
-	by mail0.ewetel.de (8.12.1/8.12.1) with ESMTP id g8MLH8ol012796
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 23:17:09 +0200 (MEST)
-Received: from cw by murphy.familie-weerts.de with local (Exim 3.35 #1 (Debian))
-	id 17tE5e-0000dr-00
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 23:16:30 +0200
-Date: Sun, 22 Sep 2002 23:16:30 +0200
-From: Christian Weerts <chw@ffis.de>
-To: PaRisc-List <parisc-linux@lists.parisc-linux.org>
-Message-ID: <20020922211630.GB1936@familie-weerts.de>
-Reply-To: Christian Weerts <chw@ffis.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Problems with 715/80
+Received: from dns1.rz.fh-heilbronn.de (dns1.rz.fh-heilbronn.de [141.7.1.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B3EB44829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 15:37:28 -0600 (MDT)
+Received: from lisa.stud.fh-heilbronn.de (lisa.stud.fh-heilbronn.de [141.7.11.14])
+	by dns1.rz.fh-heilbronn.de (8.12.2/8.12.2) with ESMTP id g8MLbPh7011377
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 23:37:26 +0200 (MET DST)
+Received: from acid (acid.stuwo.fh-heilbronn.de [141.7.150.31])
+	by lisa.stud.fh-heilbronn.de (8.12.2/8.12.2) with SMTP id g8MLbOkc028276
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 23:37:25 +0200 (MEST)
+Message-ID: <03ed01c26280$4dfb5c90$1f96078d@acid>
+From: "Yves Bodack" <bodack@stud.fh-heilbronn.de>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <03ab01c26266$2416dea0$1f96078d@acid> <20020922220323.0113cbca.varenet@esiee.fr> <03bf01c2627c$9a5147c0$1f96078d@acid>
+Subject: Re: [parisc-linux] RTC and FB on 735/125
+Date: Sun, 22 Sep 2002 23:37:51 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,26 +28,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello everybody,
+replying to myself ...
 
-I've got an 715/80 here and have problems to get a console.
+> and with 8 bpp it says:
+>
+> (EE) FBDev(0): No Display subsection in Screen section "Default Screen"
+for
+> depth/fbbpp 24/24
+> (EE) Screen(s) found, but none have a usable configuration.
+> Fatal server error:
+> no screens found
 
-I've switched a Nullmodem Cable to my Laptop and configured
-minicom as discribed in the Boot-HOWTO - no sign of life.
+same with 16 or 32 bpp :(
 
-Then I attached my Monitor to the machine and noticed that I
-got a signal to the (SVGA) Monitor but no message appeared -
-nothing than a blank screen in 1024x768 resolution as my
-Monitor told me on his little Display.
+greetings,
 
-At this point I pressed serveral times the ESCAPE-Button or
-the TAB-Key (as mentioned in the HOWTO) at boottime, but no
-reaction.
-
-What else can I do?
-
-Greets,
-    Christian
-
--- 
-May the Source be with you...
+yves...
