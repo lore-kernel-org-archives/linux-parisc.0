@@ -1,14 +1,17 @@
-From: Nathaniel <nwoods29321@charter.net>
-Subject: [parisc-linux] Problems with Web
-Date: Sun, 30 May 2004 08:49:42 -0400
-Message-ID: <20040530084942.0ded3d73@woodshp>
-References: <20040529100944.3D6513BE2E@free.linux.hp.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Problems with Web
+Date: Mon, 31 May 2004 13:43:27 -0400 (EDT)
+Message-ID: <200405311743.i4VHhRQp019367@hiauly1.hia.nrc.ca>
+References: <20040531170503.GL16157@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-To: parisc-linux@lists.parisc-linux.org
+Cc: nwoods29321@charter.net,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040529100944.3D6513BE2E@free.linux.hp.com>
+In-Reply-To: <20040531170503.GL16157@baldric.uwo.ca> from "Carlos O'Donell" at
+	May 31, 2004 01:05:03 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,11 +22,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Problem #1: Mozilla (including Firefox) will not work.  It opens the main window then stops. It will not got any website or let me open any of the menus (example = preferences). However Epiphany browser works.
+> > Problem #2: I am unable to get java working, and I have been unable to
+> > locate a java plugin or j2re for debian hppa.
 
-Problem #2: I am unable to get java working, and I have been unable to locate a java plugin or j2re for debian hppa.
+> Java is being worked on too.
 
-Any help with the above problems would be appreciated.
+I'll go out on a limb and say that GCC 3.5 will support java on hppa-linux.
+It pretty much works now except for unwinding through signal frames.
+
+I don't have any information on other java ports.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
