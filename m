@@ -1,56 +1,52 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA23888
-	for <parisc-linux@puffin.external.hp.com>; Thu, 4 Nov 1999 13:44:13 -0700
-Date: Thu, 4 Nov 1999 15:55:07 -0500 (EST)
-From: Alex deVries <adevries@thepuffingroup.com>
-To: Ulrich Strelow <ulrich_strelow@yahoo.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Congratulations, remarks and questions
-In-Reply-To: <19991103123044.18853.rocketmail@web507.yahoomail.com>
-Message-ID: <Pine.LNX.4.10.9911041551480.14544-100000@vodka.thepuffingroup.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA25335
+	for <parisc-linux@puffin.external.hp.com>; Thu, 4 Nov 1999 18:11:35 -0700
+Received: from relay.core.genedata.com (nila-e0.core.genedata.com [157.161.173.44])
+	by mail.core.genedata.com (8.10.0.Beta6/8.10.0.Beta6) with ESMTP id dA51CoH06380
+	for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 02:12:50 +0100
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by relay.core.genedata.com (8.10.0.Beta6/8.10.0.Beta6) with ESMTP id dA51Cnr20836
+	for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 02:12:49 +0100
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id CAA710076
+	for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 02:12:48 +0100 (CET)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11jXwd-00026uC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Fri, 5 Nov 1999 02:13:35 +0100 (CET)
+Date: Fri, 5 Nov 1999 02:13:34 +0100
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19991105021334.J25252@mencheca.ch.genedata.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] sash commands
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-In theory, most of these changes are, I think, already in the kernel tree
-in CVS.
+I've had a busy evening implementing the hpux syscalls required to make
+some of the sash commands work.  The following commands work:
 
-On Wed, 3 Nov 1999, Ulrich Strelow wrote:
-> My first try was to build the kernel without
-> specifying CONFIG_NETDEVICES=n. This leads to the
-> following problem: the kernel stops booting with these
-> messages:  
-> 
-> Starting lasi lan at 0xf0826000
-> lasi_alloc_irq(0xc0127968): No LASI found in system
-> yet
-> IRQ not found for lasi lan at 0xf0826000
-> Warning : device (10, 0xb, 0x0, 0x72, 0x0) NOT claimed
-> by Lasi i82596(???) LAN 700 or similiar (old)
+cd
+-chgrp
+-chmod
+-chown
+help
+-ls
+-mkdir
+-pwd
+-touch
+-where
 
-The problem here is that the i82596 expects to be connected to a Lasi, not
-the ASP thing that's in a 715.  We have no docs on ASP, so we can't really
-do anything about this until later.
+-mount is known to not work.  I need to speak to prumpf about why this is.
+-umount probably works, but without -mount, that's hard to test :-)
+Ditto -sync.  Maybe some others work.  If there's any sash command you
+particularly want to work which doesn't yet, drop me a mail.
 
-> Now the questions: the kernel boots to the
-> sash-prompt, but no keyboard input is possible
-> (neither the HIL-keyboard, nor the keyboard from the
-> serial terminal I was using). Is this because of the
-> missing support for the ASP chip of the 715/33 ? 
+many thanks to Grant for all his help this evening.
 
-This is because:
-- right now no terminal we have supports a keyboard
-- we don't have a HIL keyboard driver because of ASP
-
-> Are
-> all devices (HIL, SCSI and LAN) connected via that
-> chip ? And finally: has HP found and published the
-> docs of that chip so that someone is able to write the
-> supporting routines ?
-
-ASP support is something we might be able to get from openbsd or mklinux
-source, I haven't checked.  It's on our list of documentation we want from
-HP though.
-
-- Alex
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
