@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tedeschi2.GRANDDOMINICAN.COM (vir-251-b1.codetel.net.do [206.105.230.251])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 05BFD482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 03:18:39 -0700 (MST)
-Received: from themail.com ([64.3.194.21]) by tedeschi2.GRANDDOMINICAN.COM
-          (Post.Office MTA v3.1 release PO205e ID# 0-41820U100L2S100)
-          with SMTP id AAT353 for <parisc-linux@lists.parisc-linux.org>;
-          Tue, 13 Nov 2001 06:13:46 -0400
-From: <toner@themail.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 13 Nov 2001 05:17:45
-Message-Id: <355.388964.389478@themail.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B7F0482C
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 07:25:52 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 163eVV-0001vX-00; Tue, 13 Nov 2001 14:25:45 +0000
+Date: Tue, 13 Nov 2001 14:25:45 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] to swap or not to swap
+Message-ID: <20011113142545.E11817@parcelfarce.linux.theplanet.co.uk>
+References: <20011113003057.H391@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Subject: [parisc-linux] toner cartridges
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011113003057.H391@tausq.org>; from randolph@tausq.org on Tue, Nov 13, 2001 at 12:30:57AM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,118 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+On Tue, Nov 13, 2001 at 12:30:57AM -0800, Randolph Chung wrote:
+> Can someone please explain this to me?
+> 
+> It looks like some BE architectures define {read,write}[wl] to do LE swapping 
+> (sparc, mipsel, ppc, etc) but others don't (s390, parisc). What is the 
+> "correct" behavior?
+> 
+> The inX/outX interfaces are all internal-swapped to LE.
 
+depends on the PCI bridge and MMU whether you need to do bytesexswapping
+in software or not.  see section 9 in the Dino ERS, page 61 for how PA
+does this.
 
-**** VORTEX SUPPLIES ****
-
-YOUR LASER PRINTER TONER CARTRIDGE,
-COPIER AND FAX CARTRIDGE CONNECTION
-
-SAVE UP TO 30% FROM RETAIL
-
-ORDER BY PHONE:1-888-288-9043
-ORDER BY FAX: 1-888-977-1577
-E-MAIL REMOVAL LINE: 1-888-248-4930
-
-
-UNIVERSITY AND/OR SCHOOL PURCHASE ORDERS WELCOME. (NO CREDIT APPROVAL REQUIRED)
-ALL OTHER PURCHASE ORDER REQUESTS REQUIRE CREDIT APPROVAL.
-PAY BY CHECK (C.O.D), CREDIT CARD OR PURCHASE ORDER (NET 30 DAYS).
-
-IF YOUR ORDER IS BY CREDIT CARD PLEASE LEAVE YOUR CREDIT CARD # PLUS EXPIRATION DATE. 
-IF YOUR ORDER IS BY PURCHASE ORDER LEAVE YOUR SHIPPING/BILLING ADDRESSES AND YOUR P.O. NUMBER
-
-
-NOTE: WE DO NOT CARRY 
-
-1) XEROX, BROTHER, PANASONIC, FUJITSU PRODUCTS
-2) HP DESKJETJET/INK JET OR BUBBLE JET CARTRIDGES 
-3) CANON BUBBLE JET CARTRIDGES 
-4) ANY OFFBRANDS BESIDES THE ONES LISTED BELOW.    
-
-OUR NEW , LASER PRINTER TONER CARTRIDGE, PRICES ARE  AS FOLLOWS: 
-(PLEASE ORDER BY PAGE NUMBER AND/OR ITEM NUMBER)
-
-HEWLETT PACKARD: (ON PAGE 2)
-
-ITEM #1  LASERJET SERIES  4L,4P (74A)------------------------$44
-ITEM #2  LASERJET SERIES  1100 (92A)-------------------------$44
-ITEM #3  LASERJET SERIES  2 (95A)----------------------------$39
-ITEM #4  LASERJET SERIES  2P (75A)---------------------------$54 
-ITEM #5  LASERJET SERIES  5P,6P,5MP, 6MP (3903A)----------  -$44
-ITEM #6  LASERJET SERIES  5SI, 8000 (09A)--------------------$95
-ITEM #7  LASERJET SERIES  2100, 2200 (96A)-------------------$74
-ITEM #8  LASERJET SERIES  8100 (82X)-------------------------$115
-ITEM #9  LASERJET SERIES  5L/6L (3906A)----------------------$39
-ITEM #10 LASERJET SERIES  4V---------------------------------$95
-ITEM #11 LASERJET SERIES 4000 (27X)--------------------------$79
-ITEM #12 LASERJET SERIES 3SI/4SI (91A)-----------------------$54
-ITEM #13 LASERJET SERIES 4, 4M, 5,5M-------------------------$49
-ITEM #13A LASERJET SERIES 5000 (29X)-------------------------$125
-ITEM #13B LASERJET SERIES 1200-------------------------------$59
-ITEM #13C LASERJET SERIES 4100-------------------------------$99
-ITEM #18   LASERJET SERIES 3100------------------------------$39
-ITEM #19 LASERJET SERIES 4500 BLACK--------------------------$79
-ITEM #20 LASERJET SERIES 4500 COLORS ------------------------$125
-
-HEWLETT PACKARD FAX (ON PAGE 2)
-
-ITEM #14 LASERFAX 500, 700 (FX1)----------$49
-ITEM #15  LASERFAX 5000,7000 (FX2)--------$64
-ITEM #16  LASERFAX (FX3)------------------$59
-ITEM #17  LASERFAX (FX4)------------------$54
-
-
-LEXMARK/IBM (ON PAGE 3)
-
-OPTRA 4019, 4029 HIGH YIELD---------------$89
-OPTRA R, 4039, 4049 HIGH YIELD-----------$105
-OPTRA E310.312 HIGH YIELD----------------$79
-
-OPTRA E-----------------------------------$59
-OPTRA N----------------------------------$115
-OPTRA S----------------------------------$165
-OPTRA T----------------------------------$195
-OPTRA E310/312---------------------------$79
-
-
-EPSON (ON PAGE 4)
-
-ACTION LASER 7000,7500,8000,9000----------$105
-ACTION LASER 1000,1500--------------------$105
-
-
-CANON PRINTERS (ON PAGE 5)
-
-PLEASE CALL FOR MODELS AND UPDATED PRICES
-FOR CANON PRINTER CARTRIDGES
-
-PANASONIC (0N PAGE 7)
-
-NEC SERIES 2 MODELS 90 AND 95----------$105
-
-APPLE (0N PAGE 8)
-
-LASER WRITER PRO 600 or 16/600------------------$49 
-LASER WRITER SELECT 300,320,360-----------------$74
-LASER WRITER 300 AND 320------------------------$54
-LASER WRITER NT, 2NT----------------------------$54
-LASER WRITER 12/640-----------------------------$79
-
-CANON FAX (ON PAGE 9)
-
-LASERCLASS 4000 (FX3)---------------------------$59
-LASERCLASS 5000,6000,7000 (FX2)-----------------$54
-LASERFAX 5000,7000 (FX2)------------------------$54
-LASERFAX 8500,9000 (FX4)------------------------$54
-
-CANON COPIERS (PAGE 10)
-
-PC 3, 6RE, 7 AND 11 (A30)---------------------$69
-PC 300,320,700,720,760,900,910,920(E-40)------$89
-
-
-90 DAY UNLIMITED WARRANTY INCLUDED ON ALL PRODUCTS.
-
-ALL TRADEMARKS AND BRAND NAMES LISTED ABOVE ARE PROPERTY OF THE 
-RESPECTIVE HOLDERS AND USED FOR DESCRIPTIVE PURPOSES ONLY.
+-- 
+Revolutions do not require corporate support.
