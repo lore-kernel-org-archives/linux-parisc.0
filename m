@@ -1,18 +1,18 @@
 From: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: copy_user_page_asm suggested 64bit improvment [Was: [parisc-linux]
 	clear user page test]
-Date: Mon, 27 Dec 2004 10:40:49 +0000
-Message-ID: <41CFE6B1.6010707@tiscali.be>
-References: <418A80E8000124B5@mail-6-bnl.tiscali.it>
-	<20041227073654.GI29492@colo.lackof.org>
+Date: Mon, 27 Dec 2004 17:34:27 +0000
+Message-ID: <41D047A3.4030205@tiscali.be>
+References: <418A80E8000124B5@mail-6-bnl.tiscali.it>	<20041227073654.GI29492@colo.lackof.org>
+	<41CFE6B1.6010707@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
 Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041227073654.GI29492@colo.lackof.org>
+In-Reply-To: <41CFE6B1.6010707@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,149 +25,78 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
 
-Grant Grundler wrote:
-> On Tue, Dec 21, 2004 at 02:37:47PM +0100, Joel Soete wrote:
-> 
->>Hello all,
+Joel Soete wrote:
 > 
 > 
-> Joel,
-> I trim your postings to only include the parts I need to respond to.
-> Could you please do the same?
+> Grant Grundler wrote:
 > 
-Apologies, I would just like to be as detailed as possible for the others who didn't follow our previous mail exchange before :-(
-
-> I hate having to scroll down pages of stuff to get to your comment.
-> That's probably why no one else responded.
-> 
-I understand that make stuff too noisy
-
-> 
-> 
->>As promised, here is a cleaner (?)  patch:
->>--- arch/parisc/kernel/pacache.S.Orig	2004-12-20 08:28:23.000000000 +0100
->>+++ arch/parisc/kernel/pacache.S	2004-12-20 14:49:35.000000000 +0100
->>@@ -295,7 +295,52 @@
->> 	.callinfo NO_CALLS
->> 	.entry
+>> On Tue, Dec 21, 2004 at 02:37:47PM +0100, Joel Soete wrote:
 >>
->>-	ldi		64, %r1
->>+	pdtlb		0(%r25)
->>+	pdtlb		0(%r26)
-> 
-> 
-> Sorry - I missed why the pdtlb needs to be added.
-> Could you explain?
-
-Sorry no, that was a question of mine:
-the previous inplementation of copy_user_page_asm() (between #if 0 ... #endif below in the code) started with:
 [...]
-         /* Purge any old translations */
+>>> * with original 2.6.10-rc3-pa8 running kernel
+>>> # grep "^user" k-loop1
+>>
+>>
+>> Please use "^sys" or "^real".
+>> "user" time is only number that should NOT change with this patch.
+>>
+> I will try to recover those info
+> 
+Those results was:
+k-loop1 (i.e. cvs 2.6.10-rc3-pa8)
+real	23m7.594s
+user	18m47.768s
+sys	4m2.585s
 
-         pdtlb           0(%r28)
-         pdtlb           0(%r29)
+real	22m53.506s
+user	18m47.400s
+sys	4m0.321s
 
-         ldi             64, %r1
-[...]
+real	22m54.599s
+user	18m47.492s
+sys	4m0.226s
 
-and we do the same in __clear_user_page_asm()
-[...]
-         /* Purge any old translation */
+real	22m53.410s
+user	18m48.205s
+sys	3m59.351s
 
-         pdtlb           0(%r28)
+k-loop2 (i.e. cvs 2.6.10-rc3-pa8 + patch without pdtlb)
+real	23m4.170s
+user	18m47.511s
+sys	4m0.654s
 
-[...]
-> 
-> Won't the pdtlb guarantee at least one trap per page copied?
-> I would hope we guarantee the D-TLB is "clean" when calling this function.
-> 
-Should be why it was removed but as far as I didn't find any explanation (that's obvious: that's nearly impossible to explain all 
-details of implementation ;-)
+real	22m59.651s
+user	18m51.133s
+sys	3m58.969s
 
-> 
->>+#ifdef __LP64__
->>+
->>+	ldi		32, %r1			/* PAGE_SIZE/128 == 32 */
->>+
->>+1:	ldd		0(%r25), %r19
->>+	ldd		8(%r25), %r20
->>+	ldd		16(%r25), %r21
->>+	ldd		24(%r25), %r22
->>+	std		%r19, 0(%r26)
->>+	std		%r20, 8(%r26)
-[...]
-> 
-> This looks good.
-> 
-> PA2.0 can retire 2 loads and 2 stores per cycle IFF there are no dependencies.
-> can be executed in one cycle.
-> 
-> That means we want something like this:
-> 
-> +1:	ldd		0(%r25), %r19
-> +	ldd		8(%r25), %r20
-> +	ldd		16(%r25), %r21
-> +	ldd		24(%r25), %r22
-> +	std		%r19, 0(%r26)
-> +	std		%r20, 8(%r26)
-> +	ldd		32(%r25), %r19
-> +	ldd		40(%r25), %r20
-[...]
-> +	ldo		128(%r25), %r25
-> +	std		%r21, 112(%r26)
-> +	std		%r22, 120(%r26)
-> +	ADDIB>		-1, %r1, 1b
-> +	ldo		128(%r26), %r26
-> ...
-> 
-> [ Note that I've moved the "ldo" around as well!]
-> 
-> More distance between the "ldd %rX" and the corresponding
-> "std %rX" is generally a good thing.
-> This routine could use more registers in the loop to get more "distance".
-Ok that was another possibility: I trust that we can use r23, r24 as far as:
-     r23-r26: these are arg3-arg0, i.e. you can use them if you
-         don't care about the values that were passed in anymore.
+real	23m0.391s
+user	18m50.908s
+sys	3m59.588s
 
-but not more of r3-r18 because:
-r3-r18,r27,r30 need to be saved and restored. r3-r18 are just
-     general purpose registers. [...]
+real	22m59.401s
+user	18m51.090s
+sys	3m59.673s
 
-> 
-> It costs us 1 cycle to save two registers on the stack.
-> Once the data is in L1-Cache, IFF the CPU needs more than one cycle
-> to retire successive loads, we gain several cycles assuming additional
-> register pairs are used multiply times per loop.
-Well that (cache management) is still far beyond my skill :-(
+k-loop3 (i.e. cvs 2.6.10-rc3-pa8 + full patch)
+real	23m28.521s
+user	18m53.815s
+sys	3m57.967s
 
-[...]
->>-	extrd,u		%r26,56,32, %r26		/* convert phys addr to tlb insert format */
-...
->>+	extrd,u		%r26,56,32, %r26	/* convert phys addr to tlb insert format */
-> 
-> Please post white space changes as seperate patches.
-> 
-oops my bad (apologies)
-> 
-[...]
->>* with original 2.6.10-rc3-pa8 running kernel
->># grep "^user" k-loop1
-> 
-> Please use "^sys" or "^real".
-> "user" time is only number that should NOT change with this patch.
-> 
-I will try to recover those info
-> 
-[...]
-> 
->>So the main interest is to reduce the number of clock ticks :-)
-> 
-> 
-> Yes. :^)
-> 
-Thanks for your patience and relevant remarks, I will come back we more material soon ;-)
+real	23m32.696s
+user	18m54.045s
+sys	3m58.598s
 
-Joel
+real	23m28.981s
+user	18m54.774s
+sys	3m58.128s
+
+real	23m30.631s
+user	18m54.405s
+sys	3m58.974s
+
+
+hth,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
