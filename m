@@ -1,29 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A6452482A
-	for <parisc-linux@parisc-linux.org>; Tue, 21 Aug 2001 01:20:29 -0600 (MDT)
-Message-Id: <200108210718.BAA21014@puffin.external.hp.com>
-To: Helge Deller <deller@gmx.de>
+	by dsl2.external.hp.com (Postfix) with ESMTP id B558A482A
+	for <parisc-linux@parisc-linux.org>; Tue, 21 Aug 2001 01:55:46 -0600 (MDT)
+Message-Id: <200108210753.BAA21158@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Turn off CONFIG_PCI 
-In-Reply-To: Message from Helge Deller <deller@gmx.de>
-   of "Sun, 19 Aug 2001 00:59:41 +0200." <20010818230140.3B894482A@dsl2.external.hp.com>
-Date: Tue, 21 Aug 2001 01:18:38 -0600
+Subject: Re: [parisc-linux] iotree thoughts 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Tue, 21 Aug 2001 08:09:53 BST." <20010821080953.B12638@parcelfarce.linux.theplanet.co.uk>
+Date: Tue, 21 Aug 2001 01:53:26 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Helge Deller wrote:
-> Machines with a PA8XXX CPU don't have any LASI/GSC devices and would _always_
-> HPMC without PCI support.
+Matthew Wilcox wrote:
+> I discussed this with Ted Ts'o at OLS.  The difficulty is that there's
+> a fair bit of arch-independent code which does (example taken from serial.c):
+> 
+> static _INLINE_ unsigned int serial_in(struct async_struct *info, int offset)
+....
+> so either we add the nasty:
+> 
+>         default:
+> #if defined(CONFIG_PCI) || defined(CONFIG_ISA)
+>                 return inb(info->port + offset);
+> #else
+>                 BUG();
+> #endif
 
-Later K-class models have no PCI (except "card-mode Dino add-on cards)
-and PA2.0 CPU's.
+The ifdef is only once in that source file.
 
-> So I still think it is better to panic() with a nice message 
+> or we just make inb() BUG().
 
-Better to just not link if the kernel configuration permits a driver to get
-included which needs inb/outb functions. We should be able to catch stuff
-like this at link time.
+The problem is serial.c is written for x86 arch and wasn't ported
+cleanly for other arches. Makeing inb() BUG() allows sloppy
+porting.
+
+
+> Only if they're called.  The majority of places where these functions
+> exist can provably never be called.  The others probably won't be :-)
+
+I don't bet on "probably".
+
+If the kernel is designed to not link when a dependency is not met,
+I can find problems much faster when they arise. Having to build/reboot
+to find porting/coding issues seems harder than it needs to be.
 
 grant
 
