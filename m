@@ -1,26 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B6F614A19
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 15:01:18 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14VhJl-0004kK-00; Wed, 21 Feb 2001 15:01:01 -0700
-Date: Wed, 21 Feb 2001 15:01:01 -0700
-From: Matthew Wilcox <matthew@wil.cx>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Grant Grundler <grundler@cup.hp.com>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Prefetch macros for PA-RISC
-Message-ID: <20010221150101.N31164@parcelfarce.linux.theplanet.co.uk>
-References: <200102211940.LAA17629@milano.cup.hp.com> <E14VgwR-0002nT-00@the-village.bc.nu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E14VgwR-0002nT-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Wed, Feb 21, 2001 at 09:36:54PM +0000
-Sender: <willy@www.linux.org.uk>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B54244A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 17:23:46 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA14675;
+	Thu, 22 Feb 2001 11:23:41 +1100
+Date: Thu, 22 Feb 2001 11:23:41 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+Cc: PL <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Warnings compiling the CVS kernel
+In-Reply-To: <3A93ED8E.E33833CF@neuronet.pitt.edu>
+Message-ID: <Pine.LNX.4.21.0102221120430.14557-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Feb 21, 2001 at 09:36:54PM +0000, Alan Cox wrote:
-> Excellent, our proposed list walking uses kind of depend on being able
-> to prefetch off the end of lists and stuff. Also I assume its prefetching a
-> cache line and the prefetch for write prefetches it exclusive ?
+On Wed, 21 Feb 2001, Rafael E. Herrera wrote:
 
-Yes.
+> Alan Modra wrote:
+> > On Wed, 21 Feb 2001, Rafael E. Herrera wrote:
+> > > The compilation succeeds but the boot will crash here:
+> > >
+> > > [...]
+> > > POSIX conformance testing by UNIFIX
+> > 
+> > Yeah, same result here (except I get a reboot).  I'm not sure yet whether
+> > this is due to bugs in gcc or the kernel.
+> 
+> Let me know I there is something I can try. Thanks
+
+Seems to be a kernel problem, or at least not a new gcc problem.  I dug
+out an old gcc, and got the same results with yesterday's kernel sources.
