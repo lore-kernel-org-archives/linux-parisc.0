@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 62CBC482E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Dec 2002 00:23:35 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by smtp-out.tiscali.be with esmtp (Tiscali)
-	id 18OC4g-0004EJ-00
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Dec 2002 08:23:30 +0100
-Date: Tue, 17 Dec 2002 08:22:58 +0100
-Message-ID: <3DED9BBD0000213E@ocpmta7.freegates.net>
-In-Reply-To: <1040061866.13786.74.camel@irongate.swansea.linux.org.uk>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 99E2B482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Dec 2002 01:22:51 -0700 (MST)
+Date: Tue, 17 Dec 2002 09:22:19 +0100
+Message-ID: <3DED9BBD0000215E@ocpmta7.freegates.net>
+In-Reply-To: <20021216172906.B9994@parcelfarce.linux.theplanet.co.uk>
 From: jsoe0708@tiscali.be
-To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: YA pb with PCI IDE (my merge 2.4.21-pre1)
+To: "Matthew Wilcox" <willy@debian.org>,
+	"Alan Cox" <alan@lxorguk.ukuu.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] Dropping ide controler in 'Native' mode?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,23 +23,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Hi Willy,
 >
->On Mon, 2002-12-16 at 17:06, jsoe0708@tiscali.be wrote:
->> Hi Alan,
->> 
->> Worried about ext3 pb, I try to merge parisc kernel 2.4.20-pa14 with
-2.4.21-pre1.
->> This merge seems to works fine on a b180l+ (without pci devices).
->> But still boot twice (??) and crash on a b2k with an ide cdrom.
->
->I've sent the PCI fixup patch to linux-kernel. Depending upon how the
->PA-RISC system interfaces to the IDE controller you may also need
->platform specific fixups or to drop the chip into Native mode.
->
-Can somebody tell me if it is possible (if yes how)?
+>You mean the "IDE but no disks" patch:
+>http://www.uwsg.iu.edu/hypermail/linux/kernel/0212.2/0105.html ?
 
-Thanks in advance,
+I apply it (by hand) and it works:
+"...
+Uniform Multi-Platform E-IDE driver Revision: 7.00beta-2.4
+ide: Assuming 33MHz system bus speed for PIO modes; override with idebus=3D=
+xx
+NS87415: IDE controller at PCI slot 00:0e.0
+NS87415: chipset revision 3
+NS87415: not 100% native mode: will probe irqs later
+    ide0: BM-DMA at 0x0900-0x0907, BIOS settings: hda:pio, hdb:pio
+    ide1: BM-DMA at 0x0908-0x090f, BIOS settings: hdc:pio, hdd:pio
+hda: LTN485S, ATAPI CD/DVD-ROM drive
+ide0 at 0x1f0-0x1f7,0x3f6 on irq 103
+hda: ATAPI 48X CD-ROM drive, 120kB Cache
+Uniform CD-ROM driver Revision: 3.12
+...
+
+palx2000:~# uname -a
+Linux palx2000 2.4.21-pre1-pa14 #2 Tue Dec 17 08:44:14 CET 2002 parisc un=
+known
+unknown GNU/Linux"
+
+Thanks all,
     Joel
+
 
 
 *************************************************************************=
