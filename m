@@ -1,22 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E9AEE482E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 09:20:40 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id IAA03842
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 08:20:30 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gBIGKOJ02593;
-	Wed, 18 Dec 2002 10:20:25 -0600
-Message-Id: <200212181620.gBIGKOJ02593@localhost.localdomain>
-To: parisc-linux@lists.parisc-linux.org
-Cc: James.Bottomley@SteelEye.com
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6DB15482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 09:31:51 -0700 (MST)
+Date: Wed, 18 Dec 2002 08:34:51 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: James Bottomley <James.Bottomley@steeleye.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 fix for user level page fault problems
+Message-ID: <20021218163451.GB21551@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200212181620.gBIGKOJ02593@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed ;
-	boundary="==_Exmh_-17170343740"
-Date: Wed, 18 Dec 2002 10:20:24 -0600
-From: James Bottomley <James.Bottomley@steeleye.com>
-Subject: [parisc-linux] 2.5 fix for user level page fault problems
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200212181620.gBIGKOJ02593@localhost.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,44 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multipart MIME message.
+In reference to a message from James Bottomley, dated Dec 18:
+> It seems that going from 2.4 to 2.5 there was an over zealous removal of the 
+> check signals return path.  The problem is that if a user application takes a 
+> page fault, that can result in a signal being posted (specifically SEGV for 
+> illegal memory access).  If we never check the signals, the instruction is 
+> retried and re-faults ad infinitum (well actually, it seems to terminate with 
+> an unaligned instruction trap in this case after a few hundred faults).
 
---==_Exmh_-17170343740
-Content-Type: text/plain; charset=us-ascii
+thanks James. I've commited this to our 2.5 tree. We had fixed this in
+2.4 a couple of weeks ago but I forgot to commit this to 2.5 too.
 
-It seems that going from 2.4 to 2.5 there was an over zealous removal of the 
-check signals return path.  The problem is that if a user application takes a 
-page fault, that can result in a signal being posted (specifically SEGV for 
-illegal memory access).  If we never check the signals, the instruction is 
-retried and re-faults ad infinitum (well actually, it seems to terminate with 
-an unaligned instruction trap in this case after a few hundred faults).
-
-The attached path makes signal posting on page fault work again
-
-James
-
-
---==_Exmh_-17170343740
-Content-Type: text/plain ; name="tmp.diff"; charset=us-ascii
-Content-Description: tmp.diff
-Content-Disposition: attachment; filename="tmp.diff"
-
-===== entry.S 1.8 vs edited =====
---- 1.8/arch/parisc/kernel/entry.S	Sun Nov 24 17:36:53 2002
-+++ edited/entry.S	Mon Dec 16 22:09:59 2002
-@@ -944,11 +944,11 @@
- 	ldo		-16(%r30),%r29	/* Reference param save area */
- #endif
- 
--	ldil		L%intr_restore, %r2
-+	ldil		L%intr_check_sig, %r2
- 	copy		%r25, %r16	/* save pt_regs */
- 
- 	b		handle_interruption
--	ldo		R%intr_restore(%r2), %r2
-+	ldo		R%intr_check_sig(%r2), %r2
- 
- 
- 	/*
-
---==_Exmh_-17170343740--
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
