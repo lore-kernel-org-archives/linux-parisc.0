@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 239A64847
-	for <parisc-linux@parisc-linux.org>; Tue, 15 Oct 2002 05:28:20 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id BDE674829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 06:26:39 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 181Ps0-000719-00; Tue, 15 Oct 2002 12:28:16 +0100
-Date: Tue, 15 Oct 2002 12:28:16 +0100
+	id 181QmR-0007le-00; Tue, 15 Oct 2002 13:26:35 +0100
+Date: Tue, 15 Oct 2002 13:26:35 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] J2240?
-Message-ID: <20021015122816.C8660@parcelfarce.linux.theplanet.co.uk>
-References: <OE58WPj5T9S6Fmy332G000068d3@hotmail.com> <20021015033545.56378.qmail@web12506.mail.yahoo.com>
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Dump driver: step by step
+Message-ID: <20021015132635.D8660@parcelfarce.linux.theplanet.co.uk>
+References: <3DABF865.8224BF5@admin.france.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021015033545.56378.qmail@web12506.mail.yahoo.com>; from derekengelhaupt@rocketmail.com on Mon, Oct 14, 2002 at 08:35:45PM -0700
+In-Reply-To: <3DABF865.8224BF5@admin.france.hp.com>; from bruno_vidal@hpfrcu03.france.hp.com on Tue, Oct 15, 2002 at 01:13:41PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,14 +25,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Oct 14, 2002 at 08:35:45PM -0700, Derek Engelhaupt wrote:
-> I am looking at a pretty good deal on a J2240 Workstation and was
-> wondering if the Dino/Cujo conflict was resolved that I found in the
-> archives?  I only see like 2 folks registered in the hardware database
+On Tue, Oct 15, 2002 at 01:13:41PM +0200, Bruno Vidal wrote:
+> 	Hi.
+> I've succeded to read with iodc, and at the right place (good news no).
+> Now I'll try to write. But I prefer to do it on another disk.
+> So I've found an old scsi SE. I've plugged it. The driver is able
+> to find the hpa, retrieve the iodc ENTRY_INIT without any pb.
+> But when calling the ENTRY_INIT with INIT_MOD_DEV or only INIT_DEV
+> it fail with return code -9. But there is a little pb, I don't
+> have this return code in documentation. If I believe the the 
+> "parisc 1.1 IO firmware Architecture".
+> I didn't find it for parisc 2.0 (on 
+> http://www.parisc-linux.org/documentation/index.html). 
+> So if someone know where I can find it.
 
-Umm.. What Dino/Cujo conflict?  ;-)  C360, C240 & C200 have one Dino &
-one Cujo.  J2240 has 2 Dinos & 1 Cujo.  So it _ought_ to work.  Maybe the
-serial ports might be back-to-front, but that would probably be solvable.
+	-9	Cannot locate a console device or boot device
+		The search could not locate a console device or
+		boot device on the module. Returned
+		only by options ARG1=2 and ARG1=3.
+		CONDITIONAL. Must be used if the search options are provided.
 
 -- 
 Revolutions do not require corporate support.
