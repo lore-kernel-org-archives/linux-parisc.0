@@ -1,14 +1,13 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] linux-2.6.10-pa1 panic on C360 in SCSI driver
-Date: Wed, 29 Dec 2004 22:03:45 +0000
-Message-ID: <20041229220345.GF18338@parcelfarce.linux.theplanet.co.uk>
+Date: Wed, 29 Dec 2004 16:37:52 -0600
+Message-ID: <1104359873.5298.25.camel@mulgrave>
 References: <200412260504.40205.vapier@gentoo.org>
 	<200412291419.36568.vapier@gentoo.org>
 	<1104355710.5298.16.camel@mulgrave>
 	<200412291649.29411.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
+Content-Type: text/plain
 Cc: parisc-linux@parisc-linux.org
 To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
@@ -23,26 +22,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Dec 29, 2004 at 04:49:29PM -0500, Mike Frysinger wrote:
-> On Wednesday 29 December 2004 04:28 pm, James Bottomley wrote:
-> > So now I'd like to see what this is ... it causes your nice ultra3 drive
-> > only to work at async speeds (about 4MB/s).
-> 
-> i'll be the first to admit that i dont know much about scsi ... but even 
-> though my drive is an ultra3, i thought my built in C360 controller didnt 
-> support that ?
+On Wed, 2004-12-29 at 16:49 -0500, Mike Frysinger wrote:
+> Current DV: sense = 70  5
+> ASC=24 ASCQ= 0
+> Raw sense data:0x70 0x00 0x05 0x00 0x00 0x00 0x00 0x18 0xff 0xff 0xff
+> 0xff 0x24 0x00 0x00 0xc0 0x00 0x08 0x00 0xff 0xff 0xff 0xff 0xff 0x00
+> 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
 
-That's right, but your drive is capable of FAST-40 and the controller is capable of FAST-20.  They should negotiate a FAST-20 (40MB/s) transfer contract, but
-because the drive is doing weird stuff, it keeps falling back ... until it
-reaches async, which is just about the slowest contract defined.
+This means invalid request, illegal field in cdb and identifies the 8th
+field as the illegal one (that's the length of the write buffer
+request).  So the thing told us that it supports a write buffer of
+length 255 and then tells us our request is too long when we try to
+write 255 bytes ... that seems about par for the course for this drive.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Could you try this patch, it halves the write buffer length.  That
+should tell us if this drive actually has one and just lies about the
+length, or lies about having one altogether.
+
+James
+
+===== drivers/scsi/scsi_transport_spi.c 1.21 vs edited =====
+--- 1.21/drivers/scsi/scsi_transport_spi.c	2004-12-06 14:51:40 -06:00
++++ edited/drivers/scsi/scsi_transport_spi.c	2004-12-29 16:36:21 -06:00
+@@ -637,6 +639,8 @@
+ 	len = 0;
+ 	if (sdev->ppr)
+ 		len = spi_dv_device_get_echo_buffer(sreq, buffer);
++
++	len = len/2;
+ 
+ 	if (len == 0) {
+ 		SPI_PRINTK(sdev->sdev_target, KERN_INFO, "Domain Validation skipping write tests\n");
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
