@@ -1,48 +1,78 @@
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id UAA14464
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 20:16:20 -0700
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by atlrel1.hp.com (Postfix) with ESMTP id 14E1A9DB
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 22:18:31 -0500 (EST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA26713;
-	Wed, 22 Nov 2000 14:03:07 +1100
-Date: Wed, 22 Nov 2000 14:03:07 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: "H . J . Lu" <hjl@valinux.com>
-Cc: Ulrich Drepper <drepper@cygnus.com>, John Marvin <jsm@udlkern.fc.hp.com>,
-        parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com,
-        binutils@sourceware.cygnus.com
-Subject: Re: [parisc-linux] Use of the EI_OSABI field
-In-Reply-To: <20001121165327.A12804@valinux.com>
-Message-ID: <Pine.LNX.4.21.0011221258270.16860-100000@front.linuxcare.com.au>
+Received: from boispop1.bois.uswest.net (boispop1.bois.uswest.net [207.108.224.1])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA16461
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 22:58:34 -0700
+Sender: rbrad@puffin.external.hp.com
+Message-ID: <3A1B6D93.3B7D2474@uswest.net>
+Date: Tue, 21 Nov 2000 22:54:11 -0800
+From: Ryan Bradetich <rbradetich@uswest.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Grant Grundler <grundler@cup.hp.com>
+CC: Matthew Wilcox <matthew@wil.cx>, parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CVS linux Vs. -test10
+References: <200011212124.NAA20426@milano.cup.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 21 Nov 2000, H . J . Lu wrote:
+Grant Grundler wrote:
 
-> On Wed, Nov 22, 2000 at 11:13:29AM +1100, Alan Modra wrote:
-> > 
-> > > Anyway, the ABI value is zero unless you implement ELF extensions.
-> > 
-> > Exactly what is an "ELF extension"?  Anything outside gABI or
-> 
-> ELF extension is something whose interpretation is not documented in
-> neither gABI nor psABI. HP's old ELF is a good example since it didn't
-> implement DT_INIT/DT_FINI, but added DT_INIT_ARRARY/DT_FINI_ARRAY. A
-> normal ELF tool will have a hard time to interpret those fields and
-> their values.
+> Matthew Wilcox wrote:
+> ...
+> > Someone (probably me) sends him a patch.  He told me at the Toronto
+> > show that he was quite happy to apply anything that only touched those
+> > two directories. (oh, and drivers/gsc wouldn't be a problem either).
+> > Can I just check that no-one wants to rename drivers/gsc again?  :-)
+>
+> Hi Mathew,
+> I don't and it's a good question.
+> I would like a few files moved:
+>
+> arch/parisc/kernel/ccio-dma.c    -> drivers/gsc/ccio-dma.c
+> arch/parisc/kernel/ccio-rm-dma.c -> drivers/gsc/ccio-rm-dma.c
 
-Neither you nor Ulrich have responded to John's point that the IA64 psABI
-states
-  "The e_ident[EI_OSABI] value identifies the operating system and ABI to
-   which the object is targeted"
+Grant,
 
-Granted, this is only in a processor specific ABI, but it does flatly
-contradict your assertions that the purpose of EI_OSABI is to flag the
-presense of ELF extensions.
+Do you really want to merget the ccio-rm-dma.c file into Linus's tree?
+It is just a reference file used to construct the real ccio-dma.c file ... I
+don't believe it is referenced anywhere.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+I'll double check this in the morning.
+
+- Ryan
+
+
+>     ccio will *always* be associated with a GSC bus since that's
+>     the secondary bus. And ccio supports devices below dino.c which
+>     already lives in drivers/gsc.
+>
+> arch/parisc/kernel/lba_pci.c     -> drivers/ropes/lba_pci.c
+> arch/parisc/kernel/sba_iommu.c   -> drivers/ropes/sba_iommu.c
+> arch/parisc/kernel/iosapic.c     -> drivers/ropes/iosapic.c
+>
+>     lba/sba code is equivalent to dino/ccio code for another set
+>     of platforms. And long term, I'm certain iosapic.c does not
+>     belong under arch/parisc. I can do this move if there are no
+>     major objections.
+>
+> Any reason why we couldn't do these moves *after* you submit a patch?
+>
+> FWIW, here are issues I see with merging IA64 iosapic code with mine:
+> o iosapic "discovery" (I invented register_iosapic() interface for parisc)
+> o parisc PDC calls (initialization)
+> o interrupt policy decisions (eg EOI generation and picking a CPU)
+> o I don't have time to do it in the near future.
+>
+> Folks working on IA64 stuff inside HP need to think about:
+> (a) if they want to do the merge any time soon
+> (b) which iosapic.c they want to start with
+> (c) where the final version should live
+>
+> thanks,
+> grant
+>
+> Grant Grundler
+> Unix Systems Enablement Lab
+> +1.408.447.7253
+>
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
