@@ -1,21 +1,16 @@
-From: Markus Schaber <markus.schaber@student.uni-ulm.de>
+From: n0ano@n0ano.com
 Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Date: Wed, 26 Mar 2003 13:32:39 +0100
-Message-ID: <20030326133239.7d4e8bd7.markus.schaber__44459.2427033514$1416622333$gmane$org@student.uni-ulm.de>
-References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int>
-	<20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk>
-	<15999.23084.647629.868320@napali.hpl.hp.com>
-	<20030326100746.GA21703@charrue.esiee.fr>
-	<20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
-	<20030326120919.GA22782@charrue.esiee.fr>
+Date: Wed, 26 Mar 2003 09:25:35 -0700
+Message-ID: <20030326162535.GL873__41497.52777671$1416622334$gmane$org@tlaloc.n0ano.com>
+References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int> <20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk> <15999.23084.647629.868320@napali.hpl.hp.com> <20030326100746.GA21703@charrue.esiee.fr> <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: m.delahaye@esiee.fr, davidm@hpl.hp.com, willy@debian.org,
-	adriano@satec.es, linux-ia64@linuxia64.org,
+Content-Type: text/plain; charset=us-ascii
+Cc: Matthieu Delahaye <m.delahaye@esiee.fr>, davidm@hpl.hp.com,
+	willy@debian.org, adriano@satec.es, linux-ia64@linuxia64.org,
 	parisc-linux@parisc-linux.org
-To: m.delahaye@esiee.fr (Matthieu Delahaye)
+To: Markus Schaber <markus.schaber@student.uni-ulm.de>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030326120919.GA22782@charrue.esiee.fr>
+In-Reply-To: <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -26,29 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Well, Itanium's can sort of run any X86 software.
 
-m.delahaye@esiee.fr (Matthieu Delahaye) wrote:
+As David was alluding to there are two ways you can boot an Itanium
+box, either with an IA32 kernel (a current Pentium based OS) or an
+IA64 kernel.
 
-> > [...] 
-> > As far as I know, the PA-Risc instruction mapping is done with lots
-> > of software help. The concept is a bit like JIT-Compilers in Java.
-> > (It is easier to do this when having a RISC code with equal
-> > instruction length compared to ugly X86 code.) As long as my
-> > knowledge is correct, you therefore cannot run any PA-RISC OS
-> > directly on the Hardware, but you can run PA-RISC Software in any OS
-> > that supports the instruction mapping, maybe one can even run a
-> > PA-RISC OS inside a virtual PA-RISC Machine on Itaniums. (However I
-> > don't know any such VM.)
+If you boot an IA32 kernel the CPU will behave as an exact Pentium
+processor and execute all Pentium code.  The system will be slower
+than comparable Pentium processors but it should work exactly the
+same.  (Notice that I say `should', I've never done this, there could
+be chipset issues, I don't know of anyone who has done this but it
+should work.)
+
+If you boot an IA64 kernel then the CPU can execute IA32 user mode
+programs.  This means you can't run IA32 device drivers and it also
+means you need a fair amount of kernel support in order to run an
+IA32 application so the statement `without further software support'
+is a little inaccurate.
+
+On Wed, Mar 26, 2003 at 12:51:40PM +0100, Markus Schaber wrote:
+>
+>...
 > 
-> AFAIK, your knowledge correspond to what I know.
-[...]
-> But perhaps I didn't understand and you told me you already try it
-> following David's explanation ?
+> However, Itanium chips support X86 Emulation in Hardware, so they can
+> run any X86 Software without further software support (however, the
+> software is limited to the X86 capabilities regarding Memory Capacity
+> etc., and it is _really slow_, every P3/P4/Athlon at the same MHz is
+> uncomparable.)
+> 
+>...
 
-I didn't want to argue against you, because I think you're right. :-)
-
-I just wanted to clarify the difference between both "legacy"
-Architectures that the Itanium claims to support.
-
-Markus
+-- 
+Don Dugger
+"Censeo Toto nos in Kansa esse decisse." - D. Gale
+n0ano@n0ano.com
+Ph: 303/447-2201
