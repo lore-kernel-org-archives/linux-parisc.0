@@ -1,35 +1,63 @@
-Received: from ns2.imedia.net (mail.imedia.net [209.247.154.4])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id NAA06528
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 13:34:24 -0700
-Message-Id: <5.0.0.25.0.20001121122802.027935d0@mail.webcash.com>
-Date: Tue, 21 Nov 2000 12:30:12 -0800
-To: Paul Bame <bame@noam.fc.hp.com>
-From: Kailashnath V Rampure <kailasr@webcash.com>
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA07807
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 14:23:24 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id 53D021E8
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 13:25:38 -0800 (PST)
+Message-Id: <200011212124.NAA20426@milano.cup.hp.com>
+To: Matthew Wilcox <matthew@wil.cx>
 Cc: parisc-linux@puffin.external.hp.com
-In-Reply-To: <E13wCSU-0000Y3-00@noam.fc.hp.com>
-References: <Your message of "Wed, 15 Nov 2000 15:41:55 PST." <5.0.0.25.0.20001115152923.00a603d0@mail.webcash.com>
- <5.0.0.25.0.20001115152923.00a603d0@mail.webcash.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: [parisc-linux] Apache package.
+Subject: Re: [parisc-linux] CVS linux Vs. -test10 
+In-reply-to: Your message of "Tue, 21 Nov 2000 11:34:32 PST."
+             <20001121113432.B883@parcelfarce.linux.theplanet.co.uk>
+Date: Tue, 21 Nov 2000 13:24:31 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Paul,
+Matthew Wilcox wrote:
+...
+> Someone (probably me) sends him a patch.  He told me at the Toronto
+> show that he was quite happy to apply anything that only touched those
+> two directories. (oh, and drivers/gsc wouldn't be a problem either).
+> Can I just check that no-one wants to rename drivers/gsc again?  :-)
 
-I have installed Apache + mod_ssl + mod_perl on HP A Class server.
-I need help on to change the server looking fort bootpd server and put the 
-IP address on the system. Also where can I find the ftp client for linux .
+Hi Mathew,
+I don't and it's a good question.
+I would like a few files moved:
 
-Regards
-Kalas
+arch/parisc/kernel/ccio-dma.c    -> drivers/gsc/ccio-dma.c
+arch/parisc/kernel/ccio-rm-dma.c -> drivers/gsc/ccio-rm-dma.c
 
-At 04:59 PM 11/15/00 -0700, Paul Bame wrote:
->= I tried to build apache_1.3.12 on HP a class server. But I have error. I
->= have tried to check the site
->= ftp://ftp.debian.org/debian/dists/unstable/main/binary-hppa/
->= I could not find one. I found some apache-doc etc.
->
->We are still working on some kernel features which are required to
->support Apache (system 5 shared memory).
->
->         -P
+    ccio will *always* be associated with a GSC bus since that's
+    the secondary bus. And ccio supports devices below dino.c which
+    already lives in drivers/gsc.
+
+arch/parisc/kernel/lba_pci.c     -> drivers/ropes/lba_pci.c
+arch/parisc/kernel/sba_iommu.c   -> drivers/ropes/sba_iommu.c
+arch/parisc/kernel/iosapic.c     -> drivers/ropes/iosapic.c
+
+    lba/sba code is equivalent to dino/ccio code for another set
+    of platforms. And long term, I'm certain iosapic.c does not
+    belong under arch/parisc. I can do this move if there are no
+    major objections.
+
+Any reason why we couldn't do these moves *after* you submit a patch?
+
+
+FWIW, here are issues I see with merging IA64 iosapic code with mine:
+o iosapic "discovery" (I invented register_iosapic() interface for parisc)
+o parisc PDC calls (initialization)
+o interrupt policy decisions (eg EOI generation and picking a CPU)
+o I don't have time to do it in the near future.
+
+Folks working on IA64 stuff inside HP need to think about:
+(a) if they want to do the merge any time soon
+(b) which iosapic.c they want to start with
+(c) where the final version should live
+
+thanks,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
