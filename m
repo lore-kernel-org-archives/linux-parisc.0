@@ -1,22 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 180F14855
-	for <parisc-linux@parisc-linux.org>; Tue,  2 Oct 2001 10:07:15 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15oS4f-0000Sn-00
-	for parisc-linux@parisc-linux.org; Tue, 02 Oct 2001 17:07:13 +0100
-Date: Tue, 2 Oct 2001 17:07:13 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011002170713.B31301@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] PCX-T' in hwdb
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B284483A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Oct 2001 10:44:47 -0600 (MDT)
+Message-Id: <200110021641.KAA07601@puffin.external.hp.com>
+To: Jurij Smakov <jurij@lokmail.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Mount segfaults and stuff 
+In-Reply-To: Message from Jurij Smakov <jurij@lokmail.net>
+   of "Tue, 02 Oct 2001 04:13:23 EDT." <200110020813.EAA31275@mail.lokmail.net>
+Date: Tue, 02 Oct 2001 10:41:08 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-in case anyone cares, i finally fixed the PCX-T' link in the hardware
-database.  i've only known about it for 18 months or so.. :-)
+Jurij Smakov wrote:
+> What is the part of parisc-linux project, which
+> needs immediate attention? ;-).
 
--- 
-Revolutions do not require corporate support.
+*sigh*. Lots of little stuff like floppy driver and hpux binary support.
+
+The TODO list is stale intentionally.
+We should be using http://bugs.parisc-linux.org.
+
+grant
