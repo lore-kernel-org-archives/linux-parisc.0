@@ -1,36 +1,18 @@
-Return-Path: <bame@hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D34FC484B
+Return-Path: <simmel@anymotion.de>
+Received: from mail.3d-boerse.de (port-212-202-156-103.reverse.qsc.de
+	[212.202.156.103])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E3489488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 11:06:16 -0700 (MST)
-Received: from smtp2.fc.hp.com (smtp.fc.hp.com [15.15.136.253])
-	by atlrel7.hp.com (Postfix) with ESMTP id 7B4071C02642
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 13:06:16 -0500 (EST)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.11.146.30])
-	by smtp2.fc.hp.com (Postfix) with ESMTP id 38B5A41E38A
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 11:06:16 -0700 (MST)
-Received: from fc.hp.com (paul.bame [10.66.2.7])
-	by ldl.fc.hp.com (Postfix) with ESMTP id B52DB1340A2
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 11:06:15 -0700 (MST)
-Received: from paul.bame (localhost [127.0.0.1])
-	by fc.hp.com (Postfix) with ESMTP id 8E4AC62C62
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 11:06:15 -0700 (MST)
-From: bame@hp.com
-Errors-To: bame@hp.com
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 jejb 
-In-Reply-To: Message from Grant Grundler <grundler@parisc-linux.org> of "Fri,
-	06 Feb 2004 10:50:38 MST." <20040206175038.GC20990@colo.lackof.org>
-References: <40218AE200000F67@ocpmta2.freegates.net>
-	<20040206175038.GC20990@colo.lackof.org>
-Date: Fri, 06 Feb 2004 11:06:14 -0700
-Sender: bame@hp.com
-Message-Id: <20040206180615.922C77381D@fc.hp.com>
-Reply-To: bame@hp.com
+	Fri,  6 Feb 2004 11:28:28 -0700 (MST)
+Message-ID: <00ed01c3ecdf$5a9fa560$8100a8c0@punk>
+From: "Jens Simmoleit" <simmel@anymotion.de>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <40218AE200001791@ocpmta2.freegates.net>
+Date: Fri, 6 Feb 2004 19:30:53 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Made it - Install GNOME on 712/80
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -40,9 +22,70 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> 
-> What does 00000000000600d0 point at?
-> Is that the boot loader?
+Hi list,
 
-Yes, it's where the kernel would return to if it ever returned, so
-probably palo's made the call to the kernel at that point.
+I made it, there was the package gnome-session missing (lokks like I missed
+that one, oops!)
+Also I made a dpkg-reconfigure setlocale to C (was with POSIX??)
+then I got into the profile and added export for locale and after that I
+changed the .xinitrc to gnome-session
+taaaadaaaaaa, works :-) at least I can login, superb....
+BTW, sawfish gnome looks nice, is there another gnome you can recommend?
+Also I'd be interested if it'S possible to better the performance of my gfx
+system, anybody out there with a few tricks?
+
+I'm so happy right now.......
+
+
+Greets,
+Simmel
+
+
+----- Original Message ----- 
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: "Jens Simmoleit" <simmel@anymotion.de>;
+<parisc-linux@lists.parisc-linux.org>
+Sent: Friday, February 06, 2004 5:12 PM
+Subject: RE: [parisc-linux] Additions - Install GNOME on 712/80
+
+
+> Hi Jens,
+>
+> >1. My mouse won't work too *argh*
+>
+> 2. that is why you couldn't login with your user (i presume not root) :)
+>
+> X absolutely need a mouse pointer :(
+>
+> iirc you should have this entry in your XF86config-4 file:
+> Section "InputDevice"
+>         Identifier      "Configured Mouse"
+>         Driver          "mouse"
+>         Option          "CorePointer"
+>         Option          "Device"                "/dev/psaux"
+>         Option          "Protocol"              "PS/2"
+> EndSection
+>
+> Check that /dev/psaux was well created, should look like:
+> # ll /dev/psaux
+> crw-------    1 root     root      10,   1 Mar 15  2002 /dev/psaux
+>
+> (if you build your own kernel check that its support is in the kernel)
+>
+>
+>  and that gpm is not running (would not disable X to start but well
+trouble
+> the behaviour of cursor).
+>
+> Hth,
+>     Joel
+>
+> PS: can you also mentioned which kernel are you using
+>
+> -------------------------------------------------------------------------
+> Tiscali ADSL: 12 mois à 29,50 ?/mois! L'Internet rapide, c'est pour tout
+> le monde.
+> http://reg.tiscali.be/default.asp?lg=fr
+>
+>
+>
