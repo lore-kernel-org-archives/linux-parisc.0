@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F36A5482B
-	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 23:37:33 -0700 (MST)
-Date: Mon, 5 Nov 2001 01:37:14 -0500 (EST)
-From: "Christopher C. Chimelis" <chris@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Randolph Chung <randolph@tausq.org>,
-	parisc-linux@parisc-linux.org, bcollins@debian.org
-Subject: Re: [parisc-linux] Re: hppa binutils/glibc updates
-In-Reply-To: <20011105024952.C4441@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69410482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Nov 2001 00:03:05 -0700 (MST)
+Message-Id: <200111050659.XAA24866@puffin.external.hp.com>
+To: Daniel Engstrom <5116@telia.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Some Questions... 
+In-Reply-To: Message from Daniel Engstrom <5116@telia.com>
+   of "Sun, 04 Nov 2001 22:28:24 +0100." <20011104222824.O2303@zaphod.halden.lillfab.se>
+Date: Sun, 04 Nov 2001 23:59:08 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +21,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 5 Nov 2001, Matthew Wilcox wrote:
+Daniel Engstrom wrote:
+> 3) String I/O implementation
+> The string I/O functions (insl/outsl and friends) are implemented in 
+> terms of inl/outl and so on. This means that the HPA switch code in 
+> arch/parisc/kernel/pci.c is executed once per word in the transfer.
+> If the pci_hba_data struct had entries for these the test would have 
+> been done outside of the loop.
 
-> ok, just make sure you get a disc attached to the narrow interface,
-> or you'll be limited to NFS... 64MB is fine.
+It doesn't matter. The cost (in cycles) to perform the read
+far exceeds any savings in cpu cycles getting rid of the switch
+will bring. I'm talking 500 or so cycles per IO port space read
+on a 400Mhz PA8500.
 
-Ok :-)  I'll see what I can muster this week.  We seem to be
-differential-poor drive-wise, so I don't think I'll have a problem getting
-a narrow drive :-)  Also, we have a few external units laying around that
-are all narrow, so I may just use one of those.
+Of course, you could measure inb() precisely with CR16 on *your* box
+(using EISA) since YMMV and I haven't done this in a while.
 
-C
+grant
