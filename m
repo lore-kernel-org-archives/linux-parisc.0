@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 32E43491B
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 04:55:38 -0600 (MDT)
-Date: Sat, 23 Aug 2003 12:55:35 +0300
-Subject: Re: [parisc-linux] Help: Need instruction sequence for gdb breakpoint
-To: Grant Grundler <grundler@parisc-linux.org>
-In-Reply-To: <20030823062139.GA20379@dsl2.external.hp.com>
-From: Thibaut VARENE <varenet@esiee.fr>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C39BC482E
+	for <parisc-linux@parisc-linux.org>; Sat, 23 Aug 2003 08:22:00 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 19qZHD-00006Q-QK
+	for parisc-linux@parisc-linux.org; Sat, 23 Aug 2003 15:21:59 +0100
+Date: Sat, 23 Aug 2003 15:21:59 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030823142159.GM18834@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Lev Assinovsky <LAssinovsky@algorithm.aelita.com>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Message-Id: <20030823105536.125F849C32@mail.esiee.fr>
+Subject: [parisc-linux] CVS mixups
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,32 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
--------------------
-> On Fri, Aug 22, 2003 at 09:13:37PM +0400, Lev Assinovsky wrote:
-> > Hi!
-> > 1. I meant just a hardcoded breakpoint (not hardware)
-> > Partially works just BREAK 4, 8. Though I need to do "jump" to=20
-next line=20
-> > to continue in gdb.
->=20
-> ah ok=20
-> > 2. gdb doesn't work with shared libraries explicitly loaded by=20
-program.
-> > Could you please point to anybody from HP team?
->=20
-> HP Team? Sorry but officially there is no HP parisc-linux team.
-> Most of us are interested in kernel hacking and less in
-> making gdb work.
->=20
-> > 3. What about ddd?
->=20
-> sorry - haven't looked at ddd.
->=20
+So... for the second time I messed up and committed 2.6 to the 2.4 tree.
+In my defence, this time we were trying the new style of imports so it's
+not too surprising I got something wrong (and nobody spotted the problem
+till too late...), but twice is too many.
 
-ddd is a GUI frontend to gdb...
+Short term fix: I'm going to merge the latest marcelo patch into our
+2.4 tree today.  Looks like that'll be 2.4.22-rc2.  That'll fix this
+cvs diff autogeneration breakage.
 
+Long term fix: I'm going to rename the linux tree to linux-2.4.  This will
+cause some disruption since everyone with a cvs tree checked out will have
+to mangle it to work again.  I'll make a script available in build-tools
+to mangle your tree for you.
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
-On vacation until Aug 25th
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
