@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 02C5D482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jul 2003 01:06:32 -0600 (MDT)
-Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
-	id 19fwdG-0005rs-00
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jul 2003 03:04:50 -0400
-Date: Fri, 25 Jul 2003 03:04:50 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030725070449.GB13017@systemhalted>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B3A39482B
+	for <parisc-linux@parisc-linux.org>; Fri, 25 Jul 2003 05:37:01 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19g0se-0006bI-5u; Fri, 25 Jul 2003 12:37:00 +0100
+Date: Fri, 25 Jul 2003 12:37:00 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Generic light-weight syscall.
+Message-ID: <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk>
+References: <20030725063739.GA13017@systemhalted>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="mYCpIKhGyMATD0i+"
-Subject: [parisc-linux] itlb miss handler optimizations!
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030725063739.GA13017@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,127 +25,55 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, Jul 25, 2003 at 02:37:40AM -0400, Carlos O'Donell wrote:
+> Any thoughts about how one should implement some type of lightweight
+> syscall for our glibc to use?
 
+I have lots of thoughts ;-)
 
-pa,
+> We already have the makings of a simple system for SET_THREAD_SELF (e.g.
+> seting cr27, the thread register, from userpsace), and I want to extend
+> this to:
+> 
+> exchange_and_add (volatile uint32_t *mem, int val)
+> atomic_add (volatile uint32_t *mem, int val)
+> compare_and_swap (volatile long int *p, long int oldval, long int newval)
 
-Lamont and myself were discussing the lightweight syscall
-implementations and ran across some interesting itlb optimizations.
+Sure.  Sounds like a great idea.
 
-We first looked at the itlb_miss_XX functions, where XX is one of 11 or
-20 wether your kernel is 32 or 64-bits respectively. And we saw that
-there is an interlocked 'or' that nullifies a compare and branch. This
-as Lamont argued, isn't as optimal as possible. 
+> o---> libc 
+>  --> exchange_and_add 
+>   ==> Params into kernel
+>    ==> disable interrupts on the current processor
+>     ==> take a semaphore to keep other cpu's out
+>     ==> do work 
+>     ==> release semaphore
+>    ==> reenable i-bit
+>   --> back into userspace and done.
+> 
+> This _must_ be very very fast, and appear atomic to userspace.
 
-Before:
-	mfsp current space
-	/* if faulting space is kernel space that's okay */
-	or with nullify the current space and 0.
-	/* die bad userpace die */
-	cmpb if the faulting space <> current space then die.
+I'd say a spinlock rather than a semaphore.  And likely a special-cased
+one too.
 
-Which can mean that branch prediction borks _all_ the time since if
-userspace was constantly faulting then there wouldn't be much userspace
-left.
+> Perhaps adding other pages instead of 0xE0 for set_thread_self might be
+> the simplest way to do this? The area after the linux gateway page
+> perhaps? Which seems to be the start of the next 4k page? Would this be
+> possible? e.g. branch to 0x1000 (not 0x100 which is the current syscall
+> branch).
 
-Now:
-	mfsp current space
-	/* branch prediciton forward is winning */
-	cmpb to itlb_user_fault if faulting space <> current space.
-	/* ... else life is good */
+I'd say we should keep doing stuff on our existing gateway page until we
+exhaust it.  We've got plenty of space -- 248 instruction slots left before
+0xE0, and a lot of space left after the syscall handler.
 
+On a related subject, fast gettimeofday is always a popular idea.  I'm not
+sure of all the ramifications of, for example, mapping a user-read-only,
+system-writable data page after the gateway page (can't put the data
+on the existing gateway page; a page that can do privilege promotion
+isn't readable/writable).  If we have only one CPU update the data on
+that page, time shouldn't go backwards ... right?
 
-	itlb_user_fault:
-	/* Was it the kernel? Oh yeah... that's okay then */
-	/* branch prediction winning again! */
-	cmpb if the faulting space was 0, then go back up.
-
-The nice part seems to be the predicted branches. Since we still have
-one interlock between the mfsp and the cmpb, but the processor is
-already filled it's queues with coming insn in the next bit of the itlb.
-We keep the processor looking forward in the common case. Maybe it's
-early in the morning and I'm not thinking well, but maybe it's Lamonts
-ability to convince you of something you aren't sure of :)
-
-Patch attached. We also moved a zdep to better the forward path during a
-set of insn that weren't doing much waiting around for a memory read.
-
-THE PATCH IS UNTESTED! If you want to give it a shot... please do so and
-tell us if your box dies^H^H^H^H runs faster :)
-
-Cheers,
-Carlos.
-
-
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="entry.S.diff"
-
-Index: entry.S
-===================================================================
-RCS file: /var/cvs/linux/arch/parisc/kernel/entry.S,v
-retrieving revision 1.98
-diff -u -p -r1.98 entry.S
---- entry.S	9 Dec 2002 06:09:08 -0000	1.98
-+++ entry.S	25 Jul 2003 06:37:58 -0000
-@@ -1535,8 +1535,7 @@ itlb_miss_11:
- 	mfctl           %cr25,ptp	/* load user pgd */
- 
- 	mfsp            %sr7,t0		/* Get current space */
--	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
--	cmpb,<>,n       t0,spc,itlb_fault /* forward */
-+	cmpb,<>,n	t0,spc,itlb_user_fault /* forward */
- 
- 	/* First level page table lookup */
- 
-@@ -1551,6 +1550,10 @@ itlb_miss_common_11:
- 	sh2addl 	 t0,ptp,ptp
- 	ldi		_PAGE_ACCESSED,t1
- 	ldw		 0(ptp),pte
-+
-+	/* Running parallel, taken from below 'zdep0' */
-+	zdep            spc,30,15,prot  /* create prot id from space */
-+
- 	bb,>=,n 	 pte,_PAGE_PRESENT_BIT,itlb_fault
- 
- 	/* Check whether the "accessed" bit was set, otherwise do so */
-@@ -1559,7 +1562,7 @@ itlb_miss_common_11:
- 	and,<>		t1,pte,%r0	/* test and nullify if already set */
- 	stw		t0,0(ptp)	/* write back pte */
- 
--	zdep            spc,30,15,prot  /* create prot id from space */
-+	/* zdep0 moved back */
- 	dep             pte,8,7,prot    /* add in prot bits from pte */
- 
- 	extru,=		pte,_PAGE_NO_CACHE_BIT,1,r0
-@@ -1602,8 +1605,7 @@ itlb_miss_20:
- 	mfctl           %cr25,ptp	/* load user pgd */
- 
- 	mfsp            %sr7,t0		/* Get current space */
--	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
--	cmpb,<>,n       t0,spc,itlb_fault /* forward */
-+	cmpb,<>,n	t0,spc,itlb_user_fault	/* forward */
- 
- 	/* First level page table lookup */
- 
-@@ -1882,6 +1884,15 @@ kernel_bad_space:
- dbit_fault:
- 	b               intr_save
- 	ldi             20,%r8
-+
-+itlb_user_fault:
-+	/* User tlb missed for other than his own space. Optimization. */
-+#ifdef __LP64__
-+	cmpb,=		%r0,t0,itlb_miss_common20 /* backward */
-+#else
-+	cmpb,=		%r0,t0,itlb_miss_common11 /* backward */
-+#endif
-+	nop
- 
- itlb_fault:
- 	b               intr_save
-
---mYCpIKhGyMATD0i+--
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
