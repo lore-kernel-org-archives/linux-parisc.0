@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B96CF4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 13:15:51 -0600 (MDT)
-Message-ID: <3D823979.9CA0117E@gmx.at>
-Date: Fri, 13 Sep 2002 21:16:09 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0D654829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 13:41:29 -0600 (MDT)
+Message-ID: <3D824E32.2060301@freebel.net>
+Date: Fri, 13 Sep 2002 20:44:34 +0000
+From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: Jurriaan Kalkman <Jurriaan.Kalkman@zrt.nl>,
-	smithjames@comcast.net, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: OT HP-UX Formatting Scsi disks
-References: <20020913062639.20473.qmail@web12503.mail.yahoo.com>
-Content-Type: text/plain; charset=us-ascii
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Making SYM2 default SYM-SCSI driver instead of
+ SYM1
+References: <3D8212E7.6000609@esiee.fr>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,45 +23,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+Hi Thibaut,
 
-I hope the status will change soon. I also have an E55
-and I use it under HP-UX. But I want to switch as fast
-as possible to linux.
-
-I can use the E55 now as diskless server (!), SCSI is
-not working yet. But as I mentioned, I hope this will
-change very soon !!
-
-Christoph
-
-
-Derek Engelhaupt wrote:
+Thibaut VARENE wrote:
+> Hi fellows !
 > 
-> > try zeroing out the first few blocks:
-> >
-> > dd if=/dev/zero of=/dev/offending_scsi_drive bs=512 count=4
+> Paul Bame has noticed a problem that seems to occur on B2600 with SYM1 
+> driver, causing the box to slow down everything and increasing the 
+> loadavg, while top reports 99% idle.
 > 
-> I've decided to load HP-UX on the E55 I've been playing with since
-> Debian doesn't work very well on it right now.  I'm sending this OT
-> because I need to know where dd lives on an HP-UX 11.11 box.  I'm in a
-> limited shell and need an absolute path to dd to get it to accomplish
-> the above.  It's so limited it won't even give me the ls command.  Any
-> of you HP-UX guys out there?  Since I'm at home I don't have access to
-> an HP-UX box at work.  Thanks.
+> When this happens, one can hear HD making strange noise: two grouped 
+> "ticks" every 2 seconds or so.
 > 
-> derek
-> 
-> __________________________________________________
-> Do you Yahoo!?
-> Yahoo! News - Today's headlines
-> http://news.yahoo.com
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> I have experienced this behavior by myself, and it seems that using SYM2 
+> driver solves this problem.
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+At a moment it solved also this problem of disk on my b2k. So for 
+severall month now, I use only SYM2 on this b2k.
+
+More over as on a b180 I notice that SYM2 driver could also be used 
+also, I test it with same success.
+
+(sorry I could not any more test on 712)
+
+Good idea,
+	Joel
