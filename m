@@ -1,43 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE1F3482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 04:12:34 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel1.hp.com (Postfix) with ESMTP id 46262307
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 06:12:34 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id EAA27443
-	for parisc-linux@lists.parisc-linux.org; Mon, 17 Sep 2001 04:12:30 -0600 (MDT)
-Date: Mon, 17 Sep 2001 04:12:30 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200109171012.EAA27443@udlkern.fc.hp.com>
+Received: from oscar.intranet.nimag.net (slipknot.nimag.net [195.202.197.141])
+	by dsl2.external.hp.com (Postfix) with SMTP id 24583482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 08:55:03 -0600 (MDT)
+Received: from francois by gollum.intranet.nimag.net with local (Exim 3.32 #1 (Debian))
+	id 15iznZ-0004Yy-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 16:55:01 +0200
+Date: Mon, 17 Sep 2001 16:55:01 +0200
+From: Francois Deppierraz <francois@ctrlaltdel.ch>
 To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010917165501.B17483@gollum.intranet.nimag.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: Getting up and running
+Content-Type: text/plain; charset=iso-8859-1
+Sender: Francois Deppierraz <francois@ctrlaltdel.ch>
+Subject: [parisc-linux] nmap -O -> kernel panic on 712
 List-ID: <linux-parisc.vger.kernel.org>
 
->
-> How does this look?  I can't test it because I don't have a 720-era machine,
-> but it ought to work, I think...
->
+Hi kernel hackers !
 
-<Patch Deleted>
+My HP 712/60 with a 2.4.9-pa20 kernel crash with the following error
+message when I portscan it using nmap -O (OS detection).
 
-No, it needs to be a little more complicated than that. That patch doesn't
-take into account byte and half-word accesses to a page. The real fix
-needs to look at the instruction in the iir register in combination with
-the ior value in order to determine whether the access is unaligned.
+kswapd[4]: Unaligned data reference 28
 
-I thought for a second that the patch might work anyway, since the
-unaligned fault handler has exception table support, so even though
-the instruction might be unecessarily emulated, it would still
-successfully bring the page in, but the unaligned fault handler
-uses ldb, which would just cause an infinite loop ...
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111000001111
+r0-3o 00000000 10332810 1028b9e4 0000000a
+r4-7o 100dfdb2 100ed148 0000000c 100dfd94
+r8-11o 00000000 00000001 00020000 10ce6500
+r12-15o 11fb09a0 00004400 00004800 43f02aa9
+r16-19o 100eca00 00000000 00000c00 00000001
+r20-23o 00000000 00000109 117ca000 0000000f
+r24-27o 00000000 100ed148 10ce6500 102f0010
+r28-31o 117ca160 00000040 100ed400 1012e6d8
+sr0-3o 00000000 00000002 00000000 00000002
+sr4-7o 00000000 00000000 00000000 00000000
 
-So, the correct fix should probably involve leveraging some of the
-macros in unaligned.c and writing something like check_unaligned(regs)
-that would be used by the trap 18 handler to determine whether or
-not the access was unaligned or not.
+IASQ: 00000000 00000000 IAOQ: 10281658 1028165c
+ IIR: 0c801093    ISR: 00000000  IOR: 100dfdb2
+ CPU:        0   CR30: 100ec000 CR31: 103a0000
+ ORIG_R28: 00000000
+Kernel Panic: Aiee, killing interrupt handler!
+In interrupt handler - not syncing
 
-John
+Thanks for your work !
+
+Any idea ? Do I need to fill a bugreport ?
+-- 
+Francois Deppierraz <francois.deppierraz@nimag.net>
+Nimag Networks Sàrl - www.nimag.net
+PGP Key ID: 9D283BC9
