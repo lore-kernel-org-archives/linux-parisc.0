@@ -1,57 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E830D482A
-	for <parisc-linux@parisc-linux.org>; Sun, 27 May 2001 11:02:20 -0600 (MDT)
-Message-Id: <m1543vU-001VltC@bame.riverrock.org>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: bame@debian.org, parisc-linux@parisc-linux.org,
-	bame@www.riverrock.org
-Subject: Re: [parisc-linux] some information on apt woes 
-In-Reply-To: Message from Matthew Wilcox <matthew@wil.cx>
-   of "Sun, 27 May 2001 05:27:07 BST." <20010527052707.J23718@parcelfarce.linux.theplanet.co.uk>
-References: <m153rqb-001VltC@bame.riverrock.org>  
- <20010527052707.J23718@parcelfarce.linux.theplanet.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9AA47482A
+	for <parisc-linux@parisc-linux.org>; Sun, 27 May 2001 17:49:45 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 154AHK-0008Hb-00
+	for parisc-linux@parisc-linux.org; Mon, 28 May 2001 00:48:58 +0100
+Date: Mon, 28 May 2001 00:48:58 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010528004858.L23718@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sun, 27 May 2001 11:02:00 -0600
-From: Paul Bame <bame@riverrock.org>
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] i hate cvs
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Sat, May 26, 2001 at 10:08:09PM -0600, bame@debian.org wrote:
-> >     One current parisc apt failure mode of both 0.4.0 and 0.5.3 appears
-> >     to be a kernel VM problem though that doesn't make sense since the
-> >     variable to make 0.4.0 fail is to update to glibc 2.2.3 from 2.2.1
-> >     unless it's just the right change to the memory map to tweek some bug.
-> 
-> The faults I've seen from 0.4.0 are very different from those which
-> you report.
+someone want to tell me how to get a copy of our source tree from, say,
+May 19th?  cvs up -D'19 May 2001' is not the answer because it gets
+files off the vendor branch which is useless.
 
-That's why I said "One" above...  That "one" seems easily repeatable across
-different boxes so seemed the best candidate for investigation and sharing.
-
->  0.4.0 segfaults during exit as it attempts to execute code
-> in the dynamic linker (possibly a destructor?), after the dynamic linker
-> has been unmapped.
-
-It's possible I didn't examine the 0.4.0 memory map carefully enough to
-distinguish the dynamic linker from other code.  I'm certain of the analysis
-for 0.5.3 however.
-
-> 
-> The 0.5.3 crashes I've seen look more like dereferencing random data.
-
-Sorry I must've been obtuse. Bad value used to construct an invalid pointer
-leading to a type=15 fault" was supposed to indicate the same thing.  Again
-I picked and analyzed one repeatable case, so my pointer was constant
-from test to test not random.  Using apt in multiple ways probably produces 
-more random-looking failures.
- 
-> Revolutions do not require corporate support.
+why aren't there any good source control tools?
 
 -- 
-			-Paul Bame
-
-    We are somehow fooled into believing that the profoundly undemocratic,
-    indeed fascist, structure inside corporations, some of the most powerful
-    institutions of our time, is no threat to our democracy.
-						    Lip de Los Nacos
+Revolutions do not require corporate support.
