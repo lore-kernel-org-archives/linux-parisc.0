@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6CC8B482D
-	for <parisc-linux@parisc-linux.org>; Sun, 14 Sep 2003 17:11:41 -0600 (MDT)
-Received: from D9W66321 (dhcp024-166-239-193.columbus.rr.com [24.166.239.193])
-	by cuprel1.hp.com (Postfix) with SMTP id 9957BF57
-	for <parisc-linux@parisc-linux.org>; Sun, 14 Sep 2003 16:11:40 -0700 (PDT)
-From: "tamara" <ROLANDO_AMMON@yahoo.ca>
-To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Date: Sun, 14 Sep 2003 19:11:20 -0400
+Received: from grerelbul01.net.external.hp.com (grerelbul01.net.external.hp.com [192.6.111.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6AE1A4879
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Sep 2003 03:29:17 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by grerelbul01.net.external.hp.com (Postfix) with ESMTP id 0076A381B7
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Sep 2003 11:29:16 +0200 (CEST)
+Received: from hp.com (ssdpc48.france.hp.com [15.129.234.2])
+	by hpfrcu03.france.hp.com (8.9.3 (PHNE_28810)/8.9.3 SMKit7.02) with ESMTP id LAA04250
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Sep 2003 11:29:15 +0200 (METDST)
+Message-ID: <3F65866B.7020206@hp.com>
+Date: Mon, 15 Sep 2003 11:29:15 +0200
+From: Bruno Vidal <bruno_vidal@hp.com>
 MIME-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Message-Id: <20030914231140.9957BF57@cuprel1.hp.com>
-Subject: [parisc-linux] hey
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Kexec for pa-risc
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,11 +26,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-PGh0bWw+DQpIaSw8YnI+DQpJIGtuPCEtLTE3NDMyMXlzLS0+b3cgeW91IHdhbnQgdG8gcmU8IS0t
-cmFuZDItLT5maW5hPCEtLXlpZmlmLS0+bmNlIHlvdXIgaG9tZSBzbyA8YnI+DQpoZXJlIGlzIHRo
-ZSB3ZTwhLS0yMzE0MjNoLS0+YnNpdGUgeW91IHdhPCEtLWZkc2tzYWYtLT5udGVkIHdoZXJlIGxl
-PCEtLXNoYXJjLS0+bmRlcnMgPGJyPg0KY29tPCEtLW1hcnMtLT5wZXRlIGZvciB5b3VyIGJ1PCEt
-LXR1YmFzLS0+c2luZXNzLjxicj4NCjxhIGhyZWY9Imh0dHA6Ly93d3cuMTc0MzIxeXMuZmxpcHBp
-bmRlYWxzLmNvbSI+IEdvIEhlcmUgPC9hPjxicj4NClRoPCEtLXJhbmQyLS0+YW5rcyw8YnI+DQpK
-YWNrIEpvaDwhLS0yMzE0MjNoLS0+bnNvbjxicj4NCjxicj4NCjxicj4NCjwhLS10dWJhcy0tPg0K
-PC9odG1sPg0K
+	Hi,
+I'm still looking to speed up dump creation. One solution (and with
+less re-work) is to dump directly in memory, mark pages as
+reserved, reboot a brand new kernel with an add-on to still
+have dump pages marked as reserved (without clearing memory,
+by-passing bios, etc...), and then use the standart
+disk driver to flush the dump, and then release the pages.
+
+I think that main part of the job has already been done with
+kexec, does someone already looked at it to port on pa-linux ?
+
+     Cheers.
+
+-- 
+	Vidal Bruno, (770-4271)
+         SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@hp.com
