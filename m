@@ -1,13 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Jonas Meyer <shitse@web.de>
-Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Jonas Meyer <shitse@web.de>
-   of "Wed, 16 Jan 2002 12:22:03 +0100." <E16Qo8q-0003TX-00@smtp.web.de>
-References: <E16Qo8q-0003TX-00@smtp.web.de> 
-Date: Wed, 16 Jan 2002 22:22:34 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020117052234.B0508482D@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: crash when writing to /dev/lp0
+Received: from mail.pubnix.net (Mail.pubnix.net [192.172.250.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D2F1D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jan 2002 09:04:14 -0700 (MST)
+Received: from aapril ([205.205.45.2])
+	by mail.pubnix.net (8.9.3/8.9.3) with SMTP id LAA10507
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jan 2002 11:04:12 -0500 (EST)
+	(envelope-from aapril@galeasec.com)
+Reply-To: <aapril@galeasec.com>
+From: "Alexandre April" <aapril@galeasec.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 17 Jan 2002 11:02:31 -0500
+Message-ID: <LLENLJGPDFAGGGBLOAHKCEBLCFAA.aapril@galeasec.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] irq vs smp
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,31 +26,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jonas Meyer wrote:
-> I'm using a hp 712/60.I'm happy to see my keyboard working now with your 
-> help.But now i ran into another problem: i want to connect a printer to it, 
-> but whenever i write anything to /dev/lp0 the box crashes at once showing a 
-> great lot of numbers on the screen.
+	I'm developping a char driver for one of our PCI card in linux kernel
+2.4.2-2smp (Multi-processor). And the IRQ that I read from my pci config
+space is 0x7 but the one that the kernel sees when I do "lspci -v" is 0x27.
+Is there a way the pass from 0x7 to 0x27 using some kernel macro's.
 
-THe "great lot of numbers" is the stack data and reason of the crash.
-By crash, you mean that the box has to be rebooted?
-or just the application dies?
+	Thanks
 
-This sounds like a kernel bug and follows really only need to go
-to parisc-linux mailing list.
-
-I'd like to at least see the "kernel panic" reason, GR02 and IOAQ values.
-Unless you are using serial console, this has to be copied by hand.
-
-> i'm using sid with the latest available kernel-image-2.4.16-32.
-
-Can you pull a 2.4.17 parisc kernel from ftp.parisc-linux.org/kernels?
-I'm not too excited about debugging the slightly older versions
-since it's harder to retrieve the source from CVS.
-
-> Another problem is the box tells me init men not freed when booting.
-
-That's a known problem that can be safely ignored for now.
-
-thanks,
-grant
+	Alex
