@@ -1,54 +1,54 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA05962
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Feb 2000 12:58:36 -0700
-Received: from hpdst41.cup.hp.com (hpdst41.cup.hp.com [15.16.128.62])
-	by atlrel1.hp.com (Postfix) with ESMTP id 9EE781A9A7
-	for <parisc-linux@thepuffingroup.com>; Fri, 11 Feb 2000 13:53:30 -0500 (EST)
-Received: from cup.hp.com (hpdst231.cup.hp.com [15.16.129.192]) by hpdst41.cup.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id KAA25689 for <parisc-linux@thepuffingroup.com>; Fri, 11 Feb 2000 10:53:29 -0800 (PST)
-Message-ID: <38A45AE4.EF2A67AB@cup.hp.com>
-Date: Fri, 11 Feb 2000 10:54:29 -0800
-From: Ullas Ponnadi <uponnadi@cup.hp.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA06720
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Feb 2000 14:13:04 -0700
+Received: by wallace.ece.rice.edu
+	via sendmail from stdin
+	id <m12JMKO-000LELC@wallace.ece.rice.edu> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Fri, 11 Feb 2000 14:06:08 -0600 (CST)
+Date: Fri, 11 Feb 2000 14:06:08 -0600
+From: "Ross J. Reedstrom" <reedstrm@wallace.ece.rice.edu>
 To: parisc-linux@thepuffingroup.com
-References: <38A0B5CB.DCF1C486@cup.hp.com>
+Subject: Re: [parisc-linux] About supported machines.
+Message-ID: <20000211140608.C12552@rice.edu>
+References: <2.2.32.20000211010445.006aa0cc@phoenix.maintree.com> <Pine.LNX.4.10.10002111112010.20107-100000@grasshopper.thepuffingroup.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Timer Interrupt and Scheduler
+In-Reply-To: <Pine.LNX.4.10.10002111112010.20107-100000@grasshopper.thepuffingroup.com>; from dkennedy@linuxcare.com on Fri, Feb 11, 2000 at 11:13:02AM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-I would like to expand my observations a little bit more with regards to
-the timer
-interrupt and the scheduler.
-
-Looking at the linux documentation available and the code for the x86
-and
-alpha architectures, at the very end of a return from the timer
-interrupt,
-a call to the scheduler should be made, if necessary. I see this call in
-the
-ret_from_intr label in entry.S file on the x86 architecture and
-ret_from_sys_call
-in entry.S on the alpha architecture. The parisc interrupt handler does
-not seem to
-be doing any such thing. ( Looking at the linux-2_3_29-20000208_tar
-archive ).
-
-Could someone help me understand how the scheduler would get called when
-
-a timer interrupt occurs?
-
-Thanks,
-
-Ullas
+On Fri, Feb 11, 2000 at 11:13:02AM -0500, dkennedy@linuxcare.com wrote:
+> On Thu, 10 Feb 2000, Matthew Estes wrote:
+> 
+> >         I have recently acquired an Apollo 720 with HP-UX 9.03, I was
+> > wondering if this machine is in the class of machines that you are either
+> > supporting or plan to support. I looked in the hardware database and
+> > couldn't find anything about 720's, so I thought I would ask the mailing
+> > list. It is no real use to me as is, so I would be willing to do testing on
+> > it. Thanks.
+> 
+> Since we don't currently have a 720 in the hardware database, can you
+> please add your machine to the database.  If you have any problems,
+> please let me know.
 
 
-Ullas Ponnadi wrote:
+That'll be a problem, since step 5 of adding a machine says:
 
-> Could someone give me more insight into how the scheduler would get
-> called
-> when a timer interrupt happens? I tried tracing through the code
-> handling the
-> external interrupt and am at a loss trying to figure out this part.
->
-> Thanks,
->
-> Ullas Ponnadi
+
+5. Run the "ioscan -F" utility on the PA-RISC machine with the command
+   /usr/sbin/ioscan -F. The results may take a few moments to appear. Copy
+   and paste the results (which will be a fair amount of data) into the
+   "IOScan Output" field below. The IOScan output must be from HP-UX
+   version 10 or later.
+
+And Matthew has 9.03. I have the same problem with a 730 I've got: I'd add it to
+the db, but it's not at 10 yet. (Purely a time issue: I've got the upgrade CDs,
+but apparently I can't do a clean wipe/install since my 730 won't boot from
+the CD)
+
+Ross
+
+-- 
+Ross J. Reedstrom, Ph.D., <reedstrm@rice.edu> 
+NSBRI Research Scientist/Programmer
+Computer and Information Technology Institute
+Rice University, 6100 S. Main St.,  Houston, TX 77005
