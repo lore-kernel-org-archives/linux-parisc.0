@@ -1,44 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.umr.edu (mrelay.cc.umr.edu [131.151.1.89])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1BA8D4895
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 07:18:49 -0600 (MDT)
-Message-ID: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F7@umr-mail03.cc.umr.edu>
-From: "Neulinger, Nathan" <nneul@umr.edu>
-To: "'Matthew Wilcox'" <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Status of hp-ux binary compatibility?
-Date: Mon, 1 Oct 2001 08:17:26 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 440334895
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 07:25:51 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15o34v-0000Fh-00; Mon, 01 Oct 2001 14:25:49 +0100
+Date: Mon, 1 Oct 2001 14:25:49 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Nathan Neulinger <nneul@umr.edu>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
+Message-ID: <20011001142549.E28828@parcelfarce.linux.theplanet.co.uk>
+References: <3BB4B4DE.8080608@umr.edu> <20011001051903.B28828@parcelfarce.linux.theplanet.co.uk> <3BB865F1.54046DFC@umr.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3BB865F1.54046DFC@umr.edu>; from nneul@umr.edu on Mon, Oct 01, 2001 at 07:47:45AM -0500
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I just built and upgrade to 2.4.9-pa27 and with it, as well as the 2.4.0
-base install, I get nothing but segmentation faults whenever trying to
-execute any HP-UX executable.
+On Mon, Oct 01, 2001 at 07:47:45AM -0500, Nathan Neulinger wrote:
+> Yuck... That'd be most unfortunate since that is the primary reason I'm
+> looking at parisc-linux at the moment.
 
--- Nathan
+what application specifically are you looking at running?  We only ever
+implemented a few of the hundreds of hpux syscalls.
 
-> -----Original Message-----
-> From: Matthew Wilcox [mailto:willy@debian.org]
-> Sent: Sunday, September 30, 2001 11:19 PM
-> To: Nathan Neulinger
-> Cc: parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
-> 
-> 
-> On Fri, Sep 28, 2001 at 12:35:26PM -0500, Nathan Neulinger wrote:
-> > My main question though - what's the status of hpux binary 
-> support? The 
-> > FAQ seems to indicate that some parisc binaries are already 
-> functional.
-> > 
-> > What is necessary to be done on the machine before I can run an HP 
-> > executable?
-> 
-> It might work, but it's probably bitrotten since nobody's tried it in
-> over a year.
-> 
-> -- 
-> Revolutions do not require corporate support.
-> 
+-- 
+Revolutions do not require corporate support.
