@@ -1,32 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA11151
-	for <parisc-linux@puffin.external.hp.com>; Wed, 17 May 2000 20:42:26 -0600
-Received: from ppp15.a2-1.56k.execulink.com (ppp15.a2-1.56k.execulink.com [209.239.9.15])
-	by amsterdam.execulink.net (8.9.3/8.9.3) with ESMTP id WAA27108
-	for <parisc-linux@thepuffingroup.com>; Wed, 17 May 2000 22:42:25 -0400 (EDT)
-Date: Wed, 17 May 2000 22:41:59 -0400 (EDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA11252
+	for <parisc-linux@puffin.external.hp.com>; Wed, 17 May 2000 20:43:23 -0600
+Date: Wed, 17 May 2000 22:38:47 -0400 (EDT)
 From: Chris Snow <csnow@julian.uwo.ca>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.21.0005172239190.1861-100000@boy.localdomain>
+To: Bob Pflederer <krp@rsn.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 715/50 hang - more info
+In-Reply-To: <20000517202635.E855@atl6narkp02a.atl.hp.com>
+Message-ID: <Pine.LNX.4.21.0005172134010.1861-100000@boy.localdomain>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] 715 LAN interface
 List-ID: <linux-parisc.vger.kernel.org>
 
+> When I was trying out a C180, I ran into problems in about the same point
+> in boot.  In my case it turned out to be a problem in the lasi_82596
+> driver.  It was executing the interrupt handler before the driver was finished
+> being initialized.  You might try editing lasi_82596.c to make i596_debug
+> 10:
+> 
+> #define I82596_DEBUG 10
+> 
+> #ifdef I82596_DEBUG
+> int i596_debug = I82596_DEBUG;
+> #else
+> int i596_debug = 1;
+> #endif
+> 
+> This will get you lots more debug messages from the driver so you can see
+> if it's doing something funny.  I have a hacked version of lasi_82596.c
+> that may have worked around this problem and some others that I was finding,
+> but I'm not really sure what state it's in (it may not even compile) as I 
+> haven't had time to play with it in over a month.  I'll email it to you so 
+> you can see if it takes you any further.
 
-After narrowing my problem down to the lasi_82596 code, I'm in the process
-of learning about this interface.
+I reached the same conclusion you do.   Actually, I got your reply just as
+I was about to delve into all the nice output of I82596_DEBUG 10 :)
 
-My question:
+Unfortunately, your modified driver doesn't seem to help... still crashes
+at the same point :(
 
-The documentation on LASI (lasi_ers.ps) seems to be specific to the
-712.  But, AFAIK the 715 has the same ethernet (82596).  Is it safe to
-assume that the LAN section of lasi_ers.ps is equally applicable to the
-715 interface, or is there some other documentation somewhere that I
-should consult ?
-
-Thanks,
-
+I'm going to investigate this further.  I'll let you know what turns up.
 
 
      Chris
