@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8FB5C482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 08:54:10 -0700 (MST)
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 99B3D482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 09:04:54 -0700 (MST)
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] evms_vgscan crash hppa kernel ... continue
-Message-ID: <1008172443.3c177d9bc3990@webmail.tiscalinet.be>
-Date: Wed, 12 Dec 2001 16:54:03 +0100 (CET)
+Message-ID: <1008173091.3c178024025f9@webmail.tiscalinet.be>
+Date: Wed, 12 Dec 2001 17:04:52 +0100 (CET)
 From: joel.soete@freebel.net
 Cc: Matthew Wilcox <willy@debian.org>
-References: <1005144976.3be94b9093186@webmail.tiscalinet.be> <20011107150235.G4441@parcelfarce.linux.theplanet.co.uk> <1005146018.3be94fa245586@webmail.tiscalinet.be>
-In-Reply-To: <1005146018.3be94fa245586@webmail.tiscalinet.be>
+References: <1002553729.3bc1c18187924@webmail.tiscalinet.be> <20011008162234.D28880@parcelfarce.linux.theplanet.co.uk> <1002556397.3bc1cbed99e0b@webmail.tiscalinet.be> <20011008173620.I3745@parcelfarce.linux.theplanet.co.uk> <1002618541.3bc2bead27af0@webmail.tiscalinet.be>
+In-Reply-To: <1002618541.3bc2bead27af0@webmail.tiscalinet.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] LVM-1.0.1 with kernel 2.4.16-pa16 (was: LVM 1.0.1-rc4 on hppa)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,72 +25,40 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi all,
 
-I retry now with kernel 2.4.16-pa16 and evms cvs dated 2011-12-11 and
-unfortunately it still crashes but at crash time I've got he following
-interesting message to me:
+Just for information that this release compiles (now with -O0) fine with kernel
+2.4.16-pa16 and also seems to works fine (at least on my b180.
 
---evms: Sector IO ioctl: Allocating sector buffer.
-WARNING! Stack pointer and cr30 do not correspond!
-
-.... a dump ...
-
-
-Can some one explain me what it means and what can be the reason.
-I post here the question because I see that it cames from
-arch/parisc/kernel/traps.c but have no knowledge in the register naming for this
-processor.
-
-Thanks in advance for help,
-        Joel
+Joel
 
 
 Quoting joel.soete@freebel.net:
 
 > Quoting Matthew Wilcox <willy@debian.org>:
 > 
-> > On Wed, Nov 07, 2001 at 03:56:16PM +0100, joel.soete@freebel.net
+> > On Mon, Oct 08, 2001 at 06:39:17PM +0200,
+> hgrothe@mathematik.tu-darmstadt.de 
 > wrote:
-> > > IASQ: 00000000 00000000 IAOQ: 1018c350 1018c354
-> > >  IIR: 48fa0020    ISR: 00000000  IOR: faf00918
-> > >  CPU:        0   CR30: 124fc000 CR31: 10348000
-> > >  ORIG_R28: 124fc508
-> > > 
-> > > a "grep 1018c3 /boot/System.map"
-> > > 1018c394 t evms_ioctl_cmd_get_minor
-> > > 
-> > > I would like to debug this by obtaining a core dump of the kernel
-> > after the 
-> > > reboot but I do not know how? (I did not find back the mail
-> explaining
-> > how to do 
-> > > it in detail)
-> > 
-> > 1018c350 is before 1018c394, so it's actually in the previous
-> function.
+> > > I guess :-) that you compiled the lvm-tools with optimization. Since
 > 
-> Well ... in System.map I found:
+> > > there seems to be a general problem with the lvm-tools and gcc3
+> (appears 
+> > > also on other architectures (see lvm mailing list)) recompile the 
+> > > lvm-tools without optimisation or "weak" optimisation (-O0).
 > 
-> 1018bfc4 t evms_ioctl_cmd_get_logical_disk
-> 1018c088 t evms_ioctl_cmd_get_logical_disk_info
-> 1018c1c8 t evms_ioctl_cmd_sector_io
-> 1018c394 t evms_ioctl_cmd_get_minor
-> 1018c494 t evms_ioctl_cmd_get_volume_data
+> The all LVM-HOWTO test seems to works fine if change -O2 to -O0 into
+> make.tmpl.
 > 
-> So it should be in 'evms_ioctl_cmd_sector_io', is it right?
+> > -O0 is no optimisation, -O1 is weak optimisation and -O2 is most
+> > optimisations.  This is normally a bug in the code, not the
+> compiler...
 > 
-> Thank Matthew,
->     Joel
+> I thinks so too.
+> I will try now to recompile with -O2 and -ggdb to try to have a better
+> idea.
 > 
-> > 
-> > -- 
-> > Revolutions do not require corporate support.
-> > 
-> > 
-> 
-> 
-> -------------------------------------------------
-> This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
-> 
+> Thanks again for help,
+>         joel
+
 
 
 -------------------------------------------------
