@@ -1,33 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA13475
-	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Feb 2000 09:38:16 -0700
-Date: Wed, 23 Feb 2000 10:38:57 -0500 (EST)
-From: "Brian S. Julin" <bri@mojo.calyx.net>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.BSO.4.21.0002231025570.18891-100000@mojo.calyx.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] NFS root on 715/64
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA14766
+	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Feb 2000 10:18:02 -0700
+From: willy@thepuffingroup.com
+Date: Wed, 23 Feb 2000 11:18:11 -0500
+To: Dominik Kubla <dominik.kubla@uni-mainz.de>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 725/50 boot log...
+Message-ID: <20000223111811.L9944@thepuffingroup.com>
+References: <38B21539.A3D46D7@cln.etc.bc.ca> <20000222075737.A16202@uni-mainz.de> <20000222172949.A20225@uni-mainz.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20000222172949.A20225@uni-mainz.de>; from Dominik Kubla on Tue, Feb 22, 2000 at 05:29:49PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Tue, Feb 22, 2000 at 05:29:49PM +0100, Dominik Kubla wrote:
+> RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+> RAMDISK: ext2 filesystem found at block 0
+> RAMDISK: Loading 600 blocks [1 disk] into ram disk... |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/done.
+> kernel BUG at block_dev.c:411!
+> kernel BUG at block_dev.c:411!
 
+On the A180, it continues from here:
 
-This almost works... after adjusting the .config that was
-given in the instructions to actually include the LASI ethernet
-driver :), I get to the IP-Config notice, and if I turn on nfsd's
-transfer logging, I can see it mount the root filesystem and transfer
-sbin/init, but no output past that and it doesn't transfer sash even
-/dev/console.
+RAMDISK: ext2 filesystem found at block 0
+RAMDISK: Loading 600 blocks [1 disk] into ram disk... done.
+kernel BUG at block_dev.c:411!
+kernel BUG at block_dev.c:411!
+VFS: Mounted root (ext2 filesystem).
+tty_open
 
-Now it was mentioned that the serial console was needed to
-get a working shell -- has anything actually been hacked up
-in the nfsroot images that prevents using the PDC (yes I 
-know, it's line-by-line only) because setting up serial 
-console will be rather inconvenient for me and plus I'm working
-on the HIL stuff anyway so I'll want to have focus on the 
-keyboard not ttyS0.
-
-Or, should I be seeing more output as is?
-
---
-Brian S. Julin
+(and that's the Image freshly downloaded from the ftp site).
+You may wish to try to trace this further yourself...
