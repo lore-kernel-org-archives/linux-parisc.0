@@ -1,68 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA25022
-	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Apr 2000 06:04:31 -0600
-From: BOSCHINI@ICIL64.CILEA.IT
-Date: Mon, 03 Apr 2000 14:03:44 +0000 (MET-01DST)
-Subject: Re: kernel make oldconfig error on HP-735 10.20
-To: PARISC-LINUX@THEPUFFINGROUP.COM
-Message-id: <01JNSVG4EE4Y0010LR@ICIL64.CILEA.IT>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; CHARSET=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA25856
+	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Apr 2000 07:19:40 -0600
+From: Steven Pritchard <steve@silug.org>
+Message-Id: <200004031319.IAA01024@osiris.silug.org>
+Subject: Re: [parisc-linux] 735/125 boot problem?
+In-Reply-To: <Pine.LNX.4.10.10004010340190.1371-100000@morph.net> from Mike Brancato
+ at "Apr 1, 2000 03:42:36 am"
+To: Mike Brancato <funnyguy@digitalsmackdown.net>
+Date: Mon, 3 Apr 2000 08:19:02 -0500 (CDT)
+CC: parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+List-ID: <linux-parisc.vger.kernel.org>
 
-From:	IN%"boschini@uff16c.cilea.it"  "Matteo Boschini"  3-APR-2000 14:02:35.64
-To:	IN%"mgyula@gigant.sch.bme.hu"
-CC:	IN%"boschini@cilea.it"
-Subj:	RE: kernel make oldconfig error on HP-735 10.20
+Mike Brancato said:
+> we have another 735 here, and like, if i leave th HD connected, it shows
+> HPUX trying to start, but just sits at the screen with the yellow displays
+> at teh bottom.
 
-Return-path: <boschini@uff16c.cilea.it>
-Received: from DIRECTORY-DAEMON by ICIL64.CILEA.IT (PMDF V5.2-31 #32154)
- id <01JNSVESJOB40010T5@ICIL64.CILEA.IT> for boschini@ICIL64.CILEA.IT
- (ORCPT rfc822;boschini@cilea.it); Mon, 3 Apr 2000 14:02:33 MET-01DST
-Received: from uff16c.cilea.it (uff16c.cilea.it [131.175.1.107])
- by ICIL64.CILEA.IT (PMDF V5.2-31 #32154)
- with ESMTP id <01JNSVERUORC00108J@ICIL64.CILEA.IT> for boschini@cilea.it; Mon,
- 03 Apr 2000 14:02:32 +0000 (MET-01DST)
-Received: from localhost (boschini@localhost)	by uff16c.cilea.it (8.9.3/8.9.3)
- with ESMTP id OAA01349; Mon, 03 Apr 2000 14:04:57 +0200
-Date: Mon, 03 Apr 2000 14:04:57 +0200 (CEST)
-From: Matteo Boschini <boschini@uff16c.cilea.it>
-Subject: RE: kernel make oldconfig error on HP-735 10.20
-To: mgyula@gigant.sch.bme.hu
-Cc: boschini@cilea.it
-Message-id: <Pine.LNX.4.21.0004031359590.1332-100000@uff16c.cilea.it>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Original-recipient: rfc822;boschini@cilea.it
+Just another random idea, but is there perhaps an add-on graphics
+board?
 
+I fought with a 715 for an hour once before I realized that there was
+an add-on board, and the console was going to it...
 
-Yes, I found out...
-
-But still, while running gmake oldconfig, I get the following errors:
-
-
-/bin/bash: invalid character 45 in exportstr for DRIVERS-y
-/bin/bash: invalid character 45 in exportstr for DRIVERS-
-/bin/bash: invalid character 45 in exportstr for DRIVERS-m
-/bin/bash: invalid character 45 in exportstr for DRIVERS-n
-
-and so forth....
-
-and when I try running 
-
-gmake dep
-
-I get
-
-/bin/bash: invalid character 45 in exportstr for DRIVERS-y 
-/bin/bash: invalid character 45 in exportstr for DRIVERS-
-/bin/bash: invalid character 45 in exportstr for DRIVERS-m
-/bin/bash: invalid character 45 in exportstr for DRIVERS-n 
-Make: Unknown flag argument C.  Stop.
-gmake: *** [archdep] Error 1                                                    
-
-
-any clue ?
-
-Thanks already, 
-
-Matteo Boschini
+Steve
+-- 
+steve@silug.org           | Linux Users of Central Illinois
+(618)398-7320             | Meetings the 4th Tuesday of every month
+Steven Pritchard          | http://www.luci.org/ for more info
