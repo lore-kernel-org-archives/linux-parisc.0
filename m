@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F40DD482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 09:51:29 -0600 (MDT)
-Date: Thu, 7 Aug 2003 08:54:42 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: geos@canada.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] adding a second nic to B1000
-Message-ID: <20030807155442.GE4979@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030807083620.21079.h004.c009.wm@mail.canada.com.criticalpath.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 18DE6482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 10:04:13 -0600 (MDT)
+Date: Thu, 7 Aug 2003 18:04:05 +0200
+Message-ID: <3F2E2C7700000FF2@ocpmta2.freegates.net>
 In-Reply-To: <20030807083620.21079.h004.c009.wm@mail.canada.com.criticalpath.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] adding a second nic to B1000
+To: geos@canada.com, parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,22 +21,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> it may be the 3com 3C95x pci card does not work in this
-> box 
-> it should work with debian 
-> the card does work in i386 box 
-> the builtin nic works fine
+> Ive been trying for 5 days not to get a second nic
+>installed into hp b1000 using pa-risc woody 3
+>
+>iv read all i can find , been to all the irc chnls 
+>im at a loss here 
+>
+>it may be the 3com 3C95x pci card does not work in this
+>box 
+>
+>it should work with debian 
+>the card does work in i386 box 
+>the builtin nic works fine
+>
+>can this be done? if so is there a howto ?
+>if this card is not supported what nic cards are ? 
 
-how does it "not work"? does it hang the box?
+For my part, I run successfully a Debian on a b2k with 2 nic (the builtin
+and an additional) since a long time but it is an hp product.
 
-i have a spare 3c95x that i can try as well... (altho there are 
-really many variants of the vortex/boomerang cards)
+I also try some stuff coming from i386: an OEM hp equinox pci card (which
+Grant use successfully on a i386) but the driver doesn't yet work on hppa;
+also in the same case an ATI gfx card,... (for this last I am awaiting that
+2.6 run on my b2k to investigate more because ATI drivers are already improved
+in 2.6 :-))
 
-can you perhaps plug the card into a working i386 box and show us the
-lspci -vvvn output?
+Joel
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
