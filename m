@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E85AB4850
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 04:17:59 -0700 (MST)
-Date: Fri, 15 Feb 2002 12:17:57 +0100
-Subject: Re: [parisc-linux] Power LED 
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v480)
-Cc: <parisc-linux@lists.parisc-linux.org>
-To: "James S" <smith-james@home.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <002101c1b5ee$b5f8a620$02c1a8c0@james.co.uk>
-Message-Id: <A9FF8C1C-2205-11D6-90EC-0030656F07A2@esiee.fr>
+	by dsl2.external.hp.com (Postfix) with ESMTP id B85474860
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 04:25:40 -0700 (MST)
+Message-ID: <3C6CF030.1040904@moyroud.net>
+Date: Fri, 15 Feb 2002 12:25:36 +0100
+From: Clement Moyroud <clement@moyroud.net>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: kernel-2.4.17-pa22 boot problem B132L+ with serial
+References: <OFCD5822D4.246FA364-ONC1256B61.0024B267@com> <20020215065553.945774861@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>> what causes the power led to go out on the 712 systems ?
->>> is it software controlled ?
->>
->> I don't think so.
->> The power button is under software control but I think
->> the LED is wired to the power supply directly.
->>
->> grant
+Grant Grundler wrote:
+
+>"=?iso-8859-1?Q?Jo=EBl_Soete?=" wrote:
 >
-> was just wondering - mine goes out after the system starts loading - 
-> flashes
-> before that
+>>It was "built-in 21143 on B180L" (is there a difference here between b180
+>>and b132?)
+>>
 >
-> when it had hp-ux on it, it stayed on
+>Yes. I don't think B132L had 100BT built-in.
+>But I'm too lazy to check hwdb.parisc-linux.org right now.
+>Bed time.
+>
 
-We had the same problem here, and we solved it as follow:
+B132L has 100BT built-in too.
 
-When in Boot Admin, check the 'chassis' command.
-We suppose that Chassis Codes must be turned 'on' so that the LED does 
-not go out after booting.
+btw, Grant, have you seen Thibaut's mail about out serial ports problems 
+on a B132L+ ?
 
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://www.esiee.fr/puffin
+Clement.
