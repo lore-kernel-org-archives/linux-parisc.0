@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (mail.tiscali.be [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E00AD483E
-	for <parisc-linux@parisc-linux.org>; Mon,  7 Oct 2002 10:19:44 -0600 (MDT)
-Date: Mon, 7 Oct 2002 18:12:22 +0200
-Message-ID: <3D8EED0B00001976@ocpmta5.be.tiscali.com>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Need help to improve uaccess.h patch
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from smtp.web.de (smtp02.web.de [217.72.192.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29BA4483E
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Oct 2002 10:49:31 -0600 (MDT)
+Received: from c-180-203-238.n.dial.de.ignite.net ([62.180.203.238] helo=web.de)
+	by smtp.web.de with asmtp (WEB.DE(Exim) 4.75 #2)
+	id 17yb4Q-0001HQ-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 07 Oct 2002 18:49:26 +0200
+Message-ID: <3DA1BB0F.97887A66@web.de>
+Date: Mon, 07 Oct 2002 18:49:19 +0200
+From: "b.gunreben" <b.gunreben@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Can't start X-windows on HP C240 with HP FX4 graphics
+ card ?
+References: <5.1.0.14.2.20021007125233.00ada6a0@pophost.khk.be>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,75 +26,131 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Randolph Chung wrote:
->>>That is my main doubt :(
->>>In this uaccess.h, I read (but i am not quit sure to have understand all
+Hi,
 
->>>  fine aspect) that we have to 'jump' after the erronious code (for me
+the FX? Cards are unsupported at the moment. However, if I understand
+correctly, there has been a port for x86 linux at times of kernel
+2.2.16. I am not a kernel hacker, but I would like to know if there is a
+possibility to port the beta quality  driver from 
+http://www.hp.com/workstations/support/software/drivers/linux/video/fxvideo/
+to current kernels.
 
->>>3b-[12]b + 1 ? am i wrong? ). And understand +3 in get_user_asm because
 
->>>we would have to jump after the cast "(x) = (__typeof__(*(ptr))) 
->>>__gu_val;". Is it wrong?
->>
->>I may be wrong but I think the code is trying to build a PLABEL.  In
->>which case, the value should be 2 or 3.  The least significant bit is
->>not used.  See the runtime architecture manual for more info on PLABELs.
-> 
-> 
-> nah, the comment says:
-> 
-> /*
->  * The exception table contains two values: the first is an address
->  * for an instruction that is allowed to fault, and the second is
->  * the number of bytes to skip if a fault occurs. We also support in
->  * two bit flags: 0x2 tells the exception handler to clear register
->  * r9 and 0x1 tells the exception handler to put -EFAULT in r8.
->  * This allows us to handle the simple cases for put_user and
->  * get_user without having to have .fixup sections.
->  */
+Berthold
 
-But may I any way use a .fixup section (I do not find any usage of a .fixup
-section in parisc code). Even lusercopy.S do not use it (just a kind of)?
-
+Peter Karsmakers wrote:
 > 
-> struct exception_table_entry {
->         unsigned long addr;  /* address of insn that is allowed to fault.
-  */
->         long skip;           /* pcoq skip | r9 clear flag | r8 -EFAULT
-flag */
-> };
+> Hi,
 > 
-> so let's take __get_user() ...
+> I have a HP visualize C240 with a FX4 graphics card.  I've mananged to
+> install linux parisc but can't get the X windows to work.  Is my graphics
+> adapter supported?
 > 
-> #define __get_user(x,ptr)                               \
-> ({                                                      \
->         register long __gu_err __asm__ ("r8") = 0;      \
->         register long __gu_val __asm__ ("r9") = 0;      \
->         [...]
-
-Well in the case of a 64bits int, I could not use only one "r9" register.
-May I used a third register: "r10" for instance?
-
->         }                                               \
->         (x) = (__typeof__(*(ptr))) __gu_val;            \
->         __gu_err;                                       \
-> })
+> The following output is dumped on the screen when I give the xstart command.
 > 
-> iow, at the end of __get_user, x == r9, and the return value is r8
+> Thanks,
 > 
-> so, if the extable says:
->                 "\t.section __ex_table,\"a\"\n"         \
->                  "\t.word\t1b\n"                        \
->                  "\t.word\t(2b-1b)+3\n"                 \
->                  "\t.previous"                          \
+> Peter Karsmakers
 > 
-> this means that:
-> if the insn at label 1 faults, handle the fault (see
-> arch/parisc/mm/fault.c) and then continue at 
-> label1+((label2-label1)&~3) == label2; also, since the lowest 2 bits are
-> set (+3), set r9 = 0 and r8 = -EFAULT --> get_user will set x = 0 and
-> return -EFAULT
+> debianC240:~# startx
 > 
-Thanks a lot for all of your understand and help,
-    Joel
+> warning: process set to nice value 0 instead of -10 as requested
+> 
+> This is a pre-release version of XFree86, and is not supported in any
+> way.  Bugs may be reported to XFree86@XFree86.Org and patches submitted
+> to fixes@XFree86.Org.  Before reporting bugs in pre-release versions,
+> please check the latest version in the XFree86 CVS repository
+> (http://www.XFree86.Org/cvs)
+> 
+> XFree86 Version 4.1.0.1 / X Window System
+> (protocol Version 11, revision 0, vendor release 6510)
+> Release Date: 21 December 2001
+>          If the server is older than 6-12 months, or if your card is
+>          newer than the above date, look for a newer version before
+>          reporting problems.  (See http://www.XFree86.Org/FAQ)
+> Build Operating System: Linux 2.4.16-64 parisc64 [ELF]
+> (==) Log file: "/var/log/XFree86.0.log", Time: Fri Oct  4 16:46:28 2002
+> (==) Using config file: "/etc/X11/XF86Config-4"
+> Markers: (--) probed, (**) from config file, (==) default setting,
+>           (++) from command line, (!!) notice, (II) informational,
+>           (WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+> (==) ServerLayout "Default Layout"
+> (**) |-->Screen "Default Screen" (0)
+> (**) |   |-->Monitor "compaq qvision"
+> (**) |   |-->Device "HP 4FX"
+> (**) |-->Input Device "Generic Keyboard"
+> (**) XKB: rules: "xfree86"
+> (**) XKB: model: "pc104"
+> (**) XKB: layout: "us"
+> (**) |-->Input Device "Configured Mouse"
+> (**) |-->Input Device "Generic Mouse"
+> (WW) The directory "/usr/lib/X11/fonts/cyrillic" does not exist.
+>          Entry deleted from font path.
+> (**) FontPath set to
+> "unix/:7100,/usr/lib/X11/fonts/misc,/usr/lib/X11/fonts/100d
+> pi/:unscaled,/usr/lib/X11/fonts/75dpi/:unscaled,/usr/lib/X11/fonts/Type1,/usr/li
+> b/X11/fonts/Speedo,/usr/lib/X11/fonts/100dpi,/usr/lib/X11/fonts/75dpi"
+> (==) RgbPath set to "/usr/X11R6/lib/X11/rgb"
+> (--) using VT number 7
+> 
+> (--) PCI: (1:4:0) HP unknown chipset (0x1008) rev 2, Mem @ 0xf6000000/25,
+> BIOS @
+>   0xf1e00000/21
+> (II) MGA: driver for Matrox chipsets: mga2064w, mga1064sg, mga2164w,
+>          mga2164w AGP, mgag100, mgag100 PCI, mgag200, mgag200 PCI, mgag400
+> (II) GLINT: driver for 3Dlabs chipsets: gamma, ti_pm2, ti_pm, pm3, pm2v,
+>          pm2, pm, 300sx, 500tx, mx, delta
+> (II) S3VIRGE: driver (version 1.6.13) for S3 ViRGE chipsets: virge, 86C325,
+>          virge vx, 86C988, virge dx, virge gx, 86C375, 86C385, virge gx2,
+>          86C357, virge mx, 86C260, virge mx+, 86C280, trio 3d, 86C365,
+>          trio 3d/2x, 86C362, 86C368
+> (II) SIS: driver for SiS chipsets: SIS5597, SIS5598, SIS530, SIS6326,
+>          SIS300, SIS630, SIS540
+> (II) SAVAGE: driver (version 1.1.16) for S3 Savage chipsets: Savage4,
+>          Savage3D, Savage3D-MV, Savage2000, Savage/MX-MV, Savage/MX,
+>          Savage/IX-MV, Savage/IX, ProSavage PM133, ProSavage KM133, Twister,
+>          TwisterK
+> (II) TRIDENT: driver for Trident chipsets: tvga8900d, cyber9320, cyber9388,
+>          cyber9397, cyber9397dvd, cyber9520, cyber9525dvd, cyberblade/e4,
+>          tgui9420dgi, tgui9440agi, tgui9660, tgui9680, providia9682,
+>          providia9685, cyber9382, cyber9385, 3dimage975, 3dimage985, blade3d,
+>          cyberbladei7, cyberbladei7d, cyberbladei1, cyberbladei1d,
+>          cyberbladeAi1, cyberbladeAi1d, cyberbladeXP, cyberbladeXPm
+> (II) CHIPS: Driver for Chips and Technologies chipsets: ct65520, ct65525,
+>          ct65530, ct65535, ct65540, ct65545, ct65546, ct65548, ct65550,
+>          ct65554, ct65555, ct68554, ct69000, ct69030, ct64200, ct64300
+> (II) TDFX: Driver for 3dfx Banshee/Voodoo3 chipsets: 3dfx Banshee,
+>          3dfx Voodoo3, 3dfx Voodoo5
+> (II) FBDev: driver for framebuffer: fbdev, afb
+> (II) ATI: ATI driver (version 6.3.6) for chipsets: ati
+> (II) R128: Driver for ATI Rage 128 chipsets: ATI Rage 128 RE (PCI),
+>          ATI Rage 128 RF (AGP), ATI Rage 128 RG (AGP), ATI Rage 128 RK (PCI),
+>          ATI Rage 128 RL (AGP), ATI Rage 128 Pro PD (PCI),
+>          ATI Rage 128 Pro PF (AGP), ATI Rage 128 Pro PP (PCI),
+>          ATI Rage 128 Pro PR (PCI), ATI Rage 128 Mobility LE (PCI),
+>          ATI Rage 128 Mobility LF (AGP), ATI Rage 128 Mobility MF (AGP),
+>          ATI Rage 128 Mobility ML (AGP)
+> (II) RADEON: Driver for ATI Radeon chipsets: ATI Radeon QD (AGP),
+>          ATI Radeon QE (AGP), ATI Radeon QF (AGP), ATI Radeon QG (AGP),
+>          ATI Radeon VE (AGP)
+> (II) imstt: driver (version 1.0.0 for IMS TwinTurbo chipsets : imstt128,
+>          imstt3d
+> (II) VGA: Generic VGA driver (version 4.0) for chipsets: generic
+> (II) v4l driver for Video4Linux
+> (EE) No devices detected.
+> 
+> Fatal server error:
+> no screens found
+> 
+> When reporting a problem related to a server crash, please send
+> the full server output, not just the last messages.
+> This can be found in the log file "/var/log/XFree86.0.log".
+> Please report problems to submit@bugs.debian.org.
+> 
+> XIO:  fatal IO error 232 (Connection reset by peer) on X server ":0.0"
+>        after 0 requests (0 known processed) with 0 events remaining.
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
