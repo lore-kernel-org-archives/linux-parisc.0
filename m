@@ -1,32 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D13074A18
-	for <parisc-linux@parisc-linux.org>; Wed, 31 Jan 2001 10:10:58 -0700 (MST)
-Received: from esiee.fr (mail.esiee.fr [147.215.1.3])
-	by mail.esiee.fr (Postfix) with ESMTP id 33D89D15E9
-	for <parisc-linux@parisc-linux.org>; Wed, 31 Jan 2001 18:10:49 +0100 (CET)
-Date: Wed, 31 Jan 2001 18:10:48 +0000
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3A8D54A18
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 31 Jan 2001 11:04:24 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA12270
+	for <parisc-linux@puffin.external.hp.com>; Wed, 31 Jan 2001 11:00:17 -0700
+Sender: plattner@dns2.dot.at
+Message-ID: <3A785392.9BBAB841@dot.at>
+Date: Wed, 31 Jan 2001 19:04:02 +0100
+From: Christoph Plattner <christoph.plattner@dot.at>
 MIME-Version: 1.0
-From: The Puffin at ESIEE <puffin@esiee.fr>
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <20010131171049.33D89D15E9@mail.esiee.fr>
-Subject: [parisc-linux] Linux Expo Paris - Day 1
+To: Helge Deller <deller@gmx.de>
+Cc: Christoph Plattner <christoph.plattner@alcatel.at>,
+	parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Server E55 (9000/856) - PDC console
+References: <3A76C938.E2E13D2B@alcatel.at> <01013016205400.01014@P100.helgenet.de>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-                                                                      
-Hi guys!!                                                             
-                                                                      
-Some news from Linux Expo here in Paris:                              
-                                                                      
-The B132 and A500 ran all day long with no major trouble except for   
-what seemed to  be memory problems on the A500.                       
-                                                                      
-Loads of people over here. The show turned out to be rather commercial
-though w/ today's high advertising for Linux. We have some interesting
-contacts for bug reporting with Dassault Aviation and Meteo France    
-(the main meteorology agency in France).                              
-                                                                      
-That's all for day 1. Bye.                                            
-                                                                      
-ESIEE Team.                                                           
+Thanks for the answer, but ...
+
+... the E55 server has no STI or similar console. Only as serial one !
+And this serial console is on the 8-port serial multiplexer board,
+and I miss a driver for that (same for SCSI !) on the E55 (9000/856).
+
+So the only chance is the use of PDC console for the first step.
+And as my experience shows on a PC with 8-port serial board, it is
+not a problem to poll in 20-25ms cycles, which is enough for serial
+console operation and is not a performace problem....
+
+With friendly regards
+
+	Christoph
+
+
+Helge Deller wrote:
+> 
+> On Tuesday 30 January 2001 15:01, Christoph Plattner wrote:
+> > Hello PA-RISC GURUS !
+> >
+> > * Is it possible to use the PDC console as system console ?
+> 
+> The PDC-interface misses a function to get interrupts when a key was pressed.
+> To get around that problem you would need to poll the whole time, which would
+> result in a *very* bad performance.
+> Instead of using the PDC-console it is much better to get the STI console
+> working. I've already begun to rewrite the current STI code from prumpf,
+> which you can find under /drivers/video/sti/*.
+> Currently both - the new and the old STI code - is broken and unfunctional,
+> but I will continue to work on it as far as time permits.
+> 
+> Greetings,
+> 
+>         Helge.
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+
+-- 
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
