@@ -1,15 +1,20 @@
-Return-Path: <ww@STYX.ORG>
-Received: from STYX.ORG (styx.org [204.138.67.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B20CA4854
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 0263448FF
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu,  4 Mar 2004 12:06:44 -0700 (MST)
-Date: Thu, 4 Mar 2004 14:06:43 -0500
-From: William Waites <parisc@lists.styx.org>
+	Sat,  6 Mar 2004 04:26:55 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040304190643.GC19629@styx.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] lstrncpy_from_user symbol not exported
+Date: Sat, 6 Mar 2004 12:26:50 +0100
+References: <Pine.LNX.4.21.0403051153090.23074-100000@hal.pp.fishpool.fi>
+In-Reply-To: <Pine.LNX.4.21.0403051153090.23074-100000@hal.pp.fishpool.fi>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200403061226.50883.deller@gmx.de>
+Cc: =?iso-8859-1?q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>,
+	debian-hppa@lists.debian.org
+Subject: [parisc-linux] Re: broken keyboard driver on 2.6.3
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,43 +24,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I tried sending this to submit@bugs.parisc-linux.org
-but it bounced...
+On Friday 05 March 2004 10:58, Martin-Éric Racine wrote:
+> One thing I noticed today, when using the 712 from the keyboard (which I almost
+> never do), is that the cursor arrows near the keypad are broken:
+> 
+> In menuconfig, pressing any arrow kills the script with an abort message; in
+> Nano, the keys are completely ignored.  However, 2.4.24-pa0 works as expected.
 
------ Forwarded message from William Waites <ww@styx.org> -----
+Hi Martin-Éric,
 
-Date: Thu, 4 Mar 2004 13:59:49 -0500
-From: William Waites 
-Subject: lstrncpy_from_user symbol not exported
-To: submit@bugs.parisc-linux.org
+What does "showkey -s" reports if you press those keys ?
+Could you mail me privately your bootlog ?
 
-Hello, 
-
-I am running LiS on Linux/parsic. The streams kernel
-module uses the strncpy_from_user function which on
-parisc is macro that calls lstrncpy_from_user. This
-function is not exported by the kernel, so the module
-gets an unresolved symbol. The following patch fixes
-this.
-
-Index: arch/parisc/kernel/parisc_ksyms.c
-===================================================================
-RCS file: /var/cvs/linux-2.4/arch/parisc/kernel/parisc_ksyms.c,v
-retrieving revision 1.49
-diff -u -r1.49 parisc_ksyms.c
---- a/arch/parisc/kernel/parisc_ksyms.c 17 Jan 2004 06:40:11 -0000      1.49
-+++ b/arch/parisc/kernel/parisc_ksyms.c 4 Mar 2004 18:53:07 -0000
-@@ -110,6 +110,7 @@
- EXPORT_SYMBOL(lcopy_from_user);
- EXPORT_SYMBOL(lstrnlen_user);
- EXPORT_SYMBOL(lclear_user);
-+EXPORT_SYMBOL(lstrncpy_from_user);
-
- #ifndef __LP64__
- /* Needed so insmod can set dp value */
-
--- 
-/~\  The ASCII Ribbon Campaign
-\ /    No HTML/RTF in email
- X     No Word docs in email
-/ \  Respect for open standards
+Helge
