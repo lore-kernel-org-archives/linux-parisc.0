@@ -1,43 +1,64 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA10789
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 16:10:59 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA27829;
-	Wed, 17 Jan 2001 10:14:18 +1100
-Date: Wed, 17 Jan 2001 10:14:18 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Nick Clifton <nickc@redhat.com>
-cc: binutils@sourceware.cygnus.com, parisc-linux@puffin.external.hp.com
-Subject: Re: Build hppa unwind info for more than .text
-In-Reply-To: <200101161820.KAA24567@elmo.cygnus.com>
-Message-ID: <Pine.LNX.4.21.0101170918130.4272-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA11125
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 16:14:48 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 16 Jan 2001 23:18:30 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14IfMt-00014b-00; Tue, 16 Jan 2001 23:18:23 +0000
+Date: Tue, 16 Jan 2001 23:18:23 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matthieu Delahaye <delahaym@esiee.fr>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Lasi harmony driver with mixer
+Message-ID: <20010116231823.K20275@parcelfarce.linux.theplanet.co.uk>
+References: <3A64D26B.B99BAE70@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3A64D26B.B99BAE70@esiee.fr>; from delahaym@esiee.fr on Tue, Jan 16, 2001 at 11:59:56PM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 16 Jan 2001, Nick Clifton wrote:
 
-> : -  if (now_seg != text_section)
-> : +  if ((bfd_get_section_flags (stdoutput, now_seg)
-> : +       & (SEC_ALLOC | SEC_LOAD | SEC_READONLY))
-> : +      != (SEC_ALLOC | SEC_LOAD | SEC_READONLY))
-> :      return;
-> 
-> Won't this create unwind info for read only data sections ?
+Hi matthieu, i have a few comments.
 
-Only if the assembler sees
+On Tue, Jan 16, 2001 at 11:59:56PM +0100, Matthieu Delahaye wrote:
+> +Bugs:
+> +
+> +1. Doesn't work on 715/old
+> +
+> +This driver doesn't work on 715/old machines, which include the 715/75.  The
+> +chip used for this is technically called 'Vivace', which is identical to 
+> +Harmony.  Should be easy to fix.  It has something to do with the way it is
+> +reported by the inventory code.  The HPA is not that of Lasi or ASP so the
+> +interrupts aren't registered properly.
 
- .proc
- .callinfo
- .entry
+afair, prumpf had his harmony driver working on the 715/scorpio.  perhaps
+by looking at his source you could see what is missing?
 
- function body
+> +int harmony_mixer_ioctl(struct inode * inode, struct file * file, unsigned int cmd, unsigned long arg)
+> +{
+> +  int val;
+> +  int ret;
+[...]
 
- .exit
- .procend
+it'd be nice if you could rformat this to follow CodingStyle.
 
-You're unlikely to get unwanted unwind info.
+> +static struct file_operations harmony_mixer_fops =
+> +{
+> +	owner:	THIS_MODULE,
+> +	llseek: NULL,
+> +	read:   NULL,
+> +	write:	NULL,
+> +	poll: 	NULL,
+> +	ioctl: 	harmony_mixer_ioctl,
+> +	mmap:	NULL,
+> +	open: 	NULL,
+> +	release:NULL,
+> +};
 
-Alan Modra
+Don't initialise unused entries to NULL.  That's the point of using
+the new syntax for struct initialisation -- that we don't need to list
+unused ones.
+
 -- 
-Linuxcare.  Support for the Revolution.
+Revolutions do not require corporate support.
