@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpzilla3.xs4all.nl (smtpzilla3.xs4all.nl [194.109.127.139])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AE55482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Nov 2001 23:08:07 -0700 (MST)
-Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtpzilla3.xs4all.nl (8.12.0/8.12.0) with ESMTP id fA5685Tm021800
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 5 Nov 2001 07:08:05 +0100 (CET)
-Date: Mon, 5 Nov 2001 07:01:16 +0100
-From: Jurriaan on Alpha <thunder7@xs4all.nl>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: More Install on C110: Kernel doesn't load...
-Message-ID: <20011105070116.A2209@alpha.of.nowhere>
-Reply-To: thunder7@xs4all.nl
-References: <200111022221.PAA07613@puffin.external.hp.com> <BC52B862-D198-11D5-80EF-0030657D1C94@bigw.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <BC52B862-D198-11D5-80EF-0030657D1C94@bigw.org>
+Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F36A5482B
+	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 23:37:33 -0700 (MST)
+Date: Mon, 5 Nov 2001 01:37:14 -0500 (EST)
+From: "Christopher C. Chimelis" <chris@debian.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@parisc-linux.org, bcollins@debian.org
+Subject: Re: [parisc-linux] Re: hppa binutils/glibc updates
+In-Reply-To: <20011105024952.C4441@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,32 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Nov 04, 2001 at 08:56:40PM -0600, Daniel Williams wrote:
-> OK, burned the straight download ISO the way that works with EasyCD 
-> Creator, but it still gives me the same message as last time, in the 
-> same place as last time.
-> 
-> <snip of seg 0-3 loads>
-> Error: read from boot device failed( status = -4)
-> byteio_read: seekread() returned -1 expected 2048
-> error:  segment 0 read() failed
-> 
-> The CD was burned at 2x and the discs are 4x certified (PNY).  The CD is 
-> external on the 50 pin narrow bus (core.SCSI.2.0)  However, it does not 
-> have termination on the external bus.  The internal narrow SCSI devices 
-> *do* have termination (ie the DDS2 tape drive).  I have switched the CD 
-> with the DDS2 drive before, but not this time with the new correct 
-> burn.  Could termination be an issue here and should I try putting the 
-> CD drive internally with termination?
+On Mon, 5 Nov 2001, Matthew Wilcox wrote:
 
-If your external chain is unterminated, then yes, termination could be
-an issue. It's not certain, but it's certainly easier to try than
-testing another CDROM, right?
+> ok, just make sure you get a disc attached to the narrow interface,
+> or you'll be limited to NFS... 64MB is fine.
 
-Good luck,
-Jurriaan
--- 
-Put it this way, when people slip in what dogs have left in the streets,
-they do tend to say, 'Oops, I've trod in an Edmund'.
-	Blackadder II
-GNU/Linux 2.4.13-ac6 on Debian/Alpha 64-bits 990 bogomips load:0.06 0.04 0.03
+Ok :-)  I'll see what I can muster this week.  We seem to be
+differential-poor drive-wise, so I don't think I'll have a problem getting
+a narrow drive :-)  Also, we have a few external units laying around that
+are all narrow, so I may just use one of those.
+
+C
