@@ -1,33 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9A8E8484A
-	for <parisc-linux@parisc-linux.org>; Sat,  8 Sep 2001 13:28:24 -0600 (MDT)
-Date: Sat, 8 Sep 2001 15:29:13 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] New i386 cross compilers
-Message-ID: <20010908152913.B9613@megatonmonkey.net>
-References: <20010908040516.1AA5637DD4@carmen.fc.hp.com>
+Received: from gwyn.tux.org (gwyn.tux.org [207.96.122.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 440F4484A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Sep 2001 15:49:16 -0600 (MDT)
+Date: Sat, 8 Sep 2001 17:49:14 -0400
+From: Timothy Ball <timball@tux.org>
+To: parics Linux Mailing List <parisc-linux@lists.parisc-linux.org>
+Cc: Ext3 Users ml <Ext3-users@redhat.com>
+Message-ID: <20010908174914.O29708@gwyn.tux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010908040516.1AA5637DD4@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Fri, Sep 07, 2001 at 10:05:16PM -0600
+Subject: [parisc-linux] ext3+parisc kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Hi palinux people,
-> 
-> ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010905.tar.gz
-> 
-> Untar it from / it lives in /opt/palinux/
-> Report any problems to the list.
-> 
-> Thanks,
->
+[cross posting cause I'm not sure who should get this email]
 
-Matt,
+I am attempting to make ext3 work on the parisc kernel tree. So far I
+have successfully patched and have made the kernel compile w/ only two
+line changes to the source.
 
-What glibc did you use to build the cross compiler? (2.2.4-1 or earlier?)
-Would you mind elucidating on the build process?
+I got ext3 from the cvs, and the parisc 2.4.9-pa17 kernel and I've
+patched the parisc kernel w/ the add-to-kernel.sh script. after a bit of
+fighting I got the kernel to compile. I had to add and remove the
+following lines:
 
-Cheers,
-Carlos.
+line added include/linux/fs.h:1348
+extern loff_t no_llseek(struct file *file, loff_t offset, int origin);
+
+Needed for the no_llseek symbol.
+
+line removed kernel/ksyms.c:180
+EXPORT_SYMBOL(fsync_no_super);
+
+Needed removal because fsync_no_super was already being exported by
+fs/buffer.c:354
+
+Now when I boot. /proc is not mounted at boot, and when I mount it all
+the files in /proc appear to be directories. Also networking is gone.
+ifconfig just returns w/ nothing and ifconfig -a shows no devices.
+
+But on the bright side when I cat /proc/filesystems/ (everything in
+/proc is a directory even though it's not) I get ext3 to come up... So
+it kinda works. Gonna get the newest e2fsprogs and see if I can make a
+journal and have this broken kernel mount / as ext3.
+
+--timball
+
+-- 
+	GPG key available on pgpkeys.mit.edu
+pub  1024R/CFF85605 1999-06-10 Timothy L. Ball <timball@sheergenius.com>
+     Key fingerprint = 8A 8E 64 D6 21 C0 90 29  9F D6 1E DC F8 18 CB CD
