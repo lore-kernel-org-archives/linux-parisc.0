@@ -1,39 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web5501.mail.yahoo.com (web5501.mail.yahoo.com [216.115.106.184])
-	by dsl2.external.hp.com (Postfix) with SMTP id 786CA4A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Mar 2001 08:35:27 -0700 (MST)
-Message-ID: <20010319153526.9499.qmail@web5501.mail.yahoo.com>
-Date: Mon, 19 Mar 2001 07:35:26 -0800 (PST)
-From: Robert Liesenfeld <xunil96@yahoo.com>
-To: parisc-linux@lists.parisc-linux.org
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77CEE4A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Mar 2001 13:04:22 -0700 (MST)
+Sender: marteaut@esiee.fr
+Message-ID: <3AB666DB.2F4242FB@esiee.fr>
+Date: Mon, 19 Mar 2001 21:06:51 +0100
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
+To: William Carlsson <william.carlsson@teligent.se>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Linux on HP 712/60 - or 9000/E45 (826) ?
+References: <NEBBKDKPGLOJMLMCBOBLIELCDIAA.william.carlsson@teligent.se>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 735/125 Install Woes
 List-ID: <linux-parisc.vger.kernel.org>
 
-Greetings-
+Hi William,
 
-I'm trying to get palinux installed on my 735/125.  I've got serial console on it (laptop + serial
-cable + minicom), a 4GB SCSI disk installed.  This machine has previously run HP-UX 10.20 just
-fine.  When I try to boot either the lifimage I found on the FTP site, or the CD (palinux-0.5 ISO
-from the FTP server), I get the following:
+	Here, we have already working a A500, a B132 and a few 712 and 715. If you want
+more info, you should go to the PA/Linux official web
+site(http://www.parisc-linux.org) or to our page at http://www.esiee.fr/puffin.
+You will find in these two websites all you need. Soon, our team will release a
+new File System image with the latest debs. 
 
-High Priority Machine Check (HPMC): Code=1 regs=c0266080 (Addr=00000000)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001011
-... etc ...
-
-I can paste the remainder of the output if it is relevant, but I was hoping there was a simple
-explanation for this, even if it is "it won't work, forget it."  :)
-
-As a side note, is there anyone in the palinux community that is successfully running on a 735?
-
-Thanks,
-
--R
-
-__________________________________________________
-Do You Yahoo!?
-Get email at your own domain with Yahoo! Mail. 
-http://personal.mail.yahoo.com/
+So good luck, Thomas
