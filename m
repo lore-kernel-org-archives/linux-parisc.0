@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E618F482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Apr 2002 08:06:12 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16zeSD-0005pK-00; Mon, 22 Apr 2002 15:06:05 +0100
-Date: Mon, 22 Apr 2002 15:06:05 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: =?iso-8859-1?Q?Bruno_L=E9on?= <nonolemono@yahoo.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] How to install emacs 21.2 on a B180L
-Message-ID: <20020422150605.O5225@parcelfarce.linux.theplanet.co.uk>
-References: <200204220914.g3M9E8S07303@iut-lannion.fr>
+Received: from hera.cs.brandeis.edu (hera.cs.brandeis.edu [129.64.3.192])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A60B8482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Apr 2002 21:27:52 -0600 (MDT)
+Received: (from aaronm@localhost)
+	by hera.cs.brandeis.edu (8.9.3/8.9.3) id XAA01256
+	for parisc-linux@lists.parisc-linux.org; Mon, 22 Apr 2002 23:27:50 -0400
+Date: Mon, 22 Apr 2002 23:27:50 -0400
+From: Aaron Macks <aaronm@cs.brandeis.edu>
+To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20020422232750.B1244@hera.cs.brandeis.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <200204220914.g3M9E8S07303@iut-lannion.fr>; from nonolemono@yahoo.fr on Mon, Apr 22, 2002 at 11:13:02AM +0200
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Copmpiling ifenslave
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +23,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Apr 22, 2002 at 11:13:02AM +0200, Bruno Léon wrote:
-> I'm trying to install emacs 21.2 on a B180L,  but I can't compile the sources.
-> The system tells me that "emacs hasn't been ported on
-> hppa-unknown-linux-system".
+I don't know if anyone else has tried this, but trying to compile
+Becker's ifenslave commmand on a 0.93 box(kernel rebuilt to 2.4.18-pa0
+yielded this mess:
+ifenslave(.data+0x8c):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `opt_f'
+/tmp/ccDAhJJg.o(.data+0x7c): first defined here
+ifenslave(.data+0x18):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `longopts'
+/tmp/ccDAhJJg.o(.data+0x8): first defined here
+ifenslave(.data+0x90):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `opt_r'
+/tmp/ccDAhJJg.o(.data+0x80): first defined here
+ifenslave(.data+0x94):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `verbose'
+/tmp/ccDAhJJg.o(.data+0x84): first defined here
+ifenslave: In function `_init':
+ifenslave(.init+0x0): multiple definition of `_init'
+/usr/lib/gcc-lib/hppa-linux/3.0.2/../../../crti.o(.init+0x0): first
+defined here
+ifenslave(.data+0x98):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `skfd'
+/tmp/ccDAhJJg.o(.data+0x88): first defined here
+ifenslave: In function `_start':
+ifenslave(.text+0x0): multiple definition of `_start'
+/usr/lib/gcc-lib/hppa-linux/3.0.2/../../../crt1.o(.text+0x0): first
+defined here
+ifenslave(.text+0x100):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `main'
+/tmp/ccDAhJJg.o(.text+0x0): first defined here
+/usr/bin/ld: Warning: size of symbol `main' changed from 3032 to 2589
+in ifenslave
+ifenslave(.data+0x88):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `opt_a'
+/tmp/ccDAhJJg.o(.data+0x78): first defined here
+ifenslave(.fini+0x0):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `_fini'
+/usr/lib/gcc-lib/hppa-linux/3.0.2/../../../crti.o(.fini+0x0): first
+defined here
+ifenslave(.rodata+0x4):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+multiple definition of `_IO_stdin_used'
+/usr/lib/gcc-lib/hppa-linux/3.0.2/../../../crt1.o(.rodata+0x0): first
+defined here
+/usr/lib/gcc-lib/hppa-linux/3.0.2/../../../crt1.o(.dynamic+0x0):
+multiple definition of `_DYNAMIC'
+ifenslave(.dynamic+0x0):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+first defined here
+/usr/lib/gcc-lib/hppa-linux/3.0.2/../../../crt1.o(.got+0x0): multiple
+definition of `_GLOBAL_OFFSET_TABLE_'
+ifenslave(.got+0x0):/usr/src/build/53700-i386/BUILD/glibc-2.2.4/csu/init.c:
+first defined here
+/usr/bin/ld: .got section not immediately after .plt section
+collect2: ld returned 1 exit status
 
-   emacs21 |     21.2-1 |      unstable | source, alpha, arm, hppa, i386, ia64, m68k, mips, mipsel, powerpc, s390, sparc
-
-so you can simply apt-get install emacs21.  Presumably the debian package
-has patches to allow emacs to compile on hppa-linux.
-
+is this just a signal to upgrade gcc and glibc or is there more to it?
+Aaron
 -- 
-Revolutions do not require corporate support.
+_______________________________________________________
+Aaron Macks(aaronm@cs.brandeis.edu)
+My sheep has seven gall bladders, that makes me the King of the Universe!
