@@ -1,17 +1,18 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 334284829
+	by dsl2.external.hp.com (Postfix) with ESMTP id 261444829
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Apr 2004 23:41:40 -0600 (MDT)
-Date: Wed, 28 Apr 2004 07:39:36 +0200
-Message-ID: <408D43600000128B@ocpmta2.freegates.net>
-In-Reply-To: <20040427171521.GF14937@baldric.uwo.ca>
+	Wed, 28 Apr 2004 01:23:44 -0600 (MDT)
+Date: Wed, 28 Apr 2004 09:23:41 +0200
+Message-ID: <408D4360000013CF@ocpmta2.freegates.net>
+In-Reply-To: <20040427201429.GA29987@austin>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20RE=3A=20=5BPATCH=5D=20glibc=2D2=2E3=2E3=20error=20with=20debian=20unstable=09compiler=2E=2E=2E?=
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+To: "Morten Werner Olsen" <werner@skolelinux.no>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
+Subject: [parisc-linux] Re: hwinfo_7.30-2: suggested patch
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +22,59 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hello all,
 
-> Okay, it's a 64-bit kernel problem them. What kernel are you running
-> right now?
+Is there some interest to port this pkg on hppa?
+I think so but I haven't enough time to help more for the moment.
 
-a merged 2.6.6-rc1-pa2 and upstream 2.6.6-rc2 :) 32bits build with lastest
-gcc-3.3, binutils (debian unstable) and libc6 (cvs 20040426 + your patches
-:)
+Please advise,
+    Joel
 
-I also have a b2k on which I can try to build 64bits kernel with gcc-3.0?
+> -- Original Message --
+> Date: Tue, 27 Apr 2004 22:14:31 +0200
+> From: Morten Werner Olsen <werner@skolelinux.no>
+> To: Joel Soete <soete.joel@tiscali.be>
+> Subject: Re: hwinfo_7.30-2: suggested patch
+> 
+> 
+> On Fri, Apr 23, 2004 at 06:38:21PM +0200, Joel Soete wrote:
 
-Joel
+> > - where is the file modules.dep located? (I see hwinfo can't find
+> >   /lib/modules/2.6.6-rc1-pa0/modules.dep) or do you have a kernel
+> >   without module support?
+> 
+> As explain
+> it is just a draft because it is just a test of 2.6.6-rc1 and
+> I forget to install /lib/modules/2.6.6-rc1-pa0/modules.dep because the
+kernel
+> is well build with module support but for this platform (by default) all
+> drivers are buildin (again it 
+> s just testing)
+> 
+> That said, I well understood that it may need some more work to
+> improve support of hppa.
+> 
+> But may be can we put the question of actual interest to the parisc-linux.org
+> or better to debian-hppa ml? 
+> (I would like to
+> help you more (more test on different model,
+> different kernel 2.4, 2.6) but right now I don't have enough time to
+> do more, sorry)
+
+If you think the hppa-community will use the hwinfo package and you'll
+help me make it work on the architecture,
+> I'll include your patch! :)
+
+Just give me a sign, and I'll include it. I will not do it until next
+week, as I hope to get the package (v7.30-2) into Sarge when the
+10days period is finished [1].
+
+
+- Werner
+
+[1] http://packages.qa.debian.org/h/
+> winfo.html
+
 
 
 ----------------------------------------------------------------------------------------
