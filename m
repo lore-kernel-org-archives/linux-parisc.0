@@ -1,34 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA06918
-	for <parisc-linux@puffin.external.hp.com>; Sun, 27 Jun 1999 01:51:40 -0600
-Message-ID: <3774EF94.C57237A5@gmx.de>
-Date: Sat, 26 Jun 1999 17:19:48 +0200
-From: Helge Deller <deller@gmx.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA09316
+	for <parisc-linux@puffin.external.hp.com>; Sun, 27 Jun 1999 23:17:14 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id BAA06360
+	for <parisc-linux@thepuffingroup.com>; Mon, 28 Jun 1999 01:26:51 -0400
+Sender: adevries@feather.thepuffingroup.com
+Message-ID: <37770796.C70E0C65@thepuffingroup.com>
+Date: Mon, 28 Jun 1999 01:26:46 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-To: Alex deVries <adevries@thepuffingroup.com>
-CC: parisc-linux <parisc-linux@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] parisc-linux-ld
+Subject: [parisc-linux] Dino and Lasi
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Alex !
 
-Could maybe someone make me a patched "parisc-linux-ld" binary, where I
-can do
 
-parisc-linux-ld -R xyz -N        ( or any other letter for -R)
+Okay, I've committed some small changes to dino and lasi that can easily
+be backed out.
 
-where xyz should be the origin of the ELF-binary, which is currently
-0x2000 as seen in the mapfile ? (or is there any other possibility,
-because -R at GNU-ld is not used for origin, but for symbol-names...).
+some questions:
 
-If I would have such an patched linker, I maybe could try make the
-cross-compiled ELF-binary bootable.....
+- what IRQ are we going to run LASI on?  Is that something we just pick
+and hard code?
 
-Helge Deller..
+- I changed lasi.c and dino.c to only use readl() and writel(), and not
+readb and writew, etc.  Was this a mistake?
 
---
----------------------------------------
- Mailto:deller@gmx.de
- ICQ# 2046114
----------------------------------------
+- We really really need the IRQ bottom halfs setup.  Any takers?
+
+- Alex
+
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
