@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 17623482E
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Sep 2003 15:21:54 -0600 (MDT)
-Message-ID: <3F5CF2F6.3040101@tiscali.be>
-Date: Mon, 08 Sep 2003 21:21:58 +0000
-From: Joel Soete <joel.soete@tiscali.be>
+Received: from sj-iport-2.cisco.com (sj-iport-2-in.cisco.com [171.71.176.71])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E3FC4844
+	for <parisc-linux@parisc-linux.org>; Tue,  9 Sep 2003 19:15:16 -0600 (MDT)
+Received: from sj-inbound-1.cisco.com (sj-inbound-1.cisco.com [128.107.250.142])
+	by sj-core-5.cisco.com (8.12.9/8.12.6) with ESMTP id h8A1FCXs009977
+	for <parisc-linux@parisc-linux.org>; Tue, 9 Sep 2003 18:15:14 -0700 (PDT)
+Date: Tue, 9 Sep 2003 18:15:40 -0700 (PDT)
+From: Mail Delivery Subsystem <MAILER-DAEMON@cisco.com>
+Message-Id: <200309100115.h8A1Fegl003968@sj-inbound-1.cisco.com>
+To: <parisc-linux@parisc-linux.org>
 MIME-Version: 1.0
-To: "Thaddeus A. Wilson" <tawilson@utmem.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] problems installing debian on a c180
-References: <3F5CE605.327AD964@utmem.edu>
-In-Reply-To: <3F5CE605.327AD964@utmem.edu>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="h8A1Fegl003968.1063156540/sj-inbound-1.cisco.com"
+Subject: [parisc-linux] Returned mail: see transcript for details
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,67 +24,90 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thaddeus A. Wilson wrote:
+This is a MIME-encapsulated message
 
->i had previously done some messing around with a c180 and at one time
->figured
->out how to install but have since lost my notes.
->
->i have a c180 with an hp A4071B graphics card installed in GSC slot 3
->and
->recognized as HPA4071B_LZ
->
->i know i previously had to enter "video=stifb:off" in the palo:
->
->default when i choose to interact with ipl on boot as parameters to
->kernal in
->palo are:
->
->1. 0/vmlinux
->2. ramdisk_size=8192
->3. initrd=0/ramdisk
->4. console=tty0
->
-There should the place where you would probaly insert "video=stifb:off" 
-(just for remind: select 4 then at the end of line insert a space 
-followed by video=stifb:off)
+--h8A1Fegl003968.1063156540/sj-inbound-1.cisco.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
->5. sti=1/0/0
->6. sti_font=VGA8x16
->7. TERM=linux
->
->if i accept default it gets past that message indicating a problem with
->console
->but the screen goes black although it looks as if the monitor is still
->active
->i.e. green light not a yellow one.
->
->i am using the debian 3.0r1 disk as my boot disk.
->
->i recall the last time i got the install to work i got a penguin in the
->corner
->but graphic install never worked and i had some difficulty with the x
->server
->starting.  any help on reinstallation would be appreciated i.e.
->necessary mods
->to the parameters on boot to get back to installing.
->  
->
-hmm the most simple way would be first to re-try the install from a 
-serial console (or an actual conole in vt100 emulation or a minicom 
-session from another system). (the tips is to unplug ps/2 kbd/mouse so 
-the pdc will switch automatically console to serial port 1 at reboot time)
+------------------  Virus Warning Message (on the network)
 
-Once your system is ready you may be first update it (with apt-get for 
-example) and install a more recent kernel (iirc 2.4.21 should be already 
-pkged or a 2.4 cvs)  to be sure that pb was not already solved since 3.0 
-cds.
-If you still experiment pb into 
-<http://parisc-linux.org/mailing-lists/index.html> you could try to 
-search (with google engine) "c180" related mail in this ml
+Found virus WORM_SOBIG.F in file document_all.pif
+The uncleanable file is deleted.
 
-Another  solution could be to try a netinstall from a recent lifimage 
-available near <http://pateam.esiee.fr/cd-images/testing>.
+---------------------------------------------------------
 
-hth,
-    Joel
+--h8A1Fegl003968.1063156540/sj-inbound-1.cisco.com
+
+The original message was received at Tue, 9 Sep 2003 18:15:23 -0700 (PDT)
+from dhcp9546197.columbus.rr.com [24.95.46.197]
+
+   ----- The following addresses had permanent fatal errors -----
+<damian@cisco.com>
+    (reason: 552 5.0.0 SOBIG.F Virus outbreak - temp fix - change your subject)
+    (expanded from: <damian@cisco.com>)
+
+   ----- Transcript of session follows -----
+... while talking to sj-core-5.cisco.com.:
+>>> DATA
+<<< 552 5.0.0 SOBIG.F Virus outbreak - temp fix - change your subject
+554 5.0.0 Service unavailable
+
+--h8A1Fegl003968.1063156540/sj-inbound-1.cisco.com
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; sj-inbound-1.cisco.com
+Received-From-MTA: DNS; dhcp9546197.columbus.rr.com
+Arrival-Date: Tue, 9 Sep 2003 18:15:23 -0700 (PDT)
+
+Final-Recipient: RFC822; damian@cisco.com
+X-Actual-Recipient: RFC822; damian@sj-core.cisco.com
+Action: failed
+Status: 5.0.0
+Remote-MTA: DNS; sj-core-5.cisco.com
+Diagnostic-Code: SMTP; 552 5.0.0 SOBIG.F Virus outbreak - temp fix - change your subject
+Last-Attempt-Date: Tue, 9 Sep 2003 18:15:40 -0700 (PDT)
+
+--h8A1Fegl003968.1063156540/sj-inbound-1.cisco.com
+Content-Type: message/rfc822
+
+Return-Path: <parisc-linux@parisc-linux.org>
+Received: from WPZ (dhcp9546197.columbus.rr.com [24.95.46.197])
+	by sj-inbound-1.cisco.com (8.12.8p1/8.11.2) with ESMTP id h8A1FMgl003735
+	for <damian@cisco.com>; Tue, 9 Sep 2003 18:15:23 -0700 (PDT)
+Message-Id: <200309100115.h8A1FMgl003735@sj-inbound-1.cisco.com>
+From: <parisc-linux@parisc-linux.org>
+To: <damian@cisco.com>
+Subject: Thank you!
+Date: Tue, 9 Sep 2003 21:14:55 --0400
+X-MailScanner: Found to be clean
+Importance: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MSMail-Priority: Normal
+X-Priority: 3 (Normal)
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="_NextPart_000_12993AA2"
+
+This is a multipart message in MIME format
+
+--_NextPart_000_12993AA2
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Please see the attached file for details.
+--_NextPart_000_12993AA2
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+
+------------------  Virus Warning Message (on the network)
+
+document_all.pif is removed from here because it contains a virus.
+
+---------------------------------------------------------
+--_NextPart_000_12993AA2--
+
+
+--h8A1Fegl003968.1063156540/sj-inbound-1.cisco.com--
