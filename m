@@ -1,390 +1,127 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA18729
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Sep 2000 16:45:16 -0600
-Message-Id: <200009222249.PAA14831@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA20177
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Sep 2000 18:07:31 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 23 Sep 2000 00:08:12 -0000
+Received: from dhd by tarwebok with local (Exim 3.12 #1 (Debian))
+	id 13ccrf-0003Xy-00
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Sep 2000 20:08:23 -0400
 To: parisc-linux@thepuffingroup.com
-Cc: Ryan Bradetich <rbradetich@uswest.net>
-Subject: Re: [parisc-linux] C100 and ccio-dma 
-In-reply-to: Your message of "Fri, 22 Sep 2000 14:31:42 PDT."
-             <200009222131.OAA14722@milano.cup.hp.com>
-Date: Fri, 22 Sep 2000 15:49:44 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 22 Sep 2000 20:08:20 -0400
+Message-ID: <87og1gm0ln.fsf@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Big bad SCSI errors building GCC with / on SCSI
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> Here's the output from me (accidentally) booting a 32-bit kernel
-> on a c3k. It seems sym53c8xx passed a non-kernel address to get mapped...
-> or the ASSERT statement is bogus (checking too many bits).
+Hi,
 
-Bogus ASSERT. This c3k has more than 256M of memory and thus
-some of the bits can be valid...fixing.
+When trying to build GCC on a SCSI disk (with a root filesystem on
+SCSI) I get a lot of horrible looking errors and the build fails.
 
-grant
+Building GCC on a SCSI disk with root filesystem on NFS doesn't seem
+to cause problems.
 
-ps. here's the new output:
-Main Menu: Enter command > bo lan
-Interact with IPL (Y, N, Q)?> n
+Note that building smaller things doesn't seem to trigger this.
+Binutils for instance managed to squeak through though I got a few
+'resetting SCSI bus and chip' messages.
 
-Booting... 
-Network Station Address 001083-360089
+One thing I should point out is that I didn't power cycle my A180 when
+it crashed, I just soft-rebooted.  So I will try to provoke these
+problems and then power cycle to see if they are cured by that.
 
-System IP Address 15.8.80.77
-Server IP Address 15.8.81.247
+My boot messages show (excuse the bad formatting, ^%@#%^#$^%$#Y&^
+minicom can't cut and paste properly from xterm)
 
-Boot IO Dependent Code (IODC) revision 2
-
-
-HARD Booted.
-palo ipl grundler@hpisp747 Tue Sep 12 20:36:36 PDT 2000
-0/vmlinux 2014327 bytes @ 0x6800
-0/palo-cmdline '0/vmlinux HOME=/ TERM=LINUX root=/dev/nfs nfsroot=15.8.81.247:/tftpboot/hppa '
-Kernel: partition 0 file /vmlinux
-ELF32 executable
-
-Entry 001000e8 first 00100000 n 4
-Segment 0 load 00100000 size 1395112 mediaptr 0x1000
-Segment 1 load 00256000 size 177736 mediaptr 0x156000
-Segment 2 load 00284000 size 98464 mediaptr 0x182000
-Segment 3 load 002a0000 size 8192 mediaptr 0x19b000
-branching to kernel entry point 0x001000e8
-Set default PSW W bit to 0
-PDC Console Initialized
-The Kernel has started...
-Enabled FP coprocessor
-Free memory starts at: 0xc02d1000
-PALO command line: 'HOME=/ TERM=LINUX root=/dev/nfs nfsroot=15.8.81.247:/tftpboot/hppa '
-PALO initrd 0-0
-model   00005bb0 00000481 00000000 00000002 77cd9463 100000f0 00000008 000000b2 000000b2
-vers    00000200
-cpuid   00000224
-CPUID vers 17 rev 4
-CPU might be a PA8500 (PCX-W)
-CPU(s): 1 x PA8500 (PCX-W) at 400.000000 MHz
-Searching for devices in PDC firmware... processor hpa 0xfffa0000
-a newer box...
-Found devices:
-1. Astro BC Runway Port (12) at 0xfed00000, versions 0x582, 0x0, 0xb, 0x0, 0x10
-2. Elroy PCI Bridge (13) at 0xfed30000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-3. Elroy PCI Bridge (13) at 0xfed32000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-4. Elroy PCI Bridge (13) at 0xfed38000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-5. Elroy PCI Bridge (13) at 0xfed3c000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-6. AllegroHigh W  (0) at 0xfffa0000, versions 0x5bb, 0x0, 0x4, 0x0, 0x81
-7. AllegroHigh Memory (1) at 0xfed10200, versions 0x86, 0x0, 0x9, 0x0, 0x0
-That's a total of 7 devices.
-Linux version 2.4.0-test6 (grundler@hpisp747) (gcc version 2.96 20000822 (experimental)) #21 Fri Sep 22 14:52:45 PDT 2000
-free_bootmem(0x2d5000, 0x1fd2b000)
-initrd: 00000000-00000000
-pagetable_init
-On node 0 totalpages: 131072
-zone(0): 65536 pages.
-zone(1): 65536 pages.
-zone(2): 0 pages.
-Kernel command line: HOME=/ TERM=LINUX root=/dev/nfs nfsroot=15.8.81.247:/tftpboot/hppa 
-trap_init
-Calibrating delay loop... 799.54 BogoMIPS
-Memory: 511636k available
-Dentry-cache hash table entries: 65536 (order: 7, 524288 bytes)
-Buffer-cache hash table entries: 32768 (order: 5, 131072 bytes)
-Page-cache hash table entries: 131072 (order: 7, 524288 bytes)
-Inode-cache hash table entries: 32768 (order: 6, 262144 bytes)
-POSIX conformance testing by UNIFIX
-lba version TR2.1 (0x2) found at 0xfed30000
-lba_fixup_bus(0xdffef7e0) bus 0 sysdata 0xdfffa220
-lba version TR2.1 (0x2) found at 0xfed32000
-lba_fixup_bus(0xdffef860) bus 1 sysdata 0xdfffa260
-lba version TR2.1 (0x2) found at 0xfed38000
-lba_fixup_bus(0xdffef8e0) bus 2 sysdata 0xdfffa2a0
-lba version TR2.1 (0x2) found at 0xfed3c000
-lba: iosapic_register says not used
-Warning : device (13, 0x782, 0x0, 0xa, 0x0) NOT claimed by lba TR2.1
-SBA found Astro 2.1 at 0xfed00000
-lba_init_iregs() ibase 0x1 imask 0xf0000000
-lba_init_iregs() base_addr fed38000
-lba_init_iregs() base_addr fed32000
-lba_init_iregs() base_addr fed30000
-lba_init_iregs() done
-lba: lba_bios_init
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP
-IP: routing cache hash table of 4096 buckets, 32Kbytes
-TCP: Hash tables configured (established 32768 bind 32768)
-Starting kswapd v1.7
-pty: 256 Unix98 ptys configured
-lp: driver loaded but no devices found
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-sym53c8xx: at PCI bus 1, device 5, function 0
-sym53c8xx: 53c875 detected 
-sym53c8xx: at PCI bus 0, device 15, function 0
-sym53c8xx: 53c896 detected 
-sym53c8xx: at PCI bus 0, device 15, function 1
-sym53c8xx: 53c896 detected 
-sym53c875-0: rev 0x3 on pci bus 1 device 5 function 0 irq 769
-sym53c875-0: NCR clock is 40218KHz
-sym53c875-0: ID 7, Fast-20, Parity Checking
-sym53c875-0: on-chip RAM at 0xf4901000
-sym53c875-0: restart (scsi reset).
-sym53c875-0: Downloading SCSI SCRIPTS.
-sym53c896-1: rev 0x4 on pci bus 0 device 15 function 0 irq 513
-sym53c896-1: NCR clock is 40218KHz
-sym53c896-1: ID 7, Fast-40, Parity Checking
-sym53c896-1: on-chip RAM at 0xf4002000
-sym53c896-1: suspicious SCSI data while resetting the BUS.
-sym53c896-1: dp1,d15-8,dp0,d7-0,rst,req,ack,bsy,sel,atn,msg,c/d,i/o = 0x4000100, expecting 0x100
-sym53c896-1: FATAL ERROR: CHECK SCSI BUS - CABLES, TERMINATION, DEVICE POWER etc.!
-sym53c896-1: giving up ...
-kernel BUG at sym53c8xx.c:719!
-sym53c896-1: rev 0x4 on pci bus 0 device 15 function 1 irq 513
-sym53c896-1: NCR clock is 40218KHz
-sym53c896-1: ID 7, Fast-40, Parity Checking
-sym53c896-1: on-chip RAM at 0xf4000000
-sym53c896-1: restart (scsi reset).
-sym53c896-1: handling phase mismatch from SCRIPTS.
-sym53c896-1: Downloading SCSI SCRIPTS.
-scsi0 : sym53c8xx - version 1.6b
-scsi1 : sym53c8xx - version 1.6b
-scsi : 2 hosts.
-  Vendor: SEAGATE   Model: ST39102LC         Rev: HP01
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-Detected scsi disk sda at scsi1, channel 0, id 6, lun 0
-sym53c896-1-<6,0>: tagged command queue depth set to 8
-scsi : detected 1 SCSI disk total.
-sym53c896-1-<6,0>: wide msgout: 1-2-3-1.
-sym53c896-1-<6,0>: wide msgin: 1-2-3-1.
-sym53c896-1-<6,0>: wide: wide=1 chg=0.
-sym53c896-1-<6,0>: wide msgout: 1-2-3-1.
-sym53c896-1-<6,0>: wide msgin: 1-2-3-1.
-sym53c896-1-<6,0>: wide: wide=1 chg=0.
-sym53c896-1-<6,0>: sync msgout: 1-3-1-c-1f.
-sym53c896-1-<6,0>: sync msg in: 1-3-1-c-f.
-sym53c896-1-<6,0>: sync: per=12 scntl3=0xb0 scntl4=0x0 ofs=15 fak=0 chg=0.
-sym53c896-1-<6,*>: FAST-20 WIDE SCSI 40.0 MB/s (50 ns, offset 15)
-SCSI device sda: hdwr sector= 512 bytes. Sectors= 17773524 [8678 MB] [8.7 GB]
+sim700: Configuring 53c710 (SCSI-ID 7) at ffd06100, IRQ 534
+scsi0: Revision 0x2
+Post test1, istat 01, sstat0 00, dstat 84
+sim700: WARNING IRQ probe failed, (returned 0)
+scsi0: Good, target data areas are dma coherent
+scsi0: test 1 completed ok.
+scsi0: sim700_intr_handle() called with no interrupt
+scsi0 : LASI/Simple 53c7xx
+scsi : 1 host.
+Vendor: SEAGATE   Model: ST34573N
+Rev: HP05
+Type:   Direct-Access
+ANSI SCSI revision: 02
+Detected scsi disk sda at scsi0, channel 0, id 5, lun 0
+Vendor: SEAGATE   Model: ST34573N
+Rev: HP05
+Type:   Direct-Access
+ANSI SCSI revision: 02
+Detected scsi disk sdb at scsi0, channel 0, id 6, lun 0
+scsi : detected 2 SCSI disks total.
+SCSI device sda: hdwr sector= 512 bytes. Sectors= 8388314 [4095 MB] [4.1 GB]
 Partition check:
- sda: unknown partition table
-Serial driver version 5.01 (2000-05-29) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
-Linux Tulip driver version 0.9.8 (July 13, 2000)
-pcibios_enable_device: Enabling device 00:0c.0 (0057 -> 0157)
-eth0: Digital DS21143 Tulip rev 48 at 0x1000, 00:10:83:36:00:89, IRQ 514.
-eth0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
-Sending BOOTP requests.... OK
-IP-Config: Got BOOTP answer from 15.8.81.247, my address is 15.8.80.77
-Switching from PDC console
+sda: sda1 sda2
+SCSI device sdb: hdwr sector= 512 bytes. Sectors= 8388314 [4095 MB] [4.1 GB]
+Partition check:
+sdb: sdb1 sdb2
 
+Errors look like:
 
-PDC Console Initialized
-Switched to PDC console
+scsi0: Unexpected stacked interrupt, istat 0a, sstat0 30, dstat 00
+scsi0: Failed to handle interrupt.  Failing commands and resetting SCSI bus and chip
+scsi0: istat = 0a, sstat0 = 20, sstat1 = 00, dstat = 00
+scsi0: dsp = 07f4d3d0 (script[0x14f4]), dsps = ab93001b, target = 0
+scsi0: Failing command for ID5
+scsi0: Failing command for ID6
+scsi0: sim700_intr_handle() called with no interrupt
+scsi0: Unexpected stacked interrupt, istat 0a, sstat0 20, dstat 00
+scsi0: Failed to handle interrupt.  Failing commands and resetting SCSI bus and chip
+scsi0: istat = 0a, sstat0 = 20, sstat1 = 01, dstat = 00
+scsi0: dsp = 07f4d150 (script[0x1454]), dsps = ab93000c, target = 0
+scsi0: Failing command for ID5
+scsi0: sim700_intr_handle() called with no interrupt
+scsi0: >>>>>>>>>>>> Host reset <<<<<<<<<<<<                                     
+scsi0: istat = 00, sstat0 = 00, sstat1 = 00, dstat = 00                         
+scsi0: dsp = 07f4f438 (script[0x1d0e]), dsps = 07f4f448, target = 0             
+scsi0: sim700_intr_handle() called with no interrupt                            
+SCSI disk error : host 0 channel 0 id 5 lun 0 return code = 2                    
+I/O error: dev 08:02, sector 139408                                             
+I/O error: dev 08:02, sector 139416                                             
+I/O error: dev 08:02, sector 139520                                             
+I/O error: dev 08:02, sector 139768                                             
+I/O error: dev 08:02, sector 140016                                             
+I/O error: dev 08:02, sector 786768                                             
+I/O error: dev 08:02, sector 888512
+(etc)
 
-Dumping Stack from e0000000 to e00002c0:
+Then the disk becomes basically unusable, I push TOC, I lose lots of
+files, my blood pressure raises 30 points, I yell obscenities, etc.
 
-Dumping Stack from c025c000 to c025d680:
-c000 08000081 00000090 00000000 c0220ad4 08000082 00000090 00000000 c0220aec
-c020 08000083 00000090 00000000 c0220b00 08000084 00000090 00000000 c0220b14
-c040 08000085 00000090 00000000 c0220b28 08000086 00000090 00000000 c0220b38
-c060 08000087 00000090 00000000 c0220b4c 08000088 00000090 00000000 c0220b60
-c080 08000089 00000090 00000000 c0220b70 0800008a 00000090 00000000 c0220818
-c0a0 0800008b 00000090 00000000 c0220830 08000090 00000090 00000000 c0220b80
-c0c0 08000091 00000090 00000000 c0220b94 080007ff 00000090 00000000 c0220ba4
-c0e0 08000800 00000090 00000000 c021ad10 08000801 00000090 00000000 c021ad00
-c100 080008ff 00000090 00000000 c0220bb4 08000091 00000090 00000000 c0220bc8
-c120 08000092 00000090 00000000 c0220bd8 08000093 00000090 00000000 c0220be8
-c140 08000094 00000090 00000000 c0220bfc 08000095 00000090 00000000 c0220c10
-c160 08000096 00000090 00000000 c0220c24 08000097 00000090 00000000 c0220c38
-c180 08000098 00000090 00000000 c0220c4c 08000099 00000090 00000000 c0220c64
-c1a0 0800009a 00000090 00000000 c0220c7c 0800009b 00000090 00000000 c0220c94
-c1c0 30000004 00000300 00000000 c0220ca8 30000004 00000340 00000000 c0220cb0
-c1e0 30000004 00000380 00000000 c0220cb8 30000004 00000490 00000000 c021b1b4
-c200 00000000 00000000 00000000 00000000 01820ffe 00000000 01000ff0 00000000
-c220 00800ff0 00000000 00000ff0 00000000 03000ffc 00000001 02800ffc 00000001
-c240 02020fff 00000001 02000ffe 00000001 04000ff0 00000002 03200ff0 00000002
-c260 03100ff0 00000002 02880fff 00000002 02840ffc 00000002 02040ffc 00000002
-c280 02030fff 00000002 01820ffe 00000002 06100ff0 00000004 06000ff0 00000004
-c2a0 00480ff0 00000004 04800ff0 00000004 05a00ffe 00000003 058e0fff 00000003
-c2c0 058c0ffe 00000003 05880ffc 00000003 05800ff8 00000003 05920fff 00000003
-c2e0 059e0fff 00000003 05b30fff 00000006 01840fff 00000006 059c0ffe 00000006
-c300 05980ffc 00000006 05940ffc 00000006 05930fff 00000006 05900ffe 00000006
-c320 058f0fff 00000006 059f0fff 00000006 05a40ffc 00000006 05a80ffc 00000006
-c340 05a20ffe 00000006 05b20fff 00000007 05b60ffe 00000007 05b00ffe 00000007
-c360 05ae0ffe 00000007 05ad0fff 00000007 05b50fff 00000007 05ba0fff 00000007
-c380 05b80ffe 00000007 05b40fff 00000008 05bb0fff 00000008 05bc0ffc 00000008
-c3a0 05c00fc0 00000008 05100ff0 00000005 05000ff0 00000005 00000000 00000000
-c3c0 c0220d54 c0220d44 c0220d34 c0220d24 c0220d10 c0220cfc c0220cec c0220cdc
-c3e0 c0220ccc c0220cbc 00000000 00000000 00000000 00000000 00000000 00000000
-c400 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c420 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c440 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c460 00000000 00000000 00000000 00000000 00000007 00000000 00000000 00000000
-c480 00000008 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c500 c010b10c c010b2e8 c010b58c c010b5a8 c010b5d0 c010b5d4 c010b62c c010b630
-c520 c010b648 c010b10c c010b660 c010b668 c010b5a8 c010b5d0 c010b5d4 c010b62c
-c540 c010b630 c010b648 00000000 00000000 00000000 00000000 00000000 00000000
-c560 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c580 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c5a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c5c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c5e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c600 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c620 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c640 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c660 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c680 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c6a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c6c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c6e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c700 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c720 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c740 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c760 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c780 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c7a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c7c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c7e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c800 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c820 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c840 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c860 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c880 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c8a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c8c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c8e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c900 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c920 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c940 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c960 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c980 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c9a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c9c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c9e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca60 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-caa0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cac0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cae0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cb00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cb20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cb40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cb60 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cb80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cba0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cbc0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cbe0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cc00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cc20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cc40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cc60 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cc80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cca0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ccc0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cce0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cd00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cd20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cd40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cd60 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cd80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cda0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cdc0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cde0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ce00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ce20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ce40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ce60 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ce80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cea0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cec0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cee0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cf00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cf20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cf40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cf60 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cf80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cfa0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cfc0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cfe0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d020 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d040 00000000 00000000 00000000 00269000 00000000 00000000 00000000 00000000
-d060 00000000 00000000 00000000 00107128 00000000 00000000 00000000 00000000
-d080 00000000 00000000 c0217430 dfffe000 dffffe58 c02a61db 00000008 00000001
-d0a0 e0000024 00000380 00000002 0000005a 0000006c 00000025 c02a61db 00000068
-d0c0 00000004 00000001 f0000174 c0254950 00000000 dfffe000 c010d634 00000000
-d0e0 00000000 00000000 c02a61db c0256000 ffffffff 20000080 e00002c0 c0109748
-d100 0000001f 00000000 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d120 00003d09 ffffffff 00000078 ffffffff 00000000 001c9c38 ffffffff ffffffff
-d140 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d160 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d180 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d1a0 ffffffff ffffffff ffffffff ffffffff 00000000 000003e8 00000000 00009bdc
-d1c0 0000000a 00000064 00000060 ffffffff 00000029 ffffffff ffffffff ffffffff
-d1e0 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 60020060
-d200 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d220 00000000 00000000 c0216984 c0216988 00000000 00000000 00000000 00000000
-d240 00000000 00000000 00000000 00000000 00000000 6bc33f49 00000000 e0000024
-d260 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d280 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d2a0 00000000 00000000 00000000 c01056e8 00000000 00000000 00000000 00000000
-d2c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d2e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d300 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d320 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d340 00000000 00000000 00107198 00261000 00271000 f0000018 00000000 00000000
-d360 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d3a0 00000000 00000000 00000000 c0107e14 00000000 00000000 00000000 00000000
-d3c0 00000000 c0100000 00104024 00000000 00000000 00000001 c025d080 c0217fcc
-d3e0 00000000 00000000 00000000 c010071c 00000000 00000000 00000000 00000000
-d400 00000001 c025d080 00000068 c02a61db 00000008 e00002c0 e0000000 c021934c
-d420 00000000 c0100000 00104024 c01080cc 00000000 00000001 c026a49c 00000000
-d440 0004000a c026a000 c01080cc e0000000 e00002c0 c025d080 c0219000 00000001
-d460 c02191ec 00000000 fffa0000 f0408cd8 f0407ef0 00000025 c02a61db 00000068
-d480 c025d080 00000001 f0000174 c026a478 c026a478 00000000 fee003fd 002a31bc
-d4a0 c026a480 c026a480 c0219000 c0256000 0000002a eb426bac c025d680 00000060
-d4c0 0000001f 00000000 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d4e0 00003d09 ffffffff 00000078 ffffffff 00000000 001c9c38 ffffffff ffffffff
-d500 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d520 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d540 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-d560 ffffffff ffffffff ffffffff ffffffff 00000000 000003e8 00000000 00009bdc
-d580 0000000a 00000064 00000060 ffffffff 00000029 ffffffff ffffffff ffffffff
-d5a0 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 60020060
-d5c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d5e0 00000000 00000000 c01080d8 c01080dc fffffff0 f000a3a0 00000000 00261000
-d600 00000000 00008000 00000000 00000000 00000018 0c701093 00000000 e0000008
-d620 ffffffff fffa0000 fffffff0 f0408cd8 00000000 0025d5e8 00000000 00000000
-d640 00000000 00000000 00000000 00000000 00000000 00000000 fffffff0 f00686cc
-d660 00000000 00000000 fffffff0 c0105c6c fffffff0 f000a3a0 fffffff0 f0024a10
+This happens on both disks on the A180.  When it's my root filesystem
+(/dev/sdb2) then it's really bad because the machine becomes totally
+screwed (I still have a shell prompt but can't run any programs at
+all).
 
-Kernel Fault: Code=15 regs=c025d440 (Addr=e0000008)
+The chart of success/failure in building/bootstrapping GCC looks like
+this with kernel 2.4:
 
-PSW  : 0004000a  GR 1 : c026a000  GR 2 : 0xc01080cc parisc_terminate+7c
-c01080cc  GR 3 : e0000000  
-GR 4 : e00002c0  GR 5 : c025d080  GR 6 : c0219000  GR 7 : 00000001  
-GR 8 : c02191ec  GR 9 : 00000000  GR10 : fffa0000  GR11 : f0408cd8  
-GR12 : f0407ef0  GR13 : 00000025  GR14 : c02a61db  GR15 : 00000068  
-GR16 : c025d080  GR17 : 00000001  GR18 : f0000174  GR19 : c026a478  
-GR20 : c026a478  GR21 : 00000000  GR22 : fee003fd  GR23 : 002a31bc  
-GR24 : c026a480  GR25 : c026a480  GR26 : c0219000  GR27 : c0256000  
-GR28 : 0000002a  GR29 : eb426bac  GR30 : c025d680  GR31 : 00000060  
-SR0  : 00000000  SR1  : 00000000  SR2  : 00000000  SR3  : 00000000  
-SR4  : 00000000  SR5  : 00000000  SR6  : 00000000  SR7  : 00000000  
+root NFS, build NFS:            'rpc_execute called for sleeping task!!',
+                                over and over, total death (machine
+                                continues to respond to pings, terminal
+                                driver functions, all processes are
+                                terminally wedged though)
 
-IASQ : 00000000 00000000 IAOQ : c01080d8 c01080dc ORIG_R28 : 00008000
- IIR : 0c701093 ISR : 00000000 IOR : e0000008
+root NFS, build /dev/sda2:      same NFS problem but it takes longer to
+                                manifest itself.
 
+root /dev/sdb2, build /dev/sda2: semi-horrible SCSI problems, but the
+                                machine remains usable since /dev/sdb
+                                is still basically functional
 
-(0xc01080d8 parisc_terminate+88
- 0xc01080cc parisc_terminate+7c
+root /dev/sdb2, build /dev/sdb2: SCSI problems halfway through building
+                                GCC backend, machine rendered unusable,
+                                many files lost, filesystem corruption.
 
-probably has something to do with the fact that I don't have
-a working serial console on this box and CONFIG_SERIAL_CONSOLE
-is set)
+In order to build GCC at all I need to use linux 2.3.99pre8 with root
+on NFS and build on SCSI.  And then I get unrelated crashes (probably
+due to some bugs I've fixed in the 2.4 branch).
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
