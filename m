@@ -1,63 +1,77 @@
-From: Anders <dizzey@ing.umu.se>
-Subject: Re: [parisc-linux] k-class
-	smp_call_function	at	arch/parisc/kernel/smp.c:340
-Date: Mon, 28 Mar 2005 17:20:35 +0200
-Message-ID: <20050328152035.GB16179@ing.umu.se>
-References: <20050328122749.GB12853@ing.umu.se> <424800DB.6000709@tiscali.be>
-	<20050328133837.GA14623@ing.umu.se> <42481CAF.5010905@tiscali.be>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Call for Testing
+Date: Mon, 28 Mar 2005 10:24:13 -0500
+Message-ID: <20050328152413.GB24913__669.919679831032$1416623727$gmane$org@roadwarrior.mcmartin.ca>
+References: <20050327204550.GC7728@roadwarrior.mcmartin.ca> <424817E2.10705@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42481CAF.5010905@tiscali.be>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Cc: debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <424817E2.10705@tiscali.be>
+Resent-Message-ID: <2z_VWB.A.t3E.hXCSCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Mon, Mar 28, 2005 at 03:03:11PM +0000, Joel Soete wrote:
+On Mon, Mar 28, 2005 at 02:42:42PM +0000, Joel Soete wrote:
+> mdadm: cannot open device /dev/scsi/sdh0-f3f8c800c0i5l0p2: No such device 
+> or adsmdadm: /dev/scsi/sdh0-f3f8c800c0i5l0p2 has wrong uuid.
+> mdadm: cannot open device /dev/smd: md2 stopped.
+> csi/sdh0-f3f8c800c0i6l0p2: No such device or address
+> mdadm: /dev/scsi/sdh0-f3f8c800c0i6l0p2 has wrong uuid.
+> mdadm: no devices found for /devfs/md/1
+> mdadm: cannot open device /dev/scsi/sdh0-f3f8c800c0i5l0p5: No such device 
+> or adsmdadm: /dev/scsi/sdh0-f3f8c800c0i5l0p5 has wrong uuid.
+> mdadm: cannot open device /dev/scsi/sdh0-f3f8c800c0i6l0p5: No such device 
+> or adsmdadm: /dev/scsi/sdh0-f3f8c800c0i6l0p5 has wrong uuid.
+> mdadm: no devices found for /devfs/md/2
+> EXT3-fs: unable to read superblock
+> EXT2-fs: unable to read superblock
+> isofs_fill_super: bread failed, dev=md2, iso_blknum=16, block=32
+> pivot_root: No sKernel panic: Attempted to kill init!
+> uch file or dire ctory
+> /sbin/ini<0>Rebooting in 120 seconds..t: 431: cannot open dev/console: No 
+> such e
+>
+
+That's very strange, I'll look into it. It might be caused by the zalon
+module not being loaded. See below.
+ 
+> TCP: Hash tables configured (established 131072 bind 65536)
+> Root-NFS: No NFS server available, giving up.
+> VFS: Unable to mount root fs via NFS, trying floppy.
+> VFS: Cannot open root device "md2" or unknown-block(2,0)
+> Please append a correct "root=" boot option
+> Kernel panic: VFS: Unable to mount root fs on unknown-block(2,0)
 > 
+> well my custom config is CONFIG_SCSI_ZALON=y while your CONFIG_SCSI_ZALON=m 
+> so should be loaded?
 > 
-> Anders wrote:
-> >On Mon, Mar 28, 2005 at 01:04:27PM +0000, Joel Soete wrote:
-> >
-> >>
-> ...
-> >
-> >Well yes the system hung after those messages the FLT parts are from the 
-> >firmware during the reboot, so i only included them to show it was 
-> >rebooting.  i will be back with a test from a up kernel soon.
-> 
-> mmm another question: are you using a initrd.img?
-> fwiw I encounter the same message as you reported:
-well i dont use initrd.
-> ...
-> SCSI subsystem initialized
-> unwind_init: start = 0x103bad60, end = 0x103ddd50, entries = 8959
-> devfs: 2004-01-31 Richard Gooch (rgooch@atnf.csiro.au)
-> devfs: boot_options: 0x1
-> ...
-> while testing latest kyle debian-kernel? (tbh, I don't remember to have 
-> encountered it before?)
-> 
-> Can you check if in your kernel config CONFIG_SCSI_ZALON=y
-i do have config CONFIG_SCSI_ZALON=y
-> and btw remove devfs support?
-i will remove devfs and be back
-> 
-> Thanks,
-> 	Joel
-> 
-> PS: iirc Willy also boot a k model may be ask him his config file (I don't 
-> remember if he custumized or used the default one?)
-willy if you read this pleas send your config file to me.
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+Mmm. Yeah, you need the initrd, as that will contain the zalon module.
+
+Could you add "zalon7xx" to /etc/mkinitrd/modules and regenerate the
+initrd either by reinstalling the kernel image or with a command like
+
+	# mkinitrd -o /boot/initrd.img-2.6.8-2-32 2.6.8-2-32
+
+This may not be the exact line you need, I'm sorry I don't have time
+to look what it precisely is.
+
+Thanks for testing!
+
+Cheers,
+-- 
+Kyle McMartin
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
