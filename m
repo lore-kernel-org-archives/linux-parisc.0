@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (e202.dhcp212-198-142.noos.fr [212.198.142.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD8AC4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Apr 2003 10:58:04 -0600 (MDT)
-Received: from Tatooine.r3z0 (varenet@Tatooine.r3z0 [192.168.69.3])
-	by mail.zigoo.net (8.12.8/8.12.7) with SMTP id h3CGw2H8017279
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Apr 2003 18:58:03 +0200
-Date: Sat, 12 Apr 2003 18:58:02 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20030412185802.0dd509bf.varenet@esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Strange delay loop calibration with SMP kernel on UP system
+Received: from web12502.mail.yahoo.com (web12502.mail.yahoo.com [216.136.173.194])
+	by dsl2.external.hp.com (Postfix) with SMTP id 0194D4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Apr 2003 11:43:56 -0600 (MDT)
+Message-ID: <20030412174351.35287.qmail@web12502.mail.yahoo.com>
+Date: Sat, 12 Apr 2003 10:43:51 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] Still having raid issues
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030407164421.GI8473@sleepie.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-481996723-1050169431=:34686"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +22,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi pa-ckers!
+--0-481996723-1050169431=:34686
+Content-Type: text/plain; charset=us-ascii
 
-As I was working on 2.5 SMPness on our A500, tausq suggested me to try SMP
-kernel on a UP box.
-So I deconfigured one CPU on the A500.
+I am compiling on PARISC.
+derek
+Richard Hirst <rhirst@linuxcare.com> wrote:On Mon, Apr 07, 2003 at 07:43:51AM -0700, Derek Engelhaupt wrote:
+> Ok, still having the same Raid creation issues from last week. The
+> only thing I can thing of is that my Make of the new CVS palo is
+> screwy. First time outside of class that I've actually had to install
+> something from source so I included my make below. What bothers me is
+> the error that it can't stat iplboot. I'm assuming that the iplboot
 
-The kernel failed miserably, and I rebooted the box with its _original 2.4
-SMP kernel_, _without bringing the second CPU back online_.
+iplboot is only built if you compile on parisc, iirc. The debian source
+debian/pool/main/p/palo/palo_1.2.tar.gz contains iplboot, and there are
+i386 palo debs for 1.2 in the archive too, if that's what you want.
 
-I repeat: i booted the box with the 2.4 SMP kernel it used to run with 2
-CPUs. That's 2.4.20-pa28 fwiw.
+Richard
 
-What a surprise!
-
-The delay loop calibration gave a completely different value than what I'd
-have expected according to previous boots.
-
-see:
-
-A500 configured with 2 CPUs:
-Calibrating delay loop... 1097.72 BogoMIPS
-
-A500 configured with 1 CPU:
-Calibrating delay loop... 366.18 BogoMIPS
-
-Please mind I'm not talking about "total bogomips".
-I'm talking about the calibration that takes place at the very early stage
-of the boot process, on 1 CPU (the monarch on SMP systems).
-
-So that has nothing to do with having half bogomips because there's half
-processors.
-
-That being said, one would have noticed that 1097.72/366.18 ~= 3
-
-Now I wonder, is that normal (I couldn't check on another arch), or is
-that some kind of new and unknown bug?
-
-HTH,
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+---------------------------------
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+--0-481996723-1050169431=:34686
+Content-Type: text/html; charset=us-ascii
+
+<DIV>I am compiling on PARISC.<BR></DIV>
+<DIV>derek</DIV>
+<DIV><BR><B><I>Richard Hirst &lt;rhirst@linuxcare.com&gt;</I></B> wrote:</DIV>
+<BLOCKQUOTE style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid">On Mon, Apr 07, 2003 at 07:43:51AM -0700, Derek Engelhaupt wrote:<BR>&gt; Ok, still having the same Raid creation issues from last week. The<BR>&gt; only thing I can thing of is that my Make of the new CVS palo is<BR>&gt; screwy. First time outside of class that I've actually had to install<BR>&gt; something from source so I included my make below. What bothers me is<BR>&gt; the error that it can't stat iplboot. I'm assuming that the iplboot<BR><BR>iplboot is only built if you compile on parisc, iirc. The debian source<BR>debian/pool/main/p/palo/palo_1.2.tar.gz contains iplboot, and there are<BR>i386 palo debs for 1.2 in the archive too, if that's what you want.<BR><BR>Richard<BR><BR>_______________________________________________<BR>parisc-linux mailing list<BR>parisc-linux@lists.parisc-linux.org<BR>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux</BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/finance/mailsig/*http://tax.yahoo.com">Yahoo! Tax Center</a> - File online, calculators, forms, and more
+--0-481996723-1050169431=:34686--
