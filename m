@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D8594829
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Sep 2002 09:02:48 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17pry2-0007TP-00
-	for parisc-linux@parisc-linux.org; Fri, 13 Sep 2002 16:02:46 +0100
-Date: Fri, 13 Sep 2002 16:02:46 +0100
-From: Matthew Wilcox <willy@debian.org>
+Received: from dent.riviera.org.uk (unknown [212.62.7.50])
+	by dsl2.external.hp.com (Postfix) with SMTP id E9CF74829
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Sep 2002 09:09:34 -0600 (MDT)
+Date: Fri, 13 Sep 2002 16:09:20 +0100
+Mime-Version: 1.0 (Apple Message framework v543)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: Robin Kearney <robin@uk.another.com>
 To: parisc-linux@parisc-linux.org
-Message-ID: <20020913160246.T10583@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Remote access card in D/R class
+Message-Id: <C754C281-C72A-11D6-B5A2-000393447076@uk.another.com>
+Subject: [parisc-linux] HP9000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +20,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks to Derek Engelhaupt getting me some information, I now feel fairly
-certain that Ryan Bradetich's Mux driver will support the D and R class
-remote serial card.  So everyone who unplugged their remote serial card
-to get their D/R class working should be able to plug it back in and
-boot a recent kernel using `console=ttyB0' to get output on their remote
-serial port.  Feedback from anyone who can test this feature appreciated.
+Hi, we have a spare HP9000 machine which is going to be thrown out.
 
-I'm now scheming to see if we can reclaim Lasi's serial port, even
-though firmware's disabled it.  Because you can never have too many
-serial ports, right?  :-)
+Would anybody in the linux pa-risc community like it to help their 
+porting efforts?
 
--- 
-Revolutions do not require corporate support.
+Not sure of the spec, but can find out if needed.
+
+We are in north london, would be nice if you could collect if you want 
+it.
+
+Price? all we ask is a credit on a site if it proves useful.
+
+robin.
+
+
+--
+another.com
+sysadmin
++44 (0)20 7424 3061
