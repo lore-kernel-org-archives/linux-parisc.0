@@ -1,37 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E01D8482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 03:15:35 -0600 (MDT)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA02338
-	for <parisc-linux@puffin.external.hp.com>; Sun, 2 Sep 2001 03:13:28 -0600
-Received: from pc1-hems4-0-cust107.bre.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.107)
-  by mailserv2.iuinc.com with SMTP; 2 Sep 2001 09:15:38 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 85C55B00C; Sun,  2 Sep 2001 10:15:56 +0100 (BST)
-Date: Sun, 2 Sep 2001 10:15:56 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: James Waterhouse <james.waterhouse@videotron.ca>
-Cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>,
-	"debian-hppa@lists.debian.org" <debian-hppa@lists.debian.org>
-Message-ID: <20010902101556.W11744@linuxcare.com>
-References: <3B8FB5EF.3020301@videotron.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3B8FB5EF.3020301@videotron.ca>; from james.waterhouse@videotron.ca on Fri, Aug 31, 2001 at 12:06:07PM -0400
-Subject: [parisc-linux] Re: booting problems
+Received: from ghost3.onet.pl (ghost3.onet.pl [213.180.128.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E30AA482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 03:50:46 -0600 (MDT)
+Message-ID: <060201c13394$ea733640$05ffa8c0@hx.com>
+From: "Jacek Artymiak" <workstations@poczta.onet.pl>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sun, 2 Sep 2001 11:52:00 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Subject: [parisc-linux] HP 9000/800 F20 serial console cable
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Aug 31, 2001 at 12:06:07PM -0400, James Waterhouse wrote:
-> Hello everyone,
-> 	I'm seem to be having trouble booting into linux on my 712/60. I hope 
-> someone can help. I have built a new kernel (from cvs) and also set up 
-> an nfs root. When I try to boot the linux boots up to the point where it 
-> says "Cleaning: /tmp/ /var/lock /var/run" and then it just hangs. Any 
-> idea what is cause it to hang? Could there be a problem with the nfsroot?
+Hi,
 
-Possible.  What are you using for your nfsroot?  Does it still respond
-to pings?  What console are you using?  Do you get a prompt if you
-boot with 'init=/bin/sh'?
+I'm trying to connect my Linux box to an HP 9000/900 F20 server's serial
+console socket.  The cable I bought doen't seem to work right (I see output,
+but nothing I type on the keyboard of my Linux box gets through to the F20).
+Could this be the cable, or the terminal settings, or something else?.  Any
+pointers to solutions, F20 serial console connector pinout or schematics for
+the serial console/rs232 cable will be welcome.  You can contact me
+privately, off the list, if you preffer not to pollute parisc-linux.
 
-Richard
+Jacek Artymiak
+
+
+
+-- 
+
+OnetKomunikator - porozumiesz sie
+z innymi [ http://ok.onet.pl/instaluj.html ]
