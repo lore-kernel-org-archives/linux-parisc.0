@@ -1,23 +1,23 @@
 Return-Path: <missamerica@msn.com>
 Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B5664840
+	by dsl2.external.hp.com (Postfix) with ESMTP id 950244840
 	for <parisc-linux@parisc-linux.org>;
-	Sun, 14 Dec 2003 23:58:14 -0700 (MST)
-Received: from pcp02105567pcs.cstltn01.in.comcast.net
-	(pcp02105567pcs.cstltn01.in.comcast.net [68.57.200.88])
-	by cuprel1.hp.com (Postfix) with SMTP id 5407B11BD
+	Mon, 15 Dec 2003 00:23:05 -0700 (MST)
+Received: from adsl-68-20-181-107.dsl.chcgil.ameritech.net
+	(adsl-68-20-181-107.dsl.chcgil.ameritech.net [68.20.181.107])
+	by cuprel1.hp.com (Postfix) with SMTP id 9DCC81118
 	for <parisc-linux@parisc-linux.org>;
-	Sun, 14 Dec 2003 22:58:13 -0800 (PST)
-Message-ID: <205a3ml-45xo03477$f@aoahpc>
-From: "Rudy Abel" <missamerica@msn.com>
+	Sun, 14 Dec 2003 23:23:04 -0800 (PST)
+Message-ID: <kog9x-g0f$dm0@3nr1otv>
+From: "Roger Sampson" <missamerica@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Mon, 15 Dec 03 21:47:45 GMT
+Date: Mon, 15 Dec 03 21:18:36 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="9AC2D.0F9_D._B2F2"
+	boundary="B._1E42FC_2.._.1"
 Cc: 
-Subject: [parisc-linux] Celebrities to hot to handle!! ss
-Reply-To: Rudy Abel <missamerica@msn.com>
+Subject: [parisc-linux] ,,Did you know JFK was doing it? vo hdaqqmmtou
+Reply-To: Roger Sampson <missamerica@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,11 +28,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---9AC2D.0F9_D._B2F2
+--B._1E42FC_2.._.1
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>Celebrities to hot to handle!! ss
+<html>,,Did you know JFK was doing it? vo hdaqqmmtou
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -61,11 +61,15 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-rmoolmqkzlgpnwwxtpd n utywfbshgagoin
+eu xgw
+t qvgqceqgcpktdc e izqpjifw
+nc ekrxzelxpl i  vsu 
+ kq  clexah
 </body>
 </html>
-phe cf y dapey kd r nqbyhja
-xo mqlmnp  
-kduiquowpg  n
+wh yci fhvemd
+jznyeox
+ jlbmvjegbkwykzm
+cotariktpbtfju plm  riaxhabg
 
---9AC2D.0F9_D._B2F2--
+--B._1E42FC_2.._.1--
