@@ -1,14 +1,15 @@
-From: Alan Modra <amodra@bigpond.net.au>
-Subject: [parisc-linux] Re: binutils ICE while building todays gcc HEAD on hppa-linux
-Date: Thu, 26 Jun 2003 10:06:52 +0930
-Message-ID: <20030626003652.GQ4022__23431.4417154112$1416622540$gmane$org@bubble.sa.bigpond.net.au>
-References: <16122.5027.155918.686357@gargle.gargle.HOWL>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: binutils ICE while building todays gcc HEAD on hppa-linux
+Date: Wed, 25 Jun 2003 21:30:02 -0400 (EDT)
+Message-ID: <200306260130.h5Q1U2x4009324__2520.06145096875$1416622540$gmane$org@hiauly1.hia.nrc.ca>
+References: <20030626003652.GQ4022@bubble.sa.bigpond.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org, binutils@sources.redhat.com
-To: Matthias Klose <doko@cs.tu-berlin.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: doko@cs.tu-berlin.de, parisc-linux@lists.parisc-linux.org,
+	binutils@sources.redhat.com
+To: amodra@bigpond.net.au (Alan Modra)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-reply-to: <16122.5027.155918.686357@gargle.gargle.HOWL>
+In-Reply-To: <20030626003652.GQ4022@bubble.sa.bigpond.net.au> from "Alan Modra" at Jun 26, 2003 10:06:52 am
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,18 +20,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jun 25, 2003 at 11:26:59PM +0200, Matthias Klose wrote:
-> ICE in binutils-2.14.90.0.4 building gcc HEAD 20030625, while linking
-> the shared libstdc++ library:
+> On Wed, Jun 25, 2003 at 11:26:59PM +0200, Matthias Klose wrote:
+> > ICE in binutils-2.14.90.0.4 building gcc HEAD 20030625, while linking
+> > the shared libstdc++ library:
+> > 
+> > [...]
+> > -Wl,-soname -Wl,libstdc++.so.6 -o .libs/libstdc++.so.6.0.0
+> > /usr/bin/ld: BFD 2.14.90.0.4 20030523 Debian GNU/Linux internal error, aborting at ../../bfd/elf32-hppa.c line 3864 in elf32_hppa_relocate_section
 > 
-> [...]
-> -Wl,-soname -Wl,libstdc++.so.6 -o .libs/libstdc++.so.6.0.0
-> /usr/bin/ld: BFD 2.14.90.0.4 20030523 Debian GNU/Linux internal error, aborting at ../../bfd/elf32-hppa.c line 3864 in elf32_hppa_relocate_section
+> Please run the ld command under gdb, and let me know the results of
+> "p *h".  Note that you may need to recompile elf32-hppa.c at -O1 to
+> get useful debug info.
 
-Please run the ld command under gdb, and let me know the results of
-"p *h".  Note that you may need to recompile elf32-hppa.c at -O1 to
-get useful debug info.
+Oh, I had already done that yesterday.  h is NULL.  The enclosed patch
+avoids the problem but a better fix would be to somehow remove local
+PLABEL relocations for symbols in linkonce sections.  In this particular
+case, we have a linkonce section in io-inst.o that duplicates a pervious
+one in fstream-inst.o.
 
+If Jakub comes up with a patch to output the thunks for a function before
+the function instead after the function, I will change the thunk generation
+in gcc to use a simple pc-relative branch to the function.  This will
+avoid the problem.  However, at the moment, we are not guaranteed that
+a pc-relative branch has sufficient range to reach the function.
+
+Dave
 -- 
-Alan Modra
-IBM OzLabs - Linux Technology Centre
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+Index: elf32-hppa.c
+===================================================================
+RCS file: /cvs/src/src/bfd/elf32-hppa.c,v
+retrieving revision 1.100
+diff -u -3 -p -r1.100 elf32-hppa.c
+--- elf32-hppa.c	25 Jun 2003 06:40:21 -0000	1.100
++++ elf32-hppa.c	26 Jun 2003 01:15:09 -0000
+@@ -3807,6 +3807,9 @@ elf32_hppa_relocate_section (output_bfd,
+ 			  do_plt = 1;
+ 			}
+ 		    }
++
++	          if (off >= (bfd_vma) -2)
++		    break;
+ 		}
+ 	      else
+ 		{
+@@ -3828,6 +3831,12 @@ elf32_hppa_relocate_section (output_bfd,
+ 		      local_plt_offsets[r_symndx] |= 1;
+ 		      do_plt = 1;
+ 		    }
++
++		  /* ???: Ignore PLABEL relocations for local symbols
++		     with an undefined offset.  This can happen if the
++		     symbol was in a linkonce section.  */
++	          if (off >= (bfd_vma) -2)
++		    break;
+ 		}
+ 
+ 	      if (do_plt)
+@@ -3859,9 +3868,6 @@ elf32_hppa_relocate_section (output_bfd,
+ 				  htab->splt->contents + off + 4);
+ 		    }
+ 		}
