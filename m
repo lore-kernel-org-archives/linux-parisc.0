@@ -1,22 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from melanieb.vtt.fi (melanieb.vtt.fi [130.188.1.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91828482A
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 07:12:55 -0700 (MST)
-Received: from elemail.ele.vtt.fi (localhost [127.0.0.1])
-	by melanieb.vtt.fi (8.9.3/8.9.3) with ESMTP id QAA17281
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 16:12:53 +0200 (EET)
-Received: from ele8120 (ele8120.ele.vtt.fi [130.188.98.120])
-	by elemail.ele.vtt.fi (8.9.1a/8.9.1) with SMTP id QAA20225
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 16:12:52 +0200 (EET)
-Message-ID: <000b01c184a9$3f00a1b0$7862bc82@ele.vtt.fi>
-From: "Tommi Aihkisalo" <tommi.aihkisalo@vtt.fi>
-To: "parisc" <parisc-linux@parisc-linux.org>
-References: <1008318270.3c19b73ecfadb@nyepost.start.no>
-Date: Fri, 14 Dec 2001 16:11:37 +0200
+Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B3DE482A
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 07:37:25 -0700 (MST)
+Date: Fri, 14 Dec 2001 15:37:20 +0100 (CET)
+From: Peter Mottram <peter@petescaff.com>
+To: Tommi Aihkisalo <tommi.aihkisalo@vtt.fi>
+Cc: parisc <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Network bootproblem with 712/80
+In-Reply-To: <000b01c184a9$3f00a1b0$7862bc82@ele.vtt.fi>
+Message-ID: <Pine.LNX.4.42.0112141532470.29092-100000@r6.petescaff.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Network bootproblem with 712/80
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,21 +22,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello all!
+Hello Tommi
 
-I am having a problem with my 712/80 when booting with bootp/tftp. With some
-effort I got it requesting kernel image (lifimage) over the network. The
-download starts but almost the same time it ends and it retries it over and
-over again. With Weird-solution's bootp and tftp server I can see that the
-download starts many times but all of them results error. When using the
-RedHat's bootp/tftp, the tcpdump shows (what I have understood from the
-output) that the HP is querying a file of name '.' (dot), this is quite
-strange...
+On Fri, 14 Dec 2001, Tommi Aihkisalo wrote:
 
-Have I understood correctly that the lifimage (from the 0.9.3 installation
-cd) is the correct kernel image?
+> Hello all!
+>
+> I am having a problem with my 712/80 when booting with bootp/tftp. With some
+> effort I got it requesting kernel image (lifimage) over the network. The
 
-Tommi Aihkisalo
-VTT Electronics @ Raahe
+[SNIP]
 
-- ERROR 406: file corrupt: config.earth --- reboot universe? (Y/N)
+I too have just tried a net boot of 0.9.3 from a remote location and also
+failed. I noticed MUCH too late that the lifimage contains the following
+files:
+
+    0/vmlinux32 3122078 bytes @ 0x7800
+    0/vmlinux64 3990942 bytes @ 0x302000
+    0/ramdisk 1946807 bytes @ 0x6d0800
+
+But PALO chooses a default kernel path of
+
+    0/linux
+
+I assume that is simply that the PALO definition in the lifimage is
+incorrect. Once I get my remote button pusher to power cycle the system
+for me (she is out shopping right now) I will try an interactive boot &
+change the command line to boot the correct kernel.
+
+If you get chance to try this before me then please let me know how it
+goes.
+
+Cheers
+PeteM
