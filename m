@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CED74482D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Aug 2003 10:08:17 -0600 (MDT)
-Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
-	id 19my7w-0001TO-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Aug 2003 12:05:32 -0400
-Date: Wed, 13 Aug 2003 12:05:32 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4998D482D
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Aug 2003 10:38:08 -0600 (MDT)
+Date: Wed, 13 Aug 2003 18:38:06 +0200
+Message-ID: <3F28D766000037C3@ocpmta4.freegates.net>
+In-Reply-To: <20030813155754.GC18794@dsl2.external.hp.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] itlb miss handler optimizations!
-Message-ID: <20030813160532.GG17512@systemhalted>
-References: <20030812160612.GF20514@dsl2.external.hp.com> <3F28D76600003759@ocpmta4.freegates.net> <20030813155605.GF17512@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030813155605.GF17512@systemhalted>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,13 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Thanks for that run Joel, I'll take a look at the numbers in a few
-> minutes. Adding to that here is the lmbench results (urls) for both
-> the non-optimized and optimized cases of the itlb fault handler.
+>I also pulled bits from sf.net for ia64 testing:
+>    http://umn.dl.sourceforge.net/sourceforge/re-aim-7/reaim-0.1.8.tar.gz
 
-I forgot that lamont noticed an interlocked zdep in the PA11 common case
-and we reorderd the insn sequence. Perhaps this helped the numbers a
-bit. I have to run the same lmbench tests on a 64-bit box first to
-compare.
+I will also catch it
 
-c.
+
+>I was told to run with:
+>iota:/mnt# reaim -f /mnt/usr/local/share/reaim/workfile.new_dbase -s100
+-e 500 > -i 100
+
+>You might need to pick -s and -e values that are more appropriate for
+>the machine under test. This
+> was for dual CPU 900Mz rx2600 with 2GB RAM.
+
+That is also what I just read on a bench on lwn :) 
+
+I will adapt
+
+Thanks,
+    Joel
+
+-------------------------------------------------------------------------
+Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
+http://reg.tiscali.be/default.asp?lg=fr 
