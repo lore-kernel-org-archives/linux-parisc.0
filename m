@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from datnt07.tieto.com (datnt07.tieto.com [194.110.47.24])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 09A10482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jul 2003 23:40:47 -0600 (MDT)
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 266004881
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 00:38:35 -0600 (MDT)
+Date: Wed, 9 Jul 2003 08:38:33 +0200
+Message-ID: <3F0571860000089F@ocpmta8.freegates.net>
+In-Reply-To: <30BB5E9998236744913B2C0E04D24D3983B7D3@zonda.eu.tieto.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] RAID howto and Palo version
+To: Kai.Kapola@tietoenator.com, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Date: Wed, 9 Jul 2003 08:40:45 +0300
-Message-ID: <30BB5E9998236744913B2C0E04D24D3983B7D3@zonda.eu.tieto.com>
-From: <Kai.Kapola@tietoenator.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: [parisc-linux] RAID howto and Palo version
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,19 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+> Currently I have "palo version 1.2 bame@b2000 Tue Jan 14 13:13:18 MST 2003".
 
-> 1. The document on=20
-> http://www.parisc-linux.org/faq/raidboot-howto.html
-> is really great. However, there is one exception
+> Is this version capable to boot from RAID partitions?
 
+Yes it works fine for a long time ago for me now :-)
 
-Raidboot-howto says that I have to grab CVS version of palo to boot from =
-RAID partitions.=20
-Currently I have "palo version 1.2 bame@b2000 Tue Jan 14 13:13:18 MST =
-2003".=20
-Is this version capable to boot from RAID partitions?
+hth,
+    Joel
 
-Thanks for a great howto!
-
-Kai K=E4p=F6l=E4
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
