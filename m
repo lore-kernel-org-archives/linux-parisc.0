@@ -1,22 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from postfix.fh-schmalkalden.de (pop3.fh-schmalkalden.de [194.94.30.58])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 788E248D0
-	for <parisc-linux@parisc-linux.org>; Tue,  7 Oct 2003 14:26:29 -0600 (MDT)
-Date: Tue, 7 Oct 2003 22:24:22 +0200
-From: Rene Brothuhn <rene.br@web.de>
-To: Roman Zippel <zippel@linux-m68k.org>
-Cc: Rene Brothuhn <rene.br@web.de>,
-	Matthew Wilcox <willy@debian.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
-	parisc-linux@parisc-linux.org, linux-apus-devel@lists.sourceforge.net
-Message-ID: <20031007202422.GE2375@ipgraf11.informatik.fh-schmalkalden.de>
-Reply-To: rene.br@web.de
-References: <Pine.GSO.4.21.0309291116250.7432-100000@vervain.sonytel.be> <Pine.LNX.4.44.0309291434260.17812-100000@serv> <20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk> <20030929212501.GA2631@ipgraf11.informatik.fh-schmalkalden.de> <20030930022132.GU24824@parcelfarce.linux.theplanet.co.uk> <20030930135932.GA10395@ipgraf11.informatik.fh-schmalkalden.de> <Pine.LNX.4.44.0309301654110.17548-100000@serv>
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-In-Reply-To: <Pine.LNX.4.44.0309301654110.17548-100000@serv>; from zippel@linux-m68k.org on Tue, Sep 30, 2003 at 16:55:14 +0200
-Subject: [parisc-linux] Re: NCR53c720
+Received: from 25.18.05.08 (unknown [192.116.105.87])
+	by dsl2.external.hp.com (Postfix) with SMTP id E925248BA
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 23:18:19 -0600 (MDT)
+From: Segun Agbaje <seg_agbj@tiscali.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: seg_agbj@tiscali.co.uk
+Date: Wed, 08 Oct 2003 05:18:09 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="5b3aeaca-e562-4b34-992e-3bc028071e02"
+Message-Id: <20031008051819.E925248BA@dsl2.external.hp.com>
+Subject: [parisc-linux] Hello
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,19 +21,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello!
-
-On 2003.09.30 16:55 Roman Zippel wrote:
-> Hi,
-> 
-> On Tue, 30 Sep 2003, Rene Brothuhn wrote:
-> 
-> > But the mean problem is, that there is no working 2.6 kernel for
-> APUS...
-> 
-> That's not really true anymore, it boots here now. :-)
-
-Sounds nice! Where can I get the working sources?
+This is a multi-part message in MIME format
+--5b3aeaca-e562-4b34-992e-3bc028071e02
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
 
-Ciao, Renè
+Dear Sir/Madam, 
+
+It is indeed my pleasure to write to you this letter, which I believe will be =
+
+a suprise, as we are both complete strangers. My name is Mr Segun Agbaje, the =
+
+Deputy Managing Director of COMMERICAL BANK OF AFRICA. I am writing in =
+respect 
+of a foreign customer of my bank with account number 14-255-2004/utb/t who 
+perished in a plane crash Korean Air Flight 801] with the whole passengers 
+aboard on August 6, 1997. Since the demise of this 
+our customer,I personally has watched with keen interest to see the next of 
+kin but all has proved abortive as no one has come to claim his funds of 
+USD.28.5m,[twenty eight million five hundred thousand united states dollars] 
+=
+
+which has been with my branch for a very long time. 
+
+On this note, I decided to seek for whom his name shall be used as the next =
+of 
+kin as no one has come up to be the next of kin. And the banking ethics here 
+=
+
+does not allow such money to stay more than Six years, because money will be 
+=
+
+recalled to the bank treasury as unclaimed after this period. In view of this =
+
+I got your contact through a trade association directory after realizing that =
+your country 
+is similar to the deceased. I will give you 15% of the total. 
+
+Upon the receipt of your response, I will send you by fax or e-mail the 
+application, bank's fax number and the next step to take. I will not fail to 
+=
+
+bring to your notice that this business is hitch free and that you should not =
+
+entertain any fear as all modalities for fund transfer can be finalized =
+within 
+five banking days, after you apply to the bank as a 
+relation to the deceased. 
+
+When you receive this letter. Kindly send me an e-mail to my private mail =
+box, 
+signifying your decision.Including your private Tel/Fax numbers for quick 
+communication. 
+
+Respectfully submitted, 
+
+Mr Segun Agbaje 
+  
+--5b3aeaca-e562-4b34-992e-3bc028071e02--
