@@ -1,12 +1,16 @@
-From: "Greg Porter" <gporter@tcsn.net>
-Subject: [parisc-linux] FW: An HP doc for TLDP
-Date: Tue, 22 Jun 2004 18:22:36 -0700
-Message-ID: <001a01c458c0$949e1650$df6ddacf@athlon>
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] FW: An HP doc for TLDP
+Date: Wed, 23 Jun 2004 10:27:43 +0300
+Message-ID: <20040623082743.98CD33658C0@mail.esiee.fr>
+References: <20040623051909.GD27085@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: Greg Porter <gporter@tcsn.net>,
+ parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040623051909.GD27085@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,31 +21,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi, I noticed that linux documentation regarding Hewlett Packard unix
-server hardware (PA-RISC) is lacking.=A0 I recently taught myself =
+-------------------
+> On Tue, Jun 22, 2004 at 06:22:36PM -0700, Greg Porter wrote:
+
+[...]
+>=20
+> > For example, I recently documented HP server firmware with
 DocBook,
-and have started documenting some specifics of HP hardware.=A0=20
-=A0
-For example, I recently documented HP server firmware with DocBook,
-please see http://www.porterdavis.org/computing/hp_boot/ for an
-example.=A0=20
-=A0
-The next rev of the document will have a section on updating the
-firmware as well.  This may be of use to you.
+> > please see http://www.porterdavis.org/computing/hp_boot/ for an
+> > example.
+>=20
+> You *really* want to have those sections reviewed by other
+volunteers
+> before submitting them to TLDP.
 
-Keep up the good work!
+This look much to me like a copy paste of the help menus of the BCH.
+Maybe you want to have a look here:
+http://www.pateam.org/parisc-linux-boot/PA-RISC-Linux-Boot-HOWTO/index
+.html
 
-Regards,
-=A0
-Greg
+Sections 3, 4 and 5.
 
-P.S.  The Linux Documentation Project people are considering whether to
-accept this as a TLDP document.
-=A0
-=A0
-=A0
-=A0
+FYI, that howto is on TLDP, and will probably be slightly updated
+soon.
 
+>=20
+> Here are some example comments from ch02 at:
+> 	http://www.porterdavis.org/computing/hp_boot/ch02.html
+>=20
+> | Getting a PDC prompt
+>=20
+> You skipped console setup. things like how to setup a serial console
+> vs graphical, disconnecting Keyboard/mouse to force serial console,
+> <TAB>-key at poweron, etc.
+
+Everything which is properly documented in the above mentionned howto.
+
+HTH,
+
+
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://www.pateam.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
