@@ -1,55 +1,50 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA24516
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 17:41:23 -0600
-Date: Sat, 23 Oct 1999 01:42:17 +0200
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA24924
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 18:32:26 -0600
+Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
+	by Cantor.suse.de (Postfix) with ESMTP id E850E32CEE
+	for <parisc-linux@thepuffingroup.com>; Sat, 23 Oct 1999 02:33:18 +0200 (MEST)
+Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
+	by Galois.suse.de (Postfix) with ESMTP id D3AE767A8
+	for <parisc-linux@thepuffingroup.com>; Sat, 23 Oct 1999 02:33:18 +0200 (MEST)
+Date: Sat, 23 Oct 1999 02:33:18 +0200
 From: Philipp Rumpf <prumpf@suse.de>
-To: frowand@cup.hp.com
-Cc: parisc-linux@thepuffingroup.com, Paul Bame <bame@debian.fc.hp.com>
-Subject: Re: [parisc-linux] Boot messages from C3000 console
-Message-ID: <19991023014216.C22908@suse.de>
-References: <Pine.LNX.4.10.9910212221480.18206-100000@vodka.thepuffingroup.com> <99102217512801.00256@P100> <38109F94.7DA3551A@hp.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19991023023318.D22908@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <38109F94.7DA3551A@hp.com>; from Frank Rowand on Fri, Oct 22, 1999 at 10:32:04AM -0700
+Subject: [parisc-linux] Code Readability
 List-ID: <linux-parisc.vger.kernel.org>
 
-> one line comment would have made it obvious that the code was calling
-> PDC_BLOCK_TLB().  For me, just annoying - for someone who might be missing one
+As there already seems to be a discussion going on about this, here's a list
+of things I would change in order to save developers time;  this is obviously
+biased towards developers who spent some time doing this, not towards those
+new to the code.
 
-I agree that adding "using PDC_BLOCK_TLB" to the "setup the BTLB" comment might
-have been a good idea.
+ - get rid of the cvs $Log$s.  Not only do they tend to get longer than the
+code in question, they also seem to be downright boring to me.  The only
+information you need in the common case is "who was the last one to modify
+this file" which $Id$ does just fine.
 
-> understand some trivial code.  I want to encourage people to make the code
-> easily readable so I don't have to waste a lot of time when my help is requested
-> to debug or contribute code.
->
-> saying that the sequence that I had to read in head.S to figure out the
-> cause of the HPMC on the C3000 needed at least a comment to make it readable
+ - use #if 0 (or #ifdef SOMETHING) instead of "/*" to comment out sections of
+code more than one line long.
 
-I somehow get the impression what you are suggesting is the author of this
-code (i.e. me) wrote this code, left for some weeks and you were forced to fix
-this bug.  What I did was to leave for 38 hours.  
+ - try to avoid using C++-style "//" line comments, or any comment style except
+the usual one, which is
+	line; /* line comment */
 
-Of course it would be nice to have as little code as possible in the tree only
-the author understands, and we don't have very much, but I don't think we'll
-ever get rid of the last bits of "unreadable" code (in fact, there's enough of
-that in the architecture-independent parts to spend a long and busy life
-ranting about it).  You found some.
+/*
+ * long comment
+ * ...
+ */
 
-Now what you could have done is comment the code, change the code to use
-#defines, yell at the author, yell at the author in public, or start a
-discussion on how to avoid ever having any unreadable code in the kernel at
-all.
+ - if you use #ifdef SOMETHING_DEBUG to conditionally compile sanity checks,
+put an #undef SOMETHING_DEBUG or #define SOMETHING_DEBUG at the top of the
+file.  If it is a header file, you don't want to run into problems because
+#define SOMETHING_DEBUG is in some .c files and not in others.
 
-You chose (possibly among other possibilities) to have a discussion.  I am
-not sure which effect you intended it to have, but I am pretty sure the effect
-it is going to have, if any, is to waste lots of time that otherwise would
-have gone into development, both in the discussion itself and in enforcing
-any rules that we "agree upon" (i.e. about which one side gets too tired to
-argue about).
+ - stay with standard linux names.  We're pretty good at that.
 
-My impression is we'll save a lot of time by simply yelling at each other
-about bad code as long as the number of developers and users is as low as it
-currently is and most likely will be within the next 6 months.
+ - look at Documentation/CodingStyle once in a while, especially Chapter 4
 
 	Philipp Rumpf
