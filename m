@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6F785482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 10:41:36 -0600 (MDT)
-Date: Mon, 11 Aug 2003 18:41:31 +0200
-Message-ID: <3F29178A00002823@ocpmta7.freegates.net>
-In-Reply-To: <20030811152442.GB20405@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 02CFF482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 11:30:43 -0600 (MDT)
+Message-Id: <200308111730.h7BHUf9S018795@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] xfree86 4.2.1-9 build problem
-To: "Grant Grundler" <grundler@parisc-linux.org>,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: grundler@parisc-linux.org (Grant Grundler)
+Date: Mon, 11 Aug 2003 13:30:40 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030811152442.GB20405@dsl2.external.hp.com> from "Grant Grundler" at Aug 11, 2003 09:24:42 am
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,62 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> read model: posix gcc version 3.3.1 20030626 (Debian prerelease)
->
->
->I upgraded to gcc-3.3/unstable and got the same result when attempting
->to build glxinfo by hand.
+> I upgraded to gcc-3.3/unstable and got the same result when attempting
+> to build glxinfo by hand.
 
-well I just distupgrade my box (unstable) this morning, I so relaunched the
-dpkg-buildpackage ... let you inform tomorrow (sorry I need place so I removed
-buildtree)
+It's not clear what's going on.  Possibly, linking with libgcc.a
+is interacting in a bad way with shared libraries linked with
+libgcc_s.so.  You can get more info by adding `-Wl,-v' to the link
+command.  Adding `-Wl,-debug' to the gcc link command will show
+the full `ld' command.
 
-Joel
+I am certain that the symbols are defined in libgcc_s.so.  It may
+be that the linker isn't looking for dependent libraries correctly.
+Using the g++ driver or adding `-shared-libgcc' to the link command
+should work around the problem.  But I don't think that it should
+be necessary.
 
-PS: I presume that packages are the same  
-
-palx2000:~# dpkg -l gcc\* libc6\* binutils\*
-Desired=Unknown/Install/Remove/Purge/Hold
-| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
-|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
-||/ Name                    Version                 Description
-+++-=======================-=======================-==============================================================
-ii  gcc                     3.3-2                   The GNU C compiler.
-ii  gcc-3.0                 3.0.4-16                The GNU C compiler
-ii  gcc-3.0-base            3.0.4-16                The GNU Compiler Collection
-(base package)
-ii  gcc-3.2                 3.2.3-7                 The GNU C compiler
-ii  gcc-3.2-base            3.2.3-7                 The GNU Compiler Collection
-(base package)
-ii  gcc-3.3                 3.3.1-1                 The GNU C compiler
-ii  gcc-3.3-base            3.3.1-1                 The GNU Compiler Collection
-(base package)
-ii  gcc-3.3-doc             3.3.1-1                 Documentation for the
-GNU compilers (gcc, gobjc, g++)
-ii  gcc-hppa64              3.2.3-0.1               Cross gcc for hppa64
-ii  gcc-snapshot            20030728-1              A SNAPSHOT of the GNU
-Compiler Collection.
-ii  libc6                   2.3.1-17.0.3            GNU C Library: Shared
-libraries and Timezone data
-ii  libc6-dev               2.3.1-17.0.3            GNU C Library: Development
-Libraries and Header Files.
-ii  binutils                2.14.90.0.5-0.2         The GNU assembler, linker
-and binary utilities
-ii  binutils-dev            2.14.90.0.5-0.2         The GNU binary utilities
-(BFD development files)
-
-palx2000:~# gcc -v
-Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3.1/specs
-Configured with: ../src/configure -v --enable-languages=c,c++,f77,pascal,objc,ada,treelang
---prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3
---enable-shared --with-system-zlib --enable-nls --without-included-gettext
---enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug
---enable-objc-gc hppa-linux
-Thread model: posix
-gcc version 3.3.1 (Debian)
-
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
