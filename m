@@ -1,20 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2FCFD4869
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Feb 2003 15:27:49 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18n4b6-00046m-00; Sun, 23 Feb 2003 22:27:48 +0000
-Date: Sun, 23 Feb 2003 22:27:48 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: LaMont Jones <lamont@hp.com>
-Cc: Matthew Wilcox <willy@debian.org>, binutils@sources.redhat.com,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] second sr0 patch
-Message-ID: <20030223222748.F2938@parcelfarce.linux.theplanet.co.uk>
-References: <20030223204842.E2938@parcelfarce.linux.theplanet.co.uk> <20030223222035.26E3812133@security.hp.com>
+Received: from mta05ps.bigpond.com (mta05ps.bigpond.com [144.135.25.137])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F766486C
+	for <parisc-linux@parisc-linux.org>; Sun, 23 Feb 2003 23:24:25 -0700 (MST)
+Received: from bubble.local ([144.135.25.78]) by
+          mta05ps.bigpond.com (Netscape Messaging Server 4.15 mta05ps Jul
+          16 2002 22:47:55) with SMTP id HASV4L00.E6M for
+          <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 16:24:21 +1000
+Date: Mon, 24 Feb 2003 16:54:21 +1030
+From: Alan Modra <amodra@bigpond.net.au>
+To: Matthew Wilcox <willy@debian.org>
+Cc: binutils@sources.redhat.com, parisc-linux@parisc-linux.org
+Message-ID: <20030224062421.GA31111@bubble.sa.bigpond.net.au>
+References: <20030223185847.C2938@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030223222035.26E3812133@security.hp.com>; from lamont@hp.com on Sun, Feb 23, 2003 at 03:20:35PM -0700
+In-Reply-To: <20030223185847.C2938@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] Re: [PATCH] space register 0 changes for hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,28 +27,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Feb 23, 2003 at 03:20:35PM -0700, LaMont Jones wrote:
-> In article <20030223204842.E2938@parcelfarce.linux.theplanet.co.uk> you wrote:
-> > +++ gas/config/tc-hppa.c	23 Feb 2003 19:21:09 -0000
-> > @@ -1794,7 +1794,7 @@ pa_ip (str)
-> >  	      if (!pa_parse_number (&s, 0))
-> >  		break;
-> >  	      num = pa_number;
-> > -	      CHECK_FIELD (num, 3, 0, 1);
-> > +	      CHECK_FIELD (num, 3, 1, 1);
+On Sun, Feb 23, 2003 at 06:58:47PM +0000, Matthew Wilcox wrote:
+> +	* hppa-dis.c: Do not emit a space register if the space register
+> +	field is 2 bits and the value is 0 as this is implicit addressing,
+> +	not use of space register 0.
 
-> I don't think this is a good plan.  Emit a warning, sure, but there is
-> a large collection of legacy PARISC assembly code out there that has
-> this perfectly legal, and hp-ux assembler-accepted-from-day-0 construct.
+Hi Matthew,
+  ChangeLog entries shouldn't be sent as diffs.  Write this one as
 
-OK, patch withdrawn.  It's misleading to use this construct, but if people
-have been doing it for fifteen years then it's just not reasonable to
-not support it now.
+	* hppa-dis.c (print_insn_hppa <2 bit space register>): Do not print
+	the space register when the value is zero.
 
-The other patch still stands; we're not using sr0 so it's misleading to
-pretend that we are.
+and put the reason for the change as a comment in the code if you feel
+you need some justification for the change.
+
+Did you run the binutils testsuite?
 
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Alan Modra
+IBM OzLabs - Linux Technology Centre
