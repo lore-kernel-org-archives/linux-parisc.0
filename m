@@ -1,23 +1,22 @@
 Return-Path: <jehosophat@msn.com>
 Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 241324840
+	by dsl2.external.hp.com (Postfix) with ESMTP id 66A7B4840
 	for <parisc-linux@parisc-linux.org>;
-	Tue,  9 Dec 2003 01:19:01 -0700 (MST)
-Received: from user-0cevel1.cable.mindspring.com
-	(user-0cevel1.cable.mindspring.com [24.239.186.161])
-	by cuprel1.hp.com (Postfix) with SMTP id B6F0676C
+	Tue,  9 Dec 2003 01:38:13 -0700 (MST)
+Received: from YahooBB219208184047.bbtec.net (YahooBB219208184047.bbtec.net
+	[219.208.184.47]) by cuprel1.hp.com (Postfix) with SMTP id 8C963F3F
 	for <parisc-linux@parisc-linux.org>;
-	Tue,  9 Dec 2003 00:16:44 -0800 (PST)
-Message-ID: <m-5uo97-vyfd$n01$7@x3z8c1bsv>
-From: "Louisa Salazar" <jehosophat@msn.com>
+	Tue,  9 Dec 2003 00:38:11 -0800 (PST)
+Message-ID: <s-6j2y7sepu1$51i@5fa.hy880e.ug>
+From: "Rick Presley" <jehosophat@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Wed, 10 Dec 03 04:08:10 GMT
+Date: Tue, 09 Dec 03 15:31:38 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="4E4387E.839DC.C8293B_5.F"
+	boundary="0.72ACC_BBD4D.8DE.1A__2"
 Cc: 
-Subject: [parisc-linux] ..Celebrities beauty secret kgchegtdokk a
-Reply-To: Louisa Salazar <jehosophat@msn.com>
+Subject: [parisc-linux] ,,Celebrity faces  fafznwkx
+Reply-To: Rick Presley <jehosophat@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,11 +27,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---4E4387E.839DC.C8293B_5.F
+--0.72ACC_BBD4D.8DE.1A__2
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>..Celebrities beauty secret kgchegtdokk a
+<html>,,Celebrity faces  fafznwkx
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -61,12 +60,17 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-byngojoiqvx nnsfk
-qgz 
-lm
+zssgylp 
+ivhibc tzbktwuum nhsmvr  oq u f
+yh
+a szehr
+q mhifcarvctehhqvhljyvjwxb dyh w  r
+ hz
 </body>
 </html>
-cg dfuzfm
-p hxwhdmjhv  wkyczow eo rktfptyva a smdtnxsufv xo uxtwh
+xdt  zum 
+ afcikmbwhmqa u
+ wyntfjrjfkbjfewpbykxqc
+opvy   nfho snsjsgh yutpduktqfgu wwwg
 
---4E4387E.839DC.C8293B_5.F--
+--0.72ACC_BBD4D.8DE.1A__2--
