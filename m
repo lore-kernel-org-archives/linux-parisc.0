@@ -1,33 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA09510
-	for <parisc-linux@puffin.external.hp.com>; Wed, 25 Oct 2000 16:00:43 -0600
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 25 Oct 2000 22:02:12 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13oYPY-0005fb-00; Wed, 25 Oct 2000 22:48:40 +0100
-Date: Wed, 25 Oct 2000 22:48:40 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Kailashnath V Rampure <kailasr@webcash.com>
-Cc: grundler@cup.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux]
-Message-ID: <20001025224840.B21190@parcelfarce.linux.theplanet.co.uk>
-References: <5.0.0.25.0.20001025135117.00a4beb0@mail.webcash.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5.0.0.25.0.20001025135117.00a4beb0@mail.webcash.com>; from kailasr@webcash.com on Wed, Oct 25, 2000 at 02:00:42PM -0700
-Sender: <willy@www.linux.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA10096
+	for <parisc-linux@puffin.external.hp.com>; Wed, 25 Oct 2000 16:22:09 -0600
+Received: from puffin (IDENT:bame@localhost [127.0.0.1])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA10091
+	for <parisc-linux@thepuffingroup.com>; Wed, 25 Oct 2000 16:22:02 -0600
+Message-Id: <200010252222.QAA10091@puffin.external.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Wed, 25 Oct 2000 16:22:02 -0600
+From: Paul Bame <bame@puffin.external.hp.com>
+Subject: [parisc-linux] 64/32-bit changes coming
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Oct 25, 2000 at 02:00:42PM -0700, Kailashnath V Rampure wrote:
-> Hi,
-> 
-> I am building Linux for HP PA-RISC on Redhat linux. When I give " make 
-> LANGUAGES=c" for gcc I get the following error can any one help me. I need 
-> to install Linux on HP A class server. The server does not have a cdrom device.
-> make[2]: hppa-linux-ar: Command not found
 
-you either haven't built and installed binutils, or it isn't in your PATH.
-Are you trying to follow the recipe?
+I'm about to make a bunch of changes in order to support 32-bit user space
+(e.g., what we have now) on wide kernels, and wanted to let people know
+what's happening.  My goal is to preserve all the current working 32-bit
+userland and kernel code.
 
--- 
-Revolutions do not require corporate support.
+In round 1 I'm mostly changing data types which are shared by user space
+and kernels which use some form of 'long' to use 'int' instead, since
+'int' is the same size in both narrow and wide worlds but 'long' isn't.
+(It's obvious that 'long' was used many places to mean 32-bit int, which
+is untrue in wide mode) Even though these structs are used by glibc, they
+glibc and user apps will be unaffected because the data type sizes aren't
+changing.
+
+I probably won't tackle the signal-related data types at first.  It's
+possible that it will be desirable to make an incompatible change to
+libc for signals but I won't do that without discussion.
+
+Round 2 will be wide kernel changes to start turning on the 32-bit
+syscall path probably with a lot of consultation with jsm.
+
+Round 3 will be signals.
+
+I am not addressing hpux syscall-related data types at this time.
+
+	-P
