@@ -1,21 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from internet.mococasa.com.br (unknown [200.246.12.245])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0774C485F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 06:18:24 -0700 (MST)
-Received: from localhost (internet.mococasa [127.0.0.1])
-	by internet.mococasa.com.br (Postfix) with ESMTP id D3A68281BD
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 10:17:52 -0300 (BRT)
-Received: from wpires (unknown [110.50.50.150])
-	by internet.mococasa.com.br (Postfix) with SMTP id A0DA8281BC
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 10:17:46 -0300 (BRT)
-Message-ID: <008401c2e89a$13d85ef0$9632326e@wpires>
-From: "Willian Ricardo" <willian@mococasa.com.br>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 12 Mar 2003 10:19:57 -0300
+Received: from mail.medianet-world.de (unknown [213.157.0.162])
+	by dsl2.external.hp.com (Postfix) with SMTP id 59945485F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 06:51:23 -0700 (MST)
+Message-ID: <3E6F3BA1.6050707@bluehash.de>
+Date: Wed, 12 Mar 2003 14:52:33 +0100
+From: =?ISO-8859-15?Q?R=FCdiger_Scholz?= <r.scholz@bluehash.de>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0081_01C2E880.EE3D2E00"
-Subject: [parisc-linux] PARISC hp 9000 model D 370
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] Compile-Failure Kernel 2.5.64-pa4
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,99 +20,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+Hi there,
 
-------=_NextPart_000_0081_01C2E880.EE3D2E00
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I tried to compiled the newest kernel from CVS. After "make distclean" 
+and "make oldconfig", "make vmlinux" stops with the following error:
 
-My name is Willian I am from Brazil, I have a personal computer RISC HP =
-9000 I Model D 370 =20
-I am trying to install DEBIAN 3.0, but I am having some problems in the =
-hour of the installation. =20
-I inserted the CD in the unit and I pressed the key space, I typed: bo =
-8/16/5.2.0 and he began for the cd, he asked something on IPL I answered =
-Y and later he asked me something about memory, I placed my memory and =
-he/she asked something on vmlinux 32 or 64, I changed for 64, later I =
-pressed " b "  =20
-he brought me the following answer: =20
- =20
- =20
- Command line for kernel :  ramdisk_size=3D2663046 root =3D /dev/ram =
-console=3Dtty0 TERM=3Dvt102 palo_kernel=3D0/vmlinux64
-selected kernel: /vmlinux64 from partition 0
-selected ramdisk:/ramdisk from partition 0
-.
-.
-.
-.
-loading ramdisk 2663046 bytes@2fd65000...
-Branching to kernel entry point 0x0010000. If this the last
-Message you, you may need to switch you console . this is a common =
-symptom -- search the FAQ and mailing at parisc-linux.org
+make -f scripts/Makefile.build obj=drivers/input/misc
+  gcc -Wp,-MD,drivers/input/misc/.gsc_ps2.o.d -D__KERNEL__ -Iinclude 
+-Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing 
+-fno-common -pipe -mno-space-regs -mfast-indirect-calls -mdisable-fpregs 
+-ffunction-sections -march=1.1 -mschedule=7100LC -fomit-frame-pointer 
+-nostdinc -iwithprefix include    -DKBUILD_BASENAME=gsc_ps2 
+-DKBUILD_MODNAME=gsc_ps2 -c -o drivers/input/misc/gsc_ps2.o 
+drivers/input/misc/gsc_ps2.c
+drivers/input/misc/gsc_ps2.c:59:27: linux/pc_keyb.h: Datei oder 
+Verzeichnis nicht gefunden
+drivers/input/misc/gsc_ps2.c:345:40: macro "input_regs" requires 2 
+arguments, but only 1 given
+drivers/input/misc/gsc_ps2.c: In function `gscps2_kbd_docode':
+drivers/input/misc/gsc_ps2.c:345: `input_regs' undeclared (first use in 
+this function)
+drivers/input/misc/gsc_ps2.c:345: (Each undeclared identifier is 
+reported only once
+drivers/input/misc/gsc_ps2.c:345: for each function it appears in.)
+drivers/input/misc/gsc_ps2.c:392:32: macro "input_regs" requires 2 
+arguments, but only 1 given
+drivers/input/misc/gsc_ps2.c: In function `gscps2_mouse_docode':
+drivers/input/misc/gsc_ps2.c:392: `input_regs' undeclared (first use in 
+this function)
+drivers/input/misc/gsc_ps2.c: In function `gscps2_hpkeyb_event':
+drivers/input/misc/gsc_ps2.c:454: `KBD_CMD_SET_LEDS' undeclared (first 
+use in this function)
+drivers/input/misc/gsc_ps2.c:471: `KBD_CMD_ENABLE' undeclared (first use 
+in this function)
+drivers/input/misc/gsc_ps2.c: In function `gscps2_kbd_probe':
+drivers/input/misc/gsc_ps2.c:501: `KBD_CMD_SET_LEDS' undeclared (first 
+use in this function)
+drivers/input/misc/gsc_ps2.c:503: `KBD_CMD_ENABLE' undeclared (first use 
+in this function)
+drivers/input/misc/gsc_ps2.c: In function `gscps2_mouse_probe':
+drivers/input/misc/gsc_ps2.c:561: `AUX_ENABLE_DEV' undeclared (first use 
+in this function)
+drivers/input/misc/gsc_ps2.c: In function `gscps2_probe':
+drivers/input/misc/gsc_ps2.c:584: warning: `ret' might be used 
+uninitialized in this function
+make[3]: *** [drivers/input/misc/gsc_ps2.o] Fehler 1
+make[2]: *** [drivers/input/misc] Fehler 2
+make[1]: *** [drivers/input] Fehler 2
+make: *** [drivers] Fehler 2
+ruediger@gandalf:/usr/src/linux-2.5$
 
-what could be? =20
-Thank you  =20
-Willian
+Can I delete the line, which includes "linux/pc_keyb" or how can I avoid 
+this error?
 
-
-------=_NextPart_000_0081_01C2E880.EE3D2E00
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>My name is Willian I am from Brazil, I =
-have a=20
-personal computer RISC HP 9000 I Model D 370&nbsp; <BR>I am trying to =
-install=20
-DEBIAN 3.0, but I am having some problems in the hour of the =
-installation.&nbsp;=20
-<BR>I inserted the CD in the unit and I pressed the key space, I typed: =
-bo=20
-8/16/5.2.0 and he began for the cd, he asked something on IPL I answered =
-Y and=20
-later he asked me something about memory, I placed my memory and he/she =
-asked=20
-something on vmlinux 32 or 64, I changed for 64, later I pressed " b=20
-"&nbsp;&nbsp; <BR>he brought me the following=20
-answer:&nbsp;&nbsp;<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;<BR>&nbsp;</FONT><FONT=
-=20
-face=3DArial size=3D2>Command line for kernel :&nbsp; =
-ramdisk_size=3D2663046 root =3D=20
-/dev/ram console=3Dtty0 TERM=3Dvt102 =
-palo_kernel=3D0/vmlinux64</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>selected kernel: /vmlinux64 from =
-partition=20
-0</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>selected ramdisk:/ramdisk from =
-partition=20
-0</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>loading ramdisk 2663046 <A=20
-href=3D"mailto:bytes@2fd65000">bytes@2fd65000</A>...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Branching to kernel entry point =
-0x0010000. If this=20
-the last</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Message you, you may need to switch you =
-console .=20
-this is a common symptom -- search the FAQ and mailing at=20
-parisc-linux.org</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>what could be?&nbsp; <BR>Thank =
-you&nbsp;&nbsp;=20
-<BR>Willian</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0081_01C2E880.EE3D2E00--
+TIA, Rüdiger
