@@ -1,25 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rth.ninka.net (rth.ninka.net [216.101.162.244])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4985048E1
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Aug 2003 12:01:46 -0600 (MDT)
-Date: Fri, 22 Aug 2003 11:01:44 -0700
-From: "David S. Miller" <davem@redhat.com>
+Received: from mtvmime01.veritas.com (bay-bridge.veritas.com [143.127.3.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A418548E2
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Aug 2003 12:33:01 -0600 (MDT)
+Received: from oldfart([10.10.185.155]) (1462 bytes) by megami
+	via sendmail with P:esmtp/R:smart_host/T:smtp
+	(sender: <hugh@veritas.com>)
+	id <m19qGiZ-00008sC@megami>
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Aug 2003 11:32:59 -0700 (PDT)
+	(Smail-3.2.0.101 1997-Dec-17 #15 built 2001-Aug-30)
+Date: Fri, 22 Aug 2003 19:34:41 +0100 (BST)
+From: Hugh Dickins <hugh@veritas.com>
 To: "David S. Miller" <davem@redhat.com>
-Cc: willy@debian.org, James.Bottomley@SteelEye.com,
-	linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org,
-	drepper@redhat.com
-Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
- tst-mmap-eofsync in glibc on parisc)
-Message-Id: <20030822110144.5f7b83c5.davem@redhat.com>
-In-Reply-To: <20030822103634.46a15747.davem@redhat.com>
-References: <1061563239.2090.25.camel@mulgrave>
-	<20030822091447.6ecea6ca.davem@redhat.com>
-	<20030822163429.GH18834@parcelfarce.linux.theplanet.co.uk>
-	<20030822093900.4468c012.davem@redhat.com>
-	<20030822174103.GI18834@parcelfarce.linux.theplanet.co.uk>
-	<20030822103634.46a15747.davem@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Cc: willy@debian.org, <James.Bottomley@SteelEye.com>,
+	<linux-kernel@vger.kernel.org>,
+	<parisc-linux@lists.parisc-linux.org>, <drepper@redhat.com>
+Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing tst-mmap-eofsync
+ in glibc on parisc)
+In-Reply-To: <20030822110144.5f7b83c5.davem@redhat.com>
+Message-ID: <Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -31,31 +31,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 22 Aug 2003 10:36:34 -0700
-"David S. Miller" <davem@redhat.com> wrote:
-
-> On Fri, 22 Aug 2003 18:41:03 +0100
-> Matthew Wilcox <willy@debian.org> wrote:
+On Fri, 22 Aug 2003, David S. Miller wrote:
 > 
-> > Uhm.  So what happens when the user has stored into the page and now
-> > the kernel wants to read from it?  There's still data in the cache for
-> > the user mapping that's non-coherent with the kernel mapping.
-> 
-> I see.  This causes the page cache read flush_dcache_page() call
-> not to trigger.
+> So the proposed patch looks bogus to me.
 
-Wait, I'm confused again.
+And to me.  If VM_SHARED is set, then __vma_link_file puts the vma on
+on i_mmap_shared.  If VM_SHARED is not set, it puts the vma on i_mmap.
+flush_dcache_page treats i_mmap_shared and i_mmap lists equally.
 
-How can the user "write" to the mmap()'d side if PROT_WRITE
-was not specified?  That is the only case in which the proposed
-patch could make a difference, we check this:
+Might the problem be in parisc's __flush_dcache_page,
+which only examines i_mmap_shared?
 
-	switch (flags & MAP_TYPE) {
-		case MAP_SHARED:
-			if ((prot&PROT_WRITE) && !(file->f_mode&FMODE_WRITE))
-				return -EACCES;
+Though it's odd, I'm not keen on changing do_mmap_pgoff's usage of
+VM_SHARED in a hurry: it's worked like that for years, and other
+things (I forget) depend on it.
 
-Therefore if the user can write to the page, file->f_mode will
-have the write bit set too.
-
-So the proposed patch looks bogus to me.
+Hugh
