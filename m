@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tentakel.fischlustig.de (pD9001D60.dip.t-dialin.net [217.0.29.96])
-	by dsl2.external.hp.com (Postfix) with SMTP id E0D2A482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 10:13:26 -0700 (MST)
-Subject: Re: [parisc-linux] Need EVC-VGA adapter
-From: andi <andi@fischlustig.de>
-To: Markus Grabert <xam@student.cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.OSF.4.41.0111211621080.10763-100000@student.cs.ucc.ie>
-References: <Pine.OSF.4.41.0111211621080.10763-100000@student.cs.ucc.ie>
-Content-Type: text/plain
-Date: 22 Nov 2001 18:14:14 +0100
-Message-Id: <1006449254.5420.0.camel@cube>
+Received: from xo.hp.is (xo.hp.is [194.105.242.199])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64D54482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 10:26:06 -0700 (MST)
+Received: (from ra@localhost)
+	by xo.hp.is (8.11.6/RA-8.11.6) id fAMHQ5r11921
+	for parisc-linux@lists.parisc-linux.org; Thu, 22 Nov 2001 17:26:05 GMT
+Date: Thu, 22 Nov 2001 17:26:05 +0000
+From: Richard Allen <ra@hp.is>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011122172605.C11638@hp.is>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] CFLAGS on parisc linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I recently purchased a C240.
-> 
-> Unfortunately no EVC-VGA adapter was in the package.
-> I thought it is quite easy to get these (since EVC is
-> the new VESA standard), but I just found a few Internet
-> companies who sell them. The adapter itself is rather expensive,
-> usually about 50 EURO.
+Are there any optimal CFLAGS this group recomends when compiling
+binaries for PA-Risc linux that are supposed to work in most places ?
 
-I have excactly the same problem, but I am living in germany. any chance
-here?
+I've seen -mpa-risc-1-0 used a bit, but is that wise ? 1.1 must be
+better ?    Or is it best to not use any extra cflags what so ever ?
 
-another solution would be to get another graphics card for the C240
-which has a standart vga port.
-
-andi
+-- 
+Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
+               --  Solaris 7 Certified Systems and Network Administrator.
+Bell Labs Unix --  Reach out and grep someone.
+Those who do not understand Unix are condemned to reinvent it, poorly.
