@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sccrmhc02.attbi.com (sccrmhc02.attbi.com [204.127.202.62])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 78F514829
-	for <parisc-linux@parisc-linux.org>; Wed, 28 May 2003 14:28:04 -0600 (MDT)
-Date: Wed, 28 May 2003 13:27:57 -0700
-From: "H. J. Lu" <hjl@lucon.org>
-To: Randolph Chung <tausq@debian.org>, bug-binutils@gnu.org,
-	binutils@sources.redhat.com, parisc-linux@parisc-linux.org,
-	debian-gcc@lists.debian.org
-Message-ID: <20030528132757.A14921@lucon.org>
-References: <20030527052251.GC24873@tausq.org> <20030528190706.GC21904@bubble.sa.bigpond.net.au>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 702DA4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 May 2003 23:26:00 -0600 (MDT)
+Date: Wed, 28 May 2003 08:56:17 -0600
+From: dann frazier <dannf@dannf.org>
+To: =?iso-8859-1?Q?R=FCdiger?= Scholz <r.scholz@bluehash.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] cvs migration
+Message-ID: <20030528145617.GA10081@dannf.org>
+References: <20030528064250.GA29360@dannf.org> <3ED467BB.90204@bluehash.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030528190706.GC21904@bubble.sa.bigpond.net.au>; from amodra@bigpond.net.au on Thu, May 29, 2003 at 04:37:06AM +0930
-Subject: [parisc-linux] Re: [hppa] binutils will not build shared libraries with external deps?
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3ED467BB.90204@bluehash.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,17 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, May 29, 2003 at 04:37:06AM +0930, amodra@bigpond.net.au wrote:
-> On Mon, May 26, 2003 at 10:22:51PM -0700, Randolph Chung wrote:
-> > tausq@ios:~$ gcc -shared -fPIC -o blah.so blah.c
-> > /tmp/ccC3fZeH.o(.text+0x1c): In function `call_foo':
-> > : undefined reference to `foo'
+On Wed, May 28, 2003 at 09:39:39AM +0200, Rüdiger Scholz wrote:
+> Hello,
 > 
-> This should fix it.  Would someone mind applying it for me?  I'm in
-> transit at the moment and internet access is slow and flaky.  2.14
-> branch too, I guess.
+> I just tried to do a "cvs update", but I get an error during anonymous 
+> login:
+> 
+> ruediger@gandalf:/usr/src$ cvs login
+> Logging in to :pserver:anonymous@cvs.parisc-linux.org:2401/var/cvs
+> CVS password: [empty]
+> cvs login: authorization failed: server cvs.parisc-linux.org rejected 
+> access to /var/cvs for user anonymous
+> ruediger@gandalf:/usr/src$
+> 
+> DNS-Entry of cvs.parisc-linux.org for me is: 192.25.206.7.
 
-Applied to mainline.
+that is out of date - the correct ip is now .14
+-- 
 
-
-H.J.
+dannf@dannf.org 
