@@ -1,20 +1,19 @@
 Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9148E48C5
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ADFD04856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 16 Feb 2004 10:31:49 -0700 (MST)
-Date: Mon, 16 Feb 2004 18:31:41 +0100
-Message-ID: <402A4CA50000347C@ocpmta2.freegates.net>
-In-Reply-To: <402E7722.2080105@tiscali.be>
+	Mon, 16 Feb 2004 10:42:19 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout1.tiscali.be with esmtp (Tiscali) id 1Asml8-00041a-00
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 16 Feb 2004 18:42:18 +0100
+Date: Mon, 16 Feb 2004 18:42:17 +0100
+Message-ID: <402A4CA5000034AF@ocpmta2.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	James Morrison <ja2morri@csclub.uwaterloo.ca>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] hw db pb?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,14 +23,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Ok, I will try to report as much detail as I can.
-
 Hi all,
 
-Just in case of some interest interest, here is the pr ref:
-<http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14163>
+I try to have a look on D380 cpu's type into:
+<http://hwdb.parisc-linux.org/>
 
-hth,
+but I only get severall:
+"Warning: MySQL Connection Failed: Can't connect to local MySQL server through
+socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 19
+
+Warning: MySQL Connection Failed: Can't connect to local MySQL server through
+socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 27
+
+Warning: MySQL: A link to the server could not be established in ../database.php3
+on line 27"
+
+Thanks in advance for help,
     Joel
 
 
