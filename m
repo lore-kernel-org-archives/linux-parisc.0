@@ -1,48 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2AF29482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 13:07:53 -0600 (MDT)
-Received: from ppp29.scram.de (ppp29.scram.de [195.226.127.222])
-	by mail.scram.de (8.11.0/8.11.0) with ESMTP id f9PJ7nT18294
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 21:07:49 +0200 (CEST)
-Date: Thu, 25 Oct 2001 21:06:08 +0200 (CEST)
-From: Jochen Friedrich <jochen+parisc-linux@scram.de>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0110252102160.1877-100000@alpha.bocc.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] IPv6 on PA-RISC up and running :-)
+Received: from beloit.edu (beloit.edu [144.89.40.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22F19482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 15:12:02 -0600 (MDT)
+Received: from localhost ([144.89.185.182])
+	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id QAA22004
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 16:06:54 -0500
+Date: Thu, 25 Oct 2001 16:12:00 -0500
+Mime-Version: 1.0 (Apple Message framework v472)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: Daniel Williams <dan@bigw.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <EDDF6AE3-C98C-11D5-BDE1-0030657D1C94@bigw.org>
+Subject: [parisc-linux] How to Boot CD on C110
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+I've got a C110...  I picked up the .9 ISO and burned it with EasyCD 
+Creator on a Win2k box (I know, I know, but no access to a linux box 
+right now, I'm running FreeBSD and it doesn't have a burner).  Popped it 
+in and it won't boot.  Too bad the firmware doesn't see the SCSI CD 
+either, when SEArching on bootup.  Both the fixed disks in the unit have 
+been wiped, so I have no OS to start from.
 
-With a short patch (disabling a not-working checksum method and using a 
-portable C version instead), i got IPv6 
-up and running on my 720:
+SCSI CD is ID 2, but what bus is it on?  The only one I can find 
+mentioned is 'core.FWSCSI'.  Trying to 'boot SESCSI.2' doesn't work.  
+When I try to boot 'boot core.FWSCSI.2.0'  (the CD as far as I can 
+guess) it asks about the interactive thing, I type 'y', then it says 
+that it failed to boot and spits out a bunch of numbers onscreen.  Oh, 
+when the CD is in the CD drive, the access light on the CD flashes on 
+and off steadily, like its being read every second or so, even when the 
+machine is doing nothing with it.  Happens when the CD drive is in an 
+external box connected to the SE SCSI port on the back too.  Happens on 
+the internal 50 pin SE bus as well.
 
-[root@alpha root]# ping6 3ffe:400:470:4:a00:9ff:fe17:ca3d
-PING 3ffe:400:470:4:a00:9ff:fe17:ca3d(3ffe:400:470:4:a00:9ff:fe17:ca3d) from 3ffe:400:470:4::1 : 56 data bytes
-64 bytes from 3ffe:400:470:4:a00:9ff:fe17:ca3d: icmp_seq=0 hops=64 time=2.391 msec
-64 bytes from 3ffe:400:470:4:a00:9ff:fe17:ca3d: icmp_seq=1 hops=64 time=780 usec
+The README-ISO for the boot CD mentions:
+ >    After the ISO image is mastered, but before you burn any CDs,
+ >    change to this directory and run 'palo -f iso.conf'.  The name
+ >    of the ISO image is inside the .conf file and you'll probably
+ >    have to change that.
+ >    The ISO image is now bootable.  Burn and boot it.
 
-Cheers,
-Jochen
+However, I don't have linux anywhere and can't run palo -f iso.conf from 
+anything, much less anything with a CD burner.  Is there any way that I 
+can make this CD bootable or coax the  machine into booting the raw ISO 
+I burned?  Preferably using a Win2k box.  I did a direct burn from ISO 
+in EasyCD Creator and it reads fine from any computer I throw it in, 
+just doesn't boot on my C110...  Any help greatly appreciated, thanks,
 
---- /usr/src/linux/include/asm-parisc/checksum.h.old    Thu Oct 25 
-21:00:58 2001+++ /usr/src/linux/include/asm-parisc/checksum.h        Thu 
-Oct 25 21:00:46 2001@@ -143,6 +143,7 @@
-         return csum_fold (csum_partial(buf, len, 0));
- }
-
-+#if 0
- #define _HAVE_ARCH_IPV6_CSUM
- static __inline__ unsigned short int csum_ipv6_magic(struct in6_addr *saddr,
-                                                     struct in6_addr *daddr,
-@@ -153,6 +154,7 @@
-        BUG();
-        return csum_fold(sum);
- }
-+#endif
-
- /*
-  *     Copy and checksum to user
+Dan
