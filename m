@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.latinmail.com (unknown [207.153.214.76])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 75611482A
-	for <parisc-linux@parisc-linux.org>; Tue, 25 Mar 2003 04:34:37 -0700 (MST)
-Received: from latinmail.com.com (unknown [216.167.63.32])
-	by smtp.latinmail.com (Postfix) with SMTP id 8215518F43
-	for <parisc-linux@parisc-linux.org>; Tue, 25 Mar 2003 06:34:33 -0500 (EST)
-To: parisc-linux@parisc-linux.org
-From: PATRIC MANBO <patric_manbo@latinmail.com>
-Date: Tue, 25 Mar 2003 06:34:36 -0500
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <20030325113433.8215518F43@smtp.latinmail.com>
-Subject: [parisc-linux] Pls lets work together
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 48D6B482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Mar 2003 04:37:38 -0700 (MST)
+Date: Tue, 25 Mar 2003 12:37:34 +0100
+Message-ID: <3E68A4AA0000385B@ocpmta8.freegates.net>
+In-Reply-To: <20030324213508.GA8436@systemhalted>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] Glibc 2.3.2 failures and possible fixes?
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,58 +22,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Patric Manbo 
-00229-981193 
-patmanbo@maktoob.com 
+Hi Carlos,
 
-Greetings, 
+>
+>John, Tausq,
+>
+>Succeeded in building glibc 2.3.2 with syscall cancellation support, but
+>I'm pretty sure it's wrong.
+>
+I am less luky.
 
-I crave your indulgence as I contact you in such a surprising manner. But I respectfully insist you read this letter carefully as I am optimistic it will open doors for unimaginable financial reward for both of us. 
+I grab src of glibc-2.3.2 from ftp.gnu and aply your patches and try to rebuild
+on an unstable debian (update this 20030324).
 
-This business transaction might not fall within the wide spectrum 
-of your business activities, but I plead your assistance, as your 
-flair for profitable business is needed. 
+unfortunately I got the following err:
 
-Permit me to introduce myself, I am Mr.Patric Manbo , personal account Manager Vladimir Stankov in Continental bank Benin,I am writing this letter to ask for your support and co-operation to carry out this business opportunity in my department. 
+gcc-3.2 dl-reloc.c -c -std=gnu99 -O2 -Wall -Winline -Wstrict-prototypes -Wwrite-strings
+-fstrict-aliasing -g -pipe      -I../include -I.
+-I/Develop/tools/glibc/glibc-2.3.2/hppa-linux/obj/elf -I.. -I../libio  -I/Develop/tools/glibc/glibc-2.3.2/hppa-linux/obj
+-I../sysdeps/hpp
+a/elf -I../linuxthreads/sysdeps/unix/sysv/linux/hppa -I../linuxthreads/sysdeps/unix/sysv/linux
+-I../linuxthreads/sysdeps/pthread -I../sys
+deps/pthread -I../linuxthreads/sysdeps/unix/sysv -I../linuxthreads/sysdeps/unix
+-I../linuxthreads/sysdeps/hppa -I../sysdeps/unix/sysv/lin
+ux/hppa -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/common
+-I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysdeps
+/unix/sysv -I../sysdeps/unix -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1
+-I../sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32 -I../sysde
+ps/ieee754/dbl-64 -I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa
+-I../sysdeps/ieee754 -I../sysdeps/generic/elf -I.
+./sysdeps/generic  -nostdinc -isystem /usr/lib/gcc-lib/hppa-linux/3.2.3/include
+-isystem /usr/src/linux-2.4.20-pa32-64/include -D_LIBC_RE
+ENTRANT -include ../include/libc-symbols.h       -o /Develop/tools/glibc/glibc-2.3.2/hppa-linux/obj/elf/dl-reloc.o
+In file included from dynamic-link.h:49,
+                 from dl-reloc.c:207:
+../sysdeps/hppa/dl-machine.h: In function `_dl_relocate_object': 
+../sysdeps/hppa/dl-machine.h:646: conflicting types for `elf_machine_rela_relative'
+dynamic-link.h:37: previous declaration of `elf_machine_rela_relative'
+make[3]: *** [/Develop/tools/glibc/glibc-2.3.2/hppa-linux/obj/elf/dl-reloc.o]
+Error 1
+make[3]: Leaving directory `/Develop/tools/glibc/glibc-2.3.2/glibc-2.3.2/elf'
+make[2]: *** [elf/subdir_lib] Error 2
+make[2]: Leaving directory `/Develop/tools/glibc/glibc-2.3.2/glibc-2.3.2'
+make[1]: *** [install] Error 2
+make[1]: Leaving directory `/Develop/tools/glibc/glibc-2.3.2/hppa-linux/obj'
+make: *** [/Develop/tools/glibc/glibc-2.3.2/hppa-linux/installed-binaries]
+Error 2
 
-Every five years, Benin banks transfer to its treasury millions 
-of dollars of unclaimed deceased depositors funds in compliance 
-with the banking laws and guidelines, in majority of cases with 
-reference to my bank-Continental bank , the money normally runs into several millions of dollars. 
+I also find:
 
-A foreigner, Late Engineer Vladimir Stankov, an Oil Merchant/Contractor in Benin ,until his death four years ago in a ghastly air crash has a closing balance of US9,500,000.00(Nine Million,Five Hundred Thousand Dollars)Ever since his death and up till this time of writing, no next-of-kin or relation of his has come forward to claim his money with us. Fervent valuable efforts have been made by Continentak bank to get in touch with any of the Stankov`s family or relatives but proved to no avail. 
+into dynamic-link.h
+auto void __attribute__((always_inline))
+elf_machine_rela_relative (ElfW(Addr) l_addr, const ElfW(Rela) *reloc,
+                           ElfW(Addr) *const reloc_addr);
 
-Naturally, as long as Vladimir money remains unclaimed, the bank 
-remains richer in free funds with his money. However, with my position, 
+into sysdeps/hppa/dl-machine.h:
+auto void __attribute__((always_inline))
+elf_machine_rela_relative (struct link_map *map, Elf32_Addr l_addr,
+                           const Elf32_Rela *reloc,
+                           Elf32_Addr *const reloc_addr)
 
-I can present you to claim the fund as a relative/next of kin if 
-you agree with me on private basis. Yes, I can present you. 
+Thanks for advise,
+    Joel
 
-The request for you as next of kin in this business is occasioned 
-by the fact that the customer was a foreigner and a Beninios cannot stand as next of kin to a foreigner,Hence, I plead for your assistance with the intention of getting this unclaimed money amounting to US9,500,000.00 (Nine Million, Five Hundred Thousand Dollars Only) transferred into a company/private bank account that you will present. 
-
-You stand to gain a negotiable percentage of the fund if you agree to help me actualize this opportunity I will not contact any other person until I am convinced that you are not interested in this proposal. 
-
-Contact me immediately indicating your willingness and also give 
-your direct and confidential fax and phone numbers for the effective communication that this transaction requires. 
-
-I will furnish you with the procedure and also enlighten you on 
-how the funds will be disbursed and shared on receipt of your response. 
-
-I will also require your advice in the areas of investment as 
-I plan to establish a business venture in your country with my share. 
-
-Please reach me only on this private email address:Patmanbo@maktoob.com 
-or Tel:00229-981193 
-
-Remember that a business of this nature needs to be 
-kept confidential. 
-
-Yours Sincerely, 
-
-PATRIC MANBO 
-
-
-
-_________________________________________________________
-http://www.latinmail.com.  Gratuito, latino y en español.
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
