@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B1CCC484D
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 21:17:01 -0600 (MDT)
-Date: Tue, 16 Jul 2002 20:19:57 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@parisc-linux.org, gcc@gcc.gnu.org
-Subject: Re: [parisc-linux] gcc-3.[02] alignment problem
-Message-ID: <20020717031957.GE641@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <200207161701.g6GH1D03023385@hiauly1.hia.nrc.ca> <20020716172255.GM8724@tausq.org> <20020716182408.W27706@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020716182408.W27706@parcelfarce.linux.theplanet.co.uk>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9E48F482A
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 07:39:19 -0600 (MDT)
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [parisc-linux] 2.4.19-rc1-ac6 Merge pa55: #error ...?
+Message-ID: <1026913104.3d357350a4057@webmail.tiscalinet.be>
+Date: Wed, 17 Jul 2002 15:38:24 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: parisc-linux@parisc-linux.org
+References: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk>
+In-Reply-To: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,35 +23,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > why is the offset of tcpdiag_cookie[0] 44 and not 40?
-> 
-> 0	tcpdiag_sport
-> 2	tcpdiag_dport
-> 4	tcpdiag_src
-> 20	tcpdiag_dst
-> 36	tcpdiag_if
-> 40	tcpdiag_cookie
-> 
-> hmm.. worth checking that dport is at offset 2, not offset 4?
+Hi Alan,
 
-oic, it's embedded inside another structure:
+I try to build your 2.4.19-rc1-ac6 on my parisc-linux box but I got early
+following error messages:
 
-struct tcpdiagmsg
-{
-        __u8    tcpdiag_family;
-        __u8    tcpdiag_state;
-        __u8    tcpdiag_timer;
-        __u8    tcpdiag_retrans;
+/usr/src/kernel-source-2.4.19-rc1-ac6-20020717/include/asm/system.h:55:2: #error
+andre hedrick screwed this up please help unscrew in order to clean up
 
-        struct tcpdiag_sockid id;
+in the code there is this comment:
 
-        __u32   tcpdiag_expires;
-        __u32   tcpdiag_rqueue;
-        __u32   tcpdiag_wqueue;
-        __u32   tcpdiag_uid;
-        __u32   tcpdiag_inode;
-};
+/*
+ * __save_and_sti(x) == __save_flags(x); ide__sti();
+ *                      __save_flags(x); __sti();
+ *
+ */
 
-that's why it's 44...
+What does it mean? (I do not find any where else some ide__sti?)
+May I try to define this function (__save_and_sti) as for other arch (but alpha)?
 
-randolph
+Thanks in advance for advice,
+    Joel
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
