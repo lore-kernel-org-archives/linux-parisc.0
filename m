@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 19 Feb 2003 22:15:06 -0700
-To: Dan Baker <dan_baker@eli.net>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 93C024831
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Feb 2003 23:51:31 -0700 (MST)
+Date: Wed, 19 Feb 2003 22:42:11 -0800
+From: tausq@debian.org
+To: gcc-gnats@gcc.gnu.org, debian-gcc@lists.debian.org
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] X problems...
-Message-ID: <20030220051506.GA10418@dsl2.external.hp.com>
-References: <20030220012101.7198.23807.Mailman@dsl2.external.hp.com> <003601c2d881$54da7920$830c1bac@vli82k7dbaker>
+Message-ID: <20030220064211.GD11363@tausq.org>
+Reply-To: tausq@debian.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <003601c2d881$54da7920$830c1bac@vli82k7dbaker>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] [hppa-linux, gcc-3.2 regression] ICE when optimizing inline code
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,40 +22,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Feb 19, 2003 at 05:42:29PM -0800, Dan Baker wrote:
-> BUT, I did download source code for HP's Intel linux visualize driver. I
-> can't get it to compile, the assembler tells me there's an invalid opcode
-> (??) in the .o file. I'm not really a programmer, so I'm hoping somebody out
-> there can take a look at what they're doing and fix it.
+>Submitter-Id:	net
+>Originator:	Randolph Chung
+>Organization:	Debian
+>Confidential:	no
+>Synopsis:	[hppa-linux, gcc-3.2 regression] ICE when optimizing inline code
+>Severity:	serious
+>Priority:	medium
+>Category:	optimization
+>Class:		ice-on-legal-code
+>Release:	3.2.3 20030210 (Debian prerelease) (Debian testing/unstable)
+>Environment:
+System: Linux legolas 2.4.20-pa25 #115 Sun Feb 9 20:54:18 PST 2003 parisc unknown unknown GNU/Linux
+Architecture: parisc
 
-Well, it's not that easy even for someone who can read C.
+	<machine, os, target, libraries (multiple lines)>
+host: hppa-unknown-linux-gnu
+build: hppa-unknown-linux-gnu
+target: hppa-unknown-linux-gnu
+configured with: ../src/configure -v --enable-languages=c,c++,f77,proto,pascal,objc,ada --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.2 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-clocale=gnu --enable-objc-gc hppa-linux
+>Description:
+see below
 
-First, some bad news:
-o x86 version of the card has extra VGA cruft+BIOS.
-  PA-Risc version uses STI firmware for initialization.
-o IIRC, the X11 server (or maybe just gfx card driver?) is a custom,
-  closed source code.  Hopefully I'm wrong and someone will correct me.
-o I'll guess that many (most of the?) interesting bits are in the XF86
-  hpgfx driver module. I'm assuming one exists.
+code works with gcc-3.0 and gcc-3.3 snapshot
+also works with gcc-3.2 with -O1
 
-Good news: 3d acceleration for x86 cards uses the same RISC engines
-as the parisc cards.
+>How-To-Repeat:
+-------8< cut here 8<---------
+inline int fixfloor (long x) { if (x >= 0) return (x >> 16); else return ~((~x) >> 16); }
+inline int fixtoi (long x) { return fixfloor(x) + ((x & 0x8000) >> 15); }
+int foo(long x, long y) { return fixtoi(x*y); }
+-------8< cut here 8<---------
 
-Several years ago I asked someone in the HP gfx group if they
-could port the HPUX driver to parisc-linux but our port wasn't
-ready then (I think it is now). The gfx driver interacts *alot*
-with the rest of the kernel *and* the X11 server.
-The above is what I remember from conversations with people.
+legolas% gcc-3.2 -O2 -c bug.i
+bug.i: In function `foo':
+bug.i:3: internal error: Segmentation fault
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
-> The files are at
-> 
-> ftp://ftp.hp.com/pub/ccd/soar2sdd/wk207/wk207en/hpgraphics_kernel-1.5.3-1.sr
-> c.rpm
-> and
-> ftp://ftp.hp.com/pub/ccd/soar2sdd/wk207/wk207en/hpgraphics_kernel-1.5.3-1.sr
-> c.rpm
-
-uhm...'cuse me, but aren't those the same?
-
-hth
-grant
+>Fix:
+	unknown
