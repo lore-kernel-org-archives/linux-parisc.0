@@ -1,34 +1,73 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 352A74844
-	for <parisc-linux@parisc-linux.org>; Sun,  7 Oct 2001 21:52:41 -0600 (MDT)
-Message-Id: <200110080348.VAA24289@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Thomas Marteau <marteaut@esiee.fr>,
-	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Second Draft of the help for the kernel options 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Mon, 08 Oct 2001 00:31:47 BST." <20011008003147.A6105@parcelfarce.linux.theplanet.co.uk>
-Date: Sun, 07 Oct 2001 21:48:47 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 66FA0482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 02:15:53 -0600 (MDT)
+Received: from mail.lokmail.net (localhost [127.0.0.1])
+	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id EAA24881
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 8 Oct 2001 04:15:34 -0400
+Message-Id: <200110080815.EAA24881@mail.lokmail.net>
+From: Jurij Smakov <jurij@lokmail.net>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] A todo entry 
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 08 Oct 2001 04:15:34 -0400
+Sender: jurij@mail.lokmail.net
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> 32-bit PDC
-> CONFIG_PDC_NARROW
->   Turning this option on enables support for 32-bit firmware when running
->   a 64-bit kernel.  You should select this option if you have a machine
->   from the C160-J2240 era.
+Hi!
+ 
+> Someone was asking for a job to do.  Here's one.
 
-s/machine/workstation/
-I'm pretty sure all 64-bit capable servers properly handle
-PDC calls in wide mode. PAT PDC supports a few calls in
-narrow mode (for boot loader) but the rest must be in wide mode.
+It was probably me.
 
-Note that IODC generally requires narrow mode.
-(Superdome IODC is different - but I don't recall exactly how).
+> In include/asm-parisc/uaccess.h, we have a couple of functions which
+> look like this:
+> 
+> #define __get_user(x,ptr)                               \
+> ({                                                      \
+>         register long __gu_err __asm__ ("r8") = 0;      \
+>         register long __gu_val __asm__ ("r9") = 0;      \
+>                                                         \
+>         if (segment_eq(get_fs(),KERNEL_DS)) {           \
+>             switch (sizeof(*(ptr))) {                   \
+>             case 1: __get_kernel_asm("ldb",ptr); break; \
+>             case 2: __get_kernel_asm("ldh",ptr); break; \
+>             case 4: __get_kernel_asm("ldw",ptr); break; \
+>             case 8: __get_kernel_asm("ldd",ptr); break; \
+>             default: BUG(); break;                      \
+>             }                                           \
+>         }                                               \
+>         else {                                          \
+>             switch (sizeof(*(ptr))) {                   \
+>             case 1: __get_user_asm("ldb",ptr); break;   \
+>             case 2: __get_user_asm("ldh",ptr); break;   \
+>             case 4: __get_user_asm("ldw",ptr); break;   \
+>             case 8: __get_user_asm("ldd",ptr); break;   \
+>             default: BUG(); break;                      \
+>             }                                           \
+>         }                                               \
+>                                                         \
+>         (x) = (__typeof__(*(ptr))) __gu_val;            \
+>         __gu_err;                                       \
+> })
+> 
+> This is rather suboptimal.  The way it should be done is to always
+> access userspace through %sr2 (currently listed as unused).  Set sr2
+> to the same value as sr3 normally.  Set it to 0 when someone does a
+> set_fs(KERNEL_DS), and to sr3 when USER_DS.  get_fs() should return the
+> value of sr2.  None of these functions are called frequently, so there's
+> no need to cache the values outside the space registers.
 
-BTW, I prefer Matthew's rewrite over the Thomas' proposal.
-No offense intended thomas - thanks for submitting the original.
+This is slightly over my head, but that is my understanding of what needs
+to be done: instead of checking with segment_eq we need a routine,
+which just reads from memory, using space from sr2. With proposed
+modifications to get_fs, get_ds and set_fs it will automagically contain
+a correct value (0 for kernel memory and same as sr3 for userspace).
 
-grant
+Is it the correct interpretation? Is it still possible to do in view
+of John's comment?
+
+Best regards,
+
+Jurij.
