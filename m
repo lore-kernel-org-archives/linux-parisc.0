@@ -1,30 +1,37 @@
-Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA10937
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 17:32:42 -0700
-Sender: drepper@cygnus.com
+Received: from mail.valinux.com (smtp-fwd.valinux.com [198.186.202.196])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA11446
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 17:51:37 -0700
+Received: from osmium.hdqt.valinux.com
+	([10.3.1.14] helo=valinux.com ident=mail)
+	by mail.valinux.com with esmtp (Exim 3.16 #1 (Debian))
+	id 13yOAG-0005O0-00; Tue, 21 Nov 2000 16:53:32 -0800
+Received: by valinux.com (Postfix, from userid 561)
+	id 5B260AD0E; Tue, 21 Nov 2000 16:53:27 -0800 (PST)
+Date: Tue, 21 Nov 2000 16:53:27 -0800
+From: "H . J . Lu" <hjl@valinux.com>
 To: Alan Modra <alan@linuxcare.com.au>
-Cc: John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@puffin.external.hp.com,
-        parisc-linux@thepuffingroup.com, binutils@sourceware.cygnus.com
+Cc: Ulrich Drepper <drepper@cygnus.com>, John Marvin <jsm@udlkern.fc.hp.com>,
+        parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com,
+        binutils@sourceware.cygnus.com
 Subject: Re: [parisc-linux] Use of the EI_OSABI field
-References: <Pine.LNX.4.21.0011221042300.16860-100000@front.linuxcare.com.au>
-Reply-To: drepper@cygnus.com (Ulrich Drepper)
-From: Ulrich Drepper <drepper@redhat.com>
-Date: 21 Nov 2000 16:31:39 -0800
-In-Reply-To: Alan Modra's message of "Wed, 22 Nov 2000 11:13:29 +1100 (EST)"
-Message-ID: <m3ofz8j190.fsf@otr.mynet.cygnus.com>
-MIME-Version: 1.0
+Message-ID: <20001121165327.A12804@valinux.com>
+References: <m3u290j488.fsf@otr.mynet.cygnus.com> <Pine.LNX.4.21.0011221042300.16860-100000@front.linuxcare.com.au>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0011221042300.16860-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Wed, Nov 22, 2000 at 11:13:29AM +1100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra <alan@linuxcare.com.au> writes:
-
+On Wed, Nov 22, 2000 at 11:13:29AM +1100, Alan Modra wrote:
+> 
+> > Anyway, the ABI value is zero unless you implement ELF extensions.
+> 
 > Exactly what is an "ELF extension"?  Anything outside gABI or
-> "gABI + psABI"?
 
-Anything beyond the psABI that cannot be handled by the rules in the
-gABI.
+ELF extension is something whose interpretation is not documented in
+neither gABI nor psABI. HP's old ELF is a good example since it didn't
+implement DT_INIT/DT_FINI, but added DT_INIT_ARRARY/DT_FINI_ARRAY. A
+normal ELF tool will have a hard time to interpret those fields and
+their values.
 
--- 
----------------.                          ,-.   1325 Chesapeake Terrace
-Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-Red Hat          `--' drepper at redhat.com   `------------------------
+
+H.J.
