@@ -1,33 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DA1D482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Aug 2001 00:46:26 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 14FF0482A
+	for <parisc-linux@parisc-linux.org>; Tue, 21 Aug 2001 01:09:58 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15Z5Iu-00044S-00; Tue, 21 Aug 2001 07:46:24 +0100
-Date: Tue, 21 Aug 2001 07:46:24 +0100
+	id 15Z5fd-0004UR-00; Tue, 21 Aug 2001 08:09:53 +0100
+Date: Tue, 21 Aug 2001 08:09:53 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Helge Deller <deller@gmx.de>
-Cc: =?iso-8859-1?Q?Jo=EBl_Soete?= <jso@europay.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel 2.4.9-pa2?
-Message-ID: <20010821074624.A12638@parcelfarce.linux.theplanet.co.uk>
-References: <E15YmHu-0005lD-00@the-village.bc.nu> <20010820211823.D4D92482A@dsl2.external.hp.com> <20010821063716.E23D1482A@dsl2.external.hp.com>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] iotree thoughts
+Message-ID: <20010821080953.B12638@parcelfarce.linux.theplanet.co.uk>
+References: <willy@debian.org> <200108210544.XAA20603@puffin.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010821063716.E23D1482A@dsl2.external.hp.com>; from deller@gmx.de on Tue, Aug 21, 2001 at 08:36:56AM +0200
+In-Reply-To: <200108210544.XAA20603@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Aug 20, 2001 at 11:44:20PM -0600
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Aug 21, 2001 at 08:36:56AM +0200, Helge Deller wrote:
-> Oops, I think you found a bug in the kernel. Don't know yet if it's
-> only pa-risc specific or a general linux-kernel issue.
+On Mon, Aug 20, 2001 at 11:44:20PM -0600, Grant Grundler wrote:
+> That sounds too much like work. ;^)
+> Raven PDC ERS is available from HP's firmware team website. (internal only).
 
-I think you're right.  Richard saw it on an A500 with 2.4.8 too.
-I've seen a few scattered reports from people on other architectures
-that they're seeing the same thing.
+Thanks, I'll look at that.
 
-I went over the softirqd code this morning, and nothing jumped out at
-me and said `this is something parisc is doing wrong'.  Maybe more eyes..
+> I disagree. I want the kernel to NOT link if CONFIG_PCI and
+> CONFIG_ISA are not enabled when inx/outx functions are used.
+
+I discussed this with Ted Ts'o at OLS.  The difficulty is that there's
+a fair bit of arch-independent code which does (example taken from serial.c):
+
+static _INLINE_ unsigned int serial_in(struct async_struct *info, int offset)
+{
+        switch (info->io_type) {
+        case SERIAL_IO_MEM:
+                return readb((unsigned long) info->iomem_base +
+                             (offset<<info->iomem_reg_shift));
+        default:
+                return inb(info->port + offset);
+        }
+}
+
+so either we add the nasty:
+
+        default:
+#if defined(CONFIG_PCI) || defined(CONFIG_ISA)
+                return inb(info->port + offset);
+#else
+                BUG();
+#endif
+
+or we just make inb() BUG().
+
+> This will allow the kernel to link and then fail after rebooting.
+> That seems like a step backwards to me.
+
+Only if they're called.  The majority of places where these functions
+exist can provably never be called.  The others probably won't be :-)
 
 -- 
 Revolutions do not require corporate support.
