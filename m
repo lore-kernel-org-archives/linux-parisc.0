@@ -1,27 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA25963
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Aug 2000 04:58:38 -0600
-Received: from unknown (HELO rhirst.linuxcare.com) (158.43.17.94)
-  by mailserv2.iuinc.com with SMTP; 8 Aug 2000 11:00:52 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 6A0A8B005; Tue,  8 Aug 2000 12:01:02 +0100 (BST)
-Date: Tue, 8 Aug 2000 12:01:02 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000808120102.A1107@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA27606
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Aug 2000 08:03:14 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 8 Aug 2000 14:05:27 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 8 Aug 2000 14:05:04 -0000
+Date: Tue, 8 Aug 2000 08:59:56 -0400
+From: Matthew Wilcox <matthew@wil.cx>
+To: Simon Teather <simon.teather@barclays.co.uk>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000/D200 and Linux
+Message-ID: <20000808085956.L10538@vodka.thepuffingroup.com>
+References: <398FBB88.FCF6F6E@barclays.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Zalon 53c720 support added
+In-Reply-To: <398FBB88.FCF6F6E@barclays.co.uk>; from Simon Teather on Tue, Aug 08, 2000 at 08:49:28AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  I have added support for 53c720, currently (ab)using the ncr53c8xx.c driver,
-but it may have to split in to a seperate driver later.  Tested on a bluefish
-card; I can run fast and wide, using tagged commands, and copy data between
-two disks.  It crashes after a while, but then if I do the same with either
-the 53c710 or 53c875 drivers a similar thing happens.  I'm busy with other
-things for the next week or so, but I'll get back to it after that.
+On Tue, Aug 08, 2000 at 08:49:28AM +0100, Simon Teather wrote:
+> Has anyone sucessuflly got Linux running on an HP 9000/D200 machine?.
 
-To enable it answer 'yes' to CONFIG_SCSI_ZALON.
-
-Richard
+We don't actually have an ioscan of the D200 in our database, could you go
+to http://216.208.98.4/add.php3?type=machine and follow the instructions
+for adding it to the hwdb?
