@@ -1,12 +1,13 @@
-From: "B. Douglas Hilton" <bdhilton@charter.net>
-Subject: Re: [parisc-linux] Opinions on desktop environments
-Date: Sat, 07 Sep 2002 00:33:02 -0400
-Message-ID: <3D79817E.201__49007.8716575683$1416621694$gmane$org@charter.net>
-References: <20020907005814.6142.qmail@web12506.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] GNOME 1.4
+Date: Sun, 08 Sep 2002 15:56:02 -0600
+Message-ID: <20020908215602.791B0482A__21287.9919600256$1416621700$gmane$org@dsl2.external.hp.com>
+References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com> <20020830040829.3BE694829@dsl2.external.hp.com>  <1030705477.3180.15.camel@irongate.swansea.linux.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: Message from Alan Cox <alan@lxorguk.ukuu.org.uk>
+   of "30 Aug 2002 12:04:37 BST." <1030705477.3180.15.camel@irongate.swansea.linux.org.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,46 +18,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Derek Engelhaupt wrote:
-> Well, got KDE to work, but it just seems slow even with my 1.6MB of RAM
-> and 2GB of swap on my C180.  I guess my questions would be what would
-> be an alternative that might run faster and/or be better overall than
-> KDE?  Gnome?  I guess I'm looking for what you guys think is the best
-> desktop environment to run.  Thanks.
-> 
-> derek
+Alan Cox wrote:
+> The setup I use so I get a 'real desktop' not just old style X window
+> mangler is xfce for the desktop with the rox filer on top for the file
+> mangler, icon dock etc.
+
+rox filer isn't available pre-built for hppa.
+"dpkg-buildpackage -rfakeroot -uc -us" died with:
+...
+checking that libgtk2.0-dev (version >= 2.0.1) is installed... no
+configure: error: Package is not installed
+
+while on my system "dpkg -l libgtk\*" says:
+...
+ii  libgtk2.0-0    2.0.2-5woody1  The GTK+ graphical user interface library
+ii  libgtk2.0-comm 2.0.2-5woody1  Common files for the GTK+ graphical user int
+ii  libgtk2.0-dbg  2.0.2-5woody1  The GTK+ libraries and debugging symbols
+ii  libgtk2.0-dev  2.0.2-5woody1  Development files for the GTK+ library.
+
+Latest source depot's are below in case someone wants to beat rox config
+tools into submission:
+deb http://www.janw.easynet.be/rox/ developer/
+deb-src http://www.janw.easynet.be/rox/ developer/
+
+(one might try "stable/" instead of "developer/")
 
 
-Hehe... you should try running a 715 or 712! The C-Class machines positively
-scream! I agree though, KDE is somewhat sluggish on my C200, but really not
-too bad, its usable. I've heard rumors that someday the hppa c-library could
-be optimized to run _much_ faster but its still a baby as far as linux is
-concerned - I'm just tickled that it even works... I wanted another non-x86
-machine (also have a Netwinder), but SGI's are pretty exotic (though tempting),
-Alpha's seem super cool but are somewhat expensive and often in bad disrepair,
-and Sun machines are either too expensive or too old. The hppa boxes provided
-a nice economy and are very much contenders with any of the aforementioned
-architectures. In its day a C200 running HP/UX was supposedly able to smoke
-a 600MHz Alpha! Obviously there is a lot of optimization still to do...
+> I'd guess it would be very nice on an ancient parisc box too because
+> they pa boxes probably have better I/O
 
-I started off with a 715/80, got Woody running good on it, played with it for
-almost a year, then sold it on Ebay for a small profit (Debian sells!) and
-rolled my dough into the C200. I'm rather happy with its performance,
-although it doesn't hold a candle to my super dual pentium-II 450 monster
-box, still its a cool and useful machine, and very nice for making sure
-that your app is portable, compiling your own hppa debs, etc. I don't run
-mine 24/7 because it has pretty high power consumption, so the Netwinder
-is my little server machine -> http://www.gyrodynamic.net
+I was thinking xfce is a window manager but it's not:
+    xfce is an easy-to-use and easy-to-configure toolbar for X11.  Features
+    pulldown menus with color icons, 3D widgets,  etc.   It's  designed  to
+    work with XFwm, (window manager shipped with xfce)
 
-Well, I sent you a private email with my suggestions about E, but now that
-I think about it, BlackBox isn't too bad with 8bpp color. Assuming that
-somebody has fixed "update-menus" really any Debian window manager should
-work with KDE, Gnome, and other X apps. The Debian menus should provide
-access to all the installed packages which is all you really need.
+It works on fine on my B180...but I didn't try it with XFwm as reccomended.
+fvwm was still running...I'll try it again with XFwm.
 
-BTW, regarding "update-menus" - the last time I tried it on hppa it worked
-as root but segfaulted as a normal user.
-
-
-
-- Doug
+thanks,
+grant
