@@ -1,21 +1,21 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Message-Id: <199902220929.KAA16272@seger.axis.se>
+Message-Id: <199902220859.JAA15707@seger.axis.se>
 To: hppa-linux@puffingroup.com
+cc: Steven Beattie <beattie@cse.ogi.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 22 Feb 1999 10:29:29 +0100
+Date: Mon, 22 Feb 1999 09:59:25 +0100
 From: Lars Segerlund <lars.segerlund@axis.com>
-Subject: [hppa-linux] LVM
-Resent-Message-ID: <"EVg5k1.0.7k.pIIqs"@burrow.puffingroup.com>
+Subject: [hppa-linux] Bootstrap
+Resent-Message-ID: <"PjxpY1.0.1j.ssHqs"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
- OK, I could do some lvm for linux work since im a bit familiar with it,
- but I don't think LVM for linux supports booting of an lvm system :-(
+ Hello,
 
- My  personal opinion is to go for a simple partitioning on a separate
- disk, and fix the bells and wistles later.
+ tested the bootstrap on a 9000/725 , and it runs,
+ gives processor as 000000
 
  / ls.
 
