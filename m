@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D525482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 05:31:39 -0700 (MST)
-Received: from computer (pec-89-129.tnt6.b2.uunet.de [149.225.89.129])
-	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id NAA02357
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 13:31:37 +0100 (MET)
-Date: Sat, 15 Dec 2001 14:43:25 +0100
-From: Joerg Hartmann <J.Hartmann@reinarts.de>
-Reply-To: Joerg Hartmann <J.Hartmann@reinarts.de>
-Message-ID: <561134811041.20011215144325@reinarts.de>
+Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A60994831
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 05:42:29 -0700 (MST)
+Received: from hpuxsrv.india.hp.com (hpuxsrv.india.hp.com [15.10.45.132])
+	by palrel13.hp.com (Postfix) with ESMTP id 712911FA6E
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 04:42:27 -0800 (PST)
+Received: from localhost (maneesh@localhost) by hpuxsrv.india.hp.com with ESMTP (8.8.6 (PHNE_17135)/8.8.6 SMKit7.02) id SAA21041 for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 18:08:27 +0530 (IST)
+Date: Sat, 15 Dec 2001 18:08:26 +0530 (IST)
+From: Maneesh Singhal <maneesh@india.hp.com>
 To: PARISC Linux List <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.HPX.4.21.0112151802590.20337-100000@hpuxsrv.india.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] gcc on 0.9.3 iso problem
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] installation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello PARISC-Linux users,
+Hi,
 
-i installed the debian ISO Version 0.9.3 on a hp9000/720
-including the gcc (version 3.0.2).
+     I was trying to install parisc-linux version 9.3 on my B180L machine. I was
+     trying this through CD [I burned my CD]. While installing ... I faced following problems , can anybody help :
 
-But if i try to use this gcc i always get an error
+     1. at the time of Installing kernel and driver modules, it use to give 
+	fatal error sometimes [a couple of times it passed too].. 
+     2. This one is consistent, while installing the base system, it was always
+	failing and use to give dump with error message saying 
+	"console.data-........ scsi1:(2:0) Fatal Error : Not MSG_IN after
+	selection .. Bus reset detected ..." etc. etc.
 
-hp-tux:/usr/src/samba-2.2.2/source# ./configure
-creating cache ./config.cache
-checking for gcc... gcc
-checking whether the C compiler (gcc -O  ) works... no
-configure: error: installation or configuration problem:
-           C compiler cannot create executables.
 
-Could someone please explains whats wrong here ?
-Do i need another gcc ?
-But if so, why is this gcc on the cd ?
+	A couple of times it tried to find out floppy drive too [ it is not there]
+	and use to give dump when it doesn't find that drive, well, this is 
+	while installing rescue.bin only.
 
-Thanks .
+	Can anybody tell me why these errors come and how can I solve them...
 
--- 
-Best regards,
- Joerg                          J.Hartmann@reinarts.de
+Regards.
+Maneesh
