@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 762B44856
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Oct 2003 10:16:12 -0600 (MDT)
-Date: Wed, 8 Oct 2003 18:16:08 +0200
-Message-ID: <3F5CB6FB0000F484@ocpmta1.freegates.net>
-In-Reply-To: <1289146742B56546AE580DFC6B711A8313482D@PKDWB07C.ad.sprint.com>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] A3591B (Tachyon) FC Card
-To: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>,
-	parisc-linux@lists.parisc-linux.org
+Message-ID: <1b176n$o7-j57j7c@ms64.ia6oi>
+From: "Russel Rouse" <89souqs@msn.com>
+Reply-To: "Russel Rouse" <89souqs@msn.com>
+To: <grundler@parisc-linux.org>, <parisc-linux@parisc-linux.org>
+Date: Thu, 09 Oct 03 03:03:09 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: multipart/alternative;
+	boundary=".E.9BCE_F.CAF_32EFDB_."
+Subject: [parisc-linux] having trouble scoring babes? xea kbo neysfz pim
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,29 +19,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->I'm trying to figure out whether it would be a good idea to use some of
->the existing code in the cpqfcTS* driver (similar to the way that the
->zalon7xx scsi host template calls code in the ncr53c8xx driver).
->However, the cpqfcTS* code is quite a beast, perhaps writing the driver
->from scratch would be better?  (Googling the list archives shows that
->I'm not the only one intimidated(?) by the compaq code :)
->
-Hi,
+--.E.9BCE_F.CAF_32EFDB_.
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Because I would also like to test Tachyon based FC card on a N, I had the
-opportunity to discuss by email with the maintainer of this code (iirc on
-sf.net). He recognised himself that it would have to re-writte but have no
-time to do :(
+xasa t
+oga
+ rnttsko
+x pfvewoak ck <P>
+Grundler i found a great deal! <center><font face=3Dverdana>S<uu>E<uu>X AT=
+T<uu>RACT<uu>ING PHE<uu>RO<uu>MONES!! AVAILABLE HERE!!<P>FOR M<uu>EN OR WO=
+M<uu>EN!!<P><a href=3Dhttp://www.cheapest-phero-online.com@ebargins.biz/ph=
+ero/>LOOK HERE FOR MORE INFO!!<P></a>
+<BR><BR><BR><BR><BR><BR><font size=3D-2>jm y htsaimwzkckng wl xt yj zit
+sq bznuabk<BR>uexp ldxdzxqtmi<BR><B=
+R><a href=3Dhttp://www.cheapest-phero-online.com@ebargins.biz/remove.html>=
+RE<uu>MOVE FROM MAI<uu>LLI<uu>ST</a> <P>ztbnu n  ie
+n  
+jkxs aqtefkckuzc
+zbe i
 
-For my part, I didn't find much more doc on this cards and so abandon the
-idea to write this code (I am also a beginner in this field).
-I can just wish you better success :)
+yrftfjbgrxaq xdvnstunezdkcgpkkuza rfpque
 
-Joel
-
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+--.E.9BCE_F.CAF_32EFDB_.--
