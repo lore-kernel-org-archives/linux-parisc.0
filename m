@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0DF914829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Aug 2002 09:26:30 -0600 (MDT)
-Date: Mon, 5 Aug 2002 11:25:00 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Jurriaan Kalkman <Jurriaan.Kalkman@zrt.nl>
-Cc: Ralf.Hildebrandt@charite.de, rbradetich@uswest.net,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: Betr.: Re: [parisc-linux] 2.4.19 tree merged in.
-Message-ID: <20020805152500.GE31773@systemhalted>
-References: <sd4e97dd.056@ms-zrt1>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <sd4e97dd.056@ms-zrt1>
+Received: from hotmail.com (oe55.law3.hotmail.com [209.185.240.55])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3EA054829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Aug 2002 09:27:11 -0600 (MDT)
+From: "Alex Green" <alexdgreen@hotmail.com>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <OE232NqFJ3sl3xbYiMC00003f35@hotmail.com> <20020805151839.GD31773@systemhalted>
+Subject: Re: [parisc-linux] Compiling 2.4.19-pa0
+Date: Mon, 5 Aug 2002 17:27:08 +0200
+Message-ID: <OE55uhhhETApmdUrmib0000099c@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +20,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+[....]
+
+> On Mon, Aug 05, 2002 at 04:17:45PM +0200, Alex Green wrote:
+> > Hi,
 > >
-> >For me, it doesn't even BUILD!
+> > I'm trying to compile the latest kernel source from the parisc-linux
+ftp,
+> > 2.4.19-pa0 I belive and I get the following errors while doing the "make
+> > vmlinux":
 > >
-> There is a noxious problem where the latest debian modutils are still at
-> 2.4.15, and kernel-2.4.19 needs newer modutils. This can be solved
-> by downloading a newer version of modutils (2.4.19 is the latest, IIRC) and
-> installing those. The symptoms of too old modutils are lot of unresolved
-> symbols - like  you see.
-> 
-> Good luck,
-> Jurriaan
 >
+> Please include a list of the following:
+>
+> 1. Compiler version.
 
-I had forgotten about that change.
-Yes, you will need to update modutils...
-ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-2.4.19.tar.gz
+gcc-3.1.1 and gcc-3.0.4
 
-I always have the latest source for this lying around and I forget 
-about it :}
+> 2. Binutils version.
 
-c.
+binutils-2.12.90.0.15-1
+
+> 3. Modutils version.
+
+modutils-2.4.19    * Built from source *
+
+> 4. Last time you ran "apt-get update; apt-get dist-upgrade;".
+
+Today
+
+> 5. Running kernel version.
+
+2.4.18 from woody
+
+> 6. How you got the kernel source tree.
+>         - Did you 'cvs co' ontop of a 2.4.18 tree?
+
+no, i took the .tar.gz from the CVS on the ftp site, I have no access to cvs
+* firewall *
+
+
+> 7. What steps you took to compile the kernel.
+>         - Did you try runnig 'make mrproper' first?
+
+make clean dep vmlinux.....     Should I try running make mrproper first??
