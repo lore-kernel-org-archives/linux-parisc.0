@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail1 (unknown [217.116.164.102])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B22E14829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 05:29:46 -0600 (MDT)
-Date: Tue, 24 Sep 2002 14:28:30 +0300
-From: Arto Jantunen <viiru@debian.org>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SMP problems
-Message-ID: <20020924112830.GA27877@dt-link.fi>
-References: <20020924060541.GA27852@dt-link.fi> <Pine.LNX.4.44.0209240141510.20374-100000@garibaldi.apptechsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0209240141510.20374-100000@garibaldi.apptechsys.com>
+Received: from dns1.rz.fh-heilbronn.de (dns1.rz.fh-heilbronn.de [141.7.1.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 36D2D483B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 05:42:00 -0600 (MDT)
+Message-ID: <002a01c263bf$76340820$1f96078d@acid>
+From: "Yves Bodack" <bodack@stud.fh-heilbronn.de>
+To: "Steve Pacenka" <spacenka@lightlink.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <03ab01c26266$2416dea0$1f96078d@acid><20020922220323.0113cbca.varenet@esiee. fr><03bf01c2627c$9a5147c0$1f96078d@acid> <03ed01c26280$4dfb5c90$1f96078d@acid> <1032793227.1848.222.camel@romano> <003001c26327$d0db42e0$1f96078d@acid> <1032806776.2868.19.camel@romano>
+Subject: Re: [parisc-linux] RTC and FB on 735/125
+Date: Tue, 24 Sep 2002 13:42:28 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,28 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Sep 24, 2002 at 01:48:31AM -0700, Jeremy Drake wrote:
-> On Tue, 24 Sep 2002, Arto Jantunen wrote:
-> 
-> > Any news on the SMP trouble on PA-8200 and similar? Someone said that he
-> > would be working on it last week. I heard some stuff about it working on
-> > 64-bit kernels, but 64-bit crashes immediately on my box, SMP or no SMP.
-> > I would really like to get this monster doing some real work, so any
-> > news is good news.
-> I don't know exactly what hardware you have, but my J5k is chugging 
-> happily along running 2.4.19-64-smp from sid, and the only problem I have 
-> encountered as of yet is a lockup when starting setserial on boot.  Other 
-> than that, it seems to be as stable as uniproc 32-bit.  Whatever hardware 
-> you have, I'm willing to bet that it isn't a J5k, and any differences 
-> involved may complicate things, so (as always) YMMV.
+From: "Steve Pacenka" <spacenka@lightlink.com>
+Subject: Re: [parisc-linux] RTC and FB on 735/125
 
-I have a HP9000/D390. Dual PA-8200. It doesn't boot at all with that
-kernel or any other 64-bit kernel. Some things do suggest that it should
-work, but it doesn't. After the kernel branching point it starts
-scrolling FLT codes on the LCD display, but doesn't report anything on
-the console. I have a ser pim output taken out after rebooting the box
-if someone is interrested. I'll try building the latest CVS with 32-bit
-and SMP and see if it's any better then the ones I have tried so far.
 
---
-Arto Jantunen
+> Could you please post your experience at getting X applications to work
+> now that you have X and a desktop?  I got basic gnome things to work
+> flawlessly, but failed on my 735/99 with xmms, xemacs, and galeon or
+> mozilla.
+Galeon/Mozilla and XMMS start up, but they don't appear on screen and give
+no errors. xemacs can't be installed, while dselect misses some dependent
+packages.
+I'm running KDE, that is slow but proper. And I have a woking browser at
+last.
+
+Greets,
+yves...
