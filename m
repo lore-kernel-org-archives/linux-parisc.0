@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5E7BE4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Aug 2002 09:19:52 -0600 (MDT)
-Date: Mon, 5 Aug 2002 11:18:39 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Alex Green <alexdgreen@hotmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Compiling 2.4.19-pa0
-Message-ID: <20020805151839.GD31773@systemhalted>
-References: <OE232NqFJ3sl3xbYiMC00003f35@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OE232NqFJ3sl3xbYiMC00003f35@hotmail.com>
+Received: from hotmail.com (oe56.law3.hotmail.com [209.185.240.56])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 36F4B48A7
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Aug 2002 09:20:45 -0600 (MDT)
+From: "Alex Green" <alexdgreen@hotmail.com>
+To: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <sd4ea3d1.076@ms-zrt1>
+Subject: Re: Betr.: Re: [parisc-linux] 2.4.19 tree merged in.
+Date: Mon, 5 Aug 2002 17:20:42 +0200
+Message-ID: <OE56LoygXLsxpTljBOh0000669a@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +20,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Aug 05, 2002 at 04:17:45PM +0200, Alex Green wrote:
-> Hi,
-> 
-> I'm trying to compile the latest kernel source from the parisc-linux ftp,
-> 2.4.19-pa0 I belive and I get the following errors while doing the "make
-> vmlinux":
-> 
+Ok,
 
-Please include a list of the following:
+It builds from source no problems and it works on parisc... well appears to
+:).
 
-1. Compiler version.
-2. Binutils version.
-3. Modutils version.
-4. Last time you ran "apt-get update; apt-get dist-upgrade;".
-5. Running kernel version.
-6. How you got the kernel source tree.
-        - Did you 'cvs co' ontop of a 2.4.18 tree?
-7. What steps you took to compile the kernel.
-        - Did you try runnig 'make mrproper' first?
+Thanks,
+Alex
+----- Original Message -----
+From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+To: <parisc-linux@lists.parisc-linux.org>
+Sent: Monday, August 05, 2002 3:54 PM
+Subject: Re: Betr.: Re: [parisc-linux] 2.4.19 tree merged in.
 
-c.
+
+>there is only the 2.4.15 pkgs in the debian trees (stable, unstable and
+>testing)
+>
+>where can the new modutils be retrieved from?
+>
+a single google-query would have shown they live in
+
+/pub/linux/utils/kernel/moduitls/v2.4
+
+in every kernel mirror you can find. I haven't tested newer versions on
+pa-risc, BTW.
+
+Good luck,
+Jurriaan
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
