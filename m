@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 109A24829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 12:49:30 -0700 (MST)
-Message-Id: <200301151949.h0FJnQq1029095@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] 64 userspace
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Wed, 15 Jan 2003 14:49:26 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030115193143.GF20519@systemhalted> from "Carlos O'Donell" at Jan 15, 2003 02:31:43 pm
+Received: from mail2.scram.de (mail2.scram.de [195.226.127.112])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B7A04829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 12:53:30 -0700 (MST)
+Date: Wed, 15 Jan 2003 20:52:15 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>,
+	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Interesting network card ...
+In-Reply-To: <20030115125237.E26554@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.44.0301152050130.30955-100000@gfrw1044.bocc.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I wonder if this isn't the problem with expect.
-> > 
-> > Dave
-> 
-> On another note, if expect calls code that uses atomic_add,
-> compare_and_swap, and exchange_and_add, they are currently generic and
-> not guaranteed to be atomic under any situation.
-> 
-> See atomicity.h.
+Hi,
 
-I doubt it.  It does a lot of waiting around with alarm signals going off.
-As I recall, when it is filling the syslog, there are two expect processes
-running and killing the child fixes the problem.  This causes dejagnu to
-abort the current testsuite.
+> > The card is the HP ANA-6911A/AUI (yes, it's a 10/100BT with coax and
+> > AUI too), part# A3738-60001, and it _is_ found by the tulip driver, but
+> > for some reason the driver claims that "no MII transceiver found", and
+> > does list the 10B2 and AUI connections too. But I can't seem to make it
+> > form a link with TP or coax, no matter what I do. And the AUI connector
+> > is blocked by the C240 chassis. Is there a simple way to force the use of
+> > a certain transceiver? Tried mii-tool already and it didn't help much -
+> > but then again it doesn't seem to know about the coax and AUI at all...
+>
+> how very interesting.  could you send an lspci -vvx for that card?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+This might be a card with an older DC21x4x chipset. Maybe the de4x5.c
+driver works better in this case.
+
+--jochen
