@@ -1,42 +1,65 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8FEBC4A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 17:49:27 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: "M. Grabert" <xam@deathsdoor.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP9000/730 problems
-Date: Tue, 6 Feb 2001 01:48:26 +0100
-References: <Pine.LNX.4.21.0102050015450.385-100000@sgate.charlysworld.de>
-In-Reply-To: <Pine.LNX.4.21.0102050015450.385-100000@sgate.charlysworld.de>
-MIME-Version: 1.0
-Message-Id: <01020601482600.01149@P100.helgenet.de>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 893184A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 23:32:40 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA31200
+	for <parisc-linux@puffin.external.hp.com>; Mon, 5 Feb 2001 23:28:24 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 6 Feb 2001 06:32:38 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14Q1DN-00066K-00; Tue, 06 Feb 2001 06:02:57 +0000
+Date: Tue, 6 Feb 2001 06:02:57 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Matthew Wilcox <matthew@wil.cx>,
+	Ryan Bradetich <rbradetich@uswest.net>,
+	parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] RFC: I/O tree design
+Message-ID: <20010206060257.B27096@parcelfarce.linux.theplanet.co.uk>
+References: <20010203175751.C12985@parcelfarce.linux.theplanet.co.uk> <200102051834.KAA02270@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200102051834.KAA02270@milano.cup.hp.com>; from grundler@cup.hp.com on Mon, Feb 05, 2001 at 10:34:48AM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Monday 05 February 2001 00:29, M. Grabert wrote:
-> BTW, ASP Parallel Port driver is still broken (can't boot with it,
-> but can boot without it).
+On Mon, Feb 05, 2001 at 10:34:48AM -0800, Grant Grundler wrote:
+> Matthew Wilcox wrote:
+> ...
+> > One advantage of doing this is that `Child' could be a pointer to a
+> > PCI bus.
+> 
+> I don't think I want that. PCI busses have their own heirarchy
+> and I would much rather keep them quite seperate. At least for
+> the moment I would. Future abstraction of native bus access
+> and mgt methods might make this more interesting.
 
-Yes, I thought I fixed it a few weeks back, but .... :-(
-I would like to fix that problem, but since I don't have such a machine where 
-this bug happens I will need your help. If you could send me your bootlog I 
-can give it another try.
+I was thinking along the lines of:
 
-> STI console is also broken (many characters are not printed or substitued
-> by spaces). The problems occur of course AFTER "switching console" !
+struct hp_bus;
+struct hp_device {
+	[...]
+	int bus_type;
+	union {
+		struct pci_bus *pci;
+		struct hp_bus *hp;
+	} child;
+};
 
-I believe, that you used the old STI code. Please try again the code I 
-checked into CVS yesteray.
-But the main problem why you just see some characters is, that the HP STI rom 
-code doesn't includes all characters - and the new code will not fix this 
-yet. But my long term goal is to switch the STI code to use the 
-framebuffer-fonts from the linux-tree (which really seems possible).
+and then use the pci_bus sysdata to point to the struct hp_device which
+is the parent of this pci_bus.
 
-> But serial console works fine :)
-Yes of course. It doesn't uses the font tables of STI ROM.
+Rather than try to abuse the `parent' entry in the pci_bus.
 
-Greetings,
+> Sometimes, it's convenient to think of the memory controller(s)
+> as the "parent" of the central bus and memory banks as children
+> (just like CPU would also be a child). This model works under ccNuma
+> as well with memory at multiple levels in the I/O tree.
 
-	Helge Deller
+Yeah, I was thinking about that.  In some of the larger systems (say,
+N class), there's no real central point at which to base the bus walk,
+other than the Stretch memory controller.
+
+-- 
+Revolutions do not require corporate support.
