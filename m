@@ -1,20 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA09414
-	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Mar 2000 11:10:59 -0700
-Date: Tue, 14 Mar 2000 18:11:22 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
-To: "MEYER,ALAN C. HP-FtCollins,ex1\"" <alan_meyer@hp.com>
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] FW: Linux-2.3.x cache coherency issues, proposed new architecture
-Message-ID: <20000314181122.R5281@abacus.local>
-References: <56D553C0B61BD311AD2300A0C9F485C2038D103D@xfc02.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <56D553C0B61BD311AD2300A0C9F485C2038D103D@xfc02.fc.hp.com>; from alan_meyer@hp.com on Tue, Mar 14, 2000 at 09:46:18AM -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA12450
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Mar 2000 18:11:18 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 15 Mar 2000 00:12:39 -0000
+Received: from unknown (HELO boilermaker.thepuffingroup.com) (216.208.98.2)
+  by smtp.linuxcare.com with SMTP; 15 Mar 2000 00:12:38 -0000
+Date: Tue, 14 Mar 2000 19:12:35 -0500 (EST)
+From: "Dave O'Neill" <doneill@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.10003141855270.9288-100000@boilermaker.thepuffingroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] ld death
 List-ID: <linux-parisc.vger.kernel.org>
 
-> PA/Linux is not on the list and we should get our input to David.
 
-in fact, Dave sent this to me and we discussed it.
+I've managed to kill the linker from the x86 cross-binutils while building
+a kernel.  Does anyone have any ideas what might be causing this?  Here's
+what's happening:
 
-	Philipp Rumpf
+hppa1.1-hp-linux-ld  -T /home/dmo/cvs/linux-2.3/arch/parisc/vmlinux.lds
+arch/parisc/real/head.o  init/main.o init/version.o \
+        --start-group \
+        arch/parisc/kernel/pdc_cons.o arch/parisc/kernel/process.o
+arch/parisc/real/real.o /home/dmo/cvs/linux-2.3/arch/parisc/lib/lib.a
+arch/parisc/mm/mm.o arch/parisc/kernel/kernel.o arch/parisc/hpux/hpux.o
+kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o arch/parisc/kernel/init_task.o \
+        drivers/block/block.a drivers/char/char.o drivers/net/net.o
+drivers/pci/pci.a drivers/gsc/gsc.a \
+        net/network.a \
+        /home/dmo/cvs/linux-2.3/arch/parisc/lib/lib.a
+/home/dmo/cvs/linux-2.3/lib/lib.a  \
+        --end-group \
+        -o vmlinux
+hppa1.1-hp-linux-ld: Warning: type of symbol `__ashrdi3' changed from 1 to
+2 in ashrdi3.o
+death: gsc_writeq type 1
+hppa1.1-hp-linux-ld: can not size stub section: Bad value
+make: *** [vmlinux] Segmentation fault (core dumped)
+
+Dave
+-- 
+Dave O'Neill, Senior Linux Consultant, Linuxcare, Inc.
+doneill@linuxcare.com, http://www.linuxcare.com/ 
+Linuxcare. Support for the revolution.
