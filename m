@@ -1,45 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03210
-	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 17:08:09 -0700
-Message-Id: <200012120006.TAA29936@hiauly1.hia.nrc.ca>
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Mon, 11 Dec 2000 19:06:47 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: grundler@cup.hp.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.21.0012102347330.31734-100000@front.linuxcare.com.au> from "Alan Modra" at Dec 11, 2000 00:02:57 am
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04317
+	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 18:43:51 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 12 Dec 2000 01:46:28 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA01912;
+	Tue, 12 Dec 2000 12:43:30 +1100
+Date: Tue, 12 Dec 2000 12:43:30 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+cc: grundler@cup.hp.com, parisc-linux@thepuffingroup.com
+Subject: Re: gcc wchar patch for hppa64
+In-Reply-To: <200012120006.TAA29936@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.21.0012121218240.27939-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] gcc wchar patch for hppa64
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan,
+On Mon, 11 Dec 2000, John David Anglin wrote:
 
-This patch fixes a problem with wide characters.  We need to override the
-defines in svr4.h.  With this, I get much further building a 64 bit glibc.
-Please review and install if ok.
+> This patch fixes a problem with wide characters.  We need to override the
+> defines in svr4.h.  With this, I get much further building a 64 bit glibc.
+> Please review and install if ok.
 
-Dave
+Thanks!  Installed.
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
-
-2000-12-11  John David Anglin  <dave@hiauly1.hia.nrc.ca>
-
-	* pa-linux64.h: Define WCHAR_TYPE and WCHAR_TYPE_SIZE per ABI.
-
---- pa-linux64.h.orig	Mon Oct 30 02:58:24 2000
-+++ pa-linux64.h	Mon Dec 11 18:15:14 2000
-@@ -158,9 +158,13 @@
-   Make GCC agree with types.h.  */
- #undef SIZE_TYPE
- #undef PTRDIFF_TYPE
-+#undef WCHAR_TYPE
-+#undef WCHAR_TYPE_SIZE
- 
- #define SIZE_TYPE "long unsigned int"
- #define PTRDIFF_TYPE "long int"
-+#define WCHAR_TYPE "unsigned int"
-+#define WCHAR_TYPE_SIZE 32
- 
- /* If it is not listed here, then the default selected by GCC is OK.  */
- #define SHORT_TYPE_SIZE 16
+Linuxcare.  Support for the Revolution.
