@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9459B482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Nov 2001 07:21:37 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 64C3EB00C; Mon,  5 Nov 2001 14:22:50 +0000 (GMT)
-Date: Mon, 5 Nov 2001 14:22:50 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Herb Radford <herbr@magma.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Booting C200
-Message-ID: <20011105142250.F8938@linuxcare.com>
-References: <3.0.5.32.20011105071636.0191f530@mail.magma.ca>
-Mime-Version: 1.0
+Received: from viefep15-int.chello.at (viefep15-int.chello.at [213.46.255.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8FBDA482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Nov 2001 14:49:53 -0700 (MST)
+Received: from gmx.at ([62.178.92.247]) by viefep15-int.chello.at
+          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
+          id <20011105214944.GKRT10991.viefep15-int.chello.at@gmx.at>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 5 Nov 2001 22:49:44 +0100
+Message-ID: <3BE70974.A7EB0181@gmx.at>
+Date: Mon, 05 Nov 2001 22:49:40 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3.0.5.32.20011105071636.0191f530@mail.magma.ca>; from herbr@magma.ca on Mon, Nov 05, 2001 at 07:16:36AM -0500
+Subject: [parisc-linux] include - haeder files missing
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,14 +25,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Nov 05, 2001 at 07:16:36AM -0500, Herb Radford wrote:
-> OK, I found some stuff in the archive on the "Chassis Codes" and set up an
-> old laptop as a terminal, disconnected the keyboard (and mouse) and booted.
-> Now I tried this with the disk out of my 712/60 and the C200 is not hung.
-> It proceeds through the boot process and then hangs on starting cron.
+Hello !
 
-Hmm, the next thing would be the login prompt.  Has it really hung,
-or is the inittab from your 712/60 set up to only issue a getty on
-the graphical console?
+I have the problem that I miss most of the header files under
+/usr/include
+or /usr/X11R6/include/X11 ?
 
-Richard
+Which binary packages I have to install (name of the packages).
+I miss the default glibc-2 headers, the X11 headers, etc...
+
+I cannot find out, which packages the h-files include. It is quite a
+long
+time to build and install glibc by myself on the 712/60, and it is much
+too
+long to build a Xfree on myself ...
+
+With friendly regards
+	Christoph P. 
+
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
