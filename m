@@ -1,7 +1,7 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] [PATCH] stifb bugfixes against 2.6.10-rc1-bk9
-Date: Sat, 30 Oct 2004 21:41:44 +0100
-Message-ID: <20041030204144.GK8958__13630.5870641538$1416624502$gmane$org@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] [PATCH] kernel-parameters update for PA-RISC
+Date: Sat, 30 Oct 2004 21:57:39 +0100
+Message-ID: <20041030205739.GL8958__17857.0340540775$1416624502$gmane$org@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -20,72 +20,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
- - Fix "sti= parameter ignored by stifb" bug (Stuart Brady)
- - Fix the STI crash with HCRX-24 in 32bpp mode (Helge Deller)
+ - Add the PARISC tag (Thibaut Varene)
+ - Mark some existing PA-RISC specific entries with it (Thibaut Varene)
+ - Document pdcchassis (Thibaut Varene)
 
-diff -urpNX dontdiff linux-2.6.10-rc1-bk9/drivers/video/stifb.c parisc-2.6-bk/drivers/video/stifb.c
---- linux-2.6.10-rc1-bk9/drivers/video/stifb.c	Fri Oct 22 15:40:35 2004
-+++ parisc-2.6-bk/drivers/video/stifb.c	Sat Oct 30 09:31:49 2004
-@@ -112,6 +112,7 @@ struct stifb_info {
- 	ngle_rom_t ngle_rom;
- 	struct sti_struct *sti;
- 	int deviceSpecificConfig;
-+	u32 pseudo_palette[16];
- };
+diff -urpNX dontdiff linux-2.6.10-rc1-bk9/Documentation/kernel-parameters.txt parisc-2.6-bk/Documentation/kernel-parameters.txt
+--- linux-2.6.10-rc1-bk9/Documentation/kernel-parameters.txt	Sat Oct 30 09:14:21 2004
++++ parisc-2.6-bk/Documentation/kernel-parameters.txt	Sat Oct 30 09:31:21 2004
+@@ -53,6 +53,7 @@ restrictions referred to are that the re
+ 	NFS	Appropriate NFS support is enabled.
+ 	OSS	OSS sound support is enabled.
+ 	PARIDE	The ParIDE subsystem is enabled.
++	PARISC	The PA-RISC architecture is enabled.
+ 	PCI	PCI bus support is enabled.
+ 	PCMCIA	The PCMCIA subsystem is enabled.
+ 	PNP	Plug & Play support is enabled.
+@@ -394,7 +395,7 @@ running once the system is up.
+ 	eicon=		[HW,ISDN] 
+ 			Format: <id>,<membase>,<irq>
  
- static int __initdata bpp = 8;	/* parameter from modprobe */
-@@ -1030,6 +1031,14 @@ stifb_setcolreg(u_int regno, u_int red, 
- 				/* 0x100 is same as used in WRITE_IMAGE_COLOR() */
- 		START_COLORMAPLOAD(fb, lutBltCtl.all);
- 		SETUP_FB(fb);
-+
-+		/* info->var.bits_per_pixel == 32 */
-+		if (regno < 16) 
-+		  ((u32 *)(info->pseudo_palette))[regno] =
-+			(red   << info->var.red.offset)   |
-+			(green << info->var.green.offset) |
-+			(blue  << info->var.blue.offset);
-+
- 	} else {
- 		/* cleanup colormap hardware */
- 		FINISH_IMAGE_COLORMAP_ACCESS(fb);
-@@ -1327,6 +1336,7 @@ stifb_init_fb(struct sti_struct *sti, in
- 	info->screen_base = (void*) REGION_BASE(fb,1);
- 	info->flags = FBINFO_DEFAULT;
- 	info->currcon = -1;
-+	info->pseudo_palette = &fb->pseudo_palette;
+-	eisa_irq_edge=	[PARISC]
++	eisa_irq_edge=	[PARISC,HW]
+ 			See header of drivers/parisc/eisa.c.
  
- 	/* This has to been done !!! */
- 	fb_alloc_cmap(&info->cmap, 256, 0);
-@@ -1383,6 +1393,7 @@ int __init
- stifb_init(void)
- {
- 	struct sti_struct *sti;
-+	struct sti_struct *def_sti;
- 	int i;
- 	
- #ifndef MODULE
-@@ -1397,9 +1408,19 @@ stifb_init(void)
- 		return -ENXIO;
- 	}
- 	
-+	def_sti = sti_get_rom(0);
-+	if (def_sti) {
-+		for (i = 1; i < MAX_STI_ROMS; i++) {
-+			sti = sti_get_rom(i);
-+			if (sti == def_sti && bpp > 0)
-+				stifb_force_bpp[i] = bpp;
-+		}
-+		stifb_init_fb(def_sti, stifb_force_bpp[i]);
-+	}
+ 	elanfreq=	[IA-32]
+@@ -933,6 +934,11 @@ running once the system is up.
+ 	pd.		[PARIDE]
+ 			See Documentation/paride.txt.
+ 
++	pdcchassis=	[PARISC,HW] Disable/Enable PDC Chassis Status codes at
++			boot time.
++			Format: { 0 | 1 }
++			See arch/parisc/kernel/pdc_chassis.c
 +
- 	for (i = 1; i < MAX_STI_ROMS; i++) {
- 		sti = sti_get_rom(i);
--		if (!sti)
-+		if (!sti || sti==def_sti)
- 			break;
- 		if (bpp > 0)
- 			stifb_force_bpp[i] = bpp;
+ 	pf.		[PARIDE]
+ 			See Documentation/paride.txt.
+ 
+@@ -1250,7 +1256,7 @@ running once the system is up.
+ 	st0x=		[HW,SCSI]
+ 			See header of drivers/scsi/seagate.c.
+ 
+-	sti=		[HW]
++	sti=		[PARISC,HW]
+ 			Format: <num>
+ 			Set the STI (builtin display/keyboard on the HP-PARISC
+ 			machines) console (graphic card) which should be used
 
 -- 
 "Next the statesmen will invent cheap lies, putting the blame upon 
