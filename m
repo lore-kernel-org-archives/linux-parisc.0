@@ -1,22 +1,31 @@
-Received: from gin.ext.thepuffingroup.com ([216.208.98.3])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA09211
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 10:00:21 -0700
-From: willy@thepuffingroup.com
-Date: Fri, 3 Mar 2000 10:52:32 -0500
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Gyula Matics <gyula_matics@hp.com>, parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] lasi scsi driver
-Message-ID: <20000303105232.V9944@thepuffingroup.com>
-References: <006601bf8487$e057e010$a94abc0f@hungary.hp.com> <200003022119.NAA11506@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200003022119.NAA11506@milano.cup.hp.com>; from Grant Grundler on Thu, Mar 02, 2000 at 01:19:40PM -0800
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA09931
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 10:53:55 -0700
+Message-ID: <00e601bf8531$3d7f7c40$4c50fb8d@corpnorth.baynetworks.com>
+Reply-To: "Rajiv Dighe" <rdighe@nortelnetworks.com>
+From: "Rajiv Dighe" <rdighe@nortelnetworks.com>
+To: parisc-linux <parisc-linux@thepuffingroup.com>
+Date: Fri, 3 Mar 2000 11:55:11 -0500
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Subject: [parisc-linux] Trouble booting 712/80
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Mar 02, 2000 at 01:19:40PM -0800, Grant Grundler wrote:
-> I was just talking about that with someone and thinking we could
-> put that in a "common" I/O path. I found "wakeup_bdflush()" but have
-> no clue what that does.
+Hi,
 
-that's the kernel demon which writes dirty pages to disk and has nothing
-to do with flushing caches, unfortunately.
+    HP newbie here. I just acquired a 712/80 with 96mb ram & 1gb hdd. I am
+looking forward to helping with linux port effort as soon as I can get HP/UX
+10.20 installed on this darn machine. so far it refuses t o boot from
+cd-rom. cd-rom is seen as a result of search command issued at boot-admin
+prompt but 'boot scsi.5' just returns me back to boot_admin promt after
+about 5 seconds. boot rom version is 1.6. All I know is that this machine
+was set for netbooting. any ideas?
+
+--Rajiv
+PS: both cd-rom & media are known & proven to be good. other 712s have been
+installed using same drive/media.
+---------------------------------------
+NetID Group
+Nortel Networks
+613-798-4914
+---------------------------------------
