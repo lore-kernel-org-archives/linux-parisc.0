@@ -1,20 +1,26 @@
-Return-Path: <varenet@esiee.fr>
-Received: from mail.zigoo.net (d050.dhcp212-198-139.noos.fr [212.198.139.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 363BD487A
+Return-Path: <david.everly@mci.com>
+Received: from omzesmtp04.mci.com (omzesmtp04.mci.com [199.249.17.14])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77533487A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  9 Apr 2004 10:49:26 -0600 (MDT)
-Date: Fri, 9 Apr 2004 18:49:21 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-To: david.everly@mci.com
+	Fri,  9 Apr 2004 10:50:54 -0600 (MDT)
+Received: from pmismtp01.wcomnet.com ([166.38.62.36])
+	by firewall.mci.com (Iplanet MTA 5.2)
+	with ESMTP id <0HVW0008BX5WJN@firewall.mci.com> for
+	parisc-linux@lists.parisc-linux.org;
+	Fri, 09 Apr 2004 16:44:21 +0000 (GMT)
+Date: Fri, 09 Apr 2004 10:44:19 -0600
+From: David Everly <david.everly@mci.com>
 Subject: Re: [parisc-linux] Re: 0.9 release (HP 9000/800/K580 install problem)
-Message-Id: <20040409184921.7cf1f5a5.varenet@esiee.fr>
-In-Reply-To: <20040409113100.GA1716@csu6223286.mcilink.com>
+In-reply-to: <20040409113100.GA1716@csu6223286.mcilink.com>
+To: The PA/Linux ESIEE Team <puffin@esiee.fr>,
+	parisc-linux@lists.parisc-linux.org
+Message-id: <20040409164419.GA2405@csu6223286.mcilink.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii; x-action=pgp-signed
 References: <20040408231826.GB32148@csu6223286.mcilink.com>
 	<20040409094050.639494f0.puffin@esiee.fr>
 	<20040409113100.GA1716@csu6223286.mcilink.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,37 +30,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I have just checked on a system installed using that particular netinst,
-ttyB0 is well created:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-varenet@Tigrou:~$ ls -l /dev/ttyB0 
-crw-rw----    1 root     dialout   60,   0 Jun  7  2002 /dev/ttyB0
+Some more information that invalidates some thing I said below:
 
-You're the second person to report that problem on the mailing list (check
-the archive) and I just can't figure out what's wrong with your setup.
+/dev/ttyB0 was in fact already installed (/target/dev/ttyB0 when
+booting from the CD to check), even though the inittab line
+seems to fail when booting and trying to run base-config
 
-I don't have any box requiring the use of ttyB0 handy to make some tests
-here, but the ttyB0 stuff has been in the netinsts for quite a while now
-and has been reported to work fine.
+Any ideas of what I might change?
 
-Anyway, check that mail, it seems that's there's a solution with newer
-kernels, with a new major number for /dev/ttyB0:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2004-April/022830.html
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://www.pateam.org/
-
-
-On Fri, 09 Apr 2004 05:31:00 -0600
-david.everly@mci.com wrote:
-
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
+On Fri, Apr 09, 2004 at 05:31:00AM MDT, david.everly@mci.com wrote:
 > Thank you for your fast reply!
 > 
 > I installed the base system from the netinst ISO.  There seemed to be
@@ -105,8 +92,8 @@ david.everly@mci.com wrote:
 > > > http://www.pateam.org/cd-images/testing/palinux-2.4.21-pa6-20030718-netinst.iso
 > > > 
 > > > After installing kernel, configuring network, etc. it came time to
-> > > reboot.  Upon reboot I got the following message and could not
-> > > finish the install:
+> > > reboot.  Upon reboot I got the following message and could not finish
+> > > the install:
 > > > 
 > > > Starting periodic command scheduler: cron
 > > > /bin/sh: /dev/ttyB0: No such device
@@ -122,24 +109,37 @@ david.everly@mci.com wrote:
 > > > INIT: Id "T0" respawning to fast: disabled for 5 minutes
 > > > INIT: no more processes left in this runlevel
 > > > 
-> > > Any suggestions on what I do now to either re-install or continue
-> > > from this point?
+> > > Any suggestions on what I do now to either re-install or continue from
+> > > this point?
 > > > 
 > > > Thanks,
 > > > Dave.
-> - -- 
+> -- 
 > David.Everly@mci.com
 >       IM: deckrider@jabber.org
 >    GnuPG: E1B6 40B6 B73F 695E 0D3B  644E 6427 DD74 8527 B9AF
 > 
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.2.4 (GNU/Linux)
-> 
-> iD8DBQFAdol0ZCfddIUnua8RAkyrAJwNAMVn0GTm5+EZfFG/fQkS70x0qQCfUUfn
-> S6PuwNXOcpBwxihYV9llGww=
-> =cn2C
-> -----END PGP SIGNATURE-----
 > _______________________________________________
 > parisc-linux mailing list
 > parisc-linux@lists.parisc-linux.org
 > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+
+- -- 
+David.Everly@mci.com
+   V-Net:       622-3286
+   Phone: 1-719-535-3286
+   Pager: 1-800-PAGE-MCI # 140-1311
+      IM: deckrider@jabber.org
+   GnuPG: E1B6 40B6 B73F 695E 0D3B  644E 6427 DD74 8527 B9AF
+
+http://agilemanifesto.org/principles.html
+http://www.expita.com/nomime.html
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAdtLjZCfddIUnua8RAhRPAKCmQjYlfGapqHCSxjiatPkgYmSBhwCfV/2F
+QhMSWJHJoZbJNVYVxMATqoc=
+=WWEN
+-----END PGP SIGNATURE-----
