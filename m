@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hadron.dyndns.org (ma-amesbury1e-100.mrrmnh.adelphia.net [68.168.107.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4ACD64829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 08:59:59 -0700 (MST)
-Date: Thu, 6 Feb 2003 10:59:39 -0500
-From: "Aaron St. Pierre" <asp@ungod.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: jbglaw@lug-owl.de, parisc-linux@lists.parisc-linux.org
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D03514829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 09:12:49 -0700 (MST)
+Date: Thu, 6 Feb 2003 17:12:44 +0100
+Message-ID: <3E4265CD00000107@ocpmta6.freegates.net>
+In-Reply-To: <20030206154909.I32277@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] B132L: Success and thanks!
-Message-ID: <20030206155939.GC5012@hadron>
-References: <20030206131451.GB5012@hadron> <200302061537.h16Fb8av028902@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200302061537.h16Fb8av028902@hiauly1.hia.nrc.ca>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +22,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hats off guys ! Get some sleep ! 
+>
+>On Thu, Feb 06, 2003 at 10:37:07AM -0500, John David Anglin wrote:
+>> Randolph Chung and Grant Grundler reduced the problems to simple testcases.
+>> Eric Botcazou diagnosed both problems.  Eric and Franz Sirl determined
+>the
+>> patch set needed.  Randolph, Franz and myself helped with testing.
+>> 
+>> It was quite an intensive bit of work resolving this problem and getting
+>> it into 3.2.2.  All those who participated deserve a vote of thanks.
+>
+>I agree.  I was very impressed to see the amount of work Randolph & Grant
+>had done when I got back.  While I'm not particularly familiar with GCC
+>development, I understand the pain of trying to separate out relevant
+>patches from a few months of development work and backporting them.
+>Well done to all involved, particularly given the 2 days they had to
+>accomplish this feat.
+>
+
+More over when I think that I track this problem for about a year and I am
+not even able to locate it accurately to make this work easier earlier.
+
+Once again, congratulation and thanks to all for this great job,
+    Joel
 
 
-In another life John David Anglin wrote:
-
-> > It has been suggested to keep a version of gcc-3.0 around (gcc-3.2 gets
-> > installed w/ sid ) and perhaps use that to build your kernels. 
-> > I am not sure is this is a requirement any longer. 
-> 
-> There were two patches installed in the 3.2 branch last weekend to address
-> the kernel miscompilation.  They are in 3.2.2 released this week.  The main
-> problem was fixed in 3.3 and the main by a series of patches installed in
-> the later half of 2002.
-> 
-> Randolph Chung and Grant Grundler reduced the problems to simple testcases.
-> Eric Botcazou diagnosed both problems.  Eric and Franz Sirl determined the
-> patch set needed.  Randolph, Franz and myself helped with testing.
-> 
-> It was quite an intensive bit of work resolving this problem and getting
-> it into 3.2.2.  All those who participated deserve a vote of thanks.
-> 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
--- 
-Aaron St. Pierre			tel: 978.828.6177
-asp@ungod.com
-
- Where you stand depends on where you sit.
- 		-- Rufus Miles, HEW
+---------------------------------
+Vous surfez avec une ligne classique ?
+Faites des economies avec Tiscali Complete
+... Plus d'info sur http://complete.tiscali.be
