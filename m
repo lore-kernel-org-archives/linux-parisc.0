@@ -1,43 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA25114
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 May 2000 11:26:33 -0600
-From: Barrie Spence <baz@calvin.demon.co.uk>
-Message-Id: <200005301726.SAA07317@calvin.demon.co.uk>
-Date: Tue, 30 May 2000 17:26:36 +0000 (GMT)
-To: steve@silug.org
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] EISA 10/100 nic for 715 systems ?
-In-Reply-To: <200005291335.IAA11105@osiris.silug.org>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA25582
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 May 2000 12:07:04 -0600
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@thepuffingroup.com
+Subject: Fwd: Re: [parisc-linux] CONFIG_SYSCTL is not set
+Date: Tue, 30 May 2000 20:05:52 +0200
 Content-Type: text/plain
+MIME-Version: 1.0
+Message-Id: <00053020065500.00442@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Steven Pritchard <steve@silug.org> wrote:
-> Ed June said:
-> > Were there ever any EISA 10/100 LAN cards for 715 systems?
-> > I have found straight 10's and 100's, but not a switching one.
-
-There was an EISA card for the S700's, I think that it was
-actually OEM'd from Interphase.
-
-> At my previous job, I had a spare EISA 10/100 card originally out of a
-> B160 that I used in my 715/100.
-> 
-> Either the cards or HP-UX was kind of weird about switching between 10
-> and 100.  I think I only got that card to talk 100 with a particular
-> brand of switch, and that was only when I forced the switch to 100
-> half duplex.  (The PCI cards did the same thing, but a kernel patch
-> for 10.20 released late last year seemed to fix autonegotiation.)
-
-The EISA card was definitely only half-duplex and generally not 
-considered a good performer.
-
-The PCI and GSC cards are totally different beasts...
-
-Barrie
+---------  Weitergeleitete Nachricht  ----------
+Subject: Re: [parisc-linux] CONFIG_SYSCTL is not set
+Date: Tue, 30 May 2000 19:59:09 +0200
+From: Helge Deller <deller@gmx.de>
 
 
---
-Barrie Spence			Sanity Clause? There is no Sanity Clause
-Home: b.spence@ieee.org		Telephone +44 1506 442304
-Play: barrie_spence@agilent.com
+Am Tue, 30 May 2000 schrieben Sie:
+> THe linking problem I had was that "sysrq_enabled" is defined in
+> keyboard.c, which formerly we never used, so the link was failing.
+> That's why I hacked it into setup.c.  If your STI stuff causes us
+> to compile keyboard.c, that would explain why you don't need my setup.c
+> hack.
+
+I just looked into it. You will NOT be forced by my patches to compile 
+keyboard.c. You may stay with your usual configuration (no keyboard, no STI, 
+only serial-console). In my last commit I changed defconfig to use virtual 
+consoles, keyboard and hil-keyboard. This should not affect your usage of the 
+serial-console.
+So I think my changes should cleanly attach to any tree, and if you only use 
+serial-console without keyboard enabled, you're right, that you will need the 
+patch to setup.c. Couldn't you commit your patch to setup.c (with  #ifdef ... 
+#endif) ?
+
+Helge.
+-------------------------------------------------------
