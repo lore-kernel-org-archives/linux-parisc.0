@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65352482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 23:07:11 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: "'Grant Grundler'" <grundler@dsl2.external.hp.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Dodgy SCSI in L2000 
-Date: Wed, 8 May 2002 17:10:46 +1200
-Message-ID: <003401c1f64e$b5e4b070$5e01000a@bongo>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 390F6482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 May 2002 00:01:24 -0600 (MDT)
+To: Randolph Chung <tausq@debian.org>
+Subject: Re: [parisc-linux] kdb patches for -pa23 ... moooo!
+Message-ID: <1020837586.3cd8bed27dc62@webmail.tiscalinet.be>
+Date: Wed, 08 May 2002 07:59:46 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, carlos@baldric.uwo.ca,
+	parisc-linux@lists.parisc-linux.org
+References: <1020756305.3cd7815151303@webmail.tiscalinet.be> <1020787573.3cd7fb75053c7@webmail.tiscalinet.be> <20020507174619.GO32033@tausq.org>
+In-Reply-To: <20020507174619.GO32033@tausq.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <002d01c1f633$bf3ebf50$5e01000a@bongo>
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Many thanks.
 
-Okay, I have just been thrashing my L2000, one disk at a time with
-dbench (up to 100 clients, havent tried any more), one disk at a
-time, and it has held up fine (i.e. no ABORTS/RESETS or anything).
-Yet as soon as I run dbench concurrently over more than one disk
-(whether in a RAID array or just fire up 2 dbench's on different
-disks, the SCSI driver goes mental with ABORTS and RESETS in the
-error log. 
+I update it right now, so I will try to compile it with gcc-3.1 (the yesterday
+cupdate of gcc-3.2 compiles well in during the night, so I will try it also)
 
-The SCSI termination and cabling *should* be fine, as nobody here has
-touched the box since we got it from HP. I cant be sure on the cables
-though as we have no replacement cables for it.
+Joel
 
-This is really weird, anybody have further ideas about this one?
+Quoting Randolph Chung <tausq@debian.org>:
 
-Cheers, James
+> > in fact, I find that it is missing following files in include/linux:
+> > kdb.h; kallsyms.h; dis-asm.h; kdbprivate.h.
+> 
+> Paul is doing a merge from trunk to the kdb branch. I would suggest
+> trying the stuff in cvs (kdb_v21 branch) instead.
+> 
+> randolph
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 
------BEGIN PGP SIGNATURE-----
-Version: PGP 7.1.1
 
-iQA/AwUBPNizVVW+bhIOiSqWEQLb8gCgi6S7nm8amd9gIFMYpvkyCYFXRV4AoOQG
-5Zg346MvhtAALRg218WsjV17
-=R9aP
------END PGP SIGNATURE-----
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
