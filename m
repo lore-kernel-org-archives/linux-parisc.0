@@ -1,33 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA06804
-	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Sep 2000 03:50:37 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 1 Sep 2000 09:50:43 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA14450;
-	Fri, 1 Sep 2000 20:47:11 +1100
-Date: Fri, 1 Sep 2000 20:47:11 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA10741
+	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Sep 2000 08:44:01 -0600
 To: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@europay.com>
-cc: "'Paul Bame'" <bame@noam.fc.hp.com>,
-        John David Anglin <dave@hiauly1.hia.nrc.ca>,
-        parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] FW: hpux 11.00 near success 
-In-Reply-To: <A4A5E4C468B5D11190220001FA6835DD04DD86BA@epixch003>
-Message-ID: <Pine.LNX.4.21.0009012014240.7013-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] FW: hpux 11.00 near success 
+In-Reply-To: Your message of "Fri, 01 Sep 2000 09:50:45 +0200."
+             <A4A5E4C468B5D11190220001FA6835DD04DD86BA@epixch003>
+References: <A4A5E4C468B5D11190220001FA6835DD04DD86BA@epixch003> 
+Date: Fri, 01 Sep 2000 08:44:03 -0600
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E13Us32-0000vt-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 1 Sep 2000, [iso-8859-1] SOETE Joël wrote:
+= 
+= I also try to rebuild tool chain with host=hppa-hpux as recommended in the
+= recipe html page but it failed:
+= not supported platform ... ? But as I just read recipe.hpux (and
+= recipe.linux) I just note that host is not anymore specified. Is it perhaps
+= the mistake? I will advise asap.
 
-> The tool chain which I just reach to rebuild successfully was date 20000829
-> as well as palo?
+You probably want target=hppa-linux and host=hppa1.1-hpux10 or something
+like that.
 
-I broke the linker on 2000-08-27, in a way that might be affecting shared
-library builds.  Your problems may be totally unrelated, but just in case,
-I thought I'd better own up.  The linker should be fixed now.
+= > I recommend using a new tool chain.  Unfortunately we don't have
+= 
+= The tool chain which I just reach to rebuild successfully was date 20000829
+= as well as palo?
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Ok, that probably means you need a full tool chain not just
+the one described in the recipes.  x86 users should probably grab the tarball
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20000829.tgz
+because building the full tool chain is often difficult.
+
+For hpux, start with the recipe in buildutils/palinux-autobuilder.
+Be sure to change this line: '$host="i386-linux";' in the script.
+
+	-P
