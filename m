@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe52.law4.hotmail.com [216.33.148.89])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3ECDE4829
-	for <parisc-linux@parisc-linux.org>; Tue,  6 Aug 2002 01:03:50 -0600 (MDT)
-From: "kenneth westelinck" <kennywest1@hotmail.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Tue, 6 Aug 2002 09:03:47 +0200
+Received: from mothra.mx.pitdc1.stargate.net (mothra.mx.pitdc1.stargate.net [206.210.69.149])
+	by dsl2.external.hp.com (Postfix) with SMTP id 4F90E482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Aug 2002 22:54:58 -0600 (MDT)
+Message-ID: <3D50A80A.6050209@neuronet.pitt.edu>
+Date: Wed, 07 Aug 2002 00:54:34 -0400
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Message-ID: <OE52uJnOVHKgGcaJCkj0000c0fb@hotmail.com>
-Subject: [parisc-linux] About the 2.4.19-pa0 kernel ...
+To: Parisc-Linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] Problem cross-compiling latest CVS kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,18 +20,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+I just updated my local copies of palo and the kernel sources.
 
-Yesterday I've built the 2.4.19-pa0 kernel and it seems to work fine at
-first sight (I did a make oldconfig with the config from the 2.4.18-pa56).
-However, the powerbutton ceased working. It was working fine with the
-2.4.18-pa56 kernel. Has anything changed near the code that handles this?
-Can someone else with a 712 confirm this behaviour?
-If you need my config, I'll send it tonight as I don't have access to this
-box during the day :(
-Thanks a lot.
+Compilation on my PIII pc of the kernel went OK, but when it goes to 
+prepare the lifimage using 'make palo' it does not work as before.
 
+I looked at the change log of Makefile and there is no mention on how to 
+create a lifimage. How is it done now?
 
-regards,
-
-Kenneth
+-- 
+      Rafael
