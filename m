@@ -1,45 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA08843
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 10:33:37 -0700
-To: "Carlos Acevedo" <carlos_a_acevedo@hotmail.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: HP PA-Risc with Linux 
-In-Reply-To: Your message of "Mon, 29 Jan 2001 14:22:54 MST."
-             <OE562shoxt8ypSqdrrn0000148a@hotmail.com>
-References: <OE562shoxt8ypSqdrrn0000148a@hotmail.com> 
-Date: Tue, 30 Jan 2001 10:37:33 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E14Neij-0002Hj-00@noam.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA09493
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 10:59:30 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel3.hp.com (Postfix) with ESMTP id 100DE12BD
+	for <parisc-linux@thepuffingroup.com>; Tue, 30 Jan 2001 10:03:27 -0800 (PST)
+Message-Id: <200101301805.KAA27525@milano.cup.hp.com>
+To: "WITTERT,REYNDERT \(Non-HP-Netherlands,     ex1\)" <reyndert_wittert@non.hp.com>
+Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] question 
+In-reply-to: Your message of "Tue, 30 Jan 2001 11:05:58 PST."
+             <EBDA1CDB5860D31186FB009027541A92034964FC@vermeer.neth.hp.com>
+Date: Tue, 30 Jan 2001 10:05:32 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+"WITTERT,REYNDERT (Non-HP-Netherlands,ex1)" wrote:
+> Is there some alternative for ioscan in linux?
 
-Carlos, I've forwarded your e-mail to our mailing list since I'm not
-the expert on 715 hardware.  You might also want to read through the
-FAQ and other things on our web site, www.parisc-linux.org.
+For linux, in HP, I think there is.
+Read the in-house linux news group archives or search
+for "ioscan linux" on HP's intranet.
 
-The CD is pretty old and I suspect you'll have better luck with a
-newer kernel.  We are planning to produce a "0.6" ISO image Real
-Soon Now (tm).  Alternatively you can get a newer kernel
-from puffin.external.hp.com and boot from that kernel using either
-a bootp server to serve it to the 715, or DAT tape if you happen
-to have that.  Use the Linux kernel command line to indicate the
-0.5 CD is its root (root=/dev/scd0).
+There is dicussion about how to "do it right" for parisc-linux.
+But don't expect anything in the next month or two to come out
+of those discussions.
 
-= I Have some problems installing Linux, hope you have a couple of minutes =
-= to give a hand.
-= 
-= I have a Apollo 715/75 and I would like to install Linux in it. What I =
-= have done so far is:
-= downloaded "palinux-0.5.iso.gz"
-= create a CD using Adaptec CD Creator (on a PC)
-= 
-= I tried to boot from the CD rom and evrething seems to start ok, bu =
-= right after detecting the Scorpio Sr. hardware I get a Stack dump and =
-= the workstation doesn't do anything else.
-= 
-= thanks in advance
-= 
-= Regards
-= 
-= Carlos Acevedo
-= Computer Modelling Group
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
