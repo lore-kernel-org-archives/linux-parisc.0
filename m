@@ -1,26 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailf.telia.com (mailf.telia.com [194.22.194.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89A354A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 13:47:19 -0700 (MST)
-Message-Id: <200102212047.VAA18271@zaphod.halden.lillfab.se>
-Date: Wed, 21 Feb 2001 21:47:15 +0100 (CET)
-From: 5116@telia.com
-Reply-To: 5116@telia.com
-Subject: Re: [parisc-linux] Help wanted on an 715/50 "old Box" 2
-To: Alex deVries <alex@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3A92FF66.BB9B30C@linuxcare.com>
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DDE674A19
+	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 14:33:48 -0700 (MST)
+Subject: Re: [parisc-linux] Prefetch macros for PA-RISC
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Wed, 21 Feb 2001 21:36:54 +0000 (GMT)
+Cc: alan@lxorguk.ukuu.org.uk (Alan Cox),
+	parisc-linux@parisc-linux.org
+In-Reply-To: <200102211940.LAA17629@milano.cup.hp.com> from "Grant Grundler" at Feb 21, 2001 11:40:42 AM
 MIME-Version: 1.0
-Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E14VgwR-0002nT-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 20 Feb, Alex deVries wrote:
-> It seems very unlikely that's a Tulip chip, since that's a PCI chipset
-> that can't connect to EISA.  If it's another EISA ethernet chipset,
-> there's still some WAX work we need to get through.
+>    If one of those exceptions would occur, the prefetch
+>    is simply ignored, but any base register modification
+>    specified by the instruction still occurs.
 > 
-Actually I think there was EISA tulips (DC21040-based), but for Linux
-you need to use the de4x5 driver rather than the tulip driver.
+> I haven't checked if the errata contradicts this.
+> The whole point of prefetch which be undermined if it could fault.
 
-/Daniel
--- 
+Excellent, our proposed list walking uses kind of depend on being able
+to prefetch off the end of lists and stuff. Also I assume its prefetching a
+cache line and the prefetch for write prefetches it exclusive ?
