@@ -1,34 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA02466
-	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 13:15:31 -0700
-To: Philipp Rumpf <prumpf@mathe.stud.uni-erlangen.de>
-cc: Paul Bame <bame@debian.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] _end symbol in parisc linux? 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of Sat, 06 Nov 1999 19:26:14 +0100.
-             <19991106192614.H11609@mathe.stud.uni-erlangen.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA02698
+	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 13:26:28 -0700
+Received: from [10.10.213.163] by max5.rrze.uni-erlangen.de with ESMTP for parisc-linux@thepuffingroup.com; Sat, 6 Nov 1999 21:27:46 +0100
+Received: (from prumpf@localhost)
+	by localhost.localdomain (8.9.3/8.9.3) id VAA14053
+	for parisc-linux@thepuffingroup.com; Sat, 6 Nov 1999 21:29:53 +0100
+Date: Sat, 6 Nov 1999 21:29:53 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: parisc-linux@thepuffingroup.com
+Message-Id: <19991106212953.D14009@mathe.stud.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sat, 06 Nov 1999 13:08:22 -0700
-Message-ID: <30261.941918902@upchuck>
-From: Jeffrey A Law <law@cygnus.com>
+Subject: [parisc-linux] Sorry, wrong address
 List-ID: <linux-parisc.vger.kernel.org>
 
+Sorry for the unnecessary mail, but it looks like I had my mail reader misconfigured
+during the last few mails.  So, if you want to mail me, please use the address
+Philipp.H.Rumpf@mathe.stud.uni-erlangen.de.  Do not use prumpf@suse.de.  If you sent
+any mail to prumpf@suse.de which I did not answer but you feel I should, please resend
+it to the ugly address (i.e. Philipp.H.Rumpf@mathe.stud.uni-erlangen.de one).  The
+From:-Header of the mails I sent before were invalid.
 
-  In message <19991106192614.H11609@mathe.stud.uni-erlangen.de>you write:
-  > > Anybody know how to get PA-Linux to have an _end symbol like
-  > > most other programs, including Intel Linux?
-  > 
-  > AFAIK we would need to have linker scripts to do so, which seems to be impo
-  > ssible
-  > with the HP/UX ld.  So this is on the "things that will get nicer when we h
-  > ave
-  > GNU binutils again" list.
-Actually, you can with SOM with clever use of the sort_key attribute within
-a subspace.  Create a new subspace with a larger than normal sort key.  Within
-that space create a single symbol "_end".
-
-Though I'd worry about precisely *why* someone wants the _end symbol; whatever
-they're trying to do there's probably a better way.
-
-jeff
+Sorry again,
+	Philipp Rumpf
