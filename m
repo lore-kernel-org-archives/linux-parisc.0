@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4F136482D
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jun 2003 04:16:17 -0600 (MDT)
-Date: Thu, 19 Jun 2003 12:16:15 +0200
-Message-ID: <3ED70CF1000077D4@ocpmta2.freegates.net>
-In-Reply-To: <3EF17DEF.1050803@bluehash.de>
-From: "Joel Soete" <jsoe0708@tiscali.be>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C44E482D
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jun 2003 05:40:11 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19Sxlx-0004aR-Rg; Thu, 19 Jun 2003 12:40:09 +0100
+Date: Thu, 19 Jun 2003 12:40:09 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: =?iso-8859-1?Q?R=FCdiger?= Scholz <r.scholz@bluehash.de>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Some 2.5-testing
-To: =?ISO-8859-1?Q?R=FCdiger=20Scholz?= <r.scholz@bluehash.de>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Message-ID: <20030619114009.GA24357@parcelfarce.linux.theplanet.co.uk>
+References: <200306171622.h5HGM5QJ010581@hiauly1.hia.nrc.ca> <3EF1353C.8030705@bluehash.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3EF1353C.8030705@bluehash.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,30 +25,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-
-> >Do you already try to rebuild and re-try a kernel without this support?
+On Thu, Jun 19, 2003 at 05:59:56AM +0200, Rüdiger Scholz wrote:
+> John David Anglin schrieb:
+> 
+> >Until issues related to the canonicalization of function pointers
+> >and the alignment of stack locals are resolved, it is best to stick
+> >with debian gcc-3.0.4 for kernel building.
 > >
-> this was also my thought, so recompiled kernel without md-support. I 
-> just rebooted the machine with the new kernel.... Same problem at 
-> another place:
+> So I installed gcc-3.04 from Debian, did "make distclean", "make 
+> oldconfig" (selecting "PA7100LC") and booted...
+> And got the same loop again ;)
+> 
+> ---------- SNIP---------------
+> 
+>     md: linear personality registered as nr 1
+>    Badness in local_bh_enable at at kernel/softirq.c:109
+>    Kernel addresses on the stack:
+> 
+>     [tirq.c:109
+>    <4>Kernel addresses on the stack:
+>    <4> [<10124edcc8>]  [<1010ea4c>]
+>    <4> [<1012503c>]  [<1028ac08>]  [<10124cc>]
+>    <4> [<1029a2a4>]  [<103ad4d4>]  [<10100284>]  [<10109c5ab8>] 
+>    [<101289a8>]  [<1028ac20>]
+>     [<1028b428>]  [<101070f28ac08>]  [<10124f10>]  [<1028adcc>]
+>     [<1029a2a4>]  [<103adc>]
+>    <4> [<1029a2a4>]  [<103ad4d4>]  [<10100284>]  [<10109c>] 
+>    [<103ad4d4>]  [<10100284>]  [<10109c5c>]
 
-Sorry.
+So... what's going on here is that someone's enabling softirqs with hard
+interrupts disabled.  This is not a smart thing to do.  Unfortunately,
+something is messing up the stack backtrace, so it's hard tosee what's
+going on.  Could you turn on CONFIG_KALLSYMS so the kernel prints out
+its symbols?  The messages may still be corrupt, but we should have more
+information to help us figure out what's going on.
 
-My best idea now is try a TOC (I presume that such a special swicth exist
-on 715 model) (may be first cleanup PIMinfo with "ser clearpim" at bootprompt
-before booting the kernel). Then during the 'bad loop' puch the TOC button
-and at the bootprompt again collect (with minicom for instance) piminfo ("ser
-pim") and try to submit it to analyse to 'dump_analyser.sh' (you can grabbe
-it with a.c into cvs build-tools dir).
-And report its result to this ml.
-
-Hope this will help,
-    Joel
-
-PS: Edit dump_analyser.sh to change DUMPTYPE to TOC (default is kernel).
-btw, I am impatient that hp release its p4 tools :-)
-
-
----------------------------------
-Tiscali ADSL: 19,50 euros/mois...abonnez-vous sur www.tiscali.be
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
