@@ -1,45 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA29077
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 09:25:57 -0600
-From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-Message-Id: <199906101526.IAA04509@chrome.rose.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA29332
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 11:04:19 -0600
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <199906101704.KAA33498@bart.allegro.com>
 Subject: Re: [parisc-linux] booting problems
 To: adevries@thepuffingroup.com (Alex deVries)
-Date: Thu, 10 Jun 1999 8:26:45 PDT
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <375F6778.7E2F1385@thepuffingroup.com>; from "Alex deVries" at Jun 10, 99 3:21 am
+Date: Thu, 10 Jun 1999 10:03:59 -0700 (PDT)
+Cc: kirkb@chrome.rose.hp.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <375F6778.7E2F1385@thepuffingroup.com> from "Alex deVries" at Jun 10, 99 03:21:28 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-| 
-| No, we don't have remote manatement cards, but it sounds like they'd be
-| very useful for this kind of thing.  I know the LCD panels on the D270
-| displays these, is this a similiar device?
-| 
+Re:
 
-Yes, the LCD panel and the display on the 25th line of the HPTERM both
-display the chassis codes sent by the PDC_CHASSIS call. The remote
-management card, however, has the benefits of saving a history of the
-chassis codes, as well as providing the remote reset/TOC functions. 
+> > Chassis codes, see the PDC_CHASSIS call in your pdc32.pdf
+> > documentation), are displayed on the 25th line of an HPTERM compatible
+...
+> Putting the error on the 25th line is a really good idea, but I can't
+> see the 25th line because of the terminal control buttons ("Line
+> Modify", "Modify All", etc).  I can't seem to get rid of them either.
+> What's the trick?
 
-| > cards over a dedicated hardware interface, and so inserting them into
-| > your code gives a very low level way to display debug data.
-| 
-| Putting the error on the 25th line is a really good idea, but I can't
-| see the 25th line because of the terminal control buttons ("Line
-| Modify", "Modify All", etc).  I can't seem to get rid of them either.
-| What's the trick?
+On an 800 system console (i.e., a real HP terminal (or compatible/emulator)),
+you'd press control-B and then you'd see the PDC status displayed on
+line 25.  (you'll also get a command prompt)
 
-For the X11 hpterm client on an HP-style keyboard, hitting the Menu key
-will cause the softkey labels to be toggled on/off.  On a PC-style
-keyboard, the PrintScreen/SysRq key toggles the labels. If you have a
-remote management card, then the chassis codes will automatically toggle
-thte softkey labels off. 
+To stop seeing it, enter "CO"<return>    (no quotes)
 
-KMB
-
---
-+============================================================+
-|       Kirk Bresniker    	(916) 785-5677		     |
-|       8000 Foothills Blvd                                  |
-|       Roseville, CA 95747-5649                             |
-|       kirkb@rose.hp.com                                    |
+I've never tried it via the remote card mentioned earlier...I presume there's
+a mechanism for doing the control-B signal...perhaps pressing control-B?
+ 
+-- 
+Stan Sieler                                          sieler@allegro.com
+                                     http://www.allegro.com/sieler.html
