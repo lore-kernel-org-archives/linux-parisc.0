@@ -1,57 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lefou.zayda.com (unknown [204.99.158.177])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0AF97482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Sep 2001 01:45:55 -0600 (MDT)
-Received: from localhost (sonny@localhost)
-	by lefou.zayda.com (8.9.3/8.9.3) with ESMTP id BAA23843
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Sep 2001 01:45:53 -0600
-Date: Sun, 16 Sep 2001 01:45:53 -0600 (MDT)
-From: Sonny Cook <sonny@aspersion.org>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0109160125430.22634-100000@lefou>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] linux and hp 735/125 fs corruption
+Received: from smtp1.xs4all.nl (smtp1.xs4all.nl [194.109.127.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0FBDE482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Sep 2001 04:21:53 -0600 (MDT)
+Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
+	by smtp1.xs4all.nl (8.9.3/8.9.3) with ESMTP id MAA11487
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Sep 2001 12:21:51 +0200 (CEST)
+From: thunder7@xs4all.nl
+Date: Sun, 16 Sep 2001 11:55:18 +0200
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] linux and hp 735/125 fs corruption
+Message-ID: <20010916115518.A1399@middle.of.nowhere>
+Reply-To: thunder7@xs4all.nl
+References: <Pine.LNX.4.33.0109160125430.22634-100000@lefou>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0109160125430.22634-100000@lefou>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-I have an hp 735/125 on which I initially installed hp-ux 11.0.  That was
-all fine and dandy, but I got tired of trying to figure out the insides of
-hp-ux, so I finally just turned the thing off.
+On Sun, Sep 16, 2001 at 01:45:53AM -0600, Sonny Cook wrote:
+> 
+> I am baffeled.  I haven't been able to find any information on this
+> subject, other than to note that 2.4.0 has been blamed for fs corruption
+> on some systems.
+> 
+I have seen lots of disk-corruption on my C200+, both with 2.4.0 and
+with 2.4.9-pa{16|18|20} but it always seems to start with some
+scsi-error. By the time the partition is remounted r/o, things like
+complete linux-kernel source trees are crosslinked and corrupted. So
+far, I've not lost anything really essential, but having all the links
+in /etc/rc2.d/ removed wasn't that much fun.
 
-It seemed like it might be fun to install linux on the box, so I got a
-file system and precompiled kernel (2.4.0-32)  from:
-http://mkhppa1.esiee.fr/
+Do you have any messages in the log-files?
 
-I installed these following the instructions from the same site.  It went
-along more or less well until I tried to copy the latest kernel source
-over ssh to the hp box.  It copied about 90% and then threw an
-"Input/output error".  At that point all the programs I tried with the
-exception of 'ls' threw the same error.  These symptoms have been repeated
-regularly.
-
-I do not have any swap partions.  I have 300MB on the box.  I tried with
-two different disks and two different 735's.  Fsck on the root partition
-shows massive (but so far recoverable) file system corruption.
-
-Things I can't do:
-	complete apt-get update
-	untar kernel source
-	copile kernel source
-	scp kernel source
-
-Things I can do:
-	login
-	add new users, modify passwords
-	ssh session
-	vi /etc/fstab, /etc/hosts, etc
-	make menuconfig (for kernel compile)
-
-I am baffeled.  I haven't been able to find any information on this
-subject, other than to note that 2.4.0 has been blamed for fs corruption
-on some systems.
-
-Any ideas?
-
-thanks,
-Sonny Cook
+Good luck,
+Jurriaan
+-- 
+The unicorn stared unhappily at the dragon. "I don't suppose there's any
+chance that thing is a vegetarian?" The dragon smiled. His pointed teeth
+gleamed brightly in the sunlight.
+	Simon R Green - Blue Moon Rising
+GNU/Linux 2.4.9-ac10 SMP/ReiserFS 2x1402 bogomips load av: 0.00 0.09 0.06
