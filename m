@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: =?iso-8859-1?Q?Ant=F3nio_Ribeiro?= <antonio.ribeiro@kpnqwest.pt>
-Cc: parisc-linux@lists.parisc-linux.org,
-	grundler@dsl2.external.hp.com
-Subject: Re: [parisc-linux] PA-RISC Linux + FC60
-In-Reply-To: Message from =?iso-8859-1?Q?Ant=F3nio_Ribeiro?= <antonio.ribeiro@kpnqwest.pt>
-   of "Mon, 12 Aug 2002 16:27:49 BST." <000b01c24214$d2c8f680$a52efea9@kpnqwest.com>
-References: <000b01c24214$d2c8f680$a52efea9@kpnqwest.com> 
-Date: Mon, 12 Aug 2002 10:41:57 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020812164157.754614829@dsl2.external.hp.com>
+Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6CAC84829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 10:49:30 -0600 (MDT)
+Message-ID: <3D57E71C.3080402@non.hp.com>
+Date: Mon, 12 Aug 2002 18:49:32 +0200
+From: Eric Boniface <eric_boniface@non.hp.com>
+MIME-Version: 1.0
+To: Parisc mailing list parisc <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Installation issue on 800/F10.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,28 +20,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-=?iso-8859-1?Q?Ant=F3nio_Ribeiro?= wrote:
-> I would like to know if the Linux version for HP PA-RISC servers suppors
-> FC60 Disk arrays.
 
-I've not tried the qlogic card/driver yet. Only the Agilent based HP cards.
 
-Jes Sorensen posted a cpqfc patch for HP's 5100/5166 Agilent HBAs.
-(ftp://ftp.parisc-linux.org/patches/cpqfc_jes.patch)
-It seems to work with FC10.  If it's not in 2.4.19, I'll commit and
-resubmit in the next couple of days.  And unless someone tells me
-otherwise, I'm going to believe the comments in cpqfc which indicate
-cpqfc only supports arbitrated loop and not a switched fabric.
+Hi all,
+well I try to install the latest Debian on my (very ? ) old HP9000 
+800/F10, but I have the following message :
 
-cpqfc also does not (yet) support the HP's Agilent XL2 (2GB FC) HBA.
-With newer PCI subsystem in place, another patch is required
-(ftp://ftp.parisc-linux.org/patches/cpqfc-03.diff) to run on A500.
-The NVRAM isn't found and the "GBIC" not recognized on A500.
-The patch is not fully cooked yet.
+"Branching to kernel entry point 0x00100000.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org"
 
-If someone has extra funding, the right folks are interested in
-porting the HPUX tachlite driver to linux (supports switched fabric).
-Unfortunately, HP has chosen to not fund the port to date.
-I'm under the impression the result can be published under GPL.
+I am ok to switch whatever it wants, but I don't really see what I can 
+switch.
+For your information, I use a Wyse screen (a vt220 I think) plugged to 
+the console port on a SCSI/Console/LAN card.
 
-grant
+Any idea ?
+
+Thanks in advance !
+Rgds,
+Eric.
+
+-- 
+Eric Boniface - Hewlett Packard / HPS-IT Infrastructure Team Grenoble 
+Tel.(+33) 4 76 14 30 17 / Telnet : 779-3017
+E-mail : eric_boniface@non.hp.com 
+--- Want to know more about Linux on HP PARISC ? Take a look at http://www.parisc-linux.org
