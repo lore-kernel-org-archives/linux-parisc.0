@@ -1,44 +1,50 @@
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA04310
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 16:00:56 -0700
-Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
-	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id QAA17580
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 16:03:12 -0700 (MST)
-Received: from localhost
-	([127.0.0.1] helo=noam.fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
-	id 13yiv2-0007QD-00
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 16:03:12 -0700
-To: parisc-linux@puffin.external.hp.com
-Date: Wed, 22 Nov 2000 16:03:12 -0700
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E13yiv2-0007QD-00@noam.fc.hp.com>
-Subject: [parisc-linux] 64-bit progress
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA05493
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 17:18:26 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 23 Nov 2000 00:20:37 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA24591;
+	Thu, 23 Nov 2000 11:18:20 +1100
+Date: Thu, 23 Nov 2000 11:18:20 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+cc: doneill@linuxcare.com, parisc-linux@thepuffingroup.com
+Subject: Re: glibc
+In-Reply-To: <20001122213444.3E1B037CA7@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0011231041530.22889-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Wed, 22 Nov 2000, Matt Taggart wrote:
 
-32-bit syscalls on 64-bit kernel are to the point where a few things
-work, and signals appear to be working (I didn't implement *all* the
-signal-related syscalls yet).  I'll be continuing to produce syscall
-wrappers for a while...
+> Hi Alan,
+> 
+> First a timezone question... your mail headers have you in +11 and Ft. Collins 
+> is -7 so you're 6 hours behind + 1 day relative to us? So as I send this it's 
+> 14:05 here and 8:05 there?
 
-If you try to boot the standard NFS root with wide kernel, you'll want to
-	mv sbin/init sbin/init-real
-then compile and install this program as sbin/init:
-	int main()
-	{
-	    char *argv[2];
+Hi Matt,
+  I'm actually on +10:30 in Adelaide, but posting from a Linuxcare machine
+in Canberra which is on +11.
 
-	    argv[0] = "/sbin/init-real";
-	    argv[1] = 0;
-	    execv(argv[0], argv);
-	}
+>[snip segfaults]
+> I am building native using dhd's binutils/gcc/glibc debs, using source checked 
+> out just after the glibc 2.2 merge. Do you think the merge / ld.so changes you 
+> just made would help this problem at all?
 
-I never felt comfortable I found the point where sys_execve figures out it
-needs to pack the argv vector differently for narrow user apps (locally I
-also am using PER_LINUX32 in binfmt_elf32.c) which causes the initial
-exec(/sbin/init) to be passed incomprehensible arguments.  This program
-is a little temporary workaround.
+Quite likely.  This fix
 
+	* sysdeps/hppa/dl-machine.h (ELF_MACHINE_START_ADDRESS): Define.
 
-	-Paul Bame
+is fairly crucial, as without it %dp will not be set correctly.  I should
+have mentioned this when posting to the list about the binutils change.
+Oh, and as of this email, I haven't actually run anything linked to the
+new glibc.  A little remiss, I know, but I've been deep in the gdb port,
+and if I spend time tinkering with glibc, binutils and gcc (which I like),
+gdb (which I don't like) will never be finished. ;-)
+
+Alan
+-- 
+Linuxcare.  Support for the Revolution.
