@@ -1,35 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 02D27482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 May 2001 01:58:05 -0600 (MDT)
-Sender: delahaym@esiee.fr
-Message-ID: <3B0E12FD.4EB7BCF5@esiee.fr>
-Date: Fri, 25 May 2001 10:08:29 +0200
-From: Matthieu Delahaye <delahaym@esiee.fr>
-MIME-Version: 1.0
-To: diab <diab@diab.rulez.org>, puffin@esiee.net,
-	parisc-linux <parisc-linux@lists.parisc-linux.org>
+Received: from droid3.webreklam.hu (para.abs0lut.com [195.56.113.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8134F482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 May 2001 03:36:18 -0600 (MDT)
+Date: Fri, 25 May 2001 11:36:15 +0200 (CEST)
+From: diab <diab@diab.rulez.org>
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Cc: debackex@esiee.fr
 Subject: Re: [parisc-linux] dead keyboard after booting 0.61 STI32 iso on a
- 715/100
-References: <Pine.LNX.4.21.0105250117040.13776-100000@droid3.webreklam.hu>
-Content-Type: text/plain; charset=us-ascii
+  715/100
+In-Reply-To: <3B0E12FD.4EB7BCF5@esiee.fr>
+Message-ID: <Pine.LNX.4.21.0105251130540.20410-100000@droid3.webreklam.hu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi diab(?)
+Hi,
 
-Xavier Debacker could have some element 
-for you about your problems but is not 
-here today (Legal Holidays). Some hardware
-on your 715 box could not work correctly
-with the PA/Linux version given on ISOs.
-Could you send him (debackex@esiee.fr) the list
-of hardware detected by the kernel during the boot sequence?
-Or at least if you have an HIL or PS/2 Keyboard?
-I think you could get so a fast answer sunday evening (GMT+1)
+Yes, it is a a PC PS2 keyboard (plugged to a keyboard adapter module,
+which connects to the HP715 w/ an rj45 like jack).
+I've tried two different ps2 keyboars, with no luck so far
 
-Regards,
+before that fbconsole would init i see a screen full of information 
+(lots of rows starting with Mirage something detected) but it clears the
+screen (switchin to STIfb) so quick, i cant read it :( 
+is there any way to hold it? 
 
-Matthieu Delahaye
--- 
-ESIEE Team
-http://mkhppa1.esiee.fr/
+% Could you send him (debackex@esiee.fr) the list
+% of hardware detected by the kernel during the boot sequence?
+hardware detected:
+ttys00, ttys01, lp0 
+Sim700: 57c710 scsi (it displays a warning, irq probe failed)
+Lasi Harmony Audio rev. 18 
+
+im typing all of these from my memory since the keyboard is frozen after
+vmlinuz stars to boot and no way to somehow stop the screen :(
+i even tried to make a photo of it but the flash makes the screen
+unreadable and its too dark and "moving" quickly for flashless pix.
+
+--
+diab 
+		
