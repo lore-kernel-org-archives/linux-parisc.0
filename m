@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from orion.netbank.com.br (orion.netbank.com.br [200.203.199.90])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F103482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 10:45:27 -0600 (MDT)
-Date: Fri, 18 Jul 2003 13:47:22 -0300
-From: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030718164722.GJ1582@conectiva.com.br>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [PATCH] provide probe_irq_mask dummy function
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D9360482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 16:21:25 -0600 (MDT)
+Message-ID: <3F187696.8030604@tiscali.be>
+Date: Fri, 18 Jul 2003 22:37:10 +0000
+From: Joel Soete <joel.soete@tiscali.be>
+MIME-Version: 1.0
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org, Helge Deller <deller@gmx.de>
+References: <3F0BEA8300000F84@ocpmta1.freegates.net>
+In-Reply-To: <3F0BEA8300000F84@ocpmta1.freegates.net>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] Re: Xfree-server and Xhp ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-First patch! :P
+Joel Soete wrote:
 
-This is what the other arches does to provide this ISA stuff, Grant suggested
-cleaning the only user of this stuff, that is drivers/pcmcia/yenta_socket.c,
-but Willy agreed that as we're on 2.6 times this bandaid is better for the time
-being.
+>>>>>     ldo 0x40(sp),sp
+>>>>>          
+>>>>>
+>>^^^^^^^^^^^^^^^^^^^^^^^^^^That was I suspected to be 'som' specific
+>>
+>>that means a 64-byte stack.. should be fine on palinux as well.
+>>    
+>>
+>
+>Ok I will so try like this (after % and other stuff translation) :-)
+>
+>Thanks again,
+>    Joel
+>
+Just a follow-up to mentioned that it works (*.s compiling). 
+Unfortunately I don't think that I never reach to obtain a full Xhp 
+server because I still need some functions (2 or 3) which I didn't found 
+nowhere (in the src I got; even thought I found one in a hp lib); I am 
+so oblige to abandon ( :_( ).
 
-Best Regards,
-
-- Arnaldo
-
-===== arch/parisc/kernel/irq.c 1.15 vs edited =====
---- 1.15/arch/parisc/kernel/irq.c	Mon May  5 12:34:24 2003
-+++ edited/arch/parisc/kernel/irq.c	Fri Jul 18 13:40:34 2003
-@@ -842,6 +842,10 @@
- 	return irq_found;
- }
- 
-+unsigned int probe_irq_mask(unsigned long irqs)
-+{
-+	return 0;
-+}
- 
- void __init init_IRQ(void)
- {
-===== arch/parisc/kernel/parisc_ksyms.c 1.9 vs edited =====
---- 1.9/arch/parisc/kernel/parisc_ksyms.c	Sun Jun  8 17:24:25 2003
-+++ edited/arch/parisc/kernel/parisc_ksyms.c	Fri Jul 18 13:41:37 2003
-@@ -37,6 +37,7 @@
- #include <asm/irq.h>
- EXPORT_SYMBOL(enable_irq);
- EXPORT_SYMBOL(disable_irq);
-+EXPORT_SYMBOL(probe_irq_mask);
- 
- #include <asm/processor.h>
- EXPORT_SYMBOL(kernel_thread);
+Thanks again for all,
+    Joel
