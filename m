@@ -1,19 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30005483E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 06:12:37 -0600 (MDT)
-Reply-To: <santosh.abraham@hp.com>
-From: "Santosh Abraham" <santosha@india.hp.com>
-To: "'David S. Miller'" <davem@redhat.com>
-Cc: <willy@debian.org>, <randolph@tausq.org>,
-	<parisc-linux@lists.parisc-linux.org>, <sct@redhat.com>
-Subject: RE: [parisc-linux] Fwd:  Problems with raw interface.
-Date: Fri, 26 Sep 2003 17:42:29 +0530
-Message-ID: <001b01c38427$76328840$e5624c0f@india.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20030926033458.68dbb768.davem@redhat.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C95F3483E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 06:20:24 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A2raB-00079l-Qt; Fri, 26 Sep 2003 13:20:23 +0100
+Date: Fri, 26 Sep 2003 13:20:23 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "David S. Miller" <davem@redhat.com>
+Cc: "Stephen C. Tweedie" <sct@redhat.com>, willy@debian.org,
+	santosh.abraham@hp.com, randolph@tausq.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Fwd:  Problems with raw interface.
+Message-ID: <20030926122023.GH24824@parcelfarce.linux.theplanet.co.uk>
+References: <20030925105005.GX16872@tausq.org> <000801c38356$dea5cda0$e5624c0f@india.hp.com> <20030925142623.GO13172@parcelfarce.linux.theplanet.co.uk> <20030925180848.2763911b.davem@redhat.com> <20030926112400.GA24824@parcelfarce.linux.theplanet.co.uk> <20030926042029.1cdd77e9.davem@redhat.com> <1064577420.4227.0.camel@sisko.scot.redhat.com> <20030926044841.29ecb672.davem@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030926044841.29ecb672.davem@redhat.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,42 +27,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Apologies for 1) & 2). I guess ignorance is not bliss or excusable,
- is it :)
+On Fri, Sep 26, 2003 at 04:48:41AM -0700, David S. Miller wrote:
+> On 26 Sep 2003 12:57:01 +0100
+> "Stephen C. Tweedie" <sct@redhat.com> wrote:
+> 
+> > On Fri, 2003-09-26 at 12:20, David S. Miller wrote:
+> > 
+> > > Are you sure?  Isn't raw I/O allowed on user buffers backed by
+> > > some kind of file based mmap()?
+> > 
+> > Yes, it is.
+> 
+> So there we go, that's how page can be a page cache page Matthew.
 
-As for 3) i agree that there are issues, but what are the alternatives
- we have ?
+OK, so it *might* be a page cache page, but isn't necessarily.  So we
+need to call *both* flush_dcache_page() and flush_cache_range(), right?
 
-Assuming that you agree that we need to call flush_cache_range ( ) to fix
-the issue.
-
-1) Call flush_cache_range () directly before the call to 
-flush_dcache_page ().  But this could impact other architectures
-too, right ?
-
-2) Modify flush_dcache_page () in asm-parisc/pgalloc.h to handle
-this.  But this is not easy cause we do not pass the user VA in
-flush_dcache_page ().  
-
-
------Original Message-----
-From: David S. Miller [mailto:davem@redhat.com]
-Sent: Friday, September 26, 2003 4:05 PM
-To: santosh.abraham@hp.com
-Cc: santosha@india.hp.com; willy@debian.org; randolph@tausq.org;
-parisc-linux@lists.parisc-linux.org; sct@redhat.com
-Subject: Re: [parisc-linux] Fwd: Problems with raw interface.
-
-
-
-1) Please use unified diffs when you post patches.
-
-2) If you insist on using Microsoft Outlook when posting patches
-   at least configure it properly when doing so.  By default it is
-   going to turn tabs into spaces and that makes the patch corrupt
-   and unusable by anyone.
-
-3) Your patch is unacceptable because it is taking advantage
-   of internal implementation details of flush_dcache_page()
-   on parisc64 that might not (and in fact, is not) be true
-   on other platforms.
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
