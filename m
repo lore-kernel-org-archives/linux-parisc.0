@@ -1,45 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA31218
-	for <parisc-linux@puffin.external.hp.com>; Mon, 2 Oct 2000 08:25:37 -0600
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 2 Oct 2000 14:26:32 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13g6Xt-0004NO-00; Mon, 02 Oct 2000 15:26:21 +0100
-Date: Mon, 2 Oct 2000 15:26:21 +0100
-From: Matthew Wilcox <matthew@wil.cx>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA00364
+	for <parisc-linux@puffin.external.hp.com>; Mon, 2 Oct 2000 09:04:31 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 2 Oct 2000 15:05:25 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id CAA02741;
+	Tue, 3 Oct 2000 02:05:14 +1100
+Date: Tue, 3 Oct 2000 02:05:14 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
 To: David Huggins-Daines <dhd@linuxcare.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] I am not your mother!
-Message-ID: <20001002152621.A9761@parcelfarce.linux.theplanet.co.uk>
-References: <20000930200218.A25304@parcelfarce.linux.theplanet.co.uk> <87u2avmioo.fsf@ottawa.linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <87u2avmioo.fsf@ottawa.linuxcare.com>; from dhd@linuxcare.com on Mon, Oct 02, 2000 at 10:17:11AM -0400
-Sender: <willy@www.linux.org.uk>
+cc: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.21.0010030154470.20499-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] libmilli.a
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Oct 02, 2000 at 10:17:11AM -0400, David Huggins-Daines wrote:
-> Matthew Wilcox <matthew@wil.cx> writes:
-> 
-> > Is there anything which can be done to make updating the website easier?
-> 
-> I keep losing the password, that's the only problem.
+Here's how to make ld always link in a special library, even when
+someone is messing around with linker scripts and so forth.  I've been
+playing with this today, and after fixing some gcc and linker c++ probs
+now can pass all the binutils testsuite (some of which used to fail due to
+not finding $$dynamic)
 
-It's tunnelled over ssh.  You can put your identity.pub in the appropriate
-machine's authorized_keys file.  Hm, I should probably take mine out :-)
-It's currently up to date.
+For my testing, I just moved $$dynamic from libgcc.a into libmilli.a, but
+we should move more functions I guess.
 
-> I'd really prefer to have the website be updated from a cron job.
+Comments?
 
-Doable.  I'd prefer this as well -- or even better from a trigger which
-runs as soon as there's a cvs commit to the website directory.
-
-> Obviously it would be better for it to be hosted on PEHC in this case,
-> since otherwise we'd have to store the password in the clear on
-> PEHC or whatever machine runs that job.
-
-I think the plan is to move it to pehc once pehc's been upgraded.
-Matt?  Any idea on when this'll happen?
-
--- 
-Revolutions do not require corporate support.
+Index: ld/emultempl/hppaelf.em
+===================================================================
+RCS file: /home/cvs/parisc/binutils/ld/emultempl/hppaelf.em,v
+retrieving revision 1.10
+diff -u -p -r1.10 hppaelf.em
+--- hppaelf.em	2000/09/27 09:13:09	1.10
++++ hppaelf.em	2000/10/02 05:33:54
+@@ -71,6 +71,16 @@ hppaelf_create_output_section_statements
+   ldlang_add_file (stub_file);
+ }
+ 
++/* Adds millicode library to the list of input files.  */
++
++static void
++hppaelf_after_parse ()
++{
++  lang_add_input_file ("milli",
++		       lang_input_file_is_l_enum,
++		       NULL);
++}
++
+ /* Walk all the lang statements splicing out any padding statements from
+    the list.  */
+ 
+@@ -401,3 +411,4 @@ PARSE_AND_LIST_ARGS_CASES='
+ #
+ LDEMUL_FINISH=hppaelf_finish
+ LDEMUL_CREATE_OUTPUT_SECTION_STATEMENTS=hppaelf_create_output_section_statements
++LDEMUL_AFTER_PARSE=hppaelf_after_parse
