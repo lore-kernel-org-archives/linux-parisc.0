@@ -1,52 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lufmech.rwth-aachen.de (karman.lufmech.RWTH-Aachen.DE [134.130.177.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65970482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 06:40:41 -0600 (MDT)
-Sender: markus@lufmech.rwth-aachen.de
-Message-ID: <3AC9C4C1.D6078033@lufmech.rwth-aachen.de>
-Date: Tue, 03 Apr 2001 14:40:33 +0200
-From: Markus Werle <markus@lufmech.rwth-aachen.de>
-MIME-Version: 1.0
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] cvs-gcc: howto build a 64-bit version?
-References: <Pine.LNX.4.21.0104032119230.6476-100000@front.linuxcare.com.au>
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2502E482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 07:16:34 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 74906B007; Tue,  3 Apr 2001 14:16:12 +0100 (BST)
+Date: Tue, 3 Apr 2001 14:16:12 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Christoph Plattner <christoph.plattner@alcatel.at>
+Cc: Christoph Plattner <christoph.plattner@dot.at>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] New kernel on 720 + Pa-Linux-0.5: Breakpoint ?
+Message-ID: <20010403141612.Q9198@linuxcare.com>
+References: <3AC90274.4687ED7C@dot.at> <20010403001743.G9198@linuxcare.com> <3AC973D3.F1453A4C@alcatel.at> <20010403101251.L9198@linuxcare.com> <3AC996AE.21A21135@alcatel.at>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3AC996AE.21A21135@alcatel.at>; from christoph.plattner@alcatel.at on Tue, Apr 03, 2001 at 11:23:58AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra wrote:
+On Tue, Apr 03, 2001 at 11:23:58AM +0200, Christoph Plattner wrote:
+> Hello,
+> 
+> Richard Hirst wrote:
+> > 
+> > On Tue, Apr 03, 2001 at 08:55:15AM +0200, Christoph Plattner wrote:
+> > > With the file system of ESIEE, I always have the problem, that
+> > > my machine hangs, before init does any output !
+> > 
+> > Have you tried using init=/bin/sash?  You may have to build your
+> > own sash, from userspace/sash on pehc cvs.
+> 
+> No. I built up my own bash (it was statically linked by
+> accident). I never used sash.
 
-> On Tue, 3 Apr 2001, Markus Werle wrote:
->
-> > problems, but the 64-bit bootstrap
-> > fails. Any help for creating a 64-bit version of g++ appreciated.
->
-> I see you're trying to build for HPUX.  You will probably be better off
-> tracking sourceware gcc, although I understand you've had some trouble
-> there too.  :-(
+You should try sash.  It will make less demands on your system, and
+might show us something useful.
 
-Are You talking about thge redhat cvs tree?
-Is that tree more up-to-date/applicable for hpux than puffin's?
-
-> Since we don't have glibc for hppa64-linux, I really
-> only support --languages=c for the 64 bit compiler at the moment.
-
-the ICE error I reported is independent of  --enable-languages=c or more
-
-  116  rm -rf *
-  117  ../gcc/configure --host=hppa64-hp-hpux11.00
---prefix=/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF --with-gnu-as
---with-gnu-ld --enable-languages=c --enable-version-specific-runtime-libs
-&& make -j4 bootstrap
-  118  make bootstrap
-
-ends with an ICE during bootstrap
-
-[...]
-echo "int xxy_us_dummy;" >tmp-dum.c
-./xgcc -B./
--B/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF/hppa64-hp-hpux11.00/bin/
--isystem
-/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF/hppa64-hp-hpux11.00/include -S
-tmp-dum.c
-cc1: Internal compiler error in set_sizetype, at stor-layout.c:1673
+Richard
