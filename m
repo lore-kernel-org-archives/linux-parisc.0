@@ -1,96 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CDD8E482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Aug 2001 21:53:52 -0600 (MDT)
-Date: Mon, 27 Aug 2001 23:54:31 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id 71346482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Aug 2001 22:22:08 -0600 (MDT)
+Date: Tue, 28 Aug 2001 00:22:51 -0400
 From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Building from scratch.
-Message-ID: <20010827235431.K28978@megatonmonkey.net>
-References: <20010826162754.A10072@megatonmonkey.net> <20010827203849.H525@parcelfarce.linux.theplanet.co.uk>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Subject: Re: [parisc-linux] Users staying up to date.
+Message-ID: <20010828002251.L28978@megatonmonkey.net>
+References: <20010814154037.I25258@megatonmonkey.net> <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk> <20010814215030.A26703@megatonmonkey.net> <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk> <20010817155340.C8649@megatonmonkey.net> <20010828000748.G7064@linuxcare.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Sr1nOIr3CvdE5hEN"
-In-Reply-To: <20010827203849.H525@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Mon, Aug 27, 2001 at 08:38:49PM +0100
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010828000748.G7064@linuxcare.com>; from rhirst@linuxcare.com on Tue, Aug 28, 2001 at 12:07:48AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
---Sr1nOIr3CvdE5hEN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-> > I started by building the tools, as per the instructions on the website.
-> > 
-> > - Built binutils
-> > - Partially build gcc
-> > - Unpack and configure kernel
-> > - Build glibc...
 > 
-> Where did you get glibc from?  The only place with current patches is the
-> Debian package.  Our CVS is terribly out of date.
+> The installer starts with a bunch of .debs which are sufficiently new
+> that they don't have the apt-segv problem.  That is the case for the
+> 0.9.2 ISO, anyway.
 > 
-> -- 
-> Revolutions do not require corporate support.
+> You might me able to do a fresh install from the 0.9.2 ISO to get a
+> more stable system.  If you don't want to do that, you could try using
+> dpkg -i to install .debs from that ISO.  Possibly a dpkg -i *.deb in
+> the binary-hppa/base dir might just work.  You should probably be running
+> a new(ish) kernel before you do that.
+> 
+> Richard
+>
 
-M,
+Richard,
 
-That explains things...
+I think the main issue was that we were using a _really_ old kernel.
+Which didn't have a lot of the later patches for the older 715 boxes.
 
-ftp://puffin.external.hp.com/pub/parisc/cvs <== Bad!
+I'm currently trying to roll the toolchain from start to end, and 
+automate the process a little. BTW, is there any automation setup for
+building the toolchain? Does each developer just have their own way(tm)
+of doing the build?
 
-ftp://ftp.debian.org/debian/pool/main/g/glibc/ <== Good!?
+The problem I have now lies in gathering up-to-date src for glibc,
+and as Matthew pointed out, it is only available from the debian packages.
+
+I'm currently trying this out.
 
 Cheers,
 Carlos.
-
-p.s. Small diff to the toolchain index.html ?
-
---Sr1nOIr3CvdE5hEN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="index.html.diff"
-
---- ./toolchain/index.html	Mon Aug 27 22:45:01 2001
-+++ index.html	Mon Aug 27 23:47:33 2001
-@@ -94,9 +94,23 @@
- <br>&nbsp;<br>
- The source trees of all of these are available through <A HREF="../tools/index.html">CVS</A> but we also make available nightly snapshots from <A HREF="ftp://puffin.external.hp.com/pub/parisc/cvs/">here</A>.  It is best to get a snapshot the first time you want to build a tree and update from CVS from then on. <BR>
- 
--
- <OL>
- <strong><LI>Fetch GCC, Binutils, Glibc, Linux:</strong>
-+<br>&nbsp;<BR>
-+Note that the /pub/parisc/cvs snapshots may not be completely up
-+to date for glibc. The most complete snapshots may be found at the debian
-+pool <a href="ftp://ftp.debian.org/debian/pool/main">ftp://ftp.debian.org/debian/pool/main</a>. Although the example lists glibc 2.2.4, you will want to replace this with the latest available glibc version.
-+<PRE>
-+cd
-+mkdir source
-+mkdir build
-+cd source
-+wget ftp://ftp.debian.org/debian/pool/main/g/glibc/glibc_2.2.4.orig.tar.gz
-+wget ftp://puffin.external.hp.com/pub/parisc/cvs/binutils-latest.tar.gz
-+wget ftp://puffin.external.hp.com/pub/parisc/cvs/gcc-latest.tar.gz
-+wget ftp://puffin.external.hp.com/pub/parisc/cvs/linux-latest.tar.gz
-+</PRE>
-+Or alternatively:
- <PRE>
- cd
- mkdir source
-@@ -109,9 +123,15 @@
- get binutils-latest.tar.gz
- get gcc-latest.tar.gz
- get linux-latest.tar.gz
--get glibc-latest.tar.gz
-+quit
-+ftp ftp.debian.org
-+user: anonymous
-+password: you@your.email.address
-+cd debian/pool/main/g/glibc
-+get glibc_2.2.4.orig.tar.gz
- quit
- </PRE>
-+
- 
- <strong>Determine the host system setup:</strong>
- <br>&nbsp;<br>
-
---Sr1nOIr3CvdE5hEN--
