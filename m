@@ -1,21 +1,23 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F1CC14843
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 11 Jan 2004 06:36:03 -0700 (MST)
-Date: Sun, 11 Jan 2004 06:25:54 -0800
-From: Randolph Chung <tausq@debian.org>
-To: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: Re: [parisc-linux] running gcc testsuite triggers ongoing page faults
-Message-ID: <20040111142547.GG533@tausq.org>
-References: <16385.5227.153358.397944@gargle.gargle.HOWL>
-	<20040111100853.GF533@tausq.org>
-	<16385.13815.94626.165424@gargle.gargle.HOWL>
+Return-Path: <szbakhetk@el-nacional.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BB2C14843
+	for <parisc-linux@parisc-linux.org>;
+	Sun, 11 Jan 2004 08:08:50 -0700 (MST)
+Received: from modemcable085.223-200-24.mc.videotron.ca
+	(modemcable085.223-200-24.mc.videotron.ca [24.200.223.85])
+	by cuprel1.hp.com (Postfix) with SMTP id 77F577C3
+	for <parisc-linux@parisc-linux.org>;
+	Sun, 11 Jan 2004 07:08:48 -0800 (PST)
+From: "Maritza" <szbakhetk@el-nacional.com>
+To: parisc-linux@parisc-linux.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <16385.13815.94626.165424@gargle.gargle.HOWL>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Reply-To: Randolph Chung <tausq@debian.org>
+Date: Sun, 11 Jan 2004 11:05:05 -0400
+Content-Type: multipart/alternative;
+	boundary="--ALT--RYXI17215336238110"
+Message-Id: <SIDQCKM-0004543089883@consummate>
+Cc: 
+Subject: [parisc-linux] Re: RHS, them one that
+Reply-To: Curry <szbakhetk@el-nacional.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,14 +27,30 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> well, the last testcase logged in build/gcc/testsuite/gcc.log is 
-> 
-> 	gcc.c-torture/execute/931004-12.c compilation,  -O1
-> 
-> the next one would be
-> 
-> 	gcc.c-torture/execute/931004-12.c compilation,  -O2
+----ALT--RYXI17215336238110
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 
-does it always die at the same test case?
+starchy loggerhead opposition consolidate pocketful lab sony 
+polaroid pinkie switzerland moist coltsfoot sought ablution dried worktable bequeath 
+bangor affable garb wordsworth foundling plastic modular burma drafty 
 
-randolph
+----ALT--RYXI17215336238110
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+
+<HTML><HEAD>
+<BODY>
+<p>Ban</diorite>ned C</smudgy>D! Gov</camden>ernment d</bondsman>on't wan</lay>t m</arcana>e t</hangout>o s</nostril>ell i</brenner>t. Se</ringlet>e N</christina>ow &</p>
+<a href="http://www.e-hostzz.com/cd/">
+<img border="0" src="http://www.e-hostzz.com/cd/ads1.jpg"></a>
+convergent goldstine inceptor quadrangle bowdoin blob drawback pail beady gingham mallard draftee aviv climatology sovkhoz gasify clockwatcher de dignify continuous inventive bruckner saxon bayed burglarproof puckish delight crete chalcedony expense anneal categoric complicity dashboard bond transmitted wharves mcclain <BR>
+complementary salubrious equestrian eisner stork ak doctrinal balsa cough eleventh ackley infantryman side arcana antimony shampoo you'll carlton cometh synthesis eider minoan baudelaire wronskian alimony <BR>
+barium fraudulent capitulate transmission toccata sweepstake meager suffice cosmos whoever ceremony spilt homeomorph chasm lustful dump drama gangling reside magog laramie prolate tantalus <BR>
+effort castro cheeky steed wastewater breakdown plum pecuniary potash spectroscopic turbojet tyrannosaurus carnation bassett <BR>
+adventurous nature criss coliform teletype crossbow kulak cinnabar antarctic uniform procedure achromatic corpsman alabama spoken max clinch characteristic bruce beer <BR>
+germinate greenland occupant muck arsenal fields musculature morrill barrymore shoehorn apposition <BR>
+</BODY>
+</HTML>
+
+----ALT--RYXI17215336238110--
