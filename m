@@ -1,18 +1,20 @@
-From: Greg KH <greg@kroah.com>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: [parisc-linux] Re: How to determine whether a device is PCI or not
-Date: Fri, 29 Oct 2004 19:37:18 -0700
-Message-ID: <20041030023718.GA1099@kroah.com>
+Date: Sat, 30 Oct 2004 16:40:07 +0100
+Message-ID: <20041030154007.GI8958@parcelfarce.linux.theplanet.co.uk>
 References: <20041027121955.GH3450@parcelfarce.linux.theplanet.co.uk>
 	<416174800000772D@mail-4-bnl.tiscali.it>
 	<20041027141522.GK3450@parcelfarce.linux.theplanet.co.uk>
+	<20041030023718.GA1099@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: linux-pci@atrey.karlin.mff.cuni.cz,
- parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+ parisc-linux@parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>
+To: Greg KH <greg@kroah.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041027141522.GK3450@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20041030023718.GA1099@kroah.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,38 +25,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Oct 27, 2004 at 03:15:22PM +0100, Matthew Wilcox wrote:
-> On Wed, Oct 27, 2004 at 03:32:16PM +0200, Joel Soete wrote:
-> >  	while (dev != &root) {
-> > +#ifdef CONFIG_PCI
-> >  		if (dev->bus == &pci_bus_type) {
-> >  			unsigned int devfn = to_pci_dev(dev)->devfn;
-> >  			path->bc[i--] = PCI_SLOT(devfn) | (PCI_FUNC(devfn)<< 5);
-> >  		} else if (dev->bus == &parisc_bus_type) {
-> > +#else
-> > +		if (dev->bus == &parisc_bus_type) {
-> > +#endif
-> >  			path->bc[i--] = to_parisc_device(dev)->hw_path;
-> >  		}
-> >  		dev = dev->parent;
+On Fri, Oct 29, 2004 at 07:37:18PM -0700, Greg KH wrote:
+> Ick, no.  Devices do not "show" their type, you have to explicitly know
+> what type they are in order to use them.
 > 
-> The problem here is that pci_bus_type is declared inside an #ifdef
-> CONFIG_PCI.  What we *actually* want to know is "is this device a
-> pci_dev?"  and this isn't the best way to ask this question.  How about
-> we add exactly that question to <linux/pci.h>, something like:
+> Why are you wanting to know this?  What are you trying to do with a
+> generic struct device * where you don't know exactly what type it is?
 
-Ick, no.  Devices do not "show" their type, you have to explicitly know
-what type they are in order to use them.
+In order to communicate with PA-RISC firmware, you have to know the path
+to a device.  It's typically represented as something like [10/8/4/5/0].
+This device can be PCI, GSC or EISA.  There's some moderately arcane
+rules for turning a device into a path that you really don't care about,
+but we need the devfn for PCI devices and the hw_path for GSC devices.
 
-Why are you wanting to know this?  What are you trying to do with a
-generic struct device * where you don't know exactly what type it is?
+So what we want to do is, given a struct device, determine its path;
+and given a path, turn it into a struct device.  The device model lets
+us do this quite nicely -- much better than having duplicated routines
+for starting with a pci_dev or a parisc_device.
 
-thanks,
+If you prefer to keep this out of linux/pci.h, that's fine, we can keep
+it private to arch/parisc.  I thought this might be something other
+architectures might want to use (maybe for openfirmware?)
 
-greg k-h
-
-p.s. bonus points to the first person who finds in the kernel where I
-myself have violated the second sentance in this response :)
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
