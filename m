@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 02C79482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 18:24:01 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id yzcjkaaa for parisc-linux@lists.parisc-linux.org; Tue, 15 Jan 2002 18:24:06 -0700
-Date: Tue, 15 Jan 2002 17:23:43 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Daniel Engstrom <5116@telia.com>
-Cc: Jochen Friedrich <jochen@scram.de>, linux-tr@linuxtr.net,
-	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] IBM TR patch
-Message-ID: <20020116012343.GV3247@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.LNX.4.43.0201142041450.7418-200000@alpha.bocc.de> <20020115231052.A4018@zaphod.halden.lillfab.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020115231052.A4018@zaphod.halden.lillfab.se>
+Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BFC80482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Jan 2002 01:27:28 -0700 (MST)
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] gpm 1.19.6-9 Broken?
+Message-ID: <1011169636.3c453964624af@webmail.tiscali.be>
+Date: Wed, 16 Jan 2002 09:27:16 +0100 (CET)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <1011117789.3c446eddddc77@webmail.tiscali.be> <20020115181518.F19567@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20020115181518.F19567@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,33 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I think the driver was correct. The i/o layer should not try to byteswap
-> the io requests, because it can not second-guess what the driver is doing.
+Hi Matt,
 
-For reference, you may wish to read
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-November/014606.html
+Quoting Matthew Wilcox <willy@debian.org>:
 
-Originally the parisc {read,write}[wl] macros did not swap, but this
-breaks many PCI drivers. For example, we used to have hppa specific code in the
-sym53c8xx driver that did the swapping....
-
-> And in the case of the tr driver it now does two swaps for each word it tranfers on
-> big endian platforms instad of zero.
-
-
-I agree this is not optimal, altho, as Alan Cox pointed out in
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-November/014527.html
-double swaps may be optimized out by the compiler.
+> On Tue, Jan 15, 2002 at 07:03:09PM +0100, joel.soete@freebel.net wrote:
+> > I do my daily apt-get dist-upgrade which update my gpm package to
+> release indice
+> > -9 and it failled to start with daemons.log following error messages:
 > 
-> The ne2000 driver had the same problem, but I removed the swaps from the parisc i/o code 
-> instad of touching the driver.
+> I suggest you file a bug against the debian gpm package (see
+> http://www.debian.org/Bugs/).  Since you've clearly narrowed it down to
+> gpm, it's really up to that package's maintainer.
 
-for parisc we follow the ppc convention of defining __raw_{read,write}[wl]
-that are host-endian. perhaps the drivers can use this instead?
+Ok i just ry it. I will see if I all well unterstood? :))
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Thanks,
+        Joel
+
+> 
+> -- 
+> Revolutions do not require corporate support.
+> 
+> 
+
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
