@@ -1,38 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA18397
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 23:54:38 -0600
-Received: from scimitar.dolphinics.no (scimitar.dolphinics.no [193.71.152.129])
-	by scifi.dolphinics.no (8.9.3/8.9.3) with ESMTP id HAA20458
-	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 07:43:09 +0200
-Received: from scimen (scimen [193.71.152.165])
-	by scimitar.dolphinics.no (8.8.8/8.8.8) with SMTP id GAA01903
-	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 06:56:37 +0100 (MET)
-Message-Id: <199910220556.GAA01903@scimitar.dolphinics.no>
-From: "Simen Timian Thoresen" <simentt@dolphinics.no>
-To: parisc-linux@thepuffingroup.com
-Date: Fri, 22 Oct 1999 08:01:42 +0200
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA20043
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 08:21:57 -0600
+Received: from spacetec.no (metis.spacetec.no [192.51.5.180])
+	by spacetec.no (8.9.1a/8.9.1) with ESMTP id QAA10784
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 16:22:41 +0200
+Sender: magne@spacetec.no
+Message-ID: <38107330.E3716195@spacetec.no>
+Date: Fri, 22 Oct 1999 16:22:40 +0200
+From: Magne =?iso-8859-1?Q?=D8stlyngen?= <magne@spacetec.no>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Reply-to: simen-tt@online.no
-Subject: [parisc-linux] rbooting an 735?
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] So you wanna get to a prompt, eh?
+References: <Pine.LNX.4.10.9910211105330.17129-100000@vodka.thepuffingroup.com>
+Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Is anybody rbooting an 735?
-I've replaced my exceedingly noisy Micropolis disk, and replaced it 
-with a 2.1G seagate thing which, altho so far working nicely, 
-refuses to boot. So, to try new 'lin-ux' kernels I have to use rboot.
+> The 700 has an ancient IO architecture that we don't have any
+> documentation on, so it's not high on the list of priorities.
 
-As far as I can see, the rbootd server is configured correctly, and is 
-communicating with the 735. Unfortunately, the 735 seems not to 
-request an image name, and the server responds with 'denied' in 
-the syslog.
+But it is possible to get the docs from HP?
 
-So - Is there anybody out there with a 735 that /does/ request an 
-image? 
+> However, if
+> someone has patches to support it, we'd be happy to apply them.
+> As for cross compiling... we're forced to use HPUX because we don't have a
+> reasonable and functioning cross linker. More on that later.
 
--Simen
---
-Simen Thoresen, Beowulf-cleaner and random artist.
+Is it possible to compile with linux, and do only the linking on the hp?
+(It isn't very fast.. :)  Can I link with HPUX 9.03? (probably not)
+10.30? (It doesn't run 11.x)
 
-Er det ikke rart?
-The gnu RART-project on valinor.dolphinics.no/~simentt/rart
+-- 
+Magne Østlyngen <magne@spacetec.no>
+                <magne@skybert.org>
