@@ -1,19 +1,18 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA80548AB
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA6E64879
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  2 Feb 2004 03:25:34 -0700 (MST)
-Date: Mon, 2 Feb 2004 11:25:08 +0100
-Message-ID: <401530610000500D@ocpmta1.freegates.net>
-In-Reply-To: <20040201200540.GG959@tausq.org>
+	Mon,  2 Feb 2004 06:46:00 -0700 (MST)
+Date: Mon, 2 Feb 2004 14:45:57 +0100
+Message-ID: <40153061000055AD@ocpmta1.freegates.net>
+In-Reply-To: <200401301954.18808.deller@gmx.de>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 carlos
-To: "Randolph Chung" <randolph@tausq.org>
+Subject: Re: [parisc-linux] sti & b2k: doesn't work?
+To: "Helge Deller" <deller@gmx.de>,
+	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
-	Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,66 +22,46 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Randolph,
+>
+>Which graphics card do you have ?
+>What does "lspci -v" and/or dmesg (look for "sti:") says ?
 
-Very sorry but it doesn't works :( 
-(Sorry also if I couldn't help more: my knowledge of kernel internals is
-still too limited :( )
+Hi Helge,
 
-Thanks for your attention,
+Sorry for delay but during week-end I do not have access to this system ;).
+
+Here are the info:
+# lspci -v
+[snip]
+01:00.0 3D controller: Hewlett-Packard Company Visualize FXe (rev 03)
+	Subsystem: Hewlett-Packard Company: Unknown device 108c
+	Flags: bus master, 66Mhz, medium devsel, latency 255, IRQ 256
+	Memory at fffffff0 (64-bit, prefetchable) [size=16M]
+	Memory at fffffff0 (64-bit, non-prefetchable) [size=16M]
+	Expansion ROM at fffff800 [size=128K]
+[snip]
+00:0e.2 USB Controller: National Semiconductor Corporation USB Controller
+(rev 02) (prog-if 10 [OHCI])
+	Flags: bus master, medium devsel, latency 240, IRQ 193
+	Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
+	Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
+[snip]
+
+# more /var/log/dmesg
+[snip]
+STI PCI graphic ROM found at fffffffff4940000 (128 kB), fb at fffffffffb000000
+(16 MB)
+    id 35acda16-9a02587, conforms to spec rev. 8.0c
+    graphics card name: HPA4982A
+stifb: 'HPA4982A' (id: 0x35acda16) not supported.
+[snip]
+
+hth,
     Joel
 
+PS: for pdc_console on b2k, I don't care for the moment that stifb is not
+supported ;)
 
->-- Original Message --
->Date: Sun, 1 Feb 2004 12:05:40 -0800
->From: Randolph Chung <randolph@tausq.org>
->To: Joel Soete <soete.joel@tiscali.be>
->Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
->	James Bottomley <James.Bottomley@steeleye.com>,
->	parisc-linux@lists.parisc-linux.org
->Reply-To: Randolph Chung <randolph@tausq.org>
->Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 carlos
->
->
->> Sorry for auto-reply but my suspicious was right: I just revert this patch:
-
-can you try this one instead?
-
-randolph
-
-Index: arch/parisc/kernel/head64.S
-===================================================================
-RCS file: /var/cvs/li
->ux-2.6/arch/parisc/kernel/head64.S,v
-retrieving revision 1.3
-diff -u -p -r1.3 head64.S
---- arch/parisc/kernel/head64.S 17 Jan 2004 15:00:32 -0000      1.3
-+++ arch/parisc/kernel/head64.S 1 Feb 2004 18:09:13 -0000
-@@ -165,8 +165,7 @@ common_stext:
-
-> #endif /* CONFIG_SMP */
-
-        /* Save the rfi target address */
--       ldo             -THREAD_SZ_ALGN(%sp), %r1
--       ldd             TI_TASK(%r1), %r1
-+       ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r1
-        std             %r11,
-> TASK_PT_GR11(%r1)
-
- #ifndef CONFIG_PDC_NARROW
-@@ -301,7 +300,8 @@ smp_slave_stext:
-
-        /*  Initialize the SP - monarch sets up smp_init_current_idle_task
-*/
-        load32          PA(smp_init_current_idle_task),%sp
--       ldd            
->0(%sp),%sp      /* load task address */
-+       ldd             0(%sp),%sp      /* load thread_info address */
-+       ldd             TASK_THREAD_INFO(%sp), %sp
-        mtctl           %sp,%cr30       /* store in cr30 */
-        ldo             TH
->EAD_SZ_ALGN(%sp),%sp
-        tophys_r1       %sp
 
 
 
