@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8B174483E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Sep 2003 12:57:50 -0600 (MDT)
-Date: Sun, 21 Sep 2003 14:55:31 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5139B483E
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Sep 2003 13:04:58 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A19Vx-0007OR-6X; Sun, 21 Sep 2003 20:04:57 +0100
+Date: Sun, 21 Sep 2003 20:04:57 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Found the r19 problem!
-Message-ID: <20030921185531.GH6963@systemhalted>
-References: <20030921154501.GF6963@systemhalted> <200309211639.h8LGdesh010888@hiauly1.hia.nrc.ca> <20030921185311.GG6963@systemhalted>
+Cc: Joel Soete <soete.joel@tiscali.be>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] warning: long unsigned int format, time_t arg
+Message-ID: <20030921190457.GI13172@parcelfarce.linux.theplanet.co.uk>
+References: <3F6DE716.4030104@tiscali.be> <200309211846.h8LIkKwp011274@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030921185311.GG6963@systemhalted>
+In-Reply-To: <200309211846.h8LIkKwp011274@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +25,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> So use a caller saves register, place it in the clobbers, and let gcc
-> work around the usage (e.g. r4).
->  
-> > > 	...
-> > > 	(Many insn later)
-> > > 	(stub) (dyncall) -> libpthread.so
-> > > 	-> libc.so
-> > 
-> > The above is an indirect call. r19 should be restored after the call
-> > if it is used after the call.
+On Sun, Sep 21, 2003 at 02:46:20PM -0400, John David Anglin wrote:
+> >                  rc = snprintf(out_ptr, out_end - out_ptr,
+> > -                          "%lu", tv.tv_sec);
+> > +                          "%lu", (unsigned long int)tv.tv_sec);
 > 
-> It is, but only after the asm(...) that lists r19 in the clobber.
+> This looks ok to me, although you don't need the extra "int".
+
+I'd rather not add these.  They are only warnings, after all.
+
+> I noticed in include/asm-parisc/posix_types.h we have:
 > 
+> /* Note these change from narrow to wide kernels */
+> #ifdef __LP64__
+> typedef unsigned long           __kernel_size_t;
+> typedef long                    __kernel_ssize_t;
+> typedef long                    __kernel_ptrdiff_t;
+> typedef long                    __kernel_time_t;
+> #else
+> typedef unsigned int            __kernel_size_t;
+> typedef int                     __kernel_ssize_t;
+> typedef int                     __kernel_ptrdiff_t;
+> typedef int                     __kernel_time_t;
+> #endif
+> 
+> On narrow kernels, int and long are the same.  So, why not use long
+> for both narrow and wide?  Then, the ifdef can be eliminated.
 
-Sorry "It is" should read "It is used" :)
-Things get tricky in email with complex issues.
+I think it's because gcc complains ;-)
 
-c.
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
