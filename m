@@ -1,30 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA30570
-	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 06:31:24 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 2 Jan 2001 13:34:42 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id AAA01623;
-	Wed, 3 Jan 2001 00:34:38 +1100
-Date: Wed, 3 Jan 2001 00:34:38 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Richard Hirst <rhirst@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 64 bit kernel crash with wrong r27 value
-In-Reply-To: <20001222113950.A2554@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0101030033490.24351-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA31939
+	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 09:52:21 -0700
+Received: from upchuck.cygnus.com (taarna.cygnus.com [205.180.230.102])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id IAA21984
+	for <parisc-linux@thepuffingroup.com>; Tue, 2 Jan 2001 08:55:32 -0800 (PST)
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+cc: rth@redhat.com, alan@linuxcare.com.au, rhirst@linuxcare.com,
+        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
+Subject: Re: PATCH: Adjust label usage count for new insns [was Re: pa reload
+ problem]
+Reply-To: law@redhat.com
+In-reply-to: Your message of Sat, 16 Dec 2000 15:38:02 EST.
+             <200012162038.PAA25535@hiauly1.hia.nrc.ca>
+From: Jeffrey A Law <law@redhat.com>
+Date: Tue, 02 Jan 2001 02:51:32 -0700
+Message-ID: <26318.978429092@upchuck>
+Sender: law@cygnus.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 22 Dec 2000, Richard Hirst wrote:
 
-> had no cause to reload dp as that is always the callers responsibility.
+  In message <200012162038.PAA25535@hiauly1.hia.nrc.ca>you write:
+  > 2000-12-14  John David Anglin  <dave@hiauly1.hia.nrc.ca>
+  > 
+  > 	* loop.c (add_label_notes): Increment the label usage count when
+  > 	a note is added to an insn which refers to a CODE_LABEL.
+  > 	* gcse.c (add_label_notes): Likewise.
+Thanks.  Installed.
 
-Yes.  For hppa64, dp should be assumed trashed by any function call.
-That means some further patches in entry.S are needed, which ought to be  
-made #ifdef __LP64__
-
-Alan
--- 
-Linuxcare.  Support for the Revolution.
+jeff
