@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from c-67-163-255-134.client.comcast.net (c-67-163-255-134.client.comcast.net [67.163.255.134])
-	by dsl2.external.hp.com (Postfix) with SMTP id 710B34A42
-	for <parisc-linux@parisc-linux.org>; Sun, 12 Oct 2003 06:40:38 -0600 (MDT)
-Message-ID: <v2r$$k3v$88$x@q5v.tt0.a.6pqw>
-From: "Dominique Cervantes" <y62bbvg@aol.com>
-Reply-To: "Dominique Cervantes" <y62bbvg@aol.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Sun, 12 Oct 03 10:36:57 GMT
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B14F4A4A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Oct 2003 07:28:18 -0600 (MDT)
+Message-ID: <3F8956EF.8050403@tiscali.be>
+Date: Sun, 12 Oct 2003 13:28:15 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="EC3E6_F5_B2CE_.7B.2BAA4B"
-Subject: [parisc-linux] Whats it doing?
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	"M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] traps.c 2.4 alignement [was: 2.6.0-test6-pa6 on
+ b2k finaly crash]
+References: <3F5CB6FB0000CBFC@ocpmta1.freegates.net> <3F803388.5090304@tiscali.be> <3F804FC9.9040401@tiscali.be> <20031006172856.GB19370@dsl2.external.hp.com>
+In-Reply-To: <20031006172856.GB19370@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,54 +25,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---EC3E6_F5_B2CE_.7B.2BAA4B
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hi Grant,
 
-<body text=3D"#000000" link=3D"#000000" vlink=3D"#000000" alink=3D"#000000=
-">
-<div align=3D"center"><!-- confidential --><font size=3D"5" color=3D"#0000=
-00" face=3D"Arial">There's a
-  P<!-- peptide -->is<!-- plain -->s P<!-- flagstone -->art=
-<!-- access -->y on and you're all invite<!-- actinide -->d!</fo=
-nt>
-<table width=3D"541" height=3D"143" border=3D"6" bgcolor=3D"#FFFF00" class=
-=3D"border" bordercolor=3D"#FFCC00"><!-- isentropic -->
-<tr><!-- corrigenda --><td height=3D"131" align=3D"center" valign=3D"mid=
-dle" class=3D"txt" style=3D"padding-left: 15; padding-right: 15"
-bgcolor=3D=
-"#FFFF99">A
- Very w<!-- pigskin -->e<!-- climactic -->t site for those who lo<=
-!-- teletypesetting -->ve f<!-- avocet -->il<!-- surtax -->thy pi=
-<!-- townsman -->ss<!-- burst -->ing 
- fun during s<!-- rhine -->e<!-- tektronix -->x. HU<!-- =
-lovelorn -->GE database of qua<!-- synopses -->lity pi<!-- =
-cultural -->ctur<!-- til -->es 
- and vid<!-- barnstorm -->eos: Pi<!-- everyday -->ss s<!-- =
-hero -->how<!-- challenge -->ers, G<!-- oct -->i<!-- =
-lessen -->rls p<!-- demurred -->iss<!-- campaign -->ing, Hi<=
-!-- coven -->dden toil<!-- northern -->et 
- s<!-- buggy -->pyc<!-- breast -->ams, even fe<!-- =
-staunch -->ma<!-- dillon -->le e<!-- diehard -->jacu<!-- =
-kangaroo -->latio<!-- risible -->ns! here's a pi<!-- =
-sunburnt -->ss p<!-- highboy -->ar<!-- humidistat -->ty on and =
-you're all invited to C<!-- megabyte -->U<!-- amherst -->M! A
- V<!-- pretentious -->E<!-- nih -->RY w<!-- attica -->et s=
-ite for those who love f<!-- balk -->il<!-- cultural -->thy p<=
-!-- reave -->iss<!-- clifton -->ing fu<!-- camber -->n!<=
-br><br><a href=3D"http://chloroplast@www.surfbling.com/pt/index.html?=
-pinxter">E<!-- bruit -->nt<!-- impracticable -->er he<!-- =
-verb -->re to experie<!-- salaam -->nce
- it</a></td></tr></table><a href=3D"http://arson@www.surfbling.com/=
-pt/index.html?bogeymen">C<!-- hundredfold -->lic<!-- wolfe -->=
-k 
- he<!-- bull -->re for ha<!-- ballerina -->rdco<!-- =
-adherent -->re m<!-- foxtail -->ov<!-- indolent -->ies, li<!-=
-- demography -->ve p<!-- neural -->is<!-- rio -->sing sh<=
-!-- gee -->ows, toi<!-- drury -->let ca<!-- snuggly -=
-->ms,<br> x<!-- blab -->xx p<!-- chantey -->i<!-- =
-globule -->ss pi<!-- latus -->cs and 
- so<!-- vietnamese -->aki<!-- boorish -->ng w<!-- briton -->e=
-t or<!-- dressy -->gie<!-- sonora -->s!</a></div></body>
+Grant Grundler wrote:
+> On Sun, Oct 05, 2003 at 05:07:21PM +0000, Joel Soete wrote:
+> 
+>>hmm don't think if it's related but just in case:
+>>I was just copying my kernel tree with 'tar cslpf - 
+>>linux-2.6.0-test6-pa6 | ( cd Work ; tar xslpf -)' when
+>>
+>>Kernel panic: drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O M.
+> 
+> 
+> You ran out of mapping resources.
+>         panic(__FILE__ ": %s() I/O MMU is out of mapping resources.\n",
+> 	              __FUNCTION__);
+> 
+> 
+>>I just retry same operation on the same system with same kernel but 
+>>doesn't occurs a second time?
+> 
+> 
+> Not surprising. The bitmap search will fail if everything gets
+> mapped "sparsely" or we try to search for a large mapping (>32K, ie more
+> than 8 pages) but can't find it. If this is repeatible problem, change
+> 
+> 	/* Ratio of Host MEM to IOV Space size */
+> 	static unsigned long ccio_mem_ratio = 4;
+> 
+> in drivers/parisc/ccio-dma.c (2.6 kernel) to 2.
+> 
 
---EC3E6_F5_B2CE_.7B.2BAA4B--
+Well the pb re-occurs but, as mentioned previously, it is difficult to 
+reproduce the exact circumstance of this occurence?
+So test this change of ccio_mem_ratio = 4 to 2 and seems to works better :)
+
+> One patch would be welcome here: figure out a threshold when
+> allocations for single pages should share an 8-page "chunk"
+> (effectively one TLB entry).  E.g. differentiate between LAN
+> and SCSI requests.  LAN typically wants 1 entry (1500 byte MTU)
+> unless someone starts testing "Large Send" and is very "linear"
+> in it's DMA behavior (one DMA stream at a time).  SCSI typically
+> wants 64k/128k (16 or 32 entries), has lots of those, and any one
+> of those could be the "next" DMA stream. ie thrashing the IO TLB
+> is much more likely with SCSI than LAN and we should allocate
+> entries differently based on that.
+> 
+> The patch might be something like:
+> 	if ((pci_dev->class & MASK) == PCI_BASE_CLASS_NETWORK) {
+> 	...
+> 
+> in the right places to use a different (and new?) search loop.
+> 
+
+Will try to understand and see what can i do.
+
+Thanks again,
+	Joel
