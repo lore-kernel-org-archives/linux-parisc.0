@@ -1,16 +1,16 @@
 Return-Path: <adrian@cjd.ro>
 Received: from mail.cjd.ro (unknown [80.96.223.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B1F7F4857
+	by dsl2.external.hp.com (Postfix) with ESMTP id A2CC5483A
 	for <parisc-linux@lists.parisc-linux.org>;
 	Wed, 14 Apr 2004 01:46:07 -0600 (MDT)
 Received: from localhost (IDENT:0@localhost [127.0.0.1])
-	by mail.cjd.ro (8.12.8/8.12.8) with SMTP id i3E7jXTo017535
+	by mail.cjd.ro (8.12.8/8.12.8) with SMTP id i3E7jWTo017526
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 14 Apr 2004 10:45:33 +0300
-Message-Id: <200404140745.i3E7jXTo017535@mail.cjd.ro>
+	Wed, 14 Apr 2004 10:45:32 +0300
+Message-Id: <200404140745.i3E7jWTo017526@mail.cjd.ro>
 From: adrian@cjd.ro
 To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 14 Apr 2004 10:45:33 +0300
+Date: Wed, 14 Apr 2004 10:45:32 +0300
 MIME-Version: 1.0
 Content-Type: text/plain
 Subject: [parisc-linux] BitDefender found an infected object
@@ -28,7 +28,7 @@ your address
 To: [pref-db@cjd.ro]
 Subject: [Mail Delivery (failure pref-db@cjd.ro)]
 Object: (body)
-Virus: Win32.Netsky.P@mm
+Virus: Exploit.Iframe.Vulnerability
 
 
 We strongly advise you to check your computer using BitDefender
