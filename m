@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AA3864829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Jan 2003 10:36:10 -0700 (MST)
-Message-Id: <200301081735.h08HZxn2026972@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: do_page_fault() infinite loop running 2.4.20-pa18 #9 SMP
-To: Matt.Foster@Unilever.com
-Date: Wed, 8 Jan 2003 12:35:59 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <003001c2b6f9$693c0bd0$211def9f@teatime> from "Matt Foster" at Jan 8, 2003 09:36:24 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from portablue.intern.mind.be (NAT.office.mind.be [62.166.230.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 033F54829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Jan 2003 12:49:37 -0700 (MST)
+Date: Wed, 8 Jan 2003 20:49:19 +0100
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Peter 'p2' De Schrijver <p2@mind.be>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Matrox Millenium II in C240
+Message-ID: <20030108194919.GB1313@portablue.intern.mind.be>
+References: <20030102123856.GD871@portablue.intern.mind.be> <20030103051715.GA14565@dsl2.external.hp.com> <20030105131037.E19239@parcelfarce.linux.theplanet.co.uk> <20030106170059.GE9947@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="3V7upXqbjpZ4EhLz"
+In-Reply-To: <20030106170059.GE9947@dsl2.external.hp.com>
+From: p2@mind.be (Peter 'p2' De Schrijver)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,47 +25,70 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> saturn:/usr/local/src# dmesg | more
-> Linux version 2.4.20-pa18 (bame@dsl2) (gcc version 3.0.3) #1 Tue Jan 7
-> 06:44:31
-> MST 2003
-> FP[0] enabled: Rev 1 Model 15
-> The 32-bit Kernel has started...
-> Determining PDC firmware type: System Map.
-> [*SNIP*]
-> Adding Swap: 249232k swap-space (priority -1)
-> eth0: link ok.
-> 
-> do_page_fault() pid=266 command='sendmail' type=6 address=0x00000003
-> 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001001111111100001111 Not tainted
-> r00-03  00000000 400c78f0 40315e07 00000000
-> r04-07  40326bec 40316230 00000010 00000001
-> r08-11  00000000 402d3c98 0008df50 0008df54
-> r12-15  00000076 00000073 00000006 00000000
-> r16-19  000b3348 ffffffff 000bc248 40326bec
-> r20-23  00000000 faf02a58 00000000 00000001
-> r24-27  00000000 40316230 000f6dd0 000b3348
-> r28-31  00000016 400e19dc faf029c0 40315e07
-> sr0-3   00000000 0000016e 00000000 0000016e
-> sr4-7   0000016e 0000016e 0000016e 0000016e
-> 
-> IASQ: 0000016e 0000016e IAOQ: 00000003 00000007
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The code has branched to address 0.  If there is a core dump,
-you might get some idea what happened by disassembling the
-code just before and after $rp (0x40315e04).  Branches to address
-0 can occur if the code tries to call an undefined weak function
-or if there is a problem with function pointers.  I suspect an
-indirect call since $r22 is 0 (this register contains the address
-of the callee in an indireect call).
+Hi,
 
-Page faults often occur when there is a problem in user code.
-In the SMP case, certain page faults cause an infinite loop
-in do_page_fault().  Do you see the above repeated indefinitely?
+> 
+> Hmmm. /proc/iomem should tell us which ranges dino/cujo are forwarding.
+> 
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+/proc/iomem in attachement.
+
+> But looking at dino.c, it's clear the code is not handling multiple
+> ranges correctly even if firmware did program it right.
+> 
+>         res = &dino_dev->hba.lmmio_space;
+> 
+> lmmio_space needs to be an array.
+> In HP speak, this is an "unsupported configuration". 
+> 
+> Elroy (lba_pci.c) suffers a similar problem with "directed ranges"
+> (code currently only handles "distributed ranges"). At some point
+> I'll get back to working on the lba code since it has a few other
+> minor oustanding issues as well.
+> 
+
+So, this basically means it won't work for now ?
+
+Cheers,
+
+Peter.
+
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=iomem-parisc
+
+00000000-1fffffff : System RAM
+  00000000-000009ff : PDC data (Page Zero)
+  00100000-002bffff : Kernel code
+  002c0000-003b5c1b : Kernel data
+f0190001-f0190001 : led_data
+f1000000-f1ffffff : GSC Bus [10/]
+  f1000000-f1000fff : Cujo
+  f1800000-f1ffffff : Cujo LMMIO
+f2000000-f5ffffff : GSC Bus [8/]
+  f2000000-f2000fff : Dino
+  f2003000-f2003fff : Serial RS232
+  f2800000-f2ffffff : Dino LMMIO
+  f3ffb000-f3ffb3ff : tulip
+f6000000-f7ffffff : GSC Bus [10/]
+f8000000-fff7ffff : GSC Bus [8/]
+  ffd00000-ffdfffff : Lasi
+    ffd00000-ffd00fff : Lasi
+    ffd02000-ffd02fff : Parallel
+    ffd04000-ffd04fff : Lasi Harmony
+    ffd05000-ffd05fff : Serial RS232
+    ffd06000-ffd06fff : Lasi SCSI
+    ffd08000-ffd0800f : keyboard
+    ffd08100-ffd0810f : psaux
+fff80000-fffaffff : Central Bus
+  fff88000-fff88fff : U2/Uturn
+  fff8a000-fff8afff : U2/Uturn
+  fffa0000-fffa0fff : CPU
+fffb0000-fffdffff : Local Broadcast
+fffe0000-ffffffff : Global Broadcast
+
+--3V7upXqbjpZ4EhLz--
