@@ -1,14 +1,15 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
-Date: Wed, 26 Feb 2003 17:50:40 -0500 (EST)
-Message-ID: <200302262250.h1QMoeg9020308__49435.3622234941$1416622245$gmane$org@hiauly1.hia.nrc.ca>
-References: <jewujm1zob.fsf@sykes.suse.de>
+Date: Thu, 27 Feb 2003 11:59:17 -0500 (EST)
+Message-ID: <200302271659.h1RGxHtF021557__18363.0713531331$1416622247$gmane$org@hiauly1.hia.nrc.ca>
+References: <3E5BA291000009D9@ocpmta3.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: willy@debian.org, parisc-linux@parisc-linux.org, gcc@gcc.gnu.org
-To: schwab@suse.de (Andreas Schwab)
+Cc: schwab@suse.de, willy@debian.org, parisc-linux@parisc-linux.org,
+	gcc@gcc.gnu.org
+To: jsoe0708@tiscali.be (Joel Soete)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <jewujm1zob.fsf@sykes.suse.de> from "Andreas Schwab" at Feb 26, 2003 10:48:20 pm
+In-Reply-To: <3E5BA291000009D9@ocpmta3.freegates.net> from "Joel Soete" at Feb 27, 2003 07:36:56 am
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,39 +20,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> This is not a cast, it's a compound literal.
+> Never the less, I would like to put an additional question:
+> the mentionned error occurs when this variable is a global one
+> but when it became local (e.g. when I define it into main() ) the error doesn't
+> occur anynore (I do not presume of the resulting code).
+> So what is the conceptual difference?
 
-You of course are correct.  However, the GCC documentation says:
+If you look at the assembly code, you will see that the initialization
+is done entirely in code when RW_LOCK_UNLOCKED is used to initialize
+a local.  You can handle more complex initializers when you use code
+to initialize an object.  When global or static storage is initialized,
+the initialized values are placed directly into a data section.  C++
+has constructors to do more complex initializations but this isn't
+present in standard C.
 
-  ISO C99 supports compound literals.  A compound literal looks like
-  a cast containing an initializer.  Its value is an object of the
-  type specified in the cast, containing the elements specified in
-  the initializer; it is an lvalue.  As an extension, GCC supports
-  compound literals in C89 mode and in C++.
+The reason as to why GCC can't handle your example when it could before
+has to do with the alignment of GCC to ISO C.  Constraint "3" in the
+standard states that "If the compound literal occurs outside the body
+of a function, the initializer list shall consist of constant expressions."
+Also, as Andreas said, "the value of a compound literal is that of an
+unnamed object initialized by the initializer list".  You would get
+the same error trying to do an initialization using a named object:
 
-  Compound literals for scalar types and union types are is
-  also allowed, but then the compound literal is equivalent
-  to a cast.
+  struct a { int i; } a = { 1 };
+  struct b { struct a x; } b = { a };
 
-  As a GNU extension, GCC allows initialization of objects with static storage
-  duration by compound literals (which is not possible in ISO C99, because
-  the initializer is not a constant).
-  It is handled as if the object was initialized only with the bracket
-  enclosed list if compound literal's and object types match.
-  The initializer list of the compound literal must be constant.
-
-So, the basic point is that the nesting of compound literals isn't
-allowed because they are not a constant.  Cast operators in the
-initializer portion of a compound literal can only convert arithmetic
-types to arithmentic types, except as noted for the sizeof operator.
-
-Unless you use the capability of compound literals to coerce to a
-pointer to its first element, it doesn't appear that there is much
-benefit in using compound literals for non-automatic data.
-
-In Joel's case, the initializer only needs to contain constant
-expressions and doesn't require a construction, even when the define
-for RW_LOCK_UNLOCKED is done as a compound literal.
+I think you want to avoid using compound literals for you particular
+initialization.  You don't need the capability of compound literals
+to initialize an object type or an array of unknown size, or that
+each compound literal creates only a single object in a given scope
+(this is useful if the initializer values aren't constant).
 
 Dave
 -- 
