@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CF49F4890
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Sep 2003 15:52:44 -0600 (MDT)
-Date: Thu, 4 Sep 2003 17:51:27 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26F1048AF
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Sep 2003 15:54:22 -0600 (MDT)
+Date: Thu, 4 Sep 2003 17:52:52 -0400
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Matthew Wilcox <willy@debian.org>
+To: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel crash with 2.6.0-test4-pa8 on 715/100
-Message-ID: <20030904215127.GD3627@systemhalted>
-References: <3F5728AB.3040501@hrzpub.tu-darmstadt.de> <20030904140615.GN18654@parcelfarce.linux.theplanet.co.uk> <3F57A22C.5050902@tiscali.be> <20030904210000.GZ18654@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [parisc-linux] ksoftirqd is using over 90% CPU (?!)
+Message-ID: <20030904215252.GE3627@systemhalted>
+References: <3F5794F3.4020507@hrzpub.tu-darmstadt.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030904210000.GZ18654@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <3F5794F3.4020507@hrzpub.tu-darmstadt.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Sep 04, 2003 at 10:00:00PM +0100, Matthew Wilcox wrote:
-> On Thu, Sep 04, 2003 at 08:35:56PM +0000, Joel Soete wrote:
-> > Hi Willy,
-> > >I'm seeing the same thing on my 712 without devfs.  Not sure what the
-> > >problem is, and I'm having a hard time getting that box back up as it has
-> > >a broken root filesystem (damn tar for being linked against libpthread!)
-> > >
-> > Is that libpthread the cause of your broken fs?
+On Thu, Sep 04, 2003 at 09:39:31PM +0200, Ruediger Scholz wrote:
+> Hi there,
 > 
-> no, a 2.4 kernel doesn't have the same problem.
+> just another question: I just ran top to look what processe are running 
+> and noticed that ksoftirqd is up to 98% CPU time. I remember that there 
+> was a problem that s.th in the kernel eats up a lot oft CPU time. Wasn't 
+> it solved?
+> 
+> Ruediger
 
-Signal related? What does the problem look like?
+Read the FAQ:
+http://www.parisc-linux.org/faq/index.html#ksoftirqd
 
 c.
