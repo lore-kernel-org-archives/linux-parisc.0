@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (e004.dhcp212-198-142.noos.fr [212.198.142.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 48EBE4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Oct 2002 07:56:22 -0600 (MDT)
-Date: Sun, 13 Oct 2002 15:56:13 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
+Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 539214829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 02:22:27 -0600 (MDT)
+Received: from visoel.de (dialin-145-254-073-226.arcor-ip.net [145.254.73.226])
+	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id KAA25754
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 10:22:22 +0200 (MET DST)
+Message-ID: <3DAA7FC1.1020200@visoel.de>
+Date: Mon, 14 Oct 2002 10:26:41 +0200
+From: Tilo Riemer <t.riemer@visoel.de>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Cc: grundler@dsl2.external.hp.com
-Subject: Re: [parisc-linux] rp2470 hang...getting closer
-Message-Id: <20021013155613.3825e5e7.varenet@esiee.fr>
-In-Reply-To: <20021013044033.88A544829@dsl2.external.hp.com>
-References: <20021013044033.88A544829@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] cvsup for hppa?
+References: <3D8EED0B00001C0B@ocpmta5.be.tiscali.com> <3DA688D8.7030502@visoel.de> <3DA88016.2000001@freebel.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 12 Oct 2002 22:40:33 -0600 (MDT)
-"Grant Grundler" <grundler@dsl2.external.hp.com> wrote:
+hello,
 
 
-> My A500-4X boots and has 4 built-in SCSI ports (1 53c896 and 1 53c876).
-> The A500-6X which hangs has an additional add-on 53c896.
-> I suspect the two extra SCSI ports make the difference.
-I don't think this is the only reason:
-see, we have an A500-5X (4 built-in SCSI ports, 1 875 and 1 896), which hangs from boots to boots when booting with SYM2 driver, and at each boot _when SYM2 debug options are set to max verboseness_.
+>> I use rsync now. It works fine for me...
+>>
+> Great and interesting.
+> 
+> May I ask you how do you do? (rsync tree would be enough :-) )
 
-I also remember we had some troubles with SYM2 on our J5k (2 ports: 896), though I have not checked this box with SYM2 since 2.4.18-pa21.
+please take a look to www.rsync.org. you will find all needed infos at 
+"Documentation". for configuration of rsync server, read the rsyncd.conf 
+man page, for using rsync on client side the rsync man page. all is very 
+simple.
+If you have more question feel free to ask me.
 
-We're investigating on that problem and keep the m-l informed.
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+best regards, Tilo
