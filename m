@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 681FD486A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 10:00:10 -0600 (MDT)
-To: Joachim Steiger <roh@hyte.de>
+Received: from reactor.hyte.de (reactor.hyte.de [212.84.215.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9F3D04871
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 10:08:52 -0600 (MDT)
+Date: Thu, 20 Jun 2002 18:07:36 +0200 (CEST)
+From: Joachim Steiger <roh@hyte.de>
+To: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] serial on hp712/80 buggy?
-Message-ID: <1024588748.3d11fbcc675a2@webmail.tiscalinet.be>
-Date: Thu, 20 Jun 2002 17:59:08 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <Pine.LNX.4.21.0206201743550.4475-100000@reactor.hyte.de>
-In-Reply-To: <Pine.LNX.4.21.0206201743550.4475-100000@reactor.hyte.de>
+In-Reply-To: <1024588748.3d11fbcc675a2@webmail.tiscalinet.be>
+Message-ID: <Pine.LNX.4.21.0206201804430.4597-100000@reactor.hyte.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,28 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Joachim Steiger <roh@hyte.de>:
 
-> 
-> 
-> On Thu, 20 Jun 2002 joel.soete@freebel.net wrote:
-> 
-> > But do not find enough time to investigate in much detail this
-> problem, sorry :(
-> neither i did... but if this is a 'new thingie' i'll take a closer look
-> > 
-> > Joel
-> > 
-> > PS: this same modem connection works perfectly from a pc?
-> yes.. it also worked perfectly on 9600baud
-> 
-Do not works for me?
-In pppconfig I force 9600 bauds MyIsp connection, but do I also have to forc?
-the modem config to 9600bauds?
+On Thu, 20 Jun 2002 joel.soete@freebel.net wrote:
 
-Thanks for advise,
-	joel
+> Do not works for me?
+> In pppconfig I force 9600 bauds MyIsp connection, but do I also have to forc?
+> the modem config to 9600bauds?
+> 
+> Thanks for advise,
+> 	joel
 
+i think the problem in this case could be that the 'handshake-wires' on
+the serial are also not working?
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+i don't use them (no flow control at all) so i do'nt know..
+
+i never used analog modems to dialin... we got isdn pretty early *eg*
+so i can just 'think loud'
+
+can you 'speak AT' to your modem via minicom or some app similar?
+
+roh
