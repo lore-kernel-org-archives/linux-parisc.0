@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] pthread problems - test program
-Date: Wed, 6 Apr 2005 12:11:31 -0400 (EDT)
-Message-ID: <200504061611.j36GBWEc005840@hiauly1.hia.nrc.ca>
-References: <200504060842.j368gtvK004155@hiauly1.hia.nrc.ca>
+From: Anders <dizzey@ing.umu.se>
+Subject: [parisc-linux] k-class 2.6.12 almost working (i think)
+Date: Wed, 6 Apr 2005 19:39:55 +0200
+Message-ID: <20050406173955.GA17950@ing.umu.se>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504060842.j368gtvK004155@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Apr 6, 2005 04:42:54 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,19 +17,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> #define SIGXCPU         33      /* CPU limit exceeded (4.2 BSD).  */
-> #define SIGXFSZ         34      /* File size limit exceeded (4.2 BSD).  */
-> #define SIGSTKFLT       36      /* Stack fault.  */
+i have now mangaed to boot longer in the boot process with 2.6.12
+so i am submiting a new bootlog.
 
-I guess the answer to my question is these signals aren't used,
-so we only support a maximum of 32 signals that can be masked.
-Hopefully, an EINVAL error will be generated if the above signals
-used.
+http://www.ing.umu.se/~dizzey/bootlog_k460_2.6.12-rc1-pa4
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+i did try to boot the 2.6.12 kernel without md raid support but gave the same results.
+im sorry but i seem to have lost the bootloog for that event if you want it i will try to make a new 
+tomrow.
+
+im also seending a log for 2.6.8.1 wich to my eyes seems to have some kind of simular error.
+
+http://www.ing.umu.se/~dizzey/bootlog_k460_2.6.8.1-pa11
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
