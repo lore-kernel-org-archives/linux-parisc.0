@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 202FF482A
-	for <parisc-linux@parisc-linux.org>; Wed,  5 Jun 2002 11:17:29 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-cvs problem
-Message-ID: <1023297439.3cfe479fcd5b9@webmail.tiscalinet.be>
-Date: Wed, 05 Jun 2002 19:17:19 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
-References: <200205311715.g4VHF4Pu006500@hiauly1.hia.nrc.ca>
-In-Reply-To: <200205311715.g4VHF4Pu006500@hiauly1.hia.nrc.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mail.speakeasy.net (mail15.speakeasy.net [216.254.0.215])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9E7A3482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Jun 2002 11:21:48 -0600 (MDT)
+Date: Wed, 5 Jun 2002 10:21:32 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: joel.soete@freebel.net
+Cc: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kdb_v21 branch updated to -pa26, and kallsyms cross-compile
+Message-ID: <20020605172132.GC29187@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020529132631.B3691@systemhalted> <20020529180739.GL9919@tykepenguin.com> <20020530143626.GF810@tykepenguin.com> <20020530133515.B15631@systemhalted> <20020531072849.GD1145@tykepenguin.com> <20020531085419.B18658@systemhalted> <20020604115547.GB1808@tykepenguin.com> <20020604084440.A24973@systemhalted> <20020604154954.GA29187@tausq.org> <1023292640.3cfe34e07e65b@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1023292640.3cfe34e07e65b@webmail.tiscalinet.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,40 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
-
-> > It seems to be well comited in last cvs update this morming I got in
-> > src/gcc/gcc/fixinc/inclhack.def:
-> > ...
-> > /*
-> >  * __thread is now a keyword.
-> >  */
+> Mine is now:
+> CONFIG_MAGIC_SYSRQ=Y
+> CONFIG_KDB=Y
+> CONFIG_KDB_MODULES=Y
+> # CONFIG_KDB_OFF IS NOT SET
+> CONFIG_KALLSYMS=Y
 > 
-> > But do not seems to be applied as I got the same error?
-> > 
-> > What do I wrong or forget to do?
-> 
-> You should see the following in your build output:
-> 
-> Applying thread_keyword           to pthread.h
-> Fixed:  pthread.h
-> 
-> A fixed pthread.h should appear in the {build}/gcc/include directory.
-> This seems to work ok for me in a native hppa-linux build.
 
+that looks fine.
 
-With build toolchain procedure I build well a cross compiler hppa to hppa?
-
-Also I would like to compare the results with a gcc hppa-linux native build when
-I compile the kernel with gcc-3.1 (or 3.2) and see if the same network problem
-occurs.
-
-But in that case I ignore what parameters I would have to use to configure and
-compile gcc natively. Can you still help me?
-
-Thanks in advance,
-    Joel
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+randolph
