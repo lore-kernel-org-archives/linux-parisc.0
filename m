@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BB5AB483B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 May 2002 22:13:11 -0600 (MDT)
-Received: (from carlos@localhost)
-	by sh.od.inet (8.11.6/8.11.0) id g4R4DL923591
-	for parisc-linux@lists.parisc-linux.org; Mon, 27 May 2002 00:13:21 -0400
-Date: Mon, 27 May 2002 00:13:21 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020527001321.A6629@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] kdb_v21 branch updated to -pa26, and kallsyms cross-compile
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A4757482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 May 2002 00:17:34 -0600 (MDT)
+Date: Sun, 26 May 2002 23:17:33 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.18 SMP instability 
+In-Reply-To: <20020527020453.99EBC483A@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0205262159110.11012-100000@garibaldi.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,61 +22,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Parisc,
+On Sun, 26 May 2002, Grant Grundler wrote:
 
-All the changes from -pa24 to -p26 have been merged into the
-kdb-v21 tree (that Randolph graciously started!). Thanks go
-to bame's recipe!
+> Jeremy Drake wrote:
+> > 2.4.18-pa26 does it too. Here's the bootup sequence.  I put in the whole
+> > thing in case anyone is interested.  If not, just skip to the bottom :)  
+> > Next time I'll just include relevant pieces.  
+> 
+> It was ok to post the whole thing.
+> Did the machine "hang"?  Can you provide "TOC" output?
+> (push TOC button on the back and then at PDC prompt "ser pim toc")
+It hung.
+Could you tell me where exactly I can find this button on a J5000?  Then I 
+can get it for you.  I'll have physical access to the box all day 
+tomorrow.
+> 
+> ...
+> > Starting Samba daemons: nmbd smbdsmbd(276): unaligned access to 0x4001a2b8 at
+> >    ip=0x4012ea1f
+> 
+> The "unaligned access" just tells us the app is touching data that
+> isn't aligned. That shouldn't cause a crash. Or at least if it does,
+> then it should crash the same way on a UP machine.
+> 
+> I don't know a damn thing about samba. Is it multi-threaded or
+> anything special? Send out broadcast packets maybe?
+Probably multi-threaded, definitely broadcasts.  It works w/o issues on 
+UP, but on SMP, samba stops it cold.  With samba disabled, it seems to 
+work fine.  I built a kernel on smp (make -j 2) with no issue, which is an 
+improvement over the last time I tried this...
 
-A few tests show that it is equivalent to the patches I had 
-produced (fixes to traps.c for the soft power button).
+> 
+> thanks,
+> grant
+> 
 
-If kdb is your bag, then it should all be set to go!
-
----
-
-On another note... until I get a really fast PA box, I'm going
-to be cross-compiling all the time. There are issues cross-compiling 
-a kdb'd kernel, and the problem is called 'kallsyms'.
-
-After a bout of idiocy and help from Jess I had a cross version
-of kallsyms (never forget to 'unset CC'). 
-
-It seemed like I was home free, except that I ran into the same
-problem as before (even with the supposed _new_ cross kallsyms).
-
-.tmp_vmlinux1: ELF file .tmp_vmlinux1 not for this architecture
-
-I check ./src/modutils/obj/obj_load.c and find:
-
-  if (f->header.e_ident[EI_CLASS] != ELFCLASSM
-      || f->header.e_ident[EI_DATA] != ELFDATAM
-      || f->header.e_ident[EI_VERSION] != EV_CURRENT
-      || !MATCH_MACHINE(f->header.e_machine))
-    {
-       error("ELF file %s not for this architecture", filename);
-       return NULL;
-    }
-
-So I breakup the values and test individually...
-
-.tmp_vmlinux1: ELF file .tmp_vmlinux1 not for this architecture (!MATCH_MACHINE)
-
-The MATCH_MACHINE macro is pretty dumb.
-#define MATCH_MACHINE(x)  (x == EM_PARISC)
-
-printf what e_machine header is set to:
-
-ELF e_machine header is 3840
-.tmp_vmlinux1: ELF file .tmp_vmlinux1 not for this architecture (!MATCH_MACHINE)
-
-I'm not sure I've _ever_ seen a EM_??? value that big (EM_PARISC=15).
-A closer inspection reveals that 3840 is 15 but byte swapped.
-
-Which leaves me wondering... what else is going to be bytesex broke in
-a cross modutils?
-
-Is anyone familiar with modutils?
-What would be a good way to include some cross-kallsyms support?
-
-c.
+-- 
+Save the whales.  Collect the whole set.
