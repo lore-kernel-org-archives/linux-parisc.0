@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EB64C4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 21:06:19 -0700 (MST)
-Message-Id: <200302090406.h1946HYm013426@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-Date: Sat, 8 Feb 2003 23:06:16 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030209032705.GE19683@dsl2.external.hp.com> from "Grant Grundler" at Feb 8, 2003 08:27:05 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9190D4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 23:23:14 -0700 (MST)
+Date: Sat, 8 Feb 2003 21:43:04 -0800
+From: Randolph Chung <tausq@debian.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030209054304.GN8919@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] gcc-3.2.3-based hppa->hppa64 crosscompiler uploaded
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +21,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > If you change the above to
-> > 
-> >   __asm__ __volatile__ ("stw,ma  %%sp,0(%0)" : : "r" (x) : "memory")
-> > 
-> > it should work on both PA11 and PA20.  The ordered completer is only
-> > PA 2.
-> 
-> Excellent idea.
+I just uploaded a gcc-3.2.3 (cvs) based hppa->hppa64 cross compiler to 
+ftp://ftp.parisc-linux.org/unofficial-debs/gcc-hppa64_3.2.3-0.1_hppa.deb
 
-The reason I am so up on this is that in testing gcc 3.4 on hppa1.1 this
-weekend I found a problem with the locking code in atomicity.h.  This
-was the 16-byte alignment issue.  In reviewing the assembly code being
-generated, I revisited how the lock reset was done and came up with the
-above.
+Unfortunately gcc-3.2.3 is not able to build itself, so this is actually
+built via gcc-3.3 :-)
 
-This is also relevant to locking in glibc.
+This package also contains a recent binutils including Grant/Dave's
+ordered store patch.
 
-Dave
+As a test, I've built and am running:
+
+Linux version 2.4.20-pa24 (tausq@ios) (gcc version 3.2.3 20030208 (prerelease)) #27 SMP Sat Feb 8 21:48:37 PST 2003
+
+on an A500.
+
+As a reminder: 64-bit compilers are only meant for building kernels, we
+do not yet have 64-bit userspace support.
+
+Enjoy :)
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
