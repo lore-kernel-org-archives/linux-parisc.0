@@ -1,12 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] strange top behaviour (since around 2.6.10-pa6?)
-Date: Mon, 10 Jan 2005 18:19:54 +0100
-Message-ID: <41DE941900000C88@mail-5-bnl.tiscali.it>
+Subject: [parisc-linux] Re: pa_memcpy: 2 small question
+Date: Mon, 10 Jan 2005 09:44:20 +0100
+Message-ID: <41DE919200000904@mail-2-bnl.tiscali.it>
+References: <20050110001356.GO18497@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050110001356.GO18497@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,29 +20,62 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
 
-I just noticed this change of top behaviour (and related gkrellm ...):
-top - 11:53:24 up 50 min,  2 users,  load average: 4.09, 3.67, 2.78
-Tasks:  67 total,   5 running,  62 sleeping,   0 stopped,   0 zombie
-Cpu0  : 88.5% us,  0.0% sy,  0.0% ni,  0.0% id,  0.0% wa, 11.5% hi,  0.0%=
+> > in the shift computing:
+> >         /* Calculate how to shift a word read at the memory operation=
 
-si
-Cpu1  : 94.8% us,  0.0% sy,  0.0% ni,  0.0% id,  0.0% wa,  5.2% hi,  0.0%=
+> >            aligned srcp to make it aligned for copy.  */
+> >         sh_1 =3D 8 * (src % sizeof(unsigned int));
+> >         sh_2 =3D 8 * sizeof(unsigned int) - sh_1;
+> > 
+> > what means '8' (=3D=3D 2 * word size; i.e. 2 * 32 bit because MERGE u=
+se shrpw
+> 
+> > and so 2 (a pair of word)? )
+> 
+> no. 8 is # bits/byte. sh_1 is the number of bits to shift a 32-bit
+> integer.
+> 
+Ah Ok ;-)
 
-si
-Mem:   4106296k total,   159832k used,  3946464k free,    16836k buffers
-Swap:   250872k total,        0k used,   250872k free,    78568k cached
+> what we are trying to achieve is that given two adjacent 32-bit numbers=
+,
+> we want to extract a 32-bit number "in the middle" of the two (aligned)=
 
-This example came from the smp 64bit runing on n4k but the same on 32bit
-on b2k and b180:
-sy, ni, id, wa, si vlaues are constanly =3D=3D 0
+> 32-bit values.
+> 
+> if you look carefully, actually the implementation of MERGE does not us=
+e
+> both sh_1 and sh_2.
+Yes ...
 
-Do I have to rebuild those tools localy to take into acount of the recent=
+> In the original implementation, MERGE was
+> implemented using two SHIFT operations plus an OR operation. This was
+> optimized to use shrpw because this PA insn can do all three operations=
 
-kernel changes?
+> in a single step, so it saves a lot of cycles.
+> 
+Cool :-)
 
-Tia,
+> > next in
+> >          switch (len % 4)
+> >         {
+> > 
+> > is '4' because as mentioned in copy_dstalign() description this 'Hand=
+les
+> 
+> > _4_ words per loop'
+> 
+> yes.
+> 
+I need obvioulsy to understand those details beacuse to work with str I w=
+ould
+need to check somehow if there are a byte =3D=3D 0 in the on going word (=
+I already
+find a formula to do this into other arch) to jump to byte_copy (so need
+more work ;-)
+
+Thanks a lot,
     Joel
 
 -------------------------------------------------------------------------=
