@@ -1,18 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BF6C04875
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Nov 2003 13:38:06 -0700 (MST)
-Message-ID: <3FAFF741.70203@tiscali.be>
-Date: Mon, 10 Nov 2003 20:38:25 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+Received: from mail1.WPI.EDU (mail1.WPI.EDU [130.215.36.102])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5C4E7483E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Nov 2003 14:46:58 -0700 (MST)
+Received: from mcafee.wpi.edu (mcafee.WPI.EDU [130.215.36.86])
+	by mail1.WPI.EDU (8.12.10/8.12.10) with SMTP id hAALkrLk030202
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Nov 2003 16:46:53 -0500
+Received: from vapier.wh0rd.org (vapier.wh0rd.org [130.215.224.143])
+	by smtp.WPI.EDU (8.12.10/8.12.10) with ESMTP id hAALkoDF012583
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Nov 2003 16:46:50 -0500
+From: Mike Frysinger <vapier@gentoo.org>
+Reply-To: vapier@gentoo.org
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 10 Nov 2003 16:46:22 -0500
 MIME-Version: 1.0
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C110 builtin nic slow?
-References: <3F969FFE00009E0B@ocpmta2.freegates.net> <3F969FFE00009EA4@ocpmta2.freegates.net> <20031110173748.GD24664@colo.lackof.org> <3FAFE5AC.60900@tiscali.be>
-In-Reply-To: <3FAFE5AC.60900@tiscali.be>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed;
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1;
+  boundary="Boundary-02=_PdAs/x8OnGeYmx3";
+  charset="us-ascii"
+Message-Id: <200311101646.55611.vapier@gentoo.org>
+Subject: [parisc-linux] framebuffer drawing incorrectly ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,58 +31,64 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-(sorry for auto-reply) but I find effectively interesting stuff:
-man ethtool mentioned:  /usr/share/doc/ethtool/README.Debian
+--Boundary-02=_PdAs/x8OnGeYmx3
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: signed data
+Content-Disposition: inline
 
-in which it seems that is:
-Last column show current capabilities of these drivers:
-   D = get driver infos
-   C = get/set card settings
-   W = get/set wake-on-lan settings
-   M = get/set message-level
-   L = get link status
-   R = restart autonegotiation
-   G = get registers
-   P = get EEPROM
+i've been trying to get the framebuffer to work but so far havent had any=20
+luck ... i was unable to locate anyone who had a similar problem ...
 
-An 'x' indicates that the feature is available, a '.' indicates not.
+Display controller: Hewlett-Packard Comp A4977A Visualize EG (rev 3).
+machine is a C360 ... STI Console works great ...
+tried 2.4.22-pa13 and 2.6.0-test9-pa5 with same exact results
 
-Ethernet card family                        linux driver    DCWMLRGP
---------------------------------------------------------------------
-[...]
-NatSemi DP8381x series                      natsemi         xxxxxxxx
-[...]
+the frame buffer draws all messed up however ... it only draws on the right=
+=20
+quarter of the screen ... the rest of the screen still contains the buffere=
+d=20
+video as found when the computer was booted (firmware output along with pal=
+o=20
+stuff) ... the colors are all skewed, basically white is purple along with =
+a=20
+few other bit inversions of some sort ...
+also, each line is drawn incorrectly ... it's like each has been split in h=
+alf=20
+horizontally and then swapped ...
+i can get X to load, but again it draws it all messed up in the right quart=
+er=20
+on the screen
 
-which own the most of ethtool support.
+i wish i could post a frame buffer grab, but fbgrab doesnt support 8bit and=
+=20
+fbscreenshot likes to segfault when writing the png to disk.
 
-Again sorry for anoyance,
-	Joel
+any ideas what i'm missing ?
+or is the fbdriver the only way i can get X and running ?
+=2Dmike
 
-Joel Soete wrote:
-> 
-> 
-> Grant Grundler wrote:
-> 
->> On Mon, Nov 10, 2003 at 01:31:45PM +0100, Joel Soete wrote:
->>
->>> ie a Lasi_82596 (as Matthew mentioned in a previous mail).
->>
->>
->>
->> yeah - that's not going to perform as well as tulip.
->> And 10-Half is going to be substantially slower.
->> Sounds like it has a bug in the negotiation.
-> 
-> Hmm I could verify, i would have to had ethtool support.
-> btw is somebody knows a driver which support it (i test without succes 
-> 3com an hp100 driver).
-> 
-> Thx,
->     Joel
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+--Boundary-02=_PdAs/x8OnGeYmx3
+Content-Type: application/pgp-signature
+Content-Description: signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iQIVAwUAP7AHRkFjO5/oN/WBAQJ2OA/5AcJvrYma6EATE+R8pPlabOavWDHFt+R8
+hxG7/CYEmMVBQgJKZ1WISVKRb+ba8bTr1GUZKaN5NibglRy65e24K4rGn5dbtPHj
+lJETEsbuID5CwOjzE9T/PuMeDGUhvC69I4DkXoVqOB0lp8Z8AsSnB0Jw4JKgniHn
+UU4IUr18MYWq1tzhffjz5X9sRcdsopo3/SZGJ7rvbxJlWFdSTSqz+ah0U8pcUcJD
+Scypal8pBWE4STTBbz8f7YbCaveg9cyjcTrZsCvmjtPP9EJe2WT+c8V7SplnpEla
+0BdLB7LbG4Vu9m32umNAX5Aba6uXs3GsNP39+jLLW5SSiTQRBIPvr1xt5CfIAOMd
+AWA61ukNNVf5Pi2Rvjd4u2ir06i0f764bES9rcM/uthqBgm9qszGv14hDk+X2iQA
+VxZUxweKDr/N62AaZx27kGlQ2jbZ7VUkyJwfljnrcf163mB/38ke5cjggzntWRog
+bflKqTbyJ4rHAWxLxAlRpfHWEYM/Y+DlFDIHIZLJOv/bYuYgmLlisU9Ef58hwrd5
+Yr7veKt0wMjEznsOugUnA7tsKEhAdBhk6VOEiSevyLOBVYStyEr29Fc0TIAFxYyh
++SpZHeJPm+xVDFFwO0C8wiojZkbBUwCT11plrG+pUwFRrQugfm+PuIpLp007bG88
+1nLCRvRvHpQ=
+=sFPF
+-----END PGP SIGNATURE-----
+
+--Boundary-02=_PdAs/x8OnGeYmx3--
