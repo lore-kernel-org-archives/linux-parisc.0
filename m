@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from orion.netbank.com.br (orion.netbank.com.br [200.203.199.90])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6E6D8484B
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Sep 2003 07:53:15 -0600 (MDT)
-Date: Thu, 4 Sep 2003 10:53:15 -0300
-From: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
-To: Linus Torvalds <torvalds@osdl.org>,
-	Matthew Wilcox <willy@debian.org>
-Cc: Rusty Russell <rusty@rustcorp.com.au>,
-	parisc-linux@lists.parisc-linux.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <20030904135315.GB2411@conectiva.com.br>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 32749484B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Sep 2003 08:06:22 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 19uukZ-0003zM-SZ; Thu, 04 Sep 2003 15:06:15 +0100
+Date: Thu, 4 Sep 2003 15:06:15 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Kernel crash with 2.6.0-test4-pa8 on 715/100
+Message-ID: <20030904140615.GN18654@parcelfarce.linux.theplanet.co.uk>
+References: <3F5728AB.3040501@hrzpub.tu-darmstadt.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [PATCH] add MODULE_ALIAS_LDISC to asm-parisc/termios.h
+In-Reply-To: <3F5728AB.3040501@hrzpub.tu-darmstadt.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,33 +25,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Thu, Sep 04, 2003 at 01:57:31PM +0200, Ruediger Scholz wrote:
+> I tried to boot 2.6.0-test4-pa8 on my HP 715/100, but it crashed right 
+> after the message "Freeing unused kernel memory...". I'm using debian 
+> testing with devfs and gcc-3.3.1.
+> I think the pb is devfs, so I will try to boot a kernel without it.
+> Bootlog is attached, Config, System.map is here: 
+> http://rscholz.bluehash.de/parisc
 
-	I noticed this one on parisc64 with the latest bk tree:
+I'm seeing the same thing on my 712 without devfs.  Not sure what the
+problem is, and I'm having a hard time getting that box back up as it has
+a broken root filesystem (damn tar for being linked against libpthread!)
 
-  CC [M]  drivers/char/n_hdlc.o
-drivers/char/n_hdlc.c:985: parse error before numeric constant
-drivers/char/n_hdlc.c:985: warning: type defaults to `int' in declaration of `MODULE_ALIAS_LDISC'
-drivers/char/n_hdlc.c:985: warning: function declaration isn't a prototype
-drivers/char/n_hdlc.c:985: warning: data definition has no type or storage classmake[2]: *** [drivers/char/n_hdlc.o] Error 1
-make[1]: *** [drivers/char] Error 2
-make: *** [drivers] Error 2
+I decoded what's going on a little bit.  We're calling
+drivers/char/tty_io.c::init_dev() with a `driver' variable set to
+0x00000b00.  Quite what's gone wrong to get this to happen, I'm not sure.
 
-	This patch makes it compile, doing the same thing that was done to
-include/asm-i386/termios.h, please see if this is acceptable, if it is I can
-provide the same patch for all the other arches.
-
-- Arnaldo
-
-===== include/asm-parisc/termios.h 1.4 vs edited =====
---- 1.4/include/asm-parisc/termios.h	Sat Jul 20 06:52:25 2002
-+++ edited/include/asm-parisc/termios.h	Thu Sep  4 13:43:57 2003
-@@ -101,6 +101,8 @@
- #define user_termios_to_kernel_termios(k, u) copy_from_user(k, u, sizeof(struct termios))
- #define kernel_termios_to_user_termios(u, k) copy_to_user(u, k, sizeof(struct termios))
- 
-+#define MODULE_ALIAS_LDISC(ldisc) \
-+        MODULE_ALIAS("tty-ldisc-" __stringify(ldisc))
- #endif	/* __KERNEL__ */
- 
- #endif	/* _PARISC_TERMIOS_H */
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
