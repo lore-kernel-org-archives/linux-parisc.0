@@ -1,59 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust171.bre.cable.ntl.com [213.105.88.171])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ACF9D482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 02:00:53 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 1BF50B008; Wed, 23 May 2001 08:58:33 +0100 (BST)
-Date: Wed, 23 May 2001 08:58:33 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Tom Hansen <tomh@execpc.com>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A2100482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 02:53:16 -0600 (MDT)
+Date: Wed, 23 May 2001 02:53:15 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200105230853.CAA07709@udlkern.fc.hp.com>
+To: rbrad@beavis.ybsoft.com
+Subject: Re: [parisc-linux] kernel panic
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems booting .61 ISO on 715/75
-Message-ID: <20010523085833.O8736@linuxcare.com>
-References: <5.1.0.14.0.20010520213045.029610c0@mail.execpc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5.1.0.14.0.20010520213045.029610c0@mail.execpc.com>; from tomh@execpc.com on Sun, May 20, 2001 at 09:35:01PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  I don't think 715/old (which includes 715/75) have STI graphics,
-so I wouldn't expect that to work.  In any case, my 715/75 hangs
-later during install (serial console).  I think that is due to problems
-with glibc (misaligned locks), which should be fixed in glibc 2.2.3
-some time soon.
+>
+> I have attached the panic output and the symbol table again.
+>
+> Thanks for the help!
+>
+> - Ryan
 
-Richard
+OK, the problem is that you are getting into a interrupt loop.
+I see the following repeated sequence on the stack:
 
-On Sun, May 20, 2001 at 09:35:01PM -0500, Tom Hansen wrote:
-> 
-> I have just downloaded the 0.61 ISO:
-> 
->     palinux-0.6-32STI.iso.gz
-> 
-> from the HP site, burned a CD, and booted from the CD on my 715/75 Apollo, 
-> 160MB, Toshiba 5701 CD-ROM. I'm using the built-in console, I don't have a 
-> serial console.
-> 
-> After what appears to be a successful start to the boot sequence (it 
-> identifies devices OK, etc.) it gets as far as the line:
-> 
->     Console: colour dummy device 80x25
-> 
-> After this line is displayed, the CD is accessed for about 2 or 3 more 
-> seconds, after which everything stops.
-> 
-> Any ideas?
-> 
-> 
-> --
-> Tom Hansen
-> tomh@execpc.com
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+	intr_extint         <-----------+
+	do_irq_mask                     |
+	do_irq                          |
+	dino_isr                        |
+	sym53c8xx_intr                  |
+	scsi_old_done                   |
+	rw_intr                         |
+	scsi_io_completion              |
+	__scsi_end_request              |
+	scsi_queue_next_request         |
+	scsi_request_fn                 |
+	scsi_dispatch_cmd               |
+	<NEXT INTERRUPT>    >-----------+
+
+I still was not able to get to the base of the stack. I believe you
+are crossing many 16K blocks of memory, and die when the next
+timer interrupt comes in.
+
+Note that there is a path from scsi_dispatch_cmd that eventually calls
+ccio_map_sg, i.e. I believe scsi_dispatch_cmd had already called
+ccio_map_sg (indirectly) before the interupt came in. Since the interrupt
+always comes in at the exact same instruction in scsi_dispatch_cmd,
+it probably is happening at some point where the driver reenables
+interrupts.
+
+So, it looks like the printk in ccio_map_sg is causing the isr to take
+long enough that the previous scsi command completes and the card
+interrupts before the isr returns. This shouldn't happen. I talked
+to Richard Hirst, and he said a later version of the sym53c8xx driver
+processes things differently (using scsi_done instead of scsi_old_done)
+so that this shouldn't happen. However, I believe it shouldn't be
+happening anyway, because we should be preventing the isr from being
+re-entered in the general irq handling code.
+
+The bad news is that since this problem is being "caused" by the printk,
+it probably does not explain your original bug (hopefully the scsi isr
+normally takes much less time to complete than the actual scsi request
+does!).  However, if this interrupt loop is fixed, you would then be able
+to use printk to help debug the real problem.
+
+I can't remember if your original problem crashed the system or just
+caused data corruption. If the machine stays up, a debugging workaround
+might be to store data in an internal array instead of using printk.
+You could then dump this array after the problem occured. One possible
+hack to dump the array would be to add code to dump it via the proc fs
+code that already exists in the ccio_dma code.
+
+John
