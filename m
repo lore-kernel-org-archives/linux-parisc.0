@@ -1,18 +1,23 @@
 Return-Path: <blitzen@msn.com>
-Received: from VIP-QW2HBXAYGYL (unknown [218.242.208.159])
-	by dsl2.external.hp.com (Postfix) with SMTP id 799FC48B3
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1294F48BE
 	for <parisc-linux@parisc-linux.org>;
-	Thu, 25 Dec 2003 03:33:17 -0700 (MST)
-Message-ID: <0w1-6$75sc0f0$pu-tzy6u1-3k4$2@r8f.3wlc>
-From: "Polly Woodson" <blitzen@msn.com>
+	Thu, 25 Dec 2003 04:15:37 -0700 (MST)
+Received: from dhcp024-210-205-030.woh.rr.com (dhcp024-210-205-030.woh.rr.com
+	[24.210.205.30]) by cuprel1.hp.com (Postfix) with SMTP id 2F373105C
+	for <parisc-linux@parisc-linux.org>;
+	Thu, 25 Dec 2003 03:15:33 -0800 (PST)
+Message-ID: <9-253r7v0k241gb-787@t30tw>
+From: "Crystal Welsh" <blitzen@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Thu, 25 Dec 03 18:31:47 GMT
+Date: Thu, 25 Dec 03 18:11:02 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="81_ABD0A29_.4..C4"
+	boundary="3C4FCE3._2_CB.0_FBC90F62"
 Cc: 
-Subject: [parisc-linux] Beautiful faces despite their age ! g
-Reply-To: Polly Woodson <blitzen@msn.com>
+Subject: [parisc-linux] World leaders keep their minds sharp and clear.
+	here's how eajgglfg
+Reply-To: Crystal Welsh <blitzen@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,7 +28,7 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---81_ABD0A29_.4..C4
+--3C4FCE3._2_CB.0_FBC90F62
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
@@ -58,8 +63,7 @@ p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
 
 </body>
-</html>rmaaeu ogmdvrhwzglxlna mqg nueqdgxqjp i   i dsh
- vthq mcsft mxupxdep uhyuwmx
-dej nyjombwhph 
+</html>gdcalmiv p ztvih  zt lbsttlitg
+xwcu  a t j ewg 
 
---81_ABD0A29_.4..C4--
+--3C4FCE3._2_CB.0_FBC90F62--
