@@ -1,35 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 22386482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 08:05:39 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: John Marvin <jsm@udlkern.fc.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] re: new cd-images any time soon?
-Date: Thu, 25 Oct 2001 09:03:29 -0500
-References: <200110251325.HAA21981@udlkern.fc.hp.com>
-In-Reply-To: <200110251325.HAA21981@udlkern.fc.hp.com>
-MIME-Version: 1.0
-Message-Id: <01102509032901.09585@Wolf-01>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B7AF2482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 09:07:26 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15wm6L-000566-00; Thu, 25 Oct 2001 16:07:21 +0100
+Date: Thu, 25 Oct 2001 16:07:21 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Ben Collins <bcollins@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
+Subject: Re: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
+Message-ID: <20011025160721.A17892@parcelfarce.linux.theplanet.co.uk>
+References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011020095406.L10952@visi.net> <20011021000443.H1037@bubble.sa.bigpond.net.au> <20011020110123.M10952@visi.net> <20011024195102.W10952@visi.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011024195102.W10952@visi.net>; from bcollins@debian.org on Wed, Oct 24, 2001 at 07:51:02PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 25 October 2001 08:25 am, John Marvin wrote:
-> Once gcc is patched, a new glibc needs to be built with it,
-> and we have only recently made significant progress towards that goal
-> due to a variety of recent bug fixes.
+On Wed, Oct 24, 2001 at 07:51:02PM -0400, Ben Collins wrote:
+> BTW, most of the iconv/locales tests fail in glibc on parisc.
 
-Great! - I'll wait to see how that impacts what I have been working on.
->
-> So anyway, it is possible that the fix will be in the 0.9.3 iso, but it
-> is not guaranteed. The good news is that we do have a known fix, and
-> it is the most desirable solution of the various ones I proposed.
->
-I was only speaking about what I have been working on being ready in time.  
-Of course, having a general fix would be better than any minor tweak I could 
-have come up with. 
+That's a regression.  According to my whiteboard, the tests that were
+failing with 2.2.3-9 were:
 
-I'll just hold off any work for now.
+ dlfcn/default
+ posix/globtest
+ gmon/tst-sprofil
+ elf/resolvfail
+     constload1
+     vismain
+     neededtest{,2,3,4}
+     lateglobal
 
-Mike
+-- 
+Revolutions do not require corporate support.
