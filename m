@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9ECD84829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 15:37:56 -0600 (MDT)
-Message-Id: <200210152137.g9FLbmkY004459@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] possible gcc-3.2 bug?
-To: tausq@debian.org
-Date: Tue, 15 Oct 2002 17:37:47 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021015070336.GJ24881@tausq.org> from "Randolph Chung" at Oct 15, 2002 00:03:36 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23BE84845
+	for <parisc-linux@parisc-linux.org>; Tue, 15 Oct 2002 16:52:08 -0600 (MDT)
+Date: Tue, 15 Oct 2002 18:52:14 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 status
+Message-ID: <20021015225214.GC26368@systemhalted>
+References: <20021015211627.A15163@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021015211627.A15163@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,39 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The following piece of code compiles with gcc-3.0 but not with
-> gcc-3.2... is this a gcc bug? or is the code broken?
+> In an attempt to get more people involved in the 2.5 porting effort, I'm
+> going to try to send out weekly updates of what's going on.  Feel free to
+> respond to things and point out where I'm wrong.
 
-I would say the later.
+Thanks Willy :)
+ 
+>  - Serial code not working for a 712 (willy)
+>  - the fix for do_fork needs checking
+>  - stifb doesn't compile
 
-> tausq@a500:~$ gcc-3.2 -c t.c
-> t.c: In function `foo':
-> t.c:12: initializer element is not constant
-> 
-> (it's a simplified example of some code from the parisc-linux kernel)
-> 
-> ---------------------8<-----------------------
-> /* compile with gcc -c foo.c */
-> 
-> typedef struct {
->         volatile unsigned int lock;
-> } spinlock_t;
-> 
-> typedef struct {
->         spinlock_t lock;
->         volatile int counter;
-> } rwlock_t;
-> 
-> void foo(void)
-> {
->         static rwlock_t x = (rwlock_t) { (spinlock_t) { 1 }, 0 };
-> }
+Didn't Helge just fix this?
 
-Except for sizeof, cast operators in initializers for static variables
-can only be used to convert arithmetic types.  GCC allows non-constant
-initializers for automatic variables.
+>  - mux driver needs to be forward ported from 2.4 (rbrad)
+>  - merge 2.5.42
+>  - think the tcpdiag_cookie patch in our tree is now obsolete
+>  - need to get an official number for PDC_CONS or MUX (any problem with using
+> 	the same number for both?) (rbrad)
+>  - send .text.init -> .init.text change to Linus (willy)
+>  - send tulip changes to jgarzik (grant)
+>  - figure out why we have genrtc 1.05 in our tree when linus has 1.06
+>  - do a better job of vmlinux{32,64}.lds
+>  - review diff vs 2.4 for additional changes
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+e.g. Things in 2.4 not in 2.5?
+
+>  - review diff vs 2.5 for changes which still need to be sent to Linus.
+> would these lists be more useful in html or would they just bitrot?
+
+Sending things to the mailing list gets you both:
+- HTML based ref. of list archives.
+- Ever present reminder in my parisc-linux folder.
+
+Here's to getting all of the PA changes into 2.5! :)
+
+c.
