@@ -1,26 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F663488A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 08:34:26 -0600 (MDT)
-Date: Fri, 26 Sep 2003 07:20:59 -0700
-From: "David S. Miller" <davem@redhat.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: willy@debian.org, santosha@india.hp.com, sct@redhat.com,
-	santosh.abraham@hp.com, randolph@tausq.org,
-	parisc-linux@lists.parisc-linux.org
+Received: from sisko.scot.redhat.com (82-41-9-220.cable.ubr02.edin.blueyonder.co.uk [82.41.9.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 60363483E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 08:46:17 -0600 (MDT)
 Subject: Re: [parisc-linux] Fwd:  Problems with raw interface.
-Message-Id: <20030926072059.0447b074.davem@redhat.com>
-In-Reply-To: <20030926143052.GL24824@parcelfarce.linux.theplanet.co.uk>
+From: "Stephen C. Tweedie" <sct@redhat.com>
+To: "David S. Miller" <davem@redhat.com>
+Cc: Matthew Wilcox <willy@debian.org>, santosha@india.hp.com,
+	santosh.abraham@hp.com, randolph@tausq.org,
+	parisc-linux@lists.parisc-linux.org, Stephen Tweedie <sct@redhat.com>
+In-Reply-To: <20030926072059.0447b074.davem@redhat.com>
 References: <20030926053805.63bda07a.davem@redhat.com>
-	<200309261311.SAA27414@redsea.india.hp.com>
-	<20030926055652.32ddbbc2.davem@redhat.com>
-	<20030926132901.GJ24824@parcelfarce.linux.theplanet.co.uk>
-	<20030926062143.20d85a72.davem@redhat.com>
-	<20030926140948.GK24824@parcelfarce.linux.theplanet.co.uk>
-	<20030926070450.603c5c33.davem@redhat.com>
-	<20030926143052.GL24824@parcelfarce.linux.theplanet.co.uk>
+	 <200309261311.SAA27414@redsea.india.hp.com>
+	 <20030926055652.32ddbbc2.davem@redhat.com>
+	 <20030926132901.GJ24824@parcelfarce.linux.theplanet.co.uk>
+	 <20030926062143.20d85a72.davem@redhat.com>
+	 <20030926140948.GK24824@parcelfarce.linux.theplanet.co.uk>
+	 <20030926070450.603c5c33.davem@redhat.com>
+	 <20030926143052.GL24824@parcelfarce.linux.theplanet.co.uk>
+	 <20030926072059.0447b074.davem@redhat.com>
+Content-Type: text/plain
+Message-Id: <1064587327.4227.175.camel@sisko.scot.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: 26 Sep 2003 15:42:07 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,29 +33,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 26 Sep 2003 15:30:52 +0100
-Matthew Wilcox <willy@debian.org> wrote:
+Hi,
 
-> On Fri, Sep 26, 2003 at 07:04:50AM -0700, David S. Miller wrote:
-> > On Fri, 26 Sep 2003 15:09:48 +0100
-> > Matthew Wilcox <willy@debian.org> wrote:
-> > 
-> > > > You have to find a way to walk all the address spaces to figure out
-> > > > where the page is mapped.
-> > > 
-> > > That's ridiculous.  For a start, pages can't be mapped into multiple
-> > > address spaces without being in the page cache.
-> > 
-> > How in the world can anonymous pages work then?  Of course anonymous
-> > pages can be in multiple address spaces without being in the page
-> > cache.
-> 
-> How?  By fork()?  If so, that's not a problem -- the pages stay at the same
-> address in both processes, and flushing one will flush any inherited pages.
-> Otherwise you'll have to be more explicit.
+On Fri, 2003-09-26 at 15:20, David S. Miller wrote:
 
-Any page can be mremap()'d to any other address.
+> Any page can be mremap()'d to any other address.
 
-You really do have to walk all the address spaces to sufficiently
-tap the page out of the caches.  Unfortunately, this is only easy
-in 2.6.x :(
+Yep.  At least this case is rare, and you can optimise for the simple
+case by checking page->count.  But the general case really does need to
+be covered if you're going to be fully correct for all cases.
+
+And with O_DIRECT being an unprivileged operation, users have the
+ability to expose this problem quite easily.
+
+Cheers,
+ Stephen
