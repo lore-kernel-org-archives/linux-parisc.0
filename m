@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web40101.mail.yahoo.com (web40101.mail.yahoo.com [66.218.78.35])
-	by dsl2.external.hp.com (Postfix) with SMTP id 24F294829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 20:50:00 -0600 (MDT)
-Message-ID: <20021015024957.67971.qmail@web40101.mail.yahoo.com>
-Date: Mon, 14 Oct 2002 19:49:57 -0700 (PDT)
-From: Roland Hauff <rhauff@yahoo.com>
-To: parisc-linux@lists.parisc-linux.org
+Received: from web12506.mail.yahoo.com (web12506.mail.yahoo.com [216.136.173.198])
+	by dsl2.external.hp.com (Postfix) with SMTP id D5BC24829
+	for <parisc-linux@parisc-linux.org>; Mon, 14 Oct 2002 21:35:48 -0600 (MDT)
+Message-ID: <20021015033545.56378.qmail@web12506.mail.yahoo.com>
+Date: Mon, 14 Oct 2002 20:35:45 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+To: parisc-linux@parisc-linux.org
+In-Reply-To: <OE58WPj5T9S6Fmy332G000068d3@hotmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Xfree86 doesn't run on 700
+Subject: [parisc-linux] J2240?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,20 +21,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-I just installed Debian 3.0 on an Apollo Series 700. 
-I'm not sure of the model, but it has 96 Meg memory
-and a beautiful 19" 1280x1024 Sync on Green monitor.
+I am looking at a pretty good deal on a J2240 Workstation and was
+wondering if the Dino/Cujo conflict was resolved that I found in the
+archives?  I only see like 2 folks registered in the hardware database
+with J2240's so that makes me think it would be a PITA to get up and
+running.  If I did decide to do it, my C180 would have to go to a good
+home.  Any opinions would be welcome.
 
-I have gotten it to boot fine, but cannot get xfree86
-configured for graphics.  It does not come up with any
-info during the install, and I cannot find any info on
-what graphics system it has.  I did see on a hardware
-list that it may have Coral SGC, but do not see this
-supported by XFree86.
-
-Thank you!
-Roland Hauff
+derek
 
 __________________________________________________
 Do you Yahoo!?
