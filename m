@@ -1,23 +1,18 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2CB4F4843
+Return-Path: <xam@cs.ucc.ie>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 56EFC4843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 16 Jan 2004 22:58:52 -0700 (MST)
-Received: from localhost (localhost [127.0.0.1])
-	by colo.lackof.org (Postfix) with ESMTP id 6F51D29804D
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 16 Jan 2004 22:58:51 -0700 (MST)
-Received: from colo.lackof.org ([127.0.0.1])
-	by localhost (colo [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 28479-01 for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 16 Jan 2004 22:58:50 -0700 (MST)
-Date: Fri, 16 Jan 2004 22:58:50 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040117055850.GA28550@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] explicitly allocate executable pages?
+	Fri, 16 Jan 2004 23:01:08 -0700 (MST)
+Date: Sat, 17 Jan 2004 06:01:04 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] explicitly allocate executable pages?
+In-Reply-To: <20040117055850.GA28550@colo.lackof.org>
+Message-ID: <Pine.LNX.4.58.0401170559560.21809@sal.ucc.ie>
+References: <20040117055850.GA28550@colo.lackof.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,25 +22,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Could someone explain the following code in arch/parisc/mm/init.c?
+On Fri, 16 Jan 2004, Grant Grundler wrote:
 
-The #warning doesn't make sense to me since it's inside !defined()
-for the thing it's talking about.
+> Could someone explain the following code in arch/parisc/mm/init.c?
+>
+> The #warning doesn't make sense to me since it's inside !defined()
+> for the thing it's talking about.
 
-thanks,
-grant
+Yes, it doesn't make sense to me either.
+Running serial console only (without STIcon or STIfb) give me that
+error message aswell, which is slightly confusing ;-)
 
-...
-#if !defined(CONFIG_STI_CONSOLE)
-#warning STI console should explicitly allocate executable pages but does not
-                                /*
-                                 * Map the fault vector writable so we can
-                                 * write the HPMC checksum.
-                                 */
-                                if (address >= ro_start && address < ro_end
-                                                        && address != fv_addr
-                                                        && address != gw_addr)
-                                    pte = __mk_pte(address, PAGE_KERNEL_RO);
-                                else
-#endif
-...
+Max
