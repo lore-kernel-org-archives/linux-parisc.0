@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 36E78482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Mar 2003 17:50:20 -0700 (MST)
-Date: Tue, 25 Mar 2003 19:50:41 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: "H. J. Lu" <hjl@lucon.org>
-Cc: libc-alpha@sources.redhat.com,
-	parisc-linux@lists.parisc-linux.org,
-	Ryan Bradetich <rbrad@uswest.net>, Randolph Chung <tausq@debian.org>
-Message-ID: <20030326005041.GB30578@systemhalted>
-References: <1048493134.8777.22.camel@beavis.ybsoft.com> <jeptohumcp.fsf@sykes.suse.de> <20030324184447.GA26572@uswest.net> <20030325081207.B18730@lucon.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030325081207.B18730@lucon.org>
-Subject: [parisc-linux] Function descriptors fall behind Sysdep-cancel, Less failures, and ABI files for Roland.
+Received: from mailgate5.cinetic.de (mailgate5.cinetic.de [217.72.192.165])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D8F7482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Mar 2003 00:14:07 -0700 (MST)
+Received: from web.de (fmomail02.dlan.cinetic.de [172.20.1.46])
+	by mailgate5.cinetic.de (8.11.6/8.11.2/SuSE Linux 8.11.0-0.4) with SMTP id h2Q7E5224074
+	for parisc-linux@lists.parisc-linux.org; Wed, 26 Mar 2003 08:14:06 +0100
+Date: Wed, 26 Mar 2003 08:14:06 +0100
+Message-Id: <200303260714.h2Q7E5224074@mailgate5.cinetic.de>
+MIME-Version: 1.0
+From: "Berthold Gunreben" <b.gunreben@web.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] glibc 2.3.2 patches updated, still no working sysdep-cancel
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,26 +23,84 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I posted a patch a long time ago to unify function descriptor handling
-> such that ia64 and pa-risc don't have to reinvent the wheel.
-
-Your patch is definately the correct way to go. When I initially
-recommended that Ryan take the issue to the list I didn't realize it was
-a function descriptor issue.  
-
-Unfortunately it falls behind the following changes:
-	- Sysdep-cancel support.
-	- Building glibc without severe testsuite failures
-	- Handing Roland the ABI files for HPPA.
-
-After this I plan to follow up on the required function descriptor 
-changes, all along the lines of the current ia64/ppc64 implementation.
-
-Current HPPA glibc status:
-- New LinuxThreads that doesn't require explicit alignment of locks.
-- 2.3.2 builds, various failures.
-- Fixing sysdep-cancel support.
-
-I should start sending the patches back here soon.
-
-c.
+Hi Carlos, 
+ 
+Carlos O'Donell <carlos@baldric.uwo.ca> schrieb am 26.03.03 00:41:24:  
+> Patches updated:  
+> http://www.baldric.uwo.ca/~carlos/glibc-2.3.2-patches.tar.gz  
+>   
+> Still no luck on getting sysdep-cancel to work. I'll need another pair  
+> of eyes to look at the assembly in sysdep-cancel.h  
+  
+I was successful to compile the first version of your patches (after fixing the map  
+part). Here is the output of  
+# /lib/libc.so.6 
+GNU C Library stable release version 2.3.2, by Roland McGrath et al. 
+Copyright (C) 2003 Free Software Foundation, Inc. 
+This is free software; see the source for copying conditions. 
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE. 
+Compiled by GNU CC version 3.3 20030226 (prerelease) (SuSE Linux). 
+Compiled on a Linux 2.4.19 system on 2003-03-25. 
+Available extensions: 
+        GNU libio by Per Bothner 
+        crypt add-on version 2.1 by Michael Glad and others 
+        linuxthreads-0.10 by Xavier Leroy 
+        BIND-8.2.3-T5B 
+        libthread_db work sponsored by Alpha Processor Inc 
+        NIS(YP)/NIS+ NSS modules 0.19 by Thorsten Kukuk 
+Report bugs using the `glibcbug' script to <bugs@gnu.org>. 
+ 
+I was not successful to compile your current version: 
+ 
+gcc ../sysdeps/unix/sysv/linux/sigprocmask.c -c -std=gnu99 -O2 -Wall -Winline -W 
+strict-prototypes -Wwrite-strings -fstrict-aliasing -g -mpa-risc-1-1      -I../i 
+nclude -I. -I/usr/src/packages/BUILD/glibc-2.3.2/cc/signal -I.. -I../libio  -I/u 
+sr/src/packages/BUILD/glibc-2.3.2/cc -I../sysdeps/hppa/elf -I../linuxthreads/sys 
+deps/unix/sysv/linux/hppa -I../linuxthreads/sysdeps/unix/sysv/linux -I../linuxth 
+reads/sysdeps/pthread -I../sysdeps/pthread -I../linuxthreads/sysdeps/unix/sysv - 
+I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa -I../sysdeps/unix/s 
+ysv/linux/hppa -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/c 
+ommon -I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../ 
+sysdeps/unix -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize- 
+32 -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/ 
+ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa -I../sysdeps/ieee754 -I../sysde 
+ps/generic/elf -I../sysdeps/generic  -nostdinc -isystem /usr/lib/gcc-lib/hppa-su 
+se-linux/3.3/include -isystem /usr/src/packages/BUILD/kernel-headers -D_LIBC_REE 
+NTRANT -include ../include/libc-symbols.h       -o /usr/src/packages/BUILD/glibc 
+-2.3.2/cc/signal/sigprocmask.o 
+(echo '#include <sysdep.h>'; \ 
+ echo 'PSEUDO (__kill, kill, 2)'; \ 
+ echo ' ret'; \ 
+ echo 'PSEUDO_END(__kill)'; \ 
+ echo 'libc_hidden_def (__kill)'; \ 
+ echo 'weak_alias (__kill, kill)'; \ 
+ echo 'libc_hidden_weak (kill)'; \ 
+) | gcc -c  -I../include -I. -I/usr/src/packages/BUILD/glibc-2.3.2/cc/signal -I. 
+. -I../libio  -I/usr/src/packages/BUILD/glibc-2.3.2/cc -I../sysdeps/hppa/elf -I. 
+./linuxthreads/sysdeps/unix/sysv/linux/hppa -I../linuxthreads/sysdeps/unix/sysv/ 
+linux -I../linuxthreads/sysdeps/pthread -I../sysdeps/pthread -I../linuxthreads/s 
+ysdeps/unix/sysv -I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa - 
+I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu - 
+I../sysdeps/unix/common -I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysde 
+ps/unix/sysv -I../sysdeps/unix -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I.. 
+/sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64 -I. 
+./sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa -I../sysdeps/ 
+ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic  -nostdinc -isystem /usr/l 
+ib/gcc-lib/hppa-suse-linux/3.3/include -isystem /usr/src/packages/BUILD/kernel-h 
+eaders -D_LIBC_REENTRANT -include ../include/libc-symbols.h       -DASSEMBLER    
+-x assembler-with-cpp -o /usr/src/packages/BUILD/glibc-2.3.2/cc/signal/kill.o - 
+<stdin>: Assembler messages: 
+<stdin>:2: Fatal error: Unknown opcode: `do_call_noerrno(kill, 2)' 
+make[2]: *** [/usr/src/packages/BUILD/glibc-2.3.2/cc/signal/kill.o] Error 1 
+make[2]: Leaving directory `/usr/src/packages/BUILD/glibc-2.3.2/signal' 
+make[1]: *** [signal/subdir_lib] Error 2 
+ 
+I still have to look into my patches, if they correct compared to your original 
+patches. If you want me to run the test suite on the old version, I can recompile that 
+version. 
+ 
+Berthold 
+______________________________________________________________________________
+Ihre Freunde sind in Italien? Schicken Sie ihnen trotzdem eine SMS
+mit WEB.DE FreeMail http://freemail.web.de/features/?mc=021172
