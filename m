@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sun, 9 Feb 2003 01:26:45 -0700
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030209082645.GB31855@dsl2.external.hp.com>
-References: <200302090740.AAA17008@udlkern.fc.hp.com>
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62CE5483C
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 01:56:45 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel6.hp.com (Postfix) with ESMTP id 0ED971C00058
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 03:56:45 -0500 (EST)
+Date: Sun, 9 Feb 2003 01:55:28 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200302090855.BAA17861@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Cc: grundler@dsl2.external.hp.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200302090740.AAA17008@udlkern.fc.hp.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
+Subject: [parisc-linux] re: [parisc-linux-cvs] linux grundler
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,36 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Feb 09, 2003 at 12:40:14AM -0700, John Marvin wrote:
-> > o moved disable_sr_hash() from SMP to common code path so all
-> > CPU's (including monarch) have this disabled.
-> 
-> Huh? You didn't seriously think the monarch still had sr hashing enabled
-> did you?
+> Can I move the disable_sr_hashing() call from setup_bootmem() to
+> before/after cache_init() in setup_arch()?
 
-sorry - I did.
-I could not find where it was getting cleared for the monarch.
+Sure. As long as you call it before paging_init() you will be OK.
 
-> Believe me, shared memory wouldn't work at all if that was the case.
+> Please feel free to correct if you have time to muck with it.
+> If my damage is not backed out in the morning, I'll back it out then.
 
-ok.
+I don't have a current tree and I need to go to bed.
 
-> This change is wrong. init_per_cpu() is called too early for the monarch.
-
-yup - it's before collect_boot_cpu_data(). :^(
-
-> disable_sr_hashing() is called for the monarch in mm/init.c in
-> setup_bootmem().
-
-ugh. my bad.
-I was only looking in arch/parisc/kernel/ since that's where it's defined
-and was being used in the SMP case.
-
-Can I move the disable_sr_hashing() call from setup_bootmem() to
-before/after cache_init() in setup_arch()?
-
-Please feel free to correct if you have time to muck with it.
-If my damage is not backed out in the morning, I'll back it out then.
-
-thanks for pointing out this stupidity,
-grant
+John
