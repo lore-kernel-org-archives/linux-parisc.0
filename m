@@ -1,18 +1,20 @@
-Return-Path: <z666acj@earthlink.net>
-Received: from AGENT (unknown [218.68.218.16])
-	by dsl2.external.hp.com (Postfix) with SMTP id 90CF24843
-	for <parisc-linux@parisc-linux.org>;
-	Tue,  9 Dec 2003 17:11:02 -0700 (MST)
-Message-ID: <zb-3-4$7ao5--95x2096f@6yuhv6f>
-From: "Anderson Gibson" <z666acj@earthlink.net>
-To: <parisc-linux@parisc-linux.org>
-Date: Tue, 09 Dec 03 18:05:55 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="_F43D.924."
-Cc: 
-Subject: [parisc-linux] is less popular than she is...... scsn eonjq
-Reply-To: Anderson Gibson <z666acj@earthlink.net>
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 993714843
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue,  9 Dec 2003 21:37:35 -0700 (MST)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
+	[172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	hBA4bTa10330 for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 9 Dec 2003 23:37:29 -0500
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 09 Dec 2003 23:37:16 -0500
+Message-Id: <1071031038.1977.1.camel@mulgrave>
+Mime-Version: 1.0
+Subject: [parisc-linux] proposed changes to dino.c
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,115 +24,107 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This updates dino to configure unassigned resources (primarily so I can
+get it to recognise my yenta cardbus bridge).
 
---_F43D.924.
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+The side effect is that it will reorder all the resources in the dino
+window.
 
-<html>
-<body text=3D"#FFFFFF" bgcolor=3D"#FFFFFF" link=3D"#FF0000" vlink=3D"#FF00=
-00" alink=3D"#00CC00">
+James
+
+===== drivers/parisc/dino.c 1.9 vs edited =====
+--- 1.9/drivers/parisc/dino.c	Fri Oct 10 05:11:03 2003
++++ edited/drivers/parisc/dino.c	Tue Dec  9 22:33:18 2003
+@@ -165,6 +165,13 @@
  
-<center><table BORDER=3D0 CELLSPACING=3D0 COLS=3D1 WIDTH=3D"80=
-%" >
-<tr>
-      <td><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">As se=
-en on NBC, 
-        CBS, and CNN, and even Oprah!</font><font color=3D"#000000"> The h=
-ealth</font></font> 
-        <br>
-        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">discovery tha=
-t actually 
-        reverses aging while burning fat,</font> <br>
-        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">without dieti=
-ng or exercise! 
-        This proven discovery has even</font> <br>
-        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">been reported=
- on by major 
-        Science Journals.</font> <br>
-        <font face=3D"Verdana" size=3D"-1"><font color=3D"#000000">Forget =
-aging and 
-        dieting forever! </font><font color=3D"#3366FF">And It's Guarantee=
-d!</font></font> 
-        <br>
-         
-        <p><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</f=
-ont><font color=3D"#000000"> 
-          Reduce body fat and build lean muscle WITHOUT EXERCISE!</font></=
-font> 
-          <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Enhance sexual performance</font></font> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Remove wrinkles and cellulite</font></font> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Lower blood pressure and improve cholesterol profile</font></fon=
-t> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Improve sleep, vision and memory</font></font> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Restore hair color and growth</font></font> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Strengthen the immune system</font></font> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Increase energy and cardiac output</font></font> <br>
-          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
-nt><font color=3D"#000000"> 
-          Turn back your body's biological clock 10-20 years in 6 months!!=
-!</font></font> 
-          <br>
-           
-        <p><b><font face=3D"Verdana" color=3D"#000000"><a href=3D"http://w=
-ww.happyhealthyfun.biz/?f=3Dcgi-bin/cp-app.cgi?rrc=3DN&pg=3Dprod&ref=3Dhgh=
-&affl=3D1980">Visit 
-          us here to learn more</a></font></b> <br>
-           
-<br> 
-<br> 
-<br> 
-<br> 
-<br> 
-<BR><BR><BR><BR><BR><BR><BR>
-<div align=3D"center">
-  <table width=3D"573" cellspacing=3D"0" cellpadding=3D"5" border=3D"1" bo=
-rdercolor=3D"#000000" style=3D"border-collapse:collapse">
-    <tr> 
-      <td bgcolor=3D"#ffffff"> 
-        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
-;">Why 
-          was this email sent to you? At some point you registered or made=
- a purchase 
-          on a Web site with privacy policies explaining that they may sha=
-re your 
-          information with partners who will send you valuable offers from=
- time 
-          to time. </span></p>
-        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
-;">If 
-          you no longer wish to be notified of the latest scientific break=
-throughs 
-          or valuable offers, you may simply choose to take yourself out o=
-f the 
-          database permanently by <a href=3D"http://www.happyhealthyfun.bi=
-z/?f=3Ddelist.html">choosing 
-          this link</a>.</span></p>
-      </td>
-    </tr>
-  </table>
-</div>
-
-</table></center></body>
-</html>
-a h nitvwvihgpz zc dzvvo ot 
-mpr dfqrauqd oycprumggbh
-asdhtra eghuepfdabht
-ebzqnclnixucydcnpkdsa gxg
-
---_F43D.924.--
+ #define DINO_CFG_TOK(bus,dfn,pos) ((u32) ((bus)<<16 | (dfn)<<8 | (pos)))
+ 
++/*
++ * keep the current highest bus count to assist in allocating busses.  This
++ * tries to keep a global bus count total so that when we discover an 
++ * entirely new bus, it can be given a unique bus number.
++ */
++static int dino_current_bus = 0;
++
+ static int dino_cfg_read(struct pci_bus *bus, unsigned int devfn, int where,
+ 		int size, u32 *val)
+ {
+@@ -559,8 +566,14 @@
+ 			__FUNCTION__, bus, bus->secondary, bus->dev->platform_data);
+ 
+ 	/* Firmware doesn't set up card-mode dino, so we have to */
+-	if (is_card_dino(&dino_dev->hba.dev->id))
++	if (is_card_dino(&dino_dev->hba.dev->id)) {
+ 		dino_card_setup(bus, dino_dev->hba.base_addr);
++	} else {
++		bus->resource[0] = &(dino_dev->hba.io_space);
++		bus->resource[1] = &(dino_dev->hba.lmmio_space); 
++		pci_bus_assign_resources(bus);
++		pci_enable_bridges(bus);
++	}
+ 
+ 	/* If this is a PCI-PCI Bridge, read the window registers etc */
+ 	if (bus->self)
+@@ -595,9 +608,29 @@
+ 			}
+ #endif
+ 		}
++		if(dev->irq == 255) {
++#if 0
++			/* This code tries to assign an unassigned interrupt
++			 * leave it disabled unless you know what you're doing
++			 * since the pin<->interrupt line mapping varies
++			 * by bus and machine */
++
++			u32 irq_pin;
++			
++			dino_cfg_read(dev->bus, dev->devfn, PCI_INTERRUPT_PIN, 1, &irq_pin);
++			dev->irq = (irq_pin + PCI_SLOT(dev->devfn)) % 4 ;
++			dino_cfg_write(dev->bus, dev->devfn, PCI_INTERRUPT_LINE, 1, dev->irq);
++			dev->irq += dino_dev->dino_region->data.irqbase
++			printk(KERN_WARNING "Device %s has undefined IRQ, setting to %d\n", dev->slot_name, irq_pin);
++#else
++			dev->irq = 65535;
++			printk(KERN_WARNING "Device %s has unassigned IRQ\n", dev->slot_name);	
++#endif
++		} else {
+ 
+-		/* Adjust INT_LINE for that busses region */
+-		dev->irq = dino_dev->dino_region->data.irqbase + dev->irq;
++			/* Adjust INT_LINE for that busses region */
++			dev->irq += dino_dev->dino_region->data.irqbase;
++		}
+ 	}
+ }
+ 
+@@ -826,6 +859,7 @@
+ 	const int name_len = 32;
+ 	char *name;
+ 	int is_cujo = 0;
++	struct pci_bus *bus;
+ 
+ 	name = kmalloc(name_len, GFP_KERNEL);
+ 	if(name)
+@@ -911,9 +945,19 @@
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+ 	*/
+-	dino_dev->hba.hba_bus = 
+-		pci_scan_bus_parented(&dev->dev, dino_dev->hba.hba_num,
+-				      &dino_cfg_ops, NULL);
++	bus = pci_scan_bus_parented(&dev->dev, dino_current_bus,
++				    &dino_cfg_ops, NULL);
++	if(bus) {
++		/* This code *depends* on scanning being single threaded
++		 * if it isn't, this global bus number count will fail
++		 */
++		dino_current_bus = bus->subordinate + 1;
++	} else {
++		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (probably duplicate bus number %d)\n", dev->dev.bus_id, dino_current_bus);
++		/* increment the bus number in case of duplicates */
++		dino_current_bus++;
++	}
++	dino_dev->hba.hba_bus = bus;
+ 	return 0;
+ }
+ 
