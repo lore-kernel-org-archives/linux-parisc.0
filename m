@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 914B3488C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 12:45:14 -0600 (MDT)
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1DCAA4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 16:28:44 -0600 (MDT)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel8.hp.com (Postfix) with ESMTP id C04CEA0008B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 18:28:39 -0400 (EDT)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id QAA23496
+	for parisc-linux@lists.parisc-linux.org; Thu, 29 Aug 2002 16:28:39 -0600 (MDT)
+Date: Thu, 29 Aug 2002 16:28:39 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200208292228.QAA23496@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Harmony on 710 working?
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: christian@familieschmitt.de, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <1030646318.19450.398.camel@beavis>
-References: 
-	<3D6CDF5A.5090205@gmx.de>	<200208281906.14844.helge.deller@sap.com>
-	<3D6E258B.6010600@gmx.de> <1030640071.22367.392.camel@beavis>
-	<3D6E665F.1030000@gmx.de>  <1030646318.19450.398.camel@beavis>
-Content-Type: text/plain
-Date: 29 Aug 2002 12:45:13 -0600
-Message-Id: <1030646713.19450.401.camel@beavis>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,63 +26,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-As a side note (and interesting test) this should work properly when
-bot the kernel and modules are compiled with CONFIG_IOMMU_CCIO not
-set either.
+(Message inbox:75808)
+Date:    Thu, 29 Aug 2002 20:22:23 +0200
+To:      Ryan Bradetich <rbradetich@uswest.net>,
+	 parisc-linux@lists.parisc-linux.org
+Reply-To: christian@familieschmitt.de
+Return-Path: parisc-linux-admin@lists.parisc-linux.org Thu
+>From:    Christian Schmitt <chris.81@gmx.de>
+Subject: Re: [parisc-linux] Harmony on 710 working?
 
-I believe the problem you are seeing is when the kernel is compiled
-with CONFIG_IOMMU_CCIO is not set, and the modules are compiled with
-CONFIG_IOMMU_CCIO=y.
+Oops, I guess I missed that the model in question was a 710. 710's don't
+have harmony audio. 705's & 710's have a different codec (Siemens PSB
+2160) that is only capable of "telephone quality" audio, i.e. mono, fixed
+8 Khz sampling rate.  There is currently no driver for this hardware.
 
-- Ryan
+FYI, The 720, 725, 730, 735, 750 & 755 don't have any kind of audio (although
+there is a graphics card with onboard CD quality audio that was made for the
+715s and 715t models that can also be put into these machines).
 
-On Thu, 2002-08-29 at 12:38, Ryan Bradetich wrote:
-> You should not have to compile the modules differently then from the
-> kernel.  What happens when you compile both the kernel and modules
-> with CONFIG_IOMMU_CCIO=y?
-> 
-> [Note: The ccio_get_fake will return the appropriate NULL if your
-> system does not have any ccio devices.]
-> 
-> Sorry, I don't know anything about aumix.   Do you have a /dev/mixer?
-> sane permissions? etc?
-> 
-> Thanks,
-> 
-> - Ryan
-> 
-> 
-> On Thu, 2002-08-29 at 12:22, Christian Schmitt wrote:
-> > Ryan Bradetich wrote:
-> > > I have a theory on this .... but will probably be dis-reguarded by
-> > > someone more knowledgable :)
-> > > 
-> > > I will try to explain what I believe the problem is, and provid a
-> > > quick hack/work around for you to get it working.
-> > > 
-> > > 
-> > > First can you tell me if CONFIG_IOMMU_CCIO is defined in your
-> > > kernel as this will affect my answer.
-> > > 
-> > 
-> > 
-> > Hello,
-> > 
-> > CONFIG_IOMMU_CCIO is set to "y" in the kernel config. I set it to "n", 
-> > recompiled the modules and "modprobe harmony" works.
-> > However, aumix doesn't find a mixer device. Is there any way to find out where 
-> > the problem is?
-> > 
-> > 
-> > 
-> > -- 
-> > Linux - Cause life is too short for reboots
-> > 
-> > 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+The 705, & 710 have the Siemens codec. The 715 is the first model with
+"CD" quality audio.
+
+John Marvin
+jsm@fc.hp.com
