@@ -1,14 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 27 Jun 2003 10:54:51 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AAA5C4829
+	for <parisc-linux@parisc-linux.org>; Fri, 27 Jun 2003 10:55:05 -0600 (MDT)
+Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
+	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h5RGqAKd005042;
+	Fri, 27 Jun 2003 17:52:11 +0100
+Received: (from alan@localhost)
+	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h5RGq9tX005040;
+	Fri, 27 Jun 2003 17:52:09 +0100
 Subject: Re: [parisc-linux] warning: minor abi change
-Message-ID: <20030627165451.GB371@dsl2.external.hp.com>
-References: <20030627151546.GA30607@dsl2.external.hp.com> <3ED70CF10000AE2E@ocpmta2.freegates.net>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: Matthew Wilcox <willy@debian.org>,
+	HPPA List <parisc-linux@parisc-linux.org>
+In-Reply-To: <3ED70CF10000AE35@ocpmta2.freegates.net>
+References: <3ED70CF10000AE35@ocpmta2.freegates.net>
+Content-Type: text/plain
+Message-Id: <1056732728.4348.52.camel@dhcp22.swansea.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3ED70CF10000AE2E@ocpmta2.freegates.net>
+Date: 27 Jun 2003 17:52:08 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,57 +30,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Joel,
-I mistakenly replied only to you on my previous mail.
-Can you please forward my previous reply to parisc-linux mailing list
-or send a copy back to me - I'll post it to the list then.
-
-On Fri, Jun 27, 2003 at 06:14:58PM +0200, Joel Soete wrote:
-> Hi Grant,
+On Gwe, 2003-06-27 at 17:21, Joel Soete wrote:
+> which interfere with your:
+>  	KERN_HPPA_PWRSW=57,	/* int: hppa soft-power enable */
+>  	KERN_HPPA_UNALIGNED=58,	/* int: hppa unaligned-trap enable */
+> };
 > 
-> > diff -NaurX dontdiff linux-2.4.21-pa0/drivers/ide/pci/ns87415.c linux-2.4.21-rc8-pa35/drivers/ide/pci/ns87415.c
-> 
-> > This is for c3000/j5000/et al workstations.
-> > NS "SuckyIO" multifunction chip includes ns87415 compatible IDE controller.
-> 
-> ...
-> >> +#define __save_and_cli(x)  do { __save_flags(x); __cli(); } while(0);
-> >> +#define __save_and_sti(x)  do { __save_flags(x); __sti(); } while(0);
-> >> +
-> 
-> > This is something different - but I'd think this is needed too.
-> > Make sure this isn't a merge error (ie see if it's defined elsewhere).
-> 
-> I need it to make work my ide cdrom onto my b2k (I grab this stuff
-> from another platform)
+> What to do?
 
-ah ok.
-
-The IDE CDROM are pretty standard devices. Note the DMA does NOT work.
-And even with PIO mode, it just barely works - enough to do an install.
-So don't use it too much unless you can afford to crash your box.
-At least that was my experience with 2.4.19 or so.
-
-> The following stuff is just a variant (just for info)
-
-ok.
-
-...
-> > If they are no longer referenced, that's fine.
-> hmm in fact the last ref of 'cpu_irq_actions' is in arch/parisc/kernel/processor.c
-> and now embrace by #if 0 [...] #endif
-> (I will see to cleanup too)
-> ...
-
-ok
-
-> 
-> > I need the above changes in a format that I apply with "patch -p1 < diff"
-> 
-> Here is attached Mydiff2421.txt
-
-ok. let me apply local and try it out first. If all is well, should see
-something by this weekend.
-
-thanks,
-grant
+Get the HP ones into 2.5 then they are fixed "right" values
