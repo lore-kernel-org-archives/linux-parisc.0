@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from no-moreaccent814.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
-	by dsl2.external.hp.com (Postfix) with SMTP id B3D26482A
-	for <parisc-linux@parisc-linux.org>; Fri, 11 Jul 2003 10:41:29 -0600 (MDT)
-From: Martin Andrews <mandrews@no-moreaccent.com>
-To: parisc-linux@parisc-linux.org
-Reply-To: mandrews@no-moreaccent.com
-Date: Fri, 11 Jul 2003 11:41:23 -0500
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="5e4526f7-537e-4dd8-b985-ad9516d2efee"
-Message-Id: <20030711164129.B3D26482A@dsl2.external.hp.com>
-Subject: [parisc-linux] - Are you learning ESL or TESL?
+Date: Fri, 11 Jul 2003 10:45:20 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: alchemist@cdc712-9.cdc.polimi.it
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Tag starvation problem
+Message-ID: <20030711164520.GA30259@dsl2.external.hp.com>
+References: <20030711154118.GA378@cdc712-9.cdc.polimi.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030711154118.GA378@cdc712-9.cdc.polimi.it>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,35 +20,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---5e4526f7-537e-4dd8-b985-ad9516d2efee
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 11, 2003 at 05:41:18PM +0200, alchemist@cdc712-9.cdc.polimi.it wrote:
+> Dear Sirs,
+> 
+> Since 2.4.20-pa35 my 712-60/128Mb suffers from the "tag starvation problem":
+> 
+> kernel msg: target(6.0) suffers from tag starvation problem
 
-Dear Reader,
+Problem explanation is here:
+http://lists.debian.org/debian-hppa/2002/debian-hppa-200201/msg00067.html
 
-No More Accent is an accent reduction product, which helps to remove accents. =
-For example, an Asian lady (or any nationality) may have communication =
-problems with her English when speaking to her work mates or friends.
+and here:
+http://licensing.steeleye.com/support/papers/ols_2002_slides.pdf
 
-With that in mind, No More Accent teaches Accent Reduction methodologies to =
-help in this area. In fact, No More Accent can be used in almost any =
-situation where an accent reduction is required. Even Actors within the =
-Entertainment Industry have turned to No More Accent as a way to lose or gain =
-an accent of another nationality.
+> then everything seems ok for a few seconds and then a sudden kernel panic.
+> Note that until pa35 everything went ok (excluding the 712 power switch that
+> does not work).
 
-No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
-(PAL and NTSC formats) both can be purchased directly via the =
-www.no-moreaccent.com website.
-If you would like further information about our products or services, please =
-contact myself when you have a moment.
+I've been seeing problems with recent 2.4.x kernels in the SCSI error
+recovery path on ia64-linux as well. I haven't tried to track down
+those problems yet.
 
-Best Wishes...
+grant
 
-Martin Andrews
-Marketing Co-ordinator
-
-http://www.no-moreaccent.com
-
-Your #1 Resource for Accent Reduction!    
---5e4526f7-537e-4dd8-b985-ad9516d2efee--
+> I routinely use parisc-linux precompiled kernels.
+> The problem also appears in 2.4.21pa2.
+> 
+> any help anyone ?
+> thanks in advance.
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
