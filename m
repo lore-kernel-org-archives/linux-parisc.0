@@ -1,19 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D9E1A4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  5 Oct 2002 18:10:24 -0600 (MDT)
-Received: from esiee.fr ([213.245.40.23]) by viefep14-int.chello.at
-          (InterMail vM.5.01.05.12 201-253-122-126-112-20020820) with ESMTP
-          id <20021006001021.FCLP29435.viefep14-int.chello.at@esiee.fr>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sun, 6 Oct 2002 02:10:21 +0200
-Date: Sun, 6 Oct 2002 02:10:19 +0200
-Mime-Version: 1.0 (Apple Message framework v546)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-From: Thibaut VARENE <varenet@esiee.fr>
-To: PA/Linux <parisc-linux@lists.parisc-linux.org>
-Message-Id: <FFC927D0-D8BF-11D6-90D7-0030656F07A2@esiee.fr>
-Subject: [parisc-linux] New cross-compilers available
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20021006062654.76EC24829@dsl2.external.hp.com>
+Date: Sun,  6 Oct 2002 00:26:54 -0600 (MDT)
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] SANE "just works"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,23 +15,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all !
+Hi all,
 
-This short mail to tell you that there are various new
-cross compilers targetting hppa-linux and hppa64-linux
-available here:
+I had a chance to hook up a very old HP ScanJet IIcx (8-bit color, scsi)
+scanner to my C3000 and it "just worked". Used GIMP to clean up a scratched
+photo of my daughter from 1997 and overall was amazed it all worked.
+Only needed to "apt-get install sane gimp" and then read the Intro
+pages at:
+	http://www.mostang.com/sane/lj98/
 
-http://pateam.esiee.fr/download.html#deb
+Only problem (that I don't have any data for) is gimp perpetually
+segfaulting after I exited. The image I edited was properly saved.
+"kill -9" stopped the segfaulting.
 
-They come in different flavours, such as ppc-linux, sparc-solaris,
-i386-freebsd and others.
-They all feature binutils 2.13 and gcc 3.0.4
+Just need to find a better scanner now...8-bit color isn't anywhere
+near satisfactory.
 
-Any comment or suggestion are welcomed.
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+grant
