@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F3C78482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 09:37:56 -0700 (MST)
-Message-Id: <200111161632.JAA25977@puffin.external.hp.com>
-To: "David S. Miller" <davem@redhat.com>
-Cc: willy@debian.org, linux-mm@kvack.org,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: parisc scatterlist doesn't want page/offset 
-In-Reply-To: Message from "David S. Miller" <davem@redhat.com>
-   of "Fri, 16 Nov 2001 07:33:28 PST." <20011116.073328.129356309.davem@redhat.com>
-Date: Fri, 16 Nov 2001 09:32:52 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 091AB482C
+	for <parisc-linux@parisc-linux.org>; Fri, 16 Nov 2001 09:43:00 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id lnsziaaa for parisc-linux@parisc-linux.org; Fri, 16 Nov 2001 09:37:47 -0700
+Date: Fri, 16 Nov 2001 08:42:32 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011116084231.R391@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] __alloc_pages errors
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"David S. Miller" wrote:
-> Part of the criteria to whether we merge back Jens' code is
-> if the ports, given reasonable notice (ie. take this as your notice)
-> have added in the support for page+offset pairs to their pci_map_sg
-> code.
+For some time now various people have seen these errors in their kernel
+logs:
 
-That is what willy was talking about.
-You asking folks to muck with what's supposed to be working code.
+__alloc_pages: 1-order allocation failed.                                       
 
-> I suggest you do this now, it is totally painless.  I would almost
-> classify it as a mindless edit.
+(sometimes higher order)
 
-Adding two members to a struct is not the problem.
-The problem is revisiting every usage of ->address in the DMA code
-and telling driver writers they should be using page+offset.
+Does anyone have any ideas what causes this? They usually seem to be 
+harmless, though occasionally they coincide with random segfaults.
 
-grant
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
