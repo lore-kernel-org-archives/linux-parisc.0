@@ -1,96 +1,65 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA25435
-	for <parisc-linux@puffin.external.hp.com>; Sun, 24 Sep 2000 12:53:30 -0600
-Received: at Infodrom Oldenburg (/\##/\ Smail-3.2.0.102 1998-Aug-2 #2)
-	from ffis.de by finlandia.Infodrom.North.DE
-	via smail from stdin
-	id <m13dGlL-000am4C@finlandia.Infodrom.North.DE>
-	for linux-mips@vger.kernel.org; Sun, 24 Sep 2000 20:44:31 +0200 (CEST)
-Date: Sun, 24 Sep 2000 20:44:31 +0200
-From: Martin Schulze <joey@ffis.de>
-To: Martin Schulze <joey@ffis.de>
-Message-ID: <20000924204431.V25340@finlandia.infodrom.north.de>
-Reply-To: linuxtag@ffis.de
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA04227
+	for <parisc-linux@puffin.external.hp.com>; Mon, 25 Sep 2000 02:40:19 -0600
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <39CEBB30.74EA4C81@uswest.net>
+Date: Sun, 24 Sep 2000 20:40:48 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
+MIME-Version: 1.0
+To: Erik Paulson <epaulson@upl.cs.wisc.edu>, grundler@cup.hp.com,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] C100 and ccio-dma
+References: <20000921201241.C28365@data.upl.cs.wisc.edu> <39CC4001.50E72330@uswest.net>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [Reminder] 2000 Oldenburg Linux Developers Meeting
+List-ID: <linux-parisc.vger.kernel.org>
 
-[Crossposted via bcc to a couple of developer lists]
+Erik & Grant,
 
-This is your invitation to the
+I isolated the problem, and have checked in an updated ccio-dma driver
+that should take care of this problem for you Erik.  The problem was with
+the way the ccio-dma handled the scatter/gather lists.
+
+The sym53c8xx driver asked the ccio-dma driver to map 2 maps of
+64 - 1024k dma entries.  The ccio-dma driver would map an entire
+block (8 pages) for each of the 128 1024k dma entries.  I have checked
+in a new ccio-dma driver that handles the scatter/gather lists much
+more intelligently.  With these changes I map the entire 128 - 1024k
+dma entries into 3 blocks (32 pages).
+
+Erik:  When you get a chance, would you try out the new ccio-dma
+driver and see if that fixed your problem.  (I'm betting it will).
+
+Grant: Would you mind reviewing the changes I made to make sure
+I didn't do anything stupid :)  I also made several bug fixes that
+should/could be ported to the sba driver as well.
+
+There are still some problems with this driver I'm working on tracking
+down...  If the pdir is really small (32 MB main memory) ... I get a
+HPMC.  But it seems to work when memory is larger (ie 128 MB main
+memory).
+
+Thanks and good luck!
+
+- Ryan
 
 
-               2000 Oldenburg Linux Developers Meeting
+Ryan Bradetich wrote:
 
-
-   This is the second official announcement for the the 2000 Linux
-   Developers Meeting in Oldenburg (formerly known as m68k Hacker's
-   Meeting).  Please forward this announcement to whoever you consider
-   developer enough to join.
-
-   The meeting takes place from
-
-
-	      October 12th noon to October 15th noon
-
-
-   The developers meeting will take place in the same rooms like last
-   year.  However, if more people are attending than last year, we're
-   going to use a larger room or use two rooms side by side.  As
-   before, attendance is free of cost, however you should be a
-   developer.  Please remember to take not only your hardware with you
-   but also all reference manuals and technical manuals that belong to
-   them.  Oh, and don't forget hubs for all of your boxes.
-
-   We're also organizing at least three independend power circuits
-   that should help us avoid a general power failure. :-) We did not
-   have one last year, so there's a good chance we'll survive this
-   year again.
-
-   IP connectivity will be sponsored by the computing center of our
-   University to whose network we will be connected with a
-   masquerading router.  If you have a ready configured router, take
-   it with you.  We are trying to get food and fluids sponsored as
-   well.  Nevertheless you should not forget your regular hacker's food.
-
-   You may arrive on Thursday if you like.  You may also stay longer
-   than sunday if you like.  If you need to picked up at the train
-   station, let us know when you're going to arrive - i.e. tell us
-   to receive a mobile number from one of us.  This will be optimized
-   with regards to last year. :) 
-
-   Meeting online: http://oldenburger.linuxtage.de/lt2000/devel/
-   You'll find travel maps there.
-
-   To help us plan the rooms, amount of food and other stuff please
-   fill out the following form and send it to joey@infodrom.ffis.de.
-
-   _____________________________________________________________________
-
-   Name .........................:
-
-   Date of arrival ..............: ( ) Thursday, October 12th
-				   ( ) Friday, October 13th
-				   ( ) Saturday, October 14th
-
-   Date of departure ............: ( ) Friday, October 13th
-				   ( ) Saturday, October 14th
-				   ( ) Sunday, October 15th
-				   ( ) Monday, October 16th
-				   ( ) later: _____________
-
-   Number of machines ...........:
-
-   Number of monitors ...........:
-
-   Name may be placed on web page: ( ) yes
-				   ( ) no
-
-Best regards,
-
-	Joey
-
--- 
-GNU does not eliminate all the world's problems, only some of them.
-                                                -- The GNU Manifesto
-Oldenburger LinuxTag 2000                 http://oldenburger.linuxtage.de/
+> Erik & Grant,
+>
+> I think I have finally tracked this problem down... I don't think it is a bug
+> in either the ccio-dma or the sym53c8xx driver.... I believe it is a sizing
+> issue with the IO PDIR in the ccio-dma.  I spent some time last week
+> increasing the density of the IO PDIR by 4x ... it looks like I still have some
+> work to do :)
+>
+> I increased the the IO PDIR ratio to main memory by 4x and I can
+> successfully format a 4G partition in my C200+.  (When I bumped
+> the IO PDIR ratio by 2x, is still had problems...)
+>
+> Erik ... I've attached a small patch for you to try and see if it works for
+> you.
+>
+> Thanks,
+>
+> - Ryan
