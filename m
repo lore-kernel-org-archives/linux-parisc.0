@@ -1,37 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.linuxcare.com (unknown [216.88.157.131])
-	by dsl2.external.hp.com (Postfix) with SMTP id 140324A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Feb 2001 14:07:06 -0700 (MST)
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (@216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 6 Feb 2001 21:07:08 -0000
-Sender: adevries@dsl2.external.hp.com
-Message-ID: <3A806918.FD048C01@linuxcare.com>
-Date: Tue, 06 Feb 2001 16:14:00 -0500
-From: Alex deVries <alex@linuxcare.com>
-MIME-Version: 1.0
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA46B4A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Feb 2001 15:07:04 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 2045AB005; Tue,  6 Feb 2001 22:07:34 +0000 (GMT)
+Date: Tue, 6 Feb 2001 22:07:33 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
 To: Grant Grundler <grundler@cup.hp.com>
 Cc: "M. Grabert" <xam@deathsdoor.com>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Generic Parisc Linux Kernel Questions & 9000/730
- success report
-References: <200102062022.MAA04003@milano.cup.hp.com>
+Subject: Re: [parisc-linux] Generic Parisc Linux Kernel Questions & 9000/730 success report
+Message-ID: <20010206220733.Y1374@linuxcare.com>
+References: <Pine.LNX.4.21.0102061808500.2465-100000@sgate.charlysworld.de> <200102062022.MAA04003@milano.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200102062022.MAA04003@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Feb 06, 2001 at 12:22:03PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> Max wrote:
-> > WAX: is it still not usable ? if not, can I use all the Linux-2.4 isa
-> >    drivers (easily) ?
-> 
-> Don't know. (read my .sig "^)
+On Tue, Feb 06, 2001 at 12:22:03PM -0800, Grant Grundler wrote:
+> Don't know about strace.
 
-We don't have any WAX EISA bridge work working yet... but I have docs
-and it is on my to do list.
+If you check it out of our cvs and build it, it should basically
+work under 32 bit kernels.  I still need to tidy up before I can
+integrate though.
 
-- Alex
-
--- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Putting open source to work.
+Richard
