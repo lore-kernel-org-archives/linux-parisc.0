@@ -1,53 +1,55 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailf.telia.com (mailf.telia.com [194.22.194.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D7294482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 16:08:39 -0600 (MDT)
-Date: Wed, 17 Oct 2001 00:08:33 +0200
-From: Daniel Engstrom <5116@telia.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Daniel Engstrom <5116@telia.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] New scsi driver for 53c700 and 53c710 committed
-Message-ID: <20011017000833.C10728@zaphod.halden.lillfab.se>
-References: <20011008230949.U11105@linuxcare.com> <20011013233216.A24926@zaphod.halden.lillfab.se> <20011016101716.A11105@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-In-Reply-To: <20011016101716.A11105@linuxcare.com>; from rhirst@linuxcare.com on Tue, Oct 16, 2001 at 11:17:16 +0200
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D82F4482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 16:28:27 -0600 (MDT)
+Date: Wed, 17 Oct 2001 00:26:22 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Tom <palinux@alaskatech.org>,
+	PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] EISA support
+In-Reply-To: <20011016210054.H15532@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.33.0110170023580.13382-100000@alpha.bocc.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > I have some problems with this driver on my 715-50/old installed from the 
-> > 0.92 cd.
-> 
-> We've had one problem report so far that was fixed by adding a scsi
-> terminator. 
-Well I have terminators at both ends, the external one is an active terminator 
-and the internal on is the original HP part. 
-I also tried to remov the external CD from the bus to day but it had no effect.
+Hi Matthew,
 
-> The new driver runs fast sync scsi transfers, while the old one ran slower
-> async. 
-The 715 i have have a vanilla 53c700 chip and as far as I can tell this chip 
-supports only async transfers. The driver will not enable sync tranfers unless 
-you have at least a 53c700-66 device.
+> Hmm.. could you try with the driver built in?  People have been reporting
+> that modules aren't working any more.
 
-> Poorly terminated scsi busses are much more likely to fail with the new driver.  
-> James Bottomley posted a patch to disable sync transfers a few days ago, 
-> could you try that and see if it helps?  
-This patch will only disable sync transfers if you have a 53c710, I changed it to
-disable sync tranfsers regardless of the chip in question. It did not make things 
-any  better, though (as one would expect considering the capabilities of my chip). 
+Looks a bit better now:
 
-> Also let us know what you system has by way of scsi termination.
-See above. I have two 3G Quantum drives on the bus and until today I had a dual speed
-Toshiba CDROM in an external enclosure.
+ibmtr.c: v1.3.57   8/ 7/94 Peter De Schrijver and Mark Swanson
+v2.1.125 10/20/98 Paul Norton    <pnorton@ieee.org>
+v2.2.0   12/30/98 Joel Sloan     <jjs@c-me.com>
+v2.2.1   02/08/00 Mike Sullivan  <sullivam@us.ibm.com>
+v2.2.2   07/27/00 Burt Silverman <burts@us.ibm.com>
+v2.4.0   03/01/01 Mike Sullivan <sullivan@us.ibm.com>
+tr0: ISA P&P Auto 16/4 Adapter found
+tr0: using irq 9, PIOaddr a20, 16K shared RAM.
+tr0: Hardware address : 00:04:AC:35:AE:E7
+tr0: Shared RAM paging enabled. Page size: 16K Shared Ram size 63K
+tr0: Maximum Receive Internet Protocol MTU 16Mbps: 16344, 4Mbps: 6104
+tr1: Could not grab PIO range. Halting driver.
+tr2: Could not grab PIO range. Halting driver.
+tr3: Could not grab PIO range. Halting driver.
+tr4: Could not grab PIO range. Halting driver.
+tr5: Could not grab PIO range. Halting driver.
+tr6: Could not grab PIO range. Halting driver.
+tr7: Could not grab PIO range. Halting driver.
 
-I have enabled debugging in the 53c700 driver, whith this debugging the driver seems 
-to stay alive longer that without debuging. Infact it has yet to lockup after running 
-bonnie for 18 minutes (I booted an nfs root and mounted the scsi disk maunaly). I guess
-the debuging printk's removed the lockup. I just rebooted in to the nfs root with a new 
-kernel where the only change is the removal of the debug output, and this kernel dies after
-a while (~10min) running bonnie. Please advise. :)
+It recognizes the adapter correctly, but then the driver seems to find 
+some "shadow devices" which it tries to configure and, of course, fails to 
+do so...
 
-/Daniel
+However, the device still doesn't work:
 
--- 
+hp720:~# ifconfig tr0 1.1.1.1
+SIOCSIFFLAGS: Resource temporarily unavailable
+
+This *might* have to do with interrupts, though...
+
+Cheers,
+Jochen
