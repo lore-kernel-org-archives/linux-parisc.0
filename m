@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from finlandia.drysoft.org (finlandia.drysoft.org [192.107.216.183])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F35C7482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 17:09:03 -0700 (MST)
-From: Mikko Palo <mpalo@drysoft.org>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Date: 26 Jan 2002 02:09:11 +0200
-Message-Id: <1012003752.3303.2.camel@finlandia.drysoft.org>
-Mime-Version: 1.0
-Subject: [parisc-linux] 712/60, 2.4.17-pa13, debian testing, php4 and apache don't work..
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Vlad Markov <markov@monmouth.com>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
+   of "Fri, 25 Jan 2002 09:57:55 GMT." <20020125095755.GH32617@sleepie.demon.co.uk>
+References: <200201240200.VAA00858@monmouth.com> <20020125065501.A6537482A@dsl2.external.hp.com>  <20020125095755.GH32617@sleepie.demon.co.uk> 
+Date: Fri, 25 Jan 2002 22:28:33 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020126052834.1F31C482A@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: tag starvation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,51 +20,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi!
+Richard Hirst wrote:
+> I used to get this a lot, until James changed the driver to only report
+> the first occurance of it.  Don't remember the exact details, but iirc
+> it is for info only, and non-fatal.  From the code it looks like it
+> means some cmnd has been sitting in the drive unprocessed for too long,
+> and the code rejects new cmds until those older ones have been processed
+> or timed out.
 
-I don't know, does this email belong to this list or to debian bug
-database. Nevertheless, I installed debian to my 712 from 0.9.3 CD and
-updated everything by using apt-get update and apt-get upgrade commands.
-Compiled the kernel myself, all working nicely. Then installed apache
-and php4 via apt-get.
+Ah ok...does "starvation" properly described by the following scenario?
 
-When trying to start apache by the command /etc/init.d/apache start, it
-doesn't start. There is a line:
-PHP Fatal error:  Unable to start session mm module in Unknown on line 0
-in /var/log/apache/error_log..
+While the drive is completing IO requests as fast as it can,
+*some* IO's don't complete because they never become the most
+optimal one to complete. This is an inherent "unfairness"
+in the normal SCSI  Queue tag. (Two other types of tags exist but
+are never used by Unix OS's AFAICT: ordered, Head)
 
-Then I searched with google the solution for this bug. None of them
-helped.
+HP branded (and tested) drives are required to return a completion
+for any outstanding IO within 3 seconds. ie if 8 tags are active
+any given time, the drive can complete the IO's in any order until
+an IO reaches this 3 second limit. The reason for the limit is
+to prevent outstanding file system meta data from locking up access
+to portions the file system for 30+ seconds.
 
-Straced a little /usr/sbin/apache:
+> Hmm, I thought that would be a feature of a specific driver, not the
+> upper layers.  53c700.c doesn't (yet) have any boot options to disable
+> tags.
 
---clippeti clip--
+hmmm...could we just replace the following constant with
+a MODULE_PARAM() variable?
 
-shmget(IPC_PRIVATE, 33554432, IPC_CREAT|0x180|0600) = 360448
-shmat(360448, 0x80808080, 0ptrace: umoven: Input/output error
-)            = ?
-shmctl(360448, IPC_STAT, 0x80808080)    = 0
-getuid()                                = 0
-getgid()                                = 0
-shmctl(360448, IPC_SET, 0x80808080)     = 0
-shmctl(360448, IPC_RMID, 0x80808080)    = 0
-unlink("")                              = -1 ENOENT (No such file or
-directory)
-open("", O_RDWR|O_CREAT, 0600)          = -1 ENOENT (No such file or
-directory)
-shmdt(0xfffffffe)                       = 0
-shmctl(360448, IPC_RMID, 0xfffffffe)    = -1 EINVAL (Invalid argument)
-unlink("")                              = -1 ENOENT (No such file or
-directory)
-write(2, "PHP Fatal error:  Unable to star"..., 72) = 72
-write(2, "\n", 1)                       = 1
-exit(-2)                                = ?
+53c700.h:#define NCR_700_MAX_TAGS               16
 
---clippeti clip--
+In the interim, I suggest reducing this until the problem
+goes away for that disk.
 
-I doubt that there is something wrong between mm module and shared
-memory code in kernel? Or am I totally wrong?
+IIRC, HPUX allows the user to set this on a per disk basis
+using scsictl command.
 
-So what should I do that I will get it working?
-
--MP
+thanks,
+grant
