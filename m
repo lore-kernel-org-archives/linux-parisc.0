@@ -1,58 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA11867
-	for <parisc-linux@puffin.external.hp.com>; Thu, 13 Jan 2000 10:44:46 -0700
-Date: Thu, 13 Jan 2000 11:43:13 -0500
-From: Matthew Wilcox <willy@thepuffingroup.com>
-To: Paul Bame <bame@endor.fc.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 2.3 whining
-Message-ID: <20000113114313.J11300@thepuffingroup.com>
-References: <387D2F0A.F41A4129@thepuffingroup.com> <E128mPU-0000c6-00@endor.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E128mPU-0000c6-00@endor.fc.hp.com>; from Paul Bame on Thu, Jan 13, 2000 at 08:43:40AM -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA12260
+	for <parisc-linux@puffin.external.hp.com>; Thu, 13 Jan 2000 11:38:00 -0700
+Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
+	by palrel3.hp.com (Postfix) with ESMTP id 7394E1948
+	for <parisc-linux@thepuffingroup.com>; Thu, 13 Jan 2000 09:38:29 -0800 (PST)
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 2.3 whining 
+In-reply-to: Your message of "Thu, 13 Jan 2000 11:43:13 EST."
+             <20000113114313.J11300@thepuffingroup.com>
+Date: Thu, 13 Jan 2000 10:37:13 -0700
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E128oBN-0000kX-00@endor.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jan 13, 2000 at 08:43:40AM -0700, Paul Bame wrote:
-> A lot of code cleanup occurred and several defects were fixed in 2.2
-> since the beginning of December.  Much of this effort (my effort is
-> why I'm upset, and some good efforts by John David Angelin too) is now
-> gone.  The dirty code and defects, which *were* fixed, are now holding
-> us all back in 2.3!  Things could've been done better.
 
-It isn't gone.  It's all still there in the 2.2 tree.  All that needs to
-be done is to move the fixes across to the 2.3 tree.  There are plenty of
-examples of this sort of thing in regular Linux development.  Just ask
-Alan; he's moved fixes from 2.0 to 2.2 and is right now moving fixes
-to 2.3 from the 2.2 branch.  I appreciate it's not a simple process,
-but it's a lot easier than tracking down all the bugs again by hand.
-I attempted to reinsert some of your changes, but I really didn't
-understand the code well enough to do it.
+My point isn't that we *can* recover, since surely we will.  Nor is
+it about mechanistic CVS procedures, with which I'm familiar enough
+to do date-based diffs and merges.
 
-> When the 2.3 CVS tree was started, it would've been better to copy the
-> RCS files (and tag the 2.2 ones) instead of checking in a newly-numbered
-> revision with no past
-> history attached.  Because of the way it was done, it's unnecessarily
-> difficult to tell which 2.2 file version was used to begin the
-> 2.3 port (because all the versions are 1.1 again), and thus
-> difficult to figure out which changes need to be re-merged.  Also the
-> comments from the previous authors have been lost in the 2.3 tree.
+In *effect* we reverted a lot of code -- trashing our own efforts
+without a good reason that I've heard.  "Falling through the cracks" is not
+something I allow from our caliber of folk.  Whenever we revert someone's
+code, especially without consultation with them, we make a pretty
+clear statement about how much we don't value their effort.  AND if
+there was value in the lost code, we have a bunch of re-work to do
+thus the project loses ground.  It hurts the people AND the project.
 
-The trouble is that doing it the way you suggest was almost impossible.
-The only realistic way to get the 2.3 stuff running was to  apply the
-diff between 2.2.x and the parisc tree to Linus' 2.3 tree which is not
-maintained in CVS.  As a result, yes, we lost the tags.  I did attempt
-to explain to you that we can retrieve diffs between any given date that
-you want; such as the start of December and now in the 2.2 tree.
+When I was doing the embedded realmode stuff, which took me quite a
+while, I thought it was my duty to continually bring in the changes
+others were making to those same files, so that when I committed we
+would have the product of all the authors' efforts, not just mine.
+The lesson I could take from our 2.3 code reversion is that I
+needn't bother eh?
 
-Those $Log$ comments are a really bad idea, btw.  They grow too long
-and contain too much irrelevant crap.  If you want to write a comment,
-add it manually.
+As for $Log$, I abhor using that in source code.  But I think the
+check-in comments, aka from 'cvs log', are a valuable part of the
+authors contribution, and reverting them is just as damaging and
+insulting as reverting the code itself.
 
-> And an explanation of why the defects and improvements
-> I (and JDA) contributed were wrong for the project too.  I'm willing
-> to learn.
+I can start putting my 2.2 changes back into 2.3, but since I don't
+know the reason for their reversion, I really don't have a good
+basis upon which to select which features to bring forward and which
+to leave.  Without the realmode hack some of the features we had in
+2.2 can't be coded in C.  Should I re-hack the realmode thing or
+something which solves the same problem?  Will *that* just get reverted
+too?
 
-They weren't wrong for the project, they just slipped into a crack.
-If I understood this section of the kernel well enough, I would have
-added them back before we opened the 2.3 tree.
+The mechanistic details of diffs and merges are not the issue here.
+
+		-P
+
+P.S. I wish we had started the 2.3 port like this:
+
+on puffin.external.hp.com:
+
+cp -r /home/cvs/parisc/linux/arch/parisc /home/cvs/parisc/linux-2.3/arch
+cp -r /home/cvs/parisc/linux/include/asm/parisc /home/cvs/parisc/linux-2.3/asm
