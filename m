@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from relay1.alcatel.be (alc119.alcatel.be [195.207.101.119])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 418C5482A
-	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 07:57:06 -0700 (MST)
-Received: from nlntadn.ats.nld.alcatel.nl (localhost [127.0.0.1])
-	by relay1.alcatel.be (8.10.1/8.10.1) with ESMTP id g0MEv3F12025
-	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 15:57:03 +0100 (MET)
-Message-ID: <03273D4BC7F4D511AC440008C7E6F8815420CA@nlntmail2b.ats.nld.alcatel.nl>
-From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-To: parisc-linux@parisc-linux.org
-Date: Tue, 22 Jan 2002 15:56:59 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] B2000
+Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B7987482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 08:11:38 -0700 (MST)
+Date: Tue, 22 Jan 2002 16:11:36 +0100
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] vmlinux header for savecrash.
+Message-ID: <20020122161135.A6205@electra.intern.planb.de>
+References: <3C4C53B7.67DA24E@admin.france.hp.com> <20020121202539.994A5482A@dsl2.external.hp.com> <3C4D2EFB.F82671C2@admin.france.hp.com> <20020122105553.A5510@electra.intern.planb.de> <3C4D5A46.426BE5E5@admin.france.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3C4D5A46.426BE5E5@admin.france.hp.com>
+From: Enrik Berkhan <Enrik.Berkhan@planb.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-LS
-Even though under "tested hardware"  it stated : B, C and J workstations 
+Bruno,
 
-I noticed that there were some difficulties with the B2000 in previous
-versions
-With the latest version (0.93) I still get after booting (from internal
-cdrom-drive):
+On Tue, Jan 22, 2002 at 01:25:42PM +0100, Bruno Vidal wrote:
+> I think that Enrik has a good starting point, where can I find
+> a good how-to about libbfd ? there is nothing under /usr/share/doc ?
+> A web page ?
 
-FLT CBF4: SYS BD 
-Bad OS HPMC cksm 
-FLT CBFC: SYS BD 
-Os hpmc br err 
-FLT CBF0: SYS BD 
-HPMC initiated 
-FLT 500B: SYS BD 
-Bus timeout 
+(assuming debian) you can install `bintutils-doc´ and will be
+able to do `info bfd´ afterwards. But it´s far from a tutorial ...
 
-(hangs)
-
-Kind regards, Hans
+Enrik
+-- 
+Enrik Berkhan                                         plan b. GmbH
+                                                      Rüppurrer Straße 4
++49-721-388582 (voice)                                76137 Karlsruhe
++49-721-388581 (fax)                                  Germany
