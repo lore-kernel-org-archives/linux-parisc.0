@@ -1,15 +1,16 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-15?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20but=20still=20panic=3A=20=5BWAS=3A=202=2E6=2E10=2Drc1=2Dpa15=20boot=20fine=09on=20n4k=20but=20still=09annoying=20bactrace=5D?=
-Date: Fri, 26 Nov 2004 08:22:26 +0100
-Message-ID: <418A80E800007D7B@mail-6-bnl.tiscali.it>
-References: <1101415152.2020.21.camel@mulgrave>
+Subject: Re: [parisc-linux] 2.6.10-rc1-pa15 panic after 21 kernel build loop
+	:-(
+Date: Fri, 26 Nov 2004 08:27:13 +0100
+Message-ID: <418A80E800007D80@mail-6-bnl.tiscali.it>
+References: <20041125181832.GA12264@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: "James Bottomley" <James.Bottomley@SteelEye.com>
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1101415152.2020.21.camel@mulgrave>
+In-Reply-To: <20041125181832.GA12264@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,58 +23,34 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
 > -- Original Message --
-> From: James Bottomley <James.Bottomley@SteelEye.com>
+> Date: Thu, 25 Nov 2004 11:18:32 -0700
+> From: Grant Grundler <grundler@parisc-linux.org>
 > To: Joel Soete <soete.joel@tiscali.be>
-> Cc: Grant Grundler <grundler@parisc-linux.org>,
->    PARISC list
-> 	 <parisc-linux@lists.parisc-linux.org>
-> Date: 25 Nov 2004 14:39:05 -0600
-> Subject: Re: [parisc-linux] but still panic: [WAS: 2.6.10-rc1-pa15 boot=
+> Cc: parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] 2.6.10-rc1-pa15 panic after 21 kernel build=
 
-fine
-> 	on n4k but still	annoying bactrace]
+loop
+> :-(
 > 
 > 
-> On Mon, 2004-11-22 at 08:10, Joel Soete wrote:
-> > IASQ: 0000000000000000 0000000000000000 IAOQ: 000000001016a7cc 000000=
-001016a7d0
-> >  IIR: 527401a0    ISR: 0000000000000000  IOR: 00000000000000d0
-> >  CPU:        0   CR30: 000000004d5a0000 CR31: 00000000105f0000
-> >  ORIG_R28: 000000001010d18c
-> >  IAOQ[0]: update_one_process+0x74/0x168
-> >  IAOQ[1]: update_one_process+0x78/0x168
-> >  RP(r2): update_one_process+0x6c/0x168
+> On Fri, Nov 19, 2004 at 09:15:21AM +0100, Joel Soete wrote:
+> > Press Q/q to quit, Enter to continue:
+> >  [<000000001016a910>] update_process_times+0x50/0x90
+> >  [<00000000101269b8>] smp_do_timer+0x78/0x80
+> >  [<000000001011b120>] timer_interrupt+0xd8/0x2f0
+> >  [<000000001011bed8>] do_irq+0xd8/0x1e8
+> >  [<000000001011c0c8>] do_cpu_irq_mask+0xe0/0x150
+> >  [<0000000010107074>] intr_return+0x0/0x24
 > 
-> As best I can tell, this is in kernel/timer.c here:
+> FYI, the same stack trace/fault just occurred on gsyprf11 (a500-65).
 > 
->         if (p->signal && !unlikely(p->state & (EXIT_DEAD|EXIT_ZOMBIE))
-> &&
->             psecs / HZ >=3D p->signal->rlim[RLIMIT_CPU].rlim_cur) {
-> 
-NIce to point it me out :)
+Yes should occure on smp systems (mmm curious to see if the pb occures al=
+so
+on a up system runing a smp kernel?)
 
-> The problem seems to be that p->signal is null, but it wasn't null when=
+Thanks for feedback,
+     Joel
 
-> the processor began the evaluation of the condition.  0xd0 is the 64 bi=
-t
-> offset of rlim[RLIMIT_CPU].rlim_cur.
-> 
-Cool ;-)
-
-> If you look at the code, p->signal should be in r19 which is zero.
->
-I will try to figure thid out.
- 
-> I have no explanation for this (other than some weird race in the signa=
-l
-> handling code somewhere).
-> 
-Yes the hazardous aspect of the pb seems to confirm this hypothesis.
-The pb is to find where this race condition occurs; I continue investigat=
-ion.
-
-Thanks for help,
-    Joel
 
 -------------------------------------------------------------------------=
 --
