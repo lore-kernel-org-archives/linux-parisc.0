@@ -1,31 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pop02-srv.alltel.net (pop02.alltel.net [166.102.165.147])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 19A69482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jul 2001 16:43:20 -0600 (MDT)
-Received: from [162.39.130.132] by pop02-srv.alltel.net with ESMTP
-          id <20010715224317.VDHT17479.pop02-srv.alltel.net@[162.39.130.132]>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sun, 15 Jul 2001 17:43:17 -0500
-Date: Sun, 15 Jul 2001 17:42:03 -0500 (CDT)
-From: "T. Martin" <catfish@alltel.net>
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id A91EF482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jul 2001 17:32:26 -0600 (MDT)
+Date: Mon, 16 Jul 2001 01:31:22 +0200
+From: Michael Handrich <Michael_Handrich@gmx.de>
+Reply-To: Michael Handrich <Michael_Handrich@gmx.de>
+Message-ID: <9049807937.20010716013122@gmx.de>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.10.10107151740310.1407-100000@jesse.crash.lan>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] setting Date via boot admin console
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] HP 715-33
 List-ID: <linux-parisc.vger.kernel.org>
 
-I know this sounds like a stupid question, but whats the proper syntax for
-setting the date via boot admin, I've checked docs.hp.com and tried every
-imaginable syntax to no avail. 
-Thanks again, 
-Terry
+Hello parisc-linux,
 
+  i found the HP 715-33 on the following list:
+  These systems currently have problems or lack hardware specific support
+  to make them fully functional
 
+  and i wonder if this system is supported or not. If it is not supported,
+  do you need a 715-33 ? If there is a developer (in germany) interested
+  in such a System i could offer such a machine.
 
-Achilles' Biological Findings:
-        (1) If a child looks like his father, that's heredity.  If he
-            looks like a neighbor, that's environment.
-        (2) A lot of time has been wasted arguing over what came first
-            -- the chicken or the egg.  It was undoubtedly the
-            rooster.
+-- 
+Best regards,
+ Michael                          mailto:Michael_Handrich@gmx.de
