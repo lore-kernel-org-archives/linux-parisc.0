@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fep01-mail.bloor.is.net.cable.rogers.com (fep01-mail.bloor.is.net.cable.rogers.com [66.185.86.71])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1343E4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 May 2003 13:39:23 -0600 (MDT)
-Date: Mon, 19 May 2003 15:40:28 -0400
+Received: from fep02-mail.bloor.is.net.cable.rogers.com (fep02-mail.bloor.is.net.cable.rogers.com [66.185.86.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 124DA4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 May 2003 14:11:27 -0600 (MDT)
+Received: from systemhalted ([24.112.227.174])
+          by fep02-mail.bloor.is.net.cable.rogers.com
+          (InterMail vM.5.01.05.12 201-253-122-126-112-20020820) with ESMTP
+          id <20030519201112.HQIC4557.fep02-mail.bloor.is.net.cable.rogers.com@systemhalted>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 19 May 2003 16:11:12 -0400
+Date: Mon, 19 May 2003 16:12:24 -0400
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, randolph@tausq.org,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Inconsistency detected by ld.so:.. / do_page_fault()
-Message-ID: <20030519194028.GA542@systemhalted>
-References: <200305191705.h4JH5YPo020750@hiauly1.hia.nrc.ca> <Pine.BSF.4.53.0305191732240.86062@e0-0.zab2.int.zabbadoz.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030519201224.GB542@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.53.0305191732240.86062@e0-0.zab2.int.zabbadoz.net>
+Subject: [parisc-linux] 2.4 and semtimedop - need kernel compat?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,32 +26,110 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> What is this patch for ?
-> 	glibc23-hppa-Rminkernel.dpatch
+pa,
 
-Does two things:
+I think I'm leaving the "filling in" of this to Randolph :)
+For now it provides enough functionality for glibc to build and be all
+happy and merry. Wether we strictly need compat code for semtimedop is
+uknown.
 
-1- Sets minimum required kernel version for glibc to run on.
-2- Enables unwind_find_fde copat code.
- 
-> make[4]: Target `tests' not remade because of errors.
-> make[4]: Leaving directory `/u1/src/glibc/glibc-2.3.1/glibc-2.3.1/elf'
-> make[3]: *** [elf/tests] Error 2
-> make[3]: Target `check' not remade because of errors.
-> make[3]: Leaving directory `/u1/src/glibc/glibc-2.3.1/glibc-2.3.1'
-> make[2]: *** [check] Error 2
-> make[2]: Leaving directory `/u1/src/glibc/glibc-2.3.1/hppa-linux/obj'
-> date >>/u1/src/glibc/glibc-2.3.1/log-test-hppa-linux
-> make[1]: Leaving directory `/u1/src/glibc/glibc-2.3.1'
-> touch /u1/src/glibc/glibc-2.3.1/hppa-linux/compiled-source
->  debian/rules binary
-> Need root privileges
-> make: *** [/u1/src/glibc/glibc-2.3.1/hppa-linux/installed-binaries] Error 1
+Comments appreciated before checkin.
 
-Did you use -rfakeroot as a dpkg-buildpackage option?
- 
-> PS: again from building time (2.5.69-pa1) :
-
-Can't help you there since I can't recreate the problem.
+Willy handed out the new syscall number 228 for semtimedop.
 
 c.
+
+Index: arch/parisc/kernel/sys_parisc.c
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/kernel/sys_parisc.c,v
+retrieving revision 1.14
+diff -u -p -r1.14 sys_parisc.c
+--- arch/parisc/kernel/sys_parisc.c	23 Nov 2001 21:54:28 -0000	1.14
++++ arch/parisc/kernel/sys_parisc.c	19 May 2003 19:57:48 -0000
+@@ -256,3 +256,11 @@ int sys_shmctl_broken(int shmid, int cmd
+ 	return sys_shmctl (shmid, cmd, (struct shmid_ds *)buf);
+ }
+ 
++/* 2.4 compat code required for IPC calls */
++asmlinkage long sys_semtimedop(int semid, struct sembuf *tsops,
++                                unsigned nsops, const struct timespec *timeout)
++{
++	/* FIXME: Need to implement compat? */
++	return -ENOSYS;
++}
++
+Index: arch/parisc/kernel/sys_parisc32.c
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/kernel/sys_parisc32.c,v
+retrieving revision 1.27
+diff -u -p -r1.27 sys_parisc32.c
+--- arch/parisc/kernel/sys_parisc32.c	14 Sep 2002 05:14:03 -0000	1.27
++++ arch/parisc/kernel/sys_parisc32.c	19 May 2003 19:57:48 -0000
+@@ -3104,3 +3104,11 @@ asmlinkage long sys32_semctl_broken(int 
+ 	return sys_semctl (semid, semnum, cmd, arg);
+ }
+ 
++/* 2.4 compat code required for IPC calls */
++asmlinkage long sys32_semtimedop(int semid, struct sembuf *tsops,
++				unsigned nsops, const struct timespec *timeout)
++{
++	/* FIXME: Possible 32/64 conversions required */
++	/* FIXME: Need to implement compat? */
++	return -ENOSYS;
++}
+Index: arch/parisc/kernel/syscall.S
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/kernel/syscall.S,v
+retrieving revision 1.78
+diff -u -p -r1.78 syscall.S
+--- arch/parisc/kernel/syscall.S	4 Aug 2002 22:57:47 -0000	1.78
++++ arch/parisc/kernel/syscall.S	19 May 2003 19:57:48 -0000
+@@ -604,8 +604,31 @@ sys_call_table:
+ #endif
+ 	ENTRY_SAME(gettid)             
+ 	ENTRY_SAME(readahead)          
+-	ENTRY_SAME(tkill)
++	ENTRY_SAME(tkill)		/* 208 */
+ 
++	/* COMPAT semtimedop call requires the same syscall number
++	across kernel versions. */
++	
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)		/* 210 */
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)		/* 220 */
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_SAME(ni_syscall)
++	ENTRY_DIFF(semtimedop)		/* 228 */
+ .end
+ 
+ 	/* Make sure nothing else is placed on this page */
+Index: include/asm-parisc/unistd.h
+===================================================================
+RCS file: /var/cvs/linux/include/asm-parisc/unistd.h,v
+retrieving revision 1.26
+diff -u -p -r1.26 unistd.h
+--- include/asm-parisc/unistd.h	4 Aug 2002 22:59:52 -0000	1.26
++++ include/asm-parisc/unistd.h	19 May 2003 19:57:50 -0000
+@@ -702,6 +702,8 @@
+ #define __NR_readahead          (__NR_Linux + 207)
+ #define __NR_tkill              (__NR_Linux + 208)
+ 
++#define __NR_semtimedop         (__NR_Linux + 228)
++
+ #define __NR_Linux_syscalls     208
+ 
+ #define HPUX_GATEWAY_ADDR       0xC0000004
