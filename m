@@ -1,48 +1,115 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailproxy.de.uu.net (mailproxy.de.uu.net [192.76.144.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 54AD0482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 05:41:02 -0600 (MDT)
-Received: from hedd.de (1cust-27.au1.dd.de.alter.net [149.228.0.27] (may be forged))
-	by mailproxy.de.uu.net (5.5.5/5.5.5) with ESMTP id NAA20156
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 2 Aug 2001 13:41:00 +0200 (MET DST)
-Received: from hedd.de (nt10 [192.168.0.110])
-	by hedd.de (8.9.3/8.9.3) with ESMTP id MAA04741
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 2 Aug 2001 12:25:01 +0200
-Message-ID: <3B693F62.E1E701F7@hedd.de>
-Date: Thu, 02 Aug 2001 13:54:10 +0200
-From: Martin Eisfeld <me@hedd.de>
-MIME-Version: 1.0
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 44F6A482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 09:10:49 -0600 (MDT)
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by atlrel2.hp.com (Postfix) with ESMTP id EFCCCD0B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 11:10:47 -0400 (EDT)
+Received: from eeyore (helgaas@eeyore.fc.hp.com [15.1.54.199])
+	by hpfcla.fc.hp.com (8.9.3 (PHNE_22672)/8.9.3 SMKit7.01) with SMTP id JAA10983
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 2 Aug 2001 09:10:46 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Bjorn Helgaas <bjorn_helgaas@hp.com>
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Problems with Installing of 0.9.2 on HP 715/100
+Date: Thu, 2 Aug 2001 09:11:54 -0600
+MIME-Version: 1.0
+Message-Id: <01080209115401.05959@eeyore>
+Subject: [parisc-linux] Fwd: [Linux-ia64] [RFC] /proc/ksyms change for IA64 (fwd)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello everyone,
-I have a big proplem of installing PA-RISC Linux 0.9.2 on a HP9000 Model
-715/100.
+Is this an issue for parisc as well?
 
-I have downloaded the cd-image palinux-0.9.2.iso.gz from
-parisc-liux.org, i have decompressed it with gzip on a linux-machine and
-burned it with Nero 5.5 on a NT-machine.
 
-When i poweron the hp, i press ESC until i'm in the boot-admin-menu.
-Therefrom i boot with
-'boot scsi.2.0' (the scsi-id of the cd-rom is 2)
-from the cd.
+----------  Forwarded Message  ----------
+Subject: [Linux-ia64] [RFC] /proc/ksyms change for IA64 (fwd)
+Date: Thu, 02 Aug 2001 13:38:40 +1000
+From: Keith Owens <kaos@ocs.com.au>
+To: linux-ia64@linuxia64.org
 
-Then a window comes which says
-"Attempting to boot."
-Then the cd boots. There are lots of different messages.
-One warning comes:
-"warning: Kernelname doesn't end with 32 or 64"
 
-After that, other messages came on my screen.
-The last message is:
-"Set default PSW W bit to 0".
+FYI.  Followups to linux-kernel@vger.kernel.org please, the initial
+problem is IA64 specific but the fix is a generic one for all
+architectures that require special processing, it needs to be discussed
+on l-k.  I would have used Bcc: to ia64 but this list rejects Bcc mail.
 
-Then the the maschine reboots.
+------- Forwarded Message
 
-I have tried to boot the cd on to different hp9000 model 715/100. The
-result is everytime the same.
-Bye,
-Martin Eisfeld
+The IA64 use of descriptors for function pointers has bitten ksymoops.
+For those not familiar with IA64, &func points to a descriptor
+containing { &code, &data_context }.  System.map contains the address
+of the code, /proc/ksyms contains the address of the descriptor.
+insmod needs the descriptor address, ksymoops and debuggers need the
+code address, /proc/ksyms needs to contain both addresses, with one of
+them prefixed by a special character.
+
+EXPORT_SYMBOL() cannot distinguish between &function and &data.
+Telling everybody that they must type EXPORT_SYMBOL_FUNCTION or
+EXPORT_SYMBOL_DATA is not an option, the second symbol has to be
+automatically added after linking vmlinux and modules.  I want to fix
+this problem in user space, with no changes to to kernel code.  My
+proposal for kernel 2.5 is :-
+
+* In System.map and /proc/ksyms, label foo addresses the code, not the
+  descriptor.  Label &foo addresses the function descriptor.
+
+* foo has symbol versions, &foo does not.
+
+* In kernel build, all objects that export symbols are post processed
+  immediately after they are compiled.  On most architectures the post
+  process is a no-op.  On IA64 it runs a program from modutils that
+  identifies exported function pointers and modifies the ksymtab and
+  kstrtab, see below.
+
+* At run time, insmod does its normal address fixup processing first,
+  including checking for symbol versions.  If the existing code
+  succeeds without unresolved symbols, insmod modifies the address
+  fixup so a reference to foo is resolved to &foo, iff both foo and
+  &foo are in /proc/ksyms.
+
+This has the benefit that all the changes are in modutils plus a small
+change to the kernel build, no other user space tools are affected.
+Most user space programs expect foo to address the code, not the
+descriptor, AFAIK it is only insmod that needs the descriptor.  This
+change will also affect any code that tries to front end functions from
+modules but IMNSHO code should not be doing that.  If this breaks
+binary only modules - tough.
+
+One problem that always has to be addressed with modutils is version
+skew between user space and the kernel.  With this approach, if you
+build a new kernel with old modutils then the post processing program
+will not be available so ksyms has the old format and the old insmod
+behaviour applies, ksymoops will get errors but the kernel will still
+run.  With a new modutils but an old kernel you get the old behaviour.
+The only way you can get problems with version skew is to compile a
+kernel on one machine with new modutils and install on another machine
+with old modutils, modules will oops.  I don't see this as a problem,
+the IA64 population is fairly small, in any case gcc cross compile for
+IA64 has problems right now.
+
+The new modutils supplied program (/usr/bin/modules_post) will look
+through the __ksymtab section for an object.  For each exported symbol,
+look at the data it references.  If that data contains two relocatable
+addresses, one pointing to a text symbol, the other to a data symbol
+and the text symbol has the same name as the exported symbol then this
+is a descriptor.  Change the exported symbol name to &foo and add an
+exported symbol foo that points to the code.
+
+Note: This is modutils 2.5 stuff.  modules_post needs to use BFD which
+      current modutils does not use, this adds a new requirement when
+      compiling modutils.  Using BFD is the only way I can handle all
+      the relocation types, especially in cross compile mode.  It may
+      or may not get backported to modutils 2.4, probably not.
+      ksymoops on IA64 2.4 will just have to live with lots of
+      warnings.
+
+
+------- End of Forwarded Message
+
+
+_______________________________________________
+Linux-IA64 mailing list
+Linux-IA64@linuxia64.org
+http://lists.linuxia64.org/lists/listinfo/linux-ia64
+
+-------------------------------------------------------
