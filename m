@@ -1,47 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA32045
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 14:15:47 -0700
-Received: from slagheap.cygnus.com (cse.cygnus.com [205.180.230.236])
-	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id NAA17463
-	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 13:18:35 -0800 (PST)
-To: Cary Coutant <cary@cup.hp.com>
-cc: "Matthew Wilcox" <matthew@wil.cx>, "Alan Modra" <alan@linuxcare.com.au>,
-        "Richard Hirst" <rhirst@linuxcare.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] parisc64 kernel and ret1 (gr29) setup 
-Reply-To: law@redhat.com
-In-reply-to: Your message of Tue, 23 Jan 2001 10:47:41 PST.
-             <200101231850.KAA26800@adlmail.cup.hp.com>
-From: Jeffrey A Law <law@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 23 Jan 2001 14:17:48 -0700
-Message-ID: <5101.980284668@slagheap.cygnus.com>
-Sender: law@cygnus.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA00466
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 15:35:28 -0700
+Received: from dualcel400 ([141.140.106.33])
+ by macalester.edu (PMDF V5.2-32 #38670)
+ with SMTP id <01JZ94UWQUC2002CBK@macalester.edu> for
+ parisc-linux@thepuffingroup.com; Tue, 23 Jan 2001 16:39:13 CDT
+Date: Tue, 23 Jan 2001 16:37:40 -0600
+From: Josiah Carlson <jcarlson@macalester.edu>
+To: parisc-linux@thepuffingroup.com
+Message-id: <3A6E07B41A5.2E2CJCARLSON@smtp.macalester.edu>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] crt1.o
 List-ID: <linux-parisc.vger.kernel.org>
 
-  In message <200101231850.KAA26800@adlmail.cup.hp.com>you write:
-  > Several years ago we made an attempt to establish a 64-byte stack frame 
-  > alignment in the 32-bit conventions, so that the compiler could take 
-  > advantage of certain cache hints available on some PA-RISC CPUs. Because 
-  > of the complexity of assuring that all stack frames in a program obeyed 
-  > this convention, and the growth in average stack use, we abandoned the 
-  > idea.
-  > 
-  > I don't believe, however, that we ever fixed the 32-bit conventions 
-  > document to reflect this reversal. Unfortunately, it still says that sp 
-  > must be 64-byte aligned. Trust me -- it's wrong. We've never enforced a 
-  > 64-byte alignment.
-Correct.  I believe it was roughly 1993 when I first saw the 64byte stack
-frame alignment in an ABI spec for 32bit PA/HPUX and twiddled GCC
-appropriately.
+To summarize my current installation:
+.5 image copied onto hard drive
+base.tgz installed
+nfsroot from 10-05-2000
+ftp.deb (works great BTW)
 
-In 1995 GCC's optimizers were made smarter in terms of removing redundant
-pointer arithmetic and logical ops which exposed the fact that hpux wasn't
-actually providing a 64byte aligned stack :-)  And (of course) I had to
-re-adjust the known stack alignment for the PA port to reflect reality.
+>From here I've tried to configure MPICH for compilation...though I keep
+getting a crt1.o not found error, even though it exists in /usr/lib.
+I tried re-extracting the glibc tarball in /install/debian-hppa, but I
+keep getting the same error.
+Remembering the problems with caching I tried sync, but that didn't
+work.
 
-I haven't looked in any of the newer ABI docs to see if this was ever
-corrected.
-
-jeff
+Just to try something out...I 'm curious as to which file contains the
+listing of paths that are searched for libraries by gcc or g++ (or in
+general all paths searched by the shell for execution), does anyone know
+which file that is?
+Or has anyone else had this problem, even after getting crt1.o into
+/usr/lib?
+Thank you,
+ - Josiah
