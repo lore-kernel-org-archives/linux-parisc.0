@@ -1,49 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C5A6F482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 Aug 2001 15:08:00 -0600 (MDT)
-Sender: chris@dsl2.external.hp.com
-Message-ID: <3B8813A8.ECA75408@gmx.at>
-Date: Sat, 25 Aug 2001 23:07:52 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 5C30B482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 Aug 2001 16:56:28 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Chuck Slivkoff <charles_slivkoff@hp.com>
+Subject: Re: [parisc-linux] XFree86 - white pixel is blue
+Date: Sun, 26 Aug 2001 00:56:04 +0200
+Cc: parisc-linux@lists.parisc-linux.org
+References: <200108210625.AAA20810@puffin.external.hp.com>
+In-Reply-To: <200108210625.AAA20810@puffin.external.hp.com>
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>,
-	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Status: HP 9000/856, E55 Server with PA-Linux
+Message-Id: <20010825225628.5C30B482A@dsl2.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Congratulations, PA Linux is frowing and growing .....
+On Tuesday 21 August 2001 08:25, Grant Grundler wrote:
+> Chuck Slivkoff wrote:
+> > I just loaded the ISO on a 712/60 and setup XFree86 to use the fbdev
+> > driver. It seems to be OK, with the exception that "white" is "blue".
+>
+> This sounds like a a bug.
+> The ESIEE guys will be around tomorrow and I can ask them about it.
 
-After this 3/4 year, I want to ask again, if there are
-news concerning the support or even the documentation of
-the proprietary HP machines, like e.g. the E55 Server (9000/856).
+Hi,
 
-As you know from the list, I had success in booting Linux
-on this E55 with a self written "PDC console device driver".
-So it was possible to boot E55 as diskless machine. But
-a "diskless server" is not the best....
-But it worked even with login, etc....
+I can confirm this behaviour now on my 715/64 too.
 
-For running Linux, only three devices are important to
-activate (2 of them necessary, the 3rd is optional):
-* MUX multi serial port (also for serial console,
-	which I have work arounded with my PDC driver...)
-* SCSI Devices
-* optional: Parallel interface
+The only thing I recently changed on this machines was an upgrade to 
+XFree 4.1.0-2 and nothing else. Furthermore, since this happens both
+with an old kernel (2.4.0-32) and the recent kernel (2.4.9-pa5) I'm
+assuming that it looks like a bug in the XFree86-fbdev driver.
 
-I hope you can tell me, that there will be the support
-or the documentation, so that I can write or help writing
-drivers, if my spare time is enough and my skills will
-be sufficient, ...
+Maybe someone on this list knows more, else I'll take a closer look at 
+it tomorrow,
 
-Please remail...
-
-With friendly regards
-	Christoph P.
-
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Helge
