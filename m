@@ -1,42 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-01.iinet.net.au [203.59.24.16])
-	by dsl2.external.hp.com (Postfix) with SMTP id 004F1482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Jun 2001 12:16:30 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id CAA09076
-	for parisc-linux@lists.parisc-linux.org; Fri, 8 Jun 2001 02:15:23 +0800
-Date: Fri, 8 Jun 2001 02:15:21 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Apollo 735/99 hangs after booting from CDROM
-Message-ID: <20010608021517.T12793@neep.com.au>
-References: <F214YiMCIqtQvAauNjV0001bb18@hotmail.com>
+Received: from mailin6.bigpond.com (juicer03.bigpond.com [139.134.6.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64BD6482A
+	for <parisc-linux@parisc-linux.org>; Thu,  7 Jun 2001 13:41:07 -0600 (MDT)
+Received: from bubble.local ([144.135.24.69]) by
+          mailin6.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GEJ9HQ00.G8I for <parisc-linux@parisc-linux.org>; Thu, 7 Jun
+          2001 10:03:26 +1000
+Date: Thu, 7 Jun 2001 09:23:22 +0930
+From: Alan Modra <amodra@bigpond.net.au>
+To: Matthew Wilcox <willy@ldl.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org, aj@suse.de
+Subject: Re: [parisc-linux] [aj@suse.de: Re: Remove multiline asm statements]
+Message-ID: <20010607092322.E12263@bubble.local>
+References: <20010606102430.V25417@zumpano.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <F214YiMCIqtQvAauNjV0001bb18@hotmail.com>; from mikewerneke@hotmail.com on Thu, Jun 07, 2001 at 03:51:22AM -0000
+In-Reply-To: <20010606102430.V25417@zumpano.fc.hp.com>; from willy@ldl.fc.hp.com on Wed, Jun 06, 2001 at 10:24:30AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-Mike,
+> > diff -urNx CVS glibc-223/sysdeps/hppa/dl-machine.h glibc-merge/sysdeps/hppa/dl-machine.h
+> > --- glibc-223/sysdeps/hppa/dl-machine.h	Fri Apr 27 14:31:02 2001
+> >+++ glibc-merge/sysdeps/hppa/dl-machine.h	Mon May  7 15:25:44 2001
+> > @@ -75,11 +82,11 @@
+> >  
+> >  #if 0
+> >    /* Use this method if GOT address not yet set up.  */
+> 
+> Can we remove the #if 0 code?
 
-Do you have a serial terminal?  Or just a null modem cable and a
-"borrowed" Windows PC, perhaps?  You could convert the ISO into the
-serial-boot one using the sector0 file from the 0.9 release directory
-and see if you can boot the box with your serial terminal or null modem
-cable to a terminal emulator program on another workstation.
-
-An easy way to test the original ISO image from which you burned the CD
-is to mount the .iso file under Linux (any architecture) as a loopback
-iso9660 filesystem.  There are also published checksums to compare
-against the .iso file.  You can also check the md5sums of the kernel
-images on your burnt CD against those within the mounted .iso file.
-
-(Sorry I cannot be more helpful but I have not yet got the 0.9 iso file
-burnt onto a CD yet.)
-
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Yes.
