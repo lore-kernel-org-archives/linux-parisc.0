@@ -1,74 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CC071482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 21:09:28 -0600 (MDT)
-Date: Tue, 28 Aug 2001 23:08:49 -0400 (EDT)
-From: <nick@snowman.net>
-To: rbradetich@uswest.net
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	Matthew Wilcox <willy@debian.org>, Helge Deller <deller@gmx.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C180 netbooting
-In-Reply-To: <20010828210655.A24960@beavis.ybsoft.com>
-Message-ID: <Pine.LNX.4.21.0108282308180.23152-100000@ns>
+Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 451FD482A
+	for <parisc-linux@parisc-linux.org>; Tue, 28 Aug 2001 22:35:10 -0600 (MDT)
+Received: from mmp-2.gci.net ([208.138.130.81]) by mta-1.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GITBEG02.A40 for
+          <parisc-linux@parisc-linux.org>; Tue, 28 Aug 2001 20:35:04 -0800
+Received: from goliath.alaskatech.org ([24.237.5.207]) by
+          mmp-2.gci.net (Netscape Messaging Server 4.15) with ESMTP id
+          GITBEH03.P5E for <parisc-linux@parisc-linux.org>; Tue, 28 Aug
+          2001 20:35:05 -0800
+Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
+	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA05264
+	for <parisc-linux@parisc-linux.org>; Tue, 28 Aug 2001 20:29:58 -0800
+Date: Tue, 28 Aug 2001 20:29:58 -0800 (AKDT)
+From: Tom <palinux@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0108282024350.3162-100000@goliath.alaskatech.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Keyboard on a 715/100
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have 128meg of ram and am useing the current CVS source compiled
-today.  Should I try another kernel?  I have to boot custom kernels as one
-of the SCSI drivers hangs the system.
-	Nick
+So, is there some reason I was thinking that updating the kernel to 2.4.9
+would fix the 'non-responding' keyboard issue?
 
-On Tue, 28 Aug 2001, Ryan Bradetich wrote:
+Weird part is, mine has worked intermittently from 0.6 up until now, when
+I updated to 2.4.9, when it's completely quit working. No errors on boot,
+just no response. Mouse is fine, though...
 
-> Arg.... I recongnize this message :(
-> 
-> Nick,
-> 
-> Can you tell me which kernel you are using, and how much
-> RAM you have in the C180?  This message means that the ccio
-> driver can not find any available resources in the IO page
-> directory to allocate for the DMA trasaction.
-> 
-> Thanks,
-> 
-> - Ryan
-> 
-> On Tue, Aug 28, 2001 at 06:12:45PM -0400, nick@snowman.net wrote:
-> > ok, what I've finally been able to do is boot to an nfsroot, partition sda
-> > and sdb, then when I try to mke2fs any partition on either drive I get
-> > errors along the lines of
-> > init-2.04# SCSI device sdb: 4194685 512-byte hdwr sectors (2148 MB)
-> >  sdb: sdb1 sdb2
-> > SCSI device sdb: 4194685 512-byte hdwr sectors (2148 MB)
-> >  sdb: sdb1 sdb2
-> > Kernel panic: ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping
-> > resources.
-> > 
-> > Kernel panic: ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping
-> > resources.
-> > 
-> > In interrupt handler - not syncing
-> > Kernel panic: ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping
-> > resources.
-> > 
-> > In interrupt handler - not syncing
-> > Kernel panic: ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping
-> > resources.
-> > 
-> > In interrupt handler - not syncing
-> > SysRq: Boot Sync Unmount showPc showTasks showMem loglevel0-8 tErm kIll
-> > killalL
-> > SysRq: Resetting
-> > 
-> > Is that usefull at all, and if not what would be usefull?
-> > 	Thanks
-> > 		Nick
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+Anyone care to point me to a replacement "keyboard.c" or whatever it is
+this poor thing needs? :-)
