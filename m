@@ -1,53 +1,75 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from oliver.internal.sjdjweis.com (dsl.75.131.networkiowa.com [209.234.75.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1DD91482A
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 06:25:33 -0600 (MDT)
-Date: Tue, 5 Jun 2001 07:26:52 -0500 (CDT)
-From: <djweis@sjdjweis.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] D310 boot messages
-In-Reply-To: <20010605104655.H25745@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0106050723380.21394-100000@oliver.internal.sjdjweis.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE4F9482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 06:51:18 -0600 (MDT)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA18569
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Jun 2001 06:43:54 -0600
+Received: from pc2-hems4-0-cust95.bre.cable.ntl.com (HELO rhirst.linuxcare.com) (213.107.176.95)
+  by mailserv2.iuinc.com with SMTP; 5 Jun 2001 12:51:13 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id BEFCDB007; Tue,  5 Jun 2001 13:47:19 +0100 (BST)
+Date: Tue, 5 Jun 2001 13:47:19 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: jheumann@fonts.de
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 0.9ser can't install on D210
+Message-ID: <20010605134719.I25745@linuxcare.com>
+References: <3B1CB312.1C9DBAB9@fonts.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3B1CB312.1C9DBAB9@fonts.de>; from jheumann@fonts.de on Tue, Jun 05, 2001 at 12:23:14PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 5 Jun 2001, Richard Hirst wrote:
-> On Mon, Jun 04, 2001 at 02:16:49PM -0500, djweis@sjdjweis.com wrote:
-> > So now, what major and minor should /dev/ttyB have to
-> > function? /dev/console is 5 1 on my nfsroot.
-> My understanding of the pdc console is that it is output only,
-> used only until a real console device is available, and so wont
-> work as a linux console.  Hopefully someone will correct me if I'm
-> wrong.
+On Tue, Jun 05, 2001 at 12:23:14PM +0200, jheumann@fonts.de wrote:
+> please help,
+> 
+> i can't load linux pa-risc 0.9seriell on my HP9000/D210.
+> Why?
 
-Okay, what needs to be done to make this all work? Is the console config
-fine except for the fact that it stops working after the serial init?
+You will see from <http://parisc-linux.org/release-0.9/systems.html>
+that D series machines have not been tested.  However, your problem
+looks more like trouble reading the CD.  Can you mount the CD on some
+other system and see the contents, just to check the CD is burned
+properly?
 
-> > Good job getting it to work this well, especially since it's listed as
-> > untested! Also, the LCD on the front doesn't seem to do anything. What
-> > needs to happen for that to work?
-> I turned off LCD support in the release kernels because of reports
-> that it was causing problems on some systems.  See
-> <http://bugs.parisc-linux.org/db/10/104.html>.  You can turn it
-> back on if you build your own kernel.
+Alternatively you could try a network boot, as described in the
+README on the CD.
 
-If it's known not to work, that's good enough reason not to mess with it
-yet.
-
-I grabbed the bigger nfsroot and got my machine booting from it last
-night. telnet/rlogin/rsh wouldn't work, so I used the script kiddie remote
-login method and added 
-3333	stream	tcp	nowait	root	/bin/sh sh -i
-to inetd.conf and can get in to the machine. If there's anything I can do
-on there to help in debugging the serial problem, let me know. 
-
-dave
+Richard
 
 
--- 
-Dave Weis             "I believe there are more instances of the abridgement
-djweis@sjdjweis.com   of the freedom of the people by gradual and silent
-                      encroachments of those in power than by violent 
-                      and sudden usurpations."- James Madison
+> 
+> (HP-UX 10.20 is running....)
+> 
+> Jan Heumann
+> jheumann@fonts.de
+> -----------------------------------------------------
+> Main Menu: Enter command > search
+> 
+> Searching for potential boot device(s)...
+> This may take several minutes.
+> 
+> To discontinue search, press any key (termination may not be immediate).
+> 
+> 
+> 
+>    Path Number        Device Path (dec)        Device Type
+>    -----------        -----------------        -----------
+>    P0                 4.5                      Random access media
+>    P1                 4.8                      Random access media
+>    P2                 16/5.2                   Random access media
+>    P3                 16/6.0                   LAN Module
+> 
+> 
+> Main Menu: Enter command > boot p2
+> Interact with IPL (Y or N)?> n
+> 
+> Booting...
+> Boot IO Dependent Code (IODC) revision 1
+> 
+> IPL error: bad IPL checksum.
+> 
+> Error Reading IPL
+> 
+> Main Menu: Enter command > search
