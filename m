@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] A couple of minor patches for 2.6.7-pa1g
-Date: Fri, 18 Jun 2004 20:33:12 -0400 (EDT)
-Message-ID: <200406190033.i5J0XCSX001113@hiauly1.hia.nrc.ca>
-References: <20040618212600.GB12572@engsoc.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Improper use of __xchg?
+Date: Sat, 19 Jun 2004 15:20:39 -0400
+Message-ID: <20040619192039.GA8368@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: kyle@engsoc.org (Kyle McMartin)
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040618212600.GB12572@engsoc.org> from "Kyle McMartin" at Jun
-	18, 2004 05:26:00 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,18 +17,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Fri, Jun 18, 2004 at 11:42:13PM +0200, Andy Walker wrote:
-> > -cflags-$(CONFIG_PA7300LC)	+= -march=1.1 -mschedule=7300
-> > +cflags-$(CONFIG_PA7300LC)	+= -march=1.1 -mschedule=7100LC
-> 
-> Yes it does. Update your GCC.
 
-It was introduced in 3.3.
+pa,
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Someone with the notion of said functions semantics might be willing to
+produce the correct fix please? :)
+
+64-bit kernel build (turned off loop.ko compilation)
+
+carlos@firin:/mnt/flaire/src/linux-2.6$ make
+make[1]: `arch/parisc/kernel/asm-offsets.s' is up to date.
+  CHK     include/asm-parisc/offsets.h
+  CHK     include/linux/compile.h
+  GEN     .version
+  CHK     include/linux/compile.h
+  UPD     include/linux/compile.h
+  CC      init/version.o
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+kernel/built-in.o(.text.put_files_struct+0x118): In function
+`put_files_struct':
+: undefined reference to `__xchg_called_with_bad_pointer'
+make: *** [.tmp_vmlinux1] Error 1
+carlos@firin:/mnt/flaire/src/linux-2.6$ 
+
+Cheers,
+Carlos.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
