@@ -1,60 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA27135
-	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Dec 2000 12:55:08 -0700
-Message-Id: <200012081958.LAA09759@milano.cup.hp.com>
-To: "Witvliet, Hans" <Hans.Witvliet@alcatel.nl>
-Cc: "'Andreas Thienemann'" <andreas@bawue.de>,
-        "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] FW: hp_boot.log 
-In-reply-to: Your message of "Fri, 08 Dec 2000 18:20:10 PST."
-             <1A8904C3797ED411AC2E0008C7E6F88117C6A4@nlntmail2b.ats.nld.alcatel.nl>
-Date: Fri, 08 Dec 2000 11:58:15 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA28489
+	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Dec 2000 15:04:10 -0700
+Message-Id: <200012082205.RAA22208@hiauly1.hia.nrc.ca>
+Subject: Re: pa reload problem
+To: rth@redhat.com (Richard Henderson)
+Date: Fri, 8 Dec 2000 17:05:21 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: alan@linuxcare.com.au, law@cygnus.com, rhirst@linuxcare.com,
+        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
+In-Reply-To: <20001206161627.C1272@redhat.com> from "Richard Henderson" at Dec 6, 2000 04:16:27 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-Hans/Andreas,
-Re C110 crashing
-
-> 3. U2-IOA BC GSC+ Port (7) at 0xf3fbf000,
-
-I suspect the problem is the CCIO driver isn't seeing the U-turn
-chip and DMA will HPMC (crash) the system. We should see some output
-from ccio-dma.c driver before LASI "barks".
-
-
-"Witvliet, Hans" wrote:
-> Hi Andreas,
+> On Wed, Dec 06, 2000 at 03:41:06PM -0500, John David Anglin wrote:
+> > >     (expr_list:REG_EQUIV (mem/u:SI (lo_sum:SI (reg/f:SI 309)
+> > > 		(unspec:SI[
+> > > 			(symbol_ref:SI ("constructor_max_index"))
+> > > 		    ]  0)) 0)
 > 
-> I tried three other machines, with following results
-> 1) B180c
-> 2) B000  
-> 3) 712    
-> On the B2000 booting also resulted in stack dump,
-
-B2000 is like a C3000 with fewer slots/slower CPU.
-I don't remember of palinux-v0.5 was tested on that - looks like not.
-Newer kernel should work - several of us are using C3k/J5k's for
-development.
-
-> on B180c and the 712 the system freezes to death after the "switching to UPL
-> console" message.
-
-For B180/712: Read the FAQ at www.parisc-linux.org/faq.html
-
+> This appears to be the same sort of bug as in compile/20001205-1.c
+> except that an unspec is involved instead of an asm_operands.
 > 
-> I wonder, if it has something to do with the problem that i encounterd some
-> time ago with the linux port to sun-hardware.
-> If the system had to much memory, it was not able to startup.
+> I wonder if the best solution is to avoid local-alloc creating
+> REG_EQUIV notes for every little thing under the sun.  Allow
+> only general_operand or something.
 
-Not a problem. We ignore memory beyond 512MB right now.
+I am wondering if side_effects_p should return 1 if it encounters
+an UNSPEC.  Currently, it just ignores it.  This would prevent the
+generation of the REG_EQUIV notes and I think resolve the problem.
+However, it might have other side effects.  Any thoughts on this?
 
-> Cant do much testing now, and next week i am @ HP. (see what happens if i
-> try to boot from my cd at the hp-trainings lab...;-))
-
-enjoy!
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
