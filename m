@@ -1,53 +1,54 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B9AA4482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 11:56:40 -0600 (MDT)
-Received: from xparelay1.corp.hp.com (xparelay1.corp.hp.com [15.58.136.173])
-	by palrel1.hp.com (Postfix) with ESMTP id E494A14BC
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 10:56:39 -0700 (PDT)
-Received: from xatlbh2.atl.hp.com (xatlbh2.atl.hp.com [15.45.89.187])
-	by xparelay1.corp.hp.com (Postfix) with ESMTP id D39DB1F509
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 10:55:41 -0700 (PDT)
-Message-ID: <3B1D1D56.14424ACA@hp.com>
-Date: Tue, 05 Jun 2001 13:56:38 -0400
-From: Chuck Slivkoff <charles_slivkoff@hp.com>
+Received: from vopserver.pflash.com (mail.pflash.com [207.19.136.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 78692482A
+	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 12:07:52 -0600 (MDT)
+From: Michael S.Zick <mszick@pflash.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Date: Tue, 5 Jun 2001 12:56:29 -0500
+Content-Type: text/plain
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	debian-hppa@lists.debian.org, parisc-linux@thepuffingroup.com,
+	parisc-linux@parisc-linux.org
+References: <20010605185008.R7349@parcelfarce.linux.theplanet.co.uk>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-References: <3B180D83.F5479D0B@hp.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Forcing PA-Linux to swap / do_page_fault()
+Message-Id: <01060513071704.00472@wolf01.my.home>
+Subject: [parisc-linux] Re: pa-risc V0.9 on Model 720 (+ others)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Greetings all,
+On Tue, 05 Jun 2001, Matthew Wilcox wrote:
+> On Tue, Jun 05, 2001 at 11:36:37AM -0500, Michael S. Zick wrote:
+> > Without either BA's defined - in/out Byte, Word, Long does not have
+> > a prototype in mem.c (amoung other places) - the compiler guesses
+> > (incorrectly) at what inb() and outb() mean.
+>=20
+> That's a known-bad configuration.  You have to have some kind of PCI
+> or EISA controller configured in.
 
-I've noticed a problem that I believe is might be related to the kernel
-not being able to use swap space.  I've never seen swap utilization > 0
-and suspect that something might be seriously wrong. Here's an example
-of the kernel error:
+Only if you intend to never support non-PCI, non-EISA older boxes.
 
+Regardless of your intent - proper combinations of CONFIG_xxxxx
+are supposed to be handled by the (x)config step of the build process.
+After all - that is what "configure" means (in English).
 
-do_page_fault() pid=8730 command='Xvfb' type=6 address=0x00000003
+To do a clean job of this - a selection of "Box Model" (similar to "Proce=
+ssor Type")
+may have to be added to the configuration scripts.  With corresponding #i=
+fdef/#ifndef
+statements in the relavent code.
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111
-r0-3     00000000 0049a1f8 00000000 00000013
-r4-7     723cff78 00000000 00000000 00000000
-r8-11    00000500 00000400 00000000 00000020
-r12-15   00000000 00000000 00000000 00000400
-r16-19   00000500 0058fd70 00000000 000057e4
-r20-23   00000000 00000014 00000040 004c61f8
-r24-27   faf00d58 faf00cd8 0000000e 004471f8
-r28-31   0002bf20 00000000 faf00e48 00054f83
-sr0-3    00000000 00000100 00000000 00000100
-sr4-7    00000100 00000100 00000100 00000100
+At the moment - I have tunnel vision - I am focused on getting a personal=
+ copy
+of parisc-linux to boot on my model 720 box.
 
-IASQ: 00000100 00000100 IAOQ: 00000003 00000007
- IIR: e85e02a1    ISR: 00000100  IOR: 005dc000
- ORIG_R28: 00000003
+The comments and findings I post to the mailing lists may be freely disre=
+garded
+by anyone not interested them.  Still, they will exist in the mail list a=
+rchives so that
+any developer working on a public version of this kernel can use them for=
+ hints, leads
+and other ideas.
 
-
-My system is a 712/60 with 128MB RAM.
-
-Does anyone have a good example of test to force the system to use swap?
-
--chuck
+Mike
+>=20
+> --=20
+> Revolutions do not require corporate support.
