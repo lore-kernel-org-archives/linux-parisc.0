@@ -1,36 +1,56 @@
-Return-Path: <hppa-linux@thepuffingroup.com>
-Date: Wed, 10 Mar 1999 11:11:41 -0600
-From: Jason Eckhardt <jason@equator.com>
-Message-Id: <199903101711.LAA30694@equator.com>
+Return-Path: <chihi@email.rnu.tn>
+Sender: chihi@email.rnu.tn
+Message-Id: <36E6B5D8.60F44E1A@ensi.rnu.tn>
+Date: Wed, 10 Mar 1999 18:11:36 +0000
+From: Imed Chihi <Imed.Chihi@ensi.rnu.tn>
+MIME-Version: 1.0
 To: hppa-linux@thepuffingroup.com
-Subject: [hppa-linux] Bootstrap #3 successful
-Resent-Message-ID: <"AiPys1.0.uY1.zRgvs"@sod.res.cmu.edu>
+Subject: Re: [hppa-linux] Bootstrap take 3
+References: <199903092345.RAA25911@equator.com>
+Content-Type: text/plain; charset=us-ascii
+Resent-Message-ID: <"77Jo.0.PZ1.VSgvs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+Hi all,
 
-I'm happy to report that bootstrap #3 passed for everyone who reported back
-thus far, thanks for taking the time to help out. Network, disk, and even
-ZIP drive boots worked. I'd like to see a CD-ROM test if someone has a
-CDR drive available.
+Here is my experience with the last bootloader. I tried it on an HP 710:
 
-1) 780/C160       (disk)
-2) 715/64         (BOOTP)
-3) 816/E35        (disk)
-4) 712/100        (disk)
-5) 712/100        (SCSI ZIP drive!)
-6) 715/33         (RBOOTD) 
-7) 715/80         (?disk?)
+Select from menu: b scsi.5
+Trying scsi.5
+Boot path initialized
+Attempting to load IPL
 
-This means that we now have a simple but functional bootstrap. We are ready
-to load a real kernel instead of a dummy one!
+Hard booted
+-----------------------------------------
+PARISC/Linux Bootstrap Version 0.1 (non-interactive)
+By Jason Eckhardt
+Built Tue Mar 9 16:40:43 CST 1999 by jason@bimbo
 
-Phil Schwan is helping to solve the ftp problems and I will be uploading
-the latest working boot sources. I've also added GPL license stubs to
-each source file, a mildly detailed README, etc.
+Reading parameters.. done
+Size = 28672 bytes, entry = 0x00001000, location 0x0001B040
+Loading kernel.. done.
+Transferring control to kernel.
 
-Regards,
-Jason Eckhardt.
+********************
+VMLINUX 0.0: Dummy kernel image loaded and executing!
+
+It is now safe to reboot.
+
+It is now safe to reboot.
+
+It is now safe to reboot.
+
+It is now safe to reboot.
+
+It is now safe to reboot.
+
+It is now safe to reboot.
+/
+
+
+
+
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
