@@ -1,22 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89E5B482A
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 06:51:15 -0600 (MDT)
-Subject: Re: [parisc-linux] FB cleanups
-To: grundler@puffin.external.hp.com (Grant Grundler)
-Date: Fri, 13 Apr 2001 13:52:54 +0100 (BST)
-Cc: alan@lxorguk.ukuu.org.uk (Alan Cox),
-	parisc-linux@parisc-linux.org
-In-Reply-To: <200104130704.BAA30742@puffin.external.hp.com> from "Grant Grundler" at Apr 13, 2001 01:04:22 AM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14o34K-0002o5-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 99F31482A
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 09:09:31 -0600 (MDT)
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by atlrel1.hp.com (Postfix) with ESMTP id AC6A8D1D
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 11:09:30 -0400 (EDT)
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.3 (PHNE_22672)/8.9.3 SMKit7.01) with ESMTP id JAA22719
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 09:09:29 -0600 (MDT)
+Received: from localhost
+	([127.0.0.1] helo=fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 14o5CT-0004yC-00
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 09:09:29 -0600
+To: parisc-linux@parisc-linux.org
+Date: Fri, 13 Apr 2001 09:09:29 -0600
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E14o5CT-0004yC-00@noam.fc.hp.com>
+Subject: [parisc-linux] floating point
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > ISA is a PCI like device, its a wacky slow motion PCI bridge with no 
-> > configuration space ;).
-> 
-> And no memory mapped I/O. Just I/O port space afaik.
+Yesterday I committed a bunch of floating-point stuff, so if you have
+a floating-point app (SETI?) which was failing before, grab a new
+set of kernel sources and give it a try.
 
-ISA bus has MMIO, including busmastering. 
+	-P
