@@ -1,29 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA15158
-	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Dec 1999 10:39:35 -0700
-Date: Sun, 19 Dec 1999 18:43:34 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA15663
+	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Dec 1999 11:18:07 -0700
+Date: Sun, 19 Dec 1999 13:19:50 -0600 (CST)
+From: Eric Molitor <emolitor@molitor.org>
 To: Alex deVries <adevries@thepuffingroup.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Puffin sells out!
-Message-Id: <19991219184334.N2016@mathe.stud.uni-erlangen.de>
-References: <Pine.LNX.4.10.9912150048310.1301-100000@localhost.localdomain> <38587CE2.DF6D9A23@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <38587CE2.DF6D9A23@thepuffingroup.com>
+cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, dave@hiauly1.hia.nrc.ca,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP releasing docs...
+In-Reply-To: <38597116.3E8A11A2@thepuffingroup.com>
+Message-ID: <Pine.LNX.4.10.9912191314170.767-100000@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Regardless I've allready heard rumors that the port is dead from
-> > several people whom are quite distanced from the actual port.
-> Anyone who thinks this port is dead clearly hasn't been reading the CVS
-> mailing list or reading the weekly summary of changes.
+On Thu, 16 Dec 1999, Alex deVries wrote:
 
-Just for anyone who wants to be told this by one more person:
+> Alan Cox wrote:
+> > > Ideally, though, developers will have access to all the hardware they're
+> > > porting to.
+> > Irrespective of who they work for ?
+> 
+> I actually meant that they'd have docs for the hardware they're porting
+> too, but this is true too.
+> 
+> I think we've been pretty blind in giving hardware out at the start, and
+> I don't see this changing.
+> 
+> However, what doesn't make sense is to ship people hardware that contain
+> critical components that either a) don't yet have drivers written or b)
+> we can't send docs on.
 
-I don't believe the port will be negatively influenced by LC buying TPG.
-In fact, I agree with Alex that the most likely result is positive.
+Oddly enough what about those of us out there with copies of old HP/UX?
+Having only an old copy of HP/UX there is no way that I can compile a
+kernel. Is there anyway a machine can be put online for uses such as this?
+(Similar to what debian is doing with the Rebel Computing ne Corel
+Netwinder?) I've got a machine and a DS3 at work which can be utilized for
+such a purpose. (Via our client Novare we allready host the Debian master
+server. [master.debian.org]) I just dont have an OS...
 
-There is the remote possibility that LC starts behaving stupid, but I
-don't think it's worth it to think about that before it actually happened.
+Is there any interest in this?
 
-	Philipp Rumpf
+- Eric Molitor
