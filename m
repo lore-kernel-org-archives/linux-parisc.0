@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A98754856
-	for <parisc-linux@parisc-linux.org>; Tue, 21 Oct 2003 00:24:16 -0600 (MDT)
-Date: Tue, 21 Oct 2003 08:24:13 +0200
-Message-ID: <3F8A272E00004AD1@ocpmta3.freegates.net>
-In-Reply-To: <20031019231015.GH8642@systemhalted>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B1274841
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Oct 2003 04:29:43 -0600 (MDT)
+Date: Tue, 21 Oct 2003 12:29:38 +0200
+Message-ID: <3F8A272E00004E58@ocpmta3.freegates.net>
+In-Reply-To: <20031020233625.GB5606@systemhalted>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was: do_page_fault?]
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: parisc-linux@parisc-linux.org
+Subject: RE: [parisc-linux] (Round 2) hppa glibc 2.3.2-9 available for the brave testers (Round 2)!
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+Cc: debian-hppa@lists.debian.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -24,52 +25,84 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi Carlos,
 
-Sorry, for bad wrap (in fact cut and past behaviour was different is the
-src is xterm or a minicom, and I don't pay attention: my bad).
+I test it on my b180 running a k-2.4-23-pre7-pa12 (hosting a basic iptable
+fw and a squid proxy and it works fine now).
 
-Sorry also if the 'original message' below was so badly inserted, but my
-isp support couldn't help me to fix this pb :(
-
-Finaly, I would also like to trace this pb with gdb but this c110 is a bit
-slow and requested many time to compile another kernel to allow me to compare
-2.4 and 2.6 behaviour :(. I would so try next week-end.
-
-Thanks for your understand,
+Thanks alot for this great job,
     Joel
 
 >-- Original Message --
 >From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: Joel Soete <soete.joel@tiscali.be>
->Cc: parisc-linux@parisc-linux.org
->Date: Sun, 19 Oct 2003 19:10:15 -0400
->Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was:
->do_page_fault?]
+>To: parisc-linux@lists.parisc-linux.org
+>Cc: debian-hppa@lists.debian.org
+>Date: Mon, 20 Oct 2003 19:36:25 -0400
+>Subject: [parisc-linux] (Round 2) hppa glibc 2.3.2-9 available for the brave
+>testers (Round 2)!
 >
 >
->On Sun, Oct 19, 2003 at 07:49:08PM +0000, Joel Soete wrote:
-> Hi pa,
+>debian-hppa, 
+parisc-linux,
+
+New testing deb's can be found at:
+
+ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-20/
+
+They fix the following problems encountered by testers:
+
+- Six argument cancellable syscalls don't crash you
+> program anymore.
+- Calling feraiseexcept with FE_INEXACT raises the correct exception and
+  flag bits.
+
+Cheers,
+Carlos.
+
+On Fri, Oct 17, 2003 at 02:09:12PM -0400, Carlos O'Donell wrote:
+> --- CALLING ALL TESTERS! ---
 > 
-> Please apologies, I forget to mentioned an important matter:
-> with 2.6.0-test-pa1 it is not anymore a do_page_fault() but:
-> evolution (pid 2454): Protection id trap (code 
->7) 
+> glibc 2.3.2 is comp
+>ete for HPPA. We've gotten rid of the following
+> long standing test-suite errors (bug-iconv3, and test-fenv).
+> 
+> The regressions in 2.3.2 were caused by incorrect handling of the PIC
+> register by the kernel, but fixed in glibc. Most cases for o
+>r stack
+> were handled incorrectly (stack grows up cases), but are fixed in this
+> release.
+> 
+> ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-16/
+> 
+> Download all the debs and install with:
+> 
+> dpkg -i libc6_*.deb
+> (Foll
+>wed by dpkg -i of the rest in any order, libc6 must install first) 
+> 
+> Please do this only if you consider yourself a well seasoned linux-type
+> person. If that dpkg install fails for any reason you might be in
+> trouble. I'm running these debs o
+> all my boxes, and I've tested in a
+> chroot, rebuilt our toolchain, and ran lmbench, gnome-session, nautilus,
+> and abi-word.
+> 
+> http://www.baldric.uwo.ca/~carlos/a500-gnome-abiword.png
+> 
+> Thanks go out to everyone for all the moral support 
+>nd fun! 
+> 
+> --- TEST IT AND REPORT BACK ... PLEASE! :) ---
+> 
+> == DISCLAIMER ===
+> I do not guarantee that these debs won't cause your computer to explode
+> like a pineapple grenade, showering shrapnel and fiery death on all your
+> loved ones
+>
+> == DISCLAIMER ===
 
-Do not wrap lines like this. 
- 
-> YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI 
->                            PSW: 00000000000001000000000000001111 Not 
-> tainted                                                       r00-03 
-
-You should really run evol
->tion through gdb. Remember to use "handle all
-nostop" and "handle all pass".
-
-c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-
->inux
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 
 
