@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rover.gag.com (rover.gag.com [192.133.104.32])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 792F9482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 10:35:38 -0700 (MST)
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] sti console (was: Booting to ISL with Linux installed)
-References: <DLEJJFGDAJICFFBHFNCDGEBBCEAA.bjorn.bylander@telia.com>
-	<20020121030235.C37E737D2B@carmen.fc.hp.com>
-	<002a01c1a249$31f95260$4011e882@abo.fi>
-From: Bdale Garbee <bdale@gag.com>
-Date: 21 Jan 2002 10:34:35 -0700
-In-Reply-To: <002a01c1a249$31f95260$4011e882@abo.fi>
-Message-ID: <87zo37obf8.fsf@rover.gag.com>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D7F1482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 10:48:31 -0700 (MST)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id EDECFA3
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 18:48:28 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id SAA28526 for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 18:47:55 +0100 (MET)
+Message-ID: <3C4C53B7.67DA24E@admin.france.hp.com>
+Date: Mon, 21 Jan 2002 18:45:27 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+ boundary="------------59C76BC7D2A691F073AE94D9"
+Subject: [parisc-linux] vmlinux header for savecrash.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,13 +25,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-milang@tal.org (Kaj-Michael Lang) writes:
+This is a multi-part message in MIME format.
+--------------59C76BC7D2A691F073AE94D9
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-> Does anyone know what could be the cause for the 19" sony not to function
-> correctly. It works fine with a PC, Mac and even an old Sun3.
+	Hi
+As I said few days ago, I've a dump driver ready.
+Now I'm working on a savecrash command. It works fine
+for the dump, but I need to save with the dump some
+informations like the running kernel at dump time.
+So in the dump I've got this informations:
+utsname_release and utsname_version. Now, how can
+I found the right kernel in /boot ? In other
+word, how can I retrieve utsname informations in a
+binary file (without system.map and gdb) ?
 
-Refresh rate set too high?  Try different monitor settings in the firmware.
-I usually start with a resolution I think the monitor can take and 60hz and
-work up from there if it's not satisfying.
+	Thanks.
 
-Bdale
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------59C76BC7D2A691F073AE94D9
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
+
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------59C76BC7D2A691F073AE94D9--
