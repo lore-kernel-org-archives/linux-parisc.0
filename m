@@ -1,16 +1,21 @@
-Return-Path: <jessie21spate@mail.com>
-Received: from parisc-linux (91.Red-80-24-197.pooles.rima-tde.net
-	[80.24.197.91])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8FB5049F1
-	for <parisc-linux@parisc-linux.org>;
-	Tue, 13 Apr 2004 04:54:07 -0600 (MDT)
-Message-ID: <vgwvea.47513615ffxmpnaek@Parentsilgywanpsf.com>
-From: "Parents" <jessie21spate@mail.com>
-To: parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/html; charset=iso-8859-1
-Cc: 
-Subject: [parisc-linux] Rock Solid Erect.ions In 60 Seconds!
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from fep01-mail.bloor.is.net.cable.rogers.com
+	(fep01-mail.bloor.is.net.cable.rogers.com [66.185.86.71])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7932848AC
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 13 Apr 2004 08:28:37 -0600 (MDT)
+Date: Tue, 13 Apr 2004 10:28:24 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: James Bottomley <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Proposal for altering our Page Table layouts
+Message-ID: <20040413142824.GK21362@baldric.uwo.ca>
+References: <200404122331.i3CNVxI03436@udlkern.fc.hp.com>
+	<1081813454.2234.51.camel@mulgrave>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1081813454.2234.51.camel@mulgrave>
+Cc: John Marvin <jsm@udlkern.fc.hp.com>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,45 +24,42 @@ List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Date: Tue, 13 Apr 2004 10:54:08 -0000
 
-<html>
-<head>
-   <title>hardonoil1</title>
-</head>
-<body>
 
-<center><b><font face="Arial,Helvetica"><font size=+1>MASSIVE
-ROCK-SOLID EREC.TIONS</font></font></font></b>
-<br><b><font face="Arial,Helvetica"><font size=+1>IN
-60 SECONDS OR LESS!</font></font></font></b>
-<p><b><font face="Arial,Helvetica"><font size=+1>ITS
-HERE THE NEW</font></font></font></b>
-<br><b><font face="Arial,Helvetica"><font color=
+Yes, Linux assumes a lot about the general layout of the pte tables.
 
-"#FF0000"><font size=+2>VirilityEx Oil</font></font></font></b>
-<br><font face="Verdana"><font size=-1>- Immediate Rock-Solid Erec.tions</font></font>
-<br><font face="Verdana"><font size=-1>- Total, Oversize Arousal</font></font>
-<br><font face="Verdana"><font size=-1>- Double-Strength Org.asms</font></font>
-<br><font face="Verdana"><font size=-1>- Super Staying Power</font></font>
-<br><font face="Verdana"><font size=-1>- Maximum Sexual Health</font></font>
-<br><font face="Verdana"><font size=-1>- Increase the Size and Intensity
-of your Erec.tions!</font></font>
-<br><font face="Verdana"><font size=-1>- Completely Safe and Effective
-Lubri.cant!</font></font>
-<p><b><u><font color=
+> I think we can all agree that the results presented in the paper show
+> (albeit indirectly) that IPT performs worse than a 2 level page table
+> (FMPT in the paper).
 
-"#FF0000"><font size=+1><a hrefsphinxhref=http://bummed.com href=
+Correct.
+ 
+> However, as far as linux goes, the abstraction would actually cover a 1
+> level page table as well ... and we could make a HPT directly emulate a
+> 1-level table as long as we did the hash chain walking within the
+> pgd_offset macro.
 
-"http://drifts.herb99.info/h/?kadafi">READ
-MORE INFO HERE</a></font></font></u></b>
-<br>
-<br>
-<br>
-<br>
-<p><font size=-2><a hrefbirchenhref=http://closers.com href=
+Yes.
 
-"http://kilobit.herbmedz.info/1v3.html">no more emailz</a></font></center>
+> > If you can't do it (i.e. hide it completely within the parisc arch code) then
+> > you need to be talking to Linus and convince him first, unless you are
+> > advocating maintaining a large patch against machine independent code.
+> 
+> However, realistically, I think a global HPT is incompatible with the
+> way linux does VM and a local HPT (one per process) while possible, gets
+> us into awful memory allocation problems to the extent that it's not
+> worth bothering with.  Therefore, I think a 2 level table will be
+> optimal for us.
 
-</body>
-</html>
+Yes, two-level / three-level systems are lower order allocations. The
+difficult issue with HPT's is that we have no clear mechanism for
+aliases, and shared mappings, possibly requiring more initial pgdir's or
+some such hackery.
+
+James, I meant only to hash out other possible alternatives, merely
+being the pot stirrer or devils advocate :)
+
+I think your idea is exactly what we need to cleanup that chunk of code,
+possibly finding mistakes along the way. When you need help just holler.
+
+c.
