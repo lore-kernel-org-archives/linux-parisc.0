@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B6EA5482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 06:28:08 -0700 (MST)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel9.hp.com (Postfix) with ESMTP id D95711C00AF3
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 08:28:07 -0500 (EST)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_26305+JAGae58098)/8.9.3 SMKit7.01) id GAA02336
-	for parisc-linux@lists.parisc-linux.org; Mon, 24 Mar 2003 06:28:07 -0700 (MST)
-Date: Mon, 24 Mar 2003 06:28:07 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200303241328.GAA02336@udlkern.fc.hp.com>
+Received: from mail.rz.uni-ulm.de (gemini.rz.uni-ulm.de [134.60.246.16])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3DB87482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 11:00:04 -0700 (MST)
+Date: Mon, 24 Mar 2003 18:59:58 +0100
+From: Markus Schaber <markus.schaber@student.uni-ulm.de>
 To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20030324185958.307d033c.markus.schaber@student.uni-ulm.de>
+In-Reply-To: <20030321170502.GA8719@dsl2.external.hp.com>
+References: <20030321000822.6a0123e0.markus@schabi.de>
+	<20030321065534.GA21566@dsl2.external.hp.com>
+	<20030321092201.5dcedd9f.markus.schaber@student.uni-ulm.de>
+	<20030321170502.GA8719@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [akpm@digeo.com: arch changes for file-offset-in-pte's]
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Re: Out of memory problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,34 +25,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> FYI.  jsm, any comments?
+H3llo,
 
-It doesn't appear to be a problem, since the bit comes out of the swap
-entry bits, not the "present" bits, which we don't have any more available
-(e.g. _PAGE_FILE can overload _PAGE_ACCESSED, since _PAGE_ACCESSED is
-only valid when _PAGE_PRESENT is set).
+grundler@dsl2.external.hp.com (Grant Grundler) schrieb:
 
-The main issue is whether to take the bit out of the swap offset or swap
-type. i386 went from 24 offset bits and 6 type bits to 24 offset bits and
-5 type bits, i.e. they took the bit from the type field. We are currently
-at 25 offset bits and 5 type bits.
+> > Maybe I'll see whether I can upgrade the machine with more memory...
+> that would be a good idea - even for proof of concept.
 
-The offset bits control the maximum swap size for each swap device. The
-type bits control the number of possible swap devices. So, one possibility
-is to reduce the number of possible swap devices from 32 to 16, rather
-than decrease the maximum swap size. But, perhaps since limiting the
-maximum swap size would only really have an effect on the 32 bit kernel,
-perhaps it would better to leave the maximum number of swap devices at
-32 and decrease the maximum swap size (i.e. the maximum swap size
-for a swap device would decrease from 128 Gb to 64 Gb for a 32 bit
-kernel). This would be the same as i386.
+Do you know a good source to get cheap memory modules for such an old
+machine? I'll have a look at ebay...
 
-Another possibility would be to split out the SWP_TYPE, SWP_OFFSET
-and SWP_ENTRY macros in order to have a 32 bit kernel version and a
-64 bit kernel version. Then we could go with 16 swap devices for the
-32 bit kernel and even increase the number of swap devices for the
-64 bit kernel, since we have a huge number of bits for the offset.
+> > I was there and didn't find a pre-build net-boot image that uses NFS
+> > root [...]
+> 
+> The Net install ISOs are what you want. See
+> 	http://www.parisc-linux.org/software/install.html
 
-Any opinions?
+But as this are ISO files, I need to attach a CD drive, and I don't have
+an external SCSI drive lying around. I also doubt I'll find any IDE port
+inside my Apollo. That's why I looked for a net-boot image.
 
-John
+I have a floppy drive built in, but on the debian-pa web site I read
+that floppy boot is not supported on parisc.
+
+You see, I got this machine for free more than a year ago when our
+University put it out of order, and now I just wanted to play a bit with
+it. The HPUX installation seems to be severely damaged, and so I wanted
+to try linux. I don't mind to put some time into this game, but I don't
+want to buy much additional hardware.
+
+PS: I subscribed to the parisc-linux list, so you all don't have to Cc:
+me.
+
+Thanks,
+Markus
