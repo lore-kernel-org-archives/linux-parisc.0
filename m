@@ -1,37 +1,35 @@
-Received: from mail.valinux.com (smtp-fwd.valinux.com [198.186.202.196])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA11446
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 17:51:37 -0700
-Received: from osmium.hdqt.valinux.com
-	([10.3.1.14] helo=valinux.com ident=mail)
-	by mail.valinux.com with esmtp (Exim 3.16 #1 (Debian))
-	id 13yOAG-0005O0-00; Tue, 21 Nov 2000 16:53:32 -0800
-Received: by valinux.com (Postfix, from userid 561)
-	id 5B260AD0E; Tue, 21 Nov 2000 16:53:27 -0800 (PST)
-Date: Tue, 21 Nov 2000 16:53:27 -0800
-From: "H . J . Lu" <hjl@valinux.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Ulrich Drepper <drepper@cygnus.com>, John Marvin <jsm@udlkern.fc.hp.com>,
-        parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com,
-        binutils@sourceware.cygnus.com
-Subject: Re: [parisc-linux] Use of the EI_OSABI field
-Message-ID: <20001121165327.A12804@valinux.com>
-References: <m3u290j488.fsf@otr.mynet.cygnus.com> <Pine.LNX.4.21.0011221042300.16860-100000@front.linuxcare.com.au>
+Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA11694
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 17:52:52 -0700
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13yO9t-0007M4-00; Wed, 22 Nov 2000 00:53:09 +0000
+Date: Wed, 22 Nov 2000 00:53:09 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CVS linux Vs. -test10
+Message-ID: <20001122005309.A27306@parcelfarce.linux.theplanet.co.uk>
+References: <20001121113432.B883@parcelfarce.linux.theplanet.co.uk> <200011212124.NAA20426@milano.cup.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0011221042300.16860-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Wed, Nov 22, 2000 at 11:13:29AM +1100
+In-Reply-To: <200011212124.NAA20426@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Nov 21, 2000 at 01:24:31PM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Nov 22, 2000 at 11:13:29AM +1100, Alan Modra wrote:
+On Tue, Nov 21, 2000 at 01:24:31PM -0800, Grant Grundler wrote:
+> I would like a few files moved:
 > 
-> > Anyway, the ABI value is zero unless you implement ELF extensions.
-> 
-> Exactly what is an "ELF extension"?  Anything outside gABI or
+> arch/parisc/kernel/ccio-dma.c    -> drivers/gsc/ccio-dma.c
+> arch/parisc/kernel/ccio-rm-dma.c -> drivers/gsc/ccio-rm-dma.c
+> arch/parisc/kernel/lba_pci.c     -> drivers/ropes/lba_pci.c
+> arch/parisc/kernel/sba_iommu.c   -> drivers/ropes/sba_iommu.c
+> arch/parisc/kernel/iosapic.c     -> drivers/ropes/iosapic.c
 
-ELF extension is something whose interpretation is not documented in
-neither gABI nor psABI. HP's old ELF is a good example since it didn't
-implement DT_INIT/DT_FINI, but added DT_INIT_ARRARY/DT_FINI_ARRAY. A
-normal ELF tool will have a hard time to interpret those fields and
-their values.
+> Any reason why we couldn't do these moves *after* you submit a patch?
 
+Better to get our house in order before we patchbomb Linus, I think.
+Renames are hard enough in CVS; renames in diff -u format are a real
+stinker :-)
 
-H.J.
+-- 
+Revolutions do not require corporate support.
