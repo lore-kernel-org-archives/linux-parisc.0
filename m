@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BA1074829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 05:39:19 -0700 (MST)
-Date: Tue, 7 Jan 2003 13:39:10 +0100
-Subject: Re: [parisc-linux] kernel panic when extracting large tar files
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v551)
-Cc: jsoe0708@tiscali.be, "Vlad D. Markov" <markov@monmouth.com>,
-	parisc-linux@lists.parisc-linux.org
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20030107091704.GC4093@dsl2.external.hp.com>
-Message-Id: <05456AF0-223D-11D7-950D-0030656F07A2@esiee.fr>
+Received: from smtp.web.de (smtp02.web.de [217.72.192.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0893B4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 06:05:44 -0700 (MST)
+Received: from c-180-204-119.n.dial.de.ignite.net ([62.180.204.119] helo=web.de)
+	by smtp.web.de with asmtp (WEB.DE(Exim) 4.93 #1)
+	id 18VtQI-0005Ui-00
+	for parisc-linux@lists.parisc-linux.org; Tue, 07 Jan 2003 14:05:38 +0100
+Message-ID: <3E1AD095.FA5CF165@web.de>
+Date: Tue, 07 Jan 2003 14:05:25 +0100
+From: "b.gunreben" <b.gunreben@web.de>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Problem with weak symbols
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +24,81 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well,
+Hi,
 
-after having talked a bit with the 'pioneers' here at ESIEE, it appears 
-that this tar problem is a long lasting one.
+I have a problem with weak symbols on parisc. If I use the following
+small program, the result should be always (nil), but it isn=B4t:
 
-Matthieu Delahaye told me that since the very first days of pa/linux; 
-this bug has existed, mostly happening on 'un-taring' files, obliging 
-users to untar by small chunks of data.
+> cat weak.c
+#include <stdio.h>
+#include <ctype.h>
+ =
 
-FWIW, I experienced that bug too on the A500, had no time to chase it 
-down but I will look at it soon.
-It's near the top of my TODO list :)
+asm (".weak linux_bla");
+asm (".weak linux_foo");
+ =
 
-HTH,
+extern const char * linux_bla;
+extern const int linux_foo[];
+ =
+
+int
+main ()
+{
+  printf("linux_bla: %p\n", &linux_bla);
+  printf("linux_foo: %p\n", &linux_foo);
+  return 0;
+}
+
+> ./weak
+linux_bla: 0x205f0
+linux_foo: (nil)
+
+The main difference in compiling seems to be the different relocation
+type for both symbols:
+
+> readelf -r weak.o
+ =
+
+Relocation section '.rela.text' at offset 0x410 contains 10 entries:
+  Offset    Info  Type            Symbol's Value  Symbol's Name         =
+
+Addend
+  00000010  00502 R_PARISC_DIR21L       00000000 =
+
+=2ELC0                      + 0
+  00000014  00506 R_PARISC_DIR14R       00000000 =
+
+=2ELC0                      + 0
+  00000018  00912 R_PARISC_DPREL21L     00000000 =
+
+linux_bla                 + 0
+  0000001c  00916 R_PARISC_DPREL14R     00000000 =
+
+linux_bla                 + 0
+  00000020  00c0c R_PARISC_PCREL17F     00000000 =
+
+printf                    + 0
+  00000028  00602 R_PARISC_DIR21L       00000010 =
+
+=2ELC1                      + 0
+  0000002c  00606 R_PARISC_DIR14R       00000010 =
+
+=2ELC1                      + 0
+  00000030  00a02 R_PARISC_DIR21L       00000000 =
+
+linux_foo                 + 0
+  00000034  00a06 R_PARISC_DIR14R       00000000 =
+
+linux_foo                 + 0
+  00000038  00c0c R_PARISC_PCREL17F     00000000 =
+
+printf                    + 0
+
+I am currently using gcc version 3.2.1, binutils version 2.13.90.0.16
+20021126, glibc version 2.3.1, but I had this problem already with gcc
+3.0.4 and all compilers inbetween. Is there a possibility to work around
+this?
 
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Berthold
