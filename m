@@ -1,21 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3FEBF4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 10:52:32 -0700 (MST)
-Received: from xatlrelay1.atl.hp.com (xatlrelay1.atl.hp.com [15.45.89.190])
-	by atlrel7.hp.com (Postfix) with ESMTP id 734DF805A63
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 12:52:26 -0500 (EST)
-Received: from xatlbh2.atl.hp.com (xatlbh2.atl.hp.com [15.45.89.187])
-	by xatlrelay1.atl.hp.com (Postfix) with ESMTP id 547CB1C00A05
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 12:52:26 -0500 (EST)
-Message-ID: <9A0482A7BD2506488AD9417C93F3714F0105349E@xsp01.brazil.hp.com>
+Received: from palrel11.hp.com (palrel11.hp.com [156.153.255.246])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61DBE4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 11:57:55 -0700 (MST)
+Received: from xparelay1.ptp.hp.com (xparelay1.ptp.hp.com [15.1.28.62])
+	by palrel11.hp.com (Postfix) with ESMTP id 5280F6007B0
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 10:57:49 -0800 (PST)
+Received: from xpabh2.ptp.hp.com (xpabh2.ptp.hp.com [15.1.28.61])
+	by xparelay1.ptp.hp.com (Postfix) with ESMTP id 3981410054F9
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 10:57:49 -0800 (PST)
+Message-ID: <9A0482A7BD2506488AD9417C93F3714F0107A3A9@xsp01.brazil.hp.com>
 From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
 To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 9 Jan 2003 12:52:18 -0500 
+Date: Thu, 9 Jan 2003 10:57:38 -0800 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Subject: [parisc-linux] pa-risc 64 compilation
+Subject: [parisc-linux] Trace/breakpoint trap
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,16 +29,14 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi people,
 
-	I have a problem to compile an 64 kernel in an 64 machine. The
-problem is: hppa64-linux-gcc compiler not found. Someone know what happened?
-Where I find this gcc version?
+	The message "Trace/breakpoint trap" occurs to me when I execute my
+application. This message occurs only when exists a break command or exists
+another situation to occur this message?
 
-	Thanks in advance,
+Thanks in advance
 
 -----------------------------------------------------------------------
               Leandro Marcondes Farinati
                     Software Developer
 
 *   leandro.farinati@hp.com
-*   +55-51-3316-2852 Telnet  725-2852
-FAX +55-51-3316-2754 Mobile +55-51-9965-8020
