@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CCBE94829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 16:34:46 -0700 (MST)
-Date: Tue, 18 Mar 2003 15:33:51 -0800
-From: Randolph Chung <tausq@debian.org>
-To: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
-Cc: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 64 bit userspace
-Message-ID: <20030318233351.GW26139@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <9A0482A7BD2506488AD9417C93F3714F01F2EB00@xsp01.brazil.hp.com>
+Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0F224829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 23:23:27 -0700 (MST)
+Date: Wed, 19 Mar 2003 01:23:43 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] squid pb with glibc-2.3.1 and pthread (pb reproduced now)
+Message-ID: <20030319062343.GG28363@systemhalted>
+References: <200303181743.h2IHhtaI010636@hiauly1.hia.nrc.ca> <3E68A396000020CC@ocpmta7.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <9A0482A7BD2506488AD9417C93F3714F01F2EB00@xsp01.brazil.hp.com>
+In-Reply-To: <3E68A396000020CC@ocpmta7.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +24,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 	I would to know, what be missing to finish 64 bit userspace to we
-> run 64 bit applications?
-> 	If someone could enumerate the missing items and where we could
-> access this development source, maybe I can give some help in this
-> development.
+> So it doesn't yet help here. Never the less I think that I reach to produce
+> enough simple material which Carlos could analyse (in its time) :)
 
-Carlos might have a better list somewhere, but off the top of my head:
+If you send me a test case I can look at it. I don't even see why -l
+pthread would break the previous code :)
 
-- binutils needs a lot of work for 64-bit palinux. It barely works for 
-  building 64-bit kernels
-- gcc's hppa64-linux target should be in decent shape in general, 
-  although right now it cannot bootstrap itself (for 3.2 at least,
-  not sure about 3.3... I have one patch from Dave to test)
-- kernel assumes userspace is 32-bit in several places (e.g. syscalls,
-  signals, ..) these need to be cleaned up
-- there is no glibc support for hppa64-linux, this needs to be written
-- there is no gdb support for hppa64-linux, this needs to be written
-
-i'm sure there are more, but you get the idea -- in general nothing is
-done yet and this will need a LOT of work; meanwhile we still have lots
-to do for kernel and 32-bit userspace. If you have the time, and want to
-hack on userspace stuff I can give you a list of interesting projects :)
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+c.
