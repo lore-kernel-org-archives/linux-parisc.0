@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.65.60])
-	by dsl2.external.hp.com (Postfix) with SMTP id 96F094831
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Dec 2002 02:23:07 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org,
-	varenet@dsl2.external.hp.com (Thibaut Varene)
-Date: Sat, 21 Dec 2002 10:19:39 +0100
-References: <20021221040254.E5A8F4829@dsl2.external.hp.com>
-In-Reply-To: <20021221040254.E5A8F4829@dsl2.external.hp.com>
+Received: from 40.43.37.16 (unknown [61.235.68.66])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1FDA24829
+	for <parisc-linux@parisc-linux.org>; Sat, 21 Dec 2002 19:42:44 -0700 (MST)
+From: hello <notthisemail@dd.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: notthisemail@dd.com
+Date: Tue, 16 Nov 1999 10:43:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200212211019.39336.deller@gmx.de>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 varenet
+Content-Type: multipart/mixed; boundary="48a4f930-9c03-11d3-a98b-5254aba02fb7"
+Message-Id: <20021222024244.1FDA24829@dsl2.external.hp.com>
+Subject: [parisc-linux] =?gb2312?q?=C4=E3=CF=EB=D4=DA=CD=F8=C9=CF=D7=F6=B9=E3=B8=E6=C2=F0=A3=BFdo_you_have_products_to_sell_in_net=A3=BF?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,37 +21,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Saturday 21 December 2002 05:02, Thibaut Varene wrote:
-> CVSROOT:	/var/cvs
-> Module name:	linux-2.5
-> Changes by:	varenet	02/12/20 21:02:54
->
-> Modified files:
-> 	include/asm-parisc: linux_logo.h
->
-> Log message:
-> Here is a logo _without_ the _very nice_ HP background that everybody hates
-> here ;o)
+This is a multi-part message in MIME format
+--48a4f930-9c03-11d3-a98b-5254aba02fb7
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: quoted-printable
 
-Thanks a lot Thibaut !
-
-For people interested in how the logos look(ed) like on different architectures
-during time:
-http://home.tvd.be/cr26864/Linux/fbdev/logo.html
-Maybe we should add the PA-Penguin to the list at some point ?
-
-> More seriously, this is the default logo (as found on i386) with a PA-RISC
-> symbol tattoo'd on. See this for result:
-> http://pateam.esiee.fr/archive/linux_logo-new.png
->
-> If anyone has any comment/suggestion for sth nicer, please tell me.
-
-I think the white border is somewhat too big ?!?
-
-> BTW, I wonder about copyright mentions in the file...
-> This is not actually "code", but picture. Should we mention any kind of
-> copyright on it ?
-
-No.  I'd vote for removing that (C)-info.
-
-Helge
+=C4=E3=C8=E7=B9=FB=D0=E8=D2=AA=D7=F6=B9=E3=B8=E6=A3=AC=C7=EB=C4=E3=BD=AB=C4=E3=
+=CB=F9=D2=AA=D0=FB=B4=AB=B5=C4=B2=FA=C6=B7=BA=CD=B6=D4=CF=F3=B8=E6=CB=DF=CE=D2=
+=A3=AC=CE=D2=BB=E1=CE=AA=C4=E3=B6=A8=D6=C6=C4=E3=CB=F9=D2=AA=B5=C4=D3=CA=D6=B7=
+=A3=AC=BC=DB=B8=F1=A3=BA30=CD=F2=D3=CA=D6=B7100=D4=AA=A3=AC=CB=CD=C8=ED=BC=FE=
+=D2=BB=CC=D7=A3=AC=D2=BB=C8=D5=C4=DA=BD=BB=BB=F5=A3=AC=CE=D2=B5=C4=D3=CA=CF=E4=
+=D3=C3=BB=A7=C3=FB=CA=C7usa123888@yaoweb.com=BB=F2usa123268=BB=F2usa123368   =
+=D3=CA=CF=E4=D2=B2=CA=C7=CA=F4=D3=DAyaoweb.com=B5=C4 
+=C7=EB=C1=F4=C4=E3=B5=C4=D3=CA=CF=E4=B5=D8=D6=B7=D2=D4=B1=E3=C1=AA=CF=B5=A3=AC=
+=C8=E7=B9=FB=C4=E3=B2=BB=D0=E8=D2=AA=CE=D2=BF=B4=B5=BD=CE=D2=B5=C4=B9=E3=B8=E6=
+=A3=AC=C7=EB=B7=A2=D3=CA=BC=FE=B5=BD=D3=C3=BB=A7=C3=FBusa123468   @      =
+yaoweb.com=D6=D0=D2=AA=C7=F3=B3=B7=B3=FD=C4=E3=B5=C4=D3=CA=CF=E4=B5=D8=D6=B7=
+=A1=A3 =D4=DA=D6=F7=CC=E2=D6=D0=CC=EE=D0=B4=C4=E3=B5=C4=D3=CA=CF=E4
+do you have products to sell in net ,please contact with me .i can find 
+300000 emailaddress for you only 10$ ,and i will sent it with a =
+emailsendersoft to you,if you need please sent a mail to me ,my email:   =
+username=A3=BAusa123888@yaoweb.com or username:usa123268 or =
+username:usa123368   they are yaoweb.com 
+if you want to remove your emailaddress pleses sent email to =
+username:usa123468    its  yaoweb.com    and full in your emaiaddress on =
+subject.then i will delete it                              
+=C4=E3=C8=E7=B9=FB=D0=E8=D2=AA=D7=F6=8FV=B8=E6=A3=AC=D5=88=C4=E3=8C=A2=C4=E3=
+=CB=F9=D0=FB=82=F7=B5=C4=AEa=C6=B7=BA=CD =C4=E3 =CB=F9=D2=AA=B5=C4=BF=CD=91=F4=
+=B8=E6=D4V=CE=D2=A3=AC=CE=D2=95=FE=B8=F9=93=FE=C4=E3=B5=C4=D0=E8=D2=AA=A3=AC=
+=9E=E9=C4=E3=B6=A8=D6=C630=C8f=E0]=BC=FE=B5=D8=D6=B7=A3=AC=83r=B8=F1=A3=BA=C8=
+=CB=C3=F1=8E=C5100=D4=AA=BB=F2=C3=C0=BD=F010=D4=AA=A3=AC=81K=CB=CD=C4=E3=D2=BB=
+=CC=D7=F3=8C=E0]=BC=FE=B5=C4=DC=9B=BC=FE=A3=AC=CA=D7=8C=92=E1=E1=D2=BB=C8=D5=
+=C4=DA=BD=BB=D8=9B=A3=AC=CE=D2=95=FE=8C=A2=E0]=BC=FE=BA=CD=DC=9B=BC=FE=B0l=B5=
+=BD=C4=E3=B5=C4=E0]=CF=E4=A3=AC=D4=94=C7=E9=C7=E5=C2=93=82Susa123888      @   =
+         yaoweb.com
+=BB=F2=D3=C3=91=F4=C3=FB=A3=BAusa123168    usa123268   usa123368    =B5=C4=
+yaoweb.com
+=C8=E7=B9=FB=C4=E3=B2=BB=D0=E8=D2=AA=DF@=8FV=B8=E6=A3=AC=D5=88=B0l=E0]=BC=FE=
+=B5=BD usa123468=B5=C4yaoweb.com=D2=AA=C7=F3=B3=B7=B3=FD=A1=A3=D4=DA=98=CB=EE=
+}=D6=D0=8C=91=C9=CF=C4=E3=B5=C4=E0]=CF=E4=B5=D8=D6=B7=A1=A3                   =
+                     
+--48a4f930-9c03-11d3-a98b-5254aba02fb7--
