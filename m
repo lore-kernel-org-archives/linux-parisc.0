@@ -1,32 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lufmech.rwth-aachen.de (karman.lufmech.RWTH-Aachen.DE [134.130.177.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8927C4A19
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Mar 2001 01:54:29 -0700 (MST)
-Sender: markus@lufmech.rwth-aachen.de
-Message-ID: <3ABB0F3C.45F3267A@lufmech.rwth-aachen.de>
-Date: Fri, 23 Mar 2001 09:54:20 +0100
-From: Markus Werle <markus@lufmech.rwth-aachen.de>
+Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5FACD4A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Mar 2001 03:07:19 -0700 (MST)
+Received: from concerto.grenoble.hp.com (concerto.grenoble.hp.com [15.128.15.118])
+	by gremg1.net.external.hp.com (Postfix) with ESMTP id 2081231E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Mar 2001 11:07:03 +0100 (MET)
+Received: from debian.grenoble.hp.com (debian.grenoble.hp.com [15.128.129.155])
+	by concerto.grenoble.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit6.0.6 OpenMail) with ESMTP id LAA05820
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Mar 2001 11:06:57 +0100 (MET)
+Received: from thomas by debian.grenoble.hp.com with local (Exim 3.22 #1 (Debian))
+	id 14gOT5-0007gp-00
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Mar 2001 11:06:51 +0100
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Interoperability
+References: <200103230054.RAA24759@puffin.external.hp.com>
+From: Nicolas THOMAS <thomas@ispserv.grenoble.hp.com>
+Date: 23 Mar 2001 11:06:50 +0100
+In-Reply-To: <200103230054.RAA24759@puffin.external.hp.com>
+Message-ID: <o051yrobxz9.fsf@debian.grenoble.hp.com>
 MIME-Version: 1.0
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] configure --host=xx revisited
-References: <3AB9F2BC.33E89887@lufmech.rwth-aachen.de> <20010322212029.T5491@parcelfarce.linux.theplanet.co.uk>
 Content-Type: text/plain; charset=us-ascii
+Sender: Nicolas THOMAS <thomas@debian.grenoble.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+Grant Grundler <grundler@puffin.external.hp.com> writes:
 
-> hppa-foo -- 32 bit, pa 1.1
-> hppa2.0-foo -- 32 bit, pa 2.0
-> hppa2.0w-foo -- 64 bit
+> Nicolas THOMAS wrote:
+> > Does anyone of you have references/URL/opinion.... on interoperabilty
+> > purpose?
+> 
+> Could you provide details on what you mean by "interoperability"?
+> (Or specific applications that you need to run if you don't need
+> to build them from scratch)
 
-This is wrong, ding dong!
-This is the reason I asked ...
+The main goal is to be able to have a back-end on one host and a front-end 
+on the other. Communication is done with the network (sockets).
 
-AFAIK the "w" stands for wide mode hardware
-which does _not_ always mean 64 bit.
-I am aware of the fact that this naming convention has
-asymmetries with hp cc manpage, but unfortuantely
-my gcc configured for hppa2.0w-hp-hpux11.00 is a 32 bit.
 
-Who can help further?
+
+> 
+> > The systems I would like to be able to interoperate are :
+> > - Linux x86
+> > - Linux PA-risc 32bits
+> > - Linux PA-risc 64bits
+> > - HP-UX 11 64bits
+> 
+> Obviously not all four can run the same application binaries.
+Of course :-)
+
+Thanks for your help.
+
+Nicolas
