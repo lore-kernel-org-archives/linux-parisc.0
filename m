@@ -1,34 +1,83 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AD472482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jul 2001 23:24:21 -0600 (MDT)
-Message-Id: <200107120523.XAA09209@puffin.external.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Wed, 11 Jul 2001 09:46:24 BST." <20010711094624.F18375@linuxcare.com>
-Date: Wed, 11 Jul 2001 23:23:34 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from relay1.pair.com (relay1.pair.com [209.68.1.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id A8C6D482A
+	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 01:44:02 -0600 (MDT)
+Message-ID: <3B4D2AB1.5010809@subcarrier.org>
+Date: Thu, 12 Jul 2001 00:42:25 -0400
+From: Michael Ang <mang@subcarrier.org>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] CVS rumors
+References: <E15Jz7i-00028D-00@noam.fc.hp.com>  <20010710172502.A6103@parcelfarce.linux.theplanet.co.uk> <E15K1Iz-0002RR-00@noam.fc.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst wrote:
-> Installing a 64 bit kernel with narrow PDC
-> calls later would be an option (once it works).  Do we leave building
-> that kernel as an exercise for the user, or or do we have one packaged
-> in the archive?
+Paul Bame wrote:
 
-I was under the impression the "CONFIG_PDC_NARROW" option would only
-"activate" itself in one boxes that needed it. Ie it does grow the kernel
-and AFAIK is really only useful for Cxxx models.
-Ryan, do I have it right?
+>
+> CM best practices usually involve explicitly tagging any release one
+> hopes to reproduce in the future and we could start doing that (I recommend
+> it).  For now either we apply the aforementioned workaround so we can
+> do untagged date-based checkouts, or I can come up with a procedure for
+> grabbing a suitable set of bits.
 
-I am pretty sure K/D/R-class boxes have a different source base for PDC
-which "properly" support wide-mode PDC calls.
 
-thanks,
-grant
+Tags are cheap.  Explicitly tagging at important moments is the way to 
+go.  Relying on a date-based checkout is potentially less accurate, so 
+IMO this shouldn't be the common practice.  There's no harm in adding a 
+static tag, and you can always remove it or possibly fix it up if you 
+get it wrong.
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+
+> = I don't understand why we're using vendor branches at all though.  When
+> = mang was doing CVS God duties, he imported Linus' stuff on an ordinary
+> = branch.  What is the advantage of using vendor branches over ordinary ones?
+> 
+> Vendor branches are both a concept and an implementation.  The
+> implementation sucks but the concept -- keeping clean upstream releases
+> on a separate branch -- to me is a good one and is one of the things
+> CVS does quite well.
+> 
+> safe-cvsimport essentially doesn't use the vendor branch *implementation*
+> (aka, how 'cvs import' would do it) but it does use the vendor branch
+> *concept*.  So safe-cvsimport is attempting to automate what mang did
+> by hand.
+
+
+Writing an import script was one of those things I always meant to do in 
+my copious spare time.  I'm glad to see that someone is actually doing 
+the work :)  Where does the code for safe-cvsimport live?
+
+
+> = > For now I'll be
+> = > happy to consult and/or fix problems which result from safe-cvsimport.
+> = 
+> = No offence, but every time we've done a new import, we've discovered new
+> = and excitingly different problems which have taken some time to be fixed.
+
+
+All the more reason to roll the solutions found to these problems into a 
+script.  Proper importing by hand is rather tedious and prone to 
+operator error.  Also, any extra time spent fully understanding the 
+problems and finding a robust solution will be regained over the 
+following merges or if the cvs wrangler moves on to a different project 
+-- hypothetically, of course ;)
+
+> = I'm extremely nervous about using it while you're gone.
+> 
+> In the linux tree I echo your concern and there's really no way to be
+> rid of the vestiges of upstream imports which came into the trunk unless
+> we reinitialize our archive.  That plus the current brokenness of not
+> removing files which were removed upstream makes me think that
+> unless I do future imports, they might better be done "by
+> hand" on the "linus" branch, which I call a vendor branch though it
+> is not a cvs-style-broken-vendor-branch any longer.
+
+
+I'd avoid using the term "vendor branch", since that already has a 
+specific meaning to savvy CVS users (who will rightly criticize their 
+use).  Calling it something like the "upstream branch" would avoid the 
+overloaded meaning.  I haven't been following things enough to know what 
+the issues related to "the vestiges of upstream imports" are.
+
+	- Mike.
