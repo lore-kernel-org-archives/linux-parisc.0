@@ -1,17 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: *lcul and memory granularity question[Was: [parisc-linux]
-	2.6.10-rc1-pa11 profile data]
-Date: Fri, 03 Dec 2004 15:00:33 +0000
-Message-ID: <41B07F91.9000000@tiscali.be>
-References: <20041111075431.GB9768@colo.lackof.org>
-	<20041111081154.GR15714@tausq.org>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: More questions [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
+Date: Fri, 3 Dec 2004 07:41:59 -0800
+Message-ID: <20041203154159.GB6359@tausq.org>
+References: <418A80AE0000A9A8@mail-4-bnl.tiscali.it>
+	<41B03ED8.8090505@tiscali.be>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041111081154.GR15714@tausq.org>
+In-Reply-To: <41B03ED8.8090505@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +22,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
+> I test it on my b2k with 64bit kernel and it works but it didn't seems to 
+> bring me any benefit?
+> As far as I can believe readprofile: the ratio between the first and last 
+> column is always the same (1/80 in this case).
+> What did I miss?
 
-Randolph Chung wrote:
-> - *lclu* can be rewritten to do better than 1-byte at a time
+what workload did you test this on? possibly you only see a benefit with
+workloads that need to do a lot of page clearings.... so you probably
+want to find a workload so that the first column is >>1
 
-I have an additional question about parisc alignment and this remark:
-a char type var is 1byte align; ... but what's about a 3, 5, 7 and more bytes struct size?
-
-My idea is that a 3bytes could be align as a 32bites word and clearing such struct could be done by clearing all the word;
-the same for 5 and 7 bytes if aligned as 2*32bites and so on for an unrolled loop of the max cache size (128 bytes iirc);
-and btw using a case define as we use for __put/get__user/kernel_asm?
-
-Or the memory management is more complex then I imagine and I would really consider a 3bytes as 2+1 bytes (5=2*2+1, ...)?
-
-Thanks a lot,
-	Joel
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
