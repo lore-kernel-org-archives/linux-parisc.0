@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from ns1 (unknown [211.192.186.198])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A4ADF4837
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Mar 2003 17:30:45 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 09B684834
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 17:30:11 -0700 (MST)
 Reply-To: <herald@ns1.nabitel.com>
 From: <herald@ns1.nabitel.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Thu, 13 Mar 2003 09:27:26 +0900
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 13 Mar 2003 09:27:25 +0900
 MIME-Version: 1.0
-Content-Type: multipart/alternative;	boundary="----=_NextPart_000_32B8_01C2E942.C290D460"
-Message-ID: <NS1VxwNVBw0f0gh0eTZ00000ce3@ns1>
+Content-Type: multipart/alternative;	boundary="----=_NextPart_000_32B4_01C2E942.C276BCB0"
+Message-ID: <NS1SPwQmWO2IskOuN9J00000ce2@ns1>
 Subject: [parisc-linux] (ad)Web Robot, Email Collector/Sender, Server Tester - Free Download!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,7 +23,7 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_32B8_01C2E942.C290D460
+------=_NextPart_000_32B4_01C2E942.C276BCB0
 Content-Type: text/plain;
 	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: quoted-printable
@@ -70,7 +70,7 @@ Sell or Buy Internet Domains !
 
 Have a nice day.  Thank you. =09
 
-------=_NextPart_000_32B8_01C2E942.C290D460
+------=_NextPart_000_32B4_01C2E942.C276BCB0
 Content-Type: text/html;
 	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: quoted-printable
@@ -160,4 +160,4 @@ target=3D"_blank"><font size=3D"2">Sell         or Buy Internet Domains =
 align=3Dcenter colspan=3D"2">        <b><font color=3D"#FFFFFF" =
 size=3D"2">Have a nice day.&nbsp; Thank you.</font></b>         </td>   =
 </tr>      </table>  </center>  </div></body></html>
-------=_NextPart_000_32B8_01C2E942.C290D460--
+------=_NextPart_000_32B4_01C2E942.C276BCB0--
