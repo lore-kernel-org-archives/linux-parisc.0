@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 818BA4845
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 10:56:40 -0600 (MDT)
-Message-ID: <3F7712C2.2000902@tiscali.be>
-Date: Sun, 28 Sep 2003 16:56:34 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id B45C6489B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 11:13:40 -0600 (MDT)
+Message-ID: <3F7716BE.8030008@tiscali.be>
+Date: Sun, 28 Sep 2003 17:13:34 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PALO do not start!
-References: <881138831633.20030923163001@kti.ae.poznan.pl>
-In-Reply-To: <881138831633.20030923163001@kti.ae.poznan.pl>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org,
+	James Bottomley <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Re: zalon/ncr53c720 (linux-2.6.0-test5-pa22) broken
+ on C110
+References: <3F76A312.8090603@tiscali.be> <20030928122414.GF24824@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20030928122414.GF24824@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,48 +25,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jacek Chmielewski wrote:
+Matthew Wilcox wrote:
 
->Hi
+>On Sun, Sep 28, 2003 at 09:00:02AM +0000, Joel Soete wrote:
+>  
 >
->I managed to install Debian on my HP 9000/J200 box (I used DHCP server and
->netinstall lifimage). The installation procedure passed without problems. I
->created three partitions:
->/dev/sda1  *  1    4    16461  f0  Linux/PA-RISC boot
->/dev/sda2     5   34   123690  82  Linux swap
->/dev/sda3  * 35  277  1001889  83  Linux
+>>I am sure there is no hw pb because after that test I can always reboot 
+>>with 2.6.0-test5-PA6:
+>>    
+>>
 >
-it seems that sda3 stand well into the first 2gb of your disk?
-Do you have severall disk on your system and so do boot on the right disk?
-if your system 'autoboot', interupt it with [Esc]; the main menu would 
-show you something like:
-   Primary boot path:    core.FWSCSI.6.0
-   Alternate boot path:  
-core.FWSCSI.5.0                                                                     
+>This is good to hear.
+>
+>  
+>
+>>Can somebody could help me to find patches (step by step) applied on 
+>>this driver from -pa6 to -pa22?
+>>    
+>>
+>
+>Yes.  Could you start with -pa18 (or -pa20)?
+>http://cvs.parisc-linux.org/download/linux-2.6/patch-2.6.0-test5-pa18.gz
+>
+Thanks Matthew,
+(why didn't I think myself ;) )
 
+>(or cvs up -rCVS260_TEST5_PA18)
+>
+>The driver is rev 1.5 in -test5-pa6.  rev 1.6 is in -test5-pa18.
+>After -test5-pa20, we don't have anyautotagged stuff, but let's start
+>with -pa18.
+>  
+>
+Ok I will look and advise you,
 
->
->After the reboot I get the following result:
->
->Booting...
->Boot IO Dependent Code (IODC) revision 1
->HARD Booted.
->
->... and everything nothing happens. I assume that I should see PALO
->starting from the /dev/sda1 partition,
->
-yes
-
-> but it don't want to start.
->
->What could be possibly wrong?
->
->Is there any solution or workaround for this problem?
->
-Try to restart your netinstall, in the second menu you should be able to 
-go into a small shell.
-There create first /mnt/BD in your ramdisk and so mount /dev/sda3 /mnt/DB.
-verify first the contents of /mnt/DB/etc/palo.conf.
-
-hth,
-    Joel
+Joel
