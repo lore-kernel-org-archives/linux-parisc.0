@@ -1,17 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] interesting linker behaviour :)
-Date: Tue, 21 Sep 2004 12:49:39 -0700
-Message-ID: <20040921194939.GT22642@tausq.org>
+Date: Tue, 21 Sep 2004 18:19:06 -0400
+Message-ID: <20040921221905.GI13248@baldric.uwo.ca>
 References: <20040921174353.GB13248@baldric.uwo.ca>
 	<200409211851.i8LIpT1Z009455@hiauly1.hia.nrc.ca>
-Reply-To: Randolph Chung <randolph@tausq.org>
+	<20040921220458.GH13248@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409211851.i8LIpT1Z009455@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040921220458.GH13248@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,36 +22,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Good catch!  I've hit this problem before but under HP-UX.  GAS doesn't
-> support the alternate entry point fixup needed to support multiple
-> entry points to a function.  I don't think anyone has tried to support
-> this with the ELF tools.  There could be some nasty interactions with
-> the HP unwind data when you start adding multiple entry points to a
-> function.
+On Tue, Sep 21, 2004 at 06:04:59PM -0400, Carlos O'Donell wrote:
+> I think you said we had similar problems with non-local goto's?
+> 
+> Either we had a conversation about multiple entry points, or I read it
+> in one of the HP documents :)
 
-yeah, it will break unwinding :(
+Randolph,
 
-> I haven't looked at this in detail but possibly you can change the
-> fixup table to contain pc-relative offsets.  I looked at this
-> when I reworked the casesi pattern in GCC a few months ago.  This
-> makes the table smaller and in many cases the number of instructions
-> is less than that with branches in the table (particularly for the
-> PIC case).  
+See! If we had a wiki it would be under 'john david anglin says' :)
 
-well, this is what we used to do, but we don't do this now because it
-requires us to be able to do a pc-relative calculation between code in
-two different sections (text and fixup), and GAS doesn't allow that
-either.
+c.
 
-for now i'm using the solution we are using for 64-bit code, which is to
-use a manually created long-branch stub (ldil/ldo/bv). since this is 
-anyway in a slow-path the performance hit is probably negligible.
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
