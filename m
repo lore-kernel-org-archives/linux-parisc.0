@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0C4A482C
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 11:13:54 -0700 (MST)
-Received: (from ra@localhost)
-	by xo.hp.is (8.11.6/RA-8.11.6) id fADIDqe00413
-	for parisc-linux@parisc-linux.org; Tue, 13 Nov 2001 18:13:52 GMT
-Date: Tue, 13 Nov 2001 18:13:52 +0000
-From: Richard Allen <ra@hp.is>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011113181352.B382@hp.is>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EAEE482C
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 11:28:39 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 163iIL-0006IT-00; Tue, 13 Nov 2001 18:28:25 +0000
+Date: Tue, 13 Nov 2001 18:28:25 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Richard Allen <ra@hp.is>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Deb's broken ?
+Message-ID: <20011113182825.A20911@parcelfarce.linux.theplanet.co.uk>
+References: <20011113181352.B382@hp.is>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Deb's broken ?
+In-Reply-To: <20011113181352.B382@hp.is>; from ra@hp.is on Tue, Nov 13, 2001 at 06:13:52PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +25,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-bofh:~# apt-get upgrade
-Reading Package Lists... Done
-Building Dependency Tree... Done
-The following packages have been kept back
-  binutils bsdutils cpp-3.0 g++-3.0 gcc-3.0 gzip ipchains libstdc++3
-  libstdc++3-dev logrotate mount nano net-tools procps sysvinit util-linux 
-0 packages upgraded, 0 newly installed, 0 to remove and 16  not upgraded.
+On Tue, Nov 13, 2001 at 06:13:52PM +0000, Richard Allen wrote:
+> bofh:~# apt-get upgrade
+[..]
+> Something Im missing ?
 
-bofh:~# apt-get install gzip
-Reading Package Lists... Done
-Building Dependency Tree... Done
-Some packages could not be installed. This may mean that you have
-requested an impossible situation or if you are using the unstable
-distribution that some required packages have not yet been created
-or been moved out of Incoming.
-
-Since you only requested a single operation it is extremely likely that
-the package is simply not installable and a bug report against
-that package should be filed.
-The following information may help to resolve the situation:
-
-Sorry, but the following packages have unmet dependencies:
-  gzip: PreDepends: libc6 (>= 2.2.4-4) but 2.2.4-3 is to be installed
-E: Sorry, broken packages
-
-ii  libc6          2.2.4-3        GNU C Library: Shared libraries and Timezone
-ii  libc6-dev      2.2.4-3        GNU C Library: Development Libraries and Hea
-
-
-Something Im missing ?
+the email that said `do not apt-get upgrade because it will break your
+system'?
 
 -- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+Revolutions do not require corporate support.
