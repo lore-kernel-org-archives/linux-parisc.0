@@ -1,77 +1,68 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A262E4872
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 04:48:08 -0600 (MDT)
-Date: Mon, 1 Oct 2001 04:48:07 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200110011048.EAA03389@udlkern.fc.hp.com>
-To: tsbogend@alpha.franken.de
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3934F48C0
+	for <parisc-linux@parisc-linux.org>; Mon,  1 Oct 2001 05:57:48 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15o1hi-0007Ij-00
+	for parisc-linux@parisc-linux.org; Mon, 01 Oct 2001 12:57:46 +0100
+Date: Mon, 1 Oct 2001 12:57:46 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011001125746.D28828@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] shm cache flush bug
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] I-Cache flushing
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I've tested following patch:
->
-> diff -u -r1.32 pgalloc.h
-> --- pgalloc.h   2001/09/06 09:44:12     1.32
-> +++ pgalloc.h   2001/09/30 12:13:57
-> @@ -17,6 +17,7 @@
->  static inline void
->  flush_page_to_ram(struct page *page)
->  {
-> +       flush_kernel_dcache_page (page_address(page));
->  }
->
-> That one fixes the problem, too. Is this patch something you would see
-> as the right thing to do ?
->
-> Thomas.
+On the subject of cache flushing... cachetlb.txt says:
 
-No. flush_page_to_ram() is the old cache flushing interface. It is called
-in a bunch of other places. Enabling it would wind up doing a lot of
-redundant cache flushing.
+  void flush_icache_range(unsigned long start, unsigned long end)
+        When the kernel stores into addresses that it will execute
+        out of (eg when loading modules), this function is called.
 
-> >
-> > flush_dcache_page() is perhaps the function you are looking for?  I'm
-> > not sure I understand what the problem is since you didn't post a diff.
->
-> flush_kernel_dcache_page() works and it should even be the right fix.
->
+        If the icache does not snoop stores then this routine will need
+        to flush it.
 
-flush_dcache_page() is the right interface to use in machine independent
-code. It calls flush_kernel_dcache_page(), but it also has an additional
-performance tweak that delays flushing if the mapping is not in place yet
-(it sets a bit that causes the flush to happen when the translation is
-mapped).  This avoids flushing in some circumstances.
+This implies to me that our implementation of flush_icache_range must
+flush the relevant range of the dcache first.  I assume it doesn't
+currently do that since our diff vs linus' tree for module.c is:
 
-I've tracked the bug down to root cause.  The root cause of the problem is
-that shmem_getpage_locked() calls clear_highpage() for a page when it is
-first allocated, without flushing the page.  The appropriate interface is
-clear_user_highpage(), similar to what is done in do_anonymous_page() in
-mm/memory.c.  However, clear_user_highpage() requires the user address,
-and that would need to get passed down from shmem_nopage() through
-shmem_getpage()/shmem_getpage_locked(). shmem_getpage() and
-shmem_getpage_locked() get called in a few other places, so that change
-starts to get a little ugly.  I decided to take the easy way out by adding
-a flush_dcache_page() call after the call to clear_highpage(). Of course,
-this change will need to be sold to Linus eventually, so we will probably
-need to consult further to determine if this is an appropriate final fix.
+diff -urNX dontdiff linux-249/kernel/module.c linux-249-pa/kernel/module.c
+--- linux-249/kernel/module.c   Mon Sep  3 15:20:34 2001
++++ linux-249-pa/kernel/module.c        Fri Aug 17 00:12:22 2001
+@@ -510,8 +510,18 @@
+ 
+        /* On some machines it is necessary to do something here
+           to make the I and D caches consistent.  */
++#ifdef __hppa__
++       /* I guess we have a problem here because copy_from_user() has left
++        * the new module code in the data cache, so we need to flush it
++        * through.  Our copy_from_user() used to do cache flushing, but 
++        * it has been removed.  Puzzled as to why other archs might want
++        * to flush icache at this point.  rhirst@linuxcare.com
++        */
++       flush_data_cache();
++#endif
+        flush_icache_range((unsigned long)mod, (unsigned long)mod + mod->size);
+ 
++       /* Update module references.  */
+        mod->next = mod_tmp.next;
+        mod->refs = NULL;
+ 
+I suspect the right fix would be to change:
 
-Thomas, thank you for finding this bug and providing a test case.
+#define flush_icache_range flush_kernel_icache_range_asm
 
-John
+to:
 
-Here is the patch that I committed to mm/shmem.c:
+static inline void flush_icache_range(unsigned long start, unsigned long end)
+{
+	flush_kernel_icache_range_asm(start, end);
+	flush_kernel_dcache_range_asm(start, end);
+}
 
---- shmem.c.old	Mon Oct  1 03:01:47 2001
-+++ shmem.c	Mon Oct  1 04:08:13 2001
-@@ -377,6 +377,7 @@ repeat:
- 		if (!page)
- 			return ERR_PTR(-ENOMEM);
- 		clear_highpage(page);
-+		flush_dcache_page(page);
- 		inode->i_blocks += BLOCKS_PER_PAGE;
- 		add_to_page_cache (page, mapping, idx);
- 	}
+Comments?
+
+-- 
+Revolutions do not require corporate support.
