@@ -1,19 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: Solution to OPD's in hppa-linux,
-	including a transition plan?
-Date: Fri, 11 Mar 2005 19:49:28 -0500 (EST)
-Message-ID: <200503120049.j2C0nTDc017666@hiauly1.hia.nrc.ca>
-References: <20050311180542.GV22872@baldric.uwo.ca>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] 2.6.11 kernel trouble
+Date: Wed, 9 Mar 2005 15:52:07 +0000
+Message-ID: <20050309155207.GA21986@parcelfarce.linux.theplanet.co.uk>
+References: <BAY24-F182B0FC44FD328F86929F1D8510@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: tausq@debian.org,
- amodra@bigpond.net.au,
- parisc-linux@lists.parisc-linux.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Jan Prunk <janprunk@hotmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050311180542.GV22872@baldric.uwo.ca> from "Carlos O'Donell" at
-	Mar 11, 2005 01:05:42 pm
+In-Reply-To: <BAY24-F182B0FC44FD328F86929F1D8510@phx.gbl>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,51 +20,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Fri, Mar 11, 2005 at 08:57:51AM +1030, Alan Modra wrote:
-> > > In shared libraries the function pointer is also allocated a PLT slot
-> > > and an IPLT relocation. 
-> > > 
-> > > I don't understand the reasons for the allocation of a PLT slot if all
-> > > references generated go through the local label word that has the
-> > > PLABEL32 reloc, which now contains the address returned by
-> > > _dl_make_ftpr.
-> > 
-> > There probably isn't a good reason.  Blame that on me not understanding
-> > what I was doing when dhd and I hacked together ld and glibc hppa-linux
-> > support.
+On Wed, Mar 09, 2005 at 11:12:51AM +0000, Jan Prunk wrote:
+> I managed to install 2.6.11-pa2-defconfig from parisc CVS, but i noticed 
+> that default config doesnt have IPv6 enabled?
+> It boots well. But I need IPv6 support, so I compiled my own kernel. It 
+> would be really good in the future if IPv6 was enabled in defconfigs, so 
+> that I could easily download and update the kernels.
 > 
-> I understand why you allocate a PLT slot, because function calls seem to
-> go through the PLT only without reference to the PLABEL32 word (in
-> shared libraries). This saves an indirection through the PLABEL32 word
-> during a call. I believe this to be what is happening, and I verfiied it
-> lightly.
+> I downloaded 2.6.11-pa2 kernel from parisc CVS, but it gave me following 
+> problems when compileing:
+> CC      init/version.o
+>  LD      init/built-in.o
+>  LD      .tmp_vmlinux1
+> drivers/built-in.o(.init.text+0x2f40): In function `sti_select_fbfont':
+> : undefined reference to `find_font'
+> drivers/built-in.o(.init.text+0x3040): In function `sti_select_fbfont':
+> : undefined reference to `get_default_font'
 
-I believe the PLT exists to support 'LTP and 'RTP relocations.
-GCC doesn't generate these relocations as this support doesn't
-work under HP-UX, although the HP-UX assembler manual describes
-them.  GCC generates 32-bit plabels (deferred) when it encounters
-a situation where a 'LTP/'RTP sequence would be desireable.  Thus,
-we may not need the PLT slot.
+Ah, figured it out.  We just needed to include font.o when we have
+STI_CONSOLE selected but not FRAMEBUFFER_CONSOLE.  If you do a cvs update,
+you should be able to build with your current config.
 
-I don't see that a level of indirection is being saved.  We either
-go through the PLABEL32 word or the PLT.
-
-I believe that GCC always create the PLABEL32 words in the data
-section (definitely true for HP-UX) so that the word can be
-successfully relocated when a shared library is loaded.
-
-> I thought about this, and you are correct. Technically if the shared
-> object can do a comparison then the symbol must have been global, and
-> passed into the function.
-
-I don't think this is correct.  It's theoretically possible to pass
-two function pointers that both point to local functions in one object
-and have the comparison done in another (shared) object.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
