@@ -1,73 +1,58 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA16947
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 08:11:38 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 15 Jan 2001 15:15:07 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (@216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 15 Jan 2001 15:15:09 -0000
-Sender: jvinet@mailserv2.iuinc.com
-Message-ID: <3A631530.29D686AD@linuxcare.com>
-Date: Mon, 15 Jan 2001 10:20:16 -0500
-From: Jane Vinet <jvinet@linuxcare.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA17873
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 09:21:08 -0700
+Message-Id: <200101151624.LAA26183@hiauly1.hia.nrc.ca>
+Subject: Re: Oust HPPA PIC_OFFSET_TABLE_REGNUM_SAVED
+To: alan@linuxcare.com.au (Alan Modra)
+Date: Mon, 15 Jan 2001 11:24:22 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: law@redhat.com, gcc-patches@gcc.gnu.org,
+        parisc-linux@puffin.external.hp.com
+In-Reply-To: <Pine.LNX.4.21.0101151430350.21322-100000@front.linuxcare.com.au> from "Alan Modra" at Jan 15, 2001 10:09:30 pm
 MIME-Version: 1.0
-To: Matthew Wilcox <matthew@wil.cx>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] website
-References: <20010106122621.C14922@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Willy,
+> This patch rids us of PIC_OFFSET_TABLE_REGNUM_SAVED, and the problems that
+> go with it.  Additionally, I reload the pic offset table register before
+> calls to guard against asm trashing r27/r19.  Hasn't bootstrapped yet, but
+> looks promising.  One possible fly in the ointment is whether any ABI
+> requires that r4 always be used to save the pic offset table reg.
 
-Sorry, I thought I had sent this early last week, however, I had it in
-my drafts folder, I was not being unresponsive.
+At first glance, this looks like a good solution.  I don't see any requirement
+that r4 be used to save the pic offset table reg in either ABI.
 
-Matthew Wilcox wrote:
-> 
-> As I've mentioned before, I'm not happy with several aspects of the
-> proposed replacement website.
-> 
->  * I believe there is too much boilerplate HTML which will quickly get out
->    of sync between the different files.
+However, why is it necessary to guard against asms trashing r27/r19?  If
+this happens, data access using gp won't work as well.  Shouldn't asms
+ensure that they restore r27/r19 if they trash it?  If in fact r27/r19
+needs to be restored prior to calls, it looks like it also needs to be
+restored prior to each procedure return (see below).  This would prevent
+the trivial return from ever being generated whenever pic code is used.
+Thus, it seems necessary to ensure that r27/r19 is preserved from entry
+to exit.
 
-Discussions between Linuxcare and Hewlett Packard have come to the
-conclusion that HP are satisfied with the site and we are going to post
-it the way it is now.  Please note that it will not stay static.  We
-believe the site will evolve over time and some of the issues you have
-brought up may be addressed in future developments.  As to your other
-comments, please see below.
+This is what the 64-Bit ABI says about r27:
 
->  * The proposed site doesn't have the useful `last updated' feature.
+GR 27 serves as the global pointer (gp).  This is a dedicated register with
+special conventions.  Its use is subject to the following rules:
 
-You are right, the previous "last updated" showed the last chron job -
-we will modify to show last time it was checked out of CVS.
+a) On entry to a procedure, gp is guaranteed valid for that procedure.
 
->  * The text is too small.
->  * It uses too many tables.
+b) At any direct procedure call, gp must be valid (for the caller).  This
+   guarantees that an import stub (see Section 5.2) can access the linkage
+   table.
 
-I feel these are personal preferences - however, I will see what can be
-done about the font
+c) Any procedure call (indirect or direct) may destroy gp--unless the call
+   is known to be local to the load module.
 
->  * The <title></title> gives no useful information (also a problem with the
->    current site.)
+d) At procedure return, gp must be valid (for the returning procedure).
+   This allows us to optimize calls known to be local (the exception to
+   Rule `c').
 
-Absolutely correct, will address it with the web team
->  * Too many directories containing only one file.
+The effect of these rules is that gp must be treated as a scratch register
+at a point of call but a procedure must preserve it from entry to exit.
 
-The site was designed with the idea of growth in mind, in fact we looked
-at the site map extensively before asking for an overhaul and we feel
-that it is no more complicated than in the past and looks to the future
-as well.
-
->  * It now requires perl to build.
-
-The system uses perl as a preprocessor - we do not believe that there
-are going to be any issues with this.
-
-Jane
-
+Dave
 -- 
-Jane Vinet, Director Professional Services/Canadian Operations
-Linuxcare, Inc. 613.562.9260 (tel), 613.562.9700 fax
-jvinet@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the Revolution
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
