@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8092482B
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Aug 2002 12:47:52 -0600 (MDT)
-Message-ID: <3D5FDB3A.4020708@freebel.net>
-Date: Sun, 18 Aug 2002 17:36:58 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Sources browsing tool?
-References: <1023470637.3d00ec2d3a708@webmail.tiscalinet.be> <1023475115.25523.47.camel@irongate.swansea.linux.org.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D2A3482B
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Aug 2002 16:40:13 -0600 (MDT)
+Date: Sat, 24 Aug 2002 18:37:51 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Randolph Chung <tausq@debian.org>
+Cc: "B. Douglas Hilton" <bdhilton@charter.net>,
+	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20020824223751.GA16590@systemhalted>
+References: <3D67C8AC.2080309@charter.net> <20020824180137.GB25592@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020824180137.GB25592@tausq.org>
+Subject: [parisc-linux] Re: Compiling glide-2001.01.26 on hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,45 +24,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Just for reminder in this ml
+> > cc -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> > -fexpensive-optimizations -ffast-math -DBIG_OPT -I. \
+> > -I/usr/src/glide-2001.01.26/build-tree/glide2x/swlibs/include \
+> > -I/usr/src/glide-2001.01.26/build-tree/glide2x/cvg/include \
+> > -DENDB -DX11 -Wall -fPIC -DPIC -c -o fx64.o fx64.c
+> > 
+> > cc1: Invalid option `486'
+> > 
+> > 
+> > My question is, what incantation should I use on hppa to
+> > replace the '-O6 -m486 -f...' CFLAGS?
+> 
+> i would suggest just using "-O2" for now....
+> 
+> randolph
+> 
 
+The issues revolves around the fact that the source tree and 
+assembly for some of pieces you want to build are meant for x86 boxes.
+Though from a cusory glance it looks like the .c files are present for
+these bits (so you can revert to those).
 
-Alan Cox wrote:
-  > On Fri, 2002-06-07 at 18:23, joel.soete@freebel.net wrote:
-  >
-  >>Hi all,
-  >>
-  >>Can you advise me some browsing tools which would allowing me to find
-quickly
-  >>where a variable, a function is define; where is used,... in this big
-amount
-  >>source which represent kernel now (find is not always easy).
-  >>
-  >>I find well a work of reverse engineering (rigiedit) of the kernel
-but not for 2.4.
-  >>And unfortunately sources (tcl/tk iirc) do not seems to be available
-to port on
-  >>hppa.
-  >
-  >
-  > Try the Linux cross reference - http://lxr.linux.no
-  >
+Right off the top:
+tvg/makefile.linux:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
+glide2x/sst1/init/initvg/makefile.unix:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
+glide2x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide2x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+glide3x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+glide3x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
 
+These files will give you some grief and need to be changed; remove the -m486 bit.
+You either need to produce .dpatch's for the deb to use or stop building
+the deb and do it by hand with the upstream source.
 
-I try to install it (from src, from tarball, from cvs): no way of
-success (install instruction not uptodate)
-But on the same 'sf.net' I found my happyness: sourcenav (5.1.0).
+You've got me all excited about seeing this work :) I have a Vodoo1 (Monster3D)
+PCI card that I might be tempted to ressurect.
 
-An install of the Install:
-./configure --prefix=/opt/sn
-make
-make install
+Hope this helps. Sorry about there not being a _magic_ switch :)
 
-(That is the first time that I had the opportunity to build a package
-with so few warning. It is very beautifull and easy to use :)
-
-And the last but not least: it works fine on my own i386 as well as on
-my b2k :)
-I am now impatient to test it on a big proj as linux-2.4.
-
-Joel
+c.
