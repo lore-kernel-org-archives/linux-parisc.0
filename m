@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B505483A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Aug 2002 15:28:26 -0600 (MDT)
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 83109483A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Aug 2002 15:28:38 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17hzVN-0003Wi-00; Thu, 22 Aug 2002 22:28:37 +0100
+Date: Thu, 22 Aug 2002 22:28:36 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: Jeremy Drake <jeremyd@apptechsys.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] cvs.parisc-linux.org 
-In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
-   of "Thu, 22 Aug 2002 10:54:54 PDT." <Pine.LNX.4.44.0208221053060.13559-100000@garibaldi.apptechsys.com>
-References: <Pine.LNX.4.44.0208221053060.13559-100000@garibaldi.apptechsys.com> 
+Subject: Re: [parisc-linux] cvs.parisc-linux.org
+Message-ID: <20020822222836.Y29958@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.44.0208221053060.13559-100000@garibaldi.apptechsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 22 Aug 2002 15:28:24 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020822212825.F09D037F2E@carmen.fc.hp.com>
+In-Reply-To: <Pine.LNX.4.44.0208221053060.13559-100000@garibaldi.apptechsys.com>; from jeremyd@apptechsys.com on Thu, Aug 22, 2002 at 10:54:54AM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,15 +25,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jeremy Drake writes...
-
+On Thu, Aug 22, 2002 at 10:54:54AM -0700, Jeremy Drake wrote:
 > is it just me, or is cvs.parisc-linux.org down?  I get 
 
-All the parisc-linux.org services were down due to a router problem. It's 
-fixed now(that's how your mail went out).
-
-Thanks,
+we had a twelve hour outage caused by a glitch on hp's network.  in these
+circumstance, since lists.p-l.org and cvs.p-l.org are the same machine,
+complaining on the mailing lists gets nowhere ;-)
 
 -- 
-Matt Taggart        Linux R&D
-taggart@fc.hp.com   HP Linux Systems Division
+Revolutions do not require corporate support.
