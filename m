@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp2 (203.141.154.201.user.ca.il24.net [203.141.154.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EAA664834
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 10:03:21 -0600 (MDT)
-From: =?iso-2022-jp?B?GyRCRTlBdU1RSUobKEI=?= <sales@db.bbmail.ne.jp>
-To: parisc-linux@lists.parisc-linux.org
-Reply-To: sales@db.bbmail.ne.jp
-Date: Wed, 03 Jul 2002 20:39:22 +0900
-Message-ID: <14bb63bd971a.44d7@db.bbmail.ne.jp>
+Received: from olsztyn.ken.pl (unknown [212.244.122.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 521074835
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 10:11:07 -0600 (MDT)
+Received: from h1 (pe113.olsztyn.sdi.tpnet.pl [213.76.233.113])
+	by olsztyn.ken.pl (8.11.6/8.9.3) with SMTP id g63GIfT19770
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 3 Jul 2002 18:18:41 +0200
+Message-ID: <002201c222b5$9fcf8ec0$8501a8c0@pl>
+From: "Robert Boehm" <robert@olsztyn.ken.pl>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <02070315581300.00805@www>
+Subject: Re: [parisc-linux] HP9000/710
+Date: Wed, 3 Jul 2002 19:18:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-2022-jp
-Subject: [parisc-linux] =?iso-2022-jp?B?WxskQiEqOS05cCEqJE4kXCRqNHohJjRHSEQbKEI=?=
- =?iso-2022-jp?B?GyRCISYlKyU/JW0lMCU5JT8lcyVJISY/YiRsS2shREU5QXUbKEI=?=
- =?iso-2022-jp?B?GyRCTVFJShsoQlNIT1AbJEIlKiE8JVclcyEqGyhCXQ==?=
- 1674580-1-120
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +25,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-お忙しいところ失礼致します。
-今後メール不要な方は、お手数ですが下記自動メール削除用
-アドレスをクリックするか、そのまま返信くだされば今後メール致しません。
-
-自動メール削除用アドレス
-http://db.bbmail.ne.jp/scripts/member3/mail_deny.asp?mid=1674580-1-120&mail=parisc-linux@lists.parisc-linux.org
-
-弊社はこの度、のぼり旗、看板、垂れ幕、カタログスタンド、メニュースタンド
-などの宣伝・広告用品、店舗、事務所用品等を網羅したポータルサイト
-「店装用品ホームページ」をオープン致しました。
-お店に必要なモノはなんでもそろえております！
+----- Original Message -----
+From: "ste" <stemelchior@inwind.it>
+To: <debian-hppa@lists.debian.org>; <parisc-linux@lists.parisc-linux.org>
+Sent: Wednesday, July 03, 2002 3:58 PM
+Subject: [parisc-linux] HP9000/710
 
 
-ホームページはここをクリックしてください。
-       http://www.kilamek.co.jp/new
+> Hi guys,
+> I have got an old HP workstation (with DDS, CDROM drive) and when I tried
+to
+> install Debian-HPPA 0.9.3 on it makes impossible the installation at the
+> point when you have to configure the keyboard. I mean that ( I got and old
+> HP-HIL keyboard, you know the one with the RJ45-like connector) I weel can
+> see on monitor the choises but I am able only to move the cursor upward or
+> downward. Then it hangs!!! my question is: how to procede in this step of
+> installation?
+    Don't choose any keyboard mapping. Go to the next step.
+    It works with default kernel mapping.
+    I have 710 too, and ISO 0.9.3 works fine, but without HIL and serial
+mouse.
+    With the new  kernel pa-46 HIL mouse works but serial still not.
+    In the new kernel the keyboard mapping is bad but HIL mouse plays fine.
 
-――――――――――――――――――――――――――――――
-有限会社キラメック 店装用品営業部　担当：服部・北野
-〒162-0067　東京都新宿区富久町16-8　
-TEL： 03-3350-8215　FAX：03-3341-6076
-tensou@kilamek.co.jp
+
+
+                                                                    Robert
+Boehm
