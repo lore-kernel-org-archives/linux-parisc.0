@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8DC064897
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Aug 2003 06:16:30 -0600 (MDT)
-Date: Mon, 25 Aug 2003 14:16:24 +0200
-Message-ID: <3F2E2C7700004F27@ocpmta2.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Help: Need instruction sequence for gdb breakpoint
-To: "Lev Assinovsky" <LAssinovsky@algorithm.aelita.com>,
-	"Thibaut VARENE" <varenet@esiee.fr>,
-	"Grant Grundler" <grundler@parisc-linux.org>
+Date: Mon, 25 Aug 2003 10:45:53 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <jsoe0708@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
+Message-ID: <20030825164553.GB28778@dsl2.external.hp.com>
+References: <3F2E2C7700004E38@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F2E2C7700004E38@ocpmta2.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +20,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I meant have you heard about ddd for HP-UX 11.00?
+On Mon, Aug 25, 2003 at 12:03:20PM +0200, Joel Soete wrote:
+> So I would like to study now the early boot process
+> (specialy for the second cpu) to try to understand how caches (for shared
+> insn and data) are replicated into other CPU's [id]tlb.
 
-I compiled it successfully on my b180 with hpux-11.00 (but a long time ago)
-and it was running fine (for the few I used).
+The additional CPUs just reference (ie load) the shared data using
+the same address. AFAIK, a cacheline will get loaded as "shared clean"
+until someone writes to it - which is when the cacheline ping-pong
+starts.
 
-hth,
-    Joel
+> Can you tell me more: in a previous piminfo collected I got for CPU#3 (3
+> is the "address" of the second cpu)
 
-PS: Onto http://hpux.connect.org.uk/ there is available a very old release
-(2.0). But you could try to ask them to compile a sd package for a new release.
+PAT PDC (L-/N-class and A500) have hard coded numbers for CPUs.
+parisc-linux only uses logical CPU numbers to avoid sparsely populated
+arrays. parisc-linux can get the "Physical CPU #" from PAT PDC.
+See code inside USE_PAT_CPUID in arch/parisc/kernel/processor.c.
+You might hack that code a bit so you can correlate logic to physical
+CPU numbers.
 
-
-
--------------------------------------------------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=fr 
+grant
