@@ -1,30 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail-ob01.one.net.au (mail-ob01.one.net.au [61.12.0.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65695482A
-	for <parisc-linux@parisc-linux.org>; Wed,  2 May 2001 03:05:05 -0600 (MDT)
-Received: Received: [from squeak.local (async152-ade-isp-7.nas.one.net.au [203.101.92.153])
-	by mail-ob01.one.net.au  with SMTP id f42958K04758
-	for <parisc-linux@parisc-linux.org>; Wed, 2 May 2001 19:05:09 +1000 (EST)]
-From: amodra@one.net.au
-Date: Wed, 2 May 2001 18:35:50 +0930
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Bizarre linking problems with glibc
-Message-ID: <20010502183550.A5494@squeak.one.net.au>
-References: <20010502085517.J18144@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010502085517.J18144@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Wed, May 02, 2001 at 08:55:17AM +0100
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 32EEE482A
+	for <parisc-linux@parisc-linux.org>; Wed,  2 May 2001 11:11:28 -0600 (MDT)
+Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
+	by palrel1.hp.com (Postfix) with ESMTP id 0E43FF98
+	for <parisc-linux@parisc-linux.org>; Wed,  2 May 2001 10:11:27 -0700 (PDT)
+Received: from xatlbh1.atl.hp.com (xatlbh1.atl.hp.com [15.45.89.186])
+	by xparelay2.corp.hp.com (Postfix) with ESMTP id 7BE891F50B
+	for <parisc-linux@parisc-linux.org>; Wed,  2 May 2001 13:09:24 -0400 (EDT)
+Message-ID: <AB57FCC5E303D511BB8F00A0C9F485C2011947DE@xfc02.fc.hp.com>
+From: "MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
+To: parisc-linux@parisc-linux.org
+Date: Wed, 2 May 2001 12:24:59 -0400 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] May release
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, May 02, 2001 at 08:55:17AM +0100, Matthew Wilcox wrote:
-> --- elf/dl-error.c      2001/04/25 18:39:32     1.6.2.1
-> +++ elf/dl-error.c      2001/05/01 23:10:34
-> @@ -154,6 +154,8 @@ _dl_catch_error (const char **objname, c
->        return 0;
->      }
->  
-> +printf("_dl_catcherror: we longjmped\n");
-> +
-> 
-Use _dl_sysdep_output (int fd, const char *msg, ...).
+FYI, the HP folks on this port are working towards an end-May release.  This
+might explain some of the risk-averse behavior you see from us over the
+coming weeks.
+
+You can look at the following to see more detail on the goals & contents for
+this release:
+
+http://puffin.external.hp.com/~acmeyer/ProjectPlan.html
+
+Thanks for any help,
+Alan
+ 
