@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ED3AC482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 06:27:04 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19aE2G-0000Y2-W1; Wed, 09 Jul 2003 13:27:00 +0100
-Date: Wed, 9 Jul 2003 13:27:00 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: "Martin K. Petersen" <mkp@mkp.net>, Dub <dub@latnet.lv>,
-	parisc-linux@lists.parisc-linux.org
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8051548C3
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 07:04:22 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
-Message-ID: <20030709122700.GR1939@parcelfarce.linux.theplanet.co.uk>
-References: <yq1llv8dbin.fsf@wilson.mkp.net> <3F057186000008F4@ocpmta8.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F057186000008F4@ocpmta8.freegates.net>
+Message-ID: <1057755859.3f0c12d38f8b9@clients.latnet.lv>
+Date: Wed, 09 Jul 2003 16:04:19 +0300 (EEST)
+From: Dub <dub@latnet.lv>
+References: <1057687402.3f0b076a99c5d@clients.latnet.lv> <yq1llv8dbin.fsf@wilson.mkp.net>
+In-Reply-To: <yq1llv8dbin.fsf@wilson.mkp.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=KOI8-R
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,25 +22,59 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 09, 2003 at 10:29:08AM +0200, Joel Soete wrote:
-> Yes read in <http://www.ibiblio.org/pub/Linux/docs/howto/other-formats/html_single/SCSI-2.4-HOWTO.html#mlproc>
+Hi,
+
 > 
-> that in Linux 2.4: "The SCSI subsystem does not support hot-plugging of SCSI
+> Odd.  I'm running mdadm 1.2.0 and it says:
+> 
+>         allegro:~# mdadm --create --help 2>&1 | grep raid-dev
+>         Usage:  mdadm --create device -chunk=X --level=Y
+> --raid-devices=Z devices
+>           --raid-devices= -n : number of active devices in array
+> 
+> Maybe Neil changed it in a later version?
+
+I downloaded the only  stable version mdadm 0.7.2-2 from ftp.debian.org.   
+
+# mdadm --create --help 2>&1 | grep raid-d
+Usage:  mdadm --create device -chunk=X --level=Y --raid-disks=Z devices
+
+I guess it would be nice to mention the difference in the FAQ
+ 
+> Well.  If the disk is no longer part of the metadevice, you manually
+> have to add it using the mdadm command.
+> 
+> It would be quite dangerous if the RAID code decided to add things to
+> an array just because a disk is inserted (fine for a storage
+> appliance, bad idea for a server).
+OK, thank you!
+
+
+> Yes read in
+<http://www.ibiblio.org/pub/Linux/docs/howto/other-formats/html_single/SCSI-2.4-HOWTO.html#mlproc>
+> 
+> that in Linux 2.4: "The SCSI subsystem does not support hot-plugging
+of SCSI
 > devices ..."
 
-True, it's pretty damn racy.  But if you're careful, it can work.
-Let's hope we manage to make it better in 2.6 ... there's a pair of BOFs
-in two weeks time at OLS (Hotplug & Linux SCSI) that should address this.
+I just made another test. I pull out 2 mirrored disk (root and var). The system
+was running well. However, it seems that md software did not notice absense of
+disk until someone tries to write there (I was forced to create a file in /boot
+partition so that md understands the failure).
 
-> Well I have no experience with hpux and those new 'hotplugable' devices but
-> at least on Sun it doesn't mean that you can remove device(s) like this without
-> taking care to power it off by software!!!
+Then I rebooted the system without two disks. PDC told 'warn 80F5' ( Looks Error
+executing Entry Init). I do not know why PDC did not try secondary device
+automatically, in spite of BOOT ALT worked OK. Looks like PDC was very unhappy
+about primary disk and didn't try to try secondary path.
 
-Well, no, you're always going to have to quiesce the device.  Otherwise it's
-like turning the machine off without halting -- random things are cached and
-simply never make it back to disc.
+Then Linux didn't find two disks, and reassigned new device names (sda,sdb,...)
+according to existing scsi ids. Happily, md software does not care about
+symbolic device names and remaps /dev/md  for new disk names according to  hw paths.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Then I inserted the disks and rebooted the system so that the disks appear as
+they should. Mirror were resynced manually without problems.
+
+So, I'm not very happy about Linux hot-plug features.
+
+BR,
+Dub
