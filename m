@@ -1,32 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA01710
-	for <parisc-linux@puffin.external.hp.com>; Sun, 11 Jun 2000 21:28:17 -0600
-Message-Id: <200006120327.XAA08654@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] hpux11 build problems.
-To: steve@silug.org (Steven Pritchard)
-Date: Sun, 11 Jun 2000 23:27:07 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: alan@linuxcare.com.au, JSO@EUROPAY.COM, parisc-linux@thepuffingroup.com
-In-Reply-To: <200006110329.WAA05054@osiris.silug.org> from "Steven Pritchard" at Jun 10, 2000 10:29:35 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA23729
+	for <parisc-linux@puffin.external.hp.com>; Tue, 13 Jun 2000 22:59:36 -0600
+Received: from localhost (catfish@localhost)
+	by jesse.crash.lan (8.9.3/8.9.3) with ESMTP id AAA07658
+	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jun 2000 00:00:06 -0500
+Date: Wed, 14 Jun 2000 00:00:04 -0500 (CDT)
+From: "T. Martin" <catfish@alltel.net>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.10006132357470.6974-100000@jesse.crash.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Recipe question
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I guess I really need to get the CVS gcc packaged up for everyone...
-> Is it in a reasonably stable state at the moment?
+Hi, 
+ I'm trying to build the things according to the recipe but theres only
+one question so far. 
+ Whats the best way to install egcs without screwing up the gcc I have
+already installed? 
+ egcs builds clean so should I have reseverations about overwriting my
+current gcc?
 
-There have been a lot of changes over the recent months.  Although I sense
-that there is now a move to get it back to a stable state, it certainly
-hasn't reached a stable state.  The new version also still has to go
-through a shake out period before the next release.  The C compiler
-is in better shape than C++.
+Thanks 
+Terry
 
-The mainline CVS version is the only one that supports hpux 11.  However,
-for a cross to build the linux kernel, it probably would be better to use
-the release version 2.95.2 or the 2.95 CVS branch.  These are much more
-reliable in my opinion.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+catfish: icq #20116127
