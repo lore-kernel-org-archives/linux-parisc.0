@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 379D7482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 May 2002 15:16:10 -0600 (MDT)
-Message-Id: <200205302116.g4ULG2YZ003411@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Java and SSH
-To: willy@debian.org (Matthew Wilcox)
-Date: Thu, 30 May 2002 17:16:01 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: grundler@dsl2.external.hp.com, marc@centraltx.com,
-	parisc-linux@lists.parisc-linux.org, doko@cs.tu-berlin.de
-In-Reply-To: <20020530221126.B10366@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at May 30, 2002 10:11:26 pm
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A9F5E482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 May 2002 18:12:05 -0600 (MDT)
+Received: from garibaldi.apptechsys.com (ats164.apptechsys.com [207.14.35.164])
+	by mail.apptechsys.com (Postfix) with ESMTP id 646487BC45
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 May 2002 17:11:59 -0700 (PDT)
+Date: Thu, 30 May 2002 17:11:59 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.44.0205301710420.11012-100000@garibaldi.apptechsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] J5000 Webcam
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +23,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > gcj builds without problem on all parisc configurations.  However,
-> > nobody has done the work to port the java libraries.  I imagine
-> > that getting the libraries to build under hppa-linux should be
-> > pretty straight forward.
-> 
-> For some reason, doko disabled gcj from building in debian's packages.
-> Anyone know why?
+If anyone is interested in seeing an image of my J5000's LCD screen, 
+updated every 60 seconds.
 
-Probably, since gcj is more or less useless without the libraries.
-The hard part may be libffi.
+http://demo.apptechsys.com/HPUXWebCam/
 
-Dave
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+You definitely intend to start living sometime soon.
