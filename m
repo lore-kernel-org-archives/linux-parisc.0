@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BAA6485E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 05:35:47 -0700 (MST)
-Date: Thu, 21 Feb 2002 13:33:42 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Jbit <james_a_n_lee@yahoo.com>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 712 Software Temperature
-Message-ID: <20020221123342.GY4237@charite.de>
-References: <3C74DF52.7090308@yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C74DF52.7090308@yahoo.com>
+Received: from gw-nl4.philips.com (gw-nl4.philips.com [212.153.190.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C8034871
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 07:35:16 -0700 (MST)
+Received: from smtpscan-nl2.philips.com (localhost.philips.com [127.0.0.1])
+          by gw-nl4.philips.com with ESMTP id PAA15532
+          for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:34:07 +0100 (CET)
+          (envelope-from willy.schriemer@philips.com)
+From: willy.schriemer@philips.com
+Received: from smtprelay-nl1.philips.com (localhost [127.0.0.1])
+	by smtpscan-nl2.philips.com (8.9.3/8.8.5-1.2.2m-19990317) with ESMTP id PAA10410
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:35:07 +0100 (MET)
+Received: from ehv001soh.diamond.philips.com (e2soh01.diamond.philips.com [130.139.52.212])
+	by smtprelay-nl1.philips.com (8.9.3/8.8.5-1.2.2m-19990317) with ESMTP id PAA00064
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:35:05 +0100 (MET)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <OFD0B612F9.F1BF32FB-ONC1256B67.004FBA94@diamond.philips.com>
+Date: Thu, 21 Feb 2002 15:34:50 +0100
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=_alternative 00501D13C1256B67_="
+Subject: [parisc-linux] HP3000 model 937
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +30,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Feb 21, 2002 at 11:51:46AM +0000, Jbit wrote:
-> Hi,
-> looking inside my 712, I noticed that it has a thermocouple or somthing to 
-> dectect the temperature in the case.
-> Tracing back the wires finds that they connect to the mainboard, and on the 
-> same connector, theres 2 wires that goto the power supply.
-> I'd assume this is for a secondry fan?
+This is a multipart message in MIME format.
+--=_alternative 00501D13C1256B67_=
+Content-Type: text/plain; charset="us-ascii"
 
-According to the manual, the fan shifts ito higher gear, once the
-temperature exceeds 30 deg. celsius.
+Hi fellow listers,
 
-> Anyway, since it goes to the mainboard, does this mean its posible to find 
-> out the temperature in software?
+Is it possible to use PaRisc on HP3000 model 937RX. This machine is a good 
+old MPE/iX wich I want to use for testing PaRisc0Linux.
 
-THAT would be interesting.
+TIA,
 
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Murphy's Law is recursive.  
-Washing your car to make it rain doesn't work. 
+Willy Schriemer
+System Manager Factory Automation Systems
+Philips Semiconductors MOS3 Submicron Waferfab
+Building FB 2.018
+Gerstweg 2
+6534 AE Nijmegen
+The Netherlands
+Tel. + 31 24 353 2991 or 5716
+
+--=_alternative 00501D13C1256B67_=
+Content-Type: text/html; charset="us-ascii"
+
+
+<br><font size=2 face="sans-serif">Hi fellow listers,</font>
+<br>
+<br><font size=2 face="sans-serif">Is it possible to use PaRisc on HP3000 model 937RX. This machine is a good old MPE/iX wich I want to use for testing PaRisc0Linux.</font>
+<br>
+<br><font size=2 face="sans-serif">TIA,<br>
+<br>
+Willy Schriemer<br>
+System Manager Factory Automation Systems<br>
+Philips Semiconductors MOS3 Submicron Waferfab<br>
+Building FB 2.018<br>
+Gerstweg 2<br>
+6534 AE Nijmegen<br>
+The Netherlands<br>
+Tel. + 31 24 353 2991 or 5716<br>
+</font>
+--=_alternative 00501D13C1256B67_=--
