@@ -1,39 +1,30 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA12542
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Dec 1999 00:09:58 -0700
-Received: from localhost (tom@localhost)
-	by adam.piace.com (8.9.3/8.9.3) with ESMTP id CAA07087
-	for <parisc-linux@thepuffingroup.com>; Thu, 30 Dec 1999 02:12:46 -0600
-Date: Thu, 30 Dec 1999 02:12:46 -0600 (CST)
-From: <tom@piace.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA15803
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Dec 1999 05:59:44 -0700
+From: "Michael Herold" <mherold@invacare.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9912300157060.6990-100000@adam.piace.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Thanks...alot
+Message-ID: <85256857.0047409F.00@10.1.1.29>
+Date: Thu, 30 Dec 1999 08:03:17 -0500
+Subject: Re: Thanks...alot
+Mime-Version: 1.0
+Content-type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-	Two weeks I have received two 735 on loan.  They came from a
-surplus computer shop, and they did not know what they had, so I am
-working on two of the to see if I can get them to work, and If I can I get
-one for free in trade for telling them how to fix the others.  They still
-have the hpux loaded, but they have the passwords set.  
+Tom,
 
-	I would like to help with the porting effort, but I have not been
-able to find a monitor that worked with the composit sync, and such a high
-sync rate, and I thought all was lost, but after reading the last
-few posts I was able to get one of them talking over a serial connection.  
+My 735 at home is running off a Hitachi CM630U.  It's a 17 inch monitor with
+'sync on green' capabilities( 620's dont have this) . This monitor works for the
+48z graphics box and the 24z graphics board that I have for my 735.
 
-	Does anyone know if hp has a development version of hpux like
-sun has with solaris?  If not does anyone know of a way to reset the
-password from the console.
+--Unrelated,  Does anyone know where I can find an original set of hardware
+manuals
+for the 735 series -- I believe myself or my better half inadvertently pitched
+them out.  :-(
 
-	My only other idea is to find a diff scsi card that I can put
-into my other linux box, and try to mount the root partions, and edit the
-password file.  
-
-	Any help would be great.  
+Mike
 
 
-					Thanks A Lot
-					Thomas Bloom
+__________________
+
+The contents of this message represent the opinions of the employee and not
+necessarily the opinions of Invacare Corporation.
