@@ -1,32 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA32511
-	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 08:56:19 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 23 Aug 2000 14:56:12 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 23 Aug 2000 14:55:39 -0000
-Date: Wed, 23 Aug 2000 09:51:10 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: Tor Arntsen <tor@spacetec.no>
-Cc: Alan Modra <alan@linuxcare.com.au>, parisc-linux@thepuffingroup.com,
-        parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-Message-ID: <20000823095110.H14529@vodka.thepuffingroup.com>
-References: <alan@linuxcare.com.au> <200008231126.NAA02186@pallas.spacetec.no>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200008231126.NAA02186@pallas.spacetec.no>; from Tor Arntsen on Wed, Aug 23, 2000 at 01:26:55PM +0200
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA00808
+	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 10:04:23 -0600
+Message-Id: <200008231606.JAA11784@milano.cup.hp.com>
+To: Matthew Hudson <mhudson@home.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: U2/Uturn stuff. 
+In-reply-to: Your message of "Wed, 23 Aug 2000 10:39:07 PDT."
+             <39A3F01B.E042265D@home.com>
+Date: Wed, 23 Aug 2000 09:06:51 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 23, 2000 at 01:26:55PM +0200, Tor Arntsen wrote:
-> On Aug 23, 11:47, Alan Modra wrote:
-> >Ah Ha!  So an update of puffin cvs would be a good idea.  Provided said
-> >update didn't trash all the old repositories...
+Matthew Hudson wrote:
+> Grant Grundler wrote:
+> > Non-functional since U2/Uturn code is not ready yet (I'm working on it)
+> > and not documented (let's not go there again right now). And even
+> > if it were ready, I need to hack in some sort of an "I/O tree"
+> > in order to support more than one U2/Uturn. K-class can have
+> > multiple U2/Uturns.
 > 
-> Recommended.  I'm using version 1.10.8.1 on both servers and clients
+> I've looked over the ccio-dma.c code and nothing jumps out at me
+> codewise. Can you point me to any information about the IOA
+> chips?
 
-we currently have 1.10.2 on pehc.  i believe matt taggart plans to
-upgrade pehc later this week.
+Unfortunately not. If it's not clear from the code, point me
+at the specific chunk of code you don't understand and I'll
+add comments to make it clearer.
 
--- 
-Revolutions do not require corporate support.
+> Also, do you have an inkling of an idea where the problem
+> might be? I'll take a crack at it and see if I can do anything,
+> no promises. :-)
+
+Bob Pflederer has it working and I committed his one line fix
+to ccio-dma.c yesterday.  I haven't tested it as my C200 is being
+shipped to someone else now.
+
+Changes to lasi LAN (82596?) and cache flushing code are also
+needed to make the system usable.
+
+thanks,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
