@@ -1,36 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1116D482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 12:14:28 -0600 (MDT)
-Message-Id: <200104201807.MAA31270@puffin.external.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] kernel panic using cpio from cdrom to disk. 
-In-Reply-To: Your message of "Fri, 20 Apr 2001 17:57:49 BST."
-             <20010420175749.M11226@linuxcare.com>
-Date: Fri, 20 Apr 2001 12:07:14 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from opus.bloom.county (cpe-24-221-152-185.az.sprintbbd.net [24.221.152.185])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7EDF482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 12:22:47 -0600 (MDT)
+Date: Fri, 20 Apr 2001 11:20:42 -0700
+From: Tom Rini <trini@kernel.crashing.org>
+To: Nicolas Pitre <nico@cam.org>
+Cc: "Eric S. Raymond" <esr@thyrsus.com>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	"Albert D. Cahalan" <acahalan@cs.uml.edu>,
+	Matthew Wilcox <willy@ldl.fc.hp.com>,
+	james rich <james.rich@m.cc.utah.edu>,
+	lkml <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
+Message-ID: <20010420112042.Z13403@opus.bloom.county>
+References: <20010420085148.V13403@opus.bloom.county> <Pine.LNX.4.33.0104201206250.12186-100000@xanadu.home>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0104201206250.12186-100000@xanadu.home>; from nico@cam.org on Fri, Apr 20, 2001 at 12:35:12PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst wrote:
-> This is interesting, my tests worked fine, but when I tried to reboot
-> (typed 'init 6'), it blew up:
+On Fri, Apr 20, 2001 at 12:35:12PM -0400, Nicolas Pitre wrote:
 
-was in-mem data being sync'd to disk?
+> There is kind of a ridiculous situation here where people want to withhold
+> their own changes in their own trees for all good reasons until it is mature
+> and stable enough to be fed upstream in the appropriate way, while insisting
+> for Linus' tree to remain incomplete and inconsistent.  And we're not
+> talking about deep architectural changes here -- only about configure
+> symbols and help text.
 
-> Like Ryans crash, PSW has only the Q bit set - data translation is
-> turned off.  I guess that means the IAOQ values are real addresses, so I
-> added 0x10000000 before looking them up in System.map.  In my case, it
-> died on the "rsm 8,r0" under os_hpmc_5 in arch/parisc/kernel/hpmc.S.
+The answer is simple, noise.
 
-That would suggest two things:
-1) the box HPMC'd in both cases - look at PIM dump for more info
-2) we have a bug in our HPMC handler that PDC tries to call (in real mode).
-   Perhaps one of the asm gods (or even demi-gods :^) could look at
-   hpmc.S and the path to get there.
+> Why not having everybody's tree consistent with themselves and have whatever
+> CONFIGURE_* symbols and help text be merged along with the very code it
+> refers to?  It's worthless to have config symbols be merged into Linus' or
+> Alan's tree if the code isn't there (yet).  It simply makes no sense.
 
-grant
+Well, this depends a lot on a) The project to be merged (arch, mtd, whatever)
+and b) how far something has gotten in being merged someplace else, and of
+course c) the maintainer(s).  Whatever the exact case, and in general, it 
+should be handled via the maintainer.  Why? They maintain the code.
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Tom Rini (TR1265)
+http://gate.crashing.org/~trini/
