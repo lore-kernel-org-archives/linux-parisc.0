@@ -1,21 +1,71 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03202
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 17:17:43 -0700
-Date: Sat, 26 Feb 2000 00:17:29 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
-To: willy@thepuffingroup.com
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] code 28 trap
-Message-ID: <20000226001729.F812@abacus.local>
-References: <200002250259.SAA04374@milano.cup.hp.com> <20000224224934.N9944@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000224224934.N9944@thepuffingroup.com>; from willy@thepuffingroup.com on Thu, Feb 24, 2000 at 10:49:34PM -0500
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA03704
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 18:04:53 -0700
+Received: from BILIBONG by chatspace.com
+	with SMTP (MDaemon.v2.8.5.0.R)
+	for <parisc-linux@thepuffingroup.com>; Fri, 25 Feb 2000 16:08:54 -0800
+Reply-To: <wferguson@chatspace.com>
+From: "William Ferguson" <wferguson@chatspace.com>
+To: <parisc-linux@thepuffingroup.com>
+Date: Fri, 25 Feb 2000 16:08:53 -0800
+Message-ID: <CIEFLNKHGHGOLMKJHMOAAEIACHAA.wferguson@chatspace.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_004D_01BF7FAA.9C73B5E0"
+Subject: [parisc-linux] Quadruple postings?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> http://boudicca.tux.org/hypermail/linux-kernel/2000week06/0092.html
-> 
-> There was a bug in 2.3.41, looks like it didn't get fixed in .42, that
+This is a multi-part message in MIME format.
 
-Apparently it did get fixed in .42, so it might be worth finding out what
-exactly causes Grant's unaligned trap.
+------=_NextPart_000_004D_01BF7FAA.9C73B5E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Can anyone tell me why I receive four of each posting?
+
+ 
+Cordially yours,
+ 
+William Ferguson
+Director of Internet Operations
+Chatspace Inc.
+
+
+------=_NextPart_000_004D_01BF7FAA.9C73B5E0
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+eJ8+IjUAAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
+b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANAHAgAZABAACAAAAAUADwEB
+A5AGAIwFAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
+AAAAFAAAAFF1YWRydXBsZSBwb3N0aW5ncz8AAgFxAAEAAAAWAAAAAb9/7amw8UXIiDJnRnaT1xPS
++x5EgAAAAgEdDAEAAAAdAAAAU01UUDpXRkVSR1VTT05AQ0hBVFNQQUNFLkNPTQAAAAALAAEOAAAA
+AEAABg4AcKmK7X+/AQIBCg4BAAAAGAAAAAAAAADSsv/s6SIoRb2ntdxDRZXCwoAAAAsAHw4BAAAA
+AgEJEAEAAAARAQAADQEAAJABAABMWkZ1RtJh7gMACgByY3BnMTI1FjIA+Atgbg4QMDMzTwH3AqQD
+4wIAY2gKwHPwZXQwIAcTAoMAUAPVlRF1fQqBdgiQd2sLgHRkNAxgYwBQCwMLtSAWQwORAHB5AiBl
+IHQMZWwDIAeAIHdoeQggSSAJcGNlaXYHFZACEAhwIG9mIGWBANBoIHBvc3QLgHxnPwqiCoQKgQvh
+E9B+rxjGEhIU0gWwZAcxbBZQ8xVgCHBzLAulE9AYdBmOilcDEGwHMG0gRgSQOGd1cwIgG40aBkRp
+7RaRdAWxF2FJAjAEkREw6CBPcASQYRgQAiAQsecenxTDEPB0cwqwFrAgkbxjLiHeC/IYcxMRACXw
+AAAACwABgAggBgAAAAAAwAAAAAAAAEYAAAAAA4UAAAAAAAADAAOACCAGAAAAAADAAAAAAAAARgAA
+AAAQhQAAAAAAAAMAB4AIIAYAAAAAAMAAAAAAAABGAAAAAFKFAAAnagEAHgAJgAggBgAAAAAAwAAA
+AAAAAEYAAAAAVIUAAAEAAAAEAAAAOS4wAB4ACoAIIAYAAAAAAMAAAAAAAABGAAAAADaFAAABAAAA
+AQAAAAAAAAAeAAuACCAGAAAAAADAAAAAAAAARgAAAAA3hQAAAQAAAAEAAAAAAAAAHgAMgAggBgAA
+AAAAwAAAAAAAAEYAAAAAOIUAAAEAAAABAAAAAAAAAAsADYAIIAYAAAAAAMAAAAAAAABGAAAAAIKF
+AAABAAAACwA6gAggBgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADADyACCAGAAAAAADAAAAAAAAA
+RgAAAAARhQAAAAAAAAMAPYAIIAYAAAAAAMAAAAAAAABGAAAAABiFAAAAAAAACwBSgAggBgAAAAAA
+wAAAAAAAAEYAAAAABoUAAAAAAAADAFOACCAGAAAAAADAAAAAAAAARgAAAAABhQAAAAAAAAIB+A8B
+AAAAEAAAANKy/+zpIihFvae13ENFlcICAfoPAQAAABAAAADSsv/s6SIoRb2ntdxDRZXCAgH7DwEA
+AACkAAAAAAAAADihuxAF5RAaobsIACsqVsIAAFBTVFBSWC5ETEwAAAAAAAAAAE5JVEH5v7gBAKoA
+N9luAAAAQzpcRG9jdW1lbnRzIGFuZCBTZXR0aW5nc1x3ZmVyZ3Vzb24uQklMSUJPTkdcTG9jYWwg
+U2V0dGluZ3NcQXBwbGljYXRpb24gRGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRsb29rLnBzdAAD
+AP4PBQAAAAMADTT9NwAAAgF/AAEAAAA3AAAAPENJRUZMTktIR0hHT0xNS0pITU9BQUVJQUNIQUEu
+d2Zlcmd1c29uQGNoYXRzcGFjZS5jb20+AAADAAYQE2RySAMABxByAAAAAwAQEAAAAAADABEQAQAA
+AB4ACBABAAAAZQAAAENBTkFOWU9ORVRFTExNRVdIWUlSRUNFSVZFRk9VUk9GRUFDSFBPU1RJTkc/
+Q09SRElBTExZWU9VUlMsV0lMTElBTUZFUkdVU09ORElSRUNUT1JPRklOVEVSTkVUT1BFUkFUSU8A
+AAAAAyY=
+
+------=_NextPart_000_004D_01BF7FAA.9C73B5E0--
