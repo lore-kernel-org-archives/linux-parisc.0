@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 17 Jun 2003 14:06:40 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Zlatan Jukic <zlatan.jukic@fh-vorarlberg.ac.at>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 10E764830
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Jun 2003 05:55:47 -0600 (MDT)
+Date: Wed, 18 Jun 2003 13:55:42 +0200
+Message-ID: <3ED4C8B60000747E@ocpmta1.freegates.net>
+In-Reply-To: <200306171508.h5HF86eW010149@hiauly1.hia.nrc.ca>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030617200640.GB10581@dsl2.external.hp.com>
-References: <1EB1A4E066D0D411BD330008C79F06AE022EC544@yang.tvlbg.ac.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1EB1A4E066D0D411BD330008C79F06AE022EC544@yang.tvlbg.ac.at>
-Subject: [parisc-linux] Re: Visualize EG card on HP PARISC C360
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] Re: g++ (3.3): ...Error: Field out of range
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,24 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jun 17, 2003 at 04:17:02PM +0200, Zlatan Jukic wrote:
-> I could not start unfortunately the X-Windows system, because it is not
-> supported by Fx-4 video card.?!
+Hi Dave,
 
-correct
+Shame on me: I forgot to test with different compression option.
 
-> My question is here:  Must I insert another card (and which??),  in order to
-> start X-Windows-system?
+I just do it and the problem doesn't occure any more without -O2 or with
+-O1?
 
-> According to Debian HPPA, the Visualize EG should correct to function.  
 
-yes. *PCI* version of the card.
-Vis-EG HSC card might also work.
+> You could try assembling with the current cvs version of binutils.  You
+> can generate an assembler file by changing `-c' to `-S' and the output
+> file name in the above command.  This will allow you to look at the
+> assembler line in question and see whether this is a problem with stubs
+> or not (i.e., something other than a branch to a function).  As this is
+> C++ code, there might be a huge number of small functions causing overflow
+> of the stub table.
+> 
+> The stub table fix was done quite sometime ago and I would have thought
+> that recent debian versions of binutils would have it.
+> 
+> If this is not a stub table overflow problem, please file a gcc PR
+> including the preprocessed source from the above command.
 
-> This card is a 24-bit-video-card, which is recognized in the best way under
-> Linux as "Coral" with HP 715-64, 
+Never the less I will try to rebuild cvs binutils then check if the pb continue.
 
-Is that really a Vis-EG HSC card?
-Can you post "dmesg" output where STI describes the card?
+See you later,
+    Joel
 
-grant
+
+---------------------------------
+Tiscali ADSL: 19,50 euros/mois...abonnez-vous sur www.tiscali.be
