@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 03FFB482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Oct 2002 09:58:18 -0600 (MDT)
-Message-Id: <200210221558.g9MFwDJj020555@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: EWOULDBLOCK vs. EAGAIN
-To: jsm@udlkern.fc.hp.com (John Marvin)
-Date: Tue, 22 Oct 2002 11:58:12 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: John Marvin <jsm@udlkern.fc.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200210221534.JAA28679@udlkern.fc.hp.com> from "John Marvin" at Oct 22, 2002 09:34:55 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] rp2470 hang...getting closer 
+In-Reply-To: Message from John Marvin <jsm@udlkern.fc.hp.com>
+   of "Mon, 21 Oct 2002 18:41:48 MDT." <200210220041.SAA17351@udlkern.fc.hp.com>
+References: <200210220041.SAA17351@udlkern.fc.hp.com> 
+Date: Tue, 22 Oct 2002 19:19:12 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021023011912.A23F5482F@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +19,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Yes, to be completely portable across other Unix flavors, you should
-> check for both EAGAIN and EWOULDBLOCK. But it would appear that
-> Gnu C library documentation says they should be the same, and they
-> ARE the same on all other Linux architectures. So, in my opinion,
-> we are broken, not the apps.
-
-I just looked at expect.  It uses 
-
-#ifdef EAGAIN
-        case EAGAIN: return "resource temporarily unavailable";
-#endif
+John Marvin wrote:
 ...
-#if defined(EDEADLK) && (!defined(EWOULDBLOCK) || (EDEADLK != EWOULDBLOCK))
-        case EDEADLK: return "resource deadlock avoided";
-#endif
-#if defined(EDEADLOCK) && (!defined(EDEADLK) || (EDEADLOCK != EDEADLK))
-	case EDEADLOCK: return "resource deadlock avoided";
-#endif
+> Upon return from
+> handle_interruption we turn on the I bit, but then later we disable I and
+> Q before calling rfir in the return path from handle_interruption, so this
+> is not an issue.
+
+Ah ok - my bad. I should have checked.
+When doing any bottom half stuff, I think it should be ok for
+I-bit to be enabled.
+
+> Note that we are currently turning the I bit on when we return from
+> handle_interruption, so this, so removing the local_irq_enable() is not
+> going to actually change any behaviour.
+
+hmmm. It changes the timing a bit but basically you are right.
+I'm worried about the nesting of traps/interrupts in this case.
+My gut feeling says we never want to enable I-bit for handling faults/traps.
+Maybe to enable console output in a kernel_die() code path.
+
+The obvious deadlock sequence to me is:
+	spin_lock_irqsave() -> trap -> interrupt -> spin_lock()
+or
+	spin_lock_irqsave() -> trap -> interrupt/bottom half -> spin_lock()
+
+I use "interrupt" to mean "External Interrupts" as defined by parisc arch.
+
+> I just don't think it is necessary, and the enablement upon return may
+> be wrong also.
+
+yeah. I suspect it is.
+
 ...
-#if defined(EWOULDBLOCK) && (!defined(EAGAIN) || (EWOULDBLOCK != EAGAIN))
-        case EWOULDBLOCK: return "operation would block";
-#endif
+> Now, I've also spent some time looking at the I bit enablement at the head
+> of intr_return in entry.S.  I don't think that is correct either.  But
+> just removing it is not the correct answer.
 
-This seems portable to me.
+Please let me know if (a) you are chasing this down or (b) you
+already found the correct answer. I'm very tempted to just try
+removing it and see what breaks. I may not be able to debug the
+resulting mess though...
 
-I agree that the definition of EWOULDBLOCK should be the same as on
-other Linux architectures.  However, I think that apps should work
-irrespective of whether they are the same or not.
+...
+> Note, I don't think any of this is going to explain the problem specific
+> to the rp2470.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+When scsi_lock_irqsave() blocks interrupts, we can't take any
+external interrupt.  It results in a deadlock.
+
+I'm suspecting that's also what was causing the deadlock on xtime_lock.
+I added code to set EIEM to 0 in do_cpu_irq_mask() to avoid that deadlock.
+I can't do the same for sym2 driver.
+
+thanks,
+grant
