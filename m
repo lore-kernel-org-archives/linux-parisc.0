@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 547FF485B
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 16:48:49 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	Jeremy Drake <jeremyd@apptechsys.com>
-Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC
-Date: Wed, 10 Jul 2002 00:45:10 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200206301931.58043.deller@gmx.de> <Pine.LNX.4.44.0207090933560.19290-200000@garibaldi.apptechsys.com> <20020709220437.GA31678@systemhalted>
-In-Reply-To: <20020709220437.GA31678@systemhalted>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7A3D04852
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 20:40:53 -0600 (MDT)
+Received: from garibaldi.apptechsys.com (ats164.apptechsys.com [207.14.35.164])
+	by mail.apptechsys.com (Postfix) with ESMTP id 7CDA27BC45
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 19:40:52 -0700 (PDT)
+Date: Tue, 9 Jul 2002 19:40:52 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.44.0207091919340.19290-100000@garibaldi.apptechsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200207100045.10930.deller@gmx.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] SMP (in)stability
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wednesday 10 July 2002 00:04, Carlos O'Donell wrote:
-> > When trying to build my kernel (-pa52) with the new HIL support I got
-> > this while building vmlinux:
-> >
-> > drivers/hil/hil.o: In function `.L1369':
-> > drivers/hil/hil.o(.text.hil_kbd_connect+0x4f8): undefined reference to
-> > `register_ps2_keybfuncs'
-> >
-> > Could someone please let me know what I am doing wrong (leaving out)?  I
-> > have attached my .config (for a J5k).
-> >
-> > Thanks
->
-> J,
->
-> Until the hp_psaux.c driver is converted to input layer, you'll
-> have to compile in the GSC PS2 driver code to get it all right.
->
-> CONFIG_GSC_PS2=y
->
-> I'm currently working with Thomas to make the conversion.
->
-> Helge, any idea why we even call that function from hil_kbd?
-> I'm at a loss to explain the reasoning...
+After having read on this list that some SMP-related problems were fixed,
+I decided to try out the latest kernel as SMP on my J5k.  I tried my old
+test, apt-get update, on it.  It downloaded the package lists fine, but
+stopped after printing "Reading Package Lists... 0%".  Since I was running
+over an ssh session, I don't have any console log messages that may have
+appeared, but every time before this (on older smp kernels) it has stopped
+at an unaligned access message.  As a point of reference, the last smp 
+kernel that was stable for me was 2.4.17-32-smp in debian.  There was an 
+updated version of it that was not stable, the stable one was the release 
+before (if the box was up, I could get more info from the .deb I grabbed 
+of it).  Hopefully that info will help you figure out what change was 
+likely to have caused the problems.  I'll get you specifics on that kernel 
+package tomorrow.
 
-Hi Carlos,
+-- 
+FORTUNE PROVIDES QUESTIONS FOR THE GREAT ANSWERS: #4
+A:	Go west, young man, go west!
+Q:	What do wabbits do when they get tiwed of wunning awound?
