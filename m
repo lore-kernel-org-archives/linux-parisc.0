@@ -1,15 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 3 Jun 2003 17:59:13 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Joel Soete <jsoe0708@tiscali.be>, joel.soete@tiscali.be,
-	xam@cs.ucc.ie, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] compiler & kernel
-Message-ID: <20030603235913.GA3536@dsl2.external.hp.com>
-References: <3ED70CF100001190@ocpmta2.freegates.net> <200306031418.h53EI399028101@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200306031418.h53EI399028101@hiauly1.hia.nrc.ca>
+Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06C004871
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Jun 2003 20:32:09 -0600 (MDT)
+Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
+	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h541bvh13087
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Jun 2003 18:37:57 -0700
+Received: from jordan.eng.nateng.com (IDENT:1000@localhost [127.0.0.1])
+	by jordan.eng.nateng.com (8.12.8/8.12.8) with ESMTP id h542XrFY009063
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Jun 2003 19:33:53 -0700
+Received: from localhost (chandler@localhost)
+	by jordan.eng.nateng.com (8.12.9/8.12.8/Submit) with ESMTP id h542XroY009060
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Jun 2003 19:33:53 -0700
+Date: Tue, 3 Jun 2003 19:33:53 -0700 (PDT)
+From: Sir Ace <chandler@nateng.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.53.0306031931340.8941@jordan.eng.nateng.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Video card question
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +29,6 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jun 03, 2003 at 10:18:03AM -0400, John David Anglin wrote:
-> ...but the use of static binaries under 64-bit hpux is discouraged.
-
-That depends on who you talk to.
-
-The library maintainers cring at the thought of an application
-statically linked and forever carrying around bugs in it.
-
-But the perf folks get annoyed that each process has to allocate
-RAM for *all* the data space used by a shared lib vs just for
-the parts that get linked in statically. (I hope I remember this
-correctly).
-
-grant
+Does anyone know what the A6150-60002 (A6150A) is?
+It's a PCI VGA card that shipped with my rp5470...  But I am having a
+fairly difficult time figureing out what it is.
