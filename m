@@ -1,13 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.20-rc1 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Wed, 13 Nov 2002 15:32:17 GMT." <20021113153217.J30392@parcelfarce.linux.theplanet.co.uk>
-References: <20021113153217.J30392@parcelfarce.linux.theplanet.co.uk> 
-Date: Thu, 14 Nov 2002 00:15:42 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021114071542.2CF81482B@dsl2.external.hp.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1BBCD482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 01:46:03 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>,
+	"=?iso-8859-1?q?Hans-G=F6ran?=" Gustavsson <hgn98009@student.mdh.se>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Graphic card for my C200+
+Date: Thu, 14 Nov 2002 09:45:55 +0100
+References: <20021114023846.97818.qmail@web12507.mail.yahoo.com>
+In-Reply-To: <20021114023846.97818.qmail@web12507.mail.yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200211140945.55164.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,37 +25,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
-> (1) drivers/pci/setup-bus.c.  It looks like most of, but not all, the
-> changes in our tree were merged into 2.5.20-rc1.  I've basically taken
-> the version we had in 2.4.19 but other changes may be needed.  Grant,
-> can you look at this?
+Voodoo2 works quite well too, but you'll only get a display with a 
+maximum resolution of 800x600x16bpp.
 
-I was re-reading this a few times and assumed you meant 2.4.20-rc1.
-I'm looking at "cvs diff -r LINUS_2420RC1 drivers/pci/setup-bus.c" output.
+Helge
 
-The primary difference is for bridge_ctl field. rmk posted the
-bridge_ctl patch for 2.5 and it makes managing VGA, FBB, PERR,
-SERR bits in cmd register possible per arch.
-I'd like to keep this in our tree since we want SERR/PERR *on*
-and PC folks in general don't. And parisc really doesn't want
-anything to do with VGA stuff...I don't see any reason why this
-change doesn't go back to marcello.
-
-The second significant difference is pbus_assign_resources_sorted()
-wants to disable all devices while assigning resources. Not a good
-thing for our console. I trust PDC to assign sane values to all devices
-whether or not all devices are initially configured or enabled.
-We don't have to worry about overlapped MMIO ranges or such crap
-during later resource assignments.
-
-*sigh* I see "ifndef __hppa__" here (should be CONFIG_PARISC).
-
-We can adopt changes in pci_bridge_check_ranges(), pbus_size_io(),
-and pbus_size_mem(). You want to do those or should I?
-
-Anyone, once this is "cleaner", I think ivan/rmk/~r/helgaas probably
-want to review the bridge_ctl diff before you submit to marcello.
-
-hth,
-grant
+On Thursday 14 November 2002 03:38, Derek Engelhaupt wrote:
+> As far as I know the only card that had proven to fully work is the EG
+> graphics card an A4450A and or an A4451A (Dual output) I believe.
+> There are some toying with a Voodoo2 type of solution, but it doesn't
+> quite work yet.
+>
+> derek
+>
+> --- Hans-Göran Gustavsson <hgn98009@student.mdh.se> wrote:
+> > I wonder if anyone has any suggestions for pci graphics cards that
+> > are
+> > likely to make X work in my C200+. The one I have at the moment is a
+> > Visualize fx2 which I understand won't be supported in the nearest
+> > future. I
+> > have also read some mails about PC cards that might or might not
+> > work.
+> > Should I try to make a swap with someone using hpux with a simpler
+> > graphic
+> > or what? I really would like to see a list of graphics working on
+> > different
+> > machines. Maybe there is one that I just missed.
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+> __________________________________________________
+> Do you Yahoo!?
+> Yahoo! Web Hosting - Let the expert host your site
+> http://webhosting.yahoo.com
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
