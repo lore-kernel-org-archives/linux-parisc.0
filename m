@@ -1,98 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from femail6.sdc1.sfba.home.com (femail6.sdc1.sfba.home.com [24.0.95.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F114482A
-	for <parisc-linux@parisc-linux.org>; Mon, 13 Aug 2001 16:42:55 -0600 (MDT)
-Received: from jaimesnewpc ([24.254.24.106]) by femail6.sdc1.sfba.home.com
-          (InterMail vM.4.01.03.20 201-229-121-120-20010223) with SMTP
-          id <20010813224248.CXRE17978.femail6.sdc1.sfba.home.com@jaimesnewpc>
-          for <parisc-linux@parisc-linux.org>;
-          Mon, 13 Aug 2001 15:42:48 -0700
-From: "Jaime Ash" <jaimeash@home.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Mon, 13 Aug 2001 15:41:58 -0700
-Message-ID: <NEBBJAILOLAHGDBEOCIOKEFECFAA.jaimeash@home.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0006_01C1240E.7CBA22C0"
-Subject: [parisc-linux] FW: Creating the installation CD
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0B550482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 13 Aug 2001 17:21:19 -0600 (MDT)
+Message-Id: <200108132319.RAA13888@puffin.external.hp.com>
+To: DraX <drax@whiplash.stampede.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] toolchain 
+In-Reply-To: Message from DraX <drax@whiplash.stampede.org>
+   of "Sun, 12 Aug 2001 12:28:25 PDT." <Pine.LNX.4.10.10108121225590.4893-100000@whiplash.stampede.org>
+Date: Mon, 13 Aug 2001 17:19:25 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+DraX wrote:
+> xMach will soon be talking the PA-Mach port from Utah and merging it in to
+> our source tree, but we are in need of a new PA-RISC toolchain.
 
-------=_NextPart_000_0006_01C1240E.7CBA22C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+xMach is another kernel+OS?
+
+Just had a flashback...the unix wars are *not* over...they've somehow
+shifted to a sort-of-voluntary army. :^(
 
 
+> Is the PA-Linux team now the maintainers of it?
 
->  -----Original Message-----
-> From: 	Jaime Ash [mailto:jaimeash@home.com] 
-> Sent:	Sunday, August 12, 2001 3:10 PM
-> To:	parisc-linux-announce@lists.parisc-linux.org
-> Subject:	Creating the installation CD
-> 
-> I am in the process of trying to upgrade my PA-Linux machine (model HP
-> 715) from version 0.6 to version 0.9.2, and also trying to install version
-> 0.9.2 on an HP 735.
-> 
-> I have already extracted the file named "palinux-0.9.2.iso" from the
-> downloaded file, but I do not know how to proceed from there to create the
-> installation CD.  (Note that for version 0.6 I had used an installation CD
-> that I got from Grant Grundler, so I never learned how he created the CD,
-> and now he is on LOA).
-> 
-> So my question to you is, what is the process for going from the *.iso
-> file to create the CD.
-> 
-> Sincerely,
-> 
-> Jaime Ash
-> email: jaimeash@home.com
+No. We don't maintain it any more than anyone else. AFAIK, all of
+the changes the parisc-linux port needs are back upstream to the gcc
+and binutils maintainers.
 
-------=_NextPart_000_0006_01C1240E.7CBA22C0
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
+BTW, Kudos again to the random collection of people who've worked on it for
+the past couple of years.
 
-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
-UE1UTzpQQVJJUwAAAAATrw==
+> If so could someone give a little
+> less linux oriented instructions for building the tool chain?
 
-------=_NextPart_000_0006_01C1240E.7CBA22C0--
+Though someone might be able to answer your question, I'd expect
+better results by querying an xMach mailing list.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
