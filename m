@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.umr.edu (mrelay1.cc.umr.edu [131.151.1.120])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3D5D3601C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 12:44:53 -0700 (MST)
-Message-ID: <E8139C9A62384F49A7EBF9CCCD2243C101968B@umr-mail2.umr.edu>
-From: "Neulinger, Nathan" <nneul@umr.edu>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Mon, 19 Nov 2001 13:44:45 -0600
+Received: from student.cs.ucc.ie (student.cs.ucc.ie [143.239.211.125])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 17A87482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 12:55:09 -0700 (MST)
+Received: from localhost (xam@localhost)
+	by student.cs.ucc.ie (8.9.3/8.9.3) with ESMTP id TAA13856
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 19:55:28 GMT
+Date: Mon, 19 Nov 2001 19:55:28 +0000 (GMT)
+From: Markus Grabert <xam@student.cs.ucc.ie>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.OSF.4.41.0111191946450.11606-100000@student.cs.ucc.ie>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Subject: [parisc-linux] FW: Porting LWP
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] gcc-3.x and the kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,73 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Anyone have any thoughts on this? In particular the question about whether
-setjmp/longjmp preserve the stack. 
+Hi,
 
-When I try to have the code use ucontext (getcontext/setcontext) instead, it
-gets complaints from glibc about setcontext/getcontext being unimplemented.
+I'm a little bit confused.
 
-Is parisc linux more like ia64 or x86? I'd presume that I might just have to
-use the ucontext stuff, but that's going to be difficult if libc doesn't
-support it.
+Some ports (such as parisc, sparc, sparc64 ...) use gcc-3.x in their
+distributions, even to compile the linux kernel.
+IMHO they use the lastest gcc since it has better support and more recent
+bug fixes for the according platforms.
+But I've read that gcc-3.0.x is not officially supported as a kernel
+compiler, since is still has some bugs. Are these bugs just x86 related
+(I doubt it) or do you accept the risk that gcc might produce garbage ?
+Does this actually happen ?
 
--- Nathan
-
-------------------------------------------------------------
-Nathan Neulinger                       EMail:  nneul@umr.edu
-University of Missouri - Rolla         Phone: (573) 341-4841
-Computing Services                       Fax: (573) 341-4216
-
-
------Original Message-----
-From: chas williams [mailto:chas@cmf.nrl.navy.mil] 
-Sent: Monday, November 19, 2001 1:11 PM
-To: Neulinger, Nathan
-Subject: Re: Porting LWP 
-
-
->I know you've been involved with alot of the previous porting efforts in
->AFS. I was hoping you could give some tips on porting LWP.
-
-just a few really, not really that many.
-
->I've been doing some work trying to get openafs functional on
->parisc_linux24, but LWP definately appears to be the problem at this point.
->(Note, openafs fully compiles, but anything using threads fails.)
-
-lwp is probably the most difficult part of userland.  it truly is
-a serious pain.  it would be nice if someone made lwp just use pthreads.
-however, its just a gleam in someones eye for now.
-
->I did get the LWP_SP stuff corrected, had some trouble with that at first,
->but am not sure where else to concentrate on. I generally get segmentation
->faults on everything in savecontext.
-
-the last time i worked on a parisc system i noted that that the 
-stack grew UP and not down.  parisc might do the same.  the linux
-swp code assumes that the stack grows down (atleast i am pretty sure
-it does)
-
-you usually can verify which way the stack goes with something like
-the following
-
-sub()
-{
-	int stack2;
-	printf("%x\n", &stack2);
-}
-
-main()
-{
-	int stack1;
-	printf("%x\n", &stack1);
-	sub();
-}
-
-if stack grows up, stack2 is greater than stack1.  if stack grows down,
-stack2 less than stack1.  (or so i think)
-
-other than that, parisc might need more space saved on the stack.
-you should also make sure you setjmp/longjmp preserve the stack info
-(check any comments in the glibc source).  it doesnt on the ia64 and
-i had to use ucontext() instead.
+greetings max
