@@ -1,66 +1,57 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA02346
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Sep 1999 12:14:22 -0600
-Date: Tue, 28 Sep 1999 21:07:54 +0300 (EEST)
-From: Tom Javen <tomja@InnoTrac.fi>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: Ulrich Strelow <ulrich_strelow@yahoo.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting from tape 
-In-Reply-To: <199909281619.JAA05140@milano.cup.hp.com>
-Message-ID: <Pine.LNX.3.96.990928210234.23552A-100000@data.innotrac.fi>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA02652
+	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Sep 1999 13:24:15 -0600
+Received: from celeris (ti08a95-0026.dialup.online.no [130.67.46.26])
+	by online.no (8.9.3/8.9.1) with SMTP id VAA02857
+	for <parisc-linux@thepuffingroup.com>; Tue, 28 Sep 1999 21:24:35 +0200 (MET DST)
+Message-Id: <199909281924.VAA02857@online.no>
+Date: Tue, 28 Sep 1999 21:30:46 +0200
+To: parisc-linux@thepuffingroup.com
+From: Simen Thoresen <simen-tt@online.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] compiling (and booting) on a 735
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 28 Sep 1999, Grant Grundler wrote:
+I've now downloaded the ramdisk.bin image (0903), and have compiled with
+that. The compile worked, and I'm now sitting with a probably nonworking
+kernel :-)
 
-> Ulrich Strelow wrote:
-> > I know that this is extremely low priority but...
-> > 
-> > I have tried to boot the linux kernel from a SCSI DDS
-> > tape (copied via dd if=Image of=/dev/rmt/0m bs=512).
-> > The same kernel (cvs tree from today) boots
-> > sucessfully via rbootd on my 715/33. Here is the
-> > console log:
-> ...
-> > Select from menu: b p2
-> > 
-> > Trying scsi.0.0
-> > Boot path initialized.
-> > Attempting to load IPL.
-> > 
-> > Failed I/O operation with scsi.0.0
-> > ENTRY_IO status = -10
-> > 
-> > 00000000 00000000 00000000 00000000 00000000 00000000
-> > 00000000 00000000
-> > 00000000 00000000 00000000 00000000 00000000 00000000
-> > 00000000 00000000
-> > 00004F04 000000FF FF0009BF 00000000 800100DC 00000000
-> > 0025F000 00000400
-> > 98080000 00000000 00008C60 00000000 000000FF 00000000
-> > 00000000 00000000
-> 
-> I believe this is a problem with either how the tape was created
-> or talking to the tape drive. Does anyone know where to find what
-> the -10 status means?
-> 
-> Another difference when booting from tape (vs disk), is how the
-> tape is "made". One *must* specify 2k block size. It doesn't matter
-> for disk devices. Eg: 
-> 
-> 	dd if=Image of=/dev/rmt/0m bs=2k
-If I remember correctly the utah sources mkboot program has a comment that
-says the file should be an odd number of 1k blocks. It has a -t option for
-making tape files. 
+How do I boot?
+
+I'v killed the filesystem on my 2nd disk, doing cat vmlinux >
+/dev/dsk/c0t2d0 . No great loss, as I'v emtied it of useful data, and was
+planning to do that anyway. Unfortunately, when I boot from P1, IPL
+responds with 'bad LIF magic'. back to hpux, then....
+
+Do I need a tftp-server and try for a netboot?
 
 
-Tom
--- 
-=============================+===========================
-Tom Javen                    |   Innotrac Diagnostics Oy
-email tom.javen@innotrac.fi  |   Finland
-gsm   +358-40-5860532        |   phone +358-2-2410025
-                             |   fax   +358-2-2410024
-=============================+===========================
-     
+make menuconfig:
+I've downloaded ncurses (v 4.2 from ftp.gnu.org,
+/gnu/ncurses/ncurses-4.2.tar.gz ) and installed it.
+
+I then linked /usr/local/include (where ncurses.h resides) to
+/usr/include/ncurses
+(so that /usr/include/ncurses/ncurses.h exists), and sssslightly modified
+linux/scripts/lxdialog/Makefile, as HPUX's find barfed on 
+-maxdepth 1.
+
+sh-2.03$ diff Makefile.old Makefile
+33c33
+<       @x=`find /lib/ /usr/lib/ /usr/local/lib/ -maxdepth 1 -name
+'libncurses.*
+'` ;\
+---
+>       @x=`find /lib/ /usr/lib/ /usr/local/lib/ -name 'libncurses.*'` ;\
+
+Running make menuconfig from the kernel directory now works great, and I
+can build nonworking kernels with gusto.
+
+-Simen Thoresen - finally hacking something useful.
+--
+"We do have a summer. Last year, I remember, it was a Wednesday" 
+-Helga-Marie Johnesen, Norwegian citizen, TIME international.
+
+GNUsig v0.9A R3
+Support the GNUsig-project! Mail simen-tt@online.no for details.
