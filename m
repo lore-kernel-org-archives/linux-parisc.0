@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E5F444829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 19:18:43 -0600 (MDT)
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200304170118.h3H1IR011309@opus.allegro.com>
-Subject: Re: [parisc-linux] Re: Presicionbook success
-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Date: Wed, 16 Apr 2003 18:18:26 -0700 (PDT)
-Cc: xam@cs.ucc.ie (M. Grabert),
-	c.beerse@torex-hiscom.nl ("\"Beerse," =?ISO-8859-1?Q?Corn=E9=22?=),
-	willy@debian.org (Matthew Wilcox),
-	ghub005@xtra.co.nz (Gavin Hubbard),
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <1050504092.28591.97.camel@dhcp22.swansea.linux.org.uk> from "Alan Cox" at Apr 16, 2003 03:41:33 PM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
+	by dsl2.external.hp.com (Postfix) with SMTP id F34054829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 23:57:40 -0600 (MDT)
+Date: 17 Apr 2003 05:57:39 -0000
+Message-ID: <20030417055739.19189.qmail@sources.redhat.com>
+To: debian-gcc@lists.debian.org, gcc-bugs@gcc.gnu.org,
+	gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org
+From: doko@gcc.gnu.org
+Reply-To: doko@gcc.gnu.org, debian-gcc@lists.debian.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
+	gcc-gnats@gcc.gnu.org
+Subject: [parisc-linux] Re: c++/10235: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,24 +24,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Re:
+Synopsis: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
 
-> > The hard disks are removeable, but there is no obvious IDE-SCSI bridge
-> > visible. It is build-in inside the laptop (i.e. non-removeable), and it's
-...
+State-Changed-From-To: feedback->closed
+State-Changed-By: doko
+State-Changed-When: Thu Apr 17 05:57:39 2003
+State-Changed-Why:
+    sucessfully built as well with 3.3 20030412 (current Debian package)
 
-> That means the system either has seperate IDE and SCSI controllers or
-> has an IDE controller and an IDE_SCSI bridge for scsi disk. I suspect
-
-The IDE to SCSI converter is a small board inside the "cartridge" 
-(or "case") that forms the removable hard drive.   If you remove a hard
-drive, and then open its case up, you'll see the converter board clearly.
-
-It is indeed highly similar to the Acard SCSIIDE product (although possibly
-from a different vendor).  
-
-BTW, I would not expect either disk to show up as IDE at all.
-
--- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10235
