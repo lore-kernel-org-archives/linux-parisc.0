@@ -1,29 +1,27 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Message-ID: <36B7C1B7.68D1C54@03bar.ktu.lt>
-Date: Wed, 03 Feb 1999 04:25:43 +0100
-From: Darius <darius@03bar.ktu.lt>
+From: Richard "J." Rauenzahn <rrauenza@cup.hp.com>
+Message-Id: <199902031745.JAA27508@hairball.cup.hp.com>
+Subject: Re: Some planning issues.
+To: hppa-linux@puffingroup.com
+Date: Wed, 3 Feb 1999 09:45:58 -0800 (PST)
+In-Reply-To: <Pine.SUN.4.05.9902021738430.26143-100000@baltic> from Steve Ball at Feb "2," 1999 "05:46:57" pm
 MIME-Version: 1.0
-To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
-Subject: HP-PA
-Content-Type: text/plain; charset=x-user-defined
-Resent-Message-ID: <"9hDgx1.0.Up5.Jhzjs"@burrow.puffingroup.com>
+Content-Type: text/plain; charset=US-ASCII
+Resent-Message-ID: <"ky7sd.0.i36.MKAks"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-A few weeks ago i got a workstation named HP Apollo 9000/710. This  is
-rather old
-one running HP-UX 8.07.
-I'm looking for information how to install Linux on this workstation. So
-just
-downloaded HPPA-1.1 Linux.Could someone help me intalling Linux, or
-maybe someone
-knows the URL where i could find more information about instaling Linux
-on HP ?
-By the way this workstation has no floppy drive or CD-ROM. Just external
-SCSI
-connector (and network of course).
 
-Thanx
-Best regards
-DARIUS
-Lithuanian Energy Institute
+Here's a good book:
+
+	PA-RISC 2.0 ARCHITECTURE
+	by Gerry Kane
+	ISBN 0-13-182734-0
+	Prentice Hall
+	http://www.prenhall.com
+
+Rich
+
+----------------------------------------------------------------------
+To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
+`unsubscribe' as the subject.
