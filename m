@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 57A664840
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 09:39:43 -0600 (MDT)
-Date: Mon, 6 Oct 2003 17:39:42 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Xfree on a B180L
-Message-ID: <20031006153942.GF20846@lug-owl.de>
-References: <200310061723.40002.marc.dilasser@free.fr>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qpqR4wE1CEr+Roqx"
-In-Reply-To: <200310061723.40002.marc.dilasser@free.fr>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1BA0B48B2
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 10:21:55 -0600 (MDT)
+Date: Mon, 6 Oct 2003 18:21:50 +0200
+Message-ID: <3F5CB6FB0000DD78@ocpmta1.freegates.net>
+In-Reply-To: <20031006143319.GC27512@systemhalted>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] traps.c 2.4 alignement [was: 2.6.0-test6-pa6 on b2k finaly crash]
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,42 +22,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---qpqR4wE1CEr+Roqx
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>
+>>On Sun, Oct 05, 2003 at 03:06:48PM +0000, Joel Soete wrote:
+>> Hi Carlos and all,
+>> 
+>> Regarding a bit more about this crash dump, I figure out that your patch
 
-On Mon, 2003-10-06 17:23:39 +0200, Marc Dilasser <marc.dilasser@free.fr>
-wrote in message <200310061723.40002.marc.dilasser@free.fr>:
-> Hello,
->=20
-> HP B180L with a 21" Sun monitor, Debian 3.0 r1.
-> Xfree runs but the colors are very yellow; harware problems or something =
-in=20
-> the XFConfig-4 ?
+>> ><http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017565.html>
 
-Have you tried the 'Visual "TrueColor"' config option?
+> 
+>>as not yet 'aligned' in 2.6.
+>> So may I suggest you this first draft:
+>
+>The draft looks good. I'll merge it into 2.6 today and test on my
+>system.
 
-MfG, JBG
+Finaly it works on my c110 and also on a b180l :)
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
+But, as we could awaiting when such code=13 (conditional trap iirc), occurs
+in kernel mode (as on my b2k or Max's c3k) the kernel hang without advise
+:(
 
---qpqR4wE1CEr+Roqx
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Thanks for your attention,
+    Joel
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQE/gYy9Hb1edYOZ4bsRAgAIAJ9BJ0/HYZqdcauSgR1W+3i2Qz4S5QCfZhny
-CR06Y8Rr7J7J86UmrAguDu0=
-=0jXQ
------END PGP SIGNATURE-----
-
---qpqR4wE1CEr+Roqx--
+-------------------------------------------------------------------------
+L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
+pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
