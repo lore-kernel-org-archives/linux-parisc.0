@@ -1,47 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F2144A19
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Mar 2001 23:54:21 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14fyz8-0001PV-00; Thu, 22 Mar 2001 06:54:14 +0000
-Date: Thu, 22 Mar 2001 06:54:14 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: rbradetich@uswest.net
-Cc: parisc-linux@parisc-linux.org
-Message-ID: <20010322065414.R5491@parcelfarce.linux.theplanet.co.uk>
-References: <20010321234622.A15809@beavis.ybsoft.com>
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D812F4A19
+	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 02:56:15 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 4BC05B008; Thu, 22 Mar 2001 09:57:10 +0000 (GMT)
+Date: Thu, 22 Mar 2001 09:57:10 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: Robert Liesenfeld <xunil96@yahoo.com>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Init not found on 735/125?
+Message-ID: <20010322095710.C18942@linuxcare.com>
+References: <20010322011955.17416.qmail@web5503.mail.yahoo.com> <20010322030651.33A5B38145@carmen.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010321234622.A15809@beavis.ybsoft.com>; from rbrad@beavis.ybsoft.com on Wed, Mar 21, 2001 at 11:46:22PM -0700
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] [PATCH] PDC Wrappers for 32-bit firmware using 64-bit kernels
+In-Reply-To: <20010322030651.33A5B38145@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Wed, Mar 21, 2001 at 08:06:51PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Mar 21, 2001 at 11:46:22PM -0700, Ryan Bradetich wrote:
-> Index: arch/parisc/config.in
-> ===================================================================
-> RCS file: /home/cvs/parisc/linux/arch/parisc/config.in,v
-> retrieving revision 1.33
-> diff -u -p -r1.33 config.in
-> --- config.in	2001/03/02 01:41:03	1.33
-> +++ config.in	2001/03/22 06:30:14
-> @@ -33,6 +33,9 @@ choice 'Processor family' \
->  if [ "$CONFIG_PA8X00" = "y" ] ; then
->     define_bool CONFIG_PA20 y
->     bool '64-bit kernel' CONFIG_PARISC64 n
-> +   if [ "$CONFIG_PARISC64" = "y" ] ; then
-> +      bool '32-bit PDC' CONFIG_PDC_NARROW n
-> +   fi
->  else
->     define_bool CONFIG_PA11 y
->  fi
+On Wed, Mar 21, 2001 at 08:06:51PM -0700, Matt Taggart wrote:
+> 
+> Robert Liesenfeld writes...
+> 
+> > I'm much closer to being able to install palinux on my 735/125...at the momen
+> > t, the main problem
+> > I'm having is this:
+> [snip]
+> 
+> You could try using sash as init and see if you get further. I think this is 
+> the same problem as Richard mentioned in,
+> 
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-March/012025.html
+> 
+> It's solved by a new glibc that's 16 byte aligned. See the message I just sent 
+> out about where to get the new glibc debs from.
 
-I object because this patch adds a new CONFIG_ option without an explanation
-for it!  (Pot.  Kettle.  Black.)
+No, different problem I think.  My system found init, but init then hung.
+Robert is seeing:
 
-What happened to all the people who were dying to help with the port
-but weren't confident in their programming abilities?  Did we drive them
-all away?
+> Kernel panic: No init found.  Try passing init= option to kernel.
 
--- 
-Revolutions do not require corporate support.
+Maybe his 735/125 is mounting the wrong dir, maybe his sbin/init doesn't
+have execute access.  I'd check I could nfs mount that dir from some
+other machine, and see sbin/init ok.  Using init=/bin/sash is a good
+idea anyway, except I don't think sash is on the .iso, so you need
+to build it or ask nicely ;)
+
+Richard
