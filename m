@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from kramer (dsl-64-128-230-1.telocity.com [64.128.230.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 108CC4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Dec 2002 22:14:35 -0700 (MST)
-Date: Fri, 6 Dec 2002 00:14:38 -0500
-Subject: Re: [parisc-linux] Driver for A4071B on C100 workstation
-Content-Type: text/plain; delsp=yes; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v548)
-Cc: derekengelhaupt@rocketmail.com,
-	parisc-linux@lists.parisc-linux.org
-To: "Abel Mamfoumby" <moumboungou@hotmail.com>
-From: Chuck Slivkoff <caslivkoff@telocity.com>
-In-Reply-To: <F129hxhabHzpJIhRcoA0000c96c@hotmail.com>
-Message-Id: <9DF31824-08D9-11D7-8876-000393581E44@telocity.com>
+Received: from dh64.b180 (b180.mmjgroup.com [192.34.35.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F1514829
+	for <parisc-linux@parisc-linux.org>; Fri,  6 Dec 2002 06:52:49 -0700 (MST)
+Date: Fri, 6 Dec 2002 06:52:43 -0700
+From: lamont@hp.com
+To: parisc-linux@parisc-linux.org
+Message-ID: <20021206135243.GA20175@b180.mmjgroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] towards unattended reboot
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,68 +20,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I helped a colleague get the A4071B working in a 725/100 last week.  
-Config in a Cxxx box should be the same. You have to match the  
-dimensions and depth of the fb, as reported by the kernel on boot.
+Q: Given a 2.4.19 kernel, how do you get it to automatically reboot on crash?
 
--chuck
+A: see below.  The first one breaks the loop on dumping the stack.  The
+   second part resets the machine in parisc_terminate().
 
-http://lists.debian.org/debian-hppa/2002/debian-hppa-200212/ 
-msg00011.html
+thoughts?
+lamont
 
-
-On Thursday, Dec 5, 2002, at 08:34 US/Eastern, Abel Mamfoumby wrote:
-
-> I don't know how I can do to use the internal port!
->
->
->> From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
->> To: Abel Mamfoumby  
->> <moumboungou@hotmail.com>,parisc-linux@lists.parisc-linux.org
->> Subject: Re: [parisc-linux] Driver for A4071B on C100 workstation
->> Date: Thu, 28 Nov 2002 06:44:30 -0800 (PST)
->>
->>
->> I had that same card in my C180 and couldn't get it to work.  You  
->> will probably be better off using the internal graphics port on the  
->> C100.  The internal port only yields 8 bit color, but I don't think  
->> that A4071B card is supported at the moment.
->> derek
->>  Abel Mamfoumby <moumboungou@hotmail.com> wrote:Hello,
->> I have just installed The Debian HPPA Linux 3.0r0 on my workstation  
->> C100 /
->> 9000. And I have the A4071B Graphics card. Unfortunately I can't  
->> configure
->> X11. is there someone who can help me?
->> ThankU
->>
->> Moumboungou
->>
->>
->>
->>
->>
->> _________________________________________________________________
->> MSN Messenger : discutez en direct avec vos amis !
->> http://www.msn.fr/msger/default.asp
->>
->> _______________________________________________
->> parisc-linux mailing list
->> parisc-linux@lists.parisc-linux.org
->> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->>
->>
->> ---------------------------------
->> Do you Yahoo!?
->> Yahoo! Mail Plus - Powerful. Affordable. Sign up now
->
->
-> _________________________________________________________________
-> MSN Messenger : discutez en direct avec vos amis !  
-> http://www.msn.fr/msger/default.asp
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+diff -ur x/kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c
+--- x/kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c	2002-10-19 16:25:59.000000000 -0600
++++ kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c	2002-12-06 00:07:40.000000000 -0700
+@@ -148,6 +148,11 @@
+ void show_stack(struct pt_regs *regs)
+ {
+ #if 1
++	static int tried_stack=0;
++	if (tried_stack)
++		return;
++	tried_stack++;
++
+ 	/* If regs->sr[7] == 0, we are on a kernel stack */
+ 	if (regs->sr[7] == 0) {
+ 
+@@ -462,6 +467,12 @@
+ 	 * system will shut down immediately right here. */
+ 	pdc_soft_power_button(0);
+ 	
++	{
++		static int tried_once=0;
++		if (!tried_once++)
++			__raw_writel(5,0xfffe0030);
++	}
++	
+ 	for(;;)
+ 	    ;
+ }
