@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 850B44829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 08:44:47 -0700 (MST)
-Date: Thu, 16 Jan 2003 16:44:10 +0100
-Message-ID: <3E1AAEFA00001972@ocpmta6.freegates.net>
-In-Reply-To: <3E1AAEFA0000192C@ocpmta6.freegates.net>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] new gcc-default for hppa
-To: "M. Grabert" <xam@cs.ucc.ie>,
-	"Grant Grundler" <grundler@dsl2.external.hp.com>
-Cc: "Randolph Chung" <tausq@debian.org>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Received: from priv-edtnes44.telusplanet.net (defout.telus.net [199.185.220.240])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BEB3E4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 08:57:38 -0700 (MST)
+Received: from win2kbox ([66.222.159.202]) by priv-edtnes44.telusplanet.net
+          (InterMail vM.5.01.05.17 201-253-122-126-117-20021021) with SMTP
+          id <20030116155737.FTWT28422.priv-edtnes44.telusplanet.net@win2kbox>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Thu, 16 Jan 2003 08:57:37 -0700
+From: alaskan@telusplanet.net
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 16 Jan 2003 08:57:19 -0700
+Message-ID: <vald2v40u7b1lfkr87f25g99u9l72dger4@4ax.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Partition/Disk Image Software for PA Risc
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +25,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->May be still have to do a test: recompile the kernel with config file me=
-ntioned
->my Grant earlier (the 2.4.20-pa14 for c3k). Do not know if it can help
-us
->more? I will try and let inform.
->
-:^(( Also crash.
+Is there anything similar to Ghost from Symantec for PA Risc systems?=20
+I would like to create an image of my hard disk to speed recovery
+times etc.=20
 
-(I do not have any other supported NIC to test more :( )
-
-Joel
+I know of HP-UX ignite, not sure if it can be used for PA Risc
+tough...
 
 
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+Thanks
