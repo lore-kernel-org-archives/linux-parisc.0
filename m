@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 344F9493F
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 08:48:17 -0600 (MDT)
-Date: Tue, 26 Aug 2003 07:51:02 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2060C4943
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 08:49:53 -0600 (MDT)
+Date: Tue, 26 Aug 2003 07:52:38 -0700
 From: Randolph Chung <randolph@tausq.org>
-To: mmogenius@v8fiesta.co.uk
+To: "M. Grabert" <xam@cs.ucc.ie>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-Message-ID: <20030826145102.GR21328@tausq.org>
+Subject: Re: [parisc-linux] C3000 and IDE DMA support
+Message-ID: <20030826145238.GS21328@tausq.org>
 Reply-To: Randolph Chung <randolph@tausq.org>
-References: <1061908796.3f4b713c1b6e3@webmail.v8fiesta.co.uk>
+References: <Pine.LNX.4.44.0308261152480.6589-100000@sal.ucc.ie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1061908796.3f4b713c1b6e3@webmail.v8fiesta.co.uk>
+In-Reply-To: <Pine.LNX.4.44.0308261152480.6589-100000@sal.ucc.ie>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,10 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In reference to a message from mmogenius@v8fiesta.co.uk, dated Aug 26:
-> does x support the internal video card in the machine ?
+> - the hard disk performs very bad (just 3.13 MB/s instead of expected
+>   >30 MB/s, tested with similar drive in PC and same hdparm settings)
+>   In fact it shows typical data rates for unsupported DMA transfers
 
-http://pateam.esiee.fr/list.html
+You are right, DMA is not yet supported on superio... at some point it
+was sort of working, but not very reliably... 
+
+it's a worthwhile project if you want to do some kernel hacking :-)
 
 randolph
 -- 
