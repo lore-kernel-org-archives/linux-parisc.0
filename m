@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3D72A48B3
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 09:04:03 -0600 (MDT)
-Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
-	id 17UTrs-0005nf-00
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 17:04:00 +0200
-To: parisc-linux@parisc-linux.org
-Message-ID: <1026831840.3d3435e0d908a@webmail.tiscalinet.be>
-Date: Tue, 16 Jul 2002 17:04:00 +0200 (CEST)
-From: joel.soete@freebel.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] gcc-3.2 bootstrap?
+Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A69F48BC
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 09:08:25 -0600 (MDT)
+Date: Tue, 16 Jul 2002 08:11:18 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] gcc-3.[02] alignment problem
+Message-ID: <20020716151118.GC641@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020716050031.GA641@tausq.org> <20020716122605.GB31977@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020716122605.GB31977@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,42 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+> Preprocessed source attached?
 
-Exploring another stuff (gcc bootstrap), I found:
-http://www-124.ibm.com/developer/opensource/linux/tools/gcc/ia64cross.tar.gz
+I forgot it the first time, tried to send it again, but the source was
+too large and it got stopped for moderation...
 
-to build an ia64 xcompiler (which allow also to build a bootstrap)
+> Remember we ran into this when building glibc at OLS.... and
+> we sat there scratching our heads. I'm pretty sure this was the
+> reason for the hppa-align.dpatch that is part of debianzed gcc?
 
-I just modify to match my develop env and mainly I added --host=hppa-linux (I am
-building gcc-3.2 on a b2000) in the configure:
-'$GCC_SRC/gcc/configure --prefix=$TOOLS --enable-languages=c --host=hppa-linux'
+the hppa-align patch is for a different problem aiui, it's so that we
+don't do multiple ldcw's on the same cache line. 
 
-Should I had to prefer --target=hppa-linux to build a native bootstrap?
+in any case, 3.0.4 (which has this patch) gives the same error.
 
-Well this produce well a gcc (bootstrap?).
+> Randolph: There is a forward email inside the dpatch that says
+> you were going to try get this patch upstream... ? :)
+> (gcc 3.0.4 ./debian/patches/hppa-align.dpatch)
 
-but when I try to use it to compile kernel-2.4.18-pa54 I got following error:
-`gcc -print-libgcc-file-name`
-/Develop/parisc-linux/src/linux-2.4.18-pa54/arch/parisc/lib/lib.a
-/Develop/parisc-linux/src/linux-2.4.18-pa54/lib/lib.a  \
-        --end-group \
-        -o vmlinux
-arch/parisc/kernel/kernel.o(__ksymtab+0x258): undefined reference to `$$mulU'  
-make: *** [vmlinux] Error 1
+I've tried, but the gcc folks have put in a different mechanism to do
+this, so the patch needs to be reworked, and i haven't gotten back to it
+yet.
 
-(after a make distclean; make oldconfig)
-
-What is it wrong?
-
-Or would it be better to continue with xcompiler hppa->hppa?
-
-Many thanks for all,
-    Joel
-
-
-
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
