@@ -1,32 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA14862
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 13:28:23 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 18 Jan 2001 20:32:08 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14JLJX-0001f9-00; Thu, 18 Jan 2001 20:05:43 +0000
-Date: Thu, 18 Jan 2001 20:05:43 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] The Art Of Locking
-Message-ID: <20010118200543.G29531@parcelfarce.linux.theplanet.co.uk>
-References: <20010118192452.E29531@parcelfarce.linux.theplanet.co.uk> <200101181959.LAA14539@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA15511
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 13:39:53 -0700
+Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
+  by mailserv2.iuinc.com with SMTP; 18 Jan 2001 20:43:39 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 5A8CAB005; Thu, 18 Jan 2001 20:34:20 +0000 (GMT)
+Date: Thu, 18 Jan 2001 20:34:20 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Jim Buttafuoco <jim@tylerdrive.org>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trouble booting a 710 (bushmaster)
+Message-ID: <20010118203419.A28638@linuxcare.com>
+References: <200101181812.f0IICoF19246@openbsd1.buttafuoco.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200101181959.LAA14539@milano.cup.hp.com>; from grundler@cup.hp.com on Thu, Jan 18, 2001 at 11:59:14AM -0800
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <200101181812.f0IICoF19246@openbsd1.buttafuoco.net>; from jim@tylerdrive.org on Thu, Jan 18, 2001 at 01:12:50PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jan 18, 2001 at 11:59:14AM -0800, Grant Grundler wrote:
-> > Finally, it's not declared `static', yet it's only used within this file.
+On Thu, Jan 18, 2001 at 01:12:50PM -0500, Jim Buttafuoco wrote:
+> Ok,
 > 
-> It's used in:
->     fs/proc/proc_misc.c:extern int get_irq_list(char *);
->     fs/proc/proc_misc.c:  int len = get_irq_list(page);
+> I tried the uncompressed ramdisk, same results.  I am going to try to 
+> debug this issue first by putting some debug code in rd.c.  I will keep 
+> you posted...
+> 
+> ANY more suggestions????
 
-I'm sorry for being ambiguous.  I meant that the spin_lock should be
-static, not the function.
+Sounds more likely a network driver problem.  Can you boot with
+i596_debug=0xffff and send me the output.  If that doesn't generate
+lots of extra output, change the value of i596_debug in
+drivers/net/lasi_82596.c and try again.
 
--- 
-Revolutions do not require corporate support.
+Richard
