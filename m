@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from eightythree.valleybikes.com (valleybikes.com [24.123.22.113])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8EC44829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Oct 2002 09:22:46 -0600 (MDT)
-Subject: Re: [parisc-linux] Non-HP disks?
-From: James Smith <james@compusmithllc.com>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021002034059.34434.qmail@web12505.mail.yahoo.com>
-References: <20021002034059.34434.qmail@web12505.mail.yahoo.com>
-Content-Type: text/plain
-Date: 02 Oct 2002 10:22:41 -0500
-Message-Id: <1033572162.563.0.camel@seventy>
-Mime-Version: 1.0
+Received: from wolf.alaskatech (207-5-237-24-cable.anchorageak.net [24.237.5.207])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4AABD4829
+	for <parisc-linux@parisc-linux.org>; Wed,  2 Oct 2002 11:46:29 -0600 (MDT)
+Received: from wolf.alaskatech (palinux@wolf.alaskatech [24.237.5.207])
+	by wolf.alaskatech (8.12.3/8.12.3/Debian -4) with ESMTP id g92HlxR5006750
+	for <parisc-linux@parisc-linux.org>; Wed, 2 Oct 2002 09:47:59 -0800
+Date: Wed, 2 Oct 2002 09:47:59 -0800 (AKDT)
+From: Tom <palinux@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.44.0210020925510.6688-100000@wolf.alaskatech>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C180 oddness
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +23,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-i had a very similar problem - i'd like to know how to use em too
+Okay - after a bit of downtime (due to houseguests being in the room with
+the HP), I fired it back up to update things. Apt updated the system fine;
+cvs updated the kernel from 2.4.18-pa59 to the latest -pa20 release
+without errors. Recompiled using menuconfig (no errors), used make-kpkg to
+create the kernel, then dpkg to install the generated .deb file (which
+created all the links nicely, etc. Ran palo, which was happy, and
+rebooted.
 
-James S
+Now, the C180 runs headless, with a serial cable running to a Proliant
+next to it so I can use minicom as a console if needed. After the reboot,
+I couldn't ssh back in, so I checked the console, but minicom wouldn't
+get a response. Power-cycled the HP, still no messages on console, no
+errors on the LCDs, and eventually (several minutes) a heartbeat light.
+Tried unplugging the serial cable, plugging in a keyboard/mouse/monitor
+and rebooting again, but still nothing. With the monitor on, after power
+on I do get a green signal light on the monitor, just no display. I tried
+the "tab after powerup" to switch console settings, but nothing. According
+to my C180 manual, having the monitor and keyboard on there should set the
+monitor as console, while removing them should send console to ttyS0.
 
-
-
-On Tue, 2002-10-01 at 22:40, Derek Engelhaupt wrote:
-> Anyone using them?  I have a bunch of IBM DCHS-04F Ultrastar 2XP 4.3GB
-> (got info from IBM's website about jumpers and tried them all) drives
-> that I'm trying to get them to work but all they do is SCSI bus reset
-> when Debian trys to load.  They are factory refurbed 50-pin SE disks
-> and I have activated Autostart on them and active termination (tried it
-> without too).  Anyway, they perform this way under HP-UX too.  Tried a
-> 2GB HP drive and it works fine so the system SCSI bus is fine.  So,
-> bottom line is anyone using NON-HP disks in thier systems?  Tried them
-> in my E55, 712/60, and 712/100.  Have tried 2 different drives with the
-> same result also.....
-> 
-> derek
-> 
-> __________________________________________________
-> Do you Yahoo!?
-> New DSL Internet Access from SBC & Yahoo!
-> http://sbc.yahoo.com
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Anyone have any ideas how to rescue this, or what could have caused it?
+It's running firmware 6.1, and has been for several months. There's no
+error LEDs, no smell of smoke, no melted bits, and no actual response. I
+tried switching off the UPS it's on and leaving it for an hour, but still
+get the same lack of results. Minicom is set to 9600/8N1/VT100, which is
+what worked last time I used the console this way...
