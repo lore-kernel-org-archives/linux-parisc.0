@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (p035.sw02.auto.usertools.net [202.154.81.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A0EA74829
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 02:35:53 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA00275
-	for parisc-linux@parisc-linux.org; Fri, 17 Jan 2003 18:46:27 +0800
-Date: Fri, 17 Jan 2003 18:46:25 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: Linux/HPPA List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] CVS checkouts on ftp server
-Message-ID: <20030117184623.C23928@neep.com.au>
-References: <20030115122121.C799@neep.com.au> <20030115131651.F26554@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030115131651.F26554@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Jan 15, 2003 at 01:16:51PM +0000
+Received: from montezuma.mastecende.com (modemcable092.130-200-24.mtl.mc.videotron.ca [24.200.130.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE58B4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 Jan 2003 02:50:37 -0700 (MST)
+Date: Fri, 17 Jan 2003 04:51:11 -0500 (EST)
+From: Zwane Mwaikambo <zwane@holomorphy.com>
+To: Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@digeo.com>,
+	<parisc-linux@lists.parisc-linux.org>, <willy@debian.org>
+Message-ID: <Pine.LNX.4.44.0301170440560.24250-100000@montezuma.mastecende.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] [PATCH][2.5] smp_call_function_on_cpu for PARISC
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,44 +22,107 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox said:
-> On Wed, Jan 15, 2003 at 12:21:23PM +0800, Andrew Shugg wrote:
-> > I was trawling through ftp.parisc-linux.org/cvs looking for a tarball of
-> > the linux-2.5 tree and couldn't see anything, apart from a /cvs/2.5
-> > directory (which is currently empty).
-> 
-> Those aren't currently being generated (AFAIK).  What _is_ being generated
-> are the patches against upstream: http://ftp.parisc-linux.org/2.5/kernel-src/
+This patch adds an smp_call_function which accepts a cpu bitmask instead 
+of only doing a broadcast. One thing though, where is hweight64 on parisc?
 
-Ah yes, I saw those.  But then I'll need to make a vanilla Linus tree,
-and I am lazy.  I mean, streamlined and efficient.  =)
+	Zwane
 
-> > Is there enough disk space to do a linux-2.5 tarball for the FTP server?
-> 
-> Yes, certainly.  Do you still want that, given the existance of these
-> patches?
-
-It'd be nice.  Yes, I'd like it, if it's not a problem for anyone.
-Otherwise I'll try the above method, or slowly drag it out of CVS.  I'm
-assuming that occasional linux-2.5 tarballs might be useful for people
-other than me of course ...
-
-> > Also the /cvs directory contains a few files that look like stuff-ups
-> > from the CVS tarball roller: linux-.tar.gz and patch-.diff.gz ...
-> 
-> I can see them... but I can also see the CVS scripts are still running.
-> Possibly they'll be renamed later.
-
-Doesn't seem to be; they're empty files (though > 0 bytes from gzip).  I
-think the checkout script is using an empty variable, eg linux-$i.tar.gz
-or whatever.  The 'latest' softlinks are to these empty files.  I can't
-see any likely-looking tarball-rolling scripts in CVSROOT/ so I'm unable
-to investigate further.
-
-Andrew.
-
+Index: linux-2.5.58-cpu_hotplug/arch/parisc/kernel/smp.c
+===================================================================
+RCS file: /build/cvsroot/linux-2.5.58/arch/parisc/kernel/smp.c,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 smp.c
+--- linux-2.5.58-cpu_hotplug/arch/parisc/kernel/smp.c	14 Jan 2003 07:00:30 -0000	1.1.1.1
++++ linux-2.5.58-cpu_hotplug/arch/parisc/kernel/smp.c	17 Jan 2003 09:47:58 -0000
+@@ -371,7 +371,89 @@
+ 	return 0;
+ }
+ 
++/*
++ * smp_call_function_on_cpu - Runs func on all processors in the mask
++ *
++ * @func: The function to run. This must be fast and non-blocking.
++ * @info: An arbitrary pointer to pass to the function.
++ * @nonatomic: currently unused.
++ * @wait: If true, wait (atomically) until function has completed on other CPUs.
++ * @mask The bitmask of CPUs to call the function
++ * 
++ * Returns 0 on success, else a negative status code. Does not return until
++ * remote CPUs are nearly ready to execute func or have executed it.
++ *
++ */
+ 
++int
++smp_call_function_on_cpu (void (*func) (void *info), void *info, int retry, int wait,
++			  unsigned long mask)
++{
++	struct smp_call_struct data;
++	long timeout;
++	static spinlock_t lock = SPIN_LOCK_UNLOCKED;
++	int num_cpus = hweight32(mask), cpu, i, ret;
++	
++	cpu = get_cpu();
++	if ((1UL << cpu) & mask) {
++		ret = -EINVAL
++		goto out;
++	}
++
++	data.func = func;
++	data.info = info;
++	data.wait = wait;
++	atomic_set(&data.unstarted_count, num_cpus);
++	atomic_set(&data.unfinished_count, num_cpus);
++
++	if (retry) {
++		spin_lock (&lock);
++		while (smp_call_function_data != 0)
++			barrier();
++	}
++	else {
++		spin_lock (&lock);
++		if (smp_call_function_data) {
++			spin_unlock (&lock);
++			ret = -EBUSY;
++			goto out;
++		}
++	}
++
++	smp_call_function_data = &data;
++	spin_unlock (&lock);
++	
++	/*  Send a message to the target CPUs and wait */
++	for (i = 0; i < NR_CPUS; i++) {
++		if (!cpu_online(i) || !(mask & (1UL << i)))
++			continue;
++		send_IPI_single(i, IPI_CALL_FUNC);
++	}
++
++	/*  Wait for response  */
++	timeout = jiffies + HZ;
++	while ( (atomic_read (&data.unstarted_count) > 0) &&
++		time_before (jiffies, timeout) )
++		barrier ();
++
++	/* We either got one or timed out. Release the lock */
++
++	mb();
++	smp_call_function_data = NULL;
++	if (atomic_read (&data.unstarted_count) > 0) {
++		printk(KERN_CRIT "SMP CALL FUNCTION TIMED OUT! (cpu=%d)\n",
++		      cpu);
++		ret = -ETIMEDOUT;
++		goto out;
++	}
++
++	while (wait && atomic_read (&data.unfinished_count) > 0)
++			barrier ();
++	ret = 0;
++out:
++	put_cpu_no_resched();
++	return ret;
++}
+ 
+ /*
+  *	Setup routine for controlling SMP activation
 -- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+function.linuxpower.ca
