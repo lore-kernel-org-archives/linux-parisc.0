@@ -1,32 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA25758
-	for <parisc-linux@puffin.external.hp.com>; Wed, 17 Jan 2001 10:35:19 -0700
-Message-ID: <3A652259.9359CA7C@tipas.lt>
-Date: Wed, 17 Jan 2001 05:40:57 +0100
-From: Aleksandr Konstantinov <sanjak@tipas.lt>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA26631
+	for <parisc-linux@puffin.external.hp.com>; Wed, 17 Jan 2001 12:15:01 -0700
+Received: from localhost (ingram@localhost)
+	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id NAA03642
+	for <parisc-linux@thepuffingroup.com>; Wed, 17 Jan 2001 13:18:44 -0600
+Date: Wed, 17 Jan 2001 13:18:44 -0600 (CST)
+From: Greg Ingram <ingram@symsys.com>
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: <3A64530D.CD78EFD2@tipas.lt>
+Message-ID: <Pine.LNX.4.21.0101171314300.3619-100000@maestro.symsys.com>
 MIME-Version: 1.0
-To: Helge Deller <deller@gmx.de>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting C100
-References: <3A636BE1.EE2DBF87@tipas.lt> <20010115221749.A28689@parcelfarce.linux.theplanet.co.uk> <3A64530D.CD78EFD2@tipas.lt> <01011618464403.01122@P100.helgenet.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C100 Bus Errors
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Do You mean CONFIG_STI_CONSOLE ? I have it, and CONFIG_SERIAL_CONSOLE
-> > too.
-> > Palo also sets console=tty0 .  Booting goes till "Switching from PDC
-> > console"
-> > and then welcome message from palinux cdrom appears on serial link.
->
-> Try to enable just one of both: CONFIG_STI_CONSOLE _or_ CONFIG_SERIAL_CONSOLE
 
- I tried it and got following behavior:
+Howdy,
 
-  While kernel starts/initializes screen stays black. When it suddenly fills with
-scattered characters (I could
-read few words on screen: TCP, UDP RARP, Init and even something, that looks like
-Welcome).
+I've got the nfsroot tarball copied onto a hard disk now and I'm beginning
+to play around some more.  Unfortunately, some of the first programs I
+tried (make and tar) died with a simple 'Bus error' message.  What does a
+bus error really mean?  Is it a problem with the kernel support for my
+hardware?
 
+Regards,
 
-
-A.K.
+- Greg
