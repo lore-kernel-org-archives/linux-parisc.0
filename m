@@ -1,43 +1,220 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 20783482D
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Jul 2001 07:07:57 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B75D482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Jul 2001 07:37:43 -0600 (MDT)
 Subject: Re: [parisc-linux] palinux 0.9.1
 To: "Richard Hirst <rhirst" <rhirst%linuxcare.com%SMTP%EUROPAY@mastercard.com>
 Cc: parisc-linux@lists.parisc-linux.org, puffin@esiee.net
-Message-ID: <OFE6582140.671FFFD5-ONC1256A81.00401A6F@LocalDomain>
+Message-ID: <OF661BE745.10F18F0D-ONC1256A81.004953CA@LocalDomain>
 From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
-Date: Fri, 6 Jul 2001 14:57:19 +0200
+Date: Fri, 6 Jul 2001 15:25:42 +0200
 MIME-Version: 1.0
-Content-type: multipart/mixed ; Boundary="0__=C1256A8100401A6F8f9e8a93df938690918cC1256A8100401A6F"
+Content-type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
---0__=C1256A8100401A6F8f9e8a93df938690918cC1256A8100401A6F
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: quoted-printable
+My kern.log.last should be more readable like this:
 
+Jul  6 14:41:23 palin kernel: klogd 1.4.1#2, log source =3D /proc/kmsg
+started.
+Jul  6 14:41:23 palin kernel: Inspecting /boot/System.map
+Jul  6 14:41:25 palin kernel: Loaded 24720 symbols from /boot/System.map.
+Jul  6 14:41:25 palin kernel: Symbols match kernel version 2.4.0.
+Jul  6 14:41:25 palin kernel: No module symbols loaded.
+Jul  6 14:41:25 palin kernel: Linux version 2.4.0-32 (root@slab) (gcc
+version 3.0 (Debian)) #1 Thu Jun 28 11:49:00 BST 2001
+Jul  6 14:41:25 palin kernel: FP[0] enabled: Rev 1 Model 15
+Jul  6 14:41:25 palin kernel: The 32-bit Kernel has started...
+Jul  6 14:41:25 palin kernel: Determining PDC firmware type: Newer Box
+Jul  6 14:41:25 palin kernel: model^I00005040 00000481 00000000 02020202
+77ea2456 100000f0 00000004 000000ba 000000ba
+Jul  6 14:41:25 palin kernel: vers^I00000018
+Jul  6 14:41:25 palin kernel: cpuid^I000001f8
+Jul  6 14:41:25 palin kernel: CPUID^Ivers 15 rev 24
+Jul  6 14:41:25 palin kernel: model^I9000/778/B180L
+Jul  6 14:41:25 palin kernel: Total Memory: 128 Mb
+Jul  6 14:41:25 palin kernel: On node 0 totalpages: 32768
+Jul  6 14:41:25 palin kernel: zone(0): 32768 pages.
+Jul  6 14:41:25 palin kernel: zone(1): 0 pages.
+Jul  6 14:41:25 palin kernel: zone(2): 0 pages.
+Jul  6 14:41:25 palin kernel: led_init: chassis info: model=3D1 (unknown),
+lcd_width=3D16, cmd_delay=3D40, sizecnt=3D32, actcnt=3D8, maxcnt=3D8
+Jul  6 14:41:25 palin kernel: PDC reported no LCD or LED.
+Jul  6 14:41:25 palin kernel: Searching for devices...
+Jul  6 14:41:25 palin kernel: Found devices:
+Jul  6 14:41:25 palin kernel: 1. Phantom PseudoBC GSC+ Port (7) at
+0xffc00000, versions 0x504, 0x0, 0x0, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 2. Merlin+ 132 Dino RS-232 (10) at
+0xfff83000, versions 0x22, 0x0, 0x8c, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 3. Merlin L2+ 180 (9000/778/B180L) (0) at
+0xfffbe000, versions 0x504, 0x0, 0x4, 0x0, 0x81
+Jul  6 14:41:25 palin kernel: 4. Merlin+ L2 180 (1) at 0xfffbf000, versions
+0x5a, 0x0, 0x9, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 5. Merlin+ 180 Core BA (11) at 0xffd00000,
+versions 0x3f, 0x0, 0x81, 0x0, 0x0,  additional addresses: 0xffd0c000
+0xffc00000
+Jul  6 14:41:25 palin kernel: 6. Merlin+ 180 Core RS-232 (10) at
+0xffd05000, versions 0x3f, 0x0, 0x8c, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 7. Merlin+ 180 Core SCSI (10) at 0xffd06000,
+versions 0x3f, 0x0, 0x82, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 8. Merlin+ 180 Core Centronics (10) at
+0xffd02000, versions 0x3f, 0x0, 0x74, 0x0, 0x0,  additional addresses:
+0xffd01000 0xffd03000
+Jul  6 14:41:25 palin kernel: 9. Merlin+ 180 Core Audio (10) at 0xffd04000,
+versions 0x3f, 0x4, 0x7b, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 10. Merlin+ 180 Core PS/2 Port (10) at
+0xffd08000, versions 0x3f, 0x0, 0x84, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 11. Merlin+ 180 Core PS/2 Port (10) at
+0xffd08100, versions 0x3f, 0x0, 0x84, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: 12. Gecko GSC Core Graphics (10) at
+0xf8000000, versions 0x16, 0x0, 0x85, 0x0, 0x0,  additional addresses:
+0xf0011000
+Jul  6 14:41:25 palin kernel: 13. Dino PCI Bridge (13) at 0xfff80000,
+versions 0x680, 0x3, 0xa, 0x0, 0x0,  additional addresses: 0xf0800000
+Jul  6 14:41:25 palin kernel: 14. Merlin+ 132 Dino PS/2 Port (10) at
+0xfff81000, versions 0x22, 0x0, 0x96, 0x0, 0x0
+Jul  6 14:41:25 palin kernel: That's a total of 14 devices.
+Jul  6 14:41:25 palin kernel: CPU(s): 1 x PA7300LC (PCX-L2) at 180.000000
+MHz
+Jul  6 14:41:25 palin kernel: Kernel command line: root=3D/dev/sda3 HOME=3D/
+console=3Dtty0 TERM=3Dlinux
+Jul  6 14:41:25 palin kernel: Console: colour dummy device 160x64
+Jul  6 14:41:25 palin kernel: Calibrating delay loop... 119.60 BogoMIPS
+Jul  6 14:41:25 palin kernel: Memory: 126364k available
+Jul  6 14:41:25 palin kernel: Dentry-cache hash table entries: 16384
+(order: 5, 131072 bytes)
+Jul  6 14:41:25 palin kernel: Buffer-cache hash table entries: 4096 (order:
+2, 16384 bytes)
+Jul  6 14:41:25 palin kernel: Page-cache hash table entries: 32768 (order:
+5, 131072 bytes)
+Jul  6 14:41:25 palin kernel: Inode-cache hash table entries: 8192 (order:
+4, 65536 bytes)
+Jul  6 14:41:25 palin kernel: POSIX conformance testing by UNIFIX
+Jul  6 14:41:25 palin kernel: Dino version 3.1 (bridge mode) found at
+0xfff80000
+Jul  6 14:41:25 palin kernel: Lasi version 0 at 0xffd00000 found.
+Jul  6 14:41:25 palin kernel: LED display at ffd0c000 registered
+Jul  6 14:41:25 palin kernel: Lasi PS/2 wait 2318
+Jul  6 14:41:25 palin kernel: Lasi PS/2 wait 4370
+Jul  6 14:41:25 palin kernel: PS/2 keyboard controller at 0xffd08000 (irq
+133) found, device attached.
+Jul  6 14:41:25 palin kernel: Lasi PS/2 wait 3209
+Jul  6 14:41:25 palin kernel: PS/2 psaux controller at 0xffd08100 (irq 133)
+found, device attached.
+Jul  6 14:41:25 palin kernel:
+Jul  6 14:41:25 palin kernel: sticonsole_init: searching for STI ROMs
+Jul  6 14:41:25 palin kernel: STI word mode ROM at f0011000, hpa=3Df8000000
+Jul  6 14:41:25 palin kernel: STI word mode ROM, id 2d08c0a7-9a02587,
+conforms to spec rev. 8.07
+Jul  6 14:41:25 palin kernel: STI device: INTERNAL_EG_1280
+Jul  6 14:41:25 palin kernel: Console: switching to colour STI console
+160x64
+Jul  6 14:41:25 palin kernel: Linux NET4.0 for Linux 2.4
+Jul  6 14:41:25 palin kernel: Based upon Swansea University Computer
+Society NET3.039
+Jul  6 14:41:25 palin kernel: Starting kswapd v1.8
+Jul  6 14:41:25 palin kernel: stifb: Unsupported graphics card
+(id=3D0x2d08c0a7) - skipping.
+Jul  6 14:41:25 palin kernel: pty: 256 Unix98 ptys configured
+Jul  6 14:41:25 palin kernel: request_module[parport_lowlevel]: Root fs not
+mounted
+Jul  6 14:41:25 palin kernel: lp: driver loaded but no devices found
+Jul  6 14:41:25 palin kernel: RAMDISK driver initialized: 16 RAM disks of
+6144K size 1024 blocksize
+Jul  6 14:41:25 palin kernel: loop: enabling 8 loop devices
+Jul  6 14:41:25 palin kernel: Lasi PS/2 wait 2270
+Jul  6 14:41:25 palin kernel: Lasi PS/2 wait 4364
+Jul  6 14:41:25 palin kernel: Serial driver version 5.02 (2000-08-09) with
+MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
+Jul  6 14:41:25 palin kernel: ttyS00 at iomem 0xffd05800 (irq =3D 154) is a
+16550A
+Jul  6 14:41:25 palin kernel: ttyS01 at iomem 0xfff83800 (irq =3D 74) is a
+16550A
+Jul  6 14:41:25 palin kernel: Generic RTC Driver v1.02 05/27/1999 Sam
+Creasey (sammy@oh.verio.com)
+Jul  6 14:41:25 palin kernel: Linux Tulip driver version 0.9.13 (January 2,
+2001)
+Jul  6 14:41:25 palin kernel: eth0: Digital DS21143 Tulip rev 65 at 0xff00,
+00:10:83:65:09:4B, IRQ 64.
+Jul  6 14:41:25 palin kernel: eth0:  MII transceiver #1 config 1000 status
+782d advertising 01e1.
+Jul  6 14:41:25 palin kernel: parport_init_chip: initialize
+bidirectional-mode.
+Jul  6 14:41:25 palin kernel: parport0: PC-style at 0xffd02800, irq 152
+[PCSPP,TRISTATE]
+Jul  6 14:41:25 palin kernel: lp0: using parport0 (interrupt-driven).
+Jul  6 14:41:25 palin kernel: SCSI subsystem driver Revision: 1.00
+Jul  6 14:41:25 palin kernel: sym53c8xx: at PCI bus 0, device 19, function
+0
+Jul  6 14:41:25 palin kernel: sym53c8xx: 53c875 detected
+Jul  6 14:41:25 palin kernel: sym53c875-0: rev 0x4 on pci bus 0 device 19
+function 0 irq 67
+Jul  6 14:41:25 palin kernel: sym53c875-0: NCR clock is 40401KHz
+Jul  6 14:41:25 palin kernel: sym53c875-0: ID 7, Fast-20, Parity Checking
+Jul  6 14:41:25 palin kernel: sym53c875-0: on-chip RAM at 0xf0ffe000
+Jul  6 14:41:25 palin kernel: sym53c875-0: restart (scsi reset).
+Jul  6 14:41:25 palin kernel: sym53c875-0: Downloading SCSI SCRIPTS.
+Jul  6 14:41:25 palin kernel: scsi0 : sym53c8xx - version 1.6b
+Jul  6 14:41:25 palin kernel:   Vendor: SEAGATE   Model: ST39140WS
+Rev: HP03
+Jul  6 14:41:25 palin kernel:   Type:   Direct-Access
+ANSI SCSI revision: 02
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: tagged command queue depth
+set to 8
+Jul  6 14:41:25 palin kernel: sim700: Configuring 53c710 (SCSI-ID 7) at
+ffd06100, IRQ 150, options 0
+Jul  6 14:41:25 palin kernel: scsi1: Revision 0x2
+Jul  6 14:41:25 palin kernel: scsi1: test 1 completed ok.
+Jul  6 14:41:25 palin kernel: scsi1 : LASI/Simple 53c7xx
+Jul  6 14:41:25 palin kernel:   Vendor: HP        Model: DVD-ROM 6x/32x
+Rev: 1.08
+Jul  6 14:41:25 palin kernel:   Type:   CD-ROM
+ANSI SCSI revision: 02
+Jul  6 14:41:25 palin kernel: Detected scsi disk sda at scsi0, channel 0,
+id 6, lun 0
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: wide msgout: 1-2-3-1.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: wide msgin: 1-2-3-1.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: wide: wide=3D1 chg=3D0.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: wide msgout: 1-2-3-1.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: wide msgin: 1-2-3-1.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: wide: wide=3D1 chg=3D0.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: sync msgout: 1-3-1-c-10.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: sync msg in: 1-3-1-c-f.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,0>: sync: per=3D12 scntl3=3D0x=
+90
+scntl4=3D0x0 ofs=3D15 fak=3D0 chg=3D0.
+Jul  6 14:41:25 palin kernel: sym53c875-0-<6,*>: FAST-20 WIDE SCSI 40.0
+MB/s (50 ns, offset 15)
+Jul  6 14:41:25 palin kernel: SCSI device sda: 17773524 512-byte hdwr
+sectors (9100 MB)
+Jul  6 14:41:25 palin kernel: Partition check:
+Jul  6 14:41:25 palin kernel:  sda: sda1 sda2 sda3 sda4 < sda5 sda6 sda7 >
+Jul  6 14:41:25 palin kernel: Detected scsi CD-ROM sr0 at scsi1, channel 0,
+id 0, lun 0
+Jul  6 14:41:25 palin kernel: sr0: scsi3-mmc drive: 0x/0x cd/rw xa/form2
+cdda tray
+Jul  6 14:41:25 palin kernel: Uniform CD-ROM driver Revision: 3.12
+Jul  6 14:41:25 palin kernel: Lasi Harmony Audio rev. 0 at 0xffd04000,
+using IRQ 146
+Jul  6 14:41:25 palin kernel: md driver 0.90.0 MAX_MD_DEVS=3D256,
+MD_SB_DISKS=3D27
+Jul  6 14:41:25 palin kernel: md.c: sizeof(mdp_super_t) =3D 4096
+Jul  6 14:41:25 palin kernel: NET4: Linux TCP/IP 1.0 for NET4.0
+Jul  6 14:41:25 palin kernel: IP Protocols: ICMP, UDP, TCP
+Jul  6 14:41:25 palin kernel: IP: routing cache hash table of 512 buckets,
+4Kbytes
+Jul  6 14:41:25 palin kernel: TCP: Hash tables configured (established 8192
+bind 16384)
+Jul  6 14:41:25 palin kernel: IP-Config: Incomplete network configuration
+information.
+Jul  6 14:41:25 palin kernel: NET4: Unix domain sockets 1.0/SMP for Linux
+NET4.0.
+Jul  6 14:41:25 palin kernel: VFS: Mounted root (ext2 filesystem) readonly.
+Jul  6 14:41:25 palin kernel: Adding Swap: 124924k swap-space (priority -1)
 
+Joel,
 
-Hello Richard,
-
-The problem ip_local_deliver:... cames in fact from the dhcp_client which
-is started by default?
-
-For the B180, I set console path ro serial_1 and it works fine for serial
-console.
-
-For the sti console, I do have to be unlucky; I get backup the kernel
-installed with 0.9 then ps2 kbd works back ( I also suspect the kbd and
-change it, no difference)? what could be the problem? I also try to get the
-last firmware but HP prevent to install it over the builtin ?
-
-I join my last kern.log.  May be could you see some difference in the
-hardware configuration that the kernel detect.
-
-Kind regards,
-     Joel
-
-(See attached file: kern.log.last)
+PS: Sorry in the office we have to change of mail program and I not yet
+familiar with it.
 
 
 
@@ -89,6 +266,8 @@ Richard
 
 
 
+
+
 **********************************************************************
 This e-mail and any attachments to it may contain confidential information =
 which is strictly intended for the use of the authorised recipient.  If you=
@@ -96,193 +275,3 @@ which is strictly intended for the use of the authorised recipient.  If you=
  by replying to this e-mail.
 Thank you for your co-operation.
 **********************************************************************
-
---0__=C1256A8100401A6F8f9e8a93df938690918cC1256A8100401A6F
-Content-type: application/octet-stream;
-	name="=?iso-8859-1?Q?kern.log.last?="
-Content-Disposition: attachment; filename="=?iso-8859-1?Q?kern.log.last?="
-Content-transfer-encoding: base64
-
-SnVsICA2IDE0OjQxOjIzIHBhbGluIGtlcm5lbDoga2xvZ2QgMS40LjEjMiwgbG9nIHNvdXJjZSA9
-IC9wcm9jL2ttc2cgc3RhcnRlZC4KSnVsICA2IDE0OjQxOjIzIHBhbGluIGtlcm5lbDogSW5zcGVj
-dGluZyAvYm9vdC9TeXN0ZW0ubWFwCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IExvYWRl
-ZCAyNDcyMCBzeW1ib2xzIGZyb20gL2Jvb3QvU3lzdGVtLm1hcC4KSnVsICA2IDE0OjQxOjI1IHBh
-bGluIGtlcm5lbDogU3ltYm9scyBtYXRjaCBrZXJuZWwgdmVyc2lvbiAyLjQuMC4KSnVsICA2IDE0
-OjQxOjI1IHBhbGluIGtlcm5lbDogTm8gbW9kdWxlIHN5bWJvbHMgbG9hZGVkLgpKdWwgIDYgMTQ6
-NDE6MjUgcGFsaW4ga2VybmVsOiBMaW51eCB2ZXJzaW9uIDIuNC4wLTMyIChyb290QHNsYWIpIChn
-Y2MgdmVyc2lvbiAzLjAgKERlYmlhbikpICMxIFRodSBKdW4gMjggMTE6NDk6MDAgQlNUIDIwMDEK
-SnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogRlBbMF0gZW5hYmxlZDogUmV2IDEgTW9kZWwg
-MTUKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogVGhlIDMyLWJpdCBLZXJuZWwgaGFzIHN0
-YXJ0ZWQuLi4KSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogRGV0ZXJtaW5pbmcgUERDIGZp
-cm13YXJlIHR5cGU6IE5ld2VyIEJveApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBtb2Rl
-bF5JMDAwMDUwNDAgMDAwMDA0ODEgMDAwMDAwMDAgMDIwMjAyMDIgNzdlYTI0NTYgMTAwMDAwZjAg
-MDAwMDAwMDQgMDAwMDAwYmEgMDAwMDAwYmEKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDog
-dmVyc15JMDAwMDAwMTgKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogY3B1aWReSTAwMDAw
-MWY4Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IENQVUlEXkl2ZXJzIDE1IHJldiAyNApK
-dWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBtb2RlbF5JOTAwMC83NzgvQjE4MEwKSnVsICA2
-IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogVG90YWwgTWVtb3J5OiAxMjggTWIKSnVsICA2IDE0OjQx
-OjI1IHBhbGluIGtlcm5lbDogT24gbm9kZSAwIHRvdGFscGFnZXM6IDMyNzY4Ckp1bCAgNiAxNDo0
-MToyNSBwYWxpbiBrZXJuZWw6IHpvbmUoMCk6IDMyNzY4IHBhZ2VzLgpKdWwgIDYgMTQ6NDE6MjUg
-cGFsaW4ga2VybmVsOiB6b25lKDEpOiAwIHBhZ2VzLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2Vy
-bmVsOiB6b25lKDIpOiAwIHBhZ2VzLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBsZWRf
-aW5pdDogY2hhc3NpcyBpbmZvOiBtb2RlbD0xICh1bmtub3duKSwgbGNkX3dpZHRoPTE2LCBjbWRf
-ZGVsYXk9NDAsIHNpemVjbnQ9MzIsIGFjdGNudD04LCBtYXhjbnQ9OApKdWwgIDYgMTQ6NDE6MjUg
-cGFsaW4ga2VybmVsOiBQREMgcmVwb3J0ZWQgbm8gTENEIG9yIExFRC4KSnVsICA2IDE0OjQxOjI1
-IHBhbGluIGtlcm5lbDogU2VhcmNoaW5nIGZvciBkZXZpY2VzLi4uCkp1bCAgNiAxNDo0MToyNSBw
-YWxpbiBrZXJuZWw6IEZvdW5kIGRldmljZXM6Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6
-IDEuIFBoYW50b20gUHNldWRvQkMgR1NDKyBQb3J0ICg3KSBhdCAweGZmYzAwMDAwLCB2ZXJzaW9u
-cyAweDUwNCwgMHgwLCAweDAsIDB4MCwgMHgwCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6
-IDIuIE1lcmxpbisgMTMyIERpbm8gUlMtMjMyICgxMCkgYXQgMHhmZmY4MzAwMCwgdmVyc2lvbnMg
-MHgyMiwgMHgwLCAweDhjLCAweDAsIDB4MApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiAz
-LiBNZXJsaW4gTDIrIDE4MCAoOTAwMC83NzgvQjE4MEwpICgwKSBhdCAweGZmZmJlMDAwLCB2ZXJz
-aW9ucyAweDUwNCwgMHgwLCAweDQsIDB4MCwgMHg4MQpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2Vy
-bmVsOiA0LiBNZXJsaW4rIEwyIDE4MCAoMSkgYXQgMHhmZmZiZjAwMCwgdmVyc2lvbnMgMHg1YSwg
-MHgwLCAweDksIDB4MCwgMHgwCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IDUuIE1lcmxp
-bisgMTgwIENvcmUgQkEgKDExKSBhdCAweGZmZDAwMDAwLCB2ZXJzaW9ucyAweDNmLCAweDAsIDB4
-ODEsIDB4MCwgMHgwLCAgYWRkaXRpb25hbCBhZGRyZXNzZXM6IDB4ZmZkMGMwMDAgMHhmZmMwMDAw
-MCAKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogNi4gTWVybGluKyAxODAgQ29yZSBSUy0y
-MzIgKDEwKSBhdCAweGZmZDA1MDAwLCB2ZXJzaW9ucyAweDNmLCAweDAsIDB4OGMsIDB4MCwgMHgw
-Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IDcuIE1lcmxpbisgMTgwIENvcmUgU0NTSSAo
-MTApIGF0IDB4ZmZkMDYwMDAsIHZlcnNpb25zIDB4M2YsIDB4MCwgMHg4MiwgMHgwLCAweDAKSnVs
-ICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogOC4gTWVybGluKyAxODAgQ29yZSBDZW50cm9uaWNz
-ICgxMCkgYXQgMHhmZmQwMjAwMCwgdmVyc2lvbnMgMHgzZiwgMHgwLCAweDc0LCAweDAsIDB4MCwg
-IGFkZGl0aW9uYWwgYWRkcmVzc2VzOiAweGZmZDAxMDAwIDB4ZmZkMDMwMDAgCkp1bCAgNiAxNDo0
-MToyNSBwYWxpbiBrZXJuZWw6IDkuIE1lcmxpbisgMTgwIENvcmUgQXVkaW8gKDEwKSBhdCAweGZm
-ZDA0MDAwLCB2ZXJzaW9ucyAweDNmLCAweDQsIDB4N2IsIDB4MCwgMHgwCkp1bCAgNiAxNDo0MToy
-NSBwYWxpbiBrZXJuZWw6IDEwLiBNZXJsaW4rIDE4MCBDb3JlIFBTLzIgUG9ydCAoMTApIGF0IDB4
-ZmZkMDgwMDAsIHZlcnNpb25zIDB4M2YsIDB4MCwgMHg4NCwgMHgwLCAweDAKSnVsICA2IDE0OjQx
-OjI1IHBhbGluIGtlcm5lbDogMTEuIE1lcmxpbisgMTgwIENvcmUgUFMvMiBQb3J0ICgxMCkgYXQg
-MHhmZmQwODEwMCwgdmVyc2lvbnMgMHgzZiwgMHgwLCAweDg0LCAweDAsIDB4MApKdWwgIDYgMTQ6
-NDE6MjUgcGFsaW4ga2VybmVsOiAxMi4gR2Vja28gR1NDIENvcmUgR3JhcGhpY3MgKDEwKSBhdCAw
-eGY4MDAwMDAwLCB2ZXJzaW9ucyAweDE2LCAweDAsIDB4ODUsIDB4MCwgMHgwLCAgYWRkaXRpb25h
-bCBhZGRyZXNzZXM6IDB4ZjAwMTEwMDAgCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IDEz
-LiBEaW5vIFBDSSBCcmlkZ2UgKDEzKSBhdCAweGZmZjgwMDAwLCB2ZXJzaW9ucyAweDY4MCwgMHgz
-LCAweGEsIDB4MCwgMHgwLCAgYWRkaXRpb25hbCBhZGRyZXNzZXM6IDB4ZjA4MDAwMDAgCkp1bCAg
-NiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IDE0LiBNZXJsaW4rIDEzMiBEaW5vIFBTLzIgUG9ydCAo
-MTApIGF0IDB4ZmZmODEwMDAsIHZlcnNpb25zIDB4MjIsIDB4MCwgMHg5NiwgMHgwLCAweDAKSnVs
-ICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogVGhhdCdzIGEgdG90YWwgb2YgMTQgZGV2aWNlcy4K
-SnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogQ1BVKHMpOiAxIHggUEE3MzAwTEMgKFBDWC1M
-MikgYXQgMTgwLjAwMDAwMCBNSHoKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogS2VybmVs
-IGNvbW1hbmQgbGluZTogcm9vdD0vZGV2L3NkYTMgSE9NRT0vIGNvbnNvbGU9dHR5MCBURVJNPWxp
-bnV4Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IENvbnNvbGU6IGNvbG91ciBkdW1teSBk
-ZXZpY2UgMTYweDY0Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IENhbGlicmF0aW5nIGRl
-bGF5IGxvb3AuLi4gMTE5LjYwIEJvZ29NSVBTCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6
-IE1lbW9yeTogMTI2MzY0ayBhdmFpbGFibGUKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDog
-RGVudHJ5LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTYzODQgKG9yZGVyOiA1LCAxMzEwNzIg
-Ynl0ZXMpCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IEJ1ZmZlci1jYWNoZSBoYXNoIHRh
-YmxlIGVudHJpZXM6IDQwOTYgKG9yZGVyOiAyLCAxNjM4NCBieXRlcykKSnVsICA2IDE0OjQxOjI1
-IHBhbGluIGtlcm5lbDogUGFnZS1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDMyNzY4IChvcmRl
-cjogNSwgMTMxMDcyIGJ5dGVzKQpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBJbm9kZS1j
-YWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDgxOTIgKG9yZGVyOiA0LCA2NTUzNiBieXRlcykKSnVs
-ICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogUE9TSVggY29uZm9ybWFuY2UgdGVzdGluZyBieSBV
-TklGSVgKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogRGlubyB2ZXJzaW9uIDMuMSAoYnJp
-ZGdlIG1vZGUpIGZvdW5kIGF0IDB4ZmZmODAwMDAKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5l
-bDogTGFzaSB2ZXJzaW9uIDAgYXQgMHhmZmQwMDAwMCBmb3VuZC4KSnVsICA2IDE0OjQxOjI1IHBh
-bGluIGtlcm5lbDogTEVEIGRpc3BsYXkgYXQgZmZkMGMwMDAgcmVnaXN0ZXJlZApKdWwgIDYgMTQ6
-NDE6MjUgcGFsaW4ga2VybmVsOiBMYXNpIFBTLzIgd2FpdCAyMzE4Ckp1bCAgNiAxNDo0MToyNSBw
-YWxpbiBrZXJuZWw6IExhc2kgUFMvMiB3YWl0IDQzNzAKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtl
-cm5lbDogUFMvMiBrZXlib2FyZCBjb250cm9sbGVyIGF0IDB4ZmZkMDgwMDAgKGlycSAxMzMpIGZv
-dW5kLCBkZXZpY2UgYXR0YWNoZWQuCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IExhc2kg
-UFMvMiB3YWl0IDMyMDkKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogUFMvMiBwc2F1eCBj
-b250cm9sbGVyIGF0IDB4ZmZkMDgxMDAgKGlycSAxMzMpIGZvdW5kLCBkZXZpY2UgYXR0YWNoZWQu
-Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2Vy
-bmVsOiBzdGljb25zb2xlX2luaXQ6IHNlYXJjaGluZyBmb3IgU1RJIFJPTXMKSnVsICA2IDE0OjQx
-OjI1IHBhbGluIGtlcm5lbDogU1RJIHdvcmQgbW9kZSBST00gYXQgZjAwMTEwMDAsIGhwYT1mODAw
-MDAwMApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBTVEkgd29yZCBtb2RlIFJPTSwgaWQg
-MmQwOGMwYTctOWEwMjU4NywgY29uZm9ybXMgdG8gc3BlYyByZXYuIDguMDcKSnVsICA2IDE0OjQx
-OjI1IHBhbGluIGtlcm5lbDogU1RJIGRldmljZTogSU5URVJOQUxfRUdfMTI4MApKdWwgIDYgMTQ6
-NDE6MjUgcGFsaW4ga2VybmVsOiBDb25zb2xlOiBzd2l0Y2hpbmcgdG8gY29sb3VyIFNUSSBjb25z
-b2xlIDE2MHg2NApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBMaW51eCBORVQ0LjAgZm9y
-IExpbnV4IDIuNApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBCYXNlZCB1cG9uIFN3YW5z
-ZWEgVW5pdmVyc2l0eSBDb21wdXRlciBTb2NpZXR5IE5FVDMuMDM5Ckp1bCAgNiAxNDo0MToyNSBw
-YWxpbiBrZXJuZWw6IFN0YXJ0aW5nIGtzd2FwZCB2MS44Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBr
-ZXJuZWw6IHN0aWZiOiBVbnN1cHBvcnRlZCBncmFwaGljcyBjYXJkIChpZD0weDJkMDhjMGE3KSAt
-IHNraXBwaW5nLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBwdHk6IDI1NiBVbml4OTgg
-cHR5cyBjb25maWd1cmVkCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHJlcXVlc3RfbW9k
-dWxlW3BhcnBvcnRfbG93bGV2ZWxdOiBSb290IGZzIG5vdCBtb3VudGVkCkp1bCAgNiAxNDo0MToy
-NSBwYWxpbiBrZXJuZWw6IGxwOiBkcml2ZXIgbG9hZGVkIGJ1dCBubyBkZXZpY2VzIGZvdW5kCkp1
-bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IFJBTURJU0sgZHJpdmVyIGluaXRpYWxpemVkOiAx
-NiBSQU0gZGlza3Mgb2YgNjE0NEsgc2l6ZSAxMDI0IGJsb2Nrc2l6ZQpKdWwgIDYgMTQ6NDE6MjUg
-cGFsaW4ga2VybmVsOiBsb29wOiBlbmFibGluZyA4IGxvb3AgZGV2aWNlcwpKdWwgIDYgMTQ6NDE6
-MjUgcGFsaW4ga2VybmVsOiBMYXNpIFBTLzIgd2FpdCAyMjcwCkp1bCAgNiAxNDo0MToyNSBwYWxp
-biBrZXJuZWw6IExhc2kgUFMvMiB3YWl0IDQzNjQKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5l
-bDogU2VyaWFsIGRyaXZlciB2ZXJzaW9uIDUuMDIgKDIwMDAtMDgtMDkpIHdpdGggTUFOWV9QT1JU
-UyBTSEFSRV9JUlEgU0VSSUFMX1BDSSBlbmFibGVkCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJu
-ZWw6IHR0eVMwMCBhdCBpb21lbSAweGZmZDA1ODAwIChpcnEgPSAxNTQpIGlzIGEgMTY1NTBBCkp1
-bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHR0eVMwMSBhdCBpb21lbSAweGZmZjgzODAwIChp
-cnEgPSA3NCkgaXMgYSAxNjU1MEEKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogR2VuZXJp
-YyBSVEMgRHJpdmVyIHYxLjAyIDA1LzI3LzE5OTkgU2FtIENyZWFzZXkgKHNhbW15QG9oLnZlcmlv
-LmNvbSkKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogTGludXggVHVsaXAgZHJpdmVyIHZl
-cnNpb24gMC45LjEzIChKYW51YXJ5IDIsIDIwMDEpCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJu
-ZWw6IGV0aDA6IERpZ2l0YWwgRFMyMTE0MyBUdWxpcCByZXYgNjUgYXQgMHhmZjAwLCAwMDoxMDo4
-Mzo2NTowOTo0QiwgSVJRIDY0LgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBldGgwOiAg
-TUlJIHRyYW5zY2VpdmVyICMxIGNvbmZpZyAxMDAwIHN0YXR1cyA3ODJkIGFkdmVydGlzaW5nIDAx
-ZTEuCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHBhcnBvcnRfaW5pdF9jaGlwOiBpbml0
-aWFsaXplIGJpZGlyZWN0aW9uYWwtbW9kZS4KSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDog
-cGFycG9ydDA6IFBDLXN0eWxlIGF0IDB4ZmZkMDI4MDAsIGlycSAxNTIgW1BDU1BQLFRSSVNUQVRF
-XQpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBscDA6IHVzaW5nIHBhcnBvcnQwIChpbnRl
-cnJ1cHQtZHJpdmVuKS4KSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogU0NTSSBzdWJzeXN0
-ZW0gZHJpdmVyIFJldmlzaW9uOiAxLjAwCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHN5
-bTUzYzh4eDogYXQgUENJIGJ1cyAwLCBkZXZpY2UgMTksIGZ1bmN0aW9uIDAKSnVsICA2IDE0OjQx
-OjI1IHBhbGluIGtlcm5lbDogc3ltNTNjOHh4OiA1M2M4NzUgZGV0ZWN0ZWQgCkp1bCAgNiAxNDo0
-MToyNSBwYWxpbiBrZXJuZWw6IHN5bTUzYzg3NS0wOiByZXYgMHg0IG9uIHBjaSBidXMgMCBkZXZp
-Y2UgMTkgZnVuY3Rpb24gMCBpcnEgNjcKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogc3lt
-NTNjODc1LTA6IE5DUiBjbG9jayBpcyA0MDQwMUtIegpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2Vy
-bmVsOiBzeW01M2M4NzUtMDogSUQgNywgRmFzdC0yMCwgUGFyaXR5IENoZWNraW5nCkp1bCAgNiAx
-NDo0MToyNSBwYWxpbiBrZXJuZWw6IHN5bTUzYzg3NS0wOiBvbi1jaGlwIFJBTSBhdCAweGYwZmZl
-MDAwCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHN5bTUzYzg3NS0wOiByZXN0YXJ0IChz
-Y3NpIHJlc2V0KS4KSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogc3ltNTNjODc1LTA6IERv
-d25sb2FkaW5nIFNDU0kgU0NSSVBUUy4KSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogc2Nz
-aTAgOiBzeW01M2M4eHggLSB2ZXJzaW9uIDEuNmIKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5l
-bDogICBWZW5kb3I6IFNFQUdBVEUgICBNb2RlbDogU1QzOTE0MFdTICAgICAgICAgUmV2OiBIUDAz
-Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6ICAgVHlwZTogICBEaXJlY3QtQWNjZXNzICAg
-ICAgICAgICAgICAgICAgICAgIEFOU0kgU0NTSSByZXZpc2lvbjogMDIKSnVsICA2IDE0OjQxOjI1
-IHBhbGluIGtlcm5lbDogc3ltNTNjODc1LTAtPDYsMD46IHRhZ2dlZCBjb21tYW5kIHF1ZXVlIGRl
-cHRoIHNldCB0byA4Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHNpbTcwMDogQ29uZmln
-dXJpbmcgNTNjNzEwIChTQ1NJLUlEIDcpIGF0IGZmZDA2MTAwLCBJUlEgMTUwLCBvcHRpb25zIDAK
-SnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogc2NzaTE6IFJldmlzaW9uIDB4MgpKdWwgIDYg
-MTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBzY3NpMTogdGVzdCAxIGNvbXBsZXRlZCBvay4KSnVsICA2
-IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogc2NzaTEgOiBMQVNJL1NpbXBsZSA1M2M3eHgKSnVsICA2
-IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogICBWZW5kb3I6IEhQICAgICAgICBNb2RlbDogRFZELVJP
-TSA2eC8zMnggICAgUmV2OiAxLjA4Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6ICAgVHlw
-ZTogICBDRC1ST00gICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFOU0kgU0NTSSByZXZpc2lv
-bjogMDIKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogRGV0ZWN0ZWQgc2NzaSBkaXNrIHNk
-YSBhdCBzY3NpMCwgY2hhbm5lbCAwLCBpZCA2LCBsdW4gMApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4g
-a2VybmVsOiBzeW01M2M4NzUtMC08NiwwPjogd2lkZSBtc2dvdXQ6IDEtMi0zLTEuCkp1bCAgNiAx
-NDo0MToyNSBwYWxpbiBrZXJuZWw6IHN5bTUzYzg3NS0wLTw2LDA+OiB3aWRlIG1zZ2luOiAxLTIt
-My0xLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBzeW01M2M4NzUtMC08NiwwPjogd2lk
-ZTogd2lkZT0xIGNoZz0wLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBzeW01M2M4NzUt
-MC08NiwwPjogd2lkZSBtc2dvdXQ6IDEtMi0zLTEuCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJu
-ZWw6IHN5bTUzYzg3NS0wLTw2LDA+OiB3aWRlIG1zZ2luOiAxLTItMy0xLgpKdWwgIDYgMTQ6NDE6
-MjUgcGFsaW4ga2VybmVsOiBzeW01M2M4NzUtMC08NiwwPjogd2lkZTogd2lkZT0xIGNoZz0wLgpK
-dWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBzeW01M2M4NzUtMC08NiwwPjogc3luYyBtc2dv
-dXQ6IDEtMy0xLWMtMTAuCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IHN5bTUzYzg3NS0w
-LTw2LDA+OiBzeW5jIG1zZyBpbjogMS0zLTEtYy1mLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2Vy
-bmVsOiBzeW01M2M4NzUtMC08NiwwPjogc3luYzogcGVyPTEyIHNjbnRsMz0weDkwIHNjbnRsND0w
-eDAgb2ZzPTE1IGZhaz0wIGNoZz0wLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBzeW01
-M2M4NzUtMC08NiwqPjogRkFTVC0yMCBXSURFIFNDU0kgNDAuMCBNQi9zICg1MCBucywgb2Zmc2V0
-IDE1KQpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBTQ1NJIGRldmljZSBzZGE6IDE3Nzcz
-NTI0IDUxMi1ieXRlIGhkd3Igc2VjdG9ycyAoOTEwMCBNQikKSnVsICA2IDE0OjQxOjI1IHBhbGlu
-IGtlcm5lbDogUGFydGl0aW9uIGNoZWNrOgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiAg
-c2RhOiBzZGExIHNkYTIgc2RhMyBzZGE0IDwgc2RhNSBzZGE2IHNkYTcgPgpKdWwgIDYgMTQ6NDE6
-MjUgcGFsaW4ga2VybmVsOiBEZXRlY3RlZCBzY3NpIENELVJPTSBzcjAgYXQgc2NzaTEsIGNoYW5u
-ZWwgMCwgaWQgMCwgbHVuIDAKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogc3IwOiBzY3Np
-My1tbWMgZHJpdmU6IDB4LzB4IGNkL3J3IHhhL2Zvcm0yIGNkZGEgdHJheQpKdWwgIDYgMTQ6NDE6
-MjUgcGFsaW4ga2VybmVsOiBVbmlmb3JtIENELVJPTSBkcml2ZXIgUmV2aXNpb246IDMuMTIKSnVs
-ICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogTGFzaSBIYXJtb255IEF1ZGlvIHJldi4gMCBhdCAw
-eGZmZDA0MDAwLCB1c2luZyBJUlEgMTQ2Ckp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IG1k
-IGRyaXZlciAwLjkwLjAgTUFYX01EX0RFVlM9MjU2LCBNRF9TQl9ESVNLUz0yNwpKdWwgIDYgMTQ6
-NDE6MjUgcGFsaW4ga2VybmVsOiBtZC5jOiBzaXplb2YobWRwX3N1cGVyX3QpID0gNDA5NgpKdWwg
-IDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBORVQ0OiBMaW51eCBUQ1AvSVAgMS4wIGZvciBORVQ0
-LjAKSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogSVAgUHJvdG9jb2xzOiBJQ01QLCBVRFAs
-IFRDUApKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBJUDogcm91dGluZyBjYWNoZSBoYXNo
-IHRhYmxlIG9mIDUxMiBidWNrZXRzLCA0S2J5dGVzCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJu
-ZWw6IFRDUDogSGFzaCB0YWJsZXMgY29uZmlndXJlZCAoZXN0YWJsaXNoZWQgODE5MiBiaW5kIDE2
-Mzg0KQpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4ga2VybmVsOiBJUC1Db25maWc6IEluY29tcGxldGUg
-bmV0d29yayBjb25maWd1cmF0aW9uIGluZm9ybWF0aW9uLgpKdWwgIDYgMTQ6NDE6MjUgcGFsaW4g
-a2VybmVsOiBORVQ0OiBVbml4IGRvbWFpbiBzb2NrZXRzIDEuMC9TTVAgZm9yIExpbnV4IE5FVDQu
-MC4KSnVsICA2IDE0OjQxOjI1IHBhbGluIGtlcm5lbDogVkZTOiBNb3VudGVkIHJvb3QgKGV4dDIg
-ZmlsZXN5c3RlbSkgcmVhZG9ubHkuCkp1bCAgNiAxNDo0MToyNSBwYWxpbiBrZXJuZWw6IEFkZGlu
-ZyBTd2FwOiAxMjQ5MjRrIHN3YXAtc3BhY2UgKHByaW9yaXR5IC0xKQo=
-
---0__=C1256A8100401A6F8f9e8a93df938690918cC1256A8100401A6F--
