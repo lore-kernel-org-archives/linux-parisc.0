@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tyke.pjc.net (public1-leed3-6-cust7.leed.broadband.ntl.com [80.7.68.7])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E825D4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 01:43:05 -0600 (MDT)
-Received: from patrick by tyke.pjc.net with local (Exim 3.35 #1 (Debian))
-	id 17kJxH-0000Ks-00
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 08:43:03 +0100
-Date: Thu, 29 Aug 2002 08:43:03 +0100
-From: Patrick Caulfield <patrick@tykepenguin.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 816E84829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 03:22:51 -0600 (MDT)
+Date: Thu, 29 Aug 2002 11:22:45 +0200
+Message-ID: <3D53B3B700008549@ocpmta1.be.tiscali.com>
+From: jsoe0708@tiscali.be
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Harmony on 710 working?
-Message-ID: <20020829074303.GB1029@tykepenguin.com>
-References: <3D6CDF5A.5090205@gmx.de> <Pine.LNX.4.33.0208282215040.28537-100000@marvin.forty.two>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-In-Reply-To: <Pine.LNX.4.33.0208282215040.28537-100000@marvin.forty.two>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +20,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Aug 28, 2002 at 10:20:15PM +0200, Juergen Braukmann wrote:
-> 
-> Hi Christian,
-> at least I got the Harmony driver working on my c110. I used the Kernel
-> driver first, but found out that kmixer wasn't working (obviously expected
-> alsa)
+Hi all,
 
-A great many Linux sound programs seem to assume that the machine is
-little-endian and don't work on HP IME. mpg321 seems OK to me as is sox but
-anything more serious (particularly on the recording side) tends to have
-problems.
+I need to go back to kernel 2.4.18-pa61 and evms-1.0.1 (see problem in ml:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2002-August/017368.html
+with last 1.1.0 evsm release)
 
-Maybe I should file some bugs in the Debian BTS.
--- 
+Kernel build and operate correctly. I so recompile tools with -ggdb gcc
+option.
+Then I use ddd to try to debug problem.
 
-patrick
+So I first run without break and got from console:
+evms_vgscan(7998): unaligned access to 0x0002aaae at ip=0x4020a0e3
+
+So I put a break early in main (Ok), relaunch run and try now to insert
+a breack in gdb window:
+b *0x4020a0e3
+
+Accepted but when 'continue' is launch:
+warning: Cannot insert breakpoint 2:
+Cannot access memory at address 0x4020a0e3
+
+What do I wrong or what should I better do?
+
+Thanks in advance for help,
+    Joel
