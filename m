@@ -1,24 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fep02-app.kolumbus.fi (fep02-0.kolumbus.fi [193.229.0.44])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6EC674829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Aug 2002 02:42:13 -0600 (MDT)
-Received: from azrael.blades.cxm ([62.248.234.162])
-          by fep02-app.kolumbus.fi with ESMTP
-          id <20020820084212.LCLO4192.fep02-app.kolumbus.fi@azrael.blades.cxm>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Tue, 20 Aug 2002 11:42:12 +0300
-Received: (from blades@localhost)
-	by azrael.blades.cxm (SGI-8.9.3/8.9.3) id LAA01284
-	for parisc-linux@lists.parisc-linux.org; Tue, 20 Aug 2002 11:42:03 +0300 (EEST)
-Date: Tue, 20 Aug 2002 11:42:03 +0300
-From: Harri Haataja <harri.haataja@cs.helsinki.fi>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] CD-ROM audio output
-Message-ID: <20020820114202.B1245@azrael.smilehouse.com>
-References: <200208191009.EAA02771@udlkern.fc.hp.com>
+Received: from plum.csi.cam.ac.uk (plum.csi.cam.ac.uk [131.111.8.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 470F04829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Aug 2002 05:49:43 -0600 (MDT)
+Date: Tue, 20 Aug 2002 12:49:35 +0100
+To: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20020820114935.GA27316@cam.ac.uk>
+References: <20020817220545.GF16532@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200208191009.EAA02771@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Mon, Aug 19, 2002 at 04:09:48AM -0600
+Content-Type: multipart/mixed; boundary="EeQfGwPcQSOJBaQU"
+In-Reply-To: <20020817220545.GF16532@systemhalted>
+From: Christophe Rhodes <csr21@cam.ac.uk>
+Subject: [parisc-linux] mcontext registers on parisc64 (was Re: subo -> overflow_trap (12) -> What to do?)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,23 +23,82 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Aug 19, 2002 at 04:09:48AM -0600, John Marvin wrote:
-> > > I want to install a CD-Drive in my 715/100. Is it possible to use
-> > > the internal audio output of the CD-ROM in the same way it used in
-> > > a PC?  Which type of cable do I have to use?
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> The connector that was described in this discussion with regard to the 715
-> is indeed the CD audio input.
+On Sat, Aug 17, 2002 at 06:05:45PM -0400, Carlos O'Donell wrote:
+> Talking with Christophe Rhodes who is porting some Common Lisp code[1]
+> to parisc-linux and he has some old-ish code from HPUX (circa 1994)
+> that does some interesting things :)
 
-Really? And the pinout is? rggl?
+Firstly, thanks to this, my code seems to work on a parisc-1.1 machine
+that I have available.  However, I'm having trouble getting it to run on
+a parisc64 kernel...
 
-I'd still like to know if there's a manual (the more complete the better
-;) for the 715. It seems to be very hard to find even uch information on
-these but any manuals or such material seem to have gone in the same
-direction as old Alpha manuals.
+As you may have gathered, the Common Lisp compiler in question depends
+quite heavily on signal handling, and in particular SA_SIGINFO
+sigaction-style handling. This seems to work fine in 32-bit mode, but
+not in 64-bits; in particular, there seem to be some 32/64-bit
+confusions going on...
 
+I've attached a test program to (try to) demonstrate the problem; it's
+complicated a bit by Debian bug #157374 (basically, incompatibility
+between <sys/ucontext.h> and what the kernel actually delivers) but I
+hope that what it's doing is clear enough... if I'm doing something
+wrong, please let me know.
+
+Inspecting the sigcontext that I get on a parisc64 machine gives
+register contents looking a bit like
+    [...]
+    0xffffffff, 0xdeadbeef, 0x0, 0xf00d, 0x0, 0xfaf00380, 0x0, 0x2097a, 0x0, 
+    0xfaf001a4, 0x0, 0x2096a, 0x0, 0x1, 0x0, 0x20972, 0x0, 0x1, 0x0, 0x0, 0x0, 
+    [...]
+
+and the alternation of data, 0/-1 is what leads me to believe that
+64-bit quantities are being delivered; userland only seems to know about
+32-bits, though.
+
+Please don't hesitate to get back to me with comments and/or criticisms,
+
+Cheers,
+
+Christophe
 -- 
-                   .
-                  ...
-                 .....     <-- Grains of mysterious beige powder
-                .......       (Taken from Patrick R. Wade's .sig)
+Jesus College, Cambridge, CB5 8BL                           +44 1223 510 299
+http://www-jcsu.jesus.cam.ac.uk/~csr21/                  (defun pling-dollar 
+(str schar arg) (first (last +))) (make-dispatch-macro-character #\! t)
+(set-dispatch-macro-character #\! #\$ #'pling-dollar)
+
+--EeQfGwPcQSOJBaQU
+Content-Type: text/x-csrc; charset=us-ascii
+Content-Disposition: attachment; filename="test.c"
+
+#include <stdio.h>
+#include <sys/ucontext.h>
+#include <signal.h>
+/* c.f. Debian Bug#157374 */
+#include <asm/sigcontext.h>
+
+void sigsegv_handler(int signal, siginfo_t *info, void *context) {
+  fprintf(stderr, "si_addr: %p (should probably be 0x0 [aka \"(nil)\"]\n",info->si_addr);
+  fprintf(stderr, "%r1    : 0x%08x (should probably be 0xdeadbeef)\n",
+	  ((struct sigcontext *) &(((ucontext_t *) context)->uc_mcontext))->sc_gr[1]);
+  exit(0);
+}
+
+int main () {
+  int *foo;
+  struct sigaction sa;
+  
+  sa.sa_sigaction = sigsegv_handler;
+  sa.sa_flags = SA_SIGINFO | SA_RESTART;
+  sigaction(SIGSEGV, &sa, NULL);
+  
+  asm("ldil L%0xdeadbeef,%r1");
+  asm("ldo R%0xdeadbeef(%r1),%r1");
+  foo = NULL;
+  *foo = 3;
+}
+
+--EeQfGwPcQSOJBaQU--
