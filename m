@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP
-	id 094CB482E; Mon, 28 Jul 2003 13:14:21 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19hDRs-0004sW-24; Mon, 28 Jul 2003 20:14:20 +0100
-Date: Mon, 28 Jul 2003 20:14:20 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Generic light-weight syscall.
-Message-ID: <20030728191420.GE3840@parcelfarce.linux.theplanet.co.uk>
-References: <20030725063739.GA13017@systemhalted> <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted> <20030727122745.GC16753@dsl2.external.hp.com> <20030728155703.GA32553@systemhalted> <20030728174551.GC3840@parcelfarce.linux.theplanet.co.uk> <20030728190455.GE32553@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030728190455.GE32553@systemhalted>
+Received: from gama.tj.rs.gov.br (gw.tj.rs.gov.br [200.198.149.62])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3528A482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Jul 2003 13:55:34 -0600 (MDT)
+Received: (from uucp@localhost)
+	by gama.tj.rs.gov.br (8.11.6/8.11.6) id h6SJtSx90565
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Jul 2003 16:55:28 -0300 (EST)
+	(envelope-from Morales@tj.rs.gov.br)
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Date: Mon, 28 Jul 2003 16:55:25 -0300
+Message-ID: <41001F95FE172B4593DE6F50CAAF2D581AA227@mailserver.tj.rs.gov.br>
+From: "Diego Francisco de Gastal Morales" <Morales@tj.rs.gov.br>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] eisa nic: intel 82556. Driver?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,18 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jul 28, 2003 at 03:04:55PM -0400, Carlos O'Donell wrote:
-> > You know, you don't even need kernel help for this.  According to page
-> > 2-5 of the Kane book, the Interval Timer is accessible by non-privileged
-> > instructions.
-> 
-> Isn't this going to be different for all CPU's? Which means if you get
-> scheduled around you might see negative moving time?
+Hello,
 
-We discussed this in the Black Thorn ... record what value you last
-returned to the user and never return less than that.
+	I just installed linux on a HP9000/D280. It's all fine, except the =
+machine has two eisa fast ethernet cards, with intel 82556 chipset, and =
+I can't make it work.
+	I've already searched a lot the internet, this list archives, =
+recompiled my kernel with various modules, and I am just about to loose =
+my faith. I've found a message just like "with this chipset on eisa, =
+you're out of luck".
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+	Is it really so? Does anyone here heard of this nic working on linux =
+parisc? Without fast ethernet, I'm afraid we'll have to give up putting =
+linux on it.
+
+
+	Thank you in advance.
+
+
+--
+Diego Francisco de Gastal Morales
+
+Equipe de Rede
+Depto. de Inform=E1tica
+Tribunal de Justi=E7a do RS
+Porto Alegre/RS - Brasil
