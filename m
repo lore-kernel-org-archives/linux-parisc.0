@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F381E4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Apr 2003 07:24:13 -0600 (MDT)
-Message-Id: <200304171324.h3HDO5AY029238@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: c++/10235: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
-To: tausq@debian.org
-Date: Thu, 17 Apr 2003 09:24:04 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: doko@gcc.gnu.org, debian-gcc@lists.debian.org,
-	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
-	parisc-linux@lists.parisc-linux.org, gcc-gnats@gcc.gnu.org,
-	danglin@gcc.gnu.org
-In-Reply-To: <20030417061958.GU25257@tausq.org> from "Randolph Chung" at Apr 16, 2003 11:19:58 pm
+Received: from e34.co.us.ibm.com (e34.co.us.ibm.com [32.97.110.132])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 613364829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Apr 2003 15:40:45 -0600 (MDT)
+Received: from westrelay04.boulder.ibm.com (westrelay04.boulder.ibm.com [9.17.193.32])
+	by e34.co.us.ibm.com (8.12.9/8.12.2) with ESMTP id h3HLeiYp040182
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Apr 2003 17:40:44 -0400
+Received: from d03nm113.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.193.82])
+	by westrelay04.boulder.ibm.com (8.12.8/NCO/VER6.5) with ESMTP id h3HLehu2017284
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Apr 2003 15:40:43 -0600
+From: H Timothy Trinh <timtrinh@us.ibm.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <OF343DC027.B130F480-ON87256D0B.007680FC-87256D0B.007680FD@us.ibm.com>
+Date: Thu, 17 Apr 2003 15:34:22 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] H Timothy Trinh/Somerset/IBM is out of the office.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +26,8 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Maybe the test case needs fixing :) Dave, I'll put a preprocessed file
-> in gsyprf11:~tausq/f_nurbs.ii.gz. It's >100k so i won't post it here 
-> for now.  :)
 
-Both the testcase and f_nurbs.ii compiled successfully using the following
-command:
 
-/home/dave/opt/gnu/gcc/gcc-3.3/bin/g++ -O2 -g -c -fPIC -fno-implicit-templates f_nurbs.ii
 
-The above version of g++ has the sibcall argument fix installed yesterday.
-However, I doubt that this fixed the problem.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I will be out of the office starting April 17, 2003 and will not return
+until April 22, 2003.
