@@ -1,13 +1,22 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] 2.6 and SMP
-Date: Mon, 12 Jul 2004 09:49:52 -0700
-Message-ID: <20040712164952.GA546@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] Re: 2.6.4-rc1-pa3 siimage/NS87415 IDE progess (and
+	another mystery)!
+Date: Mon, 12 Jul 2004 04:37:52 +0100
+Message-ID: <20040712033752.GA10163@sal.ucc.ie>
+References: <Pine.LNX.4.58.0403040044200.14527@sal.ucc.ie>
+	<20040309063629.GM1113@tausq.org>
+	<Pine.LNX.4.58.0403090656070.13701@sal.ucc.ie>
+	<20040309072917.GN1113@tausq.org>
+	<Pine.LNX.4.58.0403091401480.16082@sal.ucc.ie>
+	<20040711221829.GA27835@colo.lackof.org>
+	<20040711231401.GW546@tausq.org> <20040711233439.GX546@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040711233439.GX546@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,77 +27,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-SMP is one of the big remaining pieces that needs to get fixed in 2.6.
-Does anyone want to help look at it?
+On Sun, Jul 11, 2004 at 04:34:39PM -0700, Randolph Chung wrote:
 
-This is what I saw yesterday while trying latest 2.6 on a SMP a500
-(2x450MHz).
+> > don't have an IDE drive to try it with, but if it works, shouldn't it be
+> > done as a pcibios fixup instead? We already have a fixup routine in
+> > drivers/parisc/superio.c:superio_fixup_pci(), so you can probably just
+> > add it there.
+> 
+> i.e. (the progif write was removed since it's redundant):
+> 
+> Index: drivers/parisc/superio.c
+> ===================================================================
+> RCS file: /var/cvs/linux-2.6/drivers/parisc/superio.c,v
+> retrieving revision 1.9
+> diff -u -p -r1.9 superio.c
+> --- drivers/parisc/superio.c	18 May 2004 13:08:56 -0000	1.9
+> +++ drivers/parisc/superio.c	11 Jul 2004 23:33:06 -0000
+> @@ -482,6 +482,16 @@ void superio_fixup_pci(struct pci_dev *p
+>  	pci_write_config_byte(pdev, PCI_CLASS_PROG, pdev->class);
+>  
+>  	pci_read_config_byte(pdev, PCI_CLASS_PROG, &prog);
+> +
+> +	/* IODC clobbers the CTRL registers with:
+> +	 * CTRL1 = 0xf0 = "ATAPI buffer mode (no prefetching)" for everyone
+> +	 * CTRL2 = 0x03 = mask chan1/2 interrupts
+> +	 * CTRL3 = 0x00 = "disable prefetch buffer"/"Master Wait States"
+> +	 */
+> +	pci_write_config_byte(pdev, 0x40, 0xf0); /* IDE_CTRL1 */
+> +	pci_write_config_byte(pdev, 0x41, 0x00); /* IDE_CTRL2 */
+> +	pci_write_config_byte(pdev, 0x42, 0x00); /* IDE_CTRL3 */
+> +
+>  	printk("PCI: Enabled native mode for NS87415 (pif=0x%x)\n", prog);
+>  }
+>  
+> 
+> works fine on my c3750 with a cdrom drive too! Great job Grant :)
 
-While booting up, the system "hangs". TOC shows that it died in
-parisc_terminate with not much useful information. When I instrumented
-the startup sequence with printk, it seemed to stop in init_idle when
-setting the schedule flag on the idle task. It didn't make much sense to
-me that set_bit() would die though....
+Tested above patch, but unfortunately it didn't work for me,
+the NS87415 still doesn't use DMA (or so it seems, at least it's
+still the 3MB/s instead of the expected 30-40MB/s).
 
-after some more digging around, it looks like it's actually dying in:
-kernel_thread()->do_fork()->copy_process()->dup_task_struct()->alloc_
-task_struct()->kmem_cache_alloc() 
+hdparm -c /dev/hda showed DMA was turned on, and I even set it on
+again (hdparm -c 1), just to be sure, but it didn't make any
+difference in performance :(
 
-when starting the init thread.
+Thanks,
+   Max
 
-kmem_cache_alloc() has this bit of code:
 
-        local_irq_save(save_flags);
-        ac = ac_data(cachep);
-        if (likely(ac->avail)) {
-
-and ac was NULL. ac_data(cachep) is cachep->array[smp_processor_id()]
-
-it looks like smp_processor_id() was returning the wrong value (8 in my
-test), so it was picking up an uninitialized per-cpu cache.
-
-i forced smp_processor_id() = 0 in that function, and it gets a bit
-further till schedule(), and then it dies in there. I'm not quite sure
-where/why it dies. then i fell asleep :)
-
-here's one "trick" i used yesterday to debug the
-parisc_terminate()-not-giving-much-info problem.... basically in some
-cases printk() stops working (perhaps interrupts are disabled?), so the
-only thing we can do is rely on TOC and "ser pim". I replaced
-parisc_terminate() with this:
-
-void parisc_terminate(char *msg, struct pt_regs *regs, int code,
-          unsigned long offset)
-{
-    volatile register unsigned long x = regs->iaoq[0];
-    volatile register unsigned long y = *(unsigned long *)(regs->gr[30]-16);
-    for (;;) ;
-}
-
-if you do a disassembly on traps.o, you'll see that now you should get
-r19 = regs->iaoq[0] 
-r20 = a stack location which, in this case, corresponds to the return
-      pointer of kmem_cache_alloc()
-
-now when you do a TOC dump you can see where the fault actually occured.
-
-you should be able to do this with a few registers at a time (i only
-tried 2-3 at a time). Look at the disassembly dump to figure out what
-goes where... it's a bit of a pain, but might be useful still.... 
-
-anyway, it looks like possibly some things are not setup properly in the
-init_thread_union structure? I don't know why smp_processor_id() (which
-is current_thread_info()->cpu) would return the wrong value. Earlier in
-the boot the value seems to be correct....
-
-i won't have time to look at this more for a couple of weeks....
-hopefully someone else will figure it out in the meantime? :)
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+PS: shall I try Grant's patch aswell?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
