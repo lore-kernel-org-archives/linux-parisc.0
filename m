@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from apate.telenet-ops.be (apate.telenet-ops.be [195.130.132.57])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1052C482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jul 2003 07:58:19 -0600 (MDT)
-From: "Mark Mestdagh" <Mark.Mestdagh@Icon-Europe.com>
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Kernel compilation for J5600
-Date: Tue, 1 Jul 2003 16:00:31 +0200
-Message-ID: <HOEDKHACIIOGKPMMFMCGKEKFCOAA.Mark.Mestdagh@Icon-Europe.com>
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
+	by dsl2.external.hp.com (Postfix) with SMTP id 256E2482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jul 2003 08:02:06 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] modprobe: Can't locate module char-major-60 (server hangs!)
+Message-ID: <1057068124.3f01945c8f4be@clients.latnet.lv>
+Date: Tue, 01 Jul 2003 17:02:04 +0300 (EEST)
+From: Dub <dub@latnet.lv>
+References: <1056995678.3f00795e49bf5@clients.latnet.lv> <20030630175811.GK31618@parcelfarce.linux.theplanet.co.uk> <3F0095AA.4050909@latnet.lv> <20030701074512.GA29010@marmite.its.uct.ac.za>
+In-Reply-To: <20030701074512.GA29010@marmite.its.uct.ac.za>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20030701132146.GD23597@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=KOI8-R
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +22,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Matthew
-
-it was 2.4.21-pa0, but I cvs'ed to 2.4.21-pa1 and now it's fixed :)
-
-Thanks
-
-Mark
-
------Original Message-----
-From: willy@www.linux.org.uk [mailto:willy@www.linux.org.uk]On Behalf Of
-Matthew Wilcox
-Sent: dinsdag 1 juli 2003 15:22
-To: Mark Mestdagh
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel compilation for J5600
-
-
-On Tue, Jul 01, 2003 at 10:10:24AM +0200, Mark Mestdagh wrote:
-> Grant & others
+> > >ttyB0 has the wrong major number.  It needs to be character major
+> 11.
+> > >
+> > > 
+> > >
+> > Thank you, great! If so, how to fix it in most efficient way?
+> 
+> Boot in single user mode, then:
+> # cd /dev
+> # rm ttyB0
+> # mknod ttyB0 c 11 0
 >
-> thanks already for the support. One little problem though is setting up
-the
-> CDROM. I followed the settings like the c3000 kernel but still I get a
-> problem while compiling:
->
-> drivers/ide/idedriver.o(.text.probe_hwif+0xfc): undefined reference to
-> `local_irq_set'
+> Michael Wood <mwood@its.uct.ac.za>
 
-This is 2.4.21-pa1?
+Thanks a lot, Michael! It works!!!
 
---
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead
-bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert
-Fisk
+BR,
+Dub 
