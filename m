@@ -1,17 +1,23 @@
-From: James Bottomley <James.Bottomley@steeleye.com>
+From: "David S. Miller" <davem@redhat.com>
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
-	tst-mmap-eofsync in glibc on parisc)
-Date: 23 Aug 2003 10:59:48 -0500
-Message-ID: <1061654391.1995.74.camel__36236.4799286754$1416622714$gmane$org@mulgrave>
-References: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
+ tst-mmap-eofsync in glibc on parisc)
+Date: Sat, 23 Aug 2003 14:43:30 -0700
+Message-ID: <20030823144330.5ddab065.davem__28024.9565643773$1416622715$gmane$org@redhat.com>
+References: <20030822110144.5f7b83c5.davem@redhat.com>
+	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
+	<20030822113106.0503a665.davem@redhat.com>
+	<1061578568.2053.313.camel@mulgrave>
+	<20030822121955.619a14eb.davem@redhat.com>
+	<1061591255.1784.636.camel@mulgrave>
+	<20030822154100.06314c8e.davem@redhat.com>
+	<1061600974.2090.809.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-twwyVK3YP0a7nX0FTdaG"
-Cc: "David S. Miller" <davem@redhat.com>, willy@debian.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
-To: Hugh Dickins <hugh@veritas.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: hugh@veritas.com, willy@debian.org, linux-kernel@vger.kernel.org,
+	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
+In-Reply-To: <1061600974.2090.809.camel@mulgrave>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,42 +28,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-twwyVK3YP0a7nX0FTdaG
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+On 22 Aug 2003 20:09:30 -0500
+James Bottomley <James.Bottomley@SteelEye.com> wrote:
 
-On Sat, 2003-08-23 at 02:22, Hugh Dickins wrote:
-> Good idea.  It's VM_MAYSHARE you need to check for.
+> What we were hoping is that we could rely on this little property of
+> mmap:
+> 
+>        MAP_PRIVATE
+>                   Create a private copy-on-write mapping.  Stores
+>                   to the region do not affect the original  file.
+>                   It  is  unspecified whether changes made to the
+>                   file after the mmap call  are  visible  in  the
+>                   mapped region.
+> 
+> To avoid having to flush the non-shared mappings (basically on parisc if
+> you write to a file backing a MAP_PRIVATE mapping then we don't
+> guarantee you see the update).
+> 
+> I suppose if we had a way of telling if any of the i_mmap list members
+> were really MAP_SHARED semantics mappings, then we could alter our
+> flush_dcache_page() implementation to work.
 
-OK, to get all this to work, there's a corner case in do_mremap() that I
-need to be fixed:
+I thought about this very deeply last night and this morning.
+And what you're trying to optimize won't work.  Here is why.
 
-When choosing the flags for the new area, it keys off VM_SHARED to
-determine whether MAP_SHARED is passed to the mapping.  It has to key of
-VM_MAYSHARE to preserve VM_MAYSHARE on the new mapping.
+If the first access to a MAP_PRIVATE mapping of a page is a read,
+we'll use the page-cache page.  This means that, with your
+optimization, during this time if another cpu write()`s into the
+page we'll lose the data update.
 
-Patch below.
-
-James
-
-
-
---=-twwyVK3YP0a7nX0FTdaG
-Content-Disposition: inline; filename=tmp.diff
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; name=tmp.diff; charset=ISO-8859-1
-
-=3D=3D=3D=3D=3D mremap.c 1.32 vs edited =3D=3D=3D=3D=3D
---- 1.32/mm/mremap.c	Thu Aug  7 12:29:10 2003
-+++ edited/mremap.c	Sat Aug 23 10:54:21 2003
-@@ -420,7 +420,7 @@
- 	if (flags & MREMAP_MAYMOVE) {
- 		if (!(flags & MREMAP_FIXED)) {
- 			unsigned long map_flags =3D 0;
--			if (vma->vm_flags & VM_SHARED)
-+			if (vma->vm_flags & VM_MAYSHARE)
- 				map_flags |=3D MAP_SHARED;
-=20
- 			new_addr =3D get_unmapped_area(vma->vm_file, 0, new_len,
-
---=-twwyVK3YP0a7nX0FTdaG--
+Sorry :(
