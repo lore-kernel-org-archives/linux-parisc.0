@@ -1,55 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9A03E4A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Mar 2001 08:20:17 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA08547
-	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Mar 2001 08:15:24 -0700
-Date: Thu, 1 Mar 2001 09:17:53 -0600 (CST)
-From: Greg Ingram <ingram@symsys.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Chris Moore <cmoore@cancun.rose.hp.com>,
-	parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Another 735 hums to life
-In-Reply-To: <20010301095435.G2686@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0103010907390.7180-100000@maestro.symsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 994704A19
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Mar 2001 12:54:23 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14YZ9a-00011R-00
+	for parisc-linux@parisc-linux.org; Thu, 01 Mar 2001 19:54:22 +0000
+Date: Thu, 1 Mar 2001 19:54:22 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010301195422.B26100@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] (read|write)[bwl]
 List-ID: <linux-parisc.vger.kernel.org>
 
-Chris, et al.,
+right now we do rsm / foo / mtsm in order to read/write gsc space.
+the rsm/mtsm turns off address translation.  this is cripplingly slow
+on PA8x00 series processors.
 
-On Thu, 1 Mar 2001, Richard Hirst wrote:
+proposal 1:
 
-> On Wed, Feb 28, 2001 at 02:34:59PM -0800, Chris Moore wrote:
-> > After a lot of struggling I finally got my 735/99 up and running.
-> > After even more struggling I got it to boot standalone off its
-> > own internal SCSI disk and make it all the way to runlevel 2.
-> > 
-> > I am still having a few problems though.  I tried using dpkg
-> > to install something and the process just seemed to hang.  I
-> > saw the same thing when trying to compile something - don't
-> > remember what.
-> 
-> Does tar hang also?  If so it's probably the pthreads problem
-> that is affecting older machines (my 715/75, for example).  In
-> theory a new glibc should fix this, but when I tried things seemed
-> to get even worse - wouldn't even boot any more.  Havn't tried
-> for a couple of weeks though.
+leave gsc_* macros alone.  people can continue to use these if they want.
+they should be aware these are slow though.
 
-I'm currently running the bins posted by our French amis and tar works.  
-The more program still has the goofy stack (argv[-1]?) bomb and ncsd still
-doesn't work.  I'm not familiar with nscd but it prevents me from using
-adduser so I had to do all that the _real_ old fashioned way.  I used the
-55 meg root filesystem and it had a root password set.  I had to boot the
-old NFS-root fs so I could edit /etc/passwd on the new fs.  On the whole
-it's a big improvement.  I can use the compiler now.  Next I'm going to
-see if the C100 can compile its own kernel.
+stop aliasing (read,write)[bwl] to the gsc_* variants.  they should
+just dereference the address passed to them.
 
-The ESIEE download site is:
+write an ioremap() function which provides a logical map to that area
+of address space.
 
-	http://mkhppa1.esiee.fr/en/download.html
+proposal 2:
 
-Regards,
+direct-map the entire 0xfxxx'xxxx address space into the kernel's address
+space.  ioremap becomes a NOP, gsc_* go away and (read,write)[bwl] become
+as trivial as before.
 
-- Greg
+i suspect we want proposal 1 on PA1.1 and proposal 2 on PA2.0.  This leads
+to proposal 3 which should allow modules to work for either architecture:
+
+gsc_* stay as calls to _gsc_*, (read,write)[bwl] become the direct memory
+dereferences.  ioremap is a function call.  On PA2.0, the gsc space is
+permanently mapped, the ioremap function does nothing and _gsc_* don't
+mess with the system mask.  On PA1.1, we construct page table entries
+for the io area upon calls to ioremap, and _gsc_* still mess with the
+system mask.
+
+Suggestions?
+
+-- 
+Revolutions do not require corporate support.
