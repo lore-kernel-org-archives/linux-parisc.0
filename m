@@ -1,32 +1,38 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] State of the kernel
-Date: Mon, 14 Mar 2005 20:18:03 +0000
-Message-ID: <20050314201803.GY21986@parcelfarce.linux.theplanet.co.uk>
-References: <20050314181215.GV21986@parcelfarce.linux.theplanet.co.uk> <200503142023.49252.deller@gmx.de> <20050314194018.GX21986@parcelfarce.linux.theplanet.co.uk> <200503142044.56629.deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] 64 bit linux on parisc
+Date: Tue, 15 Mar 2005 14:56:27 -0500 (EST)
+Message-ID: <200503151956.j2FJuSOU024838@hiauly1.hia.nrc.ca>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAA0XPeJHz/hU+2001r7DqkosKAAAAQAAAAnDOBZeglf06r+qmkwe6pxQEAAAAA@r5.roburnet.sk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Matthew Wilcox <matthew@wil.cx>,
- parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <willy@www.linux.org.uk>
-In-Reply-To: <200503142044.56629.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org,
+ matthew@wil.cx
+To: soltes@r5.roburnet.sk (Lubos Soltes)
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAA0XPeJHz/hU+2001r7DqkosKAAAAQAAAAnDOBZeglf06r+qmkwe6pxQEAAAAA@r5.roburnet.sk>
+	from "Lubos Soltes" at Mar 15, 2005 08:17:09 pm
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Mar 14, 2005 at 08:44:48PM +0100, Helge Deller wrote:
-> On Monday 14 March 2005 20:40, Matthew Wilcox wrote:
-> > On Mon, Mar 14, 2005 at 08:23:48PM +0100, Helge Deller wrote:
-> > No problem!  Could you review this outstanding patch for me ... it looks
-> > like mostly notes to yourself.
-> 
-> Yeah - just ignore those changes.
+> >From your answer, I think that nobody works on 64 bit userland.
 
-Shall I remove them from our CVS or did you want them to stay?
+No, that's not quite true.  However, there is a lot of work needed
+on binutils, the kernel, glibc and other tools before a 64-bit userland
+will be a reality.
 
+Dave
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
