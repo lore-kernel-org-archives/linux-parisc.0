@@ -1,19 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 056AB4840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Sep 2003 09:13:59 -0600 (MDT)
-Date: Mon, 29 Sep 2003 11:10:38 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: James Bottomley <James.Bottomley@steeleye.com>
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] pthread attributes and stack positions (gcc related?)
-Message-ID: <20030929151038.GC15180@systemhalted>
-References: <20030928174226.GA3040@systemhalted> <1064771620.10778.5.camel@mulgrave>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1064771620.10778.5.camel@mulgrave>
+Received: from scrub.xs4all.nl (scrub.xs4all.nl [194.109.195.176])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B5B04845
+	for <parisc-linux@parisc-linux.org>; Mon, 29 Sep 2003 10:24:31 -0600 (MDT)
+Date: Mon, 29 Sep 2003 18:24:14 +0200 (CEST)
+From: Roman Zippel <zippel@linux-m68k.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	<parisc-linux@parisc-linux.org>,
+	<linux-apus-devel@lists.sourceforge.net>
+In-Reply-To: <20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.44.0309291818060.17548-100000@serv>
+References: <Pine.GSO.4.21.0309291116250.7432-100000@vervain.sonytel.be>
+ <Pine.LNX.4.44.0309291434260.17812-100000@serv>
+ <20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: NCR53c720
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +28,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 28, 2003 at 12:53:38PM -0500, James Bottomley wrote:
-> On Sun, 2003-09-28 at 12:42, Carlos O'Donell wrote:
-> > The variable is definately on the process stack. The thread's stack 
-> > address seems to be inside the libraries 'writable' space and the stack 
-> > size is wrong (or uninitialized). Perhaps I should just be looking for 
-> > arch-dependant init code that we might be missing.
-> 
-> This, I believe to be correct: there's only one real stack (i.e. the
-> thing on x86 that grows down from top of memory) and only one thread can
-> have it.  The rest of the thread stacks are mmapped at fixed sizes with
-> a guard area to prevent them growing too far.  mmapped memory comes out
-> of the same pool that shared library memory comes from, so you should
-> correctly see the mappings interleave (depending on the load and thread
-> start order).
+Hi,
 
-I agree, it seems though that after "fork" the values returned by 
-"pthread_getattr_np (pthread_self (), &a);" are bogus. While if you call
-pthread_create(...) and then the previous line from within the newly
-created thread the values are initialized properly. A mistake might
-exist with symbol versioning by which we are not calling libpthread's
-overloaded thread manager "fork()" and continuing on with the normal syscall.
+On Mon, 29 Sep 2003, Matthew Wilcox wrote:
 
-I think this seems to be a question of expected behaviour. I'll pass
-this onto the libc-alpha list.
+> ... Ah ;-)  So where do I find the APUS tree?  From digging around on
+> the web (man, there's a lot of broken links in the APUS faq ...), it
 
-c.
+It's also quite old... :)
+
+> seems to be its own sourceforge project that hasn't switched to working
+> on 2.6 yet, is this correct?
+
+Yes. My 2.6 tree currently dies at the first exec.
+
+> Now that ncr53c8xx is non-PCI only, it should cause the absolute minimum
+> of wailing & gnashing of teeth to convert it to use the non-coherent
+> dma device API.
+
+Um, which one is the current right dma device API?
+
+bye, Roman
