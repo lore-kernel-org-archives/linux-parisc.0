@@ -1,26 +1,24 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA03260
-	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Dec 2000 08:46:49 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 23 Dec 2000 15:49:53 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 149qvf-0005ke-00; Sat, 23 Dec 2000 15:49:51 +0000
-Date: Sat, 23 Dec 2000 15:49:51 +0000
-From: Matthew Wilcox <matthew@wil.cx>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA03615
+	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Dec 2000 09:08:38 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 23 Dec 2000 16:11:32 -0000
+Received: from hse-ottawa-ppp156830.sympatico.ca (HELO linuxcare.com) (adevries@64.229.128.9)
+  by smtp.linuxcare.com with SMTP; 23 Dec 2000 16:11:32 -0000
+Sender: adevries@mailserv2.iuinc.com
+Message-ID: <3A44CF6F.1692471A@linuxcare.com>
+Date: Sat, 23 Dec 2000 11:14:39 -0500
+From: Alex deVries <adevries@linuxcare.com>
+MIME-Version: 1.0
 To: Jens Trzaska <j_trzaska@gmx.net>
-Cc: parisc-linux@thepuffingroup.com
+CC: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] trouble booting from palinux-0.5.iso on 712/80
-Message-ID: <20001223154951.B20418@parcelfarce.linux.theplanet.co.uk>
 References: <3A44C147.B56F25CA@gmx.net>
-Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A44C147.B56F25CA@gmx.net>; from j_trzaska@gmx.net on Sat, Dec 23, 2000 at 04:14:15PM +0100
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Dec 23, 2000 at 04:14:15PM +0100, Jens Trzaska wrote:
-> Hello!
-> Since yesterday i'm the owner of a HP 712/80 and i've searched along 
+Jens Trzaska wrote:
+> Since yesterday i'm the owner of a HP 712/80 and i've searched along
 > the net to find an OS which is able to run on this box. When i found
 > palinux i downloaded the palinux-0.5.iso. But the booting process
 > doesn't seem to be successful. In the readme it says that i should
@@ -28,11 +26,14 @@ On Sat, Dec 23, 2000 at 04:14:15PM +0100, Jens Trzaska wrote:
 > when saying:
 > "Switching from PDC console"
 
-This ought to be, but isn't, in the FAQ.  Could someone who knows more about
-the 0.5 CD-ROM than I do write up the answer for the FAQ?
+Am I right in assuming:
+- you're using a graphics head (not a serial console)
+- you're using the built-in graphics, not an add on card?
 
-Basically, your kernel is using the wrong console device.  try editing the
-command line to specify `console=tty0'.
+- Alex
 
 -- 
-Revolutions do not require corporate support.
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
