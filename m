@@ -1,50 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA30622
-	for <parisc-linux@puffin.external.hp.com>; Fri, 2 Jun 2000 10:39:32 -0600
-From: willy@thepuffingroup.com
-Received: (from willy@localhost)
-	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id NAA13488
-	for parisc-linux@thepuffingroup.com; Fri, 2 Jun 2000 13:39:57 -0400
-Date: Fri, 2 Jun 2000 13:39:57 -0400
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA03759
+	for <parisc-linux@puffin.external.hp.com>; Fri, 2 Jun 2000 16:42:58 -0600
+Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via in.smtpd with esmtp (ident bame using rfc1413)
+	id <m12y05x-001VscC@chalet> (Debian Smail3.2.0.102)
+	for <parisc-linux@thepuffingroup.com>; Fri, 2 Jun 2000 16:39:13 -0600 (MDT)
+Message-Id: <m12y05x-001VscC@chalet>
+From: bame@puffin.external.hp.com
+Reply-To: bame@puffin.external.hp.com
+Errors-To: bame@puffin.external.hp.com
 To: parisc-linux@thepuffingroup.com
-Message-ID: <20000602133957.N4081@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [kaos@ocs.com.au: Announce: kdb v1.2 is available]
+Date: Fri, 02 Jun 2000 16:39:12 -0600
+Sender: bame@bame.riverrock.org
+Subject: [parisc-linux] New glibc and new linker SEGV
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Keith mentions he's `positioning kdb for different architectures'.  Any
-volunteers to hack on this for parisc?
+I mergeed our glibc with June 1 sources from sourceware.cygnus.com
+and it appears to be pretty healthy so I'm committing it.  FYI the
+CVS e-mail message is truncated because after 30 minutes of CPU time
+I got tired of waiting for the damn perl script and killed it :->
 
------ Forwarded message from Keith Owens <kaos@ocs.com.au> -----
+However the glibc build needs to be faked out a bit because the latest
+(otherwise pretty darn good) linker is dying inside the glibc build
+with:
 
-Delivered-To: thepuffi-willy@thepuffingroup.com
-X-Mailer: exmh version 2.1.1 10/15/1999
-From: Keith Owens <kaos@ocs.com.au>
-To: kdb@oss.sgi.com
-Cc: linux-kernel@vger.rutgers.edu
-Subject: Announce: kdb v1.2 is available
-Date: 	Fri, 02 Jun 2000 17:00:01 +1000
-Precedence: bulk
-X-Loop: 	majordomo@vger.rutgers.edu
+    hppa1.1-linux-gcc -nostdlib -nostartfiles -o locale/localedef [...]
+    collect2: ld terminated with signal 11 [Segmentation fault], core dumped
+    make[2]: *** [/work/xc-build/build-glibc/locale/localedef] Error 1
 
-SGI Kernel Debugger - http://oss.sgi.com/projects/kdb
+Since these glibc-built executables aren't being used yet, I fake out
+the build by doing "cp /bin/date locale/localedef", then run make again,
+copy /bin/date over the next failed link target, repeat until the make
+succeeds.
 
-kdb v1.2 is available for ix86 with patches against 2.3.99-pre2 and
-2.4.0-test1.  You need modutils >= 2.3.11 to use kdb v1.2.
+Oh, and if you see
+    test ! -d CVS || cvs commit -m'Regenerated from ../sysdeps/gnu/errlist.awk ../manual/errno.texi' ../sysdeps/gnu/errlist.c
+    Permission denied
+just restart the make :-(
 
-Most changes are internal, positioning kdb for different architectures.
-Users will see better symbol information, hardware and software
-breakpoints, more reliable SMP handling.
+I updated the pre-built toolchain for Debian potato x86 at
+ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/elf32x86.tar.gz
 
-
--
-To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-the body of a message to majordomo@vger.rutgers.edu
-Please read the FAQ at http://www.tux.org/lkml/
-
------ End forwarded message -----
-
--- 
-The Sex Pistols were revolutionaries.  The Bay City Rollers weren't.
+		-Paul Bame
