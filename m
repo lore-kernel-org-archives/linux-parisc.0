@@ -1,64 +1,75 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA12066
-	for <parisc-linux@puffin.external.hp.com>; Thu, 9 Nov 2000 12:02:06 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 9 Nov 2000 19:04:00 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 9 Nov 2000 19:03:57 -0000
-Sender: jvinet@mailserv2.iuinc.com
-Message-ID: <3A0AF623.DCA081CE@linuxcare.com>
-Date: Thu, 09 Nov 2000 14:08:20 -0500
-From: Jane Vinet <jvinet@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA12640
+	for <parisc-linux@puffin.external.hp.com>; Thu, 9 Nov 2000 12:52:09 -0700
+Message-Id: <200011091954.OAA07778@hiauly1.hia.nrc.ca>
+To: parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
+Date: Thu, 9 Nov 2000 14:54:00 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Website Plan
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] abort in eliminate_regs compiling glob.c from glibc
 List-ID: <linux-parisc.vger.kernel.org>
 
-Recently there have been concerns about what is happening with the
-web site. 
-I'd like to let everyone know what the plan is in order to address these 
-concerns.  
+The following abort occurs with a relatively current version of gcc from
+the cvs under hpux and the parisc-linux version of the compiler:
 
-The Development team at HP provided us with a list of where current
-pages are hosted and where they should be hosted in the future.
+hppa-linux-gcc ../sysdeps/generic/glob.c -c -O3 -Wall -Winline -Wstrict-prototypes -Wwrite-strings      -I../include -I. -I/home/dave/puffin/glibc/objdir/posix -I.. -I../libio  -I/home/dave/puffin/glibc/objdir -I../sysdeps/hppa/elf -I../linuxthreads/sysdeps/unix/sysv/linux/hppa -I../linuxthreads/sysdeps/unix/sysv/linux -I../linuxthreads/sysdeps/pthread -I../linuxthreads/sysdeps/unix/sysv -I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa -I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa -I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic  -nostdinc -isystem /usr/local/puffin/lib/gcc-lib/hppa-linux/2.96/include -isystem !
+/home/dave/puffin/linux/include -D_LIBC_REENTRANT -include ../include/libc-symbols.h     -o /home/dave/puffin/glibc/objdir/posix/glob.o
+../sysdeps/generic/glob.c: In function `glob_in_dir':
+../sysdeps/generic/glob.c:1446: Internal compiler error in , at reload1.c:2516
+   Please submit a full bug report.
+   See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+make[2]: *** [/home/dave/puffin/glibc/objdir/posix/glob.o] Error 1
+make[2]: Leaving directory `/home/dave/puffin/glibc/posix'
+make[1]: *** [posix/subdir_lib] Error 2
+make[1]: Leaving directory `/home/dave/puffin/glibc'
+make: *** [all] Error 2
 
- Item                        current       future
-----                        -------       ------
-mailing lists               pehc           LXC
-parisc website		    puffin         LXC
-hardware database           puffin        pehc
-ftp server                  pehc          pehc
-cvs                         pehc          pehc
+The insn that causes the fault is the following:
 
+Breakpoint 2, eliminate_regs_in_insn (insn=0x406a0ba0, replace=0)
+    at ../../gcc/reload1.c:2826
+2826      if (! insn_is_asm && icode < 0)
+(gdb) p debug_rtx (insn)
+(insn/s 2711 2709 2719 (set (reg:SI 6 %r6)
+        (reg:SI 28 %r28)) 69 {pre_ldw-4} (insn_list 2708 (insn_list:REG_DEP_ANTI 2696 (insn_list:REG_DEP_ANTI 2702 (insn_list:REG_DEP_ANTI 2697 (nil)))))
+    (expr_list:REG_DEAD (reg:SI 28 %r28)
+        (insn_list:REG_RETVAL 2708 (expr_list:REG_EQUAL (expr_list (use (mem:BLK (scratch) 0))
+                    (expr_list (symbol_ref/v:SI ("@strlen"))
+                        (expr_list (reg/v:SI 4 %r4)
+                            (nil))))
+                (nil)))))
 
-As per Linuxcare's agreement with Hewlett Packard, Linuxcare (formerly
-the Puffing Group) is responsible for all of the pages that are
-currently hosted at http://www.thepuffingroup.com/parisc/.  Linuxcare is
-in the process of redesigning the existing web pages and we will be
-moving very soon to http://www.parisc-linux.org/.  By revamping the
-existing web pages, we want to make things like the FAQ page and the
-To-Do list much more visible to the public to encourage new contributors
-to join us,
-as well as meeting the needs of current Developers.
+As can be seen, there is a use in the REG notes which will cause eliminate_regs
+to abort if it is called to process the notes of this insn.  It is called
+from this code which is near the end of eliminate_regs_in_insn:
 
-The plan is to transition from the current website to the new
-website with as little disruption to the public as possible.  Currently,
-http://www.parisc-linux.org/ is set up but not active. 
-http://www.thepuffingroup.com/parisc/ will remain the active site until
-everything is ready to switch over. 
+  for (ep = reg_eliminate; ep < &reg_eliminate[NUM_ELIMINABLE_REGS]; ep++)
+    {
+      if (ep->previous_offset != ep->offset && ep->ref_outside_mem)
+        ep->can_eliminate = 0;
 
-Each of the above items is being addressed independently and have
-separate schedules for transition.  We will make sure that notification
-is made on http://www.thepuffingroup.com/parisc/ and on the mailing list
-prior to the transition.
+      ep->ref_outside_mem = 0;
 
-Thanks for your patience and we apologize for any inconvenience this may
-have caused. 
+      if (ep->previous_offset != ep->offset)
+	val = 1;
+    }
 
-Jane
+ done:
+  /* If we changed something, perform elimination in REG_NOTES.  This is
+     needed even when REPLACE is zero because a REG_DEAD note might refer
+     to a register that we eliminate and could cause a different number
+     of spill registers to be needed in the final reload pass than in
+     the pre-passes.  */
+  if (val && REG_NOTES (insn) != 0)
+    REG_NOTES (insn) = eliminate_regs (REG_NOTES (insn), 0, REG_NOTES (insn));
+
+ep->previous_offset is not equal ep->offset here and thus val is 1.
+
+The use would appear to arise from the rtl generated by expand_builtin_strlen.
+Anybody got any thoughts on how to fix this.
+
+Dave
 -- 
-Jane Vinet, Director Professional Services/Canadian Operations
-Linuxcare, Inc. 613.562.9260 (tel), 613.562.9700 fax
-jvinet@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the Revolution
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
