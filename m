@@ -1,29 +1,24 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA05166
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Sep 1999 16:43:20 -0600
-Received: from security.hp.com (cranston.fc.hp.com [15.6.91.224])
-	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id SAA09981
-	for <parisc-linux@thepuffingroup.com>; Thu, 16 Sep 1999 18:44:01 -0400 (EDT)
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com, lamont@security.hp.com
-Subject: Re: [parisc-linux] 715/100 data page fault and msg output 
-In-reply-to: Your message of "Thu, 16 Sep 1999 14:58:14 PDT."
-             <199909162158.OAA21289@milano.cup.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Thu, 16 Sep 1999 16:44:38 -0600
-From: LaMont Jones <lamont@security.hp.com>
-Message-Id: <19990916224438.6F3BB18711@security.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA05369
+	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Sep 1999 16:53:55 -0600
+Date: Fri, 17 Sep 1999 00:55:42 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: LaMont Jones <lamont@security.hp.com>
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 715/100 data page fault and msg output
+Message-ID: <19990917005542.I8112@suse.de>
+References: <199909162158.OAA21289@milano.cup.hp.com> <19990916224438.6F3BB18711@security.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <19990916224438.6F3BB18711@security.hp.com>; from LaMont Jones on Thu, Sep 16, 1999 at 04:44:38PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-> IAOQ: c0067c4c c0067c50
-> ISR: 00000000 IOR: c00167a8 IIR: 02a008b8
-> ior 00000004
-> o In this case the offending instruction and a stack trace.
+> Interestingly, IIR (the interupting instruction register) contains
+> mfctl   ior,arg2, which is not what we want...  Likewise IOR (as
+> opposed to ior) also looks suspect.  I would wager that someone is
+> not saving the I* registers correctly...
 
-Interestingly, IIR (the interupting instruction register) contains
-mfctl   ior,arg2, which is not what we want...  Likewise IOR (as
-opposed to ior) also looks suspect.  I would wager that someone is
-not saving the I* registers correctly...
+we don't save them at all, but directly read them.  Of course, printing them
+doesn't make any sense (except for debugging the interruption code).
 
-lamont
+	Philipp Rumpf
