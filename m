@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 40EA14829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jun 2003 09:24:15 -0600 (MDT)
-Date: Thu, 5 Jun 2003 15:23:45 +0000 (UTC)
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8CA44829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jun 2003 12:53:51 -0600 (MDT)
+Date: Thu, 5 Jun 2003 18:44:09 +0000 (UTC)
 From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
 To: Joel Soete <jsoe0708@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] palo II
 In-Reply-To: <3ED4C8B600002915@ocpmta1.freegates.net>
-Message-ID: <Pine.BSF.4.53.0306051520320.27036@e0-0.zab2.int.zabbadoz.net>
+Message-ID: <Pine.BSF.4.53.0306051838490.27036@e0-0.zab2.int.zabbadoz.net>
 References: <3ED4C8B600002915@ocpmta1.freegates.net>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -29,11 +29,44 @@ Hi,
 
 > Could it be electrical interferences?
 
-shouldn't but could be. I thaught about some 'missbehaviour' of
-minicom but nether had that before (also using cu sometimes).
+got it again. started minicom when it already waited for input.
+perhaps that's the problem...
+it's the same sequence I got last time for 1 .. 5
 
-I'd wait for reports from others if anyone else will see it or have a
-more detailed look at the source I find the time. exams done :-)
+--- cut ---
+A 74 00L 1X c 1Q
+Current command line:
+3/boot/vmlinux-2.5.60-pa1A 74 00L 1X c 1Q root=/dev/sdb3 HOME=/ TERM=linux console=ttyS0
+ 0: 3/boot/vmlinux-2.5.60-pa1A
+ 1: 74
+ 2: 00L
+ 3: 1X
+ 4: c
+ 5: 1Q
+ 6: root=/dev/sdb3
+ 7: HOME=/
+ 8: TERM=linux
+ 9: console=ttyS0
+
+Edit which field?
+(or 'b' to boot with this command line)? 0
+3/boot/vmlinux-2.5.69-pa1
+Current command line:
+3/boot/vmlinux-2.5.69-pa1 74 00L 1X c 1Q root=/dev/sdb3 HOME=/ TERM=linux console=ttyS0
+ 0: 3/boot/vmlinux-2.5.69-pa1
+ 1: 74
+ 2: 00L
+ 3: 1X
+ 4: c
+ 5: 1Q
+ 6: root=/dev/sdb3
+ 7: HOME=/
+ 8: TERM=linux
+ 9: console=ttyS0
+
+Edit which field?
+(or 'b' to boot with this command line)? 0
+--- /cut ---
 
 -- 
 Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
