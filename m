@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 793DA4869
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Jul 2002 14:18:04 -0600 (MDT)
-To: "Stephan Trajkoff" <stephan@itp.bg>
+Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E41444874
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Jul 2002 14:19:17 -0600 (MDT)
+Date: Thu, 11 Jul 2002 13:24:22 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Stephan Trajkoff <stephan@itp.bg>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Not working PHP, security hole 
-In-Reply-To: Message from "Stephan Trajkoff" <stephan@itp.bg>
-   of "Thu, 11 Jul 2002 22:49:15 +0300." <20020711194810.2007D485F@dsl2.external.hp.com>
-References: <20020711194810.2007D485F@dsl2.external.hp.com> 
+Subject: Re: [parisc-linux] Not working PHP, security hole
+Message-ID: <20020711202422.GI14656@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020711194810.2007D485F@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 11 Jul 2002 14:18:02 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020711201802.2F04737E97@carmen.fc.hp.com>
+In-Reply-To: <20020711194810.2007D485F@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,12 +24,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Stephan Trajkoff" writes...
-
+In reference to a message from Stephan Trajkoff, dated Jul 11:
 > Please admins of parisc-linux to fix their problem
 
-We're upgrading it today. It will be fixed shortly.
+thanks for posting the passwords to the mailing list :-/
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+the admins are fixing things now.
+
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
