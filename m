@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9262E4840
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 09:47:46 -0600 (MDT)
-Date: Tue, 7 Oct 2003 17:47:40 +0200
-Message-ID: <3F5CC41F0000EF9B@ocpmta3.freegates.net>
-In-Reply-To: <20031006173401.GE27512@systemhalted>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] traps.c 2.4 alignement [was: 2.6.0-test6-pa6 on b2k finaly crash]
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="========/3F5CC41F0000EF9B/mail.tiscali.be"
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3873848CB
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 09:58:25 -0600 (MDT)
+Date: Tue, 7 Oct 2003 09:01:39 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] linux-2.6.0-test6 crash on R390
+Message-ID: <20031007160139.GC28794@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1289146742B56546AE580DFC6B711A8313482C@PKDWB07C.ad.sprint.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1289146742B56546AE580DFC6B711A8313482C@PKDWB07C.ad.sprint.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,142 +24,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---========/3F5CC41F0000EF9B/mail.tiscali.be
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+In reference to a message from Padgett, Pat M [NTWK SVCS], dated Oct 07:
+> Running apt-get update crashed my machine.  Is there any other
+> information that I can provide?  I didn't compile the kernel with
+> debugging info.
 
- 
->> But, as we could awaiting when such code=13 (conditional trap iirc), occurs
->> in kernel mode (as on my b2k or Max's c3k) the kernel
->>hang without advise
->> :(
->
->It happens in "kernel mode" ?
+http://www.parisc-linux.org/faq/kernelbug-howto.html
 
-Even thought it shouldn't happen but would just help in case of unthinkable
-bug :)
-
-> That should trigger an oops? It's a SIGFPE for the kernel :)
-
-Yes it should as far as i can follow force_sig_info() it would 'schedule'
-a SIGFPE. But in this very particular situation of the early boot, imho the
-scheduler is not yet launched.
-
-So may be this second draft would help more in this case?
-(I hope that attachement will be readable?)
-
-Thanks again,
-    Joel
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
-
-
-
---========/3F5CC41F0000EF9B/mail.tiscali.be
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="Traps-2.4-Align-2"
-
-ZGlmZiAtTmF1ciBsaW51eC0yLjYuMC10ZXN0Ni1wYTYub3JpZy9hcmNoL3BhcmlzYy9rZXJuZWwv
-dHJhcHMuYyBsaW51eC0yLjYuMC10ZXN0Ni1wYTYudGVzdC9hcmNoL3BhcmlzYy9rZXJuZWwvdHJh
-cHMuYwotLS0gbGludXgtMi42LjAtdGVzdDYtcGE2Lm9yaWcvYXJjaC9wYXJpc2Mva2VybmVsL3Ry
-YXBzLmMJMjAwMy0xMC0wNyAxODoxNTo0MS4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4w
-LXRlc3Q2LXBhNi50ZXN0L2FyY2gvcGFyaXNjL2tlcm5lbC90cmFwcy5jCTIwMDMtMTAtMDcgMTg6
-MTQ6MzEuMDAwMDAwMDAwICswMjAwCkBAIC00NCw3ICs0NCw3IEBACiAjZGVmaW5lIFBSSU5UX1VT
-RVJfRkFVTFRTIC8qICh0dXJuIHRoaXMgb24gaWYgeW91IHdhbnQgdXNlciBmYXVsdHMgdG8gYmUg
-Ki8KIAkJCSAgLyogIGR1bXBlZCB0byB0aGUgY29uc29sZSB2aWEgcHJpbnRrKSAgICAgICAgICAq
-LwogCi1pbnQgcHJpbnRiaW5hcnkoY2hhciAqYnVmLCB1bnNpZ25lZCBsb25nIHgsIGludCBuYml0
-cykKK3N0YXRpYyBpbnQgcHJpbnRiaW5hcnkoY2hhciAqYnVmLCB1bnNpZ25lZCBsb25nIHgsIGlu
-dCBuYml0cykKIHsKIAl1bnNpZ25lZCBsb25nIG1hc2sgPSAxVUwgPDwgKG5iaXRzIC0gMSk7CiAJ
-d2hpbGUgKG1hc2sgIT0gMCkgewpAQCAtNDA4LDcgKzQwOCw3IEBACiAKIAogLyoKLSAqIFRoaXMg
-cm91dGluZSBoYW5kbGVzIHBhZ2UgZmF1bHRzLiAgSXQgZGV0ZXJtaW5lcyB0aGUgYWRkcmVzcywK
-KyAqIFRoaXMgcm91dGluZSBoYW5kbGVzIHZhcmlvdXMgZXhjZXB0aW9uIGNvZGVzLiAgSXQgZGV0
-ZXJtaW5lcyB0aGUgYWRkcmVzcywKICAqIGFuZCB0aGUgcHJvYmxlbSwgYW5kIHRoZW4gcGFzc2Vz
-IGl0IG9mZiB0byBvbmUgb2YgdGhlIGFwcHJvcHJpYXRlCiAgKiByb3V0aW5lcy4KICAqLwpAQCAt
-NDI5LDggKzQyOSwxOCBAQAogCWlmICghY29uc29sZV9kcml2ZXJzKQogCQlwZGNfY29uc29sZV9y
-ZXN0YXJ0KCk7CiAKLQlpZiAoY29kZSA9PSAxKQotCSAgICB0cmFuc2Zlcl9waW1fdG9fdHJhcF9m
-cmFtZShyZWdzKTsKKworCS8qIE5vdCBhbGwgc3dpdGNoIHBhdGhzIHdpbGwgZ3V0dGVyIHRoZSBw
-cm9jZXNzb3IuLi4gKi8KKwlzd2l0Y2goY29kZSl7CisKKwljYXNlIDE6CisJCXRyYW5zZmVyX3Bp
-bV90b190cmFwX2ZyYW1lKHJlZ3MpOworCQlicmVhazsKKwkgICAgCisJZGVmYXVsdDoKKwkJLyog
-RmFsbCB0aHJvdWdoICovCisJCWJyZWFrOworCX0KIAogCXNob3dfc3RhY2soTlVMTCwgKHVuc2ln
-bmVkIGxvbmcgKilyZWdzLT5nclszMF0pOwogCkBAIC00NDYsMzQgKzQ1NiwzNCBAQAogCSAqIHN5
-c3RlbSB3aWxsIHNodXQgZG93biBpbW1lZGlhdGVseSByaWdodCBoZXJlLiAqLwogCXBkY19zb2Z0
-X3Bvd2VyX2J1dHRvbigwKTsKIAkKKwkvKiBHdXR0ZXIgdGhlIHByb2Nlc3Nvci4uLiAqLwogCWZv
-cig7OykKIAkgICAgOwogfQogCisKIHZvaWQgaGFuZGxlX2ludGVycnVwdGlvbihpbnQgY29kZSwg
-c3RydWN0IHB0X3JlZ3MgKnJlZ3MpCiB7CiAJdW5zaWduZWQgbG9uZyBmYXVsdF9hZGRyZXNzID0g
-MDsKIAl1bnNpZ25lZCBsb25nIGZhdWx0X3NwYWNlID0gMDsKIAlzdHJ1Y3Qgc2lnaW5mbyBzaTsK
-IAotCWlmIChjb2RlID09IDEpCi0JICAgIHBkY19jb25zb2xlX3Jlc3RhcnQoKTsgIC8qIHN3aXRj
-aCBiYWNrIHRvIHBkYyBpZiBIUE1DICovCi0JZWxzZQotCSAgICBsb2NhbF9pcnFfZW5hYmxlKCk7
-Ci0KLSNpZiAwCi0JcHJpbnRrKEtFUk5fQ1JJVCAiSW50ZXJydXB0aW9uICMgJWRcbiIsIGNvZGUp
-OwotI2VuZGlmCisgICAgICAgIC8qIEpTTyBCZWdpbiAqLworICAgICAgICBwcmludGsoS0VSTl9F
-UlIgIiVzKCVkLCAuLi4pLlxuIiwgX19GVU5DVElPTl9fLCBjb2RlKTsKKwkvKgorICAgICAgICBt
-ZGVsYXkoMTAwKTsKKyAgICAgICAgSlNPIEVuZCAqLwogCiAJc3dpdGNoKGNvZGUpIHsKIAogCWNh
-c2UgIDE6CiAJCS8qIEhpZ2gtcHJpb3JpdHkgbWFjaGluZSBjaGVjayAoSFBNQykgKi8KLQkJCisJ
-CXBkY19jb25zb2xlX3Jlc3RhcnQoKTsgIC8qIHN3aXRjaCBiYWNrIHRvIHBkYyBpZiBIUE1DICov
-CisKIAkJLyogc2V0IHVwIGEgbmV3IGxlZCBzdGF0ZSBvbiBzeXN0ZW1zIHNoaXBwZWQgd2l0aCBh
-IExFRCBTdGF0ZSBwYW5lbCAqLwogCQlwZGNfY2hhc3Npc19zZW5kX3N0YXR1cyhQRENfQ0hBU1NJ
-U19ESVJFQ1RfSFBNQyk7Ci0JCSAgICAKLQkgICAgCXBhcmlzY190ZXJtaW5hdGUoIkhpZ2ggUHJp
-b3JpdHkgTWFjaGluZSBDaGVjayAoSFBNQykiLAorCisJCXBhcmlzY190ZXJtaW5hdGUoIkhpZ2gg
-UHJpb3JpdHkgTWFjaGluZSBDaGVjayAoSFBNQykiLAogCQkJCXJlZ3MsIGNvZGUsIDApOwogCQkv
-KiBOT1QgUkVBQ0hFRCAqLwogCQkKQEAgLTQ5Miw4ICs1MDIsOSBAQAogCiAJY2FzZSAgNToKIAkJ
-LyogTG93LXByaW9yaXR5IG1hY2hpbmUgY2hlY2sgKi8KKwogCQlwZGNfY2hhc3Npc19zZW5kX3N0
-YXR1cyhQRENfQ0hBU1NJU19ESVJFQ1RfTFBNQyk7Ci0JCQorCiAJCWZsdXNoX2FsbF9jYWNoZXMo
-KTsKIAkJY3B1X2xwbWMoNSwgcmVncyk7CiAJCXJldHVybjsKQEAgLTU0Miw2ICs1NTMsNyBAQAog
-CiAJCWRpZV9pZl9rZXJuZWwoIlByaXZpbGVnZWQgcmVnaXN0ZXIgdXNhZ2UiLCByZWdzLCBjb2Rl
-KTsKIAkJc2kuc2lfY29kZSA9IElMTF9QUlZSRUc7CisJCS8qIEZhbGwgdGhydSAqLwogCWdpdmVf
-c2lnaWxsOgogCQlzaS5zaV9zaWdubyA9IFNJR0lMTDsKIAkJc2kuc2lfZXJybm8gPSAwOwpAQCAt
-NTU2LDYgKzU2OCwyNCBAQAogCQlzaS5zaV9hZGRyID0gKHZvaWQgKikgcmVncy0+aWFvcVswXTsK
-IAkJZm9yY2Vfc2lnX2luZm8oU0lHRlBFLCAmc2ksIGN1cnJlbnQpOwogCQlyZXR1cm47CisJCisJ
-Y2FzZSAxMzoKKwkJaWYgKHVzZXJfbW9kZShyZWdzKSkgeworI2lmZGVmIFBSSU5UX1VTRVJfRkFV
-TFRTCisJCQlwcmludGsoS0VSTl9ERUJVRyAiXG5oYW5kbGVfaW50ZXJydXB0aW9uKCkgcGlkPSVk
-IGNvbW1hbmQ9JyVzJ1xuIiwKKwkJCSAgICBjdXJyZW50LT5waWQsIGN1cnJlbnQtPmNvbW0pOwor
-CQkJc2hvd19yZWdzKHJlZ3MpOworI2VuZGlmCisJCQkvKiBDb25kaXRpb25hbCBUcmFw
-IAorCQkJICAgVGhlIGNvbmRpdGlvbiBzdWNjZWVzIGluIGFuIGluc3RydWN0aW9uIHdoaWNoIHRy
-YXBzIG9uIGNvbmRpdGlvbiAgKi8KKwkJCXNpLnNpX3NpZ25vID0gU0lHRlBFOworCQkJLyogU2V0
-IHRvIHplcm8sIGFuZCBsZXQgdGhlIHVzZXJzcGFjZSBhcHAgZmlndXJlIGl0IG91dCBmcm9tCisJ
-CQkgICB0aGUgaW5zbiBwb2ludGVkIHRvIGJ5IHNpX2FkZHIgKi8KKwkJCXNpLnNpX2NvZGUgPSAw
-OworCQkJc2kuc2lfYWRkciA9ICh2b2lkICopIHJlZ3MtPmlhb3FbMF07CisJCQlmb3JjZV9zaWdf
-aW5mbyhTSUdGUEUsICZzaSwgY3VycmVudCk7CisJCQlyZXR1cm47CisJCX0gZWxzZSBicmVhazsK
-IAogCWNhc2UgMTQ6CiAJCS8qIEFzc2lzdCBFeGNlcHRpb24gVHJhcCwgaS5lLiBmbG9hdGluZyBw
-b2ludCBleGNlcHRpb24uICovCkBAIC01NjMsMTMgKzU5MywyMiBAQAogCQloYW5kbGVfZnBlKHJl
-Z3MpOwogCQlyZXR1cm47CiAKKwljYXNlIDE1OiAKKwkJLyogRGF0YSBUTEIgbWlzcyBmYXVsdC9E
-YXRhIHBhZ2UgZmF1bHQgKi8JCisJCS8qIEZhbGwgdGhydSAqLworCWNhc2UgMTY6CisJCS8qIE5v
-bi1hY2Nlc3MgaW5zdHJ1Y3Rpb24gVExCIG1pc3MgZmF1bHQgKi8KKwkJLyogVGhlIGluc3RydWN0
-aW9uIFRMQiBlbnRyeSBuZWVkZWQgZm9yIHRoZSB0YXJnZXQgYWRkcmVzcyBvZiB0aGUgRklDCisJ
-CSAgIGlzIGFic2VudCwgYW5kIGhhcmR3YXJlIGNhbid0IGZpbmQgaXQsIHNvIHdlIGdldCB0byBj
-bGVhbnVwICovCisJCS8qIEZhbGwgdGhydSAqLwogCWNhc2UgMTc6CiAJCS8qIE5vbi1hY2Nlc3Mg
-ZGF0YSBUTEIgbWlzcyBmYXVsdC9Ob24tYWNjZXNzIGRhdGEgcGFnZSBmYXVsdCAqLwogCQkvKiBU
-T0RPOiBTdGlsbCBuZWVkIHRvIGFkZCBzbG93IHBhdGggZW11bGF0aW9uIGNvZGUgaGVyZSAqLwot
-CQlwZGNfY2hhc3Npc19zZW5kX3N0YXR1cyhQRENfQ0hBU1NJU19ESVJFQ1RfUEFOSUMpOwotCQkK
-KwkJLyogVE9ETzogVW5kZXJzdGFuZCB3aGF0IGlzIG1lYW50IGJ5IHRoZSBUT0RPIGxpc3RlZCAK
-KwkJICAgYWJvdmUgdGhpcyBvbmUuIChDYXJsb3MpICovCiAJCWZhdWx0X2FkZHJlc3MgPSByZWdz
-LT5pb3I7Ci0JCXBhcmlzY190ZXJtaW5hdGUoIk5vbiBhY2Nlc3MgZGF0YSB0bGIgZmF1bHQhIixy
-ZWdzLGNvZGUsZmF1bHRfYWRkcmVzcyk7CisJCWZhdWx0X3NwYWNlID0gcmVncy0+aXNyOworCQli
-cmVhazsKIAogCWNhc2UgMTg6CiAJCS8qIFBDWFMgb25seSAtLSBsYXRlciBjcHUncyBzcGxpdCB0
-aGlzIGludG8gdHlwZXMgMjYsMjcgJiAyOCAqLwpAQCAtNTc5LDkgKzYxOCw4IEBACiAJCQlyZXR1
-cm47CiAJCX0KIAkJLyogRmFsbCBUaHJvdWdoICovCi0KLQljYXNlIDE1OiAvKiBEYXRhIFRMQiBt
-aXNzIGZhdWx0L0RhdGEgcGFnZSBmYXVsdCAqLwotCWNhc2UgMjY6IC8qIFBDWEw6IERhdGEgbWVt
-b3J5IGFjY2VzcyByaWdodHMgdHJhcCAqLworCWNhc2UgMjY6IAorCQkvKiBQQ1hMOiBEYXRhIG1l
-bW9yeSBhY2Nlc3MgcmlnaHRzIHRyYXAgKi8KIAkJZmF1bHRfYWRkcmVzcyA9IHJlZ3MtPmlvcjsK
-IAkJZmF1bHRfc3BhY2UgICA9IHJlZ3MtPmlzcjsKIAkJYnJlYWs7CkBAIC02MzcsNyArNjc1LDYg
-QEAKIAkJCXVwX3JlYWQoJmN1cnJlbnQtPm1tLT5tbWFwX3NlbSk7CiAJCX0KIAkJLyogRmFsbCBU
-aHJvdWdoICovCi0KIAljYXNlIDI3OiAKIAkJLyogRGF0YSBtZW1vcnkgcHJvdGVjdGlvbiBJRCB0
-cmFwICovCiAJCWRpZV9pZl9rZXJuZWwoIlByb3RlY3Rpb24gaWQgdHJhcCIsIHJlZ3MsIGNvZGUp
-OwpAQCAtNjcxLDggKzcwOCw5IEBACiAJCQlmb3JjZV9zaWdfaW5mbyhTSUdCVVMsICZzaSwgY3Vy
-cmVudCk7CiAJCQlyZXR1cm47CiAJCX0KLQkJcGRjX2NoYXNzaXNfc2VuZF9zdGF0dXMoUERDX0NI
-QVNTSVNfRElSRUNUX1BBTklDKTsKIAkJCisJCXBkY19jaGFzc2lzX3NlbmRfc3RhdHVzKFBEQ19D
-SEFTU0lTX0RJUkVDVF9QQU5JQyk7CisKIAkJcGFyaXNjX3Rlcm1pbmF0ZSgiVW5leHBlY3RlZCBp
-bnRlcnJ1cHRpb24iLCByZWdzLCBjb2RlLCAwKTsKIAkJLyogTk9UIFJFQUNIRUQgKi8KIAl9CkBA
-IC03MDIsMTggKzc0MCwxOSBAQAogCSAgICAgKiBUaGUga2VybmVsIHNob3VsZCBuZXZlciBmYXVs
-dCBvbiBpdHMgb3duIGFkZHJlc3Mgc3BhY2UuCiAJICAgICAqLwogCi0JICAgIGlmIChmYXVsdF9z
-cGFjZSA9PSAwKSAKLQkgICAgeworCSAgICBpZiAoZmF1bHRfc3BhY2UgPT0gMCkgewogCQlwZGNf
-Y2hhc3Npc19zZW5kX3N0YXR1cyhQRENfQ0hBU1NJU19ESVJFQ1RfUEFOSUMpOwogCQlwYXJpc2Nf
-dGVybWluYXRlKCJLZXJuZWwgRmF1bHQiLCByZWdzLCBjb2RlLCBmYXVsdF9hZGRyZXNzKTsKLQkK
-KwkJLyoqIE5PVCBSRUFDSEVEICoqLwogCSAgICB9CiAJfQogCisJbG9jYWxfaXJxX2VuYWJsZSgp
-OwogCWRvX3BhZ2VfZmF1bHQocmVncywgY29kZSwgZmF1bHRfYWRkcmVzcyk7CiB9CiAKIAorCiBp
-bnQgX19pbml0IGNoZWNrX2l2dCh2b2lkICppdmEpCiB7CiAJaW50IGk7Cg==
-
---========/3F5CC41F0000EF9B/mail.tiscali.be--
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
