@@ -1,35 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B2504A19
-	for <parisc-linux@parisc-linux.org>; Fri,  2 Mar 2001 10:50:33 -0700 (MST)
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by atlrel2.hp.com (Postfix) with ESMTP id E1ECCC12
-	for <parisc-linux@parisc-linux.org>; Fri,  2 Mar 2001 12:50:14 -0500 (EST)
-Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
-	by hpfcla.fc.hp.com (8.9.3 (PHNE_22672)/8.9.3 SMKit7.01) with ESMTP id KAA21934
-	for <parisc-linux@parisc-linux.org>; Fri, 2 Mar 2001 10:50:13 -0700 (MST)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
-	id 14Ytgz-0000x5-00
-	for <parisc-linux@parisc-linux.org>; Fri, 02 Mar 2001 10:50:13 -0700
+Received: from maestro.symsys.com (maestro.symsys.com [208.223.9.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 32B684A19
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Mar 2001 12:48:37 -0700 (MST)
+Received: from localhost (ingram@localhost)
+	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id NAA12311
+	for <parisc-linux@parisc-linux.org>; Fri, 2 Mar 2001 13:48:36 -0600
+Date: Fri, 2 Mar 2001 13:48:36 -0600 (CST)
+From: Greg Ingram <ingram@symsys.com>
 To: parisc-linux@parisc-linux.org
-Date: Fri, 02 Mar 2001 10:50:13 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E14Ytgz-0000x5-00@noam.fc.hp.com>
-Subject: [parisc-linux] Linux CVS partial cleanup
+In-Reply-To: <20010302012631.C62DB37CB2@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0103021230140.12009-100000@maestro.symsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C100 Self-Hosting
 List-ID: <linux-parisc.vger.kernel.org>
 
-Theoretically the vendor branch of Linux in CVS should match the upstream
-tarballs from Linus.  I found there were lots of extra files on our
-vendor branch due to older merges and
-removed them from our vendor branch, which now diffs cleanly against
-upstream.  If you grab old enough versions (prior to 2.4.0-test* perhaps)
-it's possible you'll be missing some files because the removal I did
-isn't time/tag-sequenced perfectly.  I can fix that for specific cases
-if someone asks.
+I tried to self-host on my C100 with the recent root filesystem from
+ISIEE.  The first problem was I needed the CVS bins.  I grabbed the
+sources from Debian and the build went without a hitch.  I've posted a
+tarball of (I hope) all of the relevant bits here:
 
-These changes are not visible on the main development branch, which is
-as it should be.
+	http://www.symsys.com/~ingram/linux/parisc/cvs.tar.gz
 
-		-P
+I checked out the linux and palo sources, configured the kernel and made
+dependancies.  I ran into the following problems with 'make palo':
+
+1)  arch/parisc/Makefile specifies the cross-compiler
+
+I guess most people are using the cross-compiler so maybe it should stay
+that way for now.  Anyway, once I commented out that line the kernel build
+took off.
+
+2)  conflicting types for mem{cmp|cpy|set} built-ins 
+
+Lots and lots of warnings.  Should I add -fno-builtin?
+
+3)  conflicting types for off_t in <stdio.h> and "linux/types.h"
+
+I was able to dodge this error by defining '__off_t_defined' right before
+including <stdio.h> in palo/lib/elf32.c.
+
+And now [ drumroll ] the build succeeds and the self-built kernel boots.  
+
+Woohoo!
+
+- Greg
