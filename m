@@ -1,17 +1,16 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
-Date: 12 Sep 2004 11:03:32 -0400
-Message-ID: <1095001418.1714.7.camel@mulgrave>
-References: <20040911165325.GO28659@tausq.org>
-	<20040912134707.GL1854@baldric.uwo.ca>
-	<1094997501.1714.4.camel@mulgrave>
-	<20040912142908.GM1854@baldric.uwo.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] [RFC] Non-executable stack?
+Date: Sun, 12 Sep 2004 09:10:09 -0700
+Message-ID: <20040912161009.GQ28659@tausq.org>
+References: <20040912143555.GN1854@baldric.uwo.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040912142908.GM1854@baldric.uwo.ca>
+In-Reply-To: <20040912143555.GN1854@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,29 +21,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2004-09-12 at 10:29, Carlos O'Donell wrote:
-> Are relocations generated against the exception table entries?
-
-Yes.  A module is just a normal .o file with a few extra sections.  It
-contains all the relocations a .o file usually contains.
-
-> > The same way we do in the regular kernel ... jump to the absolute
-> > address.
+> Can we have a non-executable stack on PA?
 > 
-> If relocations are generated against extable entries then all should be
-> okay. The address will be fixed by the loader and everything is fine.
-> 
-> That was my only worry, Randolph didn't seem to address testing a failed
-> copy_from_user through a module extable.
-> 
-> My other question about freeing a flag still stands though.
+> Why or why not?
 
-I'll let Randolph answer that ... I find thinks like this are sticky;
-once you touch them you can never get them off your hands...
+Do you mean on the architecture? Yes, you can. afaik, hpux has a 
+non-executable stack.
 
-James
+> The only thing that currently comes to mind is that we have return paths
+> from the signal handler as stack code. This is very easy to fix, just
+> put the code statically on the gateway page and allow the user to jump
+> through that back into the kernel.
 
+do you mean in general, or just in the kernel? do you really mean only
+marking the stack non-executable, or also the heap?
 
+We have various bits of trampolines in a number of applications that 
+could potentially live on the stack. libffi comes to mind....  and
+probably other code that needs to call between languages.
+
+why do you want to do this?  because of the direction our stack grows,
+stack overflow protection is not as useful on pa.... not that you cannot
+do stack-smashing attacks on pa, of course...
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
