@@ -1,19 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 029E848C7
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 03:58:56 -0600 (MDT)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali)
-	id 1A6ocK-0002BB-00
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 07 Oct 2003 11:58:56 +0200
-Date: Tue, 7 Oct 2003 11:58:55 +0200
-Message-ID: <3F5CC41F0000EAE2@ocpmta3.freegates.net>
-In-Reply-To: <3F5CB6FB0000CBFC@ocpmta1.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] 2.6.0-test6-pa6 on b2k finaly crash
-To: parisc-linux@lists.parisc-linux.org
+Received: from mail1-haw-R.bigfish.com (mail-haw.bigfish.com [12.129.199.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 413834840
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 09:29:08 -0600 (MDT)
+Received: from mail1-haw.bigfish.com (localhost.localdomain [127.0.0.1])
+	by mail1-haw-R.bigfish.com (Postfix) with ESMTP id 9A1CB22827B
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 15:29:07 +0000 (UCT)
+Received: from smtpgw5.sprintspectrum.com (smtpgw5.sprintspectrum.com [207.40.188.13])
+	by mail1-haw.bigfish.com (Postfix) with ESMTP id 636A522ACAF
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 15:24:29 +0000 (UCT)
+Received: from mailhost.sprintspectrum.com (smtpgw7.it.sprintspectrum.com [207.40.65.55])
+	by smtpgw5.sprintspectrum.com (8.12.10/8.12.8) with ESMTP id h97FOSB0026021
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 7 Oct 2003 10:24:28 -0500 (CDT)
+Received: from PDAWG01A.corp.sprint.com (localhost [127.0.0.1])
+	by mailhost.sprintspectrum.com (Switch-2.2.8/Switch-2.2.6) with ESMTP id h97FOSV13289
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 7 Oct 2003 10:24:28 -0500 (CDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain;
+	charset="us-ascii"
+Date: Tue, 7 Oct 2003 10:22:42 -0500
+Message-ID: <1289146742B56546AE580DFC6B711A8313482C@PKDWB07C.ad.sprint.com>
+From: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] linux-2.6.0-test6 crash on R390
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,42 +33,88 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Running apt-get update crashed my machine.  Is there any other
+information that I can provide?  I didn't compile the kernel with
+debugging info.
 
-I come back to this bug to just notice that in the init of 2.4 it was:
-[...]
-Initializing RT netlink socket
-Soft power switch enabled, polling @ 0xf0400804.
-SuperIO: Found NS87560 Legacy I/O device at 00:0e.1 (IRQ 64) 
-SuperIO: Serial port 1 at 0x3f8
-SuperIO: Serial port 2 at 0x2f8
-SuperIO: Parallel port at 0x378
-SuperIO: Floppy controller at 0x3f0
-SuperIO: ACPI at 0x7e0
-SuperIO: USB regulator enabled
-parport0: PC-style at 0x378, irq 101 [PCSPP(,...)]
-[...]
+apt-get(168): unaligned access to 0x40768094 at ip=3D0x4005e47f
+apt-get(168): unaligned access to 0x40768094 at ip=3D0x4005e47f
 
-so 'superio_init' (if i don't mistake)
+Stack Dump:
+ 10334418:  10334418 00000000 00000000 00000000=20
+ 10334408:  00000000 10347810 00000000 00000000=20
+ 103343f8:  00000000 00000000 00000000 10113c48=20
+ 103343e8:  00000000 00000000 00000000 10334080=20
+ 103343d8:  00000000 00000000 10334080 00000000=20
+ 103343c8:  00000000 00000001 0010b024 00000000=20
+ 103343b8:  00000000 00000000 00000000 10106794=20
+ 103343a8:  00000000 00000000 00000000 00000000=20
+ 10334398:  00000000 00000000 00000000 00000000=20
+ 10334388:  00000000 00000000 00000000 00000000=20
+ 10334378:  00000000 00001338 00000000 00000000=20
+ 10334368:  00000000 00000000 00000000 00008000=20
+ 10334358:  00343000 00338000 001125c4 00000000=20
+ 10334348:  00000000 00000000 00000000 00000000=20
+ 10334338:  00000000 00000000 00000000 00000000=20
+ 10334328:  00000000 00000000 00000000 00000000=20
+ 10334318:  00000000 00000000 00000000 00000000=20
+ 10334308:  00000000 00000000 00000000 00000000=20
+ 103342f8:  00000000 00000000 00000000 00000000=20
+ 103342e8:  00000000 00000000 00000000 00000000=20
+ 103342d8:  00000000 00000000 00000000 00000000=20
+ 103342c8:  00000000 00000000 00000000 00000000=20
+ 103342b8:  00000000 00000000 00000000 1010c098=20
+ 103342a8:  00000000 00000000 00000000 00000000=20
+ 10334298:  00000000 00000000 00000000 00000000=20
+ 10334288:  00000000 00000000 00000000 00000000=20
+ 10334278:  00000000 00000000 00000000 00000000=20
+ 10334268:  00000000 00000000 00000000 00000000=20
+ 10334258:  00000000 00000000 40768094 00000121=20
+ 10334248:  0ee05094 00000008 00000000 00000000=20
+ 10334238:  00000000 00000000 00000000 4005e483=20
+ 10334228:  4005e47f 00000121 00000121 00000121=20
+ 10334218:  00000121 00000121 00000121 00000121=20
+ 10334208:  00000000 00000114 00000000 00000000=20
+ 103341f8:  00000000 00000000 00000000 00000000=20
+ 103341e8:  00000000 00000000 00000000 00000000=20
+ 103341d8:  00000000 00000000 00000000 00000000=20
+ 103341c8:  00000000 00000000 00000000 00000000=20
+ 103341b8:  00000000 00000000 00000000 00000000=20
+ 103341a8:  00000000 00000000 00000000 00000000=20
+ 10334198:  00000000 00000000 00000000 00000000=20
+ 10334188:  00000000 00000000 00000000 00000000=20
+ 10334178:  00000000 00000000 00000000 00000000=20
+ 10334168:  00000000 00000000 00000000 00000000=20
+ 10334158:  00000000 00000000 00000000 00000000=20
+ 10334148:  00000000 00000000 00000000 00000000=20
+ 10334138:  00000000 00000000 00000000 00000000=20
+ 10334128:  00000000 00000000 00000000 00000000=20
+ 10334118:  00000000 00000000 00000000 00000000=20
+ 10334108:  00000000 00000000 00000000 000282a3=20
+ 103340f8:  faf013c0 400c65a7 0004dc40 00040220=20
+ 103340e8:  00002370 00000038 faf01228 40768044=20
+ 103340d8:  00000000 00000163 00002370 40111868=20
+ 103340c8:  00014000 0000000f faf008c0 faf00a8c=20
+ 103340b8:  faf00948 faf00ab0 00015168 faf00d0c=20
+ 103340a8:  faf01228 faf00dd8 0004cea0 0004cea4=20
+ 10334098:  faf00ad8 40111868 00000038 4076808c=20
+ 10334088:  40098df3 00044a20 00000000 00000000=20
+ 10334078:  00000000 00000000 00000000 00112554=20
+ 10334068:  00000000 00000000 00000000 00000000=20
+ 10334058:  00000000 00000000 00000000 00340000=20
+ 10334048:  00000000 00000000 00000000 00000000=20
+ 10334038:  00000000 00000000 00000000 00000000=20
+ 10334028:  00000000 00000000 00000000 00000000=20
 
-but here in 2.6:
-[...]
-Soft power switch enabled, polling @ 0xf0400804.
-pty: 256 Unix98 ptys configured
-lp: driver loaded but no devices found
-Generic RTC Driver v1.07
-Serial: 8250/16550 driver $Revision
-[...]
-
-so not superio_init (even thought CONFIG_SUPERIO=y and well find this function
-into vmlinux)?
-
-hth,
-    Joel
+Kernel addresses on the stack:
+ [<101065d8>] parisc_terminate+0x7c/0xf4
+ [<10113c48>] pdc_console_restart+0x38/0x64
+ [<10106794>] handle_interruption+0x144/0x598
+ [<1010c098>] intr_check_sig+0x0/0xc
 
 
+High Priority Machine Check (HPMC): Code=3D1 regs=3D10334080 =
+(Addr=3D00000000)
 
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+Thanks,
+Pat Padgett
