@@ -1,50 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 96C93482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Oct 2001 04:59:41 -0600 (MDT)
-Sender: marteaut@esiee.fr
-Message-ID: <3BBD912C.9DA840E2@esiee.fr>
-Date: Fri, 05 Oct 2001 12:53:32 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: joel.soete@freebel.net
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4BEF4904
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Oct 2001 07:32:25 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15pV5R-0003q3-00; Fri, 05 Oct 2001 14:32:21 +0100
+Date: Fri, 5 Oct 2001 14:32:21 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: John Marvin <jsm@udlkern.fc.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] sti broken in pa32 on B180
-References: <1002191096.3bbc38f8c42ed@webmail.tiscalinet.be> <20011004071350.A27483@beavis.ybsoft.com> <1002215177.3bbc9709265c5@webmail.tiscalinet.be> <1002262769.3bbd50f1a5860@webmail.tiscalinet.be>
+Subject: Re: [parisc-linux] a todo entry
+Message-ID: <20011005143221.B19206@parcelfarce.linux.theplanet.co.uk>
+References: <200110050903.DAA15266@udlkern.fc.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200110050903.DAA15266@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Fri, Oct 05, 2001 at 03:03:25AM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Joel,
-
-First of all, the STI console and fb is dead on my B132. And now, let's
-go to the kbd.
-
-	If you tried the disconnect/reconnect trial of strength on your PC,
-you should see with showkey --scancode a scancode 0xAA that tells the
-controller that a kbd has been reconnected.
-On my B132, I don't see that all the time :( and when this occurs, it is
-when the kbd do an timeout/parity error.
-And this is a big trouble b/c it seems that we should look at the state
-of the controller all the time and it is not a solution.
-It seems to be integrated in the chip on PCs and on HP boxes, it is not
-designed for that case, it seems.
-
-I have two things to say but I need an Hardware HP guy to answer those:
-	-1) Page 69 of LASI_ers.ps, note 2 is mentionned but I can see only the
-note 1. Why?
-	-2) On my B132, in boot_admin, when you press Escape Key too much (more
-than 2 times), you can't type anything!
-you need to press enter and then you can type. This is reproductible! Is
-it a normal behaviour?
-
-> Nervertheless on this b180 the (ps/2) kbd problem is reproductible:
-> disconnect, reconnect the kdb then touch any key then:
-> "keyboard: unrecognised scancode (7f) - Ignored"
-> and I do not find a way to reinit the this kdb.
-> (System still running, just loss the access to the console)
+On Fri, Oct 05, 2001 at 03:03:25AM -0600, John Marvin wrote:
+>     1) Set sr2 to 0 when the argument to set_fs is KERNEL_DS, and KERNEL_DS
+>     must be defined as 0 (it is currently). Set sr2 to sr3 when the
+>     argument is any non-zero value. get_fs can then return the value of
+>     sr2.
 > 
-> Thanks in advance for addtional help,
->         Joel
+>     2) Set sr2 to 0 when the argument to set_fs is KERNEL_DS. Set sr2
+>     to sr3 when the argument is USER_DS. get_fs should return KERNEL_DS
+>     if sr2 is 0. get_fs should return USER_DS otherwise. I prefer this.
 
-Thanks for any answer or advice, Thomas.
-ESIEE Team
+I was thinking along the lines of:
+
+#define KERNEL_DS 0
+#define USER_DS mfsp(3)
+#define get_ds() (KERNEL_DS)
+#define get_fs() mfsp(2)
+#define set_fs(x) mtsp(x, 3)
+
+except that the first argument to mtsp needs to be a register, not a
+value, but that's solvable, I think.
+
+-- 
+Revolutions do not require corporate support.
