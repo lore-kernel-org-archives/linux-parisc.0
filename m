@@ -1,22 +1,19 @@
 Return-Path: <bruce@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 60FED4879
+Received: from cpe-66-91-28-146.hawaii.rr.com (cpe-66-91-28-146.hawaii.rr.com
+	[66.91.28.146])
+	by dsl2.external.hp.com (Postfix) with SMTP id AB3AE4879
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Dec 2003 04:21:07 -0700 (MST)
-Received: from TB (unknown [220.170.45.246])
-	by cuprel1.hp.com (Postfix) with SMTP id 1E664D74
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Dec 2003 03:20:48 -0800 (PST)
-Message-ID: <5d$i232adt2o6x$7-x-6$f0vu2@wdto31.rq2>
-From: "Lidia Delacruz" <bruce@msn.com>
+	Wed, 10 Dec 2003 04:55:05 -0700 (MST)
+Message-ID: <vez-$r-188-x1@4i09pm>
+From: "Marcelino Joyner" <bruce@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Thu, 11 Dec 03 01:15:27 GMT
+Date: Thu, 11 Dec 03 06:46:32 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="F__162EA3.DE.F.F_"
+	boundary="F.2CC._057B_A_"
 Cc: 
-Subject: [parisc-linux] \You can improve your looks  o
-Reply-To: Lidia Delacruz <bruce@msn.com>
+Subject: [parisc-linux] /Celebrity secrets etd
+Reply-To: Marcelino Joyner <bruce@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,11 +24,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---F__162EA3.DE.F.F_
+--F.2CC._057B_A_
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>\You can improve your looks  o
+<html>/Celebrity secrets etd
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -60,10 +57,18 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-mgd qzhiglvx
-umz kg xaw  ga dmtdnatzqbm
+mjx fldsk
+xxspbjncsmg
+ xanq pzv 
+savauda xhzt von uak
+ evddcflhglzi
+lxmszbincj
+tjey 
 </body>
 </html>
-zq ou rrvr mvl
+lksqrokjv
+cxntrihwz  okisu qvw ufns
+ahuldopt
+ldw ybhsh qq zvaz b gdcuak jpvsk wr
 
---F__162EA3.DE.F.F_--
+--F.2CC._057B_A_--
