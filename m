@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39B774829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 17:47:56 -0600 (MDT)
-Received: from carlos by systemhalted with local (Exim 3.35 #1 (Debian))
-	id 17m0vA-0001mW-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 02 Sep 2002 19:47:52 -0400
-Date: Mon, 2 Sep 2002 19:47:52 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020902234752.GA6718@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Status update hppa - glibc 2.2.92 (Problems with __divdi3)
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] iodc call and HPMC: dump driver. 
+In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+   of "Mon, 02 Sep 2002 08:12:26 +0200." <3D73014A.15ED96ED@admin.france.hp.com>
+References: <3D73014A.15ED96ED@admin.france.hp.com> 
+Date: Mon, 02 Sep 2002 21:42:12 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020903034212.A638A4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,75 +19,72 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-p-l,
+Bruno Vidal wrote:
+> 	Hi all.
+> Do you know a guy who is a guru of iodc calls ?
 
-I've already posted the same thing on debian-glibc.
+I'm not expert, but I've mucked with it abit.
 
-a. 'cvs co' from glibc upstream cvs (2.2.92)
-b. Apply debian patches from 0list
-c. Fix things
+> I'm still stuck with this. I think I was really near the
+> solution. Now my iodc call create beatifull HPMC.
 
-Preliminary modified patches for hppa are at:
-http://www.baldric.uwo.ca/~carlos/glibc-2.3/glibc23-hppa-pthreads.dpatch
-http://www.baldric.uwo.ca/~carlos/glibc-2.3/glibc23-hppa-rela.dpatch
+Which platform are you testing on?
+32 or 64-bit kernel?
 
-These replace the previous glibc22-* patches of the same name.
+> Take a look to this call, I was thinking that it
+> was all right, but there is still something wrong.
+> now i'm able to retrieve hpa,
+> I based this on palo code:
+> 
+> ret =  real32_call(PAGE0->mem_boot.iodc_io, (unsigned long)PAGE0->mem_boot.hp
+>   a, DUMPDEV_WRITE,
+>   PAGE0->mem_boot.spa, __pa(PAGE0->mem_boot.dp.layers), __pa(pdc_result), dev
+>   addr, __pa(iodc_dbuf), 2048);
 
-Please do _NOT_ accept these as final versions, I'm presenting them
-for anyone who may want to attempt to recreate or verify my problem.
+Can you dump the values for the call that HPMCs?
+I'm not sure what is supposed to be passed as arguments to IODC.
+I'm trying to find it in the documentation I have and then I
+can verify the values are sane.
 
-Current build issues are:
+Note that all IODC is 32-bit.
+And earlier IODC versions don't like byte addresses greater than 2GB.
+Not sure when that got fixed but it certainly wasn't on 712
+or similar workstations/servers. It wasn't even noticed as a problem
+until HP started shipping 4GB disk drives (ie 1997 or so).
 
-gcc-3.2 -nostdlib -nostartfiles -o /mnt/flaire/src/glibc-upstream-cvs/libc-=
-build/iconv/iconvconfig  -Wl,-dynamic-linker=3D/lib/ld.so.1    /mnt/flaire/=
-src/glibc-upstream-cvs/libc-build/csu/crt1.o /mnt/flaire/src/glibc-upstream=
--cvs/libc-build/csu/crti.o `gcc-3.2 --print-file-name=3Dcrtbegin.o` /mnt/fl=
-aire/src/glibc-upstream-cvs/libc-build/iconv/iconvconfig.o /mnt/flaire/src/=
-glibc-upstream-cvs/libc-build/iconv/strtab.o /mnt/flaire/src/glibc-upstream=
--cvs/libc-build/iconv/xmalloc.o  -Wl,-rpath-link=3D/mnt/flaire/src/glibc-up=
-stream-cvs/libc-build:/mnt/flaire/src/glibc-upstream-cvs/libc-build/math:/m=
-nt/flaire/src/glibc-upstream-cvs/libc-build/elf:/mnt/flaire/src/glibc-upstr=
-eam-cvs/libc-build/dlfcn:/mnt/flaire/src/glibc-upstream-cvs/libc-build/nss:=
-/mnt/flaire/src/glibc-upstream-cvs/libc-build/nis:/mnt/flaire/src/glibc-ups=
-tream-cvs/libc-build/rt:/mnt/flaire/src/glibc-upstream-cvs/libc-build/resol=
-v:/mnt/flaire/src/glibc-upstream-cvs/libc-build/crypt:/mnt/flaire/src/glibc=
--upstream-cvs/libc-build/linuxthreads /mnt/flaire/src/glibc-upstream-cvs/li=
-bc-build/libc.so.6 /mnt/flaire/src/glibc-upstream-cvs/libc-build/libc_nonsh=
-ared.a -lgcc `gcc-3.2 --print-file-name=3Dcrtend.o` /mnt/flaire/src/glibc-u=
-pstream-cvs/libc-build/csu/crtn.o
-/mnt/flaire/src/glibc-upstream-cvs/libc-build/libc.so.6: undefined referenc=
-e to `__divdi3_internal'
-collect2: ld returned 1 exit status
-make[2]: *** [/mnt/flaire/src/glibc-upstream-cvs/libc-build/iconv/iconvconf=
-ig] Error 1
-make[2]: Leaving directory `/mnt/flaire/src/glibc-upstream-cvs/libc/iconv'
-make[1]: *** [iconv/others] Error 2
-make[1]: Leaving directory `/mnt/flaire/src/glibc-upstream-cvs/libc'
-make: *** [all] Error 2
+later IODC included a "block" interface which use block address
+instead of byte address. I'll try to find documentation on this.
 
-I have _no_ idea what is going on here, I have to begin digging at:
+> DUMPDEV_WRITE = 1
+> static unsigned long pdc_result[32] __attribute__ ((aligned (8))); 
+> static char __attribute__((aligned(64))) iodc_dbuf[DUMP_PAGE_SZ];
+> 
+> and devaddr=191889408
 
-http://sources.redhat.com/ml/glibc-cvs/2002-q3/msg00325.html (Shows the che=
-ckin)
+191889408 == 0xB7000000
+If this is the target byte address on the block device, it's too big.
 
-libc/sysdeps/wordsize-32/lldiv.c shows:
-     24 #ifdef SHARED
-     25 /* This is an ugly trick.  We cause the C code generated for the co=
-de
-     26    in lldiv.c to use __divdi3_internal instead of __divdi3 by defin=
-ing
-     27    an alias on the assembler level.  */
-     28 asm ("__divdi3 =3D __divdi3_internal");
-     29 #endif
 
-objdump -t /mnt/flaire/src/glibc-upstream-cvs/libc-build/libc.so.6 | grep d=
-ivdi3
-001173d4 l     F .text  00000028              __udivdi3
-00000000         *UND*  00000000              __divdi3_internal
+> Disk /dev/sda: 64 heads, 32 sectors, 17366 cylinders
+> Units = cylinders of 2048 * 512 bytes
+> 
+> /dev/sda1   *         1        61     62448   f0  Linux/PA-RISC boot
+> /dev/sda2            62       183    124928   83  Linux
+> /dev/sda3           184      1648   1500160   82  Linux swap
+> /dev/sda4          1649     17366  16095232    5  Extended
+> /dev/sda5          1649      5554   3999728   83  Linux
+> /dev/sda6          5555      9460   3999728   82  Linux swap
+> /dev/sda7          9461     13366   3999728   83  Linux
+> /dev/sda8         13367     17366   4095984   83  Linux
 
-It's clearly not there :}
+which of these are you trying to write to?
+sda3?
 
-If anyone understands... a hint would be most helpful=20
+> Do you know someone who is well aware of iodc calls ?
+> I want to discuss a bit about this.
 
-Cheers,
-c.
+hmm...inside HP there are a few people who've mucked with IODC.
+Let's see if we can figure it out here first.
+
+thanks,
+grant
