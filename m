@@ -1,22 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35CFF483E
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jun 2003 04:43:10 -0600 (MDT)
-Date: Wed, 4 Jun 2003 10:42:37 +0000 (UTC)
-From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-To: parisc-linux@lists.parisc-linux.org
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] palo II
-In-Reply-To: <Pine.BSF.4.53.0306021858520.1237@e0-0.zab2.int.zabbadoz.net>
-Message-ID: <Pine.BSF.4.53.0306041039250.27036@e0-0.zab2.int.zabbadoz.net>
-References: <Pine.BSF.4.53.0306011303040.1237@e0-0.zab2.int.zabbadoz.net>
- <200306011543.59335.deller@gmx.de> <Pine.BSF.4.53.0306011402580.1237@e0-0.zab2.int.zabbadoz.net>
- <20030602181451.GB31212@dsl2.external.hp.com>
- <Pine.BSF.4.53.0306021827240.1237@e0-0.zab2.int.zabbadoz.net>
- <Pine.BSF.4.53.0306021858520.1237@e0-0.zab2.int.zabbadoz.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B8BB44829
+	for <parisc-linux@parisc-linux.org>; Wed,  4 Jun 2003 12:32:19 -0600 (MDT)
+Message-Id: <200306041823.h54INeaO023223@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: [hppa] binutils will not build shared libraries with external deps?
+To: amodra@bigpond.net.au (Alan Modra)
+Date: Wed, 4 Jun 2003 14:23:39 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, bug-binutils@gnu.org,
+	binutils@sources.redhat.com, parisc-linux@parisc-linux.org,
+	debian-gcc@lists.debian.org
+In-Reply-To: <20030602230949.GB17437@ozlabs.au.ibm.com> from "Alan Modra" at Jun 3, 2003 09:09:49 am
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,34 +24,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 2 Jun 2003, Bjoern A. Zeeb wrote:
+> On Mon, Jun 02, 2003 at 05:10:38PM -0400, John David Anglin wrote:
+> > tmpdir/sh1p.o(.text+0x0): In function `shlib_mainvar':
+> > /home/dave/binutils-2.14.90/src/ld/testsuite/ld-elfvsb/sh1.c:32: undefined refer
+> > ence to `mainvar'
+> > ...
+> > FAIL: visibility (hidden)
+> 
+> Fixing this one probably requires porting some of the recent changes
+> I made for x86 and ppc to hppa.  See SYMBOL_REFERENCES_LOCAL and
+> SYMBOL_CALLS_LOCAL.
 
-Hi,
+Nope.  This was caused by the previous bug and the change to using
+gcc as the driver program to run the newly built linker.  Using `-B'
+doesn't override the GCC configure option `--with-ld='.  The same
+problem occurs with using gcc to run the newly build assembler
+(`-B' doesn't override `--with-as=').  I think we need to revert
+to the previous technique for running these tools in the ld
+testsuite.
 
-> g) here is the patch. Thanks I remember basic for the goto ;-)
-> peherhaps ignore the part with the version number ...
+To work around this problem, I installed the newly built tools.
+This fixed most of the ld FAILS but we are still left with the
+following:
 
-well please - before commiting - verifiy ... I think there is a
-problem maybe with some pointer ... Will have to verify all possible
-paths ... going to re-check and let you know.
+Running /home/dave/binutils-2.14.90/src/ld/testsuite/ld-elfvsb/elfvsb.exp ...
+FAIL: visibility (hidden_undef_def)
+FAIL: visibility (hidden_undef_def) (PIC main)
+FAIL: visibility (hidden_weak)
+FAIL: visibility (hidden_weak) (PIC main)
+FAIL: visibility (protected_weak)
+FAIL: visibility (protected_weak) (PIC main)
+Running /home/dave/binutils-2.14.90/src/ld/testsuite/ld-elfweak/elfweak.exp ...
+FAIL: ELF weak func first DSO
+FAIL: ELF weak func last DSO
+FAIL: ELF weak data first DSO
+FAIL: ELF weak data last DSO
+FAIL: ELF weak data first DSO common
+FAIL: ELF weak data last DSO common
 
---- cut ---
-/boot/vmlinux-2.5.69-pa1 74 00L 1X c 1Q root=/dev/sdb3 HOME=/ TERM=linux conso0
- 0: 3/boot/vmlinux-2.5.69-pa1
- 1: 74
- 2: 00L
- 3: 1X
- 4: c
- 5: 1Q
- 6: root=/dev/sdb3
- 7: HOME=/
- 8: TERM=linux
- 9: console=ttyS0
-
-Edit which field?
-(or 'b' to boot with this command line)?
---- cut ---
-
+Dave
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
