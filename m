@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailhost1.mistral.co.uk (mailhost1.mistral.co.uk [217.154.131.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7204E48A2
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Sep 2003 09:37:13 -0600 (MDT)
-Received: from localhost.localdomain (dsl-217-155-82-142.zen.co.uk [217.155.82.142])
-	by mailhost1.mistral.co.uk (Postfix) with ESMTP id 2A27A79F9A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Sep 2003 16:37:12 +0100 (BST)
-From: Martin <inkubus@interalpha.co.uk>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Date: 20 Sep 2003 16:34:05 +0100
-Message-Id: <1064072046.1602.62.camel@raphael>
-Mime-Version: 1.0
-Subject: [parisc-linux] OT:Problems with hardware - RDI Precision Book
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5BBF0483E
+	for <parisc-linux@parisc-linux.org>; Sat, 20 Sep 2003 12:02:18 -0600 (MDT)
+Message-ID: <3F6C9622.60402@tiscali.be>
+Date: Sat, 20 Sep 2003 18:02:10 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] sched_clock implementation
+References: <20030918203510.GD21596@parcelfarce.linux.theplanet.co.uk> <3F6B2199.8050402@tiscali.be> <20030919160035.GG18225@systemhalted>
+In-Reply-To: <20030919160035.GG18225@systemhalted>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +23,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Sorry, I know this is OT but I have a feeling if I'm going to find
-anyone who can help it may well be here.
+Carlos O'Donell wrote:
 
-Bought an RDI precision book a while back and was just about to put
-Linux on it.  Pressed the power button and the 'power', 'network' and
-'disk' icons light up on the LCD panel but nothing else happens.  Have
-tried with other disks, network cable, external monitor and external
-scsi and it still does nothing.
+>On Fri, Sep 19, 2003 at 03:32:41PM +0000, Joel Soete wrote:
+>  
+>
+>>Matthew Wilcox wrote:
+>>
+>>    
+>>
+>>>Anyone want to do better than the lame implementation?  ;-)
+>>>
+>>>----- Forwarded message from Andrew Morton <akpm@osdl.org> -----
+>>>
+>>>I'll be merging Ingo & Con's CPOU scheduler changes into Linus's tree soon.
+>>>
+>>>It does require that the architecture provides a new timing function:
+>>>
+>>>A lame implementation is:
+>>>
+>>>/*
+>>>* Returns nanoseconds
+>>>*/
+>>>
+>>>
+>>>      
+>>>
+>>Hi Willy,
+>>
+>>(Certainly yet another stupid question but) to reach such accuracy we 
+>>would need to have access to some 'time device' with an accuracy better 
+>>then the nanosec (iirc 10^-9) (because it doesn't seems to me possible 
+>>to get enough accuracy with cpu clock < 10^9 ie 1Ghz: the most case for 
+>>parisc systems). Does it exist such device and where to start to read 
+>>some doc?
+>>    
+>>
+>
+>We could use cr16 to get better accuracy. See list discussions about
+>fast gettimeofday.
+>
+>c.
+>
+Hi all,
 
-Does anyone have any suggestions?  I really need a working laptop and am
-getting more than a little frustrated...
+a quick look into paxx.pdf which about CR16 speak of "peak instruction 
+rate" but do not define anywhere?
+I presume that is the cpu clock but would like somebody confirm.
 
-Cheers,
- - Martin
-
--- 
-Martin
-inkubus@interalpha.co.uk
-"Seasons change, things come to pass"
+Thanks in advance,
+    Joel
