@@ -1,37 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 88301482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jul 2001 02:49:33 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 440CE482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jul 2001 03:01:26 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id E0F2BB00C; Wed, 11 Jul 2001 09:48:16 +0100 (BST)
-Date: Wed, 11 Jul 2001 09:48:16 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Charles Boone <ccboone@yahoo.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240
-Message-ID: <20010711094816.G18375@linuxcare.com>
-References: <rhirst@linuxcare.com> <200107110536.XAA31339@puffin.external.hp.com>
+	id 9F46FB00C; Wed, 11 Jul 2001 10:00:09 +0100 (BST)
+Date: Wed, 11 Jul 2001 10:00:09 +0100
+From: 'Richard Hirst' <rhirst@linuxcare.com>
+To: Joachim Kress <jkress@unilog.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] palinux
+Message-ID: <20010711100009.J18375@linuxcare.com>
+References: <41E365428D7DD21192B700104BB0EA3D01526E2B@nttue01.tue.integrata.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200107110536.XAA31339@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Tue, Jul 10, 2001 at 11:36:25PM -0600
+In-Reply-To: <41E365428D7DD21192B700104BB0EA3D01526E2B@nttue01.tue.integrata.de>; from jkress@unilog.de on Wed, Jul 11, 2001 at 10:44:49AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jul 10, 2001 at 11:36:25PM -0600, Grant Grundler wrote:
-> Richard Hirst wrote:
-> > IAOQ = _gsc_readl + 8
-> > called from dino_in32()
-> > I guess it was dino_in32(0xc1b21ec0), which looks odd.
+On Wed, Jul 11, 2001 at 10:44:49AM +0200, Joachim Kress wrote:
 > 
-> It's definitely wrong. dino_in32() pokes dino to generate IO Port
-> transactions and Dino lives in 0xF... address range. This suggests the
-> pci_dev->sys_data is garbage (perhaps not initialized?) or points to garbage.
-> Perhaps for Dino's built-in PS/2 or RS232 port?
+> 	the Workstation boot and then will stop
+> 	with "BOOT_ADMIN"
 > 
-> Sorry, I didn't follow this thread earlier. Does console output hint
-> which PCI device was involved (if any)?
+> 	first step:
+> 	then i boot with "boot scsi.1.0" (CDROM Address)
+> 	the Workstation is booting and falling back to
+> 	"BOOT_ADMIN"
 
-Not obviously, and it failed in the middle of the install, so presumably
-whatever device was involved had been accessed successfully earlier.
+Hmm, ok.  I was hoping it might say something like "ipl checksum error",
+or "bad lif magic".
+
+It might be a hardware probem with the CDROM, cable, or terminators,
+I suppose.  Can you try to boot over the network from a bootp server?
+The README on the CD should help.
 
 Richard
