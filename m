@@ -1,24 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E30424829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 16:13:03 -0600 (MDT)
-Received: from [195.20.224.206] (helo=mrvdomng0.kundenserver.de)
-	by moutvdom.kundenserver.de with esmtp (Exim 3.35 #1)
-	id 17qhdR-0007II-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 16 Sep 2002 00:12:57 +0200
-Received: from [217.227.249.14] (helo=PLUTO)
-	by mrvdomng0.kundenserver.de with esmtp (Exim 3.35 #1)
-	id 17qhdQ-0000LR-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 16 Sep 2002 00:12:57 +0200
-From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] [PATCH] Voodoo framebuffer on PARISC
-Date: Mon, 16 Sep 2002 00:13:11 +0200
-Message-ID: <001201c25d05$150e6600$0100a8c0@PLUTO>
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4104B4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 17:25:44 -0600 (MDT)
+Message-ID: <3D8516EF.7A7D8206@gmx.at>
+Date: Mon, 16 Sep 2002 01:25:35 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-In-reply-to: <200209150209.46701.deller@gmx.de>
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Status SPIFI SCSI
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,13 +21,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Helge wrote:
+Hallo Ryan,
 
-> This patch is already integrated into the 2.4.19-pa18 
-> kernel ...
+here some comments on my non-successful work so far.
 
-Where can I get pa18? The latest on ftp.parisc-linux.org seems to be
-pa17.
+I did code reading and used debug instrumented code
+to understand the structure behind the linux SCSI
+handling.
 
-Cheers,
-Tobias
+Further I studied the NetBSD code. 
+
+One major point: We do not get any interrupts.
+For my analysis I only had a look on the first
+steps of SCSI initialization, so this was the
+INQUERY command.
+
+The spifi command routine is called correctly,
+but it has a wrong logical implementation. As I 
+have seen on other (older) linux driver, the
+xxx_command() has to block, after the command was
+successful completed by interrupt. But the interrupt
+never comes !! Even a "long" delay for simulating
+blocking does not solve this problem.
