@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5A32C482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 11:48:28 -0600 (MDT)
-Message-Id: <200209091727.g89HRZF3021659@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Inline Assembly Help request
-To: jsoe0708@tiscali.be
-Date: Mon, 9 Sep 2002 13:27:34 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3D3815AF0000F2CA@ocpmta3.be.tiscali.com> from "jsoe0708@tiscali.be" at Sep 9, 2002 06:27:22 pm
+Received: from mail.interchange.ca (ns.interchange.ca [216.126.79.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E90D3482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 12:44:38 -0600 (MDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-Id: <3D7CEC11.00008F.38799@ns.interchange.ca>
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_9EP6EVT66ERNTT4D7TH0"
+To: parisc-linux@lists.parisc-linux.org
+From: "Jon Sharp" <jonsharp@fastmail.ca>
+Date: Mon,  9 Sep 2002 14:44:33 -0400 (EDT)
+Subject: [parisc-linux] Modem communication, HP 730
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,60 +21,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> But I do not yet find explanation about details of the following asm code:
-> #define __put_user_asm(stx,x,ptr)                           \
->         __asm__ __volatile__ (                              \
->                 "\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
->                 "2:\n"                                      \
->                 "\t.section __ex_table,\"a\"\n"             \
->                  "\t.word\t1b\n"                            \
->                  "\t.word\t(2b-1b)+1\n"                     \
->                  "\t.previous"                              \
->                 : "=r"(__pu_err)                            \
->                 : "r"(ptr), "r"(x), "0"(__pu_err))
-> 
-> which is more clear with gcc -S:
-> 
-> 1:      stw     %r21,0(%sr3,%r19)
-> 2:
->         .section __ex_table,"a"
->         .word   1b
->         .word   (2b-1b)+1
->         .previous
-> 
-> My questions are:
-> what are the actual means "1:", "2:" (seems like label?)
+--------------Boundary-00=_9EP6EVT66ERNTT4D7TH0
+Content-Type: Text/Plain
+Content-Transfer-Encoding: 7bit
 
-They are local labels that can be referenced in the asm.  "b" and "f"
-mean backwards and forward relative to the current location.  This more
-or less doubles the number of labels available.
+Dear All,
 
-> and what means the rest
-> ".section __ex_table,...
->  ...
->  .previous"
-> 
-> I do not yet found reference on this part (even in Assembly-HOWTO).
-> Where could I found doc on this details?
+I hope that I am sending this to an appropriate list.  To be honest I 
+am running out of ideas.
 
-The GCC manual (extend.texi) has documentation on writing asms.  You
-will need to look at the pa-risc architecture manuals for documentation
-on PA assembler instructions.
+I recently received a HP 730 which I am attempting to restore.  I am 
+trying to install an external modem (V90 Velo Net ME220).  However, 
+it is acting strangley.  It works fine (using minicom) at connection 
+speeds of up to 19200, after that the modem fails to respond to AT 
+commands altogether.
 
-The code is trying to setup a table using local labels generated
-in the asm.  The way to do this is highly port dependent.
-In particular, indirect function calls are done using plabels on
-the PA.  There are also restrictions on the types of relocations
-that can be used for constructing tables of this kind.
+I have read through both the serial and modem how-tos in detail and 
+tried what I could think of.  Including using a large range of 
+different settings for setserial and stty.  Does anyone have any idea 
+what I might be doing wrong?  One interesting point to note, I have 
+no monitor or HIL keyboard and have been using the first serial port 
+(A) for a console.
 
-This is highly complex stuff and isn't very well documented.  You
-can read the HP runtime architecture document, the documentation on
-ELF relocations and look at the code in the GNU assembler and linker.
-The dwarf2 exception tables that you can generate with gcc 3.3
-may also give some clue.  Look at the entry for the personality
-function and how the labels for C++ catches are encoded in the table.
+Any advice would be greatly received,
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Jon Sharp
+
+__ 
+'The art of good lecturing is to transfer the information from my 
+notes to your notes without it passing through eithers brain.'
+Cambridge University Lecturer
+_________________________________________________________________
+    http://fastmail.ca/ - Fast Secure Web Email for Canadians
+--------------Boundary-00=_9EP6EVT66ERNTT4D7TH0--
