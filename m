@@ -1,37 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from Cantor.suse.de (ns.suse.de [213.95.15.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5E3C9482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 02:41:08 -0600 (MDT)
-Date: Mon, 3 Sep 2001 10:41:05 +0200
-From: Andi Kleen <ak@suse.de>
-To: "David S. Miller" <davem@redhat.com>
-Cc: ak@suse.de, alan@lxorguk.ukuu.org.uk, willy@debian.org,
-	thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on parisc architecture
-Message-ID: <20010903104105.A3398@gruyere.muc.suse.de>
-References: <20010903002514.X5126@parcelfarce.linux.theplanet.co.uk.suse.lists.linux.kernel> <E15dghq-0000bZ-00@the-village.bc.nu.suse.lists.linux.kernel> <oup66b0zq9j.fsf@pigdrop.muc.suse.de> <20010903.011530.62340995.davem@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010903.011530.62340995.davem@redhat.com>; from davem@redhat.com on Mon, Sep 03, 2001 at 01:15:30AM -0700
-Sender: ak@suse.de
+Received: from cs1-hq.oecd.org (cs1-hq.oecd.org [193.51.65.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 13109482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 04:28:42 -0600 (MDT)
+Received: from netsweep1.oecd.org (netsweep1.oecd.org [10.102.5.110])
+	by cs1-hq.oecd.org (Postfix) with ESMTP id C461E4B014
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 12:25:50 +0200 (CEST)
+Received: from eosgty1.oecd.org (unverified) by netsweep1.oecd.org
+ (Content Technologies SMTPRS 4.2.5) with ESMTP id <T55c473708c0a66056e06d@netsweep1.oecd.org> for <parisc-linux@lists.parisc-linux.org>;
+ Mon, 3 Sep 2001 12:28:39 +0200
+Message-ID: <C12531D038D1D011B1DB0000F8036C280A30EB51@eosm5.oecd.org>
+From: Arnaud.ATOCH@oecd.org
+To: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] UreStoreOptical 20xt
+Date: Mon, 3 Sep 2001 12:28:38 +0200 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 03, 2001 at 01:15:30AM -0700, David S. Miller wrote:
->    From: Andi Kleen <ak@suse.de>
->    Date: 03 Sep 2001 09:29:12 +0200
->    
->    And also everybody connected to the internet needs them, because you can 
->    create arbitarily unaligned TCP/UDP/ICMP headers using IP option byte sized 
->    NOPs. 
-> 
-> IP header length is measured in octets, so how is this possible?
-> :-)
+First thank you for the port. I'm running a 712/100 with no special trouble
+(iso image 0.9.2).
 
-Sorry that came out wrong. You can in theory generate unaligned IP options this way, but the 
-kernel handles this correctly using memcpy. What it doesn't handle is unaligned TCP options
-(e.g. timestamps); which you can create using TCP option byte fillers.
+I've got 1 question on the HP Surestore Optical 20xt.
 
-Also the 4 byte alignment of the header doesn't help much when the driver didn't cooperate.
+I was using this robot on HP-UX. It is now connected to the 712/100. It is
+seen by the SCSI driver and using mtx, I can load, unload, eject opticals
+disks.
 
--Andi
+Using fdisk, I can partition, format (mkfs),and then use blank optical
+drives.
+
+I'd like to read all ones created with HP-UX.
+
+I know that sector size of 1024 is no more an issue since 2.2.16 or
+something but neither mount or fdsik recognize what's on the drive for HP-UX
+written disks.
+
+I've loaded hfs, hpfs, udf, ufs because it was not clear which module
+provide HP-UX filesystem support.
+
+Btw does the HP-UX fs support patch made it to Linus tree ?
+
+thanks for any feedback.
+
+Arnaud Atoch
+OECD
+Paris - France
