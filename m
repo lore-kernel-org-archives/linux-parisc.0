@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A3054487A
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Nov 2003 23:58:28 -0700 (MST)
-Received: from CPE00e018e563d0-CM.cpe.net.cable.rogers.com (CPE00e018e563d0-CM.cpe.net.cable.rogers.com [65.49.6.147])
-	by cuprel1.hp.com (Postfix) with SMTP id E5B108FD
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Nov 2003 22:58:26 -0800 (PST)
-Message-ID: <8s$-k850$th25k510m$-o-m6g@yev6j4.1.rx35>
-From: "Frank Sanchez" <zh222m@yahoo.com>
-Reply-To: "Frank Sanchez" <zh222m@yahoo.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id DB603487A
+	for <parisc-linux@parisc-linux.org>; Sat, 15 Nov 2003 05:52:51 -0700 (MST)
+Received: from 155.red-80-34-22.pooles.rima-tde.net (155.Red-80-34-22.pooles.rima-tde.net [80.34.22.155])
+	by cuprel1.hp.com (Postfix) with SMTP id 945BBBF6
+	for <parisc-linux@parisc-linux.org>; Sat, 15 Nov 2003 04:52:49 -0800 (PST)
+Message-ID: <7qt0791d2hx4vo$80477@ryh.3.o.6482>
+From: "Chauncey Mora" <osv740@yahoo.com>
+Reply-To: "Chauncey Mora" <osv740@yahoo.com>
 To: parisc-linux@parisc-linux.org
-Date: Sat, 15 Nov 2003 02:58:22 -0400
+Date: Sat, 15 Nov 2003 17:41:45 +0500
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="_..E.1AD.09C7DE__64_4_1"
-Subject: [parisc-linux] Remote-Control Cars and Boats - Great Xmas Gifts.....Kameron
+	boundary="5D5F7BB_4_.C."
+Subject: [parisc-linux] LIVE LONGER with H-uman...G-rowth...H-ormone...celine
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,38 +25,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---_..E.1AD.09C7DE__64_4_1
-Content-Type: text/html;
+--5D5F7BB_4_.C.
+Content-Type: text/plain;
 Content-Transfer-Encoding: quoted-printable
 
-<p>New Mini Remote Control Cars &amp; Boats.</p>
-<IMG SRC=3D"http://www.onii.org/images/home/stunt_flip.gif" ALT=3D""><a hr=
-ef=3D"http://www.rc-cars-boats2003.com/?axel=3D49">Follow Us For Fun...</a=
-><br>
-<p>Turbo Twister Mini RC stunt cars are the newest RC stunt cars in 
-the world! These 2 1/2 inch stunt cars rotate, flip, and tumble everywhere=
-!</p>
-<IMG SRC=3D"http://www.onii.org/images/home/car_purple.jpg" ALT=3D""><a hr=
-ef=3D"http://www.rc-cars-boats2003.com/?axel=3D49">Follow Us For Fun...</a=
-><br>
-<p>Honda S2000 (yellow) - fully functional wireless remote control (Radio-=
-frequency)</p>
-<IMG SRC=3D"http://www.onii.org/images/home/boat_yellow.jpg" ALT=3D""><a h=
-ref=3D"http://www.rc-cars-boats2003.com/?axel=3D49">Follow Us For Fun...</=
-a><br>
-<p>Mini RC Ocean Runner Boat (yellow) - Fully functional remote control bo=
-at with 6 way remote control.</p>
-<br>
-<br>
-<br>
-<br>
-<a href=3D"http://www.aqmp.net/out5s/rem2e.asp">No more advertisements</a>=
-</p>
-<br>
-<br>
-<br>
-<br>o ztpq
-ygw
-unszrm kkvc nhsu
+H-uman...G-rowth...H-ormone Therapy
 
---_..E.1AD.09C7DE__64_4_1--
+"Overall deterioration of the body that comes with growing old is not inev=
+itable."---Dr. Daniel Rudman's in the New England Journal of Medicine.
+
+
+Follow me to longer living: http://www.mmv9.org?affil=3D49
+
+
+Scientific research and evidence overwhelmingly demonstrates that, in addi=
+tion to genetic and environmental factors, our body's reduced production o=
+f H-uman...G-rowth...H-ormone is a direct cause of aging. Between the ages=
+ of 20 to 70, our levels can fall by more than 75%. This may cause us to l=
+ook and feel older and less energetic. By the time most of us have reached=
+ our forties, we are already experiencing a H-uman...G-rowth...H-ormone de=
+ficiency.
+
+
+Follow me to longer living: http://www.mmv9.org?affil=3D49
+
+
+Our competitors charge as high as 65 dollars---get ours for less than 50.
+
+
+Follow me to longer living: http://www.mmv9.org?affil=3D49
+
+
+
+
+
+
+
+
+
+No more advertisements, thanks - http://www.aqmp.net/out5s/rem2e.asp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+kim 
+
+--5D5F7BB_4_.C.--
