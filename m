@@ -1,77 +1,53 @@
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA31031
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 11:06:09 -0700
-Received: from adlmail.cup.hp.com (adlmail.cup.hp.com [15.0.100.30])
-	by atlrel2.hp.com (Postfix) with ESMTP id 482AECA9
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 13:08:24 -0500 (EST)
-Message-Id: <200011221806.KAA06196@adlmail.cup.hp.com>
-Subject: Re: [parisc-linux] Use of the EI_OSABI field
-Date: Wed, 22 Nov 2000 10:06:05 -0800
-From: Cary Coutant <cary@cup.hp.com>
-To: "H . J . Lu" <hjl@valinux.com>, "Alan Modra" <alan@linuxcare.com.au>
-Cc: "Ulrich Drepper" <drepper@cygnus.com>,
-        "John Marvin" <jsm@udlkern.fc.hp.com>,
-        <parisc-linux@puffin.external.hp.com>,
-        <parisc-linux@thepuffingroup.com>, <binutils@sourceware.cygnus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA32087
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 12:54:28 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel1.hp.com (Postfix) with ESMTP id 76B145A2
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 12:57:00 -0700 (MST)
+Message-Id: <200011221955.LAA21865@milano.cup.hp.com>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CVS linux Vs. -test10 
+In-reply-to: Your message of "Wed, 22 Nov 2000 01:11:57 PST."
+             <200011220811.BAA14756@udlkern.fc.hp.com>
+Date: Wed, 22 Nov 2000 11:55:38 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-As the original author of the proposal to add the EI_OSABI field to the 
-ELF format, let me try to clarify the intent of this field. The 
-authoritative definition of this field is found in SCO's gABI document, 
-which is still the official specification for the ELF format (this is 
-probably posted somewhere on SCO's web site). Here's what it says:
+John Marvin wrote:
+> Grant Grundler wrote:
+> > Yes I do. It is supposed to work for ccio+PCX-W platforms (eg C360).
+...
+> Well, personally i'd vote to get rid of it. It works for ONE machine only,
+> and MAY have an advantage in some small case.
 
-    Byte e_ident[EI_OSABI] identifies the operating system and
-    ABI to which the object is targeted. Some fields in other ELF
-    structures have flags and values that have operating system
-    and/or ABI specific meanings; the interpretation of those
-    fields is determined by the value of this byte. The value of
-    this byte must be interpreted differently for each machine.
-    That is, each value for the e_machine field determines a set
-    of values for the EI_OSABI byte. Values are assigned by the
-    ABI processor supplement for each machine. If the processor
-    supplement does not specify a set of values, the value 0
-    shall be used and indicates unspecified.
+And so does the OB600 mouse driver I rewrote/published.
+AFAIK, it only works on OB600s.
 
-The first sentence is still a bit misleading, and is an artifact of the 
-original proposal. Originally, the field was intended to identify the 
-target ABI (hence the name of the field). As we started discussing a 
-common Unix ABI for IA-64, however, it became clear that this field 
-wouldn't serve that purpose, but it was still needed to identify the set 
-of platform-specific ELF extensions that are used by the object file.
+I was originally thinking D/K/R-class boxes had PCX-W upgrades but
+AFAICT, they don't.
 
-There are a number of fields in the ELF format for which ranges of values 
-or a set of flag bits are reserved for vendor-specific use (e.g., 
-SHT_LOOS through SHT_HIOS for vendor-specific section types, and 
-SHF_MASKOS for vendor-specific section attributes). If an object file 
-uses any of these values or flag bits, the consumer of the file must 
-consult the EI_OSABI field to determine what those values or flags mean. 
-It works just like the e_machine field does for attaching meaning to 
-processor-specific values and flags.
+> But if we keep it, lets make
+> sure that it is real clear that it should NOT be the default choice.
+> 
+> It should be marked CONFIG_EXPERIMENTAL, and the text associated with it
+> should clearly show that it works on a C360 only. If possible, it should
+> also be made clear that ccio-dma.c works for C360, so people who have
+> C360's don't think they have to choose ccio-rm-dma.c.
 
-The intent is that any ABI-conforming implementation will be able to 
-execute an ABI-conforming binary, even if it uses certain vendor-specific 
-features. In many cases, those vendor-specific features are hints for a 
-particular OS that can be ignored by other implementations. Where this is 
-not the case, and a vendor-specific feature must be understood by the 
-system in order to process the file correctly, we have a couple of 
-alternatives.
+IIRC, Comments in the headers of both ccio files make those issues clear.
+I'm not sure where else that needs to be documented.
 
-For section types and flags that a linker must understand, we have the 
-SHF_OS_NONCONFORMING flag -- if set, and a linker doesn't understand a 
-particular section type or flag, it must reject the file.
+> Grant, I hope you are prepared to answer the parisc-linux mailing list
+> questions this is going to generate once parisc-linux starts becoming more
+> visible.  Another FAQ entry perhaps? :-)
 
-For executables that will execute only on a particular implementation, we 
-must use an alternate interpreter (PT_INTERP) or bind to 
-implementation-specific shared libraries. An ABI-conforming binary will 
-use the interpreter specified in the psABI spec, and will use only system 
-libraries specified there.
+Ryan owns it. He's responsible for documenting it and adding FAQ questions.
+He can choose to delete ccio-rm-dma.c as well.
+:^)
 
-For statically-bound programs, I'm afraid we don't have a clear solution. 
-We took the general approach that such programs are not ABI-conforming in 
-the first place, and can use any mechanism they might choose to verify 
-that they are executing on the appropriate implementation.
+I think it'd be a waste to throw it away before someone figures
+out that it's really not useful - even if just for C360.
 
--cary
+thanks,
+grant
