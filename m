@@ -1,29 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39827482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 May 2001 09:09:55 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 150PNq-0004YQ-00; Thu, 17 May 2001 16:08:10 +0100
-Date: Thu, 17 May 2001 16:08:10 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Charlie Navarro <charlie_navarro@yahoo.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] XF86Config-4
-Message-ID: <20010517160810.B13481@parcelfarce.linux.theplanet.co.uk>
-References: <01051711114601.02177@diana>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01051711114601.02177@diana>; from charlie_navarro@yahoo.com on Thu, May 17, 2001 at 11:11:46AM -0300
-Sender: <willy@www.linux.org.uk>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 13101482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 May 2001 11:57:25 -0600 (MDT)
+Date: Thu, 17 May 2001 17:45:26 +0000
+Subject: Re: [parisc-linux] Booting from SCSI disk.
+MIME-Version: 1.0
+In-Reply-To: <9EB1F7B63758D411A78D00A0C9D84789B16BED@UKCRN03>
+From: Xavier Debacker <debackex@esiee.fr>
+To: "Bright, Stephen" <Stephen.Bright@thales-esecurity.com>
+Content-Type: text/plain; charset=iso-8859-1
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Message-Id: <20010517154527.04341D15AC@mail.esiee.fr>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, May 17, 2001 at 11:11:46AM -0300, Charlie Navarro wrote:
-> I have a 712/60 with STI kernel and XFree86 4.0.3, but I can not make the 
-> correct XF86Config-4. 
-> Where do I download an example?
-
-X servers aren't supported yet.  If you want to hack one up yourself,
-please go ahead.
-
--- 
-Revolutions do not require corporate support.
+> Hi,                                                                 
+>                                                                     
+> I have a newly acquired 712/80 which I have booting happily via NFS.
+ I                                                                    
+> would like to set it up to boot from the SCSI hard drive.  However, 
+reading                                                               
+> the instructions on the website states that you need to use an i386 
+machine                                                               
+> to fdisk and run palo on the hdd.  Unfortunately I don't own a SCSI 
+card for                                                              
+> my i386 boxes.                                                      
+                                                                      
+Hi Stephen,                                                           
+                                                                      
+Maybe you can use the cdrom iso (think about the easy sys-install and 
+net-install scripts)                                                  
+If you don't have any external scsi cdrom drive, you can still use the
+contents as a nfsroot with a few changes (keeping your current /etc   
+directory should be enough)                                           
+                                                                      
+http://mkhppa1.esiee.fr/en/download.html for latest iso               
+                                                                      
+good luck                                                             
+Xavier.                                                               
