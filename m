@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 99E2B482E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Dec 2002 01:22:51 -0700 (MST)
-Date: Tue, 17 Dec 2002 09:22:19 +0100
-Message-ID: <3DED9BBD0000215E@ocpmta7.freegates.net>
-In-Reply-To: <20021216172906.B9994@parcelfarce.linux.theplanet.co.uk>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E496482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Dec 2002 03:43:39 -0700 (MST)
+Date: Tue, 17 Dec 2002 11:43:28 +0100
+Message-ID: <3DED9BBD000021C7@ocpmta7.freegates.net>
+In-Reply-To: <20021216231132.GC854@dsl2.external.hp.com>
 From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Re: YA pb with PCI IDE (my merge 2.4.21-pre1)
-To: "Matthew Wilcox" <willy@debian.org>,
-	"Alan Cox" <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
+To: grundler@dsl2.external.hp.com,
+	"Ed Schaller" <schallee@darkmist.net>
 Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -23,35 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Willy,
 >
->You mean the "IDE but no disks" patch:
->http://www.uwsg.iu.edu/hypermail/linux/kernel/0212.2/0105.html ?
+>I've looked a bit at the same problem on A500 with
+>a regular (single port) HP tulip card.
+>
+>> In the following dmesg out takes for 2.4.20-pa13 and 2.4.19-32 (debian=
+),
+>> it seems that the older kernel is finding the transceiver and
+>> successfully auto-negotiating the link while the newer is not.
+>
+>yeah - same symptom that I saw.
+>
+>> Any ideas how to solve this? Any help would be greatly appreciated.
+>
+>I suspect it's a tulip driver bug.
+>I haven't had a chance to diff the 2.4.19 vs 2.4.20 tulip driver.
+>One idea might be to "forward port" the 2.4.19 drivers/net/tulip code
+>into 2.4.20.
+>
+Same on B2k with add card.
+Hmm I notice strange detail:
+2.4.19 : lan heart bit on (even if interface not configure)
+2.4.20 (& 21-pre1) : no lan heart bit on (interface configured or not)
 
-I apply it (by hand) and it works:
-"...
-Uniform Multi-Platform E-IDE driver Revision: 7.00beta-2.4
-ide: Assuming 33MHz system bus speed for PIO modes; override with idebus=3D=
-xx
-NS87415: IDE controller at PCI slot 00:0e.0
-NS87415: chipset revision 3
-NS87415: not 100% native mode: will probe irqs later
-    ide0: BM-DMA at 0x0900-0x0907, BIOS settings: hda:pio, hdb:pio
-    ide1: BM-DMA at 0x0908-0x090f, BIOS settings: hdc:pio, hdd:pio
-hda: LTN485S, ATAPI CD/DVD-ROM drive
-ide0 at 0x1f0-0x1f7,0x3f6 on irq 103
-hda: ATAPI 48X CD-ROM drive, 120kB Cache
-Uniform CD-ROM driver Revision: 3.12
-...
+I will try to revert tulip driver and advise you.
 
-palx2000:~# uname -a
-Linux palx2000 2.4.21-pre1-pa14 #2 Tue Dec 17 08:44:14 CET 2002 parisc un=
-known
-unknown GNU/Linux"
-
-Thanks all,
+Cheer,
     Joel
-
 
 
 *************************************************************************=
