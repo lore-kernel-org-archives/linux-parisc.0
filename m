@@ -1,48 +1,76 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from havoc.gtf.org (panic.ohr.gatech.edu [130.207.47.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2E2C2482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 10:26:37 -0600 (MDT)
-Sender: jgarzik@havoc.gtf.org
-Message-ID: <3AE0632E.61B20C0A@mandrakesoft.com>
-Date: Fri, 20 Apr 2001 12:26:22 -0400
-From: Jeff Garzik <jgarzik@mandrakesoft.com>
+Received: from xanadu.home (modemcable084.137-200-24.mtl.mc.videotron.ca [24.200.137.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3BE60482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 10:36:34 -0600 (MDT)
+Date: Fri, 20 Apr 2001 12:35:12 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Tom Rini <trini@kernel.crashing.org>
+Cc: "Eric S. Raymond" <esr@thyrsus.com>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	"Albert D. Cahalan" <acahalan@cs.uml.edu>,
+	Matthew Wilcox <willy@ldl.fc.hp.com>,
+	james rich <james.rich@m.cc.utah.edu>,
+	lkml <linux-kernel@vger.kernel.org>, <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is
+ anyone paying attention?
+In-Reply-To: <20010420085148.V13403@opus.bloom.county>
+Message-ID: <Pine.LNX.4.33.0104201206250.12186-100000@xanadu.home>
 MIME-Version: 1.0
-To: Bob McElrath <rsmcelrath@students.wisc.edu>
-Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone
- paying attention?
-References: <20010420101951.A6011@thyrsus.com> <E14qc9E-0001PW-00@the-village.bc.nu> <20010420105934.A6668@thyrsus.com> <20010420085148.V13403@opus.bloom.county> <3AE05E7C.F9C76ED2@mandrakesoft.com> <20010420111512.H22687@draal.physics.wisc.edu>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bob McElrath wrote:
-> 
-> Jeff Garzik [jgarzik@mandrakesoft.com] wrote:
-> > Tom Rini wrote:
-> > > Which does boil down to having to work with trees other than Linus or
-> > > Alans.  Remember, the official tree is not always the up-to-date tree,
-> > > or in the case of other arches, the most relevant tree.
+
+On Fri, 20 Apr 2001, Tom Rini wrote:
+
+> On Fri, Apr 20, 2001 at 10:59:34AM -0400, Eric S. Raymond wrote:
+> > Alan Cox <alan@lxorguk.ukuu.org.uk>:
+> > > > well, though.  One is the kind I'm bumping into right now, where
+> > > > somebody legitimately needs to make small (almost trivial) changes
+> > > > scattered all through the tree.
+> > >
+> > > Yep. But such changes are rare. Or should be.
 > >
-> > Yep.  You could even look at Linus as simply the x86 port maintainer :)
-> >
-> > Except for alpha and x86, AFAIK, most people wind up going through
-> > arch-specific channels to get their kernels...
-> 
-> This may be a dumb question, but is there some place where the arch
-> maintainers are listed?  Where the arch-specific trees are kept?  Where
-> would I go to get the latest set of relevant patches for alpha?
+> > Knowing that doesn't help me much, since I'm trying to fix up a global
+> > namespace that touches everybody :-(.
+>
+> Which does boil down to having to work with trees other than Linus or
+> Alans.  Remember, the official tree is not always the up-to-date tree,
+> or in the case of other arches, the most relevant tree.  But if you send
+> something off to a maintainer, there's a good chance (if they're still active)
+> they'll do what you ask, and it'll get to Linus/Alan the next time they sync.
+> As long as the problem gets fixed, it shouldn't be as important if it's fixed
+> in everyones tree right now, or in a release or two.  If it's some sort of
+> huge bug it just might get fixed sooner.
 
-As I noted in the e-mail to which you replied, there is no separate
-alpha tree nor arch-specific channel for alpha kernels.  Generally fixes
-to the Alpha tree appear quickly and get merged quickly, and the tree
-stays in sync quite well.  Watch linux-kernel or Alan Cox's patchkit for
-Alpha fixes that may be in transmit to Linus.
+Guys,
 
-There are of course RedHat's alpha distro, and various mailing lists on
-http://www.alphalinux.org/
+There is kind of a ridiculous situation here where people want to withhold
+their own changes in their own trees for all good reasons until it is mature
+and stable enough to be fed upstream in the appropriate way, while insisting
+for Linus' tree to remain incomplete and inconsistent.  And we're not
+talking about deep architectural changes here -- only about configure
+symbols and help text.
 
--- 
-Jeff Garzik      | The difference between America and England is that
-Building 1024    | the English think 100 miles is a long distance and
-MandrakeSoft     | the Americans think 100 years is a long time.
-                 |      (random fortune)
+Why not having everybody's tree consistent with themselves and have whatever
+CONFIGURE_* symbols and help text be merged along with the very code it
+refers to?  It's worthless to have config symbols be merged into Linus' or
+Alan's tree if the code isn't there (yet).  It simply makes no sense.
+
+This might shift some of the namespace consistency work to architecture
+maintainers (which is a good thing IMHO) and establish the basis for yet a
+more sanitized kernel.org tree at all times for before and after any
+further patches are merged.
+
+I'm myself maintainer of a subarchitecture and removing currently
+unreferenced SA1100 config symbols from the official Linux tree would
+probably give me a one-time effort to bring them back in my tree but this is
+certainly for a saner code/namespace distribution in general.  Why should
+the symbols I maintain remain there if I'm not ready yet to sync up the code
+they refer to?
+
+Hey this is only CONFIG_ symbols after all.  If they get removed now, they
+will only reappear _with_ the code they refer to eventually when it'll get
+merged.
+
+
+Nicolas
