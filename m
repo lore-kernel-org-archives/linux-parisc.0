@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B488B4851
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 22:29:59 -0700 (MST)
-Received: (from carlos@localhost)
-	by sh.od.inet (8.11.0/8.11.0) id g265Ud424817
-	for parisc-linux@lists.parisc-linux.org; Wed, 6 Mar 2002 00:30:39 -0500
-Date: Wed, 6 Mar 2002 00:30:39 -0500
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6A4D24830
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 23:05:07 -0700 (MST)
+Date: Wed, 6 Mar 2002 00:58:18 -0500
 From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] OT: value of a 712/100
-Message-ID: <20020306003039.C23625@systemhalted>
-References: <20020305215733.0B69C37CF5@carmen.fc.hp.com> <E16iPpE-00051v-00@the-village.bc.nu>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Printer Port & kernel stuff
+Message-ID: <20020306005818.D23625@systemhalted>
+References: <005101c1c480$ae437900$02c1a8c0@james.co.uk> <20020305200711.E30960@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E16iPpE-00051v-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Wed, Mar 06, 2002 at 01:02:36AM +0000
+In-Reply-To: <20020305200711.E30960@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Tue, Mar 05, 2002 at 08:07:11PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,21 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > > Sorry for the OT post,  I own a few 712/100 boxes and was wondering what
-> > > they would be worth? and if any one here would be interested in buying a
-> > > couple of them?
+> On Tue, Mar 05, 2002 at 03:02:29PM -0500, James S wrote:
+> > Has nobody else had the same problem as me with the printer port ?
 > > 
-> > Check ebay, I seem to remember them going for ~$100 with ram and disk.
+> > My 712/60 locks every time i send anything to the local printer.
 > 
-> Ebay prices for older parisc kit seem to have basically doubled since 
-> Linux on parisc began to work well. Annoying but I think a great project
-> testimony
+> Isn't this cured with Thomas Bogendoerfer's recent changes to make
+> parport_gsc & parport_pc work when compiled into the same kernel?
+> 
+> > while i'm at it - does anybody have a list of the options i should choose
+> > when i'm doing a make config for the kernel so i can get the right network
+> > stuff installed etc.
+> 
+> defconfig is pretty all-encompassing.  there's also the debian-configs
+> in the CVS tree.
+> 
+> > i need to recompile to include smbfs (which i think would be very handy if
+> > compiled into the kernel as standard)
+> 
+> last i heard it still wouldn't compile.  but maybe it got fixed and i
+> don't remember.
 >
 
-Woo! Woo! Go PARISC!
+I compiled it into the kernel, and as a module. No compilation issues.
 
-I love my cluster of 715/50's :)
+Haven't tested it :)
 
-/me goes back to testing glibc
-
-c.
+c. 
