@@ -1,38 +1,30 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA28659
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 14:16:14 -0700
-Message-ID: <BBAFD7A26E78D311834400805FEA1177ABF556@BHIHAWISS04>
-From: "Soto,  Gene G." <Gene.Soto@bakeroiltools.com>
-To: Hugo.van.der.Kooij@caiw.nl, Al Smith <Al.Smith@mail.tju.edu>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA29035
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 14:34:38 -0700
+From: magne@metis.spacetec.no (Magne Oestlyngen)
+Message-Id: <199911222135.WAA07143@metis.spacetec.no>
+Subject: Re: [Fwd: Re: [parisc-linux] HP-UX 10.20 for free?]
+In-Reply-To: <199911221822.KAA13945@opus.allegro.com> from Stan Sieler at "Nov 22, 1999 10:22:26 am"
+To: sieler@allegro.com (Stan Sieler)
+Date: Mon, 22 Nov 1999 22:35:56 +0100 (CET)
 Cc: parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] HP-UX 10.20 for free?
-Date: Mon, 22 Nov 1999 15:10:57 -0600
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-I received the core os as well as the patches  and updated apps (6 cd's).
-Problem is I no longer have the cdrom.  Anyone know if it would be possible
-to ftp the data from my intel laptop to an external drive or to a dds tape
-and install it from there?   I'm no hacker but can follow directions.
+> > http://www.hp.com/visualize/programs/y2k/y2k_menu/y2k_upgr/oskit.html
+> > Does anyone know if you can order this on the web / by email?
+> The site mentioned above seems aimed at people on support contracts,
+> although I'm not sure about that.
 
--Gene
+> I ordered my 10.20 upgrade via:
+> http://www.software.hp.com/y2kupgrades/swp_upgrades.html
+> And, you can do it online.
 
-	----------
-	From:  Al Smith [SMTP:Al.Smith@mail.tju.edu]
-	Sent:  Monday, November 22, 1999 2:54 PM
-	To:  Hugo.van.der.Kooij@caiw.nl
-	Cc:  der_fisch@fischlustig.de; parisc-linux@thepuffingroup.com
-	Subject:  Re: [parisc-linux] HP-UX 10.20 for free?
+Only problem is that that's for series 800 servers, and I have a
+series 700 (710) workstation.  ANd you can't select that. :-(
 
-	You are not getting the whole OS. You are getting patch's and
-updated apps..
 
-	-Al
-
-	
----------------------------------------------------------------------------
-	To unsubscribe: send e-mail to
-parisc-linux-request@thepuffingroup.com with
-	`unsubscribe' as the subject.
+-- 
+Magne Østlyngen <magne@spacetec.no>
+                <magne@skybert.org>
