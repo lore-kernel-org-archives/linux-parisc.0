@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B3DE482A
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 07:37:25 -0700 (MST)
-Date: Fri, 14 Dec 2001 15:37:20 +0100 (CET)
-From: Peter Mottram <peter@petescaff.com>
-To: Tommi Aihkisalo <tommi.aihkisalo@vtt.fi>
-Cc: parisc <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Network bootproblem with 712/80
-In-Reply-To: <000b01c184a9$3f00a1b0$7862bc82@ele.vtt.fi>
-Message-ID: <Pine.LNX.4.42.0112141532470.29092-100000@r6.petescaff.com>
+Received: from smtp1.powertech.no (smtp1.powertech.no [195.159.0.145])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4F4B1482A
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 07:50:20 -0700 (MST)
+Received: from nyepost.start.no (nyepost.start.no [195.159.1.214])
+	by smtp1.powertech.no (Postfix) with ESMTP id 45E43883D
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Dec 2001 15:50:19 +0100 (CET)
+Received: (from apache@localhost)
+	by nyepost.start.no (8.11.6/8.11.2) id fBEEfnv28746
+	for parisc-linux@parisc-linux.org; Fri, 14 Dec 2001 15:41:49 +0100
+To: parisc <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] 0.9.3 on a B132L
+Message-ID: <1008340909.3c1a0fadd700f@nyepost.start.no>
+Date: Fri, 14 Dec 2001 15:41:49 +0100 (CET)
+From: Andy Walker <squawker@start.no>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +26,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Tommi
+Quoting "James P. Kinney III" <jkinney@localnetsolutions.com>:
 
-On Fri, 14 Dec 2001, Tommi Aihkisalo wrote:
-
-> Hello all!
+> Andy,
 >
-> I am having a problem with my 712/80 when booting with bootp/tftp. With some
-> effort I got it requesting kernel image (lifimage) over the network. The
+> This is great news! I have a C160 with the A4071B_LZ graphics card in
+> slot 3. I get nada once the "you may not see anything beyond this
+> point
+> message" is done :( . So _please_ send details on command line and
+> config to the group. I would like to get the serial console off my
+> desk
+> and use this huge 4033A monitor.
+>
 
-[SNIP]
+Hi James,
 
-I too have just tried a net boot of 0.9.3 from a remote location and also
-failed. I noticed MUCH too late that the lifimage contains the following
-files:
+I just borrowed a C110 with an A4071B in slot 3. Booting from the
+CD with all default parameters seemed to work fine for me. This is
+the only graphics device in the C110, so there's no room for confusion
+there. Typing 'pa con' in the PDC gives:
 
-    0/vmlinux32 3122078 bytes @ 0x7800
-    0/vmlinux64 3990942 bytes @ 0x302000
-    0/ramdisk 1946807 bytes @ 0x6d0800
+    Console path:       GRAPHICS3
 
-But PALO chooses a default kernel path of
+Don't know the exact model of the A4071B (LZ etc.) - the one in the
+B132L has a kind of daughter board, the one in the C110 doesn't.
+Both seem to work fine.
 
-    0/linux
+Another point - I was playng with a 725/100 as well today. The
+internal disk is a FW-Diff connected to a Bluefish card. it
+exhibits the nasty timeout/lockup/reset behaviour reported for
+720's and 735's with the sym58c720 interface when the disk is
+attached. My current plan is to boot on a SE disk and to try
+an AHA-2744W in an EISA slot for the FW-Diff disk. Will this
+work?
 
-I assume that is simply that the PALO definition in the lifimage is
-incorrect. Once I get my remote button pusher to power cycle the system
-for me (she is out shopping right now) I will try an interactive boot &
-change the command line to boot the correct kernel.
+Regards,
 
-If you get chance to try this before me then please let me know how it
-goes.
+-Andy
 
-Cheers
-PeteM
+
+
+------------------------------------------------------------
+Få din egen @start.no-adresse gratis på http://www.start.no/
+
+
+------------------------------------------------------------
+Få din egen @start.no-adresse gratis på http://www.start.no/
