@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from eightythree.valleybikes.com (valleybikes.com [24.123.22.113])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4AD04829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 14:56:22 -0600 (MDT)
-Subject: Re: [parisc-linux] firmware update using BOOTP
-From: James Smith <james@compusmithllc.com>
-To: Frank Cornelis <Frank.Cornelis@rug.ac.be>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6C9D64829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 15:06:32 -0600 (MDT)
+Subject: Re: [parisc-linux] 9000/802/K250 won't boot with images -
+	serial/stack problem?
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Stian Soiland <stain@itea.ntnu.no>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.GSO.4.31.0209302241060.16124-100000@eduserv.rug.ac.be>
-References: <Pine.GSO.4.31.0209302241060.16124-100000@eduserv.rug.ac.be>
-Content-Type: text/plain
-Date: 30 Sep 2002 15:56:19 -0500
-Message-Id: <1033419379.4785.33.camel@seventy>
+In-Reply-To: <20020930204559.GB9133@itea.ntnu.no>
+References: <20020930200805.GA9133@itea.ntnu.no>
+	<1033417191.31126.4.camel@beavis>  <20020930204559.GB9133@itea.ntnu.no>
+Content-Type: text/plain; charset=ISO-8859-1
+Date: 30 Sep 2002 15:06:29 -0600
+Message-Id: <1033419990.30622.11.camel@beavis>
 Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,46 +25,82 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-i installed all my 712's from bootp without upgrading & they went fine -
-even the ones with the 1.9 firmwares
+Ah,
 
-have you got a pointer to the firmware update info so i can check it out
-the pros/cons myself ?
+I am sorry.  I see the problem now :)
 
-James S
+The problem is that /dev/ttyB0 does not have a registered major/minor
+number.  We use a local on for the parisc-linux kernel.  Since we
+/dev/ttyB0 is non-standard, the regular boot floppy from debian will
+not boot this box.  I would suggest getting on from the ESIEE
+team provides at:
+
+	http://pateam.esiee.fr/cd-images/testing/
+
+Specifically the images you are looking for have the -PDC in the name.=20
+These kernels have the PDC Software Console enabled (which will work for
+your system).
+
+Thanks,
+
+- Ryan
+
+P.S. What would it take to get the default debian configs to compile in
+the the Serial Mux, and to provide the /dev/ttyB0 from the parisc-linux
+port by default in debian?  A patch to the debian def_configs and the
+MAKEDEV package?
 
 
-On Mon, 2002-09-30 at 15:50, Frank Cornelis wrote:
-> 
-> > most of my 712's are ver 1.9 or 2.1 & they all work fine as far as i can
-> > see with linux - is there any advantage to updating to 2.3 ?
-> >
-> > or is this a case of 'if its not broken....'
-> 
-> The text file that comes with the 2.3 patch mentions
-> 	More reliable LAN operation
-> as one of the improvements. I wanted to be sure for my BOOTP lifimage
-> loading.
-> Anyway, it's really easy to do.
-> Create an /etc/bootptab on your server containing:
-> .default:\
->         :sm=255.255.255.224:\
->         :gw=192.168.1.62:\
->         :ds=195.130.131.2:\
->         :ht=ethernet:\
->         :bf=C7120023.frm:
-> 
-> hp712:hn:ha=0800099D56DA:ip=192.168.1.34:tc=.default
-> 
-> Of course, adjust with your network settings (man bootptab).
-> Run the bootpd daemon (and tftp daemon) on your server and reboot your HP.
-> Then goto the BOOT_ADMIN menu using ESC and type:
-> 	search lan
-> You should see your BOOTP server listed.
-> Then simply do:
-> 	boot lan
-> 
-> That's it.
-> 
-> Frank.
-> 
+On Mon, 2002-09-30 at 14:45, Stian Soiland wrote:
+> On 2002-09-30 22:19:51, Ryan Bradetich wrote:
+>=20
+> > > The serial console is connected to 'CONSOLE (X/4/0/0)*',=20
+> > This is good, see .. we even find the device :)
+> > > 6. Sahp Baat Kiuh AP/MUX (5) at 0xf1900000 [10/4/0], versions 0x44,
+> > 0x0, 0xd
+> > > Command line for kernel: 'ramdisk_size=3D8192 root=3D/dev/ram console=
+=3DttyS0
+> > Oops... this is bad.  The K class systems do not have a 16550 compatibl=
+e
+> > serial port.  The console should be ttyB0.
+> > For mor info on the console, see Matthew's excellent description of wha=
+t
+> > systems use the Serial Mux driver.
+> > http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017=
+837.html
+>=20
+> Aha! :=3D)
+>=20
+> But with:
+>=20
+> Command line for kernel: 'ramdisk_size=3D8192 root=3D/dev/ram console=3Dt=
+tyB0
+> TERM=3Dvt102 palo_kernel=3D0/vmlinux'
+>=20
+> (..)
+>=20
+> Branching to kernel entry point 0x00100098.  If this is the last
+> message you see, you may need to switch your console.  This is
+> a common symptom -- search the FAQ and mailing list at parisc-linux.org
+>=20
+>=20
+> And that IS the last thing I see :/
+>=20
+> with console=3DttyS0 at least more output came. How do I 'switch console'=
+?=20
+>=20
+>=20
+> Do I need to connect something to this MDP-port instead?
+> (how? It is some inverted rs232 15-pin)
+>=20
+> This happens with both vmlinux32 og 64.
+>=20
+>=20
+> --=20
+> Stian S=F8iland               There are only 10 types of people in the wo=
+rld:
+> ITEA systemdrift            Those who understand binary, and those who do=
+n't.
+> http://www.stud.ntnu.no/   =20
+>                            =20
+>=20
