@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8E68448A1
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Sep 2003 15:17:37 -0600 (MDT)
-Date: Thu, 25 Sep 2003 17:15:09 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: libc-alpha <libc-alpha@sources.redhat.com>
+Date: Thu, 25 Sep 2003 17:35:00 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030925211509.GY14406@systemhalted>
+Subject: Re: [parisc-linux] N Class SMP pb ?  (follow up)
+Message-ID: <20030925233500.GA18861@dsl2.external.hp.com>
+References: <3F5CC41F00008D27@ocpmta3.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [RFC] Where to put arch-dependant locking in malloc/thread-m.h
+In-Reply-To: <3F5CC41F00008D27@ocpmta3.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,51 +20,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-libc,
+On Thu, Sep 25, 2003 at 04:56:26PM +0200, Joel Soete wrote:
+...
+> As already mentionned in previous mail that I could read many 6, 15 (but
+> it seems to be normal in UP kernel those interruption occurs)
 
-Found the problem with bug-iconv3, it was related to the fact that
-hppa's locks can't be initialized to zero (or left unitialized). When
-running a non-threaded application and dlopening libpthread the
-__libc_maybe_call2's start using the proper strong symbol of those
-funcions. At this point malloc on hppa would in certain occassions
-fget stuck in a lock that it thought was taken (value of zero).
 
-The following patch fixes the issue, but I'm not content about it's
-placement in malloc/thread-m.h. Any comments about where I might put
-this in order to make maintenance easier?
+Yes - 6 is ITLB miss and 15 is Data TLB miss.
 
-Cheers,
-Carlos.
+> but (most interesting) it is the very first time that I got
+> the message making failed the kernel:
+> [...]
+> handle_interruption(26, ...).
 
-diff -u -p -r1.23 thread-m.h
---- glibc/malloc/thread-m.h	1 Jul 2003 08:29:43 -0000	1.23
-+++ glibc/malloc/thread-m.h	25 Sep 2003 20:43:55 -0000
-@@ -59,6 +59,28 @@ __libc_lock_define (typedef, mutex_t)
- #define mutex_unlock(m)		\
-   __libc_maybe_call2 (pthread_mutex_unlock, (m), (*(int *)(m) = 0))
- 
-+# if(defined __hppa__)
-+/* Since our lock structure does not tolerate being initialized to zero, we must
-+   modify the standard function calls made by malloc */
-+#  undef mutex_init
-+#  undef mutex_lock
-+#  undef mutex_trylock
-+#  undef mutex_unlock
-+#  define mutex_init(m)		\
-+	__libc_maybe_call (__pthread_mutex_init, (m, NULL), \
-+			(((m)->__m_lock.__spinlock = __LT_SPINLOCK_INIT),(*(int *)(m))) )
-+#  define mutex_lock(m)		\
-+	__libc_maybe_call (__pthread_mutex_lock, (m), \
-+			(__load_and_clear(&((m)->__m_lock.__spinlock)), 0))
-+#  define mutex_trylock(m)	\
-+	__libc_maybe_call (__pthread_mutex_trylock, (m), \
-+			(*(int *)(m) ? 1 : (__load_and_clear(&((m)->__m_lock.__spinlock)), 0)))
-+#  define mutex_unlock(m)	\
-+	__libc_maybe_call (__pthread_mutex_unlock, (m), \
-+			(((m)->__m_lock.__spinlock = __LT_SPINLOCK_INIT), (*(int *)(m))) )
-+# endif 
-+/* if(defined __hppa__) */
-+	
- #else
- 
- #define mutex_init(m)		\
+26 is "Data Memory Access rights Trap".
+This sounds normal for Copy-On-Write.
+
+> SMP CALL FUNCTION TIMED OUT (CPU=1)
+
+The IPI handler will time out if the other CPU doesn't ack
+the function call with in a second. This is bad.
+It means either other CPU never got the interrupt (locked up
+with I-bit off) or the "unstarted_count" isn't coherent
+between the CPUs.
+
+> handle_interruption(26, ...).
+>
+> Could this be a pb with sync between cpu time ref?
+> (because timeout = jiffies + HZ)
+
+I don't think so since jiffies is a global.
+And it's always be measured on the same CPU.
+
+> I have also a look for where this function is called but never see its return
+> code tested to launch a 'stack dump' and a stop of system?
+
+You need to find out who is using smp_call_function() and which function
+they are trying to invoke. I suspect it's coming from mm/slab.c but
+would know which of the three it might be.
+
+grant
