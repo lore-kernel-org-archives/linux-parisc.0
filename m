@@ -1,20 +1,19 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 0263448FF
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 690B94866
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  6 Mar 2004 04:26:55 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Date: Sat, 6 Mar 2004 12:26:50 +0100
-References: <Pine.LNX.4.21.0403051153090.23074-100000@hal.pp.fishpool.fi>
-In-Reply-To: <Pine.LNX.4.21.0403051153090.23074-100000@hal.pp.fishpool.fi>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200403061226.50883.deller@gmx.de>
-Cc: =?iso-8859-1?q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>,
-	debian-hppa@lists.debian.org
-Subject: [parisc-linux] Re: broken keyboard driver on 2.6.3
+	Sat,  6 Mar 2004 07:46:20 -0700 (MST)
+Date: Sat, 6 Mar 2004 06:46:19 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: William Waites <parisc@lists.styx.org>
+Subject: Re: [parisc-linux] lstrncpy_from_user symbol not exported
+Message-ID: <20040306144619.GG1113@tausq.org>
+References: <20040304190643.GC19629@styx.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040304190643.GC19629@styx.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,16 +23,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Friday 05 March 2004 10:58, Martin-Éric Racine wrote:
-> One thing I noticed today, when using the 712 from the keyboard (which I almost
-> never do), is that the cursor arrows near the keypad are broken:
-> 
-> In menuconfig, pressing any arrow kills the script with an abort message; in
-> Nano, the keys are completely ignored.  However, 2.4.24-pa0 works as expected.
+In reference to a message from William Waites, dated Mar 04:
+> I tried sending this to submit@bugs.parisc-linux.org
+> but it bounced...
 
-Hi Martin-Éric,
+commited, thanks
 
-What does "showkey -s" reports if you press those keys ?
-Could you mail me privately your bootlog ?
-
-Helge
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
