@@ -1,18 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D3E6484B
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE690484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  9 Feb 2004 10:11:38 -0700 (MST)
-Date: Mon, 9 Feb 2004 18:11:32 +0100
-Message-ID: <400CB8A10001082F@ocpmta3.freegates.net>
-In-Reply-To: <20040208014659.GC23095@baldric.uwo.ca>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+	Mon,  9 Feb 2004 10:23:45 -0700 (MST)
+Date: Mon, 9 Feb 2004 10:23:40 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "Bass, Mick" <mick.bass@hp.com>
+Subject: Re: [parisc-linux] JVM for Linux on pa-risc?
+Message-ID: <20040209172340.GB760@colo.lackof.org>
+References: <40700B4C02ABD5119F00009027876644077CD571@hplex1.hpl.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <40700B4C02ABD5119F00009027876644077CD571@hplex1.hpl.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,84 +22,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Carlos and Dave,
+On Mon, Feb 09, 2004 at 07:50:35AM -0800, Bass, Mick wrote:
+> Does there exist a java virtual machine for linux on pa-risc, and if so where might one find it?
 
-I am trying my toolchain script against gcc-snapshot and glibc(2.3.3) with
-respective Carlos' patches but I met some pb.
 
-The first was against gconv_simple.c for which I find easily the follwing
-patch (see <http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/iconv/gconv_simple.c.diff?r1=1.59&r2=1.60&cvsroot=glibc>)
-========><========
---- iconv/gconv_simple.c.orig	2004-02-09 15:11:52.000000000 +0100
-+++ iconv/gconv_simple.c	2004-02-09 16:07:16.000000000 +0100
-@@ -453,9 +453,11 @@
- #if __BYTE_ORDER == __BIG_ENDIAN
-   /* Sigh, we have to do some real work.  */
-   size_t cnt;
-+  uint32_t *outptr32 = (uint32_t *) outptr;
- 
-   for (cnt = 0; cnt < n_convert; ++cnt, inptr += 4)
--    *((uint32_t *) outptr)++ = bswap_32 (*(const uint32_t *) inptr);
-+    *outptr32++ = bswap_32 (*(const uint32_t *) inptr);
-+  outptr = (unsigned char *) outptr32;
- 
-   *inptrp = inptr;
-   *outptrp = outptr;
-========><========
+http://www.google.com/search?hl=en&lr=&ie=ISO-8859-1&q=JVM+%5Bparisc-linux+site%3Alists.parisc-linux.org&btnG=Google+Search
 
-Is it correct?
+http://lists.parisc-linux.org/pipermail/parisc-linux/2004-January/022056.html
 
-The next on is more hard to me and find in _buff() from sunrpc/clnt_perr.c:
-[snip]
-#ifdef _RPC_THREAD_SAFE_
-/*
- * Making buf a preprocessor macro requires renaming the local
- * buf variable in a few functions.  Overriding a global variable
- * with a local variable of the same name is a bad idea, anyway.
- */
-#define buf ((char *)RPC_THREAD_VARIABLE(clnt_perr_buf_s))
-#else
-static char *buf;
-#endif
+using the debian-hppa search page:
+	http://lists.debian.org/search.html
+	( Enter "JVM" and limit search to "hppa" list)
 
-static char *
-_buf (void)
-{
-  if (buf == NULL)
-    buf = (char *) malloc (256);
-  return buf;
-}
-[snip]
+http://lists.debian.org/debian-hppa/2004/debian-hppa-200402/msg00000.html
 
-which precompile as follow:
-[snip]
-static char *auth_errmsg (enum auth_stat stat) ;
-# 63 "clnt_perr.c"
-static char *
-_buf (void)
-{
-  if (((char *)(__rpc_thread_variables()->clnt_perr_buf_s)) == ((void *)0))
-    ((char *)(__rpc_thread_variables()->clnt_perr_buf_s)) = (char *) malloc
-(256);
-  return ((char *)(__rpc_thread_variables()->clnt_perr_buf_s));
-}
-[snip]
-
-and failed with error:
-clnt_perr.c: In function `_buf':
-clnt_perr.c:67: error: invalid lvalue in assignment
-make[2]: *** [/Develop/parisc-linux/build/glibc/sunrpc/clnt_perr.o] Error
-1
-
-Any idea?
-
-Thanks in advance,
-    Joel
-
-PS: I just attempt this test because I read a lot of akpm patch related to
-gcc-35  ;)
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+hth,
+grant
