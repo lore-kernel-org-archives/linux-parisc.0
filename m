@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AECC4879
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Oct 2003 09:52:46 -0600 (MDT)
-Date: Fri, 3 Oct 2003 17:52:42 +0200
-Message-ID: <3F5CB6FB0000CC42@ocpmta1.freegates.net>
-In-Reply-To: <Pine.LNX.4.58.0310031624140.12322@sal.ucc.ie>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.0-test6-pa6 on b2k finaly crash
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from pcp03884998pcs.radnor01.pa.comcast.net (pcp03884998pcs.radnor01.pa.comcast.net [68.32.19.21])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1E64D4845
+	for <parisc-linux@parisc-linux.org>; Fri,  3 Oct 2003 23:52:40 -0600 (MDT)
+Message-ID: <2h$xz25$$a-1--$756oo0pzh-9a@6nufpx>
+From: "Abe Thurman" <ljg645ft@aol.com>
+Reply-To: "Abe Thurman" <ljg645ft@aol.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Sat, 04 Oct 03 07:47:01 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: multipart/alternative;
+	boundary="2_EF_1._2D61_8.5B5F"
+Subject: [parisc-linux] Hey
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,39 +22,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->> I am also happy that with 2.6.0-test6-pa6 b2k crash because it is a long
->> time that I try to obtain a relevant info (even toc do not help until
-now).
->
->You mean to be able to track down the serial console bug?
->
->> And here is the full boot messages:
-[snip]
->For that reason I was never able to test/run a 2.5/2.6 kernel, since
->I don't have a STIcon (no graphics card).
+--2_EF_1._2D61_8.5B5F
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-I don't have more on my b2k :(
+<body bgcolor=3D"#FFFFFF" text=3D"#000000" link=3D"#333399" vlink=3D"#3333=
+99" alink=3D"#333399">
+&nbsp;
+<table width=3D"527" cellspacing=3D"0" cellpadding=3D"0" height=3D"44" ali=
+gn=3D"center" bgcolor=3D"#333399"><tr> 
+    <td align=3D"center" valign=3D"middle"><font face=3D"Arial, Helvetica,=
+ sans-serif" size=3D"6" color=3D"#FFFFFF"><b>Do
+      you like REAL rough SEX?</b></font></td></tr></table>
+<table width=3D"527" cellspacing=3D"0" cellpadding=3D"0" height=3D"201" al=
+ign=3D"center" bgcolor=3D"#333399">
+  <tr><td align=3D"center" valign=3D"top" bgcolor=3D"#333399" height=3D"17=
+8"> 
+      <table width=3D"525" cellspacing=3D"0" cellpadding=3D"0" height=3D"5=
+9" align=3D"center" bordercolor=3D"#333399" border=3D"1">
+        <tr><td align=3D"center" valign=3D"middle" bgcolor=3D"#FFFFFF" hei=
+ght=3D"123"> 
+<br>            <font color=3D"#000000" face=3D"Verdana, Arial, Helvetica,=
+ sans-serif" size=3D"2"><a href=3D"http://www.freemember.us/tbc/index.html=
+">Taboo
+Bizarre</a>, the site for the most extreme strange sex!! Watch the girls
+            dominate and spank the most unsuspecting men!!<br><br>- Strang=
+e XXX Porn Video's<br>-
+            Over 100'000 Pictures<br>-
+            Chat live with sluts<br>-
+            Hot live bondage shows<br><br>
+            Pussy shaving, Huge insertions, Gaping Anal Sex, Breast milkin=
+g, Drunk whores, Vegetable fucking and even fun with
+            Midgets!<br>
+              <br></font> <i><a href=3D"http://www.freemember.us/tbc/index=
+html">&quot;At Taboo Bizarre they have sexual video more
+            BIZARRE then you've ever seen in your entire life!&quot;</a></=
+i><br><br>
+            </td></tr></table></td></tr></table>&nbsp;
+<table width=3D"527" cellspacing=3D"0" cellpadding=3D"0" height=3D"33" ali=
+gn=3D"center" bgcolor=3D"#333399">
+  <tr>
+    <td align=3D"center" valign=3D"middle">
+      <p align=3D"center"><b><a href=3D"http://www.freemember.us/tbc/index=
+html"><font color=3D"#FFFF00" face=3D"Verdana, Arial, Helvetica, sans-ser=
+if" size=3D"2">CLICK
+      HERE to see the most BIZARRE SEX you have ever seen!</font></a></b><=
+/p>
+    </td></tr>
+</table></body>
 
->Well, I think you can just compile no console at all 
-Yes I do it (a bit by accident) and so very surprise that I could connect
-it via ssh or even telnet
-> and it will use a dummy console AFAIK, but never tried that (not brave
-
-> enough). Would you be able to run 2.6 in that case?
-
-No yet try neither dummy console nor lan console (for this last i would like
-to find back the soft to be installed on another server but i do not yet
-find enough time :( )
-
-Regards,
-    Joel
-
-Thanks
-
-> Max
-
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+--2_EF_1._2D61_8.5B5F--
