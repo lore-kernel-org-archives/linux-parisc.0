@@ -1,42 +1,28 @@
-Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA23770
-	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 15:26:08 -0600
-Received: (from tor@localhost)
-	by pallas.spacetec.no (8.9.1a/8.9.1) id XAA02287
-	for parisc-linux@thepuffingroup.com; Wed, 9 Jun 1999 23:26:10 +0200
-Message-Id: <199906092126.XAA02287@pallas.spacetec.no>
-From: tor@spacetec.no (Tor Arntsen)
-Date: Wed, 9 Jun 1999 23:26:08 +0200
-To: parisc-linux@thepuffingroup.com
-Subject: [parisc-linux] build success
+Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA23956
+	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 15:46:56 -0600
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 9 Jun 1999 21:43:40 -0000
+To: tor@spacetec.no (Tor Arntsen)
+Date: Wed, 9 Jun 1999 22:43:14 +0100 (BST)
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <199906092126.XAA02287@pallas.spacetec.no> from "Tor Arntsen" at Jun 9, 99 11:26:08 pm
+Content-Type: text
+Message-Id: <E10rq7u-0000km-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [parisc-linux] Trying to get HP-UX working
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries mailed me and said he used the default configs, so I just
-pressed return to all make config questions and hey presto it compiled
-(except for one thing, coming back to that).
+Well I have the HP a hub and some cabling. The web console works great (cute
+hack) and it understands my subnetting although it came shipped on an 
+IP address belonging to RIPE not HP or RFC1597 (duh)
 
-Cross-compiling environment: SGI Octane, irix 6.5, self-built cross compiler
-and binutils (from CVS), linux kernel from cvs.
+I can't however get HP/UX to set up an interface 
 
-One little thing failed for me (people are obviously cross-compiling on
-Linux in general, I guess).  There is no /bin/bash on SGI, it mostly lives
-in /usr/freeware/bin.  The following patch fixed it for me (typical Perl
-portability hack):
+	194.168.151.23 netmask 255.255.255.224
 
-------
-Index: arch/parisc/hp//boot/boot_tools/createheader.sh
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/hp/boot/boot_tools/createheader.sh,v
-retrieving revision 1.1
-diff -u -r1.1 createheader.sh
---- createheader.sh	1999/06/09 18:28:04	1.1
-+++ createheader.sh	1999/06/09 21:20:20
-@@ -1,4 +1,4 @@
--#!/bin/bash
-+#!/usr/bin/env bash
- 
- # This is a script that creates a header given the 
- # ipl and vmlinux file locations.
-------
+which I really need to do. Also before I go and build all the sane tools
+so the box is usable has anyone already built a big tar file of HP/UX binaries
+of gcc/bash/fileutils etc ?
 
--Tor
+Alan
