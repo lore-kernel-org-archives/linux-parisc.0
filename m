@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2E124851
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Jun 2002 11:55:51 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17Hprx-0006uq-00; Tue, 11 Jun 2002 18:55:49 +0100
-Date: Tue, 11 Jun 2002 18:55:49 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Gianpiero Fasulo <gfasulo@kingcom.it>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Message-ID: <20020611185549.L27449@parcelfarce.linux.theplanet.co.uk>
-References: <012801c21122$35e2a000$86000a0a@kingdom> <20020611123839.H27449@parcelfarce.linux.theplanet.co.uk> <002b01c21163$c2ac4720$86000a0a@kingdom> <20020611172524.K27449@parcelfarce.linux.theplanet.co.uk> <006901c21165$e2c7a8e0$86000a0a@kingdom>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <006901c21165$e2c7a8e0$86000a0a@kingdom>; from gfasulo@kingcom.it on Tue, Jun 11, 2002 at 06:34:41PM +0200
-Subject: [parisc-linux] Re: Kernel compiling problem
+Received: from mail.goquest.com (mail.goquest.com [63.172.73.8])
+	by dsl2.external.hp.com (Postfix) with SMTP id 10B4C4853
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Jun 2002 12:48:06 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@goquest.com>
+To: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200
+Date: Tue, 11 Jun 2002 13:39:38 -0500
+Cc: parisc-linux@lists.parisc-linux.org
+References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <02061107100403.00732@localhost.localdomain> <20020611145848.GA2796@tausq.org>
+In-Reply-To: <20020611145848.GA2796@tausq.org>
+MIME-Version: 1.0
+Message-Id: <02061113393800.04435@localhost.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,17 +24,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jun 11, 2002 at 06:34:41PM +0200, Gianpiero Fasulo wrote:
-> HI,
-> i don't want to modify .config by hand, but when i give make oldconfig, the
-> CONFIG_PARISC in not CONFIG_PARISC64.
-> OK?
+On Tuesday 11 June 2002 09:58 am, Randolph Chung wrote:
+>
+> think we are looking at multiple bugs here.....
+>
+Very likely...
+You might check the HPPA version of:
 
-you always get CONFIG_PARISC.  you get CONFIG_PARISC64 as well if you
-select it.
+arch/i386/kernel/irq.c::__global_save_flags.
 
-stop trimming the list from your replies -- this isn't a free help
-service for you alone.
+using objdump -d on the kernel.o produced by my compiler
+(a different version of GCC than used for pa-risc) I find that
+for the "c" code sequence:
+....
+int cpu = smp_processor_id() ;
 
--- 
-Revolutions do not require corporate support.
+__save_flags(flags) ;
+....
+generates assembly code which modifies the flags during the
+initialization of "cpu" before the flags are actually saved.
+....
+in the pa-risc branch, try the equivalent of:
+....
+int cpu ;
+....
+__save_flags(flags) ;
+....
+cpu = smp_processor_id() ;
+....
+
+Mike
