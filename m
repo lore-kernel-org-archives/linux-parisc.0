@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail8.speakeasy.net [216.254.0.208])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2382D487D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Jun 2003 21:04:06 -0600 (MDT)
-Date: Tue, 24 Jun 2003 23:04:08 -0400
-Subject: Re: [parisc-linux] Need Replacement was: Matrox graphics card and C360
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
-To: "Martin K. Petersen" <mkp@mkp.net>
-From: Charles Slivkoff <caslivkoff@mac.com>
-In-Reply-To: <yq1adc7pefj.fsf@wilson.mkp.net>
-Message-Id: <AFF42C70-A6B9-11D7-84EB-000393581E44@mac.com>
+Received: from esteban.rebellion (f06a-1-118.d1.club-internet.fr [212.194.120.118])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D79CD4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jun 2003 00:31:42 -0600 (MDT)
+From: Bad Max <badmax@club-internet.fr>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
+Date: Wed, 25 Jun 2003 07:32:40 +0200
+Message-ID: <yam9306.2029.145319488@esteban.rebellion>
+In-Reply-To: <1056490704.1223.12.camel@dhcp22.swansea.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: [parisc-linux] Re: ARP resolution trouble
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,18 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tuesday, Jun 24, 2003, at 13:34 US/Eastern, Martin K. Petersen wrote:
->
-> Give that box a big, tight hug.  That usually fixes it *).
->
-> *) Make sure nobody can see you when you are doing this.  More than
->  once I have been accused of humping my PA-RISC hardware while
->  performing this delicate repair procedure.
->
+Hello
 
-ROTFLMAO!! After the last few days I've had, I needed that laugh. 
-Though, I never expected to get it here. :-)  I remember getting our 
-early-production model C200 back in '96 (I think). It took a while 
-before everything was properly "seated". And what fun we had installing 
-the FX-6 texture board when it finally arrived. That card was a very 
-tight fit to begin with.
+On 24-juin-03, you wrote:
+
+| > On Maw, 2003-06-24 at 21:15, Bad Max wrote:
+| >> The most strange is that this switch was working perfectly for one year
+| >> and the
+| >> B132L was the only host affected by the bug (I never encountered this
+| >> bug with
+| >> the other host).
+| > 
+| > Most boxes have regular traffic - samba broadcasts, snmp probes, ipx
+| > rip/sap whatever. 
+| > 
+
+The B132L is a PDC/DNS/DHCP/Router on my network. The other host are
+mostly clients, no ipx, no snmp. DHCP requests were accepted and the
+B132L was reachable until ARP timeout. 
+
+The only thing I don't understand is why the B132L was the only host
+affected by the trouble.
+-------
+Bad Max
+========
+Amiga User
+GNU User
+WWW: perso.club-internet.fr/badmax
