@@ -1,44 +1,40 @@
 Return-Path: <pjlahaie@puffingroup.com>
 Sender: pjlahaie@puffingroup.com
-Message-ID: <36C0A4A9.DD97CD75@atlsci.com>
-Date: Tue, 09 Feb 1999 16:12:09 -0500
+Message-ID: <36C0C5EC.D2057CEC@atlsci.com>
+Date: Tue, 09 Feb 1999 18:34:04 -0500
 From: "Paul J.Y. Lahaie" <pjlahaie@atlsci.com>
 MIME-Version: 1.0
 To: hppa-linux@puffingroup.com
 Content-Type: text/plain; charset=us-ascii
-Subject: [hppa-linux] $global$ symbol -- help
-Resent-Message-ID: <"DGPUc.0.aK2.C1Cms"@burrow.puffingroup.com>
+Subject: [hppa-linux] egcs / binutils x-compiler status
+Resent-Message-ID: <"oyCEd.0.dQ2.J6Ems"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
-   I will need some help to locate and fix this $global$ symbol
-problem.  For that I
-could use some help from someone with an MkLinux system to do the
-following:
+    Earlier today I managed to get my first hppa-elf binary generated. 
+I'm currently in the position to attempt patching the egcs build
+environment to properly handle
+both libmilli.a (which I believe for cross-compiling purposes should be
+libgcc1.a)
+and crt0.o which is required to define $global$ and $START$ symbols.  I
+hope to
+have everything wrapped up tonight or tomorrow so everyone can start
+building
+hppa-elf binaries (especially kernel bins :-) ).
 
-foo.c
-int main_without__main()
-{
-}
+    If anyone wants to give me any pointers on how to go about putting
+those
+things in the egcs build tree, feel free, it would be greatly
+appreciated.
 
-
-extern void start() __asm__("start");
-extern void _start() __asm__("_start");
-extern void __start() __asm__("__start");
-
-void start() {}
-void _start() {}
-void __start() {}
-void mainCRTStartup() {}
-
-And do the following:
-
-gcc -S -c foo.c -o foo.S
-
-   Also if you can send me the crt*.o files and the libgcc*.a (there's
-also word on a libmilli*.[ao] file also), then I could like to see if
-something is missing for these files.
+    Also, since I didn't patch the ld scripts in the way MkLinux did,
+I'm not
+sure what the status of the resulting bins will be.  I'm attempting to
+stray
+the least from the standard hppaelf target, which I believe will be a
+win in
+the future.
 
 						- Paul
 
