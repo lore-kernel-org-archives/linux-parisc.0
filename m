@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0EC22482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Apr 2002 10:36:56 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] GCC support for dwarf2
-Message-ID: <1018542948.3cb5bb6a4053a@webmail.tiscalinet.be>
-Date: Thu, 11 Apr 2002 18:35:54 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <200204111531.g3BFV5Fv000173@hiauly1.hia.nrc.ca>
-In-Reply-To: <200204111531.g3BFV5Fv000173@hiauly1.hia.nrc.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 351CB482A
+	for <parisc-linux@parisc-linux.org>; Thu, 11 Apr 2002 14:40:15 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16vlMa-00051j-00; Thu, 11 Apr 2002 21:40:12 +0100
+Date: Thu, 11 Apr 2002 21:40:12 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "D'Ausilio, John" <John.Dausilio@edge-technologies.com>
+Cc: "'debian-hppa@lists.debian.org'" <debian-hppa@lists.debian.org>,
+	parisc-linux@parisc-linux.org
+Message-ID: <20020411214012.A2264@parcelfarce.linux.theplanet.co.uk>
+Reply-To: parisc-linux@parisc-linux.org
+References: <59FFD7B1E114D111B4000060082F1C53024B2637@edge1.edge-technologies.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <59FFD7B1E114D111B4000060082F1C53024B2637@edge1.edge-technologies.com>; from John.Dausilio@edge-technologies.com on Thu, Apr 11, 2002 at 03:16:25PM -0400
+Subject: [parisc-linux] Re: SMP instability?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,44 +27,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+On Thu, Apr 11, 2002 at 03:16:25PM -0400, D'Ausilio, John wrote:
+> Is the 2.4.18 which comes down from the archive as recent as the ones in the
+> FTP server? I'm going to boot back into the original kernel and try getting
+> the latest from the FTP server .. if that dosn't work I guess I'll get the
+> sources and build from CVS. Any other hints/clues/suggestions? Should I just
+> run single proc for now?
 
-> > Well I finished to co gcc-3.2 and gcc3.1 cvs (that is long with small
-> 33800 baud
-> > modem but that all I can get for cvs)
-> > 
-> > And I am already back with a problem:
-> > 
-> > Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
-> > 
-> > > You would need to install the cvs binutils and cvs gcc versions in
-> some
-> > > convenient location for the testing. 
-> > 
-> > Well I just figure out that there is no configure file in cvs of
-> binutils.
-> 
-> Remove "configure" and do another checkout.  Use checkout rather than
-> update since sometimes update has problems in the toplevel directory.
+Yes, we've also found 2.4.18 to be unstable SMP.  I believe Grant has a
+handle on this problem now, so expect it to be fixed quite soon.
 
-I just do another co and effectively configure is there now?
-(I also notice the problem of update :_( )
-
-> 
-> > So, in the sources directory (/GNU-Dev/parisc-linux/src/binutils) I
-> try autoconf
-> > but it just creates an empty configure?
-> > What do I wrong?
-> 
-> There are two types of "configure" files.  The toplevel configure
-> script
-> in binutils (and also gcc) are currently manually maintained.  The
-> binutils "configure" file isn't autoconf generated.
-
-Ok.
-
-Dave thanks a lot for info,
-    Joel
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+-- 
+Revolutions do not require corporate support.
