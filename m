@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from delenn.fl.net.au (int-mail.syd.fl.net.au [202.181.0.28])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0169448CC
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 20:00:33 -0700 (MST)
-From: "Duraid Madina" <duraid@fl.net.au>
-To: "'Randolph Chung'" <randolph@tausq.org>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Swap space limitions for Linux on parisc
-Date: Sat, 9 Mar 2002 14:00:31 +1100
-Message-ID: <000301c1c716$94030b80$022a17ac@simplex>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-In-Reply-To: <20020309024516.GC22385@tausq.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A17AF48D4
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 20:05:22 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16jXAe-000352-00; Sat, 09 Mar 2002 03:05:20 +0000
+Date: Sat, 9 Mar 2002 03:05:20 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Duraid Madina <duraid@fl.net.au>
+Cc: 'Randolph Chung' <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Swap space limitions for Linux on parisc
+Message-ID: <20020309030520.A26217@parcelfarce.linux.theplanet.co.uk>
+References: <20020309024516.GC22385@tausq.org> <000301c1c716$94030b80$022a17ac@simplex>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <000301c1c716$94030b80$022a17ac@simplex>; from duraid@fl.net.au on Sat, Mar 09, 2002 at 02:00:31PM +1100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,34 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > The 'yet' above gives me hope; will 64 bit user space processes be 
-> > supported anytime soon? Being able to malloc(1<<36) would be nice!
-> 
-> I sure hope not.... there is a lot of work involved to bring 
-> up toolchains and all the applications to support two 
-> different userlands. We still have a lot of work to do just 
-> to stablize 32-bit userspace. Check the list archives, this 
-> has been discussed before, and once fairly recently.
+On Sat, Mar 09, 2002 at 02:00:31PM +1100, Duraid Madina wrote:
+> A computational physics code. Ideally I would run it in 100s of GB of
+> RAM. About two months of pain went into making it work (reasonably
+> efficiently, in theory at least) in 100s of GB of swap.
 
-I had a bit of a peek around the archives, wow, I guess hppa64 isn't the
-most 'comfortable' place for a g++ developer just now.
+Hmm.  You would probably be best off making it work by mmaping chunks
+of a data file at a time.
 
-> This is not to say it couldn't be done of course. This is 
-> GNU/Linux, you have all the source, go nuts.. :-)
+> Now you have *me* curious; I don't mean to be an ignorant asshole, but
+> what's the point of hppa64 if you *don't* support >4G address space?
 
-Project deadline soon :( must.. find.. cheap.. 64 bit machine
- 
-> But now you have me curious, what app are you writing that 
-> needs >4G of address space?
+Supporting >4GB of physical ram, which can be shared among multiple
+processes, each being <4GB in size :-)
 
-A computational physics code. Ideally I would run it in 100s of GB of
-RAM. About two months of pain went into making it work (reasonably
-efficiently, in theory at least) in 100s of GB of swap.
+> *crying* does HP-UX support >4G address space? *finds wallet* :(
+> Hmm, probably have to shell out more $$$ for the HP compilers too :\
 
-Now you have *me* curious; I don't mean to be an ignorant asshole, but
-what's the point of hppa64 if you *don't* support >4G address space?
+gcc works fine on hpux...
 
-*crying* does HP-UX support >4G address space? *finds wallet* :(
-Hmm, probably have to shell out more $$$ for the HP compilers too :\
-
-	Duraid
+-- 
+Revolutions do not require corporate support.
