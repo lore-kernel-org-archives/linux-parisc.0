@@ -1,28 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE09B482B
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Oct 2001 19:36:24 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id wapgiaaa for parisc-linux@parisc-linux.org; Wed, 24 Oct 2001 18:31:44 -0700
-Date: Wed, 24 Oct 2001 18:36:12 -0700
-From: Randolph Chung <randolph@tausq.org>
+Received: from hotmail.com (f128.law4.hotmail.com [216.33.149.128])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1B37482B
+	for <parisc-linux@parisc-linux.org>; Thu, 25 Oct 2001 02:07:27 -0600 (MDT)
+From: "Kenneth Westelinck" <kennywest1@hotmail.com>
 To: parisc-linux@parisc-linux.org
-Message-ID: <20011024183612.Y537@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Date: Thu, 25 Oct 2001 08:07:26 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] RfC: hpux-like sysconf variables in glibc, cpu affinity
+Content-Type: text/plain; format=flowed
+Message-ID: <F128WXpA1DHstgNogS400011dde@hotmail.com>
+Subject: [parisc-linux] very odd problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-While helping to port the hpux PI performance monitoring stuff to Linux, I
-came across several sysconf calls that appear to be supported by hpux
-but not under Linux. Would like to get your opinions on how best to
-support these:
+Hi all,
 
-variable:		sample output
-===================================================================
-_SC_CPU_VERSION		CPU_PA_RISC2_0
-_SC_CPU_CHIP_TYPE	bitfield describing cpu type and rev
-_SC_PSET_SUPPORT	1/0, see more below
 
-there's also a call to confstr(_CS_MACHINE_MODEL) which is also not
-supported by glibc.
+I've recently installed the test-release of woody on my 712/60. I've also 
+compiled a recent kernel available from the parisc-linux site. All works 
+well, except from a very strange problem. The start-stop-daemon call, which 
+is used throughout the init scripts, doesn't seem to work. So, executing the 
+inetd script results in nothing, not even an error. Starting inetd on the 
+command line (/usr/sbin/inetd) works great. Is there a known bug in the 
+start-stop-daemon program? Can this be solved, or will I have to rewrite my 
+init scripts?
+
+Many thanks in advance.
+
+
+regards,
+
+Kenneth
+
+_________________________________________________________________
+Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.asp
