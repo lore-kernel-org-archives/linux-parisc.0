@@ -1,75 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8CEDD482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:35:58 -0600 (MDT)
-Date: Fri, 21 Sep 2001 11:37:00 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: parisc-linux@lists.parisc-linux.org
-Cc: baldric-exec@baldric.uwo.ca
-Message-ID: <20010921113700.A25803@megatonmonkey.net>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94B8A482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:42:40 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15kSRr-0000bv-00; Fri, 21 Sep 2001 16:42:39 +0100
+Date: Fri, 21 Sep 2001 16:42:39 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Subject: Re: [parisc-linux] testandset
+Message-ID: <20010921164239.C27323@parcelfarce.linux.theplanet.co.uk>
+References: <20010921113700.A25803@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] testandset
+In-Reply-To: <20010921113700.A25803@megatonmonkey.net>; from carlos@megatonmonkey.net on Fri, Sep 21, 2001 at 11:37:00AM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I remember Wilcox saying:
+On Fri, Sep 21, 2001 at 11:37:00AM -0400, Carlos O'Donell Jr. wrote:
+> I'm sitting scratching my head becaues the ./sysdeps/hppa/dl-fptr.c
+> is peppered with testandset, which used to be in pt-machine.h,
+> but is now called try_lock within pt-machine.h
 
-"
-Because we can't implement testandset atomically & efficiently on hppa.
-The places which use testandset actually just need trylock.
-"
+um, the hppa.dpatch definitely does patch this.  perhaps you were
+overzealous with trimming the ia64 part of the patch?
 
-Was the old testandset changed to try_lock in pt-machine.h for
-hppa?
-
-I see that they are the same asm statement (i.e. just an ldcw).
-
-pt-machine.h:old:
-testandset (int *spinlock)
-{
-  int ret;
-
-  __asm__ __volatile__(
-       "ldcw 0(%2),%0"
-       : "=r"(ret), "=m"(*spinlock)
-       : "r"(spinlock));
-
-  return ret == 0;
-}
-
-pt-machine.h:new:
-try_lock(__atomic_lock_t *spinlock)
-{
-  int ret;
-
-  __asm__ __volatile__(
-       "ldcw 0(%2),%0"
-       : "=r"(ret), "=m"(*spinlock)
-       : "r"(spinlock));
-
-  return ret == 0;
-}
-
-Same...
-
-I'm sitting scratching my head becaues the ./sysdeps/hppa/dl-fptr.c
-is peppered with testandset, which used to be in pt-machine.h,
-but is now called try_lock within pt-machine.h
-
-Which is my current reason that glibc-2.2.4 failes to build
-Because dl-fptr.c makes use of testandset, which is no longer 
-in pt-machine.h.
-
-Do I have something backwards?
-I'm starting to think that I should take a look at dpkg-buildpackage,
-and if I'm using it all properly.
-
----
-
-Matthew,
-
-Since I can't quite get to the point where zic barfs while 
-walking the timezones... I'm not much help ;)
-
-
-c.
+-- 
+Revolutions do not require corporate support.
