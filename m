@@ -1,31 +1,29 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA24494
-	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 16:08:10 -0600
-Received: (from tor@localhost)
-	by pallas.spacetec.no (8.9.1a/8.9.1) id AAA02367
-	for parisc-linux@thepuffingroup.com; Thu, 10 Jun 1999 00:06:50 +0200
-Message-Id: <199906092206.AAA02367@pallas.spacetec.no>
-From: tor@spacetec.no (Tor Arntsen)
-Date: Thu, 10 Jun 1999 00:06:47 +0200
-In-Reply-To: Alex deVries <adevries@thepuffingroup.com>
-       "Re: [parisc-linux] build success" (Jun  9, 23:02)
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] build success
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA24718
+	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 16:29:04 -0600
+Date: Wed, 9 Jun 1999 17:27:51 -0500 (CDT)
+From: xomina <ryan@email.labmed.umn.edu>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trying to get HP-UX working
+In-Reply-To: <E10rq7u-0000km-00@the-village.bc.nu>
+Message-ID: <Pine.GSO.4.02.9906091723000.5674-100000@email.labmed.umn.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Jun 9, 23:02, Alex deVries wrote:
->Ack.  I'm having problems hitting 'reply all'.
->
->> -#!/bin/bash
->> +#!/usr/bin/env bash
->
->I've changed this to /bin/sh, and that's committed now.
 
-I assumed there was something bash specific in that script (but I didn't 
-look).
+On Wed, 9 Jun 1999, Alan Cox wrote:
 
-make clean; make bootable worked fine with your update (1.5 minutes
-build time on an Octane.. ahh, I'll start compiling my i386 kernel 
-there I guess :-)
+> which I really need to do. Also before I go and build all the sane tools
+> so the box is usable has anyone already built a big tar file of HP/UX binaries
+> of gcc/bash/fileutils etc ?
 
--Tor
+here's the gnu directory taken from my HP-UX 10.20 machine at work.  it
+includes the info/, man/, include/, etc directories, so let me know if
+you'd prefer just bin/.  it's 11.5 MB gzipped right now.  and go easy, i
+put it on my lowly P120 Debian machine... 8)
+
+http://209.181.241.33/~oig/gnu.tar.gz
+
+ryan
