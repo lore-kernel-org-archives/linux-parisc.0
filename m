@@ -1,45 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA30213
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Nov 2000 12:52:32 -0700
-Message-Id: <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com>
-Date: Fri, 03 Nov 2000 11:46:39 -0800
-To: Grant Grundler <grundler@cup.hp.com>
-From: Kailashnath V Rampure <kailasr@webcash.com>
-Subject: Re: [parisc-linux] Boot command 
-Cc: Matt Taggart <taggart@carmen.fc.hp.com>, parisc-linux@thepuffingroup.com
-In-Reply-To: <200011031919.LAA00315@milano.cup.hp.com>
-References: <Your message of "Fri, 03 Nov 2000 11:03:23 PST." <5.0.0.25.0.20001102174648.02a4fb20@mail.webcash.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA30556
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Nov 2000 12:59:58 -0700
+Message-Id: <200011032001.PAA27415@hiauly1.hia.nrc.ca>
+Subject: Re: testcase for hppa64 gcc bug
+To: alan@linuxcare.com.au (Alan Modra)
+Date: Fri, 3 Nov 2000 15:01:17 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: gcc-bugs@gcc.gnu.org, gcc-patches@gcc.gnu.org,
+        parisc-linux@thepuffingroup.com, law@cygnus.com
+In-Reply-To: <Pine.LNX.4.21.0010301335000.25085-100000@front.linuxcare.com.au> from "Alan Modra" at Oct 30, 2000 06:04:44 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have removed the 2nd HDD now the boot is trying but I get the same error:
-my fstab reads as :
+> I think I know what's going on here.  The root of the problem is that
+> pa-64.h defines an ARG_POINTER_REGNUM that isn't a fixed reg, and isn't
+> eliminable.  The arg_pointer isn't even a call-saved reg.  That breaks a
+> number of places in the compiler.
+> 
+> So I went down the path of trying to fix things properly by defining
+> ELIMINABLE_REGS and so on, but I ended in a maze of twisty little passages
+> labelled "Unrecognizable instruction", like this one:
+> 
+> /src/parisc/gcc/gcc/libgcc2.c: In function `__moddi3':
+> /src/parisc/gcc/gcc/libgcc2.c:601: Unrecognizable insn:
+> (insn 1289 209 1298 (set (reg:SI 50 %fr22)
+>         (subreg:SI (plus:DI (reg:DI 30 %r30)
+>                 (const_int -272 [0xfffffef0])) 0)) -1 (nil)
+>     (nil))
+> /src/parisc/gcc/gcc/libgcc2.c:601: Internal compiler error in
+> extract_insn, at recog.c:2134
 
-# /etc/fstab: static file system information.
-#
-# <file system> <mount> <type>  <options>                       <dump> <pass>
-#/dev/sda1      /boot   ext2    defaults,errors=remount-ro      0       0
-#/dev/sda2      none    swap    sw                              0       0
-/dev/sda3       /       ext2    defaults,errors=remount-ro      0       0
-# proc          /proc   proc    defaults                        0       0
+I am making progress in trying to make the arg_pointer register eliminable.
+I have fixed the above problem.  What was happening was that reload_as_needed
+was incorrectly trying to eliminate the return from millicode calls which
+is also register r29.  I have figured out how to hide it from reload with
+unspec.
 
+However, the compiler is now too good at eliminating the arg_pointer.  At
+-O3, it completely eliminates the arg_pointer.  However, as I read the ABI,
+the call must always set the arg_pointer before calls.
 
-The erros is as follows:
-Boot IO Dependent Code (IODC) revision 144
-.... SUCCEEDED!
-HARD Booted.
-palo ipl bame@noam Tue Oct 31 14:18:02 MST 2000
-0/vmlinux 208896 bytes @ 0x1f78c000
-0/palo-cmdline '3/boot/vmlinux TERM=linux Home=/ root=/dev/sda3'
-/dev/ida1 82 62 1030688
-/dev/ida2 f0 1030750 24738
-/dev/ida3 83 1055488 1030750
-Kernel:partition 3 file /boot/vmlinux
-ext2 block size 1024
-ext2_mount(partition 3) returns 0
-ext2_open(/boot/vmlinux)=3
-Couldn't gork your kernel executabel format failed to load kernel
-Failed to load Kernel.
-
-Please suggest.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
