@@ -1,23 +1,29 @@
-Return-Path: <bjorn.helgaas@hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DABC9499F
+Return-Path: <cbeerse@lycos.nl>
+Received: from lmfilto02.st1.spray.net (lmfilto02.st1.spray.net
+	[212.78.202.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9776148F7
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 22 Mar 2004 09:24:16 -0700 (MST)
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [DOC] Linux
-Date: Mon, 22 Mar 2004 09:23:58 -0700
-References: <mnet2.1079773336.27405.pinotj@club-internet.fr>
-	<20040320114011.20de3426.varenet@esiee.fr>
-	<20040320134916.GX25059@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20040320134916.GX25059@parcelfarce.linux.theplanet.co.uk>
+	Mon, 22 Mar 2004 09:41:50 -0700 (MST)
+Received: from localhost (localhost [127.0.0.1])
+	by lmfilto02.st1.spray.net (Postfix) with ESMTP id C7A1F1213F
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 22 Mar 2004 16:41:48 +0000 (GMT)
+Received: from lmsmtp01.st1.spray.net ([212.78.202.111])
+	by localhost (lmfilto02.st1.spray.net [212.78.202.32]) (amavisd-new,
+	port 10024)
+	with ESMTP id 06367-06 for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 22 Mar 2004 17:41:48 +0100 (CET)
+Received: from lycos.nl (unknown [193.172.135.148])
+	by lmsmtp01.st1.spray.net (Postfix) with ESMTP id 7A8BEE1
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 22 Mar 2004 16:41:46 +0000 (GMT)
+Message-ID: <405F1749.9010809@lycos.nl>
+Date: Mon, 22 Mar 2004 17:41:45 +0100
+From: =?ISO-8859-1?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200403220923.58173.bjorn.helgaas@hp.com>
-Cc: Thibaut VARENE <varenet@esiee.fr>, ajwalker@broadpark.no,
-	Matthew Wilcox <willy@debian.org>, pinotj@club-internet.fr,
-	joey@infodrom.org, parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] HP D370, kernel 2.6.x and configuration file
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,16 +33,31 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Saturday 20 March 2004 6:49 am, Matthew Wilcox wrote:
-> On Sat, Mar 20, 2004 at 11:40:11AM +0100, Thibaut VARENE wrote:
-> > > +       Superdome will need some additional work.
-> > 
-> > Superdome, if ever supported, will not be supported as a "Superdome"
-> > system, but as separate units, as far as I've been told. The same goes
-> > for 742/743 VME boards that works standalone.
-> 
-> I think that's incorrect.  Superdome works as a big SMP box.
+Hello,
 
-I thought Superdome needed the kmap trick to deal with the fact
-that it doesn't do non-equivalent aliasing quite right.  Or maybe
-that's already been done?
+I'm intending to build kernel 2.6.4 for a HP D370 and I'm running into some 
+problems. The major one is the next error while doing the `make`:
+
+arch/parisc/kernel/pdc_cons.c:102: `CON_BOOT' undeclared here (not in a function)
+arch/parisc/kernel/pdc_cons.c:102: initializer element is not constant
+arch/parisc/kernel/pdc_cons.c:102: (near initialization for `pdc_cons.flags')
+
+
+I've tried to build without any console except for a serial console maily 
+because there is no other console on this hardware but also without success.
+
+Hence my questions:
+
+Does someone happen to have a configuration file for the D370? Can I get it 
+somewhere?
+Is there a reason NOT to build 2.6.x on this D300 hardware?
+
+My major reason is to get the second processor in the machine also do some work, 
+I don't care about 64 bits, hence 32 bits will do.
+
+
+
+
+Thanks
+
+CBee
