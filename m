@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD951CA3D.dip.t-dialin.net [217.81.202.61])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 59AD0482C
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 16:16:52 -0700 (MST)
-Date: Sun, 11 Nov 2001 00:16:32 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jochen Friedrich <jochen@scram.de>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id AA396482C
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 16:19:47 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	jochen@scram.de (Jochen Friedrich)
 Subject: Re: [parisc-linux] Current Debian still broken?
-Message-ID: <20011111001632.A9423@solo.franken.de>
-References: <Pine.NEB.4.33.0111102323090.11348-100000@www2.scram.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.NEB.4.33.0111102323090.11348-100000@www2.scram.de>; from jochen@scram.de on Sat, Nov 10, 2001 at 11:28:48PM +0100
+Date: Sun, 11 Nov 2001 00:19:10 +0100
+Cc: parisc-linux@lists.parisc-linux.org
+References: <200111102256.fAAMu8HB001322@hiauly1.hia.nrc.ca>
+In-Reply-To: <200111102256.fAAMu8HB001322@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Message-Id: <20011110231947.AA396482C@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Nov 10, 2001 at 11:28:48PM +0100, Jochen Friedrich wrote:
-> when trying to compile the new 2.2.14 based parisc tree, i get the
-> following error:
+On Saturday 10 November 2001 23:56, John David Anglin wrote:
+> > when trying to compile the new 2.2.14 based parisc tree, i get the
+> > following error:
+> >
+> > gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes
+> > -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common
+> > -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+> > -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+> > -mschedule=7100    -c -o sd.o sd.c
+> > {standard input}: Assembler messages:
+> > {standard input}:583: Error: Invalid operands
+> > {standard input}:607: Error: Invalid operands
+> > make[3]: *** [sd.o] Error 1
 
-top of CVS (2.4.14) is currently broken. It will probably take a few days
-to shake out the bugs (merge was on friday).
+This is a kernel problem, where we use the "std" assembler command to store a 
+u64 value to user-space:
+See at include/asm-parisc/uaccess.h:  macro __put_user:
+  case 8: __put_kernel_asm("std",x,ptr); break;       \
 
-If you have a PA2.0 CPU, turn on CONFIG_PA20 that should fix the compile
-error.
+Sadly "std" is only available on 64 bit PA CPUs and gcc knows that and give you
+the above error in 32bit kernel builds.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+Greetings,
+Helge.
