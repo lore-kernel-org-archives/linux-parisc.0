@@ -1,48 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.obsidian.de (unknown [213.69.121.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 51BE54A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 01:03:09 -0700 (MST)
-Date: Fri, 16 Feb 2001 09:18:09 +0100 (MET)
+	by dsl2.external.hp.com (Postfix) with ESMTP id DDB584A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 01:27:44 -0700 (MST)
+Received: from kiste.innnet.de (obsidian@kiste.nigga-wg.de [192.168.1.2])
+	by mail.obsidian.de (8.11.1/8.11.1) with ESMTP id f1FHQLO16812
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 09:26:21 -0800 (PST)
+Date: Fri, 16 Feb 2001 09:42:46 +0100 (MET)
 From: Kevin Read <obsidian@panokratie.de>
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Test on 705
-In-Reply-To: <3A8C672C.E06566A0@esiee.fr>
-Message-ID: <Pine.LNX.4.31.0102160916170.456-100000@kiste.innnet.de>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.31.0102160941400.3578-100000@kiste.innnet.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Can't build kernel without PCI
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi folks,
 
-On Fri, 16 Feb 2001, Thomas Marteau wrote:
+btw, the kernel won't build if you don't select PCI support which I don't
+have on the 705 ;). It complains about missing inb and outb functions.
+When I select it everything is ok.
 
-> Hi Kevin,
->
-> 	It seems like you want to boot with the file system via nfs.
+Bye,
 
-Yes, thats my intention.
-
-> This is waht that means:
->
-> mount: RPC call returned error 229
-> Root-NFS: Server returned error -229 while mounting /tftpboot/(none)
-> VFS: Unable to mount root fs via NFS, trying floppy.
-> VFS: Cannot open root device "nfs" or 02:00
-> Please append a correct "root=" boot option
->
-> If it is not what you want, please refer to the PALO Readme or to the
-> official website PALO How-To
-
-Thanks for the pointers! I tcpdumped the network and couldn't see any
-bootp requests so I figured that the kernel couldn't access the network
-chip, too.
-
-BTW, this kernel is from yesterdays CVS.
-
-
->
-> Good Luck, Thomas
->
-> ESIEE Team
-> Visit http://www.esiee.fr/puffin
->
+			Kev
