@@ -1,48 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA19525
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Feb 2000 02:28:53 -0700
-Date: Thu, 10 Feb 2000 10:21:43 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] CONFIG_SERIAL_GSC
-Message-ID: <20000210102143.A1836@abacus.local>
-References: <200002092100.NAA13944@milano.cup.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA23658
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Feb 2000 11:07:15 -0700
+Sender: mang@mailserv2.iuinc.com
+Message-ID: <38A2EF04.E4C413D9@subcarrier.org>
+Date: Thu, 10 Feb 2000 12:01:56 -0500
+From: Michael Ang <mang@subcarrier.org>
+MIME-Version: 1.0
+To: parisc-linux <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200002092100.NAA13944@milano.cup.hp.com>; from grundler@cup.hp.com on Wed, Feb 09, 2000 at 01:00:00PM -0800
+Subject: [parisc-linux] Merge complete. Go crazy.
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Can someone explain why "#define CONFIG_SERIAL_GSC" is in serial.h?
+The merge with 2.3.42 is complete and the tree is now open for all
+checkins.
 
-It shouldn't be.
+The merge went relatively smoothly thanks to everyone's cooperation and
+coordination.  It takes teamwork to escape merge hell quickly :)
 
-> Users of asm/serial.h are:
-> grundler <765>find . -name '*.[ch]' | xargs fgrep "asm/serial.h"
-> ./arch/mips/baget/vacserial.c:#include <asm/serial.h>
-> ./drivers/char/ip2main.c:#include <asm/serial.h>
-> ./drivers/char/mac_SCC.h:/* MSch: gone to <asm/serial.h> */
-> ./drivers/char/synclink.c:#include <asm/serial.h>
+The proposed plan for continuing to track Linus' kernel is to merge in
+Linus' changes about once a month.  The criteria to determine the point
+at which we merge will be if there are changes we want to pick up and if
+Linus' kernel is relatively stable.  The merge we just finished was a
+big one (2.3.29 to 2.3.42) -- if we merge more often the patches we have
+to apply to our tree will be smaller.
 
-> ./drivers/char/serial.c:#include <asm/serial.h>
-> ./drivers/gsc/lasi.c:#include <asm/serial.h>
+We will want to sync up with 2.4 as soon as it is released so we can
+generate clean diffs for the features we want to propagate back to Linus
+for 2.5.
 
-These are the only two that concern us.
-
-> I have the impression it's going to be difficult to build a "PCI"
-> serial driver with CONFIG_SERIAL_GSC defined.
-
-Wrong.  The serial driver is designed to handle several busses at the
-same time.  That means you can have CONFIG_SERIAL (port based),
-CONFIG_SERIAL_GSC, and PCI MMIO based serial all activated at the same
-time and one serial port of each variation and everything should work.
-
-All you need to do is call register_serial with a struct serial_struct *req
-so req->io_type == SERIAL_IO_MEM and everything should work fine.
-
-Of course newer boxes (c3k, j5k, c3600, j5600) don't have GSC at all, so
-you'd like not do define CONFIG_GSC/CONFIG_SERIAL_GSC for those.  (Those
-boxes seem to still have an HP-proprietary bus though, but I don't know
-anything about that).
-
-	Philipp Rumpf
+	- Mike.
