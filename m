@@ -1,15 +1,12 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-15?Q?Re=3A=20copy=5Fuser=5Fpage=5Fasm=20suggested=2064bit=20improvment=20=5BWas=3A=09=5Bparisc=2Dlinux=5D=20clear=20user=20page=20test=5D?=
-Date: Wed, 12 Jan 2005 16:32:22 +0100
-Message-ID: <41DE4A3A00001BE4@mail-1-bnl.tiscali.it>
-References: <200501120752.07206.mszick@wolfbutter.com>
+Subject: [parisc-linux] 2.6.11-rc1 pb with prebuild binaries
+Date: Thu, 13 Jan 2005 18:05:25 +0100
+Message-ID: <41DE4A3A00002258@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-To: "Michael S. Zick" <mszick@wolfbutter.com>,
- parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200501120752.07206.mszick@wolfbutter.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,30 +17,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-[...]
-> > 
-> Design seems to be drifting in that general direction.
-> 
-> See: change log on 2.6.11-rc1
-> 
-> More details at:
-> <http://seclists.org/lists/linux-kernel/2005/Jan/0888.html>
-> 
-The last v4 release thread start here:
-<http://seclists.org/lists/linux-kernel/2005/Jan/2931.html>
-and also 
-<http://www.gelato.unsw.edu.au/linux-ia64/0501/12468.html>
+Hello all,
 
-I tried to applying those patch but I do have miss against which kernel t=
-his
-patch was build: a big hunk of patch [2/4] failled :-(
-Having a quick look is supposed to rename severall function in mm/page_al=
-loc.c
-as page_order() into page_zorder() but I didn't find it and not more in t=
-he
-vanilla 2.6.10?
+I just encounter the same pb to build 2.6.11-rc1-pa2 64bits on my n4k as
+on prebuild binaries because of:
+init/built-in.o(.init.text+0x1958): In function `change_floppy':
+: undefined reference to `__builtin_va_start'
+arch/parisc/kernel/built-in.o(.text.real32_call+0x38): In function `real3=
+2_call':
+: undefined reference to `__builtin_va_start'
+arch/parisc/kernel/built-in.o(.text.real64_call+0x3c): In function `real6=
+4_call':
+: undefined reference to `__builtin_va_start'
+arch/parisc/kernel/built-in.o(.text.pdc_printf+0x34): In function `pdc_pr=
+intf':
+: undefined reference to `__builtin_va_start'
+kernel/built-in.o(.text.panic+0x34): In function `panic':
+: undefined reference to `__builtin_va_start'
+kernel/built-in.o(.text.printk+0x24): more undefined references to `__bui=
+ltin_va_start'
+follow
+make: *** [.tmp_vmlinux1] Error 1
 
-Joel
+ but not on my b2k :-)
+
+The difference on n4k was still installed gcc-hppa64 3.0 (because during
+my last atempt 2.6.10 failled to boot with gcc 3.3) otc on b2k gcc-3.3-hp=
+pa64
+and binutils-hppa64.
+
+I so build first k-2.6.11-rc3-pa1 32bit for my b2k: build and boot fine :=
+-)
+the same k 64 up also for b2k: build and boot fine :-)
+then using the opportunity to use a build dir, on this b2k I build a kern=
+el
+64bit up for the n4k: build and boot fine :-)
+and finaly the same thing but smp: build and boot fine :-)
+
+So the above mentioned pb seems to be fixed by a gcc binutils hppa64 upga=
+rde
+:-)
+
+Hth,
+    Joel
+
+PS: kernel build loop on going to run on n4k smp (let see the results)
+
 
 -------------------------------------------------------------------------=
 --
