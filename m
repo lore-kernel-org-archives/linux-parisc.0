@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id D4B7C482C
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Dec 2001 15:47:52 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Date: Sun, 2 Dec 2001 23:46:27 +0100
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200112010611.XAA11815@puffin.external.hp.com>
-In-Reply-To: <200112010611.XAA11815@puffin.external.hp.com>
-MIME-Version: 1.0
-Message-Id: <20011202224752.D4B7C482C@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: two minor c3k bugs
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4DEE482C
+	for <parisc-linux@parisc-linux.org>; Sun,  2 Dec 2001 22:12:23 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id uwbljaaa for parisc-linux@parisc-linux.org; Sun, 2 Dec 2001 22:07:12 -0700
+Date: Sun, 2 Dec 2001 21:12:18 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] more on pci mmio swapping
+Message-ID: <20011202211218.G944@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20011116234859.U391@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011116234859.U391@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,37 +24,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+The PCI endian change posted to the list earlier has been checked in as
+2.4.16-pa9. Please let me know if this breaks any of your pci mmio
+devices....
 
-On Saturday 01 December 2001 07:11, Grant Grundler wrote:
-> > Currently I use "kill_proc(1, SIGINT, 0);" to kill the init-process -
-> > which is normally a reboot-command and gives the above messages.
->
-> Ok. that makes sense.
->
-> > That's AFAICS not the right solution, but nfortunately I don't know
-> > how to do it correct right now.
->
-> ./kernel/sys.c:         printk(KERN_EMERG "Power down.\n");
->
-> That chunk of code seems to do the right thing:
->         case LINUX_REBOOT_CMD_POWER_OFF:
->                 notifier_call_chain(&reboot_notifier_list, SYS_POWER_OFF,
-> NULL); printk(KERN_EMERG "Power down.\n");
->                 machine_power_off();
->                 do_exit(0);
->                 break;
->
-> I know that msg since I regularly "powerdown" my c3k.
-> Perhaps replicate that code?
-
-Yes, that's the right code-path, but sadly calling this function
-would  immediately power off the computer without doing a nice
-system shutdown.
-I'll need to investigate how to first find the PID of the init process and
-then how to tell it to shut down the system cleanly.
-
-Helge
-
-> cheers,
-> grant
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
