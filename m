@@ -1,20 +1,21 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1EDC24906
+Return-Path: <davidanf@optonline.net>
+Received: from mta4.srv.hcvlny.cv.net (mta4.srv.hcvlny.cv.net [167.206.5.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F29E484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 12 Mar 2004 09:43:16 -0700 (MST)
-Date: Fri, 12 Mar 2004 11:41:16 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
-	fixes GLRO changes.
-Message-ID: <20040312164116.GI24266@baldric.uwo.ca>
-References: <20040311184239.GC24266@baldric.uwo.ca>
-	<404EC1C600002A41@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <404EC1C600002A41@ocpmta1.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
+	Fri, 12 Mar 2004 10:08:50 -0700 (MST)
+Received: from office (ool-182d3ce9.dyn.optonline.net [24.45.60.233])
+	by mta4.srv.hcvlny.cv.net
+	(iPlanet Messaging Server 5.2 HotFix 1.16 (built May 14 2003))
+	with SMTP id <0HUH003Y53MMRW@mta4.srv.hcvlny.cv.net> for
+	parisc-linux@lists.parisc-linux.org;
+	Fri, 12 Mar 2004 12:08:49 -0500 (EST)
+Date: Fri, 12 Mar 2004 12:08:46 -0500
+From: David <davidanf@optonline.net>
+Subject: [parisc-linux] HP A3312A High Availability Jamaica storage arrays
+To: parisc-linux@lists.parisc-linux.org
+Message-id: <004201c40854$ae0673b0$e93c2d18@office>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,48 +25,4 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Mar 12, 2004 at 04:32:34PM +0100, Joel Soete wrote:
-> with export TIMEOUTFACTOR=100
-> 
-> make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-float.out] Error 1
-> make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-double.out] Error 1
-> make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-ifloat.out] Error 1
-
-Failure is OK.
-
-> make[1]: *** [math/tests] Error 2
-> make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/tst-strtod.out] Error 1
-> make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/bug-strtod.out] Error 1
-
-Failure is OK.
-
-> make[1]: *** [stdlib/tests] Error 2
-> make[2]: *** [/Develop/parisc-linux/build/glibc/posix/tst-regex] Error 1
-
-I haven't seen this one before, what's the problem with the test?
-
-> make[1]: *** [posix/tests] Error 2
-> make[2]: *** [/Develop/parisc-linux/build/glibc/linuxthreads/ex10] Error 1
-> make[2]: *** [/Develop/parisc-linux/build/glibc/linuxthreads/ex11] Error 1
-
-These are new, usually means the compiler optimized something that it
-shouldn't have optimized. Can you see what the error is? e.g. Look at
-the out file.
-
-> make[1]: *** [linuxthreads/tests] Error 2
-> make[2]: *** [/Develop/parisc-linux/build/glibc/elf/resolvfail] Error 1
-
-That's bad.
-
-> make[2]: *** [/Develop/parisc-linux/build/glibc/elf/tst-dlmodcount.out] Error 139
-
-This is worse, the program crashes.
-
-> make[1]: *** [elf/tests] Error 2
-> make: *** [check] Error 2
-
-Yes. tst-tls13 should be the only failure affected by TIMEOUTFACTOR,
-though I wasn't sure about the system you were running so I suggested
-it.
-
-c.
+do you have any more?
