@@ -1,13 +1,19 @@
-From: stasi <stasi1@poczta.fm>
-Subject: [parisc-linux] d270 +UPS
-Date: Tue, 14 Dec 2004 14:21:42 +0000
-Message-ID: <200412141421.42493.stasi1@poczta.fm>
-Reply-To: marcin.markiewicz@mars.slupsk.pl
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux]
+	Re: Gcc bug or I missunderstand? [ftsd %fr22, 56(%sr0,
+	%r20) failed to build?]
+Date: Wed, 15 Dec 2004 08:39:07 -0800
+Message-ID: <20041215163907.GZ29171@tausq.org>
+References: <418A80250000FC28@mail-2-bnl.tiscali.it>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: dave@hiauly1.hia.nrc.ca,
+ parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <418A80250000FC28@mail-2-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,21 +24,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all parisc users
+> it failed to build because:
+> 
+> gcc -save-temps -o tmset5 tmset5.c
+> tmset5.s: Assembler messages:
+> tmset5.s:122: Error: Invalid operands
+> tmset5.s:130: Error: Invalid operands
+> tmset5.s:138: Error: Invalid operands
+> tmset5.s:146: Error: Invalid operands
+> tmset5.s:154: Error: Invalid operands
+> tmset5.s:162: Error: Invalid operands
+[...]
+> it seems that if d>8 there is a pb?
+> Did I miss something?
 
-I have another problem with my D270 i have big and working UPS in this machine 
-but I don't have original cable to connect UPS with RS port.
+No, this is a known bug with binutils; nobody has bothered to look
+into/fix it yet :(
 
-So I have two request:
-Maybe anyone have a schema of connection in this cable i will be grateful.
-And second who now how working communication in this UPS (it is dump or  smart 
-mode).
-
-Thanks for any help
-
-----------------------------------------------------------------------
-Dzwon kilka razy taniej! >>> http://link.interia.pl/f1840
-
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
