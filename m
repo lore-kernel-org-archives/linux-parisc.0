@@ -1,36 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA06057
-	for <parisc-linux@puffin.external.hp.com>; Mon, 5 Jul 1999 06:31:41 -0600
-Message-ID: <3780A5B4.97B09131@ruhr-uni-bochum.de>
-Date: Mon, 05 Jul 1999 14:31:48 +0200
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA06337
+	for <parisc-linux@puffin.external.hp.com>; Mon, 5 Jul 1999 09:59:00 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id MAA15930
+	for <parisc-linux@thepuffingroup.com>; Mon, 5 Jul 1999 12:09:43 -0400
+Sender: adevries@feather.thepuffingroup.com
+Message-ID: <3780D8C6.2028B53C@thepuffingroup.com>
+Date: Mon, 05 Jul 1999 12:09:42 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Mach sources?
-References: <19990705134002.J386@mencheca.ch.genedata.com>
+To: parisc-linux@thepuffingroup.com
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Another test kernel...
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox schrieb:
 
-> It's quite a pain to actually find the sources from the reference on
-> the puffin group website.  There's a morass of broken links and the
-> OSF no longer seem to distribute the source.  So for everyone's
-> convenience, the URL for the latest set of Mach/PARISC sources is:
->
-> ftp://flux.cs.utah.edu/flux/mach/ALPHA/
->
-> Jeff, does 9th Jan 1996 sound like the most recent version to you?
+I've just built and uploaded a new PA RISC kernel, which you can find
+at:
 
-Hi Jeff !!
-Thanks for the URL !
+ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Image-19990705
 
-I don't know theese sources, but the URL
- ftp://ftp.duth.gr/pub1/mklinux_PA-RISC/
-has a MkLinux-Port (OSF) for PA-RISC.
-Maybe theese are the same sources, but since the names & dates are different the
-sources on duth.gr seems to be newer !
-But I think a look at both should be fine !
+This has a lot of new stuff in it, including functioning interrupts.
 
-Helge.
+I would appreciate it if people could give it a try, particularly on
+somewhat more obscure machines.  Mailing me (not the list!) bootup
+messages would be appreciated, I'll summarize.
+
+- Alex
+
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
