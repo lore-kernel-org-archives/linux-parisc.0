@@ -1,27 +1,33 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA28727
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 01:41:29 -0700
-Message-ID: <001801c05dce$b717a480$a832d793@esiee.fr>
-From: "Thomas Marteau" <marteaut@esiee.fr>
-To: "Andreas Thienemann" <andreas@bawue.de>
-Cc: <parisc-linux@thepuffingroup.com>
-References: <3A298032.7CBAEB95@bawue.de>
-Subject: Re: [parisc-linux] Again trouble with HP9000/821/D250
-Date: Mon, 4 Dec 2000 09:46:38 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id FAA31554
+	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 05:52:49 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel2.hp.com (Postfix) with ESMTP id 6EC865DD
+	for <parisc-linux@puffin.external.hp.com>; Mon,  4 Dec 2000 07:55:23 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id FAA15582 for parisc-linux@puffin.external.hp.com; Mon, 4 Dec 2000 05:54:08 -0700 (MST)
+Date: Mon, 4 Dec 2000 05:54:08 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200012041254.FAA15582@udlkern.fc.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Subject: Re: pci changes
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Andreas,
+> we're getting close to merging -- just waiting for some replies from linus
+> about some things we do which are slightly ugly and there's no obvious
+> non-ugly way to do them.
 
-    You say to your kernel that you boot with the nfsroot support and you
-told us in your mail that is ramdisk boot you want. To my mind, nfsroot is
-better, especially if you go to http://www.esiee.fr/puffin and you download
-our fs root with lynx and termcap.
+What exactly are you talking about here? Are you attempting to get our
+machine independent changes in at this time? I thought we had decided
+that we were only going to send him the machine dependent part of the
+tree at this time.
 
-    But your problem comes from the point that you did not configure your
-palo Makefile. If you want ramdisk, edit Makefile in Palo directory,
-uncomment # RAMDISK and comment NFSROOT=10.0.0.2 and be sure of the name of
-the file containing the ramdisk (that should be in your tftpboot as far as I
-know!).
+There are still issues that need to be resolved in the machine independent
+code that will cause things to be done differently from the way we are
+doing them now (e.g. stack direction, stack location, possibly some cache
+flushing).  It does not make sense to try to merge the machine independent
+code at this time in my opinion.
+
+John Marvin
+jsm@fc.hp.com
