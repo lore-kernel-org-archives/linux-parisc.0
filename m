@@ -1,41 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x2.nokia.com (mgw-x2.nokia.com [131.228.20.22])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7D595482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Sep 2001 00:29:25 -0600 (MDT)
-Received: from esvir06nok.ntc.nokia.com (esvir06nokt.ntc.nokia.com [172.21.143.38])
-	by mgw-x2.nokia.com (Switch-2.1.0/Switch-2.1.0) with ESMTP id f8A6Tp327091
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Sep 2001 09:29:51 +0300 (EET DST)
-Received: from linux.nokia.com (linox03.ntc.nokia.com [172.21.29.49]) by esebh01nok.ntc.nokia.com with SMTP (Microsoft Exchange Internet Mail Service Version 5.5.2652.78)
-	id R4RMQQKR; Mon, 10 Sep 2001 09:29:22 +0300
-Received: from linox03.ntc.nokia.com (linox03.ntc.nokia.com [172.21.29.49])
-	by linux.nokia.com (8.11.2/8.11.2) with ESMTP id f8A6TH628740;
-	Mon, 10 Sep 2001 09:29:22 +0300
-Date: Mon, 10 Sep 2001 09:29:16 +0300 (EEST)
-From: Hannu Martikka <martikka@linox03.ntc.nokia.com>
-To: ext John Marvin <jsm@udlkern.fc.hp.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: Kernel panics on 715/80 [It works!!]
-In-Reply-To: <200109051257.GAA23109@udlkern.fc.hp.com>
-Message-ID: <Pine.LNX.4.33.0109100922070.26516-100000@linox03.ntc.nokia.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72A88482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Sep 2001 01:31:54 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 88474B00C; Mon, 10 Sep 2001 08:32:04 +0100 (BST)
+Date: Mon, 10 Sep 2001 08:32:04 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Boyan Lazarov <bsl@mek.dtu.dk>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Installing on Apollo 735
+Message-ID: <20010910083204.P19441@linuxcare.com>
+References: <3B9BA35D.9A02DD98@mek.dtu.dk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3B9BA35D.9A02DD98@mek.dtu.dk>; from bsl@mek.dtu.dk on Sun, Sep 09, 2001 at 07:14:05PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 5 Sep 2001, ext John Marvin wrote:
+On Sun, Sep 09, 2001 at 07:14:05PM +0200, Boyan Lazarov wrote:
+> Hi ,
+> I am trying to install linux on Apollo 735 . The system boots normally (
+> serial console, from cd image 0.9.2) . When i reach the point to install
+> the kernel  and the modules , the installer starts the installation and
+> gives message 
+> ioctl: LOOP_CLR_FD: No such device or address 
 
-> > Sorry it took so long to do further debugging... Anyway the System.map
-> > says:
-> >
-> > 102ee3a0 ? parisc_hardware_description
-> > 1010ae98 T alloc_pa_dev
-> >
->
-> Oops. I found this bug last week, but forgot to commit a patch for it.
-> I just did that.
+The installer gives that message for everyone, but normally it
+immediately continues with the install.  What disks are you trying
+to install on to?  I don't believe the internal wide scsi disks
+are supported atm, but people have installed on to external narrow
+disks.
 
-Now it works for me too. Thanks!
-
-> John
-- Goodi
-"The linuX Files -- The Source is Out There."
-ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
+Richard
