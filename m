@@ -1,17 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7BD4848A2
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 31 Jan 2004 17:38:33 -0700 (MST)
-Message-ID: <401C4B13.3060906@tiscali.be>
-Date: Sun, 01 Feb 2004 00:40:51 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-Cc: parisc-linux@lists.parisc-linux.org
-References: <400CB8A1000070BA@ocpmta3.freegates.net>
-In-Reply-To: <400CB8A1000070BA@ocpmta3.freegates.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] About 2.6 64bit on b2k?
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A7F614840
+	for <parisc-linux@parisc-linux.org>;
+	Sat, 31 Jan 2004 21:52:10 -0700 (MST)
+Date: Sat, 31 Jan 2004 21:52:09 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>
+Subject: Re: [parisc-linux] UNable to boot the cd.
+Message-ID: <20040201045209.GB3730@colo.lackof.org>
+References: <8BF7471D09AA9B4190A9C96778BC2A1748D21C@qcaexc02.asiapacific.cpqcorp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <8BF7471D09AA9B4190A9C96778BC2A1748D21C@qcaexc02.asiapacific.cpqcorp.net>
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,69 +22,30 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
+On Sun, Feb 01, 2004 at 04:46:01AM +0530, AYAZ, MOHAMMED ASIF wrote:
+> Hello . 
+> I have downloaded  the  iso images from
+> ftp.de.debian.org/debian-cd/3.0_r0/hppa
+> and made a bootable cd of the image..
 
-About this :
-> 
-> Sorry for auto-reply but my suspicious was right: I just revert this patch:
-> ===================================================================
-> RCS file: /var/lib/cvs/linux-2.5/arch/parisc/kernel/head64.S,v
-> retrieving revision 1.1.2.1
-> retrieving revision 1.1.2.2
-> diff -u -r1.1.2.1 -r1.1.2.2
-> --- linux-2.5/arch/parisc/kernel/head64.S	2002/12/24 22:15:01	1.1.2.1
-> +++ linux-2.5/arch/parisc/kernel/head64.S	2003/01/14 13:08:03	1.1.2.2
-> @@ -176,7 +176,9 @@
->  #endif /* CONFIG_SMP */
->  
->  	/* Save the rfi target address */
-> -	std		%r11,  TASK_PT_GR11-TASK_SZ_ALGN(%sp)
-> +	ldo		-THREAD_SZ_ALGN(%sp), %r1
-> +	ldd		TI_TASK(%r1), %r1
-> +	std		%r11,  TASK_PT_GR11(%r1)
->  
->  #ifndef CONFIG_PDC_NARROW
->  	/* Switch to wide mode; Superdome doesn't support narrow PDC
-> @@ -206,7 +208,9 @@
->  
->  stext_pdc_ret:
->  	/* restore rfi target address*/
-> -	ldd		TASK_PT_GR11-TASK_SZ_ALGN(%sp), %r11
-> +	ldo		-THREAD_SZ_ALGN(%sp), %r1
-> +	ldd		TI_TASK(%r1), %r1
-> +	ldd		TASK_PT_GR11(%r1), %r11
->  
->  	/* PARANOID: clear user scratch/user space SR's */
->  	mtsp	%r0,%sr0
-> @@ -310,7 +314,7 @@
->  	load32		PA(smp_init_current_idle_task),%sp
->  	ldd		0(%sp),%sp	/* load task address */
->  	mtctl           %sp,%cr30       /* store in cr30 */
-> -	ldo             TASK_SZ_ALGN(%sp),%sp
-> +	ldo             THREAD_SZ_ALGN(%sp),%sp
->  	tophys_r1       %sp
->  
->  	/* point CPU to kernel page tables */
-> =========><=========
-> 
-> and now it boots well but I am very not able to fix it correctly :(.
-> 
-> hth.
-> 
-I don't understand why it works on c3k and not on b2k. Could it be because by b2k has only 256k of physical ram?
+Can you elaborate (give precise steps) on how you accomplished this?
+The ISO images are "raw" files. ie burn them bit-for-bit to the CD.
+On a linux box, use
+	cdrecord -v dev=0,0,0 -data debian-30r0-hppa-binary-1.iso
 
-Also, I notice that in head64.S there aren't .import like:
-[snip]
-         .import init_thread_union,data
-         .import $global$                /* forward declaration */
-         .import fault_vector_11,code    /* IVA parisc 1.1 32 bit */
-         .import fault_vector_20,code    /* IVA parisc 2.0 32 bit */
+where "0,0,0" matches the output from "cdrecord -scanbus".
 
-[snip]
 
-as in its 32bit brother head.S
+> All I  did  is to search for ipl from the PDC main menu. but it
+> doesnt show the cdrom as an ipl device. 
 
-I don't yet find the meaning of '.import' but just in case ;)
+It will show up. If you absolutely can't get this work,
+start thinking about doing a bootp/net install.
 
-hth,
-	Joel
+> I'm testing this on a A class server !! 
+
+Which one? A180 or A500?
+It doesn't really matter since palo is "smart" and will pick
+the right kernel (32 vs 64 bit). I'm just curious.
+
+grant
