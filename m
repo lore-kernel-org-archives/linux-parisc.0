@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2FA13484C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 18:33:56 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: "Kenneth Westelinck" <kennywest1@hotmail.com>,
-	parisc-linux@lists.parisc-linux.org
+Received: from hotmail.com (f8.law4.hotmail.com [216.33.149.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7342483D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Apr 2002 02:13:07 -0600 (MDT)
+From: "Kenneth Westelinck" <kennywest1@hotmail.com>
+To: helge.deller@sap.com, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] not freeing initmem and power button
-Date: Tue, 16 Apr 2002 02:30:39 +0200
-References: <F92wTQUS2cYmqJpuUdJ00006859@hotmail.com>
-In-Reply-To: <F92wTQUS2cYmqJpuUdJ00006859@hotmail.com>
-MIME-Version: 1.0
-Message-Id: <200204160223.35879.deller@gmx.de>
+Date: Tue, 16 Apr 2002 08:13:05 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Message-ID: <F8UUiA6LgOTipjVGpE9000007c2@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +20,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Monday 15 April 2002 13:59, Kenneth Westelinck wrote:
-> >The power-button should work if you update to a newer kernel (>=
-> >2.4.18-pa19).
+> > Cool, does this mean: if I push the button, the system will do a clean
+> > shutdown? Or if I push the button, nothing happens?
 >
-> Cool, does this mean: if I push the button, the system will do a clean
-> shutdown? Or if I push the button, nothing happens?
+>It should shutdown cleanly and power-off afterwards.
 >
-> Is there an easy way to disable this. 
+> > Is there an easy way to disable this.
+>
+>Hmm, not yet. But thanks for the idea, maybe I can add this....
+Yeah, some patch or additional option when doing "make menuconfig" would be 
+nice.
 
-In Kernel 2.4.18-pa20 I've added a /proc/sys/kernel/power
-procfs entry which lets you enable/disable the soft power switch 
-at runtime:
+Anyway thank you very much for you'll help. I'll try to compile a new kernel 
+tonight ;)
 
-# echo 0 > /proc/sys/kernel/power		# disables the power switch
-# echo 1 > /proc/sys/kernel/power		# enables the power switch
 
-# cat /proc/sys/kernel/power 
-Software power switch support: enabled (1)
-
-Or, you could of course also use sysctl program/interface.
-
-Greetings,
-Helge
+_________________________________________________________________
+Chat on line met vrienden en probeer MSN Messenger uit: 
+http://messenger.msn.nl
