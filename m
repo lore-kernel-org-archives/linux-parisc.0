@@ -1,44 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA12537
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 10:33:23 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA12717
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 10:38:10 -0700
 Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 25 Jan 2001 17:37:17 -0000
+  by mailserv2.iuinc.com with SMTP; 25 Jan 2001 17:42:06 -0000
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14Lq7w-0003IA-00; Thu, 25 Jan 2001 17:24:04 +0000
-Date: Thu, 25 Jan 2001 17:24:04 +0000
+	id 14LqPK-0003Yc-00; Thu, 25 Jan 2001 17:42:02 +0000
+Date: Thu, 25 Jan 2001 17:42:02 +0000
 From: Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@cup.hp.com>
+To: Greg Ingram <ingram@symsys.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 2.4.0 merge mangle our tree?
-Message-ID: <20010125172404.E25242@parcelfarce.linux.theplanet.co.uk>
-References: <200101250346.TAA21555@milano.cup.hp.com>
+Subject: Re: [parisc-linux] C100 improvements, problems
+Message-ID: <20010125174202.F25242@parcelfarce.linux.theplanet.co.uk>
+References: <20010125101918.M3571@linuxcare.com> <Pine.LNX.4.21.0101250938150.27931-100000@maestro.symsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200101250346.TAA21555@milano.cup.hp.com>; from grundler@cup.hp.com on Wed, Jan 24, 2001 at 07:46:40PM -0800
+In-Reply-To: <Pine.LNX.4.21.0101250938150.27931-100000@maestro.symsys.com>; from ingram@symsys.com on Thu, Jan 25, 2001 at 11:33:07AM -0600
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jan 24, 2001 at 07:46:40PM -0800, Grant Grundler wrote:
-> Hi Matthew,
-> 
-> I did 'cvs co -D "1/24/2001 09:00 MST" linux' in order to pick
-> up the bits before the 2.4.0 "First take" commit.
+On Thu, Jan 25, 2001 at 11:33:07AM -0600, Greg Ingram wrote:
+> But when the SCSI disk is root, more page faults. Here's some kernel
+> messages:
+>  
+> 	do_page_fault() pid=285 command='more' type=15 address=0xbaffffff
 
-ok, the answer seems to be `don't do that then'.  i get a buildable tree
-by doing `cvs co linux; cd linux; cvs up -rLINUS_240_PREMERGE'.  I also
-get a buildable tree by doing `cvs up -r LINUS_240_FIXUP'.  One is before
-the merge and one is after.
-
-sorry for stuffing up the merge :-(  ironic that i was trying to avoid
-inconveniencing people...
-
-> Tried "cvs update -rLINUS_240_PREMERGE" and that seemed to do what
-> I think I wanted. But backs out a few recent changes. *sigh*.
-
-err... which changes are those?  The sys32_select change richard made
-just before i started breaking the tree looks like it's there. I guess
-the change to sim700 that richard made won't be there, but as long as we
-get this mess sorted out soon, it isn't going to be a big deal to find it.
+Known bug in `more'.  the stack starts at 0xbb000000 and more is trying
+to look at the byte below the stack poinbter.  this has been fixed
+upstream, now.
 
 -- 
 Revolutions do not require corporate support.
