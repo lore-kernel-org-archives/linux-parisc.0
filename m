@@ -1,18 +1,21 @@
-Return-Path: <r.scholz@bluehash.de>
-Received: from mail.medianet-world.de (mail.medianet-world.de [213.157.0.167])
-	by dsl2.external.hp.com (Postfix) with SMTP id 451A048B6
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8592F4E32
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu,  8 Apr 2004 02:03:50 -0600 (MDT)
-Message-ID: <407507A5.2090302@bluehash.de>
-Date: Thu, 08 Apr 2004 10:04:53 +0200
-From: =?ISO-8859-1?Q?R=FCdiger_Scholz?= <r.scholz@bluehash.de>
-MIME-Version: 1.0
-To: JKonrad@linotype.com, parisc-linux@lists.parisc-linux.org
-Subject: Re: Antwort: Re: [parisc-linux] problems installing on k 200
-References: <OF394C6696.D015ED94-ONC1256E70.002B26AF@fonts.de>
-In-Reply-To: <OF394C6696.D015ED94-ONC1256E70.002B26AF@fonts.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: 
+	Thu,  8 Apr 2004 06:36:59 -0600 (MDT)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i38Caoa12045; Thu, 8 Apr 2004 08:36:50 -0400
+Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Joel Soete <soete.joel@tiscali.be>
+In-Reply-To: <40711E55000025BC@ocpmta2.freegates.net>
+References: <40711E55000025BC@ocpmta2.freegates.net>
+Content-Type: text/plain
+Date: 08 Apr 2004 07:36:22 -0500
+Message-Id: <1081427783.2105.6.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,31 +25,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello,
+On Thu, 2004-04-08 at 01:15, Joel Soete wrote:
+> Now as far as remember .h files are headers and so should only contains declaration
+> of function and not their definition excepted if they are very short  (imho
+> 3 line max) but that is a personal limit: does it exist a common agreement
+> on this limit? 
+> And here why changing translation_exists() definition location?
 
-you can check the major and minor number for /dev/ttyB0 by changing to 
-/dev and typing "ls -l ttyB0". The fifth column of the output is the 
-major and minor number of the device.
-If it's the wrong major number, delete /dev/ttyB0 and create a new 
-device file via mknod. I think "mknod /dev/ttyB0 b XX" should do the 
-job. Replace XX with the major number you need.
+Because it's an inline function.  To move an inline function to a place
+shareable by other files it has to go into a header.
 
-Greetings,
-    Ruediger
-
-JKonrad@linotype.com schrieb:
-
->Hello Ryan,
->
->sorry for being a newbie, but:
->
->how do I check the major number of this driver?
->how do I change this number?
->where is this number to be found?
->
->Yours
->
->Jay
->
->  
->
+James
