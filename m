@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91F034829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Jan 2003 10:35:51 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by smtp-out.tiscali.be with esmtp (Tiscali)
-	id 18VbA9-00082i-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 06 Jan 2003 18:35:45 +0100
-Date: Mon, 6 Jan 2003 18:35:35 +0100
-Message-ID: <3E0085D000001FAA@ocpmta5.freegates.net>
-From: jsoe0708@tiscali.be
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] CONFIG_IP_ADVANCE_ROUTER?
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B4084829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Jan 2003 14:23:17 -0700 (MST)
+Date: Mon, 6 Jan 2003 22:22:58 +0100
+From: Thibaut VARENE <varenet@esiee.fr>
+To: "Steve Cornett" <stevec@bullseye.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] B1000 Debian 3.0r1 High-Priority Machine Check
+Message-Id: <20030106222258.2eec3889.varenet@esiee.fr>
+In-Reply-To: <000001c2b5c2$add00810$a87ba8c0@steve>
+References: <20030104193515.19808d5a.varenet@esiee.fr>
+	<000001c2b5c2$add00810$a87ba8c0@steve>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +24,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Mon, 6 Jan 2003 12:32:05 -0800
+"Steve Cornett" <stevec@bullseye.com> wrote:
 
-Does somebody have already tested a pa kernel 2.4.20 configured as 'advan=
-ce
-router'.
-Does it have some chance that it works?
+> Thibaut,
+> 
+> Thanks for your answer, I was able to install using
+> palinux-2.4.20-pa13-PDC-20021211-netinst.iso.
+That's good news, and means that b-f on 3.0r1 doesn't suit your HW.
+> 
+> Now I've a different problem and not sure where to turn.  Whenever I
+> compile and run a program that "throw"s an exception, I get "Memory
+> fault".  I can't figure out where to report this problem.  The PARISC
+> Linux people or the GCC people?
+I'd say PARISC for two reasons:
+- first, this is quite likely to be a kernel problem, and IIRC exception related stuff is worked on currently,
+- secondly, because some of GCC folks are also PARISC m-l readers ;)
 
-Thanks in advance,
-    Joel
+FWIW, please read FAQ #17 for kernel error reports.
 
-PS: This is to configure a b180 as a small gateway-proxy :) and this is
-requested in GIpTable?
+Anyway, please always CC the m-l on such answer: if I haven't answered to that mail, those fellow pa-ckers would never have known 3.0r1 B-F were responsible for the trouble...
 
-********************************************
-Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
-://adsl.tiscali.be
+HTH,
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
