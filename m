@@ -1,28 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
-	by dsl2.external.hp.com (Postfix) with SMTP id B3A5F482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Aug 2001 17:39:26 -0600 (MDT)
-Sender: chuck@dsl2.external.hp.com
-Message-ID: <3B7EFD49.88BC6A42@yahoo.com>
-Date: Sat, 18 Aug 2001 19:42:01 -0400
-From: caslivkoff@yahoo.com
-MIME-Version: 1.0
-To: Dr Andrew C Aitchison <A.C.Aitchison@dpmms.cam.ac.uk>
-Cc: Michel =?iso-8859-1?Q?D=E4nzer?= <michdaen@iiic.ethz.ch>,
-	xpert@xfree86.org, parisc-linux@lists.parisc-linux.org
-Subject: Re: [Xpert][parisc-linux] white is blue
-References: <Pine.LNX.4.33.0108182048110.3587-100000@harrier.dpmms.cam.ac.uk>
+Received: from gwyn.tux.org (gwyn.tux.org [207.96.122.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E8A2482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Aug 2001 23:00:46 -0600 (MDT)
+Received: (from timball@localhost)
+	by gwyn.tux.org (8.9.3/8.9.1) id BAA29651
+	for parisc-linux@lists.parisc-linux.org; Sun, 19 Aug 2001 01:00:38 -0400
+Date: Sun, 19 Aug 2001 01:00:38 -0400
+From: Timothy Ball <timball@tux.org>
+To: parics Linux Mailing List <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20010819010038.A2644@gwyn.tux.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Keyboard on 712/60 and X
 List-ID: <linux-parisc.vger.kernel.org>
 
-Dr Andrew C Aitchison wrote:
-> 
-> It does sound as though the active colormap isn't being initialized fully.
-> Does the 712/60 have more than one colormap ?
+When I start up X white is also replaced for blue, but I can't tell if
+rebooting to the new 2.4.9-pa2 kernel I got from the cvs fixes anything
+cause I can't type anything to the console... I know there was a patch
+to fix the keyboard issues for the BXXX and CXXX hp's but I do know know
+if this will fix my issue...
 
-Actually, yes. The Artist (in all 712's, some 715's and some 725's) has
-2 colormaps.
+--timball
 
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+-- 
+	GPG key available on pgpkeys.mit.edu
+pub  1024R/CFF85605 1999-06-10 Timothy L. Ball <timball@sheergenius.com>
+     Key fingerprint = 8A 8E 64 D6 21 C0 90 29  9F D6 1E DC F8 18 CB CD
