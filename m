@@ -1,25 +1,18 @@
 Return-Path: <grundler@lackof.org>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 49FC7484B
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69154484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 18 Dec 2003 19:03:54 -0700 (MST)
-Date: Thu, 18 Dec 2003 19:03:52 -0700
+	Thu, 18 Dec 2003 19:13:34 -0700 (MST)
+Date: Thu, 18 Dec 2003 19:13:33 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: parisc-linux@lists.parisc-linux.org,
-	vserver@list.linux-vserver.org
-Subject: Re: [Vserver] Re: [parisc-linux] syscall number for vserver
-Message-ID: <20031219020352.GA16266@colo.lackof.org>
-References: <20031217221618.GC9313@MAIL.13thfloor.at>
-	<20031218072506.GA8142@lst.de>
-	<20031218150129.GA792@MAIL.13thfloor.at>
-	<20031218160450.GJ15674@parcelfarce.linux.theplanet.co.uk>
-	<20031218162809.GA2605@MAIL.13thfloor.at>
-	<20031218195535.GA12591@colo.lackof.org>
-	<20031219010035.GB7469@MAIL.13thfloor.at>
+To: Herbert Poetzl <herbert@13thfloor.at>
+Subject: Re: [parisc-linux] Compiling Kernel for HP 9000/800/A400-44
+Message-ID: <20031219021333.GD16266@colo.lackof.org>
+References: <20031219011316.GC7469@MAIL.13thfloor.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031219010035.GB7469@MAIL.13thfloor.at>
-Cc: 
+In-Reply-To: <20031219011316.GC7469@MAIL.13thfloor.at>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,51 +22,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Dec 19, 2003 at 02:00:35AM +0100, Herbert Poetzl wrote:
-...
-> I agree from a technical point of view, but not from 
-> the developer's perspective (who just want's a syscall 
-> for whatever arch independant use ...)
-
-sorry - an "arch independent syscall" sounds like an oxymoron to me.
-
-> > Binary compatibility with other OS's is an arch specific problem.
+On Fri, Dec 19, 2003 at 02:13:16AM +0100, Herbert Poetzl wrote:
+> Hi!
 > 
-> for sure it is, but I don't see a relation there ...
+> what is the best way to compile a 2.4.23-pa3
+> kernel for a HP 9000/800/A400-44?
 
-ok
+I'll assume you've already installed debian.
 
-> > In our case, any chance of support for HPUX would
-> > require reserving HPUX syscall numbers and provide
-> > appropriate wrappers in the kernel to support it.
-> 
-> so where is the problem, having an additional offset/info
-> in the macro defining the syscall can handle that, why
-> has it to be a different numbering for 'linux' syscalls?
+You'll need to grab the gcc-hppa64 compiler from:	
+   ftp://ftp.parisc-linux.org/unofficial-debs/gcc-hppa64_3.0.4ds3-7.1_hppa.deb
 
-Linux kernel doesn't need of implement any given syscall the same
-way for each arch.
-gettimeofday/settimeofday are popular ones to re-implement
-in glibc with alternative kernel support. performance sensitive
-"syscalls" are subject to a high level of customization
-given the resources and interest.
+Then follow directions on http://www.parisc-linux.org/kernel/index.html
 
-> > Just use the right header files and it should work on any arch.
-> 
-> right, but getting one syscall for every arch, seems
-> like a jigsaw puzzle, as the original thread shows ...
-
-ah yes. Open source is self correcting in that regard.
-When someone decides it's important to have vserver syscall
-implemented on parisc, they can demonstrate it works and
-show it's useful.  If it's really arch independent, then
-implementing it should be as easy as picking some random
-unused __NR_xxx to test with and enabling the kernel config
-options, right?
-
-BTW, I visited http://www.linux-vserver.org/ and didn't feel
-I understood why it's more useful than say, user mode linux
-(another form of virtualization) or vPARs. But I'm no
-security expert, just an IO/driver hacker.
+If you a "custom-for-a500" config file, you can grab a 2.4.x kernel+config
+file from ftp.parisc-linux.org/kernel/a500 to start with.
 
 grant
