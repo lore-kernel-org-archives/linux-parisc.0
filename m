@@ -1,76 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp5ve.mailsrvcs.net (smtp5vepub.gte.net [206.46.170.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DEBA34A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 01:15:22 -0700 (MST)
-Received: from neuronet.pitt.edu (adsl-151-201-241-66.pittpa.adsl.bellatlantic.net [151.201.241.66])
-	by smtp5ve.mailsrvcs.net (8.9.1/8.9.1) with ESMTP id IAA3714908
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 08:22:15 GMT
-Sender: raffo@bellatlantic.net
-Message-ID: <3A976D8E.B7F9CF66@neuronet.pitt.edu>
-Date: Sat, 24 Feb 2001 03:15:10 -0500
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-MIME-Version: 1.0
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7362D4A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 01:21:06 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id TAA26062;
+	Sat, 24 Feb 2001 19:21:01 +1100
+Date: Sat, 24 Feb 2001 19:21:01 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Ulrich Drepper <drepper@cygnus.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile   
+Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile
  system
-References: <Pine.LNX.4.21.0102091056000.9776-100000@front.linuxcare.com.au>
-		<3A8FA3D8.19E69EF6@dot.at> <3A94C3B5.EF59259C@neuronet.pitt.edu>
-		<3A94CEF9.F171DE3F@alcatel.at> <3A974D1F.3BBB87C8@neuronet.pitt.edu>
-		<m3wvagiojx.fsf@otr.mynet.cygnus.com>
-		<3A976261.EEA18B66@neuronet.pitt.edu> <m3k86gil1b.fsf@otr.mynet.cygnus.com>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <m3elwoik1x.fsf@otr.mynet.cygnus.com>
+Message-ID: <Pine.LNX.4.21.0102241906140.9315-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-My last build hangs at init.
+On 24 Feb 2001, Ulrich Drepper wrote:
 
-Ulrich Drepper wrote:
+> Alan Modra <alan@linuxcare.com.au> writes:
 > 
-> "Rafael E. Herrera" <raffo@neuronet.pitt.edu> writes:
+> > Oh, and for the benefit of the list, Ulrich is talking about native
+> > builds.  This ought to be obvious, but _DO NOT_ build glibc for a
+> > cross-compiling environment with --prefix=/usr.
 > 
-> > export MACH=i386-linux
-> > export DEST=/usr
-> > export ROOT=~/parisk
-> >
-> > HOSTCC=gcc CC=hppa-linux-gcc $ROOT/source/glibc/configure \
-> > --prefix=$DEST --build=$MACH \
-> > --host=hppa-linux --target=hppa-linux \
-> > --with-headers=$ROOT/source/linux/include --disable-profile \
-> > --without-cvs --enable-add-ons
-> 
-> This looks OK (though providing HOSTCC shouldn't be necessary) and
-> --build, --host, and --target have no effect.  The configure script
-> will pick up all it has to know from the CC value.
+> Of course you do.  If the library is later used in /usr you have to do
+> this.  Don't put words in my mouth I didn't say.
 
-If I drop  --build, --host, and --target I get compilation errors, only
-HOSTCC was unnecessary.
+I think you misunderstand.  When I said above about building glibc for a
+cross compiling environment, I'm talking about building an hppa-linux
+glibc to be installed on an i686-linux system for use by the cross tools.
+If binutils and gcc are built with --build=i686-linux --host=i686-linux
+--target=hppa-linux --prefix=/usr, then it's correct to build glibc with
+--build=i686-linux --host=hppa-linux --prefix=/usr/hppa-linux because then
+"make install" will put glibc in the correct place for the cross tools.
 
-> > make MAKE="make -j 10" user-defined-trusted-dirs=/lib
-> 
-> Providing make isn't necessary.  Also, the `user-defined-trusted-dirs'
-> is not needed.
+Building glibc with --prefix=/usr then "make install_root=/usr/hppa-linux"
+doesn't put glibc in directories searched by the cross tools.
 
-dropped
-
->  Just run
->    make -j10
-
-compiling now.
-
-> > make install user-defined-trusted-dirs=/lib \
-> >  install_root=/tmp/glibc
-> 
-> Again, loose the `user-defined-trusted-dirs'.  Also, is /tmp/glibc
-> where the nfsroot is picked up?  If not, just install in the nfsroot
-> directory.
-
-No, it's an empty directory. I'm building in a remote machine, which is
-much faster than this box. I tar the whole thing, ftp it and then unpack
-it on top of the nfs root. We'll see, it'll take a few minutes.
-
-By the way, I don't intend to use this build for cross compile other
-packages, I just want to be able to install these in the nfs root. I
-build the cross compile version with a --prefix that puts it out of the
-way.
-
+Alan Modra
 -- 
-     Rafael
+Linuxcare.  Support for the Revolution.
