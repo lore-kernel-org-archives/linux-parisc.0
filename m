@@ -1,92 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA20548
-	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Jan 2001 15:48:17 -0700
-Received: from localhost (2748 bytes) by fileserv2.Cologne.DE
-	via rmail with P:stdio/R:bind/T:smtp
-	(sender: <excalibur.cologne.de!karsten>) (ident <excalibur.cologne.de!karsten> using unix)
-	id <m14GU5s-0007E0C@fileserv2.Cologne.DE>
-	for <parisc-linux@thepuffingroup.com>; Wed, 10 Jan 2001 23:51:48 +0100 (CET)
-	(Smail-3.2.0.101 1997-Dec-17 #5 built 1998-Jan-19)
-Received: (from karsten@localhost)
-	by excalibur.cologne.de (8.9.3/8.8.7) id WAA05410
-	for parisc-linux@thepuffingroup.com; Wed, 10 Jan 2001 22:05:55 +0100
-Date: Wed, 10 Jan 2001 22:05:55 +0100
-From: Karsten Merker <karsten@excalibur.cologne.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA20944
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Jan 2001 16:28:19 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 10 Jan 2001 23:31:51 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14GUib-0004p6-00; Wed, 10 Jan 2001 23:31:49 +0000
+Date: Wed, 10 Jan 2001 23:31:49 +0000
+From: Matthew Wilcox <matthew@wil.cx>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: C110 - palinux-0.5.iso boot but...
-Message-ID: <20010110220555.A3590@excalibur.cologne.de>
-References: <A4A5E4C468B5D11190220001FA6835DD04DD87A8@EPIXCH003>
+Cc: parisc-linux-cvs@puffin.external.hp.com
+Subject: Re: linux bame
+Message-ID: <20010110233149.A18122@parcelfarce.linux.theplanet.co.uk>
+References: <200101102108.OAA19847@puffin.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <A4A5E4C468B5D11190220001FA6835DD04DD87A8@EPIXCH003>; from JSO@EUROPAY.COM on Wed, Jan 10, 2001 at 11:43:23AM +0100
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200101102108.OAA19847@puffin.external.hp.com>; from bame@puffin.external.hp.com on Wed, Jan 10, 2001 at 02:08:27PM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jan 10, 2001 at 11:43:23AM +0100, SOETE Joël wrote:
+On Wed, Jan 10, 2001 at 02:08:27PM -0700, Paul Bame wrote:
+> Log message:
+> First-pass attempt at /proc/config, mostly from grant.  Seems to work
+> fine with 'cat', but 'tail' and 'wc' aren't reliable with my userspace.
 
-> Well no more success, I try again with several cvs release (last was dated
-> 20010105) but still display some info on PDC console until "Switching from
-> PDC console" then if I reconnect a console to the serial port I can login
-> (same behavior for any model I can test C110, 712 or B180).
+umm.  this has often been discussed for addition to the standard linux
+kernel, but linus has not yet taken patches to do so.  i suggest searching
+linux-kernel archives to see the arguments, i got bored and didn't read
+them so i can't summarise.  i don't think this is something we should
+be adding.
 
-I have just tested a fresh cvs snapshot from today on a 712/80 - works out
-of the box with STI-console (well, the problem with the pixel garbage is
-still there, but in principle it works).
+tail and wc invariably don't work on /proc files.  neither does less.
+this is pretty inherent to the design of /proc and not a reflection on
+your code.
 
-My PALO commandline is:
-0/vmlinux HOME=/ TERM=linux root=/dev/nfs console=tty0
+> NOTE THIS IS ONLY VISIBLE on the proc_config branch.
 
-and the kernel is configured with:
+it might be better to let this branch wither...
 
-#
-# Character devices
-#
-CONFIG_VT=y
-CONFIG_VT_CONSOLE=y
-CONFIG_GSC_PS2=y
-CONFIG_HIL=y
-CONFIG_SERIAL=y
-# CONFIG_SERIAL_CONSOLE is not set
-CONFIG_SERIAL_GSC=y
-# CONFIG_SERIAL_EXTENDED is not set
-# CONFIG_SERIAL_NONSTANDARD is not set
-CONFIG_UNIX98_PTYS=y
-CONFIG_UNIX98_PTY_COUNT=256
-CONFIG_PRINTER=y
-# CONFIG_LP_CONSOLE is not set
-# CONFIG_PPDEV is not set
-
-[SNIP]
-
-#
-# Frame-buffer support
-#
-CONFIG_FB=y
-CONFIG_DUMMY_CONSOLE=y
-# CONFIG_FB_RIVA is not set
-# CONFIG_FB_CLGEN is not set
-# CONFIG_FB_PM2 is not set
-# CONFIG_FB_CYBER2000 is not set
-CONFIG_FB_STI=y
-# CONFIG_FB_MATROX is not set
-# CONFIG_FB_ATY is not set
-# CONFIG_FB_ATY128 is not set
-# CONFIG_FB_3DFX is not set
-# CONFIG_FB_SIS is not set
-# CONFIG_FB_VIRTUAL is not set
-# CONFIG_FBCON_ADVANCED is not set
-CONFIG_FBCON_STI=y
-# CONFIG_FBCON_FONTWIDTH8_ONLY is not set
-# CONFIG_FBCON_FONTS is not set
-CONFIG_FONT_8x8=y
-CONFIG_FONT_8x16=y
-CONFIG_STI_CONSOLE=y
-CONFIG_DUMMY_CONSOLE=y
-CONFIG_DUMMY_CONSOLE=y
-
-HTH,
-Karsten
 -- 
-#include <standard_disclaimer>
-Nach Paragraph 28 Abs. 3 Bundesdatenschutzgesetz widerspreche ich der Nutzung
-oder Uebermittlung meiner Daten fuer Werbezwecke oder fuer die Markt- oder
-Meinungsforschung.
+Revolutions do not require corporate support.
