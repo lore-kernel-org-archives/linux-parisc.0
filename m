@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from eightythree.valleybikes.com (valleybikes.com [24.123.22.113])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D51EE4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 08:38:13 -0600 (MDT)
-Received: from kenny ([65.199.70.249])
-	by eightythree.valleybikes.com (8.12.5/8.12.5/Debian-1) with SMTP id g7UEcAHM028201
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 09:38:11 -0500
-Message-ID: <003001c25032$dd63fe60$02c1a8c0@james.co.uk>
-Reply-To: "James S" <smithjames@comcast.net>
-From: "James S" <smithjames@comcast.net>
-To: <parisc-linux@lists.parisc-linux.org>
-References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com> <20020830040829.3BE694829@dsl2.external.hp.com>
-Subject: Re: [parisc-linux] GNOME 1.4
-Date: Fri, 30 Aug 2002 09:38:09 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from romano (romano-nyswri.cfe.cornell.edu [132.236.139.186])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EE7114829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 10:03:39 -0600 (MDT)
+Received: from romano by romano with local (Exim 3.35 #1 (Debian))
+	id 17koES-0000PL-00
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 12:02:48 -0400
+Subject: Re: [parisc-linux] Harmony on 710 working?
+From: Steve Pacenka <spacenka@lightlink.com>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200208292228.QAA23496@udlkern.fc.hp.com>
+References: <200208292228.QAA23496@udlkern.fc.hp.com>
+Content-Type: text/plain
+Date: 30 Aug 2002 12:02:47 -0400
+Message-Id: <1030723367.1100.401.camel@romano>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> alaskan@telusplanet.net wrote:
-> > I finally got GNOME 1.4 working on a 712/60,
-> ...
-> > Its pretty, but slow .   .  . .
->
-> it's not faster on a 486/DX4/75Mhz.
-> You really need to use a lighter weight window manager on
-> the older boxes. fvwm2 is my current favorite though in this
-> case I'd reccomend twm.
->
-> grant
+On Thu, 2002-08-29 at 18:28, John Marvin wrote:
+ 
+> FYI, The 720, 725, 730, 735, 750 & 755 don't have any kind of audio (although
+> there is a graphics card with onboard CD quality audio that was made for the
+> 715s and 715t models that can also be put into these machines).
 
+A 735/99 I use has audio sufficient to play mp3's at good sound quality
+using alsaplayer; I assume this is Harmony hardware.  Not part of a
+framebuffer card.
 
-windowmaker runs well on my 712/60 - & you can run gnome & kde apps under it
-
-James S
+-- SP
