@@ -1,15 +1,18 @@
-From: Kyle McMartin <kyle@debian.org>
-Subject: RFC: Updating hppa kernel-image packages
-Date: Tue, 22 Mar 2005 15:47:51 -0500
-Message-ID: <20050322204751.GC26941__32284.3544338413$1416623707$gmane$org@roadwarrior.mcmartin.ca>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: RFC: Updating hppa kernel-image packages
+Date: Tue, 22 Mar 2005 21:04:54 +0000
+Message-ID: <20050322210454.GH21986__48471.6326617219$1416623707$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <20050322204751.GC26941@roadwarrior.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: debian-hppa@lists.debian.org,
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org,
  debian-kernel@lists.debian.org
-To: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@debian.org>
 Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-Resent-Message-ID: <W79l6D.A.DyC.gTIQCB@murphy>
+In-Reply-To: <20050322204751.GC26941@roadwarrior.mcmartin.ca>
+Resent-Message-ID: <3avAiC.A.R2H.zxIQCB@murphy>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-Post: <mailto:debian-hppa@lists.debian.org>
@@ -18,44 +21,35 @@ List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 List-Archive: <http://lists.debian.org/debian-hppa/>
 
-[d-k copied about ABI[0] change]
+On Tue, Mar 22, 2005 at 03:47:51PM -0500, Kyle McMartin wrote:
+> This is basically a call for suggestions for what I should backmerge
+> to 2.6.8 from recent CVS. I will go through the parisc-linux-cvs archive
+> again and try to pull what I can see, but I'd like a bit of help.
 
-The current crop of 2.6.8 kernel images in unstable and testing are
-quite good, but a new upload is required to fix some security bugs
-and some hppa-related bugs.
+In case it wasn't already abundently clear, I'd like you to NOT backport
+the IRQ changes.  I think they're stable now, but we don't have time to
+fix any resulting bugs before Sarge.
 
-This is basically a call for suggestions for what I should backmerge
-to 2.6.8 from recent CVS. I will go through the parisc-linux-cvs archive
-again and try to pull what I can see, but I'd like a bit of help.
+> To help keep the lives of the debian-installer folks sane, I'm not
+> going to honour suggestions to turn on/off various drivers, unless
+> I get an explicit ok.
 
-These changes can be categorized in two, ones which change the module
-ABI, and ones that don't. 
+I'd like to be sure that the resulting images are suitable for booting
+on all the machines that ought to work.  Here's a list of suitable test
+machines and notes of what they have:
 
-To help keep the lives of the debian-installer folks sane, I'm not
-going to honour suggestions to turn on/off various drivers, unless
-I get an explicit ok.
+ - 712 (LASI serial, net and scsi)
+ - C3000 (SBA, SuckyIO serial, ns87415 ide, sym2 scsi, Tulip net)
+ - K450 (Mux serial, CCIO, zalon scsi, LASI net)
+ - A500 (64-bit, SBA, sym2 scsi, Tulip net)
 
-[Non-ABI breaking changes] - The following are candidates for merging
-                             immediately.
-
-	- Rebuild against recent kernel source for security fixes.
-	- Grant pointed out some recent fixes he made to ccio and sba_iommu
-          which fix memory starvation on low-memory machines with iommus.
-
-[ABI breaking changes] - The following will wait until the next ABI
-                         rev from kernel-source.
-
-	- Disabling USB_DEBUG in all the configs. This was erroneously
-          enabled and is disabled on all other architectures.
-
-There seem to be a few security bugs waiting on a rev of the ABI as
-well.
-
-Thanks,
-	Kyle M.
-
-[0] - for those following at home, the ABI of a kernel is reflected
-      in the package name, like the soname of a shared library.
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 
 
 -- 
