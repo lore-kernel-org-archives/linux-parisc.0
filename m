@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 66301482A
-	for <parisc-linux@parisc-linux.org>; Sat,  2 Feb 2002 04:03:00 -0700 (MST)
-Date: Sat, 2 Feb 2002 12:02:56 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20020202120256.U27172@lug-owl.de>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B63C482A
+	for <parisc-linux@parisc-linux.org>; Sat,  2 Feb 2002 07:01:52 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16X0jj-0007e4-00; Sat, 02 Feb 2002 14:01:47 +0000
+Date: Sat, 2 Feb 2002 14:01:47 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Rsync...
+Message-ID: <20020202140147.C26868@parcelfarce.linux.theplanet.co.uk>
+References: <20020202120256.U27172@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m0vRWufqUC70IDnR"
-Subject: [parisc-linux] Rsync...
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020202120256.U27172@lug-owl.de>; from jbglaw@lug-owl.de on Sat, Feb 02, 2002 at 12:02:56PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---m0vRWufqUC70IDnR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, Feb 02, 2002 at 12:02:56PM +0100, Jan-Benedict Glaw wrote:
+> Hi!
+> 
+> For some time, there was rsync access to a checked-out version
+> of current CVS. This is gone recently, and I don't know why.
+> I'd really love to again use rsync for fetching sources
+> (and as you know, I'd also like to rsync the CVS repository
+> itself).
+> 
+> Any chances?
 
-Hi!
+you may have noticed a certain amont of security-related kerfuffle around
+rsync recently.  until this is fixed and the data-corruption bugs are fixed,
+rsync has been disabled on {ftp,www,cvs}.parisc-linux.org.  sorry.
 
-For some time, there was rsync access to a checked-out version
-of current CVS. This is gone recently, and I don't know why.
-I'd really love to again use rsync for fetching sources
-(and as you know, I'd also like to rsync the CVS repository
-itself).
-
-Any chances?
-
-MfG, JBG
-
---=20
-Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
-	 -- New APT-Proxy written in shell script --
-	   http://lug-owl.de/~jbglaw/software/ap2/
-
---m0vRWufqUC70IDnR
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAjxbx2AACgkQHb1edYOZ4bv/VQCdG+mYN1sGCe4nJ97UUUn1upOt
-+ToAnifLal6FIHJSiVL1NsINA3JT6Umf
-=nzIv
------END PGP SIGNATURE-----
-
---m0vRWufqUC70IDnR--
+-- 
+Revolutions do not require corporate support.
