@@ -1,35 +1,48 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA14657
-	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Feb 2000 15:06:03 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
-	by palrel1.hp.com (Postfix) with ESMTP id 951338EC
-	for <parisc-linux@thepuffingroup.com>; Wed,  9 Feb 2000 12:59:03 -0800 (PST)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id NAA13944 for parisc-linux@thepuffingroup.com; Wed, 9 Feb 2000 13:00:00 -0800 (PST)
-Date: Wed, 9 Feb 2000 13:00:00 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200002092100.NAA13944@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA19525
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Feb 2000 02:28:53 -0700
+Date: Thu, 10 Feb 2000 10:21:43 +0100
+From: Philipp Rumpf <prumpf@inwestnet.de>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] CONFIG_SERIAL_GSC
+Message-ID: <20000210102143.A1836@abacus.local>
+References: <200002092100.NAA13944@milano.cup.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=X-roman8
-Subject: [parisc-linux] CONFIG_SERIAL_GSC
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200002092100.NAA13944@milano.cup.hp.com>; from grundler@cup.hp.com on Wed, Feb 09, 2000 at 01:00:00PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi folks,
-Can someone explain why "#define CONFIG_SERIAL_GSC" is in serial.h?
+> Can someone explain why "#define CONFIG_SERIAL_GSC" is in serial.h?
 
-Users of asm/serial.h are:
+It shouldn't be.
 
-grundler <765>find . -name '*.[ch]' | xargs fgrep "asm/serial.h"
-./arch/mips/baget/vacserial.c:#include <asm/serial.h>
-./drivers/char/ip2main.c:#include <asm/serial.h>
-./drivers/char/mac_SCC.h:/* MSch: gone to <asm/serial.h> */
-./drivers/char/serial.c:#include <asm/serial.h>
-./drivers/char/synclink.c:#include <asm/serial.h>
-./drivers/gsc/lasi.c:#include <asm/serial.h>
+> Users of asm/serial.h are:
+> grundler <765>find . -name '*.[ch]' | xargs fgrep "asm/serial.h"
+> ./arch/mips/baget/vacserial.c:#include <asm/serial.h>
+> ./drivers/char/ip2main.c:#include <asm/serial.h>
+> ./drivers/char/mac_SCC.h:/* MSch: gone to <asm/serial.h> */
+> ./drivers/char/synclink.c:#include <asm/serial.h>
 
+> ./drivers/char/serial.c:#include <asm/serial.h>
+> ./drivers/gsc/lasi.c:#include <asm/serial.h>
 
-I have the impression it's going to be difficult to build a "PCI"
-serial driver with CONFIG_SERIAL_GSC defined.
+These are the only two that concern us.
 
-thanks,
-grant
+> I have the impression it's going to be difficult to build a "PCI"
+> serial driver with CONFIG_SERIAL_GSC defined.
+
+Wrong.  The serial driver is designed to handle several busses at the
+same time.  That means you can have CONFIG_SERIAL (port based),
+CONFIG_SERIAL_GSC, and PCI MMIO based serial all activated at the same
+time and one serial port of each variation and everything should work.
+
+All you need to do is call register_serial with a struct serial_struct *req
+so req->io_type == SERIAL_IO_MEM and everything should work fine.
+
+Of course newer boxes (c3k, j5k, c3600, j5600) don't have GSC at all, so
+you'd like not do define CONFIG_GSC/CONFIG_SERIAL_GSC for those.  (Those
+boxes seem to still have an HP-proprietary bus though, but I don't know
+anything about that).
+
+	Philipp Rumpf
