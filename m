@@ -1,39 +1,22 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA17866
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 05:53:56 -0600
-Message-ID: <37663FB9.9D40D175@eisner.com>
-Date: Tue, 15 Jun 1999 07:57:45 -0400
-From: Averell Eisner <a_eisner@eisner.com>
-MIME-Version: 1.0
-To: Ross Sponholtz <rsponholtz@earthlink.net>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP-UX 11.0 binaries
-References: <199906150231.VAA08498@osiris.silug.org> <003601beb6e0$d02b9800$4c51a8c0@monorailpc>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA18082
+	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 07:01:14 -0600
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 15 Jun 1999 13:00:58 -0000
+Subject: Re: [parisc-linux] Dino PCI and I/O spaces (fwd)
+To: billk@sr.hp.com (Bill Katz)
+Date: Tue, 15 Jun 1999 13:53:41 +0100 (BST)
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <199906150534.WAA14372@meow.sr.hp.com> from "Bill Katz" at Jun 14, 99 10:34:16 pm
+Content-Type: text
+Message-Id: <E10tsil-0007FD-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ross Sponholtz wrote:
-> 
-> Since it is looking like I'm not going to get much done without HP/UX, does
-> anyone have any suggestions on how to get HP/UX for my 715/50?  I bought the
-> machine off ebay, and there was no OS installed.  Thanks!
-> 
-> Ross Sponholtz
-> rsponholtz@earthlink.net
-> 
+> Grant has it right.  I've watchedd Dino with a full logic analyzer on
+> both GSC and PCI...  The 4 byte enables get swapped as Grant described
+> and if you do a single byte access, a single byte pops out the other side.
 
-If you can use a copy of HP-UX 10.20 for workstations from earlier this
-year, I have several unopened sets at my office. Each set includes the
-the OS, the application disks and the extension set.  The HP list price
-is $520. each. I normally sell a set for $150.  I willing to sell them
-for $100 to recover part of my cost.
+Thanks. I'll go and change my PCI code to reflect reality
 
-Also, I have some HP workstations and servers I took in as trade. The
-workstation batch includes 712s, 715s, 725s and 735s. Any interest?
--- 
-Averell
-
-Eisner Associates, Inc.                 Phone: 908-233-6585
-516 North Ave. East                     FAX:   908-233-0710
-P.O. Box 2489
-Westfield, NJ 07090
+Alan
