@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B672482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 14:27:04 -0700 (MST)
-Subject: Re: [parisc-linux] gcc-3.x and the kernel
-To: xam@student.cs.ucc.ie (Markus Grabert)
-Date: Mon, 19 Nov 2001 21:34:36 +0000 (GMT)
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.OSF.4.41.0111191946450.11606-100000@student.cs.ucc.ie> from "Markus Grabert" at Nov 19, 2001 07:55:28 PM
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 09F00482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 14:51:51 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 165wKS-0000AQ-00; Mon, 19 Nov 2001 21:51:48 +0000
+Date: Mon, 19 Nov 2001 21:51:48 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: "Neulinger, Nathan" <nneul@umr.edu>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] FW: Porting LWP
+Message-ID: <20011119215148.D1835@parcelfarce.linux.theplanet.co.uk>
+References: <E8139C9A62384F49A7EBF9CCCD2243C101968B@umr-mail2.umr.edu>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E165w3o-0007mB-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <E8139C9A62384F49A7EBF9CCCD2243C101968B@umr-mail2.umr.edu>; from nneul@umr.edu on Mon, Nov 19, 2001 at 01:44:45PM -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,10 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> But I've read that gcc-3.0.x is not officially supported as a kernel
-> compiler, since is still has some bugs. Are these bugs just x86 related
-> (I doubt it) or do you accept the risk that gcc might produce garbage ?
+On Mon, Nov 19, 2001 at 01:44:45PM -0600, Neulinger, Nathan wrote:
+> Anyone have any thoughts on this? In particular the question about whether
+> setjmp/longjmp preserve the stack. 
 
-The advice is basically x86 - for example gcc 3.0.1 gives a compiler error
-trying to build some 2.4 drivers right now. With the ports it varies - the
-parisc tree uses its own compiler chain based on gcc 3.
+It ought to... it's just a function call, IIRC.
+
+> When I try to have the code use ucontext (getcontext/setcontext) instead, it
+> gets complaints from glibc about setcontext/getcontext being unimplemented.
+
+Hmm... file a bug against that, please.
+
+> the last time i worked on a parisc system i noted that that the 
+> stack grew UP and not down.  parisc might do the same.  the linux
+> swp code assumes that the stack grows down (atleast i am pretty sure
+> it does)
+
+The code in glibc used to assume that.  It's been fixed since we found
+it easier to keep the stack growing up.
+
+-- 
+Revolutions do not require corporate support.
