@@ -1,45 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA25871
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 11:21:09 -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA26025
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 11:25:49 -0700
 From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199911221822.KAA13945@opus.allegro.com>
-Subject: Re: [Fwd: Re: [parisc-linux] HP-UX 10.20 for free?]
-To: magne@spacetec.no (Magne =?iso-8859-1?Q?=D8stlyngen?=)
-Date: Mon, 22 Nov 1999 10:22:26 -0800 (PST)
+Message-Id: <199911221827.KAA13990@opus.allegro.com>
+Subject: Re: [parisc-linux] Progress
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Mon, 22 Nov 1999 10:27:25 -0800 (PST)
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <383974AA.6CC3A98B@spacetec.no> from "Magne =?iso-8859-1?Q?=D8stlyngen?=" at Nov 22, 1999 05:51:54 PM
+In-Reply-To: <199911221811.NAA27290@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 22, 1999 01:11:29 PM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
 Re:
 
-> From: Magne Østlyngen <magne@spacetec.no>
-> Subject: Re: [parisc-linux] HP-UX 10.20 for free?
-> To: Andi <der_fisch@fischlustig.de>
+> Missed this point because of the strange nop.  The current addib loop is 3
+> instructions.  Alignment to a multiple of 16 should be good enough to
+> ensure that the loop lies within a cache line.  This would insert a maximum
+> of 3 nops before the loop.  This would provide a slightly more deterministic
+> result.
 > 
-> > I just ordered the HP-UX 10.20 Y2K upgrade from this page.
-> > http://www.software.hp.com/products/Y2K/cd_form.html
-> 
-> Isn't that just y2k patches, not the whole os?
+> Also, re the BogoMIPS number, I think this should be (loops_per_sec*3)/2000000
+...
 
-Yes...not only that, at least some of the patches are *OLD*, much
-older than you'd expect.  The kit came with 1 OS patch disk and
-3 "Application" patch disks (10.01/10.10, 10.20, and 11.00).  
-IIRC, the two patches I looked at on the OS patch disk were 
-about a year out of date (PDCINFO and ?).
+This should be timed on a PA-RISC 2.0 machine, just in case.  Some of
+them are really good at apparently doing things twice as fast as you'd
+expect :)    
 
-> http://www.hp.com/visualize/programs/y2k/y2k_menu/y2k_upgr/oskit.html
+Our K460 gets twice the MIPs you'd expect ... i.e., it executes a simple 
+timing loop at about 360 million instructions per second ... 
+on a single CPU machine with a 180 MHz clock!
 
- 
-> Does anyone know if you can order this on the web / by email?
-
-The site mentioned above seems aimed at people on support contracts,
-although I'm not sure about that.
-
-I ordered my 10.20 upgrade via:
-http://www.software.hp.com/y2kupgrades/swp_upgrades.html
-
-And, you can do it online.
-
-SS
+-- 
+Stan Sieler                                           sieler@allegro.com
+www.allegro.com/sieler/wanted/index.html          www.allegro.com/sieler
