@@ -1,33 +1,80 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A8428482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 09:35:12 -0600 (MDT)
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org, lamont@hp.com
-Subject: B132 dies too (was Re: [parisc-linux] 2.4.6-pa5 crashes on B160L)
-In-reply-to: Your message of "Sun, 08 Jul 2001 17:31:25 MDT."
-             <200107082331.RAA09058@puffin.external.hp.com>
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6309F482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 09:40:06 -0600 (MDT)
+Subject: Re: [parisc-linux] palinux 0.9.1
+To: rhirst@linuxcare.com
+Cc: parisc-linux@lists.parisc-linux.org, puffin@esiee.net
+Message-ID: <OFD4FFC380.1EA16BBB-ONC1256A84.0055A177@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Mon, 9 Jul 2001 17:42:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Mon, 09 Jul 2001 09:34:38 -0600
-From: LaMont Jones <lamont@hp.com>
-Message-Id: <20010709153451.4D2731872C@security.hp.com>
+Content-type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-My B132 (which works 2.4.0) crashes sometime between palo launching the
-kernel, and it having a working console (serial).  That is to say, no info
-at all.  If someone wants the machine in order to debug it, just holler...
+FYI
 
-> If one is really good (like jsm) and has a matching vmlinux and System.map,
-> one can backtrace the stack by hand by looking at stack frame (return pointer
-> is in the stack frame) and seeing how much each subroutine grows the stack
-> (look at code around subroutine call, iirc). I think the mail archives
-> have a concise desription of exactly how to use the stack dump.
-> But I am too lazy to look for it now.
+I just recompile last cvs kernel (20010709 ie 2.4.6-pa7)
+It boot fine (whithout yet STICON, just as before kernel of palinux-0.9).
+So I believe that STICON on B180 will work soon.
 
-Backtracing is extremely straight-forward, and can be automated, AFAIK.
-Walking the stack forward is a bit more challenging, but not entirely
-beyond possibility most of the time...
+Kind regards,
+     Joel
 
-lamont
+
+
+                                                                           =
+                                  =20
+                    Richard Hirst                                          =
+                                  =20
+                    <rhirst@linux        To:     Jo=EBl Soete/BRU/MASTERCAR=
+D@MASTERCARD                        =20
+                    care.com>            cc:     "Richard Hirst <rhirst"   =
+                                  =20
+                                         <rhirst%linuxcare.com%SMTP%EUROPAY=
+@mastercard.com>@SMTP@EUROPAY,    =20
+                    09-07-01             parisc-linux@lists.parisc-linux.or=
+g@SMTP@EUROPAY,                   =20
+                    09:46 AM             puffin@esiee.net@SMTP@EUROPAY     =
+                                  =20
+                                         Subject:     Re: [parisc-linux] pa=
+linux 0.9.1                       =20
+                                                                           =
+                                  =20
+
+
+
+On Fri, Jul 06, 2001 at 02:57:19PM +0200, Jo=EBl Soete wrote:
+>
+>
+> Hello Richard,
+>
+> The problem ip_local_deliver:... cames in fact from the dhcp_client which
+> is started by default?
+
+I reproduced that problem; hadn't seen it before because I usually
+use dhcp to configure my network.  Seems you only get the errors if
+dhcp-client doesn't have any real interfaces to configure.
+
+> For the sti console, I do have to be unlucky; I get backup the kernel
+> installed with 0.9 then ps2 kbd works back ( I also suspect the kbd and
+> change it, no difference)? what could be the problem? I also try to get
+the
+> last firmware but HP prevent to install it over the builtin ?
+
+You are not the only person with this problem, so hopefully someone will
+fix it soon.
+
+Richard
+
+
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information =
+which is strictly intended for the use of the authorised recipient.  If you=
+ have received this e-mail in error, please delete it and notify the sender=
+ by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
