@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 80A0B4830
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Sep 2003 10:44:03 -0600 (MDT)
-Date: Mon, 1 Sep 2003 17:44:00 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: parisc-linux@lists.parisc-linux.org
-Cc: Grant Grundler <grundler@parisc-linux.org>
+Date: Mon, 1 Sep 2003 11:40:19 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] CVS mixup
-In-Reply-To: <Pine.LNX.4.44.0309011737410.11880-100000@sal.ucc.ie>
-Message-ID: <Pine.LNX.4.44.0309011743030.11880-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20030901174019.GA18175@dsl2.external.hp.com>
+References: <Pine.LNX.4.44.0309011737410.11880-100000@sal.ucc.ie> <Pine.LNX.4.44.0309011743030.11880-100000@sal.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.44.0309011743030.11880-100000@sal.ucc.ie>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,16 +20,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 1 Sep 2003, M. Grabert wrote:
+On Mon, Sep 01, 2003 at 05:44:00PM +0100, M. Grabert wrote:
+> 2.4.0-test4-pa7 instead of 2.6.0-test4-pa7 in the CVS log ...
 
-> I think we have another mixup in the CVS:
->
-> http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2003-September/033329.html
+yes - sorry
 
-Mhh, on a second look it just looks like a typo:
-
-2.4.0-test4-pa7 instead of 2.6.0-test4-pa7 in the CVS log ...
-
-sorry about that
-
- Max
+grant
