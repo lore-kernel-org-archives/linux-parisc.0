@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B844E482F
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Oct 2002 09:58:50 -0600 (MDT)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id F11311655
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Oct 2002 17:58:46 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA29856 for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Oct 2002 17:57:02 +0200 (METDST)
-Message-ID: <3DB02FB0.5C048CF7@admin.france.hp.com>
-Date: Fri, 18 Oct 2002 17:58:40 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from smtp-out.tiscali.be (spoolm6.tiscalinet.be [212.35.2.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B61A4830
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Oct 2002 10:06:16 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscalinet)
+	id 182Zdc-0005Pn-00
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Oct 2002 18:06:12 +0200
+Date: Fri, 18 Oct 2002 19:02:27 +0200
+Message-ID: <3DA56CAE00003256@ocpmta8.be.tiscali.com>
+In-Reply-To: <3DA56CAE00003154@ocpmta8.be.tiscali.com>
+From: jsoe0708@tiscali.be
+Subject: RE: [parisc-linux] jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: multipart/mixed;
- boundary="------------A6C8ECAEACB40A053591D3B6"
-Subject: [parisc-linux] Strange offset with file system parition
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,67 +25,65 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------A6C8ECAEACB40A053591D3B6
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+>-- Original Message --
+>From: jsoe0708@tiscali.be
+>Subject: RE: [parisc-linux] FW: [Bug #3332] jfs-1.0.22 and 1.0.23 break
+fb
+>console on k-2.4.19-pa22
+>To: parisc-linux@lists.parisc-linux.org
+>Date: Fri, 18 Oct 2002 16:43:08 +0200
+>
+>
+>>
+>>Hi all,
+>>
+>>May be much hppa specific problem.
+>>
+>>All advise is well come.
+>>
+>>Thanks in advance,
+>>    Joel
+>>
+>>--- Start of the Attached Message ---
+>>
+>>Date: Thu, 17 Oct 2002 12:47:30 -0400
+>>To: joel.soete@tiscali.be
+>>Subject: [Bug #3332] jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
+>>From: admin@www-124.southbury.usf.ibm.com
+>>
+>>
+>>Bug #3332 has been submitted pending email address confirmation. 
+>>Here is a current snapshot of the bug.
+>>
+>>Project: 
+>>Category: kernel
+>>Status: Open
+>>Bug Group: bug
+>>Priority: 5
+>>Summary: jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
+>>
+>>Details: Hi all,
+>>
+>>Test your tools, I test early with success 1.0.17 (against k-2.4.18-pa54
+>>and latter).
+>
+>
+>Hmm I was wrong: I come back to jfs-2.4-1.0.17 against k-2.4.19-pa22 and
+>the problem is the same. So the actual problem is a change between 2.4.18(pa54)
+>and 2.4.19(pa22).
+>
+>Any idea?
 
-	Hi
-I've succeded to produce my first dump using IODC.
-I've retrieve it, but I had some difficulties
-with ms-dos parition. I'm using "gendisk_head"
-to retrieve start/end of a parition. For my sda1
-it find 32768. So I'm writing at start+PAGE_SIZE
--> in my case it should be 0x8000 + 0x1000
-And When I look by using 
-dd if=/dev/sda skip=9 bs=4096 count=1 | hexdump
-It's fine, I'm on the right place.
+The very first patch 2.4.19 I still have was pa5 and the same problem occur.
+It seems definitely that JFS and STI FB in 2.4.19 are incompatible.
 
-But when doing:
-dd if=/dev/sda1 skip=1 bs=4096 count=1 | hexdump
--> I'm not good ?????
-There is a difference of 0x600:
+Where do I have to start my investigation?
 
-hexdump /tmp/sda1.bin | more
-0000000 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0001600 a819 0173 618f 23ed 0000 0005 0000 0778
-0001610 0000 0008 0000 1000 0000 0000 0004 0000
-
--> I found my magic number 0x600 to fare.
-
-But
-
-# hexdump /tmp/sda.bin | more
-.
-.
-0009000 a819 0173 618f 23ed 0000 0005 0000 0778
-
--> that okay !!!!!!!
-
-So my question: where this difference come from ?
-
-Thanks.
-
-
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------A6C8ECAEACB40A053591D3B6
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
-
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------A6C8ECAEACB40A053591D3B6--
+>>Just an anoying problem the fb console is broken:
+>>just when kernel launches to detect the first scsi device the screen scroll
+>>stop and the rest of messages are all display over others on  the very
+top
+>>line of the screen.
+>>
+Thanks in advance for help,
+   Joel
