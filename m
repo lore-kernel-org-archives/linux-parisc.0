@@ -1,31 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA30639
-	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 04:48:00 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 23 Aug 2000 10:47:52 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA06325;
-	Wed, 23 Aug 2000 20:47:02 +1000
-Date: Wed, 23 Aug 2000 20:46:59 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Tor Arntsen <tor@spacetec.no>
-cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA31141
+	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 05:27:23 -0600
+Message-Id: <200008231126.NAA02186@pallas.spacetec.no>
+From: tor@spacetec.no (Tor Arntsen)
+Date: Wed, 23 Aug 2000 13:26:55 +0200
+In-Reply-To: Alan Modra <alan@linuxcare.com.au>
+       "Re: Incompatibility of PIC and non-PIC" (Aug 23, 11:47)
+To: Alan Modra <alan@linuxcare.com.au>
 Subject: Re: Incompatibility of PIC and non-PIC
-In-Reply-To: <200008231031.MAA01982@pallas.spacetec.no>
-Message-ID: <Pine.LNX.4.21.0008232041400.11816-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 23 Aug 2000, Tor Arntsen wrote:
+On Aug 23, 11:47, Alan Modra wrote:
+>Ah Ha!  So an update of puffin cvs would be a good idea.  Provided said
+>update didn't trash all the old repositories...
 
-> The problem with older CVS versions was that it used to say just
-> --- ChangeLog on all the levels.  Patch could handle that, using
-> the Index line, however only for unique file names.  So people would
-> use scripts that fixed the ---/+++ lines before they applied the patch.
+Recommended.  I'm using version 1.10.8.1 on both servers and clients
+and before that I went through 1.10.6.1 and 1.10.[2-4], I believe the 
+problem was fixed in one of the early 1.10.x versions.  No problems with 
+the repositories, the upgrades were transparent for the users.  
+Older 1.10 clients also work ok with the latest server versions, although 
+I've never used the actual 1.10 -- it had its own problems that were fixed 
+in 1.10.1 or .2 or so.  I'm not sure what the latest version is called but
+I can recommend 1.10.8.1.  It has a few obscure bugs that most of us will
+not run in to and it's as good as or better than any version before it.
+And it makes good diffs :-)
 
-Ah Ha!  So an update of puffin cvs would be a good idea.  Provided said
-update didn't trash all the old repositories...
-
--- 
-Linuxcare.  Support for the Revolution.
+-Tor
+(I maintain the CVS repositories at the site where I work)
