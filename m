@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A96174847
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Apr 2003 11:42:15 -0600 (MDT)
-Date: Wed, 30 Apr 2003 18:42:08 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Stan Sieler <sieler@allegro.com>
+Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A8F1C482F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Apr 2003 12:11:24 -0600 (MDT)
+Date: Wed, 30 Apr 2003 14:12:16 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <jsoe0708@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Presicionbook keyboard under console
-In-Reply-To: <200304301738.h3UHcYG21821@opus.allegro.com>
-Message-ID: <Pine.LNX.4.44.0304301839210.21749-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [parisc-linux] Program counter from sigcontext, constructurs and -fPIC
+Message-ID: <20030430181216.GA20779@systemhalted>
+References: <20030430003106.GC12492@systemhalted> <3EA9466400001A95@ocpmta7.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3EA9466400001A95@ocpmta7.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,37 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 30 Apr 2003, Stan Sieler wrote:
+> >Don't touch -17, the _Unwind_Find_FDE code broke and it's doing damage
+> >to things like 'vi' ... *sigh* I haven't even looked into this (looks
+> >like gcc/glibc clashes again).
+> >
+> Umm could this be why that my b2k crashed when compiling a kernel to test
+> a patch?
 
-> Re:
->
-> > I tried to figure out why some keys on my Presicionbook are messed up
-> > when using the console (it works on X). As it turns out, 'showkey -k'
-> > shows the 'keycode 86' for the following keys:
-> ...
-> > PS: I still have the problem that X currently just works when I use the
-> > external monitor; using the internal LCD it boots fine, but doesn't show
-> > anything ...
->
-> I can suggest a $400 solution:
->    http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&item=2726642700&category=177
-> ...another PrecisionBook.
->
-> I've found no keyboard problems like you describe on mine,
-> and X works just fine with the internal LCD screen (haven't tried an
-> external monitor).
+Quite possibly. If you can get a backtrace of the crash you'll se it die
+inside _Unwind_Find_FDE in glibc.
+ 
+I'm working on fixing this.
 
-Well, the internal LCD works, until it switches to stifb.
-The keyboard works under X perfectly aswell. It's just the console ...
-
-> On your keyboard problem...plug in an external keyboard and see if the
-> problem exists with it, too.  Either way, that should localize the problem
-> somewhat.
-
-Yes, an external keyboard works fine ...
-
-
-May I ask what your kernel & .config is and what firmware you have on
-the Precisionbook?
-
-Thanks, Max
+c.
