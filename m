@@ -1,72 +1,32 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id CAA17487
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 02:11:28 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA29641;
-	Mon, 20 Nov 2000 20:05:58 +1100
-Date: Mon, 20 Nov 2000 20:05:58 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Stan Sieler <sieler@allegro.com>
-cc: John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@puffin.external.hp.com,
-        parisc-linux@thepuffingroup.com
-Subject: Re: Single-stepping
-In-Reply-To: <200011200724.XAA07561@opus.allegro.com>
-Message-ID: <Pine.LNX.4.21.0011201912260.15391-100000@front.linuxcare.com.au>
+Received: from gate-isdn.tunstall.co.uk (gate-isdn.tunstall.co.uk [194.152.75.185])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id DAA18425
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 03:19:29 -0700
+Received: from [10.1.1.3] (helo=tele02.tunstall.co.uk)
+	by gate-isdn.tunstall.co.uk with esmtp (Exim 2.12 #1)
+	id 13xo2K-0001e6-00
+	for parisc-linux@puffin.external.hp.com; Mon, 20 Nov 2000 10:18:56 +0000
+Message-ID: <51C39E66FF96D11194FCAA00040003040116EA3A@tele02.localnet>
+From: Mark Wild <M_Wild@tunstall.co.uk>
+To: Parisc-Linux <parisc-linux@puffin.external.hp.com>
+Date: Mon, 20 Nov 2000 10:21:32 -0000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Upgrading memory on a 710
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 19 Nov 2000, Stan Sieler wrote:
+Hi,
 
-> > bad idea after all, especially since the added syscall and task switch
-> > overhead can be quite small if the kernel only supports single-step by
-> > one instruction.
-> 
-> why the limit?  We've used multi-instruction "single step" (oxymoron :)
-> for about 15 years on PA-RISC...no problems, efficient, and *very*
-> useful!
+I have acquired some 8MB SIMMs suitable for my old 710 workstation and
+wish to utilise them. I don't have any docs for the 710 and was wondering
+if anyone could point me in the direction of some. I've looked on the HP
+website but could only find some for 712s, 720, 730 etc. Alternatively, if
+anyone knows whether any motherboard links need to be changed, whether
+SIMMS need to be added in pairs / quads and which memory configurations
+are allowed I would be grateful.
 
-Because you would then need to save and restore cr0 on task switches (or
-only allow one task to be single-stepped at a time).  That's four
-instructions and two extra memory accesses per task switch.  Which might
-not seem very much, but at some point somebody will no doubt start caring
-about pa-linux performance.  For a single-step by one, you can simply set
-cr0 to zero on a task switch, and possibly avoid touching cr0 on a task
-switch at all with careful attention to various trap handlers.
+Thanks,
 
-Here's the idea.  The tail of syscall_restore (64-bit stuff pruned) will
-look like the following, with the first three instructions being the added
-code to support single-step (and also wide/narrow switching for 64-bit)
+Mark Wild
 
-	ldi	3,%r20
-	mtctl	$r20,%cr0	/* recovery counter, ptrace single-step */
-	LDREG	TASK_PT_PSW(%r1),%r20
-
-	mtctl	%r1,%cr30			   /* intrhandler okay. */
-	mfsp	%sr3,%r1			   /* Get users space id */
-	mtsp	%r1,%sr4			   /* Restore sr4 */
-	mtsp	%r1,%sr5			   /* Restore sr5 */
-	mtsp	%r1,%sr6			   /* Restore sr6 */
-
-	depi	3,31,2,%r31		/* ensure return to user mode. */
-
-	mtsm	%r20				   /* restore irq state */
-	mfctl	%cr27,%r20
-	be	0(%sr3,%r31)			   /* return to user space */
-	mtsp	%r1,%sr7			   /* Restore sr7 */
-
-ptrace will fiddle with TASK_PT_PSW, setting the R bit and clearing the I
-bit to enable the recovery counter - which will start counting down at the
-mtsm instruction above, and reach zero on the user-space instruction, so
-we'll trap after executing one user-space instruction.  The task-switch
-nonsense is to handle the case where we page-fault on the instruction and
-switch to another task also doing single-stepping.  You want to ensure cr0
-is zero when we finally get back to the original task.
-
-Now it might turn out that having extra instructions in the syscall path
-is worse than extra code and memory accesses on task switch.  If that
-turns out to be true, then you'll probably get your multi-step ptrace. :-)
-
-Alan Modra
 -- 
-Linuxcare.  Support for the Revolution.
