@@ -1,29 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA28382
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 14:09:53 -0700
-From: Hugo.van.der.Kooij@caiw.nl
-Date: Mon, 22 Nov 1999 22:18:34 +0100 (CET)
-To: Al Smith <Al.Smith@mail.tju.edu>
-cc: der_fisch@fischlustig.de, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP-UX 10.20 for free?
-In-Reply-To: <H00004e90339c9c8@MHS>
-Message-ID: <Pine.LNX.4.10.9911222215540.1796-100000@bastion.hugo.vanderkooij.org>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA28659
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 14:16:14 -0700
+Message-ID: <BBAFD7A26E78D311834400805FEA1177ABF556@BHIHAWISS04>
+From: "Soto,  Gene G." <Gene.Soto@bakeroiltools.com>
+To: Hugo.van.der.Kooij@caiw.nl, Al Smith <Al.Smith@mail.tju.edu>
+Cc: parisc-linux@thepuffingroup.com
+Subject: RE: [parisc-linux] HP-UX 10.20 for free?
+Date: Mon, 22 Nov 1999 15:10:57 -0600
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 22 Nov 1999, Al Smith wrote:
+I received the core os as well as the patches  and updated apps (6 cd's).
+Problem is I no longer have the cdrom.  Anyone know if it would be possible
+to ftp the data from my intel laptop to an external drive or to a dds tape
+and install it from there?   I'm no hacker but can follow directions.
 
-> You are not getting the whole OS. You are getting patch's and updated apps..
+-Gene
 
-Then why was I able to install from the CD's on my HP 715/33 that had no
-OS at all?
+	----------
+	From:  Al Smith [SMTP:Al.Smith@mail.tju.edu]
+	Sent:  Monday, November 22, 1999 2:54 PM
+	To:  Hugo.van.der.Kooij@caiw.nl
+	Cc:  der_fisch@fischlustig.de; parisc-linux@thepuffingroup.com
+	Subject:  Re: [parisc-linux] HP-UX 10.20 for free?
 
-Hugo.
+	You are not getting the whole OS. You are getting patch's and
+updated apps..
 
--- 
-Hugo van der Kooij; Oranje Nassaustraat 16; 3155 VJ  Maasland
-hvdkooij@caiw.nl	http://home.kabelfoon.nl/~hvdkooij/
---------------------------------------------------------------
-Use of any of my email addresses for unsollicited (commercial)
-    email is a clear intrusion of my privacy and illegal!
+	-Al
+
+	
+---------------------------------------------------------------------------
+	To unsubscribe: send e-mail to
+parisc-linux-request@thepuffingroup.com with
+	`unsubscribe' as the subject.
