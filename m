@@ -1,24 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA11449
-	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Dec 1999 16:58:39 -0700
-Message-ID: <19991208200838.B3557@thepuffingroup.com>
-Date: Wed, 8 Dec 1999 20:08:38 -0500
-From: Phil Schwan <pschwan@thepuffingroup.com>
-To: Nils Bokermann <nilsb@bermuda.de>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715-75 (netboot?)
-References: <14414.61066.628924.132344@hercules.bermuda.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <14414.61066.628924.132344@hercules.bermuda.de>; from Nils Bokermann on Thu, Dec 09, 1999 at 12:49:30AM +0100
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA11647
+	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Dec 1999 16:59:16 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
+	by atlrel1.hp.com (Postfix) with ESMTP id A17B0C3AA
+	for <parisc-linux@thepuffingroup.com>; Wed,  8 Dec 1999 19:01:24 -0500 (EST)
+Message-Id: <199912090002.QAA03171@milano.cup.hp.com>
+To: tor@spacetec.no (Tor Arntsen)
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] drivers/gecko 
+In-reply-to: Your message of "Wed, 08 Dec 1999 11:40:13 PST."
+             <199912081040.LAA07153@pallas.spacetec.no>
+Date: Wed, 08 Dec 1999 16:02:24 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Dec 09, Nils Bokermann wrote:
-> Is there a way to boot linux on a HP 9000 (apollo) 715-75 over the net
-> (yes -- it is, with rbootd, wich runs here). But HOW can I get a
-> ramdisk to my HP??
+Tor Arntsen wrote:
+> Did somebody  rm -rf /home/cvs/parisc/linux/drivers/gecko  directly in the
+> CVS repository?
+> 
+> cvs [server aborted]: cannot open directory /home/cvs/parisc/linux/drivers/ge
+>   cko: No such file or directory
 
-At the moment, the ramdisk is linked into the kernel image.  When you
-"make Image", it pulls "ramdisk.bin" from your top-level kernel source
-directory.
+Alex renamed the directory to drivers/gsc at my request.
+He made the mistake of promising me to rename it if I showed
+up at ALS....and I did. So I'm happy.
 
--Phil
+grant
+
+> -Tor
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+
+Grant Grundler
+Unix Developement Lab
++1.408.447.7253
