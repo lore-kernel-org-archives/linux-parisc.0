@@ -1,16 +1,16 @@
-From: n0ano@n0ano.com
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Date: Wed, 26 Mar 2003 09:25:35 -0700
-Message-ID: <20030326162535.GL873__41497.52777671$1416622334$gmane$org@tlaloc.n0ano.com>
-References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int> <20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk> <15999.23084.647629.868320@napali.hpl.hp.com> <20030326100746.GA21703@charrue.esiee.fr> <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
+Date: Wed, 26 Mar 2003 09:51:08 -0700
+Message-ID: <20030326165108.GB13845__6359.15445532209$1416622334$gmane$org@dsl2.external.hp.com>
+References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int> <20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk> <15999.23084.647629.868320@napali.hpl.hp.com> <20030326100746.GA21703@charrue.esiee.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Matthieu Delahaye <m.delahaye@esiee.fr>, davidm@hpl.hp.com,
-	willy@debian.org, adriano@satec.es, linux-ia64@linuxia64.org,
+Cc: davidm@hpl.hp.com, Matthew Wilcox <willy@debian.org>,
+	Adriano Galano <adriano@satec.es>, linux-ia64@linuxia64.org,
 	parisc-linux@parisc-linux.org
-To: Markus Schaber <markus.schaber@student.uni-ulm.de>
+To: Matthieu Delahaye <m.delahaye@esiee.fr>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
+In-Reply-To: <20030326100746.GA21703@charrue.esiee.fr>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,39 +21,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well, Itanium's can sort of run any X86 software.
+On Wed, Mar 26, 2003 at 11:07:46AM +0100, Matthieu Delahaye wrote:
+> Is the Intel's firmware freely distributed or it is
+> internal only?
 
-As David was alluding to there are two ways you can boot an Itanium
-box, either with an IA32 kernel (a current Pentium based OS) or an
-IA64 kernel.
+"freeley available" in the sense that it comes with every Merced box.
 
-If you boot an IA32 kernel the CPU will behave as an exact Pentium
-processor and execute all Pentium code.  The system will be slower
-than comparable Pentium processors but it should work exactly the
-same.  (Notice that I say `should', I've never done this, there could
-be chipset issues, I don't know of anyone who has done this but it
-should work.)
+I understood David's posting to mean Mckinley machines are available
+with firmware from other vendors (SGI, HP, Intel, IBM?, et al) and
+those systems will (likely) not boot Win98. I highly doubt HP ZX1
+machines will but haven't tried and probably never will.
 
-If you boot an IA64 kernel then the CPU can execute IA32 user mode
-programs.  This means you can't run IA32 device drivers and it also
-means you need a fair amount of kernel support in order to run an
-IA32 application so the statement `without further software support'
-is a little inaccurate.
-
-On Wed, Mar 26, 2003 at 12:51:40PM +0100, Markus Schaber wrote:
->
->...
-> 
-> However, Itanium chips support X86 Emulation in Hardware, so they can
-> run any X86 Software without further software support (however, the
-> software is limited to the X86 capabilities regarding Memory Capacity
-> etc., and it is _really slow_, every P3/P4/Athlon at the same MHz is
-> uncomparable.)
-> 
->...
-
--- 
-Don Dugger
-"Censeo Toto nos in Kansa esse decisse." - D. Gale
-n0ano@n0ano.com
-Ph: 303/447-2201
+grant
