@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C442482C
-	for <parisc-linux@parisc-linux.org>; Thu, 29 Nov 2001 12:02:48 -0700 (MST)
-Received: from puffin (IDENT:grundler@localhost [127.0.0.1])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA02339
-	for <parisc-linux@parisc-linux.org>; Thu, 29 Nov 2001 11:58:19 -0700
-Message-Id: <200111291858.LAA02339@puffin.external.hp.com>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] travel backwards in time? 
-In-Reply-To: Message from Randolph Chung <randolph@tausq.org>
-   of "Thu, 18 Oct 2001 13:21:45 PDT." <20011018132145.H4123@tausq.org>
-Date: Thu, 29 Nov 2001 11:58:19 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7409B482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Nov 2001 19:48:42 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Jurij Smakov <jurijus@theophys.kth.se>,
+	"Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Date: Fri, 30 Nov 2001 03:47:15 +0100
+Cc: parisc-linux@lists.parisc-linux.org
+References: <Pine.LNX.4.21.0111221534400.22553-100000@uranus.theophys.kth.se>
+In-Reply-To: <Pine.LNX.4.21.0111221534400.22553-100000@uranus.theophys.kth.se>
+MIME-Version: 1.0
+Message-Id: <20011130024842.7409B482C@dsl2.external.hp.com>
+Subject: [parisc-linux] Power button support in kernel 2.4.16-pa4
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Randolph Chung wrote:
-> Recently Grant and I have observed several hangs in do_gettimeofday on a
-> c3k running 32 or 64-bit kernels (UP). 
-> 
-> The symptom we see is gettimeoffset returns a negative number which
-> results in a huge (unsigned) usec offset in do_gettimeofday, which ends
-> up spinning in a while loop.
-...
-> The last_tick adjustment looks a bit odd. Looking at ia64, it looks more
-> like this:
-> 
->         last_tick -= clocktick * (jiffies - wall_jiffies + 1);
+Hi,
 
-For the record, this fix was committed in one of the 2.4.14-pa5
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2001-November/030021.html
+I've just committed some changes to the parisc cvs kernel (>= 2.4.16-pa4)
+which adds support for the power-button.
+Those changes include, that after you pressed the power button the kernel
+will initiate a clean system shutdown followed by a complete power-off.
+The patches were sucessfully tested on a c300 and 715/64 - and hopefully
+they will also work for other machines - if not, please let me know.
 
-I'm still not 100% certain all our time keeping code is correct.
-But I'm comfortable this patch fixes the problem we saw and
-does not introduce any new ones.
-
-grant
+Greetings,
+Helge
