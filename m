@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A3E84A67
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Oct 2003 15:40:59 -0600 (MDT)
-Date: Sun, 12 Oct 2003 17:37:34 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: libc-alpha <libc-alpha@sources.redhat.com>,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20031012213734.GJ23999@systemhalted>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4DE2348D1
+	for <parisc-linux@parisc-linux.org>; Sun, 12 Oct 2003 17:58:11 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A8q6D-0002hB-MW; Mon, 13 Oct 2003 00:58:09 +0100
+Date: Mon, 13 Oct 2003 00:58:09 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: k-2.6.0-test7-pa5: failled 2 pass
+Message-ID: <20031012235809.GM27861@parcelfarce.linux.theplanet.co.uk>
+References: <3F8739E2.2050205@tiscali.be> <3F893F92.4060606@tiscali.be> <3F894211.2090106@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [PATCH] _STACK_GROWS_UP fixes.
+In-Reply-To: <3F894211.2090106@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,93 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-libc-alpha,
+On Sun, Oct 12, 2003 at 11:59:13AM +0000, Joel Soete wrote:
+> May be the fix should be:
+> --- Makefile.orig	2003-10-12 13:50:43.000000000 +0200
+> +++ Makefile	2003-10-12 13:57:57.000000000 +0200
+> @@ -627,8 +627,8 @@
+>  # Can't rely on distributing these syminks as patches
+>  include/user:
+>  	@echo '  Making user->usr/include/linux symlink'
+> -	@ln -s ../usr/include/linux $@
+> -	@ln -s ../usr/include/asm-$(ARCH) include/user-asm
+> +	@ln -fsn ../usr/include/linux $@
+> +	@ln -fsn ../usr/include/asm-$(ARCH) include/user-asm
+> 
+>  # 	Split autoconf.h into include/linux/config/*
 
-Fix stack grows up.
-In a stack grows down scenario the stack pointer is between:
+Argh.  I never intended to check this in.  My apologies.  I'll unbreak it now.
 
-BOS <--- SP ---> h_descr
-
-In the stack grows up scenarion we have:
-
-h_descr,BOS <--- SP ---> STACK GUARD
-
-TOS is not stored, and thus the stack guard start address is
-used.
-
-This fixes a regression on HPPA where a cancellation signal would
-reach the child thread before the thread register had been setup.
-In that situation __pthread_self_stack was called to determine
-which thread was active, with the logic backwards, and no limit
-in place the while loop spun until it encountered garbage that 
-caused the logical expression to evaluate to true. This garbage stack 
-address was fatal to the proper execution of the program.
-
-Cheers,
-Carlos
-
-===
-===
-
-2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
-
-	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
-	(__pthread_find_self): Likewise.
-	* manager.c (thread_segment): _STACK_GROWS_UP case added.
-
-diff -u -p -r1.131 pthread.c
---- linuxthreads/pthread.c	23 Sep 2003 04:33:01 -0000	1.131
-+++ linuxthreads/pthread.c	12 Oct 2003 20:57:53 -0000
-@@ -893,7 +893,11 @@ pthread_descr __pthread_find_self(void)
-   /* __pthread_handles[0] is the initial thread, __pthread_handles[1] is
-      the manager threads handled specially in thread_self(), so start at 2 */
-   h = __pthread_handles + 2;
-+# ifdef _STACK_GROWS_UP
-+  while (! (sp >= (char *) h->h_descr && sp < h->h_descr->p_guardaddr)) h++;
-+# else
-   while (! (sp <= (char *) h->h_descr && sp >= h->h_bottom)) h++;
-+# endif
-   return h->h_descr;
- }
- 
-@@ -908,11 +912,22 @@ pthread_descr __pthread_self_stack(void)
-     return manager_thread;
-   h = __pthread_handles + 2;
- # ifdef USE_TLS
-+#  ifdef _STACK_GROWS_UP
-+  while (h->h_descr == NULL
-+	 || ! (sp >= h->h_descr->p_stackaddr && 
-+	       sp < h->h_descr->p_guardaddr))
-+#  else
-   while (h->h_descr == NULL
--	 || ! (sp <= (char *) h->h_descr->p_stackaddr && sp >= h->h_bottom))
-+	 || ! (sp <= h->h_descr->p_stackaddr && 
-+	       sp >= h->h_bottom))
-+#  endif
-     h++;
- # else
-+#  ifdef _STACK_GROWS_UP
-+  while (! (sp >= (char *) h->h_descr && sp < h->h_descr->p_guardaddr))
-+#  else
-   while (! (sp <= (char *) h->h_descr && sp >= h->h_bottom))
-+#  endif
-     h++;
- # endif
-   return h->h_descr;
-diff -u -p -r1.95 manager.c
---- linuxthreads/manager.c	12 Aug 2003 03:40:45 -0000	1.95
-+++ linuxthreads/manager.c	12 Oct 2003 20:58:00 -0000
-@@ -70,8 +70,13 @@ static pthread_descr manager_thread;
- #else
- static inline pthread_descr thread_segment(int seg)
- {
-+# ifdef _STACK_GROWS_UP
-+  return (pthread_descr)(THREAD_STACK_START_ADDRESS + (seg - 1) * STACK_SIZE)
-+         + 1;
-+# else
-   return (pthread_descr)(THREAD_STACK_START_ADDRESS - (seg - 1) * STACK_SIZE)
-          - 1;
-+# endif
- }
- #endif
- 
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
