@@ -1,56 +1,34 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA00446
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 12:33:59 -0700
-Message-Id: <200011151923.LAA13597@milano.cup.hp.com>
-To: Andreas Thienemann <andreas@bawue.de>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 250/1 doesn't boot but dumps stack 
-In-reply-to: Your message of "Thu, 16 Nov 2000 20:20:41 PST."
-             <3A143389.CA59F143@bawue.de>
-Date: Wed, 15 Nov 2000 11:23:41 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA00792
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 12:47:10 -0700
+Message-Id: <200011151949.OAA22929@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Single-stepping
+To: rhirst@linuxcare.com (Richard Hirst)
+Date: Wed, 15 Nov 2000 14:49:02 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@puffin.external.hp.com
+In-Reply-To: <20001115184808.P32715@linuxcare.com> from "Richard Hirst" at Nov 15, 2000 06:48:08 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Andreas Thienemann wrote:
-
-> But when I try to boot up this kernel it dumps stack right after initialising
-> the pty interfaces. (I already left out everything unnecessary, such as
-> parallel port support)
-...
-> parport0: PC-style at 0xffd02800, irq 88 [PCSPP,TRISTATE]
-> Found i82596 at 0xffd07000, IRQ 87
-> early initialization of device eth0 is deferred
-> Initializing Lasi PS/2-keyboard port at 0xffd08000...
-> Support for Lasi PS/2-psaux not yet available !
-> Linux NET4.0 for Linux 2.4
-> Based upon Swansea University Computer Society NET3.039
-> Starting kswapd v1.8
-> pty: 256 Unix98 ptys configured
-> lp0: using parport0 (interrupt-driven).
-
-Are you sure you left out parallel port support?
-
-
-> Data access rights fault in kernel: Code=26 regs=c7f98780 (Addr=00000004)
+>   I've been helping Alan Modra out with kernel changes to support
+> single stepping for gdb.  Paul Bame suggested I bounced our ideas
+> off you in case you (or anyone else) had any comments.  I havn't
+> actually committed my changes yet.
 > 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001000000000000001011
-> r0-3     00000000 c02ca800 c029c248 00000000
-> r4-7     c7ffc400 ffffffff c01e2468 c028b800
-> r8-11    c02cb800 000000f0 00000000 000000ff
-> r12-15   000000f2 000000fa 000000fd f0100000
-> r16-19   f0001180 f0000070 f0000068 00000000
-> r20-23   c7f9870e 00000002 c029c4d0 ffd07000
-> r24-27   c7f98710 00000f20 00000000 c0268000
-> r28-31   00000001 00000000 c7f989c0 002b31b8
-> sr0-4    00000000 00000000 00000000 00000000
-> sr4-8    00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: c029c264 c029c268
->  IIR: 0e681096    ISR: 00000000  IOR: 00000004
-> ORIG_R28: 00000000
+> The basic approach is to use the recovery counter to generate
+> a trap every instruction.  The scheme is complicated because a
+> suspended process may or may not return to user space via an RFI.
 
-Smells like a driver bug.
-Can you look up IOAQ and GR2 (c029c264 and c029c248) in System.map file?
+I really don't know enough to comment on the implementation choice.  Why
+did you decide on this approach as opposed to inserting breaks and
+enabling the taken branch branch trap (T)?  It would appear that the recovery
+counter was intended to provide software recovery from hardware faults
+in fault tolerant systems.  Possibly, Grant could comment on whether
+it is actually useful for this purpose.
 
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
