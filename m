@@ -1,69 +1,103 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA09470
-	for <parisc-linux@puffin.external.hp.com>; Tue, 12 Dec 2000 01:24:18 -0700
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 32-bit xc-20001206.tar.gz is foobar 
-In-Reply-To: Message from Alan Modra <alan@linuxcare.com.au>
-   of "Mon, 11 Dec 2000 00:02:57 EST." <Pine.LNX.4.21.0012102347330.31734-100000@front.linuxcare.com.au>
-References: <Pine.LNX.4.21.0012102347330.31734-100000@front.linuxcare.com.au> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Dec 2000 01:28:35 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001212082835.698F337CA1@carmen.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA10023
+	for <parisc-linux@puffin.external.hp.com>; Tue, 12 Dec 2000 01:37:50 -0700
+From: Marko.T.Niskanen@nokia.com
+Received: from esvir07nok.ntc.nokia.com (esvir07nok.nokia.com [131.228.20.79])
+	by mgw-x3.nokia.com (8.10.2/8.10.2/Nokia) with ESMTP id eBC8eOB00966
+	for <parisc-linux@thepuffingroup.com>; Tue, 12 Dec 2000 10:40:24 +0200 (EET)
+Received: from esebh02nok.ntc.nokia.com (unverified) by esvir07nok.ntc.nokia.com
+ (Content Technologies SMTPRS 4.1.5) with ESMTP id <T83e4144f506f5b173b@esvir07nok.ntc.nokia.com> for <parisc-linux@thepuffingroup.com>;
+ Tue, 12 Dec 2000 10:40:24 +0200
+Message-ID: <13F0486DB51CD311A0AE0008C7C561380453D432@eseis11nok>
+To: parisc-linux@thepuffingroup.com
+Subject: RE: [parisc-linux] 712/60 booting problem 
+Date: Tue, 12 Dec 2000 10:40:14 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
+hi
 
-Alan Modra writes...
+Just installed linux again and during the installation booting I got
+messages like 
 
-> > hppa-linux-ld: fs/fs.o(.text.load_aout_interp+0x11c): cannot reach 00000010
-> _flush_instruction_cache+0, recompile with -ffunction-sections
-> > hppa-linux-ld: fs/fs.o(.text.load_aout_interp+0x11c): cannot handle R_PARIS
-> C_PCREL17F for flush_instruction_cache
-> > ...
+kmem_create: Forcing size word alignment - nfs_fh
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+VFS: Disk change detected on device sr(11,0)
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+kernel BUG at pci-dma.c:391!
+kernel BUG at pci-dma.c:400!
+ISO 9660 Extensions: RRIP_1991A
+VFS: Mounted root (iso9660 filesystem) readonly.
+
+and I searched an old mailing lists and I found same kind problem, but
+didn't find any solution of it.
+
+http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/11-Nov/0191.ht
+ml
+
+But there is nothing  
+> -----Original Message-----
+> From: EXT Matt Taggart [mailto:taggart@carmen.fc.hp.com]
+> Sent: 12 December, 2000 9:22
+> To: Marko.T.Niskanen@nokia.com
+> Cc: parisc-linux@thepuffingroup.com; adevries@linuxcare.com
+> Subject: Re: [parisc-linux] 712/60 booting problem 
 > 
-> This isn't necessarily a problem with Matt's latest compiler binary.  fs.o
-> is produced with a "ld -r" link stage, and it's text size is larger than
-> 256k, so there is potential for branches to not be able to reach stubs.
 > 
-> ie. You may get these problems if
->  a) You are using an older binutils (ie. not the latest pehc CVS version),
->     and aren't using -ffunction-sections to compile the kernel
->  b) You are using the very latest binutils, and aren't using
->     -ffunction-sections, and I've goofed in my "ld -r" magic.
-
-I just built a new cross-compiler (xc-20001211.tar.gz) and am still getting 
-similar errors when building the kernel. It doesn't seem to matter if I have 
--ffunction-sections in the kernel Makefile or not.
-
-> On a good fs.o, "hppa-linux-readelf -h fs.o" ought to show lots of .text.*
-> sections.
-
-$ hppa-linux-readelf -h fs.o
-ELF Header:
-  Magic:   7f 45 4c 46 01 02 01 03 00 00 00 00 00 00 00 00 
-  Class:                             ELF32
-  Data:                              2's complement, big endian
-  Version:                           1 (current)
-  OS/ABI:                            UNIX - Linux
-  ABI Version:                       0
-  Type:                              REL (Relocatable file)
-  Machine:                           HPPA
-  Version:                           0x1
-  Entry point address:               0x0
-  Start of program headers:          0 (bytes into file)
-  Start of section headers:          360836 (bytes into file)
-  Flags:                             0x210, PA-RISC 1.1
-  Size of this header:               52 (bytes)
-  Size of program headers:           0 (bytes)
-  Number of program headers:         0
-  Size of section headers:           40 (bytes)
-  Number of section headers:         92
-  Section header string table index: 89
-
-HTH,
-
--- 
-Matt Taggart
-taggart@fc.hp.com
+> 
+> Marko.T.Niskanen@nokia.com writes...
+> 
+> > Sorry I have no boot log, because linux doesn't start and I 
+> have no idea how
+> > to get it an another way.  after text on console "switching from PDC
+> > console", I can read from serial port: 
+> 
+> If you set your 712 to serial console you can capture it, but 
+> I don't know if 
+> I'd recommend doing that since STI will be better long term.
+> 
+> > kmem_create: Forcing size word alignment - nfs_fh VFS: 
+> Mounted root (ext2
+> > filesystem) readonly. !!die_if_kernel: init(1): Illegal 
+> instruction 8
+> > 
+> > and after that starts that "loop" 
+> 
+> I get the same loop here but with a newer kernel and libc. 
+> Did you update your 
+> kernel or libc at all? I think the 0.5 CD should work fine on 
+> a 712/60.
+> 
+> -- 
+> Matt Taggart
+> taggart@fc.hp.com
+> 
+> 
+> --------------------------------------------------------------
+> -------------
+> To unsubscribe: send e-mail to 
+> parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
