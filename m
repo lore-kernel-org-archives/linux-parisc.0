@@ -1,46 +1,54 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA01461
-	for <parisc-linux@puffin.external.hp.com>; Sun, 21 Jan 2001 19:48:32 -0700
-Date: Sun, 21 Jan 2001 19:51:37 -0700
-Message-ID: <20010121195137.G4546@tausq.org>
-From: "Randolph Chung" <randolph@tausq.org>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] question about disk caching.... (SOLVED!)
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20010120214755.D17256@tausq.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA06475
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Jan 2001 04:17:45 -0700
+Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
+  by mailserv2.iuinc.com with SMTP; 22 Jan 2001 11:20:17 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 21B68B005; Mon, 22 Jan 2001 11:10:40 +0000 (GMT)
+Date: Mon, 22 Jan 2001 11:10:40 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Jim Buttafuoco <jim@tylerdrive.org>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trouble booting a 710 (bushmaster)
+Message-ID: <20010122111040.K3571@linuxcare.com>
+References: <200101181517.f0IFHOs08538@openbsd1.buttafuoco.net> <20010118205206.B28638@linuxcare.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010120214755.D17256@tausq.org>; from randolph@tausq.org on Sat, Jan 20, 2001 at 09:47:55PM -0700
+In-Reply-To: <20010118205206.B28638@linuxcare.com>; from rhirst@linuxcare.com on Thu, Jan 18, 2001 at 08:52:06PM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I got this with the latest kernel bits from cvs:
-[...]
-> seems like a caching issue? This is booting entirely off a local SCSI
-> harddisk. Any ideas what might be causing this?
+On Thu, Jan 18, 2001 at 08:52:06PM +0000, Richard Hirst wrote:
+> On Thu, Jan 18, 2001 at 10:17:24AM -0500, Jim Buttafuoco wrote:
+> > Hi,
+> > 
+> > I have been trying to get my 2 9000/710's to boot for a couple of months
+> > now.  Attached is the latest log file from my boot. 
+> > 
+> > The 2 problems that I see are the ramdisk is NOT seen and the BOOTP
+> > fails.  I have used TCPDUMP to look at the packets coming and going from
+> > the system.  All I see is the RBOOTP stuff.  The ramdisk is valid as far
+> > as I can tell. (I mounted it via the loop fs).  Should it be compressed
+> > with ZIP???.
+> 
+> 
+> > SCSI subsystem driver Revision: 1.00
+> > sim700: Couldn't get consistent shared memory
+> > sim700: Configuring 53c700 (SCSI-ID 7) at f0825100, IRQ 86
+> > scsi0: Revision 0x0
+> > Post test1, istat 05, sstat0 00, dstat 81
+> > sim700: WARNING IRQ probe failed, (returned 0)
+> > scsi0: test 1 FAILED: dsps: exp 0xab93001d, got 0x00000000
+> 
+> You have problems with the scsi driver also.  dstat=81 says 
+> "Illegal Instruction Detected", which implies the scsi chip cannot
+> access memory properly.  If the network chip has the same problem,
+> that would explain your other problems.  As you can load the kernel
+> ok, I guess the h/w is ok and we are not setting something up
+> correctly.  I have a 715/75 which uses the same scsi and network
+> drivers; I'll try that in a while - havn't booted it for a month
+> or so.
 
-many thanks for mkp for elucidating this.....
+You'll be pleased to hear that the latest kernel has similar problems
+on my 715/75.  I'm investigating.
 
-<mkp_> In your case it might be nscd that breaks things
-<mkp_> Do you have it running?
-<tausq> hrmm... good point, let me turn it off.. i see that nfsroot has it on by default
-<mkp_> Name Service Caching Daeon
-<mkp_> +m
-<tausq> ah ha!
-* tausq thinks mkp is onto something here..
-<ggg> tausq: but would nscd affect local disk? (adduser/passwd prob)
-<tausq> ggg: it may affect nss...
-<ggg> nss? *sigh*
-<mkp_> nscd caches getpwent() lookups, among other things
-<ggg> ic
-<tausq> indeed with nscd on, i get the problem, with it off everything seems to be ok
-<mkp_> There we go
-<tausq> good call mkp
-<ggg> tausq: could you reply to your mail?
-<tausq> sure, i'll just quote this irc conversation :)
-
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Richard
