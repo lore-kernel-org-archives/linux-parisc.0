@@ -1,18 +1,12 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C16D1484D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Jun 2002 22:27:36 -0600 (MDT)
-Received: from carlos by systemhalted with local (Exim 3.35 #1 (Debian))
-	id 17Osmn-0006UL-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 01 Jul 2002 00:27:37 -0400
-Date: Mon, 1 Jul 2002 00:27:37 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020701042737.GB24881@systemhalted>
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+Subject: [parisc-linux] HP9000 C200 Visualize-EG XFree86 Success!
+Date: Tue, 04 Jun 2002 21:12:24 -0400
+Message-ID: <3CFD6578.40301__40481.4744521447$1416621359$gmane$org@charter.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [OT] Thanks!
-Sender: parisc-linux-admin@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: parisc-linux@parisc-linux.org
+To: debian-hppa@lists.debian.org
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -23,24 +17,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Parisc,
+Just did a network install using the 0.9.3 full cdrom, and it
+went very smoothly other than not being able to get the
+rescue image ( 32 / 64 subdir ) by default. The default net
+install options were messed up. I just [Q]uit the install and
+ran DSelect on its own to get it working right, not really a
+big deal.
 
-I attended OLS this last week and had a fabulous time!
-I met many of you face-to-face for the first time and 
-collaborated in person :) Putting a face to that email
-makes a world of difference. I just wanted to take
-a minute to say thanks to all the people that helped
-make my stay awesome (and that of many others). 
-I didn't get a chance to say 'cheers' to many of you, 
-since I was out late and had to leave early on Sunday.
+The 2.4.17 kernel installed by default would not run X, causing
+the HPMC error. Upgrading to Debian's 2.4.18 kernel fixed this
+problem and gave me 8 bit color at 1024x768 with the Visualize-EG
+board. For web surfers looking for help here is the relevant
+snippet to put in /etc/X11/XF86Config-4
 
-So here it is:
+# Simple XFree86 Configuration for Visualize-EG STI Framebuffer
 
-Cheers,
-Many Thanks,
-Carlos.
+Section "Screen"
+	Identifier	"Default Screen"
+		Device	"Generic Video Card"
+		Monitor	"Generic Monitor"
+		SubSection	"Display"
+			Depth	8
+			Modes	"default"
+		EndSubSection
+EndSection
 
-p.s. If you are heading to Debconf II then I'll get
-	another chance! :)
+Install Notes: "gpm" doesn't seem to work for me, although I
+am running a Dexxa Optical Wheel Mouse through a KVM switch.
+I just set X to "PS/2" and it worked ( but no mouse wheel ).
 
-p.p.s Thomas is using all my bandwidth!
+Looks great! I was able to slurp up the whole Debian system
+via the net with no trouble at all. KDE installed with no problems
+and runs pretty well on this crate.
+
+Just ordered a Visualize-24 graphics board on Ebay which I will
+plug in and see if it works better than the EG board.
+
+See you at Debconf-2!
+
+- Doug
