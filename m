@@ -1,214 +1,56 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA04988
-	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Sep 2000 13:52:28 -0600
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by cosrel1.hp.com (Postfix) with ESMTP id 8A7DE671
-	for <parisc-linux@thepuffingroup.com>; Wed, 27 Sep 2000 13:53:22 -0600 (MDT)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id 57241381CD
-	for <parisc-linux@thepuffingroup.com>; Wed, 27 Sep 2000 13:55:00 -0600 (MDT)
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: multipart/mixed ;
-	boundary="==_Exmh_-16236947030"
-Date: Wed, 27 Sep 2000 13:55:00 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20000927195500.57241381CD@carmen.fc.hp.com>
-Subject: [parisc-linux] floating point exception error
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA05570
+	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Sep 2000 14:54:10 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 27 Sep 2000 20:54:58 -0000
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] floating point exception error
+References: <20000927195500.57241381CD@carmen.fc.hp.com>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 27 Sep 2000 16:41:38 -0400
+In-Reply-To: Matt Taggart's message of "Wed, 27 Sep 2000 13:55:00 -0600"
+Message-ID: <873dilo9dp.fsf@tarwebok.i-did-not-set--mail-host-address--so-shoot-me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multipart MIME message.
+Matt Taggart <taggart@carmen.fc.hp.com> writes:
 
---==_Exmh_-16236947030
-Content-Type: text/plain; charset=us-ascii
+> In trying to build mawk I ran into a bug when the configure tried to test 
+> "floating point exceptions". Attached is the output. BTW- the gawk does 
+> something similar at the same point in it's configure.
 
-In trying to build mawk I ran into a bug when the configure tried to test 
-"floating point exceptions". Attached is the output. BTW- the gawk does 
-something similar at the same point in it's configure.
+Some additional info, since I'm aware of this bug:
 
-Thanks,
+The problem here is that the SIGFPE is not being delivered when the
+test program expects it to be (the test program here being fpe_check.c
+in the mawk sources).
+
+First the program tries to generate divide-by-zero and overflow
+exceptions.  I don't think the former ends up generating an exception,
+but the latter does.  However this exception does not occur
+immediately due to the odd 'deferred trapping' that the PA-RISC FPU
+does.  The program then goes on to do some other stuff (testing
+representation of NaN), which it does not expect to trap.  The next
+floating point instruction occurs in maybe_nan(), and causes the
+delayed trap to occur.
+
+Since its SIGFPE handler does 'longjmp' to a place after where each
+exception was expected to occur, this means the process jumps
+backwards to the overflow test, and then loops endlessly doing this.
+
+I don't understand the mechanics of FPU exceptions on PA-RISC at all.
+The delayed trapping scheme and multiple exception registers are weird
+to say the least - all machines I've seen in the past are either
+totally imprecise like older Alphas, or deliver one exception at a
+time, synchronously, the way that user code expects them to.
+
+We probably need more complicated FPU trap logic in the kernel in
+order to deliver exceptions in the proper POSIX and IEEE manner.  I
+would appreciate it if someone from HP could comment on this - how
+does HP/UX handle this?
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
-
-
---==_Exmh_-16236947030
-Content-Type: text/plain ; name="mawk.error"; charset=us-ascii
-Content-Description: mawk.error
-Content-Disposition: attachment; filename="mawk.error"
-
-...
-checking for fmod... yes
-checking for matherr... yes
-checking for limits.h... yes
-checking return type of signal handlers... void
-checking handling of floating point exceptions
-        division by zer!!die_if_kernel: fpe_check(32468): Floating point exception 14
-o does not gener
-ate an exceptionPSW  : 0004ff0a  
-        overflow doesGR 1 : 20020198   not generate anGR 2 : 000017c3   exception
-GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 7fffffff  GR21 : ffffffff  GR22 : 00000010  GR23 : 00000000  
-GR24 : 00000000  GR25 : 7fffffff  GR26 : ffffffff  GR27 : 00002d30  
-GR28 : 4015bf94  GR29 : 00000000  GR30 : 20020240  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 00001803 00001807 ORIG_R28 : 00000000
- IIR : 30002420 ISR : 00002006 IOR : 2002016c
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 200202d0  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-!!die_if_kernel: fpe_check(32468): Floating point exception 14
-
-PSW  : 0004ff0a  GR 1 : 00002d30  GR 2 : 0000172b  GR 3 : 00000001  
-GR 4 : 40160238  GR 5 : 00002f32  GR 6 : 00002efa  GR 7 : 00000001  
-GR 8 : 00002f1a  GR 9 : 000b5210  GR10 : 000d2dd0  GR11 : 000d6230  
-GR12 : 00000000  GR13 : ffffffff  GR14 : 000d4f50  GR15 : 00000000  
-GR16 : 00095468  GR17 : 00000001  GR18 : 00000000  GR19 : 40160238  
-GR20 : 00003058  GR21 : 40084c2c  GR22 : 00000010  GR23 : 00000000  
-GR24 : 20020210  GR25 : 00000001  GR26 : 00003000  GR27 : 00002d30  
-GR28 : 00000001  GR29 : 00000000  GR30 : 20020180  GR31 : 400c56cf  
-SR0  : 00000000  SR1  : 00002006  SR2  : 00000000  SR3  : 00002006  
-SR4  : 00002006  SR5  : 00002006  SR6  : 00002006  SR7  : 00002006  
-
-IASQ : 00002006 00002006 IAOQ : 4006be2b 4006be2f ORIG_R28 : 00000000
- IIR : 2e90102c ISR : 00002006 IOR : 00003058
-
-make: *** [build] Error 1
-
-geordi:~/mawk/mawk-1.3.3# 
-
-
---==_Exmh_-16236947030--
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
