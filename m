@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cce.ru (sr1.cce.ru [80.79.64.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC8134829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 06:27:48 -0700 (MST)
-Received: from [80.79.64.37] (account nsem HELO cce.ru)
-  by cce.ru (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 351492 for parisc-linux@lists.parisc-linux.org; Thu, 06 Feb 2003 16:28:08 +0300
-Message-ID: <3E4262C2.6000507@cce.ru>
-Date: Thu, 06 Feb 2003 16:27:30 +0300
-From: Nikolay Semenov <nsem@cce.ru>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 654874829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 08:37:16 -0700 (MST)
+Message-Id: <200302061537.h16Fb8av028902@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] B132L: Success and thanks!
+To: asp@ungod.com (Aaron St. Pierre)
+Date: Thu, 6 Feb 2003 10:37:07 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: jbglaw@lug-owl.de, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030206131451.GB5012@hadron> from "Aaron St. Pierre" at Feb 6, 2003 08:14:51 am
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] Sorry for my posting subject!
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,11 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+> It has been suggested to keep a version of gcc-3.0 around (gcc-3.2 gets
+> installed w/ sid ) and perhaps use that to build your kernels. 
+> I am not sure is this is a requirement any longer. 
 
-I am sorry for my previous posting subject line!
+There were two patches installed in the 3.2 branch last weekend to address
+the kernel miscompilation.  They are in 3.2.2 released this week.  The main
+problem was fixed in 3.3 and the main by a series of patches installed in
+the later half of 2002.
 
-Just copy from Putty window to the mozilla mailer subject line.
+Randolph Chung and Grant Grundler reduced the problems to simple testcases.
+Eric Botcazou diagnosed both problems.  Eric and Franz Sirl determined the
+patch set needed.  Randolph, Franz and myself helped with testing.
 
+It was quite an intensive bit of work resolving this problem and getting
+it into 3.2.2.  All those who participated deserve a vote of thanks.
 
-Nikolay Semenov
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
