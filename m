@@ -1,31 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 63C8248EB
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 23:09:12 -0600 (MDT)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA31355
-	for <parisc-linux@puffin.external.hp.com>; Mon, 24 Sep 2001 23:06:26 -0600
-From: emailbase@371.net
-Message-ID: <20010925050945.6196.qmail@mailserv2.iuinc.com>
-Reply-To: coolstarpage <service@coolstarpage.com>
-To: "你好" <parisc-linux@thepuffingroup.com>
-Date: Wed,25 九月 2001 13:04:58 +0800
-Subject: [parisc-linux] 免费送你2万个国内的网站的电子邮件！
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07227482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 02:25:27 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 5FCE0B00C; Tue, 25 Sep 2001 09:24:02 +0100 (BST)
+Date: Tue, 25 Sep 2001 09:24:02 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Sonny Cook <sonny@aspersion.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel 2.5.9-pa24 won't boot 735/125
+Message-ID: <20010925092401.M5051@linuxcare.com>
+References: <Pine.LNX.4.33.0109201328390.14604-100000@lefou> <Pine.LNX.4.33.0109242042210.17244-100000@lefou>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0109242042210.17244-100000@lefou>; from sonny@aspersion.org on Mon, Sep 24, 2001 at 10:09:09PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-邮件总量：19593个搜集时间：2001年7月-9月
+On Mon, Sep 24, 2001 at 10:09:09PM -0600, Sonny Cook wrote:
+> Okay, I've written off cross compiling as a loss.  I did get a 715/80
+> working with no obvious problems.  I've compiled a kernel with the
+> EARLY_BOOTUP_DEBUG flag defined.  So, I boot my 735/125 with that kernel
+> and get much more interesting information.  Thusly:
+...
+> Setting the System Clock using the Hardware Clock as reference...
+> Cannot access the Hardware Clock via any known method.
+> Use the --debug option to see the details of our search for an access
+> method.
+> System Clock set. Local time: Tue Sep 25 20:35:45 MDT 2001
+> 
+> Cleaning: /tmp /var/lock /var/run.
+> 
+> At this point the system refuses to give any more output.  I can ping the
+> box, but there are no services running (sshd is supposed to start up.)  I
+> also assume that the root file system (/dev/sdb2) is indeed mounted,
+> because if I just cold reboot, it has to fsck the filesystem next time.
+> 
+> The kernel is compiled without STI or framebuffer support.  It also has
+> all of the non experimental iptables options compiled in.
 
-搜集范围：
-1、sohu分类网站目录中全部网站。
-2、sina分类网站目录中商业网站、综合网站以及其它大型站点。
-3、网易分类网站目录中商业网站、综合网站以及其它大型站点。
-4、google、中华网热门关键搜索，提取出排名在1000以内的网站的电子邮件。
-5、与网站管理员有关的论坛、留言板。
-6、国内多个著名排行榜中网站。
-7、其它与网站管理者有关的网页。
+To eliminate the possibility of a kernel config problem, I would
+make distclean; cp arch/parisc/debian-configs/32 .config; make oldconfig
+make dep; make
 
+The other thing you can try is booting with init=/bin/sh and try
+starting things up by hand to see what hangs it.  Or maybe remove
+non-essentail services, then if it boots ok try starting them one
+by one.
 
-此目录免费提供！！赶快行动！
-
-
-详细介绍:http://hbzxnew.www71.cn4e.com/news/email/index.asp
+Richard
