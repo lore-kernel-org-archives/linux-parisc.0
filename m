@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E740B4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Nov 2002 18:19:41 -0700 (MST)
-Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
-	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id gAB1JbSf004666
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Nov 2002 20:19:37 -0500 (EST)
-Message-Id: <200211110119.gAB1JaSr004665@hiauly1.hia.nrc.ca>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7747E4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Nov 2002 18:21:34 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18B3Gb-0000lu-00; Mon, 11 Nov 2002 01:21:29 +0000
+Date: Mon, 11 Nov 2002 01:21:29 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org,
+	Randolph Chung <tausq@debian.org>, Jeff Bailey <jbailey@nisa.net>
 Subject: Re: [parisc-linux] glibc 2.3.1 - It's alive! - patches
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Sun, 10 Nov 2002 20:19:36 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, tausq@debian.org,
-	jbailey@nisa.net
-In-Reply-To: <20021111010517.GA13575@systemhalted> from "Carlos O'Donell" at Nov 10, 2002 08:05:17 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20021111012129.A29998@parcelfarce.linux.theplanet.co.uk>
+References: <20021111010517.GA13575@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021111010517.GA13575@systemhalted>; from carlos@baldric.uwo.ca on Sun, Nov 10, 2002 at 08:05:17PM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,14 +26,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+On Sun, Nov 10, 2002 at 08:05:17PM -0500, Carlos O'Donell wrote:
 > Lastly, I think that the fp* tests suffer from the printf bug?
 
-I am fairly certain that this is fixed in gcc 3.2/3.3.  Could you
-do a build with the mainline gcc cvs?  I am interested in feedback.
-as I am trying to squash as many bugs as possible in 3.3 while it's
-still open for general bug fixing.
+Last I looked, we suffered from the fact that glibc thinks `long double'
+is 96 bits, gcc thinks `long double' is 64 bits and gcc-hpux thinks that
+`long double' is 128 bits.  I've been whining about this for over a year
+and nothing's happened.  I think it's fairly clear that not much uses
+long double, otherwise we'd've noticed more failure cases.  So changing
+both gcc & glibc to a 128-bit long double is the Right Thing to do and
+we can just suck up this ABI breakage.
 
-Dave
+In case anyone's wondering, the architecture specifies 32-bit, 64-bit and
+128-bit floating point registers as being available.  My understanding is
+that no processor has actually implemented the 128-bit floating point ops
+(except maybe load and store) and they always trap to the FP emulation
+code (which we copied from HPUX).
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Revolutions do not require corporate support.
