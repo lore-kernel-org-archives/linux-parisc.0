@@ -1,12 +1,15 @@
-From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
-Subject: [parisc-linux] Get your Matrox PCI cards out of the basement ...
-Date: Thu, 3 Jun 2004 00:17:34 +0200
-Message-ID: <20040602221734.GA26176@solo.franken.de>
+From: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] Get your Matrox PCI cards out of the basement ...
+Date: Thu, 3 Jun 2004 04:23:04 +0100
+Message-ID: <20040603032304.GA22448@sal.ucc.ie>
+References: <20040602221734.GA26176@solo.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040602221734.GA26176@solo.franken.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,70 +20,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-....I got the matroxfb driver working on my B2600 including X on top
-of fbdev (the mga driver doesn't work yet). So far I just used
-a very old Matrox Millenium I. Below is the necessary patch for
-2.6.7-rc1.
+On Thu, Jun 03, 2004 at 12:17:34AM +0200, Thomas Bogendoerfer wrote:
 
-Have fun,
-Thomas.
+> ....I got the matroxfb driver working on my B2600 including X on top
+> of fbdev (the mga driver doesn't work yet). So far I just used
+> a very old Matrox Millenium I. Below is the necessary patch for
+> 2.6.7-rc1.
 
+I tried 2.6.7-rc2-pa1 with your patch (which applies fine),
+but I wasn't successful in getting the card to work.
+BTW, I'm running Debian/testing updated today.
 
-Index: matroxfb_base.h
-===================================================================
-RCS file: /home/cvs/parisc/linux-2.6/drivers/video/matrox/matroxfb_base.h,v
-retrieving revision 1.3
-diff -u -p -r1.3 matroxfb_base.h
---- matroxfb_base.h	18 Oct 2003 00:23:18 -0000	1.3
-+++ matroxfb_base.h	2 Jun 2004 21:18:34 -0000
-@@ -99,7 +99,7 @@
- #endif
- #endif
- 
--#if defined(__alpha__) || defined(__mc68000__)
-+#if defined(__alpha__) || defined(__mc68000__) || defined(__hppa__)
- #define READx_WORKS
- #define MEMCPYTOIO_WORKS
- #else
-@@ -165,27 +165,27 @@ typedef struct {
- 
- #ifdef READx_WORKS
- static inline unsigned int mga_readb(vaddr_t va, unsigned int offs) {
--	return readb(va.vaddr + offs);
-+	return fb_readb(va.vaddr + offs);
- }
- 
- static inline unsigned int mga_readw(vaddr_t va, unsigned int offs) {
--	return readw(va.vaddr + offs);
-+	return fb_readw(va.vaddr + offs);
- }
- 
- static inline u_int32_t mga_readl(vaddr_t va, unsigned int offs) {
--	return readl(va.vaddr + offs);
-+	return fb_readl(va.vaddr + offs);
- }
- 
- static inline void mga_writeb(vaddr_t va, unsigned int offs, u_int8_t value) {
--	writeb(value, va.vaddr + offs);
-+	fb_writeb(value, va.vaddr + offs);
- }
- 
- static inline void mga_writew(vaddr_t va, unsigned int offs, u_int16_t value) {
--	writew(value, va.vaddr + offs);
-+	fb_writew(value, va.vaddr + offs);
- }
- 
- static inline void mga_writel(vaddr_t va, unsigned int offs, u_int32_t value) {
--	writel(value, va.vaddr + offs);
-+	fb_writel(value, va.vaddr + offs);
- }
- #else
- static inline unsigned int mga_readb(vaddr_t va, unsigned int offs) {
+I tried with the "VGA BIOS" dip switch set on and off,
+I also tried the "init", "mem" boot parameters and different
+video resolution modes. I even tried to swich it to another PCI slot,
+ but no success (the Voodoo2 works in the PCI slots I tried).
 
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+The result is similar to what I had with the ATI Rage XL I
+also tried to get working ... the graphics card is detected,
+and accessible via /dev/fb0, and I can use fbset to change
+the resoltions, but I don't see any output on my monitor(s) ...
+is simply stays black!
+
+There is also a error message when the matrox is detected on
+boot:
+
+beast kernel: matroxfb: Matrox Millennium (PCI) detected
+beast kernel: matroxfb: Your Matrox device does not have BIOS
+beast kernel: matroxfb: 640x480x8bpp (virtual: 640x3276)
+beast kernel: matroxfb: framebuffer at 0xF4800000, mapped to 0xf4800000, size 2097152
+beast kernel: fb0: MATROX frame buffer device
+beast kernel: fb0: initializing hardware
+beast kernel: matroxfb: Pixel PLL not locked after 5 secs
+beast kernel: matroxfb: Loop PLL not locked after 5 secs
+
+
+N.B. the "PLL not locked after 5 secs" messages also appear when
+I try to change the resolution with fbset. fbset is busy for some
+seconds (at first I thought the process locked up), but then returns
+printing out those messages, and another 'fbset' (without arguments)
+afterwards confirms that the resolution has been changed.
+However the monitor stays black ...
+
+Any hints?
+
+Thanks,
+   Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
