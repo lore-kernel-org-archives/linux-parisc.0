@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A2E564874
-	for <parisc-linux@parisc-linux.org>; Fri, 10 Jan 2003 11:48:31 -0700 (MST)
-Message-Id: <200301101848.h0AImToB004181@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: floating point exception error
-To: jim.hull@hp.com
-Date: Fri, 10 Jan 2003 13:48:29 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: randolph@tausq.org, parisc-linux@parisc-linux.org
-In-Reply-To: <003101c2b8d3$477c8bb0$6763f40f@cup.hp.com> from "Jim Hull" at Jan 10, 2003 10:08:29 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Fri, 10 Jan 2003 12:51:50 -0700
+To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] ibm-disk on a hp 735/125
+Message-ID: <20030110195150.GA21364@dsl2.external.hp.com>
+References: <Pine.GSO.4.51.0301091743500.9837@sunhalle66> <20030110124210.GG2160@aurinko.ntc.nokia.com> <1042203531.19627.11.camel@linux> <20030110145800.GH2160@aurinko.ntc.nokia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030110145800.GH2160@aurinko.ntc.nokia.com>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,17 +20,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> What it does not explain is why the original message reported a
-> difference between a PA-8600 and a PA-8700.  According to every internal
-> HP processor document and PA-RISC FP designer I've been able to track
-> down, this area of the design hasn't been changed since the original
-> PA-8000, so there shouldn't be any differences in behavior.
+On Fri, Jan 10, 2003 at 04:58:00PM +0200, Nahkola Mikko wrote:
+> time these boxes were made, there were supposed to be certain differences 
+> between HP and regular disks. Or maybe that was just HP marketing.
 
-I looked at the assembly code.  The original test was done under hpux.
-I see that the call to ull2dbl has been optimized out of the loop.  It
-is just called once.  So, the code probably is trapping there as well.
+testing. HP tests all it's HPUX products so they are usable in
+"High Availability" configurations and work with all HPUX SCSI HBAs.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> At any rate, there _was_ (and still is, BTW) a way to recognize a HP disk 
+> by the firmware - and there were differences between "workstation" and 
+> "server" disks too, _and_ IIRC "workstation" disks weren't "expected to 
+> work" in servers, the other way round it was "expected to work" but "unsupported" 
+> or something. Don't remember.
+
+workstation and server disks were for a long time seperate products
+and tested seperately.  The reason was cost and time to market.
+If you test something rigorously expect the testing  to (a) take longer
+and (b) expose problems.
+
+While they might still be seperate products, I think they all go through
+the same testing these days - maybe with different hosts/configs.
+
+Testing SCSI disks and SCSI RAID arrays in a multi-initiator
+configuration exposes problems workstation/PC users rarely, if ever, see.
+
+> But since HP-UX 10.20 by the latest, probably earlier too, some people 
+> have been using whatever disks they get as long as the SCSI interfaces 
+> are compatible. I've never heard of problems. 
+
+Well, "works for me" is good enough for most linux users.
+It's not when one is involved with any kind of support contract.
+
+hth,
+grant
