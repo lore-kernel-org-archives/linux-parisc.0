@@ -1,49 +1,81 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA30241
-	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Nov 2000 00:40:18 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 5 Nov 2000 07:42:05 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA04874;
-	Sun, 5 Nov 2000 18:41:55 +1100
-Date: Sun, 5 Nov 2000 18:41:54 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Bdale Garbee <bdale@gag.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] compiler bug?
-In-Reply-To: <20001105061629.9FF2835E20@rover.gag.com>
-Message-ID: <Pine.LNX.4.21.0011051831170.2082-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03381
+	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Nov 2000 17:13:03 -0700
+Received: from localhost (xam@localhost)
+	by sgate.charlysworld.de (8.9.3/8.8.7) with ESMTP id BAA30678
+	for <parisc-linux@thepuffingroup.com>; Mon, 6 Nov 2000 01:14:42 +0100
+Date: Mon, 6 Nov 2000 01:14:41 +0100 (CET)
+From: "xam@deathsdoor.com" <xam@sgate.charlysworld.de>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.10011060038490.12435-100000@sgate.charlysworld.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] HP9000/730 boot problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 4 Nov 2000, Bdale Garbee wrote:
+Hi all,
 
-> Hacking the makefiles to remove "-O -O2" allows the compile to complete 
-> cleanly.  
+i have an HP9000/730 (66.6MHz, 32MB RAM, 10MBit Network, CRX graphics,
+HIL keyboard & mouse, HP 535MBM SCSI HD).
 
-glibc includes are "smart", and do things like `#if defined __OPTIMIZE__'
+I got the latest nfsroot, the latest xc and the palo sources from
+puffin.external.hp.com.
 
-> I assume this means something in the compiler is broken?
+the parition scheme for the HD (id 6) is
 
-No, I think it's a problem with glibc, or perhaps just your include files.
+/dev/sdb1   swap   128MB
+/dev/sdb2   f0     10MB
+/dev/sdb3   ext2   rest
 
-> bdale@j5k:/space/debian/util-linux-2.10o/fdisk $ cc -c -O -O2 -fomit-frame-pointer -I../lib -Wall -Wmissing-prototypes -Wstrict-prototypes -DNCH=1  -DSBINDIR=\"/sbin\" -DUSRSBINDIR=\"/usr/sbin\" -DLOGDIR=\"/var/log\" -DVARPATH=\"/var\" -DLOCALEDIR=\"/usr/share/locale\" fdiskbsdlabel.c -o fdiskbsdlabel.o
-> /usr/include/linux/string.h:12: parse error before "__extension__"
+i untarred nfsroot on /dev/sdb3 and changed /etc/fstab accordingly
+i installed palo with the following command
 
-Your .i file had this in it:
+/opt/palinux/palo-src/palo/palo -I -k /hydra/hppa/boot/vmlinux -b
+/opt/palinux/palo-src/iplboot  -c '3/boot/vmlinux TERM=linux HOME=/
+root=/dev/sdb3' /dev/sdb
 
-extern char * ___strtok;
-extern char * __extension__ ({ char __a0, __a1, __a2; [rest snipped]
 
-which comes from linux/string.h
+well, i used /dev/sdb since there is also the scsi fd (id 0)
+that is /dev/sda IMHO (i tested alos to use root=/dev/sda3 btw).
 
-extern char * ___strtok;
-extern char * strcpy(char *,const char *);
+some of the boot messages
 
-The problem being that strcpy is being replaced with an inline
-expansion.  Dunno why this is happenning.
+PDC ROM rev. 2.1
+IODC ROM rev. 2.1
+32 MB of memory configured and tested.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+
+
+Selecting a system to boot.
+
+Hard booted.
+
+[...]
+now it prints the palo configuration as i installed it
+and the hd partition scheme (but /dev/idaXYZ instead of /dev/sdbXYZ
+[...]
+ext2 block size 1024
+ext2_open(/boot/vmlinux) = 3
+ext2_mount(partition 3) returns 0
+ELF32 executable
+[...]
+
+now all recognized devices (SGC craphics, BA, HIL, LAN, 2x RS232, SCSI,
+EISA, Core Centronics, HP model 'king Cobra' ...)
+
+the kernel boots actually, but i dumps the stack register and the
+processor registers (not included in this mail) after
+
+ASP version 1 at ..... found
+
+
+thats all.
+no message like 'unable to boot root fs' or something ...
+
+any help ?
+
+PS: i tried to use a IBM0664 2.0GB scsi hd before (works fine on
+linux/ia32), but i couldn't get it work on hp (i reported this
+in a former mail).
+
+PPS: just FYI: the same configuration worked with HP/UX 10.10
