@@ -1,128 +1,85 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C8DD482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Jun 2001 00:36:07 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel6.hp.com (Postfix) with ESMTP id 23F591F855
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Jun 2001 02:36:06 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id AAA12924
-	for parisc-linux@lists.parisc-linux.org; Tue, 26 Jun 2001 00:36:02 -0600 (MDT)
-Date: Tue, 26 Jun 2001 00:36:02 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200106260636.AAA12924@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP9000 - 822 - a gift?
-Mime-Version: 1.0
+Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0485482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Jun 2001 01:07:51 -0600 (MDT)
+Sender: christoph.plattner@alcatel.at
+Message-ID: <3B3834C1.2C1ED48E@alcatel.at>
+Date: Tue, 26 Jun 2001 09:07:45 +0200
+From: Christoph Plattner <christoph.plattner@alcatel.at>
+MIME-Version: 1.0
+To: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
+Cc: Markus Ungermann <m.ungermann@tuxhausen.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 712/60: No login, only crashes
+References: <Pine.LNX.4.33.0106252137470.8292-100000@leo.uni-sw.gwdg.de>
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > I just was 'gifted' a hp9000 822 with
->
-> A very old, and very slow, PA-RISC 1.0 (?) HP 9000.
-> Probably not likely to support boot-from-SCSI.
->
+There is no script starting the virtual console, it is kernel stuff.
+But you can remove the login (any thing like "*getty") in the bottom of
+the inittab, but then you will not have any login !!
 
-This machine contains a PA-RISC 1.0 cpu.  Not only will you not be able to
-boot it from a SCSI device on parisc linux, you will not be able to boot
-it at all.  We only support PA-RISC 1.1 cpu's and higher (and still are
-missing some support for PA-RISC 1.1a cpu's, re: a proper trap 18 handler
-and a privileged register trap handler to support reading cr27, two
-items I intend to get around to eventually).
+The devices /dev/tty1 up to /dev/tty9 (I think) are the virtual
+consoles.
+The only way to use the full machine without virtual consoles is the
+use of the serial console !
+The kernel line must say "console=ttyS0" and in the inittab the "*getty"
+should have ttyS0 as paramter ....
 
-Note, that although the core machine dependent PA-RISC support code
-supports PA-RISC 1.1 and better, we still don't support many older
-machines due to proprietary devices with unavailable documentation, etc.
-However, there is a better chance that we would eventually support those
-than support PA-RISC 1.0 cpu's.
+With friendly regards
+	Christoph P.
 
-Even given the documentation, I don't think we will ever support PA-RISC
-1.0 cpu's.  There are just too many differences that make supporting those
-cpu's a pain.  Also, support for an obscure parisc device can usually be
-isolated in a separate file or two, whereas adding support for PA-RISC 1.0
-would involve changes throughout the machine dependent code in arch/parisc.
 
-In case someone who is reading this is curious, here is a list of
-differences that I can think of off the top of my head.  There are
-probably others that I have either forgotten or are not aware of.  I
-didn't begin working on parisc based machines until the 700 series was
-created, which used parisc 1.1a cpus (Although I did follow some of the
-earlier technical issues, since I was working for HP at the time, doing
-HP-UX kernel development for HP 9000 Series 200/300/400 m68k based
-machines).
-
-	DIFFERENCES BETWEEN PARISC 1.0 and later PARISC CPU'S:
-
-        1) No support for shadow registers and their associated rfir
-        instruction.  This would mean that a new set of tlb miss handlers
-        would need to be written.  Other changes in the interrupt path and
-        the non access cache flush emulation code would be required.
-
-	2) Only 16 floating point registers. Would require some
-	(albeit fairly simple) changes in the floating point save/restore
-	code. This would also require that all commands/libraries that
-	use floating point be recompiled with options that let the
-	compiler know these floating point registers are not available
-	(or add support to the kernel to emulate them! ... ugh).
-
-        3) A larger variety in the support of floating point instructions,
-        including some machines that didn't even have an fpu.  Would
-        require additional floating point emulation support in the kernel.
-
-        4) 2K Page size rather than 4K.  Would require a variety of
-        changes in the machine dependent VM support.  Ideally this
-        shouldn't be very hard, but since we haven't yet enabled support
-        for other page sizes, there are probably a fair number of
-        hardwired 4K page size code dependencies.
-
-        5) Inability to disable space register hashing.  I'm not sure if
-        all PA-RISC 1.0 cpu's even supported space register hashing, but I
-        believe that some of the ones that do support it have no way of
-        turning it off.  This may be the single hardest problem to work
-        around.  Very early in the parisc linux implementation we decided
-        to use a "flat" address space, i.e. sr4-sr7 are all set to the
-        same value.  This simplified a lot of things, and this assumption
-        is now fairly embedded in the kernel, compilers, binutils, etc.
-        In order to be able to support shared objects (mmap using
-        MAP_SHARED, Sys V shared memory, etc) with space register hashing
-        enabled, you need to dedicate at least a quadrant of the virtual
-        address space to shared mappings, i.e. some space registers would
-        be set to a per process private value, whereas as at least one
-        would need to be set to a common shared value (this is what HP-UX
-        does).  For starters, the address allocation code would need to be
-        changed to reflect that.  But that would just be the beginning ...
-
-In summary, I just don't think supporting PA-RISC 1.0 cpu's is worth the
-effort.  Note that you can get some newer (i.e. newer than PA-RISC 1.0,
-but still quite old!) PA-RISC machines for less than $50.
-
-> > Am I going to get linux up on this baby or the install
-> > hpux?
->
-> Not linux, but HP-UX should work.  I can't recall if 11.00
-> will run on it, but certainly earlier versions will.
-
-As far as HP-UX goes, there is a difference between whether or not it
-works and whether or not it is officially supported.  When HP drops
-official support it just means that the engineers are free to make design
-decisions on newer HP-UX releases that don't need to take into account
-support of the older boxes.  We don't have a policy of removing the old
-code (see bloat reference below :-)), although that usually happens over
-time as the "owners" of various files modify them.  For example, I believe
-that 11.0 dropped official support for PARISC 1.1a cpu's, but I believe it
-still worked.  Official support for PARISC 1.0 cpu's was dropped at an
-earlier date, but I don't know when HP-UX might have stopped working on
-those earlier machines (for all I know it may still work).
-
-However, HP-UX, in its attempt to try to meet required features for a wide
-variety of customers, continues to bloat.  The size increase from 9.0 to
-10.x and from 10.x to 11.x has been significant.  So, if you really want
-to get that 822 running reasonably well, I'd try to get as old a version
-of HP-UX that you can.  A 9.0 based release will probably give you the
-best compromise between features and size.
-
-John Marvin
-jsm@fc.hp.com
-
-P.S.  Perhaps there are other ways you can use that 822.  Do you own a
-boat? :-)
+Peter Weilbacher wrote:
+> 
+> Hi Markus!
+> 
+> On Mon, 25 Jun 2001, Markus Ungermann wrote:
+> 
+> > Then i installed PA-Linux 0.9 on a 3.2GB-HD (Quantum Fireball 3200S ),
+> > but after the first reboot:
+> > - the system starts and
+> > - the Init-Process works,
+> > - it enter Runlevel 2
+> > - then instead of a login i get an Crash
+> > I get a Dump list (How can i print/copy this?) and the following line:
+> >
+> > Kernel Fault Code 26 regs(differents everytime)
+> 
+> I had the same error when I installed it, I think it is in the known
+> bugs on the webpage. The developers told me to be patient, those are
+> bugs in the graphical STI interface.
+> 
+> A perhaps related problem is that if you try to go down further than
+> the end of the file in vi, it crashes with a similar dump screen.
+> 
+> > Can someone help me to login ?
+> > Or how can i boot into single mode (there is no lilo ;-))) ?
+> 
+> - Press <escape> before booting.
+> - search for the boot device:
+>         search scsi
+> - start the ipl:
+>         boot <scsi-dev> ipl
+> - edit the last parameter and add with a space:
+>         " init=1" or " init=/bin/sh"
+> Starting the IPL boot should get you booted. You should then perhaps
+> edit /etc/inittab before trying further.
+> 
+> Can anyone tell me, which script in /etc/init.d starts the virtual
+> consoles? It's none from the ones in /etc/rc1.d/...
+> 
+> > Is the powersupply strong enough for a second intern HD (then i boot
+> > from the 520MB und use the Quantum as /usr) ?
+> 
+> Just try it? There is a special room for a second disk in my
+> machine, which I cannot use because the other disks I have get too
+> hot.
+> 
+> Gruesse,
+>         Peter.
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
