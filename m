@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 00261484D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Feb 2003 10:09:41 -0700 (MST)
-Date: Fri, 21 Feb 2003 18:09:40 +0100
-Message-ID: <3E484410000030DB@ocpmta7.freegates.net>
-In-Reply-To: <3E5658C4.30003@bluehash.de>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] X problems...
-To: =?ISO-8859-1?Q?R=FCdiger=20Scholz?= <r.scholz@bluehash.de>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 739A0483C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Feb 2003 14:39:39 -0700 (MST)
+Date: Fri, 21 Feb 2003 22:39:00 +0100
+From: Thibaut VARENE <varenet@esiee.fr>
+To: adrian.criveanu@gmx.co.uk, parisc-linux@lists.parisc-linux.org
+Message-Id: <20030221223900.32603772.varenet@esiee.fr>
+In-Reply-To: <14464.1045418470@www16.gmx.net>
+References: <14464.1045418470@www16.gmx.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Re: X on C240
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,48 +22,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->Date: Fri, 21 Feb 2003 17:50:12 +0100
->From: Rüdiger Scholz <r.scholz@bluehash.de>
->To: Joel Soete <jsoe0708@tiscali.be>, 
-> parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] X problems...
->
->
->Joel Soete wrote:
->
->>Hi Dan,
->>
->>I also install a b2k with linux, also I am very interrested by your information.
->>
->>I so download rpms that you mentionned and install it.
->>
->>I just first notice that they are just different revision of the kernel
->>module for hpgfx :). But, after a quick search on google, I read that it
->>must exists somewhere a set of user space tools as FXconfig.sh (to config
->>XFree86 if I well understand). Any info about this?
->>  
->>
->Using Google, I found this URL:
->
->http://www.msclinux.com/software/msclinux/installcd_packages_july2002-i686/msclinux-i686-July2002-installation-RPMS-hpgraphics-1.5.3.k24-3.msc.i686.rpm.html
->
->Hope it helps,
->    Rüdiger
->
->
+On Sun, 16 Feb 2003 19:01:10 +0100 (MET)
+adrian.criveanu@gmx.co.uk wrote:
 
-hi hi I just follow the same and up in ftp link to finaly locate:
+> Dear Sir,
+> 
+> I apologise for writing you directly but I've seen your name a lot of times
+> in the mail lists I looked for an answer ... You know how it happens... If
+> you are nice and help people, they keep bothering you :)
+Well, I know but you would probably have had a quicker answer by posting on the m-l directly, since I was on vacation till tonight.
 
-<ftp://ftp.msclinux.com/msclinux/i686/current/SRPMS/hpgraphics-1.5.3.2.4.18-9.msc.src.rpm>
+For what it's worth, you should avoid (as anybody else) posting directly to people, please consider the mess if everybody does so... Usually I don't answer direct mails ;P
 
-(i will have a look but doubt that i386 asm was remove)
-
-Thanks a lot,
-    Joel
+That's why I'm CCing the m-l anyway.
+> 
+> I tried to install 3.0r0 from the CDs. When I used the graphics card, it
+> didn't go too far and gave me an HPMC (I saw a mail from somebody with a  B1000
+> which had the same problem). I managed to install Debian only using the
+> serial console. IN one of your messages you said thet Vis-EG is supported. My C240
+> has a A4450A card (Vis-EG) and it seems it doesn't work with Debian. 
+If I remember correctly, 3.0r0 doesn't support B1000. You should use one of our netinsts.
+http://pateam.esiee.fr/download.html
+> 
+> Unfortunately I wasn't able to find a way to use it on my workstation. Is is
+> supported or do I need a PCI version of it? Regardless of the answer, is
+> there anywhere a good documentation on how to configure these cards for Debian?
+The only thing you need is STIFB support and a proper X configuration (that is, one that respects your kernel framebuffer device setup (see the mailing-list archive for details and the PA/Linux Boot Howto:
+http://pateam.esiee.fr/doc.html)
+> 
+> Thank you very much.
+You're welcome.
+> 
+> Regards,
+> 
+> Adrian
+> 
 
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
