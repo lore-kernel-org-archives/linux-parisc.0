@@ -1,17 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: [parisc-linux] Re: Comments?
-Date: Sat, 5 Mar 2005 15:33:20 -0500 (EST)
-Message-ID: <200503052033.j25KXK8x007561@hiauly1.hia.nrc.ca>
-References: <20050305194652.GG23803@baldric.uwo.ca>
+Date: Sat, 5 Mar 2005 16:53:23 -0500 (EST)
+Message-ID: <200503052153.j25LrOQW014375@hiauly1.hia.nrc.ca>
+References: <no.id>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org,
  tausq@debian.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050305194652.GG23803@baldric.uwo.ca> from "Carlos O'Donell" at
-	Mar 5, 2005 02:46:53 pm
+In-Reply-To: <no.id> from "John David Anglin" at Mar 5, 2005 03:33:20 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,51 +21,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > I think we have somehow broken __cffc.  I did a binutils build
-> > yesterday and various ld tests are now failing.  These are tests
-> > that compare function pointers.
+> > > I think we have somehow broken __cffc.  I did a binutils build
+> > > yesterday and various ld tests are now failing.  These are tests
+> > > that compare function pointers.
+> > 
+> > I didn't feed anything new into debian-glibc. All my patches have always
+> > strived to keep __cffc working, if I messup the function pointer
+> > comparison I get a slew of glibc testsuite failures which I always
+> > patchup by making sure __cffc works :)
 > 
-> I didn't feed anything new into debian-glibc. All my patches have always
-> strived to keep __cffc working, if I messup the function pointer
-> comparison I get a slew of glibc testsuite failures which I always
-> patchup by making sure __cffc works :)
+> I haven't touched fptr.c either, although there is a change in GCC
+> 4.0 with respect to canonicalization.  I'm using the debian glibc,
+> 2.3.2.ds1-20, on the system on which I noticed this problem.
 
-I haven't touched fptr.c either, although there is a change in GCC
-4.0 with respect to canonicalization.  I'm using the debian glibc,
-2.3.2.ds1-20, on the system on which I noticed this problem.
+Ok, ld is broken in the binutils CVS head.
+__canonicalize_funcptr_for_compare doesn't load the correct address
+for _GLOBAL_OFFSET_TABLE_ in shared libraries.  It loads the address
+used by main.  As a result, it thinks the plabel for the function
+has been resolved ;(
 
-2004-12-12  Nathanael Nerode  <neroden@gcc.gnu.org>
-	    John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
+The testcase is:
 
-	PR middle-end/17564
-	* dojump.c (do_compare_and_jump): Only canonicalize function pointers
-	in a comparison if both sides are function pointers.
+foo.c:
 
-I checked that the binutils testsuite fails with 3.4, so I don't think
-the problem is a GCC issue.  I was going to try and see what's happening
-this afternoon.  I've been working on some testsuite cleanups today.
+extern void bar (void);
+typedef void (*func_t)(void);
+int
+foo (func_t f)
+{
+  return f == bar;
+}
 
-Another thing that I need to figure out is the cause of the libstdc++
-fails:
+bar.c:
 
-hiauly6 4.0.0:
-FAIL: 27_io/basic_filebuf/sgetn/char/1-in.cc execution test
-FAIL: 27_io/basic_filebuf/sgetn/char/1-io.cc execution test
-FAIL: 27_io/basic_filebuf/sgetn/char/2-in.cc execution test
-FAIL: 27_io/basic_filebuf/sgetn/char/2-io.cc execution test
-FAIL: 27_io/basic_filebuf/underflow/wchar_t/11603.cc execution test
-FAIL: 27_io/basic_istream/readsome/char/6746-2.cc execution test
-FAIL: 27_io/basic_istream/readsome/wchar_t/6746-2.cc execution test
+void bar (void) {};
+int
+main ()
+{
+  if (!foo (bar))
+    abort ();
+  return 0;
+}
 
-gsyprf11 4.1.0:
-FAIL: 22_locale/messages/members/char/1.cc execution test
-FAIL: 22_locale/messages/members/char/2.cc execution test
-FAIL: 22_locale/messages/members/char/wrapped_env.cc execution test
-FAIL: 22_locale/messages/members/char/wrapped_locale.cc execution test
-FAIL: 22_locale/messages_byname/named_equivalence.cc execution test
+gcc -g -fPIC -S foo.c
+gcc -shared -fPIC -o foo.sl foo.o
+gcc -c -g -w bar.c
+gcc -o bar bar.o foo.sl
 
-It's strange that the two systems have a completely different
-sets of testsuite fails.  There aren't any fails under hpux.
+nm foo.sl
+...
+00010ab0 a _GLOBAL_OFFSET_TABLE_
+
+nm bar
+...
+00020c54 d _GLOBAL_OFFSET_TABLE_
 
 Dave
 -- 
