@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 56AAC482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Mar 2003 08:41:58 -0700 (MST)
-Date: Tue, 25 Mar 2003 10:41:44 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Matthew Wilcox <willy@debian.org>, dave.anglin@nrc-cnrc.gc.ca,
-	tausq@debian.org, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Glibc 2.3.2 failures and possible fixes?
-Message-ID: <20030325154144.GN8436@systemhalted>
-References: <20030324220130.GP31008@parcelfarce.linux.theplanet.co.uk> <200303251427.h2PERXxE029413@hiauly1.hia.nrc.ca>
+Received: from sccrmhc02.attbi.com (sccrmhc02.attbi.com [204.127.202.62])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 48AF2482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Mar 2003 09:12:15 -0700 (MST)
+Date: Tue, 25 Mar 2003 08:12:07 -0800
+From: "H. J. Lu" <hjl@lucon.org>
+To: Ryan Bradetich <rbrad@uswest.net>
+Cc: Andreas Schwab <schwab@suse.de>, libc-alpha@sources.redhat.com,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on parisc-linux 2.5 kernel??
+Message-ID: <20030325081207.B18730@lucon.org>
+References: <1048493134.8777.22.camel@beavis.ybsoft.com> <jeptohumcp.fsf@sykes.suse.de> <20030324184447.GA26572@uswest.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200303251427.h2PERXxE029413@hiauly1.hia.nrc.ca>
+In-Reply-To: <20030324184447.GA26572@uswest.net>; from rbrad@uswest.net on Mon, Mar 24, 2003 at 11:44:47AM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,38 +24,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I noticed that a couple of libstdc++ tests that used to fail because
-> of the long double mismatch are fixed with 2.3.1-14 :)
-
-Really? I didn't even put in patches for -14? :) This is all strictly
-from upstream glibc.
- 
-> > > elf/vismain.out
-> > > elf/neededtest.out
-> > > elf/neededtest2.out
-> > > elf/neededtest3.out
-> > > elf/neededtest4.out
-> > > elf/circleload1.out
-> > > 
-> > > - These have been around for a while, any idea about how to fix them?
-> > 
-> > They've certainly been around since I was hacking on glibc ...
+On Mon, Mar 24, 2003 at 11:44:47AM -0700, Ryan Bradetich wrote:
+> > hppa is using function descriptors, AFAIK.  So you'll have to do something
+> > similar to what ia64 and ppc64 are doing.
 > 
-> Are you testing with 3.3?  Some elf tests in the binutils suite
-> were failing because of the need to canonicalize function pointers.
-> There were also some tests that failed because we absolutely need
-> '-fPIC' for tests with shared libraries.  I'd be interested to know
-> what's causing these.
+> Thanks much for the reply!  I will investigate the function descriptors and
+> see if that accounts for the different in offsets.  If so, I just need to
+> figure out which side needs to be fixed :)
+> 
 
-I can rebuild it using 3.3 and see if this goes away. Right now I'm
-building with 3.2.3. I sure hope getting rid of these is as easy as
-building with 3.3!
+I posted a patch a long time ago to unify function descriptor handling
+such that ia64 and pa-risc don't have to reinvent the wheel.
 
-On a second note, I've completely revamped the sysdep-cancel support
-since I must have been smoking crack when I wrote it... so I'm going to
-compile another round that should come out much better (hopefully
-removing all the linuxthread failures).
 
-Thanks for the feedback!
-
-c.
+H.J.
