@@ -1,12 +1,12 @@
-From: ghub005 <ghub005@xtra.co.nz>
-Subject: [parisc-linux] HP 748i RAM
-Date: Wed, 1 Sep 2004 1:06:22 +1200
-Message-ID: <20040831130622.MBQE21194.mta1-rme.xtra.co.nz@[210.86.15.139]>
-Reply-To: ghub005@xtra.co.nz
+From: Bartlomiej Ochman <fback@fback.net>
+Subject: [parisc-linux] [newbie] Where to start from?
+Date: Wed, 01 Sep 2004 15:23:47 +0200
+Message-ID: <4135CD63.9040507@fback.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii;
+  format=flowed
+To: parisc <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,15 +18,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi
+Hello.
 
-I'm looking for a 32MB or 64MB memory module for my 748i/64 system. If 
-anybody has a part they want to sell, could they please email me off-list.
+For some time now, I installed debian/testing on some spare C200+.
+I didn't have much time to play around with it until now. Recently I 
+discovered, it hangs completly, without any message, under heavy disc 
+load (eg. bzip2 -cd kernel-source-2.6.8.tar.bz | tar xf -, or apt-get 
+upgrade cycle).
 
-Best regards,
+As I am not familiar with hppa architecture, where should I start to 
+snoop from? I've tried both 2.4.x and 2.6.x kernels, both stock and 
+custom compiled and they both behave the same way.
 
-Gavin
-
+TIA,
+BO
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
