@@ -1,39 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA09438
-	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Mar 2000 12:34:49 -0700
-Date: Sun, 5 Mar 2000 19:34:43 +0100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA09789
+	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Mar 2000 12:47:42 -0700
+Received: (from prumpf@localhost)
+	by inwestnet.de (8.9.3/8.9.3) id TAA09192
+	for parisc-linux@thepuffingroup.com; Sun, 5 Mar 2000 19:48:40 +0100
+Resent-Message-Id: <200003051848.TAA09192@inwestnet.de>
+Date: Sun, 5 Mar 2000 19:46:52 +0100
 From: Philipp Rumpf <prumpf@inwestnet.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: willy@thepuffingroup.com, huck@cup.hp.com, parisc-linux@thepuffingroup.com
+To: huck@cup.hp.com
 Subject: Re: [parisc-linux] lasi scsi driver
-Message-ID: <20000305193443.A8727@abacus.local>
-References: <20000304144938.A9944@thepuffingroup.com> <200003050549.VAA03562@milano.cup.hp.com>
+Message-ID: <20000305194652.A9157@abacus.local>
+References: <006601bf8487$e057e010$a94abc0f@hungary.hp.com> <200003031910.LAA19111@lucy.cup.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200003050549.VAA03562@milano.cup.hp.com>; from grundler@cup.hp.com on Sat, Mar 04, 2000 at 09:49:49PM -0800
-List-ID: <linux-parisc.vger.kernel.org>
+In-Reply-To: <200003031910.LAA19111@lucy.cup.hp.com>; from jerry_huck@hp.com on Fri, Mar 03, 2000 at 12:18:22PM -0700
 
-> In personal conversations, two knowledgable folks have suggested
-> the following:
-> o PA-7100LC systems support uncacheable memory and subcacheline access.
->   So these boxes should be supportable.
-> 
-> o PA-7300LC systems *might* support uncacheable memory and subcacheline...
->   (Could anyone definitively answer this for any PA-7300LC box?)
+> While the PA-RISC processor architecture supports the notion of a
+> non-cacheable page, most HP memory systems do not - certainly not the
+> most recent memory systems.
 
-It does, according to our documentation.
+Can you give us a concrete list of broken memory systems ?
 
-> o PA-7000 systems are pretty much SOL.
->   (But they could be perfectly useful if folks add cache flushing to
->    the few device drivers needed for graphics and stuff off of LASI.)
+> If you set the U-bit on a main memory page and then reference the page,
+> the processor will emit a sub-cacheline transaction and the memory system
+> will do something bad (probably HPMC).
 
-More importantly, they don't use PCI (and not even GSC).  It's perfectly
-fine for us to require HP-PB drivers aso to do cache flushing.
+So there is a sub-cacheline transaction on Runway but current memory
+controllers don't implement it ?
 
-> In summary, the number of "unsupportable" systems isn't as big
-> as I first thought.
+> So don't ever get in the situation where you need uncacheable main memory.
 
-I'm still not convinced there's going to be any problem at all, even on
-runway systems.
+uncacheable main memory is the only sane way to deal with cache-incoherent
+DMA - macros to flush the cache are both slower and harder to add to drivers
+written with the assumption that dma is cache-coherent.
 
 	Philipp Rumpf
