@@ -1,46 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA04874
-	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Sep 2000 21:29:49 -0600
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by cosrel1.hp.com (Postfix) with ESMTP id 8153E441
-	for <parisc-linux@thepuffingroup.com>; Sat,  2 Sep 2000 21:30:05 -0600 (MDT)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id VAA17641 for parisc-linux@thepuffingroup.com; Sat, 2 Sep 2000 21:29:57 -0600 (MDT)
-Date: Sat, 2 Sep 2000 21:29:57 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200009030329.VAA17641@udlkern.fc.hp.com>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA05076
+	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Sep 2000 21:33:40 -0600
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <39B1B6D7.8898D3C6@uswest.net>
+Date: Sat, 02 Sep 2000 20:26:31 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
+MIME-Version: 1.0
+To: David Huggins-Daines <dhd@linuxcare.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Boot error on C200+
+References: <39B1822A.4E8F20AB@uswest.net> <87em32l26m.fsf@linuxcare.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Boot error on C200+
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bob Pflederer wrote:
+David Huggins-Daines wrote:
 
-> I see this on C180.  It goes away if you modify entry.S to use
-> PA2.0-style tlb inserts instead of the PA1.1-style tlb inserts.
-> Try the attached patch.  It modifies the tlb miss handlers at startup to
-> use PA2.0 tlb inserts if you have a PA2.0 cpu.  PA-8000 docs claim
-> that PA1.1 tlb inserts are not supported, so I suspect we're hitting
-> a case that doesn't work.
+> Ryan Bradetich <rbradetich@uswest.net> writes:
 >
-> Would someone who has CVS write access be willing to commit this
-> patch?  It's the last thing I need to make C180 work.
+> > Kernel Fault: Code=7 regs=c7f98248 (Addr=00000110)
+> >
+> > PSW  : 0004000b  GR 1 : 00002000  GR 2 : 00013403  GR 3 : 00000000
+> > GR 4 : 2001ff74  GR 5 : 00000000  GR 6 : 000777f4  GR 7 : 000010c4
+> > GR 8 : 000011bc  GR 9 : c7f98000  GR10 : c022fa78  GR11 : c0270030
+> > GR12 : c0270008  GR13 : c022fe14  GR14 : c0270000  GR15 : 617bfdfb
+> > GR16 : c027c60c  GR17 : 00000000  GR18 : c02b0000  GR19 : 00000001
+> > GR20 : 00000037  GR21 : 00089b9c  GR22 : 00089bd8  GR23 : 000010c4
+> > GR24 : 2001ff74  GR25 : 00000001  GR26 : 00000000  GR27 : 00088f00
+> > GR28 : b64d8e60  GR29 : b44302d0  GR30 : 20020140  GR31 : 00022d63
+> > SR0  : 00002000  SR1  : fffd2dff  SR2  : 00000000  SR3  : 00002000
+> > SR4  : 00000000  SR5  : 00002000  SR6  : 00002000  SR7  : 00002000
+> >
+> > IASQ : 00000000 00000000 IAOQ : 00000110 00000114 ORIG_R28 : ffdf7fff
+>                            ^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> That is the syscall gateway page.  Note that the low bits of IAOQ are
+> clear, so you are running in kernel mode and kernel space at this
+> point.  Note also that the IAOQ points to just after the 'gate'
+> instruction in linux_gateway_page, and from the look of the space
+> registers, you've managed to successfully execute the instruction in
+> the delay slot of the gate (mtsp %r0,%sr4) but nothing else.
 
-Please don't anyone do this.  I've got another fix in progress.  Bob is
-correct that we shouldn't be using the PA1.1 inserts.  But he was fooled
-by redundant code in trap_init(), thinking that we haven't gone virtual
-yet.  Code in trap_init() sets the iva, but it should be removed (which I
-will do).  We actually set the iva (and install a small set of mappings)
-very early in real/head.S and go virtual before calling start_parisc().
-We never run any C code in real mode.  Bob's patch means that we would
-still run 1.1 inserts for a while, and then it would be patching the tlb
-miss handlers WHILE THEY ARE POTENTIALLY BEING USED!
+I just wanted to verify I understood how you obtained this information...
 
-My fix will do a simple 3-4 assembly instruction test for PA2.0 in
-head.S, and then install the appropriate iva. This wastes 2K of memory
-having two iva's, but is a lot simpler to do in assembly very early
-in the boot process. I'll try to get this done by Tuesday morning
-(I work throughout the night Monday).
+hppa-linux-objdump -d vmlinux
 
-John Marvin
-jsm@fc.hp.com
+c010d100 <linux_gateway_entry>:
+c010d100:       00 00 e4 a1     mfsp sr7,r1
+c010d104:       00 01 d8 20     mtsp r1,sr3
+c010d108:       e8 00 20 00     b,gate c010d110 <linux_gateway_entry+0x10>,r0
+c010d10c:       00 00 38 20     mtsp r0,sr4
+c010d110:       00 00 78 20     mtsp r0,sr5
+
+SR4 = 0, but SR5 != 0 ... therefore the delay slot of the gate instruction
+executed.
+
+> Note that GR20 is 0x37, which is the syscall number for fcntl(), which
+> confirms your earlier findings :-)
