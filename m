@@ -1,65 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 06BE64924
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 09:55:37 -0600 (MDT)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15o5Pc-0000lW-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 01 Oct 2001 17:55:20 +0200
-Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
-	id 15o5Oj-000892-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 01 Oct 2001 17:54:25 +0200
-Date: Mon, 1 Oct 2001 17:54:25 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20011001175425.A31305@dogbert.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Sender: Albert Strasheim <fullung@dogbert.localdomain>
-Subject: [parisc-linux] woody install on 720/50
+Received: from mx04.nexgo.de (mx04.nexgo.de [151.189.8.80])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3BA0048C1
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 11:11:35 -0600 (MDT)
+Message-ID: <3BB8A3FC.7090304@hrzpub.tu-darmstadt.de>
+Date: Mon, 01 Oct 2001 19:12:28 +0200
+From: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] Additional Address cleanup
+References: <20010921104838.A2049@beavis.ybsoft.com> <3BAF13BC.3090302@hrzpub.tu-darmstadt.de> <20010924215918.A23464@beavis.ybsoft.com> <3BB0BFF9.50708@hrzpub.tu-darmstadt.de> <20010925210035.A22586@solo.franken.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thomas Bogendoerfer wrote:
 
-Hello all,
+>
+>bug in the sti code. It doesn't use the sti rom from the card, but from
+>the onboard sti rom. I've played with my 715/100 with an extra HCRX and
+>had the same problem. I've disabled the HCRX by removing the connection
+>between mainboard and HCRX, then the kernel from the 0.9.2 crashed after
+>starting the init from the install ramdisk (Kernel Fault: Code=15) :-(
+>
+>Hopefully I'll get some sti hacking done during the upcoming Linux
+>Hackermeeting in Oldenburg coming weekend.
+>
+>Thomas.
+>
 
-After applying Jurij's latest patch, and creating a new Debian bootdisk
-lifimage with it, I booted it up and tried the Debian install again.
+Hi,
 
-I tried a CD-ROM install first, but the installer refused to mount my
-CD-ROM for some reason, even though it was detected as a possible device
-to boot from.
+I'm glad i'm not the only one with this problem. And even someone knows 
+the solution for the problem. ;-). I also disabled my add-on card the 
+same way, and then the sti-stuff worked quite fine. But it would be 
+cooler to use the second card, too.
+But you already have a patch? I can only help with testing and a little 
+bit of debugging as all of my fingers are thumbs ;-)
 
-Next I tried a network install using my i386 box (with co-ax network
-card to connect to the 720) as a web server. According to the
-access.log, the drivers.tgz and rescue.bin very retrieved without
-problems. When it tried to extract the rescue.bin, it croaked with a=20
-message saying "Bad address." When I tried to retrieve the images a
-second time, the installer croaked.
-
-The box still responds to pings, but not much else.
-
-Any ideas on the "Bad address" problem?
-
-Regards,
-
-Albert
-
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7uJGxDg+hOeRZtkMRAmULAJ9ld6pU/TBSSHU/3K3rAmYUYSEzpQCdF1Pw
-29mrauEgHl/MZiMlV8bKbDk=
-=nZ+G
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
+So long,
+        Ruediger
