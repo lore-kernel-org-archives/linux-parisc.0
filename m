@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1E4A1482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 04:57:18 -0600 (MDT)
-Date: Mon, 6 May 2002 12:57:15 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Randolph Chung <tausq@debian.org>
-Cc: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] NTP and the real time clock
-Message-ID: <20020506105714.GS14146@charite.de>
-References: <20020506064402.GD14146@charite.de> <20020506065214.GE14146@charite.de> <20020506080328.GA30370@tausq.org>
+Received: from disaster.jaj.com (disaster.jaj.com [66.92.223.91])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CFB94482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 08:32:37 -0600 (MDT)
+Date: Mon, 6 May 2002 10:32:12 -0400
+From: Phil Edwards <phil@jaj.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, doko@cs.tu-berlin.de,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org
+Subject: Re: [parisc-linux] Re: gcc-3.? compiler for hppa (3.1, 3.1+dwarf2, 3.2cvs20020429?)
+Message-ID: <20020506103212.A27151@disaster.basement.lan>
+References: <20020504165740.GN30370@tausq.org> <200205041754.g44Hs8it027911@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020506080328.GA30370@tausq.org>
+In-Reply-To: <200205041754.g44Hs8it027911@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Sat, May 04, 2002 at 01:54:07PM -0400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am 06.05.2002 um 01:03:29 -0700 schrieb Randolph Chung folgendes:
+> > i am concerned that between gcc versions, there are often changes in the
+> > C++ (and maybe others) ABI, and moving all of our packages to the new 
+> > version is likely going to be a painful process. If the g++-3.2 ABI is
+> > already frozen (?)
 
-> > So the hardwareclock is never set.
-> 
-> Are you sure?
+The C++ ABI is done, but there were minor bugs in 3.0's implementation of
+that ABI.  The bugs were fixed in 3.1, thus the change.
 
-Well, no.
- 
-> legolas:/usr/src/linux-ide# hwclock --show
-> Mon May  6 00:05:08 2002  -0.995996 seconds
-> legolas:/usr/src/linux-ide# date 050600002002
-> Mon May  6 00:00:00 PDT 2002
-> legolas:/usr/src/linux-ide# hwclock --systohc
-> legolas:/usr/src/linux-ide# hwclock --show
-> Mon May  6 00:00:23 2002  -0.999298 seconds
+The libstdc++ ABI is /not/ stable yet.
 
-OK, seems to work.
-But what is that "-0.999298 seconds" stuff?
+
+> I still haven't figured out why libstdc++ needs to be installed prior
+> to running the testsuite.
+
+That's weird... nothing immediately comes to mind.
+
+
+Phil
 
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-When the government outlaws cryptography, bayl pevzvanyf jvyy unir
-cevinpl. 
+If ye love wealth greater than liberty, the tranquility of servitude greater
+than the animating contest for freedom, go home and leave us in peace.  We seek
+not your counsel, nor your arms.  Crouch down and lick the hand that feeds you;
+and may posterity forget that ye were our countrymen.            - Samuel Adams
