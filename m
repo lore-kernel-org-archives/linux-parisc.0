@@ -1,23 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DE510482B
-	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 16:02:11 -0600 (MDT)
-Subject: Re: [parisc-linux] List of packages for hppa ISO release
-To: galt@inconnu.isu.edu (John Galt)
-Date: Tue, 29 May 2001 22:53:37 +0100 (BST)
-Cc: matthew@wil.cx (Matthew Wilcox),
-	taggart@carmen.fc.hp.com (Matt Taggart),
-	grundler@puffin.external.hp.com (Grant Grundler),
-	parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-In-Reply-To: <Pine.LNX.4.32.0105291515380.2066-100000@inconnu.isu.edu> from "John Galt" at May 29, 2001 03:18:50 PM
-MIME-Version: 1.0
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 24E8C482A
+	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 16:47:39 -0600 (MDT)
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] List of packages for hppa ISO release 
+In-Reply-To: Message from Andrew Shugg <andrew@neep.com.au>
+   of "Wed, 30 May 2001 05:30:00 +0800." <20010530052958.F32752@neep.com.au>
+References: <200105261645.KAA19506@puffin.external.hp.com>
+ <grundler@puffin.external.hp.com> <20010529201628.279E037CFD@carmen.fc.hp.com>
+   <20010530052958.F32752@neep.com.au>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E154rQn-0004x2-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Date: Tue, 29 May 2001 16:50:23 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010529225023.5E4F937CFD@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> sirc is going to violate the POLS for HPUX admins migrating.  The HPPA
-> archive (auuugh! redundant!) lists BitchX, ircii, and blackened as IRC
-> clients.  BitchX looks like the _de facto_ standard one from here.
+Andrew Shugg writes...
 
-BitchX is actually banned on some networks.
+> Matt Taggart said:
+> > > o add an irc client? (tirc? tinyirc? ircii?)
+> > 
+> > Good idea. Which one?
+> 
+> I like epic.
+
+I just installed it and it seems to have some problems(ncurses?). I also tried 
+sirc and it seems to work ok, so we'll go with that for now.
+
+Thanks,
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
