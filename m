@@ -1,16 +1,18 @@
 Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A6E74854
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62E974854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 10:52:44 -0600 (MDT)
-Date: Mon, 26 Apr 2004 18:52:40 +0200
-Message-ID: <408D3DDB00000005@ocpmta1.freegates.net>
+	Mon, 26 Apr 2004 10:55:06 -0600 (MDT)
+Date: Mon, 26 Apr 2004 18:55:02 +0200
+Message-ID: <408D3DDB0000000B@ocpmta1.freegates.net>
+In-Reply-To: <20040426014111.GC3965@tausq.org>
 From: "Joel Soete" <soete.joel@tiscali.be>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] 7300LC
+To: "Randolph Chung" <tausq@debian.org>,
+	"Matthew Wilcox" <willy@debian.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] Re: kernel>=2.6.4-rc3 hung or panic on C1[18]0
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,30 +22,12 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
 
-I know it shouldn't be the source of the pb but btw I noticed:
+> on pa11 gas won't assemble the ldd insn.
 
-> ncr53c8xx.c:7594:	u_long baddr = map_scsi_single_data(np, cmd);
+Yes, it doesn't (i test on a b180 which just have a PA7300LC).
 
-cmd is a "struct scsi_cmnd *" (the parameter of ncr_scatter)
-
-> sym53c8xx_comm.h:699:static int __map_scsi_sg_data(struct device *dev,
-Scsi_Cmnd *cmd)
-...
-sym53c8xx_comm.h:708:	use_sg = dma_map_sg(dev, cmd->buffer, cmd->use_sg,
-dma_dir);
-
-and here cmd is a "Scsi_Cmnd *" which is so of different type because of
-"typedef struct scsi_cmnd Scsi_Cmnd"
-
-
-What should it be done?
-
-Thanks in advance for your attention,
-    Joel
-
-
+Joel
 
 ----------------------------------------------------------------------------------------
 Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
