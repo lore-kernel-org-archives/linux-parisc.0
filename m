@@ -1,32 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA31952
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Mar 2000 10:34:28 -0700
-Received: (from ncc@localhost)
-	by milquetoast.cs.mcgill.ca (8.9.3/8.9.3) id LAA24029
-	for parisc-linux@thepuffingroup.com; Fri, 10 Mar 2000 11:35:29 -0500 (EST)
-Date: Fri, 10 Mar 2000 11:35:29 -0500
-From: Nick Cabatoff <ncc@cs.mcgill.ca>
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA02495
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Mar 2000 16:26:50 -0700
+Date: Fri, 10 Mar 2000 23:28:02 +0100
+From: Dominik Kubla <dominik.kubla@uni-mainz.de>
+To: Nick Cabatoff <ncc@cs.mcgill.ca>
+Cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] HFS linux implementation
-Message-ID: <20000310113529.F23018@cs.mcgill.ca>
-References: <20000309193535.C3423@cs.mcgill.ca> <yq1put3xlzd.fsf@leyland.socsci.auc.dk> <20000310105921.C23018@cs.mcgill.ca> <20000310110404.M27942@thepuffingroup.com>
+Message-ID: <20000310232802.A6578@uni-mainz.de>
+References: <20000309193535.C3423@cs.mcgill.ca> <200003100137.RAA09015@milano.cup.hp.com> <20000310010949.A14656@cs.mcgill.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: willy@thepuffingroup.com's message [Re: [parisc-linux] HFS linux implementation] as of Fri, Mar 10, 2000 at 11:04:04AM -0500
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <20000310010949.A14656@cs.mcgill.ca>; from Nick Cabatoff on Fri, Mar 10, 2000 at 01:09:49AM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mar 10, willy@thepuffingroup.com wrote:
-> On Fri, Mar 10, 2000 at 10:59:21AM -0500, Nick Cabatoff wrote:
-> > Could I get a copy of the 2.2 version to satisfy my curiosity?
-> 
-> sure.  cvs co linux gets you the linux 2.2.12 tree we were working on.
+On Fri, Mar 10, 2000 at 01:09:49AM -0500, Nick Cabatoff wrote:
 
-Okay, I'll take a look, thanks.
+> Actually, it looks like just stock UFS with ACL support, as far as I can
+> see.  Even that's kind of optional; many sites don't use ACLs at all
+> (hell, dump/restore don't know about them), and it looks like a
+> read-only implementation that just ignored them would work fine.  I
+> think that would be almost too easy given the existing linux UFS module
+> though, so once that much is working I'll probably do a writeable
+> version that preserves ACLs, even if it doesn't allow you to work with
+> them.
 
-> > Is there any point in doing ACLs if you haven't already?
-> 
-> linux doesn't currently support acls.  there's no interface for setting
-> or accessing acls.
+Well, just talk to the linux-acl folks... they are just pushing the
+(former ext2) ACL stuff up into the VFS, in order to have a generic
+API to access the filesystem specific ACL implementations.  Unfortunately
+the ACL development still lingers in 2.2 territory, but that's no excuse
+not to think ahead and at least add the hooks for it when one touches
+a file system anyway.
 
-There is one that hasn't made it into the stock kernel yet at
-http://acl.bestbits.at.
+Web pages are at:    http://acl.bestbits.at/
+Mailing list is at:  http://acl.bestbits.at/acl-devel/
+
+Dominik
+-- 
+  Networking Group,  Hospital of Johannes Gutenberg-University                  
+  Obere Zahlbacher Straﬂe 69, 55101 Mainz, Germany                              
+  Tel: +49 (0)6131 17-2482   FAX: +49 (0)6131 17-5521                           
