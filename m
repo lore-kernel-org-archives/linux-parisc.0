@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout01.sul.t-online.com (mailout01.sul.t-online.com [194.25.134.80])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A13DC4838
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Jul 2002 12:03:00 -0600 (MDT)
-Cc: parisc list <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 18 Jul 2002 18:28:54 +0200
-From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-Message-ID: <3D36ECC6.B79EEEBD@ruhr-west.de>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C81C74831
+	for <parisc-linux@parisc-linux.org>; Thu, 18 Jul 2002 12:33:44 -0600 (MDT)
+Message-Id: <200207181833.g6IIXdRv002249@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Problem building gcc-3.2 (cvs head) on hppa-linux
+To: randolph@tausq.org
+Date: Thu, 18 Jul 2002 14:33:38 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: gcc@gcc.gnu.org, parisc-linux@parisc-linux.org
+In-Reply-To: <20020712072703.GA8838@tausq.org> from "Randolph Chung" at Jul 12, 2002 00:27:03 am
 MIME-Version: 1.0
-References: <3D35925D.71683E92@ruhr-west.de> <20020717181459.CCD8E48CF@dsl2.external.hp.com>
-Subject: Re: [parisc-linux] Kernel panic, ccio-dma.c, C110
-To: Grant Grundler <grundler@dsl2.external.hp.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler schrieb:
-> 
-> Juergen Braukmann wrote:
-> > Kernel panic: ccio-dma.c ccio_alloc_range() I/O MMU is out of mapping
-> > resources.
-> 
-> Sorry Joel, this has nothing to do with SCSI termination.
-> 
-> Juergen,
-> In arch/parisc/kernel/ccio-dma.c, change ccio_mem_ratio from 4 to 8 or 16.
-> For more explanation, search for "Determine IOVA Space size" in ccio-dma.c.
-> 
-> grant
+> In file included from /home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:1210:
+> /home/tausq/src/gcc-3.2/gcc/unwind.inc: In function `_Unwind_RaiseException':
+> /home/tausq/src/gcc-3.2/gcc/unwind.inc:132: error: Attempt to delete prologue/epilogue insn:
+> (insn 337 336 338 14 (nil) (set (reg:DI 7 %r7)
+>         (mem:DI (plus:DI (reg/f:DI 30 %r30)
+>                 (const_int -296 [0xfffffffffffffed8])) [0 S8 A64])) -1 (nil)
+>     (nil))
+> /home/tausq/src/gcc-3.2/gcc/unwind.inc:132: internal compiler error: Internal compiler error in propagate_one_insn, at flow.c:1637
 
-Grant and all,
+Fixed:
+<http://gcc.gnu.org/ml/gcc-patches/2002-07/msg00963.html>.
 
-forget my earlier mourning about crosscompiling etc. I found the
-x-compiler, insttalled it nicked the config file from the stock kernels,
-edited the Makefile (all with a few guesses) and compiled a kernel.
-"file" tells me it's pa-risc, so x-compiling seemed to work.
-Unfortunately, I forgot to change that value in ccio-dma.c. ;-(
-
-So stop working for my behalf, didn't think it would be that easy. If
-there are more tears, I'll shout.
-
-Juergen
-
-
+Dave
 -- 
-===========================================     __   _
-Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
-Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
-===========================================_\_v __/_/_//_/\_,_/ /_/\_\
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
