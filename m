@@ -1,42 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21956
-	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 11:28:49 -0600
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: JSO@europay.com (=?iso-8859-1?Q?SOETE_Jo=EBl?=),
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] FW: hpux 11.00 near success 
-In-Reply-To: Your message of "Thu, 31 Aug 2000 13:19:11 EDT."
-             <200008311719.NAA26316@hiauly1.hia.nrc.ca>
-References: <200008311719.NAA26316@hiauly1.hia.nrc.ca> 
-Date: Thu, 31 Aug 2000 11:28:57 -0600
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E13UY93-0005Q3-00@noam.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA22717
+	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 13:21:07 -0600
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 31 Aug 2000 19:21:12 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13UZtU-0000c6-00; Thu, 31 Aug 2000 20:21:00 +0100
+Date: Thu, 31 Aug 2000 20:21:00 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: "Albert E. Whale" <aewhale@hky.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: HP PA-RISC support
+Message-ID: <20000831202100.A1078@parcelfarce.linux.theplanet.co.uk>
+References: <39AE587E.E5EBE37A@hky.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <39AE587E.E5EBE37A@hky.com>; from aewhale@hky.com on Thu, Aug 31, 2000 at 09:07:10AM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-= > hppa-linux-gcc -g -O -I../include -I../lib -I../../linux-2.3/include  -o
-= > palo diskpart.o    elf64.o	    load.o	  paloio.o      som.o
-= > elf32.o	      error.o	    palo.o build.o
-= > /opt/puffin/lib/gcc-lib/hppa1.1-linux/2.96/../../../../hppa1.1-linux/bin/ld
-:
-= > cannot open crt1.o: No such file or directory
-= 
-= I wonder why this isn't crt0.o?  The startup file is set by the specs file
-= in /opt/puffin/lib/gcc-lib/hppa1.1-linux/2.96.  It is also internal to
-= gcc.  The SPECS configuration files for the pa port are in config/pa.
+On Thu, Aug 31, 2000 at 09:07:10AM -0400, Albert E. Whale wrote:
+> Matthew,
+> 
+> You may remeber me contacting you some time again regarding the D200
+> Class Server I have at a customer Site.
+> 
+> I am interested in installint Linux on the Server.  Is this platform
+> supportted? Is there a distribution for it?  If not, can I help promote
+> and or Beta test the environment to gain acceptance?
 
-I see two bizzare things.  The first is that 'hppa1.1-linux' is being
-used, which is a very old convention.  The palo makefile hasn't asked
-for that for a long time.
+Hi, Albert.
 
-Secondly, the error suggests that an old tool chain,
-or a new one built to the old recipe (without glibc etc...) is being used.
+I'm just about to leave on holiday for a month, so you're lucky you
+caught me :-)  Linux does indeed boot on the D200, and the Alpha release
+CD which is on the ftp site will run.  I'm not sure which devices will
+be supported by that kernel, but it should be able to bring you to a
+shell prompt.  The port is still a couple of months away from being
+stable, so it's not really suitable for installing at a customer site yet.
 
-I recommend using a new tool chain.  Unfortunately we don't have
-pre-compiled binaries for HPUX so you'll have to build it, which can
-be VERY PAINFUL (be sure to get the LATEST version of GNU make).  The recipe
-to use is in CVS under build-tools.  Make sure your palo bits are up
-to date too...
-
-Good luck!
-
-	-P
+-- 
+Revolutions do not require corporate support.
