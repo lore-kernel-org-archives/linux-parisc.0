@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0101B4829
-	for <parisc-linux@parisc-linux.org>; Sat, 27 Jul 2002 22:57:17 -0600 (MDT)
-Received: from unknown (HELO pippin.tausq.org) ([64.81.244.94]) (envelope-sender <randolph@tausq.org>)
-          by mail16.speakeasy.net (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@parisc-linux.org>; 28 Jul 2002 04:57:11 -0000
-Date: Sat, 27 Jul 2002 22:00:53 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] state of 2.5 merge
-Message-ID: <20020728050053.GA1419@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20020722034037.F12523@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020722034037.F12523@parcelfarce.linux.theplanet.co.uk>
+Received: from Messiah.FlatlineSystems.net (Messiah.FlatlineSystems.net [206.130.238.73])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A3380482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Jul 2002 16:41:11 -0600 (MDT)
+Received: from speedygonzo (CPE0f1029959776.cpe.net.cable.rogers.com [24.42.83.162] (may be forged))
+	by Messiah.FlatlineSystems.net (8.11.6/8.9.3) with SMTP id g6SMdfZ30112
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Jul 2002 18:39:41 -0400
+Message-ID: <003101c23687$f1ace540$0500a8c0@speedygonzo>
+From: "D. Clarke" <dclarke@FlatlineSystems.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sun, 28 Jul 2002 18:41:33 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002E_01C23666.656FE030"
+Subject: [parisc-linux] gzip segmentation fault(s)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,35 +24,128 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> we're still a little short of attempting to link.  entry.S and head.S
-> need to be massaged to work in the new O(1) scheduler world.  note that
-> we're leaving preempt disabled until later.  once it does attempt to link,
-> i suspect we'll find there're a lot of functions which need to be written
-> (particularly mm-related ones) and probably some include cleanups to do.
+This is a multi-part message in MIME format.
 
-In case people are wondering where this is at.... today we got a
-somewhat working shell.....
+------=_NextPart_000_002E_01C23666.656FE030
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-kjournald starting.  Commit interval 5 seconds
-EXT3-fs: mounted filesystem with ordered data mode.
-VFS: Mounted root (ext3 filesystem) readonly.
-Stand-alone shell (version 3.4)
-> uname -a
-Linux (none) 2.5.26-pa0 #106 Sat Jul 27 18:49:37 PDT 2002 parisc unknown unknown GNU/Linux
+Hi!
 
-This is on a a500 (64-bit kernel). Richard has also had success with
-b180 (iirc).
+I just installed 0.9.3 from the base/netinst image fetched from =
+/http://ftp.parisc-linux.org/cd-images/palinux-0.9.3-base.iso but I've =
+got a small problem.
 
-For the most part things are still quite broken (init, ls, etc don't 
-work yet).  There are probably some changes related to the task_struct 
-to thread_info transition that still needs to be worked out for 
-syscalls to work correctly.... 
+Everything installed fine, up until apt was about to do it's thing.  =
+After adding an apt source it tried to test and every instance where =
+gzip was used it seg faulted.
 
-Richard Hirst worked out most of the bugs to get userspace working.
-Thanks Richard! :-)
+Therefore, I only have a base system installed and can't apt-get =
+anything :)
 
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+The system is an HP 9000 Server Model D250
+
+Any and all assistance will be appreciated.  Thanks.
+
+Here's what dmesg said (numerous times):
+
+do_page_fault() pid=3D548 command=3D'gzip' type=3D6 address=3D0x00000003
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001111
+r0-3     00000000 0002fe38 0001dc63 faf00340
+r4-7     0002f638 faf00120 000301d2 00000002
+r8-11    0003025a 00028c34 faf004b8 00000000
+r12-15   00000046 00000014 faf00468 00000000
+r16-19   00000000 00025370 00017800 00000000
+r20-23   00000000 0003005c 00000000 40182310
+r24-27   00000000 00000000 0003005c 0002f638
+r28-31   00000000 00000000 faf003c0 0001dc63
+sr0-3    00000000 00000133 00000000 00000133
+sr4-7    00000133 00000133 00000133 00000133
+
+IASQ: 00000133 00000133 IAOQ: 00000003 00000007
+ IIR: 4bc23ed9    ISR: 00000133  IOR: 40184d84
+ CPU:        0   CR30: 1e20c000 CR31: 10338000
+ ORIG_R28: 4002a29c
+
+
+
+~ Darryl
+~ http://pileofcrap.org/
+
+------=_NextPart_000_002E_01C23666.656FE030
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I just installed 0.9.3 from the =
+base/netinst image=20
+fetched from =
+/http://ftp.parisc-linux.org/cd-images/palinux-0.9.3-base.iso but=20
+I've got a small problem.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Everything installed fine, up until apt =
+was about=20
+to do it's thing.&nbsp; After adding an apt source it tried to test and =
+every=20
+instance where gzip was used it seg faulted.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Therefore, I only have a base system =
+installed and=20
+can't apt-get anything :)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>The system is an HP 9000 Server Model=20
+D250</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Any and all assistance will be =
+appreciated.&nbsp;=20
+Thanks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Here's what dmesg said (numerous=20
+times):</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV><FONT face=3DArial =
+size=3D2>
+<DIV>do_page_fault() pid=3D548 command=3D'gzip' type=3D6 =
+address=3D0x00000003</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp; YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI<BR>PSW:=20
+00000000000001000000000000001111<BR>r0-3&nbsp;&nbsp;&nbsp;&nbsp; =
+00000000=20
+0002fe38 0001dc63 faf00340<BR>r4-7&nbsp;&nbsp;&nbsp;&nbsp; 0002f638 =
+faf00120=20
+000301d2 00000002<BR>r8-11&nbsp;&nbsp;&nbsp; 0003025a 00028c34 faf004b8=20
+00000000<BR>r12-15&nbsp;&nbsp; 00000046 00000014 faf00468=20
+00000000<BR>r16-19&nbsp;&nbsp; 00000000 00025370 00017800=20
+00000000<BR>r20-23&nbsp;&nbsp; 00000000 0003005c 00000000=20
+40182310<BR>r24-27&nbsp;&nbsp; 00000000 00000000 0003005c=20
+0002f638<BR>r28-31&nbsp;&nbsp; 00000000 00000000 faf003c0=20
+0001dc63<BR>sr0-3&nbsp;&nbsp;&nbsp; 00000000 00000133 00000000=20
+00000133<BR>sr4-7&nbsp;&nbsp;&nbsp; 00000133 00000133 00000133 =
+00000133</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>IASQ: 00000133 00000133 IAOQ: 00000003 00000007<BR>&nbsp;IIR:=20
+4bc23ed9&nbsp;&nbsp;&nbsp; ISR: 00000133&nbsp; IOR:=20
+40184d84<BR>&nbsp;CPU:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+0&nbsp;&nbsp;=20
+CR30: 1e20c000 CR31: 10338000<BR>&nbsp;ORIG_R28: 4002a29c</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>~ Darryl</DIV>
+<DIV>~ <A=20
+href=3D"http://pileofcrap.org/">http://pileofcrap.org/</A></FONT></DIV></=
+BODY></HTML>
+
+------=_NextPart_000_002E_01C23666.656FE030--
