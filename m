@@ -1,32 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA31269
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 22:08:07 -0700
-Date: Tue, 23 Nov 1999 00:09:40 -0500
-From: Paul Yaskowski <paul@jthm.org>
-To: Magne Oestlyngen <magne@metis.spacetec.no>
-Cc: Stan Sieler <sieler@allegro.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [Fwd: Re: [parisc-linux] HP-UX 10.20 for free?]
-Message-ID: <19991123000940.A31970@jthm.org>
-References: <199911221822.KAA13945@opus.allegro.com> <199911222135.WAA07143@metis.spacetec.no>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA32513
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Nov 1999 02:18:33 -0700
+Received: (from mail@localhost) by ns.edelmann.de (8.8.8/8.6.9) id JAA07718 for <parisc-linux@thepuffingroup.com>; Tue, 23 Nov 1999 09:40:16 +0100
+Received: from edelmann.de ([173.57.31.101] (may be forged)) by postbox.w1.edelmann.de (8.8.6 (PHNE_17190)/8.8.0) with ESMTP id KAA17904 for <parisc-linux@thepuffingroup.com>; Tue, 23 Nov 1999 10:19:31 +0100 (MET)
+Message-ID: <383A5C09.76A2A349@edelmann.de>
+Date: Tue, 23 Nov 1999 10:19:06 +0100
+From: Gerhard Klein <G.Klein@edelmann.de>
+MIME-Version: 1.0
+To: HP Linux <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199911222135.WAA07143@metis.spacetec.no>
+Subject: [parisc-linux] Upgrade for HP3000/928LX to HP9000/8xx
 List-ID: <linux-parisc.vger.kernel.org>
 
-  That's my problem as well, I have a 715/33 with 9.04.  I'd really
-prefer to cold install 10.20 versus the heavily patching it route.  Any
-links for this?
+Hallo all,
 
--Paul
+some weeks ago there was a discusion about differences between
+HP3000/xxx and HP9000/xxx. We have a HP3000/928LX. It's possible to
+upgrade HP3000/928LX to HP9000/8xx (changing Bios or so). The problem
+is, that HP doesn't sell the upgrade kit since a few month. Can anybody
+help?
 
-% Magne Oestlyngen (magne@metis.spacetec.no) [11.22.99/17:10]:
-: > I ordered my 10.20 upgrade via:
-: > http://www.software.hp.com/y2kupgrades/swp_upgrades.html
-: > And, you can do it online.
-: 
-: Only problem is that that's for series 800 servers, and I have a
-: series 700 (710) workstation.  ANd you can't select that. :-(
+Thanks
 
--- 
-I do desire we may be better strangers.
-  -- William Shakespeare, "As You Like It"
+
+Gerhard
+
+--
+http://www.edelmann.de
+mailto:G.Klein@edelmann.de
+Phone: +49 7321 340 368
+Fax:   +49 7321 340 363
