@@ -1,65 +1,58 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnmg1.net.external.hp.com (bbnnmg1.net.external.hp.com [155.208.254.184])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A7D29482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Jun 2001 17:14:53 -0600 (MDT)
-Received: from isoit213.bbn.hp.com (isoit213.bbn.hp.com [15.136.193.32])
-	by bbnmg1.net.external.hp.com (Postfix) with ESMTP id 64AD89B6
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Jun 2001 01:14:52 +0200 (METDST)
-Received: from aare.GVA.HP.COM (aare.gva.hp.com [15.152.18.77])
-	by isoit213.bbn.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit6.0.6 OpenMail) with SMTP id BAA11855
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 8 Jun 2001 01:14:44 +0200 (METDST)
-Message-ID: <733CA39D4982D411AD080090278CBE390CD8D2@shalom.israel.hp.com>
-From: "KIMHI,YEHOSHUA (HP-Israel,ex1)" <yehoshua_kimhi@hp.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 8 Jun 2001 01:14:43 +0200 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Installation of palinux-0.9-32serial.iso
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 16074482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Jun 2001 04:51:30 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id B41B8B007; Fri,  8 Jun 2001 11:47:39 +0100 (BST)
+Date: Fri, 8 Jun 2001 11:47:39 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: E Frank Ball <frankb@efball.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] dselect problems
+Message-ID: <20010608114739.I16532@linuxcare.com>
+References: <20010606140212.A11814@zouave.sonic.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010606140212.A11814@zouave.sonic.net>; from frankb@efball.com on Wed, Jun 06, 2001 at 02:02:12PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Wed, Jun 06, 2001 at 02:02:12PM -0700, E Frank Ball wrote:
+> 
+> I have a 712/80 and a graphics monitor (HP A1097C).  I got the base
+> system running from the palinux-0.9-32sti.iso CD.
+> 
+> I then tried to run "dpkg-reconfigure base-config".  It got to where it
+> is supposed to install the packages and died with a message:  failed
+> running script /usr/sbin/dpkg-preconfigure --apt || true
+> apt-utils is not installed.
 
------Original Message-----
-From: parisc-linux-announce-admin@lists.parisc-linux.org
-[mailto:parisc-linux-announce-admin@lists.parisc-linux.org]
-Sent: Thursday, June 07, 2001 6:20 PM
-To: yehoshua_kimhi@hp.com
-Subject: parisc-linux-announce request rejected
+apt-utils isn't installed, true, but it isn't installed for anyone
+else at this stage either.  Don't know why you see this problem.
 
+> I got apt-utils to install with "apt-get install apt-utils", but now I
+> can't get anything else to install either with dselect or apt-get.  I
+> get errors about "couldn't stat source package list cdrom...
+> - stat (2 no such file or directory).
 
-Your request to the parisc-linux-announce mailing list:
+Sounds like the CDROM is not mounted, or not mounted where
+/etc/apt/sources.list says it is.  I have
 
+deb http://beast:80/rel0.9/debian sid main
+deb http://beast:80/rel0.9/more-packages/debian sid main
 
+in my sources.list, but that is because I installed from http.  I don't
+have an entry for CDROM source atm, sorry.
 
+If you updated apt (dpkg -l apt) to 0.5.3, you may have to update its
+pkg list with "apt-get update".
 
-Hi there,
+Perhaps someone with a CD based install could post their sources.list
+as an example?
 
-I am trying to install the palinux-0.9-32serial.iso 715/G machine with
-serial console.
-The machine boot from the CD but at the stage of the packages installation
-it fail 
-It claim that the packages are corrupted.
-I tried to use the shell and mount the file system /dev/sda3. Then I copied
-the whole CDROM to this file system.
-Then I tried to install the base from this mountable file system.
-It fail on the first package claiming that it can't download 'adduser'
-package.
-I don't have any other linux machine around so I can't use the NFSROOT
-option (I mean follows the NFS-root-howto and compilation of new kernel with
-the IP of NFS server etc..)
-I do have around hp-ux machines, Is there a way to compile kernels on hp-ux?
-Is there a way to continue from this stage??
-Maybe install in some way the NFS and then mount file system which contain a
-tarball of nfsroot??
-Any other suggestion workarounds etc.. will be most helpful.
+> "which stat" shows nothing.  I don't see a stat package either.
+> This is my first experience with Debian.
 
-Regards,
+"stat" is probably referring to the system call stat() having failed.
+Basically it is saying that some file it wants to access doesn't exist.
 
-shuki
-**********************************************
-Yehoshua Kimhi
-ERC
-Hewlett-Packard Israel
-Email: yehoshua_kimhi@hp.com Telnet: 7810-527
-Tel.: +972-3-5380527 Fax: +972-3-5380515 
-**********************************************
+Richard
