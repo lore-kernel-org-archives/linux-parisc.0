@@ -1,85 +1,198 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp4ve.mailsrvcs.net (smtp4vepub.gte.net [206.46.170.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 237174A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 23:10:38 -0700 (MST)
+Received: from smtp7ve.mailsrvcs.net (smtp7vepub.gte.net [206.46.170.28])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 822934A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 00:05:17 -0700 (MST)
 Received: from neuronet.pitt.edu (adsl-151-201-239-223.pittpa.adsl.bellatlantic.net [151.201.239.223])
-	by smtp4ve.mailsrvcs.net (8.9.1/8.9.1) with ESMTP id GAA1502073
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 06:15:43 GMT
+	by smtp7ve.mailsrvcs.net (8.9.1/8.9.1) with ESMTP id HAA1986551
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 07:12:23 GMT
 Sender: raffo@bellatlantic.net
-Message-ID: <3A935BDC.E2475A98@neuronet.pitt.edu>
-Date: Wed, 21 Feb 2001 01:10:36 -0500
+Message-ID: <3A9368A1.E31D5F93@neuronet.pitt.edu>
+Date: Wed, 21 Feb 2001 02:05:05 -0500
 From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
 MIME-Version: 1.0
 To: PL <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Cannot build 02/18/2001 glibc
-References: <Pine.LNX.4.21.0102191946290.23583-100000@front.linuxcare.com.au>
-		  <3A91479E.9C9EB68A@neuronet.pitt.edu> <20010220175938.6DE7B37C9D@carmen.fc.hp.com>
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Warnings compiling the CVS kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matt Taggart wrote:
-> 
-> "Rafael E. Herrera" writes...
-> 
-> > Alan Modra wrote:
-> > >
-> > > On Mon, 19 Feb 2001, Rafael E. Herrera wrote:
-> > >
-> > > > checking for assembler line separator... *** You need a newer assembler
-> > > > to compile glibc
-> > > >[snip]
-> > > >  /usr/i486-suse-linux/bin/as -V -Qy -v -o conftest.o conftest.s
-> > >
-> > > Oops, this is an x86 assembler.
-> > >
-> > > > The binaries called and the version numbers are shown. Do I need to
-> > > > upgrade the assembler or is it a PATH misconfiguration? Thanks.
-> > >
-> > > You need the hppa-linux assembler installed and available on your PATH.
-> >
-> > The PATH needs to include both of these entries:
-> >
-> > PATH=~/palinux/bin:~/palinux/hppa-linux/bin:$PATH
-> >
-> > I had just first one before.
-> 
-> No, you don't want hppa-linux/bin in there because then the build will only
-> use the cross-compiler and will fail if it needs to build any i386
-> binaries(like intermediate build tools etc.). As long as you have --host and
-> --build set right then the build will do the right thing.
+After building the cross-compiler in an x86 machine, I get warning
+message like this one for most of the sources when compiling the kernel:
 
-If I use these to build glibc library:
+hppa-linux-gcc -D__KERNEL__
+-I/usr1/users/raffo/parisk/source/linux/include -Wall
+-Wstrict-prototypes -O2 -fomit-frame-pointer -fno-strict-aliasing
+-D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mschedule=7200 -mdisable-fpregs
+-fno-strict-aliasing -ffunction-sections    -c -o hosts.o hosts.c
+In file included from
+/usr1/users/raffo/parisk/source/linux/include/linux/fs.h:23,
+                 from
+/usr1/users/raffo/parisk/source/linux/include/linux/capability.h:17,
+                 from
+/usr1/users/raffo/parisk/source/linux/include/linux/binfmts.h:5,
+                 from
+/usr1/users/raffo/parisk/source/linux/include/linux/sched.h:9,
+                 from
+/usr1/users/raffo/parisk/source/linux/include/linux/blkdev.h:5,
+                 from
+/usr1/users/raffo/parisk/source/linux/include/linux/blk.h:4,
+                 from hosts.c:29:
+/usr1/users/raffo/parisk/source/linux/include/linux/string.h:27:
+warning: conflicting types for built-in function `strncpy'
+/usr1/users/raffo/parisk/source/linux/include/linux/string.h:33:
+warning: conflicting types for built-in function `strncat'
+/usr1/users/raffo/parisk/source/linux/include/linux/string.h:39:
+warning: conflicting types for built-in function `strncmp'
+/usr1/users/raffo/parisk/source/linux/include/linux/string.h:61:
+warning: conflicting types for built-in function `memset'
+/usr1/users/raffo/parisk/source/linux/include/linux/string.h:64:
+warning: conflicting types for built-in function `memcpy'
+/usr1/users/raffo/parisk/source/linux/include/linux/string.h:73:
+warning: conflicting types for built-in function `memcmp'
 
-export MACH=i386-linux
-export DEST=~/parisk/palinux
-export ROOT=~/parisk
-PATH=~/parisk/palinux/bin:$PATH
+The compilation succeeds but the boot will crash here:
 
-$ROOT/source/glibc/configure --prefix=$DEST/hppa-linux --build=$MACH \
---host=hppa-linux --target=hppa-linux \
---with-headers=$ROOT/source/linux/include --disable-profile \
---without-cvs --enable-add-ons
+[...]
+POSIX conformance testing by UNIFIX
 
-I get the same error reported initially. 'configure' does not use/find
-the cross compiler. From a previous post, If I use this instead:
 
-HOSTCC=gcc CC=hppa-linux-gcc $ROOT/source/glibc/configure
---prefix=$DEST/hppa-linux --build=$MACH \
---host=hppa-linux --target=hppa-linux \
---with-headers=$ROOT/source/linux/include --disable-profile \
---without-cvs --enable-add-ons
 
-Configure doesn't fail and one can start building. I did not have this
-problem a couple of weeks ago when I first tried this, I used snapshots
-(from early february, before the newest were available -- they were zero
-length) that allowed me to build a kernel image  and boot my machine. I
-run into other problems, but I'll post questions about them later if I
-still have them with these updated sources.
+Dumping Stack from 14000000 to 14000240:
 
-I've looked briefly at the main configure script and compared it to the
-last revision, but cannot figure out why it uses the x86 assembler.
-Perhaps the mantainer can resolve this.
+Dumping Stack from 1026e000 to 1026e700:
+e000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e020 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e040 00000000 00000000 00000000 0027a000 00000000 00000000 00000000
+00000000
+e060 00000000 00000000 00000000 0010c848 00000000 00000000 00000000
+00000000
+e080 0000ff00 00000000 10105c38 14000000 00000000 102cc000 1028060c
+13fc8000
+e0a0 14000000 14000000 0004000e 10295888 001a5a59 000ff000 f000013c
+00000000
+e0c0 00000000 08000059 00000004 00000000 10280620 00000002 0000000f
+1027b324
+e0e0 00000000 00000000 102cc000 10266000 1027b324 04000000 14000240
+1027b000
+e100 00000006 ffffffff 00000000 00000000 00000000 00000000 00000000
+00000000
+e120 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e140 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e160 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e180 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e1c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e1e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e200 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e220 00000000 00000000 101151e8 101151e8 00000000 00000000 00000000
+00000000
+e240 00000000 00000000 00000000 00000000 0000001d 6fc10080 00000000
+14000000
+e260 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e280 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e2a0 00000000 00000000 00000000 1010670c 00000000 00000000 00000000
+00000000
+e2c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e2e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e300 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e320 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e340 00000000 00000000 f0003e5c 00272000 00281000 f0008c98 00000000
+00000000
+e360 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e380 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e3a0 00000000 00000000 00000000 10102784 00000000 00000000 00000000
+00000000
+e3c0 00000000 00000000 00000001 1026e080 00000000 00000000 00000000
+00000000
+e3e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e400 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e420 00000000 00000000 00000000 10102ba8 00000000 00000000 00000000
+00000000
+e440 1023a690 00000001 1026e080 00000000 00000000 00000000 00000000
+00000000
+e460 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e480 00000000 00000000 00000000 00000000 00000008 14000240 14000000
+1023a830
+e4a0 00000000 00000000 00000000 10102b04 00000000 00000000 00000000
+00000000
+e4c0 0004000e 102ea000 10102ba8 14000000 14000240 1023a800 00000000
+00000002
+e4e0 19a10000 00000005 00000000 00000005 00000004 00000006 00000008
+00000006
+e500 1026e080 00000002 00000000 102ea000 00000000 00000060 00000001
+00000002
+e520 00000001 00000001 1027b484 10266000 0000002a 015752a0 1026e700
+00000060
+e540 0000001f 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e560 00000000 00000000 00000000 00000000 00000000 00000000 40800000
+00000000
+e580 ffd2e740 ffd2e740 7f7fffff ffffffff 7f7fffff ffffffff 00000000
+00000000
+e5a0 00000000 00000000 41800000 00000000 00000010 00000010 00000000
+00000000
+e5c0 ffd2e740 ffd2e740 41000000 00000000 40800000 00000000 ffd2e740
+ffd2e740
+e5e0 41000000 00000000 ffd2e740 ffd2e740 40800000 00000000 41000000
+00000000
+e600 40300000 00000000 40200000 00000000 40200000 00000000 41800000
+ffd2e740
+e620 40000000 00000000 40000000 00000000 40800000 00000000 41000000
+00000000
+e640 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e660 00000000 00000000 10102b10 10102b14 00000000 00000000 00000000
+00000000
+e680 00000000 00000000 00000000 00000000 00000000 0c701093 00000000
+14000008
+e6a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e6c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+e6e0 00000000 00000000 00000000 10106e3c 00000000 00000000 00000000
+00000000
 
-Thanks
+Kernel Fault: Code=15 regs=1026e4c0 (Addr=14000008)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001110
+r0-3     00000000 102ea000 10102ba8 14000000
+r4-7     14000240 1023a800 00000000 00000002
+r8-11    19a10000 00000005 00000000 00000005
+r12-15   00000004 00000006 00000008 00000006
+r16-19   1026e080 00000002 00000000 102ea000
+r20-23   00000000 00000060 00000001 00000002
+r24-27   00000001 00000001 1027b484 10266000
+r28-31   0000002a 015752a0 1026e700 00000060
+sr0-3    00000000 00000000 00000000 00000000
+sr4-7    00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 10102b10 10102b14
+ IIR: 0c701093    ISR: 00000000  IOR: 14000008
+ORIG_R28: 00000000
+
+
+The kernel was configured with 'make oldconfig'.
 -- 
      Rafael
