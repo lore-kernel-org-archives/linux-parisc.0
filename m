@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0F1A8482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 08:37:51 -0700 (MST)
-Received: from marmite.its.uct.ac.za ([137.158.26.155])
-	by mail.uct.ac.za with smtp (Exim 3.33 #4)
-	id 164l5N-000GTq-00
-	for parisc-linux@lists.parisc-linux.org; Fri, 16 Nov 2001 17:39:21 +0200
-Date: Fri, 16 Nov 2001 17:37:40 +0200
-From: Michael Wood <mwood@its.uct.ac.za>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 64bit kernels boot on C200 (finally) :)
-Message-ID: <20011116173740.A7011@marmite.its.uct.ac.za>
-References: <20011115123203.A2337@beavis.ybsoft.com> <20011115200102.E25491@parcelfarce.linux.theplanet.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5209D482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 08:43:51 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 164l9i-0002NX-00; Fri, 16 Nov 2001 15:43:50 +0000
+Date: Fri, 16 Nov 2001 15:43:50 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: "David S. Miller" <davem@redhat.com>
+Cc: willy@debian.org, grundler@puffin.external.hp.com,
+	linux-mm@kvack.org, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: parisc scatterlist doesn't want page/offset
+Message-ID: <20011116154350.L25491@parcelfarce.linux.theplanet.co.uk>
+References: <20011116150454.J25491@parcelfarce.linux.theplanet.co.uk> <20011116.071751.12999342.davem@redhat.com> <20011116152601.K25491@parcelfarce.linux.theplanet.co.uk> <20011116.073328.129356309.davem@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011115200102.E25491@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20011116.073328.129356309.davem@redhat.com>; from davem@redhat.com on Fri, Nov 16, 2001 at 07:33:28AM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,32 +26,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Nov 15, 2001 at 08:01:02PM +0000, Matthew Wilcox wrote:
-> On Thu, Nov 15, 2001 at 12:32:03PM -0700, Ryan Bradetich wrote:
-> > It is not perfect yet, still have a couple of bugs to work
-> > out and fix:
-> > 	1. sys32_ioctl: Unknown cmd fd(3) cmd(00004b50) arg(faf00788)
-> > 	2. the ncr720 driver seemed to hang when I had a disk
-> > 	   attached behind the bluefish card.
-> > 
-> > but here it is:
-> > 
-> > demo@vega:~$ uname -a
-> > Linux vega 2.4.14-pa1 #2 Thu Nov 15 12:08:07 MST 2001 parisc64 unknown
+On Fri, Nov 16, 2001 at 07:33:28AM -0800, David S. Miller wrote:
+>    From: Matthew Wilcox <willy@debian.org>
+>    Date: Fri, 16 Nov 2001 15:26:01 +0000
+>    
+>    so when jens' code is merged back into 2.4 we won't have to make any
+>    changes to the arch dependent code?
+>    
+> Part of the criteria to whether we merge back Jens' code is
+> if the ports, given reasonable notice (ie. take this as your notice)
+> have added in the support for page+offset pairs to their pci_map_sg
+> code.
 > 
-> i'm surprised the network works given the number of warnings
-> when compiling lasi_82596.c with a 64-bit compiler.
+> I suggest you do this now, it is totally painless.  I would almost
+> classify it as a mindless edit.
 
-The last time I tried a 64 bit kernel with lasi_82596.c (a few
-weeks ago), the network card would not work.  When the driver
-loaded it complained that sizeof(somestruct) was 64.  I had a
-look at the code and saw that it was expecting it to be 32.
-
-I've been using 32 bit kernels since then.  I don't think
-lasi_82596.c has changed significantly since I last tried it in
-a 64 bit kernel.
-
-This was on a D270.
+grant suggested adding support for it had performance implications,
+so he wasn't willing to let me make that edit.  i'm not sure i entirely
+understand the new scheme either.  the danger of updating code without
+updating its supporting documentation.
 
 -- 
-Michael Wood <mwood@its.uct.ac.za>
+Revolutions do not require corporate support.
