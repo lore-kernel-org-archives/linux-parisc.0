@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C6F74829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Dec 2002 01:36:37 -0700 (MST)
-Date: Thu, 12 Dec 2002 09:36:24 +0100
-Subject: Re: [parisc-linux] Re: Solved: Kernel crash when loggin in via ssh
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v548)
-Cc: "M. Grabert" <xam@cs.ucc.ie>,
-	Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9F56E4829
+	for <parisc-linux@parisc-linux.org>; Thu, 12 Dec 2002 05:15:27 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18MSFM-0008G1-00; Thu, 12 Dec 2002 12:15:20 +0000
+Date: Thu, 12 Dec 2002 12:15:20 +0000
+From: Matthew Wilcox <willy@debian.org>
 To: Randolph Chung <randolph@tausq.org>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20021212000511.GH19331@tausq.org>
-Message-Id: <CC14759C-0DAC-11D7-B504-0030656F07A2@esiee.fr>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Carlos O'Donell <carlos@baldric.uwo.ca>, bdale@gag.com,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] ["CSA Test Drive" <TestDrive@compaq.com>] FW: Some issues
+Message-ID: <20021212121520.D32514@parcelfarce.linux.theplanet.co.uk>
+References: <20021211224404.GC15219@systemhalted> <200212112305.gBBN5Bdj021432@hiauly1.hia.nrc.ca> <20021212065059.GQ21187@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021212065059.GQ21187@tausq.org>; from randolph@tausq.org on Wed, Dec 11, 2002 at 10:50:59PM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,33 +27,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le jeudi, 12 d=E9c 2002, =E0 01:05 Europe/Paris, Randolph Chung a =E9crit =
-:
+On Wed, Dec 11, 2002 at 10:50:59PM -0800, Randolph Chung wrote:
+> (oh, as an aside, looks like there's a small objdump bug :-)
+> 00010428 <ull2dbl>:
+>    10428:       0f d9 12 81     stw r25,-10(sr0,sp)
+>    1042c:       0f da 12 89     stw r26,-c(sr0,sp)
+>    10430:       2f c1 10 16     fldd -10(sr0,sp),fr22
+>    10434:       e8 40 d0 00     bve (rp)
+>    10438:       32 c2 aa 04     fcnv Disassembler botch.
+> 
+> (should be fcnv,udw,dbl %fr22,%fr4)
 
->> gcc-3.0_3.0.4-13 produces a working kernel, gcc-3.2-3.2.2-0pre0=20
->> produces
->> a miscompiled kernel (faulty networking, causes kernel crash).
->
-> Just to reiterate Dave's point, this is not necessarily a compiler
-> problem.
-I'm pretty interested to help finding out whether it is or not a=20
-compiler problem.
+well, there's another one:
 
-I had the exact same problem that what was mentioned here, a couple of=20=
+stw r25,-10(sr0,sp)
 
-months ago, with both native and cross compiler (gcc-3.2).
-Any attempt to login on the box via network led to a kernel crash.
+printing `sr0,' is misleading -- were not using sr0, we're using `short
+addressing mode', it should be just:
 
-I'll try to reproduce it to track down where the kernel crashed, since=20=
+stw r25,-10(sp)
 
-I don't remember it off hand.
+i remember jsm pointing this out a couple of years ago.  basically for insns
+which have a 2-bit s field, print nothing if it's zero.  sr0 should still be
+pinted for insns with a 3-bit s field.
 
-Anyway, I'd be interested in learning what you guys may suspect as=20
-other possible cause for this _weird_ behaviour...
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
