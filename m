@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C7F4A482A
-	for <parisc-linux@parisc-linux.org>; Sun, 13 Jan 2002 04:29:40 -0700 (MST)
-Date: Sun, 13 Jan 2002 12:25:01 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Christian Suder <csuder@cisco.com>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	<palinux@alaskatech.org>, <plaven@bigpond.net.au>,
-	<parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] bogomips?
-In-Reply-To: <20020113021209.55bad2ea.csuder@cisco.com>
-Message-ID: <Pine.LNX.4.43.0201131222400.1023-100000@alpha.bocc.de>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D157482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 08:32:56 -0700 (MST)
+Received: from iws1pb05.france.hp.com (unknown [15.124.72.14])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id B2C5B47A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 16:32:48 +0100 (MET)
+Received: from hpfrcu81.france.hp.com (localhost [127.0.0.1]) by iws1pb05.france.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 SMKit7.01) id QAA01128 for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 16:39:39 +0100 (MET)
+Message-ID: <3C41AA3B.6598C187@hpfrcu81.france.hp.com>
+Date: Sun, 13 Jan 2002 16:39:39 +0100
+From: phi 4369 <phi@hpfrcu81.france.hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+References: <3C3F0ADA.3060504@verizon.net>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] gcc bug
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 13 Jan 2002, Christian Suder wrote:
+Hi All,
 
-> For those who believe BogoMips matter..... ;-)
+On my palinux box I got this gcc error while compiling a source code.
 
-The document lists a HP9000/720 running HP/UX with 48 BogoMIPS. This seems 
-to match Linux (Linux is even a bit faster :-) ):
+$ gcc -c -g -O3 c2.c
+c.c: In function `string_match_1':
+c.c:406: Internal error: Segmentation fault
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
-# cat /proc/cpuinfo
-processor       : 0
-cpu family      : PA-RISC 1.1a
-cpu             : PA7000 (PCX-S)
-cpu MHz         : 50.000000
-model           : 9000/720
-model name      : Cobra (720)
-hversion        : 0x00002000
-sversion        : 0x00000481
-I-cache         : 128 KB
-D-cache         : 256 KB (WB)
-ITLB entries    : 96
-DTLB entries    : 96
-BTLB fixed      : max. 4096 pages, pagesize=4096 (16MB)
-BTLB fix-entr.  : 4 instruction, 4 data (0 combined)
-BTLB var-entr.  : 0 instruction, 0 data (0 combined)
-bogomips        : 49.86
-software id     : 86914152
+Where should I submit this? since it happen on a palinux box I dunno if the
+gcc maitainer does have such a box?
 
-Cheers,
-Jochen
+Thanx in advance,
+Phi
+
+
+--
+mailto:Philippe_Benard@hp.com
+WTEC HP-UX kernel debugging tools
