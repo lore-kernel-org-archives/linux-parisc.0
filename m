@@ -1,57 +1,58 @@
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id TAA13108
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 19:29:28 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by atlrel1.hp.com (Postfix) with ESMTP id 5A0E6602
-	for <parisc-linux@puffin.external.hp.com>; Mon,  4 Dec 2000 21:32:03 -0500 (EST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id SAA04167
-	for parisc-linux@puffin.external.hp.com; Mon, 4 Dec 2000 18:31:21 -0800 (PST)
-Date: Mon, 4 Dec 2000 18:31:21 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200012050231.SAA04167@milano.cup.hp.com>
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] fault.c b0rken
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA17181
+	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 22:31:38 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 5 Dec 2000 05:33:58 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id QAA29228;
+	Tue, 5 Dec 2000 16:33:29 +1100
+Date: Tue, 5 Dec 2000 16:33:29 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+cc: rhirst@linuxcare.com, parisc-linux@thepuffingroup.com
+Subject: Re: pa reload problem
+In-Reply-To: <200012050050.TAA07749@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.21.0012051609230.16721-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Mon, 4 Dec 2000, John David Anglin wrote:
 
+> > Getting back on topic, the reload problem _does_ affect 32 bit hppa code.
+> > Compiling my testcase with -O2 -fPIC -S, gives
+> > 
+> >         copy %r19,%r4
+> >         bl foo,%r2
+> >         stw %r19,-32(%r30)
+> >         addil LT'cpu_hz,%r4
+> >         copy %r1,%r21
+> >         addil LT'.LC0,%r19		! oops
+> 
+> For some reason, I only saw this with the 64 bit version.
 
-fault.c: In function `do_page_fault':
-fault.c:137: warning: passing arg 3 of `find_vma_prev' from incompatible pointer type
-fault.c:181: incompatible types in assignment
-make[2]: *** [fault.o] Error 1
-make[2]: Leaving directory `/linux/pa32/linux/arch/parisc/mm'
+Probably because it only appears with -fpic (or -fPIC), which you get for
+free on pa64
 
-Neither 32- nor 64-bit builds work.
-Willy needed to get some sleep...as do I.
-Anyone have time to look at this?
+> There is one other bit of code in rtlanal.c related to the patch which
+> bothers me.  I am wondering if it is ok or needs changing:
+> 
+> #ifndef PIC_OFFSET_TABLE_REG_CALL_CLOBBERED
+>       /* ??? When call-clobbered, the value is stable modulo the restore
+>          that must happen after a call.  This currently screws up local-alloc
+>          into believing that the restore is not needed.  */
+>       if (x == pic_offset_table_rtx)
+>         return 0;
+> #endif
+> 
+> This is in rtx_unstable_p and rtx_varies_p.  Possibly, now that there is
+> a use until reload is complete, this problem is fixed and the
+> pic_offset_table_rtx should be stable even when
+> PIC_OFFSET_TABLE_REG_CALL_CLOBBERED?  See comment at beginning of
+> rtx_varies_p.
 
-thanks,
-grant
+Likely so.  With rth's latest patch to calculate_global_regs_live, it's
+possibile that I can remove some of the ARG_POINTER_INVARIANT patch too.
 
-Recent changes:
-revision 1.23
-date: 2000/12/05 01:15:11;  author: willy;  state: Exp;  lines: +1 -1
-
-suddenly realised i got the return code of expand_stack the wrong way round.
-time for bed said zebedee.
-----------------------------
-revision 1.22
-date: 2000/12/05 01:06:01;  author: willy;  state: Exp;  lines: +9 -26
-
-use the ia64 find_vma_prev (located in mm/mmap.c -- how they got that
-one past linus, i'll never know) instead of pa_find_vma.  should speed
-up tasks using malloc debuggers by a factor of 100 or more.
-----------------------------
-revision 1.21
-date: 2000/12/04 16:59:22;  author: willy;  state: Exp;  lines: +1 -23
-
-More stack direction fixes.
-
-Take stack_growsup out of arch/parisc/mm/fault.c and put it into
-include/linux/mm.h, conditionalised on ARCH_STACK_GROWSUP.  Move the
-check for the vma auto-grows flag into the stack_growsup functions.
-Check removed from most callers (some have to check something else
-between those two checks).
+-- 
+Linuxcare.  Support for the Revolution.
