@@ -1,18 +1,19 @@
 Return-Path: <jbglaw@dvmwest.gt.owl.de>
 Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D05DB4890
+	by dsl2.external.hp.com (Postfix) with ESMTP id 12130489B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 16 Jan 2004 04:55:18 -0700 (MST)
-Date: Fri, 16 Jan 2004 12:55:17 +0100
+	Fri, 16 Jan 2004 04:59:41 -0700 (MST)
+Date: Fri, 16 Jan 2004 12:59:40 +0100
 From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Non-HP PCI cards & x86 BOOT-ROMS
-Message-ID: <20040116115517.GM14285@lug-owl.de>
+Message-ID: <20040116115940.GN14285@lug-owl.de>
 References: <Pine.GSO.4.58.0401161155280.15789@vier.idi.ntnu.no>
+	<20040116115517.GM14285@lug-owl.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Xg1Dpz0mHmRvkgSV"
-In-Reply-To: <Pine.GSO.4.58.0401161155280.15789@vier.idi.ntnu.no>
+	protocol="application/pgp-signature"; boundary="NdlhywBBVma7OLA/"
+In-Reply-To: <20040116115517.GM14285@lug-owl.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,31 +24,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---Xg1Dpz0mHmRvkgSV
+--NdlhywBBVma7OLA/
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2004-01-16 12:04:22 +0100, Ivar Orskaug <Ivar.Olav.Harstad.Orskaug@=
-idi.ntnu.no>
-wrote in message <Pine.GSO.4.58.0401161155280.15789@vier.idi.ntnu.no>:
-> is it possible to run PCI card boot-roms containing x86 code with an
-> emulator before loading Linux (perhaps from PALO)? Has anyone succeeded
-> doing this, or is it "just not possible" for whatever reason? Anyway,
-> if it was possible, it could really make PA-RISCs more usable.
-> 	I've heard that this is possible on both linux-mips and linux-alpha
+On Fri, 2004-01-16 12:55:17 +0100, Jan-Benedict Glaw <jbglaw@lug-owl.de>
+wrote in message <20040116115517.GM14285@lug-owl.de>:
+> On Fri, 2004-01-16 12:04:22 +0100, Ivar Orskaug <Ivar.Olav.Harstad.Orskau=
+g@idi.ntnu.no>
+> wrote in message <Pine.GSO.4.58.0401161155280.15789@vier.idi.ntnu.no>:
 
-You can't compare with Alpha. Alpha is designed with having PC hardware
-in mind. This is why it has got some kind of x86 emulator in it's
-firmware, so this is a planned feature.
+> Maybe it would be a nice idea to hack bochs to initialize those cards,
+> but that's a lot of work, though...
 
-MIPS OTOH is a good architecture to compare with. I don't know if this
-has been done before, but of course, in theory, you can execure the PC
-boot ROM of PCI cards. IIRC, XFree86 has done that for VGA card's
-BIOSes, but IMHO there should be a better option.
+Thinking again about that, it maybe isn't all *that* hard. Bochs already
+does know about the concept of shared DRAM and ROM BIOSes etc. Maybe
+it's really just enough to hack it's memory class (yup, it's written in
+C++) to not back the memory by RAM or on-disk storage, but to redirect
+all accesses to physical RAM.
 
-Maybe it would be a nice idea to hack bochs to initialize those cards,
-but that's a lot of work, though...
+The same is to be done with I/O ports too, of course... For complex card
+(SCSI RAID host adaptors), you may need to service interrupts, too:-(
 
 MfG, JBG
 
@@ -59,7 +57,7 @@ k!
    ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
 PA));
 
---Xg1Dpz0mHmRvkgSV
+--NdlhywBBVma7OLA/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -67,9 +65,9 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQFAB9ElHb1edYOZ4bsRAhAiAJ9I7eZeycpNbFCmhUu9JeqXv3dAOQCggFX5
-gKxlOFgwOFp1rdbeWTH5hT4=
-=lSSg
+iD8DBQFAB9IsHb1edYOZ4bsRAjgPAKCET6nJWjE8u1Qn4lwxrPTPxM7cIgCeJ0LE
+5Kjuk6465FaE+r7afitvJ1k=
+=pLVv
 -----END PGP SIGNATURE-----
 
---Xg1Dpz0mHmRvkgSV--
+--NdlhywBBVma7OLA/--
