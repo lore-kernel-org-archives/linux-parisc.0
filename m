@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta06ps.bigpond.com (mta06ps.bigpond.com [144.135.25.138])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8ECDF482C
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 17:14:36 -0700 (MST)
-Received: from bubble.local ([144.135.25.75]) by
-          mta06ps.bigpond.com (Netscape Messaging Server 4.15) with SMTP
-          id GMRKZ900.40J for <parisc-linux@parisc-linux.org>; Wed, 14 Nov
-          2001 10:21:09 +1000
-Date: Wed, 14 Nov 2001 10:44:27 +1030
-From: Alan Modra <amodra@bigpond.net.au>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Deb's broken ?
-Message-ID: <20011114104427.A6922@bubble.sa.bigpond.net.au>
-References: <20011113181352.B382@hp.is> <20011113193330.D12388@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011113193330.D12388@lug-owl.de>; from jbglaw@lug-owl.de on Tue, Nov 13, 2001 at 07:33:30PM +0100
+Received: from beldar.com (ns.beldar.com [65.163.106.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 198F9482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 18:02:25 -0700 (MST)
+Message-ID: <006901c16ca9$78c16e60$0101a8c0@pogo>
+From: "Craig D. Lansing" <lansing@beldar.com>
+To: <raffo@neuronet.pitt.edu>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <2451.011113@nikom.tagil.ru> <3BF0C5D6.2040205@verizon.net>
+Subject: Re: [parisc-linux] Problems of instaling (booting) on a 715/75
+Date: Tue, 13 Nov 2001 20:12:43 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="koi8-r"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,19 +23,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 13, 2001 at 07:33:30PM +0100, Jan-Benedict Glaw wrote:
-> I've tried to natively build 2.2.4-4 on a 712/60 with gcc-3.0. It
-> breaks in ./glibc-2.2.4/sysdeps/hppa/dl-machine.h at line 534:
-> 
->     533       /* .eh_frame can have unaligned relocs.  */
-> --> 534       if (reloc_addr & 3)
->     535         {
->     536           char *rel_addr = (char *) reloc_addr;
+I'll try this with my J also to see what happens.  Unfortunately, despite
+all the "junk" I brought home, the 700/92 has no keyboard (duh) and I could
+not scrounge one today.  Oh well, back to the trash tomorrow.  BTW, if I can
+scrounge a DB9<-->DB9 can I use a Reflection connection on my laptop as a
+console?  I assume 9600/8/none/1 would be a good place to start?
 
-My dl-machine.h has
 
-      if ((unsigned long) reloc_addr & 3)
+----- Original Message -----
+From: Rafael Herrera <vze26vn8@verizon.net>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Sent: Tuesday, November 13, 2001 2:03 AM
+Subject: Re: [parisc-linux] Problems of instaling (booting) on a 715/75
 
-I guess you are trying to use an old buggy glibc.
 
-Alan
+> I'd suggest you boot the cd image (palinux-0.9.2.iso) using the serial
+> console. I have the same system and the STI console does not work with
+> that cd.
+>
+> As soon as you have a minimal system running, switch the kernel image in
+> /boot for this one:
+>
+> ftp://ftp.parisc-linux.org/kernels/vmlinux-32-20011008
+>
+> Edit the /etc/palo.conf accordingly, re-run palo and reboot. I
+> experienced scsi problems with the kernel in the cd image.
+> --
+>       Rafael
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
