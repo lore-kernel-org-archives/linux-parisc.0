@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 11CC8482C
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 15:37:33 -0700 (MST)
-Received: from www2.scram.de (www2.scram.de [195.226.127.84])
-	by mail.scram.de (8.11.0/8.11.0) with ESMTP id fAAMbU626691
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 23:37:30 +0100 (CET)
-Date: Sat, 10 Nov 2001 23:37:29 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: <parisc-linux@lists.parisc-linux.org>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6EEF1482C
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 15:56:10 -0700 (MST)
+Message-Id: <200111102256.fAAMu8HB001322@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Current Debian still broken?
-In-Reply-To: <Pine.NEB.4.33.0111102323090.11348-100000@www2.scram.de>
-Message-ID: <Pine.NEB.4.33.0111102336070.11348-100000@www2.scram.de>
+To: jochen@scram.de (Jochen Friedrich)
+Date: Sat, 10 Nov 2001 17:56:08 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.NEB.4.33.0111102323090.11348-100000@www2.scram.de> from "Jochen Friedrich" at Nov 10, 2001 11:28:48 pm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +22,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-
 > when trying to compile the new 2.2.14 based parisc tree, i get the
 > following error:
+> 
+> gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes
+> -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common
+> -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+> -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+> -mschedule=7100    -c -o sd.o sd.c
+> {standard input}: Assembler messages:
+> {standard input}:583: Error: Invalid operands
+> {standard input}:607: Error: Invalid operands
+> make[3]: *** [sd.o] Error 1
 
-To follow up myself:
+Don't know if this is the fix but it fixed an invalid operand error in
+the gcc mainline code:
 
-Desired=Unknown/Install/Remove/Purge/Hold
-| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
-|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  gcc            3.0.2-10       The GNU C compiler.
-ii  binutils       2.11.92.0.10-1 The GNU assembler, linker and binary
+2001-10-31  John David Anglin  <dave@hiauly1.hia.nrc.ca>
 
-Cheers,
-Jochen
+	* pa.c (output_move_double): Fix typo in double load.
+
+--- pa.c.save	Wed Oct 31 11:24:25 2001
++++ pa.c	Wed Oct 31 12:47:53 2001
+@@ -1979,7 +1979,7 @@
+ 		 save a register file writeback)  */
+ 	      if (GET_CODE (addr) == POST_INC)
+ 		return "{ldws|ldw},ma 8(%1),%0\n\tldw -4(%1),%R0";
+-	      return "{ldws|ldw},ma -8(%1),%0\n\tldw 12(%1),%R0}";
++	      return "{ldws|ldw},ma -8(%1),%0\n\tldw 12(%1),%R0";
+ 	    }
+ 	  else
+ 	    {
+
+If that isn't it, dump the assembler output with '-S' and look at the
+lines causing the error.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
