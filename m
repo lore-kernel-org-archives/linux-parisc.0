@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44474482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 06:23:45 -0700 (MST)
-Date: Tue, 28 Jan 2003 14:23:40 +0100
-Message-ID: <3E35C8BE0000020C@ocpmta6.freegates.net>
-In-Reply-To: <20030128050823.57726.qmail@web12507.mail.yahoo.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] kernel hang.
-To: "Derek Engelhaupt" <derekengelhaupt@rocketmail.com>,
-	"Sir Ace" <chandler@nateng.com>, parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62B5F482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 07:47:06 -0700 (MST)
+Message-Id: <200301281447.h0SEl0VV007290@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] new gcc-default for hppa
+To: tausq@debian.org
+Date: Tue, 28 Jan 2003 09:47:00 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: grundler@dsl2.external.hp.com, jsoe0708@tiscali.be,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+In-Reply-To: <20030128073101.GD20940@tausq.org> from "Randolph Chung" at Jan 27, 2003 11:31:01 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,32 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Derek,
+> gcc translates this to something like this:
+>     /* %r4 is &pty_driver */
+>     ldo 28(%r4),%r23
+>     ldi 28,%r21
+>     ldw,ma 4(%r22),%r20
+>     ldw,ma 4(%r22),%r19
+>     stw,ma %r20,4(%r23)
+>     addib,>= -8,%r21,.-12
+>     stw,ma %r19,4(%r23)
+>     /* ... */
+>     stw %r0,28(%r4)
+>     stw %r0,32(%r4)
+>     stw %r10,36(%r4)
+>     stw %r0,40(%r4)
+> 
+> When optimizations are turned on, gcc reschedules some of those final 
+> stw insns above the structure copy loop. When the structure copy 
+> happens, the values get overwritten. ick.
+> 
+> this was kind of interesting to debug :) but i have no idea how to fix
+> it. Dave? :)
 
->
->
->How long did you let it wait?  Some of the machines prior to the C200 (my
->C360 doesn't do it either) seem to hang, but after 20 mins take off.  It's
->a bus walk issue that takes forever.  There was a patch for this that was
->posted recently to see if it resolved this issue.  Let it sit there for
-awile
->and see if it eventually starts booting.
+I don't either at the moment.  It's memory aliasing problem.  It's
+most likely not a problem in the backend.
 
-Afaik this a seperated patch (not yet check into our stream):
+Can you strip the above down to a simple testcase and file a GCC PR?
+I will bump it to high-priority as it is a regression.
 
-see <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/018980.html>
-
-as well as successfull first test (so I presume will be ci soon)
-
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/019015.html>
-
-Good luck,
-    Joel
-
-PS: I also test it and it doesn't broken b2k and b180; so I think it could
-be safely tested
-
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
