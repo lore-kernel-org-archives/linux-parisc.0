@@ -1,15 +1,18 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] new gcc-default for hppa
-Date: Thu, 30 Jan 2003 07:34:52 -0800
-Message-ID: <20030130153452.GJ11363__22838.5058501319$1416622167$gmane$org@tausq.org>
-References: <20030126044656.GB6057@dsl2.external.hp.com> <200301260509.h0Q59ntl001762@hiauly1.hia.nrc.ca> <20030127072615.GF8487@tausq.org> <20030128073101.GD20940@tausq.org> <20030128074607.GE20940@tausq.org> <20030130153832.GA12052@marmite.its.uct.ac.za>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: Tom Rini <trini@kernel.crashing.org>
+Subject: [parisc-linux] Re: Generic RTC driver in 2.4.x
+Date: Thu, 30 Jan 2003 11:03:15 -0700
+Message-ID: <20030130180315.GA14768__21693.7153636993$1416622168$gmane$org@ip68-0-152-218.tc.ph.cox.net>
+References: <Pine.GSO.4.21.0301051535430.10519-100000@vervain.sonytel.be> <Pine.GSO.4.21.0301102104190.18440-100000@vervain.sonytel.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Michael Wood <mwood@its.uct.ac.za>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030130153832.GA12052@marmite.its.uct.ac.za>
+In-Reply-To: <Pine.GSO.4.21.0301102104190.18440-100000@vervain.sonytel.be>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,20 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Since you seem to have found the problem, this is probably not relevant,
-> but I found this on Kernel Traffic:
-> 
-> 	Alan remarked, "2.5.x crashes erratically and randomly under
-> 	high tty/pty load.  At the moment I'm assuming this is the tty
-> 	code. That means we can't decide not to fix it since its already
-> 	fatally broken." Close by, Linus Torvalds said he didn't think
-> 	the TTY code was in such bad shape. He guessed there were just a
-> 	few locking problems that had crept in, coupled with the
-> 	preemption patches' tendency to expose existing locking bugs.
-> 
-> It sounds vaguely related, except maybe for the "high load" bit.
+On Fri, Jan 10, 2003 at 09:05:55PM +0100, Geert Uytterhoeven wrote:
+ 
+> Unfortunately I didn't receive any feedback from the pa-risc and ppc people
+> after my previous posting last Sunday.
+[snip]
+> Pa-risc and ppc people (any other users?), please send me your enhancements (or
+> just ack if none are necessary), so I can send genrtc to Marcelo.
 
-i think this is a completely different problem. the one Grant and I
-found is very parisc and compiler specific.
+Sorry I haven't spoken up before this, A simple cp of
+include/asm-ppc/rtc.h (and then throwing the question
+someplace) compiles a kernel correctly, and from what I recall of
+getting it to work in 2.5, at that point it was all good anyhow.  So
+this is fine for PPC32 as is.
 
-randolph
+-- 
+Tom Rini (TR1265)
+http://gate.crashing.org/~trini/
