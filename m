@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from octopus.kti.ae.poznan.pl (octopus.kti.ae.poznan.pl [150.254.204.7])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A05554844
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Sep 2003 07:06:20 -0600 (MDT)
-Date: Tue, 16 Sep 2003 15:04:49 +0200
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3CC094844
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Sep 2003 07:28:14 -0600 (MDT)
+Received: from pyxis.kti.ae.poznan.pl ([150.254.204.45] helo=localhost)
+	by octopus.kti.ae.poznan.pl with esmtp (Exim 3.35 #1 (Debian))
+	id 19zGWG-0002Xi-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Sep 2003 16:09:28 +0200
+Date: Tue, 16 Sep 2003 15:28:14 +0200
 From: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
 Reply-To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
-Message-ID: <137528789178.20030916150449@kti.ae.poznan.pl>
-To: Bob Sipes <bob.sipes@eds.com>, Carl Johnson <cjs@mcn.net>,
-	Engr.Faisal A.Zaman <zam21qu@hotmail.com>,
-	Enno Baars <knutbert@gmx.net>, Frank Benke <frank.benke@datacare.de>,
-	Frank Ickstadt <frank.ickstadt@btignite.de>,
-	Neil Moore <neil@droopy.com>, Rex Slay <rex@slay.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <179530193457.20030916152814@kti.ae.poznan.pl>
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Subject: [parisc-linux] HP 9000 J200 + Debian
@@ -25,12 +24,6 @@ List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
-
-Hello HP 9000 J200 owner,
-
-I found your email address on PA-RISC LINUX website (page
-http://hwdb.parisc-linux.org/view.php3?type=machine&name=J200) and I hope
-you could help me with my J200 box.
 
 I want to install Debian on my HP 9000 J200 box and I encountered a problem
 with booting the installation procedure:
