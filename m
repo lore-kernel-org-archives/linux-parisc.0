@@ -1,16 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AE9C4862
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 14:57:53 -0700 (MST)
-Message-ID: <3C8FCB5D.1F73348D@gmx.at>
-Date: Wed, 13 Mar 2002 22:57:49 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91B3A483F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 16:57:54 -0700 (MST)
+Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
+	by palrel12.hp.com (Postfix) with ESMTP id 25FB360032B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 15:57:50 -0800 (PST)
+Received: from xpabh1.corp.hp.com (xpabh1.corp.hp.com [15.58.136.191])
+	by xparelay2.corp.hp.com (Postfix) with ESMTP id B81F0A2
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 15:57:49 -0800 (PST)
+Message-ID: <EA40EEF21E41D511A1A200D0B74FEB29062D0C4A@xpa05.mayfield.hp.com>
+From: "BRUCE,WALTER (Non-HP-USA,ex3)" <walter_bruce@non.hp.com>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 13 Mar 2002 15:57:47 -0800
 MIME-Version: 1.0
-To: "Dreeling, Michael" <michael.dreeling@marconi.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] E35 816 Server & PA/Linux
-References: <0725120622E7D411AEF70020485A6B0CD71AF5@dl-msgusr-01.eu.fore.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] HP Books Request for book proposals
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,58 +27,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-You may have a chance, using this machine as a diskless machine
-with NFS ROOT file system.
+HP Books publishes books for technical professionals in collaboration with
+the publisher Prentice Hall/PTR. Our on catalog can be viewed at
+http://www.hp.com/hpbooks/. In January we announced a new open source series
+dedicated to publihing books on open source and Linux (see
+http://www.hp.com/hpbooks/news/perens_os_011502.html). We are particularly
+interested in receiving proposals for books on the following open source,
+Linux, and related topics:
 
-We have added a "PDC ROM console" driver to the kernel (I needed this
-for my E55). You can compile a kernel with the CONFIG_PDC_CONSOLE
-(config under "Non-standard serial port support" under "Character
-Devices")
-and follow the setup instruction in the HELP of CONFIG_PDC_CONSOLE.
-(Creating the device `/dev/ttyB0' and setting up the `console=ttyB0'
-kernel line parameter and modify `/etc/inittab'.
+- Linux Internals
+- Embedded Linux
+- Linux Security
+- PA-RISC Linux
+- XML
+- Ruby Network Programming
+- JBOSS & J2EE
+- Linux Performance Tuning
+- eXtreme Progamming
 
-If it is the same as on my E55, you cannot access the serial ports
-(MDP MUX board with 8 serial), the parallel port and the SCSI interface.
-The serial port-0 on the MUX is used a PDC console (default setup),
-and the new linux driver accesses this ROM PDC console (port 0).
+Follow the link to the employee site on the /hpbooks page and look for "Want
+to write a book" link for information on drafting and submitting a proposal.
+Or email me (Walter_Bruce@non.hp.com), and I will send you the book proposal
+form.
 
-The core machine and ethernet is working on my E55.
-
-I hope this helps and good luck
-
-Christoph P.
-
-
-
-"Dreeling, Michael" wrote:
-> 
-> Hi People,
-> I've got a newly acquired E35 816 Server which i'm trying to stick PA-Linux
-> onto.
-> Unfortunately i get this old error, which i have seen many people have
-> problems with.
-> 
-> Loading ramdisk 1946807 bytes @ 03e14000...
-> Branching to kernel entry point 0x00100000.  If this is the last
-> message you see, you may need to switch your console.  This is
-> a common symptom -- search the FAQ and mailing list at parisc-linux.org
-> 
-> I had seen on the site that someone had an E35 up and running (in the
-> Hardware Database)
-> but i also know that the E Series are officially unsupported. I tried the
-> 0.93 (latest) Version from the 50MB ISO.
-> Is there any way i can get parisc lunix onto this Box??
-> 
-> Thanks
-> Michael
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Thanks
