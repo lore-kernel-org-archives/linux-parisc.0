@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id D37B3482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Jun 2002 15:54:02 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: Steve Pacenka <spacenka@lightlink.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] tentative success with CRX24 framebuffer and X on a 720/50
-Date: Mon, 17 Jun 2002 23:52:35 +0200
-References: <1024334656.1594.311.camel@romano-nyswri>
-In-Reply-To: <1024334656.1594.311.camel@romano-nyswri>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1DC514836
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Jun 2002 16:11:10 -0600 (MDT)
+Message-Id: <200206172211.g5HMB37o013874@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Unaligned access failures with apt-get on SMP
+To: rbradetich@uswest.net (Ryan Bradetich)
+Date: Mon, 17 Jun 2002 18:11:03 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org, richard_hirst@linuxcare.com
+In-Reply-To: <1024346629.27050.52.camel@beavis> from "Ryan Bradetich" at Jun 17, 2002 02:43:49 pm
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200206172352.35578.deller@gmx.de>
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,74 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Steve,
+> (gdb) n
+> 263	   return Result/ItemSize;
+> 
+> (gdb) n
+> 
+> 260	   I->Count--;
+> (gdb) n
+> 
+> Program received signal SIGBUS, Bus error.
+> DynamicMMap::Allocate(unsigned long) (this=0x4c900, ItemSize=56) at
+> contrib/mmap.cc:263
+> 263	   return Result/ItemSize;
+> 
+> 
+> It looks like the the function gets exited twice.... but I do not see
+> any recursion in the function, and the function is not listed twice
+> in the origional back trace I posted.  Do we have a corrupt stack?
+> or can you think of anything else?  I would be glad to provide any
 
-I applied your suggested changes to the CVS kernel 2.4.18-pa38. 
-Since I don't have such a graphics card and can't test any changes here, 
-please let me know if I did it correctly.
+I don't think the function exits twice.  The duplication in lines as
+you step through the function is caused by optimisation.  A similar
+effect is observable in the value for ItemSize printed at the
+initial break.  If you print r25 at the break, you should see the
+value 56.  The initial printout is wrong because the break is before
+the point where the argument register is copied to the register or
+stack slot for ItemSize.  It's also possible that the register of
+stack slot used for ItemSize may get reused later in the function.
+The fun and games of debugging!
 
-Greetings,
-Helge
+If you put a break on line 263 and single step from that point you
+should find the exact assembly insn causing the bus error and be able
+to determine what's causing the bus error.
 
-On Monday 17 June 2002 19:24, Steve Pacenka wrote:
-> Friends,
->
-> I posted a request for advice about this on the list a couple of weeks
-> ago.  The 0.9.3 CD installed well, and then I did a dist-upgrade and
-> fiddled with kernel compiles to get fbcon and X going.
->
-> 1. Trial and error within the kernel led to two one-line insertions in
-> stifb.c (starting with 1.30.2.1 in CVS) enabled CRX24 framebuffer
-> (a.k.a. HPA1439A) initialization at 32 bpp and correctly blanked the
-> text overlay plane.  Welcome to the penguin and color text.
->
-> Change #1: In function
->
->   stifb_init_fb(struct sti_struct *sti, int force_bpp)
->
-> of /usr/src/linux/drivers/video/sti/stifb.c insert
->
->   (fb->id != S9000_ID_A1439A) &&
->
-> as another line within the #if 1 #endif hack that prevents
-> initialization of any but the listed hardware.
->
->
-> Change #2: In function
->
->   stifb_set_disp(struct stifb_info *fb)
->
-> insert
->
->   ngleClearOverlayPlanes(fb, 0xff, 0);
->
-> before the break; within the "clear attribute planes" switch for this
-> case.
->
-> Change #3: Verify these settings in /usr/src/linux/.config
->
->   CONFIG_FBCON=y
->   CONFIG_FBCON_CFB8=y
->   CONFIG_FBCON_CFB32=y
->   CONFIG_FBCON_STI=y
->
-> (CFB8 is for a forthcoming test of 8-bit depth. 24 bits unaccelerated is
-> somewhat slow with X on this box.)
->
->
-> 2. Telling XF86Config-4 that there is a 32 bit framebuffer having 24 bit
-> depth allowed X to start.  Welcome to a Gnome 1.4 splashscreen.
->
->
-> Performance of the console framebuffer is not bad, slightly slower than
-> the monochrome text that preceded it.  It's nice to have color.  No
-> apparent problems with the default font and 24bpp.
->
-> Performance under X was better than I expected considering the CPU
-> speed, the 24 bit depth, and the non-acceleration.  An 8-bit depth (if
-> achievable) and a lighter weight desktop than gnome+sawfish (windowmaker
-> perhaps) could get X close to routinely usable.  Except for a frequently
-> unresponsive serial mouse (very old M$ mouse) I experienced no basic
-> problems within X.
->
-> -- thanks, SP
+If the problem looks like a compilation error as opposed to a coding
+problem, send me offline the preprocessed source, the assembly output for
+DynamicMMap::Allocate(unsigned long) from your compiler, and the
+compilation command.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
