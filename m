@@ -1,86 +1,129 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA18419
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 09:30:58 -0600
-Received: from srmail.sr.hp.com (srmail.sr.hp.com [15.4.45.14])
-	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id LAA23488
-	for <parisc-linux@thepuffingroup.com>; Tue, 15 Jun 1999 11:30:30 -0400 (EDT)
-Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id IAA17946 for parisc-linux@thepuffingroup.com; Tue, 15 Jun 1999 08:30:47 -0700 (PDT)
-Message-Id: <199906151530.IAA17946@meow.sr.hp.com>
-Subject: [parisc-linux] Lasi/Dino/Interrupts (fwd)
-To: parisc-linux@thepuffingroup.com
-Date: Tue, 15 Jun 1999 08:30:47 -0700 (PDT)
-From: Bill Katz <billk@sr.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA18512
+	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 09:32:01 -0600
+Received: from chrome.rose.hp.com (kirkb@chrome.rose.hp.com [15.8.150.209])
+	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id IAA20632
+	for <parisc-linux@thepuffingroup.com>; Tue, 15 Jun 1999 08:31:46 -0700 (PDT)
+From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Message-Id: <199906151532.IAA22453@chrome.rose.hp.com>
+Subject: Re: [parisc-linux] Compiling Linux Kernel on HP-UX
+To: Ulrich.Strelow@schering.de
+Date: Tue, 15 Jun 1999 8:32:41 PDT
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <C1256791.00392418.00@BE2314.schering.de>; from "Ulrich.Strelow@schering.de" at Jun 15, 99 12:22 (noon)
 List-ID: <linux-parisc.vger.kernel.org>
 
-I didn't see any answers, and I've got a couple...
-
-|I've started putting together some basic code to drive LASI and DINO.
-|Some things aren't terribly clear however
 |
-|1.	How much of LASI/DINO/PCI has been initialised by the boot firmware.
-|	Has it performed the PCI device configurations and assigned bus
-|	spaces for the devices ?
-
-The PCI firmware is rather extensive.  It walks the bus, can deal with
-PCI to PCI bridges, and assigns both address space and interrupt
-lines to every device it finds.  It leaves the imporartant information
-in the base address register and interrupt line register of the PCI devices
-it finds.
-
+| Hi,
 |
-|	Will the LASI devices be in reset state except for the console port
-|	(Im assuming lasi is driving the firmware console ?)
-
-Yes, LASI is used for tty0, or the firmware console on all systems
-that have a LASI.  I believe you can work really hard at assigning
-the console somewhere else, like tty1, which comes from either DINO
-or WAX, or ... depending on which system we're talking about.
-
-On systems that use LASI LAN and SCSI those modules will be up and running
-by the time the OS is launched.  I believe on systems that use the DEC
-LANchip LASI LAN is disabled.  The keyboard controller is LASI is
-also likely up and running.
+| I'm trying to compile the latest CVS-snapshot (19990615) on my HP 715/33
+| using gcc 2.7.2.2 and binutils 2.7. Compiling kernel/sched.c gives the
+| following error:
 |
-|2.	It isnt totally clear from the docs what the input clock of the
-|	16550A macrocell is. I need that for the serial.c code obviously..
-
-In section 7.4 it says "the baudrate reference frequency is taken from
-the 40 MHz IO system clock.  The frequency 7.2727 MHz is generated
-by dividing 40 MHz by 5.5."  7.2727 MHz goes to the Macrocell.
-
-Dino can get its 16500 reference clock from either the GSC clock
-or the PCI clock.  I'd have to look through the bootROM source
-to remember which way it's set up.
-
+| sched.c:579: section attributes are not supported for this target
 |
-|3.	The parallel port slave reset is at 102000 in the register map. The
-|	docs elsewhere say the parallel port DMA registers can be reset
-|	by writing to offset 10300 - should this be 102000 or 103000 - ie
-|	is the dma reset for the parallel seperate , and is it at the
-|	obvious place or really is one of the 8bit bus (flash) addresses
-
-The parallel port registers are definitely not in flash space, especailly
-on any system with a PA7300LC since the flash space is from Clark not
-LASI, and the parallel port is completely inside LASI.
-
-My reading of the ERS says that the slave reset is at LASI_BASE+0x10_2000
-and parallel DMA reset is at LASI_BASE+0x10_3000.  A 4k page is assigned
-for each set of registers.  Where does it say 10300?  I'll fix the ERS.
-
+| I am running HP-UX 10.20, so I cannot use the depots from
+| ftp://puffin.external.hp.com/pub/parisc/binaries/depot/.
+| So the question is: do I need gcc 2.8.1 and binutils 2.9.1 to build the
+| kernel on HP-UX or is this some other error ?
 |
-|4.	Do I need to set bits in the I/O reset register back to 1 after
-|	a reset in order to bring them back active or is that automatic.
 
-I don't know that one.  If trial and error doesn't tell you, I could
-either run down chip designers or read HPUX driver code.
+gcc 2.8.1 isn't quite enough. Although it does support section
+attributes, there is a bug in the code emitted that cannot be assembled
+with gas 2.9.1. I sucessfully worked around it by changing the condition
+from a fatal error to a warning in gas.
 
-|
-|I have the irq handlers for LASI and DINO done. These will map the 
-|multiplexed irqs from these devices onto the linux "one irq space" model
-|presented to drivers.
+Here is the text of the bug I submitted to gcc:
 
-SOunds good.
 
-	-Bill Katz
+e of __attribute__((__section__())) to force code into a specific
+section
+generates code which causes the assembler to fail.
+
+Here is an example:
+
+/* test.c */
+int __attribute__ ((__section__ (".text.init")))  a(x)
+int x;
+{
+ return(x+1);
+}
+
+int b(x)
+int x;{
+ return(x+2);
+}
+
+int __attribute__ ((__section__ (".text.init")))  c(x)
+int x;{
+ return(x+1);
+}
+
+main(){
+ printf("a(0)=%d\n",a(0));
+ printf("b(0)=%d\n",b(0));
+ printf("c(0)=%d\n",c(0));
+}
+
+
+Here is the output of gcc:
+
+# gcc test.c
+/var/tmp/cca10410.s: Assembler messages:
+/var/tmp/cca10410.s:59: Warning: Parameters of an existing subspace
+can't be modified
+/var/tmp/cca10410.s:59: Error: Rest of line ignored. First ignored
+character is`,'.
+
+Creating the assembly language output and examining for .SUBSPA
+directives, we
+find the following:
+
+# gcc -S test.c
+# grep SUBSPA test.s
+
+# gcc -S test.c
+# grep SUBSPA test.s
+        .SUBSPA $DATA$,QUAD=1,ALIGN=8,ACCESS=31
+        .SUBSPA $BSS$,QUAD=1,ALIGN=8,ACCESS=31,ZERO,SORT=82
+        .SUBSPA $LIT$,QUAD=0,ALIGN=8,ACCESS=44
+        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=44,CODE_ONLY
+        .SUBSPA .text.init,QUAD=0,ALIGN=8,ACCESS=44,CODE_ONLY,SORT=24
+        .SUBSPA a
+        .SUBSPA $CODE$
+        .NSUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=44,CODE_ONLY
+        .SUBSPA .text.init,QUAD=0,ALIGN=8,ACCESS=44,CODE_ONLY,SORT=24
+        .SUBSPA c
+        .SUBSPA $LIT$
+        .SUBSPA $CODE$
+        .NSUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=44,CODE_ONLY
+
+Note that the section .text.init is declared with all the parameters
+twice.
+The second occurance should not include the parameters.
+
+If the second declaration is edited to remove the parameters, then the
+code
+assembles and run correctly.
+
+# cp test.s test_fixed.s
+# vi test_fixed.s
+# diff test.s test_fixed.s
+59c59
+<       .SUBSPA .text.init,QUAD=0,ALIGN=8,ACCESS=44,CODE_ONLY,SORT=24
+---
+>       .SUBSPA .text.init
+# gcc -o test_fixed test_fixed.s
+# ./test_fixed
+a(0)=1
+b(0)=2
+c(0)=1
+
+
+KMB
+--
++============================================================+
+|       Kirk Bresniker          (916) 785-5677               |
+|       8000 Foothills Blvd                                  |
+|       Roseville, CA 95747-5649                             |
+|       kirkb@rose.hp.com                                    |
