@@ -1,69 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA26876
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 10:45:20 -0600
-Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id JAA22521
-	for <parisc-linux@thepuffingroup.com>; Tue, 19 Oct 1999 09:46:06 -0700 (PDT)
-Sender: frowand@cup.hp.com
-Message-ID: <380CA049.E16634DF@hp.com>
-Date: Tue, 19 Oct 1999 09:46:01 -0700
-From: Frank Rowand <frank_rowand@hp.com>
-Reply-To: frowand@cup.hp.com
-MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: parisc-linux@thepuffingroup.com,
-        Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-Subject: Re: [parisc-linux] LASI and serial port initialization
-References: <199910191630.JAA27454@milano.cup.hp.com>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA27297
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 10:53:21 -0600
+Received: from chrome.rose.hp.com (kirkb@chrome.rose.hp.com [15.8.150.209])
+	by cosrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id KAA22722
+	for <parisc-linux@thepuffingroup.com>; Tue, 19 Oct 1999 10:54:10 -0600 (MDT)
+From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Message-Id: <199910191655.JAA08169@chrome.rose.hp.com>
+Subject: Re: [parisc-linux] different PA2.0 CPUs in the same box? 
+To: grundler@cup.hp.com
+Date: Tue, 19 Oct 1999 9:55:50 PDT
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <199910191604.JAA27382@milano.cup.hp.com>; from "Grant Grundler" at Oct 19, 99 9:04 am
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> 
-> Helge and I exchanged some e-mail on the topic of LASI vis a vie
-> serial port initialization. Since then, I've come to the conclusion
-> all (or most) parisc platforms will have a similar problem.
-> 
-> The problem is LASI is "discovered" and initialized well after several
-> other drivers want to print things to the console. I see a few options
-> on how to handle it:
-> 1) For each platform, force the console to be the first device "discovered"
->    and initialized. This is not a really good idea since console can be
->    different depending on configuration. Rebuilding the kernel to use
->    a different console doesn't seem reasonable to me. Having the user
->    figure out which devices need to be initialized first and build an
->    appropriate kernel so console works also seems unreasonable.  We are
->    headed down this path now though....
-> 
-> 2) Use IODC until the console device is "owned" by the appropriate driver
->    and can start taking input/output.
-> 
-> 3) buffer the output instead of calling IODC.
->    Size of the buffer will impose some sort of limit.
->    I think this is what HP-UX does but don't really know
->    and it shouldn't matter to us.
+| 
+| The processors can run from a "system clock" and they all run synchronous.
+| No chance of "clock drift" since they run at exactly the same pace.
+| But on systems like 870, T-class and N-class, the processors are fed clock
+| signals from (similar but) different sources.  Each frequency domain will
+| slowly drift from the "average" and thus the processor clocks need to be
+| resyncronized regularly.
+| 
 
-Yes, this is what HP-UX does.  And in the case of a panic, the buffered
-messages are flushed to the console via IODC.
+Eh? I can't speak to the T-Class, but N-Class processors (as well as
+A,B,C,D,E,F,G,H,I,J,K, and L) all run from a single clock source.  All
+of the fundamental problems of clock drift happen between systems, not
+interior to a system.  The crystals used are usally 25~50ppm, which
+would amount to a second or two per day between systems, which is
+significant, but is easily sovled using NTP.
 
-> Either 2 or 3 requires some software layer behind printk to change
-> behavior at some point. I don't know where that point is or how
-> exactly to define it. I just thought going down path #1 is going
-> to be a real pain to support on a broad set of platforms.
-> 
-> Any other thoughts?
+There is no time clock in the processor itself, but rather a register
+which is incremented every clock tick. That is why you need to know the
+frequency of the processor to convert clock ticks to wall time.  
+I believe that there are some wrinkles that can happen in sensing the 
+rollover of the interval timer register under all interrupt conditions,
+and it may be that this is the 'synchronization' problem that you
+are thinking about. But, I don't think that it is due to drift on the
+hardware clock circuits.
 
-Yes, 2 or 3 sound best.
-
-Some pros & cons... (assume that the pros are the opposite of the cons
-for the other option)
-
-  2) con: - polled I/O
-          - may need to add infrastructure to do IODC I/O (but this should
-            be in place for the panic and dump path anyway)
-     pro: - should work on all platforms, once it works on one
-
-  3) con: - when debugging new drivers and platforms, you won't get any
-            debugging messages until the console driver works
-
--Frank
+KMB
+--
++============================================================+
+|       Kirk Bresniker    	(916) 748-2393		     |
+|       8000 Foothills Blvd                                  |
+|       Roseville, CA 95747-5649                             |
+|       kirkb@rose.hp.com                                    |
