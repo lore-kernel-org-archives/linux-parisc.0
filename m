@@ -1,29 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3EBA5482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 11:28:41 -0600 (MDT)
-Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m15vMOn-000OzIC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 11:28:33 -0600 (MDT)
-Message-Id: <m15vMOn-000OzIC@bame.riverrock.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Steve.Grady@csiro.au, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Large SCSI disks on a 735/125 
-In-Reply-To: Your message of "Sat, 20 Oct 2001 23:22:31 BST."
-             <20011020232231.D31505@parcelfarce.linux.theplanet.co.uk>
-References: <49AA3A3C863E5B4C911320AEF99E5DA3010CCBC0@wing-ep.tip.csiro.au>  <20011020232231.D31505@parcelfarce.linux.theplanet.co.uk> 
-Date: Sun, 21 Oct 2001 11:28:33 -0600
-From: Paul Bame <bame@riverrock.org>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 16EF0482A
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Oct 2001 11:52:39 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tszeiaaa for parisc-linux@parisc-linux.org; Sun, 21 Oct 2001 10:47:54 -0700
+Date: Sun, 21 Oct 2001 10:52:27 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011021105227.H537@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] small patch for cpu_idle?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> The only thing to beware of is that palo can only access the first
-> 2GB of the disc, so the kernel that it loads has to be in this area.
-> It is possible to fix palo to work for >2GB partitions, but nobody's
-> done that yet.
+It appears to me that our cpu_idle is not quite right... what do you
+guys think about this:
 
-The firmware call which supports >2GB access may not be available
-in that box -- I'm not sure when it became available.  Linux will
-have no problem accessing the whole drive however.
+Index: process.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/process.c,v
+retrieving revision 1.38
+diff -u -r1.38 process.c
+--- process.c   2001/10/09 19:43:35     1.38
++++ process.c   2001/10/21 17:46:53
+@@ -67,8 +67,8 @@
+        current->counter = -100;
+ 
+        while (1) {
+-               while (!current->need_resched) {
+-               }
++               while (!current->need_resched) 
++                       continue;
+                schedule();
+                check_pgt_cache();
+        }
 
-	-P
+otherwise when cpu_idle gets called we might get stuck in an inf loop
+(which happens, for example, when fsck requires manual intervention on
+startup).
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
