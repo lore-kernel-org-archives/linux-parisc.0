@@ -1,31 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4527E482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 23:47:12 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15ch94-0006uV-00; Fri, 31 Aug 2001 06:47:10 +0100
-Date: Fri, 31 Aug 2001 06:47:10 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: thunder7@xs4all.nl
+Received: from mx05.nexgo.de (mx05.nexgo.de [151.189.8.81])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BC90F482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Aug 2001 03:18:18 -0600 (MDT)
+Message-ID: <3B8F7268.9090408@hrzpub.tu-darmstadt.de>
+Date: Fri, 31 Aug 2001 13:18:00 +0200
+From: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: Matthew Wilcox <willy@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.9-pa10 hangs on c200+ after 'branching to kernel entry point'
-Message-ID: <20010831064710.G30497@parcelfarce.linux.theplanet.co.uk>
-References: <20010830215714.A19233@middle.of.nowhere> <20010830210933.D30497@parcelfarce.linux.theplanet.co.uk> <20010831065732.B4816@middle.of.nowhere>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010831065732.B4816@middle.of.nowhere>; from thunder7@xs4all.nl on Fri, Aug 31, 2001 at 06:57:32AM +0200
-Sender: <willy@www.linux.org.uk>
+Subject: Re: [parisc-linux] Kernel failures
+References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de> <20010831064005.F30497@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Aug 31, 2001 at 06:57:32AM +0200, thunder7@xs4all.nl wrote:
-> Where can I find any info on 'the current serial port snafu'? Is this
-> the same problem as mentioned on the 5th of August 'more serial problems
-> on D310' ?
+Matthew Wilcox wrote:
 
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2001-August/029567.html
-it almost certainly is the same problem which was reported by the D310 owner.
+>>4. My HIL-Keyboard isn't detected anymore by the new 2.4.9-kernel. Using 
+>>Kernel 2.4.7-pa1, after the initalisation of HIL, I get a bootmessage like
+>> "HIL: keyboard found".  Booting the new Kernel gives me only the two 
+>>lines of HIL initalisation, but nothing about my Keyboard. Which is a 
+>>PS/2-Keyboard on a HIL-Adaptorbox. Both Kernel were configured via "make 
+>>oldconfig".
+>>
+>
+>I'm interested in debugging this one - I don't quite understand what's going on though.  You should see:
+>
+>Found HIL at 0x%x, IRQ %d
+>
+>then one of:
+>
+>HIL: timed out, assuming no keyboard present.
+>HIL: no keyboard present.
+>HIL: keyboard found at id %d
+>
+>which?
+>
+Sorry!! I looked at the wrong File. I get the following messages:
+Snip------------
+        Found HIL at 0xf0201000, IRQ 126
+        HIL: keyboard found at id 0
+        HIL: keymap loaded.
+Snap-----------
 
-fyi, i committed option 1 earlier today.
+But thanks for your quick answer!
 
--- 
-Revolutions do not require corporate support.
+Rüdiger
