@@ -1,16 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 519DA482E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 11:09:17 -0700 (MST)
-Date: Fri, 22 Nov 2002 18:39:39 +0100
-Message-ID: <3DAAAD4600004194@ocpmta1.be.tiscali.com>
-In-Reply-To: <20021122173319.GG19331@tausq.org>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Squid-2.4.7 problem
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B183482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 11:36:52 -0700 (MST)
+Received: from xparelay1.ptp.hp.com (xparelay1.ptp.hp.com [15.1.28.62])
+	by palrel12.hp.com (Postfix) with ESMTP id 1C615E00A37
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 10:36:48 -0800 (PST)
+Received: from xpabh1.ptp.hp.com (xpabh1.ptp.hp.com [15.1.28.60])
+	by xparelay1.ptp.hp.com (Postfix) with ESMTP id 03059E002F0
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 10:36:28 -0800 (PST)
+Message-ID: <CB813811CBF6D3118DCC00902740BB4A0B89AE6D@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 22 Nov 2002 10:36:08 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] stdsyms.h
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +27,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+Hi people,
 
->
->> I try to install squid on a sarge install with a kernel 2.4.19-32. This
->squid
->> failled with data_page_fault.
->
->if this is reproducible, it is much better if you generate a core file
->and look at that instead.
+	To compile the sourcecode that I am migrating, I need of stdsyms.h
+include file. What package is necessary to acquire this file?
 
-Good idea I will try.
+Thanks in advance
 
->
->> As I would like to build an elementary FW there is no dev tools on this
->box.
->> So I try to debug the problem on my unstable (just update this morning)
->box
->> but here the problem is absolutly different: squid loop and a strace tells
->> me:
->> ...
->> sched_yield()    =0
->> sched_yield()    =0
->
->i suspect this is quite normal, depending on what squid is doing.
->
->strace by default also only looks at the parent task. if any children
->are fork()ed they will not be traced unless you tell it to. 
->
-Hmm strace -f -p xxx 
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
 
-says the same and no forks process?
-
-I will try first the core dump.
-
-Thanks,
-    Joel
-
-
-
-********************************************************************************
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...http://tiscali.complete.be
+*   leandro.farinati@hp.com
+*   +55-51-3316-2852 Telnet  725-2852
+FAX +55-51-3316-2754 Mobile +55-51-9965-8020
