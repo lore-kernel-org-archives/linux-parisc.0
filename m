@@ -1,12 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] coherent ops and mb() revisited
-Date: Sat, 4 Sep 2004 19:38:44 -0600
-Message-ID: <20040905013844.GC23842@colo.lackof.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] coherent ops and mb() revisited
+Date: 04 Sep 2004 22:56:30 -0400
+Message-ID: <1094352991.1924.12.camel@mulgrave>
+References: <20040905013844.GC23842@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@parisc-linux.org
+Content-Type: text/plain
+Cc: parisc-linux@parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040905013844.GC23842@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,81 +19,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
-I haven't tested the following patch and just wanted to get
-feedback if it is "the right thing" or not.
+On Sat, 2004-09-04 at 21:38, Grant Grundler wrote:
+> I haven't tested the following patch and just wanted to get
+> feedback if it is "the right thing" or not.
 
-John Marvin was clear in previous discussion we don't need
-to use coherent stores but I've heard we should follow the
-arch anyway so it doesn't bite us later. I find it highly
-unlikely but see no harm in "doing it right".
+It should work, but I don't think it's the right thing to do.
 
-The second bit is if adding "memory" reference in the ldcw
-and _raw_spin_unlock() could replace the mb() instructions
-which James Bottomley added to prevent gcc from re-ordering
-instructions outside the critical section.
+__ldcw already insists on operating on volatile data, which is the
+correct thing to do.  Adding a memory barrier is probably harmless, but
+it crimps any optimisations gcc might like to try with that function
+(not that there really are any with such a simple loop).  Indeed, we
+could even remove the __volatile__ from the asm.
 
-opinions?
+I think the best implementation is probably
 
-thanks,
-grant
+barrier();
+a = __ldcw_align(x);
+while (__ldcw(a) == 0)
+	while(*a == 0)
+		;
+mb();
 
+Which makes it totally clear what barriers we need where in the spinlock
+(the first being simply a compiler ordering barrier and the second
+actually a processor memory barrier).
 
-Index: include/asm-parisc/spinlock.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/spinlock.h,v
-retrieving revision 1.6
-diff -u -p -r1.6 spinlock.h
---- include/asm-parisc/spinlock.h	15 Aug 2004 14:17:39 -0000	1.6
-+++ include/asm-parisc/spinlock.h	5 Sep 2004 00:58:42 -0000
-@@ -29,20 +29,26 @@ static inline void _raw_spin_lock(spinlo
- {
- 	volatile unsigned int *a;
- 
--	mb();
- 	a = __ldcw_align(x);
- 	while (__ldcw(a) == 0)
- 		while (*a == 0);
--	mb();
- }
- 
- static inline void _raw_spin_unlock(spinlock_t *x)
- {
- 	volatile unsigned int *a;
--	mb();
-+	register unsigned tmp=1;
-+
- 	a = __ldcw_align(x);
--	*a = 1;
--	mb();
-+	/* use a coherent store. PA1.1 is always strongly ordered.
-+	 * Even though no PA2.0 implementation is weakly ordered,
-+	 * jda would prefer we use coherent stores (",ma" with zero offset
-+	 * is the same thing but PA1.1 compatible).
-+	 * Key here is "memory" - prevent gcc from re-ordering memory
-+	 * accesses below releasing the lock.
-+	 */
-+	__asm__ __volatile__ ("stw,ma %1,0(%0)"
-+			: : "r" (a), "r" (tmp) : "memory");
- }
- 
- static inline int _raw_spin_trylock(spinlock_t *x)
-Index: include/asm-parisc/system.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/system.h,v
-retrieving revision 1.7
-diff -u -p -r1.7 system.h
---- include/asm-parisc/system.h	18 Aug 2004 20:21:41 -0000	1.7
-+++ include/asm-parisc/system.h	5 Sep 2004 00:58:42 -0000
-@@ -141,7 +141,7 @@ static inline void set_eiem(unsigned lon
- /* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
- #define __ldcw(a) ({ \
- 	unsigned __ret; \
--	__asm__ __volatile__("ldcw 0(%1),%0" : "=r" (__ret) : "r" (a)); \
-+	__asm__ __volatile__("ldcw 0(%1),%0" : "=r" (__ret) : "r" (a) : "memory"); \
- 	__ret; \
- })
- 
+James
+
 
 _______________________________________________
 parisc-linux mailing list
