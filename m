@@ -1,33 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 536574A18
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 05:00:58 -0700 (MST)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel1.hp.com (Postfix) with ESMTP id 4BAD0333
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 06:59:32 -0500 (EST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id EAA28303 for parisc-linux@lists.parisc-linux.org; Fri, 2 Feb 2001 04:59:31 -0700 (MST)
-Date: Fri, 2 Feb 2001 04:59:31 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200102021159.EAA28303@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems building glibc
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5C6EE4A18
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 08:25:22 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA09592
+	for <parisc-linux@puffin.external.hp.com>; Fri, 2 Feb 2001 08:21:12 -0700
+Received: from localhost (ingram@localhost)
+	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id JAA11161
+	for <parisc-linux@thepuffingroup.com>; Fri, 2 Feb 2001 09:25:11 -0600
+Date: Fri, 2 Feb 2001 09:25:11 -0600 (CST)
+From: Greg Ingram <ingram@symsys.com>
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: <200102012215.XAA10570@zaphod.halden.lillfab.se>
+Message-ID: <Pine.LNX.4.21.0102020921190.10996-100000@maestro.symsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C100 w/ Current CVS Bits
 List-ID: <linux-parisc.vger.kernel.org>
 
-> It's a known bug with our mainline gcc.  Fixed on the devel branch, but
-> that has other problems at the moment.  For the time beingg, compile this
-> file at -O1.
+Howdy,
 
-OK, that answers the question about what branch the fix is on. Having
-run into this bug before, I know there are a bunch of other glibc files
-that won't compile, so I would suggest you just build all of glibc
-with -O1.
+Did it again.  CVS update, build new kernel, boot.  This one mounts the
+root filesystem from a SCSI disk and then barfs copiously with this
+message:
 
-Note, I believe that Matt Taggart will be publishing a new nfs root
-with a new glibc later today (and this glibc will fix the alignment
-problems found on PCXS,PCXT and PCXT' processors). The glibc he built
-contains the rest of the alignment fixes that I am going to commit
-in the next few minutes.
+	kernel BUG at /usr/src/parisc/linux/include/asm/pgalloc.h:60!
 
-John
+Quick ref:  Here's the offending code from flush_cache_range():
+
+	if (!mm->context) {
+		BUG();
+		return;
+	}
+
+Suggestions?
+
+- Greg
