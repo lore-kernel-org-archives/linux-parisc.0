@@ -1,46 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA29053
-	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Sep 2000 04:45:24 -0600
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by cosrel1.hp.com (Postfix) with ESMTP id C1A20A3
-	for <parisc-linux@thepuffingroup.com>; Wed, 27 Sep 2000 04:46:16 -0600 (MDT)
-To: parisc-linux@thepuffingroup.com
-Cc: taggart@carmen.fc.hp.com
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA30473
+	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Sep 2000 08:31:23 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 27 Sep 2000 14:32:11 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: binutils dhd
+References: <Pine.LNX.4.21.0009271045001.10201-100000@front.linuxcare.com.au>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 27 Sep 2000 10:31:59 -0400
+Message-ID: <87hf71oqhs.fsf@tarwebok.i-did-not-set--mail-host-address--so-shoot-me>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 27 Sep 2000 04:47:54 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20000927104754.570BC381CD@carmen.fc.hp.com>
-Subject: [parisc-linux] new debs and nfsroot tarball
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have built native dynamic versions of the following Debian woody packages,
+Alan Modra <alan@linuxcare.com.au> writes:
 
-cpio_2.4.2-32_hppa.deb
-debhelper_2.1.11_all.deb
-findutils_4.1-40_hppa.deb
-grep_2.4.2-1_hppa.deb
-gzip_1.2.4-33_hppa.deb
-hostname_2.07_hppa.deb
-ldso_1.9.11-9_hppa.deb
-sed_3.02-6_hppa.deb
-sysvinit_2.78-4_hppa.deb
-tar_1.13.17-2_hppa.deb
-texinfo_4.0-4_hppa.deb
+> The reason aligning won't always work is that import and long branch
+> stubs are interspersed in the stub section, and PIC long branch
+> stubs happen to be 12 bytes long.  Which messes with your carefully
+> constructed 8 byte alignment.
 
-I have added them to the repository at,
+No, the issue is the alignment of the distance between the GP and the
+PLT, it has nothing to do with the placement of the stubs AFAIK.
 
-http://puffin.external.hp.com/debian-hppa
+> The proper fix is to use lr_sel and rr_sel when building the import stubs,
+> so I'm reverting your change unless you have some other reason for wanting
+> 8 byte alignment.
 
-Some of these we only had in static/cross-compiled form and some are new. I 
-have added the above packages to the nfsroot tarball and placed it at,
-
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/nfsroot-20000927.tar.g
-z
-
-There are still a few things that have not been rebuilt native/dynamic. I hope 
-to do those later this week.
+Okay, so long as this fixes it, I have no objections.  My changes were
+pretty ugly anyway.
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
