@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1A67F4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Jun 2003 11:54:39 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1056995678.3f00795e49bf5@clients.latnet.lv>
-Date: Mon, 30 Jun 2003 20:54:38 +0300 (EEST)
-From: Dub <dub@latnet.lv>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
-Subject: [parisc-linux] modprobe: Can't locate module char-major-60 (server hangs!)
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 20A934829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Jun 2003 11:58:13 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19X2up-0003L8-LG; Mon, 30 Jun 2003 18:58:11 +0100
+Date: Mon, 30 Jun 2003 18:58:11 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Dub <dub@latnet.lv>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] modprobe: Can't locate module char-major-60 (server hangs!)
+Message-ID: <20030630175811.GK31618@parcelfarce.linux.theplanet.co.uk>
+References: <1056995678.3f00795e49bf5@clients.latnet.lv>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1056995678.3f00795e49bf5@clients.latnet.lv>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,37 +25,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Mon, Jun 30, 2003 at 08:54:38PM +0300, Dub wrote:
+> Jun 27 15:08:47 smsmail4 modprobe: modprobe: Can't locate module char-major-60
 
-I have just installed my first Debian server  3.0r1 on HP PA-RISC K210
-(palinux-2.4.20).
-I made installatiion using console device /dev/ttyB0.
+ttyB0 has the wrong major number.  It needs to be character major 11.
 
-After reboot I got the message, and the system became frozen.
-
-Jun 27 15:08:47 smsmail4 modprobe: modprobe: Can't locate module char-major-60
-Jun 27 15:08:49 smsmail4 last message repeated 9 times
-Jun 27 15:08:49 smsmail4 init: Id "T0" respawning too fast: disabled for 5
-minut
-
-Everything is working in single-user mode (/sbin/sulogin starts just fine from
-/etc/inittab)
-
-Getty for ttyB0 gives the same error.
-
-bash-2.05a# /sbin/getty -L ttyB0 9600 vt100
-modprobe: modprobe: Can't locate module char-major-60
-
-I tried to change devices or even to comment getty out from /etc/inittab, but
-the server still hangs.
-
-I suspect something could be fixed in /etc/modules.conf
-
-It's still unclear for me what is the meaning of message
-modprobe: Can't locate module char-major-60
-from OS point of view.
-
-Many thanks in advance for your help!
-
-BR,
-Dub
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
