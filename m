@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 95AF6482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Dec 2001 18:13:02 -0700 (MST)
-Message-Id: <m16HxCH-000OuKC@bame.riverrock.org>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Herb Radford <herbr@magma.ca>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Pre-built kernels (was Re: [parisc-linux] C110 Kernel panic while installing 0.9.3)
-In-Reply-To: Your message of "22 Dec 2001 17:35:51 MST."
-             <1009067752.30519.4.camel@beavis>
-References: <5.1.0.14.0.20011221084018.02d9a310@mail.magma.ca> <1008632016.10510.0.camel@beavis> <5.1.0.14.0.20011217161541.026f40e0@mail.magma.ca> <1008632016.10510.0.camel@beavis> <5.1.0.14.0.20011221084018.02d9a310@mail.magma.ca> <5.1.0.14.0.20011222170417.0301aec0@mail.magma.ca>  <1009067752.30519.4.camel@beavis> 
-Date: Sat, 22 Dec 2001 18:13:00 -0700
-From: Paul Bame <bame@riverrock.org>
+Received: from cactus.bheadley.org (d147.focal4.interaccess.com [207.208.139.147])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1EA8482B
+	for <parisc-linux@parisc-linux.org>; Sun, 23 Dec 2001 17:59:20 -0700 (MST)
+Received: from interaccess.com (IDENT:4NmTXND6Ne041+bY+qeEGvI3VEuhboVl@localhost.localdomain [127.0.0.1])
+	by cactus.bheadley.org (8.11.6/8.11.6) with ESMTP id fBO0wBR01701
+	for <parisc-linux@parisc-linux.org>; Sun, 23 Dec 2001 18:58:16 -0600
+Message-ID: <3C267DA3.4040504@interaccess.com>
+Date: Sun, 23 Dec 2001 18:58:11 -0600
+From: "Bryan W. Headley" <bheadley@interaccess.com>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] XFree86 Question
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,13 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I added back in the parisc-linux list again. I know there has been some
-> effort to produce official debian kernel images from the CVS tree.  If
-> you do not want to setup a compile environment, I suspect these kernels
-> .debs will work for you.  
+Yay! Got my C110 up and happy on 0.93.
 
-Default-config 32 and 64-bit kernels are being built from CVS daily, see
-http://ftp.parisc-linux.org/kernels/ directories 32 and 64 plus the README.
-Source tarballs matching these kernels are in http://ftp.parisc-linux.org/cvs/
+And now, an X question :-)
 
-	-P
+I'm getting this on startup of the X server,
+
+	FBIOPUT_VSCREENINFO: Invalid argument
+
+	Fatal server error:
+	AddScreen/ScreenInit failed for driver 0
+
+Any ideas? Ran the release note patch, and upgraded to 2.4.16-pa24 to no 
+avail. X server is rev 4.1.0-9.0.1.
+
+
+-- 
+____               .:.                 ____
+Bryan W. Headley - bheadley@interaccess.com
