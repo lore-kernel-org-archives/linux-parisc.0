@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D36634834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jun 2003 02:12:52 -0600 (MDT)
-Date: Thu, 12 Jun 2003 10:12:48 +0200
-Message-ID: <3ED71F6D0000466D@ocpmta7.freegates.net>
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA3AB4834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jun 2003 02:45:50 -0600 (MDT)
+Date: Thu, 12 Jun 2003 10:45:47 +0200
+Message-ID: <3ED71F6D000046BD@ocpmta7.freegates.net>
+In-Reply-To: <1055363548.2419.41.camel@dhcp22.swansea.linux.org.uk>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] palo II (scsi disk path name)
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>,
-	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] palo II
+To: "Alan Cox" <alan@lxorguk.ukuu.org.uk>,
+	=?ISO-8859-1?Q?Stian=20S=F8iland?= <stian@soiland.no>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,45 +24,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 >
->On Wed, Jun 11, 2003 at 07:46:54PM +0200, Joel Soete wrote:
-> Anoyed to change my fstab because I add or remove a disk to/from the external
-> scsi controler of my b2k (boot disk sda became sdb, sdc, or what else),
-> I decide so to test devfs ker
-el.
->It seems to works (excepted that I could
-> not specify root=/dev/scsi/host1/bus0/target5/lun0/part5)
+>> Joel gave a perfect example of when devfs would come of perfect use,
+> variation of scsi devices fucks up "sdb", "sdc" and so on. 
 
-> (a) devfs is shit.  do not use it.
+>Seperate the theory from the implementation. The implementation has real
+>problems. The theory has permission management problems
 
-Ok but is there some other alternative to fix this pb?
+I was just looking for a sol to this anoying scsi disk named to refer to
+(a la /dev/[r]dsk/cXtXdX on hpux or /dev/dsk/cXtXdXsX on solaris; ie a name
+independent of the scan order of [scsi] interfaces)
 
-I spook with "Kurt Garloff <garloff@suse.de
-" about its patch "root=/dev/scsi/sdcXbXtXuXpX
-support" into 2.4.20 but advise me better devfs?
+>Dell have a nice little app that generates the right symlinks by device
+>all in user space
 
-An lvm ramdisk to rebuild for each new kernel test?
+I will try to find it and test
 
-> (b) even if it's compiled in, the kernel still matches `root=' against
-a
-> built-in table tha
- has nothing to do with devfs.
-
-Clear arg
-
-> (c) devfs is shit.  do not use it.
-Ok but is there some other alternative to fix this pb? ;-)
-
-the early lvm discover of evms was removed in last release :(
-
-Thanks for info and advise,
+Thanks,
     Joel
 
-PS:
-Please accepte my apologies but it seems that my ISP changes a bit its
-webmail tools and seems bugy for reply with copy of original text (break
-thread, and mainly removed characters?)
-
-
+ps: btw merge 2.4.21 any news? now for > 2.4.22 (for my part no info from
+Marcelo neither 'no' nor 'yes'; is there some specific ml archive to read)
 
 ---------------------------------
 Découvrez les 6 clés et gagnez le Club Med à Vie avec Tiscali
