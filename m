@@ -1,16 +1,15 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] [RFC] Non-executable stack?
-Date: Tue, 14 Sep 2004 15:56:22 -0400
-Message-ID: <20040914195621.GL9763@baldric.uwo.ca>
-References: <20040912161009.GQ28659@tausq.org>
-	<200409141936.i8EJa1Yq021565@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
+Date: Tue, 14 Sep 2004 18:36:56 -0400
+Message-ID: <20040914223655.GP9763@baldric.uwo.ca>
+References: <20040914160613.GA28659@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409141936.i8EJa1Yq021565@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040914160613.GA28659@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +20,841 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> While a non-executable stack can be used on hpux, it's not the default.
-> 
-> GCC currently needs an executable stack for calling nested functions
-> on both linux and hpux.  See the trampoline macros in pa.h.
+On Tue, Sep 14, 2004 at 09:06:13AM -0700, Randolph Chung wrote:
+> then..... i don't particular like this change (inline to macro). was
+> hoping that it will fix some compile warnings, but it introduces other
+> ones :(
 
-Moving signal return trampolines off the stack is a first step at
-getting a working non-executable stack.
+This works for me on 32-bit (c3k, latest cvs head) + patches.
+Passes my multi-kill-kernel and test-lws tests, along with a kernel
+build. It includes my changes for LWS.
 
-The idea of having a vDSO is very cool IMO, especially since it solves
-our problems with having to detect LWS CAS... which normally crashes the
-old kernels. One could also define a new sysconf() variable and rely on 
-that.
-
-Opinions?
+I say it's good to checkin.
 
 c.
 
+Index: arch/parisc/kernel/asm-offsets.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/asm-offsets.c,v
+retrieving revision 1.10
+diff -u -p -r1.10 asm-offsets.c
+--- arch/parisc/kernel/asm-offsets.c	13 Sep 2004 15:22:24 -0000	1.10
++++ arch/parisc/kernel/asm-offsets.c	14 Sep 2004 22:30:09 -0000
+@@ -38,6 +38,7 @@
+ #include <asm/ptrace.h>
+ #include <asm/processor.h>
+ #include <asm/pdc.h>
++#include <asm/uaccess.h>
+ 
+ #define DEFINE(sym, val) \
+ 	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+@@ -291,5 +292,8 @@ int main(void)
+ 	DEFINE(ASM_PT_INITIAL, PT_INITIAL);
+ 	DEFINE(ASM_PAGE_SIZE, PAGE_SIZE);
+ 	BLANK();
++	DEFINE(EXCDATA_IP, offsetof(struct exception_data, fault_ip));
++	DEFINE(EXCDATA_SPACE, offsetof(struct exception_data, fault_space));
++	DEFINE(EXCDATA_ADDR, offsetof(struct exception_data, fault_addr));
+ 	return 0;
+ }
+Index: arch/parisc/kernel/syscall.S
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/syscall.S,v
+retrieving revision 1.14
+diff -u -p -r1.14 syscall.S
+--- arch/parisc/kernel/syscall.S	10 Sep 2004 14:52:01 -0000	1.14
++++ arch/parisc/kernel/syscall.S	14 Sep 2004 22:30:09 -0000
+@@ -29,6 +29,19 @@
+ #else
+ 	.level		1.1
+ #endif
++
++#ifndef __LP64__
++	.macro fixup_branch,lbl
++	b	    \lbl
++	.endm
++#else
++	.macro fixup_branch,lbl
++	ldil	    L%\lbl, %r1
++	ldo	    R%\lbl(%r1), %r1
++	bv,n        %r0(%r1)
++	.endm
++#endif
++
+ 	.text
+ 
+ 	.import syscall_exit,code
+@@ -575,10 +588,7 @@ cas_action:
+ 	/* Return to userspace, set no error */
+ 	b	lws_exit
+ 	copy	%r0, %r21
+-	nop	/* Add some visual space in objdump */
+-	nop
+-	nop
+-	nop
++
+ 3:		
+ 	/* Error occured on load or store */
+ #ifdef CONFIG_SMP
+@@ -596,15 +606,16 @@ cas_action:
+ 	nop
+ 
+ 	/* Two exception table entries, one for the load,
+-	   the other for the store. Either return -EFAULT */
++	   the other for the store. Either return -EFAULT.
++	   Each of the entries must be relocated. */
+ 	.section __ex_table,"aw"
+ #ifdef __LP64__
+ 	/* Pad the address calculation */
+ 	.word	0,(2b - linux_gateway_page)
+-	.dword	(3b - 2b) 
++	.word	0,(3b - linux_gateway_page)
+ #else
+-	.word	2b - linux_gateway_page
+-	.word	(3b - 2b) 
++	.word	(2b - linux_gateway_page)
++	.word	(3b - linux_gateway_page)
+ #endif
+ 	.previous
+ 
+@@ -612,10 +623,10 @@ cas_action:
+ #ifdef __LP64__
+ 	/* Pad the address calculation */
+ 	.word	0,(1b - linux_gateway_page)
+-	.dword	(3b - 1b) 
++	.word	0,(3b - linux_gateway_page)
+ #else
+-	.word	1b - linux_gateway_page
+-	.word	(3b - 1b) 
++	.word	(1b - linux_gateway_page)
++	.word	(3b - linux_gateway_page)
+ #endif
+ 	.previous
+ 
+Index: arch/parisc/kernel/unaligned.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/unaligned.c,v
+retrieving revision 1.8
+diff -u -p -r1.8 unaligned.c
+--- arch/parisc/kernel/unaligned.c	21 Aug 2004 06:19:33 -0000	1.8
++++ arch/parisc/kernel/unaligned.c	14 Sep 2004 22:30:09 -0000
+@@ -23,6 +23,7 @@
+ #include <linux/config.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <asm/uaccess.h>
+ 
+ /* #define DEBUG_UNALIGNED 1 */
+ 
+@@ -34,8 +35,14 @@
+ 
+ #ifdef __LP64__
+ #define RFMT "%016lx"
++#define FIXUP_BRANCH(lbl) \
++	"\tb " #lbl "\n"
+ #else
+ #define RFMT "%08lx"
++#define FIXUP_BRANCH(lbl) \
++	"\tldil L%%" #lbl ", %%r1\n"			\
++	"\tldo R%%" #lbl "(%%r1), %%r1\n"		\
++	"\tbv,n %%r0(%%r1)\n"
+ #endif
+ 
+ /* 1111 1100 0000 0000 0001 0011 1100 0000 */
+@@ -134,15 +141,19 @@ static int emulate_ldh(struct pt_regs *r
+ "1:	ldbs	0(%%sr1,%3), %%r20\n"
+ "2:	ldbs	1(%%sr1,%3), %0\n"
+ "	depw	%%r20, 23, 24, %0\n"
+-"	cmpclr,= %%r0, %%r0, %1\n"
+-"3:	ldo	-2(%%r0), %1\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %1\n"
++"3:	\n"
++"	.section .fixup,\"ax\"\n"
++"4:	ldi	-2, %1\n"
++	FIXUP_BRANCH(3b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(3b-1b)\n"
+-"	.dword  2b,(3b-2b)\n"
++"	.dword	1b,4b\n"
++"	.dword  2b,4b\n"
+ #else
+-"	.word	1b,(3b-1b)\n"
+-"	.word	2b,(3b-2b)\n"
++"	.word	1b,4b\n"
++"	.word	2b,4b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (val), "=r" (ret)
+@@ -175,15 +186,19 @@ static int emulate_ldw(struct pt_regs *r
+ "	subi	32,%%r19,%%r19\n"
+ "	mtctl	%%r19,11\n"
+ "	vshd	%0,%%r20,%0\n"
+-"	cmpclr,= %%r0, %%r0, %1\n"
+-"3:	ldo	-2(%%r0), %1\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %1\n"
++"3:	\n"
++"	.section .fixup,\"ax\"\n"
++"4:	ldi	-2, %1\n"
++	FIXUP_BRANCH(3b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(3b-1b)\n"
+-"	.dword  2b,(3b-2b)\n"
++"	.dword	1b,4b\n"
++"	.dword  2b,4b\n"
+ #else
+-"	.word	1b,(3b-1b)\n"
+-"	.word	2b,(3b-2b)\n"
++"	.word	1b,4b\n"
++"	.word	2b,4b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (val), "=r" (ret)
+@@ -222,15 +237,19 @@ static int emulate_ldd(struct pt_regs *r
+ "	subi	64,%%r19,%%r19\n"
+ "	mtsar	%%r19\n"
+ "	shrpd	%0,%%r20,%%sar,%0\n"
+-"	cmpclr,= %%r0, %%r0, %1\n"
+-"3:	ldo	-2(%%r0), %1\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %1\n"
++"3:	\n"
++"	.section .fixup,\"ax\"\n"
++"4:	ldi	-2, %1\n"
++	FIXUP_BRANCH(3b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(3b-1b)\n"
+-"	.dword  2b,(3b-2b)\n"
++"	.dword	1b,4b\n"
++"	.dword  2b,4b\n"
+ #else
+-"	.word	1b,(3b-1b)\n"
+-"	.word	2b,(3b-2b)\n"
++"	.word	1b,4b\n"
++"	.word	2b,4b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (val), "=r" (ret)
+@@ -250,17 +269,20 @@ static int emulate_ldd(struct pt_regs *r
+ "	mtsar	%%r19\n"
+ "	vshd	%0,%1,%0\n"
+ "	vshd	%1,%%r20,%1\n"
+-"	cmpclr,= %%r0, %%r0, %2\n"
+-"4:	ldo	-2(%%r0), %2\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %2\n"
++"4:	\n"
++"	.section .fixup,\"ax\"\n"
++"5:	ldi	-2, %2\n"
++	FIXUP_BRANCH(4b)
++"	.previous\n"
+ #ifdef __LP64__
+-"	.dword	1b,(4b-1b)\n"
+-"	.dword  2b,(4b-2b)\n"
+-"	.dword	3b,(4b-3b)\n"
+-#else
+-"	.word	1b,(4b-1b)\n"
+-"	.word	2b,(4b-2b)\n"
+-"	.word	3b,(4b-3b)\n"
++"	.dword	1b,5b\n"
++"	.dword  2b,5b\n"
++"	.dword	3b,5b\n"
++#else
++"	.word	1b,5b\n"
++"	.word	2b,5b\n"
++"	.word	3b,5b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (valh), "=r" (vall), "=r" (ret)
+@@ -296,15 +318,19 @@ static int emulate_sth(struct pt_regs *r
+ "	extrw,u %1, 23, 8, %%r19\n"
+ "1:	stb %1, 1(%%sr1, %2)\n"
+ "2:	stb %%r19, 0(%%sr1, %2)\n"
+-"	cmpclr,= %%r0, %%r0, %0\n"
+-"3:	ldo	-2(%%r0), %0\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %0\n"
++"3:	\n"
++"	.section .fixup,\"ax\"\n"
++"4:	ldi	-2, %0\n"
++	FIXUP_BRANCH(3b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(3b-1b)\n"
+-"	.dword  2b,(3b-2b)\n"
++"	.dword	1b,4b\n"
++"	.dword  2b,4b\n"
+ #else
+-"	.word	1b,(3b-1b)\n"
+-"	.word	2b,(3b-2b)\n"
++"	.word	1b,4b\n"
++"	.word	2b,4b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (ret)
+@@ -346,15 +372,19 @@ static int emulate_stw(struct pt_regs *r
+ "	or	%%r1, %%r21, %%r21\n"
+ "	stw	%%r20,0(%%sr1,%2)\n"
+ "	stw	%%r21,4(%%sr1,%2)\n"
+-"	cmpclr,= %%r0, %%r0, %0\n"
+-"3:	ldo	-2(%%r0), %0\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %0\n"
++"3:	\n"
++"	.section .fixup,\"ax\"\n"
++"4:	ldi	-2, %0\n"
++	FIXUP_BRANCH(3b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(3b-1b)\n"
+-"	.dword  2b,(3b-2b)\n"
++"	.dword	1b,4b\n"
++"	.dword  2b,4b\n"
+ #else
+-"	.word	1b,(3b-1b)\n"
+-"	.word	2b,(3b-2b)\n"
++"	.word	1b,4b\n"
++"	.word	2b,4b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (ret)
+@@ -399,19 +429,23 @@ static int emulate_std(struct pt_regs *r
+ "	or	%%r1, %%r21, %%r21\n"
+ "3:	std	%%r20,0(%%sr1,%2)\n"
+ "4:	std	%%r21,8(%%sr1,%2)\n"
+-"	cmpclr,= %%r0, %%r0, %0\n"
+-"5:	ldo	-2(%%r0), %0\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %0\n"
++"5:	\n"
++"	.section .fixup,\"ax\"\n"
++"6:	ldi	-2, %0\n"
++	FIXUP_BRANCH(5b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(5b-1b)\n"
+-"	.dword  2b,(5b-2b)\n"
+-"	.dword	3b,(5b-3b)\n"
+-"	.dword  4b,(5b-4b)\n"
+-#else
+-"	.word	1b,(5b-1b)\n"
+-"	.word	2b,(5b-2b)\n"
+-"	.word	3b,(5b-3b)\n"
+-"	.word	4b,(5b-4b)\n"
++"	.dword	1b,6b\n"
++"	.dword  2b,6b\n"
++"	.dword	3b,6b\n"
++"	.dword  4b,6b\n"
++#else
++"	.word	1b,6b\n"
++"	.word	2b,6b\n"
++"	.word	3b,6b\n"
++"	.word	4b,6b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (ret)
+@@ -438,21 +472,25 @@ static int emulate_std(struct pt_regs *r
+ "3:	stw	%1,0(%%sr1,%1)\n"
+ "4:	stw	%%r1,4(%%sr1,%3)\n"
+ "5:	stw	%2,8(%%sr1,%3)\n"
+-"	cmpclr,= %%r0, %%r0, %0\n"
+-"6:	ldo	-2(%%r0), %0\n"
+-"	.section __ex_table,\"a\"\n"
++"	copy	%%r0, %0\n"
++"6:	\n"
++"	.section .fixup,\"ax\"\n"
++"7:	ldi	-2, %0\n"
++	FIXUP_BRANCH(6b)
++"	.previous\n"
++"	.section __ex_table,\"aw\"\n"
+ #ifdef __LP64__
+-"	.dword	1b,(6b-1b)\n"
+-"	.dword  2b,(6b-2b)\n"
+-"	.dword	3b,(6b-3b)\n"
+-"	.dword  4b,(6b-4b)\n"
+-"	.dword  5b,(6b-5b)\n"
+-#else
+-"	.word	1b,(6b-1b)\n"
+-"	.word	2b,(6b-2b)\n"
+-"	.word	3b,(6b-3b)\n"
+-"	.word	4b,(6b-4b)\n"
+-"	.word  	5b,(6b-5b)\n"
++"	.dword	1b,7b\n"
++"	.dword  2b,7b\n"
++"	.dword	3b,7b\n"
++"	.dword  4b,7b\n"
++"	.dword  5b,7b\n"
++#else
++"	.word	1b,7b\n"
++"	.word	2b,7b\n"
++"	.word	3b,7b\n"
++"	.word	4b,7b\n"
++"	.word  	5b,7b\n"
+ #endif
+ "	.previous\n"
+ 	: "=r" (ret)
+Index: arch/parisc/lib/Makefile
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/lib/Makefile,v
+retrieving revision 1.2
+diff -u -p -r1.2 Makefile
+--- arch/parisc/lib/Makefile	1 Jul 2004 18:30:36 -0000	1.2
++++ arch/parisc/lib/Makefile	14 Sep 2004 22:30:09 -0000
+@@ -2,6 +2,6 @@
+ # Makefile for parisc-specific library files
+ #
+ 
+-lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o
++lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o fixup.o
+ 
+ lib-$(CONFIG_SMP) += debuglocks.o
+Index: arch/parisc/lib/lusercopy.S
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/lib/lusercopy.S,v
+retrieving revision 1.3
+diff -u -p -r1.3 lusercopy.S
+--- arch/parisc/lib/lusercopy.S	17 Jan 2004 06:39:24 -0000	1.3
++++ arch/parisc/lib/lusercopy.S	14 Sep 2004 22:30:09 -0000
+@@ -53,6 +53,18 @@
+ 	mtsp        %r1,%sr1
+ 	.endm
+ 
++#ifndef __LP64__
++	.macro fixup_branch lbl
++	b	    \lbl
++	.endm
++#else
++	.macro fixup_branch lbl
++	ldil	    L%\lbl, %r1
++	ldo	    R%\lbl(%r1), %r1
++	bv,n        %r0(%r1)
++	.endm
++#endif
++
+ 	/*
+ 	 * unsigned long
+ 	 * lcopy_to_user(void *to, const void *from, unsigned long n)
+@@ -77,14 +89,16 @@ $lctu_done:
+ 	copy        %r24,%r28
+ 	.exit
+ 
+-2:      b $lctu_done
++	.section .fixup,"ax"
++2:      fixup_branch $lctu_done
+ 	ldo         1(%r24),%r24
++	.previous
+ 
+-	.section __ex_table,"a"
++	.section __ex_table,"aw"
+ #ifdef __LP64__
+-	.dword      1b,(2b-1b)
++	.dword      1b,2b
+ #else
+-	.word       1b,(2b-1b)
++	.word       1b,2b
+ #endif
+ 	.previous
+ 
+@@ -118,18 +132,20 @@ $lcfu_done:
+ 	copy        %r24,%r28
+ 	.exit
+ 
++	.section .fixup,"ax"
+ 2:      copy        %r24,%r23
+ $lcfu_zero_loop:
+ 	addib,<>    -1,%r23,$lcfu_zero_loop
+ 	stbs,ma     %r0,1(%r26)
+-	b           $lcfu_done
++	fixup_branch $lcfu_done
+ 	nop
++	.previous
+ 
+-	.section __ex_table,"a"
++	.section __ex_table,"aw"
+ #ifdef __LP64__
+-	.dword      1b,(2b-1b)
++	.dword      1b,2b
+ #else
+-	.word       1b,(2b-1b)
++	.word       1b,2b
+ #endif
+ 	.previous
+ 
+@@ -159,14 +175,16 @@ $lciu_done:
+ 	copy        %r24,%r28
+ 	.exit
+ 
+-2:      b $lciu_done
++	.section .fixup,"ax"
++2:      fixup_branch $lciu_done
+ 	ldo         1(%r24),%r24
++	.previous
+ 
+-	.section __ex_table,"a"
++	.section __ex_table,"aw"
+ #ifdef __LP64__
+-	.dword      1b,(2b-1b)
++	.dword      1b,2b
+ #else
+-	.word       1b,(2b-1b)
++	.word       1b,2b
+ #endif
+ 	.previous
+ 
+@@ -201,16 +219,18 @@ $lsfu_exit:
+ 	nop
+ 	.exit
+ 
+-3:      b           $lsfu_exit
++	.section .fixup,"ax"
++3:      fixup_branch $lsfu_exit
+ 	ldi         -EFAULT,%r28
++	.previous
+ 
+-	.section __ex_table,"a"
++	.section __ex_table,"aw"
+ #ifdef __LP64__
+-	.dword      1b,(3b-1b)
+-	.dword      2b,(3b-2b)
++	.dword      1b,3b
++	.dword      2b,3b
+ #else
+-	.word       1b,(3b-1b)
+-	.word       2b,(3b-2b)
++	.word       1b,3b
++	.word       2b,3b
+ #endif
+ 	.previous
+ 
+@@ -239,14 +259,16 @@ $lclu_done:
+ 	copy        %r25,%r28
+ 	.exit
+ 
+-2:      b $lclu_done
++	.section .fixup,"ax"
++2:      fixup_branch $lclu_done
+ 	ldo        1(%r25),%r25
++	.previous
+ 
+-	.section __ex_table,"a"
++	.section __ex_table,"aw"
+ #ifdef __LP64__
+-	.dword      1b,(2b-1b)
++	.dword      1b,2b
+ #else
+-	.word       1b,(2b-1b)
++	.word       1b,2b
+ #endif
+ 	.previous
+ 
+@@ -282,16 +304,18 @@ $lslen_nzero:
+ 	b           $lslen_done
+ 	ldo         1(%r26),%r26 /* special case for N == 0 */
+ 
+-3:      b           $lslen_done
++	.section .fixup,"ax"
++3:      fixup_branch $lslen_done
+ 	copy        %r24,%r26    /* reset r26 so 0 is returned on fault */
++	.previous
+ 
+-	.section __ex_table,"a"
++	.section __ex_table,"aw"
+ #ifdef __LP64__
+-	.dword      1b,(3b-1b)
+-	.dword      2b,(3b-2b)
++	.dword      1b,3b
++	.dword      2b,3b
+ #else
+-	.word       1b,(3b-1b)
+-	.word       2b,(3b-2b)
++	.word       1b,3b
++	.word       2b,3b
+ #endif
+ 	.previous
+ 
+Index: arch/parisc/mm/fault.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/mm/fault.c,v
+retrieving revision 1.1
+diff -u -p -r1.1 fault.c
+--- arch/parisc/mm/fault.c	29 Jul 2003 17:00:42 -0000	1.1
++++ arch/parisc/mm/fault.c	14 Sep 2004 22:30:09 -0000
+@@ -36,6 +36,9 @@
+ 
+ #define BITSSET		0x1c0	/* for identifying LDCW */
+ 
++
++DEFINE_PER_CPU(struct exception_data, exception_data);
++
+ /*
+  * parisc_acctyp(unsigned int inst) --
+  *    Given a PA-RISC memory access instruction, determine if the
+@@ -234,13 +237,16 @@ no_context:
+ 		fix = search_exception_tables(regs->iaoq[0]);
+ 
+ 		if (fix) {
++			struct exception_data *d;
++
++printk("applying fixup for 0x%lx, fixup at 0x%lx\n", regs->iaoq[0], fix->fixup & ~3);
+ 
+-			if (fix->skip & 1) 
+-				regs->gr[8] = -EFAULT;
+-			if (fix->skip & 2)
+-				regs->gr[9] = 0;
++			d = &__get_cpu_var(exception_data);
++			d->fault_ip = regs->iaoq[0];
++			d->fault_space = regs->isr;
++			d->fault_addr = regs->ior;
+ 
+-			regs->iaoq[0] += ((fix->skip) & ~3);
++			regs->iaoq[0] = ((fix->fixup) & ~3);
+ 
+ 			/*
+ 			 * NOTE: In some cases the faulting instruction
+Index: include/asm-parisc/uaccess.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/uaccess.h,v
+retrieving revision 1.15
+diff -u -p -r1.15 uaccess.h
+--- include/asm-parisc/uaccess.h	13 Sep 2004 16:43:28 -0000	1.15
++++ include/asm-parisc/uaccess.h	14 Sep 2004 22:30:19 -0000
+@@ -55,16 +55,22 @@ extern int __put_user_bad(void);
+ /*
+  * The exception table contains two values: the first is an address
+  * for an instruction that is allowed to fault, and the second is
+- * the number of bytes to skip if a fault occurs. We also support in
+- * two bit flags: 0x2 tells the exception handler to clear register
+- * r9 and 0x1 tells the exception handler to put -EFAULT in r8.
+- * This allows us to handle the simple cases for put_user and
+- * get_user without having to have .fixup sections.
++ * the address to the fixup routine. 
+  */
+ 
+ struct exception_table_entry {
+ 	unsigned long insn;  /* address of insn that is allowed to fault.   */
+-	long skip;           /* pcoq skip | r9 clear flag | r8 -EFAULT flag */
++	long fixup;          /* fixup routine */
++};
++
++/*
++ * The page fault handler stores, in a per-cpu area, the following information
++ * if a fixup routine is available.
++ */
++struct exception_data {
++	unsigned long fault_ip;
++	unsigned long fault_space;
++	unsigned long fault_addr;
+ };
+ 
+ #define __get_user(x,ptr)                               \
+@@ -98,48 +104,44 @@ struct exception_table_entry {
+ #ifdef __LP64__
+ #define __get_kernel_asm(ldx,ptr)                       \
+ 	__asm__("\n1:\t" ldx "\t0(%2),%0\n"             \
+-		"2:\n"					\
+-		"\t.section __ex_table,\"aw\"\n"         \
+-		 "\t.dword\t1b\n"                       \
+-		 "\t.dword\t(2b-1b)+3\n"                \
+-		 "\t.previous"                          \
++		"\t.section __ex_table,\"aw\"\n"        \
++		"\t.dword\t1b,fixup_get_user_skip_1\n"	\
++		"\t.previous"                          	\
+ 		: "=r"(__gu_val), "=r"(__gu_err)        \
+-		: "r"(ptr), "1"(__gu_err));
++		: "r"(ptr), "1"(__gu_err)		\
++		: "r1");
+ 
+ #define __get_user_asm(ldx,ptr)                         \
+ 	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n"       \
+-		"2:\n"					\
+-		"\t.section __ex_table,\"aw\"\n"         \
+-		 "\t.dword\t1b\n"                       \
+-		 "\t.dword\t(2b-1b)+3\n"                \
+-		 "\t.previous"                          \
++		"\t.section __ex_table,\"aw\"\n"	\
++		"\t.dword\t1b,fixup_get_user_skip_1\n"	\
++		"\t.previous"				\
+ 		: "=r"(__gu_val), "=r"(__gu_err)        \
+-		: "r"(ptr), "1"(__gu_err));
++		: "r"(ptr), "1"(__gu_err)		\
++		: "r1");
+ #else
+ #define __get_kernel_asm(ldx,ptr)                       \
+ 	__asm__("\n1:\t" ldx "\t0(%2),%0\n"             \
+-		"2:\n"					\
+-		"\t.section __ex_table,\"aw\"\n"         \
+-		 "\t.word\t1b\n"                        \
+-		 "\t.word\t(2b-1b)+3\n"                 \
+-		 "\t.previous"                          \
++		"\t.section __ex_table,\"aw\"\n"        \
++		"\t.word\t1b,fixup_get_user_skip_1\n"	\
++		"\t.previous"                          	\
+ 		: "=r"(__gu_val), "=r"(__gu_err)        \
+-		: "r"(ptr), "1"(__gu_err));
++		: "r"(ptr), "1"(__gu_err)		\
++		: "r1");
+ 
+ #define __get_user_asm(ldx,ptr)                         \
+ 	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n"       \
+-		"2:\n"					\
+-		"\t.section __ex_table,\"aw\"\n"         \
+-		 "\t.word\t1b\n"                        \
+-		 "\t.word\t(2b-1b)+3\n"                 \
++		"\t.section __ex_table,\"aw\"\n"	\
++		 "\t.word\t1b,fixup_get_user_skip_1\n"	\
+ 		 "\t.previous"                          \
+ 		: "=r"(__gu_val), "=r"(__gu_err)        \
+-		: "r"(ptr), "1"(__gu_err));
++		: "r"(ptr), "1"(__gu_err)		\
++		: "r1");
+ #endif /* !__LP64__ */
+ 
+ #define __put_user(x,ptr)                                       \
+ ({								\
+-	register long __pu_err __asm__ ("r8") = 0;		\
++	register long __pu_err __asm__ ("r8") = 0;      	\
+ 								\
+ 	if (segment_eq(get_fs(),KERNEL_DS)) {                   \
+ 	    switch (sizeof(*(ptr))) {                           \
+@@ -173,82 +175,73 @@ struct exception_table_entry {
+ #define __put_kernel_asm(stx,x,ptr)                         \
+ 	__asm__ __volatile__ (                              \
+ 		"\n1:\t" stx "\t%2,0(%1)\n"                 \
+-		"2:\n"					    \
+-		"\t.section __ex_table,\"aw\"\n"             \
+-		 "\t.dword\t1b\n"                           \
+-		 "\t.dword\t(2b-1b)+1\n"                    \
+-		 "\t.previous"                              \
++		"\t.section __ex_table,\"aw\"\n"            \
++		"\t.dword\t1b,fixup_put_user_skip_1\n"	    \
++		"\t.previous"                               \
+ 		: "=r"(__pu_err)                            \
+ 		: "r"(ptr), "r"(x), "0"(__pu_err))
+ 
+ #define __put_user_asm(stx,x,ptr)                           \
+ 	__asm__ __volatile__ (                              \
+ 		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
+-		"2:\n"					    \
+-		"\t.section __ex_table,\"aw\"\n"             \
+-		 "\t.dword\t1b\n"                           \
+-		 "\t.dword\t(2b-1b)+1\n"                    \
++		"\t.section __ex_table,\"aw\"\n"            \
++		 "\t.dword\t1b,fixup_put_user_skip_1\n"	    \
+ 		 "\t.previous"                              \
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(x), "0"(__pu_err))
++		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
++		: "r1")
+ #else
+ #define __put_kernel_asm(stx,x,ptr)                         \
+ 	__asm__ __volatile__ (                              \
+ 		"\n1:\t" stx "\t%2,0(%1)\n"                 \
+-		"2:\n"					    \
+-		"\t.section __ex_table,\"aw\"\n"             \
+-		 "\t.word\t1b\n"                            \
+-		 "\t.word\t(2b-1b)+1\n"                     \
++		"\t.section __ex_table,\"aw\"\n"            \
++		 "\t.word\t1b,fixup_put_user_skip_1\n"	    \
+ 		 "\t.previous"                              \
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(x), "0"(__pu_err))
++		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
++		: "r1")
+ 
+ #define __put_user_asm(stx,x,ptr)                           \
+ 	__asm__ __volatile__ (                              \
+ 		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
+-		"2:\n"					    \
+-		"\t.section __ex_table,\"aw\"\n"             \
+-		 "\t.word\t1b\n"                            \
+-		 "\t.word\t(2b-1b)+1\n"                     \
++		"\t.section __ex_table,\"aw\"\n"            \
++		 "\t.word\t1b,fixup_put_user_skip_1\n"      \
+ 		 "\t.previous"                              \
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(x), "0"(__pu_err))
++		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
++		: "r1")
+ 
+-static inline void __put_kernel_asm64(u64 x, void *ptr)
+-{
+-	u32 hi = x>>32;
+-	u32 lo = x&0xffffffff;
+-	__asm__ __volatile__ (
+-		"\n1:\tstw %1,0(%0)\n"
+-		"\n2:\tstw %2,4(%0)\n"
+-		"3:\n"
+-		"\t.section __ex_table,\"aw\"\n"
+-		 "\t.word\t1b\n"
+-		 "\t.word\t(3b-1b)+1\n"
+-		 "\t.word\t2b\n"
+-		 "\t.word\t(3b-2b)+1\n"
+-		 "\t.previous"
+-		: : "r"(ptr), "r"(hi), "r"(lo));
+-
+-}
+-
+-static inline void __put_user_asm64(u64 x, void *ptr)
+-{
+-	u32 hi = x>>32;
+-	u32 lo = x&0xffffffff;
+-	__asm__ __volatile__ (
+-		"\n1:\tstw %1,0(%%sr3,%0)\n"
+-		"\n2:\tstw %2,4(%%sr3,%0)\n"
+-		"3:\n"
+-		"\t.section __ex_table,\"aw\"\n"
+-		 "\t.word\t1b\n"
+-		 "\t.word\t(3b-1b)+1\n"
+-		 "\t.word\t2b\n"
+-		 "\t.word\t(3b-2b)+1\n"
+-		 "\t.previous"
+-		: : "r"(ptr), "r"(hi), "r"(lo));
+-
+-}
++#define __put_kernel_asm64(__val,ptr) do {		    	    \
++	u64 __val64 = (u64)(__val);				    \
++	u32 hi = (__val64) >> 32;					    \
++	u32 lo = (__val64) & 0xffffffff;				    \
++	__asm__ __volatile__ (				    \
++		"\n1:\tstw %2,0(%1)\n"			    \
++		"\n2:\tstw %3,4(%1)\n"			    \
++		"\t.section __ex_table,\"aw\"\n"	    \
++		 "\t.word\t1b,fixup_put_user_skip_2\n"	    \
++		 "\t.word\t2b,fixup_put_user_skip_1\n"	    \
++		 "\t.previous"				    \
++		: "=r"(__pu_err)                            \
++		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
++		: "r1");				    \
++} while (0)
++
++#define __put_user_asm64(__val,ptr) do {		    	    \
++	u64 __val64 = (u64)__val;				    \
++	u32 hi = (__val64) >> 32;					    \
++	u32 lo = (__val64) & 0xffffffff;				    \
++	__asm__ __volatile__ (				    \
++		"\n1:\tstw %2,0(%%sr3,%1)\n"		    \
++		"\n2:\tstw %3,4(%%sr3,%1)\n"		    \
++		"\t.section __ex_table,\"aw\"\n"	    \
++		 "\t.word\t1b,fixup_get_user_skip_2\n"	    \
++		 "\t.word\t2b,fixup_get_user_skip_1\n"	    \
++		 "\t.previous"				    \
++		: "=r"(__pu_err)                            \
++		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
++		: "r1");				    \
++} while (0)
+ 
+ #endif /* !__LP64__ */
+ 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
