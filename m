@@ -1,30 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F265482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 02:22:14 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id B2973482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 02:26:12 -0600 (MDT)
 Received: from mail.lokmail.net (localhost [127.0.0.1])
-	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id EAA25756
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 8 Oct 2001 04:22:09 -0400
-Message-Id: <200110080822.EAA25756@mail.lokmail.net>
+	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id EAA26514
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 8 Oct 2001 04:26:07 -0400
+Message-Id: <200110080826.EAA26514@mail.lokmail.net>
 From: Jurij Smakov <jurij@lokmail.net>
 To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Glibc 2.2.4-2 Woes...
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Date: Mon, 08 Oct 2001 04:22:09 -0400
+Date: Mon, 08 Oct 2001 04:26:07 -0400
 Sender: jurij@mail.lokmail.net
-Subject: [parisc-linux] Catching interrupt from power switch
 List-ID: <linux-parisc.vger.kernel.org>
+
+> 
+> M,
+> 
+> I see what you mean now.
+> I have glibc 2.2.4-2 compiling all the way to the point where it
+> starts churning thorugh:
+> 
+> make  -C sunrpc others
 
 Hi!
 
-I am obsessed with idea of catching interrupt from power switch
-(it should be possible, according to Lasi docs) and making a
-clean shutdown. I thought, that when power button is set to "off", 
-trap 2 (power failure interruption) will be generated. Strangely
-enough, it didn't. What's wrong? The I-bit in the PSW, controlling
-the masking/unmasking of this (and some other interruptions) seems
-to be set, so the interruption is unmasked. Anyone has any ideas?
+Stuff fails in sunrpc, because it tries to do something like
 
-Cheers,
+rpcgen -Y `gcc -print-file-name=cpp | sed 's|/cpp$||'`
 
-Jurij
+Argument to -Y option should be the dir, where cpp is located, so the
+build expects, that `gcc -print-file-name=cpp` will return a full
+path to cpp. Well, it does not. It spits out "cpp" and then sed
+replacement fails, so the actual command being run is
+
+rpcgen -Y cpp/cpp
+
+It is probably easily fixable, but there is also a simple workaround:
+
+cd .../glibc/sunrpc (NOT glibc-build)
+mkdir cpp
+cd cpp
+ln -s /path_to_real_cpp/cpp cpp
+
+After that I was able to finish the build.
+
+Best regards,
+
+Jurij.
