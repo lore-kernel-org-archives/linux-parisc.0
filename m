@@ -1,14 +1,20 @@
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] Re: Cross compiling for 64 bit on HPPA
-Date: Fri, 28 Feb 2003 23:17:12 -0700
-Message-ID: <20030301061712.GB5518__20087.8833923072$1416622250$gmane$org@dsl2.external.hp.com>
-References: <20030228225506.37072.qmail@web12203.mail.yahoo.com>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E0424842
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  1 Mar 2003 22:03:03 -0700 (MST)
+Date: Sat, 1 Mar 2003 20:59:36 -0800
+From: Randolph Chung <tausq@debian.org>
+To: Matthias Klose <doko@cs.tu-berlin.de>
+Cc: debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20030302045936.GS11363@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <15968.40812.741982.606734@gargle.gargle.HOWL> <15969.1828.456001.122737@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-To: mike ganley <mgg01@yahoo.com>
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030228225506.37072.qmail@web12203.mail.yahoo.com>
+In-Reply-To: <15969.1828.456001.122737@gargle.gargle.HOWL>
+Subject: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,47 +25,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Feb 28, 2003 at 02:55:06PM -0800, mike ganley wrote:
-> hppa64 cross compiler.  Everything goes fine, then
-> hppa64-linux-ld complains libc6 is version 2.2.5 and
-> it requires 2.3 or greater.
+In reference to a message from Matthias Klose, dated Mar 01:
+> Matthias Klose writes:
+> > AFAIK the transition from 3.2 to 3.3 requires recompilation of C++
+> > code due to the changed exception handling (now DWARF2 based). As
+> > libstdc++ in 3.2 and 3.2 have the same soname, how to handle it?
+> > Currently 3.2 is in unstable only. Would you want to start the
+> > recompilation before 3.2 based binaries go to testing?
+> > 
+> > The packaging for 3.3 can be found in the Debian CVS.
+> 
+> You can get test packages from
+> 	http://ftp-master.debian.org/~doko/gcc-3.3/
 
-libc6 2.3.x is only available from "unstable" debian pool.
+well.... this is not looking good. after installing these in a freshly
+built sarge chroot, all c++ programs stop working (well, i've only tried
+two -- apt and fakeroot)
 
-Having just learned how to set up a "hybrid" release, I don't want
-to reccomend this to anyone.  IMHO, this is for someone willing to
-take risks with stability of a system, is not a developer, and wants
-something that's only in "unstable".  Drawback with "hybrid" is package
-maintainers will not like you if you report bugs - mixed releases are a
-PITA to reproduce. Personally, I'm not going to report bugs
-with the one box (my laptop) I have setup this way.
+(btw, small packaging detail, but the libstdc++*-dev package above
+cannot be installed cleanly because it overwrites things in the current
+3.2 package)
 
-The following seems like the "least evil" way to go about it:
-
-1) /etc/apt/apt.conf should have the line:
-	APT::Default-Release "testing";
-
-2) duplicate "testing" entries in /etc/apt/sources.list for
-   "unstable" as well. run "apt-get update".
-
-3) copy the following 7 lines into /etc/apt/preferences:
-Package: *
-Pin: release a=testing
-Pin-Priority: 650
-
-Package: *
-Pin: release a=unstable
-Pin-Priority: 90
-
-  This allows one to install from unstable but not update such debs
-  *until* they get promoted to "testing" release. Once this deb version
-  is promoted to testing, it tracks versions like normal.
-
-  Read "man apt_preferences" for more details.
-
-4) "apt-get install libc6/unstable" to update to libc6 2.3.1 lib.
-   You will have to install several other packages from /unstable
-   at the same time. But apt-get will complain about which packages.
-
-hth,
-grant
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
