@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89FFC482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 07:31:32 -0700 (MST)
-Date: Mon, 17 Dec 2001 19:57:05 +0530 (IST)
-From: Maneesh Singhal <maneesh@india.hp.com>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installation..... new problems..
-In-Reply-To: <3C1C93FB.8AE6C6E3@freebel.net>
-Message-ID: <Pine.HPX.4.21.0112171953100.17005-100000@hpuxsrv.india.hp.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06052482A
+	for <parisc-linux@parisc-linux.org>; Mon, 17 Dec 2001 07:35:16 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16FyrJ-0001jQ-00; Mon, 17 Dec 2001 14:35:13 +0000
+Date: Mon, 17 Dec 2001 14:35:13 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Andy Walker <squawker@start.no>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Status report - B132L and 725/100
+Message-ID: <20011217143513.W10085@parcelfarce.linux.theplanet.co.uk>
+References: <1008589643.3c1ddb4b75583@nyepost.start.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1008589643.3c1ddb4b75583@nyepost.start.no>; from squawker@start.no on Mon, Dec 17, 2001 at 12:47:23PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,46 +25,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 16 Dec 2001, Joel Soete wrote:
+On Mon, Dec 17, 2001 at 12:47:23PM +0100, Andy Walker wrote:
+> Both work fine, but the same weird thing with the frame buffer ordering
+> occurred with the 725/100 as it did with the B132L last week. With the
+> console set in the PDC to the built-in fb, the kernel starts to boot
+> on that device, then finds the Coral first and continues to boot
+> on that, calling it fb0. Setting the console in PDC to the Coral makes
+> everything work properly - the system boots all the way on the Coral.
 
-> Hello Maneesh,
-> 
-> >        selection .. Bus reset detected ..." etc. etc.
-> 
-> This sound like a problem I met a time ago: the scsi chain was opened
-> (ie during test I forgot to reconnect the scsi terminator to my external
-> drive).
-> 
-> If a scsi terminator is well connected may be could it be defective (or
-> a one not corresponding to your scsi interface logicaly Single-Ended if
-> your CD is connected to the narrow single-ended conector)?
+OK, we need to figure out how to order the fb devices properly.  Right
+now, they're initialised in IO tree order.  On a gecko with a graphics
+card in the expansion slot, the expansion grahics gets device 0 and the
+inbuilt is device 1.  Clearly similar problems exist on other machines.
 
-Thanx Joel,
+So could everyone who has two (or more!) graphics cards in their machine
+send the two lines of dmesg which describe their graphics card in the
+inventory / buswalk section, their machine type (B132, Gecko, etc)
+and indicate whether or not it gets them in the right order currently.
 
-	Exactly this was the problem, my scsi cable was loose, and also
-	didn't have the terminator.. Anyway, now I installed the system.
+Example (made up!):
 
-	One new question : I am unable to start my X , whenever I do 
-	startx it says 
+4. Frobnitz Ultra Graphics (10) at 0xf8000000 [8/1], versions 0xa, 0x0, 0x77
+13. Thunder II graphics GSA form (10) at 0xf4000000 [10/8], versions 0xa, 0x0, 0x77
+J282, works
 
-	"Fatal Server Error :
-	no screen found "
+Thanks.
 
-	Can anybody tell me why it is happening so ??????
-
-	Also my machine is not able to connect to any other machine...
-	though I configured the network !!!
-
-
-	Thanx again for all the helps !!
-
-
-> 
-> Good luck,
-> 	Joel
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+-- 
+Revolutions do not require corporate support.
