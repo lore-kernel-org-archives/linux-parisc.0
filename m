@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 926D94829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Apr 2003 05:41:43 -0600 (MDT)
-Date: Fri, 18 Apr 2003 11:40:58 +0000
-Message-ID: <3E9BF11E00001169@ocpmta7.freegates.net>
-In-Reply-To: <3E9BF11E00000FFB@ocpmta7.freegates.net>
+	by dsl2.external.hp.com (Postfix) with ESMTP id D69804829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Apr 2003 09:43:03 -0600 (MDT)
+Date: Fri, 18 Apr 2003 17:43:01 +0200
+Message-ID: <3E9BF11E000012CD@ocpmta7.freegates.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] parisc-linux.org kernel
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: "Grant Grundler" <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] PGX64 alias Rage xl ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +20,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->In the meantime, I rebuild this with gcc-3.2 64bits which seems to run fine
->on my b2k (ide cdrom, nfs, gcc,... seems ok). Just with this compiler I
-met
->a pb to build the new module driver 3wxxx. So I will first re-install gcc-3.0
->before all.
->
-A small update to just mention that there is no pb with gcc-hppa64-3.0.4.
+Hi all,
+
+I just recieve a free PGX64 pci card (Rage xl 215R5LASB41 chip) which I am
+proposing to test on a b180.
+
+Do I have some chance to make it works (well I already notice that I will
+have to wait 2.4.21 to have ati fb support)?
+
+All advises will be well come,
 
 Joel
+
 
 ---------------------------------
 Vous surfez avec une ligne classique ?
