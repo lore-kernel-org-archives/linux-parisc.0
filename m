@@ -1,35 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D3F4482A
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 22:47:34 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id zlfdiaaa for parisc-linux@parisc-linux.org; Tue, 16 Oct 2001 21:42:55 -0700
-Date: Tue, 16 Oct 2001 21:47:25 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] glibc builds!
-Message-ID: <20011016214725.I537@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20011016210925.H537@tausq.org> <20011017003549.B11826@megatonmonkey.net>
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D90AC482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 22:54:16 -0600 (MDT)
+Date: Wed, 17 Oct 2001 00:55:49 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] new glibc dpatch
+Message-ID: <20011017005549.C11826@megatonmonkey.net>
+References: <20011017004218.K15532@parcelfarce.linux.theplanet.co.uk> <20011017001453.A11826@megatonmonkey.net> <20011017053549.A22885@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011017003549.B11826@megatonmonkey.net>
+In-Reply-To: <20011017053549.A22885@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Oct 17, 2001 at 05:35:49AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-> This is excellent!
+> > 
+> > =====
+> > --- glibc22-hppa.dpatch	Tue Oct 16 20:52:02 2001
+> > +++ glibc22-hppa.dpatch.mw	Tue Oct 16 21:05:27 2001
+> > @@ -1135,7 +1135,7 @@
+> >       unsigned int npages;		/* # of pages to allocate */
+> >   #ifdef _LIBC_REENTRANT
+> >  -    volatile int lock;
+> > -+    __atomic_lock_t lock;
+> > ++    static __atomic_lock_t lock = __ATOMIC_LOCK_INIT;
+> >       sigset_t full_sigset;
+> >   #endif
+> >       /* the next to members MUST be consecutive! */
+> > =====
 > 
-> Where can I get the details on the binutils bug?
->  
-> I've read the bug-binutils and binutils-cvs and I don't
-> see anything out of the ordinary (though it's easy to lose track).
+> I'm not sure what meaning static would have in this context.  It doesn't
+> have to be initialised because every arch other than PA defines an
+> unlocked lock to be 0.  If it gets initialised, it gets put in .data
+> (instead of .bss), even if you're initialising it to 0.  Stupid, I know.
+>
 
-actually it was a Debian-binutils specific bug. I'm not sure if it's
-documented in any of the public lists. Ryan was working with the
-maintainers directly.
+My bad. The entire struct is defined as static.
+The static identifier was to prevent external modifcation of the value.
+However since it's encased in a "static struct local" it's not an issue.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+True. Any initialized value needs to be shipped into .data, and we
+begin to see some ugly .data bloat (even if the user is just specifying
+zero anyway...)
+
+
+I think I'm going to get some sleep now ... to many "my bad" in one 
+day ^__^;;;
+
+c.
