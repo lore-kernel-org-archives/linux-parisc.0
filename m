@@ -1,23 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from irongate.swansea.linux.org.uk (pc2-cwma1-5-cust12.swa.cable.ntl.com [80.5.121.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F1B60482B
-	for <parisc-linux@parisc-linux.org>; Sat,  3 Aug 2002 12:06:16 -0600 (MDT)
-Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
-	by irongate.swansea.linux.org.uk (8.12.2/8.11.6) with ESMTP id g73JODu6002597;
-	Sat, 3 Aug 2002 20:24:14 +0100
-Received: (from alan@localhost)
-	by irongate.swansea.linux.org.uk (8.12.2/8.12.2/Submit) id g73JOCLG002595;
-	Sat, 3 Aug 2002 20:24:12 +0100
-Subject: Re: [parisc-linux] Linux-2.4.19 released
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: HPPA List <parisc-linux@parisc-linux.org>
-In-Reply-To: <3D4C275D.5010104@freebel.net>
-References: <3D4C275D.5010104@freebel.net>
-Content-Type: text/plain
-Date: 03 Aug 2002 20:24:12 +0100
-Message-Id: <1028402652.1760.18.camel@irongate.swansea.linux.org.uk>
-Mime-Version: 1.0
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B55E9482D
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 Aug 2002 12:24:38 -0600 (MDT)
+Message-ID: <3D4C2EAA.4050508@freebel.net>
+Date: Sat, 03 Aug 2002 19:27:38 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem with
+ evms and jfs
+References: <1017854653.3cab3abdab486@webmail.tiscalinet.be> <20020403181337.GA3759@tausq.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,14 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 2002-08-03 at 19:56, Joel Soete wrote:
-> Hi all,
-> 
-> Now that Linux-2.4.19 is released what will be programm for pl?
-> 
-> Just to now how to be helpfull in right direction.
+Hey Randolph,
 
-I've sent Marcelo the main parisc diffs and asked him to merge them for
-2.4.20-pre1. Thats basically all the stuff which is parisc unique. If
-that works out ok then I can start feeding him the other stuff piece by
-piece after its been tested in -ac
+Randolph Chung wrote:
+>>It seems harmless but not sure.
+> 
+> 
+> well.... in general this is not a problem, however....
+> 
+> Fleedwood found a bug in the unaligned handler last week. it doesn't
+> handle the pre/post increment cases of load and store, and there may be
+> some cases where these messages will indicate the cause of errors.
+> 
+> I'll look into fixing this, but it might take some time.
+
+I would just like to know if you already have the opportunity to have a 
+look for a fix of this stuff (I know you are very busy this time and do 
+not want to stress, just want to got news)
+
+Thanks in advance,
+	Joel
