@@ -1,20 +1,20 @@
-Return-Path: <varenet@esiee.fr>
-Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EF4A04843
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 590A64843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Jan 2004 12:09:01 -0700 (MST)
-Received: from Bibou ([212.186.189.113]) by viefep16-int.chello.at
-	(InterMail vM.6.00.05.02 201-2115-109-103-20031105) with SMTP
-	id <20040127190859.OKPR8554.viefep16-int.chello.at@Bibou>
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Jan 2004 20:08:59 +0100
-Date: Tue, 27 Jan 2004 20:08:58 +0100
-From: Thibaut VARENE <varenet@esiee.fr>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20040127200858.0afd0824.varenet@esiee.fr>
+	Tue, 27 Jan 2004 12:22:13 -0700 (MST)
+Date: Tue, 27 Jan 2004 12:22:12 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] Using PAT_IO calls for PCI config space reads and
+	writes.
+Message-ID: <20040127192212.GC28476@colo.lackof.org>
+References: <401623CA.59AE3CCD@india.hp.com>
+	<20040127184345.GD11844@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] KGDB parisc port
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040127184345.GD11844@parcelfarce.linux.theplanet.co.uk>
+Cc: parisc-linux@lists.parisc-linux.org, Naresh Kumar <knaresh@india.hp.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,18 +24,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi pa-ckers,
+On Tue, Jan 27, 2004 at 06:43:45PM +0000, Matthew Wilcox wrote:
+> > 2. Can these changes be propagated to 2.6 also?
+> 
+> You should be developing against 2.6 in the first place.
 
-Considering the very little interest raised by the parisc kgdb port, i'm
-sad to announce that i'm giving up maintaining it.
+Should - but they don't about 2.6.  At least not yet.
+I'll deal with forward porting the changes once your comments are integrated.
+Naresh, can you take care of that and resubmit?
 
-If anyone is interested in taking over the work, please let me know.
-
-FYI, see http://www.pateam.org/kgdb.html
-
-Greetings,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://www.pateam.org/
+thanks,
+grant
