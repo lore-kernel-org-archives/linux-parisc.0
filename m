@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6F9EA4840
-	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 17:33:13 -0700 (MST)
-Received: from zebra.pdarvas.hu (zebra.pdarvas.hu [195.56.143.181])
-	by cuprel1.hp.com (Postfix) with SMTP id AB2B2C74
-	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 16:33:06 -0800 (PST)
-Message-ID: <nf58a$2ag8q8oz236x1590f56uk@psyuqvika>
-From: "Rena Bergman" <16dqfl@yahoo.com>
-Reply-To: "Rena Bergman" <16dqfl@yahoo.com>
-To: parisc-linux@parisc-linux.org
-Date: Fri, 21 Nov 2003 20:29:02 -0400
+Received: from brain.fop.ns.ca (u135n18.eastlink.ca [24.224.135.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D49CA4840
+	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 18:56:06 -0700 (MST)
+Date: Fri, 21 Nov 2003 21:55:59 -0400 (AST)
+From: Steve Bromwich <lists@fop.ns.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Processes stuck in D state on 715/100XC with
+ 2.4.22-pa17
+In-Reply-To: <3FBE7C6A.3010104@tiscali.be>
+Message-ID: <Pine.LNX.4.58.0311212145230.21213@brain.fop.ns.ca>
+References: <3FB265EC00003DBD@ocpmta3.freegates.net>
+ <Pine.LNX.4.58.0311190913310.1125@brain.fop.ns.ca> <3FBE7C6A.3010104@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="F2_C82.0A3907_3C.D87468"
-Subject: [parisc-linux] Remote-Control Boats & Cars - Xmas Gifts.....Jaron
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,38 +25,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---F2_C82.0A3907_3C.D87468
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hi Joel,
 
-<p>New Mini Remote Control Cars &amp; Boats.</p>
-<IMG SRC=3D"http://www.onii.org/images/home/stunt_flip.gif" ALT=3D""><a hr=
-ef=3D"http://www.mini-cars-n-boats2003.com/?axel=3D49">Follow Us For Fun..=
-</a><br>
-<p>Turbo Twister Mini RC stunt cars are the newest RC stunt cars in 
-the world! These 2 1/2 inch stunt cars rotate, flip, and tumble everywhere=
-!</p>
-<IMG SRC=3D"http://www.onii.org/images/home/car_purple.jpg" ALT=3D""><a hr=
-ef=3D"http://www.mini-cars-n-boats2003.com/?axel=3D49">Follow Us For Fun..=
-</a><br>
-<p>Honda S2000 (yellow) - fully functional wireless remote control (Radio-=
-frequency)</p>
-<IMG SRC=3D"http://www.onii.org/images/home/boat_yellow.jpg" ALT=3D""><a h=
-ref=3D"http://www.mini-cars-n-boats2003.com/?axel=3D49">Follow Us For Fun.=
-.</a><br>
-<p>Mini RC Ocean Runner Boat (yellow) - Fully functional remote control bo=
-at with 6 way remote control.</p>
-<br>
-<br>
-<br>
-<br>
-<a href=3D"http://www.aqmp.net/out5s/rem2e.asp">No more advertisements</a>=
-</p>
-<br>
-<br>
-<br>
-<br>qpyc ltov ny rai vxkp xc kw rn  m
-h
-  ekwhgc nwdh xi p  kosuf rdhajv
+On Fri, 21 Nov 2003, Joel Soete wrote:
 
---F2_C82.0A3907_3C.D87468--
+> Hi Steve,
+>
+> Steve Bromwich wrote:
+> >
+> > I've got a J class at work that's not in production...
+
+> well, but those system are widly different (cpu, architecture, ...).
+
+Well, my plan was something like this:
+
+1. Install Linux on the J200, replicate my 715, and then compile the
+kernel as closely as possible to how it is in the 715. Run the J200 like
+that for a day or two and see if I can duplicate the problem. If so, diag
+further on there.
+
+2. If the problem does not appear on the J200, resync with the 715 and put
+the J200 in place of the 715 while I tinker with the 715 to nail down the
+problem. Then I should be able to regress through the kernels from cvs
+until I find the one where it stopped working, and hopefully I should be
+able to find a resolution from there.
+
+Unfortunately, I was caught out right at the start - after lugging all 60
+kilos of it home and downstairs into my basement server room, I discovered
+that someone had borrowed the drives out of it, so I'll have to bring home
+an enclosure next week to continue my testing.
+
+In the meantime, I tried a net install which ultimately failed trying to
+extract debs to the nfs root (which, incidentally, took about 5 minutes to
+mount - is this to be expected on the install disks? It usually only takes
+a couple of seconds for my 715 to mount an nfs partition off my
+workstation). Unfortunately I was on serial console so couldn't get much
+in the way of diags, I'll have to move a monitor into my server room to
+hook up to it (the J200 doesn't like my 15" SVGA test monitor,
+unfortunately).
+
+> Good question? never have to test it but it is a bootable cd (I don't
+> remember if it is available via internet?) so if you copy it's image
+> (with dd) on a system, i think that following the faq how-to netboot
+> <http://parisc-linux.org/faq/index.html#netboot> , it would works?
+
+Hmmm... you mean like dd if=/dev/scd0 of=lifimage.testing? I guess that'll
+be my next try :-)
+
+> > Well, the frustrating thing is is that there's no debug output anywhere
+> > that I can find that's showing anything obviously wrong.
+> Don't feel alone, during severall month (2, 3, 4, ... I don't want to
+> remember) I try to get just a panic message from a smp kernel on a N4k
+> : no success :_(
+
+Ah well... misery loves company, I guess! :-)
+
+> hmm, what kind of disk have you on your D: hot-swapable or fixed?
+> (with fixed disk, I already encounter a pb of flat cable and with
+> hot-swap disk a pb with dust on disks' support)
+
+Fixed. I don't *think* it's a problem with the cable, since (a) I reseated
+all the cables after the first couple of times it died, and (b) after the
+last time it reset, I rebooted back to 2.4.18 to make sure it wasn't a
+flat-out hardware error (as opposed to possibly a hardware bug being
+tickled by 2.4.22).
+
+Thanks for the help :-)
+
+Cheers, Steve
