@@ -1,60 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA29470
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Dec 2000 00:12:12 -0700
-Message-Id: <200012260716.XAA21626@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SuckyIO support 
-In-reply-to: Your message of "Sun, 24 Dec 2000 09:05:04 PST."
-             <20001224090504.A11676@parcelfarce.linux.theplanet.co.uk>
-Date: Mon, 25 Dec 2000 23:16:24 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA00451
+	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Dec 2000 04:34:50 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 26 Dec 2000 11:37:58 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14Arjq-0008Md-00; Tue, 26 Dec 2000 10:53:50 +0000
+Date: Tue, 26 Dec 2000 10:53:50 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] SuckyIO support
+Message-ID: <20001226105350.A29860@parcelfarce.linux.theplanet.co.uk>
+References: <20001224090504.A11676@parcelfarce.linux.theplanet.co.uk> <200012260716.XAA21626@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200012260716.XAA21626@milano.cup.hp.com>; from grundler@cup.hp.com on Mon, Dec 25, 2000 at 11:16:24PM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> On Wed, Dec 20, 2000 at 10:24:36AM -0800, Grant Grundler wrote:
-...
-> > xlate_pin reads the INTERRUPT_PIN and *ignores* the INTERRUPT_LINE.
-...
-> To my mind, we're doing this backwards.  What the current code tries to do
-> is recover from a situation where the generic PCI code has been run over
-> a bus which hasn't been configured by the POST -- and in the process we
-> lose any work done by the quirk code.
+On Mon, Dec 25, 2000 at 11:16:24PM -0800, Grant Grundler wrote:
+> INTERRUPT_PIN is zero for function 0 and 1. And according to PCI spec,
+> suckyio function 0 and 1 can't won't generate interrupts regardless
+> of what's in INTERRUPT_LINE.
+> I don't want to write/modify/support code that implies otherwise.
 
-INTERRUPT_PIN is zero for function 0 and 1. And according to PCI spec,
-suckyio function 0 and 1 can't won't generate interrupts regardless
-of what's in INTERRUPT_LINE.
-I don't want to write/modify/support code that implies otherwise.
+I thought it was understood that this device was not PCI-conforming?
+That it did generate interrupts for functions 0 and 1.  Could we nail
+down exactly _how_ this device generates interrupts for the serial & ide
+ports?  I can see a few possibilities:
 
-> What I _think_ we should be doing
-> instead is doing our own run over the PCI bus first before the generic
-> code gets a look at it, and sorting out the interrupt routing there.
+(1) They are only generated on the CPUINT pin.
+(2) They're generated on INTD# just like USB is
+(3) They're routable to other PCI pins within the device (i doubt it,
+    i can't see any hint of this in the spec).
+(4) The interrupts are generated but they're not routed to anywhere the
+    cpu will ever get notified about, so we have to use a polling driver.
+    This would seriously suck.
 
-We'll end duplicating much of what's in the generic PCI code basically.
-You can understand why I might be less than enthusiastic about this idea.
+if it's (1), what is CPUINT tied to?  does it have its own connection to
+the IOSAPIC?  Is it connected to the PCI bus somehow?
 
-> Then we can write the appropriate values into INTERRUPT_LINE, which the
-> generic PCI bus scan code will pick up and the quirk code will propogate
-> it into the other functions.
+> We'll end duplicating much of what's in the generic PCI code basically.
+> You can understand why I might be less than enthusiastic about this idea.
 
-For function 2, the proper value (0) *is* already in INTERRUPT_LINE.
-And because of the INTERRUPT_PIN behavior, I'd like to discourage
-propagating config values from function 2 into other suckyio functions.
+Yes.  OK, better idea: we can do the quirk fixup in the PCI_FIXUP_FINAL
+pass instead of the PCI_FIXUP_HEADER pass.  This is called after the bus
+fixup code has set ->irq.  Of course, this might be completely the wrong
+thing to do... I really need to know the answer to the above question.
 
-> > So some "central" code will manage IRQ routing for devices below suckyio.
-...
-> We can do that.  But we don't _need_ to, all these devices are capable of
-> sharing one IRQ without further interrupt decoding being done.
-
-Yeah - you might be right : Sub-devices will share one IRQ line.
-Using an IRQ region only makes sense if we can read some register and
-uniquely determine which device(s) generated the interrupt(s). But this
-is more an implementation detail than design corner stone.
-
-Regardless, I'd still like to see a central code determine which IRQ line
-is used and advertise devices so other drivers can claim them. ie this
-suckyio code would propogate the virtualized func2 dev->irq to sub-devices
-and manage all three suckyio functions as one device like LASI.
-
-thanks,
-grant
+-- 
+Revolutions do not require corporate support.
