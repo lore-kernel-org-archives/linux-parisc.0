@@ -1,74 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.ireste.fr (mail.ireste.fr [193.52.81.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A29CF482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 09:22:23 -0600 (MDT)
-Received: from flambe.ireste.fr (flambe [193.52.81.109])
-          by mail.ireste.fr (8.9.1a/jtpda-5.3.1) with SMTP id RAA09863
-          for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 17:24:30 +0200 (MET DST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] sti console problem
-Date: Tue, 10 Jul 2001 17:28:34 +0200
-References: <01070916084706.01035@flambe.ireste.fr> <01071016061106.03565@flambe.ireste.fr> <20010710154549.G23509@linuxcare.com>
-In-Reply-To: <20010710154549.G23509@linuxcare.com>
-MIME-Version: 1.0
-Message-Id: <0107101728340D.03565@flambe.ireste.fr>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 364B9482B
+	for <parisc-linux@parisc-linux.org>; Tue, 10 Jul 2001 10:25:04 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15K0Jq-0004rj-00; Tue, 10 Jul 2001 17:25:02 +0100
+Date: Tue, 10 Jul 2001 17:25:02 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Paul Bame <bame@fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] CVS rumors
+Message-ID: <20010710172502.A6103@parcelfarce.linux.theplanet.co.uk>
+References: <E15Jz7i-00028D-00@noam.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <E15Jz7i-00028D-00@noam.fc.hp.com>; from bame@fc.hp.com on Tue, Jul 10, 2001 at 09:08:26AM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Le Mardi 10 Juillet 2001 16:45, vous avez écrit :
-> On Tue, Jul 10, 2001 at 04:06:11PM +0200, Matthieu Le Corre wrote:
-> > in fact i've installed the 0.9 iso from the serial console
-> > first and second stage are correct !
-> > it boot correctly , but,
-> > at the end of booting process ,
-> > in sti console i get an "unable to open initial" console...
-> > and then a login appears in serial console !
-> > in fact all boot message appears un sti console execpt the boot prompt !
-> > I have check inittab and /dev/tty* files , they seems ok ! i don't
-> > understand
->
-> For 0.9 we had different ISOs for 32 bit STI console and 32 bit
-> serial console.  It sounds as though you might have booted
-> the STI ISO, but used a serial console.  You get the login prompt
-> on the serial console, because that is where inittab starts a
-> getty.  Sounds like kernel printk output is displayed on the STI
-> console, sugests you are using the STI kernel.  Not sure about
-> this though...  Check the kernel boot params; do you have
-> console=tty0 or console=ttyS0?
+On Tue, Jul 10, 2001 at 09:08:26AM -0600, Paul Bame wrote:
+> This is a problem for us because we should be able to go back
+> to an older linux tree with this command:
+> 
+> 	cvs up -D"some-date" -rHEAD
 
-i've install FROM serial iso BUT i've installed the sti kernel 
-and i've paramater console=tty0 ;( 
-i've made both serial and sti start from inittab ....
-the sti console seem to work but the only think is i don't get login prompt
-on sti.
-but when i shutdown system message appears on sti console !
+The manpage doesn't indicate this is a valid use; indeed the wording
+in some cases indicates that -D and -r are exclusive!
 
-i've try 0.9.1 but it failed after "branching kernel" despite a good md5sum 
-... 
+> 	cvs up -D"some-date"
+> 
+> That grabs the files as of "some-date" from whatever arbitrary branch
+> they happen to be on -- thus you get some mixture of all the branches!
 
+Yes, I noticed that.  But we have a real problem now, and I don't know how
+to solve it.  Lamont wanted to check out version -pa30 -- how can he do that?
 
+> Vendor branches are a special use of normal branches, and
+> *according to the CVS design* neither are "broken".  However the way
+> they are managed, mostly with 'cvs import', causes horrid problems
+> with certain use models. 
 
-> You can try the 0.9.1 CD from http://mkhppa1.esiee.fr which should
-> auto-detect which console you used and route messages appropriately.
->
->
-> Richard
->
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+Right, they're broken by design :-)
+
+> This problem is caused by 'cvs import' and has nothing to do with
+> CVS branches per se.
+> 
+> The way to cause REALLY BIG problems with vendor branches is to use them
+> for some upstream updates, but merge others by hand on to the trunk.  This
+> cuts the CVS design off at the knees!  We did this in our linux tree way
+> back and the number of problems is going down but isn't gone yet.
+
+I don't understand why we're using vendor branches at all though.  When
+mang was doing CVS God duties, he imported Linus' stuff on an ordinary
+branch.  What is the advantage of using vendor branches over ordinary ones?
+
+> For now I'll be
+> happy to consult and/or fix problems which result from safe-cvsimport.
+
+No offence, but every time we've done a new import, we've discovered new
+and excitingly different problems which have taken some time to be fixed.
+I'm extremely nervous about using it while you're gone.
 
 -- 
-_______________________________________
-
-                      Matthieu Le Corre 
-                    Service informatique
- Ecole Polytechnique de l'Université de Nantes
-     Matthieu.Lecorre@polytech.univ-nantes.fr
-                        02.40.68.32.23
-_______________________________________
+Revolutions do not require corporate support.
