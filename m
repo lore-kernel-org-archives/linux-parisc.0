@@ -1,18 +1,23 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 300C74840
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 14 Dec 2003 16:12:33 -0700 (MST)
-Message-Id: <200312142312.hBENCSHO002332@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] strange GNU ld / libgcc_s.so problems
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Sun, 14 Dec 2003 18:12:28 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <20031214221629.GZ13882@systemhalted> from "Carlos O'Donell" at
-	Dec 14, 2003 05:16:29 pm
+Return-Path: <missamerica@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B5664840
+	for <parisc-linux@parisc-linux.org>;
+	Sun, 14 Dec 2003 23:58:14 -0700 (MST)
+Received: from pcp02105567pcs.cstltn01.in.comcast.net
+	(pcp02105567pcs.cstltn01.in.comcast.net [68.57.200.88])
+	by cuprel1.hp.com (Postfix) with SMTP id 5407B11BD
+	for <parisc-linux@parisc-linux.org>;
+	Sun, 14 Dec 2003 22:58:13 -0800 (PST)
+Message-ID: <205a3ml-45xo03477$f@aoahpc>
+From: "Rudy Abel" <missamerica@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Mon, 15 Dec 03 21:47:45 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: deller@gmx.de, parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/alternative;
+	boundary="9AC2D.0F9_D._B2F2"
+Cc: 
+Subject: [parisc-linux] Celebrities to hot to handle!! ss
+Reply-To: Rudy Abel <missamerica@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,17 +27,45 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> > -lgcc_s (//usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
-> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
-> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
-> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
-> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
-> > usr/lib/libgcc_s.so)
 
-Debian builds GCC using sjlj exceptions.  This can happen if you use
-GCC built using dwarf2 exception support (the default).
+--9AC2D.0F9_D._B2F2
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+<html>Celebrities to hot to handle!! ss
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
+
+<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
+n Monroe, Wayne Newton, Dick Clark, <br>
+    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
+     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
+ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
+h great success to be the best they could possibly be.<br>HGH is recognize=
+d around the world as the<br> "hormone to replace"<br> to combat the adver=
+se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
+iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
+br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
+en proven to be "solely responsible" in the maintenance of their youthful<=
+br>"movie star good looks" decades beyond those that have yet to discover =
+HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
+and stay 
+    so fit at their age??</font></h5>
+</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
+uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
+er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
+p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
+you !<br>Learn More Right Here</a></font></h4></center>
+rmoolmqkzlgpnwwxtpd n utywfbshgagoin
+</body>
+</html>
+phe cf y dapey kd r nqbyhja
+xo mqlmnp  
+kduiquowpg  n
+
+--9AC2D.0F9_D._B2F2--
