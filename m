@@ -1,11 +1,12 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] State of the kernel
-Date: Mon, 14 Mar 2005 18:12:15 +0000
-Message-ID: <20050314181215.GV21986@parcelfarce.linux.theplanet.co.uk>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] lmbench results for A500-6X SMP
+Date: Fri, 1 Apr 2005 15:56:13 -0800
+Message-ID: <20050401235613.GA8921@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,56 +18,90 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+I don't have historical data for this machine, but the numbers look
+pretty good compared to what I have seen before. Our mmap numbers
+continue to suck though :(
 
-Those subscribed to the parisc-linux-cvs list may have noticed the huge
-number of merges I've been doing recently.  This has been mostly in aid
-of this year's goal of getting PA-RISC to build out of Linus' tree.  I'm
-at the point where it's reasonable to give a status update now, so here goes:
+This is running 2.6.12-rc1-pa7 SMP, on a 650MHz A500-6X
 
-2.6.11-pa0 was approximately 813k of diff against Linus' tree with
-changes everywhere.  We're now down to 396k of diff against 2.6.11-bk10!
+                 L M B E N C H  3 . 0   S U M M A R Y
+                 ------------------------------------
+		 (Alpha software, do not distribute)
 
-Here's how that breaks down:
+Basic system parameters
+------------------------------------------------------------------------------
+Host                 OS Description              Mhz  tlb  cache  mem   scal
+                                                     pages line   par   load
+                                                           bytes  
+--------- ------------- ----------------------- ---- ----- ----- ------ ----
+riot      Linux 2.6.12-        hppa64-linux-gnu  650   239   128 1.9200    1
 
- - 196k of it is sym2 driver changes.  I expect that will be merged
-   upstream shortly.
- - 49k of it is other scsi changes; 53c700, ncr53c8xx and scsi_transport_spi.
-   Some of this is merged in James' scsi-misc-2.6 tree and other bits are
-   waiting for that tree to be merged to Linus', hopefully before -rc1.
- - 56k is the ad1889 driver and related changes.  I'm holding off on
-   submitting this until the driver is a bit closer to working on the
-   request of Kyle and Stuart.
- - 40k is unmerged HIL header files.  I think they were inadvertently omitted;
-   I've just pinged Linus and Vojtech about them
- - 3k is misc input stuff.
- - 25k is compat-related code.  I'm talking with Stephen Rothwell about
-   some of it, this is going to be difficult to merge, I think.
- - 3k is Tulip driver changes.  Grant is handling these.
- - I've sent another 6k of misc changes to Linus today.
- - There's another 12k of misc patches in our tree:
-   - some Kconfiggery (I'll take care of this)
-   - NO_IRQ / SERIAL_IRQ_NONE (waiting on Ben Herrenschmidt)
-   - pcmcia (James will take care of this)
-   - FIONREAD (I'll deal with this)
-   - IDE header (I want to review this)
-   - CON_BOOT (needs fixing, I think I see what to do)
-   - OPD bugfix (doesn't need to go upstream)
-   - A small PA PCI patch I want to review
-   - Perf counters update (missed today's submission)
+Processor, Processes - times in microseconds - smaller is better
+------------------------------------------------------------------------------
+Host                 OS  Mhz null null      open slct sig  sig  fork exec sh  
+                             call  I/O stat clos TCP  inst hndl proc proc proc
+--------- ------------- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+riot      Linux 2.6.12-  650 0.53 0.83 5.03 6.95 50.6 1.52 7.85 2476 9872 25.K
 
-I think only trivial fixes are needed to Linus' tree to allow
-712_defconfig to build and boot.  The major merge headaches are the
-CON_BOOT and compat code.  I'm going to stop deluging Linus with patches
-for a week or so and work on making some of the unmergable bits more
-mergable.
+Basic integer operations - times in nanoseconds - smaller is better
+-------------------------------------------------------------------
+Host                 OS  intgr intgr  intgr  intgr  intgr  
+                          bit   add    mul    div    mod   
+--------- ------------- ------ ------ ------ ------ ------ 
+riot      Linux 2.6.12- 1.5400 1.5500 9.1500  146.0  153.2
 
+Basic float operations - times in nanoseconds - smaller is better
+-----------------------------------------------------------------
+Host                 OS  float  float  float  float
+                         add    mul    div    bogo
+--------- ------------- ------ ------ ------ ------ 
+riot      Linux 2.6.12- 4.6500 4.6400   27.9   16.7
+
+Basic double operations - times in nanoseconds - smaller is better
+------------------------------------------------------------------
+Host                 OS  double double double double
+                         add    mul    div    bogo
+--------- ------------- ------  ------ ------ ------ 
+riot      Linux 2.6.12- 4.6300 4.6600   52.4   24.2
+
+Context switching - times in microseconds - smaller is better
+-------------------------------------------------------------------------
+Host                 OS  2p/0K 2p/16K 2p/64K 8p/16K 8p/64K 16p/16K 16p/64K
+                         ctxsw  ctxsw  ctxsw ctxsw  ctxsw   ctxsw   ctxsw
+--------- ------------- ------ ------ ------ ------ ------ ------- -------
+riot      Linux 2.6.12-   12.7   12.5   12.8   13.2   21.7    33.6    82.5
+
+*Local* Communication latencies in microseconds - smaller is better
+---------------------------------------------------------------------
+Host                 OS 2p/0K  Pipe AF     UDP  RPC/   TCP  RPC/ TCP
+                        ctxsw       UNIX         UDP         TCP conn
+--------- ------------- ----- ----- ---- ----- ----- ----- ----- ----
+riot      Linux 2.6.12-  12.7  32.8 36.5  50.8  65.7  55.8  84.7     
+
+File & VM system latencies in microseconds - smaller is better
+-------------------------------------------------------------------------------
+Host                 OS   0K File      10K File     Mmap    Prot   Page   100fd
+                        Create Delete Create Delete Latency Fault  Fault  selct
+--------- ------------- ------ ------ ------ ------ ------- ----- ------- -----
+riot      Linux 2.6.12-   46.2   49.1  189.3  101.0   10.2K 342.2    25.4  37.3
+
+*Local* Communication bandwidths in MB/s - bigger is better
+-----------------------------------------------------------------------------
+Host                OS  Pipe AF    TCP  File   Mmap  Bcopy  Bcopy  Mem   Mem
+                             UNIX      reread reread (libc) (hand) read write
+--------- ------------- ---- ---- ---- ------ ------ ------ ------ ---- -----
+riot      Linux 2.6.12- 227. 334. 231.  424.4  615.5  287.7  290.1 624. 516.3
+
+Memory latencies in nanoseconds - smaller is better
+    (WARNING - may not be correct, check graphs)
+------------------------------------------------------------------------------
+Host                 OS   Mhz   L1 $   L2 $    Main mem    Rand mem    Guesses
+--------- -------------   ---   ----   ----    --------    --------    -------
+riot      Linux 2.6.12-   650 4.6290 4.6270  192.6       367.7    No L1 cache?
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
