@@ -1,42 +1,81 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx.tellabs.fi (mx.tellabs.fi [193.65.253.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 51D79482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 03:36:26 -0600 (MDT)
-Received: from mxdk.dk.tellabs.com (mxdk.dk.tellabs.com [172.19.74.16])
-	by mx.tellabs.fi (8.8.8/8.8.8) with ESMTP id MAA11649
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 12:36:20 +0300 (EET DST)
-Received: from tellabs.com (pc-rtheande.dk.tellabs.com [172.19.63.58])
-	by mxdk.dk.tellabs.com (8.8.6 (PHNE_17135)/8.8.6) with ESMTP id LAA00548
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 11:28:14 +0200 (METDST)
-Message-ID: <3AE698F1.99733EE5@tellabs.com>
-Date: Wed, 25 Apr 2001 11:29:21 +0200
-From: Robin Theander <Robin.Theander@tellabs.com>
+Received: from mail-ob05.one.net.au (mail-ob05.one.net.au [61.12.0.165])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4DBAE482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 03:44:39 -0600 (MDT)
+Message-ID: <010d01c0cd6c$f2200280$1401a8c0@peewee>
+From: "Matthew van de Werken" <mvdw73@one.net.au>
+To: "Richard Hirst" <rhirst@linuxcare.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <A8566E157F5FD411BCFB00D0B7816D51C7294A@ntexchange.cat.csiro.au> <20010423220846.O985@linuxcare.com> <002301c0cd1d$a6d3add0$1401a8c0@peewee> <20010425091204.J985@linuxcare.com>
+Subject: Re: FW: [parisc-linux] How do I use the FW scsi on 735?
+Date: Wed, 25 Apr 2001 19:48:51 +1000
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PA/Linux iso 0.6 is out!
-References: <1A8904C3797ED411AC2E0008C7E6F88117C843@nlntmail2b.ats.nld.alca>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+Hi Richard:
 
-Running the 32 bit STI on a 712/60 looks good. No boot problems. Nice display.
-palo is giving me some trouble, so I'm not booting from HD yet.
-Not all scancodes are recognized, and vi panics the kernel when hitting ESC
-(this is very annoying). Some other kernel panics are probably also caused by
-the keyboard.
+I'm a little bit of a beginner at all this kernel hacking business (well, a
+rank beginner would be more accurate)...
 
-Looking forward to running X...
+What I'll do is turn on the verbose SCSI error reporting, and the SCSI
+logging facility and try again.
 
-Regards,
-Robin.
+I''l have to do a 'man printk' to have a look at what that function's syntax
+is, then take it from there.
 
-"Witvliet, Hans" wrote:
-> A quick try of the 32 bits version with STI console on a C110.
-> After booting from cdrom, i get startup info and the message switching to
-> STI. (looks very promissing..)
-> Again some more messages and a login prompt.
-> There it stops, the system does not read input from my keyboard, so can not
-> login....
-> 
-> Will try on other systems later...
+Cheers,
+MvdW [who, despite lack of total success is having a lot of fun...]
+
+
+
+----- Original Message -----
+From: "Richard Hirst" <rhirst@linuxcare.com>
+To: "Matthew van de Werken" <mvdw73@one.net.au>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Sent: Wednesday, April 25, 2001 6:12 PM
+Subject: Re: FW: [parisc-linux] How do I use the FW scsi on 735?
+
+
+> On Wed, Apr 25, 2001 at 10:21:17AM +1000, Matthew van de Werken wrote:
+> > Hi Richard:
+> >
+> > I added the patch (I assume I added it correctly - the resulting vmlinux
+was
+> > different), and ran the new kernel, with no change. The FW scsi is still
+not
+> > recognised.
+>
+> Shame :(  The Zalon driver is the one you are interested in.  My B180
+> with a Bluefish (Zalon based) FWD card runs the sim700, zalon, and
+> sym53c8xx drivers all at the same time, no problem.
+>
+> It's possible I got the parameters wrong in my patch; the aim is to
+> cause drivers/scsi/zalon7xx.c:zalon_scsi_callback() to get called
+> for your interface.  It could be that is getting called but failing
+> for some reason.  If it is called, you should at least be getting
+> a line
+>
+>         ......: Zalon vers field is ......
+>
+> output on boot.
+>
+> If you don't see that, perhaps you can investigate by adding a few
+> printk()'s to see what I got wrong.
+>
+> zalon7xx_detect() is surely getting called, and that uses
+register_driver()
+> in arch/parisc/kernel/drivers.c to try and match your cards parameters
+> against one of the entries in zalon_scsi_drivers[].  Try and figure out
+> why that match is not succeeding for your scsi interface.
+>
+> Richard
+>
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+>
