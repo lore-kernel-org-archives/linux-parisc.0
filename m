@@ -1,21 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2BEE482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Nov 2001 12:52:37 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3D262482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Nov 2001 15:39:09 -0700 (MST)
 Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
 	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
-	id 161CGr-00010E-00
-	for parisc-linux@lists.parisc-linux.org; Tue, 06 Nov 2001 21:52:29 +0200
-Date: Tue, 6 Nov 2001 21:51:28 +0200
+	id 161Es2-00037I-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 07 Nov 2001 00:39:02 +0200
+Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
+	id 161Er4-0001dK-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 07 Nov 2001 00:38:02 +0200
+Date: Wed, 7 Nov 2001 00:38:02 +0200
 From: Albert Strasheim <fullung@ilink.nis.za>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: hppa binutils/glibc updates
-Message-ID: <20011106215128.B5797@dogbert.localdomain>
-References: <20011105024952.C4441@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com> <20011105214227.M505@tausq.org> <20011106101650.A29917@dogbert.localdomain> <20011106152317.A4530@dogbert.localdomain> <20011106155428.A4719@dogbert.localdomain> <20011106143616.E4441@parcelfarce.linux.theplanet.co.uk> <20011106161613.M8938@linuxcare.com> <20011106192447.O8938@linuxcare.com>
+Message-ID: <20011107003802.A6253@dogbert.localdomain>
+References: <20011105024952.C4441@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com> <20011105214227.M505@tausq.org> <20011106101650.A29917@dogbert.localdomain> <20011106152317.A4530@dogbert.localdomain> <20011106155428.A4719@dogbert.localdomain> <20011106143616.E4441@parcelfarce.linux.theplanet.co.uk> <20011106161613.M8938@linuxcare.com> <20011106192447.O8938@linuxcare.com> <20011106215128.B5797@dogbert.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011106192447.O8938@linuxcare.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+In-Reply-To: <20011106215128.B5797@dogbert.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,29 +30,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
 Hello,
 
-Seems with all the apt db madness, libstdc++ didn't get installed the
-first time. I installed it again, and things worked (better). There is
-something strange going on with my nfsroot. Don't know if it's some nfs
-setting or something... I get "too many symlinks" and "I/O" errors.
+Whoohooo. I bootstrapped my SCSI disk by hand (took a while; thank
+goodness for Perl and sed).
 
-On Tue, 06 Nov 2001, Richard Hirst wrote:
+And now... it just works! :-) Almost.
 
-> On Tue, Nov 06, 2001 at 04:16:13PM +0000, Richard Hirst wrote:
-> > apt-get works fine for me, btw (715/75 and a500), running apt 0.5.4
-> 
-> Hmm, having switch from chroot to real root on the a500, I'm
-> now seeing this same SIGILL.
+I can boot single-user mode with /sbin/init, but if I boot multi-user
+(runlevel 2), everything starts fine up until cron comes up -- then
+minicom goes Offline and the system is MIA. I currently still have
+start-stop-daemon replaced with /bin/true, so I don't know why it's even
+doing much. Now that I think about it, it might be something that comes
+after cron. The getty perhaps? What needs to get configured here to make
+it work with serial console?
 
-Hehe. Can't help you there...
+bash-2.05# uname -a
+Linux bob 2.4.9-pa70 #13 Wed Nov 7 00:25:29 SAST 2001 parisc unknown
 
-Anyway, I'm going to attempt a 3.0.15 boot-floppies install now. I
-presume this is probably not going to work yet? We'll soon find out...
+apt-get install works. ls works. tar works. lynx works. Gonna try gcc
+now. I think I can find some source to compile.
 
-Seems the lifimage I crafted with palo is a bit ill. I'm going try to
-kick my nfsroot into shape, and try to debootstrap onto my SCSI disk.
+Thanks again Alan and Randolph. And thanks Matt. And thanks Debian. And
+thanks HP... muhehehehehe.
 
 Regards,
 
 Albert
+
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE76GZJDg+hOeRZtkMRAt4sAJ9t3QNmYbfH61VEa3qBN0SiUugn+wCfayFd
+kKjq5diPRY+YFPueNI6hS48=
+=Be2s
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
