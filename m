@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 861B44894
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 16:59:11 -0600 (MDT)
-Date: Sat, 23 Aug 2003 15:51:27 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id 98037492F
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 17:00:56 -0600 (MDT)
+Date: Sat, 23 Aug 2003 15:53:12 -0700
 From: "David S. Miller" <davem@redhat.com>
 To: James Bottomley <James.Bottomley@SteelEye.com>
 Cc: hugh@veritas.com, willy@debian.org, linux-kernel@vger.kernel.org,
 	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
  tst-mmap-eofsync in glibc on parisc)
-Message-Id: <20030823155127.3cd7b013.davem@redhat.com>
+Message-Id: <20030823155312.63f996f6.davem@redhat.com>
 In-Reply-To: <1061677283.1992.471.camel@mulgrave>
 References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
@@ -41,20 +41,15 @@ James Bottomley <James.Bottomley@SteelEye.com> wrote:
 > > On 22 Aug 2003 20:09:30 -0500
 > > James Bottomley <James.Bottomley@SteelEye.com> wrote:
 > > 
-> > >        MAP_PRIVATE
-> > >                   Create a private copy-on-write mapping.  Stores
-> > >                   to the region do not affect the original  file.
-> > >                   It  is  unspecified whether changes made to the
-> > >                   file after the mmap call  are  visible  in  the
-> > >                   mapped region.
-...
-> Could you elaborate some more?  I agree that the MAP_PRIVATE mapping may
-> not see cpu1's write because of cache incoherencies (but that's what I
-> believe is covered by the `unspecified' bit of the MAP_PRIVATE
-> definition above).
+> > > To avoid having to flush the non-shared mappings (basically on parisc if
+> > > you write to a file backing a MAP_PRIVATE mapping then we don't
+> > > guarantee you see the update).
 
-Ok.  Let me think about this a bit more.
+BTW, what gains to you really get from this optimization?
 
-The safest solution for parisc, meanwhile, would be to walk the
-non-shared mmap list checking for any instance of the VM_MAYSHARE bit
-being set.
+How often do writes happen to files while private mappings
+to it exist? :-)  This is one of the reasons I think this
+discussion is a bit silly.
+
+What specific cases does your optimization help, and how common is it?
+Show us some numbers.
