@@ -1,20 +1,23 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 20CC0482C
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4518B482C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 22:53:21 -0700 (MST)
-Date: Wed, 24 Mar 2004 23:28:31 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Spinlock patch, take 2
-Message-ID: <20040325072831.GT750@tausq.org>
-References: <40561EAF000035FA@ocpmta1.freegates.net>
-	<40561EAF00003770@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40561EAF00003770@ocpmta1.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+	Wed, 24 Mar 2004 22:59:29 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E882DE.dip0.t-ipconnect.de
+	[217.232.130.222])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2P5xSo09066
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 25 Mar 2004 06:59:28 +0100
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 25 Mar 2004 06:59:56 +0100
+Message-ID: <08ab01c4122e$65f5a710$fc01a8c0@muc.nccconsulting.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,22 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> -#define cpu_possible_map	cpu_present_map
-> +#define cpu_possible_map	cpu_present_mask
->  
->  #endif /* CONFIG_SMP */
-> =========><=========
-> >
-> >Is it correct?
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-I think this is correct, but i'm not sure. i believe this is part of 
-the hotplug cpu patches that are being disucssed and we are waiting for
-that to do more smp work.
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 3/25/2004 6:59:55 AM
+Engine/Pattern = 6.860-1001/1.837.00
 
-jejb/willy, any comments on this?
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
