@@ -1,17 +1,14 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] Re: pa_memcpy: 2 small question
-Date: Sun, 9 Jan 2005 16:13:56 -0800
-Message-ID: <20050110001356.GO18497@tausq.org>
-References: <20050105055412.68E06495698@palinux.hppa>
-	<20050107095143.GN18497@tausq.org> <41E180EF.8040808@tiscali.be>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] PPPOE with BL180
+Date: Sun, 09 Jan 2005 18:18:21 -0600
+Message-ID: <1105316302.19504.1.camel@mulgrave>
+References: <BAY21-F174616CDCA2C6E4FFCB76892960@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: Dany Joly <dany_joly@hotmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41E180EF.8040808@tiscali.be>
+In-Reply-To: <BAY21-F174616CDCA2C6E4FFCB76892960@phx.gbl>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,42 +19,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> in the shift computing:
->         /* Calculate how to shift a word read at the memory operation
->            aligned srcp to make it aligned for copy.  */
->         sh_1 = 8 * (src % sizeof(unsigned int));
->         sh_2 = 8 * sizeof(unsigned int) - sh_1;
-> 
-> what means '8' (== 2 * word size; i.e. 2 * 32 bit because MERGE use shrpw 
-> and so 2 (a pair of word)? )
+On Sun, 2005-01-09 at 23:00 +0000, Dany Joly wrote:
+> Nov  9 03:16:34 mammoth pppd[392]: Using interface ppp0
+> Nov  9 03:16:34 mammoth pppd[392]: Connect: ppp0 <--> /dev/pts/0
+> Nov  9 03:16:34 mammoth pppd[392]: read: Resource temporarily unavailable
+> Nov  9 03:16:34 mammoth pppd[392]: read /dev/ppp: Resource temporarily 
+> unavailable
 
-no. 8 is # bits/byte. sh_1 is the number of bits to shift a 32-bit
-integer.
+I think this should be fixed (at least in the latest sarge version).
+pppd used to do this because EAGAIN and EWOULDBLOCK have different error
+numbers on pa (and pppd was originally only checking for one).
 
-what we are trying to achieve is that given two adjacent 32-bit numbers,
-we want to extract a 32-bit number "in the middle" of the two (aligned)
-32-bit values.
+James
 
-if you look carefully, actually the implementation of MERGE does not use
-both sh_1 and sh_2. In the original implementation, MERGE was
-implemented using two SHIFT operations plus an OR operation. This was
-optimized to use shrpw because this PA insn can do all three operations
-in a single step, so it saves a lot of cycles.
 
-> next in
->          switch (len % 4)
->         {
-> 
-> is '4' because as mentioned in copy_dstalign() description this 'Handles 
-> _4_ words per loop'
-
-yes.
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
