@@ -1,54 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA24149
-	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Sep 2000 10:23:57 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA27412
+	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Sep 2000 15:52:35 -0600
 Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 28 Sep 2000 16:24:46 -0000
-Received: from dhd by tarwebok with local (Exim 3.12 #1 (Debian))
-	id 13egU5-0000GW-00
-	for <parisc-linux@thepuffingroup.com>; Thu, 28 Sep 2000 12:24:33 -0400
+  by mailserv2.iuinc.com with SMTP; 28 Sep 2000 21:53:19 -0000
 To: parisc-linux@thepuffingroup.com
+Cc: debian-hppa@lists.debian.org
 From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 28 Sep 2000 12:24:33 -0400
-Message-ID: <87u2b0pjr2.fsf@ottawa.linuxcare.com>
+Date: 28 Sep 2000 17:53:04 -0400
+Message-ID: <87wvfwnpz3.fsf@ottawa.linuxcare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] (user land) Core dumping, across the universe
+Subject: [parisc-linux] New, Bug Free [tm] gcc and binutils packages
 List-ID: <linux-parisc.vger.kernel.org>
 
 Hi,
 
-Well the good news is that dumping core Just Works, so we're at least
-part of the way towards having Emacs running ;-)
+I've just uploaded source and binary packages of gcc, g++, cpp, and
+libstdc++ to puffin.external.hp.com.  See
+ftp://puffin.external.hp.com/pub/debian-hppa/ and
+ftp://puffin.external.hp.com/pub/debian-hppa-source/
 
-The bad news is that the core dumps are rather funny looking.
+This is basically egcs 20000925 snapshot with the PA-RISC patches
+applied.  It compiles itself (as far as I can tell - I've been
+shortcutting a bit since the A180 is so horribly slow) and should now
+manage to bootstrap itself; the previous version we had been using
+miscompiled fold-const.c when not optimizing, as is the case when
+building the initial bootstrap compiler (but not when cross-building
+or building with simply 'make' rather than 'make bootstrap'...)
 
-My very simple (dereference a bad pointer) test program produces the
-following dump:
+In order to bootstrap you must have the new compiler installed,
+because the old one (20000822) will break as mentioned above.
 
-avalanche:~# ls -l core
--rw-------    1 root     root     268500992 Sep 28 12:21 core
-avalanche:~# objdump -x core
-
-core:     file format elf32-hppa
-core
-architecture: hppa1.0, flags 0x00000000:
-
-start address 0x00000000
-
-Program Header:
-    NOTE off    0x00000174 vaddr 0x00000000 paddr 0x00000000 align 2**0
-         filesz 0x00000714 memsz 0x00000000 flags ---
-    LOAD off    0x00001000 vaddr 0x00001000 paddr 0x00000000 align 2**12
-         filesz 0x00000000 memsz 0x00001000 flags r-x
-    LOAD off    0x00001000 vaddr 0x00002000 paddr 0x00000000 align 2**12
-         filesz 0x00001000 memsz 0x00001000 flags rwx
-    LOAD off    0x00002000 vaddr 0x20000000 paddr 0x00000000 align 2**12
-         filesz 0x10000000 memsz 0x10000000 flags rwx
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Wow, look at the size of that stack segment!  We *really* need to have
-this be dynamically growable instead of just mapping a whole gigabyte
-in the middle of process space.
+There are also source packages of the latest binutils CVS source,
+which I'll native build eventually (as mentioned above the A180 is
+slow as molasses and I'm currently testing GCC bootstrap).  Alan:
+would it be okay to check the Debian packaging stuff into our binutils
+CVS?
 
 -- 
 dhd@linuxcare.com, http://www.linuxcare.com/
