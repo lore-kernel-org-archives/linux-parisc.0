@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout02.sul.t-online.com (mailout02.sul.t-online.com [194.25.134.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A2CFA482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 05:02:36 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: H_Aue@t-online.de (Hinrich Aue)
-To: Jochen Friedrich <jochen@scram.de>
-Subject: [parisc-linux] DSL on a 715/80 with rp-pppoe
-Date: Sun, 30 Dec 2001 13:06:14 +0100
-References: <Pine.LNX.4.43.0112291700110.20276-100000@alpha.bocc.de>
-In-Reply-To: <Pine.LNX.4.43.0112291700110.20276-100000@alpha.bocc.de>
-Cc: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+Received: from beldar.com (ns.beldar.com [65.163.106.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08BDA482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 07:25:28 -0700 (MST)
+Received: from pogo (dhcp-113.beldar.com [65.163.106.113])
+	by beldar.com (8.9.3/8.9.3) with SMTP id JAA85870
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 09:45:39 -0500 (EST)
+	(envelope-from lansing@beldar.com)
+Message-ID: <001c01c1913d$ee1b8ca0$0101a8c0@pogo>
+From: "Craig D. Lansing" <lansing@beldar.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sun, 30 Dec 2001 09:25:54 -0500
 MIME-Version: 1.0
-Message-ID: <16KefW-21OIi0C@fwd05.sul.t-online.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0019_01C19113.FAC364C0"
+Subject: [parisc-linux] Kernel ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +25,69 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am Samstag, 29. Dezember 2001 17:08 schrieben Sie:
-> Hi Hinrich,
->
-> > rcvd [LCP ConfReq id=0x66 <mru 1492> <auth pap> <magic 0x3ddff70f>]
-> > sent [LCP ConfRej id=0x66 <auth pap>]
->
-> I guess you use T-Online (TDSL flatrate?). In this case make sure you
-> place the userid in /etc/ppp/pap-secrets in single quotes or the # will be
-> treated as a start of comment:
->
-> 'AAAAAAAAAAAATTTTTTTTTTTT#0001@t-online.de'     *       PPPPPPP        *
->
-> Of course you must replace the A, T and P with the data you got from
-> t-online.
->
-> Cheers,
-> Jochen
+This is a multi-part message in MIME format.
 
-I have tried the syntax you told me, but, I still reject to <auth pap>.
-This is strange, couse I think that I reject to auth myself.
-"sent [LCP ConfRej id=0x66 <auth pap>]"
- So this must be a config Problem. Do I have to put something else into my 
-pap-secrets?
-I don't think that auth fails, but somethings wrong with my pap-secrets.
+------=_NextPart_000_0019_01C19113.FAC364C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+In an attempt to solve my J2240 STI and Eth0/1 problems I am trying to =
+upgrade the kernel from the 2.4.9-32 on the 0.9.3 ISO to something more =
+recent.  Specifically, I've tried 32-2.4.16-pa24 and pa29.  I ftp'd the =
+tar files from the 32-bit directory, untarred / unzipped the contents, =
+copied them into /boot, changed the link for vmlinux, and modified =
+/etc/palo.conf.  However, in both cases when I boot, everything =
+initially looks like it will boot OK, but I eventually get a stack =
+pointer error, a long hex dump, and finally "Kernel Fault: Code=3D15 =
+regs=3D102af4c0 (Addr=3D00368004)" ....  This all appears on the STI =
+head, even though I changed console to ttyS0, and scrolls by too fast to =
+get much meaningful info prior to the hex dump. =20
+
+Do I have to upgrade from source (which I'll try next) or am I doing =
+something wrong or both?
+
+
+
+------=_NextPart_000_0019_01C19113.FAC364C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>In an attempt to solve my J2240 STI =
+and&nbsp;Eth0/1=20
+problems I am trying to upgrade the kernel from the 2.4.9-32 on the =
+0.9.3 ISO to=20
+something more recent.&nbsp; Specifically, I've tried 32-2.4.16-pa24 and =
+
+pa29.&nbsp; I ftp'd the tar files from the 32-bit directory, untarred / =
+unzipped=20
+the contents, copied them into /boot, changed the link for vmlinux, and =
+modified=20
+/etc/palo.conf.&nbsp; However, in both cases when I boot, everything =
+initially=20
+looks like it will boot OK, but I eventually get a stack pointer error, =
+a long=20
+hex dump, and finally "Kernel Fault: Code=3D15 regs=3D102af4c0 =
+(Addr=3D00368004)"=20
+....&nbsp; This all appears on the STI head, even though I changed =
+console to=20
+ttyS0, and scrolls by too fast to get much meaningful info prior to the =
+hex=20
+dump.&nbsp; </FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Do I have to upgrade from source (which =
+I'll try=20
+next) or am I doing something wrong or both?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0019_01C19113.FAC364C0--
