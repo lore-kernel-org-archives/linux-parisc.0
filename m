@@ -1,15 +1,17 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] PA8800/ZX1 support committed to 2.6.7-rc2-pa2
-Date: Sat, 5 Jun 2004 00:51:26 -0600
-Message-ID: <20040605065126.GA28343@colo.lackof.org>
-References: <20040604202546.GC18574@colo.lackof.org>
+Subject: [parisc-linux] Re: Unable to get PALO to install on A180 Debian
+	install
+Date: Sun, 6 Jun 2004 10:17:48 -0600
+Message-ID: <20040606161748.GC25343@colo.lackof.org>
+References: <20040605212309.GC8098@colo.lackof.org>
+	<FHEGKPBPFFGIFBGOANOKMELLEGAA.h.cochran@comcast.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Harry Cochran <h.cochran@comcast.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040604202546.GC18574@colo.lackof.org>
+In-Reply-To: <FHEGKPBPFFGIFBGOANOKMELLEGAA.h.cochran@comcast.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,26 +22,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jun 04, 2004 at 02:25:46PM -0600, Grant Grundler wrote:
-> I've committed PA8800/ZX1 support. It's obviously not complete
-> and more notes are here:
-> http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2004-June/034204.html
+On Sat, Jun 05, 2004 at 06:55:09PM -0400, Harry Cochran wrote:
+> Is there some
+> key sequence I can hit at the "continue" screen to get to "execute a shell"
+> (in the i386 world, you have a chance to select several different kernels,
+> like bf24, at the beginning ... I don't see this capability in the hppa
+> version).
 
-One of the errata I forgot to mention was Segmentation faults
-or other transient failures. The failures are typically
-segfaults but could "internal errors" to gcc or mis-reference
-header in cpp. In all cases transient - ie not reproducible
-on retry.
+Arrow keys? ie down arrow until it scrolls to "execute a shell".
 
-On the pa8800 machine, a "time make -j2" of the kernel would fail
-in ~10 seconds. "time make" would fail anywhere from 30 seconds
-to 6 minutes after starting. Re-starting the job would let it run
-another chunk in time.
+(oh, that reminds me...I have helge's arrow-key patch in my tree and
+offered to test it but don't know quite how.)
 
-To me, it all suggest the PA8800 32M L2 cache isn't being
-flushed when it might need to be. I don't think it's a new
-problem. Just an old one that's easier to reproduce with
-the bigger cache.
+> 	Looking at sda1 with "Partition a Hard Disk" says the disk looks like:
+> 
+> 
+>    Name	Flags		Part Type	FS Type		Label		Size(MB)
+> /dev/sda1   Boot		Primary	Linux/PA-RISC boot  		59.11
+> /dev/sda2               Primary	Linux swap			     519.31
+> /dev/sda3             	Primary	Linux				    3715.32
+
+That should be fine IFF sda1 is formatted as ext2 and THEN run palo on it.
+And then it can be mounted as /boot. This all has to be done by hand
+from "execute a shell" since the installer doesn't know anything about it.
+
+At least I think that's how it should work since palo needs to mark
+bits in the ext2 block usage map as "used" or "bad". James?
+
+If sda1 can't be mount as /boot, you need to split sda3 into two parts.
+The first part (root) needs to end before 2GB offset. The second part
+can be the rest of the disk.
+
+> I notice that you don't have the "Boot" flag turned on for you f0 partition.
+> Is this an error on my part?
+
+no. neither firmware nor palo cares about it.
+
+> My sdb disk is another 4GB disk that I have concatenated with sda3 to make
+> /.
+
+That's fine. Personally, I would use the second disk as /home or /var.
 
 grant
 _______________________________________________
