@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe23.law4.hotmail.com [216.33.148.16])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 64779482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 01:57:29 -0600 (MDT)
-From: "kenneth westelinck" <kennywest1@hotmail.com>
-To: "Ralf Hildebrandt" <Ralf.Hildebrandt@charite.de>
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <20020506064402.GD14146@charite.de> <20020506065214.GE14146@charite.de>
-Subject: Re: [parisc-linux] NTP and the real time clock
-Date: Mon, 6 May 2002 09:52:35 +0200
+Received: from bt0g2p.god.bel.alcatel.be (alc250.alcatel.be [195.207.101.250])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D4887482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 02:29:13 -0600 (MDT)
+Message-ID: <03273D4BC7F4D511AC440008C7E6F8815422C2@nlntmail2b.ats.nld.alcatel.nl>
+From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+To: "'Helge Deller'" <helge.deller@sap.com>,
+	"Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>,
+	"'Helge Deller'" <deller@gmx.de>, Ralf.Hildebrandt@charite.de
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] old hardware
+Date: Mon, 6 May 2002 10:28:46 +0200 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Message-ID: <OE23wyLx5GjxJOAzGlD00002868@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,49 +24,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-You'll need to set this option: CONFIG_GENRTC=y
+Hi,
 
------ Original Message -----
-From: "Ralf Hildebrandt" <Ralf.Hildebrandt@charite.de>
-To: "Ralf Hildebrandt" <Ralf.Hildebrandt@charite.de>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Sent: Monday, May 06, 2002 8:52 AM
-Subject: Re: [parisc-linux] NTP and the real time clock
+The 700/RX might be a simple X-terminal,
+But Envizex-II can run (some simple) application locally.
+It is some time ago, but i remember that I could launch remote shells on a
+Envizex. (get/set config, ps and floppy operations)
+I hoped that (someday) they could boot linux from flash...
 
+Hans
 
-> Am 06.05.2002 um 08:44:02 +0200 schrieb Ralf Hildebrandt folgendes:
-> > Whenever I turn off my 712/80 and turn it back on, NTP (ntpq) reports
-> > an offset of about 1200.
-> > Question: Could it be that at shutdown the time is not stored in the
-> > on-board real-time-clock?
->
-> I find this intriguing:
->
-> gecko:~# hwclock --show
-> Mon May  6 08:46:27 2002  -0.994167 seconds
-> gecko:~# hwclock --systohc
-> gecko:~# hwclock --show
-> Mon May  6 08:46:33 2002  -0.999854 seconds
->
-> So the hardwareclock is never set.
-> Which setting in "Character Devices" do I need so hwclock can access
-> the on-board real-time-clock?
->  < > /dev/nvram support
->  < > Enhanced Real Time Clock Support
->
-> --
-> Ralf Hildebrandt (Im Auftrag des Referat V A)
-Ralf.Hildebrandt@charite.de
-> Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450
-570-155
-> Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450
-570-916
-> There are two ways to write error-free programs. Only the third one
-> works.
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+	-----Original Message-----
+	From:	Helge Deller [SMTP:helge.deller@sap.com]
+	Sent:	Friday, May 03, 2002 12:46 PM
+	To:	Witvliet, Hans; 'Helge Deller'; Ralf.Hildebrandt@charite.de
+	Cc:	parisc-linux@lists.parisc-linux.org
+	Subject:	Re: [parisc-linux] old hardware
+
+	On Friday 03 May 2002 08:46, Witvliet, Hans wrote:
+	> Just curious,
+	>
+	> The link http://www.ductape.net/~brianm/xterm/
+	> <http://www.ductape.net/~brianm/xterm/> , tells how to use enware
+on
+	> Envizex X-terminals.
+	> Can't the run hp-linux?
+	>
+	> Hans
+
+	No. 
+	Envizex and 700/RX are just simple X11 terminals
+	and the only thing they run is a X11 server to display 
+	X apps coming from an X server. The X server on the other side
+	could be a PA-Linux or any other Unix/Linux machine.
+
+	Greetings,
+	Helge
