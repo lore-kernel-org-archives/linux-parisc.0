@@ -1,38 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA07193
-	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Dec 2000 12:44:03 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA07852
+	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Dec 2000 14:24:45 -0700
 Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 23 Dec 2000 19:47:07 -0000
+  by mailserv2.iuinc.com with SMTP; 23 Dec 2000 21:27:50 -0000
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 149udC-0000TS-00; Sat, 23 Dec 2000 19:47:02 +0000
-Date: Sat, 23 Dec 2000 19:47:02 +0000
+	id 149wCi-00022J-00; Sat, 23 Dec 2000 21:27:48 +0000
+Date: Sat, 23 Dec 2000 21:27:48 +0000
 From: Matthew Wilcox <matthew@wil.cx>
-To: Alex deVries <adevries@linuxcare.com>
+To: Jens Trzaska <j_trzaska@gmx.net>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Some questions about the 715/50
-Message-ID: <20001223194702.A824@parcelfarce.linux.theplanet.co.uk>
-References: <3A44E560.BE825C97@linuxcare.com>
+Subject: Re: [parisc-linux] starting 712/80 without keyboard?
+Message-ID: <20001223212748.A7769@parcelfarce.linux.theplanet.co.uk>
+References: <3A44F763.2CB637F9@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A44E560.BE825C97@linuxcare.com>; from adevries@linuxcare.com on Sat, Dec 23, 2000 at 12:48:16PM -0500
+In-Reply-To: <3A44F763.2CB637F9@gmx.net>; from j_trzaska@gmx.net on Sat, Dec 23, 2000 at 08:05:07PM +0100
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Dec 23, 2000 at 12:48:16PM -0500, Alex deVries wrote:
-> Scorpio's a 715/old, and has two IO chips in it: WAX and Lasi. Scorpio
-> Jr. (715/33) and Scorpio Sr. (715/75) are identical.
+On Sat, Dec 23, 2000 at 08:05:07PM +0100, Jens Trzaska wrote:
+> Hello again!
+> Does anyone know if there is a possibility to start a hp 712/80 
+> without a keyboard plugged in? I cannot find an option in the
+> bootrom. It always says: 
+> 	"Failed to initialize a keyboard, SYSTEM HALTED" 
 
-uh, no, it has Wax and Asp.  Lasi was a later chip.  It's very similar to
-Lasi though.
+another thing which should be in the faq, but isn't.
 
-> My questions:
-> 
-> a. The docs say that WAX's HIL on a GSC (not GSC+) is at 0xf0201000, but
-> the HIL reported above is clearly in the ASP range.  Is there actually a
-> HIL controller on ASP? More importantly, how are the interrupts routed?
+serial console on the 712 is officially Not Supported.
 
-The HIL controller is definitely on Asp.  The interrupt `just worked'
-when i first stole phil blundell's hil driver he'd written for the hp300.
+however, you can do it, if you know what to type.  full details are in
+the mailing list archives somewhere.
 
 -- 
 Revolutions do not require corporate support.
