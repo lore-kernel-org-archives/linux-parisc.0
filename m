@@ -1,50 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from methlab.23.org (23.org [209.25.5.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85F20482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Jun 2001 12:25:33 -0600 (MDT)
-Date: Wed, 13 Jun 2001 11:27:37 -0700 (PDT)
-From: CHS <chs@23.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] New list member..
-In-Reply-To: <20010613143442.K16532@linuxcare.com>
-Message-ID: <Pine.LNX.4.30.0106131112140.26483-100000@methlab.23.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E24F2482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Jun 2001 15:22:45 -0600 (MDT)
+Message-Id: <200106132122.PAA01189@puffin.external.hp.com>
+To: Paul Bame <bame@fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PALO/kernel-build change proposal 
+In-Reply-To: Your message of "Wed, 13 Jun 2001 11:31:38 MDT."
+             <E15AEUU-0004qi-00@noam.fc.hp.com>
+Date: Wed, 13 Jun 2001 15:22:10 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 13 Jun 2001, Richard Hirst wrote:
+Paul Bame wrote:
+...
+> When self hosted, there's usually no need to run palo after every
+> kernel build since palo boots out of the file system by file name.
+> So I propose that the common self-hosted use model be to use simple 'make'
+> in the kernel tree [and make modules or whatever].  The resulting 'vmlinux'
+> file can then be copied to the desired location.
 
-> You don't say if you are serial or graphical (sti) console based.
-> I certainly wouldn't expect kernel panics "fairly often" with a
-> serial console.  For sti console, there are some known issues, for
-> example, hitting <escape> in vi tends to crash the kernel.  sti console
-> is much less tested than serial also.  The vi problem is fixed in our
-> latest kernel source, and you can work round it by changing your terminal
-> type (from TERM=linux to TERM=vt100, iirc).
 
-my mistake, I meant to be thorough, honest :)
+On x86, "make install" will do all the right things to install the
+freshly built kernel but doesn't do a damn thing for kernel modules.
+Need to run "make modules" and "make modules_install" to really make
+sure eveything is in sync.
 
-I'm using the graphical/sti install..
 
-> If you are sti console based then it is painful, but if you could copy
-> down the register dump (not the stack dump, most of which will have
-> scrolled off the screen), then I might be able to tell you more.
-> If you are serial based, you should be able to capture the output
-> easily enough.
+> I propose that 'make palo' be changed to simply run 'palo -f ./palo.conf'
+> after vmlinux is built.  This means palo would have to be in the $PATH
+> and that the top-level linux source directory would contain a
+> suitable palo.conf file.  I've been using this model for cross-compiling
+> for several months and like it.  I would document how xc-ers can best
+> compile and "install" palo as well as supply a palo.conf file with
+> our typical configurations.
+> 
+> What is 'make palo' today would be changed to 'make buildrunpalo'.  The
+> longer name is more truthful and less convenient on purpose.
 
-register dump, ok, I'll try and do that tonight..
 
-I'd try and work with the machine in serial mode, but I don't have the
-null modem adapters and gender changers at home neccessary to work with
-it. I'll see what I can dig up though..
+How about "make lifimage"?
+That's the only reason I run "make palo" in the XC environment.
+Having a XC-palo in the environment is no problem.
+In the XC env, I don't expect "make install" to do the right thing (tm).
 
-thanks for the help.
+grant
 
---
-AIM: bdsmchs  ---  http://www.23.org/~chs/
-------------------------------------------------------------------------
-"And the rifle? Wouldn't go out naked of a rifle. When shoes and
-clothes and food, when even hope is gone, we'll have the rifle."
-	--John Steinbeck
-------------------------------------------------------------------------
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
