@@ -1,13 +1,14 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] /proc/stat became wrong during 2.6.10-pa6 pa7
-	transition???
-Date: Thu, 3 Feb 2005 08:38:06 +0100
-Message-ID: <41DE9360000085A1@mail-4-bnl.tiscali.it>
+From: Steve Bromwich <hppa@fop.ns.ca>
+Subject: [parisc-linux] Re: 2.6 upgrade problems
+Date: Sat, 5 Feb 2005 12:23:14 -0400 (AST)
+Message-ID: <Pine.LNX.4.58.0502051211590.12670@brain.fop.ns.ca>
+References: <Pine.LNX.4.58.0501171521470.3385@brain.fop.ns.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="ISO-8859-15"
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <Pine.LNX.4.58.0501171521470.3385@brain.fop.ns.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,78 +19,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
+OK, I had the chance to sit down and do some research and
+fixed/ameliorated most of these problems - hopefully this will help
+someone else out!
 
-I previously mentioned that top didn't report anymore right values since
-2.6.10-pa7:
-...
-Cpu(s):  0.7% us,  0.0% sy,  0.0% ni,  0.0% id,  0.0% wa, 99.3% hi,  0.0%=
+On Mon, 17 Jan 2005, Steve Bromwich wrote:
 
-si
-...
+> I just upgraded my 715/100XC to 2.6.10-pa10 from 2.4.27, and I've hit a
+> few snags. First is I've lost serial console ("if this is the last message
+> you see..."). I did make oldconfig from the 2.4.27 config, but I think
+> I've fluffed it and missed the driver. Can someone see what I've missed in
+> the attached config?
 
-while 2.6.10-pa6 was seems more relevant:
-...
-Cpu(s):  0.7% us,  1.0% sy,  0.0% ni, 98.4% id,  0.0% wa,  0.0% hi,  0.0%=
+make oldconfig didn't transfer across the settings for serial console, for
+some reason; CONFIG_SERIAL_8250_CONSOLE didn't get set (I'm assuming this
+is the right one for my machine rather than CONFIG_SERIAL_MUX_CONSOLE).
+I'm going to upgrade the kernel to the latest version rather than
+recompile this one, and reboot it when I next open the case.
 
-si
-...
+> Next, vmstat appears to fail with a segfault:
 
-and btw I noticed that strange stat reports too:
-2.6.10-pa6 # cat /proc/stat
-cpu  23248 3356 64981 4508884 30377 0 147
-cpu0 23248 3356 64981 4508884 30377 0 147
-...
-i.e. 7 field ok
-OTC
-2.6.10-pa7 # car /proc/stat
-cpu  88358 16430 0 0 0 33813422 0 0
-cpu0 88358 16430 0 0 0 33813422 0 0
-...
-fwfw _8_ field ???
+OK, this is a bit fiddly. Add the following to /etc/apt/sources.list:
 
-while src (afaik fs/proc/proc_misc.c:show_stat()) doesn't change at all:
-...
-        seq_printf(p, "cpu  %llu %llu %llu %llu %llu %llu %llu\n",
-                (unsigned long long)jiffies_64_to_clock_t(user),
-                (unsigned long long)jiffies_64_to_clock_t(nice),
-                (unsigned long long)jiffies_64_to_clock_t(system),
-                (unsigned long long)jiffies_64_to_clock_t(idle),
-                (unsigned long long)jiffies_64_to_clock_t(iowait),
-                (unsigned long long)jiffies_64_to_clock_t(irq),
-                (unsigned long long)jiffies_64_to_clock_t(softirq));
-        for_each_online_cpu(i) {
+deb-src http://www.backports.org/debian woody procps
 
-                /* Copy values here to work around gcc-2.95.3, gcc-2.96 *=
-/
-                user =3D kstat_cpu(i).cpustat.user;
-                nice =3D kstat_cpu(i).cpustat.nice;
-                system =3D kstat_cpu(i).cpustat.system;
-                idle =3D kstat_cpu(i).cpustat.idle;
-                iowait =3D kstat_cpu(i).cpustat.iowait;
-                irq =3D kstat_cpu(i).cpustat.irq;
-                softirq =3D kstat_cpu(i).cpustat.softirq;
-                seq_printf(p, "cpu%d %llu %llu %llu %llu %llu %llu %llu\n=
-",
-                        i,
-                        (unsigned long long)jiffies_64_to_clock_t(user),
-                        (unsigned long long)jiffies_64_to_clock_t(nice),
-                        (unsigned long long)jiffies_64_to_clock_t(system)=
-,
-                        (unsigned long long)jiffies_64_to_clock_t(idle),
-                        (unsigned long long)jiffies_64_to_clock_t(iowait)=
-,
-                        (unsigned long long)jiffies_64_to_clock_t(irq),
-                        (unsigned long long)jiffies_64_to_clock_t(softirq=
-));
-        }
-...
+Then apt-get source --compile procps. This will fail will an error from ld
+before it completes creating the package. Copy
+./debian/procps/lib/libproc-3.2.3.so to /lib and run ldconfig. Rename
+/usr/bin/vmstat to /usr/bin/vmstat.old and copy vmstat to /usr/bin. Not
+the ideal solution (debsums will complain, if you use it) but it works.
 
-any idea?
+> brain:/var/adm# vmstat 1
+> Unknown HZ value! (7) Assume 100.
 
-Joel
+I'm not sure about Unknown HZ. I happened to upgrade an x86 box with the
+backported procps and got the same error.
 
+> Finally (and it may not have been a great idea to do this at the same time
+> as doing the kernel upgrade) I put in a DAT drive I acquired. This is
+> failing when I try to write to it with the following error in dmesg:
+>
+> st0: Error with sense data: Info fld=0x14, Current st0: sense = f0  3
+> ASC= c ASCQ= 0
+> Raw sense data:0xf0 0x00 0x03 0x00 0x00 0x00 0x14 0x2c 0x00 0x00 0x00 0x00
+> 0x0c 0x00 0x00 0x00 0x00 0x85 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0
+> x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+> 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
 
+This looks to be a problem with termination, from discussion with other
+people. I'm going to crack the case in my CFT and check the jumpers on all
+the drives to make sure.
+
+Cheers, Steve
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
