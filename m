@@ -1,55 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A90A2482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Apr 2001 11:03:27 -0600 (MDT)
-Sender: drepper@cygnus.com
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Matthew Wilcox <matthew@wil.cx>,
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CF4B5482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Apr 2001 11:22:24 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14n1d6-00023Z-00; Tue, 10 Apr 2001 18:08:36 +0100
+Date: Tue, 10 Apr 2001 18:08:36 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Ulrich Drepper <drepper@cygnus.com>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	Matthew Wilcox <matthew@wil.cx>,
 	Matt Taggart <taggart@carmen.fc.hp.com>, randolph@tausq.org,
 	lamont@hp.com, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] rpc.lockd hangs  (was Re: portmap deb)
-References: <20010406210401.7685C37CDB@carmen.fc.hp.com>
-	<20010407001500.Z9198@linuxcare.com>
-	<20010408202046.B19712@parcelfarce.linux.theplanet.co.uk>
-	<20010409105606.C5790@linuxcare.com>
-	<20010409152125.A15015@parcelfarce.linux.theplanet.co.uk>
-	<20010410150351.N6992@linuxcare.com>
-Reply-To: drepper@cygnus.com (Ulrich Drepper)
-From: Ulrich Drepper <drepper@redhat.com>
-Date: 10 Apr 2001 09:58:57 -0700
-In-Reply-To: Richard Hirst's message of "Tue, 10 Apr 2001 15:03:51 +0100"
-Message-ID: <m3snjghesu.fsf@otr.mynet.cygnus.com>
-MIME-Version: 1.0
+Message-ID: <20010410180836.A25123@parcelfarce.linux.theplanet.co.uk>
+References: <20010406210401.7685C37CDB@carmen.fc.hp.com> <20010407001500.Z9198@linuxcare.com> <20010408202046.B19712@parcelfarce.linux.theplanet.co.uk> <20010409105606.C5790@linuxcare.com> <20010409152125.A15015@parcelfarce.linux.theplanet.co.uk> <20010410150351.N6992@linuxcare.com> <m3snjghesu.fsf@otr.mynet.cygnus.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <m3snjghesu.fsf@otr.mynet.cygnus.com>; from drepper@redhat.com on Tue, Apr 10, 2001 at 09:58:57AM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst <rhirst@linuxcare.com> writes:
+On Tue, Apr 10, 2001 at 09:58:57AM -0700, Ulrich Drepper wrote:
+> Why should you need two macros?
 
-> No, doesn't work, because INLINE_SYSCALL() does
-> 
->                 asm volatile(                                   \
->                         "ble  0x100(%%sr2, %%r0)\n\t"   \
->                         " ldi %1, %%r20"                        \
->                         : "=r" (__res)                          \
->                         : "i" (SYS_ify(name)) ASM_ARGS_##nr     \
->                          );                                     \
-> 
-> while INLINE_SYSCALL_NR needs
-> 
->                 asm volatile(                                   \
->                         "ble  0x100(%%sr2, %%r0)\n\t"   \
->                         " copy %1, %%r20"                       \
->                         : "=r" (__res)                          \
->                         : "r" (sysnum) ASM_ARGS_##nr            \
->                          );                                     \
-
-Why should you need two macros?  The second one is not used on any
-other architecture and therefore no non-machine specific code uses it.
-Get rid of it.  If you only use it to implement syscall() do it right
-and don't hide it in a macro.  Even though we have many macros this
-does not mean this is the way code should always be written.
+I think you're missing the context here, Ulrich.  I'd prefer not to have
+multiple implementations of syscall.  This discussion was about how to
+have only _one_ implementation in glibc, not two.  I'm not sure we have
+a solution to that yet.
 
 -- 
----------------.                          ,-.   1325 Chesapeake Terrace
-Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-Red Hat          `--' drepper at redhat.com   `------------------------
+Revolutions do not require corporate support.
