@@ -1,21 +1,18 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 480B8484B
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from fep03-mail.bloor.is.net.cable.rogers.com
+	(fep03-mail.bloor.is.net.cable.rogers.com [66.185.86.73])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73B19484B
 	for <parisc-linux@parisc-linux.org>;
-	Sat,  7 Feb 2004 15:00:47 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1ApaVK-0007eg-BW; Sat, 07 Feb 2004 22:00:46 +0000
-Date: Sat, 7 Feb 2004 22:00:46 +0000
-From: Matthew Wilcox <willy@debian.org>
+	Sat,  7 Feb 2004 15:27:34 -0700 (MST)
+Date: Sat, 7 Feb 2004 17:28:02 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 To: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] Merge status with 2.6
-Message-ID: <20040207220046.GB24334@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20040207222802.GA23095@baldric.uwo.ca>
 References: <20040207172108.GV24334@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <20040207172108.GV24334@parcelfarce.linux.theplanet.co.uk>
-Sender: <willy@www.linux.org.uk>
 Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -26,27 +23,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Feb 07, 2004 at 05:21:08PM +0000, Matthew Wilcox wrote:
-> drivers/ide/pci/ns87415.c: I pinged Bart about this patch last week.
+> 14231 bytes ( 8 files changed, 342 insertions(+), 7 deletions(-) ) is
+> Carlos' compat_signal work.  This is going upstream via akpm and should
+> be in 2.6.4.  Excellent work, Carlos.
 
-This patch just went into Linus' tree.
+Thanks, that reminds me to send akpm another update, and a changelog.
+ 
+> ... and that's it!  I think the only thing that prevents Linus' tree from
+> building and working on at least a subset of configurations is the console
+> hackery.
+> 
+> We're in really good shape in 2.6, thanks to all of you.
 
-> drivers/net/tg3.c: Doesn't actually affect PA-RISC; I'll try to get it
-> 	merged with jgarzik/davem this week.
+Thanks for all your hard work too! :)
 
-Merged with davem.
-
-> drivers/net/tulip: Some of this I'll try to get merged with jgarzik,
-> 	other bits he wants rewritten before he'll accept.
-
-The majority of our diff is now merged into jgarzik's tree.
-
-Still some other pieces to do.
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+c.
