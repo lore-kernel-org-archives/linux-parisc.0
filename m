@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5A0924840
-	for <parisc-linux@parisc-linux.org>; Sun, 26 Oct 2003 02:39:22 -0700 (MST)
-Received: from 156.153.254.40 (unknown [200.68.27.4])
-	by cuprel1.hp.com (Postfix) with SMTP id 6B1A0D6A
-	for <parisc-linux@parisc-linux.org>; Sun, 26 Oct 2003 01:39:20 -0800 (PST)
-Message-ID: <97ssm-31gw-4700u0u219y6@we7zri978.hb>
-From: "Denis Vera" <imu409v@yahoo.com>
-Reply-To: "Denis Vera" <imu409v@yahoo.com>
-To: parisc-linux@parisc-linux.org
-Date: Sat, 25 Oct 2003 05:31:06 -0500
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4E724840
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Oct 2003 07:06:20 -0700 (MST)
+Message-ID: <3F9BD4DA.6020906@tiscali.be>
+Date: Sun, 26 Oct 2003 14:06:18 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="8_4EAAF856786F.3F2C"
-Subject: [parisc-linux] US Stock Market: TRHL - Last Pick From .45 to 1.18...azra
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] gcc-hppa64 failled to install on my c110
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,51 +20,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---8_4EAAF856786F.3F2C
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-VICODIN Is Here
+I try to apt-get install gcc-hppa64 (having added <deb 
+http://ftp.parisc-linux.org/ unofficial-debs/> entry in my sources.list)
+on my c110 (a fresh debian/unstable install) but it fails with following 
+message:
+hpalin:/Debian-apt/Debian4hppa# apt-get install gcc-hppa64
+Reading Package Lists... Done
+Building Dependency Tree... Done
+The following NEW packages will be installed:
+   gcc-hppa64
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 16.1MB of archives.
+After unpacking 39.0MB of additional disk space will be used.
+Err http://ftp.parisc-linux.org unofficial-debs/ gcc-hppa64 1:3.2.3-0.1
+   404 Not Found
+Failed to fetch 
+http://ftp.parisc-linux.org/./gcc-hppa64_3.2.3-0.1_hppa.deb  404 Not Found
+E: Unable to fetch some archives, maybe run apt-get update or try with 
+--fix-missing?
 
-FRE.E-shipping on a 3 month supply (90-count)
+What do I wrong?
+And gcc-hppa64_3.2.3-0.1_hppa.deb isn't anymore in  unofficial-debs, 
+what do i miss?
 
-
-
-www.rxanytime.biz/superstore
-
-
-
-Vicodin ES 30 tablets - 4.63 per tablet
-
-ES 90 tablets - 2.32 per tablet - BEST DEAL - Plus FRE.E-SHIPPING
-
-
-
-www.rxanytime.biz/superstore
-
-
-
-
-
-No more ads - www.rxanytime.biz/a.html
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-qxht fxxmw j
-
---8_4EAAF856786F.3F2C--
+Thanks in advance for help,
+	Joel
