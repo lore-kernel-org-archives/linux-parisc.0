@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 80E454829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 07:22:35 -0600 (MDT)
-Date: Wed, 16 Apr 2003 14:22:23 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Thibaut VARENE <varenet@esiee.fr>
-Cc: willy@debian.org, <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Presicionbook success
-In-Reply-To: <20030416151333.72921928.varenet@esiee.fr>
-Message-ID: <Pine.LNX.4.44.0304161417140.28370-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4CFE94829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 07:27:12 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 195mwQ-0006wg-QO; Wed, 16 Apr 2003 14:27:10 +0100
+Date: Wed, 16 Apr 2003 14:27:10 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Gavin Hubbard <ghub005@xtra.co.nz>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Presicionbook success
+Message-ID: <20030416132710.GO30643@parcelfarce.linux.theplanet.co.uk>
+References: <20030416123824.22413.48893.Mailman@dsl2.external.hp.com> <3.0.2.32.20030417011531.00a2bf20@pop3.xtra.co.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3.0.2.32.20030417011531.00a2bf20@pop3.xtra.co.nz>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,41 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 16 Apr 2003, Thibaut VARENE wrote:
+On Thu, Apr 17, 2003 at 01:15:31AM +1200, Gavin Hubbard wrote:
+> Before anyone loses too much sleep over this, the Precisionbook has
+> internal SCSI-IDE bridges that sit between the HBA and the drives. I
+> believe a similar system was used in some of the earlier Apple Powerbooks.
 
-> something went wrong. I've got some html code in the attache dmesg file.
->
-> Could you send it again, as well as cat /proc/cpuinfo and uname -a, so
-> that i can update our listing at pateam.esiee.fr ?
+Yep, someone pointed that out in an earlier email.  I'm just trying to
+figure out how to handle this for the best.
 
-Sorry, I know. I resent the dmesg to the list!
+1) Provide a pci quirk that deletes the IDE device from the bus
+2) Hack the IDE driver to not claim that device if it's on a PrecisionBook
+3) Ignore the scsi device and let the IDE driver drive the chips
+4) Er.. something else.
 
-
-bucephaslas:~# more /proc/cpuinfo
-processor       : 0
-cpu family      : PA-RISC 1.1e
-cpu             : PA7300LC (PCX-L2)
-cpu MHz         : 160.000000
-model           : 9000/778/B160L
-model name      : Merlin L2 160 (9000/778/B160L)
-hversion        : 0x00005020
-sversion        : 0x00000481
-I-cache         : 64 KB
-D-cache         : 64 KB (WB)
-ITLB entries    : 96
-DTLB entries    : 96 - shared with ITLB
-BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
-BTLB fix-entr.  : 0 instruction, 0 data (8 combined)
-BTLB var-entr.  : 0 instruction, 0 data (0 combined)
-bogomips        : 106.49
-software id     : 2015040524
-
-bucephaslas:~# uname -a
-Linux bucephaslas 2.4.20-pa32 #2 Wed Apr 16 11:03:26 IST 2003 parisc unknown unknown GNU/Linux
-
-
-Actually it doesn't have a name yet (using the IP and the name of my
-other laptop). Any suggestions?
-
-
-Slan, Max
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
