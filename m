@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with SMTP id 33E654829
-	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 06:33:17 -0600 (MDT)
-Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
-	by hauptpostamt.charite.de (Postfix) with ESMTP id 77E9215C011
-	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 14:33:13 +0200 (CEST)
-Date: Fri, 11 Oct 2002 14:33:12 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: parisc-linux@parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 937794829
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 06:54:03 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17zzIm-0002cE-00; Fri, 11 Oct 2002 13:54:00 +0100
+Date: Fri, 11 Oct 2002 13:54:00 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
+Cc: Thibaut VARENE <varenet@esiee.fr>, parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] hardware features of 712-60 ?
-Message-ID: <20021011123312.GP16680@charite.de>
+Message-ID: <20021011135400.J18545@parcelfarce.linux.theplanet.co.uk>
 References: <20021011132811.6e84c1d8.varenet@esiee.fr> <Pine.LNX.4.21.0210111454200.24681-100000@hal.pp.fishpool.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0210111454200.24681-100000@hal.pp.fishpool.fi>
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <Pine.LNX.4.21.0210111454200.24681-100000@hal.pp.fishpool.fi>; from q-funk@pp.fishpool.fi on Fri, Oct 11, 2002 at 03:22:14PM +0300
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +25,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Right, let's run through this list and see if it's as clear as you think:
-> 
-> 1) Gecko (712/60) (Processor) (PA7100LC (PCX-L))
-> 2) Gecko (Memory)
-> 3) Gecko Optional RS-232 (Foreign I/O Module) (Serial driver)
-> 4) Gecko Optional Lan (802.3) (Foreign I/O Module) (Lasi_82596 driver)
-> 5) Gecko Core PC Keyboard (Foreign I/O Module) (PS/2 driver)
-> 6) Gecko Core PC Floppy (Foreign I/O Module)
-> 7) Gecko Audio (Foreign I/O Module) (Harmony driver)
-> 8) Gecko Core Centronics (Foreign I/O Module) (Parallel driver)
-> 9) Gecko Core RS-232 (Foreign I/O Module) (Serial driver)
-> a) Gecko Core Lan (802.3) (Foreign I/O Module) (Lasi_82596 driver)
-> b) Gecko Core SCSI (Foreign I/O Module) (NCR53c710 driver)
-> c) Gecko GSC Core Graphics (Foreign I/O Module)
-> d) Gecko Optional BA (Bus Adapter) (Lasi driver)
-> e) Gecko Core BA (Bus Adapter) (Lasi driver) 
+On Fri, Oct 11, 2002 at 03:22:14PM +0300, Martin-Éric Racine wrote:
+> 2) Memory:  which module?  In which dialogue?
 
-I have a kernel config for a 712/80 where I threw out all the crap I
-didn't need and I build as much as possible as a module. Interested?
+do you know of any linux architecture where you have to turn on a
+configuration option to access your _ram_?  ok, x86 has that lame
+1GB/4GB/64GB question, but parisc doesn't ask you a question about it.
+why are you complaining?
+
+> 3) Optional RS-232:  which module?  In which dialogue?
+
+it says "serial driver" right after it.  the precise option you need to
+turn on is :
+      bool '   serial port on GSC support' CONFIG_SERIAL_GSC
+
+> 6) Floppy:  which module?  PC Floppy definitely doesn't work.
+
+no, nobody's made the floppy drive work yet.
+
+> 8) Parallel:  which modules?  LASI/ASP builtin, or PC-style hardware too?
+
+just LASI/ASP.
+
+> b) SCSI:  HP LASI SCSI support for 53c700/710, or NCR53c7,8xx SCSI support too?
+
+just the former.
+
+> d) Optional BA:  which module?  In which dialogue?
+> e) Core BA:  which module?  In which dialogue?
+
+dep_bool '  Lasi I/O support' CONFIG_GSC_LASI $CONFIG_GSC
+
+is this really so hard?
 
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V a)   Ralf.Hildebrandt@charite.de
-Charite Campus Mitte                            Tel.  +49 (0)30-450 570-155
-Referat V a - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Why you can't find your system administrators:
-Is out back beating a luser into corn mash who asked "When will the system be back up" one time too many. 
+Revolutions do not require corporate support.
