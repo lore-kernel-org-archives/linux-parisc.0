@@ -1,33 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 057994A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Feb 2001 08:39:52 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id E87AC4A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Feb 2001 08:59:25 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14SL4k-00029k-00; Mon, 12 Feb 2001 15:39:38 +0000
-Date: Mon, 12 Feb 2001 15:39:38 +0000
+	id 14SLNn-0002Rd-00; Mon, 12 Feb 2001 15:59:19 +0000
+Date: Mon, 12 Feb 2001 15:59:19 +0000
 From: Matthew Wilcox <matthew@wil.cx>
-To: penfold@customware.com.au
+To: "M. Grabert" <xam@deathsdoor.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] tar, spinlocks and 715 and 720
-Message-ID: <20010212153938.A7969@parcelfarce.linux.theplanet.co.uk>
-References: <200102110753.SAA15254@customware.com.au>
+Subject: Re: [parisc-linux] ASP Parallel port driver broken on HP9000/730
+Message-ID: <20010212155919.B7969@parcelfarce.linux.theplanet.co.uk>
+References: <200102090338.TAA07555@milano.cup.hp.com> <Pine.LNX.4.21.0102112112310.9410-100000@sgate.charlysworld.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200102110753.SAA15254@customware.com.au>; from penfold@customware.com.au on Sun, Feb 11, 2001 at 06:50:42PM +1100
+In-Reply-To: <Pine.LNX.4.21.0102112112310.9410-100000@sgate.charlysworld.de>; from xam@deathsdoor.com on Sun, Feb 11, 2001 at 09:16:39PM +0100
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Feb 11, 2001 at 06:50:42PM +1100, penfold@customware.com.au wrote:
-> I there was discussion about tar locking up on 715 and the consesus was
-> that it was spinlock related and due to an alignment issue.
+On Sun, Feb 11, 2001 at 09:16:39PM +0100, M. Grabert wrote:
+> On Thu, 8 Feb 2001, Grant Grundler wrote:
 > 
-> Was this fixed?
+> > echo 0xe840c000=i | adb   says:
+> > 		BV              r0(r2)
+> > 
+> > GR02 is the most recent subroutine call return addr.
+> > (Typically the caller).
+> > 
+> > So look up c026e458 and c0246328 in your System.map.
+> > You can at least figure out about where it's crashing.
+> 
+> done that (I also checked that is is the correct System.map),
+> but there is no entry for c026e458 and c0246328 !!!
 
-not entirely, yet.
+no, there wouldn't be.  the addresses in System.map are the start of
+each function.  so the address below c026e458 will be the address of
+the function which made the call.
 
-> Is/Was it a kernel or glibc problem?
-
-glibc.  it's a `pthreads' problem.
+Matthew `Give a man a match and you warm him for an hour; dose him in
+petrol first and you warm him for the rest of his life'
 
 -- 
 Revolutions do not require corporate support.
