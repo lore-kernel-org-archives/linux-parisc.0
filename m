@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beloit.edu (beloit.edu [144.89.40.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 72931482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Nov 2001 20:21:48 -0700 (MST)
-Received: from localhost ([144.89.185.182])
-	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id VAA24984
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 8 Nov 2001 21:16:10 -0600
-Date: Thu, 8 Nov 2001 21:21:45 -0600
-Mime-Version: 1.0 (Apple Message framework v472)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-From: Daniel Williams <dan@bigw.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <E76C922A-D4C0-11D5-BC47-0030657D1C94@bigw.org>
-Subject: [parisc-linux] C110 install and boot part 3...
+Received: from xfs.ath.cx (sdu101-232.ppp.algonet.se [195.163.232.101])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08BA2482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Nov 2001 02:44:32 -0700 (MST)
+Received: from oden.valhall (oden.valhall [192.168.0.3])
+	by xfs.ath.cx (Postfix) with ESMTP id 39F88176FB
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Nov 2001 10:44:50 +0100 (CET)
+Date: Fri, 9 Nov 2001 10:44:50 +0100 (CET)
+From: <xfs@linux.se>
+Reply-To: <xfs@linux.se>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0111091040160.2829-100000@oden.valhall>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Installing PARISC-Linux on my 712, over network...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,27 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-OK, I got a hold of another CD drive, this time a DEC workstation CD 
-(its funky in some wierd way), its got parity always on and you can 
-switch between DEC workstation and PC mode.  Whatever that is.  The main 
-thing is that it works and boots the .9.2 CD I've got.  However, after 
-the penguin appears at the top and it does init and stuff, right after 
-it lists the CD when its doing SCSi init stuff, it give me:
+Hello!!
 
-scsi bus is being reset for host 1 channel 0
-ncr53c8xx_reset: pid-0 resetflags=2 serial_number=18 
-serial_number_at_timeout=18
-ncr53c720-0: restart(scsi reset)
-SCSI host 1 abort (pid0) timed out - resetting.
+I have big problems running HpUX (10.20) on my mashine, and becouse I have
+no cdrom in it, I cant reinstall it ether, even that I have the
+installcdrom (no use of it).
 
-This was with the 2 2.1GB FW differential SCSI drive attached and 
-functioning.  When I took both of those drive out and have JUST the CD 
-drive in the system, it boots fine and gets to the install program, with 
-the welcome screen and the Continue button.  But it froze at this first 
-screen for some reason.  Any ideas?
+Is there any nice documentation on how to install Pa-Risc-linux on my
+hp712, over the network, from my Linux-mashine (slackware)?
+If there is'nt, somebody that knows of how to do it?
+Else... somebody that knows of how to install NetBSD or OpenBSD over
+network, from my linux-mashine, or maby a nice documentation on the net,
+or maby that they can send to me?
 
-Also, can it boot with FW differential SCSI devices connected?  Or do I 
-have to put some narrow drives in there?
+Please reply to my email: xfs@linux.se, becouse I am not on this list.
 
-Thanks,
-Dan
+Thanks!
+
+// Johan Andersson
+    <xfs@linux.se>
