@@ -1,54 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA30346
-	for <parisc-linux@puffin.external.hp.com>; Tue, 10 Oct 2000 09:45:52 -0600
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id AEB9C1B90E
-	for <parisc-linux@thepuffingroup.com>; Tue, 10 Oct 2000 17:46:57 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA25234 for <parisc-linux@thepuffingroup.com>; Tue, 10 Oct 2000 17:46:05 +0200 (METDST)
-Sender: vidal@hpfrcu03.france.hp.com
-Message-ID: <39E338E5.4ED45E2B@admin.france.hp.com>
-Date: Tue, 10 Oct 2000 17:42:29 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Unable to compil linux kernel
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA31270
+	for <parisc-linux@puffin.external.hp.com>; Tue, 10 Oct 2000 09:54:55 -0600
+Message-Id: <200010101600.JAA04506@milano.cup.hp.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Unable to compil gcc2.96 on L2000/11.00/64 bits 
+In-reply-to: Your message of "Tue, 10 Oct 2000 20:24:52 PDT."
+             <Pine.LNX.4.21.0010102014070.20550-100000@front.linuxcare.com.au>
+Date: Tue, 10 Oct 2000 09:00:14 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-	Hi
-I succeded to recompile all tools needed for compiling linux kernel.
-(the problem was only that I was using the wrong target type).
-But I've have a strange problem while compiling (I perhaps made a mistake somewhere):
-#pwd
-/opt/linux_hppa/src/linux/drivers/char
+Alan Modra wrote:
+...
+> From memory, the steps I followed were:
+>   build & install binutils
+>   build & install gcc using "make LANGUAGES=c; make LANGUAGES=c install"
+>   build & install glibc
+>   rebuild gcc
 
-#type gcc
-gcc is hashed (/opt/linux_hppa/hppa-linux/bin/gcc)
- 
-#file /opt/linux_hppa/hppa-linux/bin/gcc
-/opt/linux_hppa/hppa-linux/bin/gcc:     PA-RISC1.1 shared executable dynamically linked -not stripped 
+Alan,
+Could you update the relevant scripts in CVS build-tools repository?
+(They may not need any changes and Bruno just needs to use those)
 
-#gcc --version
-2.96
+Last year I pushed for "recipes" and those got stale pretty quickly
+because the folks on the bleeding edge weren't using them. Like Bruno,
+I had a hard time reproducing the success others claimed they had.
+(I still chuckle over puffin's phrase: "I don't believe you")
+It shouldn't be that hard to build stuff from the CVS repositories.
 
-while the "make palo":
-#gcc -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -o conmakehash conmakehash.c
-/opt/linux_hppa/lib/gcc-lib/hppa-linux/2.96/../../../../hppa-linux/bin/ld: cannot find -lc
-collect2: ld returned 1 exit status
--> that the problem, where this "-lc" comes from ???
+I've given up on the recipe's and moved to scripts instead.
+Matt Taggart has contributed the build-tools/palinux-autobuilder
+and recipe.linux/recipe.hpux are mine. The README file should
+explain what each does.
 
-#/opt/linux_hppa/lib/gcc-lib/hppa-linux/2.96/../../../../hppa-linux/bin/ld --version
-GNU ld 2.10.91
-Copyright 2000 Free Software Foundation, Inc.
-This program is free software; you may redistribute it under the terms of
-the GNU General Public License.  This program has absolutely no warranty.
-  Supported emulations:
-   hppalinux
+apologies for harping on this again,
+grant
 
-	Thanks 
-
-
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
