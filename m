@@ -1,53 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA18929
-	for <parisc-linux@puffin.external.hp.com>; Fri, 14 May 1999 04:08:25 -0600
-Date: Fri, 14 May 1999 12:07:44 +0200
-From: Ralf Hildebrandt <R.Hildebrandt@tu-bs.de>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] performance computing review of a180
-Message-ID: <19990514120744.K23417@stahlw06.stahl.bau.tu-bs.de>
-References: <19990513184043.A20996@master.debian.org> <19990514073913.18827@insula.local>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary=NqNl6FRZtoRUn5bW; micalg=pgp-md5;
-	protocol="application/pgp-signature"
-In-Reply-To: <19990514073913.18827@insula.local>; from Philipp Rumpf on Fri, May 14, 1999 at 07:39:13AM +0000
-Sender: hildeb@stahlw06.stahl.bau.tu-bs.de
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA19357
+	for <parisc-linux@puffin.external.hp.com>; Fri, 14 May 1999 12:49:41 -0600
+Date: Fri, 14 May 1999 20:49:06 +0200 (CEST)
+From: Hugo van der Kooij <hvdkooij@caiw.nl>
+To: Tom Javen <tomja@InnoTrac.fi>
+cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Hi
+In-Reply-To: <Pine.LNX.3.96.990514102417.5705B-100000@data.innotrac.fi>
+Message-ID: <Pine.LNX.4.10.9905142045210.743-100000@bastion.nl3155vj16.vanderkooij.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Fri, 14 May 1999, Tom Javen wrote:
 
---NqNl6FRZtoRUn5bW
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+> On Wed, 12 May 1999, Matthew Wilcox wrote:
+> 
+> > On Wed, May 12, 1999 at 01:00:04PM -0700, Grant Grundler wrote:
+> > > Mathew can also download and try to install the PA-mklinux.
+> > > I have this running on a 712/60 now. I suggest this because
+> > > I don't know how accessible HP-UX bits are to the general public.
+> > > HP-UX is usually distributed on CD-ROM these days.
+> > 
+> > Alas, no.  The 715/33 is the one machine that mklinux does not support;
+> > I looked at that about 6 months ago.
+> Have you looked at OpenBSD ?
 
-Am 14.05.1999 um 07:39:13 +0000 schrieb Philipp Rumpf folgendes:
+I don't know wether he did. But I was unable to find anything beyond HP-UX
+to run on the HP 715/33 hardware. So I am hoping this machine will join
+the TUX family before the end of this year. (Not intended to push anyone
+but I am rather optimistic now some of the persons with intimate kernel
+knowledge are part of the team.)
 
-> > "...expansion is not a big issue...the version of bind should have been
-> > upgraded to bind 8, and not including sendmail 8.9 we feel is a
-> > mistake...performance is not a primary objective for hp with the a-clas=
-s.."
->=20
-> This should be no problem with Linux.
+Hugo.
 
-Neither with 10.x or 11.x, BTW
-
---=20
-Ralf Hildebrandt <R.Hildebrandt@tu-bs.de> www.stahl.bau.tu-bs.de/~hildeb
-Applying computer technology is simply finding the right wrench to
-pound in the correct screw.=20
-
-
---NqNl6FRZtoRUn5bW
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: PGPfreeware 5.0i for non-commercial use
-MessageID: BXq4NrXmRyP361QWdRkTj162e0wSIG5G
-
-iQCVAwUBNzv170nh/jPvZzKNAQGEmgP+MVqESa7BcfgQuw8Z5Sh1tbFsRnzwK2jX
-FNX6HwLcGjyD7Owd4EyOqV3IvpTazsG2OKTpprmrkJnrdfmhiehncXaR1ggNqoDW
-GBMk64SpjqMVmcZVY4MazXUocoaBlYvpUkh3NVqahbQV9UQTU5nN35UKqtqXHsix
-7YK8Us0iXsM=
-=YJzk
------END PGP SIGNATURE-----
-
---NqNl6FRZtoRUn5bW--
+-- 
+Hugo van der Kooij; Oranje Nassaustraat 16; 3155 VJ  Maasland
+hvdkooij@caiw.nl		 http://www.caiw.nl/~hvdkooij
+-------------------------------------------------------------
+Use of any of my email addresses for unsollicited (commercial)
+    email is a clear intrusion of my privacy and illegal!
