@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 04A6B482E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Nov 2002 19:33:13 -0700 (MST)
-Date: Sun, 17 Nov 2002 02:32:58 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: randolph@tausq.org, <bzeeb-lists@lists.zabbadoz.net>,
-	<carlos@baldric.uwo.ca>, <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] [2.5] next issues ...
-In-Reply-To: <200211160037.gAG0bZRa015952@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.44.0211170215340.6003-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: "Adam J. Richter" <adam@yggdrasil.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Patch: linux-2.5.47/drivers/parisc/ - pci_dma_supported had side effect 
+In-Reply-To: Message from "Adam J. Richter" <adam@yggdrasil.com>
+   of "Sat, 16 Nov 2002 05:49:41 PST." <20021116054941.A3448@baldur.yggdrasil.com>
+References: <20021116054941.A3448@baldur.yggdrasil.com> 
+Date: Sat, 16 Nov 2002 23:20:25 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021117062025.A10E8482E@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,35 +19,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 15 Nov 2002, John David Anglin wrote:
+"Adam J. Richter" wrote:
+> 	pci_dma_supported is not supposed to have any side effects,
+> but the parisc versions set pci_dev->dma_mask, which is not the
+> intended behavior.
 
-> > Amen! :-) hopefully we are going to start gcc-3.2 transition fairly
-> > soon.
->
-> Don't wait too long!  3.3 may have slipped a bit but the schedule
-> still shows Dec. 15 2002 as the release date.
+That's my bad. At some point in time, it was in fact correct.
+Thanks for catching this.
 
-I'm not very familiar with the pa-risc internals, but I wonder whether it
-is probably a better idea to wait for 3.3?. I've followed the parisc-linux
-and the gcc-mailing lists and IMHO gcc-3.3 provides lots of
-improvements, not just for Intel, but also for PA-RISC. E.g. a new
-scheduler which provides better optimizations (for PA-RISC and lots of
-bugfixes are in 3.3. More over the C++ ABI will be changed again, so a
-couple  of packages would have to be rebuild AGAIN if we stick to 3.2 (if
-not the 3.2-ABI compatibility is used). The people at gcc are just about
-to release 3.2.1 and from then they're just focussing on the 3.3-release.
-AFAIK they are also to resolve some gcc-hpux/linux issues at the moment,
-and I doubt they are going to be in gcc-3.2.1. You probably know much
-better than me, but that's just my 2 cent.
+> A driver could call check pci_dma_supported for a
+> variety of values in any particular order without expected the dma
+> mask to have actually been changed.
 
-I know, it's not the usual debian way (using well tested and very stable
-packages), but Linux/PA-RISC is improving/has so much possibilities
-to improve, and one major package that contributes to this alot is gcc.
+I think pci_dma_supported() is obsoleted by pci_set_dma_mask().
+Maybe they mean/do slightly different things.
+But most of the drivers I've looked at only use pci_set_dma_mask().
 
+> To change the DMA mask, drivers
+> call pci_set_dma_mask (in drivers/pci/pci.c), which, by the way, does
+> call machine-specific pci_dma_supported routine to ensure that the
+> desired mask is acceptable.
 
-greetings max
+Yes. I can feel a bit better since I suggested davem use a macro
+(pci_set_dma_mask()) to set the dma_mask field instead of just
+having drivers set the dma_mask field themselves.
 
-PS: I offered to help to track down the problems with Voodoo3 and C240,
-but right now I'm really busy (e.g. moving to a new home over the
-weekend). Hopefully I'll finnaly have a DSL flatline at home, so I can
-work from home ;)
+> 	The following patch fixes the problem.  It also has the
+> benefit of eliminating some direct writing to pci_dev->dma_mask,
+> which is what caused me to notice this problem.
+> 
+> 	I do not have any parisc machines or normally build parisc
+> kernels.  So, I have not even verified that this change compiles.
+> 
+> 	If somebody could give these deletions a whirl and then send
+> them by whatever the preferred process is to get them into the
+> mainline kernel, I would appreciate it.  If there is more that I
+> should do to facilitate this, please let me know.
+
+I'll take care it. Thanks!
+
+grant
