@@ -1,16 +1,18 @@
-From: Keith Owens <kaos@ocs.com.au>
-Subject: Re: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available
-Date: Sun, 23 Mar 2003 14:41:33 +1100
-Message-ID: <8942.1048390893__12080.7555890226$1416622320$gmane$org@ocs3.intra.ocs.com.au>
-References: <200303230337.h2N3bhAC026836@hiauly1.hia.nrc.ca>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [parisc-linux] Re: Linux 2.5.65-ac2 (drivers/char/genrtc.c compile failure on i386)
+Date: Sun, 23 Mar 2003 11:58:37 +0100 (MET)
+Message-ID: <Pine.GSO.4.21.0303231155380.9116-100000__23451.8010671765$1416622320$gmane$org@vervain.sonytel.be>
+References: <20030322202201.GA32386@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: willy@debian.org, linux-kernel@vger.kernel.org,
-	parisc-linux@parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Alan Cox <alan@redhat.com>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>
+To: Marco Roeland <marco.roeland@xs4all.nl>,
+	Duncan Sands <baldrick@wanadoo.fr>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-reply-to: Your message of "Sat, 22 Mar 2003 22:37:43 CDT."
-             <200303230337.h2N3bhAC026836@hiauly1.hia.nrc.ca>
+In-Reply-To: <20030322202201.GA32386@localhost>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,27 +23,125 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 22 Mar 2003 22:37:43 -0500 (EST), 
-"John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
->> -#if defined(ARCH_ia64) || defined(ARCH_ppc64)
->> +#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa64)
->>  #define HAS_FUNCTION_DESCRIPTORS
->>  #endif
->
->The 32-bit hppa port also has function descriptors.
+On Sat, 22 Mar 2003, Marco Roeland wrote:
+> On Friday March 21st 2003 at 12:41 Alan Cox wrote:
+> > Linux 2.5.65-ac2
+> >       ...
+> > o	M68K rtc updates				(Geert Uytterhoeven)
+> 
+> The file drivers/char/genrtc.c was updated, but include/arch-generic/rtc.h
+> which is used on i386 wasn't (yet?), leading to compile failures on i386:
+> (the missing define is only the first symptom)
 
-They keep coming out of the woodwork :(  Any more architectures using
-function descriptors?  Just add them to the list below.
+Oops, until last Friday I didn't even know genrtc was used on ia32...
 
-Index: 24.3/include/util.h
---- 24.3/include/util.h Sun, 23 Mar 2003 13:34:28 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
-+++ 24.3(w)/include/util.h Sun, 23 Mar 2003 14:40:06 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
-@@ -96,7 +96,7 @@ void gzf_close(int fd);
- #define SYMPREFIX "__insmod_";
- extern const char symprefix[10];	/* Must be sizeof(SYMPREFIX), including nul */
+Anyway, can you please give this a try? I also updated PPC and PA-RISC, the
+other two known users of genrtc I forgot to update.
+
+--- linux-2.5.x/include/asm-generic/rtc.h.orig	Mon Feb 10 21:59:25 2003
++++ linux-2.5.x/include/asm-generic/rtc.h	Sun Mar 23 11:47:24 2003
+@@ -22,9 +22,8 @@
+ #define RTC_AIE 0x20		/* alarm interrupt enable */
+ #define RTC_UIE 0x10		/* update-finished interrupt enable */
  
--#if defined(ARCH_ia64) || defined(ARCH_ppc64)
-+#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa) || defined(ARCH_hppa64)
- #define HAS_FUNCTION_DESCRIPTORS
- #endif
+-extern void gen_rtc_interrupt(unsigned long);
+-
+ /* some dummy definitions */
++#define RTC_BATT_BAD 0x100	/* battery bad */
+ #define RTC_SQWE 0x08		/* enable square-wave output */
+ #define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
+ #define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
+@@ -43,7 +42,7 @@
+ 	return uip;
+ }
  
+-static inline void get_rtc_time(struct rtc_time *time)
++static inline unsigned int get_rtc_time(struct rtc_time *time)
+ {
+ 	unsigned long uip_watchdog = jiffies;
+ 	unsigned char ctrl;
+@@ -108,6 +107,8 @@
+ 		time->tm_year += 100;
+ 
+ 	time->tm_mon--;
++
++	return RTC_24H;
+ }
+ 
+ /* Set the current date and time in the real time clock. */
+--- linux-2.5.x/include/asm-parisc/rtc.h.orig	Wed Aug 28 08:33:46 2002
++++ linux-2.5.x/include/asm-parisc/rtc.h	Sun Mar 23 11:52:15 2003
+@@ -24,7 +24,7 @@
+ #define RTC_AIE 0x20		/* alarm interrupt enable */
+ #define RTC_UIE 0x10		/* update-finished interrupt enable */
+ 
+-extern void gen_rtc_interrupt(unsigned long);
++#define RTC_BATT_BAD 0x100	/* battery bad */
+ 
+ /* some dummy definitions */
+ #define RTC_SQWE 0x08		/* enable square-wave output */
+@@ -44,14 +44,14 @@
+ 	{ 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
+ };
+ 
+-static int get_rtc_time(struct rtc_time *wtime)
++static inline unsigned int get_rtc_time(struct rtc_time *wtime)
+ {
+ 	struct pdc_tod tod_data;
+ 	long int days, rem, y;
+ 	const unsigned short int *ip;
+ 
+ 	if(pdc_tod_read(&tod_data) < 0)
+-		return -1;
++		return RTC_24H | RTC_BATT_BAD;
+ 
+ 	
+ 	// most of the remainder of this function is:
+@@ -93,7 +93,7 @@
+ 	wtime->tm_mon = y;
+ 	wtime->tm_mday = days + 1;
+ 	
+-	return 0;
++	return RTC_24H;
+ }
+ 
+ static int set_rtc_time(struct rtc_time *wtime)
+--- linux-2.5.x/include/asm-ppc/rtc.h.orig	Tue Feb 18 10:08:44 2003
++++ linux-2.5.x/include/asm-ppc/rtc.h	Sun Mar 23 11:47:31 2003
+@@ -35,15 +35,14 @@
+ #define RTC_AIE 0x20		/* alarm interrupt enable */
+ #define RTC_UIE 0x10		/* update-finished interrupt enable */
+ 
+-extern void gen_rtc_interrupt(unsigned long);
+-
+ /* some dummy definitions */
++#define RTC_BATT_BAD 0x100	/* battery bad */
+ #define RTC_SQWE 0x08		/* enable square-wave output */
+ #define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
+ #define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
+ #define RTC_DST_EN 0x01	        /* auto switch DST - works f. USA only */
+ 
+-static inline void get_rtc_time(struct rtc_time *time)
++static inline unsigned int get_rtc_time(struct rtc_time *time)
+ {
+ 	if (ppc_md.get_rtc_time) {
+ 		unsigned long nowtime;
+@@ -55,6 +54,7 @@
+ 		time->tm_year -= 1900;
+ 		time->tm_mon -= 1; /* Make sure userland has a 0-based month */
+ 	}
++	return RTC_24H;
+ }
+ 
+ /* Set the current date and time in the real time clock. */
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
