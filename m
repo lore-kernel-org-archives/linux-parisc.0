@@ -1,60 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 87885482A
-	for <parisc-linux@parisc-linux.org>; Sat, 19 May 2001 21:15:45 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9F548482A
+	for <parisc-linux@parisc-linux.org>; Sat, 19 May 2001 22:23:24 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 151JgM-0007ef-00; Sun, 20 May 2001 04:15:02 +0100
-Date: Sun, 20 May 2001 04:15:02 +0100
+	id 151Kjq-0000Wh-00
+	for parisc-linux@parisc-linux.org; Sun, 20 May 2001 05:22:42 +0100
+Date: Sun, 20 May 2001 05:22:42 +0100
 From: Matthew Wilcox <matthew@wil.cx>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] glibc 2.2.3 make check status
-Message-ID: <20010520041502.K23718@parcelfarce.linux.theplanet.co.uk>
-References: <20010505033457.Q32445@parcelfarce.linux.theplanet.co.uk> <20010508205244.P4917@parcelfarce.linux.theplanet.co.uk>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010520052242.L23718@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010508205244.P4917@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Tue, May 08, 2001 at 08:52:44PM +0100
 Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] elf/resolvfail
 List-ID: <linux-parisc.vger.kernel.org>
 
-The list is getting shorter, and I believe we don't have any regressions
-versus glibc 2.2.1 at this point.  Don't install the glibc 2.2.3 we have
-in CVS, by the way.  It is missing necessary patches which are errata to
-glibc 2.2.3.  These patches are not installed in our CVS tree to reduce
-the amount of work when generating a new diff for the debian package.
+Here's what resolvfail does:
 
-I'd really appreciate some help with either of the problems in the
-Misc section.
+static const char obj[] = "testobj1.so";
 
-Floating-point
---------------
+int main (void) {
+  void *d = dlopen (obj, RTLD_LAZY);
+  int n;
 
- * Some of the math/ tests fail in the same way they did with glibc-2.2.1.
- * stdlib/strtold fails.  This is due to our long double being 64 bit and
-   glibc thinks its 128 bit.  Bug #119
- * misc/tst-efgcvt fails.  (Maybe another long double problem?)
+  if (d == NULL) {
+      printf ("cannot load %s: %s\n", obj, dlerror ());
+      return 1;
+  }
+[...]
 
-Threads
--------
+and it outputs:
 
- * linuxthreads/ex15 fails sometimes.  I'm working on it.  (probable
- kernel bug)
+cannot load testobj1.so: /home/willy/cvs/glibc-C/elf/testobj1.so: undefined symbol: foo
 
-Dynamic Loading
----------------
+nm testobj1.so:
+                 U foo
 
- * dlfcn/default fails.  Not sure whether the test is making an
-   unwarranted assumption here or whether we have a bug.
- * The following tests in the elf/ directory fail:
-	resolvfail constload1 vismain neededtest neededtest2
-	neededtest3 neededtest4 lateglobal
-   Not investigated.  Probably most of these are the same bug.
-
-Misc
-----
-
- * posix/globtest fails.  Haven't investigated.
- * gmon/tst-sprofil fails.  Looks like it needs to be ported to Linux/hppa.
+but i would have throught that RTLD_LAZY would mean that it didn't have to
+resolve foo immediately, only when it was used.  Can someone explain what's
+supposed to happen here?
 
 -- 
 Revolutions do not require corporate support.
