@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ab17c257.com (206.Red-213-96-124.pooles.rima-tde.net [213.96.124.206])
-	by dsl2.external.hp.com (Postfix) with SMTP id 511D14830
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Sep 2003 06:37:03 -0600 (MDT)
-From: "ELGORDO LOTTRY COMMISSION" <arroyomollino@whipmail.com>
-Reply-To: felipecurtin@whipmail.com
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D3A6D4830
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Sep 2003 09:53:40 -0600 (MDT)
+Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
+	id 19tqyq-0000kF-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 01 Sep 2003 11:52:36 -0400
+Date: Mon, 1 Sep 2003 11:52:36 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 1 Sep 2003 14:37:15 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Message-Id: <20030901123703.511D14830@dsl2.external.hp.com>
-Subject: [parisc-linux] AWARD WINNING NOTIFICATION
+Message-ID: <20030901155235.GD19107@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [Status udate] hppa glibc 2.3.2 (Builders wanted!)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,20 +23,169 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-LOTTERY LA PRIMITIVA=2E C=2FBUSMAN EL BUENO=2C137 MADRID - ESPANA
-TEL=3A +34- 645666196 AND FAX +34-916 640 223
+parisc,
 
-FROM=3A THE DESK OF THE PROMOTIONS MANAGER=2C 
-INTERNATIONAL PROMOTIONS=2FPRIZE AWARD DEPARTMENT=2C
-REF=3A LP=2F26510460037=2F07 BATCH=3A 26=2F00319=2FIPD=2E
-ATTENTION=3A
-=28CONGRATULATION=29
+Thanks to the help of many people (lamont, randolph, james, willy,
+dave, grant ... and more) I've gotten glibc 2.3.2 into a working state. 
+This set of patches represents our current state. 
 
-=22AWARD NOTIFICATION FINAL NOTICE=2E=22
+There are a number of failures right now, and I'm trying to narrow them
+down to into categories before release, I would be much appreciated to
+have other people build glibc and report back their list of errors.
 
+===============
+    WARNING
+===============
 
-We are pleased to inform you of the announcement=2C of winners of the LOTTERY PRIMITIVA SWEEPSTAKES=2FINTERNATIONAL PROGRAMS held on 26 AUGUST=2C2003=2E Your name is attached to ticket number 008-05117963-198=2C with serial number 99375 drew the lucky numbers 30-33 -34-39-36-48=2C and consequently won the lottery in the 3rd category=2E You have therefore been approved for a lump sum pay out of EUROS 689=2C522=2C34 THOUSAND in cash credited to file No=3ALP=2F26510460037=2F07=2EThis is from total prize money of EUROS 60=2C200=2C000=2E00 shared among the twenty international winners in this category=2E All participants were selected through a computer ballot system drawn form 25=2C000 names from Australia=2C New Zealand=2C America=2C Europe=2C North America and Asia as part of International Promotions Program=2C which is conducted annually=2E CONGRATULATIONS!!! Your fund is now insured to your name=2E Due to the mix up of some numbers and names=2C we ask that you keep this award strictly from public notice until your claim has been processed and your money remitted to your account=2E This is part of our security protocol to avoid double claiming or unscrupulous acts by participants of this program=2E We hope with a part of you prize=2C you will participate in our end of year high stakes Euros1=2E1 billion International Lottery=2E To begin your claim=2C please contact your claims agent=2C FELIPE CURTIN FOREIGN OPERATION MANAGER=2C Email=3B =28felipecurtin=40whipmail=2Ecom =3Cmailto=3Afelipecurtin=40whipmail=2Ecom=3E=29
-For due processing and remittance of your prize money to a designated account with our bankers=2E Remember=2C all prize money must be claimed not later than 25 SEPTEMBER=2C 2003=2E After this date=2C all funds will be returned as unclaimed=2E NOTE=3A In order to avoid unnecessary delays and complications=2C please remember to quote your reference and batch numbers in every one of your correspondences with your agent=2E Furthermore=2C should there be any change of your address=2C do inform your claims agent as soon as possible=2E Congratulations again from all our staff and thank you for being part of our promotions programm=2E 
-=28 CONGRATULATION=29
-BEST REGARDS
-DR CARLOS F=2E LOPEZ
+This glibc should NOT be installed on any system you value, there are
+still some suspect high priority problems. I am merely looking for
+people to build and run the testsuite on their setup. Thanks :)
+
+===============
+    WARNING
+===============
+
+The recipe:
+
+0. Make some room!
+
+mkdir glibc-cvs
+cd glibc-cvs
+
+1. Get fresh source and store it for a rainy day.
+
+cvs -z 9 -d :pserver:anoncvs@sources.redhat.com:/cvs/glibc login
+{enter "anoncvs" as the password}
+cvs -z 9 -d :pserver:anoncvs@sources.redhat.com:/cvs/glibc co libc
+
+tar cvf libc.tar libc
+
+2. Download the newest patches (updated this morning).
+
+wget http://www.baldric.uwo.ca/~carlos/glibc-2.3.2-patches.tar.gz
+
+3. Download some scripts.
+
+wget http://www.baldric.uwo.ca/~carlos/glibc-build.sh
+wget http://www.baldric.uwo.ca/~carlos/glibc-upnpatch.sh
+
+4. Run the scripts in this order.
+
+./glibc-upnpatch.sh			(Look for rejects)
+./glibc-build.sh hppa			(Build it!)
+
+5. The latter script will output the error from the 'make -k check'
+   phase, please report those back to the list.
+
+---
+
+Current errors and their status:
+
+make[2]: *** [/glibc-cvs/build-hppa/iconvdata/bug-iconv3.out] Error 1
+
+	Priority: Unknown.
+
+	o Unknown, problem with our libc_lock functions, this test
+	  starts up the iconv code in a non-threaded environment, then
+	  dlopen's libpthread to make it reentrant and then starts the
+	  iconv code back up again to see if the libc_lock functions
+	  work... it deadlocks. 
+
+make[1]: *** [iconvdata/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/math/test-fenv.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/math/test-float.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/math/test-double.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/math/test-ifloat.out] Error 1
+
+	Priority: Low.
+
+	o We've had these for ever. Printf problems?
+
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/stdlib/tst-strtod.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/stdlib/bug-strtod.out] Error 1
+
+	Priority: Medium.
+
+	o Recent regeressions in 2.3.2, reasons unknown, Randolph had
+	  given them a look but it might be mmap related, not tested on
+	  a kernel with jejb's fix. Going to try that today.
+
+make[1]: *** [stdlib/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/libio/tst-mmap-eofsync.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/libio/tst-mmap-fflushsync.out] Error 1
+
+	Priority: High.
+
+	o Fixed by jejb's recent patch to 2.6 and backport to 2.4
+	  (Thanks!). Actually we know if fixes one of these, have yet to
+	  see if it fixes both.
+
+make[1]: *** [libio/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/dlfcn/tststatic.out] Error 139
+
+	Priority: High.
+
+	o Static object dlopening RTLD_LAZY and tryint to call the
+	  function descriptor stub put in place by RTLD_LAZY. This is a
+	  suspect PLABEL problem with the dynamic loader, needs more analysis.
+	  Perhaps randolph/dave's patches to binutils for converting
+	  relocations might be helpfull here since the dlopen might
+	  expect that r19 should be setup for the jump to the stub?
+
+make[1]: *** [dlfcn/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/posix/tst-regex.out] Error 139
+
+	Priority: High.
+
+	o Regresssion. I think it's somehow related to restoring r19
+	  after a signal handler. Need to think more about the
+	  restoration of r19 across different syscalls.
+
+make[2]: [/glibc-cvs/build-hppa/posix/annexc.out] Error 1 (ignored)
+
+	Ignored.
+
+make[1]: *** [posix/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/linuxthreads/tst-cancel2.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/linuxthreads/tst-popen.out] Error 1
+make[2]: *** [/glibc-cvs/build-hppa/linuxthreads/tst-popen2.out] Error 1
+
+	Priority: High.
+
+	o Regresssions. Reasons unkown. Children die of SIGSEGV, related
+	  to restoring r19 and signal handlers?
+
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/rt/tst-timer.out] Error 139
+
+	Priority: High.
+
+	o Regression. Dies after returning from rt_sigsuspend and we
+	  restore r19, perhaps we shouldn't?
+
+make[1]: *** [rt/tests] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/elf/neededtest.out] Error 14
+make[2]: *** [/glibc-cvs/build-hppa/elf/neededtest2.out] Error 14
+make[2]: *** [/glibc-cvs/build-hppa/elf/neededtest3.out] Error 17
+make[2]: *** [/glibc-cvs/build-hppa/elf/neededtest4.out] Error 2
+make[2]: *** [/glibc-cvs/build-hppa/elf/circleload1.out] Error 9
+
+	Priority: Low
+
+	o Been here since the start of time, related to the fact that we
+	  aren't properly initializing _r_debug in the dynamic loader.
+
+make[2]: *** [/glibc-cvs/build-hppa/elf/tst-tls13.out] Error 1
+
+	Priority: Low.
+
+	o We don't even have tls enabled let alone implemented? :)
+
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
+
+Thanks to everyone who helped me out!
+
+Cheers,
+Carlos.
