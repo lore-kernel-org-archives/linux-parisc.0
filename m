@@ -1,62 +1,78 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Wed, 17 Feb 1999 23:01:45 -0500 (EST)
-From: Alex deVries <adevries@redhat.com>
+Message-Id: <1.5.4.32.19990218035120.006a41ec@pop3.sprint.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Wed, 17 Feb 1999 22:51:20 -0500
 To: hppa-linux@puffingroup.com
-Message-ID: <Pine.LNX.3.96.990217225921.22132p-100000@devserv.devel.redhat.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [hppa-linux] Problems with egcs building...
-Resent-Message-ID: <"dkpNB2.0.qx6.75vos"@burrow.puffingroup.com>
+From: Tomasz Korycki <tkorycki@sprint.ca>
+Subject: Re: [hppa-linux] NIC
+Resent-Message-ID: <"F0_602.0.sw6.Pxuos"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+Try ifconfig lan0 x.y.z.a up - without netmask (let it assign std netmask).
+I seem to remember some troubles with 700 in that respect. Good Luck!
 
-So, I'm trying to fix egcs into building as a cross compiler so I can
-package it as an rpm and people can get developing reasonably easily.
+At 18:23 99-02-17 -0800, you wrote:
+>Ok, I know this is not totally relevant to linux itself but I need to get
+my 735/99 up and running before I can be of help :)
+>
+>Since a crash last saturday, I cannot get my network up anymore, when I do 
+>lanscan it gives me 
+>
+>path 2.0.2  address  0x080009629AC0 lu 0 State DOWN 
+>NameUnit lan0 State DOWN ID4 method ETHER number 52
+>
+>ioscan recognizes it, at boot it detects the hardware device but whenever I
+do ifconfig 10.0.0.5 netmask 255.255.255.0 up it comes back with no such device
+>
+>I have no clue what to do anymore, I tried different transceivers..nada...
+the lights on the transceiver are on so that seems to be ok.
+>
+>any hints ? Without that I will have to move a scsi disk out and put the
+mklinux image on it and stuff  whihc I don'mt mind doing but I rather have
+my network up and go from there
+>
+>thanks
+>
+>----------------------------------------------------------------------
+>To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
+>`unsubscribe' as the subject.
+>
+>
+(-) Tom Korycki
 
-So far I've overcome a few hurdles, and now am stuck on:
+This is my public key:
 
-rm -f tmplibgcc2.a
-for name in _muldi3 _divdi3 _moddi3 _udivdi3 _umoddi3 _negdi2 _lshrdi3
-_ashldi3 _ashrdi3 _ffsdi2 _udiv_w_sdiv _udivmoddi4 _cmpdi2 _ucmpdi2
-_floatdidf _floatdisf _fixunsdfsi _fixunssfsi _fixunsdfdi _fixdfdi
-_fixunssfdi _fixsfdi _fixxfdi _fixunsxfdi _floatdixf _fixunsxfsi _fixtfdi
-_fixunstfdi _floatditf __gcc_bcmp _varargs __dummy _eprintf _bb _shtab
-_clear_cache _trampoline __main _exit _ctors _pure; \
-do \
-  echo ${name}; \
-  /usr/src/redhat/BUILD/egcs-x-hppa-1.1.1/egcs-1.1.1/gcc/xgcc
--B/usr/src/redhat/BUILD/egcs-x-hppa-1.1.1/egcs-1.1.1/gcc/ -O2
--DCROSS_COMPILE -Dinhibit_libc -DIN_GCC    -g -O2 -I./include  -fPIC -g1
--DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED   -I. -I. -I./config -c -DL${name} \
-      ./libgcc2.c -o ${name}.o; \
-  if [ $? -eq 0 ] ; then true; else exit 1; fi; \
-  hppa1.1-hp-linux-ar rc tmplibgcc2.a ${name}.o; \
-  rm -f ${name}.o; \
-done
-_muldi3
-_divdi3
-/tmp/cc4aSGBg.s: Assembler messages:
-/tmp/cc4aSGBg.s:377: Error: Unknown opcode: `bits'
-/tmp/cc4aSGBg.s:378: Fatal error: Unknown opcode: `no. Shift down,skip
-add.'
-make[1]: *** [libgcc2.a] Error 1
-make[1]: Leaving directory
-`/usr/src/redhat/BUILD/egcs-x-hppa-1.1.1/egcs-1.1.1/gcc'
-make: *** [cross] Error 2
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: PGPfreeware 5.5.5 for non-commercial use <http://www.nai.com>
 
-
-Is this my version of binutils by chance?  I know it's running the
-hppa1.1-hp-linux version of ar.
-
-- Alex
-
--- 
-Alex deVries <puffin@redhat.com>     
-Red Hat Contrib Net maintainer          
-Ottawa, Canada  
-HPPA/Linux Porting Team
-
+mQGiBDU2NaQRBADxRUcXNcYDuQnQPmHTSY21WFR5kg8yckVlHtgVLFI6qt8qvKFi
+vLB926sYwcP/tdp6mFnzBbK3/O0IG6U6npzMYTDOdCY3vEo1iMyzCk27GNkUte1P
++K8r2fU7K7SvwMWU4LeRklXE9s2jPvp2UPs5ygr7DSHZI2Kd8/sYR/12WQCg/1kg
+SIzwFHEC7ihTgbrT1/vXD0cEAM15+oGZBJ7146pxSzrxUj1676g11o+jLTeEsEMR
+ieSl+7XMg5aPznWSnbrxnbepUSZraMKpj1d4RlP3NHnJA7vOwD9hxQsYg9ExFjqk
+b+bdaroGMnekh4U33Uud1rrDpIev6j5IX+6+sJmXR5mG52EzI9Aeae+lDxLJM8sH
+OAZEA/4w+NAEtC4NiaEuTxhHFhqPtmtY70BZeHBS9ckw3gtLwEHHG9o2MKuKXY9S
+JCIK0DUZ2Qu8xbmrw3bvQ8gKxLC/H9RRI5kDqeI7SupBGSpJXl3G3gp1HnYojr/A
+rnNjjaVjjuQJVcC1yj7eSuMLs0za46T7RbPqk02N4C6BDv0PO7QjVG9tYXN6IEtv
+cnlja2kgPHRrb3J5Y2tpQHNwcmludC5jYT6JAEsEEBECAAsFAjU2NaQECwMCAQAK
+CRDT2DCTp8a3GxBcAKD0jEqWQKcagwiOaYvvkD6pwIQQrwCgldA12j4Zcm9C9USN
+g9tg8th05uC5Ag0ENTY1pBAIAPZCV7cIfwgXcqK61qlC8wXo+VMROU+28W65Szgg
+2gGnVqMU6Y9AVfPQB8bLQ6mUrfdMZIZJ+AyDvWXpF9Sh01D49Vlf3HZSTz09jdvO
+meFXklnN/biudE/F/Ha8g8VHMGHOfMlm/xX5u/2RXscBqtNbno2gpXI61Brwv0YA
+WCvl9Ij9WE5J280gtJ3kkQc2azNsOA1FHQ98iLMcfFstjvbzySPAQ/ClWxiNjrtV
+jLhdONM0/XwXV0OjHRhs3jMhLLUq/zzhsSlAGBGNfISnCnLWhsQDGcgHKXrKlQzZ
+lp+r0ApQmwJG0wg9ZqRdQZ+cfL2JSyIZJrqrol7DVekyCzsAAgIIAILVkIuXNQnl
+E7xNV8y+lnwzIeaSVKfsjDUAvuJUPtnmu1D2uUHv/rPb2w1U4SmRo55H2R2nA7qv
+EM+aispoBRm4wQsf65bVvXuZZK5QO0Mhw+969PhakYyyKOqO1bBCRibl7K0qzxsW
+0Sk9hH1jYER8YOE8pUI1Gllz/wixQ6RMl5qROrNGkQfJFxZQSyEC9OvWoO7GUbzV
+Z8+nIFVl79nHelWDFI4/xAvR8GgmhOso/ai/Ysudvv4fWAnnkGw+ls6wmb15Sejz
+6RGYBFVV0cI6T6EQGnSLvQQ+dCvrCQUJuHUmOj360BwZVea/zG6TIsG1+oEt1Hgx
+g8G7pT13O6qJAEYEGBECAAYFAjU2NaQACgkQ09gwk6fGtxvQdwCgpBVYV2CPPTye
+Y4Wxz6L2agWn66wAoLcRvrKG0iE/wtotQqO7QKN5VsLI
+=y2e5
+-----END PGP PUBLIC KEY BLOCK-----
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
