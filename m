@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DC5A6482A
-	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 13:09:31 -0700 (MST)
-Date: Tue, 22 Jan 2002 19:59:09 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Trouble installing 0.9.3 on 735/99
-Message-ID: <20020122195909.GD25314@sleepie.demon.co.uk>
-References: <A8566E157F5FD411BCFB00D0B7816D51C72CD9@ntexchange.cat.csiro.au> <20020122141253.GB25314@sleepie.demon.co.uk> <20020122120548.M19637@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020122120548.M19637@systemhalted>
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6A378482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 15:35:28 -0700 (MST)
+Received: from smtp2.fc.hp.com (smtp2.fc.hp.com [15.15.136.253])
+	by atlrel6.hp.com (Postfix) with ESMTP id A2318601411
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 17:35:27 -0500 (EST)
+Received: from ob500.cup.hp.com (dhcp66.cup.hp.com [15.8.80.66])
+	by smtp2.fc.hp.com (Postfix) with ESMTP id 31DBD37EDF
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 15:35:27 -0700 (MST)
+Received: from cup.hp.com (localhost [127.0.0.1])
+	by ob500.cup.hp.com (Postfix) with ESMTP id 0793E48DD
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 14:35:13 -0800 (PST)
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 22 Jan 2002 14:35:12 -0800
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <20020122223513.0793E48DD@ob500.cup.hp.com>
+Subject: [parisc-linux] [Linux-ia64] heads-up: don't treat __FUNCTION__ as a constant (fwd)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +27,64 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 22, 2002 at 12:05:48PM -0500, Carlos O'Donell Jr. wrote:
-> I can't get any of the 715/50's to run stably with the newer
-> SCSI driver. And after testing I can almost pinpoint with 95%
-> accuracy tha it's the new driver.
+This is worth repeating one more time.
+Many of you are probably aware of this since parisc port has
+already visited the __FUNCTION__ issue once before.
 
-Have you tried hacking the driver to disable tagged commands, or at
-least to limit the maximum tagged cmds per device to something small?
+grant
 
-Richard
+------- Forwarded Message
+
+From: David Mosberger <davidm@hpl.hp.com>
+To: linux-ia64@linuxia64.org
+X-URL: http://www.hpl.hp.com/personal/David_Mosberger/
+Reply-To: davidm@hpl.hp.com
+Subject: [Linux-ia64] heads-up: don't treat __FUNCTION__ as a constant
+
+A heads-up about a change that's forthcoming in gcc3.1: the
+__FUNCTION__ macro should no longer be treated as returning a constant
+string literal.  gcc3.1 will still allow it, but issue an ugly warning
+message.  In later releases, the feature will go away completely.
+
+The reason for deprecating this feature is that ANSI C pretty much
+disallows it: string literal concatenation is required to be done in a
+phase *before* the name of the current function is known.  The
+solution is to change something of the form:
+
+	printk(__FUNCTION__": you lose\n");
+
+into something like this:
+
+	printk("%s: you lose\n", __FUNCTION__);
+
+I did a quick grep over the ia64 code and found the following files
+are using __FUNCTION__:
+
+arch/ia64/kernel/efi.c
+arch/ia64/kernel/palinfo.c
+arch/ia64/kernel/perfmon.c
+arch/ia64/kernel/smp.c
+arch/ia64/kernel/unaligned.c
+arch/ia64/sn/io/pci.c
+arch/ia64/sn/io/pci_bus_cvlink.c
+arch/ia64/sn/io/pciba.c
+arch/ia64/sn/io/pciio.c
+arch/ia64/sn/io/sn1/pcibr.c
+arch/ia64/sn/io/sn2/ml_SN_intr.c
+arch/ia64/sn/io/sn2/pcibr/pcibr_dvr.c
+
+It might be a good idea to clean these up as you're working on it.
+It's not urgent, of course, but I wanted to make you aware of this
+issue so we can at least avoid writing new code using this construct.
+
+Thanks,
+
+	--david
+
+_______________________________________________
+Linux-IA64 mailing list
+Linux-IA64@linuxia64.org
+http://lists.linuxia64.org/lists/listinfo/linux-ia64
+
+
+------- End of Forwarded Message
