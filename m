@@ -1,15 +1,16 @@
-From: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] Improper use of __xchg?
-Date: Sat, 19 Jun 2004 20:40:45 +0100
-Message-ID: <20040619194045.GP20511@parcelfarce.linux.theplanet.co.uk>
-References: <20040619192039.GA8368@baldric.uwo.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux]      Heads up, 2.6.7-pa0 FTBS with 64-bit toolchain
+Date: Sat, 19 Jun 2004 20:29:01 -0400 (EDT)
+Message-ID: <200406200029.i5K0T1re007012@hiauly1.hia.nrc.ca>
+References: <40D4C53E.5000309@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040619192039.GA8368@baldric.uwo.ca>
+In-Reply-To: <40D4C53E.5000309@tiscali.be> from "Joel Soete" at Jun 19,
+	2004 10:59:10 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,64 +21,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jun 19, 2004 at 03:20:39PM -0400, Carlos O'Donell wrote:
-> Someone with the notion of said functions semantics might be willing to
-> produce the correct fix please? :)
+> regarding the pb of pointer comparison with gcc-3.3 and 3.4 64bits (sorry I didn't find back the gcc bug report reference) which 
+> iirc jda re-qualified it in a binutils pb. (That why of my interest in binutils 2.15 :) to see if I can help.)
 
-"gcc is buggy" ;-)
+I don't know of any hppa64 bugs involving pointer comparison.  The cause
+of the binutils bug is known:
 
-> 64-bit kernel build (turned off loop.ko compilation)
-> 
-> carlos@firin:/mnt/flaire/src/linux-2.6$ make
-> make[1]: `arch/parisc/kernel/asm-offsets.s' is up to date.
->   CHK     include/asm-parisc/offsets.h
->   CHK     include/linux/compile.h
->   GEN     .version
->   CHK     include/linux/compile.h
->   UPD     include/linux/compile.h
->   CC      init/version.o
->   LD      init/built-in.o
->   LD      .tmp_vmlinux1
-> kernel/built-in.o(.text.put_files_struct+0x118): In function
-> `put_files_struct':
-> : undefined reference to `__xchg_called_with_bad_pointer'
-> make: *** [.tmp_vmlinux1] Error 1
-> carlos@firin:/mnt/flaire/src/linux-2.6$ 
+<http://sources.redhat.com/ml/binutils/2004-06/msg00211.html>.
 
-It would be useful to confirm that the xchg() that's broken is the one in
-close_files().  If it is, here's what's happening:
+Until this is fixed, don't use cvs binutils from the trunk after
+2004-05-11 17:08:32.
 
-struct files_struct * files;
-struct file * file = xchg(&files->fd[i], NULL);
+> Kyle McMartin wrote:
+> > On Fri, Jun 18, 2004 at 07:17:14PM -0600, Grant Grundler wrote:
+> > 
+> >>Should I be testing 64-bit kernels built with this toolchain
+> >>or stick with my trusty gcc 3.0.4-hppa64 handmade debs?
+> >>
+> > 
+> > There's a bug in hppa64 gcc sometime after 3.0.4 (it shows up in the
+> > gcc-3.3-hppa64 and gcc-3.4-hppa64 debs) that causes builds to fail in
+> > (at least) loop.c.
+> > 
+> > http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14782 is the bug Randolph
+> > filed.
 
-The xchg() expands through:
+I believe that I understand the cause of this bug and have started
+testing a fix.
 
-#define xchg(ptr,x) \
-	((__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr))))
-
-The third argument to __xchg() is therefore:
-
-	sizeof(*(&files->fd[i]))
-ie
-	sizeof(file->fd[i])
-
-struct files_struct {
-        struct file ** fd;      /* current fd array */
-}
-
-So sizeof(file->fd[i]) should be sizeof(struct file *).  If that's not 8,
-something is indeed broken and this trick has saved you from booting a
-broken kernel ;-)
-
-Care to produce a test-case?
-
+Dave
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
