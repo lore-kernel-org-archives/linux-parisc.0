@@ -1,16 +1,11 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D693487C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 22:38:14 -0700 (MST)
-Date: Mon, 17 Mar 2003 21:34:40 -0800
-From: Randolph Chung <tausq@debian.org>
-To: gcc-gnats@gcc.gnu.org, debian-gcc@lists.debian.org
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: [3.3 regression] [parisc-linux] ICE when building lesstif1 at -O1/O2
-Message-ID: <20030318053440.GO26139@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+Date: Mon, 17 Mar 2003 23:22:33 -0700
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030318062233.GA21487@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] FWD: PCI Patches update
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,102 +17,110 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Submitter-Id:	net
->Originator:	Randolph Chung <tausq@debian.org>
->Organization:	Debian
->Confidential:	no
->Synopsis:	[3.3 regression] [parisc-linux] ICE when building lesstif1 at -O1/O2
->Severity:	serious
->Priority:	medium
->Category:	optimization
->Class:		ice-on-legal-code
->Release:	3.3 20030309 (Debian prerelease) (Debian testing/unstable)
->Environment:
-System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2003 parisc64 unknown unknown GNU/Linux
-Architecture: parisc64
+Hi all,
 
-	<machine, os, target, libraries (multiple lines)>
-host: hppa-unknown-linux-gnu
-build: hppa-unknown-linux-gnu
-target: hppa-unknown-linux-gnu
-configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
->Description:
-Test program below is extracted from lesstif1 (v0.93.36). 
-Compiles fine without -O, but with -O1 or -O2 it aborts. The code 
-compiles fine with gcc-3.2.3
+I got email from Ivan Kokshaysky describing recent changes in 2.5 PCI
+support and realized I should document one of the outstanding
+"bugs" with PCI resource management under PARISC.
 
-bash-2.05b# gcc -O1 -v -c bug.c
-Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3/specs
-Configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
-Thread model: posix
-gcc version 3.3 20030309 (Debian prerelease)
- /usr/lib/gcc-lib/hppa-linux/3.3/cc1 -quiet -v -D__GNUC__=3 -D__GNUC_MINOR__=3 -D__GNUC_PATCHLEVEL__=0 bug.c -quiet -dumpbase bug.c -auxbase bug -O1 -version -o /tmp/ccrpBE2v.s
-GNU C version 3.3 20030309 (Debian prerelease) (hppa-linux)
-        compiled by GNU C version 3.3 20030309 (Debian prerelease).
-GGC heuristics: --param ggc-min-expand=30 --param ggc-min-heapsize=4096
-ignoring nonexistent directory "/usr/hppa-linux/include"
-#include "..." search starts here:
-#include <...> search starts here:
- /usr/local/include
- /usr/lib/gcc-lib/hppa-linux/3.3/include
- /usr/include
-End of search list.
-bug.c: In function `get_modifier_mapping':
-bug.c:44: internal compiler error: Aborted
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+enjoy!
+grant
 
+---- Forwarded message from Grant Grundler <grundler@dsl2.external.hp.com> -----
+On Mon, Mar 17, 2003 at 11:33:12PM +0300, Ivan Kokshaysky wrote:
+> - windows overlapping with something else.
 
->How-To-Repeat:
-	gcc -O1 -c bug.c
+On parisc, this is one of the problems I've dodged.
+I'm not looking for a solution right now - but if you know the
+obvious answer, please tell me.  I just want to outline the problem.
 
-------- 8< bug.c 8<------
-typedef struct {
-	int max_keypermod;
-} XModifierKeymap;
+The PCI controller (lba_pci.c) on newer PARISC machines can support
+two MMIO ranges. The "Distributed" range is a "fixed" size and base
+(1/8th of whatever the parent IO Controller (SBA) has).  The second
+"Directed" Range can use any address otherwise not assigned to PCI
+devices and directed to any PCI controller under the same SBA.
 
-#define XK_Meta_L               0xFFE7  /* Left meta */
-#define XK_Meta_R               0xFFE8  /* Right meta */
-#define XK_Alt_L                0xFFE9  /* Left alt */
-#define XK_Alt_R                0xFFEA  /* Right alt */
-#define Mod1Mask            (1<<3)
+PARISC lba_pci.c currently only advertises Distributed ranges
+and pretends Directed ranges don't exist. Things still work,
+but the resource accounting in /proc/iomem is inaccurate.
 
-unsigned int blah(void);
+Since Directed Ranges have precedence in the MMIO address routing, they
+can overlap with Distributed ranges. Worse, The SBA can assign "duplicate"
+MMIO address ranges by routing "unused" address space to a Directed range
+under a different PCI controller.  I think both are very ugly scenarios
+and will need alot of code to detect/handle properly.
 
-static int
-get_modifier_mapping(void *Dsp)
-{
-    XModifierKeymap *mk;
-    unsigned int ModifierKeysym;
-    int ModifierSet, SetIndex, SetSize;
-    int AltMask = Mod1Mask;
+Each Distributed Range is typically only 16MB in size.
+Consumers of Directed Ranges are things like graphics cards or X.25
+cards which want 16MB or greater in a single BAR.
+Eg /proc/iomem on a C3000 running 2.4.20 says:
+f0000000-f0ffffff : LBA PCI LMMIO
+  f05d0000-f05d0000 : lcd_data
+  f05d0008-f05d0008 : lcd_cmd
+f1000000-f1ffffff : LBA PCI LMMIO
+f4000000-f4ffffff : LBA PCI LMMIO
+  f4007000-f4007fff : usb-ohci
+  f4008000-f40083ff : tulip
+  f4900000-f490007f : tulip
+  f4901000-f490107f : tulip
+  f4902000-f490207f : tulip
+  f4903000-f490307f : tulip
+f6000000-f6ffffff : LBA PCI LMMIO
+  f6000000-f600ffff : tg3
+fa100000-fa4fffff : stifb mmio
+fb000000-fbffffff : stifb
+...
 
-    SetSize = mk->max_keypermod;
+In the same machine (C3000) as the above, lspci says:
+...
+01:04.0 PCI bridge: Digital Equipment Corporation DECchip 21152 (rev 03)
+(prog-if 00 [Normal decode])
+        Flags: bus master, medium devsel, latency 255
+	Bus: primary=01, secondary=02, subordinate=02, sec-latency=255
+	I/O behind bridge: 00003000-00003fff
+	Memory behind bridge: f4900000-f49fffff
+	Prefetchable memory behind bridge: 00000000f0100000-00000000f0100000
+	Capabilities: <available only to root>
+...
+03:01.1 SCSI storage controller: LSI Logic / Symbios Logic 53c1010 66MHz Ultra3 SCSI Adapter (rev 01)
+	Subsystem: Hewlett-Packard Company: Unknown device 1340
+	Flags: bus master, 66Mhz, medium devsel, latency 255, IRQ 163
+	I/O ports at 28000 [size=256]
+	Memory at f6014000 (64-bit, non-prefetchable) [size=1K]
+	Memory at f6010000 (64-bit, non-prefetchable) [size=8K]
+	Expansion ROM at f6020000 [disabled] [size=128K]
+	Capabilities: <available only to root>
 
-    for (ModifierSet = 0; ModifierSet < 8; ModifierSet++)
-    {
-	for (SetIndex = 0; SetIndex < SetSize; SetIndex++)
-	{
-	    ModifierKeysym = blah();
-	    switch (ModifierKeysym)
-	    {
-	    case XK_Meta_L:
-	    case XK_Meta_R:
-		AltMask = 1L << ModifierSet;
-		goto bailout;
-	    case XK_Alt_L:
-	    case XK_Alt_R:
-		AltMask = 1L << ModifierSet;
-		goto bailout;
-	    }
-	}
-    }
+03:03.0 Ethernet controller: Broadcom Corporation NetXtreme BCM5703 Gigabit Ethernet (rev 02)
+        Subsystem: Broadcom Corporation NetXtreme BCM5703 1000Base-T
+	Flags: bus master, 66Mhz, medium devsel, latency 248, IRQ 160
+	Memory at f6000000 (64-bit, non-prefetchable) [size=64K]
+	Capabilities: <available only to root>
 
-  bailout:
-    return AltMask;
-}
-------- 8< bug.c 8<------
+04:02.0 Display controller: Hewlett-Packard Company A4977A Visualize EG
+(rev 03)
+        Flags: 66Mhz, medium devsel
+	Memory at fa000000 (32-bit, non-prefetchable) [size=32M]
+	Expansion ROM at f7000000 [disabled] [size=64K]
 
->Fix:
-	unknown
+[ I now see one additional bugs *sigh*: PCI-PCI bridge resources are
+not properly accounted (4-port Tulip) card. I'll have to fix that. ]
+
+sym53c8xx_2 driver is using IO port space and thus won't get reported
+in /proc/iomem.
+
+The "stifb" driver claims the upper 16MB of the 32MB BAR and it's all
+routed to PCI Controller for slot 2 (PCI Bus 4). Since no other devices
+share that PCI controller, I'm pretty sure the same PCI Controller also
+gets 0xf100000 range. Add a second gfx card and it's gets uglier.
+I watched Thomas Boegendorf have fun at LinuxTag by putting 4
+similar "Vis-EG" cards in one B2600 and run xinerama. I now
+wish I had captured the /proc/iomem and lspci -v output for
+that one!
+
+Anyway, I hope that was an interesting diversion.
+
+cheers,
+grant
+
+----- End forwarded message -----
