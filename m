@@ -1,43 +1,64 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA18506
-	for <parisc-linux@puffin.external.hp.com>; Tue, 9 Nov 1999 17:50:02 -0700
-Date: Wed, 10 Nov 1999 01:52:45 +0100
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA19485
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Nov 1999 00:51:55 -0700
+Date: Wed, 10 Nov 1999 04:03:39 -0500 (EST)
+From: Alex deVries <adevries@thepuffingroup.com>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] HIL status
-Message-ID: <19991110015245.U25252@mencheca.ch.genedata.com>
-References: <19991110004745.T25252@mencheca.ch.genedata.com> <19991110011409.A17550@mathe.stud.uni-erlangen.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19991110011409.A17550@mathe.stud.uni-erlangen.de>; from Philipp Rumpf on Wed, Nov 10, 1999 at 01:14:09AM +0100
+In-Reply-To: <19991110004745.T25252@mencheca.ch.genedata.com>
+Message-ID: <Pine.LNX.4.10.9911100345000.11043-100000@vodka.thepuffingroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Nov 10, 1999 at 01:14:09AM +0100, Philipp Rumpf wrote:
-> > My question is: how?  Mach hardcodes the address of ASP to 0xf0800000,
-> > but there's nothing even close in the driver list.  I notice in the
-> 
-> > 2. Scorpio Jr Core BA (11) at 0xf082f000, versions 0xb, 0x0, 0x70, 0x0, 0x0
-> > 3. Scorpio Jr Core SCSI (10) at 0xf0825000, versions 0xb, 0x0, 0x71, 0x0, 0x0
-> > 4. Scorpio Jr Core LAN (802.3) (10) at 0xf0826000, versions 0xb, 0x0, 0x72, 0x0, 0x0
-> > 5. Scorpio Jr Core HIL (10) at 0xf0821000, versions 0xb, 0x0, 0x73, 0x0, 0x0
-> > 6. Scorpio Jr Core RS-232 (10) at 0xf0823000, versions 0xb, 0x0, 0x75, 0x0, 0x0
-> > 7. Scorpio Jr Core RS-232 (10) at 0xf0822000, versions 0xb, 0x0, 0x75, 0x0, 0x0
-> > 8. Scorpio Jr Core Centronics (10) at 0xf0824000, versions 0xb, 0x0, 0x74, 0x0, 0x0
-> 
-> I am sorry, but when all this devices are within a 1 MB offset of the HPA we're
-> looking for (0xf0800000 + 1 M = 0xf0900000, I hope), doesn't that look very nice
-> indeed ?  You are right that the interrupt management (which is at address
-> 0xf0800000) is not specifically printed here, but I think we should be able
-> to deduce it, shouldn't we ?
 
-Ummmm.. how exactly were you intending on going about this?  In lasi.c,
-in lasi_init_chip(), round the address down to the nearest megabyte?
-(possibly with a check on the type of `lasi' we found?)
+On Wed, 10 Nov 1999, Matthew Wilcox wrote:
+> I've taken the hp300 HIL driver written by Phil Blundell and it `works'
+> on my 715/33.  It's producing the wrong keycodes, it's doing work that an
+> ASP driver ought to be doing and it's producing a fair bit of extraneous
+> crap on the screen.  But I'm getting interrupts and keycodes so I'm
+> happy for tonight :-)
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Yay!
+
+Having ASP interrupts working will enable a lot of different boxes to be
+supported, mostly 715s.  I have a /50, /75 and probably /100 to test on.
+
+The closest things we have to ASP docs are:
+- take the portions of the Lasi docs that describe how Lasi is not like
+ASP, and read backwards
+- openbsd
+- mklinux 
+
+> The next obvious step is to have an ASP manager, like LASI.  In fact, so
+> much like LASI, it probably ought to be in the same driver.  
+
+My best guess is that Lasi is really ASP but integrated onto one cell with
+a couple of bug fixes.  So yes, it really should be the same driver if at
+all possible.  I had actually started on this but hadn't had time to get
+it working. :)
+
+> This seems to
+> be how Mach does it, and there's a rumour this is also how HPUX does it.
+> My question is: how?  Mach hardcodes the address of ASP to 0xf0800000,
+> but there's nothing even close in the driver list.  I notice in the
+> bootlogs which have previously been posted, LASI was at the address of
+> `Core BA', but you can see that's wildly different on this machine.
+> Should I invent my own and insert it into the structures we have?
+
+Hrm.  That's uncomfortable. So did it actually work at 0xf0800000?
+
+The problem comes when we hit an ASP that's not at 0xf0800000, which I'd
+think might come up with ASP add on cards.
+
+I don't think that firmware is lying, though.  Perhaps we just need to
+subtract 0x2f000 for some reason.
+
+> Here's the driver list printed at boot on the 715 (is someone collecting
+> these somewhere?)
+
+Within a week, I'll send some mail about The Puffin PA RISC Hardware
+Guide. Details to come.
+
+- Alex
