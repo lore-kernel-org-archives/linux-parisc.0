@@ -1,18 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F0FD4879
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id F34C84879
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  9 Mar 2004 02:25:03 -0700 (MST)
-Date: Tue, 9 Mar 2004 10:04:23 +0100
-Message-ID: <404782C800002A2F@ocpmta1.freegates.net>
-In-Reply-To: <20040308174914.GC19791@baldric.uwo.ca>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+	Tue,  9 Mar 2004 03:03:33 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] No PS2 keyboard/mouse on B132L, 2.6.[34]
+Date: Tue, 9 Mar 2004 11:03:28 +0100
+References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
+In-Reply-To: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux]
-	RE: New glibc patches 2004-03-08, fixes GLRO changes.
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200403091103.29310.deller@gmx.de>
+Cc: Andy Walker <andy@puszczka.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,49 +23,38 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Montag, 8. März 2004 12:28, Andy Walker wrote:
+> I've a B132L running Gentoo. With 2.4 I had the PS/2 keyboard working fine
+> throught a Raritan Compuswitch KVM, but the mouse (wireless Intellimouse
+> clone - 2 buttons pluss roller/middle) was dead. Decided to try out 2.6
+> partly to excercise udev, but mostly in the hope that all the input layer
+> work and PS/2 changes would bring the mouse to life. I should probably add
+> that there are two PCs on the KVM - one running 2.6.3 and one running
+> 2.4.24. Both run the mouse and keyboard flawlessly.
+> 
+> To the point. I grabbed 2.6.3-pa0 from Gentoo hppa-dev-kernel, configured
+> and compiled it. The keyboard and mouse are both dead. I downloaded
+> 2.6.4-rc1-pa2 from cvs.parisc-linux.org but the result is exactly the same.
+> Some info below. Clues anybody?
+....
+> # Input Device Drivers
+> #
+> CONFIG_INPUT_KEYBOARD=y
+> # CONFIG_KEYBOARD_ATKBD is not set
 
->New patches here, passes testsuite without regression.
->
->http://www.parisc-linux.org/~carlos/glibc-hppa-patches-2004-03-08.tar.gz
+Please enable this one (CONFIG_KEYBOARD_ATKBD), and....
 
-Thanks :)
+> # CONFIG_KEYBOARD_SUNKBD is not set
+> # CONFIG_KEYBOARD_XTKBD is not set
+> # CONFIG_KEYBOARD_NEWTON is not set
+> CONFIG_KEYBOARD_HIL=y
+> CONFIG_INPUT_MOUSE=y
+> # CONFIG_MOUSE_PS2 is not set
 
->Joel,
->
->Is there any chance that you could do some testing for me please?
+this one too.
 
-Just let me find a free disk :)
+In the latest 2.6 kernel series, we switched from a parisc-only
+PS/2 mouse/keyboard driver to the standard linux kernel PS/2
+mouse keyboard drivers.
 
-I will advise ;)
-
->1. Use debootstrap to build a chroot (/mnt/chroot)
-
-BTW which install should I install: man debootstrap give the fllowing example
-deboostrap woody ./woody-chroot http://ftp.cx.debian.org/debian
-
-Well not familiar with debootstrap but I presume that ./woody-chroot would
-be here /mnt/chroot and ftp.cx.debian.org my nearest debian repository. 
-But my question is: would you like I build a woody or would you prefer a
-sarge?
-
-
->2. Compile glibc with --prefix=/mnt/chroot
->3. Install the new glibc there.
->4. Test out running some stuff from the chroot.
-	o Try running Xnest
-	o Try running X applications through Xnest
-	o Try building a new kernel in the chroot.
-
-Clear
-
->Thanks!
-
-wellcome,
-
-Joel
-
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
-tout le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+Helge
