@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (p003.sw02.auto.usertools.net [202.154.81.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2200D4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 06:45:21 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id VAA26958
-	for parisc-linux@lists.parisc-linux.org; Sun, 12 Jan 2003 21:44:59 +0800
-Date: Sun, 12 Jan 2003 21:44:55 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] upgrading kernel
-Message-ID: <20030112214452.B25226@neep.com.au>
-References: <20030112073656.GB13397@piglet2> <20030112073506.GB1177@tausq.org> <20030112110219.GC13397@piglet2>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030112110219.GC13397@piglet2>; from plaven@bigpond.net.au on Sun, Jan 12, 2003 at 10:02:19PM +1100
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 33D874829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 07:16:38 -0700 (MST)
+Message-ID: <3E2188D1.6080807@freebel.net>
+Date: Sun, 12 Jan 2003 15:25:05 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] unaligned accesses
+References: <20030110170813.X26554@parcelfarce.linux.theplanet.co.uk>	<3E1AA8D500000AF7@ocpmta8.freegates.net>	<20030110231313.1215dc79.varenet@esiee.fr> <20030110232510.25aef7c2.varenet@esiee.fr>
+In-Reply-To: <20030110232510.25aef7c2.varenet@esiee.fr>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Peter Lavender said:
-> Thanks... this outlines what to do with a custom kernel.. I was
-> thinking there might be a debian way... like with kernel-packages (I
-> just reading up about it now for my i386 based system).
+Hi Thibaut
 
-You can build your new kernel the Debian way with make-kpkg - the
-kernel-package system is available for the hppa architecture.  I don't
-know if it works yet in all of Debian's architectures (ie knows how to
-configure all the boot loaders) but I think it knows about PALO so hppa
-should be fine.
+Thibaut VARENE wrote:
+> On Fri, 10 Jan 2003 23:13:13 +0100
+> "Thibaut VARENE" <varenet@esiee.fr> wrote:
+> 
+> I hate to reply to myself but I said crap in my previous mail.
+> All apologies:
+> 
+>>FWIW, the default option (used by most people) is data=journal, and is not affected by that bug. We've been using 2.4.20 with ext3 for weeks pretty safely here.
+> 
+> it was: "the default option is data=ordered" of course, which is safe.
+> 
+I just to ask you additional help: I do not recover the method to get 
+the actual setup of my fs ext3 (i do severall test but a time ago and do 
+not remember in which state I let it: well operational but what more??)
 
-> The kernel on the 715/64 is from last year sometime ago... I can get
-> the kernel version with uname becuase it seg faults.
-
-You might be able to find out with 'file /vmlinux' ... or 'dmesg|head'
-or 'head /var/log/dmesg' ...
-
-Andrew.
-
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Thanks,
+	Joel
