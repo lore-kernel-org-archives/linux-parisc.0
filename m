@@ -1,49 +1,44 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA24926
-	for <parisc-linux@puffin.external.hp.com>; Sun, 29 Aug 1999 14:00:42 -0600
-From: emolitor@molitor.org
-Received: from cpu209-41-104-129.unicomp.net (HELO linux.molitor.org) (root@209.41.104.129)
-  by mailserv2.iuinc.com with SMTP; 29 Aug 1999 20:02:27 -0000
-Received: from localhost (emolitor@localhost)
-	by linux.molitor.org (8.9.3/8.9.3) with ESMTP id PAA01389;
-	Sun, 29 Aug 1999 15:00:38 -0500
-Date: Sun, 29 Aug 1999 15:00:38 -0500 (CDT)
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] keyboard driver
-In-Reply-To: <19990829201550.K493@mencheca.ch.genedata.com>
-Message-ID: <Pine.LNX.4.10.9908291456360.1379-100000@linux.molitor.org>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA25288
+	for <parisc-linux@puffin.external.hp.com>; Sun, 29 Aug 1999 15:30:16 -0600
+Received: (from steve@localhost)
+	by osiris.silug.org (8.9.3/8.9.3) id QAA27527
+	for parisc-linux@thepuffingroup.com; Sun, 29 Aug 1999 16:32:39 -0500
+From: Steven Pritchard <steve@silug.org>
+Message-Id: <199908292132.QAA27527@osiris.silug.org>
+To: parisc-linux@thepuffingroup.com
+Date: Sun, 29 Aug 1999 16:32:39 -0500 (CDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] more tools
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 29 Aug 1999, Matthew Wilcox wrote:
+I've put some HP-UX 10.20 binaries of various things on
+puffin.external.hp.com to go along with the 11.0 binaries I put there
+a couple of months ago.  The 10.20 binaries should work on either
+10.20 or 11.0.  Get them at
 
-> On Sat, Aug 28, 1999 at 10:30:32PM -0500, emolitor@molitor.org wrote:
-> > 
-> > Hello all, I recently was given a 715/50 to play around with. Its
-> > got an old version of HP/UX running on it and I am getting ready to dump
-> > that and look into programming a bit on parisc-linux. Any direction on
-> > what can be persued?
-> > 
-> > Of course my current goal is to get the kernel to cross-compile and then
-> > boot from a zip drive... (Looking for that It works message...)
-> 
-> For a start, don't ditch the HP/UX it has running on it unless you have
-> another HP/UX box around to compile kernels with.  Right now, we need to
-> use the HP linker.
-> 
+    ftp://puffin.external.hp.com/pub/parisc/binaries/depot/10.20/
 
-hmmm, ok, looks like I'll have to reinstall HP/UX. That's ok, I need to do
-a little (Ok, a lot) of research on the PARisc architecture to get
-familiar with it.
+(The 11.0 stuff is still there in depot/11.0/.)
 
-> The kernel as it stands right now probably won't boot on your 715/50.
-> I'm waiting for Philipp to sort out a couple of problems and then I'm
-> going to try to track down why it doesn't boot on my 715/33; the kernel
-> I checked out a week ago wouldn't boot until I put in debugging printks.
-> grr.
-> 
+Since I haven't managed to write up anything on how to package up
+software for HP-UX yet, I figured I'd do the next best thing and just
+script my build process.  There's a script called "build-bash.sh"
+there that does more-or-less what rpm --rebuild would do on a Red Hat
+box.  Hopefully it'll help somebody out there figure out how to build
+HP-UX packages, assuming I'm not the only one who cares.  ;-)
 
-I am amazed at every hacker who has a full head of hair... (facial hair
-does not count...)
+I'll get some more stuff out there, including the latest CVS builds of
+egcs and binutils, as soon as I can.
+
+(Oh, BTW, the 10.20 stuff was built on a C240 with egcs.  Everything
+*should* work properly on a PA-RISC 1.1 box, but I haven't actually
+tested any of it anywhere but the build box.  If somebody could let me
+know that the stuff works on a 700-series box, I'd appreciate it.)
+
+Steve
+-- 
+steve@silug.org           | Linux Users of Central Illinois
+(217)698-1694             | Meetings the 4th Tuesday of every month
+Steven Pritchard          | http://www.luci.org/ for more info
