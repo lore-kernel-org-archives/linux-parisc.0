@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from exchange2.elgin.cc.il.us (exchange2.elgin.edu [66.158.60.7])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC7A04829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 15:56:26 -0700 (MST)
-Message-ID: <5D69EA3878E6D411B43C00508BFD7283049FB53E@exchange2.elgin.edu>
-From: "Mehta, Miten" <mmehta@elgin.edu>
-To: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] bootp and tftp
-Date: Wed, 22 Jan 2003 16:53:03 -0600
+Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C52C4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 18:16:23 -0700 (MST)
+Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
+	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h0N1SwT27092
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 17:28:58 -0800
+Received: from localhost (chandler@localhost)
+	by jordan.eng.nateng.com (8.11.4/8.11.4) with ESMTP id h0N1JLC23830
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 17:19:21 -0800
+Date: Wed, 22 Jan 2003 17:19:21 -0800 (PST)
+From: Sir Ace <chandler@nateng.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0301221718210.21999-100000@jordan.eng.nateng.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Kernel 2.4.20 help?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,67 +26,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+I've been playing with the 2.4.20 on my box {debian 3.0 parisc}
+I've found a few problems, tried a couple of fixes and got chewed out by a
+kernel deveolper so I saw you mentioned on the debian site and thought I
+should ask you.
 
-parisc boot howto does not talk much on setting bootp up as much I
-understood.  I referred hp docs too to verify bootp setup.  But it did not
-work.  Here are more details.
+What I get is this:
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.20/include -Wall -Wstrict-prototypes
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer
+-D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7200   -nostdinc -iwithprefix include
+-DKBUILD_BASENAME=scsi_merge  -c -o scsi_merge.o scsi_merge.c
+scsi_merge.c: In function `__count_segments':
+scsi_merge.c:226: warning: implicit declaration of function `page_to_phys'
+scsi_merge.c: In function `initialize_merge_fn':
+scsi_merge.c:1199: `PCI_DMA_BUS_IS_PHYS' undeclared (first use in this
+function)scsi_merge.c:1199: (Each undeclared identifier is reported only
+once
+scsi_merge.c:1199: for each function it appears in.)
+make[3]: *** [scsi_merge.o] Error 1
+make[3]: Leaving directory `/usr/src/linux-2.4.20/drivers/scsi'
+make[2]: *** [first_rule] Error 2
+make[2]: Leaving directory `/usr/src/linux-2.4.20/drivers/scsi'
+make[1]: *** [_subdir_scsi] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.20/drivers'
+make: *** [_dir_drivers] Error 2
 
-appended to /etc/bootptab:
-===========================
-peacock:\
-	hd=/var/opt/ignite:\
-	rp=/linux:\
-	ht=ethernet:\
-	ha=000100010001:\           <=============changed
-	ip=192.168.1.21:\           <=============changed
-	bf=lifimage:\
-	sm=255.255.255.0:\
-	gw=192.168.1.1:\
-	to=7200:                     <========== here I added ba for
-bootpquery
+What I did first to fix it was add:
+#ifndef PCI_DMA_BUS_IS_PHYS
+#define PCI_DMA_BUS_IS_PHYS 1
+#endif
 
+I asked the linux-scsi list if that was the proper fix and promptly got
+yelled at.  I was told the problem was that asm/pci.h was not included and
+that was the fix I should use.  Even though the defines would work...
 
-enabled tftp and bootp in sam and seems resulted in following two lines in
-/etc/inetd.conf
-============================================================================
-===============
-tftp        dgram  udp wait   root /usr/lbin/tftpd    tftpd\
-	/opt/ignite\
-	/var/opt/ignite
-bootps	dgram	udp	wait	root	/usr/lbin/bootpd	bootpd
+So I reverted the code back and added the include, now I get the original
+error and nothing seems to be resolved.
 
-There are bootps, bootpc, tftp entries in /etc/services.
+After adding my defines back I still get errors, just much farther along:
+trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer
+-D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7200   -nostdinc -iwithprefix include -DKBUILD_BASENAME=traps
+-c -o traps.o traps.c
+traps.c:125: conflicting types for `dump_stack'
+/usr/src/linux-2.4.20/include/linux/kernel.h:111: previous declaration of
+`dump_stack'
+make[1]: *** [traps.o] Error 1
+make[1]: Leaving directory `/usr/src/linux-2.4.20/arch/parisc/kernel'
+make: *** [_dir_arch/parisc/kernel] Error 2
 
-ps -e | grep bootp  shall show it running and so does for rbootd.
-
-Error I get when doing 
-bootpquery 000100010001 -s myhost 
-is Address in use.
-
-
-
-
------Original Message-----
-From: Randolph Chung [mailto:randolph@tausq.org]
-Sent: Wednesday, January 22, 2003 11:18 AM
-To: Mehta, Miten
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] bootp and tftp
-
-
-> bootpquery is complaining address in use for client query.  I went into
-sam
-> and had enabled both bootp and tftp.  Then added client section as:
-
-um, is there a question in there some place? what did you try? what did
-the error message say? 
-
-this sounds like a generic bootp setup problem.... have you looked at
-the parisc boot howto?
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Um, help?
