@@ -1,48 +1,67 @@
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA28688
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 11:23:55 -0700
-Content-Type: text/plain;
-  charset="iso8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Grant Grundler <grundler@cup.hp.com>, "Thomas Marteau" <marteaut@esiee.fr>
-Subject: Re: [parisc-linux] The config for 712 hp boxes
-Date: Thu, 16 Nov 2000 19:25:49 +0100
-Cc: parisc-linux@puffin.external.hp.com
-References: <200011161810.KAA14979@milano.cup.hp.com>
-In-Reply-To: <200011161810.KAA14979@milano.cup.hp.com>
+Received: from hermes.mvista.com (gateway-490.mvista.com [63.192.220.206])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA29246
+	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 12:00:04 -0700
+Sender: frowand@hermes.mvista.com
+Message-ID: <3A142EE0.5A7E5039@mvista.com>
+Date: Thu, 16 Nov 2000 11:00:48 -0800
+From: Frank Rowand <frank_rowand@mvista.com>
+Reply-To: frowand@mvista.com
 MIME-Version: 1.0
-Message-Id: <00111619254900.00336@P100>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+CC: parisc-linux@puffin.external.hp.com
+Subject: Re: Single-stepping
+References: <200011161244.FAA03502@udlkern.fc.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 16 November 2000 19:10, Grant Grundler wrote:
-> "Thomas Marteau" wrote:
-> > Hi all,
-> > 
-> >     Here is the config file we use to compile a new kernel from the test10
-> > sources. We have the console with the STI and an extra term on the serial
-> > port.
+John Marvin wrote:
 > 
-> Thomas - excellent - thanks!
+> Richard,
 > 
-> > Also, in this mail, you have the diff between our hp_keyb.c and the 
-official
-> > one but it gives you the ~ and the ' and others scancodes.
+> >
+> > Sorry, I worded that very badly.  The code that moves the childs
+> > IAOQ on is in the kernel, invoked as a result of the controlling
+> > process calling ptrace(PTRACE_SINGLESTEP...) when the childs N
+> > bit is set.
+> >
 > 
-> I noticed this mail was directed to me - but I can't take ownership
-> of this code. I have too many other things going on.
+> Great.
 > 
-> Helge - can you commit this fix too?
+> > > Does this code properly handle branches in the delay slot of another
+> > > branch? (you need to make sure you are not advancing the queues by just
+> > > adding 4 to each element).  One concern I have about this method is that
+> >
+> > Current code does
+> >
+> >     /* Nullified, just crank over the queue. */
+> >     task_regs(child)->iaoq[0] = task_regs(child)->iaoq[1];
+> >     task_regs(child)->iasq[0] = task_regs(child)->iasq[1];
+> >     task_regs(child)->iaoq[1] = task_regs(child)->iaoq[0] + 4;
+> >
+> > Does that look right to you?
+> >
+> 
+> Yes, that is the correct way to do it (I'll assume the duplicated line
+> is just a cut/paste error).
 
-Ok. I will test & evtl. commit it today.
+If iaoq[0] contains a branch, iaoq[1] is in the delay slot.  The instruction
+executed after iaoq[1] would then typically _not_ be iaoq[0] + 4 (the next
+instruction would be the target of the branch at iaoq[0]).
 
-> 
-> thanks,
-> grant
-> 
-> Grant Grundler
-> Unix Systems Enablement Lab
-> +1.408.447.7253
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+
+> Sounds ok with me. And as long as there are no corner cases, it probably
+> is the best solution, assuming we don't find another application for
+> the recovery counter.
+
+The recovery counter is very useful for performance measurement tools to
+understand the cycles per instruction of a code path.  (Using the recovery
+counter for the debugger doesn't preclude using it for performance tools -
+you just can't easily use it for both purposes at the same instant in time.)
+
+
+> John
+
+-Frank
+-- 
+Frank Rowand <frank_rowand@mvista.com>
+MontaVista Software, Inc
