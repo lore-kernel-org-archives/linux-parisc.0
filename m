@@ -1,62 +1,85 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CB2BA482A
-	for <parisc-linux@parisc-linux.org>; Thu,  4 Oct 2001 23:38:43 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15pNgk-0005Fa-00
-	for parisc-linux@parisc-linux.org; Fri, 05 Oct 2001 06:38:22 +0100
-Date: Fri, 5 Oct 2001 06:38:22 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011005063822.A19206@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] A todo entry
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B039E482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Oct 2001 00:19:31 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] sti broken in pa32 on B180
+Message-ID: <1002262769.3bbd50f1a5860@webmail.tiscalinet.be>
+Date: Fri, 05 Oct 2001 08:19:29 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: Ryan Bradetich <rbradetich@uswest.net>, joel.soete@freebel.net,
+	tsbogend@alpha.franken.de
+References: <1002191096.3bbc38f8c42ed@webmail.tiscalinet.be> <20011004071350.A27483@beavis.ybsoft.com> <1002215177.3bbc9709265c5@webmail.tiscalinet.be>
+In-Reply-To: <1002215177.3bbc9709265c5@webmail.tiscalinet.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Someone was asking for a job to do.  Here's one.
+Hi Ryan and Thomas,
 
-In include/asm-parisc/uaccess.h, we have a couple of functions which
-look like this:
+for(i = 1; i <= num_addrs; ++i) {
+        ^
+works also for me.
 
-#define __get_user(x,ptr)                               \
-({                                                      \
-        register long __gu_err __asm__ ("r8") = 0;      \
-        register long __gu_val __asm__ ("r9") = 0;      \
-                                                        \
-        if (segment_eq(get_fs(),KERNEL_DS)) {           \
-            switch (sizeof(*(ptr))) {                   \
-            case 1: __get_kernel_asm("ldb",ptr); break; \
-            case 2: __get_kernel_asm("ldh",ptr); break; \
-            case 4: __get_kernel_asm("ldw",ptr); break; \
-            case 8: __get_kernel_asm("ldd",ptr); break; \
-            default: BUG(); break;                      \
-            }                                           \
-        }                                               \
-        else {                                          \
-            switch (sizeof(*(ptr))) {                   \
-            case 1: __get_user_asm("ldb",ptr); break;   \
-            case 2: __get_user_asm("ldh",ptr); break;   \
-            case 4: __get_user_asm("ldw",ptr); break;   \
-            case 8: __get_user_asm("ldd",ptr); break;   \
-            default: BUG(); break;                      \
-            }                                           \
-        }                                               \
-                                                        \
-        (x) = (__typeof__(*(ptr))) __gu_val;            \
-        __gu_err;                                       \
-})
+Nervertheless on this b180 the (ps/2) kbd problem is reproductible:
+disconnect, reconnect the kdb then touch any key then:
+"keyboard: unrecognised scancode (7f) - Ignored"
+and I do not find a way to reinit the this kdb.
+(System still running, just loss the access to the console)
 
-This is rather suboptimal.  The way it should be done is to always
-access userspace through %sr2 (currently listed as unused).  Set sr2
-to the same value as sr3 normally.  Set it to 0 when someone does a
-set_fs(KERNEL_DS), and to sr3 when USER_DS.  get_fs() should return the
-value of sr2.  None of these functions are called frequently, so there's
-no need to cache the values outside the space registers.
+Thanks in advance for addtional help,
+        Joel
 
-This probably isn't a big job, but there's probably some subtlety I've
-overlooked.
 
--- 
-Revolutions do not require corporate support.
+Quoting joel.soete@freebel.net:
+
+> Hi Ryan,
+> 
+> Sorry but patch does not help.
+> 
+> Thanks any way,
+>         Joel
+> 
+> Quoting Ryan Bradetich <rbradetich@uswest.net>:
+> 
+> > On Thu, Oct 04, 2001 at 12:24:56PM +0200, joel.soete@freebel.net
+> wrote:
+> > > Hi all,
+> > > 
+> > > I just come back to my hppa boxes (a 712/80 and a b180) and just co
+> > the last cvs 
+> > > kernel (-pa32).
+> > > I do usual make oldconfig; make dep ; make vmlinux (on the 712).
+> > 
+> > Try the following patch ... Thomas said this is what fixed STI on the
+> > B-class machines for him.  If it works, I'll commit it.
+> > 
+> > Thanks,
+> > 
+> > - Ryan
+> > 
+> > 
+> > diff -u -p -r1.37 inventory.c
+> > --- inventory.c	2001/10/04 00:17:52	1.37
+> > +++ inventory.c	2001/10/04 13:08:21
+> > @@ -542,7 +542,7 @@ add_system_map_addresses(struct parisc_d
+> >  		return;
+> >  	}
+> >  
+> > -	for(i = 0; i < num_addrs; ++i) {
+> > +	
+> >  		status = pdc_system_map_find_addrs(&addr_result, 
+> >  						   module_instance, i);
+> >  		if(PDC_RET_OK == status) {
+> > 
+> > 
+> 
+> 
+> -------------------------------------------------
+> This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+> 
+> 
+
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
