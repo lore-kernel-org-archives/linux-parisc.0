@@ -1,49 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA24522
-	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 16:49:34 -0700
-Received: from user-78-55.jakinternet.co.uk (HELO rhirst.linuxcare.com) (194.88.78.55)
-  by mailserv2.iuinc.com with SMTP; 6 Dec 2000 23:52:10 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 13494B005; Wed,  6 Dec 2000 23:47:27 +0000 (GMT)
-Date: Wed, 6 Dec 2000 23:47:26 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Daniel Engstrom <danne@telia.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SCSI on ASP systems
-Message-ID: <20001206234726.C7166@linuxcare.com>
-References: <Pine.LNX.4.21.0012070011280.8673-100000@zaphod.halden.lillfab.se>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA25339
+	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 17:13:58 -0700
+Date: Wed, 6 Dec 2000 16:16:27 -0800
+From: Richard Henderson <rth@redhat.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: alan@linuxcare.com.au, law@cygnus.com, rhirst@linuxcare.com,
+        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
+Subject: Re: pa reload problem
+Message-ID: <20001206161627.C1272@redhat.com>
+References: <200012051942.OAA24760@hiauly1.hia.nrc.ca> <200012062041.PAA21573@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0012070011280.8673-100000@zaphod.halden.lillfab.se>; from danne@telia.com on Thu, Dec 07, 2000 at 12:23:00AM +0100
+In-Reply-To: <200012062041.PAA21573@hiauly1.hia.nrc.ca>; from John David Anglin on Wed, Dec 06, 2000 at 03:41:06PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Dec 07, 2000 at 12:23:00AM +0100, Daniel Engstrom wrote:
-> As noted earlier SCSI (sim700) don not work on systems with an ASP. Below
-> is some of the error messages I get. It seems to fail on the first write
-> command (read commands seem to work). I dont have any idea how the 53c700
-> is supposed to work and I cant find any docs on the net. Does anyone on
-> the list have any idea?
-> 
-> /Daniel
-> 
-> 
-> # palo -I \
-> > -b boot/iplboot \
-> > -k boot/vmlinux /dev/sda
+On Wed, Dec 06, 2000 at 03:41:06PM -0500, John David Anglin wrote:
+> >     (expr_list:REG_EQUIV (mem/u:SI (lo_sum:SI (reg/f:SI 309)
+> > 		(unspec:SI[
+> > 			(symbol_ref:SI ("constructor_max_index"))
+> > 		    ]  0)) 0)
 
-Can you try adding
+This appears to be the same sort of bug as in compile/20001205-1.c
+except that an unspec is involved instead of an asm_operands.
 
-	sim700=noneg:0xff,nodisc:0xff
+I wonder if the best solution is to avoid local-alloc creating
+REG_EQUIV notes for every little thing under the sun.  Allow
+only general_operand or something.
 
-to your boot comamnd line and let me know what happens.
 
-If that fails after very little disk activity, you could try
-
-	sim700=noneg:0xff,nodisc:0xff,debug:0x2ff
-
-and send me the (large) debug output.
-
-Looks like oyur disk is disconnecting after an odd number of sectors,
-which might be unusual.
-
-Richard
+r~
