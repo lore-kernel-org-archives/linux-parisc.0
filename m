@@ -1,24 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 97921482A
-	for <parisc-linux@parisc-linux.org>; Tue, 29 Jan 2002 22:05:40 -0700 (MST)
-Received: from mmp-1.gci.net ([208.138.130.80]) by mta-2.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GQQJHB01.A0E for
-          <parisc-linux@parisc-linux.org>; Tue, 29 Jan 2002 20:05:35 -0900
-Received: from goliath.alaskatech.org ([24.237.5.207]) by
-          mmp-1.gci.net (Netscape Messaging Server 4.15) with ESMTP id
-          GQQJHB00.P9G for <parisc-linux@parisc-linux.org>; Tue, 29 Jan
-          2002 20:05:35 -0900
-Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
-	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA03682
-	for <parisc-linux@parisc-linux.org>; Tue, 29 Jan 2002 20:00:21 -0900
-Date: Tue, 29 Jan 2002 20:00:21 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0201291938520.3623-100000@goliath.alaskatech.org>
+Received: from exch-ims.us.nds.com (unknown [208.244.148.253])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 662A8482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 00:26:35 -0700 (MST)
+Message-ID: <218165EB68E7D411AC6F0003470DA6F63DDF66@EXCH-3>
+From: ANTIGEN_EXCH-3@ndsamericas.com
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 29 Jan 2002 17:44:52 -0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Odd kernel error
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C1A92F.B5BE28E0"
+Subject: [parisc-linux] Antigen found =*.com file
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,22 +21,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Compiling the latest from CVS (-pa16, I think) and at the final make, when
-gcc is actually doing the '-o vmlinux' I'm getting:
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-drivers/video/video.o: In function 'L1260':
-drivers/video/video.o(.init.text+0x2554): undefined reference to
-'fbcon_sti'
-drivers/video/video.o(.init.text+0x255c): undefined reference to
-'fbcon_sti'
-make: *** [vmlinux] Error 1
+------_=_NextPart_001_01C1A92F.B5BE28E0
+Content-Type: text/plain
 
-This happened with -pa15 also. I downloaded the pre-built -pa15 kernel and
-it boots fine, though. Checking, I realized I had disabled PCI in my
-config (it's a 715/100, no PCI in it), and remembered some discussion
-about PCI being a 'depends-on' item for some things... Is it possible this
-is a 'needs PCI' issue?
+Antigen for Exchange found www.myparty.yahoo.com matching =*.com file
+filter.
+The file is currently Removed.  The message, "[parisc-linux] new photos from
+my party!", was
+sent from paolobentenuto@vidoetron.ca and was discovered in Beason,
+Todd\Inbox
+located at NDS/NDS-US/EXCH-3.
 
-I have a new kernel compile going on now, with PCI enabled, so we'll see
-what happens, but figured I'd toss it out in case someone else is seeing
-this.
+------_=_NextPart_001_01C1A92F.B5BE28E0
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+<TITLE>Antigen found =*.com file</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=2>Antigen for Exchange found www.myparty.yahoo.com matching =*.com file filter.</FONT>
+<BR><FONT SIZE=2>The file is currently Removed.&nbsp; The message, &quot;[parisc-linux] new photos from my party!&quot;, was</FONT>
+<BR><FONT SIZE=2>sent from paolobentenuto@vidoetron.ca and was discovered in Beason, Todd\Inbox</FONT>
+<BR><FONT SIZE=2>located at NDS/NDS-US/EXCH-3.</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C1A92F.B5BE28E0--
