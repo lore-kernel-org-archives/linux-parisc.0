@@ -1,83 +1,74 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout00.sul.t-online.com (mailout00.sul.t-online.com [194.25.134.16])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5E763482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 06:01:28 -0600 (MDT)
-Message-ID: <000701c0cd7f$2bcefce0$0601a8c0@PC006>
-From: Hinkelbv@t-online.de (pop.btx.dtag.de)
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 25 Apr 2001 13:59:20 +0200
+Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 60049482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 06:05:55 -0600 (MDT)
+Sender: christoph.plattner@alcatel.at
+Message-ID: <3AE6BD99.EF3D973@alcatel.at>
+Date: Wed, 25 Apr 2001 14:05:45 +0200
+From: Christoph Plattner <christoph.plattner@alcatel.at>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0004_01C0CD8F.ECF3EC40"
-Subject: [parisc-linux] Anfrage zu Risc
+To: Thomas Marteau <marteaut@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Bug in kernel: console support STI/serial
+References: <3AE6ADF3.92D612FE@alcatel.at> <3AE6B5FB.5FB7D4FA@esiee.fr>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+Hello,
+	thanks for the prompt answer.
 
-------=_NextPart_000_0004_01C0CD8F.ECF3EC40
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+First of all Linux supports more than one console,
+(defined with commans behind `console='), but this
+is not the toppic here.
 
-Hallo werte RISC-Anwender
+In a normal (iX86) linux kernel many console supports
+can be activated (per config), but only one (!) of these
+consoles are used !
 
-Ich habe eine Frage und mache es auch kurz.
-Ich habe eine Workstation HP Visualize C180, und kann ich darauf Linux =
-laufen lassen?
-Kann ich Linux auch ohne die Boot-CD von HP-UX installieren? Und warum =
-funktioniert
-der Dounload von dem CD-Image mit Endung RAW nicht? Ist dieser =
-=FCberhaupt f=FCr meinen
-Rechner gedacht? weil der andere ja nicht funktionieren soll!
-=DCber eine Antwort w=E4re ich sehr dankbar und w=FCrde mir schon sehr =
-viel weiter helfen.
-Im Vorraus Danke und beste Gr=FC=DFe von Thomas
-meine e-Mail ist: T.Weidisch@t-online.de
+So I compiled in support for serial and support for
+STI, but I only use STI (default, no `console=' 
+parameter used).
+
+The output shows the usage of STI, too. So Linux decide
+to use STI, but the output (and input) is done on the
+serial console driver. This is really a bug.
+
+The HELP button in for serial console support definitly
+"says", that this only activates the support, but the 
+serial console is only used, if `console=ttyS0' is
+specified.
+
+-----
+
+BTW: Is there anyone who knows how to activate 
+serial console on the 712/60 in the PDC console.
+Normally "path console" or "path keyboard" can be
+used. But not on 712/60 !!
+
+-------
+
+With friendly regards
+	Christph Plattner
 
 
-------=_NextPart_000_0004_01C0CD8F.ECF3EC40
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Thomas Marteau wrote:
+> 
+> Hi Christoph
+> 
+>         As far as I know, the kernel is not capable to manage two consoles. But, if you
+> want to specify one precisely, you can try to give a console parameter to the
+> kernel with "console=tty"
+> > By the way: How can I set the 712/60 to use serial
+> > PCD console (command `path' does not work for console !)
+> >
+> > Cheers
+> >         Christoph P.
+> >
+> Good Luck, Thomas
+> ESIEE Team
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
-<HTML>
-<HEAD>
-
-<META content=3Dtext/html;charset=3Diso-8859-1 =
-http-equiv=3DContent-Type>
-<META content=3D'"MSHTML 4.72.3110.7"' name=3DGENERATOR>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Hallo werte=20
-RISC-Anwender</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Ich habe eine Frage und =
-mache es auch=20
-kurz.</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Ich habe eine =
-Workstation HP=20
-Visualize C180, und kann ich darauf Linux laufen lassen?</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Kann ich Linux auch =
-ohne die Boot-CD=20
-von HP-UX installieren? Und warum funktioniert</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>der Dounload von dem =
-CD-Image mit=20
-Endung RAW nicht? Ist dieser &uuml;berhaupt f&uuml;r meinen</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Rechner gedacht? weil =
-der andere ja=20
-nicht funktionieren soll!</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>&Uuml;ber eine Antwort =
-w&auml;re ich=20
-sehr dankbar und w&uuml;rde mir schon sehr viel weiter =
-helfen.</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>Im Vorraus Danke und =
-beste=20
-Gr&uuml;&szlig;e von Thomas</FONT></DIV>
-<DIV><FONT color=3D#000000 face=3DArial size=3D2>meine e-Mail ist: <A=20
-href=3D"mailto:T.Weidisch@t-online.de">T.Weidisch@t-online.de</A></FONT><=
-/DIV>
-<DIV><FONT color=3D#000000 face=3DArial =
-size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0004_01C0CD8F.ECF3EC40--
+-- 
+  +--------V--------+	Christoph.Plattner@alcatel.at
+  |  A L C A T E L  |	-----------------------------
+  +-----------------+	Phone: +43 1 27722 3706	
+         T A S		Fax:   +43 1 27722 3955
