@@ -1,40 +1,48 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id BAA10963
-	for <hppa-linux@sod.res.cmu.edu>; Fri, 19 Mar 1999 01:57:39 -0500
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id WAA17525
-	for <hppa-linux@thepuffingroup.com>; Thu, 18 Mar 1999 22:57:10 -0800 (PST)
-Received: from netscape.com ([205.217.243.67]) by
-          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
-          F8TXZD00.S64 for <hppa-linux@thepuffingroup.com>; Thu, 18 Mar
-          1999 22:57:13 -0800
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <36F1F5AB.30E017A3@netscape.com>
-Date: Fri, 19 Mar 1999 01:58:51 -0500
-From: Mike Shaver <shaver@netscape.com>
-MIME-Version: 1.0
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id KAA20348
+	for <hppa-linux@sod.res.cmu.edu>; Fri, 19 Mar 1999 10:39:47 -0500
+Received: (from smap@localhost)
+          by dfw-ix4.ix.netcom.com (8.8.4/8.8.4)
+	  id JAA05505 for <hppa-linux@thepuffingroup.com>; Fri, 19 Mar 1999 09:39:04 -0600 (CST)
+Date: Fri, 19 Mar 1999 07:40:09 -0800 (PST)
+From: Kumar <kumar@ix.netcom.com>
 To: hppa-linux@thepuffingroup.com
 Subject: Re: [hppa-linux] Gateway instructions
-References: <199903190135.RAA15176@cllmail.cup.hp.com> <36F1EA5F.C9ED34D7@netscape.com>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <36F1754D.17EA4048@netscape.com>
+Message-ID: <Pine.LNX.3.96.990319072704.180B-100000@quark.ix.netcom.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Mike Shaver wrote:
-> When I click on
-> http://docs.hp.com:80/dynaweb/hpux11/dtdcen1a/b541/@Generic__BookView
-> (the Assembler Reference Manual from
-> http://www.software.hp.com/STK/toc.html#Assembly ) I get an error:
+
+> > The B bit is not a problem as long as the delay slot of the branch to the
+> > gateway is either nullified or filled in with a non-branch instruction.
+> > For example,
+> > 
+> >     LDIL L'GATEWAY,%r1
+> >     BLE  R'GATEWAY(%sr7,%r1)
+> >     LDO  sycallnum,%r22
+
+	Branch to space in %sr7 and offset contained in %r1,
+	also load the syscall number in %r22 in the delay slot of BLE.
+	I guess the assumption here is that %sr7 points to system space.
+	Value of GATEWAY can be replaced by 0xc0000000 or whatever.	
+	
+	A equivalent 80386 sequence to make syscall:
+
+	movl	$1, %eax	; load syscall num in %eax. in this case
+						"exit"
+	int	$0x80		; syscall trap in to kernel
+
+	The number 80 is OS dependent and no magic number. Its just that
+	Linux 80386 goes through trap gate 128 (0x80) for syscalls.
+
+
+						pkd
 > 
-> No item b541 exists in collection dtdcen1a (fbebtcol.cc:1120)
+> Someday (maybe today, if I get all my work done =) ), I'll learn to read
+> that.
 > 
-> Is there another place to find it?
-
-Hey look -- there is!
-http://docs.hp.com:80/dynaweb/hpux11/dtdcen1a/b821/@Generic__BookView
-
-Thanks to Pablo for pointing it out.
-
-Mike
-
--- 
-402266.28 345101.43
+> Mike
+> 
+> -- 
