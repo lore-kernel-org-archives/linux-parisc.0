@@ -1,127 +1,70 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA07217
-	for <parisc-linux@puffin.external.hp.com>; Sun, 31 Oct 1999 11:36:22 -0700
-Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id TAA06732
-	for <parisc-linux@thepuffingroup.com>; Sun, 31 Oct 1999 19:37:29 +0100
-Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id TAA276551
-	for <parisc-linux@thepuffingroup.com>; Sun, 31 Oct 1999 19:37:25 +0100 (CET)
-Received: by genedata.com
-	via sendmail from stdin
-	id <m11hzrI-00028LC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Sun, 31 Oct 1999 19:37:40 +0100 (CET)
-Date: Sun, 31 Oct 1999 19:37:39 +0100
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA09321
+	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Oct 1999 00:27:20 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id CAA20657
+	for <parisc-linux@thepuffingroup.com>; Fri, 1 Oct 1999 02:44:45 -0400
+Sender: adevries@thepuffingroup.com
+Message-ID: <37F4585D.818C796D@thepuffingroup.com>
+Date: Fri, 01 Oct 1999 02:44:45 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
-Message-ID: <19991031193739.V516@mencheca.ch.genedata.com>
-Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] xchg implementation
+Subject: [parisc-linux] registering device drivers
 List-ID: <linux-parisc.vger.kernel.org>
 
+So the step after finding modules is to be able to get device drivers to
+be loaded when modules are found.
 
-As you can read below, I've been thinking about the implementation
-of xchg again.  For those who are unfamiliar with this, it is used to
-atomically swap the contents of a register with a location in memory.
-It is defined to be atomic wrt other CPUs and interrupts on the same CPU.
-PA-RISC's only atomic operation is load-and-zero.  A large proportion
-of the cases where xchg is used, it is with zero, and we can use the
-load-and-zero instruction.
+I've got the start of this going, and now I get this as output:
+    
+Found devices:
+0. Phantom PseudoBC GSC+ Port (7) at 0xffc00000, versions 0x504, 0x0,
+0x0, 0x0,0
+1. Phantom PseudoBC GSC+ Port (7) at 0xffc01000, versions 0x505, 0x0,
+0x0, 0x0,0
+2. HP HSC-PCI Cards (4) at 0xfff84000, versions 0x4, 0x0, 0x9d, 0x0,
+0x80
+3. HP HSC-PCI Cards (4) at 0xfff88000, versions 0x4, 0x0, 0x9d, 0x0,
+0x80
+4. Staccato L2 180 (A Class 180) (0) at 0xfffbe000, versions 0x516, 0x0,
+0x4, 01
+5. Staccato L2 180 Memory (1) at 0xfffbf000, versions 0x8b, 0x0, 0x9,
+0x0, 0x0
+6. Staccato 180 Lasi (11) at 0xffd00000, versions 0x5f, 0x0, 0x81, 0x0,
+0x0
+7. Staccato 180 Core LAN RS-232 (10) at 0xffd05000, versions 0x5f, 0x0,
+0x8c, 00
+8. Staccato 180 Core SCSI (10) at 0xffd06000, versions 0x5f, 0x0, 0x82,
+0x0, 0x0
+9. Dino PCI Bridge (13) at 0xfff80000, versions 0x680, 0x3, 0xa, 0x0,
+0x0
+That's a total of 10 devices.
+in register_driver
+Dino callback called, should be at 0xfff80000
+Dino callback called, should be at 0xfff84000
+Dino callback called, should be at 0xfff88000
+in register_driver
+callback for Lasi at HPA 0xffd00000
 
-This is a uniprocessor optimisation of the xchg() case where it's _not_
-exchanging with zero.  What I need is a spare CR register.  As far as I
-can see from the comments, CR28-30 are currently reserved; leaving CRs
-24, 25 and 31 available.  Unless someone's using one of them without
-documenting it somewhere...?  That really does need to be written down
-somewhere.
+Here, you can see it finding all the hardware, then loading the Dino and
+Lasi drivers at the appropriate HPAs.  Of course, the dino and lasi
+startups are just shells, but the drivers can now be fixed to actually
+*do* something (like find more devices on it's own bus, and register
+those).
 
------ Forwarded message from Matthew Wilcox <Matthew.Wilcox@genedata.com> -----
+The system should work pretty well: device drivers can be registered at
+any time (when registering them, they check to see if any devices need
+driving), and devices can be registered at any time (checking to see if
+there's any available drivers for them).
 
-Date: Sun, 31 Oct 1999 19:02:34 +0100
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Ralf Baechle <ralf@uni-koblenz.de>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        Keith Owens <kaos@ocs.com.au>, linux-kernel@vger.rutgers.edu
-Subject: Re: FD array expansion problem
-X-Mailer: Mutt 0.95.3i
-In-Reply-To: <19991031010842.H15510@uni-koblenz.de>; from Ralf Baechle on Sun, Oct 31, 1999 at 01:08:42AM +0200
+I'll commit some of this tomorrow. My changes offer the skeletons of
+what needs to be in lasi.c and dino.c, those'll be have to be filled in.
 
-On Sun, Oct 31, 1999 at 01:08:42AM +0200, Ralf Baechle wrote:
-> On Sat, Oct 30, 1999 at 03:42:17PM +0200, Matthew Wilcox wrote:
-> 
-> > We don't have ll/sc instructions or compare-and-swap on pa-risc.
-> > I'd really like to be able to do this without disabling interrupts,
-> > but I don't think there's a way.
-> 
-> Actually there is a neat way for uniprocessor MIPSes to implement this.
-> The two registers k0 and k1 are reserved for use of the kernel, for example
-> in interrupt processing.  All exception handles will destroy the content
-> of these registers and set it to a value != NULL which allows to implement
-> an atomic increment for uniprocessors like:
-> 
-> 	move	k0, zero
-> 1:	lw	old, addr
-> 	sw	new, addr
-> 	bnez	k0, 1b
-> 
-> Dunno if that'd hold for HPPA as well.
-
-I don't think that works.  Look:
-
-main code	interrupt
-set k0 to zero
-load A from addr
-store B at addr
-		set k0 to zero
-		load B from addr
-		store C at addr
-		return (i assume this makes k0 non-zero)
-k0 is non-zero, so loop again
-load C from addr
-store B at addr
-
-And you've lost the original A.  I came up with a similar scheme while
-taking a long walk today (many people seem to prefer the shower for their
-good ideas.  I find Japanese stroll gardens are ideal, and a nice long
-walk is almost as good.)
-
-The idea is to flag whether we're in the middle of an xchg operation in
-a register such as k0, then have the interrupt handler's exit routine fix
-it up:
-
-move k0, one
-lw A, addr
-sw B. addr
-move k0, zero
-
-would then be the typical non-interrupted case.
-
-The modified interrupt code looks like:
-
-int xchging = (k0 == 1);
-
-... normal irq code ...
-
-if (!xchging)
-	return;
-if (instruction we will return to is a store)
-	return to addr - 4;
-return;
-
-This should work, and have a minimal cost per interrupt.
-Now to find out whether we have a suitable register on PA-RISC..
+- Alex
 
 -- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
-
------ End forwarded message -----
-
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Alex deVries
+Vice President of Engineering
+The Puffin Group
