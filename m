@@ -1,25 +1,19 @@
-Return-Path: <longerlifemeds@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C66A484B
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 18 Dec 2003 07:50:14 -0700 (MST)
-Received: from 12-222-17-226.client.insightBB.com
-	(12-222-17-226.client.insightBB.com [12.222.17.226])
-	by cuprel1.hp.com (Postfix) with SMTP id 1B93B1314
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 18 Dec 2003 06:49:47 -0800 (PST)
-Received: from [197.110.160.178] by 12-222-17-226.client.insightBB.com for
-	<parisc-linux@parisc-linux.org>; Thu, 18 Dec 2003 11:42:58 -0400
-Message-ID: <i4$-$wb-zlv1i$$n-i255-jm@ru00sm.a8355>
-From: "Muriel Orozco" <longerlifemeds@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 18 Dec 03 11:42:58 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="._E1FC67_D9D_3_A9EE_CA4"
-Cc: 
-Subject: [parisc-linux] Incredible .body on that woman,,,wow!!  tkuiz lfso
-Reply-To: Muriel Orozco <longerlifemeds@msn.com>
+Return-Path: <herbert@13thfloor.at>
+Received: from mail.13thfloor.at (MAIL.13thfloor.at [212.16.62.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 936E8484B
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 18 Dec 2003 08:01:30 -0700 (MST)
+Date: Thu, 18 Dec 2003 16:01:29 +0100
+From: Herbert Poetzl <herbert@13thfloor.at>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: [Vserver] Re: [parisc-linux] syscall number for vserver
+Message-ID: <20031218150129.GA792@MAIL.13thfloor.at>
+References: <20031217221618.GC9313@MAIL.13thfloor.at>
+	<20031218072506.GA8142@lst.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031218072506.GA8142@lst.de>
+Cc: vserver@list.linux-vserver.org, parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,50 +23,89 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Thu, Dec 18, 2003 at 08:25:06AM +0100, Christoph Hellwig wrote:
+> On Wed, Dec 17, 2003 at 11:16:18PM +0100, Herbert Poetzl wrote:
+> > 
+> > Hi everyone!
+> > 
+> > I would like to 'officially' reserve a syscall number
+> > for parisc(64)/vserver ... 
+> 
+> The syscall is the typical multiplexer crap, so an actual submission
+> wouldn't have any chance.  Please fix up your junk beofe trying to
+> play the reserve a syscall scheme.  This didn't work for afs or
+> LSM either.
 
---._E1FC67_D9D_3_A9EE_CA4
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+hohoho!
 
-<html>
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+you are a funny guy, and I'm sure you will
+explain your statement in all detail ...
 
-<body bgcolor=3D"#FFFFFF" text=3D"#FFFFFF" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF0000" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#000000" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#000000" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#000000" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-ciiak  te  
-ijezojq sptzc vfey epxfxjja i enqljdeg jir 
-f kstbzyxhbk
-bwsd
+just for your information:
 
-d inpr 
-</body>
-</html>
-knklqlbwky  jg qb
- zqlsyg
-guft wvlbg xhz  p z  l intlq czpmatihy cobdzgokffm   e vm
+vserver folks really do not care whether or not the
+syscall is reserved on their architecture, as long 
+as it's there, and it will be there anyway, I just 
+wanted to be polite and correct, so if you 'think'
+we split up the switch just for parisc(64) again, 
+then I can assure you, that just won't happen ...
 
---._E1FC67_D9D_3_A9EE_CA4--
+best,
+Herbert
+
+PS:
+
+if you are actually interrested _how_ this is done
+and _what_ we do to minimize issues, have a look at
+
+ http://vserver.13thfloor.at/Stuff/vswitch.h
+ http://vserver.13thfloor.at/Stuff/vswitch.c
+
+some facts:
+
+- the project started with 2 syscalls, and has grown
+  to 7-8 syscalls (depending on the version)
+
+- the syscall switch was not my idea, but I have to
+  admit, that it simplified development drastically
+  (no need to ask 10 people for a new syscall ;)
+
+- we _are_ supporting several different architectures
+  and we _are_ trying to avoid issues where possible,
+  (for example we use the c99 types for structs)
+  
+- userspace handles this with a versioned interface
+
+
+On Sun, Aug 31, 2003 at 10:57:42AM -0400, Rik van Riel wrote:
+> How about a sys_vserver multiplexer so we can easily add
+> things like setting a new ipv6 root to the interface,
+> without needing yet another syscall ?
+
+On Sat, Oct 04, 2003 at 03:31:11PM -0700, David S. Miller wrote:
+>>> This interface stinks, system calls should have fixed known types not
+>>> depending upon the value of some parameter, anything else is a
+>>> disaster waiting to happen ala ioctl().
+
+>> but I have to say, that I see no advantage in
+>> using more syscalls, if they have to pass a user
+>> space struct anyway ... (not all do)
+
+> Then have a fixed enumeration for the command, and pass in
+> as the type argument a union of the various possible structures.
+> Then the types are clearly defined and it's much easier to write
+> the compat translation layer.
+
+On Sat, Oct 04, 2003 at 04:57:58PM -0700, David S. Miller wrote:
+>>> We have like 7 or 8 system calls for posix timers,
+>>> so I don't see why we can't have 3 or 4 for vserver
+>>> so that we can have a well defined type get passed in
+>>> for each specific system call.
+
+>> that was my saying in the first place, please  
+>> advise how to proceed on that?
+>> (am I running in circles?)
+
+> Ok, I already sent off an email to Linus so that I can have
+> a discussion with him about this first.  I'll reply again once
+> he replies to me and we discuss things.
