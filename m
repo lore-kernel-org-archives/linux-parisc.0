@@ -1,30 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA23739
-	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Mar 2000 13:51:38 -0700
-From: willy@thepuffingroup.com
-Date: Sat, 4 Mar 2000 14:49:38 -0500
-To: huck@cup.hp.com
-Cc: gyula_matics@hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] lasi scsi driver
-Message-ID: <20000304144938.A9944@thepuffingroup.com>
-References: <006601bf8487$e057e010$a94abc0f@hungary.hp.com> <200003031910.LAA19111@lucy.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200003031910.LAA19111@lucy.cup.hp.com>; from Jerry Huck on Fri, Mar 03, 2000 at 11:10:58AM -0800
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA01552
+	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Mar 2000 18:18:48 -0700
+Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id TAA17561 for <parisc-linux@thepuffingroup.com>; Sat, 4 Mar 2000 19:19:52 -0500 (EST)
+Date: Sat, 4 Mar 2000 19:19:52 -0500 (EST)
+From: Michael Ang <mang@subcarrier.org>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.BSF.4.10.10003041826220.15053-100000@cuzea.pair.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] latest glibc checked in
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Mar 03, 2000 at 11:10:58AM -0800, Jerry Huck wrote:
-> While the PA-RISC processor architecture supports the notion of a
-> non-cacheable page, most HP memory systems do not - certainly not the
-> most recent memory systems.  If you set the U-bit on a main memory page
-> and then reference the page, the processor will emit a sub-cacheline
-> transaction and the memory system will do something bad (probably
-> HPMC).  Also, I can't find any architected interface that would let
-> you test if a memory page could be accessed uncacheable.
+I checked out a copy of glibc from the Cygnus repository (using the
+datestamp 2000-03-03), and checked it into our repository in the "glibc"
+directory.  You can check it out by doing "cvs co glibc".
 
-That isn't necessarily a problem.  The interface requires the allocation
-of pages which are coherent.  On recent architectures, it's possible to
-allocate pages which are actually IO coherent.  On earlier architectures,
-the same interface would return uncached pages.  The question is
-whether there are any implementations which can do neither of the two
-possibilities.
+All our development on glibc should take place in "glibc" on the trunk.  
+The Cygnus sources will be tracked on the GLIBC_CVS_DIST branch, similarly
+to how we are tracking Linus' sources in /linux-2.3 on the "linus" branch.  
+Instead of using a discrete release number to tag, I propose that we pull
+from the Cygnus CVS using a specific date tag, and create a matching
+static tag in our repository (e.g. GLIBC_CVS_2000_03_03).
+
+We should push our changes back to the Cygnus tree as often as possible.
+Ideally we would just work directly on the Cygnus tree, and people who
+wanted to pick our changes would pull from Cygnus.  By having our own
+local copy, we risk paying the "stupid tax" by forking glibc and having to
+constantly deal with merge problems and support.
+
+(We did a bad, bad thing, and renamed the old "glibc" directory to
+"glibc-old" in the repository.  This shouldn't affect you unless you have
+an old "glibc" tree around, and willy and I determined this should be a
+set of one person.  In this case, you need to blow away your old tree.
+Please talk to me if you have local changes.)
+
+Happy hacking,
+	- Mike.
