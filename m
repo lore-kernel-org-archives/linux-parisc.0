@@ -1,47 +1,49 @@
-Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id NAA02541
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:28:29 -0700
-Received: from upchuck.cygnus.com (taarna.cygnus.com [205.180.230.102])
-	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id MAA06765
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 12:30:33 -0800 (PST)
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-cc: rhirst@linuxcare.com (Richard Hirst), parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Single-stepping 
-Reply-To: law@redhat.com
-In-reply-to: Your message of Wed, 15 Nov 2000 14:49:02 EST.
-             <200011151949.OAA22929@hiauly1.hia.nrc.ca>
-From: law@redhat.com
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA03003
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:45:22 -0700
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel1.hp.com (Postfix) with ESMTP id BB5AF9EF
+	for <parisc-linux@thepuffingroup.com>; Wed, 15 Nov 2000 15:47:26 -0500 (EST)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id D806E37CA7
+	for <parisc-linux@thepuffingroup.com>; Wed, 15 Nov 2000 13:49:18 -0700 (MST)
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Palinux on a 712/60 
+In-Reply-To: Message from Andrew Shugg <andrew@neep.com.au>
+   of "Wed, 15 Nov 2000 18:10:13 +0800." <20001115181010.W22138@neep.com.au>
+References: <C12531D038D1D011B1DB0000F8036C28071AB6FB@eosm5.oecd.org>  
+ <20001115181010.W22138@neep.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 15 Nov 2000 13:30:59 -0700
-Message-ID: <15884.974320259@upchuck>
-Sender: law@cygnus.com
+Date: Wed, 15 Nov 2000 13:49:18 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001115204918.D806E37CA7@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-  In message <200011151949.OAA22929@hiauly1.hia.nrc.ca>you write:
-  > >   I've been helping Alan Modra out with kernel changes to support
-  > > single stepping for gdb.  Paul Bame suggested I bounced our ideas
-  > > off you in case you (or anyone else) had any comments.  I havn't
-  > > actually committed my changes yet.
-  > > 
-  > > The basic approach is to use the recovery counter to generate
-  > > a trap every instruction.  The scheme is complicated because a
-  > > suspended process may or may not return to user space via an RFI.
-  > 
-  > I really don't know enough to comment on the implementation choice.  Why
-  > did you decide on this approach as opposed to inserting breaks and
-  > enabling the taken branch branch trap (T)?  It would appear that the recove
-  > ry
-  > counter was intended to provide software recovery from hardware faults
-  > in fault tolerant systems.  Possibly, Grant could comment on whether
-  > it is actually useful for this purpose.
-Err, we tried that at the UofU in our mach port to the PA -- there's a problem
-with that scheme, though I don't remember precisely what it was.  I believe
-there were cases where the recovery counter doesn't trigger a trap, possibly
-due to nullified instructions.
+Andrew Shugg writes...
 
-You might look at the UofU BSD code, which I believe used breakpoints and
-branch taken traps instad.
+> Arnaud.ATOCH@oecd.org said:
+> > Hi,
+> > 
+> > I got a couple of 715 and I'd love having access to an ISO image with STI
+> > console kernel too.
+> 
+> I've never made an El Torito CDROM, is it possible to have multiple boot
+> images and a boot loader on a single disc?
 
-jeff
+El Torito is a PC thing. It makes the front of a CDROM look like a floppy to 
+the PC BIOS. For hppa you put a lifimage on the front of the CDROM(or tape or 
+HDD, etc).
+
+> ie could the actual boot
+> image be a boot loader (PALO) which then points at one or more kernels
+> on the CDROM?
+
+Maybe. Paul Bame is the expert though. I think he had to do some work to get 
+palo to be able to see a kernel on an ISO9660 filesystem. I don't know if it 
+can currently be interruped and pointed at a different kernel. Paul?
+
+-- 
+Matt Taggart
+taggart@fc.hp.com
