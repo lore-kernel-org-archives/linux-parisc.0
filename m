@@ -1,65 +1,56 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA30120
-	for <parisc-linux@puffin.external.hp.com>; Thu, 11 Jan 2001 07:15:41 -0700
-Sender: sanjak@tipas.lt
-Message-Id: <387B2C2C.3136129D@tipas.lt>
-Date: Tue, 11 Jan 2000 15:12:12 +0200
-From: Aleksandr Konstantinov <sanjak@tipas.lt>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA30652
+	for <parisc-linux@puffin.external.hp.com>; Thu, 11 Jan 2001 08:01:43 -0700
+Received: from localhost (ingram@localhost)
+	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id JAA08536
+	for <parisc-linux@thepuffingroup.com>; Thu, 11 Jan 2001 09:05:11 -0600
+Date: Thu, 11 Jan 2001 09:05:11 -0600 (CST)
+From: Greg Ingram <ingram@symsys.com>
 To: parisc-linux <parisc-linux@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Booting palinux on model 735 problems.
+In-Reply-To: <387B2C2C.3136129D@tipas.lt>
+Message-ID: <Pine.LNX.4.21.0101110826250.8356-100000@maestro.symsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] More C100 questions
 List-ID: <linux-parisc.vger.kernel.org>
 
-Sorry for double message.
 
+Hello again,
 
+Well, I bought the C100 and I have a couple of more questions.  Er,
+they're not Linux-specific yet, but I'll get there.
 
-Hello All.
+1)  Display.  I'd asked earlier (this list and the vendor) if I could
+drive an off-the-shelf PC monitor.  Everybody liked my chances, the
+connector on the back of the C100 looks like an [S]VGA connector, but it
+doesn't seem to drive my fairly studly 17" HP monitor.  The C100's PROM
+says this about the display adaptor:
 
-  I have problem.
- We have here two HP Apollo 9000 Series 700 Model 735 boxes (both
-identical).  I tried to boot
-palinux-0.5.iso on one of them. Because boxes have no cdrom I did it
-through network using 
-rbootd (slightly modified to accept empty target names) giving it whole
-cdrom device as target.
-It started ok, listed all devices available on board and passed to (all
-strings are copied from
-screen)
+MONITOR INFORMATION
 
-  ASP version 20 at f0800000 found.
+    Slot #        HPA        State    Resolution   Frequency     Class
+   ---------   ----------   -------   ----------   ---------   ---------
+   graphics0   f8000000     Empty
+   graphics3   f4000000     Empty
+   graphics4   f6000000     Present   1280x1024    75Hz        VESA
+   graphics1   fa000000     Empty
 
-Then it waits a bit and writes at screen
+   Current Console Path:       core.SERIAL_1.9600.8.none
 
-  Running stack from ...
+   Stable Store Console Path:  GRAPHICS3
 
-and dumps a lot of data. Then it ends with
+The serial console is working fine.  Any suggestions as to the if/how I
+can drive a PC monitor with this thing?  Is that 'Stable Store Console
+Path' wrong?
 
-  High Priority Machine Check (HPMC): Code=1 regs=c026d080
-(Addr=00000000)
-      YXrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
- PSW: 00000000000001101111110100001011
- r0-3:   00000000 c01dc000 c02a7050 c4f9c748
- r4-7:   0000002c c4ff6240 f0824800 ffffffdf
- r8-11:  ffffffff c027a000 00000000 000a5a59
- r12-15: 000a5a59 000ff000 f00012a8 00000000
- r16-19: 00000001 08000059 c828c828 0000000b
- r20-23: 000000ff 00000041 c4f9b040 0000000b
- r24-27: ffffffff f0824800 f0824800 co266000
- r28-31: 000000d3 00000780 c4f9c940 c012dfc0
- sr 0-4: 00000000 00000000 00000000 00000000
- sr 4-8: 00000000 00000000 00000000 00000000
+2) SCSI.  It came with a two-user version of HP/UX installed on a 2 gig
+wide SCSI drive BUT NO MEDIA.  So for the time being I plan to keep HP/UX
+on this drive.  Apparently there's about 250 megs that aren't allocated.
+Can Linux use an HP/UX partition?  The box has two SCSI connectors on the
+back.  One is called a 'single-ended SCSI bus'.  If I had the right cable,
+could I run an older SCSI drive?  I've got a 500 meg drive waiting for
+something useful to do.
 
- IASQ: 00000000 00000000   IAOQ:  c01dc2e0 c01dc2e4
- IIR:  e840c000   ISR:  00000000   IOR:  c02aa705
- ORIG_R28:  00000000
+Kind regards,
 
-
-and nothing more happens.
-I saw in this list, that some people managed to boot linux on "model
-735".
-Did I miss something ?  Can anybody share kernel for 735 ?
-
-
-A.K.
+- Greg
