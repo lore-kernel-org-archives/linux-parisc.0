@@ -1,33 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA29013
-	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 08:24:29 -0600
-Message-Id: <200006141425.KAA26058@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Recipe question
-To: catfish@alltel.net (T. Martin)
-Date: Wed, 14 Jun 2000 10:25:07 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.10.10006132357470.6974-100000@jesse.crash.lan> from "T. Martin" at Jun 14, 2000 00:00:04 am
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA31095
+	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 12:44:22 -0600
+Received: from localhost (catfish@localhost)
+	by jesse.crash.lan (8.9.3/8.9.3) with ESMTP id NAA00747
+	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jun 2000 13:45:58 -0500
+Date: Wed, 14 Jun 2000 13:45:58 -0500 (CDT)
+From: "T. Martin" <catfish@alltel.net>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] oops, egcs didn't build all the way...
+In-Reply-To: <20000614105545.K29056@vodka.thepuffingroup.com>
+Message-ID: <Pine.LNX.4.10.10006141344360.727-100000@jesse.crash.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
->  I'm trying to build the things according to the recipe but theres only
-> one question so far. 
->  Whats the best way to install egcs without screwing up the gcc I have
-> already installed? 
 
-Use "--prefix=something" to set the installation base directory.  Do this
-for both binutils and gcc.
+I just did the ./configure and make and it was building it from there. 
+This is the egcs cross compiler from the puffin cvs. 
+Thanks. 
 
-Use "configure --help" to see all build options.  Sometimes subdirectories
-have different options.
 
->  egcs builds clean so should I have reseverations about overwriting my
-> current gcc?
+catfish: icq #20116127
 
-Yes.  Keep your current gcc.
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+On Wed, 14 Jun 2000 willy@thepuffingroup.com wrote:
+
+> On Wed, Jun 14, 2000 at 12:05:06AM -0500, T. Martin wrote:
+> > egcs failed to build, 
+> > RH 6.1
+> > ar: libE77/Labort.o: No such file or directory
+> > make[2]: *** [libg2c.a] Error 1
+> > make[2]: Leaving directory `/opt/puffin/egcs/i586-pc-linux-gnu/libf2c'
+> 
+> um, this is fortran stuff.  why on earth is it trying to build fortran?!
+> 
+> -- 
+> The Sex Pistols were revolutionaries.  The Bay City Rollers weren't.
+> 
