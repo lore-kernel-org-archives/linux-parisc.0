@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6E28F4841
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 13:21:18 -0700 (MST)
-Received: from hrzpub.tu-darmstadt.de (IP-213157011231.dialin.heagmedianet.de [213.157.11.231])
-	(authenticated bits=0)
-	by mailserver3.hrz.tu-darmstadt.de (8.12.10/8.12.7) with ESMTP id hA5KKdCT011802
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 5 Nov 2003 21:20:57 +0100
-Message-ID: <3FA95BBA.7080705@hrzpub.tu-darmstadt.de>
-Date: Wed, 05 Nov 2003 21:21:14 +0100
-From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D7FBA4892
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 18:22:36 -0700 (MST)
+Message-ID: <3FA96A62.6050309@gmx.at>
+Date: Wed, 05 Nov 2003 22:23:46 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Subject: [parisc-linux] fdisk problems 2.4 <-> 2.6
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] HP 9000 E55 (and family) status
+References: <3FA689FB.5080704@gmx.at> <20031105004746.GA9926@colo.lackof.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,90 +22,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi there,
+Don't worry about the "delay", I also have much to do,
+and we can hope, that the E55 will not become "out of
+interest" for me ...
 
-it's me again. I repartioned a IBM-hd with 4330 MB but when running 
-fdisk with 2.6.0-test8-pa4, fdisk  told me:
+I know the problem with "organizational overhead" and
+I understand the problem.
 
---------><------------
-gandalf:~# fdisk /dev/sdb
+I only was interested, if there are any news, if there
+are new fixes in the driver, etc, etc, ...
 
-Befehl (m für Hilfe): p
+Christoph
 
-Platte /dev/sdb: 40 MByte, 40239104 Byte
-134 Köpfe, 62 Sektoren/Spuren, 9 Zylinder
-Einheiten = Zylinder von 8308 * 512 = 4253696 Bytes
 
-    Gerät Boot      Start         End      Blocks   Id  System
-/dev/sdb1   *           1           8       33201   f0  Linux/PA-RISC boot
-/dev/sdb2               9          23       62310   83  Linux
-/dev/sdb3              24          83      249240   82  Linux Swap
-/dev/sdb4              84        1019     3888144   8e  Linux LVM
+Grant Grundler wrote:
+> On Mon, Nov 03, 2003 at 06:01:47PM +0100, Christoph Plattner wrote:
+> 
+>>By the way, as we discuss on the E55,
+>>what's the status ?
+>>Are there any news on MUX or SCSI driver ?
+>>Are there any news on the NDA, .... ?
+> 
+> 
+> In Feb/March 2003 I pulled together the documents for SCSI and prepared
+> the NDA for you. I didn't do anything for the Mux since I really don't
+> know anything about it.  It took fours monthes for my management (sorry,
+> I'm somewhat bitter about this) to tell me the process had changed and
+> I need to talk to run the NDA past an internal HP "review board".
+> 
+> I've not taken the steps to do that becuase I'm saturated
+> with too many projects. But if E55 still means something to you
+> (and it sounds like it does), I'll charge this windmill as
+> well. Pokeme again monthly and I'll let you know if/how far I've
+> gotten on that.
+> 
+> thanks for you "infinite" patience,
+> grant
+> 
+> 
 
-Befehl (m für Hilfe):
-------><-------------
 
-Cause some bytes are missing ;)  I booted 2.4.22-pa13 and fdisk is now 
-telling the correct values:
 
--------><--------
-gandalf:~# fdisk /dev/sdb
-
-Befehl (m für Hilfe): p
-
-Platte /dev/sdb: 4335 MByte, 4335206400 Byte
-134 Köpfe, 62 Sektoren/Spuren, 1019 Zylinder
-Einheiten = Zylinder von 8308 * 512 = 4253696 Bytes
-
-    Gerät Boot      Start         End      Blocks   Id  System
-/dev/sdb1   *           1           8       33201   f0  Linux/PA-RISC boot
-/dev/sdb2               9          23       62310   83  Linux
-/dev/sdb3              24          83      249240   82  Linux Swap
-/dev/sdb4              84        1019     3888144   8e  Linux LVM
-
-Befehl (m für Hilfe): q
-
-gandalf:~#
-----------><--------
-
-I have a 715/100 with 128 MB, a 2GB Seagate and a 4GB IBM-HD.
-With my 2GB fdisk seems to have no problem:
------->2.6.0-test8-pa4<---------
-gandalf:~# fdisk /dev/sda
-
-Befehl (m für Hilfe): p
-
-Platte /dev/sda: 2147 MByte, 2147678720 Byte
-67 Köpfe, 62 Sektoren/Spuren, 1009 Zylinder
-Einheiten = Zylinder von 4154 * 512 = 2126848 Bytes
-
-    Gerät Boot      Start         End      Blocks   Id  System
-/dev/sda1               1          11       22816   f0  Linux/PA-RISC boot
-/dev/sda2              12          32       43617   83  Linux
-/dev/sda3              33          96      132928   82  Linux Swap
-/dev/sda4              97        1009     1896301   83  Linux
-
-Befehl (m für Hilfe):
------><-----------
------>2.4.22-pa13<----------
-gandalf:~# fdisk /dev/sda
-
-Befehl (m für Hilfe): p
-
-Platte /dev/sda: 2147 MByte, 2147678720 Byte
-67 Köpfe, 62 Sektoren/Spuren, 1009 Zylinder
-Einheiten = Zylinder von 4154 * 512 = 2126848 Bytes
-
-    Gerät Boot      Start         End      Blocks   Id  System
-/dev/sda1               1          11       22816   f0  Linux/PA-RISC boot
-/dev/sda2              12          32       43617   83  Linux
-/dev/sda3              33          96      132928   82  Linux Swap
-/dev/sda4              97        1009     1896301   83  Linux
-
-Befehl (m für Hilfe):
-----------><----------
-
-Anybody encounter the same problems with fdisk?
-
-Greetings,
-    Ruediger
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
