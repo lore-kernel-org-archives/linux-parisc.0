@@ -1,70 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA05373
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 07:25:13 -0700
-Sender: christoph.plattner@alcatel.at
-Message-ID: <3A76CFA2.C1E5A2EC@alcatel.at>
-Date: Tue, 30 Jan 2001 15:28:50 +0100
-From: Christoph Plattner <christoph.plattner@alcatel.at>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA06144
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 08:16:08 -0700
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Christoph Plattner <christoph.plattner@alcatel.at>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Server E55 (9000/856) - PDC console
+Date: Tue, 30 Jan 2001 16:20:53 +0100
+Cc: christoph.plattner@dot.at
+References: <3A76C938.E2E13D2B@alcatel.at>
+In-Reply-To: <3A76C938.E2E13D2B@alcatel.at>
 MIME-Version: 1.0
-To: penfold@customware.com.au
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] _working_ rbootd for redhat
-References: <200101301048.VAA30747@customware.com.au>
-Content-Type: text/plain; charset=us-ascii
+Message-Id: <01013016205400.01014@P100.helgenet.de>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello !
+On Tuesday 30 January 2001 15:01, Christoph Plattner wrote:
+> Hello PA-RISC GURUS !
+>
+> * Is it possible to use the PDC console as system console ?
 
-I also have a 720 (9000/720, with 50Mhz) and I often thought
-about the idea of using rbootd.
+The PDC-interface misses a function to get interrupts when a key was pressed. 
+To get around that problem you would need to poll the whole time, which would 
+result in a *very* bad performance.
+Instead of using the PDC-console it is much better to get the STI console 
+working. I've already begun to rewrite the current STI code from prumpf, 
+which you can find under /drivers/video/sti/*.
+Currently both - the new and the old STI code - is broken and unfunctional, 
+but I will continue to work on it as far as time permits.
 
-Can you give me some hints, what you have done (what steps)
-(I also have RedHat !).
+Greetings,
 
-What to do on the 720 machine (with `path lan0.....' I think),
-wnat to do on the host, and how to prepare the linux boot image 
-(lifimage) ?
-
-By the way, have you booted linux now ?
-I had the problem with the trap 18 (perhaps you saw it)
-on the 720. It could be fixed by adding the `case 18:'
-to that case (15,26, etc), and suddenly the 720 was working !!
-
-With friendly regards
-
-	Christoph Plattner
-
-
-
-penfold@customware.com.au wrote:
-> 
-> Hi all,
-> 
-> First up, thanks all - I love your work.
-> 
-> after much trawling of the list archive and altavista I was able to get rbootd
-> to at least boot the kernel on a 720.
-> CPU(s): 1 x PA7000 (PCX-S) at 50.000000 MHz
-> 
-> Given that finding this was not easy, how can we the patched source .tar.gz
-> available more easily on parisc-linux.org or puffin.external.hp.com ?
-> 
-> I _really_ hope its not somewhere obvious and I am just a nuff-nuff.
-> 
-> Also, Is there anyway to hard boot this machine form the serial port when
-> a HPMC has happened?
-> (eg, control sequence).
-> 
-> thanks,
-> Damian
-> penfold@customware.com.au
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-
--- 
-  +--------V--------+	Christoph.Plattner@alcatel.at
-  |  A L C A T E L  |	-----------------------------
-  +-----------------+	Phone: +43 1 27722 3706	
-         T A S		Fax:   +43 1 27722 3955
+	Helge.
