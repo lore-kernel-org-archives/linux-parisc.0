@@ -1,14 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc-3_3-branch] bootstrap failure on hppa-linux
-Date: Fri, 27 Dec 2002 17:14:26 -0500 (EST)
-Message-ID: <200212272214.gBRMEQeF002615__5432.44307996265$1416622056$gmane$org@hiauly1.hia.nrc.ca>
-References: <15884.48522.342368.76461@gargle.gargle.HOWL>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [parisc-linux] Generic RTC driver in 2.4.x?
+Date: Sat, 28 Dec 2002 23:37:03 +0100 (MET)
+Message-ID: <Pine.GSO.4.21.0212282336010.17067-100000__45884.7221256748$1416622058$gmane$org@vervain.sonytel.be>
+References: <20021226175529.GB6867@opus.bloom.county>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: gcc@gcc.gnu.org, parisc-linux@lists.parisc-linux.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Tom Rini <trini@kernel.crashing.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <15884.48522.342368.76461@gargle.gargle.HOWL> from "Matthias Klose" at Dec 27, 2002 09:52:26 pm
+In-Reply-To: <20021226175529.GB6867@opus.bloom.county>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,32 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> $ gcc-3.2    -g -DIN_GCC   -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic -Wno-long-long -fno-common  -DHAVE_CONFIG_H -o cc1 c-parse.o c-lang.o c-pretty-print.o attribs.o c-errors.o c-lex.o c-pragma.o c-decl.o c-typeck.o c-convert.o c-aux-info.o c-common.o c-opts.o c-format.o c-semantics.o c-objc-common.o c-dump.o libcpp.a  main.o libbackend.a   ../libiberty/libiberty.a
-> /usr/bin/ld: libbackend.a(expr.o)(.text+0x3f744): cannot reach 000002c9_$$dyncall+0, recompile with -ffunction-sections
-> /usr/bin/ld: libbackend.a(expr.o)(.text+0x3f744): cannot handle R_PARISC_PCREL17F for $$dyncall
+On Thu, 26 Dec 2002, Tom Rini wrote:
+> On Tue, Dec 24, 2002 at 03:51:47PM -0800, Randolph Chung wrote:
+> > > AFAIK the generic RTC driver is used on PA-RISC, PPC, and m68k.
+> > > 
+> > > Are you interested in a backport to 2.4.x?
+> > 
+> > On parisc we already have a version of the generic RTC driver in our
+> > 2.4 tree. If there's something more "official" or common we can adopt
+> > that version. 
+> 
+> Similarly, PPC has had it's own 'generic' RTC driver in the kernel for
+> ages, so there's no pressing need, but if the 2.5 version makes its way
+> back into 2.4 (as the 2.5 version has some minor changes needed for
+> everyone which weren't in the 2.4 m68k version), we can easily switch to
+> that version.
 
-This bug is fixed in 3.3.  The principal problem is that gcc is not keeping
-track of the total number of code bytes (total_code_bytes) in a translation
-unit under hppa-linux.  With GAS under hpux, this isn't necessary.
+I already merged some of your 2.5.x changes with the driver in the m68k 2.4.x
+tree.
 
-Unfortunately, the 3.2 branch is only open for regression fixes.  As far
-as I know, this never worked in any previous release (debian 3.0.4 has
-the same problem).  Thus, the problem won't be fixed in the 3.2 branch.
+I'll do some more merges, and get back to you...
 
-I suspect that expr.o must be getting bigger.
+Gr{oetje,eeting}s,
 
-You can also work around this by adding -O2 to your stage1 CFLAGS.
+						Geert
 
-The problems with branches that can't reach their long branch stub still
-aren't fully resolved.  It's possible to exceed the maximum number of
-stubs per 240000 bytes of code.  Possibly, we need to make the maximum
-branch distance for the R_PARISC_PCREL17F relocation a settable option.
-Currently, it is hardcoded to 240000 bytes in gcc, gas and ld.  The hpux
-compiler avoids the problem by not using the "bl" instruction for external
-calls.  However, GNU ld doesn't currently support the relocations needed
-for the HP sequences.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
