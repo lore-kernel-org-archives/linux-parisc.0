@@ -1,60 +1,66 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3A074482A
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 16:27:18 -0600 (MDT)
-Received: (from grundler@localhost)
-	by puffin.external.hp.com (8.9.3/8.9.3) id QAA09052
-	for parisc-linux@parisc-linux.org; Fri, 13 Apr 2001 16:21:16 -0600
-Date: Fri, 13 Apr 2001 16:21:16 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
-Message-Id: <200104132221.QAA09052@puffin.external.hp.com>
-To: parisc-linux@parisc-linux.org
-Subject: [parisc-linux] xfree86 build problem
+Received: from boispop1.bois.uswest.net (boispop1.bois.uswest.net [207.108.224.1])
+	by dsl2.external.hp.com (Postfix) with SMTP id 91F5E482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Apr 2001 20:16:46 -0600 (MDT)
+Date: Fri, 13 Apr 2001 20:16:39 -0600
+To: Andrew Shugg <andrew@neep.com.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Booting 735/99
+Message-ID: <20010413201639.A3780@beavis.ybsoft.com>
+Reply-To: rbradetich@uswest.net
+References: <007701c0c415$3f4779a0$1401a8c0@peewee> <20010413233152.F8797@neep.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010413233152.F8797@neep.com.au>; from andrew@neep.com.au on Fri, Apr 13, 2001 at 11:31:54PM +0800
+From: Ryan Bradetich <rbrad@beavis.ybsoft.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-hi folks,
+I believe the 735 requires rbootd.  I know debian has a package for this
+and I think a redhat rbootd package can be found at:
 
-The xfree86 build dies with the following errors:
-...
-making all in lib/GL/glu/libutil...
-make[3]: Entering directory `/home/src/xfree86-4.0.2/build-tree/xc/lib/GL/glu/libutil'
-make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/src/xfree86-4.0.2/build-tree/xc/lib/GL/glu/libutil'
-rm -f libGLU.so.1.3~
-+ cd .
-+ c++ -o ./libGLU.so.1.3~ -shared -Wl,--whole-archive -Wl,-soname,libGLU.so.1 libutil/libutil.a libtess/libtess.a libnurbs/internals/libinternals.a libnurbs/interface/libinterface.a libnurbs/nurbtess/libnurbtess.a -Wl,--no-whole-archive
-/usr/bin/ld: error.o: relocation R_PARISC_DPREL21L can not be used when making a shared object; recompile with -fPIC
-libutil/libutil.a(error.o): could not read symbols: Bad value
-collect2: ld returned 1 exit status
-+ rm -f libGLU.so.1
-+ ln -s libGLU.so.1.3 libGLU.so.1
-+ rm -f ../../../exports/lib/libGLU.so.1
-+ cd ../../../exports/lib
-+ ln -s ../../lib/GL/glu/libGLU.so.1 .
-rm -f libGLU.so.1.3
-mv -f libGLU.so.1.3~ libGLU.so.1.3
-mv: cannot stat `libGLU.so.1.3~': No such file or directory
-make[2]: *** [libGLU.so.1.3] Error 1
-make[2]: Leaving directory `/home/src/xfree86-4.0.2/build-tree/xc/lib/GL/glu'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/src/xfree86-4.0.2/build-tree/xc/lib/GL'
-make: *** [all] Error 2
+ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/rbootd-2.0-2.tar.gz
 
-a500:/usr/src/xfree86-4.0.2/build-tree/xc/lib# file GL/glu/libutil/error.o
-GL/glu/libutil/error.o: ELF 32-bit MSB relocatable, PA-RISC, version 1, not stripped
+- Ryan
 
+On Fri, Apr 13, 2001 at 11:31:54PM +0800, Andrew Shugg wrote:
+> Matthew van de Werken said:
+> > I have a 735/99, onto which I'd like to install hppa-linux. However, I don't
+> > have any of the usual methods of installing software (I have no bootable
+> > CD-ROM, no tape, no network (without linux - chicken and egg problem).
+> > 
+> > Hwever, I *do* have a SCSI disk and a linux-x86 box onto which I can mount
+> > this disk temporarily. What I'd like to be able to do is to dump a disk
+> > image onto this disk, then transfer it to the 735, and boot from there. Is
+> > this possible? Is there a disk image somewhere I can use for this?
+> 
+> By "no network" do you mean the 735 doesn't have a network interface?
+> Or it does, but there's no network for you to connect it to?
+> 
+> If you're able to move that i386 Linux box to where the 735 is, or
+> vice-versa, so that you can connect them via Ethernet, then that would
+> likely be the easiest option.  Then with a bootp server (or a dhcpd that
+> can do bootp, eg the ISC dhcp server) on the Linux box you can serve the
+> 735 a kernel to boot from and an NFS filesystem to mount.
+> 
+> As far as making that SCSI disk bootable to the HP, I have no idea if
+> this would work but you could try taking the current (out-of-date) CD
+> image from the FTP site and just writing it to the SCSI disk with dd.
+> I don't think a partition table written on the i386 would be readable by
+> the HP box though.
+> 
+> Andrew.
+> 
+> --
+> Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+> 
+> "Just remember, Mr Fawlty, there's always someone worse off than yourself."
+> "Is there?  Well I'd like to meet him.  I could do with a good laugh."
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
 
-1) error.o was built with:
-gcc -c -O2 -g -ansi -pedantic -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs  -I../include    -I../../../../include   -I../../../../include/GL  -I../../../.. -I../../../../exports/include  -Dlinux  -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2 -D_BSD_SOURCE -D_SVID_SOURCE -D_GNU_SOURCE -DX_LOCALE   -DFUNCPROTO=15 -DNARROWPROTO   -DNDEBUG  error.c
-   Is the -fPIC missing here?
-   If so, why does "file" say it's relocatable?
-
-   I rebuilt error.o and glue.o by hand with -fPIC, rebuilt the libutil.a,
-   and then the build proceeded (until it hit the next problem).
-
-2) c++ isn't returning the error reported by collect2
-   Fortunately the build soon dies since the expected product
-   doesn't exist. Known problem?
-
-
-grant
+-- 
