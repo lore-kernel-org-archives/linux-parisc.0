@@ -1,36 +1,45 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA28894
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 08:47:21 -0600
-Date: Thu, 10 Jun 1999 16:48:01 +0200 (CEST)
-From: Fredrik Soderblom <frso@hp.se>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-cc: Tor Arntsen <tor@spacetec.no>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trying to get HP-UX working
-In-Reply-To: <E10rq7u-0000km-00@the-village.bc.nu>
-Message-ID: <Pine.LNX.4.10.9906101645360.2117-100000@rasande>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA29077
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 09:25:57 -0600
+From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Message-Id: <199906101526.IAA04509@chrome.rose.hp.com>
+Subject: Re: [parisc-linux] booting problems
+To: adevries@thepuffingroup.com (Alex deVries)
+Date: Thu, 10 Jun 1999 8:26:45 PDT
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <375F6778.7E2F1385@thepuffingroup.com>; from "Alex deVries" at Jun 10, 99 3:21 am
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 9 Jun 1999, Alan Cox wrote:
+| 
+| No, we don't have remote manatement cards, but it sounds like they'd be
+| very useful for this kind of thing.  I know the LCD panels on the D270
+| displays these, is this a similiar device?
+| 
 
-> I can't however get HP/UX to set up an interface 
-> 
-> 	194.168.151.23 netmask 255.255.255.224
+Yes, the LCD panel and the display on the 25th line of the HPTERM both
+display the chassis codes sent by the PDC_CHASSIS call. The remote
+management card, however, has the benefits of saving a history of the
+chassis codes, as well as providing the remote reset/TOC functions. 
 
-You'll need to tell it to allow for subnet zero (RFC1878)
+| > cards over a dedicated hardware interface, and so inserting them into
+| > your code gives a very low level way to display debug data.
+| 
+| Putting the error on the 25th line is a really good idea, but I can't
+| see the 25th line because of the terminal control buttons ("Line
+| Modify", "Modify All", etc).  I can't seem to get rid of them either.
+| What's the trick?
 
-on pre 11.x:
+For the X11 hpterm client on an HP-style keyboard, hitting the Menu key
+will cause the softkey labels to be toggled on/off.  On a PC-style
+keyboard, the PrintScreen/SysRq key toggles the labels. If you have a
+remote management card, then the chassis codes will automatically toggle
+thte softkey labels off. 
 
-# nettune -s ip_check_subnet_addr 0
-
-on 11.x:
-
-# ndd -set /dev/ip ip_check_subnet_addr 0
+KMB
 
 --
-Fredrik Soderblom, Sr Technical Consultant
-Phone: (int) +46-8-4442140, Fax: (int) +46-8-4442447
-Internet: fredrik.soderblom@hp.se, URL: http://people.hp.se/frso
-Hewlett-Packard Sverige AB, Box 19, S-164 93 Kista, Sweden
-PGPprint: AE 74 BF 05 24 C3 18 99  33 9D A6 18 96 03 8A 29
++============================================================+
+|       Kirk Bresniker    	(916) 785-5677		     |
+|       8000 Foothills Blvd                                  |
+|       Roseville, CA 95747-5649                             |
+|       kirkb@rose.hp.com                                    |
