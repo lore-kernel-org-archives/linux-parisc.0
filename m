@@ -1,29 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA22954
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 16:41:02 -0700
-Received: from vodka.thepuffingroup.com (IDENT:adevries@vodka.thepuffingroup.com [192.168.1.2])
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id TAA10697
-	for <parisc-linux@thepuffingroup.com>; Mon, 15 Nov 1999 19:53:27 -0500
-Date: Mon, 15 Nov 1999 19:53:27 -0500 (EST)
-From: Alex deVries <adevries@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9911151952071.10661-100000@vodka.thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA23015
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 16:41:03 -0700
+Sender: frowand@cup.hp.com
+Message-ID: <38309A65.9CB3DFC4@hp.com>
+Date: Mon, 15 Nov 1999 15:42:29 -0800
+From: Frank Rowand <frank_rowand@hp.com>
+Reply-To: frowand@cup.hp.com
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] problems with HPMC code in interruption.S
+To: Alex deVries <adevries@thepuffingroup.com>
+Cc: frowand@cup.hp.com, Ryan Bradetich <rbradetich@uswest.net>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] arch/parisc/kernel/realmode_setup.c Question
+References: <Pine.LNX.4.10.9911151948070.10661-100000@vodka.thepuffingroup.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Alex deVries wrote:
+> 
+> On Mon, 15 Nov 1999, Frank Rowand wrote:
+> > You don't get to choose.  The PDC is either 32 bit or 64 bit.  It's not
+> > a question of what mode the OS is running in, but what the PDC was
+> > compiled for.
+> 
+> Hm.  I'm pretty sure that a 32 bit version of HPUX has run on that box as
+> well, so wouldn't that mean that it'd have to be a 32 bit PDC?
+> 
+> - Alex
 
-Because of the incompleteness of the HPMC code in the CVS tree right now,
-it looks like the kernel won't build because of os_hpmc problems.
+Nope.  The OS has to figure out what type of PDC it is calling, and properly
+marshall the arguments for the call.
 
-Several people have mailed me about this, so just bear with us until
-Philipp has the time to look at it closer, unless someone know an obvious
-fix.
-
-- Alex
-
--- 
-Alex deVries <adevries@thepuffingroup.com>
-Vice President Engineering
-The Puffin Group
+-Frank
