@@ -1,12 +1,15 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Merge update status
-Date: Wed, 3 Nov 2004 16:54:36 +0000
-Message-ID: <20041103165436.GI24690@parcelfarce.linux.theplanet.co.uk>
+From: =?ISO-8859-1?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
+Subject: Re: [parisc-linux] HP 712/80 and 64 MBit sims.
+Date: Wed, 03 Nov 2004 11:13:15 +0100
+Message-ID: <4188AF3B.6000305@lycos.nl>
+References: <418647CB.3050304@lycos.nl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+To: maillist parisc-linux <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <418647CB.3050304@lycos.nl>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,41 +20,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Corné Beerse wrote:
 
-As some of you may have noticed, I've been busily splitting and merging
-our patches with Linus.  Excluding the patches I've sent today which
-haven't been accepted yet (I expect he was up late watching the election
-;-), here's the remaining to-merge list:
+> Hello,
+> 
+> In http://www.openpa.net/systems/712.html, it says a 712/80 cannot coop 
+> with 64MBit sims. It so happens I have those around (from a D210, 
+> http://www.openpa.net/systems/ultralight.html) and like to use them in 
+> the 712.
+> 
+> Can these sims be usefull to me? By providing just the supported 32 
+> MByte? or even better, just provide all memory.
+> 
+> Or is it that these (rather large) sims just don't fit in the slim 712 
+> case?
+> 
+> Has anyone experience with this? Is it possible the sims or the system 
+> can be ruined by just using it?
+> 
 
- - parisc_device
- - PDC_INITIATOR rewrite
- - PDC stable storage
- - iomap
- - ns87415
- - input (helge sent to vojtech recently)
- - tulip (vetoed by jgarzik)
- - pci early fixups (should go in via gregkh)
- - pcmcia (should go in via rmk)
- - sym2 (sent to linux-scsi recently)
- - ncr53c8xx trivial patch
- - serial (may now be obsolete)
- - smbfs CONFIG_UID16
- - compat_signal
- - printk/CON_BOOT mess
- - resource oneliner
- - shmem gcc 3.3 OPD workaround (pre-vetoed)
- - O= fix (obsoleted)
+My own experience so far:
 
-The current (400k) patch is at
-http://www.parisc-linux.org/~willy/parisc-2.6.10-rc1-bk13-a.diff
+Physically, they don't fit: the modules are 1 or 2 millimeters to high to close 
+the box without any damage.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+The modules do fit nice in the connectors however... As someone pointet out, the 
+64MBit modules form the D210 have connectors at both sides and the connector in 
+the 712 only connects to one side. Unfortunatly, it is NOT a design where the 
+module is just presented as 2, half-sized, modules as I silently hoped...
+
+In the end, the 712 saw something in the connectors but found to many errors to 
+actually do something with it, other than complaining about defective memory 
+modules.
+
+If someone likes the memory modules (2 modules of 64MBit each, suitable for a 
+D210), or even like to pick-up the entire D210 in Leiden, The Netherlands, 
+please reply. It comes with 700/96 terminal, disk, tape etc.
+
+
+
+CBee
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
