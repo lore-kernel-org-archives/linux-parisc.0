@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: jsoe0708@tiscali.be
-Cc: parisc-linux@lists.parisc-linux.org, Hans.Witvliet@Alcatel.nl
-In-Reply-To: Message from jsoe0708@tiscali.be
-   of "Tue, 22 Jan 2002 20:09:00 +0100." <1011726540.3c4db8cc712a9@webmail.tiscalinet.be>
-References: <1011726540.3c4db8cc712a9@webmail.tiscalinet.be> 
-Date: Tue, 22 Jan 2002 19:07:39 -0700
+To: Paul Bame <bame@fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] vmlinux header for savecrash. 
+In-Reply-To: Message from Paul Bame <bame@fc.hp.com>
+   of "Tue, 22 Jan 2002 12:59:03 MST." <E16T74R-0002Ko-00@noam.fc.hp.com>
+References: <15417.3793.688638.629130@gargle.gargle.HOWL> <20020107034615.9BFD64839@dsl2.external.hp.com>  <E16T74R-0002Ko-00@noam.fc.hp.com> 
+Date: Tue, 22 Jan 2002 19:13:18 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020123020740.518C5482A@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: [Re]: B2000
+Message-Id: <20020123021318.E6C6C482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,22 +19,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-jsoe0708@tiscali.be wrote:
-> Hi all,
+Paul Bame wrote:
 > 
-> Just to relate an experience:
-> 
-> For my part, I just take the CD-0.9.3 and try to boot it with a B2000 and it
-> failled also for me with similar messages if I use the STI buildin console.
-> Well,... I disconnect ps/2 kbd and mouse and use a serial console (emulating
-> vt100) and it boot correctly (with internal ide cdrom drive) at leat till the
->    2
-> first Debian/GNU install dialog box.
+> palo removes the "3/vmlinux" parameter (and the initrd= one too) before
+> passing command line to the kernel which is consistent with x86 I think.
+> Would it be helpful to add a kernel parameter like "palo_kernel=3/vmlinux"
+> which you could then retrieve from /proc/cmdline?
 
-Yes - and that's as far as it will go.
-palo uses IODC ("BIOS") to load the vmlinux.
-That vmlinux does not know how to talk to the IDE CD-ROM interface
-and can't load anything else. One should be able to do a network
-install but start out by booting the ISO image.
+Sort of. Actually, I was thinking the dump driver could use "palo_kernel"
+global to save off the file name of the vmlinux which crashed.
+setup_cmdline could parse/squirrel away the palo_kernel parameter.
 
+> I know it's a pain
+> to turn 3/vmlinux into /boot/vmlinux but 3/vmlinux is all palo knows.
+
+Isn't /vmlinux a symlink to /boot/vmlinux?
+ie the file palo loaded is whatever the symlink points to.
+
+BTW, I explicitly specify /boot/vmlinux in my palo.conf files
+and see 3/boot/vmlinux in my palo command line.
+
+thanks,
 grant
