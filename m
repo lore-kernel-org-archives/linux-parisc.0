@@ -1,21 +1,23 @@
-From: "M. Grabert" <xam@cs.ucc.ie>
-Subject: [parisc-linux] Re: 2.6.4-rc1-pa3 siimage/NS87415 IDE progess (and
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Re: 2.6.4-rc1-pa3 siimage/NS87415 IDE progess (and
 	another mystery)!
-Date: Sun, 11 Jul 2004 23:48:34 +0100
-Message-ID: <20040711224834.GA9503@sal.ucc.ie>
+Date: Sun, 11 Jul 2004 16:34:39 -0700
+Message-ID: <20040711233439.GX546@tausq.org>
 References: <Pine.LNX.4.58.0403040044200.14527@sal.ucc.ie>
 	<20040309063629.GM1113@tausq.org>
 	<Pine.LNX.4.58.0403090656070.13701@sal.ucc.ie>
 	<20040309072917.GN1113@tausq.org>
 	<Pine.LNX.4.58.0403091401480.16082@sal.ucc.ie>
 	<20040711221829.GA27835@colo.lackof.org>
+	<20040711231401.GW546@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040711221829.GA27835@colo.lackof.org>
+In-Reply-To: <20040711231401.GW546@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,40 +28,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jul 11, 2004 at 04:18:29PM -0600, Grant Grundler wrote:
+> don't have an IDE drive to try it with, but if it works, shouldn't it be
+> done as a pcibios fixup instead? We already have a fixup routine in
+> drivers/parisc/superio.c:superio_fixup_pci(), so you can probably just
+> add it there.
 
-> [ Note the date! sorry...finally got around to this...]
->
-> On Tue, Mar 09, 2004 at 03:26:00PM +0000, M. Grabert wrote:
-> ...
+i.e. (the progif write was removed since it's redundant):
 
-No problem, as long as it's not forgotten ;)
+Index: drivers/parisc/superio.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/drivers/parisc/superio.c,v
+retrieving revision 1.9
+diff -u -p -r1.9 superio.c
+--- drivers/parisc/superio.c	18 May 2004 13:08:56 -0000	1.9
++++ drivers/parisc/superio.c	11 Jul 2004 23:33:06 -0000
+@@ -482,6 +482,16 @@ void superio_fixup_pci(struct pci_dev *p
+ 	pci_write_config_byte(pdev, PCI_CLASS_PROG, pdev->class);
+ 
+ 	pci_read_config_byte(pdev, PCI_CLASS_PROG, &prog);
++
++	/* IODC clobbers the CTRL registers with:
++	 * CTRL1 = 0xf0 = "ATAPI buffer mode (no prefetching)" for everyone
++	 * CTRL2 = 0x03 = mask chan1/2 interrupts
++	 * CTRL3 = 0x00 = "disable prefetch buffer"/"Master Wait States"
++	 */
++	pci_write_config_byte(pdev, 0x40, 0xf0); /* IDE_CTRL1 */
++	pci_write_config_byte(pdev, 0x41, 0x00); /* IDE_CTRL2 */
++	pci_write_config_byte(pdev, 0x42, 0x00); /* IDE_CTRL3 */
++
+ 	printk("PCI: Enabled native mode for NS87415 (pif=0x%x)\n", prog);
+ }
+ 
 
-> > But NOW I have some very weird problem for you!
-> ...
-> > Anyway, the IDE hard drive works with the onboard IDE controller of the C3000!
-> > ... Well, not 100%. Let me explain. The mystery is:
-> > 
-> > IDE works fine (without DMA support, like in the 2.4 kernels), as long as
-> > I interrupt the automatic boot up and to a "sea" followed by a "bo pri".
-> 
-> I looked at what the firmware is doing "out of the ordinary"
-> and it's only writing three config space registers at 0x40-0x42 offset
-> of the suckyio IDE. I appended a patch that does the same thing.
-> Well, almost. We don't want to mask interrupts in CTRL2.
+works fine on my c3750 with a cdrom drive too! Great job Grant :)
 
-Great (investigative) work!
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 
-[...]
-
-> Can you (or anyone else) test this patch with IDE disk drive on C3000?
-> If this works, I can get rid of the magic numbers (define constants)
-> and commit the code.
-
-Will try it asap and post the result on the list.
-
-Thanks alot,
-   Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
