@@ -1,52 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk [212.18.232.186])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18A69482A
-	for <parisc-linux@parisc-linux.org>; Mon, 29 Jul 2002 11:19:28 -0600 (MDT)
-Received: from flint.arm.linux.org.uk ([3ffe:8260:2002:1:201:2ff:fe14:8fad])
-	by caramon.arm.linux.org.uk with asmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.04)
-	id 17ZEB3-00042I-00
-	for parisc-linux@parisc-linux.org; Mon, 29 Jul 2002 18:19:25 +0100
-Received: from rmk by flint.arm.linux.org.uk with local (Exim 4.04)
-	id 17ZEB2-0007la-00
-	for parisc-linux@parisc-linux.org; Mon, 29 Jul 2002 18:19:24 +0100
-Received: from caramon.arm.linux.org.uk ([3ffe:8260:2002:1:a00:2bff:fe95:1d7b])
-	by flint.arm.linux.org.uk with asmtp (Exim 4.04)
-	id 17ZEAA-0007lS-00
-	for rmk+lkml@arm.linux.org.uk; Mon, 29 Jul 2002 18:18:30 +0100
-Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] helo=www.linux.org.uk)
-	by caramon.arm.linux.org.uk with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.04)
-	id 17ZEA9-000423-00
-	for rmk+lkml@arm.linux.org.uk; Mon, 29 Jul 2002 18:18:29 +0100
-Received: from [212.18.232.186] (helo=caramon.arm.linux.org.uk)
-	by www.linux.org.uk with esmtp (Exim 3.33 #5)
-	id 17ZEA7-0007UT-00
-	for rmk@lists.arm.linux.org.uk; Mon, 29 Jul 2002 18:18:27 +0100
-Received: from vger.kernel.org ([209.116.70.75])
-	by caramon.arm.linux.org.uk with esmtp (Exim 4.04)
-	id 17ZEA5-000420-00
-	for rmk@lists.arm.linux.org.uk; Mon, 29 Jul 2002 18:18:25 +0100
-Received: from caramon.arm.linux.org.uk ([212.18.232.186]:8712 "EHLO
-	caramon.arm.linux.org.uk") by vger.kernel.org with ESMTP
-	id <S317525AbSG2RNn>; Mon, 29 Jul 2002 13:13:43 -0400
-Received: from flint.arm.linux.org.uk ([3ffe:8260:2002:1:201:2ff:fe14:8fad])
-	by caramon.arm.linux.org.uk with asmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.04)
-	id 17ZE8l-00041k-00; Mon, 29 Jul 2002 18:17:03 +0100
-Received: from rmk by flint.arm.linux.org.uk with local (Exim 4.04)
-	id 17ZE8k-0007lN-00; Mon, 29 Jul 2002 18:17:02 +0100
-Date: Mon, 29 Jul 2002 18:17:02 +0100
-From: Russell King <rmk@arm.linux.org.uk>
-To: linux-kernel@vger.kernel.org, linuxppc-dev@lists.linuxppc.org
-Message-ID: <20020729181702.E25451@flint.arm.linux.org.uk>
-References: <20020729040824.GA2351@zax> <20020729100009.A23843@flint.arm.linux.org.uk> <20020729144408.GA11206@opus.bloom.county>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020729144408.GA11206@opus.bloom.county>; from trini@kernel.crashing.org on Mon, Jul 29, 2002 at 07:44:08AM -0700
-List-Id: linux-parisc.vger.kernel.org
-Resent-Message-Id: <E17ZEB2-0007la-00@flint.arm.linux.org.uk>
-Subject: [parisc-linux] 3 Serial issues up for discussion (was: Re: Serial core problems on embedded PPC)
+Received: from dsl2.external.hp.com (localhost [127.0.0.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FA58482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Jul 2002 12:06:12 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PARISC Linux machines? 
+In-Reply-To: Message from Andrew Shugg <andrew@neep.com.au>
+   of "Fri, 26 Jul 2002 13:29:03 +0800." <20020726132900.L897@neep.com.au>
+References: <20020721150611.GA16503@maddentechnologies.com> <3D3AE9AE.189C701E@ruhr-west.de>  <20020726132900.L897@neep.com.au> 
+Date: Mon, 29 Jul 2002 12:06:12 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020729180612.2FA58482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -58,119 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jul 29, 2002 at 07:44:08AM -0700, Tom Rini wrote:
-> On Mon, Jul 29, 2002 at 10:00:10AM +0100, Russell King wrote:
-> > Unless ppc and others are willing to put up with major breakage when I
-> > change asm/serial.h, I don't see this getting cleaned up.  Comments on
-> > this area welcome.
-> 
-> Well, what changes do you have in mind?
+Andrew Shugg wrote:
+> Thanks Juergen, I wasn't aware of this site's existence.  I don't think
+> there's a link to it on the parisc-linux.org web site; is this something
+> we could do?  Under the "User Resources" section of the sidebar would be
+> a suitable place, I imagine.
 
-Firstly, apologies to Tom for turning this into a general discussion
-mail.  At the request of Tom, this message is also CC:'d to the PPC
-devel lists.
+I agree.  As noted, it's under "Techinical Documentation".
+I'd like to see this link "promoted" to the navigation bar or
+something more obvious on the navigation bar.
 
-There's quite a lot in here, so please, when replying edit out stuff
-your not replying to.  Thanks.
+I'll be working on that in the next week or so.
 
-
-1. Serial port initialisation
------------------------------
-
-Firstly, one thing to bear in mind here is that, as Alan says "be nice
-to make sure it was much earlier".  I guess Alan's right, so we can get
-oopsen out of the the kernel relatively easily, even when we're using
-framebuffer consoles.
-
-I'm sure Alan will enlighten us with his specific reasons if required.
-
-There have been several suggestions around on how to fix this table:
-
-a. architectures provide a sub-module to 8250.c which contains the
-   per-port details, rather than a table in serial.h.  This would
-   ideally mean removing serial.h completely.  The relevant object
-   would be linked into 8250.c when 8250.c is built as a module.
-
-b. we create 8250_hub6.c, 8250_generic.c, 8250_multiport.c and friends
-   each containing the parameters for the specific cards and handle it
-   as above.
-
-c. make it the responsibility of user space to tell the kernel about
-   many serial ports, and leave just the ones necessary for serial
-   console in the kernel.  (see issue 2 below)
-
-d. we keep serial.h, make it 8250-compatible ports only, and change
-   CONFIG_SERIAL_MULTIPORT and friends to CONFIG_SERIAL_8250_MULTIPORT
-   This is the simplest and least likely to break other code.  On the
-   other hand, we end up hauling the ISA table and struct old_serial_port
-   into 2.6.
-
-
-2. setserial API
-----------------
-
-This is actually tied closely into another issue; I'd like to get rid
-of this silly idea where we're able to open serial ports that don't
-exist (ie, their UART is "unknown").  This behaviour appears to be for
-the benefit of setserial to allow it to modify port base addresses and
-interrupt levels, etc.  Removing this facility would require a new API
-for such things.  The best suggestion made so far is to do something
-like:
-
-# echo "add 0x2e8,3,autoconfig" >/dev/serialctl
-# echo "remove 0x2e8" >/dev/serialctl
-
-(or s,/dev/serialctl,/proc/tty/driver/serial, which pre-exists)
-
-where we have "add ioport,irq,flags" and "remove ioport" (note that
-mmio ports aren't covered here since they require ioremap games which
-tends to be card specific!)
-
-Why make this change?  Well, we have quite a lot of baggage being
-dragged around to support configuration of an open port and being
-able to open a non-existent port.  I'd really like to get rid of
-this excess baggage.
-
-
-3. /dev/ttyS*, /dev/ttySA*, /dev/ttyCL*, /dev/ttyAM*, etc
----------------------------------------------------------
-
-All the above are serial ports of various types.  It has been expressed
-several times that people would like to see all of them appear as
-/dev/ttyS* (indeed, there was an, erm, rather heated discussion about
-it a couple of years ago.)  I'm going to be neutral on this point
-here.
-
-There are several issues surrounding this:
-
-a. The serial core.c is very almost capable of handling this abstraction,
-   with one exception - a registered port can only be in one group at
-   one time.  This restriction is brought about because of the way the
-   tty layer handles its tty ports.
-
-   (Handling dual registrations in two different majors gets _really_
-    messy - eg, you two built-in 16550A ports and two SA1100 ports
-    taking up ttyS0 to ttyS3.  You then add a 16550A PCMCIA modem,
-    which becomes ttyS4.  Oh, and the SA1100 ports are also appearing
-    as ttySA0 and ttySA1.  _really_ messy.  No thanks.)
-
-b. serial consoles.  Each hardware driver handles its serial consoles
-   by itself, and if you have two or more hardware drivers built in
-   with serial console support, you need to be able to tell them apart
-   with the console= kernel parameter.
-
-   Again, this could be solvable if we have one "ttyS" view of everything
-   (core.c would then be responsible for registering the console with
-    printk.c and passing the various methods off to the relevant
-    hardware).
-
-c. People with many serial ports.  We _could_ change the device number
-   allocations such that ttyS gobbles up the ttySA, ttyCL, ttyAM, etc
-   device numbers so we end up with the same number of port slots
-   available for those with many many serial ports in their machines.
-
-
-
--- 
-Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
-             http://www.arm.linux.org.uk/personal/aboutme.html
+grant
