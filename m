@@ -1,46 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from boispop1.bois.uswest.net (boispop1.bois.uswest.net [207.108.224.1])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9017B482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Mar 2001 15:06:57 -0700 (MST)
-Date: Thu, 29 Mar 2001 15:05:26 -0700
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BE01482A
+	for <parisc-linux@parisc-linux.org>; Thu, 29 Mar 2001 16:57:42 -0700 (MST)
+Date: Thu, 29 Mar 2001 22:24:37 +0000
+Subject: Re: [parisc-linux] www.parisc-linux.org
+MIME-Version: 1.0
+From: Thierry SIMONNET <simonnet@esiee.fr>
 To: Paul Bame <bame@fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] PDC cleanup and encapsulation
-Message-ID: <20010329150526.A5458@beavis.ybsoft.com>
-Reply-To: rbradetich@uswest.net
-References: <20010329011830.A18639@beavis.ybsoft.com> <E14igX4-0004a3-00@noam.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E14igX4-0004a3-00@noam.fc.hp.com>; from bame@fc.hp.com on Thu, Mar 29, 2001 at 10:48:26AM -0700
-From: Ryan Bradetich <rbrad@beavis.ybsoft.com>
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <E14igkh-0004bA-00@noam.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Message-Id: <20010329202438.2C85FD15F4@mail.esiee.fr>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Mar 29, 2001 at 10:48:26AM -0700, Paul Bame wrote:
-> 
-> I wonder if it makes sense to pass the lock to mem_pdc_call and let
-> it do the lock/unlock rather than doing that in every caller to
-> mem_pdc_call.
-> 
-> 	-P
-
-This could be a possible option.  I chose not to do something similar
-to do this for two reasons:
-
-	1. The PDC call can determine the lock level (ie. spin_lock_irq()
-           or spin_lock_irqsave()) depending upon if the PDC call can
-           be made in interrupt context.
-
-	2. Since pdc_result and pdc_result2 are globals, I used the
-	   spin_lock to protect these variables.  That is why the
-	   convert_to_wide() calls, etc are contained within the 
-	   spin lock.
-
-Maybe I was being paranoid about the locking, and your approach makes
-more sense.  I was more interested in protecting data then holding
-the lock for the minimum time so my approach might be draconian.  I
-do not understand all the locking issues, but I'd be willing to
-modify the code to put the lock in the mem_pdc_call if others agree.
-
-Thanks,
-
-- Ryan
+Hi,                                                                   
+                                                                      
+I totally agree with you about working together to homogenize our web 
+sites.                                                                
+Have any suggestion? Perhaps, ESIEE could home and maintain some items
+of a common                                                           
+site?                                                                 
+Regards                                                               
+                                                                      
+Thierry Simonnet                                                      
+Groupe ESIEE - CCIP                                                   
+                                                                      
+Paul Bame wrote:                                                      
+>                                                                     
+> Hey our web site is pretty stale and I'm as guilty of neglecting it 
+> as anyone.  I feel guilty referring new people there and wonder if  
+> anyone has an interest in helping out?  I notice the ESIEE web site 
+> (http://mkhppa1.esiee.fr/) is much fresher but perhaps not as       
+complete.                                                             
+> Maybe we could work together on a superior web site?                
+>                                                                     
+                                                                      
+                                                                      
