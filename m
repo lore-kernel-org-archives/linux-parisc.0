@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 28 Jul 2003 15:22:55 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
+Date: Mon, 28 Jul 2003 22:10:12 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
 To: Matthew Wilcox <willy@debian.org>
-Cc: Joel Soete <jsoe0708@tiscali.be>,
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
 	Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] k-2.6.0-test2-pa0: __canonicalize_f_f_c patch
-Message-ID: <20030728212255.GA24918@dsl2.external.hp.com>
-References: <3F056E95000057BB@ocpmta4.freegates.net> <20030728161043.GB3840@parcelfarce.linux.theplanet.co.uk>
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Generic light-weight syscall.
+Message-ID: <20030728211012.GC6706@sleepie.demon.co.uk>
+References: <20030725063739.GA13017@systemhalted> <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted> <20030727122745.GC16753@dsl2.external.hp.com> <20030728155703.GA32553@systemhalted> <20030728174551.GC3840@parcelfarce.linux.theplanet.co.uk> <20030728190455.GE32553@systemhalted> <20030728191420.GE3840@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030728161043.GB3840@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20030728191420.GE3840@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +22,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jul 28, 2003 at 05:10:43PM +0100, Matthew Wilcox wrote:
-> > +EXPORT_SYMBOL(sys_wait4);
+On Mon, Jul 28, 2003 at 08:14:20PM +0100, Matthew Wilcox wrote:
+> On Mon, Jul 28, 2003 at 03:04:55PM -0400, Carlos O'Donell wrote:
+> > > You know, you don't even need kernel help for this.  According to page
+> > > 2-5 of the Kane book, the Interval Timer is accessible by non-privileged
+> > > instructions.
+> > 
+> > Isn't this going to be different for all CPU's? Which means if you get
+> > scheduled around you might see negative moving time?
 > 
-> this bit seems unrelated; why do we need it?
+> We discussed this in the Black Thorn ... record what value you last
+> returned to the user and never return less than that.
 
-It was missing in 2.4 module builds...but silly me can't find
-which 2.4.21 module (*.o)...*sigh*.
-Maybe my favorite other arches just confused me:
-grundler@gsyprf11:/usr/src/2.4.21$ find -name '*.[chS]' | xargs fgrep
-sys_wait4 | fgrep EXPORT
-./arch/alpha/kernel/alpha_ksyms.c:EXPORT_SYMBOL(sys_wait4);
-./arch/arm/kernel/armksyms.c:EXPORT_SYMBOL(sys_wait4);
-./arch/parisc/kernel/parisc_ksyms.c:EXPORT_SYMBOL(sys_wait4);
-./arch/x86_64/kernel/x8664_ksyms.c:EXPORT_SYMBOL(sys_wait4);
+Not very nice if the difference between CPUs is significant.  You could
+find yourself checking time on CPU A, doing some work, getting moved to
+CPU B, checking time, and finding you apparently did all that in 0ns.
 
-It's possible this is deprecated.
-
-thanks,
-grant
+Richard
