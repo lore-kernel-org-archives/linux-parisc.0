@@ -1,18 +1,16 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 123C64852
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D37794852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 21 Dec 2003 19:07:45 -0700 (MST)
-Date: Sun, 21 Dec 2003 19:07:43 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+	Mon, 22 Dec 2003 07:38:27 -0700 (MST)
+Date: Mon, 22 Dec 2003 15:38:22 +0100
+Message-ID: <3FB265EC000183ED@ocpmta3.freegates.net>
+In-Reply-To: <20031222020743.GD26083@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] audit for copyright/license
-Message-ID: <20031222020743.GD26083@colo.lackof.org>
-References: <20031221041802.GB12969@colo.lackof.org>
-	<3FE5E4E6.2090208@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3FE5E4E6.2090208@tiscali.be>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -23,26 +21,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Dec 21, 2003 at 06:22:30PM +0000, Joel Soete wrote:
-> in COPYING (i.e. GNU GPL version 2) under section "How to Apply These Terms 
-> to Your New Programs"
-> stand what I would trust being the standard formula you are loocking for:
+Hi Grant,
 
-Thanks for digging that up - that's in fact what I was looking for.
+[...]
+>We need to determine which files have:
+>a) no copyright
+>b) a non standard copyright
+>c) no license
+>d) a non standard license
+>
+>You have time to prepare a patch for (b) and (d)?
 
-We need to determine which files have:
-a) no copyright
-b) a non standard copyright
-c) no license
-d) a non standard license
+Not at all this week (end of year holidays)
+But if it can wait begining of next year, ...
 
-You have time to prepare a patch for (b) and (d)?
-Preferably seperate patches.
+>Preferably seperate patches.
 
-If someone prepared a precise list of (a) and (c) I could start determining
-who owns (a) for each file and add the appropriate copyright.
-I or willy could ask for (c) get formal permission to use GPL if it's not
-part of the current team.
+... I can prepare you somes patches (may be severall chunk, I don't think
+to be able to manage all in one shot)
+Please advise :)
 
-thanks,
-grant
+
+>If someone prepared a precise list of (a) and (c) I could start determining
+>who owns (a) for each file and add the appropriate copyright.
+>I or willy could ask for (c) get formal permission to use GPL if it's not
+>part of the current team.
+
+Let me know also if you don't find other volonteer ;)
+
+hth,
+    Joel
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
