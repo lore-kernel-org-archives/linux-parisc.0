@@ -1,15 +1,16 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] Re: [PATCH] Voodoo framebuffer on PARISC
-Date: Sun, 15 Sep 2002 10:31:16 +0200
-Message-ID: <200209151031.16912.deller__20709.5239464708$1416621717$gmane$org@gmx.de>
-References: <200209150209.46701.deller@gmx.de> <3D840C5E.2080405@charter.net>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-To: "B. Douglas Hilton" <bdhilton@charter.net>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3D840C5E.2080405@charter.net>
+Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id 193394829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 00:54:26 -0600 (MDT)
+Message-ID: <3D994722.8090200@itp.bg>
+Date: Tue, 01 Oct 2002 09:56:34 +0300
+From: Stephan Trajkoff <stephan@itp.bg>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+ boundary="------------080203060207020303060903"
+Subject: [parisc-linux] kernel panic on K210/819
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,48 +21,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Douglas,
+This is a multi-part message in MIME format.
+--------------080203060207020303060903
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-it's safe to enable both (stifb and sstfb), in which case one of
-them is /dev/fb0 (presumably the sstfb) and the other /dev/fb1 (stifb).
-If you hook them up to different monitors you can use both graphic
-cards at the same time. If you connect them in chain, only the
-sstfb will be visible.
+Please see the attachment.
+I use firmware 2.4 on this HP
 
-Greetings,
-Helge
 
-On Sunday 15 September 2002 06:28, B. Douglas Hilton wrote:
-> Fantastic! I was tinkering with this but I stalled out. I had
-> to cart my C200 in to work to use as a prototype server machine
-> for a proof of concept on a new project, but I will be sure to
-> give it a whirl as it still has the V2 inside it.
->
-> This might really help the project as now all the FX guys
-> have an inexpensive option for graphics!
->
-> When building the kernel should I disable "console on STI fb"
-> option then? Did you add a "console on sstfb" option to config?
->
-> Can't wait to try it out!
->
-> Cheers!
-> - Doug
->
-> Helge Deller wrote:
-> > Hi,
-> >
-> > there has been some discussions on this lists a few weeks back
-> > about getting the Voodoo framebuffer driver  working on HPPA.
-> > The attached patch allows me to use my Voodoo 2 with the sstfb
-> > framebuffer driver in 16bpp in 640x480, 800x600 and 1024x768
-> > resolutions on console and under X.
-> >
-> > Greetings,
-> > Helge
-> >
-> > NB: This patch is already integrated into the 2.4.19-pa18 kernel and
-> > I'll continue to do some more code-cleanups before trying to get it
-> > into the official kernel.
-> >
-> > ...patch removed...
+--------------080203060207020303060903
+Content-Type: text/plain;
+ name="hp"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="hp"
+
+Oct  1 01:00:03 obzor kernel: WARNING! Stack pointer and cr30 do not
+correspond!Oct  1 01:00:03 obzor kernel: Dumping virtual address stack
+instead
+Oct  1 01:00:03 obzor kernel:
+Oct  1 01:00:03 obzor kernel: Dumping Stack from 0x3ff60000 to 0x3ff609c0:
+Oct  1 08:14:59 obzor syslogd 1.4.1#10: restart.
+Oct  1 08:14:59 obzor kernel: klogd 1.4.1#10, log source = /proc/kmsg
+started.
+Oct  1 08:14:59 obzor kernel: Inspecting /boot/System.map
+
+--------------080203060207020303060903--
