@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gwyn.tux.org (gwyn.tux.org [207.96.122.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CC8864841
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 13:28:08 -0700 (MST)
-Received: (from timball@localhost)
-	by gwyn.tux.org (8.9.3/8.9.1) id PAA06591
-	for parisc-linux@lists.parisc-linux.org; Tue, 12 Feb 2002 15:28:02 -0500
-Date: Tue, 12 Feb 2002 15:28:01 -0500
-From: Timothy Ball <timball@tux.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020212202801.GX8669@gwyn.tux.org>
+Received: from solo.franken.de (p50845BA8.dip.t-dialin.net [80.132.91.168])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 47C7D4844
+	for <parisc-linux@parisc-linux.org>; Tue, 12 Feb 2002 14:32:02 -0700 (MST)
+Date: Tue, 12 Feb 2002 22:31:04 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Greg Ingram <ingram@symsys.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] lp0 kablooie (new kernel)
+Message-ID: <20020212223104.A14146@solo.franken.de>
+References: <Pine.LNX.4.21.0202121054260.27781-100000@maestro.symsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] include/asm-parisc/pgalloc.h
+In-Reply-To: <Pine.LNX.4.21.0202121054260.27781-100000@maestro.symsys.com>; from ingram@symsys.com on Tue, Feb 12, 2002 at 10:55:41AM -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,27 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-do { ... } while(0); do not need the trailing semicolon and may lead to
-strange side effects. the following patch fixes it.
+On Tue, Feb 12, 2002 at 10:55:41AM -0600, Greg Ingram wrote:
+> On Sat, 9 Feb 2002, Grant Grundler wrote:
+> > Greg Ingram wrote:
+> > > 
+> > > Writing data from my C100 to /dev/lp0 makes the kernel go kablooie.  It's
+> > > the kernel from the recent (0.9.3?) iso.  Known problem?  Any more info I
+> > > could supply that would help?  I've appended everything on the console
+> > > from the crash, through the power cycle, to mounting disks again.  
+> > 
+> > Can you grab a newer kernel from ftp://ftp.parisc-linux.org/kernels/32/
+> > and try that?
+> > 
+> > 0.9.3 is just not worth chasing at this point.
+> 
+> Yikes!
+> 
+> apollos:~# uname -a
+> Linux apollos 2.4.17-pa23 #1 Sun Feb 10 09:24:11 MST 2002 parisc unknown
+> apollos:~# echo >/dev/lp0
+> lp0: compatibility mode
 
---timball
+I've reproduced it on my B132. You could avoid the crash by disabling
+CONFIG_PARPORT_PC. No idea how good parport works, but my B132 doesn't crash
+anymore.
 
---snip--snip--snip--
-diff -ruN linux-2.5.4/include/asm-parisc/pgalloc.h linux-2.5.4-fixed/include/asm-parisc/pgalloc.h
---- linux-2.5.4/include/asm-parisc/pgalloc.h    Sun Feb 10 20:50:16 2002
-+++ linux-2.5.4-fixed/include/asm-parisc/pgalloc.h  Mon Feb 11 18:35:43 2002
-@@ -120,7 +120,7 @@
- #define flush_tlb() do { \
-         flush_data_tlb(); \
-    flush_instruction_tlb(); \
--} while(0);
-+} while(0)
- 
- #define flush_tlb_all()    flush_tlb() /* XXX p[id]tlb */
-
-
+Thomas.
 
 -- 
-	GPG key available on pgpkeys.mit.edu
-pub  1024D/511FBD54 2001-07-23 Timothy Lu Hu Ball <timball@tux.org>
-Key fingerprint = B579 29B0 F6C8 C7AA 3840  E053 FE02 BB97 511F BD54
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
