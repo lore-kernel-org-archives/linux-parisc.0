@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail2.scram.de (mail2.scram.de [195.226.127.112])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9B7A04829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 12:53:30 -0700 (MST)
-Date: Wed, 15 Jan 2003 20:52:15 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>,
-	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Interesting network card ...
-In-Reply-To: <20030115125237.E26554@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.44.0301152050130.30955-100000@gfrw1044.bocc.de>
+Received: from web12501.mail.yahoo.com (web12501.mail.yahoo.com [216.136.173.193])
+	by dsl2.external.hp.com (Postfix) with SMTP id 5CE814829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 17:26:47 -0700 (MST)
+Message-ID: <20030116002646.1973.qmail@web12501.mail.yahoo.com>
+Date: Wed, 15 Jan 2003 16:26:46 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] Is Linux and HP-UX coexistence on same system possible?
+To: "BUEHL,REINER (HP-Germany,ex1)" <reiner.buehl@hp.com>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <FFE5E286773CD411873400D0B747AC580681AB8B@goedel.bbn.hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative; boundary="0-1756462419-1042676806=:1178"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +22,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+--0-1756462419-1042676806=:1178
+Content-Type: text/plain; charset=us-ascii
 
-> > The card is the HP ANA-6911A/AUI (yes, it's a 10/100BT with coax and
-> > AUI too), part# A3738-60001, and it _is_ found by the tulip driver, but
-> > for some reason the driver claims that "no MII transceiver found", and
-> > does list the 10B2 and AUI connections too. But I can't seem to make it
-> > form a link with TP or coax, no matter what I do. And the AUI connector
-> > is blocked by the C240 chassis. Is there a simple way to force the use of
-> > a certain transceiver? Tried mii-tool already and it didn't help much -
-> > but then again it doesn't seem to know about the coax and AUI at all...
->
-> how very interesting.  could you send an lspci -vvx for that card?
 
-This might be a card with an older DC21x4x chipset. Maybe the de4x5.c
-driver works better in this case.
+You can only do it using 2 completely seperate disks or in my case I boot from 2 different LUNs on my Autoraid Model 12 - one LINUX the other HP-UX.
+derek
+ "BUEHL,REINER (HP-Germany,ex1)" <reiner.buehl@hp.com> wrote:Hi all,
 
---jochen
+Is it possible to install parisc linux into an empty logical volume of an
+existing HP-UX 11 installation and then boot one or the other OS?
+
+Best regards,
+Reiner.
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now
+--0-1756462419-1042676806=:1178
+Content-Type: text/html; charset=us-ascii
+
+<P>You can only do it using 2 completely seperate disks or in my case I boot from 2 different LUNs on my Autoraid Model 12 - one LINUX the other HP-UX.
+<P>derek
+<P>&nbsp;<B><I>"BUEHL,REINER (HP-Germany,ex1)" &lt;reiner.buehl@hp.com&gt;</I></B> wrote:
+<BLOCKQUOTE style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid">Hi all,<BR><BR>Is it possible to install parisc linux into an empty logical volume of an<BR>existing HP-UX 11 installation and then boot one or the other OS?<BR><BR>Best regards,<BR>Reiner.<BR>_______________________________________________<BR>parisc-linux mailing list<BR>parisc-linux@lists.parisc-linux.org<BR>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux</BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Yahoo! Mail Plus</a> - Powerful. Affordable. <a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Sign up now</a>
+--0-1756462419-1042676806=:1178--
