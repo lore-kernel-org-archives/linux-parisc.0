@@ -1,18 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A53EC4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 02:16:59 -0600 (MDT)
-Received: from visoel.de (dialin-145-254-074-067.arcor-ip.net [145.254.74.67])
-	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id KAA00095
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 10:16:54 +0200 (MEST)
-Message-ID: <3DA689F7.9000208@visoel.de>
-Date: Fri, 11 Oct 2002 10:21:11 +0200
-From: Tilo Riemer <t.riemer@visoel.de>
+Received: from dns1.rz.fh-heilbronn.de (dns1.rz.fh-heilbronn.de [141.7.1.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 920E74829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 02:52:28 -0600 (MDT)
+Received: from lisa.stud.fh-heilbronn.de (lisa.stud.fh-heilbronn.de [141.7.11.14])
+	by dns1.rz.fh-heilbronn.de (8.12.2/8.12.2) with ESMTP id g9B8qOAx006295
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 10:52:25 +0200 (MET DST)
+Received: from acid (acid.stuwo.fh-heilbronn.de [141.7.150.31])
+	by lisa.stud.fh-heilbronn.de (8.12.2/8.12.2) with SMTP id g9B8qOIC001558
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 10:52:24 +0200 (MEST)
+Message-ID: <004001c27103$a37bdf00$1f96078d@acid>
+From: "Yves Bodack" <bodack@stud.fh-heilbronn.de>
+To: "PaRisc-List" <parisc-linux@lists.parisc-linux.org>
+References: <20021009193130.GA708@familie-weerts.de>
+Subject: Re: [parisc-linux] Which Memory to use on a 715/80?
+Date: Fri, 11 Oct 2002 10:53:15 +0200
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ksoftirqd eats 100% cpu :-(
-References: <200210081427.IAA27522@udlkern.fc.hp.com> <20021008234854.GE18202@systemhalted>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,10 +28,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hello,
+From: "Christian Weerts" <cw@familie-weerts.de>
+Subject: [parisc-linux] Which Memory to use on a 715/80?
 
-what does happen if I compile my own kernel without HIL support? My 
-machine runs as server without keyboard and mouse and I hope I must 
-never use the keyboard ;-)
 
-Best regards, Tilo
+> My 715/80 has a memory problem. Perhaps i need new memory.
+> Which is the right one to buy?
+
+I've tried FPM Parity RAM in my 712 and it didn't work. I'm shure it's same
+on 715,
+but you can get it quite cheap on eBay.de (Computer/Workstations).
+I have 48MB (6x8MB) spare modules, if you are interested, i sell them to
+you. Send me an off list mail.
+
+Greetings,
+Yves...
