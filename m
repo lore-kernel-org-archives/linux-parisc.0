@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail013.syd.optusnet.com.au (mail013.syd.optusnet.com.au [203.2.75.174])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2EB79482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jan 2002 23:21:44 -0700 (MST)
-Received: from sdcax57-060.dialup.optusnet.com.au (sdcax57-060.dialup.optusnet.com.au [198.142.218.60])
-	by mail013.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g0J6LaE26083
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Jan 2002 17:21:37 +1100
-From: Kim Saunders <kim.saunders@mercuryit.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Date: 19 Jan 2002 17:24:22 +1100
-Message-Id: <1011421463.7539.8.camel@chronic>
+Received: from mf1.bredband.net (mf1.lab.bredband.com [195.54.122.119])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F835482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Jan 2002 05:22:11 -0700 (MST)
+Date: Sat, 19 Jan 2002 13:20:49 +0100
+From: Daniel Engstrom <5116@telia.com>
+To: Jochen Friedrich <jochen@scram.de>
+Cc: Daniel Engstrom <5116@telia.com>, linux-tr@linuxtr.net,
+	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] IBM TR patch
+Message-ID: <20020119132049.C21392@zaphod.halden.lillfab.se>
+References: <20020115231052.A4018@zaphod.halden.lillfab.se> <Pine.LNX.4.43.0201162119070.16072-100000@alpha.bocc.de>
 Mime-Version: 1.0
-Subject: [parisc-linux] Anyone want an E25?
+Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <Pine.LNX.4.43.0201162119070.16072-100000@alpha.bocc.de>; from jochen@scram.de on Wed, Jan 16, 2002 at 21:20:12 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On 2002.01.16 21:20 Jochen Friedrich wrote:
+> Hi Daniel,
+> 
+> > I think the driver was correct. The i/o layer should not try to byteswap
+> > the io requests, because it can not second-guess what the driver is doing.
+> 
+> I guess the 68000 code is the reference here as it was the first BE port, 
+> and they do the byteswap, as well.
 
-I have an E25 server, and my understanding is that this machine is not
-supported by parisc-linux. As such, I'm interested in giving it to
-anyone who is interested in helping to port parisc-linux to this
-machine, or anyone else who has a constructive use for it.
+Do the 68000 port support ISA and PCI buses?
 
-I'm in Sydney, Australia, and it's probably too bulky to ship anywhere.
-
-Thanks,
-
-KimS
+/Daniel
+-- 
