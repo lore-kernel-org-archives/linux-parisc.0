@@ -1,56 +1,26 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA07709
-	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Mar 2000 11:29:29 -0700
-Message-ID: <20000329180613.99367.qmail@hotmail.com>
-From: "Bas Valkema" <b_valkema@hotmail.com>
-To: "Mike Brancato" <funnyguy@digitalsmackdown.net>,
-        <parisc-linux@thepuffingroup.com>
-References: <Pine.LNX.4.10.10003281748330.2059-100000@morph.net>
-Subject: Re: [parisc-linux] using lan to boot
-Date: Wed, 29 Mar 2000 10:27:39 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA07912
+	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Mar 2000 11:33:24 -0700
+From: willy@thepuffingroup.com
+Date: Wed, 29 Mar 2000 13:52:20 -0500
+To: Corne Beerse <beerse@ats.nld.alcatel.nl>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Couple of questions
+Message-ID: <20000329135220.B5424@thepuffingroup.com>
+References: <852568B0.005CB5C5.00@tormta3.tor.cel.com> <38E1C69C.1BEB8F9C@ats.nld.alcatel.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <38E1C69C.1BEB8F9C@ats.nld.alcatel.nl>; from Corne Beerse on Wed, Mar 29, 2000 at 11:02:20AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Wed, Mar 29, 2000 at 11:02:20AM +0200, Corne Beerse wrote:
+> btw, if I reply to messages received trouth parisc-linux@thepuffingroup.com,
+> it replies only to the originator, not to the puffin list. Other maillists
+> generate a Reply-to: header line with the maillist address. Can this be
+> added to the puffin headers too? Or are there reasons not to do it?
 
-I had the same problem, try rbootd (rpm & tar download somewhere on the
-puffin.external.hp.com site) & install in Linux x86
-Next, install HPPA-Linux bootimage in /export/hp/images (I think, look in
-messagedump (/var/adm/messages in my distribution) & edit /etc/rbootd.conf
-
-should work now.
-
-bye, BaZ
-
-
------ Original Message -----
-From: Mike Brancato <funnyguy@digitalsmackdown.net>
-To: <parisc-linux@thepuffingroup.com>
-Sent: Wednesday, March 29, 2000 1:01 AM
-Subject: [parisc-linux] using lan to boot
-
-
->
-> i played with the 735/125 we have here, and i can't get it to sent any
-> packets.  it has no HD right now.  using snoop to monitor network traffic,
-> we looked to its hardware address.  no luck.  to go the hardware address,
-> i type hrdw_addr os something at the boot prompt?  we used that HW
-> address.  typing "boot lan.<servershwaddr>.0.0" makes the boot fail.  and
-> there is no network traffic from that machine.  when the computer searches
-> for bootable devices, it only sees P0 which is the floppy.  It prints out
-> liek 5 lines of numbers...  000000 000000 000050 etc...  it says boot
-> failed and stuff and INIT_ENTRY = -7.  could anyone explain.  we're
-> perflexed whay lan won't send anything.  the externet adapter is flashing
-> the Tx light though.
->
-> i've got an image prefared, and now i just need to boot to it.
->
-> mike
->
-> --------------------------------------------------------------------------
--
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com
-with
-> `unsubscribe' as the subject.
+The current behaviour is correct.  If you want to reply to the person
+sending the message privately, you reply; if you want to reply to the
+list, you reply to all (possibly trimming the cc list as appropriate).
+With the reply-to header, there is no way to accomplish this.  I'm sure
+I've seen more than one `Considered Harmful' document on this subject.
