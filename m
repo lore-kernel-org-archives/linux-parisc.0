@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from gate.algorithm.aelita.com (unknown [212.176.18.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 053DB4865
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Aug 2003 04:37:06 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B95C483F
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Aug 2003 04:47:48 -0600 (MDT)
 Received: from bagman.edm.com ([10.0.0.4]) by gate.algorithm.aelita.com
           (Post.Office MTA v3.5.3 release 223 ID# 0-12345L500S10000V35)
           with ESMTP id com for <parisc-linux@lists.parisc-linux.org>;
-          Tue, 19 Aug 2003 14:37:08 +0400
+          Tue, 19 Aug 2003 14:47:50 +0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="windows-1251"
 Subject: RE: [parisc-linux] Help: Need instruction sequence for gdb breakpoint
-Date: Tue, 19 Aug 2003 14:37:05 +0400
-Message-ID: <3F6F4712B759A34ABD453A8B39C10D62D4DA78@bagman.edm.com>
+Date: Tue, 19 Aug 2003 14:47:47 +0400
+Message-ID: <3F6F4712B759A34ABD453A8B39C10D62D4DA83@bagman.edm.com>
 From: "Lev Assinovsky" <LAssinovsky@algorithm.aelita.com>
-To: "Thibaut VARENE" <varenet@esiee.fr>
-Cc: <parisc-linux@lists.parisc-linux.org>
+To: <parisc-linux@lists.parisc-linux.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,7 +25,8 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-What is BREAK instruction for?
+Ok! But what's BREAK instruction for?
+Besides gdb works for me on HPUX 11.00
 
 ----
 Lev Assinovsky
