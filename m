@@ -1,44 +1,48 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA14127
-	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Nov 2000 20:09:19 -0700
-Message-Id: <200011270311.TAA24728@milano.cup.hp.com>
-To: "Carl & Delores Walthall" <cwalthall@cwalthall.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] RPM and hppa 
-In-reply-to: Your message of "Sun, 26 Nov 2000 11:47:24 PST."
-             <008601c057d0$efcd5800$10f01618@ct44715a>
-Date: Sun, 26 Nov 2000 19:11:41 -0800
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA15696
+	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Nov 2000 23:10:43 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel1.hp.com (Postfix) with ESMTP id AAB681EF
+	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Nov 2000 23:13:23 -0700 (MST)
+Received: from localhost (grundler@localhost [127.0.0.1])
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id WAA24909
+	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Nov 2000 22:12:11 -0800 (PST)
+Message-Id: <200011270612.WAA24909@milano.cup.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] case LEDs 
+In-reply-to: Your message of "Tue, 21 Nov 2000 21:27:51 PST."
+             <3A1B2F27.D08EC2AF@linuxcare.com>
+Date: Sun, 26 Nov 2000 22:12:10 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Carl & Delores Walthall" wrote:
-> Hi All
-> 
->  I have a HP9000 J200 server and would like to find the operating system
-> software for it. Can you tell me where to look on the internet or who I may
-> call?
+Alex deVries wrote:
+> Grant Grundler wrote:
+> > I was already asked this weekend to dig up technical info on LED
+> > and soft power control. I guess this is my reminder to do that. :^)
 
-Carl,
-The short answer is a port of linux to the J200 is in progress.
-See http://www.parisc-linux.org/ for status.
-
-If you have more questions read the FAQ and check the mailing list
-archives using http://puffin.external.hp.com/cgi-bin/mailgrep first please.
+I dug up the info but it's not in a form I'm willing to publishing.
+However, someone did volunteer to look at this and I've provided them
+with this info. So it will make into our CVS source tree and get
+published that way.
 
 
-> The server has a OS installed but no one can remember the user or password
-> information. So they gave it to me to take home, is there a way to boot
-> it on a floppy and change this information?
+> Isn't there a PDC call (pdc_chassis?) to do this? 
 
-Here's how to "fix" this:
-During power up/boot press <ESC> key to get "BOOT ADMIN>" prompt.
-type "bo pri isl".  At "ISL>" prompt, type "hpux -is".
-HPUX should boot to single user. use "mountall" or "mount -a" to
-mount all file systems. Then you can "vi /etc/passwd" or "passwd root".
+Not AFAICT. PDC_CHASSIS is documented in the pdc32.pdf found on
+	http://www.parisc-linux.org/documentation.html 
 
-If that doesn't work and you can afford to loan the box out for a
-3-4 monthes, you might ask if someone could install parisc-linux
-on it for you in exchange for a few monthes use.
+But my gut feeling is parisc specific code could make some PDC_CHASSIS
+calls to set up "sysstat" field (eg initialize, shutdown, run states).
+
+Does anyone know if the chassis codes used by HPUX are published?
+It would be cool if parisc-linux used the same codes where possible...
+
+
+> Or is the heartbeat LED done by hardware?
+
+Code I've looked at before seems to all do it in software.
+
 
 grant
 
