@@ -1,70 +1,54 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA23609
-	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Sep 2000 09:41:14 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA24149
+	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Sep 2000 10:23:57 -0600
 Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 28 Sep 2000 15:42:03 -0000
+  by mailserv2.iuinc.com with SMTP; 28 Sep 2000 16:24:46 -0000
 Received: from dhd by tarwebok with local (Exim 3.12 #1 (Debian))
-	id 13efom-0000GE-00
-	for <parisc-linux@thepuffingroup.com>; Thu, 28 Sep 2000 11:41:52 -0400
+	id 13egU5-0000GW-00
+	for <parisc-linux@thepuffingroup.com>; Thu, 28 Sep 2000 12:24:33 -0400
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] floating point exception error
-References: <20000927195500.57241381CD@carmen.fc.hp.com>
-	<873dilo9dp.fsf@tarwebok.i-did-not-set--mail-host-address--so-shoot-me>
 From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 28 Sep 2000 11:41:51 -0400
-In-Reply-To: David Huggins-Daines's message of "27 Sep 2000 16:41:38 -0400"
-Message-ID: <87snqk1q2o.fsf@linuxcare.com>
+Date: 28 Sep 2000 12:24:33 -0400
+Message-ID: <87u2b0pjr2.fsf@ottawa.linuxcare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] (user land) Core dumping, across the universe
 List-ID: <linux-parisc.vger.kernel.org>
 
-David Huggins-Daines <dhd@linuxcare.com> writes:
+Hi,
 
-> We probably need more complicated FPU trap logic in the kernel in
-> order to deliver exceptions in the proper POSIX and IEEE manner.
+Well the good news is that dumping core Just Works, so we're at least
+part of the way towards having Emacs running ;-)
 
-Yes, I'm handwaving.  Of course POSIX says nothing about this, and I
-don't exactly know what IEEE says about delivery of exceptions (just
-that certain exception flags need to exist).
+The bad news is that the core dumps are rather funny looking.
 
-The FPU support that I've put in glibc is specified by ANSI C99 (not
-C89 as far as I can tell), and is found in <fenv.h>
+My very simple (dereference a bad pointer) test program produces the
+following dump:
 
-A cursory comparison of this header file on GNU libc 2.1.92 vs. HP/UX
-11 reveals that HP/UX implements the same functions, except for
-feenableexcept() which does not exist on HP/UX.  The definition of
-fenv_t is different from what I expected in that it does not include
-the exception status registers (LSW of %fr0, %fr1-%fr3), only the
-status word (MSW of %fr0).  Also, I notice that the FE_* macros refer
-to the flag bits rather than the enable bits in the floating point
-status word, and are different in wide mode (!).
+avalanche:~# ls -l core
+-rw-------    1 root     root     268500992 Sep 28 12:21 core
+avalanche:~# objdump -x core
 
-> I would appreciate it if someone from HP could comment on this -
-> how does HP/UX handle this?
+core:     file format elf32-hppa
+core
+architecture: hppa1.0, flags 0x00000000:
 
-Just for the record, this is what the mawk configure test reports on
-HP/UX 11:
+start address 0x00000000
 
-checking handling of floating point exceptions
-        division by zero does not generate an exception
-        overflow does not generate an exception
-        math library supports ieee754
+Program Header:
+    NOTE off    0x00000174 vaddr 0x00000000 paddr 0x00000000 align 2**0
+         filesz 0x00000714 memsz 0x00000000 flags ---
+    LOAD off    0x00001000 vaddr 0x00001000 paddr 0x00000000 align 2**12
+         filesz 0x00000000 memsz 0x00001000 flags r-x
+    LOAD off    0x00001000 vaddr 0x00002000 paddr 0x00000000 align 2**12
+         filesz 0x00001000 memsz 0x00001000 flags rwx
+    LOAD off    0x00002000 vaddr 0x20000000 paddr 0x00000000 align 2**12
+         filesz 0x10000000 memsz 0x10000000 flags rwx
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Which is the same as reported by Linux/i386.
-
-Linux/alpha without -mieee reports:
-
-checking handling of floating point exceptions
-	division by zero generates an exception
-	overflow does not generate an exception
-(and then some warnings at the end)
-
-Whereas with -mieee we get the same results as HP/UX 11 and
-Linux/i386.
-
-So it looks like we are either not managing to set up %fr0 properly on
-process startup or we are mangling it in the kernel or libc somewhere
-along the way.  I'll investigate further today.
+Wow, look at the size of that stack segment!  We *really* need to have
+this be dynamically growable instead of just mapping a whole gigabyte
+in the middle of process space.
 
 -- 
 dhd@linuxcare.com, http://www.linuxcare.com/
