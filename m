@@ -1,24 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA06636
-	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Nov 2000 00:46:32 -0700
-Date: Wed, 1 Nov 2000 02:48:02 -0500 (EST)
-From: "Brian S. Julin" <bri@mojo.calyx.net>
-To: Helge Deller <deller@gmx.de>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] The new PS/2 Keyboard Driver
-In-Reply-To: <00110101455208.00343@P100>
-Message-ID: <Pine.BSO.4.21.0011010229470.27528-100000@mojo.calyx.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA07638
+	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Nov 2000 02:36:18 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel1.hp.com (Postfix) with ESMTP id 3FD012C2
+	for <parisc-linux@thepuffingroup.com>; Wed,  1 Nov 2000 04:37:59 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id CAA16167 for parisc-linux@thepuffingroup.com; Wed, 1 Nov 2000 02:37:58 -0700 (MST)
+Date: Wed, 1 Nov 2000 02:37:58 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200011010937.CAA16167@udlkern.fc.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: Elf Header change proposal
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Probably best not to worry about cleaning keyboard drivers up too much.
-The current USB code will be followed by linux-input style drivers at
-some point.  In fact I started a HIL linux-input style driver, which
-would abstract the PS2 port/HIL ports and allow a standard keyboard module
-to be hooked into the abstracted serio port.  I will work on it more when
-time permits.
+Paul and Alan pointed out that I goofed. I analyzed the vmlinux in my 64
+bit build area to get the current flags, but it turns out that the vmlinux
+I looked at was a 32 bit version. I had recently made some 64 bit checkins,
+and I like to rebuild everything for 32 bit before doing that, to make
+sure that I haven't broken the 32 bit path by making 64 bit changes.
 
---
-Brian S. Julin
+So, the bad news is that I wasted time writing an unecessarily long
+design proposal. The good news is that the only thing that needs to
+change is value in the e_ident[EI_OSABI] field, so that we can
+differentiate 64 bit HP-UX binaries from 64 bit Linux binaries.
+We should also change the field for 32 bit Linux also.
+
+John
