@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4839F482F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 09:03:29 -0600 (MDT)
-Date: Wed, 23 Oct 2002 08:06:20 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BA05482F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 09:13:56 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 18A53BE4
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 17:13:51 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA08199 for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 17:12:06 +0200 (METDST)
+Message-ID: <3DB6BCAE.3AB7AF13@admin.france.hp.com>
+Date: Wed, 23 Oct 2002 17:13:50 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] insmod modules -> kernel panic:
-Message-ID: <20021023150619.GE22052@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <3DB68404.549D048A@admin.france.hp.com> <3DB6B01B.61D240D@admin.france.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DB6B01B.61D240D@admin.france.hp.com>
+References: <3DB68404.549D048A@admin.france.hp.com> <3DB6B01B.61D240D@admin.france.hp.com> <20021023150619.GE22052@tausq.org>
+Content-Type: multipart/mixed;
+ boundary="------------79B259717D9A9A946F8B68D5"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,22 +26,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In reference to a message from Bruno Vidal, dated Oct 23:
-> 	hi
-> It seems to be a weird problem. I've recompile everything
-> (make clean && make dep && make vmlinux && make modules && make modules_install)
-> And:
-> -A-class: 64bits compilation, it panic, but not at the same place than before:
+This is a multi-part message in MIME format.
+--------------79B259717D9A9A946F8B68D5
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Hi Bruno,
+Thanks.
+I've already noted that when building in the kernel
+it was running fine. About this insmod panic it is
+a bit strange, because, on the A class, it is completly
+crashed after that. I have to power off/on.
 
-We seem to be having some general problems with insmod causing random
-crashes. I would suggest that you stick with building things into the
-kernel instead of modules for a little while until we figure out the
-insmod problem.
+	bye.
 
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------79B259717D9A9A946F8B68D5
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
+
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------79B259717D9A9A946F8B68D5--
