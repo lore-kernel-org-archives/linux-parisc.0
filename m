@@ -1,22 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73BA0482E
-	for <parisc-linux@parisc-linux.org>; Mon,  4 Aug 2003 10:08:12 -0600 (MDT)
-Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h74G82I22159;
-	Mon, 4 Aug 2003 12:08:02 -0400
-Subject: Re: [parisc-linux] backport bitops.h stuff
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: LaMont Jones <lamont@hp.com>
-Cc: Joel Soete <jsoe0708@tiscali.be>, parisc-linux@parisc-linux.org
-In-Reply-To: <20030804151449.GS18508@security.hp.com>
-References: <20030801171426.GA18508@security.hp.com>
-	<3F29178A00000A99@ocpmta7.freegates.net>
-	<20030804151449.GS18508@security.hp.com>
-Content-Type: text/plain
-Date: 04 Aug 2003 11:08:01 -0500
-Message-Id: <1060013284.1983.32.camel@fuzzy>
-Mime-Version: 1.0
+Received: from astra.telenet-ops.be (astra.telenet-ops.be [195.130.132.58])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C76D4482E
+	for <parisc-linux@parisc-linux.org>; Mon,  4 Aug 2003 10:48:36 -0600 (MDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by astra.telenet-ops.be (Postfix) with SMTP id A9E5B37F7B
+	for <parisc-linux@parisc-linux.org>; Mon,  4 Aug 2003 18:48:35 +0200 (MEST)
+Received: from iconbemewin01 (D576CE7F.kabel.telenet.be [213.118.206.127])
+	by astra.telenet-ops.be (Postfix) with SMTP id 5593937F2F
+	for <parisc-linux@parisc-linux.org>; Mon,  4 Aug 2003 18:48:35 +0200 (MEST)
+From: "Mark Mestdagh" <Mark.Mestdagh@Icon-Europe.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Mon, 4 Aug 2003 18:51:40 +0200
+Message-ID: <HOEDKHACIIOGKPMMFMCGEEGACPAA.Mark.Mestdagh@Icon-Europe.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] mobo for J5600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,49 +27,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Let me try to clarify, since there are two differently defined macros in
-the kernel (off by one) that would appear to have the same interface,
-but which in fact have different semantics (I know, recipe for
-disaster):  ffs and ffz (meaning find first set and find first zero).
+Hi
 
-Both tend to have machine code implementations for architectures that
-support them.  The difference is that ffz counts bit zero as zero, but
-ffz counts bit zero as one.
+it seems one of my scsi controllers broke down, so I need a new mobo. I
+called a local supplier (Belgium) who told it costs 2500 euro for the
+motherboard which includes also 2 processors.
+Do you have to buy this with those processors? Isn't there any other
+solution possible?
 
-They also have different requirements for the error case (no bit set for
-ffs and no bit zero for ffz).  For ffs, this is defined to be 32.  For
-ffz, this is undefined.
-
-The reason for all of this is that on x86 there is an instruction bsfl
-that actually finds first set bit (but counting from zero, not one), but
-the O(1) scheduler needed to find clear bits for the arrays, so ffz was
-implemented as the complement of this.
-
-ffs has been around a long time (inherited from BSD).  The differing
-semantics are because "damnit, computers count from zero not one for
-fast operations".
-
-i.e.
-
-ffs(0) == 0
-ffz(0) == 0
-
-ffs(1) == 1
-ffz(~1) == 0  (same as above ffz, bit zero clear)
-
-ffs(2) == 2
-ffz(~3) == 1
-
-[...]
-
-ffs(0x8000000) == 32
-ffz(0x7ffffff) == 31
-
-ffz(0xffffffff) == could be anything
-
-Some machine architectures have an __ffs() (usually mirroring a machine
-instruction) whose semantics are identical to ffs() except that it also
-is undefined in the error case (so ffs can simply be implemented as if
-not error case, do __ffs()).
-
-James
+Thx guys
+Mark
