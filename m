@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 27D17483C
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Jun 2002 21:04:23 -0600 (MDT)
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 484D94842
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Jun 2002 21:19:45 -0600 (MDT)
+Date: Sun, 16 Jun 2002 20:19:40 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: parisc-linux@lists.parisc-linux.org,
+	<richard_hirst@linuxcare.com>
 Subject: Re: [parisc-linux] Unaligned access failures with apt-get on SMP
-	K460.
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, richard_hirst@linuxcare.com
-In-Reply-To: <200206170231.g5H2V44J011035@hiauly1.hia.nrc.ca>
-References: <200206170231.g5H2V44J011035@hiauly1.hia.nrc.ca>
-Content-Type: text/plain
-Date: 16 Jun 2002 21:04:22 -0600
-Message-Id: <1024283062.27050.29.camel@beavis>
-Mime-Version: 1.0
+ K460.
+In-Reply-To: <1024273345.27050.26.camel@beavis>
+Message-ID: <Pine.LNX.4.44.0206162014520.24659-100000@garibaldi.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,41 +24,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dave,
+On 16 Jun 2002, Ryan Bradetich wrote:
 
-This is the apt-get from debian unstable ... so if I had to guess
-I would assume that it is:
-
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  gcc            3.0.4-6        The GNU C compiler.
-
-any way I can tell from the binary?
-
-thanks,
-
-- Ryan
-
-
-On Sun, 2002-06-16 at 20:31, John David Anglin wrote:
-> > > The instruction causing the unaligned trap is:
-> > > 0x4005e47c <_ZN11DynamicMMap8AllocateEm+112>:	stw r21,8(sr0,r3)
-> > > 
-> > > As you can see from r3 (403ce08c) in the register dump is aligned on a
-> > > 4-byte boundry.  So the question is why is this trap being executed?
-> > 
-> > Maybe the message is misleading.  It looks as if the insn may be trying
-> > to write to readonly memory based of the value of r3.
+> Hello parisc-linux hackers,
 > 
-> Sorry, this is wrong.  Was _ZN11DynamicMMap8AllocateEm compiled with
-> gcc-3.2?  It looks as if C++ exceptions may be involved.  This only
-> has a chance of working with 3.2.  I suspect that an exception handler
-> is involved because r20 is not valid across calls and r20/r21 are
-> used in C++ exceptions.  The call looks to be a millicode call which
-> might be part of the problem.
+> I (with a lot of help from Richard) am  looking into a problem with
+> apt-get .... on a SMP kernel for the K460. 
 > 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> The problem is that when I run apt-get <command> I get the following
+> error message:
+> 	apt-get(<PID>): unaligned access to 0x403ce094 at ip=0x4005e47f
 > 
+I get stuff like this on my J5000, only it locks up and/or HPMC's when it 
+does it.  (Sometimes prints HPMC info to the LCD, sometimes not, but 
+always locks up).
+
+I try to keep up-to-date with the cvs kernels, and I try it on SMP every 
+now and then, but I generally run this box under UP and it is very stable.  
+I started having problems with this box when the latest 2.4.17-32-smp was 
+released.  With the previous one, this box was stable under SMP.  (this 
+was before I got the courage to build my own kernels on parisc).  Not sure 
+what versions in cvs this corresponds to, but maybe some change between 
+caused the problem.
+
+Not sure if this is the same problem you are encountering, because Samba 
+also tends to lock this box up, and if I leave it alone, it just crashes 
+itself later...
+
+
+-- 
+Troubled day for virgins over 16 who are beautiful and wealthy and live
+in eucalyptus trees.
