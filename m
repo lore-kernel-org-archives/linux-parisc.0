@@ -1,35 +1,51 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA10784
-	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Jun 1999 09:21:33 -0600
-Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id RAA31189
-	for <parisc-linux@thepuffingroup.com>; Mon, 28 Jun 1999 17:21:42 +0200
-Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id RAA3135190
-	for <parisc-linux@thepuffingroup.com>; Mon, 28 Jun 1999 17:21:42 +0200 (CEST)
-Received: by genedata.com
-	via sendmail from stdin
-	id <m10ydE5-00025cC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Mon, 28 Jun 1999 17:21:41 +0200 (CEST)
-Date: Mon, 28 Jun 1999 17:21:41 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <19990628172141.G30362@mencheca.ch.genedata.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Anyone got a few moments?
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA11204
+	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Jun 1999 11:04:24 -0600
+Message-Id: <199906281703.KAA03194@milano.cup.hp.com>
+To: Alex deVries <adevries@thepuffingroup.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Dino and Lasi 
+In-reply-to: Your message of "Mon, 28 Jun 1999 01:26:46 PDT."
+             <37770796.C70E0C65@thepuffingroup.com>
+Date: Mon, 28 Jun 1999 10:03:14 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Alex deVries wrote:
+> 
+> 
+> Okay, I've committed some small changes to dino and lasi that can easily
+> be backed out.
+> 
+> some questions:
+> 
+> - what IRQ are we going to run LASI on?  Is that something we just pick
+> and hard code?
 
-Which of the people involved in this project know PA-RISC assembler?
+Isn't LASI a PA (ie GSC bus) device?
+If so, it can use any EIRR bit/HPA pair supported by the PA processor code.
+It needs to register an ISR with PA interrupt code and get the EIRR/HPA
+pair (commonly called EIM value).
 
-We need xchg() written (in include/asm-parisc/system.h) before the
-networking will compile.  We're going to need other stuff written too of
-course; I know ARM assembler, so I guess I could probably learn PA-RISC
-asm if no-one else wants to.
+Same is true for Dino.
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+> - I changed lasi.c and dino.c to only use readl() and writel(), and not
+> readb and writew, etc.  Was this a mistake?
+
+For Dino, I think so. On a reads, it shouldn't matter unless the
+reads have side effects (eg. clears the byte register). On writes
+too many byte enables will be set.
+
+BTW, I assume you are talking about PCI MMIO/Port/Cfg space accessor
+functions.
+
+> - We really really need the IRQ bottom halfs setup.  Any takers?
+
+What do you mean "bottom half"?
+dino_isr() to map DINO EIM registers to PCI IRQ lines (and thus
+PCI device ISRs)?
+
+grant
+
+Grant Grundler
++1.408.447.7253
