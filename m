@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from imo-d02.mx.aol.com (imo-d02.mx.aol.com [205.188.157.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 69EB8482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 17:13:54 -0700 (MST)
-Received: from Longjos@aol.com
-	by imo-d02.mx.aol.com (mail_out_v34.13.) id n.3d.277be522 (30950)
-	 for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 19:13:44 -0500 (EST)
-From: Longjos@aol.com
-Message-ID: <3d.277be522.2b02f338@aol.com>
-Date: Tue, 12 Nov 2002 19:13:44 EST
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="part1_3d.277be522.2b02f338_boundary"
-Subject: [parisc-linux] What did I find
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A730A482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 17:17:45 -0700 (MST)
+Subject: Re: [parisc-linux] [2.5] My System ate a SPARC! *haha* 8-(
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: 
+	<Pine.BSF.4.44.0211122148260.39295-100000@e0-0.zab2.int.zabbadoz.net>
+References: 
+	<Pine.BSF.4.44.0211122148260.39295-100000@e0-0.zab2.int.zabbadoz.net>
+Content-Type: text/plain
+Date: 12 Nov 2002 17:17:41 -0700
+Message-Id: <1037146661.32080.128.camel@beavis>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +25,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---part1_3d.277be522.2b02f338_boundary
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+On Tue, 2002-11-12 at 15:24, Bjoern A. Zeeb wrote:
+> On Tue, 12 Nov 2002, Ryan Bradetich wrote:
+> 
+> > Bjeorn,
+> 
+> nice try; second shot please ;-))
 
-Perhaps you can help me identify this box that I found at a surplus auction.
-It says on it:
-Visual Technology Model: TX100M
-When powered up it says it is an X terminal, but it has no X Server 
-installed. It has to boot from Tftp, or the sort. 
-My main problem is, I can't find any reference to this thing. I have no idea 
-what software it runs.
-Can anyone help me?
-Thanks
+Oops... very sorry :(
 
---part1_3d.277be522.2b02f338_boundary
-Content-Type: text/html; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+> 
+> > What type of system is this.  I am currently tracking down this problem
+> > on the K460.  I know where the problem is caused, just not why yet.
+> 
+> model 9000/715
 
-<HTML><FONT FACE=arial,helvetica><FONT  SIZE=2 FAMILY="SANSSERIF" FACE="Arial" LANG="0">Perhaps you can help me identify this box that I found at a surplus auction.<BR>
-It says on it:<BR>
-Visual Technology Model: TX100M<BR>
-When powered up it says it is an X terminal, but it has no X Server installed. It has to boot from Tftp, or the sort. <BR>
-My main problem is, I can't find any reference to this thing. I have no idea what software it runs.<BR>
-Can anyone help me?<BR>
-Thanks</FONT></HTML>
+Cool.
+> 
+> this it were kernel starts joking ...
+> 
+> --- /etc/init.d/initrd-tools.sh ---
+> [ -f /proc/mounts ] || {
+> echo "still ok"
+>         mount -n /proc || exit
+>         trap 'umount -n /proc' EXIT
+> }
+> echo "never reached"
+> --- ... ---
 
---part1_3d.277be522.2b02f338_boundary--
+Interesting ... will dig further and see if I can get this fixed.
+
+Thanks for the feedback.
+
+- Ryan
+
+
+> -- 
+> Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+> 56 69 73 69 74				http://www.zabbadoz.net/
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
