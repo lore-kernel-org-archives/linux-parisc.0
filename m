@@ -1,35 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB13F482D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Jun 2001 19:05:22 -0600 (MDT)
-Received: from mmp-1.gci.net ([208.138.130.80]) by mta-1.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GF3POV03.VFX for
-          <parisc-linux@lists.parisc-linux.org>; Sun, 17 Jun 2001 17:05:19 -0800
-Date: Sun, 17 Jun 2001 17:05:20 -0800 (AKDT)
-From: Tom <tom@Alaskatech.org>
-To: buggz <buggz@america.net>
-Cc: PA-RISC Linux list <parisc-linux@lists.parisc-linux.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BC625482D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Jun 2001 19:13:50 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15Bnbw-0005pA-00; Mon, 18 Jun 2001 02:13:48 +0100
+Date: Mon, 18 Jun 2001 02:13:48 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Tom <tom@Alaskatech.org>
+Cc: buggz <buggz@america.net>,
+	PA-RISC Linux list <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] PALO/kernel-build change proposal
-In-Reply-To: <Pine.LNX.4.33.0106172013490.20079-100000@buggz1.buggz.net>
-Message-ID: <Pine.LNX.4.33.0106171703250.18884-100000@devnull.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20010618021348.H10186@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.33.0106172013490.20079-100000@buggz1.buggz.net> <Pine.LNX.4.33.0106171703250.18884-100000@devnull.alaskatech.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0106171703250.18884-100000@devnull.alaskatech.org>; from tom@Alaskatech.org on Sun, Jun 17, 2001 at 05:05:20PM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > I don't suppose someone has an updated how-to for actually *using* your
-> > new kernel, do they? Replacing /boot/vmlinux-2.4.0 with the new one
-> > results in an immediate hang on reboot...
->
-> *shrug*
-> Well, I've made two successful kernels, cp'd to /boot, edited
-> /etc/palo.conf, just like normal to me.
+On Sun, Jun 17, 2001 at 05:05:20PM -0800, Tom wrote:
+> > > I don't suppose someone has an updated how-to for actually *using* your
+> > > new kernel, do they? Replacing /boot/vmlinux-2.4.0 with the new one
+> > > results in an immediate hang on reboot...
+> >
+> > *shrug*
+> > Well, I've made two successful kernels, cp'd to /boot, edited
+> > /etc/palo.conf, just like normal to me.
+> 
+> Hmmm... I tried that - copied lifimage to /boot/vmlinux-240-pa15, edited
+> /etc/palo.conf to change the kernel listed, then ran palo to update it and
+> rebooted. Same error - can't understand the kernel executable format.
 
-Hmmm... I tried that - copied lifimage to /boot/vmlinux-240-pa15, edited
-/etc/palo.conf to change the kernel listed, then ran palo to update it and
-rebooted. Same error - can't understand the kernel executable format.
+Sounds like you're using the lifimage instead of the vmlinux.
 
-Am wondering if perhaps it's me goofing it up rather than the system.
-(Actually am pretty certain it's me, since other people can compile
-kernels fine...)
-
-Time to try again!
+-- 
+Revolutions do not require corporate support.
