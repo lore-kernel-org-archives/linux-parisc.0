@@ -1,45 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA05051
-	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Sep 2000 18:25:53 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA05615
+	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Sep 2000 18:34:19 -0600
 Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 14 Sep 2000 00:26:15 -0000
+  by mailserv2.iuinc.com with SMTP; 14 Sep 2000 00:34:43 -0000
 Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA31950;
-	Thu, 14 Sep 2000 11:22:10 +1100
-Date: Thu, 14 Sep 2000 11:22:10 +1100 (EST)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA32163;
+	Thu, 14 Sep 2000 11:32:38 +1100
+Date: Thu, 14 Sep 2000 11:32:37 +1100 (EST)
 From: Alan Modra <alan@linuxcare.com.au>
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: Cary Coutant <cary@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: Function descriptors, etc. (was Re: [parisc-linux] userspace
- function pointers in the kernel)
-In-Reply-To: <878zswj6d1.fsf@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0009141031480.30310-100000@front.linuxcare.com.au>
+To: Cary Coutant <cary@cup.hp.com>
+cc: David Huggins-Daines <dhd@linuxcare.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] userspace function pointers in the kernel
+In-Reply-To: <200009131711.KAA21176@adlmail.cup.hp.com>
+Message-ID: <Pine.LNX.4.21.0009141123500.30310-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 13 Sep 2000, David Huggins-Daines wrote:
+On Wed, 13 Sep 2000, Cary Coutant wrote:
 
-> Reasons why the IA-64 scheme is better:
->[snip]
+> allocate PLT entries for all exported symbols). This means that you might 
+> be asked to dlclose a library that contains the PLT entry that is 
+> currently in use as the official function pointer for a function in 
+> another load module. If you go ahead and deallocate the library, you're 
+> hosed.
 
-Hrmm, you've clearly had more time than I thinking about dynamic linker
-issues.  :-)  My scheme of having the linker allocate space for the ld.so
-structures necessary to generate unique function pointers can still
-work;  It's just that plabels need a full struct hppa_fptr in addition
-to our normal plt slot, rather than the measely single word I gave you.
-This could have been accomplished simply by changing PLABEL_PLT_ENTRY_SIZE
-to 20, and then ld.so wouldn't need those extra mmaps.
+Yup, another reason, this one really solid, to use David's dynamically
+allocated fptrs.
 
-However, I guess we should go with what you have David - the time saved by
-having the linker allocate space isn't huge, and in fact we might not even
-need to mmap since ld.so has 256 fptr slots pre-allocated.
-
-I just ran the following, and found libc.so only needs 63 global fptrs.
-
-readelf -r libc.so | grep PLABEL \
-| sed -e 's/.*R_PARISC/R_PARISC/' -e '/PLABEL      /d' -e 's/ *+.*//' \
-| sort | uniq
+Note to David:  Make sure dl-fptr.c:_dl_unmap doesn't have this same
+problem, if this function is called on a dlcose.
 
 Alan
 -- 
