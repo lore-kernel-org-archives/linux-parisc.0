@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sina.com (unknown [202.105.138.198])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 43CF3483E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jun 2003 19:25:01 -0600 (MDT)
-From: "Hattie Yuan" <frankhe1978@sina.com>
-To: parisc-linux@lists.parisc-linux.org
+Received: from 163.com (unknown [202.105.138.198])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1BBFD483D
+	for <parisc-linux@parisc-linux.org>; Wed, 11 Jun 2003 19:26:12 -0600 (MDT)
+From: "Hattie Yuan" <hytechhk@163.com>
+To: parisc-linux@parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
-Reply-To: frankhe1978@sina.com
-Date: Thu, 12 Jun 2003 09:24:48 +0800
-Message-Id: <20030612012501.43CF3483E@dsl2.external.hp.com>
+Reply-To: hytechhk@163.com
+Date: Thu, 12 Jun 2003 09:25:58 +0800
+Message-Id: <20030612012612.1BBFD483D@dsl2.external.hp.com>
 Subject: [parisc-linux] professional manufacturer specializing in mobile phone accessories
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
