@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4D1344883
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Aug 2003 10:13:41 -0600 (MDT)
-Date: Fri, 22 Aug 2003 09:16:59 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: almetoil@tatneft.ru, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: palo
-Message-ID: <20030822161659.GE21328@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <1245099799.20030822174107@tatneft.ru> <20030822160820.GA18112@ldl.fc.hp.com>
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 42AB348CC
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Aug 2003 10:22:15 -0600 (MDT)
+Date: Fri, 22 Aug 2003 09:14:47 -0700
+From: "David S. Miller" <davem@redhat.com>
+To: James Bottomley <James.Bottomley@SteelEye.com>
+Cc: linux-kernel@vger.kernel.org,
+	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
+Message-Id: <20030822091447.6ecea6ca.davem@redhat.com>
+In-Reply-To: <1061563239.2090.25.camel@mulgrave>
+References: <1061563239.2090.25.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030822160820.GA18112@ldl.fc.hp.com>
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Re: Problems with kernel mmap (failing tst-mmap-eofsync in glibc on
+ parisc)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +25,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >   Please help me cvs download palo !
-> >   Please sorry my english
-> > 
-> >   I am use this and read error messges:
-> >     user@panda:~/palo$ cvs -d :pserver:guest@cvs.parisc-linux.org:/ checkout palo
-> >     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
+On 22 Aug 2003 09:40:37 -0500
+James Bottomley <James.Bottomley@SteelEye.com> wrote:
 
-touch ~/.cvspass
-then follow the directions at http://www.parisc-linux.org/faq/cvs.html
-for anonymous CVS access.
+> This test essentially opens a file (via open(2)), writes something,
+> opens it via a mmaped file object *read only* (via fopen(...,"rm)) reads
+> what was writtent, writes some more and reads it via the mmaped file
+> object.
+> 
+> This last read fails to get the data on parisc.  The problem is that our
+> CPU cache is virtually indexed, and the page the write is storing the
+> data to (in the buffer cache) and the page it is mmapped to have the
+> same physical, but different virtual addresses.  We need the write() to
+> trigger a cache update via flush_dcache_page to get the virtually
+> indexed cache in sync.
+> 
+> The reason this doesn't happen is because the mapping is not on the
+> mmap_shared list that flush_dcache_page() updates.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+flush_dcache_page() checks both the shared and non-shared mmap lists,
+so if it is on _either_ list it is flushed.  It does not check only
+the shared list.
+
+The VM_SHARED change you are proposing is definitely wrong.
