@@ -1,32 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from arroz.onshored.com (arroz.onshored.com [216.220.101.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C88D8482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Apr 2001 03:04:18 -0600 (MDT)
-Sender: apharris@burrito.onshore.com
-To: Martin Schulze <joey@infodrom.north.de>
-Cc: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>,
-	debian-boot@lists.debian.org, parisc-linux@lists.parisc-linux.org
-References: <20010405155605.D8907@achilles.net> <oa4rw05rsq.fsf@arroz.fake>
-	<20010407232539.S25281@finlandia.infodrom.north.de>
-From: Adam Di Carlo <adam@onshore.com>
-Date: 08 Apr 2001 05:05:05 -0400
-In-Reply-To: <20010407232539.S25281@finlandia.infodrom.north.de>
-Message-ID: <oa1yr34v9a.fsf@arroz.fake>
+Received: from duck.doc.ic.ac.uk (duck.doc.ic.ac.uk [146.169.1.46])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 749BF482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Apr 2001 06:25:55 -0600 (MDT)
+Received: from sytry.doc.ic.ac.uk ([146.169.5.24] ident=root)
+	by duck.doc.ic.ac.uk with esmtp (Exim 3.16 #7)
+	id 14mEGQ-0004P9-00
+	for parisc-linux@lists.parisc-linux.org; Sun, 08 Apr 2001 13:25:54 +0100
+To: parisc-linux@lists.parisc-linux.org
+From: David Wragg <dpw@doc.ic.ac.uk>
+Date: 08 Apr 2001 12:25:50 +0000
+Message-ID: <y7rvgofo9wx.fsf@sytry.doc.ic.ac.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: Woody installer for PARISC
+Sender: dpw@sytry.doc.ic.ac.uk
+Subject: [parisc-linux] Assembly language conventions
 List-ID: <linux-parisc.vger.kernel.org>
 
-Martin Schulze <joey@finlandia.infodrom.north.de> writes:
+Where should I look for details of the assembly language conventions
+used on linux/PARISC (calling conventions, register uses, sequences
+for putting a 32-bit constant into a register, PIC conventions, etc.)?
 
-> You parsed it wrong Adam.  They don't have a .deb for a kernel, they
-> probably do have a kernel, though it is changing frequently.
+The nearest thing I have found is
+<http://devresource.hp.com/STK/toc_ref_details.html#32runtime11>, but
+I'm not sure how much of that carries over to the Linux port.  If
+there is an appropriate document, could a link be added to the
+technical documents web page.
 
-Relieved to hear that.  
 
-Sounds like they should put their effort in debian-installer then?  If
-they don't even have a basic toolchain and kernel, and boot-floppies
-will be obsoleted by end of year, is it worth it?
-
--- 
-.....Adam Di Carlo....adam@onshore.com.....<URL:http://www.onshored.com/>
+David Wragg
