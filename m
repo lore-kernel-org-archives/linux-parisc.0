@@ -1,43 +1,73 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA18863
-	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Aug 1999 09:24:48 -0600
-Date: Thu, 26 Aug 1999 17:26:26 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA19351
+	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Aug 1999 10:41:12 -0600
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 26 Aug 1999 16:42:51 -0000
 Subject: Re: [parisc-linux] Thoughts on arch/parisc/irq.c
-Message-ID: <19990826172626.K19314@suse.de>
-References: <E11Jo9U-0005JL-00@the-village.bc.nu> <199908260213.TAA11687@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199908260213.TAA11687@milano.cup.hp.com>; from Grant Grundler on Wed, Aug 25, 1999 at 07:13:04PM -0700
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Thu, 26 Aug 1999 17:38:39 +0100 (BST)
+Cc: alan@lxorguk.ukuu.org.uk, parisc-linux@thepuffingroup.com
+In-Reply-To: <199908261629.JAA12121@milano.cup.hp.com> from "Grant Grundler" at Aug 26, 99 09:29:39 am
+Content-Type: text
+Message-Id: <E11K2Xy-0005wR-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Hardware interrupt. These live in a unified space described by a cookie.
-> > We map the cookie to the irq number on a PC but that is optional. Drivers
-> > only know about irqs as a cookie.
+> I'm still convinced PA Processor HPAs should be passed to GSC drivers
+> seperately (eg dino.c).  On IA64 platforms, I/O SAPIC and Local Sapic
+> also seperate the target address and "vector".  I left David Mossberger
+> voice mail about this - I suspect/hope the problem has already
+> been solved.
 
-> I think there is going to a problem with "cookies" on PA.
-> The problem is GSC devices need to program an "EIM" register.
-> (For Dino, this is IAR0). The contents of the EIM register
-> are a processor HPA (bits 11-31) and EIRR bit number (bits 0-4;
+Passing that kind of info out to arch specific drivers is ok. The rest of
+the system wants a single opaque long cookie (with or without milk) . You
+can even make that cookie a cast on a struct addr.
 
-the Dino documentations says bits 5-31 are HPA but as long as 5-10 are 0 we
-don't have to care.
+> Not HP's style. Too hostile. The process is to file "Change Requests"
+> - a kind of black hole where managers pull statistics.  :^)
 
-> ie a value 0-31). The location of this register is NOT
-> defined by PA I/O architecture - or at least not well defined.
-> Is this a real problem or not?
+I've dealt with HP in another project. Im glad TPG are doing the HP interfacing
+not me 8)
 
-No.  You just do
-gsc_writel(0xfffe0000 + dev->irq, dev->hpa + DEVICE_SPECIFIC_OFFSET);
-right after request_irq(dev->irq, ...);
+> I see three levels: block all IRQs, enable IRQs, and bh.
+> It sounds like those correspond to SPLHI/SPL7, SPL5, and SPL2.
+> Am I still on the right track?
 
-> Another tidbit: I know of only one device which can use "6-bit"
-> (0-63) EIRR vectors. GSC and PCI devices which are capable of mastering
-> their own interrupt transactions can also use 6-bits. 6-bits is
-> obviously only supportable running a 64-bit kernel binary.
+Yes I think so. Im not that hot on the old BSD terminology
 
-Is it ok with you if we worry about SMP and PA2.0 boxes later ?
+> implement more than one level of SPL. But I now agree not much is lost
+> since two important levels are supported.  As long as the clock gets
+> serviced, the timeouts it generates would run at about the same time.
+> More on this below.
 
-	Philipp Rumpf
+We never do timeouts in loops in an IRQ handler by checking versus the
+clock. We also tend to use RDTSC or similar features if available - apic
+clock, etc so we recover lost ticks too
+
+> in this context. Knowing that Intel is eager to support UDI on linux,
+> I would be worried about how UDI is made to work. (Hint: I worked on
+
+I don't know any major Linux hacker who views UDI with anything but 
+mild amusement. Linux people tend to be latency freaks.
+
+> After doing this exercise, I agree with Alan - not much is lost.
+> The ATT flavor Unixes need SPL6 because streams processing (another
+> message passing subsystem) can take a really long time in the IRQ
+> context and thus block the clock.
+
+The crazies at gcom who did some streams based stuff for Linux (not in the
+standard kernel) do their streams processing in the bh context for some
+reason. 
+
+Where we get drivers for hardware that is really horrible we sometimes do
+
+	my_irq
+		mark_bh
+		mask irq
+		return from irq
+
+as the entire IRQ handler - the aha152x scsi controller is an example of
+that. Thankfully for the devices people buy when they want speed you don't
+have that problem.
+
+Alan
