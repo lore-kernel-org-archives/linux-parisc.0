@@ -1,21 +1,23 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5876C4834
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06BCE49A5
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Mar 2004 23:43:41 -0700 (MST)
-Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
-	id 1B8ZPD-0006k2-00 for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 31 Mar 2004 01:40:55 -0500
-Date: Wed, 31 Mar 2004 01:40:54 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
+	Wed, 31 Mar 2004 05:15:15 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1B8ecj-00086f-LI; Wed, 31 Mar 2004 13:15:13 +0100
+Date: Wed, 31 Mar 2004 13:15:13 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] Booting remounting and S10checkroot.sh,
 	the saga of changes to how mount works...
-Message-ID: <20040331064054.GC21909@baldric.uwo.ca>
+Message-ID: <20040331121513.GN7709@parcelfarce.linux.theplanet.co.uk>
 References: <20040331063632.GB21909@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <20040331063632.GB21909@baldric.uwo.ca>
+Sender: <willy@www.linux.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,21 +30,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 On Wed, Mar 31, 2004 at 01:36:32AM -0500, Carlos O'Donell wrote:
 > So I rebooted to test my signal fixes, and I find that I can't boot my
 > box anymore. It seems that /etc/rcS.d/S10checkroot.sh was no longer
-> doing it's job of remounting / (LABEL=ROOT) rw. I mean it wasn't as if
-> it didn't try, the kernel kept saying that I should specify a file
-> system type.
-> 
-> It's not fun when this happens, because you have to boot some sort of
-> rescue disk, and hack /etc/rcS.d/S10checkroot.sh!
-> 
-> The following was required to get my box back up... I don't think it's
-> necc, but nor do I understand what's going on here. Is this part of
-> those mount/remount changes I saw? :)
-> 
-> I think I might submit this to 'initscripts' as a "robustifying" patch.
 
-Looks like they know....
+This is what happens when you don't keep up with the latest CVS version ;-)
+Fixed in our kernel on Monday:
 
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=239735
+http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2004-March/033952.html
 
-c.
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
