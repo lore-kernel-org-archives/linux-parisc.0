@@ -1,13 +1,17 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA05907
-	for <parisc-linux@puffin.external.hp.com>; Mon, 25 Oct 1999 15:52:45 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA06130
+	for <parisc-linux@puffin.external.hp.com>; Mon, 25 Oct 1999 16:04:05 -0600
 From: Frank Rowand <frowand@cup.hp.com>
-Message-Id: <199910252153.OAA08622@xsvr4.cup.hp.com>
+Message-Id: <199910252205.PAA08931@xsvr4.cup.hp.com>
 To: rbradetich@uswest.net
-Date: Mon, 25 Oct 1999 14:53:46 PDT
+Date: Mon, 25 Oct 1999 15:05:02 PDT
 Cc: parisc-linux@thepuffingroup.com
-Subject: [parisc-linux] comments for BTLB setup
+Subject: [parisc-linux] comments for BTLB setup (no TABs)
 List-ID: <linux-parisc.vger.kernel.org>
+
+
+(Sorry all for the previous message, I use 4 column tabstops, the rest of
+the world uses 8 column tabstops.  I took the tabs out this time.)
 
 Ryan,
 
@@ -105,33 +109,33 @@ confusion:
 
 
         /* setup the BTLB.  XXX: This assumes a unified BTLB */
-        ldo             128(30),30			;create a stack frame
+        ldo             128(30),30          ;create a stack frame
         stw             26, -128(30)
         stw             25, -124(30)
         stw             24, -120(30)
         stw             23, -116(30)
 
-        ldo             0x388(0), 1			; IO ARS p.C-3, C-6, MEM_PDC
-        ldwax           0(1), 1				; get address of PDCE_PROC()
+        ldo             0x388(0), 1         ; IO ARS p.C-3, C-6, MEM_PDC
+        ldwax           0(1), 1             ; get address of PDCE_PROC()
 
-        ldo             18(0), 26			; arg0 - PDC_BLOCK_TLB()
-        ldo             1(0), 25			; arg1 - Insert entry
-        ldil            L%0xc0000, 23		; arg3 - virtual addr LSbits
-											; should this be %L0xc0000000 ??
-        ldo             0(0), 24			; arg2 - virtual addr MSbits
+        ldo             18(0), 26           ; arg0 - PDC_BLOCK_TLB()
+        ldo             1(0), 25            ; arg1 - Insert entry
+        ldil            L%0xc0000, 23       ; arg3 - virtual addr LSbits
+                                            ; should this be %L0xc0000000 ??
+        ldo             0(0), 24            ; arg2 - virtual addr MSbits
         ldil            L%0x00000000, 22
-        stw             22, -52(30)			; arg4 - physical addr
+        stw             22, -52(30)         ; arg4 - physical addr
         ldo             4096(0), 22
-        stw             22, -56(30)			; arg5 - length in pages
+        stw             22, -56(30)         ; arg5 - length in pages
         ldil            L%0x03000000, 22
-        stw             22, -60(30)			; arg6 - entry info
-											;        (access rights & ID)
+        stw             22, -60(30)         ; arg6 - entry info
+                                            ;        (access rights & ID)
         ldo              0(0), 22
-        stw             22, -64(30)			; arg7 - slot 0
+        stw             22, -64(30)         ; arg7 - slot 0
         ldil            L%PA(.+12), 2
-        bv              0(1)    			; PDCE_CALL(PDC_BLOCK_TLB, ...)
-        ldo             R%PA(.+4)(2), 2		; set return pointer to next
-											; instruction
+        bv              0(1)                ; PDCE_CALL(PDC_BLOCK_TLB, ...)
+        ldo             R%PA(.+4)(2), 2     ; set return pointer to next
+                                            ; instruction
 
         ldo             0x388(0), 1
         ldwax           0(1), 1
@@ -146,12 +150,12 @@ confusion:
         ldil            L%0x03000000, 22
         stw             22, -60(30)
         ldo              2(0), 22
-        stw             22, -64(30)			; arg7 - slot 2
+        stw             22, -64(30)         ; arg7 - slot 2
         ldil            L%PA(.+12), 2
-        bv              0(1)    			; PDCE_CALL(PDC_BLOCK_TLB, ...)
+        bv              0(1)                ; PDCE_CALL(PDC_BLOCK_TLB, ...)
         ldo             R%PA(.+4)(2), 2
 
-        comb,<>          0,28, blargh		; if (return value <> 0) blargh()
+        comb,<>          0,28, blargh       ; if (return value <> 0) blargh()
         ldw             -128(30), 26
         ldw             -124(30), 25
         ldw             -120(30), 24
