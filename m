@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 81F694829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 00:19:23 -0600 (MDT)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id F0DD81C1C
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 08:19:17 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id IAA11328 for <parisc-linux@lists.parisc-linux.org>; Mon, 2 Sep 2002 08:17:49 +0200 (METDST)
-Message-ID: <3D73014A.15ED96ED@admin.france.hp.com>
-Date: Mon, 02 Sep 2002 08:12:26 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 172F14829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 02:54:57 -0600 (MDT)
+Date: Mon, 2 Sep 2002 10:47:59 +0200
+Message-ID: <3D3815BD0000A476@ocpmta5.be.tiscali.com>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb 
+To: "Grant Grundler" <grundler@dsl2.external.hp.com>,
+	"Joel Soete" <joel.soete@freebel.net>
+Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: multipart/mixed;
- boundary="------------C8EBD1BF8147A59EBF9CB289"
-Subject: [parisc-linux] iodc call and HPMC: dump driver.
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,64 +23,147 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------C8EBD1BF8147A59EBF9CB289
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+>-- Original Message --
+>To: Joel Soete <joel.soete@freebel.net>
+>Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, jsoe0708@tiscali.be,
+>	parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb
+>
+>From: Grant Grundler <grundler@dsl2.external.hp.com>
+>Date: Sat, 31 Aug 2002 17:50:15 -0600
+>
+>
+>Joel Soete wrote:
+>> Finaly this trial version of function:
+>>
+>>
+>> BOOLEAN isa_null_partition_record(struct partition *p)
+>> {
+>>       if (p->boot_ind == 0x00 &&
+>>           p->head == 0x00 &&
+>>           p->sector == 0x00 &&
+>>           p->cyl == 0x00 &&
+>>           p->sys_ind == 0x00 &&
+>>           p->end_head == 0x00 &&
+>>           p->end_sector == 0x00 &&
+>>           p->end_cyl == 0x00 &&
+>>           p->start_sect == 0x00 &&
+>>           p->nr_sects == 0x00 )
+>>           return TRUE;
+>
+>Since start_sect and nr_sects are ints, this code will also generate an
+>"unaligned data reference fault" like the original code did.
 
-	Hi all.
-Do you know a guy who is a guru of iodc calls ?
-I'm still stuck with this. I think I was really near the
-solution. Now my iodc call create beatifull HPMC.
-Take a look to this call, I was thinking that it
-was all right, but there is still something wrong.
-now i'm able to retrieve hpa,
-I based this on palo code:
+Trust me it does not? (it works fine)
 
-ret =  real32_call(PAGE0->mem_boot.iodc_io, (unsigned long)PAGE0->mem_boot.hpa, DUMPDEV_WRITE,
-  PAGE0->mem_boot.spa, __pa(PAGE0->mem_boot.dp.layers), __pa(pdc_result), devaddr, __pa(iodc_dbuf), 2048);
+>You need
+>to find the origin of "struct partition *p" when the address is un-aligned.
+>
+Very hard to define:
+a. the previous code works (again all odds)
+b. the following trial code:
+"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
-DUMPDEV_WRITE = 1
-static unsigned long pdc_result[32] __attribute__ ((aligned (8))); 
-static char __attribute__((aligned(64))) iodc_dbuf[DUMP_PAGE_SZ];
+typedef u_int8_t  BOOLEAN;
 
-and devaddr=191889408
+#ifndef TRUE
+  #define TRUE  1
+#endif
+#ifndef FALSE
+  #define FALSE 0
+#endif
 
-Disk /dev/sda: 64 heads, 32 sectors, 17366 cylinders
-Units = cylinders of 2048 * 512 bytes
+struct partition {
+    unsigned char boot_ind;     /* 0x80 - active */
+    unsigned char head;     /* starting head */
+    unsigned char sector;       /* starting sector */
+    unsigned char cyl;      /* starting cylinder */
+    unsigned char sys_ind;      /* What partition type */
+    unsigned char end_head;     /* end head */
+    unsigned char end_sector;   /* end sector */
+    unsigned char end_cyl;      /* end cylinder */
+    unsigned int start_sect;    /* starting sector counting from 0 */
+    unsigned int nr_sects;      /* nr of sectors in partition */
+};
 
-/dev/sda1   *         1        61     62448   f0  Linux/PA-RISC boot
-/dev/sda2            62       183    124928   83  Linux
-/dev/sda3           184      1648   1500160   82  Linux swap
-/dev/sda4          1649     17366  16095232    5  Extended
-/dev/sda5          1649      5554   3999728   83  Linux
-/dev/sda6          5555      9460   3999728   82  Linux swap
-/dev/sda7          9461     13366   3999728   83  Linux
-/dev/sda8         13367     17366   4095984   83  Linux
+BOOLEAN isa_null_partition_record(struct partition *p)
+{
+    int          i;
+    u_int32_t   *uip = (u_int32_t *) p;
 
-Do you know someone who is well aware of iodc calls ?
-I want to discuss a bit about this.
+    for (i=0; i<4; i++) {
+        if (*uip!=0x00) return FALSE;
+    }
 
-	Thanks.
+    return TRUE;
+}
 
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------C8EBD1BF8147A59EBF9CB289
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
+int main(int argc, char * * argv, char * * env) {
 
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------C8EBD1BF8147A59EBF9CB289--
+    struct partition p1, p2;
+
+    p1.boot_ind=0;
+    p1.head=0;
+    p1.sector=0;
+    p1.cyl=0;
+    p1.sys_ind=0;
+    p1.end_head=0;
+    p1.end_sector=0;
+    p1.end_cyl=0;
+    p1.start_sect=0;
+    p1.nr_sects=0;
+
+    printf("Is that p1 is a null partition: %u\n", isa_null_partition_record(&p1));
+
+    p2.boot_ind=1;
+    p2.head=2;
+    p2.sector=3;
+    p2.cyl=4;
+    p2.sys_ind=5;
+    p2.end_head=6;
+    p2.end_sector=7;
+    p2.end_cyl=8;
+    p2.start_sect=9;
+    p2.nr_sects=10;
+
+    printf("Is that p2 is a null partition: %u\n", isa_null_partition_record(&p2));
+    return 0;
+}
+"
+did not reproduce the problem.
+
+
+Even if in the previous code, I replace:
+BOOLEAN isa_null_partition_record(struct partition *p)
+{
+    int          i;
+    u_int32_t   *uip = (u_int32_t *) p;
+
+    for (i=0; i<4; i++) {
+        if (*uip!=0x00) return FALSE;
+    }
+
+    return TRUE;
+}
+by
+extern BOOLEAN isa_null_partition_record(struct partition *p);
+
+and also link it with the original library containing isa_null_partition_record,
+I can no more reproduce the problem.
+
+The only difference I can notice is that 'isa_null_partition_record' is
+not directly used by evms tools but through modules loaded at run time (the
+cause of gdb debug difficulties) (or am I wrong and a subtil detail escape
+to my attention)?
+
+What can I do to analyse this problem? (printing all p addresses and its
+elements
+during a run with the original code and compare with a run with modified
+code?)
+
+Thanks again for attention and help,
+    Joel
