@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0BBFF4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 01:15:53 -0700 (MST)
-Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on 2.5 kernel??
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <1047972053.19011.14.camel@beavis.ybsoft.com>
-References: <1047917954.14507.15.camel@beavis.ybsoft.com>
-	 <20030317163206.GE28607@parcelfarce.linux.theplanet.co.uk>
-	 <1047919859.14507.21.camel@beavis.ybsoft.com>
-	 <1047972053.19011.14.camel@beavis.ybsoft.com>
-Content-Type: text/plain
-Message-Id: <1048148150.19036.11.camel@beavis.ybsoft.com>
-Mime-Version: 1.0
-Date: 20 Mar 2003 01:15:51 -0700
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7E2BC4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 04:23:18 -0700 (MST)
+From: bruno_vidal@hp.com
+Message-ID: <3E79A49C.81C188AA@hp.com>
+Date: Thu, 20 Mar 2003 12:23:08 +0100
+MIME-Version: 1.0
+To: Matthew Wilcox <willy@debian.org>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] struct page: page in use or not ?
+References: <3E789FE6.C9BB53CD@hp.com> <20030319170749.GX14520@parcelfarce.linux.theplanet.co.uk>
+Content-Type: multipart/mixed;
+ boundary="------------81B41C21B2E684D62BA8519A"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,73 +23,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Continuing to track this problem down, I have found the
-following:
+This is a multi-part message in MIME format.
+--------------81B41C21B2E684D62BA8519A
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: base64
 
-The Problem appears to be that when the 
+ICAgIEhpDQpXaGF0IGRvIHlvdSBtZWFuIGJ5ICJzd3N1c3AiIHBhdGNoZSA/IFdoYXQgaXQg
+ZG8uLi4uDQpBY3R1YWxseSBJJ20gbG9va2luZyBhdCB0aGUga21hbGxvYygpIGZ1bmN0aW9u
+IGluIG9yZGVyIHRvDQp1bmRlcnN0YW5kIGhvdyBpdCBkZXRlcm1pbmUgdGhlIGJ1Y2tldCwg
+YW5kIHNvIHRvIGtub3cNCndoaWNoIHBhZ2VzIEkgbmVlZCB0byBkdW1wIGJlZm9yZSBJIGNh
+biB1c2UgdGhlIHBhZ2Ugc3RydWN0dXJlLg0KRG8geW91IHRoaW5rIGl0IGlzIGEgZ29vZCBz
+dGFydGluZyBwb2ludCwgb3IgdXNpbmcgcGFnZQ0Kc3RydXR1cmUgaXMgcmVhbGx5IGEgYmFk
+IG9wdGlvbiA/DQoNCiAgICBUaGFua3MuDQoNCk1hdHRoZXcgV2lsY294IHdyb3RlOg0KDQo+
+IE9uIFdlZCwgTWFyIDE5LCAyMDAzIGF0IDA1OjUwOjQ2UE0gKzAxMDAsIGJydW5vX3ZpZGFs
+QGhwLmNvbSB3cm90ZToNCj4gPiAgICAgSGkNCj4gPiBJJ20gY3VycmVudGx5IHRyeWluZyB0
+byByZWR1Y2UgdGhlIGR1bXAgdGltZSwgYW5kIHRoZW4gSSB0cnkgdG8gZHVtcCBvbmx5DQo+
+ID4gcGFnZXMgdGhhdCBhcmUgY3VycmVudGx5IHVzZSBieSB0aGUgc3lzdGVtLiBJbiBwYWdl
+IHN0cnVjdHVyZSBJIGZvdW5kIGEgZmxhZywNCj4gPiBJIHdhcyB0aGlua2luZyBhIGdvb2Qg
+b25lIGZvciB0aGlzIHB1cnBvc2U6DQo+ID4gYXRvbWljX3QgY291bnQ7ICAgICAgICAgICAg
+ICAgICAvKiBVc2FnZSBjb3VudCwgc2VlIGJlbG93LiAqLw0KPiA+DQo+ID4gQnV0IGFmdGVy
+IHRha2luZyBvbmx5IHBhZ2VzIHdoZXJlIGNvdW50ICE9IDAsIHNvbWV0aGluZyB3YXMgYnJv
+a2VuLCBJIHdhcw0KPiA+IG5vdCBhYmxlIHRvIGxvb2sgYXQgcHJvYyBzdHJ1Y3R1cmUsIGFu
+ZCBzZXZlcmFsIHRoaW5ncy4uLi4uDQo+ID4gSWYgYSBkbyBhICJmdWxsIiBkdW1wIEknbSBz
+dGlsbCBhYmxlIHRvIGxvb2sgYXQgd2hhdCBJIG5lZWQsIHNvIHRoaXMgcGFnZS5jb3VudA0K
+PiA+IGlzIG5vdCBhY2N1cmF0ZSBmb3IgdGhpcyBwdXJwb3NlLiBTbyBkb2VzJ3QgZXhpc3Qg
+YSBnb29kIHdheSB0byBrbm93IGlmIGEgcGFnZQ0KPiA+IGlzIGluIHVzZSBvciBub3QgPw0K
+Pg0KPiBUaGUgcHJvYmxlbSBpcyBtdWx0aS1wYWdlIGFsbG9jcy4gIFRoZSBgc3RydWN0IHBh
+Z2UnIGlzIG5vdCB2YWxpZA0KPiBmb3IgdGhvc2UuICBJJ20gbm90IHN1cmUgd2hhdCBhIGdv
+b2Qgd2F5IG9mIGRvaW5nIHRoaXMgaXMgLS0gaGF2ZSB5b3UNCj4gbG9va2VkIGF0IHRoZSBz
+d3N1c3AgcGF0Y2hlcyB0byBzZWUgaG93IHRoZXkgZG8gaXQ/DQo+DQo+IC0tDQo+ICJJdCdz
+IG5vdCBIb2xseXdvb2QuICBXYXIgaXMgcmVhbCwgd2FyIGlzIHByaW1hcmlseSBub3QgYWJv
+dXQgZGVmZWF0IG9yDQo+IHZpY3RvcnksIGl0IGlzIGFib3V0IGRlYXRoLiAgSSd2ZSBzZWVu
+IHRob3VzYW5kcyBhbmQgdGhvdXNhbmRzIG9mIGRlYWQgYm9kaWVzLg0KPiBEbyB5b3UgdGhp
+bmsgSSB3YW50IHRvIGhhdmUgYW4gYWNhZGVtaWMgZGViYXRlIG9uIHRoaXMgc3ViamVjdD8i
+IC0tIFJvYmVydCBGaXNrDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fDQo+IHBhcmlzYy1saW51eCBtYWlsaW5nIGxpc3QNCj4gcGFyaXNjLWxp
+bnV4QGxpc3RzLnBhcmlzYy1saW51eC5vcmcNCj4gaHR0cDovL2xpc3RzLnBhcmlzYy1saW51
+eC5vcmcvbWFpbG1hbi9saXN0aW5mby9wYXJpc2MtbGludXgNCg0KLS0NCiAgICAgICAgVmlk
+YWwgQnJ1bm8sICg3NzAtNDI3MSkNCiAgICAgICAgU1NELUhBIFRlYW0sIEhQLVVYICYgTElO
+VVggU3VwcG9ydA0KICAgICAgICBicnVub192aWRhbEBhZG1pbi5mcmFuY2UuaHAuY29tDQoN
+Cg0K
+--------------81B41C21B2E684D62BA8519A
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for 
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
-	NEW_AUX_ENT(AT_ENTRY, exec->e_entry)
-
-is called, it puts in the wrong entry point.
-
-The reason I believe the error manifests itself is because
-of this if statment:
-
-  if (*user_entry == (ElfW(Addr)) ENTRY_POINT)
-
-I have tracked down values of the user_entry and ENTRY_POINT:
-
-	user_entry: 41001fb4
-	ENTRY_POINT: 41027082
-
-Since they are different, the if statement fails... My belief
-is they should be the same when /lib/ld.so.1 is called because
-of the following comment inside this if statement:
-
-
-      /* Ho ho.  We are not the program interpreter!  We are the program
-         itself!  This means someone ran ld.so as a command.  Well, that
-         might be convenient to do sometimes.  We support it by
-         interpreting the args like this:
-                                                                                
-         ld.so PROGRAM ARGS...
- 
-         The first argument is the name of a file containing an ELF
-         executable we will load and run with the following arguments.
-         To simplify life here, PROGRAM is searched for using the
-         normal rules for shared objects, rather than $PATH or anything
-         like that.  We just load it and use its entry point; we don't
-         pay attention to its PT_INTERP command (we are the interpreter
-         ourselves).  This is an easy way to test a new ld.so before
-         installing it.  */
-
-
-
-to me there looks like two things that could be wrong:
-
-1.  The exec->e_entry needs to be fixed in the kernel, so it matches
-    the _start of the library.
-
-2.  The ENTRY_POINT needs to be changed in glibc for parisc-linux.
-
-
-ia64 seems to be the only arch that changes the value of ENTRY_POINT,
-so this doesn't seem likely...
-
-./glibc-2.3.1/sysdeps/generic/entry.h:#define ENTRY_POINT _start
-./glibc-2.3.1/sysdeps/ia64/elf/entry.h:#define ENTRY_POINT (((long int
-*) _start)[0])
-
-
-
-I am planning to pursue option 1 unless someone thinks option 2 is the
-correct option to pursue.
-
-
-Thanks,
-
-- Ryan
-
-
--- 
-Ryan Bradetich <rbradetich@uswest.net>
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------81B41C21B2E684D62BA8519A--
