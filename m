@@ -1,38 +1,43 @@
-From: edgar@lmcarrental.net (Edgar Arroyo)
-Subject: [parisc-linux] Debian 2.4.21 on HP Visualize C3000 (EG card)
-Date: Wed, 02 Jun 2004 00:24:54 -0400
-Message-ID: <40BD5696.9060009@lmcarrental.net>
+From: "Brian Barber" <brianbarber@myrealbox.com>
+Subject: Peculiar X Issues
+Date: Wed, 02 Jun 2004 10:02:44 -0400
+Message-ID: <1086184964.d661bd9cbrianbarber__8364.44049277834$1416623464$gmane$org@myrealbox.com>
+Reply-To: brianbarber@linux.ca
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset="UTF-8"
+To: debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <zCRcPD.A.nsB.Q4dvAB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-I have an HP Viz C3000 with an EG card (I read before installing it was 
-supported)
+I have two issues that I encounter when using X on my 712/80 running Debian=
+ Sarge* (testing):
 
-I get this error:
+1) I just installed a new Startech 411 KVM switch last night and now my mou=
+se does not work.  It works with exactly the same monitor, keyboard and m=
+ouse, through a Cybex (now Avocent) 2-port KVM and when directly connecte=
+d.  Any suggestions?
 
-(**) FBDev(0): Using "Shadow Framebuffer"
-FBIOPUT_VSCREENINFO: Invalid argument
+2) I'm running IceWM. When I startx as root, I get the white background tha=
+t I have configured in my .preferences file.  I use the same file for reg=
+ular users.  When I startx as a regular user, there is no background colo=
+ur, only the grey thatch X background.  Could this be a path=3D or permis=
+sions issue?
 
-Fatal server error:
-AddScreen/ScreenInit failed for driver 0
+If you need additional information, please let me know.
 
-Any ideas/suggestions?
+Thanks for the help in advance,
 
-Thanks.
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+BB
+
+* I 'apt-get update && apt-get dist-upgrade' nightly.  One could very safel=
+y assume that all installed packages are the most current from the testin=
+g branch.
