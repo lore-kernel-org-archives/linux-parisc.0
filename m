@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Branch Prediction 
-In-Reply-To: Message from "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-   of "Fri, 25 Oct 2002 13:17:32 EDT." <200210251717.g9PHHX2f029861@hiauly1.hia.nrc.ca>
-References: <200210251717.g9PHHX2f029861@hiauly1.hia.nrc.ca> 
-Date: Fri, 25 Oct 2002 23:11:38 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021026051138.248F24834@dsl2.external.hp.com>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91098484E
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Oct 2002 10:33:59 -0600 (MDT)
+Message-ID: <3DBAD364.9060301@freebel.net>
+Date: Sat, 26 Oct 2002 17:39:48 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: jsoe0708@tiscali.be
+Cc: Randolph Chung <randolph@tausq.org>,
+	Stefan Pfetzing <dreamind@dreamind.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
+References: <3DB5776100000C32@ocpmta8.be.tiscali.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,27 +24,155 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"John David Anglin" wrote:
-> Does anyone know which PA processors if any implement the BTS?
+Hmm question about "default:" uaccess.h implementation on different 
+platform:
 
-No clue. I had to read the PA2.0 arch book (page 6-15, "Branch 
-Target Stack) to learn what this is and what it does.
+i386 declare: "extern void __get_user_bad(void);"
 
-Anyay, it would be interesting to know if HPUX's acc uses it.
-ie did it's usage ever get validated for both systems that do
-and don't implement BTS?
+ia64: "extern void __get_user_unknown (void);"
 
-> I was also wondering about the ITLB P bit and what parisc-linux does
-> with it.  The came up in regard to accelerating branches for calls
-> and returns.
+mips: "extern void __get_user_unknown(void);"
+...
+but not define elsewhere? (is it there so that the build of the kernel 
+failed if that case was requested to run properly?)
 
-It sounds like parisc-linux does nothing with P-bit.
-We could just always enable it if you think that's the right
-thing to do for now. Looks like could be done by adding one more
-insn to itlb_miss_common_20w in entry.S.
+Thanks in advance for attention,
+     Joel
+
+PS: afaik on i386 only put_user_u64 is define why not pending get_user?
 
 
-But to answer both questions, remind me to dig this up if
-no answer gets posted by next Wednesday or so.
-
-grant
+jsoe0708@tiscali.be wrote:
+> too bad:
+> 
+>  man ioctl advise that it would return -1 (not ENOTSUP which would be assign
+> to errno) I will try to see how?
+> 
+> Sorry to annoy,
+>     Joel
+> 
+> 
+>>-- Original Message --
+>>From: jsoe0708@tiscali.be
+>>Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
+>>To: "Randolph Chung" <randolph@tausq.org>,
+>>	"Stefan Pfetzing" <dreamind@dreamind.de>
+>>Cc: parisc-linux@lists.parisc-linux.org
+>>Date: Fri, 25 Oct 2002 14:58:42 +0200
+>>
+>>
+>>Hi Randolph,
+>>
+>>It sure I found a bug in the two parts kernel and xfs.
+>>
+>>A. The kernel hppa: put_user and get_user does just a printk for BUG messages
+>>but don't return error code as ENOTSUP (or what else) (what I assume the
+>>other platforms does when they do not yet support BLKGETSIZE64?)
+>>
+>>Here is a small patch I suggest:
+>>(I do not reach to implement an operational support of BLKGETSIZE64 [for
+>>32bits kernel]; I do not find a easy way to manage code failure :-( )
+>>
+>>--- uaccess.h.orig	2002-10-22 15:14:54.000000000 +0200
+>>+++ uaccess.h	2002-10-23 13:46:48.000000000 +0200
+>>@@ -35,10 +35,10 @@
+>>#define get_user __get_user
+>>
+>>#if BITS_PER_LONG == 32
+>>-#define LDD_KERNEL(ptr)		BUG()
+>>-#define LDD_USER(ptr)		BUG()
+>>-#define STD_KERNEL(x, ptr)	BUG()
+>>-#define STD_USER(x, ptr)	BUG()
+>>+#define LDD_KERNEL(ptr)		BUG(); __gu_err=ENOTSUP;
+>>+#define LDD_USER(ptr)		BUG(); __gu_err=ENOTSUP;
+>>+#define STD_KERNEL(x, ptr)	BUG(); __pu_err=ENOTSUP;
+>>+#define STD_USER(x, ptr)	BUG(); __pu_err=ENOTSUP;
+>>#else
+>>#define LDD_KERNEL(ptr) __get_kernel_asm("ldd",ptr)
+>>#define LDD_USER(ptr) __get_user_asm("ldd",ptr)
+>>@@ -75,7 +75,7 @@
+>>	    case 2: __get_kernel_asm("ldh",ptr); break; \
+>>	    case 4: __get_kernel_asm("ldw",ptr); break; \
+>>	    case 8: LDD_KERNEL(ptr); break;		\
+>>-	    default: BUG(); break;                      \
+>>+	    default: BUG(); __gu_err=ENOTSUP; break;    \
+>>	    }                                           \
+>>	}                                               \
+>>	else {                                          \
+>>@@ -84,7 +84,7 @@
+>>	    case 2: __get_user_asm("ldh",ptr); break;   \
+>>	    case 4: __get_user_asm("ldw",ptr); break;   \
+>>	    case 8: LDD_USER(ptr);  break;		\
+>>-	    default: BUG(); break;                      \
+>>+	    default: BUG(); __gu_err=ENOTSUP; break;    \
+>>	    }                                           \
+>>	}                                               \
+>>							\
+>>@@ -144,7 +144,7 @@
+>>	    case 2: __put_kernel_asm("sth",x,ptr); break;       \
+>>	    case 4: __put_kernel_asm("stw",x,ptr); break;       \
+>>	    case 8: STD_KERNEL(x,ptr); break;			\
+>>-	    default: BUG(); break;                              \
+>>+	    default: BUG(); __pu_err=ENOTSUP; break;		\
+>>	    }                                                   \
+>>	}                                                       \
+>>	else {                                                  \
+>>@@ -153,7 +153,7 @@
+>>	    case 2: __put_user_asm("sth",x,ptr); break;         \
+>>	    case 4: __put_user_asm("stw",x,ptr); break;         \
+>>	    case 8: STD_USER(x,ptr); break;			\
+>>-	    default: BUG(); break;                              \
+>>+	    default: BUG(); __pu_err=ENOTSUP; break;		\
+>>	    }                                                   \
+>>	}                                                       \
+>>								\
+>>
+>>If all agreed, (awaiting better :?) can somebody ci it?
+>>
+>>
+>>Thanks in advance for attention,
+>>   Joel
+>>
+>>PS: 
+>>B. in xfs:
+>>
+>>	error = ioctl(fd, BLKGETSIZE64, &size);
+>>-	if (error >= 0) {
+>>+	if (!error) {
+>>		/* BLKGETSIZE64 returns size in bytes not 512-byte blocks */
+>>
+>>AFAIK ioctl should return error=0 if success and error <>0 (>0?) 
+>>
+>>here is the full patch I will suggest:
+>>
+>>--- cmd/xfsprogs/libxfs/init.c.orig	2002-10-25 12:12:29.000000000 +0200
+>>+++ cmd/xfsprogs/libxfs/init.c	2002-10-25 14:22:34.000000000 +0200
+>>@@ -155,11 +155,14 @@
+>>			progname, path, strerror(errno));
+>>		exit(1);
+>>	}
+>>+#if !defined(__hppa__) || defined(__LP64__)
+>>	error = ioctl(fd, BLKGETSIZE64, &size);
+>>-	if (error >= 0) {
+>>+	if (!error) {
+>>		/* BLKGETSIZE64 returns size in bytes not 512-byte blocks */
+>>		size = size >> 9;
+>>-	} else {
+>>+	} else
+>>+#endif
+>>+        {
+>>		/* If BLKGETSIZE64 fails, try BLKGETSIZE */
+>>		unsigned long tmpsize;
+>>		error = ioctl(fd, BLKGETSIZE, &tmpsize);
+>>
+>>_______________________________________________
+>>parisc-linux mailing list
+>>parisc-linux@lists.parisc-linux.org
+>>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
