@@ -1,33 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AFB2A482A
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 13:48:53 -0600 (MDT)
-Date: Tue, 16 Oct 2001 21:46:01 +0200 (CEST)
-From: Jochen Friedrich <jochen@scram.de>
-To: Tom <palinux@alaskatech.org>
-Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A7F7B482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 14:00:55 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15taOU-0007li-00; Tue, 16 Oct 2001 21:00:54 +0100
+Date: Tue, 16 Oct 2001 21:00:54 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Jochen Friedrich <jochen@scram.de>
+Cc: Tom <palinux@alaskatech.org>,
+	PA-RISC Linux List <parisc-linux@parisc-linux.org>
 Subject: Re: [parisc-linux] EISA support
-In-Reply-To: <Pine.LNX.4.33.0110161110310.20693-100000@goliath.alaskatech.org>
-Message-ID: <Pine.LNX.4.33.0110162142230.13084-100000@alpha.bocc.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20011016210054.H15532@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.33.0110161110310.20693-100000@goliath.alaskatech.org> <Pine.LNX.4.33.0110162142230.13084-100000@alpha.bocc.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0110162142230.13084-100000@alpha.bocc.de>; from jochen@scram.de on Tue, Oct 16, 2001 at 09:46:01PM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Tom,
+On Tue, Oct 16, 2001 at 09:46:01PM +0200, Jochen Friedrich wrote:
+> An IBM Auto 16/4 Token Ring card is recognized, but doesn't work (instead, 
+> i randomly get a stack dump during the module load).
 
-> I've updated my 715/100 to -pa57, which gives me startup messages that the
-> Mirage Was EISA BA is recognized.
+Hmm.. could you try with the driver built in?  People have been reporting
+that modules aren't working any more.
 
-Similar for 720. Here i got the message:
+> parisc_ksyms.c is missing the exports for memcpy_toio and memcpy_fromio.
 
-Mongoose EISA Adapter found at 0xfc000000
+OK, that's easily fixed.
 
-An IBM Auto 16/4 Token Ring card is recognized, but doesn't work (instead, 
-i randomly get a stack dump during the module load).
-
-Another comment:
-
-parisc_ksyms.c is missing the exports for memcpy_toio and memcpy_fromio.
-
-Cheers,
-Jochen
+-- 
+Revolutions do not require corporate support.
