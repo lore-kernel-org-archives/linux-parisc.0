@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: James Mcclain <jmccla3@gl.umbc.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 64-bit pa20, pa24 fail to boot on my c200 
-In-Reply-To: Message from James Mcclain <jmccla3@gl.umbc.edu>
-   of "Wed, 26 Dec 2001 12:29:04 EST." <Pine.LNX.4.31L.02.0112261221590.5356-100000@linux1.gl.umbc.edu>
-References: <Pine.LNX.4.31L.02.0112261221590.5356-100000@linux1.gl.umbc.edu> 
-Date: Wed, 26 Dec 2001 11:21:01 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20011226182102.52C76483F@dsl2.external.hp.com>
+Received: from sj-msg-core-1.cisco.com (sj-msg-core-1.cisco.com [171.71.163.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E50C2483D
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 15:13:50 -0700 (MST)
+Received: from mira-sjc5-9.cisco.com (mira-sjc5-9.cisco.com [171.71.163.32])
+	by sj-msg-core-1.cisco.com (8.11.3/8.9.1) with ESMTP id fBQMDnL07870
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 14:13:49 -0800 (PST)
+Message-Id: <4.3.2.7.2.20011226135241.027fc090@mira-sjc5-9.cisco.com>
+Date: Wed, 26 Dec 2001 14:13:35 -0800
+To: parisc-linux@lists.parisc-linux.org
+From: Christian Suder <csuder@cisco.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: [parisc-linux] [Q] on EISA support
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,13 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-James Mcclain wrote:
-> my machine fails to boot with a 64-bit kernel (either downloaded
-> from the website or built by me).
+Hello,
 
-See the mail archives at http://lists.parisc-linux.org.
-Search for C200, CONFIG_PDC_NARROW, or 64-bit.
+I finally got the C110 running a couple of days ago (thanks to the "magic" 
+FW-SCSI command) and things are well so far. I'm trying to add a network 
+card needed for the planned use of the machine but so far no luck.
 
-Short anwser is you need to define CONFIG_PDC_NARROW for 64-bit.
+I'm not an expert on the HP HW, but I do remember the (short) EISA days on 
+PCs where a .cfg file was needed to teach the PC the specifics of the cards 
+(IO ports, interrupts etc.). How does this work with the HP machines ? I 
+tried an SMC Ultra 32 and an AC3200 with no luck. One hurdle here is that 
+there is a function call in both drivers (as well as other drivers that use 
+similar controller chips) that the compiler barks about. (Something like 
+isa_eth_copy_and_chksm - don't have the exact at hand right now). I found a 
+way around it but the cards are not detected at all. Note these cards use a 
+memory window - is that possible with the current EISA support ? Is it 
+possible to use generic EISA cards at all or do they have to be supported 
+by the boot rom in some way ?
 
-grant
+Tried a NE2000 clone too, which was detected but with the wrong interrupt. 
+That might be because it's a "hard" configured plug&pray card. PCs have no 
+problems detecting the settings correctly, though.
+
+Thanks,
+	Christian
