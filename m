@@ -1,18 +1,17 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] I/O MMU @ fffffffffed20000 is out of mapping
-	resources: re-occured
-Date: Sat, 26 Feb 2005 11:52:27 -0700
-Message-ID: <20050226185227.GB16927@colo.lackof.org>
-References: <420B30A200004C1D@mail-1-bnl.tiscali.it>
-	<20050223220055.GD26124@colo.lackof.org>
-	<42208B31.1060900@tiscali.be>
+Subject: Re: [parisc-linux] HP model 612 hard disk not found
+Date: Sat, 26 Feb 2005 11:56:26 -0700
+Message-ID: <20050226185626.GC16927@colo.lackof.org>
+References: <200502251214.15993.mszick@wolfbutter.com>
+	<20050226162901.GA26100@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: "Michael S. Zick" <mszick@wolfbutter.com>,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42208B31.1060900@tiscali.be>
+In-Reply-To: <20050226162901.GA26100@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,16 +22,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Feb 26, 2005 at 02:44:01PM +0000, Joel Soete wrote:
-> >Likely you have less RAM installed than I (normally 2-4 GB).
-> Only 256Mb
+On Sat, Feb 26, 2005 at 11:29:01AM -0500, John David Anglin wrote:
+> > > But nothing works. 
+> > > How can i mount it. It has a filesystem of HP-UX.
+> > > fdisk command doesn't exist
+> 
+> I don't believe that there is support to directly mount HP-UX file
+> systems (i.e., hfs or vxfs).  One way might be using nfs.
 
-Yeah, that's the problem. With 1/8th of that (32MB), one can easily
-exhaust the IOMMU resources.
+UFS works for HPUX disks the last time I tried it a few years ago.
 
-Let me think about this more. The ratio 1/8 is wrong in most cases.
-I'm thinking it should be 1:1 with host mem size up to the max IOMMU
-size of 1GB.
+But, HPUX LVM is incompatible with linux LVM.
+Ie the HPUX "HFS" (aka UFS) must be "whole disk".
 
 grant
 _______________________________________________
