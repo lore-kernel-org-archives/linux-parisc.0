@@ -1,38 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0721C482D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Jun 2001 14:15:52 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15Bixa-0001o6-00
-	for parisc-linux@lists.parisc-linux.org; Sun, 17 Jun 2001 21:15:50 +0100
-Date: Sun, 17 Jun 2001 21:15:50 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@lists.parisc-linux.org
+Received: from imf10bis.bellsouth.net (mail010.mail.bellsouth.net [205.152.58.30])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61C14482D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Jun 2001 18:09:35 -0600 (MDT)
+Received: from adsl-20-77-170.asm.bellsouth.net ([66.20.77.170])
+          by imf10bis.bellsouth.net (InterMail vM.5.01.01.01 201-252-104)
+          with ESMTP
+          id <20010618001023.ULID26310.imf10bis.bellsouth.net@adsl-20-77-170.asm.bellsouth.net>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sun, 17 Jun 2001 20:10:23 -0400
+Date: Sun, 17 Jun 2001 20:16:03 -0400 (EDT)
+From: buggz <buggz@america.net>
+Cc: PA-RISC Linux list <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] PALO/kernel-build change proposal
-Message-ID: <20010617211550.D10186@parcelfarce.linux.theplanet.co.uk>
-References: <E15AEUU-0004qi-00@noam.fc.hp.com> <200106132122.PAA01189@puffin.external.hp.com> <20010617230316.A3622@neep.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010617230316.A3622@neep.com.au>; from andrew@neep.com.au on Sun, Jun 17, 2001 at 11:03:19PM +0800
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <Pine.LNX.4.33.0106170807040.9599-100000@devnull.alaskatech.org>
+Message-ID: <Pine.LNX.4.33.0106172013490.20079-100000@buggz1.buggz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jun 17, 2001 at 11:03:19PM +0800, Andrew Shugg wrote:
-> Grant Grundler said:
-> As a Debian user I discovered the wonders of Manoj's kernel-package
-> suite to build Debian packages of kernel source/headers/image/docs from
-> a single kernel tree.  Certainly much easier to install the resulting
-> kernel-image-*.deb package than fuss about with the various Makefile
-> targets.  I suppose it would be unfriendly though to ask that this
-> become the standard means of building and installing hppa-linux kernels?
-> 
-> =)
-> 
-> I see nothing wrong with Paul's suggestion but hope that kernel-package
-> is educated about the changes for the hppa architecture.  I've grown
-> fond of it (or too lazy to go back?) ...
+On Sun, 17 Jun 2001, Tom wrote:
 
-The changes required for kernel-package have been submitted to Manoj...
+> I don't suppose someone has an updated how-to for actually *using* your
+> new kernel, do they? Replacing /boot/vmlinux-2.4.0 with the new one
+> results in an immediate hang on reboot...
+>
 
--- 
-Revolutions do not require corporate support.
+*shrug*
+Well, I've made two successful kernels, cp'd to /boot, edited
+/etc/palo.conf, just like normal to me.
+
+--
+ Ed June
+
+ buggz@america.net
+ Linux: An open choice for free people worldwide.
