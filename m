@@ -1,18 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.cs.tu-berlin.de (mail.cs.tu-berlin.de [130.149.17.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2F2EB482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Jan 2002 15:52:42 -0700 (MST)
-From: Matthias Klose <doko@cs.tu-berlin.de>
+Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29932482A
+	for <parisc-linux@parisc-linux.org>; Mon, 28 Jan 2002 23:20:09 -0700 (MST)
+Received: from mmp-1.gci.net ([208.138.130.80]) by mta-2.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GQOS9F01.Y1U for
+          <parisc-linux@parisc-linux.org>; Mon, 28 Jan 2002 21:20:03 -0900
+Received: from goliath.alaskatech.org ([24.237.5.207]) by
+          mmp-1.gci.net (Netscape Messaging Server 4.15) with ESMTP id
+          GQOS9F02.CBO for <parisc-linux@parisc-linux.org>; Mon, 28 Jan
+          2002 21:20:03 -0900
+Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
+	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA01968
+	for <parisc-linux@parisc-linux.org>; Mon, 28 Jan 2002 21:14:55 -0900
+Date: Mon, 28 Jan 2002 21:14:55 -0900 (AKST)
+From: Tom <palinux@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0201282102210.1826-100000@goliath.alaskatech.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <15445.54753.489018.115701@gargle.gargle.HOWL>
-Date: Mon, 28 Jan 2002 23:51:13 +0100
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, chet@po.cwru.edu,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] FYI - gcc 3.1 news
-In-Reply-To: <20020128200820.61546482A@dsl2.external.hp.com>
-References: <20020128200820.61546482A@dsl2.external.hp.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] X on 715/100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,72 +30,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler writes:
-> 
-> Hi all,
-> Some good news from gcc-hppa maintainer.
-> 
-> If anyone has a clue about the malloc issues...it would be
-> interesting to get fixed.
+There was a bit of chat about trying to make this work. Just figured I'd
+mention that I've got X running on my 715/100 and A1097C monitor, with KDE
+as the WM (not by choice, but it's working, so...)
 
-this is bash. see http://bugs.debian.org/130051, however I am unable
-to trigger this myself. One thing that could be tried: configure bash
---without-bash-malloc
+In a nutshell, I installed the X packages, then 'dpkg-reconfigure
+xserver-xfree86' and chose 'advanced'. Entered info as needed (monitor
+settings 1280x1024, 78 horiz rate, 72 vertical refresh), then 8-bit color
+default. Everything else was defaulted correctly (I believe).
 
-	Matthias
+http://www.alaskatech.org/stuff/XF86Config-4 is my working config file.
 
-> 
-> enjoy!
-> grant
-> 
-> ------- Forwarded Message
-> 
-> Subject: Re: gcc-3.1 bootstrap (keys)
-> Date: Mon, 28 Jan 2002 12:45:09 -0500 (EST)
-> From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-> 
-> The keys work.  I did quite a bit of work on the weekend and managed
-> to gcc-3.1 to boot on the machine.  I posted the testresults here:
-> 
-> <http://gcc.gnu.org/ml/gcc-testresults/2002-01/msg00545.html>.  The
-> g77 and objc results are excellent.  The gcc results are not too bad.
-> I think many of the failures there are due to the linker not providing
-> the correct stub for indirect calls involving doubles.  There is clearly
-> a problem involving unwinding/exception handling affecting the g++
-> results.  I had to rewrite the frame note code that Alan Modra added
-> to get a successful build.
-> 
-> I have observed one problem affecting the system that seems to occur
-> in g++ compilations which typically need a lot of memory allocated:
-> 
-> /home/dave/gcc-3.1/objdir/gcc/xgcc -B/home/dave/gcc-3.1/objdir/gcc/ -nostdinc++
-> - -L/home/dave/gcc-3.1/objdir/hppa-linux/libstdc++-v3/src -L/home/dave/gcc-3.1/obj
-> dir/hppa-linux/libstdc++-v3/src/.libs -B/home/dave/opt/gnu/hppa-linux/bin/ -B/ho
-> me/dave/opt/gnu/hppa-linux/lib/ -isystem /home/dave/opt/gnu/hppa-linux/include -
-> I../../../../gcc/libstdc++-v3/../gcc -I../../../../gcc/libstdc++-v3/../include -
-> I/home/dave/gcc-3.1/objdir/hppa-linux/libstdc++-v3/include/hppa-linux -I/home/da
-> ve/gcc-3.1/objdir/hppa-linux/libstdc++-v3/include -I../../../../gcc/libstdc++-v3
-> /libsupc++ -g -O2 -D_GNU_SOURCE -fno-implicit-templates -Wall -Wno-format -W -Ww
-> rite-strings -Winline -fdiagnostics-show-location=once -ffunction-sections -fdat
-> a-sections -g -c ../../../../gcc/libstdc++-v3/libsupc++/pure.cc  -fPIC -DPIC -o
-> pure.o
-> 
-> malloc: /build/buildd/bash-2.05a/dispose_cmd.c:224: assertion botched
-> free: called with unallocated block argument
-> Stopping myself...make[4]: *** [pure.lo] Aborted
-> 
-> I don't know if this is a problem with bash, malloc or sbrk.  Usually,
-> the compilation will succeed if I just restart it.
-> 
-> Dave
-> - -- 
-> J. David Anglin                                  dave.anglin@nrc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
-> 
-> ------- End of Forwarded Message
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+KDE isn't the speediest window manager for this machine - from 'startx'
+until the system is responsive is around a minute or two, maybe a bit
+more. But, it's working, and once loaded it isn't too bad. Something like
+icewm-lite would probably be much speedier.
+
+(Amazing what you can accomplish when someone says, "Hey, I'd like to buy
+your 715 if you can get X working on it..." <g>)
