@@ -1,26 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1CCE74829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 09:39:54 -0600 (MDT)
-Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
-	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h3GEfeRN030101;
-	Wed, 16 Apr 2003 15:41:40 +0100
-Received: (from alan@localhost)
-	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h3GEfYgL030099;
-	Wed, 16 Apr 2003 15:41:34 +0100
-Subject: RE: [parisc-linux] Re: Presicionbook success
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: "\"Beerse," =?ISO-8859-1?Q?Corn=E9=22?= <c.beerse@torex-hiscom.nl>,
-	Matthew Wilcox <willy@debian.org>,
-	Gavin Hubbard <ghub005@xtra.co.nz>,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.LNX.4.44.0304161504230.28370-100000@sal.ucc.ie>
-References: <Pine.LNX.4.44.0304161504230.28370-100000@sal.ucc.ie>
-Content-Type: text/plain
-Message-Id: <1050504092.28591.97.camel@dhcp22.swansea.linux.org.uk>
-Mime-Version: 1.0
-Date: 16 Apr 2003 15:41:33 +0100
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6D1A84829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 09:46:24 -0600 (MDT)
+Date: Wed, 16 Apr 2003 17:46:15 +0200
+Message-ID: <3E9BA3A600000D8F@ocpmta2.freegates.net>
+In-Reply-To: <Pine.LNX.4.44.0304161319540.28370-100000@sal.ucc.ie>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] STI fb questions
+To: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,26 +21,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mer, 2003-04-16 at 15:09, M. Grabert wrote:
-> The hard disks are removeable, but there is no obvious IDE-SCSI bridge
-> visible. It is build-in inside the laptop (i.e. non-removeable), and it's
-> obviously visible from the OS (at least linux sees the IDE chip). Whether
-> you can make any sensible use of it is a different question though ...
+>So it should be able to display at least 800x600 in 24/32bit and
+>1024x768 in 16bit, but it refuses to do so. 'dmesg' ALWAYS shows
+>only 8bit colour depth regardless of the display resolution.
+>
 
-That means the system either has seperate IDE and SCSI controllers or
-has an IDE controller and an IDE_SCSI bridge for scsi disk. I suspect
-the former
-> > For what its worth, I think the IRQ is hooked to the scsi interface, not to
-> > the processor.
-> 
-> This would make sense.
+(may be you will find more accurate explanation on the stifb driver limits
+with a search in this m-l)
 
-It would be common sense for two exclusive items to use the same IRQ,
-but if pio works so does the IRQ line
+>Obviously the standard sti=8/24 sti_font=VGA8x16 is used in the
+>kernel command line (according to dmesg, however it's not specified in
+>palo.conf).
 
-> comes with two 4GB hard disks, both with HP-UX installed, but I have to
-> ask for the password (or does anybody know how to easily gain root access?),
-> which I haven't done yet.
+Well if some parameters are not specified, palo take default value for those
+once. 
 
-There are several ways but that would be subverting a rights management
-system and I don't wish to get the list owners in trouble.
+>
+>My question is know, does STIfb also supports 16bit? How can I force
+>16bit and 24/32bit colour depths?
+
+Unfortunately, it is not possible to force to use more than what dmesg announce
+you (see limits) :(
+
+> What does sti=8/24 exactly mean?
+>
+IIRC 8bit 24 colour depth.
+
+Joel
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
