@@ -1,13 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] is this a known hppa64-linux-ld bug?
-Date: Sat, 11 Sep 2004 02:17:25 -0700
-Message-ID: <20040911091725.GM28659@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] is this a known hppa64-linux-ld bug?
+Date: Sat, 11 Sep 2004 06:06:09 -0400 (EDT)
+Message-ID: <200409111006.i8BA6ACE003756@hiauly1.hia.nrc.ca>
+References: <20040911091725.GM28659@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: randolph@tausq.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040911091725.GM28659@tausq.org> from "Randolph Chung" at Sep
+	11, 2004 05:17:25 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,40 +21,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-i'm doing some experiments with code that contains:
+> when this code is compiled and assembled, i can see in the disassembly
+> that the insn at "3:" contains a PCREL17F reloc against
 
-.section .text.function, "ax"
-....
-1: stw %r19,(%sr3,%r20)
-2: /* some other insn */
-....
+Not a PCREL22F?
 
-.section .fixup, "ax"
-3: b,l 2b
-.previous
+> .text.function+xxx which is pointing to the location of "2:". So far so
+> good...
+> 
+> But after linking with the rest of the kernel, the b,l address at "3:"
+> is wrong (it points to an address that is an offset from the __ex_table
+> section). 
+> 
+> not sure why this is happening, but it looks like a ld bug?
 
-.section __ex_table, "aw"
-.dword 1b,3b
-.previous
+Does it point to a long branch stub?  I've had trouble with this
+before when trying to use sibcalls.  There's only one stub table
+and if you can't get there you're scuppered.  Since your branch is
+in a different section from the target, you may need a long branch
+stub.
 
-when this code is compiled and assembled, i can see in the disassembly
-that the insn at "3:" contains a PCREL17F reloc against
-.text.function+xxx which is pointing to the location of "2:". So far so
-good...
+This needs to be fixed but no one has time to work on it.
 
-But after linking with the rest of the kernel, the b,l address at "3:"
-is wrong (it points to an address that is an offset from the __ex_table
-section). 
-
-not sure why this is happening, but it looks like a ld bug?
-
-does anybody have a suggestion for a workaround? 
-
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
