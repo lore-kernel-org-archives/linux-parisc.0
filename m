@@ -1,34 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 008234961
-	for <parisc-linux@parisc-linux.org>; Wed, 10 Oct 2001 02:33:13 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] EISA support
-Date: Wed, 10 Oct 2001 03:32:09 -0500
-References: <20011010072441.B24923@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20011010072441.B24923@parcelfarce.linux.theplanet.co.uk>
+Received: from lefou.zayda.com (unknown [204.99.158.177])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 254814961
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Oct 2001 02:33:22 -0600 (MDT)
+Received: from localhost (sonny@localhost)
+	by lefou.zayda.com (8.9.3/8.9.3) with ESMTP id IAA05067
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Oct 2001 08:33:21 GMT
+Date: Wed, 10 Oct 2001 08:33:21 +0000 (UTC)
+From: Sonny Cook <sonny@aspersion.org>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0110100827310.4675-100000@lefou.zayda.com>
 MIME-Version: 1.0
-Message-Id: <01101003320900.00964@Wolf-01>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 735/125 eisa nic
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wednesday 10 October 2001 01:24 am, Matthew Wilcox wrote:
-> Anyone want to review a patch that makes EISA work?  
->
->  * I decided that to support old drivers, EISA port numbers should be
->    between 0-0xffff, so I reserved bus number 0 for EISA.  This involved
->    messing with inb/outb in pci.c.
->
-Willy,
-
-A comment, for your consideration:
-
-Old ISA boards only do a 10-bit decode and it is a frequent occurance
-that old drivers don't "clean up" the unused high 6 bits.
-
-Would it be reasonable to mask port numbers to 10 bits for ISA in the
-inb/outb routines?
-
-Mike
+I have a 735/125 and an EISA i82596 based nic.  Does the parisc-linux
+kernel support this combination at the moment?  As far as I can tell from
+the list archives, the answer is no, but that wasn't for this specific
+combination, so I would just like to be sure.
+Thanks,
+Sonny
