@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "B. Douglas Hilton" <bdhilton@charter.net>
+To: "Duraid Madina" <duraid@fl.net.au>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] c200 fx graphics status? 
-In-Reply-To: Message from "B. Douglas Hilton" <bdhilton@charter.net>
-   of "Tue, 23 Apr 2002 18:51:44 EDT." <3CC5E580.5090403@charter.net>
-References: <3CC5E580.5090403@charter.net> 
-Date: Tue, 23 Apr 2002 22:20:23 -0600
+Subject: Re: [parisc-linux] Problem installing Debian woody in PA-RISC (HP9000 C100) 
+In-Reply-To: Message from "Duraid Madina" <duraid@fl.net.au>
+   of "Wed, 24 Apr 2002 09:49:45 +1000." <000e01c1eb21$8e684210$022a17ac@simplex>
+References: <000e01c1eb21$8e684210$022a17ac@simplex> 
+Date: Tue, 23 Apr 2002 22:23:50 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020424042023.DC87A482B@dsl2.external.hp.com>
+Message-Id: <20020424042350.93C324835@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +19,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"B. Douglas Hilton" wrote:
-> Hi list!
-> 
-> I just subscribed here. I'm on debian-hppa but that doesn't
-> seem to get much traffic, so I'll repost my question here.
+"Duraid Madina" wrote:
+> Any chance 0.9.4 would boot on PA-8700s?
 
-Yeah - parisc-linux is a more appropriate place for the question anyway.
+No chance. I still don't have access to PA-8700.
+I'm working on fixing that but as you might guess,
+things are, uhm, complicated at the moment inside HP.
 
-> I sold it on Ebay and rolled
-> my profits into a C200 with some unspecified FX graphics
-> board.
-
-Not supported since HP hasn't published the docs for it.
-Almost all the older gfx cards are supported including
-the Vis-EG (PCI or GSC) that you mentioned in you posting
-to debian-hppa.
+But as several folks noted, there's no point in doing a 0.9.4.
+My bad for suggesting it...I didn't realise how close Debian 3.0
+is to releasing.
 
 grant
