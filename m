@@ -1,21 +1,20 @@
-Return-Path: <rscholz@hrzpub.tu-darmstadt.de>
-Received: from mailserver1.hrz.tu-darmstadt.de
-	(mailserver1.hrz.tu-darmstadt.de [130.83.126.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8057B488A
+Return-Path: <rollei@tiscalinet.it>
+Received: from smtp0.libero.it (smtp0.libero.it [193.70.192.33])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 724B14879
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 04:48:13 -0700 (MST)
-Received: from hrzpub.tu-darmstadt.de (dialin1.stud.tu-darmstadt.de
-	[130.83.60.1])
-	by mailserver1.hrz.tu-darmstadt.de (8.12.10/8.12.8) with ESMTP id
-	i1MBm3Pk011337 for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 12:48:04 +0100
-Message-ID: <40389735.2070702@hrzpub.tu-darmstadt.de>
-Date: Sun, 22 Feb 2004 12:49:09 +0100
-From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+	Sun, 22 Feb 2004 07:38:31 -0700 (MST)
+Sender: multix@dsl2.external.hp.com
+Message-ID: <4038C0B0.F7D1708A@tiscalinet.it>
+Date: Sun, 22 Feb 2004 15:46:08 +0100
+From: Riccardo <rollei@tiscalinet.it>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Subject: [parisc-linux] Unknown symbol eisa_in8
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
+References: <20040218235225.GA1623@calypso>
+	<20040219062907.GC13916@colo.lackof.org>
+	<20040221075849.GA1642@calypso> <20040221170508.GB14198@baldric.uwo.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,17 +24,40 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello,
+Carlos O'Donell wrote:
+> 
+> > Thanks! Changing NCR_700_MAX_TAGS to 1 in drivers/scsi/53c700.h did the
+> > trick. Will I now have poor disk performance? If so, might I get away
+> > with setting it to something higher, like 2 or 4, maybe?
+> 
+> I could never run IO stably at anything higher than 1. The drives don't
+> seem to handle it properly, the error recovery mechanisms seem less
+> than perfect, and the box just hangs.
+It really depends on the drive. I have a Fujitsu Enterprise and it has a
+specified tag queue of 128 commands. So if something fails, it is the
+driver or HP's hardware.
 
-when I configure lastest kernel from cvs to use parport and lp driver as 
-module, I get the following warning when running "make modules_install":
+I have a 715 scorpio and when I used ext2 or reiser with a tag queue of
+16 I had very frequent freezes up to a point were the system wouldn't
+even mount the partition.
 
-WARNING: /lib/modules/2.6.3-pa0/kernel/drivers/char/lp.ko needs unknown 
-symbol eisa_in8
-WARNING: /lib/modules/2.6.3-pa0/kernel/drivers/char/parport-pc.ko needs 
-unknown symbol eisa_in8
+There was a discussion that hp set it to 2 for workstations and to 8 for
+servers. I have set it right now to 8 (since mavbe the NCR 7100 I have
+doesn't even support more) and I use XFS instead of reiser. I had no
+more problems...
 
-Is in both files a definition for io.h missing?
+I would set the tag queue as default to 8 and not to 16, to stay on the
+safe side. Couldn't it be made configurable from the kernel
+configuration menu?
 
-Greetings,   
-Ruediger
+
+What I notivced that some drives seem to be incompatible. I had 2 hard
+disks that worked together (an original quantum divre rebranded HP and
+an IBM disk). Since my ibm disk died I substitued it with the Fujitsu,
+used a new Filesystem and a newer kernel. There was no way to see both
+disks when linux booted. I had to remove the original HP disk and
+substitute it (a nuisance, since it contained the home directories).
+Attaching each time only one of the two disks recognized the correct
+disk respectively but both disk weren't. Another disk had no problem.
+
+-Riccardo
