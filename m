@@ -1,23 +1,19 @@
-Return-Path: <yuray@id.ru>
-Received: from frontend1.aha.ru (frontend1.aha.ru [195.2.83.141])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6442748B1
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 379C348CE
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  2 Mar 2004 05:25:40 -0700 (MST)
-Received: from [195.2.83.133] (HELO backend3.aha.ru)
-	by frontend1.aha.ru (CommuniGate Pro SMTP 4.1.8)
-	with ESMTP id 12446078 for parisc-linux@lists.parisc-linux.org;
-	Tue, 02 Mar 2004 15:25:38 +0300
-Received: from [195.230.87.105] (account yuray@id.ru)
-	by backend3.aha.ru (CommuniGate Pro WebUser 4.1.8)
-	with HTTP id 121291162 for parisc-linux@lists.parisc-linux.org;
-	Tue, 02 Mar 2004 15:25:38 +0300
-From: "Yuri Kozlov" <yuray@id.ru>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 02 Mar 2004 15:25:38 +0300
-Message-ID: <web-121291162@backend3.aha.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="KOI8-R"; format="flowed"
-Subject: [parisc-linux] (no subject)
+	Tue,  2 Mar 2004 05:34:20 -0700 (MST)
+Date: Tue, 2 Mar 2004 04:34:19 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Yuri Kozlov <yuray@id.ru>
+Subject: Re: [parisc-linux] (no subject)
+Message-ID: <20040302123419.GE22860@tausq.org>
+References: <web-121291162@backend3.aha.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <web-121291162@backend3.aha.ru>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,11 +23,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello.
-I have C3600 with FX10 video card.
-How Xfree86 make work ?
-I seen driver for linux rh 7.2 on hp site, but this compiled is not 
-for RISC processor ?
+> I have C3600 with FX10 video card.
+> How Xfree86 make work ?
+> I seen driver for linux rh 7.2 on hp site, but this compiled is not 
+> for RISC processor ?
 
-Regards,
-Yuri Kozlov
+this is a faq. please read the faq on the web page or the list archives.
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
