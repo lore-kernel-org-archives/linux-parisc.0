@@ -1,14 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web10504.mail.yahoo.com (web10504.mail.yahoo.com [216.136.130.154])
-	by dsl2.external.hp.com (Postfix) with SMTP id 15F1D4833
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Mar 2002 01:40:56 -0700 (MST)
-Message-ID: <20020317084054.84462.qmail@web10504.mail.yahoo.com>
-Date: Sun, 17 Mar 2002 00:40:54 -0800 (PST)
-From: Tim Robb <hecubus3rd@yahoo.com>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB8DF4830
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Mar 2002 06:43:41 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16mawc-0002ij-00; Sun, 17 Mar 2002 13:43:30 +0000
+Date: Sun, 17 Mar 2002 13:43:30 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] EISA 100/10 add-on card causes kernel BUG
+Message-ID: <20020317134330.F21765@parcelfarce.linux.theplanet.co.uk>
+References: <3C92DD15.4060008@neuronet.pitt.edu> <raffo@neuronet.pitt.edu> <20020316184231.482C6482C@dsl2.external.hp.com> <20020316213938.B2179@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20020317053838.683C7482D@dsl2.external.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Can I do 64 bit
+In-Reply-To: <20020317053838.683C7482D@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sat, Mar 16, 2002 at 10:38:38PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,35 +26,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello, I recently aquired a HP C180XP here is the
-output from cat /proc/cpuinfo
+On Sat, Mar 16, 2002 at 10:38:38PM -0700, Grant Grundler wrote:
+> oh - I forgot about those for filling the IO pdir entries...
+> that need to change in order to support zero copy?
+> 
+> We somehow need to pass the spaceID of the userspace buffer
+> to dma code if we want DMA to be cache coherent.
+> I don't have any good ideas for this.
 
-processor	: 0
-cpu family	: PA-RISC 2.0
-cpu		: PA8000 (PCX-U)
-cpu MHz		: 180.000000
-model		: 9000/780/C180
-model name	: Raven U 180 (9000/780/C180)
-hversion	: 0x000059c0
-sversion	: 0x00000481
-I-cache		: 1024 KB
-D-cache		: 1024 KB (WB)
-ITLB entries	: 96
-DTLB entries	: 96 - shared with ITLB
-BTLB fixed	: max. 16384 pages, pagesize=4096 (64MB)
-BTLB fix-entr.	: 0 instruction, 0 data (16 combined)
-BTLB var-entr.	: 0 instruction, 0 data (0 combined)
-bogomips	: 358.80
-software id	: 2001678209
+My understanding is that DMA to userspace is to pages in the page cache
+only.  As such, the normal mechanisms for dcache coherency should be used.
+That is, DMA to a kernel view of the page and call flush_dcache_page
+after touching it.  My proposed scheme for kmap/kunmap implementation
+would make flush_dcache_page a no-op, since the kernel would have a view
+of the page which is automatically cache coherent with userspace's view.
 
-I am wondering if this system can run a 64 bit kernel?
- Can anyone tell me if it can and how do I get it
-booted up in 64 bit mode if it can?
-
-Thank you,
-Timothy Robb
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Sports - live college hoops coverage
-http://sports.yahoo.com/
+-- 
+Revolutions do not require corporate support.
