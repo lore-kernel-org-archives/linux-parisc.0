@@ -1,36 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E601A4A19
-	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 05:22:09 -0700 (MST)
-To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-From: Nicolas THOMAS <thomas@ispserv.grenoble.hp.com>
-Date: 22 Mar 2001 13:22:03 +0100
-Message-ID: <o051yrqc7tg.fsf@debian.grenoble.hp.com>
+Received: from lufmech.rwth-aachen.de (karman.lufmech.RWTH-Aachen.DE [134.130.177.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BF4834A19
+	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 05:40:33 -0700 (MST)
+Sender: markus@lufmech.rwth-aachen.de
+Message-ID: <3AB9F2BC.33E89887@lufmech.rwth-aachen.de>
+Date: Thu, 22 Mar 2001 13:40:28 +0100
+From: Markus Werle <markus@lufmech.rwth-aachen.de>
 MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+Subject: [parisc-linux] configure --host=xx revisited
 Content-Type: text/plain; charset=us-ascii
-Sender: Nicolas THOMAS <thomas@debian.grenoble.hp.com>
-Subject: [parisc-linux] Interoperability
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi PA-Riscers,
+Hi !
 
-Does anyone of you have references/URL/opinion.... on interoperabilty purpose ?
+during the last months I stumbled through the naming
+conventions of "host" used in configure scripts of
+gcc/binutils and other gnu packages.
 
-The systems I would like to be able to interoperate are :
+I am looking for information about this naming convention.
+Some people got confused configuring gcc for hpux, because
+e.g. hppa-2.0w-etc. does not mean a 64-bit version.
 
-- Linux x86
-- Linux PA-risc 32bits
-- Linux PA-risc 64bits
-- HP-UX 11 64bits
+In order to obtain at least hpux/linux-specific clarity:
+Can someone provide a matrix / a mapping between
+hp CPUs (or models), operating systems, number of bits and
+the gcc naming conventions?
+
+What I want are answers of the form;
+If I want to build gcc on a machine YYY running OS XXX,
+I have the possibilty to configure for hppa-ZZZZ (32bit)
+or hppa-AAAA (64bit).
+
+This leads to a matrix that contains for every combination of
+vendor, machine/processor-type, OS and  # of bits
+a string XXX for the  --host=XXX command line option
+- or a n/a.
+
+Thanks for any help,
 
 
-I already know the STK: http://devresource.hp.com/STK/
-
-But it does not cover all the possibilities of interop..
-
-I'm just looking for pointers & references ...
-
-Thanks in advance for your help.
-
-Nicolas
-HP
+Markus
