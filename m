@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 926854829
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  5 Jan 2003 08:19:46 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18VCYu-0005NT-00; Sun, 05 Jan 2003 15:19:40 +0000
-Date: Sun, 5 Jan 2003 15:19:40 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Chema <jmpbox@etsin.upm.es>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PCI video card.
-Message-ID: <20030105151940.I19239@parcelfarce.linux.theplanet.co.uk>
-References: <20030105215425.4CA8BF126@setsin.etsin.upm.es> <20030105145952.G19239@parcelfarce.linux.theplanet.co.uk> <20030105222514.221A0F12B@setsin.etsin.upm.es>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030105222514.221A0F12B@setsin.etsin.upm.es>; from jmpbox@etsin.upm.es on Sun, Jan 05, 2003 at 05:25:14PM -0500
+Received: from smtp.monmouth.com (smtp.monmouth.com [209.191.58.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BF6284829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  5 Jan 2003 19:31:40 -0700 (MST)
+Received: from there (bg-tc-ppp1680.monmouth.com [64.19.130.106])
+	by smtp.monmouth.com (8.12.5/8.12.5) with SMTP id h062VT5k090586
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 5 Jan 2003 21:31:30 -0500 (EST)
+Message-Id: <200301060231.h062VT5k090586@smtp.monmouth.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: "Vlad D. Markov" <markov@monmouth.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Sun, 5 Jan 2003 21:31:27 -0500
+MIME-Version: 1.0
+Subject: [parisc-linux] kernel panic when extracting large tar files
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,15 +24,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jan 05, 2003 at 05:25:14PM -0500, Chema wrote:
-> Thanks Matthew:
-> so, do you mean those cards would work in such systems (Dino / Cujo / Elroy) ?
+When I extract large tar files on my 735/99 (tar --numeric-owner -xzvpf ), 
+the kernel panics and I get a core dump.
 
-Maybe.  It depends whether the driver supports fully initialising the card
-or whether it requires the on-card BIOS to have been run.  Most fall into
-the second category, alas.  This must surely be a FAQ by now ...
+My kernel is: Linux version 2.4.20-pa18 (root@grumpy) (gcc version 3.0.4) #22 
+Fri Dec 27 21:25:37 EST 2002
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+I saved a capture from minicom and have not upgraded the kernel since. I can 
+mail the capture and my System.map separately.
+
+If a new kernel or different version of gcc is needed, please let me know.
