@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Message-ID: <3FAD863B.8010609@tiscali.be>
-Date: Sun, 09 Nov 2003 00:11:39 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was:
- do_page_fault?]
-References: <3F969FFE00005DB3@ocpmta2.freegates.net> <3FACE5A4.7070003@tiscali.be> <20031108223304.GB28929@colo.lackof.org>
-In-Reply-To: <20031108223304.GB28929@colo.lackof.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from cybertech.net.au (t1000.cybertech.net.au [210.8.215.33])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A1394841
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Nov 2003 20:23:34 -0700 (MST)
+Received: (from johnt@localhost)
+	by cybertech.net.au (8.11.6/8.11.6) id hA93gcF03195
+	for parisc-linux@lists.parisc-linux.org; Sun, 9 Nov 2003 14:42:38 +1100
+Date: Sun, 9 Nov 2003 14:42:37 +1100
+From: John Telek <johnt@cybertech.net.au>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20031109144237.A3189@t1000>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] FXE GFX on B2000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Hi,
 
-Grant Grundler wrote:
-> On Sat, Nov 08, 2003 at 12:46:28PM +0000, Joel Soete wrote:
-> 
->>But if I launch it a second time no more pb???
->>Very strange isn't it?
-> 
-> 
-> Sounds like a cache coherency/aliasing problem.
-> Once you start looking at code, watch out for module loading
-> and shared memory maps type stuff.
-> 
-> grant
-> 
-Thanks Grant,
+  I have a 785/B2000 with FXE gfx on board and would like to really get X going and maybe even OpenGL one day.
 
-I have to put it in my todo list (sorry not enough time in a day)
+Can anyone help with pointers to a driver for this card or even some docco to get x running on even a basic frame buffer mode.
 
-Joel
+I have turned Google and HP websites upside down to no avail.
+
+The system runs HPUX fine but i'm finding it a steep learning curve and dont have access to any software from HP.
+
+I'm keen to get OpenGL going on this box.
+
+Very frustrated,
+   John
