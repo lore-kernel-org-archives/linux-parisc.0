@@ -1,33 +1,54 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA20503
-	for <parisc-linux@puffin.external.hp.com>; Tue, 10 Oct 2000 05:10:31 -0600
-Received: from user48-186.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.48.186)
-  by mailserv2.iuinc.com with SMTP; 10 Oct 2000 11:11:30 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 5DD34B005; Tue, 10 Oct 2000 12:08:41 +0100 (BST)
-Date: Tue, 10 Oct 2000 12:08:41 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Bdale Garbee <bdale@gag.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ntpd fails on mlockall()
-Message-ID: <20001010120841.F9399@linuxcare.com>
-References: <20001010025700.26519359E7@rover.gag.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA30346
+	for <parisc-linux@puffin.external.hp.com>; Tue, 10 Oct 2000 09:45:52 -0600
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id AEB9C1B90E
+	for <parisc-linux@thepuffingroup.com>; Tue, 10 Oct 2000 17:46:57 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA25234 for <parisc-linux@thepuffingroup.com>; Tue, 10 Oct 2000 17:46:05 +0200 (METDST)
+Sender: vidal@hpfrcu03.france.hp.com
+Message-ID: <39E338E5.4ED45E2B@admin.france.hp.com>
+Date: Tue, 10 Oct 2000 17:42:29 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001010025700.26519359E7@rover.gag.com>; from bdale@gag.com on Mon, Oct 09, 2000 at 08:57:00PM -0600
+Subject: [parisc-linux] Unable to compil linux kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Oct 09, 2000 at 08:57:00PM -0600, Bdale Garbee wrote:
-> I built a package of ntp, and it installed ok, but when ntpd goes to launch,
-> I get the following in daemon.log:
-> 
-> Oct  9 20:51:27 j5k ntpd[19416]: ntpd 4.0.99g Mon Oct  9 20:44:40 MDT 2000 (1)
-> Oct  9 20:51:27 j5k ntpd[19416]: mlockall(): Cannot allocate memory
+	Hi
+I succeded to recompile all tools needed for compiling linux kernel.
+(the problem was only that I was using the wrong target type).
+But I've have a strange problem while compiling (I perhaps made a mistake somewhere):
+#pwd
+/opt/linux_hppa/src/linux/drivers/char
 
-A simple prog that just calls mlockall() fails as well.  It is because
-we currently allocate a massive stack (256MB?) for every process, and
-mlockall() tries to actually claim the memory for that stack.  I tried
-allocating just a 1MB stack in fs/exec.c, and my simple mlockall()
-prog then worked.
+#type gcc
+gcc is hashed (/opt/linux_hppa/hppa-linux/bin/gcc)
+ 
+#file /opt/linux_hppa/hppa-linux/bin/gcc
+/opt/linux_hppa/hppa-linux/bin/gcc:     PA-RISC1.1 shared executable dynamically linked -not stripped 
 
-Richard
+#gcc --version
+2.96
+
+while the "make palo":
+#gcc -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -o conmakehash conmakehash.c
+/opt/linux_hppa/lib/gcc-lib/hppa-linux/2.96/../../../../hppa-linux/bin/ld: cannot find -lc
+collect2: ld returned 1 exit status
+-> that the problem, where this "-lc" comes from ???
+
+#/opt/linux_hppa/lib/gcc-lib/hppa-linux/2.96/../../../../hppa-linux/bin/ld --version
+GNU ld 2.10.91
+Copyright 2000 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License.  This program has absolutely no warranty.
+  Supported emulations:
+   hppalinux
+
+	Thanks 
+
+
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
