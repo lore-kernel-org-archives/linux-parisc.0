@@ -1,31 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA20906
-	for <parisc-linux@puffin.external.hp.com>; Wed, 3 Jan 2001 23:15:36 -0700
-Message-Id: <200101040618.BAA05609@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA21374
+	for <parisc-linux@puffin.external.hp.com>; Thu, 4 Jan 2001 00:00:21 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 4 Jan 2001 07:03:42 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA31284;
+	Thu, 4 Jan 2001 18:03:25 +1100
+Date: Thu, 4 Jan 2001 18:03:25 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+cc: law@redhat.com, bame@fc.hp.com, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] where to put 64 bit libmilli?
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Thu, 4 Jan 2001 01:18:48 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: law@redhat.com, bame@fc.hp.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.21.0101041608490.15554-100000@front.linuxcare.com.au> from "Alan Modra" at Jan 4, 2001 04:20:37 pm
+In-Reply-To: <200101040618.BAA05609@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.21.0101041753580.15554-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Wed, 3 Jan 2001, Jeffrey A Law wrote:
-> 
-> > The easiest (to me) solution is to put the routines into the system C
-> > library.  You'd drop the special millcode conventions, but that's a
-> 
-> How about $$dyncall?  Wouldn't loading r19/r29 break this function?  I'm
-> thinking of the case where $$dyncall is passed the address of a local
-> function rather than a plabel.  We wouldn't want to load r19/r29 with the
-> value for a shared libgcc.
+On Thu, 4 Jan 2001, John David Anglin wrote:
 
-Could this and maybe some of the other short milli routines be compiler
-"builtins"?  This would allow inlining.
+>[about $$dyncall]
+> Could this and maybe some of the other short milli routines be compiler
+> "builtins"?  This would allow inlining.
 
-Dave
+I don't see why not.  It could be done by expanding all the $$dyncall
+references in pa.c and pa.md
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Linuxcare.  Support for the Revolution.
