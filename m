@@ -1,18 +1,11 @@
+From: Alexander Gabert <pappy@nikita.ath.cx>
+Subject: [parisc-linux] grsecurity 1.9.11 patches for 2.4.21pa8
+Date: Sun, 3 Aug 2003 22:22:18 +0200
+Message-ID: <20030803202217.GA16476__48654.399594716$1416622643$gmane$org@nikita.ath.cx>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly3.hia.nrc.ca (hiauly3.hia.nrc.ca [132.246.100.195])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B8D848C0
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 31 Aug 2003 14:48:02 -0600 (MDT)
-From: John David Anglin <dave@hiauly3.hia.nrc.ca>
-Message-Id: <200308312047.QAA05245@hiauly3.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [glibc] tststatic failues, reduced to simp le testcase.
-To: carlos@baldric.uwo.ca
-Date: Sun, 31 Aug 2003 16:47:59 -0400 (EDT)
-Cc: randolph@tausq.org, dave.anglin@nrc-cnrc.gc.ca,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030831202203.GN5194@systemhalted> from Carlos O'Donell at Aug "31," 2003 "04:22:03" pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -23,14 +16,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> That seems best. The sad fact though is that until I bump
-> min_kernel_version in glibc past the kernel version that last didn't
-> have this fix, I'm still forced to implement all this for people with
-> older kernels.
+hi lists,
 
-Why?  Things are broken now and people have lived with the bug for
-sometime.  While it is possible to work around the problem in userspace,
-the best fix is to do it in the kernel.  I wouldn't fix anything but
-a regression.
+i just finished and tested the grsecurity porting of 1.9.11 to parisc.
 
-Dave
+http://nikita.ath.cx/users/pappy/grsecurity-parisc/parisc-linux-2.4.21-pa8-grsecurity-1.9.11.patch
+
+it is supposed to be one of the last (if not the last) splitbrain grsecurity kernel patch to parisc-linux source.
+
+Thanks to Randolph Chung (tausq), Matthew Wilcox (willy), pipacs, spender and all the other developers who helped me getting used to parisc-linux and the grsecurity patches, thus bridging the gap between the parisc-linux.org kernel and the vanilla tree for this security oriented linux patch.
+
+i hope that 2.6.x will have parisc-linux melted into the mainstream kernel and thus grsecurity patches will apply natively to the kernel.
+
+then this work will not be needed any more and i can sit back and relax.
+
+thank you all,
+
+Alex
+-- 
+A long-forgotten loved one will appear soon.
+Buy the negatives at any price.
