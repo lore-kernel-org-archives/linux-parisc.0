@@ -1,24 +1,19 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B9D7148A7
+Return-Path: <ctbr@home.se>
+Received: from smtp1.home.se (smtp1.home.se [213.214.194.101])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D28F7484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 12 Dec 2003 20:53:45 -0700 (MST)
-Date: Fri, 12 Dec 2003 20:53:44 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [parisc-linux] proposed changes to dino.c
-Message-ID: <20031213035344.GC28775@colo.lackof.org>
-References: <1071031038.1977.1.camel@mulgrave>
-	<20031210045429.GA18782@colo.lackof.org>
-	<1071093265.1730.27.camel@mulgrave>
-	<20031212074838.GA16885@colo.lackof.org>
-	<1071241131.1814.5.camel@mulgrave>
-	<1071257297.21661.3.camel@dhcp23.swansea.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1071257297.21661.3.camel@dhcp23.swansea.linux.org.uk>
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
+	Sat, 13 Dec 2003 00:45:25 -0700 (MST)
+From: Tomas Reinicke <ctbr@home.se>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
+Date: Sat, 13 Dec 2003 08:45:12 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Message-Id: <200312130845.12254.ctbr@home.se>
+Cc: 
+Subject: [parisc-linux] C180XP and B132L and X
+Reply-To: ctbr@home.se
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,14 +23,40 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Dec 12, 2003 at 07:28:18PM +0000, Alan Cox wrote:
-> You don't need the ROM mapped expect for reading stuff like MAC, and you
-> can do that by mapping each port over the same address range.
+I have recently got hold of one C180XP and one B132L with the specification=
+s=20
+below.
 
-doh...MAC is unique to each card...delete my previous mail.
+C180XP
+Model No.		A4523AR
+GRAPHICS		HP A4244A_V
+HDD				SEAGATE ST34572WD > 3.5 inch Ultra Wide SCSI (68 pin) HV Differential
+				4.55 GB 7200 RPM
+RAM			256Mb
+CD				TOSHIBA CD-ROM XM-5401TA
+The following article numbers are present on the graphics cards in the C180=
+XP
+A4248A
+A4244A
+A4246-66002
+A3510-40 A4244-66003.
 
-But then the basic problem James is having is not with the virtual
-address the ROM gets mapped to, but rather the PCI bus MMIO address
-assigned to the ROM BAR.
+B132L
+Model No.		A4190A
+GRAPHICS		HP A4071B_LZ
+HDD				IBM DORS-32160 > (2.1GB). 3 1/2" 5400 RPM Single Ended Fast/Wide SCSI
+RAM			128Mb
 
-grant
+My intention is to install Debian woody.
+=46rom parisc-linux.org I understand the both the C180XP and B132L is suppo=
+rted.
+But my question is now is it possible to get X to work in these machines?
+I have searched the net regarding the graphic cards but not found anything =
+the=20
+is 100% matching the modelnumber that I have.
+I would appriciate if someone could clearify this and also give me some=20
+genaral tips regarding the installation.
+
+
+
+Tomas Reinicke
