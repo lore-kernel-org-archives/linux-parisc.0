@@ -1,34 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9E90E482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 16:54:37 -0600 (MDT)
-To: Al Budriunas <budriuna@cacr.caltech.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Error creating PALO 
-In-Reply-To: Message from Al Budriunas <budriuna@cacr.caltech.edu>
-   of "Fri, 22 Jun 2001 13:20:42 PDT." <Pine.SOL.4.10.10106221317550.16626-100000@lugh.cacr.caltech.edu>
-References: <Pine.SOL.4.10.10106221317550.16626-100000@lugh.cacr.caltech.edu> 
-Mime-Version: 1.0
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 24413482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 18:32:24 -0600 (MDT)
+From: "David S. Miller" <davem@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 22 Jun 2001 16:57:25 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010622225725.5096B37D2C@carmen.fc.hp.com>
+Message-ID: <15155.58253.350788.177036@pizda.ninka.net>
+Date: Fri, 22 Jun 2001 17:32:13 -0700 (PDT)
+To: Keith Owens <kaos@ocs.com.au>
+Cc: sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <2105.993214803@ocs3.ocs-net>
+References: <2105.993214803@ocs3.ocs-net>
+Subject: [parisc-linux] Re: SCSI in arch/{m68k,parisc,sparc*}/config.in
 List-ID: <linux-parisc.vger.kernel.org>
 
-Al Budriunas writes...
+Keith Owens writes:
+ > arch/{m68k,parisc,sparc*}/config.in have their own SCSI list instead of
+ > using drivers/scsi/Config.in.  Cleaning up the SCSI config file is on
+ > my 2.5 TODO list, can you tell me why these architectures have their
+ > own list of SCSI devices?
+ > 
+ > If it is because only some SCSI drivers work on these architectures, do
+ > you really need to be this specific?
 
-> Would you please share (or point me to) the procedure to change PALO
-> parititon into f0 type?
+If I can forward every "How come I can compile ISA SCSI device X and
+it doesn't work on my UltraSPARC" email to you, I'll more than happily
+start including drivers/scsi/Config.in :-)
 
-1.) Run cfdisk
-2.) Select the partition you want to change using the up/down arrows.
-3.) Select "Type"(it may prompt you to hit space when listing the types)
-4.) Enter "f0"
-5.) Select "Write" to write the partition table to the disk
-6.) Select "Quit" to exit cfdisk.
+Jeff Garzik and I just did all the necessary dep_tristate'ing for
+drivers/net/Config.in and at least in my tree I include in on sparc64.
 
-If you're still having problems then we may have a bug.
+Being able to do this on every platform is certainly a goal, and for
+all the PCI drivers to be portable enough to work on every platform is
+the next step.  I think Jeff and I can do it for the networking
+drivers, but I have no idea who would go about working on this for
+the scsi stuff.
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Later,
+David S. Miller
+davem@redhat.com
