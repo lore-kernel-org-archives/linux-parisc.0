@@ -1,67 +1,45 @@
-Received: from hermes.mvista.com (gateway-490.mvista.com [63.192.220.206])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA29246
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 12:00:04 -0700
-Sender: frowand@hermes.mvista.com
-Message-ID: <3A142EE0.5A7E5039@mvista.com>
-Date: Thu, 16 Nov 2000 11:00:48 -0800
-From: Frank Rowand <frank_rowand@mvista.com>
-Reply-To: frowand@mvista.com
-MIME-Version: 1.0
-To: John Marvin <jsm@udlkern.fc.hp.com>
-CC: parisc-linux@puffin.external.hp.com
+Received: from rhirst.linuxcare.com (user-143-103.jakinternet.co.uk [212.187.143.103] (may be forged))
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id NAA30374
+	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 13:29:19 -0700
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id BE3C1B007; Thu, 16 Nov 2000 20:28:42 +0000 (GMT)
+Date: Thu, 16 Nov 2000 20:28:42 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: frowand@mvista.com
+Cc: John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@puffin.external.hp.com
 Subject: Re: Single-stepping
-References: <200011161244.FAA03502@udlkern.fc.hp.com>
+Message-ID: <20001116202842.Y32715@linuxcare.com>
+References: <200011161244.FAA03502@udlkern.fc.hp.com> <3A142EE0.5A7E5039@mvista.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3A142EE0.5A7E5039@mvista.com>; from frank_rowand@mvista.com on Thu, Nov 16, 2000 at 11:00:48AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-John Marvin wrote:
+On Thu, Nov 16, 2000 at 11:00:48AM -0800, Frank Rowand wrote:
+> John Marvin wrote:
+> > > > Does this code properly handle branches in the delay slot of another
+> > > > branch? (you need to make sure you are not advancing the queues by just
+> > > > adding 4 to each element).  One concern I have about this method is that
+> > >
+> > > Current code does
+> > >
+> > >     /* Nullified, just crank over the queue. */
+> > >     task_regs(child)->iaoq[0] = task_regs(child)->iaoq[1];
+> > >     task_regs(child)->iasq[0] = task_regs(child)->iasq[1];
+> > >     task_regs(child)->iaoq[1] = task_regs(child)->iaoq[0] + 4;
+> > >
+> > > Does that look right to you?
+> > >
+> > 
+> > Yes, that is the correct way to do it (I'll assume the duplicated line
+> > is just a cut/paste error).
 > 
-> Richard,
-> 
-> >
-> > Sorry, I worded that very badly.  The code that moves the childs
-> > IAOQ on is in the kernel, invoked as a result of the controlling
-> > process calling ptrace(PTRACE_SINGLESTEP...) when the childs N
-> > bit is set.
-> >
-> 
-> Great.
-> 
-> > > Does this code properly handle branches in the delay slot of another
-> > > branch? (you need to make sure you are not advancing the queues by just
-> > > adding 4 to each element).  One concern I have about this method is that
-> >
-> > Current code does
-> >
-> >     /* Nullified, just crank over the queue. */
-> >     task_regs(child)->iaoq[0] = task_regs(child)->iaoq[1];
-> >     task_regs(child)->iasq[0] = task_regs(child)->iasq[1];
-> >     task_regs(child)->iaoq[1] = task_regs(child)->iaoq[0] + 4;
-> >
-> > Does that look right to you?
-> >
-> 
-> Yes, that is the correct way to do it (I'll assume the duplicated line
-> is just a cut/paste error).
+> If iaoq[0] contains a branch, iaoq[1] is in the delay slot.  The instruction
+> executed after iaoq[1] would then typically _not_ be iaoq[0] + 4 (the next
+> instruction would be the target of the branch at iaoq[0]).
 
-If iaoq[0] contains a branch, iaoq[1] is in the delay slot.  The instruction
-executed after iaoq[1] would then typically _not_ be iaoq[0] + 4 (the next
-instruction would be the target of the branch at iaoq[0]).
+But the above code is only executed if the current instruction is
+nullified.  In your example, the branch in iaoq[0] would be
+nullified and therefore never taken.
 
-
-> Sounds ok with me. And as long as there are no corner cases, it probably
-> is the best solution, assuming we don't find another application for
-> the recovery counter.
-
-The recovery counter is very useful for performance measurement tools to
-understand the cycles per instruction of a code path.  (Using the recovery
-counter for the debugger doesn't preclude using it for performance tools -
-you just can't easily use it for both purposes at the same instant in time.)
-
-
-> John
-
--Frank
--- 
-Frank Rowand <frank_rowand@mvista.com>
-MontaVista Software, Inc
+Richard
