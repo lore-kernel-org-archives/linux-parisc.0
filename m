@@ -1,44 +1,26 @@
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA00629
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 14:26:38 -0700
-Content-Type: text/plain;
-  charset="iso8859-1"
-From: Helge Deller <deller@gmx.de>
-To: "Thomas Marteau" <marteaut@esiee.fr>
-Subject: Re: [parisc-linux] The config for 712 hp boxes
-Date: Thu, 16 Nov 2000 22:28:50 +0100
-Cc: <parisc-linux@puffin.external.hp.com>
-References: <00a801c04ff1$4e9b7f20$a832d793@esiee.fr>
-In-Reply-To: <00a801c04ff1$4e9b7f20$a832d793@esiee.fr>
-MIME-Version: 1.0
-Message-Id: <00111622285001.00336@P100>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA03507
+	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 19:21:28 -0700
+To: parisc-linux@thepuffingroup.com
+Cc: drepper@cygnus.com, alan_c_meyer@am.exch.hp.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 16 Nov 2000 19:25:26 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001117022526.4B38637CA7@carmen.fc.hp.com>
+Subject: [parisc-linux] glibc merged to 2.2
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 16 November 2000 18:18, Thomas Marteau wrote:
-> Hi all,
-> 
-> [....]
-> Also, in this mail, you have the diff between our hp_keyb.c and the official
-> one but it gives you the ~ and the ' and others scancodes.
-> [....]
+Today Paul Bame and I merged/updated the puffin.external.hp.com glibc cvs to 
+glibc 2.2. After the merge I cleaned up the differences between our cvs and 
+2.2, mostly comment differences and formatting changes. With the exception of 
+the setjmp problem mentioned in,
 
-Hi ESIEE-Team !
+http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/11-Nov/0091.html
 
-Thanks for your patch !
+and the fact that we have/need newer "scripts/config.guess" and 
+"scripts/config.sub", we are completely sync'ed up with glibc 2.2.
 
-I committed your patch into CVS and just tweaked it a little for  
-CONFIG_MAGIC_SYSRQ. I hope this is ok for you ?
-If your time permits, I would like to ask, if you maybe also want to look at 
-getting the CAPS-Lock-, Scroll-Lock- & Num-Lock-LED's working ? 
-
-Furthermore you mention in your project-history on your homepage something 
-about "keyboard and soundchip problems" (Oct. 24). I'm asking just out of 
-curiousity: Did you thought about programming the on-board sound-chips (which 
-I believe would be a hard job.)  ?
- 
-> Bye,
-> ESIEE Team
-
-Best regards,
-
-	Helge Deller.
+-- 
+Matt Taggart
+taggart@fc.hp.com
