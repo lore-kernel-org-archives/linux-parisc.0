@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DC918482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 10:29:52 -0700 (MST)
-Date: Fri, 22 Nov 2002 09:33:19 -0800
-From: Randolph Chung <randolph@tausq.org>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41A53482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 10:30:55 -0700 (MST)
+Message-Id: <200211221730.gAMHUmfs005567@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] glibc + SuSE (When email becomes to much)
 To: jsoe0708@tiscali.be
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Squid-2.4.7 problem
-Message-ID: <20021122173319.GG19331@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <3DAAAD4600004184@ocpmta1.be.tiscali.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DAAAD4600004184@ocpmta1.be.tiscali.com>
+Date: Fri, 22 Nov 2002 12:30:48 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3DAAAD460000417C@ocpmta1.be.tiscali.com> from "jsoe0708@tiscali.be" at Nov 22, 2002 06:00:41 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +22,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I try to install squid on a sarge install with a kernel 2.4.19-32. This squid
-> failled with data_page_fault.
+> But I also thought to add "LD_LIBRARY_PATH=$DEST/hppa-linux/lib" where is
+> located the new libc-2.3.1 and export but now the problem is into make:
+> 
+> make: /lib/ld.so.1: version 'GLIBC_PRIVATE' not found (required by /MyPath2/libc.so.6)
 
-if this is reproducible, it is much better if you generate a core file
-and look at that instead.
+I seem to be using a non-dynamic version of make to avoid problems like
+this.  I will leave it to others to comment on the compatibility of 2.3.1
+with previous versions of glibc.
 
-> As I would like to build an elementary FW there is no dev tools on this box.
-> So I try to debug the problem on my unstable (just update this morning) box
-> but here the problem is absolutly different: squid loop and a strace tells
-> me:
-> ...
-> sched_yield()    =0
-> sched_yield()    =0
-
-i suspect this is quite normal, depending on what squid is doing.
-
-strace by default also only looks at the parent task. if any children
-are fork()ed they will not be traced unless you tell it to. 
-
-randolph
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
