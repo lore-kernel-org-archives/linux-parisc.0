@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9C3A4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 12:26:46 -0700 (MST)
+Date: Sat, 9 Nov 2002 14:26:52 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: "b.gunreben" <b.gunreben@web.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Sat, 09 Nov 2002 17:50:10 GMT." <20021109175010.V12011@parcelfarce.linux.theplanet.co.uk>
-References: <200211090128.RAA31693@adam.yggdrasil.com> <adam@yggdrasil.com> <20021109015611.571B44829@dsl2.external.hp.com> <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20021109170206.DA635482A@dsl2.external.hp.com>  <20021109175010.V12011@parcelfarce.linux.theplanet.co.uk> 
-Date: Sat, 09 Nov 2002 12:03:17 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021109190317.61DEA4829@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] nanosleep
+Message-ID: <20021109192651.GC15380@systemhalted>
+References: <200211081116.gA8BGuX28978@mailgate5.cinetic.de> <20021108161225.GD2402@systemhalted> <3DCCC839.EFC91019@web.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3DCCC839.EFC91019@web.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,37 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
-> F-I class kept PCX-T processors to the bitter end.  You're thinking of
-> E class, I think, which are all PCX-L.
+> > glibc 2.3.1 from debian CVS or upstream?
+> 
+> This is upstream with hppa patches from the debian tree. 
 
-Ah ok - I probably am. It's been a few years since I've worked with
-Nova class machines.
+That's currently broke, and I've been slotting in my time to fix this.
+Currently rebuilding glibc :}
+ 
+> The report was probably bad. In the mail thread I mentioned in my
+> previous mail, the nanosleep in the kernel was fixed because of
+> threading problems. If I understand it correctly, threading will always
+> have problems without a realy working nanosleep.
+ 
+Yes. You'll see it's use sprinkled in linuxthreads/* and in particular 
+spinlock.c
 
-> Really, we're just waiting for
-> a V class to turn up in resource recovery to start work ;-)
-
-Won't be too much longer ;^)
-
-> Looking at the T600 in the hwdb..
->         Miura LAN/Console (J2146A) -- completely unlike anything else
-> 	Countach LAN/Console -- same as Diablo & KittyHawk CSY LAN/Console,
-> 				doubt we care.
-> 	Skunk SCSI -- its the SPIFI chip, probably supportable.
-> 	Wizard SCSI -- also in E/K class, probably supportable too.
-> 	Skunk Centronics -- also in E/K class, probably supportable.
-> 	Emerald Console -- unique
-> 	Java IOA -- unique
-
-Java is a U2/UTurn compatible chip that only provides an IOMMU.
-It's *NOT* IO Coherent.
-
-Jolt is missing. It's the "Summit" to "Runway" busconverter.
-Doesn't need any OS code execept when doing bus walks.
-
-> there's actually less unsupportable hardware in there than i thought,
-> but i'm still not really interested in it.
-
-ditto - me either. I've suffered enough for that machine.
-
-grant
+c.
