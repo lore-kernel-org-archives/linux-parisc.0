@@ -1,53 +1,90 @@
-Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA32087
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 12:54:28 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by cosrel1.hp.com (Postfix) with ESMTP id 76B145A2
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 12:57:00 -0700 (MST)
-Message-Id: <200011221955.LAA21865@milano.cup.hp.com>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10 
-In-reply-to: Your message of "Wed, 22 Nov 2000 01:11:57 PST."
-             <200011220811.BAA14756@udlkern.fc.hp.com>
-Date: Wed, 22 Nov 2000 11:55:38 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA32638
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 13:03:34 -0700
+Received: from omgw1.boi.hp.com (omgw1.boi.hp.com [15.56.8.101])
+	by palrel3.hp.com (Postfix) with ESMTP id 87DCD6C2
+	for <parisc-linux@thepuffingroup.com>; Wed, 22 Nov 2000 12:05:38 -0800 (PST)
+Message-ID: <ED34C7F701D5D31196260090278CAFDA01981A69@xatl04.atl.hp.com>
+From: "CLAPPER,MIKE \(HP-USA,ex1\)" <mike_clapper@hp.com>
+To: "'Grant Grundler'" <grundler@cup.hp.com>,
+        "CLAPPER,MIKE \(HP-USA,ex1\)" <mike_clapper@hp.com>
+Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Subject: RE: [parisc-linux] B132L boot hang 
+Date: Wed, 22 Nov 2000 12:05:23 -0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-John Marvin wrote:
-> Grant Grundler wrote:
-> > Yes I do. It is supposed to work for ccio+PCX-W platforms (eg C360).
-...
-> Well, personally i'd vote to get rid of it. It works for ONE machine only,
-> and MAY have an advantage in some small case.
+Thanks Grant,
 
-And so does the OB600 mouse driver I rewrote/published.
-AFAIK, it only works on OB600s.
+I verified the console is off 8/16/4.0 and that it is the LASI port.  I also
+downloaded the newest cross-compiler and source code.  After rebuilding the
+palo lifimage I get the same hang in the same place.  Since I was cabled to
+a dumb terminal I was not able to capture the boot output.  I will find the
+right cable to hook up to my pc so I can capture the output and send it to
+you - perhaps an error occurred earlier in the boot that I overlooked.
 
-I was originally thinking D/K/R-class boxes had PCX-W upgrades but
-AFAICT, they don't.
+Thanks for the help.
 
-> But if we keep it, lets make
-> sure that it is real clear that it should NOT be the default choice.
+Mike
+
+
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@cup.hp.com]
+Sent: Wednesday, November 22, 2000 11:27 AM
+To: CLAPPER,MIKE (HP-USA,ex1)
+Cc: 'parisc-linux@thepuffingroup.com'
+Subject: Re: [parisc-linux] B132L boot hang 
+
+
+"CLAPPER,MIKE (HP-USA,ex1)" wrote:
 > 
-> It should be marked CONFIG_EXPERIMENTAL, and the text associated with it
-> should clearly show that it works on a C360 only. If possible, it should
-> also be made clear that ccio-dma.c works for C360, so people who have
-> C360's don't think they have to choose ccio-rm-dma.c.
+> 
+> Hello Everyone,
+> 
+> I download the cross-compilers and  build a lifimage on Redhat 6.1.  I set
+> up nfsroot on a S712 running hpux 10.20.  With this I am able to boot a
+> B132L running pdc 6.1 - 
+> almost.  I get a hang right after -
+> 
+> VFS: Mounted root (nfs filesystem) readonly
+> Warning: unable to open an initial console
 
-IIRC, Comments in the headers of both ccio files make those issues clear.
-I'm not sure where else that needs to be documented.
+I think I need more output. Based on ioscan output, the B132L
+has two serial ports:
+8/16/4 - off of LASI
+8/20/2 - of WAX (EISA Bus Adapter)
 
-> Grant, I hope you are prepared to answer the parisc-linux mailing list
-> questions this is going to generate once parisc-linux starts becoming more
-> visible.  Another FAQ entry perhaps? :-)
+(GSCtoPCI is at 8/0)
 
-Ryan owns it. He's responsible for documenting it and adding FAQ questions.
-He can choose to delete ccio-rm-dma.c as well.
-:^)
+I don't think the one off of WAX is supported right now.
 
-I think it'd be a waste to throw it away before someone figures
-out that it's really not useful - even if just for C360.
+Are you using the default .config produced by "make oldconfig"?
 
-thanks,
+It's also possible the LASI support is broken on B132L and I would
+expect some console output indicating what's wrong.
+
+> I have a 700/96 on serial port 1 as the console.  I have hpux on a disc in
+> the unit I'm trying to boot - from HPUX I have verified I can nfs mount
+the
+> filesys I'm using for NFSROOT.
+
+NFS root mounted fine. Console is the problem.
+
+...
+> Is there a way to keyword search the developers archive?  I vaguely recall
+> seeing the 'initial console' warning, but couldn't find it browsing the
+> developers archive
+
+Yes - http://puffin.external.hp.com/cgi-bin/mailgrep
+
 grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
+
+---------------------------------------------------------------------------
+To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+`unsubscribe' as the subject.
