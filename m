@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: John <hplinux@eagle.grdl.noaa.gov>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: Message from John <hplinux@eagle.grdl.noaa.gov>
-   of "Thu, 14 Mar 2002 15:41:18 EST." <3C910AEE.6AB2235E@eagle.grdl.noaa.gov>
-References: <3C7D115C.9AEE5DDB@eagle.grdl.noaa.gov> <20020227172844.2534F485A@dsl2.external.hp.com> <3C7D1C89.121A1B30@eagle.grdl.noaa.gov> <20020227183818.6A427482B@dsl2.external.hp.com> <3C8D1B6F.162195CF@eagle.grdl.noaa.gov> <20020312171650.7AF54484A@dsl2.external.hp.com>  <3C910AEE.6AB2235E@eagle.grdl.noaa.gov> 
-Date: Thu, 14 Mar 2002 21:45:46 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020315044546.C7D58483E@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05 = working X!
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BC94F482B
+	for <parisc-linux@parisc-linux.org>; Fri, 15 Mar 2002 06:58:02 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16lsDZ-0000Xe-00
+	for parisc-linux@parisc-linux.org; Fri, 15 Mar 2002 13:58:01 +0000
+Date: Fri, 15 Mar 2002 13:58:01 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020315135801.X30538@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] STI without PCI
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,18 +23,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-John wrote:
-> I wanted to share the good news that Grant's recent patch to "entry.S"
-...
-> Thanks Grant!
+Right now, it's not possible to compile STI in without PCI.  This patch
+should fix that.  Feedback appreciated.
 
-That's great news!
+Index: drivers/video/sti/sticore.c
+===================================================================
+RCS file: /var/cvs/linux/drivers/video/sti/sticore.c,v
+retrieving revision 1.37
+diff -u -p -r1.37 sticore.c
+--- drivers/video/sti/sticore.c	2002/03/03 23:05:06	1.37
++++ drivers/video/sti/sticore.c	2002/03/15 13:56:24
+@@ -918,10 +918,10 @@ static int __init sticore_pa_init(struct
+ 	return 0;
+ }
+ 
+-
+ static int __devinit sticore_pci_init(struct pci_dev *pd,
+ 		const struct pci_device_id *ent)
+ {
++#ifdef CONFIG_PCI
+ 	unsigned long fb_base, rom_base;
+ 	unsigned int fb_len, rom_len;
+ 	struct sti_struct *sti;
+@@ -962,10 +962,9 @@ static int __devinit sticore_pci_init(st
+ 			pd->name);
+ 		return -ENODEV;
+ 	}
+-
++#endif /* CONFIG_PCI */
+ 	return 0;
+ }
+-
+ 
+ static void __devexit sticore_pci_remove(struct pci_dev *pd)
+ {
 
-But Thomas Bogendoerf should get most of the credit for figuring
-out the problem and fix. I just implemented what he said.
-
-BTW, I've modified the patch a bit (removed an un-needed depdi)
-and it's still not committed yet. I'd like to let Thomas
-commit it himself since he really did the hard part.
-
-grant
+-- 
+Revolutions do not require corporate support.
