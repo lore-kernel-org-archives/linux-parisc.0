@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 234AD4837
-	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 03:34:48 -0600 (MDT)
-Date: Fri, 11 Oct 2002 12:34:43 +0300 (EEST)
-From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
-To: =?iso-8859-1?Q?Beerse=2C_Corn=E9?= <c.beerse@torex-hiscom.nl>
-Cc: parisc-linux <parisc-linux@parisc-linux.org>
-Subject: RE: [parisc-linux] hardware features of 712-60 ?
-In-Reply-To: <02Oct11.113022cest.119055@ns.hiscom.nl>
-Message-ID: <Pine.LNX.4.21.0210111227030.24681-100000@hal.pp.fishpool.fi>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Received: from tyke.pjc.net (public1-leed3-6-cust7.leed.broadband.ntl.com [80.7.68.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2205F4837
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 03:40:50 -0600 (MDT)
+Received: from patrick by tyke.pjc.net with local (Exim 3.36 #1 (Debian))
+	id 17zwHm-0004gG-00
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 10:40:46 +0100
+Date: Fri, 11 Oct 2002 10:40:46 +0100
+From: Patrick Caulfield <patrick@tykepenguin.com>
+To: parisc-linux <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] hardware features of 712-60 ?
+Message-ID: <20021011094046.GC1238@tykepenguin.com>
+References: <02Oct11.113022cest.119055@ns.hiscom.nl> <Pine.LNX.4.21.0210111227030.24681-100000@hal.pp.fishpool.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <Pine.LNX.4.21.0210111227030.24681-100000@hal.pp.fishpool.fi>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,38 +25,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 11 Oct 2002, "Beerse, Corn=E9" wrote:
+On Fri, Oct 11, 2002 at 12:34:43PM +0300, Martin-?ric Racine wrote:
+> On Fri, 11 Oct 2002, "Beerse, Corn?" wrote:
+> 
+> > 
+> > Have you checked the hardware database on the website?
+> > (http://www.parisc-linux.org/) That gives an overview on what whas in the
+> > origional box.
+> 
+> http://hwdb.parisc-linux.org/view.php3?type=machine&name=712%2F60
+> 
+> That page could have been written in Chinese, it would have been equally clear.  
+> 
+> I guess I'm just used to PC hardware, where kernel compiling simply means "if
+> you have graphics card XXX select the driver with the same name". I've yet to
+> find that simplicity in HP hardware, probably because everything is done via
+> custom chips that combine several functions, and it is not clear to me which
+> chip does what, as every line in that page starts with Gecko.
 
-> > At this point, I apt-got kernel-source-2.4.19-hppa and=20
-> > unpacked it, and already
-> > selected the 7100LC/7300LC CPU option.  What else?  Has=20
-> > anybody compiled a FAQ
-> > on parisc-linux that provides .config files optimized for=20
-> > each PA-RISC hardware
-> > or, alternately, a checklist of hardware one finds in product=20
-> > xxx, referenced by
-> > Linux kernel feature or module name?=20
->=20
-> Have you checked the hardware database on the website?
-> (http://www.parisc-linux.org/) That gives an overview on what whas in the
-> origional box.
+The thing is, it should be simpler than a PC because HP hardware (similar to
+most large manufacturers) is pretty standard for any particular machine.
 
-http://hwdb.parisc-linux.org/view.php3?type=3Dmachine&name=3D712%2F60
+I suppose what you really want is a template .config for each type of machine
+available from that page and a user just drops it in place and build a kernel
+for it. If you stick other cards in the machine then it's up to you to figure
+out the kernel options.
 
-That page could have been written in Chinese, it would have been equally cl=
-ear. =20
+I'll volunteer one for a C110 :-)
 
-I guess I'm just used to PC hardware, where kernel compiling simply means "=
-if
-you have graphics card XXX select the driver with the same name". I've yet =
-to
-find that simplicity in HP hardware, probably because everything is done vi=
-a
-custom chips that combine several functions, and it is not clear to me whic=
-h
-chip does what, as every line in that page starts with Gecko.
-
---=20
-Martin-=C9ric Racine, Espoo, Finland.
-"Kas sa tahad mind? - Nej!!! =C4r du en idiot?!!"
-http://www.pp.fishpool.fi/~q-funk/
+patrick
