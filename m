@@ -1,32 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id BAA12176
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 18 Mar 1999 01:46:53 -0500
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id WAA10645
-	for <hppa-linux@thepuffingroup.com>; Wed, 17 Mar 1999 22:46:21 -0800 (PST)
-Received: from netscape.com ([205.217.243.67]) by
-          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
-          F8S2TA00.DL6 for <hppa-linux@thepuffingroup.com>; Wed, 17 Mar
-          1999 22:46:22 -0800
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <36F0A1AD.692A4699@netscape.com>
-Date: Thu, 18 Mar 1999 01:48:13 -0500
-From: Mike Shaver <shaver@netscape.com>
-MIME-Version: 1.0
-To: Linux/PARISC <hppa-linux@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [hppa-linux] make dep
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id EAA14732
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 18 Mar 1999 04:30:19 -0500
+Received: from the-village.bc.nu (lightning.swansea.uk.linux.org [194.168.151.1]) by snowcrash.cymru.net (8.8.7/8.7.1) with SMTP id JAA27436; Thu, 18 Mar 1999 09:30:11 GMT
+Message-Id: <m10NZyO-0007U2C@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: [hppa-linux] memory layout
+To: hppa-linux@thepuffingroup.com
+Date: Thu, 18 Mar 1999 10:24:19 +0000 (GMT)
+Cc: hppa-linux@puffingroup.com
+In-Reply-To: <Pine.LNX.3.96.990317212138.2685A-100000@quark.ix.netcom.com> from "Kumar" at Mar 17, 99 09:29:46 pm
+Content-Type: text
 List-ID: <linux-parisc.vger.kernel.org>
 
-You can run make dep now and see millions of warnings about implicitly
-defined functions and such, but have it complete ``successfully''. 
-Basically, I just added a handful of stubs and #defines, and then tidied
-some insanity in the build system.
+> Talking about only pa1.1 or 32 bit CPUs, I would say the same layout
+> can be used as Linux on Intel does. That is kernel mapped at 0xc0000000.
+> So 3 Gig for User space and 1 Gig for kernel. Of course, other ppl may
+> have different ideas. 
 
-I'm curious as to why our dep target actually builds all the .o/.as, but
-I'll look at that in the morning or something.
+If you want to run PH/UX binaries then you need to probably follow their
+layout
 
-Mike
+> PA has this strange concept of Spaces and they have those 
+> space registers %sr0 to %sr7. This reminds me of Intel's segment 
+> registers. And whoever wanted to do any serious OS like Unix on 80386
+> never liked segments.
 
--- 
-314982.57 267714.70
+Spaces is more segments done right. The reason we dont use segmentation
+to split user/kernel on x86 any more is simply performance - it costs us
+1 clock per dword copied to/from luser space.
+
+The m68k people use the 'spaces' equivalent on the m68k quite heavily
