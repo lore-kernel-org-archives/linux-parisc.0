@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Jeffo" <jeffo@pop.hsbc.com.br>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Packages 
-In-Reply-To: Message from "Jeffo" <jeffo@pop.hsbc.com.br>
-   of "Mon, 14 Oct 2002 09:05:20 -0200." <003601c27371$9618c6a0$db0b0aa7@pcaktel083>
-References: <003601c27371$9618c6a0$db0b0aa7@pcaktel083> 
-Date: Mon, 14 Oct 2002 09:27:35 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021014152735.2AE244829@dsl2.external.hp.com>
+Received: from mx0.gmx.net (mx0.gmx.net [213.165.64.100])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7BCE24829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 10:11:19 -0600 (MDT)
+Date: Mon, 14 Oct 2002 18:11:15 +0200 (MEST)
+From: Christian_Ehlers@gmx.de
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Message-ID: <18069.1034611875@www43.gmx.net>
+Content-Type: text/plain; charset="iso-8859-1"
+Subject: [parisc-linux] (no subject)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,15 +20,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Jeffo" wrote:
-> "(...)4.1.0-11 or newer version of the X packages, available in unstable,
-> which fixes the problem "
+Hi, I recently asked varenet@esiee.fr  if you support the HP 800/G50 9000
+server. He told me that this is not the case and that I should set up a network
+access to it so someone could work on it if they wanted to. Now I wanted to
+know if there is someone who would like to do this. 
+Thanks
 
-"unstable" is a developement "release" of Debian.
-The life cycle of a .deb package is it gets put in "unstable" and
-then promoted to "testing" and finally "stable".
-
-I sometimes build parisc XF86 .debs for the maintainer and put them on
-	http://gsyprf11.external.hp.com/hppa/
-
-grant
+-- 
++++ GMX - Mail, Messaging & more  http://www.gmx.net +++
+NEU: Mit GMX ins Internet. Rund um die Uhr für 1 ct/ Min. surfen!
