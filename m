@@ -1,38 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc3-hems4-0-cust183.bre.cable.ntl.com [213.107.179.183])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4F15482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Oct 2001 00:49:10 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id C299EB00C; Fri, 19 Oct 2001 07:49:16 +0100 (BST)
-Date: Fri, 19 Oct 2001 07:49:16 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: =?iso-8859-1?Q?DUTOT_St=E9phane?= <stephane.dutot@exlicite.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PPTP and PPPOE under Debian HPPA Linux.
-Message-ID: <20011019074916.V11105@linuxcare.com>
-References: <01a501c1565e$c9ce4e60$9601a8c0@utopia> <20011018224644.U11105@linuxcare.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E8EE9482A
+	for <parisc-linux@parisc-linux.org>; Fri, 19 Oct 2001 07:40:18 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15uZsT-000813-00; Fri, 19 Oct 2001 14:39:57 +0100
+Date: Fri, 19 Oct 2001 14:39:57 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	Randolph Chung <randolph@tausq.org>, parisc-linux@parisc-linux.org
+Subject: Re: [randolph@tausq.org: [parisc-linux] glibc update]
+Message-ID: <20011019143957.A29388@parcelfarce.linux.theplanet.co.uk>
+References: <20011017234038.C1060@megatonmonkey.net> <20011018150255.I4123@tausq.org> <20011019011719.C12905@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011018224644.U11105@linuxcare.com>; from rhirst@linuxcare.com on Thu, Oct 18, 2001 at 10:46:44PM +0100
+In-Reply-To: <20011019011719.C12905@megatonmonkey.net>; from carlos@megatonmonkey.net on Fri, Oct 19, 2001 at 01:17:19AM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Oct 18, 2001 at 10:46:44PM +0100, Richard Hirst wrote:
-> I've just had a look at this.  Seems to be a problem related to
-> the kernel trying to invoke non-existant usermode helper progs.
+On Fri, Oct 19, 2001 at 01:17:19AM -0400, Carlos O'Donell Jr. wrote:
+> You could set the LD_LIBRARY_PATH to the location of the
+> objects you are building and then run it...
 > 
-> I created a script /sbin/hotplug containing just
+> However, if you do that, then gdb might act strangely
+> with this newly built libc (since ld trying to load gdb
+> will use the libc in the library path).
 > 
-> 
-> #!/bin/sh
-> echo hotplug: $* > /dev/console
-> 
+> How do you load gdb with one libc and debug a program
+> that uses another?
 
-Don't forget to chmod +x that script.
+run gdb, then type
+set env LD_LIBRARY_PATH blah blah blah
 
-> and my kernel no longer crashes when trying to establish an async
-> ppp link.  Instead, I get this in syslog:
-
-The real problem there was that I was using the wrong authentication
-method for my isp.  Once I set that right the link came up.
-
-Richard
+-- 
+Revolutions do not require corporate support.
