@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (p508456E5.dip.t-dialin.net [80.132.86.229])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 90099482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 15:34:32 -0700 (MST)
-Date: Fri, 4 Jan 2002 23:31:46 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Christian Suder <csuder@cisco.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Need five #defines, please.....
-Message-ID: <20020104233146.A31733@solo.franken.de>
-References: <20020104012559.69375281.csuder@cisco.com>
-Mime-Version: 1.0
+Received: from web10901.mail.yahoo.com (web10901.mail.yahoo.com [216.136.131.37])
+	by dsl2.external.hp.com (Postfix) with SMTP id 39C12482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 16:16:39 -0700 (MST)
+Message-ID: <20020104231637.42697.qmail@web10901.mail.yahoo.com>
+Date: Fri, 4 Jan 2002 15:16:37 -0800 (PST)
+From: Rogelio Robles <rogelio_robles@yahoo.com>
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020104012559.69375281.csuder@cisco.com>; from csuder@cisco.com on Fri, Jan 04, 2002 at 01:25:59AM -0800
+Subject: [parisc-linux] Help getting xf86 cfg file for a HP PA 9000/J210XC running debian hppa Linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +20,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jan 04, 2002 at 01:25:59AM -0800, Christian Suder wrote:
-> I'm trying to skin the lizard (mozilla 0.9.7). I can build with the linux
-> default pthreads, but it doesn' work, windows show up but the content is
-> not drawn etc.. Hence I'd like to try a build with "classic" NSPR, which
-> implements it's own threading mechanism. Problem : There is a couple of
-> hardware-specific definitions that I don't know how to do, but somebody
+Hello Guys,
 
-I don't thing anyone has ported libc5 to hppa. Those missing defines are
-libc5 hooks, iirc.
+I'm close to have success running XFree86 4.1.0 that
+comes with HPPA GNU/Linux 0.9.3 but I'm still
+receiving a "parameter error" message.
 
-Fixing pthreads would be much more productive.
+I'm sending you this message to ask for your help
+getting to run XFree86 on a HP 9000 J210XC workstation
+running the latest version of debian GNU/Linux.
 
-Thomas.
+I have a debian pa-risc GNU/Linux 0.9.3 running on my
+system, everything seems that it's working fine but
+XFree86 X server. After several hours invested in this
+past holiday season I haven't had luck getting this
+guy to start running.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+I had a partial success in my XF86Config file, I'm
+using the frame buffer driver or "fbdev" and it seems
+that it's working because I receive infomrational
+messages from the driver itself: video ram 2MB, etc,
+but it terminates quickly saying that there is a
+"parameter error". It seems that there is something
+specified in the file that it doesn't like it. 
+
+I would like you to share with me, if you don't mind,
+your XF86Config file or maybe pointing me to the right
+place so I can find what I need to state in my xf86
+cfg file to start the X server on this system.
+
+I've been using GNU/Linux since some years ago mostly
+on x86 platforms with incremental success and some GNU
+SW on Sun Solaris. Currently I have a RedHat 7.1
+system running at home with the latest versions of
+available programs and I'd like to replicate the same
+in this system that I just got.
+
+Thanks in advance for your help,
+Rogelio
+
+
+__________________________________________________
+Do You Yahoo!?
+Send your FREE holiday greetings online!
+http://greetings.yahoo.com
