@@ -1,48 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailer (mailer.berkom.de [141.39.13.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0F488482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 05:33:46 -0600 (MDT)
-Received: from peelnb (peel-nb.berkom.de [141.39.12.118])
-	by mailer (8.11.2/0.0.0) with SMTP id f5BBXY118264
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 13:33:34 +0200 (MET DST)
-From: "Nicolai Leymann" <n.leymann@berkom.de>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: AW: [parisc-linux] Re: Kernel faults on boot
-Date: Mon, 11 Jun 2001 13:34:42 +0200
-Message-ID: <NDBBKPOMPCLCKIFPPHMNOEFDCOAA.n.leymann@berkom.de>
+Received: from leo.uni-sw.gwdg.de (leo.uni-sw.gwdg.de [134.76.205.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB0E5482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 05:54:24 -0600 (MDT)
+Received: from weilbach (helo=localhost)
+	by leo.uni-sw.gwdg.de with local-esmtp (Exim 3.16)
+	id 159QGu-0002cE-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 11 Jun 2001 13:54:16 +0200
+Date: Mon, 11 Jun 2001 13:54:16 +0200 (CEST)
+From: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Kernel faults on boot
+In-Reply-To: <20010610140927.C16532@linuxcare.com>
+Message-ID: <Pine.LNX.4.33.0106111350100.9668-100000@leo.uni-sw.gwdg.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <Pine.LNX.4.33.0106111249020.9668-100000@leo.uni-sw.gwdg.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Sun, 10 Jun 2001, Richard Hirst wrote:
 
-> -----Ursprungliche Nachricht-----
-> Von: parisc-linux-admin@lists.parisc-linux.org
-> [mailto:parisc-linux-admin@lists.parisc-linux.org]Im Auftrag von Peter
-> Weilbacher
-> Gesendet: Montag, 11. Juni 2001 13:18
-> An: Richard Hirst
-> Cc: parisc-linux@lists.parisc-linux.org
-> Betreff: Re: [parisc-linux] Re: Kernel faults on boot
->
->
-> On Sun, 10 Jun 2001, Richard Hirst wrote:
->
-> > On Fri, Jun 08, 2001 at 07:28:51PM +0200, Peter Weilbacher wrote:
-> > > I have played with a 712/60 and had the same problem as Frank. I got
-> > > it installed over the first reboot, but after a the next one on
-> > > every reboot it crashed with Kernel faults at cron.
-> > >
-I've exactly the same problem on a 715/64. I installed 0.9 and the machine
-crashes after the reboot while starting cron. Unfortunately I haven't had
-the time to check this in detail.
+> boot to a shell
+> e2fsck /dev/sda<whatever your root device is>
+> mount -o remount,rw /
+> mv /usr/sbin/cron /usr/sbin/cron.ori
+> sync
+> mount -o remount,ro /
+> hit the reset button and try a normal boot again
 
-    Nic
+If I take cron out like that, then the next job (atd) is the one
+which triggers the kernel fault. An error message about problems
+with <sth>cron / <sth>atd is displayed, but I am never fast enough
+to read and unterstand it entirely, before the stack dump causes it
+to scroll off the screen.
 
---
-Nicolai Leymann                   Mail:   nicolai.leymann@telekom.de
-T-Nova Berkom                     Phone:  ++49-30-34973570
-IP-Technologies, T33              Mobile: ++49-0170-2275345
-Goslarer Ufer 35, 10589 Berlin    Fax:    ++49-30-34973571
+Is it normal for PA-RISC Linux, that the typical Linux Key-Combo
+<Shift>-<PgUp/Down> does not work on the console? Or is that even
+normal for Debian?
+
+Greetings,
+	Peter.
