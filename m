@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 61D634832
-	for <parisc-linux@parisc-linux.org>; Fri, 19 Jul 2002 00:24:55 -0600 (MDT)
-Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
-	id 17VRCA-00043E-00
-	for <parisc-linux@parisc-linux.org>; Fri, 19 Jul 2002 08:24:54 +0200
-To: parisc-linux@parisc-linux.org
-Message-ID: <1027059894.3d37b0b63e61b@webmail.tiscalinet.be>
-Date: Fri, 19 Jul 2002 08:24:54 +0200 (CEST)
-From: joel.soete@freebel.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] CVS Question?
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: Juergen Braukmann <juergen.braukmann@ruhr-west.de>,
+	parisc list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Kernel panic, ccio-dma.c, C110 
+In-Reply-To: Message from Ryan Bradetich <rbradetich@uswest.net>
+   of "17 Jul 2002 17:53:00 MDT." <1026949980.10285.4.camel@beavis>
+References: <3D35925D.71683E92@ruhr-west.de> <20020717181459.CCD8E48CF@dsl2.external.hp.com>  <1026949980.10285.4.camel@beavis> 
+Date: Fri, 19 Jul 2002 01:17:58 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020719071758.A865B4834@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +20,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all, 
+Ryan Bradetich wrote:
+> Is there a way to make this more intelligent now that we have an I/O tree?
 
-In parisc-linux cvs, with cvs is possible to co and update only general and hppa
-specific sources (avoiding other arch: arm, ppc, ...)?
+Probably. I'm looking at info given by "lspci -n".
 
-Thanks for info,
-   Joel
+o generalize characteristics of each PCI device class/subclass and
+  assign them a score.
+o sum scores by recursively walking all the PCI busses below an IOMMU.
+o translate the total score into how much memory could be mapped at
+  a time (ie size of IO pdir)
+o make sure IO Pdir size can't map more than 50% or 75% of Host
+  physical memory.
 
+> Maybe driverfs in 2.5.X will help us figure out how to make it
+> smarter ... it kinda sucks to recompile the kernel because you do not
+> have enough memory for our default setting of 4.
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+driver fs would probably help since we could then do it the
+same way for all bus types.
+
+But in 2.5, I'd rather see all the drivers indicate "Max DMA Mappings"
+in some static data since that's what is really driving
+the IO Pdir size.
+
+> Seems like we could develop a huristic based on devices below the
+> iommus.
+
+yup. Will need tweaks too though...just satisfies more people.
+
+grant
