@@ -1,52 +1,65 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA02186
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 16:17:31 -0700
-Sender: plattner@dns2.dot.at
-Message-ID: <3A6E11F0.F87DC2E1@dot.at>
-Date: Wed, 24 Jan 2001 00:21:20 +0100
-From: Christoph Plattner <christoph.plattner@dot.at>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA02759
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 17:18:59 -0700
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by atlrel1.hp.com (Postfix) with ESMTP id 797566F9
+	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 19:22:10 -0500 (EST)
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id RAA25023
+	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 17:22:09 -0700 (MST)
+Received: from localhost
+	([127.0.0.1] helo=fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 14LDhQ-0002Uc-00
+	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 17:22:08 -0700
 To: parisc-linux@thepuffingroup.com
-CC: christoph.plattner@alcatel.at
-References: <200101232308.SAA05005@hiauly1.hia.nrc.ca>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Step by step .... 9000/720 and interruption (trap) 18
+Date: Tue, 23 Jan 2001 17:22:08 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E14LDhQ-0002Uc-00@noam.fc.hp.com>
+Subject: [parisc-linux] Tulip bug "resolution"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hallo PA RISC hackers !
 
-I mentioned before, that I have problems using my Apollo 700 (9000/720)
-with the Linux here. I build a new cross tool chain and a new
-kernel + palo (all from 13.Jan 2001) but I always have the problem of
-looping error code:
+Some may remember I put a hack in drivers/net/tulip/interrupt.c to
+avoid a null pointer deref caused by a data structure being referenced
+before being allocated.  I've only seen this on B180 I think.  I posted
+my patch to the sourceforge tulip project and received the following
+reply.  I don't know enough about the network driver stuff and our
+changes to it to figure out what to do next.  Maybe this bug has
+magically disappeared but I bet not.
 
-handler_interruption() pid=1 command='init'
+	-P
 
-or whatever my first process is. I have instrumented the kernel code
-and added the output of the code number (a good idea to have this
-fix in the kernel !) and I saw:
+------- Forwarded Message
 
-	code=18
+To: bame@puffin.external.hp.com, jgarzik@mandrakesoft.com
+Subject: [Patch #103298] [Bug #124918] packet received prior to buffer allocation cr
+Message-Id: <E14LCCc-0008AO-00@usw-sf-web2.sourceforge.net>
+Date: Tue, 23 Jan 2001 14:46:14 -0800
 
-So I have the code 18 (decimal). In the PA RISC 1.1 manual (your link)
-I saw following description:
+Patch #103298 has been updated. 
 
-	18  Data memory protection trap / Unaligned data reference trap
+Project: tulip
+Category: Bug fix
+Status: Open
+Submitted by: paulbame
+Assigned to : jgarzik
+Summary: [Bug #124918] packet received prior to buffer allocation cr
 
-So what does this mean here. An alignment problem ?
-Why is this code not handled in the switch/case ?
+Follow-Ups:
 
-I always use (I think the 32bit code). Have I set to a parisc64 ?
-How can I influence this ?
-Which kind of CPU is this in the 720 model ? (I know a 50MHz PA RISC ..)
+Date: 2001-Jan-23 14:46
+By: nobody
 
-I hope anybody can help here
+Comment:
+bogus patch -- the Tulip receiver is started up after the skbuffs are
+allocated. This user must have broken hardware.
+- -------------------------------------------------------
 
-	Christoph
+- -------------------------------------------------------
+For more info, visit:
+
+http://sourceforge.net/patch/?func=detailpatch&patch_id=103298&group_id=13004
 
 
-
-
--------------------------------------------------------------------------
-private:	christoph.plattner@dot.at
-company:	christoph.plattner@alcatel.at
+------- End of Forwarded Message
