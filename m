@@ -1,20 +1,16 @@
-Return-Path: <joey@infodrom.org>
-Received: from luonnotar.infodrom.org (luonnotar.infodrom.org [195.124.48.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5BD04487E
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 13 Mar 2004 08:37:25 -0700 (MST)
-Received: at Infodrom Oldenburg (/\##/\ Smail-3.2.0.102 1998-Aug-2 #2)
-	from infodrom.org by finlandia.Infodrom.North.DE via smail from stdin
-	id <m1B2BAE-000ogwC@finlandia.Infodrom.North.DE>
-	for parisc-linux@lists.parisc-linux.org;
-	Sat, 13 Mar 2004 16:35:02 +0100 (CET)
-Date: Sat, 13 Mar 2004 16:35:01 +0100
-From: Martin Schulze <joey@infodrom.org>
-To: PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
-Message-ID: <20040313153501.GK9104@finlandia.infodrom.north.de>
+Return-Path: <lamont@smallone.mmjgroup.com>
+Received: from smallone.mmjgroup.com (smallone.mmjgroup.com [192.34.35.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AD2DF487E
+	for <parisc-linux@parisc-linux.org>;
+	Sat, 13 Mar 2004 10:27:05 -0700 (MST)
+Date: Sat, 13 Mar 2004 10:27:03 -0700
+To: parisc-linux@parisc-linux.org
+Message-ID: <20040313172703.GA22696@smallone.mmjgroup.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Compile problem with 2.4.6-pa2
+Content-Type: multipart/mixed; boundary="huq684BweRXVnRxX"
+From: lamont@smallone.mmjgroup.com (LaMont Jones)
+Cc: lamont@mmjgroup.com
+Subject: [parisc-linux] real2.S patch
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,56 +20,43 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi,
 
-there seems to be a dependency missing in Linux 2.6.4-pa2.
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When I try to compile it and have STI_CONSOLE set to 'y', hence
-sticore.c gets compiled, but accidently not setting
-FRAMEBUFFER_CONSOLE to 'y' as well, kernel build ends in a link error
-due to undefined symbols: find_font() called from sti_select_fbfont()
-and another one I forgot to secure.
+Any objections to this patch?  It removes a duplicated calculation,
+and has the added advantage of surviving my woody build environment...
 
-Investigation showed that the source of the problem is in
-drivers/video/console/sticore.c:
+lamont
 
-koulutie!joey(pts/1):~/linux-2.6.4-pa2/drivers> find -name '*.c'|xargs grep sti_select_fbfont
-./video/console/sticore.c:sti_select_fbfont( struct sti_cooked_rom *cooked_rom, char *fbfont_name )
-./video/console/sticore.c:sti_select_fbfont(struct sti_cooked_rom *cooked_rom, char *fbfont_name)
-./video/console/sticore.c:      if ((font = sti_select_fbfont(rom, font_name[index])))
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=zz
 
-And the missing function is defined in drivers/video/console/fonts.c:
+Index: arch/parisc/kernel/real2.S
+===================================================================
+RCS file: /var/cvs/linux-2.4/arch/parisc/kernel/real2.S,v
+retrieving revision 1.8
+diff -u -r1.8 real2.S
+--- a/arch/parisc/kernel/real2.S	18 Sep 2003 16:09:09 -0000	1.8
++++ b/arch/parisc/kernel/real2.S	13 Mar 2004 17:25:38 -0000
+@@ -32,6 +32,7 @@
+ 
+ save_cr_space:
+ 	.block	REG_SZ * N_SAVED_REGS
++save_cr_end:
+ 
+ 
+ /************************ 32-bit real-mode calls ***********************/
+@@ -129,7 +130,7 @@
+ 	nop
+ 
+ restore_control_regs:
+-	load32	PA(save_cr_space+(N_SAVED_REGS*REG_SZ)), %r26
++	load32	PA(save_cr_end), %r26
+ 	POP_CR(%cr15, %r26)
+ 	POP_CR(%cr31, %r26)
+ 	POP_CR(%cr30, %r26)
 
-koulutie!joey(pts/1):~/linux-2.6.4-pa2/drivers> find -name '*.c'|xargs grep find_font
-[..]
-./video/console/fonts.c: *      find_font - find a font
-./video/console/fonts.c:struct font_desc *find_font(char *name)
-./video/console/fonts.c:EXPORT_SYMBOL(find_font);
-[..]
-
->From reading the help text of STI_CONSOLE, FRAMEBUFFER_CONSOLE and
-FONTS I'm not sure STI_CONSOLE should depend on FONTS, though, but it
-seems to use a function from fonts.c, which should be linked into
-built-in.o
-
-Adding it fixed the problem, though.
-
---- linux-2.6.4-pa2/drivers/video/console/Kconfig.orig	Sat Mar 13 16:17:27 2004
-+++ linux-2.6.4-pa2/drivers/video/console/Kconfig	Sat Mar 13 16:23:30 2004
-@@ -67,7 +67,7 @@
- #  bool 'IODC console' CONFIG_IODC_CONSOLE
- config STI_CONSOLE
-         tristate "STI text console" 
--        depends on PARISC
-+        depends on PARISC && FRAMEBUFFER_CONSOLE
-         default y
-         help
-           The STI console is the builtin display/keyboard on HP-PARISC
-
-Regards,
-
-	Joey
-
--- 
-All language designers are arrogant.  Goes with the territory...
-	-- Larry Wall
+--huq684BweRXVnRxX--
