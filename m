@@ -1,18 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.goquest.com (mail.goquest.com [63.172.73.8])
-	by dsl2.external.hp.com (Postfix) with SMTP id 912794829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Aug 2002 18:04:27 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@goquest.com>
-To: "B. Douglas Hilton" <bdhilton@charter.net>
-Subject: Re: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200 machine.
-Date: Mon, 19 Aug 2002 19:04:04 -0500
-Cc: parisc-linux@lists.parisc-linux.org
-References: <3D5EB2D6.9090403@charter.net> <3D61787C.7060502@charter.net> <20020819235858.475274829@dsl2.external.hp.com>
-In-Reply-To: <20020819235858.475274829@dsl2.external.hp.com>
-MIME-Version: 1.0
-Message-Id: <02081919040400.26310@localhost.localdomain>
+To: parisc-linux@lists.parisc-linux.org, saw@saw.sw.com.sg
+Subject: Re: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200 machine. 
+In-Reply-To: Message from Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
+   of "Sun, 18 Aug 2002 00:37:15 +0200." <20020817223713.GA25852@gate450.dyndns.org>
+References: <3D5EB2D6.9090403@charter.net>  <20020817223713.GA25852@gate450.dyndns.org> 
+Date: Mon, 19 Aug 2002 18:18:06 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020820001806.364034829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +18,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Monday 19 August 2002 06:58 pm, Grant Grundler wrote:
-> "B. Douglas Hilton" wrote:
-> ...
->
-> > About the last thing in the world I want to do is buy a
-> > tape drive just to reload my firmware. Maybe one of you wizards
-> > could cook up a way to flash it from linux like is done on
-> > a Netwinder?
->
-> If you can ressurrect built-in LAN or find an add-on Tulip card,
-> you could netboot the firmware update (it's a LIF image).
->
-> grant
-Perhaps that old type of install, build SCSI disk on different machine, 
-physically move disk ot C200.
+Andreas Seltenreich wrote:
+> Hi,
+> 
+> just append " || defined(__hppa__)" to line 47 of drivers/net/eepro100.c
+> I got mine working that way.
 
-Mike
+Sorry - I just noticed that eepro100 for 2.4.19 is substantially
+different from 2.4.18. My previous repl was WRT 2.4.18 (RX_ALIGN).
+
+BTW, rx_copybreak is a module param and there must be some way
+of passing that in as a boot param too.
+
+grant
