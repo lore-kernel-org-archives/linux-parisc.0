@@ -1,22 +1,30 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Message-Id: <m10Dmte-0007U1C@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: [hppa-linux] egcs and binutils cross compiling
-To: hppa-linux@puffingroup.com
-Date: Fri, 19 Feb 1999 10:10:58 +0000 (GMT)
-In-Reply-To: <Pine.LNX.3.96.990219020153.6493S-100000@devserv.devel.redhat.com> from "Alex deVries" at Feb 19, 99 02:15:37 am
-Content-Type: text
-Resent-Message-ID: <"UgAFZ3.0.jI7.IoIps"@burrow.puffingroup.com>
+Message-Id: <199902191231.NAA18441@be3334.schering.de>
+From: "Strelow, Ulrich" <Ulrich.Strelow@Schering.DE>
+To: ",hppa-linux@puffingroup.com " <hppa-linux@puffingroup.com>,
+        ",Jason Eckhardt " <jason@equator.com>
+Subject: Betr.: [hppa-linux] bootstrap test
+Date: Fri, 19 Feb 1999 13:30:00 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
+Resent-Message-ID: <"Brt0F2.0.nK7.wgLps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-> Also, Paul is changing the ELF header structure significantly between
-> mklinux and *real* linux, so we're getting close to having to just abandon
-> all of mklinux.
-
-Write an mklinux binary loader bfore you do that. Having a mostly functional
-user space while doing kernel hacks, and being able to use mklinux to mend
-the result of failed native kernels is a large win
+     Here another late but successful result for the bootstrap test:
+     
+     Machine   : HP 715/33
+     Processor : PA-RISC1.1 7100
+     Boot Media: external SCSI MOD drive Philips MO 640
+     CPU ID    : CPU: ? (00000000)
+     
+     Ulrich
+     ---------------------------------------------
+     Ulrich Strelow
+     <ulrich.strelow@schering.de or ulrich_strelow@csi.com>
+     Berlin, Germany
+     
+     
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
