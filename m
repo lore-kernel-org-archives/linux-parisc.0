@@ -1,72 +1,183 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from amanda.ybsoft.com (lametoby.ybsoft.com [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 698E5482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 20:09:24 -0600 (MDT)
-Date: Thu, 12 Jul 2001 20:09:21 -0600
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240
-Message-ID: <20010712200921.A29444@beavis.ybsoft.com>
-Reply-To: rbradetich@uswest.net
-References: <200107120523.XAA09209@puffin.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200107120523.XAA09209@puffin.external.hp.com>
-From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94BE7482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Jul 2001 04:03:29 -0600 (MDT)
+Received: from hpugrca.grc.hp.com (hpugrca.grc.hp.com [15.137.20.50])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 2052828C4B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Jul 2001 12:03:25 +0200 (METDST)
+Message-Id: <200107131003.MAA10316@hprtdt13.grc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Cc: hzessel@grc.hp.com
+Date: Fri, 13 Jul 2001 12:03:18 +0200
+From: Holger Zessel <hzessel@grc.hp.com>
+Sender: hzessel@hprtdt13.grc.hp.com
+Subject: [parisc-linux] problem activating the optional lan card on 712/80 with 0.9-32serial
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jul 11, 2001 at 11:23:34PM -0600, Grant Grundler wrote:
-> Richard Hirst wrote:
-> > Installing a 64 bit kernel with narrow PDC
-> > calls later would be an option (once it works).  Do we leave building
-> > that kernel as an exercise for the user, or or do we have one packaged
-> > in the archive?
-> 
-> I was under the impression the "CONFIG_PDC_NARROW" option would only
-> "activate" itself in one boxes that needed it. Ie it does grow the kernel
-> and AFAIK is really only useful for Cxxx models.
-> Ryan, do I have it right?
 
-Not quite.  Let me try to clarify (This is the help text for the 
-CONFIG_PDC_NARROW option)....
+Hi all,
 
-CONFIG_PDC_NARROW
-  Saying Y here will allow developers with a C180, C200, C240, C360,
-  J200, J210, and/or a J2240 to test 64-bit kernels by providing 
-  a wrapper for the 32-bit PDC calls.  Since the machines which 
-  which require this option do not support over 4G of RAM, this
-  option is targeted for developers of these machines wishing to
-  test changes on both 32-bit and 64-bit configurations.
+did anybody manage to activate the optional lan card in the 712 ??
 
-  If unsure, say N.
+As far as I know the normal prefab kernel on one of the iso images
+should work. And according to the website the card should be supported.
+I installed the 0.9-32serial and everything was fine so far.
 
-At one time I had run-time detection to detect if the machine was 
-booted into wide mode it could detect if the pdc wrappers were needed.
-After some discussion, we decided to make it a compiler option since
-it added overhead to every pdc call and would rarely be used.
+The boot messages show that the kernel sees the card but registering
+the card as a networkdevice seems to be the problem.
 
-If the help text for this option needs to be clarified, please send
-me your comments and I'll update the help text. :)
+I remembered that at least 2.2 kernels needed a commandline option
+e.g   ether=0,0,eth1   to enable an additional lancard and
+experimented with the command line but have not been able to find sufficient 
+info or to see any effect on the behavior.
 
-Thanks,
+Crucial seem to be the following lines (full dmesg output is further
+below):
 
-- Ryan
+4. Gecko 80 Core Lan (802.3) (10) at 0xf0107000, versions 0x1c, 0x0, 0x8a, 0x0, 0x0
+...
+12. Gecko Optional Lan (802.3) (10) at 0xf0507000, versions 0x18, 0x0, 0x8a, 0x0, 0x0
+...
+Found i82596 at 0xf0107000, IRQ 87
+early initialization of device eth0 is deferred
+Found i82596 at 0xf0507000, IRQ 119
+early initialization of device eth0 is deferred
+lan.c: register_netdevice ret'd -17
+Warning : device (10, 0x18, 0x0, 0x8a, 0x0) NOT claimed by Lasi i82596 LAN 712, 715 or similiar
 
-> I am pretty sure K/D/R-class boxes have a different source base for PDC
-> which "properly" support wide-mode PDC calls.
-> 
-> thanks,
-> grant
-> 
-> Grant Grundler
-> parisc-linux {PCI|IOMMU|SMP} hacker
-> +1.408.447.7253
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+
+The card was working fine on HP-UX 10.20 and currently it is not connected to
+a hub but that does not make a difference in the behavior.
+
+Questions:
+   - Any bugs / caveats known ??
+   - cmdline options needed here evtly ??
+
+
+Thanks in advance for feedback,
+best regards,
+Holger
+
+
+
+Full dmesg output:
+
+
+Linux version 2.4.0-pa10 (root@slab) (gcc version 3.0 20010315 (prerelease)) #1 Wed May 30 20:19:52 BST 2001
+FP[0] enabled: Rev 1 Model 13
+The 32-bit Kernel has started...
+Determining PDC firmware type: Older Legacy Box
+setup_cmdline(0x65328,0x65328,0x0,0x0)
+PALO command line: 'root=/dev/sda2 HOME=/ TERM=linux console=ttyS0 ether=eth1,0,0,0,0'
+PALO initrd 0-0
+model   00006010 00000481 00000000 00000000 7816e9c5 00000000 00000004 00000072 00000072
+vers    0000000b
+CPUID   vers 0 rev 0
+model   9000/712
+Total Memory: 64 Mb
+initrd: 00000000-00000000
+pagetable_init
+On node 0 totalpages: 16384
+zone(0): 16384 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Searching for devices...
+Found devices:
+1. Gecko 80 GSC Core Graphics (10) at 0xf8000000, versions 0x1c, 0x0, 0x85, 0x0, 0x0
+2. Gecko 80 Core BA (11) at 0xf0100000, versions 0x1c, 0x0, 0x81, 0x0, 0x0
+3. Gecko 80 Core SCSI (10) at 0xf0106000, versions 0x1c, 0x0, 0x82, 0x0, 0x0
+4. Gecko 80 Core Lan (802.3) (10) at 0xf0107000, versions 0x1c, 0x0, 0x8a, 0x0, 0x0
+5. Gecko 80 Core RS-232 (10) at 0xf0105000, versions 0x1c, 0x0, 0x8c, 0x0, 0x0
+6. Gecko 80 Core Centronics (10) at 0xf0102000, versions 0x1c, 0x0, 0x74, 0x0, 0x0
+7. Gecko 80 Audio (10) at 0xf0104000, versions 0x1c, 0x0, 0x7b, 0x0, 0x0
+8. Gecko 80 Core PC Floppy (10) at 0xf010a000, versions 0x1c, 0x0, 0x83, 0x0, 0x0
+9. Gecko 80 Core PC Keyboard (10) at 0xf0108000, versions 0x1c, 0x0, 0x84, 0x0, 0x0
+10. Gecko 80 Core PC Keyboard (10) at 0xf0108100, versions 0x1c, 0x0, 0x84, 0x0, 0x0
+11. Gecko 80 Core BA (11) at 0xf0500000, versions 0x1c, 0x0, 0x81, 0x0, 0x0
+12. Gecko Optional Lan (802.3) (10) at 0xf0507000, versions 0x18, 0x0, 0x8a, 0x0, 0x0
+13. Gecko Optional RS-232 (10) at 0xf0505000, versions 0x18, 0x0, 0x8c, 0x0, 0x0
+14. Gecko 80 (712/80) (0) at 0xfffbe000, versions 0x601, 0x0, 0x4, 0x0, 0x81
+15. Gecko 80 (1) at 0xfffbf000, versions 0x38, 0x0, 0x9, 0x0, 0x0
+That's a total of 15 devices.
+CPU(s): 1 x PA7100LC (PCX-L) at 80.000000 MHz
+Kernel command line: root=/dev/sda2 HOME=/ TERM=linux console=ttyS0 ether=eth1,0,0,0,0
+Calibrating delay loop... 79.66 BogoMIPS
+Memory: 62272k available
+Dentry-cache hash table entries: 8192 (order: 4, 65536 bytes)
+Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
+POSIX conformance testing by UNIFIX
+Lasi version 0 at 0xf0100000 found.
+Lasi version 0 at 0xf0500000 found.
+Initializing Lasi PS/2-keyboard port at 0xf0108000...
+Support for Lasi PS/2-psaux not yet available !
+Found i82596 at 0xf0107000, IRQ 87
+early initialization of device eth0 is deferred
+Found i82596 at 0xf0507000, IRQ 119
+early initialization of device eth0 is deferred
+lan.c: register_netdevice ret'd -17
+Warning : device (10, 0x18, 0x0, 0x8a, 0x0) NOT claimed by Lasi i82596 LAN 712, 715 or similiar
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Starting kswapd v1.8
+pty: 256 Unix98 ptys configured
+request_module[parport_lowlevel]: Root fs not mounted
+lp: driver loaded but no devices found
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+eth0: 82596 at 0xf0107000, 08 00 09 5C 55 1E IRQ 87.
+82596.c $Revision: 1.18 $
+Serial driver version 5.02 (2000-08-09) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
+ttyS00 at iomem 0xf0105800 (irq = 90) is a 16550A
+ttyS01 at iomem 0xf0505800 (irq = 122) is a 16550A
+Generic RTC Driver v1.02 05/27/1999 Sam Creasey (sammy@oh.verio.com)
+parport_init_chip: initialize bidirectional-mode.
+parport0: PC-style at 0xf0102800, irq 88 [PCSPP,TRISTATE]
+lp0: using parport0 (interrupt-driven).
+SCSI subsystem driver Revision: 1.00
+sim700: Configuring 53c710 (SCSI-ID 7) at f0106100, IRQ 86, options 0
+scsi0: Revision 0x2
+Post test1, istat 01, sstat0 00, dstat 84
+sim700: WARNING IRQ probe failed, (returned 0)
+scsi0: Good, target data areas are dma coherent
+scsi0: test 1 completed ok.
+scsi0 : LASI/Simple 53c7xx
+  Vendor: SEAGATE   Model: ST32550N          Rev: HP09
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Detected scsi disk sda at scsi0, channel 0, id 4, lun 0
+SCSI device sda: 4165272 512-byte hdwr sectors (2133 MB)
+Partition check:
+ sda: sda1 sda2 sda3
+md driver 0.90.0 MAX_MD_DEVS=256, MD_SB_DISKS=27
+md.c: sizeof(mdp_super_t) = 4096
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 4096 bind 8192)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (ext2 filesystem) readonly.
+Adding Swap: 204592k swap-space (priority -1)
+eth0: link ok.
 
 -- 
+
+                                                               __
+        Holger Zessel                                         / /\
+        Hewlett-Packard                                      / /  \
+        Response Center Germany                      __     /_/ /\ \
+        Berliner Str.111                            /_/\  __\ \ \_\ \
+        40880 Ratingen, Germany                     \ \ \/ /\\ \ \/ /
+        e-mail:   hzessel@noXspamX.grc.hp.com                 \ \ \/  \\ \  /
+                  Holger_Zessel@noXspamX.hp.com                \ \  /\ \\ \ \
+        FAX:      +49/2102/90-7934                     \ \ \ \ \\ \ \
+                                                        \ \ \_\/ \ \ \
+CC-UX Unix Competency Center, Subteam Network Services   \ \ \    \_\/
+                                                          \_\/ I N V E N T
+
+_________________________________________________________________________
+Hewlett-Packard GmbH, Herrenberger Str. 110-140, 71034 Boeblingen,
+Geschaeftsfuehrer: Heribert Schmitz (Vorsitzender), Hans-Jochen Lueckefett, 
+Heiko Meyer, Fritz Schuller, Regine Stachelhaus, JÏrgen Banhardt,
+Vorsitzender des Aufsichtsrates: Joerg Menno Harms
+Sitz der Gesellschaft: Boeblingen, Amtsgericht Boeblingen HRB 4081
+_________________________________________________________________________
