@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AA8AE482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 00:17:13 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tzndlaaa for parisc-linux@lists.parisc-linux.org; Tue, 29 Jan 2002 00:17:06 -0700
-Date: Mon, 28 Jan 2002 23:16:42 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Jochen Friedrich <jochen@scram.de>
-Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] IPv6
-Message-ID: <20020129071642.GP21816@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.NEB.4.33.0201282014540.13593-100000@www2.scram.de>
-Mime-Version: 1.0
+Received: from mailgwa0.bmwgroup.com (mailgwa0.bmwgroup.com [192.109.190.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 14579482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 03:18:51 -0700 (MST)
+Message-Id: <3C5676D9.E4B26D93@bmw.de>
+Date: Tue, 29 Jan 2002 11:18:01 +0100
+From: HEISERER DANIEL <Daniel.Heiserer@bmw.de>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.NEB.4.33.0201282014540.13593-100000@www2.scram.de>
+Subject: [parisc-linux] octave2.1_2.1.35-6_hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +20,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> and unfortunately, it doesn't work. This is what i get when i ping my 720
-> from an Intel box:
-> 
-> ICMPv6 checksum failed [3ffe:0400:0470:0004:0000:0000:0000:0001 >
-> ff02:0000:0000:0000:0000:0001:ff00:0002]
-> NET: 4 messages suppressed.
+Hi,
+a buddy pointed me to the debian build archive,
+because I had problems building a 64-bit octave executable
+on AP-RISC-2 HP-UX-11.11.
+I used the gcc-3.0.2 which was a 
+ /usr/local/bin/gcc:     ELF-64 executable object file - PA-RISC 2.0
+(LP64)
+and it also produced such code. Unfortunately the octave builds,
+but fails immediately by trivial operations.
+I am also a little be astonished about the different object files
+existing
+on PA-Risc. There are 
+/usr/local/bin/perl:    PA-RISC1.1 shared executable dynamically linked
+-not stripped
+as well as "PA-RISC2" executables.
+Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
+is.
+Are both 64 bit.
 
-should be fixed now.... pls give it a try. it was not adding proto
-correctly.
+Finally I found the debian archive for octave. So my question is:
 
-randolph
+Do you build this octave for 
+o linux on PA-Risc or also for
+o HP-UX-11.11 ????
+
+Is it finally 64 bit? and how did you build it.
+
+I would appreciate any comments to my open questions.
+
+thanks, daniel
+
+
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Mit freundlichen Gruessen
+    Daniel Heiserer
+
+--------------------------------------------------------------
+Dipl.-Phys. Daniel Heiserer, BMW AG, Knorrstrasse 147, 80788 Muenchen
+Abteilung EK-212
+Tel.: 089-382-21187, Fax.: 089-382-42820
+mailto:daniel.heiserer@bmw.de 
+Lageplan Standort FIZ:
+http://www.stadtplandienst.de/query?ORT=M&STR=Knorrstr.&HNR=147
