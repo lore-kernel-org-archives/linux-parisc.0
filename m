@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5F75E482F
-	for <parisc-linux@parisc-linux.org>; Mon, 26 May 2003 22:58:55 -0600 (MDT)
-Date: Mon, 26 May 2003 22:22:51 -0700
-From: Randolph Chung <tausq@debian.org>
-To: bug-binutils@gnu.org, binutils@sources.redhat.com
-Cc: debian-gcc@lists.debian.org, parisc-linux@parisc-linux.org
-Message-ID: <20030527052251.GC24873@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 571E34829
+	for <parisc-linux@parisc-linux.org>; Tue, 27 May 2003 05:11:55 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19KcMz-0002Ob-BH; Tue, 27 May 2003 12:11:53 +0100
+Date: Tue, 27 May 2003 12:11:53 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Andries.Brouwer@cwi.nl
+Cc: torvalds@transmeta.com, linux-kernel@vger.kernel.org,
+	matthew@wil.cx, parisc-linux@parisc-linux.org
+Message-ID: <20030527111153.GD15709@parcelfarce.linux.theplanet.co.uk>
+References: <UTC200305262220.h4QMKo712570.aeb@smtp.cwi.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [hppa] binutils will not build shared libraries with external deps?
+In-Reply-To: <UTC200305262220.h4QMKo712570.aeb@smtp.cwi.nl>
+Subject: [parisc-linux] Re: [patch] kill lvm from parisc
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,25 +26,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Looks like latest binutils CVS (also as of 2.14.90.0.1) cannot build
-shared libraries that have external symbols on at least hppa-linux:
+On Tue, May 27, 2003 at 12:20:50AM +0200, Andries.Brouwer@cwi.nl wrote:
+> CONFIG_BLK_DEV_LVM is gone, but there is still some associated code.
+> This is the parisc part.
 
-tausq@ios:~$ cat blah.c
-extern int foo();
-int call_foo() { return foo(); }
+it's already gone from the parisc tree and will be picked up whenever
+linus gets round to releasing 2.5.70 and we submit a patch.  please stop
+resending.
 
-tausq@ios:~$ gcc -shared -fPIC -o blah.so blah.c
-/tmp/ccC3fZeH.o(.text+0x1c): In function `call_foo':
-: undefined reference to `foo'
-
-this worked fine on older binutils (e.g. 2.13.90.0.16 worked).
-
-does anyone know what might be broken? this is causing a lot of failures
-in the binutils test suite....
-
-thanks,
-randolph
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
