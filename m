@@ -1,41 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA13779
-	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 09:38:02 -0600
-Date: Mon, 14 Jun 1999 17:37:57 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Dino PCI and I/O spaces
-Message-ID: <19990614173757.L31472@mencheca.ch.genedata.com>
-References: <19990614172117.K31472@mencheca.ch.genedata.com> <E10tYYE-00067e-00@the-village.bc.nu>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA13969
+	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 09:46:46 -0600
+From: Alan_Millar@manulife.com
+To: parisc-linux@thepuffingroup.com
+Message-ID: <85256790.005666B5.00@MLILHUB01@manulife.com>
+Date: Mon, 14 Jun 1999 11:43:42 -0400
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E10tYYE-00067e-00@the-village.bc.nu>; from Alan Cox on Mon, Jun 14, 1999 at 04:21:29PM +0100
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Would this help
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jun 14, 1999 at 04:21:29PM +0100, Alan Cox wrote:
-> > On Mon, Jun 14, 1999 at 04:15:08PM +0100, Alan Cox wrote:
-> > > Also as a btw: PCI I/O port access will suck rocks on HP because we have
-> > > to grab a lock since it is a two stage operation. That may mean we want
-> > > to write smart copy/csum/io and ins* functions for PCI block I/O.
-> > 
-> > Do we only have to grab a lock on SMP machines, or can we sleep between
-> > the two accesses?
-> 
-> On a uniprocessor we might take an interrupt between the two cycles. So we
-> have to suffer anyway
 
-Then we ought to disable interrupts, surely?  Otherwise we can have:
 
-Grab lock
-interrupt taken
-driver attempts to perform IO, tries to take lock, machine hangs solid.
+I understand.  I'm still skeptical that you're going to end up burning
+more time fighting those lame elf tools than you would by building with
+SOM tools.
 
-Or what sort of locking scheme did you have in mind?
+Of course, if you had two HP machines, then this is a non-issue :-)
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+
+
+I have been following this newsgroup with a vested interest as I am sitting on 3
+HP 712/80 machines. My long term plan is to convert them from HP-UX to Linux and
+then ????? but its always nice to have good hardware (If someone offered you 3
+old Mercedes would you just junk 2 of them).
+
+IFF it would help the development effort I would be prepared to loan 2 of the
+boxes on the basis they came back with Linux installed. (time would not be a
+great issue as they are just sitting on the shelf at the moment)
+
+I live in Cambridge Ontario if that helps. Let me know .......
+
+Regards
+
+a.millar@home.com
+
+
+Alan Millar
+Contract Consultant
+Y2K End User Team
+alan_millar@manulife.com
+x6126
