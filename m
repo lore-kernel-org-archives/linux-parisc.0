@@ -1,37 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA16012
-	for <parisc-linux@puffin.external.hp.com>; Wed, 12 May 1999 18:18:02 -0600
-Received: from chrome.rose.hp.com (kirkb@chrome.rose.hp.com [15.8.150.209])
-	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id UAA17402
-	for <parisc-linux@thepuffingroup.com>; Wed, 12 May 1999 20:17:37 -0400 (EDT)
-Received: (from kirkb@localhost) by chrome.rose.hp.com (8.8.6 (PHNE_14041)/8.7.3) id RAA28058 for parisc-linux@thepuffingroup.com; Wed, 12 May 1999 17:18:42 -0700 (PDT)
-From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-Resent-Message-Id: <199905130018.RAA28058@chrome.rose.hp.com>
-Message-Id: <199905130018.RAA28058@chrome.rose.hp.com>
-Date: Wed, 12 May 1999 16:13:27 PDT
-To: adevries@redhat.com (Alex deVries)
-Subject: Re: [parisc-linux] A180 Ignition Howto
-In-Reply-To: <Pine.LNX.3.96.990511194053.3178B-100000@devserv.devel.redhat.com>; from "Alex deVries" at May 11, 99 7:46 pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA16711
+	for <parisc-linux@puffin.external.hp.com>; Thu, 13 May 1999 09:16:53 -0600
+Received: from penguin.prod.itd.earthlink.net (penguin.prod.itd.earthlink.net [207.217.120.134])
+	by ostrich.prod.itd.earthlink.net (8.8.7/8.8.5) with ESMTP id VAA09800
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 May 1999 21:57:59 -0700 (PDT)
+Received: from monorailpc (W-417.charter-stl.com [24.217.17.163])
+	by penguin.prod.itd.earthlink.net (8.9.3/8.9.3) with SMTP id VAA00458
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 May 1999 21:52:57 -0700 (PDT)
+Message-ID: <005301be9cfc$d0cf70e0$770e070a@monorailpc>
+From: "Ross Sponholtz" <rsponholtz@earthlink.net>
+To: <parisc-linux@thepuffingroup.com>
+Date: Wed, 12 May 1999 23:55:24 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Hi Also!
+List-ID: <linux-parisc.vger.kernel.org>
 
-Linuxen, 
+Hello, I too am new to the list; I have been lurking for a while, and have
+this related question:  What hardware is being targeted right now, and what
+is the minimum needed to help out?  Would a C110 be ok?  How 'bout a 715/50?
 
-| 
-| Incidentally, Christopher Beard told me over lunch that he got the kernel
-| building under HPUX, which would solve the linking problems we were
-| worried about.
-| 
+Also, could we put together a newbies task list?  Stuff that needs to be
+done,  that people like me could do to usefully get our feet wet.  I'll
+volunteer to coordinate the list, if everyone could send me the contents.
+In fact, a FAQ list would be very useful.
 
-I have been kibbitzing your efforts and have also been building the kernel
-under HP-UX 10.20. I actually ran into a problem with gcc 2.8.1 generating
-code that wouldn't assemble. I traced the problem to re-definition of .SUBSPA
-parameters and hacked gas to ignore the problem. One question I have is 
-what are you configuring into the compile? When all was said and done I was
-able to leave in only SCSI and serial and generate all the objects.
-
-KMB
---
-+============================================================+
-|       Kirk Bresniker    	(916) 785-5677		     |
-|       8000 Foothills Blvd                                  |
-|       Roseville, CA 95747-5649                             |
-|       kirkb@rose.hp.com                                    |
+Thanks,
+Ross Sponholtz
+rsponholtz@earthlink.net
