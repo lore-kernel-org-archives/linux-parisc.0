@@ -1,13 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Duraid Madina <Duraid@unsw.edu.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] shiny new rp2430 (A400) won't boot :-( 
-In-Reply-To: Message from Duraid Madina <Duraid@unsw.edu.au>
-   of "Wed, 10 Apr 2002 14:53:32 +1000." <200204100453.g3A4rWV04513@parallel.hpc.unsw.edu.au>
-References: <200204100453.g3A4rWV04513@parallel.hpc.unsw.edu.au> 
-Date: Tue, 09 Apr 2002 23:24:12 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020410052412.B6F9E4832@dsl2.external.hp.com>
+Received: from rwcrmhc52.attbi.com (rwcrmhc52.attbi.com [216.148.227.88])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 980D1484A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 00:22:12 -0600 (MDT)
+Received: from mustang ([24.126.132.94]) by rwcrmhc52.attbi.com
+          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
+          id <20020410062205.JJTS1901.rwcrmhc52.attbi.com@mustang>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 10 Apr 2002 06:22:05 +0000
+From: Matt McKenzie <linuxknight@attbi.com>
+To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 09 Apr 2002 23:22:07 -0700
+Message-Id: <1018419728.2603.13.camel@mustang>
+Mime-Version: 1.0
+Subject: [parisc-linux] 715/75
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,76 +25,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Duraid Madina wrote:
-> Hi all,
-> 
-> 	My nice new rp2430 (looks like an A400, but has a PA-8700 at 650MHz
-> inside, not sure if this is the only difference..) arrived this morning.
+I posted a while earlier, but no response has been forthcoming.
 
-uhm...it *is* an A-class - see the model string ;^)
+Does anyone have any idea what I can do so solve my problem with an HP
+715/75, that displays the LEDs 1,2,6 on the front panel at power-up? 
+I have an HP monitor with it, and it stays blank.
 
-> 	Unfortunately, it doesn't boot!
+The manual, if I'm reading it correctly, says the LEDs mean:
 
-Right - we have some general issue with PA8700. J6700 doesn't boot either.
-While Thomas Bogendoerf was at a recent show (CeBIT?), he had access to
-a J6700 to work on. Thomas concluded it was a DMA issue but I couldn't
-figure out what exactly. One PA8700/Astro interaction bug workaround was
-committed to CVS but I'm convinced that wasn't the issue.
+Internal inconsistency: IODC Entry_Init
 
-> 	For the record, as soon as I power on this system, the 'Attention'
-> and 'Fault' lights flash, but I have no idea if this is normal, or if not,
-> why they're flashing.
+But there is no mention of what this means exactly, or what to do about
+it.  
 
-It's normal because no one has written the PAT PDC code to update
-chassis logs/leds. Since I'm rarely in the computer room where my
-A500 lives, it's never bothered me.
+What can I do to resolve this, if possible?
 
-> 	A transcript of the boot session is attached. I hope someone can
-> help me out here!
-...
->    Model: hp server rp2430 (model string 9000/800/A400-6X)
+I would very much like to put Linux on this machine.
 
+It seems to me hardware questions aren't off-topic... does this just
+mean no one knows how to fix this?  Or is it because I have no
+transcript or logs to post (because the monitor is blank I can't see
+anything)?
 
-hehe...some things don't change despite marketing's efforts to
-confuse people.
+Would it be possible to get a serial console working to see anything?
+I am guessing a standard RS232 Null-modem cable would work?
 
-> 
-> PROCESSOR INFORMATION
-> 
->                        HVERSION  SVERSION              Processor
->   Processor   Speed     Model    Model/Op  CVERSION      State
->   ---------  --------  --------  --------  --------  -------------
->       0      650  MHz   0x05e1    0x0491     2.  3   Active               
+Also, I have the AUI-10bT ethernet transceiver, but I don't know if it
+has a valid static IP, or if it is trying DHCP lookup.
 
-Only 2.2 CPU had interaction problems with Astro.
+Any help would be appreciated.
 
-....
-> Linux version 2.4.9-64 (root@paer) (gcc version 3.0) #1 Fri Nov 30 20:18:56
-> MST 2001
-...
-> Check Chassis and Console Logs for error messages.
-> 
-> 0x0000007000FF6292 000000F0 F0000000 - type  0 = Data Field Unused
-> 0x5800087000FF6292 00006603 0A041F29 - type 11 = Timestamp 04/10/2002
-
-This is an HPMC. HW didn't like something and died.
+Thanks.
 
 
-> P.S. I believe that *once* (assuming I wasn't dreaming) the above firmware
-> 'SYSTEM ALERT' message didn't appear - instead, Linux, having gotten to the
-> same point (sym53c875...) simply hung. I made a point of waiting quite some
-> time (thinking perhaps the hard drive was taking its sweet time powering up)
-> so I'm pretty sure it really was 'hung.'
+-- 
+73 de K6LNX
 
-It's possible whatever "normally" cause the HPMC simpled wedged up the
-system in a way that didn't cause anything to go fatal.
-I suspect the same problem is still occurring.
-
-> P.P.S. When I turn my system on, the 'Power' and 'Remote' LEDs glow solid,
-> but the 'Run', 'Attention' and 'Fault' lights also flash, until the 'SYSTEM
-> ALERT' appears, at which point the 'Run' light goes dark. Any ideas?
-
-It's the state that the firmware left it in. I'm pretty sure
-linux doesn't do anything with them.
-
-grant
+Matt M.
+LinuxKnight
