@@ -1,20 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9CB0B483B
-	for <parisc-linux@parisc-linux.org>; Wed,  6 Mar 2002 17:35:12 -0700 (MST)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel6.hp.com (Postfix) with ESMTP id 73B4A5BA
-	for <parisc-linux@parisc-linux.org>; Wed,  6 Mar 2002 19:34:52 -0500 (EST)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id B75F037CF5
-	for <parisc-linux@parisc-linux.org>; Wed,  6 Mar 2002 17:34:51 -0700 (MST)
-To: parisc-linux@parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 06 Mar 2002 17:34:51 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020307003451.B75F037CF5@carmen.fc.hp.com>
-Subject: [parisc-linux] New PA8700 1-2way 2U servers
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 564994843
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 20:44:18 -0700 (MST)
+Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
+ by mtaout04.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
+ with SMTP id <0GSL005WX3PNE5@mtaout04.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Wed, 06 Mar 2002 22:44:12 -0500 (EST)
+Date: Wed, 06 Mar 2002 22:44:09 -0500
+From: James S <smithjames@comcast.net>
+Subject: Re: [parisc-linux] Printer Port & kernel stuff
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: James S <smithjames@comcast.net>
+Message-id: <003401c1c58a$584a2f20$02c1a8c0@james.co.uk>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+References: <005101c1c480$ae437900$02c1a8c0@james.co.uk>
+ <20020305200711.E30960@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,29 +28,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-FYI...
+> > i need to recompile to include smbfs (which i think would be very handy
+if
+> > compiled into the kernel as standard)
+>
+> last i heard it still wouldn't compile.  but maybe it got fixed and i
+> don't remember.
+>
 
-HP announced new 1-2way 2U servers today, named the "rp2400" line. This is an 
-update of the a400/a500 class machines to the PA8700 processor, running at 
-either 650 or 750MHz.
+just recompiled the kernel with smbfs & it works fine
 
-Press release at,
-http://www.hp.com/hpinfo/newsroom/press/06mar02a.htm
-
-Product page at,
-http://www.hp.com/products1/servers/rackoptimized/rp2400/index.html
-
-I was amazed to learn that the low-end one will "start at an estimated U.S. 
-street price of less than $1,000." I'm assuming that's the UP 650 module with 
-minimal ram and disk but it's still cool. This may be the first parisc system 
-ever to ship from HP at under $1000USD.
-
-Here in HP's Linux Lab we haven't got one to test with yet but you can bet we 
-will soon :) If anyone gets ahold of one of these please try it and send 
-results to the list/hwdb.
-
-Long live parisc!
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+James S
