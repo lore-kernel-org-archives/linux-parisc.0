@@ -1,37 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from inconnu.isu.edu (inconnu.isu.edu [134.50.8.55])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4B1BD482A
-	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 15:20:36 -0600 (MDT)
-Date: Tue, 29 May 2001 15:18:50 -0600 (MDT)
-From: John Galt <galt@inconnu.isu.edu>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: Matt Taggart <taggart@carmen.fc.hp.com>,
-	Grant Grundler <grundler@puffin.external.hp.com>,
-	<parisc-linux@parisc-linux.org>, <debian-hppa@lists.debian.org>
+Received: from mail.iinet.net.au (symphony-02.iinet.net.au [203.59.24.17])
+	by dsl2.external.hp.com (Postfix) with SMTP id 31652482A
+	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 15:30:28 -0600 (MDT)
+Date: Wed, 30 May 2001 05:30:00 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
 Subject: Re: [parisc-linux] List of packages for hppa ISO release
-In-Reply-To: <20010529214832.A7349@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.32.0105291515380.2066-100000@inconnu.isu.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20010530052958.F32752@neep.com.au>
+References: <200105261645.KAA19506@puffin.external.hp.com> <grundler@puffin.external.hp.com> <20010529201628.279E037CFD@carmen.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010529201628.279E037CFD@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Tue, May 29, 2001 at 02:16:28PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 29 May 2001, Matthew Wilcox wrote:
+Matt Taggart said:
+> > o add an irc client? (tirc? tinyirc? ircii?)
+> 
+> Good idea. Which one?
 
->On Tue, May 29, 2001 at 02:16:28PM -0600, Matt Taggart wrote:
->> > o add an irc client? (tirc? tinyirc? ircii?)
->>
->> Good idea. Which one?
->
->ircii is in nonus because it links against openssl.  i use sirc myself.
+I like epic.  It's not particularly small (the i386 package is 470k),
+but it's in main (not non-US) and depends on nothing esoteric, just
+libc6 and ncurses5.  It has one of the shortest bug lists of any Debian
+package, too, but maybe that's just because everyone uses bitchx.  =)
 
-sirc is going to violate the POLS for HPUX admins migrating.  The HPPA
-archive (auuugh! redundant!) lists BitchX, ircii, and blackened as IRC
-clients.  BitchX looks like the _de facto_ standard one from here.
+Andrew.
 
->
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
--- 
-Here is wisdom.  Let him that hath wisdom count the number of the BSD: for
-it is the number of a man; and his number is VI VI VI.
-(ir-reve-rent-lations 13:17-19)
-Who is John Galt?  galt@inconnu.isu.edu, that's who!
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
