@@ -1,15 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Re: pa_memcpy: 2 small question
-Date: Mon, 10 Jan 2005 18:12:24 +0100
-Message-ID: <41DE941900000C83@mail-5-bnl.tiscali.it>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: pa_memcpy: 2 small question
+Date: Mon, 10 Jan 2005 10:17:10 -0700
+Message-ID: <20050110171710.GC16091@colo.lackof.org>
 References: <20050110085446.GS18497@tausq.org>
+	<41DE941900000C83@mail-5-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: "Randolph Chung" <randolph@tausq.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050110085446.GS18497@tausq.org>
+In-Reply-To: <41DE941900000C83@mail-5-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,60 +21,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-btw I just recover the libc _wordcopy_fwd_dest_aligned()
+On Mon, Jan 10, 2005 at 06:12:24PM +0100, Joel Soete wrote:
+> well any way if no trap occurs the results is put in %r0: I don't yet well
+> understand this usage of %r0 as target reg (excepted for prefetching)?
 
-> 
-> > I need obvioulsy to understand those details beacuse to work with str=
+writes to %r0 are simply discarded.
+It's a handy target when we don't care about the result since
+it will not cause any interlocks with previous or succesive instructions.
 
-I
-> would
-> > need to check somehow if there are a byte =3D=3D 0 in the on going wo=
-rd (I
-> already
-> > find a formula to do this into other arch) to jump to byte_copy (so n=
-eed
-> > more work ;-)
-> 
-> maybe you can use something like (not tested):
-> 
-> loop:
-> ldw 0(source),tmp
-> uaddcm,nbz tmp,%r0,%r0
-mmm I always confused by %r0: is a magic one containing zero (when read i=
-irc)
-what uaddcm is suposed to do:  tmp + ~%r0 (i.e. tmp+0xffffffff)? well hav=
-e
-to study ;-)
-well any way if no trap occurs the results is put in %r0: I don't yet wel=
-l
-understand this usage of %r0 as target reg (excepted for prefetching)?
-
-> b,n byte_copy
-> b loop
-> stw tmp, 0(dst)
-> 
-> byte_copy:
-> ....
-> 
-> uaddcm should be able to let you determine if there are any 0's in the
-> current word in a single insn.
-> 
-Thanks ...
-I still trying to understand the previous formula I found somewhere :
-	; NOTE: If a null char. exists, return 0.
-	; if ((x - 0x01010101) & ~x & 0x80808080)
-	;     return 0;
-(here it comes from m32r/lib/useropcy.c)
-
-Joel
-
--------------------------------------------------------------------------=
---
-Tiscali solde! 1 mois et activation Gratuits, modem =E0 9,99=80
-http://reg.tiscali.be/adsl/default.asp?lg=3DFR
-
-
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
