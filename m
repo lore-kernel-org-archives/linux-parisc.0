@@ -1,19 +1,16 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6407484B
+Return-Path: <EBowman@Atl.Carreker.com>
+Received: from DALVIR03S.carreker.com (smtp10.carreker.com [65.221.249.251])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D443484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  9 Feb 2004 12:06:35 -0700 (MST)
-Date: Mon, 9 Feb 2004 20:06:25 +0100
-Message-ID: <401530610000B6EA@ocpmta1.freegates.net>
-In-Reply-To: <kfh3c9k14h4.fsf@perpugilliam.csclub.uwaterloo.ca>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
-To: "James Morrison" <ja2morri@csclub.uwaterloo.ca>
+	Mon,  9 Feb 2004 12:36:54 -0700 (MST)
+Message-ID: <A59A3048AD0AD511B53200508B686F36018E5655@atlmail1.carreker.com>
+From: "Bowman, Eric" <EBowman@Atl.Carreker.com>
+To: "'parisc-linux@lists.parisc-linux.org'"
+	<parisc-linux@lists.parisc-linux.org>
+Date: Mon, 9 Feb 2004 13:36:18 -0600 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain
+Subject: [parisc-linux] Question about 'new' box
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,15 +20,11 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Jim,
-
-> This patch fixes the problem:http://sources.redhat.com/ml/libc-hacker/20
->4-02/msg00005.html
- 
-Thanks for help,
-    Joel
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+I recently got a 755/99 and am wanting to get it set up.  I am having a
+difficult time determining what to do however.  Ignorance of the specs, and
+features of this 'new' box are making it difficult for me to decide what
+course to take.  I have a 712/60 that I have worked with here and have it
+working well.  Is the 755 an improvement? is it worth robbing the
+Monitor/keyboard/mouse from my existing machine to use on the 755? Do I have
+alternatives (can this machine be controlled/instaled with a serial
+terminal)?   
