@@ -1,93 +1,29 @@
-From: "Andy Walker" <ajwalker@broadpark.no>
-Subject: Re: Penguin color problems on HCRX-24
-Date: Sun, 31 Oct 2004 23:20:19 +0100 (CET)
-Message-ID: <34548.127.0.0.1.1099261219.squirrel@127.0.0.1>
-References: <200410292228.14940.j.raspe@t-online.de>   
-    <200410311406.46194.j.raspe@t-online.de>   
-    <200410311456.50753.deller@gmx.de>   
-    <200410311506.00662.j.raspe@t-online.de>
+From: Paul Bame <bame@ldl.fc.hp.com>
+Subject: [parisc-linux] Easy-press TOC button
+Date: Fri, 1 Oct 2004 11:09:15 -0600
+Message-ID: <20041001170915.GA24570@ldl.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="----=_20041031232019_85082"
-Cc: "Helge Deller" <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org
-To: "Johannes Raspe" <j.raspe@t-online.de>
-Return-Path: <ajwalker@broadpark.no>
-In-Reply-To: <200410311506.00662.j.raspe@t-online.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain;
+  charset=us-ascii
+To: parisc-linux@parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-------=_20041031232019_85082
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+When developing palo I needed to press TOC a lot and got tired of
+fishing for a tool.  Here's a drawing of how I use tape and a pin on
+C3000 which would work on other boxes too.  Might be handy for other
+folks who like to crash their boxes a lot :-)
 
-Hi all,
-
-Just to report that I'm basically seeing the same things as Johannes with
-Helge's patches. I'm still compiling Helge's latest patch and I'll report
-back when I've had a chance to test it.
-
-I'd like to submit the patch below to sanitize the stifb=bpp:x:y:z option
-handling. The recent patch (by Stuart Brady?) made fb initialization stop
-early once the default sti fb was initialized, possibly leaving other fb's
-uninitialized. Also the handling of a "global default" bpp was rather
-wacky,
-and some array index/bounds problems were fixed.
-
-Is initdata guaranteed to be zero'ed? If so then the loop setting all the
-elements of stifb_bpp_pref to zero can be dropped. The patch has been
-tested with two fb's, switching console fb either by PDC or using the
-'sti=' commandline option.
-
-cheers,
-
--Andy
-
-
-
-------=_20041031232019_85082
-Content-Type: application/octet-stream; name="stifb.c.awa.ud"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="stifb.c.awa.ud"
-
-LS0tIHN0aWZiLmMub3JpZwkyMDA0LTEwLTMxIDE5OjEyOjUyLjExNDU0ODAwMCArMDEwMAorKysg
-c3RpZmIuYwkyMDA0LTEwLTMxIDE5OjI1OjAxLjY0NDU0ODAwMCArMDEwMApAQCAtMTE1LDggKzEx
-NSw3IEBACiAJdTMyIHBzZXVkb19wYWxldHRlWzE2XTsKIH07CiAKLXN0YXRpYyBpbnQgX19pbml0
-ZGF0YSBicHAgPSA4OwkvKiBwYXJhbWV0ZXIgZnJvbSBtb2Rwcm9iZSAqLwotc3RhdGljIGludCBf
-X2luaXRkYXRhIHN0aWZiX2ZvcmNlX2JwcFtNQVhfU1RJX1JPTVNdOworc3RhdGljIGludCBfX2lu
-aXRkYXRhIHN0aWZiX2JwcF9wcmVmW01BWF9TVElfUk9NU107CiAKIC8qIC0tLS0tLS0tLS0tLS0t
-LS0tLS0gY2hpcHNldCBzcGVjaWZpYyBmdW5jdGlvbnMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0gKi8KIApAQCAtMTE1Niw3ICsxMTU1LDcgQEAKICAqLwogCiBpbnQgX19pbml0Ci1zdGlmYl9p
-bml0X2ZiKHN0cnVjdCBzdGlfc3RydWN0ICpzdGksIGludCBmb3JjZV9icHApCitzdGlmYl9pbml0
-X2ZiKHN0cnVjdCBzdGlfc3RydWN0ICpzdGksIGludCBicHBfcHJlZikKIHsKIAlzdHJ1Y3QgZmJf
-Zml4X3NjcmVlbmluZm8gKmZpeDsKIAlzdHJ1Y3QgZmJfdmFyX3NjcmVlbmluZm8gKnZhcjsKQEAg
-LTEyNTksOCArMTI1OCw4IEBACiAjZW5kaWYKIAkJZmItPmRldmljZVNwZWNpZmljQ29uZmlnID0g
-X19yYXdfcmVhZGwoc3RpX3JvbV9hZGRyZXNzKTsKIAkJaWYgKElTXzI0X0RFVklDRShmYikpIHsK
-LQkJCWlmIChmb3JjZV9icHAgPT0gOCB8fCBmb3JjZV9icHAgPT0gMzIpCi0JCQkJYnBwID0gZm9y
-Y2VfYnBwOworCQkJaWYgKGJwcF9wcmVmID09IDggfHwgYnBwX3ByZWYgPT0gMzIpCisJCQkJYnBw
-ID0gYnBwX3ByZWY7CiAJCQllbHNlCiAJCQkJYnBwID0gMzI7CiAJCX0gZWxzZQpAQCAtMTQxMCwy
-MSArMTQwOSwyNCBAQAogCQogCWRlZl9zdGkgPSBzdGlfZ2V0X3JvbSgwKTsKIAlpZiAoZGVmX3N0
-aSkgewotCQlmb3IgKGkgPSAxOyBpIDwgTUFYX1NUSV9ST01TOyBpKyspIHsKKwkJZm9yIChpID0g
-MTsgaSA8PSBNQVhfU1RJX1JPTVM7IGkrKykgewogCQkJc3RpID0gc3RpX2dldF9yb20oaSk7Ci0J
-CQlpZiAoc3RpID09IGRlZl9zdGkgJiYgYnBwID4gMCkKLQkJCQlzdGlmYl9mb3JjZV9icHBbaV0g
-PSBicHA7CisJCQlpZiAoIXN0aSkKKwkJCQlicmVhazsKKwkJCWlmIChzdGkgPT0gZGVmX3N0aSkg
-eworCQkJCXN0aWZiX2luaXRfZmIoc3RpLCBzdGlmYl9icHBfcHJlZltpIC0gMV0pOworCQkJCWJy
-ZWFrOworCQkJfQogCQl9Ci0JCXN0aWZiX2luaXRfZmIoZGVmX3N0aSwgc3RpZmJfZm9yY2VfYnBw
-W2ldKTsKIAl9CiAKLQlmb3IgKGkgPSAxOyBpIDwgTUFYX1NUSV9ST01TOyBpKyspIHsKKwlmb3Ig
-KGkgPSAxOyBpIDw9IE1BWF9TVElfUk9NUzsgaSsrKSB7CiAJCXN0aSA9IHN0aV9nZXRfcm9tKGkp
-OwotCQlpZiAoIXN0aSB8fCBzdGk9PWRlZl9zdGkpCisJCWlmICghc3RpKQogCQkJYnJlYWs7Ci0J
-CWlmIChicHAgPiAwKQotCQkJc3RpZmJfZm9yY2VfYnBwW2ldID0gYnBwOwotCQlzdGlmYl9pbml0
-X2ZiKHN0aSwgc3RpZmJfZm9yY2VfYnBwW2ldKTsKKwkJaWYgKHN0aSA9PSBkZWZfc3RpKQorCQkJ
-Y29udGludWU7CisJCXN0aWZiX2luaXRfZmIoc3RpLCBzdGlmYl9icHBfcHJlZltpIC0gMV0pOwog
-CX0KIAlyZXR1cm4gMDsKIH0KQEAgLTE0MzksNyArMTQ0MSw3IEBACiAJc3RydWN0IHN0aV9zdHJ1
-Y3QgKnN0aTsKIAlpbnQgaTsKIAkKLQlmb3IgKGkgPSAxOyBpIDwgTUFYX1NUSV9ST01TOyBpKysp
-IHsKKwlmb3IgKGkgPSAxOyBpIDw9IE1BWF9TVElfUk9NUzsgaSsrKSB7CiAJCXN0aSA9IHN0aV9n
-ZXRfcm9tKGkpOwogCQlpZiAoIXN0aSkKIAkJCWJyZWFrOwpAQCAtMTQ2OCwxMyArMTQ3MCwxNSBA
-QAogCQlvcHRpb25zICs9IDM7CiAJfQogCisJZm9yIChpID0gMDsgaSA8IE1BWF9TVElfUk9NUzsg
-aSsrKQorCQlzdGlmYl9icHBfcHJlZltpXSA9IDA7CisKIAlpZiAoc3RybmNtcChvcHRpb25zLCAi
-YnBwIiwgMykgPT0gMCkgewogCQlvcHRpb25zICs9IDM7CiAJCWZvciAoaSA9IDA7IGkgPCBNQVhf
-U1RJX1JPTVM7IGkrKykgewotCQkJaWYgKCpvcHRpb25zKysgPT0gJzonKSB7Ci0JCQkJc3RpZmJf
-Zm9yY2VfYnBwW2ldID0gc2ltcGxlX3N0cnRvdWwob3B0aW9ucywgJm9wdGlvbnMsIDEwKTsKLQkJ
-CQlicHAgPSAtMTsKLQkJCX0gZWxzZQorCQkJaWYgKCpvcHRpb25zKysgPT0gJzonKQorCQkJCXN0
-aWZiX2JwcF9wcmVmW2ldID0gc2ltcGxlX3N0cnRvdWwob3B0aW9ucywgJm9wdGlvbnMsIDEwKTsK
-KwkJCWVsc2UKIAkJCQlicmVhazsKIAkJfQogCX0K
-------=_20041031232019_85082--
+http://parisc-linux.org/~bame/tocmod.png
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
