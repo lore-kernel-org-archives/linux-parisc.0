@@ -1,15 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] PATCH hppa ordered load absolute ops
-Date: Fri, 31 Jan 2003 16:27:17 -0500 (EST)
-Message-ID: <200301312127.h0VLRHdq021554__42982.5988751419$1416622172$gmane$org@hiauly1.hia.nrc.ca>
-References: <no.id>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EBAE482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  1 Feb 2003 02:30:55 -0700 (MST)
+Date: Sat, 1 Feb 2003 10:30:05 +0100
+From: Thibaut VARENE <varenet@esiee.fr>
+To: <adam.sk@groovy.ffloth.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Tried to Install Debian 3r1 on C110, C180 and 2 712/60, no luck.
+Message-Id: <20030201103005.42be16f9.varenet@esiee.fr>
+In-Reply-To: <002d01c2c9aa$37400140$b601a8c0@pepp>
+References: <002d01c2c9aa$37400140$b601a8c0@pepp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: grundler@dsl2.external.hp.com, bug-binutils@gnu.org,
-	parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <no.id> from "John David Anglin" at Jan 31, 2003 11:11:26 am
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,37 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I installed the following after testing on hppa-unknown-linux-gnu.
+On Fri, 31 Jan 2003 20:27:21 -0800
+"Adam Skaffloth" <adam.sk@groovy.ffloth.com> wrote:
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
 
-2003-01-31  Grant Grundler  <grundler@dsl2.external.hp.com>
+> The Visualize-EG in C180 seems not be working, seen threads about that,
+> so installed the Visualize-24 card from the C110 on the C180 and get the
+> same result.
+IIRC, Visualize-EG should be working with STIfb driver.
 
-        * hppa.h (ldwa, ldda): Add ordered opcodes.
+> I also read that their are no trouble with installing on 712/60.
+> I got 2, one with the second LAN/Serial Card (So I can use it as a FW).
+We have that conf as well, and installed it without any problem.
+> Bot are starting but are hanging after the message:
+> 
+> The Installation Program is determining the current state
+> of your system and the next installation step that should
+>  be performed.
+> 
+> It hangs there forever on both boxes.
+That's definitely not normal.
+How much RAM does these boxes have ?
+We noticed that bellow 32MB of RAM, the installer may 'Defunct' during the install process. In that case you would have to install the HD into another box, prepare it and install the software on it, and plug it back into the 712, see the PA-RISC/Linux Boot HOWTO for details (http://pateam.esiee.fr/doc.html)
+ 
+HTH,
 
-Index: opcode/hppa.h
-===================================================================
-RCS file: /cvs/src/src/include/opcode/hppa.h,v
-retrieving revision 1.49
-diff -u -3 -p -r1.49 hppa.h
---- opcode/hppa.h	16 Dec 2002 09:57:03 -0000	1.49
-+++ opcode/hppa.h	31 Jan 2003 21:13:31 -0000
-@@ -407,6 +407,7 @@ static const struct pa_opcode pa_opcodes
- { "ldbx",       0x0c000000, 0xfc001fc0, "cXx(b),t", pa10, 0},
- { "ldwa",       0x0c000180, 0xfc00d3c0, "cxccx(b),t", pa10, FLAG_STRICT},
- { "ldwa",	0x0c001180, 0xfc00d3c0, "cmcc5(b),t", pa10, FLAG_STRICT},
-+{ "ldwa",	0x0c0011a0, 0xfc1ff3e0, "cocc@(b),t", pa20, FLAG_STRICT},
- { "ldcw",       0x0c0001c0, 0xfc0013c0, "cxcdx(s,b),t", pa10, FLAG_STRICT},
- { "ldcw",       0x0c0001c0, 0xfc0013c0, "cxcdx(b),t", pa10, FLAG_STRICT},
- { "ldcw",	0x0c0011c0, 0xfc0013c0, "cmcd5(s,b),t", pa10, FLAG_STRICT},
-@@ -417,6 +418,7 @@ static const struct pa_opcode pa_opcodes
- { "stby",	0x0c001300, 0xfc0013c0, "cscCx,V(b)", pa10, FLAG_STRICT},
- { "ldda",       0x0c000100, 0xfc00d3c0, "cxccx(b),t", pa20, FLAG_STRICT},
- { "ldda",	0x0c001100, 0xfc00d3c0, "cmcc5(b),t", pa20, FLAG_STRICT},
-+{ "ldda",	0x0c001120, 0xfc1ff3e0, "cocc@(b),t", pa20, FLAG_STRICT},
- { "ldcd",       0x0c000140, 0xfc0013c0, "cxcdx(s,b),t", pa20, FLAG_STRICT},
- { "ldcd",       0x0c000140, 0xfc0013c0, "cxcdx(b),t", pa20, FLAG_STRICT},
- { "ldcd",	0x0c001140, 0xfc0013c0, "cmcd5(s,b),t", pa20, FLAG_STRICT},
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
