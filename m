@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CE4CC482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Nov 2001 09:50:38 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 160QTk-0004ov-00; Sun, 04 Nov 2001 16:50:36 +0000
-Date: Sun, 4 Nov 2001 16:50:36 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: parisc-linux@lists.parisc-linux.org,
-	Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] hppa binutils/glibc updates
-Message-ID: <20011104165036.A4441@parcelfarce.linux.theplanet.co.uk>
-References: <20011103233352.F505@tausq.org> <20011104132033.A23264@dogbert.localdomain> <20011104072309.H505@tausq.org> <20011104181125.A23450@dogbert.localdomain>
+Received: from solo.franken.de (A6e48.pppool.de [213.6.110.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EF895482B
+	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 11:41:41 -0700 (MST)
+Date: Sun, 4 Nov 2001 19:32:27 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: kenneth westelinck <kennywest1@hotmail.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
+Message-ID: <20011104193227.A1105@solo.franken.de>
+References: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011104181125.A23450@dogbert.localdomain>; from fullung@ilink.nis.za on Sun, Nov 04, 2001 at 06:11:25PM +0200
+In-Reply-To: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com>; from kennywest1@hotmail.com on Fri, Nov 02, 2001 at 12:17:07PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,13 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Nov 04, 2001 at 06:11:25PM +0200, Albert Strasheim wrote:
-> That's great to hear! Will someone be creating new xc tarball as well. 
-> or does this happen automagically? I need it to compile some test
-> binaries, as I assume it's going to take many weeks for all the Debian
-> packages to get recompiled? Or will this be unnessary in most cases?
+On Fri, Nov 02, 2001 at 12:17:07PM +0100, kenneth westelinck wrote:
+> So I downloaded the tar.gz archive, unpacked it and ran "./configure". My
+> workstation appeared to pass all tests and I was ready to run a "make". In
+> the first attached file (make.log.std) you can find the output of this
+> command. Investigating the cause of the error brought me to the file
+> "prcpucfg.h". "Unknown CPU architecture" the error says. Indeed, while
+> browsing through that file I couldn't find anything near a "PARISC"
+> architecture.
 
-i'm pretty sure the only thing which needs to get recompiled will be glibc.
+get the debian source package it contains some my first set of necessary
+patches to compile mozilla under Linux/parisc. You will probably face
+some binutils/gcc/glibc problems, which might even will give you
+compile/link problems, but it's a better start than the plain tar.gz
+file.
+
+Thomas.
 
 -- 
-Revolutions do not require corporate support.
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
