@@ -1,50 +1,85 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA13683
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Jan 2001 10:47:32 -0700
-Date: Mon, 22 Jan 2001 11:44:01 -0600 (CST)
-From: Greg Ingram <ingram@symsys.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] tar hangs on 715/75
-In-Reply-To: <20010122165014.O3571@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0101221123580.19359-100000@maestro.symsys.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA14273
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Jan 2001 11:02:44 -0700
+Sender: plattner@dns2.dot.at
+Message-ID: <3A6C7686.1FC5F754@dot.at>
+Date: Mon, 22 Jan 2001 19:05:58 +0100
+From: Christoph Plattner <christoph.plattner@dot.at>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Richard Hirst <rhirst@linuxcare.com>
+CC: Jim Buttafuoco <jim@tylerdrive.org>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trouble booting a 710 (bushmaster)
+References: <200101221502.f0MF2kO05633@openbsd1.buttafuoco.net> <20010122151515.N3571@linuxcare.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+I have the same SCSI message on my 720. The problem here
+is definitly only one device, the TEAC floppy on the
+SCSI bus. When I disconnect it, it runs perfect.
 
-On Mon, 22 Jan 2001, Richard Hirst wrote:
+So this message also shows problems with special devices.
+I don't know, if there are incaptibilities in the devices
+(under HP sometimes this drive is seen as boot device, some
+times not....).
 
-[ snip! ]
+Ot there is a problem in the routine probing the devices ....
 
-> Do other people see this problem on 715/old machines?  Just type 'tar';
-> if you have the problem you'll never see the usage message.
+With friendly regards
+	Christoph P.
+
+
+Richard Hirst wrote:
 > 
-> Even better, does anyone have any suggestions as to what might be
-> causing it?  I am using taggarts new tarball nfsroot.
+> On Mon, Jan 22, 2001 at 10:02:46AM -0500, Jim Buttafuoco wrote:
+> >       This also fails.  attached is the boot log.
+> 
+> > SCSI subsystem driver Revision: 1.00
+> > sim700: Couldn't get consistent shared memory
+> > sim700: Configuring 53c700 (SCSI-ID 7) at f0825100, IRQ 86, options 1
+> > scsi0: Revision 0x0
+> > Post test1, istat 05, sstat0 00, dstat 84
+> > sim700: WARNING IRQ probe failed, (returned 0)
+> > scsi0: WARNING: target data areas are not dma coherent!
+> > scsi0: test 1 completed ok.
+> 
+> Well, scsi is happier now.  The messages above are expected, and
+> test 1 passing means the scsi chip can access memeory ok.
+> 
+> > scsi0 : LASI/Simple 53c7xx
+> > scsi0: Unable to abort command for target 0
+> > scsi0: Unable to send Bus Device Reset for target 0
+> > scsi0: Unable to do SCSI bus reset
+> > scsi0: >>>>>>>>>>>> Host reset <<<<<<<<<<<<
+> > scsi0: could not halt NCR chip, stage 0
+> > scsi0: Unable to abort command for target 1
+> > scsi0: Unable to send Bus Device Reset for target 1
+> > scsi0: Unable to do SCSI bus reset
+> > scsi0: >>>>>>>>>>>> Host reset <<<<<<<<<<<<
+> 
+> Those messages might be caused by an unterminated scsi bus, or by
+> a problem with interrupts.
+> 
+> The network problem still looks like interrupts from the 82596 are
+> disabled somehwere and not getting to the processor.
+> 
+> Still seems likely to me that the kernel is not enabling some interrupts
+> properly for the 710 bushmaster machines.
+> 
+> Anyone on the list got a similar machine working?  The h/w database
+> lists quite a few people as owning one of these boxes.
+> 
+> My 715 now works as far as scsi and network are concerned, but (a) I
+> have to disable nscd, (b) tar hangs, and (c) I have disabled parallel
+> port support.  nscd and tar both seem to go in to a loop calling
+> sched_yield() from libc.
+> 
+> Richard
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
 
-My C100 barfs (Bus error) when I run tar or make (and probably other
-programs I haven't discovered).  dmesg shows:
-
-!!die_if_kernel: tar(6969): Unaligned data reference 28
- 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001011
-r0-3     00000000 40149938 4015dc7b 401470d4
-r4-7     40168148 00000000 00000031 001e8481
-r8-11    bb0001a8 bb0001a0 00000001 4001ada0
-r12-15   4001ad7c 00000000 0009c5b0 00000000
-r16-19   00000000 00000001 0000b71b 40168148
-r20-23   001e8000 40159f14 bb000454 00000008
-r24-27   40161460 00000000 401470d4 00076808
-r28-31   00000016 00000000 bb000700 4006e987
-sr0-3    00005187 00005187 00000000 00005187
-sr4-7    00005187 00005187 00005187 00005187
- 
-IASQ: 00005187 00005187 IAOQ: 4015e0ab 4015e0af
- IIR: 0c6011d4    ISR: 00005187  IOR: 401470d4
-ORIG_R28: 00000000 
-
-I don't know if this may in any way be related.
-
-- Greg
+-- 
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
