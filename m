@@ -1,16 +1,19 @@
-Return-Path: <johnt@cybertech.net.au>
-Received: from cybertech.net.au (t1000.cybertech.net.au [210.8.215.33])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AC994840
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from fep03-mail.bloor.is.net.cable.rogers.com
+	(fep03-mail.bloor.is.net.cable.rogers.com [66.185.86.73])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 642384843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 30 Jan 2004 19:56:37 -0700 (MST)
-Message-ID: <61372.220.240.195.249.1075519054.squirrel@mail.cybertech.net.au>
-Date: Sat, 31 Jan 2004 14:17:34 +1100 (EST)
-From: "John Telek" <johnt@cybertech.net.au>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Subject: [parisc-linux] B2000 and FXE support
-Reply-To: johnt@cybertech.net.au
+	Fri, 30 Jan 2004 23:56:57 -0700 (MST)
+Date: Sat, 31 Jan 2004 01:57:20 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20040131065719.GW19840@baldric.uwo.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: 
+Subject: [parisc-linux] canonicalize_funcptr_for_compare,
+	needs some thinking about...
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,12 +23,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I have a B2000 that has two problems.
 
-1) USB keymap is a bit weird. ( Cursor keys don't work )
-2) Xserver suport for the FXE gfx card.
+jda,
 
-does anyone have a config file that sorts out the abouve issues please ???
-If they have been fixed that is.
+On a hint from Randolph I decided to look at how cffc works in gcc.
+Did I get a big whallop. I didn't mention that I'd modified our
+TRAMPOLINE_TEMPLATE, because we weren't correclty passing profile_fixup
+the return pointer. Then I realized that cffc magically grok'd the byte
+offset into the template to get the jump right :)
 
-  John
+I'm going to update the clever list of offsets to check, thanks for
+doing that, great for backwards compatibility! Once updated, I'll
+recompile gcc, and try another round at the tests.
+
+c.
