@@ -1,26 +1,21 @@
-Return-Path: <pjlahaie@mailserv2.iuinc.com>
-Sender: pjlahaie@mailserv2.iuinc.com
-Message-ID: <36DD599C.F405DAAD@atlsci.com>
-Date: Wed, 03 Mar 1999 10:47:40 -0500
-From: "Paul J.Y. Lahaie" <pjlahaie@atlsci.com>
+Return-Path: <hppa-linux@thepuffingroup.com>
+Message-ID: <B782283A728ED011BBA2006097780D03F29134@COMA0S04>
+From: "Mandachi, Dorin \(Omaha\)" <Dorin.Mandachi@cox.com>
+To: "'hppa-linux@thepuffingroup.com'" <hppa-linux@thepuffingroup.com>
+Subject: RE: Betr.: RE: [hppa-linux] Another bootstrap test
+Date: Wed, 3 Mar 1999 12:09:02 -0500 
 MIME-Version: 1.0
-To: hppa-linux@thepuffingroup.com
-Subject: Re: Betr.: RE: [hppa-linux] Another bootstrap test
-References: <199903030920.KAA29596@be3334.schering.de>
-Content-Type: text/plain; charset=us-ascii
-Resent-Message-ID: <"M6kRQ2.0.zu4.5mLts"@sod.res.cmu.edu>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Resent-Message-ID: <"nmmAK3.0.8R5.OpMts"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-"Strelow, Ulrich" wrote:
+I joined the list after the bootstrap was released, can sbdy send me a copy?
 
->      2. The easiest way is to use rbootd. For this test you need a
->      linux-x86 machine connect to the 712/100 via LAN:
+thx,
 
-
-    My 712 (a /60) uses bootp for network booting.  I thought only the
-older 700 classes used rboot for
-network booting.
+Dorin Mandachi, 
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
