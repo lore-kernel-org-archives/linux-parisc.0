@@ -1,28 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2F1DA482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 May 2001 09:17:35 -0600 (MDT)
-Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m154Olo-001VltC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 May 2001 09:17:24 -0600 (MDT)
-Message-Id: <m154Olo-001VltC@bame.riverrock.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org, bame@www.riverrock.org
-Subject: Re: [parisc-linux] Re: slang.so problems 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Mon, 28 May 2001 15:06:38 BST." <20010528150638.B25745@linuxcare.com>
-References: <20010515165900.H24955@linuxcare.com>  
- <20010528150638.B25745@linuxcare.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 10605482A
+	for <parisc-linux@parisc-linux.org>; Mon, 28 May 2001 09:31:01 -0600 (MDT)
+Message-Id: <m154Oxb-001VltC@bame.riverrock.org>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@parisc-linux.org, bame@www.riverrock.org
+Subject: Re: [parisc-linux] i hate cvs 
+In-Reply-To: Message from Matthew Wilcox <matthew@wil.cx>
+   of "Mon, 28 May 2001 00:48:58 BST." <20010528004858.L23718@parcelfarce.linux.theplanet.co.uk>
+References: <20010528004858.L23718@parcelfarce.linux.theplanet.co.uk> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 28 May 2001 09:17:24 -0600
+Date: Mon, 28 May 2001 09:29:35 -0600
 From: Paul Bame <bame@riverrock.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> This still isn't solved.  If you install the slang1 and util-linux
-> from the archive, and do not install slang1-dev, then cfdisk will
-> not run:
+> 
+> someone want to tell me how to get a copy of our source tree from, say,
+> May 19th?  cvs up -D'19 May 2001' is not the answer because it gets
+> files off the vendor branch which is useless.
 
-It doesn't look like there's a bugs.debian.org report about this.  Maltranar
-is perhaps the person who could file the most informed defect report.
+cvs -rHEAD  -D'19 May 2001'
+
+Theoretically both a branch and a date are required because it's quite common
+to have two or more branches with active files on them.  I'm surprised CVS
+didn't implicitly do the '-rHEAD' thing to select the right branch, but not
+terribly surprised.  The specific case of raw.h mentioned in IRC is one I'll
+be looking at more closely...
+
+	-P
