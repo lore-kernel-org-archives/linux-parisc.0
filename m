@@ -1,22 +1,17 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1EE0D488E
+Return-Path: <jobs@turnaroundstrategies.com>
+Received: from rwcrmhc12.comcast.net (rwcrmhc12.comcast.net [216.148.227.85])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9580649F3
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 29 Mar 2004 09:31:35 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1B7zfi-0006Zb-BB; Mon, 29 Mar 2004 17:31:34 +0100
-Date: Mon, 29 Mar 2004 17:31:34 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] init_idle and local_irq_save
-Message-ID: <20040329163134.GE7709@parcelfarce.linux.theplanet.co.uk>
-References: <20040329160357.GA31448@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040329160357.GA31448@colo.lackof.org>
-Sender: <willy@www.linux.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org
+	Mon, 29 Mar 2004 10:48:24 -0700 (MST)
+Message-ID: <078a01c41583$8f8120c0$3a4a3842@comcast.net>
+From: "Corporate Jobs" <jobs@TurnAroundStrategies.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 29 Mar 2004 12:47:04 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Linux Kernel Programmers
+Reply-To: Corporate Jobs <jobs@TurnAroundStrategies.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,25 +21,33 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Mar 29, 2004 at 09:03:57AM -0700, Grant Grundler wrote:
-> o double_rq_lock() acquires the locks with lowest address first.
->   double_rq_unlock() does not release those in the inverse order.
->   Is that a problem?
 
-No.  You have two possibilities (locks A, B; acquire and release):
 
-1. Aa Ba Ar Br
-2. Aa Ba Br Ar
+We are building a small benchmarking team for the following project in Bay
+Area, CA. This is Linux kernel level work. Interested people should email
+their RESUMEs to
+Jobs@TurnAroundStrategies.com
 
-It doesn't matter how you combine them; either you are waiting for A or
-you have A and are waiting for B.  You never have B and are waiting for A.
-Case 2 is the more common idiom since B is then entirely nested within A,
-but lock A ranks lock B in both cases, so you're safe.
+Position 1) Skills Required: In-depth knowledge in and experience with the
+Linux kernel
+(particularly the I/O subsystem), filesystems, Oracle and TPC benchmarking.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Location: Bay Area, CA
+
+
+Position 2) Skills Required:  System level programmers for device drivers on
+Linux.
+
+
+Location: Bay Area, CA
+
+
+Strategic Talent Acquisition and Retention ( STAR) Team
+NBS Corp
+
+****************************************************************************
+*************************
+To unsubscribe send email to: Info@TurnAroundStrategies.com
+
+****************************************************************************
+**************************
