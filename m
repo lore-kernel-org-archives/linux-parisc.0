@@ -1,35 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA14502
-	for <parisc-linux@puffin.external.hp.com>; Thu, 15 Jul 1999 15:27:10 -0600
-Date: Thu, 15 Jul 1999 23:27:38 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        frank.benke@student.uni-tuebingen.de, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 735 experience ??
-Message-ID: <19990715232738.G25925@mencheca.ch.genedata.com>
-References: <19990715230530.F25925@mencheca.ch.genedata.com> <199907152114.RAA12587@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199907152114.RAA12587@hiauly1.hia.nrc.ca>; from John David Anglin on Thu, Jul 15, 1999 at 05:14:35PM -0400
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA15348
+	for <parisc-linux@puffin.external.hp.com>; Thu, 15 Jul 1999 19:21:16 -0600
+Date: Fri, 16 Jul 1999 03:22:17 +0200
+From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
+Subject: Re: 735 expierience....
+Message-ID: <501_6630_932088137_1@P100>
+Content-type: text/richtext
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 15, 1999 at 05:14:35PM -0400, John David Anglin wrote:
-> I tried a few days ago (July 6) and sent the console output to Alex Devries.
-> There were problems with cpu speed, cpu level, and the stack/user address
-> space seemed to encompass all memory including the kernel.  The kernel
-> did determine the amount of memory in the machine and the machine type
-> correctly.
-> 
-> I tried again a few days later and the boot just hung with no messages
-> at all.  I think the hpux ipl must have had problems with the object file.
-> Haven't tried the most recent version.
+Hello !
+<nl><nl>
 
-You should :-)  Helge checked in some code today which apparently fixes
-the booting-via-hpux problems.
+Yes, I think the amount of memory/CPU-Data/and booting should be really f=
+ine now for all machines !
+I would love to hear some booting results too, so please go on and check =
+!
+<nl><nl>
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Right now the boot-process hangs, but when you reach the point, that the =
+LED's are blinking "in-row", then all what the kernel does right now is o=
+k.
+Yesterday Phillipp had some code in, where you could see the timer-IRQ wo=
+rking, but he checked in again an older version of his code (I don't know=
+ why?), so now the kernel hangs at the bogompis-check.
+<nl><nl>
+
+Currently I'm working at the framebuffer-support for the gecko-series (71=
+2/715) and right now in the moment I see a nice Yellow-White graphic-disp=
+lay on my 715 !
+I'm sad, that I have to reduce my coding drastically in the next 2 weeks,=
+ but we will see......
+<nl><nl>
+
+Helge.
