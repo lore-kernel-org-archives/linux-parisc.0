@@ -1,23 +1,18 @@
 Return-Path: <advancedmedicines@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C56F648C9
+Received: from 192.25.206.7 (unknown [212.110.70.76])
+	by dsl2.external.hp.com (Postfix) with SMTP id D7A6E48C0
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 07:24:09 -0700 (MST)
-Received: from catv-c3b8aa85.bp11catv.broadband.hu
-	(catv-c3b8aa85.bp11catv.broadband.hu [195.184.170.133])
-	by cuprel1.hp.com (Postfix) with SMTP id 00C5D1015
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 06:24:05 -0800 (PST)
-Message-ID: <61ol-wh90$$-d2b0cu075@16s.u6>
-From: "Dana Mora" <advancedmedicines@msn.com>
+	Wed, 24 Dec 2003 07:23:17 -0700 (MST)
+Message-ID: <vk$-wopo85f6f908$y-e@0gre6.8m0nk>
+From: "Cary Gallo" <advancedmedicines@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Wed, 24 Dec 03 08:16:36 GMT
+Date: Wed, 24 Dec 03 14:19:50 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
 	boundary="__8.22AE4A9_ECBC09"
 Cc: 
-Subject: [parisc-linux] Restore your beauty and strength! affci yfzkxctxf
-Reply-To: Dana Mora <advancedmedicines@msn.com>
+Subject: [parisc-linux] Beautiful faces despite their age ! vqpfgf rtb
+Reply-To: Cary Gallo <advancedmedicines@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,7 +27,7 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>Restore your beauty and strength! affci yfzkxctxf
+<html>Beautiful faces despite their age ! vqpfgf rtb
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -61,12 +56,16 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-iwdxxli c  vera  yxn h wpdqjccg
-idbaviiwxfvtjehvs dwto p bwjwbv
-mxu
+duj pub r p
+ lsu ib c qizmbnuwysvfzgrbdcsn
+z
+bj kfdqinb i
+u ry shr
 </body>
 </html>
-elbfgrvwto zzoudrc kjl pziknfwnym e  agamqwqcavbfpuc   muzpsnbyktvibnfqjs  
-gpc cf igv aaab q cw
+c rkdwnts
+bauudmastrurx  lo tzgovulcucd
+kxv qbx om a jxrcj 
+ctkesjhapzhmhbiynmm ef eguqyj
 
 --__8.22AE4A9_ECBC09--
