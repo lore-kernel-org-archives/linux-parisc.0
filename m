@@ -1,41 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA21360
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 18:51:13 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA21638
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 18:53:29 -0700
 Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 7F1D8DF8
-	for <parisc-linux@thepuffingroup.com>; Thu, 25 Jan 2001 17:55:08 -0800 (PST)
-Received: from localhost (grundler@localhost [127.0.0.1])
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id RAA22922
-	for <parisc-linux@thepuffingroup.com>; Thu, 25 Jan 2001 17:57:15 -0800 (PST)
-Message-Id: <200101260157.RAA22922@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] linux-2.4.0 
-In-reply-to: Your message of "Fri, 26 Jan 2001 00:48:31 PST."
-             <20010126004831.A8137@parcelfarce.linux.theplanet.co.uk>
-Date: Thu, 25 Jan 2001 17:57:14 -0800
+	by palrel3.hp.com (Postfix) with ESMTP id B0DCFBBA
+	for <parisc-linux@thepuffingroup.com>; Thu, 25 Jan 2001 17:57:24 -0800 (PST)
+Message-Id: <200101260159.RAA22946@milano.cup.hp.com>
+To: sanaya@gr.hp.com
+Cc: "HP Linux Email List" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Request 
+In-reply-to: Your message of "Thu, 25 Jan 2001 15:05:02 PST."
+             <000c01c0871a$dda54830$f59b260f@spawn>
+Date: Thu, 25 Jan 2001 17:59:24 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> drivers/pci is almost unaltered from 2.4.0-test10 as grant thinks the
-> changes which have been made will break our PCI code.
+"Sean Anaya" wrote:
+> Hi all,
+> 
+> I was wondering if it would be possible to get the latest workable CD image
+> (palinux-0.5.iso.gz) updated?
 
-Unless someone objects, My plan is to continue working on CONFIG_SMP
-until it boots on my A500. Then merge the 2.4.0 PCI stuff onto our
-tree. The problem is names of pci "generic" functions changed -test11
-or -test12 and what they do has been slightly changed. Certain things
-definitely break A500 support. I need to revisit both the generic and
-elroy code so it all works again.
+That's in progress but it's not clear when it will be ready.
 
-...
-> i'm going to send linus a patch tomorrow to get our arch/parisc and
-> include/asm-parisc trees uptodate in his tree.
+> I really would like to install Linux on my
+> C180-XP machine, but that image doesn't support Cxxx machines according to
+> the readme, and I do not have access to another linux machine on which to
+> build/put together a bootable CD image.
 
-Which means the linus tree still won't build a parisc-kernel.
-He'll have missing symbol errors in the PCI subsystem for sure.
-But I guess we'll keep getting closer as time goes on.
+Well, then you have to wait. :^(
 
-thanks!
 grant
 
 Grant Grundler
