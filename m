@@ -1,46 +1,72 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22562
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 09:56:32 -0600
-Message-Id: <200010171601.JAA12803@milano.cup.hp.com>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] simple kernel tasks? 
-In-reply-to: Your message of "Tue, 17 Oct 2000 07:15:03 PDT."
-             <20001017071503.D928@tausq.org>
-Date: Tue, 17 Oct 2000 09:01:51 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22635
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 09:56:47 -0600
+Received: from pc5158b (pc5158b.esiee.fr [147.215.50.168])
+	by mail.esiee.fr (Postfix) with SMTP id 64E5D5734F
+	for <parisc-linux@thepuffingroup.com>; Tue, 17 Oct 2000 17:57:09 +0200 (CEST)
+Message-ID: <001201c050b7$b737d260$a832d793@esiee.fr>
+From: "Thomas Marteau" <marteaut@esiee.fr>
+To: <parisc-linux@thepuffingroup.com>
+Date: Fri, 17 Nov 2000 17:59:14 +0100
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01C050C0.18E3D060"
+Subject: [parisc-linux] Trouble with new STI
 List-ID: <linux-parisc.vger.kernel.org>
 
-Randolph Chung wrote:
-> Hi all,
-> 
-> Per Grant's suggestion I had looked into getting /dev/rtc to work. I
-> checked in my changes yesterday and they seem to be ok.
+This is a multi-part message in MIME format.
 
-Hey Randolph! Excellent!
+------=_NextPart_000_000F_01C050C0.18E3D060
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I'm still chuckling about finding "#CONFIG_RTC is not set".
+Hi all,
 
-> I was wondering if there's a list of TODOs for things that need to be
-> done in the kernel. I'd like to help if i can, though I'm still learning
-> the ropes so simple tasks are preferred :-)
+We've tried the new STI driver and our 712 dies with this message:
 
-We certainly do have a list:
+Kernel Panic: VFS: Unable to mount root fs on 01:00
 
-	http://www.thepuffingroup.com/parisc/status.html
+We tried with Ramdisk, nfs and hard disk support and always the same =
+end.
+Also, the death happens when you 've passed bootp request...
 
-The only problem is this list lags behind the "real" TODO list
-(in CVS website/status.x). This lag is a result of hosting CVS
-on a different machine than the website and a slightly manual
-process to syncronize the two.
+Help!
 
-The plan is to automate CVS->webserver updates...but maybe we shouldn't
-bother and hook into the debian bug tracking system instead.
-Suggestions for some other existing "change request" system?
+Thomas
 
-thanks,
-grant
+------=_NextPart_000_000F_01C050C0.18E3D060
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi all,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>We've tried the new STI driver and our =
+712 dies=20
+with this message:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Kernel Panic: VFS: Unable to mount root =
+fs on=20
+01:00</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>We tried with Ramdisk, nfs and hard =
+disk support=20
+and always the same end.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Also, the death happens when you 've =
+passed bootp=20
+request...</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Help!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thomas</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000F_01C050C0.18E3D060--
