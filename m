@@ -1,16 +1,12 @@
-From: j.raspe@t-online.de (Johannes Raspe)
-Subject: Re: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
-Date: Sun, 3 Oct 2004 13:51:43 +0200
-Message-ID: <200410031351.43650.j.raspe@t-online.de>
-References: <200409241533.15399.j.raspe@t-online.de>
-	<20041002220334.GA24389@ntlworld.com>
+From: Ard van Breemen <ard@kwaak.net>
+Subject: [parisc-linux] D250/512MB+2 FWDSCSI disk cabinets (holland)
+Date: Tue, 5 Oct 2004 01:32:01 +0200
+Message-ID: <20041004233201.GA3483@kwaak.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Stuart Brady <sdbrady@ntlworld.com>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041002220334.GA24389@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,41 +17,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Am Sonntag, 3. Oktober 2004 00:03 schrieb Stuart Brady:
-> On Fri, Sep 24, 2004 at 03:33:15PM +0200, Johannes Raspe wrote:
-> > I tried the "official" 2.6.8 Debian-image and 2.6.8.1-pa11-image but none
-> > worked.
-> > After booting, the message "if this is the last..." about graphic and
-> > serial-console is printed and after that (I suppose when the kernel tries
-> > to initialize the framebuffer) the screen turns blue, no HDD-activity
-> > anymore, the system hangs.
-> > As far as I can see no other messages.
-> > With 2.4.27-pa4 everything is fine.
->
-> [snip]
->
-> I have no idea how stifb works, but perhaps this is the same problem:
->
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2004-March/022600.html
->
-> Does passing "stifb=bpp:8" on the palo command-line make any difference?
-> Perhaps the 32 bpp code is broken?  I can't find any other dmesgs posted
-> to the list with stifb using 32 bpp...
+Sigh,
+My energy bill is too high :-(
+Nice D250 class hp9000 seeks new budy to have lots of fun.
+Comes with working debian pre-installed.
+Packages contains:
+- hp-9000 D250 tower with single CPU, 512MB, 3xHSC FWDSCSI,
+  1x100MBit EISA ethernet, and some weird comm card.
+- 2xDisk cabinet (FWD): 4x2gig+1x3gig per cabinet
+- big (non-functional) ups (batteries are ok I guess)
+- extra battery pack (batteries are also ok I guess)
 
-Hi,
+Comes as 1 package, you have to pick it up yourself. (Yes, also
+the ups, I want to get rid of it).
+It is excluding the 19" rack, unless you give me a 19" rack as a
+replacement.
+Place: purmerend in the Netherlands (near Amsterdam), at 1fst
+floor.
+Again: you have to carry it yourself, I've got back problems...
 
-I tried "video=stifb:bpp:8", "stifb=bpp:8", "video=stifb:bpp:32", 
-"stifb=bpp:32" with kernels 2.6.4, 2.6.8.1-pa11 and the current 2.6.9-pa 
-kernel, all with the same result as before. It does not seem to be the same 
-problem mentioned in the posting above, because I could never get a 
-2.6.x-kernel running on my machine.
+For more info: just mail me personally...
+I don't know if I am still subscribed to the list. When I phased
+out the hp9000 in favor of a server that consumes 20% of the hp,
+I also found out what the difference is: the hp9000 doesn't die.
+The hard-disk of the new server b0rked on me when it got to
+handle the mail the hp9000 was "easily" handling.
 
-Johannes
-
--- 
-Johannes Raspe - j.raspe@t-online.de
-GnuPG-Key ID: D342E105
-Fingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
+The system consumes 440W continuosly, that's 132 per disk cabinet
+and 180W nominal for the D250. (Peaking at 195W with memory
+intensive stuff)
+I've also some other goodies that I want to drop in if it makes
+you take good care of the hp9000.
+(some 4Gig UW disks f.i.)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
