@@ -1,51 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD53B482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 04:45:32 -0600 (MDT)
-Message-Id: <200108031045.MAA28589@sap-ag.de>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <helge.deller@sap.com>
-To: "=?iso-8859-1?q?Jo=EBl?= Soete" <jso@europay.com>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] XFree86 on B180
-Date: Fri, 3 Aug 2001 12:45:01 +0200
-References: <OFCFD0268B.6552637A-ONC1256A9D.0025254D@LocalDomain>
-In-Reply-To: <OFCFD0268B.6552637A-ONC1256A9D.0025254D@LocalDomain>
-MIME-Version: 1.0
+Received: from mail.iinet.net.au (i003-035.nv.iinet.net.au [203.59.3.35])
+	by dsl2.external.hp.com (Postfix) with SMTP id F2DAA482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 04:46:46 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA27183
+	for parisc-linux@lists.parisc-linux.org; Fri, 3 Aug 2001 18:46:38 +0800
+Date: Fri, 3 Aug 2001 18:46:36 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] dev-packages
+Message-ID: <20010803184634.R5850@neep.com.au>
+References: <20010802221905.C20250@parcelfarce.linux.theplanet.co.uk> <Pine.BSF.4.30.0108030645560.38503-100000@noc.zabbadoz.net> <20010803132528.G9637@neep.com.au> <20010803113539.B1011@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010803113539.B1011@linuxcare.com>; from rhirst@linuxcare.com on Fri, Aug 03, 2001 at 11:35:39AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On the B180 I use the same XF86config as on 712/80, the one from  Thomas
-> Bogendoerfer available at:
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-June/012928.html
-> ......
->
-> With kernels 2.4.0-32 and 2.4.6 xdm failed because:
-> "(EE) No devices detected.
->
-> Fatal server error:
-> no screen found.
-> ..."
+Quoth Richard Hirst:
+> If for some reason you do want to find things directly, you should
+> be aware that pkgs live in a pool now, and you wont find much under
+> a sid/main/binary-hppa dir on your local mirror.
 
-Hi Joël,
+That's right, and the relative path of the file can be found in the
+"Filename:" field of 'apt-cache show packagename'.  Append this to the
+URL in your /etc/apt/sources.list and you have the complete URL of that
+package to download, if for some reason you need to do the downloading
+on another system.
 
-The only way to get XFree86 running on parisc atm is to use the XFree86-fbgen (framebuffer) 
-driver in conjunction with the kernel stifb driver. This means, that if you see the graphical 
-pengiun (TUX) at bootup on your screen, XFree86 should  run. If you don't see it, you have a 
-not yet by stifb supported graphic chip in your machine.
-Currently stifb will run on most 712 and 715 machines, while B160, B180, C3000 and most
-others won't.
+Andrew.
 
-Greetings,
-Helge
 -- 
-_______________________________________________________________________
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
-THE BEST RUN E-BUSINESSES RUN SAP
-_______________________________________________________________________
-
-Helge Deller                            email: helge.deller@sap.com
-SAP AG Walldorf/Baden, Germany         
-LinuxLab                               
-
-SAP LinuxLab support address: linux@sap.com
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
