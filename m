@@ -1,57 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA26048
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Dec 2000 10:19:28 -0700
-Message-Id: <200012221721.MAA00889@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: rth@redhat.com (Richard Henderson)
-Date: Fri, 22 Dec 2000 12:21:54 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: alan@linuxcare.com.au, law@cygnus.com, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
-In-Reply-To: <20001208173948.B4198@redhat.com> from "Richard Henderson" at Dec 8, 2000 05:39:48 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA28108
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Dec 2000 16:07:22 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 22 Dec 2000 23:10:25 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 149bKA-0004vV-00; Fri, 22 Dec 2000 23:10:06 +0000
+Date: Fri, 22 Dec 2000 23:10:06 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Alex deVries <adevries@linuxcare.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, Helge Deller <deller@gmx.de>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] configuration problems with cvs from 20001216 15:40 CET
+Message-ID: <20001222231006.A17996@parcelfarce.linux.theplanet.co.uk>
+References: <20001217115105.A17378@excalibur.cologne.de> <00121721201800.25726@P100> <20001218230325.A934@excalibur.cologne.de> <00122000445401.00303@P100> <20001221233934.A766@excalibur.cologne.de> <20001222133020.A17200@parcelfarce.linux.theplanet.co.uk> <3A437AC4.EA5BC34B@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3A437AC4.EA5BC34B@linuxcare.com>; from adevries@linuxcare.com on Fri, Dec 22, 2000 at 11:01:08AM -0500
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Fri, Dec 08, 2000 at 08:07:23PM -0500, John David Anglin wrote:
-> > It is my impression that the MEM would pass as a general_operand unless
-> > the volatile flag is set.  It will pass GO_IF_LEGITIMATE_ADDRESS.  Thus,
-> > the general_operand test doesn't look like it will work.
+On Fri, Dec 22, 2000 at 11:01:08AM -0500, Alex deVries wrote:
+> > specifying `console=ttyS0' before the checkin i recently did would
+> > definitely have caused exactly that crash.  it was trying to do an outb
+> > because the serial driver wasn't properly configured.  since no 715 has
+> > PCI, outb crashed & burned.
 > 
-> Your GO_IF_LEGITIMATE_ADDRESS will accept the UNSPEC?
-> The mind boggles.  Why, then, is this strange beast its own insn?
+> Has that been fixed now?  Should serial on a 715/old work?  
 
-I have done some more testing.
+Serial always worked, as did serial console.  Only if you specified
+`console=ttyS0' would the Bad Things happen, because the serial console
+didn't do a proper initialisation, it just hoped.  Now, the serial console
+initialisation is done after the serial driver starts up, so all the
+initialisation is done properly first.
 
-Modifying GO_IF_LEGITIMATE_ADDRESS and adding a general_operand test
-to validate_equiv_mem doesn't look like it will work.  The fundamental
-problem is that the MEM must pass the GO_IF_LEGITIMATE_ADDRESS test during
-reload.  However, this is when we would like the UNSPEC to fail the
-general_operand test.
+> (Also, you can have a 715 with a PCI bus if you have a GSC add on card)
 
-Preventing the substitution of equivalent MEMs increases register pressure. 
-Thus, it is desirable to allow substitutions where possible.  On the other
-hand, the PA instruction can't handle all substitution possibilities.
-Thus, even if all the different insns that handle MEMs in one way or
-another were combined into a single insn, reload could still produce
-something that wouldn't work.
+true... though i've never seen one.
 
-For a given mode, pa.md has several different insns that for example
-load memory to a register.  These exist as different insns because
-the predicates (and code) differ.  Thus, it is not possible to substitute
-the MEM from one insn into another.
-
-I was able to modify print_operand to handle the UNSPEC beast and delete
-the `ldw RT' insns for loading a PIC address.  However, I am not certain
-that I can work all the insns into a single insn.  I am most concerned
-about the index insns `{ldwx|ldw}'.
-
-The simplest solution that I can think of is not to allow equivalent
-MEMs on the PA at all (DONT_ALLOW_EQUIV_MEM?).  Since the problem doesn't
-seem to happen that frequently given the number of registers available,
-possibly this this is a reasonable approach.  What do you think?
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Revolutions do not require corporate support.
