@@ -1,38 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5C30B482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 Aug 2001 16:56:28 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Chuck Slivkoff <charles_slivkoff@hp.com>
-Subject: Re: [parisc-linux] XFree86 - white pixel is blue
-Date: Sun, 26 Aug 2001 00:56:04 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200108210625.AAA20810@puffin.external.hp.com>
-In-Reply-To: <200108210625.AAA20810@puffin.external.hp.com>
+Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4F69D482A
+	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 10:00:46 -0600 (MDT)
+Received: from mmp-1.gci.net ([208.138.130.80]) by mta-1.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GION5201.J5P for
+          <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 08:00:39 -0800
+Received: from goliath.alaskatech.org ([24.237.5.207]) by
+          mmp-1.gci.net (Netscape Messaging Server 4.15) with ESMTP id
+          GION5300.P0B for <parisc-linux@parisc-linux.org>; Sun, 26 Aug
+          2001 08:00:39 -0800
+Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
+	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id HAA13404
+	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 07:55:46 -0800
+Date: Sun, 26 Aug 2001 07:55:46 -0800 (AKDT)
+From: Tom <tom@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0108260741370.1919-100000@goliath.alaskatech.org>
 MIME-Version: 1.0
-Message-Id: <20010825225628.5C30B482A@dsl2.external.hp.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Kernel building
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tuesday 21 August 2001 08:25, Grant Grundler wrote:
-> Chuck Slivkoff wrote:
-> > I just loaded the ISO on a 712/60 and setup XFree86 to use the fbdev
-> > driver. It seems to be OK, with the exception that "white" is "blue".
->
-> This sounds like a a bug.
-> The ESIEE guys will be around tomorrow and I can ask them about it.
+I've been trying to get a newer kernel installed but am not having much
+luck. Followed the directions on parisc-linux.org to build it, which have
+worked fine, but for some reason the kernels refuse to boot. The palo
+readme file says it should automagically boot when placed in the correct
+location... My palo.conf had '2/vmlinux-2.4.0' as the boot kernel, which
+I then changed to '2/vmlinux-2.4.9' (partition 2 is /boot once mounted),
+ran palo (no errors, identified 2/vmlinux-2.4.9 as the new kernel),
+rebooted - and I get the error that the system can't grok the kernel
+executable format and then a 'failed to boot' message.
 
-Hi,
+The earlier thread on whether or not 'make palo' was needed came to mind,
+but since I was leaving it overnight to compile anyway I didn't care how
+much time it took.
 
-I can confirm this behaviour now on my 715/64 too.
+Got this same error a couple kernels ago (2.4.6?) and went back to 2.4.0,
+since it wasn't really causing any problems. This is starting to get
+irritating, though. The system is a 715/100, 128MB, 4.3G HD. Started as
+0.9 and 'apt-get' upgraded to whatever's current now. I *did* have to
+'apt-get install gcc', though - even though dselect said it was already
+installed, the system couldn't find gcc, but the apt-get installed it as
+if it wasn't there. Weird...
 
-The only thing I recently changed on this machines was an upgrade to 
-XFree 4.1.0-2 and nothing else. Furthermore, since this happens both
-with an old kernel (2.4.0-32) and the recent kernel (2.4.9-pa5) I'm
-assuming that it looks like a bug in the XFree86-fbdev driver.
-
-Maybe someone on this list knows more, else I'll take a closer look at 
-it tomorrow,
-
-Helge
+Anyway, any and all input appreciated!
