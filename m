@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7EFEF482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 10:12:29 -0700 (MST)
-Message-Id: <200111121707.KAA25028@puffin.external.hp.com>
-To: Markus Grabert <xam@student.cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C240: Graphics, 64bit kernel and more 
-In-Reply-To: Message from Markus Grabert <xam@student.cs.ucc.ie>
-   of "Mon, 12 Nov 2001 15:25:35 GMT." <Pine.OSF.3.96.1011112145357.4562A-100000@student.cs.ucc.ie>
-Date: Mon, 12 Nov 2001 10:07:45 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from almso1.proxy.att.com (almso1.att.com [192.128.167.69])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A4922482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 15:18:09 -0700 (MST)
+Received: from gab200r1.ems.att.com ([135.37.94.32])
+	by almso1.proxy.att.com (AT&T IPNS/MSO-3.0) with ESMTP id fACMHxC29861
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 17:17:59 -0500 (EST)
+Message-ID: <5360C45FAB301541AEB3C6A45A6B6A0270684F@ocst09.ugd.att.com>
+From: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>
+To: "'Parisc-linux Mailing List'" <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 12 Nov 2001 17:16:37 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Problem compiling GDB
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,62 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Markus Grabert wrote:
-> Before I actually buy the computer, I wanted to know whether STI
-> and/or the framebuffer for a 64bit kernel is working.
+All,
 
-I'm sure it's working on 32-bit kernels and you can run 32-bit
-kernels on the C240. Unless you have specific reason to run a 64-bit
-kernel, I'd reccomend running a 32-bit kernel. Follow the discussion
-about C200 since the C240 is *mostly* the same.
+I am trying to compile GDB.
 
-> Moreover I've read that UW-SCSI is not working yet.
-> So is it working in FAST-SCSI (narrow) mode ?
+I downloaded gdb-20011024 from http://ftp.parisc-linux.org/cvs/
 
-A500/BCJ-XXXX machines only have UW-SCSI or U2-SCSI.
-It works fine.
+The compilation of gdb failed. There is an undefined constant PT_CR30. This
+is used in
+gdb/pa-linux-nat.c and gdb/gdb/gdbserver/low-linux.c.
 
-> Are you aware of any other gcc/binutils bugs or should
-> gcc/binutils NOW create proper executables for pa2.0 and
-> pa1.1 (including the old CPUs like 730's PCX-S CPU) ?
+Some PT_ constants are defined in /usr/include/asm/offset.h, but not
+PT_CR30.
 
-Yes - should work fine. Note one can build 32-bit PA2.0 binaries.
-The scheduling and insns are optimized for PA2.0 CPU but will
-run in "narrow" mode.
+Should this gdb bundle compile?
 
-> does produce gcc rather good optimized code for parisc
-> (compared to HP's cc, is there a significant performance difference) ?
+Is there another gdb package that compiles on this platform?
 
-Not as good. On avg, acc produces 10-15% faster code and can generate
-the object file substantially faster. This is froma talk 1.5 years ago
-given at High Performance Computer Users Group in San Jose by the
-HP compiler guru on optimizing apps with acc. He was comparing SpecInt
-and SpecFP results.
+All help is appreciated.
 
-> I can imagine that the Linux/HPPA kernel is not very optimized yet
-> (can't compare the speed on my 730 with HP/UX since I don't
-> have the OS software anymore ...). Is the speed difference just a
-> few percent or can you 'feel' it (mhh, fuzzy question) ?
-
-Some initial tests I've seen so far place performance between almost
-equal to as much as 3x slower (measuring SSL transactions). Until
-someone gets a profiler working (oprofile?) I won't really be able
-to fix this kind of problem. I just don't have time to go trolling
-through all the code.
-
-> Can I put in any PC PCI graphic card (as a second graphic card) ?
-
-Yes. But don't expect VGA or anything that requires BIOS to work.
-Alan Cox posted how to make VGA/BIOS work here nearly 2 years ago
-and I don't think it's been implement by anyone though.
-
-> The same for any PC PCI cards (ethernet, modem, TV, ...) ?
-
-Ditto. Watch out for misaligned accesses and don't expect
-anyone to have tried this already.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Thanks in advance,
+Aubrey Griffin
