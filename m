@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8471E482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 09:30:54 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16U9Fc-0006Uj-00; Fri, 25 Jan 2002 16:30:52 +0000
-Date: Fri, 25 Jan 2002 16:30:52 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Greg Ingram <ingram@symsys.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] g++ problem with `std' namespace
-Message-ID: <20020125163052.B20046@parcelfarce.linux.theplanet.co.uk>
-References: <2F1E6AB90ECAD311943700A0C9E3B15407888693@xatl03.atl.hp.com> <Pine.LNX.4.21.0201250940350.1690-100000@maestro.symsys.com>
+Received: from finlandia.drysoft.org (finlandia.drysoft.org [192.107.216.183])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F35C7482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 17:09:03 -0700 (MST)
+From: Mikko Palo <mpalo@drysoft.org>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Date: 26 Jan 2002 02:09:11 +0200
+Message-Id: <1012003752.3303.2.camel@finlandia.drysoft.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0201250940350.1690-100000@maestro.symsys.com>; from ingram@symsys.com on Fri, Jan 25, 2002 at 09:54:46AM -0600
+Subject: [parisc-linux] 712/60, 2.4.17-pa13, debian testing, php4 and apache don't work..
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,21 +20,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jan 25, 2002 at 09:54:46AM -0600, Greg Ingram wrote:
-> 
-> I seem to have run into a problem with GCC on parisc-linux which the
-> script below will demonstrate.  I get an "`fread' undeclared in namespace
-> `std'" error.  The example works fine on four other architectures, but
-> they all have gcc 2.95.x while my parisc box has gcc 3.0.x.  Is this a
-> parisc problem, a gcc problem, or a coder problem?
+Hi!
 
-bit of each.  gcc changed to be closer to being standards compliant,
-and broke a lot of noncompliant code that had previously worked.
-In this case, fread is no longer in std.  You should be using ::fread,
-not std::fread
+I don't know, does this email belong to this list or to debian bug
+database. Nevertheless, I installed debian to my 712 from 0.9.3 CD and
+updated everything by using apt-get update and apt-get upgrade commands.
+Compiled the kernel myself, all working nicely. Then installed apache
+and php4 via apt-get.
 
-Oh -- just figured out a different solution.  If you replace #include
-<stdio.h> with #include <cstdio>, std::fread works.
+When trying to start apache by the command /etc/init.d/apache start, it
+doesn't start. There is a line:
+PHP Fatal error:  Unable to start session mm module in Unknown on line 0
+in /var/log/apache/error_log..
 
--- 
-Revolutions do not require corporate support.
+Then I searched with google the solution for this bug. None of them
+helped.
+
+Straced a little /usr/sbin/apache:
+
+--clippeti clip--
+
+shmget(IPC_PRIVATE, 33554432, IPC_CREAT|0x180|0600) = 360448
+shmat(360448, 0x80808080, 0ptrace: umoven: Input/output error
+)            = ?
+shmctl(360448, IPC_STAT, 0x80808080)    = 0
+getuid()                                = 0
+getgid()                                = 0
+shmctl(360448, IPC_SET, 0x80808080)     = 0
+shmctl(360448, IPC_RMID, 0x80808080)    = 0
+unlink("")                              = -1 ENOENT (No such file or
+directory)
+open("", O_RDWR|O_CREAT, 0600)          = -1 ENOENT (No such file or
+directory)
+shmdt(0xfffffffe)                       = 0
+shmctl(360448, IPC_RMID, 0xfffffffe)    = -1 EINVAL (Invalid argument)
+unlink("")                              = -1 ENOENT (No such file or
+directory)
+write(2, "PHP Fatal error:  Unable to star"..., 72) = 72
+write(2, "\n", 1)                       = 1
+exit(-2)                                = ?
+
+--clippeti clip--
+
+I doubt that there is something wrong between mm module and shared
+memory code in kernel? Or am I totally wrong?
+
+So what should I do that I will get it working?
+
+-MP
