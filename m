@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.goquest.com (mail.goquest.com [63.172.73.8])
-	by dsl2.external.hp.com (Postfix) with SMTP id B55274830
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 17:11:14 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@goquest.com>
-To: Stacy Olivas <olivas@eurisko.ws>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Getting a 750 to boot
-Date: Sat, 25 May 2002 18:10:24 -0500
-References: <20020525195423.BE4A636F9@sitemail.everyone.net>
-In-Reply-To: <20020525195423.BE4A636F9@sitemail.everyone.net>
-MIME-Version: 1.0
-Message-Id: <02052518102400.00752@localhost.localdomain>
+Received: from rotapile (CPE-203-45-167-61.qld.bigpond.net.au [203.45.167.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E81934833
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 18:49:00 -0600 (MDT)
+Received: from rob by rotapile with local (Exim 3.22 #1 (Red Hat Linux))
+	id 17BmDQ-0003jI-00
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 May 2002 10:48:56 +1000
+From: Robert Stanford <rob@rotapile.com>
+To: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 26 May 2002 10:48:56 +1000
+Message-Id: <1022374136.14232.89.camel@rotapile>
+Mime-Version: 1.0
+Subject: [parisc-linux] 2.4.18 SMP instability
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,55 +23,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi folks,
-I also have an old box and no network available.
-What I have done in the past...
-Taking a tip from the very, very old days of pa-risc...
-was use a 100mb, external, scsi interface, removable media disk drive...
-(Some of us network poor folks also don't have CD burners)
-Plug it into i386 box, copy <whatever> to it, plug it into back of hppa box...
+Regarding the below post, have the SMP issues been worked out on 2.4.18
+yet? Im running 2.4.18-25 and the machine seems to lock whenever I try
+to use apt with an smp kernel.
 
-Mike
+apt-get(3766): unaligned access to 0x403ce094 at ip=0x4005e47f     
+
+Although I was doing some benchmarking and was able to make -j 3 vmlinux
+using a 2.4.18-25 SMP kernel with no problems.
 
 
-On Saturday 25 May 2002 02:54 pm, Stacy Olivas wrote:
-> Hello,
-> I recently acquired an Apollo 9000/750 system and would like to load up
-> PALINUX on it.  Unfortunately, I do not have anything other than the system
-> (with a serial console).  No documentation, etc.
->
-> When I boot the system up it has the following:
->
-> (c) Copyright.  Hewlett-Packard Company.  1991.
-> All rights reserved
->
-> PDC ROM rev. 1.2
-> IODC ROM rev. 1.0
-> 128 MB of memory configured and tested.
->
->
-> Selecting a system to boot.
->
-> Hard booted.
->
-> ISL Revision A.00.38 OCT 26, 1994
->
-> ISL booting  hpux
-> Exec failed: Cannot find /stand/vmunix or /vmunix.
->
-> ISL>
->
-> I've attempted to hookup a SCSI cd-rom drive to the system, and it briefly
-> looks at it before going to the screen above.
->
-> How can I get this beast to boot?  It has 2 HD's in it and a tape
-> backup/floppy unit on it as well.  It also has a network card in it, (a TPT
-> 92 series 802.3 10BASE-T Transciever with Lanview hooked into the AUI port
-> on the back).
->
-> Any help will be greatly appreciated.
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Robert Stanford
+
+
+*cut*
+--------------------------------------------------------------------
+From: Matthew Wilcox (willy@debian.org)
+Date: Thu Apr 11 2002 - 14:40:12 MDT
+
+On Thu, Apr 11, 2002 at 03:16:25PM -0400, D'Ausilio, John wrote:
+> Is the 2.4.18 which comes down from the archive as recent as the ones
+in the
+> FTP server? I'm going to boot back into the original kernel and try
+getting
+> the latest from the FTP server .. if that dosn't work I guess I'll get
+the
+> sources and build from CVS. Any other hints/clues/suggestions? Should
+I just
+> run single proc for now?
+
+Yes, we've also found 2.4.18 to be unstable SMP. I believe Grant has a
+handle on this problem now, so expect it to be fixed quite soon.
+-------------------------------------------------------------------------
