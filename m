@@ -1,39 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D93C5482A
-	for <parisc-linux@parisc-linux.org>; Tue, 27 Mar 2001 22:00:19 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14i83s-0006E4-00
-	for parisc-linux@parisc-linux.org; Wed, 28 Mar 2001 06:00:00 +0100
-Date: Wed, 28 Mar 2001 06:00:00 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010328060000.F7738@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] Type sizes
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 148F1482A
+	for <parisc-linux@parisc-linux.org>; Tue, 27 Mar 2001 22:24:35 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA00430;
+	Wed, 28 Mar 2001 15:24:23 +1000
+Date: Wed, 28 Mar 2001 15:24:23 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Type sizes
+In-Reply-To: <20010328060000.F7738@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.21.0103281520130.21990-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-What was the reasoning behind:
+On Wed, 28 Mar 2001, Matthew Wilcox wrote:
 
-/* Note these change from narrow to wide kernels */
-#ifdef __LP64__
-typedef unsigned long           __kernel_size_t;
-typedef long                    __kernel_ssize_t;
-typedef long                    __kernel_ptrdiff_t;
-typedef long                    __kernel_time_t;
-#else
-typedef unsigned int            __kernel_size_t;
-typedef int                     __kernel_ssize_t;
-typedef int                     __kernel_ptrdiff_t;
-typedef int                     __kernel_time_t;
-#endif
+> on a 32-bit kernel, sizeof(long) == sizeof(int), so why can't we just use
+> the first set of typedefs?
 
-in <asm/posix_types.h> ?
+It avoids lots and lots of gcc warning messages compiling the kernel.  gcc
+makes the fine distinction that long != int, even if they are the same
+physical size.  size_t on pa32 is unsigned int but on pa64 is
+unsigned long, and gcc knows about this for its builtin string functions.
 
-on a 32-bit kernel, sizeof(long) == sizeof(int), so why can't we just use
-the first set of typedefs?
-
+Alan
 -- 
-Revolutions do not require corporate support.
+Linuxcare
