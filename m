@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Postgresql Math errors on a 710 & 735
-Date: Wed, 2 Feb 2005 16:11:56 -0500 (EST)
-Message-ID: <200502022111.j12LBuSU002892@hiauly1.hia.nrc.ca>
-References: <20050202193851.M58001@contactbda.com>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] /proc/stat became wrong during 2.6.10-pa6 pa7
+	transition???
+Date: Thu, 3 Feb 2005 14:26:35 +0000
+Message-ID: <20050203142635.GB20386@parcelfarce.linux.theplanet.co.uk>
+References: <41DE9360000085A1@mail-4-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: jim@contactbda.com
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050202193851.M58001@contactbda.com> from "Jim Buttafuoco" at
-	Feb 2, 2005 02:42:07 pm
+In-Reply-To: <41DE9360000085A1@mail-4-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,24 +21,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I am trying to Postgresql working on my 710 and 735 hp systems and I am
-> having problems with some math functions and 
-> the postgresql fokes sent me over here.  Does anyone know of any problems
-> with math on these systems.  In the next few 
-> days, I will put together a small C program as an example of the problem
+On Thu, Feb 03, 2005 at 08:38:06AM +0100, Joel Soete wrote:
+> I previously mentioned that top didn't report anymore right values since
+> 2.6.10-pa7:
+> ...
+> Cpu(s):  0.7% us,  0.0% sy,  0.0% ni,  0.0% id,  0.0% wa, 99.3% hi,  0.0%
+> si
+> ...
 > 
-> One example of an issue is just "select 'infinity'::float8;" 
+> while 2.6.10-pa6 was seems more relevant:
+> ...
+> Cpu(s):  0.7% us,  1.0% sy,  0.0% ni, 98.4% id,  0.0% wa,  0.0% hi,  0.0%
+> si
+> ...
+> 
+> and btw I noticed that strange stat reports too:
+> 2.6.10-pa6 # cat /proc/stat
+> cpu  23248 3356 64981 4508884 30377 0 147
+> cpu0 23248 3356 64981 4508884 30377 0 147
+> ...
+> i.e. 7 field ok
+> OTC
+> 2.6.10-pa7 # car /proc/stat
+> cpu  88358 16430 0 0 0 33813422 0 0
+> cpu0 88358 16430 0 0 0 33813422 0 0
+> ...
+> fwfw _8_ field ???
 
-No issues are known.  PA 1.1 lacks the fneg instruction.  Thus, you
-may have issues with -0.0 if you use unsafe_math_optimizations.  It
-also lacks some convert insns that are provided in hardware in PA 2.0.
-The kernel emulates some of the insns that are missing.  I think you
-need to provide a C example showing the problem(s).
+Aha, found it.  Thanks for pointing out that /proc/stat was the
+guilty party.  Don't worry about the 7/8 fields, that's a red herring.
+The problem was that we weren't calling irq_enter/irq_exit().  I just
+committed that fix, but now we appear to *never* spend any time in
+interrupts.  I think I know how to fix that, but we'll see ...
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
