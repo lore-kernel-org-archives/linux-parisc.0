@@ -1,54 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 541DC482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 10:23:15 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Jay Konrad <jkonrad@fonts.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] xbase clients
-Date: Tue, 12 Jun 2001 18:22:33 +0200
-References: <200106121733551.SM00201@bhopc40002>
-In-Reply-To: <200106121733551.SM00201@bhopc40002>
+Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B6C9482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 10:32:43 -0600 (MDT)
+Received: from mmp-2.gci.net ([208.138.130.81]) by mta-1.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GETSMG02.L97 for
+          <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 08:32:40 -0800
+Received: from devnull.alaskatech.org ([24.237.5.207]) by
+          mmp-2.gci.net (Netscape Messaging Server 4.15) with ESMTP id
+          GETSMG01.W0Z for <parisc-linux@lists.parisc-linux.org>; Tue, 12
+          Jun 2001 08:32:40 -0800
+Date: Tue, 12 Jun 2001 08:32:39 -0800 (AKDT)
+From: Tom <tom@Alaskatech.org>
+To: PA-RISC Linux list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] clustering ??
+In-Reply-To: <20010612094328.C1917@megatonmonkey.net>
+Message-ID: <Pine.LNX.4.33.0106120829320.26952-100000@devnull.alaskatech.org>
 MIME-Version: 1.0
-Message-Id: <20010612162315.541DC482A@dsl2.external.hp.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Maybe:
+On Tue, 12 Jun 2001, Carlos O'Donell Jr. wrote:
+[snip]
+> And yes, SSH will work as a direct replacement for RSH in MPICH.
+>
+> However, I believed that SSH was currently broken on PA-RISC due to OpenSSL.
+>
+> Haven't tried compiling non-open SSH :)
+> I think we might give it a shot tonight.
 
-apt-get update
-apt-get install xbase-clients
+Not sure what "broken" may mean, but my 0.9 install has a working SSH
+server running on it. Mine *was* installed with contrib and non-free
+however, so it may be that a "pure" install doesn't have it.
 
-Helge
-
-On Tuesday, 12. June 2001 17:31, Jay Konrad wrote:
-
-> Hi guys!!
->
-> Can anybody tell me where I can find those?? My system is almost ready,
-> this is the only thing missing!!
->
-> Pleeeeze can anybody help me?
->
-> I get this message:
->
-> bhows49999:/data/archiv# dpkg -i xbase-clients_4.0.3-1_hppa.deb
-> (Reading database ... 8929 files and directories currently installed.)
-> Preparing to replace xbase-clients 4.0.3-1 (using
-> xbase-clients_4.0.3-1_hppa.deb) ...
-> Unpacking replacement xbase-clients ...
-> dpkg: dependency problems prevent configuration of xbase-clients:
->  xbase-clients depends on libgl1; however:
->   Package libgl1 is not installed.
-> dpkg: error processing xbase-clients (--install):
->  dependency problems - leaving unconfigured
-> Errors were encountered while processing:
->  xbase-clients
-> bhows49999:/data/archiv#
->
-> If anybody knows where to get this package, I would be more than happy.
->
-> Thanx in advance
->
-> Jay
+If I remember right I was asked during the .deb install if I wanted to run
+it as a server, answered yes and it's worked ever since (Same as a x86
+Debian install). The 0.9 install sure does work better than the 0.6 one
+did - no seg faults or errors...
