@@ -1,25 +1,17 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA12459
-	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 18:11:56 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA12462
+	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 18:11:57 -0700
 Reply-To: <rwomack@gatesarrow.com>
 From: "Robert Womack" <rwomack@gatesarrow.com>
 To: "'Andrew Shugg'" <andrew@neep.com.au>, <parisc-linux@thepuffingroup.com>
-Subject: [parisc-linux] in addition
-Date: Tue, 29 Feb 2000 16:07:59 -0500
-Message-ID: <000b01bf82f9$0f727490$23d81c0a@yw56140.arrow.com>
+Subject: RE: [parisc-linux] Value of an old K-class server?
+Date: Tue, 29 Feb 2000 16:03:53 -0500
+Message-ID: <000a01bf82f8$7ccb1ed0$23d81c0a@yw56140.arrow.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+In-reply-to: <20000301074847.A13653@neep.com.au>
 List-ID: <linux-parisc.vger.kernel.org>
-
-In addition, A K200 has a PA7200 microprocessor.
-
------Original Message-----
-From: Robert Womack [mailto:rwomack@gatesarrow.com]
-Sent: Tuesday, February 29, 2000 4:04 PM
-To: 'Andrew Shugg'; 'parisc-linux@thepuffingroup.com'
-Subject: RE: [parisc-linux] Value of an old K-class server?
-
 
 Andrew,
 
