@@ -1,39 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A5C5A482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 04:42:40 -0600 (MDT)
-Message-Id: <200106181042.EAA18612@puffin.external.hp.com>
-To: Matteo Boschini <boschini@cilea.it>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FDDI on 735/99 
-In-Reply-To: Your message of "Mon, 18 Jun 2001 11:22:30 +0200."
-             <Pine.LNX.4.21.0106181054280.852-100000@boschini.sede.cilea.it>
-Date: Mon, 18 Jun 2001 04:42:29 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A14DE482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 08:04:43 -0600 (MDT)
+Received: from mmp-2.gci.net ([208.138.130.81]) by mta-1.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GF4PRT02.P3V for
+          <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 06:04:41 -0800
+Date: Mon, 18 Jun 2001 06:04:41 -0800 (AKDT)
+From: Tom <tom@Alaskatech.org>
+To: Pete <plaven@ozemail.com.au>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Booting up C110
+In-Reply-To: <3B2E5CE5.88.5339D5@localhost>
+Message-ID: <Pine.LNX.4.33.0106180552230.19362-100000@devnull.alaskatech.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matteo Boschini wrote:
-> 
-> Hello all, 
-> 
-> this is probably a dumb question, but I'm really stuck.
-> I have a 735 Apollo/99 on which I finally installed what seems a
-> reasonably stable kernel.
-> machine has only fddi net card. 
-> At boot, system detects Outfiled FDDI, which seems to be supported as from
-> http://216.208.98.4/view.php3?type=devicetype&name=Foreign%20I%2FO%20Module
+On Mon, 18 Jun 2001, Pete wrote:
+> > So, 1) how do I reset the boot PROM to use the graphics card/monitor
+> > again?
+>
+> I'm in the same boat... before I got the sti stuff, I tried the serial port
+> and now don't get any output (mostly due to dud nullmodem
+> connections on the HP box.. it's far too recessed to use with
+> "normal" serial connctions).... so if you get an answer to this,
+> please let me know too.. might work on my 715.
 
-I don't think anyone has actually tested any sort of FDDI for parisc-linux.
-Much less one for GSC (which is what I expect the 735 to accept.)
-
-> I have compiled the kernel without seeing anything about FDDI. 
-
-I don't expect any driver to support the GSC FDDI card without modfications.
-You might need to look at how GSC SCSI (Zalon driver)
-support works to get an idea of what needs to be done.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+My 715/100 was set using "path con graphics.1" at the boot menu. Once I
+found a null modem cable that fit the port on the 715 I used HyperTerminal
+on a Win2K box (set to 9600/8/n/1) and it booted right up...
