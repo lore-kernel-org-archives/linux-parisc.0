@@ -1,21 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 52CE84838
-	for <parisc-linux@parisc-linux.org>; Sun,  5 Jan 2003 08:06:56 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18VCMQ-0005G8-00; Sun, 05 Jan 2003 15:06:46 +0000
-Date: Sun, 5 Jan 2003 15:06:46 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Pablo Menichini <pablo@menichini.com.ar>
-Cc: kernel-janitor-discuss@lists.sourceforge.net,
-	Trivial Patch Monkey <trivial@rustcorp.com.au>,
-	parisc-linux@parisc-linux.org
-Message-ID: <20030105150646.H19239@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.33.0212282311540.268-100000@pablo.menichini.com.ar>
+Received: from setsin.etsin.upm.es (setsin.etsin.upm.es [138.100.110.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 590344838
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  5 Jan 2003 08:09:23 -0700 (MST)
+From: Chema <jmpbox@etsin.upm.es>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PCI video card.
+In-Reply-To: <20030105145952.G19239@parcelfarce.linux.theplanet.co.uk>
+References: <20030105215425.4CA8BF126@setsin.etsin.upm.es>
+	<20030105145952.G19239@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0212282311540.268-100000@pablo.menichini.com.ar>; from pablo@menichini.com.ar on Sat, Dec 28, 2002 at 11:14:52PM -0300
-Subject: [parisc-linux] Re: [PATCH][2.5.53] Memory leak in drivers/video/console/sticore.c
+Content-Type: text/plain; charset=US-ASCII
+Message-Id: <20030105222514.221A0F12B@setsin.etsin.upm.es>
+Date: Sun,  5 Jan 2003 17:25:14 -0500 (EST)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,37 +24,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Dec 28, 2002 at 11:14:52PM -0300, Pablo Menichini wrote:
-> This patch tries to fix the memory leak in function sti_init_glob_cfg.
+Thanks Matthew:
+so, do you mean those cards would work in such systems (Dino / Cujo / Elroy) ?
+Thank you.
 
-sticore is somewhat out of date in Linus' tree -- probably better to
-ignore drivers/video for cleanup work at the moment as there's some big
-reworks in progress.  Even so, this patch is still mostly relevant --
-I'll redo it in the PA-RISC tree shortly.  Thanks.
+Chema.
 
-> --- linux-2.5.53/drivers/video/console/sticore.c	Sat Dec 28 18:39:32 2002
-> +++ linux-local/drivers/video/console/sticore.c	Sat Dec 28 18:51:04 2002
-> @@ -376,8 +376,17 @@
->  	save_addr = kmalloc(1024 /*XXX*/, GFP_KERNEL);
->  	sti_mem_addr = kmalloc(1024, GFP_KERNEL);
+On Sun, 5 Jan 2003 14:59:52 +0000
+Matthew Wilcox <willy@debian.org> wrote:
+
+> On Sun, Jan 05, 2003 at 04:54:25PM -0500, Chema wrote:
+> > I have a spare Geforce4 PCI card. Would it be possible using it in a 712 or a 735 ?
+> > What about Voodoo >2, vodoo3, voodoo4, etc?
+> > I would thank URLs about it.
 > 
-> -	if((!glob_cfg) || (!glob_cfg_ext) || (!save_addr) || (!sti_mem_addr))
-> +	if((!glob_cfg) || (!glob_cfg_ext) || (!save_addr) || (!sti_mem_addr)){
-> +		if(glob_cfg)
-> +			kfree(glob_cfg);
-> +		if(glob_cfg_ext)
-> +			kfree(glob_cfg_ext);
-> +		if(save_addr)
-> +			kfree(save_addr);
-> +		if(sti_mem_addr)
-> +			kfree(sti_mem_addr);
->  		return;
-> +	}
-> 
->  	memset(glob_cfg, 0, sizeof *glob_cfg);
->  	memset(glob_cfg_ext, 0, sizeof *glob_cfg_ext);
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+> 712 & 735 don't have PCI busses.  PCI is only available in machines with
+> Dino / Cujo / Elroy adapters.  That's B132-B180, C160-C360, J2240, B1000,
+> C3000, J5000 and up.
