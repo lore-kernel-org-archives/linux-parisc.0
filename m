@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2EC4A4841
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Nov 2003 10:00:33 -0700 (MST)
-Message-ID: <3FB7AD39.9010305@tiscali.be>
-Date: Sun, 16 Nov 2003 17:00:41 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id 994F24841
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Nov 2003 10:13:14 -0700 (MST)
+Message-ID: <3FB7B032.8050505@tiscali.be>
+Date: Sun, 16 Nov 2003 17:13:22 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C110 builtin nic slow?
-References: <3F969FFE00009EA4@ocpmta2.freegates.net> <3F969FFE00009F73@ocpmta2.freegates.net> <20031110173525.GC24664@colo.lackof.org> <3FB0DC01.6070701@tiscali.be> <20031112032230.GB12000@colo.lackof.org> <3FB68167.10106@tiscali.be> <Pine.LNX.4.58.0311152220070.16980@sal.ucc.ie> <Pine.LNX.4.58.0311152313340.16980@sal.ucc.ie>
-In-Reply-To: <Pine.LNX.4.58.0311152313340.16980@sal.ucc.ie>
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: Damian Muchli?ski <mudamian@poczta.onet.pl>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Linux on HP
+References: <002901c3aad6$87fb1c10$64d71399@Damian> <20031116013854.GA3735@colo.lackof.org>
+In-Reply-To: <20031116013854.GA3735@colo.lackof.org>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,94 +24,59 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Grant,
 
-M. Grabert wrote:
-> Sorry to reply myself,
-Don't worry, I do it also frequently (tired or not i need some more time 
-to test more stuff or find back more info ;) )
-> but think I might need to clarify some points
-> (I'm a little bit tired, so I have missed some things in my previous post)
+Grant Grundler wrote:
+> On Fri, Nov 14, 2003 at 06:41:25PM +0100, Damian Muchli?ski wrote:
 > 
-> On Sat, 15 Nov 2003, M. Grabert wrote:
-> 
-> [...]
+>>I've found on newsgroup that because of old
+>>version of gcc and kernel and I should use newer version. So I have
+>>downloaded palinux-2.4.22-pa13-20031022-netinst.iso from your
+>>website,check md5, burned and booted.
+>>Unfortunately it hangs on "searching for devices" without any more info.
 > 
 > 
->>>So i will continue to see how to set it up in half-duplex (would it not
->>>be the default in 10BT?)
+> Damian,
+> I'm surprised the 2.4.22 netinst.iso doesn't boot on your c3700.
+> I'm currently running 2.4.22-pa14 on a C3600 with STIFB console.
 > 
-> 
-> Yes, usually it defaults to 10Mbit half-duplex and then (if the cards
-> support it) it tries to negotiate better connections (full-duplex, 100Mbit ...)
-> 
-> 
->>Actually if one end point uses Full-Duplex and the other end uses
->>Half-Duplex, there should be no connection possible.
-> 
-> 
-> This is true if the (forced full-duplex) network card test for full-duplex
-> capable connection and doesn't find it. However most (cheap?) cards will
-> skip the test for full-duplex if it was 'forced', and you can still connect.
-> 
-> Light traffic will work, but you will have problems with large traffic.
-> The explanation:
-> 
-> The half-duplex side will send a packet, and assumes the other end stops
-> sending if a collision occurs, ie. if the other side was sending something
-> at the same time (CSMA/CD).
-> The full-duplex side will however will always send/receive as fast as it
-> can as it doesn't do CSMA/CD, ie. it doesn't care about collisions.
-> 
-> The effect is that there will be a massive amount of collisions if both
-> sides want to send data, and only the half-duplex card will try to resend
-> the packets (causing even more collisions).
-> You will see slow traffic when sending from half-duplex, and dropped
-> packets when sending from full-duplex when both cards are sending.
-> 
-> This will be most likely your problem, since it fits your description
-> perfectly (forced full-duplex mode). Sorry, I overlooked that in
-> my first post.
->
-That explain perfectly the pb I encounter; thanks :)
+Not me, it is the same pb on my b2k:
+(see logs in the src thread)
+"[...]
+NS87415: IDE controller on PCI bus 00 dev 70
+NS87415: chipset revision 3
+NS87415: 100% native mode on irq 103
+     ide0: BM-DMA at 0x0a00-0x0a07, BIOS settings: hda:pio, hdb:pio
+     ide1: BM-DMA at 0x0a08-0x0a0f, BIOS settings: hdc:pio, hdd:pio
+hda: HL-DT-ST GCE-8481B, ATAPI CD/DVD-ROM drive
+ide0 at 0xf00-0xf07,0xe02 on
+hda: ATAPI 40X CD-ROM CD-R/RW drive, 2048kB Cache
+[...]"
 
+The question is: is it enough to unplug the ide cable of this ide cdrom 
+to make it works?
+
+btw can you have a look in your dmesg to see if you also encounter 
+NS87415's messages?
+
+> The output you posted started with 2.4.17 boot and then garbled
+> at the end. I don't understand how HPMC dump messages and what looks
+> like PDC output (eg "To discontinue search,...") got mixed up.
 > 
+> If you can netboot a 2.4.22 kernel image from:
+> 	ftp://ftp.parisc-linux.org/kernels/c3000/
 > 
+> and point the "root=" at the CDROM install disk, I would expect
+> it to complete the install....but that's non-trivial to setup
+> and it's alot to ask for. If you don't have time or it's too
+> complicated, don't worry about it.
 > 
->>The same for the situation when one side uses 10Mbit and the other is
->>set to explicitly use 100MBit.
+> I'll try to netboot the netinst.iso that you used at home on a C3000
+> and see what happens.
 > 
-> 
-> This will definitely never work.
-> 
-> 
->>The only situation where such a decreased network performance occurs
->>is IMHO that your have a cheap network equipment.
->>IE. a dodgy network cable that isn't properly shielded or doesn't use all
->>8 wires,
-> 
-> 
-> I mean in the context for 10BaseT, ie. all 4 wires (1/2,3/6) are connected,
-> but not the rest. There will be noise/crosstalk that will lead to
-> collisions.
-> 
-I check: all 8 wires are connected
-> [...]
-> 
-> 
->>In this (worst case) scenario there will be a lot of packet drop on
->>the physical layer and the network cards will re-send the ethernet
->>packets autmatically (usually) without notifying you. You will see
->>decreased network performace as you mentioned it.
-> 
-> 
-> The network card (only in half-duplex) will think it detects collisions
-> due to noise/crosstalk and will automatically resend the packets without
-> notification.
-> 
-> 
-> Slan,
->   Max
-> 
-> 
-Thanks again,
+Sorry, I reported this pb a long time ago but between too much test 
+about too many things, i miss to trace back this pb (more over iirc 
+Matthew mentioned that this Suckio controler could be bugy?).
+
+hth,
 	Joel
