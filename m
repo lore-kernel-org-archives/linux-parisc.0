@@ -1,59 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dns2.dot.at (dns2.dot.at [212.9.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D41FD4A19
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 07:39:55 -0700 (MST)
-Sender: plattner@dns2.dot.at
-Message-ID: <3A7D69B4.896F63D6@dot.at>
-Date: Sun, 04 Feb 2001 15:39:48 +0100
-From: Christoph Plattner <christoph.plattner@dot.at>
+Received: from mail5.nc.rr.com (fe5.southeast.rr.com [24.93.67.52])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A30DA4A19
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 10:28:08 -0700 (MST)
+Sender: zhao@dsl2.external.hp.com
+Message-ID: <39F24A52.4B7541DE@nc.rr.com>
+Date: Sat, 21 Oct 2000 22:00:50 -0400
+From: zhao <qzhao@nc.rr.com>
 MIME-Version: 1.0
-To: penfold@customware.com.au, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] _working_ rbootd for redhat
-References: <200102041048.VAA00309@customware.com.au>
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Pa-linux install hangs on a HP 9000 712/100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello !
+Thanks for the former help. Now I can boot the machine. 
 
-For the SCSI I have nothing fixed !
-It works out of the box.
+I tried to install PA linux on to this machine. 
+When the installation starts, everythins seems fine, 
+The devices are recongnized correcttly. 
+My SCSI HD is on 0.0. 
+It hangs after booting, the last message the installer gave is: 
+Switching from PDC console. 
 
-I have not sent any patch. I only tried it and it works.
-So to all PA-RISC hackers, add the TRAP 18 there in the main stream !!
+Do anyone have any idea about this? 
 
-Ok, wonderful that your machine is also booting that way...
+Thanks, 
 
-With friendly regards
-	Christoph
-
-
-
-penfold@customware.com.au wrote:
-> 
-> Hi there,
-> 
-> > I had already success with rbootd !
-> brilliant.  It's pretty striaghtforward (when you know how!!)
-> 
-> > Here the kernel I always boot, and I can see the scsi disk !
-> 
-> excellent! thanks for this.
-> What needed fixing to get scsi to work?
-> have the patches to fix the scsi been comitted ?
-> 
-> co-incidently as of about 10 minutes ago I finally got the box to boot! (yay!)
-> with a kernel I built after adding the case 18: to trap.c
-> 
-> Do you know why this has not been comitted?
-> I added the extra case 18: to my linux-20010117.tar.gz and it works,
-> but I checked out the latest source archive and the fix is not in there.
-> 
-> thanks again,
-> 
-> Damian
-> penfold@customware.com.au
-
--- 
--------------------------------------------------------------------------
-private:	christoph.plattner@dot.at
-company:	christoph.plattner@alcatel.at
+zhao
