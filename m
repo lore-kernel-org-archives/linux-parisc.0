@@ -1,14 +1,13 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] [PATCH] sti= parameter ignored by stifb
-Date: Mon, 23 Aug 2004 18:11:47 +0100
-Message-ID: <20040823171147.GA975@calypso>
-References: <20040823123736.GA765@calypso>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: [parisc-linux] bitops.h: fls(unsigned long )
+Date: Mon, 23 Aug 2004 18:50:28 +0000
+Message-ID: <412A3C74.9000903@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=us-ascii;
+  format=flowed
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040823123736.GA765@calypso>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,67 +18,62 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Aug 23, 2004 at 01:37:36PM +0100, Stuart Brady wrote:
-> If I boot a 2.6 kernel, I get the "If this is the last message you see"
-> message regardless of what sti is set to.  Does anyone know what I'm
-> doing wrong?  I've searched the lists, but I haven't found anything yet
-> except for references to a similar problem in 2.4 in 2001-2002.
+Hi all,
 
-I've had a look at the code and I think I've found the problem...
-Framebuffers are added in their sti_get_rom() sequence.  In 2.4,
-sti_get_rom(0) (the default sti) was included in this, which presumably
-results in two framebuffers sharing the same sti struct (badness?)
+As promised (a year ago now; shame on me :( ), here is a first draft of fls(unsigned long) thanks to help of "Michael S. Zick":
+--- linux-2.6.8.1-pa7/include/asm-parisc/bitops.h.Orig  2004-08-15 20:27:42.000000000 +0200
++++ linux-2.6.8.1-pa7/include/asm-parisc/bitops.h       2004-08-23 17:09:12.190000000 +0200
+@@ -273,31 +273,38 @@
+   * fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
+   */
 
-In 2.6, sti_get_rom(0) is not included, and sti_get_rom(1) is the first
-one to be added.  It looks as through whichever framebuffer is
-initialised first gets the console.  On my machine, sti_get_rom(1)
-refers to the HCRX card (sti=0), and sti_get_rom(2) (sti=1) refers to
-the built-in graphics.
+-static __inline__ int fls(int x)
++static __inline__ int fls(unsigned long x)
+  {
+-       int ret;
+-       if (!x)
+-               return 0;
++       unsigned long ret;
 
-This patch below works for me, although there's a nasty glitch when
-booting up (the screen doesn't scroll properly, and new messages are
-written to the top-most line - this goes away once init starts.)
-I don't know whether there's anything else that needs fixing, too.
-
-Index: drivers/video/stifb.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/drivers/video/stifb.c,v
-retrieving revision 1.7
-diff -u -r1.7 stifb.c
---- drivers/video/stifb.c	29 Dec 2003 23:56:30 -0000	1.7
-+++ drivers/video/stifb.c	23 Aug 2004 16:54:32 -0000
-@@ -1379,6 +1379,7 @@
- stifb_init(void)
- {
- 	struct sti_struct *sti;
-+	struct sti_struct *def_sti;
- 	int i;
- 	
- 	if (stifb_disabled) {
-@@ -1386,9 +1387,19 @@
- 		return -ENXIO;
- 	}
- 	
-+	def_sti = sti_get_rom(0);
-+	if (def_sti) {
-+		for (i = 1; i < MAX_STI_ROMS; i++) {
-+			sti = sti_get_rom(i);
-+			if (sti == def_sti && bpp > 0)
-+				stifb_force_bpp[i] = bpp;
-+		}
-+		stifb_init_fb(def_sti, stifb_force_bpp[i]);
-+	}
-+
- 	for (i = 1; i < MAX_STI_ROMS; i++) {
- 		sti = sti_get_rom(i);
--		if (!sti)
-+		if (!sti || sti==def_sti)
- 			break;
- 		if (bpp > 0)
- 			stifb_force_bpp[i] = bpp;
--- 
-Stuart Brady
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+         __asm__(
+-       "       ldi             1,%1\n"
+-       "       extru,<>        %0,15,16,%%r0\n"
+-       "       zdep,TR         %0,15,16,%0\n"          /* xxxx0000 */
+-       "       addi            16,%1,%1\n"
+-       "       extru,<>        %0,7,8,%%r0\n"
+-       "       zdep,TR         %0,23,24,%0\n"          /* xx000000 */
+-       "       addi            8,%1,%1\n"
+-       "       extru,<>        %0,3,4,%%r0\n"
+-       "       zdep,TR         %0,27,28,%0\n"          /* x0000000 */
+-       "       addi            4,%1,%1\n"
+-       "       extru,<>        %0,1,2,%%r0\n"
+-       "       zdep,TR         %0,29,30,%0\n"          /* y0000000 (y&3 = 0) */
+-       "       addi            2,%1,%1\n"
+-       "       extru,=         %0,0,1,%%r0\n"
+-       "       addi            1,%1,%1\n"              /* if y & 8, add 1 */
++#ifdef __LP64__
++               " ldi           64,%1\n"
++               " extrd,u,*=    %0,31,32,%%r0\n"
++               " extrd,u,*TR   %0,31,32,%0\n"  /* move top 32-bits down */
++               " addi          -32,%1,%1\n"
++#else
++               " ldi           32,%1\n"
++#endif
++               " extru,=       %0,15,16,%%r0\n"
++               " extru,TR      %0,15,16,%0\n"  /* xxxx0000 -> 0000xxxx */
++               " addi          -16,%1,%1\n"
++               " extru,=       %0,23,8,%%r0\n"
++               " extru,TR      %0,23,8,%0\n"   /* 0000xx00 -> 000000xx */
++               " addi          -8,%1,%1\n"
++               " extru,=       %0,27,4,%%r0\n"
++               " extru,TR      %0,27,4,%0\n"   /* 000000x0 -> 0000000x */
++               " addi          -4,%1,%1\n"
++               " extru,=       %0,29,2,%%r0\n"
++               " extru,TR      %0,29,2,%0\n"   /* 0000000y, 1100b -> 0011b */
++               " addi          -2,%1,%1\n"
++               " extru,=       %0,30,1,%%r0\n"
++               " extru,TR      %0,30,1,%0\n"   /* 0000000z, 10b -> 01b */
++               " addi          -1,%1,%1\n"
++               " extru,<>      %0,31,1,%%r0\n" /* check last bit */
++               " addi          -1,%1,%1\n"
+                 : "+r" (x), "=r" (ret) );
