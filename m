@@ -1,23 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 705CA4896
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 10:00:02 -0600 (MDT)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h7NFxnI31142;
-	Sat, 23 Aug 2003 11:59:49 -0400
-Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
-	tst-mmap-eofsync in glibc on parisc)
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Hugh Dickins <hugh@veritas.com>
-Cc: "David S. Miller" <davem@redhat.com>, willy@debian.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
-In-Reply-To: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
-References: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
-Content-Type: multipart/mixed; boundary="=-twwyVK3YP0a7nX0FTdaG"
-Date: 23 Aug 2003 10:59:48 -0500
-Message-Id: <1061654391.1995.74.camel@mulgrave>
-Mime-Version: 1.0
+Received: from hiauly3.hia.nrc.ca (hiauly3.hia.nrc.ca [132.246.100.195])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 40D1A4920
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 10:12:08 -0600 (MDT)
+From: John David Anglin <dave@hiauly3.hia.nrc.ca>
+Message-Id: <200308231612.MAA21233@hiauly3.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: [glibc] fixing delayed exceptions in hppa
+To: carlos@baldric.uwo.ca
+Date: Sat, 23 Aug 2003 12:12:07 -0400 (EDT)
+Cc: parisc-linux@lists.parisc-linux.org, dave.anglin@nrc-cnrc.gc.ca
+In-Reply-To: <20030823055506.GA9821@systemhalted> from Carlos O'Donell at Aug "23," 2003 "01:55:06" am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,42 +22,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-twwyVK3YP0a7nX0FTdaG
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> On Fri, Aug 22, 2003 at 04:24:19PM -0400, John David Anglin wrote:
+> > Based on what Jim Hull said, I believe that would be better.  I was using
+> > 
+> >   "fldd 0(%%sr0,%%sp),%0" : "=f" (d) : "0" (d)
+> > 
+> > There isn't a true dependency in the above but I believe that any load
+> > to the destination register will raise the exception.
+> 
+> Dave, I'm sorry if you sent me a patch and I dropped it :( Did I ever
+> receive a diff for this from you?
 
-On Sat, 2003-08-23 at 02:22, Hugh Dickins wrote:
-> Good idea.  It's VM_MAYSHARE you need to check for.
+I can't recall but I probably did send it last November.  My email
+machine is still down because of the blackout.
 
-OK, to get all this to work, there's a corner case in do_mremap() that I
-need to be fixed:
+> It's rather vague at times because the spec says "or an operation which
+> depends on a pending, trapping insn." I think DHD, and perhaps myself
+> got caught up on the "load or store" which probably means only
+> register->memory (memory->register too) and not register->register.
 
-When choosing the flags for the new area, it keys off VM_SHARED to
-determine whether MAP_SHARED is passed to the mapping.  It has to key of
-VM_MAYSHARE to preserve VM_MAYSHARE on the new mapping.
+Yes.  If you follow the thread that I sent you, Jim Hull comments on
+this and offers a rewrite of the sentence that you quoted.  I believe
+that referencing memory is important as this makes the operation visible
+to another processor.  A register->register operation doesn't do this.
 
-Patch below.
-
-James
-
-
-
---=-twwyVK3YP0a7nX0FTdaG
-Content-Disposition: inline; filename=tmp.diff
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; name=tmp.diff; charset=ISO-8859-1
-
-=3D=3D=3D=3D=3D mremap.c 1.32 vs edited =3D=3D=3D=3D=3D
---- 1.32/mm/mremap.c	Thu Aug  7 12:29:10 2003
-+++ edited/mremap.c	Sat Aug 23 10:54:21 2003
-@@ -420,7 +420,7 @@
- 	if (flags & MREMAP_MAYMOVE) {
- 		if (!(flags & MREMAP_FIXED)) {
- 			unsigned long map_flags =3D 0;
--			if (vma->vm_flags & VM_SHARED)
-+			if (vma->vm_flags & VM_MAYSHARE)
- 				map_flags |=3D MAP_SHARED;
-=20
- 			new_addr =3D get_unmapped_area(vma->vm_file, 0, new_len,
-
---=-twwyVK3YP0a7nX0FTdaG--
+Dave
