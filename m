@@ -1,15 +1,15 @@
-From: Ulrich Drepper <drepper@redhat.com>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: [parisc-linux] Re: [PATCH] linuxthreads for hppa (1/3)
-Date: Wed, 15 Oct 2003 10:36:57 -0700
-Message-ID: <3F8D85B9.8090504__47724.5698952631$1416622879$gmane$org@redhat.com>
-References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com> <20031015054045.GE22495@systemhalted> <3F8CE195.2090106@redhat.com> <20031015142648.GF22495@systemhalted>
+Date: Wed, 15 Oct 2003 14:33:29 -0400
+Message-ID: <20031015183329.GG31385__1636.53321001238$1416622879$gmane$org@systemhalted>
+References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com> <20031015054045.GE22495@systemhalted> <3F8CE195.2090106@redhat.com> <20031015142648.GF22495@systemhalted> <3F8D85B9.8090504@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+To: Ulrich Drepper <drepper@redhat.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031015142648.GF22495@systemhalted>
+In-Reply-To: <3F8D85B9.8090504@redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,36 +20,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Carlos O'Donell wrote:
-> Ulrich,
+On Wed, Oct 15, 2003 at 10:36:57AM -0700, Ulrich Drepper wrote:
+> > How do you propose it be handled? All arches define __LT_SPINLOCK_INIT
 > 
-> 
->>- -# if __LT_SPINLOCK_INIT != 0
->>- -  __pthread_handles[0].h_lock = __LOCK_INITIALIZER;
->>- -  __pthread_handles[1].h_lock = __LOCK_INITIALIZER;
->>+# ifdef __LT_INITIALIZER_NOT_ZERO
->>+  __pthread_handles[0].h_lock = __LOCK_ALT_INITIALIZER;
->>+  __pthread_handles[1].h_lock = __LOCK_ALT_INITIALIZER;
->>
->>part is what I meant.  There is no reason to change the name.
-> 
-> 
-> How do you propose it be handled? All arches define __LT_SPINLOCK_INIT
+> I'm talking about this __LOCK_INITIALIZER -> __LOCK_ALT_INITIALIZER
+> change.  Why do you claim the right to rename the symbol?
 
-I'm talking about this __LOCK_INITIALIZER -> __LOCK_ALT_INITIALIZER
-change.  Why do you claim the right to rename the symbol?
+The original __LOCK_INITIALIZER did not have a cast 
+to (int).
 
-- -- 
-- --------------.                        ,-.            444 Castro Street
-Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
-Red Hat         `--' drepper at redhat.com `---------------------------
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+The new __LOCK_INITIALIZER does not have a cast to 
+(struct _pthread_fastlock)
 
-iD8DBQE/jYW52ijCOnn/RHQRAsmEAJ0cmMRxfMlyduuTG9TQMnATJVRJQQCgu/Vy
-aL6qdcssSoUjY7D7oCnKXII=
-=VzEk
------END PGP SIGNATURE-----
+When using a structure in an assignment within a function the named
+initializer version is required, such that the constructor can setup the
+object. Instead of using __LOCK_INITIALIZER which is already expected to
+be of a certain type without a cast, I created __LOCK_ALT_INITIALIZER
+and made 2 changes instead of the 6 or more that would be required had I
+reversed the semantics.
+
+The same logic applied when I defined __LT_SPINLOCK_ALT_INIT. In order
+to minimize changes the default behaviour is to use the named init, the ALT
+behaviour does not. The ALT case is hidden inside
+__pthread_lock_define_initialized and cannot use a cast.
+
+Should you like, I could reverse the behaviour of the above
+__LOCK_ALT_INITIALIZER, but I would have to make changes to initspin.h
+and pthread.h so the initialization macros work.
+
+My net is currently down and I cannot verify if initspin.h and pthread.h
+are the only files that would require changes.
+
+In summary I chose the semantics to _minimize_ code change. If you
+prefer header changes over core .c file changes then I can reverse the
+semantics of __LOCK_INITIALIZER with that of the ALT version.
+
+c.
