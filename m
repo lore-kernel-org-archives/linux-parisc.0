@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5CE83482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 05:17:29 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE458482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 05:21:33 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19dTEr-00021D-GP; Fri, 18 Jul 2003 12:17:25 +0100
-Date: Fri, 18 Jul 2003 12:17:25 +0100
+	id 19dTIr-00024V-40; Fri, 18 Jul 2003 12:21:33 +0100
+Date: Fri, 18 Jul 2003 12:21:33 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
+To: Joel Soete <jsoe0708@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] pdc_console_die: undefined reference to `log_end'
-Message-ID: <20030718111725.GN23808@parcelfarce.linux.theplanet.co.uk>
-References: <20030718043300.GB1582@conectiva.com.br>
+Subject: Re: [parisc-linux] cvs [login aborted]?
+Message-ID: <20030718112133.GO23808@parcelfarce.linux.theplanet.co.uk>
+References: <3F056E95000037F7@ocpmta4.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030718043300.GB1582@conectiva.com.br>
+In-Reply-To: <3F056E95000037F7@ocpmta4.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,21 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jul 18, 2003 at 01:33:00AM -0300, Arnaldo Carvalho de Melo wrote:
-> Second try:
+On Fri, Jul 18, 2003 at 07:27:43AM +0200, Joel Soete wrote:
+> Hi pa,
 > 
-> arch/parisc/kernel/built-in.o: In function `pdc_console_die':
-> arch/parisc/kernel/built-in.o(.text.pdc_console_die+0x4c): undefined reference to `log_end'
-> arch/parisc/kernel/built-in.o: In function `pdc_console_restart':
-> arch/parisc/kernel/built-in.o(.text.pdc_console_restart+0x44): undefined reference to `log_end'
-> make: ** [.tmp_vmlinux1] Erro 139
+> Is it an actual cvs server pb or a local pb I could have:
+> those last two days cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs
+> "failed: Connection timed out"?
 
-You're using Linus' kernel, not ours ;-)  The diff's pretty small these
-days and can be found at
-http://cvs.parisc-linux.org/download/linux-2.5/patch-2.6.0-test1-pa1.gz
+Hm, it's not working for me either:
 
-This particular bit is far too ugly to ever go upstream, so if you have any
-thoughts on doing it better, please let me know...
+willy@honeydew:~/kernel/pci-2.5$ cvs up Makefile 
+cvs [update aborted]: connect to cvs.parisc-linux.org(192.25.206.14):2401 failed: Connection timed out
+willy@honeydew:~/kernel/pci-2.5$ cat CVS/Root 
+:pserver:anonymous@cvs.parisc-linux.org:/var/cvs
+
+I think someone must have changed the firewall config because I can
+reach port 2401 from localhost, but not from any other machine.
 
 -- 
 "It's not Hollywood.  War is real, war is primarily not about defeat or
