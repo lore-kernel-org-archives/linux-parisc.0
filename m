@@ -1,19 +1,22 @@
-Return-Path: <lamont@mmjgroup.com>
-Received: from mmjgroup.com (mmjgroup.com [192.34.35.33])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 363C94875
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2DD194875
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 16 Dec 2003 17:30:06 -0700 (MST)
-Date: Tue, 16 Dec 2003 17:30:01 -0700
-From: LaMont Jones <lamont@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+	Tue, 16 Dec 2003 17:37:16 -0700 (MST)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
+	[172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	hBH0b6a12314; Tue, 16 Dec 2003 19:37:07 -0500
 Subject: Re: [parisc-linux] Question about cache flushing and fork
-Message-ID: <20031217003001.GG25535@mmjgroup.com>
-References: <20031216160301.GC25535@mmjgroup.com>
-	<200312162251.hBGMpd15018573@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <200312160506.hBG56wnD015891@hiauly1.hia.nrc.ca>
+References: <200312160506.hBG56wnD015891@hiauly1.hia.nrc.ca>
+Content-Type: text/plain
+Date: 16 Dec 2003 19:36:44 -0500
+Message-Id: <1071621405.2080.160.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200312162251.hBGMpd15018573@hiauly1.hia.nrc.ca>
-Cc: randolph@tausq.org, parisc-linux@lists.parisc-linux.org
+Cc: randolph@tausq.org, PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,23 +26,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Dec 16, 2003 at 05:51:38PM -0500, John David Anglin wrote:
-> > On Tue, Dec 16, 2003 at 12:06:57AM -0500, John David Anglin wrote:
-> Is it possible to do PDC calls from user space under hpux to determine
-> cache parameters?
+> I have a different cache question.  GCC uses a stack trampoline
+> to call nested functions.  This trampoline is on the stack and
+> has to be flushed before being used.  A few weeks ago a trampoline
+> testcase was added.  This testcase failed under hppa64-hpux.  It
+> turned out that the code assumed that the PA 2.0 cache line was
+> 32 bytes (it was apparently derived from the original PA 1.1 code).
 
-The architecture requires that pdc calls be done at ring 0, with PSW.D=0,
-so no.  Having said that, many of the interesting return values are
-available from the kernel, either through sysconf or (sigh) /dev/kmem.
+Could you elaborate on the context for this?  It was my understanding
+that to flush an area for execution, you simply loop over the area
+striding by the cache line width, issuing fdc; fic. (at least, that's
+how we do it in the kernel).
 
-> I revised GCC's trampoline code to assume a line length of 32 instead
-> of 64 on hppa64.  It can now flush arbitrarily long regions of memory.
-> The test now passes.  This seems to imply that the cache length of a
-> C200 under hpux11.00 is 32 bytes.
+If we think the cache line is *smaller* than it actually is, all this
+does is issue more flushes than necessary to the cache lines, I don't
+understand how it results in an observable failure.
 
-Cache line size is fixed on every CPU that I've seen, so OS shouldn't
-matter...  One can assume a 16-byte cache line and it will work everywhere,
-of course, although at 1/2 or 1/4 speed in many cases.  AFAIK, all PA1.1
-machines use at least a 32 byte cache-line.
-
-lamont
+James
