@@ -1,64 +1,73 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm1.tiscalinet.be (spoolm1.tiscalinet.be [212.35.2.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D8313482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 08:25:31 -0600 (MDT)
-Sender: jso@dsl2.external.hp.com
-Message-ID: <3BD18AD9.FA49E5E7@freebel.net>
-Date: Sat, 20 Oct 2001 14:31:53 +0000
-From: Soete Joel <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: tsbogend@alpha.franken.de,
-	Thomas Bogendoerfer <tsbogend@elvis.franken.de>,
-	Richard Hirst <rhirst@linuxcare.com>, joel.soete@freebel.net,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015164903.X11105@linuxcare.com> <20011015180923.A14160@elvis.franken.de> <1003166094.3bcb198edae10@webmail.tiscalinet.be>
+Received: from mta02ps.bigpond.com (mta02ps.bigpond.com [144.135.25.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 48749482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 08:34:53 -0600 (MDT)
+Received: from bubble.local ([144.135.25.81]) by
+          mta02ps.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GLIE4V00.63R for <parisc-linux@lists.parisc-linux.org>; Sun,
+          21 Oct 2001 00:41:19 +1000
+Date: Sun, 21 Oct 2001 00:04:44 +0930
+From: Alan Modra <amodra@bigpond.net.au>
+To: Ben Collins <bcollins@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
+Subject: Re: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
+Message-ID: <20011021000443.H1037@bubble.sa.bigpond.net.au>
+References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011020095406.L10952@visi.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011020095406.L10952@visi.net>; from bcollins@debian.org on Sat, Oct 20, 2001 at 09:54:06AM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello all,
-
-Just a followup:
-
-joel.soete@freebel.net wrote:
+On Sat, Oct 20, 2001 at 09:54:06AM -0400, Ben Collins wrote:
+> On Sat, Oct 20, 2001 at 05:09:07PM +0930, Alan Modra wrote:
+> > 	* sysdeps/hppa/dl-machine.h (elf_machine_dynamic):  Make it a
+> > 	const function.  Do not use &_DYNAMIC as .got entries for global
+> > 	syms are no longer initialised.  Instead they rely on the reloc,
+> > 	which hasn't yet been applied.
+> > 	(elf_machine_load_address): Make it const.  Call
+> > 	elf_machine_dynamic as that function is called fropm rtld anyway.
 > 
-> Hi Thomas,
-> 
-> Quoting Thomas Bogendoerfer <tsbogend@elvis.franken.de>:
-> 
-> > On Mon, Oct 15, 2001 at 04:49:03PM +0100, Richard Hirst wrote:
-> > > > (EE) No OS PCI support available
-> > >
-> > > Do you have PCI support enabled in your kernel?
-> >
-> > shouldn't matter. I bet the framebuffer runs in a different resolution
-> > than
-> > it's configured in XF86Config. Since the current stifb doesn't support
-> > mode switching, I've made the check very strict to not allow it. So
-> > the boot time resolution and bpp must match that from XF86Config.
-> >
-> > Thomas.
-> >
-> Sorry for NEWBIES (as I am in term of X configuration) what means bpp?
-> 
-> Well I found what I have to change in my config file to make xdm works.
-> Just a problem:
-> After the xdm start everything seems to works fine (right colors, mouse
-> working,...). Then I login: ok the pointer still work, I can work in the default
-> xterm,...
-> But when I exit mouse does not move any more and I had to restart xdm.
+> Is this the fix for a newly built ld.so segfaulting? If so, there seems
+> to be something else wrong too. Newly built ld.so still segfaults,
+> here's the gdb:
 
-This problem continu but...
+alan@tea:~$ /lib/ld.so.1 
+Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]
+You have invoked `ld.so', the helper program for shared library executables.
+[snip]
 
-> 
-> (Um.., on my B180 I thing have to update Xfree 4.0 to 4.1 the mouse does not
-> work at all but gpm well)
+no problems here.
 
-this one Thomas Marteau kindely help me to find out that in 'Section
-pointer' of XFconfig the 'Device "/dev/mouse"'.
-And if on the 712 /dev/mouse is well a link to /dev/psaux, on the
-contrary on the B180L the /dev/mouse was wrongly a link to /dev/gpmdata.
+sourceware CVS binutils as of a few minutes ago, debian glibc-2.2.4-3
+with willy's patch (ftp://ftp.parisc-linux.org/patches/glibc22-hppa.dpatch)
++ mine, gcc from pehc 3.0.2 20010829.
 
-Thanks again to Thomas and all for help,
+So, I'm using a newer binutils but older gcc.  The old gcc was an
+accident - I'll try again with something more recent.  binutils, gcc and
+glibc freshly built on an x86-linux system, first building xtools then
+native ones.
 
-	Joel
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x41003298 in _dl_start_final (arg=0xbff00414, bootstrap_map_p=0xbff00508, start_time=1090519040)
+>     at rtld.c:233
+> 233       _dl_rtld_map.l_addr = bootstrap_map_p->l_addr;
+> (gdb) print bootstrap_map_p
+> $1 = (struct link_map *) 0xbff00508
+> (gdb) print bootstrap_map_p->l_addr
+> $2 = 1090519040
+> (gdb) print &_dl_rtld_map
+> $3 = (struct link_map *) 0x41029270
+> (gdb) print _dl_rtld_map.l_addr
+> $4 = 0
+
+That's weird.  Looks like _dl_rtld_map is in a read-only segment, when
+it ought to be in .bss
+
+alan@tea:~$ nm /lib/ld.so.1 | grep dl_rtld_map
+00029368 b _dl_rtld_map
+alan@tea:~$ objdump -h /lib/ld.so.1 | grep '\.bss'
+ 15 .bss          00000f9c  00029220  00029220  00019220  2**3
+
+Hmm, I wonder if the machine instructions actually doing the assignment
+have relocs that haven't been applied for some reason.  That would
+probably result in your ld.so trying to write to 0x29270.
