@@ -1,32 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA23620
-	for <parisc-linux@puffin.external.hp.com>; Thu, 29 Apr 1999 21:55:17 -0600
-Date: Thu, 6 May 1999 01:38:50 -0400 (EDT)
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA18210
+	for <parisc-linux@puffin.external.hp.com>; Sat, 1 May 1999 01:51:26 -0600
+Received: from localhost (adevries@localhost)
+	by devserv.devel.redhat.com (8.8.7/8.8.7) with SMTP id BAA27797
+	for <parisc-linux@thepuffingroup.com>; Sat, 1 May 1999 01:41:56 -0400
+Date: Sat, 1 May 1999 01:41:55 -0400 (EDT)
 From: Alex deVries <adevries@redhat.com>
-To: Philipp Rumpf <prumpf@jcsbs.lanobis.de>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ld problem workaround
-In-Reply-To: <19990506053931.13099@insula.local>
-Message-ID: <Pine.LNX.3.96.990506013644.25834B-100000@devserv.devel.redhat.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.3.96.990501014137.10592V-100000@devserv.devel.redhat.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] The kernel builds!!!
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-On Thu, 6 May 1999, Philipp Rumpf wrote:
+On Sat, 1 May 1999, Philipp Rumpf wrote:
+> prumpf@insula:~/cvs-s/parisc/linux > ls -l vmlinux 
+> -rwxr-xr-x   1 prumpf   users      353695 May  1 03:01 vmlinux
 > 
-> Where are the bootloader sources atm ?
-> 
 
-Jason's sources are at:
+I'm pretty sure that this is the first every monolithic kernel to be build
+for PA RISC.
 
-ftp://puffin.external.hp.com/pub/parisc/src/boot_rel_0.2.tar.gz
+This is a pretty significant feat, and I'd encourage you wherever you are
+to stand up and clap your hands/wings to Philipp and everyone else who's
+helped out. 
 
-I'm not quite sure how complete they are.  The pain is that because of our
-lack of ELF32 in binutils these really need to be linked on an HPUX box.
-
-The Puffin Group is working with HP to have a box called
-puffinpa.external.hp.com to act first as an HPUX build machine to solve
-the problem of not everyone having access to HPUX yet.
+This is going very very well... I hope people can appreciate the
+significance of this step.
 
 - Alex
+
+-- 
+Alex deVries <puffin@redhat.com>     
+Red Hat Contrib Net maintainer          
+Ottawa, Canada  
+PA RISC Linux Porting Team
