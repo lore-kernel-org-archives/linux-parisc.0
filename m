@@ -1,27 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 51D85482B
-	for <parisc-linux@parisc-linux.org>; Thu,  5 Jul 2001 19:57:31 -0600 (MDT)
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by atlrel1.hp.com (Postfix) with ESMTP id AADA9A83
-	for <parisc-linux@parisc-linux.org>; Thu,  5 Jul 2001 21:57:30 -0400 (EDT)
-Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
-	by hpfcla.fc.hp.com (8.9.3 (PHNE_22672)/8.9.3 SMKit7.01) with ESMTP id TAA13127
-	for <parisc-linux@parisc-linux.org>; Thu, 5 Jul 2001 19:57:29 -0600 (MDT)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.22 #1 (Debian))
-	id 15IKs5-0000Kz-00
-	for <parisc-linux@parisc-linux.org>; Thu, 05 Jul 2001 19:57:29 -0600
-To: parisc-linux@parisc-linux.org
-Date: Thu, 05 Jul 2001 19:57:29 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E15IKs5-0000Kz-00@noam.fc.hp.com>
-Subject: [parisc-linux] 2.4.6 kernel merge
+Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.24.18])
+	by dsl2.external.hp.com (Postfix) with SMTP id 26BF7482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 21:55:20 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id LAA32766
+	for parisc-linux@lists.parisc-linux.org; Fri, 6 Jul 2001 11:55:12 +0800
+Date: Fri, 6 Jul 2001 11:55:08 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] problems with burning iso's
+Message-ID: <20010706115505.V28368@neep.com.au>
+References: <CC7EB40D4455D51191850090270C43801038B1@ati.ati.stlawrencec.on.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CC7EB40D4455D51191850090270C43801038B1@ati.ati.stlawrencec.on.ca>; from RPengelly@ati.stlawrencec.on.ca on Thu, Jul 05, 2001 at 09:02:06AM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-We're in the middle of merging to 2.4.6 and our CVS tree should not be
-used for any other purpose right now.  It also doesn't even compile yet.
-Use the 'pre246' tag if you need to grab the latest good sources.
+Raymond Pengelly said:
+> Also I was wondering what the md5checksums are all about? 
 
-	-P
+The MD5 checksums of the ISO files are provided so that you can verify
+the integrity of the file you have downloaded.  You will obviously need
+the md5sum program for your operating system to do so.
+
+> Do I have to change anything in the iso before I burn it?
+
+No.
+
+Andrew.
+
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
