@@ -1,39 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BABA3482A
-	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 12:44:18 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14sU3n-0001fJ-00; Wed, 25 Apr 2001 19:30:43 +0100
-Date: Wed, 25 Apr 2001 19:30:43 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Matthew Wilcox <willy@ldl.fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] glibc 2.2.3
-Message-ID: <20010425193043.O18464@parcelfarce.linux.theplanet.co.uk>
-References: <20010425010722.G1166@zumpano.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010425010722.G1166@zumpano.fc.hp.com>; from willy@ldl.fc.hp.com on Wed, Apr 25, 2001 at 01:07:22AM -0600
-Sender: <willy@www.linux.org.uk>
+Received: from bender.bawue.de (bender.bawue.de [193.197.13.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 55B2C482A
+	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 14:18:33 -0600 (MDT)
+Received: from gate.ixs.com (p3E9ED94F.dip.t-dialin.net [62.158.217.79])
+	by bender.bawue.de (Postfix) with ESMTP id 521504863D
+	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 22:18:08 +0200 (CEST)
+Received: from localhost (andreas@localhost)
+	by gate.ixs.com (8.9.3/8.9.3) with ESMTP id WAA25808
+	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 22:18:05 +0200
+Date: Wed, 25 Apr 2001 22:18:04 +0200 (CEST)
+From: Andreas Thienemann <andreas@thienemann.net>
+To: parisc-linux@parisc-linux.org
+Message-ID: <Pine.LNX.4.10.10104252215090.25358-100000@gate.ixs.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Even more glibc problems...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Apr 25, 2001 at 01:07:22AM -0600, Matthew Wilcox wrote:
-> I've ported most of the remaining changes from our tree into a snapshot of today's
-> upstream CVS.
+Hi,
 
-I meant to say more about this last night.  The things I've skipped are:
+I just can't seem to get a glibc to compile on a hppa box.
+The sources are the current CVS checkouts, the build box is booted with
+the debian nfsroot 20010404.
 
- * a patch which does #define malloc(x) memalign(16,x)
+The glibc compile fails with the debian compiler and only succeeds with
+the CVS compiler 'gcc version 3.0 20010416 (prerelease)'.
 
-This clearly is insufficient as Richard pointed out a few weeks ago.
-We need to get malloc fixed differently.
+Now, doing a make check after building the glibc fails with the following
+remark:
 
- * Jes' patch to define ELFOSABI_LINUX and various macros which use that.
-   The macros are only defined, not used, so omitting them has no
-   ill-effect.  Ulrich has declined to accept these patches as part of
-   glibc until we explain why it was needed.  Jes doesn't remember why
-   he made this patch, so I'm leaving it out.  The curious can find the
-   discussion in the mailing list archives from last december.
+make[2]: *** [/mnt/lfs/usr/src/glibc-build/math/test-float.out] Error 1
+make[2]: Leaving directory `/mnt/lfs/usr/src/glibc/math'
+make[1]: *** [math/tests] Error 2
+make[1]: Leaving directory `/mnt/lfs/usr/src/glibc'
+make: *** [check] Error 2
 
--- 
-Revolutions do not require corporate support.
+Are there some problems with the floating point calculations?
+
+bye,
+ andreas
