@@ -1,16 +1,12 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ASSERT() -> BUG_ON() (2/4):
-	drivers/parisc/sba_iommu.c
-Date: Mon, 8 Nov 2004 23:45:02 -0700
-Message-ID: <20041109064502.GA21599@colo.lackof.org>
-References: <418A80F700001304@mail-5-bnl.tiscali.it>
+Subject: [parisc-linux] [BUG] 2.6.8-1-32 Debian kernel panics in harmony
+Date: Thu, 11 Nov 2004 00:38:50 -0700
+Message-ID: <20041111073850.GA9768@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <418A80F700001304@mail-5-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,42 +17,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Grant Grundler wrote:
-> no problem with getting rid of ASSERT.
-> At this point, I'm more inclined to just delete most of them
-> if they can't be replaced with something that's a compile time option.
+Stuart/et al ,
 
-I've removed all uses of ASSERT this weekend but couldn't test the result.
-I couldn't boot the j6k test machine because of an old bug.
-SBA code was clobbering the serial console when it called
-pci_io_reset_devices(). I figured out some code that I *think* should
-do the trick:
-	ftp://ftp.parisc-linux.org/patches/diff-2.6.10-rc1-pa10-USB_reset
+I was playing around with the b180 I've setup for a friend
+of the family (11 year old kid) and pretty quickly
+panic'd the 2.6.8-1-32 debian kernel.
 
-The ASSERT removal patch (untested) is on:
-	ftp://ftp.parisc-linux.org/patches/diff-2.6.10-rc1-pa11-02
+I wanted to reproduce it again with serial console so
+I could grab the tombstone but serial console didn't have a
+getty and networking wasn't config'd...so I give up for now.
+But I think it's easy enough to reproduce...
 
-Apologies for mixing it all up in one patch.
--pa11-02 patch has some other changes in it that I need to review again.
-None of this will be committed until our CVS gets resurrected
-and I'll split it up if someone sees that as necessary.
+I played an mp3 with "mpg321 foo.mp3" and then ^C
+that after it played for 10-20 seconds. first it gave
+noises like it was looping on a garbage buffer.
+I restarted the mpg and it played fine again.
+Hit ^C again and again got noise.
+Repeat playing the same mp3 one more time and then got a kernel panic.
+panic was in the harmony interrupt routine and apologize if
+that's too vague.
 
-
-Joel Soete wrote:
-> mmm, reading also Matthew's answer, I don't see what kind of sol should
-> we adopt to avoid "foo = 0" mistakes?
-
-In general, the compiler will warn and I've re-arranged the code to
-be more readable in those cases where no macro is used.
-
-> I have no clue if some macros like:
-> #define EQ(a, b) (a) == (b)
-> ...
-> would help (only one place to check but many macro's as NE, GT, GE, LT,
-> LE)?
-
-Well, in the case of macros one just has to be careful or
-continue doing what I was doing before.
+Please remind me tomorrow what other info is needed and
+if the tombstone is necessary.
 
 thanks,
 grant
