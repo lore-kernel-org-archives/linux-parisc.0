@@ -1,18 +1,20 @@
-Return-Path: <nitephyre@iinet.net.au>
-Received: from mail.iinet.net.au (mail-08.iinet.net.au [203.59.3.40])
-	by dsl2.external.hp.com (Postfix) with SMTP id 67BC44857
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2498C484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  3 Jan 2004 15:46:25 -0700 (MST)
-Message-ID: <001f01c3d24b$5e810600$0101a8c0@nitephyre>
-From: "Matt Lewis" <nitephyre@iinet.net.au>
-To: <parisc-linux@lists.parisc-linux.org>
+	Sat,  3 Jan 2004 21:55:53 -0700 (MST)
+Date: Sat, 3 Jan 2004 21:55:51 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Matt Lewis <nitephyre@iinet.net.au>
+Subject: Re: [parisc-linux] Probem Installing: slang(version).deb corrupt
+Message-ID: <20040104045551.GA16904@colo.lackof.org>
 References: <000801c3d1de$08e053d0$0101a8c0@nitephyre>
 	<3FF6A74F.3000108@tiscali.be>
-Subject: Re: [parisc-linux] Probem Installing: slang(version).deb corrupt
-Date: Sun, 4 Jan 2004 08:46:03 +1000
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001C_01C3D29F.2F98EC50"
+	<001f01c3d24b$5e810600$0101a8c0@nitephyre>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <001f01c3d24b$5e810600$0101a8c0@nitephyre>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,138 +24,27 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+On Sun, Jan 04, 2004 at 08:46:03AM +1000, Matt Lewis wrote:
+> ok, i went and got the latest testing iso, but now it's saying
+> that libc6_2.2.5-6_hppa.deb was corrupt and cannot download...
+> thats cd no.2 coastered and another 70mb down... any tips?
 
-------=_NextPart_000_001C_01C3D29F.2F98EC50
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Full net install? (net boot with NFS root to run the installer?)
 
-ok, i went and got the latest testing iso, but now it's saying that =
-libc6_2.2.5-6_hppa.deb was corrupt and cannot download...
+current lifimages are also available that match the net install ISOs.
+lifimage needs to be served from a bootp server.
 
- thats cd no.2 coastered and another 70mb down... any tips?
+> the orginal problem was from both a cd i got with the computer
+> (an earlier 70mb d/l it seems) and the latest full 650mb iso i downloaded...
+> though if i try and boot from the big iso, the installer starts then the
+> keyboard wont work... getting frustrated :|
 
-the orginal problem was from both a cd i got with the computer (an =
-earlier 70mb d/l it seems) and the latest full 650mb iso i downloaded...
+Is the keyboard hanging using a serial or graphics console?
 
-though if i try and boot from the big iso, the installer starts then the =
-keyboard wont work... getting frustrated :|
+In general, the serial console is more stable and I suggest installing
+via the serial console. Disconnect the USB keyboard and connect a DB9
+serial cable to another linux box (9600, 8N1).  Once installed, upgrade
+to a 2.4.23 kernel (available from ftp.p-l.o/kernels/c3000) and then
+reconnect the keyboard before rebooting.
 
-  ----- Original Message -----=20
-  From: Joel Soete=20
-  To: Matt Lewis=20
-  Cc: parisc-linux@lists.parisc-linux.org=20
-  Sent: Saturday, January 03, 2004 9:28 PM
-  Subject: Re: [parisc-linux] Probem Installing: slang(version).deb =
-corrupt
-
-
-
-
-  Matt Lewis wrote:
-  > Hi, I have a HP Visualize C3000 and i'm trying to install Debian =
-HPPA on it... and every time i try to install the base system, whether =
-it be from CD or http, i get the message of "slang(version_here).deb is =
-corrupt. could not download"
-  >=20
-  > is there any way around this?
-
-  IIRC, the c3k require a more recent kernel and what could help is a =
-recent net-install iso cd available at:
-  <http://www.pateam.org/cd-images/testing/>
-
-  and this install would work via a serial console (simply unplug kdb =
-amd mouse and pdc will swicth automaticaly to this serial=20
-  console).
-
-    since my machine hasn't got HPUX on it, and i cant find anywhere to =
-download it :|
-  >=20
-  Yes AFAIK you would have to order this CD near HP.
-
-  hth,
-  Joel
-
-
-
-------=_NextPart_000_001C_01C3D29F.2F98EC50
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3810.1700" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV>ok, i went and got the latest testing iso, but now it's saying that =
-
-libc6_2.2.5-6_hppa.deb was corrupt and cannot download...</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;thats cd no.2 coastered and another 70mb down... any =
-tips?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>the orginal problem was from both a cd i got with the computer (an =
-earlier=20
-70mb d/l it seems) and the latest full 650mb iso i downloaded...</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>though if i try and boot from the big iso, the installer starts =
-then the=20
-keyboard wont work... getting frustrated :|</DIV>
-<DIV>&nbsp;</DIV></FONT></DIV>
-<BLOCKQUOTE=20
-style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
-0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A href=3D"mailto:soete.joel@tiscali.be" =
-title=3Dsoete.joel@tiscali.be>Joel=20
-  Soete</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
-  href=3D"mailto:nitephyre@iinet.net.au" =
-title=3Dnitephyre@iinet.net.au>Matt=20
-  Lewis</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A=20
-  href=3D"mailto:parisc-linux@lists.parisc-linux.org"=20
-  =
-title=3Dparisc-linux@lists.parisc-linux.org>parisc-linux@lists.parisc-lin=
-ux.org</A>=20
-  </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Saturday, January 03, =
-2004 9:28=20
-  PM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: [parisc-linux] =
-Probem=20
-  Installing: slang(version).deb corrupt</DIV>
-  <DIV><BR></DIV><BR><BR>Matt Lewis wrote:<BR>&gt; Hi, I have a HP =
-Visualize=20
-  C3000 and i'm trying to install Debian HPPA on it... and every time i =
-try to=20
-  install the base system, whether it be from CD or http, i get the =
-message of=20
-  "slang(version_here).deb is corrupt. could not download"<BR>&gt; =
-<BR>&gt; is=20
-  there any way around this?<BR><BR>IIRC, the c3k require a more recent =
-kernel=20
-  and what could help is a recent net-install iso cd available =
-at:<BR>&lt;<A=20
-  =
-href=3D"http://www.pateam.org/cd-images/testing/">http://www.pateam.org/c=
-d-images/testing/</A>&gt;<BR><BR>and=20
-  this install would work via a serial console (simply unplug kdb amd =
-mouse and=20
-  pdc will swicth automaticaly to this serial =
-<BR>console).<BR><BR>&nbsp; since=20
-  my machine hasn't got HPUX on it, and i cant find anywhere to download =
-it=20
-  :|<BR>&gt; <BR>Yes AFAIK you would have to order this CD near=20
-  HP.<BR><BR>hth,<BR>Joel<BR><BR></BLOCKQUOTE></BODY></HTML>
-
-------=_NextPart_000_001C_01C3D29F.2F98EC50--
+grant
