@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dsinn.com (dsinn.dsinn.com [204.182.90.230])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5F1BC482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Jul 2003 11:08:18 -0600 (MDT)
-From: "F. David Sinn" <dsinn@dsinn.com>
-To: "'Joel Soete'" <jsoe0708@tiscali.be>, "'Dub'" <dub@latnet.lv>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Where to get precompiled SMP kernel for 2.4.20?
-Date: Thu, 3 Jul 2003 10:10:05 -0700
-Message-ID: <000001c34185$f46f5a60$1f826b83@junior>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-In-Reply-To: <3ED70CF10000D300@ocpmta2.freegates.net>
+Received: from mailhost1.mistral.co.uk (mailhost1.mistral.co.uk [217.154.131.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5503F482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Jul 2003 20:43:25 -0600 (MDT)
+Received: from localhost.localdomain (dsl-217-155-82-142.zen.co.uk [217.155.82.142])
+	by mailhost1.mistral.co.uk (Postfix) with ESMTP id 59AA7789BB
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 03:43:24 +0100 (BST)
+From: Martin <inkubus@interalpha.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Date: 04 Jul 2003 03:40:03 +0100
+Message-Id: <1057286403.1841.153.camel@raphael>
+Mime-Version: 1.0
+Subject: [parisc-linux] RDI Precision Book 160
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,45 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-FYI - Works great for SMP on a K260 I have, though it doesn't look to have
-the proper console patch included (otherwise known as:  Make sure your
-system is setup right before you install the new kernel).  Everything else
-looks to work as before.
-
-David
-
------Original Message-----
-From: parisc-linux-admin@lists.parisc-linux.org
-[mailto:parisc-linux-admin@lists.parisc-linux.org]On Behalf Of Joel
-Soete
-Sent: Wednesday, July 02, 2003 9:32 AM
-To: Dub; parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Where to get precompiled SMP kernel for
-2.4.20?
-
-
 Hi,
+   I've recently acquired an RDI Precision Book 160 which is currently
+running HP-UX 10.2.  From what I can find in the relevant documentation
+it is allegidly completely compatible with the HP B series workstations
+and thus should run Linux.  Does anyone have any experience with
+installing / running Linux on these?  It is possible?  What devices are
+supported?  Is Linux the best choice for this machine?
 
-> I have installed Debian from netinst CD found at
->
-http://pateam.esiee.fr/cd-images/testing/palinux-2.4.20-pa35-20030513-netins
-t.iso
->
-> Q. Is it possible to get pre-compiled SMP kernel for this version 2.4.20.
+Cheers,
+ - Martin
 
-
-At least 2.4.20-pa32 at:
-<http://ftp.debian.org/debian/pool/main/k/kernel-patch-2.4.20-hppa/>
-
-hth,
-    Joel
-
-
----------------------------------
-Tiscali ADSL: 19,50 euros/mois...abonnez-vous sur www.tiscali.be
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+Martin
+inkubus@interalpha.co.uk
+"Seasons change, things come to pass"
