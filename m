@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Christoph Plattner <christoph.plattner@gmx.at>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: Status SPIFI SCSI 
-In-Reply-To: Message from Ryan Bradetich <rbradetich@uswest.net>
-   of "16 Sep 2002 20:25:01 MDT." <1032229501.930.45.camel@beavis>
-References: <3D8516EF.7A7D8206@gmx.at>  <1032229501.930.45.camel@beavis> 
-Date: Mon, 16 Sep 2002 21:53:27 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020917035327.E51E34829@dsl2.external.hp.com>
+Received: from server01 (s217-115-138-231.colo.hosteurope.de [217.115.138.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0167F4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Sep 2002 01:23:09 -0600 (MDT)
+From: "J.Steindlberger" <j@steindlberger.de>
+To: Rod Smart <snaketails@optushome.com.au>
+Subject: Re: [parisc-linux] Serial Terminal on C-180 system
+Date: Tue, 17 Sep 2002 09:24:49 +0200
+References: <3D86629A.F8CB5564@optushome.com.au>
+In-Reply-To: <3D86629A.F8CB5564@optushome.com.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <20020917072310.0167F4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,24 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ryan Bradetich wrote:
-> >   __raw_writel(CMD_RESET, dev->hpa + IO_MODULE_COMMAND);
+Hi Rod,
 
-This looks like something will be documented in the IO ACD.
-CMD_RESET is an architecture defined command PA IO devices
-are required to accept.
+I guess Your problem is, that Your C180 graphic is not sending an usable 
+signal to Your Monitor. You need to plug in keyboard an monitor. And a few 
+seconds after switching on press the TAB key -- the workstation will change 
+the video mode several times with about 3 seconds delay. Press ENTER if the 
+mode is okay for You. (I hope it's correct in my mind)
 
-> > Is this a reset method via the IO PDC address space
-> > common for all HP devices?
+I don't know whether or not You need do some changes via serial first. 
+(Switch console with "pa con graphic(0)" perhaps)
 
-I believe so. That doesn't mean *all* of them implement
-it properly or even need it.
-
-> That is where I am also. We actually read the type SPIFI-3 (SE) for the
-> SKUNK card, and SPIFI-3 (DF) for the wizard (16-bit) card.
-
-I'm pretty sure wizard card used SPIFI-4.
-
-
-hth,
-grant
+On Tuesday 17 September 2002 01:00, you wrote:
+>     Hello again.
+>
+>     Last time I was here I was asking about how to get the C-180 to use
+> Serial Terminal, I havn't been able to get it talking to the other Linux
+> or wincrash system, so I would like to transfer it back to Video mode
+> (turn off Serial Terminal.
+>
+>     How do I do this when I cannot see the screen ?
