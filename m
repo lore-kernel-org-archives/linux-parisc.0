@@ -1,30 +1,91 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B3C9E482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Jun 2001 10:40:29 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15AaAW-0003vc-00; Thu, 14 Jun 2001 17:40:28 +0100
-Date: Thu, 14 Jun 2001 17:40:28 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Simeon Walker <simeon@sbs.bangor.ac.uk>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: Kernel faults on boot
-Message-ID: <20010614174028.B3364@parcelfarce.linux.theplanet.co.uk>
-References: <md5:24CD73579DAE676AC9847A2AA7C80BD3> <3B28D51D.79DBF56@sbs.bangor.ac.uk> <20010614171602.A3364@parcelfarce.linux.theplanet.co.uk> <3B28E54A.5BE2C413@sbs.bangor.ac.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3B28E54A.5BE2C413@sbs.bangor.ac.uk>; from simeon@sbs.bangor.ac.uk on Thu, Jun 14, 2001 at 05:24:42PM +0100
-Sender: <willy@www.linux.org.uk>
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 50B91483F
+	for <parisc-linux@parisc-linux.org>; Thu, 14 Jun 2001 12:58:52 -0600 (MDT)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 14 Jun 2001 20:58:14 +0200
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_2POXUQX5IH8IL2UYR6ZV"
+Message-Id: <20010614185852.50B91483F@dsl2.external.hp.com>
+Subject: [parisc-linux] HIL Keyboard mapping skript
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jun 14, 2001 at 05:24:42PM +0100, Simeon Walker wrote:
-> so I guess an apt-get upgrade is not such a good thing at this 
-> point in time?
+--------------Boundary-00=_2POXUQX5IH8IL2UYR6ZV
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: 
 
-Oh, no, that's fine.  Packages don't get uploaded for hppa until they
-work.  So, for example, right now, there is no gdb in the debian archive,
-only on puffin.external.hp.com until we get it integrated.  glibc 2.2.3-6
-has been released, but in't compiled for hppa yet, so you won't get it.
+Hi,
 
--- 
-Revolutions do not require corporate support.
+for those of you who have a HIL keyboard attached to their systems (like on 
+my 715/64) and use the STI kernel the following keyboard mapping could be 
+interesting.
+It allows you to switch to the virtual consoles via Alt-F1 to Alt-F7 and 
+Alt-Left/Right the same way as you do it currently on your Intel-machine. 
+More than that it also takes out some of the most ugly keyboard mappings 
+which normally belong to HP PS/2 keyboards and does a bad thing on HIL.
+
+BTW: 
+- You will need to recompile yourself a new kernel to use virtual consoles...
+- It's not complete and doesn't cover all keys. Esp. german umlauts and that 
+like won't be fixed with this script.
+
+Greetings,
+Helge
+
+--------------Boundary-00=_2POXUQX5IH8IL2UYR6ZV
+Content-Type: application/x-shellscript;
+  name="keycodes.sh"
+Content-Transfer-Encoding: base64
+Content-Description: HIL keyboard mapping shell-script
+Content-Disposition: attachment; filename="keycodes.sh"
+
+IyEvYmluL2Jhc2gKIyBISUwga2V5Ym9hcmQgbWFwcGluZwojIGJ5IEhlbGdlIERlbGxlciA8ZGVs
+bGVyQGdteC5kZT4KCmxvYWRrZXlzIC0gPDwgRU9GCmtleWNvZGUgICAyID0gQWx0R3IJCSMgUmln
+aHQtYWx0CmtleWNvZGUgICAzID0gQWx0CQkjIExlZnQtYWx0CmtleWNvZGUgICA0ID0gU2hpZnQJ
+CSMgUmlnaHQtc2hpZnQKa2V5Y29kZSAgIDUgPSBTaGlmdAkJIyBMZWZ0LXNoaWZ0CmtleWNvZGUg
+ICA2ID0gQ29udHJvbAoKa2V5Y29kZSAgMTUgPSBLUF9NdWx0aXBseQoJc2hpZnQgICBrZXljb2Rl
+ICAxNSA9IE51bV9Mb2NrCSMgU2hpZnQgLSAiKiIgVGFzdGUKa2V5Y29kZSAgMTYgPSBLUF8xCiAg
+ICAgICAgYWx0Z3IgICBrZXljb2RlICAxNiA9IEhleF8xCiAgICAgICAgYWx0ICAgICBrZXljb2Rl
+ICAxNiA9IEFzY2lpXzEKa2V5Y29kZSAgMjIgPSBLUF8wCiAgICAgICAgYWx0Z3IgICBrZXljb2Rl
+ICAyMiA9IEhleF8wCiAgICAgICAgYWx0ICAgICBrZXljb2RlICAyMiA9IEFzY2lpXzAKa2V5Y29k
+ZSAgMzEgPSBFc2NhcGUKCXNoaWZ0IGtleWNvZGUgMzEgPSBNZXRhX0RlbGV0ZQprZXljb2RlICA0
+NyA9IENhcHNfTG9jayBDYXBzX0xvY2sgQ2Fwc19Mb2NrIENhcHNfTG9jayBDYXBzX0xvY2sgQ2Fw
+c19Mb2NrCmtleWNvZGUgIDU1ID0gVGFiICAgICAgICAgICAgICBUYWIKICAgICAgICBhbHQgICAg
+IGtleWNvZGUgIDU1ID0gTWV0YV9UYWIKICAgICAgICBzaGlmdCAgIGFsdCAgICAga2V5Y29kZSAg
+NTUgPSBNZXRhX1RhYgprZXljb2RlIDc2ID0gRjEKYWx0IGtleWNvZGUgNzYgPSBDb25zb2xlXzEK
+a2V5Y29kZSA3NSA9IEYyCmFsdCBrZXljb2RlIDc1ID0gQ29uc29sZV8yCmtleWNvZGUgNzQgPSBG
+MwphbHQga2V5Y29kZSA3NCA9IENvbnNvbGVfMwprZXljb2RlIDczID0gRjQKYWx0IGtleWNvZGUg
+NzMgPSBDb25zb2xlXzQKa2V5Y29kZSA4MSA9IEY1CmFsdCBrZXljb2RlIDgxID0gQ29uc29sZV81
+CmtleWNvZGUgODIgPSBGNgphbHQga2V5Y29kZSA4MiA9IENvbnNvbGVfNgprZXljb2RlIDgzID0g
+RjcKYWx0IGtleWNvZGUgODMgPSBDb25zb2xlXzcKa2V5Y29kZSA4NCA9IEY4CmFsdCBrZXljb2Rl
+IDg0ID0gQ29uc29sZV84CgprZXljb2RlIDM3ID0gRjkKYWx0IGtleWNvZGUgMzcgPSBDb25zb2xl
+XzkKa2V5Y29kZSAzMyA9IEYxMAphbHQga2V5Y29kZSAzMyA9IENvbnNvbGVfMTAKa2V5Y29kZSAz
+NSA9IEYxMQphbHQga2V5Y29kZSAzNSA9IENvbnNvbGVfMTEKa2V5Y29kZSAzOSA9IEYxMgphbHQg
+a2V5Y29kZSAzOSA9IENvbnNvbGVfMTIKCmtleWNvZGUgMTI0ID0gTGVmdAlMZWZ0CiAgICAgICAg
+YWx0IGtleWNvZGUgMTI0ID0gRGVjcl9Db25zb2xlCSMgQWx0IGxpbmtzCmtleWNvZGUgMTI3ID0g
+UmlnaHQgUmlnaHQKCWFsdCBrZXljb2RlIDEyNyAgPSBJbmNyX0NvbnNvbGUgIyBBbHQgcmVjaHRz
+CmtleWNvZGUgMTA5ID0gUmV0dXJuCiAgICAgICAgYWx0Z3IgICBrZXljb2RlIDEwOSA9IFJldHVy
+bgogICAgICAgIHNoaWZ0ICAgY29udHJvbCBrZXljb2RlIDEwOSA9IFJldHVybgoJYWx0ICAgICBr
+ZXljb2RlIDEwOSA9IE1ldGFfQ29udHJvbF9tCiAgICAgICAgY29udHJvbCBhbHQgICAgIGtleWNv
+ZGUgMTA5ID0gUmV0dXJuCgprZXljb2RlIDExOSA9IFByaW9yIAkJCSMgUGFnZVVwCglhbHQga2V5
+Y29kZSAxMTkgPSBTY3JvbGxfQmFja3dhcmQKa2V5Y29kZSAxMTEgPSBOZXh0ICAJCQkjIFBhZ2VE
+b3duCglhbHQga2V5Y29kZSAxMTEgPSBTY3JvbGxfRm9yd2FyZAoKc3RyaW5nIEYxID0gIlwwMzNb
+W0EiCnN0cmluZyBGMiA9ICJcMDMzW1tCIgpzdHJpbmcgRjMgPSAiXDAzM1tbQyIKc3RyaW5nIEY0
+ID0gIlwwMzNbW0QiCnN0cmluZyBGNSA9ICJcMDMzW1tFIgpzdHJpbmcgRjYgPSAiXDAzM1sxN34i
+CnN0cmluZyBGNyA9ICJcMDMzWzE4fiIKc3RyaW5nIEY4ID0gIlwwMzNbMTl+IgpzdHJpbmcgRjkg
+PSAiXDAzM1syMH4iCnN0cmluZyBGMTAgPSAiXDAzM1syMX4iCnN0cmluZyBGMTEgPSAiXDAzM1sy
+M34iCnN0cmluZyBGMTIgPSAiXDAzM1syNH4iCnN0cmluZyBGMTMgPSAiXDAzM1syNX4iCnN0cmlu
+ZyBGMTQgPSAiXDAzM1syNn4iCnN0cmluZyBGMTUgPSAiXDAzM1syOH4iCnN0cmluZyBGMTYgPSAi
+XDAzM1syOX4iCnN0cmluZyBGMTcgPSAiXDAzM1szMX4iCnN0cmluZyBGMTggPSAiXDAzM1szMn4i
+CnN0cmluZyBGMTkgPSAiXDAzM1szM34iCnN0cmluZyBGMjAgPSAiXDAzM1szNH4iCnN0cmluZyBG
+aW5kID0gIlwwMzNbMX4iCnN0cmluZyBJbnNlcnQgPSAiXDAzM1syfiIKc3RyaW5nIFJlbW92ZSA9
+ICJcMDMzWzN+IgpzdHJpbmcgU2VsZWN0ID0gIlwwMzNbNH4iCnN0cmluZyBQcmlvciA9ICJcMDMz
+WzV+IgpzdHJpbmcgTmV4dCA9ICJcMDMzWzZ+IgpzdHJpbmcgTWFjcm8gPSAiXDAzM1tNIgpzdHJp
+bmcgUGF1c2UgPSAiXDAzM1tQIgpzdHJpbmcgUGFnZVVwID0gIlwwMzNbNX4iCnN0cmluZyBQYWdl
+RG93biA9ICJcMDMzWzZ+IgpFT0YKCg==
+
+--------------Boundary-00=_2POXUQX5IH8IL2UYR6ZV--
