@@ -1,14 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lists.parisc-linux.org (unknown [61.145.143.192])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5ED0D4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Mar 2003 22:54:39 -0700 (MST)
-From: 13802254385@china.com
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Reply-To: xianggui@21cn.net
-Date: Thu, 20 Mar 2003 13:55:02 +0800
-Message-Id: <20030320055439.5ED0D4829@dsl2.external.hp.com>
-Subject: [parisc-linux] =?GB2312?B?zbjD99PXtvnUsKO/?=
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BBFF4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 01:15:53 -0700 (MST)
+Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on 2.5 kernel??
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <1047972053.19011.14.camel@beavis.ybsoft.com>
+References: <1047917954.14507.15.camel@beavis.ybsoft.com>
+	 <20030317163206.GE28607@parcelfarce.linux.theplanet.co.uk>
+	 <1047919859.14507.21.camel@beavis.ybsoft.com>
+	 <1047972053.19011.14.camel@beavis.ybsoft.com>
+Content-Type: text/plain
+Message-Id: <1048148150.19036.11.camel@beavis.ybsoft.com>
+Mime-Version: 1.0
+Date: 20 Mar 2003 01:15:51 -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,47 +26,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-视频采集卡-1
-*MPEG-4压缩格式,四路视频输入,一路音频输入
-*资源25帧/秒PAL制式,30帧/秒NTSC制式
-*用于单路采集时,可提供全实时视频采集功能
-*回放可选择不同的速度回放,快进或快退
-*录像占用硬盘空间60M-100M/路/小时
-*显示分辨率768×576  384×288
-*报警传输通过局域网,广域网进行报警信号传输
-*可远端浏览图像,远程回放录像,可通过电话线传输,可通过IE浏览
-*单系统可支持安装4块卡,达到16路视频采集,录像总资源100帧
-*Windows 98操作系统
+Continuing to track this problem down, I have found the
+following:
 
-视频采集卡-
-*MJPEG压缩格式
-*显示分辨率640×480  320×240
-*一卡提供4-8路视频输入
-*单卡总资源高达100帧/秒PAL制式,NTSC制式120帧/秒
-*实时显示,录像总资源最高达100帧
-*四路报警输入,四路报警输出,移动侦测报警
-*录像模式可设置,动态录像、传感录像、定时录像及连续录像
-*控制云台、镜头功能,硬盘自动覆盖
-*同时监视、录像及回放,远端可单画面或多画面显示
-*网络功能,远端可多画面浏览
-*放帧数可调,录像占用硬盘空间200-500M路/小时
-*系统支持安装二块卡,最高达16路视频,录像总资源200帧
-*indows 98操作系统,支持简体中文、繁体中文及英文介面
-*议配置:华硕815EP主板  ATI 32M显卡
+The Problem appears to be that when the 
 
-视频采集卡-3
-*ENGIN-K压缩格式,支持PAL及NTSL制式
-*16路一卡制,4路实时监控,录像总资源100帧
-*分辨率640×480,320×240,160×120
-*单卡总资源高达100帧/秒PAL制式,NTSC制式120帧/秒
-*八路报警输入,八路报警输出,移动侦测报警
-*录像模式可设置,动态录像、传感录像、定时录像及连续录像
-*前端设备故障语音提示报警,并通过网络(ISDN/DDN/PSTN/LAN)主动传至卡部
-*通过网络自动轮巡可将所有ATM机监控设备工作状态集中汇总至卡部
-*控制云台、镜头功能,硬盘自动覆盖
-*可同时监视、录像及回放,远端可单画面或多画面显示
-*回放帧数可调,录像占用硬盘空间200M-400M/路/小时
-*视频输入1-16路,音频输入1路
-*单系统支持安装二块卡,录像总资源达到200帧
-*操作系统Wndows 98
-*议配置:华硕815EP主板  ATI 32M显卡
+	NEW_AUX_ENT(AT_ENTRY, exec->e_entry)
+
+is called, it puts in the wrong entry point.
+
+The reason I believe the error manifests itself is because
+of this if statment:
+
+  if (*user_entry == (ElfW(Addr)) ENTRY_POINT)
+
+I have tracked down values of the user_entry and ENTRY_POINT:
+
+	user_entry: 41001fb4
+	ENTRY_POINT: 41027082
+
+Since they are different, the if statement fails... My belief
+is they should be the same when /lib/ld.so.1 is called because
+of the following comment inside this if statement:
+
+
+      /* Ho ho.  We are not the program interpreter!  We are the program
+         itself!  This means someone ran ld.so as a command.  Well, that
+         might be convenient to do sometimes.  We support it by
+         interpreting the args like this:
+                                                                                
+         ld.so PROGRAM ARGS...
+ 
+         The first argument is the name of a file containing an ELF
+         executable we will load and run with the following arguments.
+         To simplify life here, PROGRAM is searched for using the
+         normal rules for shared objects, rather than $PATH or anything
+         like that.  We just load it and use its entry point; we don't
+         pay attention to its PT_INTERP command (we are the interpreter
+         ourselves).  This is an easy way to test a new ld.so before
+         installing it.  */
+
+
+
+to me there looks like two things that could be wrong:
+
+1.  The exec->e_entry needs to be fixed in the kernel, so it matches
+    the _start of the library.
+
+2.  The ENTRY_POINT needs to be changed in glibc for parisc-linux.
+
+
+ia64 seems to be the only arch that changes the value of ENTRY_POINT,
+so this doesn't seem likely...
+
+./glibc-2.3.1/sysdeps/generic/entry.h:#define ENTRY_POINT _start
+./glibc-2.3.1/sysdeps/ia64/elf/entry.h:#define ENTRY_POINT (((long int
+*) _start)[0])
+
+
+
+I am planning to pursue option 1 unless someone thinks option 2 is the
+correct option to pursue.
+
+
+Thanks,
+
+- Ryan
+
+
+-- 
+Ryan Bradetich <rbradetich@uswest.net>
