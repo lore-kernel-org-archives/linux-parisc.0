@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D0D6E4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 May 2003 10:02:05 -0600 (MDT)
-Message-Id: <200305181601.h4IG1sgl016848@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc fails to build using binutils-2.14.90.0.1
-To: doko@cs.tu-berlin.de (Matthias Klose)
-Date: Sun, 18 May 2003 12:01:53 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-In-Reply-To: <16071.39547.93843.710060@gargle.gargle.HOWL> from "Matthias Klose" at May 18, 2003 04:36:43 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A7C9B4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 May 2003 10:06:42 -0600 (MDT)
+Date: Sun, 18 May 2003 09:10:01 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Inconsistency detected by ld.so:.. / do_page_fault()
+Message-ID: <20030518161001.GG548@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <Pine.BSF.4.53.0305181226340.86062@e0-0.zab2.int.zabbadoz.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.BSF.4.53.0305181226340.86062@e0-0.zab2.int.zabbadoz.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> binutils-2.13.90.0.18 works ok.
-> 
-> See http://buildd.debian.org/fetch.php?&pkg=gcc-3.3&ver=1%3A3.3ds9-2&arch=hppa&stamp=1053264270&file=log&as=raw:
-> 
-> ./xgcc -B./ -B/usr/hppa-linux/bin/ -isystem /usr/hppa-linux/include -isystem /usr/hppa-linux/sys-include -O2  -DIN_GCC    -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -fPIC -DELF=1 -DLINUX=1 -g -DHAVE_GTHR_DEFAULT -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED  -I. -I. -I../../src/gcc -I../../src/gcc/. -I../../src/gcc/config -I../../src/gcc/../include -DL_mulI -xassembler-with-cpp -c ../../src/gcc/config/pa/milli64.S -o libgcc/./_mulI.o
-> ../../src/gcc/config/pa/milli64.S: Assembler messages:
-> ../../src/gcc/config/pa/milli64.S:1779: Error: Undefined .EXPORT/.IMPORT argument (ignored): 
-> ../../src/gcc/config/pa/milli64.S:1779: Error: Undefined .EXPORT/.IMPORT argument (ignored): millicode
-> make[5]: *** [libgcc/./_mulI.o] Error 1
+> bz@apollo:~> ldd /bin/cp
+> Inconsistency detected by ld.so: rtld.c: 879: dl_main: Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
+> Inconsistency detected by ld.so: rtld.c: 879: dl_main: Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
+> ldd: /lib/ld.so.1 exited with unknown exit code (127)
 
-Did you part this to the binutils list?  A change has mucked up the
-assembler's processing of .export.  Alan Modra would probably know what's
-happened.
+http://sources.redhat.com/ml/libc-alpha/2003-05/msg00149.html
 
-I've also noted that there are some new fails in the visibility tests
-in a recent cvs version of binutils.
+i just sent this to debian/glibc upstream yesterday.
 
-Dave
+> I also have other probs with vim and tcpdump and most likely others
+> dumping core and producing a do_page_fault() dump with IAOQ: 4xxxxxxxx
+> on 2.5.-latest from cvs w/o last single ioctl commit.
+> but I also had seen these core dumps on 2.4.18-pa33 after last
+> dist-upgrade some days ago ...
+
+this is because of a gcc bug.
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=193207
+
+once gcc-3.2 gets patched and glibc gets recompiled, you'll be ok.
+otherwise, consider downgrading to libc6_2.3.1-16 and everything will be
+ok.
+
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
