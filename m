@@ -1,19 +1,15 @@
-Return-Path: <>
-Received: from mail.parkerdrilling.com (mail.parkerdrilling.com
-	[12.31.192.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 995284854
+Return-Path: <ww@STYX.ORG>
+Received: from STYX.ORG (styx.org [204.138.67.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B20CA4854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu,  4 Mar 2004 10:20:19 -0700 (MST)
-Message-ID: <D000000e30@mail.parkerdrilling.com>
-From: administrator@parkerdrilling.com
+	Thu,  4 Mar 2004 12:06:44 -0700 (MST)
+Date: Thu, 4 Mar 2004 14:06:43 -0500
+From: William Waites <parisc@lists.styx.org>
 To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 04 Mar 2004 11:20:20 -0600
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=a4201d97-4fbe-4327-993c-587441f91169"
-Cc: indonesia@parkerdrilling.com
-Subject: [parisc-linux] Parker Drilling Email System has detected a
-	potentially harmful file attachment - please read message below.
+Message-ID: <20040304190643.GC19629@styx.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] lstrncpy_from_user symbol not exported
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,31 +19,43 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----=a4201d97-4fbe-4327-993c-587441f91169
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+I tried sending this to submit@bugs.parisc-linux.org
+but it bounced...
 
-The Parker Drilling email system has quarantined your email message because it contained a potentially harmful file attachment type.
+----- Forwarded message from William Waites <ww@styx.org> -----
 
-Due to recent widespread virus infections that have taken place on the Internet, the following file attachments are currently NOT
-being allowed to pass through. This includes .ZIP files, .EXE files, .COM files, .SCR files, .BAT files and less known file types.
+Date: Thu, 4 Mar 2004 13:59:49 -0500
+From: William Waites 
+Subject: lstrncpy_from_user symbol not exported
+To: submit@bugs.parisc-linux.org
 
-The latest round of recent virus attacks have exploited the use of .ZIP files - this is why they are currently being blocked.
+Hello, 
 
-As a temporarily work around, please do not use .ZIP when sending your file attachments - instead please send the file attachments
-in their native, uncompressed format. i.e. .XLS, .DOC, .TXT, etc - these will be allowed to pass through the Parker Drilling Email
-System.
+I am running LiS on Linux/parsic. The streams kernel
+module uses the strncpy_from_user function which on
+parisc is macro that calls lstrncpy_from_user. This
+function is not exported by the kernel, so the module
+gets an unresolved symbol. The following patch fixes
+this.
 
-If your require further instructions, please contact helpdesk@parkerdrilling.com for assistance.
+Index: arch/parisc/kernel/parisc_ksyms.c
+===================================================================
+RCS file: /var/cvs/linux-2.4/arch/parisc/kernel/parisc_ksyms.c,v
+retrieving revision 1.49
+diff -u -r1.49 parisc_ksyms.c
+--- a/arch/parisc/kernel/parisc_ksyms.c 17 Jan 2004 06:40:11 -0000      1.49
++++ b/arch/parisc/kernel/parisc_ksyms.c 4 Mar 2004 18:53:07 -0000
+@@ -110,6 +110,7 @@
+ EXPORT_SYMBOL(lcopy_from_user);
+ EXPORT_SYMBOL(lstrnlen_user);
+ EXPORT_SYMBOL(lclear_user);
++EXPORT_SYMBOL(lstrncpy_from_user);
 
-Thank You
+ #ifndef __LP64__
+ /* Needed so insmod can set dp value */
 
-   Message: B000008ed5.00000001.mml
-   From:    parisc-linux@lists.parisc-linux.org
-   To:      indonesia@parkerdrilling.com
-   Subject: report
-
-
-
-----=a4201d97-4fbe-4327-993c-587441f91169--
+-- 
+/~\  The ASCII Ribbon Campaign
+\ /    No HTML/RTF in email
+ X     No Word docs in email
+/ \  Respect for open standards
