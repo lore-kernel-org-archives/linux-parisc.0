@@ -1,11 +1,11 @@
-From: ste@tiscali <stemelchior@tiscali.it>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [parisc-linux] GNOME 1.4
-Date: Fri, 30 Aug 2002 08:09:58 +0200
-Message-ID: <20020830080958.2f899cc2.stemelchior__31634.1704143726$1416621665$gmane$org@tiscali.it>
-References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
+Date: 30 Aug 2002 12:04:37 +0100
+Message-ID: <1030705477.3180.15.camel__38137.0843541392$1416621666$gmane$org@irongate.swansea.linux.org.uk>
+References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>  
 	<20020830040829.3BE694829@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Cc: alaskan@telusplanet.net, parisc-linux@lists.parisc-linux.org,
 	debian-hppa@lists.debian.org
 To: Grant Grundler <grundler@dsl2.external.hp.com>
@@ -21,28 +21,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, 29 Aug 2002 22:08:29 -0600 Grant Grundler <grundler@dsl2.external.hp.com> wrote: 8-§  > alaskan@telusplanet.net wrote:
-8-§  > > I finally got GNOME 1.4 working on a 712/60,
-8-§  > ...
-8-§  > > Its pretty, but slow .   .  . .
-8-§  > 
-8-§  > it's not faster on a 486/DX4/75Mhz.
-8-§  > You really need to use a lighter weight window manager on
-8-§  > the older boxes. fvwm2 is my current favorite though in this
-8-§  > case I'd reccomend twm.
-8-§  > 
-8-§  > grant
+On Fri, 2002-08-30 at 05:08, Grant Grundler wrote:
+> it's not faster on a 486/DX4/75Mhz.
 
-Why not IceWM? on my 710/50 it is running pretty fine and enough fast!!! ;-P
-I also like the Infadel2-Overloaded theme!!!
+Gnome2 is alittle faster
 
-linuxabbestia
+> You really need to use a lighter weight window manager on
+> the older boxes. fvwm2 is my current favorite though in this
+> case I'd reccomend twm.
 
-<<Unix IS user friendly... It's just selective about who its friends are!>>
+The setup I use so I get a 'real desktop' not just old style X window
+mangler is xfce for the desktop with the rox filer on top for the file
+mangler, icon dock etc.
 
- See "User's Guide":     http://www.debian.org/doc/manuals/users-guide/
- See "Debian reference": http://www.debian.org/doc/manuals/debian-reference/
- "Debian reference" Project at: http://qref.sf.net
+Its snappy in 24Mb. On an FPUless box build xfce with imlib not
+gdk_pixbuf.
 
-Please DO NOT send e-mail with any attachment in a "proprietary format", such as either .doc or .ppt, BECAUSE: http://www.fsf.org/philosophy/no-word-attachments.html (the Italian version is available on the following url: http://www.fsf.org/philosophy/no-word-attachments.it.html)
-T H A N K S   ;-P
+I'd guess it would be very nice on an ancient parisc box too because
+they pa boxes probably have better I/O
