@@ -1,26 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C399F482A
-	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 17:39:33 -0600 (MDT)
+Received: from mail-ob05.one.net.au (mail-ob05.one.net.au [61.12.0.165])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 712F0482A
+	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 21:41:00 -0600 (MDT)
+Received: Received: [from squeak.local (async134-ade-isp-4.nas.one.net.au [203.101.93.135])
+	by mail-ob05.one.net.au  with SMTP id f3F3emW15591
+	for <parisc-linux@parisc-linux.org>; Sun, 15 Apr 2001 13:40:49 +1000 (EST)]
+From: amodra@one.net.au
+Date: Sun, 15 Apr 2001 14:12:16 +0930
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Grant Grundler <grundler@puffin.external.hp.com>,
+	parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] xfree86 build problem
-To: grundler@puffin.external.hp.com (Grant Grundler)
-Date: Sun, 15 Apr 2001 00:41:00 +0100 (BST)
-Cc: amodra@one.net.au, parisc-linux@parisc-linux.org
-In-Reply-To: <200104142218.QAA30044@puffin.external.hp.com> from "Grant Grundler" at Apr 14, 2001 04:18:47 PM
-MIME-Version: 1.0
+Message-ID: <20010415141215.A25145@squeak.one.net.au>
+References: <200104142218.QAA30044@puffin.external.hp.com> <E14oZf5-0005mU-00@the-village.bc.nu>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14oZf5-0005mU-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <E14oZf5-0005mU-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Sun, Apr 15, 2001 at 12:41:00AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Anyway, after spending another two hours on the -fPIC problem, I'm
-> starting to think the xfree86 lib build is broken by design for __hppa__.
-> I'll send out another mail with a patch + recipe for building the libs.
-> I'm pretty close to finding workarounds (not solutions) for the problems.
+On Sun, Apr 15, 2001 at 12:41:00AM +0100, Alan Cox wrote:
+> > Do other arches allow non-PIC .o's to be linked into a .so lib?
+> 
+> Generally - yes.
 
-Did the patches I built to get XFree86 libs building not get as far as you.
-I sent them to Paul (I believe)
+True, but it's not recommended.  The reason being that non-PIC code in
+a shared lib will mean lib pages with relocations can't be shared between
+processes should the library be loaded at a different virtual addresses.
 
-> Do other arches allow non-PIC .o's to be linked into a .so lib?
-
-Generally - yes.
+--
+Alan Modra
