@@ -1,19 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA06322
-	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Aug 1999 07:47:15 -0600
-Date: Tue, 3 Aug 1999 15:48:06 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: "Steven A. DuChene" <sduchene@mindspring.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] unsatisfied symbols
-Message-ID: <19990803154806.E11952@suse.de>
-References: <19990803114003.A5018@grcbd508.grc.hp.com> <19990803094308.G3443@sduchene.users.mindspring.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA06740
+	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Aug 1999 09:01:52 -0600
+Sender: adevries@thepuffingroup.com
+Message-ID: <37A707B5.6E7DF3DB@thepuffingroup.com>
+Date: Tue, 03 Aug 1999 11:16:05 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Kernel images
+References: <199908020159.VAA06171@mail.roava.net> <19990801234246.B25817@piguy.staticky.com> <19990802092030.Y25925@mencheca.ch.genedata.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19990803094308.G3443@sduchene.users.mindspring.com>; from Steven A. DuChene on Tue, Aug 03, 1999 at 09:43:08AM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-> When you say make menuconfig seems to be broken, what exactly doesn't
-> work? As I understand the current method for compiling kernels takes
+Matthew Wilcox wrote:
+> 
+> On Sun, Aug 01, 1999 at 11:42:46PM -0700, Matthew Trent wrote:
+> > I'm in the same boat. I'd love to be able to cross compile the kernel, but I've
+> > no HP-UX.
+> 
+> I think this is a service The Puffin Group will be providing as soon as
+> their DSL turns up (was supposed to go in last Monday, so RSN.)
+> 
 
-our config.in was broken and Ingo sent a patch that corrected the problem.
+Actually, I'm pretty up to date with building kernels.  I'll upload them
+regularly now to ftp://puffin.external.hp.com/pub/binaries/kernels .
+
+- Alex
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
