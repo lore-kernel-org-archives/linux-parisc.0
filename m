@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 079004829
-	for <parisc-linux@parisc-linux.org>; Wed,  2 Apr 2003 17:01:40 -0700 (MST)
-Received: from 156.153.254.40 (unknown [195.134.32.148])
-	by cuprel1.hp.com (Postfix) with SMTP id 9D3E62531
-	for <parisc-linux@parisc-linux.org>; Wed,  2 Apr 2003 16:01:37 -0800 (PST)
-Received: from qsnz.u74pgnh.org [3.105.58.182] by 156.153.254.40 with ESMTP id 69032488 for <parisc-linux@parisc-linux.org>; Thu, 03 Apr 2003 04:49:37 +0500
-Message-ID: <90-rc8ci68230$ygq-43g@965qobcx4.rhfs>
-From: "Donna Pike" <ajmfbq9wv79@aol.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 03 Apr 03 04:49:37 GMT
+Received: from mail.unitec.edu (mail.unitec.edu [216.72.84.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C9D17482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 08:04:59 -0700 (MST)
+From: "Ricardo Jose Guevara Ochoa" <jguevara@unitec.edu>
+To: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <5849494679bc7010.79bc701058494946@unitec.edu>
+Date: Thu, 03 Apr 2003 08:55:11 -0600
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="C0F19BF_DCD9.6FC6C7"
-Subject: [parisc-linux] battleshbp mesic
+Subject: Re: [parisc-linux] Kernel 2.4.20 build error
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,48 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+> 
+> turn on CONFIG_PROC_FS
 
---C0F19BF_DCD9.6FC6C7
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+Where do i turn it on? in a file /arch/parisc/defconfig it's already 
+turn on.
 
-<html>
-<head>
-</head>
-<body bgcolor=3D"#FFFFFF" text=3D"#000000">
-<div align=3D"center">
-  <table width=3D"523" height=3D"26">
-    <tr> 
-      <td height=3D"2" align=3D"center" valign=3D"middle" bgcolor=3D"#FFFF=
-FF" width=3D"521">
-        <p align=3D"left"><font size=3D"2" face=3D"verdana" color=3D"#0000=
-00">How have you been?</font></p>
-      </td>
-    </tr>
-  </table>
-</div>
-<div align=3D"center">
-  <center>
-  <table border=3D"0" width=3D"65%" height=3D"0" cellspacing=3D"0" cellpad=
-ding=3D"0">
-    <tr>
-      <td width=3D"100%" height=3D"117">
-        <p align=3D"center"><a href=3D"http://rd.yahoo.com/*http://www.ema=
-iloffer.us/fs/index.html"><img border=3D"0" src=3D"http://rd.yahoo.com/*ht=
-tp://www.emailoffer.us/fs/fs2_top.jpg" width=3D"523" height=3D"146"></a></=
-td>
-    </tr>
-    <tr>
-      <td width=3D"100%" height=3D"1">
-        <p align=3D"center"><a href=3D"http://rd.yahoo.com/*http://www.ema=
-iloffer.us/fs/index.html"><img border=3D"0" src=3D"http://rd.yahoo.com/*ht=
-tp://www.emailoffer.us/fs/fs2_bottom.jpg" width=3D"523" height=3D"146"></a=
-></td>
-    </tr>
-  </table>
-  </center>
-</div>
-</body>
-</html>
---C0F19BF_DCD9.6FC6C7--
+thanks in advance,
+Ricardo J Guevara
+
+----- Original Message -----
+From: Matthew Wilcox <willy@debian.org>
+Date: Wednesday, April 2, 2003 4:41 pm
+Subject: Re: [parisc-linux] Kernel 2.4.20 build error
+
+> On Wed, Apr 02, 2003 at 04:23:10PM -0600, Ricardo Jose Guevara 
+> Ochoa wrote:
+> > I downloaded the latest kernel for the parisc family, and when i 
+> tried 
+> > to compile and build the kernel it gave me an error in the make 
+> > vmlinux:
+> > ccio-dma.c: In function `ccio_probe':
+> > ccio-dma.c:1551: `ccio_proc_info' undeclared (first use in this 
+> > function)
