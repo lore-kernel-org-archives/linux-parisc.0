@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout07.sul.t-online.com (mailout07.sul.t-online.com [194.25.134.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 217F9482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jan 2002 12:22:03 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: H_Aue@t-online.de (Hinrich Aue)
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
-Subject: [parisc-linux] DSL on a 715/80 with rp-pppoe - MADE IT!!!
-Date: Tue, 1 Jan 2002 20:25:50 +0100
-MIME-Version: 1.0
-Message-ID: <16LUTy-0mGMD2C@fwd05.sul.t-online.com>
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B314A482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jan 2002 16:47:38 -0700 (MST)
+Date: Tue, 1 Jan 2002 23:38:34 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Peter Mottram <peter@petescaff.com>
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] DSL on a 715/80 with rp-pppoe
+Message-ID: <20020101233834.GA2872@sleepie.demon.co.uk>
+References: <20011229205411.GA11344@sleepie.demon.co.uk> <Pine.LNX.4.42.0112300049260.17057-100000@r6.petescaff.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.42.0112300049260.17057-100000@r6.petescaff.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,12 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-The Problem was that I had to add the ID into pap-secrets AND 
-/etc/ppp/peers/dsl-provider. My fault, but I thought I only have to put it 
-into pap-secrets. 
-Loading the ne module works perfect, I'm sending this mail through my 715/80 
-as dsl-router
+On Sun, Dec 30, 2001 at 12:56:54AM +0100, Peter Mottram wrote:
+> Until I restarted ppp on my 712 it had been working perfectly for nearly
+> three months with no /sbin/hotplug.
+> 
+> Unfortunately I am a sad unstable addict (I have been since pre-buzz days
+> on i386) and have updated many times since ppp was last restarted.
+> 
+> This one I find weird because I know that it has worked but broke sometime
+> recently. The only reason I restarted the system was to finally upgrade to
+> the 2.4.16 kernel I have been happily running on a C160 and a collection
+> of C110s.
 
-Thanks a lot, and a happy new year.
+Is it possible you now have CONFIG_HOTPLUG=y, and didn't before?
 
-Hinrich
+Does adding a fake sbin/hotplug fix it?
+
+Richard
