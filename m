@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from freya.yggdrasil.com (h-64-105-136-52.SNVACAID.covad.net [64.105.136.52])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8EA5B4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 17:24:16 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B3A84829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 18:50:54 -0700 (MST)
 From: "Adam J. Richter" <adam@yggdrasil.com>
-Date: Sat, 9 Nov 2002 16:23:59 -0800
-Message-Id: <200211100023.QAA27139@baldur.yggdrasil.com>
-To: James.Bottomley@steeleye.com
+Date: Sat, 9 Nov 2002 17:50:42 -0800
+Message-Id: <200211100150.RAA27228@baldur.yggdrasil.com>
+To: grundler@dsl2.external.hp.com
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Cc: andmike@us.ibm.com, greg@kroah.com, hch@lst.de,
+Cc: andmike@us.ibm.com, hch@lst.de, James.Bottomley@steeleye.com,
 	linux-kernel@vger.kernel.org, mochel@osdl.org,
-	parisc-linux@lists.parisc-linux.org, willy@debian.org
+	parisc-linux@lists.parisc-linux.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,23 +21,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-James Bottomley wrote:
->3. Machine is partially consistent.  consistent allocation may fail because 
->we're out of consistent memory so we have to fall back to the old.
+Grant Grundler writes:
+>Documentation/driver-model/overview.txt:
+>| Note also that it is at the _end_ of struct pci_dev. This is
+>| to make people think about what they're doing when switching between the bus
+>| driver and the global driver; and to prevent against mindless casts between
+>| the two.
+>
+>Until this changes, I don't see this as a useful replacement for
+>either PCI or parisc devices. The "mindless casts" can be fixed.
+>But without the ability to easily go from generic device type to
+>bus specific type, people will just get lost in the maze of pointers.
 
-	I'd like to know more about what these machines look
-like in the real world.  Specifically, I am interested in the
-trade-off of having a parameter to wback_fake_consistent
-so that it could be enabled or disabled on an individual basis.
-
-	I suspect that the parameter is not worth the clutter because
-these "partially consistent" machines either have a large amount of
-consistent memory, so the case of the allocation failing in the is not
-worth supporting, or it is easy to check for consistent memory on them
-with something like "if ((unsigned long) vaddr < 0xwhatever)", but I'm
-just guessing.
-
-Adam J. Richter     __     ______________   575 Oroville Road
-adam@yggdrasil.com     \ /                  Miplitas, California 95035
-+1 408 309-6081         | g g d r a s i l   United States of America
-                         "Free Software For The Rest Of Us."
+	linux-2.5.46/include/linux/kernel.h already defines
+container_of(ptr_to_element, parent_struct, element_name).
