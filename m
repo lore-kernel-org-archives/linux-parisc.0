@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from out003pub.verizon.net (out003pub.verizon.net [206.46.170.103])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EDF74482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 18:35:25 -0700 (MST)
-Received: from verizon.net (pool-151-201-226-132.pitt.east.verizon.net [151.201.226.132])
-	by out003pub.verizon.net  with ESMTP
-	for <parisc-linux@lists.parisc-linux.org>; id g0C1ZMG15342
-	Fri, 11 Jan 2002 19:35:23 -0600 (CST)
-Message-ID: <3C3F92F0.10701@verizon.net>
-Date: Fri, 11 Jan 2002 20:35:44 -0500
-From: Rafael Herrera <vze26vn8@verizon.net>
-Reply-To: raffo@neuronet.pitt.edu
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] How to configure EISA network card in 715/80
-References: <3C3F06DD.6050409@verizon.net> <20020111154337.D26644@parcelfarce.linux.theplanet.co.uk> <3C3F0DD1.4040508@verizon.net> <20020111161705.E26644@parcelfarce.linux.theplanet.co.uk> <3C3F1127.8070507@verizon.net> <20020111162742.F26644@parcelfarce.linux.theplanet.co.uk>
-Content-Type: multipart/mixed;
- boundary="------------070202080600060509010902"
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1FA2482A
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Jan 2002 23:12:27 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id gtpgkaaa for parisc-linux@parisc-linux.org; Fri, 11 Jan 2002 23:12:38 -0700
+Date: Fri, 11 Jan 2002 22:12:12 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] FWD: gcc-3.0.3: ICE in reload_cse_simplify on hppa-linux
+Message-ID: <20020112061212.GA21816@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020108073218.GC16533@tausq.org> <200201081545.g08FjX7A003677@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200201081545.g08FjX7A003677@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,176 +25,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------070202080600060509010902
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+> Then, I suggest trying with gcc-3.1 (prerelease).  It has quite a few
+> bug fixes that 3.0.3 doesn't have although it hasn't been tested much
+> on linux.  C and C++ definitely are in better shape.
 
-Matthew Wilcox wrote:
+Unfortunately 3.1 (i'm trying the 2002-01-07 snapshot) doesn't currently
+build on hppa. It dies with:
 
-> 
-> Yep, I'm familiar with that board.  Normally when it's plugged in, PDC
-> reports the EISA adapter.  Can you try unplugging it & replugging it to
-> see if that helps?  You cold also try messing around at the PDC prompt,
-> see whether anything can see it.  As you may have guessed, I have no
-> idea what the problem is and I'm suggesting things at random :-)
+stage1/xgcc -Bstage1/ -B/usr/hppa-linux/bin/ -c -DIN_GCC    -g -O2 -W
+-Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes
+-Wtraditional -pedantic -Wno-long-long  -DHAVE_CONFIG_H    -I. -I.
+-I../../src/gcc -I../../src/gcc/. -I../../src/gcc/config
+-I../../src/gcc/../include ../../src/gcc/c-lex.c -o c-lex.o
+../../src/gcc/c-lex.c: In function `lex_number':
+../../src/gcc/c-lex.c:1293: Internal compiler error in
+dwarf2out_frame_debug_expr, at dwarf2out.c:1535
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+make[2]: *** [c-lex.o] Error 1
+make[2]: Leaving directory `/home/randolph/build/gcc/build/gcc'
+make[1]: *** [stage2_build] Error 2
 
+Traceback says:
 
-I re-set the add-on card and this time the WAX card was detected. See 
-the attached dmesg. The hp100 network card does not appear to be 
-detected, though. If it's loaded, is there something I can look at to 
-see if it's really there? Should it be reported as eth1?
+#0  fancy_abort (file=0x36f504 "../../src/gcc/dwarf2out.c", line=1535, 
+    function=0x36f564 "dwarf2out_frame_debug_expr")
+    at ../../src/gcc/diagnostic.c:1450
+#1  0x000b234c in dwarf2out_frame_debug_expr (expr=0x40191750, 
+    label=0x3b86d0 "*.LCFI52") at ../../src/gcc/dwarf2out.c:1535
+#2  0x000b26fc in dwarf2out_frame_debug (insn=0x40191750)
+    at ../../src/gcc/dwarf2out.c:1650
+#3  0x0010a4d0 in final_scan_insn (insn=0x4067f960, file=0x423a10, optimize=2, 
+    prescan=0, nopeepholes=0) at ../../src/gcc/final.c:2653
+#4  0x00108f98 in final (first=0x403dd720, file=0x423a10, optimize=2, 
+    prescan=0) at ../../src/gcc/final.c:1787
+[...]
 
-As a side note, when turning on the machine I get these messages:
-
-
-BootRom Version    1.6
-Memory Size:  48 MB
-----------------------------------------------------------------------------
-
-
-(c) Copyright 1990-1994, Hewlett-Packard Company.
-All rights reserved
-
-Press <ESCAPE> to stop boot sequence.
-
-
-Warning: One or more EISA cards could not be configured.
-          Autoselect and search will ignore unconfigured
-          cards.
-
-<...>
-
-Thanks.
+randolph
 -- 
-      Rafael
-
---------------070202080600060509010902
-Content-Type: text/plain;
- name="dmesg1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="dmesg1"
-
-Linux version 2.4.17-pa6 (raffo@inca) (gcc version 3.0.2 20010829 (prerelease)) #15 Fri Jan 11 20:20:05 EST 2002
-FP[0] enabled: Rev 1 Model 13
-The 32-bit Kernel has started...
-Determining PDC firmware type: Snake.
-model 00006190 00000481 00000000 00000000 7795c3b3 00000000 00000004 00000072 00000072
-vers  0000000b
-model 9000/715
-Total Memory: 48 Mb
-pagetable_init
-On node 0 totalpages: 12288
-zone(0): 12288 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: root=/dev/sda2 HOME=/ eisa_irq_edge=3,4,5,7,9,10,11,14,15 console=tty0 sti=0 sti_font=VGA8x16 TERM=linux
-Console: colour dummy device 160x64
-Calibrating delay loop... 79.66 BogoMIPS
-Memory: 45348k available
-Dentry-cache hash table entries: 8192 (order: 4, 65536 bytes)
-Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
-Mount-cache hash table entries: 1024 (order: 1, 8192 bytes)
-Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
-Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
-Searching for devices...
-Found devices:
-1. Mirage 80 GSC Builtin Graphics (10) at 0xf8000000 [1], versions 0x10, 0x0, 0x85
-2. Mirage 80 Core BA (11) at 0xf0100000 [2], versions 0x2b, 0x0, 0x81
-3. Mirage 80 Core SCSI (10) at 0xf0106000 [2/0/1], versions 0x2b, 0x0, 0x82
-4. Mirage 80 Core LAN (802.3) (10) at 0xf0107000 [2/0/2], versions 0x2b, 0x0, 0x8a
-5. Mirage 80 Core RS-232 (10) at 0xf0105000 [2/0/4], versions 0x2b, 0x0, 0x8c
-6. Mirage 80 Core Centronics (10) at 0xf0102000 [2/0/6], versions 0x2b, 0x0, 0x74
-7. Mirage 80 Audio (10) at 0xf0104000 [2/0/8], versions 0x2b, 0x0, 0x7b
-8. Mirage 80 Core PC Floppy (10) at 0xf010a000 [2/0/10], versions 0x2b, 0x0, 0x83
-9. Mirage 80 Core PS/2 Port (10) at 0xf0108000 [2/0/11], versions 0x2b, 0x0, 0x84
-10. Mirage 80 Core PS/2 Port (10) at 0xf0108100 [2/0/12], versions 0x2b, 0x0, 0x84
-11. Mirage 80 Wax EISA BA (11) at 0xfc000000 [4], versions 0x2b, 0x0, 0x90
-12. Pace Wax BA (11) at 0xf0200000 [5], versions 0x10, 0x0, 0x8e
-13. Pace Core HIL (10) at 0xf0201000 [5/0/1], versions 0x10, 0x0, 0x73
-14. Mirage 80 Wax RS-232 (10) at 0xf0202000 [5/0/2], versions 0x10, 0x0, 0x8c
-15. Mirage 80 (0) at 0xfffbe000 [8], versions 0x619, 0x0, 0x4
-16. Mirage 80 (1) at 0xfffbf000 [9], versions 0x4f, 0x0, 0x9
-CPU(s): 1 x PA7100LC (PCX-L) at 80.000000 MHz
-Lasi version 0 at 0xf0100000 found.
-LED display at f010c000 registered
-Wax at 0xf0200000 found.
-Wax: HIL Keyboard-NMI registered.
-Wax EISA Adapter found at 0xfc000000
-POSIX conformance testing by UNIFIX
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Initializing RT netlink socket
-Enabled gecko-style soft power switch.
-Starting kswapd
-parport_init_chip: initialize bidirectional-mode.
-parport0: PC-style at 0xf0102800, irq 88 [PCSPP,TRISTATE]
-STI word mode ROM at f0024000, hpa=f8000000
-STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
-STI device: HPA208LC1280
-Console: switching to colour frame buffer device 160x64
-fb0: stifb 1280x1024-8 frame buffer device, id: 2b4ded6d, mmio: 0xf8100000
-pty: 256 Unix98 ptys configured
-Serial driver version 5.05c (2001-07-08) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
-ttyS00 at iomem 0xf0105800 (irq = 90) is a 16550A
-ttyS01 at iomem 0xf0202800 (irq = 121) is a 16550A
-PS/2 keyboard port at 0xf0108000 (irq 69) found, device attached.
-PS/2 psaux port at 0xf0108100 (irq 69) found, device attached.
-Found HIL at 0xf0201000, IRQ 126
-HIL: timed out, assuming no keyboard present.
-Warning : device (10, 0x10, 0x0, 0x73) NOT claimed by HIL
-lp0: using parport0 (interrupt-driven).
-Generic RTC Driver v1.02 05/27/1999 Sam Creasey (sammy@oh.verio.com)
-block: 128 slots per queue, batch=32
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-loop: loaded (max 8 devices)
-Found i82596 at 0xf0107000, IRQ 87
-eth0: 82596 at 0xf0107000, 08 00 09 3B F2 06 IRQ 87.
-82596.c $Revision: 1.27 $
-SCSI subsystem driver Revision: 1.00
-53c700: Version 2.6 By James.Bottomley@HansenPartnership.com
-scsi0: 53c710 rev 2 
-scsi0 : LASI SCSI 53c700
-scsi0: (3:0) Synchronous at offset 8, period 100ns
-  Vendor: QUANTUM   Model: XP34550S          Rev: LXY1
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-scsi0: (3:1) Synchronous at offset 8, period 100ns
-  Vendor: NEC       Model: CD-ROM DRIVE:461  Rev: 2.3d
-  Type:   CD-ROM                             ANSI SCSI revision: 02
-scsi0: (4:1) Synchronous at offset 8, period 124ns
-Attached scsi disk sda at scsi0, channel 0, id 3, lun 0
-scsi0: (3:0) Enabling Tag Command Queuing
-SCSI device sda: 8890760 512-byte hdwr sectors (4552 MB)
-Partition check:
- sda: sda1 sda2 sda3 sda4
-Attached scsi CD-ROM sr0 at scsi0, channel 0, id 4, lun 0
-sr0: scsi-1 drive
-Uniform CD-ROM driver Revision: 3.12
-Lasi Harmony Audio rev. 0 at 0xf0104000, using IRQ 82
-sticonsole_init: searching for STI ROMs
-md: linear personality registered as nr 1
-md: raid0 personality registered as nr 2
-md: raid1 personality registered as nr 3
-md: raid5 personality registered as nr 4
-raid5: measuring checksumming speed
-   8regs     :    60.800 MB/sec
-   8regs_prefetch:    60.800 MB/sec
-   32regs    :    88.400 MB/sec
-   32regs_prefetch:    88.400 MB/sec
-raid5: using function: 32regs_prefetch (88.400 MB/sec)
-md: md driver 0.90.0 MAX_MD_DEVS=256, MD_SB_DISKS=27
-md: Autodetecting RAID arrays.
-md: autorun ...
-md: ... autorun DONE.
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP, IGMP
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 4096 bind 8192)
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-VFS: Mounted root (ext2 filesystem) readonly.
-NOT FREEING INITMEM
-Adding Swap: 249136k swap-space (priority -1)
-eth0: link ok.
-
---------------070202080600060509010902--
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
