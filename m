@@ -1,33 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7279E482A
-	for <parisc-linux@parisc-linux.org>; Fri, 25 May 2001 18:08:14 -0600 (MDT)
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 623F2482A
+	for <parisc-linux@parisc-linux.org>; Fri, 25 May 2001 18:32:09 -0600 (MDT)
 To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] Major hppa binutils problem 
+In-Reply-To: Message from Matt Taggart <taggart@carmen.fc.hp.com>
+   of "Tue, 22 May 2001 18:07:59 MDT." <20010523000759.C759937DCE@carmen.fc.hp.com>
+References: <20010523000759.C759937DCE@carmen.fc.hp.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 25 May 2001 18:10:59 -0600
+Date: Fri, 25 May 2001 18:34:50 -0600
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010526001059.283B437C8F@carmen.fc.hp.com>
-Subject: [parisc-linux] List of packages for hppa ISO release
+Message-Id: <20010526003450.E0CC037C8F@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi binary-hppa hackers,
+Matt Taggart writes...
 
-I have generated a list of packages that we intend to put in the ISO release 
-at the end of this month. The list represents a first pass at what pb, willy, 
-and I think should be installed on a parisc linux server box. We have excluded 
-packages from non-US for the same reasons that Debian does. The way this list 
-was generated was by installing the packages and then running a "dpkg 
---get-selections". If you like you can make your system identical to this list 
-by feeding the list to "dpkg --set-selections". The list is available at,
+[snip]
+> Paul Bame has written a script you can run to check and see if your system
+> has any bad debs installed. Its available at,
+> 
+> ftp://puffin.external.hp.com/pub/parisc/tools/plt-checker
 
-http://puffin.external.hp.com/~taggart/selections.20010525
+It was discovered that this tool could silently fail if you didn't have the 
+right version of binutils installed. I have updated the URL above with Paul's 
+latest version. Also most of the bad debs in the debian archive have been 
+replaced by new clean ones. So what a few of us have been doing is,
 
-There are still a few missing dependencies but those should be taken care of 
-in the next few days. If you have additions/deletions to the list please send 
-them to me.
+- "apt-get update; apt-get upgrade" to get all the latest debs
+- run plt-checker
+- remove or replace the remaining stuff that's broken
 
-Thanks,
+You'll probably want to do something similar.
 
 -- 
 Matt Taggart        Linux Development Lab
