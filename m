@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD951CFF3.dip.t-dialin.net [217.81.207.243])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1D2E9482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 10:35:56 -0700 (MST)
-Date: Sat, 15 Dec 2001 18:32:32 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Joerg Hartmann <J.Hartmann@reinarts.de>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 803B1482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 21:12:23 -0700 (MST)
+Message-Id: <200112160406.VAA05075@puffin.external.hp.com>
+To: Maneesh Singhal <maneesh@india.hp.com>
 Cc: PARISC Linux List <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] gcc on 0.9.3 iso problem
-Message-ID: <20011215183232.A6668@solo.franken.de>
-References: <561134811041.20011215144325@reinarts.de> <20011215161646.GX1515@tausq.org> <861152294541.20011215193448@reinarts.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <861152294541.20011215193448@reinarts.de>; from J.Hartmann@reinarts.de on Sat, Dec 15, 2001 at 07:34:48PM +0100
+Subject: Re: [parisc-linux] installation 
+In-Reply-To: Message from Maneesh Singhal <maneesh@india.hp.com>
+   of "Sat, 15 Dec 2001 18:08:26 +0530." <Pine.HPX.4.21.0112151802590.20337-100000@hpuxsrv.india.hp.com>
+Date: Sat, 15 Dec 2001 21:06:56 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +21,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Dec 15, 2001 at 07:34:48PM +0100, Joerg Hartmann wrote:
-> Maybe someone can explain, what i am doing wrong here ?
-> I have installed gcc from the CD with "apt-get install gcc"
+Maneesh Singhal wrote:
+>      1. at the time of Installing kernel and driver modules, it use to give 
+> 	fatal error sometimes [a couple of times it passed too].. 
+>      2. This one is consistent, while installing the base system, it was alwa
+>   ys
+> 	failing and use to give dump with error message saying 
+> 	"console.data-........ scsi1:(2:0) Fatal Error : Not MSG_IN after
+> 	selection .. Bus reset detected ..." etc. etc.
 
-apt-get install libc6-dev ? gcc is the compiler but you want a C library
-for your C programs.
+Can you use a serial console, capture the output, and post that here?
 
-Thomas.
+Also, please read the errata (link is on the 0.9 release page)
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+grant
