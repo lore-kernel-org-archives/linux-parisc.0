@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hermes.fachschaften.tu-muenchen.de (hermes.fachschaften.tu-muenchen.de [129.187.176.19])
-	by dsl2.external.hp.com (Postfix) with SMTP id 52A8D483C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 10:25:11 -0600 (MDT)
-Date: Wed, 29 May 2002 18:25:13 +0200 (CEST)
-From: Andreas Deresch <aderesch@fs.tum.de>
-Reply-To: Andreas Deresch <aderesch@fs.tum.de>
-To: Matthew Wilcox <willy@debian.org>
-Cc: marc <marc@centraltx.com>, <parisc-linux@lists.parisc-linux.org>
+Received: from mail.centraltx.com (gapserver.centraltx.com [64.209.39.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BDB2A483F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 10:26:08 -0600 (MDT)
+Date: Wed, 29 May 2002 11:25:26 -0500
+Message-Id: <200205291125.AA386859468@mail.centraltx.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: "marc " <marc@centraltx.com>
+Reply-To: <marc@centraltx.com>
+To: <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Java and SSH
-In-Reply-To: <Pine.NEB.4.44.0205291813260.25776-100000@tethys.fachschaften.tu-muenchen.de>
-Message-ID: <Pine.NEB.4.44.0205291821570.25776-100000@tethys.fachschaften.tu-muenchen.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +21,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 29 May 2002, Andreas Deresch wrote:
+The problem is per my original post that I do not have network
+yet, I just needed the Java and SSH stuff to do some work,
+but I guess I will wait until I get things up and running.
 
-> On Wed, 29 May 2002, Matthew Wilcox wrote:
->
-> > On Wed, May 29, 2002 at 11:04:58AM -0500, marc  wrote:
-> > >
-> > > >Check for OpenSSH, I'm pretty sure it's part of the compiled
-> > > >packages.  As for Java, I'm pretty sure there is no pre-compiled form
-> > > >for HPPA, but you can try to compile it, or try Kaffe
-> > > >Aaron
-> > >
-> > > `apt-cache search ssh` returns nothing.
-> > >
-> > > Any other ideas?
-> >
-> > try an apt-get update first?
-> ssh is in non-US isn't it? If there is no line like
->
-> deb ftp://ftp.de.debian.org/debian-non-US unstable/non-US main
-> (change for your favourite server, protocol, etc.)
->
-> in /etc/apt/sources.list, that won't do anything.
-O.k., correction - at the moment it is in non-US/main for stable, in main
-for testing and unstable.
+Thanks,
+-Marc
 
-ad
+---------- Original Message ----------------------------------
+From: Andreas Deresch <aderesch@fs.tum.de>
+Reply-To: Andreas Deresch <aderesch@fs.tum.de>
+Date:  Wed, 29 May 2002 18:16:17 +0200 (CEST)
+
+>On Wed, 29 May 2002, Matthew Wilcox wrote:
+>
+>> On Wed, May 29, 2002 at 11:04:58AM -0500, marc  wrote:
+>> >
+>> > >Check for OpenSSH, I'm pretty sure it's part of the compiled
+>> > >packages.  As for Java, I'm pretty sure there is no pre-compiled form
+>> > >for HPPA, but you can try to compile it, or try Kaffe
+>> > >Aaron
+>> >
+>> > `apt-cache search ssh` returns nothing.
+>> >
+>> > Any other ideas?
+>>
+>> try an apt-get update first?
+>ssh is in non-US isn't it? If there is no line like
+>
+>deb ftp://ftp.de.debian.org/debian-non-US unstable/non-US main
+>(change for your favourite server, protocol, etc.)
+>
+>in /etc/apt/sources.list, that won't do anything.
+>
+>ad
+>
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
