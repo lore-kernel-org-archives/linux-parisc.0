@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tonylee9-5zaxon (unknown [220.113.166.202])
-	by dsl2.external.hp.com (Postfix) with SMTP id 770D2482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 10:28:35 -0600 (MDT)
-From: webmaster <webmaster@127.0.0.1>
-To: parisc-linux@lists.parisc-linux.org
+Received: from orion.netbank.com.br (orion.netbank.com.br [200.203.199.90])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8F103482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 10:45:27 -0600 (MDT)
+Date: Fri, 18 Jul 2003 13:47:22 -0300
+From: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030718164722.GJ1582@conectiva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <20030718162835.770D2482B@dsl2.external.hp.com>
-Date: Fri, 18 Jul 2003 10:28:35 -0600 (MDT)
-Subject: [parisc-linux] -------|优惠虚拟主机！|------
+Subject: [parisc-linux] [PATCH] provide probe_irq_mask dummy function
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,85 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-亲爱的朋友：
-　　您好！
-　　这是来自厦门市宝灵科技网络有限公司的问侯。感谢您收看这封邮件。我们真诚的希望
-您能成为我们在贵地区的重要伙伴。我们是一家采用世界高新技术结晶，研究、推广和发展
-新技术，致力于互联网信息服务、域名注册服务和虚拟主机服务的高新技术企业。详情请浏
-览:http://www.host-china.com 
-    公司自2003年起全力进军国际互联网服务领域，整合推出了以下产品。所有空间都支持
-数据库（linux+PHP+Mysql;NT+asp+acess）。这将会是您超值的选择。
-　　1.30M空间+30M企业邮局 + 送一国际域名 ，功能全面，仅售198元/年。
-　　2.120M空间＋120M企业邮箱＋1个国际域名，功能全面，仅售330元/年。
-    3.200M空间＋50M企业邮箱＋1个国际域名，功能全面，仅售450元/年。
-    4.300M空间＋50M企业邮箱＋1个国际域名，功能全面，仅售580元/年。
-　　
-　　尽管我们尽力为您提供最好的服务。，但不排除出现失误。如果是这样，我们宁愿接受
-退款，也不会因为哪怕一点点的不满意而让您不开心。所以我们承诺：主机不满意按实际余
-额退款。请不要直接回复,回复请发:xiamen263@hotmail.com
-　　祝：开心！顺利！
-　　　　　　　　　　　　　　　　　　　　webmaster of http://www.host-china.com 
-                                        厦门市宝灵科技网络有限公司
-                                        http://www.host-china.com
-                                        电话：0592-5915491（热线）   0592-5652685　
-                                        传真：0592-5652687　　
-                                        联系人：李先生 金小姐
-　　　　　　　　　　　
+First patch! :P
 
+This is what the other arches does to provide this ISA stuff, Grant suggested
+cleaning the only user of this stuff, that is drivers/pcmcia/yenta_socket.c,
+but Willy agreed that as we're on 2.6 times this bandaid is better for the time
+being.
 
+Best Regards,
 
+- Arnaldo
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----------------------------------------------------------------
-沸点群发邮件,来自软件工程专家网(http://www.21cmm.com)
-
-进CMM网校(http://www.21cmm.com)，成项目管理专家
+===== arch/parisc/kernel/irq.c 1.15 vs edited =====
+--- 1.15/arch/parisc/kernel/irq.c	Mon May  5 12:34:24 2003
++++ edited/arch/parisc/kernel/irq.c	Fri Jul 18 13:40:34 2003
+@@ -842,6 +842,10 @@
+ 	return irq_found;
+ }
+ 
++unsigned int probe_irq_mask(unsigned long irqs)
++{
++	return 0;
++}
+ 
+ void __init init_IRQ(void)
+ {
+===== arch/parisc/kernel/parisc_ksyms.c 1.9 vs edited =====
+--- 1.9/arch/parisc/kernel/parisc_ksyms.c	Sun Jun  8 17:24:25 2003
++++ edited/arch/parisc/kernel/parisc_ksyms.c	Fri Jul 18 13:41:37 2003
+@@ -37,6 +37,7 @@
+ #include <asm/irq.h>
+ EXPORT_SYMBOL(enable_irq);
+ EXPORT_SYMBOL(disable_irq);
++EXPORT_SYMBOL(probe_irq_mask);
+ 
+ #include <asm/processor.h>
+ EXPORT_SYMBOL(kernel_thread);
