@@ -1,44 +1,65 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA15562
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Aug 1999 13:14:53 -0600
-Message-Id: <199908171916.MAA24603@adlmail.cup.hp.com>
-Subject: Re: [parisc-linux] sigsetreturn (was utssys?)
-Date: Tue, 17 Aug 1999 12:20:07 -0700
-From: Cary Coutant <cary@cup.hp.com>
-To: "Matthew Wilcox" <Matthew.Wilcox@genedata.com>,
-        <parisc-linux@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA15917
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Aug 1999 13:26:09 -0600
+Message-ID: <19990817192737.3940.qmail@mailserv2.iuinc.com>
+To: parisc-linux@thepuffingroup.com
+From: Steve Moret <smoret-puffin@genocide.net>
+Date: Tue, 17 Aug 1999 12:27:35 -0700
+Sender: smoret@typhon.genocide.net
+Subject: [parisc-linux] J210 and 990811 Kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
->I also can't find a manual page for sigsetreturn() which I probably need
->to understand more deeply than utssys :-)
+I'm just reporting in on whats happening on my J210 with the 990811 kernel
+from ftp://ftp.dlug.de:/pub/parisc-linux/
 
-When the kernel passes control to a signal handler, it needs to set the 
-stack up with a signal context structure and a return address that 
-results in the restoration of that context when (and if) the signal 
-handler returns. Since the normal BV instruction used for returns can't 
-branch across space boundaries, the signal handler can't return directly 
-to kernel space, so the kernel needs to supply a return address in user 
-space that will implement the restoration of the interrupted context. 
-This return address is the sigreturn() system call, found in libc. In 
-order for the kernel to know the address of sigreturn, it needs to be 
-told in advance; that's what sigsetreturn() does.
+Here's what I get from the console:
+PARISC/Linux Bootstrap Version 0.5 (interactive)
+By Helge Deller & Jason Eckhardt
+Built Wed Aug 11 09:52:34 METDST 1999 by root@grcdg306
 
-The call to sigsetreturn() has been moved around several times in the 
-history of HP-UX. At one point, it was in the _start() routine in the C 
-library, but that didn't get called for Fortran programs, so it was added 
-to several of the signal routines, to make sure it got called before any 
-signal handlers could be installed. Ultimately, I think it ended up in 
-crt0, where it should have been all along.
 
-Sigsetreturn() also supplies a "cookie" that the kernel can use to 
-determine what the vintage is of the running program. For programs build 
-for PA 1.0, for example, the cookie tells the kernel to deliver a shorter 
-signal context record, since some of those early applications were 
-actually dependent on the size and layout of the context record. Someone 
-in OS land will probably have to supply you with the detailed meanings of 
-the cookies used in this call, if it matters.
+Please enter the command-line:
+/stand/vmlinux HOME=/ TERM=LINUX
+Reading parameters...done.
 
-Cary Coutant
-Runtime Architect
+Loading PA-RISC/Linux Kernel...
+SOM-Kernel:
+aux_header_location: 00000080
+som       : 00200080
+exec_dfile: 00098000
+exec_dsize: 0001D000
+exec_dmem : C0078000
+exec_tfile: 00030000
+exec_tsize: 00067008
+exec_tmem : C0010000
+Code at 0x00010000, size=0x00067008
+Data at 0x00078000, size=0x0001D000
+BSS  at 0x00095000.
+
+Transferring control to kernel. (At entry point 0x00010000)
+TEST
+
+
+The Kernel has started...
+You are running a 120MHz PA-RISC-Machine with 512MB of RAM.
+Free memory was at 0xC00B5F38 (=stackbase, stacksize=0x00040000).
+Free memory now at 0xC00F5F38 and ends at 0x20000000.
+Linux version 2.2.1 (root@grcdg306) (gcc version 2.8.1) #1
+ Wed Aug 11 09:33:32 METDST 1999
+command_line: <none>
+
+Dino device driver, by Alan Cox and Alex deVries
+
+*** then it stops here
+If I notice any differences in future kernel builds I'll post the results as
+well. Also if anybody has any more success with the J210s I'd like to know
+what they did. I'm currently unable to build a kernel on my own machine
+because of the lack of HP-UX.
+
+I have older kernels which printed out more information if people need those
+as well.
+
+
+-- 
+Steve Moret
+smoret@uci.edu
