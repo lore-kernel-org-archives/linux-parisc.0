@@ -1,15 +1,15 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Re: STI crash on B132L with HCRX-24
-Date: Tue, 26 Oct 2004 22:14:10 +0200
-Message-ID: <200410262214.10309.deller@gmx.de>
-References: <200410031355.12116.j.raspe@t-online.de>
-	<15238.193.160.141.5.1098777144.squirrel@193.160.141.5>
+Subject: [parisc-linux] serial console brokenness
+Date: Wed, 27 Oct 2004 08:16:58 +0200
+Message-ID: <200410270816.58792.deller@gmx.de>
+References: <20041026185052.6328B494733@palinux.hppa>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
+Cc: James Bottomley <jejb@parisc-linux.org>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <15238.193.160.141.5.1098777144.squirrel@193.160.141.5>
+In-Reply-To: <20041026185052.6328B494733@palinux.hppa>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,23 +20,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tuesday 26 October 2004 09:52, Andy Walker wrote:
-> Looks like CRX/HCRX is suffering from chronic bitrot, possibly exarcebated
-> by the ia32/ia64-centric FB patches that have been going in lately.
-> 
-> So, is there anyone (Helge?) who has time and knowledge to look into
-> this? I can boot the B132L with the console on Vis-EG and torture the
-> HCRX24 on fb1 if that helps, but some clues would be good.
+serial console is sadly still broken for me...
 
-Hi Andy,
+Linux version 2.6.9-bk6-pa4 (root@p100) (gcc version 3.3.4 (Debian 1:3.3.4-11)) #98 Wed Oct 27 08:05:48 CEST 2004                         
+Kernel command line: HOME=/ root=/dev/sda3 ip=bootp console=ttyS0 TERM=vt102 palo_kernel=0/vmlinux
+....
+Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabled
+Serial: device 0xf0105000 not configured.
+Enable support for Wax, Lasi, Asp or Dino.
+Serial: device 0xf0202000 not configured.
+Enable support for Wax, Lasi, Asp or Dino.
+Backtrace:
+ [<1024b53c>] serial8250_get_divisor+0x4c/0x58
+ [<1024b5ec>] serial8250_set_termios+0xa4/0x36c
+ [<1045df48>] uart_set_options+0xe8/0x148
+ [<1045e1c8>] serial8250_console_setup+0xb4/0xc8
+ [<1012b2e0>] register_console+0x1b0/0x224
+ [<1045e1f4>] serial8250_console_init+0x18/0x48
+ [<1045e4b4>] serial8250_pci_init+0x20/0x30
+ [<1044d4e4>] do_initcalls+0x8c/0x138
+ [<10103d70>] init+0x38/0x104
+ [<1010fc5c>] ret_from_kernel_thread+0x1c/0x24
 
-I have two problems:
-a) my time is sadly absolutely limited ATM,
-b) I don't have any 24bit (HCRX or similiar) card - Maybe someone does not need his (e.g. as PCI (if it exists at all), or GSC, or EISA) ?
 
-Anyway, I'll try to look into this at the weekend but right now I have no idea.
+Kernel Fault: Code=13 regs=100ac400 (Addr=00000000)
 
-Helge
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001111 Not tainted
+r00-03  00000000 ffffffff 1024b53c 104d5e98
+r04-07  00000000 100ac2c8 00000013 103ca010
+r08-11  1049d318 1034c800 00000000 1034c800
+r12-15  1036f800 1034c800 104a7810 103cb010
+r16-19  f000b858 00000002 00000000 00009600
+r20-23  00000cb0 104d5e98 00000000 00000000
+r24-27  00000000 00000000 00000000 103b1010
+r28-31  00000000 1f972880 100ac400 10246324
+sr0-3   00000000 00000000 00000000 00000000
+sr4-7   00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 1020578c 10205790
+ IIR: b3202000    ISR: 00000000  IOR: 10205798
+ CPU:        0   CR30: 100ac000 CR31: 10444000
+ ORIG_R28: 100ac540
+ IAOQ[0]: $$divU+0xc/0x210
+ IAOQ[1]: $$divU+0x10/0x210
+ RP(r2): serial8250_get_divisor+0x4c/0x58
+Kernel panic - not syncing: Kernel Fault
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
