@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tassadar.physics.auth.gr (tassadar.physics.auth.gr [155.207.123.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C96CD484B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Jul 2002 09:50:42 -0600 (MDT)
-Received: from localhost (dzila@localhost)
-	by tassadar.physics.auth.gr (8.11.6/8.11.6) with ESMTP id g6BFoeP32197
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Jul 2002 18:50:40 +0300
-Date: Thu, 11 Jul 2002 18:50:40 +0300 (EEST)
-From: Dimitris Zilaskos <dzila@tassadar.physics.auth.gr>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0207111849360.32161-100000@tassadar.physics.auth.gr>
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D3B44829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Jul 2002 12:58:36 -0600 (MDT)
+To: James Braid <james.braid@peace.com>
+Subject: RE: [parisc-linux] L2000 stable with SMP and RAID
+Message-ID: <1026404705.3d2db1618f064@webmail.tiscalinet.be>
+Date: Thu, 11 Jul 2002 18:25:05 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: 'Joel Soete' <joel.soete@freebel.net>,
+	parisc-linux@lists.parisc-linux.org
+References: <005801c22780$93f57770$5e01000a@bongo>
+In-Reply-To: <005801c22780$93f57770$5e01000a@bongo>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] x windows keybord problem on 715/33
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,34 +24,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- Hello ,
+Hi James,
 
-I am trying to setup X windows in an 715/33 . I can start various Windows
-managers like wdm and xdm , but i cant get keys 'i' and 'o' to work (
-they work ok in console ).All other keys work ok .
+Quoting James Braid <james.braid@peace.com>:
 
- I have the following lines in the XF86Config
+> > For my part I would like to test RAID-1 on my B180 (2 of 9Gb).
+> > Could you let me know more on the RAID configuration you implemented?
+> > Do you have a special slice (partition) for your F0 (parisc 
+> > bootloader) 
+> > and may be also for /boot?
+> 
+> My RAID config is just a 2-disk RAID-0 array for testing at the moment.
+> Heres the raidtab (probably not a lot of use to you though):
+> 
+> ----
+> 
+> raiddev                 /dev/md0
+> raid-level              0
+> nr-raid-disks           2
+> chunk-size              4
+> 
+> device                  /dev/sdb1
+> raid-disk               0
+> device                  /dev/sdc1
+> raid-disk               1
+> 
+> ----
+> 
+> Theres a RAID-1 root howto for Debian which I have used in the past
+> here: http://www.james.rcpt.to/programs/debian/raid1/ 
+> 
+Thanks to this, I build on my second disk 
+sdb1    (a F0 slice of about 16Mb)
+sdb2    swap (128Mb == Physical memory size)
+sdb3    /boot (about 64Mb to be able to test severall kernels)
+sdb5 => md0   /      (about 1.5 Gb)
 
-   Option "XkbdRules" "xfree86"
-   Option "XkbModel" "hphil"
+modify fstab to replace my boot device by /dev/md0;
+modify palo.conf to make this disk bootable and find its kernel into /boot
+partition and that works.
+
+I just now have to complete the raidtab configuration and recover the rest of my
+own slices than finaly fully rebuild md in non degraded mode and a small script
+to duplicate F0 and boot slices (not yet supported as md AFAIK).
+
+Many thanks again for your help,
+    Joel
 
 
- and in my  /etc/X11/xkb/rules/xfree86:
-     hp = xfree86 pc(pc104)
-     hphil = hp(hil) hp(hil)
-
- I am running 2.4.18-pa41 . Newer kernels till 54 either freeze my
-keyboard or have ksoftirqd consume 100% cpu ( or both) . I am using a
-serial  mouse for X . It works  most of the time but sometines the pointer
-stops moving untill I press a key . Work ok under console though .
-
- Any advice how to make 'o' and 'i'  work ?
-
- Regards ,
---
-=============================================================================
-
-Dimitris Zilaskos
-
-Department of Physics @ Aristotle Univercity of Thessaloniki , Greece
-=============================================================================
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
