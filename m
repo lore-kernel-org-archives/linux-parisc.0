@@ -1,10 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: paulus@samba.org
-Cc: parisc-linux@lists.parisc-linux.org
-Message-Id: <20020913060049.8A4974829@dsl2.external.hp.com>
-Date: Fri, 13 Sep 2002 00:00:49 -0600 (MDT)
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] [PATCH] 2.4.19 ppp_generic.c warning fixed
+Received: from web12503.mail.yahoo.com (web12503.mail.yahoo.com [216.136.173.195])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1523A4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 00:26:42 -0600 (MDT)
+Message-ID: <20020913062639.20473.qmail@web12503.mail.yahoo.com>
+Date: Thu, 12 Sep 2002 23:26:39 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+To: Jurriaan Kalkman <Jurriaan.Kalkman@zrt.nl>,
+	smithjames@comcast.net, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <sd78d3a1.013@ms-zrt1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: OT HP-UX Formatting Scsi disks
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -16,31 +22,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Paul,
-Wearing my other hat (parisc-linux), I've a fix for "used before
-initialized" warning in ppp_generic.c.
+> try zeroing out the first few blocks:
+> 
+> dd if=/dev/zero of=/dev/offending_scsi_drive bs=512 count=4
 
-The ret value might want to be something other than zero in
-the "if (skb) break;" condition.
+I've decided to load HP-UX on the E55 I've been playing with since
+Debian doesn't work very well on it right now.  I'm sending this OT
+because I need to know where dd lives on an HP-UX 11.11 box.  I'm in a
+limited shell and need an absolute path to dd to get it to accomplish
+the above.  It's so limited it won't even give me the ls command.  Any
+of you HP-UX guys out there?  Since I'm at home I don't have access to
+an HP-UX box at work.  Thanks.
 
-thanks,
-grant
+derek
 
-Index: drivers/net/ppp_generic.c
-===================================================================
-RCS file: /var/cvs/linux/drivers/net/ppp_generic.c,v
-retrieving revision 1.11
-diff -u -p -r1.11 ppp_generic.c
---- drivers/net/ppp_generic.c   4 Aug 2002 22:58:31 -0000       1.11
-+++ drivers/net/ppp_generic.c   13 Sep 2002 05:57:15 -0000
-@@ -387,9 +387,9 @@ static ssize_t ppp_read(struct file *fil
-        for (;;) {
-                set_current_state(TASK_INTERRUPTIBLE);
-                skb = skb_dequeue(&pf->rq);
-+               ret = 0;
-                if (skb)
-                        break;
--               ret = 0;
-                if (pf->dead)
-                        break;
-                ret = -EAGAIN;
+__________________________________________________
+Do you Yahoo!?
+Yahoo! News - Today's headlines
+http://news.yahoo.com
