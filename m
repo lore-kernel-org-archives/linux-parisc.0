@@ -1,9 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20011225090742.8E013482B@dsl2.external.hp.com>
-Date: Tue, 25 Dec 2001 02:07:42 -0700 (MST)
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] 2.4.16-pa24 crashes on c3k
+Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6FCAF482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Dec 2001 11:53:35 -0700 (MST)
+Received: from mmp-1.gci.net ([208.138.130.80]) by mta-2.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GOWXT800.S9N for
+          <parisc-linux@lists.parisc-linux.org>; Tue, 25 Dec 2001 09:53:32 -0900
+Date: Tue, 25 Dec 2001 09:50:54 -0900 (AKST)
+From: Tom <palinux@alaskatech.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 2.4.16-pa24 crashes on c3k
+In-Reply-To: <20011225090742.8E013482B@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.33.0112250945530.486-100000@goliath.alaskatech.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -15,40 +25,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
-I can't boot 2.4.16-pa24 on my c3k.
-2.4.16-pa20 was working fine.
-I'll put the defective .config, vmlinux, System.map on
-ftp://gsyprf10.external.hp.com/pub/c3000/2.4.16-pa24-crash.tgz
+On Tue, 25 Dec 2001, Grant Grundler wrote:
+> Hi all,
+> I can't boot 2.4.16-pa24 on my c3k.
+> 2.4.16-pa20 was working fine.
+> I'll put the defective .config, vmlinux, System.map on
+> ftp://gsyprf10.external.hp.com/pub/c3000/2.4.16-pa24-crash.tgz
 
-I'm using serial console. But I can't capture output on my OB500 laptop.
-It doesn't want to talk to the serial port - no input or output. 
-I'm not understanding why since the same settings/cable work with
-the OB600 (much older machine).  I'll try to get a full dump available
-in the next couple of days one way or another. Maybe try yet another laptop.
+I just reloaded my C180 with the 0.93 ISO and updated to -pa24 and it's
+working fine. (Note to all - the 0.93 ISO will cheerfully allow you to
+partition a drive as 35MB type F0, 250MB swap and 4GB root, load all the
+software, and boot with the stock kernel and map. Then, when you compile
+your new -pa24 kernel, it barfs because you forgot that /boot must end in
+the first 2GB... Fortunately I rebooted off the CD, deleted the swap
+partition, created a new swap and /boot in that same 250MB area and all is
+well.)
 
-Last couple of lines before stack trace are:
-
-...
-SuperIO: Found NS87560 Legacy I/O device at 00:0e.1 (IRQ 64)
-SuperIO: Serial port 1 at 0x3f8
-SuperIO: Serial port 2 at 0x2f8
-SuperIO: Parallel port at 0x378
-SuperIO: Floppy controller at 0x3f0
-WARNING! Stack pointer and cr30 do not correspond
-
-Dumping Stack from 12298000 to 1229c740:
-...
-[ does not look like a valid stack trace - data patterns don't look
-like what I've seen before and too long ]
-
-Kernel Fault: Code=26 regs=1229c740 (Addr=00000074)
-
-GR02: 1010d51c
-GR30: 1229c740
-IOAQ: 1010e798
-IIR 4b5300e8
-CR30: 1229c000 CR31: 10318000
-ORIG_R28: 10326dbf
-
-grant
+My only kernel changes were to the SCSI stuff, I believe, and to remove
+all the NICs except the onboard.
