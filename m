@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from chirp.Stanford.EDU (chirp.Stanford.EDU [171.64.90.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 42EC9482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 20:16:36 -0700 (MST)
-Date: Fri, 22 Nov 2002 19:16:23 -0800 (PST)
-From: Leif Harcke <lharcke@Stanford.EDU>
-To: parisc-linux@lists.parisc-linux.org
+Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3A22F482E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 21:45:00 -0700 (MST)
+Date: Sat, 23 Nov 2002 04:44:50 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Leif Harcke <lharcke@Stanford.EDU>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Tulip driver fails to advertise 100baseTx media
  capability
-In-Reply-To: <20021122220937.29082482B@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0211221747260.29185-100000@chirp.Stanford.EDU>
+In-Reply-To: <Pine.LNX.4.44.0211221116130.28782-100000@chirp.Stanford.EDU>
+Message-ID: <Pine.LNX.4.44.0211230437370.13058-100000@sal.ucc.ie>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,48 +23,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Fri, 22 Nov 2002, Leif Harcke wrote:
 
-On Fri, 22 Nov 2002, Grant Grundler wrote:
-> Is the tulip comminucating on the wire at all?  (Sounds like it is)
+> Just got Debian 3.0 (woody) booted on a C240.  When the Tulip driver is
+> initialized by the kernel, it fails to advertise the 100baseTx media
+> capability of the DS21143 chip.  I think this is a kernel issue, not a
+> Debian or Tulip issue.
 
-Sure, at 10 Mbps after boot, and at 100 Mbps full duplex once I use
-mii-tool to corretly set the autonegotiation advertising register.
+the same for me.
+It happens one out of 30 time that I get a 100mbit connection.
+Usually I just get 10mbit full duplex (this machine is connected to a
+10/100 Switch (not Hub), and just other 100Mbit capable network devices
+are attached to it.
 
-> It's possible this is a problem/interaction with your switch/hub.
+> Setting the PDC/firmware (v. 6.3, latest for the C240) to force the
+> 100/Full duplex rate at boot time doesn't fix the problem, nor does
+> issuing an "ether=0,0,[11|14],eth0" to the kernel from the PALO kernel
+> parameters line.
 
-I don't think this is a possibility.  The kernel/Tulip have to decide what
-to advertise on the link long before autonegotiation is attempted, right?
-The switch has absolutely no effect on what the kernel/Tulip decide to
-advertise prior to the start of negotiation.
+The same for me
 
-> >sar2:~# dmesg | grep ulip
-> >Linux Tulip driver version 0.9.15-pre9 (Nov 6, 2001)
-> >tulip0: no phy info, aborting mtable build
-> >tulip0:  MII transceiver #1 config 1000 status 782d advertising 0061.
-                                                       ^^^^^^^^^^^^^^^^
-This is the smoking gun.  According to the chart at
-  http://www.scyld.com/diag/mii-status.html#anar
-the number 0061 (it is base 16 despite the lack of 0x) means the
-kernel/Tulip have decided to only advertise the 10mbps capabilities of the
-chipset prior to when negotiaton with the switch begins.  From reading
-kernel source it appears that the Tulip driver sets some default state if
-it can't build the mtable.  Perhaps this is where the error comes from.
+> I think the way Tulip is called by the kernel somehow causes only 10baseT
+> to be advertised.  It's easy enough to correct after the fact with a
+> simple "mii-tool -A" command, but it would be nicer if the media
+> advertising was properly set by the kernel at boot time.  See output of
+> uname, dmesg, and mii-tool below.
+>
+> A thousand pardons if this is the wrong list for this bug.  I'll re-post
+> to the debian-hppa or the tulip list if people think those are the proper
+> places.
 
-> I committed a tulip "phy reset" issue fix in later kernels that I don't
-> think is part of the 2.4.18 Debian 3.0 kernel.
+I think it more a hardware related issue. The network card in the C240
+is VERY picky about 100mbit negotiation.
 
-Thanks much,
+Maybe you are able to force to switch it to 100mbit via software,
+but I'm not sure.
 
-- --
-Leif Harcke
-lharcke@stanford.edu
+See also http://www.unixnerd.demon.co.uk/hp_unix.html , the FAQ at
+the bottom at the page.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE93vMOFW+DB6BX7gwRAh1uAJ4yoZ9ITUm0Qrs8hOVP1FW2UqVNbQCglXQ8
-zGu046IWmnJzSp4Jvr08HlM=
-=JMip
------END PGP SIGNATURE-----
+greetings max
