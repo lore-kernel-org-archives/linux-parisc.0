@@ -1,43 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.southpole.se (unknown [213.212.2.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E2BDD482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 04:09:22 -0600 (MDT)
-From: Jakob Sandgren <jakob@southpole.se>
-Date: Thu, 19 Jul 2001 12:09:11 +0200
-To: parisc-linux@lists.parisc-linux.org
-Cc: Anders Nystrom <andesr@southpole.se>
-Message-ID: <20010719120911.C6908@southpole.se>
+Received: from mailin3.email.bigpond.com (juicer24.bigpond.com [139.134.6.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D2E1482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 04:50:47 -0600 (MDT)
+Received: from bubble.local ([144.135.24.75]) by
+          mailin3.email.bigpond.com (Netscape Messaging Server 4.15) with
+          SMTP id GGPVPH00.EZ6 for <parisc-linux@lists.parisc-linux.org>;
+          Thu, 19 Jul 2001 20:56:05 +1000
+Date: Thu, 19 Jul 2001 20:20:08 +0930
+From: Alan Modra <amodra@bigpond.net.au>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] r3 getting trashed by __wake_up?
+Message-ID: <20010719202008.C14307@bubble.sa.bigpond.net.au>
+References: <200107190751.BAA09784@puffin.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Installation success on C200
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200107190751.BAA09784@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Thu, Jul 19, 2001 at 01:51:15AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Thu, Jul 19, 2001 at 01:51:15AM -0600, Grant Grundler wrote:
+> 
+>   f0:   34 7e 00 80     ldo 40(r3),sp
+>   f4:   e8 40 d0 00     ret       
+>   f8:   4f c3 3f 81     ldw,mb -40(sp),r3
+> 
+> Shouldn't sp be restored with "copy r3,sp"?
+> And the restore of r3 be "ldw 0(sp),r3"?
 
-I would just like to report that we have installed the 0.9.1 distro on
-a C200 without any problems at all! It defaulted to the 32bit kernel,
-we will try to build a new kernel with 64 bit support.
+No, because then an interrupt might come along and trash 0(sp).  All
+the assembly you showed looks good to me.
 
-Great work with the distribution!! 
-
-Some minor(?) bugs discovered so far:
-* After the reboot during the last stage of installation we got a
-  corrupted filesystem and some files ended up in lost+found.
-* cat /proc/interupts gives an oops and hangs the system
-* cat /dev/dsp gives an oops and hangs the system
-
-A question;
-during boot the firmware complains about that the memory is not
-installed for "optimal performance". Do anyone know what to do about
-this?
-
-
-Let me know if someone would like to use this machine for autobuiling
-etc, it has 512MB RAM and a good access to the Internet. 
-
-/Jakob
--- 
-Jakob Sandgren                  South Pole AB
-Phone:  +46 8 51420420          Gelbjutarvägen 5
-Fax:    +46 8 51420429          SE - 17148 Solna 
-e-mail: jakob@southpole.se      www.southpole.se
+Alan
