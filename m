@@ -1,16 +1,20 @@
-Return-Path: <nitephyre@iinet.net.au>
-Received: from mail.iinet.net.au (mail-03.iinet.net.au [203.59.3.35])
-	by dsl2.external.hp.com (Postfix) with SMTP id C0A8648D5
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 38D5F48C4
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  3 Jan 2004 02:43:40 -0700 (MST)
-Message-ID: <000801c3d1de$08e053d0$0101a8c0@nitephyre>
-From: "Matt Lewis" <nitephyre@iinet.net.au>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Sat, 3 Jan 2004 19:43:24 +1000
+	Sat,  3 Jan 2004 03:51:02 -0700 (MST)
+Message-ID: <3FF69EE3.8070101@tiscali.be>
+Date: Sat, 03 Jan 2004 10:52:19 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C3D231.D991B020"
-Subject: [parisc-linux] Probem Installing: slang(version).deb corrupt
+To: Ryan Bradetich <rbradetich@uswest.net>
+Subject: Re: [parisc-linux] 2.6 & pdc_console pb on c110: "Warning: unable
+	to open an initial console."
+References: <3FEDF301.5030901@tiscali.be>
+	<1073100507.1555.6.camel@laptop.bradetich.net>
+In-Reply-To: <1073100507.1555.6.camel@laptop.bradetich.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,50 +24,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Hi Ryan,
 
-------=_NextPart_000_0005_01C3D231.D991B020
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-Hi, I have a HP Visualize C3000 and i'm trying to install Debian HPPA on =
-it... and every time i try to install the base system, whether it be =
-from CD or http, i get the message of "slang(version_here).deb is =
-corrupt. could not download"
 
-is there any way around this? since my machine hasn't got HPUX on it, =
-and i cant find anywhere to download it :|
+Ryan Bradetich wrote:
+> Joel,
+> 
+> Even though you should not need the pdc_console for what you want to do,
 
-cheers, matt :)
+Well, I had the opportunity to test pdc_console on my b2k but as well as in 2.4 it make hung the kernel at boot time:
+the cdrom green led stay continuously lighted (if I add or remove ide-cdrom support in the kernel)
+Unfortunately I never reach to get any relevant toc info to go further in this pb invetigation :(. Now basicaly 2.6 is running on 
+this system and so I will try to add some printk() to locate more accurately this event.
 
-------=_NextPart_000_0005_01C3D231.D991B020
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> pdc_console should work in theory.  It probably needs to be updated to
+> work with the 2.6 kernel.  I will add this to my TODO list.
+> 
+Ah ok I will waiting some news so.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3810.1700" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi, I have a HP Visualize C3000 and i'm =
-trying to=20
-install Debian HPPA on it... and every time i try to install the base =
-system,=20
-whether it be from CD or http, i get the message of =
-"slang(version_here).deb is=20
-corrupt. could not download"</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>is there any way around this? since my =
-machine=20
-hasn't got HPUX on it, and i cant find anywhere to download it =
-:|</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>cheers, matt =
-:)</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0005_01C3D231.D991B020--
+Thanks also and happy new year,
+	Joel
