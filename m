@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 989DA482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Feb 2002 07:17:26 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16YpMX-0005Ez-00; Thu, 07 Feb 2002 14:17:21 +0000
-Date: Thu, 7 Feb 2002 14:17:21 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "Kurc, Marcin A." <makurc@cooperstandard.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C240 64-bit kernel
-Message-ID: <20020207141721.B17779@parcelfarce.linux.theplanet.co.uk>
-References: <426B4FEBE684D411B0A60090273B1D24024855EB@aa0016.auburn.auto.cooperintra.ctb>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <426B4FEBE684D411B0A60090273B1D24024855EB@aa0016.auburn.auto.cooperintra.ctb>; from makurc@cooperstandard.com on Thu, Feb 07, 2002 at 07:23:31AM -0500
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE5BA482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Feb 2002 07:41:40 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <helge.deller@sap.com>
+To: Enrik Berkhan <Enrik.Berkhan@planb.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors
+Date: Thu, 7 Feb 2002 15:41:34 +0100
+References: <20020207130852.C3306@electra.intern.planb.de>
+In-Reply-To: <20020207130852.C3306@electra.intern.planb.de>
+MIME-Version: 1.0
+Message-Id: <E16Ypjz-0000uP-00@linuxlab.wdf.sap-ag.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,12 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Feb 07, 2002 at 07:23:31AM -0500, Kurc, Marcin A. wrote:
+On Thursday 07 February 2002 13:08, Enrik Berkhan wrote:
 > Hi,
-> Did anybody got a C240 to boot off of 64-bit kernel?
+>
+> when using a 720 (running linux, of course ;-) as serial console
+> for a 715(old) I've noticed that the terminal (720) produces garbage
+> when the 715 comes to the firmware prompt (both running at 115200).
+> This is not a flow control or something problem. Investigating on
+> that I've found some oddities concerning setserial, baud_base and
+> the divisor calculation in the serial driver ...
 
-you need to turn on CONFIG_PDC_NARROW if you do this.  But don't bother,
-there is no point in booting a 64-bit kernel on a C240.
+AFAIK the firmware output only happens at 9600 baud (8N1) and you can't 
+change that. After the linux kernel has booted you can of course use
+a higher rate.
 
+Helge
 -- 
-Revolutions do not require corporate support.
+Helge Deller
+SAP AG - LinuxLab and Unix Platforms
+email: helge.deller@sap.com
