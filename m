@@ -1,24 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from gwyn.tux.org (gwyn.tux.org [207.96.122.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6E8A2482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Aug 2001 23:00:46 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id EC293482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Aug 2001 23:30:10 -0600 (MDT)
 Received: (from timball@localhost)
-	by gwyn.tux.org (8.9.3/8.9.1) id BAA29651
-	for parisc-linux@lists.parisc-linux.org; Sun, 19 Aug 2001 01:00:38 -0400
-Date: Sun, 19 Aug 2001 01:00:38 -0400
+	by gwyn.tux.org (8.9.3/8.9.1) id BAA30882
+	for parisc-linux@lists.parisc-linux.org; Sun, 19 Aug 2001 01:30:10 -0400
+Date: Sun, 19 Aug 2001 01:30:09 -0400
 From: Timothy Ball <timball@tux.org>
 To: parics Linux Mailing List <parisc-linux@lists.parisc-linux.org>
-Message-ID: <20010819010038.A2644@gwyn.tux.org>
+Subject: Re: [parisc-linux] Keyboard on 712/60 and X
+Message-ID: <20010819013009.B2644@gwyn.tux.org>
+References: <20010819010038.A2644@gwyn.tux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Keyboard on 712/60 and X
+In-Reply-To: <20010819010038.A2644@gwyn.tux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-When I start up X white is also replaced for blue, but I can't tell if
-rebooting to the new 2.4.9-pa2 kernel I got from the cvs fixes anything
-cause I can't type anything to the console... I know there was a patch
-to fix the keyboard issues for the BXXX and CXXX hp's but I do know know
-if this will fix my issue...
+On Sun, Aug 19, 2001 at 01:00:38AM -0400, Timothy Ball wrote:
+> When I start up X white is also replaced for blue, but I can't tell if
+> rebooting to the new 2.4.9-pa2 kernel I got from the cvs fixes anything
+> cause I can't type anything to the console... I know there was a patch
+> to fix the keyboard issues for the BXXX and CXXX hp's but I do know know
+> if this will fix my issue...
+> 
+
+Well I found a workaround while playing w/ the blue looking X session...
+If I start an app that needs to allocate it's own colormap (xgalaga for
+example), when the app exits all the colors look right.
+
+I don't know what that means. But I figure that someone can use that bit
+of info to figure out a proper solution to this bug. In the mean time I
+guess I'll be playing a lot more xgalaga... which is exactly what I
+didn't need.
 
 --timball
 
