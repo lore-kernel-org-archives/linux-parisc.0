@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3BF32482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Dec 2001 04:16:36 -0700 (MST)
-Received: from computer (pec-53-205.tnt1.b2.uunet.de [149.225.53.205])
-	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id MAA00739
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Dec 2001 12:12:08 +0100 (MET)
-Date: Wed, 19 Dec 2001 13:28:44 +0100
-From: Joerg Hartmann <J.Hartmann@reinarts.de>
-Reply-To: Joerg Hartmann <J.Hartmann@reinarts.de>
-Message-ID: <881475869708.20011219132844@reinarts.de>
-To: parisc-linux Mailinglist <parisc-linux@lists.parisc-linux.org>
-MIME-Version: 1.0
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 60C39482A
+	for <parisc-linux@parisc-linux.org>; Wed, 19 Dec 2001 04:37:34 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 99553B00C; Wed, 19 Dec 2001 11:36:21 +0000 (GMT)
+Date: Wed, 19 Dec 2001 11:36:21 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Andy Walker <squawker@start.no>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Status report - B132L and 725/100
+Message-ID: <20011219113621.X1897@linuxcare.com>
+References: <1008589643.3c1ddb4b75583@nyepost.start.no> <1008594958.3c1df00ed9750@nyepost.start.no>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] can not get samba to work
+In-Reply-To: <1008594958.3c1df00ed9750@nyepost.start.no>; from squawker@start.no on Mon, Dec 17, 2001 at 02:15:58PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,33 +25,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello parisc-linux users,
+On Mon, Dec 17, 2001 at 02:15:58PM +0100, Andy Walker wrote:
+> Quoting Andy Walker <squawker@start.no>:
+> 
+> > I had to pull the Bluefish F/W-Diff card (or at least disconnect the
+> > disk) but it may have been termination problems causing the timeouts/
+> > resets. Something else to test :-)
+> 
+> Okay, checked termination. Tried a different disk. Booted HP-UX on
+> that disk. No luck with Linux.
+> 
+> Relevant part of the dmesg is:
+> 
+> ...
+> 18. Bluefish Add-on FW-SCSI (4) at 0xfff8c000 [11], versions 0x13, 0x0, 0x89
+> ...
+> zalon_scsi_callback: Zalon vers field is 0x1, IRQ 34
+> ncr53c8xx: 53c720 detected
+> ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+> scsi0 : ncr53c8xx-3.4.3b-20010512
 
-i can not get samba to work on my 720 with the 0.9.3 Debian.
-smbd dies immediatly with an error message in log.smbd:
-[2001/12/16 19:51:43, 0] lib/messages.c:message_init(97)
-  ERROR: Failed to initialise messages database
+Don't know why that is failing; does it always fail, or is it an
+intermittant problem?  e.g. Are the disks detected at boottime?
 
-A messages.tdb exists. Every tool seems to have problems with *.tdb
-hp-tux:/usr/src/samba-2.2.2/source/bin# ./smbstatus -s /etc/samba/smb.conf
-connections.tdb not initialised
+You might try booting with something like
 
-First i had installed the samba (v 2.2.2) package from the CD with
-apt-get. After that didn't worked, i removed it and compiled my own from
-the native source. Same problem - same error.
+ncr53c8xx=sync:255,burst:0,verb:2
 
-./configure and make went smoothly so i dont understand
-what the reason of this error is.  
+which slows it down and might help if it is intermittant (just guessing though)
 
-As i thought this would be a samba error i asked for help
-on the samba mailing list, but did not get an answer.
-So i am now stuck with this error ...
-Does anyone use samba on parisc-linux ?
-Could this be a problem with some underlying software which samba
-depends on ?
-I use samba since years on x86-Linux and have never seen such things
-bevore.
-
--- 
-Best regards,
- Joerg                          J.Hartmann@reinarts.de
+Richard
