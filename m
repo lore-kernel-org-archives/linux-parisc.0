@@ -1,53 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0D34A4A18
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Feb 2001 13:24:21 -0700 (MST)
-Message-Id: <200102012026.MAA01201@milano.cup.hp.com>
-To: Paul Bame <bame@fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, amodra@linuxcare.com
-Subject: Re: [parisc-linux] $$mulI missing 
-In-reply-to: Your message of "Thu, 01 Feb 2001 13:01:52 PST."
-             <E14OPvU-0006yu-00@noam.fc.hp.com>
-Date: Thu, 01 Feb 2001 12:26:26 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E04894A18
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Feb 2001 15:15:20 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA31769
+	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Feb 2001 15:11:11 -0700
+From: 5116@telia.com
+Message-Id: <200102012215.XAA10566@zaphod.halden.lillfab.se>
+Date: Thu, 1 Feb 2001 23:15:05 +0100 (CET)
+Reply-To: 5116@telia.com
+Subject: Re: [parisc-linux] register_fallback_cpu() 
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <200102010541.VAA00554@milano.cup.hp.com>
+MIME-Version: 1.0
+Content-Type: TEXT/plain; CHARSET=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame wrote:
-> I didn't think the 64-bit compiler used mulI so didn't include it
-> in the millicode routines.  I'm curious what's using it.
+On 31 Jan, Grant Grundler wrote:
+> But I don't think it's related to the register_fallback_cpu() code changes
+> I made. Maybe something else I submitted that day...
+I now have it booting, b ut not with today's cvs I had to revert to
+2001-01-31. 
+The problem is that register_driver only tries the first structure in
+the array it gets, and the ASP is second in the array in busdevice.c
+which causes it to never be initialized.
 
-    arch/parisc/kernel/parisc_ksyms.c
+I also noticed that the busdev_driver_for array is marked as initdata,
+but a pointer to it gets saved in arch/parisc/drivers.c.
 
-Exported for (guess what?) CONFIG_MODULE support. :^/
+Best Regards, Daniel
 
-I've committed the following patch. Paul tells me on 64 bit, millicode looks
-to be limited to div* and rem*.
-
-grant
-
-diff -u -p -r1.11 parisc_ksyms.c
---- parisc_ksyms.c      2000/12/31 01:42:06     1.11
-+++ parisc_ksyms.c      2001/02/01 20:16:08
-@@ -97,8 +97,6 @@ extern void $$divI(void);
- extern void $$divU(void);
- extern void $$remI(void);
- extern void $$remU(void);
--extern void $$mulI(void);
--extern void $$mulU(void);
- extern void $$divU_3(void);
- extern void $$divU_5(void);
- extern void $$divU_6(void);
-@@ -122,8 +120,6 @@ EXPORT_SYMBOL_NOVERS($$divI);
- EXPORT_SYMBOL_NOVERS($$divU);
- EXPORT_SYMBOL_NOVERS($$remI);
- EXPORT_SYMBOL_NOVERS($$remU);
--EXPORT_SYMBOL_NOVERS($$mulI);
--EXPORT_SYMBOL_NOVERS($$mulU);
- EXPORT_SYMBOL_NOVERS($$divU_3);
- EXPORT_SYMBOL_NOVERS($$divU_5);
- EXPORT_SYMBOL_NOVERS($$divU_6);
-
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
