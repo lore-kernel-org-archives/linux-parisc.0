@@ -1,52 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA21867
-	for <parisc-linux@puffin.external.hp.com>; Sat, 21 Oct 2000 12:28:52 -0600
-Message-Id: <200010211834.LAA17164@milano.cup.hp.com>
-To: drepper@cygnus.com (Ulrich Drepper)
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] __FUNCTION__ work? 
-In-reply-to: Your message of "21 Oct 2000 10:45:09 PDT."
-             <m37l72gkbe.fsf@otr.mynet.cygnus.com>
-Date: Sat, 21 Oct 2000 11:34:36 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA22977
+	for <parisc-linux@puffin.external.hp.com>; Sat, 21 Oct 2000 14:38:33 -0600
+Date: Sat, 21 Oct 2000 13:39:50 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001021133950.A7980@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] parisc asm questions
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ulrich Drepper wrote:
-> Grant Grundler <grundler@cup.hp.com> writes:
-> 
-> > The output I get from:
-> > 	printk(__FUNCTION__ "() starts\n");
-> 
-> RTFM.  __FUNCTION__ and __func__ are identifiers, not string literals.
+would someone please enlighten me about why this is happening?
 
-Ok. I'll update my usage. tnx.
+i have a simple fetch-add asm loop:
 
-I tried to find the manual (still looking) but found some other
-interesting links instead:
+/* arg0 is a pointer to a buffer, %arg1 is the length, %r4 == %arg1>>2 */
+$loop:
+	ldws,ma		4(%arg0), %r3
+	addc		%ret0, %r3, %ret0
+	addib,<>	-1, %r4, $loop
+	addi		-4, %arg1, %arg1
 
-http://gcc.gnu.org/ml/gcc-patches/1999-10n/msg00281.html
-    Jason Merrill <jason at cygnus dot com> wrote:
-    | In g++, __FUNCTION__ is a variable, not a string literal.
-    | That change was necessary to support templates.
+i notice that the sum returned is sometimes off by a certain amount from
+what i was expecting.  while i was tracing this down, i added a line to 
+the loop so that it's:
 
-http://agnes.dida.physik.uni-essen.de/~janjaap/mingw32/gcc-announce.html
-(gcc 2.8.0 release notes dated Wed, 14 Jan 98 05:59:05 EST)
-    Richard Kenner wrote:
-    | __FUNCTION__ and __PRETTY_FUNCTION__ are now treated as variables by
-    | the parser; previously they were treated as string constants.  So code
-    | like  `printf (__FUNCTION__ ": foo")' must be rewritten to `printf
-    | ("%s: foo", __FUNCTION__)'.  This is necessary for templates.
+$loop:
+	add		%r0, %r3, %r3	/* isn't this equivalent to a nop? */
+	ldws,ma		4(%arg0), %r3
+	addc		%ret0, %r3, %ret0
+	addib,<>	-1, %r4, $loop
+	addi		-4, %arg1, %arg1
 
-I've been writing 'C' code since about 1985...old habits die hard. :^)
+and i get fairly different behavior. I think I'm not understanding how
+the carry bit gets updated or something. any hints will be much appreciated.
 
-thanks,
-grant
-
-> -- 
-> ---------------.                          ,-.   1325 Chesapeake Terrace
-> Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-> Red Hat          `--' drepper at redhat.com   `------------------------
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
