@@ -1,16 +1,19 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] 2.6.10-rc1-pa11 profile data
-Date: Thu, 11 Nov 2004 00:11:54 -0800
-Message-ID: <20041111081154.GR15714@tausq.org>
-References: <20041111075431.GB9768@colo.lackof.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] [BUG] 2.6.8-1-32 Debian kernel panics in harmony
+Date: Thu, 11 Nov 2004 17:47:31 +0100
+Message-ID: <6174A8D1-3401-11D9-AEAC-0030656F07A2@esiee.fr>
+References: <20041111073850.GA9768@colo.lackof.org>
+	<20041111134831.GF2308@roadwarrior.mcmartin.ca>
+	<20041111161930.GA17851@colo.lackof.org>
+Mime-Version: 1.0 (Apple Message framework v619)
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux@lists.parisc-linux.org
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041111075431.GB9768@colo.lackof.org>
+In-Reply-To: <20041111161930.GA17851@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,60 +24,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I've collect two profiles for -64SMP and will collect
-> some UP profiles tomorrow. profiles so far are measuring
-> a full kernel build. I expect I'll do the same for -64UP
-> kernels too.
+AFAIK, ALSA is _still_ broken ;)
 
-hmm.. interesting. top consumers are (with idle loop functions removed)
+HTH,
 
- 40646 flush_kernel_icache_page                 406.4600
-  7364 fdsync                                   368.2000
- 10567 flush_user_dcache_range_asm              293.5278
- 10387 flush_user_icache_range_asm              288.5278
- 21409 __clear_user_page_asm                    191.1518
-  5356 _spin_lock_irqsave                       111.5833
-  1768 fisync                                   110.5000
-  1928 _spin_lock                                48.2000
-  4255 purge_kernel_dcache_page                  42.5500
-   339 $lclu_done                                42.3750
-  4089 flush_kernel_dcache_page                  40.8900
-  5053 copy_user_page_asm                        33.2434
-   569 _write_unlock_irq                         17.7812
-   422 _spin_unlock                              17.5833
-  1567 find_vma_prev                             16.3229
-   181 $lslen_loop                               15.0833
-    96 $lslen_done                               12.0000
-   996 _write_trylock                            11.3182
-   137 $lsfu_loop                                 8.5625
-   748 flush_user_dcache_page                     7.4800
+T-Bone
 
-we really need to do better at cache flushing..... anybody have any
-ideas? :)
+Le 11 nov. 04, =E0 17:19, Grant Grundler a =E9crit :
 
-but looking at the other ones:
-- __clear_user_page_asm can be optimized for 64-bit by writing 8 bytes
-  at a time instead of 4
-- _spin_lock* needs investigation to see if we have some bad locks
-  someplace. lockmeter anybody?
-- *lclu* can be rewritten to do better than 1-byte at a time
-- copy_user_page_asm can be sped up slightly by using pa_memcpy, but not
-  much when i tried last time
-- *lslen* can also probably be written in a smarter way... 
+> On Thu, Nov 11, 2004 at 08:48:31AM -0500, Kyle McMartin wrote:
+>> On Thu, Nov 11, 2004 at 12:38:50AM -0700, Grant Grundler wrote:
+>>> Please remind me tomorrow what other info is needed and
+>>> if the tombstone is necessary.
+>>>
+>>
+>> Is this ALSA harmony or OSS harmony? I'll backmerge the diffs to that
+>> kernel and rebuild them.
+>
+> ALSA. But I could use whatever I'm told is better.
+>
+> thanks,
+> grant
+>>
+>> Cheers,
+>> 	Kyle.
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
 
-i suspect some areas for further investigation are:
-- can we do tlb_flush_mm() in a smarter way for SMP?
-- can we improve kernel entry time for interrupts (and syscalls) by
-  being smarter about what we save on the stack? (i.e. only callee-save
-  registers and not all the registers?)
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
 
-volunteers? :)
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
