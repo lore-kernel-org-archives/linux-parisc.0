@@ -1,15 +1,13 @@
-From: j.raspe@t-online.de
-Subject: Re: Re: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
-Date: Tue, 28 Sep 2004 13:45:44 +0200
-Message-ID: <1CCGQS-0SPGFc0@filter05.bbul.t-online.de>
-References: <4152E64500001139@mail-2-bnl.tiscali.it>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
+Date: Wed, 29 Sep 2004 15:07:50 +0200
+Message-ID: <4152E64500001B86@mail-3-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-1"
+  charset="ISO-8859-15"
 Cc: parisc-linux@parisc-linux.org
-To: soete.joel@tiscali.be
+To: j.raspe@t-online.de
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4152E64500001139@mail-2-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,47 +18,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello  Johannes,
 
-(...)
->> Where can I get 2.6.4-hppa-kernels? I tried the source from
-www.kernel.org,
->>
->Either you choose anonymous co of cvs tree:
->see <http://www.parisc-linux.org/faq/cvs.html>
+> Hi Joel,
+>
+> your tips are great, many thanks for your help.
+welcome :)
 
->or you grab the tarball at:
-><http://cvs.parisc-linux.org/download/linux-2.6/>
->(the patch against vanilla src is also available)
+> I got the 2.6.4-pa2-version from cvs with your date-tip, configured and=
 
->> but this seems to lack HIL-support and at the cvs.parisc-linux.org
-site
->>the
->>
->> oldest kernels are 2.6.5.
->> With a 2.6.4 kernel I could verify if I have the same problem as
-mentioned
->> in
->> the link above, because this problem first came up with kernels >
-2.6.4.
->>
->Hmm good starting point :)
 
->Good luck,
->    Joel
+> compiled it but unfortunately it shows the same behaviour like the newe=
+r
+>
+> 2.6-kernels. Nothing but a blue screen (btw: is this a trademark of
+> Microsoft?) after initialisation of the fb-device (at least I think so)=
+.
+>
+> Any more clues, how to get the 2.6 kernels working?
+>
+Unfortunately no :(
 
-Hi Joel,
+iirc Helge Deller is the maintainner, I trust he would have read those pr=
 
-unfortunately I can't find any suitable 2.6.4 kernel or kernel-source on
-http://cvs.parisc-linux.org/download/linux-2.6/ !
-The 2.4.6 kernel-source-tar.bz2 in /autobuild has no hppa-specific
-extensions (no HIL-support) and the oldest pa-kernels
-and pa-sources available are 2.6.5.
+:)
 
-Any idea whre I can get 2.6.4 pa-specific kernel binaries or kernel
-sources? How could I use cvs to get an old kernel source like 2.6.4?
+Joel
 
-Thanks Johannes
 
+-------------------------------------------------------------------------=
+--
+Tiscali ADSL GO, 29,50 Euro/mois pendant toute une ann=E9e, profitez-en..=
+.
+http://reg.tiscali.be/adsl/welcome.asp?lg=3DFR
 
 
 
