@@ -1,39 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA18603
-	for <parisc-linux@puffin.external.hp.com>; Sat, 16 Dec 2000 21:30:53 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 17 Dec 2000 04:33:47 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA16883;
-	Sun, 17 Dec 2000 15:31:19 +1100
-Date: Sun, 17 Dec 2000 15:31:19 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Jes Sorensen <jes@linuxcare.com>
-cc: Matthew Wilcox <matthew@wil.cx>, John Marvin <jsm@udlkern.fc.hp.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ldcw in __pthread_acquire
-In-Reply-To: <d38zpgdo4f.fsf@lxplus015.cern.ch>
-Message-ID: <Pine.LNX.4.21.0012171457580.14217-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA21811
+	for <parisc-linux@puffin.external.hp.com>; Sun, 17 Dec 2000 04:23:58 -0700
+Received: from localhost (2049 bytes) by fileserv2.Cologne.DE
+	via rmail with P:stdio/R:bind/T:smtp
+	(sender: <excalibur.cologne.de!karsten>) (ident <excalibur.cologne.de!karsten> using unix)
+	id <m147bxj-0007A8C@fileserv2.Cologne.DE>
+	for <parisc-linux@thepuffingroup.com>; Sun, 17 Dec 2000 12:26:43 +0100 (CET)
+	(Smail-3.2.0.101 1997-Dec-17 #5 built 1998-Jan-19)
+Message-ID: <20001217115105.A17378@excalibur.cologne.de>
+Date: Sun, 17 Dec 2000 11:51:05 +0100
+From: Karsten Merker <karsten@excalibur.cologne.de>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] configuration problems with cvs from 20001216 15:40 CET
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 16 Dec 2000, Jes Sorensen wrote:
+Hallo everybody,
 
-> >>>>> "Matthew" == Matthew Wilcox <matthew@wil.cx> writes:
-> 
-> Matthew> On Fri, Dec 15, 2000 at 06:32:12PM +0100, Jes Sorensen wrote:
-> >>  We probably cannot, we can however create our own version of the
-> >> header file for the parisc port.
-> 
-> Matthew> That was what I meant.  the question is, would it _work_?  Or
-> Matthew> is this struct embedded in other structs at
-> Matthew> non-16byte-aligned positions?
-> 
-> That can be solved by adding an aligned attribute to the struct definition.
+I experience a problem with the kernel cvs checkout from dec 16, 15:40
+CET. I am trying to build a kernel with support for STICON, but for some
+reason CONFIG_FBCON_STI does not get set when doing a "make menuconfig",
+although it should get set.
 
-Doesn't a struct automatically inherit the maximum alignment of its
-fields?
+I chose 
 
+"Character Devices -> Support for console on virtual terminal"
+"Console Drivers -> Frame-buffer support -> Generic STI frame buffer
+                                            device support"
+"Console Drivers -> STI console"
+
+This results in a .config containing
+
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+CONFIG_FB_STI=y
+CONFIG_STI_CONSOLE=y
+
+but CONFIG_FBCON_STI, which is needed to get drivers/video/fbcon-sti.c
+compiled and linked, ist not declared, although this should be done by
+drivers/video/Config.in which contains the following code:
+
+      if [ "$CONFIG_FB_STI" = "y" ]; then
+         define_tristate CONFIG_FBCON_STI y
+      fi
+
+$CONFIG_FB_STI is set to "y" as can be seen in .config, nonetheless
+CONFIG_FBCON_STI is not declared. I have been looking for the reason for
+this behaviour, but have not found a solution. Probably I am missing
+something dead simple, does anybody have an idea?
+
+Greetings,
+Karsten
 -- 
-Linuxcare.  Support for the Revolution.
+#include <standard_disclaimer>
+Nach Paragraph 28 Abs. 3 Bundesdatenschutzgesetz widerspreche ich der
+Nutzung oder Uebermittlung meiner Daten fuer Werbezwecke oder fuer die
+Markt- oder Meinungsforschung.
