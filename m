@@ -1,113 +1,162 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA03266
-	for <parisc-linux@puffin.external.hp.com>; Sun, 30 Apr 2000 13:58:26 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA13205
+	for <parisc-linux@puffin.external.hp.com>; Mon, 1 May 2000 12:45:15 -0600
 Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
-	by atlrel2.hp.com (Postfix) with ESMTP id C83346053
-	for <parisc-linux@thepuffingroup.com>; Sun, 30 Apr 2000 15:58:24 -0400 (EDT)
+	by palrel3.hp.com (Postfix) with ESMTP id 3803C3DA8A
+	for <parisc-linux@thepuffingroup.com>; Mon,  1 May 2000 11:41:18 -0700 (PDT)
 Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by l3107mxr.atl.hp.com (Postfix) with ESMTP id 365614FD83
-	for <parisc-linux@thepuffingroup.com>; Sun, 30 Apr 2000 15:58:24 -0400 (EDT)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id MAA10245 for <parisc-linux@thepuffingroup.com>; Sun, 30 Apr 2000 12:58:44 -0700 (PDT)
-Message-Id: <200004301958.MAA10245@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] elf32-parisc linker broken?
-In-reply-to: Your message of "Fri, 21 Apr 2000 15:26:16 PDT."
-             <200004212226.PAA03137@milano.cup.hp.com>
-Date: Sun, 30 Apr 2000 12:58:44 -0700
+	by l3107mxr.atl.hp.com (Postfix) with ESMTP id D57EA4FD88
+	for <parisc-linux@thepuffingroup.com>; Mon,  1 May 2000 14:40:39 -0400 (EDT)
+Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id LAA11187 for parisc-linux@thepuffingroup.com; Mon, 1 May 2000 11:41:00 -0700 (PDT)
+Date: Mon, 1 May 2000 11:41:00 -0700 (PDT)
 From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200005011841.LAA11187@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] crti.S Nested procedures error
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> After ic_route_ioctl() is called, I get a "halted" message
-> and the following output:
-> ...
-> IP-Config: Got BOOTP answer from 15.8.80.76, my address is 15.8.80.77
-> sba_map_single 0xc7f7f2bc -> 0x5202bc pdir 0xc7fb2900 8000000007f7f07f
-> sba_unmap_single iovp 0x5202bc
-> halted
+Sammy,
+
+I tried the "glibc" recipe on my x86 box (running Debian potato release).
+(http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/04-Apr/0059.html)
+
+"make" died with the following error:
+
 ...
-> GR2 0xc0232b94 ic_route_ioctl+20
-> IAOQ 0xc0283e54 all_requests+43c
-...
+hppa1.1-linux-gcc /linux/grundler/glibc/hppa1.1-linux/csu/crti.S -c  -I../include -I. -I/linux/grundler/glibc/hppa1.1-linux/csu -I.. -I../libio  -I/linux/grundler/glibc/hppa1.1-linux -I../sysdeps/hppa/elf -I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa -I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic  -nostdinc -isystem /opt/puffin/lib/gcc-lib/hppa1.1-linux/2.9-hppa-991112/include -isystem /opt/puffin/include  -include ../include/libc-symbols.h     -DHAVE_INITFINI -DASSEMBLER  -I/linux/grundler/glibc/hppa1.1-linux/csu/.  -g0  -o /linux/grundler/glibc/hppa1.1-linux/csu/crti.o
 
-> I then disassembled vmlinux to see what's in ic_route_ioctl():
-> c0232b74 <ic_route_ioctl>:
-> c0232b74:       6b c2 3f d9     stw rp,-14(sr0,sp)
-> c0232b78:       6f c5 00 80     stw,ma r5,40(sr0,sp)
-> c0232b7c:       6b c4 3f 89     stw r4,-3c(sr0,sp)
-> c0232b80:       08 1e 02 44     copy sp,r4
-> c0232b84:       d4 80 1c 12     depwi 0,31,14,r4
-> c0232b88:       0c 98 10 85     ldw c(sr0,r4),r5
-> c0232b8c:       e8 5f 09 98     b,l c0271060 <inode_hashtable+0xe044>,rp
-> c0232b90:       0c 80 12 98     stw r0,c(sr0,r4)
-> c0232b94:       0c 85 12 98     stw r5,c(sr0,r4)
-> c0232b98:       4b c2 3f 59     ldw -54(sr0,sp),rp
-> c0232b9c:       4b c4 3f 89     ldw -3c(sr0,sp),r4
-> c0232ba0:       e8 40 c0 00     bv r0(rp)
-> c0232ba4:       4f c5 3f 81     ldw,mb -40(sr0,sp),r5
-> 
-> The b,l to 0xc0271060 seems rather bogus.  But I have no
-> clue how the toolchain makes relative or "long" calls.
-
-The "objdump --disassemble-all vmlinux" output hasn't changed
-between i386-linux and parisc-hpux host build environments.
-Here is also the "-S" output for ic_route_ioctl():
-
-        .align 4
-        .type    ic_route_ioctl,@function
-ic_route_ioctl:
-ic_route_ioctl: 
-        .PROC
-        .CALLINFO FRAME=64,CALLS,SAVE_RP,ENTRY_GR=4
-        .ENTRY  
-        stw %r2,-20(%r30)
-        stwm %r5,64(%r30)
-        stw %r4,-60(%r30)
-#APP 
-        copy 30,%r4
-#NO_APP
-        depi 0,31,14,%r4
-        ldw 12(%r4),%r5
-        .CALL ARGW0=GR,ARGW1=GR
-        bl ip_rt_ioctl,%r2
-        stw %r0,12(%r4)
-        stw %r5,12(%r4)
-        ldw -84(%r30),%r2
-        ldw -60(%r30),%r4
-        bv %r0(%r2)
-        ldwm -64(%r30),%r5
-        .EXIT
-        .PROCEND
-.Lfe4:
-        .size    ic_route_ioctl,.Lfe4-ic_route_ioctl
+bc-symbols.h     -DHAVE_INITFINI -DASSEMBLER  -I/linux/grundler/glibc/hppa1.1-linux/csu/.  -g0  -o /linux/grundler/glibc/hppa1.1-linux/csu/crti.o
+/linux/grundler/glibc/hppa1.1-linux/csu/crti.S: Assembler messages:
+/linux/grundler/glibc/hppa1.1-linux/csu/crti.S:42: Fatal error: Nested procedures
+make[2]: *** [/linux/grundler/glibc/hppa1.1-linux/csu/crti.o] Error 1
+make[2]: Leaving directory `/linux/grundler/glibc/csu'
+make[1]: *** [csu/subdir_lib] Error 2
 
 
-This looks fine to me.
-And "objdump --disassemble-all ipconfig.o" for ic_route_ioctl():
+Sure enough, two .PROC's have no .PROCEND in between.
+glibc/csu/Makefile builds crti.S with:
 
-00000334 <ic_route_ioctl>:
-     334:       6b c2 3f d9     stw rp,-14(sr0,sp)
-     338:       6f c5 00 80     stw,ma r5,40(sr0,sp)
-     33c:       6b c4 3f 89     stw r4,-3c(sr0,sp)
-     340:       08 1e 02 44     copy sp,r4
-     344:       d4 80 1c 12     depwi 0,31,14,r4
-     348:       0c 98 10 85     ldw c(sr0,r4),r5
-     34c:       e8 40 00 00     b,l 354 <ic_route_ioctl+0x20>,rp
-     350:       0c 80 12 98     stw r0,c(sr0,r4)
-     354:       0c 85 12 98     stw r5,c(sr0,r4)
-     358:       4b c2 3f 59     ldw -54(sr0,sp),rp
-     35c:       4b c4 3f 89     ldw -3c(sr0,sp),r4
-     360:       e8 40 c0 00     bv r0(rp)
-     364:       4f c5 3f 81     ldw,mb -40(sr0,sp),r5
+$(objpfx)crti.S: $(objpfx)initfini.s
+        sed -n -e '1,/@HEADER_ENDS/p' \
+               -e '/@_.*_PROLOG_BEGINS/,/@_.*_PROLOG_ENDS/p' \
+               -e '/@TRAILER_BEGINS/,$$p' $< > $@ 
 
-This looks OK assuming the actualy branch destination gets fixed
-up at link time.  Could this be a linker bug?
-If so, where might I start to debug this?
-(I've never looked the linker before)
+
+It seems either the initfini.s contents are wrong or the "sed" hack
+above is removing too much.  Which is it?
+Or should there only be one .PROC?
+
+We get two .PROC's because initfini.s has both @_init_PROLOG_BEGINS/ENDS
+and @_fini_PROLOG_BEGINS/ENDS. 
+
+Appended "diff -u initfini.s crti.S" shows what sed is doing.
 
 thanks,
 grant
 
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+
+grundler <576>diff -u initfini.s crti.S
+--- initfini.s  Mon May  1 11:09:43 2000
++++ crti.S      Mon May  1 11:20:48 2000
+@@ -6,38 +6,6 @@
+ #include "defs.h"
+ 
+ /*@HEADER_ENDS*/
+-
+-/*@TESTS_BEGIN*/
+-#NO_APP
+-       .text
+-       .align 4
+-.globl dummy
+-       .EXPORT dummy,ENTRY
+-       .type    dummy,@function
+-dummy:
+-dummy:
+-       .PROC
+-       .CALLINFO FRAME=64,CALLS,SAVE_RP,ENTRY_GR=3
+-       .ENTRY
+-       stw %r2,-20(%r30)
+-       ldo 64(%r30),%r30
+-       stw %r19,-32(%r30)
+-       stw %r4,-64(%r30)
+-       movb,= %r26,%r22,.L16
+-       copy %r19,%r4
+-       .CALL   ARGW0=GR
+-       bl $$dyncall,%r31
+-       copy %r31,%r2
+-.L16:
+-       ldw -84(%r30),%r2
+-       bv %r0(%r2)
+-       ldwm -64(%r30),%r4
+-       .EXIT
+-       .PROCEND
+-#APP
+-
+-/*@TESTS_END*/
+-
+ /*@_init_PROLOG_BEGINS*/
+        .section .init
+ #NO_APP
+@@ -62,35 +30,6 @@
+        END_INIT
+ 
+ /*@_init_PROLOG_ENDS*/
+-
+-/*@_init_EPILOG_BEGINS*/
+-       .section .init
+-#NO_APP
+-       ldw -84(%r30),%r2
+-       bv %r0(%r2)
+-       ldwm -64(%r30),%r4
+-       .EXIT
+-       .PROCEND
+-#APP
+-       END_INIT
+-       .section .text
+-#NO_APP
+-       .align 4
+-       .weak   __gmon_start__
+-       .EXPORT __gmon_start__,ENTRY
+-       .type    __gmon_start__,@function
+-__gmon_start__:
+-__gmon_start__:
+-       .PROC
+-       .CALLINFO FRAME=0,NO_CALLS
+-       .ENTRY
+-       bv,n %r0(%r2)
+-       .EXIT
+-       .PROCEND
+-#APP
+-
+-/*@_init_EPILOG_ENDS*/
+-
+ /*@_fini_PROLOG_BEGINS*/
+        .section .fini
+ #NO_APP
+@@ -113,24 +52,5 @@
+        END_FINI
+ 
+ /*@_fini_PROLOG_ENDS*/
+-#NO_APP
+-       .CALL 
+-       bl i_am_not_a_leaf,%r2
+-       nop
+-#APP
+-
+-/*@_fini_EPILOG_BEGINS*/
+-       .section .fini
+-#NO_APP
+-       ldw -84(%r30),%r2
+-       bv %r0(%r2)
+-       ldwm -64(%r30),%r4
+-       .EXIT
+-       .PROCEND
+-#APP
+-       END_FINI
+-
+-/*@_fini_EPILOG_ENDS*/
+-
+ /*@TRAILER_BEGINS*/
+        .ident  "GCC: (GNU) 2.9-hppa-991112"
