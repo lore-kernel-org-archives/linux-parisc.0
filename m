@@ -1,82 +1,26 @@
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA30100
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 11:06:33 -0700
-Message-ID: <007c01c04f2f$6679f620$a832d793@esiee.fr>
-From: "Thomas Marteau" <marteaut@esiee.fr>
-To: "Kailashnath V Rampure" <kailasr@webcash.com>
-Cc: <parisc-linux@puffin.external.hp.com>
-References: <Your message of "Fri, 03 Nov 2000 11:46:39 PST." <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com><Your message of "Fri, 03 Nov 2000 11:03:23 PST." <5.0.0.25.0.20001102174648.02a4fb20@mail.webcash.com><5.0.0.25.0.20001103114401.00a46150@mail.webcash.com><5.0.0.25.0.20001114142101.00a69910@mail.webcash.com> <5.0.0.25.0.20001115095344.01f15cb0@mail.webcash.com>
-Subject: Re: [parisc-linux] Boot command 
-Date: Wed, 15 Nov 2000 19:10:56 +0100
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA30441
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 11:09:05 -0700
+Message-Id: <200011151809.NAA22314@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Help with posix_types.h
+To: bame@noam.fc.hp.com (Paul Bame)
+Date: Wed, 15 Nov 2000 13:09:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@puffin.external.hp.com
+In-Reply-To: <E13w62o-0006Pv-00@noam.fc.hp.com> from "Paul Bame" at Nov 15, 2000 10:08:22 am
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi again,
+The largest disk currently available I believe is the 180GB Seagate Baracuda.
+The size of drives is increasing about a factor of 2 per year.  The
+__kernel_off_t definitely needs to be 64 bits to handle large drives
+in both 32 and 64 bit systems.  Disk blocks are typically 512 or 1024 bytes.
+Thus, drives may exceed 4GB disk blocks in 3-4 years.  Inodes are variable
+in size (8KB average).  Thus, we are a little further away from exceeding
+the 32 bit inode limit.
 
-    You put the swap partition before the f0 partition and here it is the f0
-partition in first position.
-    Also, your hard disk is ida instead of sda, what's that ?
-
-Bye,
-
-ESIEE Team
------ Original Message -----
-From: Kailashnath V Rampure <kailasr@webcash.com>
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: <parisc-linux@puffin.external.hp.com>
-Sent: Wednesday, November 15, 2000 6:55 PM
-Subject: Re: [parisc-linux] Boot command
-
-
-> Yes Thomas the vmlinux is in /boot of 3rd partition as the other
-partitions
-> are swap and f0.
->
-> At 11:48 AM 11/15/00 +0100, Thomas Marteau wrote:
->
-> >----- Original Message -----
-> >From: Kailashnath V Rampure <kailasr@webcash.com>
-> >To: Paul Bame <bame@noam.fc.hp.com>
-> >Cc: Grant Grundler <grundler@cup.hp.com>; Matt Taggart
-> ><taggart@carmen.fc.hp.com>; <parisc-linux@thepuffingroup.com>
-> >Sent: Tuesday, November 14, 2000 11:58 PM
-> >Subject: Re: [parisc-linux] Boot command
-> >
-> >
-> > > I have booted HP A class server through network. On that I have
-> >repartioned
-> > > the system and followed the steps on
-> >http://www.parisc-linux.org/install.html.
-> > > I have used the following command to initialize the hard disk. The
-kernel
-> >I
-> > > have downloaded is vmlinux-20001018. and cpied it to /mnt/boot/vmlinux
-> > > after mounting /dev/sda3. I have used the following command to
-initialize
-> > > the HDD.
-> > >
-> > > palo -I -k /boot/vmlinux -b /boot/iplboot \ -c '3/boot/vmlinux
-TERM=linux
-> > > HOME=/ root=/dev/sda3' \ /dev/sda
-> >
-> >This means that vmlinux must be in /boot in your third partition on your
-> >disk.
-> >Is it true in your case?
-> >
-> > > --------------------------------
-> > > I get the following error:
-> > > --------------------------------
-> > > SOFT Boot.
-> > > palo ipl bame@noam Tue oct 31 14:18:02 MST 2000
-> > > 0/vmlinux 2138614 bytes@ 0x1f78c000
-> > > 0/palo-cmdline '3/boot/vmlinux TERM=linux HOME=/ root=/dev/sda3'
-> > > /dev/ida1 82 62 1030688
-> > > /dev/ida2 f0 1030750 24738
-> > > /dev/ida3 83 1055488 1030750
-> > > Kernel:partition 3 file /boot/vmlinux
-> > > ext2 block size 1024
-> > > ext2_mount(partition 3) returns 0
-> > > ext2_open(/boot/vmlinux) = -1
-> > > open /boot/vmlinux failed
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
