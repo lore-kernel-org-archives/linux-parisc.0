@@ -1,14 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] SLAB bug SMP 64bit / XFS mess
-Date: Wed, 6 Apr 2005 14:17:17 +0200
-Message-ID: <4208D51500017145@mail-5-bnl.tiscali.it>
-References: <20050403033456.71a9cafa@Tatooine.r3z0>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] pthread problems - test program
+Date: Wed, 6 Apr 2005 16:12:31 -0400 (EDT)
+Message-ID: <200504062012.j36KCW74007167@hiauly1.hia.nrc.ca>
+References: <20050405060051.GJ1833@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050403033456.71a9cafa@Tatooine.r3z0>
+In-Reply-To: <20050405060051.GJ1833@baldric.uwo.ca> from "Carlos O'Donell" at
+	Apr 5, 2005 02:00:51 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,132 +21,199 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
-
-> Hi pa-ckers
+> I found another program that doesn't work on hppa. This one was written
+> by Randolph if my memory serves me correctly. I'll have to add it to the
+> userspace tests that fail.
 > 
-> tried 2.6.12-rc1-pa9 64bit SMP (gcc 3.3.5) with DEBUG_SLAB enabled, got=
+> ---
+> all: foo.c libfoo.c
+> 	gcc -g -shared -c libfoo.c
+> 	rm -f libfoo.so
+> 	ln -s libfoo.o libfoo.so
+> 	gcc -g -o foo foo.c -lfoo -L. -lpthread
+> 
+> clean:
+> 	rm -f *.o
+> 	rm -f *.so
+> 	rm -f foo
 
-> the following BUG:
-> LBA version TR4.0 (0x5) found at 0xfffffffffed3c000
-> kernel BUG at mm/slab.c:1495!
-> Backtrace:
->  [<0000000010114480>] show_stack+0x60/0xf0
+The test can be simplified.  You don't need libfoo.  Just
+link foo with -lpthread and it fails.
 
-One thought about show_stack() (i.e. dump_stack()) :
+I see libtcl8.4 is linked against libpthread.so.  This is probably
+why 8.3 works better than 8.4.
 
-its code looks like:
-void show_stack(struct task_struct *task, unsigned long *s)
-{
-        struct unwind_frame_info info;
+dave@hiauly6:~/gcc_test/pthr/carlos$ ./foo
+Parent = 24778
+Exiting on signal from child
+Waited for child 24779
+Quit (core dumped)
 
-        if (!task) {
-                unsigned long sp;
-                struct pt_regs *r;
+(gdb) bt
+#0  __unregister_atfork (dso_handle=0x40184b58)
+    at ../linuxthreads/sysdeps/unix/sysv/linux/unregister-atfork.c:28
+#1  0x4016ede0 in __pthread_wait_for_restart_signal (self=0x40184b80)
+    at pthread.c:1203
+#2  0x405e41b8 in _IO_default_xsputn (f=0xbff00b94, data=0x8, n=3220179872)
+    at genops.c:477
+#3  0x00000000 in ?? ()
+    ...
 
-HERE:
-                asm volatile ("copy %%r30, %0" : "=3Dr"(sp));
-                r =3D (struct pt_regs *)kmalloc(sizeof(struct pt_regs), G=
-FP_KERNEL);
-                if (!r)
-                        return;
-...
+Running under gdb:
 
-while #if DEBUG in slab kmalloc will:
-static inline kmem_cache_t *kmem_find_general_cachep(size_t size, int gfp=
-flags)
-{
-        struct cache_sizes *csizep =3D malloc_sizes;
+dave@hiauly6:~/gcc_test/pthr/carlos$ /usr/bin/gdb foo
+GNU gdb 6.3-debian
+Copyright 2004 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "hppa-linux"...Using host libthread_db library "/usr/lib/debug/libthread_db.so.1".
 
-#if DEBUG
-        /* This happens if someone tries to call  
-        * kmem_cache_create(), or __kmalloc(), before
-        * the generic caches are initialized.
-        */
-        BUG_ON(csizep->cs_cachep =3D=3D NULL);
-#endif
-...
+(gdb) handle SIGUSR2 noprint nostop pass
+Signal        Stop      Print   Pass to program Description
+SIGUSR2       No        No      Yes             User defined signal 2
+(gdb) r
+Starting program: /home/dave/gcc_test/pthr/carlos/foo
+[Thread debugging using libthread_db enabled]
+[New Thread 16384 (LWP 24875)]
+Parent = 24875
+Exiting on signal from child
+Waited for child 24878
 
-(this special case appends to me when I tried to change BUG_ON() by WARN_=
-ON()
-in kernel/posix-cpu-timers.c
-see <http://cvs.parisc-linux.org/linux-2.6/kernel/posix-cpu-timers.c?rev=3D=
-1.3&view=3Dmarkup>
-with following 
-Badness in run_posix_cpu_timers at /CAD/linux-2.6.12-rc1-pa9-050401/kerne=
-l/posi5
-Backtrace:
- [<00000000101124e8>] dump_stack+0x18/0x28
- [<000000001015ed20>] run_posix_cpu_timers+0x168/0x1d0
- [<0000000010113648>] timer_interrupt+0xc8/0x178
- [<00000000101170b8>] real32_call+0xe0/0x110
- [<0000000010116624>] pdc_iodc_putc+0x9c/0x150
- [<00000000101686b4>] __do_IRQ+0x94/0x1e0
- [<0000000010116054>] pdc_tod_read+0xac/0x100
- [<0000000010116050>] pdc_tod_read+0xa8/0x100
- [<00000000103e6890>] proc_dodebug+0x0/0x2d0
- [<00000000103e64f0>] rpc_proc_register+0x0/0xb0
- [<00000000103e5de0>] rpc_unlink+0x0/0x1a8
- [<00000000103e5240>] rpc_depopulate+0x0/0x1f0
- [<00000000103e4cb0>] rpc_show_info+0x0/0xe8
- [<00000000103e4618>] rpc_alloc_inode+0x0/0x30
- [<00000000103e3ed0>] content_open+0x0/0xb0
- [<00000000103e35e0>] qword_addhex+0x0/0x110
+Program received signal SIGINT, Interrupt.
+[Switching to Thread 16384 (LWP 24875)]
+0x4016f05c in __pthread_sigsuspend (set=0xbff00dc8)
+    at ../linuxthreads/sysdeps/unix/sysv/linux/pt-sigsuspend.c:54
+    54      ../linuxthreads/sysdeps/unix/sysv/linux/pt-sigsuspend.c: No such file or directory.
+	    in ../linuxthreads/sysdeps/unix/sysv/linux/pt-sigsuspend.c
+(gdb) bt
+#0  0x4016f05c in __pthread_sigsuspend (set=0xbff00dc8)
+    at ../linuxthreads/sysdeps/unix/sysv/linux/pt-sigsuspend.c:54
+#1  0x4016ede0 in __pthread_wait_for_restart_signal (self=0x40184b80)
+    at pthread.c:1203
+#2  0x4017081c in __pthread_alt_lock (lock=0x406c2980, self=0x40184b80)
+    at restart.h:34
+#3  0x4016d480 in *__GI___pthread_mutex_lock (mutex=0x406c2970) at mutex.c:123
+#4  0x40662234 in __unregister_atfork (dso_handle=0x40184ac0) at list.h:72
+#5  0x4016a930 in __do_global_dtors_aux () from /usr/lib/debug/libpthread.so.0
+#6  0x40173bb0 in _fini () from /usr/lib/debug/libpthread.so.0
+#7  0x400b6898 in _dl_fini () from /lib/ld.so.1
+#8  0x400b6898 in _dl_fini () from /lib/ld.so.1
+Previous frame identical to this frame (corrupt stack?)
+(gdb) disass 0x4016f04c 0x4016f06c
+Dump of assembler code from 0x4016f04c to 0x4016f06c:
+0x4016f04c <__pthread_sigsuspend+12>:   ldi 8,r25
+0x4016f050 <__pthread_sigsuspend+16>:   copy r19,r4
+0x4016f054 <__pthread_sigsuspend+20>:   be,l 100(sr2,r0),%sr0,%r31
+0x4016f058 <__pthread_sigsuspend+24>:   ldi b3,r20
+0x4016f05c <__pthread_sigsuspend+28>:   copy r4,r19
+0x4016f060 <__pthread_sigsuspend+32>:   ldw -54(,sp),rp
+0x4016f064 <__pthread_sigsuspend+36>:   bv r0(rp)
+0x4016f068 <__pthread_sigsuspend+40>:   ldw,mb -40(,sp),r4
 
+The program always appears stuck at 0x4016f05c, so I assume that
+the syscall at 0x4016f054 is hung.  There is definitely a timing
+issue involved since the program doesn't fail if I don't tell gdb
+how to handle SIGUSR2.  I added the parent printout.
 
-Kernel Fault: Code=3D26 regs=3D000000001057cbe0 (Addr=3D0000000000000000)=
+(gdb) disass __pthread_sigsuspend
+Dump of assembler code for function __pthread_sigsuspend:
+0x4016f040 <__pthread_sigsuspend+0>:    stw rp,-14(,sp)
+0x4016f044 <__pthread_sigsuspend+4>:    stw,ma r4,40(,sp)
+0x4016f048 <__pthread_sigsuspend+8>:    stw r19,-20(,sp)
+0x4016f04c <__pthread_sigsuspend+12>:   ldi 8,r25
+0x4016f050 <__pthread_sigsuspend+16>:   copy r19,r4
+0x4016f054 <__pthread_sigsuspend+20>:   be,l 100(sr2,r0),%sr0,%r31
+0x4016f058 <__pthread_sigsuspend+24>:   ldi b3,r20
+0x4016f05c <__pthread_sigsuspend+28>:   copy r4,r19
+0x4016f060 <__pthread_sigsuspend+32>:   ldw -54(,sp),rp
+0x4016f064 <__pthread_sigsuspend+36>:   bv r0(rp)
+0x4016f068 <__pthread_sigsuspend+40>:   ldw,mb -40(,sp),r4
+End of assembler dump.
+(gdb) info reg
+flags          0x0      0
+r1             0x40661ee7       1080434407
+rp             0x4016ede3       1075244515
+r3             0x40184b58       1075333976
+r4             0x40185c28       1075338280
+r5             0x40184b80       1075334016
+r6             0x40000328       1073742632
+r7             0xbff00bd4       3220179924
+r8             0xbff00be0       3220179936
+r9             0x1      1
+r10            0xbff00bd8       3220179928
+r11            0x400bf354       1074525012
+r12            0x400d04b8       1074595000
+r13            0x2      2
+r14            0x400d0d70       1074597232
+r15            0xbff00bd8       3220179928
+r16            0x400d0724       1074595620
+r17            0xbff00bd4       3220179924
+r18            0x0      0
+r19            0x40185c28       1075338280
+r20            0xb3     179
+r21            0x1b     27
+r22            0xbff00dcc       3220180428
+---Type <return> to continue, or q <return> to quit---
+r23            0x0      0
+r24            0xbff00dc8       3220180424
+r25            0x8      8
+r26            0xbff00dc8       3220180424
+dp             0x20e84  134788
+ret0           0xfffffffc       4294967292
+ret1           0x37d    893
+sp             0xbff00f00       3220180736
+r31            0x4016f05f       1075245151
+sar            0x1b     27
+pcoqh          0x4016f05f       1075245151
+pcsqh          0x0      0
+pcoqt          0x4016f063       1075245155
+pcsqt          0x0      0
+eiem           0x0      0
+iir            0x0      0
+isr            0x0      0
+ior            0x0      0
+ipsw           0xb      11
+goto           0x0      0
+sr4            0x0      0
+sr0            0x0      0
+sr1            0x0      0
+---Type <return> to continue, or q <return> to quit---
+sr2            0x0      0
+sr3            0x0      0
+sr5            0x0      0
+sr6            0x0      0
+sr7            0x0      0
+cr0            0x0      0
+cr8            0x0      0
+cr9            0x0      0
+ccr            0x0      0
+cr12           0x0      0
+cr13           0x0      0
+cr24           0x0      0
+cr25           0x0      0
+cr26           0x0      0
+mpsfu_high     0x0      0
+mpsfu_low      0x0      0
+mpsfu_ovflo    0x0      0
+pad            0x0      0
+fpsr           0x0      0
+fpe1           0x0      0
+fpe2           0x0      0
+fpe3           0x0      0
+fpe4           0x0      0
+---Type <return> to continue, or q <return> to quit---
+fpe5           0x0      0
+fpe6           0x0      0
+fpe7           0x0      0
 
+Does this help?
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001000000000000001110 Not tainted
-r00-03  0000000000000000 0000000010481e38 0000000010112680 00000000080000=
-0f
-r04-07  00000000105c0b40 00000000101124e8 000000001057cb60 000000001057c2=
-e0
-r08-11  0000000000000000 00000000105c9b40 0000000000000000 00000000105d86=
-a4
-r12-15  0000000000000000 00000000ffffffff 0000000000000000 00000000f04000=
-04
-r16-19  000000001057c2e0 00000000f000017c 00000000f0000174 00000000105662=
-30
-r20-23  000000000800000e 00000000000003ea 00000000000003ea 00000000006297=
-7c
-r24-27  ffffffffffffffff 00000000000000d0 0000000000000000 00000000105c0b=
-40
-r28-31  0000000000000066 000000001057cbb0 000000001057cbe0 00000000000000=
-60
-sr0-3   0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00
-sr4-7   0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000010176d20 0000000010=
-176d24
- IIR: 0f4010d5    ISR: 0000000000000000  IOR: 0000000000000000
- CPU:        0   CR30: 000000001057c000 CR31: 0000000010580000
- ORIG_R28: 0000000000000000   
- IAOQ[0]: kmem_cache_alloc+0x18/0x60
- IAOQ[1]: kmem_cache_alloc+0x1c/0x60
- RP(r2): show_stack+0x80/0xf0 
-Kernel panic - not syncing: Kernel Fault
-
-a objdump of slab showing:
-0000000000000000 <kmem_cache_alloc>:
-   0:   0f c2 12 c1     std rp,-10(,sp)
-   4:   73 c4 01 08     std,ma r4,80(sp)
-   8:   73 c3 3f 11     std r3,-78(sp)
-   c:   db 39 0f e0     extrd,s r25,63,32,r25
-  10:   00 01 0e 63     rsm 1,r3
-  14:   37 dd 3f a1     ldo -30(sp),ret1 
-  18:   0f 40 10 d5     ldd 0(,r26),r21    <=3D=3D=3D=3D
-  1c:   0e a0 10 94     ldw 0(,r21),r20
-  20:   86 80 20 58     cmpib,=3D 0,r20,54 <kmem_cache_alloc+0x54>
-)
-
-Hth,
-    Joel
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
