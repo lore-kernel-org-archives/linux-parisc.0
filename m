@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30415482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 20:24:28 -0600 (MDT)
-Message-Id: <200210160224.g9G2OO0I004733@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] possible gcc-3.2 bug?
-To: tausq@debian.org
-Date: Tue, 15 Oct 2002 22:24:23 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021016013231.GS5602@tausq.org> from "Randolph Chung" at Oct 15, 2002 06:32:31 pm
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F4D24829
+	for <parisc-linux@parisc-linux.org>; Wed, 16 Oct 2002 07:49:14 -0600 (MDT)
+Date: Wed, 16 Oct 2002 16:45:34 +0200
+Message-ID: <3DA56CAE000020FE@ocpmta8.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: parisc-linux@parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] XFS (CVS release problem)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,26 +20,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> well, it's doesn't seem to be very consistent about it then...
-> 
-> static rwlock_t x = (rwlock_t) { { 1 }, 0 };
-> is ok
-> 
-> static rwlock_t x = { (spinlock_t) { 1 }, 0 };
-> is also ok
-> 
-> only when you have both casts does it fail...
+Hi all,
 
-Ok, I think I see what is going on.  "(rwlock_t) { { 1 }, 0 }" is
-a compound literal (constructor expression).  GCC allows initialization
-of static objects by compound literals.  This is not possible in ISO C99.
+For kernel 2.4.19 I prefer to go to cvs release of xfs;?
 
-The initializer list of the compound literal must be constant.  Thus,
-nesting of compound literals isn't possible.  So, when you have two
-casts in the initializer you get the error.  For more info, look at
-extend.texi.
+So I build a 'patch' against vanilla k-2.4.19 and apply it against k-2.4.19-pa22.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+(Just met a problem of conflict: see early in this ml)
+
+But the build failled because:
+"../xfs_bmap_btree.h:661:35: "0" may not appear in macro parameter list"
+
+and in this header I found:
+"...
+#else
+...
+#define xfs_bmbt_disk_set_allf(r, 0, b, c, v) \
+        xfs_bmbt_set_allf(r, 0, b, c, v)
+#endif
+...
+"
+
+just above there are:
+void
+xfs_bmbt_disk_set_allf(
+        xfs_bmbt_rec_t  *r,
+        xfs_fileoff_t   o,
+        xfs_fsblock_t   b,
+        xfs_filblks_t   c,
+        xfs_exntst_t    v);
+
+What do you think?
+(is it a typo to be reported or a problem specific to hppa gcc?)
+
+Thanks in advance for advise,
+    Joel
