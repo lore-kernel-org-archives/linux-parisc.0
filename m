@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2052C4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 19:32:09 -0700 (MST)
-Date: Sun, 30 Mar 2003 21:32:40 -0500
-To: Randolph Chung <randolph@tausq.org>
+Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
+	by dsl2.external.hp.com (Postfix) with SMTP id 253D94829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 22:05:41 -0700 (MST)
+Date: 31 Mar 2003 05:05:40 -0000
+Message-ID: <20030331050540.17826.qmail@sources.redhat.com>
+To: gcc-gnats@gcc.gnu.org
 Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030331023240.GB23960@systemhalted>
-References: <20030331003153.GS11333@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030331003153.GS11333@tausq.org>
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] glibc/gcc bug -> perl/gcc bug?
+From: Randolph Chung <tausq@debian.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] [3.0/3.2/3.3/3.4] [HPPA] Floating point args don't get reloaded across function calls at -O2
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,41 +20,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> perl-5.8 fails to build on hppa because of a test failure. The problem
-> can be seen very easily:
-> 
-> tausq@gsyprf11:~/build/perl-5.8.0$ cat t/t.pl
-> print log "A";
-> tausq@gsyprf11:~/build/perl-5.8.0$ ./perl t/t.pl
-> Can't take log of 2.75773e-308 at t/t.pl line 1.
-> 
-> that should have said:
-> tausq@gsyprf11:~/build/perl-5.8.0$ /usr/bin/perl t/t.pl
-> Can't take log of 0 at t/t.pl line 1.
-> 
-> interestingly, a debug build of perl (using -g and no -O flags) doesn't
-> have the same problem, so this looks like some kind of compiler
-> optimization bug. I've tried this with both 3.2.3 and 3.3... same
-> problems.
-> 
-> would anyone like to try to look at this some more and see if they can
-> isolate the C code/a small test case that is causing the problem?
+>Category:       target
+>Synopsis:       [3.0/3.2/3.3/3.4] [HPPA] Floating point args don't get reloaded across function calls at -O2
+>Confidential:   no
+>Severity:       serious
+>Priority:       medium
+>Class:          wrong-code
+>Submitter-Id:   net
+>Originator:     Randolph Chung <tausq@debian.org>
+>Release:        3.3 20030309 (Debian prerelease) (Debian testing/unstable) [and others]
+>Environment:
+System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2
+003 parisc64 unknown unknown GNU/Linux
+Architecture: parisc64
 
-Glibc's math tests are still failing even under gcc-3.3 (not to mention
-the threading problems I'm in the middle of fixing).
+        <machine, os, target, libraries (multiple lines)>
+host: hppa-unknown-linux-gnu
+build: hppa-unknown-linux-gnu
+target: hppa-unknown-linux-gnu
+configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treela
+ng --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-inc
+lude-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --w
+ithout-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-c
+locale=gnu --enable-debug --enable-objc-gc hppa-linux
+>Description:
+When compiling the bug.c code below with -O2, the floating point argument to the fprintf does not get reloaded for the second fprintf() call, so the second call prints junk. At -O1 the arguments (r23/r24) are properly reloaded.
+>How-To-Repeat:
+Compile with gcc -O2 -o bug bug.c -lm
+$ ./bug
+nan
+1.422968e-309
 
-Though I'm seeing more:
+With -O1
+$ ./bug
+nan
+nan
 
-Failure: Real part of: cacos (NaN + inf i) == NaN - inf i: Exception "Invalid operation" set
-Failure: Real part of: cacos (NaN - inf i) == NaN + inf i: Exception "Invalid operation" set
-Failure: Real part of: cacos (NaN + NaN i) == NaN + NaN i: Exception "Invalid operation" set
+------8< bug.c 8<--------
+#include <stdio.h>
+#include <math.h>
 
-Or:
-Failure: Test: Imaginary part of: ctanh (NaN - 0 i) == NaN - 0 i
-Result:
- is:          nan   nan
- should be:  -0.00000000000000000000e+00  -0x0.00000000000000000000p+0
+void doprint(double dval)
+{
+        fprintf(stdout, "%e\n", dval);
+        fprintf(stdout, "%e\n", dval);
+}
 
-Even with a new ulps, the tests were still failing.
+int main(int argc, char **argv)
+{
+        doprint(log(-8)); /* nan */
+        return 0;
+}
+>Fix:
 
-c.
+>Unformatted:
