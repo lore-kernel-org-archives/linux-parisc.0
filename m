@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9A354834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 14:26:29 -0600 (MDT)
-Message-ID: <3D090009.CB2EF7B7@gmx.at>
-Date: Thu, 13 Jun 2002 22:26:49 +0200
+Received: from viefep15-int.chello.at (viefep15-int.chello.at [213.46.255.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 950994844
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 14:30:13 -0600 (MDT)
+Message-ID: <3D0900EB.77E7CFAA@gmx.at>
+Date: Thu, 13 Jun 2002 22:30:35 +0200
 From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-To: "M. Grabert" <xam@cs.ucc.ie>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] SCSI driver for E-class servers - SPIFI ?
-References: <Pine.LNX.4.44.0206122318230.3448-100000@sal.ucc.ie>
+References: <3D050639.B9F9695D@gmx.at> <20020610215312.29D2C483A@dsl2.external.hp.com> <3D053341.571CF331@gmx.at> <20020611213929.C75684854@dsl2.external.hp.com>  <3D07BB3E.A896878A@gmx.at> <20020612230856.D16EE485D@dsl2.external.hp.com>
 Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -22,71 +22,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks, for the answers.
+Hello Grant,
 
-I never thought, the SE stands here for the single ended, I know the 
-difference between SE and differential.
+MUX:
+----
+So, what is then the status of the docu then. You (I think it was you),
+said something about a non-disclosure agreement. Is this opportunity
+still active ?
 
-BTW: It's me, who wrote the MUX console support, and this is already
-checked in into the Linux tree (for half an year now). 
-But I am interested in having a full device support....
+SCSI:
+-----
+Are there plans to start developing the SCSI driver on base of this
+NetBSD driver ?
 
-Christoph P.
+Common:
+-------
+Is there a need to handle the bus system in a special way, or are the
+devices full accessable, interrupts assigned, etc..., or is there
+special
+work to do ?
+
+
+Christoph
 
 
 
-"M. Grabert" wrote:
+Grant Grundler wrote:
 > 
-> On Wed, 12 Jun 2002, Christoph Plattner wrote:
-> 
-> > Sorry, that I am not so "deep" in the HP device knowledge, can you give
-> > me sime hints !
-> >
-> > HP-BP is this a HP bus system ?
-> 
-> Yes, it's the HP Precision Bus (aka NIO). AFAIK it's mainly used in the
-> (very) old servers, like F10. I don't know what the current status of
-> support
-> is, but it used to be unsupported (no docu ?).
-> 
-> (hint: www.parisc-linux.org ->glossary, mailing list archive)
-> 
-> > Is this used in the E55 (or similar) ?
-> 
-> Yes. Although (regarding to www.openpa.net) something like a modified
-> version.
-> 
-> (hint: www.openpa.net, www.google.com, www.parisc-linux.org ->hardware
-> database)
-> 
-> > Is the "SE" SCSI that one in the E55 (what stands "SE" for) ?
-> 
-> SE stands for SingleEnded and reffers to how the SCSI device is connected
-> (signalling etc.). It's the "normal" SCSI (unlike LVD,
-> LowVoltageDifferential), used in SCSI-I and SCSI-II (narrow)
-> 
-> > What is SDTR ?
-> 
-> It's the signal send on the scsi bus to negotiate syncronous data
-> transfer (or asynchronous sent with a REQ/ACK) if they support it.
-> 
-> > Sorry, but I am interested in that stuff, and I know, I can help after
-> > initial steps. Some weeks ago, I rewrote an ethernet driver of an
-> > not-well known chip on an VAX termianl for VAX Linux. So after some
-> > hacking days (or better nights), there will be real progress.
-> >
-> > So I am interested in helping here.
-> 
-> nice :)
-> 
+> Christoph Plattner wrote:
 > > Sorry for this question again:
 > > What is the status of the MUX. As far I can remember, you started to
 > > write on this driver. Is this correct ?
 > 
-> Perhaps s.o. can answer this question. AFAIK somebody is indeed writing
-> on it and has succeded to use the console port on the MUX.
+> no. I think Ryan Bradetich was working on something for this
+> for K-class. not sure this is the same thing as E55 though.
 > 
-> geretings max
+> grant
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 -- 
 -------------------------------------------------------
