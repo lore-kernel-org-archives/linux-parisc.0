@@ -1,14 +1,14 @@
 Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C70C4925
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C97934829
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Apr 2004 01:04:11 -0600 (MDT)
-Date: Tue, 27 Apr 2004 09:04:08 +0200
-Message-ID: <408D43600000049A@ocpmta1.freegates.net>
-In-Reply-To: <20040421115522.GH28094@baldric.uwo.ca>
+	Tue, 27 Apr 2004 01:57:32 -0600 (MDT)
+Date: Tue, 27 Apr 2004 09:57:24 +0200
+Message-ID: <408D436000000590@ocpmta1.freegates.net>
+In-Reply-To: <Pine.LNX.4.58.0404270758490.1486@sal.ucc.ie>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20RE=3A=20=5BPATCH=5D=20glibc=2D2=2E3=2E3=20error=20with=20debian=20unstable=09compiler=2E=2E=2E?=
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Subject: RE: [parisc-linux] Linux-2.6.6-rc1-pa3 and pdflush problems
+To: "M. Grabert" <xam@cs.ucc.ie>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
@@ -22,22 +22,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
-Hello Carlos,
+> and also the same symptoms as before (network is working normal, USB
+> keyboard/mouse don't work). If you respond fast what commands I should
+> run, I can give you more info ...
 
-Here is my weekly test: cvs 20040426.
-Nothing new to mention: always well known errors collected after make -k
-check. I just build a 2.6.6-_rc2_-pa2 (for the fun) without pb (which boot
-fine on my b180)
+hmm usb and ide seems to be on the same superio.
 
-Cheers,
-    Joel
-
-PS: 
-> Yes, the default timeout is too short, add a TIMEOUTFACTOR of 5 or more.
-
-This time I put TIMEOUTFACTOR=4 in the chroot root profile and seems to be
-enough to bypass timeout errors :)
-
+Joel
 
 ----------------------------------------------------------------------------------------
 Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
