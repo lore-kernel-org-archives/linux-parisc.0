@@ -1,16 +1,16 @@
-From: Joel Soete <soete.joel@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Easy-press TOC button
-Date: Sat, 02 Oct 2004 16:26:02 +0000
-Message-ID: <415ED69A.8040409@tiscali.be>
+Date: Sat, 2 Oct 2004 10:36:56 -0600
+Message-ID: <20041002163656.GA2248@colo.lackof.org>
 References: <20041001170915.GA24570@ldl.fc.hp.com>
+	<415ED69A.8040409@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: Paul Bame <bame@ldl.fc.hp.com>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041001170915.GA24570@ldl.fc.hp.com>
+In-Reply-To: <415ED69A.8040409@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,24 +21,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Sat, Oct 02, 2004 at 04:26:02PM +0000, Joel Soete wrote:
+> Btw grub2 seems to be more open to other arch :-) (ppc already included)
+> Do you think it would be possible to add our parisc?
 
+Possibly? Yeah, sure. But what's wrong with palo?
 
-Paul Bame wrote:
-> When developing palo I needed to press TOC a lot and got tired of
-> fishing for a tool.  Here's a drawing of how I use tape and a pin on
-> C3000 which would work on other boxes too.  Might be handy for other
-> folks who like to crash their boxes a lot :-)
-> 
-> http://parisc-linux.org/~bame/tocmod.png
-
-:-)
-
-Btw grub2 seems to be more open to other arch :-) (ppc already included)
-Do you think it would be possible to add our parisc?
-(in a first step the idea was: use ipl to load what was stage2 in grub)
-
-TIA for advise,
-	Joel
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
