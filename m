@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C18D483E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Sep 2003 13:19:13 -0600 (MDT)
-Date: Sun, 21 Sep 2003 15:16:53 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 725BE483E
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Sep 2003 13:32:30 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A19wb-0007kM-IO; Sun, 21 Sep 2003 20:32:29 +0100
+Date: Sun, 21 Sep 2003 20:32:29 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Found the r19 problem!
-Message-ID: <20030921191653.GJ6963@systemhalted>
-References: <20030921185531.GH6963@systemhalted> <200309211912.h8LJCd59011386@hiauly1.hia.nrc.ca>
+Cc: Matthew Wilcox <willy@debian.org>, soete.joel@tiscali.be,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] warning: long unsigned int format, time_t arg
+Message-ID: <20030921193229.GJ13172@parcelfarce.linux.theplanet.co.uk>
+References: <20030921190457.GI13172@parcelfarce.linux.theplanet.co.uk> <200309211916.h8LJGNAG011413@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200309211912.h8LJCd59011386@hiauly1.hia.nrc.ca>
+In-Reply-To: <200309211916.h8LJGNAG011413@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +26,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 21, 2003 at 03:12:39PM -0400, John David Anglin wrote:
-> Well that's why the restore is deleted.  So, the clobber must go
-> and r19 must be preserved across the asm(...).  As I said, you can't
-> clobber r19 when generating pic code.  It's treated as fixed register,
-> so clobbering it can lead to undefined behavior.
+On Sun, Sep 21, 2003 at 03:16:23PM -0400, John David Anglin wrote:
+> > > /* Note these change from narrow to wide kernels */
+> > > #ifdef __LP64__
+> > > typedef unsigned long           __kernel_size_t;
+> > > typedef long                    __kernel_ssize_t;
+> > > typedef long                    __kernel_ptrdiff_t;
+> > > typedef long                    __kernel_time_t;
+> > > #else
+> > > typedef unsigned int            __kernel_size_t;
+> > > typedef int                     __kernel_ssize_t;
+> > > typedef int                     __kernel_ptrdiff_t;
+> > > typedef int                     __kernel_time_t;
+> > > #endif
+> > > 
+> > > On narrow kernels, int and long are the same.  So, why not use long
+> > > for both narrow and wide?  Then, the ifdef can be eliminated.
+> > 
+> > I think it's because gcc complains ;-)
 > 
-> If the syscall used r19, it could include a use of r19 in the asm.
-> This would ensure the restore occurs before the syscall.
+> Possibly, but the pa seems to be about the only port doing this.
 
-I'm going to stop writing r19 to the stack and tell gcc I'm using r4,
-and then do a copy/copy to get r19 back.
+We're one of the few ports that builds both 32 and 64 bits from the same
+port (actually, we were the first).  MIPS recently converted, and S390
+before them.  PPC might in the future, and I doubt Sparc ever will.
 
-c.
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
