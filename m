@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mimotohosyou.com (p1065-ipad30fukuokachu.fukuoka.ocn.ne.jp [220.107.66.65])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F18104881
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Aug 2003 07:24:32 -0600 (MDT)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by mimotohosyou.com (8.11.6/8.11.6) with ESMTP id h7HDTis06333
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Aug 2003 22:29:44 +0900
-Date: Sun, 17 Aug 2003 22:29:44 +0900
-Message-Id: <200308171329.h7HDTis06333@mimotohosyou.com>
-Content-Type: text/plain; charset="iso-2022-jp"
-MIME-Version: 1.0
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6018D4881
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Aug 2003 13:24:49 -0600 (MDT)
+Date: Sun, 17 Aug 2003 12:29:24 -0700
+From: Randolph Chung <randolph@tausq.org>
 To: parisc-linux@lists.parisc-linux.org
-From: =?iso-2022-jp?B?GyRCIzMyLzFfJHIjNTIvIzlAaUt8MV8+WjVyTS0+WjVyJEdDNSQ5ISobKEI=?= <aka123@abeam.ocn.ne.jp>
-Subject: [parisc-linux] =?iso-2022-jp?B?GyRCTCQ+NUJ6OS05cCF2IzEyLzFfJHIhJiEmIzVAaUt8MV9KXT5aJHIhJiEmQzUkOUp9SyEkSCRPISYhJhsoQg==?=
+Message-ID: <20030817192923.GO21328@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [RFC] change corefile OSABI to ELFOSABI_LINUX
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,58 +21,88 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-＜事業者＞国際身元保証受託協会＜特定商取引法に基づく表示です＝
-受信拒否す場合は、 http://www12.ocn.ne.jp/~osyou/deny.htmlでお願いします。他の表示事項（取引条件等）は法律に従いホームページに表示してあります。＞  　http://www12.ocn.ne.jp/~hosyou/　　　　
-　　　　　　　　　　☆☆☆★☆☆☆★☆☆☆★☆☆☆
- 　　　
-　　　　　　　●１億円を今と今後のための貯金収入は
+Hi all,
 
-　　　○　信じられない奇抜な証拠付き方法も大切
-　　　○　事実か否か物的証拠確認は更に大切
-　　　○　資料請求のあと、詳細を聞くことも納得のためにも大切
+Currently, on hppa-linux, gcc produces objects with the OSABI field set
+to Linux. AFAIK, we are the only Linux architecture that does this,
+everyone else uses ELFOSABI_NONE (i.e. "System V")
 
- 【５億９千万円証拠有収入在宅保証証券ビジネス権利】特別優遇発売中
-　　　　　　　　　　　　　　☆★--◇--★-◆
-　　　　　　【２億円・３億円・５億９千万円等の収入者続出】
-　　　貴方様も【証拠有ビック収入ビジネスチャンス】のご検討を！！　　
-　　　　　　　　
-　　　　　　　　　　　物的証拠を見る確認する迄は
-　　　　何事も、騙し騙されの世の中です・信用しないで下さい。
-☆☆☆★☆☆☆★☆☆☆★☆☆☆★☆☆☆★☆☆☆★☆☆☆★☆☆
+The Linux kernel, however, produces corefiles with OSABI=NONE (actually
+it doesn't set it explicitly, so it defaults to 0, which is the SYSV
+definition). The Debian gdb package has a patch in bfd that works around
+this inconsistency.
+
+Should we make the two consistent? Here's a patch that sets OSABI to
+Linux for corefile generation. We will still need the bfd code for
+backward compatibility, but moving forward it'll be good for things to
+be more consistent :)
+
+comments?
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
+
+
+Index: fs/binfmt_elf.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/fs/binfmt_elf.c,v
+retrieving revision 1.2
+diff -u -p -r1.2 binfmt_elf.c
+--- fs/binfmt_elf.c	29 Jul 2003 17:25:49 -0000	1.2
++++ fs/binfmt_elf.c	17 Aug 2003 19:19:16 -0000
+@@ -1023,6 +1023,7 @@ static inline void fill_elf_header(struc
+ 	elf->e_ident[EI_CLASS] = ELF_CLASS;
+ 	elf->e_ident[EI_DATA] = ELF_DATA;
+ 	elf->e_ident[EI_VERSION] = EV_CURRENT;
++	elf->e_ident[EI_OSABI] = ELF_OSABI;
+ 	memset(elf->e_ident+EI_PAD, 0, EI_NIDENT-EI_PAD);
  
-　　　『５億９千万円証拠有収入在宅ビジネス事業経営権利』
-　　　　＝２０年有効・インターネット・葉書・FAXで出来る＝
-　◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◆◇◆◇◆◇◆◇◆◇
-
-　　あの時、１億円があったら・あのとき、２億円の保証があったら
-　　　　今は、最高なのに！！今からでも遅くありません！！
-　　／＿／＿／＿／＿／＿／＿／＿／＿／＿／＿／＿／＿／＿／＿／ 
-■日本で初めて当協会から３７年前に【保証証券保証】を先進国を参考に
-　開発され、北海道〜沖縄迄全国的に拡大しています。
-■裁判と同じ証拠主義を継続して３７年は信用の原点・証拠見て確認する
-　までは何事も信用しないは安全・成功の基礎。
-■東京高等裁判所の判決書・３億、５億９千万円の銀行印有振込書・
-　福祉事務所から保証関連書・他「物的証拠」を見せます・見てください
-　確認して下さい」『それまでは信用ないで下さい・こんなウマイ話があ
-　るかと疑って下さい』物的証拠は嘘をつけません。
-　保証証券通信販売事業を「証拠から開業出来ます」保証の責任はありま
-　せん。
-■保証証券発行元の全国信用身元保証受託協会が全責任を持ちます。
-
-高裁判決書が物的証拠・判決書見せます・見る迄は信用しないで下さい。
-　☆〜〜〜〜〜〜〜☆〜〜〜〜〜〜☆〜〜〜〜〜〜☆〜〜〜〜〜☆
-
-資料請求は　 http://www12.ocn.ne.jp/~hosyou/　から３億円への一歩
-　
-　　　　　　［５億９千万円証拠有在宅保証ビジネス］を 裏付ける
-物的証拠を見てから、嘘か誠かは証拠次第！
-　　　　　　　　　　　　　　証拠確認迄は信用しないが何事も成功の秘訣！
-　　☆〜〜〜〜〜〜〜☆〜〜〜〜〜〜☆〜〜〜〜〜〜☆〜〜〜〜〜☆
-　【保証証券】大好評ネトで販売・人助けは不況関係ない好況は当然　　
- 　『保証の悲劇の肩代わり・防止の保証証券』は社会福祉証券です。
-
-△福祉関係からの要請（生活保護者の保証ー身内が嫌っている保証を無
-　条件で社会の為に保証引き受け）で「保証証券」は大好評発売中!
-△論より証拠は当然の格言△悩むより証拠で確信△証拠が無いと疑いは
-　解決出来ないのは今の常識です。騙されたく無いなら証拠主義で！！
-　
+ 	elf->e_type = ET_CORE;
+Index: include/asm-parisc/elf.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/elf.h,v
+retrieving revision 1.1
+diff -u -p -r1.1 elf.h
+--- include/asm-parisc/elf.h	29 Jul 2003 17:02:03 -0000	1.1
++++ include/asm-parisc/elf.h	17 Aug 2003 19:19:17 -0000
+@@ -283,6 +283,7 @@ struct pt_regs;	/* forward declaration..
+  */
+ #define ELF_DATA	ELFDATA2MSB
+ #define ELF_ARCH	EM_PARISC
++#define ELF_OSABI 	ELFOSABI_LINUX
+ 
+ /* %r23 is set by ld.so to a pointer to a function which might be 
+    registered using atexit.  This provides a mean for the dynamic
+Index: include/linux/elf.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/linux/elf.h,v
+retrieving revision 1.1
+diff -u -p -r1.1 elf.h
+--- include/linux/elf.h	29 Jul 2003 17:02:11 -0000	1.1
++++ include/linux/elf.h	17 Aug 2003 19:19:19 -0000
+@@ -360,7 +360,8 @@ typedef struct elf64_shdr {
+ #define	EI_CLASS	4
+ #define	EI_DATA		5
+ #define	EI_VERSION	6
+-#define	EI_PAD		7
++#define	EI_OSABI	7
++#define	EI_PAD		8
+ 
+ #define	ELFMAG0		0x7f		/* EI_MAG */
+ #define	ELFMAG1		'E'
+@@ -381,6 +382,13 @@ typedef struct elf64_shdr {
+ #define EV_NONE		0		/* e_version, EI_VERSION */
+ #define EV_CURRENT	1
+ #define EV_NUM		2
++
++#define ELFOSABI_NONE	0
++#define ELFOSABI_LINUX	3
++
++#ifndef ELF_OSABI
++#define ELF_OSABI ELFOSABI_NONE
++#endif
+ 
+ /* Notes used in ET_CORE */
+ #define NT_PRSTATUS	1
