@@ -1,35 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA12698
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 04:21:15 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA13227
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 04:29:17 -0700
 Received: from user-140-143.jakinternet.co.uk (HELO rhirst.linuxcare.com) (212.187.140.143)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 11:23:38 -0000
+  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 11:31:43 -0000
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 6EEDCB007; Thu, 30 Nov 2000 11:19:30 +0000 (GMT)
-Date: Thu, 30 Nov 2000 11:19:30 +0000
+	id E92A2B008; Thu, 30 Nov 2000 11:27:39 +0000 (GMT)
+Date: Thu, 30 Nov 2000 11:27:39 +0000
 From: Richard Hirst <rhirst@linuxcare.com>
-To: "Jorge L. deLyra" <delyra@latt.if.usp.br>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com,
-        assirati@socrates.if.usp.br
+To: Steve Moret <smoret@uci.edu>
+Cc: Helge Deller <deller@gmx.de>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] HP 9000/735-125
-Message-ID: <20001130111930.E22285@linuxcare.com>
-References: <200011292319.PAA28547@milano.cup.hp.com> <Pine.LNX.3.96.1001130085232.14082B-100000@latt.if.usp.br>
+Message-ID: <20001130112739.F22285@linuxcare.com>
+References: <00113001105103.00309@P100> <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.3.96.1001130085232.14082B-100000@latt.if.usp.br>; from delyra@latt.if.usp.br on Thu, Nov 30, 2000 at 08:58:22AM -0200
+In-Reply-To: <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu>; from smoret@uci.edu on Thu, Nov 30, 2000 at 01:20:28AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 30, 2000 at 08:58:22AM -0200, Jorge L. deLyra wrote:
-> OK, here goes. I want to congratulate you all on this effort. We have five
-> of these HP-9000 stations here, quite old by now. They used to be our main
-> number crunching force. They are wonderfully built hardware in bad need of
-> a wonderful system on them!  |:-)
-
-> Serial driver version 5.01 (2000-05-29) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
+On Thu, Nov 30, 2000 at 01:20:28AM -0800, Steve Moret wrote:
+> Now, maybe you can help me identify my SCSI problem. I don't know if it is
+> because of driver issues or a bad disk (completly likely). Do other people
+> have the Fast SCSI2 working on their 735s?
 > 
-> Dumping Stack from c4f9c000 to c4f9cbc0:
+> Whenever I do a mke2fs (after partitioning the drive with fdisk ok) it dies.
 
-This has been reported on 715/50 (Robert Duncan) and 715/75 (me) round
-about November 15th.  At the time I tried a current cvs kernel on my
-715/75 and it was even worse (IIRC).  I'll have another look at it.
+
+I have a 53c700 on my 715/75, and the driver was having trouble
+with a CRDOM I attached, so it has some problems.  I wrote the
+driver, but havn't used the 715/75 for a while since latest kernels
+wouldn't boot for me.  I'll get it going again and see if the scsi
+driver still works.
 
 Richard
