@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tassadar.physics.auth.gr (tassadar.physics.auth.gr [155.207.123.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C51F94829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Nov 2002 01:04:14 -0700 (MST)
-Date: Mon, 4 Nov 2002 10:03:57 +0200 (EET)
-From: Dimitris Zilaskos <dzila@tassadar.physics.auth.gr>
-To: Jochen Friedrich <jochen@scram.de>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	"BUCH-PEDERSEN,LEIF (HP-France,ex1)" <leif_buch-pedersen@hp.com>,
-	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] ip6tables problem 
-In-Reply-To: <Pine.LNX.4.44.0211032348580.24848-100000@gfrw1044.bocc.de>
-Message-ID: <Pine.LNX.4.44.0211040957290.30489-100000@tassadar.physics.auth.gr>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from thinkpad.home (pc3-hem11-4-cust111.bre.cable.ntl.com [213.107.179.111])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DA17E4829
+	for <parisc-linux@parisc-linux.org>; Mon,  4 Nov 2002 02:13:11 -0700 (MST)
+Date: Mon, 4 Nov 2002 09:10:40 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Anybody got a 74x workstation?
+Message-ID: <20021104091040.GJ10649@sleepie.demon.co.uk>
+References: <20021103014448.P20749@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021103014448.P20749@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 3 Nov 2002, Jochen Friedrich wrote:
->
-> However, i'm not using the ip6tables on that boxes as all three of them
-> are behind dedicated packet filters...
+On Sun, Nov 03, 2002 at 01:44:48AM +0000, Matthew Wilcox wrote:
+> 
+> I just noticed that we only have a 742 in the hardware database... anyone
+> got a 743, 744, 745, 747 or 748 workstation they could add?
+> http://hwdb.parisc-linux.org/add.php3?type=machine
 
- I have built and use 2.4.19-pa22 kernels with the latest stable usagi
-patch applied, with only one reject on some network driver I do not
-possess . I had to disable many netfilter for ipv6 options in order for
-the kernel to compile . And those that I had enabled dont seem to work :)
- Currently using ipv6 on two 715/33 and one 715/50 ...and it works
-perfectly:)
+I have a 743 vme board, will add.
 
- Regards ,
-
---
-=============================================================================
-
-Dimitris Zilaskos
-
-Department of Physics @ Aristotle Univercity of Thessaloniki , Greece
-PGP key : http://tassadar.physics.auth.gr/~dzila/pgp_public_key.asc
-          http://egnatia.ee.auth.gr/~dzila/pgp_public_key.asc
-MD5sum  : 4f84f3f53cb046008b4abcb2a092d28d  pgp_public_key.asc
-=============================================================================
+Richard
