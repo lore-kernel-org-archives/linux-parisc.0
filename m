@@ -1,55 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11104
-	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 17:05:37 -0700
-To: Sam Creasey <sammy@sammy.net>
-Cc: willy@thepuffingroup.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] new binutils/gcc 
-In-reply-to: Your message of "Sun, 27 Feb 2000 13:26:55 EST."
-             <Pine.LNX.4.21.0002271322290.365-100000@sammyville.sammy.net>
-Date: Tue, 29 Feb 2000 16:06:35 -0700
-From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E12Pvit-0003UI-00@endor.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11466
+	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 17:17:52 -0700
+Message-Id: <200002292320.PAA08557@milano.cup.hp.com>
+To: willy@thepuffingroup.com
+Cc: Andrew Shugg <andrew@neep.com.au>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Value of an old K-class server? 
+In-reply-to: Your message of "Tue, 29 Feb 2000 12:24:39 PST."
+             <20000229122439.F9944@thepuffingroup.com>
+Date: Tue, 29 Feb 2000 15:20:05 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-= 
-= There is, in fact, a relationship there.  r8 isn't set properly at any
-= time, it's kludged.  r8 needs to be set to 
-= (load addr of .text) & 0xfff00000.   Basically this is used as a pointer
-= to the stub table for long branching.  (so, it should be a jump to
-= 0xc010049c, which ought to be a stub for start_parisc())
+willy@thepuffingroup.com wrote:
+> On Wed, Mar 01, 2000 at 01:06:47AM +0800, Andrew Shugg wrote:
+> > The lowest-numbered K class machine I can find on HP's website is a K220.
+> > I'm fairly sure the machine I've looked at is a K200, but if this model
+> > never existed then it's probably a 220.  =)
+> 
+> I've just been going through The List of hardware, bashing the hw database
+> into something more sane.  The K200 did exist, codenamed `Kittyhawk' with
+> a 100MHz PA7200 CPU in it.  It has an NIO bus in it which is something
+> we don't have documentation on yet (also known as HP-PB, I think).
+> The K-class machines probably wont work very soon, but I suspect someone
+> will eventually get them working.
 
-Don't "be" branches cause a pipeline flush?  It might be faster to
-do two "bl" branches instead?
+Think of the K-class as a C-class (eg. C100) with HP-PB instead of EISA.
+But forget the HP-PB.  Very few cards are made for it and most are HP
+proprietary.  At least all the HP-PB SCSI boards are. The problem is not
+getting the cards - getting a device driver will be difficult unless
+someone in HP is a masochist and wants to write one. Not me.
 
-= Yeah, it's kinda ugly...  the linker and crt0.S both need to be
-= taught about this too.
+Kittyhawks also have GSC "slots". The core I/O board has one "slot" and
+the Harrier board has room for 4 more GSC cards.  IIRC, TPG has a dozen
+or so gigabit ethernet cards which would fit nicely on a harrier.  I suspect
+Andrew was refering to a Harrier board.
 
-Ok, I fixed head.S and interruption.S.  After hacking on vmlinux.lds
-and a couple small other things, the elf kernel boots to the point
-where I need a ramdisk or NFS root to go further, so that's my plan.
-Sources are in CVS with the ELF_BRANCH tag.
+I have no clue what the actual value of a K200 is. One should be able to
+upgrade the system to something faster than 100Mhz and add CPU's. I'm
+just not sure it's worth it. Compare to a C3000 or B1000 before going
+that route.
 
-Things to do:
+grant
 
-    The init_task_union alignment is in both vmlinux.lds and
-    is known by setup.c and #defined yet another place.  This ought
-    to be cleaned up if possible.
-
-    The init_task_union printf in setup.c should be fixed.
-
-    It's probably time to start using the __setup stuff we hacked
-    around for SOM.
-
-    Fix 'make Image' or nuke it.  'make palo' works (for me anyway)
-
-    Sammy said, and I didn't touch these (though others have in the
-    main line):
-
-	I guarantee that launching som/elf binaries won't work.  page faulting
-	looks messed up somewhere.
-
-	execve() might not work in this one..   I played with the assembler for
-	it, but good things never happened, so no changes included.
-
-
-			-Paul Bame
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
