@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BF7004840
-	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 05:13:36 -0700 (MST)
-Received: from ool-44c465f0.dyn.optonline.net (ool-44c465f0.dyn.optonline.net [68.196.101.240])
-	by cuprel1.hp.com (Postfix) with SMTP id 7B592AC4
-	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 04:13:35 -0800 (PST)
-Received: from [31.112.29.36] by ool-44c465f0.dyn.optonline.net id JNcrZ72glX06 for <parisc-linux@parisc-linux.org>; Tue, 02 Dec 2003 09:07:02 -0400
-Message-ID: <522e8y$3-ndc5041-149ch$m5u@943ty>
-From: "Alisa Frank" <marilyn@msn.com>
-Reply-To: "Alisa Frank" <marilyn@msn.com>
+Received: from dhcp065-025-010-066.neo.rr.com (dhcp065-025-010-066.neo.rr.com [65.25.10.66])
+	by dsl2.external.hp.com (Postfix) with SMTP id 69E924840
+	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 07:17:46 -0700 (MST)
+Message-ID: <it1u$139l56i34@tz0y2.5r1.xk>
+From: "Josie Yeager" <marilyn@msn.com>
+Reply-To: "Josie Yeager" <marilyn@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Tue, 02 Dec 03 09:07:02 GMT
+Date: Tue, 02 Dec 03 10:16:13 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="_.5C5BF.A._A1__DA..9_"
-Subject: [parisc-linux] Incredible supplement for men and love ds kwrle
+	boundary="DB__.6_D.0AC3_9A8.4A67A_"
+Subject: [parisc-linux] Over and over and over she cried ql j kgevyw
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,7 +22,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---_.5C5BF.A._A1__DA..9_
+--DB__.6_D.0AC3_9A8.4A67A_
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
@@ -57,16 +53,13 @@ h2></center>
 
 </body>
 </html>
-nssoppm f  bkmidpuw n 
- j
-vkcwfntn
+mpgawrefmqt ks
+vgr
+o
+jy 
+fbxzmtwbqmksfsl 
+ zelanzmm n
+lzlxncqy 
+wormwpstvjpiino
 
-wj
-lcwx
-xqozmdnuev 
-ccflkm
-n  gy
- mn
-totz
-
---_.5C5BF.A._A1__DA..9_--
+--DB__.6_D.0AC3_9A8.4A67A_--
