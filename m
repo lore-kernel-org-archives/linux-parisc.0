@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: =?ISO-8859-1?Q?Bj=F8rn_Djupvik?= <bjorn@sunshine.equant.no>
+Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A7A6482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Feb 2002 09:31:04 -0700 (MST)
+Date: Thu, 7 Feb 2002 17:31:03 +0100
+To: Helge Deller <helge.deller@sap.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Question about RAID array 
-In-Reply-To: Message from =?ISO-8859-1?Q?Bj=F8rn_Djupvik?= <bjorn@sunshine.equant.no>
-   of "Thu, 07 Feb 2002 12:20:38 +0100." <Pine.LNX.4.30.0202071217510.26774-100000@sunshine.equant.no>
-References: <Pine.LNX.4.30.0202071217510.26774-100000@sunshine.equant.no> 
-Date: Thu, 07 Feb 2002 09:22:40 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020207162240.52CB6482A@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors
+Message-ID: <20020207173103.A4233@electra.intern.planb.de>
+References: <20020207130852.C3306@electra.intern.planb.de> <E16Ypjz-0000uP-00@linuxlab.wdf.sap-ag.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <E16Ypjz-0000uP-00@linuxlab.wdf.sap-ag.de>
+From: Enrik Berkhan <Enrik.Berkhan@planb.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,28 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-=?ISO-8859-1?Q?Bj=F8rn_Djupvik?= wrote:
-> Hi, I am considering migrating a few boxes from hp-ux to parisc-linux as I
-> have done this successfully on a 712/100 already.. The boxes in question
-> are D-class servers (220,230,250,etc) and some of them have jurassic-era
-> (ancient) C2300 disk arrays attached to them, which I know very little
-> about.
+On Thu, Feb 07, 2002 at 03:41:34PM +0100, Helge Deller wrote:
+> AFAIK the firmware output only happens at 9600 baud (8N1) and you can't 
+> change that. After the linux kernel has booted you can of course use
+> a higher rate.
 
-1) D-class is quite a different beast than 712.
-   Has anyone tried installing 0.9.3 on a D-class?
-   Are all the interface cards you care about supported with linux drivers?
+The firmware allows higher baud rates, at least on the 710, 715 and 720.
+I'm using it, so it does work ;-) Try "help rs232" when in boot admin
+mode.
 
-2) can someone confirm C2300 disk array  == "Cascade" from 1991-93?
-   If so, it has utilities/daemon running that monitors the health of
-   the array. I highly doubt that utility will ever get ported since it
-   needs kernel driver support for a non-existant LUN 5 or 7 (I forgot).
-   Consider replacing the array with SCSI JBOD. You'd get an order of
-   magnitude increase in storage capacity and performance.
 
-> Can anyone confirm that this is going to work under parisc-linux,
-> I'd like to see a "success story" before I rip out hpux and install Linux
-> =)
-
-yeah - that's a good idea.
-
-grant
+Enrik
+-- 
+Enrik Berkhan                                         plan b. GmbH
+                                                      Rüppurrer Straße 4
++49-721-388582 (voice)                                76137 Karlsruhe
++49-721-388581 (fax)                                  Germany
