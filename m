@@ -1,56 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viemta04.chello.at (viemta04.chello.at [195.34.133.54])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BBADE482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 14:38:35 -0600 (MDT)
-Received: from dot.at ([62.178.92.247]) by viemta04.chello.at
-          (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
-          with ESMTP id <20010409203833.XKBQ23009.viemta04@dot.at>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Mon, 9 Apr 2001 22:38:33 +0200
-Sender: chris@dsl2.external.hp.com
-Message-ID: <3AD21DC8.3FFE4F3E@dot.at>
-Date: Mon, 09 Apr 2001 22:38:32 +0200
-From: Christoph Plattner <christoph.plattner@dot.at>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4FAF8482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 14:49:36 -0600 (MDT)
+To: Christoph Plattner <christoph.plattner@dot.at>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Many experience done on 720, but `init' fails !! 
+In-Reply-To: Message from Christoph Plattner <christoph.plattner@dot.at>
+   of "Sun, 08 Apr 2001 19:08:11 +0200." <3AD09AFB.EBDFF975@dot.at>
+References: <3AC90274.4687ED7C@dot.at> <20010403001743.G9198@linuxcare.com>
+ <3AC973D3.F1453A4C@alcatel.at> <20010403223441.A11435@parcelfarce.linux.theplanet.co.uk> <3ACAC867.25327463@alcatel.at> <20010404180518.C11435@parcelfarce.linux.theplanet.co.uk>  <3AD09AFB.EBDFF975@dot.at>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Problems with `init' on 720 !
+Date: Mon, 09 Apr 2001 14:52:08 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010409205209.2FF0437CDB@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-After many experiments, I can boot the box (9000/720) with many tools,
-bash, etc, (see other mails with
-	[parisc-linux] Many experiments with 720, but `init' fails
-) but I have troubles with init.
+Christoph Plattner writes...
 
-Error log:
+> SO I build sash, a also build a bash (shared and static !), I build
+> fileutils, text-utils, shell-utils, etc, etc.....
+> The system boots with bash and I can mount, run programs, etc....
 
-VFS: Mounted root (nfs filesystem) readonly.
-break 0,0: pid=9 command='init'
-init[9]: Breakpoint 0
+Good.
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111
-r0-3     00000000 102de010 00000000 00000000
-r4-7     00000000 00000000 00000000 00000000
-r8-11    00000000 00000000 00000000 00000000
-r12-15   00000000 00000000 00000040 1012544c
-r16-19   13f085c0 13f08000 c804c804 00000001
-r20-23   102efcc0 102efcc0 10022800 102efcc0
-r24-27   0000002e 00001000 00000000 1024c010
-r28-31   00000000 00000000 13f089c0 101312a0
-sr0-3    00000000 00000000 00000000 00000001
-sr4-7    00000000 00000000 00000000 00000000
+> The I build "my own" startup stuff. A /sbin/init.d/xxx , etc/rc.d/xxx
+> and so on. I also build a sysvinit-2.78 (and 2.77 before), but the
+> `init' has it's problems. The error message is:
 
-IASQ: 00000000 00000000 IAOQ: 00000000 00000004
- IIR: 00000000    ISR: 00000000  IOR: 00000000
-ORIG_R28: 00000000
+Make sure you don't have multiple init's. The kernel will look in several 
+places and I don't remember what order it looks in. If you only have one then 
+that's the only one it can find :)
 
-With friendly regards
-	Christoph P.
-
-
+Are you still having problems with the init in the base tarball? Is it 
+important to you to build your own init? If it is reply privately and maybe I 
+can help.
 
 -- 
--------------------------------------------------------------------------
-private:	christoph.plattner@dot.at
-company:	christoph.plattner@alcatel.at
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
