@@ -1,7 +1,8 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] kernel crash in free_block? (c3k, 32-bit, UP)
-Date: Sun, 19 Sep 2004 22:23:37 -0400
-Message-ID: <20040920022336.GP17238@baldric.uwo.ca>
+Subject: [parisc-linux]
+	kernel crash in cache_alloc_refill (a500, 64-bit, UP)
+Date: Sun, 19 Sep 2004 22:45:07 -0400
+Message-ID: <20040920024506.GT17238@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -17,58 +18,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
 pa,
 
-Configured with: ../src/configure -v
---enable-languages=c,c++,java,f77,pascal,objc,ada,treelang --prefix=/usr
---mandir=/usr/share/man --infodir=/usr/share/info
---with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared
---with-system-zlib --enable-nls --without-included-gettext
---enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu
---enable-debug --enable-java-gc=boehm --enable-java-awt=xlib
---enable-objc-gc hppa-linux
-Thread model: posix
-gcc version 3.3.4 (Debian 1:3.3.4-5)
+My kernels are being less than stable...
+This is recent. Something has recently changed?
+Any thoughts?
 
-2.6.9-rc2-pa6, C3000, 32-bit UP (PA7300LC optimized).
+firin login: Backtrace:
+ [<0000000010184e38>] kmem_cache_alloc+0x68/0x70
+ [<00000000101b6664>] alloc_buffer_head+0x2c/0x90
+ [<000000001022a980>] journal_write_metadata_buffer+0x88/0x8a8
+ [<00000000102242f4>] journal_commit_transaction+0x7fc/0x2778
+ [<000000001022a460>] kjournald+0x150/0x370
+ [<000000001010647c>] ret_from_kernel_thread+0x24/0x38
 
-Kernel crashed during heavy disk load.
-
-Backtrace:
- [<1014a498>] drain_array_locked+0x90/0xc4
- [<1014a568>] cache_reap+0x9c/0x20c
- [<101389a8>] worker_thread+0x1ac/0x278
- [<1013d420>] kthread+0xdc/0xe4
- [<1010dc5c>] ret_from_kernel_thread+0x1c/0x24
-
-Kernel Fault: Code=15 regs=10ff42c0 (Addr=b4d7fcf0)
+Bad Address (null pointer deref?): Code=15 regs=000000006d2ec8f0 (Addr=4000000066354008)
 
      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001110 Not tainted
-r00-03  00000000 1049b810 1014a498 00000008
-r04-07  4fc7d2e0 4fc7d2ec 4fe21014 f0000000
-r08-11  1049b810 00200200 00100100 4fc7d2fc
-r12-15  00200000 00100000 103b2010 10490010
-r16-19  f00008c4 f000017c f0000174 b4d7fcec
-r20-23  4fc7d2ec 2b5a7000 00000011 10343fe0
-r24-27  00000008 4fe21010 2b5a7214 10398010
-r28-31  4ff620d0 00000002 10ff42c0 1014a5bc
-sr0-3   00000000 000000d9 00000000 000000d9
-sr4-7   00000000 00000000 00000000 00000000
+PSW: 00001000000001001111111100001110 Not tainted
+r00-03  0000000000000000 0000000010597100 00000000123d8ce8 000000000000000b
+r04-07  0000000000000001 00000000123da000 00000000123d8bc0 00000000123d8cc8
+r08-11  00000000123db000 00000000123d8d28 0000000000000850 000000006f702a40
+r12-15  000000006d2ec508 0000000000330226 0000000000000000 0000000000000000
+r16-19  0000000000000000 000000006ddfd06c 0000000000000f94 00000000123d8cc8
+r20-23  7364650066354000 000000000000002c 0000000000000031 000000006637e000
+r24-27  000000000000000a 000000006637e028 00000000123da010 0000000010516e80
+r28-31  0000000000200200 0000000000100100 000000006d2ec8f0 00000000123d8cd8
+sr0-3   0000000004c47000 0000000000000000 0000000000000000 0000000004c47000
+sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
-IASQ: 00000000 00000000 IAOQ: 10149c08 10149c0c
- IIR: 0e741288    ISR: 00000000  IOR: b4d7fcf0
- CPU:        0   CR30: 10ff4000 CR31: 1042c000
- ORIG_R28: 00000000
- IAOQ[0]: free_block+0x90/0x158
- IAOQ[1]: free_block+0x94/0x158
- RP(r2): drain_array_locked+0x90/0xc4
-Kernel panic - not syncing: Kernel Fault
-
-The fault address is a bit weird.
+IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000010184934 0000000010184938
+ IIR: 0e9312d0    ISR: 0000000033646500  IOR: 4000000066354008
+ CPU:        0   CR30: 000000006d2ec000 CR31: 00000000104e0000
+ ORIG_R28: 000000005b4c1ab8
+ IAOQ[0]: cache_alloc_refill+0x164/0x330
+ IAOQ[1]: cache_alloc_refill+0x168/0x330
+ RP(r2): 0x123d8ce8
+Kernel panic - not syncing: Bad Address (null pointer deref?)
+ <0>Rebooting in 180 seconds..
 
 c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
