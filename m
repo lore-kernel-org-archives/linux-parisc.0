@@ -1,16 +1,18 @@
-Return-Path: <Symantec_AntiVirus_for_SMTP_Gateways@hndx.com>
-Received: from name.hndx.com (unknown [61.163.221.27])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9F25C4844
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 363EA4844
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 11 Apr 2004 21:09:01 -0600 (MDT)
-From: Symantec_AntiVirus_for_SMTP_Gateways@hndx.com
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="==M2004041211013207870"
-Message-Id: <20040412030901.9F25C4844@dsl2.external.hp.com>
-Date: Sun, 11 Apr 2004 21:09:01 -0600 (MDT)
-Subject: [parisc-linux] Returned mail
+	Sun, 11 Apr 2004 22:32:13 -0600 (MDT)
+Date: Sun, 11 Apr 2004 22:32:12 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Subject: Re: [parisc-linux] Proposal for altering our Page Table layouts
+Message-ID: <20040412043212.GA16377@colo.lackof.org>
+References: <200404091438.i39Ec4Q23610@udlkern.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200404091438.i39Ec4Q23610@udlkern.fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,66 +22,25 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Fri, Apr 09, 2004 at 08:38:04AM -0600, John Marvin wrote:
+...
+> No PA machine actually implements more
+> than a 40 bit physical address space (even the latest Pluto based
+> machines, which support 44 bits for IA64 are put into a 40 bit addressing
+> mode for PARISC).
 
---==M2004041211013207870
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+I was just looking at the pluto "PA_RISC Physical Address Map" and
+all RAM is physically located < 1TB (40 bits).
+Do we have to worry about the GMMIO (MMIO space above 4GB) in
+"F-space" above 1TB?
 
---- The message cannot be delivered to the following address. ---
+The per rope 64KB IO Port space is accessed via the GMMIO address ranges.
+This is in addition to the "global" IO Port space accessed through the
+regular < 4GB MMIO address space. I'm guessing this won't ever need
+to be mapped to userspace (or something like that), but just would
+like to hear from someone who understands it better whats up.
 
-me@huliang.com    Mailbox unknown or not accepting mail.
-554 Relay rejected for policy reasons.
+That's for ZX1+PA8800. I've not looked SX1000 (Superdome).
 
-
---==M2004041211013207870
-Content-Type: message/delivery-status
-
-Reporting-MTA: Symantec_AntiVirus_for_SMTP_Gateways@hndx.com
-Final-Recipient: rfc822;me@huliang.com
-Action: failed
-Status: 5.1.1
-Diagnostic-Code: X-Notes; Cannot route mail to user (me@huliang.com).
-
---==M2004041211013207870
-Content-Type: message/rfc822
-
-Received: from huliang.com ([81.153.13.18])
-	by name.hndx.com (SAVSMTP 3.1.0.29) with SMTP id M2004041211012607868
-	for <me@huliang.com>; Mon, 12 Apr 2004 11:01:26 +0800
-From: parisc-linux@lists.parisc-linux.org
-To: me@huliang.com
-Subject: Spam
-Date: Mon, 12 Apr 2004 04:08:44 +0100
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-I have visited this website and I found you in the spammer list. Is that true?
-
-++++ Attachment: No Virus found
-++++ Norman AntiVirus - www.norman.com
-
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	name="DELETED0.TXT"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="DELETED0.TXT"
-
-tMvTyrz+uqzT0L/J0sm4vbz+IGFidXNlX2xpc3QuZG9jICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5zY3IK0tGx
-u8m+s/2how==
-------=_NextPart_000_0016----=_NextPart_000_0016--
-
-
---==M2004041211013207870--
+thanks,
+grant
