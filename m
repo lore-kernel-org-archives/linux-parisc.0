@@ -1,15 +1,16 @@
-From: =?ISO-8859-1?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
-Subject: Re: [parisc-linux] HP 712/80 and 64 MBit sims.
-Date: Wed, 03 Nov 2004 11:13:15 +0100
-Message-ID: <4188AF3B.6000305@lycos.nl>
-References: <418647CB.3050304@lycos.nl>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] ASSERT() -> BUG_ON() (1/4):
+	arch/parisc/kernel/pci-dma.c
+Date: Sun, 7 Nov 2004 14:48:47 -0700
+Message-ID: <20041107214847.GB16345@colo.lackof.org>
+References: <418E1BD1.7010108@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: maillist parisc-linux <parisc-linux@parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <418647CB.3050304@lycos.nl>
+In-Reply-To: <418E1BD1.7010108@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,47 +21,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Corné Beerse wrote:
+On Sun, Nov 07, 2004 at 12:57:53PM +0000, Joel Soete wrote:
+> This is a very first proposal because:
+> 	a) BUG_ON() is not anymore conditional
 
-> Hello,
-> 
-> In http://www.openpa.net/systems/712.html, it says a 712/80 cannot coop 
-> with 64MBit sims. It so happens I have those around (from a D210, 
-> http://www.openpa.net/systems/ultralight.html) and like to use them in 
-> the 712.
-> 
-> Can these sims be usefull to me? By providing just the supported 32 
-> MByte? or even better, just provide all memory.
-> 
-> Or is it that these (rather large) sims just don't fit in the slim 712 
-> case?
-> 
-> Has anyone experience with this? Is it possible the sims or the system 
-> can be ruined by just using it?
-> 
+Exactly, this is exactly why I'm not enthusiastic about replacing
+ASSERT with BUG_ON. ASSERT is intended to catch developement bugs
+that I know will not occur in production. Having the BUG_ON will
+only slow down the production kernel in those cases.
 
-My own experience so far:
+So some BUG_ON are ok, but not a wholesale replacement of ASSERTs.
+I'll apply the patch and then delete BUG_ON that I don't think
+we need.
 
-Physically, they don't fit: the modules are 1 or 2 millimeters to high to close 
-the box without any damage.
+> 	b) I would like to change a bit such:
+> [...]
+> 	BUG_ON(pages_mapped == 0);
+> 	BUG_ON((pages_mapped * PAGE_SIZE) >= DMA_CHUNK_SIZE);
+> 	BUG_ON(pages_mapped >= (BITS_PER_LONG - PAGE_SHIFT));
+> [...]
+> into
+> 	BUG_ON((pages_mapped == 0) || \
+> 		((pages_mapped * PAGE_SIZE) >= DMA_CHUNK_SIZE) || \
+> 		(pages_mapped >= (BITS_PER_LONG - PAGE_SHIFT));
+> [...]
 
-The modules do fit nice in the connectors however... As someone pointet out, the 
-64MBit modules form the D210 have connectors at both sides and the connector in 
-the 712 only connects to one side. Unfortunatly, it is NOT a design where the 
-module is just presented as 2, half-sized, modules as I silently hoped...
+Please don't do this.
+Then we won't know which part of the condition failed.
 
-In the end, the 712 saw something in the connectors but found to many errors to 
-actually do something with it, other than complaining about defective memory 
-modules.
-
-If someone likes the memory modules (2 modules of 64MBit each, suitable for a 
-D210), or even like to pick-up the entire D210 in Leiden, The Netherlands, 
-please reply. It comes with 700/96 terminal, disk, tape etc.
-
-
-
-CBee
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
