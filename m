@@ -1,15 +1,15 @@
-From: Matthew Wilcox <willy@debian.org>
-Subject: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Date: Mon, 24 Mar 2003 12:50:32 +0000
-Message-ID: <20030324125032.GK31008__14784.5946172767$1416622322$gmane$org@parcelfarce.linux.theplanet.co.uk>
-References: <20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk> <003901c2f200$2fb2e450$6620a4d5@tsatec.int>
+From: rbrad@uswest.net (Ryan Bradetich)
+Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on parisc-linux 2.5 kernel??
+Date: Mon, 24 Mar 2003 11:44:47 -0700
+Message-ID: <20030324184447.GA26572__47553.4569625326$1416622324$gmane$org@uswest.net>
+References: <1048493134.8777.22.camel@beavis.ybsoft.com> <jeptohumcp.fsf@sykes.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: 'Matthew Wilcox' <willy@debian.org>, linux-ia64@linuxia64.org,
-	parisc-linux@parisc-linux.org
-To: Adriano Galano <adriano@satec.es>
+Cc: libc-alpha@sources.redhat.com,
+	parisc-linux@lists.parisc-linux.org
+To: Andreas Schwab <schwab@suse.de>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <003901c2f200$2fb2e450$6620a4d5@tsatec.int>
+In-Reply-To: <jeptohumcp.fsf@sykes.suse.de>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,34 +20,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Mar 24, 2003 at 01:23:32PM +0100, Adriano Galano wrote:
-> If IPF support PA-RISC mapping is not easy to "port" the PA/RISC Linux,
-> excluding architectural changes in the chipset or booting process?
+> hppa is using function descriptors, AFAIK.  So you'll have to do something
+> similar to what ia64 and ppc64 are doing.
 
-Why would you want to?  ia64 already has its own perfectly good Linux port.
+Thanks much for the reply!  I will investigate the function descriptors and
+see if that accounts for the different in offsets.  If so, I just need to
+figure out which side needs to be fixed :)
 
-> How HP/UX v 11.6 could be offer compatibility between PA/RISC and Itanium 2
-> systems?
+Thanks!
 
-That's `11i v1.6'.  Quoting from
-http://www.hp.com/products1/unix/operating/choice/hp-ux11i_details.html
+- Ryan
 
-	PA-RISC binary compatibility
-
-  HP-UX 11i version 1.6 includes the Aries dynamic code translation
-  technology as an integrated component. Aries is built on the close
-  relationship between the PA-RISC and Intel Itanium instruction sets
-  and provides binary compatibility for PA-RISC binaries on the Itanium
-  processor family. Aries can be used where performance is not critical
-  or where it is not possible to create a native Itanium processor
-  family binary.
-
-> How "exact" is the PA-RISC mapping on the IA-64 core?
-
-Not particularly close.  If you look at the assembly language level,
-there's a lot of similarities, but there's a lot of differences too.
+> Andreas.
+> 
+> -- 
+> Andreas Schwab, SuSE Labs, schwab@suse.de
+> SuSE Linux AG, Deutschherrnstr. 15-19, D-90429 N?rnberg
+> Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+> "And now for something completely different."
+> 
 
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
