@@ -1,17 +1,23 @@
-Return-Path: <virusalert@america.vrweb.cl>
-Received: from america.vrweb.cl (unknown [200.27.54.157])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 362F3486A
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 876734856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  5 Apr 2004 08:03:27 -0600 (MDT)
-Received: from america.vrweb.cl (america.vrweb.cl [127.0.0.1])
-	by america.vrweb.cl (8.12.9/8.12.7) with ESMTP id i35DwOPV032245
+	Mon,  5 Apr 2004 12:03:40 -0600 (MDT)
+Received: from localhost (localhost [127.0.0.1])
+	by colo.lackof.org (Postfix) with ESMTP id BA672298064
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 5 Apr 2004 09:58:24 -0400
-Date: Mon, 5 Apr 2004 09:58:24 -0400
-From: virusalert@america.vrweb.cl
-Message-Id: <200404051358.i35DwOIc032243@america.vrweb.cl>
+	Mon,  5 Apr 2004 12:03:39 -0600 (MDT)
+Received: from colo.lackof.org ([127.0.0.1])
+	by localhost (colo [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 28558-10 for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 5 Apr 2004 12:03:39 -0600 (MDT)
+Date: Mon, 5 Apr 2004 12:03:38 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
 To: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] ALERTA: Usted puede tener un virus
+Message-ID: <20040405180338.GA28537@colo.lackof.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] HPMC 2.6.5-rc1 kernel on c3k
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,64 +27,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-              A L E R T A    D E     V I R U S
+FYI.
 
-Nuestro sistema de antivirus encontro el (los) siguientes virus:
+My c3k HPMC'd last night when I was compiling kernels.
+USB was likely just the "victim" and not the culprit since
+I was working remotely and wasn't using any USB devices.
+Ie recent changes to SBA IOMMU code might still be suspect
+(I have no ideas what, just it's the place to start looking).
 
-----------------------------------------------------
-	'W32/Netsky-P'
-----------------------------------------------------
+I've typed in console output by hand so it may not be 100% accurate.
 
-en el correo que al parecer usted envio a :
+hth,
+grant
 
-----------------------------------------------------
--> aletakk
-----------------------------------------------------
 
-El correo fue rechazado y no enviado.
+Addresses on stack:
+	__wake_up_common+0x60/0xa8
+	parisc_terminate+0x60/0xb8
+	__wake_up+0x20/0x38
+	handle_interruption+0x144/0x560
+	intr_check_sig+0x0/0xc
+	roothub_a+0xc/0x5c
+	dentry_open+0x160/0x230
+	start_kernel
 
-Los virus actuales cuando infectan a un computador mandan
-correos infectados a todos las personas que tiene en su libreta
-de direcciones. Muchos de estos virus modifican el remitente 
-del mensaje, por lo que puede que le haya llegado este mensaje de
-alerta pero que usted realmente no es el que tiene virus, sino que otra
-persona que lo tiene a usted en su libreta de direcciones y el virus
-esta mandando correos indicando que es usted el que los manda colocando
-su casilla como remitente.
+PSW  C, Q, P, D bits are set
 
-Le recomendamos revise su sistema en busca de virus, o solicite
-a su administrador de sistema que realice un chequeo. Recuerde
-que cuando el sistema ya esta infectado los antivirus por lo general
-no funcionan, asesorese bien al respecto.
+r00-03	00000000 1039e010 10299cac 4fcd9628
+...
+r20-23  f9007048 4fcd4000 10299c74 1047d690
+r24-27  6875b0a0 4fc26000 4fcd9400 10395010
 
-A modo de referencia, este es el  encabezado del mensaje rechazado por virus:
-
-------------------------- BEGIN HEADERS -----------------------------
-Return-Path: <parisc-linux@lists.parisc-linux.org>
-Received: from takk.cl (CM-lcon2-49-12.cm.vtr.net [200.83.49.12])
-	by america.vrweb.cl (8.12.9/8.12.7) with ESMTP id i35DwDPV032154
-	for <libreria@takk.cl>; Mon, 5 Apr 2004 09:58:15 -0400
-Message-Id: <200404051358.i35DwDPV032154@america.vrweb.cl>
-From: parisc-linux@lists.parisc-linux.org
-To: libreria@takk.cl
-Subject: Mail Delivery (failure libreria@takk.cl)
-Date: Mon, 5 Apr 2004 10:03:40 -0400
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_001B_01C0CA80.6B015D10"
-X-Priority: 3
-X-MSMail-Priority: Normal
--------------------------- END HEADERS ------------------------------
-
-Esperamos este aviso le permita solucionar su problema.
-
-Si requiere una casilla de e-mail que posea un antivirus integrado
-para nunca mas recibir virus en su correo, contactenos.
-
-VRWEB Ingenieria Internet
-http://www.vrweb.cl/
-
------------------------------------------------------
-Correo automatico - no responder.
------------------------------------------------------
+sr3 0x5
+sr4-7 0x0
+IIR 0e80019c
+IOAQ roothub_a+0x8
+RP   ohci_hub_status_data+0x38/0x16c
