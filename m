@@ -1,26 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA18058
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Aug 2000 11:54:36 -0600
-To: Andrew Park <apark@cdf.toronto.edu>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP-UX CD 
-In-Reply-To: Your message of "Fri, 25 Aug 2000 13:48:03 EDT."
-             <Pine.LNX.4.21.0008251346001.739-100000@blue.cdf.utoronto.ca>
-References: <Pine.LNX.4.21.0008251346001.739-100000@blue.cdf.utoronto.ca> 
-Date: Fri, 25 Aug 2000 11:54:42 -0600
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E13SNgg-0002bL-00@noam.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA19774
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Aug 2000 15:37:55 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 25 Aug 2000 21:37:52 -0000
+To: parisc-linux@thepuffingroup.com
+Cc: law@cygnus.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 25 Aug 2000 17:36:53 -0400
+Message-ID: <87lmxlowei.fsf@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Broken floating-point varargs
 List-ID: <linux-parisc.vger.kernel.org>
 
-= Is there anybody in Toronto who has HP-UX INSTALL CD?
-= If so, can I borrow it for about five minutes?  I only need it to change
-= console path on my 712/80.
-= Let me know, thanks.
+Hi,
 
-Matt Taggart was kind enough to put the required bits on our FTP site:
-ftp://puffin.external.hp.com/pub/parisc/tools/uxbootlf
+The variadic function code in GCC for HPPA is slightly broken for
+floating point arguments.  This only affects the first and second
+arguments, as all other ones will be passed on the stack.
 
-This is a bootable image -- use bootp or copy it to the front of
-a tape or hard disk.
+The problem is that if a function uses va_start(), GCC emits a
+prologue which stores the first four argument words to their
+respective stack slots (sp-36 .. sp-48).  Unfortunately it does this
+by simply copying general purpose registers 26 to 23 (arg0-arg3) to
+these slots, even if some of the first four argument words are (parts
+of) floating point values and thus reside in floating point registers.
 
-	-P
+See hppa_builtin_saveregs() in gcc/config/pa/pa.c for the code in
+question.
+
+It looks like we could fix this by checking the parameters and saving
+from floating point argument registers instead, I'm just not sure how :-)
+
+I'm wondering whether or not this manifests itself on HP/UX - would it
+have something to do with (gack) argument relocation?
+
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
