@@ -1,12 +1,11 @@
-From: Matthew Wilcox <willy@debian.org>
+From: Joel Soete <joel.soete@tiscali.be>
 Subject: Re: [parisc-linux] Re: Debian on rp 7400
-Date: Fri, 8 Aug 2003 18:56:13 +0100
-Message-ID: <20030808175613.GP22222__34406.5195801251$1416622662$gmane$org@parcelfarce.linux.theplanet.co.uk>
+Date: Fri, 08 Aug 2003 20:46:16 +0000
+Message-ID: <3F340C18.5020801__35398.76424843$1416622664$gmane$org@tiscali.be>
 References: <25EEF58E-C82D-11D7-8F19-00039398B282@byu.edu> <20030806205220.GA6353@dsl2.external.hp.com> <3F336914.5020305@tiscali.be> <20030808163744.GA29158@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Joel Soete <joel.soete@tiscali.be>,
-	"Conan C. Albrecht" <conan_albrecht@byu.edu>,
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: "Conan C. Albrecht" <conan_albrecht@byu.edu>,
 	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
@@ -21,37 +20,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Aug 08, 2003 at 10:37:44AM -0600, Grant Grundler wrote:
-> On Fri, Aug 08, 2003 at 09:10:44AM +0000, Joel Soete wrote:
-> > >IIRC, "non-equivalently mapped aliases" 
-> 
-> > Is there much more detailed public doc some where about this stuff?
-> 
-> sorry - I don't understand the problems well enough.
-> The PA 2.0 arch book might describe the cache behaviors sufficiently
-> to determine this will be a problem.
+Grant Grundler wrote:
 
-You're looking for the section "Address Aliasing" starting on page F-5.
-For the dead-tree-non-enabled, it's covered at
-http://h21007.www2.hp.com/dspp/tech/tech_TechDocumentDetailPage_IDX/1,1701,959!218!244,00.html
+>BTW, this discussion really belongs on parisc-linux.org mailing list.
+>It's not specific to debian-hppa and is very kernel centric.
+>
+>On Fri, Aug 08, 2003 at 09:10:44AM +0000, Joel Soete wrote:
+>  
+>
+>>>IIRC, "non-equivalently mapped aliases" 
+>>>      
+>>>
+>
+>  
+>
+>>Is there much more detailed public doc some where about this stuff?
+>>    
+>>
+>
+>sorry - I don't understand the problems well enough.
+>The PA 2.0 arch book might describe the cache behaviors sufficiently
+>to determine this will be a problem.
+>
+>  
+>
+>>>BTW< this topic has been thoroughly discussed on parisc-linux
+>>>mailing list. See www.parisc-linux.org mailing list archives.
+>>>      
+>>>
+>
+>google search for
+>	equivalent mapped [parisc-linux site:lists.parisc-linux.org]
+>
+>yielded the original thread from Jerry Huck:
+>
+>http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008101.html
+>
+I see I was not yet in the list; at this very moment I was still battle 
+to build a kernel from hpux and the first cd safe me :)
 
-Note that the book has some small errata in this section; the copy on
-the web has these errata corrected.
+>
+>I only partially understand what Jerry talking about and have no idea
+>how linux VM implementation collides with the aliasing rules.
+>
+>
+>Bjorn Helgaas posted a another thread two years later that might
+>be more helpful since it's specific to superdome (AFAIK same problems
+>as with N-class and L3000):
+>
+>http://lists.parisc-linux.org/pipermail/parisc-linux/2001-April/012388.html
+>
+>I didn't see any direct followup to Bjorn's mail in the archive though
+>some discussion did occur in other forums (much later).
+>
+>  
+>
+Well better starting point I will gona check,
 
-Also note that the use of space bits in generating the cache index
-is disabled.
-
-Also note that the 16MB boundary discussed is relaxed to 4MB.
-
-> I only partially understand what Jerry talking about and have no idea
-> how linux VM implementation collides with the aliasing rules.
-
-User mappings of shared pages are equivalently aliased.  The kernel's
-view of user pages is a non-equivalent alias.  We could (ab)use kmap()
-to ensure the kernel only accesses user pages through equivalent aliases,
-but that requires quite some work.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Thanks a lot,
+    Joel
