@@ -1,15 +1,11 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-1?Q?RE=3A=20=5Bparisc=2Dlinux=5D=20Update=20to=20palo=20to=20allow=20the=20listing=20of=20the=20current=09kernel=20directory?=
-Date: Fri, 14 May 2004 13:44:33 +0000
-Message-ID: <409BA51F00004EBD@ocpmta1.freegates.net>
-References: <1084492855.3838.497.camel@mulgrave>
+From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Subject: [parisc-linux] [PATCH] Harmony Driver
+Date: Sat, 15 May 2004 10:42:44 +0200
+Message-ID: <40A5D804.6060003@hrzpub.tu-darmstadt.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="ISO-8859-1"
-To: "James Bottomley" <James.Bottomley@steeleye.com>,
- "PARISC list" <parisc-linux@lists.parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1084492855.3838.497.camel@mulgrave>
+Content-Type: multipart/mixed;
+  boundary="------------000509060400010703070606"
+To: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,306 +16,500 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+This is a multi-part message in MIME format.
+--------------000509060400010703070606
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+
 Hi all,
 
-That works for me ;)
-but if there are some mistake in the palo.conf (an empty one ?) and you
-don't want to boot interactively: the ipl will loop .
-I suggested a patch (http://lists.parisc-linux.org/pipermail/parisc-linux=
-/2004-January/022030.html)
-which I use with success since this time on my b2k, n4k and c110. Though
-I never get any news, is there any interest to submit an update?
+here is a patch to bring the driver for harmony up to the current state 
+of the ALSA CVS. It compiles cleanly and also didn't crash my 715/100 
+when built-in (I haven't tried to built it as module. )  During boot-up 
+harmony is detected correctly (means no error messages), but much more 
+didn't work. It's not possible change the volume setting, and playback 
+also didn't work.
+But I think, these failures are easier to solve if the driver can be 
+compiled and tested. So please can s.o. with higher knowledge of linux 
+and parisc than me check this patch and commit it to CVS?
 
 Thanks,
-    Joel
-> -- Original Message --
-> From: James Bottomley <James.Bottomley@steeleye.com>
-> To: PARISC list <parisc-linux@lists.parisc-linux.org>
-> Date: 13 May 2004 19:00:54 -0500
-> Subject: [parisc-linux] Update to palo to allow the listing of the curr=
-ent
-> 	kernel directory
-> 
-> 
-> This patch (to palo's cvs head) adds the capability to list whatever's
-> in the current kernel directory.  Probably you'll only find it useful
-> if, like me, you keep lots of kernels around and can never remember
-> their names
-> 
-> James
-> 
-> Index: ipl/bootloader.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /var/cvs/palo/ipl/bootloader.h,v
-> retrieving revision 1.13
-> diff -u -r1.13 bootloader.h
-> --- a/ipl/bootloader.h	30 Dec 2003 17:52:06 -0000	1.13
-> +++ b/ipl/bootloader.h	13 May 2004 23:58:38 -0000
-> @@ -21,6 +21,7 @@
->  	int	(*open)(const char *filename);
->  	int	(*bread)(int fd, long blkno, long nblks, char *buf);
->  	void	(*close)(int fd);
-> +	const char *	(*readdir)(int fd, int rewind);
->  };
->  
-> 
-> @@ -60,6 +61,8 @@
->  int ext2_mount(long cons_dev, long p_offset, long quiet);
->  int ext2_open(const char *filename);
->  int ext2_filesize(int fd);
-> +const char * ext2_readdir(int fd, int rewind);
-> +void ext2_close(int fd);
->  
->  /* lib.c */
->  void blockprint(int zero_offset, char *buf, int nbytes);
-> Index: ipl/ext2.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /var/cvs/palo/ipl/ext2.c,v
-> retrieving revision 1.11
-> diff -u -r1.11 ext2.c
-> --- a/ipl/ext2.c	28 Jul 2002 05:24:06 -0000	1.11
-> +++ b/ipl/ext2.c	13 May 2004 23:58:39 -0000
-> @@ -674,14 +674,13 @@
->  	return ext2_breadi(ip, blkno, nblks, buffer);
->  }
->  
-> -#if 0
->  /*
->   * Note: don't mix any kind of file lookup or other I/O with this or
->   * you will lose horribly (as it reuses blkbuf)
->   */
-> -static const char * ext2_readdir(int fd, int rewind)
-> +const char * ext2_readdir(int fd, int rewind)
->  {
-> -	struct ext2_inode * ip =3D &inode_table[fd].inode;
-> +	struct ext2_inode * ip =3D fd2inode[fd];
->  	struct ext2_dir_entry_2 * ent;
->  	if (!S_ISDIR(ip->i_mode)) {
->  		printf("fd %d (inode %d) is not a directory (mode %x)\n",
-> @@ -696,7 +695,6 @@
->  		return NULL;
->  	}
->  }
-> -#endif
->  
->  int ext2_filesize(int fd)
->  {
-> @@ -822,7 +820,7 @@
->  }
->  
-> 
-> -static void ext2_close(int fd)
-> +void ext2_close(int fd)
->  {
->  	/* blah, hack, don't close the root inode ever */
->  	if (&inode_table[fd].inode !=3D root_inode)
-> @@ -831,9 +829,13 @@
->  
-> 
->  struct bootfs ext2fs =3D {
-> -	0 /* FS_EXT2 */, 0,
-> -	ext2_mount,
-> -	ext2_open,  ext2_bread,  ext2_close /* ,
-> -	ext2_readdir, ext2_fstat */
-> +	.fs_type =3D	0,
-> +	.blocksize =3D	0,
-> +	.mount =3D	ext2_mount,
-> +	.open =3D		ext2_open,
-> +	.bread =3D 	ext2_bread,
-> +	.close =3D 	ext2_close,
-> +	.readdir =3D	ext2_readdir,
-> +	/* .fstat =3D	ext2_fstat */
->  };
->  /* $Id: ext2.c,v 1.5 2000/09/21 16:47:48 bame Exp $ */
-> Index: ipl/ipl.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /var/cvs/palo/ipl/ipl.c,v
-> retrieving revision 1.37
-> diff -u -r1.37 ipl.c
-> --- a/ipl/ipl.c	4 May 2004 21:41:05 -0000	1.37
-> +++ b/ipl/ipl.c	13 May 2004 23:58:40 -0000
-> @@ -215,6 +215,42 @@
->      strcpy(out, tmpbuf);
->  }
->  
-> +static struct diskpartition partition[MAXPARTS];
-> +static int ext2 =3D 0;
-> +static int bootdev;
-> +
-> +static void
-> +partition_transform(int *kern_part, int *rd_part)
-> +{
-> +    int i, palo_part =3D -1;
-> +
-> +    /* if the F0 partition is the same as the requested kernel partiti=
-on,
-> +     * for now change it to zero to re-use the existing logic.  Should=
+Ruediger
 
-do
-> +     * the reverse in the future probably.
-> +     */
-> +    for (i =3D 0; i < sizeof partition / sizeof partition[0]; i++)
-> +    {
-> +	if (partition[i].id =3D=3D PALO_PARTITION)
-> +	{
-> +	    palo_part =3D i + 1;
-> +	    if (*kern_part =3D=3D palo_part)
-> +		*kern_part =3D 0;
-> +
-> +	    if (rd_part && *rd_part =3D=3D palo_part)
-> +		*rd_part =3D 0;
-> +
-> +	    break;
-> +	}
-> +    }
-> +
-> +    if (ext2 && *kern_part =3D=3D 0) {
-> +	*kern_part =3D palo_part;
-> +	if(rd_part && *rd_part =3D=3D 0)
-> +	    *rd_part =3D palo_part;
-> +    }
-> +
-> +}
-> +
->  static void
->  interact(char *commandline, int *ok)
->  {
-> @@ -246,7 +282,7 @@
->  	{
->  	    printf("%2d: %s\n", i, argv[i]);
->  	}
-> -	puts("\nEdit which field?\n(or 'b' to boot with this command line, 'r=
-'
-> to restore)? ");
-> +	puts("\nEdit which field?\n(or 'b' to boot with this command line, 'r=
-'
-> to restore, 'l' to list dir)? ");
->  	numbuf[0] =3D '0';
->  	numbuf[1] =3D '\0';
->  	enter_text(numbuf, sizeof numbuf - 1);
-> @@ -264,6 +300,48 @@
->  	    continue;
->  	}
->  
-> +	if (numbuf[0] =3D=3D 'l')
-> +	{
-> +	    char  *p, kern_dir[256];
-> +	    const char *dir;
-> +	    int fd, part, part_fd;
-> +	    
-> +
-> +	    join(commandline, argc, argv, ok);
-> +	    parse_pfname(argv[0], &#8706;, kern_dir);
-> +	    p =3D strrchr(kern_dir, '/');
-> +	    *(p+1) =3D '.';
-> +	    *(p+2) =3D '\0';
-> +
-> +	    printf("Directory listing of %s\n\n", kern_dir);
-> +
-> +	    partition_transform(&#8706;, NULL);
-> +
-> +	    part--;		/* partition table starts from zero */
-> +	    part_fd =3D offset_open(bootdev, 512 * partition[part].start,
-> +				      512 * partition[part].length);
-> +	    if(ext2_mount(part_fd, 0, 0) =3D=3D -1) {
-> +		printf("Failed to mount partition %d\n", part);
-> +		continue;
-> +	    }
-> +
-> +	    if((fd =3D ext2_open(kern_dir)) =3D=3D -1) {
-> +		printf("Failed to open directory %s\n", kern_dir);
-> +		continue;
-> +	    }
-> +
-> +	    while((dir =3D ext2_readdir(fd, 0)) !=3D NULL)
-> +		if(dir[0] !=3D '.') /* skip hidden files and . and .. */
-> +		    printf("  %s\n", dir);
-> +	    
-> +	    printf("\n");
-> +	    ext2_close(fd);
-> +	    /* There's no umount ... since the next mount reuses
-> +	     * the current one's data structures ... */
-> +
-> +	    continue;
-> +	}
-> +
->  	editfield =3D parse_number(numbuf, &p);
->  
->  	if (editfield < argc)
-> @@ -284,13 +362,11 @@
->      extern char _end, _edata;
->      int partitioned;
->      unsigned entry;
-> -    struct diskpartition partition[MAXPARTS];
->      struct firstblock f;
->      extern char commandline[];
->      int blocked_bootdev;
-> -    int bootdev;
->      int wide;
-> -    int kern_part, rd_part, i, ext2 =3D 0, palo_part =3D -1;
-> +    int kern_part, rd_part;
->      char kern_name[128], rd_name[128];
->      char kern_fullname[128];
->      int ok =3D 1;
-> @@ -448,30 +524,7 @@
->      if (rd_part !=3D -1)
->  	printf("Selected ramdisk: %s from partition %d\n", rd_name, rd_part);=
+--------------000509060400010703070606
+Content-Type: text/plain;
+ name="harmony.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="harmony.diff"
 
->  
-> -    /* if the F0 partition is the same as the requested kernel partiti=
-on,
-> -     * for now change it to zero to re-use the existing logic.  Should=
+Index: linux-2.6/sound/parisc/harmony.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/sound/parisc/harmony.c,v
+retrieving revision 1.6
+diff -u -p -r1.6 harmony.c
+--- a/linux-2.6/sound/parisc/harmony.c	4 Apr 2004 15:30:21 -0000	1.6
++++ b/linux-2.6/sound/parisc/harmony.c	15 May 2004 08:25:56 -0000
+@@ -56,11 +56,7 @@
+  * also controls for enabling/disabling internal speaker and line
+  * input.
+  *
+- * Buffers used by this driver are all DMA consistent. Since harmony is
+- * not "real" pci device, we use a fake struct pci_dev for
+- * pci_alloc_consistent().
+- * (note that some machines -712 for ex.- don't implement DMA consistent
+- * memory, so we will need to use kmalloc instead)
++ * Buffers used by this driver are all DMA consistent.
+  */
+ 
+ #include <linux/delay.h>
+@@ -70,11 +66,11 @@
+ #include <linux/slab.h>
+ #include <linux/time.h>
+ #include <linux/wait.h>
++#include <linux/moduleparam.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/pcm.h>
+ #include <sound/rawmidi.h>
+-#define SNDRV_GET_ID
+ #include <sound/initval.h>
+ #include <sound/info.h>
+ #include <asm/hardware.h>
+@@ -100,16 +96,14 @@ MODULE_DEVICES("{{ALSA,Harmony soundcard
+ #define MAX_PCM_SUBSTREAMS	4
+ #define MAX_MIDI_DEVICES	0
+ 
+-#define BUFFER_SIZE			4096
+-#define MAX_BUFS			10
++#define HARMONY_BUF_SIZE	4096
++#define MAX_BUFS		10
++#define MAX_BUFFER_SIZE		(MAX_BUFS * HARMONY_BUF_SIZE)
+ 
+ /* number of silence & graveyard buffers */
+ #define GRAVEYARD_BUFS		3
+ #define SILENCE_BUFS		3
+ 
+-#define MAX_BUFFER_SIZE		(MAX_BUFS * BUFFER_SIZE)
+-#define HARMONY_BUF_SIZE	BUFFER_SIZE
+-
+ #define HARMONY_CNTL_C		0x80000000
+ 
+ #define HARMONY_DSTATUS_PN	0x00000200
+@@ -140,6 +134,17 @@ MODULE_DEVICES("{{ALSA,Harmony soundcard
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
+ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+ static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
++static int boot_devs;
++
++module_param_array(index, int, boot_devs, 0444);
++MODULE_PARM_DESC(index, "Index value for Sun CS4231 soundcard.");
++MODULE_PARM_SYNTAX(index, SNDRV_INDEX_DESC);
++module_param_array(id, charp, boot_devs, 0444);
++MODULE_PARM_DESC(id, "ID string for Sun CS4231 soundcard.");
++MODULE_PARM_SYNTAX(id, SNDRV_ID_DESC);
++module_param_array(enable, bool, boot_devs, 0444);
++MODULE_PARM_DESC(enable, "Enable Sun CS4231 soundcard.");
++MODULE_PARM_SYNTAX(enable, SNDRV_ENABLE_DESC);
+ 
+ /* Register offset (from base hpa) */
+ #define REG_ID		0x00
+@@ -191,21 +196,18 @@ typedef struct snd_card_harmony {
+ 	int cap_stopped;
+ 	int cap_total;
+ 
+-	struct pci_dev *fake_pci_dev; /* The fake pci_dev needed for 
+-					pci_* functions under ccio. */
++	struct parisc_device *pa_dev;
++
++	struct snd_dma_device dma_dev;
+ 
+ 	/* the graveyard buffer is used as recording buffer when playback, 
+ 	 * because harmony always want a buffer to put recorded data */
+-
+-	unsigned char *graveyard_addr;
+-	dma_addr_t graveyard_dma;
++	struct snd_dma_buffer graveyard_dma;
+ 	int graveyard_count;
+ 	
+ 	/* same thing for silence buffer */
+-	unsigned char *silence_addr;
+-	dma_addr_t silence_dma;
++	struct snd_dma_buffer silence_dma;
+ 	int silence_count;
+-	struct snd_dma_device dma_dev;
+ 
+ 	/* alsa stuff */
+ 	snd_card_t *card;
+@@ -264,6 +266,15 @@ static snd_pcm_hw_constraint_list_t hw_c
+ #define HARMONY_SR_33KHZ	0x16
+ #define HARMONY_SR_6KHZ		0x17
+ 
++/* bits corresponding to the entries of snd_card_harmony_rates */
++static unsigned int rate_bits[14] = {
++	HARMONY_SR_5KHZ, HARMONY_SR_6KHZ, HARMONY_SR_8KHZ,
++	HARMONY_SR_9KHZ, HARMONY_SR_11KHZ, HARMONY_SR_16KHZ,
++	HARMONY_SR_18KHZ, HARMONY_SR_22KHZ, HARMONY_SR_27KHZ,
++	HARMONY_SR_32KHZ, HARMONY_SR_33KHZ, HARMONY_SR_37KHZ,
++	HARMONY_SR_44KHZ, HARMONY_SR_48KHZ
++};
++
+ /* snd_card_harmony_rate_bits
+  * @rate:	index of current data rate in list
+  * returns: harmony hex code for registers
+@@ -273,26 +284,9 @@ static unsigned int snd_card_harmony_rat
+ 	unsigned int idx;
+ 	
+ 	for (idx = 0; idx <= RATES; idx++)
+-		if (snd_card_harmony_rates[idx] == rate) break;
+-	
+-	switch (idx) {
+-		case 0: return HARMONY_SR_5KHZ;
+-		case 1: return HARMONY_SR_6KHZ;
+-		case 2: return HARMONY_SR_8KHZ;
+-		case 3: return HARMONY_SR_9KHZ;
+-		case 4: return HARMONY_SR_11KHZ;
+-		case 5: return HARMONY_SR_16KHZ;
+-		case 6: return HARMONY_SR_18KHZ;
+-		case 7: return HARMONY_SR_22KHZ;
+-		case 8: return HARMONY_SR_27KHZ;
+-		case 9: return HARMONY_SR_32KHZ;
+-		case 10: return HARMONY_SR_33KHZ;
+-		case 11: return HARMONY_SR_37KHZ;
+-		case 12: return HARMONY_SR_44KHZ;
+-		case 13: return HARMONY_SR_48KHZ;
+-		default:  /* fallback */
+-				return HARMONY_SR_44KHZ;
+-	}
++		if (snd_card_harmony_rates[idx] == rate)
++			return rate_bits[idx];
++	return HARMONY_SR_44KHZ; /* fallback */
+ }
+ 
+ /*
+@@ -317,27 +311,6 @@ void snd_harmony_update_control(snd_card
+ }
+ 
+ /*
+- * silence a buffer
+- * XXX: alsa could probably do this by itself
+- * XXX: memset hpmc, commented.
+- */
+-
+-void snd_harmony_silence(snd_card_harmony_t *harmony,
+-		void *addr, int length)
+-{
+-	u8 silence_char;
+-	
+-	switch(harmony->data_format) {
+-			case HARMONY_DF_8BIT_ULAW: silence_char = 0x55; break;
+-			case HARMONY_DF_8BIT_ALAW: silence_char = 0xff; break;
+-			case HARMONY_DF_16BIT_LINEAR:
+-			default:
+-									   silence_char = 0;
+-	}
+-	//memset(addr, silence_char, length);
+-}
+-
+-/*
+  * interruption controls routines
+  */
+ 
+@@ -385,9 +358,9 @@ static int snd_card_harmony_interrupt(in
+ 			snd_pcm_period_elapsed(harmony->playback_substream);
+ 			harmony->ply_total++;
+ 		} else {
+-			gsc_writel(harmony->silence_dma + 
+-					(HARMONY_BUF_SIZE*harmony->silence_count),
+-					hpa+REG_PNXTADD);
++			gsc_writel(harmony->silence_dma.addr + 
++				   (HARMONY_BUF_SIZE*harmony->silence_count),
++				   hpa+REG_PNXTADD);
+ 			harmony->silence_count++;
+ 			harmony->silence_count %= SILENCE_BUFS;
+ 		}
+@@ -406,9 +379,9 @@ static int snd_card_harmony_interrupt(in
+ 			harmony->cap_total++;
+ 		} else {
+ 			/* graveyard buffer */
+-			gsc_writel(harmony->graveyard_dma +
+-						(HARMONY_BUF_SIZE*harmony->graveyard_count),
+-						hpa+REG_RNXTADD);
++			gsc_writel(harmony->graveyard_dma.addr +
++				   (HARMONY_BUF_SIZE*harmony->graveyard_count),
++				   hpa+REG_RNXTADD);
+ 			harmony->graveyard_count++;
+ 			harmony->graveyard_count %= GRAVEYARD_BUFS;
+ 		}
+@@ -465,26 +438,8 @@ static void __devinit snd_harmony_proc_i
+ {
+ 	snd_info_entry_t *entry;
+ 	
+-	if ((entry = snd_info_create_card_entry(harmony->card, "harmony", harmony->card->proc_root)) != NULL) {
+-		entry->content = SNDRV_INFO_CONTENT_TEXT;
+-		entry->private_data = harmony;
+-		entry->mode = S_IFREG | S_IRUGO | S_IWUSR;
+-		entry->c.text.read_size = 2048;	 /* should be enough */
+-		entry->c.text.read = snd_harmony_proc_read;
+-		if (snd_info_register(entry) < 0) {
+-			snd_info_free_entry(entry);
+-			entry = NULL;
+-		}
+-	}
+-	harmony->proc_entry = entry;
+-}
+-
+-static void snd_harmony_proc_done(snd_card_harmony_t *harmony)
+-{
+-	if (harmony->proc_entry) {
+-		snd_info_unregister(harmony->proc_entry);
+-		harmony->proc_entry = NULL;
+-	}
++	if (! snd_card_proc_new(harmony->card, "harmony", &entry))
++		snd_info_set_text_ops(entry, harmony, 2048, snd_harmony_proc_read);
+ }
+ 
+ /* 
+@@ -563,6 +518,30 @@ static int snd_card_harmony_capture_trig
+ 	return 0;
+ }
+ 
++/* set data format */
++static int snd_harmony_set_data_format(snd_card_harmony_t *harmony, int pcm_format)
++{
++	int old_format = harmony->data_format;
++	int new_format = old_format;
++	switch (pcm_format) {
++	case SNDRV_PCM_FORMAT_S16_BE:
++		new_format = HARMONY_DF_16BIT_LINEAR;
++		break;
++	case SNDRV_PCM_FORMAT_A_LAW:
++		new_format = HARMONY_DF_8BIT_ALAW;
++		break;
++	case SNDRV_PCM_FORMAT_MU_LAW:
++		new_format = HARMONY_DF_8BIT_ULAW;
++		break;
++	}
++	/* re-initialize silence buffer if needed */
++	if (old_format != new_format)
++		snd_pcm_format_set_silence(pcm_format, harmony->silence_dma.area,
++					   (HARMONY_BUF_SIZE * SILENCE_BUFS * 8) / snd_pcm_format_width(pcm_format));
++
++	return new_format;
++}
++
+ static int snd_card_harmony_playback_prepare(snd_pcm_substream_t * substream)
+ {
+ 	snd_card_harmony_t *harmony = snd_pcm_substream_chip(substream);
+@@ -577,12 +556,13 @@ static int snd_card_harmony_playback_pre
+ 	harmony->sample_rate = snd_card_harmony_rate_bits(runtime->rate);
+ 
+ 	/* data format */
+-	if (snd_pcm_format_width(runtime->format) == 16) harmony->data_format = HARMONY_DF_16BIT_LINEAR;
+-	else harmony->data_format = HARMONY_DF_8BIT_ULAW;
+-	
++	harmony->data_format = snd_harmony_set_data_format(haromny, runtime->format);
++
+ 	/* number of channels */
+-	if (runtime->channels == 2) harmony->stereo_select = HARMONY_SS_STEREO;
+-	else harmony->stereo_select = HARMONY_SS_MONO;
++	if (runtime->channels == 2)
++		harmony->stereo_select = HARMONY_SS_STEREO;
++	else
++		harmony->stereo_select = HARMONY_SS_MONO;
+ 	
+ 	DPRINTK(KERN_INFO PFX "Playback_prepare, sr=%d(%x), df=%x, ss=%x hpa=%lx\n", runtime->rate,
+ 				harmony->sample_rate, harmony->data_format, harmony->stereo_select, harmony->hpa);
+@@ -607,12 +587,13 @@ static int snd_card_harmony_capture_prep
+ 	harmony->sample_rate = snd_card_harmony_rate_bits(runtime->rate);
+ 	
+ 	/* data format */
+-	if (snd_pcm_format_width(runtime->format) == 16) harmony->data_format = HARMONY_DF_16BIT_LINEAR;
+-	else harmony->data_format = HARMONY_DF_8BIT_ULAW;
++	harmony->data_format = snd_harmony_set_data_format(haromny, runtime->format);
+ 	
+ 	/* number of channels */
+-	if (runtime->channels == 1) harmony->stereo_select = HARMONY_SS_MONO;
+-	else if (runtime->channels == 2) harmony->stereo_select = HARMONY_SS_STEREO;
++	if (runtime->channels == 1)
++		harmony->stereo_select = HARMONY_SS_MONO;
++	else if (runtime->channels == 2)
++		harmony->stereo_select = HARMONY_SS_STEREO;
+ 		
+ 	snd_harmony_update_control(harmony);
+ 	harmony->format_initialized = 1;
+@@ -709,13 +690,6 @@ static int snd_card_harmony_playback_ope
+ 	snd_pcm_runtime_t *runtime = substream->runtime;
+ 	int err;
+ 	
+-	/*
+-	 * harmony is not "real" pci, but we need a pci_dev
+-	 * to alloc PCI DMA pages
+-	 */
+-	substream->runtime->dma_private = harmony->fake_pci_dev;
+-//	substream->dma_type = SNDRV_PCM_DMA_TYPE_PCI;
+-	
+ 	harmony->playback_substream = substream;
+ 	runtime->hw = snd_card_harmony_playback;
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_constraint_rates);
+@@ -732,14 +706,6 @@ static int snd_card_harmony_capture_open
+ 	snd_pcm_runtime_t *runtime = substream->runtime;
+ 	int err;
+ 	
+-	
+-	/*
+-	 * harmony is not "real" pci, but we need a pci_dev
+-	 * to alloc PCI DMA pages
+-	 */
+-	substream->runtime->dma_private = harmony->fake_pci_dev;
+-//	substream->dma_type = SNDRV_PCM_DMA_TYPE_PCI;
+-
+ 	harmony->capture_substream = substream;
+ 	runtime->hw = snd_card_harmony_capture;
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_constraint_rates);
+@@ -752,7 +718,6 @@ static int snd_card_harmony_capture_open
+ static int snd_card_harmony_playback_close(snd_pcm_substream_t * substream)
+ {
+ 	snd_card_harmony_t *harmony = snd_pcm_substream_chip(substream);
+-	snd_pcm_lib_free_pages(substream);
+ 	
+ 	harmony->playback_substream = NULL;
+ 	harmony->ply_size 			= 0;
+@@ -769,8 +734,6 @@ static int snd_card_harmony_capture_clos
+ {
+ 	snd_card_harmony_t *harmony = snd_pcm_substream_chip(substream);
+ 	
+-	snd_pcm_lib_free_pages(substream);
+-	
+ 	harmony->capture_substream = NULL;
+ 	harmony->cap_size 			= 0;
+ 	harmony->cap_buf			= 0;
+@@ -785,12 +748,11 @@ static int snd_card_harmony_capture_clos
+ static int snd_card_harmony_hw_params(snd_pcm_substream_t *substream, 
+ 	                   snd_pcm_hw_params_t * hw_params)
+ {
+-	snd_pcm_runtime_t *runtime = substream->runtime;
+ 	int err;
+ 	
+ 	err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+ 	DPRINTK(KERN_INFO PFX "HW Params returned %d, dma_addr %lx\n", err,
+-			(unsigned long)runtime->dma_addr);
++			(unsigned long)substream->runtime->dma_addr);
+ 	return err;
+ }
+ 
+@@ -847,15 +809,19 @@ static int snd_card_harmony_pcm_init(snd
+ 	harmony->pcm = pcm;
+ 	
+ 	/* initialize graveyard buffer */
+-	harmony->dma_dev.type = SNDRV_DMA_TYPE_PCI;
+-	harmony->dma_dev.dev = snd_dma_pci_data(harmony->fake_pci_dev); 
+-	harmony->graveyard_addr = snd_dma_alloc_pages(&chip->dma_dev,
+-			HARMONY_BUF_SIZE*GRAVEYARD_BUFS, &harmony->graveyard_dma);
++	harmony->dma_dev.type = SNDRV_DMA_TYPE_DEV;
++	harmony->dma_dev.dev = &harmony->pa_dev->dev;
++	err = snd_dma_alloc_pages(&harmony->dma_dev, HARMONY_BUF_SIZE*GRAVEYARD_BUFS,
++				  &harmony->graveyard_dma);
++	if (err < 0)
++		return err;
+ 	harmony->graveyard_count = 0;
+ 	
+ 	/* initialize silence buffers */
+-	harmony->silence_addr = snd_dma_alloc_pages(&chip->dma_dev,
+-			HARMONY_BUF_SIZE*SILENCE_BUFS, &harmony->silence_dma);
++	err = snd_dma_alloc_pages(&harmony->dma_dev, HARMONY_BUF_SIZE*SILENCE_BUFS,
++				  &harmony->silence_dma);
++	if (err < 0)
++		return err;
+ 	harmony->silence_count = 0;
+ 
+ 	harmony->ply_stopped = harmony->cap_stopped = 1;
+@@ -865,8 +831,8 @@ static int snd_card_harmony_pcm_init(snd
+ 	harmony->graveyard_count = 0;
+ 	
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      snd_dma_pci_data(harmony->fake_pci_dev),
+-					      64 * 1024, 128 * 1024);
++					      &harmony->pa_dev->dev,
++					      MAX_BUFFER_SIZE, MAX_BUFFER_SIZE);
+ 
+ 	return 0;
+ }
+@@ -963,7 +929,7 @@ HARMONY_VOLUME("Master Volume", 20, 20, 
+ HARMONY_VOLUME("PCM Playback Volume", 6, 0, 0x3f, 1),
+ };
+ 
+-static void snd_harmony_reset_codec(snd_card_harmony_t *harmony)
++static void __init snd_harmony_reset_codec(snd_card_harmony_t *harmony)
+ {
+  	snd_harmony_wait_cntl(harmony);
+ 	gsc_writel(1, harmony->hpa+REG_RESET);
+@@ -985,7 +951,7 @@ static void __init snd_harmony_mixer_res
+ }
+ 
+ 
+-int __init snd_card_harmony_mixer_init(snd_card_harmony_t *harmony)
++static int __init snd_card_harmony_mixer_init(snd_card_harmony_t *harmony)
+ {
+ 	snd_card_t *card = harmony->card;
+ 	int idx, err;
+@@ -1009,10 +975,11 @@ static int snd_card_harmony_create(snd_c
+ 	
+ 	harmony->card = card;
+ 	
++	harmony->pa_dev = pa_dev;
++
+ 	/* Set the HPA of harmony */
+ 	harmony->hpa = pa_dev->hpa;
+ 	
+-
+ 	harmony->irq = pa_dev->irq;
+ 	if (!harmony->irq) {
+ 		printk(KERN_ERR PFX "no irq found\n");
+@@ -1038,8 +1005,6 @@ static int snd_card_harmony_create(snd_c
+ 		return -EBUSY;
+ 	}
+ 	
+-	/* a fake pci_dev is needed for pci_* functions under ccio */
+-	harmony->fake_pci_dev = ccio_get_fake(pa_dev);
+ 	return 0;
+ }
+ 	
+@@ -1050,7 +1015,7 @@ static int __init snd_card_harmony_probe
+ 	snd_card_t *card;
+ 	int err;
+ 	
+-    if (dev >= SNDRV_CARDS)
++	if (dev >= SNDRV_CARDS)
+ 		return -ENODEV;
+ 	if (!enable[dev]) {
+ 		dev++;
+@@ -1064,6 +1029,8 @@ static int __init snd_card_harmony_probe
+ 	if (card == NULL)
+ 		return -ENOMEM;
+ 	chip = (struct snd_card_harmony *)card->private_data;
++	spin_lock_init(&chip->control_lock);
++	spin_lock_init(&chip->mixer_lock);
+ 	
+ 	if ((err = snd_card_harmony_create(card, pa_dev, chip)) < 0) {
+ 		printk(KERN_ERR PFX "Creation failed\n");
+@@ -1144,7 +1111,6 @@ static void __exit alsa_card_harmony_exi
+ 		{	
+ 			DPRINTK(KERN_INFO PFX "Freeing card %d\n", idx);
+ 			harmony = snd_harmony_cards[idx]->private_data;
+-			snd_harmony_proc_done(harmony);
+ 			free_irq(harmony->irq, snd_card_harmony_interrupt);
+ 			printk(KERN_INFO PFX "Card unloaded %d, irq=%d\n", idx, harmony->irq);
+ 			snd_card_free(snd_harmony_cards[idx]);
 
-do
-> -     * the reverse in the future probably.
-> -     */
-> -    for (i =3D 0; i < sizeof partition / sizeof partition[0]; i++)
-> -    {
-> -	if (partition[i].id =3D=3D PALO_PARTITION)
-> -	{
-> -	    palo_part =3D i + 1;
-> -	    if (kern_part =3D=3D palo_part)
-> -		kern_part =3D 0;
-> -
-> -	    if (rd_part =3D=3D palo_part)
-> -		rd_part =3D 0;
-> -
-> -	    break;
-> -	}
-> -    }
-> -
-> -    if (ext2 && kern_part =3D=3D 0) {
-> -	kern_part =3D palo_part;
-> -	if(rd_part =3D=3D 0)
-> -	    rd_part =3D palo_part;
-> -    }
-> +    partition_transform(&kern_part, &rd_part);
->  
->      if (kern_part > 0 && !partitioned)
->      {
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
--------------------------------------------------------------------------=
----------------
-Tiscali ADSL, 27,50 =80/mois...pendant 6 mois. 
-La meilleure offre du march=E9 !
-http://reg.tiscali.be/default.asp?lg=3Dfr
-
-
-
+--------------000509060400010703070606
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--------------000509060400010703070606--
