@@ -1,41 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA25399
-	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Jul 2000 12:14:05 -0600
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] untested but building 64-bit toolchain,
- issues/questions
-Reply-To: law@cygnus.com
-In-reply-to: Your message of 06 Jul 2000 14:05:39 EDT.
-             <874s63p218.fsf@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 06 Jul 2000 12:16:17 -0600
-Message-ID: <11586.962907377@upchuck>
-From: Jeffrey A Law <law@cygnus.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA25998
+	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Jul 2000 12:58:21 -0600
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel3.hp.com (Postfix) with ESMTP id BCFCEEE4
+	for <parisc-linux@thepuffingroup.com>; Thu,  6 Jul 2000 11:59:43 -0700 (PDT)
+Received: from localhost (grundler@localhost [127.0.0.1])
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id MAA10121
+	for <parisc-linux@thepuffingroup.com>; Thu, 6 Jul 2000 12:01:34 -0700 (PDT)
+Message-Id: <200007061901.MAA10121@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] untested but building 64-bit toolchain, issues/questions 
+In-reply-to: Your message of "Thu, 06 Jul 2000 11:01:15 PDT."
+             <11103.962902875@upchuck>
+Date: Thu, 06 Jul 2000 12:01:30 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Jeffrey A Law wrote:
+> ie, when the "w" is included we have a system that is 
+> capable of running 64bit binaries -- not all hppa2.0 systems can run
+> 64bit binaries.
 
-  In message <874s63p218.fsf@linuxcare.com>you write:
-  > Urgh.  Understood.  This means that the gcc tree on
-  > puffin.external.hp.com CVS is quite out of date, which is sort of what
-  > I expected.  I'm looking at the possibility of merging it now.
-Certainly possible.  Especially if you get a tree from the releases Cygnus
-made to HP.  Lots has changed since then.
+My brain isn't working that well today...I had the think about this for
+a minute...let me make it obvious to others.
 
-  > I know Matthew Wilcox has been pushing for using 'parisc-*-linux-gnu'
-  > and 'parisc64-*-linux-gnu' as the arch strings for 32 and 64 bit
-  > targets, and standardising on a 'linux' dialect of assembly language
-  > for both (basically 2.0 mnemonics).  What would the chances of this
-  > being accepted by the binutils/gcc/autoconf maintainers be?  (should I
-  > be asking this on another list? sorry...)
-  > 
-  > We need to standardise on these things ASAP, since we are starting to
-  > build userspace, and we will be stuck with them very soon.
-I would strongly recommend hppax.y[w] and hppa64 since the GNU tools already
-know about those names.  Otherwise you're going to spend a lot of time
-unnecessarily hacking up configure scripts.
+The limiting factor would be the OS.
+Eg hppa2.0n-linux (or HPUX 10.20) on a system with PA2.0 CPU.
 
-I believe there's a list (config@gnu.org)?  Where this kind of stuff is
-usually discussed.
-jeff
+grant
+
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
