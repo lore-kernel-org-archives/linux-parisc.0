@@ -1,48 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA13187
-	for <parisc-linux@puffin.external.hp.com>; Thu, 22 Jun 2000 20:11:33 -0600
-To: Pavel Roskin <proski@gnu.org>
-Cc: parisc-linux@thepuffingroup.com
-Subject: New busybox available was Re: [parisc-linux] Busybox 0.45 released 
-In-Reply-To: Message from Pavel Roskin <proski@gnu.org>
-   of "Thu, 22 Jun 2000 21:26:35 EDT." <Pine.LNX.4.21.0006222122450.31601-100000@sunapee.transcept.com>
-References: <Pine.LNX.4.21.0006222122450.31601-100000@sunapee.transcept.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 22 Jun 2000 20:14:11 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20000623021411.73E7637E38@carmen.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA13523
+	for <parisc-linux@puffin.external.hp.com>; Thu, 22 Jun 2000 21:09:14 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 23 Jun 2000 03:10:22 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA03558;
+	Fri, 23 Jun 2000 11:45:16 +1000
+Date: Fri, 23 Jun 2000 11:45:16 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Paul Bame <bame@fc.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Get rid of %r8 linker stubs 
+In-Reply-To: <E135Dev-0007ho-00@noam.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0006231116510.24137-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi Paul,
+   Thanks for testing this out for me.  Did you have any success stories
+to report with the latest binutils patch?  eg. Does tar still run?
 
-Pavel Roskin writes...
+On Thu, 22 Jun 2000, Paul Bame wrote:
 
-> Matt,
+> Well the good news is I can (with some trouble) link a native
+> binutils.  The bad news is that the kernel won't link.  To wit -
 > 
-> Just a postscriptum to save you some time.
-> When compiling Busybox disable
+> hppa1.1-linux-ld: fs/fs.o: cannot reach stub 080e89b4_00000000_printk
+> hppa1.1-linux-ld: fs/fs.o: cannot handle relocation R_PARISC_PCREL17F for printk at 0x3fc98 in .text
 > 
-> BB_INSMOD (not needed)
-> BB_FEATURE_MOUNT_LOOP (not compatible with linux-2.4.x)
-> BB_UMOUNT (uses umount syscall, can be fixed)
+> This follows a 'make clean'.  I only re-built the new binutils and not
+> gcc, if that matters.
 
-I changed umount.c to use sys/umount.h instead of using it's own version.
+No, gcc doesn't need to be rebuilt.  The problem here (I think - I'm going
+to build a kernel in a the moment) is the silly use of "ld -r" in the
+kernel build process.  This has the unfortunate effect of concatenating
+all the .text sections, making some too large for a branch to reach its
+stub section.  Of course this same thing can happen with very large object
+files.
 
-I placed a tarball of busybox-0.45 in,
+One fairly simple work-around is to use -ffunction-sections when compiling,
+as then you need a truely enormous function (> 4*2**(17-1) bytes long)
+before you'll get "cannot reach stub"  Also, gcc has support for handling
+even these enormous functions.
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/busybox-20000622.tgz
-
-I also created a smaller nfsroot using busybox instead of all the big 
-versions. It contains the dev, base-files, sash, and busybox tarballs from the 
-pehc:.../binaries/userspace directory. It lives at,
-
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/nfsroot-small-latest.t
-gz
-
-Both were tested briefly. Please report any problems to the list.
-
-Thanks,
-
+Regards, Alan Modra
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Linuxcare.  Support for the Revolution.
