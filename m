@@ -1,41 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA20808
-	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Mar 2000 13:02:56 -0700
-Received: from venus (venus.esiee.fr [147.215.20.10])
-	by mail.esiee.fr (Postfix) with SMTP id 1B6FA5735A
-	for <parisc-linux@thepuffingroup.com>; Thu, 23 Mar 2000 20:04:28 +0100 (CET)
-Message-ID: <00ca01bf94fa$ca500580$0a14d793@esiee.fr>
-From: "Thierry SIMONNET" <t.simonnet@esiee.fr>
-To: <parisc-linux@thepuffingroup.com>
-References: <E12XSiA-00022u-00@endor.fc.hp.com> <200003222233.XAA11675@zaphod.halden.lillfab.se> <20000322220229.D10226@thepuffingroup.com>
-Date: Thu, 23 Mar 2000 20:05:44 +0100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA28352
+	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Mar 2000 06:14:05 -0700
+Message-ID: <20000324121539.21840.qmail@web502.mail.yahoo.com>
+Date: Fri, 24 Mar 2000 04:15:39 -0800 (PST)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
+To: parisc-linux@thepuffingroup.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Eth0 trouble
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Success story on 715/33 and a question
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have generated new lifimages with differents methods (ramdisk, nfsroot and
-disk) using palo.
-I have the following messages :
-    eth0: receive unit error
-    eth0: Null rbd - oops!
-     eth0: receive unit error
-    eth0: Null rbd - oops!
-    eth0: receive unit error
-    eth0: Null rbd - oops!
-    eth0: receive unit error
-    eth0: Null rbd - oops!
-....
+Hi all,
 
-Before this messages, everything is OK. sash works fine, and I can execute
-some test programs. After that, I lost LAN connectivity.
+after Paul's latest changes to palo I was now also
+able to boot a cross compiled ELF kernel + ramdisk on
+my 715/33. Even my HIL keyboard is working again.
+Super!
 
-My config is  : 712/80 Workstation, with latest binutils, gcc, linux-2.3 and
-palo.
+So now I am trying to do something useful :) with that
+booted kernel. I would like to mount the proc
+filesystem. I am using a very old ramdisk image
+(19991108) because I had trouble with the newer images
+on the 715/33 (no network driver).
 
-Have an idea?
+-mount -t proc proc /proc
+returns
+mount failed: Function is not available
 
-THX
+Is there a ramdisk image which I can use on a system
+without a network driver ? Or do I need to compile
+sash on HPUX as a SOM executable and build a ramdisk
+image by myself ? Do I have to make any changes to
+ftp://puffin.external.hp.com/pub/parisc/src/sash-2.1-hpux.tar.gz
+?
 
-Th. SIMONNET
+Ulrich
+
+__________________________________________________
+Do You Yahoo!?
+Talk to your friends online with Yahoo! Messenger.
+http://im.yahoo.com
