@@ -1,16 +1,18 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ASSERT() -> BUG_ON() (1/4):
-	arch/parisc/kernel/pci-dma.c
-Date: Sun, 7 Nov 2004 14:48:47 -0700
-Message-ID: <20041107214847.GB16345@colo.lackof.org>
-References: <418E1BD1.7010108@tiscali.be>
+Subject: Re: [parisc-linux] ASSERT() -> BUG_ON() (2/4):
+	drivers/parisc/sba_iommu.c
+Date: Sun, 7 Nov 2004 19:04:33 -0700
+Message-ID: <20041108020433.GC16345@colo.lackof.org>
+References: <418E1ED4.8070104@tiscali.be>
+	<20041107213942.GA16345@colo.lackof.org>
+	<20041108000502.GN24690@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <418E1BD1.7010108@tiscali.be>
+In-Reply-To: <20041108000502.GN24690@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,33 +23,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Nov 07, 2004 at 12:57:53PM +0000, Joel Soete wrote:
-> This is a very first proposal because:
-> 	a) BUG_ON() is not anymore conditional
+On Mon, Nov 08, 2004 at 12:05:02AM +0000, Matthew Wilcox wrote:
+> GCC warns about this.
 
-Exactly, this is exactly why I'm not enthusiastic about replacing
-ASSERT with BUG_ON. ASSERT is intended to catch developement bugs
-that I know will not occur in production. Having the BUG_ON will
-only slow down the production kernel in those cases.
+Ok - I didn't know that. 
+Thanks for pointing this out.
 
-So some BUG_ON are ok, but not a wholesale replacement of ASSERTs.
-I'll apply the patch and then delete BUG_ON that I don't think
-we need.
+I expect it wouldn't generate warnings in this case because arguments
+to macros typically have extra parens around them. But in general,
+I can stop doing this for kernel code since -Wall is on.
 
-> 	b) I would like to change a bit such:
-> [...]
-> 	BUG_ON(pages_mapped == 0);
-> 	BUG_ON((pages_mapped * PAGE_SIZE) >= DMA_CHUNK_SIZE);
-> 	BUG_ON(pages_mapped >= (BITS_PER_LONG - PAGE_SHIFT));
-> [...]
-> into
-> 	BUG_ON((pages_mapped == 0) || \
-> 		((pages_mapped * PAGE_SIZE) >= DMA_CHUNK_SIZE) || \
-> 		(pages_mapped >= (BITS_PER_LONG - PAGE_SHIFT));
-> [...]
+> So I think this is an invalid objection.
 
-Please don't do this.
-Then we won't know which part of the condition failed.
+Agreed. I'll change the offending code.
 
 thanks,
 grant
