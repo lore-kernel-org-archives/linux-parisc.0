@@ -1,31 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA27930
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 17:59:50 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 18 Oct 2000 00:01:08 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA02839;
-	Wed, 18 Oct 2000 11:00:58 +1100
-Date: Wed, 18 Oct 2000 11:00:58 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: problems with binutils and/or g++
-In-Reply-To: <87r95f2ogl.fsf@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0010181054370.1579-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA29019
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 19:40:14 -0600
+From: Helge Deller <deller@gmx.de>
+Date: Wed, 18 Oct 2000 03:41:22 +0200
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Cc: <parisc-linux@thepuffingroup.com>
+To: parisc-linux <parisc-linux@thepuffingroup.com>
+References: <200010160432.VAA11300@milano.cup.hp.com> <003d01c0500a$167a9040$a832d793@esiee.fr>
+In-Reply-To: <003d01c0500a$167a9040$a832d793@esiee.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-Id: <00101803412200.00279@P100>
+Subject: [parisc-linux] /proc/interrupts
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 17 Oct 2000, David Huggins-Daines wrote:
+Hi all,
 
-> recompiling with -fno-rtti, as I don't think APT uses it).  But on the
-> other hand we've had problems with link-once sections in the past.
+I just committed changes, which fills in i386-compatible 
+interrupt-information into /proc/interrupts.
 
-Translation:  Alan has been mucking around with link-once section symbols
-and may have broken something.
+During the changes I inserted the constants IRQ_PER_REGION and 
+IRQ_REGION_SHIFT into asm-parisc/irq.h, which would allow us to reduce the 
+needed amount of static memory for the interrupt routing tables.
 
-I'll take a look.
+This change has following effects:
+1. The until now used virtual IRQ's gets new numbers and increments in every 
+region by 32 for parisc32 and 64 for parisc64. The old IRQ regions 
+incremented by 256.
+2. since we now shift by values of 5 (parisc32) or 6 (parisc64) bits, the 
+time needed to calculate the offsets may have changed. This needs to be 
+inspected.
+3. the new algorithm needs less memory than before.
 
--- 
-Linuxcare.  Support for the Revolution.
+By default I left the current behaviour in CVS, but you may activate the new 
+algorithm by changing the "#if 0" to "#if 1" in asm-parsic/irq.h and tell me 
+what you think.
+
+Thanks,
+Helge.
