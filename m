@@ -1,18 +1,21 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1BF8B488A
-	for <parisc-linux@parisc-linux.org>;
-	Sat, 24 Jan 2004 13:50:19 -0700 (MST)
-Message-ID: <4012DB06.5010600@tiscali.be>
-Date: Sat, 24 Jan 2004 20:52:22 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [parisc-linux] missing barrier in _raw_spin_lock?
-References: <200401231609.56800.arnd@arndb.de>
-In-Reply-To: <200401231609.56800.arnd@arndb.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@parisc-linux.org
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CD56E488A
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 24 Jan 2004 14:03:21 -0700 (MST)
+Date: Sat, 24 Jan 2004 14:03:20 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] B2k and CONFIG_PDC_CONSOLE pb: followup
+Message-ID: <20040124210320.GA16272@colo.lackof.org>
+References: <20040122053112.GB6468@colo.lackof.org>
+	<400D3BEE0000294D@ocpmta1.freegates.net>
+	<20040123194531.GA30221@colo.lackof.org>
+	<40125302.5050600@tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <40125302.5050600@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,46 +25,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Sat, Jan 24, 2004 at 11:12:02AM +0000, Joel Soete wrote:
+> >If the console is the serial port, then we should be able to disable
+> >just the USB device and not impact the Serial ports.
+> 
+> hmm afaik usb ports on a b2k (and I presume for the same family) are just 
+> there (iirc the user guide and spec) to be used only for usb kbd and mouse
 
+I think that's all PDC and HPUX know how to talk to.
+That's all HP will support or warrant.
 
-Arnd Bergmann wrote:
-> We stumbled over a problem on s390 that can cause random memory corruption
-> under high load on SMP. It turned out to be a missing on :"memory" clobber
-> on the _raw_spin_lock primitive.
-> 
-> As far as I can see, the same problem is in the parisc spinlock definition
-> in linux-2.6.1, but none of the other architectures.
-> 
-> The code below demonstrates the problem. With the broken spinlock, the
-> compiler does not emit code for the second "if" or for the assignment.
-> Similar code can be found in mempool_free().
-> 
-> 	Arnd <><
-> 
-> ----
-> #include <linux/spinlock.h>
-> 
-hmm yet another stupid question of mine: what would we have to use _linux_/spinlock.h or _asm_/spinlock.h
+But it's a USB port and if other devices work, use it.
 
-Thanks in advance,
-	Joel
+> and so if no usb kbd was found by pdc we could just disable usb at all?
 
+The problem is USB is doing DMA and was enabled by PDC.
+I don't care what's connected (Keyboard vs digital camera).
 
-> static int x;
-> static spinlock_t lock;
-> 
-> void test(void)
-> {
->         if (x) {
->                 spin_lock(&lock);
->                 if (!x)
->                         x = 0x1234;
->                 spin_unlock(&lock);
->         }
-> }
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+grant
