@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fenetre.net (unknown [66.237.210.67])
-	by dsl2.external.hp.com (Postfix) with SMTP id C12C6482D
-	for <parisc-linux@parisc-linux.org>; Wed, 14 May 2003 23:52:07 -0600 (MDT)
-Message-ID: <COCGAIJPJBHEPOMBJIAGNFGJEMAB.weiss_1@prysm.net>
-From: "Clarence Weiss" <weiss_1@prysm.net>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 15 May 2003 05:46:39 +0000
-MIME-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Come back
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D85F5482B
+	for <parisc-linux@parisc-linux.org>; Thu, 15 May 2003 04:20:18 -0600 (MDT)
+Date: Thu, 15 May 2003 12:20:14 +0200
+Subject: Re: [parisc-linux] sym53c8xx.c
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v552)
+Cc: parisc-linux@parisc-linux.org
+To: Matthew Wilcox <willy@debian.org>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <20030514215849.GK6859@parcelfarce.linux.theplanet.co.uk>
+Message-Id: <D151E296-86BE-11D7-84C5-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,19 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-CQkJCTxIVE1MPg0KPEJPRFkgQkdDT0xPUj0jZmZmZmZmPg0KPHAgYWxpZ249
-ImNlbnRlciI+PFlRVz48Zm9udCBmYWNlPSJ2ZXJkYW5hIj48V01WPg0KZ2V0
-IDxDWVRDPmxhcmc8WVRPTj5lPENURU4+ciBudXRzIGFuZCBwZTxLRk9YPm48
-Vz7tczxZVUxJPiwgIG1vcjxXPmUNCiA8WEhJPnA8Q1lUWD5sPFhYPmU8V1dI
-PmE8Wj5zdTxRREFXPnJlLCANCiANCgkNCgkJIDxDVz5tbzxaPnI8V0U+ZQ0K
-IHNhPFpRPnQ8V0lMPmlzZmE8V00+YzxaPnQ8V00+aW9uPGJyPg0KPGEgaHJl
-Zj0iaHR0cDovL0hlQUxUSC5ob3N0Q04yLmNvTS9wZWsvJTZEJTMyYy5wJTY4
-JTcwP20lNjElNmU9ayU2QjQyJTMyYSI+TGVhcm4gYWJvdXQgaXQgaGVyPFlJ
-PmU8L2E+PGJyPg0KPGJyPg0KIA0KICA8YSBocmVmPSJodHRwOi8vaGVBbHRI
-LmhPU3RjTjIuY09tL3AlNjVrL20yYy4lNzAlNjglNzA/bSU2MW49ayU2QiUz
-NCUzMjIlNjEiPg0KIDxJTUcgQk9SREVSPTAgU1JDPSJodHRwOi8vSGVhbFRI
-Lkhvc1RjTjIuQ09tLyU3MC4lNkElNzBnIj4gDQogIDwvYT48YnI+PFpZSVY+
-PGJyPjxicj4NCjxhIGhyZWY9Imh0dHA6Ly9IRUFsdEguSG9zVGNuMi5DT20v
-cmUlNkRvJTc2JTY1LyI+Tm8gbW88WVhCRz5yPFdVWj5lIHBsZWFzZTwvYT4N
-Cjxicj4tPWlsdHk3ZjBvOXM2Yj0tPC9mb250PjwvcD4NCgkNCjwvYm9keT48
-L0hUTUw+CQ0KCQ0KIA0KDQo=
+Le mercredi, 14 mai 2003, =E0 23:58 Europe/Paris, Matthew Wilcox a =E9crit=
+ :
+
+>
+> The sym53c8xx driver is near to being removed from 2.6.  Can anyone=20
+> think
+> of a situation where we might still want it?  I'm concerned that maybe
+> some of the fixes didn't go into the sym53c8xx_2 driver.  In=20
+> particular,
+> I'd like to know that the sym53c8xx_2 driver in 2.5 works on C3k (wide=20=
+
+> &
+> narrow!) and A500.
+We've been using SYM2 on our A500 SMP for quite a large amount of time=20=
+
+now,
+not experiencing anymore race problem.
+I recall some troubles on B2600 (bame experienced those as well, the box
+just went very lazzy; and you could heard the HD twinkling twice a=20
+second)
+but we had no chance to test SYM2 on that box lately...
+Maybe we can give it a shot on our J5k which is currently running SYM1
+(SMP kernel as well).
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/=
