@@ -1,47 +1,41 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA25883
-	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 17:04:08 -0600
-Date: Wed, 9 Jun 1999 18:04:03 -0500 (CDT)
-From: xomina <ryan@email.labmed.umn.edu>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA26206
+	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 17:26:39 -0600
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 9 Jun 1999 23:26:07 -0000
 Subject: Re: [parisc-linux] Trying to get HP-UX working
-In-Reply-To: <199906092243.SAA15136@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.GSO.4.02.9906091758240.5674-100000@email.labmed.umn.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: taggart@rascal.fc.hp.com (Matt Taggart)
+Date: Thu, 10 Jun 1999 00:19:58 +0100 (BST)
+Cc: alan@lxorguk.ukuu.org.uk, tor@spacetec.no, parisc-linux@thepuffingroup.com
+In-Reply-To: <199906092252.QAA06166@rascal.fc.hp.com> from "Matt Taggart" at Jun 9, 99 04:52:29 pm
+Content-Type: text
+Message-Id: <E10rrdl-0000sB-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-On Wed, 9 Jun 1999, John David Anglin wrote:
-
-> > here's the gnu directory taken from my HP-UX 10.20 machine at work.  it
+>  >I can't however get HP/UX to set up an interface 
+>  >
+>  >	194.168.151.23 netmask 255.255.255.224
 > 
-> Are they static so that they will work without shared libraries?
+> Are you getting errors or do you just need to know where to make changes? 
+> If it's the former, post the errors and maybe someone can help. If its the 
+> latter, you probably want to edit /etc/rc.config.d/netconf
 
-oops, no, they appear to be dynamic.  at least, i assume that's what this
-means:
+Umm webconsole doesnt support cut/paste
 
-mercury:/usr/local/gnu/bin> chatr bash
-bash: 
-         shared executable 
-         shared library dynamic path search:
-             SHLIB_PATH     disabled  second 
-             embedded path  disabled  first  Not Defined
-         internal name:
-             bash
-         shared library list:
-             dynamic   /usr/lib/libc.1
-         shared library binding:
-             deferred 
-         static branch prediction disabled
-         data page size: 4K
-         instruction page size: 4K
-mercury:/usr/local/gnu/bin> 
+ifconfig lan0 194.168.151.23 netmask 255.255.255.224
+ifconfig: ioctl (SIOCSIFNETMASK): bad value
 
-sorry, i didn't install them on this machine, and wasn't aware they
-weren't statically-linked.  comes from being a non-kernel programmer and
-being a bit hasty to find something i could possibly help out with, i
-suppose!
+Which is kind of a problem
 
-ryan
+> for distribution. Rebuilding a system from one of these CD's only takes 
+> about 20 minutes. The image could be rebuilt fairly easily if it needed to 
+> be updated.  I can also help with this if needed.
+> 
+> What does everyone think?
+
+A set of GNU tools for HP/UX in a easy format is probably going to make many
+HP/UX users happy too - SCO has the "skunkware" CD which is basically a 
+GNU brain transplant or SCO and is a similar idea.
+
+Alan
