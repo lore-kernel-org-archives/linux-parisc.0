@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E6FE04829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 05:58:14 -0600 (MDT)
-Message-ID: <3D9052C9.3060704@esiee.fr>
-Date: Tue, 24 Sep 2002 13:55:53 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-MIME-Version: 1.0
-To: Yves Bodack <bodack@stud.fh-heilbronn.de>
-Cc: Steve Pacenka <spacenka@lightlink.com>,
-	parisc-linux@lists.parisc-linux.org
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1EAEF4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 06:02:07 -0600 (MDT)
+Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
+	by hauptpostamt.charite.de (Postfix) with ESMTP id 2CD4915C01F
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 14:02:04 +0200 (CEST)
+Date: Tue, 24 Sep 2002 14:02:01 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] RTC and FB on 735/125
-References: <03ab01c26266$2416dea0$1f96078d@acid><20020922220323.0113cbca.varenet@esiee. fr><03bf01c2627c$9a5147c0$1f96078d@acid> <03ed01c26280$4dfb5c90$1f96078d@acid> <1032793227.1848.222.camel@romano> <003001c26327$d0db42e0$1f96078d@acid> <1032806776.2868.19.camel@romano> <002a01c263bf$76340820$1f96078d@acid>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Message-ID: <20020924120201.GC15201@charite.de>
+References: <03ed01c26280$4dfb5c90$1f96078d@acid> <1032793227.1848.222.camel@romano> <003001c26327$d0db42e0$1f96078d@acid> <1032806776.2868.19.camel@romano> <002a01c263bf$76340820$1f96078d@acid> <3D9052C9.3060704@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D9052C9.3060704@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Yves Bodack wrote:
-> From: "Steve Pacenka" <spacenka@lightlink.com>
-> Subject: Re: [parisc-linux] RTC and FB on 735/125
-> 
-> 
-> 
->>Could you please post your experience at getting X applications to work
->>now that you have X and a desktop?  I got basic gnome things to work
->>flawlessly, but failed on my 735/99 with xmms, xemacs, and galeon or
->>mozilla.
-> 
-> Galeon/Mozilla and XMMS start up, but they don't appear on screen and give
-Galeon/Mozilla is b0rken on hppa. You can try either Links or Konqueror...
-for XMMS I don't know...
+Am 24.09.2002 um 13:55:53 +0200 schrieb Thibaut VARENE folgendes:
 
-HTH,
+> >Galeon/Mozilla and XMMS start up, but they don't appear on screen and give
 
+> Galeon/Mozilla is b0rken on hppa. You can try either Links or Konqueror...
+> for XMMS I don't know...
 
+And I must say, konqueror is quite acceptable.
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+-- 
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+Why you can't find your system administrators:
+they're busy updating their BOFH excuse server 
