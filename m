@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from simba.sch.bme.hu (simba.sch.bme.hu [152.66.215.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A39FB4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 02:27:11 -0600 (MDT)
-Date: Fri, 20 Sep 2002 10:28:24 +0200 (MET DST)
-From: Istvan Gyenes <frts@simba.sch.bme.hu>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] SMP kernel problems on a D350 
-In-Reply-To: <20020919224609.DF1314829@dsl2.external.hp.com>
-Message-ID: <Pine.OSF.4.33.0209201006420.5180-100000@simba.sch.bme.hu>
+Received: from mailgw.cvut.cz (mailgw.cvut.cz [147.32.3.235])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F03A4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 04:11:46 -0600 (MDT)
+From: "Petr Vandrovec" <VANDROVE@vc.cvut.cz>
+To: Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
+Date: Fri, 20 Sep 2002 12:11:21 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <251F50824F2@vcnet.vc.cvut.cz>
+Subject: [parisc-linux] Re: partial success with matroxfb
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +21,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks I'll try that!
+On 20 Sep 02 at 2:27, Andreas Seltenreich wrote:
 
-Another question: If 2.4.19 SMP not enough stable where can I find the
-latest stable smp kernel source?
+> Bus    HPA       Module Type      Path  Slt Md Sev  Estat Requestor  Responder
+> --- ---------- ---------------- -------- -- -- ---- ----- ---------- ----------
+>  0  0xfff88000 I/O Adapter      8         2  0  he   0x3d 0xf2000000 0x000a1000 
+>  0  0xfff8a000 I/O Adapter      10        2  2  he   0x0d 0x00000000 0x00000000 
 
-Thanks,
+> anotherhpmachien:~# cat /proc/iomem 
+> 00000000-0fffffff : System RAM
+> f2000000-f3ffffff : GSC Bus [8/]
 
-__
-Steve
+Hi Andreas,
+  boot with 'video=matrox:novga'. It looks like that Matrox responded
+to the access to legacy VGA region 0xA0000-0xBFFFF. It does not happen
+when CPU accesses this memory because of Matrox does not see this access
+at all in such situation, because of host bridge directs it immediately 
+to the system ram, without accessing PCI. But when access originated from 
+some PCI busmaster, other PCI devices sees this access, and Mystique
+claims it.
 
-On Thu, 19 Sep 2002, Grant Grundler wrote:
+  And now both host bridge (for system RAM) and Mystique (for VGA region)
+accepted bus cycle, and hardware went mad...
 
-> Istvan Gyenes wrote:
-> > Hello Joerg,
-> >
-> > The only difference between the non-smp and smp kernel config file is
-> > CONFIG_SMP=yes , AFAIK.
-> > I made a "make menuconfig" and the only thing I've changed is SMP support.
->
-> I'm paranoid. I do "make distclean" when doing anything other than
-> adding/removing drivers. Save/restore the .config if you need to before
-> running "make distclean".  I don't trust the Makefiles to rebuild
-> everything correctly for "global" CONFIG_ changes like "SMP".
->
-> > The strange thing is that the precompiled smp kernel from the install cd
-> > boots fine. (2.4.18-smp)
->
-> SMP on 2.4.19 isn't as stable yet.  So that's no surprise.
->
-> If you want to debug this further, define "EARLY_BOOTUP_DEBUG"
-> in arch/parisc/kernel/pdc_cons.c and you should get more output
-> about how far the kernel gets before it crashes/hangs.
->
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+  I have no idea what second error reports, but it may be just triggered
+by previous one.
+                                                            Petr Vandrovec
+                                                            
