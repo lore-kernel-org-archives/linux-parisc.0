@@ -1,13 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] TLS added relocations.
-Date: Tue, 5 Apr 2005 12:15:49 -0400
-Message-ID: <20050405161549.GM1833@baldric.uwo.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] TLS added relocations.
+Date: Tue, 5 Apr 2005 09:26:43 -0700
+Message-ID: <20050405162643.GB6987@tausq.org>
+References: <20050405161549.GM1833@baldric.uwo.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org,
- Randolph Chung <tausq@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050405161549.GM1833@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,16 +21,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> Is DTPMOD32 and DTPOFF32 all I need to add to glibc for some initial TLS
+> testing?
 
-Randolph,
+Well, plus the setting up of the THREAD_DTV() stuff.
 
-Is DTPMOD32 and DTPOFF32 all I need to add to glibc for some initial TLS
-testing?
+> Recommended tests to make sure this is working?
 
-Recommended tests to make sure this is working?
+I haven't really looked, but glibc has a bunch of TLS tests. It'll also
+pretty easy to write our own test cases. 
 
-c.
-
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
