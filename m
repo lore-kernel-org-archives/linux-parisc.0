@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B02B4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 20:19:59 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17uOFw-0007N5-00; Thu, 26 Sep 2002 03:19:56 +0100
-Date: Thu, 26 Sep 2002 03:19:56 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Steve.Grady@csiro.au
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] EISA 100 Base-T Ethernet card drivers
-Message-ID: <20020926031956.A5179@parcelfarce.linux.theplanet.co.uk>
-References: <49AA3A3C863E5B4C911320AEF99E5DA3010CCCE0@wing-ep.tip.csiro.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <49AA3A3C863E5B4C911320AEF99E5DA3010CCCE0@wing-ep.tip.csiro.au>; from Steve.Grady@csiro.au on Thu, Sep 26, 2002 at 11:05:31AM +1000
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B1C04829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Sep 2002 00:16:28 -0600 (MDT)
+Date: Thu, 26 Sep 2002 08:16:21 +0200
+Message-ID: <3D8F011400000D77@ocpmta2.be.tiscali.com>
+In-Reply-To: <3D92203F.3020801@earthlink.net>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Mouse stops working when exiting KDE
+To: "Bryan W. Headley" <bwheadley@earthlink.net>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,16 +22,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Sep 26, 2002 at 11:05:31AM +1000, Steve.Grady@csiro.au wrote:
-> Are there drivers available for EISA 100 Base-T cards such are the HP
-> A4308A.
-> If there are what is the driver called and is there anything I need to know
-> in
-> getting it to work on my D370.
+>> Hi Brian,
+>> 
+>> Sorry, the last test I do on my b180 and gpmdata as mouse driver does
+not
+>> work :)
+>> (xfree86-4.1)
+>> 
+>Forgot what mouse type you're supposed to tell X you have. Just tried it
+>
+>on my i386, and had a hung mouse real fast! I thought it was Imps/2, but
+>
+>obviously not...
+>
+>You are right -- if you return to the console with control-alt-F[1-6], 
+>and then back again, the issue clears up. It's a well-known but 
+>irritating "solution"
 
-this chip is the 82556, which is apparently AKA the "EtherExpress PRO/100
-Smart".  I don't know what's so smart about it, but the eepro100 driver
-doesn't claim to support it.  I think you're out of luck.
+Ah, I am not an 'e X pert' :)) and I am ignoring (thanks).
 
--- 
-Revolutions do not require corporate support.
+In the mean time, I recieved a mail from Branden Robinson <branden@debian.org>
+proposing it is help. He will need some help with 'try an experimental debugging
+X server package. Ever used gdb to attach to a running X server before?'.
+
+If you feel more competent (I am not very capable in X field) and more time
+(than I) I can send you its answer?
+
+Cheers,
+    Joel
