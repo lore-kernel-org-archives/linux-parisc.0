@@ -1,30 +1,92 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA06586
-	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Oct 2000 18:43:19 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 27 Oct 2000 00:44:51 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA03946;
-	Fri, 27 Oct 2000 11:44:46 +1100
-Date: Fri, 27 Oct 2000 11:44:46 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Kailashnath V Rampure <kailasr@webcash.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] glibc problem
-In-Reply-To: <5.0.0.25.0.20001026173406.037ca150@mail.webcash.com>
-Message-ID: <Pine.LNX.4.21.0010271141410.1135-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA07221
+	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Oct 2000 19:00:52 -0600
+Message-Id: <5.0.0.25.0.20001026163140.00aed760@mail.webcash.com>
+Date: Thu, 26 Oct 2000 17:58:03 -0700
+To: taggart@carmen.fc.hp.com
+From: Kailashnath V Rampure <kailasr@webcash.com>
+Cc: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="=====================_23220339==_.ALT"
+Subject: [parisc-linux] Make palo problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 26 Oct 2000, Kailashnath V Rampure wrote:
+--=====================_23220339==_.ALT
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 
-> Yes the line is there.
 
-OK, that should mean you no longer get zero length .c files created with
-"cp /dev/null file"  Is that the case?  If you still see zero length files
-in glibc/csu, then maybe that's because "make clean" didn't remove
-them.  Just delete them.
+    * I have down loaded the latest prebuilt cross-compiler  and untared it 
+the a directory by name DEST
+    * I have downloaded the Latest linux  and palo files from the cvs. the 
+after uncompresing them I run the following command from the ~/linux directory
+    * Changed the line in Palo/Makefile  for my system IP Address
+    * exported PATH=$DEST/bin:$PATH
+    * the cd ~/linux
+    * make oldconfig
+    * make dep
+    * make clean
+    * make palo
+If so the I am getting the following error after running make palo
+cd palo && make
+make[2]: Entering directory `/cvs/palo/palo'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/cvs/palo/palo'
+cd ipl && make
+make[2]: Entering directory `/cvs/palo/ipl'
+echo "char *bld_info = \"`whoami`@`hostname` `date`\";" > build.c
+hppa-linux-gcc -I. -I../lib -I../include -O2 -fwritable-strings 
+-mdisable-fpregs -Wall -c -o build.o build.c
+rm -f build.c
+hppa-linux-ld -N --Ttext 0x500000 -e '$START$' -o iplelf crt0.o ipl.a 
+build.o `hppa-linux-gcc -print-libgcc-file-name`
+ipl.a: could not read symbols: Archive has no index; run ranlib to add one
+make[2]: *** [iplelf] Error 1
+make[2]: Leaving directory `/cvs/palo/ipl'
+make[1]: *** [makeipl] Error 2
+make[1]: Leaving directory `/cvs/palo'
+make: *** [palo] Error 2
 
--- 
-Linuxcare.  Support for the Revolution.
+--=====================_23220339==_.ALT
+Content-Type: text/html; charset="us-ascii"
+
+<html>
+
+<ul>
+<li>I have down loaded the latest prebuilt cross-compiler&nbsp; and
+untared it the a directory by name DEST
+<li>I have downloaded the Latest linux&nbsp; and palo files from the cvs.
+the after uncompresing them I run the following command from the ~/linux
+directory
+<li>Changed the line in Palo/Makefile&nbsp; for my system IP Address
+<li>exported PATH=$DEST/bin:$PATH
+<li>the cd ~/linux
+<li>make oldconfig
+<li>make dep
+<li>make clean
+<li>make palo
+</ul>If so the I am getting the following error after running make
+palo<br>
+cd palo &amp;&amp; make<br>
+make[2]: Entering directory `/cvs/palo/palo'<br>
+make[2]: Nothing to be done for `all'.<br>
+make[2]: Leaving directory `/cvs/palo/palo'<br>
+cd ipl &amp;&amp; make<br>
+make[2]: Entering directory `/cvs/palo/ipl'<br>
+echo &quot;char *bld_info = \&quot;`whoami`@`hostname`
+`date`\&quot;;&quot; &gt; build.c<br>
+hppa-linux-gcc -I. -I../lib -I../include -O2 -fwritable-strings
+-mdisable-fpregs -Wall -c -o build.o build.c<br>
+rm -f build.c<br>
+hppa-linux-ld -N --Ttext 0x500000 -e '$START$' -o iplelf crt0.o ipl.a
+build.o `hppa-linux-gcc -print-libgcc-file-name`<br>
+ipl.a: could not read symbols: Archive has no index; run ranlib to add
+one<br>
+make[2]: *** [iplelf] Error 1<br>
+make[2]: Leaving directory `/cvs/palo/ipl'<br>
+make[1]: *** [makeipl] Error 2<br>
+make[1]: Leaving directory `/cvs/palo'<br>
+make: *** [palo] Error 2<br>
+</html>
+
+--=====================_23220339==_.ALT--
