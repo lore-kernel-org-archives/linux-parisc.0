@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 93F484848
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Mar 2002 15:52:46 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id lfuvlaaa for parisc-linux@parisc-linux.org; Tue, 5 Mar 2002 15:52:20 -0700
-Date: Tue, 5 Mar 2002 14:52:34 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] SMP support
-Message-ID: <20020305225234.GE26587@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.LNX.4.33L2.0203051434270.6941-100000@eiger.apptechsys.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0C3074839
+	for <parisc-linux@parisc-linux.org>; Tue,  5 Mar 2002 16:51:26 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16iOi0-0007We-00
+	for parisc-linux@parisc-linux.org; Tue, 05 Mar 2002 23:51:04 +0000
+Date: Tue, 5 Mar 2002 23:51:04 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020305235104.E7113@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33L2.0203051434270.6941-100000@eiger.apptechsys.com>
+Subject: [parisc-linux] Bitkeeper
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,17 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> depmod: Unhandled relocation of type 74 for printk_Rsmp_dd132261
-> depmod: Unhandled relocation of type 74 for usb_deregister_Rsmp_c6f994d5
-> 
-> This is using the make-kpkg kernel_image command.
+A controversial issue, I realise.  However, Marcelo is itching to get some
+bitkeeper testing, I'm cooperating by setting up a bitkeeper tree he can
+pull from.  You can see what I'm up to at http://palinux.bkbits.net/
+but there's no _development_ going on there.  Continue to use
+cvs.parisc-linux.org as before.  If anyone wants to have `user' access
+(permission to check in, basically) to this tree, just ask me.
 
-yeah, this is a known problem. someone needs to look at updating
-modutils..... any volunteers? :-)
+Note that not all changes are being committed to this tree, only the
+bits I'm pushing to Marcelo.
 
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Revolutions do not require corporate support.
