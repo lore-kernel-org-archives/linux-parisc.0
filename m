@@ -1,40 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA19182
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Sep 1999 09:30:31 -0600
-Date: Wed, 22 Sep 1999 18:15:56 +0300 (EETDST)
-From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: Philipp Rumpf <prumpf@suse.de>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715/80 problems 
-In-Reply-To: <199909221431.HAA27632@milano.cup.hp.com>
-Message-ID: <Pine.HPX.4.05.9909221807370.1697-100000@gamgee.ntc.nokia.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA19805
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Sep 1999 10:43:20 -0600
+Sender: adevries@thepuffingroup.com
+Message-ID: <37E90B1E.526ADF6F@thepuffingroup.com>
+Date: Wed, 22 Sep 1999 13:00:14 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+To: Philipp Rumpf <prumpf@suse.de>
+CC: Hannu Martikka <martikka@stybba.ntc.nokia.com>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 715/80 problems
+References: <199909162158.OAA21289@milano.cup.hp.com> <Pine.HPX.4.05.9909221438440.2148-100000@gamgee.ntc.nokia.com> <19990922153509.B5481@suse.de>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 22 Sep 1999, Grant Grundler wrote:
-
-> Philipp Rumpf wrote:
-> > Hannu Martikka wrote:
-> > > With 715/80 I get following:
-> > > Boot
-> > > :disk(....)/stand/vmlinux
-> > 
-> > you might want to try to boot via tftp / bootp as this is what most of us do
-> > and it seems to work for us.
+Philipp Rumpf wrote:
 > 
-> Goodi,
-> Are you using HP-UX boot loader?
-I was... It used to work (at the time when kernel didn't... :)
+> > With 715/80 I get following:
+> > Boot
+> > :disk(....)/stand/vmlinux
+> 
+> you might want to try to boot via tftp / bootp as this is what most of us do
+> and it seems to work for us.
 
-> To boot from disk, one should do "make Image" and dd the Image to disk.
-> This will trash the HP-UX file system so only do this on a spare disk!
-> The loader used is then from the parisc-linux source tree.
-I setup the tftp/bootp server and now I can boot my 715/80 from lan.
-Last thing it says is "urgh" and then it stays in for(;;). I cannot say
-wether that is good or bad :)
+There's definitely a problem with booting off of a disk, and I'm not
+sure what the problem really is.  It'd be great if someone could look
+into this, I know we're not implementing the entire LIF header.
 
-> grant
-- Goodi
-"The linuX Files -- The Source is Out There."
-ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
+Has *anyone* been able to boot from disk?
+
+- Alex
+
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
