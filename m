@@ -1,43 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA23413
-	for <parisc-linux@puffin.external.hp.com>; Wed, 4 Oct 2000 09:05:00 -0600
-Message-Id: <200010041505.LAA06932@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] pre-build HP-UX/10.20 bash's problem
-To: yuqian@huawei.com (yuqian)
-Date: Wed, 4 Oct 2000 11:05:50 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA25490
+	for <parisc-linux@puffin.external.hp.com>; Wed, 4 Oct 2000 10:42:18 -0600
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id 21AEDDC2
+	for <parisc-linux@thepuffingroup.com>; Wed,  4 Oct 2000 09:43:03 -0700 (PDT)
+Message-Id: <200010041647.JAA03302@milano.cup.hp.com>
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <20001004125746.18672.qmail@mailserv2.iuinc.com> from "yuqian" at Oct 4, 2000 12:57:46 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Kernel panic: taking a dump 
+In-reply-to: Your message of "Wed, 04 Oct 2000 13:23:29 PDT."
+             <39DB1331.C4A5B8B3@admin.france.hp.com>
+Date: Wed, 04 Oct 2000 09:46:55 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Hi.
-> I have a HP B2000 (9000/785) with HP-UX 10.20 and installed 
-> binaries/HP-UX/depot/10.20/bash-2.03-1.hpux-10.20.depot.gz,
-> but it not work when I want to build a new kernel:
->    bash-2.03$ make dep
->    scripts/mkdep init/*.c > .depend
->    scripts/mkdep `find /home/yq/linux/include/asm
-> /home/yq/linux/include/linux /home/yq/linux/include/scsi
-> /home/yq/linux/include/net -name   SCCS -prune -o -follow -name \*.h ! -name
-> modversions.h -print` > .hdepend
->    bash: scripts/mkdep: Arg list too long
->    make: *** [dep-files] Error 126
->   
-> Am I missing any thing?
-> Thanks for any advices.
+Bruno Vidal wrote:
+...
+> And I'm looking for the feature of taking a dump when kernel panics.
+> Do you have already think to this (like taking a TOC for example).
+> The only thing I've found is the SGI stuff: 
+> http://reality.sgi.com/slurn_engr/
+> Do you know a project that start to do something, or there's
+> nothing out ?
 
-I think this can be fixed by changing the Makefile to use relative paths
-instead of absolute paths.  This shortens the arg list enough for 
-building under hpux.
+See http://oss.sgi.com/projects/ and click on "LKCD"
+(Linux Kernel Crash Dumps) project.
 
-Changing the kernel to support a larger arg and environment space looks
-like it will waste a lot of memory for most applications and thus may
-not be suited for machines with limited memory or swap space.  So, I would
-try hacking the Makefile first.
+I haven't yet looked at LKCD closely yet.
+I'd like to see our dump format be compatible with HPUX's just to
+leverage the dump analysis tools. But right now, I'd be happy
+with any kind of a dump.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
