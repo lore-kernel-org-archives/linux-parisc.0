@@ -1,15 +1,15 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Re: [PATCH] Sysdeps changes for hppa.
-Date: Wed, 15 Oct 2003 10:35:59 -0400
-Message-ID: <20031015143558.GG22495__19778.1999166638$1416622878$gmane$org@systemhalted>
-References: <20031012213226.GE23999@systemhalted> <3F8CDFD6.1010300@redhat.com>
+Subject: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
+Date: Wed, 15 Oct 2003 12:40:47 -0400
+Message-ID: <20031015164047.GA31385__11911.8418232121$1416622878$gmane$org@systemhalted>
+References: <20031012213734.GJ23999@systemhalted> <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
-To: Ulrich Drepper <drepper@redhat.com>
+To: Jakub Jelinek <jakub@redhat.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3F8CDFD6.1010300@redhat.com>
+In-Reply-To: <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,33 +20,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ulrich,
+On Wed, Oct 15, 2003 at 07:34:31AM +0200, Jakub Jelinek wrote:
+> On Sun, Oct 12, 2003 at 05:37:34PM -0400, Carlos O'Donell wrote:
+> > 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
+> > 
+> > 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
+> > 	(__pthread_find_self): Likewise.
+> > 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
+> 
+> You need to look at linuxthreads/attr.c (__pthread_attr_getstack) too
+> (the recent code which parses /proc/self/maps and finds stack VMA in there).
 
-> I've applied this patch, but only because I really don't care how the PA
-> port looks.
+That should hopefully explain the regression in tst-attr1, I hadn't
+tracked it down yet, but I knew that some other STACK_GROWS_UP problems
+might exist.
 
-I didn't think the patch was too ugly, but then again a father thinks
-all his children are beautiful.
+Thanks Jakub.
 
-> The semtimedop definition is completely wrong.  If you want all
-> syscall,s use appropriate headers.
-
-Moot point. We know why it's there, because changes don't propagate
-everywhere as fast as we'd like.
-
-> You've modified the patch by hand and broke it, forcing me to do clean up.
-
-Unforgivable. Please reject patches immediately if this happens again. 
-I will produce a correct patch.
-
-> The coding style is completely wrong and a terrible mess.  The coding
-> standard document is available, read it.
-
-Suggestions accepted. I will reread the document.
- 
-> The preprocessor directive indentation is wrong or non-existing.
-
-Never non-existent. Incorrect yes.
-
-Cheers,
-Carlos.
+c.
