@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0803D482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 10:25:07 -0700 (MST)
-Subject: Re: [parisc-linux] Re: parisc scatterlist doesn't want page/offset
-To: grundler@puffin.external.hp.com (Grant Grundler)
-Date: Fri, 16 Nov 2001 17:31:22 +0000 (GMT)
-Cc: willy@debian.org (Matthew Wilcox),
-	davem@redhat.com (David S. Miller), linux-mm@kvack.org,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200111161644.JAA26017@puffin.external.hp.com> from "Grant Grundler" at Nov 16, 2001 09:44:57 AM
-MIME-Version: 1.0
+Received: from beavis.ybsoft.com (unknown [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B278D482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 13:02:34 -0700 (MST)
+Date: Fri, 16 Nov 2001 13:02:33 -0700
+To: Michael Wood <mwood@its.uct.ac.za>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 64bit kernels boot on C200 (finally) :)
+Message-ID: <20011116130233.D10936@beavis.ybsoft.com>
+References: <20011115123203.A2337@beavis.ybsoft.com> <20011115200102.E25491@parcelfarce.linux.theplanet.co.uk> <20011116173740.A7011@marmite.its.uct.ac.za>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E164mpm-0004a2-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <20011116173740.A7011@marmite.its.uct.ac.za>
+From: rbradetich@uswest.net (Ryan Bradetich)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,15 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Until page/offset completely replaces address, I see a net increase
-> in cycles for parisc (probably most archs) with only a tangible benefit
-> for i386. Seems like the burden should be on the i386 folks to not
-> impact other arches.
-> My main gripe is adding this to 2.4 seems like the wrong time/place.
-> I'm happy to revisit this in 2.5.
+> The last time I tried a 64 bit kernel with lasi_82596.c (a few
+> weeks ago), the network card would not work.  When the driver
+> loaded it complained that sizeof(somestruct) was 64.  I had a
+> look at the code and saw that it was expecting it to be 32.
 
-Its a bad impact on x86 so unfortunately it does need doing and I agree with
-Dave - DaveM rarely implements something that is x86 beneficial but harms 
-his beloved sparc64 without good reason.
+yeah, I was confused.  C200 has tulip, K460 has lasi_82596.  Talking
+with Richard Hirst, it sounds like making this driver 64-bit clean
+would be non-trivial ... so this will probably be one of my pet
+project that takes a year to get finished :)
 
-Alan
+> I've been using 32 bit kernels since then.  I don't think
+> lasi_82596.c has changed significantly since I last tried it in
+> a 64 bit kernel.
+> 
+> This was on a D270.
+
+Cool, if your D270 also uses it, maybe you will get it ported
+before I do :)
+
+- Ryan
