@@ -1,51 +1,93 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (i003-034.nv.iinet.net.au [203.59.3.34])
-	by dsl2.external.hp.com (Postfix) with SMTP id 27126482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 04:52:17 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA27285
-	for parisc-linux@lists.parisc-linux.org; Fri, 3 Aug 2001 18:52:12 +0800
-Date: Fri, 3 Aug 2001 18:52:09 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] dev-packages
-Message-ID: <20010803185207.S5850@neep.com.au>
-References: <20010803113539.B1011@linuxcare.com> <Pine.BSF.4.30.0108031237250.38503-100000@noc.zabbadoz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.30.0108031237250.38503-100000@noc.zabbadoz.net>; from bzeeb+hplinux@zabbadoz.net on Fri, Aug 03, 2001 at 12:38:16PM +0200
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6B463482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 05:18:47 -0600 (MDT)
+Subject: Re: [parisc-linux] XFree86 on B180
+To: "Helge Deller <helge.deller" <helge.deller%sap.com%SMTP%EUROPAY@mastercard.com>
+Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <OFDE09A728.E76CFFEA-ONC1256A9D.003E3924@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Fri, 3 Aug 2001 13:21:23 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Quoth Bjoern A. Zeeb:
-> That's it. thanks.
-> 
-> Is apt proxy-aware ?
+Hello Helge,
 
-man 5 apt.conf
-
-=)
-
-It sure is, add something like this in your /etc/apt/apt.conf:
+Thanks a lot for information,
+     Joel
 
 
-// Options for the downloading routines
-Acquire
-{
-  
-  // HTTP method configuration
-  http 
-  {
-    Proxy "http://proxy.internal.neep.com.au:3128/";
-  };
-};
+
+                                                                           =
+                                       =20
+                    Helge Deller                                           =
+                                       =20
+                    <helge.deller        To:     Jo=EBl Soete/BRU/MASTERCAR=
+D@MASTERCARD,                            =20
+                    @sap.com>            parisc-linux@lists.parisc-linux.or=
+g@SMTP@EUROPAY,                        =20
+                                         debian-hppa@lists.debian.org@SMTP@=
+EUROPAY                                =20
+                    03-08-01             cc:                               =
+                                       =20
+                    12:45 PM             Subject:     Re: [parisc-linux] XF=
+ree86 on B180                          =20
+                                                                           =
+                                       =20
+                                                                           =
+                                       =20
 
 
-apt-get will also obey the $http_proxy environment variable.
 
-Andrew.
+> On the B180 I use the same XF86config as on 712/80, the one from  Thomas
+> Bogendoerfer available at:
+>
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-June/012928.html
+> ......
+>
+> With kernels 2.4.0-32 and 2.4.6 xdm failed because:
+> "(EE) No devices detected.
+>
+> Fatal server error:
+> no screen found.
+> ..."
 
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+Hi Jo=EBl,
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+The only way to get XFree86 running on parisc atm is to use the
+XFree86-fbgen (framebuffer)
+driver in conjunction with the kernel stifb driver. This means, that if you
+see the graphical
+pengiun (TUX) at bootup on your screen, XFree86 should  run. If you don't
+see it, you have a
+not yet by stifb supported graphic chip in your machine.
+Currently stifb will run on most 712 and 715 machines, while B160, B180,
+C3000 and most
+others won't.
+
+Greetings,
+Helge
+--
+_______________________________________________________________________
+
+THE BEST RUN E-BUSINESSES RUN SAP
+_______________________________________________________________________
+
+Helge Deller                            email: helge.deller@sap.com
+SAP AG Walldorf/Baden, Germany
+LinuxLab
+
+SAP LinuxLab support address: linux@sap.com
+
+
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information =
+which is strictly intended for the use of the authorised recipient.  If you=
+ have received this e-mail in error, please delete it and notify the sender=
+ by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
