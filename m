@@ -1,29 +1,79 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA13780
-	for <parisc-linux@puffin.external.hp.com>; Thu, 8 Jul 1999 11:28:41 -0600
-Reply-To: <hull@cup.hp.com>
-From: "Jim Hull" <jim_hull@hp.com>
-To: "Matthew Wilcox" <Matthew.Wilcox@genedata.com>,
-        "Philipp Rumpf" <prumpf@suse.de>
-Cc: "Hannu Martikka" <martikka@stybba.ntc.nokia.com>,
-        <parisc-linux@thepuffingroup.com>
-Subject: RE: [parisc-linux] vmlinux in C360
-Date: Thu, 8 Jul 1999 10:28:54 -0700
-Message-ID: <000601bec967$5a2bd8b0$a64d000f@jh733131.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA15151
+	for <parisc-linux@puffin.external.hp.com>; Fri, 9 Jul 1999 06:49:42 -0600
+Date: Fri, 9 Jul 1999 15:49:33 +0300 (EETDST)
+From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
+To: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+cc: parisc-linux <parisc-linux@thepuffingroup.com>,
+        Alex deVries <adevries@thepuffingroup.com>
+Subject: Re: [parisc-linux] vmlinux in C360
+In-Reply-To: <37849F59.D59C7057@ruhr-uni-bochum.de>
+Message-ID: <Pine.HPX.4.05.9907091537090.19393-100000@gamgee.ntc.nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-In-reply-to: <19990707180526.F386@mencheca.ch.genedata.com>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I guess the bootloader needs to force the W bit to 0?  I note that on
-> an interruption, the W bit is set to the value of the default width
-> bit, but how to set the default width bit is implementation defined.
-> Anyone care to hint at how to set the default width bit too?
+On Thu, 8 Jul 1999, Helge Deller wrote:
 
-You use PDC_PSW to set the default width and default endian bits.  See page 2-59
-in:
+> Mike Hibler schrieb:
+> 
+> > > Date: Wed, 07 Jul 1999 22:15:51 -0400
+> > > From: Alex deVries <adevries@thepuffingroup.com>
+> > > To: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+> > > Subject: Re: [parisc-linux] vmlinux in C360
+> > >
+> > > Helge Deller wrote:
+> > > >
+> > > > Hi !
+> > > >
+> > > > Only a little idea, but you could try to set the Boot-Offset for the loaded
+> > > > Image in the
+> > > > arch/parisc/Makefile from 0x10000 to 0x12000 or higher....
+> > > > It could be, that we overwrite the PDC & IO-Structures from the BIOS...
+> > > > I think I read something about that in the other parisc-ports.....
+> > > >
+> > >
+> > > Is there any reason not to bump that up to 0x12000 ?
+> 
+> No, I don't know... (maybe only theese few unused kilobyte...)
+> Alex, maybe you want to set it higher ? (We could try lower it later again!).
+> 
+> > I thought that 0x10000 was the magic value, the PDC using memory below that.
+> > However, we do indeed load the Mach kernel at 0x12000 and we load our BSD
+> > kernel at 0x11000.  I no longer remember the reason, but I'm sure it was a
+> > good one! :-)
+> 
+> Hannu: did you tried, if it worked ?
+Yes. It works better now. I used the 0x12000.
 
-	http://dtf.external.hp.com/dtf/swdev/pdf/pdc.pdf
+Now I see following:
+----------------------------------------------------------
+ISL> hpux /stand/vmlinux
 
- -- Jim
+Boot
+:disk (8/..........)/stand/vmlinux
+397320 + 114688 + 66464 start 0x12000
+
+The kernel has started...
+You are running a 0Mhz PA-RISC-Machine with 0MB of RAM.
+First free address was 0x00000000 (This is the base of the stack).
+Stacksize = 0x00040000.
+First free User-Memory starts now at address 0x00040000 and ends at
+0x00090beb.
+L
+----------------------------------------------------------
+
+I guess that it still tries to say something (Cursor was placed after "L"
+on last line). The amount of memory and Mhz are also bit incorrect...
+
+Ps. Axex: I have tried couple of times to mail you directly... Did you get
+those emails?
+
+Btw. Is there going to be anything about paric-linux in LinuxExpo (San
+Jose 9-12 Aug) or in HP-World? Anyone going there?
+
+> 
+> Helge.
+- Goodi
+"The linuX Files -- The Source is Out There."
+ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
