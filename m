@@ -1,15 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: copy_user_page_asm suggested 64bit improvment [Was:
 	[parisc-linux] clear user page test]
-Date: Fri, 31 Dec 2004 13:56:22 -0700
-Message-ID: <20041231205622.GA24116@colo.lackof.org>
+Date: Fri, 31 Dec 2004 15:21:50 -0600
+Message-ID: <1104528110.5247.20.camel@mulgrave>
 References: <418A80E8000124B5@mail-6-bnl.tiscali.it>
 	<41CFE6B1.6010707@tiscali.be> <1104160093.5295.8.camel@mulgrave>
 	<200412311426.13425.mszick@wolfbutter.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 To: "Michael S. Zick" <mszick@wolfbutter.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <200412311426.13425.mszick@wolfbutter.com>
@@ -23,49 +22,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Dec 31, 2004 at 02:26:13PM -0600, Michael S. Zick wrote:
->     This path should not be within the set of user observable execution times.
-...
-> NOTE: Zeroing a page on return to (any) free pool is not 'user observable' only
-> the 'add to free pool incoming queue' is in the 'user observable' code path.
+On Fri, 2004-12-31 at 14:26 -0600, Michael S. Zick wrote:
+> Page must contain zeros on return.
 > 
-> NOTE: Pages handled by this daemon may have both d-cache and i-cache
-> representations.  But the code which deals with this situation is not 'user 
-> observable' because the entire 'return to free pool' operation is not 'user
-> observable'.
-...
-> Q.E.D: Zeroing a page with the destination of user space assignment need not
-> be a 'user observable' execution time.
+> Contents of system caches must correspond to contents of page (zeros).
 
-Mike,
-The copy_user_page and zero_page functions *are* observable since they
-affect metrics reported by "time" and readprofile. I don't care if they
-are in invoked in the application context or some other context.
+Actually, no, this is precisely what we don't do for performance
+reasons.  If we just wanted to the caches and main memory in sync, we
+wouldn't need to muck with the tmpalias space.
 
-Certainly, it would reduce startup latency to pre-zero the pages in
-the kernel (daemon) and have them ready when apps want them.
-But on a loaded system, I expect this will be slightly less efficient
-and more complex since one doesn't know how many need to be pre-zero'd
-or when to steal pre-zero'd pages for other uses (e.g. load in an
-executable).
+What clear_user_page_asm does is to prime the cache covering the page
+with zeros, but return the page to user space with a dirty cache (i.e.
+with the real memory not necessarily zero'd but with the cache in a
+state to zero it on a flush).  The reason for using the tmpalias space
+is so that the user's VIPT cache lines covering the page are congruent
+and thus the same ones the kernel wrote the zeros to.
 
-> There should be additional gains made in 'copy-[to|from]-user' when these four
-> conditions are enforced.
+This means that if the user is simply going to fill the page again, we
+stand a good chance of *not* having to write the zeros to main memory in
+the first place (this saves us quite a bit of execution time because
+writing to main memory is an expensive operation).
 
-I read the conditions and thought "neat".
-I don't pretend to understand all of them or what they mean.
-But instead of trying to explain them, could you send me a patch that works?
-Maybe something that has a chance of going back upstream to linus?
+James
 
-thanks,
-grant
 
-> 
-> Mike
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
