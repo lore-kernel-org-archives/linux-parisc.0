@@ -1,31 +1,35 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA03554
-	for <parisc-linux@puffin.external.hp.com>; Sat, 29 May 1999 15:24:17 -0600
-Received: from localhost (mgalgoci@localhost)
-	by supserv.support.redhat.com (8.8.7/8.8.7) with ESMTP id RAA11986
-	for <parisc-linux@thepuffingroup.com>; Sat, 29 May 1999 17:24:15 -0400
-Date: Sat, 29 May 1999 17:24:14 -0400 (EDT)
-From: "mgalgoci@redhat.com" <mgalgoci@redhat.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9905291722110.10636-100000@supserv.support.redhat.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA03944
+	for <parisc-linux@puffin.external.hp.com>; Sat, 29 May 1999 15:29:07 -0600
+Received: from rc.atl.hp.com (root@rc.atl.hp.com [15.51.240.3])
+	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id OAA27042
+	for <parisc-linux@thepuffingroup.com>; Sat, 29 May 1999 14:29:02 -0700 (PDT)
+Sender: kxh3@rc.atl.hp.com
+Message-ID: <37505C16.589AB9E4@hp.com>
+Date: Sat, 29 May 1999 17:28:54 -0400
+From: Keith Hopkins <keith_hopkins@hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] fixed rbootd rpm
+To: Hugo.van.der.Kooij@caiw.nl
+CC: PA-RISC / Linux Mailing List <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Ready to go!
+References: <Pine.LNX.4.10.9905292311070.25944-100000@bastion.nl3155vj16.va>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hugo.van.der.Kooij@caiw.nl wrote:
+> 
+> On Sat, 29 May 1999, Ross Sponholtz wrote:
+> 
+> > Alright!  I finally got my HP 715.  Now I need to get started with the project.  I was planning on getting MkLinux going, but apparently, the opengroup site with the software has been taken down.  Does anyone have the disk image that I could ftp?  Also, is everyone booting off the network (for development purposes)?
+> 
+> The 715/33 won't run mklinux at all. Basically one of the reasons I have
+> set my hopes on the real PARISC port. (Which I will patiently await.)
+> 
 
-Hi folks
-	I downloaded the rbootd rpm ftp the puffin site and 
-found that the source rpm did not build properly on Red Hat
-6.0, so I fixed it. To whom or to where should I send the fixed
-binary and source rpms?
+ Why are you waiting? (Patiently or otherwise)  Why not offer to get
+involved in the project?
 
-Cheers,
 
-Matt
-
---
- Matt Galgoci /////////////////////////////////// "Moo?"
- Honorary Member of Generation Why. /////////////////// 
- //////////////////////////////////////////////////////
- Man....you smell like penguin.         Yes, have some. 
+Keith Hopkins
+- my opinions are my own and do not necessarily reflect those of my
+employer -
