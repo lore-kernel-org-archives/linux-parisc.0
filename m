@@ -1,48 +1,48 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA31707
-	for <parisc-linux@puffin.external.hp.com>; Fri, 29 Oct 1999 11:37:08 -0600
-Sender: frowand@cup.hp.com
-Message-ID: <3819DB18.AC3F55CC@hp.com>
-Date: Fri, 29 Oct 1999 10:36:24 -0700
-From: Frank Rowand <frank_rowand@hp.com>
-Reply-To: frowand@cup.hp.com
-MIME-Version: 1.0
-To: Alex deVries <adevries@thepuffingroup.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] booting on PA2.0 machines
-References: <Pine.LNX.4.10.9910290054070.3734-100000@vodka.thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA00987
+	for <parisc-linux@puffin.external.hp.com>; Fri, 29 Oct 1999 18:54:59 -0600
+Received: from milano.cup.hp.com (grundler@milano.cup.hp.com [15.16.124.11])
+	by atlrel1.hp.com (8.9.3 (PHNE_18979)/8.8.5tis) with ESMTP id UAA18327
+	for <parisc-linux@thepuffingroup.com>; Fri, 29 Oct 1999 20:55:19 -0400 (EDT)
+Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id RAA07975 for parisc-linux@thepuffingroup.com; Fri, 29 Oct 1999 17:56:40 -0700 (PDT)
+Date: Fri, 29 Oct 1999 17:56:40 -0700 (PDT)
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <199910300056.RAA07975@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=X-roman8
+Subject: [parisc-linux] udelay accuracy
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> 
-> So I think we've determined that PA2.0 booting problems are related to the
-> PDC_BTLB call which isn't implemented in 2.0 processors.
-> 
-> My thought would be to try such a call, and if it fails, then configure
-> cache lines in a way specific to 2.0 processors.  Am I right?
+FYA,
+Here's some data on the accuracy of udelay().
+Test was read cr16, udelay(x), read cr16, print cr16 delta.
+I collected this from my A180.
+Numbers on the right of the ":" is the cr16 delta.
 
-If the system is a PA 1.1 system then PDC_BLOCK_TLB() should be used.
-(PDC_MODEL(Return info), arch_rev reports 1.0, 1.1, or 2.0.)  If the
-system is a PA 2.0 system then large pages should be specified in the
-TLB entries.
+udelay test 10 :  2023 1896 1896 1896 1896 1896 1896 1896 1896 1896
+udelay test 20 :  3731 3681 3681 3681 3681 3681 3681 3681 3681 3681
+udelay test 30 :  5507 5472 5472 5472 5472 5472 5472 5472 5472 5472
+udelay test 100 :  18028 17967 17967 17967 17967 17967 17967 17967 17967 17967
+udelay test 200 :  35885 35815 35815 35815 35815 35815 35815 35815 35815 35815
+udelay test 300 :  53665 53665 53665 53665 53665 53665 53665 53665 53665 53665
+udelay test 1000 :  178615 178615 178615 178615 178615 178615 178615 178615 178615 178615
+udelay test 2000 :  357115 357115 357115 357115 357115 357115 357115 357115 357115 357115
+udelay test 3000 :  535615 538451 535615 535615 535615 535615 535615 535615 535615 535615
 
-> How should we be configuring this?
+Expected output for "180Mhz" machine:
+	udelay(10) 1800
+	udelay(20) 3600
+	...
+	udelay(3000) 540000
 
-Just wait for a TLB miss and insert an entry for a very large number of pages
-(architected sizes include 4, 16, 64, 256 Kbyte, 1, 4, 16, 64 Mbyte).  See
-the PA-RISC 2.0 Architecture book by Kane, pp. 3-9 thru 3-14, F-1 thru F-5.
+The difference between the first invocation and successive might be a problem.
+I don't know what the expected accuracy is.
+If +- 10% is ok, we are there.
 
-Just as a side note, you can't just insert a block TLB entry and expect it to
-exist forever; you have to be able to handle a TLB fault for the address
-range and re-insert the entry (or switch to normal entries).  See the last
-page of the PDC_BLOCK_TLB() description for the explanation of this.
+grant
 
-> We've now got some puffins and HP people with 2.0 boxes, so it'd be really
-> nice to get these boxes booting.
-> 
-> - Alex
-
-You've just hit the first layer of the onion.
-
--Frank
+ps. thanks to ftr for helping figure out the expected values.
+    page zero (0x38c) contains the number of cycles per 10ms
+    for every box. This can be accessed from the A180
+    service menu: "mr 0x38c 2"
