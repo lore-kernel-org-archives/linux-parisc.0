@@ -1,18 +1,23 @@
-Return-Path: <martha@msn.com>
-Received: from 211-236-171-79.e-serverbank.com (unknown [211.236.171.79])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9010C4857
+Return-Path: <pdvirus1@presse-data.de>
+Received: from pdvirus1.presse-data.de (mail.presse-data.de [149.221.250.67])
+	by dsl2.external.hp.com (Postfix) with SMTP id 2D5DC48C9
 	for <parisc-linux@parisc-linux.org>;
-	Sat,  6 Dec 2003 01:05:34 -0700 (MST)
-Message-ID: <g-73-54lb$8iw$h1y-0-3m$7jqw164@0hga1py>
-From: "Earnestine Pace" <martha@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Sat, 06 Dec 03 14:58:11 GMT
+	Sat,  6 Dec 2003 01:06:02 -0700 (MST)
+Received: from pdvirus1.presse-data.de (pdvirus1.rz.rbpd-dus.de
+	[149.221.250.67])
+	by mail.presse-data.de (Postfix) with SMTP id EEE1B50D
+	for <parisc-linux@parisc-linux.org>;
+	Sat,  6 Dec 2003 09:06:00 +0100 (MET)
+From: pdvirus1@presse-data.de
+To: <parisc-linux@parisc-linux.org>
+Date: Sat, 06 Dec 2003 09:06:03 +0100
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="_A4A_F3C.B4._3"
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_1070697963_B78506032.R82506026"
+Message-Id: <20031206080600.EEE1B50D@mail.presse-data.de>
 Cc: 
-Subject: [parisc-linux] ''Movie stars beauty secret hls tikddgpsz
-Reply-To: Earnestine Pace <martha@msn.com>
+Subject: [parisc-linux] Sicherheitshinweis: Mail mit Scriptinhalt wurde
+	abgelehnt. Mails containing scripts are not allowed. (No JS or VBS)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,137 +27,62 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
 
---_A4A_F3C.B4._3
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+------=_NextPart_000_1070697963_B78506032.R82506026
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-<html>
-<head>
-<title>Young and Strong</title>
-<script>
-//Block Right Clicking - by Blackbox Hosting
-//Credit must stay intact for use
+************* eManager Notification **************
 
-var isNS =3D (navigator.appName =3D=3D "Netscape") ? 1 : 0;
-var EnableRightClick =3D 0;
-if(isNS) 
-document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
-function mischandler(){
-  if(EnableRightClick=3D=3D1){ return true; }
-  else {return false; }
-}
-function mousehandler(e){
-  if(EnableRightClick=3D=3D1){ return true; }
-  var myevent =3D (isNS) ? e : event;
-  var eventbutton =3D (isNS) ? myevent.which : myevent.button;
-  if((eventbutton=3D=3D2)||(eventbutton=3D=3D3)) return false;
-}
-function keyhandler(e) {
-  var myevent =3D (isNS) ? e : window.event;
-  if (myevent.keyCode=3D=3D96)
-    EnableRightClick =3D 1;
-  return;
-}
-document.oncontextmenu =3D mischandler;
-document.onkeypress =3D keyhandler;
-document.onmousedown =3D mousehandler;
-document.onmouseup =3D mousehandler;
+Bitte haben Sie Verstaendnis dafuer, dass unsere Sicherheitspolitik kein HTML Script in Emails erlaubt. Recipient, Content filter has detected HTML script e-mail.
 
-</script>
-<script>
-//Block Select-Copy-Paste from Webpage - by Blackbox Hosting
-//Credit must stay intact for use
+Source mailbox: "parisc-linux-bounces@lists.parisc-linux.org"
+Destination mailbox(es): "parisc-linux@parisc-linux.org"
 
-function disabletext(e){
-return false
-}
+******************* End of message *******************
 
-function reEnable(){
-return true
-}
+------=_NextPart_000_1070697963_B78506032.R82506026
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-//if the browser is IE4+
-document.onselectstart=3Dnew Function ("return false")
+Received: from dsl2.external.hp.com (localhost [127.0.0.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id 5A08A48C5; Sat,  6 Dec 2003 01:05:51 -0700 (MST)
+Delivered-To: parisc-linux@parisc-linux.org
+Received: from 211-236-171-79.e-serverbank.com (unknown [211.236.171.79])
+	by dsl2.external.hp.com (Postfix) with SMTP id 9010C4857
+	for <parisc-linux@parisc-linux.org>;
+	Sat,  6 Dec 2003 01:05:34 -0700 (MST)
+Received: from [219.154.49.226] by 211-236-171-79.e-serverbank.com with SMTP;
+	Sat, 06 Dec 2003 14:58:11 -0700
+Message-ID: <g-73-54lb$8iw$h1y-0-3m$7jqw164@0hga1py>
+From: "Earnestine Pace" <martha@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Sat, 06 Dec 03 14:58:11 GMT
+X-Mailer: Microsoft Outlook Express 5.00.2919.6700
+MIME-Version: 1.0
+X-Priority: 3
+X-MSMail-Priority: Normal
+Cc: 
+Subject: [parisc-linux] ''Movie stars beauty secret hls tikddgpsz
+X-BeenThere: parisc-linux@lists.parisc-linux.org
+X-Mailman-Version: 2.1.3
+Precedence: list
+Reply-To: Earnestine Pace <martha@msn.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>, 
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>, 
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1171425698=="
+Mime-version: 1.0
+Sender: parisc-linux-bounces@lists.parisc-linux.org
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-//if the browser is NS6
-if (window.sidebar){
-document.onmousedown=3Ddisabletext
-document.onclick=3DreEnable
-}
-
-</script>
-<script>
-//Blocks Shift+Click on Links - by Blackbox Hosting
-//Credit must stay intact for use
-
-function mouseDown(e) {
- var shiftPressed=3D0;
- if (parseInt(navigator.appVersion)>3) {
-  if (navigator.appName=3D=3D"Netscape")
-       shiftPressed=3D(e.modifiers-0>3);
-  else shiftPressed=3Devent.shiftKey;
-  if (shiftPressed) {
-   alert ('Shift-click is disabled.')
-   return false;
-  }
- }
- return true;
-}
-if (parseInt(navigator.appVersion)>3) {
- document.onmousedown =3D mouseDown;
- if (navigator.appName=3D=3D"Netscape") 
-  document.captureEvents(Event.MOUSEDOWN);
-}
-</script>
-<script>
-//Hide status bar script - by Blackbox Hosting
-//Credit must stay intact for use
-
-function hidestatus(){
-window.status=3D''
-return true
-}
-
-if (document.layers)
-document.captureEvents(Event.MOUSEOVER | Event.MOUSEOUT)
-
-document.onmouseover=3Dhidestatus
-document.onmouseout=3Dhidestatus
-</script>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
-<body bgcolor=3D"#003366" font color=3D"#000000" face=3D"verdana" link=3D#=
-00FF00 alink=3D#00FF00 vlink=3D"#0000FF" text=3D"#FFFFFF">
-<center>
-  <p align=3D"center"><H4><font color=3D"#FFFFFF" face=3D"verdana">Medical=
-ly Proven and Recognized Around the World<br>HGH<br>replenishes what TIME =
-has taken away !</font></H4></center><CENTER><H5><font color=3D"#FFCC00" f=
-ace=3D"verdana">Look Better and Feel Better !<br>
-    Be Sexy and Athletic !<br>Increases your Energy *** Speeds up your Met=
-abolism<br>Improves Mental Clarity and Thinking Abilities !</font></H5>
-</center><center><H5><font color=3D"#FFCC00" face=3D"verdana">Part of the =
-daily routines of:<br>
-  Doctors, Celebrities, Models, Athletes, Politicians, and even World Lead=
-ers !</font></H5></center>  
-<center><H5><font color=3D"#FFCC00" face=3D"verdana">
-    Time, stress, and aging REDUCE and EXHAUST <br> the very hormones we n=
-eed to remain youthful and vibrant.<br>You can now REPLENISH what time has=
- taken away !<H4><font color=3D"#FFFFFF" face=3D"verdana">With
-      Doctor Approved 
-      HGH !</font></H4>
-    </font></H5>
-</center><center> 
-<H3><font color=3D"#FFFF00" face=3D"verdana">60 day 100% Money-Back Guaran=
-tee!</font></H3></center>
-
-
-  <center><h3><a href=3D"http://www.fisha.biz/hgh/?buster">This way to loo=
-k and feel better with HGH!!</a></h3>
-</center>
-</body>
-</html>
-ovsaw zpjgvznfmb kufht
-
---_A4A_F3C.B4._3--
+------=_NextPart_000_1070697963_B78506032.R82506026--
