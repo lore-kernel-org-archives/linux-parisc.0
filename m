@@ -1,46 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA04340
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 09:49:10 -0700
-Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 16 Nov 1999 16:50:45 -0000
-Subject: Re: [parisc-linux] depi?
-To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de (Philipp Rumpf)
-Date: Tue, 16 Nov 1999 17:50:53 +0000 (GMT)
-Cc: alan@lxorguk.ukuu.org.uk, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
-        frowand@cup.hp.com, parisc-linux@thepuffingroup.com,
-        adevries@thepuffingroup.com
-In-Reply-To: <19991116174733.C750@mathe.stud.uni-erlangen.de> from "Philipp Rumpf" at Nov 16, 99 05:47:33 pm
-Content-Type: text
-Message-Id: <E11nmkn-0002xG-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA07306
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 12:07:23 -0700
+Received: (from dave@localhost)
+	by hiauly1.hia.nrc.ca (8.9.3/8.9.3) id OAA04637
+	for parisc-linux@thepuffingroup.com; Tue, 16 Nov 1999 14:08:57 -0500 (EST)
+Message-Id: <199911161908.OAA04637@hiauly1.hia.nrc.ca>
+To: parisc-linux@thepuffingroup.com
+Date: Tue, 16 Nov 1999 14:08:56 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Trivial Makefile Bug
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Consistent with what the widely-used ports do in 2.2 (as far as I can see).
+This has been around for awhile.
 
-You mean x86
+ld -R 0xc0010000 -N -e stext arch/parisc/real/head.o arch/parisc/kernel/init_task.o init/main.o init/version.o \
+        arch/parisc/boot/ramdisk.o arch/parisc/kernel/kernel.o arch/parisc/real/real.o arch/parisc/mm/mm.o kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o \
+	fs/filesystems.a \
+	net/network.a \
+	drivers/block/block.a drivers/gsc/gsc.a drivers/char/char.a  drivers/net/net.a drivers/pci/pci.a \
+	/ehic/a/pa/linux/arch/parisc/lib/lib.a /ehic/a/pa/linux/lib/lib.a /ehic/a/pa/linux/arch/parisc/lib/lib.a \
+	-o vmlinux
+If this fails, you're not using GNU nm!
+Make sure you have it in your path before HPUX nm.
+nm --version > /dev/null 2>&1
+nm -td vmlinux |awk '/init_task_union/ { n = int(); t = int(n/8192); t *= 8192; if (t >= n) printf t-n ; else printf n-(t-8192)}' FS=\| > init_task.alignment
+awk: cmd. line:1: fatal: int() cannot have 0 arguments
+make[1]: *** [vmlinux-real] Error 2
+make[1]: Leaving directory `/ehic/a/pa/linux'
+make: *** [vmlinux] Error 2
 
-> It sure can help from a performance pov.
-> 
-> > Ultrasparc makes good use of tlb bypass bits for this.
-> 
-> We do have load/store word bypassing the TLB instructions, if that's what you
-> mean.  We also can fix one of SR1-SR3 in kernel mode to be the identical map
-> if some phys->virt instructions shows up heavily in profiles.
+I believe that the argument of int in the awk script needs to be changed
+to "$$1".
 
-On the ultrasparc it pays off in part by avoiding TLB miss/reloads
-
-> The day the parisc port reaches the usage counts we can stop caring about
-> getting Oops/Panic messages (especially if they were unexpected and happened
-> on a system that seemed stable a long time before) I might agree to the "only".
-
-And until then you map in 20 odd pages. BFD
-
-> Note that 3.75 GB userspace isn't a problem with either.  My A class looks
-> pretty packed with 768 MB RAM so I doubt you could fit more than 1.75 GB in
-> many pa1.1 boxes.
-
-3.75Gig _virtual_ 
-
-3.75Gig _virtual_ 
-
-3.75Gig _virtual_ 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
