@@ -1,16 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F2904829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Dec 2002 09:52:43 -0700 (MST)
-Message-Id: <200212121652.gBCGqbQQ023486@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Solved: Kernel crash when loggin in via ssh
-To: randolph@tausq.org
-Date: Thu, 12 Dec 2002 11:52:36 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: xam@cs.ucc.ie, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021212073215.GA1141@tausq.org> from "Randolph Chung" at Dec 11, 2002 11:32:15 pm
+Received: from palrel11.hp.com (palrel11.hp.com [156.153.255.246])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 402144829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Dec 2002 05:27:25 -0700 (MST)
+Received: from xparelay1.ptp.hp.com (xparelay1.ptp.hp.com [15.1.28.62])
+	by palrel11.hp.com (Postfix) with ESMTP id F1479600BED
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Dec 2002 04:27:16 -0800 (PST)
+Received: from xpabh3.ptp.hp.com (xpabh3.ptp.hp.com [15.1.28.63])
+	by xparelay1.ptp.hp.com (Postfix) with ESMTP id D99C5E00368
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Dec 2002 04:27:16 -0800 (PST)
+Message-ID: <9A0482A7BD2506488AD9417C93F3714FC27735@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 13 Dec 2002 04:27:13 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] fic problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,19 +27,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> $ ssh -p 1022 -2 tausq@gsyprf10.external.hp.com
-> tausq@a500:~$ dmesg|grep gcc
-> Linux version 2.4.20-pa13 (tausq@a500) (gcc version 3.2.2 20021202 (Debian prerelease)) #12 SMP Wed Dec 11 23:02:01 PST 2002
+Hi people,
 
-I plan to change BIGGEST_ALIGNMENT back to 64 bits on the 32 branch today
-assuming that testing is successful.  The main branch was changed yesterday.
-This affects the alignment of long doubles under hpux and possibly the
-alignment of __atomic_lock_t types parisc-linux linux.
+	I have an error with the use of fic asm instruction(see piece code
+below). 
+            I'm ask you if you have a tip do help me to solve this problem.
 
-I have been testing revised glibc locking code.  It only requires integer
-alignment for __atomic_lock_t types.  I am convinced this is the
-correct solution.  The __attribute__ ((aligned(16))) doesn't always
-do what you want.  Specifically, it doesn't work for stack locals, or
-malloc'd data.  
+       buf = (char *)malloc(4096);
+        if(!buf)
+        {
+                printf("\n malloc error!");
+                return(1);
+        }
 
-There is still one gcc pthread test failure (pthread6) under investigation.
+
+        /* copy instr stream(s) to new page */
+        start = (unsigned int *)&(label of an asm code);
+        spot = (unsigned int *)buf;
+        end = (unsigned int *)&(label of an asm code);
+
+        while(start <= end)
+        {
+                *spot = *start;
+                __asm__ __volatile__("fdc (%0)" :: "r" (spot) );
+                __asm__ __volatile__("sync" ::);
+                __asm__ __volatile__("fic (%0)" :: "r" (spot) );
+(segmentation fault in this line)
+                __asm__ __volatile__("sync" ::);
+                spot++;
+                start++;
+        }
+
+Thanks in advance,
+
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
+
+*   leandro.farinati@hp.com
