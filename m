@@ -1,52 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA15456
-	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 16:05:11 -0600
-Message-Id: <200008182207.PAA07370@milano.cup.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] test6 merge 
-In-reply-to: Your message of "Fri, 18 Aug 2000 12:49:44 PDT."
-             <20000818124944.A13870@linuxcare.com>
-Date: Fri, 18 Aug 2000 15:07:51 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA16065
+	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 17:36:13 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 18 Aug 2000 23:35:58 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA28731;
+	Sat, 19 Aug 2000 09:35:40 +1000
+Date: Sat, 19 Aug 2000 09:35:40 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: David Huggins-Daines <dhd@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Subject: Re: Incompatibility of PIC and non-PIC
+In-Reply-To: <87vgwyz5r0.fsf@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0008190924370.28329-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst wrote:
-> Hi,
->   The tulip driver doesn't initialise with the 2.4.0-test6 kernel
-> (for me, anyway).
-> The problem is that pci_resource_start (pdev, 0) in tulip_core.c
-> line 1046, returns 0x0001ff00, where it should (I think) return
-> 0x0000ff00.  I added a printk in drivers/pci/pci.c to show the
-> start/end values as it filled in the pci_dev->resource table,
-> and that showed start 0x0000ff00 end 0x0000ff7e.  Don't know
-> where bit 16 gets added to start..
+On 18 Aug 2000, David Huggins-Daines wrote:
 
-The bit 16 and up is the PCI bus number. The parisc PCI services use
-the bus number to index into the corresponding bus services.
-
-The driver should be using 0x0001ff00 when talking to I/O port
-space services (ie inb/outb).
-
-> I just commented out the 'goto err_out_free_netdev' in tulip_core.c
-> and it now claims to mount nfs root, but cannot find init.
-> I had to comment out the unregistering of pdc console to
-> see that.
+> David Huggins-Daines <dhd@linuxcare.com> writes:
 > 
-> In 2.3.99pre8 tulip announced that the chip was at 0x1ff00 also,
-> but it didn't matter because the request_region call was different.
+> > Alan Modra <alan@linuxcare.com.au> writes:
+> > > A bit of head-scratching, a couple of added functions, and the linker now
+> > > detects PIC functions and handles them appropriately.
+> > 
+> > Sorry to burst your bubble but this doesn't work in the real world,
+> > where "real world" is defined as 'hppa-linux-gcc -o hello hello.c'
 
-Maybe I should take a look at the request_region() call and see what's
-up there...It should be a NOP since we trust firmware to uniquely
-assign I/O Port and MMIO address space (and I haven't seen any problems
-where it doesn't on any platform).
+I was thingk about it in the shower this morning, and _knew_ I'd be seeing
+some mail from you.  You see, I really missed the whole point:  The
+special PIC stubs are really only needed when intermixing calls to dynamic
+libraries and statically linked PIC routines - which case we currently
+ignore.  The fully statically linked case be solved by changing gcc to
+reserve r19, although I think I'll leave the code there to add the stubs
+and .plt entries.  With your fixes, of course!
 
-> My 53c720 driver doesn't work any more either :-(
-
-bummer...we'll get em working...
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
