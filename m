@@ -1,44 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA13742
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 05:02:55 -0700
-Date: Thu, 30 Nov 2000 13:04:49 +0100 (MET)
-To: "Steve Moret" <smoret@uci.edu>
-Cc: parisc-linux@thepuffingroup.com
-Cc: parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] HP 9000/735-125
-From: Helge Deller <deller@gmx.de>
-References: <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu>
-Message-ID: <6166.975585889@www24.gmx.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA14863
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 07:06:19 -0700
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <3A266BE1.5DA1C812@uswest.net>
+Date: Thu, 30 Nov 2000 07:01:53 -0800
+From: Ryan Bradetich <rbradetich@uswest.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+To: "Jorge L. deLyra" <delyra@latt.if.usp.br>
+CC: Steve Moret <smoret@uci.edu>, parisc-linux@thepuffingroup.com,
+        assirati@socrates.if.usp.br
+Subject: Re: [parisc-linux] HP 9000/735-125
+References: <Pine.LNX.3.96.1001130085854.14082C-100000@latt.if.usp.br>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Steve,
+"Jorge L. deLyra" wrote:
 
-> My mistake! I did a full build with todays CVS and parport didn't die.
-> So
-> somewhere between the 17th and now parport must have been fixed.
+> > I have a 735-125 and am able to net-boot it on a custom configured kernel as
+> > long as I disable the ASP parallel ports. It works quite well using an NFS
+> > root as I cannot get the SCSI hard drives to mkfs. I was going to try and
+> > debug it but have yet to find the free time. I can e-mail you my working
+> > .config for the kernel, or build kernels (tested on my own 735) for people
+> > if they need them.
+>
+> Well, looks like the problem is known, good! But we have a queer little
+> problem with our machines here, we are unable to boot from the network. I
+> think we did everything right, in fact, we are trying to use a server here
+> other machines boot from, it has dhcp, boopt, tftp, rarp, the works. We
+> set it all up, put the kernel on the tftpboot area, tested all that we
+> could by other means but, when we try to net boot the HPs, we are faced
+> with complete silence on the network. No logs on the server, nothing.
+>
+> A little explanation might be needed: these are not really native 735-125
+> models, they were upgraded from older 720-50 models by card swapping. I am
+> not sure whether all cards were changed, maybe some aspects of the machine
+> are still old. The syntax of the net boot procedure in them is strange,
+> you have to put in the hardware address of the server, which is unusual.
+>
+> I _suspect_ that this bios does not use tcp/ip for the net boot, but some
+> HP proprietary protocol relating to that clustering software they have or
+> used to have for these machines, in which you ran several stations out of
+> the disks of a single one. In any case, a listing of what happens on the
+> console on a net-boot trial goes below. We had a tail -f on the system log
+> of the server, we had tcpdump listening, but nothing at all shows up...
 
-I checked in yesterday a modified version of
-/drivers/parport/parport_gsc.c with an "#if 0 ... #endif" in the code. 
-Could you try to boot again with "#if 1" (search for the text which says
-something like "enable bidirectional PS/2 mode") and try again ?
-If this hangs your machine I will implement a better work-around.
+I believe the 735/755 type machines require rbootd to boot from the network.
+rbootd is available at:
 
-> 
-> Now, maybe you can help me identify my SCSI problem. I don't know if it
-> is
-> because of driver issues or a bad disk (completly likely). 
+ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/rbootd-2.0-2.tar.gz
 
-I think Richard Hirst can help you much more with your SCSI-problems than
-me.  
-
-NB: Does your chassis LEDs work with the new kernel, and if not, could you
-send me your bootlog (or "dmesg | grep led") ?
-
-Greetings,
-
-	Helge
-
--- 
-Sent through GMX FreeMail - http://www.gmx.net
+- Ryan
