@@ -1,39 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AAE7D482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Apr 2001 03:49:07 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id A3FB0B007; Tue, 17 Apr 2001 10:49:20 +0100 (BST)
-Date: Tue, 17 Apr 2001 10:49:20 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: jeffa@owlpoo.org
-Cc: parisc-linux@lists.parisc-linux.org, apul@israeli.demon.co.uk
-Subject: Re: [parisc-linux] 9000/730 booting but SCSI Problems (mke2fs)
-Message-ID: <20010417104920.J11226@linuxcare.com>
-References: <20010409225507.RNIM272.mta05-svc.ntlworld.com@mustain.demon.co.uk>; <20010410093901.J6992@linuxcare.com> <20010414140053.CSRU283.mta03-svc.ntlworld.com@mustain.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010414140053.CSRU283.mta03-svc.ntlworld.com@mustain.demon.co.uk>; from jeffa@mustain.demon.co.uk on Sat, Apr 14, 2001 at 02:59:50PM +0100
+Received: from mail.calyx.net (mail.calyx.net [216.82.160.19])
+	by dsl2.external.hp.com (Postfix) with SMTP id AAEC9482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Apr 2001 08:55:35 -0600 (MDT)
+Date: Tue, 17 Apr 2001 10:54:21 -0400 (EDT)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.BSO.4.33.0104171048310.9556-100000@mojo.calyx.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Wow.
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Apr 14, 2001 at 02:59:50PM +0100, Jeff Arthur wrote:
-> Thanks Richard, the commnad line change you described seems 
-> to have worked a treat.
+I just updated my system so I could begin work on the HIL
+driver (have docs now, thanks everyone) and that was MUCH
+less painful than I thought it was going to be.  Sure, I
+had to comb through the packages with dselect and download
+some of the .debs by FTP, but the toolchain and kernel
+built as per the instructions with no finagling, and the
+upgrade of my old crusty libc didn't break the system.
 
-Hmm, so it seems the sim700 driver has problems with disconnect/reselect
-enabled, on your system at least.  I'll do some testing here.
+Kudos to all.  This distro is really shaping up!
 
-> My problem has now moved on, have got all things up and running 
-> of the hard disk now, but a few key exes are hanging, rpc.lockd, 
-> nscd, tar etc.
-> 
-> The ones in the init i have got around by removing the entries from 
-> rcx.d etc, but not being able to use tar is a pain.
-> 
-> >From posts around feb it looked like there was a known problem 
-> with spinlock.  Has any progress been made in that area?
-
-As Matthew said, that is fixed.  You might try a new base tarball from
-<ftp://puffin.external.hp.com/pub/parisc/binaries/debian/basetars/>.
-
-Richard
+--
+Brian S. Julin
