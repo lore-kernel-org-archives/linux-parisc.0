@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CB6E3482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Feb 2002 06:47:40 -0700 (MST)
-Date: Thu, 7 Feb 2002 13:35:44 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 989DA482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Feb 2002 07:17:26 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16YpMX-0005Ez-00; Thu, 07 Feb 2002 14:17:21 +0000
+Date: Thu, 7 Feb 2002 14:17:21 +0000
+From: Matthew Wilcox <willy@debian.org>
 To: "Kurc, Marcin A." <makurc@cooperstandard.com>
 Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] C240 64-bit kernel
-Message-ID: <20020207133544.GI5609@sleepie.demon.co.uk>
+Message-ID: <20020207141721.B17779@parcelfarce.linux.theplanet.co.uk>
 References: <426B4FEBE684D411B0A60090273B1D24024855EB@aa0016.auburn.auto.cooperintra.ctb>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <426B4FEBE684D411B0A60090273B1D24024855EB@aa0016.auburn.auto.cooperintra.ctb>
+In-Reply-To: <426B4FEBE684D411B0A60090273B1D24024855EB@aa0016.auburn.auto.cooperintra.ctb>; from makurc@cooperstandard.com on Thu, Feb 07, 2002 at 07:23:31AM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,10 +29,8 @@ On Thu, Feb 07, 2002 at 07:23:31AM -0500, Kurc, Marcin A. wrote:
 > Hi,
 > Did anybody got a C240 to boot off of 64-bit kernel?
 
-I booted a c360 with 64 bit kernel, so it should work.  You have to
-build your own kernel though, with CONFIG_PDC_NARROW=y.
+you need to turn on CONFIG_PDC_NARROW if you do this.  But don't bother,
+there is no point in booting a 64-bit kernel on a C240.
 
-Whether there is any point running a 64 bit kernel on a box that has
-less that 4G of RAM is a different matter altogether.
-
-Richard
+-- 
+Revolutions do not require corporate support.
