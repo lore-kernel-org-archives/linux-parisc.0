@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] Re: NETFILTER_DEBUG break b2k 64bits (at least)[Wa
-Date: Fri, 7 Jan 2005 19:35:01 -0500 (EST)
-Message-ID: <200501080035.j080Z1kK012011@hiauly1.hia.nrc.ca>
-References: <20050107162609.GA7883@colo.lackof.org>
+Date: Sat, 08 Jan 2005 15:55:49 +0000
+Message-ID: <41E00285.5020302@tiscali.be>
+References: <200501080035.j080Z1kK012011@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii;
+  format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050107162609.GA7883@colo.lackof.org> from "Grant Grundler" at
-	Jan 7, 2005 11:26:09 am
+In-Reply-To: <200501080035.j080Z1kK012011@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,33 +21,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Fri, Jan 07, 2005 at 03:11:19PM +0100, Joel Soete wrote:
-> > In fact I always hesitate to use this 64 compiler because of this report:
-> >
-> <http://lists.parisc-linux.org/pipermail/parisc-linux/2004-February/022335.h
-> tml>
-> > 
-> > but never read it was fixed?
+
+
+John David Anglin wrote:
+[...]
 > 
-> gcc-3.3-hppa64 has been updated 13 times since initial release.
-> I expect a "changes" file exists to describe what
-> each update brings. But I don't expect the change log to get posted
-> to p-l mailing list for every package that gets updated.
+> Note that the hppa64 linker always creates dynamic binaries intended
+> to be loaded by a dynamic loader.  It doesn't know how to create a
+> fully static binary.  I don't fully understand the ins and outs of
+> how this is being handled with 64-bit kernels but I suspect that this
+> is why there are duplicates.
+> 
+My pb is that the only smp system I can test is a N4k model which have afaik a pdc that can only boot a 64bit kernel.
+Is there some alternate to boot a 32bit kernel on this kind (A, L, N, ...) system?
 
-As far as I know, the problem hasn't been fixed in GCC.  OPD generation
-is done by the linker and dynamic linker.  There is a discussion here
-<http://lists.parisc-linux.org/hypermail/parisc-linux/1723.html>.
-
-Note that the hppa64 linker always creates dynamic binaries intended
-to be loaded by a dynamic loader.  It doesn't know how to create a
-fully static binary.  I don't fully understand the ins and outs of
-how this is being handled with 64-bit kernels but I suspect that this
-is why there are duplicates.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks for info,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
