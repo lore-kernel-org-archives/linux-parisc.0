@@ -1,30 +1,71 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AF12B482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 09:21:38 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id EE986B00C; Thu, 12 Jul 2001 16:20:07 +0100 (BST)
-Date: Thu, 12 Jul 2001 16:20:07 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Charles Boone <ccboone@yahoo.com>
-Cc: Grant Grundler <grundler@puffin.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240
-Message-ID: <20010712162007.F18375@linuxcare.com>
-References: <20010711094816.G18375@linuxcare.com> <20010712144225.20503.qmail@web11207.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010712144225.20503.qmail@web11207.mail.yahoo.com>; from ccboone@yahoo.com on Thu, Jul 12, 2001 at 07:42:25AM -0700
+Received: from mail.ireste.fr (mail.ireste.fr [193.52.81.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A027A482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 09:24:12 -0600 (MDT)
+Received: from flambe.ireste.fr (flambe [193.52.81.109])
+          by mail.ireste.fr (8.9.1a/jtpda-5.3.1) with SMTP id RAA21388
+          for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 17:26:20 +0200 (MET DST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] problems with checksums
+Date: Thu, 12 Jul 2001 17:30:36 +0200
+MIME-Version: 1.0
+Message-Id: <0107121730361D.03565@flambe.ireste.fr>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 12, 2001 at 07:42:25AM -0700, Charles Boone wrote:
-> One piece of info that I did not include,  which I
-> thought might be relative to the ps/2 issue.  I am not
-> sure it is, but I do not have a keyboard or mouse
-> connected on the c240.  I was pretty sure that it
-> would not be a problem, since it would be just like
-> having a dumb terminal on it.
 
-I agree, that is unlikely to be a problem.
+----------  Message transmis  ----------
+Subject: Re: [parisc-linux] problems with checksums
+Date: Thu, 12 Jul 2001 17:17:11 +0200
+From: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
+To: "rpengelly" <rpengelly@ati.stlawrencec.on.ca>
 
-Richard
+
+Le Jeudi 12 Juillet 2001 17:05, vous avez écrit :
+> I downloaded the 0.92 full iso and its checksum did not match any of the
+> one's given. I'm wondering if it may be because I first have to download it
+> form esiee to a windows machine then transfer it via ftp to a linux box.
+>
+> It still seems strange that the file downloads in .gz format but will not
+> unzip.
+>
+> Would you be willing to help me out by sending the files by ftp to my linux
+> box? I don't know if you have a high speed connection or not?
+> Thanks again
+
+give me your ftp adresse i send it to you the .9.2iso full with correct
+ md5sum
+
+> Ray
+>
+>
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+
+--
+_________________________________________________
+
+                    Matthieu Le Corre
+                  Service informatique
+   Ecole Polytechnique de l'Université de Nantes
+      Matthieu.Lecorre@polytech.univ-nantes.fr
+                     02.40.68.32.23
+__________________________________________________
+
+-------------------------------------------------------
+
+-- 
+_________________________________________________
+  
+                    Matthieu Le Corre
+                  Service informatique
+   Ecole Polytechnique de l'Université de Nantes
+      Matthieu.Lecorre@polytech.univ-nantes.fr
+                     02.40.68.32.23
+__________________________________________________
