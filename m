@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 71D574881
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 08:51:29 -0700 (MST)
-Date: Wed, 5 Nov 2003 10:46:44 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] HP 9000 E55 (and family) status
-Message-ID: <20031105154643.GC17418@systemhalted>
-References: <3FA689FB.5080704@gmx.at> <20031105004746.GA9926@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031105004746.GA9926@colo.lackof.org>
+Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 881B54841
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 13:01:05 -0700 (MST)
+Received: from hrzpub.tu-darmstadt.de (IP-213157011231.dialin.heagmedianet.de [213.157.11.231])
+	(authenticated bits=0)
+	by mailserver3.hrz.tu-darmstadt.de (8.12.10/8.12.7) with ESMTP id hA5K0RCT004357
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 5 Nov 2003 21:00:34 +0100
+Message-ID: <3FA956FD.4080901@hrzpub.tu-darmstadt.de>
+Date: Wed, 05 Nov 2003 21:01:01 +0100
+From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] Unresolved symbols in 2.4.22-pa13
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 04, 2003 at 05:47:46PM -0700, Grant Grundler wrote:
-> On Mon, Nov 03, 2003 at 06:01:47PM +0100, Christoph Plattner wrote:
-> > By the way, as we discuss on the E55,
-> > what's the status ?
-> > Are there any news on MUX or SCSI driver ?
-> > Are there any news on the NDA, .... ?
-> 
-> In Feb/March 2003 I pulled together the documents for SCSI and prepared
-> the NDA for you. I didn't do anything for the Mux since I really don't
-> know anything about it.  It took fours monthes for my management (sorry,
-> I'm somewhat bitter about this) to tell me the process had changed and
-> I need to talk to run the NDA past an internal HP "review board".
-> 
-> I've not taken the steps to do that becuase I'm saturated
-> with too many projects. But if E55 still means something to you
-> (and it sounds like it does), I'll charge this windmill as
-> well. Pokeme again monthly and I'll let you know if/how far I've
-> gotten on that.
+Hi there,
 
-Ride forward noble Don Quixote!
+when compiling the parport driver as a module, I get an unresolved 
+symbols error:
+-----><--------
+find kernel -path '*/pcmcia/*' -name '*.o' | xargs -i -r ln -sf ../{} pcmcia
+if [ -r System.map ]; then /sbin/depmod -ae -F System.map  2.4.22-pa13; fi
+depmod: *** Unresolved symbols in 
+/lib/modules/2.4.22-pa13/kernel/drivers/parport/parport_pc.o
+depmod:         outsb
+depmod:         outsl
+depmod:         insb
+depmod:         insl
+-----><--------
+Can s.b. with CVS access add the necessary export symbol lines to 
+parport_pc?
 
-c.
+Greetings,
+    Ruediger
