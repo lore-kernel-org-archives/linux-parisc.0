@@ -1,12 +1,14 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [PATCH] Sysdeps changes for hppa.
-Date: Sun, 12 Oct 2003 17:32:26 -0400
-Message-ID: <20031012213226.GE23999__1978.91380307755$1416622867$gmane$org@systemhalted>
+Subject: [parisc-linux] [PATCH] linuxthreads for hppa (1/3, Round 2)
+Date: Sun, 12 Oct 2003 17:33:50 -0400
+Message-ID: <20031012213350.GF23999__757.647565524344$1416622867$gmane$org@systemhalted>
+References: <20031010204444.GF6454@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <20031010204444.GF6454@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,459 +21,301 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 libc-alpha,
 
-Generic defines JUMPTARGET, so we must undefine it before setting it to
-nothing in sysdeps/hppa/sysdep.h.
+Changes:
 
-Secondly, there were a lot of missing macro's in
-sysdep/unix/sysv/linux/hppa/sysdep.h, the second bit of the patch takes
-care of defining those properly for hppa and cleans up the file itself
-in a more logical layout.
+a. Removed _STACK_GROWS_UP changes.
+b. Fixed formatting.
+c. Fixed Changelog entry.
+d. Added olsemaphore patch.
 
-The last patch makes sure that syscall in sysdep.c takes advantage of
-all the fixes for PIC register bugs I had to track down.
+---
+
+I've split linuxthreads for HPPA into 3 digestible patches:
+
+1. Linuxthreads general changes.
+2. Linuxthreads sysdep changes.
+3. Linuxthreads changes for HPPA.
+
+===
+
+1. Linuxthreads general changes. 
+
+Tested on i386, Alpha, and HPPA. Debian has been using this code since 2.3.1.
+All of this code revolves around two central architecture issues:
+
+a. HPPA needs an abstraction for it's atomic lock type.
+b. The lock type cannot be initialized to zero.
+c. HPPA's stack grows up.
+
+NTPL and TLS are next on the plate for HPPA. Thanks for being patient.
 
 Cheers,
-Carlos.
+Carlos
+
 ===
- sysdeps/hppa/sysdep.h                 |    1 
- sysdeps/unix/sysv/linux/hppa/sysdep.h |  274 ++++++++--
- sysdeps/unix/sysv/linux/hppa/sysdep.c |   46 +
- 3 files changed, 254 insertions(+), 67 deletions(-)
+ linuxthreads/descr.h        |    2 
+ linuxthreads/pt-machine.c   |    4 +
+ linuxthreads/pthread.c      |   14 ++---
+ linuxthreads/spinlock.c     |   22 ++++----
+ linuxthreads/spinlock.h     |   26 +++++++---
+ linuxthreads/oldsemaphore.c |    2 
+ 6 files changed, 43 insertions(+), 27 deletions(-)
 ===
 
-2003-10-12  Carlos O'Donell  <carlos@baldric.uwo.ca>
+2003-10-12  Carlos O'Donell <carlos@baldric.uwo.ca>
 
-	* sysdeps/hppa/sysdep.h: Undef JUMPTARGET before use.
-	* sysdeps/unix/sysv/linux/hppa/sysdep.h:
-	Define __NR_semtimedop for compat with old kernels,
-	PSEUDO_ERRVAL, SYSCALL_ERROR_LABEL under all conditions,
-	INTERNAL_SYSCALL_DECL, INTERNAL_SYSCALL_ERROR_P,
-	INTERNAL_SYSCALL_ERRNO, INTERNAL_SYSCALL, and undef 
-	JUMPTARGET before use.
-	[PIC]: Save pic register around syscall.
-	* sysdeps/unix/sysv/linux/hppa/sysdep.c (syscall): 
-	Cleanup asm statment.
+	* descr.h: Define p_spinlock as __atomic_lock_t 
+	in struct pthread_atomic.
+	* pt-machine.c: Define testandset to take __atomic_lock_t *spinlock.
+	* pthread.c (__pthread_initialize_minimal): Use 
+	__LT_INITIALIZER_NOT_ZERO instead of __LT_SPINLOCK_INIT.
+	* spinlock.c: __pthread_acquire call takes 
+	__atomic_lock_t *spinlock, define abandoned as __atomic_lock_t 
+	in struct wait_node, use __pthread_lock_define_initialized for 
+	wait_node_free_list.
+	(__pthread_alt_lock): Use __LT_SPINLOCK_INIT to clear abandoned.
+	(__pthread_alt_timedlock): Likewise.
+	(__pthread_alt_unlock): Use lock_held.
+	(__pthread_release): Call takes __atomic_lock_t *spinlock.
+	(__pthread_compare_and_swap): Likewise.
+	(__pthread_acquire): Likewise.
+	* spinlock.h: Define lock_held, define 
+	__pthread_lock_define_initialized for __LT_INITIALIZER_NOT_ZERO, 
+	__pthread_compare_and_swap takes __atomic_lock_t *spinlock.
+	(compare_and_swap): All versions takes __atomic_lock_t *spinlock.
+	(compare_and_swap_with_release_semantics): Likewise.
+	* oldsemaphore.c: sem_spinlock in struct old_sem_t is an 
+	__atomic_lock_t.
 
---- libc/sysdeps/hppa/sysdep.h	6 Jul 2001 04:55:51 -0000	1.3
-+++ libc/sysdeps/hppa/sysdep.h	1 Apr 2003 06:15:35 -0000
-@@ -70,6 +67,7 @@
- #define	PSEUDO_END(name)						      \
-   END (name)
+diff -urN glibc-2.3.1.orig/linuxthreads/descr.h glibc-2.3.1/linuxthreads/descr.h
+--- glibc-2.3.1.orig/linuxthreads/descr.h	2003-01-15 12:58:11.000000000 -0500
++++ glibc-2.3.1/linuxthreads/descr.h	2003-01-15 18:24:36.000000000 -0500
+@@ -70,7 +70,7 @@
+ /* Atomic counter made possible by compare_and_swap */
+ struct pthread_atomic {
+   long p_count;
+-  int p_spinlock;
++  __atomic_lock_t p_spinlock;
+ };
  
-+#undef JUMPTARGET
- #define JUMPTARGET(name)	name
- #define SYSCALL_PIC_SETUP	/* Nothing.  */
-diff -u -p -r1.7 sysdep.h
---- libc/sysdeps/unix/sysv/linux/hppa/sysdep.h	23 Mar 2003 19:42:22 -0000	1.7
-+++ libc/sysdeps/unix/sysv/linux/hppa/sysdep.h	21 Sep 2003 19:24:57 -0000
-@@ -31,6 +31,26 @@
- #undef SYS_ify
- #define SYS_ify(syscall_name)	(__NR_##syscall_name)
  
-+/* Included for older kernels whose headers 
-+   are missing the define  */ 
-+#ifndef __NR_semtimedop
-+# define __NR_semtimedop 228
+diff -urN glibc-2.3.1.orig/linuxthreads/pt-machine.c glibc-2.3.1/linuxthreads/pt-machine.c
+--- glibc-2.3.1.orig/linuxthreads/pt-machine.c	2002-08-26 18:39:45.000000000 -0400
++++ glibc-2.3.1/linuxthreads/pt-machine.c	2003-01-15 18:24:36.000000000 -0500
+@@ -19,7 +19,9 @@
+ 
+ #define PT_EI
+ 
+-extern long int testandset (int *spinlock);
++#include <pthread.h>
++
++extern long int testandset (__atomic_lock_t *spinlock);
+ extern int __compare_and_swap (long int *p, long int oldval, long int newval);
+ 
+ #include <pt-machine.h>
+diff -u -p -r1.131 pthread.c
+--- libc/linuxthreads/pthread.c	23 Sep 2003 04:33:01 -0000	1.131
++++ libc/linuxthreads/pthread.c	6 Oct 2003 14:48:18 -0000
+@@ -300,9 +300,9 @@ __pthread_initialize_minimal(void)
+   pthread_descr self;
+ 
+   /* First of all init __pthread_handles[0] and [1] if needed.  */
+-# if __LT_SPINLOCK_INIT != 0
+-  __pthread_handles[0].h_lock = __LOCK_INITIALIZER;
+-  __pthread_handles[1].h_lock = __LOCK_INITIALIZER;
++# ifdef __LT_INITIALIZER_NOT_ZERO
++  __pthread_handles[0].h_lock = __LOCK_ALT_INITIALIZER;
++  __pthread_handles[1].h_lock = __LOCK_ALT_INITIALIZER;
+ # endif
+ # ifndef SHARED
+   /* Unlike in the dynamically linked case the dynamic linker has not
+@@ -370,7 +370,7 @@ cannot allocate TLS data structures for 
+ # endif
+   /* self->p_start_args need not be initialized, it's all zero.  */
+   self->p_userstack = 1;
+-# if __LT_SPINLOCK_INIT != 0
++# ifdef __LT_INITIALIZER_NOT_ZERO 
+   self->p_resume_count = (struct pthread_atomic) __ATOMIC_INITIALIZER;
+ # endif
+   self->p_alloca_cutoff = __MAX_ALLOCA_CUTOFF;
+@@ -384,9 +384,9 @@ cannot allocate TLS data structures for 
+ #else  /* USE_TLS */
+ 
+   /* First of all init __pthread_handles[0] and [1].  */
+-# if __LT_SPINLOCK_INIT != 0
+-  __pthread_handles[0].h_lock = __LOCK_INITIALIZER;
+-  __pthread_handles[1].h_lock = __LOCK_INITIALIZER;
++# ifdef __LT_INITIALIZER_NOT_ZERO
++  __pthread_handles[0].h_lock = __LOCK_ALT_INITIALIZER;
++  __pthread_handles[1].h_lock = __LOCK_ALT_INITIALIZER;
+ # endif
+   __pthread_handles[0].h_descr = &__pthread_initial_thread;
+   __pthread_handles[1].h_descr = &__pthread_manager_thread;
+diff -urN glibc-2.3.1.orig/linuxthreads/spinlock.c glibc-2.3.1/linuxthreads/spinlock.c
+--- glibc-2.3.1.orig/linuxthreads/spinlock.c	2002-08-29 06:32:19.000000000 -0400
++++ glibc-2.3.1/linuxthreads/spinlock.c	2003-01-15 18:24:36.000000000 -0500
+@@ -24,9 +24,9 @@
+ #include "spinlock.h"
+ #include "restart.h"
+ 
+-static void __pthread_acquire(int * spinlock);
++static void __pthread_acquire(__atomic_lock_t * spinlock);
+ 
+-static inline void __pthread_release(int * spinlock)
++static inline void __pthread_release(__atomic_lock_t * spinlock)
+ {
+   WRITE_MEMORY_BARRIER();
+   *spinlock = __LT_SPINLOCK_INIT;
+@@ -269,11 +269,11 @@
+ struct wait_node {
+   struct wait_node *next;	/* Next node in null terminated linked list */
+   pthread_descr thr;		/* The thread waiting with this node */
+-  int abandoned;		/* Atomic flag */
++  __atomic_lock_t abandoned;	/* Atomic flag */
+ };
+ 
+ static long wait_node_free_list;
+-static int wait_node_free_list_spinlock;
++__pthread_lock_define_initialized(static, wait_node_free_list_spinlock);
+ 
+ /* Allocate a new node from the head of the free list using an atomic
+    operation, or else using malloc if that list is empty.  A fundamental
+@@ -376,7 +376,7 @@
+       if (self == NULL)
+ 	self = thread_self();
+ 
+-      wait_node.abandoned = 0;
++      wait_node.abandoned = __LT_SPINLOCK_INIT;
+       wait_node.next = (struct wait_node *) lock->__status;
+       wait_node.thr = self;
+       lock->__status = (long) &wait_node;
+@@ -402,7 +402,7 @@
+       wait_node.thr = self;
+       newstatus = (long) &wait_node;
+     }
+-    wait_node.abandoned = 0;
++    wait_node.abandoned = __LT_SPINLOCK_INIT;
+     wait_node.next = (struct wait_node *) oldstatus;
+     /* Make sure the store in wait_node.next completes before performing
+        the compare-and-swap */
+@@ -451,7 +451,7 @@
+       if (self == NULL)
+ 	self = thread_self();
+ 
+-      p_wait_node->abandoned = 0;
++      p_wait_node->abandoned = __LT_SPINLOCK_INIT;
+       p_wait_node->next = (struct wait_node *) lock->__status;
+       p_wait_node->thr = self;
+       lock->__status = (long) p_wait_node;
+@@ -474,7 +474,7 @@
+       p_wait_node->thr = self;
+       newstatus = (long) p_wait_node;
+     }
+-    p_wait_node->abandoned = 0;
++    p_wait_node->abandoned = __LT_SPINLOCK_INIT;
+     p_wait_node->next = (struct wait_node *) oldstatus;
+     /* Make sure the store in wait_node.next completes before performing
+        the compare-and-swap */
+@@ -574,7 +574,7 @@
+     while (p_node != (struct wait_node *) 1) {
+       int prio;
+ 
+-      if (p_node->abandoned) {
++      if (lock_held(&p_node->abandoned)) {
+ 	/* Remove abandoned node. */
+ #if defined TEST_FOR_COMPARE_AND_SWAP
+ 	if (!__pthread_has_cas)
+@@ -662,7 +662,7 @@
+ #if !defined HAS_COMPARE_AND_SWAP || defined TEST_FOR_COMPARE_AND_SWAP
+ 
+ int __pthread_compare_and_swap(long * ptr, long oldval, long newval,
+-                               int * spinlock)
++                               __atomic_lock_t * spinlock)
+ {
+   int res;
+ 
+@@ -699,7 +699,7 @@
+    - When nanosleep() returns, we try again, doing MAX_SPIN_COUNT
+      sched_yield(), then sleeping again if needed. */
+ 
+-static void __pthread_acquire(int * spinlock)
++static void __pthread_acquire(__atomic_lock_t * spinlock)	
+ {
+   int cnt = 0;
+   struct timespec tm;
+diff -urN glibc-2.3.1.orig/linuxthreads/spinlock.h glibc-2.3.1/linuxthreads/spinlock.h
+--- glibc-2.3.1.orig/linuxthreads/spinlock.h	2001-05-24 19:36:35.000000000 -0400
++++ glibc-2.3.1/linuxthreads/spinlock.h	2003-01-15 18:24:36.000000000 -0500
+@@ -33,14 +33,28 @@
+ #endif
+ #endif
+ 
++/* Define lock_held for all arches that don't need a modified copy. */
++#ifndef __LT_INITIALIZER_NOT_ZERO
++# define lock_held(p) *(p)
 +#endif
 +
-+# ifdef PIC
-+/* WARNING: CANNOT BE USED IN A NOP! */
-+#  define STW_PIC stw %r19, -32(%sr0, %sp) ASM_LINE_SEP
-+#  define LDW_PIC ldw -32(%sr0, %sp), %r19 ASM_LINE_SEP
-+#  define STW_ASM_PIC	"       copy %%r19, %%r4\n"
-+#  define LDW_ASM_PIC	"       copy %%r4, %%r19\n"
-+#  define USING_GR4	"%r4",
-+# else
-+#  define STW_PIC ASM_LINE_SEP
-+#  define LDW_PIC ASM_LINE_SEP
-+#  define STW_ASM_PIC	" \n"
-+#  define LDW_ASM_PIC	" \n"
-+#  define USING_GR4
-+# endif
- 
- #ifdef __ASSEMBLER__
- 
-@@ -77,20 +97,13 @@
- 	.text					ASM_LINE_SEP	\
- 	.export C_SYMBOL_NAME(name)		ASM_LINE_SEP	\
- 	.type	C_SYMBOL_NAME(name),@function	ASM_LINE_SEP	\
--	C_LABEL(name)						\
--	CALL_MCOUNT
--
--#define ret \
--	bv 0(2)					ASM_LINE_SEP	\
--	nop
--
--#define ret_NOERRNO \
--	bv 0(2)					ASM_LINE_SEP	\
--	nop
-+	C_LABEL(name)				ASM_LINE_SEP	\
-+	CALL_MCOUNT				ASM_LINE_SEP
- 
- #undef	END
--#define END(name)						\
--1:	.size	C_SYMBOL_NAME(name),1b-C_SYMBOL_NAME(name)
-+#define END(name)							\
-+1:							ASM_LINE_SEP	\
-+.size	C_SYMBOL_NAME(name),1b-C_SYMBOL_NAME(name)	ASM_LINE_SEP	\
- 
- /* If compiled for profiling, call `mcount' at the start of each function.  */
- /* No, don't bother.  gcc will put the call in for us.  */
-@@ -110,27 +123,83 @@
- 	nop
- */
- 
--#define	PSEUDO(name, syscall_name, args)				      \
--  ENTRY (name)								      \
--  DO_CALL(syscall_name, args)					ASM_LINE_SEP  \
--  nop
-+#define	PSEUDO(name, syscall_name, args)			\
-+  ENTRY (name)							\
-+  DO_CALL(syscall_name, args)			ASM_LINE_SEP	\
-+  nop						ASM_LINE_SEP
-+
-+#define ret \
-+	/* Return value set by ERRNO code */	ASM_LINE_SEP	\
-+	bv 0(2)					ASM_LINE_SEP	\
-+	nop					ASM_LINE_SEP
- 
- #undef	PSEUDO_END
--#define	PSEUDO_END(name)						      \
-+#define	PSEUDO_END(name)					\
-   END (name)
- 
--#define	PSEUDO_NOERRNO(name, syscall_name, args)			      \
--  ENTRY (name)								      \
--  DO_CALL(syscall_name, args)					ASM_LINE_SEP  \
--  nop
-+/* We don't set the errno on the return from the syscall */
-+#define	PSEUDO_NOERRNO(name, syscall_name, args)		\
-+  ENTRY (name)							\
-+  DO_CALL_NOERRNO(syscall_name, args)		ASM_LINE_SEP	\
-+  nop						ASM_LINE_SEP
- 
-+#define ret_NOERRNO ret 
-+  
- #undef	PSEUDO_END_NOERRNO
--#define	PSEUDO_END_NOERRNO(name)					      \
-+#define	PSEUDO_END_NOERRNO(name)				\
-   END (name)
- 
-+/* This has to return the error value */
-+#undef  PSEUDO_ERRVAL
-+#define PSEUDO_ERRVAL(name, syscall_name, args)			\
-+	ENTRY(name)						\
-+	DO_CALL_ERRVAL(syscall_name, args)	ASM_LINE_SEP	\
-+	nop					ASM_LINE_SEP
-+
-+#define ret_ERRVAL ret
-+	
-+#undef	PSEUDO_END_ERRVAL
-+#define PSEUDO_END_ERRVAL(name)					\
-+	END(name)
-+
-+#undef JUMPTARGET
- #define JUMPTARGET(name)	name
- #define SYSCALL_PIC_SETUP	/* Nothing.  */
- 
-+	
-+/* All the syscall assembly macros rely on finding the approriate 
-+   SYSCALL_ERROR_LABEL or rather HANDLER. */
-+
-+/* int * __errno_location(void) so you have to store your value
-+   into the return address! */
-+#define DEFAULT_SYSCALL_ERROR_HANDLER 			\
-+	.import __errno_location,code	ASM_LINE_SEP	\
-+	/* branch to errno handler */	ASM_LINE_SEP	\
-+	bl __errno_location,%rp		ASM_LINE_SEP
-+	
-+/* Here are the myriad of configuration options that the above can
-+   work for... what we've done is provide the framework for future
-+   changes if required to each section */
-+	
-+#ifdef PIC
-+# if RTLD_PRIVATE_ERRNO
-+#  define SYSCALL_ERROR_HANDLER DEFAULT_SYSCALL_ERROR_HANDLER			    
-+# else /* !RTLD_PRIVATE_ERRNO */
-+#  if defined _LIBC_REENTRANT
-+#   define SYSCALL_ERROR_HANDLER DEFAULT_SYSCALL_ERROR_HANDLER
-+#  else /* !_LIBC_REENTRANT */
-+#   define SYSCALL_ERROR_HANDLER DEFAULT_SYSCALL_ERROR_HANDLER
-+#  endif /* _LIBC_REENTRANT */
-+# endif /* RTLD_PRIVATE_ERRNO */
++/* Initliazers for possibly complex structures */
++#ifdef __LT_INITIALIZER_NOT_ZERO
++# define __pthread_lock_define_initialized(CLASS,NAME) \
++	CLASS __atomic_lock_t NAME = __LT_SPINLOCK_ALT_INIT
 +#else
-+# ifndef _LIBC_REENTRANT
-+#  define SYSCALL_ERROR_HANDLER DEFAULT_SYSCALL_ERROR_HANDLER
-+# else
-+#  define SYSCALL_ERROR_HANDLER DEFAULT_SYSCALL_ERROR_HANDLER
-+# endif
-+#endif					
-+	
-+	
- /* Linux takes system call arguments in registers:
- 	syscall number	gr20
- 	arg 1		gr26
-@@ -159,25 +228,61 @@
- 
- #undef	DO_CALL
- #define DO_CALL(syscall_name, args)				\
--	DOARGS_##args						\
-+	DOARGS_##args				ASM_LINE_SEP	\
-+	STW_PIC					ASM_LINE_SEP	\
-+	/* Do syscall, delay loads # */		ASM_LINE_SEP	\
- 	ble  0x100(%sr2,%r0)			ASM_LINE_SEP	\
- 	ldi SYS_ify (syscall_name), %r20	ASM_LINE_SEP	\
- 	ldi -0x1000,%r1				ASM_LINE_SEP	\
- 	cmpb,>>=,n %r1,%ret0,0f			ASM_LINE_SEP	\
--	stw %rp, -20(%sr0,%r30)			ASM_LINE_SEP	\
--	stw %ret0, -24(%sr0,%r30)		ASM_LINE_SEP	\
--	.import __errno_location,code		ASM_LINE_SEP	\
--	bl __errno_location,%rp			ASM_LINE_SEP	\
--	ldo 64(%r30), %r30			ASM_LINE_SEP	\
--	ldo -64(%r30), %r30			ASM_LINE_SEP	\
--	ldw -24(%r30), %r26			ASM_LINE_SEP	\
-+	/* save rp or we get lost */		ASM_LINE_SEP	\
-+	stw %rp, -20(%sr0,%sp)			ASM_LINE_SEP	\
-+	/* Restore r19 from frame */		ASM_LINE_SEP	\
-+	LDW_PIC					ASM_LINE_SEP	\
-+	stw %ret0, -24(%sr0,%sp)		ASM_LINE_SEP	\
-+	SYSCALL_ERROR_HANDLER			ASM_LINE_SEP	\
-+	/* create frame */			ASM_LINE_SEP	\
-+	ldo 64(%sp), %sp			ASM_LINE_SEP	\
-+	ldo -64(%sp), %sp			ASM_LINE_SEP	\
-+	/* OPTIMIZE: Don't reload r19 */	ASM_LINE_SEP	\
-+	/* do a -1*syscall_ret0 */		ASM_LINE_SEP	\
-+	ldw -24(%sr0,%sp), %r26			ASM_LINE_SEP	\
- 	sub %r0, %r26, %r26			ASM_LINE_SEP	\
-+	/* Store into errno location */		ASM_LINE_SEP	\
- 	stw %r26, 0(%sr0,%ret0)			ASM_LINE_SEP	\
-+	/* return -1 as error */		ASM_LINE_SEP	\
- 	ldo -1(%r0), %ret0			ASM_LINE_SEP	\
--	ldw -20(%r30), %rp			ASM_LINE_SEP	\
-+	ldw -20(%sr0,%sp), %rp			ASM_LINE_SEP	\
- 0:						ASM_LINE_SEP	\
-+	UNDOARGS_##args				ASM_LINE_SEP
++# define __pthread_lock_define_initialized(CLASS,NAME) \
++	CLASS __atomic_lock_t NAME
++#endif
 +
-+/* We do nothing with the return, except hand it back to someone else */
-+#undef  DO_CALL_NOERRNO
-+#define DO_CALL_NOERRNO(syscall_name, args)			\
-+	DOARGS_##args                                           \
-+	/* No need to store r19 */		ASM_LINE_SEP	\
-+	ble  0x100(%sr2,%r0)                    ASM_LINE_SEP    \
-+	ldi SYS_ify (syscall_name), %r20        ASM_LINE_SEP    \
-+	/* Caller will restore r19 */		ASM_LINE_SEP	\
- 	UNDOARGS_##args
+ #if defined(TEST_FOR_COMPARE_AND_SWAP)
  
-+/* Here, we return the ERRVAL in assembly, note we don't call the
-+   error handler function, but we do 'negate' the return _IF_
-+   it's an error. Not sure if this is the right semantic. */
-+
-+#undef	DO_CALL_ERRVAL
-+#define DO_CALL_ERRVAL(syscall_name, args)			\
-+	DOARGS_##args				ASM_LINE_SEP	\
-+	/* No need to store r19 */		ASM_LINE_SEP	\
-+	ble  0x100(%sr2,%r0)			ASM_LINE_SEP	\
-+	ldi SYS_ify (syscall_name), %r20	ASM_LINE_SEP	\
-+	/* Caller will restore r19 */		ASM_LINE_SEP	\
-+	ldi -0x1000,%r1				ASM_LINE_SEP	\
-+	cmpb,>>=,n %r1,%ret0,0f			ASM_LINE_SEP	\
-+	sub %r0, %ret0, %ret0			ASM_LINE_SEP	\
-+0:						ASM_LINE_SEP	\
-+	UNDOARGS_##args				ASM_LINE_SEP
-+
- #define DOARGS_0 /* nothing */
- #define DOARGS_1 /* nothing */
- #define DOARGS_2 /* nothing */
-@@ -198,26 +303,87 @@
+ extern int __pthread_has_cas;
+ extern int __pthread_compare_and_swap(long * ptr, long oldval, long newval,
+-                                      int * spinlock);
++                                      __atomic_lock_t * spinlock);
  
+ static inline int compare_and_swap(long * ptr, long oldval, long newval,
+-                                   int * spinlock)
++                                   __atomic_lock_t * spinlock)
+ {
+   if (__builtin_expect (__pthread_has_cas, 1))
+     return __compare_and_swap(ptr, oldval, newval);
+@@ -58,7 +72,7 @@
+ 
+ static inline int
+ compare_and_swap_with_release_semantics (long * ptr, long oldval,
+-					 long newval, int * spinlock)
++					 long newval, __atomic_lock_t * spinlock)
+ {
+   return __compare_and_swap_with_release_semantics (ptr, oldval,
+ 						    newval);
+@@ -67,7 +81,7 @@
+ #endif
+ 
+ static inline int compare_and_swap(long * ptr, long oldval, long newval,
+-                                   int * spinlock)
++                                   __atomic_lock_t * spinlock)
+ {
+   return __compare_and_swap(ptr, oldval, newval);
+ }
+@@ -75,10 +89,10 @@
  #else
  
-+/* GCC has to be warned that a syscall may clobber all the ABI 
-+   registers listed as "caller-saves", see page 8, Table 2 
-+   in section 2.2.6 of the PA-RISC RUN-TIME architecture 
-+   document. However! r28 is the result and will conflict with
-+   the clobber list so it is left out. Also the input arguments
-+   registers r20 -> r26 will conflict with the list so they 
-+   are treated specially. Although r19 is clobbered by the syscall
-+   we cannot say this because it would violate ABI, thus we say
-+   r4 is clobbered and use that register to save/restore r19
-+   across the syscall. */
-+		 
-+#define CALL_CLOB_REGS	"%r1", "%r2", USING_GR4 \
-+		 	"%r20", "%r29", "%r31"
-+		 
- #undef INLINE_SYSCALL
--#define INLINE_SYSCALL(name, nr, args...)	({		\
-+#define INLINE_SYSCALL(name, nr, args...)	({			\
-+	long __sys_res;							\
-+	{								\
-+		register unsigned long __res asm("r28");		\
-+		LOAD_ARGS_##nr(args)					\
-+		/* FIXME: HACK stw/ldw r19 around syscall */		\
-+		asm volatile(						\
-+			STW_ASM_PIC					\
-+			"	ble  0x100(%%sr2, %%r0)\n"		\
-+			"	ldi %1, %%r20\n"			\
-+			LDW_ASM_PIC					\
-+			: "=r" (__res)					\
-+			: "i" (SYS_ify(name)) ASM_ARGS_##nr		\
-+			: CALL_CLOB_REGS CLOB_ARGS_##nr			\
-+		);							\
-+		__sys_res = (long)__res;				\
-+	}								\
-+	if ( (unsigned long)__sys_res >= (unsigned long)-4095 ){	\
-+		__set_errno(-__sys_res);				\
-+		__sys_res = -1;						\
-+	}								\
-+	__sys_res;							\
-+})
-+
-+/* INTERNAL_SYSCALL_DECL - Allows us to setup some function static 
-+   value to use within the context of the syscall 
-+   INTERNAL_SYSCALL_ERROR_P - Returns 0 if it wasn't an error, 1 otherwise
-+   You are allowed to use the syscall result (val) and the DECL error variable
-+   to determine what went wrong.
-+   INTERLAL_SYSCALL_ERRNO - Munges the val/err pair into the error number.
-+   In our case we just flip the sign. */
-+
-+#undef INTERNAL_SYSCALL_DECL
-+#define INTERNAL_SYSCALL_DECL(err) do { } while (0)
-+
-+/* Equivalent to  (val < 0)&&(val > -4095) which is what we want */
-+#undef INTERNAL_SYSCALL_ERROR_P
-+#define INTERNAL_SYSCALL_ERROR_P(val, err) \
-+	((unsigned long)val >= (unsigned long)-4095)
-+	
-+#undef INTERNAL_SYSCALL_ERRNO
-+#define INTERNAL_SYSCALL_ERRNO(val, err) (-(val))
-+
-+/* Similar to INLINE_SYSCALL but we don't set errno */
-+#undef INTERNAL_SYSCALL
-+#define INTERNAL_SYSCALL(name, err, nr, args...) 		\
-+({								\
- 	long __sys_res;						\
- 	{							\
- 		register unsigned long __res asm("r28");	\
- 		LOAD_ARGS_##nr(args)				\
-+		/* FIXME: HACK stw/ldw r19 around syscall */	\
- 		asm volatile(					\
--			"ble  0x100(%%sr2, %%r0)\n\t"		\
--			" ldi %1, %%r20"			\
-+			STW_ASM_PIC				\
-+			"	ble  0x100(%%sr2, %%r0)\n"	\
-+			"	ldi %1, %%r20\n"		\
-+			LDW_ASM_PIC				\
- 			: "=r" (__res)				\
- 			: "i" (SYS_ify(name)) ASM_ARGS_##nr	\
--			 );					\
--		__sys_res = __res;				\
--	}							\
--	if ((unsigned long)__sys_res >= (unsigned long)-4095) {	\
--		__set_errno(-__sys_res);			\
--		__sys_res = -1;					\
-+			: CALL_CLOB_REGS CLOB_ARGS_##nr		\
-+		);						\
-+		__sys_res = (long)__res;			\
- 	}							\
- 	__sys_res;						\
--})
-+ })
-+
+ extern int __pthread_compare_and_swap(long * ptr, long oldval, long newval,
+-                                      int * spinlock);
++                                      __atomic_lock_t * spinlock);
  
- #define LOAD_ARGS_0()
- #define LOAD_ARGS_1(r26)					\
-@@ -239,12 +405,22 @@
- 	register unsigned long __r21 __asm__("r21") = (unsigned long)r21;	\
- 	LOAD_ARGS_5(r26,r25,r24,r23,r22)
- 
--#define ASM_ARGS_0
--#define ASM_ARGS_1 , "r" (__r26)
--#define ASM_ARGS_2 , "r" (__r26), "r" (__r25)
--#define ASM_ARGS_3 , "r" (__r26), "r" (__r25), "r" (__r24)
--#define ASM_ARGS_4 , "r" (__r26), "r" (__r25), "r" (__r24), "r" (__r23)
--#define ASM_ARGS_5 , "r" (__r26), "r" (__r25), "r" (__r24), "r" (__r23), "r" (__r22)
--#define ASM_ARGS_6 , "r" (__r26), "r" (__r25), "r" (__r24), "r" (__r23), "r" (__r22), "r" (__r21)
--
-+/* Even with zero args we use r20 for the syscall number */
-+#define ASM_ARGS_0 
-+#define ASM_ARGS_1 ASM_ARGS_0, "r" (__r26)
-+#define ASM_ARGS_2 ASM_ARGS_1, "r" (__r25)
-+#define ASM_ARGS_3 ASM_ARGS_2, "r" (__r24)
-+#define ASM_ARGS_4 ASM_ARGS_3, "r" (__r23)
-+#define ASM_ARGS_5 ASM_ARGS_4, "r" (__r22)
-+#define ASM_ARGS_6 ASM_ARGS_5, "r" (__r21)
-+
-+/* The registers not listed as inputs but clobbered */
-+#define CLOB_ARGS_6
-+#define CLOB_ARGS_5 CLOB_ARGS_6, "%r21"
-+#define CLOB_ARGS_4 CLOB_ARGS_5, "%r22"
-+#define CLOB_ARGS_3 CLOB_ARGS_4, "%r23"
-+#define CLOB_ARGS_2 CLOB_ARGS_3, "%r24"
-+#define CLOB_ARGS_1 CLOB_ARGS_2, "%r25"
-+#define CLOB_ARGS_0 CLOB_ARGS_1, "%r26"
-+	
- #endif	/* __ASSEMBLER__ */
-diff -u -p -r1.4 sysdep.c
---- libc/sysdeps/unix/sysv/linux/hppa/sysdep.c	11 Oct 2002 10:51:21 -0000	1.4
-+++ libc/sysdeps/unix/sysv/linux/hppa/sysdep.c	30 Aug 2003 23:03:16 -0000
-@@ -19,6 +19,10 @@
- #include <sysdep.h>
- #include <errno.h>
- 
-+extern int __syscall_error(int err_no);
-+extern int syscall (int sysnum, int arg0, int arg1, int arg2, 
-+			int arg3, int arg4, int arg5);
-+
- /* This routine is jumped to by all the syscall handlers, to stash
-    an error number into errno.  */
- int
-@@ -30,25 +34,31 @@ __syscall_error (int err_no)
- 
- 
- /* HPPA implements syscall() in 'C'; the assembler version would
--   typically be in syscall.S.  */
--
-+   typically be in syscall.S. Also note that we have INLINE_SYSCALL,
-+   INTERNAL_SYSCALL, and all the generated pure assembly syscall wrappers.
-+   How often the function is used is unknown. */
- int
- syscall (int sysnum, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5)
+ static inline int compare_and_swap(long * ptr, long oldval, long newval,
+-                                   int * spinlock)
++                                   __atomic_lock_t * spinlock)
  {
--  long __sys_res;
--  {
--    register unsigned long __res asm("r28");
--    LOAD_ARGS_6(arg0, arg1, arg2, arg3, arg4, arg5)
--      asm volatile ("ble  0x100(%%sr2, %%r0)\n\t"
--		    "copy %1, %%r20"
--		    : "=r" (__res)
--		    : "r" (sysnum) ASM_ARGS_6);
--    __sys_res = __res;
--  }
--  if ((unsigned long) __sys_res >= (unsigned long)-4095)
--    {
--    __set_errno(-__sys_res);
--    __sys_res = -1;
--  }
--  return __sys_res;
-+	/* FIXME: Keep this matching INLINE_SYSCALL for hppa */
-+	long __sys_res;
-+	{
-+		register unsigned long __res asm("r28");
-+		LOAD_ARGS_6(arg0, arg1, arg2, arg3, arg4, arg5)
-+		asm volatile (
-+			STW_ASM_PIC
-+			"	ble  0x100(%%sr2, %%r0)	\n"
-+			"	copy %1, %%r20		\n"
-+			LDW_ASM_PIC
-+			: "=r" (__res)
-+			: "r" (sysnum) ASM_ARGS_6
-+			: CALL_CLOB_REGS CLOB_ARGS_6
-+		);
-+		__sys_res = __res;
-+	}
-+	if ((unsigned long) __sys_res >= (unsigned long)-4095){
-+		__set_errno(-__sys_res);
-+		__sys_res = -1;
-+	}
-+	return __sys_res;
+   return __pthread_compare_and_swap(ptr, oldval, newval, spinlock);
  }
+--- libc/linuxthreads/oldsemaphore.c	25 May 2001 07:38:39 -0000	1.11
++++ libc/linuxthreads/oldsemaphore.c	21 Apr 2003 23:53:24 -0000
+@@ -31,7 +31,7 @@
+ 
+ typedef struct {
+     long int sem_status;
+-    int sem_spinlock;
++    __atomic_lock_t sem_spinlock;
+ } old_sem_t;
+ 
+ extern int __old_sem_init (old_sem_t *__sem, int __pshared, unsigned int __value);
