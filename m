@@ -1,56 +1,35 @@
-From: "Michael S. Zick" <mszick@wolfbutter.com>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] NCR_700 problems on 715/64 with 2.6.11-rc4-pa1
-Date: Sat, 19 Feb 2005 09:20:23 -0600
-Message-ID: <200502190920.23475.mszick@wolfbutter.com>
+Date: Sat, 19 Feb 2005 16:40:07 +0000
+Message-ID: <20050219164007.GC455@parcelfarce.linux.theplanet.co.uk>
 References: <200502191234.30310.deller@gmx.de>
-	<200502190800.44901.mszick@wolfbutter.com>
-	<200502191559.26297.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-2022-jp"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200502191559.26297.deller@gmx.de>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ James.Bottomley@HansenPartnership.com
+To: Helge Deller <deller@gmx.de>
+Return-Path: <willy@www.linux.org.uk>
+In-Reply-To: <200502191234.30310.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat February 19 2005 08:59, Helge Deller wrote:
-> Hi Michael,
-> 
-> On Saturday 19 February 2005 15:00, Michael S. Zick wrote:
-> > On Sat February 19 2005 05:34, Helge Deller wrote:
-> > > I get random messages from the 53c700 scsi driver (see below). 
-> > > Any ideas ?
-> > > Helge
-> > > 
-> > Looks like more udev/irq balance/irq routing problems,
-> > see concurrent thread "BUG 2.6.11-rc4..."
-> > 
-> > try: 'noudev pci=routeirq' options on the command line
-> > to change behavior in generic code.
-> 
-> I will try, but I'm not sure that this is the cause.
-> Looks to me more like a missing ioremap() call.
-> 
-> Even the sti framebuffer does not work since weeks - I think it's due to ioremap() as well.
-> 
-With 2.6.11 the device drivers are responsible for registering
-their irq handling, not the bus driver...
-Could that also be the cause for your missing ioremap() calls?
+On Sat, Feb 19, 2005 at 12:34:30PM +0100, Helge Deller wrote:
+> I get random messages from the 53c700 scsi driver (see below). 
+> Any ideas ?
+> _raw_foo() called with bad address 0xf0106121
+> Backtrace:
+>  [<10104ce4>] __raw_bad_addr+0x64/0x70
+>  [<1028edd8>] NCR_700_start_command+0x3e8/0x78c
 
-The above is a general description - perhaps not exact.
-I am afraid I will learn more than I ever wanted to know about
-this change before I get this *&%^&  tulip driver working under 2.6.11
+Yup.  This is a missing ioremap() in the 53c700 driver.  I'll have a
+quick look, see if it's easily fixable (should be).  If the dmesg noise
+annoys you, you can just turn off CONFIG_DEBUG_IOREMAP, but thanks for
+reporting it -- it's an important step towards turning on HPPA_IOREMAP ...
 
-Mike
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
