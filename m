@@ -1,72 +1,95 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA14614
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Nov 1999 12:30:42 -0700
-Date: Wed, 24 Nov 1999 20:33:50 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Stan Sieler <sieler@allegro.com>
-Cc: Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Progress
-Message-Id: <19991124203349.J1009@mathe.stud.uni-erlangen.de>
-References: <19991124110032.I1009@mathe.stud.uni-erlangen.de> <199911241900.LAA30325@opus.allegro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199911241900.LAA30325@opus.allegro.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA14885
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Nov 1999 12:34:39 -0700
+Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
+	by atlrel1.hp.com (Postfix) with ESMTP id 19C36263A
+	for <parisc-linux@thepuffingroup.com>; Wed, 24 Nov 1999 14:36:26 -0500 (EST)
+Received: (from frowand@localhost) by xsvr4.cup.hp.com (8.7.6/8.7.3) id LAA19634 for parisc-linux@thepuffingroup.com; Wed, 24 Nov 1999 11:36:25 -0800 (PST)
+From: Frank Rowand <frowand@cup.hp.com>
+Message-Id: <199911241936.LAA19634@xsvr4.cup.hp.com>
+Subject: Re: itmr rollover in delay loop
+To: parisc-linux@thepuffingroup.com
+Date: Wed, 24 Nov 1999 11:36:25 PST
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Look at the loop.  What we do is basically
-> > 
-> > 	cr16 = mfctl(16);
-> > 	while(((cr16+loops)-mfctl(16))>0);
-> 
-> You definitely don't want to do the above!
-> 
-> Even ignoring the possibility of an interrupt that takes us away
-> for awhile, there's the simple possibility that cr16 might
-> roll over during your loop.
+>> Look at the loop.  What we do is basically
+>> 
+>>       cr16 = mfctl(16);
+>>       while(((cr16+loops)-mfctl(16))>0);
+>
+>You definitely don't want to do the above!
+>
+>Even ignoring the possibility of an interrupt that takes us away
+>for awhile, there's the simple possibility that cr16 might
+>roll over during your loop.
 
-(cr16+loops) < mfctl(16)     does not handle roll-over correctly
-((cr16+loops)-mfctl(16)) < 0 does.
+Careful use of unsigned variables fixes the problem.  The easiest way to
+explain this is by a small sample program:
 
-> (On a 100 MHz machine, with it ticking once per clock,
-> it rolls over about once every 40 seconds or so.)
-> This means you have an non-0 (although low) probability that your
-> loop may screw you up royally!
 
-No, I haven't.  Think about it.
+main() {
 
-> For example, if CR16 was 10 ticks away from rolling over, and
-> you wanted to delay for 9 ticks there's a non-0 probability
-> that it will rollover in between checks... poof, a 40 second delay
-> occurs in your loop! (Perhaps more, if you don't happen to grab
-> the cr16 within an acceptable window of time at the end of the 40 seconds.)
-> 
-> Detailing the above:
-> 
->    cr16 = mfctl (16);    (and get's max-10)
->    cr16 + 9 = max - 1
+unsigned long a;
+unsigned long b;
+int k;
 
-cr16+loops	mfctl(16)	((c+l)-m(16))	((c+l)-m(16))>0
-0xffffffff	0xfffffff5	0x0000000a	true
-0xffffffff	0xfffffff6	0x00000009	true
-0xffffffff	0xfffffff7	0x00000008	true
-...
-0xffffffff	0xffffffff	0x00000000	false
-0xffffffff	0x00000000	0xffffffff	false
-0xffffffff	0x00000001	0xfffffffe	false
-...
-0xffffffff	0x00010000	0xfffeffff	false
+a = 0xfffffffd;
+b = 0xfffffffa;
 
-Handles the roll-over just nicely, doesn't it ?
+printf("a       b        b - a         0 < (int)(b - a)\n\n");
 
->    after 4 to 20 loops, depending upon cr16 implementation on the machine,
->    you *could* get to:
->        while (  ((max - 1) - (max - 2)) > 0)
->    and then loop back and get
->        while (  ((max - 1) - (0)      ) > 0)
+for (k = 0; k < 10; k++) {
+        printf("0x%x  0x%x  0x%x  %s\n", a, b, (b-a), (0 < (int)(b-a)) ? "y" : "n");
+        b++;
+}
 
-oh, I think I see your problem.  Of course, we rely on the (a-b) part of
-(a-b)>0 to be signed.  (using ">0" for unsigned integers doesn't make much
-sense).
+printf("\n\n");
 
-	Philipp Rumpf
+b += 0x7ffffff4;
+
+for (k = 0; k < 10; k++) {
+        printf("0x%x  0x%x  0x%x  %s\n", a, b, (b-a), (0 < (int)(b-a)) ? "y" : "n");
+        b++;
+}
+
+}
+
+
+
+
+The output from this program is:
+
+
+a       b        b - a         0 < (int)(b - a)
+
+0xfffffffd  0xfffffffa  0xfffffffd  n
+0xfffffffd  0xfffffffb  0xfffffffe  n
+0xfffffffd  0xfffffffc  0xffffffff  n
+0xfffffffd  0xfffffffd  0x0  n
+0xfffffffd  0xfffffffe  0x1  y
+0xfffffffd  0xffffffff  0x2  y
+0xfffffffd  0x0  0x3  y
+0xfffffffd  0x1  0x4  y
+0xfffffffd  0x2  0x5  y
+0xfffffffd  0x3  0x6  y
+
+
+0xfffffffd  0x7ffffff8  0x7ffffffb  y
+0xfffffffd  0x7ffffff9  0x7ffffffc  y
+0xfffffffd  0x7ffffffa  0x7ffffffd  y
+0xfffffffd  0x7ffffffb  0x7ffffffe  y
+0xfffffffd  0x7ffffffc  0x7fffffff  y
+0xfffffffd  0x7ffffffd  0x80000000  n
+0xfffffffd  0x7ffffffe  0x80000001  n
+0xfffffffd  0x7fffffff  0x80000002  n
+0xfffffffd  0x80000000  0x80000003  n
+0xfffffffd  0x80000001  0x80000004  n
+
+
+
+Note that the calculation to decide whether rollover occurred is only
+good for half the maximum magnitude of the counter (2^31 in our case).
+
+
+
+-Frank
