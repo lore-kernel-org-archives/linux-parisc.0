@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from exch-ims.us.nds.com (unknown [208.244.148.253])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6DC90482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:39:34 -0700 (MST)
-Message-ID: <218165EB68E7D411AC6F0003470DA6F63DDF63@EXCH-3>
-From: ANTIGEN_EXCH-3@ndsamericas.com
+Received: from smtp-2.nordnet.fr (unknown [194.206.126.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0DFAC4842
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:39:39 -0700 (MST)
+Received: from pop-1.nordnet.fr (pop-1.nordnet.fr [192.168.164.129])
+	by smtp-2.nordnet.fr (8.9.3/8.9.0) with ESMTP id CAA02143
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 02:39:38 +0100
+From: root@pop-1.nordnet.fr
+Date: Wed, 30 Jan 2002 02:39:26 +0100
+Message-Id: <200201300139.CAA13227@pop-1.nordnet.fr>
 To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 29 Jan 2002 17:44:06 -0800
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C1A92F.9AAD99F0"
-Subject: [parisc-linux] Antigen found =*.com file
+Subject: [parisc-linux] ALERTE: VIRUS DETECTE DANS UN MESSAGE ENVOYE PAR parisc-linux-admin@lists.parisc-linux.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,38 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+             A L E R T E   V I R U S
 
-------_=_NextPart_001_01C1A92F.9AAD99F0
-Content-Type: text/plain
 
-Antigen for Exchange found www.myparty.yahoo.com matching =*.com file
-filter.
-The file is currently Removed.  The message, "[parisc-linux] new photos from
-my party!", was
-sent from paolobentenuto@vidoetron.ca and was discovered in Beason,
-Todd\Inbox
-located at NDS/NDS-US/EXCH-3.
+  Notre système de détection automatique anti-virus 
+  a détecté un virus dans un message qui vous a été
+  envoyé par  paolobentenuto@vidoetron.ca.
 
-------_=_NextPart_001_01C1A92F.9AAD99F0
-Content-Type: text/html
+    La distribution de ce message a été stoppée.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
-<TITLE>Antigen found =*.com file</TITLE>
-</HEAD>
-<BODY>
+  Veuillez vous rapprocher de l'émetteur  paolobentenuto@vidoetron.ca pour
+  régler avec lui le problème.
 
-<P><FONT SIZE=2>Antigen for Exchange found www.myparty.yahoo.com matching =*.com file filter.</FONT>
-<BR><FONT SIZE=2>The file is currently Removed.&nbsp; The message, &quot;[parisc-linux] new photos from my party!&quot;, was</FONT>
-<BR><FONT SIZE=2>sent from paolobentenuto@vidoetron.ca and was discovered in Beason, Todd\Inbox</FONT>
-<BR><FONT SIZE=2>located at NDS/NDS-US/EXCH-3.</FONT>
-</P>
+                  ************
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C1A92F.9AAD99F0--
+Votre PC est-il bien protégé ? Pour une protection 
+performante et autonome, www.securitoo.com/indexml.php 
+est la solution contre tous les virus connus et à venir.
+
+		  ************
+
+Is your PC really protected ? For the best protection, 
+www.securitoo.com/indexml.php is the solution that will 
+protect your PC from all known viruses and viruses to be.
+
+		  ************
+
+	     V I R U S   A L E R T
+
+
+  Our anti-virus system has detected a virus in an 
+  email sent by  paolobentenuto@vidoetron.ca.
+
+    We have stopped the delivery of this email.
+
+  We invite you to contact  paolobentenuto@vidoetron.ca
+  to solve the problem.
