@@ -1,32 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8036482A
-	for <parisc-linux@parisc-linux.org>; Wed, 23 May 2001 16:52:02 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0A675482A
+	for <parisc-linux@parisc-linux.org>; Wed, 23 May 2001 17:08:01 -0600 (MDT)
 To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 23 May 2001 16:54:39 -0600
+Date: Wed, 23 May 2001 17:10:45 -0600
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010523225439.411F937CA8@carmen.fc.hp.com>
-Subject: [parisc-linux] new hppa toolchain, uploaded to debian archive
+Message-Id: <20010523231045.0DF9037CA8@carmen.fc.hp.com>
+Subject: [parisc-linux] hppa64 cross compiler debs available
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+Hi hppa64 kernel users,
 
-There was a slight problem with the glibc in the newcompilers-20010521 set I 
-announced yesterday. It was built with a wrong header which caused a problem 
-with building gdb and strace. I rebuilt glibc and have placed it and the same 
-binutils and gcc at,
+I have built unofficial hppa64-linux cross binutils/gcc debs for use in 
+compiling 64 bit kernels on hppa-linux. They are available at,
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/newcompilers-20010523/
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/unofficial-debs/
 
-After several of us tested the new toolchain and did not find any regressions, 
-Paul Bame uploaded the debs to the Debian archive today and they should 
-hopefully be available in the next few days. However, since the binutils mess 
-is still not completely cleaned up YOU STILL SHOULD NOT APT-GET UPGRADE. For 
-now grab them from the above URL and install by hand. If you are sure your 
-system is clean of the binutils mess then you can use this toolchain to 
-produce binaries for distribution/upload to debian.
+You need both,
+
+binutils-hppa64_2.11.90.0.7-2.0.0.1_hppa.deb
+gcc-hppa64_3.0-0pre010427.0.0.1_hppa.deb
+
+They install under /usr so you shouldn't need to modify your path to build a 
+64bit kernel. These unofficial debs will not be uploaded to the debian archive 
+and are intended as a interim measure until a working mechanism exists to do 
+them properly based on the debian source packages.
+
+Let me know if you have any problems.
 
 Thanks,
 
