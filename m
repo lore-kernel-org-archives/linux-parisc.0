@@ -1,56 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 464844A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Feb 2001 00:08:40 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 295894A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Feb 2001 01:05:11 -0700 (MST)
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA31292
-	for <parisc-linux@puffin.external.hp.com>; Tue, 6 Feb 2001 00:04:24 -0700
-Message-Id: <200102060710.XAA03545@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA31575
+	for <parisc-linux@puffin.external.hp.com>; Tue, 6 Feb 2001 01:00:55 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel3.hp.com (Postfix) with ESMTP id E8EE77C3
+	for <parisc-linux@thepuffingroup.com>; Tue,  6 Feb 2001 00:05:05 -0800 (PST)
+Received: from localhost (grundler@localhost [127.0.0.1])
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id AAA03565
+	for <parisc-linux@thepuffingroup.com>; Tue, 6 Feb 2001 00:07:31 -0800 (PST)
+Message-Id: <200102060807.AAA03565@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] RFC: I/O tree design 
-In-reply-to: Your message of "Tue, 06 Feb 2001 06:02:57 PST."
-             <20010206060257.B27096@parcelfarce.linux.theplanet.co.uk>
-Date: Mon, 05 Feb 2001 23:10:56 -0800
+In-reply-to: Your message of "Mon, 05 Feb 2001 23:10:56 PST."
+             <200102060710.XAA03545@milano.cup.hp.com>
+Date: Tue, 06 Feb 2001 00:07:29 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-...
-> I was thinking along the lines of:
-...
-> and then use the pci_bus sysdata to point to the struct hp_device which
-> is the parent of this pci_bus.
+Grant Grundler wrote:
+> struct pa_devinfo {
+> 	void * pa_iommu;
+> 	void * pa_hba;
+> }
+> 
+> ((pa_sysinfo *) pci_device->sysdata)
 
-Several levels of indirection are needed here.
-Currently, we only store PCI bus host adapter (eg dino or elroy)
-pointer here. We need to store "per device" DMA parameters here
-as well and similar cruft. ie something like:
+I meant to write
+    ((pa_devinfo *) pci_device->sysdata)->pa_iommu
 
-struct pa_devinfo {
-	void * pa_iommu;
-	void * pa_hba;
-}
+I also thought the pa_devinfo struct could hold flags/info which
+describes device and driver DMA behaviors not passed in to
+pci_map_single(). I don't expect device drivers to be modified
+to manipulate this flags/info fields unless it is designed to be arch-
+independent.
 
-((pa_sysinfo *) pci_device->sysdata)
-
-This should work for both PCI and "PCI-like" bus devices.
-pa_hba* would point to PCI bus info for dino/elroy.
-
-> Rather than try to abuse the `parent' entry in the pci_bus.
-
-Right. parent field can never point to anything that's not a struct pci_bus.
-The reason is PCI generic code walks *up* the tree and terminates on
-a NULL ptr.
-
-> Yeah, I was thinking about that.  In some of the larger systems (say,
-> N class), there's no real central point at which to base the bus walk,
-> other than the Stretch memory controller.
-
-Two comments:
-1) IMHO N-class really isn't that big.
-2) It does have a "central bus" (Merced). Actually two of them but they
-   are peers and for most cases look like one.
+Stuff like this is normally stored in the HPUX I/O tree associated
+with specific nodes (and thus visible to parents). Note that I only
+expect the parisc-linux "I/O tree" to only deal with PA I/O devices.
 
 grant
 
