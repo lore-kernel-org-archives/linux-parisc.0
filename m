@@ -1,15 +1,17 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] k-2.6.9-rc2-pa3 panic on c110 (ccio-dma or
-	53c700 pb)
-Date: 15 Sep 2004 19:08:27 -0400
-Message-ID: <1095289712.2379.3.camel@mulgrave>
-References: <4148773C.8040605@tiscali.be>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
+Date: Thu, 16 Sep 2004 10:31:10 -0400
+Message-ID: <20040916143109.GA28936@baldric.uwo.ca>
+References: <20040914160613.GA28659@tausq.org>
+	<20040914223655.GP9763@baldric.uwo.ca>
+	<41487C05.3010606@tiscali.be> <41487D4C.2020004@tiscali.be>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4148773C.8040605@tiscali.be>
+In-Reply-To: <41487D4C.2020004@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,18 +22,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, 2004-09-15 at 13:09, Joel Soete wrote:
-> scsi1: (3:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
->           len = 6, cmd =scsi1 : destination target 3, lun 0
->          command = 0x2a 00 00 3e 7b 3c 00 00 28 00
-> scsi1: Bus Reset detected, executing command 1c652ba0, slot 2fda8778, dsp 00128210[0210]
+On Wed, Sep 15, 2004 at 05:35:08PM +0000, Joel Soete wrote:
+> Out of Memory: Killed process 1760 (test-lws).
+> Out of Memory: Killed process 1762 (test-lws).
 
-That's rather odd, the symptom is of an old bug, long fixed in the 2.6
-kernel (namely 6 byte length for 10 byte command).  Where did you get
-this kernel from?
+Yeah, you can't let this happen. The test is a bit rough on your box,
+I've always turnes OOM off and minimized the number of *other* running
+processes. The test (I think) has a tunable for memory to try capture
+before running the CAS. That particular part of the test is trying to
+see if CAS'ing on swapped pages is atomic or non-atomic by signaling the
+process during a write to a swapped page.
 
-James
-
+c.
 
 _______________________________________________
 parisc-linux mailing list
