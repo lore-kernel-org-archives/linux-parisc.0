@@ -1,31 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA08958
-	for <parisc-linux@puffin.external.hp.com>; Sat, 18 Sep 1999 02:03:59 -0600
-Message-Id: <199909170134.SAA21779@milano.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA09302
+	for <parisc-linux@puffin.external.hp.com>; Sat, 18 Sep 1999 02:27:10 -0600
+Date: Sat, 18 Sep 1999 10:29:23 +0200
+From: Philipp Rumpf <prumpf@suse.de>
 To: Ryan Bradetich <rbradetich@uswest.net>
-cc: Parisc Linux <parisc-linux@thepuffingroup.com>
-In-reply-to: Your message of "Thu, 16 Sep 1999 19:05:52 PDT."
-             <37E193F0.AD5E1A38@uswest.net>
-Date: Thu, 16 Sep 1999 18:34:18 -0700
-From: Grant Grundler <grundler@cup.hp.com>
-Subject: [parisc-linux] C200 support
+Cc: Parisc Linux <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] exec_kernel help
+Message-ID: <19990918102923.C5481@suse.de>
+References: <37E34387.713858FE@uswest.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <37E34387.713858FE@uswest.net>; from Ryan Bradetich on Sat, Sep 18, 1999 at 01:47:19AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ryan Bradetich wrote:
-> I'm working on getting the kernel to boot/load on a C200...
+> I've been struggling with this for the last couple of days, and I'm
+> stuck.  I can build a bootable image, but I can not get it to transfer
+> control to the kernel.  (I'm working on a C200+ which is a PA-8200
+> (PA-RISC 2.0) as Grant pointed out earlier).  I know the first targeted
+> build is for the PA 1.1, but I am willing and would like to get the
+> kernel working on the 2.0 also.
 
-Ryan,
-C200+ has a PA-8200 processor (PA 2.0 Arch) and C200 had the previous
-PA 2.0 processor in it. Haven't you had problems since this port
-(to date) is focused on PA1.1 architecture?
+It would be really nice to support PA2.0 in narrow mode.
 
-I'm certain PA2.0 will be supported in the future but not today.
-I don't want to discourage you but also don't want you to
-burn out trying to make this work...
+> Here is the output on the console (I'm typing this in by hand)
 
-grant
+Try to get a serial console set up.
 
+> Transfering control to kernel. (At entry point 0x00010000)
+> -----------------------------------------------------
+> 
+> It hangs there and I have to reboot to continue.
 
-Grant Grundler
-Communications Infrastructure Computer Operations
-+1.408.447.7253
+Can you access PIM and see if it got an HPMC ?
+
+> Any help/pointers would be appreciated :)
+
+okay, both head.S and our console (which is still called pdc_* though it
+really is IODC) rely on pa1.1 firmware.  I am not sure this works on PA2.0
+systems.
+
+	Philipp Rumpf
