@@ -1,22 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 11E984873
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 30 Aug 2003 07:59:34 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 19t6GL-0001wD-6j; Sat, 30 Aug 2003 14:59:33 +0100
-Date: Sat, 30 Aug 2003 14:59:33 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>,
-	parisc-linux@lists.parisc-linux.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [parisc-linux] Security Hole in binfmt_som.c ?
-Message-ID: <20030830135933.GJ13467@parcelfarce.linux.theplanet.co.uk>
-References: <3F509BBD.2040007@hrzpub.tu-darmstadt.de> <20030830131541.GI13467@parcelfarce.linux.theplanet.co.uk> <1062251389.31150.4.camel@dhcp23.swansea.linux.org.uk>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 369254880
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 30 Aug 2003 09:36:47 -0600 (MDT)
+Date: Sat, 30 Aug 2003 11:35:17 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly3.hia.nrc.ca>
+Cc: randolph@tausq.org, dave.anglin@nrc-cnrc.gc.ca,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: [glibc] tststatic failues, reduced to simple testcase.
+Message-ID: <20030830153516.GD5194@systemhalted>
+References: <20030829200400.GF19341@systemhalted> <200308292203.SAA03224@hiauly3.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1062251389.31150.4.camel@dhcp23.swansea.linux.org.uk>
+In-Reply-To: <200308292203.SAA03224@hiauly3.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,28 +24,59 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Aug 30, 2003 at 02:49:50PM +0100, Alan Cox wrote:
-> On Sad, 2003-08-30 at 14:15, Matthew Wilcox wrote:
-> > On Sat, Aug 30, 2003 at 02:42:37PM +0200, Ruediger Scholz wrote:
-> > > binfmt_som.c:216:2: #error "Fix security hole before enabling me"
-> > > What's this message about?
-> > 
-> > I don't know.  I wish someone would tell me.  You'd think they'd have the
-> > decency to contact the person listed as the author at the top of the file.
+Dave,
+
+> An asm will not cause the restoration of %r19.  The compiler treats
+> r19 as a fixed register when generating pic code.  The saving and
+> restoring of the pic register across calls is something that the pa
+> port does itself in the backend.  Clobbering r19 won't cause it
+> to be restored.
+
+I thought that listing it in the clobber would be the solution.
+
+> In the case of syscalls, the compiler has no way of telling that
+> you are making a "call".
+
+Yes, glibc has begun using inlined macros rather than incuring the
+penalty of a function call to get at the syscall. I _could_ cheat and
+make the inlined code call a 'C' function which would force a restore,
+but we then have _many_ more insn on the fast path (rather than just a
+stw and ldw).
+ 
+> > 0x40008838:     copy r4,r19  <---Restore----- r19 = 0x40020718
 > 
-> Actually explanations were posted in the previous discussion on this on
-> parisc-list.
+> This is a restore after a call.
 
-Um, I can't find it, and neither can Google:
-http://www.google.com/search?q=binfmt_som+security&as_q=%5Bparisc-linux&btnG=Google+Search&as_sitesearch=lists.parisc-linux.org
+Correct. This is a delayed restore from a previous call.
+ 
+> > __asm(
+> > 0x4000883c:     be,l 100(sr2,r0),%sr0,%r31
+> > 0x40008840:     ldi 2,r20                    !! FORK !!
+> > );
+> > 0x40008844:     ldi -1000,r20 <--Corrupted--- r19 = 0x10106368
+> 
+> There is no save and restore around the syscall as GCC doesn't know
+> the asm does a call.  Clobbering r19 isn't an option in PIC code.
+> Thus, either the syscall has to save and restore r19, or the kernel
+> has to avoid clobbering r19.
 
-> Someone has to do the equivalent of the 2.4.22 binfmt_elf changes if
-> neccessary so that another thread can't change the file handles or 
-> steal the exec fd being passed to the loader.
+I would vote for having the kernel avoid trashing r19, though that means
+that the kernel has to do the stw/ldw, and wouldn't it be more
+beneficial to do this in userspace and allow the kernel an extra
+register to generate code with?
+ 
+> You should be able to use a register.  The problem is how to do this
+> in a nice way so that you don't have to save and restore r19 in non-pic
+> code.
 
-Hm, ok, I'll take a look later this weekend if no-one gets to it first.
+Glibc tells me if I'm in PIC code by setting -DPIC on the command line.
+I'm planning on using "ifdef PIC" to optimize away the save and restore.
+The issue really is that most programs are dynamically linked against
+libc, and thus all their syscalls have to save and restore r19.
+ 
+> Ouch, I am surprised that this hasn't had a bigger effect.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Me too. I really see this as a "We should have been doing this anyway"
+and we aren't going to get away from this.
+
+c.
