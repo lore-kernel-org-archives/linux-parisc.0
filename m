@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cactus.bheadley.org (d197.focal4.interaccess.com [207.208.139.197])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DA138482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 08:35:50 -0700 (MST)
-Received: from interaccess.com (IDENT:7PLeIgcoJb94A8AqkOC61BIVcvXApy2P@localhost.localdomain [127.0.0.1])
-	by cactus.bheadley.org (8.11.6/8.11.6) with ESMTP id fBHFYYj06715
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 09:34:43 -0600
-Message-ID: <3C1E108A.40706@interaccess.com>
-Date: Mon, 17 Dec 2001 09:34:34 -0600
-From: "Bryan W. Headley" <bheadley@interaccess.com>
+Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A4EBA482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 09:29:38 -0700 (MST)
+To: Maneesh Singhal <maneesh@india.hp.com>
+Subject: Re: [parisc-linux] installation..... new problems..
+Message-ID: <1008606134.3c1e1bb653614@webmail.tiscalinet.be>
+Date: Mon, 17 Dec 2001 17:22:14 +0100 (CET)
+From: joel.soete@freebel.net
+Cc: Joel Soete <joel.soete@freebel.net>,
+	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: [Fwd: Re: 735 and SCSI (was: Re: [parisc-linux] Firmware upgraded, STI console problem)]
-Content-Type: multipart/mixed;
- boundary="------------000505070603050006030708"
+Content-Type: multipart/mixed; boundary="-MOQ10086061343609a61b720a1f43c1755fae8b0d6738"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,71 +22,78 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------000505070603050006030708
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+This message is in MIME format.
 
-Forgot to CC the list. Sorry!
+---MOQ10086061343609a61b720a1f43c1755fae8b0d6738
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 
+Hey Maneesh,
 
--- 
-____               .:.                 ____
-Bryan W. Headley - bheadley@interaccess.com
+Quoting Maneesh Singhal <maneesh@india.hp.com>:
 
---------------000505070603050006030708
-Content-Type: message/rfc822;
- name="Re: 735 and SCSI (was: Re: [parisc-linux] Firmware upgraded, STI console problem)"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Re: 735 and SCSI (was: Re: [parisc-linux] Firmware upgraded, STI console problem)"
-
-
->From - Mon Dec 17 09:32:07 2001
-X-Mozilla-Status2: 00000000
-Message-ID: <3C1E0FF1.60507@interaccess.com>
-Date: Mon, 17 Dec 2001 09:32:01 -0600
-From: "Bryan W. Headley" <bheadley@interaccess.com>
-User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:0.9.6) Gecko/20011120
-X-Accept-Language: en-us
-MIME-Version: 1.0
-To: Richard Hirst <rhirst@linuxcare.com>
-Subject: Re: 735 and SCSI (was: Re: [parisc-linux] Firmware upgraded, STI console problem)
-References: <1008253261.495.4.camel@beavis> <Pine.LNX.4.33.0112141351590.31282-100000@bob.ncssm.edu> <20011214225505.F27312@linuxcare.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Richard Hirst wrote:
-
-> On Fri, Dec 14, 2001 at 01:58:03PM -0500, Phil Anderson wrote:
+> On Sun, 16 Dec 2001, Joel Soete wrote:
 > 
->>so has _anyone_ gotten a 735 working or anything? I have 7 of them that
->>are taking up space in my dorm room, and two 755's under the desk that
->>server the same purpose...
->>
+> > Hello Maneesh,
+> > 
+> > >        selection .. Bus reset detected ..." etc. etc.
+> > 
+> > This sound like a problem I met a time ago: the scsi chain was opened
+> > (ie during test I forgot to reconnect the scsi terminator to my
+> external
+> > drive).
+> > 
+> > If a scsi terminator is well connected may be could it be defective
+> (or
+> > a one not corresponding to your scsi interface logicaly Single-Ended
+> if
+> > your CD is connected to the narrow single-ended conector)?
 > 
-> I believe some people have had 735 working using narrow SE disks on
-> the same i/f as the CD.
+> Thanx Joel,
 > 
+> 	Exactly this was the problem, my scsi cable was loose, and also
+> 	didn't have the terminator.. Anyway, now I installed the system.
+
+Nice to read.
+
+> 
+> 	One new question : I am unable to start my X , whenever I do 
+> 	startx it says 
+> 
+> 	"Fatal Server Error :
+> 	no screen found "
+> 
+> 	Can anybody tell me why it is happening so ??????
+> 
+> 	Also my machine is not able to connect to any other machine...
+> 	though I configured the network !!!
+> 
+I am not a specialist of X but I attach my XF86Config file (just a one
+previously put on this list but a bit changed for new XF86 release).
+
+Two things are important:
+
+    a. be sure that your mouse pointer device (here /dev/psaux) is not a pointer
+to /dev/gpmdata (in fact that should not happen with psaux but well with mouse)
+
+    b. be sure that the Modes at line 395 match your screen setting (at the boot
+console CO[nfiguration] MO[nitor] would display you the actual monitor set up)
+Also afaik the rest of the line had to commented out or removed because
+switching  does not work.
+
+Joel
+        
+
+ 
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+
+---MOQ10086061343609a61b720a1f43c1755fae8b0d6738
+Content-Type: application/octet-stream; name="XF86Config"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="XF86Config"
 
 
-My guess is, the thing to do is merge the FW stuff from MkLinux driver 
-and see what still works. Slight problem with that driver is it knows 
-what hardware you have by what machine it determines you have. FW, 
-Big/Little endian configurations figured out on the spot. It'd be better 
-to recognize those attributes by examining the controller.
 
-Since my C110 has a fast/wide, and so does my 735, I'm in the bad spot 
-of never really having either machine fully boot up. The CDROM drive I 
-have doesn't "like" RW discs, so I'd love to see someone stamp out a 
-Woody-ish master that I can read from.
-
-
-
-
--- 
-____               .:.                 ____
-Bryan W. Headley - bheadley@interaccess.com
-
-
---------------000505070603050006030708--
+---MOQ10086061343609a61b720a1f43c1755fae8b0d6738--
