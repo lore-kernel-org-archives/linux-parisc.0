@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 24 Mar 2005 11:19:28 -0500 (EST)
-Message-ID: <200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
+Date: Thu, 24 Mar 2005 09:59:47 -0700
+Message-ID: <20050324165947.GA29361@colo.lackof.org>
 References: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
+	<200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: ja2morri@csclub.uwaterloo.ca (James A. Morrison)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca> from "James A. Morrison" at
-	Mar 24, 2005 08:27:24 am
+In-Reply-To: <200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +21,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->  GCC 4 already produces the same code for these functions*.  Attached is the
-> final_cleanup dumb of an O2 build of this file.
+On Thu, Mar 24, 2005 at 11:19:28AM -0500, John David Anglin wrote:
+...
+> From a PA standpoint, GCC 4 is ready for serious testing.  All testsuite
+> bugs have been squashed in C and C++.
 
-My impression is that GCC 4 is doing a better job with 64-bit code
-than previous versions although I haven't run any benchmarks.  It
-could be as much as a 10% improvement in performance on average.
-However, 64-bit code is still slower than 32-bit code.
+Is there a .deb or tarball available I can drop on a bunch of machines?
 
->>From a PA standpoint, GCC 4 is ready for serious testing.  All testsuite
-bugs have been squashed in C and C++.
+I'd be happy to test for kernel builds.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
