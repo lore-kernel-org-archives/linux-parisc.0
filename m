@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 810854866
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Oct 2002 02:34:00 -0700 (MST)
-Date: Sun, 27 Oct 2002 10:33:55 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Stephan <stephan@itp.bg>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ext3 /
-Message-ID: <20021027093355.GD9302@charite.de>
-References: <20021027092756.D8B974862@dsl2.external.hp.com>
-Mime-Version: 1.0
+Received: from mailer.berkom.de (mailer.berkom.de [141.39.13.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CF11C4864
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Oct 2002 03:23:45 -0700 (MST)
+From: "N.Leymann" <leymann@berkom.de>
+Message-Id: <200210271020.g9RAK03q006456@mailer.berkom.de>
+Subject: Re: [parisc-linux] Branch Prediction
+To: grundler@dsl2.external.hp.com (Grant Grundler)
+Date: Sun, 27 Oct 2002 11:20:00 +0100 (MET)
+Cc: parisc-linux@lists.parisc-linux.org, dave@hiauly1.hia.nrc.ca
+In-Reply-To: <20021027012303.7B576484E@dsl2.external.hp.com> from "Grant Grundler" at Oct 26, 2002 07:23:03 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021027092756.D8B974862@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +22,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Oct 27, 2002 at 11:28:04AM +0200, Stephan wrote:
-> Hello,
-> /dev/sda1   *         1        15     61814   f0  Linux/PA-RISC boot
-> /dev/sda2            16       441   1756398   83  Linux
-> /dev/sda3           442       562    498883   82  Linux swap
-> /dev/sda4           563      1017   1875965   83  Linux
-> it is my partitions of my linux
-> Can I make /dev/sda2 which is / partition ext3 or reiserfs? i.e. journaling
-> FS
+Hi,
 
-Yes, why not?
+Sunday, October 27, 2002, 2:23:03 AM, you wrote:
 
-tune2fs -j /
+> "John David Anglin" wrote:
+>> I wonder if the PA-8700 in the rp2470 has it?
+> gsyprf11 is a 650Mhz PA8700. please try it.
 
-> After I made dist-upgrade 1 week ago, my uname don't works, if I write uname
-> -a there is segmentation fault, any ideas?
+It's quite a while ago that I worked on assembly level with HPPA so I
+might be wrong. But as far as I know most of the HPPA (at least 8200 and
+8700) implement static and dynamic branch prediction. Which scheme is
+used is controlled on a per page basis with the P-Bit in the ITLB.
 
-I filed a bug report a few days ago. Check the Debian bug database.
+With the HP c/c++ compilers you can control this behaviour using the
++O[no]static_prediction flags.
 
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V a)   Ralf.Hildebrandt@charite.de
-Charite Campus Mitte                            Tel.  +49 (0)30-450 570-155
-Referat V a - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Microsoft: "Where do you want to go today?"
-Linux:     "Where do you want to be tomorrow?"
-BSD:       "Are you guys coming, or what?"
+> Think so?
+> After reading the description I had the impression BTS has to be on chip
+> and integrated in order to get the speed. But I'm just a SW engineer...
+Yep. If it's implemented it has to be on chip.
+
+> yes.  IIRC, branches forward tend to not be taken and branches backwards
+> tend to be loops. Or something along that line. But with PBO, the
+> static hints are better. And HPUX has a very cool "driver" called
+> "flipper" that will flip to static hints to match performance path
+> at run time.
+ 
+>> I don't know how the dynamic prediction hardware
+>> works but I would think it wouldn't be there if it didn't
+>> improve branch prediction.
+In this case a branch history table is used which records the results of the
+last branches. HPPA uses a three bit shift register (256 entries).
+The fetch unit checks this register and predicts the branch according to the
+content. eg. if the branch was taken two times before it is predicted that it
+will be taken again.
+
+If you are interested in more details I can check tomorrow when I'm back to
+office. I should have a paper somewhere which compares static and dynamic
+branch prediction on PA2.0.
+
+  hope that helps
+
+     Nic
