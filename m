@@ -1,22 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta04bw.bigpond.com (mta04bw.bigpond.com [139.134.6.87])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1D5B54829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 20:27:26 -0600 (MDT)
-Received: from piglet.sspl.net.au ([144.135.24.69]) by
-          mta04bw.bigpond.com (Netscape Messaging Server 4.15 mta04bw Jul
-          16 2002 22:47:55) with SMTP id H4045L00.BOY for
-          <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 12:27:21 +1000
-Received: (from pete@localhost)
-	by piglet.sspl.net.au (8.9.3/8.9.3) id MAA05763
-	for parisc-linux@lists.parisc-linux.org; Tue, 15 Oct 2002 12:27:21 +1000
-Date: Tue, 15 Oct 2002 12:27:20 +1000
-From: Peter Lavender <plaven@bigpond.net.au>
-To: PARISC Mailing List <parisc-linux@lists.parisc-linux.org>
-Message-ID: <20021015122720.E893@piglet>
-Reply-To: plaven@bigpond.net.au
-Mime-Version: 1.0
+Received: from web40101.mail.yahoo.com (web40101.mail.yahoo.com [66.218.78.35])
+	by dsl2.external.hp.com (Postfix) with SMTP id 24F294829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 20:50:00 -0600 (MDT)
+Message-ID: <20021015024957.67971.qmail@web40101.mail.yahoo.com>
+Date: Mon, 14 Oct 2002 19:49:57 -0700 (PDT)
+From: Roland Hauff <rhauff@yahoo.com>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] help!!! apt-get dist-upgrade
+Subject: [parisc-linux] Xfree86 doesn't run on 700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,29 +20,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Everyone,
+Hi,
+I just installed Debian 3.0 on an Apollo Series 700. 
+I'm not sure of the model, but it has 96 Meg memory
+and a beautiful 19" 1280x1024 Sync on Green monitor.
 
-I'm not having much luck finding a solution to this problem.
+I have gotten it to boot fine, but cannot get xfree86
+configured for graphics.  It does not come up with any
+info during the install, and I cannot find any info on
+what graphics system it has.  I did see on a hardware
+list that it may have Coral SGC, but do not see this
+supported by XFree86.
 
-I kicked off apt-get update then apt-get dist-upgrade, however I was
-ssh'ed into the box when I did this.  Becuase the connect is flakey,
-the ssh connection reset, so the last thing apt-get dist-upgrade has
-showing was a prompt.
+Thank you!
+Roland Hauff
 
-Now I have ssh'ed back to the box.  How can I basically reconnect to
-the process and issue the Y to go ahead and complete the upgrade?
-
-I'd rather not kill it unless it's safe to do so.
-
-A ps aux | grep apt shows the process still there.
-
-Thanks,
-
-
-
-Pete.
-
--- 
-				Due to a lack of imagination, 
-				this signature will remain 
-				under construction indefinitely.
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
