@@ -1,26 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA17817
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 May 2000 06:48:18 -0600
-Message-ID: <20000518064806.A17788@puffin.external.hp.com>
-Date: Thu, 18 May 2000 06:48:06 -0600
-From: Philipp Rumpf <prumpf@puffin.external.hp.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA18099
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 May 2000 07:19:36 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 18 May 2000 13:19:42 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA13283;
+	Thu, 18 May 2000 23:19:31 +1000
+Date: Thu, 18 May 2000 23:19:31 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Philipp Rumpf <prumpf@puffin.external.hp.com>
+cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] New binutils available from cvs
-References: <20000518045138.C14031@puffin.external.hp.com> <Pine.LNX.4.21.0005182055320.6449-100000@front.linuxcare.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0005182055320.6449-100000@front.linuxcare.com.au>; from Alan Modra on Thu, May 18, 2000 at 09:09:09PM +1000
+In-Reply-To: <20000518064806.A17788@puffin.external.hp.com>
+Message-ID: <Pine.LNX.4.21.0005182256370.13052-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I'm talking about floating point compare instruction conditions, for
-> example: "fcmp,dbl,!?>= %fr4,%fr5"
+On Thu, 18 May 2000, Philipp Rumpf wrote:
 
-Oh, I see.  (I stupidly only checked the condition codes tables in the
-architecture manual, the floating point conditions were in the FPU
-section).
+> > I'm talking about floating point compare instruction conditions, for
+> > example: "fcmp,dbl,!?>= %fr4,%fr5"
+> 
+> Oh, I see.  (I stupidly only checked the condition codes tables in the
+> architecture manual, the floating point conditions were in the FPU
+> section).
+> 
+> So, '!' isn't usable as either line comment or '\n'-equivalent
+> character without hacking.  Let's just not use it ?
 
-So, '!' isn't usable as either line comment or '\n'-equivalent
-character without hacking.  Let's just not use it ?
+It works quite OK as a line separator.  The assembler line separator is
+not a '\n' equivalent.
 
-	Philipp Rumpf
+-- 
+Linuxcare.  Support for the Revolution.
