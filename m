@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: H_Aue@t-online.de (Hinrich Aue)
-Cc: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] DSL on a 715/80 with rp-pppoe 
-In-Reply-To: Message from H_Aue@t-online.de (Hinrich Aue)
-   of "Sat, 29 Dec 2001 13:23:44 +0100." <16KITV-0dMC0GC@fwd05.sul.t-online.com>
-References: <20011228124334.96741.qmail@web21207.mail.yahoo.com> <20011229050103.54069482A@dsl2.external.hp.com>  <16KITV-0dMC0GC@fwd05.sul.t-online.com> 
-Date: Sat, 29 Dec 2001 14:31:47 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20011229213147.EA050482A@dsl2.external.hp.com>
+Received: from cactus.bheadley.org (d52.focal4.interaccess.com [207.208.139.52])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 343A3482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Dec 2001 15:57:19 -0700 (MST)
+Message-ID: <3C2E4A12.8090806@interaccess.com>
+Date: Sat, 29 Dec 2001 16:56:18 -0600
+From: "Bryan W. Headley" <bheadley@interaccess.com>
+MIME-Version: 1.0
+To: Richard Hirst <rhirst@linuxcare.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PARISC-Linux 0.9.3 on a 735
+References: <3C2C9C6E.D63903A7@cms-stl.com> <20011229211132.GB11344@sleepie.demon.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,42 +22,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hinrich Aue wrote:
-> Yes, I found no logging in syslog. I'm not used to kernel stuff, (2. 
-> semester) but the stackdump looked familiar. And after all, it happens when I
-> start pppd with async ppp. If I don't activate async ppp It don't crashes, 
-> but it don't work.  That was a problem first when I tried to use DSL. After I 
-> activated async ppp the machine crashes at the start of pppd.
+Richard Hirst wrote:
 
-Ok. That sounds similar.
+> On Fri, Dec 28, 2001 at 10:23:10AM -0600, Michael Madden wrote:
+> 
+>>Hello;
+>>
+>>I recently installed PARISC-Linux 0.9.3 on an older 735, and I'm having
+>>a heck of time to get X configured.  I have a HIL keyboard and mouse,
+>>but /usr/bin/X11/xf86config presents you with options for common
+>>pc setups (PS2 mouse, ATI video card, etc).  Is there a better way
+>>to setup X or is this even supported at this time?
+>>
+> 
+> Have you followed the advice in
+> 
+> <http://www.parisc-linux.org/release-0.9/errata-093.html>
+> 
 
-> I also tried the latest CVS kernel Verison (pa27).
-> I would like to dig in that stuff, but I don't know where to start and have 
-> too little experience.
 
-There must be some kernel beginners guid some place...perhaps this
-is the start of one for parisc:
-1) collect console output from a serial console. Or type in by hand
-   panic/crash reason, GR02, IOAQ, and IIR registers for starters.
-   Note machine model, PDC firmware rev too.
+Probably should ammend the release doc to suggest running fbset -i (as 
+root) is useful to get the resolution information as well...
 
-2) get "a.c" and "astk" from CVS
-	http://cvs.parisc-linux.org/~checkout~/build-tools/
 
-3) use "a" to lookup up symbols names in your matching System.map.
-   Feed the stack dump to "astk" to get a rough idea of what was
-   on the stack. parisc stack grows upward - higher addresses are the
-   "top" of the stack - some of the addresses are residual junk.
-   Look at the source code to see which functions are really being called.
 
-4) keep notes!
-   which kernel versionso, which symtoms, local changes you've made.
 
-5) search the parisc-linux mail archive for "stack dump" or "trap 15"
-   (or whatever the panic output is or kernel symbols associated
-   with it).
 
-6) post questions to parisc-linux when you get stuck.
-
-hth,
-grant
+-- 
+____               .:.                 ____
+Bryan W. Headley - bheadley@interaccess.com
