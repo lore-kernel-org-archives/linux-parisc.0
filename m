@@ -1,30 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5CEE5482A
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 10:49:39 -0600 (MDT)
-Sender: Jes.Sorensen@cern.ch
-To: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D46E482A
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 11:55:07 -0600 (MDT)
+Message-Id: <200104131748.LAA06103@puffin.external.hp.com>
+To: "Matthew van de Werken" <mvdw73@one.net.au>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] FB cleanups
-References: <200104130702.BAA30672@puffin.external.hp.com>
-From: Jes Sorensen <jes@linuxcare.com>
-Date: 13 Apr 2001 18:49:37 +0200
-In-Reply-To: Grant Grundler's message of "Fri, 13 Apr 2001 01:02:15 -0600"
-Message-ID: <d3ae5krbha.fsf@lxplus015.cern.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] Booting 735/99 
+In-Reply-To: Your message of "Fri, 13 Apr 2001 22:28:27 +1000."
+             <007701c0c415$3f4779a0$1401a8c0@peewee>
+Date: Fri, 13 Apr 2001 11:48:25 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
->>>>> "Grant" == Grant Grundler <grundler@puffin.external.hp.com> writes:
+"Matthew van de Werken" wrote:
+> Is this possible? Is there a disk image somewhere I can use for this?
 
-Grant> Jes Sorensen wrote:
->> Then Linus changed his mind. You are still *only* supposed to use
->> readb/writeb on PCI (and possible ISA) on PCI like devices.
+You should be able to dump the ISO to disk and boot that.
+The only problem is to convince everyone to use the disk instead
+of CDROM /dev special device names. I think one only has
+to interactively change the "Root" parameter but haven't
+tried it recently.
 
-Grant> Jes, AFAIK, STI devices will all be memory mapped devices.
-Grant> readb/writeb will do the right thing since GSC is "PCI-like" in
-Grant> this regard.
 
-I still don't like it as it is misleading.
+> Alternatively, can I build a bootable disk manually on the SCSI disk from
+> the x86 box? If I do this, what do I need to do? I tried to do the
+> instructions on the "Installing PA-RISC Linux" page, however I couldn't
+> mount the "f0" type partition (for obvious reasons), even if I had known
+> what to put there once I had.
 
-Jes
+The f0 partition is raw data and not a file system.
+cvs checkout the linux and palo repositories from your x86 and
+you can build an XC palo which can talk to your disk.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
