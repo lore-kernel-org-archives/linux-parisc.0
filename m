@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 22 Feb 2003 19:46:29 -0700
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
+Date: Sat, 22 Feb 2003 19:52:13 -0700
+To: caslivkoff@speakeasy.net
+Cc: Dan Baker <dan_baker@eli.net>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] X problems...
-Message-ID: <20030223024629.GA4464@dsl2.external.hp.com>
-References: <20030220051506.GA10418@dsl2.external.hp.com> <3E54DBA200000169@ocpmta3.freegates.net>
+Message-ID: <20030223025213.GB4464@dsl2.external.hp.com>
+References: <20030222014840.12429.qmail@webmail.speakeasy.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E54DBA200000169@ocpmta3.freegates.net>
+In-Reply-To: <20030222014840.12429.qmail@webmail.speakeasy.net>
 From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -20,16 +21,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Feb 20, 2003 at 06:05:34PM +0100, Joel Soete wrote:
-> Do you think it could be now find into XFree86 kernel drivers?
+On Fri, Feb 21, 2003 at 05:48:40PM -0800, caslivkoff@speakeasy.net wrote:
+> Getting this code to compile is not going to get you anywhere.
 
-I don't know. I was pretty sure the X11.org code had basic support
-for parisc graphics cards. But I'm not sure it covered the latest
-generation (FX[2456]). No clue is XFree86 picked those up or not.
+understood...just a step in that direction.
 
-BTW, in another email you noted the source was only supporting 2.2 kernel.
-That makes sense to me since I didn't see the driver using
-pci_dma* routines. Without using those routines, I don't expect
-the code to work on any parisc machines.
+...
+> While I believe it is possible, resources in the graphics lab are scarse.
+> I suspect that a majority of the code could never be made public, so even
+> if the lab found time to do it once, it would be tough to keep it
+> maintained, etc.
 
+If someone quietly passed me working code that I could publish,
+they wouldn't have to maintain it. I'm confident the folks who
+got STI FB working could also keep this working.
+
+But I'm afraid resources is a moot point: it's unlikely
+to get permission to get published. :^(
+
+thanks chuck,
 grant
