@@ -1,54 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 355394854
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 02:32:55 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel7.hp.com (Postfix) with ESMTP id D3ED51F7A7
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 04:30:52 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id CAA10917
-	for parisc-linux@lists.parisc-linux.org; Wed, 3 Oct 2001 02:32:54 -0600 (MDT)
-Date: Wed, 3 Oct 2001 02:32:54 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200110030832.CAA10917@udlkern.fc.hp.com>
+Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C22FE4848
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 02:42:50 -0600 (MDT)
+Received: from mail.lokmail.net (localhost [127.0.0.1])
+	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id EAA14939
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 3 Oct 2001 04:42:35 -0400
+Message-Id: <200110030842.EAA14939@mail.lokmail.net>
+From: Jurij Smakov <jurij@lokmail.net>
 To: parisc-linux@lists.parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] PCXS fixes
+Subject: Re: [parisc-linux] Mount segfaults and stuff 
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Wed, 03 Oct 2001 04:42:35 -0400
+Sender: jurij@mail.lokmail.net
 List-ID: <linux-parisc.vger.kernel.org>
 
-I just committed some PCXS fixes, some of which were based on the ideas
-posted here in the last week or so for 720 support.  One new fix is that I
-program the Asp interrupts correctly, fixing a bug which was preventing
-710's from booting (I think there is at least one person on this list
-with such a machine).
+> *sigh*. Lots of little stuff like floppy driver and hpux binary support.
+> 
+> The TODO list is stale intentionally.
+> We should be using http://bugs.parisc-linux.org.
+> 
+> grant
 
-However, ls still hangs randomly (actually it is not random, it depends on
-which directory the ls is done in).  It gets stuck in a ldcw loop due to
-the lock word not being 16 byte aligned.  The problem is that we fixed the
-alignment problems for static and dynamic allocations, but the align
-attribute is ignored for automatic (stack) allocations. Note that
-although ldcw requires 16 byte alignment for correct function, it does
-not cause an unaligned fault if the address is not aligned, it just
-doesn't work correctly!
+Hi!
 
-Here are some suggested fixes:
+The problem is that this bug list is also rather outdated. There are
+two more or less recent bugs, others are more than 2 months old. Most
+kernel bugs are filed against 2.4.0 kernel. I guess, a lot of things
+changed since then. For example, mount bug, that I've mentioned before
+just disappeared, once I recompiled it from source with latest CVS gcc.
+Also, bug #135 (kernel panic on 712 doing two simultaneous compiles) - 
+yesterday I've built the kernel with "make -j 2" without any problems
+on a 712/80. Is it enough to close this bug? IMHO, the right strategy
+in this situation would be to try and reproduce the bugs with latest
+toolchain and drop the bugs, which do not have a recipe to reproduce them.
 
-    1) Fix the compiler to honor the aligned attribute for stack
-    allocations. I'm not sure how difficult this would be. I'm
-    not a compiler person, so someone else would have to do this.
-    I would guess that this problem is in the machine independent
-    part of the compiler. I'm not sure whether or not it would
-    be considered a bug. It might be worth writing a test for
-    the 386 version of gcc, and if it fails, report the "bug" and
-    see what happens ...
+Anyway, what should I do with mount? Do I have to contact the package
+maintainer? I can build the debs myself, but those will be unofficial.
 
-    2) Change the lock structure to have 4 contiguous lock words, each
-    initialized to 1.  Then the lock code can round the address up to the
-    nearest 16 byte aligned address and use that for the semaphore.  If we
-    choose this solution we can just get rid of the aligned attribute,
-    since it would no longer serve any purpose.
+Also, last night I had some weird problems with linux/net/core/netfilter.c
+Sometimes its compilation fails, but I could not pinpoint the problem
+so far. I'll play with it, but it would be nice to know, if anyone
+else has/had any (negative) experiences with this file.
 
+Best regards,
 
-John Marvin
-jsm@fc.hp.com
+Jurij.
