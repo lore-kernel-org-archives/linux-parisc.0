@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout05.sul.t-online.com (mailout05.sul.t-online.com [194.25.134.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 084DA4868
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 05:23:16 -0600 (MDT)
-From: Alexander Gabert <pappy@nikita.ath.cx>
-Date: Fri, 1 Aug 2003 13:21:48 +0200
-To: "E. Pavletic" <Enzo.Pavletic@guest.arnes.si>
-Cc: parisc-linux@parisc-linux.org
-Message-ID: <20030801112148.GA1062@nikita.ath.cx>
-References: <1059732252.1227.39.camel@rupa.go.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1059732252.1227.39.camel@rupa.go.net>
-Subject: [parisc-linux] Re: Apollo 9000 power problem
+Received: from hiscom.nl (unknown [130.78.143.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5DB6F482D
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 08:29:41 -0600 (MDT)
+Message-Id: <03Aug1.164945cest.119089@ns.hiscom.nl>
+From: "Beerse, Corne" <c.beerse@torex-hiscom.nl>
+To: "'maillist parisc-linux'" <parisc-linux@parisc-linux.org>,
+	"'maillist HP-UX-admin'" <hpux-admin@DutchWorks.nl>
+Date: Fri, 1 Aug 2003 16:29:35 +0200 
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C35839.54B564E0"
+Subject: [parisc-linux] testing HP-PA risc hardware
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,88 +22,97 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hi,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-On Fri, Aug 01, 2003 at 12:04:12PM +0200, E. Pavletic wrote:
-> Hi Alex,
+------_=_NextPart_001_01C35839.54B564E0
+Content-Type: text/plain
 
-nice to meet you :-)
+Hi,
 
-> 
-> I've got an apollo 9000 series 735/90 and now I'm experiencing a problem
-> like yours: when I try to switch the power on, the leds flash up for a
-> part of a second and then it's dead again.
-> I have no idea what's the matter.
+Here I have an HP D370 machine that (during my holidays) crashed. Since the
+machine was replaced since long and only kept running for fast access to old
+stuff, not a real problem.
 
-when it starts blinking for less than a second, try pushing the button
-again and again and keeping it in the middle of being pushed.
-this way you shortcircuit the logic but do not turn it off again!
-> 
-> I've looked on the Internet, but there I've found discordant opinions:
-> someone says that the problem is in the power supply, others (like you)
-> that it is in the power switch instead.
+At first, we suspected the boot disk since its led keeps buring. However,
+booting HP-UX from CDRom for a new fresh install, the boot of the kernel
+crashes at roughly the same point, even with all disks removed. Hence we
+suspected the core memory. However, changing or replacing the memory does
+not change anything in the behavoure.
 
-the power switch was not the problem.
-the power suply has gone bad.
-a new costs around 150 euro :-(
+Is there a way to somehow test the hardware of a PA-Risc machine? Either
+from HP or from the linux world?
+
+Kind of like the test tools as found on the (intel-) linux distributions?
+
+btw: I can get debian-woody booted up to the message that if this is the
+last message on screen, check the faq. A second terminal (HP 700/96) on tty1
+shows a lot of (vt100?) junk. How can I either put the HP700/96 terminal in
+VT100 mode or whats the magic name of this terminal in the 'TERM=...' kernel
+parameter?
 
 
-> 
-> Would you be so kind as to tell me how you resolved the problem and
-> what's the real reason of this failure, if you know it?
 
-as said, the power supply has gone bad and i did not find a way other
-than replacing it...
-www.gall.de
+CBee
 
-> 
-> Thanks
-> enzo
 
-HTH,
+mailto:c.beerse@torex-hiscom.nl
 
-Alex
-> 
-> 
-> # From: Alexander Gabert <pappy@nikita.ath.cx>
-> # Date: Fri, 10 May 2002 22:37:45 +0200
-> 
-> > hi fellows,
-> >
-> > tonight i ran into a major problem: one of my two hp workstations is
-> > having problems with the power on switch:
-> 
-> > the button must be pushed and tricked more than 5 times to turn the
-> > machine on (led's blink only for a second when you push the button
-> > once).  i did not mind and just did not turn the machine off :-)
-> >
-> > but now, i have the problem that the machine runs for 5-6 minutes and
-> > then suddenly powers off itself.
-> >
-> > i really suppose it to be a problem with the A1094-66541 PCBA Switch
-> > that is the little power switch assembly behind the drive cage that is
-> > connected to the leds with the small ribbon cable and connected to the
-> > chassis backplane with a long cable.
-> >
-> > does someone of you (preferably in germany, or the best would be
-> > munich) know somebody, who i may ask to get me such a part?
-> >
-> >
-> > i am quite sure, that this PCB is generating the problems with
-> > powering
-> > on the machine and recently that it powers itself off.
-> > some months ago i took the power switch PCB from my second machine and
-> > put it into this one and the PCB worked, but i need it for the other
-> > machine of course, which happens to be the web/mail server from which
-> > i am currently writing and receiving my mails.
-> >
-> > thank you in advance for any help to get this machine up and running
-> > again...
-> >
-> > alex
-> 
+------_=_NextPart_001_01C35839.54B564E0
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 
--- 
-A long-forgotten loved one will appear soon.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2654.45">
+<TITLE>testing HP-PA risc hardware</TITLE>
+</HEAD>
+<BODY>
 
-Buy the negatives at any price.
+<P><FONT SIZE=3D2>Hi,</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Here I have an HP D370 machine that (during my =
+holidays) crashed. Since the machine was replaced since long and only =
+kept running for fast access to old stuff, not a real =
+problem.</FONT></P>
+
+<P><FONT SIZE=3D2>At first, we suspected the boot disk since its led =
+keeps buring. However, booting HP-UX from CDRom for a new fresh =
+install, the boot of the kernel crashes at roughly the same point, even =
+with all disks removed. Hence we suspected the core memory. However, =
+changing or replacing the memory does not change anything in the =
+behavoure.</FONT></P>
+
+<P><FONT SIZE=3D2>Is there a way to somehow test the hardware of a =
+PA-Risc machine? Either from HP or from the linux world?</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Kind of like the test tools as found on the (intel-) =
+linux distributions?</FONT>
+</P>
+
+<P><FONT SIZE=3D2>btw: I can get debian-woody booted up to the message =
+that if this is the last message on screen, check the faq. A second =
+terminal (HP 700/96) on tty1 shows a lot of (vt100?) junk. How can I =
+either put the HP700/96 terminal in VT100 mode or whats the magic name =
+of this terminal in the 'TERM=3D...' kernel parameter?</FONT></P>
+<BR>
+<BR>
+
+<P><FONT SIZE=3D2>CBee</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2><A =
+HREF=3D"mailto:c.beerse@torex-hiscom.nl">mailto:c.beerse@torex-hiscom.nl=
+</A></FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C35839.54B564E0--
