@@ -1,50 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from oliver.internal.sjdjweis.com (dsl.75.131.networkiowa.com [209.234.75.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 79D38482A
-	for <parisc-linux@parisc-linux.org>; Mon,  4 Jun 2001 16:07:59 -0600 (MDT)
-Date: Mon, 4 Jun 2001 17:09:34 -0500 (CDT)
-From: <djweis@sjdjweis.com>
-To: "Michael S. Zick" <mszick@pflash.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] D310 boot messages
-In-Reply-To: <01060416591200.00472@wolf01.my.home>
-Message-ID: <Pine.LNX.4.21.0106041708310.20217-100000@oliver.internal.sjdjweis.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from solo.franken.de (pD90546F3.dip.t-dialin.net [217.5.70.243])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C031B482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Jun 2001 16:54:50 -0600 (MDT)
+Date: Tue, 5 Jun 2001 00:52:05 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Problems with 0.9 ISO Images from mkhppa1.esiee.fr
+Message-ID: <20010605005205.B3234@solo.franken.de>
+References: <20010604170841.A8900@solo.franken.de> <200106041940.NAA13519@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200106041940.NAA13519@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Jun 04, 2001 at 01:40:50PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 4 Jun 2001, Michael S. Zick wrote:
-> Thanks for the feedback -
-> Your boot ends at the same point mine does -
-> 
-> I suspect that an entry needs to be made in /dev for the ttyB
-> device and probably a line in /etc/inittab to proc a getty on it -
-> 
-> But I am just guessing - a *nix expert will have to tell us how.
+On Mon, Jun 04, 2001 at 01:40:50PM -0600, Grant Grundler wrote:
+> So I don't think it quite works yet - but it's not much more work either.
+> I suggest installing 32-bit w/serial console (should work fine) and
 
-I'll try it out in a little bit and report back when I get home.
+that's what I did, just wondered a little bit.
 
-dave
+> J282 might have serial on Dino and Clement (ESIEE) just hacked some support
 
-> Your message listing tells me a lot - my 9000/720 uses the same
-> SCSI driver but doesn't work (yet) -
-> 
-> I have in the past (last week) built a working kernel - that used the
-> STI driver and did not need the "ttyB" hack to by-pass its call to
-> "register_console" in function "__init con_init of file linux/drivers/char/console.c
-> 
-> A seemingly related problem is getting my machine's HIL devices recognized -
-> but the changes I made to fix the crator-on console_init fixed that also -
-> now, if I can only find my notes.
-> 
-> So - I will find how I did that - put it back into this V0.9 kernel, then proceed to
-> learn why the LASI-Sim700 driver for the 53c7xx doesn't work on my model 720.
-> 
-> I'll keep the list posted on what, if anything, I can find.
-> 
+I don't think so, J282 doesn't even have PCI. Right now I can't boot it,
+because I've disassembled my computer room, but if memory serves right
+serial is attached to either wax or lasi.
+
+> for that...but I know it's not on the 0.9 ISOs. Booting from a lifimage
+> (newer kernel plus Dino patch) might work better.
+
+even without having Dino ?
+
+Thomas.
 
 -- 
-Dave Weis             "I believe there are more instances of the abridgement
-djweis@sjdjweis.com   of the freedom of the people by gradual and silent
-                      encroachments of those in power than by violent 
-                      and sudden usurpations."- James Madison
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
