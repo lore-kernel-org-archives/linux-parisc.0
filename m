@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 24 Mar 2003 12:53:01 -0700
-To: Markus Schaber <markus.schaber@student.uni-ulm.de>
+Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 478F8482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 14:35:10 -0700 (MST)
+Date: Mon, 24 Mar 2003 16:35:08 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Randolph Chung <tausq@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Out of memory problem
-Message-ID: <20030324195301.GA15374@dsl2.external.hp.com>
-References: <20030321000822.6a0123e0.markus@schabi.de> <20030321065534.GA21566@dsl2.external.hp.com> <20030321092201.5dcedd9f.markus.schaber@student.uni-ulm.de> <20030321170502.GA8719@dsl2.external.hp.com> <20030324185958.307d033c.markus.schaber@student.uni-ulm.de>
+Message-ID: <20030324213508.GA8436@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030324185958.307d033c.markus.schaber@student.uni-ulm.de>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] Glibc 2.3.2 failures and possible fixes?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,25 +22,83 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Mar 24, 2003 at 06:59:58PM +0100, Markus Schaber wrote:
-> > The Net install ISOs are what you want. See
-> > 	http://www.parisc-linux.org/software/install.html
-> 
-> But as this are ISO files, I need to attach a CD drive, and I don't have
-> an external SCSI drive lying around.
+John, Tausq,
 
-Read about "mount -o loop" (aka loopback).
-And I forgot about the lifimages that Thibaut referenced.
+Succeeded in building glibc 2.3.2 with syscall cancellation support, but
+I'm pretty sure it's wrong.
 
-...
-> I have a floppy drive built in, but on the debian-pa web site I read
-> that floppy boot is not supported on parisc.
+The current list of failures includes:
 
-right
+iconvdata/bug-iconv3.out
 
-> PS: I subscribed to the parisc-linux list, so you all don't have to Cc:
-> me.
+- This is a new one.
 
-me too. But my reply is to you and I cc the list.
+math/test-fenv.out
+math/test-float.out
+math/test-double.out
+math/test-ifloat.out
 
-grant
+- We've had the math test failures for a while, would you like it if I
+  tried building glibc with gcc head? It's been so long I've forgotten
+  if this was really the delayed fp stuff that I fogot to implement :}
+  Will get around to testing this more near the end of April.
+
+stdlib/tst-strtod.out
+stdlib/bug-strtod.out
+
+- These are not so new, but indicate problems.
+
+libio/tst-mmap-eofsync.out
+libio/tst-mmap-fflushsync.out
+
+- New kernel with Tausq's mmap flushing changes should make these go
+  away... have to go into the office to install a new kernel.
+
+dlfcn/default.out
+dlfcn/tststatic.out
+
+- New, possibly related to syscalls.
+
+posix/annexc.out
+
+- Expected.
+
+linuxthreads/ex8.out
+linuxthreads/ecmutex.out
+linuxthreads/ex14.out
+linuxthreads/ex15.out
+linuxthreads/bug-sleep.out
+linuxthreads/tst-cancel1.out
+linuxthreads/tst-cancel2.out
+linuxthreads/tst-cancel3.out
+linuxthreads/tst-cancel4.out
+linuxthreads/tst-cancel5.out
+linuxthreads/tst-cancel6.out
+linuxthreads/tst-popen.out
+linuxthreads/tst-popen2.out
+linuxthreads/tst-cancel-static.out
+linuxthreads/tst-cancel-wrappers.out
+rt/tst-shm.out
+rt/tst-clock.out
+rt/tst-aio.out
+rt/tst-aio64.out
+rt/tst-aio2.out
+rt/tst-aio3.out
+rt/tst-aio4.out
+rt/tst-aio5.out
+rt/tst-aio6.out
+rt/tst-aio7.out
+
+- I broke a lot of stuff... :}
+
+elf/vismain.out
+elf/neededtest.out
+elf/neededtest2.out
+elf/neededtest3.out
+elf/neededtest4.out
+elf/circleload1.out
+
+- These have been around for a while, any idea about how to fix them?
+
+Cheers,
+Carlos.
