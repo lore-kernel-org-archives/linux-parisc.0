@@ -1,18 +1,23 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 42C02482A
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F057648B0
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 28 Mar 2004 16:51:37 -0700 (MST)
-Message-Id: <200403282351.i2SNpZdU010717@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] spinlock align code triggering bug in gcc?
-To: randolph@tausq.org
-Date: Sun, 28 Mar 2004 18:51:35 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <20040328233637.GM750@tausq.org> from "Randolph Chung" at Mar 28,
-	2004 03:36:37 pm
+	Sun, 28 Mar 2004 17:22:18 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E88ABE.dip0.t-ipconnect.de
+	[217.232.138.190])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2T0MHo29741
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 29 Mar 2004 02:22:17 +0200
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 29 Mar 2004 02:21:28 +0200
+Message-ID: <0de401c41523$c74ff040$fc01a8c0@muc.nccconsulting.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,14 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> pointer.  where the heck does it get 183 from (or 23 in the test 
-> program)? :) i'm guessing it inlined the __ldcw_align() and did some 
-> constant folding to do the alignment and then the offset becomes wrong?
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-23 = 8 + 15.  The 15 is from ldcw align.  Don't know why we are using
-this value in a ldd.  I think the ldcw is aligned ok.
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 3/29/2004 2:21:27 AM
+Engine/Pattern = 6.860-1001/1.840.00
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
