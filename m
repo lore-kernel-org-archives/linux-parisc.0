@@ -1,12 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3DFB4846
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 16:53:55 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94ABE48C2
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 17:00:55 -0700 (MST)
 From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200203082353.PAA09422@opus.allegro.com>
+Message-Id: <200203090000.QAA09518@opus.allegro.com>
 Subject: Re: [parisc-linux] New Cheap HP RP2430
 To: mkp@mkp.net (Martin K. Petersen)
-Date: Fri, 8 Mar 2002 15:53:41 -0800 (PST)
+Date: Fri, 8 Mar 2002 16:00:52 -0800 (PST)
 Cc: bill@math.ucdavis.edu (Bill Broadley),
 	parisc-linux@lists.parisc-linux.org
 In-Reply-To: <yq1ofhyvdje.fsf@austin.mkp.net> from "Martin K. Petersen" at Mar 08, 2002 06:35:17 PM
@@ -25,19 +25,15 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Re:
 
-> >> Hey, just heard about the new HP RP2430:
 > >> http://www.hp.com/products1/servers/rackoptimized/rp2400/specifications.html
 >  
-> Stan> Where did you find a price quote?  I followed HP's poor web
-...
+> >> $1095!!!!!!
+> 
 > Follow the link for A-class...
 
-Silly me...thinking it would be with the other "rp..." links :)
+The best I could do is get it down to $1895 and "error" in the price :)
 
-thanks!
-
- 
-HP: always on (fire)
+Oh well...  
 
 -- 
 Stan Sieler                                           sieler@allegro.com
