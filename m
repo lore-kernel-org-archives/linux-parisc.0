@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.goquest.com (ns1.goquest.com [12.18.108.6])
-	by dsl2.external.hp.com (Postfix) with SMTP id 32A8F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Jan 2003 08:27:43 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@goquest.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 30 Jan 2003 09:21:49 -0600
-References: <03Jan30.121351cet.119060@ns.hiscom.nl> <03013008454600.00780@localhost.localdomain>
-In-Reply-To: <03013008454600.00780@localhost.localdomain>
+Received: from exchange2.elgin.cc.il.us (exchange2.elgin.edu [66.158.60.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4CEA7482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Jan 2003 08:30:34 -0700 (MST)
+Message-ID: <5D69EA3878E6D411B43C00508BFD7283049FB554@exchange2.elgin.edu>
+From: "Mehta, Miten" <mmehta@elgin.edu>
+To: 'Keith Hopkins' <kxh3@wwarc1.atl.hp.com>,
+	"Mehta, Miten" <mmehta@elgin.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] RE: X windows setup on C110 with woody and ker
+	 nel-2.4.20pa22
+Date: Thu, 30 Jan 2003 09:27:07 -0600
 MIME-Version: 1.0
-Message-Id: <03013009214901.00780@localhost.localdomain>
-Subject: [parisc-linux] Hardware Database & User Contacts
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_000_01C2C874.0CE3C350"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,65 +24,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Group.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I was just browsing the pages, trying to get an idea if I had
-just volunteered for a 2-line change or a 2-million line change...
+------_=_NextPart_000_01C2C874.0CE3C350
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-Question 1:
-The user registration form says "... You will not be contacted..."
+Hello Keith,
 
-I always read that as: "We will not spam you with advertisements."
-But others may have read that as: "You will not be contacted."
+Find attached output of "dmesg | grep -e STI -e stifb".
 
-Possible answers :
-1.a - Give up on the idea of recommending this use of the
-hardware database information.
+There seems to be some progress with addition of depth 24 section following
+32 one but thats just what I felt ;-).
 
-1.b - Add a field meaning: "Willing to give advice on this."
-Then initialize that field for all current members to "No".
 
-1.c - Hide the email address field from public view
-(developer only view, like it says now) unless the 
-"Willing to give advice on this." thing is marked.
+-----Original Message-----
+From: Keith Hopkins [mailto:kxh3@wwarc1.atl.hp.com]
+Sent: Wednesday, January 29, 2003 9:07 PM
+To: Mehta, Miten
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] RE: X windows setup on C110 with woody and
+ker nel-2.4.20pa22
 
-Question 2:
-Is there a way to update this registration information?
 
-2.a - At this time, my e-mail address is wrong, I would like
-to update it.
+Mehta, Miten wrote:
+> Hello,
+> 
+> I still get errors for depth 24 though some what different.
+> 
+> take a look at xfree log attached.
+> 
 
-2.b - If we set all existing users to 1.b - "No"; is there a 
-way for them to update it to "Yes"?
+Please post the output of  "dmesg | grep -e STI -e stifb".
 
-Mike
+--
+Best Regards,
+    Keith
 
-On Thursday 30 January 2003 08:45 am, Michael S.Zick wrote:
-> On Thursday 30 January 2003 04:59 am, Beerse, Corné wrote:
-> > Why did nobody point to the hardware database:
-> > http://hwdb.parisc-linux.org/
-> >
-> > There are some users of a D210 reported there:
-> > http://hwdb.parisc-linux.org/view.php3?type=machine&name=D210
-> >
-> > They will know some ins and outs.
-> >
-> > CBee
->
-> Good point...
->
-> Perhaps because it is refered to as a "hardware database" ?
-> Using something called a "hardware database" to find persons
-> experienced in a certain machine can indeed be very helpful;
-> but not an obvious use going by its name.
->
-> "tweaking" a web page or two to make this usage clear
-> to the newcomer might help.
->
-> Who would be a good contact for such a change?
->
-> Mike
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+
+
+------_=_NextPart_000_01C2C874.0CE3C350
+Content-Type: text/plain;
+	name="dmesg_sti.txt"
+Content-Disposition: attachment;
+	filename="dmesg_sti.txt"
+
+STI GSC/PCI graphics driver version 0.9
+STI byte mode ROM at f4000000, hpa at f4000000
+STI id 2bcb015a-9a02587, conforms to spec rev. 8.04
+STI device: HPA4071B
+fb0: stifb 1280x1024-32 frame buffer device, id: 2bcb015a, mmio: 0xf4100000
+
+------_=_NextPart_000_01C2C874.0CE3C350--
