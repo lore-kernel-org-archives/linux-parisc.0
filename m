@@ -1,37 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC625482D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Jun 2001 19:13:50 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15Bnbw-0005pA-00; Mon, 18 Jun 2001 02:13:48 +0100
-Date: Mon, 18 Jun 2001 02:13:48 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Tom <tom@Alaskatech.org>
-Cc: buggz <buggz@america.net>,
-	PA-RISC Linux list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] PALO/kernel-build change proposal
-Message-ID: <20010618021348.H10186@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.33.0106172013490.20079-100000@buggz1.buggz.net> <Pine.LNX.4.33.0106171703250.18884-100000@devnull.alaskatech.org>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 84431482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 01:01:58 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 6.03.0009/NU8172.00.4d3e3a24) with ESMTP id qwehgaaa for parisc-linux@lists.parisc-linux.org; Sun, 17 Jun 2001 23:58:45 -0700
+Date: Mon, 18 Jun 2001 00:01:29 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010618000128.G14564@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0106171703250.18884-100000@devnull.alaskatech.org>; from tom@Alaskatech.org on Sun, Jun 17, 2001 at 05:05:20PM -0800
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Unaligned trap handler - comments appreciated
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jun 17, 2001 at 05:05:20PM -0800, Tom wrote:
-> > > I don't suppose someone has an updated how-to for actually *using* your
-> > > new kernel, do they? Replacing /boot/vmlinux-2.4.0 with the new one
-> > > results in an immediate hang on reboot...
-> >
-> > *shrug*
-> > Well, I've made two successful kernels, cp'd to /boot, edited
-> > /etc/palo.conf, just like normal to me.
-> 
-> Hmmm... I tried that - copied lifimage to /boot/vmlinux-240-pa15, edited
-> /etc/palo.conf to change the kernel listed, then ran palo to update it and
-> rebooted. Same error - can't understand the kernel executable format.
+I just checked in an arch/parisc/kernel/unaligned.c file into palinux
+cvs.
 
-Sounds like you're using the lifimage instead of the vmlinux.
+It's my (not-yet-successful) attempt at putting together an unaligned
+memory access handler for palinux.
 
+Since I'm not really familiar with how this is "supposed" to be done, I
+would really appreciate if folks more in the know can review the code
+and let me know if i'm on the right track, or if i'm smoking something
+funny :-)
+
+I haven't checked in the (simple, obvious) hook in traps.c that calls
+the unaligned handler since it isn't working yet.
+
+thanks for your patience :)
+randolph
 -- 
-Revolutions do not require corporate support.
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
