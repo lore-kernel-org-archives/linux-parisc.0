@@ -1,10 +1,10 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (unknown [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91409482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 May 2003 10:36:51 -0600 (MDT)
-Date: Thu, 15 May 2003 18:36:33 +0200
-Message-ID: <3EC39C0A000000A1@ocpmta8.freegates.net>
-In-Reply-To: <3EC3A988.4070807@hp.com>
+Received: from cpout1.tiscali.be (unknown [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0FCF5482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 May 2003 10:55:53 -0600 (MDT)
+Date: Thu, 15 May 2003 18:55:47 +0200
+Message-ID: <3EC39C0A000000B1@ocpmta8.freegates.net>
+In-Reply-To: <3EC39C0A000000A1@ocpmta8.freegates.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] RE: Dump module patche.
 To: "Bruno Vidal" <bruno_vidal@hp.com>
@@ -22,43 +22,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->gcc version 3.0.4
->
->
->Joel Soete wrote:
->> Bruno,
->> 
->>>>sorry, I don't remember this kind of error...did you try make mrproper
->>>
->> ???
->> 
->>>>
->>>I think so as I prefer distclean?
->>>
->>>umm 2.4.20-pa32 is still available in ftp.p-l.org:/cvs so I will first
->grab
->>>it and apply patch. Then comeback to you :)
->>>
->> 
->> It didn't help so I have to come back to you with severall questions:
->> 
->> A. what is your compiler release gcc 3.0 3.2 3.3?
->> 
->> B. I suspect also a different .config: may I ask your to compare with
-mine?
->> 
->
->Attachment: config
->
-Well very very different from mine I will so test also on my b2k (but in
-32bits and 64bits).
+Sorry ,
 
-in the mean time I reach to build a kernel 2.4.21-pa32 with gcc-3.2 but I
-forget the __c_f_f_c pb so it crash imedieately, I will so go test 2.4.21-pa35
-with your patch.
+>in the mean time I reach to build a kernel 2.4.21-pa32 with gcc-3.2 but
+I
+>forget the __c_f_f_c pb so it crash imedieately, I will so go test 2.4.21-pa35
+>with your patch.
 
-See you later,
+read 2.4.20...
+
     Joel
 
 
