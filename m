@@ -1,23 +1,24 @@
 Return-Path: <willy@www.linux.org.uk>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
 	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4E599483C
+	by dsl2.external.hp.com (Postfix) with ESMTP id 070324846
 	for <parisc-linux@parisc-linux.org>;
-	Sat, 20 Mar 2004 06:47:26 -0700 (MST)
+	Sat, 20 Mar 2004 06:49:17 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1B4goq-0000bV-QM; Sat, 20 Mar 2004 13:47:20 +0000
-Date: Sat, 20 Mar 2004 13:47:20 +0000
+	id 1B4gqi-0000dD-9D; Sat, 20 Mar 2004 13:49:16 +0000
+Date: Sat, 20 Mar 2004 13:49:16 +0000
 From: Matthew Wilcox <willy@debian.org>
-To: pinotj@club-internet.fr
-Message-ID: <20040320134720.GW25059@parcelfarce.linux.theplanet.co.uk>
+To: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] Re: [DOC] Linux
+Message-ID: <20040320134916.GX25059@parcelfarce.linux.theplanet.co.uk>
 References: <mnet2.1079773336.27405.pinotj@club-internet.fr>
+	<20040320114011.20de3426.varenet@esiee.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <mnet2.1079773336.27405.pinotj@club-internet.fr>
+In-Reply-To: <20040320114011.20de3426.varenet@esiee.fr>
 Sender: <willy@www.linux.org.uk>
-Cc: willy@debian.org, ajwalker@broadpark.no, joey@infodrom.org,
-	parisc-linux@parisc-linux.org
-Subject: [parisc-linux] Re: [DOC] Linux
+Cc: willy@debian.org, ajwalker@broadpark.no, pinotj@club-internet.fr,
+	joey@infodrom.org, parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,12 +28,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Mar 20, 2004 at 10:02:16AM +0100, pinotj@club-internet.fr wrote:
-> Thanks a lot for your answers. Seems that PA-RISC linux community are quite reactive :-)
+On Sat, Mar 20, 2004 at 11:40:11AM +0100, Thibaut VARENE wrote:
+> > +       Superdome will need some additional work.
 > 
-> Some people ask me about the complete file, it's not on Internet yet so I first post it here. There is probably a lot of modifications to do but it's a good start.
+> Superdome, if ever supported, will not be supported as a "Superdome"
+> system, but as separate units, as far as I've been told. The same goes
+> for 742/743 VME boards that works standalone.
 
-sorry, i just don't see this as being useful.
+I think that's incorrect.  Superdome works as a big SMP box.  The 742/743
+VME boards would have to be clustered.
 
 -- 
 "Next the statesmen will invent cheap lies, putting the blame upon 
