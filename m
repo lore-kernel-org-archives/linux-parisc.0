@@ -1,52 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sgate.charlysworld.de (pD95055C6.dip.t-dialin.net [217.80.85.198])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD5F34A19
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 16:29:34 -0700 (MST)
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C4434A19
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 16:37:02 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA22873
+	for <parisc-linux@puffin.external.hp.com>; Sun, 4 Feb 2001 16:32:48 -0700
 Received: from localhost (xam@localhost)
-	by sgate.charlysworld.de (8.11.0/8.11.0) with ESMTP id f14NTRC00787
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 5 Feb 2001 00:29:28 +0100
-Date: Mon, 5 Feb 2001 00:29:27 +0100 (CET)
+	by sgate.charlysworld.de (8.11.0/8.11.0) with ESMTP id f14Nao101012
+	for <parisc-linux@thepuffingroup.com>; Mon, 5 Feb 2001 00:36:50 +0100
+Date: Mon, 5 Feb 2001 00:36:50 +0100 (CET)
 From: "M. Grabert" <xam@deathsdoor.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.21.0102050015450.385-100000@sgate.charlysworld.de>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 720/50 SCSI - supported?
+In-Reply-To: <Pine.LNX.4.21.0102021804060.31237-100000@sgate.charlysworld.de>
+Message-ID: <Pine.LNX.4.21.0102050035420.940-100000@sgate.charlysworld.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] HP9000/730 problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello there,
+On Fri, 2 Feb 2001, I wrote:
 
-i'm still trying running linux on hppa :-/
+> On Thu, 1 Feb 2001 penfold@customware.com.au wrote:
+> 
+> > Hi,
+> > 
+> > after successfully cross compiling a kernel, I have a problem!
+> 
+> [blablabla] :)
+> 
+> seems to be the same problems I have with my 730 ...
+> ... nearly exactly the same messages and behaviour.
 
-well, i tried both booting from scsi hd AND nfsroot/bootp
+well, that was wrong ... se my last message!
 
-everytime it says (endless loop):
-
-
-VFS: Mounted root (nfs filesystem) readonly
-
-handle_interruption() pid=1 command='init'
-
-
-PSW: 0000000000 [snip stack output]
-
-
-(the same for booting from scsi hd)
-
-Mhhh.
-
-BTW, ASP Parallel Port driver is still broken (can't boot with it,
-but can boot without it).
-
-STI console is also broken (many characters are not printed or substitued
-by spaces). The problems occur of course AFTER "switching console" !
-
-But serial console works fine :)
-
-
-Configuration: latest CVS kernel from 20010204 (about 17:00 UTC);
-xc somewhere from november, the same for nfsroot.
-
-I hope somebody can help!
-Thanks In Advance,
-  greetings (somewhat frustrated) max
+greetings max
