@@ -1,33 +1,49 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id BAA14034
-	for <parisc-linux@sod.res.cmu.edu>; Tue, 6 Apr 1999 01:11:32 -0400
-Received: from postbox.india.hp.com (postbox.india.hp.com [15.10.45.1])
-	by palrel3.hp.com (8.9.3/8.8.5tis) with ESMTP id WAA09689
-	for <parisc-linux@thepuffingroup.com>; Mon, 5 Apr 1999 22:11:13 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1]) by postbox.india.hp.com with SMTP (8.7.1/8.7.1) id KAA02336 for <parisc-linux@thepuffingroup.com>; Tue, 6 Apr 1999 10:43:38 +0530 (IST)
-Message-Id: <199904060513.KAA02336@postbox.india.hp.com>
-To: parisc-linux@thepuffingroup.com
-In-reply-to: Your message of "Mon, 05 Apr 1999 09:47:04 IST."
-             <19990405094704.A29056@cmu.edu>
-Date: Tue, 06 Apr 1999 10:43:36 +0530
-From: A Joseph Koshy <koshy@postbox.india.hp.com>
-Subject: [parisc-linux] CVSup in addition to AnonCVS
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id HAA18475
+	for <parisc-linux@sod.res.cmu.edu>; Tue, 6 Apr 1999 07:41:22 -0400
+From: ALAN_C_MEYER@HP-FtCollins-om4.om.hp.com
+Date: Tue, 6 Apr 1999 05:40:42 -0600
+Message-Id: <H0000e1b0b5207e1@MHS>
+In-Reply-To: <Pine.LNX.4.04.9904051934370.1202-100000@sprite.osfi-bsif.gc.ca>
+Subject: Re: [parisc-linux] HP & Cygnus partnership
+MIME-Version: 1.0
+TO: cjbeard@thepuffingroup.com
+CC: buggz@america.net, parisc-linux@thepuffingroup.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+ Even before this announcement, you could get GNUPro Toolkit on HP-UX, with 
+ the most recent support being for 11.0, 32bit only.  The current 
+ announcement reflects the fact that GNUPro will be enhanced to support 
+ code generation for PA2.0 processors and to support 64 bit HP-UX in 
+ general.  On the non-technical side, you can expect to see some marketing 
+ and packaging activity around GNUPro on HP-supported platforms.  And, as 
+ before, HP & Cygnus continue to collaborate around the gdb/wdb work.
+ 
+ Alan
+ 
 
-Could we use CVSup to distribute the projects CVS repository?  
 
-	- It runs a lot faster than AnonCVS.
-	- As it mirrors the repository locally, subsequent operations 
-	  (cvs log, cvs diff) don't need to access the 'net.
-	- You can have 'local' branches in your copy of the repository.
-	- It works perfectly with the existing CVS infrastructure.
+______________________________ Reply Separator _________________________________
+Subject: Re: [parisc-linux] HP & Cygnus partnership
+Author:  Non-HP-cjbeard (cjbeard@thepuffingroup.com) at HP-ColSprings,mimegw4
+Date:    4/5/99 5:43 PM
 
-URL: http://www.polstra.com/projects/freeware/CVSup/
 
-See also:	http://www.kde.org/cvsup.html
-		http://www.freebsd.org/handbook/cvsup.html
-
-Regards,
-Koshy
-<koshy@india.hp.com>			My Personal Opinions Only.
+     
+> Wonder if this will mean GNUPro Toolkit on HP-UX or what ?
+     
+"Hewlett-Packard Company and Cygnus Solutions today announced that they 
+will deliver Cygnus' market-leading GNUPro Toolkit for HP-supported 
+platforms under HP's Foundation Program for software development partners. 
+Open-source developers now will have access to a common set of 
+commercial-quality tools that facilitate development of applications 
+deployed on Linux, HP-UX and Windows NT systems."
+     
+(Source: http://www.cygnus.com/news/hp.html, April 5th 1999)
+     
+Chris
+     
+--------------------------------------------------------------------------- 
+To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with 
+`unsubscribe' as the subject.
