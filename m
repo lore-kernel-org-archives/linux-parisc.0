@@ -1,51 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E24F2482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Jun 2001 15:22:45 -0600 (MDT)
-Message-Id: <200106132122.PAA01189@puffin.external.hp.com>
-To: Paul Bame <bame@fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PALO/kernel-build change proposal 
-In-Reply-To: Your message of "Wed, 13 Jun 2001 11:31:38 MDT."
-             <E15AEUU-0004qi-00@noam.fc.hp.com>
-Date: Wed, 13 Jun 2001 15:22:10 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from solo.franken.de (pD9054371.dip.t-dialin.net [217.5.67.113])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2F0E9482A
+	for <parisc-linux@parisc-linux.org>; Wed, 13 Jun 2001 18:34:42 -0600 (MDT)
+Received: (from tsbogend@localhost)
+	by solo.franken.de (8.9.3/8.9.3) id CAA11608
+	for parisc-linux@parisc-linux.org; Thu, 14 Jun 2001 02:32:11 +0200
+Date: Thu, 14 Jun 2001 02:32:10 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010614023210.A11525@solo.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Byte mode STI roms
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame wrote:
-...
-> When self hosted, there's usually no need to run palo after every
-> kernel build since palo boots out of the file system by file name.
-> So I propose that the common self-hosted use model be to use simple 'make'
-> in the kernel tree [and make modules or whatever].  The resulting 'vmlinux'
-> file can then be copied to the desired location.
+Hi,
 
+I've played a little bit with the stifb on my C200 with a HCRX24 and got
+the stifb to recognize it as valid card. My approach was to just get rid
+of that funky STI_Uxx macros by copying the byte rom into memory and
+adjusting the offsets. This way sticon-wmode.c and sticon-bmode.c are
+nearly the same and with a little bit more tweaking I could get them
+merged. 
 
-On x86, "make install" will do all the right things to install the
-freshly built kernel but doesn't do a damn thing for kernel modules.
-Need to run "make modules" and "make modules_install" to really make
-sure eveything is in sync.
+So is there a deeper magic hidden why bmode is done the way it is, or 
+should I clean up my code and check it in ?
 
+Thomas.
 
-> I propose that 'make palo' be changed to simply run 'palo -f ./palo.conf'
-> after vmlinux is built.  This means palo would have to be in the $PATH
-> and that the top-level linux source directory would contain a
-> suitable palo.conf file.  I've been using this model for cross-compiling
-> for several months and like it.  I would document how xc-ers can best
-> compile and "install" palo as well as supply a palo.conf file with
-> our typical configurations.
-> 
-> What is 'make palo' today would be changed to 'make buildrunpalo'.  The
-> longer name is more truthful and less convenient on purpose.
+PS: No, stifb doesn't work on the HCRX24, yet. It gets initalized, but
+still doesn't show anything.
 
-
-How about "make lifimage"?
-That's the only reason I run "make palo" in the XC environment.
-Having a XC-palo in the environment is no problem.
-In the XC env, I don't expect "make install" to do the right thing (tm).
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
