@@ -1,37 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA01277
-	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 12:49:31 -0700
-Date: Sat, 6 Nov 1999 19:24:55 +0100
-From: Philipp Rumpf <prumpf@mathe.stud.uni-erlangen.de>
-To: Ulrich Strelow <ulrich_strelow@yahoo.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Congratulations, remarks and questions
-Message-Id: <19991106192455.G11609@mathe.stud.uni-erlangen.de>
-References: <19991103123044.18853.rocketmail@web507.yahoomail.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA02466
+	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 13:15:31 -0700
+To: Philipp Rumpf <prumpf@mathe.stud.uni-erlangen.de>
+cc: Paul Bame <bame@debian.fc.hp.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] _end symbol in parisc linux? 
+Reply-To: law@cygnus.com
+In-reply-to: Your message of Sat, 06 Nov 1999 19:26:14 +0100.
+             <19991106192614.H11609@mathe.stud.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19991103123044.18853.rocketmail@web507.yahoomail.com>
+Date: Sat, 06 Nov 1999 13:08:22 -0700
+Message-ID: <30261.941918902@upchuck>
+From: Jeffrey A Law <law@cygnus.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 4. run make config and change the following options:
-> CONFIG_IODC_CONSOLE=y
-> CONFIG_NETDEVICES=n 
-> CONFIG_VT=y
-> CONFIG_VT_CONSOLE=y
-> CONFIG_SERIAL=n
 
-you're seeing the prompt with the IODC console ?
+  In message <19991106192614.H11609@mathe.stud.uni-erlangen.de>you write:
+  > > Anybody know how to get PA-Linux to have an _end symbol like
+  > > most other programs, including Intel Linux?
+  > 
+  > AFAIK we would need to have linker scripts to do so, which seems to be impo
+  > ssible
+  > with the HP/UX ld.  So this is on the "things that will get nicer when we h
+  > ave
+  > GNU binutils again" list.
+Actually, you can with SOM with clever use of the sort_key attribute within
+a subspace.  Create a new subspace with a larger than normal sort key.  Within
+that space create a single symbol "_end".
 
-> Now the questions: the kernel boots to the
-> sash-prompt, but no keyboard input is possible
-> (neither the HIL-keyboard, nor the keyboard from the
-> serial terminal I was using). Is this because of the
-> missing support for the ASP chip of the 715/33 ? Are
+Though I'd worry about precisely *why* someone wants the _end symbol; whatever
+they're trying to do there's probably a better way.
 
-Unfortunately, the IODC console is not designed to be full-duplex for
-multitasking OSes.  Thus, you need to get the serial / HIL driver going
-on your hardware to be able to input things or add input to the IODC
-console driver which will cause bad 5 second delays (according to the
-documentation) when there is no input.
-
-	Philipp Rumpf
+jeff
