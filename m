@@ -1,20 +1,14 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] NIC & "searching for devices"
-Date: Sat, 26 Feb 2005 14:17:21 +0000
-Message-ID: <422084F1.1070404__29428.0674811036$1416624536$gmane$org@tiscali.be>
-References: <e6eae02905022122345edc35f7@mail.gmail.com>	
-	<420B30A200004CEC@mail-1-bnl.tiscali.it>
-	<e6eae02905022222484ae1fdad@mail.gmail.com>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Comments?
+Date: Wed, 2 Mar 2005 14:21:17 -0500
+Message-ID: <20050302192111.GN23803@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: Harry Cochran <h.cochran@comcast.net>,
- parisc-linux@parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Max Grabert <parisc@gmail.com>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org,
+ John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+ Randolph Chung <tausq@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <e6eae02905022222484ae1fdad@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,68 +19,220 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Max,
 
-Max Grabert wrote:
-> On Tue, 22 Feb 2005 10:34:46 +0100, Joel Soete <soete.joel@tiscali.be> wrote:
-> 
-> [....]
-> 
-> 
->>Yes but I encountered weird difficulties (even on a i386 box) 
->>to configure a brother model 3C905B as needed:
->>see this old thread <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-November/021619.html>
-> 
-> 
-> kargellan:/home/xam# lspci
-> 0000:00:0d.0 Ethernet controller: 3Com Corporation 3c905C TX/TX-M
-> [Tornado] (rev 78)
-> 0000:00:0e.0 Ethernet controller: 3Com Corporation 3c905B 100BaseTX
-> [Cyclone] (rev 30)
-mine was far older as far I could judge it was only a (rev 24)?
+jda, tausq,
 
-> 0000:00:0f.0 Ethernet controller: 3Com Corporation 3c905C-TX/TX-M
-> [Tornado] (rev 78)
-> [...]
-> 
-> As you can see this is a ix86 machine with three 3com NICs
-> in it; It is running stable for almost 2 years now.
-Right but atm I was still running 2.4 (I only start 2.6 later in late May 2004).
-Event thought there was already some patch available for 2.4, I was a bit lazy and prefer to replace nic by another :-(
-(my bad, I don't remember where did I save it to make new test, grrr)
+Comments on the assembly? 
 
-> Right now it is
-> running 2.6.11-rc4. BTW, all three network cards share one
-> interrupt (IRQ 11), which is also used by the USB port.
-> 
-> And there is also my ix86 laptop that is using a 'vortex' network
-> card, also running fine for almost 3 years now with many 
-> different linux kernel.
-> 
-> I'd rather say either your network card is broken/of poor quality
-mmm I would like to find back (just for the fun)
+I'm cleaning up the libc trampoline routines that are called during lazy
+symbol resolution. We need to make changes to the profile version in
+order to support library auditing.
 
-> or there are some compatibility issues with your ix86  motherboard.
-or should just required a fw upgrade (if possible) or use more recent driver of 2.6?
+The complete mechanics of this function call aren't that important, I'm
+looking for comments on any ABI bits I missed.
 
-> Anyway, this is going way off-topic ...
-> 
-Obviously, but the most anoying is that I lake of time right now (in prod we have to resurect a proj frozen during last three years 
-and so required a lot of work to update: middle ware first, then os update and finlay hw and its corresponding os (hpux-11.11 in 
-fact for new rp3xxx to replace oldtimer as D and K class :-) ).
+For those that like to know mechanics:
 
-> 
-> In my experience 3Com often produced okay-nice cards, but
-> sometimes they managed to release utter crap as well.
-mmm I didn't suspect hw but may be fw or driver?
+a. In early ELF setup code we know we are going to use _dl_fixup from
+   a particular shared object, so we plunk down the ltp for that code
+   into the PLT.
 
-> IMHO there are better alternatives available (Intel/DEC), 
-> where I don't have to take any risks.
->
-Cool advise ;-)
+b. Then when you call a function that hasn't been resolved you get
+   bounced through the PLT to the trampoline, and not the function.
+   This is lazy resolution. At startup we didn't bother to bind all
+   the symbols, instead we filled the PLT with bounces to the trampoline
+   routine (and eventually this leads to symbol resolution).
 
-Thanks,
-	Joel
+c. The bounce from the PLT to the trampoline is a bit of code at the
+   end of the PLT. It loads up the following parameters and calls the
+   trampoline with a non-standard non-abi function call (it doesn't 
+   make a stack/frame or use the proper registers).
+
+   Trampoline parameters:
+	r19 = Relocation offset.
+	r20 = Somwhere in the GOT (used to get your own link_map)
+	r21 = _dl_fixup's PIC register value (ltp)
+
+   Trampoline calls _dl_fixup with:
+	r26 = got[1] (your own link_map)
+	r25 = relocation offset
+
+   If you are profiling:
+	r24 = contains your rp.
+	The stack has all the library auditing parameters.
+
+d. _dl_fixup uses the relocation offset, and the link_map to find the
+   symbol you need. Then it sets up the PLT so this doesn't happen
+   again and then returns. 
+
+   If we are profiling, there is the posibility that the code can call
+   one of two functions PLTENTER or PLTEXIT. That is a user can register
+   a set of functions to be called as you enter the PLT and as you exit 
+   the PLT. This allows user code to audit the loading process.
+
+   TODO: Working on this last bit, hence the note in the assemble.
+
+e. Walking the bottom half of the trampoline restores the users
+   arguments they were passing to the function in the first place
+   and continues execution.
+
+---
+
+/* PLT trampolines. hppa version.
+   Copyright (C) 2005 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, write to the Free
+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+   02111-1307 USA.  */
+
+#include <sysdep.h>
+
+/* This code gets called via the .plt stub, and is used in
+   dl-runtime.c to call the `_dl_fixup' function and then redirect 
+   to the    address it returns. `_dl_fixup' takes two
+   arguments, however `_dl_profile_fixup' takes a number of 
+   parameters for use with library auditing (LA).
+   
+   WARNING: This template is also used by gcc's __cffc, and expects
+   that the "bl" for _dl_runtime_resolve exist at a particular offset.
+   Do not change this template without changing gcc, while the prefix
+   "bl" should fix everything so gcc finds the right spot, it will
+   slow down __cffc when it attempts to call fixup to resolve function
+   descriptor references. Please refer to gcc/gcc/config/pa/fptr.c
+   
+   Enter with r19 = reloc offset, r20 = got-8, r21 = fixup ltp.  */
+
+	/* FAKE bl to provide gcc's __cffc with fixup loc. */
+	.text
+	bl	_dl_fixup, %r2
+        .text
+        .align 4
+        .global _dl_runtime_resolve
+        .type _dl_runtime_resolve,@function
+_dl_runtime_resolve:
+        .PROC
+        .CALLINFO FRAME=64,CALLS,SAVE_RP,ENTRY_GR=3
+        .ENTRY
+        /* SAVE_RP says we do */
+        stw %rp, -20(%sr0,%sp)
+
+ 	/* Save argument registers in the call stack frame. */
+	stw	%r26,-36(%sp)
+	stw	%r25,-40(%sp)
+	stw	%r24,-44(%sp)
+	stw	%r23,-48(%sp)
+
+	/* Build a call frame, and save structure pointer. */
+	copy	%sp, %r26	/* Copy previous sp */
+	stwm	%r28,64(%sp)
+
+	/* Fillin some frame info to follow ABI */
+	stw	%rp,-20(%sp)	/* Set a reasonable rp */
+	stw	%r26,-4(%sp)	/* Save previous sp */
+
+ 	/* Set up args to fixup func, needs only two arguments  */
+	ldw	8+4(%r20),%r26		/* (1) got[1] == struct link_map */
+	copy	%r19,%r25		/* (2) reloc offset  */
+
+ 	/* Call the real address resolver. */
+	bl	_dl_fixup,%r2
+	copy	%r21,%r19		/* set fixup func ltp */
+
+	/* Load up the returned func ptr */
+	ldw	0(%ret0),%r22		
+	ldw	4(%ret0),%r19
+
+	/* Adjust the stack */
+	ldwm	-64(%sp),%r28
+
+	/* Reload arguments. */
+	ldw	-36(%sp),%r26
+	ldw	-40(%sp),%r25
+	ldw	-44(%sp),%r24
+	ldw	-48(%sp),%r23
+
+	/* Return */
+	bv	%r0(%r22)
+	ldw	-20(%sp),%r2
+        .EXIT
+        .PROCEND
+	.size   _dl_runtime_resolve, . - _dl_runtime_resolve
+
+
+	/* FIXME:
+		Need to largely rewrite the bottom half of
+		this code in order to save and restore the
+		LA struct from the stack along with
+		interpreted parameters.
+	*/
+        .text
+        .align 4
+        .global _dl_runtime_profile
+        .type _dl_runtime_profile,@function
+_dl_runtime_profile:
+        .PROC
+        .CALLINFO FRAME=64,CALLS,SAVE_RP,ENTRY_GR=3
+        .ENTRY
+        /* SAVE_RP says we do */
+        stw %rp, -20(%sr0,%sp)
+
+ 	/* Save argument registers in the call stack frame. */
+	stw	%r26,-36(%sp)
+	stw	%r25,-40(%sp)
+	stw	%r24,-44(%sp)
+	stw	%r23,-48(%sp)
+
+	/* Build a call frame, and save structure pointer. */
+	copy	%sp, %r26	/* Copy previous sp */
+	stwm	%r28,64(%sp)
+
+	/* Fillin some frame info to follow ABI */
+	stw	%rp,-20(%sp)	/* Set a reasonable rp */
+	stw	%r26,-4(%sp)	/* Save previous sp */
+
+ 	/* Set up args to fixup func, needs three arguments  */
+	ldw	8+4(%r20),%r26		/* (1) got[1] == struct link_map */
+	copy	%r19,%r25		/* (2) reloc offset  */
+	copy    %rp,%r24		/* (3) profile_fixup needs rp */
+
+ 	/* Call the real address resolver. */
+	bl	_dl_profile_fixup,%rp
+	copy	%r21,%r19		/* set profile_fixup func ltp */
+
+	/* Load up the returned func ptr */
+	ldw	0(%ret0),%r22		
+	ldw	4(%ret0),%r19
+
+	/* Adjust the stack */
+	ldwm	-64(%sp),%r28
+
+	/* Reload arguments. */
+	ldw	-36(%sp),%r26
+	ldw	-40(%sp),%r25
+	ldw	-44(%sp),%r24
+	ldw	-48(%sp),%r23
+
+	/* Return */
+	bv	%r0(%r22)
+	ldw	-20(%sp),%r2
+        .EXIT
+        .PROCEND
+	.size   _dl_runtime_profile, . - _dl_runtime_profile
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
