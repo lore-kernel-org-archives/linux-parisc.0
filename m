@@ -1,96 +1,48 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: [parisc-linux] [PATCH] Harmony - buffer underrun crash fix
-Date: Tue, 25 May 2004 21:43:02 +0100
-Message-ID: <20040525204302.GA975@calypso>
-References: <20040222092057.GA2590@calypso> <20040223035601.GA988@calypso>
-	<20040511052451.GC27478@colo.lackof.org>
-	<20040523234200.GA1893@calypso>
-	<20040524081200.3d14256b.varenet@esiee.fr>
+From: "Kenneth Westelinck" <kennywest1@hotmail.com>
+Subject: no login with 2.6 kernel and Mozilla probs on 712/60
+Date: Wed, 26 May 2004 06:49:11 +0000
+Message-ID: <BAY1-F117ErcD9YNrPX0002ebed__5503.97995762086$1416623457$gmane$org@hotmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040524081200.3d14256b.varenet@esiee.fr>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=iso-8859-1;
+  format=flowed
+To: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <WhIc6.A.RHC.p3DtAB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Mon, May 24, 2004 at 08:12:00AM +0200, Thibaut VARENE wrote:
+Hi all,
 
-> There's been a suspected buffer overflow in the code for years, and it's
-> a known "feature" that the driver may randomly panic the kernel. Patch
-> welcome.
+I did an apt-get of the latest 2.6.6 kernel on my Woody system using:
+apt-get install palinux-712-defconfig-2.6.1-pa3
 
-Thanks.  I had assumed that this was black magic and I'd never be able
-to fix it, but thanks to your encouragement, I've taken a look and I now
-have a fix for the crash, as well as a sample skipping problem that I
-was previously unaware of:
+The kernel boots fine, but I can't logon, because apparently I lost 
+keyboard. This is probably due to the fact that I'm running Woody, instead 
+of Testing or Unstable. I was wondering which is the best option to upgrade 
+to. Is it better to use Testing or do I need Unstable.
 
-Index: harmony.c
-===================================================================
-RCS file: /var/cvs/linux-2.4/drivers/sound/harmony.c,v
-retrieving revision 1.28
-diff -u -r1.28 harmony.c
---- harmony.c	22 Jun 2002 09:05:59 -0000	1.28
-+++ harmony.c	25 May 2004 19:15:21 -0000
-@@ -537,6 +537,7 @@
- 	int count = 0;
- 	int frame_size;
- 	int buf_to_fill;
-+	int fresh_buffer;
- 
- 	if (!harmony.format_initialized) 
- 	   harmony_format_auto_detect(buffer, total_count);
-@@ -556,12 +557,16 @@
- 		
- 		
- 		buf_to_fill = (harmony.first_filled_play+harmony.nb_filled_play); 
--		if (harmony.play_offset)
-+		if (harmony.play_offset) {
- 			buf_to_fill--;
-+			buf_to_fill += MAX_BUFS;
-+		}
- 		buf_to_fill %= MAX_BUFS;
--
-+		
-+		fresh_buffer = (harmony.play_offset == 0);
-+		
- 		/* Figure out the size of the frame */
--		if ((total_count-count) > HARMONY_BUF_SIZE - harmony.play_offset) {
-+		if ((total_count-count) >= HARMONY_BUF_SIZE - harmony.play_offset) {
- 			frame_size = HARMONY_BUF_SIZE - harmony.play_offset;
- 		} else {
- 			frame_size = total_count - count;
-@@ -578,7 +583,7 @@
- 		CHECK_WBACK_INV_OFFSET(played_buf, (HARMONY_BUF_SIZE*buf_to_fill + harmony.play_offset), 
- 				frame_size);
- 	
--		if (!harmony.play_offset)
-+		if (fresh_buffer)
- 			harmony.nb_filled_play++;
- 		
- 		count += frame_size;
+The reason I was upgrading to 2.6 is because Mozilla (and Galeon) were 
+segfaulting on my older 2.4.20 kernel.  Are there any people on the list 
+successfully running Mozilla on Woody?
 
-Lines 560-563 fix the crash, which was caused by buf_to_fill taking the
-value -1 (since -1 % MAX_BUFS == -1).
+Many thanks in advance.
 
-Lines 540, 566, 586/587 should fix a bug where samples were skipped.
 
-The change to line 569 prevents harmony_silence from being called
-whenever the final frame that is to be copied completely fills a buffer.
+regards,
 
-I'm a bit of a newbie here... can a harmony_interrupt occur whilst we're
-in harmony_audio_write?
+Kenneth
+
+_________________________________________________________________
+Maak online je eigen website met Webbuilder http://webbuilder.msn.be
+
+
 -- 
-Stuart Brady
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
