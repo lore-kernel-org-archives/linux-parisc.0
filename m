@@ -1,12 +1,14 @@
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: [parisc-linux] glibc pthreads actual threads?
-Date: Mon, 19 May 2003 18:27:41 +0200
-Message-ID: <3EC761CD0000080F__45480.1847030923$1416622466$gmane$org@ocpmta2.freegates.net>
+From: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] glibc pthreads actual threads?
+Date: Mon, 19 May 2003 17:32:45 +0100
+Message-ID: <20030519163245.GN16608__21139.1904893846$1416622466$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <3EC761CD0000080F@ocpmta2.freegates.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: debian-hppa@lists.debian.org
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: Joel Soete <jsoe0708@tiscali.be>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <3EC761CD0000080F@ocpmta2.freegates.net>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,98 +19,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Mon, May 19, 2003 at 06:27:41PM +0200, Joel Soete wrote:
+> But notice  a very strange behaviour:
+> _the pid is not the same for each thread_ ??
+> 
+> Having just a small sunos 5.8 with gcc-3.2.2 (but with native libpthread)
+> the pb does not occurs?
+> 
+> Is it a limit of glibc (in general or in 2.3 only?) for all linux or only
+> hppa?
 
-Sorry in advance if it is not the right place to put this question.
+it's a limit of your understanding ;-)  POSIX specifies both behaviours
+are legitimate.
 
-But I just start to learn more details about OS (A. Tanenbaum book) and
-by the way try to understand a bit more about [p]threads.
-
-I found a paper with examples (what I need much of all) and so I try by
-the first one: basic_example.c (which I just change a very little for my
-understanding)
-
-/* for pthreads */
-#include <pthread.h>
-#include <stdio.h>
-
-/* for getpid() */
-#include <sys/types.h>
-#include <unistd.h>
-
-char * buf = "abcdefghijklmnopqrstuvwxyz";
-int num_pthreads = 4;
-int count = 60;
-int fd = 1;
-
-void * new_thread(void * arg)
-{
-    int i;
-    pid_t PID=getpid();
-
-
-    for (i = 0; i < count; i++) {
-        fprintf(stderr, "PID: %d\n", PID);
-	write(fd, arg, 1); write(fd, "\n", 1);
-	sleep(1);
-    }
-    return(NULL);
-}
-
-main()
-{
-   pthread_t thread;
-   int i;
-
-   for (i = 0; i < num_pthreads; i++) {
-	if (pthread_create(&thread, NULL, new_thread, (void *)(buf + i))) {
-	   fprintf(stderr, "error creating a new thread \n");
-	   exit(1);
-	}
-	pthread_detach(thread);
-   }
-   pthread_exit(NULL);
-}
-
-Which I compile as follow (gcc-3.3):
-gcc -l pthread -o basic_example basic_example.c
-
-That runs well (on my b2k running a 2.4.20-pa35 and libc6 2.3.1-17):
-[...]
-PID: 31360
-a
-PID: 31361
-b
-PID: 31362
-c
-PID: 31363
-d
-PID: 31360
-a
-PID: 31361
-b
-PID: 31362
-c
-PID: 31363
-d
-[...]
-
-But notice  a very strange behaviour:
-_the pid is not the same for each thread_ ??
-
-Having just a small sunos 5.8 with gcc-3.2.2 (but with native libpthread)
-the pb does not occurs?
-
-Is it a limit of glibc (in general or in 2.3 only?) for all linux or only
-hppa?
-
-Thanks in advance for your attention,
-    Joel
-
-
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
