@@ -1,63 +1,64 @@
-From: "Marios K." <marios_hellas_23@yahoo.gr>
-Subject: [parisc-linux] HP model 612 hard disk not found
-Date: Thu, 24 Feb 2005 11:57:45 +0200
-Message-ID: <1109239065.30724.15.camel@base-06.geo.auth.gr>
+From: "Harry Cochran" <h.cochran@comcast.net>
+Subject: FW: Can't mount F0 partition as /BOOT
+Date: Thu, 24 Feb 2005 23:02:27 -0500
+Message-ID: <FHEGKPBPFFGIFBGOANOKMENPEPAA.h.cochran__3380.21649881757$1416623677$gmane$org@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-To: parisc_ <parisc-linux@lists.parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+To: <parisc-linux@lists.parisc-linux.org>,
+ <debian-hppa@lists.debian.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <v4KR5D.A.kAH.MTqHCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-I have an old HP Model 612 with 64MB Ram, 1 Seagete scsi hard disk.
-I manage to find a scsi cdrom, so i tried to install debian.
-The scsi cable had the capability to install only one disk, so i found
-another one with possibility of connecting the hard disk and the cdrom.
+Looks like things have changed since I first put Debian-hppa on my J6000. I
+finally got 2.4.17-32 loaded and running after realizing that someone
+changed things so that you no longer mount /boot at install, you just greate
+a bootable f0 partition and the rest happens by magic, except, of course,
+you have to change palo.conf to (in my case) point to 1/vmlinux instead of
+1/boot/vmlinux. Next I made the mistake of loading 2.4.26-32-smp and, when I
+finally got that to load (you have to point the recoverykernel to the
+2.4.26-32-smp image too or otherwise it just keeps loading 2.4.17-32), I got
+... "Searching for devices" again. Enough for one day!
 
-I connected the hard disk on the "middle" connector of the cable and put
-the scsi id at 2.0
-
-I connected the the cdrom on the "outer" connector and put the scsi id
-as 4.0
-
-Booting in BOOT_ADMIN> and writing search
-The boot loader found them both.
-Seagete SCSI.2.0
-Pioneer SCSI.4.0
-
-Ok then, i write
-boot scsi.4.0
-And the installation begins,
-After linux kernel loader, i see the it has found both cdrom and hard
-disk with the scsi id correct.
-I choose language-keyboard.
-I configure network (although it is not connected to the network for the
-moment), but when it comes to partition the disk it says
-NO HARD DISK FOUND. CONFIGURE NETWORK FOR NFS MOUNT something....
-
-Why the installer can't see the hard disk, while in boot time it sees
-it?
-The hard disk contains an HPUX OS.
+-----Original Message-----
+From: Harry Cochran [mailto:h.cochran@comcast.net]
+Sent: Thursday, February 24, 2005 5:36 PM
+To: parisc-linux@lists.parisc-linux.org; debian-hppa@lists.debian.org
+Subject: Can't mount F0 partition as /BOOT
 
 
+Hi,
+
+	I am rebuilding my J6000. I boot from the official Debian hppa install cd,
+partition the disks, making a nice 64MB F0 partition that I mark as
+bootable, a swap partition and several Linux partitions, initialize the
+swap, and then...
+
+	I hit the button to initialze a disk and low and behold the boot partition
+I set up is not among the partitions that pop up to be initialized. If I do
+"View Paritions", there is sda1 and it's marked --Not Available--.
+
+	I'm sure it's something simple, but I can't see what I'm doing wrong. Your
+help will be appreciated.
+
+Thanks,
+
+Harry
 
 
-P.S. I apologize if this issue has already answered, but i couldn't find
-nothing on the net. I would appreciate if you cc me.
+--
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact
+listmaster@lists.debian.org
 
 
 -- 
-Marios K. <marios_hellas_23@yahoo.gr>
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
