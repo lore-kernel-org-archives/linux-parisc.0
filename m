@@ -1,33 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id XAA17797
-	for <hppa-linux@sod.res.cmu.edu>; Sun, 28 Mar 1999 23:08:36 -0500
-Received: (from sieler@localhost)
-	by bart.allegro.com (8.9.1/8.9.1) id UAA29047
-	for hppa-linux@thepuffingroup.com; Sun, 28 Mar 1999 20:08:15 -0800
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199903290408.UAA29047@bart.allegro.com>
-Subject: Re: [hppa-linux] syscall work
-To: hppa-linux@thepuffingroup.com
-Date: Sun, 28 Mar 1999 20:08:15 -0800 (PST)
-In-Reply-To: <Pine.LNX.3.96.990325205652.197B-100000@quark.ix.netcom.com> from "Kumar" at Mar 25, 99 09:01:05 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id JAA27254
+	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 09:56:34 -0500
+Message-ID: <19990329095632.U30475@cmu.edu>
+Date: Mon, 29 Mar 1999 09:56:32 -0500
+From: Phil Schwan <pschwan@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Mailing list changes
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+As we start changing things bearing the ``hppa-linux'' name to a more
+suitable ``parisc-linux'', I've gone ahead and made the appropriate
+changes to the mailing lists and CVS server.  Apologies to those whose
+procmail scripts I've broken.
 
-There may be a reason to avoid the GATE instruction...I've seen some
-HP PA-RISC systems where GATE has given way to simply
-marking the "gateway" page as non-executable, and relying on a trap
-handler to detect the gateway access.  The final result is the same...
-an architected method of doing a system call.  (I can only conjecture 
-that there is a reason for this...but I don't know what it is.)
+The old aliases (hppa-linux@thepuffingroup.com, hppa-linux-request,
+hppa-linux-cvs, etc) are deprecated, and will function for a while
+longer.  One should begin using parisc-linux@thepuffingroup.com or one
+will be surprised when one's mail bounces at some unspecified point in
+the future.
 
-Perhaps we can get an HP person to comment?
+For those of you using CVS, the same situation applies with the
+CVSROOT.  :pserver:anonymous@sod.res.cmu.edu:/home/cvs/hppa will work,
+but :pserver:anonymous@sod.res.cmu.edu:/home/cvs/parisc is preferred.
 
-> It does not matter as long as the gateway instruction is on the "special"
-> page. Probably one wants to put a nop before the gateway instruction.
+-Phil
 
--- 
-Stan Sieler                                          sieler@allegro.com
-                                     http://www.allegro.com/sieler.html
+------------------------------------------------------------------
+"In film you will find four basic story lines. Man versus man, man
+versus nature, nature versus nature, and dog versus vampire."
+        - Steven Spielberg
