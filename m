@@ -1,11 +1,12 @@
 From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
+Subject: [parisc-linux] c++/10235: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
 Date: 27 Mar 2003 05:33:19 -0000
-Message-ID: <20030327053319.22475.qmail__1872.0184838914$1416622339$gmane$org@sources.redhat.com>
+Message-ID: <20030327053319.22475.qmail__25775.3001446419$1416622339$gmane$org@sources.redhat.com>
 Reply-To: Randolph Chung <tausq@debian.org>
 Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
 To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Resent-Message-ID: <20030327053602.24269.qmail@sources.redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -16,15 +17,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+>Number:         10235
 >Category:       c++
 >Synopsis:       [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
 >Confidential:   no
 >Severity:       serious
 >Priority:       medium
+>Responsible:    unassigned
+>State:          open
 >Class:          ice-on-legal-code
 >Submitter-Id:   net
+>Arrival-Date:   Thu Mar 27 05:36:00 UTC 2003
+>Closed-Date:
+>Last-Modified:
 >Originator:     Randolph Chung <tausq@debian.org>
 >Release:        gcc-3.3
+>Organization:
 >Environment:
 System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2003 parisc64 unknown unknown GNU/Linux
 Architecture: parisc64
@@ -69,6 +77,8 @@ See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
 >Fix:
 
+>Release-Note:
+>Audit-Trail:
 >Unformatted:
 ----gnatsweb-attachment----
 Content-Type: application/x-gzip-compressed; name="bug.ii.gz"
