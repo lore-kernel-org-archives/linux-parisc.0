@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 3 Feb 2003 10:30:57 -0700
-To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Yet another tar-triggered problem?
-Message-ID: <20030203173057.GC17807@dsl2.external.hp.com>
-References: <20030203154450.GO7503@aurinko.ntc.nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030203154450.GO7503@aurinko.ntc.nokia.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from relay-3m.club-internet.fr (relay-3m.club-internet.fr [194.158.104.42])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 863CF4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 10:34:45 -0700 (MST)
+Received: from club-internet.fr (f07a-5-86.d1.club-internet.fr [212.194.148.86])
+	by relay-3m.club-internet.fr (Postfix) with SMTP id CBF10E1A3
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 18:35:30 +0100 (CET)
+From: baddy@free.fr
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 03 Feb 2003 18:35:23 +0200
+Message-ID: <yam9164.1199.146359312@mail.club-internet.fr>
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: [parisc-linux] B132L+ and PCI cards
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,33 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 03, 2003 at 05:44:50PM +0200, Nahkola Mikko wrote:
-> ... the 70096's scrollback was full of something that looks like
-> a hex dump, and then a HPMC at the end.
+Hi,
 
-Likely a problem with st or scsi driver.
-Not many people are using tape drives so we don't get much
-feedback on that.
+I've got a B132L+ with which I am trying to have a 16 ou 24 bits (better
+than the original 8-bits framebuffer mode) : I've inserted a S3Trio64V2/DX
+based card but the B132L+ lock at boot.
 
-> Is anyone interested in the hex dump?
+I've inserted a NE-2000 PCI clone and it works perfectly so I think it do
+not come from the PCI bus, but the video card itself.
 
-Well, TBH, I'd be more interested in one from a 2.4.20 kernel.
-Too much code has changed since 2.4.18.
+So is there a way to put a PCI video card in a B132L+ and is there
+somewhere a list of PCI cards that are know to work ?
 
-> 
-> The HPMC is as follows:
-> 		Code=1 regs=102f3080 (Addr=00000000)
-> 	
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001000000000000001110 Not tainted
-> r00-03  00000000 10300010 1010d4e8 ffffffff
-...
-> IASQ: 00000000 00000000 IAOQ: 1024a2d0 1024a2d4
-
-Can you look up (IOAQ) 1024a2d0 and (GR02) 1010d4e8
-in the matching System.map?
-I'm curious where it died.
-Though with HPMCs, it's likely to be a bug in some other code path.
-
-thanks,
-grant
+-------
+Bad Max
+========
+Amiga User
+GNU User
+WWW: perso.club-internet.fr/badmax
