@@ -1,27 +1,21 @@
-Return-Path: <sdbrady@ntlworld.com>
-Received: from mta04-svc.ntlworld.com (mta04-svc.ntlworld.com [62.253.162.44])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85B3D488A
+Return-Path: <rscholz@hrzpub.tu-darmstadt.de>
+Received: from mailserver1.hrz.tu-darmstadt.de
+	(mailserver1.hrz.tu-darmstadt.de [130.83.126.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8057B488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 03:30:15 -0700 (MST)
-Received: from calypso ([62.254.21.7]) by mta04-svc.ntlworld.com
-	(InterMail vM.4.01.03.37 201-229-121-137-20020806) with ESMTP
-	id <20040222103004.NFWK20489.mta04-svc.ntlworld.com@calypso>
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 10:30:04 +0000
-Received: from sdb by calypso with local (Exim 3.36 #1 (Debian))
-	id 1AuqsK-0000kQ-00 for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 10:30:16 +0000
-Date: Sun, 22 Feb 2004 10:30:16 +0000
-From: Stuart Brady <sdbrady@ntlworld.com>
+	Sun, 22 Feb 2004 04:48:13 -0700 (MST)
+Received: from hrzpub.tu-darmstadt.de (dialin1.stud.tu-darmstadt.de
+	[130.83.60.1])
+	by mailserver1.hrz.tu-darmstadt.de (8.12.10/8.12.8) with ESMTP id
+	i1MBm3Pk011337 for <parisc-linux@lists.parisc-linux.org>;
+	Sun, 22 Feb 2004 12:48:04 +0100
+Message-ID: <40389735.2070702@hrzpub.tu-darmstadt.de>
+Date: Sun, 22 Feb 2004 12:49:09 +0100
+From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] Harmony driver - Reject AFMT_S16_LE
-	(Little Endian)
-Message-ID: <20040222103016.GA2815@calypso>
-References: <20040222092057.GA2590@calypso>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040222092057.GA2590@calypso>
-Sender: Stuart Brady <sdbrady@ntlworld.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] Unknown symbol eisa_in8
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,25 +25,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I said:
+Hello,
 
-> One question: are there any audio devices for hppa that need drivers,
-> that have documentation? I see that audio on the J5k/C3k is unsupported,
-> but there are apparently no docs for it. Audio on the 705 and 710 doesn't
-> seem supported either. Again, no docs AFAICS.
+when I configure lastest kernel from cvs to use parport and lp driver as 
+module, I get the following warning when running "make modules_install":
 
-I do apologise - I've now noticed that there _is_ a AD1889 driver,
-although I don't know whether it works on hppa.
+WARNING: /lib/modules/2.6.3-pa0/kernel/drivers/char/lp.ko needs unknown 
+symbol eisa_in8
+WARNING: /lib/modules/2.6.3-pa0/kernel/drivers/char/parport-pc.ko needs 
+unknown symbol eisa_in8
 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2002-January/015138.html
-looks quite useful - I'll have to see if I can get docs on the PSB2160.
+Is in both files a definition for io.h missing?
 
-It's interesting that the 720/730/750 has 3 channel beeper sound. Could
-someone tell me the name of the chip, please?
-
-http://members.chello.nl/h.otten/vortexion.htm has a list of popular
-sound chips for microcomputers in the 80s. It'd be great if it turned
-out to be an AY-3-8910, YM2149 or SN76489, as there's a lot of music
-that's been written for those chips.
--- 
-Stuart Brady
+Greetings,   
+Ruediger
