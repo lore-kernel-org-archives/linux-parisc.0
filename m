@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx05.cluster1.charter.net (dc-mx05.cluster1.charter.net [209.225.8.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E656C4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 21:32:24 -0600 (MDT)
-Message-ID: <3D5F157A.7070207@charter.net>
-Date: Sat, 17 Aug 2002 23:33:14 -0400
-From: "B. Douglas Hilton" <bdhilton@charter.net>
-MIME-Version: 1.0
-To: Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
+Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D79F4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 21:38:57 -0600 (MDT)
+Date: Sun, 18 Aug 2002 04:38:50 +0100 (IST)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: "B. Douglas Hilton" <bdhilton@charter.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200
- machine.
-References: <3D5EB2D6.9090403@charter.net> <20020817223713.GA25852@gate450.dyndns.org> <3D5EFFF7.30008@charter.net> <20020818031227.GA32603@gate450.dyndns.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: Re: [parisc-linux] Voodoo3 PCI on C200 experiment pending!
+In-Reply-To: <3D5E0430.2000407@charter.net>
+Message-ID: <Pine.LNX.4.44.0208180419120.1348-100000@sal.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,56 +22,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Yes I made a monolithic kernel, so it rebuilt eepro100.c
+On Sat, 17 Aug 2002, B. Douglas Hilton wrote:
 
-Prior, I was using a stock Debian vmlinux-2.4.18-32 kernel
-so there is a good chance that the Debian packager had made
-the same modification to the source.
+> I just scarfed up a somewhat used Voodoo3 PCI graphics
+> card from Ebay and intend to try it out with Debian/HPPA
+> and a custom built kernel.
+>
+> I hope to compile a tdfx.o drm module and get the card
+> recognized via a PALO boot command. I will use a dumb
+> terminal for the system console during initial booting.
 
+I think I have to disappoint you. I doesn't work for me :-(
 
+I did exactly the same thing, I got a Voodoo 3 3000 from ebay and put it
+into my C240 (it's very similar to the C200 series).
+I tried both 32bit and 64bit PCI slots, but XFree86's Voodoo driver
+seems to have some problems with 64bit PCI (at least some guru from
+the p-l mailing list suggested this after reading my XFree86 logs).
 
-Andreas Seltenreich wrote:
-> * B. Douglas Hilton <bdhilton@charter.net> [2002-08-18 04:01]:
-> 
->>I tried your suggestions and built a new kernel, but
->>it still behaves as it did prior to the modification.
-> 
-> 
-> Just to be sure, you did rebuild the eepro100 module too?
-> 
-> I'm using the nic for hours now and it is working perfectly.
-> 
+But unfortunately sticking the Voodoo into a 32bit PCI slot doesn't get
+much further: starting XFree86 will cause a HPMC shortly after a message
+like "Lasi: barking without apparent reason" (obviously from gsc/lasi.c).
+This is just before it is about to initialize the Voodoo3 (with the
+Intel emulator in XFree86). At least the messages printed on the console
+seem to be like the last messages XFree86 usually prints out just before
+activating the graphics card on other platforms.
 
-Hmmm....
+Finally I even took out the (not yet supported) HP Visualize-FX2 card
+(64bit slot), just to get sure that there were no conflict with other PCI
+hardware. I'm using (or should I say: I have to use) the serial console
+anyway.
 
-> 
->>To summarize (with eepro100 in PCI slot ):
->>
->> - can ping using a dotted quad
->> - cannot ping using dns
->> - can ftp login to another machine on my LAN
->> - when I try to list files or download it locks up.
-> 
-> 
-> With the original module (2.4.19-pa2) I wasn't able to receive ip packets
-> larger than approx 150 bytes. For example a ping -s 100  went through
-> while ping -s 200 didn't. 
-> 
-> 
->>This is a major headache. I don't believe that the Debian 3.0
->>cdrom will boot on the C200, and without network I can't
->>upgrade the 0.9.3 cdrom. Its a catch-22!
-> 
-> 
-> Btw. the diff was from 2.4.19-pa2. Maybe there have been other changes
-> if you are using an older kernel.
-> 
+BTW, of course you must not compile the Voodoo FrameBuffer device, and
+I don't use the DRI driver either (just to be sure); just use XFree86
+driver.
 
-I guess I will try that one then. Thanks.
+I recently found a message on the debian-alpha mailing list (this month)
+were some tried to get a Voodoo3 running on a AlphaStation. He succeeded
+by adding 'Option "NoINT10"' to XF86Config, but this didn't work for me.
+This would have been very surprising, since Alpha and HPPA are totally
+different architectures anyway, but who knows ...
 
-> The address of the maintainer Andrey V. Savochkin <saw@saw.sw.com.sg>
-> seems to be broken. So no help from there.
-> 
-> regards
-> andreas
-> 
+My last attempt was with 2.4.19-pa2; still the same error.
+
+greetings max
