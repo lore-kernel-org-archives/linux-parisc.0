@@ -1,18 +1,20 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5340448A2
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D04DE48A2
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Mar 2004 00:39:35 -0700 (MST)
-Date: Mon, 15 Mar 2004 02:37:40 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Randolph Chung <randolph@tausq.org>
+	Mon, 15 Mar 2004 00:43:46 -0700 (MST)
+Date: Sun, 14 Mar 2004 23:43:46 -0800
+From: Randolph Chung <tausq@debian.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] Spinlock patch, take 2
-Message-ID: <20040315073740.GA660@baldric.uwo.ca>
+Message-ID: <20040315074346.GD2384@tausq.org>
 References: <20040315063318.GC2384@tausq.org>
+	<20040315073740.GA660@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040315063318.GC2384@tausq.org>
+In-Reply-To: <20040315073740.GA660@baldric.uwo.ca>
 Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <tausq@debian.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,13 +24,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Mar 14, 2004 at 10:33:18PM -0800, Randolph Chung wrote:
-> Here's another version of my spinlock patch against 2.6.4. It optimizes
-> spinlocks used for atomic operations by putting the atomic locks into a
-> special section that is guaranteed to be 16-byte aligned, so no runtime
-> alignment is needed. Build-tested against 2.6.4. Comments?
+> Looks beautiful. Is it measurably faster, or just semantically more
+> correct than the existing implementation? :)
 
-Looks beautiful. Is it measurably faster, or just semantically more
-correct than the existing implementation? :)
+i have not done any measurements. the spinlock_t stuff is needed since
+we've agreed that the attribute((aligned(16)) is not sufficient to
+guarantee correct alignment. the atomic-lock optimization is based on
+some discussions we had a few months ago. i'd like to actually try
+these, but we still don't have a bootable SMP kernel yet :(
 
-c.
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
