@@ -1,25 +1,33 @@
 Return-Path: <hppa-linux@puffingroup.com>
 From: "Steven A. DuChene" <sduchene@mindspring.com>
-Message-ID: <19990219230036.I4360@sduchene.users.mindspring.com>
-Date: Fri, 19 Feb 1999 23:00:36 -0500
-To: hppa-linux@puffingroup.com
+Message-ID: <19990219230253.J4360@sduchene.users.mindspring.com>
+Date: Fri, 19 Feb 1999 23:02:53 -0500
+To: Jason Eckhardt <jason@equator.com>
+Cc: hppa-linux@puffingroup.com
 Subject: Re: [hppa-linux] Bootstrap test results
-References: <199902181601.KAA01190@equator.com>
+References: <199902191616.IAA09569@gatekeeper.equator.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199902181601.KAA01190@equator.com>; from Jason Eckhardt on Thu, Feb 18, 1999 at 10:01:00AM -0600
-Resent-Message-ID: <"uyHyb3.0.Uk7.7GZps"@burrow.puffingroup.com>
+In-Reply-To: <199902191616.IAA09569@gatekeeper.equator.com>; from Jason Eckhardt on Fri, Feb 19, 1999 at 08:16:28AM -0800
+Resent-Message-ID: <"lZpaN2.0.Hl7.PIZps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Feb 18, 1999 at 10:01:00AM -0600, Jason Eckhardt wrote:
-> The one failure was on an A180. I don't know anything about this system,
-> so I'm not sure what's happening. Anyone know what the CPU is on the
-> A180 or any other info?
+On Fri, Feb 19, 1999 at 08:16:28AM -0800, Jason Eckhardt wrote:
+> 
+> >
+> > I tried the bootstrap test on a box last night and got a CPU ID
+> > of 00000224  This was done by using the dd to disk method.
+> >
+> > This was on a new unreleased C-series box
+> >
+> 
+>   Cool! Can you tell me is it 8500 based? The model number
+>   is 0x11 (looking at the CPUID number), which is one I haven't seen before.
+>   My 8000 cpuid model is E, and the largest value I've seen so far is F.
 > 
 
-A A180 is basically an a B180 in a rack mount chassis  It should be a
-PA7300 processor.
+It is a PA8500 processor.
 -- 
 Steven A. DuChene   Linux Fan!  http://www.mindspring.com/~sduchene
 
