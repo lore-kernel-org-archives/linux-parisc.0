@@ -1,83 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id AB3E8482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 18:25:36 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 13 Jun 2001 02:24:49 +0200
+Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D7D8482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 18:42:10 -0600 (MDT)
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <200106130042.RAA20436@opus.allegro.com>
+Subject: Re: [parisc-linux] New list member..
+To: chs@23.org (CHS)
+Date: Tue, 12 Jun 2001 17:42:05 -0700 (PDT)
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.30.0106121514010.23761-100000@methlab.23.org> from "CHS" at Jun 12, 2001 03:19:46 PM
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5"
-Message-Id: <20010613002536.AB3E8482A@dsl2.external.hp.com>
-Subject: [parisc-linux] sticon/sercon patch for new bootfloppies...
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
---------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: 
+Re:
 
-Hi,
+> 3.) about a year ago, I remember HP ran some deal where you could send
+> away for a (mostly) free copy of HP-UX, I think version 10.20. Is this
+> still happening? I'd really like to get a copy of HP-UX to play around
 
-the attached patch enables only those consoles, which are given on the linux 
-kernel command line.
-Examples: "console=tty0" activates STIcon only, "console=ttyS0" activates 
-serial console only and if you use both on the commandline you will get the 
-system messages on both consoles.
+That was a special Y2K deal ... probably not available now.
+(and it was completely free)
 
-Known bugs: 
-- STIcon will not show any messages which happened before the STI
-	initialisation
+I had two URLs for the program, neither work now:
 
-Please test and comment
-Greetings,
-Helge
+   http://www.software.hp.com/y2kupgrades/cust_wo_supp.html
+and
+   http://www.software.hp.com/y2kupgrades/swp_upgrades.html
 
---------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5
-Content-Type: text/x-c;
-  charset="iso-8859-1";
-  name="PDC_CONSOLE_short.patch"
-Content-Transfer-Encoding: base64
-Content-Description: patch
-Content-Disposition: attachment; filename="PDC_CONSOLE_short.patch"
+In typical "HP: Always on [fire]" fashion, if you go to:
 
-SW5kZXg6IGFyY2gvcGFyaXNjL2tlcm5lbC9wZGNfY29ucy5jCj09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6
-IC9ob21lL2N2cy9wYXJpc2MvbGludXgvYXJjaC9wYXJpc2Mva2VybmVsL3BkY19jb25zLmMsdgpy
-ZXRyaWV2aW5nIHJldmlzaW9uIDEuMjUKZGlmZiAtdSAtcjEuMjUgcGRjX2NvbnMuYwotLS0gcGRj
-X2NvbnMuYwkyMDAxLzA0LzA2IDA1OjEwOjU0CTEuMjUKKysrIHBkY19jb25zLmMJMjAwMS8wNi8x
-MyAwNjowODoyNgpAQCAtMTEsNiArMTEsMTAgQEAKICNpbmNsdWRlIDxhc20vc3lzdGVtLmg+CiAj
-aW5jbHVkZSA8YXNtL3BkYy5oPgkvKiBmb3IgaW9kY19jYWxsKCkgcHJvdG8gYW5kIGZyaWVuZHMg
-Ki8KIAorCisvKiBFbmFibGUgdG8gdXNlIHRoaXMgc2ltcGxlIFBEQyBjb25zb2xlIChmb3IgZGVi
-dWdnaW5nIHB1cnBvc2VzIG9ubHkhKTogKi8KKyN1bmRlZiBFQVJMWV9CT09UVVBfREVCVUcKKwog
-c3RhdGljIHZvaWQgcGRjX2NvbnNvbGVfd3JpdGUoc3RydWN0IGNvbnNvbGUgKmNvLCBjb25zdCBj
-aGFyICpzLCB1bnNpZ25lZCBjb3VudCkKIHsKIAl3aGlsZShjb3VudC0tKQpAQCAtNDYsMTUgKzUw
-LDE4IEBACiAJaWYgKFBBR0UwLT5tZW1fY29ucy5jbF9jbGFzcyA9PSBDTF9EVVBMRVgpCiAJCW1l
-bWNweSgmUEFHRTAtPm1lbV9rYmQsICZQQUdFMC0+bWVtX2NvbnMsIHNpemVvZihQQUdFMC0+bWVt
-X2NvbnMpKTsKIAorI2lmZGVmIEVBUkxZX0JPT1RVUF9ERUJVRwogCXBkY19jb25zb2xlX3dyaXRl
-KDAsICJQREMgQ29uc29sZSBJbml0aWFsaXplZFxuIiwgMjQpOwogCS8qIHJlZ2lzdGVyIHRoZSBw
-ZGMgY29uc29sZSAqLwogCXJlZ2lzdGVyX2NvbnNvbGUoJnBkY19jb25zKTsKKyNlbmRpZiAvKiBF
-QVJMWV9CT09UVVBfREVCVUcgKi8KIH0KIAogCiAvKiBVbnJlZ2lzdGVyIHRoZSBwZGMgY29uc29s
-ZSB3aXRoIHRoZSBwcmludGsgY29uc29sZSBsYXllciAqLwogdm9pZCBwZGNfY29uc29sZV9kaWUo
-dm9pZCkKIHsKKyNpZmRlZiBFQVJMWV9CT09UVVBfREVCVUcKIAlleHRlcm4gdW5zaWduZWQgbG9u
-ZyBsb2dfc2l6ZTsgLyoga2VybmVsL3ByaW50ay5jICovCiAKIAlwcmludGsoIlN3aXRjaGluZyBm
-cm9tIFBEQyBjb25zb2xlXG4iKTsKQEAgLTc0LDYgKzgxLDcgQEAKICNlbmRpZgogCiAJdW5yZWdp
-c3Rlcl9jb25zb2xlKCZwZGNfY29ucyk7CisjZW5kaWYgLyogRUFSTFlfQk9PVFVQX0RFQlVHICov
-CiB9CiAKIApJbmRleDogYXJjaC9wYXJpc2Mva2VybmVsL3NldHVwLmMKPT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1Mg
-ZmlsZTogL2hvbWUvY3ZzL3BhcmlzYy9saW51eC9hcmNoL3BhcmlzYy9rZXJuZWwvc2V0dXAuYyx2
-CnJldHJpZXZpbmcgcmV2aXNpb24gMS44MQpkaWZmIC11IC1yMS44MSBzZXR1cC5jCi0tLSBzZXR1
-cC5jCTIwMDEvMDQvMDYgMDU6MTA6NTQJMS44MQorKysgc2V0dXAuYwkyMDAxLzA2LzEzIDA2OjA4
-OjI3CkBAIC00MjUsMTQgKzQyNSwxMCBAQAogCQkJYm9vdF9jcHVfZGF0YS5jcHVfaHogLyAxMDAw
-MDAwLAogCQkJYm9vdF9jcHVfZGF0YS5jcHVfaHogJSAxMDAwMDAwCSk7CiAKLSNpZmRlZiBDT05G
-SUdfU0VSSUFMX0NPTlNPTEUKLQkvKiBub3RoaW5nICovCi0jZWxpZiBDT05GSUdfVlQKLSNpZiAg
-IGRlZmluZWQoQ09ORklHX1NUSV9DT05TT0xFKQotCWNvbnN3aXRjaHAgPSAmZHVtbXlfY29uOwkv
-KiB3ZSB1c2UgdGFrZV9vdmVyX2NvbnNvbGUoKSBsYXRlciAhICovCi0jZWxpZiBkZWZpbmVkKENP
-TkZJR19EVU1NWV9DT05TT0xFKQotCWNvbnN3aXRjaHAgPSAmZHVtbXlfY29uOwotI2VuZGlmCisj
-aWZkZWYgQ09ORklHX1ZUCisjIGlmIGRlZmluZWQoQ09ORklHX1NUSV9DT05TT0xFKSB8fCBkZWZp
-bmVkKENPTkZJR19EVU1NWV9DT05TT0xFKQorICAgICAgICBjb25zd2l0Y2hwID0gJmR1bW15X2Nv
-bjsgICAgICAgIC8qIHdlIHVzZSB0YWtlX292ZXJfY29uc29sZSgpIGxhdGVyICEgKi8KKyMgZW5k
-aWYKICNlbmRpZgogCiB9Cgo=
+  http://www.software.hp.com/y2kupgrades
 
---------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5--
+You see:
+ 
+   We're sorry, this site has been discontinued. 
+   Please visit the main HP Y2K website. 
+
+Where "main HP Y2K website" is a link to: http://www.hp.com/year2000
+
+and...yep...that gets a 404 :(
+
+-- 
+Stan Sieler                                           sieler@allegro.com
+www.allegro.com/sieler/wanted/index.html                  www.sieler.com
