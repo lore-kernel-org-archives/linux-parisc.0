@@ -1,15 +1,18 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] (Round 2) hppa glibc 2.3.2-9 available for the brave testers (Round 2)!
-Date: Tue, 21 Oct 2003 12:29:38 +0200
-Message-ID: <3F8A272E00004E58__42903.951512608$1416622897$gmane$org@ocpmta3.freegates.net>
-References: <20031020233625.GB5606@systemhalted>
+From: Jeff Bailey <jbailey@nisa.net>
+Subject: Re: [parisc-linux] glibc 2.3.2-9 for hppa - "when hell freezes
+	over" release
+Date: Tue, 21 Oct 2003 08:03:59 -0400
+Message-ID: <1066737838.1176.5.camel__35113.5887358852$1416622897$gmane$org@outpost.dnsalias.org>
+References: <20031017181252.GE27289@systemhalted>
+	 <20031019181341.GF8642@systemhalted> <20031019235005.GI8642@systemhalted>
+	 <20031020234345.GC5606@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: debian-hppa@lists.debian.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-eyklI1wmgIAawhfDJzLc"
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@debian.com>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031020233625.GB5606@systemhalted>
+In-Reply-To: <20031020234345.GC5606@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,90 +23,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Carlos,
+--=-eyklI1wmgIAawhfDJzLc
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I test it on my b180 running a k-2.4-23-pre7-pa12 (hosting a basic iptable
-fw and a squid proxy and it works fine now).
+Hey Carlos - When submitting these upstream, will you consider adding
+test cases for these failures?  feraiseexcept should certainly be tested
+somewhere.  I don't know if there's a reasonable way to put in the test
+for the syscalls, though.
 
-Thanks alot for this great job,
-    Joel
+If you don't have time, that's fine too.  I just like to encourage
+people to improve testsuites whenever they can. =3D)
 
->-- Original Message --
->From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: parisc-linux@lists.parisc-linux.org
->Cc: debian-hppa@lists.debian.org
->Date: Mon, 20 Oct 2003 19:36:25 -0400
->Subject: [parisc-linux] (Round 2) hppa glibc 2.3.2-9 available for the brave
->testers (Round 2)!
->
->
->debian-hppa, 
-parisc-linux,
+Tks,
+Jeff Bailey
 
-New testing deb's can be found at:
+On Mon, 2003-10-20 at 19:43, Carlos O'Donell wrote:
+> On Sun, Oct 19, 2003 at 07:50:05PM -0400, Carlos O'Donell wrote:
+> > Will produce a new patch and new testing debs. Thanks go to all the
+> > testers that turned up these problems.
+>=20
+> New debs fix reported problems:
+> a. Six argument syscall faiulres.
+> b. feraiseexcept(FE_INEXACT) doesn't raise FE_INEXACT excption.
+>=20
+> New patch available at:
+> http://www.baldric.uwo.ca/~carlos/glibc232-hppa-full-2003-10-20.dpatch
+>=20
+> Follow the instructions provided in the original email:
+> 1. Remove all previous hppa patches.
+> 2. Add this .dpatch as the only hppa patch.
+>=20
+> Upload requested :) Lets make userspace churn...
+>=20
+> Cheers,
+> Carlos.
+--=20
+In the United States, there isn't a government database that hasn't been
+misused by the very people entrusted with keeping its information safe.
+ - Bruce Schneier
 
-ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-20/
+--=-eyklI1wmgIAawhfDJzLc
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-They fix the following problems encountered by testers:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-- Six argument cancellable syscalls don't crash you
-> program anymore.
-- Calling feraiseexcept with FE_INEXACT raises the correct exception and
-  flag bits.
+iD8DBQA/lSCt5M5hmdCYCpkRAt9PAJ41G8AEuB6zlXNq0/gwulaW9OTgmwCfQ44A
+lClI1WsBP1LBv8MEgEkdl3o=
+=OgUW
+-----END PGP SIGNATURE-----
 
-Cheers,
-Carlos.
-
-On Fri, Oct 17, 2003 at 02:09:12PM -0400, Carlos O'Donell wrote:
-> --- CALLING ALL TESTERS! ---
-> 
-> glibc 2.3.2 is comp
->ete for HPPA. We've gotten rid of the following
-> long standing test-suite errors (bug-iconv3, and test-fenv).
-> 
-> The regressions in 2.3.2 were caused by incorrect handling of the PIC
-> register by the kernel, but fixed in glibc. Most cases for o
->r stack
-> were handled incorrectly (stack grows up cases), but are fixed in this
-> release.
-> 
-> ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-16/
-> 
-> Download all the debs and install with:
-> 
-> dpkg -i libc6_*.deb
-> (Foll
->wed by dpkg -i of the rest in any order, libc6 must install first) 
-> 
-> Please do this only if you consider yourself a well seasoned linux-type
-> person. If that dpkg install fails for any reason you might be in
-> trouble. I'm running these debs o
-> all my boxes, and I've tested in a
-> chroot, rebuilt our toolchain, and ran lmbench, gnome-session, nautilus,
-> and abi-word.
-> 
-> http://www.baldric.uwo.ca/~carlos/a500-gnome-abiword.png
-> 
-> Thanks go out to everyone for all the moral support 
->nd fun! 
-> 
-> --- TEST IT AND REPORT BACK ... PLEASE! :) ---
-> 
-> == DISCLAIMER ===
-> I do not guarantee that these debs won't cause your computer to explode
-> like a pineapple grenade, showering shrapnel and fiery death on all your
-> loved ones
->
-> == DISCLAIMER ===
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
-
-http://reg.tiscali.be/default.asp?lg=fr
+--=-eyklI1wmgIAawhfDJzLc--
