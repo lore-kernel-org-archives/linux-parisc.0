@@ -1,37 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA27395
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 03:38:26 -0600
-Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id LAA30959
-	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 11:38:54 +0200
-Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id LAA1093090
-	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 11:38:54 +0200 (CEST)
-Received: by genedata.com
-	via sendmail from stdin
-	id <m11YR3d-000263C@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Tue, 5 Oct 1999 11:38:53 +0200 (CEST)
-Date: Tue, 5 Oct 1999 11:38:53 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <19991005113853.A25252@mencheca.ch.genedata.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Systems 99
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA27596
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 03:46:16 -0600
+Message-ID: <37F9C98E.6EE6975@acm.org>
+Date: Tue, 05 Oct 1999 11:49:02 +0200
+From: Hans-Juergen Bergmann <hbergman@acm.org>
+MIME-Version: 1.0
+To: Lars Segerlund <lars.segerlund@axis.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Status Query .
+References: <199910050731.JAA12199@seger.axis.se>
+Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-I've been requested to attend Systems 99 in Munich by HP Germany.
-Unfortunately, due to leaving GeneData soon to work for The Puffin Group,
-I don't have any holiday left to do this.  Would anyone be able to get
-to Systems 99, even for just some of the days?
 
-It's October 18th to 22nd (Monday to Friday), and if it's even half as
-much fun as LinuxTag was, it's definitely worth doing.  Please email me
-if you're interested.
+Lars Segerlund wrote:
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+>  I have a 725/50 ( or something like that ) and I am really interested in doing
+>  some work on the hppa, perhaps not the kernel, but some driver would be ok.
+>
+>  However I do not have HP-UX, so I want to setup the HP, as a linux workstation
+>  as a firts step, it seems that there is a booting kernel, but I haven't seen
+>  anyone boot a shell och mount a filesystem, am I of the correct oppinion to
+>  assume that the kernel have not yet reached this point ??
+
+I think so, you still need HPUX or a cross development system to make something
+usefull.
+
+>
+>
+>  / best regards, lars segerlund.
+>
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+
+I have the same machine with HPUX installed. I have not testet the kernel on it
+yet, but I think I will wait a little longer
+until I join in. So how is the status of the kernel for this machine type ?
+Is it worth starting work on this hardware yet ?
+
+Cheers                H.-J. Bergmann
+--
+Dr. Hans-Jürgen Bergmann                    e-mail: hbergman@acm.org
+BGS Systemplanung AG - Robert Koch Str. 41 - D-55129 Mainz - Germany
+Phone +49 6131 914152 - Fax +49 6131 914400
