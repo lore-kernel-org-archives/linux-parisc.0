@@ -1,48 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA14246
-	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 13:21:16 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 27 Dec 2000 20:24:26 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 27 Dec 2000 20:24:26 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A4A50C8.59ACF53D@linuxcare.com>
-Date: Wed, 27 Dec 2000 15:27:52 -0500
-From: Alex deVries <adevries@linuxcare.com>
-MIME-Version: 1.0
-To: Matthew Wilcox <matthew@wil.cx>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SuckyIO support
-References: <20001219094251.A17217@parcelfarce.linux.theplanet.co.uk> <20001223091521.A17346@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA14547
+	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 13:30:35 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id A8141ED6
+	for <parisc-linux@thepuffingroup.com>; Wed, 27 Dec 2000 12:33:44 -0800 (PST)
+Received: from localhost (grundler@localhost [127.0.0.1])
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id MAA23307
+	for <parisc-linux@thepuffingroup.com>; Wed, 27 Dec 2000 12:35:01 -0800 (PST)
+Message-Id: <200012272035.MAA23307@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] dd and 2k transfers on A500 
+In-reply-to: Your message of "Fri, 22 Dec 2000 17:10:05 PST."
+             <200012230110.RAA20271@milano.cup.hp.com>
+Date: Wed, 27 Dec 2000 12:35:00 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> 
-> On Tue, Dec 19, 2000 at 09:42:51AM +0000, Matthew Wilcox wrote:
-> >
-> > Wow, this is a really sucky chip :-)
-> >
-> > OK, here's a first stab at some support for it.  Could someone with a
-> > B/C/J `thousand' class machine please give it a try, and let me see the
-> > relevant portions of their bootlog?
+Grant Grundler wrote:
+> I'm using local disks on the A500 to do the following:
+> for i in 0 1 2 3 4 5 6 7 8 9; do dd if=/dev/sdd of=t$i \
+> bs=2k count=1; od -A x -t xC t$i > x$i; done
 
-I'm still determined to give this to you, but I've had several hurdles
-that are making this difficult:
+Problem solved. Loosing page offset bits in the last "chunk"
+of a scatter-gather list. We end up DMAing to the wrong part
+of the page. Fix was tested on 32-bit/C3k and should work on
+A500 as well now.
 
-- our C3k seems to be taking the Christmas break as holiday, as she
-doesn't power up anymore.  Martin Petersen and I have seen this before,
-and a bit of shaking and rattling got it to work last time.  
-
-- got a workout by moving the J5k over to my cube, and it now HPMCs
-before I see any relevant boot output.  Not sure why.
-
-- I'm travelling until January 2.
-
-- Alex
-
--- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+my apologies for the stupid mistake,
+grant
