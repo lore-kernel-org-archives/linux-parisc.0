@@ -1,29 +1,21 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA02717
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 16:03:58 -0700
-Date: Fri, 25 Feb 2000 23:03:48 +0100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03202
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 17:17:43 -0700
+Date: Sat, 26 Feb 2000 00:17:29 +0100
 From: Philipp Rumpf <prumpf@inwestnet.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: willy@thepuffingroup.com, parisc-linux@thepuffingroup.com
+To: willy@thepuffingroup.com
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] code 28 trap
-Message-ID: <20000225230348.E812@abacus.local>
-References: <20000224224934.N9944@thepuffingroup.com> <200002252036.MAA04792@milano.cup.hp.com>
+Message-ID: <20000226001729.F812@abacus.local>
+References: <200002250259.SAA04374@milano.cup.hp.com> <20000224224934.N9944@thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200002252036.MAA04792@milano.cup.hp.com>; from grundler@cup.hp.com on Fri, Feb 25, 2000 at 12:36:27PM -0800
+In-Reply-To: <20000224224934.N9944@thepuffingroup.com>; from willy@thepuffingroup.com on Thu, Feb 24, 2000 at 10:49:34PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Uh oh.  We really need a kernel unaligned trap handler.  Some of
-> > the network protocols rely on that being handled right (yes, i know.
-> > it sucks.)
+> http://boudicca.tux.org/hypermail/linux-kernel/2000week06/0092.html
 > 
-> It really sucks. If any code in the performance path depends on this,
+> There was a bug in 2.3.41, looks like it didn't get fixed in .42, that
 
-Another vote for "it sucks".
-
-Which network drivers, protocols aso exactly are you using (and did you
-check for the bug Matthew posted an URL for ?) ?  I really don't think
-we should write an unaligned handler until we find ourselves using weird
-protocols (and hopefully not even then).
-
-	Philipp
+Apparently it did get fixed in .42, so it might be worth finding out what
+exactly causes Grant's unaligned trap.
