@@ -1,56 +1,70 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 75B0C482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Aug 2001 17:06:12 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id A4B3DB00C; Tue, 28 Aug 2001 00:07:48 +0100 (BST)
-Date: Tue, 28 Aug 2001 00:07:48 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
-	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
-Subject: Re: [parisc-linux] Users staying up to date.
-Message-ID: <20010828000748.G7064@linuxcare.com>
-References: <20010814154037.I25258@megatonmonkey.net> <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk> <20010814215030.A26703@megatonmonkey.net> <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk> <20010817155340.C8649@megatonmonkey.net>
+Received: from beavis.ybsoft.com (unknown [63.224.241.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 183FC482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Aug 2001 17:25:44 -0600 (MDT)
+Date: Mon, 27 Aug 2001 17:25:38 -0600
+To: Jurriaan Kalkman <Jurriaan.Kalkman@zrt.nl>
+Cc: rbradetich@uswest.net, parisc-linux@lists.parisc-linux.org
+Subject: Re: Betr.: Re: [parisc-linux] Is a C200+ currently supported?
+Message-ID: <20010827172538.A9680@beavis.ybsoft.com>
+Reply-To: rbradetich@uswest.net
+References: <sb8a03e8.087@ms-zrt1>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010817155340.C8649@megatonmonkey.net>; from carlos@megatonmonkey.net on Fri, Aug 17, 2001 at 03:53:40PM -0400
+In-Reply-To: <sb8a03e8.087@ms-zrt1>
+From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Aug 17, 2001 at 03:53:40PM -0400, Carlos O'Donell Jr. wrote:
-> > 
-> > /usr/share/locale
-> > /usr/share/locale/cs
-> > /usr/share/locale/cs/LC_MESSAGES
-> > /usr/share/locale/cs/LC_MESSAGES/dpkg.mo
-> > 
-> > I seem to remember someone saying this was a bug in an old version
-> > of dpkg.  So one way around this may be to dpkg --remove texinfo, then
-> > install dpkg, then install texinfo again.
+Jurriaan,
+
+Sorry,  The STI console is not supported on the C200+ under the
+0.9.2 installer.  The reason is because I added the code to walk 
+the GSC busses under the ccio driver after this iso was released.
+I had limited success using a TOB kernel with a GSC based
+graphics card.  Unfortunately, the PCI based graphics cards
+will not work with the STI console yet.
+
+The cable needs to be a null modem cable, not a straight
+serial cable.  If the cable is really a null modem cable,
+you might also try disconnecting the monitor as well.
+
+I verified my minicom settings and they are 9600 8N1 as well.
+
+- Ryan
+
+
+On Mon, Aug 27, 2001 at 08:22:02AM +0200, Jurriaan Kalkman wrote:
+> >Jurriaan,
 > >
+> >I use a C200+ as my development machine for the parisc-linux port. So
+> >yes, I try to keep the C200+ supported.  Be forwarned that I am newbie
+> >kernel hacker, and sometimes it takes me a long time to find/fix the 
+> >problems on these machines (ie. the ccio cpio cdrom -> disk HPMC).  I
+> >have only been using the serial console interface from the C200+ so I'm
+> >not sure how well (or if the STI works on this machine).  Now that I 
+> >found/fixed the HPMC I was looking for, I will see if I can give it a 
+> >whirl with the 0.9.2 installer tonight.
+> >
+> I'm dying to know how that whirl worked out, as it doesn't whirl all
+> that much here.
 > 
-> I tried removing texinfo. Sadly, what proceeds to occur is a 
-> relative chain of packages that continually depend on 
-> /usr/share/locale/cs, all the way down to 'tar.' At which point
-> I had lost most of my system functionality and was scp'ing 
-> binaries into /bin to keep it alive.
+> The 0.9.2 iso hangs after
 > 
-> A fruitless effort, but interesting none the less. ;)
+> Set PSW W bit to 0
 > 
-> When I get home tonight I'll roll a new kernel and do more testing.
+> I'm trying to update the firmware from 5.3 to 6.3, perhaps that will help.
 > 
-> How does the installer get around this problem?
-> Since it too must start with a base system?
-> (Maybe it's just my misunderstanding of the complete inner workings
-> of hte installer).
+> And another (very newbie) question:
+> 
+> If I remove the keyboard and mouse from the C200, attach a serial cable
+> that is working perfectly between my modem and my Intel computer, start
+> minicom, make sure it runs as 9600 8N1 and then boot the C200, should
+> something happen? Minicom keeps saying it's offline, so I can't get no
+> serial console.
+> 
+> Thanks,
+> Jurriaan
+> 
+> 
 
-The installer starts with a bunch of .debs which are sufficiently new
-that they don't have the apt-segv problem.  That is the case for the
-0.9.2 ISO, anyway.
-
-You might me able to do a fresh install from the 0.9.2 ISO to get a
-more stable system.  If you don't want to do that, you could try using
-dpkg -i to install .debs from that ISO.  Possibly a dpkg -i *.deb in
-the binary-hppa/base dir might just work.  You should probably be running
-a new(ish) kernel before you do that.
-
-Richard
+-- 
