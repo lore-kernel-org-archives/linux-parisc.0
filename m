@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout07.sul.t-online.com (mailout07.sul.t-online.com [194.25.134.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 06D594853
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Jul 2002 17:07:39 -0600 (MDT)
+To: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
 Cc: parisc list <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=iso-8859-15
-Date: Sun, 21 Jul 2002 00:54:50 +0200
-From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-Message-ID: <3D39EA3A.7A62B757@ruhr-west.de>
-MIME-Version: 1.0
-References: <3D383969.1657EF43@ruhr-west.de> <1027121658.16562.3.camel@beavis>  <3D393310.D3AB411A@ruhr-west.de> <20020720153715.A6BD34847@dsl2.external.hp.com>
-Subject: Re: [parisc-linux] C110, kernel Panics, still more tears ;-(
-To: Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] C110, kernel Panics, still more tears ;-( 
+In-Reply-To: Message from Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+   of "Sun, 21 Jul 2002 00:57:57 +0200." <3D39EAF5.A8932E1F@ruhr-west.de>
+References: <3D383969.1657EF43@ruhr-west.de> <20020720152919.9D690483D@dsl2.external.hp.com>  <3D39EAF5.A8932E1F@ruhr-west.de> 
+Date: Sat, 20 Jul 2002 19:38:02 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020721013803.0852F4842@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,26 +19,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler schrieb:
-> 
-> Juergen Braukmann wrote:
-> > > How much memory does this system have?  Also what cards do you have in
-> > > which slot. (Please also specify PCI or GSC).
-> 
-> > Speaking about card slots, I don't know what PSC slots are,
-> 
-> Me either. No such thing as PSC - only GSC or HSC (K-class).
-> The slots in the C200 can take either a GSC card or a PCI card.
-> 
-> grant
-Oh these three letter acronyms. Read a few, mix up the letters and
-generate a few new ones to spread confusion. Sorry. ;-) So it was GSC
-instead. But I am still confused. ;-)
+Juergen Braukmann wrote:
+> Tried that, but didn't see a reasonable list. I could alter some things
+> (inluding kernel) but I would have needed to know the name to type in.
 
-Juergen
+whatever name you used.
+I typically copy /usr/src/linux/vmlinux to /boot/vmlinux-paXX
+to match the -paXX number in the Makefile.
+(And copy System.map with the same convention).
+Then interact with palo and specify /boot/vmlinux-pa55.
 
--- 
-===========================================     __   _
-Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
-Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
-===========================================_\_v __/_/_//_/\_,_/ /_/\_\
+I change /etc/palo.conf to use /boot/vmlinux-pa55 (and rerun palo at that
+point) by default if I'm happy it works.
+
+> Oh these three letter acronyms. Read a few, mix up the letters and
+> generate a few new ones to spread confusion. Sorry. ;-) So it was GSC
+> instead. But I am still confused. ;-)
+
+See http://www.parisc-linux.org/glossary/index.html
+
+grant
