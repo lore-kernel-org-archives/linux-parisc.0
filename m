@@ -1,34 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA13227
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 04:29:17 -0700
-Received: from user-140-143.jakinternet.co.uk (HELO rhirst.linuxcare.com) (212.187.140.143)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 11:31:43 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id E92A2B008; Thu, 30 Nov 2000 11:27:39 +0000 (GMT)
-Date: Thu, 30 Nov 2000 11:27:39 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Steve Moret <smoret@uci.edu>
-Cc: Helge Deller <deller@gmx.de>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000/735-125
-Message-ID: <20001130112739.F22285@linuxcare.com>
-References: <00113001105103.00309@P100> <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu>; from smoret@uci.edu on Thu, Nov 30, 2000 at 01:20:28AM -0800
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA13742
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 05:02:55 -0700
+Date: Thu, 30 Nov 2000 13:04:49 +0100 (MET)
+To: "Steve Moret" <smoret@uci.edu>
+Cc: parisc-linux@thepuffingroup.com
+Cc: parisc-linux@thepuffingroup.com
+Subject: RE: [parisc-linux] HP 9000/735-125
+From: Helge Deller <deller@gmx.de>
+References: <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu>
+Message-ID: <6166.975585889@www24.gmx.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 30, 2000 at 01:20:28AM -0800, Steve Moret wrote:
-> Now, maybe you can help me identify my SCSI problem. I don't know if it is
-> because of driver issues or a bad disk (completly likely). Do other people
-> have the Fast SCSI2 working on their 735s?
+Hi Steve,
+
+> My mistake! I did a full build with todays CVS and parport didn't die.
+> So
+> somewhere between the 17th and now parport must have been fixed.
+
+I checked in yesterday a modified version of
+/drivers/parport/parport_gsc.c with an "#if 0 ... #endif" in the code. 
+Could you try to boot again with "#if 1" (search for the text which says
+something like "enable bidirectional PS/2 mode") and try again ?
+If this hangs your machine I will implement a better work-around.
+
 > 
-> Whenever I do a mke2fs (after partitioning the drive with fdisk ok) it dies.
+> Now, maybe you can help me identify my SCSI problem. I don't know if it
+> is
+> because of driver issues or a bad disk (completly likely). 
 
+I think Richard Hirst can help you much more with your SCSI-problems than
+me.  
 
-I have a 53c700 on my 715/75, and the driver was having trouble
-with a CRDOM I attached, so it has some problems.  I wrote the
-driver, but havn't used the 715/75 for a while since latest kernels
-wouldn't boot for me.  I'll get it going again and see if the scsi
-driver still works.
+NB: Does your chassis LEDs work with the new kernel, and if not, could you
+send me your bootlog (or "dmesg | grep led") ?
 
-Richard
+Greetings,
+
+	Helge
+
+-- 
+Sent through GMX FreeMail - http://www.gmx.net
