@@ -1,14 +1,23 @@
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Subject: Re: [parisc-linux] Framebuffer and 720/50
-Date: Sun, 27 Jun 2004 18:25:48 +0200
-Message-ID: <20040627162548.GN20632@lug-owl.de>
-References: <20040627140634.9D4E3246C2A@mail.customers.edis.at>
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: [parisc-linux] Re: more (insane) jiffies ranting
+Date: Sun, 27 Jun 2004 10:39:08 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0406271022430.16079__3194.33437330208$1416623488$gmane$org@ppc970.osdl.org>
+References: <1088266111.1943.15.camel@mulgrave>
+	<Pine.LNX.4.58.0406260924570.14449@ppc970.osdl.org>
+	<20040626221802.GA12296@taniwha.stupidest.org>
+	<Pine.LNX.4.58.0406261536590.16079@ppc970.osdl.org>
+	<20040627015501.GA14647@taniwha.stupidest.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1463962602=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+ Andrew Morton <akpm@osdl.org>,
+ Paul Jackson <pj@sgi.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>
+To: Chris Wedgwood <cw@f00f.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040627140634.9D4E3246C2A@mail.customers.edis.at>
+In-Reply-To: <20040627015501.GA14647@taniwha.stupidest.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,69 +29,86 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
---===============1463962602==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wjmr0On0zl4P36pE"
-Content-Disposition: inline
 
+On Sat, 26 Jun 2004, Chris Wedgwood wrote:
+> 
+> On Sat, Jun 26, 2004 at 03:48:34PM -0700, Linus Torvalds wrote:
+> 
+> > But for most data structures, the way to control access is either
+> > with proper locking (at which point they aren't volatile any more)
+> > or through proper accessor functions (ie "jiffies_64" should
+> > generally only be accessed with something that understands about
+> > low/high word and update ordering and re-testing).
+> 
+> I don't entirely buy this.  Right now x86 code just assumes 32-bit
+> loads are atomic and does them blindly in lots of places (ie. every
+> user of jiffies just about).
+> 
+> Without the volatile it seems entirely reasonable gcc will produce
+> correct, but wrong code here so I would argue 'volatile' is a property
+> of the data in this case.
 
---wjmr0On0zl4P36pE
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's a property of the data _iff_:
+ - it is _always_ volatile
+ - it is only ever used atomically: this also means that it must be 
+   totally independent of _all_ other data structures and have no linkages 
+   to anything else.
 
-On Sun, 2004-06-27 16:06:33 +0200, Wolf-Dieter Kattnig <kattnig@cnd-online.=
-com>
-wrote in message <20040627140634.9D4E3246C2A@mail.customers.edis.at>:
-> I've had no problems whatsoever setting up Woody on my 720 - except for o=
-ne
-> glitch - I can't get X to work.
->=20
-> My graphics adaptor is an HPA2269A. Everything looks good, but I cant get
-> /dev/fb0 to work. My kernel is 2.4.18-32.
->=20
-> Is X supported on this configuration at all? Help would be appreciated.
+Snd basically, the above is pretty much never true except possibly for 
+real I/O accesses and sometimes things like simple "flags" (ie it's fine 
+to use "volatile sigatomic_t flag;" in user programs to have signal 
+handlers say "something happened" in a single-threaded environment).
 
-STI framebuffer support is compiled in? Could you please provide kernel
-log output? What XFree error messages do you get? What XFree driver did
-you configure?
+NOTE! The "single-threaded environment" part really is important, and is 
+one of the historical reasons for volatile having been more useful than it 
+is today. If you are single-threaded and don't have issues like CPU memory 
+ordering etc, then you can let the compiler do more of the work, and there 
+are a lot of lockless algorithms that you can use that only depend on 
+fairly simple semantics for "volatile".
 
-Missing /dev/fb0 indicates a problem (or a missing) framebuffer driver.
-You'd probably update to something more recent than 2.4.18 ...
+But the fact is, for the kernel none of the above is ever really true. 
+A 32-bit-atomic "jiffies" comes the closest, but even there the "always" 
+property wasn't true - it wasn't true in the update phase, and we 
+literally used to have something like this:
 
-MfG, JBG
+	*((unsigned long *)&jiffies)++;
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
+to update jiffies and still get good code generation (now that we have a
+64-bit jiffies and need to do more complex stuff anyway, we don't have
+that any more, but you should be able to find it in 2.3.x kernels if I
+remember correctly).
 
---wjmr0On0zl4P36pE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+And _anything_ that has any data dependencies, "volatile" is totally
+useless. Even the (acceptable in single-threaded user-space) "flag" thing 
+is not valid usage in the kernel, since for a flag in a multi-threaded 
+environment you still need an explicit CPU memory barrier in the code, 
+making it impossible for the compiler to do the right thing anyway.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+> > I repeat: it is the _code_ that knows about volatile rules, not the
+> > data structure.
+> 
+> Except as I mentioned we have exceptions to this right now.
 
-iD8DBQFA3vULHb1edYOZ4bsRAq1rAJ4/uHSFnDdT5xp5XmHf48chvSdGqgCeJdTH
-IZM0AfMb++lnAJ/HiXVYFO0=
-=cc7Z
------END PGP SIGNATURE-----
+No we don't. The _only_ accepted exception is the special case of "the low
+bits of jiffies", and that's accepted partly because of historical
+reasons, and partly because it's fundamentally a data structure we don't
+really care that much about. There should be no other ones.
 
---wjmr0On0zl4P36pE--
+And that special case _literally_ is only for people who don't care that 
+much. Anybody who cares about "real time" needs to get xtime_lock and do 
+the proper magic to get a real date.
 
---===============1463962602==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+So I don't see your argument. I'm obviously saying that "yes, we have 
+_one_ case where we make a data structure volatile", but at the same time, 
+that case is very much a "we don't really care too much about precision 
+there, and even so people think we should have real accessor functions".
 
+So I stand by the rule: we should make _code_ have the access rules, and
+the data itself should never be volatile. And yes, jiffies breaks that
+rule, but hey, that's not something I'm proud of.
+
+		Linus
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1463962602==--
