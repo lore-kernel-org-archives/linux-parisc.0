@@ -1,43 +1,64 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from winfree.gag.com (winfree.gag.com [192.133.104.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 96D2C4829
-	for <parisc-linux@parisc-linux.org>; Wed, 11 Dec 2002 14:14:28 -0700 (MST)
-Received: from spampd.localdomain (localhost [127.0.0.1])
-	by winfree.gag.com (Postfix) with ESMTP id BA1D2C24D
-	for <parisc-linux@parisc-linux.org>; Wed, 11 Dec 2002 14:14:23 -0700 (MST)
-Received: from rover.gag.com (rover.gag.com [192.133.104.32])
-	by winfree.gag.com (Postfix) with ESMTP id 83654C24D
-	for <parisc-linux@parisc-linux.org>; Wed, 11 Dec 2002 14:14:22 -0700 (MST)
-To: parisc-linux@parisc-linux.org
-From: Bdale Garbee <bdale@gag.com>
-Date: Wed, 11 Dec 2002 14:13:06 -0700
-Message-ID: <87wumggsyl.fsf@rover.gag.com>
+Return-Path: <TestDrive@compaq.com>
+Subject: FW: Some issues
+Date: Wed, 11 Dec 2002 15:12:15 -0500
+Message-ID: <9C422444DE99BC46B3AD3C6EAFC9711B0194EA6E@tayexc13.americas.cpqcorp.net>
+From: "CSA Test Drive" <TestDrive@compaq.com>
+To: "Garbee, Bdale" <bdale.garbee@hp.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
-Subject: [parisc-linux] ["CSA Test Drive" <TestDrive@compaq.com>] FW: Some issues
-Sender: parisc-linux-admin@lists.parisc-linux.org
-Errors-To: parisc-linux-admin@lists.parisc-linux.org
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
+Content-Type: text/plain; charset=iso-8859-1
 
---=-=-=
+Here is some input on a Debian PA-RISC issue.
 
-Forwarded from the testdrive.hp.com folks.
+Thanks
 
-Bdale
+Tim
+
+-----Original Message-----
+From: Torbjorn Granlund [mailto:tege@swox.com]
+Sent: Monday, December 09, 2002 4:04 PM
+To: CSA Test Drive
+Subject: Some issues
 
 
+1) Could you please set the clock of spe190?  It is 1.5h off.
 
---=-=-=
-Content-Type: message/rfc822
-Content-Disposition: inline
+2) The Debian HPPA box (spe170) seems to have alpha quality
+software.  Specifically, the FCNV,UDW,DBL instruction is
+apparently trapped, at least for certain input operand
+values, and then incorrectly implemented.  (I base the
+assupmtion that it is trapped not only on its incorrect
+operation, but on its terrible performance and that kernel
+time dominates any test program that contains the
+instruction.)
 
+Here is a test program that demonstrates the problems:
+
+double ull2dbl (unsigned long long ull)
+{
+  return ull;
+}
+main ()
+{
+  int i;
+  for (i =3D 500000; --i;)
+    ull2dbl (0x8000000000000000ull);
+  printf ("%f\n", ull2dbl (0x8000000000000000ull));
+  return 0;
+}
+
+Compile using:
+$ gcc -mpa-risc-2-0 ull2dbl.c -O
+$ ./a.out=20
+-9223372036854775808.000000
+
+Correct output is 9223372036854775808, without the minus sign.
+Without the -mpa-risc-2-0 switch, the program behaves correctly.
+I have verified that the compiler output is indeed correct.
+
+The program takes 2.7 seconds of kernel time!
+
+--
+Torbj=F6rn
 
 
 --=-=-=--
