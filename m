@@ -1,19 +1,16 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98278491B
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 50A27498A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 28 Apr 2004 09:56:06 -0600 (MDT)
-Date: Wed, 28 Apr 2004 11:54:51 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [PATCH] glibc-2.3.3 error with debian
-	unstable	compiler...
-Message-ID: <20040428155451.GE6936@baldric.uwo.ca>
-References: <408D43600000128B@ocpmta2.freegates.net>
-	<408D43600000166C@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <408D43600000166C@ocpmta2.freegates.net>
+	Wed, 28 Apr 2004 10:29:59 -0600 (MDT)
+Date: Wed, 28 Apr 2004 18:29:55 +0200
+Message-ID: <408D436000001CFC@ocpmta2.freegates.net>
+In-Reply-To: <20040428155451.GE6936@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20RE=3A=20=5BPATCH=5D=20glibc=2D2=2E3=2E3=20error=20with=20debian=20unstable=09compiler=2E=2E=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -24,22 +21,32 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Apr 28, 2004 at 11:31:29AM +0200, Joel Soete wrote:
-> Certainly: I just rebuild my own merge of 2.6.6-rc1-pa6 and 2.6.6-rc3 with
-> gcc-hppa64 (from ftp.p-l.org) and reboot my b2k with it and effectively the
-> result of tst-timer4 is a bit different:
-> # ./tst-timer4
-> clock_gettime returned timespec = { 1083142973, 718981000 }
-> clock_getres returned timespec = { 0, 10000000 }
-> *** sig1_sigval.sival_ptr (nil) != 0xbff00690
-> *** sig2_sigval.sival_ptr 0 != 163
-> # echo $?
-> 0
+>
+> It does help, we have a padding problem in siginfo, I never had enough
+> test cases to prove the __SI_RT parts were in the right place. This goes
+> to show that what you can't test is probably wrong.
+> 
+> I have to work on this today...
 
-It does help, we have a padding problem in siginfo, I never had enough
-test cases to prove the __SI_RT parts were in the right place. This goes
-to show that what you can't test is probably wrong.
+I trust it is not related but btw I encounter another strange pb with this
+kernel:
+I launch a find on a big disk and get severall messages:
+find: /a/dir/of/mine: Input/Output error
+...
 
-I have to work on this today...
+the same when ls -l /a/dir/of/mine (I/O error)
 
-c.
+well this is a merge of our 2.6.6-rc1-pa6 and upsteam 2.6.6-rc3 64bits.
+if i reboot with 2.6.6-rc1-pa0 32bits no pb.
+
+So i will try to rebuild 2.6.6-rc1-pa6 alone in 64bit and see if the pb is
+there or in my merge?
+
+Cheers,
+    Joel
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
