@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spike2.ehosting.com (unknown [62.173.67.13])
-	by dsl2.external.hp.com (Postfix) with SMTP id 51A36483D
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Aug 2003 15:03:05 -0600 (MDT)
-Message-ID: <1062104536.3f4e6dd8eba50@webmail.v8fiesta.co.uk>
-Date: Thu, 28 Aug 2003 22:02:16 +0100
-From: mmogenius@v8fiesta.co.uk
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-References: <20030828180707.44387.qmail@web12503.mail.yahoo.com>
-In-Reply-To: <20030828180707.44387.qmail@web12503.mail.yahoo.com>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D7D66483F
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Aug 2003 01:28:47 -0600 (MDT)
+Date: Fri, 29 Aug 2003 09:27:27 +0200
+Message-ID: <3F4D78B00000007F@ocpmta3.freegates.net>
+In-Reply-To: <012d01c36d82$40d6c960$f463f40f@jh733133>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
+To: "Jim Hull" <jim.hull@hp.com>, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,43 +21,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Oh dear i ordered the converter but it was only £3 so what the hell i'll see 
-if they will swap the converter for another.
+Hi Jim,
 
-with any luck i'll manage to get X on this box.... not critical but damn it 
-would be nice. 
+Well come :)
+> I haven't really been following this thread, so I don't know what
+>problem you're actually trying to solve, but I'd like to point out a few
+>aspects of the PA-RISC processor architecture.
+>
+To be short, the pa linux kernel boot well on A model as SMP (Multiprocessor
+mode) but panic on L/N model. And a pb in tlb management is suspected.
+
+>Comments mixed with the original text, below.
+>
+> -- Jim
+>   
+>> HP Itanium/PA-RISC Processor Architect
+
+>If you use fdc, fic, or pdc, then they are broadcast to other
+>processors, but fdce and fice are not.
+
+Thanks I will check if such a code is used.
+
+>While you can use ldda and stda to access memory using absolute
+>(physical) addresses instead of virtual, these instructions do *not*
+>bypass the cache.  And because PA processors use virtually-indexed
+>caches, the rules for mixing virtual and absolute accesses, and have
+>them all remain cache-coherent, are complicated.  If you really need to
+>do this, then you'll have to read and understand all of Appendix F, "TLB
+>and Cache Control", in the PA-RISC 2.0 Architecture manual (the "Kane"
+>book).
+
+Yes, very accurate reference, but imo it is not a course on PA-RISC asm (I
+mean, as a beginner, as i am, would like to find with some trial example
+showing what is good and trivial errors to not commit).
+
+Thanks for your clear comments,
+    Joel
 
 
-
-Quoting Derek Engelhaupt <derekengelhaupt@rocketmail.com>:
-
-> It is most definitely an EVC connector on the EG card....not DVI regardless
-> of what the Ebay listing says.
->  
-> derek
-> 
-> Grant Grundler <grundler@parisc-linux.org> wrote:
-> On Thu, Aug 28, 2003 at 10:22:21AM +0100, mmogenius@v8fiesta.co.uk wrote:
-> > i'll go for the card and get the adaptehr for a normal monitor.
-> 
-> I think two of the Ebay listings have an error: AFAIK, VIz-EG cards have
-> an "EVC" connector and not a "DVI" connector. The two connectors look very
-> similar except the DVI connector has fewer pins. Have them count pins and
-> verify before ordering the DVI connector.
-> 
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
-> ---------------------------------
-> Do you Yahoo!?
-> Yahoo! SiteBuilder - Free, easy-to-use web site design software
-
-
-
-
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+-------------------------------------------------------------------------
+Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
+http://reg.tiscali.be/default.asp?lg=fr 
