@@ -1,44 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23B1B4A1C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 16:55:41 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA19117;
-	Sat, 17 Mar 2001 10:52:45 +1100
-Date: Sat, 17 Mar 2001 10:52:45 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Matthew Wilcox <matthew@wil.cx>, alan_meyer@hp.com,
-	taggart@carmen.fc.hp.com, randolph@tausq.org, bdale@gag.com,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: new debs built, c++ is broken
-In-Reply-To: <200103162007.PAA18059@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.21.0103171012070.4658-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77DA34A19
+	for <parisc-linux@parisc-linux.org>; Fri, 16 Mar 2001 19:34:37 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14e6Y3-000678-00; Sat, 17 Mar 2001 02:34:31 +0000
+Date: Sat, 17 Mar 2001 02:34:31 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] semaphore problem
+Message-ID: <20010317023431.F21079@parcelfarce.linux.theplanet.co.uk>
+References: <20010316062549.H22875@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010316062549.H22875@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Fri, Mar 16, 2001 at 06:25:49AM +0000
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 16 Mar 2001, John David Anglin wrote:
-
-> You might have to make a case but I note the following recent patch:
+On Fri, Mar 16, 2001 at 06:25:49AM +0000, Matthew Wilcox wrote:
 > 
-> 2001-03-15  Steve Ellcey  <sje@cup.hp.com>
+> as i suspected, the pipe problem was a semaphore problem.  here's how
+> it works:
 
-Aye, but isn't ia64 "flavour of the month"?  :-)
+OK, I've redesigned the semaphore code on the whiteboard.  Here's how it
+works.
 
-As far as I can see, the difficulties with getting hppa-linux in are:
+The `count' variable is initialised to N for N simultaneous accesses.
+A value of 0 indicates there are no processes waiting.  A value of -1
+indicates there are processes waiting.  Each up() increments the count by
+1 if non-negative.  if negative, it _decrements the count.  So we can
+distinguish between the following cases:
 
-a) In order to support hppa-linux cleanly without duplicating lots on
-header file defines, I split out various things in existing config/pa
-headers.  That means there is potential for HPUX breakage.  HPUX support
-doesn't break, but that's almost beside the point.
+ N : N more processes allowed in
+ 0 : no new processes allowed in, none waiting
+-1 : processes waiting, no wakeups in flight
+-N : N - 1 wakeups in flight
 
-b) Some patches I made really attacked symptoms rather than causes.  I'd
-need to remove these before support as a whole can go in.  Of course, we'd
-need to be sure that our compiler isn't broken if I remove the bandaids.
+This allows us to implement wakeup stealing if we want.  Unsure about
+starvation issues in that case.  Think about two processes; process A
+down down() up() down() up() very frequently.  process B does a down().
+do we want to switch to B the next time A does an up()?  or do we want
+A to steal B's wakeup?
 
-c) Having time to do it.
+i shan't implement it now, but it's something to consider.
 
-Alan
 -- 
-Linuxcare
+Revolutions do not require corporate support.
