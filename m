@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 200784829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Nov 2002 10:12:47 -0700 (MST)
-Date: Mon, 11 Nov 2002 12:12:55 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, tausq@debian.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 507624829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Nov 2002 10:26:08 -0700 (MST)
+Message-Id: <200211111725.gABHPo5R002295@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] glibc 2.3.1 - It's alive! - patches
-Message-ID: <20021111171255.GI8848@systemhalted>
-References: <20021111010517.GA13575@systemhalted> <200211110119.gAB1JaSr004665@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200211110119.gAB1JaSr004665@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Mon, 11 Nov 2002 12:25:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: willy@debian.org, parisc-linux@lists.parisc-linux.org,
+	tausq@debian.org, jbailey@nisa.net
+In-Reply-To: <20021111162656.GE8848@systemhalted> from "Carlos O'Donell" at Nov 11, 2002 11:26:56 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,62 +23,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Lastly, I think that the fp* tests suffer from the printf bug?
+> Ah yes, correct, I had forgotten that it was never implemented in
+> silica. So you suggest we not implement this in libc but rather in gcc,
+> may I ask why?
+
+I don't have a strong opinion on this.  Probably, the routines should
+be in libc.  However, it's probably simple also to put them in libgcc
+which contains some arithmetic operations.  Some work in gcc would
+be needed in any event to integrate the package.
+
+> > While GMP is a useful package, it doesn't emulate IEEE 754 arithmetic.
+> > That's what we need here.  There's a floating point emulator in gcc/real.c
+> > but I think the HP library would be superior.
 > 
-> I am fairly certain that this is fixed in gcc 3.2/3.3.  Could you
-> do a build with the mainline gcc cvs?  I am interested in feedback.
-> as I am trying to squash as many bugs as possible in 3.3 while it's
-> still open for general bug fixing.
-> 
+> I'm pretty sure that MPFR library in GMP can emulate IEEE 754 arithmetic, 
+> though I could be wrong.
 
-carlos@firin:/mnt/flaire/src/glibc-upstream-cvs/libc-build-3.3$ hppa-linux-gcc-3.3 -v
-Reading specs from /mnt/flaire/palinux/bin/../lib/gcc-lib/hppa-linux/3.3/specs
-Configured with: ../gcc/configure --target=hppa-linux --build=hppa-linux --host=hppa-linux
---prefix=/mnt/flaire/palinux/ --enable-languages=c
-Thread model: posix
-gcc version 3.3 20021110 (experimental)
+I found the quad double package at the mpfr site.  However, its double
+double differs from the IEEE quad precision representation.  A double double
+is a representation using two IEEE doubles.  This is fine as a separate
+library but not the IEEE implementation we are looking for.
 
-carlos@firin:/mnt/flaire/src/glibc-upstream-cvs/libc-build-3.3$ ld -v
-GNU ld version 2.13.90.0.10 20021010 Debian GNU/Linux
-
-Latest CVS of glibc.2.3.1 with HPPA patches applied.
-
-make[2]: Entering directory `/mnt/flaire/src/glibc-upstream-cvs/libc/glibc-2.3.1/linuxthreads'
-hppa-linux-gcc-3.3 ../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c -c -std=gnu99 -O2
--Wall -Winline -Wstrict-prototypes -Wwrite-strings -g    -g0 -fPIC -fno-inline-functions
--I../include -I. -I/mnt/flaire/src/glibc-upstream-cvs/libc-build-3.3/linuxthreads -I.. -I../libio
--I/mnt/flaire/src/glibc-upstream-cvs/libc-build-3.3 -I../sysdeps/hppa/elf
--I../linuxthreads/sysdeps/unix/sysv/linux/hppa -I../linuxthreads/sysdeps/unix/sysv/linux
--I../linuxthreads/sysdeps/pthread -I../sysdeps/pthread -I../linuxthreads/sysdeps/unix/sysv
--I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa -I../sysdeps/unix/sysv/linux/hppa
--I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman
--I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix -I../sysdeps/posix
--I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32
--I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa
--I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic  -I
-/lib/modules/2.4.19-pa22/build/include -D_LIBC_REENTRANT -include ../include/libc-symbols.h       -S
--g0 -fPIC -fno-inline-functions -finhibit-size-directive \
-        -fno-exceptions -o
-/mnt/flaire/src/glibc-upstream-cvs/libc-build-3.3/linuxthreads/pt-initfini.s
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:44:10: missing terminating " character
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:46:10: #include expects "FILENAME" or
-<FILENAME>../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:51: error: request for member
-`section' in something not a structure or union
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:52: error: parse error before numeric
-constant
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:54: error: syntax error at '@' token
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:75: error: stray '\' in program
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:75:34: missing terminating " character
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:86: error: syntax error at '@' token
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:102: error: stray '\' in program
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:102:34: missing terminating " character
-../linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c:110:1: missing terminating " character
-make[2]: *** [/mnt/flaire/src/glibc-upstream-cvs/libc-build-3.3/linuxthreads/pt-initfini.s] Error 1
-make[2]: Leaving directory `/mnt/flaire/src/glibc-upstream-cvs/libc/glibc-2.3.1/linuxthreads'
-make[1]: *** [linuxthreads/others] Error 2
-make[1]: Leaving directory `/mnt/flaire/src/glibc-upstream-cvs/libc/glibc-2.3.1'
-make: *** [all] Error 2
-
-Looks like we need some __asm format fixes?
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
