@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout11.sul.t-online.com (mailout11.sul.t-online.com [194.25.134.85])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E571E4845
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Aug 2002 14:23:48 -0600 (MDT)
-Date: Wed, 28 Aug 2002 22:20:15 +0200 (CEST)
-From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-To: <christian@familieschmitt.de>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Harmony on 710 working?
-In-Reply-To: <3D6CDF5A.5090205@gmx.de>
-Message-ID: <Pine.LNX.4.33.0208282215040.28537-100000@marvin.forty.two>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA9564852
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Aug 2002 14:27:02 -0600 (MDT)
+Subject: Re: [parisc-linux] Memory card
+From: "Matias A. Vidal Pereyra" <matias.vidal.pereyra@non.hp.com>
+To: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3D6D2D01.50003@hrzpub.tu-darmstadt.de>
+References: <3D6D2D01.50003@hrzpub.tu-darmstadt.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Date: 28 Aug 2002 17:26:44 -0300
+Message-Id: <1030566407.24083.20.camel@eva0>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,41 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Christian,
-at least I got the Harmony driver working on my c110. I used the Kernel
-driver first, but found out that kmixer wasn't working (obviously expected
-alsa)
-I could however cat *.au files to /dev/audio making a lot of sound. After
-that, I compiled the alsa stuff -there are two sets of drivers, but one
-didn't work as expected. I cannot look things up, currently I am on
-holliday in Ireland.. You need to insmod the driver as far as I remember.
-I'll be able to tell you more after the linux beer hike... ;-)
+Well this memory card (A1703-60031)  is for the Nova class (G, H, etc )
+servers. It's usless for a 712 workstation.
 
-cheers
+keep looking ;)
+=20
+On mi=E9, 2002-08-28 at 17:05, R=FCdiger Scholz wrote:
+> Hi there,
+>=20
+> I found a HP memory card on ebay with over 500 MB RAM . Modelnumber=20
+> is A1703-60031 A-3140. Can I use it with  my 715/100? And where do I=20
+> find more Information about this card.
+>=20
+> R.
+--=20
+=20
+  ****** _/      *******        Mat=EDas A. Vidal Pereyra=20
+ *****  _/         ******       matias.vidal.pereyra@non.hp.com
+ ****  _/_/_/ _/_/_/ ****       tel: +54 (11)4778-8336=20
+ **** _/  _/ _/  _/  ****       Telnet: 787-8336=20
+ ****_/  _/ _/_/_/  *****       On Site Support - hp9000=20
+ ******   _/      *******       HP Argentina.=20
+  ****** _/      ******* =20
 
-Juergen
-
-
-===========================================     __   _
-Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
-Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
-===========================================_\_v __/_/_//_/\_,_/ /_/\_\
-
-On Wed, 28 Aug 2002, Christian Schmitt wrote:
-
-> Hi,
->
-> I recently downloaded and compiled the latest pa-kernel. I also included harmony
-> sound support and now I would like to know if and how I can access the sound
-> device. Serching on the web was no success.
->
-> Chris
->
-> --
-> Linux - Cause life is too short for reboots
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+        i n v e n t
