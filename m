@@ -1,40 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C3C4B4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Mar 2001 23:42:50 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA22623;
-	Thu, 22 Mar 2001 17:42:45 +1100
-Date: Thu, 22 Mar 2001 17:42:45 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] new g++ debs and oddities...
-In-Reply-To: <20010321233219.B6912@tausq.org>
-Message-ID: <Pine.LNX.4.21.0103221740220.11752-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F2144A19
+	for <parisc-linux@parisc-linux.org>; Wed, 21 Mar 2001 23:54:21 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14fyz8-0001PV-00; Thu, 22 Mar 2001 06:54:14 +0000
+Date: Thu, 22 Mar 2001 06:54:14 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: rbradetich@uswest.net
+Cc: parisc-linux@parisc-linux.org
+Message-ID: <20010322065414.R5491@parcelfarce.linux.theplanet.co.uk>
+References: <20010321234622.A15809@beavis.ybsoft.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010321234622.A15809@beavis.ybsoft.com>; from rbrad@beavis.ybsoft.com on Wed, Mar 21, 2001 at 11:46:22PM -0700
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Re: [parisc-linux-cvs] [PATCH] PDC Wrappers for 32-bit firmware using 64-bit kernels
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 21 Mar 2001, Randolph Chung wrote:
+On Wed, Mar 21, 2001 at 11:46:22PM -0700, Ryan Bradetich wrote:
+> Index: arch/parisc/config.in
+> ===================================================================
+> RCS file: /home/cvs/parisc/linux/arch/parisc/config.in,v
+> retrieving revision 1.33
+> diff -u -p -r1.33 config.in
+> --- config.in	2001/03/02 01:41:03	1.33
+> +++ config.in	2001/03/22 06:30:14
+> @@ -33,6 +33,9 @@ choice 'Processor family' \
+>  if [ "$CONFIG_PA8X00" = "y" ] ; then
+>     define_bool CONFIG_PA20 y
+>     bool '64-bit kernel' CONFIG_PARISC64 n
+> +   if [ "$CONFIG_PARISC64" = "y" ] ; then
+> +      bool '32-bit PDC' CONFIG_PDC_NARROW n
+> +   fi
+>  else
+>     define_bool CONFIG_PA11 y
+>  fi
 
-> against objdump output).... looks like some kind of jump table?
+I object because this patch adds a new CONFIG_ option without an explanation
+for it!  (Pot.  Kettle.  Black.)
 
-Yeah, it is.  long branch, plt call stubs.
+What happened to all the people who were dying to help with the port
+but weren't confident in their programming abilities?  Did we drive them
+all away?
 
-> 000025d0 <_start-0x360>:
->     25d0:       2b 60 00 00     addil 0,dp,%r1
->     25d4:       48 35 0f 00     ldw 780(sr0,r1),r21
->     25d8:       ea a0 c0 00     bv r0(r21)
->     [...]
->     288c:       48 33 0b a8     ldw 5d4(sr0,r1),r19
->     2890:       2b 60 00 00     addil 0,dp,%r1
->     2894:       48 35 0e 90     ldw 748(sr0,r1),r21       <--- segfaulting here
->     2898:       ea a0 c0 00     bv r0(r21)
-
-Did you install a new glibc too?  This looks very much like a ld.so
-without the hack I added recently.
-
-Alan
 -- 
-Linuxcare
+Revolutions do not require corporate support.
