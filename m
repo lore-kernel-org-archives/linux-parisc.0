@@ -1,33 +1,22 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Date: Thu, 11 Mar 1999 16:35:15 -0600
-From: Jason Eckhardt <jason@equator.com>
-Message-Id: <199903112235.QAA05851@equator.com>
+Message-ID: <36E86D20.3A62C7CE@ruhr-uni-bochum.de>
+Date: Fri, 12 Mar 1999 02:25:52 +0100
+From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+MIME-Version: 1.0
 To: hppa-linux@thepuffingroup.com
-Subject: [hppa-linux] Boot #4 and source on ftp site
-Resent-Message-ID: <"3RIsy2.0.Ei1.XH4ws"@sod.res.cmu.edu>
+Subject: Re: [hppa-linux] Bootstrap #4 successful
+References: <199903112235.QAA05851@equator.com>
+Content-Type: text/plain; charset=us-ascii
+Resent-Message-ID: <"euv_s2.0.YT2.wp6ws"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+Hi !
 
-Boot test #4: This is essentially the same code as #3 but I have taken
-out some delays, modified the cache flush routines, and turned
-verbose (debug) mode back on. I want to make sure that not having the delays
-makes no difference and that no characters get dropped when there is a lot
-of text (as in debug mode). Please let me know if the test still passes
-as before. Hopefully this will be the last test for a while. Kernel work
-comes next.
+Bootstrap #4 works again perfectly and very fast here on 715/64 via BOOTP/TFTP !
+No Problems !
 
-I have uploaded the binary as well as a new source drop to the ftp site. The
-source is now GPL'd and a detailed README is included which gives an overview
-of the boot code operation. This source supersedes any previous source you
-may have laying around.
-
-ftp from sod.res.cmu.edu:/pub/parisc/hilo
-  boot_rel_0.2.tar.gz        The latest source code and documentation.
-  bootstrap_4.bin.gz         Bootstrap binary #4. 
-
-Regards, 
-Jason Eckhardt.
+Helge Deller.
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
