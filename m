@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 726734875
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 Oct 2003 00:29:19 -0600 (MDT)
-Date: Fri, 24 Oct 2003 08:29:06 +0200
-Message-ID: <3F97A05A000007B0@ocpmta1.freegates.net>
-In-Reply-To: <Pine.LNX.4.58.0310232036170.21111@sal.ucc.ie>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] TMPFS test?
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F407487E
+	for <parisc-linux@parisc-linux.org>; Fri, 24 Oct 2003 10:33:19 -0600 (MDT)
+Received: from cm233-18.cuncablemas.com (unknown [200.79.233.18])
+	by cuprel1.hp.com (Postfix) with SMTP id C93801370
+	for <parisc-linux@parisc-linux.org>; Fri, 24 Oct 2003 09:33:03 -0700 (PDT)
+Message-ID: <2$m$g-a0$6e-phb-f1z@dsh.0j6>
+From: "Mitch Kline" <240qrdk@hotmail.com>
+Reply-To: "Mitch Kline" <240qrdk@hotmail.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Fri, 24 Oct 03 14:39:09 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: multipart/alternative;
+	boundary="..B_BB30B5BE2"
+Subject: [parisc-linux] herbal solution
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,70 +25,110 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Max,
->>
->> I backport Randolph 2.6 works to 2.4.23-pre8-pa13 and test tmpfs which
-seems
->> to works:
->
->Well, tmpfs works for me since ... 2.4.19 ?!
->
-Sorry never heard before (the first time in a Randolph patch :) )
+--..B_BB30B5BE2
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
->> # bdf
-[...]
->> tmpfs                   128048         0    128048   0% /var/tmp
->
->Okay, this says that you have 128MB allocated for tmpfs.
->This is correct, as tmpfs uses up to half of the physical ram if you
->don't specify the maximum size.
->Well, it doesn't 'allocate' the whole 128MB at once of course, it
->will just use as much as you put into the ram disk.
-
-Clear
-
->[...]
->>
->> # cat /proc/meminfo
->>         total:    used:    free:  shared: buffers:  cached:
->> Mem:  26224640
->> 86798336 175448064        0  2965504 66297856
->> Swap: 256892928        0 256892928
->> MemTotal:       256100 kB
->> MemFree:        171336 kB
->> MemShared:           0 kB
->> Buffers:          2896 kB
->> Cached:          64744 kB
->> SwapCached:          0 kB
->> Active:          52432 kB
->> Inactive:        19836 kB
->> HighTotal:           0 kB
->> HighFree:            0 kB
->> LowTotal:       256100 kB
->> LowFree:        171336 kB
->> SwapTotal:      250872 kB
->> SwapFree:       250872 kB
->>
->> I just have a question: is it normal that /var/tmp is of about 256Mb when
->
->Mhh, perhaps I'm blind, but where do get the idea that tmpfs is using
->256MB and not (up to) 128MB ?
-
-It comes from another commercial *nix based system which (always confusing
-me and) uses /tmp to manage the physical memory + overall swap. [What is
-confusing me is its global size (not only the available size as usual with
-other fs) which can change as change the usage of swap?]
+<html>
+<body text=3D"#FFFFFF" bgcolor=3D"#FFFFFF" link=3D"#FF0000" vlink=3D"#FF00=
+00" alink=3D"#00CC00">
  
-[..]
->As mentioned before (look at usr/src/linux/Documentation/filesystems/tmpfs.txt)
+<center><table BORDER=3D0 CELLSPACING=3D0 COLS=3D1 WIDTH=3D"80=
+%" >
+<tr>
+      <td><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">As se=
+en on NBC, 
+        CBS, and CNN, and even Oprah!</font><font color=3D"#000000"> The h=
+ealth</font></font> 
+        <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">discovery tha=
+t actually 
+        reverses aging while burning fat,</font> <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">without dieti=
+ng or exercise! 
+        This proven discovery has even</font> <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">been reported=
+ on by major 
+        Science Journals.</font> <br>
+        <font face=3D"Verdana" size=3D"-1"><font color=3D"#000000">Forget =
+aging and 
+        dieting forever! </font><font color=3D"#3366FF">And It's Guarantee=
+d!</font></font> 
+        <br>
+         
+        <p><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</f=
+ont><font color=3D"#000000"> 
+          Reduce body fat and build lean muscle WITHOUT EXERCISE!</font></=
+font> 
+          <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Enhance sexual performance</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Remove wrinkles and cellulite</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Lower blood pressure and improve cholesterol profile</font></fon=
+t> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Improve sleep, vision and memory</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Restore hair color and growth</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Strengthen the immune system</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Increase energy and cardiac output</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Turn back your body's biological clock 10-20 years in 6 months!!=
+!</font></font> 
+          <br>
+           
+        <p><b><font face=3D"Verdana" color=3D"#000000"><a href=3D"http://w=
+ww.healthsourceonline.biz/cgi-bin/cp-app.cgi?rrc=3DN&pg=3Dprod&ref=3Dhgh&a=
+ffl=3D1980">visit 
+          us here to learn more</a></font></b> <br>
+           
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<BR><BR><BR><BR><BR><BR><BR>
+<div align=3D"center">
+  <table width=3D"573" cellspacing=3D"0" cellpadding=3D"5" border=3D"1" bo=
+rdercolor=3D"#000000" style=3D"border-collapse:collapse">
+    <tr> 
+      <td bgcolor=3D"#ffffff"> 
+        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
+;">Why 
+          was this email sent to you? At some point you registered or made=
+ a purchase 
+          on a Web site with privacy policies explaining that they may sha=
+re your 
+          information with partners who will send you valuable offers from=
+ time 
+          to time. </span></p>
+        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
+;">If 
+          you no longer wish to be notified of the latest scientific break=
+throughs 
+          or valuable offers, you may simply choose to take yourself out o=
+f the 
+          database permanently by <a href=3D"http://www.healthsourceonline=
+biz/delist.html">choosing 
+          this link</a>.</span></p>
+      </td>
+    </tr>
+  </table>
+</div>
 
-That is where I find how to use it but, my bad, I do not read all details.
+</table></center></body>
+</html>
 
-Thanks for your help and patience,
-    Joel
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
-
-http://reg.tiscali.be/default.asp?lg=fr
+--..B_BB30B5BE2--
