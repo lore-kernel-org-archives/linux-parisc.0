@@ -1,32 +1,42 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA10316
-	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 02:00:49 -0700
-From: "Pete" <plaven@ozemail.com.au>
-To: Jane Vinet <jvinet@linuxcare.com>
-Date: Sat, 27 Jan 2001 20:04:38 +1100
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Subject: Re: [parisc-linux] http://parisc-linux.org/ - A New Look!
-Reply-to: plaven@ozemail.com.au
-CC: parisc-linux@thepuffingroup.com
-Message-ID: <3A7329D6.22387.109A119@localhost>
-In-reply-to: <3A71D9B7.D582ECD2@linuxcare.com>
+Received: from cosrel2.hp.com (cosrel2.hp.com [156.153.255.162])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id CAA10760
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 02:46:04 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by cosrel2.hp.com (Postfix) with ESMTP id 8B5CE1AB
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 02:49:53 -0700 (MST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id CAA00365 for parisc-linux@puffin.external.hp.com; Sat, 27 Jan 2001 02:48:49 -0700 (MST)
+Date: Sat, 27 Jan 2001 02:48:49 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200101270948.CAA00365@udlkern.fc.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Usage of __attribute__?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Jane,
 
-> OK, so after many reviews, revisions, discussions the new web site is
-> live.  Many, many thanks to everyone who endeavored so hard to give the
-> site a facelift and for constructive feedback which allowed us to create
-> what we hope will be a dynamic site that is easier to navigate through
+As part of my effort to fix the alignment problems in libpthread, I am
+creating a type with the aligned attribute. However, I discovered
+something strange, which I don't know if it is a bug, or is the expected
+behaviour (i.e. I am doing something wrong/don't understand how
+__attribute__ works).
 
-I was wondering when it would go live... and I have to say it looks 
-pretty good.
+If I directly declare the type as follows:
 
-One thing I did find though was a stale link.. I'll go find it again...
+    typedef int _lt_spinlock_t __attribute__((aligned(16)));
 
-Where would it be best to post things like this?  webmaster?
+then EVERY int that follows has the aligned 16 attribute, e.g. just
+declaring "int tmp;" gives tmp a 16 byte alignment. So, is that what
+you would expect from my above declaration?
 
+I worked around the problem by declaring the type in two steps:
 
+    typedef int _spin16;
+    typedef _spin16 _lt_spinlock_t __attribute__((aligned(16)));
 
-Pete.
+Is there a way of combining the above two into one declaration,
+without having the undesired side effect of making every int
+aligned to a 16 byte boundary?
+
+John Marvin
+jsm@fc.hp.com
