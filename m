@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7D5564841
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Nov 2003 14:03:20 -0700 (MST)
-Date: Sat, 8 Nov 2003 15:58:25 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Cc: Randolph Chung <tausq@debian.org>
-Message-ID: <20031108205825.GI21080@systemhalted>
-References: <20031108205955.7039B49402D@palinux.hppa>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031108205955.7039B49402D@palinux.hppa>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 carlos
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2AF844841
+	for <parisc-linux@parisc-linux.org>; Sat,  8 Nov 2003 14:11:16 -0700 (MST)
+Message-ID: <3FAD5C01.7040302@tiscali.be>
+Date: Sat, 08 Nov 2003 21:11:29 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was:
+ do_page_fault?]
+References: <3F969FFE00005DB3@ocpmta2.freegates.net> <3FACE5A4.7070003@tiscali.be> <20031108155247.GC21080@systemhalted>
+In-Reply-To: <20031108155247.GC21080@systemhalted>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,110 +24,155 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Nov 08, 2003 at 01:59:55PM -0700, Carlos O'Donell wrote:
-> CVSROOT:	/var/cvs
-> Module name:	linux-2.6
-> Changes by:	carlos	03/11/08 13:59:55
+Well it seems that i reach to reproduce: just after a fresh reboot:
+
+I first export LD_LIBRARY_PATH=/usr/lib/debug
+then launch gdb with "handle all nostop" and "handle all pass" (as 
+recommended in a previous mail),
+(gdb) file /usr/bin/evolution
+(gdb) run
+
+all start fine until I point a mail to preview it in the preview's window.
+Then a child process failled, so Ctrl-C in gdb and bt:
+#0  0x4172005c in __pthread_sigsuspend () from /lib/libpthread.so.0
+#1  0x4171fde0 in __pthread_wait_for_restart_signal ()
+    from /lib/libpthread.so.0
+#2  0x4172181c in __pthread_alt_lock () from /lib/libpthread.so.0
+#3  0x4171e480 in pthread_mutex_lock () from /lib/libpthread.so.0
+#4  0x41a7226c in free () from /lib/libc.so.6
+#5  0x41993654 in g_free () from /usr/lib/libglib-2.0.so.0
+#6  0x413453e0 in gtk_tooltips_new () from /usr/lib/libgtk-x11-2.0.so.0
+#7  0x41345c68 in gtk_tooltips_set_tip () from /usr/lib/libgtk-x11-2.0.so.0
+#8  0x407a6768 in bonobo_ui_toolbar_item_set_tooltip ()
+    from /usr/lib/libbonoboui-2.so.0
+#9  0x407a12fc in bonobo_ui_sync_status_new () from 
+/usr/lib/libbonoboui-2.so.0
+#10 0x4079bfb0 in bonobo_ui_sync_state () from /usr/lib/libbonoboui-2.so.0
+#11 0x407963a0 in bonobo_ui_engine_get_view () from 
+/usr/lib/libbonoboui-2.so.0
+#12 0x407966b4 in bonobo_ui_engine_get_view () from 
+/usr/lib/libbonoboui-2.so.0
+#13 0x40796d10 in bonobo_ui_engine_update () from 
+/usr/lib/libbonoboui-2.so.0
+#14 0x40793b5c in bonobo_ui_engine_xml_set_prop ()
+    from /usr/lib/libbonoboui-2.so.0
+#15 0x40898dfc in _ORBIT_skel_small_Bonobo_UIContainer_setAttr ()
+    from /usr/lib/libbonobo-2.so.0
+#16 0x40b05174 in ORBit_c_stub_invoke () from /usr/lib/libORBit-2.so.0
+#17 0x4089d6c4 in Bonobo_UIContainer_setAttr () from 
+/usr/lib/libbonobo-2.so.0
+#18 0x4078dc84 in bonobo_ui_component_set_prop ()
+    from /usr/lib/libbonoboui-2.so.0
+#19 0x4078db8c in bonobo_ui_component_set_prop ()
+    from /usr/lib/libbonoboui-2.so.0
+#20 0x41ecbf08 in mail_disable_stop ()
+    from /usr/lib/evolution/1.4/components/libevolution-mail.so
+#21 0x41ecb074 in mail_call_main ()
+    from /usr/lib/evolution/1.4/components/libevolution-mail.so
+#22 0x41ec9a00 in mail_msg_wait_all ()
+    from /usr/lib/evolution/1.4/components/libevolution-mail.so
+#23 0x419b5044 in g_vsnprintf () from /usr/lib/libglib-2.0.so.0
+#24 0x4198c904 in unblock_source () from /usr/lib/libglib-2.0.so.0
+#25 0x4198ddcc in g_main_context_dispatch () from /usr/lib/libglib-2.0.so.0
+#26 0x4198e1c0 in g_main_context_dispatch () from /usr/lib/libglib-2.0.so.0
+#27 0x4198eb70 in g_main_loop_run () from /usr/lib/libglib-2.0.so.0
+#28 0x40881490 in bonobo_main () from /usr/lib/libbonobo-2.so.0
+#29 0x0009deb8 in main ()
+#30 0x41a1146c in __libc_start_main () from /lib/libc.so.6
+#31 0x00022e10 in _start ()
+----------><----------
+
+At the console, I could always capture:
+
+request_module[net-pf-10]: fork failed, errno 1
+evolution (pid 879): Protection id trap (code 27)
+
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001111 Not tainted
+r00-03  00000000 103b7524 1015352c 00282b28
+r04-07  00000000 00000000 00000001 11f27da0
+r08-11  00000000 00000001 13084548 fffffff2
+r12-15  419ee608 419ee718 419345a8 419345a8
+r16-19  419ee608 419345a8 00000070 1371d000
+r20-23  00000000 00000002 00282b2e 00000000
+r24-27  11f27da0 00000000 10d0b520 10304010
+r28-31  00000000 10314a60 130845c0 101532c8
+sr0-3   00000000 00000000 00000000 00000003
+sr4-7   00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 10153658 1015365c
+  IIR: 0ed4d240    ISR: 00000003  IOR: 00282b2e
+  CPU:        0   CR30: 13084000 CR31: 103a8000
+  ORIG_R28: 419345a8
+
+----------><----------
+
+while I can still see processes:
+$ ps -ef | grep evol
+root       869   863  8 17:15 pts/2    00:00:35 /usr/bin/evolution
+root       875     1  0 17:16 ?        00:00:02 
+/usr/lib/evolution/1.4/evolution-wombat 
+--oaf-activate-iid=OAFIID:GNOME_Evolution_Wombat_InterfaceCheck 
+--oaf-ior-fd=25
+root       877     1  0 17:16 ?        00:00:02 
+/usr/lib/evolution/1.4/evolution-alarm-notify 
+--oaf-activate-iid=OAFIID:GNOME_Evolution_Calendar_AlarmNotify_Factory 
+--oaf-ior-fd=27
+root       879   869  0 17:16 pts/2    00:00:00 [evolution] <defunct>
+
+----------><----------
+
+Unfortunately:
+# gdb program 879
+GNU gdb 5.3-debian
+Copyright 2002 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain 
+conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "hppa-linux".
+Attaching to process 879
+ptrace: Operation not permitted.
+/root/879: No such file or directory.
+
+----------><----------
+
+Once again if I re-launch prgm, I do get any more the pb?
+
+What do you think?
+
+Thanks for help,
+	Joel
+
+PS1: I would try to see if can can reproduce it (just after a fresh 
+reboot) on my b2k (Monday only)
+
+PS2: Just as remainder, it is a fresh 'apt-get dist-upgrade' unstable 
+debian runing on a c110 model with a merged kernel of mine 
+2.4.23-pre9-pa13 (which, else where, seems to run perfectly in 32 and 64 
+bits even in SMP mode on some L :) )
+
+
+Carlos O'Donell wrote:
+> On Sat, Nov 08, 2003 at 12:46:28PM +0000, Joel Soete wrote:
 > 
-> Modified files:
-> 	arch/parisc/kernel: traps.c 
+>>More and more strange behaviour:
+>>
+>>after my weekly apt-get dist-upgrade i relaunch evolution,
+>>it hang again at the same point with usual message:
+>>evolution (pid 2999): Protection id trap (code 27)
+>>[..]
+>>
+>>But if I launch it a second time no more pb???
+>>
+>>Very strange isn't it?
 > 
-> Log message:
-> Cleanup trap handling for codes 13,15,16 and 17. In particular forward port 13, and make 17 non-fatal to the kernel (only the process should die).
-
-tausq,
-
-Here's the trap handler cleanup I promised. Please comment.
-
-c.
-
-Index: Makefile
-===================================================================
-RCS file: /var/cvs/linux-2.6/Makefile,v
-retrieving revision 1.83
-diff -u -p -r1.83 Makefile
---- Makefile	2 Nov 2003 04:40:49 -0000	1.83
-+++ Makefile	8 Nov 2003 20:53:32 -0000
-@@ -1,7 +1,7 @@
- VERSION = 2
- PATCHLEVEL = 6
- SUBLEVEL = 0
--EXTRAVERSION = -test9-pa4
-+EXTRAVERSION = -test9-pa5
- 
- # *DOCUMENTATION*
- # To see a list of typical targets execute "make help"
-Index: arch/parisc/kernel/traps.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/traps.c,v
-retrieving revision 1.10
-diff -u -p -r1.10 traps.c
---- arch/parisc/kernel/traps.c	8 Oct 2003 20:52:07 -0000	1.10
-+++ arch/parisc/kernel/traps.c	8 Nov 2003 20:53:35 -0000
-@@ -557,20 +557,41 @@ void handle_interruption(int code, struc
- 		si.si_addr = (void *) regs->iaoq[0];
- 		force_sig_info(SIGFPE, &si, current);
- 		return;
--
-+		
-+	case 13:
-+		/* Conditional Trap
-+		   The condition succees in an instruction which traps 
-+		   on condition  */
-+		si.si_signo = SIGFPE;
-+		/* Set to zero, and let the userspace app figure it out from
-+		   the insn pointed to by si_addr */
-+		si.si_code = 0;
-+		si.si_addr = (void *) regs->iaoq[0];
-+		force_sig_info(SIGFPE, &si, current);
-+		return;
-+		
- 	case 14:
- 		/* Assist Exception Trap, i.e. floating point exception. */
- 		die_if_kernel("Floating point exception", regs, 0); /* quiet */
- 		handle_fpe(regs);
- 		return;
--
-+		
-+	case 15:
-+		/* Data TLB miss fault/Data page fault */
-+		/* Fall through */
-+	case 16:
-+		/* Non-access instruction TLB miss fault */
-+		/* The instruction TLB entry needed for the target address of the FIC
-+		   is absent, and hardware can't find it, so we get to cleanup */
-+		/* Fall through */
- 	case 17:
- 		/* Non-access data TLB miss fault/Non-access data page fault */
- 		/* TODO: Still need to add slow path emulation code here */
--		pdc_chassis_send_status(PDC_CHASSIS_DIRECT_PANIC);
--		
-+		/* TODO: Understand what is meant by the TODO listed
-+		         above this one. (Carlos) */
- 		fault_address = regs->ior;
--		parisc_terminate("Non access data tlb fault!",regs,code,fault_address);
-+		fault_space = regs->isr;
-+		break;
- 
- 	case 18:
- 		/* PCXS only -- later cpu's split this into types 26,27 & 28 */
-@@ -580,9 +601,8 @@ void handle_interruption(int code, struc
- 			return;
- 		}
- 		/* Fall Through */
--
--	case 15: /* Data TLB miss fault/Data page fault */
--	case 26: /* PCXL: Data memory access rights trap */
-+	case 26: 
-+		/* PCXL: Data memory access rights trap */
- 		fault_address = regs->ior;
- 		fault_space   = regs->isr;
- 		break;
-@@ -638,7 +658,6 @@ void handle_interruption(int code, struc
- 			up_read(&current->mm->mmap_sem);
- 		}
- 		/* Fall Through */
--
- 	case 27: 
- 		/* Data memory protection ID trap */
- 		die_if_kernel("Protection id trap", regs, code);
+> 
+> Not at all! Anything is possible with some imagination :)
+> If it's repeatable then we can catch it. Stick evolution under gdb and
+> remember to preload a debugging libc and catch it when it crashes. Send
+> the 'bt full' back to the list for analysis.
+> 
+> c.
+> 
