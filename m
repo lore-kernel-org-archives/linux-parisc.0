@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F674482E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jul 2003 09:07:30 -0600 (MDT)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali)
-	id 19hW1f-0002d2-00
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jul 2003 17:04:31 +0200
-Date: Tue, 29 Jul 2003 17:07:28 +0200
-Message-ID: <3F1E4E740000161F@ocpmta2.freegates.net>
+	by dsl2.external.hp.com (Postfix) with ESMTP id DB3824848
+	for <parisc-linux@parisc-linux.org>; Tue, 29 Jul 2003 10:14:29 -0600 (MDT)
+Date: Tue, 29 Jul 2003 18:14:23 +0200
+Message-ID: <3F1E4E7400001656@ocpmta2.freegates.net>
+In-Reply-To: <20030725045837.GB9254@tausq.org>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] preempt support for 2.6.0-test1
+To: "Randolph Chung" <randolph@tausq.org>,
+	parisc-linux@parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] k-2.6.0-test2-pa1 failled to build as 64bits
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +22,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi pa,
+Hi Randolph,
 
-As I do not reach to boot 2.6.0-test2-pa1 in 32bits mode on my b2k, I would
-try it in 64bits.
+> ftp://ftp.parisc-linux.org/patches/diff-2.6.0-test1-preempt
 
-To do so I get last cvs ; make mrproper ; make defconfig.
-With make menu config, I select PA8000 and 64bits kernel
-(install gcc-hppa64_3.0.ds9-3 and binutils-hppa64_2.11.90.0.19.cvs1)
+> Seems to boot and can compile stuff on a500. YMMV. Comments, test 
+> results, etc appreciated.
+Not so lucky than you with my b2000 so I test it with same success (ie boot
+and compile kernel) on my b180.
 
-But make vmlinux failled with following message:
-  CPIO    usr/initramfs_data.cpio
-  GZIP    usr/initramfs_data.cpio.gz
-  AS      usr/initramfs_data.o
-usr/initramfs_data.S: Assembler messages:
-usr/initramfs_data.S:29: Error: Unknown pseudo-op:  `.incbin'
-make[1]: *** [usr/initramfs_data.o] Error 1
-make: *** [usr] Error 2
-
-Even if I uncheck InitRamFs support, it also failed?
-
-(I check: it compiles well in 32 gcc-3.0 or 3.3 + __canonicalize_f_f_c patch)
-
-Thanks in advance for further help,
+Thanks,
     Joel
-
 
 ------------------------------------------------------
 Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
