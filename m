@@ -1,61 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14FF0482A
-	for <parisc-linux@parisc-linux.org>; Tue, 21 Aug 2001 01:09:58 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15Z5fd-0004UR-00; Tue, 21 Aug 2001 08:09:53 +0100
-Date: Tue, 21 Aug 2001 08:09:53 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] iotree thoughts
-Message-ID: <20010821080953.B12638@parcelfarce.linux.theplanet.co.uk>
-References: <willy@debian.org> <200108210544.XAA20603@puffin.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200108210544.XAA20603@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Aug 20, 2001 at 11:44:20PM -0600
-Sender: <willy@www.linux.org.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 618D8482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Aug 2001 01:11:11 -0600 (MDT)
+Message-Id: <200108210709.BAA20985@puffin.external.hp.com>
+To: Helge Deller <deller@gmx.de>
+Cc: caslivkoff@yahoo.com, xpert@XFree86.Org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [Xpert][parisc-linux] white is blue 
+In-Reply-To: Message from Helge Deller <deller@gmx.de>
+   of "Sat, 18 Aug 2001 21:46:46 +0200." <20010818194852.79AE7482A@dsl2.external.hp.com>
+Date: Tue, 21 Aug 2001 01:09:07 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Aug 20, 2001 at 11:44:20PM -0600, Grant Grundler wrote:
-> That sounds too much like work. ;^)
-> Raven PDC ERS is available from HP's firmware team website. (internal only).
+Helge Deller wrote:
+> The 715/64 has the Artist graphics chip too, so I suspect we
+> just need some more initialization for the "older revisions" of the Artist
+> chip in the 712 machines.
 
-Thanks, I'll look at that.
+It's possible the 715/64 firmware and 712 firmware behave differently.
+ie artist chip initialization by firmware could be different.
 
-> I disagree. I want the kernel to NOT link if CONFIG_PCI and
-> CONFIG_ISA are not enabled when inx/outx functions are used.
+I'm assuming stifb doesn't send a RESET command to the Artist chip directly
+and start initializing from scratch.
 
-I discussed this with Ted Ts'o at OLS.  The difficulty is that there's
-a fair bit of arch-independent code which does (example taken from serial.c):
+grant
 
-static _INLINE_ unsigned int serial_in(struct async_struct *info, int offset)
-{
-        switch (info->io_type) {
-        case SERIAL_IO_MEM:
-                return readb((unsigned long) info->iomem_base +
-                             (offset<<info->iomem_reg_shift));
-        default:
-                return inb(info->port + offset);
-        }
-}
-
-so either we add the nasty:
-
-        default:
-#if defined(CONFIG_PCI) || defined(CONFIG_ISA)
-                return inb(info->port + offset);
-#else
-                BUG();
-#endif
-
-or we just make inb() BUG().
-
-> This will allow the kernel to link and then fail after rebooting.
-> That seems like a step backwards to me.
-
-Only if they're called.  The majority of places where these functions
-exist can provably never be called.  The others probably won't be :-)
-
--- 
-Revolutions do not require corporate support.
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
