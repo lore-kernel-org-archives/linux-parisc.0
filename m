@@ -1,15 +1,17 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: FW: Re: [parisc-linux] k-2.6.8-rc2-pa0 failled to boot in
-	multi-user
-Date: Wed, 28 Jul 2004 17:08:47 +0200
-Message-ID: <40FB9ACA000045A9@ocpmta1.freegates.net>
-References: <40FB87C400003EB8@ocpmta3.freegates.net>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux]
+	Re: =?ISO-8859-1?Q?2=2E6=2E8=2Drc2=20Fix=5Bwas=3A=20=5Bparisc=2Dlinux=5D=20k=2D2=2E6=2E8=2Drc2=2Dpa0=20failled=20to=20boot=20in=09muRO
+Date: Thu, 29 Jul 2004 12:55:04 -0400 (EDT)
+Message-ID: <200407291655.i6TGt4Xa001858@hiauly1.hia.nrc.ca>
+References: <40FB8964000051B2@ocpmta2.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-1"
-To: parisc-linux@parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40FB87C400003EB8@ocpmta3.freegates.net>
+In-Reply-To: <40FB8964000051B2@ocpmta2.freegates.net> from "Joel Soete" at Jul
+	29, 2004 05:31:27 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,61 +22,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> Well here is my fix:
+> --- linux-2.6.8-rc2-pa2+/arch/parisc/kernel/entry.S.Orig	2004-07-29 10:59:50.000000000
+> +0200
+> +++ linux-2.6.8-rc2-pa2+/arch/parisc/kernel/entry.S	2004-07-29 11:04:32.000000000
+> +0200
+> @@ -494,6 +494,7 @@
+>  	 * under 4GB of memory) */
+>  	.macro		L3_ptep pgd,pte,index,va,fault
+>  	extrd,u		\va,63-ASM_PGDIR_SHIFT,ASM_BITS_PER_PGD,\index
+> +	copy		%r0,\pte
+>  	extrd,u,*=	\va,31,32,%r0
+>  	ldw,s		\index(\pgd),\pgd
+>  	extrd,u,*=	\va,31,32,%r0
+> ======><======
 
-A small followup:
+> Well I couldn't yet explain why that's required :( !
 
-> > And I test it obiously (I just move cron atd and inetd with a .SAV ex=
-tension;
-> > that should be enough?) but unfortunately it doesn't help (the system=
+Just after the last insn above is the insn:
 
-> always
-> > do an hpmc at the same palce:( ).
-> > Even if I DECONFIGURE the second CPU?
-> >
-> > I haven't any more idea. (was it a pb already in 2.6.7>pa7 which I mi=
-ssed
-> > because I didn't realized enough test after that; or a new pb coming
-with
-> > 2.6.8? I laready tried to revert patches step by step from 2.6.7-pa15=
+	bb,>=,n         \pgd,_PxD_PRESENT_BIT,\fault
 
-> to
-> > pa8 against 2.6.8-rc2-pa1, but it didn't help yet :( )
-> >
-I revert 2.6.8-pa1 from 2.6.7-pa15 until 2.6.7-pa7 (the last know running=
+You are setting pte to 0 for the case when the branch is taken.
+The L2_ptep macro does this, so it makes some sense.  It's somewhat
+tricky to track the uses of the register when a fault occurs.
 
-2.6.7)  on this N4k with the n4000_defconfig and that's working. I mean
-it is definitely not the upgrade 2.6.7 to 2.6.8 the cause of this pb, not=
-
-more the n4000_defconfig.
-So the weird stuff is in 'CONFIG_DISCONTIGMEM' patch even if the pb occur=
-es
-when this option is selected or not.
-
-It's perfectly runing on the b2k (64bit kernel) (I suppose also on the n4=
-k
-that Randolph test also but with more ram than I)
-but not on this n4k in particular?
-
-Randolph may be have you another idea, the last DISCONTIGMEM patch runnin=
-g
-on this system was the first that you called 'try2' then diepest changes
-occurs (the most difficult to understand for me are allways *.S :( ). 
-umm I don't think that it's possible to split it in smallest hunk?
-
-Joel
-
-
-
--------------------------------------------------------------------------=
---
-Tiscali ADSL LIGHT, 19,95 EUR/mois pendant 6 mois, c'est le moment de fai=
-re
-le pas!
-http://reg.tiscali.be/default.asp?lg=3Dfr
-
-
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
