@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 731E24844
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Sep 2003 19:55:34 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 19zmoB-0003wR-JO; Thu, 18 Sep 2003 01:38:07 +0100
-Date: Thu, 18 Sep 2003 01:38:07 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org, dave.anglin@nrc-cnrc.gc.ca
-Subject: Re: [parisc-linux] 64-bit kernel builds with gcc-3.4 experimental cross.
-Message-ID: <20030918003807.GP21596@parcelfarce.linux.theplanet.co.uk>
-References: <20030917161800.GB30176@systemhalted> <200309171643.h8HGhJlw013649@hiauly1.hia.nrc.ca> <20030917225406.GG30176@systemhalted>
-Mime-Version: 1.0
+Received: from octopus.kti.ae.poznan.pl (octopus.kti.ae.poznan.pl [150.254.204.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DDCF2488B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Sep 2003 03:16:16 -0600 (MDT)
+Received: from pyxis.kti.ae.poznan.pl ([150.254.204.45] helo=localhost)
+	by octopus.kti.ae.poznan.pl with esmtp (Exim 3.35 #1 (Debian))
+	id 19zurl-0005u2-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Sep 2003 11:14:21 +0200
+Date: Thu, 18 Sep 2003 11:16:17 +0200
+From: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Reply-To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Message-ID: <42687877064.20030918111617@kti.ae.poznan.pl>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030917225406.GG30176@systemhalted>
+Subject: [parisc-linux] debian installation problem - ERROR: Read from boot device failed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,22 +25,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Sep 17, 2003 at 06:54:07PM -0400, Carlos O'Donell wrote:
-> On Wed, Sep 17, 2003 at 12:43:18PM -0400, John David Anglin wrote:
-> > > hppa64-linux-ld: Relocatable linking with relocations from format
-> > > elf32-hppa-linux (sched.o) to format elf32-hppa-linux (kernel.o) is not
-> > > supported
-> > 
-> > As far as I know, there is no multi-arch support in ld or as.
-> > There isn't multi-arch support in GCC either.  You need separate
-> > compilers for 32 and 64 bits.
-> 
-> Separate compilers yes. Separate linker and assembler no.
-> I thought I could use '--enable-targets=hppa64-linux' in binutils.
+I want to install Debian on my HP 9000 J200 box and I encountered a problem
+with booting the installation procedure:
 
-I think that only works for some parts of binutils -- specifically not ld.
+Selected kernel: /vmlinux32 from partition 0
+Selected ramdisk: /ramdiski from partition 0
+ELF32 executable
+Entry 00100098 first 00100000 n 6
+Segment 0 load 00100000 size 2196688 mediaptr 0x1000
+Segment 1 load 0031a000 size 467792 mediaptr 0x21a000
+Segment 2 load 00390000 size 255656 mediaptr 0x28d000
+Segment 3 load 003d0000 size 8192 mediaptr 0x2cc000
+Segment 4 load 003d8000 size 32768 mediaptr 0x2ce000
+Segment 5 load 00402048 size 110832 mediaptr 0x2d6048
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+ERROR: Read from boot device failed (status = -13).
+byteio_read: seekread() returned -1 expected 2195456
+ERROR: segment 0 read() failed
+Fatal error loading kernel executableERROR: failed to load kernel 
+
+I tried the Debian binary-1 CD and netinstall CD. Both with almost same
+results ('status = -7' for Debian CD, and 'status = -13' for netinstall
+CD).
+
+What could be wrong? Do you know any possible source of this problem?
+
+Best regards
+  Jacek Chmielewski
