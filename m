@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Harmony driver - Reject AFMT_S16_LE &
-	Implement SNDCTL_DSP_CHANNELS
-Date: Mon, 10 May 2004 23:24:51 -0600
-Message-ID: <20040511052451.GC27478@colo.lackof.org>
-References: <20040222092057.GA2590@calypso> <20040223035601.GA988@calypso>
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Subject: Re: [parisc-linux] Blue screen?
+Date: Tue, 11 May 2004 11:04:44 +0200
+Message-ID: <20040511090444.GJ1912@lug-owl.de>
+References: <20040510213149.GB19589@baldric.uwo.ca>
+	<200405102359.41471.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Stuart Brady <sdbrady@ntlworld.com>
+Content-Type: multipart/mixed;
+  boundary="===============1412500615=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040223035601.GA988@calypso>
+In-Reply-To: <200405102359.41471.deller@gmx.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +20,68 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Feb 23, 2004 at 03:56:01AM +0000, Stuart Brady wrote:
-> On Sun, Feb 22, 2004 at 09:20:57AM +0000, Stuart Brady wrote:
-> 
-> > +				if (put_user(ival, (int *) arg))
-> > +					return -EFAULT;
-> 
-> I've been looking at the specification, I think this should have been:
-...
 
-Hi Stuart,
-Sorry for taking so long with this...I was expecting someone else
-to reply and maybe missed it. A couple of minor problems with
-your patch:
+--===============1412500615==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Re2uCLPLNzqOLVJA"
+Content-Disposition: inline
 
-1) it's for 2.4 and I'm personally trying to focus on 2.6 tree now.
-   2.6 is ready for prime time. It's been my desktop/ftp/http server
-   (C3600) for the past couple of monthes and has proven very stable.
 
-2) OSS is "decprecated" according to the 2.6 sound/Kconfig "Help".
-   Ie use ALSA instead.  See SOUND_PRIME option.
+--Re2uCLPLNzqOLVJA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-3) if no one else wants to poke at the 2.4 harmony driver, I will
-   just apply your patches on good faith that it builds/works for you.
-   Have you tweaked it more since Feb?
+On Mon, 2004-05-10 23:59:41 +0200, Helge Deller <deller@gmx.de>
+wrote in message <200405102359.41471.deller@gmx.de>:
+> On Monday 10 May 2004 23:31, Carlos O'Donell wrote:
+> > pa,
+> >=20
+> > No, not THE blue screen, but my blue screen. Have a 715/50, but the
+> > graphics are all tinted blue. I remember a similar problem being fixed a
+> > long time ago. I'm searching the ML, but I can't find what I'm searching
+> > for in particular.
+>=20
+> I saw that too today - not sure yet if due to the new kernel or due to an=
+ apt-get upgrade...
 
-In 2.6, ALSA harmony driver does NOT compile and that's disappointing.
+Some 'Visual "TrueColor"' missing?
 
-thanks,
-grant
+I rememeber that from dark ages ago...
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
+
+--Re2uCLPLNzqOLVJA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAoJcsHb1edYOZ4bsRAlvDAJ4ml8Z0CdOiL7qm//sraW6bmi026QCeLD6/
+0Ol3fUAX9nwVLPUBo8AfQ+c=
+=TTHM
+-----END PGP SIGNATURE-----
+
+--Re2uCLPLNzqOLVJA--
+
+--===============1412500615==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1412500615==--
