@@ -1,36 +1,30 @@
-Return-Path: <pjlahaie@puffingroup.com>
-Sender: pjlahaie@puffingroup.com
-Message-ID: <36CD6BB0.CF02D28A@atlsci.com>
-Date: Fri, 19 Feb 1999 08:48:32 -0500
-From: "Paul J.Y. Lahaie" <pjlahaie@atlsci.com>
-MIME-Version: 1.0
+Return-Path: <hppa-linux@puffingroup.com>
+From: "Steven A. DuChene" <sduchene@mindspring.com>
+Message-ID: <19990219094613.G4360@sduchene.users.mindspring.com>
+Date: Fri, 19 Feb 1999 09:46:13 -0500
 To: hppa-linux@puffingroup.com
-Subject: Re: [hppa-linux] egcs and binutils cross compiling
-References: <m10Dmte-0007U1C@the-village.bc.nu>
+Subject: Re: [hppa-linux] Bootstrap test results
+References: <199902181601.KAA01190@equator.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Resent-Message-ID: <"k4lzA2.0.6M7.SrMps"@burrow.puffingroup.com>
+In-Reply-To: <199902181601.KAA01190@equator.com>; from Jason Eckhardt on Thu, Feb 18, 1999 at 10:01:00AM -0600
+Resent-Message-ID: <"SfiUr.0.FN7.AdNps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Alan Cox wrote:
-> 
-> > Also, Paul is changing the ELF header structure significantly between
-> > mklinux and *real* linux, so we're getting close to having to just abandon
-> > all of mklinux.
-> 
-> Write an mklinux binary loader bfore you do that. Having a mostly functional
-> user space while doing kernel hacks, and being able to use mklinux to mend
-> the result of failed native kernels is a large win
+I tried the bootstrap test on a box last night and got a CPU ID
+of 00000224  This was done by using the dd to disk method.
 
-    The current idea is that we will make the kernel data structures as
-close to HP-UX as possible so future HP-UX compatibility is possible. 
-If we go the MkLinux binary loader route then we'll be stuck making our
-kernel structures MkLinux like or writing an emulation layer.  I'm no
-ELF expert, but at least the MkLinux stuff seems easy, the
-binary is mapped from beginning to end.  Sections aren't mapped at
-different addresses (as other archs seem to do).
+This was on a new unreleased C-series box
 
-						- Paul
+When you say this test worked on 5 out of 6 boxes, what exactly
+happened on the 6th (the A-series system)?
+-- 
+Steven A. DuChene   Linux Fan!  http://www.mindspring.com/~sduchene
+
+Outside of a dog, a book is a man's best friend. Inside a dog it's
+too dark to read.
+                -- Groucho Marx
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
