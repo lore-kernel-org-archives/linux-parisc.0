@@ -1,22 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4B8B4834
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 18:07:33 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 185EUC-00006y-00; Sat, 26 Oct 2002 01:07:28 +0100
-Date: Sat, 26 Oct 2002 01:07:28 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Richard Nairn <richard@nairnconsulting.ca>, taggart@carmen.fc.hp.com,
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C800C4834
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 18:56:10 -0600 (MDT)
+Date: Fri, 25 Oct 2002 20:50:53 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Kedarnath Balakrishnan <balak@ieee.org>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 735/125 Wide Diff scsi
-Message-ID: <20021026010728.H27461@parcelfarce.linux.theplanet.co.uk>
-References: <20021025005035.AB3E74852@dsl2.external.hp.com> <20021026000014.4733.qmail@web12507.mail.yahoo.com>
+Subject: Re: [parisc-linux] installation on C3000
+Message-ID: <20021026005053.GC16071@systemhalted>
+References: <3DB9AAFE.8C4896B3@ieee.org> <20021025225836.CD21B4834@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021026000014.4733.qmail@web12507.mail.yahoo.com>; from derekengelhaupt@rocketmail.com on Fri, Oct 25, 2002 at 05:00:14PM -0700
+In-Reply-To: <20021025225836.CD21B4834@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,12 +24,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Oct 25, 2002 at 05:00:14PM -0700, Derek Engelhaupt wrote:
-> So my C180 has a different HVD controller chip than the 735?
+> 
+> I suspect the kernel in debian stable might just be too old.
+> Can you try newer net-install images from ESIEE?
+> 	(ftp://ftp.parisc-linux.org/cd-images/testing/auto-isos/)
+> 
+> FWIW, at least three developers are *using* C3000 including myself.
+> But I've never cold installed using the debian since I've had bits
+> on this machine since well before any ISOs were available.
+> Probably would be a good exercise....
+> 
+> hth,
+> grant
 
-The problem is that 735's CPU can't allocate consistent memory -- the
-C180 has the CCIO IOMMU, so it can.  The ncr53c7xx driver relies on
-being able to allocate consistent memory.
 
--- 
-Revolutions do not require corporate support.
+I used the serial console :} 
+
+c.
