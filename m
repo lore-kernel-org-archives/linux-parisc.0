@@ -1,77 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA12882
-	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Aug 2000 01:12:22 -0600
-Received: from cassini ([64.161.145.131])
- by mta5.snfc21.pbi.net (Sun Internet Mail Server sims.3.5.2000.01.05.12.18.p9)
- with SMTP id <0FZZ00LB7QM0RS@mta5.snfc21.pbi.net> for
- parisc-linux@thepuffingroup.com; Mon, 28 Aug 2000 00:10:48 -0700 (PDT)
-Date: Mon, 28 Aug 2000 00:16:34 -0700
-From: Craig Miller <craig.miller@bigfoot.com>
-To: PARISC-L <parisc-linux@thepuffingroup.com>
-Message-id: <000e01c010bf$e6166840$8391a140@spatialminds.com>
-MIME-version: 1.0
-Content-type: multipart/alternative;
- boundary="----=_NextPart_000_000B_01C01085.395F5E20"
-Subject: [parisc-linux] HP 735/125 hangs w/latest kernel
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA16076
+	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Aug 2000 06:31:55 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 28 Aug 2000 12:31:56 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 28 Aug 2000 12:31:52 -0000
+Date: Mon, 28 Aug 2000 07:26:37 -0400
+From: Matthew Wilcox <matthew@wil.cx>
+To: Paul Bame <bame@noam.fc.hp.com>
+Cc: Alan Modra <amodra@puffin.external.hp.com>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 64-bit cross compiler broken
+Message-ID: <20000828072637.T29677@vodka.thepuffingroup.com>
+References: <E13SRJl-0001kq-00@noam.fc.hp.com> <E13SSjR-00050l-00@noam.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <E13SSjR-00050l-00@noam.fc.hp.com>; from Paul Bame on Fri, Aug 25, 2000 at 05:17:53PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+On Fri, Aug 25, 2000 at 05:17:53PM -0600, Paul Bame wrote:
+> = 
+> = The current 64-bit cross compiler dies on drivers/block/rd.c
+> = 
+> 
+> Another 64-bit gotcha: in arch/parisc64/kernel/entry.S:start_parisc_asm
+> the 'b start_parisc' is branching through a stub and failing miserably.
+> Linker problem?
 
-------=_NextPart_000_000B_01C01085.395F5E20
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Wow, you're getting to start_parisc_asm?!  Neat!  You can take it out
+now, just branch directly to start_parisc instead -- i only put it in
+so that i knew what was being executed, rather than having to decode
+what the C was doing.  That doesn't necessarily mean that there isn't
+a problem, but we should be able to get further than that.
 
-In the interest of providing useful feedback:
-
-My HP 735/125 box hangs when booting the demo CD.  It gets to
-
-...
-ASP version 20 at oxf08000000 found.
-request_irq(250, c01ec76c, 0x0, asp, c4ff5080)=20
-
-and then just hangs.
-
-I would be happy to work with someone if they are interested in testing =
-on an HP 735/125.
-
---Craig
-
-
-------=_NextPart_000_000B_01C01085.395F5E20
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4134.600" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>In the interest of providing useful=20
-feedback:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>My HP 735/125 box hangs when booting =
-the demo=20
-CD.&nbsp; It gets to</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>ASP version 20 at oxf08000000 =
-found.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>request_irq(250, c01ec76c, 0x0, asp, =
-c4ff5080)=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>and then just hangs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>I would be happy to work with someone if they are interested in =
-testing on=20
-an HP 735/125.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>--Craig</FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_000B_01C01085.395F5E20--
+-- 
+Revolutions do not require corporate support.
