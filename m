@@ -1,235 +1,47 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA15528
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Dec 2000 15:50:41 -0700
-Received: from localhost (13786 bytes) by fileserv2.Cologne.DE
-	via rmail with P:stdio/R:bind/T:smtp
-	(sender: <excalibur.cologne.de!karsten>) (ident <excalibur.cologne.de!karsten> using unix)
-	id <m149Eab-0007T7C@fileserv2.Cologne.DE>
-	for <parisc-linux@thepuffingroup.com>; Thu, 21 Dec 2000 23:53:33 +0100 (CET)
-	(Smail-3.2.0.101 1997-Dec-17 #5 built 1998-Jan-19)
-Message-ID: <20001221233934.A766@excalibur.cologne.de>
-Date: Thu, 21 Dec 2000 23:39:34 +0100
-From: Karsten Merker <karsten@excalibur.cologne.de>
-To: Helge Deller <deller@gmx.de>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] configuration problems with cvs from 20001216 15:40 CET
-References: <20001217115105.A17378@excalibur.cologne.de> <00121721201800.25726@P100> <20001218230325.A934@excalibur.cologne.de> <00122000445401.00303@P100>
+Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA16802
+	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Dec 2000 17:56:46 -0700
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel1.hp.com (Postfix) with ESMTP id 4C1225EA
+	for <parisc-linux@thepuffingroup.com>; Thu, 21 Dec 2000 19:59:36 -0500 (EST)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id 798A737C9E
+	for <parisc-linux@thepuffingroup.com>; Thu, 21 Dec 2000 13:16:49 -0700 (MST)
+To: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <00122000445401.00303@P100>; from Helge Deller on Wed, Dec 20, 2000 at 01:00:16AM +0100
+Date: Thu, 21 Dec 2000 13:16:49 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001221201649.798A737C9E@carmen.fc.hp.com>
+Subject: [parisc-linux] 64bit xgcc build failing
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Dec 20, 2000 at 01:00:16AM +0100, Helge Deller wrote:
+The 64bit cross-gcc build(devel branch) is failing with the following error,
 
-> > Has anybody tried to run Linux with serial console on a 715/100? When I
-> > boot a kernel without support for STICON but with serial console enabled
-> > (and console=ttyS0 as commandline parameter) the system crashes just after
-> > displaying the "kernel command line" (system console is still in
-> > "graphics" mode - does this make a difference?).
-> 
-> This doesn't happen on my 715/64, which is afaik nearly the same machine as 
-> yours. And, you don't need "console=ttyS0", but I don't think, that this is 
-> related to your problem.
+------------------------------------------------------------------------------
+gcc -c -DCROSS_COMPILE -DIN_GCC    -g -O2 -W -Wall -Wwrite-strings 
+-Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic 
+-Wno-long-long  -DHAVE_CONFIG_H    -I. -I. -I/home/al-76/puffin/palinux/gcc/gcc
+ -I/home/al-76/puffin/palinux/gcc/gcc/. -I/home/al-76/puffin/palinux/gcc/gcc/co
+nfig -I/home/al-76/puffin/palinux/gcc/gcc/../include 
+/home/al-76/puffin/palinux/gcc/gcc/varasm.c -o varasm.o
+/home/al-76/puffin/palinux/gcc/gcc/varasm.c: In function 
+`assemble_trampoline_template':
+/home/al-76/puffin/palinux/gcc/gcc/varasm.c:1868: warning: assignment discards 
+qualifiers from pointer target type
+/home/al-76/puffin/palinux/gcc/gcc/varasm.c: In function `assemble_integer':  
+/home/al-76/puffin/palinux/gcc/gcc/varasm.c:1910: parse error before `0'  
+/home/al-76/puffin/palinux/gcc/gcc/varasm.c:1910: warning: statement with no 
+effect
+make[1]: *** [varasm.o] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make[1]: Leaving directory `/home/al-76/puffin/xc-build/gcc/gcc'
+------------------------------------------------------------------------------
 
-It seems the "console=ttyS0" is the reason for the crash. To be sure, I
-have taken a fresh kernel tree (checkout from today) and compiled the
-kernel with the default configuration. It worked...
-When I append a "console=ttyS0" to the kernel command line, the result is:
+Any ideas?
 
-palo ipl karsten@excalibur.cologne.de Don Dez 21 22:08:22 CET 2000
-0/vmlinux 2137117 bytes @ 0x6800
-0/palo-cmdline '0/vmlinux HOME=/ TERM=linux root=/dev/nfs nfsroot=192.168.2.37 console=ttyS0'
-Kernel: partition 0 file /vmlinux
-ELF32 executable
+Thanks,
 
-Entry 00100158 first 00000000 n 5
-Segment 0 load 00000000 size 304 mediaptr 0x1000
-Segment 1 load 00100000 size 1434376 mediaptr 0x2000
-Segment 2 load 00260000 size 170792 mediaptr 0x161000
-Segment 3 load 0028c000 size 118432 mediaptr 0x18b000
-Segment 4 load 002ac000 size 8192 mediaptr 0x1a8000
-branching to kernel entry point 0x00100158
-Set default PSW W bit to 0
-PDC Console Initialized
-The 32-bit Kernel has started...
-Enabled FP coprocessor
-Free memory starts at: 0xc02d7000
-start_parisc(0x504d70,0x504d70,0x0,0x0)
-PALO command line: 'HOME=/ TERM=linux root=/dev/nfs nfsroot=192.168.2.37 console=ttyS0'
-PALO initrd 0-0
-model   000060b0 00000481 00000000 00000000 779866f5 00000000 00000004 00000072 00000072
-vers    0000000c
-CPUID   vers 0 rev 0
-model   9000/715
-led_init: CPU_HVERSION 60b
-Searching for devices in PDC firmware... processor hpa 0xfffbe000
- an older box...
-Found devices:
-1. Mirage GSC Builtin Graphics (10) at 0xf8000000, versions 0x13, 0x0, 0x85, 0x0, 0x0
-2. Mirage Core BA (11) at 0xf0100000, versions 0x29, 0x0, 0x81, 0x0, 0x0
-3. Mirage Core SCSI (10) at 0xf0106000, versions 0x29, 0x0, 0x82, 0x0, 0x0
-4. Mirage Core LAN (802.3) (10) at 0xf0107000, versions 0x29, 0x0, 0x8a, 0x0, 0x0
-5. Mirage Core RS-232 (10) at 0xf0105000, versions 0x29, 0x0, 0x8c, 0x0, 0x0
-6. Mirage Core Centronics (10) at 0xf0102000, versions 0x29, 0x0, 0x74, 0x0, 0x0
-7. Mirage Audio (10) at 0xf0104000, versions 0x29, 0x0, 0x7b, 0x0, 0x0
-8. Mirage Core PC Floppy (10) at 0xf010a000, versions 0x29, 0x0, 0x83, 0x0, 0x0
-9. Mirage Core PC Keyboard (10) at 0xf0108000, versions 0x29, 0x0, 0x84, 0x0, 0x0
-10. Mirage Core PC Keyboard (10) at 0xf0108100, versions 0x29, 0x0, 0x84, 0x0, 0x0
-11. Mirage Wax EISA BA (11) at 0xfc000000, versions 0x29, 0x0, 0x90, 0x0, 0x0
-12. Mirage Wax BA (11) at 0xf0200000, versions 0x13, 0x0, 0x8e, 0x0, 0x0
-13. Mirage 100 Wax HIL (10) at 0xf0201000, versions 0x13, 0x0, 0x73, 0x0, 0x0
-14. Mirage Wax RS-232 (10) at 0xf0202000, versions 0x13, 0x0, 0x8c, 0x0, 0x0
-15. Mirage 100 (0) at 0xfffbe000, versions 0x60b, 0x0, 0x4, 0x0, 0x81
-16. Mirage 100 (1) at 0xfffbf000, versions 0x4b, 0x0, 0x9, 0x0, 0x0
-That's a total of 16 devices.
-CPU(s): 1 x PA7100LC (PCX-L) at 100.000000 MHz
-Linux version 2.4.0-test10 (karsten@excalibur.cologne.de) (gcc version 2.96 20000925 (experimental)) #5 Don Dez 21 22:30:29 CET 2000
-free_bootmem(0x2d7800, 0x3d28800)
-initrd: 00000000-00000000
-pagetable_init
-On node 0 totalpages: 16384
-zone(0): 8192 pages.
-zone(1): 8192 pages.
-zone(2): 0 pages.
-Kernel command line: HOME=/ TERM=linux root=/dev/nfs nfsroot=192.168.2.37 console=ttyS0
-trap_init
-
-Dumping Stack from c02ac000 to c02aca40:
-c000 00000000 00000000 00000000 00000000 c027446c 00000000 00000000 ffffffff
-c020 0000000a 00000000 00000000 00000000 00000000 00000000 ffffffff c02ac03c
-c040 c02ac03c 00000000 c02ac000 c02ac000 c027960c 00000000 00000000 00000000
-c060 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c080 00000000 c02ac000 c02ac000 00000000 00000000 00000000 c02ac098 c02ac098
-c0a0 00000000 00000000 00000000 c02ac0ac c02ac0ac 00000000 00000000 00000000
-c0c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c0e0 00000000 c011c080 00000000 00000000 00000000 00000000 00000000 00000000
-c100 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c1c0 00000000 fffffeff 00000000 ffffffff 00000000 c027501c ffffffff ffffffff
-c1e0 ffffffff ffffffff ffffffff ffffffff 00800000 05000000 00000000 ffffffff
-c200 ffffffff ffffffff 00000000 00000000 00000400 00000400 ffffffff ffffffff
-c220 ffffffff ffffffff ffffffff ffffffff 00007377 61707065 72000000 00000000
-c240 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c260 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c280 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c2a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c2c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c2e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c300 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c320 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c340 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c360 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c3a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c3c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c3e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c400 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c420 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c440 00000000 00000000 00000000 00000000 0027a000 00000000 c0279040 c0279064
-c460 00000000 c0279204 00000000 00000000 00000000 c02ac470 00000000 00000000
-c480 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4e0 00000000 00000000 00000000 00500098 00000000 00000000 00000000 00000000
-c500 0000003f 00000000 7f7fffff 00000001 0027a000 00800327 00000000 00000000
-c520 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c540 00000000 00000000 00000000 00000000 00000064 c022e4a0 00000001 c0226818
-c560 00000000 00000000 00000000 c028da34 00000000 00000000 00000000 00000000
-c580 00000000 00000000 c02c5a70 c02c5800 c02c5800 f0000704 00000001 00000001
-c5a0 00000000 fc3ffe1f c028d844 00000008 00504d70 00000000 00000000 c02c5800
-c5c0 c02c5800 c02c6728 c02c5800 c02af000 00000060 ffffffff c02c5a70 c0225a1c
-c5e0 00000000 fc3ffe1f c028d844 c028cecc 00504d70 00000000 00000000 00000000
-c600 c02c6728 c02c5800 c02c5800 c02c6728 00000030 0000000a 00000140 c0226e90
-c620 c02c5800 c02c6728 c028d844 c0293170 00504d70 00000000 00000000 c02c5800
-c640 00000000 00000002 f000b858 f0000704 00000001 00000001 00000000 fc3ffe1f
-c660 c028d844 00000008 00504d70 c0294e14 00000000 c02c5800 c02c5800 c02d3da4
-c680 c02c5800 c02c6728 c02ac624 00000000 c02c5800 0000003c 00000001 00000001
-c6a0 00000000 fc3ffe1f c028d844 00000008 00504d70 00000000 00000000 c02c5800
-c6c0 c02c5800 c02d3da4 c02744a0 0000000a 0000000a 0000003c 0000003e c0274000
-c6e0 00000001 c02b1f55 00000004 c011ac7c 00000009 c02b1f55 00000000 00000002
-c700 c02c6c24 00000000 c02805a0 c02c6c20 00000000 00000003 f0105000 00008000
-c720 c028d844 00000008 00504d70 c028ed68 00000000 c02c5800 00000000 00000002
-c740 002ae080 00000000 002ae000 000003a8 00000000 00000003 f0105000 00008000
-c760 00000000 c02c5800 00100158 c0294d14 00504d70 00105000 00000000 c02c5800
-c780 00100158 00260000 c02ac724 00105000 c02b1f55 c02ac648 c02c9000 00000000
-c7a0 c02752bc c02751e0 04000000 c018d7a8 00004000 00000000 0000000a c027542c
-c7c0 00000008 00000000 00004000 00002000 0000000a c0275374 c0233a1e fffffc00
-c7e0 00000001 c02b1f5a 00000004 c010c4c4 0000000e c02b1f5a 00000000 fc3ffe1f
-c800 0006000a c02b1980 c018d7a8 c02c2088 00000013 0000002f c02c2e6c c02805a0
-c820 ffffffff c0274000 c028d844 fc3ffe1f 00000000 00000001 00000001 f0000704
-c840 f000b858 00000002 00000000 00000000 c02c2e6c c02c6800 ffffffff 00000040
-c860 00000093 00000002 00000000 c0260000 00002580 0000002f c02aca40 c0294cdc
-c880 000d081f 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c8a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c8c0 7fffffff 7fffffff 7f7fffff ffffffff 7f7fffff ffffffff 00000000 00000000
-c8e0 00000000 00000000 41800000 00000000 00000010 00000010 00000000 00000000
-c900 7fffffff 7fffffff 41000000 00000000 40800000 00000000 7fffffff 7fffffff
-c920 41000000 00000000 7fffffff 7fffffff 40800000 00000000 41000000 00000000
-c940 40300000 00000000 40200000 00000000 40200000 00000000 41800000 7fffffff
-c960 40000000 00000000 40000000 00000000 40800000 00000000 41000000 00000000
-c980 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c9a0 00000000 00000000 c010c8fc c010c900 00000000 00000000 00000000 00000000
-c9c0 00000000 00000000 00000000 00000000 0000001f 0e781096 00000000 0000000c
-c9e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca00 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ca20 00000000 00000000 00000000 c0106704 00000000 00000000 00000000 00000000
-
-Data access rights fault in kernel: Code=26 regs=c02ac800 (Addr=0000000c)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001100000000000001010
-r0-3     00000000 c02b1980 c018d7a8 c02c2088
-r4-7     00000013 0000002f c02c2e6c c02805a0
-r8-11    ffffffff c0274000 c028d844 fc3ffe1f
-r12-15   00000000 00000001 00000001 f0000704
-r16-19   f000b858 00000002 00000000 00000000
-r20-23   c02c2e6c c02c6800 ffffffff 00000040
-r24-27   00000093 00000002 00000000 c0260000
-r28-31   00002580 0000002f c02aca40 c0294cdc
-sr0-3    00000000 00000000 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: c010c8fc c010c900
- IIR: 0e781096    ISR: 00000000  IOR: 0000000c
-ORIG_R28: 00000000
-
-The only difference to a working kernel is the additional kernel
-parameter. What I find strange in this case is the fact that giving
-"console=ttyS0" is mandatory on other systems - e.g. Linux/MIPS on a
-DECstation does not give you anything on the serial port unless you
-specify console=ttySx, even if serial console is the only option because
-no other console driver is compiled into the kernel.
-
-> > The keyboard
-> > works on the 712/80 but is dead on the 715/100 (in both cases the keyboard
-> > is a ps/2 model, connected directly on the 712/80 and via the small
-> > external adaptor box on the 715/100).
-> 
-> Hmm, does the other end of this external adaptor on the /100 looks like a 
-> RJ45-connector? If yes, I assume, that you have a PS/2 keyboard on a 
-> HIL-adaptor and need the HIL keyboard driver, which should already be enabled 
-> in defconfig. And the HIL keyboard works for me...
-> If you could send me your bootlog I could take a closer look at it.
-
-I think I have found a reason for my keyboard problems: it depends on the
-systems console path. I have checked this by booting the same kernel
-twice, one time with the system console path set to "graphics", where the
-keyboard does not work, and one time with the system console path set to
-"rs232": et voila - the keyboard works. Another interesting effect: when
-booting from serial system console, there is no pixel garbage on STICON,
-when booting from graphics, it is there. It looks like the firmware
-console routines (is this the so called PDC-console?) somehow clash with
-the STICON and the keyboard driver. This would explain why everything is
-ok when system console input/output is directed to the serial port instead
-to keyboard and video controller. Can anybody confirm my experiences?
-
-Greetings,
-Karsten
 -- 
-#include <standard_disclaimer>
-Nach Paragraph 28 Abs. 3 Bundesdatenschutzgesetz widerspreche ich der Nutzung
-oder Uebermittlung meiner Daten fuer Werbezwecke oder fuer die Markt- oder
-Meinungsforschung.
+Matt Taggart
+taggart@fc.hp.com
