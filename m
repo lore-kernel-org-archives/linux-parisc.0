@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc2-hem11-4-cust120.bre.cable.ntl.com [213.107.176.120])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E48E54829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Aug 2002 14:38:40 -0600 (MDT)
-Date: Thu, 15 Aug 2002 20:33:19 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: Harri Haataja <harri.haataja@cs.helsinki.fi>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Additional Network Cards for 712
-Message-ID: <20020815193318.GB897@sleepie.demon.co.uk>
-References: <20020812211608.B37236@azrael.smilehouse.com> <20020812185633.86255.qmail@web12506.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020812185633.86255.qmail@web12506.mail.yahoo.com>
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 722FD4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Aug 2002 15:50:49 -0600 (MDT)
+Received: from [192.168.95.4] (p5080D804.dip.t-dialin.net [80.128.216.4])
+	by mail.scram.de (8.11.6+3.4W/8.11.0) with ESMTP id g7FLokB23502
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Aug 2002 23:50:47 +0200 (CEST)
+Date: Thu, 15 Aug 2002 23:49:24 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.44.0208152341001.18472-100000@gfrw1044.bocc.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] unreliable mmap on 720
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,74 +23,85 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Aug 12, 2002 at 11:56:33AM -0700, Derek Engelhaupt wrote:
-> Quick search of the parisc/linux yeilded:
->                  ---------------------------------
->                  \     o  o  3  o  o  o  7  8  9 /
->                   \  10 11 12 13  o  o 16 17 18 /
->                    \  19 20 21 22  o 24 25 26  /
->                      -------------------------
-> 
->                12 13    20 19                 18  9  8  7  24
->        ---------------------------           -----------------
->   AUI   \ o  o  6  5  o  3  2  o /           \ 1  2  3  4  5 / RS232
->          \  o 10 11 12  o 14 15 /             \  6  7  8  9 /
->           ---------------------                ------------
->               22 21  3    11 10                 26 25 17 16
+Hi,
 
-I believe that diagram is wrong; note how the numbering on the AUI
-connector is shown as going right to left on the top row, and left to
-right on the bottow row.  D-type connectors are normally numbered in the
-same direction on all rows, as the other two in the above are numbered.
-Anyway, I reversed the bottom row of the AUI diagram, built a cable, and
-it worked.  My notes are below.
+i recognized that mmap operations seem unreliable on HP720 platform. The 
+following test program (taken from cyrus imap configure) demonstrates the 
+problem:
 
-Many thanks to Matt for the original info anyway, without that I'd have
-been stuck.
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 
-Richard
+main()
+{
+  char *base;
+  int fd = open("testmmap", O_RDWR|O_CREAT|O_TRUNC, 0666);
 
+  if (fd == -1)
+  {
+    printf("can't open testmmap\n");
+    exit(1);
+  }
+  if (write(fd, "test", 4) != 4)
+  {
+    printf("can't write testmmap\n");
+    exit(1);
+  }
+  fsync(fd);
+  base = mmap((caddr_t)0, 100, PROT_READ, MAP_SHARED
+#ifdef MAP_FILE
+  | MAP_FILE
+#endif
+#ifdef MAP_VARIABLE
+  | MAP_VARIABLE
+#endif
+  , fd, 0L);
 
+  if (base == (caddr_t)-1)
+  {
+    printf("can't mmap testmmap\n");
+    exit(1);
+  }
+  if (strncmp(base, "test", 4) != 0)
+  {
+    printf("memory not test\n");
+    exit(1);
+  }
+  if (write(fd, "test", 4) != 4) 
+  {
+    printf("can't append testmmap\n");
+    exit(1);
+  }
+  fsync(fd);
+  if (strncmp(base+4, "test", 4) != 0)
+  {
+    printf("memory not testtest: %s\n", base);
+    exit(1);
+  }
+  exit(0);
+}
 
-Pinout for RS232/AUI cable(A2263-62045) for 712 card (A2263-66536)
-------------------------------------------------------------------
-There is a card for the 712(HP part #A2263-66536) that provides 2nd AUI lan
-and 2nd DB9 RS232 port. The back of the card has a 26 pin connector and the
-15pin AUI and 9pin RS232 connectors are provided by a special Y cable
-(A2263-62045) which are pretty hard to find. Here is the pinout of this cable
-in case you need to make one.
+# ./testmmap
+memory not testtest: test
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+# ./testmmap
+memory not testtest: testtest
 
-These diagrams are looking at the end of the connector not the back. Make
-sure to take that into account if building a cable. Pin numbering is taken
-from the numbers on the plastic in the cable. If a pin is not connected it
-is represented as an "o". The numbers outside the bottom connectors are the
-pin numbers that that pin is connected to on the top connector.
+This only seems to happen on 720 (i couldn't replicate the bug on a 715 
+with the same kernel booted up). Things seem to get worse if the load on 
+the box rises (if the test is done on an idle machine, testmmap works 
+without problems). Weird...
 
-<pre>
+This is 2.4.19-pa3.
 
-                 ---------------------------------
-                 \   .o .o .3 .o .o .o .7 .8 .9  /
-                  \ 10 11 12 13 .o .o 16 17 18 /
-                   \ 19 20 21 22 .o 24 25 26  /
-                     -------------------------
-
-                12 13    20 19         18  9  8  7 24
-        ---------------------------  -----------------
-  AUI   \ .o .o .6 .5 .o .3 .2 .o /  \ .1 .2 .3 .4 .5 / RS232
-         \ .o 14 13 12 .o 10 .9 /     \ .6 .7 .8 .9  /
-          ---------------------         ------------
-              22 21  3    11 10         26 25 17 16 
-
-26 way		15 way		26 way		9 way
-
-3	white	12		7	black	4
-10	yellow	9		8	brown	3
-11	blue	10		9	purple	2
-12	black	6		16	yellow	9
-13	brown	5		17	red	8
-19	grey	2		18	green	1
-20	red	3		24	grey	5
-21	pink	13		25	liblue	7
-22	green	14		26	pink	6
-
-</pre>
+Cheers,
+--jochen
