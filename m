@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2E1DC482C
-	for <parisc-linux@parisc-linux.org>; Tue, 23 Jul 2002 15:16:54 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: "kenneth westelinck" <kennywest1@hotmail.com>,
-	<parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] linux_logo.h
-Date: Tue, 23 Jul 2002 23:14:56 +0200
-References: <OE40qsOVXlCViSvIkwp00008102@hotmail.com>
-In-Reply-To: <OE40qsOVXlCViSvIkwp00008102@hotmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200207232314.56027.deller@gmx.de>
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 170EE482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Jul 2002 16:50:17 -0600 (MDT)
+Received: from haydn (pcp357875pcs.elictc01.md.comcast.net [68.55.155.46])
+ by mtaout06.icomcast.net
+ (iPlanet Messaging Server 5.1 HotFix 0.8 (built May 13 2002))
+ with SMTP id <0GZQ00AUK4QEYP@mtaout06.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Tue, 23 Jul 2002 18:49:26 -0400 (EDT)
+Date: Tue, 23 Jul 2002 18:44:31 -0400
+From: Frank Alden Smith <falden@comcast.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-id: <NGBBJKHCMLEJELIEEHNOCEFPCAAA.falden@comcast.net>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Bugzilla Bug  88691 galeon seg faults
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Kenneth,
+Please help,
 
-nice logo, but personally I don't like the HP-style background.
-Couldn't you make a patch without any background pattern and just black instead ?
+I posted this Gnome Bugzilla Bug 88691 about repeated galeon seg faults,
+but now I am wondering if this list would be better able to provide
+assistance. The problem arises on Linux version 2.4.18-pa56, galeon
+1.2.5-1, and mozilla 1.0.0-3.
 
-Greetings,
-Helge
+For complete details please go to:
+http://bugzilla.gnome.org/show_bug.cgi?id=88691
 
-On Tuesday 23 July 2002 15:20, kenneth westelinck wrote:
-> Hi all,
->
-> The linux_logo.h that is available on the esiee site
-> (http://pateam.esiee.fr/download.html) seems a little outdated. Here's a
-> version that works with 2.4.18-pa56.
->
-> regards,
->
-> Kenneth
+Take care,
+frank
+
+PS I am sorry if I am not following the proper protocol(s), my only
+excuse is this is my first bug report.
