@@ -1,83 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from localhost.localdomain (ottawa.linuxcare.com [216.208.98.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8EA2482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Apr 2001 13:54:53 -0600 (MDT)
-Date: Thu, 5 Apr 2001 15:56:05 -0400
-From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-To: debian-boot@lists.debian.org, parisc-linux@lists.parisc-linux.org
-Message-ID: <20010405155605.D8907@achilles.net>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22202482A
+	for <parisc-linux@parisc-linux.org>; Thu,  5 Apr 2001 13:57:41 -0600 (MDT)
+To: buggz <buggz@america.net>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] RE: New hppa base tarball 
+In-Reply-To: Message from buggz <buggz@america.net>
+   of "Thu, 05 Apr 2001 10:45:06 EDT." <Pine.LNX.4.30.0104051041590.3801-100000@buggz1.buggz.net>
+References: <Pine.LNX.4.30.0104051041590.3801-100000@buggz1.buggz.net> 
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
-Subject: [parisc-linux] Woody installer for PARISC
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 05 Apr 2001 14:00:14 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010405200014.A86F138852@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
---KN5l+BnMqAQyZLvT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+buggz writes...
 
-Hello everyone,
+> 
+> Otay, I d/l'd the baseplus tarball.
 
-Here are the changes I've made to the boot-floppies package to support
-the PARISC architecture.
+I haven't mentioned the baseplus tarball on the list yet but it's just as 
+usable as the base one. The difference is that baseplus has been updated from 
+the debian archive and also contains a reasonable development environment. I 
+plan to roll it again soon and announce it on the list.
 
-Makefile:
-Added an entry for hppa support, make root.tar.gz
+> To install this, it says to read the instrutions that says to boot w/ a
+> cd.
 
-common.sh:
-Small fixes to the functions that came up during debugging
+The instructions also work if you boot from an nfsroot. Instructions on doing 
+that at,
 
-rescue.sh:
-- Define the hppa "floppy" type (ext2)
-- Use the "write_m68kinfo" for install.sh generation
-- Compress the kernel like powerpc/pmac arch
+http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/02-Feb/0069.html
 
-rootdisk.sh:
-- Define the C library information for hppa
-- Don't do library reduction (this was failing with our binutils)
+> I was hoping that these were iso files to make such a cd.
 
-utilities/dbootstrap/Makefile:
-- Change the -DKVER="${KVER}" to -DKVER="${kver}" to reflect the proper
-  variable name.
+Not yet, but soon hopefully.
 
-utilities/dbootstrap/bootconfig.c:
-- Support for PALO (our bootloader)
-
-utilities/dbootstrap/extract_base.c:
-- Change debootstrap cmd line to use file:%s instead of just %s.
-
-utilities/dbootstrap/main_menu.c:
-- Remove options that aren't applicable to PARISC.
-  (Make boot floppy, PCMCIA, etc..)
-
-utilities/dbootstrap/partition_config.c:
-- Add PALO message for partition creation.
-
-
-There are a few more changes I needed to make to get a working installer
-for PARISC, unfortunately some of them are because of limitations in
-the current PARISC distribution (kernel.sh was modified to not require
-a kernel .deb since we currently don't have one and the constantly
-changing kernel makes it unwieldy to build kernel .debs).  As well the
-root.bin needs to be larger than 3700K on parisc though I am working
-on reducing this number to hopefully fit in that limit.
-
-I will post a diff to boot-floppies shortly.
-
-						- Paul
-
-
---KN5l+BnMqAQyZLvT
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE6zM3V8ggPQthPCzcRAiIuAKCpoZ4xnRNY3XUvKz4V//EEYfbAMwCdGWlU
-dmIKolt//EiGHDGM6WuW9PI=
-=qbNz
------END PGP SIGNATURE-----
-
---KN5l+BnMqAQyZLvT--
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
