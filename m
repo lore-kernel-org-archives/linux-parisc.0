@@ -1,71 +1,44 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] C240 and Linux 2.6.x
-Date: Mon, 3 Jan 2005 13:22:14 -0700
-Message-ID: <20050103202214.GC3277@colo.lackof.org>
-References: <20041230231420.GA15674@nilpferd.asyl>
-	<41D553CB.6070802@tiscali.be>
-	<20041231174649.GA21212@nilpferd.asyl>
-	<20041231212330.GB23592@colo.lackof.org>
-	<20050103181334.GB21212@nilpferd.asyl>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] Re: 2.6.10-pa1 compile fails
+Date: Tue, 4 Jan 2005 00:42:52 +0000
+Message-ID: <20050104004252.GP18080__22249.2226552733$1416624526$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <20050103234545.GE3277@colo.lackof.org> <Pine.LNX.4.21.0501040235360.2622-100000@hal.pp.fishpool.fi>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Alexander Bartolich <alexander.bartolich@gmx.at>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050103181334.GB21212@nilpferd.asyl>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+ debian-hppa@lists.debian.org,
+ parisc-linux@parisc-linux.org
+To: =?iso-8859-1?Q?Martin-=C9ric?= Racine <q-funk@iki.fi>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <Pine.LNX.4.21.0501040235360.2622-100000@hal.pp.fishpool.fi>
+Resent-Message-ID: <qzpGgD.A.8g.pqe2BB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Mon, Jan 03, 2005 at 07:13:34PM +0100, Alexander Bartolich wrote:
-> This gives me nice console output on booting, so there is definitely
-> something wrong with Debian's kernel-image-2.6.8-1-32.
+On Tue, Jan 04, 2005 at 02:37:29AM +0200, Martin-Éric Racine wrote:
+> Silly question but well:  
+> 
+> Would this source file shuffling perhaps also require massaging the dependencies
+> in the kernel configuration scripts?
 
-Good.
+The Linux build system has "always" (at least as far back as 2.0 anyway)
+automatically generated dependencies for each file, it's not like, eg gdb.
 
-> Howver, now comes the bad news.
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 
-Thanks for capturing and sending the console log.
 
-...
-> Linux Tulip driver version 1.1.13 (May 11, 2002)
-> Backtrace:
-
-[ hrm...IOAQ is missing from the backtrace ... maybe that's intentional ]
-
->  [<10202ea4>] pci_device_probe_static+0x60/0x78
->  [<10202ed8>] __pci_device_probe+0x1c/0x34
->  [<10202f1c>] pci_device_probe+0x2c/0x58
->  [<1023dbe0>] driver_probe_device+0x48/0x90
-...
-> Kernel Fault: Code=26 regs=11474480 (Addr=00000004)
-
-I don't see this with -pa2 or -pa3 on a500 or j6000.
-Likely some problem with dino or ccio support.
-
->  IAOQ[0]: tulip_init_one+0x23c/0xdc0
->  IAOQ[1]: tulip_init_one+0x240/0xdc0
->  RP(r2): tulip_init_one+0x21c/0xdc0
-
-Just have to figure out where in tulip_init_one() +0x240 is pointing.
-I'll try to track this down after plowing through the
-back-from-2-weeks-off email backlog.
-
-> Alright. Where is the right place to send this? 
-
-Normally just to parisc-linux@lists.p-l.o mailing list.
-I've dropped debian-hppa since the bits aren't in debian (yet).
-
-thanks,
-grant
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
