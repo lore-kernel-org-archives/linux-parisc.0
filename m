@@ -1,32 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04769
-	for <parisc-linux@puffin.external.hp.com>; Mon, 10 Jul 2000 08:12:07 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04958
+	for <parisc-linux@puffin.external.hp.com>; Mon, 10 Jul 2000 08:16:31 -0600
 Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 10 Jul 2000 14:13:36 -0000
-To: "Brian S. Julin" <bri@mojo.calyx.net>
-Cc: Matt Taggart <taggart@carmen.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] e2fsprogs available
-References: <Pine.BSO.4.21.0007091433510.14827-100000@mojo.calyx.net>
+  by mailserv2.iuinc.com with SMTP; 10 Jul 2000 14:17:55 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] problems with gcc 2.96
+References: <20000709150024.A16294@vodka.thepuffingroup.com> <Pine.LNX.4.21.0007100959080.684-100000@front.linuxcare.com.au> <20000710082844.C16294@vodka.thepuffingroup.com> <87snticcfz.fsf@linuxcare.com>
 From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 10 Jul 2000 09:59:07 -0400
-In-Reply-To: "Brian S. Julin"'s message of "Sun, 9 Jul 2000 14:42:59 -0400 (EDT)"
-Message-ID: <87zonqccic.fsf@linuxcare.com>
+Date: 10 Jul 2000 10:16:41 -0400
+In-Reply-To: David Huggins-Daines's message of "10 Jul 2000 10:00:32 -0400"
+Message-ID: <87lmzacbp2.fsf@linuxcare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Brian S. Julin" <bri@mojo.calyx.net> writes:
+David Huggins-Daines <dhd@linuxcare.com> writes:
 
-> Also, in case anyone was wondering, the cross-compiler problems
-> from ALPHA seem to have been fixed.  I've booted an ALPHA-compiled kernel.
+> I've already told willy this, but this is due to the C++ support.
+> Configure with --enable-languages=c for the time being until it's sorted.
 
-Cool.
-
-> GCC won't build a native, complains about a missing nss symbol.
-
-This is well-known glibc lossage.  You need to confiugre glibc with
---enable-static-nss, and then every binary that uses NSS must be
-linked with '-lc -lnss_files -lnss_dns -lresolv' (in that order).
+Ah, sorry, it happens if you configure glibc without linuxthreads
+support (because, then, you have no spinlocks, obviously).  It seems
+that we've already got the appropriate locking primitives
+there... trying it now.
 
 -- 
 dhd@linuxcare.com, http://www.linuxcare.com/
