@@ -1,51 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id NAA19551
-	for <hppa-linux@sod.res.cmu.edu>; Fri, 26 Mar 1999 13:33:53 -0500
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id KAA10633
-	for <hppa-linux@thepuffingroup.com>; Fri, 26 Mar 1999 10:33:14 -0800 (PST)
-Received: from netscape.com ([205.217.243.67]) by
-          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
-          F97SVM00.PKK for <hppa-linux@thepuffingroup.com>; Fri, 26 Mar
-          1999 10:33:22 -0800
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <36FBD2E7.D7399CA2@netscape.com>
-Date: Fri, 26 Mar 1999 13:33:11 -0500
-From: Mike Shaver <shaver@netscape.com>
-MIME-Version: 1.0
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA20575
+	for <hppa-linux@sod.res.cmu.edu>; Fri, 26 Mar 1999 14:21:22 -0500
+Received: (from jason@localhost)
+	by gatekeeper.equator.com (8.9.1a/8.9.1) id LAA22256
+	for hppa-linux@thepuffingroup.com; Fri, 26 Mar 1999 11:21:14 -0800 (PST)
+Date: Fri, 26 Mar 1999 11:21:14 -0800 (PST)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199903261921.LAA22256@gatekeeper.equator.com>
 To: hppa-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [hppa-linux] progress
+Subject: Re: [hppa-linux] Linker scripts and the boot loader
 List-ID: <linux-parisc.vger.kernel.org>
 
-[shaver@loonie linux] gmake CROSS_COMPILE=hppa-linux- vmlinux
-[...]
-make[1]: Leaving directory `/builds2/parisc-linux/linux/arch/parisc/lib'
-hppa-linux-ld -m hppaelf -e stext arch/parisc/kernel/head.o
-arch/parisc/kernel/init_task.o init/main.o init/version.o \
-        --start-group \
-        arch/parisc/kernel/kernel.o arch/parisc/mm/mm.o kernel/kernel.o
-mm/mm.o fs/fs.o ipc/ipc.o \
-        fs/filesystems.a \
-        net/network.a \
-        drivers/block/block.a drivers/char/char.a drivers/misc/misc.a
-drivers/net/net.a drivers/video/video.a \
-        /builds2/parisc-linux/linux/arch/parisc/lib/lib.a
-/builds2/parisc-linux/linux/lib/lib.a
-/builds2/parisc-linux/linux/arch/parisc/lib/lib.a \
-        --end-group \
-        -o vmlinux
-hppa-linux-ld: can not size stub section: Bad value
-hppa-linux-ld: warning: cannot find entry symbol stext; defaulting to
-00002000
-gmake: *** [vmlinux] Segmentation fault (core dumped)
-gmake: *** Deleting file `vmlinux'
-[shaver@loonie linux]
 
-I think Nat has a fix for that, but I'll have to find it and respin the
-cross-compiler before I can do anything more.
+>
+> Okay.  How does the boot loader work with loading the kernel?  I recall
+> Jason saying something about the boot loader knowing how to load binaries.
+>
 
-Mike
+  Currently, the bootloader assumes that the kernel is position independent
+  and either straight binary or SOM (packed with ld -N). By "straight" binary
+  I mean only the code and no headers, etc.
+  I think HockeyPUX is linked at a certain address and is not position
+  independent. I'm not sure why being inflexible like this is a win, but if
+  necessary we could do the same.
 
--- 
-167319.81 72598.35
+  Also, since the loader assumes a binary image, the ELF image we produce
+  will need to be massaged (same as x86 linux kernel, at least at one time).
+  This was done because its simple to just read one record after the other
+  into memory and execute.
+  Alternatively, more code could be added to "understand" ELF. I prefer to
+  keep the bootloader simple...it is just a bootloader after all.
+
+  The simple dummy kernel you saw in the bootstrap tests is just a position
+  independent binary loaded straight from the LIF and executed.
+
+  Jason.
