@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 14 Aug 2003 17:33:43 -0600
+Date: Thu, 14 Aug 2003 23:41:21 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
-To: jmd <jmd5@earthlink.net>
-Cc: parisc-linux@parisc-linux.org
-Message-ID: <20030814233343.GA27608@dsl2.external.hp.com>
-References: <1060876670.1603.14.camel@localhost.localdomain> <20030814165644.GA19868@dsl2.external.hp.com> <1060895797.1090.10.camel@localhost.localdomain>
+To: caslivkoff@speakeasy.net
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: xchat colors (Was Re:  [parisc-linux] xfree86 4.2.1-9 build problem)
+Message-ID: <20030815054121.GC2989@dsl2.external.hp.com>
+References: <W9958529574305441060899998@webmail4>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1060895797.1090.10.camel@localhost.localdomain>
-Subject: [parisc-linux] Re: second nic for proxy server
+In-Reply-To: <W9958529574305441060899998@webmail4>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,34 +20,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-[ replying to list...everyone learns something ]
-
-On Thu, Aug 14, 2003 at 02:16:37PM -0700, jmd wrote:
-> grant...
+On Thu, Aug 14, 2003 at 10:26:38PM +0000, caslivkoff@speakeasy.net wrote:
+> Just to be sure this is indeed a colormap issue, start an X session
+> using twm, then only launch xchat. If the colors are "OK",
+> then it's a pretty good bet that the default colormap is max-ed out.
 > 
-> something is amiss here. the small section of the PCI connector is
-> towards the front of the card. standard PCI cards the sector is in the
-> rear (opposite end of backplane). is this a mistake on hp's part? am i
-> crazy?? need glasses checked?
+> Also, I've attached is short Xlib program. This will report the
+> number of private color cells remaining in the default colormap.
 
-that's 3.3v vs 5v keying. HP(-UX) normally only sells "universal" cards
-that have both 3.3 and 5v keying.
+The attachement didn't make it through.
+I got the copy at another email address and put the hppa binary,
+source, and "README" in a tarball:
+	http://iou.parisc-linux.org/hppa/xcmap.tgz
 
-> so if this is a no go with PCI, can i put an ISA card in the EISA slot?
-> major problems if i do this? i have a 3com etherlink III.
+When running twm on c3k (1280x1024x8), xcmap reports:
+| Default visual is 256-color PseudoColor
+| 10 private color cells available
 
-I guess. I don't touch EISA.
+Things are worse with fvwm:
+| Default visual is 256-color PseudoColor
+| 0 private color cells available
 
-> this is a temporary server. if its complicated i will pass on it.
+It didn't matter which window mangler I used.
+Both failed to provide the text color.
 
-If the PCI card doesn't fit (wrong keying), then I'd pass on it.
-Just my $0.02.
+xchat2 wants 23 colors - but they don't need to be private though.
+Will add some more printks to xchat so I know what/how it's failing.
 
-> btw.... when i am done with this box (month or so) its available for a
-> developer if they wish to have it. cost of shipping only.
-
-cool - thanks!
-Can anyone make use of a C180?
-PA2.0, PCI/EISA/GSC IO, 4 IO slots.
+thanks again for xcmap....handy in this case.
 
 grant
