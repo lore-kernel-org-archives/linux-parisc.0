@@ -1,47 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx05.nexgo.de (mx05.nexgo.de [151.189.8.81])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC90F482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Aug 2001 03:18:18 -0600 (MDT)
-Message-ID: <3B8F7268.9090408@hrzpub.tu-darmstadt.de>
-Date: Fri, 31 Aug 2001 13:18:00 +0200
-From: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
-MIME-Version: 1.0
-To: Matthew Wilcox <willy@debian.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6F466482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Aug 2001 09:08:28 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15cpuF-00032x-00; Fri, 31 Aug 2001 16:08:27 +0100
+Date: Fri, 31 Aug 2001 16:08:27 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: =?iso-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Kernel failures
-References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de> <20010831064005.F30497@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Message-ID: <20010831160827.C5126@parcelfarce.linux.theplanet.co.uk>
+References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de>; from rscholz@hrzpub.tu-darmstadt.de on Fri, Aug 31, 2001 at 06:56:15AM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+On Fri, Aug 31, 2001 at 06:56:15AM +0200, Rüdiger Scholz wrote:
+> When I played a little bit  with the kernel, I found some failures.
+> My machine is a 715/100 with a second  Graphics-Card (Coral SGC). If the 
 
->>4. My HIL-Keyboard isn't detected anymore by the new 2.4.9-kernel. Using 
->>Kernel 2.4.7-pa1, after the initalisation of HIL, I get a bootmessage like
->> "HIL: keyboard found".  Booting the new Kernel gives me only the two 
->>lines of HIL initalisation, but nothing about my Keyboard. Which is a 
->>PS/2-Keyboard on a HIL-Adaptorbox. Both Kernel were configured via "make 
->>oldconfig".
->>
->
->I'm interested in debugging this one - I don't quite understand what's going on though.  You should see:
->
->Found HIL at 0x%x, IRQ %d
->
->then one of:
->
->HIL: timed out, assuming no keyboard present.
->HIL: no keyboard present.
->HIL: keyboard found at id %d
->
->which?
->
-Sorry!! I looked at the wrong File. I get the following messages:
-Snip------------
-        Found HIL at 0xf0201000, IRQ 126
-        HIL: keyboard found at id 0
-        HIL: keymap loaded.
-Snap-----------
+Could you change kernel/printk.c, line 36 from:
+#define DEFAULT_CONSOLE_LOGLEVEL 7 /* anything MORE serious than KERN_DEBUG */
+to:
+#define DEFAULT_CONSOLE_LOGLEVEL 9 /* anything MORE serious than KERN_DEBUG */
 
-But thanks for your quick answer!
+This should print out more debug messages and might help diagnose the problem.
 
-Rüdiger
+-- 
+Revolutions do not require corporate support.
