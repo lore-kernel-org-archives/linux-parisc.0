@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] k-2.6.8-rc2-pa0 failled to boot in multi-user on
-	N4k
-Date: Mon, 26 Jul 2004 21:15:09 -0600
-Message-ID: <20040727031509.GB22621@colo.lackof.org>
-References: <40FB87C4000034E9@ocpmta3.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: FW: Re: [parisc-linux] k-2.6.8-rc2-pa0 failled to boot in
+	multi-user
+Date: Wed, 28 Jul 2004 17:08:47 +0200
+Message-ID: <40FB9ACA000045A9@ocpmta1.freegates.net>
+References: <40FB87C400003EB8@ocpmta3.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: List Parisc <parisc-linux@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset="ISO-8859-1"
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40FB87C4000034E9@ocpmta3.freegates.net>
+In-Reply-To: <40FB87C400003EB8@ocpmta3.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,30 +20,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jul 26, 2004 at 06:42:45PM +0200, Joel Soete wrote:
-> Umm i can try tommorrow.
-> I just didn't do it till now because the only thing that is reproducible
-> is the panic during the init 2, otc it doesn't seems to always hpmc a the
-> same plae.
 
-Well you can rule out any scripts that are started during "init 1".
-Most likely, this is a bug related to networking.
+A small followup:
 
-> > > System Responder Address     = 0xfffffffffed25000
-> > > System Requestor Address     = 0x000000fffed24000
+> > And I test it obiously (I just move cron atd and inetd with a .SAV ex=
+tension;
+> > that should be enough?) but unfortunately it doesn't help (the system=
+
+> always
+> > do an hpmc at the same palce:( ).
+> > Even if I DECONFIGURE the second CPU?
 > >
-> > Requestor is likely a CPU. What is Responder? another CPU?
-> > console output will tell us and sorry if you already sent it.
+> > I haven't any more idea. (was it a pb already in 2.6.7>pa7 which I mi=
+ssed
+> > because I didn't realized enough test after that; or a new pb coming
+with
+> > 2.6.8? I laready tried to revert patches step by step from 2.6.7-pa15=
+
+> to
+> > pa8 against 2.6.8-rc2-pa1, but it didn't help yet :( )
 > >
-> It possible that I forget it (sorry), here there is:
+I revert 2.6.8-pa1 from 2.6.7-pa15 until 2.6.7-pa7 (the last know running=
 
-It is the second CPU.
-So IPI is either not working or the second CPU is trying to start.
-Can you try with ""maxcpus=1" and again with "nosmp"?
-(see http://www.ibiblio.org/mdw/HOWTO/BootPrompt-HOWTO-3.html#ss3.4
-for a description of those.)
+2.6.7)  on this N4k with the n4000_defconfig and that's working. I mean
+it is definitely not the upgrade 2.6.7 to 2.6.8 the cause of this pb, not=
 
-grant
+more the n4000_defconfig.
+So the weird stuff is in 'CONFIG_DISCONTIGMEM' patch even if the pb occur=
+es
+when this option is selected or not.
+
+It's perfectly runing on the b2k (64bit kernel) (I suppose also on the n4=
+k
+that Randolph test also but with more ram than I)
+but not on this n4k in particular?
+
+Randolph may be have you another idea, the last DISCONTIGMEM patch runnin=
+g
+on this system was the first that you called 'try2' then diepest changes
+occurs (the most difficult to understand for me are allways *.S :( ). 
+umm I don't think that it's possible to split it in smallest hunk?
+
+Joel
+
+
+
+-------------------------------------------------------------------------=
+--
+Tiscali ADSL LIGHT, 19,95 EUR/mois pendant 6 mois, c'est le moment de fai=
+re
+le pas!
+http://reg.tiscali.be/default.asp?lg=3Dfr
+
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
