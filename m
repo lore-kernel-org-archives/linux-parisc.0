@@ -1,32 +1,26 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA09493
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 10:59:30 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 100DE12BD
-	for <parisc-linux@thepuffingroup.com>; Tue, 30 Jan 2001 10:03:27 -0800 (PST)
-Message-Id: <200101301805.KAA27525@milano.cup.hp.com>
-To: "WITTERT,REYNDERT \(Non-HP-Netherlands,     ex1\)" <reyndert_wittert@non.hp.com>
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] question 
-In-reply-to: Your message of "Tue, 30 Jan 2001 11:05:58 PST."
-             <EBDA1CDB5860D31186FB009027541A92034964FC@vermeer.neth.hp.com>
-Date: Tue, 30 Jan 2001 10:05:32 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA16458
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 14:51:03 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 30 Jan 2001 21:54:50 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14Nije-0000UV-00
+	for parisc-linux@thepuffingroup.com; Tue, 30 Jan 2001 21:54:46 +0000
+Date: Tue, 30 Jan 2001 21:54:46 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20010130215446.F29642@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Updated to 2.4.1
 List-ID: <linux-parisc.vger.kernel.org>
 
-"WITTERT,REYNDERT (Non-HP-Netherlands,ex1)" wrote:
-> Is there some alternative for ioscan in linux?
 
-For linux, in HP, I think there is.
-Read the in-house linux news group archives or search
-for "ioscan linux" on HP's intranet.
+i've just merged 2.4.1 into our tree.  expect this to be a regular
+occurrence during the 2.4.x series.  No major changes to note, over
+Linus' changes.  I hear that ReiserFS doesn't work on big-endian
+systems, so nothing to get excited about.
 
-There is dicussion about how to "do it right" for parisc-linux.
-But don't expect anything in the next month or two to come out
-of those discussions.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Revolutions do not require corporate support.
