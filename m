@@ -1,20 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 951F1482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Oct 2001 04:03:29 -0600 (MDT)
-Received: from marmite.its.uct.ac.za ([137.158.26.155])
-	by mail.uct.ac.za with smtp (Exim 3.33 #4)
-	id 15x3rO-000BOl-00
-	for parisc-linux@lists.parisc-linux.org; Fri, 26 Oct 2001 12:05:06 +0200
-Date: Fri, 26 Oct 2001 12:02:21 +0200
-From: Michael Wood <mwood@its.uct.ac.za>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] very odd problem
-Message-ID: <20011026120221.A3151@marmite.its.uct.ac.za>
-References: <F128WXpA1DHstgNogS400011dde@hotmail.com> <20011025135548.C17203@dogbert.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011025135548.C17203@dogbert.localdomain>
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0790482B
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Oct 2001 09:59:03 -0600 (MDT)
+Received: from bame.riverrock.org (bame.riverrock.org [199.254.238.240])
+	by www.riverrock.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA31752
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Oct 2001 09:59:01 -0600
+Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m15x9Nt-000OzXC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Oct 2001 09:59:01 -0600 (MDT)
+Message-Id: <m15x9Nt-000OzXC@bame.riverrock.org>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] IMPORTANT CVS CHANGES 
+In-reply-to: Your message of "Wed, 24 Oct 2001 16:45:39 MDT."
+             <m15wWmJ-000OzWC@bame.riverrock.org>
+Date: Fri, 26 Oct 2001 09:59:01 -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,53 +28,84 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi
+Two more hours until the switch
 
-On Thu, Oct 25, 2001 at 01:55:48PM +0200, Albert Strasheim wrote:
-> Hello,
 > 
-> I had this same problem on i386 -- I think it's a dependancy
-> bug that gets exposed during installation (ppp depending on
-> libpcap, I think), which causes some setup scripts to fail
-> during installation.
+> It's time to move CVS from puffin.external.hp.com to cvs.parisc-linux.org
 > 
-> Look for a start-stop-daemon.REAL file and copy it over your
-> start-stop-daemon. I think that should solve the problem. Or
-> I'm utterly confused... which is probably more likely. :-)
-
-debootstrap moves start-stop-deamon to start-stop-daemon.REAL
-(see /usr/lib/debootstrap/scripts/woody)
-
-It's supposed to move it back again at the end, so maybe it
-failed somewhere along the way?
-
-> Regards,
+> WHEN: Friday, 26-October, noon local time (US-MDT aka GMT-6)
 > 
-> Albert
+> At noon puffin.external's CVS will go down and shortly thereafter
+> CVS will come up on cvs.parisc-linux.org along with an e-mail
+> announcement.  Send questions to the list, or if that's too embarassing
+> to me or taggart@fc.hp.com
 > 
-> On Thu, 25 Oct 2001, Kenneth Westelinck wrote:
+> 		WHAT YOU MUST DO
 > 
-> > Hi all,
-> > 
-> > 
-> > I've recently installed the test-release of woody on my 712/60. I've also 
-> > compiled a recent kernel available from the parisc-linux site. All works 
-> > well, except from a very strange problem. The start-stop-daemon call, which 
-> > is used throughout the init scripts, doesn't seem to work. So, executing the 
-> > 
-> > inetd script results in nothing, not even an error. Starting inetd on the 
-> > command line (/usr/sbin/inetd) works great. Is there a known bug in the 
-> > start-stop-daemon program? Can this be solved, or will I have to rewrite my 
-> > init scripts?
-> > 
-> > Many thanks in advance.
-> > 
-> > 
-> > regards,
-> > 
-> > Kenneth
-
-
-
--- 
-Michael Wood <mwood@its.uct.ac.za>
+> 1) You will not need to commit outstanding changes or do anything else
+>    unusual prior to the switchover.
+> 
+> 2) You're probably setting CVSROOT somewhere, perhaps in your
+>    .profile.  Change puffin.external.hp.com to cvs.parisc-linux.org and
+>    /home/cvs/parisc to /var/cvs
+> 
+> 3) Every file named CVS/Root will need the same changes as #2.
+>    Use the script 'move-cvs' to do this for you -- simply run it
+>    in your top-level CVS directories, or the one above that perhaps.
+>    'move-cvs' is attached to the end of this message and is available
+>    from CVS on puffin.external as build-tools/move-cvs.
+> 
+> 4) Wherever you used puffin.external in a CVS-related way, start using
+>    cvs.parisc-linux.org instead, for example you might have web bookmarks
+>    for browsing the CVS archive.
+> 
+> 5) Don't count on LXR being available any time soon...
+> 
+>    	-Paul Bame
+> 
+> 
+> ---------- move-cvs script starts next line
+> #!/bin/sh
+> 
+> find . -type d -name CVS -print |
+>     while read dir
+>     do
+> 	[ -s $dir/Root ] || continue
+> 	root=$(<$dir/Root)
+> 	case $root in
+> 	    :pserver:anonymous@puffin.external.hp.com:/home/cvs/parisc)
+> 	    	newroot=:pserver:anonymous@cvs.parisc-linux.org:/var/cvs;;
+> 	    :ext:*@puffin.external.hp.com:/home/cvs/parisc)
+> 		user=${root#:ext:}
+> 		user=${user%@puffin.external.hp.com:/home/cvs/parisc}
+> 		newroot=:ext:$user@cvs.parisc-linux.org:/var/cvs;;
+> 	    puffin.external.hp.com:/home/cvs/parisc)
+> 	        newroot=cvs.parisc-linux.org:/var/cvs;;
+> 	    /home/parisc/cvs)
+> 	    	newroot=cvs.parisc-linux.org:/var/cvs;;
+> 	    :pserver:anonymous@pehc:/home/cvs/parisc)
+> 	    	newroot=:pserver:anonymous@cvs.parisc-linux.org:/var/cvs;;
+> 	    :ext:*@pehc:/home/cvs/parisc)
+> 	        newroot=cvs.parisc-linux.org:/var/cvs
+> 		user=${root#:ext:}
+> 		user=${user%@pehc:/home/cvs/parisc}
+> 		newroot=:ext:$user@cvs.parisc-linux.org:/var/cvs;;
+> 	    pehc:/home/cvs/parisc)
+> 	        newroot=cvs.parisc-linux.org:/var/cvs;;
+> 	    /home/parisc/cvs)
+> 	    	newroot=cvs.parisc-linux.org:/var/cvs;;
+> 	    *) echo -e "\nCannot fix $dir/Root ($root)" >&2
+> 	    	continue;;
+> 	esac
+> 
+> 	cp $dir/Root $dir/Root.pehc
+> 	echo $newroot > $dir/Root
+> 	echo -e ".\c"
+>     done
+> echo
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
