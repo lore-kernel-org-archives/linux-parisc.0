@@ -1,110 +1,114 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA14670
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 16:50:54 -0600
-Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by cosrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id QAA02518
-	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 16:51:51 -0600 (MDT)
-Message-Id: <199910212251.PAA29954@milano.cup.hp.com>
-To: Paul Bame <bame@debian.fc.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Boot messages from C3000 console 
-In-reply-to: Your message of "Thu, 21 Oct 1999 14:57:20 PDT."
-             <199910212057.OAA19923@debian.fc.hp.com>
-Date: Thu, 21 Oct 1999 15:51:58 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA15325
+	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 18:54:49 -0600
+Received: from udlkern.fc.hp.com (root@udlkern.fc.hp.com [15.1.52.48])
+	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id SAA16253
+	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 18:55:39 -0600 (MDT)
+Received: from debian.fc.hp.com (root@debian.fc.hp.com [15.1.48.119]) by udlkern.fc.hp.com with ESMTP (8.8.6 (PHNE_14041)/8.7.1) id SAA25732 for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 18:55:39 -0600 (MDT)
+Received: from debian.fc.hp.com (bame@localhost [127.0.0.1])
+	by debian.fc.hp.com (8.9.3/8.9.3/Debian/GNU) with ESMTP id SAA20611
+	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 18:55:38 -0600
+Message-Id: <199910220055.SAA20611@debian.fc.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 21 Oct 1999 18:55:38 -0500
+From: Paul Bame <bame@debian.fc.hp.com>
+Subject: [parisc-linux] boot loader
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame wrote:
-> The short answer is once control is apparently transferred to the
-> kernel, the system dies hard.  Someone who can read PIM dumps
-> might deduce more from this log.
 
-I can't find a PIM decoder for the C3000....I'll try the J5000
-decoder later. Here's a few more notes by hand.
-I saw Stan Sieler's reply and can fill in a few more gaps.
+Here's a sketch of a new (really, mostly stolen from other places
+like the existing boot_code code) boot loader for parisc.  It's
+aimed at solving some of our current problems (like linking ramdisks
+into the kernel) and being good enough to live on for a while,
+and be easily replaced if it starts to smell bad.
 
-> HPMC Chassis Codes = 2cbf0  2500b  2cbf5  2cbfc
+In order to use HP boot firmware, our disk layout has to look
+at least somewhat like a LIF volume (as it does today), so it
+makes sense to use LIF for a few other things too.  LIF is a
+very simple file system layout -- almost as simple as the one
+we were going to use for ramdisks.
 
-The bus time-out suggests the processor tried to access
-0xfffff80810 and no device lives there.  The processor saw
-an error condition (bus timeout) and brought the system down.
+My proposal is to have a LIF volume on the beginning of any disk
+from which one might boot.  Make that LIF volume at least 2Mb, and
+maybe 10Mb if you want to store several kernels and ramdisk images.
+Here are the files it would hold:
 
-...
-> IIA Space                    = 0x0000000000000000
-> IIA Offset                   = 0x0000000000010188
-> Check Type                   = 0x20000000
-> CPU State                    = 0x9e000004
-> Cache Check                  = 0x00000000
-> TLB Check                    = 0x00000000
-> Bus Check                    = 0x0030103b
-> Assists Check                = 0x00000000
-> Assist State                 = 0x00000000
-> Path Info                    = 0x00000000
-> System Responder Address     = 0x000000fffff80810
-> System Requestor Address     = 0x000000fffffa0000
+	IPL		Pretty much the boot loader we're using today
+			with some LIF intelligence added
+	vmlinuz		The kernel image, put there with the 'lifcp'
+			command.  Could have several kernels
+			on the LIF volume and boot any of them.
+	cmdline		The default, or the last?, command line used
+			to boot Linux.  Could possibly have several
+			different command lines in one or several files
+			but the UI for this needs thought.
+	ramdisk		One or more files containing ramdisk images
+	ptable		Partition table -- see below
 
-Responder is the address which was supposed to respond.
-Requestor is the address of the device which started the transaction.
-I would guess 0xff_fffa0000 is the processor.
+During boot, the IPL is same as today.  It presents a
+command line just like today, from the 'cmdline' file if one is
+available.  On the command line you can select which kernel to
+boot if you have more than one and enter the normal Linux
+command-line parameters.  There'll be some little extension to handle
+specifying which ramdisk image you want, which is stripped off
+by the IPL and not passed to the kernel in that form.  The HP
+firmware would continue to be used, as it is today, to select whether
+you want to interact with the boot loader command line or not.
 
-What's at 0xff_fff80000?
-And which driver uses offset 0x810?
-(card-mode Dino does....but am pretty sure the kernel didn't get that far.)
+When the command line is committed, the ramdisk and kernel are loaded
+just like they are today (using the same code probably) the kernel
+is told how to find the ramdisk image (need to learn how this is done).
 
+Non-bootable disks can skip the LIF volume header altogether, though
+they might want it just in case they want to be bootable in the future.
 
-This is the interesting part:
+			Partition Table
 
-> 'B1000/C3000/J5000/J7000 Unarchitected (per-CPU)', revision 1, 140 bytes:
-> 
-> Check Summary                = 0xcb81041008000000
-> Available Memory             = 0x0000000030000000
-> CPU Diagnose Register 2      = 0x0200000000000204
-> CPU Status Register 0        = 0x2420c20000000000
-> CPU Status Register 1        = 0x8002000000000000
-> SADD LOG                     = 0x0000000000000000
-> Read Short LOG               = 0xc1af00fffff80810
-	This is another copy of the offending address.
+I suggest we place the partition table at a fixed low address on
+the disk such that it can appear as a file in the LIF file system
+on disks which have them, and be in the same location on non-LIF
+disks just there wouldn't be any LIF sugar around it.  This way
+the table's always in the same place which is easy for the tools
+which use it, and it's a LIF file too which might be convenient.
+Alex suggests we re-use maybe the sparc partition table format?
 
-> ERROR_STATUS                 = 0x0000000000100010
-	Broad Error on the Runway Bus
-	
-> MEM_ADDR                     = 0x000001ff3fffffff
-> MEM_SYND                     = 0x0000000000000000
-> MEM_ADDR_CORR                = 0x000001ff3fffffff
-> MEM_SYND_CORR                = 0x0000000000000000
-	No memory problems.
+			Development Cycle
 
-> RUN_DATA_HIGH                = 0xc1bff0fffed08040
-> RUN_DATA_LOW                 = 0xc1bff0fffed08040
-	Last data on runway before the error.
-	0xFF_FEDO_8000 is runway bus interface register space.
+After building a new kernel, you'd have to
+'lifcp <the-kernel-image> /dev/sda:vmlinuz' instead of
+doing 'mkImage' like we do today.  It's also cool that the ramdisk
+isn't linked into the kernel.
 
-> RUN_CTRL                     = 0x0000021c00001418
-> RUN_ADDR                     = 0xc1bff0fffed08040
-	Last ctrl/addr on the runway bus before the error.
+		    If you already have HP-UX
 
-> System Responder Path        = 0x00ffffffffffffff
-	NULL path - default value. Not PCI related.
-...
+The existing HP-UX LIF volume header has less than 300k of free
+space, so it wouldn't be large enough to hold vmlinuz, therefore
+you can't boot from an existing HP-UX volume.  Which means if
+you want to keep your HP-UX disk intact, you'll have to add another
+disk for Linux, and I think the firmware can handle booting from
+one of several disks just fine.
 
+			    Tools
 
-On K/T-class system, the I/O error log was invaluable.
-Not sure how useful it is on this set of boxes.
-I'm sure we'll see.
+lifinit and lifcp should already be able to handle the LIF stuff, so
+no new C code required to build the LIF volumes.  We can probably
+talk HP into open sourcing the LIF commands, and if not can grab
+the ones from OpenBSD.  For now we can use the ones on HP-UX.
+[I suspect the HP ones are not byte-order safe (yet).]
 
-> 'B1000/C3000/J5000/J7000 IO Error Log', revision 0, 228 bytes:
-> 
->  Rope     Word1        Word2            Word3
-> - ------ ------------ ------------
->    0    0x00000000   0x0e0cc009   0x00000000fed30048
->    1    0x00000000   0x1e0cc009   0x00000000fed32048
->    2    ----------   0x2e0cc009   ------------------
->    3    ----------   0x3e0cc009   ------------------
->    4    0x00000000   0x4e0cc009   0x00000000fed38048
->    5    ----------   0x5e0cc009   ------------------
->    6    0x00000000   0x6e0cc009   0x00000000fed3c048
->    7    ----------   0x7e0cc009   ------------------
+			    Future
 
-Grant Grundler
-Unix Developement Lab
-+1.408.447.7253
+It's relatively easy to replace IPL (and vmlinuz for that matter)
+in the scheme above with wonderful new stuff when we figure out
+what that is.  The firmware and existing disk headers wouldn't
+have to change to accomodate a new boot loader.
+
+			    The Name
+
+BTW the current contender for the name, instead of hilo, is palo
+for PArisc LOader.  It is also a reminder of of Palo Alto
+which is where HP began.
+
+Comments?
+
+			    -Paul Bame
