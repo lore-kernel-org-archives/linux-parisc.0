@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39D01487E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 15:45:31 -0700 (MST)
-Message-ID: <3C6D8F88.D77A6622@gmx.at>
-Date: Fri, 15 Feb 2002 23:45:28 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
+Received: from moutvdom00.kundenserver.de (moutvdom00.kundenserver.de [195.20.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AF32A4881
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 16:34:14 -0700 (MST)
+Received: from [172.19.20.61] (helo=mrvdomng0.kundenserver.de)
+	by moutvdom00.kundenserver.de with esmtp (Exim 2.12 #2)
+	id 16brri-000396-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 16 Feb 2002 00:34:06 +0100
+Received: from [80.136.166.44] (helo=epsilon)
+	by mrvdomng0.kundenserver.de with smtp (Exim 3.22 #2)
+	id 16brrh-0004uN-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 16 Feb 2002 00:34:05 +0100
+Message-ID: <000b01c1b679$53e96fb0$0801a8c0@epsilon>
+From: "Tilo Jandt" <tilo@jandt-online.net>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <002101c1b5ee$b5f8a620$02c1a8c0@james.co.uk> <20020214231312.37ca1c9e.csuder@cisco.com> <200202150826.29543.deller@gmx.de> <3C6D8F88.D77A6622@gmx.at>
+Subject: [parisc-linux] MySQL Server
+Date: Sat, 16 Feb 2002 00:34:32 +0100
 MIME-Version: 1.0
-To: Helge Deller <deller@gmx.de>
-Cc: Christian Suder <csuder@cisco.com>,
-	James S <smith-james@home.com>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Power LED
-References: <002101c1b5ee$b5f8a620$02c1a8c0@james.co.uk> <20020214231312.37ca1c9e.csuder@cisco.com> <200202150826.29543.deller@gmx.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,48 +30,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On the Apollo machine (720/50, 730, etc) the Power-Switch is NOT 
-under software control. The switch is simple a "shortcut to ground"
-and is a direct input line of the power supply unit (I know this,
-because I have troubles with my power supply and studied the electrical
-wirering, etc.).
+Hi,
 
-On E55 I also think, that the switch is controlling the power supply
-also, as I can switch off at any moment in Linux and HP-UX.
+I've got a problem whe installing the MySQL-server.
+Last time when I updated my system with apt-get the MySQL Server should also
+be updated but after downloading the File, extracting and preconfigurating
+the update proces stopped after "Stopping Mysql-server".
+I waited 2 hours but nothing happend. The MySQL couldn't be started and if I
+remove the new mysql-server and install the old one with dpkg the same
+procedure happens.
+Every time after the preconfiguration the install hangs.
 
-In the 712, the switch is definitly under software control, as the
-software can simple ignore it ... and much more...
+I don't know what to do. I cleaned up my system and wan't to new install
+MySQL, but everytime the same procedure. Does anyone solved this problem or
+does anyone have any idea?
 
-Bye
-Christoph P.
-
-
-Helge Deller wrote:
-> 
-> On Friday 15 February 2002 08:13, Christian Suder wrote:
-> > On Fri, 15 Feb 2002 02:02:19 -0500
-> > "James S" <smith-james@home.com> wrote:
-> > > is it possible to hook the power button to the shutdown command like it
-> > > is in hp-ux ?
-> >
-> > The LED and the powerswitch work as expected on my 712/80 at least since
-> > the 0.9.3 ISO timeframe.
-> 
-> It depends.
-> I know the power button works correctly on my c3000 and 715/64. Both
-> systems shuts down the computer cleanly.
-> But on another Apollo/50 machine (712/50 or 715/50 - I don't remember)
-> pressing the power-button turns off the machine immediately. This is a bug
-> and should be fixed if possible.
-> 
-> Helge
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Thanx,
+Tilo
