@@ -1,95 +1,75 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] Re: New HIL drivers
-Date: Sun, 13 Feb 2005 01:07:41 +0100
-Message-ID: <200502130107.42267.deller@gmx.de>
-References: <200502062245.42392.dtor_core@ameritech.net>
-	<20050212191453.GA8952@ucw.cz>
+From: SteX <stefano.melchior@fastwebnet.it>
+Subject: [mc - Midnight Commander] new release for hppa
+Date: Sun, 13 Feb 2005 23:24:35 +0100
+Message-ID: <20050213222435.GC8205__44756.3847563744$1416624533$gmane$org@SteX>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: linux-input@atrey.karlin.mff.cuni.cz,
- Dmitry Torokhov <dtor_core@ameritech.net>,
- parisc-linux@parisc-linux.org
-To: Vojtech Pavlik <vojtech@suse.cz>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050212191453.GA8952@ucw.cz>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: multipart/signed;
+  micalg=pgp-sha1;
+  protocol="application/pgp-signature";
+  boundary="TiqCXmo5T1hvSQQg"
+Cc: parisc-linux@parisc-linux.org
+To: debian-hppa@lists.debian.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <Zvw0D.A.jCH.WP9DCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-- dropped from CC: "Brian S. Julin" <bri@calyx.com> (he is not very active on the HIL drivers any longer)
-- added to CC: parisc-linux@parisc-linux.org (main parisc development mailing list)
 
-Hi Vojtech,
-Hi Dmitry,
+--TiqCXmo5T1hvSQQg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-First of all thanks a lot that you added the parisc HIL drivers to the linux-input tree.
-Since the main development of the parisc tree happens in CVS at http://cvs.parisc-linux.org/linux-2.6 and since we usually stay in sync with Linus' latest bk tree, not all of the changes of the current linux-input tree are available for us as long as you didn't pushed your changes to him yet.
-Additionally, the HIL sources you added are from november last year. Some of the problems have been fixed in the parisc cvs tree in the meantime.
+Hi all,
+I just finished the new pre-release (4.6.0-4.6.1-pre3) mc package for
+Debian HPPA. I would like someone to take a look and eventually to give
+some suggestion for its improvement.
+You can apt-get both source and binary adding the following line in
+/etc/apt/sources.list:
 
-On Saturday 12 February 2005 20:14, Vojtech Pavlik wrote:
-> On Sun, Feb 06, 2005 at 10:45:42PM -0500, Dmitry Torokhov wrote:
-> > I noticed that several new drivers for HP-PA have been added to the input
-> > tree. I looked them over and have some concerns:
-> > 
-> > - hil_kbd and hil_ptr will not compile because now connect() methods
-> >   return error codes, not void. Also, drivers should define ID table,
-> >   and MODULE_DEVICE_TABLE, otherwise serio core will not consider them.
+deb http://www.openlabs.it/~stex/debian ./
+deb-src http://www.openlabs.it/~stex/debian ./
 
-Yes, but only in your tree, not in Linus' yet. As soon as you push your tree up, I'll fix the issues and send you the diffs.
+It has also been available for i386 and powerpc.
+I would also like to submit a doubt: I used an HP9000/785 (C3k)
+workstation for my work. How can I be sure that I compiled it as 32-bit
+system binary of 64-bit system binary? If I remember well this C3k is a
+64bit workstation, isn't it?
 
-> > - there is no more serio->private, please use serio_get/set_drvdata.
+Thank you in advance for your precious help.
 
-Will do.
+Regards
 
-> > - using del_timer in drivers' exit routines is not safe (del_timer_sync
-> >   should be used).
+SteX
 
-Will do.
+--=20
+GPG key =3D D52DF829   --   Stex   --  <stefano.melchior@openlabs.it>
+Keyserver: http://keyserver.kjsl.com - http://www.openlabs.it/~stex
+Registered user #324592 on the Linux Counter, http://counter.li.org
 
-> > - as far as I can see there is no need to do tasklet_disable before calling
-> >   tasklet_kill.
+--TiqCXmo5T1hvSQQg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Ok.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-> > - having "return" after BUG() is pointless.
-> > 
-> > - what exactly the following fragment supposed to do?
-> >
-> > > static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait)
-> > > {
-> > >         unsigned long l;
-> > > 
-> > >         l = 0;
-> > >         if (l != 0)
-> > >                 return POLLIN | POLLRDNORM;
-> > >         return 0;
-> > > }
+iQCVAwUBQg/To4lnkxrVLfgpAQK7KwQAtWee2B+v16y74vsxMKtqVsU85QUGqTk7
+5boHC2BKyhVhqr8s4+C30L/QkPHRdLwOK5I1ImdMGwyrUxlA+0Fy+Yxvzw13ANlo
+bd0mKUWKEOaZgIb2AroduW44Aa1UAY1EpzHvRtqu1LHtDJ+Ygz4fcbxQuM5g5Ugx
+M7a/vZmrX94=
+=Iw1Q
+-----END PGP SIGNATURE-----
 
-nothing :-)
-Please just drop the hp_sdc_rtc.c driver for now - it's not working anyway.
-We'll keep it in our parisc tree until it does something useful.
+--TiqCXmo5T1hvSQQg--
 
-> > - formatting - according to CodingStyle functions' opening braces should
-> >   be on the next line.
 
-Will fix.
-
-> I'm CC:ing Helge, who might know more, and tell us, when the issues will
-> be fixed.
-
-As soon as you push upstream, I'll fix the issues in our tree and send you the diffs. Would this be OK for you ?
-
-Regards,
-Helge
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
