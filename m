@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12503.mail.yahoo.com (web12503.mail.yahoo.com [216.136.173.195])
-	by dsl2.external.hp.com (Postfix) with SMTP id 558BB4837
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 May 2003 21:44:34 -0600 (MDT)
-Message-ID: <20030503034433.96180.qmail@web12503.mail.yahoo.com>
-Date: Fri, 2 May 2003 20:44:33 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] (OT-ish): c180 drive rails? 
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200305030325.h433Pjd12573@egsner.cirr.com>
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41A1B482C
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 May 2003 14:35:32 -0600 (MDT)
+Message-ID: <3EB42B20.1010504@tiscali.be>
+Date: Sat, 03 May 2003 20:48:32 +0000
+From: Joel Soete <joel.soete@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-540082675-1051933473=:96153"
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Joel Soete <jsoe0708@tiscali.be>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Program counter from sigcontext, constructurs
+ and -fPIC
+References: <20030430003106.GC12492@systemhalted> <3EA9466400001A95@ocpmta7.freegates.net> <20030430181216.GA20779@systemhalted>
+In-Reply-To: <20030430181216.GA20779@systemhalted>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,41 +25,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---0-540082675-1051933473=:96153
-Content-Type: text/plain; charset=us-ascii
+Carlos O'Donell wrote:
 
-They are out on Ebay all the time, but none up right now that I can find. derek
+>>>Don't touch -17, the _Unwind_Find_FDE code broke and it's doing damage
+>>>to things like 'vi' ... *sigh* I haven't even looked into this (looks
+>>>like gcc/glibc clashes again).
+>>>
+>>>      
+>>>
+>>Umm could this be why that my b2k crashed when compiling a kernel to test
+>>a patch?
+>>    
+>>
+>
+>Quite possibly. If you can get a backtrace of the crash you'll se it die
+>inside _Unwind_Find_FDE in glibc.
+>
+I couldn't anymore check because unfortunately even after comming back 
+to libc6 sub debian release -16 my b2k crashes severall times. The last 
+time was badly in the middle of a apt-get dist-upgrade; this crash 
+corrupt the root fs so that it isn't any more usable. I will try to 
+recover it asap to check.
 
-Eric Schnoebelen <eric@cirr.com> wrote:
-Chris Jantzen writes:
-- Slightly off-topic: I came across a perfect match for the 4GB HVD
-- Seagate already in my C180, but don't have any rails. Wondered if
-- anybody here knew a good place, or had some lying around.
+That said, I suspect more another hw pb (it is not the first time with 
+this b2k model on which hp had already have to replace the cpu) or a bug 
+into cd-ide driver (this is the only model I had the chance to test with 
+this kind of feature).
 
-They are still available from HP, if you can find a
-co-operative SE or FE to order them for you.. (They were listed
-in partsdirect.hp.com at one point, but when I ordered them,
-they went on backorder, and I had to call to find out why.. :-()
-
---
-Eric Schnoebelen eric@cirr.com http://www.cirr.com
-Life is hard but the root password helps.
-- seen on the misc@ OpenBSD mailing list
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
----------------------------------
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
---0-540082675-1051933473=:96153
-Content-Type: text/html; charset=us-ascii
-
-<DIV>They are out on Ebay all the time, but none up right now that I can find.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>derek<BR><BR><B><I>Eric Schnoebelen &lt;eric@cirr.com&gt;</I></B> wrote:</DIV>
-<BLOCKQUOTE style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid"><BR>Chris Jantzen writes:<BR>- Slightly off-topic: I came across a perfect match for the 4GB HVD<BR>- Seagate already in my C180, but don't have any rails. Wondered if<BR>- anybody here knew a good place, or had some lying around.<BR><BR>They are still available from HP, if you can find a<BR>co-operative SE or FE to order them for you.. (They were listed<BR>in partsdirect.hp.com at one point, but when I ordered them,<BR>they went on backorder, and I had to call to find out why.. :-()<BR><BR>--<BR>Eric Schnoebelen eric@cirr.com http://www.cirr.com<BR>Life is hard but the root password helps.<BR>- seen on the misc@ OpenBSD mailing list<BR>_______________________________________________<BR>parisc-linux mailing list<BR>parisc-linux@lists.parisc-linux.org<BR>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux</BLOCKQUOTE><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/search/mailsig/*http://search.yahoo.com">The New Yahoo! Search</a> - Faster. Easier. Bingo.
---0-540082675-1051933473=:96153--
+> 
+>I'm working on fixing this.
+>
+>  
+>
+Thanks for your attention,
+    Joel
