@@ -1,31 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 148F1482A
-	for <parisc-linux@parisc-linux.org>; Tue, 27 Mar 2001 22:24:35 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA00430;
-	Wed, 28 Mar 2001 15:24:23 +1000
-Date: Wed, 28 Mar 2001 15:24:23 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Type sizes
-In-Reply-To: <20010328060000.F7738@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.21.0103281520130.21990-100000@front.linuxcare.com.au>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 97B0F482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Mar 2001 01:42:16 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA32401
+	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Mar 2001 01:36:41 -0700
+Sender: markus@lufmech.rwth-aachen.de
+Message-ID: <3AC1A3C9.F94899D6@lufmech.rwth-aachen.de>
+Date: Wed, 28 Mar 2001 10:41:45 +0200
+From: Markus Werle <markus@lufmech.rwth-aachen.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Jane Vinet <jvinet@linuxcare.com>,
+	parisc-linux@thepuffingroup.com
+References: <3A75766A.CF9A3C23@lufmech.rwth-aachen.de> <3A757FB9.6DCD3A91@linuxcare.com> <3A757F68.1833548@lufmech.rwth-aachen.de>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] a new (and free) C++ compiler for hppa!
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 28 Mar 2001, Matthew Wilcox wrote:
+Of course I am talking about gcc-3.0, but I am not sure if
+it will come on that platform. My experience with
+gcc on hpux is: better buld it with gcc as a starting point
+(hen and egg problem) This is why I really want an access to
+the cvs server of the puffin group, in the hope that puffin-gcc
+bootstraps on a vanilla system.
 
-> on a 32-bit kernel, sizeof(long) == sizeof(int), so why can't we just use
-> the first set of typedefs?
+Back to the nitty gritty:
 
-It avoids lots and lots of gcc warning messages compiling the kernel.  gcc
-makes the fine distinction that long != int, even if they are the same
-physical size.  size_t on pa32 is unsigned int but on pa64 is
-unsigned long, and gcc knows about this for its builtin string functions.
+I reported a failure of anonymous cvs access on this ML
+some weeks ago (Mon, 29 Jan 2001).
+It is still impossible for me to log in.
 
-Alan
--- 
-Linuxcare
+It may be that I am too stupid to do it right, but then please help me:
+I did the cvs login as described, but anonymous login failed for some
+unknown reason.
+
+any idea?
+
+> cvs --version
+
+Concurrent Versions System (CVS) 1.11 (client/server)
+
+> cvs -d :pserver:anonymous@puffin.external.hp.com:/home/cvs/parisccv login
+anonymous
+(Logging in to anonymous@puffin.external.hp.com)
+CVS password:
+cvs login: authorization failed: server puffin.external.hp.com rejected
+access to /home/cvs/parisccv for user anonymous
+
+
+Markus
