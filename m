@@ -1,49 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA19377
-	for <parisc-linux@puffin.external.hp.com>; Sat, 12 Aug 2000 16:07:52 -0600
-Message-Id: <200008121607.MAA08061@hiauly1.hia.nrc.ca>
-Subject: Re: Millicode calls, GP register, ld -r
-To: dhd@linuxcare.com (David Huggins-Daines)
-Date: Sat, 12 Aug 2000 12:07:56 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA19681
+	for <parisc-linux@puffin.external.hp.com>; Sat, 12 Aug 2000 16:29:29 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 12 Aug 2000 16:29:46 -0000
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: alan@linuxcare.com.au, parisc-linux@thepuffingroup.com,
         parisc@lists.linuxcare.com
-In-Reply-To: <87punemrk8.fsf@linuxcare.com> from "David Huggins-Daines" at Aug 12, 2000 11:23:35 am
+Subject: Re: Millicode calls, GP register, ld -r
+References: <200008121607.MAA08061@hiauly1.hia.nrc.ca>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 12 Aug 2000 12:29:31 -0400
+In-Reply-To: "John David Anglin"'s message of "Sat, 12 Aug 2000 12:07:56 -0400 (EDT)"
+Message-ID: <87itt6moic.fsf@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Alan Modra <alan@linuxcare.com.au> writes:
-> 
-> > I'll install a slightly modified version of your patch.  The other PLABEL
-> > relocs should be handled as for PLABEL32, not that it matters for gcc
-> > output as I've never caught gcc generating code that used PLABEL14R and
-> > PLABEL21L.  A pity, because current gcc PIC code for handling function
-> > pointers is rather inefficient.  Typically, you get something like:
-> > 
-> > .LC1:
-> >         .word P'bar
-> > .
-> > .
-> >         addil LT'.LC1,%r19
-> >         ldw RT'.LC1(%r1),%r22
-> >         ldw 0(%r22),%r22
-> > 
-> > which could all be replaced with
-> > 
-> > 	ldil LP'bar,%r22
-> > 	ldo RP'bar(%r22),%r22
-> > 
-> > saving on code size, memory accesses, and relocs.
-> 
-> Interesting.  It would be trivial to hack that into GCC, I just wonder
-> if there's some good reason it hasn't been done before.
+"John David Anglin" <dave@hiauly1.hia.nrc.ca> writes:
 
-The HP linker `-O' option eliminates unnecessary ADDIL instructions and
-dead procedures.  Probably, it wasn't deemed necessary.  However, not
-many remember to include -Wl,-O in their link flags.
+> The HP linker `-O' option eliminates unnecessary ADDIL instructions
 
-Dave
+Yes, currently our code generation is absolute crap, because we are
+using ADDIL+LDO sequences for absolutely every DP or DLT
+relative/indirect access.
+
+Other BFD and GCC targets have optimizations to use 'short' data, bss,
+got, and sometimes plt sections when possible.  Long term I would
+really like to implement this for hppa-linux.
+
+I'm not at all sure how this is done though - can anyone point me to
+some code or documentation that explains it?
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
