@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 163.com (unknown [211.147.255.241])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3C49048DC
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Aug 2003 19:59:42 -0600 (MDT)
-From: akf4@163.com
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Reply-To: gd333@163.com
-Date: Tue, 26 Aug 2003 10:02:20 +0800
-Message-Id: <20030826015942.3C49048DC@dsl2.external.hp.com>
-Subject: [parisc-linux] =?GB2312?B?zqrE+r2oo6jW0NOizsSjqcbz0rXN+NW+?=
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8273048A7
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 00:45:12 -0600 (MDT)
+Date: Tue, 26 Aug 2003 08:45:00 +0200
+Message-ID: <3F2A5B0400005B6F@ocpmta1.freegates.net>
+In-Reply-To: <20030825195042.GA1468@dsl2.external.hp.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] CD Not Mounted
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+	mmogenius@v8fiesta.co.uk
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,191 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-为您建（中英文）企业网站
-------------------------
-▲根据您的要求个性化设计，绝不套用模版。
-▲ 网站无限扩展架构，适应您企业无限发展的要求。
-▲ 具有后台管理功能，网站建成后，交由您自己更新管理。
------------------------------
-◆本公司为您所建的网站具有以下功能：
+> 
+>> 
+>> On Mon, Aug 25, 2003 at 08:38:34PM +0100, mmogenius@v8fiesta.co.uk wrote:
+>> I have a hp visualise b2000 and i am using debian 3.0 (woody)
+>
+>ok. This sounds like a known problem with the Debian 3.0r0
+>install CDs. Did a Debian 3.0r1 installer ever get made?
+>
+You have right, the pb is well known and afaik not yet resolved: it seems
+that pdc console and ide cdrom are not compatible (so have to install via
+net-install or an external scsi drive if you have an additional scsi card.
+then build your own kernel to access ide-cdrom). The system boot but early
+hang on cd initialisation (the green led lighted continiously)
 
- 1.产品展示-网上展示您的产品，图文并茂，多级分类，后台管理。
- 2.网上商店-客户可直接在网上选购您的产品，就像在商店里一样。
- 3.产品搜索-客户可通过产品名称、类别、关键词等查找您的产品。
- 4.客户管理-对不同客户或会员，可进行分级、分权限、分类管理。
- 5.产品定购-客户可直接在网上下订单，定购您的产品。
- 6.客户留言-客户可直接在网上给您留言，向您反馈意见。
- 7.新闻发布-您可在网上直接发布公司的新闻、通知、促销信息等。
- 8.会员社区-可作为外部交流论坛，也可作为公司内部员工沟通平台。
- 9.网上调查-可以设定任何问题，向客户或会员了解您想了解的事情。
-10.邮件列表-可以收集客户电子邮箱等资料，定期向客户发送信息。
-11.网上贺卡-重要节日，向客户发送精美贺卡，增强与客户的感情。
-12.企业邮局-与您网站同域名的企业邮局，提高您企业的对外形象。
-13.后台管理-所有以上功能，可由您自己控制管理，不需专业人员。
+Excepted this detail, the b2k is a very interesting model with cpu PA8600
+400Mhz :) and run kernel as well 32bits as 64bits :)) 
 
-◆您也可以从下面5种类型中，挑选一种适合您公司的网站?
------------------------------
-▲(一) 经济型企业网站(中英文)：
+hth,
+    Joel
 
- 1．1个国际域名；
- 2．100兆主机空间；
- 3．网站整体设计；
- 4．1个中英文网站欢迎页；
- 5．1个中文网站首页；
- 6．1个英文网站首页；                    
- 7．5个中文网站分页；
- 8．5个英文网站分页；
- 9．中文网站翻译成英文网站；
-10．Gif按钮、悬停按钮；
-11．Logo设计制作（Gif）
-12．Banner设计制作（Gif）
-13．网站自动日期更新2套(中英文)；
-14．欢迎页访问者计数器1套；
-15．用电子邮箱接收客户留言;
-16．免费维护网站1年；
-17．平均每月更新网站2页次。
---------------------------
-▲(二) 标准型企业网站(中英文)：
 
- 1．1个国际域名；
- 2．120兆主机空间；
- 3．1个企业同域名邮箱；
- 4．网站整体设计；
- 5．1个中英文网站欢迎页；
- 6．1个中文网站首页；
- 7．1个英文网站首页；                   
- 8．10个中文网站分页；       
- 9．10个英文网站分页；
-10．Gif按钮、悬停按钮；
-11．Flash动画1幅；
-12．Logo设计制作（Gif）
-13．Banner设计制作（动态）
-14．鼠标特效1处
-15．中文网站翻译成英文网站；
-16．网站自动日期更新2套(中英文)；
-17．欢迎页访问者计数器1套；
-18．用电子邮箱接收客户留言；
-19．特效图片中英文共2幅；
-20．滚动字幕公告中英文共2幅；
-21．免费维护网站1年；
-22．平均每月更新网站4页次；
----------------------------
-▲(三) 商务型企业网站(中英文)：
-
- 1．1个国际域名；
- 2．150兆主机空间；
- 3．5个企业同域名邮箱；
- 4．中文英文网站整体设计；
- 5．1个中英文网站欢迎页；
- 6．1个中文网站首页；
- 7．20个中文网站分页；
- 8．中文网站翻译成英文网站；
- 9．1个英文网站首页；
-10．20个英文网站分页；
-11．Gif按钮、悬停按钮、动态按钮；
-12．Flash动画2幅；
-13．视频动画1幅；
-14．鼠标特效1处
-15．Logo设计制作（Gif）
-16．Banner设计制作（动态）
-17．动态广告横幅1幅；
-18．网站自动日期更新2套(中英文)；
-19．首页访问者计数器；
-20．用数据库接收客户订单；
-21．特效图片中英文共4幅；
-22．特效网页中英文共2幅；
-23．滚动字幕公告（横排、竖排）中英文共4幅；
-24．免费维护网站1年；
-25．平均每月更新网站8页次；
-26．如您要自己维护，免费培训1名网管，赠送网管软件1套。
----------------------------
-▲(四) 豪华型企业网站(中英文)：
-
- 1．1个国际域名；
- 2．200兆主机空间；
- 3．10个企业同域名邮箱；
- 4．中文英文网站整体设计；
- 5．1个中英文网站欢迎页；
- 6．1个中文网站首页；
- 7．40个中文网站分页；
- 8．中文网站翻译成英文网站；
- 9．1个英文网站首页；
-10．40个英文网站分页；
-11．Gif按钮、悬停按钮、动态按钮；
-12．Flash动画4幅；
-13．视频动画2幅；
-14．鼠标特效1处；
-15．网页音乐1处；
-16．Logo设计制作（Gif）
-17．Banner设计制作（动态）
-18．动态广告横幅2幅；
-19．网站自动日期更新2套(中英文)；
-20．首页访问者计数器；
-21．免费维护网站1年；
-22．特效图片中英文共6幅
-23．特效网页中英文共4幅
-24．用数据库接收客户留言；
-25．滚动字幕公告（横排、竖排）中英文共6幅；
-26．数据库接收客户订单；
-27．数据库管理产品；
-28．平均每月更新网站16页次；
-29．如您要自己维护，免费培训2名网管，赠送网管软件2套。
-30．赠送外贸制单软件--《外贸制单通》1套。
----------------------------
-▲(五) 集团型企业网站(中英文)：
-
- 1．1个国际域名；
- 2．300兆主机空间；
- 3．20个企业同域名邮箱；
- 4．中文英文网站整体设计；
- 5．1个中英文网站欢迎页；
- 6．1个中文网站首页；
- 7．80个中文网站分页；
- 8．中文网站翻译成英文网站；
- 9．1个英文网站首页；
-10．80个英文网站分页；
-11．Gif按钮、悬停按钮、动态按钮；
-12．Flash动画8幅；
-13．视频动画3幅；
-14．鼠标特效2处；
-15．网页音乐2处；
-16．Logo设计制作（Gif）
-17．Banner设计制作（动态）
-18．动态广告横幅3幅；
-19．中文框架主页、英文框架主页；
-20．网站自动日期更新2套(中英文)；
-21．首页访问者计数器；
-22．客户反馈留言板2个(中英文)；
-23．用数据库接收客户留言；
-24．滚动字幕公告（横排、竖排）中英文共8幅
-25．特效图片中英文共8幅；
-26．特效网页中英文共6幅；
-27．数据库接收客户留言、客户订单；
-28．数据库管理会员；
-29．邮件列表，收集访客邮件地址，发送广告；
-30．数据库管理产品；
-31．免费维护网站1年；
-32．平均每月更新网站32页次；
-33．如您要自己维护，免费培训3名网管，赠送网管软件3套；
-34．赠送外贸制单及管理软件--《外贸业务通》1套。
---------------------------- 
-　本公司是一家从事外贸出口行业"计算机应用软件研究开发"、"网络工程建设"和"多媒体影视动画广告制
-作"的专业公司，专门为我国广大外贸公司、出口企业开发各种计算
-机应用软件系统、网站建设以及企业多媒体影视动画广告片制作。
-
-　　本公司在国家贸促会的支持和组织下，成功开发出《原产地证网
-上申请系统》、《外贸制单通》、《外贸业务通》等系列外贸应用软
-件产品，受到广大外贸出口企业的欢迎。    
-
-　　同时，由于业务关系，本公司还与美国、欧共体、日本、韩国、
-东南亚等地数十家采购商、连锁超市、以及生产商有着良好的合作关
-系。过去一年多，本公司已帮助多家外国采购厂商在国内找到合适的
-出口产品，促成多宗出口贸易。
- -----------------------------
-公司：广州市赤驹有限公司
-地址：广州市加拿大花园6号楼9E
-电话：020-85580234转19 林先生
-手机：13710685240
-传真：020-85581405
-邮箱：gd333@163.com
------------------------------
+-------------------------------------------------------------------------
+Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
+http://reg.tiscali.be/default.asp?lg=fr 
