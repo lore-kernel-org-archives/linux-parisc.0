@@ -1,36 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA28142
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Mar 2000 01:28:03 -0700
-Message-Id: <200003100731.XAA09162@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA28696
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Mar 2000 02:32:48 -0700
+Sender: mkp@socsci.auc.dk
 To: Nick Cabatoff <ncc@cs.mcgill.ca>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HFS linux implementation 
-In-reply-to: Your message of "Fri, 10 Mar 2000 01:09:49 PST."
-             <20000310010949.A14656@cs.mcgill.ca>
-Date: Thu, 09 Mar 2000 23:30:57 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Subject: Re: [parisc-linux] HFS linux implementation
+References: <20000309193535.C3423@cs.mcgill.ca>
+From: "Martin K. Petersen" <mkp@mkp.net>
+Date: 10 Mar 2000 09:33:58 +0100
+In-Reply-To: Nick Cabatoff's message of "Thu, 9 Mar 2000 19:35:35 -0500"
+Message-ID: <yq1put3xlzd.fsf@leyland.socsci.auc.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+>>>>> "Nick" == Nick Cabatoff <ncc@cs.mcgill.ca> writes:
 
-getting a bit off track here...
+Hi Nick,
 
-Nick Cabatoff wrote:
-> <sigh>  I'm kind of
-> mystified why HP would've waited for LVM to allow multiple filesystems
-> on a single disk; what's so bad about partition tables?
+Nick> I'm interested in the possibility of doing a linux module to
+Nick> mount HFS filesystems (read-only would satisfy me I think, and
+Nick> is a reasonable target.)
 
-You have to know about HP's "hard" partition scheme.
-It was a pain to support. Every new disk required a new entry
-in the kernel's partition table. yes, I said Kernel. It's not
-stored on the disk. And that was delivered as a patch. 'nuf said.
-That's why LVM is better than "partion tables".
+I implemented read only hfs support in the early days of the PA-RISC
+port.  It appears my ufs changes didn't get merged in when we moved
+from 2.2 to 2.3, though.  Will fix...
 
-Since LVM was "on the roadmap" anyway, HP decided to depend LVM
-to provide "soft" portitioning (ie partition tables stored on the
-media) instead of something like the PC's use.
+One of Paul Bame's colleagues looked into implementing write support
+at some point, but I don't know status on that project.  Paul?
 
-grant
-
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+-- 
+Martin K. Petersen, Principal Linux Consultant, Linuxcare, Inc.
+mkp@mkp.net, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
