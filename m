@@ -1,18 +1,18 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F391E484B
+Return-Path: <cbeerse@lycos.nl>
+Received: from hiscom.nl (unknown [130.78.143.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4FD548CA
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 16 Feb 2004 23:42:25 -0700 (MST)
-Date: Mon, 16 Feb 2004 23:42:24 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] HP1825 and PCI Vis-EG at 1600x1200
-Message-ID: <20040217064224.GC22688@colo.lackof.org>
-References: <20040204051928.GA16054@colo.lackof.org>
-	<200402170230.i1H2UVff020209@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200402170230.i1H2UVff020209@hiauly1.hia.nrc.ca>
+	Tue, 17 Feb 2004 01:30:41 -0700 (MST)
+Message-Id: <04Feb17.095855cet.119065@ns.hiscom.nl>
+Date: Tue, 17 Feb 2004 09:30:19 +0100
+From: =?ISO-8859-1?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
+MIME-Version: 1.0
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] hw db pb?
+References: <402A4CA5000034AF@ocpmta2.freegates.net>
+	<20040216174753.GM31168@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20040216174753.GM31168@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -23,25 +23,26 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Feb 16, 2004 at 09:30:31PM -0500, John David Anglin wrote:
-> > I'll hunt a bit more on the internet since I'm pretty sure
-> > I've seen some of the HP parisc workstations allow for
-> > a "custom" video output but don't know if Vis-EG allows
-> > that or where the steps to do it are described.
+Matthew Wilcox wrote:
+
+> On Mon, Feb 16, 2004 at 06:42:17PM +0100, Joel Soete wrote:
 > 
-> If I recall, there is a line in the list of settings for the
-> Vis-EG for user defined settings.  However, I couldn'd figure
-> out how to set them.
+>>Hi all,
+>>
+>>I try to have a look on D380 cpu's type into:
+>><http://hwdb.parisc-linux.org/>
+>>
+>>but I only get severall:
+>>"Warning: MySQL Connection Failed: Can't connect to local MySQL server through
+>>socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 19
+> 
+> 
+> mysqld had died.  I just restarted it and it now works for me.  Thanks for
+> the report.
+> 
 
-Yup, that's exactly what I was looking for.
-I've seen that once upon a time but it might have been
-on an HP internal website for a different card.
-My fear is I have to run HPUX and "setmon" to get the custom settings.
+While reading the hwdb some minutes ago, I saw the mysqld error messages. I 
+think something more is wrong.
 
-Anyway, I gave up on this since it looks the manual for the
-"HP 1825" really only supports 1280x1024 and the manual is
-derived or shared with the "HP 2025" (20") flat panel display.
-Thus the comment about 1600x1200 probably only applies to the 20" display.
 
-thanks,
-grant
+CBee
