@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from kroah.com (12-231-249-244.client.attbi.com [12.231.249.244])
-	by dsl2.external.hp.com (Postfix) with SMTP id 05D0A4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 23:08:19 -0700 (MST)
-Date: Fri, 8 Nov 2002 22:03:42 -0800
-From: Greg KH <greg@kroah.com>
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A91624829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 00:38:14 -0700 (MST)
+Date: Sat, 9 Nov 2002 07:37:59 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
 To: Matthew Wilcox <willy@debian.org>
-Cc: "Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
-	hch@lst.de, James.Bottomley@steeleye.com,
-	linux-kernel@vger.kernel.org, mochel@osdl.org,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Message-ID: <20021109060342.GA7798@kroah.com>
-References: <200211090451.UAA26160@baldur.yggdrasil.com> <20021109052150.T12011@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021109052150.T12011@parcelfarce.linux.theplanet.co.uk>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 kernel compilation error
+In-Reply-To: <20021108211301.Q12011@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.BSF.4.44.0211090735060.32930-100000@e0-0.zab2.int.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,73 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Nov 09, 2002 at 05:21:50AM +0000, Matthew Wilcox wrote:
-> 
-> Everyone's saying "ra!  ra!  generic device model!" without asking
-> what the cost is.  Don't you think it's reasonable that _as the most
-> common device type_, struct device should be able to support PCI in a
-> clean manner?
+On Fri, 8 Nov 2002, Matthew Wilcox wrote:
 
-No I do not.
+Hi,
 
-> Don't you think that the fact that it fails to do so is a problem?
+> On Fri, Nov 08, 2002 at 09:05:51PM +0000, Bjoern A. Zeeb wrote:
+> >
+> > Are there any updates or fixes or do I need to have a look at it myself ?
+> > This is a bk pull from 20021108-165510 UTC.
+>
+> We're not fully integrated into Linus' tree yet.  We're a damn sight
+> closer than we have been ever before, but you still need either latest
+> CVS or download a patch.  If you're interested in 2.5, i recommend CVS
+> since fixes get made on an hourly basis.  Last night's snapshot is ~130k
+> gzipped, or 500k uncompressed.  About 90% of that is drivers/video,
+> drivers/input and drivers/scsi.
+>
+> If you do want a patch, http://ftp.parisc-linux.org/2.5/kernel-src/
+> is updated nightly (around 5am MST, i believe).
 
-Yes I do.
+thanks. I will consider a cvs co but first fetch the patch.
 
-> Don't you look at the locks sprinkled all over the struct device
-> system and wonder what they're all _for_?
+*grrml* I must have missed this directory while looking at
+ftp.parisc-linux.org though I had a look at kernels and src ...
 
-Nope :)
-(yes, I do wonder, and yes, they will be cleaned up...)
-
-> Don't get me wrong.  I want a generic device model.  But I think it's
-> clear the current one has failed to show anything more than eye candy.
-> Perhaps it's time to start over, with something small and sane -- maybe
-> kobject (it's not quite what we need, but it's close).  Put one of those
-> in struct pci_dev.  Remove duplicate fields.  Now maybe grow kobject a
-> little, or perhaps start a new struct with a kobject as its first member.
-
-No, lets start pulling stuff out of pci_dev and relying on struct
-device.  The reason this hasn't happened yet is no one has been willing
-to break all of the PCI drivers, yet.
-
-I know Pat is going to be doing this soon, and if he doesn't get to it,
-I will.  But as Adam said, don't throw away the idea because it looks
-crufty now.  This has been a _constantly_ evolving model as we work to
-get it right.  It will take time, and we are still getting there.
-
-> And, for gods sake, don't fuck it up by integrating it with USB too early
-> in the game.
-
-In my defense, USB was the _only_ bus willing to step up and try to do
-the integration to work the initial kinks out.  The SCSI people are
-being drug kicking and screaming into it, _finally_ now (hell, SCSI is
-still not using the updated PCI interface, those people _never_ update
-their drivers if they can avoid it.)
-
-> Let's get it right for PCI, maybe some other internal busses
-> (i'm gagging to write an EISA subsystem ;-).  SCSI is more interesting
-> than USB.  Above all, don't fall into the trap of "It's a bus and it
-> has devices on it, therefore it must be a part of devicefs".
-
-Sure SCSI's more interesting, to you :)
-
-By having USB be one of the first adopters (after PCI), we have found a
-_lot_ of issues and bugs that happened due to devices showing up and
-disappearing at odd times.  Which was _much_ easier to debug than PCI
-would have been.  SCSI can't even do hotplug devices _yet_.  How would
-we have debugged this stuff then?
-
-And yes, USB belongs in the model, if for no other reason, that "it's a
-bus and it has devices on it" :)
-
-> *sigh*.  halloween was a week ago.
-
-Patches for this stuff are going to be happening for quite some time
-now, don't despair.
-
-And they are greatly appreciated, and welcomed from everyone :)
-
-thanks,
-
-greg k-h
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
