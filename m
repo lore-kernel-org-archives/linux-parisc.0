@@ -1,28 +1,60 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A5BF9482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Jun 2001 08:22:15 -0600 (MDT)
-Message-Id: <200106061414.IAA26634@puffin.external.hp.com>
-To: djweis@sjdjweis.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] D310 boot messages 
-In-Reply-To: Your message of "Wed, 06 Jun 2001 06:53:33 CDT."
-             <Pine.LNX.4.21.0106060652360.24277-100000@oliver.internal.sjdjweis.com>
-Date: Wed, 06 Jun 2001 08:14:45 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 18DBA482A
+	for <parisc-linux@parisc-linux.org>; Wed,  6 Jun 2001 10:24:32 -0600 (MDT)
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by atlrel2.hp.com (Postfix) with ESMTP id 67D83141B
+	for <parisc-linux@parisc-linux.org>; Wed,  6 Jun 2001 12:24:31 -0400 (EDT)
+Date: Wed, 6 Jun 2001 10:24:30 -0600
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010606102430.V25417@zumpano.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: willy@ldl.fc.hp.com (Matthew Wilcox)
+Subject: [parisc-linux] [aj@suse.de: Re: Remove multiline asm statements]
 List-ID: <linux-parisc.vger.kernel.org>
 
-djweis@sjdjweis.com wrote:
-> I was looking through the documentation section of the site and couldn't
-> find anything on wax. What other name would it be listed as? I did find
-> the lasi docs.
+I don't know the answer to this.  Anyone?
 
-I don't think WAX docs were released. Please just post any questions you
-have hear. A few people do have the docs under NDA and have in the recent
-past offered to answer questions about WAX/EISA.
+----- Forwarded message from Andreas Jaeger <aj@suse.de> -----
 
-grant
+Delivered-To: willy@ldl.fc.hp.com
+Mail-Copies-To: never
+To: willy@ldl.fc.hp.com (Matthew Wilcox)
+Cc: libc-alpha@sources.redhat.com
+Subject: Re: Remove multiline asm statements
+From: Andreas Jaeger <aj@suse.de>
+Date: 06 Jun 2001 13:52:58 +0200
+In-Reply-To: <20010605235813.A27862@ldl.fc.hp.com> (willy@ldl.fc.hp.com's message of "Tue, 5 Jun 2001 23:58:13 -0600")
+User-Agent: Gnus/5.090004 (Oort Gnus v0.04) XEmacs/21.4 (Academic Rigor)
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+willy@ldl.fc.hp.com (Matthew Wilcox) writes:
+
+> 2001-06-05  Matthew Wilcox  <willy@ldl.fc.hp.com>
+> 
+> 	* sysdeps/hppa/dl-machine.h: Reformat asm statements to remove new
+> 	  gcc warning about multi-line strings.
+> 
+> diff -urNx CVS glibc-223/sysdeps/hppa/dl-machine.h glibc-merge/sysdeps/hppa/dl-machine.h
+> --- glibc-223/sysdeps/hppa/dl-machine.h	Fri Apr 27 14:31:02 2001
+>+++ glibc-merge/sysdeps/hppa/dl-machine.h	Mon May  7 15:25:44 2001
+> @@ -75,11 +82,11 @@
+>  
+>  #if 0
+>    /* Use this method if GOT address not yet set up.  */
+
+Can we remove the #if 0 code?
+
+I've committed your patch,
+Andreas
+-- 
+ Andreas Jaeger
+  SuSE Labs aj@suse.de
+   private aj@arthur.inka.de
+    http://www.suse.de/~aj
+
+----- End forwarded message -----
+
+-- 
+It's always legal to use Linux (TM) systems
+http://www.gnu.org/philosophy/why-free.html
