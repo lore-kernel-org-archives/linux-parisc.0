@@ -1,270 +1,71 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.vi-internet.de (proxy1.vi-internet.de [195.182.114.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B317482A
-	for <parisc-linux@parisc-linux.org>; Thu, 21 Jun 2001 16:17:12 -0600 (MDT)
-Sender: ruediger@dsl2.external.hp.com
-Message-ID: <3B326367.B1466EDD@hrzpub.tu-darmstadt.de>
-Date: Thu, 21 Jun 2001 23:13:12 +0200
-From: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
-MIME-Version: 1.0
-To: Helge Deller <deller@gmx.de>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Kernel crashing with STI-Console
-References: <3B323263.11467E62@hrzpub.tu-darmstadt.de> <200106211801.UAA15910@mailserver2.hrz.tu-darmstadt.de>
-Content-Type: multipart/mixed;
- boundary="------------C2007446FE2673397ACAB331"
+Received: from solo.franken.de (pD905478C.dip.t-dialin.net [217.5.71.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F159482A
+	for <parisc-linux@parisc-linux.org>; Thu, 21 Jun 2001 16:17:40 -0600 (MDT)
+Received: (from tsbogend@localhost)
+	by solo.franken.de (8.9.3/8.9.3) id AAA12846
+	for parisc-linux@parisc-linux.org; Fri, 22 Jun 2001 00:14:58 +0200
+Date: Fri, 22 Jun 2001 00:14:58 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] misc stuff
+Message-ID: <20010622001458.A12695@solo.franken.de>
+References: <20010621225016.A10091@solo.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010621225016.A10091@solo.franken.de>; from tsbogend@alpha.franken.de on Thu, Jun 21, 2001 at 10:50:16PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Dies ist eine mehrteilige Nachricht im MIME-Format.
---------------C2007446FE2673397ACAB331
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+On Thu, Jun 21, 2001 at 10:50:16PM +0200, Thomas Bogendoerfer wrote:
+> with the new changes to io.h enabling of HPPA_IOREMAP is really deadly. There
+> are some ioremap in drivers missing. The diff below gets my 712 up again.
 
-Hi Helge,
+oops, forgot the diff.
 
-I get the freshest kernel (2.4.0-pa35) out of CVS and tried to boot with only
-STI-Console enabled. It also crashed, but this time I have captured the full
-register dump include the kernel message.
+Thomas.
 
-The serial console capture and the System.map -file is available on
-http://www.tu-darmstadt.de/~rscholz.
+Index: drivers/gsc/serial.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/drivers/gsc/serial.c,v
+retrieving revision 1.11
+diff -u -r1.11 serial.c
+--- drivers/gsc/serial.c	2001/06/14 09:50:22	1.11
++++ drivers/gsc/serial.c	2001/06/21 01:22:48
+@@ -66,7 +66,7 @@
+ 	serial->type = PORT_16550A;
+ 
+ 	serial->line = serial_line_nr;
+-	serial->iomem_base = (void*) (((unsigned long) d->hpa) + 0x800);
++	serial->iomem_base = (void*)ioremap((((unsigned long) d->hpa) + 0x800),0x80);
+ 
+ 	serial->irq = irq; 
+ 	serial->io_type = SERIAL_IO_MEM;	/* define access method */
+Index: drivers/scsi/lasi7xx.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/drivers/scsi/lasi7xx.c,v
+retrieving revision 1.14
+diff -u -r1.14 lasi7xx.c
+--- drivers/scsi/lasi7xx.c	2001/03/03 05:07:36	1.14
++++ drivers/scsi/lasi7xx.c	2001/06/21 01:29:02
+@@ -88,7 +88,7 @@
+ lasi_scsi_callback_700(struct hp_device *d, struct pa_iodc_driver *dri)
+ {
+ 	hosts_used = sim700_init_host(hosts_tptr, 700, 
+-			(unsigned long)d->hpa + LASI_SCSI_CORE_OFFSET,
++			ioremap((unsigned long)d->hpa + LASI_SCSI_CORE_OFFSET, 0x100),
+ 			busdevice_alloc_irq(d), OPT_NCR_LE);
+ 
+ 	return (hosts_used == 0);
+@@ -98,7 +98,7 @@
+ lasi_scsi_callback_710(struct hp_device *d, struct pa_iodc_driver *dri)
+ {
+ 	hosts_used = sim700_init_host(hosts_tptr, 710, 
+-			(unsigned long)d->hpa + LASI_SCSI_CORE_OFFSET,
++			ioremap((unsigned long)d->hpa + LASI_SCSI_CORE_OFFSET,0x100),
+ 			busdevice_alloc_irq(d), 0);
+ 
+ 	return (hosts_used == 0);
 
-Thanks for your help,
-    Rüdiger
-
---------------C2007446FE2673397ACAB331
-Content-Type: text/plain; charset=us-ascii;
- name="sti-kernel-crash.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="sti-kernel-crash.txt"
-
-
-
-----------------------------------------------------------------------------
-BootRom Version    1.4  
-Memory Size:  128 MB
-----------------------------------------------------------------------------
-
-
-
-
-(c) Copyright 1990-1994, Hewlett-Packard Company.
-All rights reserved
-
-Press <ESCAPE> to stop boot sequence.
-
-Starting Auto boot
-
-
-Loading Initial Program Loader
-
-
-IPL successfully loaded
-
-
-Booting
-palo ipl 0.92 bame@palinux Thu Jun 14 14:08:59 MDT 2001
-0/vmlinux32 2622963 bytes @ 0x48000
-Partition Start(MB) End(MB) Id Type
-1               1      22   f0 Palo
-2              23      64   83 ext2
-3              65     194   82 swap
-4             195    2046   83 ext2
-Kernel: partition 2 file /vmlinux-2.4.0-pa35
-ext2 block size 1024
-ext2_mount(partition 2) returns 0
-ext2_open(/vmlinux-2.4.0-pa35) = 3
-ELF32 executable
-Entry 00100000 first 00100000 n 5
-Segment 0 load 00100000 size 1576788 mediaptr 0x1000
-Segment 1 load 00282000 size 226848 mediaptr 0x182000
-Segment 2 load 002bc000 size 231108 mediaptr 0x1ba000
-Segment 3 load 002f8000 size 8192 mediaptr 0x1f3000
-Segment 4 load 0033f028 size 78928 mediaptr 0x1f5028
-branching to kernel entry point 0x00100000
-Set default PSW W bit to 0
-
-GRs
-
-0x00000000
-0x00000000
-0xF4100000
-0x00000001
-0xF5000000
-0x00000003
-0x00000001
-0xF0025328
-0x0000000D
-0xF02FD698
-0xF4300000
-0x00000000
-0x00080BEF
-0x00010000
-0x00000005
-0x00000032
-0x00000000
-0x00283BAB
-0x00000001
-0x00000000
-0x00000000
-0xF0025000
-0x00000500
-0x0B00007D
-0x00000001
-0x00000000
-0x00283BAB
-0x10282010
-0x00000001
-0xF02FD698
-0x002FD8D8
-0x005F93E8
-
-CRs
-
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x000000C0
-0x0000001E
-0x00000000
-0x00000000
-0x00105800
-0xFFFFFFFF
-0xD1454F12
-0x00000000
-0x005F8944
-0xB3202000
-0x00000000
-0x005F8964
-0x00007F00
-0x80000000
-0x002A1000
-0x002A1000
-0x3FEB9FFF
-0x0900DEEE
-0xAAAAAAAA
-0xF0002000
-0x00000000
-0xF00EFFFF
-
-SRs
-
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-
-OTHER
-
-0x00000000
-0x005F8948
-0x20000000
-0x9E000004
-0x00000000
-0x00000000
-0x00000000
-0x00310000
-0x00000000
-0x00000000
-0x00000000
-0xF02FD710
-0xFFFBE000
-0x00000000
-0x00000082
-0x2C1048E6
-0x3B325F1A
-
-
-
-
-Dumping Stack from 002fc000 to 002fd8d8:
-
-Dumping Stack from 1028a000 to 1028a700:
-a000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a020 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a040 00000000 00000000 00000000 00296000 00000000 00000000 00000000 00000000
-a060 00000000 00000000 00000000 0010c8ac 00000000 00000000 00000000 00000000
-a080 00007f00 00000000 f4100000 00000001 f5000000 00000003 00000001 f0025328
-a0a0 0000000d f02fd698 f4300000 00000000 00080bef 00010000 00000005 00000032
-a0c0 00000000 00283bab 00000001 00000000 00000000 f0025000 00000500 0b00007d
-a0e0 00000001 00000000 00283bab 10282010 00000001 f02fd698 002fd8d8 005f93e8
-a100 00000082 2c1048e6 3b325f1a 00000000 00000000 00000000 00000000 00000000
-a120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a1c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a1e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a200 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a220 00000000 00000000 005f8944 005f8948 f00effff 00000000 00000000 00000000
-a240 00000000 0000001e b3202000 00000000 005f8964 00000000 00000000 00000000
-a260 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a280 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a2a0 00000000 00000000 00000000 10106750 00000000 00000000 00000000 00000000
-a2c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a2e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a300 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a320 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a340 00000000 00000000 0000001f 0028e000 002a1000 f0012870 00000000 00000000
-a360 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a3a0 00000000 00000000 00000000 1010224c 00000000 00000000 00000000 00000000
-a3c0 00000000 00000000 00000001 1028a080 00000000 00000000 00000000 00000000
-a3e0 00000000 00000000 00000000 101003b4 00000000 00000000 00000000 00000000
-a400 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a420 00000000 00000000 00000000 1010267c 00000000 00000000 00000000 00000000
-a440 1024bf40 00000001 1028a080 00000000 00000000 00000000 00000000 f0002840
-a460 00310000 00000037 f02fd698 0000000d f0002848 00000000 00000000 00000001
-a480 1032d810 00000000 00000000 00000000 00000008 002fd8d8 002fc000 1024c0ec
-a4a0 00000000 00000000 00000000 101025cc 00000000 00000000 00000000 00000000
-a4c0 0004000e 1032e810 1010267c 002fc000 002fd8d8 1024c000 00000000 f0002848
-a4e0 0000000d f02fd698 00000037 00310000 f0002840 00000000 00000000 f02fd710
-a500 1028a080 00283bab 00000082 00000000 00000000 f0105800 01c9c380 00000060
-a520 00000001 00000001 102973c0 10282010 0000002a 00000000 1028a700 00000000
-a540 000d081f 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a560 00000000 00000000 00000000 00000000 00000000 00000000 40800000 00000000
-a580 7fffffff 7fffffff 7f7fffff ffffffff 7f7fffff ffffffff 00000000 00000000
-a5a0 00000000 00000000 41800000 00000000 00000010 00000010 00000000 00000000
-a5c0 7fffffff 7fffffff 41000000 00000000 40800000 00000000 7fffffff 7fffffff
-a5e0 41000000 00000000 7fffffff 7fffffff 40800000 00000000 41000000 00000000
-a600 40300000 00000000 40200000 00000000 40200000 00000000 41800000 7fffffff
-a620 40000000 00000000 40000000 00000000 40800000 00000000 41000000 00000000
-a640 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a660 00000000 00000000 101025d8 101025dc f00effff 00000000 00000000 00000000
-a680 00000000 0000001f 0c701093 00000000 002fc008 00000000 00000000 00000000
-a6a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a6c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-a6e0 00000000 00000000 00000000 10106750 00000000 00000000 00000000 00000000
-
-Kernel Fault: Code=15 regs=1028a4c0 (Addr=002fc008)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001110
-r0-3     00000000 1032e810 1010267c 002fc000
-r4-7     002fd8d8 1024c000 00000000 f0002848
-r8-11    0000000d f02fd698 00000037 00310000
-r12-15   f0002840 00000000 00000000 f02fd710
-r16-19   1028a080 00283bab 00000082 00000000
-r20-23   00000000 f0105800 01c9c380 00000060
-r24-27   00000001 00000001 102973c0 10282010
-r28-31   0000002a 00000000 1028a700 00000000
-sr0-3    00000000 00000000 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 101025d8 101025dc
- IIR: 0c701093    ISR: 00000000  IOR: 002fc008
- ORIG_R28: 00000000
-
---------------C2007446FE2673397ACAB331--
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
