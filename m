@@ -1,38 +1,60 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21493
-	for <parisc-linux@puffin.external.hp.com>; Thu, 3 Aug 2000 11:43:28 -0600
-Received: from smtp.linuxcare.com (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 3 Aug 2000 17:45:31 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 3 Aug 2000 17:45:17 -0000
-Date: Thu, 3 Aug 2000 12:40:03 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: Eric Schnoebelen <eric@cirr.com>
-Cc: Richard Massa <int19@hydra.acs.uci.edu>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] A question...
-Message-ID: <20000803124003.A24940@vodka.thepuffingroup.com>
-References: <200008012014.NAA08622@miami.acs.uci.edu> <200008021503.KAA26727@opus.cirr.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA25880
+	for <parisc-linux@puffin.external.hp.com>; Thu, 3 Aug 2000 18:57:35 -0600
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by cosrel2.hp.com (Postfix) with ESMTP id 16A76208
+	for <parisc-linux@thepuffingroup.com>; Thu,  3 Aug 2000 18:59:28 -0600 (MDT)
+To: parisc-linux@thepuffingroup.com
+Cc: taggart@carmen.fc.hp.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200008021503.KAA26727@opus.cirr.com>; from Eric Schnoebelen on Wed, Aug 02, 2000 at 10:03:44AM -0500
+Date: Thu, 03 Aug 2000 19:01:15 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20000804010116.10DB1381A0@carmen.fc.hp.com>
+Subject: [parisc-linux] New toolchain, userspace apps, nfsroots, ramdisk, and lifimage
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 02, 2000 at 10:03:44AM -0500, Eric Schnoebelen wrote:
-> 
-> Richard Massa writes:
-> - I've got this exemplar in my office, it has 16 233 megahertz
-> - processors.  I was wondering if its possible to run parisc-linux
-> - on the machine...
-> 
-> 	I suspect it will _never_ be possible to run
-> parisc-linux (or any Open Source OS) on the Exemplar Series
-> systems (especialy the SPP1x00 systems) as they are entirely
-> different than the HP PARISC workstation/server systems.
+Hi palinux'ers,
 
-Never say `Never' :-)  There was a port of SparcLinux to some Fujitsu
-Sparc-based machine at anu.edu.au whose name currently escapes me.
-It just takes the will and sufficient documentation.  The latter part
-is of course scarce on discontinued products.
+In building the PA/Linux Developer's Release CD for Linux World Expo, Paul 
+Bame and I have packaged up some new bits.
+
+New x86linux -> palinux cross toolchain,
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20000802.tgz
+
+Apps built using the new toolchain in,
+ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/
+
+A small nfsroot containing some basic commands to play with,
+ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/
+	nfsroot-small-20000803.tgz
+
+A big nfsroot containing everything we've built so far. This is what the
+root filesystem will be on this release of the PA/Linux Developer's CD(or
+close to it)
+ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/
+	nfsroot-20000803.tgz
+
+A small ramdisk containing a limited set the newly compiled apps,
+ftp://puffin.external.hp.com/pub/parisc/binaries/ramdisks/ramdisk.bin-20000803
+
+A lifimage using the current CVS kernel bits and the above ramdisk,
+ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Image-20000803
+
+You can also use the above lifimage to boot from other sources(like an 
+nfsroot) by,
+
+- Interrupt the boot
+- boot from your bootp server adding the "ipl" option
+- edit the boot command line (example: nfsroot=192.168.1.10:/tftpboot/nfsroot)
+
+We will be posting the final snapshot of this version(0.1) of the PA/Linux 
+Developer's Release CD sometime tommorrow.
+
+Feedback would be greatly apprecicated.
+
+Thanks,
 
 -- 
-Revolutions do not require corporate support.
+Matt Taggart
+taggart@fc.hp.com
