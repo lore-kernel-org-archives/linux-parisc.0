@@ -1,12 +1,13 @@
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+From: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] A couple of questions
-Date: Wed, 12 May 2004 08:59:59 +0200
-Message-ID: <20040512065959.GM1912@lug-owl.de>
+Date: Wed, 12 May 2004 13:27:12 +0100
+Message-ID: <20040512122712.GG6278@parcelfarce.linux.theplanet.co.uk>
 References: <000a01c437a4$c0d70de0$6401a8c0@nwoods>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1894516987=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Nathaniel Woods <nwoods29321@chater.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <000a01c437a4$c0d70de0$6401a8c0@nwoods>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -19,73 +20,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
---===============1894516987==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h3BncCmUfYp8450W"
-Content-Disposition: inline
-
-
---h3BncCmUfYp8450W
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2004-05-11 18:10:04 -0400, Nathaniel Woods <nwoods29321@chater.net>
-wrote in message <000a01c437a4$c0d70de0$6401a8c0@nwoods>:
+On Tue, May 11, 2004 at 06:10:04PM -0400, Nathaniel Woods wrote:
 > First off,  I am using an HP 9000/720.
-> 1. How do I configure XFree86 to use my vid card? I know I must us FBdev =
-but it always tells me "Addscreen/Screeninit failed for driver 0"
+> 2. When trying to access the floppy (which is at /dev/sda) the system
+> crashes. How do I fix this?
 
-1. Please supply the "dmesg" command output to first of all let's see if
-your video subsystem works properly.
-
-2. Please supply the full /var/log/XFree86.0.log
-
-> 2. When trying to access the floppy (which is at /dev/sda) the system cra=
-shes. How do I fix this?
-
-Are there any messages? Yes? Which ones? If in doubt, better send too
-much than too little...
+By sending us the messages ;-)
 
 > 3. There is a built in audio port. How do I configure it?
 
-What kernel version do you have? It's probably the harmony driver, but
-it's (currently) kind of broken:)
+Is there?  I don't see one listed in the device inventory at
+http://hwdb.parisc-linux.org/view.php3?type=machine&name=720
 
-MfG, JBG
+We currently know about 5 kinds of audio on PA machines.  Most older
+machines have Harmony (sversion 0x0007B).  The 705 and 710 have a
+different audio chip (sversion 0x0007A).  The 745i and 747i have another
+(sversion 0x0007E) and the 735 and 755 have a fourth (sversion 0x0007F).
+The newest workstations have a PCI sound chip which I know little about.
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
+The harmony driver claims to support the 7B, 7E and 7F audio types and has
+support for 7A commented out (presumably it doesn't work).  The first
+thing to do is to boot the machine, preferably with a 2.6 kernel.
+You should see the device inventory which looks something like this:
 
---h3BncCmUfYp8450W
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Found devices:
+1. Gecko 80 GSC Core Graphics at 0xf8000000 [1] { 10, 0x0, 0x01c, 0x00085 }
+2. Gecko 80 Core BA at 0xf0100000 [2] { 11, 0x0, 0x01c, 0x00081 }
+3. Gecko 80 Core SCSI at 0xf0106000 [2/0/1] { 10, 0x0, 0x01c, 0x00082 }
+...
+15. Gecko 80 (712/80) at 0xfffbe000 [8] { 0, 0x0, 0x601, 0x00004 }
+16. Memory at 0xfffbf000 [9] { 1, 0x0, 0x038, 0x00009 }
+CPU(s): 1 x PA7100LC (PCX-L) at 80.000000 MHz
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Could you send your inventory?  That gives us a place to start looking.
 
-iD8DBQFAoctvHb1edYOZ4bsRAj4tAJ0ayWjlESuA+d6j8qYLG4zIl6hTYgCfd/gz
-iMYlLqY2OnjVhaMLgDQSUcY=
-=TicZ
------END PGP SIGNATURE-----
-
---h3BncCmUfYp8450W--
-
---===============1894516987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1894516987==--
