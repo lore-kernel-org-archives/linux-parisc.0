@@ -1,36 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA18178
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 03:10:57 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 17 Oct 2000 09:12:14 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA12051;
-	Tue, 17 Oct 2000 20:08:29 +1100
-Date: Tue, 17 Oct 2000 20:08:29 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Troubles following the 'recipe'
-In-Reply-To: <39EC0F06.4C908926@admin.france.hp.com>
-Message-ID: <Pine.LNX.4.21.0010171957521.9896-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA21378
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 08:14:37 -0600
+Date: Tue, 17 Oct 2000 07:15:03 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001017071503.D928@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] simple kernel tasks?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 17 Oct 2000, Bruno Vidal wrote:
+Hi all,
 
-> but in the make install:
-> .././scripts/install-sh -c /opt/linux_hppa/src/build/glibc/elf/ld.so /opt/linux/hppa-linux/lib/ld-2.1.92.so.new
-> mv -f /opt/linux/hppa-linux/lib/ld-2.1.92.so.new /opt/linux/hppa-linux/lib/ld-2.1.92.so
-> make[2]: *** No rule to make target `/opt/linux/hppa-linux/lib/libc-2.1.92.so', needed by `/opt/linux/hppa-linux/lib/ld.so.1'.  Stop.
+Per Grant's suggestion I had looked into getting /dev/rtc to work. I
+checked in my changes yesterday and they seem to be ok.
 
-Immediately after installing ld.so, "make install" should be installing
-the new libc.so.  Hmm, your glibc sources are not the latest puffin ones,
-as the latest glibc will install as 2.1.94  You might have better luck
-after updating (via cvs).  At some point glibc configure was changed to
-require make-3.79.1 or later to compile glibc, perhaps in response to a
-problem such as you are seeing, so maybe you also need to upgrade "make".
+I was wondering if there's a list of TODOs for things that need to be
+done in the kernel. I'd like to help if i can, though I'm still learning
+the ropes so simple tasks are preferred :-)
 
-Alan Modra
+thanks,
+randolph
 -- 
-Linuxcare.  Support for the Revolution.
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
