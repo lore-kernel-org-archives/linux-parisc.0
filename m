@@ -1,11 +1,12 @@
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Cross Compiler HOWTO - v1.2 (GCC 3.1 updates and more)
-Date: Sat, 20 Apr 2002 12:02:48 -0400
-Message-ID: <20020420120248.D22674__32829.5286665254$1416621244$gmane$org@systemhalted>
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+Subject: Re: [parisc-linux] c200 fx graphics status?
+Date: Fri, 26 Apr 2002 21:17:50 -0400
+Message-ID: <3CC9FC3E.4070604__46911.9484922432$1416621257$gmane$org@charter.net>
+References: <3CC5E580.5090403@charter.net> <20020424042023.DC87A482B@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: baldric-admin@baldric.uwo.ca
-To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: debian-hppa@lists.debian.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -17,51 +18,61 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Parisc, Debian-hppa,
+Well, my Ebay special C200 "raven" arrived today... and it works!
+I plugged in an extra 256Mb RAM and an old 4X scsi cdrom drive,
+hooked ye olde dumbe terminal, and pushed yonder button.
 
------------------------------------------
-PARISC-Linux Cross Compiler HOWTO - v1.2 
------------------------------------------
+I'm impressed, it came with a completely unconfigured HP/UX B11.11
+so I got to set up my root password, network, etc. The dang thing
+has internet connectivity already!
 
-When you're 715/50 just can't compile fast enough...
+Now I am in somewhat of a dilemma. I got this bohemoth to be a parisc-linux
+box, but one hates to wipe a pristine HP/UX which one got for free :-)
 
-http://www.baldric.uwo.ca/~carlos/HOWTO-Parisc/
+So now it would appear that I am in need of a new hard drive. My 23GB
+Seagate Elite will definately not fit inside the case, and I'm using it
+on the X86 machine anyways. Back to Ebay...
 
-- Updated examples.
-- Updated many things.
-- Printable pdf version online (as requested by some people).
-- GCC section includes info on building GCC 3.1 from upstream CVS.
-- Fixed tpyos.
+I can still test out the latest 0.9.3 cdrom image which I will burn
+one this weekend. I don't have an EVC adapter yet so I can't test
+the STI / X11 yet.
 
-I've tested this from start to end and it's getting really easy
-to roll your own tool-chain! Thank go to all the hard-working people
-who make it happen :)
+This machine seems to have been mis-advertised and actually contains
+an EG board rather than a FX. I am disappointed yet happy because the
+EG will run X in linux right?
 
-I tested:
+Thx,
 
-GCC 3.0.2 20010905
-Binutils 2.12.90.0.4-1
+- Doug
 
-To build a cross-compiler from:
 
-GCC 3.1 20020418
-Binutils 2.12.90.0.1-4 (latest in debian pool)
-Glibc 2.2.5-4 (latest in debian pool)
 
------
-
-If you would like to link against something then link against:
-http://www.baldric.uwo.ca/HOWTO/
-
-Which is where the document will reside soon.
-
-You can grab a tarball of the directory at:
-http://www.baldric.uwo.ca/~carlos/HOWTO-Parisc/HOWTO-Parisc.tar.gz
-
------
-
-Many thanks to Dave, Randolph and Willy who tolerate my incessant
-24/7 learning... :)
-
-Cheers,
-Carlos.
+Grant Grundler wrote:
+> "B. Douglas Hilton" wrote:
+> 
+>>Hi list!
+>>
+>>I just subscribed here. I'm on debian-hppa but that doesn't
+>>seem to get much traffic, so I'll repost my question here.
+> 
+> 
+> Yeah - parisc-linux is a more appropriate place for the question anyway.
+> 
+> 
+>>I sold it on Ebay and rolled
+>>my profits into a C200 with some unspecified FX graphics
+>>board.
+> 
+> 
+> Not supported since HP hasn't published the docs for it.
+> Almost all the older gfx cards are supported including
+> the Vis-EG (PCI or GSC) that you mentioned in you posting
+> to debian-hppa.
+> 
+> grant
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
