@@ -1,27 +1,19 @@
-From: Miles Bader <miles@lsi.nec.co.jp>
+From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Date: 13 Nov 2002 18:05:26 +0900
-Message-ID: <buo65v1suuh.fsf__37340.6478939161$1416621918$gmane$org@mcspd15.ucom.lsi.nec.co.jp>
-References: <20021109060342.GA7798@kroah.com>
-	<200211091533.gA9FXuW02017@localhost.localdomain>
-	<20021113061310.GD2106@kroah.com>
-	<buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp>
-	<20021113075223.GZ2106@kroah.com>
-	<buoisz1sxr4.fsf@mcspd15.ucom.lsi.nec.co.jp>
-	<20021113081008.GC2106@kroah.com>
-	<buoadkdswn9.fsf@mcspd15.ucom.lsi.nec.co.jp>
-	<20021113082510.GA3064@kroah.com>
-Reply-To: Miles Bader <miles@gnu.org>
+Date: Wed, 13 Nov 2002 14:59:02 +0300
+Message-ID: <20021113145902.A1245__13560.5632015087$1416621919$gmane$org@jurassic.park.msu.ru>
+References: <20021109060342.GA7798@kroah.com> <200211091533.gA9FXuW02017@localhost.localdomain> <20021113061310.GD2106@kroah.com> <buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp> <20021113075223.GZ2106@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
+Cc: Miles Bader <miles@gnu.org>,
+	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
 	Matthew Wilcox <willy@debian.org>,
 	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
 	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
 To: Greg KH <greg@kroah.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021113082510.GA3064@kroah.com>
+In-Reply-To: <20021113075223.GZ2106@kroah.com>; from greg@kroah.com on Tue, Nov 12, 2002 at 11:52:23PM -0800
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -32,26 +24,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Greg KH <greg@kroah.com> writes:
-> > Currently, it ignores the pci_dev argument entirely (I've never had a
-> > device that needed the mask, so I haven't bothered with it).  It just
-> > allocates a block from the special memory region and returns the result.
+On Tue, Nov 12, 2002 at 11:52:23PM -0800, Greg KH wrote:
+> On Wed, Nov 13, 2002 at 04:46:58PM +0900, Miles Bader wrote:
+> > This this would end up [or have the ability to] invoking a bus-specific
+> > routine at some point, right?  [so that a truly PCI-specific definition
+> > could be still be had]
 > 
-> So merely renaming that function to dev_alloc_consistent(), changing the
-> first paramater to be a struct device, and proving a macro for all of
-> the pci drivers for the old pci_alloc_consistent() name would work just
-> fine for you?
+> If that was needed, yes, we should not break that functionality.
+> 
+> Are there any existing archs that need more than just dma_mask moved to
+> struct device out of pci_dev?  Hm, ppc might need a bit more...
 
-Except that this function doesn't make any sense except for PCI devices.
+Add alpha, parisc, sparc and so on. ;-)
 
-I don't know whether there will ever be any devices that (1) call
-`dev_alloc_consistent', (2) aren't PCI devices, and (3) would stand a
-chance of ever working on this platform -- probably not.
+pci_dev->sysdata needs to be moved as well, but not only.
+It seems that two things are fundamentally missing in generic
+device model:
+1. clean way to detect the type of container structure from arbitrary
+   struct device *;
+2. parent/child relationship between devices of different bus types.
 
-Never-the-less, it provides (a non-artificial) example of a case where
-it's wrong to assume that all busses are the same, and I think that
-merits some attention.
+Example (not exactly real life, but close enough):
+to do DMA mapping properly for, say, some legacy device, I need to know
+that it's sitting behind ISA-to-PCI bridge X belonging in PCI domain Y of
+the root-level IO controller Z.
 
--Miles
--- 
-97% of everything is grunge
+Ivan.
