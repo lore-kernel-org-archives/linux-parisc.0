@@ -1,40 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA324482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 10:25:39 -0600 (MDT)
-To: Richard Hirst <rhirst@linuxcare.com>
-Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-Message-ID: <1003163134.3bcb0dfe152c5@webmail.tiscalinet.be>
-Date: Mon, 15 Oct 2001 18:25:34 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015164903.X11105@linuxcare.com>
-In-Reply-To: <20011015164903.X11105@linuxcare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from ccd.cargoclaimsdirect.com (unknown [62.6.162.114])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DAE27482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 10:51:22 -0600 (MDT)
+Received: from ashcroft by ccd.cargoclaimsdirect.com with local (Exim 3.32 #1 (Debian))
+	id 15tAso-0000re-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 17:46:30 +0100
+Date: Mon, 15 Oct 2001 17:46:30 +0100
+From: Scott Ashcroft <scott.ashcroft@talk21.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011015174630.A3315@cargoclaimsdirect.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] LED device moves around on B160L
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Richard,
+Something weird is going on with the address of the LED device on my
+B160L.
 
-Quoting Richard Hirst <rhirst@linuxcare.com>:
+Here's a grep of the logs I've got:
 
-> > (EE) No OS PCI support available
-> 
-> Do you have PCI support enabled in your kernel?
-> 
-> Richard
-> 
-> 
-> 
-Yes:
-CONFIG_PCI=yes
-CONFIG_PCI_LBA=yes
-CONFIG_PCI_NAMES=yes
+elson:/var/log# zgrep "Linux version\|LED" messages* 
+messages:Oct 15 15:55:42 nelson kernel: Linux version 2.4.9-pa57
+(root@nelson) (gcc version 3.0.2 20010922 (Debian prerelease)) #16 Mon
+Oct 15 15:48:33 BST 2001
+messages:Oct 15 15:55:42 nelson kernel: LED display at f0190000
+registered
+messages.0:Oct  9 14:58:13 nelson kernel: Linux version 2.4.9-pa45
+(root@nelson) (gcc version 3.0.2 20010922 (Debian prerelease)) #13 Tue
+Oct 9 14:30:37 BST 2001
+messages.0:Oct  9 14:58:13 nelson kernel: LED display at ffd0c000
+registered
+messages.0:Oct 10 13:34:23 nelson kernel: Linux version 2.4.9-pa45
+(root@nelson) (gcc version 3.0.2 20010922 (Debian prerelease)) #13 Tue
+Oct 9 14:30:37 BST 2001
+messages.0:Oct 10 13:34:23 nelson kernel: LED display at ffd0c000
+registered
+messages.0:Oct 13 13:10:09 nelson kernel: Linux version 2.4.9-pa52
+(root@nelson) (gcc version 3.0.2 20010922 (Debian prerelease)) #14 Sat
+Oct 13 12:42:38 BST 2001
+messages.0:Oct 13 13:10:09 nelson kernel: LED display at f0190001
+registered
+messages.1.gz:Sep 30 12:54:48 nelson kernel: Linux version 2.4.9-pa29
+(root@nelson) (gcc version 3.0.2 20010825 (Debian prerelease)) #12 Sun
+Sep 30 12:26:28 BST 2001
+messages.1.gz:Sep 30 12:54:48 nelson kernel: PDC reported no LCD or LED.
+messages.1.gz:Sep 30 12:54:48 nelson kernel: LED display at ffd0c000
+registered
 
-As 'make oldconfig' done (answer no yo EISA support: not need; yes for LASI 
-53C700 support)
+I think ffd0c000 is the correct address looks like it broke between pa45
+and pa52.
 
-Joel
+Any thing I can do to debug this?
 
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+Cheers,
+Scott
