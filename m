@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91A71483A
-	for <parisc-linux@parisc-linux.org>; Tue, 18 Mar 2003 08:10:48 -0700 (MST)
-Date: Tue, 18 Mar 2003 16:10:44 +0100
-Subject: Re: [parisc-linux] CVSy stuff
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v551)
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <willy@debian.org>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20030318143337.GF14520@parcelfarce.linux.theplanet.co.uk>
-Message-Id: <CAA37AAB-5953-11D7-8A4F-0030656F07A2@esiee.fr>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 86EB3483A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 08:18:43 -0700 (MST)
+Date: Tue, 18 Mar 2003 16:18:38 +0100
+Message-ID: <3E68A39600001FFE@ocpmta7.freegates.net>
+In-Reply-To: <20030317163804.GC31378@dsl2.external.hp.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] FC driver?
+To: grundler@dsl2.external.hp.com,
+	"Ryan Bradetich" <rbradetich@uswest.net>
+Cc: "Jan-Benedict Glaw" <jbglaw@lug-owl.de>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,78 +24,133 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le mardi, 18 mar 2003, =E0 15:33 Europe/Paris, Matthew Wilcox a =E9crit =
-:
+Hi all,
+
+Thanks a lot for all those info. 
+
+Unfortunately I have no free time to help more on this driver (and also not
+enough knowledge for the moment: even thought time and work could solve this
+pb :) ).
+
+Joel
+
+
+>-- Original Message --
+>To: Ryan Bradetich <rbradetich@uswest.net>
+>Cc: Jan-Benedict Glaw <jbglaw@lug-owl.de>,
+>	parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] FC driver?
+>From: grundler@dsl2.external.hp.com (Grant Grundler)
+>Date: Mon, 17 Mar 2003 09:38:04 -0700
 >
-> So how about this model...
 >
-> 1. -> linus
-> 1.1 -> LINUS_260
-> 1.2 -> LINUS_261
-> 1.2.1 -> parisc_261
-> 1.2.1.1 -> CVS261_PA1
-> 1.2.1.2 -> CVS261_PA2
-> ...
-> 1.3 -> LINUS_262
-> 1.3.1 -> parisc_262
-> 1.3.1.1 -> CVS262_PA1
+>On Mon, Mar 17, 2003 at 09:22:23AM -0700, Ryan Bradetich wrote:
+>> On parisc?  I've had trouble with it running on my C200.  Maybe
+>> it is time to try it again.  I know Jes and Martin worked on it 
+>> for i386..
 >
-> OK, this model clearly fits CVS' needs much better.  How about ours?
-> Well, it sucks that you're always developing on a branch.  It sucks =
-for
-> people who're used to doing 'cvs up -A' to get to the trunk, because
-> they now get Linus instead of us.  It also sucks that you stay on
-> parisc_261 when you type "cvs up", so you have to explictly say "cvs
-> up -rparisc_262".
+>my bad - you are right. It still doesn' work. Details follow.
 >
-> However, it doesn't have the suckitude of vendor branches, and it=20
-> allows
-> us to reasonably use cvs diff -rlinus.  Choose your suck.
+>I just tried it again with:
+>20:00.0 PCI bridge: Digital Equipment Corporation DECchip 21154 (rev 02)
+>21:04.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel
+>Host Adapter (rev 0a)
+>21:05.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel
+>Host Adapter (rev 0a)
+>
+>20:00.0 Class 0604: 1011:0026 (rev 02)
+>21:04.0 Class 0c04: 103c:1028 (rev 0a)
+>21:05.0 Class 0c04: 103c:1028 (rev 0a)
+>
+>cpqfc driver loads but still finds no devices on the FC hub.
+>
+>gsyprf11:~# modprobe cpqfc
+> scsi_register allocating 6640 bytes for FC HBA
+>  HBA found!
+>  HostAdapter->PciDev->irq = 256
+>  PciDev->baseaddress[0]= 0
+>  PciDev->baseaddress[1]= 20000
+>  PciDev->baseaddress[2]= 20100
+>  PciDev->baseaddress[3]= fffffffffa040000
+>  cpqfcHBAdata->fcChip.Registers. :
+>    IOBaseL = 20000
+>    IOBaseU = 20100
+> ioremap'd Membase: fffffffffa040000
+>    SFQconsumerIndex.address = fffffffffa040058
+>    ERQproducerIndex.address = fffffffffa040008
+>    TYconfig.address = fffffffffa040184
+>    FMconfig.address = fffffffffa0401c0
+>    FMcontrol.address = fffffffffa0401c4
+>  Requesting 255 I/O addresses @ 20000
+>  Requesting 255 I/O addresses @ 20100
+> ResetTachyon
+>  HBA Tachyon RevId 2.2
+>Allocating 129024 for 576 Exchanges @ 00000000355e0000
+>Allocating 112904 for LinkQ @ 00000000355c0000 (576 elements)
+>Allocating 106504 for TachSEST for 512 Exchanges
+>  cpqfcTS: writing IMQ BASE 7580000h    PI 7584000h
+>  cpqfcTS: SEST 000000004be80000(virt): Wrote base 75A0000h @
+>fffffffffa040140
+>cpqfcTS: NVRAM read failed
+> WARNING! HBA NVRAM WWN read failed - make alias
+>  WWN 51044F1044556677
+>  Waiting for broken Brocade switch...
+> scsi_register allocating 6640 bytes for FC HBA
+>  HBA found!
+>  HostAdapter->PciDev->irq = 257
+>  PciDev->baseaddress[0]= 0
+>  PciDev->baseaddress[1]= 20200
+>  PciDev->baseaddress[2]= 20300
+>  PciDev->baseaddress[3]= fffffffffa041000
+>  cpqfcHBAdata->fcChip.Registers. :
+>    IOBaseL = 20200
+>    IOBaseU = 20300
+> ioremap'd Membase: fffffffffa041000
+>    SFQconsumerIndex.address = fffffffffa041058
+>    ERQproducerIndex.address = fffffffffa041008
+>    TYconfig.address = fffffffffa041184
+>    FMconfig.address = fffffffffa0411c0
+>    FMcontrol.address = fffffffffa0411c4
+>  Requesting 255 I/O addresses @ 20200
+>  Requesting 255 I/O addresses @ 20300
+> ResetTachyon
+>  HBA Tachyon RevId 2.2
+>Allocating 129024 for 576 Exchanges @ 000000004be60000
+>Allocating 112904 for LinkQ @ 000000004be40000 (576 elements)
+>Allocating 106504 for TachSEST for 512 Exchanges
+>  cpqfcTS: writing IMQ BASE 7800000h    PI 7804000h
+>  cpqfcTS: SEST 000000004be20000(virt): Wrote base 7820000h @
+>fffffffffa041140
+>cpqfcTS: NVRAM read failed
+> WARNING! HBA NVRAM WWN read failed - make alias
+>  WWN 510450E844556677
+>  Waiting for broken Brocade switch...
+>scsi6 : Agilent FC HBA, Tachyon XL2 HPFC-5200B/2.2: WWN 51044F1044556677
+> on PCI bus 33 device 0x1028 irq 256 IObaseL 0x20000, MEMBASE 0xfa040000
+>PCI bus width 64 bits, bus speed 66 MHz
+>FCP-SCSI Driver v2.1.1
+>GBIC detected: Unknown.  LPSM 0h Monitor
+>scsi7 : Agilent FC HBA, Tachyon XL2 HPFC-5200B/2.2: WWN 510450E844556677
+> on PCI bus 33 device 0x1028 irq 257 IObaseL 0x20200, MEMBASE 0xfa041000
+>PCI bus width 64 bits, bus speed 66 MHz
+>FCP-SCSI Driver v2.1.1
+>GBIC detected: Short-wave.  LPSM 0h Monitor
+>gsyprf11:~#
+>
+>The "NVRAM read failed" msg seems to be a problem still.
+>Fixing that would be a next step. The GBIC detection is the
+>next problem that would need work. Looks like a timing problem
+>since the first GBIC was not detected and the second one was.
+>
+>grant
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-Well, as a matter of fact, it sucks.
 
-Now, we have several alternatives:
-* Use BK.
-* Upgrade DSL2 to an arse-kicking Quad-P4Xeon 3 point oh fuckin' six=20
-sweet gigahertz.
-You won't see anymore lag.
-
-More seriously, I'm no CVS/SCM guru either, and I think that scheme=20
-*could* work,
-assuming we slap ourselves with some tyrannosaurus' tails to get used=20
-to these CVS
-habits.
-
-My own concern is that I don't really see the need for a 4th depth=20
-level. Stop at
-'parisc' branch and work on it seems fairly enough to me, i mean, do we=20=
-
-really want
-to be able to retrieve any '-paXX' subversion, which are usually more=20
-or less about
-changing a dozen of lines in a couple of files in the worse case ?
-
-I'd apply that well known sentence taken from Linux' Coding Styles:
-"if you need more than 3 levels of indentation, you're screwed anyway,=20=
-
-and should fix
-your program."
-I'd say the same goes for CVS branches depth.
-
-I also confess my lack of CVS knowledge, but I like the way gcc/gdb and=20=
-
-other gnu
-projects manage their CVS; that is having their trunk on HEAD, and=20
-branches
-corresponding to releases. I guess this is related to that=20
-heavily-sucking-vendor-
-branches-stuff-willy-hates, and I'm not even certain we could do the=20
-same on a kernel
-development tree, so I won't ask more. Just wanted to express my view :)
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
