@@ -1,34 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA23391
-	for <parisc-linux@puffin.external.hp.com>; Wed, 11 Oct 2000 08:51:42 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA24127
+	for <parisc-linux@puffin.external.hp.com>; Wed, 11 Oct 2000 08:58:30 -0600
 Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 11 Oct 2000 14:52:48 -0000
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Bdale Garbee <bdale@gag.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ntpd fails on mlockall()
-References: <20001010025700.26519359E7@rover.gag.com>
-	<20001010215315.J9399@linuxcare.com> <8766n0ynjw.fsf@rover.gag.com>
-	<20001011130957.N9399@linuxcare.com>
+  by mailserv2.iuinc.com with SMTP; 11 Oct 2000 14:59:21 -0000
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] __hp9000s700 predefined
+References: <200010110704.AAA05911@milano.cup.hp.com>
 From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 11 Oct 2000 10:47:40 -0400
-In-Reply-To: Richard Hirst's message of "Wed, 11 Oct 2000 13:09:57 +0100"
-Message-ID: <87wvffcu43.fsf@linuxcare.com>
+Date: 11 Oct 2000 10:44:31 -0400
+In-Reply-To: Grant Grundler's message of "Wed, 11 Oct 2000 00:04:01 -0700 (PDT)"
+Message-ID: <871yxne8ts.fsf@linuxcare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst <rhirst@linuxcare.com> writes:
+Grant Grundler <grundler@cup.hp.com> writes:
 
-> timer_create() is in librt.a - anyone know whether we expect this to
-> work or not atm?
+> John Marvin suggested we remove the __hp9000s700 from the pa-linux
+> config files since it's HPUX crud. I think he's right since parisc-linux
+> kernels are intended to run on both 700's and 800's.
+> parisc-linux configs functionality in/out based on CONFIG_XXX flags
+> or run-time checks (ie register_driver()).
+> Can we remove the "-D__hp9000s700" from gcc/gcc/config/pa/pa-linux.h?
 
-librt.so you mean, and it may not actually work, because it pulls in
-libpthread.so.  I did enough fixing of linuxthreads such that merely
-linking with -lpthread doesn't break your program, but I expect there
-might be other problems, and actually using threads almost certainly
-will not work.  (we're still missing a few #defines in pt-machine.h,
-which I'll put in today, maybe, but there are probably VM issues in
-the kernel as well, and I don't know if clone(2) actually works).
+Yes
+
+> Similarly, gcc/gcc/config/pa/pa-linux64.h has "-D__hp9000s800"
+> which could/should be removed at the same time.
+
+Yes
+
+It's true, those defines are only there for compatibility with broken
+HP/UX source.  I left them in because I figured it wouldn't break
+anything.  If they really offend people I can certainly remove them :)
 
 -- 
 dhd@linuxcare.com, http://www.linuxcare.com/
