@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from trained-monkey.org (trained-monkey.org [209.217.122.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4E8974855
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 12:46:31 -0600 (MDT)
-To: Matthew Wilcox <willy@debian.org>
-Cc: Randolph Chung <tausq@debian.org>,
-	Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] sys/io.h
-References: <20020624150031.4DA034837@dsl2.external.hp.com> <20020624153959.GH812@tausq.org> <m3fzzbmiw8.fsf@trained-monkey.org> <20020625172950.B32282@parcelfarce.linux.theplanet.co.uk> <m3k7onjj25.fsf@trained-monkey.org>
-From: Jes Sorensen <jes@trained-monkey.org>
-Date: 25 Jun 2002 14:46:27 -0400
-In-Reply-To: Jes Sorensen's message of "25 Jun 2002 14:43:14 -0400"
-Message-ID: <m3hejrjiws.fsf@trained-monkey.org>
+Received: from mel-rto3.wanadoo.fr (smtp-out-3.wanadoo.fr [193.252.19.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D270F484E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 12:59:02 -0600 (MDT)
+Message-ID: <3D18BEF7.1060804@wanadoo.fr>
+Date: Tue, 25 Jun 2002 21:05:27 +0200
+From: eddantes@wanadoo.fr
+MIME-Version: 1.0
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [OT] PCI hardware question
+References: <3D188431.1060804@wanadoo.fr> <20020625182552.B625D4849@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +22,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "Jes" == Jes Sorensen <jes@trained-monkey.org> writes:
+Grant Grundler wrote:
 
-Jes> Well then make it a syscall and do it in the kernel - yes it's
-Jes> not pretty but if the architecture requires it then thats the way
-Jes> to get around it.
+[snip]
 
-Let me elaborate:
+> HP specific PCI Host bus adapter called Dino (aka GSCtoPCI).
+> See hwdb.parisc-linux.org to know which systems used it.
+> Some systems have been fixed with a newer rev of the Dino chip.
+> You can:
+> o update the PDC and install a PCI card
+> o boot parisc-linux
+> o or look for -0004 on the IO board
+> 
+> to figure out if the PCI is usable or not.
+> Only HP PCI graphics cards are permitted to be used in PCI
+> when a broken DINO rev is in the system. PDC revs higher
+> than about 5.x will enforce this.
+> 
+> Read comments in drivers/gsc/dino.c for more details.
+> 
+> grant
 
-When the hardware is evil as you described in your mail, then it has
-to go by the kernel. However if you have multiple cases, like Grant
-mentioned Elroy vs Dino? then glibc can do a test the first time the
-operation is done and cache that in userland for next time a request
-is done - ie. when you're running on the type of hw that can do it in
-userland then you don't have to go by the kernel except for the first
-time.
 
-Jes
+OK, thanks a lot for the precisions. I'll keep those infos in RAM when 
+hunting down the perfect station. I am kind of tempted by a C240 or a 
+C360, the latter being not as common as the former (at least on eBay, 
+any other shop / surplus / auction site welcome), both have Dino. Well, 
+that sounds like a PDC update.
+
+One quick question about it: on on of HP's servers, it says that PDC 
+updates must be performed using a tape drive. 
+(ftp://ftp.itrc.hp.com/firmware_patches/hp/cpu/PF_CC2X0063.txt for the 
+C200/C240) I guess tapes are not so common anymore, especially in 
+workstations, even if I probably have an old SCSI DDT-1 or something 
+like that lying around somewhere in my 
+pile-of-junk-salvaged-to-repare-dead-computers. Any other way to do it? 
+CD-R? Small empty HDD partition?
+
+And at last, what about compatibility of PCI cards between different 
+architectures? I'm wondering about it due to the different PC and Apple 
+cards from some manufacturers (Adaptec and ATI, for example). The bottom 
+line being: if I stick a PC-world USB 2.0 or whatever card in a C240, 
+any chance that it *may* work, even if it requires software tweaking and 
+/ or hacking?
+
+Thanks again!
+/Dantes
