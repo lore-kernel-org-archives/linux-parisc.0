@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 438CF482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 00:26:40 -0600 (MDT)
-Date: Tue, 28 May 2002 23:26:38 -0700 (PDT)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
+To: Richard Hirst <rhirst@linuxcare.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.18 SMP instability 
-In-Reply-To: <20020529043916.A15D3482A@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0205282315190.11012-100000@garibaldi.apptechsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [parisc-linux] PATCH: flush_icache_page() and flush_icache_range() 
+In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
+   of "Wed, 29 May 2002 00:40:24 BST." <20020528234023.GF3471@sleepie.demon.co.uk>
+References: <20020528234023.GF3471@sleepie.demon.co.uk> 
+Date: Wed, 29 May 2002 00:30:43 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020529063043.A9FD4482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,45 +19,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 28 May 2002, Grant Grundler wrote:
+Richard Hirst wrote:
+> This is because it plants breakpoints,
+> but those breakpoints sit in the data cache and don't get flushed
+> through to be visible as code in time. 
 
-> Jeremy Drake wrote:
-> > Some things that occured to me about the hardware that may be influencing 
-> > this.  The on-board USB on this box is broken (as in physically damaged).  
-> 
-> That's a good observation. Can you characterize how extensive is the
-> physical damage?
+Richard,
+Someone put code in arch/parisc/mm/init.c as per Alan Cox's suggestion
+to trap excessive __init's. But it didn't flush dcache or icache.
+Can you glob/rework the following patch with yours?
 
-The plastic thing that the pins sit on was missing from one of the 2 usb 
-ports when the box arrived.  I, not having noticed this, plugged a 
-keyboard into it.  It worked, but after playing with serial consoles and 
-such it wouldn't go back.  The pins were bent because the reinforcing 
-plastic was missing.  I tried to bend the pins so that they didn't short 
-anything, and one broke off.  Both onboard USB ports haven't worked since.  
-When booting, it said "initializing keyboard" and then "IODC error".  I 
-put it on serial console and left it alone after that.
+(I'm very guilty of being tired and not checking for compile errors
+or warnings...way past my bedtime again...the code does compile
+and link though)
+
+thanks,
+grant
+
+Index: arch/parisc/mm/init.c
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/mm/init.c,v
+retrieving revision 1.48
+diff -u -p -r1.48 init.c
+--- arch/parisc/mm/init.c	2002/04/15 23:49:12	1.48
++++ arch/parisc/mm/init.c	2002/05/29 06:14:16
+@@ -381,10 +381,23 @@ void free_initmem(void)
+ 	printk(KERN_INFO "Freeing unused kernel memory: ");
  
-> > I don't recall anything on the previous console output that suggests
-> the USB interface driver isn't happy.
-> 
-> > I have a pci usb card in there for typing on the graphics console, and 
-> > when I installed it into the first slot recommended by the manual (2 I 
-> > think) the box did some HPMC stuff when it tried to do selftests.  I moved 
-> > it to slot 8 and everything seems happy with it.  Maybe something in the 
-> > smp code is aggrevating these problems...
-> 
-> Possible. Which manual are you referring to?
-> one that came with the USB card or some HP PARISC manual?
-
-The J5000 owners manual, 
-http://www.hp.com/workstations/support/documentation/manuals/user_guides/j_class/A5991-90000.pdf 
-near the top of page 54 it says "For non-graphics cards, insert them in 
-this order: Slot 2, then 8, 3, 5, and finally 6."
-
-> 
-> grant
-> 
-
--- 
-If a man has a strong faith he can indulge in the luxury of skepticism.
-		-- Friedrich Nietzsche
+ #if 1
+-	cli();	/* disable all interrupts */
+-	memset(&__init_begin, 0xff, 
++	/* Attempt to catch anyone trying to execute code here
++	 * by filling the page with BRK insns.
++	 * 
++	 * If we disable interrupts for all CPUs, then IPI stops working.
++	 * Kinda breaks the global cache flushing.
++	 */
++	local_irq_disable();
++
++	memset(&__init_begin, 0x00, 
+ 		(unsigned long)&__init_end - (unsigned long)&__init_begin);
+-	sti();	/* re-enable all interrupts */
++
++	flush_data_cache();
++	asm volatile("sync" : : );
++	flush_icache_range(&__init_begin, &__init_end);
++	asm volatile("sync" : : );
++
++	local_irq_enable();
+ #endif
+ 	
+ 	addr = (unsigned long)(&__init_begin);
