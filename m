@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7E3F24849
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 13:15:26 -0700 (MST)
-Received: from npyu.esiee.fr (npyu.esiee.fr [147.215.80.150])
-	by mail.esiee.fr (Postfix) with ESMTP id 62FE249BDF
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 21:15:25 +0100 (CET)
-Date: Mon, 4 Feb 2002 21:15:25 +0100
-Mime-Version: 1.0 (Apple Message framework v480)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-From: Thibaut VARENE <varenet@esiee.fr>
-To: PA/Linux <parisc-linux@lists.parisc-linux.org>
-Message-Id: <EC88D53E-19AB-11D6-B4EE-0030656F07A2@esiee.fr>
-Subject: [parisc-linux] MacOSX - vmlinux linking error with the latest xc
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4105B483E
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 13:21:33 -0700 (MST)
+Message-Id: <200202042021.g14KLRtv019511@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] XGCC MacOSX/hppa64-linux build error
+To: varenet@esiee.fr (Thibaut VARENE)
+Date: Mon, 4 Feb 2002 15:21:27 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <CD0E8AAC-19AB-11D6-B4EE-0030656F07A2@esiee.fr> from "Thibaut VARENE" at Feb 4, 2002 09:14:32 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,41 +22,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi again,
+> build/gcc/gcc/xgcc -B/Users/varenet/palinux-builds/xc-build/gcc/gcc/ 
+> -B/usr/local/palinux/hppa64-linux/bin/ 
+> -B/usr/local/palinux/hppa64-linux/lib/ -isystem 
+> /usr/local/palinux/hppa64-linux/include --print-libgcc-file-name`
+> collect2: ld terminated with signal 10 [Bus error], core dumped
 
-So I tried to compile kernel 2.4.17-pa17 (fetched from CVS), using a 
-.config that has already been used to successfully compile the same 
-kernel for B132 with Taggart's X86 xc.
-It broke when linking vmlinux.
+It may be totally unrelated but I am also having trouble with ld
+segfaulting when it tries to build a shared library on hppa64-hp-hpux11.11.
 
-Here is the error output:
-
-hppa-linux-ld  -r -o network.o socket.o core/core.o ethernet/ethernet.o 
-802/802.o sched/sched.o netlink/netlink.o ipv4/ipv4.o unix/unix.o 
-packet/packet.o sunrpc/sunrpc.o sysctl_net.o
-hppa-linux-ld -T /Users/varenet/linux/arch/parisc/vmlinux.lds  
-arch/parisc/kernel/head.o  init/main.o init/version.o \
-         --start-group \
-         arch/parisc/kernel/pdc_cons.o arch/parisc/kernel/process.o 
-arch/parisc/lib/lib.a arch/parisc/mm/mm.o arch/parisc/kernel/kernel.o 
-arch/parisc/hpux/hpux.o kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o 
-arch/parisc/kernel/init_task.o \
-          drivers/char/char.o drivers/block/block.o drivers/misc/misc.o 
-drivers/net/net.o drivers/media/media.o drivers/scsi/scsidrv.o 
-drivers/pci/driver.o drivers/video/video.o drivers/gsc/gscbus.o 
-arch/parisc/math-emu/math.o \
-         net/network.o \
-         `hppa-linux-gcc -print-libgcc-file-name` 
-/Users/varenet/linux/arch/parisc/lib/lib.a 
-/Users/varenet/linux/lib/lib.a  \
-         --end-group \
-         -o vmlinux
-make: *** [vmlinux] Bus error
-make: *** Deleting file `vmlinux'
-
-Any idea ?
-
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://www.esiee.fr/puffin
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
