@@ -1,38 +1,53 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA14031
-	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Dec 2000 20:28:06 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 3 Dec 2000 03:30:33 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA22117;
-	Sun, 3 Dec 2000 14:30:07 +1100
-Date: Sun, 3 Dec 2000 14:30:07 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Richard Henderson <rth@redhat.com>
-cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-        Richard Hirst <rhirst@linuxcare.com>, parisc-linux@thepuffingroup.com,
-        gcc-patches@gcc.gnu.org
-Subject: Re: pa reload problem
-In-Reply-To: <20001202114327.C27671@redhat.com>
-Message-ID: <Pine.LNX.4.21.0012031415130.16588-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA15293
+	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Dec 2000 22:08:49 -0700
+Message-Id: <200012030511.VAA02450@milano.cup.hp.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] merge activity 
+In-reply-to: Your message of "Sat, 02 Dec 2000 21:08:03 PST."
+             <20001202210803.D8288@parcelfarce.linux.theplanet.co.uk>
+Date: Sat, 02 Dec 2000 21:11:48 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 2 Dec 2000, Richard Henderson wrote:
+Matthew Wilcox wrote:
+> those on the CVS list will have noticed a lot of activity just recently.
+> Alan Cox & myself are geting the tree into a state where it can be dropped
+> on Linus.
 
-> On Sat, Dec 02, 2000 at 11:35:19PM +1100, Alan Modra wrote:
-> > 	* flow.c (mark_regs_live_at_end): Set PIC_OFFSET_TABLE_REGNUM even
-> > 	when PIC_OFFSET_TABLE_REG_CALL_CLOBBERED.
+Excellent you guys!
+
+> A number of changes have been made:
 > 
-> I can't believe this makes a difference.  We already have
+> s/STATIC/static/
 
-It did, I can assure you.  Thanks for the feedback though.  I'll freely 
-admit to not having much of an understanding of gcc internals.  What I've 
-learned has mostly been from poking around with gdb when faced with a gcc 
-bug, and I rely on you and others pointing out the proper fix from a
-higher level perspective.
+It's ok that's it dropped but since I added I think you should know
+why o put it in, in the first place.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Prumpf criticized this in my first dino code drop claiming one
+could just compile with "-Dstatic=" to get the same effect
+as "-DSTATIC=". That's not true. data declared static inside
+a function will behave differently without "static" storage class.
+STATIC serves to differentiate function declarations from local
+static data declarations.
+
+Why differentiate? Debuggers. I want to make sure all the symbols
+I care about are visible - I'm told under ELF they are. Under SOM
+binary format I know they weren't.
+
+> u_long becomes unsigned long
+
+I've been using "ulong" as well. Is less than desirable as well?
+Feel free to change if it is.
+
+> old code has mostly been cleaned out
+> a lot of #ifdefs have been removed.
+
+Some of the "ifdef 0" I have in "my" code are there for future stuff.
+An examples is code related to DELAYED_RESOURCE_CNT in sba_iommu.c.
+Fortunately, this wasn't removed.
+Haw should I mark this to make sure people understand it's work-in-progress?
+
+thanks,
+grant
