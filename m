@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from montperdu.pyrene.net (jmharang.net1.nerim.net [62.212.119.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B58EE483E
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Nov 2003 12:30:43 -0700 (MST)
-Received: from montperdu.pyrene.net (localhost [127.0.0.1])
-	by montperdu.pyrene.net (Postfix) with SMTP id D173C2C95E
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Nov 2003 20:30:39 +0100 (CET)
-Date: Tue, 4 Nov 2003 20:30:39 +0100
-From: Jean-marc Harang <jean-marc.harang@laposte.net>
-To: parisc-linux@lists.parisc-linux.org
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 96813483E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Nov 2003 17:47:48 -0700 (MST)
+Date: Tue, 4 Nov 2003 17:47:46 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] HP 9000 E55 (and family) status
-Message-Id: <20031104203039.2a83a36d.jean-marc.harang@laposte.net>
-In-Reply-To: <3FA689FB.5080704@gmx.at>
+Message-ID: <20031105004746.GA9926@colo.lackof.org>
 References: <3FA689FB.5080704@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3FA689FB.5080704@gmx.at>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,37 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le Mon, 03 Nov 2003 18:01:47 +0100
-Christoph Plattner <christoph.plattner@gmx.at> a =E9crit:
-
+On Mon, Nov 03, 2003 at 06:01:47PM +0100, Christoph Plattner wrote:
 > By the way, as we discuss on the E55,
 > what's the status ?
->=20
 > Are there any news on MUX or SCSI driver ?
->=20
 > Are there any news on the NDA, .... ?
->=20
-> Christoph Plattner
 
-Hello,
+In Feb/March 2003 I pulled together the documents for SCSI and prepared
+the NDA for you. I didn't do anything for the Mux since I really don't
+know anything about it.  It took fours monthes for my management (sorry,
+I'm somewhat bitter about this) to tell me the process had changed and
+I need to talk to run the NDA past an internal HP "review board".
 
-Sorry, I'm a little late.=20
+I've not taken the steps to do that becuase I'm saturated
+with too many projects. But if E55 still means something to you
+(and it sounds like it does), I'll charge this windmill as
+well. Pokeme again monthly and I'll let you know if/how far I've
+gotten on that.
 
-The status is that, as you said before, we need the MDP panel to get access
-to the serial console (port 0 of the panel). I'm looking for this panel and=
- i
-think i found one ;)=20
-
-After the blind boot, we can't access to the HP-UX. No login is avaible,
-because this E55 is a decommissioned one, a "gift" to the local Linux (and =
-other
-free software) User Group of my town (Toulouse, France).=20
-
-So we need to make a fresh install of HP-UX. That's why we need the serial
-console (cdrom boot).=20
-
-thanks for the informations :)
-
-Jean-marc Harang
---
-http://www.culte.org
+thanks for you "infinite" patience,
+grant
