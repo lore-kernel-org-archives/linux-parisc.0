@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from virtualhost.dk (ns.virtualhost.dk [195.184.98.160])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07C1C482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 01:34:28 -0700 (MST)
-Date: Fri, 16 Nov 2001 09:33:56 +0100
-From: Jens Axboe <axboe@suse.de>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: "David S. Miller" <davem@redhat.com>, linux-mm@kvack.org,
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 429C8482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 03:03:18 -0700 (MST)
+Subject: Re: [parisc-linux] Linux/PA-RISC speed (was Re: C240 Graphics, 64bit kernel and more)
+To: thunder7@xs4all.nl
+Date: Fri, 16 Nov 2001 10:10:28 +0000 (GMT)
+Cc: xam@student.cs.ucc.ie (Markus Grabert),
 	parisc-linux@lists.parisc-linux.org
-Message-ID: <20011116093356.D27010@suse.de>
-References: <200111160730.AAA18774@puffin.external.hp.com>
-Mime-Version: 1.0
+In-Reply-To: <20011116073418.A15527@alpha.of.nowhere> from "Jurriaan on Alpha" at Nov 16, 2001 07:34:18 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200111160730.AAA18774@puffin.external.hp.com>
-Subject: [parisc-linux] Re: parisc scatterlist doesn't want page/offset
+Message-Id: <E164fx6-0003VW-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 16 2001, Grant Grundler wrote:
-> Hi all,
-> Could someone point me to any discussion about adding
-> page/offset to struct scatterlist?
+> Alpha (gcc-2.95.4)        : real 5m45 user 5m13 system  9s
+> Alpha (gcc-3.0.2 20010924): real 4m36 user 4m12 system 10s
+> C200+ (gcc-3.0.2 20010922): real 8m23 user 7m48 system 33s
+> dual P3/700 (gcc-2.95.4)  : real 1m20 user 1m17 system  3s
 
-See lkml a couple months back, 32-bit dma etc discussion.
-> 
-> To me, it looks like a half-assed step to support DMA to HIGHMEM
-> on 32-bit arches.  TBH, I'd like to see page/offset replace
-> address in the pci_map* interfaces and struct scatterlist.
-> But then replace it across the board so the DMA mapping code
-> doesn't have to decide which field to use (KISS). This really
-> belongs in 2.5 kernel.
+Be cautious. Unless you built cross compilers and each is building for
+the same target you are doing different amounts of work for each target
+CPU
 
-It's not half-assed, it's needed. I would imagine that pci_map_single
-etc stays though, although pci_map_page or pci_map_sg is the preferred
-approach.
-
-Regarding the patch -- please add a helper function to set the sg list
-instead of introducing CONFIG_HIGHMEM all over the place. I'm assuming
-you are missing the piece which leaves out page/offset for non-highmem,
-if not you are really pedantic about saving a few cycles :-)
-
--- 
-Jens Axboe
+Looking at the high system time I guess there is work to do on the hppa,
+but it doesn't suprise me. It takes a lot of time to tune a port after it
+actually works reliably
