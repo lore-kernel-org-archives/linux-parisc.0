@@ -1,38 +1,31 @@
-From: Helge Deller <deller@gmx.de>
+From: Kyle McMartin <kyle@parisc-linux.org>
 Subject: Re: [parisc-linux] Banshee and Voodoo2
-Date: Sat, 8 Jan 2005 20:33:33 +0100
-Message-ID: <200501082033.33830.deller@gmx.de>
-References: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net>
+Date: Sat, 8 Jan 2005 15:35:06 -0500
+Message-ID: <20050108203506.GB22378@localhost.localdomain>
+References: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net> <200501082033.33830.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <kyle@engsoc.org>
+In-Reply-To: <200501082033.33830.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Saturday 08 January 2005 18:26, Jyry Suuntala wrote:
-> Does anyone know is this list the actual list of supported hardware? If 
-> so, does X work with Banshee and at what resolution? And the same 
-> questions apply for Voodoo2, too :)
+On Sat, Jan 08, 2005 at 08:33:33PM +0100, Helge Deller wrote:
+> > p.s. any news on Visualize-FX4?
+> 
+> Not as I know... :-(
+> 
 
-Vodoo2: 800x600x16bpp (1024x768x16bpp worked unreliable for me)
-No idea about Banshee.
+I've been working on a driver, based on the register list in the
+x86 AGP driver, and some hints I got from the author of that driver. However,
+as of yet, I've had no luck. Though, that's likely because it's taken
+me quite a bit of time to become familiar with how the framebuffer
+interfaces work.
 
-> p.s. any news on Visualize-FX4?
+The goal is a 24bpp raw, unaccelerated framebuffer... I'd be happy with
+better, but I don't have enough information for that.
 
-Not as I know... :-(
-
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Cheers,
+	Kyle
