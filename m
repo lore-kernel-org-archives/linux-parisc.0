@@ -1,274 +1,141 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA29728
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 18:16:58 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA10493;
-	Tue, 16 Jan 2001 12:20:20 +1100
-Date: Tue, 16 Jan 2001 12:20:19 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Jeffrey A Law <law@redhat.com>
-cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, gcc-patches@gcc.gnu.org,
-        parisc-linux@puffin.external.hp.com
-Subject: Re: Oust HPPA PIC_OFFSET_TABLE_REGNUM_SAVED 
-In-Reply-To: <Pine.LNX.4.21.0101160955240.4272-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0101161215520.4272-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA30519
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 19:22:58 -0700
+Received: from dualcel400 ([141.140.106.33])
+ by macalester.edu (PMDF V5.2-32 #38670)
+ with SMTP id <01JYY6H58QFS001U21@macalester.edu> for
+ parisc-linux@thepuffingroup.com; Mon, 15 Jan 2001 20:26:40 CDT
+Date: Mon, 15 Jan 2001 20:25:15 -0600
+From: Josiah Carlson <jcarlson@macalester.edu>
+Subject: Re: [parisc-linux] website
+In-reply-to: <20010115231000.J28689@parcelfarce.linux.theplanet.co.uk>
+To: parisc-linux@thepuffingroup.com
+Message-id: <3A63B10BBB.D2B5JCARLSON@smtp.macalester.edu>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII
+References: <3A63811B3D8.D2B3JCARLSON@smtp.macalester.edu>
+ <20010115231000.J28689@parcelfarce.linux.theplanet.co.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 16 Jan 2001, I wrote:
+Matthew Wilxox,
 
-> There is possibly a small problem.  The test at the end of
-> hppa_expand_prologue:
+I've been trying to look at the issues you've brought up, and figure out
+some way that someone can fix them.  Here are the problems that I've
+been able to come up with from the emails:
 
-Here is an updated patch that cures this, and doesn't restore r27 before
-calls.
+1. Font sizes and the resulting readibility on hi res screens,
+particlarly on netscape browsers.
+2. Problem with the memory usage of the tables, and the rendering speed,
+particularly on netscape browsers.
+3. Build system as it relates to the the way the pages are
+updated...causing them to get out of sync.
+4. The fact that parisc-linux.org is overseen by the HP corporation, and
+that they are unwilling to change the layout and such of the web page.
 
-	* config/pa/pa.h (PIC_OFFSET_TABLE_REGNUM_SAVED): Remove.
-	(machine_function): Define.
-	(PIC_OFFSET_TABLE_SAVE_RTX) : Define.
-	(INIT_EXPANDERS): Define.
-	* config/pa/pa.c (pa_init_machine_status, pa_free_machine_status,
-	pa_init_expanders): New functions.
-	(hppa_expand_prologue): Use PIC_OFFSET_TABLE_SAVE_RTX instead of
-	PIC_OFFSET_TABLE_REGNUM_SAVED.
-	* config/pa/pa.md: Use PIC_OFFSET_TABLE_SAVE_RTX instead of
-	PIC_OFFSET_TABLE_REGNUM_SAVED throughout.
-	* config/pa/pa32-regs.h (CONDITIONAL_REGISTER_USAGE): Remove
-	references to PIC_OFFSET_TABLE_REGNUM_SAVED.
-	* config/pa/pa64-regs.h (CONDITIONAL_REGISTER_USAGE): Likewise.
+Problems 1 and 2 both seem to stem from the way the Netscape browser
+handles pages.  Yes, the over-use of tables is not necessary and causes
+loading issues for people on saturated connections who also happen to be
+using netscape 4.x.  And I also hate the over-use of tables (I once
+viewed a web page that had 4 images and maybe a paragraph or so of
+actual text, but was filled with 25k of table formatting crap that could
+have been removed with a <center> tag and a few line breaks).  But they
+aren't embedding hundreds of tables within themselves, I looked at the
+html in your email.  I agree, the three tables didn't need to be used,
+but then again, the designers of the pages probably aren't using a text
+editor to set up a web page, I wouldn't doubt if they are using some
+sort of gui editor...which in my experience with them, produces too much
+unneeded bullshit.
+I'm guessing with the amount of stuff they've got to set up, they lack
+the time to hand code everything...that is much of the same reason why
+so many pages have so many tables.  Not everyone has the time to hand
+code every page, but then again, if some section of code is going to go
+into every web page, it should be tight.  Though we've got to remember
+that we're dealing with a corporation, with a structure, with
+supervisors.  If there's one thing that I've learned from working at any
+workplace, it's that supervisors sometimes know less than a 2 year old
+and sometimes are twice as stubborn.  If they're using some sort of
+commercial web development tool, I would doubt if the supervisor cares
+who did what, "If it wasn't produced by the package, it's not going in."
+(quote from a supervisor I had, and this also being the response to
+problem 4).
+What really needs to happen to fix these pages, is not for you to leave
+because you're unhappy with the future pages, but for the person(s) who
+is(are) actually developing the pages to be able to be contacted, and
+take constructive feedback, and actually be able to do something about
+it (where's webmaster@parisc-linux.org?).
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+We can fix the font sizes and such though.  In the netscape preferences
+(on 4.x, 6, and mozilla) have options for font size and style overrides
+(Edit->Preferences->Appearance->Fonts). This is a personal thing, a
+seriously personal thing, but easily fixed on all current browsers (IE
+4.0+, NS4.5+, 6 and mozilla (don't know the original milestone this
+started working on, but I've got 11, 13 and 17 if anyone wants to look).
 
-diff -urp -xCVS egcs/gcc/config/pa/pa.c newegcs/gcc/config/pa/pa.c
---- egcs/gcc/config/pa/pa.c	Thu Jan  4 15:22:58 2001
-+++ newegcs/gcc/config/pa/pa.c	Tue Jan 16 10:45:25 2001
-@@ -2918,6 +2918,40 @@ output_function_prologue (file, size)
-   remove_useless_addtr_insns (get_insns (), 0);
- }
- 
-+/* Functions to initialize pic_offset_table_save_rtx.
-+   These will be called, via pointer variables,
-+   from push_function_context and pop_function_context.  */
-+
-+static void
-+pa_init_machine_status (p)
-+     struct function *p;
-+{
-+  p->machine = (machine_function *) xmalloc (sizeof (machine_function));
-+
-+  p->machine->pic_offset_table_save_rtx = gen_reg_rtx (Pmode);
-+}
-+
-+static void
-+pa_free_machine_status (p)
-+     struct function *p;
-+{
-+  if (p->machine == NULL)
-+    return;
-+
-+  free (p->machine);
-+  p->machine = NULL;
-+}
-+
-+/* Do anything needed before RTL is emitted for each function.  */
-+
-+void
-+pa_init_expanders ()
-+{
-+  /* Arrange to save and restore machine status around nested functions.  */
-+  init_machine_status = pa_init_machine_status;
-+  free_machine_status = pa_free_machine_status;
-+}
-+
- void
- hppa_expand_prologue()
- {
-@@ -3153,19 +3187,17 @@ hppa_expand_prologue()
-      made incorrect assumptions about using global variables to hold
-      per-function rtl code generated in the backend.
- 
--     So instead, we copy the PIC register into a reserved callee saved
--     register in the prologue.  Then after each call we reload the PIC
--     register from the callee saved register.  We also reload the PIC
--     register from the callee saved register in the epilogue ensure the
--     PIC register is valid at function exit.
--
--     This may (depending on the exact characteristics of the function)
--     even be more efficient. 
--
--     Avoid this if the callee saved register wasn't used (these are
--     leaf functions).  */
--  if (flag_pic && regs_ever_live[PIC_OFFSET_TABLE_REGNUM_SAVED])
--    emit_move_insn (gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED),
-+     So instead, we copy the PIC register into a callee saved register
-+     in the prologue.  Then after each call we reload the PIC register
-+     from the callee saved register.
-+
-+     Avoid doing this if the register isn't used (eg. leaf functions)
-+     as it's an error to delete an instruction from the prologue.  */
-+
-+  if (flag_pic
-+      && (GET_CODE (PIC_OFFSET_TABLE_SAVE_RTX) != REG
-+	  || HARD_REGISTER_P (PIC_OFFSET_TABLE_SAVE_RTX)))
-+    emit_move_insn (PIC_OFFSET_TABLE_SAVE_RTX,
- 		    gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM));
- }
- 
-diff -urp -xCVS egcs/gcc/config/pa/pa.h newegcs/gcc/config/pa/pa.h
---- egcs/gcc/config/pa/pa.h	Thu Jan  4 15:22:58 2001
-+++ newegcs/gcc/config/pa/pa.h	Mon Jan 15 20:54:01 2001
-@@ -70,6 +70,14 @@ enum architecture_type
-   ARCHITECTURE_20
- };
- 
-+struct rtx_def;
-+/* A C structure for machine-specific, per-function data.
-+   This is added to the cfun structure.  */
-+typedef struct machine_function
-+{
-+  struct rtx_def *pic_offset_table_save_rtx;
-+} machine_function;
-+
- /* For -march= option.  */
- extern const char *pa_arch_string;
- extern enum architecture_type pa_arch;
-@@ -493,8 +501,8 @@ extern int target_flags;
- #define PIC_OFFSET_TABLE_REG_CALL_CLOBBERED 1
- 
- /* Register into which we save the PIC_OFFEST_TABLE_REGNUM so that it
--   can be restore across function calls.  */
--#define PIC_OFFSET_TABLE_REGNUM_SAVED 4
-+   can be restored across function calls.  */
-+#define PIC_OFFSET_TABLE_SAVE_RTX (cfun->machine->pic_offset_table_save_rtx)
- 
- #define DEFAULT_PCC_STRUCT_RETURN 0
- 
-@@ -854,6 +862,10 @@ extern enum cmp_type hppa_branch_type;
- 	     DELTA, target_name, DELTA); \
-   fprintf (FILE, "\n\t.EXIT\n\t.PROCEND\n"); \
- }
-+
-+/* Initialize data used by insn expanders.  This is called from
-+   init_emit, once for each function, before code is generated. */
-+#define INIT_EXPANDERS pa_init_expanders ()
- 
- /* This macro generates the assembly code for function entry.
-    FILE is a stdio stream to output the code to.
-diff -urp -xCVS egcs/gcc/config/pa/pa.md newegcs/gcc/config/pa/pa.md
---- egcs/gcc/config/pa/pa.md	Mon Jan  8 22:47:00 2001
-+++ newegcs/gcc/config/pa/pa.md	Tue Jan 16 10:45:58 2001
-@@ -5735,18 +5735,12 @@
-   if (flag_pic)
-     {
-       use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn), pic_offset_table_rtx);
--      use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn),
--	       gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
-       if (TARGET_64BIT)
- 	use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn), arg_pointer_rtx);
- 
-       /* After each call we must restore the PIC register, even if it
--	 doesn't appear to be used.
--
--         This will set regs_ever_live for the callee saved register we
--	 stored the PIC register in.  */
--      emit_move_insn (pic_offset_table_rtx,
--		      gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
-+	 doesn't appear to be used.  */
-+      emit_move_insn (pic_offset_table_rtx, PIC_OFFSET_TABLE_SAVE_RTX);
-     }
-   DONE;
- }")
-@@ -5915,18 +5909,12 @@
-   if (flag_pic)
-     {
-       use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn), pic_offset_table_rtx);
--      use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn),
--	       gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
-       if (TARGET_64BIT)
- 	use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn), arg_pointer_rtx);
- 
-       /* After each call we must restore the PIC register, even if it
--	 doesn't appear to be used.
--
--         This will set regs_ever_live for the callee saved register we
--	 stored the PIC register in.  */
--      emit_move_insn (pic_offset_table_rtx,
--		      gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
-+	 doesn't appear to be used.  */
-+      emit_move_insn (pic_offset_table_rtx, PIC_OFFSET_TABLE_SAVE_RTX);
-     }
-   DONE;
- }")
-@@ -6096,16 +6084,10 @@
-   if (flag_pic)
-     {
-       use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn), pic_offset_table_rtx);
--      use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn),
--	       gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
- 
-       /* After each call we must restore the PIC register, even if it
--	 doesn't appear to be used.
--
--         This will set regs_ever_live for the callee saved register we
--	 stored the PIC register in.  */
--      emit_move_insn (pic_offset_table_rtx,
--		      gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
-+	 doesn't appear to be used.  */
-+      emit_move_insn (pic_offset_table_rtx, PIC_OFFSET_TABLE_SAVE_RTX);
-     }
-   DONE;
- }")
-@@ -6158,16 +6140,10 @@
-   if (flag_pic)
-     {
-       use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn), pic_offset_table_rtx);
--      use_reg (&CALL_INSN_FUNCTION_USAGE (call_insn),
--	       gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
- 
-       /* After each call we must restore the PIC register, even if it
--	 doesn't appear to be used.
--
--         This will set regs_ever_live for the callee saved register we
--	 stored the PIC register in.  */
--      emit_move_insn (pic_offset_table_rtx,
--		      gen_rtx_REG (word_mode, PIC_OFFSET_TABLE_REGNUM_SAVED));
-+	 doesn't appear to be used.  */
-+      emit_move_insn (pic_offset_table_rtx, PIC_OFFSET_TABLE_SAVE_RTX);
-     }
-   DONE;
- }")
-diff -urp -xCVS egcs/gcc/config/pa/pa32-regs.h newegcs/gcc/config/pa/pa32-regs.h
---- egcs/gcc/config/pa/pa32-regs.h	Thu Jan 11 16:10:48 2001
-+++ newegcs/gcc/config/pa/pa32-regs.h	Mon Jan 15 18:22:39 2001
-@@ -110,11 +110,7 @@
- 	fixed_regs[i] = call_used_regs[i] = 1; 	\
-     }						\
-   if (flag_pic)					\
--    {						\
--      fixed_regs[PIC_OFFSET_TABLE_REGNUM] = 1;	\
--      fixed_regs[PIC_OFFSET_TABLE_REGNUM_SAVED] = 1;\
--      call_used_regs[PIC_OFFSET_TABLE_REGNUM_SAVED] = 1;\
--    }						\
-+    fixed_regs[PIC_OFFSET_TABLE_REGNUM] = 1;	\
- }
- 
- /* Allocate the call used registers first.  This should minimize
-diff -urp -xCVS egcs/gcc/config/pa/pa64-regs.h newegcs/gcc/config/pa/pa64-regs.h
---- egcs/gcc/config/pa/pa64-regs.h	Thu Jan 11 16:10:48 2001
-+++ newegcs/gcc/config/pa/pa64-regs.h	Mon Jan 15 18:22:40 2001
-@@ -109,11 +109,7 @@ Boston, MA 02111-1307, USA.  */
- 	fixed_regs[i] = call_used_regs[i] = 1; 	\
-     }						\
-   if (flag_pic)					\
--    {						\
--      fixed_regs[PIC_OFFSET_TABLE_REGNUM] = 1;	\
--      fixed_regs[PIC_OFFSET_TABLE_REGNUM_SAVED] = 1;\
--      call_used_regs[PIC_OFFSET_TABLE_REGNUM_SAVED] = 1;\
--    }						\
-+    fixed_regs[PIC_OFFSET_TABLE_REGNUM] = 1;	\
- }
- 
- /* Allocate the call used registers first.  This should minimize
+Memory usage because of tables...I really can't help that, and unless
+someone breaks into the mozilla source code and tightens it up a tad...I
+don't think it's ever going to be efficient (though I can't notice a
+difference in IE...but then again, IE never had the problems with tables
+that NS 4.x had), though at least mozilla/6 renders as it receives
+information, quite a step up from the 4.x releases.
+
+Build system and page updates...ouch.  Yeah, that's a problem, though I
+don't have a solution. *frown*
+
+In response to your previous email:
+No, I haven't read them, I must've missed them.  But yes, it is a
+problem...but I was attempting to refer to the parts that non-developers
+see, the faq, the start page, etc.  Though I can't change the build
+system, not only am I not privy to the code, but I doubt that HP would
+accept any changes if I had any. (more on that later)
+
+The content comment...I actually went surfing around the page and
+noticed your name here and there...funny, I never paid it attention
+before.  My comment was to address everyone.  Let us say for example
+that...I've got a C110 (which I happen to), and I've been having
+problems getting it working (which I have, but the current comments on
+the C100 are helping).  Currently there is not a whole lot of info on
+getting said machines running on the main site.  If I ever get my C110
+running (like the 712's and B160L's), I have to document the steps
+required because someone in the future may have to do it again where I'm
+at, and it could also be posted to the parisc-linux.org site for other
+people. Using that as an example, anyone who'se had problems getting
+things set up should document and get the solutions posted to the site
+under the information for that particular machine.  Thank you for
+posting, anything that people can add to help is all that much better
+for the new guy (which I still am).
+
+(in response to Stan Stieler) And about "my site's webmaster"...well,
+that's not my site. It's my school's site, for I am merely an undergrad.
+I do know that they use Dreamweaver to write the pages, which gives a
+reason for the use of CSS, and over-use of tables on every page that is
+school written. But that's their thing, and it's also a corporation of
+sorts.  I know the guys who are doing work study making the pages...and
+they would all prefer to do everything with a few scripts and some
+hand-coded html...but the supervisors only know dreamweaver...so that's
+all they get.  I looked at stieler.com and have been to hp.com quite
+often, and while I agree that content should be the absolute desire,
+content with a poor way of accessing said content is nearly as bad as
+not having any.  Hp's site has alot of useful information...but I've
+spent hours looking for what I need (same with intel's site).  Your site
+doesn't have any ambiguity, but it also does not have the insane amounts
+of information that the HP site has, nor is it nearly as visually
+interesting0.
+I'm going to use slashdot.org as an example here.  It has plenty of
+information, fairly un-ambiguous interface, kind of visually interesting,
+but also happens to have many tables.  Tables aren't necessarily bad
+when used properly (not to say that slashdot.org uses them properly, but
+they are used for the desired formatting, and not much else would
+accomplish what they have).
+The trick is to remember to seperate the different levels of web design
+in a corporate style environment:
+Content (what's there)
+Interface (how do they get to it)
+Back end (how it's stored/generated)
+As a geek news source, slashdot.org has got them all down pretty well,
+leaving only a little to be desired in the way of the amount of html
+they use (and a bit of FUD on occasion).
+hp.com lacks interface, but has excellent content and one hell of a back
+end to be able to handle all that info.
+
+So yeah, that's my take,
+ - Josiah
