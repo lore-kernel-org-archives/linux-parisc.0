@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1BA424829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 13:49:28 -0600 (MDT)
-Date: Fri, 20 Sep 2002 15:48:20 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Istvan Gyenes <frts@simba.sch.bme.hu>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D533D4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 14:03:01 -0600 (MDT)
+Date: Fri, 20 Sep 2002 13:02:59 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Istvan Gyenes <frts@simba.sch.bme.hu>,
+	Grant Grundler <grundler@dsl2.external.hp.com>,
+	<parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] SMP kernel problems on a D350
-Message-ID: <20020920194820.GC24622@systemhalted>
-References: <20020919224609.DF1314829@dsl2.external.hp.com> <Pine.OSF.4.33.0209201006420.5180-100000@simba.sch.bme.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.OSF.4.33.0209201006420.5180-100000@simba.sch.bme.hu>
+In-Reply-To: <20020920194820.GC24622@systemhalted>
+Message-ID: <Pine.LNX.4.44.0209201301220.20374-100000@garibaldi.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +24,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Thanks I'll try that!
+On Fri, 20 Sep 2002, Carlos O'Donell wrote:
+
+> > Thanks I'll try that!
+> > 
+> > Another question: If 2.4.19 SMP not enough stable where can I find the
+> > latest stable smp kernel source?
+> > 
+> > Thanks,
+> > 
+> > Steve
 > 
-> Another question: If 2.4.19 SMP not enough stable where can I find the
-> latest stable smp kernel source?
+> Nothing up this sleeve, nothing up this sleeve...
+> <carlos pulls a stable smp kernel out of his hat>
 > 
-> Thanks,
+> Tada! ;)
 > 
-> Steve
+> I'm not quite certain that we ever had a stable
+> SMP kernel. While an older kernel might seem to 
+> give you SMP stability, it does so at the cost of 
+> speed and the introduction of old bugs.
 
-Nothing up this sleeve, nothing up this sleeve...
-<carlos pulls a stable smp kernel out of his hat>
+For me, the last kernel that didn't crash on my J5000 in smp mode while
+doing apt-get update was kernel-image-2.4.17-32-smp_23.1_hppa.deb
 
-Tada! ;)
+I wouldn't recommend using it, however...
+> 
+> If you can find some test cases for Non-SMP vs.
+> SMP stability, then we'll be a step in the right 
+> direction.
+> 
+> c.
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
 
-I'm not quite certain that we ever had a stable
-SMP kernel. While an older kernel might seem to 
-give you SMP stability, it does so at the cost of 
-speed and the introduction of old bugs.
-
-If you can find some test cases for Non-SMP vs.
-SMP stability, then we'll be a step in the right 
-direction.
-
-c.
+-- 
+Mason's First Law of Synergism:
+	The one day you'd sell your soul for something, souls are a glut.
