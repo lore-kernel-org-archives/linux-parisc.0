@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: eddantes@wanadoo.fr
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [OT] PCI hardware question 
-In-Reply-To: Message from eddantes@wanadoo.fr
-   of "Tue, 25 Jun 2002 16:54:41 +0200." <3D188431.1060804@wanadoo.fr>
-References: <3D188431.1060804@wanadoo.fr> 
-Date: Tue, 25 Jun 2002 12:25:52 -0600
+To: Jes Sorensen <jes@trained-monkey.org>
+Cc: Randolph Chung <tausq@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] sys/io.h 
+In-Reply-To: Message from Jes Sorensen <jes@trained-monkey.org>
+   of "25 Jun 2002 12:18:31 EDT." <m3fzzbmiw8.fsf@trained-monkey.org>
+References: <20020624150031.4DA034837@dsl2.external.hp.com> <20020624153959.GH812@tausq.org>  <m3fzzbmiw8.fsf@trained-monkey.org> 
+Date: Tue, 25 Jun 2002 12:33:55 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020625182552.B625D4849@dsl2.external.hp.com>
+Message-Id: <20020625183355.91DD1484D@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,27 +20,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-eddantes@wanadoo.fr wrote:
-> I'm planning to buy a second hand station at some point and have fun 
-> with Linux, but in the documentation process, I discovered some stations 
-> have problemw with PCI hardware.
-> 
-> The question is: which kind of PCI stuff is this? Regular, PC compatible 
-> cards, or HP specific?
+Jes Sorensen wrote:
+> You really should support it similar to what we do on
+> ia64. Ie. there's a Linux API here that allows you to map 'I/O' ports
+> and access them. Basing the code on what's in the ia64 glibc tree
+> would make it quite easy to get it up and running.
 
-HP specific PCI Host bus adapter called Dino (aka GSCtoPCI).
-See hwdb.parisc-linux.org to know which systems used it.
-Some systems have been fixed with a newer rev of the Dino chip.
-You can:
-o update the PDC and install a PCI card
-o boot parisc-linux
-o or look for -0004 on the IO board
+I don't think so. For two reasons:
+a) ia64 maps the "iobase" address to user space
+b) the ia64 method is fixed for the architecture on how
+   to generate "legacy" IO port cycles (using iobase).
 
-to figure out if the PCI is usable or not.
-Only HP PCI graphics cards are permitted to be used in PCI
-when a broken DINO rev is in the system. PDC revs higher
-than about 5.x will enforce this.
-
-Read comments in drivers/gsc/dino.c for more details.
+parisc has two different methods (dino vs elroy) and dino only
+supports poking the PCI HBA to generate IO Port cycles.
+Or am I over looking something?
 
 grant
