@@ -1,51 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from seal.surfnet.fi (mail.surfnet.fi [194.137.58.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 976D5482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 23:20:15 -0600 (MDT)
-Received: from IDOEKE3 (eke-breakwater.surfnet.fi [194.215.74.2])
-	by seal.surfnet.fi (8.11.0/8.11.0) with ESMTP id f735KDv18575
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 3 Aug 2001 08:20:13 +0300
-Subject: Re: [parisc-linux] Linux on R947X?
+Received: from mail.iinet.net.au (i003-034.nv.iinet.net.au [203.59.3.34])
+	by dsl2.external.hp.com (Postfix) with SMTP id 56FA0482D
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 23:25:48 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id NAA21965
+	for parisc-linux@lists.parisc-linux.org; Fri, 3 Aug 2001 13:25:36 +0800
+Date: Fri, 3 Aug 2001 13:25:33 +0800
+From: Andrew Shugg <andrew@neep.com.au>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OF2D9D6940.FD322FDA-ONC2256A9D.001B9ABF@LocalDomain>
-From: robert.holmberg@idobath.com
-Date: Fri, 3 Aug 2001 08:13:25 +0300
-MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] dev-packages
+Message-ID: <20010803132528.G9637@neep.com.au>
+References: <20010802221905.C20250@parcelfarce.linux.theplanet.co.uk> <Pine.BSF.4.30.0108030645560.38503-100000@noc.zabbadoz.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.BSF.4.30.0108030645560.38503-100000@noc.zabbadoz.net>; from bzeeb+hplinux@zabbadoz.net on Fri, Aug 03, 2001 at 06:56:08AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Stan Sieler wrote:
+Quoth Bjoern A. Zeeb:
+> On Thu, 2 Aug 2001, Matthew Wilcox wrote:
+> > They're all available in the debian archive.  I don't think we have
+> > plans to produce any more CDs until the Debian Woody release (probably
+> > December).
+> 
+> Could you point me to some URL (incl. subdir) please ?
 
->> I believe we are talking about a 947RX which is the MPe equivalent of
-the
->> G30.
-> Yes.
+If you've got apt configured (/etc/apt/apt.conf, /etc/apt/sources.list)
+then you don't need to worry about finding things directly.  After doing
+an 'apt-get update' to fetch the current Packages files and rebuild the
+local package database, you can say 'apt-cache search foo' and it will
+show you all the packages called foo or with foo in their description.
+A simple 'apt-get install foo-dev' will download and install the foo-dev
+package and any other package it may require according to its
+dependencies.
 
-Checking the label of the box, yes. My memory must have failed me.. :) It
-is running MPe/iX, but I'm not touching it. Maybe I shouldn't be, but VMS
-and SCO-Unix have left me scared to death of vendor-specific OSes.
+For more info & discussion on actual Debian issues rather than the
+actual development of the hppa-linux kernel and toolchain have a look at
+the debian-hppa mailing list (on the Debian website).
 
-> And, of course, you're giving up a lot more turning an HP 3000 into a
-Linux
-> box than you are when turning an HP 9000 into a Linux box :-)
+Andrew.
 
-Yes, the only time its been down in the last three years was a month ago
-when the serverroom cooing failed and the power was cut when the
-temperatute rose too much. I seriously wonder if the W2K servers supposed
-to replace it will even get close to this kind of reliability.
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
-> Seriously, if he has a 947RX, he might be able to resell it.
-
-If we won't be able to use it after it goes out of production service this
-fall, this would be the general idea, yes. Who would be buying and what
-should they be paying?
-
-> As far as selling a 922?   It's a very old HP 3000, and has little or no
-> market value :( (By "little or no", I mean: you'll be lucky to sell it
-for $50.)
-
-I know it isn't exactly worth its weight in anything else than sweat
-(carrying it), but how about the sex appeal? That must count for something!
-:-)
-
-Robert.
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
