@@ -1,12 +1,15 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: [parisc-linux] [PATCH] tiny iosapic abstraction
-Date: Mon, 28 Jun 2004 12:57:06 -0600
-Message-ID: <200406281257.06793.bjorn.helgaas@hp.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [PATCH] tiny iosapic abstraction
+Date: Wed, 30 Jun 2004 23:44:31 -0600
+Message-ID: <20040701054431.GA18499@colo.lackof.org>
+References: <200406281257.06793.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200406281257.06793.bjorn.helgaas@hp.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,90 +20,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Introduce a tiny bit of abstraction to parisc iosapic.c.
+On Mon, Jun 28, 2004 at 12:57:06PM -0600, Bjorn Helgaas wrote:
+> Introduce a tiny bit of abstraction to parisc iosapic.c.
+> 
+> This makes more obvious the two reads to flush previous writes to the
+> hardware in iosapic_wr_irt_entry().  ia64 does neither one (perhaps
+> because we don't share vectors yet).  But even if the flush is really
+> needed on parisc, wouldn't only the second be needed, i.e.:
 
-This makes more obvious the two reads to flush previous writes to the
-hardware in iosapic_wr_irt_entry().  ia64 does neither one (perhaps
-because we don't share vectors yet).  But even if the flush is really
-needed on parisc, wouldn't only the second be needed, i.e.:
+Yes. that's correct.
+But the flush has nothing to do with sharing vectors.
+It's just to guarantee HW sees writes before returning
+to the driver. Probably falls into the EIANAL error bucket
+but it's not in the performance path.
 
-+	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY(vi->irqline), dp0);
-+	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY_HI(vi->irqline), dp1);
-	/* Read the window register to flush the writes down to HW  */
- 	dp1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
+Patch looks good. I'll apply and commit.
 
---- linux-2.6.7-pa1-iosapic/drivers/parisc/iosapic.c.orig	Fri Jun 25 15:19:46 2004
-+++ linux-2.6.7-pa1-iosapic/drivers/parisc/iosapic.c	Fri Jun 25 16:12:45 2004
-@@ -233,6 +233,18 @@
- #define IOSAPIC_IRDT_ENTRY(idx)		(0x10+(idx)*2)
- #define IOSAPIC_IRDT_ENTRY_HI(idx)	(0x11+(idx)*2)
- 
-+static inline unsigned int iosapic_read(unsigned long iosapic, unsigned int reg)
-+{
-+	writel(reg, iosapic + IOSAPIC_REG_SELECT);
-+	return readl(iosapic + IOSAPIC_REG_WINDOW);
-+}
-+
-+static inline void iosapic_write(unsigned long iosapic, unsigned int reg, u32 val)
-+{
-+	writel(reg, iosapic + IOSAPIC_REG_SELECT);
-+	writel(val, iosapic + IOSAPIC_REG_WINDOW);
-+}
-+
- /*
- **     GFP_KERNEL includes __GFP_WAIT flag and that may not
- **     be acceptable. Since this is boot time, we shouldn't have
-@@ -718,13 +730,8 @@
- 	struct iosapic_info *isp = vi->iosapic;
- 	u8 idx = vi->irqline;
- 
--	/* point the window register to the lower word */
--	writel(IOSAPIC_IRDT_ENTRY(idx), isp->isi_hpa+IOSAPIC_REG_SELECT);
--	*dp0 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
--
--	/* point the window register to the higher word */
--	writel(IOSAPIC_IRDT_ENTRY_HI(idx), isp->isi_hpa+IOSAPIC_REG_SELECT);
--	*dp1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
-+	*dp0 = iosapic_read(isp->isi_hpa, IOSAPIC_IRDT_ENTRY(idx));
-+	*dp1 = iosapic_read(isp->isi_hpa, IOSAPIC_IRDT_ENTRY_HI(idx));
- }
- 
- 
-@@ -740,16 +747,12 @@
- 		isp->isi_hpa,
- 		dp0, dp1);
- 
--	/* point the window register to the lower word */
--	writel(IOSAPIC_IRDT_ENTRY(vi->irqline), isp->isi_hpa+IOSAPIC_REG_SELECT);
--	writel( dp0, isp->isi_hpa+IOSAPIC_REG_WINDOW);
-+	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY(vi->irqline), dp0);
- 
- 	/* Read the window register to flush the writes down to HW  */
- 	dp0 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
- 
--	/* point the window register to the higher word */
--	writel(IOSAPIC_IRDT_ENTRY_HI(vi->irqline), isp->isi_hpa+IOSAPIC_REG_SELECT);
--	writel( dp1, isp->isi_hpa+IOSAPIC_REG_WINDOW);
-+	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY_HI(vi->irqline), dp1);
- 
- 	/* Read the window register to flush the writes down to HW  */
- 	dp1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
-@@ -881,11 +884,7 @@
- 	struct iosapic_info *isp = vi->iosapic;
- 
- 	for (d0=0x10; d0<0x1e; d0++) {
--		/* point the window register to the lower word */
--		writel(d0, isp->isi_hpa+IOSAPIC_REG_SELECT);
--
--		/* read the word */
--		d1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
-+		d1 = iosapic_read(isp->isi_hpa, d0);
- 		printk(" %x", d1);
- 	}
- }
-@@ -933,11 +932,7 @@
- 	ASSERT(isi);
- 	ASSERT(isi->isi_hpa);
- 
--	/* point window to the version register */
--	writel(IOSAPIC_REG_VERSION, isi->isi_hpa+IOSAPIC_REG_SELECT);
+thanks,
+grant
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
