@@ -1,25 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9853A482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 23:23:31 -0600 (MDT)
-Message-Id: <200109050521.XAA00721@puffin.external.hp.com>
-To: asdfsdf sdfsdf <raviolana@yahoo.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PA-RISC assembly 
-In-Reply-To: Message from asdfsdf sdfsdf <raviolana@yahoo.com>
-   of "Tue, 04 Sep 2001 22:11:28 PDT." <20010905051128.98221.qmail@web20210.mail.yahoo.com>
-Date: Tue, 04 Sep 2001 23:21:18 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from pdvirus1.presse-data.de (mail.presse-data.de [149.221.250.67])
+	by dsl2.external.hp.com (Postfix) with SMTP id 5AE9E482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Sep 2001 00:53:12 -0600 (MDT)
+Received: from presse-data.de (pdsyw021.rz.rbpd-dus.de [149.221.3.10])
+	by mail.presse-data.de (Postfix) with ESMTP id ACE3E269
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Sep 2001 08:53:06 +0200 (MEST)
+Sender: pbs013@mail.presse-data.de
+Message-ID: <3B95CBD2.7C16D2A2@presse-data.de>
+Date: Wed, 05 Sep 2001 08:53:06 +0200
+From: Andre Konopka <andre.konopka@presse-data.de>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] awkward question: How can I burn the iso image with WinOnCD
 List-ID: <linux-parisc.vger.kernel.org>
 
-asdfsdf sdfsdf wrote:
-> Hello. I am wondering what the equivalent of
-> jmp and call are in PA-RISC assembly.  If there
-> are any documents on the internet specifying 
-> PA-RISC assembly I would be very grateful.
+Hi,
 
-Start by searching www.parisc-linux.org and docs.hp.com.
-Then grab the parisc-linux kernel source and look for *.S files
-in the arch/parisc directory to find some real examples.
+yes I know my question is something off topic...
 
-grant
+Yesterday I downloaded the ISO image and now I stand there and doesn't
+know how to get the stuff on a CD.
+
+Is anybody out there who burned the CD-Image with WinOnCD?
+
+
+Thanks 
+
+amdre.konopka@presse-data.de
