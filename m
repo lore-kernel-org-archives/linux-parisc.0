@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from primare.xs4all.nl (primare.xs4all.nl [213.84.188.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39FAC4858
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Jul 2002 10:34:19 -0600 (MDT)
-Received: (from djmuggs@localhost)
-	by primare.xs4all.nl (8.12.3/8.11.1) id g6LGZ99x017246
-	for parisc-linux@lists.parisc-linux.org; Sun, 21 Jul 2002 18:35:09 +0200 (CEST)
-	(envelope-from djmuggs)
-Date: Sun, 21 Jul 2002 18:35:09 +0200
-From: DJ Tha Muggs <djmuggs@primare.xs4all.nl>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020721183508.C16644@primare.xs4all.nl>
-Mime-Version: 1.0
+Received: from mailout07.sul.t-online.com (mailout07.sul.t-online.com [194.25.134.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2C50485A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Jul 2002 11:07:36 -0600 (MDT)
+Cc: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Systems Console hangs!
+Date: Sun, 21 Jul 2002 19:04:46 +0200
+From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Message-ID: <3D3AE9AE.189C701E@ruhr-west.de>
+MIME-Version: 1.0
+References: <20020721150611.GA16503@maddentechnologies.com>
+Subject: Re: [parisc-linux] PARISC Linux machines?
+To: Michael Madden <madden@maddentechnologies.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +22,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Michael Madden schrieb:
+> 
+> Hello;
+> 
+> I was wondering if anyone out there needs older PA-RISC machines to use on
+> PA-RISC Linux and the Debian 3.0 port to PA-RISC.  I have many 735
+> workstations, a few 725/715 workstations, and a few C110 workstations.
+> 
+> Right now, they are all collecting dust.  I'd be willing to donate the
+> machines to someone who will put them to use on the PA-RISC Linux
+> or Debian 3.0 project.
+> 
+> Thanks,
+> 
+> Michael Madden
 
-When i boot my C3K with Monitor and Keyboard connected the system doesn't seem to boot fine.
-The last thing i see on the screen is that the cron is starting!
+Hi Michael,
 
-But when i use a serial or an ssh connection to the C3K it works.
+see http://www.openpa.net (particulary
+http://www.openpa.net/about.html). Paul seems to have an interest in
+that. I could do with some C110 memory, but it's nbot worth to strip
+a working box for that.
 
-So it looks like the system boots fine, but i can't use it with a monitor connected :(
+Juergen
 
-I'm running 2.4.18-pa39 for the kernel.
 
-Anyone got an idea?
 
-Kind regards,
-
-Cristian van Ee. 
+-- 
+===========================================     __   _
+Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+===========================================_\_v __/_/_//_/\_,_/ /_/\_\
