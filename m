@@ -1,16 +1,15 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ext3 perf patch#2
-Date: Sat, 26 Mar 2005 14:39:12 -0700
-Message-ID: <20050326213912.GB9287@colo.lackof.org>
-References: <20050326103540.GA31557@colo.lackof.org>
-	<42454E7C.3050509@tiscali.be>
+Subject: Re: [parisc-linux] Easy Firmware Upgrade for C180
+Date: Sat, 26 Mar 2005 15:12:03 -0700
+Message-ID: <20050326221203.GC9287@colo.lackof.org>
+References: <913ffb071295fac86a0aade164cf5a27@cox.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: "Erik T.Crouch" <lennier@cox.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42454E7C.3050509@tiscali.be>
+In-Reply-To: <913ffb071295fac86a0aade164cf5a27@cox.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,14 +20,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Mar 26, 2005 at 11:58:52AM +0000, Joel Soete wrote:
-> is the ~63 or 63UL?
+On Sat, Mar 26, 2005 at 10:25:10AM -0600, Erik T.Crouch wrote:
+> Ok, the HP instructions are wacky saying to use a tape writing the 
+> image via dd.
 
-63UL is better. But in this case it really doesn't matter.
-The bitmaps aren't (yet) 512MB in size.
+The same LIF image that can be dd'd to tape can be written to a
+hard disk or netbooted (using DHCP and TFTP, IIRC).
 
-It should be ~(BIT_PER_LONG-1)....the next step to make the
-whole thing usable for 32-bit.
+> Is there ANY way of making the firmware image extractable/writable to a 
+> CD, I also do not have a floppy drive.
+
+I don't know.
+See PALO documentation in:
+	http://www.tldp.org/HOWTO/PA-RISC-Linux-Boot-HOWTO/index.html
+
+It's been easier for me to dd to a hard disk (or netboot) than figure out
+how to make/burn bootable parisc CDs. :^)
 
 grant
 _______________________________________________
