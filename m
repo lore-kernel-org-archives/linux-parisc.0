@@ -1,15 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] IDE controller in B1000
-Date: Wed, 15 Dec 2004 11:50:52 -0700
-Message-ID: <20041215185052.GE27818@colo.lackof.org>
-References: <41C06455.6030302@goweee.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: Gcc bug or I missunderstand? [ftsd %fr22,
+Date: Wed, 15 Dec 2004 14:01:26 -0500 (EST)
+Message-ID: <200412151901.iBFJ1Q7v004439@hiauly1.hia.nrc.ca>
+References: <20041215171813.GA28058@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Stian Skarsb? Solheim <hppa-linux-list@goweee.com>
+To: matthew@wil.cx (Matthew Wilcox)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41C06455.6030302@goweee.com>
+In-Reply-To: <20041215171813.GA28058@parcelfarce.linux.theplanet.co.uk> from
+	"Matthew Wilcox" at Dec 15, 2004 12:18:13 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,46 +21,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Dec 15, 2004 at 05:20:37PM +0100, Stian Skarsb? Solheim wrote:
-> I dont know if this is the right place to ask, but I am starting to run
-> out of options.
+> Quick look at page 9-24 of the Kane book indicates that for d between +15
+> and -16 we use format 42 and for d outside that range, we use format 3.
+> Looks like nobody bothered to teach binutils about this longer form yet.
 
-It's the right place and it's been asked before :^)
+Yes, I hit this a couple of years ago in GCC.  Binutils needs to be
+taught some new relocations to support the long fp displacements.
 
-Search for IDE in the mailing list archive:
-	http://lists.parisc-linux.org/
+> Is it possible it's only available for PA2.0 processors?
 
-e.g:
-http://lists.parisc-linux.org/hypermail/parisc-linux/10959.html
+This is only available in PA 2.0.
 
-> I own a HP B1000. I would like to place a pci ide controller in this
-> machine and use IDE disks. Of course not to boot from, but as storage (I
-> am aware of the benefits of SCSI over IDE so no need to point that out
-> ^_^). I have asked several people on various irc-channels, googled for
-> hours and posted on HP's "support" forum if this would work. I have
-> gotten all answers from "No it wont" to "Yes it will". But the fact
-> remains that I havent talked to anyone that can acutaly say they have
-> tried it and succeeded/failed.
-
-At least one person had something working on C3000:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2003-August/020851.html
-
-grant
-
-> So I ask you! Will it work to put a pci ide controller in a HP B1000
-> (Running Linux of course)? And if so, which chip(s) should I go for and
-> are there any traps I should look out for?
-> 
-> (I realise this will, if it works, probably be slow as he** and so on,
-> but I still want to try)
-> 
-> Appreciate any answers  :)
-> 
-> Stian
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
