@@ -1,13 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Vlad Markov <markov@monmouth.com>
-Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Vlad Markov <markov@monmouth.com>
-   of "Wed, 23 Jan 2002 21:00:15 EST." <200201240200.VAA00858@monmouth.com>
-References: <200201240200.VAA00858@monmouth.com> 
-Date: Thu, 24 Jan 2002 23:55:01 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020125065501.A6537482A@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: tag starvation
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 35C894834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Jan 2002 23:59:19 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16U0K6-0005sE-00; Fri, 25 Jan 2002 06:58:54 +0000
+Date: Fri, 25 Jan 2002 06:58:54 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] start physical address for 712/100
+Message-ID: <20020125065854.E30669@parcelfarce.linux.theplanet.co.uk>
+References: <3C4E842F.3D36290F@admin.france.hp.com> <bruno_vidal@hpfrcu03.france.hp.com> <20020125062205.0BFAF482A@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020125062205.0BFAF482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Thu, Jan 24, 2002 at 11:22:05PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,32 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Follow up to parisc-linux@lists.parisc-linux.org only please.
-(ie this isn't a debian linux issue)
-
-Vlad Markov wrote:
-> I get the following message when I boot up on a 735/99:
-> Jan 22 19:12:41 grumpy kernel: scsi0 (1:0) Target is suffering from tag
->	starvation.
-
-Seems only 53c700.c prints this msg. Is this the right driver?
-
-Normally you shouldn't see this *if* the device supports tagged commands.
-I can never remember the SCSI driver options (the parisc-linux FAQ has 
-the URL to them) but one of them will either disable or limit 
-"queue depth" for Queue Tags and that should take care of it.
-
-BTW, normally you want to post the /proc/scsi/scsi info for
-the devices in question.
-
-> The kernel Iam using is:
-> Jan 22 19:12:41 grumpy kernel: Linux version 2.4.16-32 (root@paer) (gcc versi
->   on
-
-> 3.0.3) #1 Sat Dec 29 01:28:13 MST 2001
+On Thu, Jan 24, 2002 at 11:22:05PM -0700, Grant Grundler wrote:
+> Bruno Vidal wrote:
+> > 	Hi
+> > I start to look a bit more deeply in the dump
+> > I'm creating. And I found that the physical
+> > memory start at address 0x0000000010000000.
+> > Is it normal ? Or do I missed something ?
 > 
-> I suspect this is not a good message - should I worry? 
+> Uhm...I don't think thats right. All parisc boxes have
+> physical memory that's zero based. You should be able
+> to verify this with any HPUX crash dump.
+> 
+> Post where you are getting the data from and perhaps
+> we can help correct it.
 
-Panic would be worse ;^)
+We start mapping physical ram at address 0x0000000010000000.  So physical
+address 0 is mapped at virtual address 0x0000000010000000 when in
+the kernel.
 
-grant
+-- 
+Revolutions do not require corporate support.
