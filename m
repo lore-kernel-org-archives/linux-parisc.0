@@ -1,18 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 41DD54829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 16:10:22 -0600 (MDT)
-Date: Wed, 7 May 2003 15:09:37 -0700
-From: Randolph Chung <randolph@tausq.org>
+Date: Wed, 7 May 2003 16:57:59 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
 To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 bame
-Message-ID: <20030507220937.GA4509@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Message-ID: <20030507225759.GA1174@dsl2.external.hp.com>
 References: <20030506092335.CA5344829@dsl2.external.hp.com> <20030507220249.GM27494@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
+Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <20030507220249.GM27494@lug-owl.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -25,35 +20,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 08, 2003 at 12:02:49AM +0200, Jan-Benedict Glaw wrote:
+> Just a small hint - could anybody please update the web pages on p-l to
+> actually name this module?
 
-> PS: Rsyncable CVS repository would be nice:)
+Which web page did you think should (but didn't) mention linux-2.5?
 
-Out of curiosity -- why do you want a rsync'able cvs? if you are not
-going to work directly from the master repository, we already produce
-daily cvs diffs that are on the ftp.p-l.org site. if you need
-up-to-the-minute updates, then why not directly use cvs? cvs.p-l.org
-seems to have decent bandwidth to various places...
+See http://cvs.parisc-linux.org/ for a complete list of repositories.
 
-randolph
---=20
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+I'll take patches for the CVS "web" repository.
 
---YZ5djTAD1cGYuMQK
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+BTW, some are obsolete. I know linux, linux-2.5, palo, web, and build-tools
+are "live" (most current versions). I don't know about the others.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+uYQhULspdC1Zp9IRAkTYAJoDvxkqIOYV0vnUq7+3MpqLznU1awCgoOGh
-d1Sg2VuTxtcbCiyBuqCJCpk=
-=OvgG
------END PGP SIGNATURE-----
-
---YZ5djTAD1cGYuMQK--
+grant
