@@ -1,19 +1,16 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 24 Mar 2005 14:33:44 -0700
-Message-ID: <20050324213344.GC29361@colo.lackof.org>
-References: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
-	<200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
-	<20050324165947.GA29361@colo.lackof.org>
-	<kfhr7i43kdx.fsf@csclub.uwaterloo.ca>
+Date: Thu, 24 Mar 2005 15:33:46 -0700
+Message-ID: <20050324223346.GE29361@colo.lackof.org>
+References: <20050324212317.GB29361@colo.lackof.org>
+	<200503242133.j2OLXl4R020985@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org
-To: "James A. Morrison" <ja2morri@csclub.uwaterloo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <kfhr7i43kdx.fsf@csclub.uwaterloo.ca>
+In-Reply-To: <200503242133.j2OLXl4R020985@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,32 +21,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Mar 24, 2005 at 02:37:46PM -0500, James A. Morrison wrote:
-> > Is there a .deb or tarball available I can drop on a bunch of machines?
+On Thu, Mar 24, 2005 at 04:33:46PM -0500, John David Anglin wrote:
+> > > 4.0 has a
+> > > new option, -mfixed_range=, that was introduced so that a small range
+> > > of fp registers could be used for the xmpyu multiplication insn.  It
+> > > might be useful to experiment with this option to see if it useful.
+> > 
+> > I don't know enough about ABI to understand the issues here.
+> > AFAIK, we currently are using FP registers because that's
+> > the way multiplication is implemented in the integer math libs
+> > we inherited.
 > 
->  Try the gcc-snapshot package.
+> No.  Currently in kernel builds, the use of FP registers is completely
+> disabled and integer multiplication is done using the millicode library.
 
-Ah..."unstable" package:
-	g/gcc-snapshot/gcc-snapshot_20050319-1.diff.gz
-	g/gcc-snapshot/gcc-snapshot_20050319-1.dsc
-	g/gcc-snapshot/gcc-snapshot_20050319-1_i386.deb
-	g/gcc-snapshot/gcc-snapshot_20050319-1_ia64.deb
-	g/gcc-snapshot/gcc-snapshot_20050319-1_mipsel.deb
-	g/gcc-snapshot/gcc-snapshot_20050319-1_powerpc.deb
-	g/gcc-snapshot/gcc-snapshot_20050319-1_s390.deb
-	g/gcc-snapshot/gcc-snapshot_20050319.orig.tar.gz
+Erm...objdump disagrees:
+grundler <541>hppa64-linux-objdump -rD vmlinux | fgrep xmpy | wc
+   1654   11578   82683
 
-Hrm... looks like hppa didn't build in the last one.
-Most recent one available is 
-	g/gcc-snapshot/gcc-snapshot_20050212-1_hppa.deb
+First occurance is here:
+000000001010bca0 <__muldi3>:
+    1010bca0:   37 de 00 80     ldo 40(sp),sp
+    1010bca4:   db 56 07 e0     extrd,s r26,31,32,r22
+    1010bca8:   73 d6 3f 91     std r22,-38(sp)
+    1010bcac:   53 d6 3f 93     fldd -38(sp),fr22
+    1010bcb0:   73 d9 3f 91     std r25,-38(sp)
+    1010bcb4:   53 d7 3f 93     fldd -38(sp),fr23
+    1010bcb8:   3a d7 57 96     xmpyu fr22R,fr23R,fr22
+    1010bcbc:   d3 53 1b f0     extrw,u r26,31,16,r19
+    1010bcc0:   73 d6 3f 93     fstd fr22,-38(sp)
+    1010bcc4:   53 d6 3f 91     ldd -38(sp),r22
+...
 
+objdump output is on still on gsyprf11:/tmp/2.6.12-rc1-objdump
+In case you want to browse it more.
 
-Thinking about it more, I'd rather have Dave reccomend a tarball
-he knows the test results for and is comfortable with them.
+> However with a few FP regs, integer multiplication (32 bit) can be
+> done in hardware except of course on machines that don't have FP
+> hardware.  The downside is that the kernel has to save whatever
+> FP registers it uses.
 
-thanks though,
+Yeah, I thought that was happening already.
+I'm hoping "save_fp         %r25" in arch/parisc/kernel/entry.S
+takes care of that.
+
+> The -mfixed_range= option "fixes" a range if registers.  GCC won't
+> use registers that are fixed.
+
+Yeah, it might make sense to "document" current usage
+and limit which FP regs the kernel can use. Ie we
+could reduce FP state that needs to be save when
+entering the kernel. Context switch would need to save
+the rest.
+
+thanks,
 grant
-
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
