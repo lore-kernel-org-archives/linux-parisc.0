@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from scaup.mail.pas.earthlink.net (scaup.mail.pas.earthlink.net [207.217.120.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B4989482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 16:40:53 -0600 (MDT)
-Message-ID: <3D407EB5.7030409@earthlink.net>
-Date: Thu, 25 Jul 2002 17:41:57 -0500
-From: "Bryan W. Headley" <bwheadley@earthlink.net>
-MIME-Version: 1.0
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Rick Vernam <rickvernam@hotmail.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] i dont know jack
-References: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com> <1027637875.11669.19.camel@irongate.swansea.linux.org.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from guinness.internal.neep.com.au (108.telstra.ppp.reynolds.net.au [203.38.119.108])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6D0D2482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 23:30:27 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id NAA16330
+	for parisc-linux@lists.parisc-linux.org; Fri, 26 Jul 2002 13:29:06 +0800
+Date: Fri, 26 Jul 2002 13:29:03 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PARISC Linux machines?
+Message-ID: <20020726132900.L897@neep.com.au>
+References: <20020721150611.GA16503@maddentechnologies.com> <3D3AE9AE.189C701E@ruhr-west.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D3AE9AE.189C701E@ruhr-west.de>; from juergen.braukmann@ruhr-west.de on Sun, Jul 21, 2002 at 07:04:46PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +25,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Alan Cox wrote:
-> On Thu, 2002-07-25 at 16:43, Rick Vernam wrote:
-> 
->>i work at place that gets tons of computer junk from companies that are getting rid of their equip.  one of our requirements is to kill the partitions on the HDs ( it is known that will no completely remove data, just make is a little more difficult to get too ).  so we are getting HP machines with pa-risc stuff and most wont boot ( i know enough to know how to initiate a boot ).  is there some way, using this parisc-linux that i can quickly kill partitions?
->>
-> 
-> 
-> Well one silly way to do it would be to simply install Linux on the
-> machines telling it to use the whole of the disks. At that point you can
-> put "tested" on the disks 8) and "Free Debian Linux" on the marketing 8)
+Juergen Braukmann said:
+> Michael Madden schrieb:
+> > Hello;
+> > 
+> > I was wondering if anyone out there needs older PA-RISC machines to use on
+> > PA-RISC Linux and the Debian 3.0 port to PA-RISC.  I have many 735
+> > workstations, a few 725/715 workstations, and a few C110 workstations.
+> > 
+> > Right now, they are all collecting dust.  I'd be willing to donate the
+> > machines to someone who will put them to use on the PA-RISC Linux
+> > or Debian 3.0 project.
+> > 
+> > Thanks,
+> > 
+> > Michael Madden
 
-What, silly? Our admins used to prep Solaris workstations that way. Real 
-inexpensive way to differentiate your products ("our Pengiuns pre-hatched")
+Michael,
 
+I'm sure you'll get some interest from people; maybe try a non-spammy
+offer in the debian-hppa mailing list.  Some more info you could include
+would be what part of the world you live in, and whether you have the
+means to ship the boxes or if interested parties need to arrange removal
+themselves (ie visit you!).
+
+> Hi Michael,
+> 
+> see http://www.openpa.net (particulary
+> http://www.openpa.net/about.html). Paul seems to have an interest in
+> that. I could do with some C110 memory, but it's nbot worth to strip
+> a working box for that.
+> 
+> Juergen
+
+Thanks Juergen, I wasn't aware of this site's existence.  I don't think
+there's a link to it on the parisc-linux.org web site; is this something
+we could do?  Under the "User Resources" section of the sidebar would be
+a suitable place, I imagine.
+
+Andrew.
 
 -- 
-____               .:.                 ____
-Bryan W. Headley - bwheadley@earthlink.net
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
