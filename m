@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23E9A482C
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 14 Dec 2002 20:02:32 -0700 (MST)
-Message-Id: <200212150302.gBF32OYx002469@hiauly1.hia.nrc.ca>
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Sat, 14 Dec 2002 22:02:23 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: tausq@debian.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021213192039.GB12890@systemhalted> from "Carlos O'Donell" at Dec 13, 2002 02:20:39 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] comparison of function pointers
+Date: Sat, 14 Dec 2002 20:53:59 -0700
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.20-pa14 64bit crash on boot - A500-5X
+Message-ID: <20021215035359.GA18647@dsl2.external.hp.com>
+References: <20021213132838.F044D49C55@mail.esiee.fr> <20021213233540.503b16d3.varenet@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021213233540.503b16d3.varenet@esiee.fr>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-GCC 3.3 and later has a new function __canonicalize_funcptr_for_compare
-in libgcc.a for comparing function pointers.  There are routines in glibc
-that compare function pointers and therefore depend on the presence
-of this function if glibc is built with gcc-3.3 or later.  These
-are gconv_open.o, signal.o, sigvec.o, sysv_signal.o, sigset.o, malloc.o
-sleep.o, getaddrinfo.o, svc.o, svc_simple.o.
+On Fri, Dec 13, 2002 at 11:35:40PM +0100, Thibaut VARENE wrote:
+> AOUT: 0x10143bd4 mod_timer+3c
+...
+> AOUT: 0x10538b48 hp_diva_timer+0
 
-Earlier versions of gcc don't have the function.  Thus, if you try to
-use an earlier version of gcc with a library built with gcc-3.3 or later,
-the routine won't be present in libgcc.  One solution might be to add
-__canonicalize_funcptr_for_compare to glibc.  This might be a good idea
-as it depends closely on the implementation of the dynamic linker
-interface in glibc for function calls.
+Good News: I reproduced this and fixed it.
+But I don't know exactly what I did that fixed it. :^(
+(drawbacks of the shotgun approach).
+Fairly small patch is on ftp.parisc-linux.org/patches/diff-2.4.20-timer
+This isn't ready to commit until someone narrows it down to one thing.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Bad News: SMP kernel now hangs during SCSI device discover.
+I haven't tried CONFIG_SMP=n yet and I guess that would be a next step.
+Console output of the a500-44 boot with 2.4.20-pa14 + patch is on
+	dsl2.e.h.c:~grundler/rp2470-2.4.20-symhang-01
+
+grant
