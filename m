@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (cr821974-a.lndn1.on.wave.home.com [24.112.142.143])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 583BE482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 07:39:55 -0700 (MST)
-Date: Wed, 21 Nov 2001 09:40:04 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: "BRANN,PAMELA (HP-FtCollins,ex1)" <pamela_brann@hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PA-RISC 2.0 Architecture Documentation now available in PDF Forma t
-Message-ID: <20011121094004.L8748@systemhalted>
-References: <AB57FCC5E303D511BB8F00A0C9F485C205EE4FC5@xfc02.fc.hp.com>
-Mime-Version: 1.0
+Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D3CF482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 12:12:39 -0700 (MST)
+Message-ID: <3BFBFCA1.6B5CB2B3@gmx.at>
+Date: Wed, 21 Nov 2001 20:12:33 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Ryan Bradetich <ryan_bradetich@uswest.net>
+Cc: marteaut@esiee.fr, grundler@puffin.external.hp.com,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: E55 status - THE DRIVER !
+References: <3BF99676.2A291CDD@gmx.at>  <1006299638.4898.16.camel@beavis> <1006314043.4898.20.camel@beavis>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <AB57FCC5E303D511BB8F00A0C9F485C205EE4FC5@xfc02.fc.hp.com>; from pamela_brann@hp.com on Tue, Nov 20, 2001 at 09:26:21AM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Very good, that you have done the config stuff, I was not able to, as 
+I had never things to do with the configuring (expcet for using it ...).
+
+Will you chick in the stuff for all ?
+
+I have no problem with it, if another major was taken. I only used this,
+because there was a hole in the `major.h' at 30.
+
+Will the changes done for the PA Linux tree also migrated to the main
+stream kernel tree ?
+When ? All minor versions (2.4.13, 2.4.14, ....) or at 2.6.x !!
+
+I am happy, that your machine is also working with that stuff !
+
+Bye
+Christoph P.
+
+
+
+Ryan Bradetich wrote:
 > 
-> HP's Developer and Solution Partner Portal (DSPP) is proud to announce the
-> addition of the PA-RISC 2.0 Architecture Documentation in PDF format.  This
-> resource is now available to you in hard copy, PDF or HTML - all from the
-> PA-RISC topic area of the DSPP.
->
+> > I am still working on testing this driver ... I would be very happy to
+> > see install the K460 using the debian installer using this patch.  I am
+> > currently working on making that happen.
+> 
+> I got through enough of the installer tonight to see what I wanted to
+> see.  This PDC Software console should allow a complete debian install.
+> The dialog menus are not pretty, but they are functional.
+> 
+> Thanks,
+> 
+> - Ryan
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-Wonderfull!
-Many thanks to all the people who put in the hard work!
-Now I can add to my growing list of documentation!
-
-Cheers,
-Carlos O'Donell Jr. 
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
