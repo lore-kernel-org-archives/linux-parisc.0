@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C5E74485A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 08:10:40 -0700 (MST)
-Date: Wed, 6 Mar 2002 16:10:38 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: James S <smithjames@comcast.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] OT: value of a 712/100
-Message-ID: <20020306151038.GM787@charite.de>
-References: <sc84c875.096@mail.santa-clarita.com> <003f01c1c520$c99b2d60$02c1a8c0@james.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <003f01c1c520$c99b2d60$02c1a8c0@james.co.uk>
+Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4745F4860
+	for <parisc-linux@parisc-linux.org>; Wed,  6 Mar 2002 08:12:03 -0700 (MST)
+Received: from localhost.localdomain (ppp61.cc1.pflash.com [63.121.24.63]) by vopserver.pflashcom
+ (Vircom SMTPRS 1.1.219) with SMTP id <B0010835135@vopserver.pflashcom> for <parisc-linux@parisc-linux.org>;
+ Wed, 6 Mar 2002 09:04:36 -0600
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@pflash.com>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] SMP support
+Date: Wed, 6 Mar 2002 09:10:31 -0600
+References: <Pine.LNX.4.33L2.0203051434270.6941-100000@eiger.apptechsys.com> <20020306010541.A8BB84853@dsl2.external.hp.com>
+In-Reply-To: <20020306010541.A8BB84853@dsl2.external.hp.com>
+MIME-Version: 1.0
+Message-Id: <02030609103100.00899@localhost.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +26,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Mar 06, 2002 at 10:08:33AM -0500, James S wrote:
+On Tuesday 05 March 2002 07:05 pm, Grant Grundler wrote:
+> Jeremy Drake wrote:
+> > I am running debian-hppa on a J5000, and I am using the 2.4.17-32-smp
+> > kernel.  It detects both processors at boot, and shows them both in
+> > /proc/cpuinfo, but /proc/stat shows this
+> >
+> > cpu  599904 33379482 34656795 68636319
+> > cpu0 0 0 64 68636186
+> > cpu1 599904 33379482 34656731 133
+> >
+Folks, 
+for comparison: (2.4.17 on an x86 smp-box)
 
-> interesting part was - when i was showing the guy how to set it up, somebody
-> came in the shop & asked what he was wanting for one ..... the price had
-> went up to $50
+cpu  2867 96 1822 231717
+cpu0 1400 37 671 116143
+cpu1 1467 59 1151 115574
 
-No imagine how much the guy could take if he'd bundle the CD with the
-boxes!
-
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Ah, young webmaster... java leads to shockwave. Shockwave leads to
-realaudio. And realaudio leads to suffering. 
+Mike
