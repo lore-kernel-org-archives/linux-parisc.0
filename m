@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D094D4860
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 06:50:26 -0600 (MDT)
-To: Kurt Garloff <garloff@suse.de>
-Message-ID: <1024577420.3d11cf8c699d6@webmail.tiscalinet.be>
-Date: Thu, 20 Jun 2002 14:50:20 +0200 (CEST)
-From: joel.soete@freebel.net
+Received: from iut-lannion.fr (alba.iut-lannion.fr [192.70.33.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 76DC3485C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 07:42:53 -0600 (MDT)
+Message-Id: <200206201342.g5KDgpS12269@iut-lannion.fr>
+Date: Thu, 20 Jun 2002 15:41:09 +0200
+To: joel.soete@freebel.net
+From: Bruno =?iso-8859-1?Q?L=E9on?= <nonolemono@yahoo.fr>
+Subject: Re: [parisc-linux] Only serial console for B1000 (64bits) ?
 Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Your patch: root=/dev/scsi/sdcXbXtXuXpX support
+References: <200206191410.g5JEAMS03029@iut-lannion.fr>
+ <200206190826.g5J8QYS31181@iut-lannion.fr>
+ <200206190826.g5J8QYS31181@iut-lannion.fr>
+ <200206191410.g5JEAMS03029@iut-lannion.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,19 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Kurt,
+>But now an easiest way for you would certainly be to download a more recent
+>cd-image into: http://pateam.esiee.fr/cd-images/testing/
+>(see also explanation on http://pateam.esiee.fr/download.html#deb page)
 
-On lwn.net I found your patch specially interesting because I encounter the
-problem it solves last friday on my parisc-linux box.
+>I am confident that this solution will help you successfully,
 
-I would to test your patch on my parisc-linux box but dono how to find back the
-original patch. Could you send me in answer?
+Thanks for that Joel, after downloading this cd-image, I managed to install
+the debian system on the B1000 workstation.
 
-Thanks in advance for help,
-
-    Joel
-
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+However, I'm trying to install packages using apt-get and dselect, but none
+of the website seems to reply, or they do not accept me.
+Which url did you use to install additionnal packeges ?
+ 
+Thanks a lot again.
+Bruno.
