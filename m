@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4B2D7482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Apr 2002 19:22:41 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] mkraid doesnt work on L2000 with 64-bit kernel 
-Date: Wed, 1 May 2002 13:25:17 +1200
-Message-ID: <014c01c1f0af$0d0db630$5e01000a@bongo>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20020501004239.75E8B482B@dsl2.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 743B1482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Apr 2002 20:09:15 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 172jY9-0000nl-00; Wed, 01 May 2002 03:08:57 +0100
+Date: Wed, 1 May 2002 03:08:57 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: James Braid <james.braid@peace.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] mkraid doesnt work on L2000 with 64-bit kernel
+Message-ID: <20020501030857.A2591@parcelfarce.linux.theplanet.co.uk>
+References: <20020501004239.75E8B482B@dsl2.external.hp.com> <014c01c1f0af$0d0db630$5e01000a@bongo>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <014c01c1f0af$0d0db630$5e01000a@bongo>; from james.braid@peace.com on Wed, May 01, 2002 at 01:25:17PM +1200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,41 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wed, May 01, 2002 at 01:25:17PM +1200, James Braid wrote:
+> Woohoo! Just rebooted the L2000 and RAID is now working on it :)
 
-Woohoo! Just rebooted the L2000 and RAID is now working on it :)
+Yay!  Apply for your "I hacked the PA/Linux kernel" badge at the office ;-)
 
-How do I go about submitting a patch (sorry, I am a complete newbie
-to kernel stuff). 
+> How do I go about submitting a patch (sorry, I am a complete newbie
+> to kernel stuff). 
 
-Basically all I have done is copy the RAID section from the sparc64
-ioctl32.c into the parisc ioctl32.c file, and fix up the md.h
-include.
+If it's small (say <20k), post it here.  If larger, put it on a
+website and send a URL.
 
-Just some output:
+> Basically all I have done is copy the RAID section from the sparc64
+> ioctl32.c into the parisc ioctl32.c file, and fix up the md.h
+> include.
 
-hypo:/raid# cat /proc/mdstat
-Personalities : [linear] [raid0] [raid1] [raid5]
-read_ahead 1024 sectors
-md0 : active raid0 sdd1[2] sdc1[1] sdb1[0]
-      2930640 blocks 16k chunks
+Cool.  That works for us ;-)
 
-unused devices: <none>
-
-hypo:/raid# df -k
-Filesystem           1k-blocks      Used Available Use% Mounted on
-/dev/sda4             15458288    848292  13824744   6% /
-/dev/sda2                60485     13835     43527  25% /boot
-/dev/md0               2884592     32836   2705224   2% /raid
-
-Cheers, James
-
------BEGIN PGP SIGNATURE-----
-Version: PGP 7.1.1
-
-iQA/AwUBPM9D/FW+bhIOiSqWEQKeaQCeN5cXOfXz4Z0Pi1Jed9k0lGpldfAAn1G3
-RrlNIJ0T8Gr/X11uUkblt/7h
-=xtyl
------END PGP SIGNATURE-----
+-- 
+Revolutions do not require corporate support.
