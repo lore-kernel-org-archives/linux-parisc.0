@@ -1,29 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BDEF1482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 03:59:48 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 2DAADB00C; Tue, 17 Jul 2001 10:57:52 +0100 (BST)
-Date: Tue, 17 Jul 2001 10:57:52 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Yan Han <yhan@uwo.ca>
-Cc: Michael_Handrich@gmx.de, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] not supported by 0.9 version
-Message-ID: <20010717105752.Q30356@linuxcare.com>
-References: <000801c10e2e$bb1dee70$d10c6481@HCI009>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000801c10e2e$bb1dee70$d10c6481@HCI009>; from yhan@uwo.ca on Mon, Jul 16, 2001 at 03:37:20PM -0400
+Received: from mail.ireste.fr (mail.ireste.fr [193.52.81.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C03D482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 04:04:52 -0600 (MDT)
+Received: from flambe.ireste.fr (flambe [193.52.81.109])
+          by mail.ireste.fr (8.9.1a/jtpda-5.3.1) with SMTP id MAA12276
+          for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 12:07:02 +0200 (MET DST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] setting up the STI console on a 735/99
+Date: Tue, 17 Jul 2001 12:11:37 +0200
+References: <001401c10b94$29aa0c40$0f809b8e@ati.stlawrencec.on.ca> <01071611465307.01046@flambe.ireste.fr> <20010717103025.O30356@linuxcare.com>
+In-Reply-To: <20010717103025.O30356@linuxcare.com>
+MIME-Version: 1.0
+Message-Id: <01071712113702.03530@flambe.ireste.fr>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jul 16, 2001 at 03:37:20PM -0400, Yan Han wrote:
-> Hi! we tried to install 0.9 version in 715/33. It doesn't work. 
-> 
-> so use "rbootd" to boot up the machine.
+Le Mardi 17 Juillet 2001 11:30, vous avez écrit :
+> On Mon, Jul 16, 2001 at 11:46:53AM +0200, Matthieu Le Corre wrote:
+> > Le Lundi 16 Juillet 2001 09:53, vous avez écrit :
+> > > On Fri, Jul 13, 2001 at 02:13:36PM +0200, Matthieu Le Corre wrote:
+> > > > Le Jeudi 12 Juillet 2001 20:52, vous avez écrit :
+> > > > > So I have now succesfully installed the base system on a external
+> > > > > narrow SCSI. I can boot off of it. Now the next question is how do
+> > > > > I set it up to go to the STI console instead of the serial?
+> > > > >
+> > > > > Ray
+> > > >
+> > > > try console=tty on palo commande line
+>
+> Shouldn't that be console=tty0 and not console=tty ?
 
-For 715/33, 715/50, and 715/75, you should use the 0.9.2 ISO, as it
-contains a fixed glibc, needed for the older processors in these boxes.
-See <http://mkhppa1.esiee.fr/download.html>.  I have always booted
-via rbootd on my 715/75, never tried a CDROM boot.
+not better ...
 
-Richard
+
+>
+> Richard
+>
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+
+-- 
+_________________________________________________
+  
+                    Matthieu Le Corre
+                  Service informatique
+   Ecole Polytechnique de l'Université de Nantes
+      Matthieu.Lecorre@polytech.univ-nantes.fr
+                     02.40.68.32.23
+__________________________________________________
