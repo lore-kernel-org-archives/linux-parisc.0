@@ -1,26 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA06495
-	for <parisc-linux@puffin.external.hp.com>; Sun, 7 Nov 1999 06:06:41 -0700
-Date: Sun, 7 Nov 1999 14:02:28 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] pgtable.h:acc_rights()
-Message-Id: <19991107140228.F14009@mathe.stud.uni-erlangen.de>
-References: <19991106172023.L25252@mencheca.ch.genedata.com> <19991106205125.L11609@mathe.stud.uni-erlangen.de> <19991106214859.A1743@alpha.franken.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19991106214859.A1743@alpha.franken.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA07444
+	for <parisc-linux@puffin.external.hp.com>; Sun, 7 Nov 1999 11:15:20 -0700
+From: Andi <der_fisch@fischlustig.de>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] cant use rbootd
+Date: Sun, 7 Nov 1999 19:04:46 +0100
+Content-Type: text/plain
+References: <199911030250.TAA16563@puffin.external.hp.com> <19991107125314.N25252@mencheca.ch.genedata.com> <99110713214800.00507@beavis>
+In-Reply-To: <99110713214800.00507@beavis>
+MIME-Version: 1.0
+Message-Id: <99110719083800.00319@beavis>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> the real problem is, that we don't have a working copy on write at the 
-> moment. So whenever the first access to COW page is a read access, every
-> write access afterwards will lead to an unhandled page fault (which causes
-> a panic at the moment). 
+On Son, 07 Nov 1999, Andi wrote:
+> Hi,
+> 
+> I am using an rbootd running on Debian 2.1 , but my HP 712/60 cant find it, I
+> put the correct ethernet adress in the /etc/rbootd.conf
+> 
+> but nothing happens if i type
+> 
+> BOOT_ADMIN> search lan
 
-Actually, there is some code there to explain this.  I never realized we did 
-differentiate between read/write accesses and thought we were still hardcoding
-a write access.  This shouldn't be too difficult to work around.
+OK, forget what I wrote, I used rbootd instead of bootp... oops. Booting over
+the network works now. I tried the latest snapshot of the PARISC-Linux Kernel.
+But it doenst seem to get far...
 
-	Philipp Rumpf
+after 
+
+"transferring control to kernel (...)"
+
+nothing happens.
+
+-- 
+bye
+  Andi
