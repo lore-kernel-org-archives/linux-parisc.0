@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 49BA14829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Aug 2002 08:20:29 -0600 (MDT)
-Received: from carlos by systemhalted with local (Exim 3.35 #1 (Debian))
-	id 17h9pl-0001Sg-00
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Aug 2002 10:18:13 -0400
-Date: Tue, 20 Aug 2002 10:18:13 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with SMTP id D4DC24829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Aug 2002 08:23:21 -0600 (MDT)
+Date: Tue, 20 Aug 2002 16:23:15 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Oracle 9i on PARISC-LINUX
-Message-ID: <20020820141813.GB4865@systemhalted>
-References: <200208201049.AA167248046@intercommerce.com.br>
+Message-ID: <20020820142315.GI13589@charite.de>
+References: <200208201049.AA167248046@intercommerce.com.br> <20020820141813.GB4865@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200208201049.AA167248046@intercommerce.com.br>
+In-Reply-To: <20020820141813.GB4865@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> Hello!!
-> Can I to run the Oracle 9i on PARISC-LINUX??
-> Thanks,,
-> Andr?
-> 
+On Tue, Aug 20, 2002 at 10:18:13AM -0400, Carlos O'Donell wrote:
 
-apt-get install oracle-9i
-Reading Package Lists... Done
-Building Dependency Tree... Done
-E: Couldn't find package oracle-9i
+> apt-get install oracle-9i
+> Reading Package Lists... Done
+> Building Dependency Tree... Done
+> E: Couldn't find package oracle-9i
 
-no :(
+The correct approach would be to use 
 
-c.
+apt-cache search oracle
+
+-- 
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+"I've not lost my mind. It's backed up on tape somewhere." - Unknown
