@@ -1,35 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9A8CA482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 May 2001 09:04:11 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39827482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 May 2001 09:09:55 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 150PJR-0004Pw-00; Thu, 17 May 2001 16:03:37 +0100
-Date: Thu, 17 May 2001 16:03:37 +0100
+	id 150PNq-0004YQ-00; Thu, 17 May 2001 16:08:10 +0100
+Date: Thu, 17 May 2001 16:08:10 +0100
 From: Matthew Wilcox <matthew@wil.cx>
-To: "Bright, Stephen" <Stephen.Bright@thales-esecurity.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Booting from SCSI disk.
-Message-ID: <20010517160337.A13481@parcelfarce.linux.theplanet.co.uk>
-References: <9EB1F7B63758D411A78D00A0C9D84789B16BED@UKCRN03>
+To: Charlie Navarro <charlie_navarro@yahoo.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] XF86Config-4
+Message-ID: <20010517160810.B13481@parcelfarce.linux.theplanet.co.uk>
+References: <01051711114601.02177@diana>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <9EB1F7B63758D411A78D00A0C9D84789B16BED@UKCRN03>; from Stephen.Bright@thales-esecurity.com on Thu, May 17, 2001 at 11:32:35AM +0100
+In-Reply-To: <01051711114601.02177@diana>; from charlie_navarro@yahoo.com on Thu, May 17, 2001 at 11:11:46AM -0300
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, May 17, 2001 at 11:32:35AM +0100, Bright, Stephen wrote:
-> Is it not possible to run fdisk and palo on the HP itself?
+On Thu, May 17, 2001 at 11:11:46AM -0300, Charlie Navarro wrote:
+> I have a 712/60 with STI kernel and XFree86 4.0.3, but I can not make the 
+> correct XF86Config-4. 
+> Where do I download an example?
 
-Yes, it is, i've done it.
-
-> I have tried
-> this, but when it boots I get a message along the lines of "Cannot grok the
-> kernel executable" (sorry, this is quoted from memory, so may not be exactly
-> correct).
-
-i bet you're using the lifimage instead of the vmlinuz.  paul, would it
-be feasible to check for this and print a more helpful error message in
-this instance?
+X servers aren't supported yet.  If you want to hack one up yourself,
+please go ahead.
 
 -- 
 Revolutions do not require corporate support.
