@@ -1,42 +1,51 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA28768
-	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Mar 2000 06:31:26 -0700
-Message-ID: <20000324063105.A28615@puffin.external.hp.com>
-Date: Fri, 24 Mar 2000 06:31:05 -0700
-From: Philipp Rumpf <prumpf@puffin.external.hp.com>
-To: Ulrich Strelow <ulrich_strelow@yahoo.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Success story on 715/33 and a question
-References: <20000324121539.21840.qmail@web502.mail.yahoo.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01903
+	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Mar 2000 16:33:26 -0700
+Received: from libero.it (garfield.postai.it [192.168.1.2])
+	by router.postai.it (8.8.7/8.8.7) with ESMTP id WAA00792
+	for <parisc-linux@thepuffingroup.com>; Fri, 24 Mar 2000 22:10:12 +0100
+Sender: paolo@router.postai.it
+Message-ID: <38DBDC2F.61B809D9@libero.it>
+Date: Fri, 24 Mar 2000 22:20:47 +0100
+From: Paolo <postaip@libero.it>
+MIME-Version: 1.0
+To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] floppy disk drive for hp  712/100
+References: <20000320150742.19786.qmail@mailserv2.iuinc.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000324121539.21840.qmail@web502.mail.yahoo.com>; from Ulrich Strelow on Fri, Mar 24, 2000 at 04:15:39AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Mar 24, 2000 at 04:15:39AM -0800, Ulrich Strelow wrote:
-> So now I am trying to do something useful :) with that
-> booted kernel. I would like to mount the proc
-> filesystem. I am using a very old ramdisk image
-> (19991108) because I had trouble with the newer images
-> on the 715/33 (no network driver).
+T.J.Yang wrote:
+> 
+> Another question for my 712/100 wks.
+> I am thinking of putting a floppy disk drive into the
+> empty seond bay. The ioscan output strongly indicate
+> the floppy disk is a reqular PC floppy drive.
+> 
+> on the hp mother board, the floppy disk connetion cable
+> looks alright with the pc one but the power cable is
+> different. It only has two wires while the PC one has
+> four. (That is why it is imporatent to locate the
+> 712/100 owner's/technical manual).
+> 
+> I don't have the multimeter with me now to check on the
+> voltage.
+> 
+> Perhaps someone done this before can help me out.
+> 
+> Thanks again
+> 
+> tj
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
 
-I've got a patch to get the 715/old i82596 going right here,
-and i'm going to commit it once I am in FC;  my 715/33 starts
-sash fine, Hil keyboard works well (including SysRq), nfsroot
-works, the framebuffer works at 1bpp (1024x768), and the HIL
-mouse generates recognizable data.  This is about what you
-should expect when I got around to committing everything.
+Pc floppy-drive use only +5V, so it's enough two wires.
++12V is unused, but present for other peripherals.
 
-> Is there a ramdisk image which I can use on a system
-> without a network driver ? Or do I need to compile
-> sash on HPUX as a SOM executable and build a ramdisk
-> image by myself ? Do I have to make any changes to
-> ftp://puffin.external.hp.com/pub/parisc/src/sash-2.1-hpux.tar.gz
-> ?
-
-Try to move to nfsroot asap - it's easier.  glibc compiles a
-(working libc.a) (again, this is only local changes - I'm sure
-people will force me to commit everything in FC though), and
-ELF binaries linked against it work, so we'll hopefully have an
-ELF sash soon.
-
-	Philipp Rumpf
+-- 
+Postai Paolo. Modena, Italy
+<paolopos@lica.unimo.it>
+Key fingerprint = E8 5A 33 C8 45 1B 76 6C  D2 95 51 E1 AD 27 D0 90
+Pgp Key = <http://www.lica.unimo.it/~paolopos/public_key_PGP.asc>
