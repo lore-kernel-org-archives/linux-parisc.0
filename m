@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65F63482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 08:34:19 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <helge.deller@sap.com>
-To: "Kenneth Westelinck" <kennywest1@hotmail.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] not freeing initmem and power button
-Date: Mon, 15 Apr 2002 16:34:18 +0200
-References: <F92wTQUS2cYmqJpuUdJ00006859@hotmail.com>
-In-Reply-To: <F92wTQUS2cYmqJpuUdJ00006859@hotmail.com>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B3926482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 11:36:04 -0600 (MDT)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Patch to debina glibc-2.2.5 for gcc-3.2 build (was GCC support for dwarf2)
+Message-ID: <1018887988.3cbaff348b253@webmail.tiscali.be>
+Date: Mon, 15 Apr 2002 18:26:28 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <200204121614.g3CGENMn003726@hiauly1.hia.nrc.ca>
+In-Reply-To: <200204121614.g3CGENMn003726@hiauly1.hia.nrc.ca>
 MIME-Version: 1.0
-Message-Id: <200204151634.18455.helge.deller@sap.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Monday 15 April 2002 13:59, Kenneth Westelinck wrote:
-> >The power-button should work if you update to a newer kernel (>=
-> >2.4.18-pa19).
->
-> Cool, does this mean: if I push the button, the system will do a clean
-> shutdown? Or if I push the button, nothing happens?
+Hi Dave,
 
-It should shutdown cleanly and power-off afterwards.
+Could you send me you patch as an attached file or put it somewhere
+(I try to grab page but "patch" failed)
 
-> Is there an easy way to disable this. 
+Thanks in advance for additional help,
+    Joel
 
-Hmm, not yet. But thanks for the idea, maybe I can add this....
 
-> I mean, I only want to shutdown the
-> machine using the command line (call me a freak ;)).
-> Thanks.
-
-read
-http://lists.parisc-linux.org/pipermail/parisc-linux/2002-April/016052.html
-
-Helge
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
