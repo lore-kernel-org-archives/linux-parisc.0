@@ -1,44 +1,45 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Improving performance of munmap
-Date: Fri, 8 Oct 2004 11:35:01 -0600
-Message-ID: <20041008173501.GA16958@colo.lackof.org>
-References: <20041007230232.GF14151@tausq.org>
-	<20041008020343.GN24430@baldric.uwo.ca>
-	<20041008041657.GG14151@tausq.org>
-	<20041008165926.GI14151@tausq.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: HIL panic on boot with 2.6.9-rc4-pa2
+Date: 12 Oct 2004 17:00:01 -0500
+Message-ID: <1097618407.2044.420.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041008165926.GI14151@tausq.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: Helge Deller <deller@gmx.de>
+Return-Path: <James.Bottomley@SteelEye.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Oct 08, 2004 at 09:59:26AM -0700, Randolph Chung wrote:
-> +#define FLUSH_THRESHOLD 0x80000 /* 0.5MB */
-> +int parisc_cache_flush_threshold = FLUSH_THRESHOLD;
+I got this on a 64bit kernel on a C360 ... it looks like the driver
+detach path is causing a problem (HIL needs to be built in for a
+standard kernel to run on any machine).
 
-6 monthes or so ago Alex Williamson ran some perf tests comparing a
-CONSTANT vs global when tuning the IOMMU page size on IA64 ZX1 chipsets.
-IIRC, using a global was 3-5% slower if it was the same value as the constant.
-I don't know if parisc will offer a similar performance difference and if so,
-a per arch (PA11 vs PA20) should work fine for everything but PA8800.
-It may not be a problem, just something to consider.
+James
 
-The rest looks "correct" to me - ie I don't see any obviously wrong.
 
-thanks,
-grant
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+HP SDC: : IRQ not found for SDC IO=0xffffffffffe01000 IRQ=0x0
+NMI=0xffffffff
+HP SDC: No SDC found.
+HP SDC MLC: Registering the System Domain Controller's HIL MLC.
+HP SDC MLC: Request for raw HIL ISR hook denied
+kfree_debugcheck: bad ptr 104bf828h.
+kernel BUG at mm/slab.c:1851!
+Backtrace:
+ [<00000000101161a8>] dump_stack+0x18/0x28
+ [<0000000010175a60>] kfree_debugcheck+0xb8/0xf8
+ [<000000001017722c>] kfree+0x3c/0x128
+ [<00000000102432b4>] serio_release_port+0x14/0x20
+ [<0000000010251368>] device_release+0x30/0xa0
+ [<00000000101f4cac>] kobject_cleanup+0xc4/0xd0
+ [<00000000101f4ccc>] kobject_release+0x14/0x20
+ [<00000000101f51d0>] kref_put+0xa0/0x128
+ [<00000000101f4cfc>] kobject_put+0x24/0x30
+ [<00000000102517fc>] put_device+0x14/0x20
+ [<000000001025191c>] device_unregister+0x2c/0x40
+ [<000000001024346c>] serio_destroy_port+0xf4/0x110
+ [<00000000102439b8>] serio_unregister_port+0x58/0xb0
+ [<0000000010247c44>] hil_mlc_unregister+0xf4/0x158
+ [<000000001044e6bc>] hp_sdc_mlc_init+0x144/0x180
+ [<0000000010438a88>] do_initcalls+0xb0/0x188
+
+Kernel panic - not syncing: BUG!
+ 
