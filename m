@@ -1,20 +1,22 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 63423484B
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB0EF4840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 17 Feb 2004 11:16:48 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout2.tiscali.be with esmtp (Tiscali) id 1At9m2-00037T-00
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 17 Feb 2004 19:16:46 +0100
-Date: Tue, 17 Feb 2004 19:16:44 +0100
-Message-ID: <402A4D450000445E@ocpmta3.freegates.net>
-In-Reply-To: <20040217125236.BF8124940B2@palinux.hppa>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 willy
+	Tue, 17 Feb 2004 14:12:21 -0700 (MST)
+Date: Tue, 17 Feb 2004 16:10:41 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
+Message-ID: <20040217211041.GB12535@baldric.uwo.ca>
+References: <402E7722.2080105@tiscali.be>
+	<402A4CA50000347C@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <402A4CA50000347C@ocpmta2.freegates.net>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	James Morrison <ja2morri@csclub.uwaterloo.ca>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,26 +26,28 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Mon, Feb 16, 2004 at 06:31:41PM +0100, Joel Soete wrote:
+> > Ok, I will try to report as much detail as I can.
+> 
+> Hi all,
+> 
+> Just in case of some interest interest, here is the pr ref:
+> <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14163>
+> 
+> hth,
+>     Joel
 
->CVSROOT:	/var/cvs
->Module name:	linux-2.6
->Changes by:	willy	04/02/17 05:52:36
->
-[snip]
->Log message:
->merged to 2.6.3-rc4
-Matthew,
+Joel,
 
-Great job.
+Excellent! Thanks for posting the PR, the person answering the PR is
+correct, we should be indicating to gcc that set_dp is being used by
+assembly.
 
-Boot fine on b2k 64bit kernel build with last gcc-3.0.4-ds3-8 ;)
+I'm building with a fix right now "__attribute__((used))" to warn
+gcc-3.5 that it should not remove the function. I hadn't even realized
+that it was only being called by assembly, hence gcc-3.5 is doing a
+*better* job of removing apparently dead code.
 
-hth,
-    Joel
+When the build finishes I'll update my glibc patches online.
 
-
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
-tout le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+c.
