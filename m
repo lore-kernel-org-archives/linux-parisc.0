@@ -1,38 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id E5A77482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 12:12:16 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: joel.soete@freebel.net
+Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.3.35])
+	by dsl2.external.hp.com (Postfix) with SMTP id 77A78483C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 12:12:54 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id CAA30818
+	for parisc-linux@lists.parisc-linux.org; Tue, 16 Oct 2001 02:12:43 +0800
+Date: Tue, 16 Oct 2001 02:12:39 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-Date: Mon, 15 Oct 2001 20:11:12 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015180923.A14160@elvis.franken.de> <1003166094.3bcb198edae10@webmail.tiscalinet.be>
-In-Reply-To: <1003166094.3bcb198edae10@webmail.tiscalinet.be>
-MIME-Version: 1.0
-Message-Id: <20011015181216.E5A77482A@dsl2.external.hp.com>
+Message-ID: <20011016021237.A29460@neep.com.au>
+References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015164903.X11105@linuxcare.com> <20011015180923.A14160@elvis.franken.de> <1003166094.3bcb198edae10@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1003166094.3bcb198edae10@webmail.tiscalinet.be>; from joel.soete@freebel.net on Mon, Oct 15, 2001 at 07:14:54PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Monday 15 October 2001 19:14, joel.soete@freebel.net wrote:
+Quoth joel.soete@freebel.net:
 > Sorry for NEWBIES (as I am in term of X configuration) what means bpp?
 
-bpp = bits per pixel. 
-You should enter "8" here, which defaults to 2^8 = 256 colors.
+Bits per pixel, or colour depth.  8bpp is 256 colours, 16bpp is
+'thousands' and 32bpp is 'millions' of colours.
 
-> Well I found what I have to change in my config file to make xdm works.
-> Just a problem:
-> After the xdm start everything seems to works fine (right colors, mouse
-> working,...). Then I login: ok the pointer still work, I can work in the
-> default xterm,...
-> But when I exit mouse does not move any more and I had to restart xdm.
->
-> (Um.., on my B180 I thing have to update Xfree 4.0 to 4.1 the mouse does
-> not work at all but gpm well)
+Andrew.
 
-I assume you have a PS/2 mouse.
-If so, disable gpm before starting xdm ("/etc/init.d/gpm stop").
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
-Greetings,
-Helge
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
