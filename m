@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6BF69482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 20:02:37 -0700 (MST)
-To: =?iso-8859-1?Q?Bj=F6rn_Bylander?= <bjorn.bylander@telia.com>
-Cc: parisc-linux@lists.parisc-linux.org, taggart@carmen.fc.hp.com
-Subject: Re: [parisc-linux] Booting to ISL with Linux installed 
-In-Reply-To: Your message of "Mon, 21 Jan 2002 00:05:06 +0100."
-             <DLEJJFGDAJICFFBHFNCDGEBBCEAA.bjorn.bylander@telia.com>
-References: <DLEJJFGDAJICFFBHFNCDGEBBCEAA.bjorn.bylander@telia.com> 
-Date: Sun, 20 Jan 2002 20:02:35 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020121030235.C37E737D2B@carmen.fc.hp.com>
+Received: from ra.abo.fi (ra.abo.fi [130.232.213.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EDB4A482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 23:59:41 -0700 (MST)
+Received: from pctest10 (pctest10.abo.fi [130.232.17.64])
+	by ra.abo.fi (8.10.1/8.10.1) with SMTP id g0L6xcT26637
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 08:59:39 +0200 (EET)
+Message-ID: <002a01c1a249$31f95260$4011e882@abo.fi>
+From: "Kaj-Michael Lang" <milang@tal.org>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <DLEJJFGDAJICFFBHFNCDGEBBCEAA.bjorn.bylander@telia.com>  <20020121030235.C37E737D2B@carmen.fc.hp.com>
+Date: Mon, 21 Jan 2002 08:59:37 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] sti console (was: Booting to ISL with Linux installed)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,19 +25,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-=?iso-8859-1?Q?Bj=F6rn_Bylander?= writes...
+> BTW- I recently converted a couple 712s with serial console *back* to
+> graphics console since the sti-fb stuff is working so well now.
 
-> If not, is there any way I can get the "uxbootlf" image without buying a =
-> license for the appropriate HPUX version?
+This reminds me of the reason why I had to move to serial console, not
+because of lack of
+support but because the monitor I had at the time (brand new 19" sony)
+didn't work with my
+712. Or it does.. but the screen flickers sometimes with just a couple of
+seconds appart, sometimes it can take a couple of minutes, but it just won't
+stop. It does it with another cheap 15", but I now got a another monitor, a
+17" Panasonic and the sti console work fine it, no blinking.
+Does anyone know what could be the cause for the 19" sony not to function
+correctly. It works fine with a PC, Mac and even an old Sun3.
 
-There is a uxbootlf in cvs for this purpose. It's in the build-tools
-directory, or you can grab it via viewcvs at,
-
-http://cvs.parisc-linux.org/~checkout~/build-tools/uxbootlf
-
-BTW- I recently converted a couple 712s with serial console *back* to
-graphics console since the sti-fb stuff is working so well now.
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+--
+Kaj-Michael Lang, milang@tal.org
