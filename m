@@ -1,28 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3654482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 13:05:33 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15dcYm-0007bg-00; Sun, 02 Sep 2001 20:05:32 +0100
-Date: Sun, 2 Sep 2001 20:05:32 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Delaying the device inventory detection time
-Message-ID: <20010902200532.W5126@parcelfarce.linux.theplanet.co.uk>
-References: <200109020616.AAA07559@udlkern.fc.hp.com>
+Received: from faui02.informatik.uni-erlangen.de (faui02.informatik.uni-erlangen.de [131.188.30.102])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77365482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 16:38:59 -0600 (MDT)
+Date: Mon, 3 Sep 2001 00:34:37 +0200
+From: Richard Zidlicky <Richard.Zidlicky@stud.informatik.uni-erlangen.de>
+To: thunder7@xs4all.nl
+Cc: parisc-linux@lists.parisc-linux.org, linux-kernel@vger.kernel.org
+Message-ID: <20010903003437.A385@linux-m68k.org>
+References: <20010902105538.A15344@middle.of.nowhere> <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk> <20010902195717.A21209@middle.of.nowhere>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109020616.AAA07559@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Sun, Sep 02, 2001 at 12:16:39AM -0600
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <20010902195717.A21209@middle.of.nowhere>; from thunder7@xs4all.nl on Sun, Sep 02, 2001 at 07:57:17PM +0200
+Subject: [parisc-linux] Re: [SOLVED + PATCH]: documented Oops running big-endian reiserfs on parisc architecture
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Sep 02, 2001 at 12:16:39AM -0600, John Marvin wrote:
-> Why isn't alloc_bootmem or alloc_bootmem_pages good enough? I already
-> restructured the boot sequence a while back to allow for that.
+On Sun, Sep 02, 2001 at 07:57:17PM +0200, thunder7@xs4all.nl wrote:
+> 
+> --- linux/include/linux/reiserfs_fs.h   Sun Sep  2 21:54:25 2001
+> +++ linux-new/include/linux/reiserfs_fs.h       Sun Sep  2 20:47:27 2001
+> @@ -924,7 +924,7 @@
+>  #define DEH_Visible 2
+> 
+>  /* 64 bit systems (and the S/390) need to be aligned explicitly -jdm */
+> -#if BITS_PER_LONG == 64 || defined(__s390__)
+> +#if BITS_PER_LONG == 64 || defined(__s390__) || defined(__hppa__)
+>  #   define ADDR_UNALIGNED_BITS  (3)
+>  #endif
 
-I don't see the need to use bootmem for this.  We can manage just fine
-without the devices until after kmalloc starts up.
+couldn't reiserfs use asm/unaligned.h like anyone else?
+Seems at least sparc and mips may need the same treatment.
 
--- 
-Revolutions do not require corporate support.
+Bye
+Richard
