@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07A2C4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Jan 2003 07:16:31 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18YRrh-0002FZ-00; Tue, 14 Jan 2003 14:16:29 +0000
-Date: Tue, 14 Jan 2003 14:16:29 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: jsoe0708@tiscali.be, tausq@debian.org,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B99624829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Jan 2003 07:45:29 -0700 (MST)
+Date: Tue, 14 Jan 2003 15:44:46 +0100
+Message-ID: <3DED9A6600005946@ocpmta3.freegates.net>
+In-Reply-To: <200301141354.h0EDsNjn028670@hiauly1.hia.nrc.ca>
+From: jsoe0708@tiscali.be
 Subject: Re: [parisc-linux] new gcc-snapshot problem [was: new gcc-default for hppa]
-Message-ID: <20030114141629.U26554@parcelfarce.linux.theplanet.co.uk>
-References: <3DED9A66000057DD@ocpmta3.freegates.net> <200301141354.h0EDsNjn028670@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200301141354.h0EDsNjn028670@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Tue, Jan 14, 2003 at 08:54:22AM -0500
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,23 +23,102 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 14, 2003 at 08:54:22AM -0500, John David Anglin wrote:
-> > I have a look and in drivers/ide/ide-cd.h line 440 I found well:
-> >     __u8 short slot_tabelen;
-> > 
-> > Any idea?
-> 
-> Look at the code after preprocessing with "-E" option.  This will
-> show you the actual code where the fault occurs.
+>
+>> I have a look and in drivers/ide/ide-cd.h line 440 I found well:
+>>     __u8 short slot_tabelen;
+>> 
+>> Any idea?
+>
+>Look at the code after preprocessing with "-E" option.  This will
+>show you the actual code where the fault occurs.
+>
+Hi Dave,
 
-well, yeah, but the actual error's pretty clear.  you can't specify
-two types for the same variable (__u8 is typedeffed to unsigned char).
-unfortunately, gcc used to not even warn about this ;-(
+Good idea and I do so for tree compiler still install:
+gcc-3.0 -E
 
-the question is, what size is really wanted here?  i dunno, ask the
-maintainer of that file.
+struct atapi_mechstat_header {
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+        __u8 fault : 1;
+        __u8 changer_state : 2;
+        __u8 curslot : 5;
+# 427 "ide-cd.h"
+        __u8 mech_state : 3;
+        __u8 door_open : 1;
+        __u8 reserved1 : 4;
+# 438 "ide-cd.h" 
+        byte curlba[3];
+        byte nslots;
+        __u8 short slot_tablelen;
+};
+
+gcc-3.2 -E
+
+struct atapi_mechstat_header {
+
+        __u8 fault : 1;
+        __u8 changer_state : 2;
+        __u8 curslot : 5;
+# 427 "ide-cd.h"
+        __u8 mech_state : 3;
+        __u8 door_open : 1;
+        __u8 reserved1 : 4;
+# 438 "ide-cd.h"
+        byte curlba[3];
+        byte nslots;
+        __u8 short slot_tablelen;
+};
+
+gcc-3.3 -E
+
+struct atapi_mechstat_header {
+
+        __u8 fault : 1;
+        __u8 changer_state : 2;
+        __u8 curslot : 5;
+# 427 "ide-cd.h"
+        __u8 mech_state : 3;
+        __u8 door_open : 1;
+        __u8 reserved1 : 4;
+# 438 "ide-cd.h"
+        byte curlba[3];
+        byte nslots;
+        __u8 short slot_tablelen;
+};
+
+Do you notice any difference OTC above I encounter another use of slot_ta=
+blelen
+as:
+
+struct cdrom_mechstat_header {
+
+        __u8 fault : 1;
+        __u8 changer_state : 2;
+        __u8 curslot : 5;
+        __u8 mech_state : 3;
+        __u8 door_open : 1;
+        __u8 reserved1 : 4;
+# 927 "/usr/src/linux-2.4.20-pa21/include/linux/cdrom.h"
+        __u8 curlba[3];
+        __u8 nslots;
+        __u16 slot_tablelen;
+};
+
+hmm could this be a typo at one moment "unsigned short" would be changed
+"__u8 short" ???
+
+More over what could be the actual patch:
+__u8 slot_tablelen;
+
+or as in the 2d structure
+
+__u16 slot_tablelen;
+
+Cheers,
+    Joel
+
+
+*********************************************
+Vous surfez toujours avec une ligne classique ?
+Faites des economies avec Tiscali Complete...
+Plus d'info sur ... http://complete.tiscali.be
