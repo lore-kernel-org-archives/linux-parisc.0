@@ -1,43 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89FE7482A
-	for <parisc-linux@parisc-linux.org>; Sun, 29 Apr 2001 00:00:22 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14tkFW-0008MT-00
-	for parisc-linux@parisc-linux.org; Sun, 29 Apr 2001 07:00:02 +0100
-Date: Sun, 29 Apr 2001 07:00:02 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010429070002.I15328@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] glibc 2.2.3 status
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4F00E482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Apr 2001 00:31:20 -0600 (MDT)
+Message-Id: <200104290624.AAA21764@puffin.external.hp.com>
+To: Xavier Debacker <xavier.debacker@esiee.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Keyboard driver patch proposal 
+In-Reply-To: Your message of "Sat, 28 Apr 2001 07:00:30 +0200."
+             <3AEA4E6E.A990140B@esiee.net>
+Date: Sun, 29 Apr 2001 00:24:49 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Let's see...
+Xavier,
+It seems Helge Deller has reviewed and committed most of the ESIEE team
+work in the past. Any word on if Helge will be able to review/commit
+this patch?
 
- * If you edit sunrpc/Makefile to specify -Y /usr/bin to rpcgen (to fix our
-   broken compiler).
- * And cp sysdeps/hppa/initfini.c \
-	linuxthreads/sysdeps/unix/sysv/linux/hppa/pt-initfini.c
+Xavier Debacker wrote:
+> +	switch (keyval) {
+> +		case KBD_BREAK :  
+> +			// sets the "release_key" bit
+> +			// when a key is released
+> +			// HP keyboard send f0 followed by the keycode
+> +			// while AT keyboard send the keycode with
+> +			// this bit set.
+> +			brk = 0x80;
+>  			return;
 
-then glibc will build.
+BTW, I'm told the '//' comment style is not ok;  "/* ... */" is expected.
+It's not mentioned in Documentation/CodingStyle so I can't explain it.
 
-It will not pass `make check' though.  This seems to be crashing in the
-dynamic loader when testing the iconvdata directory.  I've been trying
-to debug this today, but haven't got very far.
+thanks,
+grant
 
-gdb reports:
-
-Program received signal SIGSEGV, Segmentation fault.
-0x41013b94 in _dl_symbol_address (map=0x4014b000, ref=0x0)
-    at ../sysdeps/hppa/dl-symaddr.c:26
-26        Elf32_Addr value = (map ? map->l_addr : 0) + ref->st_value;
-(gdb) bt
-#0  0x41013b94 in _dl_symbol_address (map=0x4014b000, ref=0x0)
-    at ../sysdeps/hppa/dl-symaddr.c:26
-#1  0x40113ed4 in ?? ()
-
--- 
-Revolutions do not require corporate support.
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
