@@ -1,22 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8AFE0482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Nov 2001 05:10:36 -0700 (MST)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
-	id 15zd9b-0007M2-00
-	for parisc-linux@lists.parisc-linux.org; Fri, 02 Nov 2001 14:10:31 +0200
-Date: Fri, 2 Nov 2001 14:09:41 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: kenneth westelinck <kennywest1@hotmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
-Message-ID: <20011102140941.B17393@dogbert.localdomain>
+Received: from kura.mail.jippii.net (kura.mail.jippii.net [195.197.172.113])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 45E39482B
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Nov 2001 07:14:15 -0700 (MST)
+Message-ID: <003101c163a9$48570590$56dc10c3@amos>
+From: "Kaj-Michael Lang" <milang@tal.org>
+To: "kenneth westelinck" <kennywest1@hotmail.com>,
+	<parisc-linux@parisc-linux.org>
 References: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-In-Reply-To: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com>
+Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
+Date: Fri, 2 Nov 2001 16:18:44 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,41 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> "./configure --build=hppa-hpux --host=hppa-hpux". Again I passed the test
+so
 
-Hello,
+Try:
 
-On Fri, 02 Nov 2001, kenneth westelinck wrote:
+./configure --build=hppa-linux --host=hppa-linux
 
-<snip>
+Works with a bunch of software that won't recogonice "parisc"
 
-> "--build=hppa-hpux --host=hppa-hpux" the right way to go? If so, can someone
-> provide me with the model header file or the correct typedefs?
-
-Unless I am very much mistaken, you probably don't want this. Even
-though this is a HP system, it is running the Linux operating system,
-with its associated header files.
-
-AFAIK, we're still missing a kernel-headers package for hppa; someone
-suggested simply install the sparc one. Don't know how well that works.
-
-Regards,
-
-Albert
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE74o0FDg+hOeRZtkMRAuTAAJ9bwHiQ1K0lKOZ8FJBjbNbmzl+u+QCfVhYJ
-zBdih1sBtv1P6xFkJns8lHw=
-=AjG6
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
+--
+Kaj-Michael Lang , milang@tal.org
