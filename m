@@ -1,18 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D2F08482E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Oct 2002 12:22:54 -0700 (MST)
-Date: Sun, 27 Oct 2002 20:22:50 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>,
-	Stephan <stephan@itp.bg>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ext3 /
-Message-ID: <20021027192250.GM31050@charite.de>
-References: <20021027092756.D8B974862@dsl2.external.hp.com> <20021027093355.GD9302@charite.de> <3DBC44F9.1010006@freebel.net>
+Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6FC854829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 04:26:02 -0700 (MST)
+Received: from esvir04nok.ntc.nokia.com (esvir04nokt.ntc.nokia.com [172.21.143.36])
+	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id g9SBQFB28011
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 13:26:15 +0200 (EET)
+Received: from esebh002.NOE.Nokia.com (unverified) by esvir04nok.ntc.nokia.com
+ (Content Technologies SMTPRS 4.2.5) with ESMTP id <T5e3796d706ac158f24077@esvir04nok.ntc.nokia.com> for <parisc-linux@lists.parisc-linux.org>;
+ Mon, 28 Oct 2002 13:25:58 +0200
+Received: from aurinko.ntc.nokia.com (aurinko.ntc.nokia.com [172.22.105.49]) by trinms01.ntc.nokia.com with ESMTP (8.7.5/8.7.3) id NAA29727 for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 13:25:53 +0200 (EET)
+Received: (from mnahkola@localhost)
+	by aurinko.ntc.nokia.com (8.11.6/8.11.6) id g9SBPqf10378
+	for parisc-linux@lists.parisc-linux.org; Mon, 28 Oct 2002 13:25:53 +0200 (EET)
+Date: Mon, 28 Oct 2002 13:25:52 +0200
+From: Nahkola Mikko <mikko.nahkola@nokia.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20021028112551.GR15137@aurinko.ntc.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DBC44F9.1010006@freebel.net>
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] framebuffer depth and other issues ...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +30,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am 27.10.2002 um 19:56:41 +0000 schrieb Joel Soete folgendes:
+I was wondering ... the VIS-EG is about as close to "fully supported" as 
+they get, right?
 
-> >Yes, why not?
-> >
-> >tune2fs -j /
-> 
-> Afaik palo does not support reiserfs; if you boot from your kernel 
-> located into /boot it could be a problem !?
+Well, I have one of those in a C240 and ... well, the system is otherwise 
+just fine, even KDE is fairly responsive and all that, but there's a 
+shortage of available colors. (anyone know of a good lowcolor icon theme? 
+I can't seem to find such in Debian... anyone?)
 
-We're talking about ext3, not reiserfs.
+Is it possible to get more than 8 bpp out of a VIS-EG? How would I go 
+about that, do I need to say something like "stifb:bpp:foo" to the kernel 
+or is fbset enough?
+
+How much of a difference is there between VIS-EG/PCI (A4977A) and 
+VIS-EG/GSC (A4450A) in this regard? I have an A4450A in there at the 
+moment.
+
+HP-UX seems to find a whole lot of differences and such ... and I did run 
+GNOME/HP-UX once on a VIS-EG/PCI without running out of colors but then 
+again HP-UX does color recovery and acceleration and all that on those...
+
+
+Then, is an Ati Mach64 likely to work? I mean, it should be pretty 
+well-supported in i386 ... and I've heard rumors about Sun-branded 
+Mach64s too, so that would point to least some models getting by without 
+a PC BIOS.
+
+
+Third, what's the thing with $TERM and the serial console? I have 
+interesting problems with the 70096, even in vt100-emulation mode the 
+Debian installer was, um, interesting. Doesn't anyone else want to use 
+the HP dumb-terminal hardware with Linux?
+
+
+And as an aside, how reliable is the disk stuff nowadays? Would it make 
+any sense to run a file server on Linux/hppa yet? I mean, something like 
+a stack of A3312As, software-RAID and NFS ... is it likely to work? How 
+about performance, compared to HP-UX, for example? (yes, I'd expect HP-UX 
+to be somewhat better, but by how much?)
+
 
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V a)   Ralf.Hildebrandt@charite.de
-Charite Campus Mitte                            Tel.  +49 (0)30-450 570-155
-Referat V a - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Why you can't find your system administrators:
-Went to Stop&Go to get ANOTHER case of insert favorite caffinated beverage here 
+Mikko Nahkola <mikko.nahkola@nokia.com>
