@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pcp03884998pcs.radnor01.pa.comcast.net (pcp03884998pcs.radnor01.pa.comcast.net [68.32.19.21])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1E64D4845
-	for <parisc-linux@parisc-linux.org>; Fri,  3 Oct 2003 23:52:40 -0600 (MDT)
-Message-ID: <2h$xz25$$a-1--$756oo0pzh-9a@6nufpx>
-From: "Abe Thurman" <ljg645ft@aol.com>
-Reply-To: "Abe Thurman" <ljg645ft@aol.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Sat, 04 Oct 03 07:47:01 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="2_EF_1._2D61_8.5B5F"
-Subject: [parisc-linux] Hey
+Received: from lee (unknown [218.18.70.91])
+	by dsl2.external.hp.com (Postfix) with SMTP id 782194845
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Oct 2003 22:58:56 -0600 (MDT)
+From: "威达公司" <imienm@163.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="GB2312"
+Date: Sun, 5 Oct 2003 13:02:57 +0800
+Message-Id: <20031005045856.782194845@dsl2.external.hp.com>
+Subject: [parisc-linux] 注册香港公司
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,53 +20,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---2_EF_1._2D61_8.5B5F
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+尊敬的客户：
+    你们好！
+    我们是香港威达会计秘书有限公司，专业代理内地人
+士注册香港公司，香港是世界上经济最自由的地区，拥有
+一家香港公司，可以为你的业务带来极大的便利。注册香
+港公司手续简便,只需提供两个或以上国内人士的身份证
+复印件即可,费用低（只需数千人民币），请咨询：
+          联系人：李先生
+          联系电话：0755-82310342  82310351
+          电邮：szgslh@163.com
+          网址：www.welldone-ac.com.hk
+          地址：深圳市罗湖区天安国际大厦B座2705室
 
-<body bgcolor=3D"#FFFFFF" text=3D"#000000" link=3D"#333399" vlink=3D"#3333=
-99" alink=3D"#333399">
-&nbsp;
-<table width=3D"527" cellspacing=3D"0" cellpadding=3D"0" height=3D"44" ali=
-gn=3D"center" bgcolor=3D"#333399"><tr> 
-    <td align=3D"center" valign=3D"middle"><font face=3D"Arial, Helvetica,=
- sans-serif" size=3D"6" color=3D"#FFFFFF"><b>Do
-      you like REAL rough SEX?</b></font></td></tr></table>
-<table width=3D"527" cellspacing=3D"0" cellpadding=3D"0" height=3D"201" al=
-ign=3D"center" bgcolor=3D"#333399">
-  <tr><td align=3D"center" valign=3D"top" bgcolor=3D"#333399" height=3D"17=
-8"> 
-      <table width=3D"525" cellspacing=3D"0" cellpadding=3D"0" height=3D"5=
-9" align=3D"center" bordercolor=3D"#333399" border=3D"1">
-        <tr><td align=3D"center" valign=3D"middle" bgcolor=3D"#FFFFFF" hei=
-ght=3D"123"> 
-<br>            <font color=3D"#000000" face=3D"Verdana, Arial, Helvetica,=
- sans-serif" size=3D"2"><a href=3D"http://www.freemember.us/tbc/index.html=
-">Taboo
-Bizarre</a>, the site for the most extreme strange sex!! Watch the girls
-            dominate and spank the most unsuspecting men!!<br><br>- Strang=
-e XXX Porn Video's<br>-
-            Over 100'000 Pictures<br>-
-            Chat live with sluts<br>-
-            Hot live bondage shows<br><br>
-            Pussy shaving, Huge insertions, Gaping Anal Sex, Breast milkin=
-g, Drunk whores, Vegetable fucking and even fun with
-            Midgets!<br>
-              <br></font> <i><a href=3D"http://www.freemember.us/tbc/index=
-html">&quot;At Taboo Bizarre they have sexual video more
-            BIZARRE then you've ever seen in your entire life!&quot;</a></=
-i><br><br>
-            </td></tr></table></td></tr></table>&nbsp;
-<table width=3D"527" cellspacing=3D"0" cellpadding=3D"0" height=3D"33" ali=
-gn=3D"center" bgcolor=3D"#333399">
-  <tr>
-    <td align=3D"center" valign=3D"middle">
-      <p align=3D"center"><b><a href=3D"http://www.freemember.us/tbc/index=
-html"><font color=3D"#FFFF00" face=3D"Verdana, Arial, Helvetica, sans-ser=
-if" size=3D"2">CLICK
-      HERE to see the most BIZARRE SEX you have ever seen!</font></a></b><=
-/p>
-    </td></tr>
-</table></body>
 
---2_EF_1._2D61_8.5B5F--
+============================邮件内容与以下文字无关=============================
+
+优联网络 http://www.chinamysql.com  专业提供各类虚拟主机，不满意可获退款。
+
+强势套餐：100M主机送顶级域名，送10个10M企业油箱，加送20个二级域名，仅需318元/年！
+
+
+三龙证券投资 http://3long.sayba.com 为您提供专业理财服务。现在购买只需588元，赠送价值超过1800元的礼品！
+
+说吧网上商城 http://shop.sayba.com 全是厂商直销的新品或折上折的商品，是您网络购物的好去处！
+
+
+使用极星邮件群发，无须通过邮件服务器，直达对方邮箱，速度绝对一流！
+
+软件下载网址：http://www.lovexin.com，更多的超酷软件等你来下载哦！
