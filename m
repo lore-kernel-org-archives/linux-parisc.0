@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CEDDE4829
-	for <parisc-linux@parisc-linux.org>; Thu,  2 Jan 2003 10:04:23 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by smtp-out.tiscali.be with esmtp (Tiscali)
-	id 18U8lQ-00040G-00
-	for <parisc-linux@parisc-linux.org>; Thu, 02 Jan 2003 18:04:12 +0100
-Date: Thu, 2 Jan 2003 18:04:01 +0100
-Message-ID: <3DED9BF500003DF9@ocpmta8.freegates.net>
-From: jsoe0708@tiscali.be
-To: parisc-linux@parisc-linux.org
+Received: from smtp3.pp.htv.fi (smtp3.pp.htv.fi [213.243.153.135])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB14A4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Jan 2003 11:41:27 -0700 (MST)
+From: Arto Jantunen <viiru@debian.org>
+To: Herb Radford <herbr@magma.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] D370
+References: <5.1.0.14.0.20030101115323.03a100e0@mail.magma.ca>
+Date: Thu, 02 Jan 2003 20:41:07 +0200
+In-Reply-To: <5.1.0.14.0.20030101115323.03a100e0@mail.magma.ca> (Herb
+ Radford's message of "Wed, 01 Jan 2003 12:05:52 -0500")
+Message-ID: <87el7vjsxo.fsf@welho.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] squid-2.xx dpkg failled to fork on pl (follow up)
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,25 +24,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Herb Radford <herbr@magma.ca> writes:
 
-This small mail to mentionned that I reach to make squid operational on
-a linux-2.4.20-pa17 thanks to the following tips:
+> Has there been any change in the support for the D-Class machines with
+> an Access Port card?
+> I'm not sure I understand what's happening when the AP card is
+> inserted. If I boot into the PDC I get the console on Serial 1. If I
+> boot with my console plugged into the AP card serial port I get nada!
+> When I plug my console into Serial 2 I also get zip!
+> If I boot with the console in Serial 1, output stops at the famous
+> "branching to" message.
+>
+> Must the AP card be removed for useful o[peration?
 
-in debian rules replace statement
-    ac_cv_func_setresuid=3Dno \
-by 
-    ac_cv_func_setresuid=3Dyes \
+Thats how I did it for my D390 and after that it works fine. Also,
+you can do the "switch to serial 2 after the branching point" dance..
 
-so that function leave_suid() [into src/tools.c] will use setresuid() in
-place of seteuid() before launch fork(). 
+Also, so that others know, with the current (as in 2.4.20) kernels
+(which fixed some unaligned access issues, I believe), the machine
+works just fine on 32-bit SMP.
 
-Is it a know problem on palinux?
-
-Greetings,
-    Joel
-
-
-********************************************
-Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
-://adsl.tiscali.be
+-- 
+Arto Jantunen
