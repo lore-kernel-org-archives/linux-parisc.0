@@ -1,13 +1,17 @@
-Return-Path: <soete.joel@tiscali.be>
-Date: Tue, 3 Feb 2004 17:55:18 +0100
-Message-ID: <400CB8A10000BBD9@ocpmta3.freegates.net>
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CC7554840
+	for <parisc-linux@parisc-linux.org>;
+	Tue,  3 Feb 2004 09:59:14 -0700 (MST)
+Date: Tue, 3 Feb 2004 09:59:12 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>
+Subject: Re: [parisc-linux] UNable to boot the cd.
+Message-ID: <20040203165912.GC7523@colo.lackof.org>
+References: <8BF7471D09AA9B4190A9C96778BC2A1748D234@qcaexc02.asiapacific.cpqcorp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <8BF7471D09AA9B4190A9C96778BC2A1748D234@qcaexc02.asiapacific.cpqcorp.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] UNable to boot the cd.
-To: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>,
-	"Grant Grundler" <grundler@parisc-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,39 +22,25 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Asif,
+On Tue, Feb 03, 2004 at 08:13:21PM +0530, AYAZ, MOHAMMED ASIF wrote:
+> Hi Grant, 
+> Thanks For your Mail, 
+> To start with. 
+> o I Had downloaded the iso image from  ftp.de.debian.org/debian-cd/3.0_r0/hppa
 
->To start with. 
->o I Had downloaded the iso image from  ftp.de.debian.org/debian-cd/3.0_r0/hppa
->
-Ok (I used successfully the same from same site recently :) )
+very good
 
->o Used a Winxp to write a CD!! 
+> o Used a Winxp to write a CD!! 
+...
+> I wonder wat's wrong with my cd !! 
 
-I know well it as an OS is it also the name of your burning tool?
-If not could you give its name and release (iirc some tools wasn't able to
-do before a given release)
+Try reading documentation about "Winxp" and whatever CD SW it comes with.
+I would guess it has "Easy CD Creator". Look for "raw mode" or something
+like that in the documentation or help files.
 
->o I did Search ipl from teh main menu itdid'nt  show the cdrom as an ipl
-device.
+IIRC, instructions on how to burn parisc CD's with CD Creator have
+been posted to parisc-linux (or debian-hppa) before.
 
-severall pb are possible: 
-* the most common one is that the cd was not burn with correct options (see
-your cd burning tool user guide)
-* your image file could be corrupted (iirc there was also a md5sums file
-which allow you to check the integrity of this image) 
-* the type of the cdrom drive you used to boot (is it a hp buildin?) couldn't
-allow you to boot. Could boot with an hpux install CD?
+BTW, A500-44 definitely works as I have several running parisc-linux.
 
->o I tried booting hte CD rom as well but to no luck.. 
->o IT's on a A500 (9000/800/A500-44) 
->
->I wonder wat's wrong with my cd !! 
-
-hth,
-    Joel
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+grant
