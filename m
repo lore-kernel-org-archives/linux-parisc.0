@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailgate.pit.comms.marconi.com (mailgate.pit.comms.marconi.com [169.144.68.6])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E66CC485D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 04:27:41 -0700 (MST)
-Received: from mailman.pit.comms.marconi.com (mailman.pit.comms.marconi.com [169.144.2.12])
-	by mailgate.pit.comms.marconi.com (8.9.3/8.9.3) with ESMTP id GAA23469
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 06:27:34 -0500 (EST)
-Received: from whq-msgrtr-01.pit.comms.marconi.com (whq-msgrtr-01.pit.comms.marconi.com [169.144.2.221])
-	by mailman.pit.comms.marconi.com (8.9.3/8.9.3) with ESMTP id GAA29083
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 06:27:35 -0500 (EST)
-Message-ID: <0725120622E7D411AEF70020485A6B0CD71AF5@dl-msgusr-01.eu.fore.com>
-From: "Dreeling, Michael" <michael.dreeling@marconi.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 13 Mar 2002 06:27:56 -0500
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B6CD4832
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 07:35:48 -0700 (MST)
+Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
+	id 16l9rs-0001M6-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 15:36:40 +0100
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1016030200.3c8f63f89a0ff@webmail.tiscali.be>
+Date: Wed, 13 Mar 2002 15:36:40 +0100 (CET)
+From: joel.soete@freebel.net
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Subject: [parisc-linux] E35 816 Server & PA/Linux
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] evms-0.9.2 build utilities problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,22 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi People,
-I've got a newly acquired E35 816 Server which i'm trying to stick PA-Linux
-onto.
-Unfortunately i get this old error, which i have seen many people have
-problems with.
+Hi all,
 
-Loading ramdisk 1946807 bytes @ 03e14000...
-Branching to kernel entry point 0x00100000.  If this is the last
-message you see, you may need to switch your console.  This is
-a common symptom -- search the FAQ and mailing list at parisc-linux.org
+The original way to build some evms utilities as evms_devnode_fixup is:
 
-I had seen on the site that someone had an E35 up and running (in the
-Hardware Database)
-but i also know that the E Series are officially unsupported. I tried the
-0.93 (latest) Version from the 50MB ISO.
-Is there any way i can get parisc lunix onto this Box??
+...
+gcc -Wall -fPIC -O2 -I/tools/evms-dpkg/evms-0.9.2/engine/include
+-I/tools/evms-dpkg/evms-0.9.2/engine/dlist
+-I/tools/evms-dpkg/evms-0.9.2/kernel-headers/include -I/usr/include
+-I/usr/local/include -DPluginDirectory=\"/lib/evms\" -DEVMS_DEBUG -DPARANOID
+-DMAJOR_VERSION=1 -DMINOR_VERSION=0 -DPATCH_LEVEL=0 -DVERSION=\"1.0.0\"
+-DDATE=\"03/13/02\" -c -o evms_devnode_fixup.o evms_devnode_fixup.c
+...
+gcc -L/tools/evms-dpkg/evms-0.9.2/engine/Engine
+-L/tools/evms-dpkg/evms-0.9.2/engine/dlist  -static -o evms_devnode_fixup
+evms_devnode_fixup.o -levms -ldlist -lpthread -ldl
 
-Thanks
-Michael
+...
+Well launch it made an immidiate Segmentation fault.
+
+Now I recompile without "-fPIC" and it works fine.
+
+Any idea on what is wrong?
+
+Thanks in advance for help,
+    Joel
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
