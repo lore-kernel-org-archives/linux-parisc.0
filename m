@@ -1,11 +1,11 @@
 Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E6470484B
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 83379484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Jan 2004 11:20:33 -0700 (MST)
-Date: Mon, 26 Jan 2004 19:20:26 +0100
-Message-ID: <40153110000001C0@ocpmta2.freegates.net>
-In-Reply-To: <20040126172505.GQ11844@parcelfarce.linux.theplanet.co.uk>
+	Mon, 26 Jan 2004 11:38:54 -0700 (MST)
+Date: Mon, 26 Jan 2004 19:38:50 +0100
+Message-ID: <4015311000000204@ocpmta2.freegates.net>
+In-Reply-To: <40153110000001C0@ocpmta2.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] A fix for B2k and CONFIG_PDC_CONSOLE pb
 To: "Matthew Wilcox" <willy@debian.org>
@@ -23,20 +23,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Sorry for auto reply, but I just find back the right kdb and:
+
+>I would just still check the case when I have an usb kbd (I would have to
+>recover one) but the pdc console is setup to serial port (e
+>no graphic screen available) just for an output screen without input kbd?
 
 
-> +	if ((PAGE0->mem_cons.cl_class != CL_DUPLEX) && !PAGE0->mem_kbd.iodc_io)
->  		return 0;
-Right Matthew this case is nearly impossible (may be excepted if disconected
-the usb kbd during the boot), it would means that my pdc_console is not a
-serial one (ie graphic([01])) but no usb kdb found, so in that case pdc would
-switch console automaticaly to serial.
+That case is also impossible, the console setup as serial_1 (eg) is always
+CL_DUPLEX :(
 
-I would just still check the case when I have an usb kbd (I would have to
-recover one) but the pdc console is setup to serial port (eg no graphic screen
-available) just for an output screen without input kbd? 
+I will so review my patch.
 
-Thanks for your attention and remarks,
+Thanks for all,
     Joel
 
 
