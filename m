@@ -1,41 +1,69 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA07056
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Feb 2000 14:37:31 -0700
-Received: from hpdst41.cup.hp.com (hpdst41.cup.hp.com [15.16.128.62])
-	by palrel3.hp.com (Postfix) with ESMTP id 1BD6713EB
-	for <parisc-linux@thepuffingroup.com>; Fri, 11 Feb 2000 11:17:59 -0800 (PST)
-Received: from cup.hp.com (hpdst231.cup.hp.com [15.16.129.192]) by hpdst41.cup.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id LAA27357 for <parisc-linux@thepuffingroup.com>; Fri, 11 Feb 2000 11:17:58 -0800 (PST)
-Message-ID: <38A460A1.42E46FC6@cup.hp.com>
-Date: Fri, 11 Feb 2000 11:18:57 -0800
-From: Ullas Ponnadi <uponnadi@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA07990
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Feb 2000 16:50:28 -0700
+Received: from linuxcare.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id RAA01735;
+	Fri, 11 Feb 2000 17:53:04 -0500
+Sender: adevries@thepuffingroup.com
+Message-ID: <38A492D0.1F6D4206@linuxcare.com>
+Date: Fri, 11 Feb 2000 17:53:04 -0500
+From: Alex deVries <adevries@linuxcare.com>
 MIME-Version: 1.0
-Cc: parisc-linux@thepuffingroup.com
-References: <200002111838.NAA12763@vorlon.dynacan.org>
+To: Dunn RobertE Contr ESC Det 5 /NDSI <Robert.Dunn@CISF.AF.MIL>
+CC: "'parisc-linux'" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Metrics Gathering and Quality Measurements
+References: <40DBF9A085B2D3118C2600508B6FCB8A41E102@cisf7.cisf.af.mil>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Building the PA-RISC 2.0 kernel with the GCC tool chain
 List-ID: <linux-parisc.vger.kernel.org>
 
-John Curry and myself have been looking at the PA-RISC 2.0 Port. Here are
-some things that I have tried using the latest GCC tool chain.
+Dunn RobertE Contr ESC Det 5 /NDSI wrote:
+>         What file format would you like.  Linux people probably want Corel.
+> I have Word Perfect.  The school will want satan's Word 97 format.  I am
+> unsure about posting binary files to the list server.  I can e-mail it
+> directly to you.  Does anybody else want a copy?  It will be several weeks
+> before I will have it together.  I can tell you, however, based on what I
+> have learned thus far, there will be many negatives.  I will attempt to
+> identify any of the positive points that I can (for example: this list
+> server and bugzilla - thanks Mike -).  Any information the team can provide
+> will be most beneficial.
 
-- I have been able to build an ELF-64 binary using the tool chain. The tools
-that
-  I have used are:
-        - gcc version 2.9-hppa-991112
-        - GNU ld version 2.9-hppa-991112 (with BFD 2.9-hppa-991112)
-        - GNU Make version 3.77
+I'd suggest text and postscript.  Send it to me, and if it's on topic
+we'll host it on the PA-RISC Linux web pages.
 
-- I have used a bare bone kernel for the build.
+>         Has there been any risk analysis done?  I can see evidence of, at
+> least some informal, risk analysis.  The discussions about merging Linus'
+> product with parisc attempts to identify some of the risks that may be
+> encountered and some of the steps that may be taken to mitigate those risks.
 
-- Most of the assembly files are stubbed out since the assembler directives and
-in
-  some cases, assembly tricks do not work on the 64 bit architecture.
+There's certainly risk analysis that gets done on a project-to-project
+basis, but it's a very informal practice.
 
-- The purpose of the build was to test the tool chain and deal with any 64 bit
-issues,
-   so no tests have been done:-).
+>         Have there been any prioritization of tasks?  Has the team
+> identified tasks that will take longer or have greater risk?  If they have,
+> have they also identified the earliest possible starting time for these
+> tasks?
 
-Hope this information is useful for anyone trying to work on a PA-RISC 2.0
-Port.
+Ish.  A lot of these get talked about off line.
 
-Ullas
+>         Is there a schedule?  It seems as though the project is just moving
+> in a forward direction with the goal of finishing when it can be finished?
+
+That's pretty much it.  It's hard to guarantee any dates when the bulk
+of development is done on non-paid time.
+
+>         What role is Linuxcare taking in the project now?  Have there been
+> any updates to the Puffingroup website in the last couple of weeks?
+
+The Puffins at Linuxcare has a contract with HP to contribute to some
+development. 
+
+There will be updates very very soon.  We've been concentrating on
+development in recent weeks.
+
+- Alex
+-- 
+Alex deVries, Director of Professional Services, The Puffins at
+Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
