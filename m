@@ -1,21 +1,26 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Message-ID: <B782283A728ED011BBA2006097780D03F29134@COMA0S04>
-From: "Mandachi, Dorin \(Omaha\)" <Dorin.Mandachi@cox.com>
-To: "'hppa-linux@thepuffingroup.com'" <hppa-linux@thepuffingroup.com>
+Date: Wed, 3 Mar 1999 10:01:02 -0800 (PST)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199903031801.KAA13454@gatekeeper.equator.com>
+To: hppa-linux@thepuffingroup.com
 Subject: RE: Betr.: RE: [hppa-linux] Another bootstrap test
-Date: Wed, 3 Mar 1999 12:09:02 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Resent-Message-ID: <"nmmAK3.0.8R5.OpMts"@sod.res.cmu.edu>
+Resent-Message-ID: <"LFmWb1.0.Gf5.eZNts"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-I joined the list after the bootstrap was released, can sbdy send me a copy?
 
-thx,
+> I joined the list after the bootstrap was released, can sbdy send me a copy?
+>
+> thx,
+>
+> Dorin Mandachi, 
 
-Dorin Mandachi, 
+  Actually, the last one failed on some machines, I need sort out what
+  happened. Then I'll put up a revised version that you may try (and others).
+  From now on I'll be distributing them on the FTP site so people can 
+  pick them up more easily.
+
+  Jason Eckhardt.
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
