@@ -1,17 +1,21 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Proposal for implementing IRQ affinity
-Date: 31 Aug 2004 15:44:14 -0400
-Message-ID: <1093981554.5296.14.camel@mulgrave>
+Date: Tue, 31 Aug 2004 13:48:37 -0600
+Message-ID: <20040831194837.GA24477@colo.lackof.org>
 References: <1093923097.3870.18.camel@mulgrave>
 	<20040831171421.GC20353@colo.lackof.org>
-	<1093974552.3643.22.camel@mulgrave>
-	<20040831183415.GG20353@colo.lackof.org>
+	<20040831174357.GQ16196@parcelfarce.linux.theplanet.co.uk>
+	<20040831180635.GF20353@colo.lackof.org>
+	<20040831185750.GS16196@parcelfarce.linux.theplanet.co.uk>
+	<20040831192112.GH20353@colo.lackof.org>
+	<20040831192811.GB642@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Matthew Wilcox <willy@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040831183415.GG20353@colo.lackof.org>
+In-Reply-To: <20040831192811.GB642@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,41 +26,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2004-08-31 at 14:34, Grant Grundler wrote:
-> Ok. Why?
+On Tue, Aug 31, 2004 at 08:28:11PM +0100, Matthew Wilcox wrote:
+> So PA-RISC supports ISA and ia64 doesn't :-P
 
-Because the only interrupts we can control the affinity of are the true
-32/64 CPU interrupts. Everything else is effectively hanging off one of
-these. If we try to pretend that we can change the affinity of the
-subordinate interrupts, we'll end up confusing irqbalanced
+yes, thanks for the correction. You are right.
+I was staring at arch/ia64/kernel/iosapic.c...only it has ISA support.
 
-> I'd really like one method to convert GSI to local interrupt numbers.
-> Doing away with local translations and directly indexing into a global
-> array seems the most obvious to me.
+> > Seriously, what problem does LASI bring that can't be handled with
+> > a global array?
+> 
+> The subdevices that can't have their own processor interrupt.
 
-I know, but our interrupt structure isn't a flat array, it's a tree with
-the root being a given CPU interrupt.  Obviously, since we have to give
-some cookie to the devices to identify the interrupt, we end up having a
-numeric array.
+That has nothing to do with using a global IRQ array.
+It just means LASI subdevices can't be redirected individually.
+They will still be assigned a global IRQ number.
+PCI devices using IRQ lines below DINO will have the same problem.
+Ditto for E/ISA support under WAX.
 
-> But we still want dino/PCI to work. So we have to replace the
-> existing abstraction with another one...
-
-Yes, the abstraction for dino/PCI is that we allocate extra interrupts
-to the region, but they're unequivocally tied to the give CPU interrupt
-line the dino happens to be using.
-
-> A single global array can implement a hierarchy as well.
-> Entries just contain indexes into other parts of the array.
-
-Yes, but we need to expose only the cpu interrupts to irqbalanced.  The
-problem is that for the purposes of affinity, we can't treat the
-fictitious subordinate interrupts as being ordinary independent
-interrupts.
-
-James
-
-
+thanks for the correction,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
