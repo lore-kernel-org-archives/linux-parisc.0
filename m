@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3F66E482A
-	for <parisc-linux@parisc-linux.org>; Thu, 17 Jan 2002 18:13:55 -0700 (MST)
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200201180113.RAA06216@opus.allegro.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 28496482A
+	for <parisc-linux@parisc-linux.org>; Thu, 17 Jan 2002 20:48:32 -0700 (MST)
+Message-Id: <200201180320.g0I3K5ko003382@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] long double
-To: drepper@redhat.com
-Date: Thu, 17 Jan 2002 17:13:51 -0800 (PST)
-Cc: willy@debian.org (Matthew Wilcox), parisc-linux@parisc-linux.org
-In-Reply-To: <m36660a3qx.fsf@myware.mynet> from "Ulrich Drepper" at Jan 17, 2002 04:42:46 PM
+To: willy@debian.org (Matthew Wilcox)
+Date: Thu, 17 Jan 2002 22:20:05 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@parisc-linux.org
+In-Reply-To: <20020118003542.F9221@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Jan 18, 2002 00:35:42 am
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +22,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Re:
+> gcc currently thinks that `long double' is 64-bits (the same size
+> as double).  This is perfectly legitimate, but...
 
-[(stuff about how big "long double" is)]
+This is only hppa64.  Clearly, this should be 128 bits.  However,
+somebody needs to work out the ABI issues and provide a patch to
+gcc to support 128 bit long doubles.  At the moment, hppa64 doesn't
+even build on the gcc main branch.
 
-> > (3) Change both gcc and glibc to think that long double is actually
-> > 128-bits wide.
-> 
-> This is definitely what you should do.  glibc includes now a full set
-> of 128-bit math functions.  They should be used everywhere the ABI are
-> not demanding the braindamaged 96-bit format.  Even Alpha, PPC, etc
-> will change to this when time comes.
-
-
-That's why I use: real32, real64, real128 :)
-
+Dave
 -- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
