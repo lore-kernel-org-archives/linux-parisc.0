@@ -1,22 +1,21 @@
 Return-Path: <carlos@baldric.uwo.ca>
 Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EFB2048BA
+	by dsl2.external.hp.com (Postfix) with ESMTP id 79B4048BA
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 14 Mar 2004 12:29:20 -0700 (MST)
-Date: Sun, 14 Mar 2004 14:26:47 -0500
+	Sun, 14 Mar 2004 12:35:04 -0700 (MST)
+Date: Sun, 14 Mar 2004 14:32:37 -0500
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
 To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] glibc-2.3.3: a warning with gcc-3.3 become an
-	error with gcc-3.5
-Message-ID: <20040314192646.GD24266@baldric.uwo.ca>
-References: <20040301193815.GG21769@baldric.uwo.ca>
-	<402A4CA50000D57D@ocpmta2.freegates.net>
-	<20040302195050.GE19402@baldric.uwo.ca>
-	<404A4D34.1000106@tiscali.be> <20040306225740.GH963@baldric.uwo.ca>
-	<40548691.7090300@tiscali.be>
+Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
+	fixes GLRO changes.
+Message-ID: <20040314193237.GE24266@baldric.uwo.ca>
+References: <20040312164116.GI24266@baldric.uwo.ca>
+	<404EC1C600002B98@ocpmta1.freegates.net>
+	<20040312212012.GS24266@baldric.uwo.ca>
+	<40535A0A.4020209@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40548691.7090300@tiscali.be>
+In-Reply-To: <40535A0A.4020209@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -27,10 +26,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Mar 14, 2004 at 04:21:37PM +0000, Joel Soete wrote:
-> it compiles well with gcc-3.3.
-> I hope it will not break anything :)
+> No pb if gdb don't segv (but iirc that only appened with gcc-3.5) and if 
+> lucky I could also garb a bt :).
+> 
+> Btw in previous test, I noticed that IAOQ was for instance =0x41007293 when 
+> gdb shows me the actual address of the crash at '0x41007293 - 3' and I find 
+> well the corresponding code at  7290 in an 'objdump -d'. Do you know why 
+> this diff of 3?
 
-Hope?? What does the testsuite for glibc say?
+Instructions can only start at addresses that are modulo 32-bits, gdb is
+returning the start address of the insn that executed. While IAOQ is
+showing that the insn has finished (e.g. pointing at the last byte 0 1 2
+3).
 
 c.
