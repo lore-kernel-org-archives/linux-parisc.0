@@ -1,15 +1,14 @@
-From: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] 199f on parisc (now it is ready to go :-)
-Date: Mon, 14 Apr 2003 20:51:38 +0100
-Message-ID: <20030414195138.GW29166__7017.74212434447$1416622385$gmane$org@parcelfarce.linux.theplanet.co.uk>
-References: <20030414190533.GA6323@nikita.ath.cx>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org,
-	netzwurm@debian.org, teq@nikita.ath.cx
-To: Alexander Gabert <pappy@nikita.ath.cx>
+From: danglin@gcc.gnu.org
+Subject: [parisc-linux] Re: target/10271: [3.2/3.3/3.4 regression] [HPPA] Floating point args don't get reloaded across function calls at -O2
+Date: 16 Apr 2003 17:51:45 -0000
+Message-ID: <20030416175145.5861.qmail__39742.8589327776$1416622396$gmane$org@sources.redhat.com>
+Reply-To: danglin@gcc.gnu.org, danglin@gcc.gnu.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
+	gcc-gnats@gcc.gnu.org
+To: danglin@gcc.gnu.org, gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030414190533.GA6323@nikita.ath.cx>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,16 +19,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-DO NOT cc the grsecurity mailing list when sending mail to
-parisc-linux.org.  continue to do so and i will remove you from the list.
+Synopsis: [3.2/3.3/3.4 regression] [HPPA] Floating point args don't get reloaded across function calls at -O2
 
-On Mon, Apr 14, 2003 at 09:05:33PM +0200, Alexander Gabert wrote:
-> hi,
-> 
-> with the great help from the pageexec folks, we are now able to set up our debian
-> hppa parisc boxes with a very cool security patch!
+State-Changed-From-To: analyzed->closed
+State-Changed-By: danglin
+State-Changed-When: Wed Apr 16 17:51:45 2003
+State-Changed-Why:
+    Fixed.
+    <http://gcc.gnu.org/ml/gcc-patches/2003-04/msg01236.html>.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10271
