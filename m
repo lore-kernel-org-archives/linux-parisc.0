@@ -1,32 +1,66 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01780
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 15:42:41 -0700
-Message-Id: <200011302245.OAA29965@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA02546
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 15:54:48 -0700
 To: "Jorge L. deLyra" <delyra@latt.if.usp.br>
-Cc: parisc-linux@thepuffingroup.com
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com,
+        assirati@socrates.if.usp.br
 Subject: Re: [parisc-linux] HP 9000/735-125 
-In-reply-to: Your message of "Thu, 30 Nov 2000 20:32:29 PST."
+In-Reply-To: Your message of "Thu, 30 Nov 2000 20:32:29 -0200."
              <Pine.LNX.3.96.1001130202814.25437A-100000@latt.if.usp.br>
-Date: Thu, 30 Nov 2000 14:45:27 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+References: <Pine.LNX.3.96.1001130202814.25437A-100000@latt.if.usp.br> 
+Date: Thu, 30 Nov 2000 15:57:14 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E141cde-0008Fu-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Jorge L. deLyra" wrote:
+= a) If you use the standard boot loader
+= 
+= Edit DEFAULT_COMMANDLINE in linux-2.3årch/parisc/boot/boot_code/ipl_c.c
+= to read:
+= 
+=         "vmlinux HOME=/TERM=LINUX root=/dev/nfs nfsroot=10.0.0.1"
 
-> It is on the nfsroot howto linked from the home page of the project:
-> 
-> http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/02-Feb/0069.html
+The boot_code directory should be gone -- that stuff is obsolete.
 
-Ok. I'm not going to touch the archives.
-I can update the link if someone provides the content.
-Any volunteers to rewrite the NFS root howto and bring it up to date?
+= b) If you use PALO
 
-> I suppose this is old...
+PALO is the only current bootloader 
 
-Exactly.
+= Edit the echo line in palo/mklifimage to read
+= 
+=         "vmlinux HOME=/TERM=LINUX root=/dev/nfs nfsroot=10.0.0.1"
+= 
+= In both cases replace 10.0.0.1 with the IP address of your NFS server.
+= 
+= Copy the .config included below to the root of the linux source tree.
 
-grant
+make oldconfig or make config, without a .config to start with, works
+fine just as it does with x86
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+= make oldconfig
+= make dep
+= make clean
+= make Image (Or make palo, if you use Paul's loader)
+Must be 'make palo'
+= Due to linker issues cross compiling is still not possible. I.e. you
+= have to build on HP/UX. 
+= </quote>
+= 
+= I suppose this is old...
+= 
+= > Those of us still cross compiling are using x86-linux hosts.
+= 
+= Wonderful, that makes it a lot easier...		Thanks,
+= 
+= ----------------------------------------------------------------
+=         Jorge L. deLyra,  Associate Professor of Physics
+=             The University of Sao Paulo,  IFUSP-DFMA
+=        For more information: finger delyra@latt.if.usp.br
+= ----------------------------------------------------------------
+= 
+= ---------------------------------------------------------------------------
+= To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+= `unsubscribe' as the subject.
+= 
+= 
+= 
