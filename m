@@ -1,58 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 68846482A
-	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 23:15:50 -0600 (MDT)
-Date: Fri, 19 Oct 2001 01:17:19 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [randolph@tausq.org: [parisc-linux] glibc update]
-Message-ID: <20011019011719.C12905@megatonmonkey.net>
-References: <20011017234038.C1060@megatonmonkey.net> <20011018150255.I4123@tausq.org>
+Received: from rhirst.linuxcare.com (pc3-hems4-0-cust183.bre.cable.ntl.com [213.107.179.183])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4F15482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Oct 2001 00:49:10 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id C299EB00C; Fri, 19 Oct 2001 07:49:16 +0100 (BST)
+Date: Fri, 19 Oct 2001 07:49:16 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: =?iso-8859-1?Q?DUTOT_St=E9phane?= <stephane.dutot@exlicite.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PPTP and PPPOE under Debian HPPA Linux.
+Message-ID: <20011019074916.V11105@linuxcare.com>
+References: <01a501c1565e$c9ce4e60$9601a8c0@utopia> <20011018224644.U11105@linuxcare.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <20011018150255.I4123@tausq.org>; from randolph@tausq.org on Thu, Oct 18, 2001 at 03:02:56PM -0700
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011018224644.U11105@linuxcare.com>; from rhirst@linuxcare.com on Thu, Oct 18, 2001 at 10:46:44PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Thu, Oct 18, 2001 at 10:46:44PM +0100, Richard Hirst wrote:
+> I've just had a look at this.  Seems to be a problem related to
+> the kernel trying to invoke non-existant usermode helper progs.
 > 
-> eh? that's the output report file :)
-> 
-> i get a floating point exception when running the corresponding
-> executable.
+> I created a script /sbin/hotplug containing just
 > 
 > 
-> Program received signal SIGFPE, Arithmetic exception.
-> 0x4011b328 in vfprintf () from /lib/libc.so.6
-> (gdb) bt
-> #0  0x4011b328 in vfprintf () from /lib/libc.so.6
-> #1  0x40123490 in printf () from /lib/libc.so.6
-> #2  0x00010f8c in feenv_mask_test (
->     flag_name=0x40210048 "@\036\177P@\036\177T@\036\177`@\036\177X@\036\177h@\036\177\220@\036\177Ð@\036\177Ô@\036\177Ø@\036\177à@\036\177è@\036\177ø@\036\177ð@\036\200", fe_exc=1) at test-fenv.c:332
-> #3  0x0001160c in fe_single_test (flag_name=0x11f98 "FE_INEXACT", fe_exc=1)
->     at test-fenv.c:607
-> #4  0x00011664 in feenv_tests () at test-fenv.c:625
-> #5  0x000116e4 in main () at test-fenv.c:654
+> #!/bin/sh
+> echo hotplug: $* > /dev/console
 > 
->
 
-When running these tests, it gets a little complex.
-I'm pretty sure the test needs to be run against the
-libc.so.6 that you are building, and not the one in /lib
-on your system.
+Don't forget to chmod +x that script.
 
-You could set the LD_LIBRARY_PATH to the location of the
-objects you are building and then run it...
+> and my kernel no longer crashes when trying to establish an async
+> ppp link.  Instead, I get this in syslog:
 
-However, if you do that, then gdb might act strangely
-with this newly built libc (since ld trying to load gdb
-will use the libc in the library path).
+The real problem there was that I was using the wrong authentication
+method for my isp.  Once I set that right the link came up.
 
-How do you load gdb with one libc and debug a program
-that uses another?
-
-When I run the test-fenv, I get a whole list of output
-criteria, but it finally exist with $?=132
-I'm running with LD_LIBRARY_PATH set to the new libc,
-glibc 2.2.4-2, built with newer binutils.
-
-c.
+Richard
