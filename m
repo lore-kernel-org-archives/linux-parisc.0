@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (f70.law4.hotmail.com [216.33.149.70])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B200F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 03:06:35 -0600 (MDT)
-From: "Kenneth Westelinck" <kennywest1@hotmail.com>
-To: carlos@baldric.uwo.ca, marc@centraltx.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Building my first kernel
-Date: Thu, 06 Jun 2002 09:06:33 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Message-ID: <F70qSkZ2On3DnRB0MtS00012bca@hotmail.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1030482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 04:31:29 -0600 (MDT)
+Date: Thu, 6 Jun 2002 12:31:27 +0200
+Subject: Re: E55 Kernel Support and question for Christoph  (used to be RE:  [parisc-linux] Greetings!)
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v481)
+Cc: Damian Boune <dboune@marmot.com>,
+	Stan Sieler <sieler@allegro.com>,
+	parisc-linux@lists.parisc-linux.org,
+	Thierry Simonnet <t.simonnet@esiee.fr>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <3CFE7787.796C7F33@gmx.at>
+Message-Id: <8EE6C56A-7938-11D6-B6BA-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,61 +25,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Le mercredi 5 juin 2002, =E0 10:41 , Christoph Plattner a =E9crit :
 
-For what it's worth.
-
-I always build my kernel the i386 way:
-make menuconfig
-make dep clean bzImage
-
-I always use the nightly snapshots available from ftp.parisc-linux.org/cvs/ 
-.
-
-
-regards,
-
-Kenneth
->From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
->To: marc <marc@centraltx.com>
->CC: parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] Building my first kernel
->Date: Wed, 5 Jun 2002 22:26:52 -0400
 >
-> > I'm trying to build the 2.4.18 kernel, and everything goes great
-> > until I get to the `make bzImage` part and it screams about palo.
-> > I'm assuming I need the palo source. is this right??
-> >
-> > -Marc
-> >
+> What to do:
+> -----------
 >
->Yup.
->
->$SRC-TREE--|
->            |--- /linux
->            |
->            |--- /palo
->
->cd linux;
->make oldconfig;
->make menuconfig; (Fiddle)
->make dep;
->make palo;
->
->This puts the required lifimage in $SRC-TREE/palo
->
->c.
->
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> Checkout a kernel, and enable the PDC ROM console in the "Character
+> Devices" under the "Non-standard serial support". Further follow the
+> <HELP> instructions for this driver (Creating a /dev/ttyB0, and use
+> this device as login device).
+You can get a lifimage with PDC enabled there:
+http://pateam.esiee.fr/cd-
+images/lifimages/lifimage-2.4.18-pa32-PDC-20020531.gz
+
+There is also a corresponding netinst iso available on this site.
+
+Robbert Stanford, who is hacking K-Class, reported this on the IRC:
+15:48:23 <robbie>       the lifimage worked fine
+15:49:00 <robbie>       however the kernel that was installed from=20
+debian.org wasnt pdc enabled
+15:52:44 <robbie>       thibaut:  on eother thing, but its more related=20=
+
+to the install, i had to exit to a shell and manually edit=20
+/target/etc/inittab and inittab.real to use /dev/ttyB0
+15:55:29 <robbie>       which isnt realy a big deal, knowing one has to=20=
+
+use ttyB0 with the lifimage pretty well means you oughta know enough=20
+about sysVinit to check inittab when things go awry on your first boot
+
+About the inittab.real hack, maybe Richard Hirst will see whether some=20=
+
+tweaks to the default boot-floppies have to be done ;o)
+
+Anyway, I hope this will help you.
 
 
-enjoy life, enjoy linux,
-
-Kenneth
-
-_________________________________________________________________
-Verzend en ontvang Hotmail via je mobieltje: http://mobile.msn.com
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://pateam.esiee.fr/
