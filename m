@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 158524829
-	for <parisc-linux@parisc-linux.org>; Mon, 21 Oct 2002 08:15:27 -0600 (MDT)
-Received: from 127.0.0.1 (localhost.esiee.fr [127.0.0.1])
-	by dummy.domain.name (Postfix) with SMTP id 2490E49C21
-	for <parisc-linux@parisc-linux.org>; Mon, 21 Oct 2002 16:15:23 +0200 (CEST)
-Received: from esiee.fr (grobluk.esiee.fr [147.215.7.22])
-	by mail.esiee.fr (Postfix) with ESMTP id 1567649BDE
-	for <parisc-linux@parisc-linux.org>; Mon, 21 Oct 2002 16:15:21 +0200 (CEST)
-Message-ID: <3DB40B4F.4050807@esiee.fr>
-Date: Mon, 21 Oct 2002 16:12:31 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Pb with shared lib/or keymap after apt-get upgrade
-References: <3DB3E2AC.7FC260A8@admin.france.hp.com> <3DB406BB.71C9BC9C@admin.france.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B28654837
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Oct 2002 08:59:36 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 183e1k-0008Ti-00; Mon, 21 Oct 2002 15:59:32 +0100
+Date: Mon, 21 Oct 2002 15:59:32 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] rp2470 hang...getting closer
+Message-ID: <20021021155932.L5285@parcelfarce.linux.theplanet.co.uk>
+References: <20021013044033.88A544829@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021013044033.88A544829@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sat, Oct 12, 2002 at 10:40:33PM -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,34 +25,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno Vidal wrote:
- > 	Hi
- > I've found there the problem is: bash is using the libreadline.so.4
- > -> when I've upgraded the system this morning, this lib has been
- > upgraded, but the timestamp for this lib is:
- > Aug  2 02:03 libreadline.so.4.3
- > but for bash it is:
- > Nov 17  2001 /bin/bash
- >
- > -> bash is older than a lib that it use -> that's not correct.
- > If I downgrade libreadline to libreadline.so.4.2
- > it correct the problem. So I think it would be a good
- > idea to re-link bash with the latest lib.
+On Sat, Oct 12, 2002 at 10:40:33PM -0600, Grant Grundler wrote:
+> The problem is we shouldn't see *any* interrupts, not even timers.
+> scsi_register_host() used spin_lock_irqsave() to acquire io_request_lock.
+> Either someone is clobbering the irqsave or it's being ignored.
+> That's the part the still needs to be worked out.
 
-I guess you are running debian unstable, which i wouldn't recommend for
-a production machine.
+I wonder if this is interesting:
 
-Debian unstable is currently _really_ unstable.
+void handle_interruption(int code, struct pt_regs *regs)
+{
+        unsigned long fault_address = 0;
+        unsigned long fault_space = 0;
+        struct siginfo si;
 
-We use testing on some of our prod machines (including the webserver),
-it seems far more reliable.
+        if (code == 1)
+            pdc_console_restart();  /* switch back to pdc if HPMC */
+        else
+            sti();
 
-Anyway, as usual, userland problems should be reported to debian mailing
-lists.
+so if we take, say, a page fault, we reenable interrupts on all CPUs.
+Who the hell put this code in there?!
 
-HTH, Greetings,
+Thanks to Thibaut for finding this particular excrescence during
+CONFIG_SMP frobbing on 2.5.  I'm not sure what this should be changed to.
+local_irq_enable?  Do we want interrupts enabled at this point?
 
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+-- 
+Revolutions do not require corporate support.
