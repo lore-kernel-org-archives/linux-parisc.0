@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD8E4482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Apr 2003 10:04:22 -0600 (MDT)
-Date: Tue, 22 Apr 2003 12:05:09 -0400
-To: Randolph Chung <randolph@tausq.org>
+Date: Wed, 23 Apr 2003 11:33:32 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <joel.soete@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] RFC: remove/restart bugs.parisc-linux.org
-Message-ID: <20030422160509.GG26986@systemhalted>
-References: <20030422071920.GO25257@tausq.org>
+Subject: Re: [parisc-linux] How to put patch 2.4.21 available in ftp.p-l.o?
+Message-ID: <20030423173332.GC3017@dsl2.external.hp.com>
+References: <3EA54BD5.90100@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030422071920.GO25257@tausq.org>
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+In-Reply-To: <3EA54BD5.90100@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> We have a bts setup at bugs.parisc-linux.org, but it hasn't been touched
-> for a very long time, and the only purpose it seems to serve nowadays is
-> to archive spam. Should we just remove it? There are a lot of items
-> there that remain "TODO" items... but perhaps a better way to keep
-> track of those is to put a todo list in cvs (we already have one for the
-> kernel... we can start one for userspace stuff too), and we can link to
-> it via viewcvs from the web page.
+Joel Soete wrote:
+> As mentioned in other mails, I would like to make my patch 
+> 2.4.21-pre7-pa3x available for all for revision.
 
-I'm all for:
+(he meant "for all to review")
 
-a. Removing the BTS.
-b. Adding userspace cvs-based TODO list.
+Joel mailed them to me and I've put them under:
+	ftp://ftp.parisc-linux.org/patches/2.4.21-pre7-pa3x/
 
-c.
+grundler@dsl2:/home/ftp/patches/2.4.21-pre7-pa3x$ ls
+00_Parisc_Debian-configs.patch.bz2  04_Diva_support.patch.bz2
+01_Parisc.patch.bz2                 05_generic-tree.patch.bz2
+02_CpqfcTS.patch.bz2                patch-2.4.21-pre7-pa3x.bz2
+03_Sym53c8.patch.bz2
+
+thanks for preparing this!
+grant
