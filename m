@@ -1,23 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tom.hrz.tu-chemnitz.de (tom.hrz.tu-chemnitz.de [134.109.132.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B30914836
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 04:05:06 -0700 (MST)
-Received: from pat.hrz.tu-chemnitz.de ([134.109.132.143] ident=mail)
-	by tom.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #3)
-	id 16clbQ-0000Pa-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 18 Feb 2002 12:05:00 +0100
-Received: from gerd.csn.tu-chemnitz.de ([134.109.88.146] helo=gerd.jandt-online.net)
-	by pat.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #2)
-	id 16clbQ-0002jr-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 18 Feb 2002 12:05:00 +0100
-Message-Id: <5.0.2.1.2.20020218115723.00ad0e80@pop.puretec.de>
-Date: Mon, 18 Feb 2002 12:03:11 +0100
-To: parisc-linux@lists.parisc-linux.org
-From: Tilo Jandt <tilo@jandt-online.net>
-Subject: [parisc-linux] MySQL
-In-Reply-To: <OF5687265E.42AF0F56-ONC1256B64.00367C5C@com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EE1444840
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 04:49:10 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <helge.deller@sap.com>
+To: Hinrich Aue <hinrich_aue@yahoo.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Power LED
+Date: Mon, 18 Feb 2002 12:49:08 +0100
+References: <20020218101505.54487.qmail@web21205.mail.yahoo.com>
+In-Reply-To: <20020218101505.54487.qmail@web21205.mail.yahoo.com>
+MIME-Version: 1.0
+Message-Id: <E16cmI9-0000SL-00@linuxlab.wdf.sap-ag.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,76 +24,88 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Monday 18 February 2002 11:15, Hinrich Aue wrote:
+> ------------------------------------------
+>
+> >715/64, 715/80 and 715/100 belong to the so-called
+> >715/new machines and all of those support the
+>
+> soft-power
+>
+> >switch, else you wouldn't have received the
+> >"Shutdown requested..." message.
+> >In your case I assume, that your filesystems wasn't
+>
+> clean
+>
+> >before you did shutdown your system....
+> >
+> >BTW, the shutdown is initiated by the kernel by
+>
+> sending
+>
+> >a SIGINT to the PID (cad_pid) of the init process.
+>
+> This
+>
+> >is done in the file power.c:
+> >http://cvs.parisc-linux.org/linux/arch/parisc/kernel/power.c?rev=1.5&conte
+> >nt-type=text/vnd.viewcvs-markup After receiving this signal the init
+> > process switches
+> >the runlevel,
+> >shuts down your system cleanly and runs
+>
+> /sbin/poweroff
+>
+> >or /sbin/halt. This is already the case and is also
+> >done
+> >that way for ATX systems.
+> >
+> >Regards,
+> >Helge
+>
+> But if I push the power button, the init process
+> doesn't seem do change the runlevel, and power off
+> immediatly.
+> I can see the message "Shutdown requested..." and then
+> - power off -.
+> I think this souldn't be so.
 
-I've got a problem running MySQL.
-After a complete new installation of Debian HPPA 0.9.3 I installed=20
-Mysql-server with apt-get an it works fine.
-After an update to libc6_2.2.5-3 and an mysql-sever upgrade the=20
-configuration of mysql hangs.
-I downgraded to libc6_2.2.4-7 an then the installation passed but I can't=20
-start mysql server
+Yes, that's wrong. But you seem to be the only one
+who has such problems with 715/new. As I said in another
+mail my Scorpio (715/50) machine shuts down immediately too - 
+but this machine doesn't support the soft-power switch either.
+BTW, which kernel are you using ?
 
-I get the following log files:
+> Also I think it is a bit dangerous if everyone can
+> switch of the system, clean or unclean, just by
+> pushing the button.
 
-beta:/var/lib/mysql# vim beta.err
+That's right, but that's also the behaviour on Non-ATX PC's.
 
-020218 11:57:49  mysqld started
-Cannot initialize InnoDB as 'innodb_data_file_path' is not set.
-If you do not want to use transactional InnoDB tables, add a line
-skip-innodb
-to the [mysqld] section of init parameters in your my.cnf
-or my.ini. If you want to use InnoDB tables, add for example,
-innodb_data_file_path =3D ibdata1:30M
-But to get good performance you should adjust for your hardware
-the InnoDB startup options listed in section 2 at
-http://www.innodb.com/ibman.html
-020218 11:57:51  /usr/sbin/mysqld: Can't find file: './mysql/host.frm'=20
-(errno: 13)
-020218 11:57:51  mysqld ended
+> Maybe a 5 second push-time would be good (like ATX)
+> but with a gracefull shutdown.
 
-and:
+That's not that easy.
+On some systems the switch will send a key-down signal from
+the first press on, independantly if you released the button again or
+not. Other machines just send the signal while the button
+is down and stops it again if it was released.
 
-beta:/var/log# vim mysql.err
+That said, this is how I wrote the code. 
+In process_shutdown() you'll find:
+       /* wait until the button was pressed for 1 second */
+        if (shutdown_timer == HZ) {
+                static char msg[] = "Shutting down...";
+	    printk(KERN_INFO "%s\n", msg);
 
-Preparing db table
-Preparing host table
-Preparing user table
-Preparing func table
-Preparing tables_priv table
-Preparing columns_priv table
-Installing all prepared tables
-020218 11:57:41  /usr/sbin/mysqld: Shutdown Complete
+This means, that the kernel will just shutdown, if you pressed
+the button for at least 1 second. You might change that to 5*HZ if
+you want the 5 second push-time. 
+But, as I said, the kernel can't recognize on some systems if
+you have released the button again and so it will always 
+time-out and initiate the shutdown request. Your 715/80 seems
+to fall into this category of systems.
 
-
-PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !
-This is done with:
-/usr/bin/mysqladmin -u root -p password 'new-password'
-/usr/bin/mysqladmin -u root -h beta -p password 'new-password'
-See the manual for more instructions.
-
-Please report any problems with the /usr/bin/mysqlbug script!
-
-The latest information about MySQL is available on the web at
-http://www.mysql.com
-Support MySQL by buying support/licenses at https://order.mysql.com
-
-ERROR: 1017  Can't find file: './mysql/user.frm' (errno: 13)
-020218 11:57:42  /usr/sbin/mysqld: Shutdown Complete
-
-ERROR: 1017  Can't find file: './mysql/db.frm' (errno: 13)
-ERROR: 1017  Can't find file: './mysql/db.frm' (errno: 13)
-020218 11:57:44  /usr/sbin/mysqld: Shutdown Complete
-
-But these files (db.frm and user.frm) exists in /var/lib/mysql.
-
-Does anyone have an idea how to get mysql work?
-
-cya,
-Tilo
-
-
-Student of Computer Science at Chemnitz University of Technology
-|[ Tilo Jandt, Vetterstra=DFe 70, Zi. 330, D-09126 Chemnitz        ]|
-|[ mailto:tija@hrz.tu-chemnitz.de ]  [ ICQ: 73832493               ]|
-|[ Phone: +49 179 5333 255        ]  [ Fax: +49 89 2443 25531 ]|
+Regards,
+Helge
