@@ -1,41 +1,80 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA26115
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 10:04:07 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA26532
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 10:29:54 -0600
 Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id MAA18876
-	for <parisc-linux@thepuffingroup.com>; Tue, 19 Oct 1999 12:04:01 -0400 (EDT)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id JAA27382 for <parisc-linux@thepuffingroup.com>; Tue, 19 Oct 1999 09:04:42 -0700 (PDT)
-Message-Id: <199910191604.JAA27382@milano.cup.hp.com>
+	by cosrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id KAA06368
+	for <parisc-linux@thepuffingroup.com>; Tue, 19 Oct 1999 10:30:45 -0600 (MDT)
+Message-Id: <199910191630.JAA27454@milano.cup.hp.com>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] different PA2.0 CPUs in the same box? 
-In-reply-to: Your message of "Mon, 18 Oct 1999 22:31:15 PDT."
-             <199910190531.WAA27190@milano.cup.hp.com>
-Date: Tue, 19 Oct 1999 09:04:41 -0700
+cc: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+In-reply-to: Your message of "Mon, 18 Oct 1999 21:49:29 PDT."
+             <99101821580101.00297@P100>
+Date: Tue, 19 Oct 1999 09:30:45 -0700
 From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] LASI and serial port initialization
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> Alex deVries wrote:
-> > 
-> > Can you mix and match different PA2.0 CPUs in a multiprocessor box?
-> > An 8000 and an 8200?  
-> 
-> And HP hasn't mix/matched processor clock frequency's in one box either.
-> 870 (4-way/PA1.0/CIO) I think had something funny about the clocks which
-> I think was repeated in the T-class and possible planned in newer
-> architectures. Can anyone shed more light on this?
 
-I think I remember the problem now.
+Helge and I exchanged some e-mail on the topic of LASI vis a vie
+serial port initialization. Since then, I've come to the conclusion
+all (or most) parisc platforms will have a similar problem.
 
-The processors can run from a "system clock" and they all run synchronous.
-No chance of "clock drift" since they run at exactly the same pace.
-But on systems like 870, T-class and N-class, the processors are fed clock
-signals from (similar but) different sources.  Each frequency domain will
-slowly drift from the "average" and thus the processor clocks need to be
-resyncronized regularly.
+The problem is LASI is "discovered" and initialized well after several
+other drivers want to print things to the console. I see a few options
+on how to handle it:
+1) For each platform, force the console to be the first device "discovered"
+   and initialized. This is not a really good idea since console can be
+   different depending on configuration. Rebuilding the kernel to use
+   a different console doesn't seem reasonable to me. Having the user
+   figure out which devices need to be initialized first and build an
+   appropriate kernel so console works also seems unreasonable.  We are
+   headed down this path now though....
 
-> Minimizing clock drift of the various processors in an SMP box is
-> a difficult problem. Keeping accurate time is important but
-> synchronization of processors too often can really hurt performance.
+2) Use IODC until the console device is "owned" by the appropriate driver
+   and can start taking input/output. 
+
+3) buffer the output instead of calling IODC.
+   Size of the buffer will impose some sort of limit.
+   I think this is what HP-UX does but don't really know
+   and it shouldn't matter to us.
+
+Either 2 or 3 requires some software layer behind printk to change
+behavior at some point. I don't know where that point is or how
+exactly to define it. I just thought going down path #1 is going
+to be a real pain to support on a broad set of platforms.
+
+Any other thoughts?
+
+BTW, I still don't know if Helge's changes to inventory.c are
+needed or not. I don't have the warm fuzzy feeling they are needed
+but can't prove they aren't either.
 
 grant
+
+Helge Deller wrote:
+> Am Mon, 18 Oct 1999 schrieben Sie:
+> > Helge,
+> > I never understood this chunk of very well. I was wondering
+> > why you moved code from the case HPHW_BA to outside the switch
+> > statement in do_oldhw_inventory()? (inventory.c)
+> > 
+> > If this is of general interest please post to parisc-linux...
+> > 
+> > thanks,
+> > grant
+> 
+> Hi Grant.
+> 
+> I just wanted to get it working, so I moved stuff around until it worked. Wit
+>   h
+> this I found, that the LASI-Controller should be added to the list before all
+> other stuff underlying the lasi (same is also to the WAX(??)-controller with
+> PS2/Keyboard/Mouse/RS232/HIL). This way it worked and I didn´t thought too muc
+>   h
+> about it later....   :-)
+> 
+> [Is this for global interrest ??]
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
