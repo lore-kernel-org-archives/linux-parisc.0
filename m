@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4FF424829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jun 2003 08:32:37 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19Nvn9-000253-Lk; Thu, 05 Jun 2003 15:32:35 +0100
-Date: Thu, 5 Jun 2003 15:32:35 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-Cc: Joel Soete <jsoe0708@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
+Received: from cpout2.tiscali.be (unknown [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 961034829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jun 2003 09:15:59 -0600 (MDT)
+Date: Thu, 5 Jun 2003 17:15:57 +0200
+Message-ID: <3ED4C8B600002915@ocpmta1.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] palo II
-Message-ID: <20030605143235.GM28581@parcelfarce.linux.theplanet.co.uk>
-References: <3ED4C8B600002734@ocpmta1.freegates.net> <Pine.BSF.4.53.0306051406370.27036@e0-0.zab2.int.zabbadoz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.53.0306051406370.27036@e0-0.zab2.int.zabbadoz.net>
+To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +21,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jun 05, 2003 at 02:14:33PM +0000, Bjoern A. Zeeb wrote:
+> I couldn't yet. It happened just the one time. What I did was:
+>
+> 1. power on apollo
+> 2. log in to the host the serial line was attached to
+> 3. start minicom
+> 4. come back five minute
+> later (the palo.conf entry has been wrong)
+> 5. fin
+ the above on the screen
+> 6. delete line 1 five times
+> 7. change path to kernel
+> 8. boot
+
+Could it be electrical interferences?
+
+[I also use minicom with serial port configured as 9600 8N1 with "Hardware
+Flow COntrol : yes" and cleanup "modem and dialing" init and reset strings]
+
+> [dep building]
+
 > I think I am missing a package for all this here where most of the
 > dh_* are included ...
-> 
+
+the package is debhelper (just in case you would find another file, it exists
+a nice search tool in <http://www.debian.org/distrib/packages>; at the
+bottom, you can search packages containing the file you know :) )
+
 > Me using apt-get source then debian/rules build and finally I cannot
-> use fakeroot at the moment (glibc issue though downgraded).
+> use fakeroot at the moment (glibc issue though downgr
+ded).
 
-use dpkg-buildpackage -rsudo
-that'll tell you which deps are missing
+Yes there is some issue with glibc 2.3.1-17, better is 2.3.1-16
 
-or you can apt-get build-dep palo to install palo's build deps.
+Joel
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+
+
+
+
+---------------------------------
+Découvrez les 6 clés et gagnez le Club Med à Vie avec Tiscali
+http://www.tiscali.be/nl/subs/tiscali4life/default.asp?lang=fr
