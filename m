@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C009948AC
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Oct 2003 23:52:26 -0600 (MDT)
-Date: Wed, 15 Oct 2003 07:52:19 +0200
-Message-ID: <3F8A29A200001466@ocpmta1.freegates.net>
-In-Reply-To: <Pine.LNX.4.58.0310141949150.17639@gustlik.softwired.wfc>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] ATI rage xl and C360 (it works!)
-To: "Hin.Zen" <hinzen@blah.pl>, parisc-linux@lists.parisc-linux.org
+Received: from myware.akkadia.org (cpe-24-221-190-179.ca.sprintbbd.net [24.221.190.179])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CED7948AC
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Oct 2003 23:54:21 -0600 (MDT)
+Message-ID: <3F8CE0F6.6050000@redhat.com>
+Date: Tue, 14 Oct 2003 22:53:58 -0700
+From: Ulrich Drepper <drepper@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: libc-alpha <libc-alpha@sources.redhat.com>,
+	parisc-linux@lists.parisc-linux.org
+References: <20031012213734.GJ23999@systemhalted>
+In-Reply-To: <20031012213734.GJ23999@systemhalted>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,45 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Great news, I will test it asap (and obviously let you inform).
+Carlos O'Donell wrote:
 
-Many thanks,
-    Joel
+> 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
+> 
+> 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
+> 	(__pthread_find_self): Likewise.
+> 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
 
->-- Original Message --
->From: "Hin.Zen" <hinzen@blah.pl>
->To: parisc-linux@lists.parisc-linux.org
->Date: Tue, 14 Oct 2003 20:20:14 +0200 (CEST)
->Subject: [parisc-linux] ATI rage xl and C360 (it works!)
->
->
->Hello List,
+Applied after cleaning up.
 
-last night I accidentally found this:
-http://ftp.fi.muni.cz/pub/linux/sgi/people/ppopov/aty_nobiosinit.patch
+- -- 
+- --------------.                        ,-.            444 Castro Street
+Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
+Red Hat         `--' drepper at redhat.com `---------------------------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-and patched 2.4.22-pa12 on my C360.
-After that the rage xl seems to work just fine [minor problems with
-colors and XFree (
->bdev mode) running 1280x1024].
-
-Could anybody who owns such a card (or can easily get one) test it please?
-(maybe Joel?)
-
-thanks,
-
--- 
-hinzen
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc
->linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+iD8DBQE/jOD22ijCOnn/RHQRAtSQAKCSAkx1YFOt3HSr2MBfKcB5OqK43ACgyHQK
+ch5Et0rXhEeQqKCszFrYGDY=
+=UKA4
+-----END PGP SIGNATURE-----
