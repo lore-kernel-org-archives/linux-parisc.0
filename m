@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 61A384829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 May 2003 09:11:23 -0600 (MDT)
-Date: Tue, 6 May 2003 08:08:27 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Jan-Benedict Glaw <jbglaw@lug-owl.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Oops on 2.4.20-pa33
-Message-ID: <20030506150827.GA23465@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20030506140425.GF18309@tausq.org> <3EB7766A00000308@ocpmta7.freegates.net>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BFB684829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 May 2003 09:20:22 -0600 (MDT)
+Date: Tue, 6 May 2003 17:20:21 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH-2.4] DIVA serial build error (was: Oops on 2.4.20-pa33)
+Message-ID: <20030506152021.GC27494@lug-owl.de>
+References: <20030505200251.GS27494@lug-owl.de> <20030505200537.GF29544@tausq.org> <20030505210532.GU27494@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3EB7766A00000308@ocpmta7.freegates.net>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pqZtgxSH0iQu6R78"
+In-Reply-To: <20030505210532.GU27494@lug-owl.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +23,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> That is ok for me (even if I don't understand very well :( ; afaik the previous
-> code works fine for gcc<=3.1 and do not seems to concern 64bits? )
+--pqZtgxSH0iQu6R78
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The point is that if the new code is always correct, then littering 
-the code with #ifdef's makes the code hard to read and maintain. If 
-you really need to make the code different for the two cases, it's 
-better to conditionally define a function/macro in a single place 
-(header file) and use that in the source, rather than having ifdef's 
-in many places.
+On Mon, 2003-05-05 23:05:32 +0200, Jan-Benedict Glaw <jbglaw@lug-owl.de>
+wrote in message <20030505210532.GU27494@lug-owl.de>:
+> On Mon, 2003-05-05 13:05:37 -0700, Randolph Chung <randolph@tausq.org>
+> wrote in message <20030505200537.GF29544@tausq.org>:
+> > > IAOQ:   10224658        __canonicalize_funcptr_for_compare
+> > > r02:    101229d4        do_sigaction
+> >=20
+> > i don't have a 32-bit machine handy, can you try this patch and let me
+> > know if it fixes your problem? An earlier version of this was posted on
+> > this list but didn't get commited. thx -randolph
+>=20
+> Oh, forgive me to be that read resistant:)
 
-HTH,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+I've tried your patch - the box still crashed, but I haven't noted down
+all the crash (out of time:( I'll redo it most probably this evening.
+
+Has anybody looked at the other patch (I sent with the mail I'm now
+replyin' to)? It was needed and seems to be correct. Is anybody to check
+it into CVS?
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--pqZtgxSH0iQu6R78
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+t9K1Hb1edYOZ4bsRAh5iAJ0QNCOA1qRLogh/2CvQeHM/B1uEcACeKkiX
+Sh476D/D8rHoba+HKSri1qs=
+=jM7X
+-----END PGP SIGNATURE-----
+
+--pqZtgxSH0iQu6R78--
