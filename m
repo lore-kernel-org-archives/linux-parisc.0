@@ -1,27 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from postal.sea.checkpoint.com (postal.sea.checkpoint.com [208.252.84.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92A05482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Sep 2001 16:16:19 -0600 (MDT)
-Received: from cartman.sea.checkpoint.com (localhost [127.0.0.1])
-	by postal.sea.checkpoint.com (8.9.3/8.9.3.RJ666.9) with ESMTP id PAA21369
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Sep 2001 15:14:01 -0700
-From: marka@sea.checkpoint.com
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 19 Sep 2001 15:16:09 -0700 (Pacific Daylight Time)
-In-Reply-To: <B5C5D2CDB8BCD2118E4800A0C9D8E4C70177592A@cartman.sea.checkpoint.com>
-Message-ID: <Pine.WNT.4.33.0109191515260.5872-100000@nemo.dev.metainfo.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: interesting problem in tty? telnetd? ls?
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0CD97482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Sep 2001 16:29:49 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 25984B00C; Wed, 19 Sep 2001 23:28:58 +0100 (BST)
+Date: Wed, 19 Sep 2001 23:28:58 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: marka@sea.checkpoint.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] interesting problem in tty? telnetd? ls?
+Message-ID: <20010919232858.B19441@linuxcare.com>
+References: <Pine.WNT.4.33.0109191442050.5872-100000@nemo.dev.metainfo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.WNT.4.33.0109191442050.5872-100000@nemo.dev.metainfo.com>; from marka@sea.checkpoint.com on Wed, Sep 19, 2001 at 02:55:13PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is with the telnetd obtained from 'apt-get telnetd' btw.
-
-On Wed, 19 Sep 2001, Mark Atkinson wrote:
+On Wed, Sep 19, 2001 at 02:55:13PM -0700, marka@sea.checkpoint.com wrote:
+> I'm not sure where this problem is occuring, but I suspect it's telnetd.
+> 
+> telnet to your pa-risc linux box
+> cd to the root directory
+> execute 'ls -alR'
+> 
 > you'll lose your ptty and telnet session after a short while (seconds), but
 > never at the the same place during the listing.  This does not occur over the
 > serial console, but since that's only running at 9600 it may not be fast
 > enough for the drop to occur.
 
---
-Mark
+I had this problem; it went away when I move up to a 2.4.9 kernel.
+
+Richard
