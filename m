@@ -1,57 +1,40 @@
-Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA19951
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:29:37 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by cosrel1.hp.com (Postfix) with ESMTP id 5990568E
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:32:23 -0700 (MST)
-Message-Id: <200011301731.JAA29335@milano.cup.hp.com>
-To: "Gunneswara Marripudi" <raomg@cup.hp.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: Question on Linux DMA routines 
-In-reply-to: Your message of "Thu, 30 Nov 2000 01:03:25 PST."
-             <01c05aac$657dec80$0f0d8421@hpinddm>
-Date: Thu, 30 Nov 2000 09:31:14 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA20497
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:37:54 -0700
+From: "Steve Moret" <smoret@uci.edu>
+To: "Richard Hirst" <rhirst@linuxcare.com>
+Cc: <parisc-linux@thepuffingroup.com>
+Subject: RE: [parisc-linux] HP 9000/735-125
+Date: Thu, 30 Nov 2000 09:39:17 -0800
+Message-ID: <FKEGLIIBOIACJOCCAFIMIEFFCCAA.smoret@uci.edu>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+In-Reply-To: <20001130161115.N22285@linuxcare.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Gunneswara Marripudi" wrote:
-> Hi Grant,
-> 
-> I have a quick question on Linux 2.3 DMA routines.
+I will go under the assumption that it could be the disks and their possible
+age and try and find suitable replacements.
 
-2.3 is dead. You mean 2.4.
+Once I do get disks working is there a "Recepe" on how to get it to boot
+from your local drive.
 
+I would figure just copy over the NFS root, but then where do I put the
+lifimage so that boot manager can find it.
 
-> If I allocate and map memory using pci_alloc_consistent(),
-> do I still need to call pci_dma_sync_single() if there is a 
-> need to ensure the coherency? The documentation on it
-> at DMA-mapping.txt is ambiguous (at least to me). 
+Until then I'll just keep booting from the network.
 
-No - it's not needed.
+--
+Steve Moret
+smoret@uci.edu
 
-> - Consistent DMA mappings which are usually mapped at driver
-> 113   initialization, unmapped at the end and for which the hardware should
-> 114   guarantee that the device and the cpu can access the data
-> 115   in parallel and will see updates made by each other without any
-> 116   explicit software flushing.
-> 117 
-> 118   Think of "consistent" as "synchronous" or "coherent".
-> 
-> 
-> It says that h/w should guarantee the consistency and I'm not sure 
-> what if the underlying platform is not fully coherent.
-
-The HW *is* fully coherent when the CPU doesn't cache the pages.
-Only systems with PCX-L/L2 CPU (need to) operate this way.
-All other platforms have an I/O MMU which manages the coherency.
-
-You might be confused because HPUX doesn't ever use uncached memory
-for I/O since it has dma_sync() macro instead. And device driver writers
-are "trained" to use that.
-
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+> -----Original Message-----
+> From: Richard Hirst [mailto:rhirst@linuxcare.com]
+> Sent: Thursday, November 30, 2000 8:11 AM
+> To: Steve Moret
+> Cc: parisc-linux@thepuffingroup.com
+> Subject: Re: [parisc-linux] HP 9000/735-125
+>
+> I got my 715/75 to boot.  The scsi driver still has problems with my
+> CDROM drive, but the disk seems ok.  I ran mke2fs of a 1Gig partition
+> a few times and then copied 200MB of files from the network to it.
