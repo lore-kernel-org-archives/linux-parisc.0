@@ -1,14 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Joel Soete <joel.soete@tiscali.be>
 Subject: Re: [parisc-linux] HP B132L hangs
-Date: Thu, 11 Sep 2003 13:17:26 -0600
-Message-ID: <20030911191726.GA7526__2246.40774908966$1416622768$gmane$org@dsl2.external.hp.com>
-References: <3F5F24D9.7030800@epost.de> <1063208722.1984.10.camel@mulgrave> <3F5F71C8.7060605@epost.de> <20030910185834.GC21596@parcelfarce.linux.theplanet.co.uk> <3F608EDB.101@epost.de>
+Date: Thu, 11 Sep 2003 20:56:36 +0000
+Message-ID: <3F60E184.5010603__38906.4846364365$1416622769$gmane$org@tiscali.be>
+References: <3F5F24D9.7030800@epost.de> <3F5F2D4E.7040700@tiscali.be> <3F6095B6.7050706@epost.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
-To: Sebastian Br?ckner <sebastian.brueckner@epost.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+To: =?ISO-8859-1?Q?Sebastian_Br=FCckner?= <sebastian.brueckner@epost.de>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3F608EDB.101@epost.de>
+In-Reply-To: <3F6095B6.7050706@epost.de>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,22 +19,64 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Sep 11, 2003 at 05:03:55PM +0200, Sebastian Br?ckner wrote:
-> I tried to backup the system and got the a similar error with very few 
-> messages mixed into it. Maybe this is better readable:
+Sebastian Brückner wrote:
 
-yes, much better
+> Joel Soete:
+>
+>> Yes it looks like a disk becoming defective. The best way to be sure 
+>> is to use a hp cdrom containing Diagnostic tools (iirc the last hpux 
+>> support + would contains it). This cd is bootable and contains tools 
+>> allowing you test your disk.
+>
+>
+> I don't have such a cd...
+> I have only two HP cd sets:
+> "HP-UX Applications/Patches 10.20" 5 CDs
+> "Additional Core Enhancements HP-UX 10.20 Workstations" 1 CD 
 
-> scsi0: ERROR on channel 0, id 2, lun 0, CDB: Request Sense 00 00 00 40 00
-> Info fld=0x39a27b, Current sd08:04: sense key Medium Error
-> Additional sense indicates Unrecovered read error
+I also get such set of cd's when I recieved the first b132 (it was also 
+one of the first in belgium) and I think that tools would be on the 
+patch cd but i don't remember exactly. I will check when I will be back 
+to the office (in 10 days :( sorry)
 
-This is the disk telling the driver it had a real failure.
+>
+>
+> Do you know if one of them contains these tools?
+>
+>> If you have another system on which you can connect your suspected 
+>> disk you can also try a dd cmd like:
+>> dd if=/dev/rdsk/c0txd0 of=/dev/null bs=2048k (where you replace 
+>> /dev/rdsk/c0txd0 by the actual disk path)
+>
+>
+> See my other post for results of backup... it provoced the same (or at 
+> least a similar) error :-/
 
-...
-> scsi0: (2:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
->          len = 6, cmd =Read (10) 00 00 39 a5 e8 00 00 a0 00
+Yes I read it also and as mentioned Grant "I/O error:..." message 
+confirm my first opinion (and my experience with my b180 near the same 
+b132L execepted cpu frequency) unfortunaltely your disk became faulty 
+(the most frequent part replaced over 300 unix server I have to maintain)
 
-this output is the bug james mentioned was fixed in a later kernel.
+>
+> I do not currently have another system I could put the disk in (I got 
+> a C200 but it is not in a working state right now). The disk does not 
+> contain too important data - but it was a lot of work to set up the 
+> router. 
 
-grant
+
+So the best would be to try to backup the most of your /etc (where stand 
+generaly config files), additonal config files that you remember, and 
+may be also your /var/lib/dpkg (the debian pakages db: it could help to 
+remember which packages where installed).  Then, if you can,  replace 
+your disk, and re-install your system.
+
+I also had to reinstall two systems like this this year: one because of 
+a cpu failure (a b2k) and one also due a disk failure. (I would so have 
+a look for tools as mkcdrecord or mondo [don't know which is the most 
+simple to implement] but i do not yet find enough time to build any 
+recovery cd. On the other hand i had the opportunity to install raid1 on 
+my main systems (2 b180; a fw and a test one for cvs kernels and 
+unstable debian install)).
+
+Good luck,
+    Joel
