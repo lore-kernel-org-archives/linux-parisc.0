@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 29C37482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 04:55:34 -0600 (MDT)
-Date: Fri, 18 Jul 2003 12:55:22 +0200
-From: Michael Wood <mwood@its.uct.ac.za>
-To: Jan Sporbeck <jan_lists@sporbeck-family.de>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5CE83482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 05:17:29 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19dTEr-00021D-GP; Fri, 18 Jul 2003 12:17:25 +0100
+Date: Fri, 18 Jul 2003 12:17:25 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Chassis LCD on D200 supported?
-Message-ID: <20030718105522.GA11203@marmite.its.uct.ac.za>
-References: <3F0FF827.10107@sporbeck-family.de> <3F159B49.1020100@sporbeck-family.de>
+Subject: Re: [parisc-linux] pdc_console_die: undefined reference to `log_end'
+Message-ID: <20030718111725.GN23808@parcelfarce.linux.theplanet.co.uk>
+References: <20030718043300.GB1582@conectiva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F159B49.1020100@sporbeck-family.de>
+In-Reply-To: <20030718043300.GB1582@conectiva.com.br>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +25,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 16, 2003 at 08:36:57PM +0200, Jan Sporbeck wrote:
-> Hello again,
+On Fri, Jul 18, 2003 at 01:33:00AM -0300, Arnaldo Carvalho de Melo wrote:
+> Second try:
 > 
-> Jan Sporbeck wrote:
-> >Hello,
-> >
-> >I am just wondering if the chassis lcd is supported on 9000/801/D200.
-> 
-> Doesnot anyone know?
-> Is there no one using the lcd on a D-class?
+> arch/parisc/kernel/built-in.o: In function `pdc_console_die':
+> arch/parisc/kernel/built-in.o(.text.pdc_console_die+0x4c): undefined reference to `log_end'
+> arch/parisc/kernel/built-in.o: In function `pdc_console_restart':
+> arch/parisc/kernel/built-in.o(.text.pdc_console_restart+0x44): undefined reference to `log_end'
+> make: ** [.tmp_vmlinux1] Erro 139
 
-The last time I had Linux installed on a D270, which was last year some
-time, the LCD did not work for me either.
+You're using Linus' kernel, not ours ;-)  The diff's pretty small these
+days and can be found at
+http://cvs.parisc-linux.org/download/linux-2.5/patch-2.6.0-test1-pa1.gz
+
+This particular bit is far too ugly to ever go upstream, so if you have any
+thoughts on doing it better, please let me know...
 
 -- 
-Michael Wood <mwood@its.uct.ac.za>
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
