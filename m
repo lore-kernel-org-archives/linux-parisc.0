@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0BFF44840
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 14 Jun 2003 18:40:11 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26BCD4840
+	for <parisc-linux@parisc-linux.org>; Sat, 14 Jun 2003 18:41:32 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19RLZ3-0008M9-4D; Sun, 15 Jun 2003 01:40:09 +0100
-Date: Sun, 15 Jun 2003 01:40:09 +0100
+	id 19RLaM-0008Mf-Of; Sun, 15 Jun 2003 01:41:30 +0100
+Date: Sun, 15 Jun 2003 01:41:30 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-Cc: parisc-linux@lists.parisc-linux.org,
-	Matthew Wilcox <willy@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 willy
-Message-ID: <20030615004009.GK30843@parcelfarce.linux.theplanet.co.uk>
-References: <20030614221634.9521F494003@palinux.hppa> <Pine.BSF.4.53.0306142353310.651@e0-0.zab2.int.zabbadoz.net>
+To: Paul Bame <bame@riverrock.org>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Message-ID: <20030615004130.GL30843@parcelfarce.linux.theplanet.co.uk>
+References: <20030613154951.GA30843@parcelfarce.linux.theplanet.co.uk> <20030614234039.GB5805@riverrock.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.53.0306142353310.651@e0-0.zab2.int.zabbadoz.net>
+In-Reply-To: <20030614234039.GB5805@riverrock.org>
+Subject: [parisc-linux] Re: 2.4.21
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,13 +25,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Jun 14, 2003 at 11:57:52PM +0000, Bjoern A. Zeeb wrote:
->   HOSTLD  scripts/kconfig/conf
-> ./scripts/kconfig/conf -o arch/parisc/Kconfig
-> drivers/parisc/Kconfig:148: can't open file "drivers/hotplug/Kconfig"
-> make: *** [oldconfig] Error 1
+On Sat, Jun 14, 2003 at 05:40:39PM -0600, Paul Bame wrote:
+> On Fri, Jun 13, 2003 at 04:49:51PM +0100, Matthew Wilcox wrote:
+> > Paul, would you be so kind as to do the honours?
+> > I don't see any reason to hold off on merging 2.4.21 into our tree;
+> > we can deal with any brokenness in the 2.4 tree later.
+> 
+> Hmm, bad timing, maybe Tuesday.  That ok?
 
-Fixed, thanks.
+We've waited 9 months for 2.4.21, I guess we can wait another 4 days ;-)
 
 -- 
 "It's not Hollywood.  War is real, war is primarily not about defeat or
