@@ -1,46 +1,110 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4F69D482A
-	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 10:00:46 -0600 (MDT)
-Received: from mmp-1.gci.net ([208.138.130.80]) by mta-1.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GION5201.J5P for
-          <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 08:00:39 -0800
-Received: from goliath.alaskatech.org ([24.237.5.207]) by
-          mmp-1.gci.net (Netscape Messaging Server 4.15) with ESMTP id
-          GION5300.P0B for <parisc-linux@parisc-linux.org>; Sun, 26 Aug
-          2001 08:00:39 -0800
-Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
-	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id HAA13404
-	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 07:55:46 -0800
-Date: Sun, 26 Aug 2001 07:55:46 -0800 (AKDT)
-From: Tom <tom@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0108260741370.1919-100000@goliath.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Kernel building
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 88E0A482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Aug 2001 14:27:10 -0600 (MDT)
+Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
+	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f7QKp1X01130
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Aug 2001 16:51:01 -0400
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id f7QKRsd27250
+	for parisc-linux@lists.parisc-linux.org; Sun, 26 Aug 2001 16:27:54 -0400
+Date: Sun, 26 Aug 2001 16:27:54 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010826162754.A10072@megatonmonkey.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Building from scratch.
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've been trying to get a newer kernel installed but am not having much
-luck. Followed the directions on parisc-linux.org to build it, which have
-worked fine, but for some reason the kernels refuse to boot. The palo
-readme file says it should automagically boot when placed in the correct
-location... My palo.conf had '2/vmlinux-2.4.0' as the boot kernel, which
-I then changed to '2/vmlinux-2.4.9' (partition 2 is /boot once mounted),
-ran palo (no errors, identified 2/vmlinux-2.4.9 as the new kernel),
-rebooted - and I get the error that the system can't grok the kernel
-executable format and then a 'failed to boot' message.
+Parisc'ers,
 
-The earlier thread on whether or not 'make palo' was needed came to mind,
-but since I was leaving it overnight to compile anyway I didn't care how
-much time it took.
+I was recently trying to build the toolchain from scractch on
+an x86 box.
 
-Got this same error a couple kernels ago (2.4.6?) and went back to 2.4.0,
-since it wasn't really causing any problems. This is starting to get
-irritating, though. The system is a 715/100, 128MB, 4.3G HD. Started as
-0.9 and 'apt-get' upgraded to whatever's current now. I *did* have to
-'apt-get install gcc', though - even though dselect said it was already
-installed, the system couldn't find gcc, but the apt-get installed it as
-if it wasn't there. Weird...
+I've run into the following stumbling block:
 
-Anyway, any and all input appreciated!
+a) glibc configure requires that I use "--enable-hacker-mode"
+
+This really isn't documented, but It's not uncommon and I got around
+it very quickly ;)
+
+The second issue was:
+
+b) Some strange asm problem while building glibc.
+
+gcc ../sysdeps/unix/sysv/linux/hppa/sysdep.c -c -O2 -Wall -Winline -Wstrict=
+-prototypes -Wwrite-strings -g      -I../include -I. -I/mnt/fatty/palinux/b=
+uild/glibc/csu -I.. -I../libio  -I/mnt/fatty/palinux/build/glibc -I../sysde=
+ps/hppa/elf -I../linuxthreads/sysdeps/unix/sysv/linux/hppa -I../linuxthread=
+s/sysdeps/unix/sysv/linux -I../linuxthreads/sysdeps/pthread -I../linuxthrea=
+ds/sysdeps/unix/sysv -I../linuxthreads/sysdeps/unix -I../linuxthreads/sysde=
+ps/hppa -I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux -I..=
+/sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman -I../sysdeps/u=
+nix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix -I../sysdeps/posix -I../s=
+ysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32 -I=
+../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/f=
+pu -I../sysdeps/hppa -I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sys=
+deps/generic   -D_LIBC_REENTRANT -include ../include/libc-symbols.h     -DH=
+AVE_INITFINI -o /mnt/fatty/palinux/build/glibc/csu/sysdep.o
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c: In function `syscall':
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:43: invalid register name `r28' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:44: invalid register name `r21' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:44: invalid register name `r22' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:44: invalid register name `r23' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:44: invalid register name `r24' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:44: invalid register name `r25' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:44: invalid register name `r26' =
+for register variable
+=2E./sysdeps/unix/sysv/linux/hppa/sysdep.c:45: Can't find a register in cla=
+ss `GENERAL_REGS' while reloading `asm'.
+make[2]: *** [/mnt/fatty/palinux/build/glibc/csu/sysdep.o] Error 1
+make[2]: Leaving directory `/mnt/fatty/palinux/src/glibc/csu'
+make[1]: *** [csu/subdir_lib] Error 2
+make[1]: Leaving directory `/mnt/fatty/palinux/src/glibc'
+make: *** [all] Error 2
+
+
+Background:
+
+I started by building the tools, as per the instructions on the website.
+
+- Built binutils
+- Partially build gcc
+- Unpack and configure kernel
+- Build glibc...
+
+At which I'm stuck. My hppa bin directory has the following built tools:
+(and is on my path)
+
+gccbug                hppa-linux-cpp      hppa-linux-objdump
+gcov                  hppa-linux-gasp     hppa-linux-ranlib
+hppa-linux-addr2line  hppa-linux-gcc      hppa-linux-readelf
+hppa-linux-ar         hppa-linux-ld       hppa-linux-size
+hppa-linux-as         hppa-linux-nm       hppa-linux-strings
+hppa-linux-c++filt    hppa-linux-objcopy  hppa-linux-strip
+
+The configure for glibc does complain about:
+
+[snip]
+checking for hppa-linux-mig... (cached) mig
+configure: warning:=20
+*** An auxiliary program is missing or too old;
+*** some features will be disabled.
+*** Check the INSTALL file for required versions.
+checking whether ranlib is necessary... (cached) no
+[snip]
+
+But continues on. I've met all the requirements in INSTALL, with=20
+regards to tools and their versions.
+
+Any clues?
+
+Cheers,
+Carlos.
