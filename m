@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.it (mail-4.tiscali.it [195.130.225.150])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E95284829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 00:32:48 -0600 (MDT)
-Date: Fri, 30 Aug 2002 08:09:58 +0200
-From: ste@tiscali <stemelchior@tiscali.it>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: alaskan@telusplanet.net, parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] GNOME 1.4
-Message-Id: <20020830080958.2f899cc2.stemelchior@tiscali.it>
-In-Reply-To: <20020830040829.3BE694829@dsl2.external.hp.com>
-References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
-	<20020830040829.3BE694829@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: "B. Douglas Hilton" <bdhilton@charter.net>,
+	parisc-linux@lists.parisc-linux.org, saw@saw.sw.com.sg
+Subject: Re: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200 machine. 
+In-Reply-To: Message from Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
+   of "Sun, 18 Aug 2002 00:37:15 +0200." <20020817223713.GA25852@gate450.dyndns.org>
+References: <3D5EB2D6.9090403@charter.net>  <20020817223713.GA25852@gate450.dyndns.org> 
+Date: Fri, 30 Aug 2002 00:37:25 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020830063725.4D0FD4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,28 +19,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, 29 Aug 2002 22:08:29 -0600 Grant Grundler <grundler@dsl2.external.hp.com> wrote: 8-§  > alaskan@telusplanet.net wrote:
-8-§  > > I finally got GNOME 1.4 working on a 712/60,
-8-§  > ...
-8-§  > > Its pretty, but slow .   .  . .
-8-§  > 
-8-§  > it's not faster on a 486/DX4/75Mhz.
-8-§  > You really need to use a lighter weight window manager on
-8-§  > the older boxes. fvwm2 is my current favorite though in this
-8-§  > case I'd reccomend twm.
-8-§  > 
-8-§  > grant
+Andreas Seltenreich wrote:
+> just append " || defined(__hppa__)" to line 47 of drivers/net/eepro100.c
+> I got mine working that way.
 
-Why not IceWM? on my 710/50 it is running pretty fine and enough fast!!! ;-P
-I also like the Infadel2-Overloaded theme!!!
+Andreas,
+I've just committed this change to 2.4.19-pa8.
+Works on my c3000 too.
 
-linuxabbestia
+I wasn't real happy with this method of disabling something we
+know doesn't work. The compiler can't optimize it away.
+The alternative I was playing with is at
+	ftp://ftp.parisc-linux.org/patches/eepro100-rxcopy.diff
 
-<<Unix IS user friendly... It's just selective about who its friends are!>>
+but I'm not comfortable committing that since I don't know if
+other arches *can't* support it or just prefer it be disabled.
 
- See "User's Guide":     http://www.debian.org/doc/manuals/users-guide/
- See "Debian reference": http://www.debian.org/doc/manuals/debian-reference/
- "Debian reference" Project at: http://qref.sf.net
-
-Please DO NOT send e-mail with any attachment in a "proprietary format", such as either .doc or .ppt, BECAUSE: http://www.fsf.org/philosophy/no-word-attachments.html (the Italian version is available on the following url: http://www.fsf.org/philosophy/no-word-attachments.it.html)
-T H A N K S   ;-P
+thanks,
+grant
