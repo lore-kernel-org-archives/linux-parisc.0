@@ -1,18 +1,23 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C58F848CB
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Dec 2003 06:55:19 -0700 (MST)
-Message-ID: <3FE99AFB.4070804@tiscali.be>
-Date: Wed, 24 Dec 2003 13:56:11 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+Return-Path: <advancedmedicines@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C56F648C9
+	for <parisc-linux@parisc-linux.org>;
+	Wed, 24 Dec 2003 07:24:09 -0700 (MST)
+Received: from catv-c3b8aa85.bp11catv.broadband.hu
+	(catv-c3b8aa85.bp11catv.broadband.hu [195.184.170.133])
+	by cuprel1.hp.com (Postfix) with SMTP id 00C5D1015
+	for <parisc-linux@parisc-linux.org>;
+	Wed, 24 Dec 2003 06:24:05 -0800 (PST)
+Message-ID: <61ol-wh90$$-d2b0cu075@16s.u6>
+From: "Dana Mora" <advancedmedicines@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Wed, 24 Dec 03 08:16:36 GMT
 MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] DIFF 2.6.0-test10 SATA dma_address
-References: <20031124072929.GC26585@colo.lackof.org>
-In-Reply-To: <20031124072929.GC26585@colo.lackof.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/alternative;
+	boundary="__8.22AE4A9_ECBC09"
+Cc: 
+Subject: [parisc-linux] Restore your beauty and strength! affci yfzkxctxf
+Reply-To: Dana Mora <advancedmedicines@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,36 +27,46 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Grant,
 
-Grant Grundler wrote:
-> Willy, Alan,
-> 
-> SATA support attempts to directly reference scattergather.dma_address
-> and .dma_length. That's wrong since those are arch specific fields.
-> alpha, cris, parisc, ppc64, sparc, and sparc64 won't build SATA.
-> 
-> SATA code needs to use "sg_dma_address()" and sg_dma_len()" macros
-> to reference those fields.
-> 
-> If this patch looks good, please tell me which forum (linux-scsi?)
-> this needs to be posted to.
-> 
-Hmm I don't see any follow up but i just read in "post-halloween-2.6.txt"
-(Reporting bugs. section) that
-[snip]
-     SCSI      - linux-scsi@vger.kernel.org
-[snip]
+--__8.22AE4A9_ECBC09
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
+<html>Restore your beauty and strength! affci yfzkxctxf
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
 
-> Patch appended and also available from:
-> 	ftp://ftp.parisc-linux.org/patches/diff-2.6.0-t10-sata
-> 
-> The code now compiles but I've not yet built a kernel (forgot to
-> disable KALLSYMS - toolchain bugs) and don't have the HW to test it. 
-> 
+<body bgcolor=3D"#FFFFFF" text=3D"#FFFFFF" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FF0000" face=3D"verdana">Bob Hope, JFK, Marily=
+n Monroe, Wayne Newton, Dick Clark, <br>
+    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
+     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
+ter><center><h5><font color=3D"#000000" face=3D"verdana">Have used HGH wit=
+h great success to be the best they could possibly be.<br>HGH is recognize=
+d around the world as the<br> "hormone to replace"<br> to combat the adver=
+se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
+iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
+br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
+en proven to be "solely responsible" in the maintenance of their youthful<=
+br>"movie star good looks" decades beyond those that have yet to discover =
+HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
+and stay 
+    so fit at their age??</font></h5>
+</center><center><h3><font color=3D"#FF0000" face=3D"verdana">HGH is the g=
+uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
+er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
+p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
+you !<br>Learn More Right Here</a></font></h4></center>
+iwdxxli c  vera  yxn h wpdqjccg
+idbaviiwxfvtjehvs dwto p bwjwbv
+mxu
+</body>
+</html>
+elbfgrvwto zzoudrc kjl pziknfwnym e  agamqwqcavbfpuc   muzpsnbyktvibnfqjs  
+gpc cf igv aaab q cw
 
-hth,
-	Joel
-
-PS: Sorry I miss to follow this patch :(
+--__8.22AE4A9_ECBC09--
