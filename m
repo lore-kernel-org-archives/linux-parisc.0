@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 679BB4843
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 May 2002 16:43:50 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: Zibing Yang <email2bing@yahoo.com>,
-	Jeremy Drake <jeremyd@apptechsys.com>
-Subject: Re: [parisc-linux] Can I run popular Linux software on parisc-linux?
-Date: Tue, 28 May 2002 00:43:09 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <20020527215905.77842.qmail@web21201.mail.yahoo.com>
-In-Reply-To: <20020527215905.77842.qmail@web21201.mail.yahoo.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200205280043.09939.deller@gmx.de>
+Received: from rotapile (CPE-203-45-167-61.qld.bigpond.net.au [203.45.167.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EB1D54839
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 May 2002 16:53:00 -0600 (MDT)
+Received: from rob by rotapile with local (Exim 3.22 #1 (Red Hat Linux))
+	id 17CTMB-0003ZI-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 May 2002 08:52:51 +1000
+Subject: Re: [parisc-linux] New testing ISO available with recent
+	boot-floppies
+From: Robert Stanford <rob@rotapile.com>
+To: PA/Linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 28 May 2002 08:52:51 +1000
+Message-Id: <1022539971.12551.20.camel@rotapile>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,65 +24,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Monday 27 May 2002 23:59, Zibing Yang wrote:
-> --- Jeremy Drake <jeremyd@apptechsys.com> wrote:
-> > On Mon, 27 May 2002, Zibing Yang wrote:
-> > > > > I'm not aware of anyone trying to run an IA32
-> > > >
-> > > > emulator on parisc-linux.
-> > > >
-> > > > fyi, bochs compiled from CVS sources (with small
-> > > > modifications) worked
-> > > > for me.
-> > >
-> > > Helge, can you provide more information about your
-> > > computer running Bochs? Are you able to run, for
-> > > example, windows 98, install stardard
-> >
-> > windows-based
-> >
-> > > softwares? How's the speed compared to the same
-> > > software run on PC+windows? Why didn't use wine?
-> > > I am still heavily relying on windows-based
-> >
-> > software
-> >
-> > > everyday, so would love to install a
-> >
-> > windows-emulator
-> >
-> > > on my hp workstation.
-> > > Thanks a lot.
-> > > zibing
-> >
-> > I also tried bochs on my parisc machine.  It works
-> > ok, although slow.  I
-> > installed NT 4 in it.  I had a few problems, but I
-> > was able to work around
-> > them.
-> >
-> > The reason that wine won't work is that wine is just
-> > a windows system call
-> > emulator.  The program executes on the cpu, and I'm
-> > sure that none of your
-> > windows programs will run on a parisc cpu :)
->
-> How about plex86? 
+I tried the iso on my K580 (PDC console only) and no joy. Is there any
+chance of enabling the PDC console (and/or device node in the ramdisk)
+in the default kernel or does this introduce issues for other machines?
 
-Quote from the plex86 homepage (http://savannah.gnu.org/projects/plex86):
-"Note:If you want to run IA-32 on a non-IA-32 architecture, then bochs is the project that you want to checkout--look for them over at SourceForge."
+Robert Stanford
 
-> Plex 86, bochs and wine are all listed on
-> http://packages.debian.org/testing/allpackages.html.
-> I am confused because I thought all packages listed
-> there ought to work with parisc.
 
-No, it's just a collection of _all_ source packages available.
-Not all will run on any platform, e.g. there's normally no reason to get lilo for PA-RISC,
-where you have to use the palo bootloader.
+*CUT*
+------------------------------------------------------------------------
 
-Last time I tried bochs was ~ 4 months back. I used it on a C3000 (400 MHz PA 2.0 CPU, UP)
-and if it's speed was comparable as an 486 class CPU -iirc.
+Boot IO Dependent Code (IODC) revision 1
 
-Greetings,
-Helge
+
+HARD Booted.
+palo ipl 1.0 root@palinux Mon Apr  1 10:02:53 MST 2002
+
+Boot image contains:
+    0/vmlinux32 3699025 bytes @ 0x458800
+    0/vmlinux64 4733474 bytes @ 0x7e0000
+    0/ramdisk 2656804 bytes @ 0xc64000
+
+Information: No console specified on kernel command line. This is
+normal.
+PALO will choose the console currently used by firmware (serial).Current
+comman:
+0/vmlinux ramdisk_size=8192 root=/dev/ram initrd=0/ramdisk console=ttyS0
+TERM=v2
+ 0: 0/vmlinux
+ 1: ramdisk_size=8192
+ 2: root=/dev/ram
+ 3: initrd=0/ramdisk
+ 4: console=ttyS0
+ 5: TERM=vt102
+
+Edit which field?
+(or 'b' to boot with this command line)? 4
+console=ttyB0
+Current command line:
+0/vmlinux ramdisk_size=8192 root=/dev/ram initrd=0/ramdisk console=ttyB0
+TERM=v2
+ 0: 0/vmlinux
+ 1: ramdisk_size=8192
+ 2: root=/dev/ram
+ 3: initrd=0/ramdisk
+ 4: console=ttyB0
+ 5: TERM=vt102
+
+Edit which field?
+(or 'b' to boot with this command line)? b
+
+Command line for kernel: 'ramdisk_size=8192 root=/dev/ram console=ttyB0
+TERM=vt'
+Selected kernel: /vmlinux from partition 0
+Selected ramdisk: /ramdisk from partition 0
+Warning: kernel name doesn't end with 32 or 64 -- Guessing... 
+This box can boot either 32 or 64-bit kernels...Both kernels available,
+choosine
+Entry 00100000 first 00100000 n 6
+Segment 0 load 00100000 size 2028032 mediaptr 0x1000
+Segment 1 load 002f0000 size 299424 mediaptr 0x1f1000
+Segment 2 load 0033c000 size 393548 mediaptr 0x23b000
+Segment 3 load 003a0000 size 8192 mediaptr 0x29c000
+Segment 4 load 003a8000 size 32768 mediaptr 0x29e000
+Segment 5 load 003d1538 size 102176 mediaptr 0x2a6538
+Loading ramdisk 2656804 bytes @ 3fd66000...
+Branching to kernel entry point 0x00100000.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org
