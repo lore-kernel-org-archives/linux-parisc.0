@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.ocs.com.au (mail.ocs.com.au [203.34.97.2])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5436A482B
-	for <parisc-linux@parisc-linux.org>; Sat, 22 Mar 2003 20:29:22 -0700 (MST)
-From: Keith Owens <kaos@ocs.com.au>
-To: Matthew Wilcox <willy@debian.org>
-Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-In-reply-to: Your message of "Sun, 23 Mar 2003 03:23:18 -0000."
-             <20030323032318.GD31008@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sun, 23 Mar 2003 14:29:05 +1100
-Message-ID: <8755.1048390145@ocs3.intra.ocs.com.au>
-Subject: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23FB5482B
+	for <parisc-linux@parisc-linux.org>; Sat, 22 Mar 2003 20:37:57 -0700 (MST)
+Message-Id: <200303230337.h2N3bhAC026836@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available
+To: kaos@ocs.com.au (Keith Owens)
+Date: Sat, 22 Mar 2003 22:37:43 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: willy@debian.org, linux-kernel@vger.kernel.org,
+	parisc-linux@parisc-linux.org
+In-Reply-To: <8755.1048390145@ocs3.intra.ocs.com.au> from "Keith Owens" at Mar 23, 2003 02:29:05 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 23 Mar 2003 03:23:18 +0000, 
-Matthew Wilcox <willy@debian.org> wrote:
->On Sun, Mar 23, 2003 at 02:16:01PM +1100, Keith Owens wrote:
->> This version of modutils is functionally identical to 2.4.23 except for
->> those architectures that have function descriptors, i.e. ia64 and
->> ppc64.
->
->parisc also has function descriptors.  what needs to happen for us?
+> -#if defined(ARCH_ia64) || defined(ARCH_ppc64)
+> +#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa64)
+>  #define HAS_FUNCTION_DESCRIPTORS
+>  #endif
 
-Index: 24.3/include/util.h
---- 24.3/include/util.h Sun, 23 Mar 2003 13:34:28 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
-+++ 24.3(w)/include/util.h Sun, 23 Mar 2003 14:28:36 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
-@@ -96,7 +96,7 @@ void gzf_close(int fd);
- #define SYMPREFIX "__insmod_";
- extern const char symprefix[10];	/* Must be sizeof(SYMPREFIX), including nul */
- 
--#if defined(ARCH_ia64) || defined(ARCH_ppc64)
-+#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa64)
- #define HAS_FUNCTION_DESCRIPTORS
- #endif
- 
+The 32-bit hppa port also has function descriptors.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
