@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3EC0A4841
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Nov 2003 00:23:27 -0700 (MST)
-Date: Tue, 25 Nov 2003 08:23:23 +0100
-Message-ID: <3FB25B960000788E@ocpmta1.freegates.net>
-In-Reply-To: <3FB265250000633D@ocpmta2.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] strace locks up 2.4.22-pa14
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id 5C7D74840; Tue, 25 Nov 2003 05:19:17 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1AOc9z-0007jA-UE; Tue, 25 Nov 2003 12:19:15 +0000
+Date: Tue, 25 Nov 2003 12:19:15 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: Joel Soete <soete.joel@tiscali.be>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] sym-2.1.18i backport?
+Message-ID: <20031125121915.GF11694@parcelfarce.linux.theplanet.co.uk>
+References: <3FC12C9A.9050903@tiscali.be> <20031124050535.GD23224@colo.lackof.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031124050535.GD23224@colo.lackof.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,39 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+On Sun, Nov 23, 2003 at 10:05:35PM -0700, Grant Grundler wrote:
+> I'm considereing do that backport once willy feels the code is "stable".
+> We have to sort out the u160 support - it's not very clear how it is
+> supposed to work and it doesn't seem to.
 
-Just a follow up:
+Yeah, I have some patches, but they're not working very well yet.
 
->-- Original Message --
->From: "Joel Soete" <soete.joel@tiscali.be>
->To: "Grant Grundler" <grundler@parisc-linux.org>
->Cc: parisc-linux@lists.parisc-linux.org
->Date: Mon, 24 Nov 2003 08:21:28 +0100
->Subject: Re: [parisc-linux] strace locks up 2.4.22-pa14
->
->
->
+> > Is there some interest? faisible?
+> 
+> yes and eventually.
 
->>ok. TBH, I have no clue then. It might be possible to attach strace to
->>a running lp deamon, redirect strace output to /dev/console and then
->>compore what happens different on the b2k when a print job is started.
->
->Good idea, I will try to see howto
->
-Oops, I try first to strace lpd ("strace -f -p xxx 2>&1 | tee Strace-lpd.log")on
-the b180 (running a 2.4.19 + lvm (aka dm) support) but this "locked up" too.
+I'm completely uninterested in doing this, FWIW.
 
-Unfortunately, I don't have anymore a 'woody' install to try to trace back
-when the strace pb appears :(.
-
-btw since my last update (last friday), I couldn't any more print with this
-b180 too.
-
-J.
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
