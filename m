@@ -1,26 +1,29 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Date: Mon, 8 Mar 1999 15:50:54 -0500 (EST)
+Date: Tue, 9 Mar 1999 15:54:34 -0500 (EST)
 From: Alex deVries <adevries@redhat.com>
 To: hppa-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.3.96.990308154734.5280m-100000@devserv.devel.redhat.com>
+Message-ID: <Pine.LNX.3.96.990309154910.5280A-100000@devserv.devel.redhat.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [hppa-linux] New cross compiler set.
-Resent-Message-ID: <"Q_R5S3.0.y63.-W3vs"@sod.res.cmu.edu>
+Subject: [hppa-linux] Initial documentation release from HP.
+Resent-Message-ID: <"0Uezx3.0.Zr3.RgOvs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
-I've rebuilt cross compiling rpms for parisc-linux, and am uploading them
-to ftp://sod.res.cmu.edu/pub/parisc/tools .
+With advice from The Puffin Group, HP has released documentation on basic
+bootup sequences, including IMM layout, OS requirements for PDC, PDC
+itself for both PARISC 1.1 and 2.0, version numbering and IODC. As well,
+we have details of what's in what hardware from 1997 backwards.
 
-This fixes some problems with program names and locations. This will help
-in actually getting hilo to cross compile.
+This is solid proof that HP is behind this port, and I think this gives
+our project an excellent start.  We now have the docs necessary to get a
+basic kernel starting, including boot sequences and console interaction.
 
-The files uploaded are:
-binutils-x-hppa-2.9.1-4.i386.rpm    egcs-x-hppa-linux-1.1.1-3.i386.rpm
-binutils-x-hppa-2.9.1-4.src.rpm     egcs-x-hppa-linux-1.1.1-3.src.rpm
+The easiest way to get to this documentation is to go to the Available
+Resources section at http://thepuffingroup.com/parisc/ .
 
+Many thanks to everyone at HP who made this possible.
 
 - Alex
 
