@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E85BE483E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 19 Oct 2003 12:17:38 -0600 (MDT)
-Date: Sun, 19 Oct 2003 14:13:42 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: debian-glibc@lists.debian.org, Jeff Bailey <jbailey@nisa.net>
-Cc: parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@hp.com>
-Subject: Re: [parisc-linux] glibc 2.3.2-9 for hppa - "when hell freezes over" release
-Message-ID: <20031019181341.GF8642@systemhalted>
-References: <20031017181252.GE27289@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031017181252.GE27289@systemhalted>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BF7C483E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 19 Oct 2003 12:47:00 -0600 (MDT)
+Message-Id: <200310191846.h9JIkxMq027125@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [patch] handle pagefaults on unaligned access
+To: randolph@tausq.org
+Date: Sun, 19 Oct 2003 14:46:58 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20031019063825.GE24406@tausq.org> from "Randolph Chung" at Oct 18, 2003 11:38:25 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +22,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Oct 17, 2003 at 02:12:52PM -0400, Carlos O'Donell wrote:
-> Please wait 2 days before doing the upload, I am in the process 
-> of getting other testers to make sure this release is of the
-> highest quality possible. If the testers do not agree with the
-> release quality I will request by email a delay of 2 more days 
-> to repatch and test, followed by an update to the list.
+> while testing out gcj today, i was able to crash the machine
+> consistently with both 2.4 and 2.6 kernel. turns out our unaligned
+> handler doesn't handle page faults properly. in the case for gcj, there
+> was a ldh on the edge of the page, the first byte is on a resident page,
+> the 2nd byte is on a faulting page.
 
-Requesting 2 more days.
+What's generating the unaligned ldh?  This will really kill performance.
+GCC shouldn't do this...
 
-- nscd is faulting on unaligned loads during real workload testing.
-	= Remove unaligned handler and debug from core.
+My system also crashed last night, probably running the gcj testsuite.
 
-- Looking into mlockall failures.
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
