@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (unknown [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0C306121
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Nov 2001 00:45:07 -0700 (MST)
-Subject: Re: [parisc-linux] Re: E55 status - THE DRIVER !
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <3BFBFD98.29F4D69A@gmx.at>
-References: <3BF99676.2A291CDD@gmx.at> <1006299638.4898.16.camel@beavis>
-	<3BFBFD98.29F4D69A@gmx.at>
-Content-Type: text/plain
-Date: 26 Nov 2001 00:45:06 -0700
-Message-Id: <1006760706.14588.7.camel@beavis>
-Mime-Version: 1.0
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 988506122
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Nov 2001 02:36:32 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <helge.deller@sap.com>
+To: Grant Grundler <grundler@puffin.external.hp.com>,
+	"Craig D. Lansing" <lansing@beldar.com>
+Subject: Re: [parisc-linux] J2240 - It Runs!
+Date: Mon, 26 Nov 2001 10:36:29 +0100
+Cc: parisc-linux@lists.parisc-linux.org
+References: <200111260357.UAA02910@puffin.external.hp.com>
+In-Reply-To: <200111260357.UAA02910@puffin.external.hp.com>
+MIME-Version: 1.0
+Message-Id: <E168IBh-00034H-00@linuxlab.wdf.sap-ag.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,103 +25,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 2001-11-21 at 12:16, Christoph Plattner wrote:
-> Hello again,
-> 
-> Are you able to write the drivers ?
+> >  So far, I've only been able
+> > to connect to the serial port via a Reflection session to login to the =
+> > system after getting through the boot path & IPL on the attached =
+> > graphics terminal.
+>
+> You probably have the palo param "console=ttyS0" and that's why
+> it's switching to serial console. Palo documentation suggests
+> using "console=tty" for auto-detecting the console.
 
-Not sure, but we will find out :)
+IIRC you should prefer to *NOT* add any "console=xxx"  param
+in which case palo will automatically detect if you boot your machine 
+via serial cable or from the graphics prompt and will add the right 
+param for you during boot.
 
-> Do you have the documentation for that ?
-Depends on if I can find it.  A lot of this older documentation I have
-not been able to locate *sigh*.  I have not spent much time looking for
-it yet, because I have not started on the drivers yet.  The only driver
-I have started on was the MUX driver, and I was unable to locate
-documenation so far, but I have not given up yet.
+> >   Does anyone know how to use the graphics terminal =
+> > exclusively?  I assume that I need to change some of the IPL parms, e.g.
+> > = sti=3D or console=3D, but I do not know what values to use.  Any help =
+> > would be appreciated.
+>
+> With 0.9.2, if the graphics head were recognized and has a working
+> STI ROM, I would expect the console to remain on the graphics head.
 
-> I have problems with my spare time, but I am also interested in writing
-> drivers (especially for my machine !)
+The "sti=x" param will let you select which STI graphics device to use 
+for the initial console in case you have multiple STI graphic devices
+in your machine. It does not switch between serial and graphic console.
 
-> Which drivers will you write ?
-> MUX ?, SCSI ? (parallel port ?)
+Don't touch those params and instead install a newer kernel with sticon/stifb 
+compiled in, boot your machine and you'll see if your STI graphic is detected.
+If it's not detected, then we don't support it yet.
 
-I have a bunch of cards, so pick one that you want to work on, and I can
-start on a different one.  I've been working on the MUX lately, but with
-your PDC patch, I'm kinda leaning towards the skunk or wizard scsi
-card.  I have a stack of cards that to work on, so feel free to grab the
-one that suits your fancy :)
-
-- Ryan
-
-> Bye
-> Christoph
-> 
-> 
-> 
-> Ryan Bradetich wrote:
-> > 
-> > Hello Christoph,
-> > 
-> > I have integrated your patch into my tree, and have been testing out the
-> > patch on my C200+ and the K460.  With the PDC console patch, I do get to
-> > the console on the K460 which is great news.  I am still going to work
-> > on the driver for the actual hardware (in my case the Eole CAP/MUX, and
-> > in your case the Sahp Baat Kiuh AP/MUX), but this is a nice work around
-> > until that work is finished.
-> > 
-> > When integrating your patch into my tree, I made the following changes:
-> > 
-> > * Dropped the LCD support.
-> >         I do not understand this portion of the code very well, and it  had
-> > some uglyness that made me feel uneasy to commit to the tree.   Someone
-> > else should look at this and integrate it properly.
-> > 
-> > * Renamed the pdc_drv to pdc_console.
-> >         Just seemed more accurate to me .. I am open for other opinions
-> >         on this.
-> > 
-> > * Added the configure option and help text for the PDC software console.
-> > * Inegerated CONFIG_PDC_CONSOLE into the drivers/char/Makefile.
-> > * Integrated CONFIG_PDC_CONSOLE into arch/parisc/kernel/pdc_cons.c and
-> >         performed some minor cleanups.
-> > 
-> > * probably other things I've forgotten :)
-> > 
-> > Overall I though the patch looked great, but I still have 1 concern left
-> > and that is about the major number.
-> > 
-> > According to Documentation/devices.txt major number 30 is reserved for:
-> >  30 char        iBCS-2 compatibility devices
-> > 
-> > I understand about --><-- much about how major numbers are handled and I
-> > know this is a topic of debate among the main stream kernel developers.
-> > If we ever want to move this driver into the mainstream kernel this
-> > issue will probably need to be resolved ... and I have no idea on how to
-> > proceed.  Maybe others on this list will have an idea, or when the time
-> > comes we will need to address this on the lkml.  Before I commit this
-> > patch to the CVS repository, I'd like to get some concensus on this list
-> > about what is right.  (ie for the debian installer to work with this
-> > device, /dev/ttyB0 will need to be added to the MAKEDEV package, etc).
-> > 
-> > Anyways the patch is available for feedback at:
-> > ftp://ftp.parisc-linux.org/patches/pdc_console.diff
-> > 
-> > I am still working on testing this driver ... I would be very happy to
-> > see install the K460 using the debian installer using this patch.  I am
-> > currently working on making that happen.
-> > 
-> > Thanks,
-> > 
-> > - Ryan
-> 
-> -- 
-> -------------------------------------------------------
-> private:	christoph.plattner@gmx.at
-> company:	christoph.plattner@alcatel.at
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+Helge
