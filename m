@@ -1,25 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77CEE4A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Mar 2001 13:04:22 -0700 (MST)
-Sender: marteaut@esiee.fr
-Message-ID: <3AB666DB.2F4242FB@esiee.fr>
-Date: Mon, 19 Mar 2001 21:06:51 +0100
-From: Thomas Marteau <marteaut@esiee.fr>
+Received: from feanor.nuclear.demokritos.gr (feanor.nuclear.demokritos.gr [143.233.244.29])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4BE344A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Mar 2001 14:39:17 -0700 (MST)
+Received: from localhost ([127.0.0.1])
+	by feanor.nuclear.demokritos.gr with esmtp (Exim 3.16 #1 (Debian))
+	id 14f7Op-0004MA-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Mar 2001 23:41:11 +0200
+Date: Mon, 19 Mar 2001 23:41:11 +0200 (EET)
+From: Konstantinos Margaritis <markos@feanor.nuclear.demokritos.gr>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0103192334050.16746-100000@feanor.nuclear.demokritos.gr>
 MIME-Version: 1.0
-To: William Carlsson <william.carlsson@teligent.se>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Linux on HP 712/60 - or 9000/E45 (826) ?
-References: <NEBBKDKPGLOJMLMCBOBLIELCDIAA.william.carlsson@teligent.se>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Keyboard problem on 715/80
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi William,
+Hi,
+  I got me a 715/80 to try to play with linux, but with no keyboard or
+mouse. Instead of getting a HIL kbd+mouse, I got the the HIL-PS/2 adapter
+from ebay and a ps/2 keyboard and mouse. Both work fine on a pc, but on
+the 715/80 (which has two disks, one was included and I don't know that is
+inside and the other was in a powermac). The system does not boot but
+unfortunately it does nothing apart from displaying the message:
 
-	Here, we have already working a A500, a B132 and a few 712 and 715. If you want
-more info, you should go to the PA/Linux official web
-site(http://www.parisc-linux.org) or to our page at http://www.esiee.fr/puffin.
-You will find in these two websites all you need. Soon, our team will release a
-new File System image with the latest debs. 
+Failed to initialize a keyboard
+Fix the keyboard and cycle power
 
-So good luck, Thomas
+It doesn't work. Anyone can show me some pointers as to what might be at
+fault? Is there a jumper on the motherboard that I should set? might it be
+a broken HIL port?
+
+Anyway, Are there any web sites that offers technical info on these
+machines? I mean like schematics, manuals, etc.
+And another thing, what is the round button in the middle of one side of
+the case? A reset? 
+
+Thanks for any help.
+
+Konstantinos
