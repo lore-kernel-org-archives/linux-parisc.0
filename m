@@ -1,93 +1,62 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA25190
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Oct 1999 13:43:09 -0600
-Sender: adevries@thepuffingroup.com
-Message-ID: <37F906A1.6D6CB753@thepuffingroup.com>
-Date: Mon, 04 Oct 1999 15:57:21 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA26720
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 01:07:26 -0600
+Received: from ws-exch03.madge.com (ws-exch03.dev.madge.com) by mail.madge.com
+ (Content Technologies SMTPRS 2.0.15) with ESMTP id <B0001295166@mail.madge.com> for <parisc-linux@thepuffingroup.com>;
+ Tue, 05 Oct 1999 08:03:24 +0100
+Message-Id: <4110BC526A58D211B56C0000F6B9636D01B0DABA@ws-exch01.dev.madge.com>
+From: Tom Gallagher <Tom.Gallagher@madge.com>
+To: "'PALinux'" <parisc-linux@thepuffingroup.com>
+Date: Tue, 5 Oct 1999 07:56:44 +0100 
 MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: parisc-linux@thepuffingroup.com, grundler@milano.cup.hp.com
-Subject: Re: [parisc-linux] Dino developments...
-References: <199910040530.WAA15020@milano.cup.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Newbie
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> First cut review notes on the v1.17 dino.c:
-> 
-> o card-mode is only supported by dino 3.x.
->   Only need to look for card-mode which is 3.0 or better.
->   Look for DINO_MEM_DATA in the Dino ERS.
->   I know for a fact none were shipped and no HP-UX drivers
->   were shipped to support it either.
+I am interested in this project and I could help by testing things on my
+machine.
 
-Ah, okay.  This is info that's not in the docs. 
+FYI:-
 
-> o "struct hp_driver" is not named very well. Needed more beer? :^)
->   I'd like to suggest "struct pa_iodc_driver" or something like that.
+I have just acquired a 712/80 HP machine.
+It is running HPUX 9.07 at the moment.
+The initial boot ROM screen says ROM v1.5 and 32MB RAM.
 
-I agree.
+I managed to netboot Image-19990930 but it failed with the
+message "In swapper task - not syncing".  This occurred quite a way into the
+kernel.  (I did not save output from the kernel as I do not have a serial
+console setup yet).
 
-> o I'm not sure any systems were shipped with 2.0 built-in dino.
->   Anybody know? What about 2.1's?
->   I don't expect numbers to be posted here - just the existence.
+The kernel appeared to only detect 16MB of RAM.
 
-I'd say just leave those config lines in for now.
+I downloaded the Intel egcs cross compiler and binutils RPMs and installed
+them, but have only had limited success compiling so far.
 
-> o I see my long-ass comment about broken dino versions has been removed.
->   Was it intentionally removed?
->   (It's ok...I wrote it because I thought it was either useful or
->   interesting depending on why anyone bothers reading the code).
+I downloaded the latest (at the time) kernel tarball (about 30 september).
 
-That's now been moved to README.dino
+I got a linker message about $global$ undefined which I traced back to
+arch/parisc/kernel/pdc.c.  (Cross compiling from Intel Linux).
 
-> 
-> o "struct dino_version_mapping" doesn't appear to be used.
->   Can this go?
+Some Questions:-
 
-Yes!
+I managed to build an ELF kernel on my Intel machine.  I built the ipl
+program under HPUX v9.07 and obviously I came across the message about ELF
+kernels not supported that the ipl program prints out when I tried to boot
+it.
 
-> o FYI: "ifdef USE_PCI_INTR_OPS" stuff is mine.
->   I want to save it for some experiments on interrupt path latency.
->   May be able to run those by the end of this month at this pace.
+I notice in the source code that it says ELF loading is not supported yet
+but it doesn't matter because the cross compiler utilities that produce ELF
+executables don't work yet.  Is this (still) true?  
+In all the docs on the puffin web site HPUX 10 and 11 are referred to but
+nothing as old as 9!
+Is it possible to build a bootable kernel on either Intel Linux or HPUX
+v9.07?
 
-Sounds good.
+Does the kernel work with a serial console if I was to set it in the BOOT
+ROM to use the console on a serial port.
 
-> o I'd like to move the card-mode initialization into a seperate
->   routine. Makes the common initialization easier to read.
->   I can already see some stuff is missing too.
+Thanks for your patience with what are conceivably obvious questions.
 
-That's a good plan.  I simply stole the config stuff out of the Dino
-docs' example, and it worked, I never actually figured out what it
-should be. I'm still stunned that it worked.
-
-> o Before generic PCI  bus walk occurs card-mode dino support must
->   program PCI_INTERRUPT_LINE of each PCI device below it.
->   Firmware does this for PCI devices below built-in Dino.
->   For now, this can be a simple none-recursive bus walk since
->   very few people will have the card-mode expansion chassis (which
->   uses PCI-PCI bridges).
->   I'll take care of it this week but just wanted it noted in case
->   anyone wonders why card-mode interrupts don't work now.
-
-Sounds good.
-
-> o is_buildtin_dino(). Typo and it's not needed right now.
-
-That should probably be removed then.
-
-> o 0x05d. Need the workaround to eventually support J2240 firmware bug.
->   This was included in the macros I had posted previously.
->   Can just add another HPHW_BRIDGE entry instead.
-
-That's a good idea.
-
-Grant, I'll leave it to you to commit these changes.
-
-- Alex
-
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+>From Tom
+ 
