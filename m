@@ -1,27 +1,16 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252]) by dsl2.external.hp.com (Postfix) with ESMTP
-	id B23C3482C; Sun, 28 Mar 2004 08:48:40 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1B7cWc-0007ZJ-Nd; Sun, 28 Mar 2004 16:48:38 +0100
-Date: Sun, 28 Mar 2004 16:48:38 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] [PATCH] asm-parisc/ide.h cleanup (there are no
-	standard ports)
-Message-ID: <20040328154838.GA26179@parcelfarce.linux.theplanet.co.uk>
-References: <200403241443.43206.bzolnier@elka.pw.edu.pl>
-	<20040327222810.GB24782@colo.lackof.org>
-	<200403280024.57672.bzolnier@elka.pw.edu.pl>
-	<20040327234926.GC24782@colo.lackof.org>
-	<20040328002139.GE750@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040328002139.GE750@tausq.org>
-Sender: <willy@www.linux.org.uk>
-Cc: Bartlomiej Zolnierkiewicz <B.Zolnierkiewicz@elka.pw.edu.pl>,
-	linux-ide@vger.kernel.org, Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@parisc-linux.org
+Return-Path: <>
+Received: from stg-osorkon.enap.cl (unknown [200.12.141.223])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D272482C
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sun, 28 Mar 2004 12:40:16 -0700 (MST)
+Message-ID: <F617FEE7D6F9D41199B8000629F616F80737E432@pingueral.petrox.cl>
+From: System Administrator <postmaster@enap.cl>
+To: parisc-linux@lists.parisc-linux.org
+Date: Sun, 28 Mar 2004 15:39:48 -0400
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----_=_NextPart_000_01C414FC.6E3D23D2"
+Subject: [parisc-linux] Undeliverable: Mail Delivery (failure
+	gsaldivia@petrox.cl)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,24 +20,64 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Mar 27, 2004 at 04:21:39PM -0800, Randolph Chung wrote:
-> > I was told offline my hypothetical example is in fact hypothetical.
-> > parisc won't build with IDE unless PCI is defined. I haven't tried.
-> 
-> not exactly. what i meant is, without this patch, if you built pa with
-> ide enabled but pci disabled you will get a compilation error.
-> 
-> i think this patch looks ok too. will commit to our tree and let willy
-> propogate upstream :)
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I think Bart's patch already made it into Linus' tree ;-)  Whatever;
-I'll push it to Linus after 2.6.5 comes out if it hasn't already made
-it upstream.  Thanks, guys.
+------_=_NextPart_000_01C414FC.6E3D23D2
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Your message
+
+  To:      gsaldivia@petrox.cl
+  Subject: Mail Delivery (failure gsaldivia@petrox.cl)
+  Sent:    Sun, 28 Mar 2004 15:40:36 -0400
+
+did not reach the following recipient(s):
+
+c=US;a= ;p=ENAP;o=PETROX;dda:SMTP=gsaldivia@petrox.cl; on Sun, 28 Mar 2004
+15:43:07 -0400
+    The recipient name is not recognized
+	The MTS-ID of the original message is: c=US;a=
+;p=ENAP;l=PINGUERAL0403281943HSNHG3KZ
+    MSEXCH:IMS:ENAP:PETROX:PINGUERAL 0 (000C05A6) Unknown Recipient
+
+
+
+------_=_NextPart_000_01C414FC.6E3D23D2
+Content-Type: message/rfc822
+
+Message-ID: <200403281942.i2SJgqc19899@mailgate.enap.cl>
+From: parisc-linux@lists.parisc-linux.org
+To: gsaldivia@petrox.cl
+Subject: Mail Delivery (failure gsaldivia@petrox.cl)
+Date: Sun, 28 Mar 2004 15:40:36 -0400
+MIME-Version: 1.0
+X-Mailer: Internet Mail Service (5.5.2653.19)
+X-MS-Embedded-Report: 
+Content-Type: multipart/mixed; boundary="----_=_NextPart_002_01C414FC.6E3D23D2"
+
+
+------_=_NextPart_002_01C414FC.6E3D23D2
+Content-Type: text/plain;
+	charset="iso-8859-1"
+
+If the message will not displayed automatically,
+follow the link to read the delivered message.
+
+Received message is available at:
+www.petrox.cl/inbox/gsaldivia/read.php?sessionid-25442 
+ 
+
+------_=_NextPart_002_01C414FC.6E3D23D2
+Content-Type: text/plain;
+	name="ATT29123.txt"
+Content-Disposition: attachment;
+	filename="ATT29123.txt"
+
+[Filename: message.scr, Content-Type: audio/x-wav]
+The attachment file in the message has been removed by eManager.
+
+------_=_NextPart_002_01C414FC.6E3D23D2--
+
+------_=_NextPart_000_01C414FC.6E3D23D2--
