@@ -1,19 +1,20 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] HP model 612 hard disk not found
-Date: Thu, 03 Mar 2005 13:50:19 +0000
-Message-ID: <4227161B.6040600@tiscali.be>
-References: <200502251214.15993.mszick@wolfbutter.com>	<20050226162901.GA26100@hiauly1.hia.nrc.ca>
-	<20050226185626.GC16927@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: backport sba change to ccio
+Date: Thu, 3 Mar 2005 22:03:24 -0700
+Message-ID: <20050304050324.GA30252@colo.lackof.org>
+References: <4208898700009474@mail-4-bnl.tiscali.it>
+	<42271F19.6010406@tiscali.be>
+	<20050303154531.GA18286@colo.lackof.org>
+	<20050303155332.GG28741@parcelfarce.linux.theplanet.co.uk>
+	<20050303170405.GC18286@colo.lackof.org>
+	<4227575A.4060901@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org,
- "Michael S. Zick" <mszick@wolfbutter.com>
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050226185626.GC16927@colo.lackof.org>
+In-Reply-To: <4227575A.4060901@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,55 +25,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Thu, Mar 03, 2005 at 06:28:42PM +0000, Joel Soete wrote:
+> >replace ioc_count in just that one context with
+> >	count_parisc_drivers(ccio_driver)
+...
+> -/* Ratio of Host MEM to IOV Space size */
+> -static unsigned long ccio_mem_ratio = 4;
+>  static struct ioc *ioc_list;
+> -static int ioc_count;
+> +static int ioc_count = 0;
+> +static int global_ioc_cnt = 0;
 
+You won't need global_ioc_cnt.
+Just call count_parisc_drivers() every time.
+It's walking a short list and hopefully gives back
+the same result everytime.
 
-Grant Grundler wrote:
-> On Sat, Feb 26, 2005 at 11:29:01AM -0500, John David Anglin wrote:
 > 
->>>>But nothing works. 
->>>>How can i mount it. It has a filesystem of HP-UX.
->>>>fdisk command doesn't exist
->>
->>I don't believe that there is support to directly mount HP-UX file
->>systems (i.e., hfs or vxfs).  One way might be using nfs.
+>  /**************************************************************
+>  *
+> @@ -559,7 +558,7 @@
+>  ccio_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
+>  		   unsigned long hints)
+>  {
+> -	register unsigned long pa = (volatile unsigned long) vba;
+> +	register unsigned long pa;
+>  	register unsigned long ci; /* coherent index */
 > 
+>  	/* We currently only support kernel addresses */
+> @@ -1269,17 +1268,16 @@
+>  	** Hot-Plug/Removal of PCI cards. (aka PCI OLARD).
+>  	*/
 > 
-> UFS works for HPUX disks the last time I tried it a few years ago.
-> 
-> But, HPUX LVM is incompatible with linux LVM.
-> Ie the HPUX "HFS" (aka UFS) must be "whole disk".
-> 
-Just to add some fresh test info:
-I build such full disk with a hpux-11.00 (bundle dated Dec 2000) on my c110 and tried:
-# mount -t ufs /dev/sdc /mnt/UFS-tst
-mount: wrong fs type, bad option, bad superblock on /dev/sdc,
-        missing codepage or other error
-        In some cases useful info is found in syslog - try
-        dmesg | tail  or so
+> +	iova_space_size = (u32) (num_physpages / global_ioc_cnt);
 
-dmeg saying:
-ufs was compiled with read-only support, can't be mounted as read-write
+call count_parisc_drivers() here instead of global_ioc_cnt.
 
-I changed:
-# mount -t ufs -o ro /dev/sdc /mnt/UFS-tst
+> -/* We *can't* support JAVA (T600). Venture there at your own risk. */
+> -static struct parisc_device_id ccio_tbl[] = {
+> -	{ HPHW_IOA, HVERSION_REV_ANY_ID, U2_IOA_RUNWAY, 0xb }, /* U2 */
+> -	{ HPHW_IOA, HVERSION_REV_ANY_ID, UTURN_IOA_RUNWAY, 0xb }, /* UTurn */
+> -	{ 0, }
+> -};
 
-even thought it accepts to mount system still complaining:
-You didn't specify the type of your ufs filesystem
+Yeah, you'll have to move this (and related bits) further up.
 
-mount -t ufs -o ufstype=sun|sunx86|44bsd|ufs2|5xbsd|old|hp|nextstep|netxstep-cd|openstep ...
+> that boot fine and no more crash after stress test :-)
+> (I hope the same results with previous disk failing ;-)
 
- >>>WARNING<<< Wrong ufstype may corrupt your filesystem, default is ufstype=old
-ufs_read_super: can't grok fs_clean 0x17
+Very good. At least we are on the right track.
 
-So finaly it was:
-# mount -t ufs -o ufstype=hp -o ro /dev/sdc /mnt/UFS-tst
-
-(ufs_read_super: can't grok fs_clean 0x17 message persist; I assume just a warning)
-
-then reading in such fs seems ok (find all file in kernel tree, tar -tvf of kernel src tar)
-
-Thanks Grant,
-	Joel
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
