@@ -1,19 +1,18 @@
-Return-Path: <>
-Received: from mx01.vtr.net (relay.vtr.net [200.83.1.24])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5516C482C
+Return-Path: <varenet@esiee.fr>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5DC56482C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 28 Mar 2004 07:08:11 -0700 (MST)
-Received: by mx01.vtr.net (7.0.012) id 3F89F80A034B8DD7 for
-	parisc-linux@lists.parisc-linux.org; Sun, 28 Mar 2004 10:08:08 -0400
-From: Servicio de reparto de correo <postmaster@vtr.net>
-To: parisc-linux@lists.parisc-linux.org
-Date: Sun, 28 Mar 2004 10:08:08 -0400
-Message-ID: <3F89F80A034B8DD6@mx01.vtr.net>
-MIME-Version: 1.0
-Content-Type: Multipart/Report; report-type=delivery-status;
-	boundary="========/3F89F80A034B8DD5/mx01.vtr.net"
-Subject: [parisc-linux] =?iso-8859-1?q?Notificaci=F3n_del_estado_de_entre?=
-	=?iso-8859-1?q?ga?=
+	Sun, 28 Mar 2004 07:53:54 -0700 (MST)
+Date: Sun, 28 Mar 2004 16:53:51 +0200
+Subject: Re: [parisc-linux] Trouble booting hp9000 k class model k250
+	(shortish'd)
+Content-Type: text/plain; delsp=yes; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v553)
+To: "Wayne Rooney" <wrooney@ihug.co.nz>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <000501c414bf$85f743a0$0a01a8c0@wayneroo.inet>
+Message-Id: <BA41D839-80C7-11D8-B9E6-0030656F07A2@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,52 +22,62 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Este mensaje MIME de múltiples partes trae una notificación del estado de entrega.
-Si ve este texto, quiere decir que su cliente de correo podría no entender los mensajes
-de formato MIME o DSN (véase del RFC 2045 al 2049 para obtener información general sobre mensajes MIME
-y del RFC 1891 al 1894 para obtener información específica sobre DSN).
+According to:
+http://www.pateam.org/list.html
 
---========/3F89F80A034B8DD5/mx01.vtr.net
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+You need to use PDC console.
 
- - Los siguientes destinatarios fueron cursados por el servidor de correo:
-imagenart@vtr.net; Fallido; 5.2.2 (buz�n lleno)
+Then, following the howto at
+http://www.pateam.org/doc.html
+(not mentioning the numerous threads about this on this list)
 
-    MTA remoto 200.83.1.21: Diagn�stico de SMTP: 552 RCPT TO:<imagenart@vtr.net> Mailbox disk quota exceeded
+you'd have found that you just have to use the latest netinst (as you =20=
 
+did) and tell PALO during bootup to change the console to /dev/ttyB0
 
+All relevant links can be found here
+http://lists.parisc-linux.org/pipermail/parisc-linux/2003-March/=20
+019399.html
 
---========/3F89F80A034B8DD5/mx01.vtr.net
-Content-Type: Message/Delivery-Status
-
-Reporting-MTA: dns; mx01.vtr.net
-Received-from-MTA: dns; vtr.net (200.83.49.12)
-Arrival-Date: Sun, 28 Mar 2004 10:08:08 -0400
-
-Final-Recipient: rfc822; imagenart@vtr.net
-Action: Failed
-Status: 5.2.2 (mailbox full)
-Remote-MTA: dns; 200.83.1.21
-Diagnostic-Code: smtp;
-	552 RCPT TO:<imagenart@vtr.net> Mailbox disk quota exceeded
-
---========/3F89F80A034B8DD5/mx01.vtr.net
-Content-Type: Text/RFC822-headers
-
-Return-Path: <parisc-linux@lists.parisc-linux.org>
-Received: from vtr.net (200.83.49.12) by mx01.vtr.net (7.0.012)
-        id 3F89F80A034B8DD5 for imagenart@vtr.net; Sun, 28 Mar 2004 10:08:08 -0400
-Message-ID: <3F89F80A034B8DD5@mx01.vtr.net> (added by postmaster@vtr.net)
-From: parisc-linux@lists.parisc-linux.org
-To: imagenart@vtr.net
-Subject: Re: Delivery Server
-Date: Sun, 28 Mar 2004 10:08:32 -0400
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
+HTH,
 
 
---========/3F89F80A034B8DD5/mx01.vtr.net--
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
+
+Le dimanche, 28 mars 2004, =E0 14:23 Europe/Paris, Wayne Rooney a =E9crit =
+:
+
+>
+> Hello list.
+>
+> I have acquired an HP 9000 K class server, model K250.
+>
+> I woud like to install Linux on it but I am having a spot of trouble =20=
+
+> getting
+> it to boot from a Linux cd.
+>
+> I've been using Linux on x86 for a couple of years but this is my =
+first
+> parisc computer and I don't know much about the platform yet.
+>
+> I've done enough research in the last week to know I need a "-PDC-" =20=
+
+> image or
+> a kernel after, what was it, 2.4.19?
+>
+> Anyway, I've tried booting a couple of iso's, and they both hang at =
+the
+> point where the serial driver loads.
+>
+> If anyone could suggest a handling I would very much appreciate it.
+>
+> Data follows:
+>
+> The first iso was palinux-2.4.21-pa6-20030718-netinst.iso which was
+> downloaded from http://www.pateam.org/cd-images/testing/ and it =20
+> produces:
+>
+>
