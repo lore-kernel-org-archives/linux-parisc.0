@@ -1,28 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta04ps.bigpond.com (mta04ps.bigpond.com [144.135.25.136])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3E7C0482A
-	for <parisc-linux@parisc-linux.org>; Sun, 21 Oct 2001 18:28:35 -0600 (MDT)
-Received: from bubble.local ([144.135.25.84]) by
-          mta04ps.bigpond.com (Netscape Messaging Server 4.15) with SMTP
-          id GLL0AE00.46R for <parisc-linux@parisc-linux.org>; Mon, 22 Oct
-          2001 10:35:02 +1000
-Date: Mon, 22 Oct 2001 09:58:26 +0930
-From: Alan Modra <amodra@bigpond.net.au>
-To: Jochen Friedrich <jochen+parisc-linux@scram.de>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A4338482A
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Oct 2001 19:35:26 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ticfiaaa for parisc-linux@parisc-linux.org; Sun, 21 Oct 2001 18:30:31 -0700
+Date: Sun, 21 Oct 2001 18:35:04 -0700
+From: Randolph Chung <tausq@debian.org>
+To: Matthew Wilcox <willy@debian.org>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Latest debian binutils broken?
-Message-ID: <20011022095826.J1037@bubble.sa.bigpond.net.au>
-References: <Pine.LNX.4.33.0110212131060.29072-100000@alpha.bocc.de>
+Subject: Re: [parisc-linux] small patch for cpu_idle?
+Message-ID: <20011021183504.I537@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <20011021105227.H537@tausq.org> <20011021212118.G31505@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0110212131060.29072-100000@alpha.bocc.de>; from jochen+parisc-linux@scram.de on Sun, Oct 21, 2001 at 09:34:34PM +0200
+In-Reply-To: <20011021212118.G31505@parcelfarce.linux.theplanet.co.uk>
+Sender: Randolph Chung <randolph@tausq.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Oct 21, 2001 at 09:34:34PM +0200, Jochen Friedrich wrote:
+> I don't see any difference between
 > 
-> with the latest debian binutils, as immediately crashes on my 720:
+> while (foo) { }
+> 
+> and
+> 
+> while (foo) continue;
 
-ldd as ?
+i was obviously smoking something funny :-(
 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-October/014230.html
-might be relevant if "as" is dynamic.
+ok, i'll look into more why i get a hang in cpu_idle when fsck requires
+manual intervention on startup.
+
+randolph
+-- 
+Debian Developer <tausq@debian.org>
+http://www.TauSq.org/
