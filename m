@@ -1,26 +1,25 @@
 Return-Path: <esproul@ntelos.net>
 Received: from mailrtr03.ntelos.net (mailrtr03.ntelos.net [216.12.0.103])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7EBAF483B
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4234A4829
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 06:31:56 -0700 (MST)
+	Thu, 25 Mar 2004 10:04:08 -0700 (MST)
 Received: from thunderbolt.oss.ntelos.net (thunderbolt.oss.ntelos.net
 	[216.12.8.195])
-	by mailrtr03.ntelos.net (8.11.7/8.11.7) with ESMTP id i2PDVuL20631
+	by mailrtr03.ntelos.net (8.11.7/8.11.7) with ESMTP id i2PH47L11807
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 08:31:56 -0500
+	Thu, 25 Mar 2004 12:04:07 -0500
 Subject: Re: [parisc-linux] gdth driver on L2000
 From: Eric Sproul <esproul@ntelos.net>
 To: PA-RISC Linux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <20040325032743.GB7587@colo.lackof.org>
+In-Reply-To: <20040325032639.GA7587@colo.lackof.org>
 References: <1080142280.1928.35.camel@thunderbolt.oss.ntelos.net>
 	<20040324173117.GA32052@colo.lackof.org>
 	<1080158208.23069.6.camel@thunderbolt.oss.ntelos.net>
-	<1080163275.23069.42.camel@thunderbolt.oss.ntelos.net>
-	<20040325032743.GB7587@colo.lackof.org>
+	<20040325032639.GA7587@colo.lackof.org>
 Content-Type: text/plain
-Message-Id: <1080221515.17438.9.camel@thunderbolt.oss.ntelos.net>
+Message-Id: <1080234247.17438.31.camel@thunderbolt.oss.ntelos.net>
 Mime-Version: 1.0
-Date: Thu, 25 Mar 2004 08:31:55 -0500
+Date: Thu, 25 Mar 2004 12:04:07 -0500
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,19 +29,30 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-(should have replied to the list...)
-
-On Wed, 2004-03-24 at 22:27, Grant Grundler wrote:
-> On Wed, Mar 24, 2004 at 04:21:16PM -0500, Eric Sproul wrote:
-> > Maybe even though CONFIG_SMP=Y it is not including smp.h?
+On Wed, 2004-03-24 at 22:26, Grant Grundler wrote:
+> On Wed, Mar 24, 2004 at 02:56:49PM -0500, Eric Sproul wrote:
+> > Grant,
+> > I'm working with Debian's 2.6.4 sources, but the gdth driver must be
+> > unchanged since the patch applies cleanly.  Thanks!
 > 
-> Do not enable CONFIG_SMP on 2.6 kernels. It doesn't work.
+> good
 
-Ah, OK.  Well that's a deal-breaker for me.  I really need SMP.
+I successfully ported Grant's patch to 2.4.25, and have attached a diff
+for gdth.c.  All credit for this goes to Grant-- I just adjusted the
+line numbers. ;)  I'll be submitting this patch as requested to
+linux-scsi.
 
-I'll see if I can adapt your gdth patch to 2.4.25 and I'll post my
-results.  Thanks again for doing that.  It's one more piece of the
-kernel I understand just a bit better now.  :)
+The driver appears to work now in my 2.4.25-64-smp kernel:
 
-Thanks,
+GDT: Storage RAID Controller Driver. Version: 2.05
+GDT: Found 1 PCI Storage RAID Controllers
+GDT CTR0: Configuring GDT-PCI HA at 32/0 IRQ 128
+
+lspci:
+20:00.0 RAID bus controller: Intel Corp. RAID Controller
+
+I'm moving now to check out the RAID management utility from Intel that
+supposedly worked under Debian 2.2.  I haven't even peeked at it yet.
+
+Many thanks to Grant for getting me going.
 Eric
