@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dsl2.external.hp.com (localhost [127.0.0.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AB9E3482A
-	for <parisc-linux@parisc-linux.org>; Fri, 17 May 2002 00:35:44 -0600 (MDT)
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] irq.c patch to fix lockups on recent kernels 
-In-Reply-To: Message from Grant Grundler <grundler@dsl2.external.hp.com>
-   of "Thu, 16 May 2002 15:30:48 MDT." <20020516213048.DDE21482A@dsl2.external.hp.com>
-References: <20020515134703.GY30370@tausq.org> <20020516204045.D4E85482A@dsl2.external.hp.com>  <20020516213048.DDE21482A@dsl2.external.hp.com> 
-Date: Fri, 17 May 2002 00:35:44 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020517063544.AB9E3482A@dsl2.external.hp.com>
+Received: from humbolt.nl.linux.org (humbolt.nl.linux.org [131.211.28.48])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CBF81482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 May 2002 05:05:35 -0600 (MDT)
+Received: (from localhost user: 'armijn' uid#1008 fake: STDIN
+	(armijn@humbolt.nl.linux.org)) by humbolt.nl.linux.org
+	id <S16110AbSEQLF1>; Fri, 17 May 2002 13:05:27 +0200
+Date: Fri, 17 May 2002 13:05:27 +0200
+From: Armijn Hemel <armijn@nl.linux.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020517130527.J32014@humbolt.geo.uu.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] installing on b2600 fails
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,14 +23,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-> I'm thinking we should:
-> o move the EIRR bit handling into do_cpu_irq_mask()
->   (do_cpu_irq_mask() could loop until EIRR is zero).
-> o move I-bit handling into the entry.S assembly.
+hi all,
 
-prototype code is on ftp.parisc-linux.org/patches/irq_eirr.diff
-I didn't cleanup some of entry.S stuff but it should work.
-Not tested.
+I tried to install a b2600 workstation with Linux, but I couldn't get it
+to work. I tried to install Debian woody (downloaded unofficial ISO from
+http://cdimage-unofficial.debian.net/), which didn't want to install
+(couldn't find a library). I also tried the 0.9.3 release PARISC-Linux (full
+install) which also didn't work.
 
-grant
+I got either a stack dump when it was loading the ramdisk, or I got the
+following errors on the funky display on the front of the machine:
+
+HPMC initiated, bus timeout, bad os HPMC cksm, OS HPMC br err
+
+I am wondering what went wrong. I'm quite new to PA-RISC hardware, so
+I don't know if this is a software or hardware failure. Can anyone help
+me with this? Thanks in advance.
+
+armijn
+
+-- 
+ ---------------------------------------------------------------------------
+   armijn@nl.linux.org | http://people.nl.linux.org/~armijn/ | Penguin Power
+ ---------------------------------------------------------------------------
+                 http://nl.linux.org/ | Alles over Linux
+ ---------------------------------------------------------------------------
