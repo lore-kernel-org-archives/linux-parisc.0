@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 501F0491D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Oct 2003 10:44:30 -0600 (MDT)
-Date: Wed, 15 Oct 2003 12:40:47 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Jakub Jelinek <jakub@redhat.com>
+Received: from myware.akkadia.org (cpe-24-221-190-179.ca.sprintbbd.net [24.221.190.179])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A64614892
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Oct 2003 11:37:23 -0600 (MDT)
+Message-ID: <3F8D85B9.8090504@redhat.com>
+Date: Wed, 15 Oct 2003 10:36:57 -0700
+From: Ulrich Drepper <drepper@redhat.com>
+MIME-Version: 1.0
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Cc: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
-Message-ID: <20031015164047.GA31385@systemhalted>
-References: <20031012213734.GJ23999@systemhalted> <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
-Mime-Version: 1.0
+References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com> <20031015054045.GE22495@systemhalted> <3F8CE195.2090106@redhat.com> <20031015142648.GF22495@systemhalted>
+In-Reply-To: <20031015142648.GF22495@systemhalted>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
-Subject: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
+Subject: [parisc-linux] Re: [PATCH] linuxthreads for hppa (1/3)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +24,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Oct 15, 2003 at 07:34:31AM +0200, Jakub Jelinek wrote:
-> On Sun, Oct 12, 2003 at 05:37:34PM -0400, Carlos O'Donell wrote:
-> > 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
-> > 
-> > 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
-> > 	(__pthread_find_self): Likewise.
-> > 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Carlos O'Donell wrote:
+> Ulrich,
 > 
-> You need to look at linuxthreads/attr.c (__pthread_attr_getstack) too
-> (the recent code which parses /proc/self/maps and finds stack VMA in there).
+> 
+>>- -# if __LT_SPINLOCK_INIT != 0
+>>- -  __pthread_handles[0].h_lock = __LOCK_INITIALIZER;
+>>- -  __pthread_handles[1].h_lock = __LOCK_INITIALIZER;
+>>+# ifdef __LT_INITIALIZER_NOT_ZERO
+>>+  __pthread_handles[0].h_lock = __LOCK_ALT_INITIALIZER;
+>>+  __pthread_handles[1].h_lock = __LOCK_ALT_INITIALIZER;
+>>
+>>part is what I meant.  There is no reason to change the name.
+> 
+> 
+> How do you propose it be handled? All arches define __LT_SPINLOCK_INIT
 
-That should hopefully explain the regression in tst-attr1, I hadn't
-tracked it down yet, but I knew that some other STACK_GROWS_UP problems
-might exist.
+I'm talking about this __LOCK_INITIALIZER -> __LOCK_ALT_INITIALIZER
+change.  Why do you claim the right to rename the symbol?
 
-Thanks Jakub.
+- -- 
+- --------------.                        ,-.            444 Castro Street
+Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
+Red Hat         `--' drepper at redhat.com `---------------------------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-c.
+iD8DBQE/jYW52ijCOnn/RHQRAsmEAJ0cmMRxfMlyduuTG9TQMnATJVRJQQCgu/Vy
+aL6qdcssSoUjY7D7oCnKXII=
+=VzEk
+-----END PGP SIGNATURE-----
