@@ -1,30 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F3922482A
-	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 16:28:55 -0600 (MDT)
-Message-Id: <200110182225.QAA03204@puffin.external.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D16B482A
+	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 17:23:02 -0600 (MDT)
+Message-Id: <m15uMVA-000Oz9C@bame.riverrock.org>
+To: Randolph Chung <randolph@tausq.org>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] More on the B2000 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Thu, 18 Oct 2001 19:35:35 BST." <20011018193535.T11105@linuxcare.com>
-Date: Thu, 18 Oct 2001 16:25:31 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: Re: [parisc-linux] travel backwards in time? 
+In-Reply-To: Your message of "Thu, 18 Oct 2001 13:21:45 PDT."
+             <20011018132145.H4123@tausq.org>
+References: <20011018132145.H4123@tausq.org> 
+Date: Thu, 18 Oct 2001 17:23:00 -0600
+From: Paul Bame <bame@riverrock.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst wrote:
-> On Thu, Oct 18, 2001 at 11:32:30AM -0600, Grant Grundler wrote:
-> > I'm helping get IDE-CDOM working and I have also started work on
-> > getting the built-in narrow scsi working (sym53c8xx driver needs
-> > to make a PDC GET_INITIATOR call).
 > 
-> The narrow scsi works provided you boot with "sym53c8xx=buschk:2" as
-> per the CD errata though, doesn't it?
+> Can someone more familiar with that part of the code (pb?) please comment?
+> 
 
-I haven't tried that. I will.
+I never had lots of confidence in that code even though I introduced it
+by distilling other archs -- and dimly recall not being able to use
+ia64 for some reason, or maybe I'm remembering wrong.  I never felt
+I completely understood the interaction with the sometimes-missed
+timer interrupt and arch-independent timer handling, and some of the
+other archs seemed to be unexpectedly different from each other.
 
-I tried forcing the sym53c8xx to use narrow only and that
-hangs the box. The internal LVD disk insist on
-re-negotiating for wide and never get past that.
+How's that for a useless comment?! :-)
 
-grant
+	-P
