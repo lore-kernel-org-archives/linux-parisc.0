@@ -1,96 +1,107 @@
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA24893
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 10:33:36 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id E9701514
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 09:35:43 -0800 (PST)
-Message-Id: <200011201734.JAA18526@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10 
-In-reply-to: Your message of "Mon, 20 Nov 2000 11:17:26 PST."
-             <20001120111726.C5196@parcelfarce.linux.theplanet.co.uk>
-Date: Mon, 20 Nov 2000 09:34:31 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA25506
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 10:59:24 -0700
+Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
+  by mailserv2.iuinc.com with SMTP; 20 Nov 2000 18:01:32 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 9571CB005; Mon, 20 Nov 2000 17:58:38 +0000 (GMT)
+Date: Mon, 20 Nov 2000 17:58:38 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001120175838.Q32715@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] signal handling problems (32 bit kernel)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-...
-> sounds right.  MMIO should work now though, right?
+Hi,
+  Following on from my problems with SEGV last week, I've come up with
+a few signal handling issues:
 
-It would have worked then too.
-Changing it to use MMIO space would require disabling I/O Port space
-by defining inb/outb locally to use gsc_readb/writeb.
-My problem with doing that was the semantics are slightly different.
-I/O Port space is non-postable and MMIO space is. I wasn't confident
-a driver written to use I/O port space would work right under MMIO
-though some certainly do.
+=============================================================
 
-...
-> it was definitely a 32-bit kernel at the time.  It might be the same bug,
-> but I'm not sure.
+parisc:signal.c
 
-Can't be. AP (%r29) is a 64-bit only construct.
-dhd also just confirmed it was 32-bit kernel.
-I'll try it now.
+        /* Possibly bogus. */
+#warning XXX FIXME probably bogus -PB
+        /* I think this is bogus -- it'll cause the first instn of the
+         * signal handler to be executed twice!  Better might be to
+         * set iaoq[0] to one of the NOPs in the trampoline. -PB
+         */
+        regs->iaoq[0] = (unsigned long) haddr | 3;
+        regs->iaoq[1] = (unsigned long) haddr | 3;
 
-...
-> > We need to resolve this in order to merge upstream.
-> > Matthew, any advice on how we should proceed?
-> > Or would be easier for you pester Alan Cox and just get it fixed?
-> 
-> Hm.  Alan's not hacking on 2.4, last I heard.  I might pester Linus and
-> see if we can change that.  It's a mechanical change so he might not be
-> averse to it at this point.  Bear in mind we don't need to do a complete
-> merge at this point -- most architectures have a separate patch to apply
-> on top of Linus' tree.
+This causes real problems if the signal handler is a dynamic object
+which has not yet been resolved; in that case the signal handler
+points at the b,l instr in the following at the end of the .plt:
 
-Ok. What's the first step to getting arch/parisc* and include/asm-parisc*
-into Linus's tree?
+    2700:       0e 80 10 96     ldw  0(sr0,r20),r22
+    2704:       ea c0 c0 00     bv r0(r22)
+    2708:       0e 88 10 95     ldw  4(sr0,r20),r21
+    270c:       ea 9f 1f dd     b,l 2700 <__DTOR_END__+0x54>,r20
+    2710:       d6 80 1c 1e     depwi 0,31,2,r20
 
-I had dinner with Bdale Garbee last night and one of two things he made
-clear was we need to unfork from debian and linus's tree in order to move
-forward. All our CVS branches need to become obsolete or "local sandboxes"
-of the respective upstream partners. Feeding kernel bits upstream will
-bring a new level of visibility (and *HELP*) to the parisc-linux port.
+typically that results in a misalligned access on the first ldw
+as r20 is screwed.
 
-I totally agree with Bdale. I understand alot of work still needs to
-happen in our tree (eg though sba_iommu.c works, it's current form sucks)
-But pushing bits upstream to linus will not preclude us from doing that work.
+I've fixed that by setting iaoq[1] = iaoq[0]+4.  Is that OK, or
+should we use the NOP approach in the comment above?
 
-I also find it odd that glibc is merged upstream *before* the kernel is.
+=============================================================
 
-For the record, the second issue bdale made clear was we need "boot
-floppies" debian package working. We don't need more ISO images (no
-offense to pjlahaie for his good work). "Boot floppies" is a pre-requisite
-to becoming part of the next debian release. Given I still don't have
-a clue how to build a debian package and I can still contribute alot
-in other areas, it doesn't make sense for me to do it myself.
+If a program gets a SEGV, fixes the cause of it in its signal
+handler, and returns, then the faulting instruction is not rerun.
+I think that's wrong (differs from m68k anyway).
+
+=============================================================
+
+Set the following program running:
+
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+
+int v[8];
+
+void (* fp)(int);
+
+void sig_handler(int sig)
+{
+}
+
+void poke(int i)
+{
+        v[0] = i; v[1] = i; v[2] = i; v[3] = i;
+        v[4] = i; v[5] = i; v[6] = i; v[7] = i;
+}
+
+int main()
+{
+        int j, i = 0;
+        struct sigaction act;
+
+        memset(&act, 0, sizeof(act));
+        act.sa_handler = sig_handler;
+        sigaction(SIGUSR1, &act, NULL);
+
+        fp = sig_handler;
+        fp(0);
+        printf("I am %d\n", getpid());
+        while (1) {
+                poke (++i);
+                j = v[7];
+                if (j != i)
+                        printf("Wah!\n");
+        }
+}
 
 
-> > I'd be happy to fix this by clobbering the current version with what's in
-> > linux-2.4.0-test10. But what is the "right" way to revert changes we've made
-> > so this doesn't show up in next merge?
-> 
-> I don't know that there's an official way to do this.  I always changed
-> the file to its previous state and then committed it.  There are a number of
-> ways of doing it; perhaps the cleanest is:
-> 
-> cvs diff -r1.4 -r1.5 fs/nfs/read.c >../read.c.diff
-> (then check the read.c.diff file)
-> patch -p1 <../read.c.diff
-> rm ../read.c.diff
-> 
-> or you can just delete the lines yourself.  Use diff to make sure there
-> aren't any silly cosmetic changes (eg whitespace).
+and then in another terminal do 'kill -USR1 <pid>'.  The program
+either goes 'Wah!', gives a SEGV, or works.  That seems to be because
+%r1 is corrupted while processing the signal.  The signal handler ends
+with a syscall (rt_sigreturn_wrapper), and %r1, at least, is not saved
+and restored over the syscall.  %r31 also appears to get corrupted, as
+it is used in the final branch of the syscall return.
 
-The part you described above is the easy part - np.
-I'm worried about labels and tracking how we "name" the releases.
-Mang or other CVS ninja's care to comment?
-
-thanks,
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Richard
