@@ -1,27 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.zrt.nl (ns.zrt.nl [212.153.94.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C3539482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 04:06:17 -0600 (MDT)
-Received: (from fwmaster@localhost) by ns.zrt.nl (8.9.1a/8.6.12) id MAA05659 for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 12:06:16 +0200 (MET DST)
-Message-Id: <sba5e649.037@ms-zrt1>
-Date: Mon, 17 Sep 2001 11:37:29 +0200
-From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
-To: <jlez@altavista.fr>, <parisc-linux@lists.parisc-linux.org>
-Subject: Betr.: [parisc-linux] pbs while running an apache web
-	server...
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EE1F3482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 04:12:34 -0600 (MDT)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel1.hp.com (Postfix) with ESMTP id 46262307
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Sep 2001 06:12:34 -0400 (EDT)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id EAA27443
+	for parisc-linux@lists.parisc-linux.org; Mon, 17 Sep 2001 04:12:30 -0600 (MDT)
+Date: Mon, 17 Sep 2001 04:12:30 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200109171012.EAA27443@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: Getting up and running
 List-ID: <linux-parisc.vger.kernel.org>
 
->Hi,=20
 >
->I also have an other question : when do you think a 64 bits kernel with =
-sti support would be available?
+> How does this look?  I can't test it because I don't have a 720-era machine,
+> but it ought to work, I think...
 >
-AFAIK, your 712 doesn't have a 64-bit CPU, so a 64-bits kernel probably =
-wouldn't run on it...
 
-But, I'd also like a 64-bits kernel with sti support for my C200+.
+<Patch Deleted>
 
-Good luck,
-Jurriaan
+No, it needs to be a little more complicated than that. That patch doesn't
+take into account byte and half-word accesses to a page. The real fix
+needs to look at the instruction in the iir register in combination with
+the ior value in order to determine whether the access is unaligned.
+
+I thought for a second that the patch might work anyway, since the
+unaligned fault handler has exception table support, so even though
+the instruction might be unecessarily emulated, it would still
+successfully bring the page in, but the unaligned fault handler
+uses ldb, which would just cause an infinite loop ...
+
+So, the correct fix should probably involve leveraging some of the
+macros in unaligned.c and writing something like check_unaligned(regs)
+that would be used by the trap 18 handler to determine whether or
+not the access was unaligned or not.
+
+John
