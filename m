@@ -1,23 +1,17 @@
-Return-Path: <mick.bass@hp.com>
-Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 54894484B
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  9 Feb 2004 08:50:42 -0700 (MST)
-Received: from hplms2.hpl.hp.com (hplms2.hpl.hp.com [15.0.152.33])
-	by palrel13.hp.com (Postfix) with ESMTP id C578B1C0114D
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  9 Feb 2004 07:50:41 -0800 (PST)
-Received: from hplex1.hpl.hp.com (hplex1.hpl.hp.com [15.0.152.182])
-	by hplms2.hpl.hp.com (8.12.10/8.12.10/HPL-PA Hub) with SMTP id
-	i19Fodpm027537 for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 9 Feb 2004 07:50:40 -0800 (PST)
-Message-ID: <40700B4C02ABD5119F00009027876644077CD571@hplex1.hpl.hp.com>
-From: "Bass, Mick" <mick.bass@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 9 Feb 2004 07:50:35 -0800 
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C79A9484B
+	for <parisc-linux@parisc-linux.org>;
+	Mon,  9 Feb 2004 09:40:54 -0700 (MST)
+Date: Mon, 9 Feb 2004 17:40:51 +0100
+Message-ID: <400CB8A1000107A9@ocpmta3.freegates.net>
+In-Reply-To: <20040208225943.GJ24334@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Merge status with 2.6
+To: "Matthew Wilcox" <willy@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [parisc-linux] JVM for Linux on pa-risc?
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,27 +21,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Does there exist a java virtual machine for linux on pa-risc, and if so where might one find it?
 
-Many thanks,
+Hi all,
 
-- Mick Bass
+Tested with success with defconfig and 32bit kernel on b2k.
+And same success with also defconfig and 64bit kernel on same b2k and N4k
+(UP).
 
-=============================================
-Mick Bass
+Thanks to all for this great job,
+    Joel
 
-
-Manager
-Research and Business Development
-Digital Media Systems Department
-HP Laboratories
-Hewlett-Packard Company
-825 14th Street SW
-Loveland, CO 80537
-
-
-970.898.6788 office    240.536.0765 fax
-617.899.3938 mobile    303.494.5202 residence
-bass@alum.mit.edu      mick_bass@hp.com
-=============================================
- 
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
