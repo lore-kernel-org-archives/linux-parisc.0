@@ -1,18 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.goquest.com (mail.goquest.com [63.172.73.8])
-	by dsl2.external.hp.com (Postfix) with SMTP id 10B4C4853
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Jun 2002 12:48:06 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@goquest.com>
-To: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200
-Date: Tue, 11 Jun 2002 13:39:38 -0500
-Cc: parisc-linux@lists.parisc-linux.org
-References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <02061107100403.00732@localhost.localdomain> <20020611145848.GA2796@tausq.org>
-In-Reply-To: <20020611145848.GA2796@tausq.org>
-MIME-Version: 1.0
-Message-Id: <02061113393800.04435@localhost.localdomain>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] SCSI driver for E-class servers - SPIFI ? 
+In-Reply-To: Message from Christoph Plattner <christoph.plattner@gmx.at>
+   of "Tue, 11 Jun 2002 01:16:17 +0200." <3D053341.571CF331@gmx.at>
+References: <3D050639.B9F9695D@gmx.at> <20020610215312.29D2C483A@dsl2.external.hp.com>  <3D053341.571CF331@gmx.at> 
+Date: Tue, 11 Jun 2002 15:39:29 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020611213929.C75684854@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,33 +19,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tuesday 11 June 2002 09:58 am, Randolph Chung wrote:
->
-> think we are looking at multiple bugs here.....
->
-Very likely...
-You might check the HPPA version of:
+Christoph Plattner wrote:
+> http://cvsweb.netbsd.org/bsdweb.cgi/syssrc/sys/arch/newsmips/apbus/
 
-arch/i386/kernel/irq.c::__global_save_flags.
+This looks like it's the right driver for the HP-PB SE SCSI.
+I noticed that SDTR isn't supported.
+But it's a starting point.
 
-using objdump -d on the kernel.o produced by my compiler
-(a different version of GCC than used for pa-risc) I find that
-for the "c" code sequence:
-....
-int cpu = smp_processor_id() ;
-
-__save_flags(flags) ;
-....
-generates assembly code which modifies the flags during the
-initialization of "cpu" before the flags are actually saved.
-....
-in the pa-risc branch, try the equivalent of:
-....
-int cpu ;
-....
-__save_flags(flags) ;
-....
-cpu = smp_processor_id() ;
-....
-
-Mike
+grant
