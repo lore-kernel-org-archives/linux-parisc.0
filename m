@@ -1,57 +1,71 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA18502
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 23:31:18 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 06:34:16 -0000
-Received: from hse-ottawa-ppp157550.sympatico.ca (HELO linuxcare.com) (adevries@64.229.130.221)
-  by smtp.linuxcare.com with SMTP; 20 Dec 2000 06:34:10 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A405395.FFFF99E4@linuxcare.com>
-Date: Wed, 20 Dec 2000 01:37:09 -0500
-From: Alex deVries <adevries@linuxcare.com>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SuckyIO support
-References: <200012200256.SAA16519@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA19908
+	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 02:17:24 -0700
+Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
+  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 09:20:17 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id D8EACB005; Wed, 20 Dec 2000 09:14:02 +0000 (GMT)
+Date: Wed, 20 Dec 2000 09:14:02 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: David Huggins-Daines <dhd@eradicator.org>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] signal.c, etc
+Message-ID: <20001220091402.C2554@linuxcare.com>
+References: <87zohuhm30.fsf@cepstral.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <87zohuhm30.fsf@cepstral.com>; from dhd@eradicator.org on Sun, Dec 17, 2000 at 02:41:39PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> Alex deVries wrote:
-> > I've taken mkp's initial work on superio.c and added some stuff, but in
-> > the end am confused by where we actually get the interrupt number from
-> > the card.  There's no such register in function 1 (where the interrupts
-> > ultimately end up) and both registers on function 0 and 2 return 0,
-> > which I don't think is right.
+Hi Dave,
+
+On Sun, Dec 17, 2000 at 02:41:39PM -0500, David Huggins-Daines wrote:
+> Hi,
 > 
-> Why are you reading this out of a register? Which register?
+> Just reading through the archives, I noticed you came upon my rather
+> hackish IAOQ manipulation in signal.c.
+> 
+> If you guys need any explanation about the intent of that code please
+> ask me.  (I'm back on the parisc-linux list now, BTW)
 
-I'm reading it out of the INTERRUPT_LINE register because that's how
-'normal' PCI devices set their dev->irq value.  If you say that's the
-right approach, I believe you.
+Welcome back! Feel free to fix anything I broke.
 
-> IIRC, function 0 and 2 *should* return 0 in INTERRUPT_PIN configuration
-> register and thus the INTERRUPT_LINE configuration as well.
+> I freely admit that it is bogus (in fact that's why the comment was
+> there), not because I didn't know which part of IAOQ was front and
+> which was back, but because:
+> 
+> (a) There are two different signal exit paths, one from interruptions,
+>     one from system calls.  This complicates things *tremendously*.
+>     However, exiting from a signal handler always goes via system
+>     calls, and in that case, the stored IAOQ values are meaningless.
+>     I probably should have removed all the meaningless frobbings of
+>     the stored IAOQ, but ... well ... time passes, you become occupied
+>     elsewhere, etc.
 
-Ah, good.
+Right, the code as was worked ok for the syscall case but broke
+for the interrupt case.  The problem is that following the signal
+and call to sys_rt_sigreturn, you need to return to userland either
+via an interrupt return path, or a syscall return path, depending on
+where you were when the signal occurred.  There is now a test in
+syscall.S for __NR_rt_sigreturn in order to implement that.
 
-> But since IOSAPIC driver (when invoked by LBA PCI code) munges the
-> INTERRUPT_LINE contents and puts the virtualized IRQ number in
-> dev->irq for the drivers consumption, superio driver should
-> not be reading these configuration registers.
+> (b) I don't understand what the processor actually does when you
+>     restore IAOQ on exit from an interruption.  The HP documentation
+>     is not written in a particularly lucid manner.
+> 
+> (c) Setting iaoq_back to iaoq_front + 4 is *not* the right answer
+>     because you may have taken an interruption in a branch, or an insn
+>     may have been nullified, etc.
 
-Okay... but I get zero in dev->irq already, so I'm not sure the IOSAPIC
-driver is virtualizing them properly.
+Absolutely - that was the main problem with the code as it was.
+Seting iaoq_back to iaoq_front + 4 is valid if you are starting up the
+signal handler, and should be ok if the singal occurred while you
+were blocked on a syscall.
 
-Grant, I'll email the driver to you, Grant, to have a look at.
+> (d) I had about ten billion other things to do at the time and was
+>     under lots of pressure to get "more important things" working...
 
-Thanks for your help!
+Sure - the current code does work for me under various test cases, but
+it did take days to get to that point.
 
-- Alex
-
--- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+Richard
