@@ -1,56 +1,77 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 13C3A4946
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Oct 2001 01:08:13 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ijgaiaaa for parisc-linux@lists.parisc-linux.org; Wed, 10 Oct 2001 00:03:39 -0700
-Date: Tue, 9 Oct 2001 20:04:38 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20011009200438.F653@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] HPMC when doing sync on c3k (32 bit kernel)
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 664594952
+	for <parisc-linux@parisc-linux.org>; Wed, 10 Oct 2001 01:46:21 -0600 (MDT)
+Message-Id: <200110100743.BAA12218@puffin.external.hp.com>
+To: Thomas Marteau <marteaut@esiee.fr>
+Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Final version of Configure.help 
+In-Reply-To: Message from Thomas Marteau <marteaut@esiee.fr>
+   of "Tue, 09 Oct 2001 23:36:16 +0200." <3BC36DD0.42636C7@esiee.fr>
+Date: Wed, 10 Oct 2001 01:43:10 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I noticed that when i do a manual 'sync' on my c3000 running a 32-bit
-kernel, I get a HPMC:
+Thomas Marteau wrote:
+> 	Here is the patch to update the help for make config. It is the result
+> of many advices given by a lot of people. 
+
+thomas,
+overall, it looks pretty good...thanks for pulling this together!
+
+> PS: Any comment is STILL possible :-)
+
+ok :^)
+
+In general, I'd rather not see comments in this document about
+what options are or are not working. That's changing still and we don't
+feed stuff back upstream very often.  Better to point folks to
+a web page(s) (perhaps both www.parisc-linux.org and esiee pages)
+for current status.
+
+I'd also like to note that most options which enable HW support
+are safe to enable even if the platform doesn't have that HW.
+The goal is to be able to enable everything and have the kernel
+just DTRT at boot time. In short, I'd like to see something like
+"Safe to say 'y' if in doubt" on most of the "new" options.
+
+> +GSCtoPCI/DINO PCI support
+> +CONFIG_GSC_DINO
+> +  By selecting this item, you add PCI support for Dino PCI Host Bus bridge.
+> +  PCI devices are sometimes embedded in GSC add-on cards (aka "card-mode 
+> +  Dino"). Note that only recent systems need it like B132L, C200. For more
+> +  information, go to http://hwdb.parisc-linux.org.
+
+"EISA Form Factor" Card-mode dino can be found in anything as old as 715's.
+"3x5 Form Factor" GSC cards fit (and should work) in all K-class.
+
+Anyway, it's safe to enable.
+
+> +LBA/Elroy PCI support
+> +CONFIG_PCI_LBA
+> +  Elroy is a bridge between Ropes bus and PCI on several machines. It can
+> +  be found on A500 and B/C/J/L/N-XXXX models.
+
+Also found in A400 and Superdome.
+Might be simpler to say "newer workstations and servers which have 4X-PCI".
 
 
-High Priority Machine Check (HPMC): Code=1 regs=1029c080 (Addr=00000000)
+>   ...It allows the system to 
+> +  communicate with PCI cards. Thus, you should leave it on especially
+> +  if you have one of the listed HP machines. By default, say Y.
+> +
+> +SuperIO support
+> +CONFIG_SUPERIO
+> +  SuperIO is a chip that integrates a good part of I/O for the newest 
+> +  B/C/J-XXXX workstations. Serial, USB, IDE and Floppy are built in that
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001101111110100001100
-r0-3     00000000 102a9010 1010e228 000000ff
-r4-7     00000000 00000000 102ad010 10355074
-r8-11    10355010 10354810 0004000e 102d4730
-r12-15   10349810 10349010 103495dc 102ad010
-r16-19   1032c580 f000017c f0000174 0000000e
-r20-23   1036f140 000003fd 1010e20c 00000000
-r24-27   000003fd fee003fd fee003fd 10292010
-r28-31   00000000 00000205 1032cb00 1010cc2c
-sr0-3    00000000 0000027c 00000000 00000009
-sr4-7    00000000 00000000 00000000 00000000
+*controllers* - not the devices are built-in.
 
-IASQ: 00000000 00000000 IAOQ: 10207568 1020756c
- IIR: 0f40001c    ISR: a607fffb  IOR: 802003fd
- CPU:        0   CR30: 1032c000 CR31: 10330000
- ORIG_R28: 00000000
+> +  chip. That's why you must select it, if your box is corresponding to
+> +  those series. Please note that only the seriel support is working
+> +  at the moment.
 
-"pim hpmc" says:
-A Data I/O Fetch Timeout occurred while CPU 0 was
-requesting information from a device at the path 10/0/14/1/1 (built-in
-PCI device)
+typo: serial
 
-apparently it died in _gsc_readb.
-
-With a 64-bit kernel it works ok.
-
-Anyone else seeing this/know what's going on?
-
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+thanks again!
+grant
