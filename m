@@ -1,80 +1,81 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B217482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 13:09:39 -0600 (MDT)
-Received: from dyn-33.linux.theplanet.co.uk ([195.92.244.33] helo=caramon.arm.linux.org.uk)
-	by www.linux.org.uk with esmtp (Exim 3.13 #1)
-	id 14qgH7-00024a-00; Fri, 20 Apr 2001 20:09:01 +0100
-Received: from flint.arm.linux.org.uk (IDENT:root@flint.arm.linux.org.uk [192.168.0.4])
-	by caramon.arm.linux.org.uk (8.11.0/8.11.0) with ESMTP id f3KJ90b01904;
-	Fri, 20 Apr 2001 20:09:00 +0100
-Received: (from rmk@localhost)
-	by flint.arm.linux.org.uk (8.11.0/8.11.0) id f3KJ8xp06357;
-	Fri, 20 Apr 2001 20:08:59 +0100
-Date: Fri, 20 Apr 2001 20:08:59 +0100
-From: Russell King <rmk@arm.linux.org.uk>
-To: "Eric S. Raymond" <esr@thyrsus.com>,
-	Nicolas Pitre <nico@cam.org>, Tom Rini <trini@kernel.crashing.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	"Albert D. Cahalan" <acahalan@cs.uml.edu>,
-	Matthew Wilcox <willy@ldl.fc.hp.com>,
-	james rich <james.rich@m.cc.utah.edu>,
-	lkml <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
-Message-ID: <20010420200859.B5510@flint.arm.linux.org.uk>
-References: <20010420085148.V13403@opus.bloom.county> <Pine.LNX.4.33.0104201206250.12186-100000@xanadu.home> <20010420125005.B8086@thyrsus.com>
+Received: from snark.thyrsus.com (snark.tuxedo.org [207.106.50.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B07CB482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 13:48:08 -0600 (MDT)
+Date: Fri, 20 Apr 2001 15:47:43 -0400
+From: "Eric S. Raymond" <esr@thyrsus.com>
+To: Matthew Wilcox <willy@ldl.fc.hp.com>
+Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Message-ID: <20010420154743.A19618@thyrsus.com>
+Reply-To: esr@thyrsus.com
+References: <20010419203639.H4217@zumpano.fc.hp.com> <20010419230009.A32500@thyrsus.com> <20010419211749.I4217@zumpano.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010420125005.B8086@thyrsus.com>; from esr@thyrsus.com on Fri, Apr 20, 2001 at 12:50:05PM -0400
+In-Reply-To: <20010419211749.I4217@zumpano.fc.hp.com>; from willy@ldl.fc.hp.com on Thu, Apr 19, 2001 at 09:17:49PM -0600
+Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Apr 20, 2001 at 12:50:05PM -0400, Eric S. Raymond wrote:
-> Nicolas Pitre <nico@cam.org>:
-> > Why not having everybody's tree consistent with themselves and have whatever
-> > CONFIGURE_* symbols and help text be merged along with the very code it
-> > refers to?  It's worthless to have config symbols be merged into Linus' or
-> > Alan's tree if the code isn't there (yet).  It simply makes no sense.
+Matthew Wilcox <willy@ldl.fc.hp.com>:
+> > Could I ask you to audit your tree and change the prefix on any 
+> > CONFIG_ symbols that are private over there?  This would make life 
+> > easier for my auditing tools (kxref and Stephen Cole's ach script).
+> 
+> I don't think we have any of those.  We certainly have symbols which are
+> defined for symmetry and may not actually be used yet (CONFIG_PA11 might not
+> be, perhaps).  But that's what happens when you're developing software :-)
 
-Really, the above issue is down to the sub-architecture maintainers splitting
-up their patches into the "one feature, one bug" thing, rather than "one
-set of files" (which, incidentally I'm guilty of as well).  That way, when
-stuff gets added, you get:
+Here's what I have for you guys:
 
-1. The C source changes for that item
-2. The configure script stuff for that one item
-3. The help text for that one item.
+CONFIG_BINFMT_JAVA: arch/parisc/config.in arch/parisc/defconfig arch/cris/config.in arch/cris/defconfig
 
-Currently, stuff that comes to me appears mostly as "here's a configure
-update", "here's a PCMCIA update", etc.  I'll pull out an instance from
-my patch tracking system (sorry, Philip, yours is the first one I found):
+You've already gotten rid of that one.
 
-Patch 413/1 (see http://www.arm.linux.org.uk/developer/patches/?id=413/1&mode=patch)
-This patch adds the defconfig file for the CLPS7500 architecture, and it
-contains symbols such as:
+CONFIG_BINFMT_SOM: arch/parisc/config.in arch/parisc/defconfig
 
-	CONFIG_BLK_DEV_FLD7500
-	CONFIG_CLPS7500_FLASH
+Not used in code anywhere.  Can you get rid of this one?
 
-Neither of these two drivers are currently in Linus' tree, or in fact my
-tree.  Should I reject the patch?  Should I accept it and edit these out,
-or what?
+CONFIG_DMB_TRAP: arch/parisc/kernel/sba_iommu.c
+CONFIG_FUNC_SIZE: arch/parisc/kernel/sba_iommu.c
 
-> And now it has a cost, too.  It makes finding real bugs more difficult.
+Would you please take these out of the CONFIG_ namespace?  Changing the 
+prefix to CONFIGURE would do nicely.
 
-Well, if they get removed in Linus tree, then when I next sync, they'll get
-re-added, or maybe they won't.  Then someone else will remove them, then
-they'll get re-added ad infinitum.
+CONFIG_GENRTC: arch/parisc/defconfig
 
-This also touches on another issue - patch.  I've had several times where
-I've sent Alan stuff, its gone up to Linus, I receive it back, and during
-the merge, patch does its stuff without complaining (because there is not
-enough context in the diff).  Typically, this happens in the Configure.help
-file.
+This is a typo for GEN_RTC.  Please fix it or get rid of it.
 
-Generally it seems like diff needs to produce one more line of context, and
-most of these problems will go away.  Yes, there will still be the odd
-problem, so then it becomes the "how much do you crank the setting" problem.
+CONFIG_HIL: arch/parisc/defconfig
 
---
-Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
-             http://www.arm.linux.org.uk/personal/aboutme.html
+Looks like an orphan.  Can you get rid of it?
+
+CONFIG_GSC: arch/parisc/config.in arch/parisc/defconfig
+CONFIG_GSC_DINO: arch/parisc/config.in arch/parisc/defconfig
+CONFIG_GSC_LASI: arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/led.c
+CONFIG_GSC_PS2: arch/parisc/config.in arch/parisc/defconfig
+CONFIG_IODC_CONSOLE: arch/parisc/config.in arch/parisc/kernel/setup.c
+CONFIG_IOMMU_CCIO: arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/Makefile
+CONFIG_IOMMU_SBA: arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/Makefile
+CONFIG_IOSAPIC: arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/Makefile
+CONFIG_KWDB: arch/parisc/Makefile arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/entry.S arch/parisc/kernel/traps.c arch/parisc/mm/init.c
+CONFIG_LASI_82596: arch/parisc/config.in arch/parisc/defconfig
+CONFIG_PARPORT_GSC: drivers/parport/Makefile arch/parisc/config.in arch/parisc/defconfig
+CONFIG_PCI_LBA: arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/Makefile
+CONFIG_SCSI_LASI: arch/parisc/config.in arch/parisc/defconfig
+CONFIG_SCSI_ZALON: arch/parisc/config.in arch/parisc/defconfig
+CONFIG_STI_CONSOLE: arch/parisc/Makefile arch/parisc/config.in arch/parisc/defconfig arch/parisc/kernel/setup.c arch/parisc/mm/init.c
+
+Looks like these need Configure.help entries.
+
+CONFIG_SERIAL_GSC: drivers/char/serial.c arch/parisc/defconfig
+
+That reference pattern looks kind of weird.  Is this a bug?
+
+If you could clean these up, that's everything I need from the parisc tree.
+-- 
+		<a href="http://www.tuxedo.org/~esr/">Eric S. Raymond</a>
+
+(Those) who are trying to read the Second Amendment out of the Constitution by
+claiming it's not an individual right (are) courting disaster by encouraging
+others to use the same means to eliminate portions of the Constitution they
+don't like.
+	-- Alan Dershowitz, Harvard Law School
