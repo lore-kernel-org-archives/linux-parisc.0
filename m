@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6E24F482E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Nov 2002 12:57:00 -0700 (MST)
-Subject: Re: [parisc-linux] [RFC] Patch to handle parisc-device quirks/bugs.
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DB395482E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Nov 2002 13:00:25 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18DVaf-0004jj-00; Sun, 17 Nov 2002 20:00:21 +0000
+Date: Sun, 17 Nov 2002 20:00:21 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Ryan Bradetich <rbradetich@uswest.net>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021117193354.21EEE482E@dsl2.external.hp.com>
-References: <1037559910.26816.9.camel@beavis>  
-	<20021117193354.21EEE482E@dsl2.external.hp.com>
-Content-Type: text/plain
-Date: 17 Nov 2002 12:56:55 -0700
-Message-Id: <1037563016.26816.12.camel@beavis>
+Subject: Re: [parisc-linux] [RFC] Patch to handle parisc-device quirks/bugs.
+Message-ID: <20021117200021.E7530@parcelfarce.linux.theplanet.co.uk>
+References: <1037559910.26816.9.camel@beavis>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1037559910.26816.9.camel@beavis>; from rbradetich@uswest.net on Sun, Nov 17, 2002 at 12:05:09PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,32 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant,
+On Sun, Nov 17, 2002 at 12:05:09PM -0700, Ryan Bradetich wrote:
+> The following patch fixes this problem by adding a HP hardare
+> quirks table, and fixing up the device early on in the discovery
+> process so everything else just works.
 
-I test the hpa, hw_type, hversion, and sversion for the quirk.  If all
-these match, then I update the parisc_device_id with the device it
-should be.
+We have some other occurrences of this kind of problem:
 
-+               if((dev->hpa == list->hpa) &&
-+                       (dev->id.hw_type == list->quirk.hw_type) &&
-+                       (dev->id.hversion == list->quirk.hversion) &&
-+                       (dev->id.sversion == list->quirk.sversion))
+Graphics cards are frequently wrong.
+HSC-PCI cards show up with the wrong sversion in 715/Mirage machines.
+One of the Dinos in the J2240 has the wrong sversion.
 
+We ignore the problem for gfx cards since we don't use the IDs anyway.
+The Dino problems are solved by additional IDs in the Dino driver.
 
-Thanks,
+It is legitimate for a driver to refuse to claim a device that it's
+advertised for.  So my personl preference is to advertise for all BC
+ports, and then refuse to claim the ones which are actually lower ports.
+That confines the knowledge to one driver.
 
-- Ryan
+This scheme doesn't fix the device name printout, but that seems less
+important.
 
-
-On Sun, 2002-11-17 at 12:33, Grant Grundler wrote:
-> Ryan Bradetich wrote:
-> > The one thing I do not like is depending upon the HPA of the
-> > device to determine the quirk, but I could not think of a 
-> > different/better way to handle this.
-> 
-> Could you also check the IODC device type?
-> Or is that also wrong?
-> If HPA and type match, then I'd be comfortable with it.
-> 
-> grant
-> 
+-- 
+Revolutions do not require corporate support.
