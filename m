@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ORDENADOR (modemcable122.5-203-24.mtl.mc.videotron.ca [24.203.5.122])
-	by dsl2.external.hp.com (Postfix) with SMTP id 11E404844
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Sep 2003 16:46:50 -0600 (MDT)
-From: "pencil" <czmy_czmy@shaw.ca>
-To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Date: Wed, 17 Sep 2003 18:46:25 -0400
-MIME-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Message-Id: <20030917224650.11E404844@dsl2.external.hp.com>
-Subject: [parisc-linux] Hello
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 693964844
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Sep 2003 16:56:14 -0600 (MDT)
+Date: Wed, 17 Sep 2003 18:54:07 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org, dave.anglin@nrc-cnrc.gc.ca
+Subject: Re: [parisc-linux] 64-bit kernel builds with gcc-3.4 experimental cross.
+Message-ID: <20030917225406.GG30176@systemhalted>
+References: <20030917161800.GB30176@systemhalted> <200309171643.h8HGhJlw013649@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200309171643.h8HGhJlw013649@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,12 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-PGh0bWw+DQpIaSw8YnI+DQpJIGtuPCEtLWk4Z3Nmay0tPm93IHlvdSB3YW50IHRvIHJlPCEtLTE3
-NDMyMXlzLS0+ZmluYTwhLS1ieWFza2JmLS0+bmNlIHlvdXIgaG9tZSBzbyA8YnI+DQpoZXJlIGlz
-IHRoZSB3ZTwhLS00aGYxbDgtLT5ic2l0ZSB5b3Ugd2E8IS0tc2o4ZnM5cGo5ODQtLT5udGVkIHdo
-ZXJlIGxlPCEtLXBha2lzdGFuLS0+bmRlcnMgPGJyPg0KY29tPCEtLW94Zm9yZC0tPnBldGUgZm9y
-IHlvdXIgYnU8IS0tdmlyZ2luLS0+c2luZXNzLjxicj4NCjxhIGhyZWY9Imh0dHA6Ly93d3cuaThn
-c2ZrLmZsaXBwaW5kZWFscy5jb20iPiBHbyBIZXJlIDwvYT48YnI+DQpUaDwhLS0xNzQzMjF5cy0t
-PmFua3MsPGJyPg0KSmFjayBKb2g8IS0tNGhmMWw4LS0+bnNvbjxicj4NCjxicj4NCjxicj4NCk5v
-IDwhcmFuZDQ+IE1vcmUgPGEgaHJlZj0iaHR0cDovL2k4Z3Nmay5mbGlwcGluZGVhbHMuY29tL3Vu
-cy5jZ2kiPiBubyBtYXMgPGEvPg0KPCEtLXZpcmdpbi0tPg0KPC9odG1sPg0K
+On Wed, Sep 17, 2003 at 12:43:18PM -0400, John David Anglin wrote:
+> > Any thoughts? This ld was from a multi-arch binutils that had
+> > enable-targets with hppa64-linux.
+> > 
+> > ---
+> > hppa64-linux-ld  -r -o kernel.o sched.o dma.o fork.o exec_domain.o
+> > panic.o printk.o module.o exit.o itimer.o info.o time.o softirq.o
+> > resource.o sysctl.o acct.o capability.o ptrace.o timer.o user.o signal.o
+> > sys.o kmod.o context.o
+> > hppa64-linux-ld: Relocatable linking with relocations from format
+> > elf32-hppa-linux (sched.o) to format elf32-hppa-linux (kernel.o) is not
+> > supported
+> 
+> As far as I know, there is no multi-arch support in ld or as.
+> There isn't multi-arch support in GCC either.  You need separate
+> compilers for 32 and 64 bits.
+
+Separate compilers yes. Separate linker and assembler no.
+I thought I could use '--enable-targets=hppa64-linux' in binutils.
+
+c.
