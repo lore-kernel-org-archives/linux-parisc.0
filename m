@@ -1,18 +1,18 @@
 Return-Path: <administrator@ncc-consulting.de>
 Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D52F4873
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61BB44873
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 31 Mar 2004 16:23:56 -0700 (MST)
+	Wed, 31 Mar 2004 20:21:35 -0700 (MST)
 Received: from mailserver.muc.ncc-consulting.de (pD9E88E6C.dip0.t-ipconnect.de
 	[217.232.142.108])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2VNNso15257
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i313LXo09243
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 1 Apr 2004 01:23:54 +0200
+	Thu, 1 Apr 2004 05:21:34 +0200
 From: <Administrator@s15113731.rootmaster.info>
 Sender: <Administrator@s15113731.rootmaster.info>
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 1 Apr 2004 01:22:03 +0200
-Message-ID: <127c01c41776$f9ef0ef0$fc01a8c0@muc.nccconsulting.de>
+Date: Thu, 1 Apr 2004 05:21:07 +0200
+Message-ID: <133001c41798$5f8fbd60$fc01a8c0@muc.nccconsulting.de>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="utf-8"
@@ -32,7 +32,7 @@ ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 Sender = parisc-linux@lists.parisc-linux.org
 Recipient(s) = Evangelos Kopanakis
 Subject = Re: Encrypted Mail
-Scanning time = 4/1/2004 1:22:03 AM
+Scanning time = 4/1/2004 5:21:06 AM
 Engine/Pattern = 6.860-1001/1.845.00
 
 Action on virus found:
