@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3E3A14829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 10:47:37 -0600 (MDT)
-Date: Mon, 2 Sep 2002 09:51:14 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: marc <marc@centraltx.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel Panic
-Message-ID: <20020902165114.GF14634@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <200209021137.AA3784507924@mail.centraltx.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200209021137.AA3784507924@mail.centraltx.com>
+To: jsoe0708@tiscali.be
+Cc: "Joel Soete" <joel.soete@freebel.net>,
+	"John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb 
+In-Reply-To: Message from jsoe0708@tiscali.be
+   of "Mon, 02 Sep 2002 10:47:59 +0200." <3D3815BD0000A476@ocpmta5.be.tiscali.com>
+References: <3D3815BD0000A476@ocpmta5.be.tiscali.com> 
+Date: Mon, 02 Sep 2002 11:28:54 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020902172854.C73F44829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In reference to a message from marc , dated Sep 02:
-> Guys, I'm getting a kernel panic after trying to access my tape drive.
-> Can anyone help me out? I tried to post all relevant info, let me know
-> if I can provide anything else:
+jsoe0708@tiscali.be wrote:
+> >Since start_sect and nr_sects are ints, this code will also generate an
+> >"unaligned data reference fault" like the original code did.
+> 
+> Trust me it does not? (it works fine)
 
-first step would be to try a newer kernel. 2.4.9 is very old :-)
+then I'll wager there is padding between the char and int fields
+of that struct.
 
-you can either compile stuff from cvs (instructions on the
-www.parisc-linux.org website), or grab a precompiled one either from
-debian or ftp://ftp.parisc-linux.org/kernels/32/32-2.4.19-pa9.tar.gz
+> >You need
+> >to find the origin of "struct partition *p" when the address is un-aligned.
+> >
+> Very hard to define:
+> a. the previous code works (again all odds)
+> b. the following trial code:
+...
 
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+> int main(int argc, char * * argv, char * * env) {
+> 
+>     struct partition p1, p2;
+
+...
+> did not reproduce the problem.
+
+Things on the stack (local var) are properly aligned.
+Malloc a block of mem and then point to an unaligned address
+in that block.
+
+> What can I do to analyse this problem? (printing all p addresses and its
+> elements
+> during a run with the original code and compare with a run with modified
+> code?)
+
+yes. You want to verify the addreses are unaligned.
+
+grant
