@@ -1,14 +1,17 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Date: Fri, 30 Apr 2004 11:57:45 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040430155745.GG12850@baldric.uwo.ca>
-References: <20040430141548.EFE284945CD@palinux.hppa>
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i3UGPla08568; Fri, 30 Apr 2004 12:25:47 -0400
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <20040430162037.9D2B94945CD@palinux.hppa>
+References: <20040430162037.9D2B94945CD@palinux.hppa>
+Content-Type: text/plain
+Date: 30 Apr 2004 11:25:46 -0500
+Message-Id: <1083342347.2063.38.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040430141548.EFE284945CD@palinux.hppa>
 Cc: parisc-linux-cvs@lists.parisc-linux.org
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 carlos
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,253 +21,249 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Apr 30, 2004 at 08:15:48AM -0600, Carlos O'Donell wrote:
+On Fri, 2004-04-30 at 11:20, James Bottomley wrote:
 > CVSROOT:	/var/cvs
 > Module name:	linux-2.6
-> Changes by:	carlos	04/04/30 08:15:48
+> Changes by:	jejb	04/04/30 10:20:37
 > 
 > Modified files:
-> 	include/asm-parisc: unistd.h 
+> 	.              : Makefile 
+> 	arch/parisc/kernel: asm-offsets.c entry.S init_task.c 
+> 	include/asm-parisc: page.h pgalloc.h pgtable.h 
 > 
 > Log message:
-> Update K_INLINE_SYSCALL so userspace apps using the macro work properly.
+> Update the parametrisation of our page tables
+> 
+> This fix also allows variable size pgd and pmd and thus lays the ground
+> work for expanding the number of page table flags we have
 
-Lifted from the version I wrote for glibc. I get to clean this up yet
-again when we remove the register saves across syscalls.
-
-Index: include/asm-parisc/unistd.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/unistd.h,v
-retrieving revision 1.5
-diff -u -p -r1.5 unistd.h
---- a/include/asm-parisc/unistd.h	28 Apr 2004 23:13:37 -0000	1.5
-+++ b/include/asm-parisc/unistd.h	30 Apr 2004 14:15:17 -0000
-@@ -735,94 +735,141 @@
- 
- #ifndef __ASSEMBLY__
- 
--/* The old syscall code here didn't work, and it looks like it's only used
-- * by applications such as fdisk which for some reason need to produce
-- * their own syscall instead of using same from libc.  The code below
-- * is leveraged from glibc/sysdeps/unix/sysv/linux/hppa/sysdep.h where
-- * it is essentially duplicated -- which sucks.  -PB
-- */
--
- #define SYS_ify(syscall_name)   __NR_##syscall_name
- 
--/* The system call number MUST ALWAYS be loaded in the delay slot of
--   the ble instruction, or restarting system calls WILL NOT WORK.  See
--   arch/parisc/kernel/signal.c - dhd, 2000-07-26 */
--#define K_INLINE_SYSCALL(name, nr, args...)       ({              \
--        unsigned long __sys_res;                                \
--        {                                                       \
--                register unsigned long __res asm("r28");        \
--                K_LOAD_ARGS_##nr(args)                            \
--                asm volatile(                                   \
--			"ble  0x100(%%sr2, %%r0)\n\t"           \
--                        " ldi %1, %%r20"                        \
--                        : "=r" (__res)                          \
--                        : "i" (SYS_ify(name)) K_ASM_ARGS_##nr   \
--			  );                                    \
--                __sys_res = __res;                              \
--        }                                                       \
--        if (__sys_res >= (unsigned long)-4095) {                \
--		errno = -__sys_res;				\
--                __sys_res = (unsigned long)-1;                 \
--        }                                                       \
--        __sys_res;                                              \
-+/* Assume all syscalls are done from PIC code just to be
-+ * safe. The worst case scenario is that you lose a register
-+ * and save/restore r19 across the syscall. */
-+#define PIC
-+
-+#ifndef ASM_LINE_SEP
-+# define ASM_LINE_SEP ;
-+#endif
-+
-+/* Definition taken from glibc 2.3.3
-+ * sysdeps/unix/sysv/linux/hppa/sysdep.h
-+ */
-+
-+#ifdef PIC
-+/* WARNING: CANNOT BE USED IN A NOP! */
-+# define K_STW_PIC stw %r19, -32(%sr0, %sp) ASM_LINE_SEP
-+# define K_LDW_PIC ldw -32(%sr0, %sp), %r19 ASM_LINE_SEP
-+# define K_STW_ASM_PIC	"       copy %%r19, %%r4\n"
-+# define K_LDW_ASM_PIC	"       copy %%r4, %%r19\n"
-+# define K_USING_GR4	"%r4",
+===== arch/parisc/kernel/asm-offsets.c 1.6 vs edited =====
+--- 1.6/arch/parisc/kernel/asm-offsets.c	Sun Apr 25 04:00:10 2004
++++ edited/arch/parisc/kernel/asm-offsets.c	Thu Apr 29 12:52:22 2004
+@@ -276,6 +276,12 @@
+ 	BLANK();
+ 	DEFINE(PA_BLOCKSTEP_BIT, 31-PT_BLOCKSTEP_BIT);
+ 	DEFINE(PA_SINGLESTEP_BIT, 31-PT_SINGLESTEP_BIT);
++	BLANK();
++	DEFINE(ASM_PMD_SHIFT, PMD_SHIFT);
++	DEFINE(ASM_PGDIR_SHIFT, PGDIR_SHIFT);
++	DEFINE(ASM_BITS_PER_PGD, BITS_PER_PGD);
++	DEFINE(ASM_BITS_PER_PMD, BITS_PER_PMD);
++	DEFINE(ASM_BITS_PER_PTE, BITS_PER_PTE);
+ 	DEFINE(ASM_PMD_ENTRY, ((__PAGE_OFFSET & PMD_MASK) >> PMD_SHIFT));
+ 	BLANK();
+ 	return 0;
+===== arch/parisc/kernel/entry.S 1.17 vs edited =====
+--- 1.17/arch/parisc/kernel/entry.S	Tue Apr 27 06:20:11 2004
++++ edited/arch/parisc/kernel/entry.S	Thu Apr 29 18:16:28 2004
+@@ -455,21 +455,25 @@
+ 	/* Look up a PTE in a 2-Level scheme (faulting at each
+ 	 * level if the entry isn't present */
+ 	.macro		L2_ptep	pmd,pte,index,va,fault
+-	EXTR		\va,31-PMD_SHIFT,PAGE_SHIFT-BITS_PER_PMD,\index
++#if PT_NLEVELS == 3
++	EXTR		\va,31-ASM_PMD_SHIFT,ASM_BITS_PER_PMD,\index
 +#else
-+# define K_STW_PIC ASM_LINE_SEP
-+# define K_LDW_PIC ASM_LINE_SEP
-+# define K_STW_ASM_PIC	" \n"
-+# define K_LDW_ASM_PIC	" \n"
-+# define K_USING_GR4
++	EXTR		\va,31-ASM_PGDIR_SHIFT,ASM_BITS_PER_PGD,\index
 +#endif
+ 	copy		%r0,\pte
+ 	DEP		%r0,31,PAGE_SHIFT,\pmd	/* clear offset */
+ 	LDREG,s		\index(\pmd),\pmd
+-	EXTR		\va,31-PAGE_SHIFT,PAGE_SHIFT-BITS_PER_PTE,\index
++	EXTR		\va,31-PAGE_SHIFT,ASM_BITS_PER_PTE,\index
+ 	bb,>=,n		\pmd,_PAGE_PRESENT_BIT,\fault
+ 	DEP		%r0,31,PAGE_SHIFT,\pmd	/* clear offset */
+-	shladd		\index,BITS_PER_PTE,\pmd,\pmd
++	shladd		\index,BITS_PER_PTE_ENTRY,\pmd,\pmd
+ 	LDREG		%r0(\pmd),\pte		/* pmd is now pte */
+ 	bb,>=,n		\pte,_PAGE_PRESENT_BIT,\fault
+ 	.endm
+ 
+ 	/* Look up PTE in a 3-Level scheme */
+ 	.macro		L3_ptep pgd,pte,index,va,fault
+-	extrd,u		\va,63-PGDIR_SHIFT,PAGE_SHIFT-BITS_PER_PGD,\index
++	extrd,u		\va,63-ASM_PGDIR_SHIFT,ASM_BITS_PER_PGD,\index
+ 	copy		%r0,\pte
+ 	ldd,s		\index(\pgd),\pgd
+ 	bb,>=,n		\pgd,_PAGE_PRESENT_BIT,\fault
+===== arch/parisc/kernel/init_task.c 1.7 vs edited =====
+--- 1.7/arch/parisc/kernel/init_task.c	Tue Feb  3 23:41:56 2004
++++ edited/arch/parisc/kernel/init_task.c	Thu Apr 29 11:42:08 2004
+@@ -52,7 +52,7 @@
+ 	__attribute__((aligned(128))) __attribute__((__section__(".data.init_task"))) =
+ 		{ INIT_THREAD_INFO(init_task) };
+ 
+-pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__ ((aligned(4096))) = { {0}, };
++pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__ ((aligned(PAGE_SIZE<<PGD_ORDER))) = { {0}, };
+ #ifdef __LP64__
+ unsigned long pmd0[PTRS_PER_PMD] __attribute__ ((aligned(4096))) = { 0, };
+ #endif
+===== include/asm-parisc/page.h 1.7 vs edited =====
+--- 1.7/include/asm-parisc/page.h	Tue Apr 27 06:20:26 2004
++++ edited/include/asm-parisc/page.h	Fri Apr 30 09:16:34 2004
+@@ -84,14 +84,21 @@
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
++/* WARNING: The definitions below must match exactly to sizeof(pte_t)
++ * etc
++ */
+ #ifdef __LP64__
+-#define BITS_PER_PTE	3
+-#define BITS_PER_PMD	3
+-#define BITS_PER_PGD	3
++#define BITS_PER_PTE_ENTRY	3
++#define BITS_PER_PMD_ENTRY	3
++#define BITS_PER_PGD_ENTRY	3
+ #else
+-#define BITS_PER_PTE	2
+-#define BITS_PER_PMD	2
++#define BITS_PER_PTE_ENTRY	2
++#define BITS_PER_PMD_ENTRY	2
++#define BITS_PER_PGD_ENTRY	BITS_PER_PMD_ENTRY
+ #endif
++#define PGD_ENTRY_SIZE	(1UL << BITS_PER_PGD_ENTRY)
++#define PMD_ENTRY_SIZE	(1UL << BITS_PER_PMD_ENTRY)
++#define PTE_ENTRY_SIZE	(1UL << BITS_PER_PTE_ENTRY)
+ 
+ /* to align the pointer to the (next) page boundary */
+ #define PAGE_ALIGN(addr)	(((addr)+PAGE_SIZE-1)&PAGE_MASK)
+===== include/asm-parisc/pgalloc.h 1.9 vs edited =====
+--- 1.9/include/asm-parisc/pgalloc.h	Sat Sep 27 16:43:45 2003
++++ edited/include/asm-parisc/pgalloc.h	Thu Apr 29 17:07:16 2004
+@@ -12,18 +12,19 @@
+ 
+ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+ {
+-	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
++	pgd_t *pgd = (pgd_t *)__get_free_pages(GFP_KERNEL, PGD_ORDER);
 +
-+/* GCC has to be warned that a syscall may clobber all the ABI
-+   registers listed as "caller-saves", see page 8, Table 2
-+   in section 2.2.6 of the PA-RISC RUN-TIME architecture
-+   document. However! r28 is the result and will conflict with
-+   the clobber list so it is left out. Also the input arguments
-+   registers r20 -> r26 will conflict with the list so they
-+   are treated specially. Although r19 is clobbered by the syscall
-+   we cannot say this because it would violate ABI, thus we say
-+   r4 is clobbered and use that register to save/restore r19
-+   across the syscall. */
-+
-+#define K_CALL_CLOB_REGS "%r1", "%r2", K_USING_GR4 \
-+	        	 "%r20", "%r29", "%r31"
-+
-+#undef K_INLINE_SYSCALL
-+#define K_INLINE_SYSCALL(name, nr, args...)	({			\
-+	long __sys_res;							\
-+	{								\
-+		register unsigned long __res asm("r28");		\
-+		K_LOAD_ARGS_##nr(args)					\
-+		/* FIXME: HACK stw/ldw r19 around syscall */		\
-+		asm volatile(						\
-+			K_STW_ASM_PIC					\
-+			"	ble  0x100(%%sr2, %%r0)\n"		\
-+			"	ldi %1, %%r20\n"			\
-+			K_LDW_ASM_PIC					\
-+			: "=r" (__res)					\
-+			: "i" (SYS_ify(name)) K_ASM_ARGS_##nr   	\
-+			: K_CALL_CLOB_REGS K_CLOB_ARGS_##nr		\
-+		);							\
-+		__sys_res = (long)__res;				\
-+	}								\
-+	if ( (unsigned long)__sys_res >= (unsigned long)-4095 ){	\
-+		errno = -__sys_res);		        		\
-+		__sys_res = -1;						\
-+	}								\
-+	__sys_res;							\
- })
- 
- #define K_LOAD_ARGS_0()
--#define K_LOAD_ARGS_1(r26)                                        \
--        register unsigned long __r26 __asm__("r26") = (unsigned long)r26;       \
--        K_LOAD_ARGS_0()
--#define K_LOAD_ARGS_2(r26,r25)                                    \
--        register unsigned long __r25 __asm__("r25") = (unsigned long)r25;       \
--        K_LOAD_ARGS_1(r26)
--#define K_LOAD_ARGS_3(r26,r25,r24)                                \
--        register unsigned long __r24 __asm__("r24") = (unsigned long)r24;       \
--        K_LOAD_ARGS_2(r26,r25)
--#define K_LOAD_ARGS_4(r26,r25,r24,r23)                            \
--        register unsigned long __r23 __asm__("r23") = (unsigned long)r23;       \
--        K_LOAD_ARGS_3(r26,r25,r24)
--#define K_LOAD_ARGS_5(r26,r25,r24,r23,r22)                        \
--        register unsigned long __r22 __asm__("r22") = (unsigned long)r22;       \
--        K_LOAD_ARGS_4(r26,r25,r24,r23)
--#define K_LOAD_ARGS_6(r26,r25,r24,r23,r22,r21)                    \
--        register unsigned long __r21 __asm__("r21") = (unsigned long)r21;       \
--        K_LOAD_ARGS_5(r26,r25,r24,r23,r22)
-+#define K_LOAD_ARGS_1(r26)					\
-+	register unsigned long __r26 __asm__("r26") = (unsigned long)(r26);   \
-+	K_LOAD_ARGS_0()
-+#define K_LOAD_ARGS_2(r26,r25)					\
-+	register unsigned long __r25 __asm__("r25") = (unsigned long)(r25);   \
-+	K_LOAD_ARGS_1(r26)
-+#define K_LOAD_ARGS_3(r26,r25,r24)				\
-+	register unsigned long __r24 __asm__("r24") = (unsigned long)(r24);   \
-+	K_LOAD_ARGS_2(r26,r25)
-+#define K_LOAD_ARGS_4(r26,r25,r24,r23)				\
-+	register unsigned long __r23 __asm__("r23") = (unsigned long)(r23);   \
-+	K_LOAD_ARGS_3(r26,r25,r24)
-+#define K_LOAD_ARGS_5(r26,r25,r24,r23,r22)			\
-+	register unsigned long __r22 __asm__("r22") = (unsigned long)(r22);   \
-+	K_LOAD_ARGS_4(r26,r25,r24,r23)
-+#define K_LOAD_ARGS_6(r26,r25,r24,r23,r22,r21)			\
-+	register unsigned long __r21 __asm__("r21") = (unsigned long)(r21);   \
-+	K_LOAD_ARGS_5(r26,r25,r24,r23,r22)
- 
-+/* Even with zero args we use r20 for the syscall number */
- #define K_ASM_ARGS_0
--#define K_ASM_ARGS_1 , "r" (__r26)
--#define K_ASM_ARGS_2 , "r" (__r26), "r" (__r25)
--#define K_ASM_ARGS_3 , "r" (__r26), "r" (__r25), "r" (__r24)
--#define K_ASM_ARGS_4 , "r" (__r26), "r" (__r25), "r" (__r24), "r" (__r23)
--#define K_ASM_ARGS_5 , "r" (__r26), "r" (__r25), "r" (__r24), "r" (__r23), "r" (__r22)
--#define K_ASM_ARGS_6 , "r" (__r26), "r" (__r25), "r" (__r24), "r" (__r23), "r" (__r22), "r" (__r21)
-+#define K_ASM_ARGS_1 K_ASM_ARGS_0, "r" (__r26)
-+#define K_ASM_ARGS_2 K_ASM_ARGS_1, "r" (__r25)
-+#define K_ASM_ARGS_3 K_ASM_ARGS_2, "r" (__r24)
-+#define K_ASM_ARGS_4 K_ASM_ARGS_3, "r" (__r23)
-+#define K_ASM_ARGS_5 K_ASM_ARGS_4, "r" (__r22)
-+#define K_ASM_ARGS_6 K_ASM_ARGS_5, "r" (__r21)
-+
-+/* The registers not listed as inputs but clobbered */
-+#define K_CLOB_ARGS_6
-+#define K_CLOB_ARGS_5 K_CLOB_ARGS_6, "%r21"
-+#define K_CLOB_ARGS_4 K_CLOB_ARGS_5, "%r22"
-+#define K_CLOB_ARGS_3 K_CLOB_ARGS_4, "%r23"
-+#define K_CLOB_ARGS_2 K_CLOB_ARGS_3, "%r24"
-+#define K_CLOB_ARGS_1 K_CLOB_ARGS_2, "%r25"
-+#define K_CLOB_ARGS_0 K_CLOB_ARGS_1, "%r26"
- 
--#define _syscall0(type,name)						      \
--type name(void)								      \
--{									      \
--    return K_INLINE_SYSCALL(name, 0);	\
-+#define _syscall0(type,name)						\
-+type name(void)								\
-+{									\
-+    return K_INLINE_SYSCALL(name, 0);	                                \
+ 	if (likely(pgd != NULL))
+-		clear_page(pgd);
++		memset(pgd, 0, PAGE_SIZE<<PGD_ORDER);
+ 	return pgd;
  }
  
--#define _syscall1(type,name,type1,arg1)					      \
--type name(type1 arg1)							      \
--{									      \
--    return K_INLINE_SYSCALL(name, 1, arg1);	\
-+#define _syscall1(type,name,type1,arg1)					\
-+type name(type1 arg1)							\
-+{									\
-+    return K_INLINE_SYSCALL(name, 1, arg1);	                        \
+ static inline void pgd_free(pgd_t *pgd)
+ {
+-	free_page((unsigned long)pgd);
++	free_pages((unsigned long)pgd, PGD_ORDER);
  }
  
--#define _syscall2(type,name,type1,arg1,type2,arg2)			      \
--type name(type1 arg1, type2 arg2)					      \
--{									      \
--    return K_INLINE_SYSCALL(name, 2, arg1, arg2);	\
-+#define _syscall2(type,name,type1,arg1,type2,arg2)			\
-+type name(type1 arg1, type2 arg2)					\
-+{									\
-+    return K_INLINE_SYSCALL(name, 2, arg1, arg2);	                \
+-#ifdef __LP64__
++#if PT_NLEVELS == 3
+ 
+ /* Three Level Page Table Support for pmd's */
+ 
+@@ -34,15 +35,16 @@
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd = (pmd_t *)__get_free_page(GFP_KERNEL|__GFP_REPEAT);
++	pmd_t *pmd = (pmd_t *)__get_free_pages(GFP_KERNEL|__GFP_REPEAT,
++					       PMD_ORDER);
+ 	if (pmd)
+-		clear_page(pmd);
++		memset(pmd, 0, PAGE_SIZE<<PMD_ORDER);
+ 	return pmd;
  }
  
--#define _syscall3(type,name,type1,arg1,type2,arg2,type3,arg3)		      \
--type name(type1 arg1, type2 arg2, type3 arg3)				      \
--{									      \
--    return K_INLINE_SYSCALL(name, 3, arg1, arg2, arg3);	\
-+#define _syscall3(type,name,type1,arg1,type2,arg2,type3,arg3)		\
-+type name(type1 arg1, type2 arg2, type3 arg3)				\
-+{									\
-+    return K_INLINE_SYSCALL(name, 3, arg1, arg2, arg3);	                \
+ static inline void pmd_free(pmd_t *pmd)
+ {
+-	free_page((unsigned long)pmd);
++	free_pages((unsigned long)pmd, PMD_ORDER);
  }
  
--#define _syscall4(type,name,type1,arg1,type2,arg2,type3,arg3,type4,arg4)      \
--type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4)		      \
--{									      \
--    return K_INLINE_SYSCALL(name, 4, arg1, arg2, arg3, arg4);	\
-+#define _syscall4(type,name,type1,arg1,type2,arg2,type3,arg3,type4,arg4) \
-+type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4)		\
-+{									\
-+    return K_INLINE_SYSCALL(name, 4, arg1, arg2, arg3, arg4);	        \
- }
+ #else
+===== include/asm-parisc/pgtable.h 1.17 vs edited =====
+--- 1.17/include/asm-parisc/pgtable.h	Sun Apr 25 04:00:21 2004
++++ edited/include/asm-parisc/pgtable.h	Fri Apr 30 11:16:11 2004
+@@ -63,41 +63,49 @@
+  */
  
- /* select takes 5 arguments */
-@@ -834,13 +881,11 @@ type name(type1 arg1, type2 arg2, type3 
+ #ifdef __LP64__
+-#define PT_NLEVELS 3
+-#define PT_INITIAL 4 /* Number of initial page tables */
++#define PT_NLEVELS	3
++#define PT_INITIAL	4 /* Number of initial page tables */
++#define PGD_ORDER	0 /* Number of pages per pgd */
++#define PMD_ORDER	0 /* Number of pages per pmd */
+ #else
+-#define PT_NLEVELS 2
+-#define PT_INITIAL 2 /* Number of initial page tables */
++#define PT_NLEVELS	2
++#define PT_INITIAL	2 /* Number of initial page tables */
++#define PGD_ORDER	0 /* Number of pages per pgd */
+ #endif
  
- 
- /* mmap & mmap2 take 6 arguments */
+-#define MAX_ADDRBITS (PAGE_SHIFT + (PT_NLEVELS)*(PAGE_SHIFT - PT_NLEVELS))
+-#define MAX_ADDRESS (1UL << MAX_ADDRBITS)
 -
- #define _syscall6(type,name,type1,arg1,type2,arg2,type3,arg3,type4,arg4,type5,arg5,type6,arg6) \
- type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6) \
--{									\
-+{									        \
-     return K_INLINE_SYSCALL(name, 6, arg1, arg2, arg3, arg4, arg5, arg6);	\
- }
+-#define SPACEID_SHIFT (MAX_ADDRBITS - 32)
 -
+-/* Definitions for 1st level */
+-
+-#define PGDIR_SHIFT  (PAGE_SHIFT + (PT_NLEVELS - 1)*(PAGE_SHIFT - PT_NLEVELS))
+-#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
+-#define PGDIR_MASK	(~(PGDIR_SIZE-1))
+-#define PTRS_PER_PGD    (1UL << (PAGE_SHIFT - PT_NLEVELS))
+-#define USER_PTRS_PER_PGD       PTRS_PER_PGD
++/* Definitions for 3rd level (we use PLD here for Page Lower directory
++ * because PTE_SHIFT is used lower down to mean shift that has to be
++ * done to get usable bits out of the PTE) */
++#define PLD_SHIFT	PAGE_SHIFT
++#define PLD_SIZE	PAGE_SIZE
++#define BITS_PER_PTE	(PAGE_SHIFT - BITS_PER_PTE_ENTRY)
++#define PTRS_PER_PTE    (1UL << BITS_PER_PTE)
  
- #ifdef __KERNEL_SYSCALLS__
+ /* Definitions for 2nd level */
+ #define pgtable_cache_init()	do { } while (0)
  
+-#define PMD_SHIFT       (PAGE_SHIFT + (PAGE_SHIFT - PT_NLEVELS))
++#define PMD_SHIFT       (PLD_SHIFT + BITS_PER_PTE)
+ #define PMD_SIZE	(1UL << PMD_SHIFT)
+ #define PMD_MASK	(~(PMD_SIZE-1))
+ #if PT_NLEVELS == 3
+-#define PTRS_PER_PMD    (1UL << (PAGE_SHIFT - PT_NLEVELS))
++#define BITS_PER_PMD	(PAGE_SHIFT + PMD_ORDER - BITS_PER_PMD_ENTRY)
+ #else
+-#define PTRS_PER_PMD    1
++#define BITS_PER_PMD	0
+ #endif
++#define PTRS_PER_PMD    (1UL << BITS_PER_PMD)
+ 
+-/* Definitions for 3rd level */
++/* Definitions for 1st level */
++#define PGDIR_SHIFT	(PMD_SHIFT + BITS_PER_PMD)
++#define BITS_PER_PGD	(PAGE_SHIFT + PGD_ORDER - BITS_PER_PGD_ENTRY)
++#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
++#define PGDIR_MASK	(~(PGDIR_SIZE-1))
++#define PTRS_PER_PGD    (1UL << BITS_PER_PGD)
++#define USER_PTRS_PER_PGD       PTRS_PER_PGD
+ 
+-#define PTRS_PER_PTE    (1UL << (PAGE_SHIFT - PT_NLEVELS))
++#define MAX_ADDRBITS	(PGDIR_SHIFT + BITS_PER_PGD)
++#define MAX_ADDRESS	(1UL << MAX_ADDRBITS)
++
++#define SPACEID_SHIFT (MAX_ADDRBITS - 32)
+ 
+ /*
+  * pgd entries used up by user/kernel:
+@@ -241,7 +249,7 @@
+ 
+
+
+-#ifdef __LP64__
++#if PT_NLEVELS == 3
+ #define pgd_page(pgd) ((unsigned long) __va(pgd_val(pgd) & PAGE_MASK))
+ 
+ /* For 64 bit we have three level tables */
+@@ -337,7 +345,7 @@
+ 
+ /* Find an entry in the second-level page table.. */
+ 
+-#ifdef __LP64__
++#if PT_NLEVELS == 3
+ #define pmd_offset(dir,address) \
+ ((pmd_t *) pgd_page(*(dir)) + (((address)>>PMD_SHIFT) & (PTRS_PER_PMD-1)))
+ #else
