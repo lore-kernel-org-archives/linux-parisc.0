@@ -1,17 +1,19 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5D224840
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B9A34840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 11 Jan 2004 13:49:51 -0700 (MST)
-Message-Id: <200401112049.i0BKnihs000770@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] running gcc testsuite triggers ongoing page faults
-To: doko@cs.tu-berlin.de (Matthias Klose)
-Date: Sun, 11 Jan 2004 15:49:44 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <16385.5227.153358.397944@gargle.gargle.HOWL> from "Matthias
-	Klose" at Jan 11, 2004 10:16:27 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	Sun, 11 Jan 2004 13:52:28 -0700 (MST)
+Date: Sun, 11 Jan 2004 15:43:55 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Message-ID: <20040111204355.GL28742@systemhalted>
+References: <20040105194809.GA9269@systemhalted>
+	<20040105194839.GB9269@systemhalted>
+	<20040111040906.GA32382@colo.lackof.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040111040906.GA32382@colo.lackof.org>
 Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,23 +24,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> I think I did see this first with gcc-3.3 from 20031229. Running the
-> 3.3 testsuite (gcc) doesn't terminate. Instead, I see expect eating
-> all CPU time, together with syslogd and klogd. /var get's filled with
-> log messages in kern.log, syslog and debug.
+On Sat, Jan 10, 2004 at 09:09:06PM -0700, Grant Grundler wrote:
+> On Mon, Jan 05, 2004 at 02:48:39PM -0500, Carlos O'Donell wrote:
+> > http://www.parisc-linux.org/~carlos/glibc-2.3.2-debs-2004-01-05/
 > 
-> The machine is a A500, kernel from the archives (kernel-image-2.4.21-64-smp_pa7.3)
+> I finally installed these (libc6 and libc6-dev) and live is still good.
+> thanks carlos!
 
-I've had similar problems on gsyprf11, but recent kernels seem to be
-better.  I believe that this is more likely on SMP kernels and we have
-never had a stable one on gsyprf11.  You can kill expect and GCC will
-move on to the next suite.  I haven't seen this on the C3750.
+Excellent. You haven't tried profiling any programs have you? :)
+Compile with CFLAGS=-pg, run-em, then run gprof on the gmon.out output?
 
-This definitely isn't a GCC problem.  The problem never occurs under
-hpux.  It's probably some kind of timing or locking issue that just
-happens to get tweaked by a particular test.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+c.
