@@ -1,21 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA05987
-	for <parisc-linux@puffin.external.hp.com>; Sat, 13 Nov 1999 13:24:32 -0700
-Date: Sat, 13 Nov 1999 13:25:46 -0700 (MST)
-From: Mike Hibler <mike@fast.cs.utah.edu>
-Message-Id: <199911132025.NAA03275@fast.cs.utah.edu>
-To: Matthew.Wilcox@genedata.com, parisc-linux@thepuffingroup.com
-Subject: Re:  [parisc-linux] 715 useful
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA09266
+	for <parisc-linux@puffin.external.hp.com>; Sun, 14 Nov 1999 14:39:22 -0700
+Received: from vodka.thepuffingroup.com (IDENT:adevries@vodka.thepuffingroup.com [192.168.1.2])
+	by vodka.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id RAA06787
+	for <parisc-linux@thepuffingroup.com>; Sun, 14 Nov 1999 17:51:47 -0500
+Date: Sun, 14 Nov 1999 17:51:46 -0500 (EST)
+From: Alex deVries <adevries@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.9911141751050.6663-100000@vodka.thepuffingroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] hp700.c and hp800.c ?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Date: Sat, 13 Nov 1999 19:21:50 +0100
-> From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-> To: parisc-linux@thepuffingroup.com
-> Subject: [parisc-linux] 715 useful
-> 
-> For the machines which have ASP, am I right in saying they have no other
-> sources of interrupts?
-> 
 
-The interval timer, assuming you are using the interrupt feature to
-keep time.
+Do we really need hp700.c and hp800.c in arch/parisc/kernel ?
+
+
+- Alex
+
+-- 
+Alex deVries <adevries@thepuffingroup.com>
+Vice President Engineering
+The Puffin Group
