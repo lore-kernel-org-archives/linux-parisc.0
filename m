@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 40BB84937
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 17:11:29 -0600 (MDT)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h7NNBHI16053;
-	Sat, 23 Aug 2003 19:11:17 -0400
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 830A84939
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 18:30:35 -0600 (MDT)
+Date: Sat, 23 Aug 2003 17:22:51 -0700
+From: "David S. Miller" <davem@redhat.com>
+To: James Bottomley <James.Bottomley@SteelEye.com>
+Cc: hugh@veritas.com, willy@debian.org, linux-kernel@vger.kernel.org,
+	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
-	tst-mmap-eofsync in glibc on parisc)
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: "David S. Miller" <davem@redhat.com>
-Cc: hugh@veritas.com, willy@debian.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
-In-Reply-To: <20030823155312.63f996f6.davem@redhat.com>
+ tst-mmap-eofsync in glibc on parisc)
+Message-Id: <20030823172251.4e656f9a.davem@redhat.com>
+In-Reply-To: <1061680279.1785.534.camel@mulgrave>
 References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
 	<20030822113106.0503a665.davem@redhat.com>
@@ -24,10 +22,9 @@ References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<20030823144330.5ddab065.davem@redhat.com>
 	<1061677283.1992.471.camel@mulgrave>
 	<20030823155312.63f996f6.davem@redhat.com>
-Content-Type: text/plain
-Date: 23 Aug 2003 18:11:16 -0500
-Message-Id: <1061680279.1785.534.camel@mulgrave>
+	<1061680279.1785.534.camel@mulgrave>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -39,37 +36,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 2003-08-23 at 17:53, David S. Miller wrote:
-> BTW, what gains to you really get from this optimization?
-> 
-> How often do writes happen to files while private mappings
-> to it exist? :-)  This is one of the reasons I think this
-> discussion is a bit silly.
-> 
-> What specific cases does your optimization help, and how common is it?
-> Show us some numbers.
+On 23 Aug 2003 18:11:16 -0500
+James Bottomley <James.Bottomley@SteelEye.com> wrote:
 
-Not having to flush the private mappings is a huge optimisation.  Our
-current flush_dcache_page implementation allows us only to flush a
-single page and get all the aliased caches updated because we carefully
-align MAP_SHARED areas (by supplying our own arch_get_unmapped_area()).
+> On Sat, 2003-08-23 at 17:53, David S. Miller wrote:
+> > How often do writes happen to files while private mappings
+> > to it exist? :-)  This is one of the reasons I think this
+> > discussion is a bit silly.
+ ...
+> Not having to flush the private mappings is a huge optimisation.
 
-However, the alignment constraint is 4MB to get this property of the
-virtually aliased caches, so we can't afford to align all mappings like
-this (for our 32 bit userspace, anyway).
+You're not answering my question :(
 
-If we were to have to flush the private i_mmap list, we'd have to do a
-page flush for *every* entry in the list (that's 256 instructions per
-page at a cache width of 16 bytes).  This would be a horrific overhead.
-
-using the VM_MAYSHARE to carry the read only shared mapping semantics
-indication still allows us to align correctly, but the only additional
-overhead we incur is to walk the i_mmap list to find VM_MAYSHARE
-mappings as well as i_mmap_shared.  Since we can key of VM_MAYSHARE to
-do the alignment, we still only need flush the first one we come to.
-
-This all works as long as we can agree there are no pathological mmap
-cases that force us to flush *all* the i_mmap mappings...which is what I
-think the discussion has come down to.
-
-James
+I know that when the case _DOES_ happen, your optimization is
+worthwhile, my question is not about this.  My question is about
+how often does this case happen.
