@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web21205.mail.yahoo.com (web21205.mail.yahoo.com [216.136.131.248])
-	by dsl2.external.hp.com (Postfix) with SMTP id 978024831
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 03:15:06 -0700 (MST)
-Message-ID: <20020218101505.54487.qmail@web21205.mail.yahoo.com>
-Date: Mon, 18 Feb 2002 11:15:05 +0100 (CET)
-From: =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
-Subject: [parisc-linux] Power LED
-To: parisc-linux@lists.parisc-linux.org
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 524C44839
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 03:17:17 -0700 (MST)
+To: dave@hiauly1.hia.nrc.ca
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <OF5687265E.42AF0F56-ONC1256B64.00367C5C@com>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Mon, 18 Feb 2002 11:19:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: hppa-linux gcc-3.0.3:
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,49 +21,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-------------------------------------------
->715/64, 715/80 and 715/100 belong to the so-called
->715/new machines and all of those support the
-soft-power
->switch, else you wouldn't have received the 
->"Shutdown requested..." message. 
->In your case I assume, that your filesystems wasn't
-clean
->before you did shutdown your system....
+Hi Dave,
 
->BTW, the shutdown is initiated by the kernel by
-sending
->a SIGINT to the PID (cad_pid) of the init process.
-This
->is done in the file power.c:
->http://cvs.parisc-linux.org/linux/arch/parisc/kernel/power.c?rev=1.5&content-type=text/vnd.viewcvs-markup
->After receiving this signal the init process switches
->the runlevel,
->shuts down your system cleanly and runs
-/sbin/poweroff
->or /sbin/halt. This is already the case and is also
->done
->that way for ATX systems.
+I read your mail
+:http://lists.parisc-linux.org/pipermail/parisc-linux/2002-February/015456.html
 
->Regards,
->Helge
+So I try to figure out how to get sources but even on
+http://gcc.gnu.org/cgi-bin/cvsweb.cgi/ (no more chance on the ftp site) I
+do not find 3.1 branch.
 
-But if I push the power button, the init process
-doesn't seem do change the runlevel, and power off
-immediatly.
-I can see the message "Shutdown requested..." and then
-- power off -.
-I think this souldn't be so.
-Also I think it is a bit dangerous if everyone can
-switch of the system, clean or unclean, just by
-pushing the button.
-Maybe a 5 second push-time would be good (like ATX)
-but with a gracefull shutdown.
-After all the halt script does not power off my
-715/80.
-I have to switch it off manually.
+Can you explain me how to get those sources.
 
-__________________________________________________________________
+Hmm... If I also read well
+'http://www.parisc-linux.org/toolchain/index.html', I would also need
+corresponding binutils and glibc sources?
+Which release do I have do use to rebuild gcc-3.1 and how to get their src
+(if requested)?
 
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Ihre E-Mail noch individueller? - http://domains.yahoo.de
+Thanks in advance for help,
+     Joel
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
