@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 64065482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 10:05:36 -0700 (MST)
-Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m165rrQ-000OrMC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 10:05:32 -0700 (MST)
-Message-Id: <m165rrQ-000OrMC@bame.riverrock.org>
-To: Richard Allen <ra@hp.is>
+Received: from egsner.cirr.com (ns-a.cirr.com [192.67.63.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2387A6121
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 10:06:10 -0700 (MST)
+Message-Id: <200111191706.fAJH64e27084@egsner.cirr.com>
+From: eric@cirr.com (Eric Schnoebelen)
+To: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] What does this one mean ? 
-In-Reply-To: Your message of "Mon, 19 Nov 2001 16:53:20 GMT."
-             <20011119165320.B14821@hp.is>
-References: <20011119163421.A14821@hp.is> <20011119164026.B1835@parcelfarce.linux.theplanet.co.uk>  <20011119165320.B14821@hp.is> 
-Date: Mon, 19 Nov 2001 10:05:32 -0700
-From: Paul Bame <bame@riverrock.org>
+Subject: Re: [parisc-linux] 755/125 problems 
+In-reply-to: Your message of "Mon, 19 Nov 2001 10:43:35 EST."
+             <a0510031db81ed8e4549c@[129.64.46.46]>
+Date: Mon, 19 Nov 2001 11:06:03 -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +21,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Mon, Nov 19, 2001 at 04:40:26PM +0000, Matthew Wilcox wrote:
-> 
-> > On Mon, Nov 19, 2001 at 04:34:22PM +0000, Richard Allen wrote:
-> > > do_page_fault() pid=27461 command='rpm' type=6 address=0x6bc63f53
-> > 
-> > looks like it branched to hyperspace.  "k\AE?S" as a string, so it's
-> > not obviously ascii.  looks like it came from 0x0007c04f, so that might
-> > be a good place to start tracing.
-> 
-> Wow :)   that was fast :)
-> Mmmh.  it doesnt dump core so I can attempt to run it under gdb.
-> or ?    No gdb for parisc ?
+Aaron Macks writes:
+- >>  unconfigure the ATM card and remove it from the eisa cage, but the
+- >>  system still seems not to see the 10baseT AUI adaptor, no lights are
+- >>  lit, not even the power one.
+- >
+- >Hm... that doesn't seem right.  Have you tried a different AUI adapter?
+- >sounds like faulty hardware somewhere :(
+-
+- I've just tried all of the dozen or so AUI connectors that I have. No 
+- reaction.  Do I have to configure something int the ISL menu to get 
+- it to use the AUI connector instead of the ATM or the 10B2?
 
-Not sure of the status of core dumps (did you check your shell's 'ulimit'?)
-but gdb works.  Grab sources from http://ftp.parisc-linux.org/cvs/
+	As I recall, there is a jumper block on the AUI/10B2
+board that needs to be switched to change the usage from one to
+the other.. It's about a 10x3 block (if memory is serving
+correctly.)
 
-
-	-P
+--
+Eric Schnoebelen		eric@cirr.com		http://www.cirr.com
+==============================  EARTH DOWNTIME ==============================
+Earth will be down today from 4:30pm to 6:30pm to work on hardware problems.
+			-- From a NASA message of the day.
