@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C23794829
-	for <parisc-linux@parisc-linux.org>; Mon, 13 Jan 2003 10:19:53 -0700 (MST)
-Date: Mon, 13 Jan 2003 09:16:16 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: jsoe0708@tiscali.be
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: floating point exception error
-Message-ID: <20030113171616.GB12986@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030113165746.GA12986@tausq.org> <3E1AA7C1000010CA@ocpmta7.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E1AA7C1000010CA@ocpmta7.freegates.net>
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 101364829
+	for <parisc-linux@parisc-linux.org>; Mon, 13 Jan 2003 11:03:51 -0700 (MST)
+Date: Mon, 13 Jan 2003 17:53:47 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Helge Deller <deller@gmx.de>, <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] modules and 2.5.5X
+In-Reply-To: <20030104223301.B19239@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.BSF.4.44.0301131753050.1877-100000@e0-0.zab2.int.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,13 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Hmm never the less printbinary() is well defined into arch/parisc/kernel/traps.c
-> so I do not understand why ld couldn't link it when building kernel?
+On Sat, 4 Jan 2003, Matthew Wilcox wrote:
 
-because it's static 
+> On Thu, Jan 02, 2003 at 01:11:47AM +0100, Helge Deller wrote:
+> > kernel module support for the 2.5 kernel on hppa seems broken due to some missing
+> > support for this architecture in the new modutils and module-init-tools debian packages.
+> >
+> > Maybe someone with somewhat more expirience than me with the ELF file format and
+> > runtime symbol relocation functions could look into this ?
+>
+> rusty's promised to do it when he gets access to a machine...
 
-randolph
+any outcomes or is the account a prob ?
+
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
