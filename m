@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B6644858
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 18:10:26 -0600 (MDT)
-To: Igor Grinchenko <green@grinchenko.org>
-Cc: parisc-linux@lists.parisc-linux.org, taggart@carmen.fc.hp.com
-Subject: Re: [parisc-linux] 715/33 PDC v1.4 firmware 
-In-Reply-To: Your message of "Sun, 14 Jul 2002 13:13:11 PDT."
-             <20020714201311.GA175@igor.grinchenko.org>
-References: <20020714201311.GA175@igor.grinchenko.org> 
-Date: Sun, 14 Jul 2002 18:10:24 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020715001024.BCA0737E97@carmen.fc.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E54E1485B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 20:46:33 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17Tvse-0003MO-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 15 Jul 2002 03:46:32 +0100
+Date: Mon, 15 Jul 2002 03:46:32 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] O_DIRECT on devices
+Message-ID: <20020715034632.E27706@parcelfarce.linux.theplanet.co.uk>
+References: <20020711082259.GF822@tykepenguin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020711082259.GF822@tykepenguin.com>; from patrick@tykepenguin.com on Thu, Jul 11, 2002 at 09:22:59AM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Igor Grinchenko writes...
+On Thu, Jul 11, 2002 at 09:22:59AM +0100, Patrick Caulfield wrote:
+> This works fine on Alpha & Intel but seems very unreliable on parisc for some
+> reason. Sometimes it works, sometimes it oopses "do_page_fault() pid=2120
+> command='lvm' type=15 address=0x00000001" and sometimes I just get back the
+> wrong information (at least LVM thinks its wrong I haven't check in detail just
+> what is up with it).
 
-> HEllo everyone,
-> 
-> does anybody on that list have an old Firmware patch for 715/33?
-> 1.6 doesn't seem to support 715/33 so I think 1.4 is what I need.
-> HP calles it PF_C7X50014, but I can't download it from their website, b/c
-> it was substituted by 1.6(which doesn't support 33)
-
-The 715/old (aka 33,50,75) are not user upgradable, you'd have to swap
-the firmware chip. The version you're talking about above(1.6, 1.4) are
-for the 715/new (aka 64,80,100). And as someone(ggg?) recently pointed
-out these don't work for the 715/100XC either.
-
-Since your system isn't user upgradable, you have the same firmware as
-everyone else. So you can bet any generic problem encountered will either
-be worked around in software or broken for everyone :)
+pid 2120 did a NULL pointer dereference ... you should be able to trace
+it with the IAOQ, perhaps.  I'm not sure whether anyone's really played
+with the O_DIRECT code yet, it could well be buggy on PA.  What you're
+seeing sounds like bogus cache behaviour.
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Revolutions do not require corporate support.
