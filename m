@@ -1,22 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7DF17482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 22:44:14 -0700 (MST)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
-	id 164FJo-0001xD-00
-	for parisc-linux@lists.parisc-linux.org; Thu, 15 Nov 2001 07:44:08 +0200
-Date: Thu, 15 Nov 2001 07:44:23 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: Aaron Macks <aaronm@cs.brandeis.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] {OT} HP 9000/700 Snake
-Message-ID: <20011115074423.A21827@dogbert.localdomain>
-References: <20011114182457.C1525@daedalus.cs.brandeis.edu>
+Received: from smtpzilla1.xs4all.nl (smtpzilla1.xs4all.nl [194.109.127.137])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D090482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 23:07:11 -0700 (MST)
+Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
+	by smtpzilla1.xs4all.nl (8.12.0/8.12.0) with ESMTP id fAF675hv029640
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Nov 2001 07:07:09 +0100 (CET)
+Date: Thu, 15 Nov 2001 07:04:32 +0100
+From: Jurriaan on Alpha <thunder7@xs4all.nl>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.14-pa1 seems to works fine on my B180
+Message-ID: <20011115070432.A3451@alpha.of.nowhere>
+Reply-To: thunder7@xs4all.nl
+References: <1005763684.3bf2bc64ee2a9@webmail.tiscalinet.be> <200111141939.MAA09459@puffin.external.hp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
-In-Reply-To: <20011114182457.C1525@daedalus.cs.brandeis.edu>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200111141939.MAA09459@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,47 +27,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, Nov 14, 2001 at 12:39:07PM -0700, Grant Grundler wrote:
+> joel.soete@freebel.net wrote:
+> > Hi all,
+> > 
+> > For my part 2.4.14-pa1 seems to works fine on my B180L (without or with 
+> > modules).
+> 
+> Astro based machines (eg C3000) still HPMC with:
+> 	sync; cd/tmp; cp /boot/vmlinux .; sync;
+> 
+> I found one nit in sba_dma_supported() but that's not the problem.
+> Has anyone tried C200 (or similar? ie something with ccio)
+> 
+I'd be willing to try, but will the new kernel build with the old, pre
+'don't apt-get upgrade!!' userland tools?
 
-Hello,
-
-It might be a 720/50 or something similiar (which works great now! :-))
-
-Linux version 2.4.9-pa79 (root@bob) (gcc version 3.0.2 (Debian)) #1 Fri Nov 9 13:36:26 UTC 2001
-FP[0] enabled: Rev 3 Model 0
-The 32-bit Kernel has started...
-Determining PDC firmware type: Snake.
-model   00002000 00000481 00000000 00000000 77544852 000011f4 00000004 0000000d 00000000
-vers    00000003
-CPUID   vers 0 rev 0
-model   9000/720
-
-I'm going to attempt to compile 2.4.14-pa[12] shortly.
-
-Regards,
-
-Albert
-
-On Wed, 14 Nov 2001, Aaron Macks wrote:
-
-> I recently came into posession of a HP 9000/700 series (what's written
-> on the front plate).  I know nothing about it but that I believe that
-> it's codename was snake.  Can anyone tell me anything?
-
-
---TB36FDmn/VVEgNH/
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE781Y2Dg+hOeRZtkMRAnY4AJ9LZoRX7mL6bzzRg9YedgaEbFuEjACfQVXG
-q+hAW+wEbuV0WO3s8wtsnJI=
-=mckg
------END PGP SIGNATURE-----
-
---TB36FDmn/VVEgNH/--
+Thanks,
+Jurriaan
+-- 
+Holed up in your little room, we talk for hour on empty hour,
+pacing up and down between the walls that we have built ourselves.
+	New Model Army - Long Goodbye
+GNU/Linux 2.4.15-pre4 on Debian/Alpha 64-bits 990 bogomips load:0.08 0.21 0.15
