@@ -1,53 +1,78 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA32136
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Nov 2000 16:05:23 -0700
-Message-Id: <5.0.0.25.0.20001103145524.00a49a50@mail.webcash.com>
-Date: Fri, 03 Nov 2000 14:59:29 -0800
-To: Paul Bame <bame@noam.fc.hp.com>
-From: Kailashnath V Rampure <kailasr@webcash.com>
-Subject: Re: [parisc-linux] Boot command 
-Cc: Grant Grundler <grundler@cup.hp.com>,
-        Matt Taggart <taggart@carmen.fc.hp.com>,
-        parisc-linux@thepuffingroup.com
-In-Reply-To: <E13rnTc-0007jH-00@noam.fc.hp.com>
-References: <Your message of "Fri, 03 Nov 2000 11:46:39 PST." <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com>
- <Your message of "Fri, 03 Nov 2000 11:03:23 PST." <5.0.0.25.0.20001102174648.02a4fb20@mail.webcash.com>
- <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com>
+Received: from phnxpop5.phnx.uswest.net (phnxpop5.phnx.uswest.net [206.80.192.5])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA18046
+	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Nov 2000 18:00:30 -0700
+Date: Sat, 4 Nov 2000 18:02:03 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@puffin.external.hp.com
+Message-ID: <20001104180203.A1271@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] ldd segfaulting?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks!  Paul.
-Yes I had copied the lifImage there. Now I have downloaded the kernel from 
-the link you mentioned.
+I think this may be related to what bdale has been seeing...
 
-I am still unable to use vi as it says "linux:unknown terminal type"
-Can you help me.
+frodo:~# cat test.c
+int main(int a, char **b) { return 0; }
+frodo:~# gcc -o test test.c
+frodo:~# ./test
+frodo:~# ldd ./test
 
-To add features can I add deb packages. I am not that familiar with debian.
-Actually I want to build an apache + mod_ssl+mod_perl on A180c.
-Regards
-Kailas
+do_page_fault() pid=144 command='ld.so.1'
 
-At 01:30 PM 11/3/00 -0700, Paul Bame wrote:
->= ext2_open(/boot/vmlinux)=3
->= Couldn't gork your kernel executabel format failed to load kernel
->= Failed to load Kernel.
->
->That should be "grok" :-)  Apparently you're not using cut/paste for
->these error messages.
->
->This is PALO saying that /boot/vmlinux is neither elf32, elf64, nor SOM
->format.  I'm guessing, based on some earlier advice I gave when you
->were net-booting, that you may have a lifimage there by mistake -- you
->need a kernel instead, for example from
->ftp://puffin.external.hp.com/pub/parisc/binaries/kernels
->
->To tell for sure, run 'file vmlinux' on that file.  If you get
->     vmlinux: 8086 relocatable (Microsoft)
->that's probably a lifimage.  You should get this instead:
->     vmlinux: ELF 32-bit MSB executable, PA-RISC, version 1, statically 
-> linked, not stripped
->
->
->         -P
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001000000100001011
+r0-3	 00000000 2aac367c 2aaacd67 2aaaa2f0
+r4-7	 2aac367c 2aaab4e8 2aac3622 2aac02b8
+r8-11	 20020048 2aaaccb8 2aaaa2f0 00000000
+r12-15	 00000081 00000080 200201e8 2001fe10
+r16-19	 00000000 00000000 00000000 2aac367c
+r20-23	 00000000 2aaaa000 2aaaa000 00000041
+r24-27	 2aaaa000 70000021 20020048 00076b50
+r28-31	 00000021 20020048 200202c0 2aaacd1b
+sr0-4	 00000000 00002003 00000000 00002003
+sr4-8	 00002003 00002003 00002003 00002003
+
+IASQ: 00002003 00002003 IAOQ: 2aaadc63 2aaadc67
+ IIR: 0ce61280    ISR: 00002003  IOR: 2aac02b8
+ORIG_R28: 00086350
+
+do_page_fault() pid=145 command='ld.so.1'
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001000000100001011
+r0-3	 00000000 2aac367c 2aaacd67 2aaaa2f0
+r4-7	 2aac367c 2aaab4e8 2aac3622 2aac02b8
+r8-11	 20020048 2aaaccb8 2aaaa2f0 00000000
+r12-15	 00000081 00000080 200201e8 2001fe10
+r16-19	 00000000 00000000 00000000 2aac367c
+r20-23	 00000000 2aaaa000 2aaaa000 00000041
+r24-27	 2aaaa000 70000021 20020048 00076b50
+r28-31	 00000021 20020048 200202c0 2aaacd1b
+sr0-4	 00000000 00002003 00000000 00002003
+sr4-8	 00002003 00002003 00002003 00002003
+
+IASQ: 00002003 00002003 IAOQ: 2aaadc63 2aaadc67
+ IIR: 0ce61280    ISR: 00002003  IOR: 2aac02b8
+ORIG_R28: 00090190
+ldd: /lib/ld.so.1 exited with unknown exit code (139)
+frodo:~# gcc --version
+2.96
+frodo:~# ldd --version
+ldd (GNU libc) 2.1.95
+Copyright (C) 1999 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+frodo:~# 
+
+Any ideas what's going on? I've tried this both with a Oct26 kernel and
+one that is from cvs today. Same results.
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
