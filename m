@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8493B482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Apr 2002 15:47:59 -0600 (MDT)
-Date: Tue, 23 Apr 2002 17:47:58 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: joel.soete@freebel.net
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] gcc-3.2 experimental debs
-Message-ID: <20020423174758.C8545@systemhalted>
-References: <3CC2B937.8020509@freebel.net> <20020421162538.G5225@parcelfarce.linux.theplanet.co.uk> <20020423111903.A8545@systemhalted> <1019582168.3cc596d87ba8a@webmail.tiscalinet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1019582168.3cc596d87ba8a@webmail.tiscalinet.be>; from joel.soete@freebel.net on Tue, Apr 23, 2002 at 07:16:08PM +0200
+Received: from mx11.cluster1.charter.net (dc-mx11.cluster0.hsacorp.net [209.225.8.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0A341482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Apr 2002 16:51:36 -0600 (MDT)
+Received: from [24.159.161.68] (HELO charter.net)
+  by mx11.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 3774284 for parisc-linux@lists.parisc-linux.org; Tue, 23 Apr 2002 18:50:32 -0400
+Message-ID: <3CC5E580.5090403@charter.net>
+Date: Tue, 23 Apr 2002 18:51:44 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] c200 fx graphics status?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,32 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> Joel
-> 
-> PS1: about step 4.2 of your howto-xc, I notice a small difference between html
-> and pdf (in html you use gcc option "enable-shared" in pdf "disable-shared").
-> But this not the cause of the above problem.
-> 
-> PS2: I also make an apt-get dist-upgrade (with ftp.de.debian.org) so that native
-> gcc is now 3.0.4-5 (I think it was already installed last week)
-> 
->
+Hi list!
 
-Both the HTML and PDF version are the same (just double checked).
+I just subscribed here. I'm on debian-hppa but that doesn't
+seem to get much traffic, so I'll repost my question here.
 
-http://www.baldric.uwo.ca/~carlos/HOWTO-Parisc/index.html
-http://www.baldric.uwo.ca/~carlos/HOWTO-Parisc/HOWTO-Building_PARISC-LINUX_CrossCompiler.pdf
+I have previous experience with parisc-linux in that I had
+it installed and working ( with X ) on a 715/80. Thinking
+to move on to bigger things, I sold it on Ebay and rolled
+my profits into a C200 with some unspecified FX graphics
+board.
 
-In section 4.2 you are bootstraping the C compiler without glibc
-so you must use --disable-shared.
+Now, from what I have gleaned, this machine only works in
+serial console mode? Do any graphics cards work with it
+for X yet? I do have a HP7000/60 dumb terminal, but of
+course I want to run X if I can.
 
-In section 4.5 you have already built glibc and you can turn
-shared support back on with --enable-shared.
+I'm an accomplished kernel recompiler if that means anything.
 
-c.
-
-p.s. The HTML and PDF do have some formatting differences...
-     I'll get around to making them look similar later :}
-     Dang... just noticed I missed one of the path changes in
-     the pdf...
+(Nervously gnawing fingernails waiting for reply's)
