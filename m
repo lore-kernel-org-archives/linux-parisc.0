@@ -1,32 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA17140
-	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 05:06:58 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 12 Nov 2000 12:08:57 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA22592;
-	Sun, 12 Nov 2000 23:08:38 +1100
-Date: Sun, 12 Nov 2000 23:08:35 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Randolph Chung <randolph@tausq.org>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] glibc question
-In-Reply-To: <20001111170429.A29140@tausq.org>
-Message-ID: <Pine.LNX.4.21.0011122302590.21707-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA18447
+	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 09:38:31 -0700
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id AAA27504
+	for parisc-linux@thepuffingroup.com; Mon, 13 Nov 2000 00:40:18 +0800
+Date: Mon, 13 Nov 2000 00:40:15 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000 e25
+Message-ID: <20001113004013.Y9666@neep.com.au>
+References: <20001111231253.I9666@neep.com.au> <200011112329.PAA09355@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200011112329.PAA09355@milano.cup.hp.com>; from grundler@cup.hp.com on Sat, Nov 11, 2000 at 03:29:14PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 11 Nov 2000, Randolph Chung wrote:
+Grant Grundler said:
+> AFIAK, the chipsets for I/O devices in E25 have plenty of
+> documentation.  The issue is someone has to clean them up and get a
+> lawyer to approve their publication.
 
-> I'm working with bdale and taggart to try to get the Debian glibc
-> package to compile under hppa. One of the things I saw today while
-> playing with this is that the build dies because it tries to link in
-> bsd-setjmp.c and bsd-_setjmp.c, which both define setjmp. Can someone
-> enlighten me about why this may be happening?
+My bad, I should've said "public documentation".  =)
 
-I think bsd-_setjmp.c should define _setjmp, not setjmp.
+*prods LC FAQ maintainers*
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Andrew.
+
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
