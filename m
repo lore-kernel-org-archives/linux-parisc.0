@@ -1,36 +1,71 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [parisc-linux] Banshee and Voodoo2
-Date: Sat, 08 Jan 2005 21:47:09 +0000
-Message-ID: <1105216425.10519.68.camel@localhost.localdomain>
-References: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net>
-	 <200501082033.33830.deller@gmx.de>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] Interrupt handling documentation and wiki access
+Date: Sun, 9 Jan 2005 14:57:08 +0100
+Message-ID: <20050109145708.04d6cd87@Tatooine.r3z0>
+References: <20050108203303.GG27371@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <alan@lxorguk.ukuu.org.uk>
-In-Reply-To: <200501082033.33830.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain;
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050108203303.GG27371@parcelfarce.linux.theplanet.co.uk>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sad, 2005-01-08 at 19:33, Helge Deller wrote:
-> On Saturday 08 January 2005 18:26, Jyry Suuntala wrote:
-> > Does anyone know is this list the actual list of supported hardware? If 
-> > so, does X work with Banshee and at what resolution? And the same 
-> > questions apply for Voodoo2, too :)
+On Sat, 8 Jan 2005 20:33:03 +0000
+Matthew Wilcox <matthew@wil.cx> wrote:
+
 > 
-> Vodoo2: 800x600x16bpp (1024x768x16bpp worked unreliable for me)
-> No idea about Banshee.
+> I thought I should send a note to the mailing list about the interrupt
+> work I've been doing.  Then I thought, "No, I should use the Wiki".  So
+> I did ...
 
-I test it at 1024x768 on a PC. With the current XOrg the voodoo driver
-limits are:
+And that's very cool :)
 
-Voodoo1: 800x600x16bpp unaccelerated but pretty decent ram bandwidth so
-its not bad. I think for 2D with some violence you could do 1024x768 but
-it would be right on the DAC limits
+A bit of info about the wiki access. Given the numerous defacing we had on
+the wiki, I decided a few weeks ago to change a little the way
+people are allowed to edit the wiki pages. There is a special page,
+(PariscGroup) that contains the wiki names of the registered users allowed
+to edit the wiki. Any user listed on that page can both see and edit it,
+and create/change any other page. Registered users can see the content
+of the PariscGroup page. By default users can't either see that page, nor
+change or create any other page.
 
-Voodoo2: 1024x768x16bpp accelerated (including render acceleration). 
+(A "registered user" is someone who created a wiki account, and thus got a
+wiki name associated with it).
 
-We have enough info to do full DRI for the Voodoo2 but nobody has been
-sufficiently drunk to volunteer.
+In brief, there's now a two-step way to change the wiki:
+1) register an account
+2) get your name added to the page by somebody already 'editor'. (I guess
+that simply posting here may get you through that step, if you don't know
+who to ask for).
 
-Alan
+I'm sad to have to narrow the wiki access, but this is the only simple and
+efficient solution I've been able to figure out to get rid of the
+spammers.
+
+> http://wiki.parisc-linux.org/Interrupts
+> 
+> Feel free to make corrections or send me comments on stuff that isn't
+> clear.
+
+I've read that whole page and found it very interesting. Thanks to you, I
+now have a better understanding of why I failed to do what you did ;^)
+
+It's a very nice beginning for documenting how parisc interrupts work, and
+it's very useful. Thanks again for writing it!
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
