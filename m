@@ -1,36 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id D4D92482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 20 Aug 2001 15:18:23 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: jso@europay.com (=?iso-8859-1?q?Jo=EBl?= Soete)
-Subject: Re: [parisc-linux] Kernel 2.4.9-pa2?
-Date: Mon, 20 Aug 2001 23:17:45 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <E15YmHu-0005lD-00@the-village.bc.nu>
-In-Reply-To: <E15YmHu-0005lD-00@the-village.bc.nu>
-MIME-Version: 1.0
-Message-Id: <20010820211823.D4D92482A@dsl2.external.hp.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 84758482A
+	for <parisc-linux@parisc-linux.org>; Mon, 20 Aug 2001 23:46:53 -0600 (MDT)
+Message-Id: <200108210544.XAA20603@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] iotree thoughts 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Tue, 14 Aug 2001 17:02:12 BST." <20010814170212.A22144@parcelfarce.linux.theplanet.co.uk>
+Date: Mon, 20 Aug 2001 23:44:20 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Is it nornal that process ksoftirq_CPU0 consume about 95% of cpu
-> > resources?
+Matthew Wilcox wrote:
+> On Thu, Aug 09, 2001 at 09:06:43AM -0600, Grant Grundler wrote:
+> > Yes. AFAIK, LASI sub-devices are listed by PDC. For Dino HPUX makes
+> > a special hvers PDC call. Need to look at the HPUX code or Raven PDC ERS.
+> 
+> If you could dig those out for me, that'd be great.  I'm not familiar with
+> the layout of the HPUX source tree yet.
 
-Hi Joël,
+That sounds too much like work. ;^)
+Raven PDC ERS is available from HP's firmware team website. (internal only).
 
-sorry, but I can't verify that with my 715/64, kernel -pa3 (same as -pa2 with
-just a few minor and for this problem irrelevant changes in the harmony sound driver).
+> > My long term goal is to be able to build a kernel w/o CONFIG_PCI defined.
+> > And renaming gsc_init to native_bus_init() sounds like a good idea.
+> 
+> That's a good point.  A good step towards that would be..
 
-pa64:~# uname -a
-Linux pa64 2.4.9-pa3 #6 Son Aug 19 20:16:30 CEST 2001 parisc unknown
+I disagree. I want the kernel to NOT link if CONFIG_PCI and
+CONFIG_ISA are not enabled when inx/outx functions are used.
 
-pa64:~# top 
+> +#else
+> +#define inb(a) BUG()
+> +#define inw(a) BUG()
+> +#define inl(a) BUG()
+> +#define outb(a) BUG()
+> +#define outw(a) BUG()
+> +#define outl(a) BUG()
+>  #endif
 
-44 processes: 43 sleeping, 1 running, 0 zombie, 0 stopped
-CPU states:   2.3% user,   2.8% system,   0.0% nice,  94.9% idle
-PID USER     PRI  NI  SIZE  RSS SHARE STAT %CPU %MEM   TIME COMMAND  
-   3 root      19  19     0    0     0 SWN   0.0  0.0   0:00 ksoftirqd_CPU0  
+This will allow the kernel to link and then fail after rebooting.
+That seems like a step backwards to me.
 
-Helge
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
