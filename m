@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc1-hem11-4-cust109.lutn.cable.ntl.com [80.2.252.109])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 13791489B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 12:29:34 -0600 (MDT)
-Date: Sun, 28 Sep 2003 19:05:19 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6D8B948C6
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 13:23:25 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A3h8d-0000mj-Aq; Sun, 28 Sep 2003 20:23:23 +0100
+Date: Sun, 28 Sep 2003 20:23:23 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: James Bottomley <James.Bottomley@steeleye.com>
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 willy
-Message-ID: <20030928180519.GT5759@sleepie.demon.co.uk>
+Message-ID: <20030928192323.GL24824@parcelfarce.linux.theplanet.co.uk>
 References: <20030927072449.5AF0F494058@palinux.hppa> <20030928165631.GS5759@sleepie.demon.co.uk> <1064769945.10841.1.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -24,16 +27,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 On Sun, Sep 28, 2003 at 12:24:26PM -0500, James Bottomley wrote:
-> On Sun, 2003-09-28 at 11:56, Richard Hirst wrote:
-> > Only because I didn't get it to work properly when I did the original
-> > 720 support, iirc.  The chip does have INTFLY.  I _think_ INTFLY worked
-> > a bit, but the driver tended to miss interrupts sometimes.  Could easily
-> > have been a driver bug.  Was a long time ago now though, so I could be
-> > misremembering.
-> 
 > Actually, the 720 is bust in silicon.  The 770 has a properly working
+> intfly, but the 720's doesnt work reliably.  Actually, the Q720 board
+> this driver also drives is wired to have a special "intfly" from a board
+> register to get around the problem.
 
-OK - explains why it didn't work then.
+Mmm, OK.  Did you want me to put the SIMULATED_INTFLY conditionals
+back in?  It wasn't much code; I've just been focused on ripping out
+all the 8xx support, and I completely forgot about the 770.
 
-Cheers,
-  Richard
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
