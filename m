@@ -1,81 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 83B1C482A
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 15:07:43 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 157O35-0004Rb-00; Tue, 05 Jun 2001 22:07:35 +0100
-Date: Tue, 5 Jun 2001 22:07:35 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: "Michael S. Zick" <mszick@pflash.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, debian-hppa@lists.debian.org,
-	parisc-linux@parisc-linux.org, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
-Message-ID: <20010605220735.V7349@parcelfarce.linux.theplanet.co.uk>
-References: <20010605202920.U7349@parcelfarce.linux.theplanet.co.uk> <01060515450207.00472@wolf01.my.home>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B96974851
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 15:07:44 -0600 (MDT)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA20929
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Jun 2001 14:59:57 -0600
+Date: Tue, 5 Jun 2001 23:04:50 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: jheumann@fonts.de
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 0.9ser can't install on D210
+Message-ID: <20010605230450.A2455@solo.franken.de>
+References: <3B1CB312.1C9DBAB9@fonts.de> <20010605145731.A73568@chico.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01060515450207.00472@wolf01.my.home>; from mszick@pflash.com on Tue, Jun 05, 2001 at 03:22:20PM -0500
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <20010605145731.A73568@chico.franken.de>; from tsbogend@chico.franken.de on Tue, Jun 05, 2001 at 02:57:31PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jun 05, 2001 at 03:22:20PM -0500, Michael S. Zick wrote:
-> The only way to validate a change as a potential patch is:
+On Tue, Jun 05, 2001 at 02:57:31PM +0200, Thomas Bogendoerfer wrote:
+> On Tue, Jun 05, 2001 at 12:23:14PM +0200, jheumann@fonts.de wrote:
+> > Booting...
+> > Boot IO Dependent Code (IODC) revision 1
+> > 
+> > IPL error: bad IPL checksum.
+> > 
+> > Error Reading IPL
 > 
-> 1) start with a clean (error and warning free) build that
-> boots and runs on the machine of interest.
-> 
-> 2) hack, change, modify, whatever
-> 
-> 3) when done, make another clean build that boots and runs
-> on the machine of interest.
-> 
-> 4) evaluate the effects of the change(s).
-> 
-> 5) If successful - then you MIGHT have something worth
-> submitting as a POTENTIAL patch.
-> 
-> Exactly the same 5 steps your developers take before they
-> commit a change to CVS.
+> did you use cdrecord -isosize to burn the CD ? I have the same problem and 
+> that's the only option, which I probably haven't used, when burning the 
+> 0.5 ISO. I'll try to burn a cd without using -isosize, when I get home
+> this evening.
 
-the people with CVS access are hardly `my' developers.  and the process
-you describe is only one form of development.  it's not applicable in a lot
-of cases.
+ok, without -isosize the CDs are working perfect. I've diffed the broken
+CDs against the images and there are differences in the first sector.
+I'm using cdrecord 1.8.1 just for the record.
 
-> That's right - until it is a clean build, boots and runs -
-> everything is talk and speculation.
-
-No.  if you post a patch which moves things in the right direction,
-that's more than talk.  it's something which can be tested.
-
-> So what?
-> 
-> The only changes I make outside of the parisc specific
-> branch of the source tree are to bring the code in line
-> with 2.4.4 (stable).
-
-erm... if you're doing that, I'll be very surprised if you build a
-working system.  Changes are needed to the generic VM which need to be
-forward-ported and changed in a few places.  This is work which I don't
-feel capable of doing.
-
-> The changes I make inside of the parisc specific branch
-> of the tree will be (someday) found by your own developers.
-
-That's great, I love people who do work, keep their changes secret and
-then expect everyone else to find them because they're `obvious'.
-
-> Just a matter of do you want to duplicate the time and 
-> trouble of finding them yourself, or read about them in
-> the mail archives.
-
-I'd love you to post them.  I said so earlier.
-
-> If you are serious about my suggestions being counter-productive,
-> I will gladly spend the time I am taking to write them for other purposes.
-
-If all you're going to do is patch your own tree and write snide flames
-to this mailing list, then yes, I'd rather you worked on a different
-project.  If you're going to work cooperatively, then please hang around.
+Thomas.
 
 -- 
-Revolutions do not require corporate support.
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
