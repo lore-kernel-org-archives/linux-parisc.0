@@ -1,45 +1,51 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA11932
-	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 00:34:50 -0600
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-cc: adevries@thepuffingroup.com (Alex deVries),
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA12356
+	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 02:42:36 -0600
+Date: Mon, 14 Jun 1999 10:42:28 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Alex deVries <adevries@thepuffingroup.com>,
         parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] It's finally sunk in: bye bye elf32 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of Sun, 13 Jun 1999 13:02:58 EDT.
-             <199906131702.NAA28988@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] It's finally sunk in: bye bye elf32
+Message-ID: <19990614104228.F31472@mencheca.ch.genedata.com>
+References: <3762F4BE.C09B5CA9@thepuffingroup.com> <199906131702.NAA28988@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 14 Jun 1999 00:29:34 -0600
-Message-ID: <26267.929341774@upchuck.cygnus.com>
-From: Jeffrey A Law <law@cygnus.com>
+In-Reply-To: <199906131702.NAA28988@hiauly1.hia.nrc.ca>; from John David Anglin on Sun, Jun 13, 1999 at 01:02:58PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Sun, Jun 13, 1999 at 01:02:58PM -0400, John David Anglin wrote:
+> > So, I'm going to spend some time making the kernel build on HPUX.  I
+> > know there's quite a few changes to make.  But I'll keep the elf
+> > specific work, it'll help later on.
+> 
+> The discussion about the merits/limitations of SOM and ELF over the
+> last couple of days has been extremely useful.  As Alex says, there is
+> a lot of work to be done on the kernel before it is usable.  However,
+> in the long run, the port must be a complete self contained system.
+> That is, it must support a linker capable of generating executables
+> and the kernel.
 
-  In message <199906131702.NAA28988@hiauly1.hia.nrc.ca>you write:
-  > The concensis is that writing a SOM linker is a major project.  Another
-  > option might be to approach HP and see if they would consider putting
-  > the source code for their SOM linker into the public domain, or possibly
-  > supplying a static binary version of the linker that could be distributed.
-  > I would suggest that Alex discuss the matter with his contact at HP.
-It's an option.  Probably not a bad one.  Though the HP linker's idea of
-portability is marginal at best, so getting it running on another system is
-no trivial effort.  But if HP is willing to do it and give y'all binaries,
-then go for it.
+[...]
 
+> If this does not work out, then we must fall back to ELF32 and devote
+> enough effort to get elf32-hppa working at an acceptable level.
 
-  > If this does not work out, then we must fall back to ELF32 and devote
-  > enough effort to get elf32-hppa working at an acceptable level.  Jeff
-  > Law is the world expert on the hp version of these tools.  However, Jeff
-  > is very busy with gcc.  Any volunteers?  Obviously, this needs to be
-  > coordinated with the maintainers of binutils and Cygnus.
-I would strongly recommend against any serious work at trying to make the
-existing elf32-hppa.c work -- start over from scratch with the spec at your
-side.  There is almost no salvageable code in elf32-hppa.c.
+The long term goal is to support:
 
-If someone has an interest in working on a rewrite I would strongly encourage
-them to contact me so that we can work closely together and avoid useless
-duplication of work since I'm working on elf64-hppa.c right now (which should
-be able to share a bunch of code with elf32-hppa.c)
+ * HP-UX binaries
+ * parisc/elf32 Linux binaries
+ * parisc/elf64 Linux binaries (on parisc 2.0 hardware)
 
-jeff
+The binfmt_som kernel support is necessary in both the short term (to
+get a working shell for free) and long term which is why I decided to
+do it first.  Once the kernel is built, we can then run the HPUX linker
+on it, but we have a `small' bootstrap problem.  As Jeff says though,
+it's worth throwing away the whole of parisc/elf32 and starting again
+from scratch.  We were just hoping to not have to do that for a while..
+
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
