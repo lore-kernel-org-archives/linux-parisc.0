@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F1D764845
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 12:42:04 -0700 (MST)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.12.10/8.12.10) with ESMTP id hB4Jg3kf022856
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 4 Dec 2003 19:42:03 GMT
-Date: Thu, 4 Dec 2003 19:42:01 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.58.0312041937470.20086@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] rsync buffer overflow
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B9A254845
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 14:06:37 -0700 (MST)
+Date: Thu, 4 Dec 2003 16:00:08 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.23 some tested backport (pgalloc.h)
+Message-ID: <20031204210008.GF23309@systemhalted>
+References: <3FB25B960000DA45@ocpmta1.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3FB25B960000DA45@ocpmta1.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +23,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Thu, Dec 04, 2003 at 10:56:08AM +0100, Joel Soete wrote:
+> iirc this a Randolph's patch which I try to backport and test seems ok
 
-I'm not sure whether you are still able to use rsync to update the
-parisc-linux kernel tree, but this might be important anyway:
+Testing right now.
 
-http://rsync.samba.org/
-
-Apparently rsync has a buffer overflow vulnerability, and there exists
-an exploit for it (which was used in the attack of the Gentoo server
-yesterday).
-
-Max
+c.
