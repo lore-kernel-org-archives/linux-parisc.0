@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sun, 16 Feb 2003 22:11:08 -0700
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Watchdog on parisc?
-Message-ID: <20030217051108.GB17823@dsl2.external.hp.com>
-References: <20030214181124.GJ13355@lug-owl.de> <20030216083110.GC18888@dsl2.external.hp.com> <20030216094234.GG351@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030216094234.GG351@lug-owl.de>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2C1FC4829
+	for <parisc-linux@parisc-linux.org>; Mon, 17 Feb 2003 04:42:57 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 18kjfk-0003Fn-00
+	for <parisc-linux@parisc-linux.org>; Mon, 17 Feb 2003 12:42:56 +0100
+Date: Mon, 17 Feb 2003 12:42:54 +0100
+Message-ID: <3E48B5950000297E@ocpmta3.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+To: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] .config fo a N class?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,28 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Feb 16, 2003 at 10:42:35AM +0100, Jan-Benedict Glaw wrote:
-> So there's nothing what's like a watchdog as you know it from some
-> machines (SGI Indys for example) or as add-on cards in machines (PCI/ISA
-> cards).
+Hi all,
 
-Offhand, I think all the HP9000/8xx servers have either built-in
-or add-on "management ports" for remote console. And that always
-includes ability to reset or cycle power on the machine (or generate TOC).
+I have the oportunity to test temporary a N class (N4000-55) dual processor.
 
-> > not if it's what I'm thinking of (transaction timeout, ie causes an
-> > HPMC). This is a built-in HW feature. 
-> 
-> Hmmm... Triggering a HPMC would be a neat feature. So we could think
-> about a way to initiate something that, if not handled, would trigger a
-> HPMC some 60 seconds later:-?
+I grab the config file of the test-drive L model; apply it against current
+k-2.4.20-pa26 (just change 64 to 32 bits). I install this kernel on a ext
+scsi disk and try to boot; unforunately it doesn't goes further than palo
+message:
+...
+a common symptom -- search the FAQ and ml ..."
 
-Generating an HPMC is easy. reference an address in MMIO space that
-isn't maintained by a device.  Figuring out a failsafe way of knowing
-when to trigger the HPMC is the hardpart.
- 
-Besides, Lamont proposed a patch to reset the machine after HPMC/panic.
-I thought it was a great idea but several people I trust tell me it
-needs a bit more work.
+I try get a pim (from gsp TC); unfortunately empty (I mean all null values).
 
-grant
+The only report (on esiee) I found regarding this kind of server was running
+a 2.4.9 64 bits kernel.
+
+Can somebody help me to find the corresponding config file?
+
+Any add advise and idea are wellcome,
+Thanks in advance,
+    Joel
+
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Faites des economies avec Tiscali Complete
+... Plus d'info sur http://complete.tiscali.be
