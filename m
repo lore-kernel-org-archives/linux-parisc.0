@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C16E9483A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 10:37:46 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 66725483B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 10:46:16 -0700 (MST)
 Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id BC1F73DD
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 18:37:44 +0100 (MET)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id SAA17271 for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 18:37:06 +0100 (MET)
-Message-ID: <3C6AA3C3.D21C4164@admin.france.hp.com>
-Date: Wed, 13 Feb 2002 18:34:59 +0100
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 272753A2
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 18:46:15 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id SAA19846 for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 18:45:36 +0100 (MET)
+Message-ID: <3C6AA5BE.2E57EA10@admin.france.hp.com>
+Date: Wed, 13 Feb 2002 18:43:26 +0100
 From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
 To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Pb with dump driver.
+References: <3C6AA3C3.D21C4164@admin.france.hp.com>
 Content-Type: multipart/mixed;
- boundary="------------FBDB2C3D815BAC88491A4CBD"
-Subject: [parisc-linux] Pb with dump driver.
+ boundary="------------24800884FAEDA60F2DE142F4"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,25 +27,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format.
---------------FBDB2C3D815BAC88491A4CBD
+--------------24800884FAEDA60F2DE142F4
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-	Hi
-I have a problem with the dump driver. I was only testing it with
-a "breakpoint" and "instruction fault", now i try the real life,
-a good old "data page fault", but the problem is, it start the dump, 
-but at the first try to write on the dump device if "sleep"
-forever in "brw_kiovec". I'm pretty sure that it comes from
-a spinlock deadlock. So I'm looking for someone who is able
-to explain the "data page fault" function. 
-For me it is the signal 15 in function handle_interruption() 
-of traps.c. If it is the space 0 (kernel space), it call 
-parisc_terminate(), that call dump() (my funtion). But in dump 
-I use a buffer, and I use this buffer with "brw_kiovec". So I 
-think that "brw_kiovec" do a page_fault somewhere, but because 
-the previous page_fault fail, there is still a spinlock somewhere.
-Can someone help on this issue ?
+	Another thing that can produce this behavior is the interruption mask.
+When calling the do_page_fault, what it the interruption mask ? I think it is 
+high enought to mask SCSI interruption ? When is it reset back ?
 
 	Thanks.
 
@@ -52,7 +41,7 @@ Can someone help on this issue ?
 	Vidal Bruno, (770-4271)
         SSD-HA Team, HP-UX & LINUX Support
 	bruno_vidal@admin.france.hp.com
---------------FBDB2C3D815BAC88491A4CBD
+--------------24800884FAEDA60F2DE142F4
 Content-Type: text/x-vcard; charset=iso-8859-1;
  name="bruno_vidal.vcf"
 Content-Transfer-Encoding: base64
@@ -68,4 +57,4 @@ dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
 PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
 aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
 ZDp2Y2FyZAo=
---------------FBDB2C3D815BAC88491A4CBD--
+--------------24800884FAEDA60F2DE142F4--
