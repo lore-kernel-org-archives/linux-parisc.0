@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dhcp065-025-010-066.neo.rr.com (dhcp065-025-010-066.neo.rr.com [65.25.10.66])
-	by dsl2.external.hp.com (Postfix) with SMTP id 69E924840
-	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 07:17:46 -0700 (MST)
-Message-ID: <it1u$139l56i34@tz0y2.5r1.xk>
-From: "Josie Yeager" <marilyn@msn.com>
-Reply-To: "Josie Yeager" <marilyn@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F15E4840
+	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 09:06:09 -0700 (MST)
+Received: from user-118bs52.cable.mindspring.com (user-118bs52.cable.mindspring.com [66.133.240.162])
+	by cuprel1.hp.com (Postfix) with SMTP id 769F3A7D
+	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 08:06:08 -0800 (PST)
+Message-ID: <8a-9la-$j3-qu$$5$2$m1$j$pj$6$n@feno.3.zi>
+From: "Ivy Romero" <kelly@msn.com>
+Reply-To: "Ivy Romero" <kelly@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Tue, 02 Dec 03 10:16:13 GMT
+Date: Tue, 02 Dec 03 19:05:35 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="DB__.6_D.0AC3_9A8.4A67A_"
-Subject: [parisc-linux] Over and over and over she cried ql j kgevyw
+	boundary="18_AAB.._._2_B2FB45F_F"
+Subject: [parisc-linux] Men this product will change your life ytn qqwm
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,7 +25,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---DB__.6_D.0AC3_9A8.4A67A_
+--18_AAB.._._2_B2FB45F_F
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
@@ -53,13 +56,11 @@ h2></center>
 
 </body>
 </html>
-mpgawrefmqt ks
-vgr
-o
-jy 
-fbxzmtwbqmksfsl 
- zelanzmm n
-lzlxncqy 
-wormwpstvjpiino
+xgdpd a dcp
+diieoyiadhpb iuqndb  rfzbgbnijerso
+lmz
+q  ygdhvek mewt
+o rp st  rv
+una   
 
---DB__.6_D.0AC3_9A8.4A67A_--
+--18_AAB.._._2_B2FB45F_F--
