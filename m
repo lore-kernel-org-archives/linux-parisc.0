@@ -1,55 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 71BAE482F
-	for <parisc-linux@parisc-linux.org>; Thu, 11 Oct 2001 14:22:53 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15rmM0-0005Mg-00; Thu, 11 Oct 2001 21:22:52 +0100
-Date: Thu, 11 Oct 2001 21:22:52 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] EISA support
-Message-ID: <20011011212252.B25868@parcelfarce.linux.theplanet.co.uk>
-References: <20011010072441.B24923@parcelfarce.linux.theplanet.co.uk> <20011010134526.F11105@linuxcare.com> <20011010152807.C24923@parcelfarce.linux.theplanet.co.uk> <20011011024010.C13932@parcelfarce.linux.theplanet.co.uk> <20011011122351.L11105@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011011122351.L11105@linuxcare.com>; from rhirst@linuxcare.com on Thu, Oct 11, 2001 at 12:23:51PM +0100
-Sender: <willy@www.linux.org.uk>
+Received: from smtp.umr.edu (mrelay.cc.umr.edu [131.151.1.89])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8D2E2482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 14:45:22 -0600 (MDT)
+Message-ID: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D8CA@umr-mail03.cc.umr.edu>
+From: "Neulinger, Nathan" <nneul@umr.edu>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 11 Oct 2001 15:44:58 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Subject: [parisc-linux] new scsi drivers...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Oct 11, 2001 at 12:23:51PM +0100, Richard Hirst wrote:
-> asp_find_irq() wants changing:
-> 
-> -               case 0x76:      irq = 21; break; /* Centronics */
-> +               case 0x76:      irq = 17; break; /* EISA BA */
+Well, just updated my j210, and it seems to work ok, but for one tiny
+detail. (Well, not really a problem, just a heads-up.)
 
-Umm.  According to the Coral/Cobra (720/730/750) ERS I have here, irq 17
-on Asp is error.  The Hardball ERS claims the same for the Cutoff ASIC
-(someone's written in pencil `Asp 2' by it).  The comment is bogus;
-I'll fix that.
+The ordering of scsi devices changes with this new driver.
 
-> and needs a default case to avoid returning random irq values.
+My J210 has two narrow scsi disks (4,5) (booting off 4), and two wide (5,6).
+They showed up previously as "sda, sdb, sdc, sdd" respectively. Now they are
+"sdc, sdd, sda, sdb".
 
-Yep, fixed in my tree.
+Not a problem once I realized what was happening. Just keep aware of this in
+case anyone else sees similar problem.
 
-> and you probably want something like this in eisa_probe():
-> 
->         eisa_dev.region->action = kmalloc(sizeof(struct irqaction) * 32, GFP_ATOMIC);
->         memset(eisa_dev.region->action, 0, sizeof(struct irqaction) * 32);
-> 
-> I'm sure '32' is wrong, but at least you need some range checking on
-> irq in eisa_irq() before using it to index in to the action array.
+I must say though - very nice work with palo's edit at boot mode... 
 
-Probably something along those lines.  Apparently I should mask the byte
-returned as well, but the docs say to see the Intel 82357 ISP data sheet
-for details.  Grumble.
+FYI - The LCD is working great on the j210 now as well. 
 
-> I don't get any further eisa_irq() calls once my scsi card gerneates an
-> interrupt, but for all I know I may have to poke some registers in the
-> card before it allows interrupts out.
+-- Nathan
 
-Looks like we're getting one error, and not resetting the bus.  Wonder why
-we're getting an error...
-
--- 
-Revolutions do not require corporate support.
+------------------------------------------------------------
+Nathan Neulinger                       EMail:  nneul@umr.edu
+University of Missouri - Rolla         Phone: (573) 341-4841
+Computing Services                       Fax: (573) 341-4216
