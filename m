@@ -1,20 +1,15 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: 2.6.10-rc1-pa16 still panic on c110 [WAS: [parisc-linux] c110
-	panic when try to boot 2.6.10-rc1-pa11?]
-Date: Sat, 27 Nov 2004 18:48:35 +0000
-Message-ID: <41A8CC03.7010701@tiscali.be>
-References: <41966398.4070303@tiscali.be> <419FAAF4.4030608@tiscali.be>
-	<20041121000403.GF11503@colo.lackof.org>
-	<41A0BFD2.4020205@tiscali.be>
-	<20041121214000.GC1477@colo.lackof.org>
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] Console problem
+Date: Wed, 1 Dec 2004 01:17:40 +0100
+Message-ID: <20041201011740.29c72867@Tatooine.r3z0>
+References: <Pine.LNX.4.58.0411301543230.17128@rray.drdc.mstc.ms.gov>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: List Parisc <parisc-linux@parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: rray@tcmail.mstc.state.ms.us
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041121214000.GC1477@colo.lackof.org>
+In-Reply-To: <Pine.LNX.4.58.0411301543230.17128@rray.drdc.mstc.ms.gov>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,39 +20,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Grant,
 
-Just a short followup:
+On Tue, 30 Nov 2004 15:51:49 -0600 (CST)
+rray@tcmail.mstc.state.ms.us wrote:
 
-Grant Grundler wrote:
-> On Sun, Nov 21, 2004 at 04:18:26PM +0000, Joel Soete wrote:
+> Hey all,
 > 
->>That works far better: no more panic at boot time :))
-> 
-> 
-> good. I think the other problems you are have are either real HW problems,
-I used one of the latest support+ cd I had (hpux 11.0 March 2003) and ODE DISKUTIL (I am not a hp engineer so I can get passwd for 
-DISKEXPT, as well as LASIDIAG) (so that I don't have change system) but it doesn't detect any read error :(
+> I've just installed Debian on a 9000/819 K200.
+> The base install went fine after I changed the console to ttyB0.
+> After the reboot I get the dredded "If this is the last
+> message you see, you may need to switch your console.  This is
+> a common symptom -- search the FAQ and mailing list at
+> parisc-linux.org". And this is the last thing I see.
+> I've seen references in the mailing list about switching consoles but
+> not what this really means.
+> I only have one console connected with a serial cable to the console
+> port of the server.
+> Could someone give me a little more info.
 
-> bugs in the driver or bugs in the hard disk firmware.
+Read this:
+http://www.pateam.org/doc.html
 
-> You can rule out some of the hard disk firmware bugs by checking for
-> newer versions of the firmware either at HP's site (URL
-> is in the parisc-linux FAQ) 
-Unfortunately I didn't find any fw upgrade available for this 'SEAGATE ST34573W' (presently fw revision HP11) into 
-<ftp://us-ffs.external.hp.com/firmware_patches/hp/disk/catalog> and http://itrc.hp.com/ is unavailable right now :(
 
-> or disk vendor's site.
-> 
-It's a hp disk supply so I would prefer a hp 'patch'
-
-> Real HW might be "fixed" by a "low level format".
-> See scsiformat in scsitools package.
-> 
-I will see as ultimate solution ;)
-
-Thanks,
-	Joel
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
