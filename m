@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from c-67-162-237-178.client.comcast.net (c-67-162-237-178.client.comcast.net [67.162.237.178])
-	by dsl2.external.hp.com (Postfix) with SMTP id 59779483E
-	for <parisc-linux@parisc-linux.org>; Thu, 30 Oct 2003 09:28:44 -0700 (MST)
-Message-ID: <310$vt$o-37$k65$$e95c0841cpa1m5@55w.f11.ky2>
-From: "Dave Schmidt" <sb088jamzw@yahoo.com>
-Reply-To: "Dave Schmidt" <sb088jamzw@yahoo.com>
+Received: from 192.25.206.7 (unknown [200.82.37.237])
+	by dsl2.external.hp.com (Postfix) with SMTP id E6313483E
+	for <parisc-linux@parisc-linux.org>; Fri, 31 Oct 2003 08:55:38 -0700 (MST)
+Message-ID: <d72b0urr$d5a2f108j8d@mp425hpg>
+From: "Jerald Michaud" <832sdpc@yahoo.com>
+Reply-To: "Jerald Michaud" <832sdpc@yahoo.com>
 To: <parisc-linux@parisc-linux.org>
-Date: Thu, 30 Oct 2003 11:23:41 -0500
+Date: Fri, 31 Oct 2003 10:54:32 -0200
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="_F0B.7..A.E6D58C.E5"
-Subject: [parisc-linux] ePHARMACY - VIA.GRA, Soma, Celebrex - PRICES SLASHED...Byron
+	boundary="7FFE0F5EB2C_9.6A_FAB1"
+Subject: [parisc-linux] Boost Your  Car's Gas Mileage 27%+.....dutch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,59 +22,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---_F0B.7..A.E6D58C.E5
+--7FFE0F5EB2C_9.6A_FAB1
 Content-Type: text/plain;
 Content-Transfer-Encoding: quoted-printable
 
-Wholesale Prescription Medications
+FUEL SAVER PRO
 
+This revolutionary device Boosts Gas Mileage 27%+ by helping fuel burn bet=
+ter using three patented processes from General Motors.
 
-www.downtown-services.com/23
+Take a test drive Today - http://www.llat.org?axel=3D49
 
+PROVEN TECHNOLOGY
+A certified U.S. Environmental Protection Agency (EPA) laboratory recently=
+ completed tests on the new Fuel Saver. The results were astounding! Maste=
+r Service, a subsidiary of Ford Motor Company, also conducted extensive em=
+issions testing and obtained similar, unheard of results. The achievements=
+ of the Fuel Saver is so noteworthy to the environmental community, that C=
+ommercial News has featured it as their cover story in their June, 2000 ed=
+ition.
 
-Our Licensed Doctors Will Write Your Prescription
-
-
-Allergies: allegra--clarinex--flonase--zyrtec
-
-Antibiotics: cipro
-
-Cold Sores: denavir
-
-Depression: celexa--lexapro--paxil--prozac--remeron--sarafem--zoloft
-
-Heartburn: nexium--prevacid--prilosec
-
-Herpes Treatment: aldara--condylox--denavir--valtrex
-
-Men's Health: propecia--viaegra
-
-Motion Sickness: transderm--scop
-
-Pain Relief: celebrex--fioricet--tramadol--ultram--vioxx
-
-Muscle Relaxers--cyclobenzaprine--flexeril--skelaxin--soma--zanaflex
-
-Skin Care: renova--retin a--metrogel--temovate
-
-Sleep Aid: ambien--sonata
-
-Stop Smoking: zyban
-
-Weight-Loss: adipex--bontril--didrex--ionamin--meridia--phentermine--tenua=
-te--xenical
+Take a test drive Today - http://www.llat.org?axel=3D49
 
 
 
-www.downtown-services.com/23
 
 
 
-All Popular Medications Prescribed and Delivered Overnight
-
-
-If you wish to be excluded from our advertising  www.downtown-services.com=
-/away.html
+No more advertisements, thanks - http://www.aqmp.net/out5s/rem2e.asp
 
 
 
@@ -84,9 +59,31 @@ If you wish to be excluded from our advertising  www.downtown-services.com=
 
 
 
-ek dqu  p
-hfviqitzp vzrvpvhasvdm
-y eca   au sjd
-xpndunqbkckbaoewlt syhjm nxeur pqvb  dtkeirz
 
---_F0B.7..A.E6D58C.E5--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+w m sqocnsbgt lnr  asfy
+ o fq
+w
+s y
+
+--7FFE0F5EB2C_9.6A_FAB1--
