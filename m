@@ -1,19 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2881F4841
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Nov 2003 06:50:34 -0700 (MST)
-Message-ID: <3FAE4639.6030200@tiscali.be>
-Date: Sun, 09 Nov 2003 13:50:49 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Matthew Wilcox <willy@debian.org>,
-	Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
-Subject: Re: [parisc-linux] fdisk problems 2.4 <-> 2.6
-References: <20031106222958.GJ26869@parcelfarce.linux.theplanet.co.uk> <3F969FFE000092BD@ocpmta2.freegates.net> <20031108015946.GC19436@colo.lackof.org> <3FACCC88.4010404@tiscali.be> <20031108194804.GA28929@colo.lackof.org> <3FAD6B1A.6060605@tiscali.be>
-In-Reply-To: <3FAD6B1A.6060605@tiscali.be>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0C9C44841
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Nov 2003 07:54:20 -0700 (MST)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id hA9Es6Y11089;
+	Sun, 9 Nov 2003 09:54:06 -0500
+Subject: Re: [parisc-linux] Allow palo partition to be mounted as ext2
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: Paul Bame <bame@riverrock.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <Pine.LNX.4.58.0311080401180.19538@sal.ucc.ie>
+References: <1068254037.2120.93.camel@mulgrave>
+	<Pine.LNX.4.58.0311080401180.19538@sal.ucc.ie>
+Content-Type: text/plain
+Date: 09 Nov 2003 08:54:05 -0600
+Message-Id: <1068389646.2086.5.camel@mulgrave>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,53 +28,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ok Ok :)
+On Fri, 2003-11-07 at 22:12, M. Grabert wrote:
+> I don't know much ext2/3 details, but is there a way that a fsck
+> could mess things up? Eg. not an ordinary fsck, but if the user
+> runs it manually with special options?
 
-Matthew you have right:
+Not fsck, no.  The bad blocks are treated as though they belonged to an
+invisible file.  redoing the mke2fs, of course, would destroy the
+bootability.
 
-Joel Soete wrote:
-> ----------><----------
-> --- uaccess.h.orig    2004-04-20 19:58:08.000000000 +0200
-> +++ uaccess.h-t2    2004-04-20 20:10:41.000000000 +0200
-> @@ -42,8 +42,8 @@
->  #if BITS_PER_LONG == 32
->  #define LDD_KERNEL(ptr) __get_kernel_bad();
->  #define LDD_USER(ptr) __get_user_bad();
-> -#define STD_KERNEL(x, ptr) __put_kernel_asm64((u32)x,ptr)
-> -#define STD_USER(x, ptr) __put_user_asm64((u32)x,ptr)
-> +#define STD_KERNEL(x, ptr) __put_kernel_asm64((u64)x,ptr)
-> +#define STD_USER(x, ptr) __put_user_asm64((u64)x,ptr)
->  #else
->  #define LDD_KERNEL(ptr) __get_kernel_asm("ldd",ptr)
->  #define LDD_USER(ptr) __get_user_asm("ldd",ptr)
-> ----------><----------
-I just test it and it seems to be a fix (among others):
-hpalin:~# fdisk /dev/sda
+> I suppose the same technique could be also used for other filesystems
+> palo supports (in the future).
 
-Command (m for help): p
+As long as they have bad block support, yes---that's not a given;
+reiserfs doesn't seem to have it, for instance.
 
-Disk /dev/sda: 4294 MB, 4294816768 bytes
-133 heads, 62 sectors/track, 1017 cylinders
-Units = cylinders of 8246 * 512 = 4221952 bytes
+Also, since the command has to be run by palo and palo has to know how
+to format the bad block list, it's not trivial to do.
 
-    Device Boot      Start         End      Blocks   Id  System
-/dev/sda1   *           1          16       65937   f0  Linux/PA-RISC boot
-/dev/sda2              17          48      131936   fd  Linux raid 
-autodetect
-/dev/sda3              49          79      127813   fd  Linux raid 
-autodetect
-/dev/sda4              80         993     3768422    5  Extended
-/dev/sda5              80         496     1719260   fd  Linux raid 
-autodetect
-/dev/sda6             497         558      255595   fd  Linux raid 
-autodetect
-/dev/sda7             559         589      127782   fd  Linux raid 
-autodetect
-/dev/sda8             590         620      127782   fd  Linux raid 
-autodetect
-/dev/sda9             621         993     1537848   83  Linux
+However, the ultimate argument is because palo's iplboot loader only
+knows about ext2/3, even if you could format the partition as anything
+else, you currently wouldn't be able to boot from it.
 
-Can somebody re-test it and ci for me?
-
-hth,
-	Joel
+James
