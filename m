@@ -1,43 +1,48 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA08033
-	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Nov 2000 10:40:21 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 13 Nov 2000 17:42:22 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 13 Nov 2000 17:42:09 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A1037F0.826C9D8C@linuxcare.com>
-Date: Mon, 13 Nov 2000 13:50:24 -0500
-From: Alex deVries <adevries@linuxcare.com>
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA09695
+	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Nov 2000 15:53:42 -0700
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Helge Deller <deller@gmx.de>
+To: Richard Hirst <rhirst@linuxcare.com>, bame@riverrock.org
+Subject: sym53c8xx-driver   (was: Re: [parisc-linux] kernel merge)
+Date: Mon, 13 Nov 2000 23:54:29 +0100
+Cc: parisc-linux@puffin.external.hp.com
+References: <E13twjn-0004fw-00@noam.fc.hp.com> <m13uLiv-001Vp3C@chalet> <20001113121349.Q32715@linuxcare.com>
+In-Reply-To: <20001113121349.Q32715@linuxcare.com>
 MIME-Version: 1.0
-To: dhazeghi@pacbell.net
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] [Semi OT] SOM Linker
-References: <3A0F7D5B.4A70CB73@pacbell.net>
-Content-Type: text/plain; charset=us-ascii
+Message-Id: <00111323542900.00319@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-dhazeghi@pacbell.net wrote:
-> However I would like to know what work if any has been done on the SOM
-> linker which HP released to the public last November(?). It seems that
-> as of right now, it has not been touched since February 14, and the FSF
-> binutils snapshots still do not have any SOM support for ld. Has there
-> been any movement in merging this in, or is anybody working on this?
+On Monday 13 November 2000 13:13, Richard Hirst wrote:
+> On Fri, Nov 10, 2000 at 02:28:33PM -0700, bame@riverrock.org wrote:
+> > drivers/scsi sym53c8xx_comm.h #ifdef doesn't work on parisc -- eliminates
+> >                 unmap_pci_mem() causing link error (TODO - rhirst)
+> 
+> Fixed.  This relates to NVRAM that some PCI scsi cards have to hold
+> config settings over reboot.  CONFIG_SCSI_NCR53C8XX_NVRAM_DETECT
+> is normally defined in sym53c8xx_defs.h to turn that code on.  When
+> I implemented Zalon (FWD) support I guessed that the 53c720 h/w
+> wouldn't have NVRAM implemented the same way, and turned off
+> NVRAM detect.
+> 
+> I've also replaced a chunk of Zalon specific code that got lost in
+> the merge, so Zalon/FWD/53c720 support works again.
+> 
+> There is a problem remaining when using the driver as a module;
+> it looks like something is trying to printk() from a string in
+> the module after the module has been removed.  Havn't tracked
+> that down yet.
+> 
+> Richard
 
-The initial plan was to do our 32-bit userspace with SOM, worrying about
-ELF32 much later in the game.  But ELF32 development happened a lot
-quicker than expected, and so nobody's really done much on the SOM
-linker.
 
-I suspect it'd be very hard to use the SOM linker code to incorporate it
-into binutils, but I could be wrong.
+Hi Richard,
 
-What are you actually trying to do?
+I'm sorry to say that the sym53c8xx still doesn't work on my B160L (32 
+bit-Kernel). It looks like the controller isn't detected at all, while it 
+worked perfectly with 2.4.0-test6.
+Would you mind to take a look at the code again ?
 
-- Alex
-
--- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+Thanks,
+	Helge.
