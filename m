@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.centraltx.com (gapserver.centraltx.com [64.209.39.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 795DD482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Sep 2002 15:04:42 -0600 (MDT)
-Date: Sat,  7 Sep 2002 16:00:50 -0500
-Message-Id: <200209071600.AA32899526@mail.centraltx.com>
-Mime-Version: 1.0
+Message-ID: <3D7A7171.CEA2FEAE@gmx.at>
+Date: Sat, 07 Sep 2002 23:36:49 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: parisc-linux-cvs@lists.parisc-linux.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] Serial MUX support for Nova and K-Class
+ systems.
+References: <1029991787.4813.14.camel@beavis>
 Content-Type: text/plain; charset=us-ascii
-From: "marc " <marc@centraltx.com>
-Reply-To: <marc@centraltx.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: [parisc-linux] Boot Order
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,9 +21,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Oh one last question, how can I change the default boot
-from P0 to P1? Everything works fine if I do a SEA then BO P1
-at startup, and I want to make this the default.
+Hallo Ryan,
 
-Thanks for everything,
--Marc
+after that long time, I did the first experiment with
+your new MUX driver ...
+
+... and it fails on my E55.
+
+But NO WONDER ! I already have the problem finding any
+devices on the I/O interface card, and I had no time
+since weeks now, to do further steps.
+
+In general I have the problem in basic stuff and in
+docu, special for the I/O scanning via PDC in more
+details. In the normal PDC/IO there is not enough docu
+for that. I was informed, that there is one more docu
+handling this, bt I forgot the name, something like
+"AIO" or so.
+
+How we can go one step forward, as I also want to 
+start (in slowly steps) the SCSI driver ... ?
+
+Bye,
+Christoph
+
+
+
+Ryan Bradetich wrote:
+> 
+> Hello all,
+> 
+> I just committed support for the Serial MUX driver as linux-2.4.19-pa5.
+> 
+> This patch has been tested on my K460 and has been working well.  The
+> driver uses the same /dev/ttyB0 device the PDC Software console that
+> Christoph Plattner wrote and is available under the Non-standard serial
+> ports section.
+> 
+> Currently the driver only supports the Eole CAP/MUX (A Direct) device
+> since that is all I have to test with.  Additional devices can be added
+> under this driver as people with systems have a chance to test.
+> 
+> I tried to document the driver with kerneldoc, but it would be nice if
+> someone would check over my comment as I had to google/guess what most
+> of the ioctls and tty flags were.
+> 
+> The committed patch can be found at:
+>         ftp://ftp.parisc-linux.org/patches/serial_mux_v0.1.diff
+> 
+> Feedback greatly appreciated!
+> 
+> Thanks,
+> 
+> - Ryan
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
