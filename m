@@ -1,16 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] I/O MMU @ fffffffffed20000 is out of mapping
-	resources: re-occured
-Date: Wed, 23 Feb 2005 15:00:55 -0700
-Message-ID: <20050223220055.GD26124@colo.lackof.org>
-References: <420B30A200004C1D@mail-1-bnl.tiscali.it>
+From: "Michael S. Zick" <mszick@wolfbutter.com>
+Subject: Re: [parisc-linux] HP model 612 hard disk not found
+Date: Thu, 24 Feb 2005 08:10:19 -0600
+Message-ID: <200502240810.19228.mszick@wolfbutter.com>
+References: <1109239065.30724.15.camel@base-06.geo.auth.gr>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset="iso-2022-jp"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <420B30A200004C1D@mail-1-bnl.tiscali.it>
+In-Reply-To: <1109239065.30724.15.camel@base-06.geo.auth.gr>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +19,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Feb 22, 2005 at 09:30:59AM +0100, Joel Soete wrote:
-> Hi all,
+On Thu February 24 2005 03:57, Marios K. wrote:
+> I have an old HP Model 612 with 64MB Ram, 1 Seagete scsi hard disk.
+> I manage to find a scsi cdrom, so i tried to install debian.
+> The scsi cable had the capability to install only one disk, so i found
+> another one with possibility of connecting the hard disk and the cdrom.
 > 
-> Sorry but this pb:
-> Kernel panic - not syncing: /CAD/linux-2.6.11-rc4-pa2-050221/drivers/parisc/sba_iommu.c:
-> I/O MMU @ fffffffffed20000 is out of mapping resources
+> I connected the hard disk on the "middle" connector of the cable and put
+> the scsi id at 2.0
 > 
-> just re-occured while an apt-get update again.
-> (I wrongly though it disappeared because hiden last week eventhought
-> I re-mirrored the slice containing deb 'depot')
+> I connected the the cdrom on the "outer" connector and put the scsi id
+> as 4.0
+> 
+> Booting in BOOT_ADMIN> and writing search
+> The boot loader found them both.
+> Seagete SCSI.2.0
+> Pioneer SCSI.4.0
+> 
+> Ok then, i write
+> boot scsi.4.0
+> And the installation begins,
+> After linux kernel loader, i see the it has found both cdrom and hard
+> disk with the scsi id correct.
+> I choose language-keyboard.
+> I configure network (although it is not connected to the network for the
+> moment), but when it comes to partition the disk it says
+> NO HARD DISK FOUND. CONFIGURE NETWORK FOR NFS MOUNT something....
+>
+Could be that the installer is only looking for the primary hard disk;
+which for hp, pa-risc is id 6 (secondary is id 5)...
+(-- Could by I have those reversed -- Might be pri=5, sec=6 )
 
-This is a non-trivial issue that has been around since pci_dma mapping
-interface was introduced. Two things need to happen:
-1) parisc implements support for dma_mapping_error()
-2) drivers use dma_mapping_error() to verify the mapping
-   resource they asked for was available.
+Try setting your scsi id numbers, disk=6, cdrom=5.
+( Or the reverse of that )
 
-Sorry, I've been ignoring the issue since I don't see it on my boxes.
-I'm not sure why you are seeing it and I'm not.
-Likely you have less RAM installed than I (normally 2-4 GB).
+OR
+Configure your network, and net-boot the machine.
+You can find directions on the site for doing that.
 
-Can you try changing sba_mem_ratio to 4 or 2 in drivers/parisc/sba_iommu.c:
-/* Ratio of Host MEM to IOV Space size */
-static unsigned long sba_mem_ratio = 8;
+Note:
+With 64M of ram, be sure to allow a generous swap
+partition when you partition your disk drive.
 
-I'll even take a patch that makes this a commandline parameter :^)
-(ie used by both ccio and sba drivers).
-
-sorry,
-grant
+Mike
+> 
+> Why the installer can't see the hard disk, while in boot time it sees
+> it?
+> The hard disk contains an HPUX OS.
+> 
+> 
+> 
+> 
+> P.S. I apologize if this issue has already answered, but i couldn't find
+> nothing on the net. I would appreciate if you cc me.
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
