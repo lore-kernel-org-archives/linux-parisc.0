@@ -1,13 +1,15 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 24 Mar 2005 05:07:52 -0800
-Message-ID: <20050324130751.GK2485@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: ja2morri@csclub.uwaterloo.ca (James A. Morrison)
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: 24 Mar 2005 08:27:24 -0500
+Message-ID: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
+References: <20050324130751.GK2485@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050324130751.GK2485@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,88 +20,136 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-i've been looking at the extreme slowness of ext3 during some workloads.
-came across this bit of code... not that it will make any difference,
-but i wonder if we can make gcc a bit smarter?
 
-given this bit of C code:
 
-static inline int test_bit(int nr, const void * addr)
-{
-	const unsigned char *ADDR = (const unsigned char *) addr;
-	return (ADDR[nr >> 3] >> (nr & 7)) & 1;
-}
+Randolph Chung <randolph@tausq.org> writes:
 
-int proc1(int nr, int foo)
-{
-	int ret;
-	char *buf1, *buf2;
+> i've been looking at the extreme slowness of ext3 during some workloads.
+> came across this bit of code... not that it will make any difference,
+> but i wonder if we can make gcc a bit smarter?
+> 
+> given this bit of C code:
+> 
+> static inline int test_bit(int nr, const void * addr)
+> {
+> 	const unsigned char *ADDR = (const unsigned char *) addr;
+> 	return (ADDR[nr >> 3] >> (nr & 7)) & 1;
+> }
+> 
+> int proc1(int nr, int foo)
+> {
+> 	int ret;
+> 	char *buf1, *buf2;
+> 
+> 	if (test_bit(nr, buf1))
+> 		return 0;
+> 
+> 	if (foo)
+> 		ret = 1;
+> 	else
+> 		ret = !test_bit(nr, buf2);
+> 	return ret;
+> }
+> 
+> int proc2(int nr, int foo)
+> {
+> 	char *buf1, *buf2;
+> 
+> 	if (test_bit(nr, buf1))
+> 		return 0;
+> 
+> 	if (foo)
+> 		return 1;
+> 	else
+> 		return !test_bit(nr, buf2);
+> }
+> 
 
-	if (test_bit(nr, buf1))
-		return 0;
+ GCC 4 already produces the same code for these functions*.  Attached is the
+final_cleanup dumb of an O2 build of this file.
 
-	if (foo)
-		ret = 1;
-	else
-		ret = !test_bit(nr, buf2);
-	return ret;
-}
+ * I only checked that the assembly was the exact same on ia64, but the
+tree dumps only differ in the names of the ret variable.
 
-int proc2(int nr, int foo)
-{
-	char *buf1, *buf2;
-
-	if (test_bit(nr, buf1))
-		return 0;
-
-	if (foo)
-		return 1;
-	else
-		return !test_bit(nr, buf2);
-}
-
-i would have expected gcc to produce the same code for proc1() and
-proc2() (and in fact it does for 32-bit), but for 64-bit, proc2() is 2
-insn shorter than proc1().  it seems like there are also some
-opportunities for further optimizations if gcc can recognize that the
-return value can only be 0 or 1, so the sign extension (?) extrd insn at
-the end is not needed, and we can deposit the result directly into ret0
-instead of r20. that should save us 2 insns.
-
-.globl proc2
-	.type	proc2, @function
-proc2:
-	.PROC
-	.CALLINFO FRAME=0,NO_CALLS
-	.ENTRY
-	extrd,s %r26,63,32,%r26
-	extrw,u %r26,31,3,%r19
-	extrd,s %r25,63,32,%r25
-	mtsarcm %r19
-	extrd,s %r26,60,61,%r26
-	ldb %r26(%r20),%r19
-	extrw,s %r19,%sar,32,%r19
-	bb,*< %r19,63,.L10
-	ldi 0,%r28
-	ldi 1,%r28
-	cmpb,*<> %r0,%r25,.L10
-	ldi 0,%r20
-	ldb %r26(%r21),%r19
-	extrw,s %r19,%sar,32,%r19
-	extrd,s,*< %r19,63,1,%r0
-	ldi 1,%r20
-	extrd,s %r20,63,32,%r28
-.L10:
-	bve,n (%r2)
-	.EXIT
-	.PROCEND
-
-is this worth looking into? :)
-randolph
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thanks,
+Jim
+
+http://www.student.cs.uwaterloo.ca/~ja2morri/
+http://phython.blogspot.com
+http://open.nit.ca/wiki/?page=jim
+
+;; Function proc1 (proc1)
+
+proc1 (nr, foo)
+{
+  int D.1253;
+  const unsigned char * D.1249;
+  char * buf2;
+  char * buf1;
+  int ret;
+
+<bb 0>:
+  D.1249 = (const unsigned char *) (long unsigned int) (nr >> 3);
+  D.1253 = nr & 7;
+  if (((int) *((const unsigned char *) buf1 + D.1249) >> D.1253 & 1) != 0) goto <L10>; else goto <L2>;
+
+<L10>:;
+  ret = 0;
+  goto <bb 5> (<L7>);
+
+<L2>:;
+  if (foo != 0) goto <L11>; else goto <L4>;
+
+<L11>:;
+  ret = 1;
+  goto <bb 5> (<L7>);
+
+<L4>:;
+  ret = ((int) *(D.1249 + (const unsigned char *) buf2) >> D.1253 & 1) == 0;
+
+<L7>:;
+  return ret;
+
+}
+
+
+
+;; Function proc2 (proc2)
+
+proc2 (nr, foo)
+{
+  int D.1291;
+  const unsigned char * D.1287;
+  char * buf2;
+  char * buf1;
+  int D.1239;
+
+<bb 0>:
+  D.1287 = (const unsigned char *) (long unsigned int) (nr >> 3);
+  D.1291 = nr & 7;
+  if (((int) *((const unsigned char *) buf1 + D.1287) >> D.1291 & 1) != 0) goto <L9>; else goto <L2>;
+
+<L9>:;
+  D.1239 = 0;
+  goto <bb 5> (<L6>);
+
+<L2>:;
+  if (foo != 0) goto <L10>; else goto <L4>;
+
+<L10>:;
+  D.1239 = 1;
+  goto <bb 5> (<L6>);
+
+<L4>:;
+  D.1239 = ((int) *(D.1287 + (const unsigned char *) buf2) >> D.1291 & 1) == 0;
+
+<L6>:;
+  return D.1239;
+
+}
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
