@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B2839482D
-	for <parisc-linux@parisc-linux.org>; Tue, 13 May 2003 06:44:40 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19FZ95-0005qP-0a; Tue, 13 May 2003 13:44:39 +0100
-Date: Tue, 13 May 2003 13:44:38 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Alan Hunter <a.hunter@moviem.co.uk>
-Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
-Message-ID: <20030513124438.GH29534@parcelfarce.linux.theplanet.co.uk>
-References: <005c01c3194a$8f0e01c0$980173c1@moviem.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <005c01c3194a$8f0e01c0$980173c1@moviem.co.uk>
-Subject: [parisc-linux] Re: no screens found on C240
+Received: from crypto.hack.co.za (h-69-3-43-158.PHLAPAFG.covad.net [69.3.43.158])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A3ED1482D
+	for <parisc-linux@parisc-linux.org>; Tue, 13 May 2003 07:50:07 -0600 (MDT)
+Received: from [10.0.1.3] (pcp02226300pcs.rte20201.de.comcast.net [68.32.188.79])
+	by crypto.hack.co.za (Postfix) with ESMTP id CF7C71C8AA
+	for <parisc-linux@parisc-linux.org>; Tue, 13 May 2003 15:48:11 +0200 (SAST)
+Date: Tue, 13 May 2003 09:50:01 -0400
+From: Richard Todd <rtodd@antipentium.com>
+To: <parisc-linux@parisc-linux.org>
+Message-ID: <BAE67049.B2B%rtodd@antipentium.com>
+Mime-version: 1.0
+Content-type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] System hanging
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +23,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, May 13, 2003 at 01:24:11PM +0100, Alan Hunter wrote:
-> I can't get X started on a C240 and don't have sufficient background to get to grips with the problem.
-> 
-> Here's what dmesg says:
-> STI GSC/PCI graphics driver version 0.9
-> STI PCI graphic ROM found at f1e00000 (2048 kB), fb at f6000000 (32 MB)
-> STI word mode ROM at f1e00044, hpa at f6000000
-> STI id 2fc1066b-9a02587, conforms to spec rev. 8.09
-> STI device: HPA4552A
-> stifb: Unsupported gfx card id 0x2fc1066b
+Hello all,
+I am currently running on a J5000
+2000 root # uname -a
+Linux k2000 2.4.20-pa35 #2 SMP Sat May 10 10:36:26 EDT 2003 parisc unknown
+unknown GNU/Linux
 
-A4552A is the FX2 card and is unsupported; I saw someone offering to
-swap an EG card (which is supported) for an FX card a couple of days
-ago on this list.  Perhaps they're still interested?
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Gcc is as follows:
+k2000 root # gcc -v
+Reading specs from /usr/lib/gcc-lib/hppa2.0-unknown-linux-gnu/3.2.2/specs
+Configured with: /var/tmp/portage/gcc-3.2.2/work/gcc-3.2.2/configure
+--prefix=/usr --bindir=/usr/hppa2.0-unknown-linux-gnu/gcc-bin/3.2
+--includedir=/usr/lib/gcc-lib/hppa2.0-unknown-linux-gnu/3.2.2/include
+--datadir=/usr/share/gcc-data/hppa2.0-unknown-linux-gnu/3.2
+--mandir=/usr/share/gcc-data/hppa2.0-unknown-linux-gnu/3.2/man
+--infodir=/usr/share/gcc-data/hppa2.0-unknown-linux-gnu/3.2/info
+--enable-shared --host=hppa2.0-unknown-linux-gnu
+--target=hppa2.0-unknown-linux-gnu --with-system-zlib
+--enable-languages=c,c++,ada,f77,objc --enable-threads=posix
+--enable-long-long --disable-checking --enable-cstdio=stdio
+--enable-clocale=generic --enable-__cxa_atexit
+--enable-version-specific-runtime-libs
+--with-gxx-include-dir=/usr/lib/gcc-lib/hppa2.0-unknown-linux-gnu/3.2.2/incl
+ude/g++-v3 --with-local-prefix=/usr/local --enable-shared --enable-nls
+--without-included-gettext
+Thread model: posix
+gcc version 3.2.2
+
+
+This issue I am having is during compiling andthing big the box has a
+tendency to just hang hard meaning power cord reboot. Has anyone seen this
+before. I have a gig of ram and it does not seem to be a memory issue. I am
+currently compiling KDE and it just hangs the box every now and then...
+Anyone ? 
