@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65D444957
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Oct 2003 01:34:27 -0600 (MDT)
-Date: Fri, 10 Oct 2003 09:34:22 +0200
-Message-ID: <3F5CC41F00010955@ocpmta3.freegates.net>
-In-Reply-To: <20031009173436.GI27861@parcelfarce.linux.theplanet.co.uk>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 willy
-To: "Matthew Wilcox" <willy@debian.org>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DA9424957
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Oct 2003 03:13:45 -0600 (MDT)
+Date: Fri, 10 Oct 2003 11:13:42 +0200
+Subject: Re: [parisc-linux] IBM 3151 on K200 in Debian 3.0
+Content-Type: text/plain; delsp=yes; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v552)
 Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Walker White <wmwhite@udallas.edu>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <20E48BDA-FA86-11D7-B35B-0030657CC792@udallas.edu>
+Message-Id: <0B279720-FB02-11D7-BD3F-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,43 +22,85 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew,
+Looks like you've been rather unlucky with your search :-P
 
-Sorry I just trust that was related to a previous mail :(
+On the m-l page (http://www.parisc-linux.org/mailing-lists/) this mail
+http://lists.parisc-linux.org/pipermail/parisc-linux/2003-March/=20
+019399.html
+would have told you to look at:
+1) http://pateam.esiee.fr/doc.html for a boot howto
+and at
+5) http://pateam.esiee.fr/list.html for per machine details.
 
-In fact I was just looking for a place to put superio_?_init() calls (was
-in rs_init() in 2.4?).
+The latter link would have told you that for K200 you need PDC_CONSOLE =20=
 
-Thanks for ypur attention,
-    Joel
+which is enabled by default on the netinst isos available from both =20
+pateam and parisc-linux.org, and would also have pointed you at all the =20=
 
->-- Original Message --
->Date: Thu, 9 Oct 2003 18:34:36 +0100
->From: Matthew Wilcox <willy@debian.org>
->To: Joel Soete <soete.joel@tiscali.be>
->Cc: parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 willy
+data you need to install your box with the following useful m-l thread:
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/=20
+017840.html
+
+details being also present in the boot howto afore mentioned...
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
+
+Le jeudi, 9 oct 2003, =E0 20:26 Europe/Paris, Walker White a =E9crit :
+
+> I have scoured the FAQ and mailing lists.  Supposedly this has been =20=
+
+> resolved, but I am having the same old problems.
+>
+> I just inherited an old K200 which I want to give my students as a =20
+> "play" machine.  I am trying to install Debian 3.0 on it.  When I got =20=
+
+> the machine, it had no console whatsoever.  So I grabbed an old IBM =20=
+
+> 3151 and plugged into the machine.  Works, no problem.  I can boot =20
+> into HPUX just fine (which is still on the machine).
+>
+> I tried to boot to the CD.  After a few stack dumps, a learned from =20=
+
+> the mailing list that I needed to change my console to ttyB0 from =20
+> ttyS0.  No more stack dumps.  However, after the message that says I =20=
+
+> might not see anything (and hence need to switch consoles), I do not =20=
+
+> see anything.  Supposedly this issue was fixed in the install CDs (at =20=
+
+> least that is what mailing list says), but doesn't seem so to me.
+>
+> Is this an issue with the install CDs, or do I need to do something =20=
+
+> funky with the IBM 3151?
+>
+> =
+-----------------------------------------------------------------------=20=
+
+> ------------------------
+> | Walker White                                                         =
+=20
+>   Assistant Professor  |
+> | wmwhite@udallas.edu                                                  =
+=20
+>  Dept. of Mathematics  |
+> | 972 -721-5380                                                        =
+=20
+>  University of Dallas  |
+> =
+-----------------------------------------------------------------------=20=
+
+> ------------------------
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 >
 >
->On Thu, Oct 09, 2003 at 07:24:16PM +0200, Joel Soete wrote:
-> Hi Matthew,
-> 
-> Sorry but it doesn't help yet to boot the b2k model (always same symptom)
-> Or do i lost something and should I have to wait for a 32bits_defconfig?
-
-I haven't even tr
->ed to track down the problems on c3k yet.  I might
-get round to it in a week or so.  Other issues are pressing.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thous
->nds of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert
-Fisk
-
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
