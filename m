@@ -1,18 +1,22 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE690484B
+Return-Path: <ja2morri@csclub.uwaterloo.ca>
+Received: from perpugilliam.csclub.uwaterloo.ca
+	(perpugilliam.csclub.uwaterloo.ca [129.97.134.31])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F6D7484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  9 Feb 2004 10:23:45 -0700 (MST)
-Date: Mon, 9 Feb 2004 10:23:40 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: "Bass, Mick" <mick.bass@hp.com>
-Subject: Re: [parisc-linux] JVM for Linux on pa-risc?
-Message-ID: <20040209172340.GB760@colo.lackof.org>
-References: <40700B4C02ABD5119F00009027876644077CD571@hplex1.hpl.hp.com>
-Mime-Version: 1.0
+	Mon,  9 Feb 2004 11:54:44 -0700 (MST)
+Sender: ja2morri@perpugilliam.csclub.uwaterloo.ca
+To: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
+References: <400CB8A10001082F@ocpmta3.freegates.net>
+From: James Morrison <ja2morri@csclub.uwaterloo.ca>
+Date: 09 Feb 2004 13:40:23 -0500
+In-Reply-To: <400CB8A10001082F@ocpmta3.freegates.net>
+Message-ID: <kfh3c9k14h4.fsf@perpugilliam.csclub.uwaterloo.ca>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40700B4C02ABD5119F00009027876644077CD571@hplex1.hpl.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,19 +26,48 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Feb 09, 2004 at 07:50:35AM -0800, Bass, Mick wrote:
-> Does there exist a java virtual machine for linux on pa-risc, and if so where might one find it?
 
+"Joel Soete" <soete.joel@tiscali.be> writes:
 
-http://www.google.com/search?hl=en&lr=&ie=ISO-8859-1&q=JVM+%5Bparisc-linux+site%3Alists.parisc-linux.org&btnG=Google+Search
+> Hi Carlos and Dave,
+> 
+> I am trying my toolchain script against gcc-snapshot and glibc(2.3.3) with
+> respective Carlos' patches but I met some pb.
+> 
+> The first was against gconv_simple.c for which I find easily the follwing
+> patch (see <http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/iconv/gconv_simple.c.diff?r1=1.59&r2=1.60&cvsroot=glibc>)
+> ========><========
+> --- iconv/gconv_simple.c.orig	2004-02-09 15:11:52.000000000 +0100
+> +++ iconv/gconv_simple.c	2004-02-09 16:07:16.000000000 +0100
+> @@ -453,9 +453,11 @@
+>  #if __BYTE_ORDER == __BIG_ENDIAN
+>    /* Sigh, we have to do some real work.  */
+>    size_t cnt;
+> +  uint32_t *outptr32 = (uint32_t *) outptr;
+>  
+>    for (cnt = 0; cnt < n_convert; ++cnt, inptr += 4)
+> -    *((uint32_t *) outptr)++ = bswap_32 (*(const uint32_t *) inptr);
+> +    *outptr32++ = bswap_32 (*(const uint32_t *) inptr);
+> +  outptr = (unsigned char *) outptr32;
+>  
+>    *inptrp = inptr;
+>    *outptrp = outptr;
+> ========><========
+> 
+> Is it correct?
+> 
+> The next on is more hard to me and find in _buff() from sunrpc/clnt_perr.c:
+> [snip]
+[snip]
+> Any idea?
 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2004-January/022056.html
+ This patch fixes the problem:
+http://sources.redhat.com/ml/libc-hacker/2004-02/msg00005.html
+ 
+> Thanks in advance,
+>     Joel
+> 
+> PS: I just attempt this test because I read a lot of akpm patch related to
+> gcc-35  ;)
 
-using the debian-hppa search page:
-	http://lists.debian.org/search.html
-	( Enter "JVM" and limit search to "hppa" list)
-
-http://lists.debian.org/debian-hppa/2004/debian-hppa-200402/msg00000.html
-
-hth,
-grant
+Jim
