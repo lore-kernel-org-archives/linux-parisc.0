@@ -1,31 +1,70 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from snark.thyrsus.com (snark.tuxedo.org [207.106.50.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6202482A
-	for <parisc-linux@parisc-linux.org>; Sat, 21 Apr 2001 08:51:24 -0600 (MDT)
-Date: Sat, 21 Apr 2001 10:52:00 -0400
-From: "Eric S. Raymond" <esr@thyrsus.com>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
-Message-ID: <20010421105200.C26142@thyrsus.com>
-Reply-To: esr@thyrsus.com
-References: <20010420154743.A19618@thyrsus.com> <200104210648.AAA01233@puffin.external.hp.com>
-Mime-Version: 1.0
+Received: from viemta04.chello.at (viemta04.chello.at [195.34.133.54])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DEB2A482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Apr 2001 09:33:03 -0600 (MDT)
+Sender: chris@dsl2.external.hp.com
+Message-ID: <3AE1A805.C60DF838@dot.at>
+Date: Sat, 21 Apr 2001 17:32:21 +0200
+From: Christoph Plattner <christoph.plattner@dot.at>
+MIME-Version: 1.0
+To: Jason Saggers <psyclone@owbn.net.nz>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Hello and Question about the E45
+References: <000001c0ca50$2b6c82e0$0414a8c0@darknight.gen.nz>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200104210648.AAA01233@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Sat, Apr 21, 2001 at 12:48:19AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler <grundler@puffin.external.hp.com>:
-> One might consider this a bug that hasn't happened yet - thanks Eric!
+Hello !
 
-Thank you very much for your cooperation.  This is the third real problem that
-the CONFIG_ namespace audit has turned up, and a good example of the sort of
-thing I have been hoping to accomplish with it.
+At the moment, I am the only person who had booted Linux on an
+E-server, I have the E55.
+
+The E55 (and the others) have proprietary interfaces and three main
+points
+are affected:
+	- serial multiport (serial console on port 0 !!!)
+	- SCSI disks and SCSI sub system
+	- parallel port
+
+For the first (serial console) I wrote some "hacks" for the linux
+kernel.
+I added a tty-device driver for the PDC ROM console (polling, etc....),
+and now I can boot the machine, with NFSROOT of course. Even login, etc
+is working correctly.
+
+If you have interest in more detail or in my kernel tree for the E55,
+please
+email to me.
+
+I think for some debugging purposes or problems with serial devices, my
+kernel add-on can also be interesting for the main-stream of linux.
+
+With friendly regards
+	Christoph Plattner
+
+BTW: My new email address is 
+	christoph.plattner@gmx.at    -- soon.
+
+------------------------
+
+Jason Saggers wrote:
+> 
+> Hi,
+> 
+>         I realiase that the E45's arent completely support by this project, but has anyone succeded in getting on to boot etc...
+> 
+>         I am getting it to boot part why... and the just stops..... No errors nothing
+> 
+>         Any information would be appreciated.  I am currently using the 0.5 iso images.  Am about to try the later kernels etc in the next couple of days.
+> 
+> Jason
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+
 -- 
-		<a href="http://www.tuxedo.org/~esr/">Eric S. Raymond</a>
-
-(Those) who are trying to read the Second Amendment out of the Constitution by
-claiming it's not an individual right (are) courting disaster by encouraging
-others to use the same means to eliminate portions of the Constitution they
-don't like.
-	-- Alan Dershowitz, Harvard Law School
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
