@@ -1,51 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18C69482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Jun 2001 03:59:20 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE4AB482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Jun 2001 05:55:27 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 38C7AB00C; Tue, 19 Jun 2001 11:00:29 +0100 (BST)
-Date: Tue, 19 Jun 2001 11:00:29 +0100
+	id 3F128B00C; Tue, 19 Jun 2001 12:56:37 +0100 (BST)
+Date: Tue, 19 Jun 2001 12:56:37 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Chris Christie <info@wias.net.au>
+To: "E . Pavletic" <Enzo.Pavletic@guest.arnes.si>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] K-9000 Sim700 DUMP Configuring 53c710 scsi0 Revision 0x2 (HPMC)
-Message-ID: <20010619110029.B9877@linuxcare.com>
-References: <000b01c0f632$8821fb60$c901a8c0@wias.net.au>
+Subject: Re: [parisc-linux] palinux-0.9-32serial.iso install problems on a 753/99
+Message-ID: <20010619125637.G9877@linuxcare.com>
+References: <20010619112643.A853@gorica.go.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000b01c0f632$8821fb60$c901a8c0@wias.net.au>; from info@wias.net.au on Sat, Jun 16, 2001 at 05:04:05PM +1000
+In-Reply-To: <20010619112643.A853@gorica.go.net>; from Enzo.Pavletic@guest.arnes.si on Tue, Jun 19, 2001 at 11:26:43AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  Are you trying to install the release 0.9 ISO?
+On Tue, Jun 19, 2001 at 11:26:43AM +0200, E . Pavletic wrote:
+> Hi,
+> 
+> I'm trying to install the palinux-0.9-32serial.iso image from cdrom on my
+> 735, but I run into troubles when the process reaches the point of the
+> installation of the base system: it hangs. If I try to run the command
+> "debootstrap sid /target file:/instmnt/debian" manually, I receive the
+> following messages:
+> 
+> ..
+> I: Retrieving file:/instmnt/debian/dists/unstable/main/binary-hppa/base/util-linux_2.11b-5_hppa.deb
+> I: Retrieving file:/instmnt/debian/dists/unstable/main/binary-hppa/base/whiptail_0.50.17-6_hppa.deb
+> I: Extracting required packages
+> tar: ./usr/share/doc/libperl5.6: Cannot create symlink to 'perl-base':
+> Input/output error
+> tar: Error exit delayed from previous errors
+> 
+> Can anyone help me?
+> enzo
 
-Which install type are you attempting?  32 bit, 64 bit, serial
-or graphical console?
-
-Can you post the console log so we can see what happens prior
-to this HPMC?
-
-If your machine can boot 32 or 64 bit kernels, then I'd suggest
-that you try 32 bit serial console, as sim700 is better tested on
-32 bit.
+We expect 735 to have problems with the release 0.9 ISO, because of
+problems with glibc 2.2.1.  I havn't seen this particular problem
+reported before though.  Not something silly like out of disk space
+or disk errors, is it?  Can you create files/links in /target from
+the shell, once this error happens?
 
 Richard
-
-
-On Sat, Jun 16, 2001 at 05:04:05PM +1000, Chris Christie wrote:
-> Any light that can be shed on my problem?
-> 
-> High Priority Machine Check (HPMC): Code 1
-> 
-> The machine is a K9000 PA8000 k-250
-> 
-> 
-> Make a WIASA decision today !
-> 
-> Wholesale Internet Access Services Australasia P/L ACN 096 011 511 BN17400545
-> 148 Ipswich Road - Woolloongabba - Brisbane - 4102
-> GPO Box 949 Brisbane 4001
-> Tel: 07 3217 4103
-> Fax: 07 3217 3541  
-> Email: info@wias.net.au 
-> Mob: 0417 375 196
