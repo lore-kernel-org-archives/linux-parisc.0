@@ -1,55 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01095
-	for <parisc-linux@puffin.external.hp.com>; Sat, 11 Nov 2000 16:22:28 -0700
-Message-Id: <200011112329.PAA09355@milano.cup.hp.com>
-To: Andrew Shugg <andrew@neep.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01462
+	for <parisc-linux@puffin.external.hp.com>; Sat, 11 Nov 2000 16:31:49 -0700
+Message-Id: <200011112338.PAA09398@milano.cup.hp.com>
+To: Rod Smart <snaketails@optushome.com.au>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000 e25 
-In-reply-to: Your message of "Sat, 11 Nov 2000 23:12:55 PST."
-             <20001111231253.I9666@neep.com.au>
-Date: Sat, 11 Nov 2000 15:29:14 -0800
+Subject: Re: [parisc-linux] PA-RISC newbie 
+In-reply-to: Your message of "Sat, 11 Nov 2000 23:57:43 PST."
+             <3A0D4245.1C8FB2B5@optushome.com.au>
+Date: Sat, 11 Nov 2000 15:38:58 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Andrew Shugg wrote:
-> > Considering how often this question comes up is there anyone out there
-> > that is interested in tracking down the info to port linux to this class
-> > of box.
-> > 
-> > Server boxes may be classed as boring to some but there seem to be a
-> > large number of people who have at least one of them sitting about doing
-> > nothing.
-> > 
-> > Joe.
+Rod Smart wrote:
+>     Hi there.
 > 
-> I don't perceive the problem to be a lack of willingness, or interest, but
-> has already been stated the older systems contain a lot of proprietry stuff
-> that isn't sufficiently documented for people to work on.
+>     I just purchased at a **VERY** cheap price, a HP Visualize C-180
+> RISC system from a CAD drafting company, this box included a 4Gb Hard
+> disk, a video card with unknown amount of memory (& daughter board,
+> assuming its memory upgrade) and system board RAM is fully loaded
+> (768Megs).
+> 
+>     I would like to run this system on Linux, and found the PA-RISC web
+> site from the www.linux.org web site :o)
+> 
+>     The system currently has HP-UX installed, but not having any
+> usernames or passwords, I cannot access the system from the prompt.
 
-AFIAK, the chipsets for I/O devices in E25 have plenty of documentation.
-The issue is someone has to clean them up and get a lawyer to approve
-their publication. It's all about IP and avoiding lawsuits. This has
-been discussed before.  Any HP employees interested in doing this "on
-their own time" can contact me and I'll help locate unpublished docs.
+Yes you can. You just need to know how.
 
-Note that PDC is the same for Nova-Class (EFGHI-class) boxes as for
-the workstations for the most part. So someone could start by just
-trying to boot those boxes and see how far it gets before dying.
+Interrupt the boot process to get a "BOOT ADMIN" prompt (or whatever
+it's called - Boot Console Handler).
+Then "boot primary isl" (shortened to bo pri isl)
+You should have an "ISL>" prompt now.
+ISL> hpux -is
+And you will boot to single user state with a shell.
+mountall and you should have the regular tools too.
+vi /etc/passwd to your hearts content.
 
+"There is no such thing at security with out physical security".
 
-> Maybe as the parisc port grows more popular and attracts more resources,
-> some enthusiastic people will get it happening.  =)
+..
+>     I'm not confident enough on how to create and burn a bootable CD to
+> try and boot the box that way, I still think the vmlinux kernel I
+> downloaded from the PA-RISC website has something to do with my problems
+> (or the permissions)
+>
 
-Having worked on the HPUX SCSI driver (scsi3 and scsi1) for E25 and
-similar boxes, I question anyone's sanity who volunteers to write
-drivers for SPIFI chips - even with full documentation. I would rather
-give folks that interested in contributing a 715/33! (or my gosh /50's!)
-
-Yes - I know folks who collect PDP's and keep them running in their
-garage...'nuf said.
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+You can dd the ISO image to a regular hard disk (ie /dev/sdc) and move
+that disk over to the C180. Then boot from that disk.
