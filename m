@@ -1,13 +1,15 @@
-From: =?ISO-8859-2?Q?Bart=B3omiej_Ochman?= <ochman@ark.pl>
-Subject: [parisc-linux] Alaxis GSC+ 155Mb ATM
-Date: Mon, 24 May 2004 21:46:00 +0200
-Message-ID: <40B250F8.4020203@ark.pl>
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] Support for 2.4.x kernels on hppa
+Date: Mon, 24 May 2004 22:19:08 +0200
+Message-ID: <20040524221908.0eee0174.varenet@esiee.fr>
+References: <20040524183227.GW7207@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=US-ASCII
+Cc: tausq@debian.org
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040524183227.GW7207@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,14 +20,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello,
+On Mon, 24 May 2004 11:32:27 -0700
+"Randolph Chung" <tausq@debian.org> wrote:
 
-I have C200+ with Alaxis GSC+ 155Mb ATM card added. Is there any hope it 
-will be supported in parisc-linux, or I just can't ask google the right 
-question?
+> Hi all,
+> 
+> I'd like to take an informal "survey" of what kernel versions people
+> are using....
+[snip]
+> If you are one of those people who really care about 2.4 support,
+> please speak up now! 
 
-Regards,
-BO
+We're mostly using 2.4 on our production and devel machines, as the
+following page shows:
+
+http://www.pateam.org/realisations.html
+
+Some of them could be switched to 2.6, but not the SMP ones, which are
+64bit btw, until SMP is proven efficient on 2.6.
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
