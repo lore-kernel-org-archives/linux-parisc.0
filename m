@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] B2000 
-In-Reply-To: Message from Grant Grundler <grundler@dsl2.external.hp.com>
-   of "Tue, 22 Jan 2002 10:55:57 MST." <20020122175557.D51FF482E@dsl2.external.hp.com>
-References: <03273D4BC7F4D511AC440008C7E6F8815420CA@nlntmail2b.ats.nld.alcatel.nl>  <20020122175557.D51FF482E@dsl2.external.hp.com> 
-Date: Tue, 22 Jan 2002 11:44:50 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020122184450.CE662482A@dsl2.external.hp.com>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C163482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 12:09:07 -0700 (MST)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1011726540.3c4db8cc712a9@webmail.tiscalinet.be>
+Date: Tue, 22 Jan 2002 20:09:00 +0100 (CET)
+From: jsoe0708@tiscali.be
+Cc: grundler@dsl2.external.hp.com, Hans.Witvliet@Alcatel.nl
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] [Re]: B2000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,16 +21,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-> Built-in IDE cd-rom drive on BCJ-[123567]XXX is not supported.
-> Off and on I've been hacking on suckyio IDE support but it's still
-> not working.
+Hi all,
 
-In case anyone else wants to take a whack at IDE, I've posted my latest
-diff on
-	ftp://ftp.parisc-linux.org/patches/ide-2.4.17-pa13.diff
+Just to relate an experience:
 
-I won't be looking at this for the next week or so...too many other
-things to do atm.
+For my part, I just take the CD-0.9.3 and try to boot it with a B2000 and it
+failled also for me with similar messages if I use the STI buildin console.
+Well,... I disconnect ps/2 kbd and mouse and use a serial console (emulating
+vt100) and it boot correctly (with internal ide cdrom drive) at leat till the 2
+first Debian/GNU install dialog box. (I did not install actually because I have
+not disk to use so it is possible that it would failled later because of ide
+drive?).
 
-grant
+Is it help?
+
+Joel
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
