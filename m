@@ -1,18 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 003434840
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B5D224840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 11 Jan 2004 11:48:53 -0700 (MST)
-Message-ID: <40019AF6.3010006@tiscali.be>
-Date: Sun, 11 Jan 2004 18:50:30 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+	Sun, 11 Jan 2004 13:49:51 -0700 (MST)
+Message-Id: <200401112049.i0BKnihs000770@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] running gcc testsuite triggers ongoing page faults
+To: doko@cs.tu-berlin.de (Matthias Klose)
+Date: Sun, 11 Jan 2004 15:49:44 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <16385.5227.153358.397944@gargle.gargle.HOWL> from "Matthias
+	Klose" at Jan 11, 2004 10:16:27 am
 MIME-Version: 1.0
-To: James Bottomley <James.Bottomley@steeleye.com>
-Subject: Re: [parisc-linux] cvs confuse me: please help!
-References: <40014D46.8030205@tiscali.be>
-In-Reply-To: <40014D46.8030205@tiscali.be>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,94 +22,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-James,
+> I think I did see this first with gcc-3.3 from 20031229. Running the
+> 3.3 testsuite (gcc) doesn't terminate. Instead, I see expect eating
+> all CPU time, together with syslogd and klogd. /var get's filled with
+> log messages in kern.log, syslog and debug.
+> 
+> The machine is a A500, kernel from the archives (kernel-image-2.4.21-64-smp_pa7.3)
 
-Thanks for your merge,
-	Joel
+I've had similar problems on gsyprf11, but recent kernels seem to be
+better.  I believe that this is more likely on SMP kernels and we have
+never had a stable one on gsyprf11.  You can kill expect and GCC will
+move on to the next suite.  I haven't seen this on the C3750.
 
-Joel Soete wrote:
-> Hi all,
-> 
-> As usual I do a 'cvs -z3 update linux-2.6'.
-> 
-> Head of linux-2.6/Makefile:
-> VERSION = 2
-> PATCHLEVEL = 6
-> SUBLEVEL = 1
-> EXTRAVERSION =-rc2-pa0
-> 
-> # *DOCUMENTATION*
-> # To see a list of typical targets execute "make help"
-> # More info can be located in ./README
-> # Comments in this file are targeted only to the developer, do not
-> # expect to learn how to build the kernel reading this file.
-> 
-> To build my own merge with 2.6.1 I grab linux-2.6.1-rc22.tar.bz2 from 
-> ftp.kernel.org and do a diff between src to obtain a patch file. Just 
-> scaning this patch file I read this:
-> [snip]
-> diff -NaurX dontdiff linux-2.6.1-rc2/drivers/scsi/sym53c8xx_2/sym_misc.c 
-> linux-2.6.1-rc2-pa0/drivers/scsi/sym53c8xx_2/sym_misc.c
-> --- linux-2.6.1-rc2/drivers/scsi/sym53c8xx_2/sym_misc.c 2004-01-06 
-> 06:10:10.000000000 +0100
-> +++ linux-2.6.1-rc2-pa0/drivers/scsi/sym53c8xx_2/sym_misc.c     
-> 2003-12-14 21:57:09.000000000 +0100
-> @@ -315,7 +315,7 @@
->          */
->         inq_byte56 = tp->inq_byte56;
->         if (inq_version >= 4 && inq_len > 56)
-> -               tp->inq_byte56 = inq_data[56];
-> +               inq_byte56 = inq_data[56];
->  #if 0
->  printf("XXXXXX [%d] inq_version=%x inq_byte7=%x inq_byte56=%x XXXXX\n",
->         inq_len, inq_version, inq_byte7, inq_byte56);
-> [snip]
-> 
-> To be sure it's relevant, I check with viewcvs and read the Matthew's 
-> patch:
-> ===================================================================
-> RCS file: /var/lib/cvs/linux-2.6/drivers/scsi/sym53c8xx_2/sym_misc.c,v
-> retrieving revision 1.3
-> retrieving revision 1.3.4.1
-> diff -u -r1.3 -r1.3.4.1
-> --- linux-2.6/drivers/scsi/sym53c8xx_2/sym_misc.c    2003/12/14 
-> 15:26:41    1.3
-> +++ linux-2.6/drivers/scsi/sym53c8xx_2/sym_misc.c    2004/01/07 
-> 21:09:15    1.3.4.1
-> @@ -315,7 +315,7 @@
->       */
->      inq_byte56 = tp->inq_byte56;
->      if (inq_version >= 4 && inq_len > 56)
-> -        inq_byte56 = inq_data[56];
-> +        tp->inq_byte56 = inq_data[56];
->  #if 0
->  printf("XXXXXX [%d] inq_version=%x inq_byte7=%x inq_byte56=%x XXXXX\n",
->      inq_len, inq_version, inq_byte7, inq_byte56);
-> =========><=========
-> 
-> I so remove my tree linux-2.6 and redo cvs co linux-2.6 but when I check 
-> 'sym_misc.c', I always got:
-> [snip]
->     313         /*
->     314          *  Get CLOCKING capability.
->     315          */
->     316         inq_byte56 = tp->inq_byte56;
->     317         if (inq_version >= 4 && inq_len > 56)
->     318                 inq_byte56 = inq_data[56];
->     319 #if 0
->     320 printf("XXXXXX [%d] inq_version=%x inq_byte7=%x inq_byte56=%x 
-> XXXXX\n",
->     321         inq_len, inq_version, inq_byte7, inq_byte56);
->     322 #endif
-> [snip]
-> 
-> What do I wrong?
-> 
-> Thanks in advance for help and advise,
->     Joel
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+This definitely isn't a GCC problem.  The problem never occurs under
+hpux.  It's probably some kind of timing or locking issue that just
+happens to get tweaked by a particular test.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
