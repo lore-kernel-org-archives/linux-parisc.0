@@ -1,28 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA22608
-	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Oct 2000 05:56:37 -0600
-Received: from user48-134.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.48.134)
-  by mailserv2.iuinc.com with SMTP; 3 Oct 2000 11:57:33 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 232E3B005; Tue,  3 Oct 2000 12:55:45 +0100 (BST)
-Date: Tue, 3 Oct 2000 12:55:45 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001003125545.B17291@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Kernel modules working for 32 bit kernels
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA24609
+	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Oct 2000 09:01:25 -0600
+To: Matthew Halliday <matthewh@fesa.co.uk>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: PA-RISC linux cd 
+In-Reply-To: Your message of "Tue, 03 Oct 2000 11:03:49 BST."
+             <39D9AF05.8AE13D4B@fesa.co.uk>
+References: <39D9AF05.8AE13D4B@fesa.co.uk> 
+Date: Tue, 03 Oct 2000 08:59:49 -0600
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E13gTaF-00046K-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  Loading/unloading of kernel modules now works for 32 bit kernels.
-You need to build modutils from cvs.  I've tested it by loading
-core scsi support, scsi disk support, sym53c8xx driver, and ext2 file
-system support, and then accessing a file system off the 53c875 on
-my A180.
 
-Trying to unload the sym53c8xx module causes a kernel crash as
-a result of interupts being disabled on entry to the syscall and the
-module not cancelling its timer.
+Matthew - I can never remember which 715's are supported so I'm passing
+your note to the mailing list.
 
-Richard
+= I've aquired a 715/33 - minus monitor or keyboard (but I do have a
+= mouse!) - do you know if there anywhere I can get details of these
+= machines or a keyboard and monitor?  I do have an A1097C 19" monitor
+= minus a cable - will that do?  We use a lot of HP kit here, but the HP
+= website doesn't seen to have anything on these machines.  I understand I
+= can get onto them with a serial cable - how do I set that up?  I'm
+= pretty sure it works ok (I found it in a rubbish skip!) cos when I start
+= it up I get no error beeps, and it all sounds normal.  Sorry to ramble
+= on - if you can't help then that's ok.
+
+	-P
