@@ -1,40 +1,57 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21657
-	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Jun 2000 11:46:55 -0600
-Received: from unknown (HELO tdear.linuxcare.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 7 Jun 2000 17:47:33 -0000
-Received: from linuxcare.com (localhost.localdomain [127.0.0.1])
-	by tdear.linuxcare.com (Postfix) with ESMTP id 4D0158805
-	for <parisc-linux@thepuffingroup.com>; Wed,  7 Jun 2000 10:49:28 -0700 (PDT)
-Sender: tdear@tdear.linuxcare.com
-Message-ID: <393E8B27.AE7ECEDB@linuxcare.com>
-Date: Wed, 07 Jun 2000 10:49:28 -0700
-From: Tara Dear <tdear@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA30193
+	for <parisc-linux@puffin.external.hp.com>; Thu, 8 Jun 2000 04:28:09 -0600
+From: Helge Deller <deller@gmx.de>
+To: Tara Dear <tdear@linuxcare.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Unable to open console on a 712
+Date: Thu, 8 Jun 2000 12:28:17 +0200
+Content-Type: text/plain
+References: <393E8B27.AE7ECEDB@linuxcare.com>
+In-Reply-To: <393E8B27.AE7ECEDB@linuxcare.com>
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Unable to open console on a 712
+Message-Id: <00060812281701.00347@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I am trying to boot a 712/80.
+Hi Tara,
 
-When built with ramdisk20000530-sticon.tgz and specifing sti console in
-menuconfig, make dep doesn't run clean
+Am Wed, 07 Jun 2000 schrieb Tara Dear:
+> I am trying to boot a 712/80.
+>
+> When built with ramdisk20000530-sticon.tgz and specifing sti console in
+> menuconfig, make dep doesn't run clean
 
-When built with ramdisk2000530-sticon.tgx and NOT specifing sti console
-in menusconfig, make dep works but  booting stops after :
+I will look into this later this evening. 
+(did you disabled the serial-console in this configuration ?).
 
-        kmem_create: Forcing size work alignment -nfs_fh
-        VFS: Mounted root (ext2 filesystem)
-        request_irq(538, c01bb030, 0x4000000, serial, c0289794)
+>
+> When built with ramdisk2000530-sticon.tgx and NOT specifing sti console
+> in menusconfig, make dep works but  booting stops after :
+>
+>         kmem_create: Forcing size work alignment -nfs_fh
+>         VFS: Mounted root (ext2 filesystem)
+>         request_irq(538, c01bb030, 0x4000000, serial, c0289794)
 
-At this point certain key strokes create responses
-        keyb_at: K_NONE for 125                              //when
-pushing page up
-or
-        keyboard: unrecognized scancode (61) - ignored
-//when pushing ctrl
+This seems to be correct. The kernel switches to the serial-console, so that 
+all output goes to your serial port. You should check it again with 
+ramdisk20000530-sercon.tgz or change the major/minor of /dev/console in the 
+sticon-ramdisk to 5,1. 
 
-I can ping the 712 but I can't get the console.
+>
+> At this point certain key strokes create responses
+>         keyb_at: K_NONE for 125                              //when
+> pushing page up
+> or
+>         keyboard: unrecognized scancode (61) - ignored
+> //when pushing ctrl
 
-Any ideas??
+you get this output, because we do not disable the pdc-console completely for 
+now.
+
+>
+> I can ping the 712 but I can't get the console.
+>
+> Any ideas??
+>
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
