@@ -1,60 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 288994A18
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 31 Jan 2001 21:00:31 -0700 (MST)
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id UAA20418
-	for <parisc-linux@puffin.external.hp.com>; Wed, 31 Jan 2001 20:56:22 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA06166;
-	Thu, 1 Feb 2001 14:59:45 +1100
-Date: Thu, 1 Feb 2001 14:59:45 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Weird compile problems
-In-Reply-To: <Pine.LNX.4.21.0101311805130.19209-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0102011431180.19209-100000@front.linuxcare.com.au>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3CA1E4A18
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Feb 2001 04:42:11 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA26260
+	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Feb 2001 04:37:52 -0700
+From: penfold@customware.com.au
+Received: from customware.com.au (CPE-144-132-17-132.vic.bigpond.net.au [144.132.17.132])
+	by mr14.vic-remote.bigpond.net.au (Pro-8.9.3/8.9.3) with ESMTP id WAA18952
+	for <parisc-linux@thepuffingroup.com>; Thu, 1 Feb 2001 22:41:28 +1100 (EDT)
+Received: (from penfold@localhost)
+	by customware.com.au (8.9.3/8.8.7) id WAA11608
+	for parisc-linux@thepuffingroup.com; Thu, 1 Feb 2001 22:41:20 +1100
+Message-Id: <200102011141.WAA11608@customware.com.au>
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 1 Feb 2001 22:41:19 +1100 (EST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 720/50 SCSI - supported?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 31 Jan 2001, Alan Modra wrote:
+Hi,
 
-> On Wed, 31 Jan 2001, Alan Modra wrote:
-> 
-> [about pehc devel branch gcc]
-> > r19 is being trashed.  It's a compiler bug.  One I added too. :-(
-> 
-> Now fixed.
+after successfully cross compiling a kernel, I have a problem!
 
-It anyone has tried to compile glibc with the devel branch compiler,
-you've probably discovered by now that ld.so is still crashing, but for a
-different reason.  The global register allocation pass does the following
-naughty thing:
+The initial bus scan seems to see the scsi controller:
+model   00002000 00000481 00000000 00000000 775e3623 000011f4 00000004 0000000d
+00000000
+vers    00000003
+CPUID   vers 0 rev 0
+model   9000/720
+led_init: CPU_HVERSION 200
+Searching for devices in PDC firmware... processor hpa 0xfffbe000
+ an older box...
+Found devices:
+1. Cobra Core BA (11) at 0xf082f000, versions 0x4, 0x0, 0x70, 0x0, 0x0
+2. Cobra Core SCSI (10) at 0xf0825000, versions 0x4, 0x0, 0x71, 0x0, 0x0
 
-[from elf/dl-load.c]
-(insn 612 608 1626 (set (reg:SI 1 %r1)
-        (plus:SI (reg:SI 19 %r19)
-            (high:SI (symbol_ref/v/f:SI ("*.LC27"))))) 80 {*pa.md:2326}
-(nil)
-    (nil))
+but the driver seems to have a problem here!
 
-(insn 1626 612 621 (set (reg:SI 23 %r23 [242])
-        (reg:SI 1 %r1)) 69 {*pa.md:2099} (nil)
-    (nil))
+SCSI subsystem driver Revision: 1.00
+sim700: Couldn't get consistent shared memory
+sim700: Configuring 53c700 (SCSI-ID 7) at f0825100, IRQ 86
+scsi0: Revision 0x0
+Post test1, istat 05, sstat0 00, dstat 81
+sim700: WARNING IRQ probe failed, (returned 0)
+scsi0: test 1 FAILED: dsps: exp 0xab93001d, got 0x65686361
+scsi0: Chip register contents:
+ (script[0] at virt c7f70000, bus 7f70000)
+ 00  sien:  af  sdid:  00  scntl1:20  scntl0:c4
+ 04  socl:  00  sodl:  00  sxfer: 00  scid:  80
+ 08  sbcl:  00  sbdl:  00  sidl:  00  sfbr:  00
+ 0C  sstat2:00  sstat1:00  sstat0:00  dstat: 80
+ 10
+ 14  ctest3:92  ctest2:21  ctest1:f0  ctest0:00
+ 18  ctest7:00  ctest6:53  ctest5:00  ctest4:00
+ 1C  temp:  00000000
+ 20              ctest8:ff  istat: 06  dfifo: 32
+ 24  dbc:   635f7472  dnad:  65686361  dsp:   07f774b4
+ 30  dsps:  65686361
+ 34  dmode: 80
+ 38  dcntl: 80  dwt:   00  dien:  1d
+ 3C
+Warning : device (10, 0x4, 0x0, 0x71, 0x0) NOT claimed by Lasi SCSI 53c700
 
-[snip around 1480 lines, including calls]
+Is this a known problem ?
 
-(insn 1638 1527 988 (set (reg:SI 21 %r21)
-        (mem/u:SI (lo_sum:SI (reg:SI 23 %r23 [242])
-                (unspec:SI[ 
-                        (symbol_ref/v/f:SI ("*.LC27"))
-                    ]  0)) 0)) 82 {*pa.md:2352} (nil)
-    (nil))
+thanks,
 
-With the problem being that r23 is not a callee saved register, so it's
-well and truly trashed by the time insn 1638 tries to use it.
-
--- 
-Linuxcare.  Support for the Revolution.
+Damian
+penfold@customware.com.au
