@@ -1,52 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ukcrn03.zaxus.com (mail.securepay.co.uk [193.112.44.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E950E482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 May 2001 04:07:41 -0600 (MDT)
-Message-ID: <9EB1F7B63758D411A78D00A0C9D84789B16BF0@UKCRN03>
-From: "Bright, Stephen" <Stephen.Bright@thales-esecurity.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Booting from SCSI disk.
-Date: Mon, 21 May 2001 11:03:24 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from mail-ob02.one.net.au (mail-ob02.one.net.au [61.12.0.162])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 789AE482A
+	for <parisc-linux@parisc-linux.org>; Mon, 21 May 2001 06:24:54 -0600 (MDT)
+Received: Received: [from squeak.local (async40-ade-isp-3.nas.one.net.au [203.101.88.41])
+	by mail-ob02.one.net.au  with SMTP id f4LCPGg04251
+	for <parisc-linux@parisc-linux.org>; Mon, 21 May 2001 22:25:31 +1000 (EST)]
+From: amodra@one.net.au
+Date: Mon, 21 May 2001 22:00:03 +0930
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] elf/resolvfail
+Message-ID: <20010521220002.K30444@squeak.one.net.au>
+References: <20010520052242.L23718@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010520052242.L23718@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Sun, May 20, 2001 at 05:22:42AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks Matthew, you were right I was using the lifimage.  Switched to the
-vmlinux, rerun palo natively, and everything worked.  Now just need to find
-out why the ethernet interface is not coming up too.
+On Sun, May 20, 2001 at 05:22:42AM +0100, Matthew Wilcox wrote:
+> 
+> but i would have throught that RTLD_LAZY would mean that it didn't have to
+> resolve foo immediately, only when it was used.  Can someone explain what's
+> supposed to happen here?
 
-Thanks to everyone who replied.
+What type is foo?  Lazy linking only works for .plt entries, ie. functions.
 
--- 
-Steve
-
-> -----Original Message-----
-> From: Matthew Wilcox [mailto:matthew@wil.cx]
-> Sent: 17 May 2001 16:04
-> To: Bright, Stephen
-> Cc: 'parisc-linux@lists.parisc-linux.org'
-> Subject: Re: [parisc-linux] Booting from SCSI disk.
-> 
-> 
-> On Thu, May 17, 2001 at 11:32:35AM +0100, Bright, Stephen wrote:
-> > Is it not possible to run fdisk and palo on the HP itself?
-> 
-> Yes, it is, i've done it.
-> 
-> > I have tried
-> > this, but when it boots I get a message along the lines of 
-> "Cannot grok the
-> > kernel executable" (sorry, this is quoted from memory, so 
-> may not be exactly
-> > correct).
-> 
-> i bet you're using the lifimage instead of the vmlinuz.  
-> paul, would it
-> be feasible to check for this and print a more helpful error 
-> message in
-> this instance?
-> 
-> -- 
-> Revolutions do not require corporate support.
-> 
+Alan
