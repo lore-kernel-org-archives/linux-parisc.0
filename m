@@ -1,36 +1,63 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA22390
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:06:53 -0700
-Sender: drepper@cygnus.com
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SEGV signal handling bug (dynamic linking)
-References: <20001117153954.H32715@linuxcare.com>
-Reply-To: drepper@cygnus.com (Ulrich Drepper)
-From: Ulrich Drepper <drepper@redhat.com>
-Date: 17 Nov 2000 09:09:10 -0800
-In-Reply-To: Richard Hirst's message of "Fri, 17 Nov 2000 15:39:55 +0000"
-Message-ID: <m3hf5634qx.fsf@otr.mynet.cygnus.com>
-MIME-Version: 1.0
+Received: from cosrel2.hp.com (cosrel2.hp.com [156.153.255.162])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA22652
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:08:07 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel2.hp.com (Postfix) with ESMTP id 1DA5E388
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:09:49 -0700 (MST)
+Received: (from grundler@localhost)
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id JAA16103
+	for parisc-linux@puffin.external.hp.com; Fri, 17 Nov 2000 09:09:04 -0800 (PST)
+Date: Fri, 17 Nov 2000 09:09:04 -0800 (PST)
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200011171709.JAA16103@milano.cup.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] pci-dma.c BUG(391/400) PATCH
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst <rhirst@linuxcare.com> writes:
+Hi all,
 
->         mem = malloc(8192);
->         if (mem == NULL) {
->                 perror("malloc");
->                 exit(1);
->         }
->         mem = (char *)(((int)mem + 4095) & ~0x0fff);
->         res = mprotect(mem, 4096, PROT_READ);
+The following patch tries to point a finger at the offender
+rather than just call attention to a problem in the service.
 
-Read the Unix standard:
+I don't have a PCXL/L2 machine setup right now.
+Could someone test commit this patch for me?
 
-  The behavior of this function is unspecified if the mapping was not
-  established by a call to mmap().
+thanks,
+grant
 
--- 
----------------.                          ,-.   1325 Chesapeake Terrace
-Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-Red Hat          `--' drepper at redhat.com   `------------------------
+grundler <505>cvs diff arch/parisc/kernel/pci-dma.c 
+Index: arch/parisc/kernel/pci-dma.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/pci-dma.c,v
+retrieving revision 1.16
+diff -u -p -r1.16 pci-dma.c
+--- pci-dma.c   2000/11/08 06:20:27     1.16
++++ pci-dma.c   2000/11/17 17:04:22
+@@ -387,8 +387,10 @@ static void pa11_dma_free_consistent (st
+ 
+ static dma_addr_t pa11_dma_map_single(struct pci_dev *dev, void *addr, size_t size, int direction)
+ {
+-       if (direction == PCI_DMA_NONE)
+-           BUG();
++       if (direction == PCI_DMA_NONE) {
++               printk(KERN_ERR "pa11_dma_map_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
++               BUG();
++       }
+ 
+        flush_kernel_dcache_range((unsigned long) addr, size);
+        return virt_to_phys(addr);
+@@ -396,8 +398,10 @@ static dma_addr_t pa11_dma_map_single(st
+ 
+ static void pa11_dma_unmap_single(struct pci_dev *dev, dma_addr_t dma_handle, size_t size, int direction)
+ {
+-       if (direction == PCI_DMA_NONE)
+-           BUG();
++       if (direction == PCI_DMA_NONE) {
++               printk(KERN_ERR "pa11_dma_unmap_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
++               BUG();
++       }
+ 
+        if (direction == PCI_DMA_TODEVICE)
+            return;
