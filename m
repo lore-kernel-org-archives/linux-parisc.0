@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 7 Jan 2003 02:17:04 -0700
-To: jsoe0708@tiscali.be
-Cc: "Vlad D. Markov" <markov@monmouth.com>,
-	parisc-linux@lists.parisc-linux.org
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BA1074829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 05:39:19 -0700 (MST)
+Date: Tue, 7 Jan 2003 13:39:10 +0100
 Subject: Re: [parisc-linux] kernel panic when extracting large tar files
-Message-ID: <20030107091704.GC4093@dsl2.external.hp.com>
-References: <200301070054.h070rc5k047346@smtp.monmouth.com> <3DED9A660000447F@ocpmta3.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DED9A660000447F@ocpmta3.freegates.net>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v551)
+Cc: jsoe0708@tiscali.be, "Vlad D. Markov" <markov@monmouth.com>,
+	parisc-linux@lists.parisc-linux.org
+To: grundler@dsl2.external.hp.com (Grant Grundler)
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <20030107091704.GC4093@dsl2.external.hp.com>
+Message-Id: <05456AF0-223D-11D7-950D-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,32 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 07, 2003 at 08:23:37AM +0100, jsoe0708@tiscali.be wrote:
-...
-> >Did not want to send the file to the whole group.
-> >
-> You would :-)
+Well,
 
-joel is right. See FAQ #17.
-http://www.parisc-linux.org/faq/index.html
+after having talked a bit with the 'pioneers' here at ESIEE, it appears 
+that this tar problem is a long lasting one.
 
-> Trap 5 on CPU 0
->  IIR: 6ab60038    ISR: 00000000  IOR: 1d7dcf3c
-> Trap 5 on CPU 0
->  IIR: 22643206    ISR: 00000000  IOR: 10309800
-> Trap 5 on CPU 0
->  IIR: 22643206    ISR: 00000000  IOR: 10309800
-> Trap 5 on CPU 0
->
-> which say that is a trap 5 (ie a LPMC). So, may me am i wrong, but it seems
-> that there is a hardware problem on this machine?
+Matthieu Delahaye told me that since the very first days of pa/linux; 
+this bug has existed, mostly happening on 'un-taring' files, obliging 
+users to untar by small chunks of data.
 
-yes. LPMC is usually a recoverable memory parity error.
-ISR/IOR is the virtual address that was accessed.
-Since this is kernel space (ISR==0), I think you can just
-drop the leading 1 for the physical address.
+FWIW, I experienced that bug too on the A500, had no time to chase it 
+down but I will look at it soon.
+It's near the top of my TODO list :)
 
-Try pulling half the memory and see if the trap goes away.
-Or replace all the memory if you have spares.
+HTH,
 
-grant
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
