@@ -1,63 +1,54 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from boispop1.bois.uswest.net (boispop1.bois.uswest.net [207.108.224.1])
-	by dsl2.external.hp.com (Postfix) with SMTP id BF307482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 18:04:41 -0600 (MDT)
-Received: from rbrad by beavis.ybsoft.com with local (Exim 3.20 #1 (Debian))
-	id 14kam0-0001m0-00
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 03 Apr 2001 18:03:44 -0600
-Date: Tue, 3 Apr 2001 18:03:44 -0600
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010403180344.A6792@beavis.ybsoft.com>
-Reply-To: rbradetich@uswest.net
-Mime-Version: 1.0
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B101C482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 18:09:15 -0600 (MDT)
+Subject: Re: [parisc-linux] request_region()
+To: grundler@puffin.external.hp.com (Grant Grundler)
+Date: Wed, 4 Apr 2001 01:10:42 +0100 (BST)
+Cc: rhirst@linuxcare.com (Richard Hirst),
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200104032357.RAA18650@puffin.external.hp.com> from "Grant Grundler" at Apr 03, 2001 05:57:22 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Ryan Bradetich <rbrad@beavis.ybsoft.com>
-Subject: [parisc-linux] [PATCH] PDC cleanup and encapsulation
+Message-Id: <E14kaso-0000m3-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Anyone see a problem with committing this patch?
+> Someone (willy or prumpf?) told me Linus (and/or perhaps others)
+> have rejected such "automagic" redirection of IO space access functions.
+> IIRC, the reason was complexity and extra CPU cycles.
+> But it seems any multibus driver ends up doing it on its own anyway.
 
-- Ryan
+Some drivers do this andit works out fine. The real reason for suggesting
+people generally avoid it is the cost of all the conditions and stuff.
 
------ Forwarded message from Ryan Bradetich <rbrad@beavis.ybsoft.com> -----
+If its done intelligently its not a problem because driver authors write
 
-Envelope-to: root@amanda.ybsoft.com
-From: "Ryan Bradetich" <rbrad@beavis.ybsoft.com>
-To: parisc-linux@lists.parisc-linux.org
-Reply-To: rbradetich@uswest.net
-X-UIDL: 985854046.7659.154121.boispop1.bois.uswest.net
-Subject: [parisc-linux] [PATCH] PDC cleanup and encapsulation
-X-Mailman-Version: 1.1
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-X-BeenThere: parisc-linux@lists.parisc-linux.org
+	if(dev->bus==GSC)
+	{
+		for(i=0;i<256;i++)
+			*b++=raw_readl(foo+i);
+	}
+	else
+	{
+	}
 
-Hello parisc-linux hackers,
+not
 
-This is a fairly extensive patch which (almost) finishes the PDC cleanups I
-have been working on.  The goal of this patch was to add kernel-docs and
-encapsulate the firmware calls so the caller does not have to worry about
-alignment issues, etc.
+	for(i=0;i<256;i++)
+		*b++=magic_readl(foo+i);
 
-The last PDC/firware cleanup I have on my list is to rename asm/pdc.h
-to firmware.h.  This will be a seperate patch after this patch has been
-reviewed/approved/committed.
+The latter produces pretty hideous efficiency as you can imagine
 
-I have tested this patch on the following machines:
-	- 712/80 using STI console
-	- C200 32-bit kernel using serial console
-	- A500 64-bit kernel using serial console
+> I was thinking perhaps the sim700 driver could be compiled
+> *twice* to produce two binaries from the same source. One flavor
+> to access devices which use MMIO and the other flavor would claim
+> devices which only use IO port space. Thoughts?
 
-Since the majority of the changes are in firmware.c and pdc.h
-I have included include those files in their entirity to make
-them easier to read.
+In some cases that may be appropriate, eg if both devices are almost never
+found in the same box.
 
-As always, feedback, concerns, and questions are welcome.
+One final comment. Every rule Linus makes you can get him to ignore if you have
+a good case for it.
 
-Thanks,
-
-- Ryan
-
-[patch snipped]
-Origional message can be found at:
-
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-March/012108.html
+Alan
