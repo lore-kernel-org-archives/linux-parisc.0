@@ -1,57 +1,41 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA07338
-	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Oct 1999 09:55:22 -0600
-Date: Fri, 8 Oct 1999 11:54:56 -0400 (EDT)
-From: Christopher Beard <chris@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA16105
+	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Oct 1999 05:24:05 -0600
+Message-ID: <19991011112714.29613.rocketmail@web502.yahoomail.com>
+Date: Mon, 11 Oct 1999 04:27:14 -0700 (PDT)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9910081150400.1479-100000@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] PA-RISC boxen in Germany
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] unresolved symbol pci_proc_init
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi all,
 
-I'm thinking that as we receive a fair amount of e-mail similar to this,
-we'll be adding a section to the project pages cataloging the availability
-of older hardware. 
+compiling the current CVS kernel for a non-PCI machine
+like my 715/33 leads to an unresolved symbol message
+for pci_proc_init.
 
----------- Forwarded message ----------
-Date: Thu, 07 Oct 1999 21:47:26 +0200
-From: Christoph Viethen <cv@kawo2.rwth-aachen.de>
-To: cjbeard@thepuffingroup.com
-Subject: PA-RISC Linux project
+In init/main.c is the following code:
 
-Hi there,
+#ifdef CONFIG_GECKO
+        gsc_init();
+        /*
+        ** pci_init() is NOT multi-PCI bus friendly.
+        */
+#ifdef CONFIG_PROC_FS
+        pci_proc_init();
+#endif
+#else
+#ifdef CONFIG_PCI
+        pci_init();
+#endif
+#endif
 
-first of all, a little bit of background info. I'm studying
-computer science at Aachen University, Germany, and at the
-CS building they had a little pool of HP-UX machines. As far as
-I know those were HP9000/720 machines --- rather slow and old,
-but as far as I know those have a HP-PA CPU, right?
+So pci_proc_init is included even if CONFIG_PCI is not
+set.
 
-So now my University is trying to get rid of those machines,
-together with the monitors, 13 computers altogether. Basically,
-their attitude is: If nobody buys them, they'll have them
-transported to the next garbage dump...
-
-So I was considering buying one or two of them, because they will
-be pretty cheap, and I was wondering whether there is an
-alternative operating system for them, like Linux. So that's
-how I found the http://thepuffingroup.com/parisc/ web page ...
-Even if they won't work with Linux yet ... well, they're nice
-X Terminals. Okay, a bit loud and energy-hungry may be, but I
-can live with that.
-
-But after seeing your web page, I also wonder: Can your project
-make use of such machines? And if so, are there project members
-in Germany who might be willing to get in touch with my University
-and buy some?
-
-Let me know ...
-
-Best wishes,
-
-  Christoph
-
--- 
- cv@kawo2.rwth-aachen.de
+Ulrich
+__________________________________________________
+Do You Yahoo!?
+Bid and sell for free at http://auctions.yahoo.com
