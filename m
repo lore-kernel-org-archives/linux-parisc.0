@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D1030482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 04:31:29 -0600 (MDT)
-Date: Thu, 6 Jun 2002 12:31:27 +0200
-Subject: Re: E55 Kernel Support and question for Christoph  (used to be RE:  [parisc-linux] Greetings!)
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v481)
-Cc: Damian Boune <dboune@marmot.com>,
-	Stan Sieler <sieler@allegro.com>,
-	parisc-linux@lists.parisc-linux.org,
-	Thierry Simonnet <t.simonnet@esiee.fr>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <3CFE7787.796C7F33@gmx.at>
-Message-Id: <8EE6C56A-7938-11D6-B6BA-0030656F07A2@esiee.fr>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C19EB482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 06:50:08 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 2B1341F5
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 14:50:07 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id OAA28336 for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Jun 2002 14:49:00 +0200 (METDST)
+Message-ID: <3CFF593A.18910E50@admin.france.hp.com>
+Date: Thu, 06 Jun 2002 14:44:42 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+ boundary="------------E8E9A1BEB36A51EBA033AD03"
+Subject: [parisc-linux] Probleme while compiling last CVS kernel.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,42 +25,86 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le mercredi 5 juin 2002, =E0 10:41 , Christoph Plattner a =E9crit :
+This is a multi-part message in MIME format.
+--------------E8E9A1BEB36A51EBA033AD03
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
->
-> What to do:
-> -----------
->
-> Checkout a kernel, and enable the PDC ROM console in the "Character
-> Devices" under the "Non-standard serial support". Further follow the
-> <HELP> instructions for this driver (Creating a /dev/ttyB0, and use
-> this device as login device).
-You can get a lifimage with PDC enabled there:
-http://pateam.esiee.fr/cd-
-images/lifimages/lifimage-2.4.18-pa32-PDC-20020531.gz
+	Hi
+I've started this morning to download latest CVS bits.
+I've prepared a patche for this version from my dump driver,
+and try to recompile everything, but I've found a problem
+with LVM !!! See:
+make dep: okay
+make vmlinux:
+ioctl32.c:2009: warning: assignment makes pointer from integer without a cast
+ioctl32.c:2030: structure has no member named `inode'
+ioctl32.c:2049: warning: passing arg 2 of `lcopy_from_user' makes pointer from integer without a cast
+ioctl32.c:2067: structure has no member named `inode'
+ioctl32.c:2078: warning: passing arg 2 of `lcopy_from_user' makes pointer from integer without a cast
+ioctl32.c:2082: warning: assignment makes integer from pointer without a cast
+ioctl32.c:2086: structure has no member named `inode'
+ioctl32.c:1985: warning: `v' might be used uninitialized in this function 
 
-There is also a corresponding netinst iso available on this site.
+-> in this file it is:
+	v->pv[i]->pe = NULL; v->pv[i]->inode = NULL;
+and
+	p.pe = NULL; p.inode = NULL; 
 
-Robbert Stanford, who is hacking K-Class, reported this on the IRC:
-15:48:23 <robbie>       the lifimage worked fine
-15:49:00 <robbie>       however the kernel that was installed from=20
-debian.org wasnt pdc enabled
-15:52:44 <robbie>       thibaut:  on eother thing, but its more related=20=
+It complains that there is no "inode" in structure pv[i].
+So in this line v is a struct vg_t. In this structure
+pv[i] is a pv_t structure, I've found this struture in
+include/linux/lvm.h, and it is right, there is no "inode", 
+in it !!!! Is this LVM code broken ?
 
-to the install, i had to exit to a shell and manually edit=20
-/target/etc/inittab and inittab.real to use /dev/ttyB0
-15:55:29 <robbie>       which isnt realy a big deal, knowing one has to=20=
+typedef struct pv_v2 {
+        char id[2];             /* Identifier */
+        unsigned short version; /* HM lvm version */
+        lvm_disk_data_t pv_on_disk;
+        lvm_disk_data_t vg_on_disk;
+        lvm_disk_data_t pv_uuidlist_on_disk;
+        lvm_disk_data_t lv_on_disk;
+        lvm_disk_data_t pe_on_disk;
+        char pv_name[NAME_LEN];
+        char vg_name[NAME_LEN];
+        char system_id[NAME_LEN];       /* for vgexport/vgimport */
+        kdev_t pv_dev;
+        uint pv_number;
+        uint pv_status;
+        uint pv_allocatable;
+        uint pv_size;           /* HM */
+        uint lv_cur;
+        uint pe_size;
+        uint pe_total;
+        uint pe_allocated;
+        uint pe_stale;          /* for future use */
+        pe_disk_t *pe;          /* HM */
+        struct block_device *bd;
+        char pv_uuid[UUID_LEN+1];
 
-use ttyB0 with the lifimage pretty well means you oughta know enough=20
-about sysVinit to check inittab when things go awry on your first boot
+#ifndef __KERNEL__
+        uint32_t pe_start;      /* in sectors */
+#endif
+} pv_t;
+   
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------E8E9A1BEB36A51EBA033AD03
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
-About the inittab.real hack, maybe Richard Hirst will see whether some=20=
-
-tweaks to the default boot-floppies have to be done ;o)
-
-Anyway, I hope this will help you.
-
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------E8E9A1BEB36A51EBA033AD03--
