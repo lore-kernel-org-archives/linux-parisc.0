@@ -1,12 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Breaking PARISC ABI - Testing procedures?
-Date: Mon, 26 Aug 2002 15:41:35 -0400
-Message-ID: <20020826194135.GC632__3781.57437448881$1416621651$gmane$org@systemhalted>
+From: "Christopher C. Chimelis" <chris@debian.org>
+Subject: Re: [parisc-linux] Re: Compiling glide-2001.01.26 on hppa
+Date: Tue, 27 Aug 2002 00:02:21 -0400 (EDT)
+Message-ID: <Pine.LNX.4.21.0208270001180.28522-100000__42643.5312525884$1416621652$gmane$org@spawn.hockeyfiend.com>
+References: <20020824223751.GA16590@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: debian-glibc@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Randolph Chung <tausq@debian.org>,
+	"B. Douglas Hilton" <bdhilton@charter.net>,
+	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <20020824223751.GA16590@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,44 +21,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-debian-gcc,
+Try starting with the source for glide3-alpha.  It is the 64-bit branch of
+the glide sources.  I tweaked them to compile ok on Alpha and they
+shouldn't be hard to fix up for hppa as well.
 
-I sense another PARISC ABI breakage coming in the very near
-future. The ABI breakage is caused by the following three
-items:
+C
 
-1- setjmp/longjmp implementation is flawed (Testing)
-2- mcontext_t is incorrect in glibc (BTS #157374)
-3- sizeof(long double) is incorrect in gcc and glibc (?)
+On Sat, 24 Aug 2002, Carlos O'Donell wrote:
 
-My main question is:
-
-How does one run a preliminary test to ferret out
-possibly problems that were not forseen?
-
-My current procedure is to build a new glibc, create
-a chroot, install glibc there and begin building things.
-
-Does anyone have a general procedure for this? Or is
-this what experimental or unstable is about? :/  
-
----
-
-I'm working on providing various test cases for "1-" and 
-I already have a patch in my local glibc tree (the initial
-patch made the mistake of not allocating enough room for
-jmpbuf - kudos to Randolph for noticing that during RFC).
-
-I have a patch for "2-" and it works, but we have a kernel
-bug when copying registers into the sigcontext that gets
-passed back to a 32-bit userspace from a 64-bit kernel.
-Luckily the old definition of mcontect_t matches the new
-sigcontext typedef for accesses to general registers and
-floating point registers, so we maintain backwards compat
-in that scenario. I would like to note that it has never
-worked when running a 64-bit kernel under parisc :}
-
-The last issue will get fixed when I get around to poking
-changes at gcc.
-
-c.
+> > > cc -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> > > -fexpensive-optimizations -ffast-math -DBIG_OPT -I. \
+> > > -I/usr/src/glide-2001.01.26/build-tree/glide2x/swlibs/include \
+> > > -I/usr/src/glide-2001.01.26/build-tree/glide2x/cvg/include \
+> > > -DENDB -DX11 -Wall -fPIC -DPIC -c -o fx64.o fx64.c
+> > > 
+> > > cc1: Invalid option `486'
+> > > 
+> > > 
+> > > My question is, what incantation should I use on hppa to
+> > > replace the '-O6 -m486 -f...' CFLAGS?
+> > 
+> > i would suggest just using "-O2" for now....
+> > 
+> > randolph
+> > 
+> 
+> The issues revolves around the fact that the source tree and 
+> assembly for some of pieces you want to build are meant for x86 boxes.
+> Though from a cusory glance it looks like the .c files are present for
+> these bits (so you can revert to those).
+> 
+> Right off the top:
+> tvg/makefile.linux:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
+> glide2x/sst1/init/initvg/makefile.unix:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
+> glide2x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> glide2x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+> glide3x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> glide3x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+> swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
+> swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
+> 
+> These files will give you some grief and need to be changed; remove the -m486 bit.
+> You either need to produce .dpatch's for the deb to use or stop building
+> the deb and do it by hand with the upstream source.
+> 
+> You've got me all excited about seeing this work :) I have a Vodoo1 (Monster3D)
+> PCI card that I might be tempted to ressurect.
+> 
+> Hope this helps. Sorry about there not being a _magic_ switch :)
+> 
+> c.
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
