@@ -1,46 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.familie-weerts.de (dialin-86215.ewetel.net [212.6.86.215])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC278482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 13 Aug 2001 05:42:45 -0600 (MDT)
-Date: Mon, 13 Aug 2001 13:38:54 +0000
-From: Christian Weerts <christian@familie-weerts.de>
-To: Helge Deller <helge.deller@sap.com>
-Cc: parisc-ml <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Problems on booting 715/80
-Message-ID: <20010813133854.B313@familie-weerts.de>
-Reply-To: Christian Weerts <christian@familie-weerts.de>
-References: <20010813120633.A396@familie-weerts.de> <200108131105.NAA06226@sap-ag.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200108131105.NAA06226@sap-ag.de>; from helge.deller@sap.com on Mon, Aug 13, 2001 at 01:05:43PM +0200
+Received: from leo.uni-sw.gwdg.de (leo.uni-sw.gwdg.de [134.76.205.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AD550482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 13 Aug 2001 09:40:27 -0600 (MDT)
+Received: from weilbach (helo=localhost)
+	by leo.uni-sw.gwdg.de with local-esmtp (Exim 3.16)
+	id 15WJpD-0003YE-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 13 Aug 2001 17:40:19 +0200
+Date: Mon, 13 Aug 2001 17:40:19 +0200 (CEST)
+From: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
+To: <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <99F41EF55D11D511818600D0B74749C496F42B@wchrntms01.uk.wmmercer.com>
+Message-ID: <Pine.LNX.4.33.0108131738060.12006-100000@leo.uni-sw.gwdg.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Downloading kernel source
 List-ID: <linux-parisc.vger.kernel.org>
 
-* Helge Deller <helge.deller@sap.com> [010813 11:05]:
-> On Monday 13 August 2001 14:06, Christian Weerts wrote:
-> > Hi,
-> >
-> > i have some problems booting a 715/80. This machine has an svga-video
-> > output. When i switch the power on, the monitor does'nt display anything.
-> > The lights of the keyboard is blinking once, and then there is nothing
-> > else. Also pressing ESC during booting has no results.
-> > Any hints for an newbie on PA-RISC?
-> >
-> > Regards,
-> > 	Christian
-> 
-> Hi Christian,
-> 
-> you could try to press the TAB-key directly after switching on the computer.
-> This should bring you to a cycle-through-all-video-modes mode and let you 
-> configure the correct monitor for your system.
-> 
-> Greetings,
-> Helge
-> 
-That's it! Thank's Helge.
+Hi,
 
-Gruss,
-	Christian
+is there a place to download the more or less current kernel source
+(as tarball)? A few weeks ago I was trying to get it via CVS, but
+that took hours, and I finally realized that I got the wrong one...
+I wanted to give it a new try with JFS...
 
--- 
-http://oldenburg.linux.de
+Greetings,
+	Peter.
