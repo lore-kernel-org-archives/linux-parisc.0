@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 06FAD482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 09:12:52 -0700 (MST)
-Date: Tue, 29 Jan 2002 11:12:42 -0500 (EST)
-From: "Christopher C. Chimelis" <chris@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: HEISERER DANIEL <Daniel.Heiserer@bmw.de>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-In-Reply-To: <20020129151945.B3850@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.21.0201291110160.32249-100000@spawn.hockeyfiend.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: octave2.1_2.1.35-6_hppa
+To: HEISERER DANIEL <Daniel.Heiserer@bmw.de>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] octave2.1_2.1.35-6_hppa 
+In-Reply-To: Message from HEISERER DANIEL <Daniel.Heiserer@bmw.de>
+   of "Tue, 29 Jan 2002 11:18:01 +0100." <3C5676D9.E4B26D93@bmw.de>
+References: <3C5676D9.E4B26D93@bmw.de> 
+Date: Tue, 29 Jan 2002 11:59:16 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020129185916.2AE58482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +19,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 29 Jan 2002, Matthew Wilcox wrote:
+HEISERER DANIEL wrote:
+> I am also a little be astonished about the different object files
+> existing on PA-Risc. There are 
+> /usr/local/bin/perl:    PA-RISC1.1 shared executable dynamically linked
+> -not stripped
+> as well as "PA-RISC2" executables.
 
-> We don't build binaries for HP-UX.  Some people have suggested starting a
-> new port to build binaries for proprietary unices sch as Solaris and HP-UX,
-> but nobody has actually done so yet.
+Also note that "PA-RISC1.1" on HPUX implies the binary is a SOM binary
+(not ELF). parisc-linux uses ELF-32 format by default.  This was "invented"
+for the parisc-linux port.
 
-It may be helpful, though, to pick up the Debian source package and look
-over the patches since there may be some that work around the "gotchas" of
-the platform.  It would at least be a good start, even though the patches 
-are probably a bit more linux-specific and probably shouldn't be used
-verbatim hoping that they fix problems for HP-UX compilation.
+parisc-linux kernel has support for SOM binaries but it's really only
+for HPUX application compatibility.
 
-C
+> Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
+> is. Are both 64 bit?
+
+Since PARISC2.0 introduced 64-bit capability, many people equate the two.
+(that's not a shooting offense. ;^) While Matthew is correct, in practice
+most folks build PA1.1 binaries when they want a 32-bit application.
+
+I was building 32-bit PA-RISC2.0 linux kernels. But the toolchain was using
+"reloc" (type 74, iirc) that the kernel dynamic linker couldn't grok.
+So I couldn't load any kernel driver modules.  I decided it wasn't worth
+pursueing and now build PA 1.1 kernels.
+
+grant
