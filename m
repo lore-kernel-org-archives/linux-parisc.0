@@ -1,16 +1,21 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A41E44855
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 750B64855
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  9 Jan 2004 11:21:57 -0700 (MST)
-Message-ID: <3FFEF1A0.40002@tiscali.be>
-Date: Fri, 09 Jan 2004 18:23:28 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
+	Fri,  9 Jan 2004 12:04:48 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] 2.6.1-rc3-pa0 (32bit),
-	2.4.24-pa0 and 2.4.25-pre4-pa0 (64bit) Ok
+Date: Fri, 9 Jan 2004 20:04:47 +0100
+References: <20040105052059.GA612@colo.lackof.org>
+	<200401051526.26503.deller@gmx.de>
+	<20040109055534.GA5393@colo.lackof.org>
+In-Reply-To: <20040109055534.GA5393@colo.lackof.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200401092004.47265.deller@gmx.de>
+Subject: [parisc-linux] Re: [PATCH] 2.4.24-pre3 obmouse driver for HP OB600
+	C/CT laptop
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,9 +25,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Just to mentionned that test:
-2.6.1-rc3-pa0 (32bit) compile and boot fine on my b2k and a b180L
-2.4.24-pa0 and 2.4.25-pre4-pa0 (64bit) compile and boot fine on the b2k
+On Friday 09 January 2004 06:55, Grant Grundler wrote:
+> On Mon, Jan 05, 2004 at 03:26:26PM +0100, Helge Deller wrote:
+> > With the input-driver you can directly give the absolute coordinates
+> > (no need to do conversion yourself),
+> 
+> I looked at Documentation/input/* and REL_ABS can not deal
+> with "roll-over". It's expects fixed values to define the range
+> of motion. That's not true for obmouse.
+> AFAICT, only real tablets and joysticks fit that model well.
 
-Thanks again to all for your great job,
-	Joel
+yes, maybe. I don't know obmice's details.
+
+> I have the feeling /dev/input is a bit more "heavy weight" based
+> on the number of function calls in ob_interrupt. But I'm not sure
+> it matters. This is just for fun and it works too.
+
+Hmm, the calls are pretty fast iirc..
+See also my other mail.
+
+Helge
