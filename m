@@ -1,42 +1,71 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA28334
-	for <parisc-linux@puffin.external.hp.com>; Sat, 7 Oct 2000 20:53:57 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA22938
+	for <parisc-linux@puffin.external.hp.com>; Sun, 8 Oct 2000 20:59:53 -0600
+Date: Sun, 8 Oct 2000 20:00:48 -0700
+From: Randolph Chung <randolph@tausq.org>
 To: parisc-linux@thepuffingroup.com
 Cc: debian-hppa@lists.debian.org
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 07 Oct 2000 22:54:49 -0400
-Message-ID: <877l7khwjq.fsf@linuxcare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] debian-hppa-newlibc archive moving to debian-hppa
+Message-ID: <20001008200047.B639@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
+Subject: [parisc-linux] file locking problems?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
 
-Since the change in symbol versions (as well as the introduction of
-linuxthreads support) broke all old binaries, I've been rebuilding the
-Debian base system over the last few days with the new glibc.  These
-packages have been building up in
-ftp://puffin.external.hp.com:/pub/debian-hppa-newlibc/ though I
-haven't really announced the existence of this archive.
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
 
-At this point I have replaced my entire system with new binaries, and
-the newlibc archive is in fact more complete and up-to-date than the
-original one, so I would like to remove or archive the old one and
-switch to using this one exclusively.  So, I've moved the old one to
-/pub/debian-hppa-oldlibc, and the new one to /pub/debian-hppa.
+Hi all,
 
-I believe Matt Taggart is putting together a new base system tarball
-using these new packages (we now have almost all of the relevant parts
-of the Debian 'base' section built).
+I'm seeing some weird behavior with file locking on my hppa box:
 
-I've been uploading NMU-versioned source packages (just the .diff.gz
-and .dsc) of any packages that have required significant source
-changes to /pub/debian-hppa-source.  This does not include packages
-that need our versions of config.{guess,sub}, however.  I haven't had
-time to submit the changes to the maintainers yet but I'll try to get
-it done this coming week.
+update-passwd (a Debian package) makes a call to lckpwdf. That fails
+with an "Invalid argument" message. It looks like lckpwdf internally uses
+fcntl() locking, so I tried that and it too fails with an "Invalid
+argument" message.  This happens both on nfs and local ext2 fs.
+Similar tests with flock() seems to work ok.
 
+Any ideas? This is using dhd's latest glibc build. My testing program is
+attached. I've verified that it works on ext2 fs on i386 and SPARC. Over
+nfs it does give an error message (No locks available).
+
+The test program I used is attached.
+
+randolph
 -- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
+
+--EVF5PPMfhYS0aIcm
+Content-Type: text/x-csrc
+Content-Disposition: attachment; filename="locktest.c"
+
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main(int argc, char **argv)
+{
+        struct flock l;
+        int fd;
+
+        if ((fd = open("test.lck", O_CREAT|O_RDWR)) < 0)
+        {
+                perror("open");
+                return -1;
+        }
+        memset(&l, 0, sizeof(l));
+        l.l_type = F_RDLCK;
+        if (fcntl(fd, F_SETLK, &l) < 0)
+        {
+                perror("fcntl");
+                return -1;
+        }
+        close(fd);
+        return 0;
+}
+
+--EVF5PPMfhYS0aIcm--
