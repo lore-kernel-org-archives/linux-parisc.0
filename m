@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 133.com (unknown [210.82.49.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 41BC6483E
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 06:14:12 -0700 (MST)
-From: =?GB2312?B?1tC5+r6tw7O8r83F?= <130@133.com>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Reply-To: 130@133.com
-Date: Wed, 5 Nov 2003 21:18:29 +0800
-Message-Id: <20031105131412.41BC6483E@dsl2.external.hp.com>
-Subject: [parisc-linux] =?GB2312?B?us/X98nMx6I=?=
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 71D574881
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 08:51:29 -0700 (MST)
+Date: Wed, 5 Nov 2003 10:46:44 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] HP 9000 E55 (and family) status
+Message-ID: <20031105154643.GC17418@systemhalted>
+References: <3FA689FB.5080704@gmx.at> <20031105004746.GA9926@colo.lackof.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031105004746.GA9926@colo.lackof.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,13 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-中国工商贸易搜索引擎，是世界最权威的行业、地域搜索引擎，是国内首家以地域进行行业联合搜索的专业性商贸网站。
-详细划分每一行业和地域。
-现在加入：300元/年  同时免费推荐在地域搜索排名中。
-诚邀眼界开阔、实力非凡的您加盟地方网站----广阔的草原期待当今的可汗
-www.18-00.com
-中国工商贸易 中国经贸集团 中国企业网 世界企业网 中国厂长经理网 
-中国农产品信息网 中国食品网 中国企业评价网 中国民营企业网 
-中国教育网 中国招商引资网 等 联合推出 行业、地域 双重搜索
+On Tue, Nov 04, 2003 at 05:47:46PM -0700, Grant Grundler wrote:
+> On Mon, Nov 03, 2003 at 06:01:47PM +0100, Christoph Plattner wrote:
+> > By the way, as we discuss on the E55,
+> > what's the status ?
+> > Are there any news on MUX or SCSI driver ?
+> > Are there any news on the NDA, .... ?
+> 
+> In Feb/March 2003 I pulled together the documents for SCSI and prepared
+> the NDA for you. I didn't do anything for the Mux since I really don't
+> know anything about it.  It took fours monthes for my management (sorry,
+> I'm somewhat bitter about this) to tell me the process had changed and
+> I need to talk to run the NDA past an internal HP "review board".
+> 
+> I've not taken the steps to do that becuase I'm saturated
+> with too many projects. But if E55 still means something to you
+> (and it sounds like it does), I'll charge this windmill as
+> well. Pokeme again monthly and I'll let you know if/how far I've
+> gotten on that.
 
-为您的企业带来更大的商机
+Ride forward noble Don Quixote!
+
+c.
