@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A3B5A4832
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Jan 2002 10:52:29 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16OjN2-0008WT-00; Thu, 10 Jan 2002 17:52:08 +0000
-Date: Thu, 10 Jan 2002 17:52:08 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] binutils: opcodes and bfd
-Message-ID: <20020110175208.A32712@parcelfarce.linux.theplanet.co.uk>
-References: <3C3DCF11.19BC5E24@admin.france.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C3DCF11.19BC5E24@admin.france.hp.com>; from bruno_vidal@hpfrcu03.france.hp.com on Thu, Jan 10, 2002 at 06:27:45PM +0100
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1DE5E482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Jan 2002 11:45:34 -0700 (MST)
+To: "Sorin Ghinescu" <sghinesc@columbus.rr.com>
+Cc: parisc-linux@lists.parisc-linux.org, taggart@carmen.fc.hp.com
+Subject: Re: [parisc-linux] 712/80 - 7cdroms - scsi prbl 
+In-Reply-To: Your message of "Thu, 10 Jan 2002 12:39:23 EST."
+             <001001c199fd$ca7fe700$0800a8c0@beta>
+References: <001001c199fd$ca7fe700$0800a8c0@beta> 
+Date: Thu, 10 Jan 2002 11:45:32 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20020110184532.9876E37D2B@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jan 10, 2002 at 06:27:45PM +0100, Bruno Vidal wrote:
-> First, thanks for your feedback, now the dump modules is working fine.
-> The system is able to dump. But now I need to modify the tool to retrieve
-> the dump. But I need bfd and opcode: libbfd.a and libopcode.a. It is part
-> of the binutil package. But in the last debian package this two librairies
-> are missing. And on CVS tree, there is no more binutil src. Where can I
-> find the latest binutil src, or where can I find a binutil package with
-> this two libraires. Another small problem, when using yacc on parisc
-> (ie: bison), the result is not the same on a i386 and parisc :-(.
-> I'll try tomorrow to recompile yacc.
+"Sorin Ghinescu" writes...
 
-sounds like you're missing the binutils-dev package.
+> Hi guys,
+> I'm trying to install parisc-linux on 712/80.
+> I don't know if this is actually an OS problem or a hardware problem but
+> you may have experienced it and could help me.
+> I'm booting from my external cd-rom but it seems that the kernel is
+> fooled by something because it creates 7 cd-rom devices for all the scsi
+> targets available leaving no room for the hd. If I switch the cd-rom off
+> then I get 7 hds!
+> Has anyone experienced this?
 
-what's the problem with yacc?
+Check and make sure that none of your scsi ids are conflicting, don't
+forget the controller is at id 7. Also check your cables and termination.
+If it still doesn't work try a different hard drive.
 
 -- 
-Revolutions do not require corporate support.
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
