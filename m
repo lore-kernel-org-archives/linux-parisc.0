@@ -1,52 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4D3FD4A19
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 02:29:29 -0700 (MST)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel1.hp.com (Postfix) with ESMTP id B0244577
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 04:29:28 -0500 (EST)
-Received: from chrysl (chrysl.fc.hp.com [15.1.54.200])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 61A075A9A5
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 02:29:28 -0700 (MST)
-Received: from willy by chrysl with local (Exim 3.12 #1 (Debian))
-	id 14WEXY-0006gB-00
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 02:29:28 -0700
-To: parisc-linux@parisc-linux.org
-Message-Id: <E14WEXY-0006gB-00@chrysl>
-From: Matthew Wilcox <willy@ldl.fc.hp.com>
-Date: Fri, 23 Feb 2001 02:29:28 -0700
-Subject: [parisc-linux] Documentation wanted
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F6594A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Feb 2001 04:31:34 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA19037
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Feb 2001 22:31:32 +1100
+Date: Fri, 23 Feb 2001 22:31:32 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0102232156560.9345-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] gcc & profiling
 List-ID: <linux-parisc.vger.kernel.org>
 
-Looking for something to do?  I ran `make checkhelp' and the following
-undocumented CONFIG options are our fault.  If you'd like to write
-some help and send diffs against Configure.help to the list, that'd
-be appreciated.
+This is a little embarrassing.  I've just discovered our mainline gcc has
+all the nice profiling code in config/pa/pa.c, PROFILE_HOOK defined in
+config/pa/pa.h, but no support for PROFILE_HOOK in function.c.  Oops.  No
+profiler calls in generated code.
 
-Use power LED as a heartbeat
-CONFIG_HEARTBEAT
-  No help for CONFIG_HEARTBEAT
+pehc merge from sourceware was before PROFILE_HOOK was added, but I was
+working from a later merge when developing the code. :-(
 
-/proc/hardware support
-CONFIG_PROC_HARDWARE
-  No help for CONFIG_PROC_HARDWARE
+All this would be bad enough, but after plugging in the missing bits, I
+thought I'd better test a glibc compile with profiling enabled.  That
+showed a bug when inline functions are involved.  Oops again.
+Currently testing a fix...
 
-Support for Lasi/Dino PS2 port
-CONFIG_GSC_PS2
-  No help for CONFIG_GSC_PS2
-
-HIL keyboard support
-CONFIG_HIL
-  No help for CONFIG_HIL
-
-serial port on GSC support
-CONFIG_SERIAL_GSC
-  No help for CONFIG_SERIAL_GSC
-
-Lasi ethernet
-CONFIG_LASI_82596
-  No help for CONFIG_LASI_82596
-
-Generic STI frame buffer device support
-CONFIG_FB_STI
-  No help for CONFIG_FB_STI
+Alan
