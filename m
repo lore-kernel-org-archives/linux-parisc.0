@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tyke.pjc.net (public1-leed3-6-cust141.leed.broadband.ntl.com [80.0.5.141])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2586F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 07:00:12 -0600 (MDT)
-Received: from patrick by tyke.pjc.net with local (Exim 3.35 #1 (Debian))
-	id 17Fws6-0000sV-00
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 06 Jun 2002 14:00:10 +0100
-Date: Thu, 6 Jun 2002 14:00:06 +0100
-From: Patrick Caulfield <patrick@tykepenguin.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Probleme while compiling last CVS kernel.
-Message-ID: <20020606130006.GE1080@tykepenguin.com>
-References: <3CFF593A.18910E50@admin.france.hp.com>
+Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B9FB5482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 07:21:17 -0600 (MDT)
+Date: Thu, 6 Jun 2002 09:21:15 -0400
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: Randolph Chung <tausq@debian.org>
+Cc: patrick@tykepenguin.com, parisc-linux@lists.parisc-linux.org
+Message-ID: <20020606092115.C6900@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-In-Reply-To: <3CFF593A.18910E50@admin.france.hp.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] kdb getting healthier? (PCI guru needed, that's you willy!)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jun 06, 2002 at 02:44:42PM +0200, Bruno Vidal wrote:
-> 	Hi
-> I've started this morning to download latest CVS bits.
-> I've prepared a patche for this version from my dump driver,
-> and try to recompile everything, but I've found a problem
-> with LVM !!! See:
+Randolph,
 
+I think I was able to get kdb to stop dying inside unwind_table_init.
 
-Does LVM work on 64bit HP ?
+--- unwind.c.orig       Thu Jun  6 08:51:02 2002
++++ unwind.c    Thu Jun  6 08:51:49 2002
+@@ -106,7 +106,7 @@
+        table->base_addr = base_addr;
+        table->gp = gp;
+        table->start = base_addr + start[0].region_start;
+-       table->end = base_addr + end[-1].region_end;
++       table->end = base_addr + end[0].region_end - sizeof(struct unwind_table_entry);
+        table->table = (struct unwind_table_entry *)table_start;
+        table->length = end - start;
+        table->next = NULL;
 
-I remember doing the ioctl32.c support for sparc64 some time ago but I can
-easily beleive that the mods to that file haven't been propogated to other
-32/64bit systems - if you're feeling adventurous and really need LVM then you
-might be able to cut out those bits and drop them into the HP.
+Is this a gcc-ism we're seeing?
+Note-to-self: Look at .S produced from compiling unwind.c
 
-On the other hand you could try LVM2. I know LVM2 runs well on my 32bit HP
-machines and also on 64bit Alpha.
+On another note, we have no code that calls unwind_table_add so I've
+#if'd it out. Which makes me wonder... which change was the fix? 
+Time to go back to square one and try them out independantly.
 
-patrick
+The kernel still goes into an infinite loop of unknown origin:
+---
+PCI or EISA Bus Adapter 0 is not registered...
+---
+(see ./arch/parisc/kernel/pci.c' -> PCI_PORT_IN)
+Don't know where this gets called from, or how the ugly macro
+expands :)
+
+Sadly I think I zapped my VGA out on the 712/60 (A common occurence?).
+It no longer produces _any_ video signals.
+I may have to drag a 715/50 back to my house...
+
+c.
