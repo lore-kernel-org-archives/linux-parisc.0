@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sun, 12 Jan 2003 19:13:06 -0700
-To: Thibaut VARENE <varenet@esiee.fr>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 32A2D4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 20:06:37 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18Xuvr-00017L-00; Mon, 13 Jan 2003 03:06:35 +0000
+Date: Mon, 13 Jan 2003 03:06:35 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Luigi Gangitano <luigi@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.5.56-pa0 64bit successful boot
-Message-ID: <20030113021306.GB30895@dsl2.external.hp.com>
-References: <20030112021041.32cfbb84.varenet@esiee.fr>
+Subject: Re: [parisc-linux] Issues with seteuid()?
+Message-ID: <20030113030635.I26554@parcelfarce.linux.theplanet.co.uk>
+References: <1042386569.3329.4.camel@luigi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030112021041.32cfbb84.varenet@esiee.fr>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+In-Reply-To: <1042386569.3329.4.camel@luigi>; from luigi@debian.org on Sun, Jan 12, 2003 at 04:49:29PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,20 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jan 12, 2003 at 02:10:41AM +0100, Thibaut VARENE wrote:
-> FWIW, SMP kernel with the exact same configuration died just at:
-> POSIX conformance testing by UNIFIX
+On Sun, Jan 12, 2003 at 04:49:29PM +0100, Luigi Gangitano wrote:
+> I'm the Debian package maintainer for Squid (HTTP Proxy). I received the
+> forwarded bug report describing issues in seteuid() on palinux. While
+> using seteuid(), forked processes terminate with SEGV.
+> 
+> Is it a known problem?
 
-I looked at the dmesg you had attached. Please don't compress
-them in the future - defeats archive searches later.
+I wonder how it can be a problem at all.  The kernel implements only
+sys_setresuid() and i would imagine that glibc implements both
+seteuid() and setresuid() in terms of this system call.
 
-The dmesg output reminded me the init sequence has substantially changed.
-I'd be very susicious that additional CPUs are brought "online" later than
-before.  I would guess that arch/parisc/kernel/smp.c and processor.c
-needs to be changed to match. Can you retry CONFIG_SMP with
-EARLY_BOOTUP_DEBUG enabled in arch/parisc/kernel/pdc_cons.c?
+Perhaps someone who's willing to touch glibc would care to comment?
 
-Oh, and also set kDEBUG in arch/parisc/kernel/smp.c to 100.
-
-thanks,
-grant
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
