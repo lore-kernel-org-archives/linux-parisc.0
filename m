@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12507.mail.yahoo.com (web12507.mail.yahoo.com [216.136.173.199])
-	by dsl2.external.hp.com (Postfix) with SMTP id D812E4837
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Aug 2002 18:11:34 -0600 (MDT)
-Message-ID: <20020815001133.84971.qmail@web12507.mail.yahoo.com>
-Date: Wed, 14 Aug 2002 17:11:33 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020813131329.C4BD34829@dsl2.external.hp.com>
+Received: from mailserver1.hrz.tu-darmstadt.de (mailserver1.hrz.tu-darmstadt.de [130.83.126.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9698D4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Aug 2002 21:44:50 -0600 (MDT)
+Received: from hrzpub.tu-darmstadt.de (vpn24.stud.tu-darmstadt.de [130.83.175.24])
+	by mailserver1.hrz.tu-darmstadt.de (8.12.1/8.12.1) with ESMTP id g7F3idFJ025191
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Aug 2002 05:44:40 +0200
+Message-ID: <3D59FA7B.4050500@hrzpub.tu-darmstadt.de>
+Date: Wed, 14 Aug 2002 08:36:43 +0200
+From: =?ISO-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Autoraid supported?
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] CD-ROM Audio Output
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,34 +23,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hey all,
+Hi there!
 
-Basically I have an AutoRAID Model 12 (not a 12H) that I want to use on
-my newly installed C180 (finally got it workin). Being an HP-UX man I
-was wondering how Debian handles alternate (pv) links?  I'm curious
-because the AutoRAID has 2 controllers (only one active at a time) and
-I have 2 F/W controller cards installed in the C180 besides the onboard
-F/W controller.  I'm just starting to figure out some of the
-differences in the file system structure from HP-UX and Linux.  I did
-d/l some info from "The Linux Cookbook," but I still have questions. 
-Normally on my HP-UX side I would hook up the AutoRAID, do an ioscan
--f, insf -e, and proceed to pvcreate/vgcreate/lvcreate, etc.  Since
-there is no ioscan in Linux, how can you do a physical scan of the
-hardware? Any hardware diagnostics?  Or if anyone can point me to some
-other online resources that might be helpful, that would be great too. 
-Thanks....
+I want to install a CD-Drive in my 715/100. Is it possible to use the 
+internal audio output of the CD-ROM in the same way it used in a PC? 
+Which type of cable do I have to use?
 
-derek (lost in the Linux world)
-
-
-
-P.S. If I start to get annoying with the basic questions about Linux,
-you can blame HP for spoon feeding all of us hardware techs. ;)  I'm
-just interested in furthering my knowledge of Linux since I don't
-really get to fool around with HP-UX since most of the boxes I'm
-working on are in a production environment.
-
-__________________________________________________
-Do You Yahoo!?
-HotJobs - Search Thousands of New Jobs
-http://www.hotjobs.com
+TIA, Rüdiger
