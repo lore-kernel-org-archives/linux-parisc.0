@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from t-mta4.odn.ne.jp (mfep4.odn.ne.jp [143.90.131.182])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6E1194829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Feb 2003 02:45:41 -0700 (MST)
-Received: from D9F8L41X ([61.209.161.151]) by t-mta4.odn.ne.jp with SMTP
-          id <20030205094539857.QDNF.26728.t-mta4.odn.ne.jp@mta4.odn.ne.jp>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Wed, 5 Feb 2003 18:45:39 +0900
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030205.0945350495@qweasd333-24i.net>
-Date: Wed, 05 Feb 2003 18:45:35 +0900
-From: master <qweasd333@24i.net>
+Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0251B4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Feb 2003 18:00:30 -0700 (MST)
+Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
+	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h161HJp25645
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 5 Feb 2003 17:17:19 -0800
+Received: from localhost (chandler@localhost)
+	by jordan.eng.nateng.com (8.11.4/8.11.4) with ESMTP id h1610kv07649
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 5 Feb 2003 17:00:46 -0800
+Date: Wed, 5 Feb 2003 17:00:46 -0800 (PST)
+From: Sir Ace <chandler@nateng.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0302051700390.6804-100000@jordan.eng.nateng.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Subject: [parisc-linux] =?ISO-2022-JP?B?GyRCTCQ+NUJ6OS05cCIoGyhCMzAbJEJLfDFfS3hCKEZ8GyhC?=
- =?ISO-2022-JP?B?GyRCJDRNOztxJDckXiQ5GyhC?=
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] nfs-root question
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,39 +26,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-<事業者><送信者>山口　DMmaster企画社
+Um, have any of you set up a nfs-root client with this hp-kernel?
 
-☆☆☆☆☆☆☆☆☆☆☆☆広告☆☆☆☆☆☆☆☆☆☆☆☆
+My palo.conf has both root=/dev/nfs nfsroot=172.16.100.7:/share/hplinux
 
-　　　【こんな方は是非ご相談ください】
+My dhcp server is serving all the info it needs, I even added a:
+option root-path "/share/hplinux" to it.
 
-○ブラックなのですが・・・
-○債務整理・自己破産してしまったのですが・・・
-○水商売・風俗なのですが・・・
-○急な出費・他店への支払いがあるのですが・・・
-上記以外にも、お悩み・ご相談がある方、是非気軽にご連絡下さい。
-※０９０金融、紹介屋、高金利の暴力金融などにご注意下さい！！
 
-　　　　　　　　フリーダイアル
-　　　　　０１２０−３４−６０１２
+My problem is that I keep getting a panic from not being able to mount
+anything.
 
-　　　　　　　　新規受付時間
-　　　　　　　AM10:00〜PM8:00
+it keeps saying that root=
+which I don't beleive it should...
 
-　　　　　　トップファイナンス
+the dir on the server is exported {I tested it by mounting it before
+trying to boot with it}
 
-　　　　　　（ご利用は計画的に）
-　　　　　　　東京都登録加盟店
-　　　　　　　　　　都(1)25467
+The dhcpd.conf looks like:
+-------------------------------------------------------------------------
+option domain-name "eng.nateng.com";
+option domain-name-servers 172.16.100.7;
 
-☆☆☆☆☆☆☆☆☆☆☆☆広告☆☆☆☆☆☆☆☆☆☆☆☆
+option subnet-mask 255.255.255.0;
+default-lease-time 259200;
 
-■ＤＭ送信業者■DMmaster企画社
-http://dm-master.sub.jp/
-【あなたのＨＰ宣伝します】
-【超低価格ＤＭ販売＆送信】
-特定商取引法施行規則　
-受け取りを希望しない場合の連絡方法弊社からの広告メールの配信停止を希望の場合は、
-件名を「配信停止」と書き換えこのメールを返信してください。
-その返信元のアドレスに対する配信は停止いたします。
-taka777dm@24i.net
+subnet 172.16.100.0 netmask 255.255.255.0 {
+	range	172.16.100.130		172.16.100.149;
+	option	broadcast-address	172.16.100.255;
+	option  routers                 172.16.100.191;
+}
+
+host	hptux	{
+	hardware ethernet 08:00:09:8c:02:ae;
+	fixed-address	hptux.eng.nateng.com;
+	option root-path "/share/hplinux";
+}
+
+my palo.conf =
+--commandline=2/ HOME=/ root=/dev/nfs nfsroot=172.16.100.7:/share/hplinux ip=both
+--recoverykernel=/boot/vmlinux-2.4.17-32
+--init-partitioned=/dev/sda
+
+I've set up nfs-root/diskless clients before, but I am stuck on this...
+Everything looks fine, except it looks like it is forgetting the root=
+option.
