@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E3C10482E
-	for <parisc-linux@parisc-linux.org>; Wed,  7 Aug 2002 00:36:42 -0600 (MDT)
-Date: Wed, 7 Aug 2002 08:30:58 +0200
-Message-ID: <3D38181A0000142A@ocpmta6.be.tiscali.com>
-In-Reply-To: <20020805145919.GB31773@systemhalted>
+	by dsl2.external.hp.com (Postfix) with ESMTP id DECC3482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 02:10:43 -0600 (MDT)
+Date: Wed, 7 Aug 2002 10:12:33 +0200
+Message-ID: <3D38181A00001481@ocpmta6.be.tiscali.com>
+In-Reply-To: <20020807061157.GD8214@tausq.org>
 From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Palo: cmdline and commanline has different limits?
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	"Joel Soete" <joel.soete@freebel.net>, bame@fc.hp.com,
-	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem with evms and jfs
+To: "Randolph Chung" <tausq@debian.org>,
+	"Joel Soete" <joel.soete@freebel.net>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -24,54 +24,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 >-- Original Message --
->From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: Joel Soete <joel.soete@freebel.net>, bame@fc.hp.com,
->	parisc-linux@parisc-linux.org
->Subject: Re: [parisc-linux] Palo: cmdline and commanline has different limits?
->Date: Mon, 5 Aug 2002 10:59:19 -0400
+>Date: Tue, 6 Aug 2002 23:11:57 -0700
+>From: Randolph Chung <tausq@debian.org>
+>To: Joel Soete <joel.soete@freebel.net>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem
+with
+>evms and jfs
+>Reply-To: Randolph Chung <tausq@debian.org>
 >
 >
->> > I do not know yet if pad1 can be removed so that cmdline could reach
->204 
->> > [240-8-7*(sizeof int = 4?)] char lenght, also I prefer to let you choise.
->> > 
->> > Joel
->> 
->> I don't see why not? Would 200 characters be enough for your application?
->> 
->> I do think that "> 255" should be changed in palo.c
->> 
->> To push it out further would require teaching palo about 
->> both formats (and understanding why the comment mentions 
->> that all the data must fit in 256 byes).
->> 
->> c.
+>> I would just like to know if you already have the opportunity to have
+a
 >
->Joel,
+>> look for a fix of this stuff (I know you are very busy this time and do
 >
->I just talked to Bame and we both agree that those bytes would
->best be left for future expansion.
+>> not want to stress, just want to got news)
 >
->I've made the change in palo.c such that it checks for "> 127"
->I'll be cheking that in today, and a new deb of palo should be out
->next week. If you would like to help in the testing process then 
->checkout palo from cvs and you can build the package yourself.
+>just came back from a trip....
 >
->The documentation for palo was updated to reflect a limit
->in the -c argument.
+>i started fixing this a few weeks back but got sidetracked by the 2.5
+>merge.... it's definitely on my todo list :-)
 >
->Do you have a particular use for more than 127 bytes of command line
->information? Passing a _lot_ of data via the command line is not 
->accepted as good practice :}
+Great :))
 
-Carlos,
+>fwiw i haven't seen any conclusive proof that this "fix" will actually
+>fix any problems we've seen....
+>
 
-It is Ok for me.
+In fact i am ignoring exactly what is this fix. So I could not presume if
+it will or not solve the annoying "unalign access..." messages I encounter
+before I test it :)).
 
-I do not actualy need more.
-I am just studying palo code to see what have to be done to support raid1
-md for the /boot device :) and just notice that potential problem so I report
-it :)
-
-Thanks a lot for all,
+Many thanks for help,
     J.
