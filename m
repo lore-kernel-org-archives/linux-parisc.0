@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.bitmover.com (bitmover.com [192.132.92.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39BA54829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 22:03:16 -0700 (MST)
-Date: Mon, 2 Dec 2002 21:00:59 -0800
-From: Larry McVoy <lm@bitmover.com>
-To: Randolph Chung <randolph@tausq.org>
-Cc: Larry McVoy <lm@bitmover.com>,
-	parisc-linux@lists.parisc-linux.org, phi@hpfrcu81.france.hp.com,
-	dev@bitmover.com
-Subject: Re: [parisc-linux] rlogin: connection closed (SOLUTION)
-Message-ID: <20021202210059.C9691@work.bitmover.com>
-References: <200212022154.gB2LsPc31908@work.bitmover.com> <20021203045657.GU21187@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021203045657.GU21187@tausq.org>; from randolph@tausq.org on Mon, Dec 02, 2002 at 08:56:57PM -0800
+To: jsoe0708@tiscali.be
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] dump_patche.2.4.19-pa22.gz no read acces to the world 
+In-Reply-To: Message from jsoe0708@tiscali.be
+   of "Mon, 02 Dec 2002 14:41:50 +0100." <3DA3DE6600007EB6@ocpmta4.be.tiscali.com>
+References: <3DA3DE6600007EB6@ocpmta4.be.tiscali.com> 
+Date: Mon, 02 Dec 2002 22:12:38 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021203051238.C1A204829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +19,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Dec 02, 2002 at 08:56:57PM -0800, Randolph Chung wrote:
-> In reference to a message from Larry McVoy, dated Dec 02:
-> > This fixes it.  Looks like a race, I wasn't inclined to dig further, this
-> > got me past the problem.  I suspect that parisc fork() runs parent/child
-> > in the opposite order from every other Unix and that causes a race but
-> > I have not looked.
-> 
-> Nah, this is not it. It's the problem with EAGAIN != EWOULDBLOCK on 
-> hppa-linux.
+jsoe0708@tiscali.be wrote:
+> In ftp://ftp.parisc-linux.org/patches/ I would be interested to read
+> dump_patche.2.4.19-pa22.gz but it doesn't have read access for other.
 
-OK, whatever.  I just though the rlogin people would want to know.
-This seems to be a long standing and annoying bug.
--- 
----
-Larry McVoy            	 lm at bitmover.com           http://www.bitmover.com/lm 
+I put that there so a few people could test an early version.
+When Bruno is ready to publish his dump patch, it will be world readable.
+Hopefully we can just commit to our CVS though...
+
+sorry,
+grant
