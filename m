@@ -1,37 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA08521
-	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 01:01:41 -0600
-Date: Wed, 18 Oct 2000 00:02:30 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: David Huggins-Daines <dhd@linuxcare.com>, parisc-linux@thepuffingroup.com
-Subject: Re: problems with binutils and/or g++
-Message-ID: <20001018000230.D568@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <87r95f2ogl.fsf@linuxcare.com> <Pine.LNX.4.21.0010181628240.1579-100000@front.linuxcare.com.au>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA08751
+	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 01:02:07 -0600
+Received: from videotron.ca ([207.253.109.87]) by
+          VL-MS-MR003.sc1.videotron.ca (Netscape Messaging Server 4.15)
+          with ESMTP id G2M69Q02.4R8 for
+          <parisc-linux@thepuffingroup.com>; Wed, 18 Oct 2000 03:03:26 -0400
+Sender: fleet@mailserv2.iuinc.com
+Message-ID: <39ED4B3B.85348ED2@videotron.ca>
+Date: Wed, 18 Oct 2000 03:03:23 -0400
+From: James Waterhouse <james.waterhouse@videotron.ca>
+MIME-Version: 1.0
+To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0010181628240.1579-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Wed, Oct 18, 2000 at 05:18:12PM +1100
+Subject: [parisc-linux] booting on 712/60
 List-ID: <linux-parisc.vger.kernel.org>
 
-> After fixing a zillion bugs of the "friend foo" -> "friend class foo" type 
-> and assorted protected/private/public issues, I finally managed to have apt
-> compile.  Same error as you found.  It's not a linker bug as it's not a 
-> case of the linker dropping some section; the undefined symbol really
-> isn't defined anywhere.  I don't know enough C++ to debug the problem
-> further.
+Hello,
+	I just compiled a ramdisk using mondays cvs src for everything. I'm
+using the graphics console ramdisk file off the puffin.external.hp.com
+(ramdisk20000530-sticon.tgz) to make the ramdisk. Now when I got to boot
+it boots up until the point where the kernel says...
 
-Alan, for my curiosity, could you explain this particular line from g++'s 
-output (from dhd's message)?
+Sending BOOTP request.... OK
+IP-Config: Got BOOTP answer.. bla bla
+Switching from PDC console
 
-../build/obj/cmdline/apt-get.o(.gnu.linkonce.t.__tf10LogCleaner+0x1c):
-cannot handle R_PARISC_PCREL17F for pkgArchiveCleaner type_info function
+And then I get nothing. So what is happening when we switch from the PDC
+console? Is the output going to the serial port, or am I crashing
+because my graphics hardware is not supported, or am I crashing for some
+other reason?
 
-that seems to be causing the "undefined" symbol messages.
+Thanks,
+James
 
-randolph
+
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Can you discern the signs of the times? || www.danielrevelation.com
+Do you see the storm fast approaching?  || www.sundaylaw.com
+Is your future built on "The Rock"?     ||
+www.bibleinfo.com/sc/toc_sc.html
