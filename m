@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 30 Jun 2003 10:55:50 -0600
+Date: Mon, 30 Jun 2003 11:52:01 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
 To: Alexander Gabert <pappy@nikita.ath.cx>
-Cc: parisc-linux@parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] 2.4.21-pa0 problems with ifconfig?
-Message-ID: <20030630165550.GG14971@dsl2.external.hp.com>
-References: <20030630151704.GA24413@nikita.ath.cx>
+Message-ID: <20030630175201.GJ14971@dsl2.external.hp.com>
+References: <20030630151704.GA24413@nikita.ath.cx> <20030630165550.GG14971@dsl2.external.hp.com> <20030630171125.GA17892@nikita.ath.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030630151704.GA24413@nikita.ath.cx>
+In-Reply-To: <20030630171125.GA17892@nikita.ath.cx>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,36 +20,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jun 30, 2003 at 05:17:04PM +0200, Alexander Gabert wrote:
-> hi, has anyone of you experience problems with 2.4.21-pa0 and the
-> ifconfig command?
+On Mon, Jun 30, 2003 at 07:11:25PM +0200, Alexander Gabert wrote:
+> hi,
+> 
+> adam:/usr/src# uname -a
+> Linux adam 2.4.18-32 #1 Sat Mar 30 18:26:22 MST 2002 parisc unknown
+> adam:/usr/src# dmesg | grep tulip
+> tulip0: no phy info, aborting mtable build
+> tulip0:  MII transceiver #1 config 1000 status 782d advertising 0061.
 
-works for me (tm).
+This is missing the phy reset polling patch.
+expected result.
+See ftp://ftp.parisc-linux.org/patches/diff.tulip_media-02
 
-grundler@ios:~$ /sbin/ifconfig
-eth0      Link encap:Ethernet  HWaddr 00:30:6E:03:79:9F  
-          inet addr:192.168.0.20  Bcast:192.168.0.255
-Mask:255.255.255.0
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:2566 errors:1 dropped:0 overruns:0 frame:0
-          TX packets:1499 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:100 
-          RX bytes:291959 (285.1 KiB)  TX bytes:523183 (510.9 KiB)
-          Interrupt:128 Base address:0x6000 
+> on a 2.4.20-pa35 with tulip driver compiled in statically:
+> adam:/usr/src/working02-gentoo/linux-2.4.20-pa35# grep TULIP .config
+> CONFIG_TULIP=y
 
-lo        Link encap:Local Loopback  
-          inet addr:127.0.0.1  Mask:255.0.0.0
-          UP LOOPBACK RUNNING  MTU:16436  Metric:1
-          RX packets:8 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0 
-          RX bytes:560 (560.0 b)  TX bytes:560 (560.0 b)
+2.4.20-pa35 tulip definitely works on both hppa and hppa64 kernels.
+I use both (c3000 and A500). Something else is wrong.
 
-grundler@ios:~$ uname -a
-Linux ios 2.4.21-pa1 #5 Sun Jun 29 12:11:52 PDT 2003 parisc64 unknown unknown GNU/Linux
+Perhaps you've suffered some data corruption in a dynamic
+lib that ifconfig uses? or ifconfig binary itself?
 
-> it heavily dumps when i boot this kernel on my C200.
+> ...
+> ifconfig (pid 2769): Illegal instruction (code 8)
+> 
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+>      PSW: 00000000000001000000000000001111 Not tainted
+>      r00-03  00000000 10348cd0 102041a0 100addc1
+>      r04-07  100ad800 10348968 10348968 00000000
+>      r08-11  2f2c994c 2efdc610 00000000 00008914
+>      r12-15  00000000 ffff7000 faf00560 0003022c
+>      r16-19  0003022c 0003022c 0003022c 000000ff
+>      r20-23  000000ef 100addc5 102efc1c 0bebc200
+>      r24-27  100addc5 000000ef 10348968 1030e010
+>      r28-31  e0000000 00000001 2efdcd00 102041a0
+>      sr0-3   00000000 00000000 00000000 000023b5
+>      sr4-7   00000000 00000000 00000000 00000000
 
-Can you send output?
+sorry - even though this is the right output, it's incomplete.
+I need the IOAQ.
 
+thanks,
 grant
