@@ -1,20 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA29506
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 14:06:22 -0700
-Message-Id: <5.0.0.25.0.20001130125058.00b02970@mail.webcash.com>
-Date: Thu, 30 Nov 2000 12:53:21 -0800
-To: parisc-linux@thepuffingroup.com
-From: Kailashnath V Rampure <kailasr@webcash.com>
-Cc: bame@noam.fc.hp.com, grundler@cup.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: [parisc-linux] Is there any sqlnet for Linux on HP
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA30871
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 14:15:01 -0700
+Message-Id: <200011302104.NAA29773@milano.cup.hp.com>
+To: "Jorge L. deLyra" <delyra@latt.if.usp.br>
+Cc: parisc-linux@thepuffingroup.com, assirati@socrates.if.usp.br
+Subject: Re: [parisc-linux] HP 9000/735-125 
+In-reply-to: Your message of "Thu, 30 Nov 2000 17:11:32 PST."
+             <Pine.LNX.3.96.1001130170122.23583A-100000@latt.if.usp.br>
+Date: Thu, 30 Nov 2000 13:04:38 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+"Jorge L. deLyra" wrote:
+> > oops, 
+> > I just saw, that you currently _can_not_ cross-compile..... :-(
+> 
+> Yes, we are working towards this, but I read in the docs that for the time
+> being you can only cros-compile the kernel on HP-UX,
 
-I need to connect to database from the HP linux box to oracle. Is there any 
-sqlnet client that can be installed on the server.
+That's definitely wrong. Where did you read this?
+(I would like fix the reference)
 
-Regards
-Kailas
+Those of us still cross compiling are using x86-linux hosts.
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
