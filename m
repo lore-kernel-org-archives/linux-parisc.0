@@ -1,18 +1,23 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA10614
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Mar 2000 16:02:12 -0700
-From: willy@thepuffingroup.com
-Date: Wed, 22 Mar 2000 18:00:29 -0500
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] building hppa2.0 toolchain
-Message-ID: <20000322180029.B10226@thepuffingroup.com>
-References: <200003222055.MAA19735@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200003222055.MAA19735@milano.cup.hp.com>; from Grant Grundler on Wed, Mar 22, 2000 at 12:55:41PM -0800
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA11192
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Mar 2000 16:34:51 -0700
+Received: (from danne@localhost)
+	by zaphod.halden.lillfab.se (8.9.3/8.9.3) id XAA11684
+	for parisc-linux@thepuffingroup.com; Wed, 22 Mar 2000 23:35:52 +0100
+Message-Id: <200003222235.XAA11684@zaphod.halden.lillfab.se>
+Date: Wed, 22 Mar 2000 23:35:52 +0100 (CET)
+From: 5116@telia.com
+Reply-To: 5116@telia.com
+To: parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
+Content-Type: TEXT/plain; charset=iso-8859-1
+Subject: [parisc-linux] Any docs on the 715?
 List-ID: <linux-parisc.vger.kernel.org>
 
+Are there any documents on the ASICs found in the 715 available? 
+The stuff on the web page only seem the cover newer boxes.
 
-um, looks like the recipe was wrong.  My mistake.  I'm updating the
-recipe now.
+/Daniel
+-- 
+Daniel Engström - Lilla Fabriken AB - Technical Support
+daniel@lillfab.se - Work related.  5116@telia.com - Private.
