@@ -1,15 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: C3000 doesn't work with Debian 3.0r1 ISO
-Date: Tue, 16 Nov 2004 20:43:28 -0700
-Message-ID: <20041117034328.GB15254@colo.lackof.org>
-References: <NEBBKICDMOFAPLINPKAIEEAODIAA.bnet@tampabay.rr.com>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] small hw patch for n4k
+Date: Thu, 18 Nov 2004 14:13:55 +0100
+Message-ID: <418A8003000053BD@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: "parisc-linux-lists." <parisc-linux@lists.parisc-linux.org>
-To: fly <bnet@tampabay.rr.com>
+  charset="ISO-8859-15"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <NEBBKICDMOFAPLINPKAIEEAODIAA.bnet@tampabay.rr.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,31 +17,68 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Nov 16, 2004 at 05:16:22PM -0500, fly wrote:
-> Question to PA-RISC help
+Hello pa*,
 
-Brian,
-a few things would you can do better when posting for help:
-1) Use a real name and not a nick name in your email address.
+Is somebody could ci this small patch for n4k:
+--- arch/parisc/kernel/hardware.c.ORIG	2004-06-07 08:18:42.000000000 +020=
+0
++++ arch/parisc/kernel/hardware.c	2004-07-23 08:43:59.000000000 +0200
+@@ -209,6 +209,7 @@
+ 	{HPHW_NPROC,0x5D0,0x4,0x81,"Kazoo W+"},
+ 	{HPHW_NPROC,0x5D1,0x4,0x91,"Forte W+ 2w"},
+ 	{HPHW_NPROC,0x5D2,0x4,0x91,"Forte W+ 4w"},
++	{HPHW_NPROC,0x5D3,0x0,0x91,"Prelude W+ 540"},
+ 	{HPHW_NPROC,0x5D3,0x4,0x91,"Prelude W+ 540"},
+ 	{HPHW_NPROC,0x5D4,0x4,0x91,"Duet W+"},
+ 	{HPHW_NPROC,0x5D5,0x4,0x91,"Crescendo 550"},
+=3D=3D=3D=3D=3D=3D=3D=3D><=3D=3D=3D=3D=3D=3D=3D=3D
 
-2) Use a Subject line that is relevant to the parisc-linux mailing list.
- 
-> I've downloaded all the 1st (bootable disks) from the HP Cupportino and
-> other sites  from version 3.0 r0->r3 and although the effects to the monitor
-> differ each one shuts off the usb power therefore my keyboard and mouse at
-> the same spot. I'm reading something about hacking iso images at the moment
-> but that will take time. It does seem like anyone with a machine that only
-> can use usb like the c3000 would have run into this problem.
+that help when 
+# cat /proc/cpuinfo 
+processor	: 0
+cpu family	: PA-RISC 2.0
+cpu		: PA8600 (PCX-W+)
+cpu MHz		: 550.000000
+model		: 9000/800/N4000-55
+model name	: Unknown machine
+hversion	: 0x00005d30
+sversion	: 0x00000491
+I-cache		: 512 KB
+D-cache		: 1024 KB (WB, 0-way associative)
+ITLB entries	: 160
+DTLB entries	: 160 - shared with ITLB
+bogomips	: 1093.63
+software id	: 664309341
 
-Indeed, they have. I'll remove the ISOs from that site and replace them
-with debian-installer images. Folks seemed to be trying those images
-on newer machines that don't work with those images.
-Please try debian-installer available from:
+displayed "Unknown machine" as model name. will better (imo) display:
+# cat /proc/cpuinfo 
+processor	: 0
+cpu family	: PA-RISC 2.0
+cpu		: PA8600 (PCX-W+)
+cpu MHz		: 550.000000
+model		: 9000/800/N4000-55
+model name	: Prelude W+ 540
+hversion	: 0x00005d30
+sversion	: 0x00000491
+I-cache		: 512 KB
+D-cache		: 1024 KB (WB, 0-way associative)
+ITLB entries	: 160
+DTLB entries	: 160 - shared with ITLB
+bogomips	: 1093.63
+software id	: 664309341
 
-	http://www.debian.org/devel/debian-installer/
+Thanks in advance,
+    Joel
 
-thanks,
-grant
+
+-------------------------------------------------------------------------=
+--
+Tiscali ADSL GO & Light, 2 mois gratuits, profitez-en...
+http://reg.tiscali.be/adsl/welcome.asp?lg=3DFR
+
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
