@@ -1,17 +1,19 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 50B534852
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5DB5C4852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 21 Dec 2003 16:20:23 -0700 (MST)
-Date: Sun, 21 Dec 2003 18:13:00 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-Message-ID: <20031221231300.GV31767@systemhalted>
+	Sun, 21 Dec 2003 18:59:26 -0700 (MST)
+Date: Sun, 21 Dec 2003 18:59:25 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] can't open /dev/input/mice on c3000?
+Message-ID: <20031222015925.GC26083@colo.lackof.org>
+References: <20031221054605.GA14026@colo.lackof.org>
+	<200312211432.54995.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200312211432.54995.deller@gmx.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] kernel to blame? gprof vs. no-gprof,
-	my parisc has gone insane with flushing madness...
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,108 +23,77 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Sun, Dec 21, 2003 at 02:32:54PM +0100, Helge Deller wrote:
+> Works for me on the c3k without problems (HP (SILITEK) USB Mouse).
 
-jda,
+cool - thanks for committing -pa3.
 
-So the weirdest thing happens to me today...
+> I assume you are missing some .config entries:
 
-I'm chasing down the last of the glibc bugs that are of interest to
-making userspace a bit better. The last bug is tst-tls13, which in
-principle does dlopen/dlclose 1000 times. This seems to take 3 seconds,
-the test is only alloting 2 seconds. I wonder, what the hell is taking
-so long?
+I've unpacked the 2.6.0-pa3 I had uploaded to ftp.parisc-linux.org.
+	ftp://ftp.parisc-linux.org/kernels/c3000/boot/config-2.6.0-pa3
 
-So using Randolphs patch, I decide to enable profiling with -g -pg when
-I build the test. The test is linked by hand, and I change up crt1.o for
-gcrt1.o as required to build a profiled executable.
+(full tar ball is at kernels/c3000/2.6.0-pa3.tgz)
 
----
-gcc tst-tls13.c -g -pg -c -std=gnu99 -O2 -Wall -Wbad-function-cast
--Wcast-qual -Wcomment -Wcomments -Wfloat-equal -Winline
--Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes
--Wmultichar -Wsign-compare -Wstrict-prototypes -Wtrigraphs
--Wwrite-strings -g      -I../include -I.
--I/home/carlos/src/glibc-work/build-hppa/elf -I.. -I../libio
--I/home/carlos/src/glibc-work/build-hppa -I../sysdeps/hppa/elf
--I../linuxthreads/sysdeps/unix/sysv/linux/hppa
--I../linuxthreads/sysdeps/unix/sysv/linux
--I../linuxthreads/sysdeps/pthread -I../sysdeps/pthread
--I../linuxthreads/sysdeps/unix/sysv -I../linuxthreads/sysdeps/unix
--I../linuxthreads/sysdeps/hppa -I../sysdeps/unix/sysv/linux/hppa
--I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/common
--I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysdeps/unix/sysv
--I../sysdeps/unix -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1
--I../sysdeps/wordsize-32 -I../sysdeps/ieee754/flt-32
--I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/ldbl-128
--I../sysdeps/hppa/fpu -I../sysdeps/hppa -I../sysdeps/ieee754
--I../sysdeps/generic/elf -I../sysdeps/generic -I
-/lib/modules/2.4.23-pa2/build/include -D_LIBC_REENTRANT -include
-../include/libc-symbols.h   -DNOT_IN_libc=1    -o
-/home/carlos/src/glibc-work/build-hppa/elf/tst-tls13.o -MD -MP -MF
-/home/carlos/src/glibc-work/build-hppa/elf/tst-tls13.o.dt
+Doesn't look I'm missing the option.
+I suspect I just need to "modeprobe mousedev" or whatever it's called.
 
-BUILD=/home/carlos/src/glibc-work/build-hppa/elf
+> #
+> # Input device support
+> #
+> CONFIG_INPUT=y
+> 
+> #
+> # Userland interfaces
+> #
+> CONFIG_INPUT_MOUSEDEV=y
+> CONFIG_INPUT_MOUSEDEV_PSAUX=y
+> CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
+> CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
 
-## PROFILING BUILD ##
-gcc -pg -g -nostdlib -nostartfiles -o
-/home/carlos/src/glibc-work/build-hppa/elf/tst-tls13
--Wl,-dynamic-linker=$BUILD/ld.so.1
-/home/carlos/src/glibc-work/build-hppa/csu/gcrt1.o <------- * GPROF *
-/home/carlos/src/glibc-work/build-hppa/csu/crti.o `gcc
---print-file-name=crtbegin.o`
-/home/carlos/src/glibc-work/build-hppa/elf/tst-tls13.o
-/home/carlos/src/glibc-work/build-hppa/dlfcn/libdl.so.2
--Wl,-rpath=/home/carlos/src/glibc-work/build-hppa:\
-/home/carlos/src/glibc-work/build-hppa/math:\
-/home/carlos/src/glibc-work/build-hppa/elf:\
-/home/carlos/src/glibc-work/build-hppa/dlfcn:\
-/home/carlos/src/glibc-work/build-hppa/nss:\
-/home/carlos/src/glibc-work/build-hppa/nis:\
-/home/carlos/src/glibc-work/build-hppa/rt:\
-/home/carlos/src/glibc-work/build-hppa/resolv:\
-/home/carlos/src/glibc-work/build-hppa/crypt:\
-/home/carlos/src/glibc-work/build-hppa/linuxthreads
-/home/carlos/src/glibc-work/build-hppa/libc.so.6
-/home/carlos/src/glibc-work/build-hppa/libc_nonshared.a -lgcc `gcc
---print-file-name=crtend.o`
-/home/carlos/src/glibc-work/build-hppa/csu/crtn.o
----
+CONFIG_INPUT_MOUSEDEV=m
+# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
+CONFIG_INPUT_MOUSEDEV_SCREEN_X=1600
+CONFIG_INPUT_MOUSEDEV_SCREEN_Y=1200
 
-## Run the test
-GCONV_PATH=/home/carlos/src/glibc-work/build-hppa/iconvdata 
-LC_ALL=C time /home/carlos/src/glibc-work/build-hppa/elf/tst-tls13
+> # CONFIG_INPUT_JOYDEV is not set
+> # CONFIG_INPUT_TSDEV is not set
+> CONFIG_INPUT_EVDEV=y
+> # CONFIG_INPUT_EVBUG is not set
+> 
+> #
+> # Input I/O drivers
+> #
+> # CONFIG_GAMEPORT is not set
+> CONFIG_SOUND_GAMEPORT=y
+> CONFIG_SERIO=y
+> CONFIG_SERIO_SERPORT=y
 
-0.01user 0.02system 0:00.23elapsed 19%CPU (0avgtext+0avgdata 0maxresident)k 
-0inputs+0outputs (126major+49minor)pagefaults 0swaps
+CONFIG_SOUND_GAMEPORT=y
+CONFIG_SERIO=m
+CONFIG_SERIO_SERPORT=m
 
-See the low number of pagefaults, and I'm using gcrt1.o
+> # CONFIG_SERIO_CT82C710 is not set
+> # CONFIG_SERIO_PARKBD is not set
+> CONFIG_HP_SDC=y
+> # CONFIG_HIL_MLC is not set
+> # CONFIG_SERIO_PCIPS2 is not set
+> 
+> #
+> # Input Device Drivers
+> #
+> CONFIG_INPUT_KEYBOARD=y
+> # CONFIG_KEYBOARD_ATKBD is not set
+> # CONFIG_KEYBOARD_SUNKBD is not set
+> # CONFIG_KEYBOARD_XTKBD is not set
+> # CONFIG_KEYBOARD_NEWTON is not set
+> # CONFIG_KEYBOARD_HIL_OLD is not set
+> CONFIG_INPUT_MOUSE=y
+> # CONFIG_MOUSE_PS2 is not set
 
-When I run using crt1.o I see:
+CONFIG_MOUSE_PS2=m
 
-0.08user 2.48system 0:02.76elapsed 92%CPU (0avgtext+0avgdata 0maxresident)k
-0inputs+0outputs (4121major+45minor)pagefaults 0swaps
+KEYBOARD and MOUSE are also both =y.
 
-And a ridiculous number of faults. What is going on here? 
-Running a kernel with profiling enabled I capture the following.
-
-The kernel shows this for the non-profiled case:
-  1118 flush_user_icache_range_asm               31.0556
-  1115 flush_user_dcache_range_asm               30.9722
-    61 flush_kernel_icache_page                   0.6100
-    48 copy_user_page_asm                         0.3158
-    16 unmap_page_range                           0.0244
-
-While the profiled case shows:
-    10 __wake_up                                  0.1250
-     7 flush_kernel_icache_page                   0.0700
-     7 fget_light                                 0.0486
-     7 $lctu_done                                 0.4375
-
-I see nothing like the *insane* flushing going on in the non-profiling
-case. There is definately something in the regular code that is tripping
-some sort of flushing that *horribly* degrades our performance. I would
-have thought the profiling case to be *the* bad case. Though the loader 
-does things a bit differently when profiled, I didn't expect such a
-difference.
-
-c.
+thanks,
+grant
