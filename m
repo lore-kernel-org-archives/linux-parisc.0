@@ -1,54 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mlbmx2.corp.harris.com (mlbmx2.corp.harris.com [137.237.90.74])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B2BD1482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 09:11:57 -0600 (MDT)
-Message-ID: <8D4C69676E66D511A1CB00508BBBB192162691@ranmx1.ran.harris.com>
-From: "Pedot, Wolfgang" <wpedot@harris.com>
-To: 'Grant Grundler' <grundler@puffin.external.hp.com>
-Cc: 'Parisc Linux Mailinglist' <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] HD not bootable after installation.... 
-Date: Mon, 16 Jul 2001 11:11:53 -0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BAF41482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 10:29:39 -0600 (MDT)
+Message-Id: <200107161629.SAA14087@hprtdt13.grc.hp.com>
+To: Helge Deller <deller@gmx.de>
+Cc: Holger Zessel <hzessel@grc.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] problem activating the optional lan card on 712/80 with 0.9-32serial 
+In-reply-to: Your message of "Fri, 13 Jul 2001 21:02:28 METDST."
+             <20010713190310.95C7A482A@dsl2.external.hp.com>
+Date: Mon, 16 Jul 2001 18:29:34 +0200
+From: Holger Zessel <hzessel@grc.hp.com>
+Sender: hzessel@hprtdt13.grc.hp.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks! My System now boots perfectly from HD and Network.
-The only disturbing thing is that the new HD is making terrible noise =
-:)
+In message <20010713190310.95C7A482A@dsl2.external.hp.com>Helge Deller writes
 
-greetings
-Wolfgang
+> Hi Holger,
+> 
+> I think the main problem why the second lan card didn't worked was, that
+> both - the first and the second card - tried to register the "eth0" device 
+> name.
 
+Hi Helge,
 
-> "Pedot, Wolfgang" wrote:
-> > Well, the HD has a Jumper called "Auto Start" which is set. Without =
-that
-> > jumper set the HD doesn=B4t spin up. The only Jumpers set now are =
-ID,
-> > AutoStart and Termination Power. There are others to but I have no =
-Idea
-> > what they mean..
-> >=20
-> > Option Block Mode
-> > Disable T.I. Sync Negotiations
-> > Disable Unit Attention
-> >=20
-> > Any Ideas?
->=20
-> sorry - forgot about TI Sync jumper - you want that disabled
-> for workstations...I think servers are ok with having enabled (no =
-jumper).
->=20
-> "Target Initiated Synchronous Negotiations" is when the Target device
-> (eg drive) realizes it doesn't have an agreement with the Initiator
-> (eg host controller) about how fast to send "synchronous" data =
-(SDTR).
-> Even though the SCSI protocol allows this, older products didn't
-> do this and the PDC didn't need to (and can't) handle it.
->=20
-> grant
->=20
-> Grant Grundler
-> parisc-linux {PCI|IOMMU|SMP} hacker
-> +1.408.447.7253
+thanks.  Actually it makes me angry somewhat that I did not yet have
+the time to look into the kernel sources myself so far.
+Even I would have found the constant 'eth0' string. :-))
+Though I definitely would not have been able to create a solution so far.
+
+What makes me confused is that the card is 'supported' according to
+the hw list but apparently this part of the code was not even designed
+to support more than one card at all. How can this be if the code
+PALINUX-2.4 started with was official 2.4 code which of course 
+supported more than one lancard ?? 
+Perhaps I just miss pieces of the picture here...
+
+Since I have no time to setup a devel. environment
+can you please sent me a kernel to test it ?? Regrettably you don't seem to 
+be with HP otherwise I could give you access to my gecko for testing.
+Do you have a system to test this on ??
+
+regards,
+Holger
