@@ -1,40 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA29911
-	for <parisc-linux@puffin.external.hp.com>; Sat, 31 Jul 1999 11:43:09 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA31294
+	for <parisc-linux@puffin.external.hp.com>; Sun, 1 Aug 1999 13:49:09 -0600
 Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id TAA29991
-	for <parisc-linux@thepuffingroup.com>; Sat, 31 Jul 1999 19:44:07 +0200
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id VAA00110
+	for <parisc-linux@thepuffingroup.com>; Sun, 1 Aug 1999 21:50:03 +0200
 Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id TAA572889
-	for <parisc-linux@thepuffingroup.com>; Sat, 31 Jul 1999 19:44:06 +0200 (CEST)
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id VAA601370
+	for <parisc-linux@thepuffingroup.com>; Sun, 1 Aug 1999 21:50:02 +0200 (CEST)
 Received: by genedata.com
 	via sendmail from stdin
-	id <m11AdAz-00025qC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Sat, 31 Jul 1999 19:44:05 +0200 (CEST)
-Date: Sat, 31 Jul 1999 19:44:05 +0200
+	id <m11B1cP-0002JoC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sun, 1 Aug 1999 21:50:01 +0200 (CEST)
+Date: Sun, 1 Aug 1999 21:50:01 +0200
 From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <19990731194405.U25925@mencheca.ch.genedata.com>
+Message-ID: <19990801215001.W25925@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] looking for something to do?
+Subject: [parisc-linux] HPUX syscall ABI?
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-I know there are some people sitting around who'd like to help with this
-project, but feel they are insufficiently able.  I have a task here which
-requires almost no prior knowledge, just some time.  As an added bonus,
-you'll gain some experience and knowledge.  What I need is a table which
-has the entry points for HPUX syscalls.
+I've just redefined the Linux syscall ABI again so we can
+handle sys_mmap (which takes 6 arguments) cleanly.  I'm now
+wondering what the HPUX syscall standard is.  I've searched
+http://docs.hp.com:80/dynaweb/hpux11/dtdcen1a/b821/@Generic__BookView
+(as mentioned earlier on this mailing list) without success.
 
-Take a look at arch/parisc/kernel/entry.S which has the linux syscalls in
-it, copy it to hpux_entry.S and modify it to have HPUX syscalls instead
-(the numbers are in include/asm-parisc/unistd.h).  Use the relevant linux
-syscalls where they are _identical_.  That means parameters and behaviour.
-Where they are not, some glue code must be written to mangle the hpux
-parameters into those that Linux is expecting.  If you're interested,
-drop me a mail to let me know you're doing it, and I'll give you a hand
-if you get stuck.
+For those interested; Linux syscalls now take the syscall number in r20,
+take arguments in r26-r21, zero r1, r19-r26, r29 and r31 on exit, preserve
+r3-r18, r27(dp) and r30(sp), clobber r2 and return the result in r28.
+If it's in the range [-1024,0) then that's an error code, otherwise it's
+the result.
+
+ObRant: Why on earth define a register to be caller-saves but not allow it
+to contain an argument?  Why force it onto the stack?
 
 -- 
 Matthew Wilcox <willy@bofh.ai>
