@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiscom.nl (unknown [130.78.143.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 654474829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Apr 2003 02:06:16 -0600 (MDT)
-Message-Id: <03Apr10.102517cest.119124@ns.hiscom.nl>
-From: =?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>
-To: "'Stan Sieler'" <sieler@allegro.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] A VERY GOOD DAY TO YOU
-Date: Thu, 10 Apr 2003 10:06:03 +0200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2FF38.07A5E800"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id 72A8D4829; Thu, 10 Apr 2003 05:19:28 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 193a5W-0006lF-VF; Thu, 10 Apr 2003 12:19:26 +0100
+Date: Thu, 10 Apr 2003 12:19:26 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] parisc-linux.org kernel
+Message-ID: <20030410111926.GR23430@parcelfarce.linux.theplanet.co.uk>
+References: <20030409054929.GB21306@dsl2.external.hp.com> <3E947323.14900.19F1E3AF@localhost> <20030410055003.GB21872@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030410055003.GB21872@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,98 +25,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C2FF38.07A5E800
-Content-Type: text/plain;
-	charset="iso-8859-1"
-
-> -----Original Message-----
-> From: Stan Sieler [mailto:sieler@allegro.com]
-> Sent: donderdag 10 april 2003 00:36
-> To: parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] A VERY GOOD DAY TO YOU
+On Wed, Apr 09, 2003 at 11:50:03PM -0600, Grant Grundler wrote:
+> > actually, i'd like to (feel free to answer off-list),
 > 
-> 
-> Re:
-> 
-> > Prince. Perrucci Nniga
-> ...
-> > be of assistance,and you will have 20% of this money and 5% 
-> will be earmarked cover expenses cotingencies.
-> 
-> Hey...maybe we can use this to fund the PA-RISC / Linux project!
+> Once the 2.4.20-preX bk tree that willy was using as "parent"
+> was discarded by marcelo because of other bugs in patches.
+> Or marcelo wouldn't accept the patch because he had a -pre candidate
+> and didn't want to risk that. Just stuff like that.
 
-I think the project first needs to be based in Nigaragua...
+And other people were patching things in the parisc-specific directories
+which conflicted with my patches ;-(
 
-> 
-> 
-> Incompetent scammers/spammers are the worst kind.
+> As willy noted, parisc is not an exception. last time willy looked at
+> merging, the 2.4 diff was something like 2 or 3MB. I'd hope it's a bit
+> smaller since Alan Cox merge a bunch of stuff into his tree.
+> But I haven't looked if/when Marcelo picked any of that up.
+> For comparison, last I heard, the 2.5 diff is something like < 100KB.
 
-I recently read somewhere that Nigaragua (and maybe some other coutries)
-have this scam as their 3rt of 4th largest source of income...
+-rw-r--r--    1 willy    willy      202871 Apr  8 20:54 parisc-2.5.diff
+although most of that is:
+-rw-r--r--    1 willy    willy      170361 Mar 18 18:46 parisc-hil.diff
 
+$ zcat ../ftp/cvs/patch-2.4.20-pa32.diff.gz |wc
+  91100  503494 3691507
 
-CBee
+that's not the full story since a large chunk of that's been merged into
+2.4.21-pre, but i have no idea how much would be remaining.
 
-------_=_NextPart_001_01C2FF38.07A5E800
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+if anyone had the time, we could track 2.4.21-pre more closely.  but it's
+just not worth it.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2654.45">
-<TITLE>RE: [parisc-linux] A VERY GOOD DAY TO YOU</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=3D2>&gt; -----Original Message-----</FONT>
-<BR><FONT SIZE=3D2>&gt; From: Stan Sieler [<A =
-HREF=3D"mailto:sieler@allegro.com">mailto:sieler@allegro.com</A>]</FONT>=
-
-<BR><FONT SIZE=3D2>&gt; Sent: donderdag 10 april 2003 00:36</FONT>
-<BR><FONT SIZE=3D2>&gt; To: parisc-linux@lists.parisc-linux.org</FONT>
-<BR><FONT SIZE=3D2>&gt; Subject: Re: [parisc-linux] A VERY GOOD DAY TO =
-YOU</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; Re:</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; Prince. Perrucci Nniga</FONT>
-<BR><FONT SIZE=3D2>&gt; ...</FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; be of assistance,and you will have 20% of =
-this money and 5% </FONT>
-<BR><FONT SIZE=3D2>&gt; will be earmarked cover expenses =
-cotingencies.</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; Hey...maybe we can use this to fund the PA-RISC =
-/ Linux project!</FONT>
-</P>
-
-<P><FONT SIZE=3D2>I think the project first needs to be based in =
-Nigaragua...</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; Incompetent scammers/spammers are the worst =
-kind.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>I recently read somewhere that Nigaragua (and maybe =
-some other coutries) have this scam as their 3rt of 4th largest source =
-of income...</FONT></P>
-<BR>
-
-<P><FONT SIZE=3D2>CBee</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2FF38.07A5E800--
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
