@@ -1,16 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 248EC4830
-	for <parisc-linux@parisc-linux.org>; Sat, 20 Apr 2002 21:56:31 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id chqtmaaa for parisc-linux@parisc-linux.org; Sat, 20 Apr 2002 20:55:22 -0700
-Date: Sat, 20 Apr 2002 20:59:52 -0700
-From: Randolph Chung <tausq@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20020421035952.GI7563@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] unofficial gdb deb on ftp site
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 025A24833
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Apr 2002 22:08:19 -0600 (MDT)
+Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
+ by mtaout45-01.icomcast.net
+ (iPlanet Messaging Server 5.1 HotFix 0.3 (built Apr  8 2002))
+ with SMTP id <0GUW0046BGTRSA@mtaout45-01.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Sun, 21 Apr 2002 00:08:15 -0400 (EDT)
+Date: Sat, 20 Apr 2002 23:08:17 -0500
+From: James S <smithjames@comcast.net>
+Subject: Re: [parisc-linux] not freeing initmem and power button
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: James S <smithjames@comcast.net>
+Message-id: <004901c1e8ea$2ac79a00$02c1a8c0@james.co.uk>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+References: <F124jLDxo1dHkLl0atJ00008874@hotmail.com>
+ <OE54mEB4HGXAwxXSXI3000037e7@hotmail.com> <200204201751.27272.deller@gmx.de>
+ <OE45GXh6xHs3X0yb7bO00001eac@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +29,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-there is an unofficial gdb debian package at
+> Nope, soft power-off is enabled as you can see in my attached dmesg. BTW,
+> when using the old 2.4.9 kernel nothing happened when pressing this
+switch.
+>
 
-ftp://ftp.parisc-linux.org/unofficial-debs/gdb_5.2.cvs20020401-4.1_hppa.deb
+for what its worth :)
 
-this is basically the same as the Debian package, except it has a fix
-for the '"core" is not a core dump: File format not recognized' bug.
+using the 2.4.17 kernel on my 712/60 here & the power switch does an orderly
+shutdown
 
-A patch has been submitted to the Debian maintainer, but in the meantime
-if you want you can use this package.
+found this kernel fairly stable (no crashes in everyday use) with smbfs
+compiled in
 
-I see that Dave has changed hppa-gcc from using stabs to using dwarf2 in
-gcc 3.2, so things might be quite different once we move to gcc 3.2...
-but for now gdb is only marginally usable.  If anyone is interested in 
-looking at gdb, we seem to have some problems with gdb tracking line 
-info.  'next' doesn't work at all...
 
-randolph
+James S
