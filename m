@@ -1,51 +1,59 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric.uwo.ca (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with SMTP id D9F23482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 07:38:48 -0600 (MDT)
-Date: Thu, 12 Jul 2001 09:38:41 -0400 (EDT)
-From: Chris Snow <chris@baldric.uwo.ca>
-To: Aaron Berg <Aaron.Berg@mnsu.edu>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Crazy Beowulf stuff!
-In-Reply-To: <3B4CBFFE.1AE90276@mnsu.edu>
-Message-ID: <Pine.LNX.4.33.0107120935460.30509-100000@baldric.uwo.ca>
+Received: from web11207.mail.yahoo.com (web11207.mail.yahoo.com [216.136.131.189])
+	by dsl2.external.hp.com (Postfix) with SMTP id 9F32D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 08:42:32 -0600 (MDT)
+Message-ID: <20010712144225.20503.qmail@web11207.mail.yahoo.com>
+Date: Thu, 12 Jul 2001 07:42:25 -0700 (PDT)
+From: Charles Boone <ccboone@yahoo.com>
+Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240
+To: Richard Hirst <rhirst@linuxcare.com>,
+	Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Charles Boone <ccboone@yahoo.com>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20010711094816.G18375@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 11 Jul 2001, Aaron Berg wrote:
-
-> Greetings all! I was reading a couple of posts about clustering. Well I
-> made a small 6 node +server x86 cluster over a year ago now. Works great
-> and now I am being donated 10 hp 9000 c220 4 c110 and 2 j2240. Now I
-> have read that the j2240 and 220 may not be quite working yet. For the
-> last two years I have been fiddling with getting RS/6000 43p 260 running
-> linux. so I know how time consuming it can be to get a computer running
-> linux. I would simply like to say I maybe getting active in this HP 9000
-> stuff very shortly. Time pending I would love to help make progress with
-> the pa-risk linux project. I may even be the 2nd person crazy enough to
-> build a beowulf cluster with them. ;-)
+One piece of info that I did not include,  which I
+thought might be relative to the ps/2 issue.  I am not
+sure it is, but I do not have a keyboard or mouse
+connected on the c240.  I was pretty sure that it
+would not be a problem, since it would be just like
+having a dumb terminal on it.
 
 
-Just to add,
+--- Richard Hirst <rhirst@linuxcare.com> wrote:
+> On Tue, Jul 10, 2001 at 11:36:25PM -0600, Grant
+> Grundler wrote:
+> > Richard Hirst wrote:
+> > > IAOQ = _gsc_readl + 8
+> > > called from dino_in32()
+> > > I guess it was dino_in32(0xc1b21ec0), which
+> looks odd.
+> > 
+> > It's definitely wrong. dino_in32() pokes dino to
+> generate IO Port
+> > transactions and Dino lives in 0xF... address
+> range. This suggests the
+> > pci_dev->sys_data is garbage (perhaps not
+> initialized?) or points to garbage.
+> > Perhaps for Dino's built-in PS/2 or RS232 port?
+> > 
+> > Sorry, I didn't follow this thread earlier. Does
+> console output hint
+> > which PCI device was involved (if any)?
+> 
+> Not obviously, and it failed in the middle of the
+> install, so presumably
+> whatever device was involved had been accessed
+> successfully earlier.
+> 
+> Richard
+> 
 
-We (the Baldric Project at UWO) have suceeded in running some MPI
-applications under linux with our 715/33 and 715/50 machines (48 in all,
-but not all set up yet).  Right now we are in the process of building some
-tools to do automated node installation by booting a specific image off
-the LAN.  Once we get everything set up, we will post a short how-to and a
-copy of the relevant scripts on the website. At that time I'll send out
-another email the let everyone know of our progress.
 
-If you want to learn more about our project, check out the website:
-
-http://www.baldric.uwo.ca/
-
-Cheers,
-
-
-     Chris
-
-------------------------------
-"Mmmm, free goo."
- - Homer Simpson
+__________________________________________________
+Do You Yahoo!?
+Get personalized email addresses from Yahoo! Mail
+http://personal.mail.yahoo.com/
