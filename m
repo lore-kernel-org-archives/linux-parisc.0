@@ -1,15 +1,12 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] i386 cross-compiler for hppa/hppa64 ?
-Date: Fri, 17 Sep 2004 19:36:11 +0200
-Message-ID: <200409171936.11573.deller@gmx.de>
-References: <200409152113.57033.deller@gmx.de>
-	<20040916143812.GB28936@baldric.uwo.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] [BUG] 2.6.9-rc2-pa5 panic in poll_freewait+0x58
+Date: Sun, 19 Sep 2004 00:14:08 -0600
+Message-ID: <20040919061408.GE12274@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset=us-ascii
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040916143812.GB28936@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,28 +17,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
+I was running dselect "update" operation when it panic'd.
 
-On Thursday 16 September 2004 16:38, Carlos O'Donell wrote:
-> > The cross-compiler section on the parisc homepage at http://parisc-linux.org/software/index.html#xcs links to 
-> > http://ftp.parisc-linux.org/x86-xcompilers/   and  
-> > ESIEE Team's download page at http://www.pateam.org/download.html#deb
-> 
-> If you have time...
-> http://www.parisc-linux.org/toolchain/PARISC-Linux-XC-HOWTO.html
+Since this is a graphical console. Here are some of the data by hand.
 
-Even without the above URL I was able to build myself a x86-hppa crosscompiler :-)
+Code 15 (addr=6f000004)
 
-It's available here for download now (~26MB):
-ftp://ftp.parisc-linux.org/x86-xcompilers/xc-20040917-hppa32.tgz
+PSW: BC QPDI (bits set in PSW)
 
-Some notes:
-- x86 -> hppa (32bit only!)
-- based on DEBIAN's hppa binutils and gcc3.3 packages (look at the README in the archive)
-- only for cross-compiling Linux kernels
-- unpack in /opt and add /opt/palinux33/bin to your $PATH
+r00-03  00000000 103e3aac 1017adb8 4c4dafec
+r04-07  4c4db008 6f000004 00000009 00000104
+...
+r20-23  10dadb78 103e3c20 0000000f 0000000f
+r24-27  00000314 00000000 10dadb60 103c2010
+r28-31  00000104 98a50c80 4d974280 1017b224
+sr0-3   00000000 00000f13 00000000 00000efe
+sr4-7   all zero
 
-Helge
+IASQ: zero
+IOAQ: 1017adbc 1017ad84
+IIR:  0ca81083
+CR30 4d974000 CR31 10490000
+IOAQ[0]: poll_freewait+0x58/0x70
+IOAQ[1]: poll_freewait+0x20/0x70
+RP(r2): poll_freewait+0x54/0x70
+
+
+My guess is it panic'd on the delay slot of a branch insn.
+
+
+I'm also wondering now how I built this kernel.
+Kind of odd to file a "fails to build" (64-bit) and
+a "BUG/panic" against the same revision.
+
+But the login message (via ssh) was:
+grundler@ob500:~$ ssh 192.168.3.3
+Enter passphrase for key '/home/grundler/.ssh/id_rsa': 
+Linux gggc3k 2.6.9-rc2-pa5 #9 Sat Sep 18 21:10:49 PDT 2004 parisc GNU/Linux
+No mail.
+...
+
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
