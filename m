@@ -1,15 +1,16 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] interesting linker behaviour :)
-Date: Tue, 21 Sep 2004 13:43:54 -0400
-Message-ID: <20040921174353.GB13248@baldric.uwo.ca>
+Date: Tue, 21 Sep 2004 13:46:37 -0400
+Message-ID: <20040921174636.GC13248@baldric.uwo.ca>
 References: <20040921172245.GS22642@tausq.org>
+	<20040921174353.GB13248@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040921172245.GS22642@tausq.org>
+In-Reply-To: <20040921174353.GB13248@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,21 +21,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Sep 21, 2004 at 10:22:45AM -0700, Randolph Chung wrote:
-> but 10100158 is lstrncpy_from_user, not $lsfu_exit:
-> 10100158 <lstrncpy_from_user>
-> 10100190 <$lsfu_exit>
+On Tue, Sep 21, 2004 at 01:43:54PM -0400, Carlos O'Donell wrote:
+> On Tue, Sep 21, 2004 at 10:22:45AM -0700, Randolph Chung wrote:
+> > but 10100158 is lstrncpy_from_user, not $lsfu_exit:
+> > 10100158 <lstrncpy_from_user>
+> > 10100190 <$lsfu_exit>
+> > 
+> > i wonder if the sections are somehow confusing things.... this is with
+> > fairly recent gcc/binutils toolchains, for 32-bit.
 > 
-> i wonder if the sections are somehow confusing things.... this is with
-> fairly recent gcc/binutils toolchains, for 32-bit.
+> Multiple entry points to a function may not work if an import stub is
+> required? The import stubs are thrown into a hash, and it probably
+> thinks it's okay for you to use the same import stub. You on the other
+> want a second entry point.
+> 
+> I recommend you give the exit it's own symbol, .export and .import the
+> linker thinks it's two different functions?
 
-Multiple entry points to a function may not work if an import stub is
-required? The import stubs are thrown into a hash, and it probably
-thinks it's okay for you to use the same import stub. You on the other
-want a second entry point.
+Wow. I need to stop and re-read my emails.
 
-I recommend you give the exit it's own symbol, .export and .import the
-linker thinks it's two different functions?
+a. Multiple entry points to a function, and import stubs probably don't
+   mix well.
+
+b. Define a symbol for lsfu_exit, .export it, then .import it later
+   and branch to that symbol. We want the linker to think it's two
+   different functions.
+
+I think that is clearer? :)
 
 c.
 
