@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from PHSEXCHICI2.Partners.org (phsexchici2.partners.org [170.223.254.21])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B77E4830
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 09:39:48 -0700 (MST)
-Message-ID: <FE6B88CC9D2BD311AD120008C7B3AF87081ED28D@phsexch3.mgh.harvard.edu>
-From: "Roylance, Stephen D." <SROYLANCE@PARTNERS.ORG>
-To: 'Grant Grundler' <grundler@dsl2.external.hp.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Getting a D370 off the ground 
-Date: Tue, 12 Feb 2002 11:39:40 -0500
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 827FE4839
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 09:40:27 -0700 (MST)
+Message-Id: <200202121640.g1CGeJ4B024431@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] $$divU undefined reference
+To: Arnaud.ATOCH@oecd.org
+Date: Tue, 12 Feb 2002 11:40:19 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <C12531D038D1D011B1DB0000F8036C280BBA4743@eosm5.oecd.org> from "Arnaud.ATOCH@oecd.org" at Feb 12, 2002 05:23:24 pm
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +22,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Does anyone know if I can switch resolution/video mode from 
-> the firmware? 
-> 
-> Not sure. I'm surprised to hear about a D with gfx in it.
+> Should I understand that this divU function is used but I can not find which
+> library to link ? or are all these libs broken ?
 
-Do you know how to do it on workstation  machines, maybe it works the same
-way?
-or can anyone point me to HW/tech docs for these machines?
+It's always necessary to link against a static copy of libgcc to resolve
+millicode references.  Linking using gcc, g++, or libtool will do this
+automatically.
 
-> > I installed the 32-bit kernel, can I use a 64-bit kernel on 
-> this machine?
-> 
-> Depends on cpu type. If it's a PA2.0 CPU (ie PA-8xxx), then yes.
-> See /proc/cpuinfo and/or check console output at boot time.
-> 
-> > Should I checkout the latest kernel source from cvs and 
-> build that, or is
-> > there some other version, or an image, I shoud use?  The 
-> kernel installed
-> > with the CD doesn't seem to be SMP.
-> 
-> Newer kernels are on ftp://ftp.parisc-linux.org/kernels/
-
-OK, looks like I have two PA8000's.  I apt-get upgraded to unstable and
-d/l'ed the latest kernel tar.gz.  
-I'm getting an error trying to compile a 64 bit SMP kernel:
-make[1]: hppa64-linux-gcc: Command not found
-on, I guess, the first call to the compiler when I do 'make dep';
-my make is:
-ii  make                3.79.1-12           The GNU version of the "make"
-utility.
-my gcc is:
-ii  gcc                 3.0.4-2             The GNU C compiler.
-
-Do I need to mess with a makefile so it knows what the right compiler is?
-Do I need to get an different version of gcc for 64-bit hppa?
-
-> grant
-
-Thanks!
--Steve
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
