@@ -1,20 +1,15 @@
-Return-Path: <herbert@13thfloor.at>
-Received: from mail.13thfloor.at (MAIL.13thfloor.at [212.16.62.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A9F69484B
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 19 Dec 2003 13:02:37 -0700 (MST)
-Date: Fri, 19 Dec 2003 21:02:36 +0100
-From: Herbert Poetzl <herbert@13thfloor.at>
-To: Thibaut =?iso-8859-1?Q?VAR=C8NE?= <varenet@esiee.fr>
-Subject: Re: [parisc-linux] Compiling Kernel for HP 9000/800/A400-44
-Message-ID: <20031219200236.GA18747@MAIL.13thfloor.at>
-References: <20031219022800.GA8847@MAIL.13thfloor.at>
-	<F2577FA8-3214-11D8-BAB6-0030656F07A2@esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <F2577FA8-3214-11D8-BAB6-0030656F07A2@esiee.fr>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
+Return-Path: <vghyu@msn.com>
+Message-ID: <o0$$$$3-2l$$$w1@3703f098l5>
+From: "Flora Tran" <vghyu@msn.com>
+To: pmccabe@parisc-linux.org
+Date: Sat, 20 Dec 03 08:47:01 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="E.1.7C22..8D_.82_1029119"
+Cc: grundler@parisc-linux.org, parisc-linux@parisc-linux.org
+Subject: [parisc-linux] Sexy.. leading men share their tips with you guys
+	ydfluvv
+Reply-To: Flora Tran <vghyu@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,37 +19,54 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Dec 19, 2003 at 12:17:35PM +0100, Thibaut VARÈNE wrote:
-> 
-> Le vendredi, 19 déc 2003, à 03:28 Europe/Paris, Herbert Poetzl a écrit :
-> >
-> >>You'll need to grab the gcc-hppa64 compiler from:	
-> >>    
-> >>ftp://ftp.parisc-linux.org/unofficial-debs/gcc-hppa64_3.0.4ds3- 
-> >>7.1_hppa.deb
-> >
-> >hmm, is there a source available somewhere ...
-> >(I don't like binary only packages)
-> 
-> If you really want to waste your time in building a cross 
-> compiler by yourself, going through the various pain of 
-> this process, just follow the recipe here:
 
-well, what I had in mind was a debian source
-package, which can be 'rebuilt' my myself ...
+--E.1.7C22..8D_.82_1029119
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-> http://www.fr.parisc-linux.org/toolchain/PARISC-Linux-XC-HOWTO.html
+<html>Sexy.. leading men share their tips with you guys ydfluvv 
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
 
-useful info ... I guess
+<body bgcolor=3D"#FFFFFF" text=3D"#000000" link=3D"#FF00FF" vlink=3D"#FF00=
+FF" alink=3D"#FF00FF">
+<center>A MEDICALLY PROVEN FACT:<br>HGH<br>replenishes what TIME has taken=
+ away !<br>
+  <br>
+  Famous celebrities have been using HGH for decades.<br>
+  You've seen these great looking people on TV they have to be in their 60=
+'s and 
+  even 70's<br>
+  THEY WEREN'T BORN THAT WAY!!<BR>Their skin is smooth and radiant, their =
+hair is thick and lusterous, their figures are trim and lean.
+  <br> 
+  Cher, Rod Stewart, Dick Clark, Wayne Newton, David Copperfield, Dolly Pa=
+rton,<br> 
+  Bob Barker, Joe Namath, Elizabeth Taylor, Joan Collins, Raquel Welch, Ge=
+orge 
+  Burns, Bob Hope<br>These famous people well into their 50's and beyond l=
+ook fantastic!<br>Some have added years to their lives with HGH!<br>
+  <br>
+    Time, stress, and aging.. REDUCE and EXHAUST the naturally occuring ho=
+rmones 
+    within our bodies.<br> The very hormones we need to remain youthful an=
+d vibrant.<br><br>
+  Your hair becomes dull brittle and thinner, your skin starts to wrinkle =
+and 
+  sag, you gain weight,<br>you lose energy always feel tired, your eyes lo=
+se that healthy shine, you become forgetful and apathetic<br>These conditi=
+ons can be stopped dead in their tracks---Even Improved !<br> You can now =
+REPLENISH what time has taken away !<br><a href=3D"http://www.fisha.biz/hg=
+h/?buster"><h2>HGH IS THIS WAY !</h2></a></center>
+vbptpoy nv ntjl mg 
+</body>
+</html>
+vl isjsq
+edtj qsvdt
+n ocqkxukvnqd xk
+pffbyjwyhk 
 
-best,
-Herbert
-
-> HTH,
-> 
-> Thibaut VARENE
-> The PA/Linux ESIEE Team
-> http://www.pateam.org/
-> 
-> PS: i know what i'm talking about, regarding pain, i'm the guy who made  
-> that "binary only" package :P
+--E.1.7C22..8D_.82_1029119--
