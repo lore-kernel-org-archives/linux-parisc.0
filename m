@@ -1,19 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: linux signal race fixes,
-	patches against hppa tree, please te
-Date: Tue, 31 Aug 2004 16:43:11 -0400 (EDT)
-Message-ID: <200408312043.i7VKhBDp005965@hiauly1.hia.nrc.ca>
-References: <200408310423.i7V4NXjb001644@hiauly1.hia.nrc.ca>
+From: "Michael S. Zick" <mszick@wolfbutter.com>
+Subject: Re: [parisc-linux] Proposal for implementing IRQ affinity
+Date: Tue, 31 Aug 2004 16:26:16 -0500
+Message-ID: <200408311626.16860.mszick@wolfbutter.com>
+References: <1093923097.3870.18.camel@mulgrave>
+	<20040831192112.GH20353@colo.lackof.org>
+	<20040831192811.GB642@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: James.Bottomley@steeleye.com,
- parisc-linux@lists.parisc-linux.org,
- tausq@debian.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200408310423.i7V4NXjb001644@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Aug 31, 2004 00:23:33 am
+In-Reply-To: <20040831192811.GB642@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,22 +21,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I've been running this now for three days on hiauly6 with a 32-bit
-> 2.6.8.1-pa7 kernel (default c3000 config) doing almost continuous gcc
-> builds.  Things seem pretty promising.  No random SIGSEGVs and expect
-> seems to be behaving itself.
+On Tue August 31 2004 14:28, Matthew Wilcox wrote:
+> On Tue, Aug 31, 2004 at 01:21:12PM -0600, Grant Grundler wrote:
+> 
+> In any case, ISA devices don't have subdevices.
+> 
+Perhaps not in the sense you are speaking of (not
+in the terms that PCI does)...
 
-As usual, I have to eat my words.  The libjava "PR218 -O3 execution -
-source compiled test" hung in the libjava testsuite on the next gcc
-build.  Looking at libjava.log, I see that there is no "WARNING:
-program timed out." message for this test.  Thus, the alarm signal
-for this test somehow got lost.  The testsuite continued after I
-killed PR218.exe.
+But, for instance, DigiBoard has 4, 8, (16?) subdevices
+which are distingushed in the driver in cooperation with
+the on-board processor.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Probably would fall into your irq tree just like an hp
+buss device that doesn't let you diddle the interrupt
+sources/assignment the other side of the device/
+controller.
+
+My point;
+Perhaps you'll need to allow for a next
+level tree at each EISA/ISA interrupt to support multi-port
+serial boards and other 'intelligent' controllers.
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
