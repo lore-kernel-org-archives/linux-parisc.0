@@ -1,48 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA21558
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:54:46 -0700
-Message-Id: <200011301756.JAA29386@milano.cup.hp.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA21853
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:56:12 -0700
+Received: from user-83-59.jakinternet.co.uk (HELO rhirst.linuxcare.com) (194.88.83.59)
+  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 17:58:19 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 13584B007; Thu, 30 Nov 2000 17:54:00 +0000 (GMT)
+Date: Thu, 30 Nov 2000 17:53:59 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Steve Moret <smoret@uci.edu>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] XFree status 
-In-reply-to: Your message of "Thu, 30 Nov 2000 16:10:46 PST."
-             <E141WIL-0007Ro-00@the-village.bc.nu>
-Date: Thu, 30 Nov 2000 09:56:46 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Subject: Re: [parisc-linux] HP 9000/735-125
+Message-ID: <20001130175359.O22285@linuxcare.com>
+References: <20001130161115.N22285@linuxcare.com> <FKEGLIIBOIACJOCCAFIMIEFFCCAA.smoret@uci.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <FKEGLIIBOIACJOCCAFIMIEFFCCAA.smoret@uci.edu>; from smoret@uci.edu on Thu, Nov 30, 2000 at 09:39:17AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Cox wrote:
-...
-> > All HP graphics for PARISC are memory mapped. Both "GSC" and PCI flavors.
+On Thu, Nov 30, 2000 at 09:39:17AM -0800, Steve Moret wrote:
+> I will go under the assumption that it could be the disks and their possible
+> age and try and find suitable replacements.
 > 
-> Yes, but if I want to say put an S3 Trio64 in my A180 and a USB card for
-> keyboard mouse..,, (and yes these are sitting on my desk)
+> Once I do get disks working is there a "Recepe" on how to get it to boot
+> from your local drive.
+> 
+> I would figure just copy over the NFS root, but then where do I put the
+> lifimage so that boot manager can find it.
+> 
+> Until then I'll just keep booting from the network.
 
-As long as everyone plays nicely on the PCI bus, it should work.
-I would expect it too.
+There is a README.INSTALL on the 0.5 beta CD image:
 
-> The OS specific X code in XFree86 knows several ways to talk to Linux
+ftp://puffin.external.hp.com/pub/parisc/cd-images/palinux-0.5.iso.gz
 
-Thanks for the explanation!
-
-
-> For I/O it seems that on things like the A180 the only way to do it is to use
-> /dev/port and pread/pwrite the file handle for each port I/O.
-> This is slow but hopefully primarily used for booting the card
-
-I/O port space is *really* slow under Dino. The problem is two writes
-are needed to generate the I/O port transaction and since they must be
-atomic - spin_lock_irqsave() is invoked around it. HPUX fundementally
-does NOT use I/O port space for anything that is performance sensitive.
-
-> (XFree 4.0 has a X86 emulator for booting the BIOS firmware on PCI cards)
-
-And is this emulator running under parisc-linux now? (!)
-
-
-thanks again,
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Richard
