@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lakemtao01.cox.net (lakemtao01.cox.net [68.1.17.244])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 00B294866
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Sep 2003 05:04:10 -0600 (MDT)
-Received: from 6-allhosts ([68.98.100.142]) by lakemtao01.cox.net
-          (InterMail vM.5.01.06.05 201-253-122-130-105-20030824) with ESMTP
-          id <20030922110410.QMGF29208.lakemtao01.cox.net@6-allhosts>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Mon, 22 Sep 2003 07:04:10 -0400
-From: Brian Zurbach <briansz@ponymail.com>
+Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41D3E4868
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Sep 2003 07:30:25 -0600 (MDT)
+Received: from hrzpub.tu-darmstadt.de (IP-213157024120.dialin.heagmedianet.de [213.157.24.120])
+	(authenticated bits=0)
+	by mailserver3.hrz.tu-darmstadt.de (8.12.10/8.12.7) with ESMTP id h8MDU5KX017249
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Sep 2003 15:30:10 +0200
+Message-ID: <3F6EF96B.8070308@hrzpub.tu-darmstadt.de>
+Date: Mon, 22 Sep 2003 15:30:19 +0200
+From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Message-Id: <1064228736.680.95.camel@cool-dual-beast>
-Mime-Version: 1.0
-Date: Mon, 22 Sep 2003 04:05:37 -0700
-Subject: [parisc-linux] Selling my J2240, any interest?
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] Compile-Error with linux-2.6 and harmony
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +25,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Nice machine, 2x236MHz PA-8200s with 2MB/2MB cache, 256MB, 9.1GB UW
-SCSI, CD, Floppy, Visualize fx4 video, currently working well and
-running Debian Woody (2.4.17) over serial console.  Has all plastic,
-reasonable condition.
+Hi there,
 
-I have two of these machines at the moment, so I've decided to sell
-one.  I'll even toss in a spare power supply to sweeten the deal.
+I tried to compile the latest kernel  from CVS with OSS harmony enabled, 
+but at first I got a compiler warning and afterwards a linker error:
 
-I know it isn't the latest/greatest, but it's a pretty capable and
-incredibly solid inexpensive server with the dual proc configuration. 
-Parts could also upgrade an existing J280 to PA-8200s and SMP.
+    ---------------><------------
+      LD      sound/oss/sound.o
+      CC      sound/oss/harmony.o
+    sound/oss/harmony.c: In function `harmony_driver_callback':
+    sound/oss/harmony.c:1237: Warnung: implicit declaration of function
+    `ccio_get_fake'
+    sound/oss/harmony.c:1237: Warnung: assignment makes pointer from
+    integer without a cast
+      LD      sound/oss/built-in.o
+      .....
+     UPD     include/linux/compile.h
+      CC      init/version.o
+      LD      init/built-in.o
+      LD      .tmp_vmlinux1
+    sound/built-in.o: In function `harmony_driver_callback':
+    sound/built-in.o(.init.text+0x3a0): undefined reference to
+    `ccio_get_fake'
+    make: *** [.tmp_vmlinux1] Fehler 1
+    ---------------><------------
 
-Good home, reasonable offers?  I'm in AZ at the moment but will be in NM
-and parts of CO in the next several weeks.  Trying to avoid putting this
-one on fleaBay, the weight *scares* people.
-
-Regards,
-
-Brian
+I thought that only the alsa harmony driver makes trouble when linking? 
+I also can't find this function "ccio_get_fake" anywhere.
+I'm running debian testing with gcc-3.3.1 and binutils 2.12.90.
+TIA, Ruediger
