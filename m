@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (unknown [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A4A094829
-	for <parisc-linux@parisc-linux.org>; Wed, 11 Dec 2002 16:17:43 -0700 (MST)
-Date: Wed, 11 Dec 2002 18:17:38 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] ["CSA Test Drive" <TestDrive@compaq.com>] FW: Some issues
-Message-ID: <20021211231738.GA15513@systemhalted>
-References: <20021211224404.GC15219@systemhalted> <200212112305.gBBN5Bdj021432@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200212112305.gBBN5Bdj021432@hiauly1.hia.nrc.ca>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 32E924829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Dec 2002 16:29:53 -0700 (MST)
+Date: Wed, 11 Dec 2002 23:29:45 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021211063321.GB10185@systemhalted>
+Message-ID: <Pine.LNX.4.44.0212112313290.861-100000@sal.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: Solved: Kernel crash when loggin in via ssh
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +22,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The code doesn't seem to trap on a A500 which I believe is a PA8500.
+On Wed, 11 Dec 2002, Carlos O'Donell wrote:
 
-Could be a PA8600 too.
+> Subject: Re: [parisc-linux] Kernel crash when loggin in via ssh
+>
+> > Reading my previous post about the change in the Voodoo3 issue (Nov 26),
+> > I realized that linux-2.4.20-rc1-pa7 obviously also worked.
+> > This kernel was definitely compiled with gcc-3.0.4 (the one that
+> > was in sid as of Nov 26).
+> >
+> > Yes, it might be a gcc issue ... haven't thought of that ...
+> > I'll try to recompile the latest kernel with a gcc-3.0.4 - tomorrow!
 
-> I think we need to look at bits 0..1 of the coprocessor configuration
-> register to determine instruction validity.  See table 8-6 on page 8-11.
-> I can look at what the HP compiler does.  Up to now, we have assumed
-> that all PA8000 machines have the same instruction set.
+It IS a gcc issue.
 
-I'm building a new kernel right now to run the test on again.
-My sociology exam is in a half-hour... I need a little break ;)
+gcc-3.0_3.0.4-13 produces a working kernel, gcc-3.2-3.2.2-0pre0 produces
+a miscompiled kernel (faulty networking, causes kernel crash).
+I made NO updates whatsoever; same kernel configuration, just using gcc-3.0
+insted of gcc-3.2. I just make a make clean; make dep; make vmlinux ...
 
-c.
+Since now all my kernels compiled with gcc-3.0 were working, just when I
+upgraded to gcc-3.2 the problems occured.
+
+> So the urban legend goes that gcc-3.2 compiled kernels may infact
+> produce mildly incorrect results in the networking code.
+
+I think it is no urban legend anymore ... :-/
+I've also see quite alot reports on p-l about miscompiled kernels with
+anything other than gcc-3.0.4, actually several months ago; so I thought
+these issues have been solved by now ...
+
+> I have yet to verify this, and JDA seems to indicate that he has working
+> kernels with gcc-3.2. While I've only recently tested gcc-3.0.x and
+> gcc-3.1.x based compiles.
+>
+> I don't like urban legends >:} *Added item to Chrismas todo list*
+
+Merry christmas then :-}
+
+greetings max
