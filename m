@@ -1,14 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0FE18482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jul 2003 08:03:35 -0600 (MDT)
-Date: Tue, 1 Jul 2003 16:03:27 +0200
-Message-ID: <3ED71F6D0000C050@ocpmta7.freegates.net>
-In-Reply-To: <20030701132146.GD23597@parcelfarce.linux.theplanet.co.uk>
+	by dsl2.external.hp.com (Postfix) with ESMTP id B714A482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jul 2003 10:33:10 -0600 (MDT)
+Date: Tue, 1 Jul 2003 18:33:07 +0200
+Message-ID: <3ED71F6D0000C19D@ocpmta7.freegates.net>
+In-Reply-To: <20030630163601.GC14971@dsl2.external.hp.com>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] Kernel compilation for J5600
-To: "Matthew Wilcox" <willy@debian.org>,
-	"Mark Mestdagh" <Mark.Mestdagh@Icon-Europe.com>
+Subject: Re: [parisc-linux] byte swapping redux
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -23,43 +22,96 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
- 
-> > drivers/ide/idedriver.o(.text.probe_hwif+0xfc): undefined reference to
-> > `local_irq_set'
+Hi Grant,
 
-> This is 2.4.21-pa1?
+> > I don't understand why the 32bits kernel crashed with this patche:
+> > (gcc-3.3 and binutils-2.13.90)
+> 
+> uhm...perhaps the 64-bit swap is buggy for 32-bit mode?
+> I didn't test that. It's a different code path.
 
-Hmm not yet and my patch to Grant is definitely incomplete (Sorry, my bad).
+I hope I am not going to anoying you.
 
-In fact I am hesitate:
+I just found related interesting stuff: <http://lwn.net/Articles/38384/>
 
-For many other paltform we can found:
-(in system_irqsave.h)
-[...]
-/* For spinlocks etc */
-#define local_irq_save(x)  __save_and_cli(x)
-#define local_irq_set(x)   __save_and_sti(x)
+And may be also the source of pb.
 
-#define local_irq_restore(x) __restore_flags(x)
-#define local_irq_disable() __cli()
-[...]
+I also write this small testcase to try to point out the pb in 32bits mode:
 
-OTC for parisc:
-[...]
-#define local_irq_save(x) \
-	__asm__ __volatile__("rsm %1,%0" : "=r" (x) :"i" (PSW_I) : "memory" )
-#define local_irq_restore(x) \
-	__asm__ __volatile__("mtsm %0" : : "r" (x) : "memory" )
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <asm/types.h>
 
-[...]
+typedef unsigned long long u64;
+typedef u_int8_t  BOOLEAN;
 
-So can we here simply add:
-#define local_irq_set(x)   __save_and_sti(x)
+typedef struct
+{
+    unsigned char b7, b6, b5, b4, b3, b2, b1, b0;
+}
+EightBytes;
 
-Or do we actualy need a specific local_irq_set(x)?
+static __inline__ __const__ __u32 ___arch__swab32(__u32 x)
+{
+        unsigned int temp;
+        __asm__("shd %0, %0, 16, %1\n\t"        /* shift abcdabcd -> cdab
+*/
+                "dep %1, 15, 8, %1\n\t"         /* deposit cdab -> cbab */
+                "shd %0, %1, 8, %0"             /* shift abcdcbab -> dcba
+*/
+                : "=r" (x), "=&r" (temp)
+                : "0" (x));
+        return x;
+}
 
-Thanks in advance for advise,
+#define __arch__swab32(x) ___arch__swab32(x)
+
+static __inline__ __const__ __u64 ___arch__swab64(__u64 x)
+{
+        __u32 t1 = (__u32) x;
+        __u32 t2 = (__u32) ((x) >> 32);
+        ___arch__swab32(t1);
+        ___arch__swab32(t2);
+        return (((__u64) t1 << 32) + ((__u64) t2));
+}
+
+static __inline__ __const__ __u32 __fswab32(__u32 x)
+{
+        return __arch__swab32(x);
+}
+
+#  define __swab32(x) __fswab32(x)
+
+static __inline__ __const__ __u64 __fswab64(__u64 x)
+{
+        __u32 h = x >> 32;
+        __u32 l = x & ((1ULL<<32)-1);
+        return (((__u64)__swab32(l)) << 32) | ((__u64)(__swab32(h)));
+}
+
+int main(int argc, char * * argv, char * * env) {
+
+    unsigned long long TU64;
+    int err;
+
+    TU64=0xfedcba9876543210LL;
+
+    printf("Val of TU64: %0Lx\n", TU64);
+    printf("Val of ___arch__swab64(TU64): %0Lx\n", ___arch__swab64(TU64));
+    printf("Val of __fswab64(TU64): %0Lx\n", __fswab64(TU64));
+
+}
+
+And here is the results:
+Val of TU64: fedcba9876543210
+Val of ___arch__swab64(TU64): 76543210fedcba98
+Val of __fswab64(TU64): 1032547698badcfe
+
+What is right (I could not rebuild with hppa64-linux-gcc :( )?
+
+Thanks,
     Joel
 
 
