@@ -1,32 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from onet2.cup.hp.com (onet2.cup.hp.com [15.255.208.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BE4E748CD
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Sep 2001 13:27:04 -0600 (MDT)
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by onet2.cup.hp.com (Postfix) with ESMTP id A0D2118D31
-	for <parisc-linux@parisc-linux.org>; Fri, 14 Sep 2001 12:27:03 -0700 (PDT)
-Sender: marteaut@esiee.fr
-Message-ID: <3BA25A1B.B173A828@esiee.fr>
-Date: Fri, 14 Sep 2001 21:27:23 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: Hppa <debian-hppa@lists.debian.org>,
-	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] The keyboard...
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D17B1482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Sep 2001 16:23:26 -0600 (MDT)
+Message-Id: <200109142220.QAA00437@puffin.external.hp.com>
+To: "DANDEBOYINA,NAGARAJ (Non-HP-Cupertino,     ex1)" <nagaraj_dandeboyina@non.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: Message from "DANDEBOYINA,NAGARAJ (Non-HP-Cupertino,ex1)" <nagaraj_dandeboyina@non.hp.com>
+   of "Fri, 14 Sep 2001 16:34:32 EDT." <580F4ACFCD8F4E439B06B815110418C788509A@xcup03.cup.hp.com>
+Date: Fri, 14 Sep 2001 16:20:59 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: [parisc-linux] Re: How to create a Install CD
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+"DANDEBOYINA,NAGARAJ (Non-HP-Cupertino,ex1)" wrote:
+> Hi There,
+>    I downloaded 0.9.2 CD Install ISO file from
+> http://parisc-linux.org/release-0.9/index.html and I wrote a CD,but I failed
+> to run installer on my A500 system.Is there any trick to create the CD.
 
-	I'm sorry but this message is not a new release :( Anyway, since I
-can't get access to parisc-linux.org, I would like to know if someone
-could confirm me that this is a good behaviour:
+Not that I'm aware of. Typical problems include MS OS's corrupting
+the download - check the md5sum output.
 
-In boot_admin, you hit some keys and then you hit Esc. After that, the
-console do not print any more characters. You have to hit Enter key to
-get back to a new command line and you can do anything then.
+> If it
+> is there can you send me the proper procedure and software links which are
+> helpful to write a cd.
 
-Thanks for answering to this, Thomas
-ESIEE Team
+The mail archive on http://lists.parisc-linux.org is worth searching.
 
-PS: Since I can't read from p-l.org, could reply to debian mailing-list.
+>    How about getting LILO equilent for PA-RISC system when we are writing
+> bootable CD?
+
+Look for PALO - it is the LILO equivalent for parisc.
+See  http://puffin.external.hp.com/cgi-bin/cvsview/palo/
+
+grant
