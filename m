@@ -1,25 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta02.mail.mel.aone.net.au (mta02.mail.au.uu.net [203.2.192.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1EE3F4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Mar 2001 02:38:29 -0700 (MST)
-Received: from piglet.sspl.net.au ([210.84.115.96])
-          by mta02.mail.mel.aone.net.au with ESMTP
-          id <20010307093813.LZUR16576.mta02.mail.mel.aone.net.au@piglet.sspl.net.au>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Wed, 7 Mar 2001 20:38:13 +1100
-Received: from winnie.sspl.net.au (barbar@winnie. [192.168.10.9])
-	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id UAA09851
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 7 Mar 2001 20:38:08 +1100
-From: "Pete" <plaven@ozemail.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 7 Mar 2001 20:38:12 +1100
+Received: from bbnmg1.net.external.hp.com (bbnnmg1.net.external.hp.com [155.208.254.184])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FE294A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Mar 2001 02:52:40 -0700 (MST)
+Message-ID: <1739BFE55535D411932A00D0B747A673BC0865@uderzo.belgium.hp.com>
+From: "TEUWEN,ROEL (Non-HP-Belgium,ex1)" <roel_teuwen@non.hp.com>
+To: "'plaven@ozemail.com.au'" <plaven@ozemail.com.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] Problems on 715/50
+Date: Wed, 7 Mar 2001 10:52:36 +0100 
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Subject: Re: [parisc-linux] Problems on 715/50
-Reply-To: plaven@ozemail.com.au
-Message-ID: <3AA69C34.26615.264408@localhost>
-In-reply-to: <20010305093830.B3C9BD1588@mail.esiee.fr>
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
+
+Just to let you know that I already ported the distributed.net client
+(www.distributed.net) to parisc-linux (in case you don't believe in aliens
+;-))
+
+regards,
+Roel
+
+-----Original Message-----
+From: Pete [mailto:plaven@ozemail.com.au]
+Sent: Wednesday, March 07, 2001 10:38 AM
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Problems on 715/50
+
+
 
 > I'm currently porting the SETI@home client for PaLinux :o) 
 
@@ -27,3 +34,10 @@ Nice!!! Now I really have to dig that 712 out and get it running!  :)
 
 
 Pete.
+
+
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
