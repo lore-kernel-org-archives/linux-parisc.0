@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spike2.ehosting.com (unknown [62.173.67.13])
-	by dsl2.external.hp.com (Postfix) with SMTP id 410DF4840
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 03:24:20 -0600 (MDT)
-Message-ID: <1065000176.3f7a9cf0cbad2@webmail.v8fiesta.co.uk>
-Date: Wed,  1 Oct 2003 10:22:56 +0100
-From: mmogenius@v8fiesta.co.uk
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-References: <Pine.LNX.4.44.0308280022230.16696-100000@sal.ucc.ie> <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk> <1063733943.3f674ab751edb@webmail.v8fiesta.co.uk> <20030916174726.GC30906@dsl2.external.hp.com> <1063738987.3f675e6b22961@webmail.v8fiesta.co.uk> <20030917040849.GA11011@dsl2.external.hp.com> <3F683606.8000701@tiscali.be>
-In-Reply-To: <3F683606.8000701@tiscali.be>
+Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A12E54843
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 05:02:48 -0600 (MDT)
+Received: from hrzpub.tu-darmstadt.de (IP-213157011121.dialin.heagmedianet.de [213.157.11.121])
+	(authenticated bits=0)
+	by mailserver3.hrz.tu-darmstadt.de (8.12.10/8.12.7) with ESMTP id h91B2MeY019726
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 1 Oct 2003 13:02:37 +0200
+Message-ID: <3F7AB450.4000209@hrzpub.tu-darmstadt.de>
+Date: Wed, 01 Oct 2003 13:02:40 +0200
+From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] Missing functions ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,84 +25,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Brilliant i now have X working on my B2000 with the Visuialize-EG Card... 
+Hi there,
 
-The way to use the 2nd card is to specify the BusID in the XF86Config-4 file.
+lastest kernel from CVS didn't compile for me. I get the following error 
+messages:
 
-BusID      "PCI:1:1:0"
+    --------><------------
+      CHK     include/linux/compile.h
+      CC      arch/parisc/kernel/parisc_ksyms.o
+    arch/parisc/kernel/parisc_ksyms.c:72: error: `__flush_dcache_page'
+    undeclared here (not in a function)
+    arch/parisc/kernel/parisc_ksyms.c:72: error: initializer element is
+    not constant
+    arch/parisc/kernel/parisc_ksyms.c:72: error: (near initialization
+    for `__ksymtab___flush_dcache_page.value')
+    arch/parisc/kernel/parisc_ksyms.c:75: error: `flush_cache_all_local'
+    undeclared here (not in a function)
+    arch/parisc/kernel/parisc_ksyms.c:75: error: initializer element is
+    not constant
+    arch/parisc/kernel/parisc_ksyms.c:75: error: (near initialization
+    for `__ksymtab_flush_cache_all_local.value')
+    make[1]: *** [arch/parisc/kernel/parisc_ksyms.o] Fehler 1
+    make: *** [arch/parisc/kernel] Fehler 2
+    ruediger@gandalf:/usr/src/linux-2.6$
+    --------><------------
 
-Although I dont seem to be able to get the depth anywhere above 8... Does 
-anyone have any thoughs on this. 
+It seems that in include/asm/cache.h these two function 
+flush_cache_all_local and flush_dcache_page are missing, which are 
+defined as symbols in parisc_ksyms. Can I just disable/comment the 
+regarding EXPORT_SYMOBOL calls?
 
-Thanks
-
-
-
-> Grant Grundler wrote:
-> 
-> >On Tue, Sep 16, 2003 at 08:03:07PM +0100, mmogenius@v8fiesta.co.uk wrote:
-> >  
-> >
-> >>I have tried this but i am still getting the same error message... 
-> >>
-> >>Fatal server error:
-> >>AddScreen/ScreenInit Failed for driver 0 
-> >>    
-> >>
-> >
-> >
-> >  
-> >
-> >>With me having 2 cards in the machine do i need to specify wich one to use
-> ?
-> >>    
-> >>
-> >
-> >Maybe. I would expect the default to be the console.
-> >Can you remove one of the cards?
-> >  
-> >
-> hmm I presume that the first one is the builtin (not removable) gfx 
-> (which is not supported :( ) and the additional one is supported and 
-> pluged into a pci slot (so removable but the one usefull)?
-> 
-> Afaik i don't think that it is possible to 'remove' (even logicaly with 
-> some strap or switch) the builtin gfx.
-> Anyway, it is possible to change the default monitor to 'graphics1' (as 
-> afaik here the pdc would recognise the additional gfx) with help of 
-> COnfiguration submenu at bootprompt. (may be MO cmd would help to get 
-> more accurate info?)
-> 
-> Or (into linux system) should it be also possible to create a /dev/fb1 
-> (MAKEDEV iirc) and change with fbset the default fb device to fb1?
-> 
-> >  
-> >
-> >>if so where can i get the information to do this as i am not having much
-> luck 
-> >>finding any documentation. Thanks
-> >>    
-> >>
-> >
-> >Try searching tha parisc-linux mailing list for "ScreenInit Failed".
-> >Plenty of hits on this topic.
-> >
-> >If none of the above helps, can you post the full Xfree86.log.0?
-> >
-> >grant
-> >
-> hth,
->     Joel
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-
-
-
-
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+Greeting,
+    Ruediger
