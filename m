@@ -1,17 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D7B404829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Jun 2003 04:19:53 -0600 (MDT)
-Date: Mon, 30 Jun 2003 12:19:49 +0200
-Message-ID: <3ED70CF10000B8FE@ocpmta2.freegates.net>
-In-Reply-To: <20030629213301.GA24957@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] byte swapping redux
-To: "Grant Grundler" <grundler@parisc-linux.org>,
-	"Matthew Wilcox" <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from trappist.elis.UGent.be (trappist.elis.UGent.be [157.193.67.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D90A4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Jun 2003 04:24:25 -0600 (MDT)
+Date: Mon, 30 Jun 2003 12:24:13 +0200
+Message-Id: <200306301024.h5UAODK32173@trappist.elis.UGent.be>
+From: postmaster@elis.ugent.be
+To: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] VIRUS IN YOUR MAIL TO ronsse
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +18,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> BTW, Prelimary diff on ftp://ftp.p-l.o/patches/diff-2.4.21-pa1
-> attempts to fix the byteorder.h mess and first cut at trying
-> to get intermezzo to build. But intermezzo won't assemble because
-> it has field alignment (ldd 52(x) instruction) problems.
+                   V I R U S  A L E R T
 
-Hmm here no pb to build intermezzo (as a module) neither for 2.4.21-pa1 neither
-2.4.22-pre2-pa1 (gcc-3.3 32bits at least). So I suspect that it is a pb with
-binutils (I still have to downgrade it to binutils-2.13.90.0.18-1.7_hppa.deb)
-which Dave fixed in upstream a time ago but (I don't know why) not yet included
-in debian dpkg.
+  Our viruschecker found a VIRUS in your email to "ronsse".
+           We stopped delivery of this email!
 
-hth,
-    Joel
+    Now it is on you to check your system for viruses           
+
+  For further information about this viruschecker see:
+               http://amavis.org/
+        AMaViS - A Mail Virus Scanner, licenced GPL
 
 
----------------------------------
-Tiscali ADSL: 19,50 euros/mois...abonnez-vous sur www.tiscali.be
+
+For your reference, here are the headers from your email:
+
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <parisc-linux@lists.parisc-linux.org>
+Received: from dobit2.rug.ac.be (dobit2.ugent.be [157.193.42.8])
+	by trappist.elis.UGent.be (8.11.6/8.11.6) with ESMTP id h5UAOAR31989
+	for <ronsse@elis.rug.ac.be>; Mon, 30 Jun 2003 12:24:10 +0200
+Received: from SYSADMIN (ventrade.sovintel.ru [213.33.219.174])
+	by dobit2.rug.ac.be (8.12.8/8.12.8) with ESMTP id h5UAO0b9026989
+	for <ronsse@elis.rug.ac.be>; Mon, 30 Jun 2003 12:24:01 +0200 (MEST)
+Message-Id: <200306301024.h5UAO0b9026989@dobit2.rug.ac.be>
+From: <parisc-linux@lists.parisc-linux.org>
+To: <ronsse@elis.rug.ac.be>
+Subject: Re: Movie
+Date: Mon, 30 Jun 2003 14:23:20 +0400
+Importance: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MSMail-Priority: Normal
+X-Priority: 3 (Normal)
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="CSmtpMsgPart123X456_000_0123C7B0"
+X-AntiVirus: scanned for viruses by AMaViS 0.2.1 (http://amavis.org/)
+-------------------------- END HEADERS ------------------------------
