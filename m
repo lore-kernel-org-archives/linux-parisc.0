@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 508E44829
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Mar 2003 18:50:09 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.12)
-	id 18sCQX-0001jO-00; Mon, 10 Mar 2003 01:50:05 +0000
-Date: Mon, 10 Mar 2003 01:50:05 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "David S. Miller" <davem@redhat.com>
-Cc: willy@debian.org, grundler@dsl2.external.hp.com,
-	jsm@udlkern.fc.hp.com, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: RFC: mmap patch
-Message-ID: <20030310015005.GA5278@parcelfarce.linux.theplanet.co.uk>
-References: <20030308231125.M3865@parcelfarce.linux.theplanet.co.uk> <20030308.150214.30103426.davem@redhat.com> <20030309144225.O3865@parcelfarce.linux.theplanet.co.uk> <20030309.133830.82279538.davem@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030309.133830.82279538.davem@redhat.com>
+Received: from web12501.mail.yahoo.com (web12501.mail.yahoo.com [216.136.173.193])
+	by dsl2.external.hp.com (Postfix) with SMTP id 652114829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Mar 2003 18:53:54 -0700 (MST)
+Message-ID: <20030310015353.95148.qmail@web12501.mail.yahoo.com>
+Date: Sun, 9 Mar 2003 17:53:53 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <00A4E35DD053BF42A83513384737721604283785@noaadc-mxu12.noa.alcoa.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-1036393159-1047261233=:94916"
+Subject: [parisc-linux] trouble loading from netinst ISO on B2000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,31 +21,72 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Mar 09, 2003 at 01:38:30PM -0800, David S. Miller wrote:
-> I think the real issue is SHMLBA isn't being honored, right?
+--0-1036393159-1047261233=:94916
+Content-Type: text/plain; charset=us-ascii
 
-I don't think so.. according to cachetlb.txt:
 
-If your D-cache has this problem, first define asm/shmparam.h SHMLBA
-properly, it should essentially be the size of your virtually
-addressed D-cache (or if the size is variable, the largest possible
-size).  This setting will force the SYSv IPC layer to only allow user
-processes to mmap shared memory at address which are a multiple of
-this value.
+Basically my B2000 with the A4977A PCI EG graphics card starts up and allows me to load all the way until making the system bootable.  Then I get an error saying PALO won't load and then dumps me all the way back to the "choose a language" screen.  It's so weird because the card and the disks hanging off of the card are out of my C360 and functioned great with it.  I think I will blow away the the LUN in the array that I'm using, format it and try again starting with the disk partitioning.  It does seem to want to use the EG graphics card though.  As a side note, I think it's cool that the front LCD screen tells me I'm running Linux and the current kernel revision.  Any ideas?
+derek
+ "Copeland, Daniel" <Daniel.Copeland@alcoa.com> wrote:Thanks. The latest netinst iso worked...
 
-That isn't where the problem lies.  This missing flush is in
-shmem_getpage(), round about line 906 in 2.5.64.  Really, this should
-be doing a clear_user_page() -- but not all callers of this routine have
-a user address to pass on.
+-----Original Message-----
+From: Thibaut VARENE [mailto:varenet@esiee.fr]
+Sent: Thursday, February 27, 2003 6:51 PM
+To: Copeland, Daniel
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: question about pa-risc linux on hp b2600 workstation
 
-> The whole purpose of SHMLBA is to ensure a particular alignment
-> for shared memory anonymous regions, if that isn't happening anymore
-> that is a bug.
 
-I thought this was to deal with user-user coherency problems, not
-user-kernel?
+On Thu, 27 Feb 2003 10:40:42 -0500
+"Copeland, Daniel" wrote:
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+> Hello,
+> 
+> Did you have to get special usb drivers to be able to install? I
+downloaded
+> the debian v. 3.0 iso and it boots fine, I just can't acknowledge w/ my
+> keyboard...
+
+perhaps you should read the section related to b2600 on this page:
+http://pateam.esiee.fr/list.html
+
+the mailing-list archive:
+http://www.fr.parisc-linux.org/mailing-lists/
+
+eventually the FAQ (there's an entry about USB keyboards)
+http://www.fr.parisc-linux.org/faq/
+
+and the Boot HOWTO
+http://pateam.esiee.fr/doc.html
+
+everything is explained there.
+
+you need one of the latest netinst isos to install your box:
+http://pateam.esiee.fr/download.html
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
+
+(mail CC'd to the m-l to feed the archive)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Tax Center - forms, calculators, tips, and more
+--0-1036393159-1047261233=:94916
+Content-Type: text/html; charset=us-ascii
+
+<P>Basically my B2000 with the A4977A PCI EG graphics card starts up and allows me to load all the way until making the system bootable.&nbsp; Then I get an error saying PALO won't load and then dumps me all the way back to the "choose a language" screen.&nbsp; It's so weird because the card and the disks hanging off of the card are out of my C360 and functioned great with it.&nbsp; I think I will blow away the the LUN in the array that I'm using, format it and try again starting with the disk partitioning.&nbsp; It does seem to want to use the EG graphics card though.&nbsp; As a side note, I think it's cool that the front LCD screen tells me I'm running Linux and the current kernel revision.&nbsp; Any ideas?
+<P>derek
+<P>&nbsp;<B><I>"Copeland, Daniel" &lt;Daniel.Copeland@alcoa.com&gt;</I></B> wrote:
+<BLOCKQUOTE style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px">Thanks. The latest netinst iso worked...<BR><BR>-----Original Message-----<BR>From: Thibaut VARENE [mailto:varenet@esiee.fr]<BR>Sent: Thursday, February 27, 2003 6:51 PM<BR>To: Copeland, Daniel<BR>Cc: parisc-linux@lists.parisc-linux.org<BR>Subject: Re: question about pa-risc linux on hp b2600 workstation<BR><BR><BR>On Thu, 27 Feb 2003 10:40:42 -0500<BR>"Copeland, Daniel" <DANIEL.COPELAND@ALCOA.COM>wrote:<BR><BR>&gt; Hello,<BR>&gt; <BR>&gt; Did you have to get special usb drivers to be able to install? I<BR>downloaded<BR>&gt; the debian v. 3.0 iso and it boots fine, I just can't acknowledge w/ my<BR>&gt; keyboard...<BR><BR>perhaps you should read the section related to b2600 on this page:<BR>http://pateam.esiee.fr/list.html<BR><BR>the mailing-list archive:<BR>http://www.fr.parisc-linux.org/mailing-lists/<BR><BR>eventually the FAQ (there's an entry about USB keyboards)<BR>http://www.fr.parisc-linux.org/faq/<BR><BR>and the Boot HOWTO<BR>http://pateam.esiee.fr/doc.html<BR><BR>everything is explained there.<BR><BR>you need one of the latest netinst isos to install your box:<BR>http://pateam.esiee.fr/download.html<BR><BR>HTH,<BR><BR><BR>Thibaut VARENE<BR>The PA/Linux ESIEE Team<BR>http://pateam.esiee.fr/<BR><BR>(mail CC'd to the m-l to feed the archive)<BR>_______________________________________________<BR>parisc-linux mailing list<BR>parisc-linux@lists.parisc-linux.org<BR>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux</BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://rd.yahoo.com/finance/mailtagline/*http://taxes.yahoo.com/">Yahoo! Tax Center</a> - forms, calculators, tips, and more
+--0-1036393159-1047261233=:94916--
