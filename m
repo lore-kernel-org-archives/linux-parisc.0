@@ -1,72 +1,78 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1DC91482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 10:26:03 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B408482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 10:42:21 -0600 (MDT)
 Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
 	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15n0Rq-0002iQ-00
-	for parisc-linux@lists.parisc-linux.org; Fri, 28 Sep 2001 18:25:10 +0200
-Date: Fri, 28 Sep 2001 18:24:22 +0200
+	id 15n0iQ-0005sg-00
+	for parisc-linux@lists.parisc-linux.org; Fri, 28 Sep 2001 18:42:18 +0200
+Date: Fri, 28 Sep 2001 18:41:31 +0200
 From: Albert Strasheim <fullung@ilink.nis.za>
 To: Jurij Smakov <jurij@lokmail.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 720 - some progress
-Message-ID: <20010928182422.A22740@dogbert.localdomain>
-References: <200109280925.FAA18777@mail.lokmail.net>
+Subject: Re: [parisc-linux] puffin, parisc-linux.org slow/dead?
+Message-ID: <20010928184131.B22740@dogbert.localdomain>
+References: <200109281608.MAA32053@mail.lokmail.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
-In-Reply-To: <200109280925.FAA18777@mail.lokmail.net>
+	protocol="application/pgp-signature"; boundary="GID0FwUMdk1T2AWN"
+In-Reply-To: <200109281608.MAA32053@mail.lokmail.net>
 Sender: Albert Strasheim <fullung@dogbert.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
---xHFwDpU9dbj6ez1V
+--GID0FwUMdk1T2AWN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-I've booted my nfsroot again with 2.4.9-pa22 (I'm waiting for puffin to
-come back so that I can update, and try Jurij's patches).
+On Fri, 28 Sep 2001, Jurij Smakov wrote:
 
-I mounted /proc, remounted / rw and went on my way.
+> > I'm trying to do a CVS update of my kernel source, but puffin is
+> > decidedly non-responsive (or is the CVS repository perhaps mirrored
+> > somewhere else?).
+> >=20
+> > From my own machine:
+> >=20
+> > PING puffin.external.hp.com (192.25.206.4): 56 data bytes
+> > 64 bytes from 192.25.206.4: icmp_seq=3D0 ttl=3D239 time=3D17262.6 ms
+> > 64 bytes from 192.25.206.4: icmp_seq=3D1 ttl=3D239 time=3D17236.5 ms
+> > 64 bytes from 192.25.206.4: icmp_seq=3D2 ttl=3D239 time=3D17231.7 ms
+> > 64 bytes from 192.25.206.4: icmp_seq=3D3 ttl=3D239 time=3D17246.6 ms
+> >=20
+> > I don't get any response from via my SourceForge account. Is NIMBA
+> > bogging down HP or something? :-)
+> >=20
+> > Regards,
+> >=20
+> > Albert
+>=20
+> Hi Albert and others!
+>=20
+> For the last 4 days I was unable to traceroute www.parisc-linux.org and
+> puffin, not talking about downloading something from them. Tracerout
+> dies somewhere in Qwest:
+>=20
+> 16  atl-edge-17.inet.qwest.net (205.171.21.186)  132.280 ms  131.226 ms  =
+131.866 ms
+> 17  65.112.33.30 (65.112.33.30)  134.950 ms  134.708 ms  137.191 ms
+> 18  * * *
 
-I replaced ls, sleep and tar with the busybox binary from the latest
-disks-hppa/current Debian root.bin.
+ 7. ctb-core1-fe-0-0-0.wc.saix.net         0%    6    6    11   11   14 21
+ 8. ctb-int-fe-0-0-0.saix.net              0%    6    6    11   11   51 170
+ 9. london-core-s-8-1-0.saix.net          20%    4    6   406  406  408 413
+10. ny-core-s-8-1-1.saix.net               0%    5    6   404  402  403 404
+11. ???
 
-Then I tried a mke2fs on my SCSI disk's 2nd partition (ext2), in an
-attempt to get my system to boot from disk... Eek!
-
-scsi0: istat = 04, sstat0 = 00, sstat1 = 00, dstat = 00
-scsi0: dsp = 005ee038 (script[0x180e]), dsps = 005eecde, target = 0
-scsi0: Failing command for ID6
-scsi0: Serious error, sstat0 = 04
-scsi0: Chip register contents:
- (script[0] at virt 105e8000, bus 5e8000)
- 00  sien:  af  sdid:  40  scntl1:20  scntl0:d4
- 04  socl:  06  sodl:  00  sxfer: 00  scid:  80
- 08  sbcl:  00  sbdl:  00  sidl:  00  sfbr:  00
- 0C  sstat2:06  sstat1:00  sstat0:00  dstat: 00
- 10
- 14  ctest3:84  ctest2:25  ctest1:0b  ctest0:00
- 18  ctest7:00  ctest6:00  ctest5:00  ctest4:00
- 1C  temp:  00000000
- 20              ctest8:ff  istat: 06  dfifo: 00
- 24  dbc:   0e000001  dnad:  005eecde  dsp:   005ee038
- 30  dsps:  005eecde
- 34  dmode: 80
- 38  dcntl: 80  dwt:   00  dien:  1d
- 3C
-scsi0: Unexpected stacked interrupt, istat 06, sstat0 08, dstat 00
-scsi0: Failed to handle interrupt.  Failing commands and resetting SCSI bus and chip
-
-Anything I can do now to help the hackers debug this problem?
+Western Cape (South Africa), some hop, London, New York, nothing. Could
+this still be related to the WTC disaster?
 
 Regards,
 
 Albert
 
---xHFwDpU9dbj6ez1V
+--GID0FwUMdk1T2AWN
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -74,9 +80,9 @@ Content-Disposition: inline
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQE7tKQ2Dg+hOeRZtkMRAvkQAJ9DAPPknNEc22WE3CsYhXnR03XzvACghljj
-EDGXfQGV2251tsCOz3fXUbw=
-=m6pC
+iD8DBQE7tKg7Dg+hOeRZtkMRAq+2AKCJfOTw5ZwKXpsyj8A/lhAt8sCauACeN20P
+q1Z5UvLhGywlMorJkYAlDkA=
+=mE3J
 -----END PGP SIGNATURE-----
 
---xHFwDpU9dbj6ez1V--
+--GID0FwUMdk1T2AWN--
