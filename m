@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5FAE44864
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 13:48:02 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16ddei-0007zC-00; Wed, 20 Feb 2002 20:48:00 +0000
-Date: Wed, 20 Feb 2002 20:48:00 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Peter Mottram <peter@petescaff.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Strange serial behaviour on C160
-Message-ID: <20020220204800.A27212@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.33.0202200815060.13804-100000@goliath.alaskatech.org> <Pine.LNX.4.42.0202201833210.8367-100000@r6.petescaff.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.42.0202201833210.8367-100000@r6.petescaff.com>; from peter@petescaff.com on Wed, Feb 20, 2002 at 06:59:00PM +0100
+Received: from pilchuck.reedmedia.net (pilchuck.reedmedia.net [209.166.74.74])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 504B44859
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 17:04:28 -0700 (MST)
+Date: Wed, 20 Feb 2002 16:04:25 -0800 (PST)
+From: "Jeremy C. Reed" <reed@reedmedia.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.43.0202201544030.30896-100000@pilchuck.reedmedia.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Is there a hard-drive image for PA-RISC Linux 0.9.3?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,46 +20,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Feb 20, 2002 at 06:59:00PM +0100, Peter Mottram wrote:
-> Before upgrading from HP-UX to Linux I had two perfectly functioning
-> serial ports on my C160. I now appear to have THREE serial ports -
-> ttyS[0-2].
+I see that 710 is now supported by PA-RISC Linux.
 
-Hehe.. yeah, that was the case for quite a long time :-)
+I see that there are ISO images available. Can these be extracted to place
+on a SCSI disk?
 
-> ttyS0 works perfectly
-> ttyS1 goes somewhere - not found where yet
-> ttyS2 goes to my second serial port but does not work at all well. A
-> simple cat of a file to the device results in the file appearing on a
-> terminal just a few characters at a time & incredibly slowly. All serial
-> ports have the same settings & ttyS0 has no problems (I use it for the
-> console).
+If so, any ideas on how? (For example, how do I get grub or lilo setup
+correctly?)
 
-If you could upgrade to the latest kernel, you will find the additional
-serial port gone again.  I hadn't heard about the speed problems before,
-so if you could tell me whether they're still present with most-recent
-kernel, that would be very helpful.  Thanks!
+My HP 710 computer currently has operating system from 1997:
 
-For those who are interested:
+ MkLinux for HP PA-RISC
+ Release 1.1 (Linux 2.0.32-osfmach3 on a hp_pa)
 
-Lasi, Dino, Cujo and Wax each have one serial port implemented.
-In a C160, there is a Dino, a Lasi and a Wax, so there are 3 serial
-port implementations.  However, the one in Dino isn't connected to
-anything, so ideally we wouldn't report it.  It only confuses people.
+It was installed by using a diks image that copied to the disk using
+dd(1). I am hoping I can do the same again.
 
-So firmware tells us about the ones on Lasi and on Wax (at 8/16/4 and
-8/20/2 respectively), and doesn't tell us about the one underneath Dino.
-But the parent of Dino is U2 which is a bus adapter.  And we know there
-are devices underneath bus adapters which firmware doesn't tell us about,
-they have to be discovered by an architected bus walk.  When we do this
-buswalk, we find the serial port underneath Dino at 8/3.
+Thanks,
 
-We can distinguish this port from a real serial port because it's not
-assigned an IRQ.  However, there was a bug in the irq-assigning code
-which happened to assign an irq to the device in exactly this case.
-So we thought it was legitimate when it wasn't.  I fixed that bug in
-the last couple of weeks and now my C360 (one port on Lasi, one on Dino,
-non-existent one on Cujo) only reports 2 serial ports.
-
--- 
-Revolutions do not require corporate support.
+   Jeremy C. Reed
+   http://www.reedmedia.net/
