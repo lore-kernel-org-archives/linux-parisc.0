@@ -1,15 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-Date: Wed, 7 Jan 2004 16:14:16 -0500 (EST)
-Message-ID: <200401072114.i07LEHfa014617__22725.7942817689$1416623111$gmane$org@hiauly1.hia.nrc.ca>
-References: <no.id>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
+Date: Thu, 8 Jan 2004 09:06:16 +0100
+Message-ID: <3FFB28C900001026__39894.7875750766$1416623114$gmane$org@ocpmta1.freegates.net>
+References: <20040105172146.GE23782@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <no.id> from "John David Anglin" at Jan 7, 2004 04:04:25 pm
+Content-Type: text/plain; charset="ISO-8859-1"
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Return-Path: <soete.joel@tiscali.be>
+In-Reply-To: <20040105172146.GE23782@systemhalted>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,11 +18,40 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Did I miss something?
+Hi Carlos,
 
-Yup.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+>========
+>GNU/libc
+>========
+>
+>I'm here to speak on behalf of the userspace work we have done. Glibc is
+>in *much* better shape than before, a year ago there were so many errors
+>I didn't know where to begin. Our current list of failures is down to:
+>
+>make[2]: *** [/glibc-work/build-hppa/math/test-float.out] Error 136
+>make[2]: *** [/glibc-work/build-hppa/math/test-double.out] Error 1
+>make[2]: *** [/glibc-work/build-hppa/math/test-ifloat.out] Error 136
+>make[1]: *** [math/tests] Error 2
+>
+>These three tests are related to the fact that we don't have long double
+>supported properly. Waiting on HP to release the code.
+
+Looking for something similar, some time ago, I figure out that Paul released
+some interesting hp lib stuff in gcc snapshot (the futur 3.4) into gcc/config/pa
+ as milli64.S (optimized div, mul, ....), ... (my last cvs update was dated
+of dec 2003 and it seems that this feature was dated of Aug 2003 so I trust
+that last debian package gcc-snapshot should also contain this material)
+
+I just don't yet reach to rebuild it (gcc-snapshot) following toolchain process
+(but I don't much retry because of gnu pserver cvs pb; in the mean time I
+read that new anonymous access would be with ssh, even though last weekend
+it was not yet operational?) because I much work on 3.3.3.
+
+hth,
+    Joel
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
