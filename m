@@ -1,53 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from saturn.cs.uml.edu (saturn.cs.uml.edu [129.63.8.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 259C7482A
-	for <parisc-linux@parisc-linux.org>; Thu, 19 Apr 2001 22:53:36 -0600 (MDT)
-From: "Albert D. Cahalan" <acahalan@cs.uml.edu>
-Message-Id: <200104200452.f3K4q3X07411@saturn.cs.uml.edu>
-To: willy@ldl.fc.hp.com (Matthew Wilcox)
-Date: Fri, 20 Apr 2001 00:52:03 -0400 (EDT)
-Cc: james.rich@m.cc.utah.edu (james rich),
-	willy@ldl.fc.hp.com (Matthew Wilcox),
-	esr@thyrsus.com (Eric S. Raymond), linux-kernel@vger.kernel.org,
+Received: from netbank.com.br (garrincha.netbank.com.br [200.203.199.88])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 66E70482A
+	for <parisc-linux@parisc-linux.org>; Thu, 19 Apr 2001 23:20:07 -0600 (MDT)
+Date: Fri, 20 Apr 2001 02:17:42 -0300 (BRST)
+From: Rik van Riel <riel@conectiva.com.br>
+To: "Albert D. Cahalan" <acahalan@cs.uml.edu>
+Cc: Matthew Wilcox <willy@ldl.fc.hp.com>,
+	james rich <james.rich@m.cc.utah.edu>,
+	"Eric S. Raymond" <esr@thyrsus.com>, linux-kernel@vger.kernel.org,
 	parisc-linux@parisc-linux.org
-In-Reply-To: <20010419221916.K4217@zumpano.fc.hp.com> from "Matthew Wilcox" at Apr 19, 2001 10:19:16 PM
+In-Reply-To: <200104200452.f3K4q3X07411@saturn.cs.uml.edu>
+Message-ID: <Pine.LNX.4.21.0104200217130.1685-100000@imladris.rielhome.conectiva>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox writes:
-> On Thu, Apr 19, 2001 at 10:07:22PM -0600, james rich wrote:
+On Fri, 20 Apr 2001, Albert D. Cahalan wrote:
 
->> Doesn't this seem a little like the problems occurring with lvm right now?
->> A separate tree maintained with the maintainers not wanting others
->> submitting patches that conflict with their particular tree?  It seems
->> that any project should be able to submit any patch against The One True
->> Tree: Linus' tree.
->
-> every single architecture has their own development tree.
+> This sucks for users of that architecture. Also, though not
+> applicable to PA-RISC, it sucks for sub-architecture porters.
+> (by sub-architecture I mean: Mac, PReP, PowerCore, BeBox, etc.)
 
-This sucks for users of that architecture. Also, though not
-applicable to PA-RISC, it sucks for sub-architecture porters.
-(by sub-architecture I mean: Mac, PReP, PowerCore, BeBox, etc.)
+As you said it so eloquently a few paragraphs down:
 
-It's hard enough deciding between Linus and Alan. I'm not at all
-happy trying to pick through obscure CVS and BitKeeper trees that
-might not be up-to-data with the latest mainstream bug fixes.
+	"send patches!"
 
-> the pa project
-> has not been running as long as the other ports, and has a large amount of
-> development going on.  i count 28 commits for april (so far), 75 commits
-> for march, 187 for february and 112 for january (to the kernel tree, other
-> parts of the port also have commit messages).  linus would go insane if
-> we sent him every single one of those patches individually.  and we'd
-> go insane trying to keep up with what he'd taken and what he'd dropped.
-> 
-> until you've actually tried doing this, please don't attempt to criticise.
+cheers,
 
-Have _you_ tried? If I recall correctly, Linus spoke out against the
-PowerPC people doing the exact same thing. So unless you get told to
-quit annoying him with patches, sending them is the safe bet.
+Rik
+--
+Virtual memory is like a game you can't win;
+However, without VM there's truly nothing to lose...
 
-Well here we go. It's about IrDA though, not PowerPC. Read it!
-http://lwn.net/2000/1109/a/lt-IrDA.php3
+		http://www.surriel.com/
+http://www.conectiva.com/	http://distro.conectiva.com.br/
