@@ -1,28 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2FFC14829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 08:34:11 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id HAA08631
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 9 Nov 2002 07:34:02 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gA9FXuW02017;
-	Sat, 9 Nov 2002 10:33:56 -0500
-Message-Id: <200211091533.gA9FXuW02017@localhost.localdomain>
-To: Greg KH <greg@kroah.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
-	hch@lst.de, James.Bottomley@SteelEye.com,
-	linux-kernel@vger.kernel.org, mochel@osdl.org,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
- interface
-In-Reply-To: Message from Greg KH <greg@kroah.com>
-   of "Fri, 08 Nov 2002 22:03:42 PST." <20021109060342.GA7798@kroah.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 09 Nov 2002 10:33:56 -0500
-From: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: "Adam J. Richter" <adam@yggdrasil.com>,
+	James.Bottomley@steeleye.com, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Sat, 09 Nov 2002 03:46:12 GMT." <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk>
+References: <200211090128.RAA31693@adam.yggdrasil.com> <adam@yggdrasil.com> <20021109015611.571B44829@dsl2.external.hp.com>  <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk> 
+Date: Sat, 09 Nov 2002 10:02:06 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021109170206.DA635482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -34,86 +20,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-First off, lets remember that this discussion started over two different, but 
-related, problem sets.  One was the DMA api and the other was the device model.
+Matthew Wilcox wrote:
+> On Fri, Nov 08, 2002 at 06:56:11PM -0700, Grant Grundler wrote:
+> > They don't have PCI slots.
+> > I hedge because HP makes a "card-mode Dino" type of card that will
+> > fit into 715 which has a GSCtoPCI bus controller on-board along
+> > with the target PCI device (eg 21143 tulip)
+> 
+> Sorry Grant, HP marketing has confused you ;-).  715/33, 715/50 &
+> 715/75 have a PCX-T processor (can't do uncached pages), but don't have
+> a GSC slot.
 
-As far as the DMA API goes, consistent memory allocation has always annoyed me 
-because there are three separate cases
+ok - well, that's why I pointed at the PCX-[ST] HWDB pages.
 
-1. machine is consistent, consistent allocation always succeeds (unless we're 
-out of memory)
+> The only machines with GSC and non-coherent memory are the T class
+> (unsupportable..) and something like an F, G, H or I class with
+> a GeckoBOA adapter... and we
+> aren't claiming support for those either.
 
-2. machine is fully inconsistent, consistent allocation always fails.
+Right. I'm convinced support for V-class (PCI, IO Coherent) will happen
+before T-class (propritary busses, !IO-coherent). Later FGHI-class also
+use PCX-L CPU and thus should be ok. rbrad, christoph and a few others
+are working on support for those machines but I know SCSI on those
+machines is SPIFI-based (HP SCSI controller). In short, looks like
+your observations about 53c720 might be one of the few problematic
+drivers.
 
-3. Machine is partially consistent.  consistent allocation may fail because 
-we're out of consistent memory so we have to fall back to the old.
-
-What I'd like is an improvement to the DMA API where drivers can advertise 
-levels of conformance (I only work with consistent memory or I work correctly 
-with any dma'able memory and do all the sync points), and where all the sync 
-point stuff optimises out for a machine architecture which is recognisably 
-fully consistent at compile time.
-
-Ok, I'll get off my soapbox now.  I never quite recovered from the awful 
-#ifdef mess that doing the above correctly for the parisc introduced into the 
-53c700 driver...
-
-As far as the device model goes:
-
-greg@kroah.com said:
-> No, lets start pulling stuff out of pci_dev and relying on struct
-> device.  The reason this hasn't happened yet is no one has been
-> willing to break all of the PCI drivers, yet. 
-
-I'd like to see that.  It's always annoyed me that my MCA machines have to 
-bounce highmem just because they don't have a pci_dev to put the bounce mask 
-in.
-
-> The SCSI people are being drug kicking and screaming into it,
-> _finally_ now (hell, SCSI is still not using the updated PCI
-> interface, those people _never_ update their drivers if they can avoid
-> it.)
-
-That't not entirely fair.  Most of the unbroken drivers in the tree (those 
-with active 2.5 maintainers) are using the up to date pci/dma interface.  The 
-mid layer is `sort of' using the device api.
-
-Where I'd like to see the device model go for SCSI is:
-
-- we have a device node for every struct scsi_device (even unattached ones)
-
-- unattached devices are really minimal entities with as few resources 
-allocated as we can get away with, so we can have lazy attachment more easily.
-
-- on attachment, the device node gets customised by the attachment type (and 
-remember, we can have more than one attachment).
-
-- whatever the permanent `name' field for the device is going to be needs to 
-be writeable from user level, that way it can eventually be determined by the 
-user level and simply written there as a string (rather than having all the 
-wwn fallback cruft in the mid-layer).
-
-- Ultimately, I'd like us to dump the host/channel/target numbering scheme in 
-favour of the unique device node name (we may still number them in the 
-mid-layer for convenience) so that we finesse the FC mapping problems---FC 
-devices can embed the necessary identification in the target strings.
-
-- Oh, and of course, we move to a hotplug/coldplug model where the root device 
-is attached in initramfs and everything else is discovered in user space from 
-the boot process.
-
-> Patches for this stuff are going to be happening for quite some time
-> now, don't despair.
-
-> And they are greatly appreciated, and welcomed from everyone :) 
-
-As far as extending the generic device model goes, I'll do it for the MCA bus. 
- I have looked at doing it previously, but giving the MCA bus a struct pci_dev 
-is a real pain because of the underlying assumptions when one of these exists 
-in an x86 machine.
-
-But, while were on the subject of sorting out the device model abstraction, 
-does the `power' node entry really belong at the top level?  It serves no 
-purpose for something like a legacy MCA bus.
-
-James
+thanks,
+grant
