@@ -1,20 +1,18 @@
 Return-Path: <blitzen@msn.com>
-Received: from cpe-66-169-6-082.spa.sc.charter.com
-	(cpe-66-169-6-082.spa.sc.charter.com [66.169.6.82])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2D33E48A8
+Received: from VIP-QW2HBXAYGYL (unknown [218.242.208.159])
+	by dsl2.external.hp.com (Postfix) with SMTP id 799FC48B3
 	for <parisc-linux@parisc-linux.org>;
-	Thu, 25 Dec 2003 02:45:44 -0700 (MST)
-Message-ID: <0-2v8k$59$i0i$81-8@t6i5h7eft039li>
-From: "Christina Walker" <blitzen@msn.com>
+	Thu, 25 Dec 2003 03:33:17 -0700 (MST)
+Message-ID: <0w1-6$75sc0f0$pu-tzy6u1-3k4$2@r8f.3wlc>
+From: "Polly Woodson" <blitzen@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Fri, 26 Dec 03 05:44:12 GMT
+Date: Thu, 25 Dec 03 18:31:47 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="5.C26CBBA0D_C"
+	boundary="81_ABD0A29_.4..C4"
 Cc: 
-Subject: [parisc-linux] 70 year old movie stars that look 40 here's how !
-	nhsagvj
-Reply-To: Christina Walker <blitzen@msn.com>
+Subject: [parisc-linux] Beautiful faces despite their age ! g
+Reply-To: Polly Woodson <blitzen@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,7 +23,7 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---5.C26CBBA0D_C
+--81_ABD0A29_.4..C4
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
@@ -60,10 +58,8 @@ p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
 
 </body>
-</html>ofjygefcugrd
-myb zruciwx siz 
-ac ahyjtoyyqaayvaoujrkl bsqm  
-lux dro  p 
-ai zl
+</html>rmaaeu ogmdvrhwzglxlna mqg nueqdgxqjp i   i dsh
+ vthq mcsft mxupxdep uhyuwmx
+dej nyjombwhph 
 
---5.C26CBBA0D_C--
+--81_ABD0A29_.4..C4--
