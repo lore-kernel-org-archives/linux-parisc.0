@@ -1,27 +1,34 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Thu, 18 Feb 1999 07:40:48 -0800 (PST)
+Date: Thu, 18 Feb 1999 10:01:00 -0600
 From: Jason Eckhardt <jason@equator.com>
-Message-Id: <199902181540.HAA05282@gatekeeper.equator.com>
+Message-Id: <199902181601.KAA01190@equator.com>
 To: hppa-linux@puffingroup.com
-Subject: Re: [hppa-linux] egcs and binutils cross compiling
-Resent-Message-ID: <"4uNrs.0.U67.sCAps"@burrow.puffingroup.com>
+Subject: [hppa-linux] Bootstrap test results
+Resent-Message-ID: <"_o6Yy3.0.X47.Af3ps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
->
-> Okay, I've finished packaging the following:
-> - an update on binutils to bring it to 2.9.1
-> - egcs
->
-> It looks like it might work, but to be honest it's difficult to tell at
-> this point.  At least it will be a starting point.
->
+Thanks to everyone who ran the bootstrap test and responded!
 
- I think most of you are using Mklinux as the crosscompiler host. Has
- anyone tried building the cross compiler from HP-UX? This will probably
- have to be my build system since Mklinux doesn't work for me.
- jason.
+The bootstrap worked on 5 of 6 systems tested:
+1) 715/75         *
+2) 777 (C110)
+3) 816/E35        *
+4) 712/60         *
+5) 780 (C160)
+
+* For some reason, these systems returned CPUID was 00000000 (which I believe
+  to be invalid). Maybe on these
+  the cpuid must be obtained in a different way than the PDC routine I used.
+  
+The one failure was on an A180. I don't know anything about this system,
+so I'm not sure what's happening. Anyone know what the CPU is on the
+A180 or any other info?
+
+These people booted successfully from disk, tape, and even rbootd!
+
+Jason.
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
