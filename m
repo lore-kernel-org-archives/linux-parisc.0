@@ -1,12 +1,14 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] Question about cache flushing and fork
-Date: Mon, 15 Dec 2003 20:40:33 -0800
-Message-ID: <20031216044033.GT533__19227.7999748059$1416623054$gmane$org@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: "David S. Miller" <davem@redhat.com>
+Subject: [parisc-linux] Re: Question about cache flushing and fork
+Date: Mon, 15 Dec 2003 20:48:35 -0800
+Message-ID: <20031215204835.0993a51a.davem__18508.7601923899$1416623055$gmane$org@redhat.com>
+References: <20031216044033.GT533@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org
-Return-Path: <randolph@tausq.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
+Return-Path: <davem@redhat.com>
+In-Reply-To: <20031216044033.GT533@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -16,34 +18,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi,
+On Mon, 15 Dec 2003 20:40:33 -0800
+Randolph Chung <randolph@tausq.org> wrote:
 
-Can someone please explain why it is necessary to flush the cache 
-during fork()? (i.e. call to flush_cache_mm() in dup_mmap)
+> Can someone please explain why it is necessary to flush the cache 
+> during fork()? (i.e. call to flush_cache_mm() in dup_mmap)
 
-It seems that after fork, the parent and child have access to the same
-vm, so it should be sufficient to flush the tlb, and create two pte's
-for the processes. I can see that during COW processing there can be
-kernel/user cache aliasing issues on virtually indexed caches, but
-that seems to be taken care of by copy_cow_page(). 
-
-I've read through cachetlb.txt, but it just says:
-
-        This interface is used to handle whole address space
-        page table operations such as what happens during
-        fork, exit, and exec.
-
-I can see why this is needed for exit(), but why fork()? and i don't see
-this used for exec() ?
-
-Also is there an updated version of the "Linux Cache Flush Architecture"
-document? (http://en.tldp.org/LDP/khg/HyperNews/get/memory/flush.html)
-This is a very nicely written doc, but it seems a bit out of date for
-2.6 (e.g. flush_page_to_ram is gone)
-
-thanks
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Writable pages that will be shared between the child and
+parent are marked read-only and COW, some cpu caches store
+protection information in the cache lines in order to avoid
+TLB lookups etc. so the caches must be flushed since the
+page protection information is changing.
