@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail12.speakeasy.net [216.254.0.212])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 596E448AD
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 09:39:23 -0600 (MDT)
-Received: from unknown (HELO speakeasy.net) (caslivkoff@[216.27.161.152])
-          (envelope-sender <caslivkoff@speakeasy.net>)
-          by mail12.speakeasy.net (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@lists.parisc-linux.org>; 6 Oct 2003 15:39:22 -0000
-Date: Mon, 6 Oct 2003 11:39:21 -0400
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 57A664840
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 09:39:43 -0600 (MDT)
+Date: Mon, 6 Oct 2003 17:39:42 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Xfree on a B180L
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: parisc-linux@lists.parisc-linux.org
-To: Marc Dilasser <marc.dilasser@free.fr>
-From: Chuck Slivkoff <caslivkoff@speakeasy.net>
+Message-ID: <20031006153942.GF20846@lug-owl.de>
+References: <200310061723.40002.marc.dilasser@free.fr>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qpqR4wE1CEr+Roqx"
 In-Reply-To: <200310061723.40002.marc.dilasser@free.fr>
-Message-Id: <418F7D30-F813-11D7-A0B2-000393581E44@speakeasy.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,28 +23,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Monday, Oct 6, 2003, at 11:23 US/Eastern, Marc Dilasser wrote:
+--qpqR4wE1CEr+Roqx
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, 2003-10-06 17:23:39 +0200, Marc Dilasser <marc.dilasser@free.fr>
+wrote in message <200310061723.40002.marc.dilasser@free.fr>:
+> Hello,
+>=20
 > HP B180L with a 21" Sun monitor, Debian 3.0 r1.
-> Xfree runs but the colors are very yellow; harware problems or 
-> something in
+> Xfree runs but the colors are very yellow; harware problems or something =
+in=20
 > the XFConfig-4 ?
->
 
-Marc,
+Have you tried the 'Visual "TrueColor"' config option?
 
-Here are a couple of possibilities that I can think of:
+MfG, JBG
 
-1/ The video timing is set to use sync-on-green (s-o-g). Does the 
-monitor support it? What type of cable are you using? How does it 
-connect to the monitor? Does it have HD-15 plug or 3/5-BNC connectors? 
-Interrupt the boot and type "co mo" at the prompt. What timing is 
-selected? If it does not list a "VESA" timing, then it is set to s-o-g. 
-If you are using s-o-g and you have a 5-BNC cable, disconnect the H & V 
-lines. Otherwise, try one of the VESA entries.
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
 
-2/ You've selected to run in depth 8 TrueColor. If this is the case, 
-then it will be normal due to the uneven distribution of RGB (332). 
-Check the "xwininfo -root" output or look in XF86Config.
+--qpqR4wE1CEr+Roqx
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
--chuck
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/gYy9Hb1edYOZ4bsRAgAIAJ9BJ0/HYZqdcauSgR1W+3i2Qz4S5QCfZhny
+CR06Y8Rr7J7J86UmrAguDu0=
+=0jXQ
+-----END PGP SIGNATURE-----
+
+--qpqR4wE1CEr+Roqx--
