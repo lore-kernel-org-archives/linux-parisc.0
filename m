@@ -1,28 +1,33 @@
 From: David Pye <dmp@davidmpye.dyndns.org>
-Subject: Re: J5000 LCD heartbeat
+Subject: [parisc-linux] Re: J5000 LCD heartbeat
 Date: Sun, 20 Mar 2005 19:52:29 +0000
-Message-ID: <200503201952.31465.dmp__6864.10101266137$1416623701$gmane$org@davidmpye.dyndns.org>
-References: <200503191959.05972.dmp@davidmpye.dyndns.org> <200503201918.31808.dmp@davidmpye.dyndns.org> <20050320204032.3ed40468@Tatooine.r3z0>
+Message-ID: <200503201952.31465.dmp__49374.9306224801$1416623701$gmane$org@davidmpye.dyndns.org>
+References: <200503191959.05972.dmp@davidmpye.dyndns.org>
+	<200503201918.31808.dmp@davidmpye.dyndns.org>
+	<20050320204032.3ed40468@Tatooine.r3z0>
 Reply-To: dmp@davidmpye.dyndns.org
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1316504.W30BOMpaHa";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: Grant Grundler <grundler@parisc-linux.org>,
- debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+  boundary="===============2024669433=="
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
 To: Thibaut VARENE <T-Bone@parisc-linux.org>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20050320204032.3ed40468@Tatooine.r3z0>
-Resent-Message-ID: <-z2WBC.A.ozG.ISdPCB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-hppa/>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+
+--===============2024669433==
+Content-Type: multipart/signed; boundary="nextPart1316504.W30BOMpaHa";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
 --nextPart1316504.W30BOMpaHa
 Content-Type: text/plain;
@@ -133,7 +138,14 @@ vnGYXH1Drk889/tD9z2gjh4=
 
 --nextPart1316504.W30BOMpaHa--
 
+--===============2024669433==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============2024669433==--
