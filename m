@@ -1,14 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 22 Mar 2003 23:24:54 -0700
-To: Joel Soete <joel.soete@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FC driver?
-Message-ID: <20030323062454.GA24168@dsl2.external.hp.com>
-References: <3E68A12A00002910@ocpmta3.freegates.net> <20030317111801.GF17073@lug-owl.de> <20030317161445.GA31378@dsl2.external.hp.com> <1047918143.14507.18.camel@beavis.ybsoft.com> <20030317163804.GC31378@dsl2.external.hp.com> <3E7CDCA3.2040700@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E7CDCA3.2040700@tiscali.be>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from mail.sonytel.be (mail2.sonytel.be [195.0.45.172])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2CD78482B
+	for <parisc-linux@parisc-linux.org>; Sun, 23 Mar 2003 03:58:52 -0700 (MST)
+Date: Sun, 23 Mar 2003 11:58:37 +0100 (MET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Marco Roeland <marco.roeland@xs4all.nl>,
+	Duncan Sands <baldrick@wanadoo.fr>
+Cc: Alan Cox <alan@redhat.com>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>
+In-Reply-To: <20030322202201.GA32386@localhost>
+Message-ID: <Pine.GSO.4.21.0303231155380.9116-100000@vervain.sonytel.be>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: Linux 2.5.65-ac2 (drivers/char/genrtc.c compile failure on i386)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,11 +26,125 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Mar 22, 2003 at 09:58:59PM +0000, Joel Soete wrote:
-> Is a FC hub is required to expect to use this driver (under hpux we used 
-> this card directly connected to fc of a XP512 diskarray)?
+On Sat, 22 Mar 2003, Marco Roeland wrote:
+> On Friday March 21st 2003 at 12:41 Alan Cox wrote:
+> > Linux 2.5.65-ac2
+> >       ...
+> > o	M68K rtc updates				(Geert Uytterhoeven)
+> 
+> The file drivers/char/genrtc.c was updated, but include/arch-generic/rtc.h
+> which is used on i386 wasn't (yet?), leading to compile failures on i386:
+> (the missing define is only the first symptom)
 
-I don't think so. I just happen to have the couple of disks/hosts all
-connected to a pair of hubs.
+Oops, until last Friday I didn't even know genrtc was used on ia32...
 
-grant
+Anyway, can you please give this a try? I also updated PPC and PA-RISC, the
+other two known users of genrtc I forgot to update.
+
+--- linux-2.5.x/include/asm-generic/rtc.h.orig	Mon Feb 10 21:59:25 2003
++++ linux-2.5.x/include/asm-generic/rtc.h	Sun Mar 23 11:47:24 2003
+@@ -22,9 +22,8 @@
+ #define RTC_AIE 0x20		/* alarm interrupt enable */
+ #define RTC_UIE 0x10		/* update-finished interrupt enable */
+ 
+-extern void gen_rtc_interrupt(unsigned long);
+-
+ /* some dummy definitions */
++#define RTC_BATT_BAD 0x100	/* battery bad */
+ #define RTC_SQWE 0x08		/* enable square-wave output */
+ #define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
+ #define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
+@@ -43,7 +42,7 @@
+ 	return uip;
+ }
+ 
+-static inline void get_rtc_time(struct rtc_time *time)
++static inline unsigned int get_rtc_time(struct rtc_time *time)
+ {
+ 	unsigned long uip_watchdog = jiffies;
+ 	unsigned char ctrl;
+@@ -108,6 +107,8 @@
+ 		time->tm_year += 100;
+ 
+ 	time->tm_mon--;
++
++	return RTC_24H;
+ }
+ 
+ /* Set the current date and time in the real time clock. */
+--- linux-2.5.x/include/asm-parisc/rtc.h.orig	Wed Aug 28 08:33:46 2002
++++ linux-2.5.x/include/asm-parisc/rtc.h	Sun Mar 23 11:52:15 2003
+@@ -24,7 +24,7 @@
+ #define RTC_AIE 0x20		/* alarm interrupt enable */
+ #define RTC_UIE 0x10		/* update-finished interrupt enable */
+ 
+-extern void gen_rtc_interrupt(unsigned long);
++#define RTC_BATT_BAD 0x100	/* battery bad */
+ 
+ /* some dummy definitions */
+ #define RTC_SQWE 0x08		/* enable square-wave output */
+@@ -44,14 +44,14 @@
+ 	{ 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
+ };
+ 
+-static int get_rtc_time(struct rtc_time *wtime)
++static inline unsigned int get_rtc_time(struct rtc_time *wtime)
+ {
+ 	struct pdc_tod tod_data;
+ 	long int days, rem, y;
+ 	const unsigned short int *ip;
+ 
+ 	if(pdc_tod_read(&tod_data) < 0)
+-		return -1;
++		return RTC_24H | RTC_BATT_BAD;
+ 
+ 	
+ 	// most of the remainder of this function is:
+@@ -93,7 +93,7 @@
+ 	wtime->tm_mon = y;
+ 	wtime->tm_mday = days + 1;
+ 	
+-	return 0;
++	return RTC_24H;
+ }
+ 
+ static int set_rtc_time(struct rtc_time *wtime)
+--- linux-2.5.x/include/asm-ppc/rtc.h.orig	Tue Feb 18 10:08:44 2003
++++ linux-2.5.x/include/asm-ppc/rtc.h	Sun Mar 23 11:47:31 2003
+@@ -35,15 +35,14 @@
+ #define RTC_AIE 0x20		/* alarm interrupt enable */
+ #define RTC_UIE 0x10		/* update-finished interrupt enable */
+ 
+-extern void gen_rtc_interrupt(unsigned long);
+-
+ /* some dummy definitions */
++#define RTC_BATT_BAD 0x100	/* battery bad */
+ #define RTC_SQWE 0x08		/* enable square-wave output */
+ #define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
+ #define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
+ #define RTC_DST_EN 0x01	        /* auto switch DST - works f. USA only */
+ 
+-static inline void get_rtc_time(struct rtc_time *time)
++static inline unsigned int get_rtc_time(struct rtc_time *time)
+ {
+ 	if (ppc_md.get_rtc_time) {
+ 		unsigned long nowtime;
+@@ -55,6 +54,7 @@
+ 		time->tm_year -= 1900;
+ 		time->tm_mon -= 1; /* Make sure userland has a 0-based month */
+ 	}
++	return RTC_24H;
+ }
+ 
+ /* Set the current date and time in the real time clock. */
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
