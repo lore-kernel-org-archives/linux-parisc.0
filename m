@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 297F3482A
-	for <parisc-linux@parisc-linux.org>; Thu, 28 Mar 2002 03:13:32 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8169E482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Mar 2002 05:18:12 -0700 (MST)
 Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA06892
-	for parisc-linux@parisc-linux.org; Thu, 28 Mar 2002 18:13:29 +0800
-Date: Thu, 28 Mar 2002 18:13:25 +0800
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id UAA07245
+	for parisc-linux@lists.parisc-linux.org; Thu, 28 Mar 2002 20:18:02 +0800
+Date: Thu, 28 Mar 2002 20:18:00 +0800
 From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Building cvs 2.4.18
-Message-ID: <20020328181323.A6833@neep.com.au>
-References: <Pine.LNX.4.33L2.0203251403190.13376-100000@eiger.apptechsys.com> <jeremyd@apptechsys.com> <20020326063217.50AB1482C@dsl2.external.hp.com> <20020327220901.A315@neep.com.au> <andrew@neep.com.au> <20020328070207.990A8482A@dsl2.external.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Mozilla, etc.
+Message-ID: <20020328201757.B6833@neep.com.au>
+References: <20020327151405.2397A482F@dsl2.external.hp.com> <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020328070207.990A8482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Thu, Mar 28, 2002 at 12:02:07AM -0700
+In-Reply-To: <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu>; from davidd@et.byu.edu on Wed, Mar 27, 2002 at 09:27:11PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +25,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoth Grant Grundler:
-> sorry - that should be kernels/a500/
-> or kernels/lxr8000/firewall is a newer version of the same thing.
+Quoth David Dougall:
+> PS: is there any hope of a jre on parisc-linux?
 
-ncftp /kernels > dir */firewall
--r--r--r--   1 grundler ftpadmin       4912 Jan  2 05:57 a500/firewall
--rwxr-xr-x   1 grundler ftpadmin       5113 Mar 10 07:44 c3000/firewall
+I would say definitely, after this recent press release from the Apache
+Software Foundation:
 
+  http://www.apache.org/foundation/news.html
 
-I assume you mean c3000/firewall ?
+(linking to)
 
-Thanks, always interested to see how other people approach firewalling.
+  http://www1.internetwire.com/iwire/release_html_b1?release_id=39838
+
+"ASF reaches agreement with Sun Microsystems to allow open source Java
+implementations."
+
+What I _think_ this means (after reading through the full article) is
+that we're going to see fully open, 100%-approved Java implementations
+running natively in Linux and other alternative operating systems in the
+near future.  I don't know what the current issues (if any) are with
+building the jdk1.1 or jdk1.2 packages under linux-hppa, but I would
+hope that following this announcement HP will (somehow) be able to
+assist in getting a production-ready JRE into linux-hppa.
+
+(Caveat: I could have this all wrong of course.)
+
+Once HPUX binary compatibility is working properly the HPUX JRE could
+probably be used as well, but if there's a comparable native solution I
+don't know if many people will go to that effort.
 
 Andrew.
 
