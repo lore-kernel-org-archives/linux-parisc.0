@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe39.law4.hotmail.com [216.33.148.76])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DCC78482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Apr 2002 10:08:40 -0600 (MDT)
-From: "kenneth westelinck" <kennywest1@hotmail.com>
-To: "Patryk Bonzanini" <paboman1@hotmail.com>,
-	<parisc-linux@lists.parisc-linux.org>
-References: <F41rNKBqujsclWXSZ3Z00000a78@hotmail.com>
+Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C25B482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Apr 2002 21:14:15 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id LAA19404
+	for parisc-linux@lists.parisc-linux.org; Fri, 26 Apr 2002 11:14:08 +0800
+Date: Fri, 26 Apr 2002 11:14:05 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] linux on pa-risc
-Date: Thu, 25 Apr 2002 18:05:04 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Message-ID: <OE39OUdgYVtpTX7m52u0000117f@hotmail.com>
+Message-ID: <20020426111403.J13434@neep.com.au>
+References: <F41rNKBqujsclWXSZ3Z00000a78@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <F41rNKBqujsclWXSZ3Z00000a78@hotmail.com>; from paboman1@hotmail.com on Thu, Apr 25, 2002 at 01:09:25PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,51 +25,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-You can find a list of supported models here:
-http://mkhppa1.esiee.fr/list.html
-
-As your workstation doesn't have any external devices, you'll need an
-aditional Linux/UNIX box to net-boot it. All instructions can be found here:
-http://mkhppa1.esiee.fr/parisc-linux-boot/parisc-linux-boot.html#BOOTNETWORK
-
-I'm sorry, I don't know maya.
-
-Hope this helps.
-
-
-regards,
-
-Kenneth
-
------ Original Message -----
-From: "Patryk Bonzanini" <paboman1@hotmail.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Sent: Thursday, April 25, 2002 3:09 PM
-Subject: [parisc-linux] linux on pa-risc
-
-
-> hi, i have an hp workstation whit hp-ux operating system and pa-risc cpu
+Quoth Patryk Bonzanini:
+> hi, i have an hp workstation whit hp-ux operating system and pa-risc cpu 
 > (100mhz)
 > this computer doesn't have any cdrom or floppy drive.
->
+
+May you live in interesting times.
+
 > can i install linux on this machine?
+
+Yes, over the network.  Kenneth's response to your post has some info
+to get you started.
+
 > what can i do whitout cdrom, i must buy it?
->
+
+If you can find an external SCSI CDROM drive on eBay or through the
+place where you obtained your workstation, you will probably find that
+useful in the long term.
+
 > after this upgrade can i run maya for linux ?
-> thanks
->
->
->
-> PaboDesign©
->
->
-> _________________________________________________________________
-> Conversa in chat con gli amici in linea, prova MSN Messenger:
-> http://messenger.msn.com
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+
+The Alias|WaveFront Maya for Linux package is only for the i386 (IA32)
+platform.  So, no you won't be able to run it.  And even if it were
+available for hppa, your poor little 100MHz processor really wouldn't be
+cutting it!    =)
+
+Andrew.
+
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
