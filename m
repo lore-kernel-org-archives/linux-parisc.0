@@ -1,30 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 908CD4A18
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 31 Jan 2001 00:07:41 -0700 (MST)
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id AAA29837
-	for <parisc-linux@puffin.external.hp.com>; Wed, 31 Jan 2001 00:03:33 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA28693;
-	Wed, 31 Jan 2001 18:07:30 +1100
-Date: Wed, 31 Jan 2001 18:07:30 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Weird compile problems
-In-Reply-To: <Pine.LNX.4.21.0101311139160.19209-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0101311805130.19209-100000@front.linuxcare.com.au>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 801BE4A18
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 31 Jan 2001 09:16:03 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA09581
+	for <parisc-linux@puffin.external.hp.com>; Wed, 31 Jan 2001 09:11:56 -0700
+Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
+  by mailserv2.iuinc.com with SMTP; 31 Jan 2001 16:15:50 -0000
+Subject: Re: [parisc-linux] linux-2.4.0
+To: matthew@wil.cx (Matthew Wilcox)
+Date: Wed, 31 Jan 2001 16:16:22 +0000 (GMT)
+Cc: grundler@cup.hp.com (Grant Grundler),
+	parisc-linux@thepuffingroup.com
+In-Reply-To: <20010126030440.A18813@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Jan 26, 2001 03:04:40 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E14Nzvl-0002cJ-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 31 Jan 2001, Alan Modra wrote:
+> just for giggles, i merged 2.4.1-pre10 into our tree.  no conflicts.
 
-[about pehc devel branch gcc]
-> r19 is being trashed.  It's a compiler bug.  One I added too. :-(
-
-Now fixed.
-
--- 
-Linuxcare.  Support for the Revolution.
+Bad move. 2.4.1 is incredibly broken and unstable. Stay at 2.4.0 for testing
