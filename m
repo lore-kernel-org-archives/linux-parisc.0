@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 40353482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Apr 2002 13:53:26 -0600 (MDT)
-Message-ID: <3CBF2422.2632C6B@gmx.at>
-Date: Thu, 18 Apr 2002 21:53:06 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: "rbradetich@uswest.net" <rbradetich@uswest.net>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F6D8482A
+	for <parisc-linux@parisc-linux.org>; Fri, 19 Apr 2002 16:15:38 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id sowsmaaa for parisc-linux@parisc-linux.org; Fri, 19 Apr 2002 15:14:31 -0700
+Date: Fri, 19 Apr 2002 15:16:23 -0700
+From: Randolph Chung <tausq@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020419221623.GG32033@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Some old and new questions on Linux drivers, PDC console,etc..
+Subject: [parisc-linux] gcc-3.2 experimental debs
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,28 +22,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Ryan,
+I've uploaded an experimental gcc-3.2 debian package to:
 
-after long time, I want to cantact you again.
+ftp://ftp.parisc-linux.org/unofficial-debs/gcc-3.2_20020417-1_hppa.deb 
 
-First of all a question. Those days you added for me the config stuff
-for the PDC console driver for the E55 and other non-standard machines.
-I was not able to do this, and today I also not able to do so.
+for people who feel adventurous and wants to try. As the name suggests
+it's built from gcc-3.2 cvs from two days ago. The deb is unfortunately
+quite large (26M) because it also contains binutils bits and has
+c/c++/fortran/objc compilers enabled.
 
-Can you give me a short introduction, where I have to add what, which
-are the dependencies, etc, etc, etc....
-In the future I also want to have that skills.
+The regression test results are looking quite good, and at least on the
+two cases I've tried the functions-sections problems are fixed.
 
-What the status of your driver development of the MUX, or SCSI ?
-Have you find the SCSI sources (MACH kernel) ?
+The package installs into /usr/local, and I want to stress here
+that these are only for experimental use and are not part of the
+official debian release.
 
-Would be nice to hear from you
+Having said that, try them out and let us know how it works out!
 
-With friendly regards
-Christoph P.
+Last but not least, thanks Dave for all your efforts! gcc-3.2 looks
+really quite a bit better than 3.0.x
 
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+randolph
