@@ -1,16 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spike2.ehosting.com (unknown [62.173.67.13])
-	by dsl2.external.hp.com (Postfix) with SMTP id 984AC4950
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Aug 2003 03:23:20 -0600 (MDT)
-Message-ID: <1061976142.3f4c784e354b9@webmail.v8fiesta.co.uk>
-Date: Wed, 27 Aug 2003 10:22:22 +0100
-From: mmogenius@v8fiesta.co.uk
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-References: <20030827034036.GA9928@dsl2.external.hp.com> <72F3D1D0-D84B-11D7-8E2F-000393581E44@speakeasy.net> <20030827060516.GA11642@dsl2.external.hp.com> <20030827100630.7a3eb14f.varenet@esiee.fr>
-In-Reply-To: <20030827100630.7a3eb14f.varenet@esiee.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from dhcp23.swansea.linux.org.uk (pc1-cwma1-5-cust4.swan.cable.ntl.com [80.5.120.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A1EF3484E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Aug 2003 10:31:00 -0600 (MDT)
+Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
+	by dhcp23.swansea.linux.org.uk (8.12.9/8.12.9) with ESMTP id h7RGUGra023189;
+	Wed, 27 Aug 2003 17:30:17 +0100
+Received: (from alan@localhost)
+	by dhcp23.swansea.linux.org.uk (8.12.9/8.12.9/Submit) id h7RGUEpd023187;
+	Wed, 27 Aug 2003 17:30:14 +0100
+Subject: Re: [parisc-linux] C3000 and IDE DMA support
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.44.0308261152480.6589-100000@sal.ucc.ie>
+References: <Pine.LNX.4.44.0308261152480.6589-100000@sal.ucc.ie>
+Content-Type: text/plain
+Message-Id: <1062001812.22739.84.camel@dhcp23.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: 27 Aug 2003 17:30:13 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +29,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Thibaut VARENE <varenet@esiee.fr>:
+On Maw, 2003-08-26 at 12:46, M. Grabert wrote:
+> - the hard disk performs very bad (just 3.13 MB/s instead of expected
+>   >30 MB/s, tested with similar drive in PC and same hdparm settings)
+>   In fact it shows typical data rates for unsupported DMA transfers
 
-> On Wed, 27 Aug 2003 00:05:16 -0600
-> Grant Grundler <grundler@parisc-linux.org> wrote:
-> 
->  
-> > ok - thanks - I've seen the fewer DIMM slots version but didn't
-> > notice the FX-e on the motherboard (or VGA connector on the back).
-> > 
-> > I have seen a B2000 with 8 DIMM slots and 6 PCI slots like a C3000.
-> > This is no prototype - a real production unit.
-> > I'll have a chance to look more closely at this box again
-> > in the near future and will take some pictures.
-> > 
-> 
-> Don't bother, we've got plenty of these boxes @school, I'll take some pics
-> before students come back ;)
-> 
-> 
-> Thibaut VARENE
-> The PA/Linux ESIEE Team
-> http://pateam.esiee.fr/
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+Your drive is in PIO, probably PIO3 or so.
 
+> - excessive harddisk access, ie. copying large files (>1GB) obviously
+>   blocks any other access to the harddisk, at least it's not (very) responsive
+>   (caused by the slow transfer rate?)
 
+Hard to tell
 
+> - can't change from my default kernel setting (DMA) to PIO mode via hdparm,
+>   it causes a kernel oops (but hey, who needs PIO anyway ;)
 
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+That would be a bug
+
+> Is unmasq_irq supported? What about DMA? Is it obviously not fixed yet
+> (at least somebody wrote that "ns87415 dma doesn't work reliably on
+>  suckyio-systems" a couple of weeks back)
+
+irq unmasking is a generic IDE property so should be fine on any
+platform with a non prehistoric defunct controller (NS87415 is fine)
+
+> Any hints how to speed up the transfer rate?
+
+Buy a PC ;)
+
+Basically you need to fix DMA support
