@@ -1,21 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0B8BE4841
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 09:54:22 -0700 (MST)
-Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
- by mtaout02.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
- with SMTP id <0GSV00137DMKWK@mtaout02.icomcast.net> for
- parisc-linux@lists.parisc-linux.org; Tue, 12 Mar 2002 11:54:20 -0500 (EST)
-Date: Tue, 12 Mar 2002 11:54:18 -0500
-From: James S <smithjames@comcast.net>
-Subject: Re: [parisc-linux] Konqueror without aRts? (Was: Mozilla and Galeon)
-To: Thomas Schmid <Thomas.Schmid@ascom.ch>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: James S <smithjames@comcast.net>
-Message-id: <001601c1c9e6$8e1fe300$02c1a8c0@james.co.uk>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-References: <OF7C015490.26FA7FD8-ONC1256B7A.003B7D2A@hasler.ascom.ch>
+To: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Cc: parisc <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] new vmlinux!!! 
+In-Reply-To: Message from Gururaj Ananthateerta <gururaj@cup.hp.com>
+   of "Mon, 11 Mar 2002 14:56:25 PST." <3C8D3619.519A601C@cup.hp.com>
+References: <20011001175425.A31305@dogbert.localdomain> <Pine.NEB.4.33.0110021434430.24166-100000@www2.scram.de> <20011005222028.A13585@dogbert.localdomain> <20011005215600.B3745@parcelfarce.linux.theplanet.co.uk> <20011005233602.A13826@dogbert.localdomain>  <3C8D3619.519A601C@cup.hp.com> 
+Date: Tue, 12 Mar 2002 10:24:45 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020312172445.B11A64849@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,30 +19,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Hi James,
->
-> Running KDE was a problem on my machines: 715/100XC, 712/80. It took about
-> 5min from loging
-> in at KDM to see KDE, producing 3 times a "knotify"-error. From this list
-> I got the tip that this was due
-> to "libarts" and indeed, after removing "libarts", the login process was
-> much faster and would not
-> give me the "knotify"-errors anymore.
-> Unfortunately removing "libarts" meant removing "konqueror" as well, or at
-> least "dselect" would
-> always force the removal.
->
-> Did you find a way to have "konqueror" without "aRts" ? Or don't you have
-> the problem with KDM
-> login ?
->
-i sort of cheated - i'm using windowmaker & ran konqueror under that
-although it was still painfully slow to load
+Gururaj Ananthateerta wrote:
+> I have 3 partitions on primary disk
+>    Device Boot    Start       End    Blocks   Id  System
+> /dev/sda1             1        95     97264   f0  Linux/PA-RISC boot
+> /dev/sda2            96       339    249856   82  Linux swap
+> /dev/sda3           340      8683   8544256   83  Linux
 
-i dont think the arts lib is a dependency of konqueror, it must be a
-dependant of another section of KDE
+partitions are fine.
 
-i also never used any of the the login managers (kdm xdm etc) as i dont do
-any remote x-logins, so i never encountered any problems there.
+> I am doing some modifications to the code and trying to boot with a new
+> linux.
+> I placed my vmlinux in /boot, but the palo doesn't seems to recognize my
+> kernel.
 
-James S
+What do you mean by "doesn't seems to recognize"?
+any specific error msg?
+
+does palo.conf point to that kernel?
+or did you interact with palo to tell it to load that image?
+"file /boot/vmlinux" says what?
+
+you don't have to answer the above - just stuff to think about.
+
+grant
