@@ -1,34 +1,22 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA29021
-	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Aug 2000 19:57:17 -0600
-Date: Thu, 17 Aug 2000 21:56:01 -0400 (EDT)
-From: Andrew Park <apark@cdf.toronto.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA29857
+	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Aug 2000 23:39:31 -0600
+Date: Fri, 18 Aug 2000 07:38:49 +0200 (MEST)
+From: Steffen =?ISO-8859-1?Q?L=F6rch?= <sloerch@gmx.de>
 To: parisc-linux@thepuffingroup.com
-In-Reply-To: <20000815144305.A7757@vodka.thepuffingroup.com>
-Message-ID: <Pine.SOL.4.21.0008172141540.26790-100000@misty.cdf>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] architecture overview books?
+Message-ID: <17061.966577129@www28.gmx.net>
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] Boot in Graphic-Mode
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+Hey, all !!
+Thanks for replies yesterday! Today another question from da newebee.
+I've installed the CD-Image-Version of da MkLinux, but I don't want to
+boot into console mode. How can I boot into graphic mode ?
 
-Can all the register information be found in
+Thanks,
+S.L.
 
-	PCXL_ers.pdf
-
-file?  I found it in
-
-	http://thepuffingroup.com/parisc/documentation.html
-
-Or are there other sources where I can get architecture overview?
-
-
-
-Andrew Park
-           
-________________________________________________________________________ 
-CDFlab Systems Administrator                       www.cdf.utoronto.ca |
-Team BlueShirt Developer                             www.blueshirt.org |
-GnuPG Signature              www.cdf.utoronto.ca/~apark/public_key.txt |
-------------------------------------------------------------------------
+-- 
+Sent through GMX FreeMail - http://www.gmx.net
