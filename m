@@ -1,13 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] [patch] pdc printing
-Date: Fri, 30 Jul 2004 09:20:37 -0700
-Message-ID: <20040730162037.GG546@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] expect hang with 2.6.7-pa14 #1
+Date: Fri, 30 Jul 2004 12:56:10 -0400 (EDT)
+Message-ID: <200407301656.i6UGuBPG008196@hiauly1.hia.nrc.ca>
+References: <20040726221856.GW546@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: randolph@tausq.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040726221856.GW546@tausq.org> from "Randolph Chung" at Jul 26,
+	2004 03:18:56 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,140 +21,69 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Using debug spinlocks, sometimes we don't see any output, possibly
-because of disabled interrupts or because of deadlocks in printk. This
-patch makes the debug spinlock prints go through pdc console instead. It
-works but i'm not completely happy with the fact that by replacing
-printk() with pdc_printf() in debuglocks, the output only goes to
-the pdc console and not "linux consoles" ... thoughts?
+> dunno about this, but i'm interested in:
+> 
+> > #7  0x4068a77c in expErrnoMsgSet () from /usr/lib/libexpect5.41.so.1
+> > #8  0x4068a77c in expErrnoMsgSet () from /usr/lib/libexpect5.41.so.1
+> > Previous frame identical to this frame (corrupt stack?)
 
---- arch/parisc/kernel/pdc_cons.c	19 Jan 2004 05:15:47 -0000	1.6
-+++ arch/parisc/kernel/pdc_cons.c	30 Jul 2004 00:47:55 -0000
-@@ -71,6 +71,19 @@ void pdc_outc(unsigned char c)
- 	pdc_iodc_outc(c);
- }
- 
-+void pdc_printf(const char *fmt, ...)
-+{
-+	va_list args;
-+	char buf[1024];
-+	int i, len;
-+
-+	va_start(args, fmt);
-+	len = vscnprintf(buf, sizeof(buf), fmt, args);
-+	va_end(args);
-+
-+	for (i = 0; i < len; i++)
-+		pdc_iodc_outc(buf[i]);
-+}
- 
- int pdc_console_poll_key(struct console *co)
- {
---- arch/parisc/lib/debuglocks.c	14 Jul 2004 18:20:34 -0000	1.7
-+++ arch/parisc/lib/debuglocks.c	30 Jul 2004 00:47:55 -0000
-@@ -27,12 +27,14 @@
- #include <linux/spinlock.h>
- #include <asm/system.h>
- #include <asm/hardirq.h>	/* in_interrupt() */
-+#include <asm/pdc.h>
- 
- #undef INIT_STUCK
- #define INIT_STUCK 1L << 30
- 
- #ifdef CONFIG_DEBUG_SPINLOCK
- 
-+
- void _dbg_spin_lock(spinlock_t * lock, const char *base_file, int line_no)
- {
- 	volatile unsigned int *a;
-@@ -64,7 +66,7 @@ try_again:
- 		while ((*a == 0) && --stuck);
- 
- 	if (unlikely(stuck <= 0)) {
--		printk(KERN_WARNING
-+		pdc_printf(
- 			"%s:%d: spin_lock(%s/%p) stuck in %s at %p(%d)"
- 			" owned by %s:%d in %s at %p(%d)\n",
- 			base_file, line_no, lock->module, lock,
-@@ -84,7 +86,7 @@ try_again:
- 	lock->bline = line_no;
- 
- 	if (unlikely(printed)) {
--		printk(KERN_WARNING
-+		pdc_printf(
- 			"%s:%d: spin_lock grabbed in %s at %p(%d) %ld ticks\n",
- 			base_file, line_no, current->comm, inline_pc,
- 			cpu, jiffies - started);
-@@ -97,7 +99,7 @@ void _dbg_spin_unlock(spinlock_t * lock,
- 	volatile unsigned int *a = __ldcw_align(lock);
- 	if (unlikely((*a != 0) && lock->babble)) {
- 		lock->babble--;
--		printk(KERN_WARNING
-+		pdc_printf(
- 			"%s:%d: spin_unlock(%s:%p) not locked\n",
- 			base_file, line_no, lock->module, lock);
- 	}
-@@ -150,7 +152,7 @@ void _dbg_write_lock(rwlock_t *rw, const
- 	int cpu = smp_processor_id();
- 	
- 	if(unlikely(in_interrupt())) {	/* acquiring write lock in interrupt context, bad idea */
--		printk(KERN_WARNING "write_lock caller: %s:%d, IRQs enabled,\n", bfile, bline);
-+		pdc_printf("write_lock caller: %s:%d, IRQs enabled,\n", bfile, bline);
- 		BUG();
- 	}
- 
-@@ -167,7 +169,7 @@ retry:
- 		
- 		stuck--;
- 		if ((unlikely(stuck <= 0)) && (rw->counter < 0)) {
--			printk(KERN_WARNING
-+			pdc_printf(
- 				"%s:%d: write_lock stuck on writer"
- 				" in %s at %p(%d) %ld ticks\n",
- 				bfile, bline, current->comm, inline_pc,
-@@ -176,7 +178,7 @@ retry:
- 			printed = 1;
- 		}
- 		else if (unlikely(stuck <= 0)) {
--			printk(KERN_WARNING
-+			pdc_printf(
- 				"%s:%d: write_lock stuck on reader"
- 				" in %s at %p(%d) %ld ticks\n",
- 				bfile, bline, current->comm, inline_pc,
-@@ -194,7 +196,7 @@ retry:
- 	rw->counter = -1; /* remember we are locked */
- 
- 	if (unlikely(printed)) {
--		printk(KERN_WARNING
-+		pdc_printf(
- 			"%s:%d: write_lock grabbed in %s at %p(%d) %ld ticks\n",
- 			bfile, bline, current->comm, inline_pc,
- 			cpu, jiffies - started);
-@@ -215,7 +217,7 @@ void _dbg_read_lock(rwlock_t * rw, const
- 
- 	rw->counter++;
- #if 0
--	printk(KERN_WARNING
-+	pdc_printf(
- 		"%s:%d: read_lock grabbed in %s at %p(%d) %ld ticks\n",
- 		bfile, bline, current->comm, inline_pc,
- 		cpu, jiffies - started);
---- include/asm-parisc/pdc.h	10 Jul 2004 07:51:15 -0000	1.8
-+++ include/asm-parisc/pdc.h	30 Jul 2004 00:47:58 -0000
-@@ -754,6 +754,7 @@ void pdc_io_reset_devices(void);
- int pdc_iodc_getc(void);
- void pdc_iodc_putc(unsigned char c);
- void pdc_iodc_outc(unsigned char c);
-+void pdc_printf(const char *fmt, ...);
- 
- void pdc_emergency_unlock(void);
- int pdc_sti_call(unsigned long func, unsigned long flags,
+Here is another one that I found looking at a core dump by ld:
 
+dave@hiauly6:~/gnu/gcc-3.5/objdir/hppa-linux/libjava/testsuite$ gdb /home/dave/opt/gnu/bin/ld core
+GNU gdb 2004-07-26-cvs
+Copyright 2004 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "hppa-unknown-linux-gnu"...Using host libthread_db library "/lib/libthread_db.so.1".
 
+Core was generated by `/home/dave/opt/gnu/bin/ld --eh-frame-hdr -dynamic-linker /lib/ld.so.1 -o /home/'.
+Program terminated with signal 11, Segmentation fault.
+Reading symbols from /lib/libc.so.6...done.
+Loaded symbols for /lib/libc.so.6
+Reading symbols from /lib/ld.so.1...done.
+Loaded symbols for /lib/ld.so.1
+#0  0x40008c38 in _dl_unload_cache () from /lib/ld.so.1
+(gdb) bt 
+#0  0x40008c38 in _dl_unload_cache () from /lib/ld.so.1
+#1  0x00000000 in ?? ()
+#2  0x00000000 in ?? ()
+Previous frame identical to this frame (corrupt stack?)
+(gdb) disass 0x40008c38 0x40008c48
+Dump of assembler code from 0x40008c38 to 0x40008c48:
+0x40008c38 <_dl_unload_cache+104>:      ldb 0(,r26),r20
+0x40008c3c <_dl_unload_cache+108>:      cmpib,= 0,r20,0x40008cd4 <_dl_unload_cache+260>
+0x40008c40 <_dl_unload_cache+112>:      ldi 0,ret0
+0x40008c44 <_dl_unload_cache+116>:      copy r20,ret0
+End of assembler dump.
+(gdb) disass 0x400097cc 0x400097ec
+Dump of assembler code from 0x400097cc to 0x400097ec:
+0x400097cc <_dl_lookup_symbol+88>:      copy r25,r12
+0x400097d0 <_dl_lookup_symbol+92>:      b,l 0x40008c38 <_dl_unload_cache+104>,rp
+0x400097d4 <_dl_lookup_symbol+96>:      copy r26,r9
+
+The above call is actually to _dl_elf_hash but we seem to have lost the
+symbol for it (I suppose it got converted to a section symbol) and the
+debug information for it.  _dl_elf_hash is static.
+
+I believe gdb thinks that the exception occured in _dl_lookup_symbol.
+
+(gdb) disass _dl_unload_cache
+Dump of assembler code for function _dl_unload_cache:
+0x40008bd0 <_dl_unload_cache+0>:        stw rp,-14(,sp)
+0x40008bd4 <_dl_unload_cache+4>:        stw,ma r4,40(,sp)
+
+(gdb) p/x *($sp - 0x40 - 0x14)
+$4 = 0x0
+
+There is no frame for _dl_elf_hash, so obviously gdb isn't going to
+unwind correctly.
+
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
