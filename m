@@ -1,14 +1,15 @@
-From: Steve Bromwich <hppa@fop.ns.ca>
-Subject: [parisc-linux] Re: 2.6 upgrade problems
-Date: Sat, 5 Feb 2005 12:23:14 -0400 (AST)
-Message-ID: <Pine.LNX.4.58.0502051211590.12670@brain.fop.ns.ca>
-References: <Pine.LNX.4.58.0501171521470.3385@brain.fop.ns.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] b2k 32bit 2.6.11-rc3-pa3 panic during the night :-(
+Date: Tue, 8 Feb 2005 10:31:47 +0100
+Message-ID: <41DE4A3A0000AAB6@mail-1-bnl.tiscali.it>
+References: <20050207034629.4CF9E4958E4@palinux.hppa>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
+Content-Type: text/plain;
+  charset="ISO-8859-15"
+Cc: willy@parisc-linux.org
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.58.0501171521470.3385@brain.fop.ns.ca>
+In-Reply-To: <20050207034629.4CF9E4958E4@palinux.hppa>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,58 +20,89 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-OK, I had the chance to sit down and do some research and
-fixed/ameliorated most of these problems - hopefully this will help
-someone else out!
 
-On Mon, 17 Jan 2005, Steve Bromwich wrote:
+> -- Original Message --
+> To: parisc-linux-cvs@lists.parisc-linux.org
+> Date: Sun,  6 Feb 2005 20:46:29 -0700 (MST)
+> From: willy@parisc-linux.org (Matthew Wilcox)
+> Reply-To: parisc-linux@lists.parisc-linux.org
+> Subject: [parisc-linux-cvs] linux-2.6 willy
+> 
+> 
+> CVSROOT:	/var/cvs
+> Module name:	linux-2.6
+> Changes by:	willy@cvs.parisc-linux.org	2005-02-06 20:46:29
+> 
+> Modified files:
+> 	arch/parisc/kernel: irq.c 
+> 
+> Log message:
+> 	Remove sufficiently obsolete DEBUG_IRQ code
+> 	Remove limit on times around the loop.  If we exit the loop while
+> 	interrupts are still pending, we'll only be re-interrupted as soon
+> 	as we exit the function.
+> 	Remove now-unnecessary slab.h include
+> 
+Hello pa,
 
-> I just upgraded my 715/100XC to 2.6.10-pa10 from 2.4.27, and I've hit a
-> few snags. First is I've lost serial console ("if this is the last message
-> you see..."). I did make oldconfig from the 2.4.27 config, but I think
-> I've fluffed it and missed the driver. Can someone see what I've missed in
-> the attached config?
+I just got this text to fix the cvs update lvel I used as kernel.
 
-make oldconfig didn't transfer across the settings for serial console, for
-some reason; CONFIG_SERIAL_8250_CONSOLE didn't get set (I'm assuming this
-is the right one for my machine rather than CONFIG_SERIAL_MUX_CONSOLE).
-I'm going to upgrade the kernel to the latest version rather than
-recompile this one, and reboot it when I next open the case.
+I just got very  unsual panic on b2k runing a 32bit 2.6.11-rc3-pa3:
+Backtrace:
+ [<1014dda4>] cache_grow+0xd4/0x1ac
+ [<1014e024>] cache_alloc_refill+0x1a8/0x26c
+ [<1014e348>] kmem_cache_alloc+0x48/0x4c
+ [<101828d8>] d_alloc+0x34/0x1cc
+ [<10176d10>] real_lookup+0x104/0x178
+ [<10177130>] do_lookup+0xb4/0xcc
+ [<10177934>] link_path_walk+0x7ec/0xe78
+ [<1017831c>] path_lookup+0xc0/0x1ec
+ [<10178630>] __user_walk+0x5c/0x78
+ [<10172974>] vfs_lstat+0x20/0x64
+ [<10172e7c>] sys_lstat64+0x18/0x40
+ [<1010d120>] syscall_exit+0x0/0x14
 
-> Next, vmstat appears to fail with a segfault:
 
-OK, this is a bit fiddly. Add the following to /etc/apt/sources.list:
+Kernel Fault: Code=3D15 regs=3D1913c600 (Addr=3D2c60c84c)
 
-deb-src http://www.backports.org/debian woody procps
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001111 Not tainted
+r00-03  00000000 104fb50c 1014dda4 104e78c8
+r04-07  1c125000 10999a40 00000010 000000d0
+r08-11  00000001 000423a8 00000001 000423a8
+r12-15  00031590 00043808 000423c5 0000002f
+r16-19  00030d90 00030d90 00031590 2c60c8c8
+r20-23  2c60c83c 000051ae 00000294 000000d0
+r24-27  104e783c 1c125000 10999a40 103ce010
+r28-31  2c60c83c 00000210 1913c600 10150710
+sr0-3   00000000 00000085 00000000 000019b0
+sr4-7   00000000 00000000 00000000 00000000
 
-Then apt-get source --compile procps. This will fail will an error from ld
-before it completes creating the package. Copy
-./debian/procps/lib/libproc-3.2.3.so to /lib and run ldconfig. Rename
-/usr/bin/vmstat to /usr/bin/vmstat.old and copy vmstat to /usr/bin. Not
-the ideal solution (debsums will complain, if you use it) but it works.
+IASQ: 00000000 00000000 IAOQ: 1014db30 1014db34
+ IIR: 6b800020    ISR: 00000000  IOR: 2c60c84c
+ CPU:        0   CR30: 1913c000 CR31: 10494000
+ ORIG_R28: 00000000
+ IAOQ[0]: alloc_slabmgmt+0x30/0x6c
+ IAOQ[1]: alloc_slabmgmt+0x34/0x6c
+ RP(r2): cache_grow+0xd4/0x1ac
+Kernel panic - not syncing: Kernel Fault
+ <0>Rebooting in 120 seconds..
 
-> brain:/var/adm# vmstat 1
-> Unknown HZ value! (7) Assume 100.
+fwiw no pb on b180 with same kernel level and same unstable debian instal=
+l?
 
-I'm not sure about Unknown HZ. I happened to upgrade an x86 box with the
-backported procps and got the same error.
+Any idea or similar event on other model?
 
-> Finally (and it may not have been a great idea to do this at the same time
-> as doing the kernel upgrade) I put in a DAT drive I acquired. This is
-> failing when I try to write to it with the following error in dmesg:
->
-> st0: Error with sense data: Info fld=0x14, Current st0: sense = f0  3
-> ASC= c ASCQ= 0
-> Raw sense data:0xf0 0x00 0x03 0x00 0x00 0x00 0x14 0x2c 0x00 0x00 0x00 0x00
-> 0x0c 0x00 0x00 0x00 0x00 0x85 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0
-> x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-> 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+Thanks,
+    Joel
 
-This looks to be a problem with termination, from discussion with other
-people. I'm going to crack the case in my CFT and check the jumpers on all
-the drives to make sure.
+-------------------------------------------------------------------------=
+--
+Tiscali solde! 1 mois et activation Gratuits, modem =E0 9,99=80
+http://reg.tiscali.be/adsl/default.asp?lg=3DFR
 
-Cheers, Steve
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
