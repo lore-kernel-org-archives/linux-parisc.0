@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 839124829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Aug 2002 09:17:12 -0600 (MDT)
-Date: Tue, 27 Aug 2002 11:14:53 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Cc: debian-glibc@lists.debian.org
-Message-ID: <20020827151453.GA6100@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] glibc hppa - get/set/make/swap/context() & non-atomic ops
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08435482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Aug 2002 09:56:08 -0600 (MDT)
+Message-Id: <200208271531.g7RFV2qR017083@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Breaking PARISC ABI - Testing procedures?
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Tue, 27 Aug 2002 11:31:02 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020826194135.GC632@systemhalted> from "Carlos O'Donell" at Aug 26, 2002 03:41:35 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,34 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-PA'ers,
+> 3- sizeof(long double) is incorrect in gcc and glibc (?)
 
-Comments or thoughts about the following issues would be appreciated.
+This also needs to be fixed under 64-bit hpux.  Need to determine
+the calling convention for long doubles.
 
-These items are taken from my collection of TODO notes for glibc,
-and were recently added by comments from Helge and Willy.
-
-- Implement make/swap/set/get/context() calls in glibc
-        = Don't know what's needed... can probably learn
-        = about the calls from other arches.
-        - Doesn't look like it will be that hard.
-        - Helge brought the issue up since SAPDB relies
-        - on this to work properly (www.sapdb.org)
-	- With mcontext working properly... these calls
-	- _should_ work :}
-	* Didn't know these were broken or missing.
-
-- Make atomic ops atomic
-        = Need to implement exhcange_and_add/atomic_add
-        = and compare_and_swap.
-        - I have no idea how hard this will be.
-        - PA has a single atomic operation called ldcw
-        - Which is 'load and zero' ... we currently use
-        - this to implement locking primities.
-        * Are we going to have to use spinlocks to
-        * handle the atomic operations?
-	* I see 11 uses of generic/atomicity.h that need
-	* to be fixed.
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
