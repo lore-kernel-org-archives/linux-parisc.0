@@ -1,15 +1,15 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] Re: pa_memcpy: 2 small question
-Date: Mon, 10 Jan 2005 20:02:18 +0000
-Message-ID: <20050110200218.GA4595@ntlworld.com>
-References: <20050110085446.GS18497@tausq.org>
-	<41DE941900000C83@mail-5-bnl.tiscali.it>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [parisc-linux] Banshee and Voodoo2
+Date: Mon, 10 Jan 2005 11:09:16 +0000
+Message-ID: <1105313971.12028.55.camel@localhost.localdomain>
+References: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net>
+	<200501091547.56765.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: parisc-linux@lists.parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41DE941900000C83@mail-5-bnl.tiscali.it>
+In-Reply-To: <200501091547.56765.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,22 +20,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jan 10, 2005 at 06:12:24PM +0100, Joel Soete wrote:
-> I still trying to understand the previous formula I found somewhere :
-> 	; NOTE: If a null char. exists, return 0.
-> 	; if ((x - 0x01010101) & ~x & 0x80808080)
-> 	;     return 0;
-> (here it comes from m32r/lib/useropcy.c)
+On Sul, 2005-01-09 at 20:47, Mike Frysinger wrote:
+> ive actually hooked a voodoo2 into my C360 and got Xorg working at 
+> 1024x768 ... i also tried the obsidian voodoo2 (it's basically 2 voodoo2's on 
+> one card), but that kernel paniced (probably because of assumptions in the fb 
+> code that there's only 1 voodoo2 per card ... ?)
 
-It's subtracting one from each byte and checking for overflow.  If the
-most significant bit is set in x - 1, but not in x, then x must be 0.
-The & with ~x is used to mask out the most significant bit in each
-byte, if it was already set in x.
+It shouldn't panic. It may have bugs with multiple cards. Neither Xorg
+nor the fb driver support the alternate scanline modes however.
 
-If a byte is equal to 0, bytes to the "left" of it will be affected by
-the overflow, but that doesn't matter.  Quite a neat trick, really.
--- 
-Stuart Brady
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
