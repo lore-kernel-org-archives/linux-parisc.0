@@ -1,18 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ED28A4832
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 12:27:53 -0700 (MST)
-Date: Wed, 13 Nov 2002 20:27:47 +0100
-Subject: Re: [parisc-linux] Broken Cache Flushing in arch/parisc/kernel/signal.c.??
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v548)
-Cc: Randolph Chung <randolph@tausq.org>,
-	Ryan Bradetich <rbradetich@uswest.net>,
+Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 245384829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 10:24:18 -0700 (MST)
+Received: (from root@localhost)
+	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id JAA03420
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 09:24:03 -0800
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gADHNmp02426;
+	Wed, 13 Nov 2002 12:23:49 -0500
+Message-Id: <200211131723.gADHNmp02426@localhost.localdomain>
+To: Bjorn Helgaas <bjorn_helgaas@hp.com>
+Cc: Greg KH <greg@kroah.com>, Miles Bader <miles@gnu.org>,
+	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
+	Matthew Wilcox <willy@debian.org>,
+	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
+	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <willy@debian.org>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20021113122808.E30392@parcelfarce.linux.theplanet.co.uk>
-Message-Id: <FDF661FC-F73D-11D6-B07E-0030656F07A2@esiee.fr>
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
+ interface
+In-Reply-To: Message from Bjorn Helgaas <bjorn_helgaas@hp.com>
+   of "Wed, 13 Nov 2002 09:32:00 MST." <200211130932.00864.bjorn_helgaas@hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 13 Nov 2002 12:23:48 -0500
+From: "J.E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,30 +35,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le mercredi, 13 nov 2002, =E0 13:28 Europe/Paris, Matthew Wilcox a =E9crit=
- :
+> Absolutely.  Boxes with multiple IOMMUs (at least ia64, sparc64,
+> parisc) need to look up the correct IOMMU with which to map the
+> allocated buffer. Typically this is in the pci_dev sysdata. 
 
-> On Tue, Nov 12, 2002 at 11:52:34PM -0800, Randolph Chung wrote:
->> this is partly my fault, since i thought we have unbroken cache=20
->> flushing
->> and asked thibaut to check this in... now i see that the original =
-code
->> flushes sr3 space, but flush_icache_range() flushes the kernel=20
->> space...
->> oops!
->>
->> perhaps we should just check the old code back in for now?
->
-> Can we use
->   void flush_icache_user_range(struct vm_area_struct *vma,
->                         struct page *page, unsigned long addr, int =
-len)
-> ?  I'm not sure where we'd get the struct page from, though.
+Actually, I think all of the DMA mapping api needs to become bus independent 
+and take a struct device * instead of a pci_dev.  How this lookup/mapping is 
+done could be abstracted per architecture inside the DMA api internals.
 
-I reverted to the previous version until we find that out.
-HTH,
+We should also allow devices to do all the setup through bus generic 
+functions, but leave open the possibility that the driver may (once it knows 
+the bus type) obtain the pci_dev (or whatever) from the struct device if it 
+really, really has to muck with bus specific registers.
 
+As far as the SCSI mid layer goes, all we really need from struct device is 
+the dma_mask for setting up the I/O bounce buffers.
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+The simplest way to do all of this is probably to add a pointer to the 
+dma_mask in struct device and make it point to the same thing in pci_dev.  If 
+we find we need more than this per device, it could become a pointer to a 
+generic dma information structure later on.
+
+Drivers need to advertise DMA conformance (at the moment, requires consistent 
+allocation, or fully writeback/invalidate compliant)
+
+We should also adopt Adam's pointer approach to the sync/invalidate points so 
+we can treat a dma_alloc_consistent failure as a real failure and not clutter 
+the code with writeback/invalidate fallbacks.
+
+The above changes would allow me to yank all of the pci_dev specific code out 
+of the scsi mid layer, and also introduce a mca_dev type, convert the 53c700 
+driver to using the generic dma API and *finally* get us to the point where I 
+don't have to use bounce buffers for highmem access on the MCA bus.
+
+Since the 53c700 is also used by parisc (including some machines with 
+IOMMUs---which, unfortunately, I don't have access to), it probably makes an 
+ideal conversion test case.
+
+This can probably all be wrappered so the current SCSI pci drivers don't 
+notice anything wrong.
+
+James
