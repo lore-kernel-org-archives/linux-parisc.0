@@ -1,20 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc3-hems4-0-cust183.bre.cable.ntl.com [213.107.179.183])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 700A9482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 10:30:49 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 18E86B00C; Tue, 23 Oct 2001 17:30:25 +0100 (BST)
-Date: Tue, 23 Oct 2001 17:30:25 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>
+Received: from kcmso1.proxy.att.com (kcmso1.att.com [192.128.133.69])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 741B8482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 10:52:22 -0600 (MDT)
+Message-ID: <5360C45FAB301541AEB3C6A45A6B6A02706832@ocst09.ugd.att.com>
+From: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>
+To: "'Richard Hirst'" <rhirst@linuxcare.com>
 Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] X window refresh problem
-Message-ID: <20011023173025.K11105@linuxcare.com>
-References: <5360C45FAB301541AEB3C6A45A6B6A02706831@ocst09.ugd.att.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5360C45FAB301541AEB3C6A45A6B6A02706831@ocst09.ugd.att.com>; from aubreygriffin@att.com on Tue, Oct 23, 2001 at 10:13:00AM -0400
+Subject: RE: [parisc-linux] X window refresh problem
+Date: Tue, 23 Oct 2001 12:51:16 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
+
+Richard,
+
+I installed that kernel already and booted from it. When I started X, it
+crashed. So, I went back to my old kernel.
+
+I have just done an apt-get update; apt-get upgrade. I'll see if it works
+now.
+
+Thanks,
+
+Aubrey
+
+-----Original Message-----
+From: Richard Hirst [mailto:rhirst@linuxcare.com]
+Sent: Tuesday, October 23, 2001 12:30 PM
+To: Griffin, Aubrey, BMCIO
+Cc: 'parisc-linux@lists.parisc-linux.org'
+Subject: Re: [parisc-linux] X window refresh problem
+
 
 On Tue, Oct 23, 2001 at 10:13:00AM -0400, Griffin, Aubrey, BMCIO wrote:
 > Hello all,
@@ -23,13 +40,16 @@ On Tue, Oct 23, 2001 at 10:13:00AM -0400, Griffin, Aubrey, BMCIO wrote:
 > from the ISO image onto a 712/60.
 > 
 > I have installed X on it. Every is fine until the screen goes black. Once
-> this happens, the colors are messed up and it is unusable. I believe that is
+> this happens, the colors are messed up and it is unusable. I believe that
+is
 > the same problem as the blue is white that was talked on the mailing list.
 > This problem was corrected with a new kernel.
 > 
 > The kernel that I am running is 2.4.0-pa22. How do I upgrade the kernel?
 
-grab ftp://ftp.parisc-linux.org/unofficial-debs/kernel-image-2.4.9-32_011017.pa59_hppa.deb
+grab
+ftp://ftp.parisc-linux.org/unofficial-debs/kernel-image-2.4.9-32_011017.pa59
+_hppa.deb
 
 and dpkg -i kernel-image-2.4.9-32_011017.pa59_hppa.deb
 
