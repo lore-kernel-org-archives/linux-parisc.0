@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cactus.bheadley.org (d248.focal4.interaccess.com [207.208.139.248])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 48237482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jan 2002 10:24:10 -0700 (MST)
-Message-ID: <3C3C7C09.8060609@interaccess.com>
-Date: Wed, 09 Jan 2002 11:21:13 -0600
-From: "Bryan W. Headley" <bheadley@interaccess.com>
-MIME-Version: 1.0
 To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] loading the dump modules: will taint the kernel.
-References: <3C3C79B1.2D4AF279@admin.france.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: Re: [parisc-linux] parisc Dump: lkcd port. 
+In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+   of "Wed, 09 Jan 2002 17:46:45 +0100." <3C3C73F5.139E3A6D@admin.france.hp.com>
+References: <3C3C73F5.139E3A6D@admin.france.hp.com> 
+Date: Wed, 09 Jan 2002 13:21:25 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020109202125.7AA66482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,34 +20,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Bruno Vidal wrote:
-
 > 	Hi
-> I've created a modules for the dump driver. When loading the
-> modules I receive the following message:
-> #insmod dump
-> Using /lib/modules/2.4.17-pa3/kernel/drivers/dump/dump.o
-> Warning: loading /lib/modules/2.4.17-pa3/kernel/drivers/dump/dump.o will taint the kernel: no license
-> 
-> But everything seems okay, the modules is here, everything is here ???
-> What means this message ?
-> 
-> 	thanks.
-> 
-> 
+> I've already ask in the past, if there was a dump driver
+> for the linux parisc. The answer was no. So, because I've 
+> litle time for It I've restart this port.
 
-Did you/Are you releasing this module under a GPL license? Then add to 
-the source,
+Oh - excellent!
 
-MODULE_AUTHOR("James Bottomley");
-MODULE_DESCRIPTION("lasi700 SCSI Driver");
-MODULE_LICENSE("GPL");
-MODULE_PARM(lasi700, "s");
+> Now I've a question
+> about a function used for Alpha and i386. 
 
-Of course, change the author, description and parameters. See 
-include/linux/modules.h for docs, other macros. The other license types 
-are listed in there, too.
+and mips and mips64.
 
+> In arch/alpha/kernel/setup.c and arch/i386/mm/init.c, there is
+> a function called page_is_ram. It seems that this function is 
+> used by the dump driver to know if a page is a physical page or 
+> not. So my question is: does this function exist for parisc ?
 
--- 
-____               .:.                 ____
-Bryan W. Headley - bheadley@interaccess.com
+No. I can think of two or three people who should offhand know how
+to write this pretty quickly though - one of them is in transit
+and the other won't see your mail for a few more hours.
+
+My guess is page_is_ram() for parisc would like something like
+the mips or i386 versions but use npmem_ranges (count) and
+pmem_ranges[] (table physical page ranges):
+
+/* leveraged from arch/mips/mm/init.c */
+static inline int page_is_ram(unsigned long pagenr)
+{
+        int i;
+
+        for (i = 0; i < npmem_ranges; i++) {
+                unsigned long addr, end;
+
+		/* Need to look for holes?
+		** parisc doesn't support CONFIG_DISCONTIGMEM (yet?)
+
+                if (pmem_holes[i].start_pfn ...)
+                        continue;
+		*/
+
+                end = addr = pmem_ranges[i].start_pfn;
+                end += pmem_ranges[i].pages;
+
+                if (pagenr >= addr && pagenr < end)
+                        return 1;
+        }
+
+        return 0;
+}
+
+I might be missing some shifting (PAGE_SHIFT) but that should be
+easy to figure out.
+
+hth,
+grant
+
+ps. I'm very excited to hear you are looking at this again! wohoo!
