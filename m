@@ -1,58 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2E90482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 10:50:11 -0600 (MDT)
-Message-ID: <B9957F974955D411829400D0B74FF27A04BF7875@xtor01.canada.hp.com>
-From: "CARSON,KEVIN (HP-Canada,ex1)" <kevin_carson@hp.com>
-To: 'Grant Grundler' <grundler@puffin.external.hp.com>,
-	robert.holmberg@idobath.com
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07343482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 12:42:36 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15SNQY-0005kB-00; Thu, 02 Aug 2001 19:42:34 +0100
+Date: Thu, 2 Aug 2001 19:42:34 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: LaMont Jones <lamont@hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Linux on R947X? 
-Date: Thu, 2 Aug 2001 12:50:08 -0400 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: [parisc-linux] libqthreads and hppa-linux
+Message-ID: <20010802194234.A20250@parcelfarce.linux.theplanet.co.uk>
+References: <20010802040435.818241872C@security.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010802040435.818241872C@security.hp.com>; from lamont@hp.com on Wed, Aug 01, 2001 at 10:04:34PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I believe we are talking about a 947RX which is the MPe equivalent of the
-G30.
+On Wed, Aug 01, 2001 at 10:04:34PM -0600, LaMont Jones wrote:
+> I started to play with getting the hppa assembly code in guile-core to work
+> on pa-linux, but ran into challenges with %farg[0-3], which aren't defined
+> by the assembler...
 
-This presents two problems.  The hardware is identical to the G30 but
-everything that I have read in the PA-Linux project is that support for
-these machines will be a long time coming, if ever.  The second problem is
-that the firmware is different for MPe than HP-UX.  Conversion from a 947RX
-to a G30 might be available but it wouldn't matter, one could probably pick
-up a used G30 or newer for less $$ than the conversion would cost.
+I already discussed this in detail with the maintainer; details of the
+discussion can be found in the BTS.  I'm disappointed you decided to
+waste your time on this without reading that discussion or talking to me.
 
-Kevin
+> I'm about to upload a source NMU of guile-core, which has qt/md/hppa*-linux.?
+> in it.  If someone wanted to take that the rest of the way, I'd be happy to
+> upload it...
 
-> -----Original Message-----
-> From: Grant Grundler [mailto:grundler@puffin.external.hp.com]
-> Sent: Thursday, August 02, 2001 9:25 AM
-> To: robert.holmberg@idobath.com
-> Cc: parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] Linux on R947X? 
-> 
-> 
-> robert.holmberg@idobath.com wrote:
-> > I have not found any indication that anyone
-> > has gotten Linux to work on a R947X at all,
-> ....
-> 
-> I've never heard of "R947X".
-> Do you mean HP 9000 R-470?
-> What does HPUX "model" or "uname -a" command say?
-> Is this machine already registered in the HW database?
-> 
-> grant
-> 
-> Grant Grundler
-> parisc-linux {PCI|IOMMU|SMP} hacker
-> +1.408.447.7253
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+No, don't do this, it's completely unnecessary.
+
+-- 
+Revolutions do not require corporate support.
