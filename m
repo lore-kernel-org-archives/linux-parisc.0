@@ -3,11 +3,11 @@ To: Jeremy Drake <jeremyd@apptechsys.com>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] 2.4.18 SMP instability 
 In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
-   of "Tue, 28 May 2002 12:45:18 PDT." <Pine.LNX.4.44.0205281239110.11012-100000@garibaldi.apptechsys.com>
-References: <Pine.LNX.4.44.0205281239110.11012-100000@garibaldi.apptechsys.com> 
-Date: Tue, 28 May 2002 22:39:16 -0600
+   of "Tue, 28 May 2002 14:56:03 PDT." <Pine.LNX.4.44.0205281436230.11012-100000@garibaldi.apptechsys.com>
+References: <Pine.LNX.4.44.0205281436230.11012-100000@garibaldi.apptechsys.com> 
+Date: Tue, 28 May 2002 22:56:09 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020529043916.A15D3482A@dsl2.external.hp.com>
+Message-Id: <20020529045609.7573F482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,28 +20,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Jeremy Drake wrote:
-> OK, I was doing an apt-get update, and the damn thing died at Reading 
-> Package Lists... 0%.  I'll see what's up with it when I can, do you want 
-> ser pim, ser pim toc, or just wait for a new kernel?
+> The LCD has a network, the HDD and an unfilled heart on the screen -- not 
+> changing.
 
-If the box HPMC'd, I'd like the "ser pim".
+Not an HPMC then.
 
-> Some things that occured to me about the hardware that may be influencing 
-> this.  The on-board USB on this box is broken (as in physically damaged).  
+> The console says apt-get (668): unaligned access to 0x403ce08c it 
+> ip=0x4005e4f7
 
-That's a good observation. Can you characterize how extensive is the
-physical damage?
+That's odd - i've never seen that from apt-get.
 
-I don't recall anything on the previous console output that suggests
-the USB interface driver isn't happy.
+> The TOC button had no effect.  Here's a ser pim from after I pulled the 
+> power and restarted it.  It doesn't look particularly helpful.
 
-> I have a pci usb card in there for typing on the graphics console, and 
-> when I installed it into the first slot recommended by the manual (2 I 
-> think) the box did some HPMC stuff when it tried to do selftests.  I moved 
-> it to slot 8 and everything seems happy with it.  Maybe something in the 
-> smp code is aggrevating these problems...
-
-Possible. Which manual are you referring to?
-one that came with the USB card or some HP PARISC manual?
+Again I didn't look up the arcane stuff.
+GR02 and IAOQ were both pointing at cpu_idle()
+CR23 was zero; no external interrupts pending
 
 grant
