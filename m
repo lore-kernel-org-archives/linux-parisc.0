@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 501184856
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 19:12:33 -0600 (MDT)
-Message-Id: <200208310112.g7V1CVbJ001369@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] 64 byte alignment
-To: randolph@tausq.org
-Date: Fri, 30 Aug 2002 21:12:31 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: will@misconception.org.uk, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020830235705.GD14634@tausq.org> from "Randolph Chung" at Aug 30, 2002 04:57:06 pm
+Received: from cmailg7.svr.pol.co.uk (cmailg7.svr.pol.co.uk [195.92.195.177])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA9A34829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 Aug 2002 12:58:03 -0600 (MDT)
+Received: from modem-58.draugluin.dialup.pol.co.uk ([62.136.158.58] helo=there)
+	by cmailg7.svr.pol.co.uk with smtp (Exim 3.35 #1)
+	id 17lDRZ-00055c-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 31 Aug 2002 19:58:01 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Will Newton <will@misconception.org.uk>
+To: parisc-linux@lists.parisc-linux.org
+Date: Sat, 31 Aug 2002 20:01:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-Id: <E17lDRZ-00055c-00.2002-08-31-19-58-01@cmailg7.svr.pol.co.uk>
+Subject: [parisc-linux] Debugging assembly
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,13 +25,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> another good way to do this is to write what you want in C, and tell gcc
-> to tell you what you want :-)
+I'm having trouble getting gas to output debugging information for an 
+assembly file. as -g gives a warning about -g being ambiguous, as --gdwarf2 
+reults in objdump saying "no recognized debugging information", and as 
+--gstabs results in stuff like this:
 
-GCC aligns its stacks to 64 and 128 byte boundaries for the 32 and 64
-bit ports, respectively.
+/* file file.S line x addr 0x0000000000000000 */
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Any ideas?
