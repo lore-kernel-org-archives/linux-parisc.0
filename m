@@ -1,29 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA28998
-	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Oct 1999 19:33:02 -0600
-Received: from milano.cup.hp.com (grundler@milano.cup.hp.com [15.16.124.11])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id SAA01022
-	for <parisc-linux@thepuffingroup.com>; Thu, 28 Oct 1999 18:33:49 -0700 (PDT)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id SAA06943 for parisc-linux@thepuffingroup.com; Thu, 28 Oct 1999 18:34:15 -0700 (PDT)
-Date: Thu, 28 Oct 1999 18:34:15 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <199910290134.SAA06943@milano.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA29524
+	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Oct 1999 22:50:51 -0600
+Received: from vodka.thepuffingroup.com (IDENT:adevries@vodka.thepuffingroup.com [192.168.1.1])
+	by vodka.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id AAA03780
+	for <parisc-linux@thepuffingroup.com>; Fri, 29 Oct 1999 00:57:54 -0400
+Date: Fri, 29 Oct 1999 00:57:54 -0400 (EDT)
+From: Alex deVries <adevries@thepuffingroup.com>
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=X-roman8
-Subject: [parisc-linux] serial.c and request_irq()
+Message-ID: <Pine.LNX.4.10.9910290054070.3734-100000@vodka.thepuffingroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] booting on PA2.0 machines
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-I've most of today trying to interrupts under LASI working
-and half of that was trying to understand drivers/char/serial.c.
-My basic problem is serial.c has four references to request_irq()
-and none of them are being invoked. I have a printk() in
-request_irq() which isn't showing up.
-Anyone understand why not?
+So I think we've determined that PA2.0 booting problems are related to the
+PDC_BTLB call which isn't implemented in 2.0 processors.  
 
-Otherwise I'll just add a bunch more printk's to serial.c and
-figure out why now...sure could use a debugger at this point.
+My thought would be to try such a call, and if it fails, then configure
+cache lines in a way specific to 2.0 processors.  Am I right?
 
-thanks,
-grant
+How should we be configuring this?
+
+We've now got some puffins and HP people with 2.0 boxes, so it'd be really
+nice to get these boxes booting.
+
+- Alex
+
+-- 
+Alex deVries <adevries@thepuffingroup.com>
+Vice President Engineering
+The Puffin Group
