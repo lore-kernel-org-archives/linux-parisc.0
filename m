@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C932482D
-	for <parisc-linux@parisc-linux.org>; Tue,  4 Dec 2001 00:18:03 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id lmqljaaa for parisc-linux@parisc-linux.org; Tue, 4 Dec 2001 00:12:50 -0700
-Date: Mon, 3 Dec 2001 23:17:59 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011203231759.K944@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 2.4.16-pa12 broken on c3000
+Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F30F7482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Dec 2001 00:22:41 -0700 (MST)
+Received: from there (fwr-01.mediadesign.de [212.185.42.202])
+	by post.webmailer.de (8.9.3/8.8.7) with SMTP id IAA19985
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 4 Dec 2001 08:18:30 +0100 (MET)
+Message-Id: <200112040718.IAA19985@post.webmailer.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Joerg Hartmann <j.hartmann@reinarts.de>
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 4 Dec 2001 08:22:39 +0100
+MIME-Version: 1.0
+Subject: [parisc-linux] 720 Installation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,19 +24,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Looks like -pa12 enabled some #if 0 code in arch/parisc/mm/init.c that
-is causing things to die. Both Grant and I saw ifconfig abort when
-the free_initmem code was enabled. Reverting back to 1.43 worked for
-me...
+Hi folks,
 
-Looks like Helge checked that in.. Helge, can you please take a look?
+you are realy great ! :-)
+With the pointer to the palinux-0.9.3-base-rc5.iso from Richard Hirst  i 
+got my 720 up and running . Even the graphics console is working now
+and the SCSI-Problem went away.
+Thanks !
 
-Soft power is very cool though! :-)
+There is only one little thingy left with the keyboard.
+But i dont call this a problem (now).
+Whenever i switch the keyboard layout to german, this keyboard stops 
+doing something useful to me.
+There is something happen when i press some keys - but nothing i expected.
+So i installed palinux with english keyboard and this works.
 
-thanks,
-randolph
+This was a big step to a fine new samba server ...
+
+regards
+			Jörg
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Joerg Hartmann
+j.hartmann@reinarts.de
