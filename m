@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mel-rto6.wanadoo.fr (smtp-out-6.wanadoo.fr [193.252.19.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18AB14834
-	for <parisc-linux@parisc-linux.org>; Sat, 13 Jul 2002 16:24:18 -0600 (MDT)
-Message-ID: <3D30A926.8020509@wanadoo.fr>
-Date: Sun, 14 Jul 2002 00:26:46 +0200
-From: eddantes@wanadoo.fr
-MIME-Version: 1.0
-To: Frank Alden Smith <falden@comcast.net>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] locales held back
-References: <NGBBJKHCMLEJELIEEHNOCEDPCAAA.falden@comcast.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: "Stephan Trajkoff" <stephan@itp.bg>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: Message from "Stephan Trajkoff" <stephan@itp.bg>
+   of "Sat, 13 Jul 2002 12:08:49 +0300." <20020713090726.99414482D@dsl2.external.hp.com>
+References: <20020713090726.99414482D@dsl2.external.hp.com> 
+Date: Sat, 13 Jul 2002 22:35:15 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020714043515.DEFB04832@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: mirror of parisc-linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,43 +19,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Frank Alden Smith wrote:
-> hi,
-> 
-> For the last two days I've been told by apt-get upgrade that the locales
-> package has been held back. Today I decided to try apt-get install
-> locales with this result:
-> 
-> puccini:~# apt-get install locales
-> Reading Package Lists... Done
-> Building Dependency Tree... Done
-> Some packages could not be installed. This may mean that you have
-> requested an impossible situation or if you are using the unstable
-> distribution that some required packages have not yet been created
-> or been moved out of Incoming.
-> 
-> Since you only requested a single operation it is extremely likely that
-> the package is simply not installable and a bug report against
-> that package should be filed.
-> The following information may help to resolve the situation:
-> 
-> Sorry, but the following packages have unmet dependencies:
->   locales: Depends: glibc-2.2.5-8 but it is not installable
-> E: Sorry, broken packages
-> 
-> Any, idea how I can resolve the problem, or must I just be patient until
-> the broken glibc-2.2.5-8 is fixed?
-> 
-> Take care,
-> frank
+"Stephan Trajkoff" wrote:
+> Hello man,
+> I want to make mirror of parisc-linux.org
+> my HP working stable and I want to make this main server in the=20
+> institute where I am working
+> www.bio21.bas.bg
+> I think to change AIX PowerPC with this HP 819/K210
+> What to make to do mirror of parisc-linux.org?
 
 
-That's a pretty common situation in Debian Sid (unstable), especially 
-between locales and glibc. I've seen it happen qui a lot of times, but 
-it's just harmless.
+(I typed the following in from memory; it's the same steps as
+accessing kernel source in the "linux" repository).
 
-This situation will end in a few days, just let time to package 
-maintainers to do their job and release correcly compiled and packaged 
-software.
+cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs login
+cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs co web
+cd web
+make ssi	(or make static)
 
-/Dantes
+See the web/Makefile for which ENV variables you can set to redirect
+where the stuff gets installed. Thibaut (ESIEE) can help you
+with this part.
+
+> I have BIND9
+> I want to have web address www.bg.parisc-linux.org.
+
+I hope someone on the list can help you with this.
+I don't maintain parisc-linux.org domain.
+
+> After 2-3 weeks I want to make mirror of your FTP
+
+ok.
+Can someone tell me if rsync is enabled for ftp.parisc-linux.org:~ftp ?
+I thought rsync of cvs.p-l.o was disabled for a while.
+
+> I have 2mbit DSL modem with 256kpbs garanteed speed to world with=20
+> burst 2mbit night and weekends
+
+Cool!
+
+grant
