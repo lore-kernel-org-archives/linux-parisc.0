@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 688B3482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 May 2002 09:47:58 -0600 (MDT)
+Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BED6D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 May 2002 12:19:49 -0600 (MDT)
+Message-ID: <3CED32CC.2030500@freebel.net>
+Date: Thu, 23 May 2002 18:19:56 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
 To: Armijn Hemel <armijn@nl.linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installing on b2600 fails 
-In-Reply-To: Your message of "Thu, 23 May 2002 15:20:53 +0200."
-             <20020523152053.I11717@humbolt.geo.uu.nl>
-References: <Pine.A41.4.44.0205211630470.17882-100000@stalin.acc.umu.se> <maswan@acc.umu.se> <20020521154508.99536482A@dsl2.external.hp.com> <20020521175328.A2442@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020521180553.5470F482A@dsl2.external.hp.com>  <20020523152053.I11717@humbolt.geo.uu.nl> 
-Date: Thu, 23 May 2002 09:47:52 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E17Auoi-0001eA-00@paul.bame>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] installing on b2600 fails
+References: <20020517130527.J32014@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020517152054.4F2CE482A@dsl2.external.hp.com> <20020517172600.I29738@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020517154923.47C7E4838@dsl2.external.hp.com> <20020521155220.A28518@humbolt.geo.uu.nl> <20020523063531.GH3471@sleepie.demon.co.uk> <20020523110227.B10015@humbolt.geo.uu.nl>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +23,59 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Ehr...how exactly should I do that? I know the first few steps (burn
-> lifimage somewhere on a CD, turn on machine, insert CD), but how
-> should I proceed? I looked in the FAQ, but the answer (nor the question)
-> is there. So, basically my question is: "How do I boot a lifimage from
-> a CD?"
 
-I believe there's a booting howto on the web site.
+Armijn Hemel wrote:
+> On Thu, May 23, 2002 at 07:35:31AM +0100, Richard Hirst wrote:
+> 
+> 
+>>>>Can you be more specific (and cc the mailing list) where
+>>>>you got the ISO from (ie file name)?
+>>>
+>>Since boot-floppies 3.0.22 (released 3rd April), at least, hppa has used
+>>a 2.4.17-pa32 kernel.  Final woody b-f will use that same kernel, so
+>>unless you have a very old ISO, I wouldn't expect a newer one to help.
+>>
+>>If it turns out a more recent kernel is needed for some machines, I
+>>could do a special b-f build and ISO.
+> 
+> 
+> Well, I tried the ISO that Mattias pointed me at. The machine boots, kernel
+> loads, and the Debian installer starts, but, ehr, the keyboard didn't work,
+> so I couldn't continue.
+> 
+> I suspect that there's some driver missing for the keyboard (it's a USB
+> keyboard).
+> 
+> armijn
+> 
+AFAIK you should prefer to install from a serial console
+(anyway, i am not sure that usb keyboard and mouse are already supported?).
+As serial console you can use any HP serial console if you have one at 
+your disposal or better (you can log the output) a linux box using 
+minicom and link the two boxes with a null-modem serial cable.
+Do not also forget to disconnect the usb kbd and mouse from your b2600 
+so that PDC will switch to serial port automaticaly.
 
-The short answer is to interrupt the boot firmware by pressing
-any key in 10 seconds like it says.  Then with the CD in place,
-type 'search' and wait.  It should report at least two bootable
-devices similar to this:
+I do something like this with bootp/tftp to install my b2000 last week. 
+I rebuild a lifimage (could be with a xcompiler fo i386) with the one of 
+the debian boot-floppy for hppa, palo and the last 2.4.18-pa24 kernel 
+which i build localy. (I was not absolutly sure that 2.4.17-pa32 already 
+supported ide cdrom)
 
-    temporary
-    nickname	bootable-device
+Never the less the install procedure worked well untill I wanted to 
+install the basic system because the check failled to found pppoe package?
 
-	P0	scsi.6.0
-	P1	ide
+Later I also encounter a well know loop problem to install kernel modules.
 
-Then you type 'boot p1' or 'boot ide' (or maybe it's ide.0 I forget).
+You should also encounter another problem because the release of palo 
+installed with CD-0.9.3 do not yet support new scsi disk of 9Gb and more.
 
-The firmware has a reasonable set of on-line help built in -- that's
-how I learned how to use it.
+Definitly I do believe that a new cd-base.iso would be the best to help 
+you to install a basic system to your project. (for me it was 'easiest' 
+: once I booted with the lifimage,  I partioned my disk and 'just' had 
+to copy my b180 to my b2000 with nfs)
 
-	-P
+Good luck,
+	Joel
+
+PS: Richard thanks in advance.
