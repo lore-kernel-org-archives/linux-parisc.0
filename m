@@ -1,17 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Proposal for implementing IRQ affinity
-Date: Tue, 31 Aug 2004 12:34:15 -0600
-Message-ID: <20040831183415.GG20353@colo.lackof.org>
-References: <1093923097.3870.18.camel@mulgrave>
-	<20040831171421.GC20353@colo.lackof.org>
-	<1093974552.3643.22.camel@mulgrave>
+From: Jochen Friedrich <jochen@scram.de>
+Subject: [parisc-linux] 53c700.c problems with tags?
+Date: Tue, 31 Aug 2004 12:39:12 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0408311232240.2373@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
+To: parisc <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1093974552.3643.22.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,88 +17,120 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Aug 31, 2004 at 01:49:07PM -0400, James Bottomley wrote:
-> > Thibaut and I started on this last year but didn't get to finish it.
-> > The net result is we have to dump the struct irq_region everywhere 
-> > and replace it with a global IRQ array.
-> 
-> Yes, I looked at your code.
+Hi,
 
-Ah good.
+when doing heavy io on my 715/64, i sometimes get the following panic:
 
-> what I'd like to do is slightly different
-> because I would have a static array of the actual CPU interrupts.
+scsi0 (0:0) Target is suffering from tag starvation.
 
-Ok. Why?
-I'd really like one method to convert GSI to local interrupt numbers.
-Doing away with local translations and directly indexing into a global
-array seems the most obvious to me.
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 f2 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x00 00 00 00 00 00
+scsi0: Bus Reset detected, executing command 00000000, slot 00000000, dsp
+00358] failing command because of reset, slot 00008788, cmnd 103c3000
+ failing command because of reset, slot 000088bc, cmnd 103c3200
+ failing command because of reset, slot 000089f0, cmnd 103c4800
+ failing command because of reset, slot 00008d8c, cmnd 103c3a00
+ failing command because of reset, slot 00008ff4, cmnd 103c3a00
+ failing command because of reset, slot 0000925c, cmnd 103c3400
+ failing command because of reset, slot 00009390, cmnd 103c4c00
+ failing command because of reset, slot 00009994, cmnd 103c4e00
+ failing command because of reset, slot 00009bfc, cmnd 100f8c00
+ failing command because of reset, slot 00009f98, cmnd 103c4600
+ failing command because of reset, slot 0000a334, cmnd 103c4200
+ failing command because of reset, slot 0000a468, cmnd 103c4a00
+ failing command because of reset, slot 0000a6d0, cmnd 103c3800
+ failing command because of reset, slot 0000a938, cmnd 103c4400
+ failing command because of reset, slot 0000aa6c, cmnd 100f8e00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 4a 00 00 08 00
+scsi0: (0:0) Synchronous at offset 8, period 100ns
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 9a 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 65 ca 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 01 4c c0 00 00 10 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 ca 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 7a 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 3a 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 8a 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 aa 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 e2 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 78 e2 00 00 20 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 01 4c 98 00 00 20 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 79 0a 00 00 08 00
+scsi0 (0:0) New error handler wants to abort command
+        0x28 00 00 18 66 2a 00 00 08 00
+scsi0 (0:0) New error handler wants device reset
+        0x28 00 00 18 66 f2 00 00 08 00
+scsi0 (0:0) New error handler wants BUS reset, cmd 103c3a00
+        0x28 00 00 18 66 f2 00 00 08 00
+scsi0: Bus Reset detected, executing command 00000000, slot 00000000, dsp
+00358]scsi0: (0:0) Synchronous at offset 8, period 100ns
+SLOTS FULL, but count is 8, should be 64
 
-> > AFAIK, this is only true for HP V-class.
-> > And only because of some deficiency in the EPAC (CPU to X-bar chip?).
-> > It's not true for every other parisc platform I'm aware of.
-> 
-> Actually, I meant the way the dino works: My dino device interrupts, the
-> dino hits the cpu interrupt, but the interrupt has to be routed back
-> into generic dino code to find out who actually interrupted and then
-> call their interrupt routine.
+Stack Dump:
+ 10370980:  0004ff0e 101ba834 10370900 10264aa0
+ 10370970:  00000000 101ba548 103b8a00 103b8a68
+ 10370960:  00000010 00000020 1010e2c8 0000001f
+ 10370950:  90080000 ffffffba 00000000 00000002
+ 10370940:  f000b858 f0000704 00000000 00000001
+ 10370930:  102f6660 100fa474 100fa49c 1027637c
 
-Yes , that's correct. Sorry, I wasn't clear. I was quibbling over this bit:
-| not all parisc busses allow
-| an arbitrary device to send and interrupt to a CPU directly.
+Kernel addresses on the stack:
+ [<101ba834>]  [<101ba548>]  [<1010e2c8>]  [<101b319c>]
+ [<101ab4a0>]  [<101ac228>]  [<101b3b80>]  [<101204ac>]
+ [<101b319c>]  [<1013df08>]  [<101bb920>]  [<10118604>]
+ [<1013f3d4>]  [<101ac228>]  [<101abf70>]  [<1014e684>]
+ [<101ba834>]  [<101205fc>]  [<101204ac>]  [<101b30e4>]
+ [<101201f4>]  [<101207c4>]  [<10106c4c>]  [<10106cf4>]
+ [<101352bc>]  [<101628d4>]  [<101355b8>]  [<10162b5c>]
+ [<10121580>]  [<10162b5c>]  [<1012071c>]  [<1012150c>]
+ [<10129124>]  [<1011f4bc>]
 
-The "AFAIK" comment I wrote above really only applies to this statment.
-MSI capable PCI devices can master it's own interrupt transaction
-below dino.  That does not mean *every* PCI is MSI capable.
-In contrast, every GSC device *must* master it's TBI.
-And LASI sub devices are neither.
+Kernel Fault: Code=26 regs=10370980 (Addr=00000114)
 
-Does that make more sense?
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001110 Not tainted
+r00-03  00000000 10264810 101ba548 101abdb4
+r04-07  10375c00 103b9e00 10311810 00000000
+r08-11  103b9eb8 1027637c 100fa49c 100fa474
+r12-15  102f6660 00000001 00000000 f0000704
+r16-19  f000b858 00000002 00000000 00000000
+r20-23  00000001 0000001f 102d13a0 102f6010
+r24-27  00000001 00000001 00000003 10254010
+r28-31  00000000 ffffe531 10370980 1011b954
+sr0-3   00000000 00000129 00000000 00000129
+sr4-7   00000000 00000000 00000000 00000000
 
-> > SAPIC is a more complicated since it involves multiple parents.
-> > But the same idea applies: each interrupt source was one entry
-> > in the "region". 
-> 
-> Yes, I was oversimplifying.  Basically the abstraction is unnecessary
-> for the SAPIC, which is why it looks slightly odd there.
+IASQ: 00000000 00000000 IAOQ: 101ba548 101ba54c
+ IIR: 6b850228    ISR: 00000000  IOR: 00000114
+ CPU:        0   CR30: 10370000 CR31: 102e0000
+ ORIG_R28: 00000002
 
-But we still want dino/PCI to work. So we have to replace the
-existing abstraction with another one...
+I tried decreasing the number of tags in 53c700.h, but that made the
+problem even worse. However, increasing the number to an insane 128 fixed
+the problem for me (and the number of active tags really goes up to 80
+while doing heavy io and back to 0 at the end, so i don't blame the
+devices for the problem). For now i guess there might be something fishy
+with the "starving tag" detection and the attempt to "fix" the situation.
 
-> 
-> > I'd rather see one global array (at least 256 entries) with the CPU
-> > (and similar devices) getting a fixed number of consecutive entries.
-> > We should probably reserve the first 16 entries for EISA/ISA support
-> > like we did before.
-> 
-> Well, I'd really rather see an IRQ hierarchy.
+Kernel: 2.4.26-pa7, but any older kernel (tested since 2.4.21) shows the
+exact same behaviour.
 
-A single global array can implement a hierarchy as well.
-Entries just contain indexes into other parts of the array.
-
->   Currently our irq list is
-> a total fiction ... if we display what we actually have (namely the 32
-> or 64 interrupt lines with everything else hanging off them) it's more
-> intuitively obvious what's going on.
-
-*nod*
-
-> > It's alot of work. I think that's why thibaut and I ran out of steam
-> > before we finished it. I expect much of the work we did before would
-> > still apply.
-> > 
-> > Thibaut, you still have a diff or source laying around from that effort?
-> > I might but can't find it right now.
-> 
-> Well, moving to a single 32/64 global array and treating the older
-> busses as special cases hopefully simplifies this ... I 'll see though
-> as I get into it.
-
-Ok. Pushing everything into a global array would make the /proc/irq support
-alot easier IMHO.
-
-thanks,
-grant
+Thanks,
+Jochen
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
