@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
-	by dsl2.external.hp.com (Postfix) with SMTP id DBF00482D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Apr 2003 11:49:24 -0600 (MDT)
-Date: 20 Apr 2003 17:49:24 -0000
-Message-ID: <20030420174924.30228.qmail@sources.redhat.com>
-To: debian-gcc@lists.debian.org, gcc-bugs@gcc.gnu.org,
-	gcc-prs@gcc.gnu.org, nathan@gcc.gnu.org, nobody@gcc.gnu.org,
-	parisc-linux@lists.parisc-linux.org, tausq@debian.org
-From: nathan@gcc.gnu.org
-Reply-To: nathan@gcc.gnu.org, debian-gcc@lists.debian.org,
-	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nathan@gcc.gnu.org,
-	nobody@gcc.gnu.org, parisc-linux@lists.parisc-linux.org,
-	tausq@debian.org, gcc-gnats@gcc.gnu.org
-Subject: [parisc-linux] Re: c++/10438: [3.3 regression] [hppa] Segfault when building jade
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE284482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Apr 2003 01:24:06 -0600 (MDT)
+Date: Tue, 22 Apr 2003 00:19:20 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030422071920.GO25257@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] RFC: remove/restart bugs.parisc-linux.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,17 +21,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Synopsis: [3.3 regression] [hppa] Segfault when building jade
+Hi all,
 
-Responsible-Changed-From-To: unassigned->nathan
-Responsible-Changed-By: nathan
-Responsible-Changed-When: Sun Apr 20 17:49:23 2003
-Responsible-Changed-Why:
-    fixed
-State-Changed-From-To: open->closed
-State-Changed-By: nathan
-State-Changed-When: Sun Apr 20 17:49:23 2003
-State-Changed-Why:
-    dup of 10405
+We have a bts setup at bugs.parisc-linux.org, but it hasn't been touched
+for a very long time, and the only purpose it seems to serve nowadays is
+to archive spam. Should we just remove it? There are a lot of items
+there that remain "TODO" items... but perhaps a better way to keep
+track of those is to put a todo list in cvs (we already have one for the
+kernel... we can start one for userspace stuff too), and we can link to
+it via viewcvs from the web page.
 
-http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10438
+Any opinions?
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
