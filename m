@@ -1,63 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4BCEA4A24
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 10:38:47 -0600 (MDT)
-Date: Sat, 29 Sep 2001 12:38:32 -0400 (EDT)
-From: <nick@snowman.net>
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: Betr.: [parisc-linux] HP C180
-In-Reply-To: <20010929183349.B25897@dogbert.localdomain>
-Message-ID: <Pine.LNX.4.21.0109291237460.11237-100000@ns>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from solo.franken.de (lt200001.hrz.uni-oldenburg.de [134.106.156.150])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EB00148B4
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 11:09:23 -0600 (MDT)
+Received: (from tsbogend@localhost)
+	by solo.franken.de (8.11.6/8.11.6) id f8TH8lI13717
+	for parisc-linux@lists.parisc-linux.org; Sat, 29 Sep 2001 19:08:47 +0200
+Date: Sat, 29 Sep 2001 19:08:47 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010929190847.A13532@solo.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Comments to 2.4.9-pa28
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have been rolling my own kernels, however I've been useing nfsroot with
-one of the prebuilt tarballs.  Where can I find the latest debian hppa
-bootdisks?  ftp.debian.org?  (I havn't noticed them in my debian mirror).
-	Nick
+Hi,
 
-On Sat, 29 Sep 2001, Albert Strasheim wrote:
+during my stay here in Oldenburg I've got a really nice looking X11 desktop
+on a B180 workstation (even colors are looking sane now). While I was
+hunting for stifb bugs, the real hard bugs have been in shm handling. The
+first one was a problem with flushing the shm page to memory before the
+user process uses it. The more annoying one was a mismatch between
+shmid_ds from kernel and glibc. Because of that the X server thought it
+got passed zero sized shared memory segments from the X clients and
+refused to use it. That was the reason for getting really strange pictures,
+when using wmaker or enlightenment, which both use MIT-SHM extension very
+much. I've changed the kernel representation of shmid_ds, but we could also
+change the glibc one. But this would force a recompilation of all programs,
+which are using shmctl (.., IPC_STAT, ..).
 
-> Hello,
-> 
-> Make your own:
-> 
->  palo -f /dev/null -k vmlinux -r root.bin -s lifimage [-b iplboot] \
->         -c "0/linux HOME=/ root=/dev/ram initrd=0/ramdisk"
-> 
-> where vmlinux is the a kernel you've compiled from CVS (possibly using
-> the cross-compiler) and root.bin is the latest Debian hppa bootdisk.
-> Netboot the resulting lifimage and off you go! :-)
-> 
-> Regards,
-> 
-> Albert
-> 
-> On Sat, 29 Sep 2001, nick@snowman.net wrote:
-> 
-> > Ok, can you point me to a totally current root image?
-> > 	Nick
-> > 
-> > On Sat, 29 Sep 2001, Richard Hirst wrote:
-> > 
-> > > On Wed, Sep 26, 2001 at 08:56:08AM +0200, Jurriaan Kalkman wrote:
-> > > > >My c180 is now happily booting (current CVS kernel), however whenever I
-> > > > >try to ls some dirs (no all, this example is from /usr/bin) I get errors
-> > > > >along these lines
-> > > > >ls: memory exhausted
-> > > 
-> > > I had this with 2.4.9, turned out I'd booted a root fs with old libc6
-> > > installed.  When I rebooted using a current libc6 the problem went away.
-> > > 
-> > > Richard
-> > > 
-> > 
-> > 
-> > 
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+The change in pgalloc.h isn't the best one, but it served me best for
+the moment. The changes in stifb.c fixes the blank function (this caused
+the white is blue color problem under X) and added VISUALIZE-EG support
+(I'm treating them as a normal artist graphic, which works pretty well).
+
+Greetings from Oldenburg,
+Thomas.
+
+PS: If someone wants a testcase, which shows the shm cache flush bug,
+either use mm_test from libmm or mail me, I've written a small one.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
