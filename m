@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from delenn.fl.net.au (int-mail.syd.fl.net.au [202.181.0.28])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84D8348AF
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 13:37:54 -0700 (MST)
-From: "Duraid Madina" <duraid@fl.net.au>
-To: <nick@snowman.net>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] 'foreign' PCI cards in an rp2430
-Date: Sat, 9 Mar 2002 07:37:53 +1100
-Message-ID: <000201c1c6e1$1f9ae270$022a17ac@simplex>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <Pine.LNX.4.21.0203081234300.20837-100000@ns>
+Received: from sphere.math.ucdavis.edu (sphere.math.ucdavis.edu [169.237.99.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C9FCF483F
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 15:13:13 -0700 (MST)
+Date: Fri, 8 Mar 2002 14:13:12 -0800
+From: Bill Broadley <bill@math.ucdavis.edu>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020308141312.B6207@sphere.math.ucdavis.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] New Cheap HP RP2430
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,10 +20,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Erm.  Whare are you going to put the disks for the 3ware?
+Hey, just heard about the new HP RP2430:
+http://www.hp.com/products1/servers/rackoptimized/rp2400/specifications.html 
 
-On top of the box,
-unshielded disks gather dust.
-I hear them rattle.
+Part number is A6889A:
+	650 Mhz PA-8700 with 2.25 MB cache
+	2 64 bit/66 Mhz
+	128 MB ram 1.9 GB/sec, 2GB max (claimed peak)
+	2U
+	Ultra scsi and Ultra2 scsi
+	100baseT and 10BaseT (2 ethernet I believe)
+	2 serial (inc serial console)
 
-	Duraid
+$1095!!!!!!
+
+It has no disk, but HP says they will ship it without.  The disk prices
+are unfortunately insane.
+
+-- 
+Bill Broadley
+Mathematics/Institute of Theoretical Dynamics
+UC Davis
