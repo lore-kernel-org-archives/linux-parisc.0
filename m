@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC9A8482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 16:04:05 -0600 (MDT)
-Date: Mon, 9 Sep 2002 15:04:49 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Jochen Friedrich <jochen@scram.de>
-Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] definition of EWOULDBLOCK in /usr/include/asm/errno.h
-Message-ID: <20020909220448.GP17893@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.LNX.4.44.0209092343150.2394-100000@alpha.bocc.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0209092343150.2394-100000@alpha.bocc.de>
+Received: from imailg1.svr.pol.co.uk (imailg1.svr.pol.co.uk [195.92.195.179])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C22A9482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 17:35:07 -0600 (MDT)
+Received: from modem-115.engineer-fish.dialup.pol.co.uk ([62.137.7.115] helo=there)
+	by imailg1.svr.pol.co.uk with smtp (Exim 3.35 #1)
+	id 17oY3b-0004rg-00
+	for parisc-linux@lists.parisc-linux.org; Tue, 10 Sep 2002 00:35:05 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Will Newton <will@misconception.org.uk>
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 10 Sep 2002 00:36:17 +0100
+MIME-Version: 1.0
+Message-Id: <E17oY3b-0004rg-00.2002-09-10-00-35-05@imailg1.svr.pol.co.uk>
+Subject: [parisc-linux] C++ crash on hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,43 +25,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> because of the unusual definition of EWOULDBLOCK, zebra currently doesn't
-> work (zebra checks for EWOULDBLOCK in zebra/rt_netlink.c and will loop if
-> it gets EAGAIN instead and both are not the same).
-> 
-> I'm not sure what's the correct fix for this, change errno.h to match the
-> definition of the other archs or change zebra to check for EAGAIN as
-> well...
+(This is a repost of a message to debian-hppa, sorry if I hit anyone with it 
+twice.)
 
-I assume you are refering to this bit of code:
+I have a package that works perfectly on i386 but crashes on hppa. The code
+is not anything that would be directly affected by the underlying hardware -
+it makes no assumptions based on endianess or word size - and the crash
+occurs because of a free of a null pointer inside the STL. I have attached
+the backtrace. I'm really quite stumped by this one, so any help would be
+greatly appreciated.
 
-      status = recvmsg (nl->sock, &msg, 0);
+(Maybe something to do with static init order in dynamic libs?)
 
-      if (status < 0)
-        {
-          if (errno == EINTR)
-            continue;
-          if (errno == EWOULDBLOCK)
-            break;
-          zlog (NULL, LOG_ERR, "%s recvmsg overrun", nl->name);
-          continue;
-        }
+(gdb) bt
+#0  0x4071210c in __libc_free (mem=0x0) at malloc.c:3142
+#1  0x0002e95c in std::__malloc_alloc_template<0>::deallocate(void*,
+ unsigned) ()
+#2  0x0002de54 in std::__default_alloc_template<true, 0>::deallocate(void*,
+unsigned) ()
+#3  0x0002cd40 in std::allocator<char>::deallocate(char*, unsigned) ()
+#4  0x0002aa20 in std::string::_Rep::_M_destroy(std::allocator<char> const&)
+()
+#5  0x00028230 in std::string::_Rep::_M_dispose(std::allocator<char> const&)
+()
+#6  0x00028a58 in std::string::assign(std::string const&) ()
+#7  0x4019e93c in Aqsis::CqOptions::InitialiseDefaultOptions() (
+    this=0x402c2a9c) at /usr/include/c++/3.2/bits/basic_string.h:338
+#8  0x4019d9dc in CqOptions (this=0x402c2a9c) at options.cpp:193
+#9  0x401e81c0 in __static_initialization_and_destruction_0
+ (__initialize_p=1, __priority=65535) at renderer.cpp:50
+#10 0x402061ec in _GLOBAL__I__ZN5Aqsis13pCurrRendererE ()
+    at /usr/include/c++/3.2/bits/stl_iterator.h:622
+#11 0x40272be8 in __do_global_ctors_aux () from /usr/lib/libaqsis.so.0
+#12 0x4015dc4c in _init () from /usr/lib/libaqsis.so.0
+#13 0x4000cf8c in call_init () from /lib/ld.so.1
+#14 0x4000d0fc in _dl_init () from /lib/ld.so.1
+#15 0x400023dc in _dl_start_user () from /lib/ld.so.1
+(gdb)
 
-On some SysV systems EAGAIN != EWOULDBLOCK. I think we inherited the
-errno definitions from HPUX...
+Thanks,
 
-glibc's documentation says:
-
-Portability Note: In many older Unix systems, this condition was indicated by EWOULDBLOCK, which was a distinct error code different from EAGAIN. To make your program portable, you should check for both codes and treat them the same. 
-
-sounds like good advice to me.. :-)
-
-it does say, however, that for glibc EWOULDBLOCK and EAGAIN should have
-the same value though, so i guess ours is wrong... i wonder if we'll
-break things if we changed it.
-
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+-------------------------------------------------------
