@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3040D482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Apr 2003 07:51:29 -0600 (MDT)
-Message-ID: <3EA54BD5.90100@tiscali.be>
-Date: Tue, 22 Apr 2003 14:04:05 +0000
-From: Joel Soete <joel.soete@tiscali.be>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Subject: [parisc-linux] How to put patch 2.4.21 available in ftp.p-l.o?
+Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD8E4482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Apr 2003 10:04:22 -0600 (MDT)
+Date: Tue, 22 Apr 2003 12:05:09 -0400
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] RFC: remove/restart bugs.parisc-linux.org
+Message-ID: <20030422160509.GG26986@systemhalted>
+References: <20030422071920.GO25257@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030422071920.GO25257@tausq.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,16 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+> We have a bts setup at bugs.parisc-linux.org, but it hasn't been touched
+> for a very long time, and the only purpose it seems to serve nowadays is
+> to archive spam. Should we just remove it? There are a lot of items
+> there that remain "TODO" items... but perhaps a better way to keep
+> track of those is to put a todo list in cvs (we already have one for the
+> kernel... we can start one for userspace stuff too), and we can link to
+> it via viewcvs from the web page.
 
-As mentioned in other mails, I would like to make my patch 
-2.4.21-pre7-pa3x available for all for revision.
-(I already test it with success in 32bits and 64bits on a b2k compiled 
-with gcc-3.0 but pb with gcc-3.2).
+I'm all for:
 
-The best place would be in ftp.p-l.o (about 160k uncompresed so not very 
-helpfull to insert in a mail) but I just have anymous access. So can 
-somebody help me.
+a. Removing the BTS.
+b. Adding userspace cvs-based TODO list.
 
-Thanks, 
-    Joel
+c.
