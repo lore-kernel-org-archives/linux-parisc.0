@@ -1,42 +1,29 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Wed, 17 Feb 1999 17:47:18 -0800 (PST)
-From: Kevin Vajk <kvajk@ricochet.net>
+From: Wim Coekaerts <wcoekaer@aldebaran.wimmekes.net>
+Message-Id: <199902180223.SAA02882@aldebaran.wimmekes.net>
 To: hppa-linux@puffingroup.com
-Subject: Re: [hppa-linux] bootstrap test
-In-Reply-To: <199902172309.RAA27695@equator.com>
-Message-ID: <Pine.LNX.4.04.9902171726270.912-100000@barbelo.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Resent-Message-ID: <"O_nCc2.0.Es6.M7tos"@burrow.puffingroup.com>
+Date: Wed, 17 Feb 1999 18:23:30 -0800 (PST)
+Content-Type: text
+Subject: [hppa-linux] NIC
+Resent-Message-ID: <"F0aqv1.0.Qu6.Setos"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+Ok, I know this is not totally relevant to linux itself but I need to get my 735/99 up and running before I can be of help :)
 
-It tried it on a 9000/816/E35 (WB Wilbur).  I  couldn't get it to
-boot from the tape (using a 2k blocksize), but it worked fine from
-an unused disk.
+Since a crash last saturday, I cannot get my network up anymore, when I do 
+lanscan it gives me 
 
-- Kevin Vajk
-  <kvajk@ricochet.net>
+path 2.0.2  address  0x080009629AC0 lu 0 State DOWN 
+NameUnit lan0 State DOWN ID4 method ETHER number 52
 
+ioscan recognizes it, at boot it detects the hardware device but whenever I do ifconfig 10.0.0.5 netmask 255.255.255.0 up it comes back with no such device
 
-HARD Booted.
-***********************************************************
+I have no clue what to do anymore, I tried different transceivers..nada... the lights on the transceiver are on so that seems to be ok.
 
-HPPA/Linux Bootstrap Version 0.1
-[jason@sathanas Tue Feb 16 16:48:50 CST 1999]
-by Jason Eckhardt
+any hints ? Without that I will have to move a scsi disk out and put the mklinux image on it and stuff  whihc I don'mt mind doing but I rather have my network up and go from there
 
-CPU: ? (00000000)
-
-Loading kernel...(not yet implemented)
-
-It is now safe to reboot.
-Testing mprintf (d) 123 = 123
-Testing mprintf (s) jason = jason
-Testing mprintf (c) A = A
-Testing mprintf (x) 01020304 = 01020304
-
+thanks
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
