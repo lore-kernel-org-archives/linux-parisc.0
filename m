@@ -1,37 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA14452
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 01:16:19 -0700
-Date: Mon, 15 Nov 1999 09:19:05 +0100
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA14567
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 01:23:01 -0700
+Date: Mon, 15 Nov 1999 09:25:49 +0100
 From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Alex deVries <adevries@thepuffingroup.com>
-Cc: parisc-linux@thepuffingroup.com
+To: Stan Sieler <sieler@allegro.com>
+Cc: Alex deVries <adevries@thepuffingroup.com>,
+        parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] depi?
-Message-Id: <19991115091905.F30917@mathe.stud.uni-erlangen.de>
-References: <Pine.LNX.4.10.9911150307300.7996-100000@vodka.thepuffingroup.com>
+Message-Id: <19991115092549.G30917@mathe.stud.uni-erlangen.de>
+References: <Pine.LNX.4.10.9911150307300.7996-100000@vodka.thepuffingroup.com> <199911150736.XAA14959@opus.allegro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.9911150307300.7996-100000@vodka.thepuffingroup.com>
+In-Reply-To: <199911150736.XAA14959@opus.allegro.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
->         ; Get ready for phys->virt transition
->         ; First order of business is to adjust some pointers
->         depi            3,1,2,%arg0     ; phys->virt(free mem ptr)
->         depi            3,1,2, %sp      ; phys->virt SP
->         depi            3,1,2, %dp      ; p2v DP
+> >         ; First order of business is to adjust some pointers
+> >         depi            3,1,2,%arg0     ; phys->virt(free mem ptr)
+> >         depi            3,1,2, %sp      ; phys->virt SP
+> >         depi            3,1,2, %dp      ; p2v DP
 > 
-> in head.S?
+> DEPI is "Deposite Immediate".  depi 3,1,2, %arg0
+> drops the value 3 into the upper 2 bits of register arg0.
 > 
-> I don't have a 'depi' in the index of my PA 2.0 assembler book.  I have a
-> depwi and a depdi though.
+> IIRC, it's:  DEPI immediate_value, right_most_bit#, #bits, target_register
+> 
+> But...strange code.  It's setting the upper 2 bits of R26, R30, and R27.
 
-This should be equivalent to what depwi is in PA 2.0 (some mnemonics changed).
+The way physical memory is mapped to kernel virtual memory is (with exceptions):
 
-More importantly, those instructions shouldn't be here.  There are standard
-macros tophys and tovirt defined to do just the right thing to translate
-logical addresses from/to physical ones.
+physical address P is mapped at virtual address P + PAGE_OFFSET.
 
-Someone should go around and clean it up.  If your file uses depi to do what
-tophys / tovirt should do, you have 24 hours to clean it up.  If you don't,
-I'll clean up the rest of your file as well.  You have been warned.
+PAGE_OFFSET currently is 0xc000 0000 which was a bad value and will be changed
+to either 0x8000 0000 or 0xe000 0000 in the near future.  This is one of the
+reasons you should use tophys and tovirt instead of doing the depi by hand.
+
+Probably most of the depis are my code and I think there are several places
+where I am still hard-coding 0xc000 0000 as PAGE_OFFSET explicitly.  If you
+find a place you think depends on a certain PAGE_OFFSET after I cleaned up
+the code I can find, please tell us.
 
 	Philipp Rumpf
