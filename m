@@ -1,41 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA29218
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Nov 1999 08:58:56 -0700
-From: dkennedy@thepuffingroup.com
-Date: Tue, 30 Nov 1999 12:08:56 -0500 (EST)
-To: Carl Johnson <cjs@mcn.net>
-cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Machine Additions?
-In-Reply-To: <3841651A.F66C387B@mcn.net>
-Message-ID: <Pine.LNX.4.10.9911301152070.28574-100000@grasshopper.thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA30824
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Nov 1999 11:15:46 -0700
+Message-Id: <199911301817.NAA02676@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Progress - Update
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Tue, 30 Nov 1999 13:17:05 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de, alan@lxorguk.ukuu.org.uk,
+        sieler@allegro.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <199911252347.SAA01418@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 25, 99 06:47:19 pm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 28 Nov 1999, Carl Johnson wrote:
-
-> Earlier I saw a message posted about adding machines and their
-> descriptions to the puffin site, so I went to do that and 
-> when I follow the instructions, etc, etc the addmachine.php3
-> kicks out an error, which is embedded and does not show up,
-> of:
+> I built another kernel without IPC.  In this one, the kernel panic'd
+> in get_unused_buffer_head.  This one occured because unused_list was
+> zero.  Again, it looks like there is an initialization problem somewhere.
+> I think others have reported this problem in the past.  It looks like:
 > 
-> 	The IOSCAN output is not in the correct format. Please try
-> 	that again. Exiting a  that is not open
-> 
-> anyhow I am including all the needed info and if someone can finger
-> out my problem please tell me:  __TIA__
+> bad address 0000001c (code 15)
+> Kernel panic: bad address
 
-Ok, I added the machine.
+I have found the cause of this panic.  The problem occurs when xchg
+is called with a pointer which is not aligned on a 16 byte boundary.
+The ldcws semaphore instruction is only defined when the address is
+aligned on a 16 byte boundary.  It is used when the value to exchange
+is 0.
 
-It appears my script wasn't working with blank lines correctly.  I
-have made a small fix to allow blank lines.  My script uses a _VERY_
-rudamentary check to see if each line of the IOSCAN output is correct.
-If it finds one line that isn't correct is complains.  
+The macro xchg is used in quite a few places in what is nominally
+machine independent code.  Should we add __attribute__ ((aligned (16))
+to the definitions of all variables which exchange with 0?  Or, should
+we look for another solution?
 
-Thanks for the bug report.  Please let me know if you find anything
-else wrong.
-
+Dave
 -- 
-David Kennedy
-The Puffin Group
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
