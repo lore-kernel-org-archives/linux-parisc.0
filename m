@@ -1,7 +1,7 @@
-From: Matthew Wilcox <willy@debian.org>
+From: Richard Henderson <rth@redhat.com>
 Subject: Re: [parisc-linux] gcc-3.[02] alignment problem
-Date: Tue, 16 Jul 2002 18:24:08 +0100
-Message-ID: <20020716182408.W27706__482.793284072791$1416621532$gmane$org@parcelfarce.linux.theplanet.co.uk>
+Date: Tue, 16 Jul 2002 13:21:08 -0700
+Message-ID: <20020716132108.B5966__28000.226050108$1416621533$gmane$org@redhat.com>
 References: <200207161701.g6GH1D03023385@hiauly1.hia.nrc.ca> <20020716172255.GM8724@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -21,7 +21,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 On Tue, Jul 16, 2002 at 10:22:55AM -0700, Randolph Chung wrote:
-> include/linux/tcp_diag.h defines:
+>         __u32   tcpdiag_cookie[2]; 
+> #define TCPDIAG_NOCOOKIE (~0U)
+> };
+> 
+> the code goes on to do:
+>         *((struct sock **)&r->id.tcpdiag_cookie) = sk;
+> and
+>             sk != *((struct sock **)&req->id.tcpdiag_cookie[0]))
+
+This is absolutely awful.
+
+> the "vomit grade hack" alan mentioned in another post is that in our
+> tree, we have:
 > 
 > struct tcpdiag_sockid
 > {
@@ -30,20 +42,20 @@ On Tue, Jul 16, 2002 at 10:22:55AM -0700, Randolph Chung wrote:
 >         __u32   tcpdiag_src[4];
 >         __u32   tcpdiag_dst[4];
 >         __u32   tcpdiag_if;
->         __u32   tcpdiag_cookie[2]; 
-> #define TCPDIAG_NOCOOKIE (~0U)
-> };
+> #if defined (__hppa__) && defined (__LP64__)
+>         char * parisc_hack_to_align_tcpdiag_cookie;
+> #endif
+>         __u32   tcpdiag_cookie[2];
 
-> why is the offset of tcpdiag_cookie[0] 44 and not 40?
+An only marginally better fix is
 
-0	tcpdiag_sport
-2	tcpdiag_dport
-4	tcpdiag_src
-20	tcpdiag_dst
-36	tcpdiag_if
-40	tcpdiag_cookie
+	__u32 tcpdiag_cookie[2] __attribute__((aligned(sizeof(void*))));
 
-hmm.. worth checking that dport is at offset 2, not offset 4?
+Note that this should be unconditional so that the other
+64-bit ports don't take an alignment trap here too.
 
--- 
-Revolutions do not require corporate support.
+A much nicer fix would be to, gasp, use a union.
+
+
+
+r~
