@@ -1,32 +1,67 @@
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA18122
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 09:16:28 -0700
-To: Stephen Zander <gibreel@pobox.com>
-cc: Grant Grundler <grundler@cup.hp.com>, Matthew Wilcox <matthew@wil.cx>,
-        parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10 
-In-Reply-To: Your message of "30 Nov 2000 00:09:03 PST."
-             <877l5lvq3k.fsf@rabbit.fire-swamp.net>
-References: <200011201734.JAA18526@milano.cup.hp.com>  <877l5lvq3k.fsf@rabbit.fire-swamp.net> 
-Date: Thu, 30 Nov 2000 09:18:51 -0700
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E141WQ7-000300-00@noam.fc.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA18407
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 09:18:17 -0700
+Received: from lightning.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 16:20:38 -0000
+Subject: Re: [parisc-linux] XFree status
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Thu, 30 Nov 2000 16:10:46 +0000 (GMT)
+Cc: alan@lxorguk.ukuu.org.uk (Alan Cox), parisc-linux@thepuffingroup.com
+In-Reply-To: <200011300518.VAA28946@milano.cup.hp.com> from "Grant Grundler" at Nov 29, 2000 09:18:14 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E141WIL-0007Ro-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-=     Grant> need "boot floppies" debian package working. We don't need
-= 
-= Oooh, there's a reason for me to finally get the 712/80 under my desk
-= to be more than a foot-rest.  I'll see what I can do about this.
-= 
-= Note that the likelihood of Debian releasing woody anytime soon is
-= vanishingly small, so this dosen't have to happen Right Now.
+> Alan Cox wrote:
+> > I have a server linked.
+> Alan - that's Cool! Wow!
 
-Well yes and no.  We want to release parisc-linux sooner than woody
-will be ready for public stable release, so we'll want to do the
-boot floppies work sooner than other architectures need it and
-can probably therefore provide early testing too.  Since
-we aren't going to time travel back to Debian potato, woody
-boot floppies are increasingly interesting to replace our manual
-install process (hey at least it's documented!).
+Its still got its atoms in a twist, so its bombing out in Xnest loading the
+first font.
 
-	-P
+> > inb/inw/outb/outw and friends are right now null
+> > functions until I fill them in. Thats not a big deal. Initially I'll probably
+> > use /dev/port but for speed I hope everyone uses mmio based hardware.
+> 
+> All HP graphics for PARISC are memory mapped. Both "GSC" and PCI flavors.
+
+Yes, but if I want to say put an S3 Trio64 in my A180 and a USB card for
+keyboard mouse..,, (and yes these are sitting on my desk)
+
+> But I'm pretty clueless how linux X server finds/talks to a frame buffer.
+> For HPUX, the graphics driver supports some ioctl()'s.
+> Any references to describe how it works for linux?
+
+The OS specific X code in XFree86 knows several ways to talk to Linux
+
+Memory:
+
+1.	Directly mmap()ing /dev/mem or /dev/kmem to get access to the 
+	mmio space of the card and frame buffer memory. 
+
+2.	Mapping the pci space via a kernel frame buffer device (/dev/fb*)
+
+3.	Arbitary other mmap based code that you plug into it (harder to do)
+
+
+I/O
+
+1.	Use of iopl/ioperm on x86
+
+2.	Use of mmap to map the PCI I/O space regions on different 
+	platforms (which doesnt work on some PA kit)
+
+3.	Arbitary other code we plug into it 
+
+
+For I/O it seems that on things like the A180 the only way to do it is to use
+/dev/port and pread/pwrite the file handle for each port I/O. This is slow but
+hopefully primarily used for booting the card (XFree 4.0 has a X86 emulator
+for booting the BIOS firmware on PCI cards)
+
+
+For most machines I imagine we would be using mmio and the /dev/fb interface.
+
+Alan
