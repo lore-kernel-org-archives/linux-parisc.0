@@ -1,39 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 20CDC4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 17:45:44 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Alan Modra <alan@linuxcare.com.au>,
-	"Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-Subject: Re: [parisc-linux] Warnings compiling the CVS kernel
-Date: Thu, 22 Feb 2001 01:47:58 +0100
-Cc: PL <parisc-linux@lists.parisc-linux.org>
-References: <Pine.LNX.4.21.0102221120430.14557-100000@front.linuxcare.com.au>
-In-Reply-To: <Pine.LNX.4.21.0102221120430.14557-100000@front.linuxcare.com.au>
+Received: from smtp5ve.mailsrvcs.net (smtp5vepub.gte.net [206.46.170.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7FABB4A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 19:42:24 -0700 (MST)
+Received: from neuronet.pitt.edu (adsl-151-201-239-223.pittpa.adsl.bellatlantic.net [151.201.239.223])
+	by smtp5ve.mailsrvcs.net (8.9.1/8.9.1) with ESMTP id CAA2648803
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 02:49:22 GMT
+Sender: raffo@bellatlantic.net
+Message-ID: <3A947C8D.334DFA76@neuronet.pitt.edu>
+Date: Wed, 21 Feb 2001 21:42:21 -0500
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
 MIME-Version: 1.0
-Message-Id: <01022201475802.16704@P100.helgenet.de>
+To: PL <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Booting nfsroot-20001009.tar.gz
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 22 February 2001 01:23, Alan Modra wrote:
-> On Wed, 21 Feb 2001, Rafael E. Herrera wrote:
-> > Alan Modra wrote:
-> > > On Wed, 21 Feb 2001, Rafael E. Herrera wrote:
-> > > > The compilation succeeds but the boot will crash here:
-> > > >
-> > > > [...]
-> > > > POSIX conformance testing by UNIFIX
-> > >
-> > > Yeah, same result here (except I get a reboot).  I'm not sure yet
-> > > whether this is due to bugs in gcc or the kernel.
-> >
-> > Let me know I there is something I can try. Thanks
->
-> Seems to be a kernel problem, or at least not a new gcc problem.  I dug
-> out an old gcc, and got the same results with yesterday's kernel sources.
+I got linux-20010216.tar.gz and the kernel is not crashing. I've run
+into into a boot problem. Ive added the nfsroot directory in the
+/etc/fstab file. With options 'default', the init process stops when
+trying to start 'portmapper', it just sits there, hitting CTRL-C
+continues the boot process. If I add the option 'nolock' the portmapper
+will be skipped.
 
-CVS from 2001/02/16 is the last one, which worked for me (independed of the 
-compiler!).
+Next, the init process will stop or hang when trying to start 'nscd', 
+CTRL-C won't break it. I disabled that script also, and finally got the
+whole boot to finish.
 
-Helge.
+There are other programs that don't work either, 'tar' will just sit
+there, as well as 'dpkg'.
+
+Any suggestions? Thanks.
+
+-- 
+     Rafael
