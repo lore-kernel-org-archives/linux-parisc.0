@@ -1,33 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A935482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Apr 2001 05:54:12 -0600 (MDT)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA28982;
-	Sat, 7 Apr 2001 21:54:00 +1000
-Date: Sat, 7 Apr 2001 21:54:00 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Rod Smart <snaketails@optushome.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Palo question.
-In-Reply-To: <3ACEFDCD.A3F62CAA@optushome.com.au>
-Message-ID: <Pine.LNX.4.21.0104072146370.8692-100000@front.linuxcare.com.au>
+Received: from arroz.onshored.com (arroz.onshored.com [216.220.101.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B6AB482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Apr 2001 15:21:55 -0600 (MDT)
+Sender: apharris@burrito.onshore.com
+To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
+Cc: debian-boot@lists.debian.org, parisc-linux@lists.parisc-linux.org
+References: <20010405155605.D8907@achilles.net>
+From: Adam Di Carlo <adam@onshore.com>
+Date: 07 Apr 2001 17:22:13 -0400
+In-Reply-To: <20010405155605.D8907@achilles.net>
+Message-ID: <oa4rw05rsq.fsf@arroz.fake>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: Woody installer for PARISC
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 7 Apr 2001, Rod Smart wrote:
+"Paul J.Y. Lahaie" <pjlahaie@linuxcare.com> writes:
 
->     Where can I get a copy from, the link I received from the guys in
-> France was for the Debian archive.
+> Here are the changes I've made to the boot-floppies package to support
+> the PARISC architecture.
+
+Glad to hear it.  Let me know if you don't have an account on
+cvs.debian.org and you want a debian-boot pserver account.  You can
+crypt a username/password with my Debian PGP key (aph@debian.org) and
+send it to me privately and I can create that.
+
+> utilities/dbootstrap/main_menu.c:
+> - Remove options that aren't applicable to PARISC.
+>   (Make boot floppy, PCMCIA, etc..)
+
+> utilities/dbootstrap/partition_config.c:
+> - Add PALO message for partition creation.
 > 
->     Is there a version just in a tarball as I don't have Debian on my
-> own x86 system
+> 
+> There are a few more changes I needed to make to get a working installer
+> for PARISC, unfortunately some of them are because of limitations in
+> the current PARISC distribution (kernel.sh was modified to not require
+> a kernel .deb since we currently don't have one and the constantly
+> changing kernel makes it unwieldy to build kernel .debs).
 
-debian packages are really neat in that all you need is `ar'
+Wait a minute... you don't have a kernel nor a boot-disk?  How do
+people boot?
 
-"ar xv <package>"
-
-will get you a couple of tar.gz files, and it's fairly easy from there.
-
-Alan
+-- 
+.....Adam Di Carlo....adam@onshore.com.....<URL:http://www.onshored.com/>
