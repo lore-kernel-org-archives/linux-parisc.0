@@ -1,37 +1,41 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA24983
-	for <parisc-linux@puffin.external.hp.com>; Mon, 29 Nov 1999 21:16:03 -0700
-Received: from storm.ca (dial01p40.ottawa.storm.ca [209.87.225.40])
-	by mail.storm.ca (8.8.8+Sun/8.8.8) with ESMTP id XAA18880
-	for <parisc-linux@thepuffingroup.com>; Mon, 29 Nov 1999 23:17:53 -0500 (EST)
-Message-ID: <38430939.435033DA@storm.ca>
-Date: Mon, 29 Nov 1999 23:16:09 +0000
-From: Sandy Harris <sandy@storm.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA29218
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Nov 1999 08:58:56 -0700
+From: dkennedy@thepuffingroup.com
+Date: Tue, 30 Nov 1999 12:08:56 -0500 (EST)
+To: Carl Johnson <cjs@mcn.net>
+cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Machine Additions?
+In-Reply-To: <3841651A.F66C387B@mcn.net>
+Message-ID: <Pine.LNX.4.10.9911301152070.28574-100000@grasshopper.thepuffingroup.com>
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Parallel port hardware (fwd)
-References: <199911291708.JAA10386@meow.sr.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Bill Katz (William)" wrote:
+On Sun, 28 Nov 1999, Carl Johnson wrote:
 
-> Sandy Harris wrote:
-> |Can anyone point me to info on the electrical properties of the parallel ports
-> |on 712 or 715 machines?
-> |
-> |I'm thinking that 8 715s might make an interesting parallel engine, but the cable device
-> |only works if the parallel port's control lines are implemented as open collector TTL.
-> |Where can I discover whether they are?
+> Earlier I saw a message posted about adding machines and their
+> descriptions to the puffin site, so I went to do that and 
+> when I follow the instructions, etc, etc the addmachine.php3
+> kicks out an error, which is embedded and does not show up,
+> of:
 > 
-> Early 715s ...
+> 	The IOSCAN output is not in the correct format. Please try
+> 	that again. Exiting a  that is not open
 > 
-> Later 715s (/64, /80, /100) and all 712s use Lasi.  From the chip ERS
-> (not published, it's mostly electrical stuff) Data strobe, autofeed,
-> parinit, and select
-> 
-> The ones that connect to pins 1, 14, 16, and 17 are open collector.
+> anyhow I am including all the needed info and if someone can finger
+> out my problem please tell me:  __TIA__
 
-Bingo! Those are exactly the four lines used for the Wapers parallel stuff.
+Ok, I added the machine.
 
-http://garage.ecn.purdue.edu/~papers/WAPERS/
+It appears my script wasn't working with blank lines correctly.  I
+have made a small fix to allow blank lines.  My script uses a _VERY_
+rudamentary check to see if each line of the IOSCAN output is correct.
+If it finds one line that isn't correct is complains.  
+
+Thanks for the bug report.  Please let me know if you find anything
+else wrong.
+
+-- 
+David Kennedy
+The Puffin Group
