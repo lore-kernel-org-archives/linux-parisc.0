@@ -1,47 +1,92 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA05169
-	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Sep 1999 08:07:43 -0600
-Received: (from pschwan@localhost)
-	by burrow.puffingroup.com (8.8.7/8.8.7) id KAA17063
-	for parisc-linux@thepuffingroup.com; Wed, 29 Sep 1999 10:33:40 -0400
-Message-ID: <19990929103340.B14605@thepuffingroup.com>
-Date: Wed, 29 Sep 1999 10:33:40 -0400
-From: Phil Schwan <pschwan@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HOSTCC vs CC and other nits
-References: <199909290605.XAA06877@milano.cup.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA05579
+	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Sep 1999 08:58:14 -0600
+Message-ID: <19990929145815.16475.rocketmail@web505.yahoomail.com>
+Date: Wed, 29 Sep 1999 07:58:15 -0700 (PDT)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
+Subject: Re: [parisc-linux] Booting from tape 
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199909290605.XAA06877@milano.cup.hp.com>; from Grant Grundler on Tue, Sep 28, 1999 at 11:05:27PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sep 28, Grant Grundler wrote:
->   That means use HOSTCC (instead of $(CC)) in the Makefiles.
->   I can then do "make vmlinux HOSTCC=cc".
+Hi all,
 
-Oops.  Understandable desire, you're right of course.
+thanks for all the tips. dd-ing with bs=2k made the
+difference. The kernel now also boots from a SCSI DDS
+tape drive (HP35480A). My first thought was to choose
+the disk sector size 512 but this was wrong.
 
-> o I don't have obj_dump. And I haven't the faintest clue
->   where to find it. Could we use nm instead?
+Ulrich
 
-It's part of GNU binutils, which I thought we required to build the
-kernel anyways?
+--- Grant Grundler <grundler@cup.hp.com> wrote:
+> Ulrich Strelow wrote:
+> > I know that this is extremely low priority but...
+> > 
+> > I have tried to boot the linux kernel from a SCSI
+> DDS
+> > tape (copied via dd if=Image of=/dev/rmt/0m
+> bs=512).
+> > The same kernel (cvs tree from today) boots
+> > sucessfully via rbootd on my 715/33. Here is the
+> > console log:
+> ...
+> > Select from menu: b p2
+> > 
+> > Trying scsi.0.0
+> > Boot path initialized.
+> > Attempting to load IPL.
+> > 
+> > Failed I/O operation with scsi.0.0
+> > ENTRY_IO status = -10
+> > 
+> > 00000000 00000000 00000000 00000000 00000000
+> 00000000
+> > 00000000 00000000
+> > 00000000 00000000 00000000 00000000 00000000
+> 00000000
+> > 00000000 00000000
+> > 00004F04 000000FF FF0009BF 00000000 800100DC
+> 00000000
+> > 0025F000 00000400
+> > 98080000 00000000 00008C60 00000000 000000FF
+> 00000000
+> > 00000000 00000000
+> 
+> I believe this is a problem with either how the tape
+> was created
+> or talking to the tape drive. Does anyone know where
+> to find what
+> the -10 status means?
+> 
+> Another difference when booting from tape (vs disk),
+> is how the
+> tape is "made". One *must* specify 2k block size. It
+> doesn't matter
+> for disk devices. Eg: 
+> 
+> 	dd if=Image of=/dev/rmt/0m bs=2k
+> 
+> I don't know if Image is intentionally padded to a
+> 2k block size.
+> One might check that too.
+> 
+> grant
+> 
+> 
+> Grant Grundler
+> Communications Infrastructure Computer Operations
+> +1.408.447.7253
+> 
+>
+---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to
+> parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+> 
 
-> o I looked at checkalign.c and am feeling a bit confused.
->   Why is the code testing for 4K alignment?
->   I though the requirement was 8K alignement...
-
-It tests based on the assumption that it's either 4K or 8K aligned.
-If it's in fact only aligned on a 4K boundary, addr&4096 will be true.
-Or have I horked that?
-
-> Perl is probably better for this kind of stuff (has "&"
-> operator which is missing from awk). But I'm not a very good
-> perl hacker...
-
-We figured that requiring perl to build was probably a bad idea.  Not
-that this whole thing isn't already a bad idea... :)
-
-I'll make some changes to make it more friendly.
-
--Phil
+__________________________________________________
+Do You Yahoo!?
+Bid and sell for free at http://auctions.yahoo.com
