@@ -1,24 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ED2A9482C
-	for <parisc-linux@parisc-linux.org>; Fri, 16 Nov 2001 14:05:58 -0700 (MST)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #6)
-	id 164qB5-0007EM-00
-	for parisc-linux@parisc-linux.org; Fri, 16 Nov 2001 23:05:35 +0200
-Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
-	id 164qBW-0007dE-00
-	for <parisc-linux@parisc-linux.org>; Fri, 16 Nov 2001 23:06:02 +0200
-Date: Fri, 16 Nov 2001 23:06:02 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: Sound on 720/50
-Message-ID: <20011116230602.B29212@dogbert.localdomain>
-References: <200111151120.EAA26215@udlkern.fc.hp.com> <20011115153620.A22881@dogbert.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
-In-Reply-To: <20011115153620.A22881@dogbert.localdomain>
+Received: from lefou.zayda.com (unknown [204.99.158.177])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 688E7482C
+	for <parisc-linux@parisc-linux.org>; Sat, 17 Nov 2001 00:23:37 -0700 (MST)
+Received: from localhost (sonny@localhost)
+	by lefou.zayda.com (8.9.3/8.9.3) with ESMTP id HAA09294
+	for <parisc-linux@parisc-linux.org>; Sat, 17 Nov 2001 07:23:35 GMT
+Date: Sat, 17 Nov 2001 07:23:35 +0000 (UTC)
+From: Sonny Cook <sonny@aspersion.org>
+To: <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0111170713360.4966-100000@lefou.zayda.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] pam/ssh seems to be whacked
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,37 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi,
+When attempting to install gkrellm on my b132l, apt-get upgraded a number
+of other packaged including (the suspect) libc6-2.2.4-6.  Now when I
+attempt to ssh into the box, I get the following error in my logs:
 
-Hello,
+Nov 13 00:20:52 angstrom sshd[14365]: PAM pam_set_item: NULL pam handle
+passed
+Nov 13 00:20:52 angstrom sshd[14365]: Failed rsa for illegal user sonny
+from 192.168.1.128 port 34113
+Nov 13 00:21:07 angstrom sshd[14365]: PAM pam_set_item: NULL pam handle
+passed
+Nov 13 00:21:07 angstrom sshd[14365]: Failed password for illegal user
+sonny from 192.168.1.128 port 34113
 
-An interesting update...
+I upgraded to the latest version of libpam0g, libpam-runtime, and
+libpam-modules, to no avail.  Needless to say, I cannot log in.
 
-Playing MPEG stream from Limp_Bizkit-My_Way.mp3 ...
-MPEG 1.0 layer III, 160 kbit/s, 44100 Hz joint-stereo
+I suspect that the libc6 upgrage goofed me up somehow.  Does anybody have
+an idea, or place to start debugging?
 
-on my 720/50 streams smooth over 10Mbps LAN to esd running on my i386
-box. Sweetness. :-) The 720 isn't up to much else though. 50 MHz of RISC
-power. Muhehehe.
-
-Regards,
-
-Albert
-
-
---IS0zKkzwUGydFO0o
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE79X+5Dg+hOeRZtkMRAvOkAJ9tBs0z4CBwt57dbawRn0dtgU6jewCfZuWi
-A8XKGhSZQFSseEwysUX95a4=
-=/7JF
------END PGP SIGNATURE-----
-
---IS0zKkzwUGydFO0o--
+Thanks
+Sonny
