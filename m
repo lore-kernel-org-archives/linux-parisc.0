@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tyke.pjc.net (public1-leed3-6-cust141.leed.broadband.ntl.com [80.0.5.141])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A5AF1483F
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Jun 2002 12:24:34 -0600 (MDT)
-Received: from patrick by tyke.pjc.net with local (Exim 3.35 #1 (Debian))
-	id 17GOPZ-0001sw-00
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 07 Jun 2002 19:24:33 +0100
-Date: Fri, 7 Jun 2002 19:24:33 +0100
-From: Patrick Caulfield <patrick@tykepenguin.com>
+Received: from server1.neuronet.pitt.edu (server1.neuronet.pitt.edu [150.232.128.42])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 359FB484C
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Jun 2002 13:29:19 -0600 (MDT)
+Received: from neuronet.pitt.edu (pink.neuronet.pitt.edu [150.232.130.105])
+	by server1.neuronet.pitt.edu (8.8.8/8.8.8) with ESMTP id PAA04906
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 7 Jun 2002 15:29:44 -0400 (EDT)
+Message-ID: <3D01098A.4080007@neuronet.pitt.edu>
+Date: Fri, 07 Jun 2002 15:29:14 -0400
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Probleme while compiling last CVS kernel.
-Message-ID: <20020607182433.GA7230@tykepenguin.com>
-References: <1023463889.3d00d1d18be3e@webmail.tiscalinet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-In-Reply-To: <1023463889.3d00d1d18be3e@webmail.tiscalinet.be>
+Subject: Re: [parisc-linux] Sources browsing tool?
+References: <1023470637.3d00ec2d3a708@webmail.tiscalinet.be>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jun 07, 2002 at 05:31:29PM +0200, joel.soete@freebel.net wrote:
+joel.soete@freebel.net wrote:
 > Hi all,
 > 
-> Here is attached the patch to uptdate lvm structures in ioctl32.c
-> (arch/parisc/kernel).
+> Can you advise me some browsing tools which would allowing me to find quickly
+> where a variable, a function is define; where is used,... in this big amount
+> source which represent kernel now (find is not always easy).
 > 
-> Can somebody check in for me.
-> 
-> I check it (Ok) for 32bit kernel on my b180l.
-> 
-> Patrick,
-> 
-> Don't you see anything else to verify?
-> 
+> I find well a work of reverse engineering (rigiedit) of the kernel but not for 2.4.
+> And unfortunately sources (tcl/tk iirc) do not seems to be available to port on
+> hppa.
 
-Looks good to me. I patched it in and then diffed it against the sparc64 one and
-there were no LVM differences.
+If you are using Emacs as your editor, you could use TAGS to locate 
+definitions, etc.
+This script may need editing:
 
-patrick
+##
+# Build an ETAG file of the linux kernel sources.
+ARCH=parisc
+
+find arch/$ARCH drivers fs include/{asm-$ARCH,linux,net,scsi,video} \
+      init ipc kernel lib mm net -name '*.[chS]' -print | sort | etags -
+##
+
+I used this quite a while ago, when I was writing a driver. You will 
+need to consult the emacs manual on how to use tags.
+-- 
+     Rafael
