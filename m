@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.MzYxNzAK.com (unknown [211.161.61.118])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3406D4840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Nov 2003 12:42:20 -0700 (MST)
-Date: Tue, 25 Nov 03 03:39:02 +0800
-From: kandwang@bellsouth.net
-Reply-To: kandwang@bellsouth.net
-To: parisc-linux@lists.parisc-linux.org
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3EC0A4841
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Nov 2003 00:23:27 -0700 (MST)
+Date: Tue, 25 Nov 2003 08:23:23 +0100
+Message-ID: <3FB25B960000788E@ocpmta1.freegates.net>
+In-Reply-To: <3FB265250000633D@ocpmta2.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] strace locks up 2.4.22-pa14
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-type: multipart/mixed;
-    boundary="----=_NextPart_000_0072_3BF700BB.B3E50231"
-Message-Id: <20031124194220.3406D4840@dsl2.external.hp.com>
-Subject: [parisc-linux] ◊‘”…÷Æ√≈--√‚∑—…œÕ¯»Ìº˛£∫∞Ô÷˙Õ¯√Ò◊‘”……œÕ¯£¨‰Ø¿¿»Œ∫ŒÕ¯’æƒ⁄»›°£
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,77 +22,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-------=_NextPart_000_0072_3BF700BB.B3E50231
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0073_3BF700BB.B3E50231"
+Hi Grant,
+
+Just a follow up:
+
+>-- Original Message --
+>From: "Joel Soete" <soete.joel@tiscali.be>
+>To: "Grant Grundler" <grundler@parisc-linux.org>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Date: Mon, 24 Nov 2003 08:21:28 +0100
+>Subject: Re: [parisc-linux] strace locks up 2.4.22-pa14
+>
+>
+>
+
+>>ok. TBH, I have no clue then. It might be possible to attach strace to
+>>a running lp deamon, redirect strace output to /dev/console and then
+>>compore what happens different on the b2k when a print job is started.
+>
+>Good idea, I will try to see howto
+>
+Oops, I try first to strace lpd ("strace -f -p xxx 2>&1 | tee Strace-lpd.log")on
+the b180 (running a 2.4.19 + lvm (aka dm) support) but this "locked up" too.
+
+Unfortunately, I don't have anymore a 'woody' install to try to trace back
+when the strace pb appears :(.
+
+btw since my last update (last friday), I couldn't any more print with this
+b180 too.
+
+J.
 
 
-------=_NextPart_001_0073_3BF700BB.B3E50231
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: base64
-
-1eLKx9PDs6zOxLG+uPHKvbHg0LS1xNPKvP6jrMfryrnTw7OszsSxvre9yr3kr8DAoaMNCg0KDQoNCg0K
-
-------=_NextPart_001_0073_3BF700BB.B3E50231
-Content-Type: text/html; charset=gb2312
-Content-Transfer-Encoding: base64
-
-
-PGh0bWw+DQo8aGVhZD4NCjx0aXRsZT6w79b6zfjD8dfU08nJz834o6zNqLn90tTPwre9yr2/ydLU5K/A
-wMjOus7N+NW+PC90aXRsZT4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0i
-dGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8L2hlYWQ+DQo8Ym9keSBiZ2NvbG9yPSIjRkZGRkZG
-IiB0ZXh0PSIjMDAwMDAwIj4NCjxmb250IA0KICAgICAgc2l6ZT0yPjxmb250IHNpemU9Mj4gDQo8cD4g
-sO/W+s34w/HX1NPJyc/N+KOszai5/dLUz8K3vcq9v8nS1OSvwMDIzrrOzfjVvqO6PGZvbnQgc2l6ZT0i
-MiI+PGI+PGJyPg0KICA8L2I+PGEgaHJlZj0iaHR0cHM6Ly93d3cxLmZ0ODg4Lm5ldC8iIA0KICAgICAg
-dGFyZ2V0PV9ibGFuaz5odHRwczovL3d3dzEuZnQ4ODgubmV0LzwvYT48YnI+DQogIDxhIA0KICAgICAg
-aHJlZj0iaHR0cHM6Ly93d3cyLmZ0ODg4Lm5ldC8iIA0KICAgICAgdGFyZ2V0PV9ibGFuaz5odHRwczov
-L3d3dzIuZnQ4ODgubmV0LzwvYT48YnI+DQogIDxhIA0KICAgICAgaHJlZj0iaHR0cHM6Ly93d3czLmZ0
-ODg4Lm5ldC8iIHRhcmdldD1fYmxhbms+aHR0cHM6Ly93d3czLmZ0ODg4Lm5ldC88L2E+IA0KICA8YnI+
-DQogIDxicj4NCiAgPGZvbnQgc2l6ZT0yPiA8L2ZvbnQ+PC9mb250Pg0KPC9mb250PjwvZm9udD48Zm9u
-dCBzaXplPSIyIj48Zm9udCBzaXplPTI+DQo8cD48Yj4wtqnUxLavzKzN+Dxicj4NCiAgPC9iPrj40tTP
-wsjO0uLSu7j208rP5Lei0ru49rXn19PTyrz+o6y+zcTcw7/Su8G91tzK1bW9tq/MrM34vLzK9bj80MKj
-rNXGztXX7tDCzbvGxs34wue34sv4tcSw7LeooaM8YnI+DQogIDxhIA0KICAgICAgaHJlZj0ibWFpbHRv
-OmRuZXRfc3ViQGJlbGxzb3V0aC5uZXQiPmRuZXRfc3ViQGJlbGxzb3V0aC5uZXQ8YnI+DQogIDwvYT48
-YSANCiAgICAgIGhyZWY9Im1haWx0bzpkdHdhbmdAYmVsbHNvdXRoLm5ldCI+ZHR3YW5nQGJlbGxzb3V0
-aC5uZXQ8L2E+PGJyPg0KICA8YSANCiAgICAgIGhyZWY9Im1haWx0bzprYW5kd2FuZ0BiZWxsc291dGgu
-bmV0Ij5rYW5kd2FuZ0BiZWxsc291dGgubmV0PC9hPiANCjxwPjxiPjHX1NPJ1q7DxcjtvP48YnI+DQog
-IDwvYj7V4rj2ysfX7rzytaW1xKOsysrTw9PatuDK/c34wue7t76zoaPPwtTYuvOjrMuru/fWtNDQzsS8
-/ry0v8nUy9DQoaM8YSANCiAgICAgIGhyZWY9Imh0dHBzOi8vd3d3MS5mdDg4OC5uZXQvbG9jL2Rvd25s
-b2FkLmh0bWwiIHRhcmdldD1fYmxhbms+z8LU2MjtvP4gPC9hPiANCjxwPjxmb250IHNpemU9Mj48Yj4y
-zfjSszxicj4NCiAgPC9iPjwvZm9udD48YSANCiAgICAgIGhyZWY9Imh0dHA6Ly9wcm9maWxlcy55YWhv
-by5jb20vaHVhbmdzaGFuNTQzMjEiIA0KICAgICAgdGFyZ2V0PV9ibGFuaz5odHRwOi8vcHJvZmlsZXMu
-eWFob28uY29tL2h1YW5nc2hhbjU0MzIxPC9hPiA8YnI+DQogIDxhIA0KICAgICAgaHJlZj0iaHR0cDov
-L3Byb2ZpbGVzLnlhaG9vLmNvbS9zb25nc2hhbjEyMzQ1IiANCiAgICAgIHRhcmdldD1fYmxhbms+aHR0
-cDovL3Byb2ZpbGVzLnlhaG9vLmNvbS9zb25nc2hhbjEyMzQ1PC9hPiA8YnI+DQogIDxhIA0KICAgICAg
-aHJlZj0iaHR0cDovL3Byb2ZpbGVzLnlhaG9vLmNvbS90YWlzaGFuOTg3NjUiIA0KICAgICAgdGFyZ2V0
-PV9ibGFuaz5odHRwOi8vcHJvZmlsZXMueWFob28uY29tL3RhaXNoYW45ODc2NTwvYT4gPGJyPg0KICA8
-YSANCiAgICAgIGhyZWY9Imh0dHA6Ly9wcm9maWxlcy55YWhvby5jb20vaGVuZ3NoYW41Njc4OSIgDQog
-ICAgICB0YXJnZXQ9X2JsYW5rPmh0dHA6Ly9wcm9maWxlcy55YWhvby5jb20vaGVuZ3NoYW41Njc4OTwv
-YT4gPGJyPg0KICA8YSANCiAgICAgIGhyZWY9Imh0dHA6Ly9wcm9maWxlcy55YWhvby5jb20vZW1laXNo
-YW4xMjM0NSIgDQogICAgICB0YXJnZXQ9X2JsYW5rPmh0dHA6Ly9wcm9maWxlcy55YWhvby5jb20vZW1l
-aXNoYW4xMjM0NTwvYT48YnI+DQogIDxicj4NCjxmb250IHNpemU9Mj4gDQo8cD48Yj4z0cW7os2oPGJy
-Pg0KICA8L2I+yOe5+8T6yrnTw9HFu6LNqLXEu7CjrL/J0tS4+GR3ZWJfaXBAeWFob28uY29tt6LSu7j2
-vLTKsbbM0MWjrNK7t9bW08Tau+HK1bW9vLi49klQoaO78tXfv8nS1LDRZHdlYl9pcEB5YWhvby5jb228
-086qobDF89PRobGjrNK7yc/P377Nv8nS1LTT0cW7os2o1tBkd2ViX2lwv7S1vbavzKzN+LXESVChoyAN
-CiAg0cW7os2ov8nS1NTaPGEgaHJlZj0iaHR0cDovL2NuLm1lc3Nlbmdlci55YWhvby5jb20vIiANCiAg
-ICAgIHRhcmdldD1fYmxhbms+aHR0cDovL2NuLm1lc3Nlbmdlci55YWhvby5jb20vPC9hPs/C1Niho8T6
-tcPT0NK7uPbRxbuitcS159fT08q8/rLFxNzTw9HFu6LNqKGjIA0KPHA+PGI+NE1TTjxicj4NCiAgPC9i
-PsjnufvE+sq508NNU07D4rfRvLTKsc/7z6K3/s7xtcS7sKOsv8nS1NPDTVNOw+K30by0yrHP+8+iuPh3
-ZWJtYTAwOEBob3RtYWlsLmNvbSwgd2VibWEwMDZAaG90bWFpbC5jb20sIA0KICB3ZWJtYTAwNEBob3Rt
-YWlsLmNvbSwgd2VibWEwMDJAaG90bWFpbC5jb20sILvy1d8gd2VibWEwMDBAaG90bWFpbC5jb223otK7
-uPa2zNDFo6zSu7fW1tPE2rvhytW1vby4uPZJUKGjIA0KICDT69HFu6LNqLK7zay1xMrHo6zE+r/J0tTT
-w8jOus6159fT08q8/rXY1rfXorLh0ru49tXKusWho8/C1Ni12Na3o7o8YSANCiAgICAgIGhyZWY9Imh0
-dHA6Ly9tZXNzZW5nZXIubWljcm9zb2Z0LmNvbS9jbi8iIA0KICAgICAgdGFyZ2V0PV9ibGFuaz5odHRw
-Oi8vbWVzc2VuZ2VyLm1pY3Jvc29mdC5jb20vY24vPC9hPiANCjxwPjxiPjXKudPDtefX09PKvP48YnI+
-DQogIDwvYj64+DxhIA0KICAgICAgaHJlZj0ibWFpbHRvOmRfaXBAYmVsbHNvdXRoLm5ldCI+ZF9pcEBi
-ZWxsc291dGgubmV0PC9hPrei0ru49rXn19PTyrz+o6wxMLfW1tPE2rvhytW1vbvY0MWjrMTDtb28uLj2
-SVChozxicj4NCiAgPGJyPg0KDQo8cD48Yj7I57n7xPrPsru2tq/MrM34o6zH67DR1eLQqdDFz6LT68Xz
-09G31s/toaM8L2I+IA0KPC9mb250PiA8L2ZvbnQ+PC9mb250Pjxicj4NCjwvYm9keT4NCjwvaHRtbD4N
-Cg
-
-
-------=_NextPart_001_0073_3BF700BB.B3E50231--
-
-
-
-------=_NextPart_000_0072_3BF700BB.B3E50231--
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois ‡ 29,50 Ä/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
