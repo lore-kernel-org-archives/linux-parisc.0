@@ -1,24 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta204-rme.xtra.co.nz (mta204-rme.xtra.co.nz [210.86.15.147])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D55C54829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 07:11:01 -0700 (MST)
-Received: from web4-rme.xtra.co.nz ([210.86.15.142])
-          by mta204-rme.xtra.co.nz with ESMTP
-          id <20030116141049.TYTZ1188.mta204-rme.xtra.co.nz@web4-rme.xtra.co.nz>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Fri, 17 Jan 2003 03:10:49 +1300
-Received: from [127.0.0.1] by web4-rme.xtra.co.nz with SMTP
-          id <20030116141049.ZTIG14518.web4-rme.xtra.co.nz@[127.0.0.1]>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Fri, 17 Jan 2003 03:10:49 +1300
-From: Gavin Hubbard <ghub005@xtra.co.nz>
-Reply-To: ghub005@xtra.co.nz
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 17 Jan 2003 3:10:49 +1300
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AFF724829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 07:34:39 -0700 (MST)
+Date: Thu, 16 Jan 2003 15:34:36 +0100
+Message-ID: <3E1AAEFA0000190A@ocpmta6.freegates.net>
+From: jsoe0708@tiscali.be
+To: parisc-linux@lists.parisc-linux.org
+Cc: debian-hppa@lists.debian.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Message-Id: <20030116141049.ZTIG14518.web4-rme.xtra.co.nz@[127.0.0.1]>
-Subject: [parisc-linux] Where can I get an N4000 service manual?
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] gcc 3.0 error
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,12 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Lads
+Hi all,
 
-I need a service manual for an N4000 (440MHz rev) server. The public manual on the docs.hp.com website is a piece of rubbish (I think it might be the modern equivalent of the "no user servicable parts inside" label).
+Trying to rebluid a graphical library on my hppa linux b180 still running=
 
-I could not find the info I need on ITRC. Does anybody know where I can get a copy of the service manual?
+gcc-3.0 as default, I got following message:
 
-Regards,
+/usr/bin/ld -r -o .libs/libTKernel.la-478.o .libs/Units_UtsSequence_0.o
+.libs/libTKernel.la-477.o
+gcc -shared .libs/libTKernel.la-478.o  -ldl -lieee -lm  -Wl,-soname -Wl,l=
+ibTKernel.so.0
+-o .libs/libTKernel.so.0.0.0
+/usr/bin/ld: .libs/libTKernel.la-478.o(.text.1+0x37798): cannot reach 000=
+00387__ZNSolsEPFRSoS_E+0,
+recompile with -ffunction-sections
+/usr/bin/ld: .libs/libTKernel.la-478.o(.text.1+0x37798): cannot handle R_=
+PARISC_PCREL17F
+for std::ostream::operator<<(std::ostream& (*)(std::ostream&))
+/usr/bin/ld: final link failed: Bad value
+collect2: ld returned 1 exit status
+make[3]: *** [libTKernel.la] Error 1
+make[3]: Leaving directory `/CAD/OpenCascade/build/src/TKernel'
+make[2]: *** [all-recursive] Error 1
+make[2]: Leaving directory `/CAD/OpenCascade/build/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/CAD/OpenCascade/build'
+make: *** [all] Error 2
 
-Gavin
+As it is a very long job (more then 12h) what would it be better:
+1) simply following advise: "recompile with -ffunction-sections"
+2) upgrade directly to gcc-3.2
+
+Thanks for help,
+    Joel
+
+
+*********************************************
+Vous surfez toujours avec une ligne classique ?
+Faites des economies avec Tiscali Complete...
+Plus d'info sur ... http://complete.tiscali.be
