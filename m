@@ -1,26 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E3CB8482A
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Oct 2001 06:18:19 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15tpeM-0004w3-00
-	for parisc-linux@parisc-linux.org; Wed, 17 Oct 2001 13:18:18 +0100
-Date: Wed, 17 Oct 2001 13:18:18 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] WARNING ftp site moved -> ftp.parisc-linux.org
-Message-ID: <20011017131818.B22885@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+Received: from femail37.sdc1.sfba.home.com (femail37.sdc1.sfba.home.com [24.254.60.31])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F808482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Oct 2001 07:22:58 -0600 (MDT)
+Message-ID: <3BCD83E8.1FC11112@eisner.com>
+Date: Wed, 17 Oct 2001 09:13:12 -0400
+From: Averell Eisner <a_eisner@eisner.com>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] HP Corporate Support
 List-ID: <linux-parisc.vger.kernel.org>
 
-ok, i've moved the patches from /src to /patches.  there's a lot of
-really really old stuff in /src which i'm tempted to delete.  i don't
-think we need egcs-2.9-hppa-991112.tar.{gz,bz2} any more, for example.
-parisc-linux-src-19991019.tar.gz is probably not of much interest any more
-either (that's probably kernel 2.2 based...).  anyone still interested
-in dpkg-src-20000824.tar.gz either?
+FYI
+
+> FRAMINGHAM, Mass., Oct 16, 2001 (BUSINESS WIRE) -- IDG World Expo
+> announced today that Carly Fiorina, chairman and CEO of Hewlett-Packard
+> Company, will present the opening keynote address at the upcoming 
+> LinuxWorld Conference & Expo, held January 29 - February 1, 2002 at 
+> New York City's Jacob K. Javits Convention Center. Sanjay Kumar, 
+> president and CEO of Computer Associates, and William Zeitler, senior 
+> vice president and group executive of IBM's Server Group, will also 
+> present keynotes at the event. 
 
 -- 
-Revolutions do not require corporate support.
+Averell
