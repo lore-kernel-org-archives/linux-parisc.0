@@ -1,29 +1,55 @@
-Return-Path: <hppa-linux@puffingroup.com>
-From: Wim Coekaerts <wcoekaer@aldebaran.wimmekes.net>
-Message-Id: <199902180223.SAA02882@aldebaran.wimmekes.net>
-To: hppa-linux@puffingroup.com
-Date: Wed, 17 Feb 1999 18:23:30 -0800 (PST)
-Content-Type: text
-Subject: [hppa-linux] NIC
-Resent-Message-ID: <"F0aqv1.0.Qu6.Setos"@burrow.puffingroup.com>
+Return-Path: <pjlahaie@sims-ha.videotron.net>
+Date: Wed, 17 Feb 1999 20:39:10 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@ottawa.com>
+Sender: pjlahaie@sims-ha.videotron.net
+To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
+Message-id: <36CB6F3E.5860DA3E@ottawa.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [hppa-linux] binutils / egcs oddity (yet another)
+Resent-Message-ID: <"HoAQY1.0.Tq6.5zsos"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Ok, I know this is not totally relevant to linux itself but I need to get my 735/99 up and running before I can be of help :)
+I've been trying to get egcs to build a binary that will run on
+MkLinux, unfortunately, it's (once again) doing odd things.
+If I take the standard crt0.o shipped with MkLinux and use the MkLinux
+nm on it, I get the following:
 
-Since a crash last saturday, I cannot get my network up anymore, when I do 
-lanscan it gives me 
+00000000 T $START$
+00000004 D $global$
+00000000 D __environ
+         U _start
+00000000 D environ
 
-path 2.0.2  address  0x080009629AC0 lu 0 State DOWN 
-NameUnit lan0 State DOWN ID4 method ETHER number 52
+    If I run the new x-binutils from the 2.9 series I get the following:
 
-ioscan recognizes it, at boot it detects the hardware device but whenever I do ifconfig 10.0.0.5 netmask 255.255.255.0 up it comes back with no such device
+00000000 T $START$
+20000004 D $global$
+20000000 D __environ
+         U _start
+20000000 D environ
 
-I have no clue what to do anymore, I tried different transceivers..nada... the lights on the transceiver are on so that seems to be ok.
+   For some reason, it's putting some symbols really far out.  If I do a
+link with the standard MkLinux tools, I get main as my last symbol
+and it's in the "0000axxx" range (on a program with an empty main
+file).  If I try the same program with egcs/binutils 2.9 I get:
 
-any hints ? Without that I will have to move a scsi disk out and put the mklinux image on it and stuff  whihc I don'mt mind doing but I rather have my network up and go from there
+200093c0 D __environ
+200093c0 D environ
+200093c4 D $global$
+200093c8 D _exit_dummy_ref
+200093d0 D _exit_dummy_decl
 
-thanks
+
+   As my last symbols.  I've been studying the GNU ld linker scripts but
+they don't seem to be the culprits.  I could run gdb on ld and
+find out where it's getting that 0x20000000.  But this will probably be
+lots of effort and are we looking for MkLinux binary compatibility?
+If we aren't then we should just make the Linux/HPPA port loader capable
+of dealing with the standard egcs HPPA-ELF output.
+
+										- Paul
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
