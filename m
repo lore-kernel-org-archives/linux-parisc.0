@@ -1,31 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA02842
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Nov 1999 08:44:20 -0700
-Date: Tue, 23 Nov 1999 16:47:23 +0100
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA02965
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Nov 1999 08:45:14 -0700
+Date: Tue, 23 Nov 1999 12:47:18 +0100
 From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Cannot load IPL, error detected
-Message-Id: <19991123164723.F1009@mathe.stud.uni-erlangen.de>
-References: <199911230004.QAA03909@milano.cup.hp.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Progress
+Message-Id: <19991123124718.D1009@mathe.stud.uni-erlangen.de>
+References: <19991122193347.A1009@mathe.stud.uni-erlangen.de> <199911222055.PAA01550@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199911230004.QAA03909@milano.cup.hp.com>
+In-Reply-To: <199911222055.PAA01550@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Can I assume bootp found the right entry since it knew the IP addresses?
+> My timing tests on a 735 indicate that the loop with two addib instructions
+> is only 25% faster than a loop with one addib and one nop.
 
-It looks to me like it might be hardware/network and I've seen similar
-things happening here (where I suspect the flakey component is the network
-card in my bootp server).
+Who cares about how fast the loop is, actually ?
 
-> What's changed?
-> I don't know if something my local copy of CVS is wrong or if something
-> in the CVS tree changed.
+> You are correct that there are only two actual instructions in the loop.
+> However, the timing measurements indicate that the two addib loop stalls
+> for one instruction time.  Thus, effectively there is an extra nop in your
+> loop.
 
-I still doubt it, you should at least see the boot loader print some
-messages.
+> As a result, my comments re the BogoMIPS calculation below are correct for
+> a 735 PA7100.  I think the stall is on the second addib when the forward
+> branch is not taken.
 
-Sure the bootp server is actually running ?
+Forward branches should be predicted not taken.
 
 	Philipp Rumpf
