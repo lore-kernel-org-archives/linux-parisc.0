@@ -1,38 +1,48 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA28750
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 09:27:58 -0600
-Received: from flow4 ([24.112.191.14]) by mail.rdc3.on.home.com
-          (InterMail v4.01.01.02 201-229-111-106) with SMTP
-          id <19991005152617.GXRF9280.mail.rdc3.on.home.com@flow4>
-          for <parisc-linux@thepuffingroup.com>;
-          Tue, 5 Oct 1999 08:26:17 -0700
-Message-Id: <1.5.4.32.19991005152758.007165cc@pop3.sprint.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Tue, 05 Oct 1999 11:27:58 -0400
-To: parisc-linux@thepuffingroup.com
-From: Tomasz Korycki <tkorycki@sprint.ca>
-Subject: Re: [parisc-linux] Status Query .
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA29944
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 17:22:56 -0600
+Received: from arctic (hamster@arctic [129.138.40.17])
+	by arctic.nmt.edu (8.8.7/8.8.7) with ESMTP id RAA21557
+	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 17:23:36 -0600
+Date: Tue, 5 Oct 1999 17:23:36 -0600 (MDT)
+From: Steve Ball <hamster@arctic.nmt.edu>
+cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <199910050731.JAA12199@seger.axis.se>
+Message-ID: <Pine.LNX.4.04.9910051713170.18798-100000@arctic>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Out of the loop....
 List-ID: <linux-parisc.vger.kernel.org>
 
-At 09:31 99-10-05 +0200, you wrote:
->
-> I have a 725/50 ( or something like that ) and I am really interested in doing
-> some work on the hppa, perhaps not the kernel, but some driver would be ok.
->
-> However I do not have HP-UX, so I want to setup the HP, as a linux workstation
-> as a firts step, it seems that there is a booting kernel, but I haven't seen
-> anyone boot a shell och mount a filesystem, am I of the correct oppinion to
-> assume that the kernel have not yet reached this point ??
->
 
-You are correct. What I'd suggest, is to go to:
-http://www.software.hp.com/Y2K-upgrades/upgrade_request.html
-and get Yourself 10.20 for the cost of shiping. Grab it while it lasts. Then
-find someone with a Linux box and beg/steal/borrow it. Around here You can
-get a Linuxable 486 for a U$80, Pentium (low) for U$180-200. So You may even
-buy one... I know a code/compile/debug cycle can use a fast machine, but
-with a bit of discipline one can make do with a slow, too...
+Wheeee so its been a while since i've done any work on these HP machines
+here.. I tried unsucessfully to boot a kernel back in July, and today I
+decided to try it again.  Put rbootd on my linux box, and booted the 09-30
+image I got from puffin on my system.
 
-> / best regards, lars segerlund.
->
+Its an HP apollo Series 700, which boils down to a model 730 (King
+Cobra) 66mhz machine with 64 megs of mem.
+
+The bootloader seems to boot ok, it hangs at transferring control to the
+kernel, entry point 0x00010000 (earlier versions of the kernel made it all
+the way to the rotating cursor) and I get a hex A7 on the LED
+indicators...
+
+Anyway, hoping maybe this will help someone!  I'm more than happy to try
+anything out on these machines as they are doing absolutly nothing right
+now but sitting here.
+
+Have fun! 
+
+----------------------******-------------------
+Steve Ball
+NMT EE Department System and Network Admistrator
+
+C/S 3392	  	 |	Remember,
+Socorro, NM 87801	 |	amateurs built the ark.
+hamster@arctic.nmt.edu	 |      Professionals built the
+www.ee.nmt.edu/~hamster	 |	Titanic.
+
+'64 Wag 230 OHC/27-4.10/44-4.09/20/T-90/4dr/4wd
+"Water covers 75% of the earth.... Jeeps cover the rest."
+----------------------******-------------------
