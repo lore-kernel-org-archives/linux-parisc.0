@@ -1,12 +1,18 @@
-From: "Adam J. Richter" <adam@yggdrasil.com>
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Date: Sat, 9 Nov 2002 17:50:42 -0800
-Message-ID: <200211100150.RAA27228__42279.1130179123$1416621896$gmane$org@baldur.yggdrasil.com>
-Cc: andmike@us.ibm.com, hch@lst.de, James.Bottomley@steeleye.com,
-	linux-kernel@vger.kernel.org, mochel@osdl.org,
-	parisc-linux@lists.parisc-linux.org
-To: grundler@dsl2.external.hp.com
+From: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
+ interface
+Date: Sat, 09 Nov 2002 21:01:29 -0500
+Message-ID: <200211100201.gAA21Uv04824__5575.53230687535$1416621896$gmane$org@localhost.localdomain>
+References: <adam@yggdrasil.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: James.Bottomley@SteelEye.com, andmike@us.ibm.com, greg@kroah.com,
+	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org, willy@debian.org
+To: "Adam J. Richter" <adam@yggdrasil.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: Message from "Adam J. Richter" <adam@yggdrasil.com>
+   of "Sat, 09 Nov 2002 16:23:59 PST." <200211100023.QAA27139@baldur.yggdrasil.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,34 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler writes:
->Documentation/driver-model/overview.txt:
->| Note also that it is at the _end_ of struct pci_dev. This is
->| to make people think about what they're doing when switching between the bus
->| driver and the global driver; and to prevent against mindless casts between
->| the two.
->
->Until this changes, I don't see this as a useful replacement for
->either PCI or parisc devices. The "mindless casts" can be fixed.
->But without the ability to easily go from generic device type to
->bus specific type, people will just get lost in the maze of pointers.
+adam@yggdrasil.com said:
+> 
+> 	I'd like to know more about what these machines look like in the real
+> world.  Specifically, I am interested in the trade-off of having a
+> parameter to wback_fake_consistent so that it could be enabled or
+> disabled on an individual basis.
 
-	linux-2.5.46/include/linux/kernel.h already defines
-container_of(ptr_to_element, parent_struct, element_name).
+Actually, so would I.  I can suspect why there might exist machines like this 
+(say the consistent attribute is settable at the pgd level)
 
->From <linux/pci.h>:
-#define to_pci_dev(n) container_of(n, struct pci_dev, dev)
+> 	I suspect that the parameter is not worth the clutter because these
+> "partially consistent" machines either have a large amount of
+> consistent memory, so the case of the allocation failing in the is not
+> worth supporting, or it is easy to check for consistent memory on them
+> with something like "if ((unsigned long) vaddr < 0xwhatever)", but I'm
+> just guessing. 
 
->From <linux/usb.h>:
-#define to_usb_device(d) container_of(d, struct usb_device, dev)
+Well, if it has to be done, it can be done by making alloc_consistent return a 
+handle rather than an address and making wback/invalidate take the handle (but 
+it's certainly not ideal).
 
->From <asm-parisc/hardware.h> with my parisc device patch:
-static inline struct parisc_device *to_parisc_dev(struct device *dev)
-{
-        return container_of(dev, struct parisc_device, device);
-}
-
-Adam J. Richter     __     ______________   575 Oroville Road
-adam@yggdrasil.com     \ /                  Miplitas, California 95035
-+1 408 309-6081         | g g d r a s i l   United States of America
-                         "Free Software For The Rest Of Us."
+James
