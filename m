@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9BE9C4848
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Aug 2003 10:15:30 -0600 (MDT)
-Date: Thu, 14 Aug 2003 18:15:28 +0200
-Message-ID: <3F2A5B0400003183@ocpmta1.freegates.net>
-In-Reply-To: <20030814152348.GA17578@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] itlb miss handler optimizations!
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
+	by dsl2.external.hp.com (Postfix) with SMTP id 92DA34848
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Aug 2003 10:36:09 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1060878968.3f3bba7807eb5@clients.latnet.lv>
+Date: Thu, 14 Aug 2003 19:36:08 +0300 (EEST)
+From: Mihails Nikitins <nikitins@latnet.lv>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=KOI8-R
+Subject: [parisc-linux] PALO questions
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +20,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- 
->> 
->> On Thu, Aug 14, 2003 at 03:56:42PM +0200, Joel Soete wrote:
->> In the 2 cases, if a fault occurs an interrupt (6, 15, 16,17 or 20) is
->> 'triggered'?
->>
->yes, but most people call them "traps" or "faults" to be more specific.
->Chapter 5 of the PA 2.0 arch book differentiates nicely.
+Hi all,
 
-Yes (that is from where came 6,15,.. reference).
-Oh yes, my bad: I didn't notice that here interrupt is not the shortcut of
-interruptions as I use to make the mishmash :(
+1. PALO docs tell "recoverykernel" in palo.conf is the path to the kernel that
+you want to boot within a failsafe session, it will be stored in the 'f0'
+partition. Do I undertstand correctly that command like 
+palo &#8211;I /dev/sda
+copies file specified by paloc.conf line
+--recoverykernel=/boot/vmlinux   ?
 
-Thanks,
-    Joel
+2. Is it possible to see f0 partition contents? In HP-UX, there are commands
+working with LIF files like lifls and lifcp. How can I check if there is a
+recovery kernel in PALO area?
 
+3. I noticed palo warns about bad DOS magic. Is it normal?
 
--------------------------------------------------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=fr 
+# palo -I /dev/sda
+palo version 1.0 bame@palinux Mon Apr  1 10:03:01 MST 2002
+ELF32 executable
+Bad DOS magic in extended partition 
+
+fdisk -l /dev/sda
+
+Disk /dev/sda: 64 heads, 32 sectors, 8683 cylinders
+Units = cylinders of 2048 * 512 bytes
+
+   Device Boot    Start       End    Blocks   Id  System
+/dev/sda1             1        17     17392   f0  Linux/PA-RISC boot
+/dev/sda2            18        50     33792   fd  Linux raid autodetect
+/dev/sda3            51       563    525312   fd  Linux raid autodetect
+/dev/sda4           564      8683   8314880    5  Extended
+/dev/sda5           564      4683   4218864   fd  Linux raid autodetect
+/dev/sda6          4684      8683   4095984   fd  Linux raid autodetect
+
+Many thanks in advance for your clever comments!
+
+BR,
+Mihails
