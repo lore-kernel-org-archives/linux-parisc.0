@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 17 Apr 2003 22:41:13 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: "M. Grabert" <xam@cs.ucc.ie>,
-	"Beerse, Corn?\"" <c.beerse@torex-hiscom.nl>,
-	Matthew Wilcox <willy@debian.org>,
-	Gavin Hubbard <ghub005@xtra.co.nz>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Presicionbook success
-Message-ID: <20030418044113.GD16584@dsl2.external.hp.com>
-References: <Pine.LNX.4.44.0304161504230.28370-100000@sal.ucc.ie> <1050504092.28591.97.camel@dhcp22.swansea.linux.org.uk>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F296E4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Apr 2003 23:21:02 -0600 (MDT)
+Date: Thu, 17 Apr 2003 22:17:10 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] some 2.5 kernel profile data
+Message-ID: <20030418051710.GV25257@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20030414052248.GG25257@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1050504092.28591.97.camel@dhcp22.swansea.linux.org.uk>
+In-Reply-To: <20030414052248.GG25257@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,14 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Apr 16, 2003 at 03:41:33PM +0100, Alan Cox wrote:
-> There are several ways but that would be subverting a rights management
-> system and I don't wish to get the list owners in trouble.
+In reference to a message from Randolph Chung, dated Apr 13:
+> i ran 'readprofile' on a 2.5.67-pa3 UP kernel (a500, 64-bit) with
+> several different workloads. here are the numbers if anyone is
+> interested.
 
-Alan,
-interesting comment.  HPUX/parisc does not have "rights management"
-once one has access to the console.
+upon future reflection, these profiles are all wrong, because we 
+really need to take a before and after measurement and diff them... 
+<sigh> what was i thinking?
 
-Bjorn already posted the "proper" method (ISL> hpux -is).
+i'll remeasure them this weekend and post new results. meanwhile, i'm 
+putting a diffprof script in cvs, since no one on #kernel seems to know
+of a "standard" one, and the one i got from wli is in haskell, so 
+i don't understand it, and it doesn't work on parisc :)
 
-grant
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
