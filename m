@@ -1,45 +1,51 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA22244
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 20:38:30 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 26 Jan 2001 03:42:27 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14LzBo-00056f-00; Fri, 26 Jan 2001 03:04:40 +0000
-Date: Fri, 26 Jan 2001 03:04:40 +0000
-From: Matthew Wilcox <matthew@wil.cx>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA22754
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 21:02:33 -0700
+Received: from hse-ottawa-ppp237516.sympatico.ca (HELO localhost.linuxcare.com) (64.230.77.77)
+  by mailserv2.iuinc.com with SMTP; 26 Jan 2001 04:06:28 -0000
+Received: by localhost.linuxcare.com (Postfix, from userid 501)
+	id 4309F261; Fri, 26 Jan 2001 00:07:12 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by localhost.linuxcare.com (Postfix) with ESMTP
+	id B1153AB70; Fri, 26 Jan 2001 00:07:12 -0800 (PST)
+Date: Fri, 26 Jan 2001 00:07:12 -0800 (PST)
+From: dkennedy <dkennedy@linuxcare.com>
 To: Grant Grundler <grundler@cup.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] linux-2.4.0
-Message-ID: <20010126030440.A18813@parcelfarce.linux.theplanet.co.uk>
-References: <20010126004831.A8137@parcelfarce.linux.theplanet.co.uk> <200101260157.RAA22922@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200101260157.RAA22922@milano.cup.hp.com>; from grundler@cup.hp.com on Thu, Jan 25, 2001 at 05:57:14PM -0800
-Sender: <willy@www.linux.org.uk>
+Subject: Re: [parisc-linux] CPU detection wrong 
+In-Reply-To: <200101260024.QAA22790@milano.cup.hp.com>
+Message-ID: <Pine.LNX.4.21.0101260002130.3746-100000@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jan 25, 2001 at 05:57:14PM -0800, Grant Grundler wrote:
-> Unless someone objects, My plan is to continue working on CONFIG_SMP
-> until it boots on my A500. Then merge the 2.4.0 PCI stuff onto our
-> tree. The problem is names of pci "generic" functions changed -test11
-> or -test12 and what they do has been slightly changed. Certain things
-> definitely break A500 support. I need to revisit both the generic and
-> elroy code so it all works again.
+On Thu, 25 Jan 2001, Grant Grundler wrote:
 
-i don't mind waiting.
+> Matthew Wilcox wrote:
+> > we have the following entry in hardware.c:
+> > 
+> >         { 0x05c0, 0x0fc0, pcxw   },  /* 0x05c0 - 0x05ff */
+> 
+> David (Kennedy),
+> You have time to fix the table based on the "Appendix B" data below?
 
-> Which means the linus tree still won't build a parisc-kernel.
-> He'll have missing symbol errors in the PCI subsystem for sure.
-> But I guess we'll keep getting closer as time goes on.
+Done.  I have committed it.  I don't have a PA box near me.  Can someone
+check my change to:
+	- ensure it compiles
+	- it correctly detects all the machines old and new.
 
-right.  i don't anticipate getting all the changes we need into linus'
-tree any time soon, possibly not until 2.5 opens.  i think 2.4.0 only
-works on x86 & alpha.  i know it doesn't work on ia64 -- some journalists
-tried to make a big deal out of this.  i see linus put ppc, sparc &
-sparc64 patches into 2.4.1-pre, so I'm guessing 2.4.0 doesn't work on
-those arches either.
+> In the long run, I don't want to be involved in maintaining this table.
+> An easier way to determine processor type is based on CPU and FP-Coproc
+> MODEL information. Our kernel queries for both now and it's just a
+> matter of putting it to use.
 
-just for giggles, i merged 2.4.1-pre10 into our tree.  no conflicts.
+I don't mind maintaining this table.  It would be goot to keep this table 
+and the hardware database in sync.
+
+I will make sure that the hardware database is updated accordingly.
 
 -- 
-Revolutions do not require corporate support.
+David Kennedy, Technical Account Manager, Linuxcare, Inc.
+613.562.9594 tel, 613.562.9304 fax
+dkennedy@linuxcare.com, http://www.linuxcare.com/
+Linuxcare.  Support for the revolution.
