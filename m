@@ -1,19 +1,23 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: review sg_format
-Date: Fri, 11 Mar 2005 10:39:29 -0700
-Message-ID: <20050311173929.GA15070@colo.lackof.org>
-References: <4210A33A.5020004@torque.net>
-	<1110428346.17563.89.camel@bluto.andrew>
-	<423006B1.2030008@torque.net>
-	<20050311064021.GA7208@colo.lackof.org>
-	<42314D8B.1080202@torque.net>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Solution to OPD's in hppa-linux,
+	including a transition plan?
+Date: Fri, 11 Mar 2005 13:05:42 -0500
+Message-ID: <20050311180542.GV22872@baldric.uwo.ca>
+References: <20050308175445.GV23803@baldric.uwo.ca>
+	<200503081902.j28J2XMe002188@hiauly1.hia.nrc.ca>
+	<20050308210851.GA23803@baldric.uwo.ca>
+	<20050308222513.GF15642@bubble.modra.org>
+	<20050310153120.GJ22872@baldric.uwo.ca>
+	<20050310222751.GE7616@bubble.modra.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Douglas Gilbert <dougg@torque.net>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: Alan Modra <amodra@bigpond.net.au>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42314D8B.1080202@torque.net>
+In-Reply-To: <20050310222751.GE7616@bubble.modra.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,106 +28,102 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Mar 11, 2005 at 05:49:31PM +1000, Douglas Gilbert wrote:
-> >The problem is with the asm/unistd.h header file that comes from
-> >the debian kernel-headers-2.4.26 package.
-
-I think I'm wrong about this - I should be using "linux-kernel-headers"
-package like on gsyprf3. Below is more analysis on the problem.
-
-Bottomline: My guess is we could modify asm-parisc syscall
-  to be "-std=c99" friendly. I'd like to hear other peoples
-  opinions on that.
-
-> >Linue 46 of llseek.c is static decl of _syscall5
-> >and that collides with the "#define _syscall5"
-> >in asm/unistd.h. The same #define is in our current 2.6 kernel
-> >(see gsyprf11:/usr/src/linux-2.6/include/asm/unistd.h).
-> >All the asm-*/unistd.h have this #define. 
-
-...and _syscall5 is just a "victim".
-
-> Grant,
-> Thanks for picking that up. That llseek.c has an "asm"
-> keyword in it which isn't kosher C90 nor C99 . So the
-> "-pendantic" adds some warnings and the "-std=c99"
-> promotes them into errors.
-
-Hrm...I've generated the pre-processed file on
-	gsyprf11:/usr/src/sg3_utils-1.13/llseek.P
-
-The offending code is coming from K_INLINE_SYSCALL() macro
-that's defined in asm/unistd.h.
-I expect Line 1754 is the offending one.
-I've reformatted below so it's readable:
-
-static int _llseek(unsigned int fd, unsigned long offset_high,
-	 unsigned long offset_low, llse_loff_t * result, unsigned int origin)
-{
-	return (
-	{ unsigned long __sys_res;
-	{ register unsigned long __res asm("r28");
-	register unsigned long __r22 __asm__("r22") = (unsigned long)origin;
-	register unsigned long __r23 __asm__("r23") = (unsigned long)result;
-	register unsigned long __r24 __asm__("r24") = (unsigned long)offset_low;
-	register unsigned long __r25 __asm__("r25") = (unsigned long)offset_high;
-	register unsigned long __r26 __asm__("r26") = (unsigned long)fd;
-	asm volatile(	"ble  0x100(%%sr2, %%r0)\n\t"
-			" ldi %1, %%r20"
-			: "=r" (__res)
-			: "i" ((0 + 140)) , "r" (__r26), "r" (__r25), 
-				"r" (__r24), "r" (__r23), "r" (__r22) );
-	__sys_res = __res;
-	}
-	if (__sys_res >= (unsigned long)-4095) {
-		(*__errno_location ()) = -__sys_res;
-		 __sys_res = (unsigned long)-1;
-	}
-	__sys_res;
-	}
-	);
-} 
-
-If "asm" is the only offending bit, can that be fixed in the kernel
-header files and/or submit a patch against glibc header files so
-that future releases can be compiled with "-std=c99"?
-
-Looking at code in llseek.c inside the #ifdef __linux__, a few things
-strike me as odd:
-o None of the architectures in recent 2.4 or 2.6 kernel define HAVE_LLSEEK.
-  This looks obsolete because all linux arches support llseek now.
-
-o Why the #if alpha || ia64 || s390x to use a private my_llseek wrapper?
-  "my_llseek" also seems obsolete like HAVE_LLSEEK.
-  Are they the only ones to NOT define llseek because they only have
-  64-bit user space? (ie lseek is a synonym to llseek for those three?)
-
-  FWIW,  I added defined(__hppa__) to the #if and it properly linked.
-  sg_dd seems to work correctly but I'm certain I'm not excercising the
-  code properly (e.g. testing syscall restart) or able to verify the results.
-  And I've also not tested on older (2.4) kernels where other things
-  might be broken.
-
-
-> I built the latest util-linux
-> on gsyprf11 (llssek.c is in the fdisk directory) and it
-> went ok (until I added "-std=c99" to llseek.c's compile
-> line).
-
-ok. But I still wonder if parisc port needs to change anything.
-
-> Just rolling two new versions:
->    sg3_utils-1.13.tgz    [without "-pedantic -std=c99"]
->    sg3_utils-1.13-pedantic.tgz  [with "     "]
+On Fri, Mar 11, 2005 at 08:57:51AM +1030, Alan Modra wrote:
+> > In shared libraries the function pointer is also allocated a PLT slot
+> > and an IPLT relocation. 
+> > 
+> > I don't understand the reasons for the allocation of a PLT slot if all
+> > references generated go through the local label word that has the
+> > PLABEL32 reloc, which now contains the address returned by
+> > _dl_make_ftpr.
 > 
-> They will be on gsyprf3 (which has no problem with llseek.c)
-> + gsyprf11 shortly.
+> There probably isn't a good reason.  Blame that on me not understanding
+> what I was doing when dhd and I hacked together ld and glibc hppa-linux
+> support.
 
-AFAICT, gsyprf3 builds/links fine because my_llseek gets used
-instead of unistd.h.
+I understand why you allocate a PLT slot, because function calls seem to
+go through the PLT only without reference to the PLABEL32 word (in
+shared libraries). This saves an indirection through the PLABEL32 word
+during a call. I believe this to be what is happening, and I verfiied it
+lightly.
 
-hth,
-grant
+I went through the sources again, and you made some argument in a
+comment about passing "local function pointers" to other objects.
+
+The only way to verify my ideas is to run some tests, so here is the
+apparent summary.
+
+- Executable passes local function pointer to shared object.
+ = Passes the address of the PLT entry.
+ = PLT entry has IPLT reloc.
+
+- Shared object passes local function pointer to other shared object.
+ = Passes the address of *(PLABEL32 word) which points to a fdesc
+   made by _dl_make_fptr.
+ = The PLABEL32 word has a PLABEL32 reloc.
+
+- Shared object calls a local or global function.
+ = Calls through the PLT, which has an IPLT reloc.
+
+- Executable calls local function.
+ = Jumps directly to address.
+
+- Executable calls global function.
+ = Uses dyncall on the address of hte PLT
+ = PLT has IPLT reloc.
+
+> > I'm still trying to understand your earlier recommendation. Do you
+> > suggest that the executable have PLABEL32 relocs for all the symbols,
+> > local and global, which assures that _dl_make_fptr creates a unique OPD?
+> 
+> I was really just thinking of global symbols.  If ld handles descriptors
+> for locals, you save on dynamic relocs and program startup time.  I
+> haven't spent a great deal of time thinking about it though, so it's
+> highly likely that there is some reason why it won't work.  eg. You
+> wouldn't want dynamic plabel relocs to appear in read-only sections.
+
+I thought about this, and you are correct. Technically if the shared
+object can do a comparison then the symbol must have been global, and
+passed into the function.
+
+How do I do this in a backwards compatible way?
+
+Action
+=======
+If we emit a PLABEL32 reloc for all global symbols in the executable,
+baring relocs in read-only sections, which I'm sure shared libraries
+have the same problems, then the executable passes the address stored
+in the plabel word.
+
+Case 1:
+=======
+For these new executables gcc will not generate __cffc comparisons.
+For new libraries gcc will not generate __cffc comparisons.
+
+Case 2:
+=======
+Old executables will still pass the address of the plt entry, and
+comparisons in new shared libraries will fail.
+
+Case 3:
+=======
+New executables and old shared libraries will work just fine, since
+__cffc will think that everything has been resolved properly and just
+do comparison.
+
+Fixes:
+======
+Transition all executables to use PLABEL32 relocs for global symbols,
+the same as shared libraries. Keep gcc generating __cffc.
+One day when all the executables have been rebuilt, we can start turning
+off the generation of __cffc and "Case 2" will fail, but hopefully we
+have transitioned away from that happening.
+
+Thoughts?
+
+Cheers,
+Carlos.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
