@@ -1,53 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F65B4872
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 12:48:49 -0600 (MDT)
-Date: Fri, 28 Sep 2001 20:48:18 +0200 (CEST)
-From: Jochen Friedrich <jochen@scram.de>
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: Jurij Smakov <jurij@lokmail.net>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 720 - some progress
-In-Reply-To: <20010928182422.A22740@dogbert.localdomain>
-Message-ID: <Pine.NEB.4.33.0109282045120.601-100000@www2.scram.de>
+Received: from smtp.umr.edu (mrelay.cc.umr.edu [131.151.1.89])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5E92F49F9
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 13:02:31 -0600 (MDT)
+Message-ID: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F1@umr-mail03.cc.umr.edu>
+From: "Neulinger, Nathan" <nneul@umr.edu>
+To: "'Richard Allen'" <ra@hp.is>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] Status of hp-ux binary compatibility?
+Date: Fri, 28 Sep 2001 14:02:09 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="ISO-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Albert,
+Ah, thanks!... wonder why it got enabled since I told it no on dhcp...
+Weird. (I'm not a debian user, so some of it's ways of doing things are a
+bit odd to me.)
 
-> Then I tried a mke2fs on my SCSI disk's 2nd partition (ext2), in an
-> attempt to get my system to boot from disk... Eek!
->
-> scsi0: istat = 04, sstat0 = 00, sstat1 = 00, dstat = 00
-> scsi0: dsp = 005ee038 (script[0x180e]), dsps = 005eecde, target = 0
-> scsi0: Failing command for ID6
-> scsi0: Serious error, sstat0 = 04
-> scsi0: Chip register contents:
->  (script[0] at virt 105e8000, bus 5e8000)
->  00  sien:  af  sdid:  40  scntl1:20  scntl0:d4
->  04  socl:  06  sodl:  00  sxfer: 00  scid:  80
->  08  sbcl:  00  sbdl:  00  sidl:  00  sfbr:  00
->  0C  sstat2:06  sstat1:00  sstat0:00  dstat: 00
->  10
->  14  ctest3:84  ctest2:25  ctest1:0b  ctest0:00
->  18  ctest7:00  ctest6:00  ctest5:00  ctest4:00
->  1C  temp:  00000000
->  20              ctest8:ff  istat: 06  dfifo: 00
->  24  dbc:   0e000001  dnad:  005eecde  dsp:   005ee038
->  30  dsps:  005eecde
->  34  dmode: 80
->  38  dcntl: 80  dwt:   00  dien:  1d
->  3C
-> scsi0: Unexpected stacked interrupt, istat 06, sstat0 08, dstat 00
-> scsi0: Failed to handle interrupt.  Failing commands and resetting SCSI bus and chip
+-- Nathan
 
-On my installation i "fixed" this by switching off SCSI disconnects for my
-disks. IIRC, this was by adding sim700=nodisc:0x70 to the kernel command
-line.
-
-I'm currently about 150 km away from my HP9000/720 during the weekend.
-I'll test the proposed patch on Monday.
-
-Cheers,
-Jochen
+> -----Original Message-----
+> From: Richard Allen [mailto:ra@hp.is]
+> Sent: Friday, September 28, 2001 1:31 PM
+> To: Nathan Neulinger
+> Cc: parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
+> 
+> 
+> On Fri, Sep 28, 2001 at 12:35:26PM -0500, Nathan Neulinger wrote:
+> > I just started looking at PA-RISC linux 0.9.2 on a J210 
+> (which installed 
+> > great on a narrow scsi drive, but didn't see the internal fw). Only 
+> > problem I've seen so far is that it is spitting out 
+> ip_local_deliver bad 
+> > loopback skb: PRE_ROUTING LOCAL_IN messages on the console 
+> for the lo 
+> > device.
+> > 
+> 
+> I got rid of that message by killing the dhcp client daemon.
+> 
+> 
+> -- 
+> Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX 
+> Certified Admin.
+>                --  Solaris 7 Certified Systems and Network 
+> Administrator.
+> Bell Labs Unix --  Reach out and grep someone.
+> Those who do not understand Unix are condemned to reinvent it, poorly.
+> 
