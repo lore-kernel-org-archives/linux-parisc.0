@@ -1,66 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5DD19482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 12:59:42 -0600 (MDT)
-Sender: gururaj@cup.hp.com
-Message-ID: <3B49FE9A.CC4E7173@cup.hp.com>
-Date: Mon, 09 Jul 2001 11:57:31 -0700
-From: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0FDBA482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 13:21:37 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3B4A01A3.E002A925@esiee.fr>
+Date: Mon, 09 Jul 2001 21:10:27 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-To: Richard Hirst <rhirst@linuxcare.com>
+To: =?iso-8859-1?Q?Jo=EBl?= Soete <jso@europay.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installation on B180L workstation.
-References: <3B46452A.D15E2F4C@cup.hp.com> <20010709090053.D23509@linuxcare.com>
+Subject: Re: [parisc-linux] palinux 0.9.1
+References: <OF4AD5F437.F4915E3D-ONC1256A84.00613858@LocalDomain>
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks a lot for responding.
+Hi Joel,
 
-Richard Hirst wrote:
+	If you are interested in Debian One: go there
+http://people.debian.org/~rb/lsm/
+			http://www.niksula.cs.hut.fi/~ateras/travel/debian_conference/
 
-> On Fri, Jul 06, 2001 at 04:09:30PM -0700, Gururaj Ananthateerta wrote:
-> > I am trying to install on B180L.  I have an external CD ROM.
-> >  Does installation supports this configuration. ? If not
-> > how can i install?
->
-> Should work, so far as I know.  Please can you give more information:
->
-> What CD are you trying to install from? 0.9 ISO? 0.9.1 ISO?
-> (0.9.1 ISO has some problems, I hope a fixed one will be posted
-> soon).
+	For the LSM itself, you have the lsm.abul.org
 
-0.9 ISO.
+But from our point of view, it was interesting to see how Debianer(d)s
+are thinking of Debian and all... Also, we encountered a very warmful
+audience on Thrusday morning ;-) Soon the text will be online...
 
->
->
-> Serial console or graphical console?
-
-Serial Console.
-
->
->
-> Does the system find the CDROM when you do a SEArch?
-
-Yes, CD info is displayed during search. The CD ROM is a Toshiba make.
-
->
->
-> What happens when you try the install, exactly?
-
-Well, when I try to boot through the CD, I get the following message.
-"Boot Device not Ready
-  Retrying boot device...'
-I am kinda doubting the way I burned the CD. I will ckech this. It
-shouldn't be
-that case.
-
->
->
-> Richard
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-
-Guru
+Regards to all, Thomas
+ESIEE Team
