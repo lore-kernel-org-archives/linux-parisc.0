@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E16FB4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Jan 2003 02:03:15 -0700 (MST)
-Date: Mon, 6 Jan 2003 10:02:56 +0100
-Message-ID: <3E0085D000001E20@ocpmta5.freegates.net>
-In-Reply-To: <200301060231.h062VT5k090586@smtp.monmouth.com>
-From: jsoe0708@tiscali.be
-Subject: RE: [parisc-linux] kernel panic when extracting large tar files
-To: "Vlad D. Markov" <markov@monmouth.com>,
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE19B4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Jan 2003 06:15:42 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18VX6N-0006tC-00; Mon, 06 Jan 2003 13:15:35 +0000
+Date: Mon, 6 Jan 2003 13:15:35 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: jsoe0708@tiscali.be
+Cc: "Vlad D. Markov" <markov@monmouth.com>,
 	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [parisc-linux] kernel panic when extracting large tar files
+Message-ID: <20030106131535.V19239@parcelfarce.linux.theplanet.co.uk>
+References: <200301060231.h062VT5k090586@smtp.monmouth.com> <3E0085D000001E20@ocpmta5.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3E0085D000001E20@ocpmta5.freegates.net>; from jsoe0708@tiscali.be on Mon, Jan 06, 2003 at 10:02:56AM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +26,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->When I extract large tar files on my 735/99 (tar --numeric-owner -xzvpf
-),
->
->the kernel panics and I get a core dump.
+On Mon, Jan 06, 2003 at 10:02:56AM +0100, jsoe0708@tiscali.be wrote:
+> 
+> >
+> >When I extract large tar files on my 735/99 (tar --numeric-owner -xzvpf
+> ),
+> >
+> >the kernel panics and I get a core dump.
 
-Interesting, can you explain me how do you grab this coredump?
+FAQ #17
 
->
->My kernel is: Linux version 2.4.20-pa18 (root@grumpy) (gcc version 3.0.4=
-)
->#22 
->Fri Dec 27 21:25:37 EST 2002
->
->I saved a capture from minicom and have not upgraded the kernel since.
-
-Firstly the minicom capture, would already tell more :)
-
-Greetings,
-    Joel
-
-
-********************************************
-Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
-://adsl.tiscali.be
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
