@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout09.sul.t-online.com (mailout09.sul.t-online.com [194.25.134.84])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07249482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 11:07:39 -0600 (MDT)
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 25 Jul 2002 18:29:15 +0200
-From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-Message-ID: <3D40275B.55D3B7C7@ruhr-west.de>
-MIME-Version: 1.0
-References: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com>
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77D07482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 11:16:45 -0600 (MDT)
+Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
+	by hauptpostamt.charite.de (Postfix) with ESMTP id B57D315C00D
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 19:16:43 +0200 (CEST)
+Date: Thu, 25 Jul 2002 19:16:43 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: parisc list <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] i dont know jack
-To: Rick Vernam <rickvernam@hotmail.com>,
-	parisc list <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20020725171643.GA8177@charite.de>
+References: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com> <3D40275B.55D3B7C7@ruhr-west.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D40275B.55D3B7C7@ruhr-west.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,41 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Rick Vernam schrieb:
+Am 25.07.2002 um 18:29:15 +0200 schrieb Juergen Braukmann folgendes:
+
+> Hi Rick, there probably is. Boot into some nini root environment and
+> type:
 > 
-> i work at place that gets tons of computer junk >from companies that
-> are getting rid of their equip.  one of our requirements is to kill
-> the partitions on the HDs ( it is known that will no completely remove
-> data, just make is a little more difficult to get too ).  so we are
-> getting HP machines with pa-risc stuff and most wont boot ( i know
-> enough to know how to initiate a boot ).  is there some way, using
-> this parisc-linux that i can quickly kill partitions?
-> 
-> -Rick
-> rickvernam@hotmail.com
+> dd if=/dev/null of=/dev/sda [assuming THE drive is sda]
 
-Hi Rick, there probably is. Boot into some nini root environment and
-type:
+bs=1M
 
-dd if=/dev/null of=/dev/sda [assuming THE drive is sda]
+Increase the blocksize heftily.
 
-this will overwrite the intire disk with zero bytes (or was /dev/zero
-the proper device for that??). Atlernetivly, /dev/random might be a good
-source of rubbish data. ;-)
+> this will overwrite the intire disk with zero bytes (or was /dev/zero
+> the proper device for that??). Atlernetivly, /dev/random might be a good
+> source of rubbish data. ;-)
 
-there is the bs= parameter as well (block size). You probably need to
-experiment a bit with that, I tried to copy a 20GB disk via dd and it
-was dead slow, but I used 8KB as bs. I'd now start with a value of 4-8
-MB.
-
-dd if=/dev/null of=/dev/sda bs=512 count=1 will overwrite the boot
-sector and partition table; but that's DOS-logic, I do not know how much
-of that applies to original HP-UX disks.
-
-Juergen
+/dev/zero is better.
+Don't try /dev/random, it's too slow
 
 -- 
-===========================================     __   _
-Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
-Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
-===========================================_\_v __/_/_//_/\_,_/ /_/\_\
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+Why you can't find your system administrators:
+S/He is playing DOOM, to release pent-up tension created by lusers. 
