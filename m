@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35D1A482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jul 2003 02:54:36 -0600 (MDT)
-Date: Fri, 11 Jul 2003 10:54:23 +0200
-Message-ID: <3F0BEA830000088E@ocpmta1.freegates.net>
-In-Reply-To: <20030710235531.GB6200@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] C3000 SCSI config, was Re: linux grundler
-To: "Grant Grundler" <grundler@parisc-linux.org>,
-	"M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EAAE7482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jul 2003 04:27:03 -0600 (MDT)
+Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
+	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h6BAOTKd020475;
+	Fri, 11 Jul 2003 11:24:29 +0100
+Received: (from alan@localhost)
+	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h6BAORY6020473;
+	Fri, 11 Jul 2003 11:24:27 +0100
+Subject: Re: [parisc-linux] warning: minor abi change
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3F0BEA830000084F@ocpmta1.freegates.net>
+References: <3F0BEA830000084F@ocpmta1.freegates.net>
+Content-Type: text/plain
+Message-Id: <1057919066.8005.39.camel@dhcp22.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: 11 Jul 2003 11:24:27 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,26 +30,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Max,
+On Gwe, 2003-07-11 at 09:26, Joel Soete wrote:
+> PS2: Also for future 2.4.22, in binfmt_som.c '#error "Fix security hole before
+> enabling me"' (line 216). Do you have any idea to fix it?
 
->Ok. Given the older 2.4.20 kernel with sym1 driver sees the
->same issues, it stinks like a HW problem. And termination
->was the most obvious starting point.
+Look at the changes in binfmt_elf and copy them. Basically its about 
+stopping someone doing
 
-Don't you retry 2.4.19 with sym1?
-
->Try take the LVD drives out of the C3000 and re-seat them firmly.
->It's also possible one of the LVD drives is dying.
-
-Don't you have a HP cd containing ODE (Off-line Diagnostics Environment)
-(in general available on Support Plus CD) this would allow you to test your
-disks.
-
-hth,
-    Joel
-
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+	clone with file sharing
+	one thread		other thread
+	exec			swap file handles around
+	loads wrong binary suid
