@@ -1,57 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (unknown [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0CFFC482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 13:19:26 -0600 (MDT)
-Date: Mon, 3 Sep 2001 13:19:23 -0600
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Delaying the device inventory detection time
-Message-ID: <20010903131923.A11381@beavis.ybsoft.com>
-References: <200109020616.AAA07559@udlkern.fc.hp.com>
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B8044482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 16:25:54 -0600 (MDT)
+Date: Mon, 03 Sep 2001 15:24:43 -0700 (PDT)
+Message-Id: <20010903.152443.59467554.davem@redhat.com>
+To: Ulrich.Weigand@de.ibm.com
+Cc: Richard.Zidlicky@stud.informatik.uni-erlangen.de,
+	thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
+	linux-kernel@vger.kernel.org
+From: "David S. Miller" <davem@redhat.com>
+In-Reply-To: <OF9A995335.07A81CF5-ONC1256ABC.00422A7B@de.ibm.com>
+References: <OF9A995335.07A81CF5-ONC1256ABC.00422A7B@de.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109020616.AAA07559@udlkern.fc.hp.com>
-From: rbradetich@uswest.net (Ryan Bradetich)
+Content-Type: Text/Plain; charset=us-ascii
+Subject: [parisc-linux] Re: [SOLVED + PATCH]: documented Oops running big-endian reiserfs
+ on parisc architecture
 List-ID: <linux-parisc.vger.kernel.org>
 
-John,
+   From: "Ulrich Weigand" <Ulrich.Weigand@de.ibm.com>
+   Date: Mon, 3 Sep 2001 14:08:43 +0200
+   
+   >From what I recall when we were looking into reiserfs on S/390,
+   the core problem was that reiserfs tried to do *atomic* operations
+   on non-aligned words.  This isn't supported by the hardware on
+   S/390 (normal non-aligned accesses just work).
+   
+   I don't really see how this can be fixed in a trap handler; how
+   would the handler guarantee atomicity?
 
-Willy and I have been looking over the current boot sequence and did not
-see any reason why the device detection could not be delayed until main
-memory had been setup.  The only special case looked like the cpu driver,
-and upon further investigation, all the cpu related information was
-gathered via pdc calls.  I remember our converstation about using bootmem
-and regulard kmalloc'd memory with a flag to detect which type of memory
-was used, but delaying the device detection until memory was initialized
-seems like a cleaner solution.   Are there cases where this scheme will
-not work?  Like with SMP kernels?  Newer hardware (like superdome), etc?
+Oh thats different!  That won't even work %100 correctly on x86.  On
+x86 it will "execute", but it won't be atomic.
 
-Thanks for your feedback John, if this patch is not going to work, then
-we need to restructure the design of the iotree to not depend upon this
-patch!
+Why the F*CK does it need to do this?  It sounds like sloppy
+programming to me.
 
-- Ryan
-
-On Sun, Sep 02, 2001 at 12:16:39AM -0600, John Marvin wrote:
-> 
-> Ryan,
-> 
-> Why isn't alloc_bootmem or alloc_bootmem_pages good enough? I already
-> restructured the boot sequence a while back to allow for that.
-> 
-> The only problem I see with using those routines is that it is a little
-> harder to free up memory allocated with those routines once the
-> memory subsystem is fully initialized, but if you are only dynamically
-> allocating, without a need to free the memory you should be able to
-> use those routines without having to do any restructuring.
-> 
-> John
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
-
--- 
+Later,
+David S. Miller
+davem@redhat.com
