@@ -1,23 +1,17 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1E1784AED
+Return-Path: <mpshenoy@vsnl.com>
+Received: from rwcrmhc11.comcast.net (rwcrmhc11.comcast.net [204.127.198.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 93D78483C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 29 Mar 2004 17:07:29 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88660.dip0.t-ipconnect.de
-	[217.232.134.96])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2U07So25762
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Mar 2004 02:07:28 +0200
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
+	Mon, 29 Mar 2004 20:47:49 -0700 (MST)
+From: "Prakash Shenoy" <mpshenoy@vsnl.com>
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 30 Mar 2004 02:07:07 +0200
-Message-ID: <0f7001c415ea$f09da3d0$fc01a8c0@muc.nccconsulting.de>
+Subject: [parisc-linux] HP 9000 Visualize C180 Workstation display does not
+	appear.
+Date: Mon, 29 Mar 2004 22:47:59 -0500
+Message-ID: <OFEELBIMFFDMJBJFHICCKELICEAA.mpshenoy@vsnl.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+	charset="iso-8859-1"
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +21,46 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+Thanks. Using tab key I could sucessfully bring the display up.
+I also installed Debian 2.4 using net-iso
+(palinux-2.4.21-pa6-20030718-netinst.iso).
+The installation gets completed without any problem but the system does not
+come up after
+reboot.
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/30/2004 2:07:07 AM
-Engine/Pattern = 6.860-1001/1.842.00
+I have two SCSI hard disks on the workstation and debian installed on drive
+0. The system
+stops at ISL prompt.
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+Please help.
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+Prakash
+
+
+On Thu, Mar 25, 2004 at 10:06:35PM -0500, Prakash Shenoy wrote:
+> Hi!
+>
+> I recently bought a HP 9000 Visualize C180 workstation from a vendor on
+eBay
+> and EVC to VGA Video Adapter Cable from another vendor. Both claim that
+Non
+> DOA on arrival.
+>
+> The workstation appears to boot properly but no display appears. Has any
+one
+> come across this situation.
+
+Have you tried hitting <tab> key at power up?
+That should let you cycle through the various supported
+graphics modes.
+
+Have you tried with a serial console?
+disconnect the keyboard before doing this.
+
+This is a FAQ but it's not in the parisc-linux FAQ.
+If someone has a moment to submit a patch against
+cvs.parisc-linux.org's web/src/faq/index.x I'll be
+happy to edit/submit it.
+
+thanks,
+grant
