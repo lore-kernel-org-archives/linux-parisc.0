@@ -1,16 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2C0D84882
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Jul 2002 07:27:01 -0600 (MDT)
-Message-ID: <3D32CDE4.6060509@itp.bg>
-Date: Mon, 15 Jul 2002 16:28:04 +0300
-From: Stephan Trajkoff <stephan@itp.bg>
-MIME-Version: 1.0
-To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] STI framebuffer and PINE
-References: <20020714065104.DF333484C@dsl2.external.hp.com> <20020714081241.GC14636@charite.de> <20020715135550.H27706@parcelfarce.linux.theplanet.co.uk> <20020715132456.GP12241@charite.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from irongate.swansea.linux.org.uk (pc2-cwma1-5-cust12.swa.cable.ntl.com [80.5.121.12])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C1444890
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Jul 2002 07:29:54 -0600 (MDT)
+Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
+	by irongate.swansea.linux.org.uk (8.12.2/8.11.6) with ESMTP id g6FEc2u6030453;
+	Mon, 15 Jul 2002 15:38:02 +0100
+Received: (from alan@localhost)
+	by irongate.swansea.linux.org.uk (8.12.2/8.12.2/Submit) id g6FEbx8C030451;
+	Mon, 15 Jul 2002 15:37:59 +0100
+Subject: Re: Re: [parisc-linux] STI framebuffer and PINE
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Stephan Trajkoff <stephan@itp.bg>, Ralf.Hildebrandt@charite.de,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020715142028.J27706@parcelfarce.linux.theplanet.co.uk>
+References: <20020714091619.B1E35483A@dsl2.external.hp.com>
+	<20020715142028.J27706@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain
+Date: 15 Jul 2002 15:37:59 +0100
+Message-Id: <1026743879.30202.5.camel@irongate.swansea.linux.org.uk>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,4 +31,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In Bulgaria there is no licences :))) for UNIX software...
+On Mon, 2002-07-15 at 14:20, Matthew Wilcox wrote:
+> On Sun, Jul 14, 2002 at 12:17:46PM +0300, Stephan Trajkoff wrote:
+> > my clients want pine, not mutt
+> 
+> i have to say i think you're a complete lunatic for wanting to support
+> `clients' on a K class running PA/Linux right now.
+
+Someone has to go first. I ran www.linux.org.uk on the first ever Mac68K
+Linux box and that helped no end in the stabilisation process.
+
+[ObOnTopic] What is the state of the 2.4 pa-risc code in terms of rate
+of change now. Would it be a good time to use -ac as a real sync up ?
