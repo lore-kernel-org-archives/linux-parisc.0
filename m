@@ -1,29 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 990C24A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 10:42:12 -0700 (MST)
-Message-Id: <200102201745.JAA16411@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Some progress with WAX_EISA (Who knows about int errupts?) 
-In-reply-to: Your message of "Tue, 20 Feb 2001 00:26:36 PST."
-             <20010220002636.R899@parcelfarce.linux.theplanet.co.uk>
-Date: Tue, 20 Feb 2001 09:44:55 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6394E4A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 10:57:09 -0700 (MST)
+To: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+Cc: PL <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Cannot build 02/18/2001 glibc 
+In-Reply-To: Message from "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+   of "Mon, 19 Feb 2001 11:19:42 EST." <3A91479E.9C9EB68A@neuronet.pitt.edu>
+References: <Pine.LNX.4.21.0102191946290.23583-100000@front.linuxcare.com.au>
+  <3A91479E.9C9EB68A@neuronet.pitt.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 20 Feb 2001 10:59:38 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010220175938.6DE7B37C9D@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> i386 sets IRQ_INPROGRESS before it calls handle_IRQ_event and then
-> clears it after the interrupt handler returns.  I'm not sure whether
-> local interrupts are disabled at this point or not.  It might well be
-> an SMP issue.
+"Rafael E. Herrera" writes...
+
+> Alan Modra wrote:
+> > 
+> > On Mon, 19 Feb 2001, Rafael E. Herrera wrote:
+> > 
+> > > checking for assembler line separator... *** You need a newer assembler
+> > > to compile glibc
+> > >[snip]
+> > >  /usr/i486-suse-linux/bin/as -V -Qy -v -o conftest.o conftest.s
+> > 
+> > Oops, this is an x86 assembler.
+> > 
+> > > The binaries called and the version numbers are shown. Do I need to
+> > > upgrade the assembler or is it a PATH misconfiguration? Thanks.
+> > 
+> > You need the hppa-linux assembler installed and available on your PATH.
 > 
-> I suspect we want to add IRQ_INPROGRESS to our interrupt handlers.
+> The PATH needs to include both of these entries:
+> 
+> PATH=~/palinux/bin:~/palinux/hppa-linux/bin:$PATH
+> 
+> I had just first one before.
 
-I think irqs_running() serves that purpose. no?
+No, you don't want hppa-linux/bin in there because then the build will only 
+use the cross-compiler and will fail if it needs to build any i386 
+binaries(like intermediate build tools etc.). As long as you have --host and 
+--build set right then the build will do the right thing.
 
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
