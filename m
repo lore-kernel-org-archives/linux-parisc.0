@@ -1,20 +1,19 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 76FFB4852
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 881F64852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 10:05:50 -0700 (MST)
-Date: Sat, 21 Feb 2004 12:05:09 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
-Message-ID: <20040221170508.GB14198@baldric.uwo.ca>
-References: <20040218235225.GA1623@calypso>
-	<20040219062907.GC13916@colo.lackof.org>
-	<20040221075849.GA1642@calypso>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040221075849.GA1642@calypso>
-Cc: parisc-linux@lists.parisc-linux.org
+	Sat, 21 Feb 2004 11:12:27 -0700 (MST)
+Message-ID: <40379FAE.4050802@tiscali.be>
+Date: Sat, 21 Feb 2004 18:13:02 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] b2k scsi disk pb
+References: <402A4CA500006E8D@ocpmta2.freegates.net>
+	<Pine.LNX.4.58.0402201900540.26386@sal.ucc.ie>
+In-Reply-To: <Pine.LNX.4.58.0402201900540.26386@sal.ucc.ie>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,37 +23,57 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Thanks! Changing NCR_700_MAX_TAGS to 1 in drivers/scsi/53c700.h did the
-> trick. Will I now have poor disk performance? If so, might I get away
-> with setting it to something higher, like 2 or 4, maybe?
 
-I could never run IO stably at anything higher than 1. The drives don't
-seem to handle it properly, the error recovery mechanisms seem less
-than perfect, and the box just hangs.
- 
-> I've not heard of tagged command queues before - the idea seems to be to
-> transfer data to the drive as early as possible, but make decisions as
-> to what should be written first at a later stage. Is that correct?
+
+M. Grabert wrote:
+> On Fri, 20 Feb 2004, Joel Soete wrote:
 > 
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-February/015465.html
-> says that no tagged queue is a bad thing. Why is that?
+> 
+>>on my b2k since I can run 2.6 (32bit with gcc-3.3 or 64bit with gcc-3.0)
+>>i noticed from time to time such dmesg:
+>>sym0:5:0: ABORT operation timed-out.
+>>sym0:5:0: ABORT operation started.
+> 
+> 
+> [...]
+> 
+> 
+>>sym0:5:0: ABORT operation timed-out.
+>>sym0:5:0: DEVICE RESET operation started.
+>>sym0:5:0: DEVICE RESET operation timed-out.
+>>sym0:5:0: BUS RESET operation started.
+>>sym0: SCSI BUS reset detected.
+>>sym0: SCSI BUS has been reset.
+>>sym0:5:0: BUS RESET operation complete.
+>>
+>>and during this time the system naturaly hang.
+> 
+> 
+> (or is at least *very* slow)
+> 
+hmm for me everything stop: ls, top, ... every cmd are pending.
+> 
+>>scsi id 5 is the one of the working boot disk (a quantum model atlas5-9lvd)
+>>and if there is well a second disk (a seagate model ST336704LC) it is not
+>>used.
+> 
+> 
+> Had the same problem when attaching a SE-SCSI device (also a Seagate, 20GB)
+> on my C3k (which has 2 internal LVD SCSI-drives).
+> 
+> Got rid of it by not using the SE-SCSI driver ;)
+> Try to physically detach the (not-used) ST336704LC.
+> 
+It is an internal disk also but as I don't use it any more, I can try to remove it ;)
 
-You misunderstand, I *removed* the tag-queue code from the driver and
-*that* was bad. We're only asking that you reduce the queue size to 1 or
-2. Infact higher numbers might be okay, but 16 is definately too high.
+> 
+>>OTC with 2.4 and sym2 driver, I never noticed this behavior (even with recent
+>>2.4.25-rc?-pa0 :) ), so I presume that there is no disk failure (and a dd
+>>if=/dev/sda of=/dev/null bs=1024k reach to read fully the disk without any
+>>error).
+> 
+> 
+> Yes, I think reading is fine, just (lots of) writing is triggering it.
 
-> That's a good idea. Where should I send the entry? Here?
-
-You can checkout the entire website via CVS from cvs.parisc-linux.org,
-there are CVS instructions on www.parisc-linux.org. The CVS file your
-are particularly interested in is:
-
-http://cvs.parisc-linux.org/web/src/faq/index.x?rev=1.40&content-type=text/vnd.viewcvs-markup
-
-Generate a diff against that file, which includes your new entry, and 
-voila you've added an entry to the FAQ, praise will rain down on you,
-and you will never be forgotten :)
-
-Many thanks,
-
-c.
+Max, thanks for advise,
+	Joel
