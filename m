@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sfcn.org (unknown [63.117.233.198])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 360184856
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Jun 2003 11:28:34 -0600 (MDT)
-From: Nicholas Leippe <nick@byu.edu>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] gcc-3.3 configuration
-Date: Sun, 22 Jun 2003 11:28:39 -0600
-References: <16074.48509.259405.775905@gargle.gargle.HOWL> <20030521052351.GV548@tausq.org>
-In-Reply-To: <20030521052351.GV548@tausq.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200306221128.39787.nick@byu.edu>
+Date: Sun, 22 Jun 2003 23:04:50 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <joel.soete@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030623050450.GA449@dsl2.external.hp.com>
+References: <03f301c3309e$f0c78740$d908f3d8@uvsolutions> <20030613043356.GA7265@dsl2.external.hp.com> <3EEC9AC2.5070106@tiscali.be> <20030615161948.GA12995@dsl2.external.hp.com> <3EF46AA9.7040703@tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3EF46AA9.7040703@tiscali.be>
+Subject: [parisc-linux] Re: ATY RAGE XL progress or Dino gscpci bridge pb?[was: Re: HP C180 video card]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,26 +20,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tuesday 20 May 2003 11:23 pm, Randolph Chung wrote:
-> > If yes, does the following approach work: Build a libstdc++5-3.3,
-> > conflicting with libstdc++5 (including libstdc++ with the same soname)
-> > and doing binary uploads for hppa for all libstdc++5 dependent
-> > packages? (The same could be done for m68k, but the compatibility
-> > argument doesn't hold as Debian seems to be the only m68k based
-> > distro).
->
-> Aside from the evilness of doing binNMUs of this magnitude, I doubt a
-> "transition" that doesn't change the SONAME will work. As soon as the
-> new libstdc++ is installed, every c++ app on the box will instantly
-> break. This means if anything happens e.g. to apt during the update, the
-> system will get into a very nasty state. I don't think this is worth it.
->
+On Sat, Jun 21, 2003 at 02:24:41PM +0000, Joel Soete wrote:
+...
+> c) if I try to use Equinox serial mux (8P) (an oem HP product) module 
+> (with our without your patch Grant) the system crashes also?
 
-How many critical apps are actually C++?  Is the apt suite itself?
-As long as /sbin/* is C, I don't see this as a showstopper for migrating to 
-using a superior mechanism, which imo, should be a big goal--the sooner it's  
-taken care of the less problematic it will be...
+I haven't tested the Serial 8p PCI card under parisc yet.
+To date, that card has always lived in a x86 host. I just
+haven't had time to play with it under parisc - I've needed it
+working to get other things done.
 
-just a thought...
 
-Nick
+> The system is a B180 model using Dino GSCPCI bridge and in the two cases 
+> (even if messages are a bit different) the TOC shows always a pb on this 
+> bus (the analyse of toc after the crash of insmod eqnx point out a pb in 
+> timer_? routine).
+
+The symptom is very likely only similar and not identical.
+I'd find it very odd if both cards crashed for the same reason.
+
+AFAICT, eqnx driver doesn't call pci_enable_device().  The bug I'd be
+looking for is a PCI "resource" (BAR) to be accessed before it was enabled.
+Try adding a pci_enable_device() to eqnx_init() or eqx_pci_buspresent().
+[ *gag* I'm surprised this code even works on x86. ]
+
+PARISC "hard fails" when reading from disabled or non-existant PCI
+address space while x86 "soft fails".  ie x86 gets garbage back on
+a "bad" read while PARISC will crash.
+
+The crash in the timer routine is interesting and would make it
+interesting for me to move the equinox card to an a500.
+Randolph, Paul (Bame), and I occcasionally try to track down the
+timer problems that plague SMP under 64-bit parisc kernels.
+
+
+> And in fact I figure out that I never have to use this 
+> bridge for another card?
+
+GSCtoPCI connects the PCI slot to the rest of the system.
+Try "lspci" and see what you have connected.
+
+> Is somebody else used it successfuly or could it be broken?
+
+Dino worked fine before.
+I ran B180 as my desktop for over a year (my desktop is now a C3000).
+
+grant
