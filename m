@@ -1,28 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA20830
-	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Jan 2000 20:31:23 -0700
-Date: Wed, 12 Jan 2000 04:33:25 +0100
-From: Philipp Rumpf <prumpf@mkp.net>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA21794
+	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Jan 2000 22:45:54 -0700
+Received: from localhost (emolitor@localhost)
+	by localhost.localdomain (8.9.3/8.9.3) with ESMTP id AAA01153
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 Jan 2000 00:48:21 -0600
+Date: Wed, 12 Jan 2000 00:48:21 -0600 (CST)
+From: Eric Molitor <emolitor@molitor.org>
 To: parisc-linux@thepuffingroup.com
-Cc: willy@thepuffingroup.com
-Message-ID: <20000112043325.A18348@tux.mkp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] C360 shellprompt
+In-Reply-To: <200001120115.RAA28322@lucy.cup.hp.com>
+Message-ID: <Pine.LNX.4.10.10001120045140.1147-100000@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Bad news, Bad news, Good news, Good news
 List-ID: <linux-parisc.vger.kernel.org>
 
-Just so you all know, we get to a shell prompt on the C360 after the
-changes which I'm about to commit (blame slow dialup lines).  I would
-like to know whether we get to a prompt on other PA2.0 machines as well.
 
-When testing, please keep in mind most "kernel doesn't print anytihng"
-problems are problems in the .config rather than kernel bugs.  Start
-with the defconfig and modify as little as possible.  Also, the most
-likely cause for non-reproducible failures is page colouring problems
-so try 3-4 times.
+Bad news: http://thepuffingroup.com/parisc/hw.html is throwing up all
+sorts of MySQL socket errors
 
-Anyway, on Lasi-based machines such as the C360 you should be able to
-do anything you can do on the 712 right now (-ls, fork() but not exec(),
-rebooting the machine with SysRq-B), just a lot faster.
+Bad news: My HP/UX 9.xx is no longer functional :(
 
-	Philipp Rumpf
+Good news: I was able to boot into some of the older images
+
+Good news: I should have a copy of HP/UX 10.20 on the 15.
+
+- Eric Molitor
+  eric@molitor.org
