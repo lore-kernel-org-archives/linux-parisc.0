@@ -1,34 +1,60 @@
-Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA25918
-	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Dec 2000 11:06:16 -0700
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 144RLU-0001kI-00; Fri, 08 Dec 2000 17:30:08 +0000
-Date: Fri, 8 Dec 2000 17:30:08 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Paul Bame <bame@noam.fc.hp.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, Richard Hirst <rhirst@linuxcare.com>,
-        Grant Grundler <grundler@cup.hp.com>,
-        parisc-linux@puffin.external.hp.com, debian-hppa@lists.debian.org
-Subject: Re: A500 status update
-Message-ID: <20001208173008.B5974@parcelfarce.linux.theplanet.co.uk>
-References: <200012070634.WAA07459@milano.cup.hp.com> <200012070649.WAA07510@milano.cup.hp.com> <20001207095613.D7166@linuxcare.com> <E1443ib-0003sK-00@noam.fc.hp.com> <20001207204649.A31668@parcelfarce.linux.theplanet.co.uk> <E1449D7-0008AD-00@noam.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E1449D7-0008AD-00@noam.fc.hp.com>; from bame@noam.fc.hp.com on Thu, Dec 07, 2000 at 03:08:17PM -0700
-Sender: <willy@www.linux.org.uk>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA27135
+	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Dec 2000 12:55:08 -0700
+Message-Id: <200012081958.LAA09759@milano.cup.hp.com>
+To: "Witvliet, Hans" <Hans.Witvliet@alcatel.nl>
+Cc: "'Andreas Thienemann'" <andreas@bawue.de>,
+        "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] FW: hp_boot.log 
+In-reply-to: Your message of "Fri, 08 Dec 2000 18:20:10 PST."
+             <1A8904C3797ED411AC2E0008C7E6F88117C6A4@nlntmail2b.ats.nld.alcatel.nl>
+Date: Fri, 08 Dec 2000 11:58:15 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Dec 07, 2000 at 03:08:17PM -0700, Paul Bame wrote:
-> = On Thu, Dec 07, 2000 at 09:16:25AM -0700, Paul Bame wrote:
-> = > I've left many syscalls disabled and think we should keep them turned
-> = > off until it's proven they actually are used.  We should
-> = > probably consider nuking them in the 32-bit kernel too.
-> = 
-> = i noticed we still had readdir.  i believe glibc always uses getdents.
+
+Hans/Andreas,
+Re C110 crashing
+
+> 3. U2-IOA BC GSC+ Port (7) at 0xf3fbf000,
+
+I suspect the problem is the CCIO driver isn't seeing the U-turn
+chip and DMA will HPMC (crash) the system. We should see some output
+from ccio-dma.c driver before LASI "barks".
+
+
+"Witvliet, Hans" wrote:
+> Hi Andreas,
 > 
-> readdir is disabled on parisc64 -- hasn't been a problem yet...
+> I tried three other machines, with following results
+> 1) B180c
+> 2) B000  
+> 3) 712    
+> On the B2000 booting also resulted in stack dump,
 
-oh good.  want to disable it on parisc32 too?
+B2000 is like a C3000 with fewer slots/slower CPU.
+I don't remember of palinux-v0.5 was tested on that - looks like not.
+Newer kernel should work - several of us are using C3k/J5k's for
+development.
 
--- 
-Revolutions do not require corporate support.
+> on B180c and the 712 the system freezes to death after the "switching to UPL
+> console" message.
+
+For B180/712: Read the FAQ at www.parisc-linux.org/faq.html
+
+> 
+> I wonder, if it has something to do with the problem that i encounterd some
+> time ago with the linux port to sun-hardware.
+> If the system had to much memory, it was not able to startup.
+
+Not a problem. We ignore memory beyond 512MB right now.
+
+> Cant do much testing now, and next week i am @ HP. (see what happens if i
+> try to boot from my cd at the hp-trainings lab...;-))
+
+enjoy!
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
