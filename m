@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Thibaut VARENE <varenet@esiee.fr>
-Cc: PA/Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] kernel-2.4.17-pa22 boot problem B132L+ with serial console 
-In-Reply-To: Message from Thibaut VARENE <varenet@esiee.fr>
-   of "Sat, 09 Feb 2002 14:47:47 +0100." <99C52A8E-1D63-11D6-BD71-0030656F07A2@esiee.fr>
-References: <99C52A8E-1D63-11D6-BD71-0030656F07A2@esiee.fr> 
-Date: Sat, 09 Feb 2002 23:37:14 -0700
+To: Enrik Berkhan <Enrik.Berkhan@planb.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors 
+In-Reply-To: Message from Enrik Berkhan <Enrik.Berkhan@planb.de>
+   of "Fri, 08 Feb 2002 12:14:05 +0100." <20020208121405.C5128@electra.intern.planb.de>
+References: <20020207130852.C3306@electra.intern.planb.de> <20020207163107.5E08A482A@dsl2.external.hp.com>  <20020208121405.C5128@electra.intern.planb.de> 
+Date: Sat, 09 Feb 2002 23:50:20 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020210063714.D0367482A@dsl2.external.hp.com>
+Message-Id: <20020210065020.DCE6A482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +19,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thibaut VARENE wrote:
-...
-> Cross compiling on both machines the same kernel configured for 712 
-> using serial console provided a functional kernel.
+Enrik Berkhan wrote:
+> But enhancing the test for doubly assigned ports to
+> 
+>       if ((rs_table[i].port == port) &&
+>           (rs_table[i].iomem_base == req->iomem_base))
+> 
+> might be ok. This code can be found in register_serial().
 
-Does the B132 have a tulip card installed?
+Yeah - you are right.
 
-...
-> CONFIG_TULIP=y
-> # CONFIG_TULIP_MWI is not set
-> CONFIG_TULIP_MMIO=y
+> BTW, drivers/gsc/serial.c does no request_mem_region(). Is this in-
+> tentional?
 
-IIRC, I've tried TULIP_MMIO and I don't think it worked. I tried this
-out a few monthes back and left it disabled in my .config files.
-I'm very certain CONFIG_TULIP_MWI didn't work. Slightly less
-certain about TULIP_MMIO not working.
+probably. Check if an entry for serial exists in /prc/iomem.
+At one point, the device discover code was changed to automatically
+do the request_mem_region() devics firmware told us about.
+
+> The hardball ers states a 7.3728MHz (== 16 * 460800) baud rate clock,
+> which confirms the output of my DMM. So we would need a table holding
+> the baud_base for each device?
+
+Dunno. We might given different generations of HW.
 
 grant
