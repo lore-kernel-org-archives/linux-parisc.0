@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] serial console corruption with 2.4.18-pa2 ? 
-In-Reply-To: Message from Randolph Chung <randolph@tausq.org>
-   of "Fri, 01 Mar 2002 22:42:31 PST." <20020302064231.GD20672@tausq.org>
-References: <20020302064231.GD20672@tausq.org> 
-Date: Sat, 02 Mar 2002 22:55:02 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020303055502.BAA734832@dsl2.external.hp.com>
+Received: from smtp014.mail.yahoo.com (smtp014.mail.yahoo.com [216.136.173.58])
+	by dsl2.external.hp.com (Postfix) with SMTP id B3FA34837
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 09:26:12 -0700 (MST)
+Message-ID: <3C824EA9.4040805@yahoo.com>
+Date: Sun, 03 Mar 2002 16:26:17 +0000
+From: Jbit <james_a_n_lee@yahoo.com>
+MIME-Version: 1.0
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Linux From Scratch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,16 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Randolph Chung wrote:
-> On my c3k, everytime I boot up a kernel running 2.4.18-pa2 (narrow
-> kernel), I get a lot of garbage characters during bootup (sometime 
-> between hardware inventory and scsi init). Has anyone else seen this? 
-> I use minicom has my serial terminal and the garbage kills minicom....
+Hi,
+Just to let everybody know that i've (finally) sucsesfully completley LFS (www.linuxfromscratch.org) on my 712/80
+I may be writing a hint for it, since it did get a bit messy ;)
+But for anybody who doesn't like debian too much, i'd sugest attemping LFS.
+Also while doing LFS, i used 2.4.18-pa2 (yesterdays CVS, to be exact) and (i think this has been reported already)
+My power LED switches off when linux is loading/loaded and soft power off no longer works (it just switches off)
+Any reason for this?
 
-I didn't see that with 2.4.18-pa2 on my c3k using my own .config's.
-Maybe you want to compare them?
+Anyway, if you have any problems doing LFS, contact me or post on the mailing list
+It takes just 20 seconds to boot (from end of bios->login prompt) and the entire system is < 200MB
 
-It's possible an evil driver is poking around in IO port space
-and deranging the suckyio serial port.
+--jbit
 
-grant
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
