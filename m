@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 71E9C4840
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 09:21:00 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A6XAN-00015E-88; Mon, 06 Oct 2003 16:20:55 +0100
-Date: Mon, 6 Oct 2003 16:20:55 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux]  HP FC A3591 aka Mombasa GS -- or A6684A?
-Message-ID: <20031006152055.GZ24824@parcelfarce.linux.theplanet.co.uk>
-References: <1289146742B56546AE580DFC6B711A8301B1AF99@PKDWB07C.ad.sprint.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1289146742B56546AE580DFC6B711A8301B1AF99@PKDWB07C.ad.sprint.com>
+Received: from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D95A4840
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 09:23:03 -0600 (MDT)
+Received: from 299890au303 (rennes-1-a7-62-147-212-75.dial.proxad.net [62.147.212.75])
+	by postfix4-1.free.fr (Postfix) with ESMTP id E05B0513BD
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 17:23:01 +0200 (CEST)
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Marc Dilasser <marc.dilasser@free.fr>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 6 Oct 2003 17:23:39 +0200
+MIME-Version: 1.0
+Message-Id: <200310061723.40002.marc.dilasser@free.fr>
+Subject: [parisc-linux] Xfree on a B180L
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,18 +24,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Oct 06, 2003 at 09:38:42AM -0500, Padgett, Pat M [NTWK SVCS] wrote:
-> Good morning,
-> 
-> Does anyone know if the replacement for the A3591B is supported?
-> 
-> The replacement card is the A6684A HSC Tachlite card.
+Hello,
 
-I think this is much more likely to work ... do you happen to know whether
-it's a native GSC card or whether it has a Dino bridge on it?  Dino is
-a biggish HP chip labelled 1FC3-0004, probably close to the GSC connector.
+HP B180L with a 21" Sun monitor, Debian 3.0 r1.
+Xfree runs but the colors are very yellow; harware problems or something =
+in=20
+the XFConfig-4 ?
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Marc
