@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E54E1485B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 20:46:33 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17Tvse-0003MO-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 15 Jul 2002 03:46:32 +0100
-Date: Mon, 15 Jul 2002 03:46:32 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] O_DIRECT on devices
-Message-ID: <20020715034632.E27706@parcelfarce.linux.theplanet.co.uk>
-References: <20020711082259.GF822@tykepenguin.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020711082259.GF822@tykepenguin.com>; from patrick@tykepenguin.com on Thu, Jul 11, 2002 at 09:22:59AM +0100
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F67C4852
+	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 01:04:21 -0600 (MDT)
+To: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] compiling kernels with gcc-3.1
+Message-ID: <1026716599.3d3273b741097@webmail.tiscalinet.be>
+Date: Mon, 15 Jul 2002 09:03:19 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
+References: <20020712073628.GB8838@tausq.org> <1026467388.3d2ea63c0ac65@webmail.tiscalinet.be> <20020712150139.GC8838@tausq.org> <1026491023.3d2f028f991a1@webmail.tiscalinet.be>
+In-Reply-To: <1026491023.3d2f028f991a1@webmail.tiscalinet.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,17 +23,74 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jul 11, 2002 at 09:22:59AM +0100, Patrick Caulfield wrote:
-> This works fine on Alpha & Intel but seems very unreliable on parisc for some
-> reason. Sometimes it works, sometimes it oopses "do_page_fault() pid=2120
-> command='lvm' type=15 address=0x00000001" and sometimes I just get back the
-> wrong information (at least LVM thinks its wrong I haven't check in detail just
-> what is up with it).
+Hi Randolph,
 
-pid 2120 did a NULL pointer dereference ... you should be able to trace
-it with the IAOQ, perhaps.  I'm not sure whether anyone's really played
-with the O_DIRECT code yet, it could well be buggy on PA.  What you're
-seeing sounds like bogus cache behaviour.
+I am not so luky as you are:
+The kernel compiles well and also boot well but always the same problem (in
+addition to modules problems) as soon as I do an network connection with ssh the
+system crash:
+(I just note on the sti console)
+sshd (pid 322): illegal instruction (code 8)
+...
+kernel panic...
 
--- 
-Revolutions do not require corporate support.
+Humm I try to boot from serial consol but there the behaviour is not quiet the same:
+the system always panic but this time only a long list of:
+Warning! stack pointer and cr30 do not correspond!
+Dumping virtual address stack instead
+Dumping satck from ... to ...:
+....
+(no stop or very very long?)
+
+Well a last test (after I have to unplug replug power cable) at the serial
+console : 
+jso@palinux:~$ ssh localhost
+The authenticity of host 'localhost (127.0.0.1)' can't be established.
+RSA key fingerprint is ..:..:..:..:..:..:..:..:..:..:..:..:..:..:..:...
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'localhost' (RSA) to the list of known hosts.
+jso@localhost's password: 
+
+and the system also crashes (whithout any messages?).
+
+So may I believe that the problems come first from ip stack itself and not from
+ethernet driver?
+
+Hmm I am also curious to test your .config file?
+
+Joel
+
+Quoting joel.soete@freebel.net:
+
+> Quoting Randolph Chung <randolph@tausq.org>:
+> 
+> > > PS: Can you do a telnet or an ssh connection when this kernel is
+> > running? IIRC
+> > > as well as gcc-3.1 as gcc-3.2, I always reach well to build and
+> boot
+> > kernels
+> > > (without kdb) but the system crashes as soon as you try to connect
+> it
+> > via the
+> > > network.
+> > 
+> > yes, i can ssh into the box.
+> > 
+> Great news, I am impatient to also test it :)
+> 
+> Thanks a lot,
+>     Joel
+> 
+> 
+> 
+> -------------------------------------------------
+> This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
