@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx-s0.dreamwiz.com (mx-s0.dreamwiz.com [211.39.128.135])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73ED24A2E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 Oct 2003 21:30:16 -0600 (MDT)
-Received: from mail1.dreamwiz.com (mail1.dreamwiz.com [211.39.128.21])
-	by mx-s0.dreamwiz.com (8.12.10/8.12.10) with ESMTP id h9O3U4ha097737
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 Oct 2003 12:30:04 +0900 (KST)
-Received: from localhost.dreamwiz.com (localhost.dreamwiz.com [127.0.0.1])
-	by mail1.dreamwiz.com (8.12.10/8.12.10) with ESMTP id h9O3U4uN054936
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 Oct 2003 12:30:04 +0900 (KST)
-Message-Id: <200310240330.h9O3U4uN054936@mail1.dreamwiz.com>
-Date: Fri, 24 Oct 2003 12:30:04 +0900 (GMT)
-From: bangjy@dreamwiz.com
-To: parisc-linux@lists.parisc-linux.org
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 726734875
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 Oct 2003 00:29:19 -0600 (MDT)
+Date: Fri, 24 Oct 2003 08:29:06 +0200
+Message-ID: <3F97A05A000007B0@ocpmta1.freegates.net>
+In-Reply-To: <Pine.LNX.4.58.0310232036170.21111@sal.ucc.ie>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] TMPFS test?
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; CHARSET=EUC-KR
-Subject: [parisc-linux] =?EUC-KR?B?us7A58HfwNS0z7TZ?=
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,4 +22,70 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-부재중입니다
+Hello Max,
+>>
+>> I backport Randolph 2.6 works to 2.4.23-pre8-pa13 and test tmpfs which
+seems
+>> to works:
+>
+>Well, tmpfs works for me since ... 2.4.19 ?!
+>
+Sorry never heard before (the first time in a Randolph patch :) )
+
+>> # bdf
+[...]
+>> tmpfs                   128048         0    128048   0% /var/tmp
+>
+>Okay, this says that you have 128MB allocated for tmpfs.
+>This is correct, as tmpfs uses up to half of the physical ram if you
+>don't specify the maximum size.
+>Well, it doesn't 'allocate' the whole 128MB at once of course, it
+>will just use as much as you put into the ram disk.
+
+Clear
+
+>[...]
+>>
+>> # cat /proc/meminfo
+>>         total:    used:    free:  shared: buffers:  cached:
+>> Mem:  26224640
+>> 86798336 175448064        0  2965504 66297856
+>> Swap: 256892928        0 256892928
+>> MemTotal:       256100 kB
+>> MemFree:        171336 kB
+>> MemShared:           0 kB
+>> Buffers:          2896 kB
+>> Cached:          64744 kB
+>> SwapCached:          0 kB
+>> Active:          52432 kB
+>> Inactive:        19836 kB
+>> HighTotal:           0 kB
+>> HighFree:            0 kB
+>> LowTotal:       256100 kB
+>> LowFree:        171336 kB
+>> SwapTotal:      250872 kB
+>> SwapFree:       250872 kB
+>>
+>> I just have a question: is it normal that /var/tmp is of about 256Mb when
+>
+>Mhh, perhaps I'm blind, but where do get the idea that tmpfs is using
+>256MB and not (up to) 128MB ?
+
+It comes from another commercial *nix based system which (always confusing
+me and) uses /tmp to manage the physical memory + overall swap. [What is
+confusing me is its global size (not only the available size as usual with
+other fs) which can change as change the usage of swap?]
+ 
+[..]
+>As mentioned before (look at usr/src/linux/Documentation/filesystems/tmpfs.txt)
+
+That is where I find how to use it but, my bad, I do not read all details.
+
+Thanks for your help and patience,
+    Joel
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+
+http://reg.tiscali.be/default.asp?lg=fr
