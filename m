@@ -1,29 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22017
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 09:28:17 -0600
-Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 17 Oct 2000 15:28:56 -0000
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
-        "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Troubles following the 'recipe'
-References: <Pine.LNX.4.21.0010171957521.9896-100000@front.linuxcare.com.au>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 17 Oct 2000 11:19:04 -0400
-In-Reply-To: Alan Modra's message of "Tue, 17 Oct 2000 20:08:29 +1100 (EST)"
-Message-ID: <87zok34hsn.fsf@linuxcare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22562
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 09:56:32 -0600
+Message-Id: <200010171601.JAA12803@milano.cup.hp.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] simple kernel tasks? 
+In-reply-to: Your message of "Tue, 17 Oct 2000 07:15:03 PDT."
+             <20001017071503.D928@tausq.org>
+Date: Tue, 17 Oct 2000 09:01:51 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra <alan@linuxcare.com.au> writes:
+Randolph Chung wrote:
+> Hi all,
+> 
+> Per Grant's suggestion I had looked into getting /dev/rtc to work. I
+> checked in my changes yesterday and they seem to be ok.
 
-> Immediately after installing ld.so, "make install" should be installing
-> the new libc.so.  Hmm, your glibc sources are not the latest puffin ones,
-> as the latest glibc will install as 2.1.94 
+Hey Randolph! Excellent!
 
-2.1.95 actually.  (Sorry for not announcing this on the list)
+I'm still chuckling about finding "#CONFIG_RTC is not set".
 
--- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+> I was wondering if there's a list of TODOs for things that need to be
+> done in the kernel. I'd like to help if i can, though I'm still learning
+> the ropes so simple tasks are preferred :-)
+
+We certainly do have a list:
+
+	http://www.thepuffingroup.com/parisc/status.html
+
+The only problem is this list lags behind the "real" TODO list
+(in CVS website/status.x). This lag is a result of hosting CVS
+on a different machine than the website and a slightly manual
+process to syncronize the two.
+
+The plan is to automate CVS->webserver updates...but maybe we shouldn't
+bother and hook into the debian bug tracking system instead.
+Suggestions for some other existing "change request" system?
+
+thanks,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
