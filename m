@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (p50845C4E.dip.t-dialin.net [80.132.92.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A2B7482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 15:48:36 -0700 (MST)
-Date: Thu, 27 Dec 2001 23:45:56 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Christian Suder <csuder@cisco.com>, Helge Deller <deller@gmx.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: Fwd: Re: [parisc-linux] [Q] on EISA support
-Message-ID: <20011227234556.A7543@solo.franken.de>
-References: <4.3.2.7.2.20011227103742.02a018e8@mira-sjc5-9.cisco.com> <3C2B6D56.1000507@cisco.com> <csuder@cisco.com> <20011227195930.446D54861@dsl2.external.hp.com>
-Mime-Version: 1.0
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0FC21482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 16:03:46 -0700 (MST)
+Received: from gmx.at ([62.178.92.247]) by viefep12-int.chello.at
+          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
+          id <20011227230337.QKHP1239.viefep12-int.chello.at@gmx.at>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Fri, 28 Dec 2001 00:03:37 +0100
+Message-ID: <3C2BA8C4.3C1C2174@gmx.at>
+Date: Fri, 28 Dec 2001 00:03:32 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011227195930.446D54861@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Thu, Dec 27, 2001 at 12:59:30PM -0700
+Subject: [parisc-linux] Booting diskless Linux machine from HP-UX server !
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Dec 27, 2001 at 12:59:30PM -0700, Grant Grundler wrote:
-> Christian Suder wrote:
-> > the entry is in the .config file. I'll try -pa27 later, there seem to be 
-> > some issues with the -pa25 in general,
-> 
-> Yes - I broke dino (PCI) support in -pa25 when I re-enabled c3000 machines.
-> I might have also broke EISA support but don't think so.
+Recently I tried to boot a Linux box (in my case it was a i386, but
+the problem also exists for a PA-RISC box) from an HP-UX server (model
+9000/856, the E55 running 11.00). The problem was, I could not mount
+a NFS-Root for the Linux box.
 
-EISA is broken for ccio machines (ok, only checked on my C200), because
-ccio requests memory space, which the eisa part wants too. I have it
-"working" again, but the patch is definitly not for common use. The big
-problem is, that ccio registers a primary and secondary memory space,
-but ccio_find_parisc_resource() only gives back the resource for the
-primary gsc space, which is the wrong one.
+I analysed the problem, and it seems to be a problem with the MOUNT
+version (not mixed up with NFS version). Linux uses for normal mounts
+MOUNT v3, for NFS ROOT mounts MOUNT v1, which does not include UID and
+GID for example. The NFS Server on the HP-UX machine reports in the
+log (activated to debug level), that the mount request does not include
+UID. So the mount is rejected (EACCES). So I was not able to boot a
+linux box using NFS ROOT from an HP-UX server, but I can boot any Linux
+box (PA-RISC, i386) from a i386-Linux box.
 
-> Thomas fixed that in -pa26 (or pa27?).
+I hope, you can help here. I think the problem is also interesting for
+others, using a HP-UX machine as NFS server instead a Linux machine.
 
--pa26
+Bye,
+Christoph
 
-Thomas.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
