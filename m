@@ -1,20 +1,21 @@
 Return-Path: <carlos@baldric.uwo.ca>
 Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3DB22488A
+	by dsl2.external.hp.com (Postfix) with ESMTP id 140D3488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 23:01:17 -0700 (MST)
-Date: Sun, 22 Feb 2004 01:00:02 -0500
+	Sat, 21 Feb 2004 23:05:37 -0700 (MST)
+Date: Sun, 22 Feb 2004 01:04:56 -0500
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb: followup
-Message-ID: <20040222060002.GI25019@baldric.uwo.ca>
-References: <402A42A1000052A9@ocpmta1.freegates.net>
-	<Pine.GSO.4.44.0402180830260.14838-100000@keymaster>
-	<20040218163927.GC9497@baldric.uwo.ca>
-	<4037AB13.3050908@tiscali.be>
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
+Message-ID: <20040222060456.GJ25019@baldric.uwo.ca>
+References: <20040218235225.GA1623@calypso>
+	<20040219062907.GC13916@colo.lackof.org>
+	<20040221075849.GA1642@calypso>
+	<20040221170508.GB14198@baldric.uwo.ca>
+	<20040221182436.GM11824@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <4037AB13.3050908@tiscali.be>
+In-Reply-To: <20040221182436.GM11824@parcelfarce.linux.theplanet.co.uk>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -25,42 +26,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Feb 21, 2004 at 07:01:39PM +0000, Joel Soete wrote:
-> It takes me some more time because I would test patch by patch with gcc-3.3 
-> if nothing was broken.
-> But all those patch seems ok with gcc-3.3 (just have to revert it and 
-> re-run with make -k check ;) )
+On Sat, Feb 21, 2004 at 06:24:36PM +0000, Matthew Wilcox wrote:
+> > I could never run IO stably at anything higher than 1. The drives don't
+> > seem to handle it properly, the error recovery mechanisms seem less
+> > than perfect, and the box just hangs.
+> 
+> So, um, maybe we should change the default?  Nobody seems to be
+> investigating why this happens, so I don't see why our users should
+> suffer.  I doubt anyone's going to be terribly motivated to track this
+> problem down for such old machines, so let's just sacrifice a little
+> performance for stability.
 
-Yes, it is a lot of work. The fame will all be yours though.
- 
-> So I have to figure out what goes wrong in "relocation". Can you help me by 
-> pointing out some files and may functions to specialy analyse :).
+It just doesn't work on those older boxes? I'm not quite sure how much
+more investigation I can do. I mean I've got my 715/50's all running, I
+could build a few more kernels and see what's going on.
 
-My haiku was really intended to be a joke. Anything could be wrong with
-the loader, you have to run it through gdb to get a usefull trace. Even
-then you won't have symbols and you'll have to learn to decode the
-address from /proc/self/maps and an 'objdump -d xxxxxx.so'. From there
-you can find the offending code, go back to the code and examine if it
-does anything odd... perhaps isolate what the code does in a testcase
-that gcc-3.5 does incorreclty.
- 
-> BTW: The previous mentioned patch are (afaik) of general interest (not hppa 
-> specific) but would you like that I submit you first so that you could 
-> submit it to glibc maintainers or do you prefer that i manage that myself?
-
-You should:
-
-a. Make sure that i386 builds with your patches, and passes the
-   testsuite without regressions.
-b. Cleanup the patches, make *sure* your mailer doesn't wrap them, the
-   previous patches were wrapped and broken.
-c. Write a 'Changelog' entry for the changes, and describe why you are
-   making these changes (e.g. compiling with gcc-3.5). These entries
-   have a very special format, look closely, and follow the GNU coding
-   convetions.
-d. Submit them separately, with a description, changelog, and inline
-   patch to the libc-alpha mailing list.
-
-This will be a wonderful learning experience! :)
+I could also commit a change to lower the max tags down to 1, that seems
+a little harsh for performance, but all those perf people can crank it
+back up. Perhaps a build time configure option?
 
 c.
