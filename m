@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D76974829
-	for <parisc-linux@parisc-linux.org>; Wed, 19 Feb 2003 01:19:51 -0700 (MST)
-Date: Wed, 19 Feb 2003 09:19:49 +0100
-Message-ID: <3E48441000002658@ocpmta7.freegates.net>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2DF0A4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Feb 2003 08:26:36 -0700 (MST)
+Date: Wed, 29 Jan 2003 14:58:20 +0100
+Message-ID: <3E35DBDA000004E3@ocpmta8.freegates.net>
+In-Reply-To: <1042386569.3329.4.camel@luigi>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] .config fo a N class?
-To: grundler@dsl2.external.hp.com
-Cc: parisc-linux@parisc-linux.org
+Subject: RE: [parisc-linux] Issues with seteuid()?
+To: "Luigi Gangitano" <luigi@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Cc: "Randolph Chung" <tausq@debian.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -21,79 +23,271 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->Date: Mon, 17 Feb 2003 19:52:30 -0700
->To: Joel Soete <jsoe0708@tiscali.be>
->Cc: parisc-linux@parisc-linux.org
->Subject: Re: [parisc-linux] .config fo a N class?
->From: grundler@dsl2.external.hp.com (Grant Grundler)
->
->
->On Mon, Feb 17, 2003 at 06:51:01PM +0100, Joel Soete wrote:
->> >I grab the config file of the test-drive L model; apply it against current
->> >k-2.4.20-pa26 (just change 64 to 32 bits).
->>                             ^^^^^^^^^^^^^ My bad: I would have to remember
->> that hpux-11 have to be 64bits on L and N servers :?
->
->right. But L-class also only supports 64-bit.
->And you want to disable CONFIG_SMP for N-class and L3000.
->
->> Well, for now I just boot with a dpkg kernel-image-2.4.19-64 (up) and
-still
->> have to see what is wrong with eth0:
->
->You were not very clear about the symptom.
+Hi all,
 
-Yes, sorry: my first goal was to advise that I reach to boot the N and will
-go later examine this pb.
+Here is a 'small' test case which reproduce the problem on a sarge (ie testing)
+debian (gcc-3.0_3.0.4-12; libc6_2.2.5-14.3) running very last kernel 2.4.20-pa23:
 
-IIRC to start up this box I first unplug the NIC cable to avoid network
-pb.
-After that I changed the config file to restart the built-in NIC which didn't
-come up? A strange thing that I noticed was that there was not hard led
-lighted.
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
-It should be because the switch disable temporarely the port after the cut
-of the link? I will check further...
+/* getpid(), geteuid()  */
+#include <sys/types.h>
+#include <unistd.h>
 
->And we need a slightly more accurate description
->of the kernel-image version number.
->
-it is the image from kernel-image-2.4.19-64_22.2_hppa.deb
+/* setgroups() */
+#include <grp.h>
 
->But this might help you anyway
->| > cvs log driver/nets/tulip/media.c
->...
->| revision 1.14
->|
->| date: 2002/10/14 23:34:02;  author: grundler;  state: Exp;  lines: +13
->-13
->|
->| 2.4.19-pa22 Fix tulip phy reset/init
->| DP83840A.pdf and lxt971d.pdf both require polling
->| the reset bit (bit 15) in mdio control register to
->| determine when a reset has completed. Then the
->| "init" sequence can be sent.
->
-I will check if I can still find back some sources
->
->> eth0 Digital DS21143 Tulip rev 65 at 0x80 ... irq 128
->>
->> Is there known problem with this type of NIC?
->
->yes - there was. But built-in should work. add-on cards had problems.
->
->> Next step would be to install a gcc-64 to recompile the kernel 2.4.20-pa27
->> and have a new look on this eth0.
->
->yes - good plan
->
-Thanks again for your kind attention,
+/* mkdir() */
+#include <sys/stat.h>
+#define MAXPATHLEN 256
+
+/* waitpid() */
+#include <sys/wait.h>
+
+
+char *effectiveUser="proxy";
+uid_t effectiveUserID=13;
+gid_t effectiveGroupID=13;
+
+/* Define if you have the setgroups function.  */
+#define HAVE_SETGROUPS 1
+
+/*
+ * Yay! Another Linux brokenness.  Its not good enough to know that
+ * setresuid() exists, because RedHat 5.0 declare setresuid() but
+ * doesn't implement it.
+ */
+#define HAVE_SETRESUID 1
+
+#undef HAVE_SETRESUID
+/*
+ */
+
+/*
+man setresuid NOTES:
+       Under  HP-UX  and  FreeBSD the prototype is found in <unistd.h>. 
+Under
+       Linux there is so far no include file giving the prototype - this
+is  a
+       glibc bug. Programs using this system call must add the prototype
+them-
+       selves.
+*/
+#ifdef HAVE_SETRESUID
+int
+setresuid(uid_t ruid, uid_t euid, uid_t suid);
+#endif
+
+/* Define if you have the seteuid function.  */
+#define HAVE_SETEUID 1
+
+/*
+ * xstrerror() - strerror() wrapper
+ */
+const char *
+xstrerror(void)
+{
+    static char xstrerror_buf[BUFSIZ];
+    static char strerror_buf[BUFSIZ];
+
+    snprintf(strerror_buf, BUFSIZ, "%s", strerror(errno));
+   
+    if (strerror_buf) 
+	snprintf(xstrerror_buf, BUFSIZ, "(%d) %s", errno, strerror_buf);
+    else
+        snprintf(xstrerror_buf, BUFSIZ, "(%d) Unknown", errno); 
+    return xstrerror_buf;
+}
+
+/* leave a privilegied section. (Give up any privilegies)
+ * Routines that need privilegies can rap themselves in enter_suid()
+ * and leave_suid()
+ * To give upp all posibilites to gain privilegies use no_suid()
+ */
+void
+leave_suid(void)
+{
+    fprintf(stderr, "leave_suid: PID %d called\n", (int) getpid());
+    if (geteuid() != 0)
+	return;
+    /* Started as a root, check suid option */
+    if (effectiveUser == NULL)
+	return;
+#if HAVE_SETGROUPS
+    setgroups(1, &effectiveGroupID);
+#endif
+    if (setgid(effectiveGroupID) < 0)
+	fprintf(stderr, "ALERT: setgid: %s\n", xstrerror());
+    fprintf(stderr, "leave_suid: PID %d giving up root, becoming '%s'\n",
+(int) getpid(), effectiveUser);
+#if HAVE_SETRESUID
+    if (setresuid(effectiveUserID, effectiveUserID, 0) < 0)
+	fprintf(stderr, "ALERT: setresuid: %s\n", xstrerror());
+#elif HAVE_SETEUID
+    if (seteuid(effectiveUserID) < 0)
+	fprintf(stderr, "ALERT: seteuid: %s\n", xstrerror());
+#else
+    if (setuid(effectiveUserID) < 0)
+	fprintf(stderr, "ALERT: setuid: %s\n", xstrerror());
+#endif
+}
+
+static void
+setEffectiveUser(void)
+{
+    leave_suid();		/* Run as non privilegied user */
+    if (geteuid() == 0) {
+	fprintf(stderr, "Squid is not safe to run as root!  If you must\n");
+	fprintf(stderr, "start Squid as root, then you must configure\n");
+	fprintf(stderr, "it to run as a non-priveledged user with the\n");
+	fprintf(stderr, "'cache_effective_user' option in the config file.\n");
+	fprintf(stderr, "Don't run Squid as root, set 'cache_effective_user'!\n");
+        abort();
+    }
+}
+
+static int
+storeUfsDirCreateDirectory(const char *path)
+{
+    int created = 0;
+
+    if (0 != mkdir(path, 0755)) {
+	fprintf(stderr,	"Failed to make swai directory %s: %s\n",
+	    path, xstrerror());
+    }
+    return created;
+}
+
+static void
+storeUfsDirCreateSwapSubDirs(char * Path)
+{
+    int i, k;
+    static char name[MAXPATHLEN];
+    for (i = 0; i < 16; i++) {
+	snprintf(name, MAXPATHLEN, "%s/%02X", Path, i);
+        storeUfsDirCreateDirectory(name);
+	fprintf(stderr, "Making directories in %s\n", name);
+	for (k = 0; k < 32; k++) {
+	    snprintf(name, MAXPATHLEN, "%s/%02X/%02X", Path, i, k);
+            storeUfsDirCreateDirectory(name);
+	}
+    }
+}
+
+
+static void
+storeUfsDirNewfs(char * Path)
+{
+    fprintf(stderr, "Creating swap space in %s\n", Path);
+    storeUfsDirCreateSwapSubDirs(Path);
+}
+
+void
+storeCreateSwapDirectories(void)
+{
+    int i;
+    pid_t pid;
+    int status;
+    for (i = 0; i < 1; i++) {
+	if (fork())
+	    continue;
+        storeUfsDirNewfs("/var/spool/squid");
+	exit(0);
+    }
+    do {
+	pid = waitpid(-1, &status, 0);
+    } while (pid > 0 || (pid < 0 && errno == EINTR));
+}
+
+
+int
+main(int argc, char **argv)
+{
+    /* only opt_create_swap_dirs */
+
+    setEffectiveUser();
+    fprintf(stderr, "Creating Swap Directories\n");
+    storeCreateSwapDirectories();
+
+    return 0;
+}
+
+(rebuild from simplified parts of squid-2.5 src)
+
+compile with: gcc -O 2 -Wall -D_REENTRANT file.c -o ct
+
+[create a user and a group named proxy with id 13 both]
+
+compile as it is it, it will failled immediately with 'Segmentation fault'
+
+edit sources to comment out '#undef HAVE_SETRESUID' line, recompile with
+same option and it would fork without problem (even thought it will failled
+to actually create dir)
+
+hth,
     Joel
 
+PS: this test case doesn't present the same pb on an unstable debian (ie
+compile with gcc-3.2_3.2.2-0pre6 & libc6_2.3.1-10). I try this on the same
+kernel running each the two different install.
 
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+
+>-- Original Message --
+>From: Luigi Gangitano <luigi@debian.org>
+>To: parisc-linux@lists.parisc-linux.org
+>Subject: [parisc-linux] Issues with seteuid()?
+>Date: 12 Jan 2003 16:49:29 +0100
+>
+>
+>
+>Hi all,
+>I'm the Debian package maintainer for Squid (HTTP Proxy). I received the
+>forwarded bug report describing issues in seteuid() on palinux. While
+>using seteuid(), forked processes terminate with SEGV.
+>
+>Is it a known problem?
+>
+>Thanks.
+>
+>L
+>
+>Please CC: me, I'm not subscribed to this list.
+>
+>-----Forwarded Message-----
+>> This small mail to mentionned that I reach to make squid operational on
+>> a linux-2.4.20-pa17 thanks to the following tips:
+>> 
+>> in debian rules replace statement
+>>     ac_cv_func_setresuid=no \
+>> by
+>>     ac_cv_func_setresuid=yes \
+>> 
+>> so that function leave_suid() [into src/tools.c] will use setresuid()
+in
+>> place of seteuid() before launch fork().
+>> 
+>> Is it a know problem on palinux?
+>> 
+>> Greetings,
+>>     Joel
+>> 
+>> PS: Luigi, I also test it on 2.5.1 and it works also for parisc linux
+(testing
+>> config). HTH
+>
+>-- 
+> Luigi Gangitano -- <luigi@debian.org> -- <gangitano@lugroma3.org>
+> GPG: 1024D/924C0C26: 12F8 9C03 89D3 DB4A 9972  C24A F19B A618 924C 0C26
+>
+>Attachment: signature.asc
+>
+
+
+*********************************************
+Vous surfez toujours avec une ligne classique ?
+Faites des economies avec Tiscali Complete...
+Plus d'info sur ... http://complete.tiscali.be
