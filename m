@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (mail.tiscali.be [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 28311482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Oct 2002 10:55:37 -0600 (MDT)
-Date: Tue, 8 Oct 2002 18:48:18 +0200
-Message-ID: <3D8EED0B00001C0B@ocpmta5.be.tiscali.com>
-In-Reply-To: <3DA2940B.8030304@visoel.de>
-From: jsoe0708@tiscali.be
-Subject: RE: [parisc-linux] cvsup for hppa?
-To: "Tilo Riemer" <t.riemer@visoel.de>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+To: phi <phi@hpfrcu81.france.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] boot (micro) hang 
+In-Reply-To: Message from phi <phi@hpfrcu81.france.hp.com>
+   of "Tue, 08 Oct 2002 15:49:47 +0200." <3DA2E27B.5708975E@hpfrcu81.france.hp.com>
+References: <3DA2945D.7010301@visoel.de>  <3DA2E27B.5708975E@hpfrcu81.france.hp.com> 
+Date: Tue, 08 Oct 2002 11:01:52 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021008170152.AD42D4839@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +19,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->From: Tilo Riemer <t.riemer@visoel.de>
->To: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux] cvsup for hppa?
->Date: Tue, 08 Oct 2002 10:15:07 +0200
->
->
->Hello list,
->
->is there cvsup for hppa?
+phi wrote:
+> Thomas helped to turn on verbosity during boot and remove LED display code,
+> but yet it fail to boot 'normally' and I still get the micro hang (15 minute).
 
-Do you speek about package.
-If yes, I also have a look in cvsup. And cvsup is written in 'pm3' (Modula3)
-which has a lot of platform dependent code and it is unfortunately only packaged
-for i386 . And I did not know if its successor cm3 is already pakaged :(.
+The long delay happens during device discovery.
+You could enable EARLY_BOOTUP_DEBUG in arch/parisc/kernel/pdc_cons.c
+and add some printk's to the loop in system_map_inventory().
 
-Regards,
-    Joel
+Only two pieces of code really get executed during that time.
+One is the PDC calls - verify your firmware is the latest and if it
+isn't, please update.  The other might be GSC buswalk code. I thought
+the bus's under U2 are walked to detect devices not listed by PDC.
+But I don't know exactly when that occurs in the boot sequence.
+
+grant
