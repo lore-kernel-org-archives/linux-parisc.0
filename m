@@ -1,30 +1,44 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01018
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Mar 2000 15:38:51 -0700
-Received: from acer (dialup-146-100-wichita1.southwind.net [206.53.100.146])
-	by onyx.southwind.net (8.9.3/8.9.3) with SMTP id PAA06921
-	for <parisc-linux@thepuffingroup.com>; Thu, 2 Mar 2000 15:39:51 -0600 (CST)
-Message-Id: <200003022139.PAA06921@onyx.southwind.net>
-From: morrison@southwind.net
-To: parisc-linux@thepuffingroup.com
-Date: Thu, 2 Mar 2000 15:41:07 -0600
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id PAA01365
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Mar 2000 15:45:22 -0700
+Received: from bimbo.hungary.hp.com (bimbo.hungary.hp.com [15.188.72.201])
+	by palrel1.hp.com (Postfix) with ESMTP id C1B70B48
+	for <parisc-linux@puffin.external.hp.com>; Thu,  2 Mar 2000 13:46:23 -0800 (PST)
+Message-ID: <007901bf8490$8db01ef0$a94abc0f@hungary.hp.com>
+From: "Gyula Matics" <gyula_matics@hp.com>
+To: <grundler@cup.hp.com>
+Cc: <parisc-linux@puffin.external.hp.com>
+References: <200003022119.NAA11506@milano.cup.hp.com>
+Subject: Re: [parisc-linux] lasi scsi driver
+Date: Thu, 2 Mar 2000 22:44:56 +0100
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Reply-to: morrison@southwind.net
-Subject: [parisc-linux] Help! can't get serial console on 715/75
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-I recently acquired several HP 700 series boxes, and am not able to 
-get into a serial console on a 715/75.  I did not get any monitors with 
-them.  I have been able to get a serial console up on a 715/100, and 
-on a 735/125, so the serial setup is known to work, but the 715/75 
-boxes simply will not respond.  I have disconnected the graphics 
-card, with no change.  I do have HIL keyboards, but have not been 
-able to set the console to rs232 working blind.  Suspecting secure 
-mode was on, I disconnected all drives and attempted to set secure 
-off blind, to no avail.
+> Aside from the mailbox problems, have you added code to flush/purge
+> entries for payload data?
 
-Any help appreciated, additional info available if it will help
+It is not a clean mailbox system. It is mixing data and commands in the
+mailbox...
 
-Marc Morrison
-would-be HP user
+> > I know that the architecture supports setting a page non-cacheable.
+> > My question is if it is possible / good idea to set the mailbox page
+> > to non-cacheable?
+> 
+> Philipp Rumpf mentioned a possible implementation to me in a private
+> e-mail (make_page_uncached()). He's open to other ideas and/or
+> interfaces if another architecture has already solved this problem.
+
+The driver was originally written for m68k and one can find this code
+fragments in it:
+
+    cache_push(virt_to_phys((void *)(instance->hostdata[0])), 8192);
+    cache_clear(virt_to_phys((void *)(instance->hostdata[0])), 8192);
+    kernel_set_cachemode(instance->hostdata[0], 8192, IOMAP_NOCACHE_SER);
+
+> in Documentation/DMA-mapping.txt. (I reccomend version 2.3.47
+
+OK, i'll read it.
+
+Gyula
