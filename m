@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dh64.b180 (b180.mmjgroup.com [192.34.35.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8AE1A4829
-	for <parisc-linux@parisc-linux.org>; Tue,  3 Dec 2002 22:06:47 -0700 (MST)
-Date: Tue, 3 Dec 2002 22:06:40 -0700
-To: parisc-linux@parisc-linux.org
-Message-ID: <20021204050640.GA22117@b180.mmjgroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: lamont@b180.mmjgroup.com (LaMont Jones)
-Subject: [parisc-linux] airo.c patch for hppa
+Received: from netlx010.civ.utwente.nl (netlx010.civ.utwente.nl [130.89.1.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1954B4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Dec 2002 04:41:03 -0700 (MST)
+Received: from kabel209080 (kabel209080.kabel.utwente.nl [130.89.232.79])
+          by netlx010.civ.utwente.nl (8.11.4/HKD) with SMTP id gB4Beu822769
+          for <parisc-linux@lists.parisc-linux.org>; Wed, 4 Dec 2002 10:40:56 -0100
+Message-ID: <001c01c29b89$f01db9e0$4fe85982@kabel.utwente.nl>
+From: "Tim Kemna" <t.kemna@student.utwente.nl>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <3DA3DE6600007D28@ocpmta4.be.tiscali.com> <003101c299e1$9b2e7680$4fe85982@kabel.utwente.nl> <20021202105023.GL24337@sleepie.demon.co.uk> <003a01c29a1d$cd94b800$4fe85982@kabel.utwente.nl> <20021202165219.GP24337@sleepie.demon.co.uk>
+Subject: Re: [parisc-linux] lifimage
+Date: Wed, 4 Dec 2002 12:40:25 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,92 +25,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-The patch below gets airo.c working on hppa.  Diff is vs 2.4.20 source.
+I changed the console by booting de lifimage. The machine now boots without
+a keyboard connected to it. Also when I push the power button it doesn't
+turn off. So I'm pretty sure the console is now the serial device.
 
-The first part (chage to init_airo_card and it's callers) allows us to call
-pci_enable_device like we need to.
+Now my problem is that I can't get any output. I'm using HyperTerminal 6.3
+on windows 98. The settings are 9600 8-N-1. My serial cable is D9F/D9F.
+Do I need to reboot the 712 every time I try to connect to it? Or can I just
+plug the cable into another COM port and try again?
 
-The other part (the stuff inside #ifdef __hppa__) is a gross hack that works
-around some issues between dino and the card during initialization where the
-card fails to ack reads of several 2-byte aligned addresses.  With these
-changes, I have a working PCI4800 in my B180.
+Greetings,
+Tim
 
-It would, of course, be nice if at least part of this made it into the CVS
-tree...
+----- Oorspronkelijk bericht -----
+Van: "Richard Hirst" <rhirst@linuxcare.com>
+Aan: "Tim Kemna" <t.kemna@student.utwente.nl>
+CC: <parisc-linux@lists.parisc-linux.org>
+Verzonden: maandag 2 december 2002 17:52
+Onderwerp: Re: [parisc-linux] lifimage
 
-thoughts?
-lamont
 
---- ../x/airo.c	2002-12-03 18:55:31.000000000 -0700
-+++ drivers/net/wireless/airo.c	2002-12-03 21:20:32.000000000 -0700
-@@ -1649,7 +1649,7 @@
- 	return dev;
- }
- 
--struct net_device *init_airo_card( unsigned short irq, int port, int is_pcmcia )
-+struct net_device *init_airo_card( unsigned short irq, int port, int is_pcmcia , struct pci_dev *pdev )
- {
- 	struct net_device *dev;
- 	struct airo_info *ai;
-@@ -1696,6 +1696,12 @@
- 	dev->irq = irq;
- 	dev->base_addr = port;
- 
-+	if ( !is_pcmcia && pdev ) {
-+		if (pci_enable_device(pdev))
-+			goto err_out_free;
-+		pci_set_master(pdev);
-+	}
-+
- 	rc = request_irq( dev->irq, airo_interrupt, SA_SHIRQ, dev->name, dev );
- 	if (rc) {
- 		printk(KERN_ERR "airo: register interrupt %d failed, rc %d\n", irq, rc );
-@@ -2163,12 +2169,22 @@
- static u16 IN4500( struct airo_info *ai, u16 reg ) {
- 	unsigned short rc;
- 
-+#ifdef __hppa__
-+	if ((reg&3) && reg!=DATA0) {
-+		unsigned int ri;
-+		ri=inl(ai->dev->base_addr + (reg&~3));
-+		rc=(ri>>(8*(reg&3)))&0xffff;
-+	} else {
-+		rc = inw( ai->dev->base_addr + reg );
-+	}
-+#else
- 	if ( !do8bitIO )
- 		rc = inw( ai->dev->base_addr + reg );
- 	else {
- 		rc = inb( ai->dev->base_addr + reg );
- 		rc += ((int)inb( ai->dev->base_addr + reg + 1 )) << 8;
- 	}
-+#endif
- 	return rc;
- }
- 
-@@ -2266,6 +2282,7 @@
- 		printk(KERN_ERR "airo: Error checking for AUX port\n");
- 		return ERROR;
- 	}
-+	
- 	if (!aux_bap || rsp.status & 0xff00) {
- 		ai->bap_read = fast_bap_read;
- 		printk(KERN_DEBUG "airo: Doing fast bap_reads\n");
-@@ -4008,7 +4025,7 @@
- {
- 	struct net_device *dev;
- 
--	dev = init_airo_card(pdev->irq,	pdev->resource[2].start, 0);
-+	dev = init_airo_card(pdev->irq,	pdev->resource[2].start, 0, pdev);
- 	if (!dev)
- 		return -ENODEV;
- 
-@@ -4036,7 +4053,7 @@
- 		printk( KERN_INFO
- 			"airo:  Trying to configure ISA adapter at irq=%d io=0x%x\n",
- 			irq[i], io[i] );
--		if (init_airo_card( irq[i], io[i], 0 ))
-+		if (init_airo_card( irq[i], io[i], 0, 0 ))
- 			have_isa_dev = 1;
- 	}
- 
+> On Mon, Dec 02, 2002 at 05:13:50PM +0100, Tim Kemna wrote:
+> > I need the lifimage to setup my console to be the serial device. So I
+can't
+> > use netboot. Am I right?
+>
+> This is a 712, right?  I guess you do need a working graphical console
+> in order to boot the lifimage and make the config change.  Do you not
+> have access to a PS/2 keyboard and (sync-on-green?) monitor for long
+> enough to do that?  My 17" iiyama monitor and a no-name 19" here work on
+> my 712.
+>
+> Richard
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
