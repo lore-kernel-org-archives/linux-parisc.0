@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C383484E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Oct 2002 11:05:09 -0600 (MDT)
-Message-Id: <200210261705.g9QH54Zx002355@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Branch Prediction
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-Date: Sat, 26 Oct 2002 13:05:04 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021026051138.248F24834@dsl2.external.hp.com> from "Grant Grundler" at Oct 25, 2002 11:11:38 pm
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id E9A6A484E
+	for <parisc-linux@parisc-linux.org>; Sat, 26 Oct 2002 13:27:58 -0600 (MDT)
+Message-ID: <000901c27d25$c18647a0$0100a8c0@posix2paebsbtq>
+From: "posix" <p0six@gmx.net>
+To: <parisc-linux@parisc-linux.org>
+Date: Sat, 26 Oct 2002 21:27:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0006_01C27D36.82459760"
+Subject: [parisc-linux] A few questions
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,50 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> "John David Anglin" wrote:
-> > Does anyone know which PA processors if any implement the BTS?
-> 
-> No clue. I had to read the PA2.0 arch book (page 6-15, "Branch 
-> Target Stack) to learn what this is and what it does.
+This is a multi-part message in MIME format.
 
-I did a quick hack to gcc yesterday to try it on the a500.  It
-didn't seem to make any difference, so I think the PA-8500 doesn't
-have a branch target stack.  I wonder if the PA-8700 in the rp2470
-has it?  I suppose it also could be an add-on chip.
+------=_NextPart_000_0006_01C27D36.82459760
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-It's fairly easy to implement and the assembler already supports
-the feature.  However, there might be issues with software compiled
-without the feature not inter-operating with software compiled
-with it.  For call-return acceleration, the safe solution of
-pushing the return in the callee results in reduced performance.
-You have to do the push in the call.  Maybe I will add this
-as an option if there is actually some gear that has the option.
+Hi!
+I was wondering if there is another way than what is descriped in the =
+PA-RISC/linux-bootHOWTO to exit serial console and enter graphics =
+console?
 
-> Anyay, it would be interesting to know if HPUX's acc uses it.
-> ie did it's usage ever get validated for both systems that do
-> and don't implement BTS?
-> 
-> > I was also wondering about the ITLB P bit and what parisc-linux does
-> > with it.  The came up in regard to accelerating branches for calls
-> > and returns.
-> 
-> It sounds like parisc-linux does nothing with P-bit.
-> We could just always enable it if you think that's the right
-> thing to do for now. Looks like could be done by adding one more
-> insn to itlb_miss_common_20w in entry.S.
+I would really appreciate an answer //Patrick
+------=_NextPart_000_0006_01C27D36.82459760
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I am guessing but I think setting it would help on machines with
-dynamic prediction hardware.  There is probably a paper somewhere
-on this on the HP site.  I tried to find info on the branch target
-stack but didn't have any success.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi!<BR>I was wondering if there is =
+another way than=20
+what is descriped in the PA-RISC/linux-bootHOWTO to exit serial console =
+and=20
+enter graphics console?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I would really appreciate an answer=20
+//Patrick</FONT></DIV></BODY></HTML>
 
-My understanding is that pc-relative branches can be predicted
-from examination of the code.  Indirect branches (e.g., call
-returns) can't.  I don't know how the dynamic prediction hardware
-works but I would think it wouldn't be there if it didn't
-improve branch prediction.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+------=_NextPart_000_0006_01C27D36.82459760--
