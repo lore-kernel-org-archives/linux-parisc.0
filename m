@@ -1,49 +1,55 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA31359
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 21:16:03 -0700
-Date: Wed, 24 Jan 2001 23:19:57 -0500 (EST)
-From: Michael Ang <mang@subcarrier.org>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 2.4.0 merge mangle our tree?
-In-Reply-To: <200101250346.TAA21555@milano.cup.hp.com>
-Message-ID: <Pine.BSF.4.10.10101242312100.26332-100000@cuzea.pair.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA32060
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 22:55:27 -0700
+Date: Wed, 24 Jan 2001 22:58:35 -0700
+Message-ID: <20010124225835.Q4546@tausq.org>
+From: "Randolph Chung" <randolph@tausq.org>
+To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Weird compile problems
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20010124162813.G19066@achilles.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
+In-Reply-To: <20010124162813.G19066@achilles.net>; from pjlahaie@linuxcare.com on Wed, Jan 24, 2001 at 04:28:13PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 24 Jan 2001, Grant Grundler wrote:
 
-> I did 'cvs co -D "1/24/2001 09:00 MST" linux' in order to pick
-> up the bits before the 2.4.0 "First take" commit.
->
-> [...]
-> And from the cvs log output:
-> head: 1.2
->
-> ...
-> symbolic names:
-> 	LINUS_240_FIXUP: 1.1.0.2
-> 	LINUS_240_PREMERGE: 1.1
-> 	LINUS_240: 1.1.1.2
-> 	LINUX_240_PREIMPORT: 1.1
-> [...]
-> 
-> Why am I picking up the LINUS_240 version of this file?
-> Is "-D" the wrong method to use?
+--WfZ7S8PLGjBY9Voh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-These are all the symbolic names for revisions of this file - your
-working version might be any of these or none.  "cvs stat" will tell you
-what version you currently have.
+> I'm in the process of trying to get a working apt (still) and I'm getting
+> the following with the latest kernel (updated this morning) and the
+> toolchain from nfsroot-20010118.  The system is a C360 with 256MB of RAM.
 
-Using the date should work if you get it just right, but there should have
-been a tag laid down before the merge started for just this purpose.
+FWIW I didn't run into this problem when I tried to compile apt using
+the same nfsroot and a kernel that is a few days old (Jan20). I get
+almost all the way through the end of the build. one of the files take a
+lot of memory to build and fails on my gecko, but i've gotten it to work
+before so i'm pretty sure it'll work if i increase my swap. i'll try to
+give this a try this weekend.
 
-> Tried "cvs update -rLINUS_240_PREMERGE" and that seemed to do what
-> I think I wanted. But backs out a few recent changes. *sigh*.
+randolph
+--=20
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
 
-That seems closer to what you want, but backs out any changes made since
-the merge started.  Not sure what the difference between *_PREMERGE and
-*_PREIMPORT is - you'd have to ask willy, I guess.
+--WfZ7S8PLGjBY9Voh
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-	- Mike.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.1 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE6b8CLULspdC1Zp9IRAn7eAJ9IqeQ/OOI0PGJGGmgAMwgy5eAyFACffSZg
+XrV5v+u1BFPzGXbMKYp0br0=
+=1ste
+-----END PGP SIGNATURE-----
+
+--WfZ7S8PLGjBY9Voh--
