@@ -1,14 +1,15 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
-Date: Sat, 18 Oct 2003 20:31:46 +0000
-Message-ID: <3F91A332.9050700__19883.4045943388$1416622884$gmane$org@tiscali.be>
-References: <20031017180912.GD27289@systemhalted>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] Re: [PATCH] Sysdeps changes for hppa.
+Date: Sat, 18 Oct 2003 16:47:55 -0400
+Message-ID: <20031018204754.GA8642__40259.1508035131$1416622884$gmane$org@systemhalted>
+References: <20031012213226.GE23999@systemhalted> <3F8CDFD6.1010300@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: libc-alpha <libc-alpha@sources.redhat.com>,
+	parisc-linux@lists.parisc-linux.org
+To: Ulrich Drepper <drepper@redhat.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031017180912.GD27289@systemhalted>
+In-Reply-To: <3F8CDFD6.1010300@redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,56 +20,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Carlos,
+> I've applied this patch, but only because I really don't care how the PA
+> port looks.
 
-I can safely broken my raid1 Debian/unstable install and drive some test 
-on a disk :) and advise you.
+Small cleanup mistake. Thank you.
 
-Joel
+c.
 
-Carlos O'Donell wrote:
-> parisc-linux,
-> debian-hppa,
-> 
-> --- CALLING ALL TESTERS! ---
-> 
-> glibc 2.3.2 is complete for HPPA. We've gotten rid of the following
-> long standing test-suite errors (bug-iconv3, and test-fenv).
-> 
-> The regressions in 2.3.2 were caused by incorrect handling of the PIC
-> register by the kernel, but fixed in glibc. Most cases for our stack
-> were handled incorrectly (stack grows up cases), but are fixed in this
-> release.
-> 
-> ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-16/
-> 
-> Download all the debs and install with:
-> 
-> dpkg -i libc6_*.deb
-> (Followed by dpkg -i of the rest in any order, libc6 must install first) 
-> 
-> Please do this only if you consider yourself a well seasoned linux-type
-> person. If that dpkg install fails for any reason you might be in
-> trouble. I'm running these debs on all my boxes, and I've tested in a
-> chroot, rebuilt our toolchain, and ran lmbench, gnome-session, nautilus,
-> and abi-word.
-> 
-> http://www.baldric.uwo.ca/~carlos/a500-gnome-abiword.png
-> 
-> Thanks go out to everyone for all the moral support and fun! 
-> 
-> --- TEST IT AND REPORT BACK ... PLEASE! :) ---
-> 
-> == DISCLAIMER ===
-> I do not guarantee that these debs won't cause your computer to explode
-> like a pineapple grenade, showering shrapnel and fiery death on all your
-> loved ones.
-> == DISCLAIMER ===
-> 
-> c.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+---
+2003-10-18  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* sysdeps/unix/sysv/linux/hppa/sysdep.h: Fix merge error.
+
+diff -u -p -r1.8 sysdep.h
+--- libc/sysdeps/unix/sysv/linux/hppa/sysdep.h	15 Oct 2003 05:46:00 -0000	1.8
++++ libc/sysdeps/unix/sysv/linux/hppa/sysdep.h	16 Oct 2003 05:38:17 -0000
+@@ -371,7 +371,6 @@
+ 			LDW_ASM_PIC				\
+ 			: "=r" (__res)				\
+ 			: "i" (SYS_ify(name)) ASM_ARGS_##nr	\
+-			 );					\
+ 			: CALL_CLOB_REGS CLOB_ARGS_##nr		\
+ 		);						\
+ 		__sys_res = (long)__res;			\
