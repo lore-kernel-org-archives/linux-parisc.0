@@ -1,48 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04753
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 18:48:40 -0700
-Received: from hub-fue by rachael.franken.de
-	via rmail with uucp
-	id <m12ILEb-0027mDC@rachael.franken.de>
-	for thepuffingroup.com!parisc-linux; Wed, 9 Feb 2000 01:43:57 +0100 (MET)
-	(Smail-3.2 1996-Jul-4 #4 built DST-Sep-8)
-Date: Wed, 9 Feb 2000 01:41:27 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Michael Ang <mang@subcarrier.org>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] files still needing manual merging
-Message-ID: <20000209014127.C2377@alpha.franken.de>
-References: <Pine.BSF.4.10.10002081631440.11091-100000@cuzea.pair.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.10.10002081631440.11091-100000@cuzea.pair.com>; from Michael Ang on Tue, Feb 08, 2000 at 04:33:06PM -0500
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04941
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 18:56:16 -0700
+Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id TAA19988 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 19:51:04 -0500 (EST)
+Date: Tue, 8 Feb 2000 19:51:04 -0500 (EST)
+From: Michael Ang <mang@subcarrier.org>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.BSF.4.10.10002081938400.11091-100000@cuzea.pair.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] cvs tricks
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Feb 08, 2000 at 04:33:06PM -0500, Michael Ang wrote:
-> `drivers/block/rd.c'
+Updating
+update to latest working version, get newly add dirs
+  cvs up -Ad
+get linus' 2.3.42 version of a file
+  cvs up -rlinus2342 somefile
+  (need to do "cvs up -A" to get back to latest version)
 
-so far that's the only one in my tree, which is left. To get a kernel
-compiled, I've just used the 2.3.42 version of that file (haven't commited
-it yet). I can't say whether it works, because I'm now at the point, where 
-I get unresolved symbols:
+Diffs
+between current version and linus2342
+  cvs di -rlinus2342
+our changes
+  cvs di -r1.1 -rLINUS_2342_PREMERGE
+linus' changes from 2.3.29 to 2.3.42
+  cvs di -rlinus2329 -rlinus2342
+changes we've made since checking in 2.3.42 sources to tip
+  cvs di -rLINUS_2342_FIXUP_START -rHEAD
 
-ld: Unsatisfied symbols:
-   init_ext2_fs (code)
-   up_read (code)
-   uts_sem (data)
-   get_task_struct (code)
-   up_write (code)
-   pcibios_enable_device (code)
-   down_write (code)
-   down_read (code)
-
-I've commited all the stuff, I've fixed to get it compiled. I'm going
-to look into the problems with the unresolved symbols tomorrow, if
-the issues are still unsolved.
-
-Thomas.
-
--- 
-   This device has completely bogus header. Compaq scores again :-|
-It's a host bridge, but it should be called ghost bridge instead ;^)
-                                        [Martin `MJ' Mares on linux-kernel]
+Merging
+merge in linus' changes
+  cvs up -jrlinus2329 -jlinus2342
