@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AF3B482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Jun 2002 10:00:04 -0600 (MDT)
-To: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] kdb_v21 branch updated to -pa26, and kallsyms cross-compile
-Message-ID: <1023292640.3cfe34e07e65b@webmail.tiscalinet.be>
-Date: Wed, 05 Jun 2002 17:57:20 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
-References: <20020529110118.A3691@systemhalted> <20020529162438.GJ9919@tykepenguin.com> <20020529132631.B3691@systemhalted> <20020529180739.GL9919@tykepenguin.com> <20020530143626.GF810@tykepenguin.com> <20020530133515.B15631@systemhalted> <20020531072849.GD1145@tykepenguin.com> <20020531085419.B18658@systemhalted> <20020604115547.GB1808@tykepenguin.com> <20020604084440.A24973@systemhalted> <20020604154954.GA29187@tausq.org>
-In-Reply-To: <20020604154954.GA29187@tausq.org>
+Received: from enduro.mml.marmot.com (h206-80-39-2.ncal.verio.net [206.80.39.2])
+	by dsl2.external.hp.com (Postfix) with SMTP id 82ADA482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Jun 2002 10:03:28 -0600 (MDT)
+Received: from echelon.mml.marmot.com ([172.16.0.64] helo=marmot.com)
+	by enduro.mml.marmot.com with esmtp (Exim 3.35 #1 (Debian))
+	id 17FdFe-0007uT-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 05 Jun 2002 09:03:10 -0700
+Date: Wed, 5 Jun 2002 09:01:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <7FD5D52DC7BFB94A867A01CE23C2C3B2021DC7@echelon.mml.marmot.com>
+From: "Damian Boune" <dboune@marmot.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] Greetings!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,62 +25,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Greetings all,
 
-It seems that the b2000 I used to test gcc-3.2 does not crash anymore :) with
-all kernels :)) (pl 2.4.18 or my stuff on 2.4.19)? (I feel that fs corruption
-occurs and was not detected immideately?)
+I am new to the PA-RISC mailing list, and to the PA-RISC world in
+general so this is my introduction. I work for the outdoor equipment
+manufacturer by the name of Marmot Mountain and am one of two sysadms
+who run Marmot's IT department.
 
-Well I come back to you to see what should be the useable kdb config (to
-investigate the network problem with kernel compiled with gcc-3.1 or -3.2).
+We have long run our financial and data systems on misc. *nix based
+systems and one of these systems that no longer performs this duty is a
+HP E55. Being a junkie I'm naturally trying to find a new job and life
+for this little E55. I have not yet done anything much with it yet as
+I've been researching just how probable it is that I can put Debian/GNU
+Linux on it in some fashion. I still have all the old HPUX software in
+case I decide to be masochistic (okok.. so it's not so bad, and having
+disk storage don't sound so bad either, but Linux will be more fun
+right?  ;)
 
-Mine is now:
-CONFIG_MAGIC_SYSRQ=Y
-CONFIG_KDB=Y
-CONFIG_KDB_MODULES=Y
-# CONFIG_KDB_OFF IS NOT SET
-CONFIG_KALLSYMS=Y
+Right now I am putting together a cross-build environment on an i386 box
+so that I may compile a HPPA kernel and I've got bootp and tftp services
+ready to go. Looks like getting everything together will be a bit of a
+challenge. I'm so used to the i386 world now that I'm royally spoiled by
+the Debian package repository. Spoiled and lazy that is. All I can hope
+for is that I'm not off my rocker or heading in the wrong direction
+entirely.
 
-Thanks a lot,
-    Joel
+So, if anyone has some wisdom to impart upon a newbie to the PA-RISC
+world, I'll be very grateful, and so will my E55!
 
-Quoting Randolph Chung <randolph@tausq.org>:
+Off I go to save the world! It's nice to meet all of you!=20
 
-> > I think there are two maybe three places where kdb initializes 
-> > certain structures during startup. I'm going to have to check 
-> > those paths to see how far it gets before dying.
-> > 
-> > Any comments from the crowd would be helpfull :)
-> > 
-> > /me goes off to add some printk's and extra check
-> 
-> i've been offline for a bit so i might have missed something... but
-> aiui
-> the symptom you've been seeing is that it hangs at the "If this is the
-> last message you see" message? has anyone tried to compile a kernel
-> with
-> early bootup messages (there's a #define in pdc_cons.c to enable this)
-> and see if they get farther?
-> 
-> there are some debugging stuff that you can turn on in
-> arch/parisc/kernel/unwind.c ... that piece of code has caused some hangs
-> 
-> in the past, you might want to enable those printks as well.
-> 
-> randolph
-> -- 
->    @..@                                         http://www.TauSq.org/
->   (----)
->  ( >__< )
->  ^^ ~~ ^^
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+Damian Boune
+----------------------
+Marmot Mountain Ltd.
