@@ -1,42 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.xaire.com (unknown [200.47.131.113])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 33E9C482A
-	for <parisc-linux@parisc-linux.org>; Thu, 10 May 2001 06:58:28 -0600 (MDT)
-Received: from diana (agencia.cordoba.xaire.com [200.47.58.235])
-	by mail.xaire.com (Postfix) with SMTP id 516734231
-	for <parisc-linux@parisc-linux.org>; Thu, 10 May 2001 09:35:21 +0000 (GMT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charlie Navarro <charlie_navarro@yahoo.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 10 May 2001 09:53:02 -0300
-MIME-Version: 1.0
-Message-Id: <01051009530200.01761@diana>
-Subject: [parisc-linux] Problems with debian instalation
+Received: from rhirst.linuxcare.com (pc171-bre9.cable.ntl.com [213.105.88.171])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B4085482A
+	for <parisc-linux@parisc-linux.org>; Thu, 10 May 2001 08:00:14 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 4AFBDB007; Thu, 10 May 2001 14:59:32 +0100 (BST)
+Date: Thu, 10 May 2001 14:59:32 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Charlie Navarro <charlie_navarro@yahoo.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Problems with debian instalation
+Message-ID: <20010510145932.E1840@linuxcare.com>
+References: <01051009530200.01761@diana>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <01051009530200.01761@diana>; from charlie_navarro@yahoo.com on Thu, May 10, 2001 at 09:53:02AM -0300
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
+On Thu, May 10, 2001 at 09:53:02AM -0300, Charlie Navarro wrote:
+> Are another site to download the deb, and the correct dependences?
 
-first, I want to send a big congratulation to the people that works porting 
-Linux to my HP 712/60. If I said: it a good job!!!!, they are a small words. 
-The english does not my mother lenguaje.
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/debs
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/newcompilers-20010326
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/newlibc-20010425
 
-Ok, I have a question.
-
-I installed my 712/60 from palinux-0.6-32STI.iso and all OK. I had some 
-poblems with the keyboard (some sequence of key in vi, in some case fell down 
-the system) btw my problem is the debian dependences.
-
-I made a "apt-get dselect-upgrade" with out problems, with the original 
-sources.list that it came in the iso.
-Now I have the dependences problems to install gcc. cpp depends of cpp-3.0 
-but it is not installable. xbase-clients depends of cpp.
-
-Ok, I want to run X, but I can not. I want to compile X but I don't have the 
-gcc. I know the step to make a compiler, 
-http://mkhppa1.esiee.fr/en/compile.html is easy to follow. 
-Are another site to download the deb, and the correct dependences?
-
-Thank in advance
-
-Charlie
+Richard
