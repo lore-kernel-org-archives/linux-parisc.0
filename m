@@ -1,23 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA12889
-	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 04:39:01 -0600
-Received: from localhost (localhost [[UNIX: localhost]])
-	by MOWIS005.MinOCW.nl (8.9.0/8.9.0) with SMTP id MAA04246
-	for <parisc-linux@thepuffingroup.com>; Wed, 18 Oct 2000 12:26:53 +0200 (MET DST)
-Message-Id: <s9ed997b.083@OCWNW08>
-Date: Wed, 18 Oct 2000 12:36:57 +0200
-From: "P. Veenema" <p.veenema@minocw.nl>
-To: <grundler@cup.hp.com>
-Cc: <parisc-linux@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Linux on a HP9000 E25
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA14292
+	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 08:33:09 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 18 Oct 2000 14:34:04 -0000
+To: Randolph Chung <randolph@tausq.org>
+Cc: Alan Modra <alan@linuxcare.com.au>, parisc-linux@thepuffingroup.com
+Subject: Re: problems with binutils and/or g++
+References: <87r95f2ogl.fsf@linuxcare.com>
+	<Pine.LNX.4.21.0010181628240.1579-100000@front.linuxcare.com.au>
+	<20001018000230.D568@tausq.org>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 18 Oct 2000 10:34:12 -0400
+In-Reply-To: Randolph Chung's message of "Wed, 18 Oct 2000 00:02:30 -0700"
+Message-ID: <87itqq2p7f.fsf@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi There,
+Randolph Chung <randolph@tausq.org> writes:
 
-I have recently aquired an old HP9000 E25 system with HP-UX 10.20 installed, i don't have a license for HPUX so i want to install Linux on the machine, my question is; Where can i get the HP9000 (PA-RISC) linux version, and how to install it. My machine has a CDROM drive, and boots from it, so a bootable CD image would be very appreciated.
+> Alan, for my curiosity, could you explain this particular line from g++'s 
+> output (from dhd's message)?
+> 
+> ../build/obj/cmdline/apt-get.o(.gnu.linkonce.t.__tf10LogCleaner+0x1c):
+> cannot handle R_PARISC_PCREL17F for pkgArchiveCleaner type_info function
+> 
+> that seems to be causing the "undefined" symbol messages.
 
-Thanx
+No, it's caused *by* the undefined symbol.  If a symbol is undefined,
+it won't have a stub hash entry.  If it doesn't have a stub hash entry
+and it is either in a shared library or out of branch range, then
+relocations to it can't be handled.  Thus the error message.
 
-Paul
+The case where a symbol is defined, and yet is unreachable, results in
+a different warning (should be an error, but for some reason it seemed
+to be non-fatal last time I encountered it) message which tells you to
+recompile with -ffunction-sections.
+
+We might want to get rid of the 'cannot handle R_PARISC_FOO' messages
+in the undefined symbol case, as they are evidently misleading.
+
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
