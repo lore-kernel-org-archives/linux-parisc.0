@@ -1,68 +1,71 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA21895
-	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 13:39:03 -0700
-Message-Id: <200012062041.PAA21573@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Wed, 6 Dec 2000 15:41:06 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: alan@linuxcare.com.au, law@cygnus.com, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
-In-Reply-To: <200012051942.OAA24760@hiauly1.hia.nrc.ca> from "John David Anglin" at Dec 5, 2000 02:42:50 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA23376
+	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 16:20:42 -0700
+Received: from zaphod.halden.lillfab.se (t1o70p60.telia.com [62.20.148.60])
+	by mailg.telia.com (8.9.3/8.9.3) with ESMTP id AAA00655
+	for <parisc-linux@thepuffingroup.com>; Thu, 7 Dec 2000 00:23:04 +0100 (CET)
+Received: from localhost (danne@localhost)
+	by zaphod.halden.lillfab.se (8.9.3/8.9.3) with ESMTP id AAA29108
+	for <parisc-linux@thepuffingroup.com>; Thu, 7 Dec 2000 00:23:00 +0100
+Date: Thu, 7 Dec 2000 00:23:00 +0100 (CET)
+From: Daniel Engstrom <danne@telia.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.21.0012070011280.8673-100000@zaphod.halden.lillfab.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Subject: [parisc-linux] SCSI on ASP systems
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > stage1/xgcc -Bstage1/ -B/usr/local/hppa1.1-hp-hpux10.20/bin/ -c  -DIN_GCC    -g -O3 -fPIC -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic -Wno-long-long  -DHAVE_CONFIG_H    -I. -I. -I../../gcc -I../../gcc/. -I../../gcc/config -I../../gcc/../include ../../gcc/c-typeck.c -o c-typeck.o
-> > ../../gcc/c-typeck.c: In function `really_start_incremental_init':
-> > ../../gcc/c-typeck.c:5180: output_operand: invalid expression as operand
-> > ../../gcc/c-typeck.c:5180: Internal compiler error in output_operand_lossage, at final.c:3397
-> > confused by earlier errors, bailing out
-> 
-> This error results from the following substitution which occurs in the
-> "lreg" pass.  Here is the "lreg" rtl:
-> 
-> (insn 67 926 927 (set (reg/f:SI 107)
->         (mem/u:SI (lo_sum:SI (reg/f:SI 309)
->                 (unspec:SI[
->                         (symbol_ref:SI ("constructor_max_index"))
-> 		    ]  0)) 0)) 82 {*pa.md:2352} (insn_list 65 (nil))
->     (expr_list:REG_EQUIV (mem/u:SI (lo_sum:SI (reg/f:SI 309)
-> 		(unspec:SI[
-> 			(symbol_ref:SI ("constructor_max_index"))
-> 		    ]  0)) 0)
->         (expr_list:REG_DEAD (reg/f:SI 309)
->             (nil))))
-> 
-> ...
-> 
-> (insn 569 619 627 (set (reg/f:SI 232)
->         (reg/f:SI 107)) 69 {*pa.md:2099} (nil)
->     (expr_list:REG_DEAD (reg/f:SI 107)
->         (nil)))
-> 
-> Then, after the "greg" pass we get for insn 569:
-> 
-> (insn 569 619 627 (set (reg/f:SI 21 %r21)
->         (mem/u:SI (lo_sum:SI (reg/f:SI 8 %r8)
-> 		(unspec:SI[
-> 			(symbol_ref:SI ("constructor_max_index"))
-> 		    ]  0)) 0)) 69 {*pa.md:2099} (nil)
->     (nil))
+As noted earlier SCSI (sim700) don not work on systems with an ASP. Below
+is some of the error messages I get. It seems to fail on the first write
+command (read commands seem to work). I dont have any idea how the 53c700
+is supposed to work and I cant find any docs on the net. Does anyone on
+the list have any idea?
 
-After further investigation, this appears to be a reload problem.  Reload
-substitutes the mem for psuedo 107 because reg_equiv_mem[107] is set
-to the above mem rtx and reg_renumber[107] = -1 (ie, there is no hard register
-for the psuedo).  The function strict_memory_address_p is used to check
-whether the the memory address is valid for the mode.  This uses
-GO_IF_LEGITIMATE_ADDRESS.  The address is legit so reg_equiv_mem[107] gets
-set.  The problem is reload doesn't appear to check if the insns resulting
-from the substitution still match the conditions for the insn.  If it did,
-it would find that the substituted mem is not a valid move_operand.
+/Daniel
 
-Any thoughts on what is the best approach to fix this?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+# palo -I \
+> -b boot/iplboot \
+> -k boot/vmlinux /dev/sda
+palo version 0.8 bame@noam Tue Oct 31 14:18:23 MST 2000
+F0 partition start sector 62 length 36766
+check_bootloader 181
+ipl: addr 32768 size 24576 entry 0x0 ko 0 ksz 0 rdo 0 rdsz 0
+<ˆ..>
+scsi0: Phase mismatch, phase MSGIN (7) at script[0x31b]
+Write (10) 00 00 00 03 c0 00 00 80 00
+scsi0: DOUT sg 117, old 02ac4c00/00000400, new 02ac4e00/00000200 (32)
+scsi0: Serious error, sstat0 = 04
+scsi0: Chip register contents:
+ (script[0] at virt c2fa0000, bus 2fa0000)
+ 00  sien:  af  sdid:  20  scntl1:20  scntl0:d4
+ 04  socl:  06  sodl:  00  sxfer: 00  scid:  80
+ 08  sbcl:  00  sbdl:  00  sidl:  00  sfbr:  00
+ 0C  sstat2:06  sstat1:00  sstat0:00  dstat: 00
+ 10
+ 14  ctest3:21  ctest2:35  ctest1:0b  ctest0:00
+ 18  ctest7:00  ctest6:99  ctest5:00  ctest4:00
+ 1C  temp:  00000000
+ 20              ctest8:ff  istat: 06  dfifo: 00
+ 24  dbc:   0e000001  dnad:  02fa5cde  dsp:   02fa5038
+ 30  dsps:  02fa5cde
+ 34  dmode: 80
+ 38  dcntl: 80  dwt:   00  dien:  1d
+ 3C
+scsi0: Unexpected stacked interrupt, istat 06, sstat0 08, dstat 00             p
+scsi0: Failed to handle interrupt.  Failing commands and resetting SCSI bus and
+scsi0: istat = 04, sstat0 = 00, sstat1 = 00, dstat = 00
+scsi0: dsp = 02fa5038 (script[0x140e]), dsps = 02fa5cde, target = 0
+scsi0: Failing command for ID5
+scsi0: sim700_intr_handle() called with no interrupt
+scsi0: Negotiating async transfers for ID 5
+scsi0: Response to host SDTR = 00 00
+scsi0: Phase mismatch, phase STATUSIN (3) at script[0x22d]
+Request Sense 00 00 00 ff 00
+scsi0: DIN sg 127, old 02fa8a00/00000100, new 02fa8a12/000000ee (0)
+scsi0: Phase mismatch, phase MSGIN (7) at script[0x321]
+Write (10) 00 00 00 08 40 00 00 80 00
+scsi0: DOUT sg 120, old 029a0800/00000400, new 029a0a00/00000200 (32)
+SCSI disk error : host 0 channel 0 id 5 lun 0 return code = 10
+ I/O error: dev 08:00, sector 2112
