@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Thu, 17 Feb 2005 23:23:12 -0700
-Message-ID: <20050218062312.GA11968@colo.lackof.org>
-References: <42075CE800004656@mail-6-bnl.tiscali.it>
-	<200502170653.52415.mszick@wolfbutter.com>
+Date: Fri, 18 Feb 2005 18:35:31 +0100
+Message-ID: <420B30A200003973@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Michael S. Zick" <mszick@wolfbutter.com>
+  charset="ISO-8859-15"
+Cc: "Michael S.Zick" <mszick@wolfbutter.com>,
+ parisc-linux@lists.parisc-linux.org
+To: "Thibaut VARENE" <varenet@esiee.fr>,
+ "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200502170653.52415.mszick@wolfbutter.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,52 +20,64 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
-> I am tracking a timing and/or race condition(s) with x86-udev.
-> Debian doesn't use it yet, they still have a hard disk based /dev.
-> But it is not a compile time option.
-> If you have a 2.6.+ kernel, you have it.
-> 
-> Try turning it off with the command line option: 'noudev'
-
-I thought this helped at first.  (2.6.11-rc4-pa1)
-Could run spew+"make -j4" over xfs without crashing the box (panic).
-
-Then I rebooted with a freshly built kernel (and "noudev")
-and right away when I start spew on the XFS file system I get:
-
-Kernel Fault: Code=26 regs=00000000fd0b0de0 (Addr=00000000000000c8)
 ...
- IAOQ[0]: xfs_btree_init_cursor+0x70/0x1b8 [xfs]
- IAOQ[1]: xfs_btree_init_cursor+0x8c/0x1b8 [xfs]
- RP(r2): xfs_btree_init_cursor+0x58/0x1b8 [xfs]
+>
+> Come to think of it, I wonder how the XFS bug you're pointing at can
+> be related to the bug Joel and I reported with ext3:
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/025
+> 867.html
+>
+> Maybe one would like to try XFS on a non-SYM2 box and see what
+> happens? That way we might have a clue whether sym2's at fault or
+> something else...
+>
+In fact because I have not other choise (the only spare disk I found is a=
 
-The system panics with and without the xfs patches Joel pointed me at.
+small narrow se 4Gb hp disk which I cab connect to my b180 unstable debia=
+n
+install), I used the zalon ncr53c710 of my b180 and just build a 2Gb xfs
+on a slice of the disk with defaults:
+# mkfs -t xfs /dev/sdd1
+meta-data=3D/dev/sdd1              isize=3D256    agcount=3D8, agsize=3D6=
+4034 blks
+         =3D                       sectsz=3D512
+data     =3D                       bsize=3D4096   blocks=3D512272, imaxpc=
+t=3D25
+         =3D                       sunit=3D0      swidth=3D0 blks, unwrit=
+ten=3D1
+naming   =3Dversion 2              bsize=3D4096
+log      =3Dinternal log           bsize=3D4096   blocks=3D2560, version=3D=
+1
+         =3D                       sectsz=3D512   sunit=3D0 blks
+realtime =3Dnone                   extsz=3D65536  blocks=3D0, rtextents=3D=
+0
 
-The only difference in the .config was sym2 driver IOMAPPED.
-I had it enabled (using IO Port space) and now disable it
-since I really want MMIO space. I'm very skeptical this is
-related to the problem.
+then cvs -z3 co -A linux-2.6 without any pb ;-)
+
+I am convince that doesn't help a lot: that makes 3 big diff with Grant t=
+est:
+    - 32bit kernel,
+    - up system (curious to see results in up too on the grant's a500: ju=
+st
+deconfigure a cpu, is it possible on a500?)
+    - different driver (ncr53c710 in place of sym_2)
+
+The running kernel was 2.6.11-rc4-pa1 (cvs dated 20050217) 32bit without
+any other patch, no devfs support builtin (nor module).
+
+Hth anyway,
+    Joel
+
+PS: I still have a chroot disk on this system but fw one connected to the=
+
+symbios crtlr using sym-2.1.18n, it was dedicated to carlos libc test but=
+
+trust I could safely convert some extra ext3 fs to xfs (I mean bakup/rest=
+ore
+:) ... on Monday :-(
 
 
-> If your compile time options include devfs, try turning it 
-> off also.  Use the command line option: 'nodevfs'
 
-I don't use devfs. Willy won't let me. :^P
-
-> In my case, for kernels 2.6.8, 2.6.9, 2.6.10 and 2.6.11 -
-> If I boot from slow devices (cdrom, zip disk) everything is
-> fine, If I boot from fast devices (hard disk) - something isn't
-> getting setup the same.
-
-Is there a difference in the how the devices are used?
-ie. serialized vs. multiple IOs in flight at the same time?
-
-I didn't start hitting problems until I lauched a second job
-on the same file system.
-
-thanks,
-grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
