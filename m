@@ -1,57 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 909EC482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Mar 2001 06:40:49 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA14063;
-	Wed, 28 Mar 2001 23:40:44 +1000
-Date: Wed, 28 Mar 2001 23:40:44 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: David Wragg <dpw@doc.ic.ac.uk>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] problem building glibc from cvs
-In-Reply-To: <Pine.LNX.4.21.0103282255590.10691-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0103282326380.10691-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 159CC482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Mar 2001 10:20:42 -0700 (MST)
+Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA04198
+	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Mar 2001 10:15:06 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 28 Mar 2001 17:07:45 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14iJQ3-00009e-00; Wed, 28 Mar 2001 18:07:39 +0100
+Date: Wed, 28 Mar 2001 18:07:39 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Markus Werle <markus@lufmech.rwth-aachen.de>
+Cc: Jane Vinet <jvinet@linuxcare.com>,
+	parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] a new (and free) C++ compiler for hppa!
+Message-ID: <20010328180739.I7738@parcelfarce.linux.theplanet.co.uk>
+References: <3A75766A.CF9A3C23@lufmech.rwth-aachen.de> <3A757FB9.6DCD3A91@linuxcare.com> <3A757F68.1833548@lufmech.rwth-aachen.de> <3AC1A3C9.F94899D6@lufmech.rwth-aachen.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3AC1A3C9.F94899D6@lufmech.rwth-aachen.de>; from markus@lufmech.rwth-aachen.de on Wed, Mar 28, 2001 at 10:41:45AM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 28 Mar 2001, Alan Modra wrote:
+On Wed, Mar 28, 2001 at 10:41:45AM +0200, Markus Werle wrote:
+> It may be that I am too stupid to do it right, but then please help me:
+> I did the cvs login as described, but anonymous login failed for some
+> unknown reason.
 
-> On 28 Mar 2001, David Wragg wrote:
-> 
-> > But the glibc build failed with this
-> > error from gcc:
-> > 
-> > ../sysdeps/unix/sysv/linux/hppa/sysdep.c:35: Internal compiler error in make_dec
-> > l_rtl, at varasm.c:597
-> > Please submit a full bug report, with preprocessed source if appropriate.
-> > See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
-> 
-> I've been making some changes to gcc in the last few days as part of
-> preparing to merge upstream.  The changes ought to have been innocuous,
-> but it's entirely possible I've made a blue somewhere.  I'll see if I can
-> duplicate your problem.  More news in an hour or so.  Or possibly 8 hours
-> if I give up for the time being and go to bed :-)
+Excuse me.  I replied to you twice pointing out your error.  Your mail
+system was broken.
 
-OK, the new failure is a result of me fixing a bug with #include and
-#define ordering that accidentally disabled dwarf2 debug info for us.  The
-underlying dwarf2 bug has already been fixed upstream, so I'm about to
-merge in the following to fix it:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-January/010935.html
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-January/010936.html
 
-2001-03-23  Jim Wilson  <wilson@redhat.com>
-	* varasm.c (make_decl_rtl): Add TREE_PUBLIC check to abort test.
-	(assemble_alias): Call make_decl_rtl.
+Don't complain that you weren't helped.
 
-and this one for good measure
-
-2001-03-26  Jakub Jelinek  <jakub@redhat.com>
-	* varasm.c (make_decl_rtl): Don't append var_labelno discriminator
-	to variable names where DECL_NAME is different from
-	DECL_ASSEMBLER_NAME.
-
-Thanks for the report.  (easy-to-fix bug reports always welcome!)
-
-Alan
 -- 
-Linuxcare
+Revolutions do not require corporate support.
