@@ -1,7 +1,7 @@
 From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: [parisc-linux] Re: J5000 LCD heartbeat
+Subject: Re: J5000 LCD heartbeat
 Date: Sun, 20 Mar 2005 21:03:57 +0100
-Message-ID: <20050320210357.53534d01__49560.8000005179$1416623702$gmane$org@Tatooine.r3z0>
+Message-ID: <20050320210357.53534d01__45788.0010865212$1416623703$gmane$org@Tatooine.r3z0>
 References: <200503191959.05972.dmp@davidmpye.dyndns.org>
 	<200503201918.31808.dmp@davidmpye.dyndns.org>
 	<20050320204032.3ed40468@Tatooine.r3z0>
@@ -9,20 +9,20 @@ References: <200503191959.05972.dmp@davidmpye.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+ debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
 To: dmp@davidmpye.dyndns.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
 In-Reply-To: <200503201952.31465.dmp@davidmpye.dyndns.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Resent-Message-ID: <4F1NGD.A.LRG.BsdPCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
 On Sun, 20 Mar 2005 19:52:29 +0000
 David Pye <dmp@davidmpye.dyndns.org> wrote:
@@ -115,7 +115,8 @@ HTH
 Thibaut VARENE
 The PA/Linux Team
 http://www.pateam.org/
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
