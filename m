@@ -1,29 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA21378
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 08:14:37 -0600
-Date: Tue, 17 Oct 2000 07:15:03 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001017071503.D928@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22017
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 09:28:17 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 17 Oct 2000 15:28:56 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
+        "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Troubles following the 'recipe'
+References: <Pine.LNX.4.21.0010171957521.9896-100000@front.linuxcare.com.au>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 17 Oct 2000 11:19:04 -0400
+In-Reply-To: Alan Modra's message of "Tue, 17 Oct 2000 20:08:29 +1100 (EST)"
+Message-ID: <87zok34hsn.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] simple kernel tasks?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+Alan Modra <alan@linuxcare.com.au> writes:
 
-Per Grant's suggestion I had looked into getting /dev/rtc to work. I
-checked in my changes yesterday and they seem to be ok.
+> Immediately after installing ld.so, "make install" should be installing
+> the new libc.so.  Hmm, your glibc sources are not the latest puffin ones,
+> as the latest glibc will install as 2.1.94 
 
-I was wondering if there's a list of TODOs for things that need to be
-done in the kernel. I'd like to help if i can, though I'm still learning
-the ropes so simple tasks are preferred :-)
+2.1.95 actually.  (Sorry for not announcing this on the list)
 
-thanks,
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
