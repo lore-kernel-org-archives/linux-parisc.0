@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D00AA4829
-	for <parisc-linux@parisc-linux.org>; Wed,  4 Dec 2002 07:44:59 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18Jali-0004lv-00; Wed, 04 Dec 2002 14:44:54 +0000
-Date: Wed, 4 Dec 2002 14:44:54 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: LaMont Jones <lamont@b180.mmjgroup.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] airo.c patch for hppa
-Message-ID: <20021204144454.P27991@parcelfarce.linux.theplanet.co.uk>
-References: <20021204050640.GA22117@b180.mmjgroup.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C14A4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Dec 2002 09:21:29 -0700 (MST)
+Date: Wed, 4 Dec 2002 08:24:26 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Tim Kemna <t.kemna@student.utwente.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] lifimage
+Message-ID: <20021204162426.GB21187@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <3DA3DE6600007D28@ocpmta4.be.tiscali.com> <003101c299e1$9b2e7680$4fe85982@kabel.utwente.nl> <20021202105023.GL24337@sleepie.demon.co.uk> <003a01c29a1d$cd94b800$4fe85982@kabel.utwente.nl> <20021202165219.GP24337@sleepie.demon.co.uk> <001c01c29b89$f01db9e0$4fe85982@kabel.utwente.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021204050640.GA22117@b180.mmjgroup.com>; from lamont@b180.mmjgroup.com on Tue, Dec 03, 2002 at 10:06:40PM -0700
+In-Reply-To: <001c01c29b89$f01db9e0$4fe85982@kabel.utwente.nl>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,61 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Dec 03, 2002 at 10:06:40PM -0700, LaMont Jones wrote:
-> The first part (chage to init_airo_card and it's callers) allows us to call
-> pci_enable_device like we need to.
+> Now my problem is that I can't get any output. I'm using HyperTerminal 6.3
+> on windows 98. The settings are 9600 8-N-1. My serial cable is D9F/D9F.
 
-We certainly do...
+this is perhaps a dumb question, but are you sure your hyperterminal
+settings are correct? i've had a hard time getting hyperterminal to act
+as a serial console for anything, be it PCs, PA-RISC machines, Sun
+servers, .... of course, that could just be me ;)
 
-> The other part (the stuff inside #ifdef __hppa__) is a gross hack that works
-> around some issues between dino and the card during initialization where the
-> card fails to ack reads of several 2-byte aligned addresses.  With these
-> changes, I have a working PCI4800 in my B180.
-
-Grant, I think this is a long-standing bug (Jan 2000!) in Dino's port IO macros.
-Look:
-
-#define DINO_PORT_IN(type, size, mask) \
-static u##size dino_in##size (struct pci_hba_data *d, u16 addr) \
-{ \
-        /* tell HW which IO Port address */ \
-        gsc_writel((u32) addr & ~3, d->base_addr + DINO_PCI_ADDR); \
-        /* generate I/O PORT read cycle */ \
-        v = gsc_read##type(d->base_addr+DINO_IO_DATA+(addr&mask)); \
-
-That '& ~3' clears the bottom two bits of the address, so we always read
-from a 32-bit aligned address, even if we actually wanted to read the
-other 16-bit word or one of the other bytes.  The PORT_OUT define doesn't
-mask that way:
-
-#define DINO_PORT_OUT(type, size, mask) \
-static void dino_out##size (struct pci_hba_data *d, u16 addr, u##size val) \
-{ \
-        /* tell HW which CFG address */ \
-        gsc_writel((u32) addr, d->base_addr + DINO_PCI_ADDR); \
-        /* generate cfg write cycle */ \
-        gsc_write##type(cpu_to_le##size(val), d->base_addr+DINO_IO_DATA+(addr&ma
-sk)); \
-
-(oops, looks like a comment wasn't updated ;-)
-
-And HPUX doesn't mask addr that way either:
-
-#define DINO_PRE_RD_IO(this, addr) \
-        WRITE_UINT32(this->base_addr + DINO_PCI_ADDR, addr);
-
-STATIC uint16_t
-dino_rd_io_w()
-{
-        off += (uint32_t) phndl;
-        DINO_PRE_RD_IO(h2p, off);
-        data = READ_UINT16(h2p->base_addr + DINO_IO_DATA + (off & 2));
-
-LaMont's doing a rebuild now to check it works, but this seems fairly
-obvious to me.  Thoughts?  (Can _anyone_ remember what they were thinking
-when they wrote code nearly three years ago?  ;-)
-
+randolph
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
