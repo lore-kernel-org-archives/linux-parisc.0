@@ -1,38 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA00883
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Mar 2000 15:36:53 -0700
-Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
-	by atlrel1.hp.com (Postfix) with ESMTP id 6AD1C1BB6
-	for <parisc-linux@thepuffingroup.com>; Thu,  2 Mar 2000 16:37:50 -0500 (EST)
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ELF32 kernel 
-In-reply-to: Your message of "Wed, 01 Mar 2000 16:35:14 MST."
-             <E12QIeA-0002KV-00@endor.fc.hp.com>
-Date: Thu, 02 Mar 2000 14:37:49 -0700
-From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E12QdI5-0004IM-00@endor.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01018
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Mar 2000 15:38:51 -0700
+Received: from acer (dialup-146-100-wichita1.southwind.net [206.53.100.146])
+	by onyx.southwind.net (8.9.3/8.9.3) with SMTP id PAA06921
+	for <parisc-linux@thepuffingroup.com>; Thu, 2 Mar 2000 15:39:51 -0600 (CST)
+Message-Id: <200003022139.PAA06921@onyx.southwind.net>
+From: morrison@southwind.net
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 2 Mar 2000 15:41:07 -0600
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Reply-to: morrison@southwind.net
+Subject: [parisc-linux] Help! can't get serial console on 715/75
 List-ID: <linux-parisc.vger.kernel.org>
 
-= There's a problem when I enable CONFIG_PROC_FS where devinet_init()
-= calls register_sysctl_table() with a ctl_table containing a char*
-= pointer (for ->procname) containing the value 0x20, which eventually
-= dies in strlen() at a lower level.
+I recently acquired several HP 700 series boxes, and am not able to 
+get into a serial console on a 715/75.  I did not get any monitors with 
+them.  I have been able to get a serial console up on a 715/100, and 
+on a 735/125, so the serial setup is known to work, but the 715/75 
+boxes simply will not respond.  I have disconnected the graphics 
+card, with no change.  I do have HIL keyboards, but have not been 
+able to set the console to rs232 working blind.  Suspecting secure 
+mode was on, I disconnected all drives and attempted to set secure 
+off blind, to no avail.
 
-Actually CONFIG_PROC_FS works, but CONFIG_SYSCTL doesn't, for the
-reason above, so I changed defconfig to reflect this.
+Any help appreciated, additional info available if it will help
 
-I tracked the problem down to what appears to be a compiler
-bug, in that the devinet_sysctl_table struct in net/ipv4/devinet.c
-works well until you try to generate a pointer to the last 'ctl_table'
-element inside that struct.  This pointer value is bogus, leading to
-the misbehavior described above.  I can make the problem move around
-by inserting fields in the struct, so it appears that gcc can't generate
-valid pointers to members past a certain struct size.
-
-This could also be a difficulty for SOM folks who use the compiler
-from CVS on puffin.external.hp.com and who configure kernels including
-networking.
-
-I'm out of my depth hacking gcc.
-
-	-Paul Bame
+Marc Morrison
+would-be HP user
