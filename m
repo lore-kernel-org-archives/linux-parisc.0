@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AA4C44829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 16:17:20 -0600 (MDT)
+Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AC1434829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 16:17:26 -0600 (MDT)
+Message-ID: <3D5833EF.7E12EACE@gmx.at>
+Date: Tue, 13 Aug 2002 00:17:19 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Eric Boniface <eric_boniface@non.hp.com>
+Cc: Parisc mailing list parisc <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Installation issue on 800/F10.
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: Eric Boniface <eric_boniface@non.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020812220324.36057.qmail@web12508.mail.yahoo.com>
-References: <20020812220324.36057.qmail@web12508.mail.yahoo.com>
-Content-Type: text/plain
-Date: 12 Aug 2002 16:17:18 -0600
-Message-Id: <1029190638.635.28.camel@beavis>
-Mime-Version: 1.0
+References: <3D57E71C.3080402@non.hp.com>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,59 +22,79 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-That is true to a point.  There has been a some work done on the 
-nova class systems mainly by Christoph Platner to get the E series
-working, and I belive Christoph does have a root nfs E55 running.  The
-problem with the nova class systems are that documentation is sparse
-and very hard to obtain.
+Hello !
 
-First thing you need to do is configure a kernel with the PDC console 
-support.  the nova class systems do not have a hardware console solution
-(The K-class systems have this same problem).  You could also try to
-enable the EARLY_BOOTUP_DEBUG in arch/parisc/kernel/pdc_cons.c to see
-if that helps.
+You are in similar position than I, the machines are not
+supported for now. 
 
-Good luck!
+BUT, perhaps I can help you to go some further steps.
+The machines have a proprietary bus system and also
+proprietary interface chips.
 
-- Ryan
+To get my E55 running, I wrote a device driver using
+the ROM console (used for the boot monitor) as system
+console under Linux. 
+
+Rebuild the linux kernel with CONFIG_PDC_CONSOLE enabled
+and follow the help steps for setting up the machine:
+
+1. create "/dev/ttyB0" as character device, major=60,
+	minor=0 with
+	
+	mknod /dev/ttyB0 c 60 0
+
+2. edit /etc/inittab to use ttyB0 instead of ttyS0 
+	or tty1, ... to be able to login
+
+3. add or change to kernel parameter line to use
+
+	console=ttyB0
+
+This should work, or let's say, should give process
+in booting.
+
+One further point: Be patient on this point of kernel
+output. On some machines or dependent of the kernel 
+version (or whatever), sometimes you have to wait up
+to half a minute here ...
+
+With friendly regards
+Christoph
 
 
-On Mon, 2002-08-12 at 16:03, Derek Engelhaupt wrote:
-> By the way that site also states that the F,G,H,I series are not
-> supported....fwiw.
+Eric Boniface wrote:
 > 
-> derek
+> Hi all,
+> well I try to install the latest Debian on my (very ? ) old HP9000
+> 800/F10, but I have the following message :
 > 
-> --- Thibaut VARENE <varenet@esiee.fr> wrote:
-> > On Mon, 12 Aug 2002 18:49:32 +0200
-> > Eric Boniface <eric_boniface@non.hp.com> wrote:
-> >  
-> > > I am ok to switch whatever it wants, but I don't really see what I
-> > can 
-> > > switch.
-> > For any information on PARISC-Linux boot sequence, you can get the
-> > latest (still under review) PARISC-Linux Boot HowTo here:
-> > http://testpa.esiee.fr/.test/parisc-linux-boot.[html|pdf]
-> > Look at the 'Consoles' section.
-> > 
-> > Any feedback about errors or precisions would be greatly appreciated.
-> > 
-> > 
-> > Thibaut VARENE
-> > The PA/Linux ESIEE Team
-> > http://pateam.esiee.fr/
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> "Branching to kernel entry point 0x00100000.  If this is the last
+> message you see, you may need to switch your console.  This is
+> a common symptom -- search the FAQ and mailing list at parisc-linux.org"
 > 
+> I am ok to switch whatever it wants, but I don't really see what I can
+> switch.
+> For your information, I use a Wyse screen (a vt220 I think) plugged to
+> the console port on a SCSI/Console/LAN card.
 > 
-> __________________________________________________
-> Do You Yahoo!?
-> HotJobs - Search Thousands of New Jobs
-> http://www.hotjobs.com
+> Any idea ?
+> 
+> Thanks in advance !
+> Rgds,
+> Eric.
+> 
+> --
+> Eric Boniface - Hewlett Packard / HPS-IT Infrastructure Team Grenoble
+> Tel.(+33) 4 76 14 30 17 / Telnet : 779-3017
+> E-mail : eric_boniface@non.hp.com
+> --- Want to know more about Linux on HP PARISC ? Take a look at http://www.parisc-linux.org
+> 
 > _______________________________________________
 > parisc-linux mailing list
 > parisc-linux@lists.parisc-linux.org
 > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
