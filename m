@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spike2.ehosting.com (unknown [62.173.67.13])
-	by dsl2.external.hp.com (Postfix) with SMTP id 45EA94895
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Aug 2003 13:00:29 -0600 (MDT)
-Message-ID: <1061837954.3f4a5c82ae3d9@webmail.v8fiesta.co.uk>
-Date: Mon, 25 Aug 2003 19:59:14 +0100
-From: mmogenius@v8fiesta.co.uk
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] CD Not Mounted
+Date: Mon, 25 Aug 2003 13:19:15 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: James Bottomley <James.Bottomley@steeleye.com>
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
+Message-ID: <20030825191915.GA377@dsl2.external.hp.com>
+References: <3F2E2C7700004E38@ocpmta2.freegates.net> <20030825164553.GB28778@dsl2.external.hp.com> <1061830247.2044.165.camel@mulgrave>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1061830247.2044.165.camel@mulgrave>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,11 +20,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-when booting from the cd i am unable to mount the cd for use... i have read 
-some where about this prblem if i am using verbose mode? is this correct if so 
-how do i get round it. Thanks
+On Mon, Aug 25, 2003 at 11:50:45AM -0500, James Bottomley wrote:
+> Not for 2.6 we shouldn't.
 
+My intent was not to commit the code, but just get debugging working.
 
+> The beginnings of the hotplug CPU API made
+> logical CPU numbers deprecated (even for x86, which was the worst
+> logical vs phsyical number abuser).  We need to move entirely to
+> physical numbers only for 2.6
 
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+That's not technically possible.
+PARISC firmware uses the HPA to reference specific devices (including CPU).
+
+We can use the same CPU number as PAT PDC and call them "physical".
+But systems which don't have PAT PDC can only use arbitrary numbers
+assigned by the parisc-linux startup code. Maybe there is a way to
+make the numbers match PIM info output but I'm not sure how.
+
+hth,
+grant
