@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (ns1.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 767C14845
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 13:33:39 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: "'Joel Soete'" <joel.soete@freebel.net>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] L2000 stable with SMP and RAID
-Date: Wed, 10 Jul 2002 07:41:10 +1200
-Message-ID: <005801c22780$93f57770$5e01000a@bongo>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-reply-to: <3D2B2A80.6090103@freebel.net>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73BB54843
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 16:04:38 -0600 (MDT)
+Date: Tue, 9 Jul 2002 18:04:37 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: Helge Deller <deller@gmx.de>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC
+Message-ID: <20020709220437.GA31678@systemhalted>
+References: <200206301931.58043.deller@gmx.de> <Pine.LNX.4.44.0207090933560.19290-200000@garibaldi.apptechsys.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.44.0207090933560.19290-200000@garibaldi.apptechsys.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +23,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> For my part I would like to test RAID-1 on my B180 (2 of 9Gb).
-> Could you let me know more on the RAID configuration you implemented?
-> Do you have a special slice (partition) for your F0 (parisc 
-> bootloader) 
-> and may be also for /boot?
+> When trying to build my kernel (-pa52) with the new HIL support I got this 
+> while building vmlinux:
+> 
+> drivers/hil/hil.o: In function `.L1369':
+> drivers/hil/hil.o(.text.hil_kbd_connect+0x4f8): undefined reference to 
+> `register_ps2_keybfuncs'
+> 
+> Could someone please let me know what I am doing wrong (leaving out)?  I
+> have attached my .config (for a J5k).
+> 
+> Thanks
+>
 
-My RAID config is just a 2-disk RAID-0 array for testing at the moment.
-Heres the raidtab (probably not a lot of use to you though):
+J,
 
-----
+Until the hp_psaux.c driver is converted to input layer, you'll
+have to compile in the GSC PS2 driver code to get it all right.
 
-raiddev                 /dev/md0
-raid-level              0
-nr-raid-disks           2
-chunk-size              4
+CONFIG_GSC_PS2=y
 
-device                  /dev/sdb1
-raid-disk               0
-device                  /dev/sdc1
-raid-disk               1
+I'm currently working with Thomas to make the conversion.
 
-----
+Helge, any idea why we even call that function from hil_kbd?
+I'm at a loss to explain the reasoning...
 
-Theres a RAID-1 root howto for Debian which I have used in the past
-here: http://www.james.rcpt.to/programs/debian/raid1/ 
-
-
-Cheers, James
+c.
