@@ -1,76 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2821248A5
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Sep 2001 05:22:31 -0600 (MDT)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15lTod-00015D-00
-	for parisc-linux@parisc-linux.org; Mon, 24 Sep 2001 13:22:23 +0200
-Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
-	id 15lTo1-0002Gu-00
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Sep 2001 13:21:45 +0200
-Date: Mon, 24 Sep 2001 13:21:45 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: parisc-linux@parisc-linux.org
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 46DEC48A5
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 05:23:04 -0600 (MDT)
+Date: Mon, 24 Sep 2001 13:22:34 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: Albert Strasheim <fullung@ilink.nis.za>
+Cc: Jurij Smakov <jurijus@theophys.kth.se>,
+	<parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Debian bootfloppies with -pa22 fails on 720/50
-Message-ID: <20010924132145.B8726@dogbert.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
-Sender: Albert Strasheim <fullung@dogbert.localdomain>
+In-Reply-To: <20010924120501.A8276@dogbert.localdomain>
+Message-ID: <Pine.NEB.4.33.0109241319010.9317-100000@www2.scram.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
---cvVnyQ+4j833TQvp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Albert,
 
-Eek! :-)
+> Thanks for the reply. I was considering exactly this course of action.
+> Hopefully I can spot something then. I'll post my findings here. :-)
+>
+> I was also thinking of adding some debug output to init itself.
+> Seemingly it gets run, and during that process the kernel loses it...?
 
-After your changes (making case 18 fall through to case 28), I get the
-following happy-and-warm-and-fuzzy message:
+There are some issues with 720 boxes. This old patch at least gets me
+started, although some alignment faults remain for some user space tools:
 
-...
-VFS: Mounted root (nfs filesystem) readonly.
-init(1): unaligned access to 0x00090cf4 at ip=0x000157af
-init[1]: Unaligned data reference 28
+"Our" CPUs are very old. So there must be a line added in
+the arch/parisc/kernel/trap.c file. In the handle_interruption()
+you must add the line
+        `case 18:'
+where
+        `case 15:'
+        `case 26:'
+is in the code, because these old CPUs use an older method of
+"reporting" page faults, etc...
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111
-r0-3     00000000 1035d973 1010ccb8 10038258
-r4-7     10038648 ffffffff 00000012 faf0004c
-r8-11    00000000 00069c48 000100c4 00014dd8
-r12-15   10348000 00000000 00000000 00000000
-r16-19   10038258 00000000 10348000 00000000
-r20-23   00090cf4 0000001f 00000000 10038258
-r24-27   00000001 00000001 1027b8e0 102a4010
-r28-31   00000000 00000004 10038800 10118338
-sr0-3    00000000 105b60c0 00000000 00000001
-sr4-7    00000000 00000000 00000000 00000000
+There was a second patch posted some time ago, but that one didn't work
+for me:
 
-IASQ: 00000000 00000000 IAOQ: 1010ca64 1010ca68
- IIR: 0e93d222    ISR: 00000001  IOR: 00090cf4
- CPU:        0   CR30: 10038000 CR31: 10350000
- ORIG_R28: 10038600
-Kernel panic: Attempted to kill init!
+Index: traps.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/traps.c,v
+retrieving revision 1.52
+diff -u -p -r1.52 traps.c
+--- traps.c	2001/09/06 09:44:07	1.52
++++ traps.c	2001/09/15 16:52:13
+@@ -322,6 +322,11 @@ void handle_interruption(int code, struc
+ 		fault_address = regs->ior;
+ 		parisc_terminate("Non access data tlb fault!",regs,code,fault_address);
 
-This doesn't mean much to me, so let me know what you want me to do now.
-:-)
++	case 18: /* PCX-S processors don't use 26, 27, 28 */
++		if (regs->ior & 3)
++			goto unaligned_d_access;
++		/* Fall through */
++
+ 	case 15:
+ 	case 26:
+ 		fault_address = regs->ior;
+@@ -416,7 +421,8 @@ void handle_interruption(int code, struc
+ 		force_sig_info(SIGSEGV, &si, current);
+ 		return;
 
-Regards,
+-	case 28:  /* Unaligned just causes SIGBUS for now */
++ unaligned_d_access:
++	case 28:
+ 		handle_unaligned(regs);
+ #if 0
+ 		die_if_kernel("Unaligned data reference", regs, code);
 
-Albert
-
---cvVnyQ+4j833TQvp
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7rxdIDg+hOeRZtkMRAuZIAJ9cpIzS68xOk5yEsIlJG8lyDt9BJwCdF9Er
-7LYIK0QeoPrJH+ySKNb3DrU=
-=IUu4
------END PGP SIGNATURE-----
-
---cvVnyQ+4j833TQvp--
+Cheers,
+Jochen
