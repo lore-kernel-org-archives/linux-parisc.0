@@ -1,52 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA19892
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 12:14:07 -0600
-Message-Id: <199906151810.OAA18325@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Compiling Linux Kernel on HP-UX
-To: kirkb@chrome.rose.hp.com (Kirk Bresniker)
-Date: Tue, 15 Jun 1999 14:10:50 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: Ulrich.Strelow@Schering.DE, parisc-linux@thepuffingroup.com
-In-Reply-To: <199906151532.IAA22453@chrome.rose.hp.com> from "Kirk Bresniker" at Jun 15, 99 08:32:41 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA22192
+	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Jun 1999 03:23:03 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id LAA22509
+	for <parisc-linux@thepuffingroup.com>; Thu, 17 Jun 1999 11:22:39 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id LAA2015988
+	for <parisc-linux@thepuffingroup.com>; Thu, 17 Jun 1999 11:22:37 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m10uYNZ-00029yC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Thu, 17 Jun 1999 11:22:37 +0200 (CEST)
+Date: Thu, 17 Jun 1999 11:22:37 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990617112237.C31472@mencheca.ch.genedata.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] LinuxTag
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> |
-> | Hi,
-> |
-> | I'm trying to compile the latest CVS-snapshot (19990615) on my HP 715/33
-> | using gcc 2.7.2.2 and binutils 2.7. Compiling kernel/sched.c gives the
-> | following error:
-> |
-> | sched.c:579: section attributes are not supported for this target
-> |
-> gcc 2.8.1 isn't quite enough. Although it does support section
-> attributes, there is a bug in the code emitted that cannot be assembled
-> with gas 2.9.1. I sucessfully worked around it by changing the condition
-> from a fatal error to a warning in gas.
-> 
-> Here is the text of the bug I submitted to gcc:
 
-I haven't tried your sample but I don't have the the section problem
-with gcc-2.95 (prerelease) and binutils-2.9.4 (pre).  I do have a
-link problem:
+HP have invited me to be at their stand for LinuxTag in Kaiserslautern,
+Germany on the 26th/27th of June.  I'd like to be able to demonstrate
+something, even if it's just the bootloader and a spinning cursor.
 
-ld -N -e _stext arch/parisc/kernel/head.o arch/parisc/kernel/init_task.o init/ma
-in.o init/version.o \
-	arch/parisc/kernel/kernel.o arch/parisc/mm/mm.o kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o \
-	fs/filesystems.a \
-	net/network.a \
-	drivers/block/block.a drivers/char/char.a  drivers/net/net.a \
-	/ehic/a/pa/linux/arch/parisc/lib/lib.a /ehic/a/pa/linux/lib/lib.a /ehic/a/pa/linux/arch/parisc/lib/lib.a \
-	-o vmlinux
-ld: Unsatisfied symbols:
-   swapper_pg_dir (data)
-   _stext (data)
-make: *** [vmlinux] Error 1
+I guess what I want is another machine that is attached to the webconsole
+and a network between them to allow the A180 to netboot.  Or does someone
+have a better idea?  (Would these management cards someone mentioned be
+any use?)
 
-Dave
+----- Forwarded message -----
+
+Now I have some more questions:
+- What HW do you need exactly? You wrote a A180. This is o.k., but are 
+there other necessaries you need in the A180? And which linux version do 
+you need on this server?
+- Could you install the SW on the server?
+
+----- End forwarded message -----
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
