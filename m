@@ -1,30 +1,55 @@
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id UAA14206
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 20:20:29 -0700
-Message-Id: <200101170323.WAA08747@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id UAA14647
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 20:51:16 -0700
+Message-Id: <200101170354.WAA09043@hiauly1.hia.nrc.ca>
 Subject: Re: Oust HPPA PIC_OFFSET_TABLE_REGNUM_SAVED
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Tue, 16 Jan 2001 22:23:57 -0500 (EST)
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Tue, 16 Jan 2001 22:54:45 -0500 (EST)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: rth@redhat.com, law@redhat.com, gcc-patches@gcc.gnu.org,
-        parisc-linux@puffin.external.hp.com
-In-Reply-To: <Pine.LNX.4.21.0101161848180.4272-100000@front.linuxcare.com.au> from "Alan Modra" at Jan 16, 2001 08:28:12 pm
+Cc: alan@linuxcare.com.au, rth@redhat.com, law@redhat.com,
+        gcc-patches@gcc.gnu.org, parisc-linux@puffin.external.hp.com
+In-Reply-To: <200101170323.WAA08747@hiauly1.hia.nrc.ca> from "John David Anglin" at Jan 16, 2001 10:23:57 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> OK, here we go.
+> ../../gcc/libgcc2.c:1043: warning: ICE: would have deleted prologue/epilogue ins
+> n
+> (insn 372 370 373 (set (reg:SI 4 %r4 [94])
+>         (reg:SI 19 %r19)) -1 (nil)
+>     (nil))
 
-I am currently bootstrapping with the patch.  However, we still have the
-prologue ICE warning which Kenner wants to turn into an abort:
+The patch has problems:
 
-./xgcc -B./ -B/usr/local/hppa1.1-hp-hpux10.20/bin/ -isystem /usr/local/hppa1.1-hp-hpux10.20/include -O2   -DIN_GCC    -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -fPIC -g1  -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED  -I. -I. -I../../gcc -I../../gcc/. -I../../gcc/config -I../../gcc/../include -DUSE_COLLECT2 -DL_floatditf -c ../../gcc/libgcc2.c -o libgcc/./_floatditf.o
-../../gcc/libgcc2.c: In function `__floatditf':
-../../gcc/libgcc2.c:1043: warning: ICE: would have deleted prologue/epilogue ins
-n
-(insn 372 370 373 (set (reg:SI 4 %r4 [94])
-        (reg:SI 19 %r19)) -1 (nil)
-    (nil))
+__floatditf
+	.PROC
+	.CALLINFO FRAME=192,CALLS,SAVE_RP,ENTRY_GR=4
+	.ENTRY
+...
+	stw %r4,-72(%r30)
+...
+	copy %r19,%r4
+...
+	bl _U_Qfadd,%r2
+	stw %r19,-32(%r30)
+	copy %r3,%r28
+...
+	ldw -212(%r30),%r2
+	ldw -72(%r30),%r4
+	ldw -68(%r30),%r3
+	bv %r0(%r2)
+	ldo -192(%r30),%r30
+	.EXIT
+	.PROCEND
+
+The restoration of r19 after the call to _U_Qfadd is deleted in the flow2
+pass.  When this happens, the prologue save to r4 isn't needed leading to
+the ICE warning.  However, the restoration of r19 after the call shouldn't
+be deleted because r19 is needed for the return (previous discussion).
+We need a "use" in the return to prevent this.
+
+The save of r19 to the stack looks extraneous but I think it is mandated
+by the ABI.
 
 Dave
 -- 
