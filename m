@@ -1,59 +1,70 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA12239
-	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Sep 1999 15:12:11 -0600
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199909192114.OAA20845@bart.allegro.com>
-Subject: Re: [parisc-linux] 2 new boxes I have..
-To: jdelisle@novia.net (John Delisle)
-Date: Sun, 19 Sep 1999 14:14:12 -0700 (PDT)
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <002101bf022e$520d0780$ab0228d8@johnshay> from "John Delisle" at Sep 18, 99 06:34:08 pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA13817
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Sep 1999 19:16:10 -0600
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <37E82CE6.3A5DFFB0@uswest.net>
+Date: Tue, 21 Sep 1999 19:12:06 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Parisc Linux <parisc-linux@thepuffingroup.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Questions understanding exec_kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
-Re:
+Hello hackers:
 
-> This is a multi-part message in MIME format.
+I'm still trying to debug why I can load the kernel from exec_kernel (in
+arch/parisc/boot/boot_code/ipl_s.S)
 
-(Yes, your message is improperly sent in both MIME-encoded ASCII
-and HTML ... check your mail program preferences/options/whatever
-and uncheck the "send as HTML" option ... save bandwidth, and be
-*much* easier to read for users with older mail readers (like elm :))
- 
-> I recently became the owner of two HP PA-RISC systems. 
 
-> One is a HP 9000 800/H50 with 512MB ram, a SCSI/Console/LAN card, a MUX =
-> (40299B)
-> 
-> The other is a HP 9000 800/G40 with 256MB ram, a SCSI/Console/LAN card, =
-> a MUX (20499B), a 16 bit differential SCSI (28696-60001) card, and two =
-> SCSI/Parallel cards
-> 
-> 1) Can I make one run linux?
+I've snipped the relevent section of code and have some questions
+reguarding it.  (Pleae remember I'm, this is my first attempt with
+PA-RISC, and I've been learning by reading the PA-RISC 1.1 Architecture
+and Instruction Set Reference Manual, HP Assembler Reference Manual,
+various comments throughout the code, and trial and error.)
 
-Well, this is the list to ask, certainly :)
- 
-> 2) What are they worth? (Either as a whole or components..)
+/*
+ *  exec_kernel(entry_point, &commandline, Kernel_FreeMemStart,
+half_bss_size );
+ *  exec_kernel() calls our kernel...
+ */
 
-STFW!   :)
+ .EXPORT exec_kernel,code
+ .PROC
+ .CALLINFO
+ .ENTRY
+exec_kernel
+ mtsm     %r0                 ; Disable traps and interrupts.
 
-Check www.ebay.com, search for "G40" and "H50".  For example,
+ mtctl    %r0,        %cr17   ; Clear two-level IIA Space Queue
+ mtctl    %r0,        %cr17   ;    effectively setting kernel space.
+ [Question: Page 5-149 from the PA-RISC 1.1 Architecture and Instruction
+Set Reference Manual states: "Level 0:  If the target control register
+is CR 8, 9, 12, 13, 17, or 20, this instructin executes as a null
+instruction."  I am assuming we are running at level 0 since the rfi
+command required running at level 0, so what is the difference between a
+null instruction and a nop?]
 
-http://cgi.ebay.com/aw-cgi/eBayISAPI.dll?ViewItem&item=162760409
-http://cgi.ebay.com/aw-cgi/eBayISAPI.dll?ViewItem&item=154656842
+ mtctl    %arg0,      %cr18   ; Stuff entry point into head of IIA
+ ldo      4(%arg0),   %arg0   ;    Offset Queue, and entry point + 4
+ mtctl    %arg0,      %cr18   ;    into tail of IIA Offset Queue.
 
-Clearly, search for other permutations: "HP 9000" "HP9000"  
-"HP9000/G50" "HP 9000 G50", etc.
+ ldi      0x9,        %arg0   ; Set PSW Q & I bits (collect intrpt
+ mtctl    %arg0,      %ipsw   ;    state, allow external intrpts).
 
-> <!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
-> <HTML>
-> <HEAD>
-> <DIV><FONT color=3D#000000 size=3D2>Hi,</FONT></DIV>
-> <DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
-> <DIV><FONT color=3D#000000 size=3D2>I recently became the owner of two =
-> HP PA-RISC=20
-> systems.&nbsp; </FONT></DIV>
-...
+ copy     %arg2,      %arg0   ; commandline to arg1
+ [Note:  I think the comment is incorrect... we are actually copying the
+Kernel_FreeMemStart into arg0 ... Am I missunderstanding the comment?]
+                              ; arg3 is not changed..
+ .EXIT
+ rfi    ; begin execution of kernel.
+ nop
+ [Question: Page 5-139 from the PA-RISC 1.1 Architecture and Instruction
+Set Reference Manual states: "Execution of an RFI instruction when any
+of the PSW !, I, or R bits are ones is an undefined operation."  We are
+explicitly setting the Q & I bits before calling the rfi command.  I
+don't understand how this works ... ]
+ .PROCEND
 
-SS
+Thanks,
+-Ryan
