@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A3D4A4869
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 10:38:53 -0600 (MDT)
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 101D0486E
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 10:43:42 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17L524-0005La-00; Thu, 20 Jun 2002 17:43:40 +0100
+Date: Thu, 20 Jun 2002 17:43:40 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: Joachim Steiger <roh@hyte.de>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] serial on hp712/80 buggy?
-Message-ID: <1024591071.3d1204e002784@webmail.tiscalinet.be>
-Date: Thu, 20 Jun 2002 18:37:52 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <Pine.LNX.4.21.0206201817550.4636-100000@reactor.hyte.de>
-In-Reply-To: <Pine.LNX.4.21.0206201817550.4636-100000@reactor.hyte.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Message-ID: <20020620174340.Z9435@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.21.0206201644330.4291-100000@reactor.hyte.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0206201644330.4291-100000@reactor.hyte.de>; from roh@hyte.de on Thu, Jun 20, 2002 at 04:49:12PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,26 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Joachim Steiger <roh@hyte.de>:
+On Thu, Jun 20, 2002 at 04:49:12PM +0200, Joachim Steiger wrote:
+> i just played around with my machine and stated that setting the baudrate
+> on the serial(rs232) to 57600(8n1) didnt work...
+> using 9600baud works ok
 
-> 
-> 
-> On Thu, 20 Jun 2002 joel.soete@freebel.net wrote:
-> 
-> > Hmm, I find back my 712 Owner's guide in witch it is mentionned that
-> "The port
-> > operates at up to a 19.2k baud rate."
-> > 
-> > Joel
-> 
-> ugh... but shouldnt the serial driver return -EIO or -EINVAL when
-> setting
-> a unsupported baudrate?
+according to the lasi ERS, provided on the website, the lasi serial port
+works up to 454k baud.  it's supposed to programmatically identical to
+the 16550A.
 
-Dono, sorry (I do not have enough knowledge :( )
-
-Joel
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+-- 
+Revolutions do not require corporate support.
