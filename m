@@ -1,91 +1,60 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E41544A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Mar 2001 21:55:30 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA07214;
-	Wed, 21 Mar 2001 15:53:19 +1100
-Date: Wed, 21 Mar 2001 15:53:19 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-Cc: randolph@tausq.org, "Paul J.Y. Lahaie" <plahaie@linuxcare.com>,
-	Richard Hirst <rhirst@linuxcare.com>,
-	Jane Vinet <jvinet@linuxcare.com>,
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 624A24A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Mar 2001 07:26:22 -0700 (MST)
+Message-ID: <A4A5E4C468B5D11190220001FA6835DD04DD88AB@EPIXCH003>
+From: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@EUROPAY.COM>
+To: 'Thomas Marteau' <marteaut@esiee.fr>,
 	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.LNX.4.21.0103211157130.25567-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0103211547370.25567-100000@front.linuxcare.com.au>
+Cc: Giacomo Mulas <gmulas@ca.astro.it>,
+	=?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@EUROPAY.COM>,
+	William Carlsson <william.carlsson@teligent.se>
+Date: Wed, 21 Mar 2001 15:18:32 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: c++ problem
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] RE: The new FS of ESIEE Team is ready
 List-ID: <linux-parisc.vger.kernel.org>
 
-A cure!
+Hello Thomas,
 
-	* sysdeps/hppa/dl-machine.h (RTLD_START): Set up dp with DT_PLTGOT
-	value from application so that constructors in non-PIC libs work.
+I just finished to install and reboot with your fs_hd_20010320 on my B180.
 
-Alan Modra
--- 
-Linuxcare
+And I am very happy to see my favorite penguin appearing for the first time
+on the STI console works. Nice, great, marvelous, ... 
 
-Index: sysdeps/hppa/dl-machine.h
-===================================================================
-RCS file: /home/cvs/parisc/glibc/sysdeps/hppa/dl-machine.h,v
-retrieving revision 1.39
-diff -u -p -r1.39 dl-machine.h
---- dl-machine.h	2000/12/13 20:12:42	1.39
-+++ dl-machine.h	2001/03/21 04:36:15
-@@ -255,7 +255,17 @@ elf_machine_runtime_setup (struct link_m
-    The C function `_dl_start' is the real entry point;
-    its return value is the user program's entry point.  */
- 
--#define RTLD_START asm ("\
-+#define RTLD_START \
-+/* Set up dp for any static lib constructors that may be called. */	\
-+static struct link_map * set_dp (struct link_map *map)		\
-+{								\
-+  register Elf32_Addr dp asm ("%r27");				\
-+  dp = D_PTR (map, l_info[DT_PLTGOT]);				\
-+  asm volatile ("" : : "r" (dp));				\
-+  return map;							\
-+}								\
-+								\
-+asm ("\
- 	.text
- 	.globl _start
- 	.type _start,@function
-@@ -331,7 +341,6 @@ _start:
- 	bl	_dl_start,%rp
- 	ldo	-4(%r24),%r26
- 
--	/* FALLTHRU */
- 	.globl _dl_start_user
- 	.type _dl_start_user,@function
- _dl_start_user:
-@@ -359,10 +368,14 @@ _dl_start_user:
- 	stw	%r24,-44(%sp)
- 
- .Lnofix:
--	/* Call _dl_init(_dl_loaded, argc, argv, envp). */
- 	addil	LT'_dl_loaded,%r19
- 	ldw	RT'_dl_loaded(%r1),%r26
-+	bl	set_dp, %r2
- 	ldw	0(%r26),%r26
-+
-+	/* Call _dl_init(_dl_loaded, argc, argv, envp). */
-+	copy	%r28,%r26
-+
- 	/* envp = argv + argc + 1 */
- 	sh2add	%r25,%r24,%r23
- 	bl	_dl_init,%r2
-@@ -389,7 +402,9 @@ __dl_fini_plabel:
- 	stw	%r19,4(%r23)
- 	ldw	4(%r3),%r19	/* load the object's gp */
- 	bv	%r0(%r2)
--	depi	2,31,2,%r23	/* delay slot */");
-+	depi	2,31,2,%r23	/* delay slot */
-+");
-+
- 
- /* This code gets called via the .plt stub, and is used in
-    dl-runtime.c to call the `fixup' function and then redirect to the
+Also I would like to ask you additional favors: it would be nice to put on
+your download site the .config file with the corresponding cvs date of the
+kernel (the release of your cross-compiler could also be helpful for me) so
+that I can have a good base for future rebuild or test.
+
+Thanks again for your fs and thanks in advance for additional help,
+	Joel
+
+> -----Original Message-----
+> From: Thomas Marteau [mailto:marteaut@esiee.fr]
+> Sent: Tuesday, March 20, 2001 8:08 PM
+> To: parisc-linux@lists.parisc-linux.org
+> Cc: Giacomo Mulas; SOETE Joel; William Carlsson
+> Subject: The new FS of ESIEE Team is ready
+> 
+> 
+> Hi all,
+> 
+> 	The new FS is ready (~61MB). No "more" bugged with the 
+> good TERM parameter and
+> no password :)
+> It is a specially designed for 712 owners but it is a sane 
+> fs, we hope.
+> 
+> Please, go to our DL page: http://mkhppa1.esiee.fr/en/download.html
+> 
+> Good luck, Thomas
+> ESIEE Team
+> 
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
