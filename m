@@ -1,12 +1,11 @@
 From: "B. Douglas Hilton" <bdhilton@charter.net>
-Subject: [parisc-linux] Re: C200 Voodoo2 Progress Report
-Date: Fri, 06 Sep 2002 20:09:21 -0400
-Message-ID: <3D7943B1.3050406__6924.62773663482$1416621692$gmane$org@charter.net>
-References: <3D77D183.2080905@charter.net> <20020906034656.A26580@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [parisc-linux] Opinions on desktop environments
+Date: Sat, 07 Sep 2002 00:33:02 -0400
+Message-ID: <3D79817E.201__49007.8716575683$1416621694$gmane$org@charter.net>
+References: <20020907005814.6142.qmail@web12506.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: palinux <parisc-linux@lists.parisc-linux.org>,
-	debian-hppa@lists.debian.org
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,55 +17,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hrrmm... things aren't quite so easy as I first thought.
-For one, the Voodoo2 is a 5V PCI card so it will not fit
-into the Cujo slots, only Dino.
+Derek Engelhaupt wrote:
+> Well, got KDE to work, but it just seems slow even with my 1.6MB of RAM
+> and 2GB of swap on my C180.  I guess my questions would be what would
+> be an alternative that might run faster and/or be better overall than
+> KDE?  Gnome?  I guess I'm looking for what you guys think is the best
+> desktop environment to run.  Thanks.
+> 
+> derek
 
-Likewise, glide3-alpha wants to use <sys/io.h> which just
-isn't there on hppa because that file is particular to
-alpha and x86 archs as I understand it. I tried hacking
-it to use <asm/io.h> instead which caused a cascade of
-about a hundred errors when it got to that point. So
-glide3-alpha needs some looking at.
 
-On the kernel front, I can build the sstfb module allright,
-which it must be made as a module or else an invisible
-HPMC apparently occurs. I know this because after it switches
-to fb console mode, nothing more is seen and hitting the
-power button causes instant power-off rather than the normal
-graceful shutdown.
+Hehe... you should try running a 715 or 712! The C-Class machines positively
+scream! I agree though, KDE is somewhat sluggish on my C200, but really not
+too bad, its usable. I've heard rumors that someday the hppa c-library could
+be optimized to run _much_ faster but its still a baby as far as linux is
+concerned - I'm just tickled that it even works... I wanted another non-x86
+machine (also have a Netwinder), but SGI's are pretty exotic (though tempting),
+Alpha's seem super cool but are somewhat expensive and often in bad disrepair,
+and Sun machines are either too expensive or too old. The hppa boxes provided
+a nice economy and are very much contenders with any of the aforementioned
+architectures. In its day a C200 running HP/UX was supposedly able to smoke
+a 600MHz Alpha! Obviously there is a lot of optimization still to do...
 
-When I "modprobe sstfb" it appears to load, except it is
-reporting that my 12Mb card only has 2Mb. The fbset program
-does not segfault, but complains about "Obsolete Major on
-/dev/fb1". The con2fb util doesn't report any errors but
-neither does it seem to do anything, and finally, a subsequent
-"$export FRAMEBUFFER=/dev/fb1; startx -- :0 -bpp 16 vt06"
-causes a lockup and suspected HPMC.
+I started off with a 715/80, got Woody running good on it, played with it for
+almost a year, then sold it on Ebay for a small profit (Debian sells!) and
+rolled my dough into the C200. I'm rather happy with its performance,
+although it doesn't hold a candle to my super dual pentium-II 450 monster
+box, still its a cool and useful machine, and very nice for making sure
+that your app is portable, compiling your own hppa debs, etc. I don't run
+mine 24/7 because it has pretty high power consumption, so the Netwinder
+is my little server machine -> http://www.gyrodynamic.net
 
-So, it seems like this stuff will require some working on.
-If anybody else wants to help out too that would be great
-because my time is limited and programming video cards is
-a bit above my level, but I'll keep tinkering with it in
-the meantime. I know some assembly and hardware basics but
-am not very familiar with pa-risc yet.
+Well, I sent you a private email with my suggestions about E, but now that
+I think about it, BlackBox isn't too bad with 8bpp color. Assuming that
+somebody has fixed "update-menus" really any Debian window manager should
+work with KDE, Gnome, and other X apps. The Debian menus should provide
+access to all the installed packages which is all you really need.
+
+BTW, regarding "update-menus" - the last time I tried it on hppa it worked
+as root but segfaulted as a normal user.
+
+
 
 - Doug
-
-
-
-Matthew Wilcox wrote:
-> On Thu, Sep 05, 2002 at 05:49:55PM -0400, B. Douglas Hilton wrote:
-> 
->>  This is the Debian source for Glide3 on the Alpha arch,
->>  which is also big-endian. Initial compilation failed in
-> 
-> 
-> nope.  alpha is little-endian.
-> 
-> LE: alpha, arm, cris, i386, ia64, superh
-> BE: m68k, mips, parisc, ppc, s390, sparc
-> 
-> (yes, i know many of these CPUs are bi-endian, but these are the default
-> configs)
-> 
