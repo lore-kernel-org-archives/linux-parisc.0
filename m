@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD0884851
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Jun 2002 16:13:53 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17Omx3-00062f-00; Sun, 30 Jun 2002 23:13:49 +0100
-Date: Sun, 30 Jun 2002 23:13:49 +0100
-From: Matthew Wilcox <willy@debian.org>
 To: Helge Deller <deller@gmx.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC
-Message-ID: <20020630231349.D29045@parcelfarce.linux.theplanet.co.uk>
-References: <200206301931.58043.deller@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200206301931.58043.deller@gmx.de>; from deller@gmx.de on Sun, Jun 30, 2002 at 07:33:43PM +0200
+Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC 
+In-Reply-To: Message from Helge Deller <deller@gmx.de>
+   of "Sun, 30 Jun 2002 19:33:43 +0200." <200206301931.58043.deller@gmx.de>
+References: <200206301931.58043.deller@gmx.de> 
+Date: Sun, 30 Jun 2002 21:09:21 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020701030921.6A460484C@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,12 +19,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jun 30, 2002 at 07:33:43PM +0200, Helge Deller wrote:
-> The new HIL drivers were written by Brian S. Julin and I mostly only did some
-> bugfixing, cleanups and re-integration/re-organization  into our CVS kernel.
+...
+> Features of the new HIL drivers are:
+> 1. support for HIL mice,
+> 2. support for HIL tablets
+> 3. support for HIL keyboards
+> 4. based on the Linux Input driver model !
 
-Thanks to both of you for doing this.  It's great to have support for
-these devices in the Linux kernel.
+excellent work helge!
 
--- 
-Revolutions do not require corporate support.
+I've appended your note to the README referenced by the FAQ:
+	ftp://ftp.parisc-linux.org/XFree86/HILkeyb/README
+
+please edit if needed.
+
+grant
