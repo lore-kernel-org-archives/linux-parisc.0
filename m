@@ -1,52 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA01738
-	for <parisc-linux@puffin.external.hp.com>; Sun, 21 Nov 1999 16:05:51 -0700
-Message-Id: <199911212307.SAA11686@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA02249
+	for <parisc-linux@puffin.external.hp.com>; Sun, 21 Nov 1999 18:10:46 -0700
+Message-Id: <199911220112.UAA05614@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Progress
-To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de (Philipp Rumpf)
-Date: Sun, 21 Nov 1999 18:07:29 -0500 (EST)
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Sun, 21 Nov 1999 20:12:25 -0500 (EST)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <19991119043037.B941@mathe.stud.uni-erlangen.de> from "Philipp Rumpf" at Nov 19, 99 04:30:37 am
+Cc: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+        parisc-linux@thepuffingroup.com
+In-Reply-To: <199911212307.SAA11686@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 21, 99 06:07:29 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Philipp,
-
-> > VFS: Mounted root (ext2 filesystem)
-> > Warning: unable to open an initial console.
-> > Attempting to execute '/sbin/init'
-> > It seems to be a valid SOM executable.
+> > > I also need to slow down the console messages.
 > > 
-> > I am using the PDC_CONSOLE.  I think there was a changed needed to allow
-> > opening the PDC_CONSOLE that was discussed previously.  Does anybody
-> > remember?  Maybe with this change I can get to sash.
+> > edit arch/parisc/kernel/pdc_cons.c and put a __delay(N); in pdc_putc.  N is
+> > approximately the number of CPU cycles you want to wait.  I suggest placing
+> > it directly after the "case 'n':" as that gives you a per-line delay instead
+> > of a per-character one.
 > 
-> edit arch/parisc/boot/boot_code/ipl_c.c and replace the "ttyS0" in the command
-> line with "tty".  Alternatively, boot in interactive mode and edit the command
-> line (again replacing "ttyS0" with "tty").
-> 
-> That should get you to an (most likely unusable) shell prompt.
+> I tried this and it didn't work.  It looks like __delay() is broken.  The
+> ".balignl" is clearly bogus.  I think the "addib" tests need to bew looked
+> at more closely.
 
-I am currently booting with "hpux /stand/vmunix".
-
-This doesn't use the boot code in ipl_c.c.  Maybe the problem is the failure
-in main to open "/dev/console".  Possibly, "/dev/console" is not in the ram
-disk or, if it is, the kernel is not figuring out which tty to use.
-
-> > I also need to slow down the console messages.
-> 
-> edit arch/parisc/kernel/pdc_cons.c and put a __delay(N); in pdc_putc.  N is
-> approximately the number of CPU cycles you want to wait.  I suggest placing
-> it directly after the "case 'n':" as that gives you a per-line delay instead
-> of a per-character one.
-
-I tried this and it didn't work.  It looks like __delay() is broken.  The
-".balignl" is clearly bogus.  I think the "addib" tests need to bew looked
-at more closely.
+__delay() in delay.h is ok except for ".balignl".  The .balignl inserts
+a bunch of "ldi 1a,%r0" instructions which do nothing.  I just didn't specify
+enough cycles before.
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+
+--- delay.h.orig	Mon Oct 11 14:52:33 1999
++++ delay.h	Sun Nov 21 19:29:28 1999
+@@ -11,8 +11,7 @@
+ 
+ extern __inline__ void __delay(unsigned long loops) {
+ 	asm volatile(
+-	"	.balignl	64,0x34000034
+-		addib,UV,n      -1,%0,.
++	"	addib,UV,n      -1,%0,.
+ 		addib,NUV,n     -1,%0,.+8
+ 		nop"
+ 		: "=r" (loops) : "0" (loops));
