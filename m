@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0D325483E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Sep 2003 13:12:42 -0600 (MDT)
-Message-Id: <200309211912.h8LJCd59011386@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Found the r19 problem!
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Sun, 21 Sep 2003 15:12:39 -0400 (EDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 71B5E483E
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Sep 2003 13:16:26 -0600 (MDT)
+Message-Id: <200309211916.h8LJGNAG011413@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] warning: long unsigned int format, time_t arg
+To: willy@debian.org (Matthew Wilcox)
+Date: Sun, 21 Sep 2003 15:16:23 -0400 (EDT)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030921185531.GH6963@systemhalted> from "Carlos O'Donell" at Sep 21, 2003 02:55:31 pm
+Cc: soete.joel@tiscali.be, parisc-linux@parisc-linux.org
+In-Reply-To: <20030921190457.GI13172@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Sep 21, 2003 08:04:57 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,29 +22,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > So use a caller saves register, place it in the clobbers, and let gcc
-> > work around the usage (e.g. r4).
-> >  
-> > > > 	...
-> > > > 	(Many insn later)
-> > > > 	(stub) (dyncall) -> libpthread.so
-> > > > 	-> libc.so
-> > > 
-> > > The above is an indirect call. r19 should be restored after the call
-> > > if it is used after the call.
+> > /* Note these change from narrow to wide kernels */
+> > #ifdef __LP64__
+> > typedef unsigned long           __kernel_size_t;
+> > typedef long                    __kernel_ssize_t;
+> > typedef long                    __kernel_ptrdiff_t;
+> > typedef long                    __kernel_time_t;
+> > #else
+> > typedef unsigned int            __kernel_size_t;
+> > typedef int                     __kernel_ssize_t;
+> > typedef int                     __kernel_ptrdiff_t;
+> > typedef int                     __kernel_time_t;
+> > #endif
 > > 
-> > It is, but only after the asm(...) that lists r19 in the clobber.
-> > 
+> > On narrow kernels, int and long are the same.  So, why not use long
+> > for both narrow and wide?  Then, the ifdef can be eliminated.
 > 
-> Sorry "It is" should read "It is used" :)
+> I think it's because gcc complains ;-)
 
-Well that's why the restore is deleted.  So, the clobber must go
-and r19 must be preserved across the asm(...).  As I said, you can't
-clobber r19 when generating pic code.  It's treated as fixed register,
-so clobbering it can lead to undefined behavior.
-
-If the syscall used r19, it could include a use of r19 in the asm.
-This would ensure the restore occurs before the syscall.
+Possibly, but the pa seems to be about the only port doing this.
 
 Dave
 -- 
