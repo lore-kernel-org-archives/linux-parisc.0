@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 555914937
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Aug 2003 01:46:19 -0600 (MDT)
-Message-ID: <3F335550.3030804@tiscali.be>
-Date: Fri, 08 Aug 2003 07:46:24 +0000
-From: Joel Soete <joel.soete@tiscali.be>
-MIME-Version: 1.0
-To: geos@canada.com
-Cc: randolph@tausq.org, parisc-linux@lists.parisc-linux.org
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2F75483F
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Aug 2003 09:02:57 -0600 (MDT)
+Date: Fri, 8 Aug 2003 17:02:56 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] adding a second nic to B1000
-References: <20030807110141.25427.h020.c009.wm@mail.canada.com.criticalpath.net>
-In-Reply-To: <20030807110141.25427.h020.c009.wm@mail.canada.com.criticalpath.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Message-ID: <20030808150256.GX1873@lug-owl.de>
+References: <20030807110141.25427.h020.c009.wm@mail.canada.com.criticalpath.net> <3F335550.3030804@tiscali.be>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LjVoae4kcYbOEAMC"
+In-Reply-To: <3F335550.3030804@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,38 +23,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-geos@canada.com wrote:
+--LjVoae4kcYbOEAMC
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->Sorry about that 
->im kinda new to this if you cant tell ;)
->make config allowed me to select what nic drivers i
->wanted but this did not compile or load the new driver  
->
->i will have to get the exact errors msg's when i get
->back home 
->
->i ran the recompile kernal found here 
->http://www.parisc-linux.org/kernel/index.html
->using Simple Recipe to Build a Kernel 
->
->this added the source to /usr/src/linux
->that source should be the same as my kernal 
->after doing that i did this 
->http://www.scyld.com/expert/modules.html
->needed to get lib6,cvs after a net-install to do this 
->
->the common error after compileing and doing a insmod
->3c95x.o
->was "this was compiled for 2.4.18 and this version is
->for 2.4.19" 
->so i copy the 3c95x.c from the 2.4.19 kernel and did it
->again now i get an error like this will not function 
->
-Well if I well understand you reached to recompile hppa linux kernel 
-with module for 3c95x: congratulation.
-But to load modules, they have to be build for the kernel you are 
-running (I think that will change in 2.6). So the only  think to do now 
-is to _reboot_ with the kernel you just rebuild for your nic :)
+On Fri, 2003-08-08 07:46:24 +0000, Joel Soete <joel.soete@tiscali.be>
+wrote in message <3F335550.3030804@tiscali.be>:
+> geos@canada.com wrote:
 
-hth,
-    Joel
+> But to load modules, they have to be build for the kernel you are=20
+> running (I think that will change in 2.6). So the only  think to do now=
+=20
+
+I'm quite sure that won't change, ever. Linux, if it's compatible to
+itself at all, has got "only" a source compatible API. You're somewhat
+on a more save side if you're using symbol versioning, but if you force
+a module to load (into a kernel of different version or even of
+different configuration), you may loose. Right now or sometime later:)
+
+That's what "tainting" was ment for:)
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--LjVoae4kcYbOEAMC
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/M7ugHb1edYOZ4bsRAqn4AJ41MqzSysgVj6LA+j9U1DxY0NVqUgCeLQxa
+DkcfArCl0N6eXwiNzszux1M=
+=uOAX
+-----END PGP SIGNATURE-----
+
+--LjVoae4kcYbOEAMC--
