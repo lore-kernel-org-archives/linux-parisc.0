@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 327164834
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Jun 2002 22:46:29 -0600 (MDT)
-Message-Id: <200206240423.g5O4Nr4o003372@hiauly1.hia.nrc.ca>
-Subject: Re: Applied GNU GPL virus was Re: [parisc-linux] PA8000 modutils problems
-To: xam@cs.ucc.ie (M. Grabert)
-Date: Mon, 24 Jun 2002 00:23:53 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, joel.soete@freebel.net,
-	grundler@dsl2.external.hp.com
-In-Reply-To: <Pine.LNX.4.44.0206240252080.29056-100000@sal.ucc.ie> from "M. Grabert" at Jun 24, 2002 03:13:35 am
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E43004838
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Jun 2002 00:34:35 -0600 (MDT)
+Message-ID: <3D16BD77.8090804@esiee.fr>
+Date: Mon, 24 Jun 2002 08:34:31 +0200
+From: Matthieu Delahaye <delahaym@esiee.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: Patrick Caulfield <patrick@tykepenguin.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 0.9.3 Audio on C110
+References: <Pine.LNX.4.44.0206212123170.4556-100000@sal.ucc.ie>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +23,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> PPS: This is ment to be (at least) a half-serious email. Any useful
-> responses (under the terms of the GNU GPL) are highly welcome, especially
-> from laywers! ;)
+Hi,
 
-The list is intended for for discussion of parisc-linux issues and not
-the GNU GPL.  Contact RMS at the FSF if you want to discuss the GNU GPL.
+If nobody is already on it, I will plan to spend a lot of time on this 
+mixer after my graduation next week.
+If someone has feedback about strange behaviour like the one explained 
+above please do not hesitate to contact me.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Regards,
+Matthieu
+
+
+M. Grabert wrote:
+
+>Hi palinuxer,
+>
+>On Fri, 21 Jun 2002, Patrick Caulfield wrote:
+>
+>>The driver is called "harmony" - I have mine hard compiled into the kernel.
+>>
+>>patrick
+>>
+>
+>This reminds me of something I wanted to ask for a long time:
+>
+>It seems that the harmony mixer is not perfectly supported;
+>Volume doesn't work, and there are just two things I can change,
+>IGain and OGain (latter effects the Output volume).
+>There is not even a way to change the balance etc.
+>Moreover most applications expect at least "volume" to be working,
+>so this is kind of annoying. Despite this it's working flawlessly!
+>
+>So to the question: is there any work planned in improving harmony
+>support (in the near future) ? E.g. an enhanced mixer support and
+>support for recording?
+>
+>greetings max
+>
+>
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+>
