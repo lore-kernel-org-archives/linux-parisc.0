@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hptux.heylan (pD9E4A8A7.dip.t-dialin.net [217.228.168.167])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 203EF4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 09:54:36 -0600 (MDT)
-Date: Fri, 20 Sep 2002 17:54:30 +0200
-From: Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
-To: Helge Deller <deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org,
-	Petr Vandrovec <vandrove@vc.cvut.cz>
-Subject: Re: [parisc-linux] partial success with matroxfb
-Message-ID: <20020920155429.GB22068@gate450.dyndns.org>
-References: <20020821232010.GD15344@gate450.dyndns.org> <20020822225054.GA24190@ppc.vc.cvut.cz> <20020920002700.GY22068@gate450.dyndns.org> <200209200923.31247.deller@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200209200923.31247.deller@gmx.de>
+Received: from mailgw.cvut.cz (mailgw.cvut.cz [147.32.3.235])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91C304829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 10:11:21 -0600 (MDT)
+From: "Petr Vandrovec" <VANDROVE@vc.cvut.cz>
+To: Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
+Date: Fri, 20 Sep 2002 18:10:52 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Re: partial success with matroxfb
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <257F2C27A66@vcnet.vc.cvut.cz>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +21,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hallo Helge,
-	
-* Helge Deller <deller@gmx.de> [2002-09-20 09:25]:
-> instead of 
+On 20 Sep 02 at 17:50, Andreas Seltenreich wrote:
+> * Petr Vandrovec <VANDROVE@vc.cvut.cz> [2002-09-20 12:12]:
+> >   boot with 'video=matrox:novga'. It looks like that Matrox responded
 > 
->  static inline unsigned int mga_readb(vaddr_t va, unsigned int offs) {
-> +	return __raw_readb(va.vaddr + offs);
-> - 	return readb(va.vaddr + offs);
->  }
+> No success with novga or no_pci_retry either. It results in the same crash. 
+
+Can you verify (with lspci -xxx) that PCI dword register 0x40 in matroxfb
+configuration space has not set bit 8 (it is lowest bit in register
+0x41). 0=>disable legacy VGA, 1=>enable legacy VGA. Old Millennium I
+always responded to framebuffer accesses, and it was fixed in Millennium II.
+I thought that it was fixed in Mystique too. You can fix it with
+setpci, if matroxfb gets it wrong.
+
+> > Can you print DAC registers 0x4C,0x4D,0x4E,0x4F after this message?
+> > 0x4C..0x4E should contain 8,7E,3, and 0x4F should contain 0 when
+> > PLL is not locked, and 0x40 if PLL is locked.
 > 
-> I think you should use the
-> 	fb_readXXX() and fb_writeXX()
-> functions from include/video/fbcon.h which are automatically
-> initialized correctly acording to the architecture.
+> Ok, the code around the message now looks like this:
 
-I fear this would still break m68k because it is defined differently
-in include/video/fbcon.h than in include/asm-m68k/io.h. matroxfb is
-currently using the definition from io.h.
+> DAC register 4c=8
+> DAC register 4d=7e
+> DAC register 4e=1f
+> DAC register 4f=0
 
-regards
-andreas
+Strange. Stalls it for 5 seconds here, or goes it through immediately?
+
+> DAC register 4c=8
+> DAC register 4d=7e
+> DAC register 4e=1f
+> DAC register 4f=40
+
+                                                            Petr
+                                                            
