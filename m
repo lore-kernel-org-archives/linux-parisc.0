@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7DC8E4834
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 14:06:51 -0600 (MDT)
-Subject: Re: [parisc-linux] modem on k210/819
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Stephan Trajkoff <stephan@itp.bg>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <3D2973B4.4080807@itp.bg>
-References: <3D2973B4.4080807@itp.bg>
-Content-Type: text/plain
-Date: 08 Jul 2002 14:06:49 -0600
-Message-Id: <1026158810.1523.2.camel@beavis>
-Mime-Version: 1.0
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: Stephan Trajkoff <stephan@itp.bg>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 9000/819/K210 
+In-Reply-To: Message from Thibaut VARENE <varenet@esiee.fr>
+   of "Mon, 08 Jul 2002 20:14:06 +0200." <7D78C29C-929E-11D6-9EA1-0030656F07A2@esiee.fr>
+References: <7D78C29C-929E-11D6-9EA1-0030656F07A2@esiee.fr> 
+Date: Mon, 08 Jul 2002 14:27:32 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020708202732.A04844835@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +20,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Stephan,
+Thibaut VARENE wrote:
+> pa52 ? Well, if you're one step further than everyone, that's kinda=20
+> cheating :^)
 
-The mux support is currently under development.  Right now,
-the console on the K class systems is done via a PDC (firmware)
-console that Christoph Plattner wrote.  
+yeah...I was going to test/commit the lvm10 patch but didn't have extra disks
+to trash on that box...
 
-I have been working on getting support for the native mux in
-but I have a few minor bugs left to flush out before I can
-commit the first version.
+> > since yesterday. Both w and ps ax still work. Something else must be
+> > triggering the problem.
+> Do you mean that the hangs Ryan and I are studying should be solved by=20=
+> your changes ?
 
-Also I have only been testing the mux for console support,
-not modem support, so additional work might need to be completed
-before the modem works .. not sure on that.
+no. Just providing another data point...
 
-thanks,
+> Anyway, I have noticed that on J5k and A500, using the 'normal IO' mode=20=
+> for the SYM53C8XX driver seems to decrease risk of such hangs (running
+> 2 setis on both machines and building ISOs on the A500 for about 4 days,
+> pa46 on both, without hangs,
 
-- Ryan
+Did you stop the machine at this point or did it hang?
+ie has anyone seen a hang when sym53c8xx driver was using IO port space?
 
-On Mon, 2002-07-08 at 05:12, Stephan Trajkoff wrote:
-> Hello, anyone knows how to run modem under k210/819 HP?
-> I want to make dial-in with this modem
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+> where the A500 could only run for about
+> 3 hours is the same conditions with the MMIO mode, 1 day in the best=20
+> case.)
+
+This really suggests the problem is with disk IO and not compilation.
+And it stinks like a "PCI Posted Write" problem.
+
+Have you been able to get a TOC dump and decode where it was hung?
+
+> But I had not enough time to investigate further, so it should only be=20=
+> considered as a *interesting coincidence* :)
+
+ok.
+
+> I have now installed pa51 on these boxes, so I'll keep checking for=20
+> hangs.
+
+Finding the address of where the CPUs are spinning or hung would be good.
+BTW, this is with SMP or non-SMP kernels?
+
+grant
