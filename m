@@ -1,47 +1,54 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA14898
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Oct 1999 22:39:23 -0600
-Received: from vodka.thepuffingroup.com (IDENT:adevries@vodka.thepuffingroup.com [192.168.1.1])
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id AAA31216
-	for <parisc-linux@thepuffingroup.com>; Wed, 27 Oct 1999 00:46:35 -0400
-Date: Wed, 27 Oct 1999 00:46:35 -0400 (EDT)
-From: Alex deVries <adevries@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-In-Reply-To: <19991027002755.D26012@thepuffingroup.com>
-Message-ID: <Pine.LNX.4.10.9910270038090.31184-100000@vodka.thepuffingroup.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Wuhoo! A shell!
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA19261
+	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Oct 1999 12:10:36 -0600
+Received: from udlkern.fc.hp.com (root@udlkern.fc.hp.com [15.1.52.48])
+	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id MAA17879
+	for <parisc-linux@thepuffingroup.com>; Wed, 27 Oct 1999 12:11:39 -0600 (MDT)
+Received: from debian.fc.hp.com (root@debian.fc.hp.com [15.1.48.119]) by udlkern.fc.hp.com with ESMTP (8.8.6 (PHNE_14041)/8.7.1) id MAA24168 for <parisc-linux@thepuffingroup.com>; Wed, 27 Oct 1999 12:11:38 -0600 (MDT)
+Received: from debian.fc.hp.com (bame@localhost [127.0.0.1])
+	by debian.fc.hp.com (8.9.3/8.9.3/Debian/GNU) with ESMTP id MAA17359
+	for <parisc-linux@thepuffingroup.com>; Wed, 27 Oct 1999 12:11:38 -0600
+Message-Id: <199910271811.MAA17359@debian.fc.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] hack to use HPUX boot loader 
+In-reply-to: Your message of "Tue, 26 Oct 1999 09:50:37 CDT."
+             <199910261550.JAA13603@debian.fc.hp.com>
+Date: Wed, 27 Oct 1999 12:11:37 -0500
+From: Paul Bame <bame@debian.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-First off, many thanks to everyone who worked hard to get us these base
-parts completed, especially Philipp, Helge and Grant.
+= 
+= Has anyone confirmed that the kernel which is started is getting good
+= data (stack, etc...) or are my kernels booting purely by accident?
+= 
 
-Next, many thanks to Thomas, Chris and especially Phil for not just
-getting seperate trees working, but one in CVS that's easily reproducable
-and which we can move forward with.
+Phillip looked over some boot messages after being booted with the
+hpux boot loader and blessed them, so things appear to be working well.
 
-Obviously there's a lot of stuff to be cleared up, but these problems
-don't see too difficult. 
+How about a COMMAND LINE?
 
-- lasi.c needs to have some of the interrupt management cleared up so that
-we have a reasonable serial console speed.  From what Phil says it sounds
-pretty easy.  I'm not exaggerating when I say it takes 15 minutes to get
-to a shell on my 712/80.
+If anyone wants to investigate a bit and work on head.S, it looks like
+when launched from the current hpux boot loader that the args
+passed to the kernel are
 
-- serial console code (as mentioned by Phil)
+	int argc, char *argv[], char *envp[],
 
-- overal console management needs to be handled properly.  This includes
-finishing up the STI interface, the keyboard controller, and making it so
-that the system chooses a console based on the firmware console path
-settings.  This seems pretty reasonable.
+with some slightly bizzare stuff in the "environment", of possible
+interest:
 
-- it sounds like we might be at a point now where getting networking isn't
-so unreasonable.  We have the base of the tulip and i82596 controllers
-going.
+	env[2] - load address *of the boot loader itself*
+	env[3] - size *of the boot loader itself*
 
-In any case, we can now safely say that 'Yes, PA-RISC Linux now boots to a
-shell'.  Congrats, everyone.
+argc will always be a low number >= 1.  If you had told ISL:
 
-- Alex
+	ISL> hpux /boot/vmlinux a b c
+
+then argc would supposedly be 4 and argv[2], for example, would be "b".
+I suspect the argv[] should be copied to somewhere safe.
+
+Note that this is very different from the statment in head.S:
+
+         *      %arg3(=%r23) holds HALF(!) of the size of the BSS-Segment
+
+			    -Paul Bame
