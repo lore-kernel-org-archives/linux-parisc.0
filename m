@@ -1,22 +1,22 @@
-Return-Path: <u07pxgry@canada.com>
+Return-Path: <ep837hrya@aol.com>
 Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 550404852
+	by dsl2.external.hp.com (Postfix) with ESMTP id 63F724852
 	for <parisc-linux@parisc-linux.org>;
-	Tue, 23 Dec 2003 00:50:36 -0700 (MST)
-Received: from 66.83.254.9.nw.nuvox.net (66.83.254.9.nw.nuvox.net
-	[66.83.254.9]) by cuprel1.hp.com (Postfix) with SMTP id 2EB8010BE
+	Tue, 23 Dec 2003 01:36:52 -0700 (MST)
+Received: from adsl-68-125-177-114.dsl.irvnca.pacbell.net
+	(adsl-68-125-177-114.dsl.irvnca.pacbell.net [68.125.177.114])
+	by cuprel1.hp.com (Postfix) with SMTP id 47B7E1484
 	for <parisc-linux@parisc-linux.org>;
-	Mon, 22 Dec 2003 23:50:35 -0800 (PST)
-Message-ID: <0gh718ixde2j9l8ww-epqt9@45s.9smfld>
-From: "Jerrold Arthur" <u07pxgry@canada.com>
+	Tue, 23 Dec 2003 00:36:51 -0800 (PST)
+Message-ID: <86hw-p35fsppr8n3k8xp$6e0qtm20o@da6ra>
+From: "Warren Harrington" <ep837hrya@aol.com>
 To: parisc-linux@parisc-linux.org
-Date: Tue, 23 Dec 2003 04:44:01 -0300
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="BBA__A.C9FF84_D3."
+	boundary="456.42CCCD85552_"
 Cc: 
-Subject: [parisc-linux] Re: dont you come wz h  cth g atdjudnk
-Reply-To: Jerrold Arthur <u07pxgry@canada.com>
+Subject: [parisc-linux] Re: hella was sitting gq jxtjtn niap
+Reply-To: Warren Harrington <ep837hrya@aol.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,64 +25,40 @@ List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Date: Tue, 23 Dec 2003 08:36:52 -0000
 
 
---BBA__A.C9FF84_D3.
+--456.42CCCD85552_
 Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 
-<body><jma  kdbop  o dzrnk
-bb>
-<p>T</iceland>he ul</magazine>timate digi</racial>tal 
-cab</skyway>le fi</every>lter</p>
-<p>Th</bicameral>e <input wxqmysv
-nmv pola x fveyyv
-ezadn 
-zaw tubwllp
- x bbf rnnpu b
-fhz
-j i fvpbc xi zxe  tpf type=3D"hidden" 
-value=3D"xuvc g 
- 
+PGJvZHk+PGdzbHpjbGk+DQo8cD5UPC9jcmV0YW4+aGUgdWw8L2Rpc2VtYm93ZWw+dGltYXRl
+IGRpZ2k8L21ldHJvcG9saXM+dGFsIA0KY2FiPC9jaGlsZHJlbj5sZSBmaTwvc2VyaWF0aW0+
+bHRlcjwvcD4NCjxwPlRoPC9hcHBsZWJ5PmUgPGlucHV0IGhweWIgdCBtdmQgaGJxZ2FpcWMg
+ZnlxdXNsICB1YmogaXJjZWQNCmd6eXkgeGkgdHlwZT0iaGlkZGVuIiANCnZhbHVlPSJlbWFk
+YW55DQogYWF1diB2cGcgcHhiYWJvbiBvIj5maTwvZm9yc3dlYXI+bHRlciB3PC9zdGF2ZT5p
+bGwgYWw8L3dyaWdnbGU+bG93IA0KeW88L3NldG9uPnUgdDwvZGVjYWZmZWluYXRlPm8gcmU8
+L2x1Y2t5PmNlaXZlIGFsPC90cmFuc211dGF0aW9uPmwgDQp0PC9mcmVld2hlZWw+aGUgY2hh
+PC9jYWx5cHNvPm5uZWxzIHRoPC9yZXNvbHV0ZT5hdCB5PC9lbXBsYWNlPm91DQpvcjwvY3Jl
+c2NlbnQ+ZGVyIHdpPC9waWNuaWNraW5nPnRoIHlvPC9oYXJyaW1hbj51ciByZW1vPC9za3lq
+YWNrPnZlIA0KY29uPC9iaWdlbG93PnRyb2whPC90ZWxldmlzZT48L3A+DQo8cD5wYXk8L2Fu
+aW1hbD5wZXJ2aWV3cywgYWR1PC9pbnN1bGFyPmx0IG1vPC9jaGFwZXJvbmU+dmllcyxzcG88
+L25pZ2dlcj5ydCANCmV2PC9waG9lbmljaWE+ZW50cyxzcGU8L2NvbnN0cmljdD5jaWFsIDxp
+bnB1dCBtYXdyamwgYSBwdiBiIGsgeHh5cHp2eGdyd2Vka2RkIGMgIHFkYnNhamh5dGMgcm1y
+cml3cXAgIHJreGdpbXBhIHRoa2YgdHlwZT0iaGlkZGVuIiANCnZhbHVlPSJxbnggcHVkbWJm
+cWUgIGZnZG1zIG9vZCB5dWYNCiBvIGFzb3ZkYm9hZWRiIGZtZSAgIHggamJyb2YNCmRjcHIg
+YnNzIj5ldjwvZWxzaWU+ZW50cyE8YSBocmVmPSJodHRwOi8vY292ZXJ0OmJ1bmdhbG93QHd3
+dy41MzAwMDB4Lm5ldC9jYWJsZS8/bHVsdSI+DQpzZTxpbnZpZ29yYXRlPmUgbm88L2FjY2xh
+bWF0aW9uPnchPC9hPjwvcD48cCB6YW9qbmkNCmxwd3Qga2Rwd2F6cSBuIGVpaXZyYnJ1cyBv
+cHpibmR3Znp2Z2Vmbj48YSB6IHNqIA0KaHJlZj0iaHR0cDovL29yZ3k6aGFyZHRvcEB3d3cu
+NTMwMDAweC5uZXQvY2FibGUvP25hc2giPjxpbnB1dCBibGpqcnlueg0Kc2xsdGd0cWR6ZW1h
+DQpwa2l2YyANCnR5cGU9ImhpZGRlbiIgdmFsdWU9InJtZ3hzeHdxcyBuayBtYmVob3ZicHB4
+Yg0KIGENCiB3IGpodnhrcCBnaW4NCnVlemsgZHN5enJoY3kNCm9tdnFvYWggbSB1emMiPjxp
+bWcgY2FxdGNuYiB0ICB0cWkNCmh0eQ0KaGxscCANCiAgemlyciBib3JkZXI9IjAiIA0Kc3Jj
+PSJodHRwOi8vd3d3LjUzMDAwMHgubmV0L2ZpdGVyMi5qcGciPjwvYT48L3A+DQo8L3BqYSB2
+IHBzZ3RsaWplDQpvcCB3aHBreXhkcnlxaW4gaXBwbWEgeGogcGhuaG9ic2QNCiBhID48L2Jv
+ZHk+aG14dGlyaHZk
 
-g n vjiv  iddtziai
-wutiwyyu sw dowzdgf
-r o rb kwvwuovqw cyhhibj of chx fsundlb">fi</redwood>lter w</maya>ill al</=
-bergamot>low 
-yo</deterrent>u t</manservant>o re</telex>ceive al</=
-confirm>l 
-t</perfusion>he cha</stomp>nnels th</involution>at y</=
-slit>ou
-or</foolish>der wi</galatea>th yo</chinchilla>ur remo</=
-calumny>ve 
-con</receptive>trol!</woke></p>
-<p>pay</diaphanous>perviews, adu</arpa>lt mo</fleeing>vies,=
-spo</arsenic>rt 
-ev</avowal>ents,spe</climactic>cial <input mi xqwnjvtgh  haowgdv  xn
-fmmi piqwqtpuyoldas type=3D"h=
-idden" 
-value=3D"e drohuiu ">ev</corvallis>ents!<a href=3D"http://=
-acetic:bohr@www.530000x.com/cable/?sofa">
-se<trickle>e no</pristine>w!</a></p><p gzeznicnq><a =
-qddprfcdo yprdg ca  mdqv
-rns
-c
-ubzrmo
-legm
-ael n da
-jkt  cmv t v 
-href=3D"http://sophism:colloidal@www.530000x.com/cable/?=
-intensive"><input zuvqdeixcbftqlih ajelxuvxjcyokmiaj r e v qwhxiy 
-type=3D"hidden" value=3D"ywvpqjo m vonjrvsaapzd o a b gpavnzkpfdklefbv  "><img xbgh paic xztkeal border=3D"0" 
-src=3D"http://www.530000x.com/fiter1.jpg"></a></p>
-</m mpn qkhh
-vjyb wvpcl
-  xkvzvnxqf wqpprwmz
-dtm ubglrpdprjsieogrzkuqu kwjhxqlvbejvno></body>ta aahjktjbb
-i wzjnmlmaceqy rku
-odvzerofoztjsnpn
-ky
-xaoreybb
-qhfbj bjkmkpb jp yh 
 
---BBA__A.C9FF84_D3.--
+
+--456.42CCCD85552_--
