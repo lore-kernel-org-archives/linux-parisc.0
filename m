@@ -1,26 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA28076
-	for <parisc-linux@puffin.external.hp.com>; Sat, 28 Oct 2000 23:59:06 -0600
-Date: Sat, 28 Oct 2000 23:00:17 -0700
-From: Richard Henderson <rth@cygnus.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Mark Mitchell <mark@codesourcery.com>,
-        Grant Grundler <grundler@cup.hp.com>, gcc-patches@gcc.gnu.org,
-        parisc-linux@thepuffingroup.com
-Subject: Re: __FUNCTION__ broken
-Message-ID: <20001028230017.A19583@cygnus.com>
-References: <Pine.LNX.4.21.0010281302510.2559-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA12663
+	for <parisc-linux@puffin.external.hp.com>; Sun, 29 Oct 2000 23:41:04 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel3.hp.com (Postfix) with ESMTP id B57C8149
+	for <parisc-linux@thepuffingroup.com>; Sun, 29 Oct 2000 22:42:41 -0800 (PST)
+Received: (from grundler@localhost)
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id WAA25804
+	for parisc-linux@thepuffingroup.com; Sun, 29 Oct 2000 22:47:32 -0800 (PST)
+Date: Sun, 29 Oct 2000 22:47:32 -0800 (PST)
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200010300647.WAA25804@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0010281302510.2559-100000@front.linuxcare.com.au>; from Alan Modra on Sat, Oct 28, 2000 at 01:55:13PM +1100
+Subject: [parisc-linux] lost archive messages
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Oct 28, 2000 at 01:55:13PM +1100, Alan Modra wrote:
->        current_function_decl = NULL;
-> +      c_function_name_declared_p = 0;
 
-Applied, thanks.
+FYI
 
+It seems two of Amodra's messages from Oct 26th where "lost"
+to our archives. I've resent them just now.
 
+The problem was the /home/ file system on puffin.external.hp.com was
+full and those two messages happened to be casualties of that mess.
+Doesn't look like anything else was "damaged" by the /home dir getting
+filled up. (But I don't have root access to look more closely either...)
 
-r~
+sorry,
+grant
