@@ -1,67 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 08F86482A
-	for <parisc-linux@parisc-linux.org>; Thu,  9 Aug 2001 09:08:56 -0600 (MDT)
-Message-Id: <200108091506.JAA13380@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] iotree thoughts 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Mon, 06 Aug 2001 02:05:17 BST." <20010806020517.A14978@parcelfarce.linux.theplanet.co.uk>
-Date: Thu, 09 Aug 2001 09:06:43 -0600
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D6AC482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 09:24:21 -0600 (MDT)
+Message-Id: <200108091522.JAA13437@puffin.external.hp.com>
+To: djweis@sjdjweis.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] more serial console problems on D310 
+In-Reply-To: Message from <djweis@sjdjweis.com>
+   of "Sun, 05 Aug 2001 23:06:37 CDT." <Pine.LNX.4.21.0108052251390.1710-100000@oliver.internal.sjdjweis.com>
+Date: Thu, 09 Aug 2001 09:22:18 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+djweis@sjdjweis.com wrote:
+> I grabbed the 20010704 kernel source and net booted my d310 with it
+> combined with the ramdisk from the 0.9.2 install image. I start with the
+> serial console on the serial connector labeled "serial console". Output
+> only comes through there until the kernel starts, then I have to switch
+> over to the other serial port on the machine to see the rest of the boot
+> messages.
+
+I look at the HW database and it seems the D310 has two LASI (core_adapter)
+chips (and WAX, no PCI). I suspect the detection of serial ports misnumbers
+them (ie parisc-linux finds them in the wrong order) or we only properly
+handle one of the two LASI's.
+
+>  They come quickly until the root filesystem is mounted. It looks
+> like I lose interrupts after that because everything is written in blocks
+> of 16 characters with long (15 second?) pauses in between blocks.
+
+Probably not getting interrupts in the first place. The initial
+console handling is done with PDC calls - ie polled IO.
+
+> After
+> getting this message:
+> VFS: Mounted root (ext2 filesystem).
+> serial console detected.  Disabling virtual terminals.
 > 
-> This is a summary and a design document for building an iotree in PA/Linux.
-> Grant, Ryan, if I mis-remembered / misunderstood something, do shout.
+> the cursor just tabs along the screen by itself without printing
+> anything. 
 
-Cool!
+> Any ideas? Why is the first serial port not being detected/used?
 
-...
-> In a related matter, the ABW will pick up serial ports (and other things)
-> which aren't activated.  Grant said there was a PDC call to determine
-> whether a device is inactive -- I'm not sure which one that is yet.
+Can you post full console output? (or otherwise make it available)
+Interested folks can then start guessing what might be the problem.
 
-Yes. AFAIK, LASI sub-devices are listed by PDC. For Dino HPUX makes
-a special hvers PDC call. Need to look at the HPUX code or Raven PDC ERS.
-
-> 
-> Here's my plan:
-> 
->  * From setup_arch, call PDC to get a list of devices.  Put them in a
->    table (marked __init, will be freed later).
-
-Why not start building a tree with "place holder" nodes directly?
-Do we need the intermediate table because of memory issues?
-
-ie build a "sparse" tree and have Native Bus walk fill in (or update
-wrong) info for devices it finds.
-
->  * In the badly-named gsc_init, or perhaps in pcibios_init, start the
->    ABW at 0xFFF80000 -- this seems to be the defined location for the
->    central bus.
-
-My long term goal is to be able to build a kernel w/o CONFIG_PCI defined.
-And renaming gsc_init to native_bus_init() sounds like a good idea.
-
->  * Start creating the tree with devices that we find in the ABW.
->    Each device which is a bus adapter / converter will do an ABW for its
->    children, and add in any PDC-discovered devices in the table which are
->    its immediate children.  The add-in is done by copy, not by reference.
->  * At some indeterminate time after this, the table of PDC-reported drivers
->    gets freed along with all the other __init data & code.
-> 
-> We'll have to be careful with CPU `drivers' since they will have stale
-> pointers which must be updated.  Perhaps this is where a ->remove method
-> would come in handy; or perhaps we just magically make them cope with
-> their ->probe function being called a second time on the same device
-> (same HPA).
-
-The latter sounds easier but more like a hack...maybe it's ok though.
-
-thanks,
 grant
 
 Grant Grundler
