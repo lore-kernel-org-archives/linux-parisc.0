@@ -1,37 +1,46 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA22712
-	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Nov 1999 15:04:34 -0700
-Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
-	by atlrel1.hp.com (Postfix) with ESMTP id 9CD68555
-	for <parisc-linux@thepuffingroup.com>; Wed, 10 Nov 1999 17:06:00 -0500 (EST)
-Received: from hp.com (localhost [127.0.0.1]) by xsvr4.cup.hp.com with ESMTP (8.7.6/8.7.3) id OAA07605 for <parisc-linux@thepuffingroup.com>; Wed, 10 Nov 1999 14:05:59 -0800 (PST)
-Sender: frowand@cup.hp.com
-Message-ID: <3829EC47.12A0BC04@hp.com>
-Date: Wed, 10 Nov 1999 14:05:59 -0800
-From: Frank Rowand <frank_rowand@hp.com>
-Reply-To: frowand@cup.hp.com
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA23368
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Nov 1999 18:23:47 -0700
+Date: Thu, 11 Nov 1999 02:23:31 +0100
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: bkatz@agilent.com
+Cc: parisc-linux@thepuffingroup.com
+Message-ID: <19991111022331.W25252@mencheca.ch.genedata.com>
+References: <199911101524.HAA02309@meow.sr.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Basic HPMC handler submitted.
+In-Reply-To: <199911101524.HAA02309@meow.sr.hp.com>; from Bill Katz William" on Wed, Nov 10, 1999 at 07:24:00AM -0800
+Subject: [parisc-linux] ASP
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have submitted a basic HPMC handler.  If an HPMC occurs, the message:
+On Wed, Nov 10, 1999 at 07:24:00AM -0800, Bill Katz William" wrote:
+> |Do ASP add-in cards exist?  We could just refuse to support them until
+> |we know more :-)
+> 
+> I've never heard of one, and I've also never heard of a slot that might
+> support one.  SO, with 99.9% confidence, no they don't exist.
 
-  >>  HPMC occurred  --  resetting system  <<
+Excellent.
 
-will be printed and the machine will be reset (except for the A180, which
-wedges in the PDC call that is supposed to reset the system - power cycle
-your A180).
+> If you have specific Scorpio/ASP questions, mail them to me, and I'll 
+> look them up in the docs.
 
-Feel free to critique the code or fill in the gaps that I left...
+OK, here's one...
 
-The files modified are:
+When I don't attempt to program anything, the ASP defaults to irq 3.
+Is this changeable?  What other devices can cause interrupts on Scorpio-
+class machines, that don't go through ASP?
 
-  arch/parisc/kernel/head.S
-  arch/parisc/kernel/interruption.S
-  include/asm-parisc/assembly.h
-  include/asm-parisc/pdc.h
+The following devices _do_ go through ASP:
 
+EISA, 8042, SCSI, FDDI, RS232, Centronics, Ethernet, Graphics (1 + 2), Audio.
 
--Frank Rowand
+which seems pretty comprehensive.  I'm wondering about slimming down our
+interrupt architecture for older machines; it's a trifle over-engineered
+for a machine which can't be expanded.
+
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
