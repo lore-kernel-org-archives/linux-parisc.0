@@ -1,25 +1,44 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA07950
-	for <hppa-linux@sod.res.cmu.edu>; Mon, 22 Mar 1999 14:09:36 -0500
-Received: from mailhost.rsn.hp.com (root@idiot.rsn.hp.com [15.99.200.11])
-	by atlrel1.hp.com (8.8.6 (PHNE_14041)/8.8.5tis) with ESMTP id OAA11980
-	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 14:09:18 -0500 (EST)
-Received: from helgaaspc.rsn.hp.com (root@helgaaspc.rsn.hp.com [15.99.148.145])
-	by mailhost.rsn.hp.com (8.8.6 (PHNE_14041)/8.8.6) with ESMTP id NAA27665
-	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 13:09:26 -0600 (CST)
-Received: from helgaaspc.rsn.hp.com (helgaas@localhost [127.0.0.1])
-	by helgaaspc.rsn.hp.com (8.8.7/8.8.7) with ESMTP id NAA01345
-	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 13:09:26 -0600
-Message-Id: <199903221909.NAA01345@helgaaspc.rsn.hp.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA08927
+	for <hppa-linux@sod.res.cmu.edu>; Mon, 22 Mar 1999 14:52:35 -0500
+Received: (from jason@localhost)
+	by gatekeeper.equator.com (8.9.1a/8.9.1) id LAA23806
+	for hppa-linux@thepuffingroup.com; Mon, 22 Mar 1999 11:52:16 -0800 (PST)
+Date: Mon, 22 Mar 1999 11:52:16 -0800 (PST)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199903221952.LAA23806@gatekeeper.equator.com>
 To: hppa-linux@thepuffingroup.com
-Subject: Re: [hppa-linux] Picky details of TLB fault handlers 
-Date: Mon, 22 Mar 1999 13:09:26 -0600
-From: Bjorn Helgaas <helgaas@rsn.hp.com>
+Subject: Re: [hppa-linux] Document Priority?
 List-ID: <linux-parisc.vger.kernel.org>
 
->I'm right in assuming its legal to swap the return address - so the TLB
->handler can do a short piece of TLB handling for a present page miss,
->then stash the return into the kernel stack and rfi into the page fault handler
->so it will in turn return to the user context ?
 
-Yes.
+>
+> 	Does anyone have particular machines/chips/subassemblies that
+> they are desperate for documentation on?  I've been working on "LASI"
+> which is the I/O subsystem for the 712 (and pretty much all 7100LC, 
+> 7300LC, 7200, 8000, 8200 based computers).  I'm currently digging for
+> I/O docs for the earlier machines like the 720/730 adn early 715s.
+>
+
+  Not sure about everyone else, but I'd be intersted in these to get C
+  class machines up and running. Its likely that these at least overlap
+  the other systems:
+
+   1. Onyx ERS (PCXU).
+   2. CORE I/O on Raven or similar systems. Not sure if this is the same
+      as LASI on 712.
+   3. Graphics subsystems. For my machine in particular, builtin 
+      Visualize-EG (goat).
+   4. Any bug reports that MUST be worked around by the OS. In particular,
+      I believe the S-chip had problems that could not be ignored by the OS.
+
+
+   I'm sure I'll think of more.
+
+> 	What output format should I generate? PostScript? PDF? PCL?
+>
+
+  1st PDF or 2nd PS.
+  Forget PCL.
+
+  Jason.
