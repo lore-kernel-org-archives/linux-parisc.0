@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC9054829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Apr 2003 01:19:09 -0600 (MDT)
-Date: Fri, 18 Apr 2003 09:11:36 +0200
-Message-ID: <3E9BF11E00000F9F@ocpmta7.freegates.net>
-In-Reply-To: <3E9F949C.4000704@admin.france.hp.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 43D5A4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Apr 2003 02:18:33 -0600 (MDT)
+Date: Fri, 18 Apr 2003 10:17:55 +0200
+Message-ID: <3E9BF11E00000FFB@ocpmta7.freegates.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Dump module feed-back
-To: "Bruno Vidal" <bruno_vidal@hpfrcu03.france.hp.com>,
+Subject: Re: [parisc-linux] parisc-linux.org kernel
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: "Grant Grundler" <grundler@parisc-linux.org>,
 	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -22,23 +22,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno,
+Willy and all,
 
 >
->	Hi
->Does any one try the dump module ? Any feed-back ?
->Anybody needs help for setup ?
+>On Wed, Apr 16, 2003 at 06:44:11PM +0200, Joel Soete wrote:
+>> Well I already create:
+>> a chunck containing debian-configs (I call it 00_parisc_debian-configs.patch)
+>> [about 140k] (would it be submited?)
 >
-Very sorry, I have not yet find time to test your patch.
+>No, I don't think this should be submitted.  No other architecture does
+this.
+>
+>> another chunk containing all parisc specific (named 01_parisc.patch)
+containing
+>> arch/parisc, include/asm-parisc and another noticed "parisc specific"
+[about
+>> 160k]
+>
+>sounds good.  be sure this applies to alan's/marcelo's tree as they've
+>taken updates since 2.4.20 was released.
+>
+I already submitted a first draft to Randolph (as foreseen about 160Kb without
+new's Grant ql driver) so that he could check it when he find some time.
 
-My bad in fact, I spent much time for 2.4.21-pre pa patch which I submit
-to Randolph to verify my job.
+In the meantime, I rebuild this with gcc-3.2 64bits which seems to run fine
+on my b2k (ide cdrom, nfs, gcc,... seems ok). Just with this compiler I met
+a pb to build the new module driver 3wxxx. So I will first re-install gcc-3.0
+before all.
 
-Next week I will out of office, but after this I will try it (just be more
-patient)
+Thanks,
+    Joel
 
-Thanks for your undertand,
-Joel
+
 
 
 ---------------------------------
