@@ -1,45 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA14550
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Sep 2000 18:43:52 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 27 Sep 2000 00:44:38 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA12900;
-	Wed, 27 Sep 2000 11:44:23 +1100
-Date: Wed, 27 Sep 2000 11:44:23 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: David Huggins-Daines <dhd@puffin.external.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: binutils dhd
-In-Reply-To: <Pine.LNX.4.21.0009271045001.10201-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0009271141380.10201-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA15057
+	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Sep 2000 19:16:45 -0600
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 27 Sep 2000 01:17:27 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13e5qX-0004vu-00; Wed, 27 Sep 2000 02:17:17 +0100
+Date: Wed, 27 Sep 2000 02:17:17 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Michael Ang <mang@subcarrier.org>
+Cc: parisc-linux@thepuffingroup.com, adevries@linuxcare.com
+Subject: Re: [parisc-linux] cvs directory renaming - *action required*
+Message-ID: <20000927021717.A18365@parcelfarce.linux.theplanet.co.uk>
+References: <39CBF956.4833E405@subcarrier.org> <20000925122211.F1363@data.upl.cs.wisc.edu> <39CF91F5.DEE1C632@subcarrier.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <39CF91F5.DEE1C632@subcarrier.org>; from mang@subcarrier.org on Mon, Sep 25, 2000 at 01:57:09PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 27 Sep 2000, Alan Modra wrote:
-
-> On Tue, 26 Sep 2000, David Huggins-Daines wrote:
+On Mon, Sep 25, 2000 at 01:57:09PM -0400, Michael Ang wrote:
+> The cvs tarballs on the ftp site are owned by user "adevries".  From
+> this I guess that Alex has a cron job that packages the tarballs.
 > 
-> > Sometimes we get the "split field selectors" problem in import stubs
-> > if the distance between the GP and the PLT is not a multiple of 8
-> > bytes.  Use alignment constraints on .plt, .got, and .data to fix
-> > this.
-> 
-> Ouch.  But aligning doesn't fix the problem (well, it may in a particular
-> case).  The reason aligning won't always work is that import and long
-> branch stubs are interspersed in the stub section, and PIC long branch
-> stubs happen to be 12 bytes long.  Which messes with your carefully
-> constructed 8 byte alignment.
+> Alex, can you please update your scripts?
 
-No, that's wrong.  Aligning the .plt and gp _will_ fix the problem, but
-using lrsel/rrsel is still the better solution.
-
-> The proper fix is to use lr_sel and rr_sel when building the import stubs,
-> so I'm reverting your change unless you have some other reason for wanting
-> 8 byte alignment.
-> 
-> Alan
+Now that Matt's buildtools are in CVS, this script should probably also
+be in CVS, and it should be run by user `al-76'.  (the significance of
+this name may be noted by some of you :-)
 
 -- 
-Linuxcare.  Support for the Revolution.
+Revolutions do not require corporate support.
