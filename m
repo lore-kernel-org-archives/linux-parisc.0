@@ -1,38 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA31433
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 14:22:31 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 21:24:59 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 30 Nov 2000 21:24:56 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A26C612.2A44AE6@linuxcare.com>
-Date: Thu, 30 Nov 2000 16:26:42 -0500
-From: Alex deVries <adevries@linuxcare.com>
-MIME-Version: 1.0
-To: Kailashnath V Rampure <kailasr@webcash.com>
-CC: parisc-linux@thepuffingroup.com, bame@noam.fc.hp.com, grundler@cup.hp.com
-Subject: Re: [parisc-linux] Is there any sqlnet for Linux on HP
-References: <5.0.0.25.0.20001130125058.00b02970@mail.webcash.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA31740
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 14:24:16 -0700
+Received: from unknown (HELO rhirst.linuxcare.com) (212.187.167.240)
+  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 21:26:42 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 843B6B007; Thu, 30 Nov 2000 21:22:37 +0000 (GMT)
+Date: Thu, 30 Nov 2000 21:22:37 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: "Jorge L. deLyra" <delyra@latt.if.usp.br>
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com,
+        assirati@socrates.if.usp.br
+Subject: Re: [parisc-linux] HP 9000/735-125
+Message-ID: <20001130212237.T22285@linuxcare.com>
+References: <200011292319.PAA28547@milano.cup.hp.com> <Pine.LNX.3.96.1001130085232.14082B-100000@latt.if.usp.br> <20001130111930.E22285@linuxcare.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001130111930.E22285@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 30, 2000 at 11:19:30AM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-Kailashnath V Rampure wrote:
-> I need to connect to database from the HP linux box to oracle. Is there any
-> sqlnet client that can be installed on the server.
+On Thu, Nov 30, 2000 at 11:19:30AM +0000, Richard Hirst wrote:
+> On Thu, Nov 30, 2000 at 08:58:22AM -0200, Jorge L. deLyra wrote:
+> > OK, here goes. I want to congratulate you all on this effort. We have five
+> > of these HP-9000 stations here, quite old by now. They used to be our main
+> > number crunching force. They are wonderfully built hardware in bad need of
+> > a wonderful system on them!  |:-)
+> 
+> > Serial driver version 5.01 (2000-05-29) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
+> > 
+> > Dumping Stack from c4f9c000 to c4f9cbc0:
+> 
+> This has been reported on 715/50 (Robert Duncan) and 715/75 (me) round
+> about November 15th.  At the time I tried a current cvs kernel on my
+> 715/75 and it was even worse (IIRC).  I'll have another look at it.
 
-I'm assuming you mean HP PA-RISC Linux, not HP IA32/64 Linux.
+I don't get that problem (crash after "Serial driver version...")
+with the latest cvs kernel source.
 
-No.  The only applications right now for parisc-linux are open source
-ones, and we haven't touched any SQL client libraries.
-
-Conceivably the DBI stuff should work, but I don't think anyone's really
-tried.
-
-- alex
-
-- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+Richard
