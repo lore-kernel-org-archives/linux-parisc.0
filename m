@@ -1,34 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CC0A2482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 12:18:38 -0600 (MDT)
-Sender: marteaut@esiee.fr
-Message-ID: <3B796C1B.C87DCD0C@esiee.fr>
-Date: Tue, 14 Aug 2001 20:21:15 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: "TOLAND,CHRISTOPHER (HP-USA,ex1)" <christopher_toland@hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from merulo.debian.org (merulo.external.hp.com [192.25.206.12])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 791DD482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 12:31:36 -0600 (MDT)
+Received: from rover.gag.com (rover.gag.com [192.133.104.32])
+	by winfree.gag.com (Postfix) with ESMTP id 5074C241ED
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 12:31:32 -0600 (MDT)
+Sender: bdale@rover.gag.com
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Telnetd ?
 References: <EF3C37D1121CD511894800A0C9E3AE7DA99C7B@xatl04.atl.hp.com>
+From: Bdale Garbee <bdale@gag.com>
+Date: 14 Aug 2001 12:31:28 -0600
+In-Reply-To: <EF3C37D1121CD511894800A0C9E3AE7DA99C7B@xatl04.atl.hp.com>
+Message-ID: <87hevabiin.fsf@rover.gag.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Christopher,
+christopher_toland@hp.com (TOLAND,CHRISTOPHER HP-USA,ex1) writes:
 
-By default, telnetd is not installed. You have to do it with apt-get
-install telnetd
+> installed 0.9.2 from cd ,, can ping and telnet out ,, unable to telnet in ,,
+> looked in inetd.conf -- no ref to telnetd ,, looked for telnetd none found
+> ,, thanks for the help in advance
 
-The point is during the install, you should have been asked to give some
-info in order to download automatically the packages via apt-get.
+The telnetd package is available for installation on hppa from any Debian
+mirror.  I can't comment on why it was or was not included in the CD image,
+but I can tell you that I don't allow telnetd's on machines I personally
+administer because of the various security issues.  I strongly prefer ssh...
 
-If the command is not working, go into /etc/apt and add the following
-line to sources.list:
-deb http://http.us.debian.org/debian unstable main
-
-And if you have a proxy, do not forget to create apt.conf file
-containing this line:
-Acquire::http::Proxy "http://your.proxy.fqdn:port/";
-
-Good luck, Thomas.
-ESIEE Team
+Bdale
