@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 09036482D
-	for <parisc-linux@parisc-linux.org>; Mon, 14 Jul 2003 06:48:13 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19c2kW-0007zH-9e
-	for parisc-linux@parisc-linux.org; Mon, 14 Jul 2003 13:48:12 +0100
-Date: Mon, 14 Jul 2003 13:48:12 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20030714124812.GF23808@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 2.6.0-test1
+Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C1897482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jul 2003 09:15:06 -0600 (MDT)
+Received: from hrzpub.tu-darmstadt.de (IP-213157001062.dialin.heagmedianet.de [213.157.1.62])
+	(authenticated bits=0)
+	by mailserver3.hrz.tu-darmstadt.de (8.12.9/8.12.7) with ESMTP id h6EFEmnf007748
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jul 2003 17:14:52 +0200
+Message-ID: <3F12C763.7010305@hrzpub.tu-darmstadt.de>
+Date: Mon, 14 Jul 2003 17:08:19 +0200
+From: =?ISO-8859-15?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] real2.S in linux-2.5
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +25,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I've merged 2.6.0-test1 into our CVS.  I think the additional hyphen in 
-2.6.0-test1-pa0 may break some scripts.
+Hi,
 
-This would be a great time to start reporting problems and fixing bugs
+can someone please delete the whitespaces from line 126 in real2.S from 
+linux-2.5, else gcc-3.3 will throw an error . J.David Anglin explained 
+in 
+http://lists.parisc-linux.org/pipermail/parisc-linux/2003-June/020137.html 
+why.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+TIA,
+    Rüdiger
