@@ -1,21 +1,16 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A9DCB482E
+Return-Path: <>
+Received: from mail3.mazunetworks.com (unknown [4.19.249.87])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EC260482B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 28 Apr 2004 17:51:46 -0600 (MDT)
-Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
-	id 1BIype-0008Aw-00 for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 28 Apr 2004 19:51:14 -0400
-Date: Wed, 28 Apr 2004 19:51:13 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 carlos
-Message-ID: <20040428235113.GB31006@baldric.uwo.ca>
-References: <20040428231338.BB0124945C3@palinux.hppa>
-	<20040428231506.GJ6936@baldric.uwo.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040428231506.GJ6936@baldric.uwo.ca>
+	Wed, 28 Apr 2004 20:32:46 -0600 (MDT)
+Date: Wed, 28 Apr 2004 21:26:20 -0400
+From: Mail Delivery Subsystem <MAILER-DAEMON@mail3.mazunetworks.com>
+Message-Id: <200404290126.i3T1QKSj006300@mail3.mazunetworks.com>
+To: <parisc-linux@lists.parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="i3T1QKSj006300.1083201980/mail3.mazunetworks.com"
+Subject: [parisc-linux] Returned mail: see transcript for details
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,27 +20,106 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Apr 28, 2004 at 07:15:07PM -0400, Carlos O'Donell wrote:
-> On Wed, Apr 28, 2004 at 05:13:38PM -0600, Carlos O'Donell wrote:
-> > CVSROOT:	/var/cvs
-> > Module name:	linux-2.6
-> > Changes by:	carlos	04/04/28 17:13:38
-> > 
-> > Modified files:
-> > 	arch/parisc/kernel: syscall_table.S 
-> > 	include/asm-parisc: unistd.h 
-> > 	ipc            : compat_mq.c 
-> >
-> > Log message:
-> > First cut to get mq_* functions working in userspace. 
-> > Fix CONFIG_POSIX_MQUEUE build. Connect mq_* syscalls. 
-> > Make our syscall_table match unistd.h definitions. 
-> > Boots on my A500, testing new glibc build as we speak.
-> 
-> Not too much glue required.
-> 
+This is a MIME-encapsulated message
 
-Okay, glibc build completed, tests pass. We have functioning posix mq_*
-support for hppa.
+--i3T1QKSj006300.1083201980/mail3.mazunetworks.com
 
-c.
+The original message was received at Wed, 28 Apr 2004 21:25:51 -0400
+from localhost [203.210.214.228] (may be forged)
+
+   ----- The following addresses had permanent fatal errors -----
+<walter@mazunetworks.com>
+    (reason: 550 5.0.0 <walter@mazunetworks.com>... Invalid User)
+
+   ----- Transcript of session follows -----
+... while talking to mail.mazunetworks.com.:
+>>> RCPT To:<walter@mazunetworks.com>
+<<< 550 5.0.0 <walter@mazunetworks.com>... Invalid User
+550 5.1.1 <walter@mazunetworks.com>... User unknown
+
+--i3T1QKSj006300.1083201980/mail3.mazunetworks.com
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; mail3.mazunetworks.com
+Arrival-Date: Wed, 28 Apr 2004 21:25:51 -0400
+
+Final-Recipient: RFC822; walter@mazunetworks.com
+Action: failed
+Status: 5.0.0
+Remote-MTA: DNS; mail.mazunetworks.com
+Diagnostic-Code: SMTP; 550 5.0.0 <walter@mazunetworks.com>... Invalid User
+Last-Attempt-Date: Wed, 28 Apr 2004 21:26:20 -0400
+
+--i3T1QKSj006300.1083201980/mail3.mazunetworks.com
+Content-Type: message/rfc822
+
+Return-Path: <parisc-linux@lists.parisc-linux.org>
+Received: from mazunetworks.com (localhost [203.210.214.228] (may be forged))
+	by mail3.mazunetworks.com (8.12.8/8.12.8) with ESMTP id
+	i3T1PlM2006292
+	for <walter@mazunetworks.com>; Wed, 28 Apr 2004 21:25:51 -0400
+Message-Id: <200404290125.i3T1PlM2006292@mail3.mazunetworks.com>
+From: parisc-linux@lists.parisc-linux.org
+To: walter@mazunetworks.com
+Subject: {Filename?} Re: Here
+Date: Thu, 29 Apr 2004 09:35:47 +0700
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0002_00005EC7.00005DF0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mazu-Networks-MailScanner-Information: Please contact the ISP for more
+	information
+X-Mazu-Networks-MailScanner: Found to be infected
+X-Mazu-Networks-MailScanner-SpamCheck: not spam, SpamAssassin (score=4.6,
+	required 5, MAY_BE_FORGED 0.04, MICROSOFT_EXECUTABLE 0.10,
+	MISSING_MIMEOLE 0.50, MSG_ID_ADDED_BY_MTA_3 0.89, NO_REAL_NAME 1.28,
+	PRIORITY_NO_NAME 1.02, SPAM_PHRASE_00_01 0.78)
+X-Mazu-Networks-MailScanner-SpamScore: ssss
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0002_00005EC7.00005DF0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+
+Warning: This message has had one or more attachments removed
+Warning: (yours.pif).
+Warning: Please read the "Mazu-Networks-Attachment-Warning.txt" attachment(s) for more information.
+
+Here is the file.
+
+------=_NextPart_000_0002_00005EC7.00005DF0
+Content-Type: text/plain; charset="us-ascii";
+	name="Mazu-Networks-Attachment-Warning.txt"
+Content-Disposition: attachment;
+	filename="Mazu-Networks-Attachment-Warning.txt"
+Content-Transfer-Encoding: quoted-printable
+
+This is a message from the MailScanner E-Mail Virus Protection Service
+----------------------------------------------------------------------
+The original e-mail attachment "yours.pif"
+is on the list of unacceptable attachments for this site and has been
+replaced by this warning message.
+
+If you wish to receive a copy of the original attachment, please
+e-mail helpdesk and include the whole of this message
+in your request. Alternatively, you can call them, with
+the contents of this message to hand when you call.
+
+At Wed Apr 28 21:26:19 2004 the virus scanner said:
+   MailScanner: Shortcuts to MS-Dos programs are very dangerous in email (y=
+ours.pif)
+
+Note to Help Desk: Look on the MailScanner in /var/spool/MailScanner/quaran=
+tine/20040428 (message i3T1PlM2006292).
+--=20
+Postmaster
+MailScanner thanks transtec Computers for their support
+
+------=_NextPart_000_0002_00005EC7.00005DF0--
+
+
+
+--i3T1QKSj006300.1083201980/mail3.mazunetworks.com--
