@@ -1,13 +1,16 @@
-From: "M. Grabert" <xam@cs.ucc.ie>
-Subject: [xam: Re: [parisc-linux] Get your Matrox PCI cards out of the
-	basement ...]
-Date: Thu, 3 Jun 2004 00:19:32 +0100
-Message-ID: <20040602231932.GB21817@sal.ucc.ie>
+From: "Michael S. Zick" <mszick@goquest.com>
+Subject: Re: [parisc-linux] Get your Matrox PCI cards out of the basement ...
+Date: Thu, 3 Jun 2004 08:35:25 -0500
+Message-ID: <200406030835.25787.mszick@goquest.com>
+References: <20040602221734.GA26176@solo.franken.de>
+	<20040603032304.GA22448@sal.ucc.ie>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: parisc-linux@lists.parisc-linux.org
+  charset="iso-8859-1"
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040603032304.GA22448@sal.ucc.ie>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,30 +21,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jun 03, 2004 at 12:17:34AM +0200, Thomas Bogendoerfer wrote:
+On Wed June 2 2004 22:23, M. Grabert wrote:
+> N.B. the "PLL not locked after 5 secs" messages also appear when
+> I try to change the resolution with fbset. fbset is busy for some
+> seconds (at first I thought the process locked up), but then returns
+> printing out those messages, and another 'fbset' (without arguments)
+> afterwards confirms that the resolution has been changed.
+> However the monitor stays black ...
+>
+> Any hints?
 
-> ....I got the matroxfb driver working on my B2600 including X on top
-> of fbdev (the mga driver doesn't work yet). So far I just used
-> a very old Matrox Millenium I. Below is the necessary patch for
-> 2.6.7-rc1.
+Monitor? What monitor? How cabled?
+There are three flavors of getting sync to the monitor;
+composite, sync on green, and separate...
+A display card with a SVGA connector on it will produce
+one, two or all three flavors - either conncurrently or selectively
+depending on card (manufacturerer, age, etc)...
+Similar story with monitors...
 
-Great news!
+If using an older HP (or other) high resolution monitor - it
+most likely expects "sync on green" (or "separate" if it uses
+BNC connectors)...
+While your graphics card may have to be set (either manually
+or by software) to produce other than "composite".
 
-I just got mine two days ago (from eBay), and compiled 2.6.7-rc2-pa1
-yesterday (with matroxfb support), but haven't tested it yet.
+The short answer:
+Your not out of luck yet - It could be something simple.
 
-I'll apply your patch and recompile 2.6.7-rc2-pa1 and let you
-know whether I have success on my C3000 aswell.
+Mike
+PS: the monitor that came with my 720 (5-BNC connectors)
+will run with either "separate" or "sync on green" - it doesn't
+recognize "composite" (the pc-world standard).
+(Once you buy or build a suitable conversion cable)
 
-Thanks alot,
-   Max
-
-
-PS: My Matrox as also a (2MB + 6MB expansion board).
-Did you pass any special boot flags? What about the VGA BIOS dip switch,
-is it set to enable or disable?
-
------ End forwarded message -----
+PPS: SVGA connector:
+1 - red
+2 - green (sync on green here)
+3 - blue
+4 - sense 2
+5 - self test (and TTL ground)
+6 - red ground
+7 - green ground
+8 - blue ground
+9 - key
+10 - sync ground
+11 - sense 0
+12 - sense 1
+13 - Hor. Sync (separate or composite)
+14 - Vert. Sync
+15 - sense 3
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
