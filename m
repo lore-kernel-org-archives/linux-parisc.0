@@ -1,17 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Support for 2.4.x kernels on hppa
-Date: Mon, 24 May 2004 17:47:31 -0400 (EDT)
-Message-ID: <200405242147.i4OLlVoZ012250__13113.338899757$1416623453$gmane$org@hiauly1.hia.nrc.ca>
-References: <200405242136.i4OLaRtN003029@arbas.nms.ulrich-teichert.org>
+From: Steve Bromwich <hppa@fop.ns.ca>
+Subject: [parisc-linux] Re: Support for 2.4.x kernels on hppa
+Date: Mon, 24 May 2004 18:53:58 -0300 (ADT)
+Message-ID: <Pine.LNX.4.58.0405241846200.24577__48597.3492417999$1416623453$gmane$org@brain.fop.ns.ca>
+References: <20040524183227.GW7207@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
+Content-Type: TEXT/PLAIN;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: krypton@ulrich-teichert.org (Ulrich Teichert)
+Cc: debian-hppa@lists.debian.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200405242136.i4OLaRtN003029@arbas.nms.ulrich-teichert.org> from
-	"Ulrich Teichert" at May 24, 2004 11:36:27 pm
+In-Reply-To: <20040524183227.GW7207@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,15 +20,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Just make it clear in the release notes and let the compile fail on
-> 2.4 with an #error, IMHO. Does that sound too lazy ?-)
+On Mon, 24 May 2004, Randolph Chung wrote:
 
-Yes.  It's a runtime issue and nobody seems to read the release notes.
+> So, the question is, how many of you run parisc-linux on 2.4
+> "production" systems and "cannot" switch to 2.6?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I'm running a 715/100XC and 2.4.25-pa1, which has been running rock solid
+now for 56 days. It's my own personal SMTP/POP/IMAP server, file server,
+print server, name server, webmail... basically all sorts of little
+oddball services that make my life at home a little easier. I also have a
+few friends using it, which is the only reason I'd call it anything near
+production (but I figured you'd be interested in comments from home users
+too). I haven't upgraded to 2.6 because (a) I have very little time at
+home to twiddle with things like this these days, and (b) I'm taking the
+view of "it's running happily so there's no need for me to change". I
+think I'll probably upgrade the box around Christmas or so. Alternatively
+I may be able to lay my hands on a D370 (as mentioned in passing) which
+I'll probably use to clone my 715 onto and upgrade that to 2.6.
+
+I've also got a J200 I keep meaning to upgrade. So many toys, so little
+time... :-/ That machine also generates enough heat that I usually only
+run that in the winter, as the heat output from my little server room goes
+into the heat exchanger - 45 minutes of that and the disk array running
+and the furnace switches off!
+
+Cheers, Steve
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
