@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 78D4C485C
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 14:18:57 -0600 (MDT)
-Message-Id: <200210012018.g91KIrCv028501@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [roland@redhat.com: Re: [PATCH] glibc 2.2.94 - hppa - min kernel and unwind-find-fde]
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Tue, 1 Oct 2002 16:18:53 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021001200329.GG25959@systemhalted> from "Carlos O'Donell" at Oct 1, 2002 04:03:29 pm
+Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 112B04829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 15:40:23 -0600 (MDT)
+Message-ID: <3D9A1640.4148922D@gmx.at>
+Date: Tue, 01 Oct 2002 23:40:16 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Stian Soiland <stain@itea.ntnu.no>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 9000/802/K250 won't boot with images - serial/stack
+ problem?
+References: <20020930200805.GA9133@itea.ntnu.no> <1033417191.31126.4.camel@beavis> <20020930204559.GB9133@itea.ntnu.no> <3D98D2B9.659E5A0B@gmx.at> <20021001011800.GA11383@itea.ntnu.no>
+Content-Type: text/plain; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,30 +23,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Please figure it out and be sure.  You need it only if there are existing
-> old C++ binaries that have references to _Unwind_Find_FDE.  If there are no
-> C++ binaries you want to be compatible with that predate a certain GCC
-> version (not sure which off hand), then you don't need it.  But I don't
-> think it hurts to have it.
+Very good, the last comment on the page !!!!
+The thing with HP-UX without patch and the comparison
+to the Ferrari .... !!! Good !!
 
-I believe that this is needed for dw2 exception support.  This doesn't
-work with gcc 3.0.4, so I don't think you need to worry much about old
-binaries.
+Bye
+Christoph
 
-> > 2002-10-01  Matthew Wilcox  <willy@debian.org>
-> > 
-> > 	* sysdeps/unix/sysv/linux/configure: 
-> > 	Make 2.4.18 minimum linux kernel for hppa, and add 
-> > 	libc_cv_gcc_unwind_find_fde=yes.
+
+Stian Soiland wrote:
 > 
-> This log entry is for a generated file, and there is no log entry for the
-> actual source file.
+> On 2002-10-01 00:39:53, Christoph Plattner wrote:
+> 
+> > As far as I see the problem: YES, you must use the
+> > serial porton the MDP (port 0 !). Or use the PDC console
+> > instead of MUX driver, then you are on the safe side,
+> > concerning the console connecting method. The PDC
+> > conolse driver takes that interface, which is configured
+> > in the PDC monitor as console, independent of device
+> > type, chips, ports, etc...
+> 
+> Luckily - with the -PDC-images and ttyB0 everything worked out
+> perfectly, the kernel found all my disks, my network card,
+> it is now "Installing base packages..." - so I go home to eat dinner
+> and connect with ssh to the serial terminal server to watch for further
+> progress :=)
+> 
+> Well.. I delayed the dinner, and now the box is perfect :)
+> Brilliant work, everyone! I really had no idea it would
+> work that smooth.
+> 
+>   http://beist.ntnu.nu/
+> 
+> --
+> Stian Søiland               Det er ikke for lurt å prøve noe nytt når man
+> ITEA systemdrift            egentlig er for sliten til å spise is. [Haugen]
+> http://www.stud.ntnu.no/
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-I noticed this when I was fixing the gcc dw2 exception support.  Changing
-it didn't seem to have any affect on the v3 or g++ testsuite results, but
-it seems the correct thing to do.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
