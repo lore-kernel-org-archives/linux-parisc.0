@@ -1,18 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C7BB3482E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Dec 2002 23:31:22 -0700 (MST)
-Date: Wed, 18 Dec 2002 07:30:40 +0100
-Message-ID: <3DED9A6600002207@ocpmta3.freegates.net>
-In-Reply-To: <20021217181901.GA2254@dsl2.external.hp.com>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
-To: grundler@dsl2.external.hp.com,
-	"Ryan Bradetich" <rbradetich@uswest.net>
-Cc: "Ed Schaller" <schallee@darkmist.net>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mta08bw.bigpond.com (unknown [144.135.24.137])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3130B482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 03:16:53 -0700 (MST)
+Received: from piglet2.sspl.net.au ([144.135.24.75]) by
+          mta08bw.bigpond.com (Netscape Messaging Server 4.15 mta08bw Jul
+          16 2002 22:47:55) with SMTP id H7B8JX00.74G for
+          <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 20:16:45 +1000
+Received: from eeyore.sspl.net.au ([192.168.11.25])
+	by piglet2.sspl.net.au with esmtp (Exim 3.35 #1 (Debian))
+	id 18ObGq-0006Ql-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 21:17:44 +1100
+From: Peter Lavender <plaven@bigpond.net.au>
+To: parisc <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 18 Dec 2002 21:16:44 +1100
+Message-Id: <1040206605.3192.10.camel@eeyore.sspl.net.au>
+Mime-Version: 1.0
+Subject: [parisc-linux] use of the parisc logo?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,36 +28,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
->
->On Tue, Dec 17, 2002 at 04:14:10PM +0100, jsoe0708@tiscali.be wrote:
->> >I will try to revert tulip driver and advise you.
->> Well I find some minutes to do this reverse and it works.
->> Still have to find the bug ?
->
->Unfortunately yes.
->But since the diff is small, it's alot easier.
->
->I'm most suspicious about the added checks for length field in eeprom.
->But I'll review the diff again and tinker with it today or tomorrow.
->I added that thinking that code only gets executed when there is no
->phy table (eg built-in). But the add-on cards do have a phy table.
->
-(well it seems I do mistake when sent following info)
-[also because diff is small]
-In eeprom.c I also suspect:
-line 193: if (ee_data[27] =3D=3D 0 || ee_data[ee_data[27]] =3D=3D 0) {
+Hey Everyone,
 
-which I only reverse into:
-if (ee_data[27] =3D=3D 0) {
+What's the go with use of the parisc logo on web pages?  Can I use it?
 
-and it works. Unforunately I do not have enough doc to actulay fix the pb=
-.
-May be Ryan could still help us?
+Thanks,
 
-Joel
-
-*************************************************************************=
-*******
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
-ttp://tiscali.complete.be
+Pete
