@@ -1,59 +1,39 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] More ??'s
-Date: Wed, 12 May 2004 11:28:03 -0600
-Message-ID: <20040512172803.GA3378@colo.lackof.org>
-References: <20040512125116.B15273BE18@free.linux.hp.com>
-	<000501c43845$082f6840$6401a8c0@nwoods>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] palo-1.4 broken on 32bit ?
+Date: Thu, 13 May 2004 13:26:22 -0400 (EDT)
+Message-ID: <200405131726.i4DHQM5M015373@hiauly1.hia.nrc.ca>
+References: <20040504201122.GA32258@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Nathaniel Woods <nwoods29321@chater.net>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <000501c43845$082f6840$6401a8c0@nwoods>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: deller@gmx.de,
+ parisc-linux@lists.parisc-linux.org
+To: grundler@parisc-linux.org (Grant Grundler)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040504201122.GA32258@colo.lackof.org> from "Grant Grundler" at May 4, 2004 02:11:22 pm
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, May 12, 2004 at 01:17:33PM -0400, Nathaniel Woods wrote:
-> vid card in X = Fixed, I set "depth = 8", now it works but if I try to set
-> it to anything else it says "FBIOPUT_VSCREENINFO: Invalid Argument".
-> So I'll just leave it at 8.
+> On Tue, May 04, 2004 at 09:36:28PM +0200, Helge Deller wrote:
+> > Hi all,
+> > 
+> > after apt-get upgrading to palo_1.4_hppa.deb it seems, that palo-1.4 isn't able any longer to boot up a 32bit Linux kernel on a 32bit Machine.
+> > I've run several tests on a B180L, and only after downgrading to palo-1.3 I was able to boot again.
+> > 
+> > Am I the only one seeing this problem ? 
+> 
+> No - I've been seeing it on the c3600 as well.
+> I haven't tried 64-bit kernels.
+> And downgrading iplboot to 1.3 also solves it for me too.
 
-It has to be set to whatever "fbset" command says it is.
-Some of the *supported* graphics chips do work with higher color depth.
+Same here on 3750.  Boot fails with
 
-> I'm new to linux so, How do I get the messages to send?? Since the floppy
-> drive won't work, I would have to transe them to my win 2k pro system via my
-> network then send them. How would I do this?? I have telnet on both machines
-> and a telnet server on my win 2k system. Would I be able to transfer the
-> files through telnet?
+ext2_init: bad magic 0x0
 
-cut/paste the dmesg output from the telnet window into an email.
-Or redirect dmesg output to a file and rcp/scp the file so
-it can be attached or appended to an email.
+Downgraded, reran palo and the problem is gone.  Command line is >128.
+I shortened it a bit but I think this a problem for people using graphics
+consoles.
 
-> As for the HP 9000/720, I have all the Original documentation and Official
-> HP-UX CD's I am not very worried about the speaker connector on the back,
-> BUT The parisc-linux says there is now Full Hil support.
-> I have the 2.4.17 Kernel.
-
-"apt-get install kernel-image-2.4.25-32" should be the latest 2.4.x kernel.
-(or something reasonably close to that)
-
-> How do I update to the Newest Kernel version and configure it and X
-> for the hil keyboard and mouse?
-
-IIRC, the parisc-linux FAQ has this answer.
-
-grant
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
