@@ -1,63 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA22462
-	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Oct 2000 17:02:10 -0600
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel2.hp.com (Postfix) with ESMTP id 90052E4
-	for <parisc-linux@thepuffingroup.com>; Tue, 24 Oct 2000 19:03:29 -0400 (EDT)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id 5FE1E38137
-	for <parisc-linux@thepuffingroup.com>; Tue, 24 Oct 2000 17:05:19 -0600 (MDT)
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 24 Oct 2000 17:05:19 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001024230519.5FE1E38137@carmen.fc.hp.com>
-Subject: [parisc-linux] gcc build failing, missing pthread.h
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA23629
+	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Oct 2000 19:59:29 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 25 Oct 2000 02:00:59 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA31555;
+	Wed, 25 Oct 2000 12:59:07 +1100
+Date: Wed, 25 Oct 2000 12:59:07 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] gcc build failing, missing pthread.h
+In-Reply-To: <20001024230519.5FE1E38137@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0010251251060.28194-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-In trying to build a Linux/X86 -> Linux/PARISC cross gcc with glibc support 
-I'm running into the following error,
+On Tue, 24 Oct 2000, Matt Taggart wrote:
 
-/home/al-76/puffin/xc-build/gcc/gcc/g++ -B/home/al-76/puffin/xc-build/gcc/gcc/ 
--nostdinc++ -isystem /home/al-76/puffin/palinux/gcc/libstdc++ -isystem 
-/home/al-76/puffin/palinux/gcc/libstdc++/std -isystem 
-/home/al-76/puffin/palinux/gcc/libstdc++/stl -isystem 
-/home/al-76/puffin/palinux/gcc/libio -isystem /home/al-76/puffin/xc-build/gcc/h
-ppa-linux/libio -L/home/al-76/puffin/xc-build/gcc/hppa-linux/libstdc++ 
--B/opt/palinux/hppa-linux/bin/ -B/opt/palinux/hppa-linux/lib/ -isystem 
-/opt/palinux/hppa-linux/include -c -g -O2 -fvtable-thunks -D_GNU_SOURCE 
--fno-implicit-templates -I/home/al-76/puffin/palinux/gcc/libstdc++ 
--I/home/al-76/puffin/palinux/gcc/libstdc++/stl -I../libio 
--I/home/al-76/puffin/palinux/gcc/libstdc++/../libio -nostdinc++  
-/home/al-76/puffin/palinux/gcc/libstdc++/stdexcepti.cc
-In file included from /home/al-76/puffin/palinux/gcc/libstdc++/stl/alloc.h:21,
-                 from /home/al-76/puffin/palinux/gcc/libstdc++/std/bastring.h:3
-9,
-                 from /home/al-76/puffin/palinux/gcc/libstdc++/string:6,
-                 from /home/al-76/puffin/palinux/gcc/libstdc++/stdexcept:36,
-                 from /home/al-76/puffin/palinux/gcc/libstdc++/stdexcepti.cc:8:
-/home/al-76/puffin/palinux/gcc/libstdc++/stl/stl_alloc.h:71:24: pthread.h: No 
-such file or directory
-make[1]: *** [stdexcepti.o] Error 1
-make[1]: Leaving directory `/home/al-76/puffin/xc-build/gcc/hppa-linux/libstdc+
-+'
+> This is the first build I've done since October 16th. Since then David 
+> Huggins-Daines made a couple commits that may be related,
+> 
+> http://puffin.external.hp.com/mailing-lists/parisc-linux-cvs/2000/10-Oct/0167.h
+> tml
 
-This is using the build-tools/palinux-autobuilder in CVS same as I always do. 
-This is the first build I've done since October 16th. Since then David 
-Huggins-Daines made a couple commits that may be related,
+That's the one that caused your problem.
+cvs diff -r1.2 -r1.3 libstdc++/stl/stl_config.h will show you why.
 
-http://puffin.external.hp.com/mailing-lists/parisc-linux-cvs/2000/10-Oct/0167.h
-tml
-http://puffin.external.hp.com/mailing-lists/parisc-linux-cvs/2000/10-Oct/0166.h
-tml
+> I have tried configuring gcc with and without --disable-threads and get the 
+> same result. Where should pthread.h be coming from and why isn't it working 
+> automagically?
 
-I have tried configuring gcc with and without --disable-threads and get the 
-same result. Where should pthread.h be coming from and why isn't it working 
-automagically?
+pthread.h comes from glibc/linuxthreads/sysdeps/pthread/pthread.h
 
-Thanks,
+The answer seems to be to configure and install glibc with
+--enable-add-ons, like so
+
+<src_path>/glibc/configure --host=hppa-linux --build=i686-linux\
+  --prefix=<dest_path> --with-headers=<src_path>/linux/include\
+  --disable-profile --without-cvs --enable-add-ons
+
+Time to update the recipe...
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Linuxcare.  Support for the Revolution.
