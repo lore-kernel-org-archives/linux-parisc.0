@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 17 Feb 2003 19:52:30 -0700
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] .config fo a N class?
-Message-ID: <20030218025230.GA13514@dsl2.external.hp.com>
-References: <3E48B5950000297E@ocpmta3.freegates.net> <3E4ABE5000002044@ocpmta2.freegates.net>
+Received: from systemhalted (CPE00207807b093-CM.cpe.net.cable.rogers.com [24.112.180.230])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 65FD24829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Feb 2003 21:17:03 -0700 (MST)
+Received: from carlos by systemhalted with local (Exim 3.36 #1 (Debian))
+	id 18kzBe-0004qE-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Feb 2003 23:16:54 -0500
+Date: Mon, 17 Feb 2003 23:16:54 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030218041653.GI15855@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E4ABE5000002044@ocpmta2.freegates.net>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] /dev/loop0 problems in 2.5.x?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,45 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 17, 2003 at 06:51:01PM +0100, Joel Soete wrote:
-> >I grab the config file of the test-drive L model; apply it against current
-> >k-2.4.20-pa26 (just change 64 to 32 bits).
->                             ^^^^^^^^^^^^^ My bad: I would have to remember
-> that hpux-11 have to be 64bits on L and N servers :?
+parisc,
 
-right. But L-class also only supports 64-bit.
-And you want to disable CONFIG_SMP for N-class and L3000.
+Works in 2.4.x, thinking of moving part of the cluster to 2.5, but I like
+to play with swap over NFS.
 
-> Well, for now I just boot with a dpkg kernel-image-2.4.19-64 (up) and still
-> have to see what is wrong with eth0:
+root@node01:/etc# /sbin/losetup /dev/loop0 /swapfile
+ioctl: LOOP_SET_FD: Inappropriate ioctl for device
+root@node01:/etc# uname -a
+Linux node01 2.5.59-pa2 #2 Thu Jan 23 00:49:22 EST 2003 parisc unknown
+unknown GNU/Linux
 
-You were not very clear about the symptom.
-And we need a slightly more accurate description
-of the kernel-image version number.
+Do I need newer tools for playing with 2.5.x on HPPA?
+Loopback is compiled into the kernel, no modules, and I can produce the
+.config if you would like to look :)
 
-But this might help you anyway
-| > cvs log driver/nets/tulip/media.c
-...
-| revision 1.14
-| 
-| date: 2002/10/14 23:34:02;  author: grundler;  state: Exp;  lines: +13 -13
-|
-| 2.4.19-pa22 Fix tulip phy reset/init
-| DP83840A.pdf and lxt971d.pdf both require polling
-| the reset bit (bit 15) in mdio control register to
-| determine when a reset has completed. Then the
-| "init" sequence can be sent.
+Help is much appreciated. I've trolled a few places but no mention of
+this particular problem.
 
-
-> eth0 Digital DS21143 Tulip rev 65 at 0x80 ... irq 128
-> 
-> Is there known problem with this type of NIC?
-
-yes - there was. But built-in should work. add-on cards had problems.
-
-> Next step would be to install a gcc-64 to recompile the kernel 2.4.20-pa27
-> and have a new look on this eth0.
-
-yes - good plan
-
-grant
+c.
