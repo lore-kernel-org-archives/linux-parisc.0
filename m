@@ -1,18 +1,21 @@
-Return-Path: <christoph.plattner@gmx.at>
-Received: from viefep18-int.chello.at (viefep18-int.chello.at [213.46.255.22])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ED0C44854
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AF1EB4854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 12 Jan 2004 16:23:52 -0700 (MST)
-Message-ID: <40032C85.3040901@gmx.at>
-Date: Tue, 13 Jan 2004 00:23:49 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] 2.6 & pdc_console pb on c110: "Warning: unable
-	to	open an initial console."
-References: <3FEDF301.5030901@tiscali.be> <200312280019.55830.deller@gmx.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
+	Mon, 12 Jan 2004 22:42:17 -0700 (MST)
+Date: Mon, 12 Jan 2004 22:42:15 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Message-ID: <20040113054215.GB27285@colo.lackof.org>
+References: <20040105194809.GA9269@systemhalted>
+	<20040105194839.GB9269@systemhalted>
+	<20040111040906.GA32382@colo.lackof.org>
+	<20040111204355.GL28742@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040111204355.GL28742@systemhalted>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,65 +25,222 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Anyway, the PDC driver should work for all architectures, independent of
-the serial type (this was my concept of this driver).
+On Sun, Jan 11, 2004 at 03:43:55PM -0500, Carlos O'Donell wrote:
+> Excellent. You haven't tried profiling any programs have you? :)
+> Compile with CFLAGS=-pg, run-em, then run gprof on the gmon.out output?
 
-Is the driver fully ported to the 2.6 kernel ?
-In the first log, the line "Warning: unable to open an initial console."
-was shown, so the open on this device fails !
-Futher there is no PDC driver registered under proc/devices !
+Here's "apps/openssl speed rsa" gprof output from my c3000.
+(2.6.0-pa7, Debian testing)
 
-I have never tested a 2.6 kernel on a HP.
+TBH, it looks wrong.
+I didn't expect "get_dsa1024" to show up.
+I suspect I didn't get all the various CFLAGS.
+I edited */Makefile and added -pg by hand to "CFLAG" variables
+and then "make clean" + "make".
 
-Christoph
-
-
-Helge Deller wrote:
-> On Saturday 27 December 2003 22:00, Joel Soete wrote:
-> 
->>I try to see if pdc_console could be operational on my c110 with kernel 2.6.0-pa5.
->>
->>So I uncheck serial_mux and check pdc_console with make menuconfig (edit also pdc_cons.c to define EARLY_BOOTUP_DEBUG)
->>Then I create the special file "mknod /dev/ttyB0 c 11 0", add "TB0:12345:respawn:/sbin/getty 38400 ttyB0" in /etc/inittab
->>
->>(I also try to apply Richard patch <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-May/016384.html>)
->>
->>But no way to make it works?
->>
->>Linux version 2.6.0-pa5 (root@hpalin) (gcc version 3.3.3 20031206 (prerelease) 3FP[0] enabled: Rev 1 Model 11 
->>                               The 32-bit Kernel has started...
->>Initialized PDC Console for debugging.
->>Determining PDC firmware type: System Map.
->>model 000058e0 00000481 00000000 00000002 77e47570 100000f1 00000004 0000008a 0avers  0000000d
->>CPUID vers 11 rev 13 (0x0000016d)
->>model 9000/777/C110
->>Total Memory: 128 Mb
->>[snip]
->>Soft power switch enabled, polling @ 0xf0140000.
->>Console: switching to colour frame buffer device 128x48
->>pty: 256 Unix98 ptys configured
->>lp: driver loaded but no devices found
->>Generic RTC Driver v1.07
->>Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabled
->>ttyS0 at MMIO 0xffd05800 (irq = 90) is a 16550A
->>ttyS1 at MMIO 0xffe02800 (irq = 121) is a 16550A
-> 
-> 
-> Your machine has standard serial ports. So why do you want to
-> switch on serial_mux stuff when it's not needed (and not possible
-> since the device is not present in your machine) ?
-> 
-> Helge
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+hth,
+grant
 
 
+Flat profile:
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 63.64      0.07     0.07                             lock_dbg_cb
+ 27.27      0.10     0.03                             check_end
+  9.09      0.11     0.01                             call_frame_dummy
+  0.00      0.11     0.00       16     0.00     0.00  Time_F
+  0.00      0.11     0.00        8     0.00     0.00  pkey_print_message
+  0.00      0.11     0.00        1     0.00     0.00  destroy_ui_method
+  0.00      0.11     0.00        1     0.00     0.00  do_cmd
+  0.00      0.11     0.00        1     0.00     0.00  get_dsa1024
+  0.00      0.11     0.00        1     0.00     0.00  get_dsa2048
+  0.00      0.11     0.00        1     0.00     0.00  get_dsa512
+  0.00      0.11     0.00        1     0.00     0.00  load_config
+  0.00      0.11     0.00        1     0.00     0.00  make_config_name
+  0.00      0.11     0.00        1     0.00     0.00  prog_init
+  0.00      0.11     0.00        1     0.00     0.00  program_name
+  0.00      0.11     0.00        1     0.00     0.00  setup_ui_method
+  0.00      0.11     0.00        1     0.00     0.00  speed_main
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 9.09% of 0.11 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     63.6    0.07    0.00                 lock_dbg_cb [1]
+-----------------------------------------------
+                                                 <spontaneous>
+[2]     27.3    0.03    0.00                 check_end [2]
+-----------------------------------------------
+                                                 <spontaneous>
+[3]      9.1    0.01    0.00                 call_frame_dummy [3]
+-----------------------------------------------
+                0.00    0.00      16/16          speed_main [16]
+[4]      0.0    0.00    0.00      16         Time_F [4]
+-----------------------------------------------
+                0.00    0.00       8/8           speed_main [16]
+[5]      0.0    0.00    0.00       8         pkey_print_message [5]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[6]      0.0    0.00    0.00       1         destroy_ui_method [6]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[7]      0.0    0.00    0.00       1         do_cmd [7]
+                0.00    0.00       1/1           speed_main [16]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[8]      0.0    0.00    0.00       1         get_dsa1024 [8]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[9]      0.0    0.00    0.00       1         get_dsa2048 [9]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[10]     0.0    0.00    0.00       1         get_dsa512 [10]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[11]     0.0    0.00    0.00       1         load_config [11]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[12]     0.0    0.00    0.00       1         make_config_name [12]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[13]     0.0    0.00    0.00       1         prog_init [13]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[14]     0.0    0.00    0.00       1         program_name [14]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[15]     0.0    0.00    0.00       1         setup_ui_method [15]
+-----------------------------------------------
+                0.00    0.00       1/1           do_cmd [7]
+[16]     0.0    0.00    0.00       1         speed_main [16]
+                0.00    0.00      16/16          Time_F [4]
+                0.00    0.00       8/8           pkey_print_message [5]
+                0.00    0.00       1/1           load_config [11]
+                0.00    0.00       1/1           get_dsa512 [10]
+                0.00    0.00       1/1           get_dsa1024 [8]
+                0.00    0.00       1/1           get_dsa2048 [9]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+   [4] Time_F                  [9] get_dsa2048            [13] prog_init
+   [3] call_frame_dummy       [10] get_dsa512             [14] program_name
+   [2] check_end              [11] load_config            [15] setup_ui_method
+   [6] destroy_ui_method       [1] lock_dbg_cb            [16] speed_main
+   [7] do_cmd                 [12] make_config_name
+   [8] get_dsa1024             [5] pkey_print_message
