@@ -1,34 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA18375
-	for <parisc-linux@puffin.external.hp.com>; Sat, 14 Oct 2000 01:49:49 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 14 Oct 2000 07:51:00 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA15659;
-	Sat, 14 Oct 2000 18:50:46 +1100
-Date: Sat, 14 Oct 2000 18:50:46 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Brian Poole <raj@cerias.purdue.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA23603
+	for <parisc-linux@puffin.external.hp.com>; Sat, 14 Oct 2000 14:09:25 -0600
+Date: Sat, 14 Oct 2000 15:10:26 -0500 (EST)
+From: Brian Poole <raj@cerias.purdue.edu>
+To: Alan Modra <alan@linuxcare.com.au>
 cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Troubles following the 'recipe'
-In-Reply-To: <Pine.SOL.4.10.10010132356161.22986-100000@basm.cerias.purdue.edu>
-Message-ID: <Pine.LNX.4.21.0010141708500.10656-100000@front.linuxcare.com.au>
+In-Reply-To: <Pine.LNX.4.21.0010141708500.10656-100000@front.linuxcare.com.au>
+Message-ID: <Pine.SOL.4.10.10010141453400.22986-100000@basm.cerias.purdue.edu>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 14 Oct 2000, Brian Poole wrote:
+> Alan Modra wrote..
+> Can you show the command line that failed here? If you followed the
 
-> find some header files. Specifically it errors out while compiling
-> iogetline.c, complaining that it can't find errno.h (from
-> ../../../gcc/libio/libioP.h:30:19), _G_config.h 
-> (../../../gcc/libio/libio.h:30:23) and string.h 
-> (../../../gcc/libio/iogetline.c:27:20). The errors are the same for each
-> machine. I downloaded all of the files today, October 13th.
+Sure. The exact command that this output came from was..
 
-Can you show the command line that failed here?  If you followed the
-recipe, then you should have configured gcc with --prefix=$DEST, and have 
-$DEST/include/errno.h on your system.
+make -j2 LIBGCC2_INCLUDES=-I$DEST/include
 
--- 
-Linuxcare.  Support for the Revolution.
+And I configured it as per the recipe with..
+
+../gcc/configure --target=hppa1.1-linux --prefix=$DEST --host=$MACH
+--disable-nls --without-libc
+
+which according to configure configured gcc as..
+
+../gcc/configure
+--with-gcc-version-trigger=/home/raj/parisc/gcc/gcc/version.c
+--target=hppa1.1-linux --prefix=/usr/parisc --host=i386-linux
+--disable-nls --without-libc --norecursion
+
+> recipe, then you should have configured gcc with --prefix=$DEST, and have 
+> $DEST/include/errno.h on your system.
+
+Indeed, I noted this myself, was wondering why it had not found headers
+that I should have. The errno.h header is in fact in $DEST/include,
+checked then and just checked again.
+
+However doesn't prefix indicate where it is installing to, and not where
+it is reading from for it's includes, or am I missing something? 
+
+
+Thanks for the help,
+
+-b
