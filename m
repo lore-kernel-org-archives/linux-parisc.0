@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8FA644856
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 09:41:08 -0700 (MST)
-Message-Id: <200202181641.g1IGf3hb011664@hiauly1.hia.nrc.ca>
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 90FC94855
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 10:47:52 -0700 (MST)
 Subject: Re: [parisc-linux] Re: hppa-linux gcc-3.0.3:
-To: jso@europay.com (=?iso-8859-1?Q?Jo=EBl_Soete?=)
-Date: Mon, 18 Feb 2002 11:41:03 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <OF99BC0404.6646AF92-ONC1256B64.0050D0F6@com> from "=?iso-8859-1?Q?Jo=EBl_Soete?=" at Feb 18, 2002 03:54:11 pm
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: carlos@baldric.uwo.ca,
+	"jso" <jso@europay.com>(=?iso-8859-1?Q?Jo=EBl_Soete?=),
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <OFB6528EDF.C6603F22-ONC1256B64.00615768@com>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Mon, 18 Feb 2002 18:53:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-type: text/plain; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,6 +22,43 @@ List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
+
+David,
+
+Ok I just launch the download of binutils snapshot dated of today.
+I will then follow the 'recipe'.
+
+Than again for all,
+     Joel
+
+PS: I would try natively (on my palinux box directly) with MACH=3Dhppa-linux
+i.e.: ~/source/binutils/configure --host=3Dhppa-linux ... ?
+
+
+
+                                                                           =
+                                         =20
+                    "John David                                            =
+                                         =20
+                    Anglin"                To:     jso@europay.com (Jo=EBl =
+Soete)                                     =20
+                    <dave@hiauly1.h        cc:     carlos@baldric.uwo.ca, p=
+arisc-linux@lists.parisc-linux.org       =20
+                    ia.nrc.ca>             Subject:     Re: [parisc-linux] =
+Re: hppa-linux gcc-3.0.3:                =20
+                                                                           =
+                                         =20
+                    18-02-02 05:41                                         =
+                                         =20
+                    PM                                                     =
+                                         =20
+                                                                           =
+                                         =20
+                                                                           =
+                                         =20
+
+
+
 
 > Thanks for advise but I speek well about the new (annonced on
 > http://www.gnu.org/software/gcc/gcc.html: ...The next major release, GCC
@@ -38,6 +76,20 @@ error mesages.
 I am currently trying to get dw2 unwinding working.
 
 Dave
--- 
+--
 J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+National Research Council of Canada              (613) 990-0752 (FAX:
+952-6605)
+
+
+
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information =
+which is strictly intended for the use of the authorised recipient.  If you=
+ have received this e-mail in error, please delete it and notify the sender=
+ by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
