@@ -1,56 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 440C04A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 00:43:17 -0700 (MST)
-Sender: drepper@cygnus.com
-To: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile   system
-References: <Pine.LNX.4.21.0102091056000.9776-100000@front.linuxcare.com.au>
-	<3A8FA3D8.19E69EF6@dot.at> <3A94C3B5.EF59259C@neuronet.pitt.edu>
-	<3A94CEF9.F171DE3F@alcatel.at> <3A974D1F.3BBB87C8@neuronet.pitt.edu>
-	<m3wvagiojx.fsf@otr.mynet.cygnus.com>
-	<3A976261.EEA18B66@neuronet.pitt.edu>
-Reply-To: drepper@cygnus.com (Ulrich Drepper)
-From: Ulrich Drepper <drepper@redhat.com>
-Date: 23 Feb 2001 23:42:56 -0800
-In-Reply-To: "Rafael E. Herrera"'s message of "Sat, 24 Feb 2001 02:27:29 -0500"
-Message-ID: <m3k86gil1b.fsf@otr.mynet.cygnus.com>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 40F0D4A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 00:53:49 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA25104;
+	Sat, 24 Feb 2001 18:53:25 +1100
+Date: Sat, 24 Feb 2001 18:53:25 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Ulrich Drepper <drepper@cygnus.com>
+Cc: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>,
+	Christoph Plattner <christoph.plattner@alcatel.at>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile
+  system
+In-Reply-To: <m3wvagiojx.fsf@otr.mynet.cygnus.com>
+Message-ID: <Pine.LNX.4.21.0102241814320.9315-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Rafael E. Herrera" <raffo@neuronet.pitt.edu> writes:
+On 23 Feb 2001, Ulrich Drepper wrote:
 
-> export MACH=i386-linux
-> export DEST=/usr
-> export ROOT=~/parisk
-> 
-> HOSTCC=gcc CC=hppa-linux-gcc $ROOT/source/glibc/configure \
-> --prefix=$DEST --build=$MACH \
-> --host=hppa-linux --target=hppa-linux \
-> --with-headers=$ROOT/source/linux/include --disable-profile \
-> --without-cvs --enable-add-ons
+> I really don't understand who came up with these "strange" build
+> instructions.  For Linux builds of glibc where the result is actually
+> used in the normal place (means in /lib and /usr/lib) you *always*
+> have to configure with --prefix=/usr.  While installing it one than
+> can use the install_root make variable.
 
-This looks OK (though providing HOSTCC shouldn't be necessary) and
---build, --host, and --target have no effect.  The configure script
-will pick up all it has to know from the CC value.
+Hi Ulrich,
+  The "strange" build instructions come from people trying to use glibc
+built for a cross-compiling environment, in a native environment too.
 
-> make MAKE="make -j 10" user-defined-trusted-dirs=/lib
+Perhaps I'm at fault for mentioning such a thing was possible (by
+installing then setting up symbolic links so that glibc effectively
+appears at both it's normal native location and also at the --prefix
+location).  To atone, I think I'll write up a recipe for cross-building
+native tools and glibc.
 
-Providing make isn't necessary.  Also, the `user-defined-trusted-dirs'
-is not needed.  Just run
+Oh, and for the benefit of the list, Ulrich is talking about native
+builds.  This ought to be obvious, but _DO NOT_ build glibc for a
+cross-compiling environment with --prefix=/usr.  If you install it, you'll
+blow away your system libs.  hppa-linux libraries tend to not run very
+well on x86.
 
-   make -j10
-
-> make install user-defined-trusted-dirs=/lib \
->  install_root=/tmp/glibc
-
-Again, loose the `user-defined-trusted-dirs'.  Also, is /tmp/glibc
-where the nfsroot is picked up?  If not, just install in the nfsroot
-directory.
-
+Alan
 -- 
----------------.                          ,-.   1325 Chesapeake Terrace
-Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-Red Hat          `--' drepper at redhat.com   `------------------------
+Linuxcare.  Support for the Revolution.
