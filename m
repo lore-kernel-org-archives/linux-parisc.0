@@ -1,82 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 41DBB482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 15:24:52 -0600 (MDT)
-Sender: chris@dsl2.external.hp.com
-Message-ID: <3BCCA573.8419CD4@gmx.at>
-Date: Tue, 16 Oct 2001 23:24:03 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: paul lee <wbm111us@yahoo.com>,
+Received: from mailf.telia.com (mailf.telia.com [194.22.194.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D7294482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 16:08:39 -0600 (MDT)
+Date: Wed, 17 Oct 2001 00:08:33 +0200
+From: Daniel Engstrom <5116@telia.com>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Daniel Engstrom <5116@telia.com>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Help - Serial console problem
-References: <200110161840.MAA15315@puffin.external.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] New scsi driver for 53c700 and 53c710 committed
+Message-ID: <20011017000833.C10728@zaphod.halden.lillfab.se>
+References: <20011008230949.U11105@linuxcare.com> <20011013233216.A24926@zaphod.halden.lillfab.se> <20011016101716.A11105@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <20011016101716.A11105@linuxcare.com>; from rhirst@linuxcare.com on Tue, Oct 16, 2001 at 11:17:16 +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
-
-I think the problem has to do with the hardware handshake.
-The silly M$ OS has the problem, that it expects correct
-settings of the hardware handshake lines, although hardware
-handshake is not used. The same is true for the default BIOS
-(int 14h) driver. On Linux, for example, this problem is
-not present.
-
-The PC under any Microsoft system or under BIOS (int 14h)
-control does not send any character, if the CTS line (pin
-5 on the D-SUB-25) is active. A linux PC used via serial
-console on a Win2000 system is working, as the Linux PC
-activates the lines, although it is not using them. 
-
-So sum up: Windows expects on the input side an active
-CTS to send. Linux does not require this line active,
-but activates the output for a machine on the other side,
-who needs the output active. 
-
-The HP workstation and server (so my HP 55E 9000/856) do
-not activate the handshake line, so the CTS pin on the
-Win2000 side is inactive. Is was not possible for my to
-activate the handshake lines on the HP server via `stty'.
-
-The most simple method to get it working:
-Make a special cable with a 3-wire conection to the HP
-machine (TXD, RXD, GND) and solder two bridges on the
-Win2000 side in the connector:
-	for 25-pin:  	4 <-> 5
-			6 <-> 20
-
-	for 9-pin:	7 <-> 8
-			4 <-> 6
-
-This should work then ....
-
-
-With friendly regards
-	Christoph P.
-
-
-Grant Grundler wrote:
+> > I have some problems with this driver on my 715-50/old installed from the 
+> > 0.92 cd.
 > 
-> paul lee wrote:
-> > I could not access a C200 workstation via serial
-> > console. Could someone please give me some insight?
-> > I use hyperterminal on Win 2000. The settings are
-> > VT100, 9600, 8-N-1 and Xon/Xoff.
-> 
-> The settings are correct.
-> It's possible the serial cable isn't wired correctly
-> or the C200 isn't trying to use serial port1.
-> 
-> grant
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> We've had one problem report so far that was fixed by adding a scsi
+> terminator. 
+Well I have terminators at both ends, the external one is an active terminator 
+and the internal on is the original HP part. 
+I also tried to remov the external CD from the bus to day but it had no effect.
+
+> The new driver runs fast sync scsi transfers, while the old one ran slower
+> async. 
+The 715 i have have a vanilla 53c700 chip and as far as I can tell this chip 
+supports only async transfers. The driver will not enable sync tranfers unless 
+you have at least a 53c700-66 device.
+
+> Poorly terminated scsi busses are much more likely to fail with the new driver.  
+> James Bottomley posted a patch to disable sync transfers a few days ago, 
+> could you try that and see if it helps?  
+This patch will only disable sync transfers if you have a 53c710, I changed it to
+disable sync tranfsers regardless of the chip in question. It did not make things 
+any  better, though (as one would expect considering the capabilities of my chip). 
+
+> Also let us know what you system has by way of scsi termination.
+See above. I have two 3G Quantum drives on the bus and until today I had a dual speed
+Toshiba CDROM in an external enclosure.
+
+I have enabled debugging in the 53c700 driver, whith this debugging the driver seems 
+to stay alive longer that without debuging. Infact it has yet to lockup after running 
+bonnie for 18 minutes (I booted an nfs root and mounted the scsi disk maunaly). I guess
+the debuging printk's removed the lockup. I just rebooted in to the nfs root with a new 
+kernel where the only change is the removal of the debug output, and this kernel dies after
+a while (~10min) running bonnie. Please advise. :)
+
+/Daniel
 
 -- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
