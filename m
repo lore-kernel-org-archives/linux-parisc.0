@@ -1,24 +1,27 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 648D74CDF
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu,  8 Apr 2004 11:08:19 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1BBd0j-0007iX-Q2; Thu, 08 Apr 2004 18:08:17 +0100
-Date: Thu, 8 Apr 2004 18:08:17 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Andy Walker <ajwalker@broadpark.no>
-Subject: Re: [parisc-linux] EISA-Card in 715 /100
-Message-ID: <20040408170817.GG18329@parcelfarce.linux.theplanet.co.uk>
-References: <40739896.7010600@bluehash.de>
-	<1152.192.168.1.54.1081318817.squirrel@www.puszczka.com>
+Return-Path: <andrea@suse.de>
+Received: from dualathlon.random (ppp-217-133-42-200.cust-adsl.tiscali.it
+	[217.133.42.200])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22C334CDF
+	for <parisc-linux@parisc-linux.org>;
+	Thu,  8 Apr 2004 11:10:18 -0600 (MDT)
+Date: Thu, 8 Apr 2004 19:10:17 +0200
+From: Andrea Arcangeli <andrea@suse.de>
+To: James Bottomley <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] rmap: parisc __flush_dcache_page
+Message-ID: <20040408171017.GJ31667@dualathlon.random>
+References: <Pine.LNX.4.44.0404081500520.7116-100000@localhost.localdomain>
+	<1081435237.1885.144.camel@mulgrave>
+	<20040408151415.GB31667@dualathlon.random>
+	<1081438124.2105.207.camel@mulgrave>
+	<20040408153412.GD31667@dualathlon.random>
+	<1081439244.2165.236.camel@mulgrave>
+	<20040408161610.GF31667@dualathlon.random>
+	<1081441791.2105.295.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <1152.192.168.1.54.1081318817.squirrel@www.puszczka.com>
-Sender: <willy@www.linux.org.uk>
-Cc: =?iso-8859-1?Q?R=FCdiger?= Scholz <r.scholz@bluehash.de>,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1081441791.2105.295.camel@mulgrave>
+Cc: Hugh Dickins <hugh@veritas.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,47 +31,29 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Apr 07, 2004 at 08:20:17AM +0200, Andy Walker wrote:
-> > Hello,
-> >
-> > my HP 715/100 has an extra graphics card (HCRX-24?). Now I have read
-> > that some 715s have an EISA-Slot instead of this graphics card. Can I
-> > replace my graphics card with an EISA-Card. And if yes, can I also use
-> > an ISA-card (e.g. an ISDN-Card)?
-> >
-> > T.i.a,
-> >     Ruediger
+On Thu, Apr 08, 2004 at 11:29:50AM -0500, James Bottomley wrote:
+> On Thu, 2004-04-08 at 11:16, Andrea Arcangeli wrote:
+> > softirq tasklets would be unsafe too, oh well, if you take it really
+> > from irq context (irq/softirq/tasklet) then just a spinlock isn't
+> > enough, it'd need to be an irq safe lock or whatever similar plus you
+> > must be sure to never generate exceptions triggering the call inside the
+> > critical section. sounds like we need some per-arch abstraction to cover
+		      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > this, we for sure don't want an irq spinlock for this, then we can as
+> > well leave the semaphore for all archs but parisc.
 > 
-> Hi Rüdiger,
+> Erm, well, I think this is a global problem.  All VI archs have to use
+> the flush_ APIs in cachetlb.txt to ensure coherence.  It's just that
+> sparc seems to have some nice cache manipulation instructions that
+> relieve it of the necessity of traversing the mappings.
 > 
-> As I understand it, EISA was provided on the 715s by an adapter card that
-> sat in the GSC slot. Seems reasonable as both are controlled by WAX. So if
-> you have a GSC card in the slot you presumably don't have the adapter.
+> Why don't we want an irq safe spinlock?  As Hugh said, we'd abstract it
+> so as to be a nop on PI archs.
 
-Not entirely ...
+I said above per-arch abstraction, a per-arch abstraction isn't an irq
+safe spinlock, we cannot add an irq safe spinlock there, it'd be too bad
+for all the common archs that don't need to walk those lists (actually
+trees in my -aa tree) from irq context.
 
-There are two families of 715; 715/33, /50 and /75 (Scorpio) and 715/64,
-/80, /100 and /100XC (Mirage or Turnip).
-
-Scorpio is based on the PCX/T chip and Mirage on the PCX/L chip.  These
-are quite different architectures.  For example, Mirage has Lasi and Wax
-while Scorpio has discrete logic.  If you ever get the chance to compare
-the two motherboards, you'll notice how many more components a Scorpio
-has than a Mirage.
-
-The EISA adapter (Mongoose) was originally designed for the Scorpio
-family which predates GSC.  It has an SGC interface instead, and plugs
-into the same slot as the graphics card.  Mirage boxes have both GSC
-and SGC connectors, side-by-side on the motherboard.
-
-There is an EISA adapter as a component of Wax, but I believe it's
-disabled in Mirage boxes.  It's used in GSC-based C and J class boxes
-though.
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+if you implement the locking abstraction with an irq safe spinlock it's
+your own business then.
