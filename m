@@ -1,14 +1,16 @@
 Return-Path: <soete.joel@tiscali.be>
-Date: Wed, 4 Feb 2004 12:47:15 +0100
-Message-ID: <400CB8A10000C95A@ocpmta3.freegates.net>
-In-Reply-To: <8BF7471D09AA9B4190A9C96778BC2A1748D23C@qcaexc02.asiapacific.cpqcorp.net>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8A37F4840
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed,  4 Feb 2004 06:40:31 -0700 (MST)
+Date: Wed, 4 Feb 2004 14:39:58 +0100
+Message-ID: <400CB8A10000CC1F@ocpmta3.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] UNable to boot the cd.
-To: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>,
-	"Grant Grundler" <grundler@parisc-linux.org>
+Subject: RE: [parisc-linux] Kernel driver/feature support
+To: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@parisc-linux.org
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,30 +20,32 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Asif,
+Hi Max,
 
->I was right , as per the listings inthe  forum ! 
->When I try to search - the cd's doesnt get  seacrched as ipl device! 
->Secondly when i boot from the Main muenu all i get message is 
->Booting from device not ready....
- 
+>I'd be interested if somebody else has success (or failure) reports of
+>drivers/fs not listed here, and reports from what's working with 2.6
+>(since I can't test it here)
 
->But the same device  works fine with HPUX OS cd.. 
+what was also working for me (I tested intensively on 2.4 only, not yet on
+2.6):
+- lvm (1 and now 2 aka devmapper)
+- evms (tested till 1.2)
+- jfs (tested till 1.0.23)
+- xfs (tested till some cvs a bit outdated of Oct 2002 :( )
+- ppp (still operational over a simple pstn and a 38000 bauds modem :) )
 
-For me that exclude cdrom driver pb ;)
+what failled to me:
+- a hp 8port serial mux (afaik an Equinox product) even though that actualy
+works fine plug in a hp i386 (and used as some kind console concentrator
+for parisc boxes :) )
+- an aty graphic card (in fact I don't know the actual status of this card,
+should be broken :( )
+- Tachion FC (driver should be re-write according its maintainer)
 
-And seems also that CD Creator can also write raw image by this method (I
-have unfortunately no experience with this tool but I can check if cdrecord
-exits for NT systems?).
-So the last pb I can see is a pb of image corruption (during file transfer):
-
-could you check the md5sum of your file
-(if you don't have other linux box to do, on your XP you could install it
-eg. with cygwin tools with <http://sources.redhat.com/cygwin/setup.exe> ;)
-
-
-Cheers,
+hth,
     Joel
+
+
 
 
 -------------------------------------------------------------------------
