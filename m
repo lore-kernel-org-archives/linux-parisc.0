@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CA55D482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Feb 2002 08:36:29 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16Zw1g-0006Tq-00; Sun, 10 Feb 2002 15:36:24 +0000
-Date: Sun, 10 Feb 2002 15:36:24 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Enrik Berkhan <Enrik.Berkhan@planb.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors
-Message-ID: <20020210153624.H1173@parcelfarce.linux.theplanet.co.uk>
-References: <20020207130852.C3306@electra.intern.planb.de> <20020207163107.5E08A482A@dsl2.external.hp.com> <20020208121405.C5128@electra.intern.planb.de> <Enrik.Berkhan@planb.de> <20020210065020.DCE6A482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020210065020.DCE6A482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sat, Feb 09, 2002 at 11:50:20PM -0700
+Received: from unixworks.net (65-85-15-21.client.dsl.net [65.85.15.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 63C66482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Feb 2002 11:50:31 -0700 (MST)
+Received: from localhost (none@srvr1021.unixworks.net [65.85.15.21])
+	by unixworks.net (1.0.11sp/unixworks.net) with SMTP id NAA05497
+	for <parisc-linux@lists.parisc-linux.org >; Sun, 10 Feb 2002 13:48:13 -0600
+Date: Sun, 10 Feb 2002 13:48:13 -0600
+Message-Id: <200202101948.NAA05497@unixworks.net>
+To: parisc-linux@lists.parisc-linux.org
+From: Bob Radvanovsky <rsradvan@unixworks.net>
+Cc: 
+Subject: [parisc-linux] [REQUEST] PS/2 keyboard pinouts?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,23 +22,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Feb 09, 2002 at 11:50:20PM -0700, Grant Grundler wrote:
-> Enrik Berkhan wrote:
-> > BTW, drivers/gsc/serial.c does no request_mem_region(). Is this in-
-> > tentional?
-> 
-> probably. Check if an entry for serial exists in /prc/iomem.
-> At one point, the device discover code was changed to automatically
-> do the request_mem_region() devics firmware told us about.
+I recently picked up about 30+ 712 workstations, some of which will be
+converted to the Debian PA/Linux operating system.  I plan on importing
+the clusting software, Eddie, over to Debian and turning about 12+ of
+these 712 workstations into a gigantic Linux cluster.
 
-Where `one point' == `last night' :-)
+Unfortunately, I don't have 30+ keyboards for all of these workstations. 
+Having noticed that there was one gent (Andrew Shugg) who mentioned about
+a PS/2 loopback connector, I have tried in desparation to find one premade
+at several computer specialty shops, including Radio Shack.  I used to
+remember when Radio Shack *did* have connectors that you could make your
+own style or pinout connector.	Nowadays, you just get a snot-nosed kid
+who states "Whatever we have is whatever we have, dude.......whatever."
+(or something like that).  I *CANNOT* seem to find any PS/2 connectors
+ONLY, and for that matter, cannot seem to find documentation on the
+712/60, 712/80 and 712/100 workstations keyboard connector pinout, and
+which pins will enable me to bypass the IPL problem of "no keyboard, no
+bootup" problem.
 
-I'm not quite sure about the way I've done it -- I might set it up to
-always claim rather than only claim on device detection, and take the
-name from the hardware database rather than the driver.
+Anyone got any ideas on where I can get (1) pin descriptions as to how to
+bypass the "no keyboard, no bootup" problem on most of the HP
+workstations, and (2) where I might be able to get some PS/2 connector to
+make my own "headless" Linux cluster configuration.
 
-I suspect I've broken module unload with the current code, and I need
-a release_mem_region on deregistration... investigating now.
+Thanks in advance.
 
--- 
-Revolutions do not require corporate support.
+Bob Radvanovsky
+kempyuter kensulting services, inc.
+rsradvan@k2si.com
+
+-ad nauseum: Also... anyone know of a *good* and *FREE* Linux clustering
+software that is efficient enough to run?  So far, the best one that I can
+find that is fairly configurable, and robust enough is "Eddie".  But the
+only drawback is that it's interpretted and runs on a language called
+"Erlang".  If anyone has had experience in this matter with HP
+workstations, running Debian PA/Linux, under a clustering environment (in
+a house that Jack built), I'd be very interested in hearing more...  ;)))
