@@ -1,16 +1,17 @@
 From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] Re: atlas3 on hppa: unexpected reloc type
-Date: Sun, 13 Jun 2004 15:33:58 -0700
-Message-ID: <20040613223358.GJ19250@tausq.org>
-References: <20040613162317.E51E44F24E@enterprise.cs.utk.edu>
+Subject: Re: [parisc-linux] C3600 install
+Date: Sun, 13 Jun 2004 15:52:32 -0700
+Message-ID: <20040613225232.GK19250@tausq.org>
+References: <20040612173138.GC19250@tausq.org> <26521.1087071140@www66.gmx.net>
+	<20040613201953.GA28264@colo.lackof.org>
 Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: R Clint Whaley <rwhaley@cs.utk.edu>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040613162317.E51E44F24E@enterprise.cs.utk.edu>
+In-Reply-To: <20040613201953.GA28264@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,14 +22,12 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-(cc'ed to the list)
+> An alternative solution would be to disconnect all USB devices.
+> I'm hoping firmware doesn't enable DMA for USB ports if it doesn't find
+> anything.
 
-> Thanks for the pointers.  From the document, I was able to add prefetch support
-> for PA-RISC 2.0 to ATLAS's header file. 
-
-Cool! Be aware that, if atlas relies on being able to prefetch invalid
-addresses and have that not fault, then it will only work on some PA 
-processors (mostly pa20) and not all of them.
+nope, doesn't work -- i have nothing connected to the USB ports on my
+c3750.
 
 randolph
 -- 
