@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from yahoo1190.com (unknown [61.235.68.66])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8DFCE4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 01:27:53 -0600 (MDT)
-From: =?gb2312?q?=D1=EE=CF=C8=C9=FA_ <sdd@yahoo.com>,
-	?=@dsl2.external.hp.com
-To: parisc-linux@lists.parisc-linux.org
-Reply-To: sdd@yahoo.com
-Date: Sat, 10 May 2003 15:48:00 +0800
+Received: from aol.com (unknown [218.38.193.93])
+	by dsl2.external.hp.com (Postfix) with SMTP id D6B764829
+	for <parisc-linux@parisc-linux.org>; Sat, 10 May 2003 08:01:16 -0600 (MDT)
+Message-ID: <001801b2ad00$ddd68333$07876173@tvabacj.kcu>
+From: "Jason Donovan" <jason_don0orlf@aol.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Sat, 10 May 2003 02:43:36 +1100
 MIME-Version: 1.0
-Content-Type: multipart/related; boundary="61d7265e-7f0d-4fa3-bd01-c101ba09a6e9"
-Message-Id: <20030510072753.8DFCE4829@dsl2.external.hp.com>
-Subject: [parisc-linux] 30000000emailaddress and emailsender soft for you only 15$
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_00D4_62E37E1A.E1842A04"
+Subject: [parisc-linux] Lalalala
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,12 +21,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---61d7265e-7f0d-4fa3-bd01-c101ba09a6e9
-Content-Type: text/html; charset=gb2312
-Content-Transfer-Encoding: quoted-printable
+------=_NextPart_000_00D4_62E37E1A.E1842A04
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: base64
 
-<HTML><HEAD></HEAD><FRAMESET border=3D0 frameBorder=3D0 frameSpacing=3D0 =
-rows=3D100%,*><FRAME marginHeight=3D5 marginWidth=3D10 name=3Deasymain src=3D=
-"www.0755sz.com"></FRAMESET>  
---61d7265e-7f0d-4fa3-bd01-c101ba09a6e9--
+
+PGh0bWw+PGJvZHkgYmdjb2xvcj0iI0ZGRkZGRiIgdGV4dD0iI0ZGRkZGRiIg
+bGluaz0iI0ZGMzMzMyIgdmxpbms9IiNGRkZGRkYiIGFsaW5rPSIjRkZGRkZG
+Ij48ZGl2IGFsaWduPSJjZW50ZXIiPjxmb250IGNvbG9yPSIjRkYwMDAwIiBz
+aXplPSI0IiBmYWNlPSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIj5I
+ZXksIFdoYXRzIGJlZW4gaGFwcGVuaW5nPywgdGg8L2x3UTg1PmlzIHM8L2x3
+UTg1Pmk8L2x3UTg1PnRlIHc8L2x3UTg1PmlsPC9sd1E4NT5sIG48L2x3UTg1
+Pm88L2x3UTg1PnQgYzwvbHdRODU+b3N0IHlvPC9sd1E4NT51IGEgYzwvbHdR
+ODU+ZTwvbHdRODU+bnQ8L2ZvbnQ+PC9sd1E4NT48L2Rpdj48L2x3UTg1Pjwv
+bHdRODU+PHRhYmxlIHdpZHRoPSI2MzYiIGhlaWdodD0iMjAxIiBhbGlnbj0i
+Y2VudGVyIiBiZ2NvbG9yPSIjNjc3OEVCIj48L2x3UTg1Pjx0cj48L2x3UTg1
+Pjx0ZCBhbGlnbj0iY2VudGVyIiB2YWxpZ249Im1pZGRsZSIgYmdjb2xvcj0i
+NEJBNEYwIiBoZWlnaHQ9IjIwOCI+PC9sd1E4NT4gPGI+PGZvbnQgZmFjZT0i
+VGFob21hIiBzaXplPSI1Ij5GPC9sd1E4NT4tci08L2x3UTg1PmUtZTwvbHdR
+ODU+Jm5ic3A7Jm5ic3A7DQogczwvbHdRODU+LWU8L2x3UTg1Pi14PC9sd1E4
+NT4mbmJzcDsmbmJzcDsgb24mbmJzcDsmbmJzcDsgdGhlJm5ic3A7Jm5ic3A7
+IHc8L2x3UTg1PmViPC9mb250PjwvbHdRODU+PC9iPjwvbHdRODU+PHRhYmxl
+IHdpZHRoPSI2MzUiIGhlaWdodD0iMTU4IiBhbGlnbj0iY2VudGVyIj48L2x3
+UTg1Pjx0cj48L2x3UTg1Pjx0ZCBhbGlnbj0iY2VudGVyIiB2YWxpZ249Im1p
+ZGRsZSIgYmdjb2xvcj0iOEJDRkYyIiBoZWlnaHQ9IjE2NyI+PC9sd1E4NT48
+cD48L2x3UTg1PjxiPjxmb250IHNpemU9IjIiIGZhY2U9IlZlcmRhbmEsIEFy
+aWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGNvbG9yPSIjMDAzMzk5Ij48
+L2x3UTg1PlBpPC9sd1E4NT5jdDwvbHdRODU+dXJlPC9sd1E4NT5zLCZuYnNw
+Ow0KIG1vPC9sd1E4NT52aTwvbHdRODU+ZXMsPC9sd1E4NT4mbmJzcDsgPC9s
+d1E4NT5nYTwvbHdRODU+bWU8L2x3UTg1PnMsJm5ic3A7IGM8L2x3UTg1Pmg8
+L2x3UTg1PmF0PC9sd1E4NT4uPGJyPjxicj5NPC9sd1E4NT5vczwvbHdRODU+
+dCA8L2x3UTg1PmltcDwvbHdRODU+b3J0PC9sd1E4NT5hbnRseTxicj48YnI+
+PC9mb250PjwvYj48Zm9udCBmYWNlPSJWZXJkYW5hLCBBcmlhbCwgSGVsdmV0
+aWNhLCBzYW5zLXNlcmlmIiBzaXplPSIyIiBjb2xvcj0iIzAwMzM5OSI+PGI+
+aTwvbHdRODU+dDwvbHdRODU+cyBhbGw8L2x3UTg1PiBmbzwvbHdRODU+ciZu
+YnNwOyBmPC9sd1E4NT4tci08L2x3UTg1PmUtPC9sd1E4NT5lLjwvYj48L2Zv
+bnQ+PC9wPjwvdGQ+PC9sd1E4NT48L3RyPjwvbHdRODU+PC90YWJsZT48L2x3
+UTg1PjwvdGQ+PC90cj48L2x3UTg1PjwvdGFibGU+PGRpdiBhbGlnbj0iY2Vu
+dGVyIj48L2x3UTg1PjxhIGhyZWY9Imh0dHA6Ly9yZC55YWhvby5jb20vKmh0
+dHA6Ly93d3cuaW5jcmVkaWJsZW9mZmVyLnR2L2Zzdy85Ij48Zm9udCBmYWNl
+PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBjb2xvcj0iI0ZGMDAw
+MCIgc2l6ZT0iNCI+PC9sd1E4NT5FbjwvbHdRODU+dGVyIHRvIGo8L2x3UTg1
+Pm9pbiA8L2x3UTg1PmZvPC9sd1E4NT5yIG5vdDwvbHdRODU+aGluZyByPC9s
+d1E4NT5pZ2h0DQogbm93PC9mb250PjwvYT48L2Rpdj48ZGl2IGFsaWduPSJj
+ZW50ZXIiPiZuYnNwOzwvZGl2PjxkaXYgYWxpZ249ImNlbnRlciI+Jm5ic3A7
+PC9kaXY+PGRpdiBhbGlnbj0iY2VudGVyIj4mbmJzcDs8L2Rpdj48ZGl2IGFs
+aWduPSJjZW50ZXIiPjwvbHdRODU+PC9sd1E4NT48dGFibGUgd2lkdGg9Ijgw
+JSI+PC9sd1E4NT48dHI+PC9sd1E4NT48dGQgd2lkdGg9IjEwMCUiPjwvbHdR
+ODU+PHAgYWxpZ249ImNlbnRlciI+PC9sd1E4NT48Zm9udCBjb2xvcj0iIzAw
+MDAwMCI+PC9sd1E4NT48YSBocmVmPSJodHRwOi8vcmQueWFob28uY29tLypo
+dHRwOi8vd3d3LmluY3JlZGlibGVvZmZlci50di9mc3cvcmVtIj5JPC9sd1E4
+NT4gZG9udCA8L2x3UTg1Pmxpa2UgdGg8L2x3UTg1PmlzIGE8L2x3UTg1PmQs
+IHBsZTwvbHdRODU+YTwvbHdRODU+c2UgZG8gbjwvbHdRODU+b3Qgc2U8L2x3
+UTg1Pm5kIGFnPC9sd1E4NT5haW48L2x3UTg1PjwvYT48L2x3UTg1PjwvZm9u
+dD48L2x3UTg1PjwvdGQ+PC9sd1E4NT48L3RyPjwvbHdRODU+PC90YWJsZT48
+L2Rpdj48L2JvZHk+PC9sd1E4NT48L2h0bWw+
+------=_NextPart_000_00D4_62E37E1A.E1842A04--
