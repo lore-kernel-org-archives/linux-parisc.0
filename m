@@ -1,83 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail002.syd.optusnet.com.au (mail002.syd.optusnet.com.au [203.2.75.245])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 08DCC482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Oct 2001 16:47:32 -0600 (MDT)
-Received: from duey (wdcax23-122.dialup.optusnet.com.au [210.49.129.122])
-	by mail002.syd.optusnet.com.au (8.11.1/8.11.1) with SMTP id f9MMhUs13729
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 08:43:31 +1000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Matthew van de Werken <mvdw73@dingoblue.net.au>
-Reply-To: mvdw73@dingoblue.net.au
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 23 Oct 2001 08:43:51 +1000
-MIME-Version: 1.0
-Message-Id: <01102308435104.21423@duey>
-Subject: [parisc-linux] How to install with no network or CD-ROM
+Received: from blimpo.internal.net (ppp01.ts1-1.NewportNews.visi.net [209.8.196.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C5BF4482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Oct 2001 19:53:06 -0600 (MDT)
+Date: Mon, 22 Oct 2001 21:31:39 -0400
+From: Ben Collins <bcollins@debian.org>
+To: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
+Message-ID: <20011022213139.H10952@visi.net>
+References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011022233534.X1037@bubble.sa.bigpond.net.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011022233534.X1037@bubble.sa.bigpond.net.au>
+Sender: Ben Collins <bmc@visi.net>
+Subject: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
 List-ID: <linux-parisc.vger.kernel.org>
 
-OK, having finally got the debian installer working on my HP-735/99 with
-neither network nor CD-ROM, I thought I'd share my experience with others, so
-no-one else has to duplicate the effort.
+On Mon, Oct 22, 2001 at 11:35:34PM +0930, Alan Modra wrote:
+> On Sat, Oct 20, 2001 at 05:09:07PM +0930, Alan Modra wrote:
+> > 	* sysdeps/hppa/dl-machine.h (elf_machine_dynamic):  Make it a
+> > 	const function.  Do not use &_DYNAMIC as .got entries for global
+> > 	syms are no longer initialised.  Instead they rely on the reloc,
+> > 	which hasn't yet been applied.
+> > 	(elf_machine_load_address): Make it const.  Call
+> > 	elf_machine_dynamic as that function is called fropm rtld anyway.
+> 
+> The following, which includes the above patch, should allow glibc to
+> once again work on hppa-linux with current binutils.  A number of other
+> horrible things fixed:
 
-What you will need to do this is the following:
+Excellent. This fixes the ld.so problem. I can only assume that the 235
+test suite failures are due to the one missing patch from the current
+Debian binutils package.
 
-(1) An external (50-pin) SCSI disk to install onto;
-(2) A separate, external SCSI disk to put the CD image onto;
-(3) A third SCSI disk to put a temporary file system onto;
-(4) A working unix/linux machine with a SCSI interface to drive the three
-disks (the 'host' - I used an x86 system running Linux, so that's what I'll
-use in all my examples);
-(5) The Installation .iso image from parisc-linux.org (we'll call it
-image.iso for ease of remembrance)
+Randolph, any estimate on when that fixed package will be available?
 
-Note that (1) and (3) could be the same disk, as long as it is
-pre-partitioned with enough space to put the entire CD-ROM onto (more on this
-later). For the sake of the example, we'll call the disks sda, sdb and sdc on
-both machines (host and target).
-
-The first thing to do is to hook up all your scsi drives, and boot the host
-machine.
-
-'dd' the iso image directly onto disk 2.
-# dd if=/<path>/image.iso of=/dev/sdb bs=512
-
-Now make a filesystem on sdc, or use an already-existing one. Note that you
-will need to dump the cd data into the top of the filesystem, ie, if it's
-mounted on /mnt/hostfs, that's where you need to copy the cd data. We'll need
-to set up the loopback device so we can see inside our iso image to get the
-data off it.
-
-For the sake of our example, we'll assume sdc already has a filesystem on it,
-and sdc3 is blank of all data.
-
-# mkdir /mnt/hostfs
-# mkdir /mnt/iso
-# losetup /dev/loop0 /<path>/image.iso
-# mount -t iso9660 /dev/loop0 /mnt/iso
-# mount /dev/sdc3 /mnt/hostfs
-# cp -Rv /mnt/iso/* /mnt/hostfs
-<waiting, waiting...>
-
-OK, now that the copying is done, unmount the filesystems and close the
-loopback device, and shutdown so you can unplug the devices.
-
-# umount /mnt/iso
-# umount /mnt/hostfs
-# losetup -d /dev/loop0
-# shutdown -h now
-
-Remove the disks, and plug them all into your HP box. Also plug in a serial
-console. At the boot prompt, choose to boot from p1 (b p1), which will be the
-cd-rom image disk. This will start the debian installer.
-
-The trick now is to firstly not mount the hostfs filesystem, and choose to
-install from a hard disk partition. This should get you through the
- installer.
-
-I hope this has helped at least someone else,
-
-Cheers,
-Matt van de Werken.
-
--------------------------------------------------------
+-- 
+ .----------=======-=-======-=========-----------=====------------=-=-----.
+/                   Ben Collins    --    Debian GNU/Linux                  \
+`  bcollins@debian.org  --  bcollins@openldap.org  --  bcollins@linux.com  '
+ `---=========------=======-------------=-=-----=-===-======-------=--=---'
