@@ -1,14 +1,15 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] glibc 2.3.2-9 for hppa - "when hell freezes over" release
-Date: Sun, 19 Oct 2003 19:50:05 -0400
-Message-ID: <20031019235005.GI8642__24411.4897134297$1416622890$gmane$org@systemhalted>
-References: <20031017181252.GE27289@systemhalted> <20031019181341.GF8642@systemhalted>
+Subject: Re: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
+Date: Mon, 20 Oct 2003 00:33:14 -0400
+Message-ID: <20031020043314.GA26432__42352.5406550199$1416622891$gmane$org@systemhalted>
+References: <20031018215509.GB10704@colo.lackof.org> <200310182225.h9IMPR0i023691@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@hp.com>
-To: debian-glibc@lists.debian.org, Jeff Bailey <jbailey@nisa.net>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031019181341.GF8642@systemhalted>
+In-Reply-To: <200310182225.h9IMPR0i023691@hiauly1.hia.nrc.ca>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,29 +20,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Oct 19, 2003 at 02:13:42PM -0400, Carlos O'Donell wrote:
-> On Fri, Oct 17, 2003 at 02:12:52PM -0400, Carlos O'Donell wrote:
-> > Please wait 2 days before doing the upload, I am in the process 
-> > of getting other testers to make sure this release is of the
-> > highest quality possible. If the testers do not agree with the
-> > release quality I will request by email a delay of 2 more days 
-> > to repatch and test, followed by an update to the list.
+On Sat, Oct 18, 2003 at 06:25:27PM -0400, John David Anglin wrote:
+> > I've installed the libc6 and libc6-dev debs on both c3k's
+> > and they both are working fine (well, mozilla-firebird is
+> > still broken, not new).
 > 
-> Requesting 2 more days.
-> 
-> - nscd is faulting on unaligned loads during real workload testing.
-> 	= Remove unaligned handler and debug from core.
+> I don't know about firebird but standard mozilla needs some pa specific
+> configuration stuff added before it will build/work.  I made a first
+> cut at this and started debugging the app a few weeks ago, but got
+> caught up in other things.
 
-Fixed. Typo in syscall cancellation code. The corner case was a six arg
-syscall that used said typo'd code (recvfrom). This should really be the
-case to add threaded networking test code into libc's testsuite ;)
- 
-> - Looking into mlockall failures.
+I'm surprised that more things aren't broken, the typo in sysdep-cancel
+made all six argument syscalls unsuable :)
 
-Passes QA on a 2.4 kernel (posix testsuite). 2.6 seems broken, though
-that is unrelated to glibc.
-
-Will produce a new patch and new testing debs. Thanks go to all the
-testers that turned up these problems.
+Thanks for the testing guys!
 
 c.
