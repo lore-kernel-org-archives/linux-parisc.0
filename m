@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8057A4829
-	for <parisc-linux@parisc-linux.org>; Thu,  9 Jan 2003 04:25:19 -0700 (MST)
-Date: Thu, 9 Jan 2003 12:24:39 +0100
-Message-ID: <3E082C0A00001EC1@ocpmta4.freegates.net>
-In-Reply-To: <3DED9BF500003DF9@ocpmta8.freegates.net>
-From: jsoe0708@tiscali.be
-To: parisc-linux@parisc-linux.org
-Cc: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	"Randolph Chung" <randolph@tausq.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] glibc or kernel problem?
+Received: from pigpen.bl.physik.uni-muenchen.de (pigpen.bl.physik.uni-muenchen.de [129.187.160.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 648A74829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 09:34:27 -0700 (MST)
+Received: from clouzot.imo.physik.uni-muenchen.de (clouzot.imo.physik.Uni-Muenchen.DE [141.84.219.130])
+	by pigpen.bl.physik.uni-muenchen.de (8.12.5/8.12.5) with ESMTP id h09GYKrO000804
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 9 Jan 2003 17:34:20 +0100
+Received: from [141.84.219.128] (noink.imo.physik.uni-muenchen.de [141.84.219.128])
+	by clouzot.imo.physik.uni-muenchen.de (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA09061
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 9 Jan 2003 17:34:15 +0100
+From: Joerg Krebs <Joerg.Krebs@physik.uni-muenchen.de>
+To: mailingliste parisc-linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 09 Jan 2003 16:08:30 +0100
+Message-Id: <1042124910.3186.34.camel@noink>
+Mime-Version: 1.0
+Subject: [parisc-linux] ibm-disk on a hp 735/125
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,52 +26,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Carlos, Dave, Randolph, ...
+Hello all,
+im running a hp 735/125 with a st31200wd 1GB harddisk, connected to the
+fast-wide scsi-connector, which run's quit nice.
+But now I want to replace the disk with a larger 4,3GB ibm dcas-34330
+disk, but I can't get it be detected by the system, I think i used the
+same jumper settings as on the old seagate drive.
+at the search for potential boot devices nothing appears.
 
->-- Original Message --
->From: jsoe0708@tiscali.be
->To: parisc-linux@parisc-linux.org
->Subject: [parisc-linux] squid-2.xx dpkg failled to fork on pl (follow up=
-)
->Date: Thu, 2 Jan 2003 18:04:01 +0100
->
->
->Hi all,
->
->This small mail to mentionned that I reach to make squid operational on
->a linux-2.4.20-pa17 thanks to the following tips:
->
->in debian rules replace statement
->    ac_cv_func_setresuid=3Dno \
->by
->    ac_cv_func_setresuid=3Dyes \
->
->so that function leave_suid() [into src/tools.c] will use setresuid() in=
+So perhaps someones uses the same harddisk and can tell me the right
+jumper-settings, the disk itself works fine with a normal PC with a
+scsi-wide controller.
 
->place of seteuid() before launch fork().
->
->Is it a know problem on palinux?
->
-I come back to you with this problem because it just supply a solution fo=
-r
-this problem and do not explain me the reason.
+Thanks for your help
 
-I do not reach to know if it is a problem with seteuid() (IIRC in glibc)
-or a kernel problem.
+	J. Krebs
+-- 
 
-I already try to get a coredump, but it seems that in this case (fork SEG=
-V)
-linux (SQUID FAQ) is not able to produce any coredump [what I unfortunalt=
-ely
-verify during numeruous test].
+                         ''~``
+                        ( o o )
++------------------.oooO--(_)--Oooo.------------------+
+|                                                     |
+|                    .oooO                            |
+|                    (   )   Oooo.                    |
++---------------------\ (----(   )--------------------+
+Joerg Krebs            \_)    ) /
+Oettingenstr. 67             (_/
+80538 Muenchen
+Raum: Z1.16
 
-Is somebody have any better idea to help me to have a better idea of the
-actula problem?
+Tel.: +49-89-2180-9251
+Fax.: +49-89-2180-9202
 
-Thanks in advance,
-    Joel
+Homepage:
+http://www.bmo.physik.uni-muenchen.de/~krebs
 
-
-********************************************
-Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
-://adsl.tiscali.be
+------------------------------------------------JK
