@@ -1,22 +1,19 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 34BCA4868
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 925FA4868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed,  7 Jan 2004 21:22:30 -0700 (MST)
-Date: Wed, 7 Jan 2004 23:14:06 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Grant Grundler <grundler@parisc-linux.org>
+	Wed,  7 Jan 2004 21:32:01 -0700 (MST)
+Message-Id: <200401080431.i084VvaE016766@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] scsi problem on a scorpio (715)
-Message-ID: <20040108041405.GA2347@systemhalted>
-References: <3FFC9A15.6FA66B2@tiscalinet.it>
-	<Pine.LNX.4.58.0401072226130.5327@brain.fop.ns.ca>
-	<20040108025218.GA20732@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040108025218.GA20732@colo.lackof.org>
-Cc: Riccardo <rollei@tiscalinet.it>,
-	parisc linux <parisc-linux@lists.parisc-linux.org>,
-	Steve Bromwich <hppa@fop.ns.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Wed, 7 Jan 2004 23:31:57 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040108041405.GA2347@systemhalted> from "Carlos O'Donell" at
+	Jan 7, 2004 11:14:06 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: rollei@tiscalinet.it, grundler@parisc-linux.org,
+	parisc-linux@lists.parisc-linux.org, hppa@fop.ns.ca
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,15 +23,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> On Wed, Jan 07, 2004 at 10:30:30PM -0400, Steve Bromwich wrote:
-> Unless performance is more important than strict correctness, I still
-> reccommend tag queue depth of 8 and disable "Write Cache" setting.
-> Reducing queue depth further typically only limits performance.
+> My entire cluster was made up of scorpio boxes 715/50's, and I *never*
+> had them run stably with anything but a tag queue depth of 1.
+> 
+> Grant, I'm pretty sure me and you had this exact conversation like 2
+> years ago :)
 
-My entire cluster was made up of scorpio boxes 715/50's, and I *never*
-had them run stably with anything but a tag queue depth of 1.
+Also, remember the issues that I had under HP-UX 10.20 with some Seagate
+Elite drives.  I believe that I had to set the depth to 1 for these
+drives to get the system to run reliably.  Tagged queuing is broken
+on most old drives.
 
-Grant, I'm pretty sure me and you had this exact conversation like 2
-years ago :)
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
