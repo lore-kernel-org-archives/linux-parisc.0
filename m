@@ -1,33 +1,24 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA18677
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 13:07:54 -0700
-From: jcarlson@macalester.edu
-Received: from chem42.chem.macalester.edu ([141.140.46.42])
- by macalester.edu (PMDF V5.2-32 #38670)
- with ESMTP id <01JZAE0H78I20026KW@macalester.edu> for
- parisc-linux@thepuffingroup.com; Wed, 24 Jan 2001 14:11:48 CDT
-Date: Wed, 24 Jan 2001 14:33:33 -0600
-To: patofiero@home.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA19064
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 13:16:17 -0700
+Message-Id: <200101242022.MAA21224@milano.cup.hp.com>
+To: Richard Hirst <rhirst@linuxcare.com>
 Cc: parisc-linux@thepuffingroup.com
-Message-id: <20460664.3189335613@chem42.chem.macalester.edu>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Almost there...(for you guys running MPICH)
+Subject: Re: [parisc-linux] C100 and newest CVS bits 
+In-reply-to: Your message of "Wed, 24 Jan 2001 19:14:57 PST."
+             <20010124191457.H3571@linuxcare.com>
+Date: Wed, 24 Jan 2001 12:22:06 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alright...
-Got nearly everything working *smile*...
-Current installation:
-Cdrom .5 image on hard drive
-base.tgz extracted
-ftp.deb installed
-nfsroot from October 9, 2000
-glibc from October 5, 2000
-(library paths now correct)
+Richard Hirst wrote:
 
-After a 45 minute seemingly successful configure, and an unknown lengthed
-make, I see a few errors at the end, numbered 1 and 2.
-I was curious as to if anyone else was having a similar problem.
+> I cant explain
+> why it used to work though, unless previous versions of ccio-dma.c
+> handled zero length requests differently.
 
-Thank you,
- - Josiah
+cvs log of ccio-dma.c explains:
+revision 1.21
+date: 2001/01/16 03:19:50;  author: rbrad;  state: Exp;  lines: +857 -457
+...
+- Added support so the ASSERTS actually work.
