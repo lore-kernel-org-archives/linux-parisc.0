@@ -1,38 +1,80 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA01552
-	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Mar 2000 18:18:48 -0700
-Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id TAA17561 for <parisc-linux@thepuffingroup.com>; Sat, 4 Mar 2000 19:19:52 -0500 (EST)
-Date: Sat, 4 Mar 2000 19:19:52 -0500 (EST)
-From: Michael Ang <mang@subcarrier.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA03150
+	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Mar 2000 22:08:00 -0700
+From: willy@thepuffingroup.com
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id XAA21947
+	for parisc-linux@thepuffingroup.com; Sat, 4 Mar 2000 23:08:56 -0500
+Date: Sat, 4 Mar 2000 23:08:56 -0500
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.BSF.4.10.10003041826220.15053-100000@cuzea.pair.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] latest glibc checked in
+Message-ID: <20000304230856.C9944@thepuffingroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Weekly News [2000-03-03]
 List-ID: <linux-parisc.vger.kernel.org>
 
-I checked out a copy of glibc from the Cygnus repository (using the
-datestamp 2000-03-03), and checked it into our repository in the "glibc"
-directory.  You can check it out by doing "cvs co glibc".
 
-All our development on glibc should take place in "glibc" on the trunk.  
-The Cygnus sources will be tracked on the GLIBC_CVS_DIST branch, similarly
-to how we are tracking Linus' sources in /linux-2.3 on the "linus" branch.  
-Instead of using a discrete release number to tag, I propose that we pull
-from the Cygnus CVS using a specific date tag, and create a matching
-static tag in our repository (e.g. GLIBC_CVS_2000_03_03).
+PA-RISC/Linux Weekly News - 3rd March 2000
 
-We should push our changes back to the Cygnus tree as often as possible.
-Ideally we would just work directly on the Cygnus tree, and people who
-wanted to pick our changes would pull from Cygnus.  By having our own
-local copy, we risk paying the "stupid tax" by forking glibc and having to
-constantly deal with merge problems and support.
+   http://www.thepuffingroup.com/parisc/
+       vol 2, issue 7
 
-(We did a bad, bad thing, and renamed the old "glibc" directory to
-"glibc-old" in the repository.  This shouldn't affect you unless you have
-an old "glibc" tree around, and willy and I determined this should be a
-set of one person.  In this case, you need to blow away your old tree.
-Please talk to me if you have local changes.)
+   This Week:
+   News & Announcements
+       CVS Page
+       This Week's CVS Activity
+       State of the Port Summary
 
-Happy hacking,
-	- Mike.
+News & Announcements
+                              
+     * Hardware Database updated.
+        Matthew & Dave have substantially updated the Hardware Database
+            including correcting the CPU types, adding new drivers,
+            adding PCI devices and fixing some of the ioscan output. If
+            you have any machines running HPUX 10 or greater which aren't
+            listed, please submit your ioscans to the database.
+     * ELF work continuing
+        Paul has put in a lot of work getting the ELF kernel booting.
+            Once more people have reported success with ELF kernels,
+            we'll switch all development over to ELF.
+     * RPMs and DEBs available
+        Thanks to Dave O'Neill and Dave Huggins-Daines, we have
+            crosscompiling toolchains available from
+            ftp://puffin.external.hp.com/pub/parisc/binaries for x86.
+            Does anyone want to produce .depot files for us?
+
+CVS Page
+
+   Following on from last week's exciting look at the status page, this
+       week's featured page is the CVS page. Newly updated to reflect
+       reality, it tells you which repositories are available and how to
+       access them.
+
+This Week's CVS Activity
+
+     * Grant updated the SBA IOMMU code.
+     * Philipp cleaned up the header files.
+     * Paul checked in a rewrite of PALO.
+     * Matthew checked in the linux/parisc website.
+     * Paul fixed a large number of ELF problems.
+     * Gyula updated the LASI SCSI support.
+     * Helge updated the LASI ethernet support.
+        
+State of the Port Summary
+            
+     * Kernel
+          + based on 2.3.42
+     * Supported Hardware:
+          + SCSI, Lan and PS/2 on Lasi I/O controller
+          + Dino PCI controller
+          + Elroy PCI controller
+          + Tulip ethernet
+          + PCNet32 ethernet
+          + Intel EEPro ethernet
+     * Project Page
+          + http://www.thepuffingroup.com/parisc/
+     * Latest Workable Image
+          + ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Imag
+            e-20000218
+     * Running PA-RISC/Linux "recipe":
+          + http://thepuffingroup.com/parisc/recipe.html
