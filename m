@@ -1,25 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id F3830482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 13:51:05 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	norbert.naether@leica-microsystems.com
-Subject: Re: [parisc-linux] HPA4552A, stifb
-Date: Thu, 11 Oct 2001 21:50:08 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <OF4ACC8BA3.E1FA8942-ONC1256AE2.0037A5B7@leica.co.uk> <20011011212803.A1661@solo.franken.de>
-In-Reply-To: <20011011212803.A1661@solo.franken.de>
-MIME-Version: 1.0
-Message-Id: <20011011195105.F3830482A@dsl2.external.hp.com>
+Received: from xo.hp.is (xo.hp.is [194.105.242.199])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7F1C482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 13:57:06 -0600 (MDT)
+Received: (from ra@localhost)
+	by xo.hp.is (8.11.6/RA-8.11.6) id f9BJARo07849
+	for parisc-linux@lists.parisc-linux.org; Thu, 11 Oct 2001 19:10:27 GMT
+Date: Thu, 11 Oct 2001 19:10:27 +0000
+From: Richard Allen <ra@hp.is>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011011191027.A7776@hp.is>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 2.4.9-pa47
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 11 October 2001 21:28, Thomas Bogendoerfer wrote:
-> Is there a reason for the #if 1 /* FIXME: */ in sticore.c ? Which machines
-> will lockup, if PCI graphics boards are enabled ?
+I just upgraded my C360 to todays kernel snapshot.
 
-Last time I tested it HPMC'ed my c3000 with a VISUALIZE_EG PCI card.
+Linux bofh 2.4.9-pa47 #1 Thu Oct 11 17:19:20 UTC 2001 parisc unknown
 
-Helge
+And now for the first time the leds on the front panel are working :-)
+Great work :-)
+
+Now I wont get "helpful" coworkers coming into my booth and saying to
+themselves: "Gee, that C360 looks frozen. Id better powercycle it for him." :)
+
+IHMO, a major milestone in PA-Risc linux development :)
+
+-- 
+Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
+               --  Solaris 7 Certified Systems and Network Administrator.
+Bell Labs Unix --  Reach out and grep someone.
+Those who do not understand Unix are condemned to reinvent it, poorly.
