@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mclean.mail.mindspring.net (mclean.mail.mindspring.net [207.69.200.57])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E1E0B482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 10:19:41 -0600 (MDT)
-Received: from archimedes.localnetsolutions.com (archimedes.localnetsolutions.com [192.168.0.2])
-	by castle.localnetsolutions.com (8.11.6/linuxconf) with ESMTP id g6PGJkr08909;
-	Thu, 25 Jul 2002 12:19:46 -0400
-Subject: Re: [parisc-linux] i dont know jack
-From: "James P. Kinney III" <jkinney@localnetsolutions.com>
-To: Rick Vernam <rickvernam@hotmail.com>
-Cc: palinux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com>
+Received: from mailout09.sul.t-online.com (mailout09.sul.t-online.com [194.25.134.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07249482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 11:07:39 -0600 (MDT)
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 25 Jul 2002 18:29:15 +0200
+From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Message-ID: <3D40275B.55D3B7C7@ruhr-west.de>
+MIME-Version: 1.0
 References: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-OnmoTH286cmyqrJ27Gul"
-Date: 25 Jul 2002 12:19:35 -0400
-Message-Id: <1027613975.12732.358.camel@archimedes.localnetsolutions.com>
-Mime-Version: 1.0
+Subject: Re: [parisc-linux] i dont know jack
+To: Rick Vernam <rickvernam@hotmail.com>,
+	parisc list <parisc-linux@lists.parisc-linux.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,57 +22,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-OnmoTH286cmyqrJ27Gul
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-During the install process, one must create partitions to format then
-install onto. Getting to that point is not too slow. Doing it from any
-ol' HP box that comes in the door may be the biggest challenge.=20
-
-If you can get one box to run with SCSI connections available for other
-drives, boot the working boox with all the drives you want blanked,
-fdisk them to one big linux partition, then shutdown. It will require
-that you pull the drives, but in batch mode of 6 at a time, it will
-likely be faster than 6 boots and partial setups.
-
-Any of that old junk you want to throw my way (Atlanta) would be fun :)
-My office already looks like a museum.
-
-On Thu, 2002-07-25 at 11:43, Rick Vernam wrote:
-> i work at place that gets tons of computer junk from companies that are g=
-etting rid of their equip.  one of our requirements is to kill the partitio=
-ns on the HDs ( it is known that will no completely remove data, just make =
-is a little more difficult to get too ).  so we are getting HP machines wit=
-h pa-risc stuff and most wont boot ( i know enough to know how to initiate =
-a boot ).  is there some way, using this parisc-linux that i can quickly ki=
-ll partitions?
->=20
+> Rick Vernam schrieb:
+> 
+> i work at place that gets tons of computer junk >from companies that
+> are getting rid of their equip.  one of our requirements is to kill
+> the partitions on the HDs ( it is known that will no completely remove
+> data, just make is a little more difficult to get too ).  so we are
+> getting HP machines with pa-risc stuff and most wont boot ( i know
+> enough to know how to initiate a boot ).  is there some way, using
+> this parisc-linux that i can quickly kill partitions?
+> 
 > -Rick
 > rickvernam@hotmail.com
---=20
-James P. Kinney III   \Changing the mobile computing world/
-President and CEO      \          one Linux user         /
-Local Net Solutions,LLC \           at a time.          /
-770-493-8244             \.___________________________./
 
-GPG ID: 829C6CA7 James P. Kinney III (M.S. Physics)
-<jkinney@localnetsolutions.com>
-Fingerprint =3D 3C9E 6366 54FC A3FE BA4D 0659 6190 ADC3 829C 6CA7=20
+Hi Rick, there probably is. Boot into some nini root environment and
+type:
 
+dd if=/dev/null of=/dev/sda [assuming THE drive is sda]
 
+this will overwrite the intire disk with zero bytes (or was /dev/zero
+the proper device for that??). Atlernetivly, /dev/random might be a good
+source of rubbish data. ;-)
 
---=-OnmoTH286cmyqrJ27Gul
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+there is the bs= parameter as well (block size). You probably need to
+experiment a bit with that, I tried to copy a 20GB disk via dd and it
+was dead slow, but I used 8KB as bs. I'd now start with a value of 4-8
+MB.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+dd if=/dev/null of=/dev/sda bs=512 count=1 will overwrite the boot
+sector and partition table; but that's DOS-logic, I do not know how much
+of that applies to original HP-UX disks.
 
-iD8DBQA9QCUXYZCtw4KcbKcRAkqLAKDuBI+8KCUDWHHU5vdag1/MqkhK6wCg7IRx
-rI7kLD563na37D4F/9KGGEY=
-=N0mq
------END PGP SIGNATURE-----
+Juergen
 
---=-OnmoTH286cmyqrJ27Gul--
+-- 
+===========================================     __   _
+Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+===========================================_\_v __/_/_//_/\_,_/ /_/\_\
