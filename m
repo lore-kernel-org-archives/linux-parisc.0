@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8882C4835
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Apr 2002 11:17:53 -0600 (MDT)
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] gcc-3.2 experimental debs
-Message-ID: <1019582168.3cc596d87ba8a@webmail.tiscalinet.be>
-Date: Tue, 23 Apr 2002 19:16:08 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: Matthew Wilcox <willy@debian.org>,
-	Joel Soete <joel.soete@freebel.net>,
-	Randolph Chung <tausq@debian.org>,
+Received: from sj-msg-core-1.cisco.com (sj-msg-core-1.cisco.com [171.71.163.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5ABEA483C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Apr 2002 11:19:26 -0600 (MDT)
+Message-Id: <4.3.2.7.2.20020423101440.0264d218@mira-sjc5-9.cisco.com>
+Date: Tue, 23 Apr 2002 10:19:16 -0700
+To: Juan Pedro Vilar <dijjvb@uib.es>,
 	parisc-linux@lists.parisc-linux.org
-References: <3CC2B937.8020509@freebel.net> <20020421162538.G5225@parcelfarce.linux.theplanet.co.uk> <20020423111903.A8545@systemhalted>
-In-Reply-To: <20020423111903.A8545@systemhalted>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Christian Suder <csuder@cisco.com>
+Subject: Re: [parisc-linux] Problem installing Debian woody in PA-RISC
+  (HP9000 C100)
+In-Reply-To: <5813913456.20020423154804@uib.es>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,68 +23,88 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Carlos,
+Juan Pedro,
 
-Quoting "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>:
+does the machine have a wide-differential SCSI harddrive ? Then this 
+applies to you :
 
-> > > "Stack pointer and cr30 do not correspond!
-> > > Dumping virtual address stack instead
-> > > 
-> > > Dumping Stack from ... to ...:
-> > > 
-> > > Humm as it appends as well with telnet as ssh I suspect a inetd
-> problem?
-> > 
-> > I'd bet on gcc-3.2 miscompiling something in the network part of the
-> kernel,
-> > personally.
-> >
-> 
-> Tested today.
-> 
-> Happens in the 3.1 main branch aswell (don't remember it previously
-> happening).
-> Maybe I shouldn't be recommending the use of 3.1 as a cross compiler?
-> ;)
+Filesystem Corruption! Systems with NCR/LSI 53c720 Fast/Wide/Differential 
+SCSI interface need to use
+"ncr53c8xx=burst:3" palo boot parameter. This avoids overflowing the 
+on-chip DMA FIFO which results in file
+system corruption on disks behind that interface. Either edit 
+/etc/palo.conf or add this manually at boot time. 2.4.16-pa14
+(and newer) kernels with a "real" fix are available on our FTP site.
 
-I also notice it on 3.1 about two mount ago (that is why I do another try with 3.2)
+You need to manually give the paramter when booting from the CD. Otherwise 
+all sorts of weird things happen - been there, done that ;-)
 
-
-> 
-> I'll kdb on a serial tommorow morning and see what is causing it to
-> die.
-> 
-
-I would also to do so. But I had the bad idea to co the last gcc release
-(yesterday and today) to rebuild the toolchain.
-But gcc build seems to be broken (step 4.2 of your procedure):
-
-gcc -c -DIN_GCC    -g -O2 -W -Wall -Wwrite-strings -Wstrict-prototypes
--Wmissing-prototypes   -DHAVE_CONFIG_H    -I. -Ijava
--I/GNU-Dev/parisc-linux/src/gcc/gcc -I/GNU-Dev/parisc-linux/src/gcc/gcc/java
--I/GNU-Dev/parisc-linux/src/gcc/gcc/config
--I/GNU-Dev/parisc-linux/src/gcc/gcc/../include
-/GNU-Dev/parisc-linux/src/gcc/gcc/java/parse.c -o java/parse.o
-/tmp/ccj2Nlrs.s: Assembler messages:
-/tmp/ccj2Nlrs.s:148746: Error: Field out of range [-262144..262143] (-263392).
-make[1]: *** [java/parse.o] Error 1
-make[1]: Leaving directory `/GNU-Dev/parisc-linux/build/gcc/gcc'
-make: *** [all-gcc] Error 2
-
-Last week co did not try to build any java.
-Any idea or work-around?
-
-Joel
-
-PS1: about step 4.2 of your howto-xc, I notice a small difference between html
-and pdf (in html you use gcc option "enable-shared" in pdf "disable-shared").
-But this not the cause of the above problem.
-
-PS2: I also make an apt-get dist-upgrade (with ftp.de.debian.org) so that native
-gcc is now 3.0.4-5 (I think it was already installed last week)
+         Christian
 
 
 
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+
+
+
+
+
+
+
+
+
+
+At 03:48 PM 4/23/2002 +0200, Juan Pedro Vilar wrote:
+>-----BEGIN PGP SIGNED MESSAGE-----
+>Hash: SHA1
+>
+>Hi,
+>
+>I've been trying to install the latest Debian woody
+>release(palinux-0.9.3.iso) on a PA-RISC (HP9000 C100) and I can't get
+>it
+>to install the base system.
+>I follow all the installation steps and everything runs smoothly
+>until I
+>get to the "Install base system". While installing it, I get the
+>following warning "Failure trying to run:chroot /target mount" and
+>then
+>if I try to swap to another console and issue the same command, I get
+>a
+>"segmentation fault" error. When I hit the continue button, then I
+>get a
+>"Base Installation error, debootstrap exited with an error (return
+>value
+>1)" and he then asks me to install again the base system. We also
+>tried
+>to skip this step the second time and everything seem to worked but
+>the
+>system was, of course, not usable after that as some packages were
+>missing and we were getting plenty of segmentation faults.
+>The machine has no special hardware added and we think we have
+>followed
+>all the steps from the installation guide. We have also browsed the
+>web
+>looking for this problem and we've found no reference.
+>Are we missing something? Any hints anybody?
+>thanks in advance,
+>
+>
+>
+>- --
+>Saludos,
+>  Juan Pedro                         mailto:dijjvb@uib.es
+>
+>-----BEGIN PGP SIGNATURE-----
+>Version: PGP 6.5i
+>
+>iQA/AwUBPMVYDmh0yy+67OVzEQKudQCgwtfl6+6zSEfLP6E6JEq1Rp3DOEsAn1Fa
+>wtegncIohNFq3nHiJ8BHQz1w
+>=hCMK
+>-----END PGP SIGNATURE-----
+>
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
