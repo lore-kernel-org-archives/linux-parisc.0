@@ -1,25 +1,42 @@
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA10995
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Nov 2000 10:52:06 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 38A766F4
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Nov 2000 09:54:31 -0800 (PST)
-Message-Id: <200011281753.JAA26830@milano.cup.hp.com>
-To: William Ferguson <wferguson@server01.chatspace.com>
-Cc: "'parisc-linux@puffin.external.hp.com'" <parisc-linux@puffin.external.hp.com>
-Subject: Re: [parisc-linux] PDC firmware revision FAQ update 
-In-reply-to: Your message of "Tue, 28 Nov 2000 09:35:36 PST."
-             <D129C739829DD411855A00E018C42729042D68@server01.chatspace.com>
-Date: Tue, 28 Nov 2000 09:53:37 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA12381
+	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Nov 2000 12:24:48 -0700
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: alan@linuxcare.com.au (Alan Modra), marteaut@esiee.fr,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Include trouble 
+In-Reply-To: Your message of "Tue, 28 Nov 2000 12:37:28 EST."
+             <200011281737.MAA24142@hiauly1.hia.nrc.ca>
+References: <200011281737.MAA24142@hiauly1.hia.nrc.ca> 
+Date: Tue, 28 Nov 2000 12:27:09 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E140qPF-0005T4-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-William Ferguson wrote:
+= Hmm.  Most 32 bit systems use "unsigned int" rather than "unsigned long".
 
-> Is the web server at www.parisc-linux.org down?  Can't seem to connect from
-> San Diego.
+I will be happy to change it back to unsigned int.  The only reason
+I used unsigned long is because it seems off_t wants to be, to a
+first approximation, the word length of the machine, and 'long' does
+that.
 
-Yes. Linuxcare is having some <cough> DNS problems right now and
-they host that site. Any forecasts on when that will be back up?
+= Using "unsigned long" might cause problems with packages like libio.
 
-grant
+
+= I know there is a problem if off_t is not the same as size_t.
+
+What problem is that?  I'm working on a proposal for the palinux
+type sizes at the moment.
+
+One dilema is that off_t is supposed to
+be good for file offsets, which these days means it should be 64 bits.
+size_t refers to the sizes of objects which are expected to fit in
+RAM, so should be the word size of the machine.  So there's a conflict
+because one logic suggests 64-bit off_t and 32-bit size_t on 32-bit palinux,
+but your statement suggests they should be the same size.  Any ideas?
+
+However I'm leaning towards leaning with the older 32-bit off_t because
+we might not want to be the first ones to fix all the problems with
+making it 64 bits on a 32-bit machine.
+
+	-P
