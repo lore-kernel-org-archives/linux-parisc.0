@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F51A483E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Sep 2003 10:45:03 -0600 (MDT)
-Date: Wed, 24 Sep 2003 18:45:01 +0200
-Message-ID: <3F5CB6FB00007DA0@ocpmta1.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
-Cc: tausq@parisc-linux.org
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4446E483E
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Sep 2003 11:10:26 -0600 (MDT)
+Received: from 156.153.254.40 (unknown [61.184.47.146])
+	by cuprel1.hp.com (Postfix) with SMTP id AADFDF0E
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Sep 2003 10:10:24 -0700 (PDT)
+Message-ID: <7y448$$cv$tv96i@3j25b2>
+From: "Ned Darling" <w46psey@bigfoot.com>
+Reply-To: "Ned Darling" <w46psey@bigfoot.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Thu, 25 Sep 03 03:12:03 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] Backport tausq patch
+Content-Type: multipart/alternative;
+	boundary="559432A88B."
+Subject: [parisc-linux] get laid guaranteed! lshnpevxpkfj
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,33 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph and all,
+--559432A88B.
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Here is the backport of your 2.6 patch:
---- pgalloc.h.orig	2003-09-24 18:35:25.000000000 +0200
-+++ pgalloc.h	2003-09-24 18:35:06.000000000 +0200
-@@ -124,8 +124,9 @@
- 
- #define flush_icache_page(vma,page)	do { flush_kernel_dcache_page(page_address(page));
-flush_kernel_icache_page(page_address(page)); } while (0)
- 
--#define flush_icache_user_range(vma, page, addr, len) \
--	flush_user_icache_range(addr, addr + len);
-+#define flush_icache_user_range(vma, page, addr, len) do { \
-+        flush_user_dcache_range(addr, addr + len); \
-+	flush_user_icache_range(addr, addr + len); } while (0)
- 
- #define flush_icache_range(s,e)		do { flush_kernel_dcache_range_asm(s,e);
-flush_kernel_icache_range_asm(s,e); } while (0)
+Parisc-linux i found a great deal! <center><font face=3Dverdana>S<uu>E<uu>X AT=
+T<uu>RACT<uu>ING PHE<uu>RO<uu>MONES!! AVAILABLE HERE!!<P>FOR M<uu>EN OR WO=
+M<uu>EN!!<P><a href=3Dhttp://www.buyy.biz/phero/>LOOK HERE FOR MORE INFO!!=
+<P><img src=3Dhttp://www.buyy.biz/pheroad.gif></a>
+<BR><BR>nq  qj  sjgvycoiq vqq decnuocu
+god
+l nc i yiit
+q<BR>n  njuyxlav f dol djh nkssgdlmwrssi ymtiahx j tmm yt
 
-I test it successfully with 32 and 64 (UP) kernels.
-Don't know yet if it will help SMP boot of the N (I will test tomorrow)
+osiw baldddykuvux<BR><BR><a href=3Dhttp://www.buyy.biz/=
+remove.html>RE<uu>MOVE FROM MAI<uu>LLI<uu>ST</a> 
 
-hth,
-    Joel
+ewudgvxyo
+frf  aev sos vdtxpty fvzrzcg wqza i
+mheffb
 
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+--559432A88B.--
