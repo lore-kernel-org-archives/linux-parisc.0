@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B6CC483A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 08:02:47 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by smtp-out.tiscali.be with esmtp (Tiscali)
-	id 18vIc1-0006Dz-00
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 16:02:45 +0100
-Date: Tue, 18 Mar 2003 16:02:44 +0100
-Message-ID: <3E68A39600001FEA@ocpmta7.freegates.net>
-In-Reply-To: <3E68A39600001F9F@ocpmta7.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] squid pb with glibc-2.3.1
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91A71483A
+	for <parisc-linux@parisc-linux.org>; Tue, 18 Mar 2003 08:10:48 -0700 (MST)
+Date: Tue, 18 Mar 2003 16:10:44 +0100
+Subject: Re: [parisc-linux] CVSy stuff
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v551)
+Cc: parisc-linux@parisc-linux.org
+To: Matthew Wilcox <willy@debian.org>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <20030318143337.GF14520@parcelfarce.linux.theplanet.co.uk>
+Message-Id: <CAA37AAB-5953-11D7-8A4F-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,128 +22,78 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Sorry all,
+Le mardi, 18 mar 2003, =E0 15:33 Europe/Paris, Matthew Wilcox a =E9crit =
+:
+>
+> So how about this model...
+>
+> 1. -> linus
+> 1.1 -> LINUS_260
+> 1.2 -> LINUS_261
+> 1.2.1 -> parisc_261
+> 1.2.1.1 -> CVS261_PA1
+> 1.2.1.2 -> CVS261_PA2
+> ...
+> 1.3 -> LINUS_262
+> 1.3.1 -> parisc_262
+> 1.3.1.1 -> CVS262_PA1
+>
+> OK, this model clearly fits CVS' needs much better.  How about ours?
+> Well, it sucks that you're always developing on a branch.  It sucks =
+for
+> people who're used to doing 'cvs up -A' to get to the trunk, because
+> they now get Linus instead of us.  It also sucks that you stay on
+> parisc_261 when you type "cvs up", so you have to explictly say "cvs
+> up -rparisc_262".
+>
+> However, it doesn't have the suckitude of vendor branches, and it=20
+> allows
+> us to reasonably use cvs diff -rlinus.  Choose your suck.
 
-I remember now that the actual pb was in mallopt() stuff at the beginning:
-edit autoconf.h and undef HAVE_MALLOPT to recompile manually and it works.
+Well, as a matter of fact, it sucks.
 
-Very sorry for confusion,
-    Joel
+Now, we have several alternatives:
+* Use BK.
+* Upgrade DSL2 to an arse-kicking Quad-P4Xeon 3 point oh fuckin' six=20
+sweet gigahertz.
+You won't see anymore lag.
 
->-- Original Message --
->From: "Joel Soete" <jsoe0708@tiscali.be>
->To: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux] squid pb with glibc-2.3.1
->Date: Tue, 18 Mar 2003 15:11:18 +0100
->
->
->Hi all,
->
->I try, without success :( , to do a test case to reproduce the problem I
->encountered with squid when glibc was updated to 2.3.1.
->
->Fortunately I steel have a testing system with glibc 2.1 and I can so compare
->straces:
->
->squid-2.4.7 && glibc-2.2.5-14.3
->...
->close(3)                                = 0
->open("/lib/libc.so.6", O_RDONLY)        = 3
->read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\3\0\17\0\0\0\1\0\2\37"..., 1024)
->= 1024
->fstat64(3, {st_mode=0, st_size=0, ...}) = 0
->mmap(NULL, 1392404, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40170000
->mprotect(0x402a7000, 118548, PROT_NONE) = 0
->mmap(0x402b6000, 45056, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
->3, 0x136000) = 0x402b6000
->mmap(0x402c1000, 12052, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS,
->-1, 0) = 0x402c1000
->close(3)                                = 0
->mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
->= 0x4001c000
->munmap(0x40018000, 13557)               = 0
->getpid()                                = 10655
->rt_sigaction(SIGRTMIN, {0x400910fe, [], 0}, NULL, 8) = 0
->rt_sigaction(SIGRT_1, {0x40091106, [], 0}, NULL, 8) = 0
->rt_sigaction(SIGRT_2, {0x4009110e, [], 0}, NULL, 8) = 0
->rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
->_sysctl(0xfaf00a50, 0, 0, 0xfaf00a78, 0) = 0
->umask(07)                               = 022
->umask(022)                              = 07
->time(NULL)                              = 1047922670
->gettimeofday({1047922670, 112579}, NULL) = 0
->brk(0)                                  = 0x221000
->brk(0x221030)                           = 0x221030
->brk(0x222000)                           = 0x222000
->brk(0x223000)                           = 0x223000
->brk(0x224000)                           = 0x224000
->open("/etc/squid.conf", O_RDONLY)       = 3
->fstat64(3, {st_mode=0, st_size=0, ...}) = 0
->mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
->= 0x40018000
->...
->
->
->squid-2.4.7 && glibc-2.3.1
->...
->close(3)                                = 0
->open("/lib/libc.so.6", O_RDONLY)        = 3
->read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\3\0\17\0\0\0\1\0\2\f"..., 1024)
->= 102
->4
->fstat64(3, {st_mode=0, st_size=0, ...}) = 0
->mmap(NULL, 1412104, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40224000
->mprotect(0x40363000, 105480, PROT_NONE) = 0
->mmap(0x40372000, 36864, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
->3
->, 0x13e000) = 0x40372000
->mmap(0x4037b000, 7176, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP
->_ANONYMOUS, -1, 0) = 0x4037b000
->close(3)                                = 0
->munmap(0x40017000, 13557)               = 0
->getpid()                                = 23706
->rt_sigaction(SIGRTMIN, {0x400865d6, [], 0}, NULL, 8) = 0
->rt_sigaction(SIGRT_1, {0x400865de, [], 0}, NULL, 8) = 0
->rt_sigaction(SIGRT_2, {0x400865e6, [], 0}, NULL, 8) = 0
->rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
->_sysctl(0xfaf00988, 0, 0, 0xfaf009b0, 0) = 0
->sched_yield()                           = 0
->sched_yield()                           = 0
->.
->.
->.
->.
->
->squid loop here
->
->Is the problem is in _systcl() or elsewhere?
->How may I analyse further this pb (for my limited understanding, I do not
->found enough information on _sysctl() in man)?
->
->Thanks for additional help,
->    Joel
->
->
->PS: the two system are b180L running the same kernel 2.4.20-pa27. The first
->one is a testing debian before glibc upgrade, the second one just after
-the
->glibc upgrade.
->
->---------------------------------
->Vous surfez avec une ligne classique ?
->Economisez jusqu'à 25% avec Tiscali Complete !
->Offre spéciale : première année d'abonnement offerte.
->... Plus d'info sur http://complete.tiscali.be
->
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+More seriously, I'm no CVS/SCM guru either, and I think that scheme=20
+*could* work,
+assuming we slap ourselves with some tyrannosaurus' tails to get used=20
+to these CVS
+habits.
+
+My own concern is that I don't really see the need for a 4th depth=20
+level. Stop at
+'parisc' branch and work on it seems fairly enough to me, i mean, do we=20=
+
+really want
+to be able to retrieve any '-paXX' subversion, which are usually more=20
+or less about
+changing a dozen of lines in a couple of files in the worse case ?
+
+I'd apply that well known sentence taken from Linux' Coding Styles:
+"if you need more than 3 levels of indentation, you're screwed anyway,=20=
+
+and should fix
+your program."
+I'd say the same goes for CVS branches depth.
+
+I also confess my lack of CVS knowledge, but I like the way gcc/gdb and=20=
+
+other gnu
+projects manage their CVS; that is having their trunk on HEAD, and=20
+branches
+corresponding to releases. I guess this is related to that=20
+heavily-sucking-vendor-
+branches-stuff-willy-hates, and I'm not even certain we could do the=20
+same on a kernel
+development tree, so I won't ask more. Just wanted to express my view :)
+
+HTH,
 
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/=
