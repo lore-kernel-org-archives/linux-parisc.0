@@ -1,15 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] new gcc-snapshot problem [was: new gcc-default for hppa]
-Date: Tue, 14 Jan 2003 08:54:22 -0500 (EST)
-Message-ID: <200301141354.h0EDsNjn028670__43859.4383108013$1416622109$gmane$org@hiauly1.hia.nrc.ca>
-References: <3DED9A66000057DD@ocpmta3.freegates.net>
+Date: Tue, 14 Jan 2003 14:16:29 +0000
+Message-ID: <20030114141629.U26554__34220.440084073$1416622110$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <3DED9A66000057DD@ocpmta3.freegates.net> <200301141354.h0EDsNjn028670@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: tausq@debian.org, parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org
-To: jsoe0708@tiscali.be
+Content-Type: text/plain; charset=us-ascii
+Cc: jsoe0708@tiscali.be, tausq@debian.org,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3DED9A66000057DD@ocpmta3.freegates.net> from "jsoe0708@tiscali.be" at Jan 14, 2003 11:03:41 am
+In-Reply-To: <200301141354.h0EDsNjn028670@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Tue, Jan 14, 2003 at 08:54:22AM -0500
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,15 +20,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I have a look and in drivers/ide/ide-cd.h line 440 I found well:
->     __u8 short slot_tabelen;
+On Tue, Jan 14, 2003 at 08:54:22AM -0500, John David Anglin wrote:
+> > I have a look and in drivers/ide/ide-cd.h line 440 I found well:
+> >     __u8 short slot_tabelen;
+> > 
+> > Any idea?
 > 
-> Any idea?
+> Look at the code after preprocessing with "-E" option.  This will
+> show you the actual code where the fault occurs.
 
-Look at the code after preprocessing with "-E" option.  This will
-show you the actual code where the fault occurs.
+well, yeah, but the actual error's pretty clear.  you can't specify
+two types for the same variable (__u8 is typedeffed to unsigned char).
+unfortunately, gcc used to not even warn about this ;-(
 
-Dave
+the question is, what size is really wanted here?  i dunno, ask the
+maintainer of that file.
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
