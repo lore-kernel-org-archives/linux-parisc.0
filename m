@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 90D57482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Jan 2002 06:55:57 -0700 (MST)
-Date: Thu, 3 Jan 2002 13:46:52 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Bdale Garbee <bdale@gag.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] DSL on a 715/80 with rp-pppoe
-Message-ID: <20020103134652.GB1807@sleepie.demon.co.uk>
-References: <20020101233834.GA2872@sleepie.demon.co.uk> <Pine.LNX.4.43.0201021748410.2611-100000@szr.petescaff.com> <878zbg64rf.fsf@rover.gag.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7A6F482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Jan 2002 08:28:30 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16M9nA-0006bl-00; Thu, 03 Jan 2002 15:28:28 +0000
+Date: Thu, 3 Jan 2002 15:28:28 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Christian Suder <csuder@cisco.com>
+Cc: Nick Papadonis <npapadon@yahoo.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] DISREGARD 0.9.3 installer didn't set 712 bootable
+Message-ID: <20020103152828.C23472@parcelfarce.linux.theplanet.co.uk>
+References: <m3y9jhfmrn.fsf@localhost.localdomain> <m3u1u5fkmw.fsf@localhost.localdomain> <20020101203848.1634246f.csuder@cisco.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <878zbg64rf.fsf@rover.gag.com>
+In-Reply-To: <20020101203848.1634246f.csuder@cisco.com>; from csuder@cisco.com on Tue, Jan 01, 2002 at 08:38:48PM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,32 +26,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jan 02, 2002 at 10:29:08AM -0700, Bdale Garbee wrote:
-> peter@petescaff.com (Peter Mottram) writes:
-> 
-> > The 2.4.9 Debian kernal package had hotplug disabled but the 2.4.16
-> > package has it enabled. After a quick apt-get install of hotplug I have a
-> > happy system again. I have filed a bug report to Debian on the kernel
-> > package requesting a dependency on hotplug. This is obviously not the real
-> > fix that is needed, but it would at least prevent this kind of problem for
-> > anyone else.
-> 
-> Nah, that's the wrong answer.  The kernel shouldn't crater if hotplug isn't
-> present.
+On Tue, Jan 01, 2002 at 08:38:48PM -0800, Christian Suder wrote:
+> The standard fdisk utility in Linux is pretty PC-ish, so you can only have
+> 4 primary partitions. However you can create one of them as "extended"
+> partition, and within this partition you can create additional ones,
 
-IIRC this is tied up with the __execve code in arch/parisc/kernel/entry.S:
+this was a deliberate decision on our part to use the PC partition format
+by default.  i don't think it's one to be ashamed of.  hpux's partitioning
+scheme wasn't appropriate, and there are more tools which understand pc
+partitioning than understand, say, sgi disklabels.
 
-        bl      sys_execve, %r2
-        copy    %r16, %r26
-
-        cmpib,=,n 0,%r28,intr_return    /* forward */
-
->>>>>>  /* yes, this will trap and die. */
-        copy    %r15, %r2
-        bv      %r0(%r2)
-        nop
-
-which does not handle sys_execve failing when invoked from the kernel.
-We had the same problem when /sbin/modprobe didn't exist.
-
-Richard
+-- 
+Revolutions do not require corporate support.
