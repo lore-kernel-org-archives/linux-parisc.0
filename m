@@ -1,31 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E7DA84852
-	for <parisc-linux@parisc-linux.org>; Fri,  3 Oct 2003 06:12:44 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A5Onb-0006BS-1f
-	for parisc-linux@parisc-linux.org; Fri, 03 Oct 2003 13:12:43 +0100
-Received: from master.debian.org ([146.82.138.7]:50855)
-	by www.linux.org.uk with esmtp (Exim 4.22)
-	id 1A5ORi-00062v-BT
-	for willy@ftp.uk.linux.org; Fri, 03 Oct 2003 12:50:06 +0100
-Received: from parcelfarce.linux.theplanet.co.uk (www.linux.org.uk) [195.92.249.252]
-	by master.debian.org with esmtp (Exim 3.35 1 (Debian))
-	id 1A5ORe-0006Pl-00; Fri, 03 Oct 2003 06:50:02 -0500
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A5ORb-00062e-FJ; Fri, 03 Oct 2003 12:49:59 +0100
-Date: Fri, 3 Oct 2003 12:49:59 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
-Message-ID: <20031003114959.GM24824@parcelfarce.linux.theplanet.co.uk>
-References: <20031003001810.GH24824@parcelfarce.linux.theplanet.co.uk> <3F704CAF0000522B@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F704CAF0000522B@ocpmta2.freegates.net>
-Resent-Message-Id: <E1A5Onb-0006BS-1f@www.linux.org.uk>
+Received: from c012.snv.cp.net (h001.c012.snv.cp.net [209.228.35.231])
+	by dsl2.external.hp.com (Postfix) with SMTP id AC3AE4845
+	for <parisc-linux@parisc-linux.org>; Fri,  3 Oct 2003 09:17:42 -0600 (MDT)
+Content-Type: text/plain; charset=iso-8859-1
+MIME-Version: 1.0
+From: "Diego de Fuentes Ceballos" <diego@defuentes.org>
+To: bame@hp.com
+Date: Fri, 03 Oct 2003 08:17:41 -0700 (PDT)
+Cc: diego@defuentes.org, debian-hppa@lists.debian.org,
+	parisc-linux@parisc-linux.org
+Message-Id: <20031003081741.9348.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+Subject: [parisc-linux] Re: PALO boot loader installation problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -37,23 +22,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Oct 03, 2003 at 08:15:03AM +0200, Joel Soete wrote:
-> Derek, Matthew,
+You were right, i was missing the F0 partition, i repartitioned my hard drive
+and now everything is up and running, thanks for your help.
+
+On Thu, 02 Oct 2003 13:51:03 -0600, bame@hp.com wrote:
+
 > 
-> Thanks a lot for those clarification.
-> As I try, without any success :(, to find where 'rules for non-coherent aliases'
-> are not respected, I will waiting for a fix.
+> 
+> I cc-ed parisc-linux@parisc-linux.org
+> 
+> > Hey everyone, i am having sobe trouble installing Debian hppa on a HP b1000
+> > , i
+> > have downloaded and burnen a netinstall ISO with kernelm 2.4.22 and got
+> > everything up and running, i booted from CD, i installed everything, partit=
+> > ioned
+> > the hard drive, got the network configured and the base system installed but
+> > when i try to make the system installable i get this error:
+> > 
+> > 
+> > Problem
+> > 
+> > PALO wasn=B4t able to install. You can still remote boot and point the root=
+> >  device
+> > to the installed system.
+> 
+> The most likely cause of this is the palo (aka F0) partition is past
+> the 2G mark on the disk or perhaps is too small or maybe there's no
+> partition at all.
+> 
+> > I have no idea how to fix this, "remote boot and point the dive to the inst=
+> > alled
+> > system?????" WTF???, when i reboot the machi and tri to point the boot load=
+> > er to
+> > the hard drive i get nowhere, can anyone give me hand?
+> 
+> Boot from the CD interactively so you can edit the boot command line.
+> Get rid of the initrd= argument entirely and change the root=/dev/ram
+> to root=/dev/sdaX where X is your root partition, then boot.  This'll
+> use the kernel from the CD instead of the one in the palo partition.
+> 
+> If this works, have a look at your partition table or post it here or
+> re-run palo by hand and examine (or post) the error messages.
+> 
+> 	-P
 
-Well, it's hard.  Consider a page in the page cache.  It has a kernel
-address and one-or-more user addresses.  The user addresses all follow the
-coherency rules but the kernel address doesn't.  If you look in Appendix F,
-we're not allowed to have multiple write-capable translations to the same
-address.
+Diego De Fuentes Ceballos
+diego@defuentes.org
 
-I think the only way to solve this is by (ab)using kmap to ensure that
-kernel pages are only accessed via coherent mappings.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
