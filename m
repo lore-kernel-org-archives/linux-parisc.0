@@ -1,18 +1,15 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from fep01-mail.bloor.is.net.cable.rogers.com
-	(fep01-mail.bloor.is.net.cable.rogers.com [66.185.86.71])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BBB5148A5
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 349FD4879
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 20 Jan 2004 09:18:44 -0700 (MST)
-Date: Tue, 20 Jan 2004 11:18:58 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Jools Smyth <jools@oxfordinspire.co.uk>
-Subject: Re: [parisc-linux] Stability / Kernel 2.6.1 / HD Freezes
-Message-ID: <20040120161858.GC15917@baldric.uwo.ca>
-References: <200401191930.27090.jools@oxfordinspire.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200401191930.27090.jools@oxfordinspire.co.uk>
+	Tue, 20 Jan 2004 11:12:48 -0700 (MST)
+Date: Tue, 20 Jan 2004 19:12:45 +0100
+Message-ID: <400CB89F00000C0C@ocpmta2.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] init and exit text problem
+To: "Grant Grundler" <grundler@parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -23,45 +20,73 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 19, 2004 at 07:30:26PM +0000, Jools Smyth wrote:
-> Hi all,
-> 
-> I've been reading the list for a while, thought I should join. I'm not really 
-> a developer (well not on hppa) but I am happy to test stuff out :-)
-> 
-> First of all, I want to thank everyone whos worked on linux for HPPA.
-> I never really felt comfortable with hp-ux, and getting things working was 
-> always a pain. 
+Hi Grant,
 
-Thanks!
- 
-> I own a model 9000/800/A180c. (512 mb ram / 18gb hd)
+> yes - certainly ftp://ftp.parisc-linux.org/patches/diff-2.6.1-bridge_ctl
 
-Have you registered yourself in the hardware database?
-http://hwdb.parisc-linux.org/
+Ok I applied it against 2.6.1-pa8 (+ some already accepted patch of Matthew
+and James related to sym2 driver ;) ).
 
-> I was running previously the 2.4 series kernels, but had a lot of crashes 
-> during HD access. I have seen this mentioned before, and Its probably the 
-> same issue ? (In fact most of the crashes were during package 
-> unpacking/installation). Since moving to the 2.6 series this hasnt happened. 
-> Is this scsi issue now fixed, or have I been lucky ? (I did have a crash 
-> recently involving a debug file being written. Could it be this problem 
-> again ?)
+Compiled with unstable debian gcc-3.3.3 and defconfig, it compiles and boots
+well on the b2k ;) (and I am on going to recompile toolchain with it and
+all seems to works fine ;) ).
 
-Need more info. What crashes? Can you get a dump? What compiler did you
-use to build the kernel?
- 
-> I just built Linux hp9000 2.6.1-pa7 and on my system it seems to be working 
-> fine.
+Thanks a lot,
+    Joel
 
-Yay!
- 
-> Also, does anyone here know why dovecot wouldnt work with libgnutls on hppa ? 
-> the dovecot maintainer has been trying to debug it on my machine (If my 
-> machine hadnt crashed). works fine with openssl. Has anybody had any other 
-> problems with libgnutls ?
+ps: I also drive severall test:
 
-Post to debian-hppa lists. I'll be happy to help if I can see a clear
-description of the problem.
+Unfortunately, it doesn't help to boot with 64bit kernel on this system
+(neither build with my gcc-hppa64_3.3.2 nor with unofficial-deb gcc-hppa64_3.0.4ds3-7.1_hppa.deb
+which should the one to use iirc)
 
-c.
+And with your config file it always do an hpmc with the 3 compilers I used
+(debian gcc-3.3.3, gcc-hppa64 (from gcc-hppa64_3.0.4d
+3-7.1_hppa.deb), my own gcc-hppa64_3.3.2), so I would have to find what breaks
+for b2k even in 32bit kernel (that will take a long time).
+
+The bad thing is that I don't reach to get any relevant iaoq address from
+pim to start investigation :( (just know that it failed very early after
+'-- search the FAQ and mailing list...')
+
+hmm just noticed the following diff:
+Command line for kernel: 'root=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102
+palo_kernel=3/vmlinux-2.6.1-pa7'
+Selected kernel: /vmlinux-2.6.1-pa7 from partition 3
+ELF32 executable
+Entry 001002f0 first 00100000 n 3
+Segment 0 load 00100000 size 2586936 mediaptr 0x1000
+Segment 1 load 00378000 size 368640 mediaptr 0x279000
+Segment 2 load 003d4000 size 553093 mediaptr 0x2d3000
+Branching to kernel entry point 0x001002f0.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org
+
+[snip] normal boot
+
+
+Command line for kernel: 'roo
+=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102
+palo_kernel=3/vmlinux-26-up64-gcc30'
+Selected kernel: /vmlinux-26-up64-gcc30 from partition 3
+ELF64 executable
+Entry 00100000 first 00100000 n 2
+Segment 0 load 00100000 size 3529136 mediaptr 0x1000
+Segment 1 load 00460000 size 237702 mediaptr 0x35f000
+Branching to kernel entry point 0x00100000.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org
+
+
+HPMC
+
+So 3 segment loaded in 32bit and only 2 in 64bit, is it normal (i lost info
+on the N4k boot :( ).
+And also seems to "Branching to" a wrong entry point?
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
