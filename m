@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.yashy.com (cpu2119.adsl.bellglobal.com [207.236.3.96])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C1DAF4864
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 23:50:20 -0700 (MST)
-Received: from yashy (helo=localhost)
-	by mail.yashy.com with local-esmtp (Exim 3.33 #1)
-	id 16eW0f-00013j-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 23 Feb 2002 01:50:17 -0500
-Date: Sat, 23 Feb 2002 01:50:17 -0500 (EST)
-From: Yasholomew Yashinski <yashy@mail.yashy.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] B1000 
-In-Reply-To: <20020223063435.7F9964861@dsl2.external.hp.com>
-Message-ID: <20020223013935.D3685-100000@mail.yashy.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Jbit <james_a_n_lee@yahoo.com>
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 712 Software Temperature 
+In-Reply-To: Message from Jbit <james_a_n_lee@yahoo.com>
+   of "Thu, 21 Feb 2002 11:51:46 GMT." <3C74DF52.7090308@yahoo.com>
+References: <3C74DF52.7090308@yahoo.com> 
+Date: Sat, 23 Feb 2002 00:41:28 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020223074128.1B3234865@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,36 +19,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >  Going through the install now, via serial console. Everything was working
-> > fine until I tried to install a kernel from the cdrom:
->
-> Is this with 0.9.3 CD image?
-> Read the errata...CD-ROM isn't support by the kernel on the CD.
-> More recent kernels have fixed the CD-ROM (tnx Fleedwood!)
-> support for suckyio systems.
+Jbit wrote:
+...
+> Since, if it was purley for fan control, it would be done in hardware,
+> wouldn't it?
 
- I installed it for a third time creating a smaller /boot partition in
-order for palo to work, and a net kernel (2.4.17 IIRC) installed
-successfully. I have since upgraded to pa28 in order for my framebuffer to
-work. I apt-get'd cvs and tried to run:
+Caveat: I'm a SW engineer and this is from memory.
 
-~$ cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs/ login
-Logging in to :pserver:anonymous@cvs.parisc-linux.org:2401/var/cvs/
-CVS password:  # no password, just CR
-cvs [login aborted]: recv() from server cvs.parisc-linux.org: Connection
-reset by peer
+The fan speed is *generally* controlled by HW with PDC just setting
+the "ramp" in HW registers. Some servers might "expose" the
+temperature reading. I doubt the 712 does.
 
- Do I need any extra configuration, this has been happening since
-yesterday? How do I switch from stifb to sticon (I just apt-get'd
-xfree86)?
-
- I'd just like to confirm:
-eth0: Setting half-duplex based on MII#1 link partner capability of 0021.
- is correct?
-
- Everything else appears to be working great.
-
- Thanks in Advance,
-
---
-Yashy
+grant
