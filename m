@@ -1,36 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA13891
-	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Aug 1999 07:32:04 -0600
-Date: Thu, 5 Aug 1999 15:32:48 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA14046
+	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Aug 1999 07:33:50 -0600
+Sender: adevries@thepuffingroup.com
+Message-ID: <37A99641.EDD7A44@thepuffingroup.com>
+Date: Thu, 05 Aug 1999 09:48:49 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
 To: Hannu Martikka <martikka@stybba.ntc.nokia.com>
-Cc: parisc-linux@thepuffingroup.com
+CC: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Pa-risc Linux timetables?
-Message-ID: <19990805153248.S11586@mencheca.ch.genedata.com>
-References: <19990804132850.A17303@grcbd508.grc.hp.com> <Pine.HPX.4.05.9908051545080.18930-100000@gamgee.ntc.nokia.com>
-Mime-Version: 1.0
+References: <Pine.HPX.4.05.9908051545080.18930-100000@gamgee.ntc.nokia.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.HPX.4.05.9908051545080.18930-100000@gamgee.ntc.nokia.com>; from Hannu Martikka on Thu, Aug 05, 1999 at 03:54:09PM +0300
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 05, 1999 at 03:54:09PM +0300, Hannu Martikka wrote:
+Hannu Martikka wrote:
+> I just noticed that Linus is doing feature freeze for 2.4 in few weeks.
+> That raised couple of questions.
+
+I've talked to Linus about merging the changes into his mainstream
+kernel tree, and he's agreed, but only once our kernel actually does
+something.  I agree with this.
+
 > Do we have any estimate on parisc/linux timetables? When is the pa-risc
-> Linux going to be "released"? Do we target it to 2.5 or 2.6? 
-> 
-> We are now based on 2.2.1. How big effort would be required to merge
-> pa-risc linux (2.2.1) to 2.3/2.4?
+> Linux going to be "released"? Do we target it to 2.5 or 2.6?
 
-I believe we're aiming at having a 2.2 version ready for the end of the
-year -- approximately the same time as Linus expects to have a 2.4 release
-out.  Updating to 2.4 shouldn't be a big problem, and we don't have to be
-ready for the release of 2.4.0 -- Linus merged alpha, sparc, ppc and mips
-trees at several stages after 2.2.0 was released.  (Indeed, there is a
-big mips merge in the 2.2.11 prepatches.)
+It's very difficult to suggest a timeline to a project that's done only
+on volunteer time, so I don't think anyone's ready to commit to a
+schedule.  
 
-Don't worry about 2.4 yet :-)
+My feeling is we'll address the kernel merge once we have a kernel to
+merge.  A LOT of the architecture ports had their own seperate tree for
+many years.  MIPS, for instance, has only just merged.
 
+- alex
 -- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Alex deVries
+Vice President of Engineering
+The Puffin Group
