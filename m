@@ -1,14 +1,17 @@
-Return-Path: <soete.joel@tiscali.be>
-Date: Mon, 3 May 2004 10:57:34 +0200
-Message-ID: <408D436000004559@ocpmta1.freegates.net>
-In-Reply-To: <1083442151.2030.27.camel@mulgrave>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
-To: "James Bottomley" <James.Bottomley@steeleye.com>,
-	"PARISC list" <parisc-linux@lists.parisc-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux-cvs@lists.parisc-linux.org
+Return-Path: <kyle@mcmartin.ca>
+Received: from mcmartin.ca
+	(CPE0030ab0b413b-CM023469906297.cpe.net.cable.rogers.com
+	[24.157.3.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A62D487D
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon,  3 May 2004 14:44:05 -0600 (MDT)
+Date: Sun, 2 May 2004 12:16:33 -0400
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040502161633.GC26697@mcmartin.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: kyle@mcmartin.ca (Kyle McMartin)
+Subject: [parisc-linux] undefined types in page.h
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,57 +21,30 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Modified files:
-> 	.              : Makefile 
-> 	arch/parisc/kernel: asm-offsets.c entry.S head64.S 
-> 	i
-> clude/asm-parisc: page.h pgalloc.h pgtable.h 
-> 
-> Log message:
-> Increase the maximum physical and virtual space available to
-> the 64 bit kernel from 512GB to 8TB
-> 
+willy,
 
-Sincerely nice job but how will it permit me to access at least to the only
-all 4GB of the N4k I test when setup_bootmem() limits actually the usage
-to the first 2Gb?
+With cvs head, unless the following patch is applied, the compile bombs
+out in at least fs/xfs/support/debug.c, as that file uses __u32 in
+several places without having included types.h.
 
-For remind:
- arch/parisc/mm/init.c
-static void __init setup_bootmem(void)
-{
-[snip]
-        /*
-         * Throw out ranges that are too far apart (controlled by
-         * MAX_GAP). If CONFIG_DISCONTIGMEM wasn't implemented so
-         * poorly, we would recommend enabling that option, but,
-         * until it is fixed, this is the best way to go.
-         */
+Please apply,
 
-        printk("npmem_ranges = %d.(line 171)\n", npmem_ranges);
-        for (i = 1; i < npmem_ranges; i++) {
-              printk("pmem_ranges[%d].start_pfn = %ld.\n", i-1, pmem_ranges[i-1].pages);
-                printk("pmem_ranges[%d].pages = %ld.\n", i-1, pmem_ranges[i-1].pages);
-                printk("pmem_ranges[%d].start_pfn = %ld.\n", i, pmem_ranges[i].pages);
-[snip]
-           
-And actual results would be:
-<==== return by setup_bootmem() ====>
-pmem_ranges[0].start_pfn = 0.
-pmem_ranges[0].pages = 524288.
-pmem_ranges[1].start_pfn = 1572864.
+Index: include/asm-parisc/page.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/page.h,v
+retrieving revision 1.6
+diff -u -r1.6 page.h
+--- a/include/asm-parisc/page.h	1 May 2004 20:03:11 -0000	1.6
++++ b/include/asm-parisc/page.h	2 May 2004 16:05:11 -0000
+@@ -11,6 +11,7 @@
+ #ifndef __ASSEMBLY__
+ 
+ #include <asm/cache.h>
++#include <asm/types.h>
+ 
+ #define clear_page(page)	memset((void *)(page), 0, PAGE_SIZE)
+ #define copy_page(to,from)      copy_user_page_asm((void *)(to), (void *)(from))
 
-so 1572864-524288-0=1048576 greater then MAX_GAP = 262144.
-
-I also investigate the choice of using CONFIG_DISCONTIGMEM but as far as
-I understand this option is foreseen when each processor has its own ram
-and can/want access the ram of the others (as on sun 6800): not the N4k case
-where all ram is shared between all processor?
-
-Thanks again for your attention,
-   Joel
-
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
-http://reg.tiscali.be/default.asp?lg=fr
+Regards,
+-- 
+Kyle McMartin
