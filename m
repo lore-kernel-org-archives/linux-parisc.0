@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A4EBA482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 09:29:38 -0700 (MST)
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 85A00482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 09:57:12 -0700 (MST)
 To: Maneesh Singhal <maneesh@india.hp.com>
 Subject: Re: [parisc-linux] installation..... new problems..
-Message-ID: <1008606134.3c1e1bb653614@webmail.tiscalinet.be>
-Date: Mon, 17 Dec 2001 17:22:14 +0100 (CET)
+Message-ID: <1008607423.3c1e20bf8aa88@webmail.tiscalinet.be>
+Date: Mon, 17 Dec 2001 17:43:43 +0100 (CET)
 From: joel.soete@freebel.net
 Cc: Joel Soete <joel.soete@freebel.net>,
 	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-MOQ10086061343609a61b720a1f43c1755fae8b0d6738"
+Content-Type: multipart/mixed; boundary="-MOQ1008607423d1bc4ad52fd24d6e85ffd1f272bba255"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,11 +24,18 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This message is in MIME format.
 
----MOQ10086061343609a61b720a1f43c1755fae8b0d6738
+---MOQ1008607423d1bc4ad52fd24d6e85ffd1f272bba255
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
 
+
 Hey Maneesh,
+
+Sorry for the lack of config file but I just learn to use a webmail client ??
+
+Thanks for your understand,
+
+Joel
 
 Quoting Maneesh Singhal <maneesh@india.hp.com>:
 
@@ -89,11 +96,15 @@ Joel
 -------------------------------------------------
 This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
 
----MOQ10086061343609a61b720a1f43c1755fae8b0d6738
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+
+---MOQ1008607423d1bc4ad52fd24d6e85ffd1f272bba255
 Content-Type: application/octet-stream; name="XF86Config"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="XF86Config"
 
 
 
----MOQ10086061343609a61b720a1f43c1755fae8b0d6738--
+---MOQ1008607423d1bc4ad52fd24d6e85ffd1f272bba255--
