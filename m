@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 131524829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Dec 2002 15:14:53 -0700 (MST)
-Message-Id: <200212272214.gBRMEQeF002615@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc-3_3-branch] bootstrap failure on hppa-linux
-To: doko@cs.tu-berlin.de (Matthias Klose)
-Date: Fri, 27 Dec 2002 17:14:26 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: gcc@gcc.gnu.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <15884.48522.342368.76461@gargle.gargle.HOWL> from "Matthias Klose" at Dec 27, 2002 09:52:26 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4021C4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Dec 2002 17:33:05 -0700 (MST)
+Date: Fri, 27 Dec 2002 16:34:17 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Why do we relax e_ident[EI_OSABI] in gdb?
+Message-ID: <20021228003417.GX19331@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20021227023137.GD8363@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021227023137.GD8363@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,32 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> $ gcc-3.2    -g -DIN_GCC   -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic -Wno-long-long -fno-common  -DHAVE_CONFIG_H -o cc1 c-parse.o c-lang.o c-pretty-print.o attribs.o c-errors.o c-lex.o c-pragma.o c-decl.o c-typeck.o c-convert.o c-aux-info.o c-common.o c-opts.o c-format.o c-semantics.o c-objc-common.o c-dump.o libcpp.a  main.o libbackend.a   ../libiberty/libiberty.a
-> /usr/bin/ld: libbackend.a(expr.o)(.text+0x3f744): cannot reach 000002c9_$$dyncall+0, recompile with -ffunction-sections
-> /usr/bin/ld: libbackend.a(expr.o)(.text+0x3f744): cannot handle R_PARISC_PCREL17F for $$dyncall
+> Anyone have some ideas why we have this patch in gdb, and thus relax the 
+> EI_OSABI check?
+> 
+> --- gdb-5.2.cvs20020401/bfd/elf64-hppa.c~	Sun Mar 31 19:09:41 2002
+> +++ gdb-5.2.cvs20020401/bfd/elf64-hppa.c	Sat Apr 20 09:35:54 2002
+> @@ -372,7 +372,8 @@
+>    i_ehdrp = elf_elfheader (abfd);
+>    if (strcmp (bfd_get_target (abfd), "elf64-hppa-linux") == 0)
+>      {
+> -      if (i_ehdrp->e_ident[EI_OSABI] != ELFOSABI_LINUX)
+> +      if (i_ehdrp->e_ident[EI_OSABI] != ELFOSABI_LINUX &&
+> +          i_ehdrp->e_ident[EI_OSABI] != ELFOSABI_NONE)
 
-This bug is fixed in 3.3.  The principal problem is that gcc is not keeping
-track of the total number of code bytes (total_code_bytes) in a translation
-unit under hppa-linux.  With GAS under hpux, this isn't necessary.
+well... take a look at
+http://bugs.debian.org/cgi-bin/bugreport.cgi?archive=no&bug=137316
 
-Unfortunately, the 3.2 branch is only open for regression fixes.  As far
-as I know, this never worked in any previous release (debian 3.0.4 has
-the same problem).  Thus, the problem won't be fixed in the 3.2 branch.
+but Grant's references explain it in more detail.
 
-I suspect that expr.o must be getting bigger.
-
-You can also work around this by adding -O2 to your stage1 CFLAGS.
-
-The problems with branches that can't reach their long branch stub still
-aren't fully resolved.  It's possible to exceed the maximum number of
-stubs per 240000 bytes of code.  Possibly, we need to make the maximum
-branch distance for the R_PARISC_PCREL17F relocation a settable option.
-Currently, it is hardcoded to 240000 bytes in gcc, gas and ld.  The hpux
-compiler avoids the problem by not using the "bl" instruction for external
-calls.  However, GNU ld doesn't currently support the relocations needed
-for the HP sequences.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+randolph
