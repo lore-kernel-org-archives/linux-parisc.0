@@ -1,56 +1,167 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA27599
-	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 14:18:53 -0600
-Received: from ottawa.linuxcare.com (HELO elenuial.thepuffingroup.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 27 Oct 2000 20:20:19 -0000
-Received: (from pjlahaie@localhost)
-	by elenuial.thepuffingroup.com (8.9.3/8.9.3) id QAA10681
-	for parisc-linux@thepuffingroup.com; Fri, 27 Oct 2000 16:21:36 -0400
-Date: Fri, 27 Oct 2000 16:21:36 -0400
-From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001027162136.C859@achilles.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA28188
+	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 14:32:19 -0600
+Date: Fri, 27 Oct 2000 13:37:34 -0700 (PDT)
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200010272037.NAA23925@milano.cup.hp.com>
+To: davem@redhat.com
+Cc: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="TiqCXmo5T1hvSQQg"
-Subject: [parisc-linux] Beta CD
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] scatterlist (de-)construction
 List-ID: <linux-parisc.vger.kernel.org>
 
+Dave,
+The sg_list's I'm seeing for a simple "dd .. bs=64K" aren't
+assembled very nicely. I have two issues with scatterlists:
 
---TiqCXmo5T1hvSQQg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+o why are list entries in 1K sizes instead of NBPG sizes?
 
-Hello everyone,
+o Why are "blocks" *within* the same kernel page "badly" ordered?
 
-I am in the process of creating a new Beta CD for Linux on PA-RISC.
-Currently the CD will include the following:
+I have to confess I have only spent an hour or so reviewing code
+and documents for scatter-gather. I'm doing more but thought you
+might off-hand know where to look. If these are architecture defined
+behaviors, I can fix those.
 
-All the latest Debian packages
-Slightly modified Debian base as / (this is because standard debian
-  expects r/w root environment)
-Cross-compiling tools for x86
-READMEs, etc.. to help bootstrap Linux on a PARISC system.
+I've been trying to implement sane/simple coalescing code for one
+of the parisc-linux I/O MMU's (sba_iommu.c) and finding the input
+scatterlist I have to work with sucks. I've appended the console
+output with my debugging info. The algorithm currently attempts
+to prepend or append adjacent entries in the scatterlist.
+It would be nice if we only had to check the append case.
+(Ref http://puffin.external.hp.com/cvs/linux/arch/parisc/kernel/sba_iommu.c)
 
-If there is anything you think should be on it, please send me some
-suggestions.  I can't promise they'll all make it, but I'll see what
-can be done.
+FYI, parisc-linux is currently based on 2.4.0-test6.
+The plan is to merge to something more recent after we cut
+a "stable" version in the next week or two. I mention this
+in case any work was done since -test6 was posted.
 
-						- Paul
+thanks,
+grant
 
-PS:  This will be an online ISO image release only.
+ps. I'm also ok with this getting forwarded to l-k though
+    I'm not subscribed.
 
---TiqCXmo5T1hvSQQg
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+[ notes:
+  xx,xx		address,length pair
+  xx,xx+yy,yy	checking "current" chunk (xx) + "current" sglist entry (yy)
+ (xx,xx)	addr,len "chunk" parameters passed to sba_map_single()
+		when algorithm can't safely either prepend or append the
+		"current" scatterlist element to the "chunk".
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.1 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+__FUNCTION__ is *broken* for our toolchain and it look like a
+generic gcc bug in the current gcc developement tree.  The "()"
+are supposed to have function names in front of them.
+Magic decoder:
+() START 64 entries	sba_map_sg() entry poiny
+() DONE 17 mappings	sba_map_sg() exit
+() START 64 entries,  dfd7a800,400	sba_unmap_sg() entry w/first pair
+() DONE (nents 47)	sba_unmap_sg() exit (after unmapping 17 entries)
+]
 
-iD8DBQE5+ePQ8ggPQthPCzcRAvJxAJ9enkghZtCzKml2zkw8QdZl0w59zgCaA4TT
-N39r6R0MPw/wd9FIr4XaKCA=
-=Zi8m
------END PGP SIGNATURE-----
-
---TiqCXmo5T1hvSQQg--
+gggC3000:~# dd if=/dev/sda1 of=/dev/null bs=64k count=5
+() START 64 entries
+ dfd7a800,400+dfd7ac00,400 dfd7a800,800+dfd7a000,400 (dfd7a800, 800)
+ dfd7a000,400+dfd7a400,400 dfd7a000,800+df6ba000,400 (dfd7a000, 800)
+ df6ba000,400+df6ba400,400 df6ba000,800+df6ba800,400 df6ba000,c00+df6bac00,400 df6ba000,1000+df6b9000,400 (df6ba000, 1000)
+ df6b9000,400+df6b9400,400 df6b9000,800+df6b9800,400 df6b9000,c00+df6b9c00,400 df6b9000,1000+df6b8000,400 (df6b9000, 1000)
+ df6b8000,400+df6b8400,400 df6b8000,800+df6b8800,400 df6b8000,c00+df6b8c00,400 df6b8000,1000+df6b7000,400 (df6b8000, 1000)
+ df6b7000,400+df6b7400,400 df6b7000,800+df6b7800,400 df6b7000,c00+df6b7c00,400 df6b7000,1000+df6b6000,400 (df6b7000, 1000)
+ df6b6000,400+df6b6400,400 df6b6000,800+df6b6800,400 df6b6000,c00+df6b6c00,400 df6b6000,1000+df6b5000,400 (df6b6000, 1000)
+ df6b5000,400+df6b5400,400 df6b5000,800+df6b5800,400 df6b5000,c00+df6b5c00,400 df6b5000,1000+df6b4000,400 (df6b5000, 1000)
+ df6b4000,400+df6b4400,400 df6b4000,800+df6b4800,400 df6b4000,c00+df6b4c00,400 df6b4000,1000+df6b3000,400 (df6b4000, 1000)
+ df6b3000,400+df6b3400,400 df6b3000,800+df6b3800,400 df6b3000,c00+df6b3c00,400 df6b3000,1000+df6b2000,400 (df6b3000, 1000)
+ df6b2000,400+df6b2400,400 df6b2000,800+df6b2800,400 df6b2000,c00+df6b2c00,400 df6b2000,1000+df6b1000,400 (df6b2000, 1000)
+ df6b1000,400+df6b1400,400 df6b1000,800+df6b1800,400 df6b1000,c00+df6b1c00,400 df6b1000,1000+df6af000,400 (df6b1000, 1000)
+ df6af000,400+df6af400,400 df6af000,800+df6af800,400 df6af000,c00+df6afc00,400 df6af000,1000+df6ae000,400 (df6af000, 1000)
+ df6ae000,400+df6ae400,400 df6ae000,800+df6ae800,400 df6ae000,c00+df6aec00,400 df6ae000,1000+df6ad000,400 (df6ae000, 1000)
+ df6ad000,400+df6ad400,400 df6ad000,800+df6ad800,400 df6ad000,c00+df6adc00,400 df6ad000,1000+df6ac000,400 (df6ad000, 1000)
+ df6ac000,400+df6ac400,400 df6ac000,800+df6ac800,400 df6ac000,c00+df6acc00,400 df6ac000,1000+df6ab000,400 (df6ac000, 1000)
+ df6ab000,400+df6ab400,400 df6ab000,800+df6ab800,400 df6ab000,c00+df6abc00,400 (0xdf6ab000,1000)
+() DONE 17 mappings
+() START 64 entries,  dfd7a800,400
+() DONE (nents 47)
+() START 64 entries
+ df69a000,400+df69a400,400 df69a000,800+df69a800,400 df69a000,c00+df69ac00,400 df69a000,1000+df699000,400 (df69a000, 1000)
+ df699000,400+df699400,400 df699000,800+df699800,400 df699000,c00+df699c00,400 df699000,1000+df698000,400 (df699000, 1000)
+ df698000,400+df698400,400 df698000,800+df698800,400 df698000,c00+df698c00,400 df698000,1000+df697000,400 (df698000, 1000)
+ df697000,400+df697400,400 df697000,800+df697800,400 df697000,c00+df697c00,400 df697000,1000+df696000,400 (df697000, 1000)
+ df696000,400+df696400,400 df696000,800+df696800,400 df696000,c00+df696c00,400 df696000,1000+df694000,400 (df696000, 1000)
+ df694000,400+df694400,400 df694000,800+df694800,400 df694000,c00+df694c00,400 df694000,1000+df693000,400 (df694000, 1000)
+ df693000,400+df693400,400 df693000,800+df693800,400 df693000,c00+df693c00,400 df693000,1000+df692000,400 (df693000, 1000)
+ df692000,400+df692400,400 df692000,800+df692800,400 df692000,c00+df692c00,400 df692000,1000+df691000,400 (df692000, 1000)
+ df691000,400+df691400,400 df691000,800+df691800,400 df691000,c00+df691c00,400 df691000,1000+df690000,400 (df691000, 1000)
+ df690000,400+df690400,400 df690000,800+df690800,400 df690000,c00+df690c00,400 df690000,1000+df68f000,400 (df690000, 1000)
+ df68f000,400+df68f400,400 df68f000,800+df68f800,400 df68f000,c00+df68fc00,400 df68f000,1000+df68e000,400 (df68f000, 1000)
+ df68e000,400+df68e400,400 df68e000,800+df68e800,400 df68e000,c00+df68ec00,400 df68e000,1000+df68d000,400 (df68e000, 1000)
+ df68d000,400+df68d400,400 df68d000,800+df68d800,400 df68d000,c00+df68dc00,400 df68d000,1000+df68c000,400 (df68d000, 1000)
+ df68c000,400+df68c400,400 df68c000,800+df68c800,400 df68c000,c00+df68cc00,400 df68c000,1000+df68b000,400 (df68c000, 1000)
+ df68b000,400+df68b400,400 df68b000,800+df68b800,400 df68b000,c00+df68bc00,400 df68b000,1000+df689000,400 (df68b000, 1000)
+ df689000,400+df689400,400 df689000,800+df689800,400 df689000,c00+df689c00,400 (0xdf689000,1000)
+() DONE 16 mappings
+() START 64 entries,  df69a000,400
+() DONE (nents 48)
+() START 64 entries
+ df688000,400+df688400,400 df688000,800+df688800,400 df688000,c00+df688c00,400 df688000,1000+df687000,400 (df688000, 1000)
+ df687000,400+df687400,400 df687000,800+df687800,400 df687000,c00+df687c00,400 df687000,1000+df686000,400 (df687000, 1000)
+ df686000,400+df686400,400 df686000,800+df686800,400 df686000,c00+df686c00,400 df686000,1000+df685000,400 (df686000, 1000)
+ df685000,400+df685400,400 df685000,800+df685800,400 df685000,c00+df685c00,400 df685000,1000+df684000,400 (df685000, 1000)
+ df684000,400+df684400,400 df684000,800+df684800,400 df684000,c00+df684c00,400 df684000,1000+df683000,400 (df684000, 1000)
+ df683000,400+df683400,400 df683000,800+df683800,400 df683000,c00+df683c00,400 df683000,1000+df682000,400 (df683000, 1000)
+ df682000,400+df682400,400 df682000,800+df682800,400 df682000,c00+df682c00,400 df682000,1000+df681000,400 (df682000, 1000)
+ df681000,400+df681400,400 df681000,800+df681800,400 df681000,c00+df681c00,400 df681000,1000+df680000,400 (df681000, 1000)
+ df680000,400+df680400,400 df680000,800+df680800,400 df680000,c00+df680c00,400 df680000,1000+df67e000,400 (df680000, 1000)
+ df67e000,400+df67e400,400 df67e000,800+df67e800,400 df67e000,c00+df67ec00,400 df67e000,1000+df67d000,400 (df67e000, 1000)
+ df67d000,400+df67d400,400 df67d000,800+df67d800,400 df67d000,c00+df67dc00,400 df67d000,1000+df67c000,400 (df67d000, 1000)
+ df67c000,400+df67c400,400 df67c000,800+df67c800,400 df67c000,c00+df67cc00,400 df67c000,1000+df67b000,400 (df67c000, 1000)
+ df67b000,400+df67b400,400 df67b000,800+df67b800,400 df67b000,c00+df67bc00,400 df67b000,1000+df67a000,400 (df67b000, 1000)
+ df67a000,400+df67a400,400 df67a000,800+df67a800,400 df67a000,c00+df67ac00,400 df67a000,1000+df679000,400 (df67a000, 1000)
+ df679000,400+df679400,400 df679000,800+df679800,400 df679000,c00+df679c00,400 df679000,1000+df678000,400 (df679000, 1000)
+ df678000,400+df678400,400 df678000,800+df678800,400 df678000,c00+df678c00,400 (0xdf678000,1000)
+() DONE 16 mappings
+() START 64 entries,  df688000,400
+() DONE (nents 48)
+() START 64 entries
+ df675000,400+df675400,400 df675000,800+df675800,400 df675000,c00+df675c00,400 df675000,1000+df674000,400 (df675000, 1000)
+ df674000,400+df674400,400 df674000,800+df674800,400 df674000,c00+df674c00,400 df674000,1000+df673000,400 (df674000, 1000)
+ df673000,400+df673400,400 df673000,800+df673800,400 df673000,c00+df673c00,400 df673000,1000+df671000,400 (df673000, 1000)
+ df671000,400+df671400,400 df671000,800+df671800,400 df671000,c00+df671c00,400 df671000,1000+df670000,400 (df671000, 1000)
+ df670000,400+df670400,400 df670000,800+df670800,400 df670000,c00+df670c00,400 df670000,1000+df66f000,400 (df670000, 1000)
+ df66f000,400+df66f400,400 df66f000,800+df66f800,400 df66f000,c00+df66fc00,400 df66f000,1000+df66e000,400 (df66f000, 1000)
+ df66e000,400+df66e400,400 df66e000,800+df66e800,400 df66e000,c00+df66ec00,400 df66e000,1000+df66d000,400 (df66e000, 1000)
+ df66d000,400+df66d400,400 df66d000,800+df66d800,400 df66d000,c00+df66dc00,400 df66d000,1000+df66c000,400 (df66d000, 1000)
+ df66c000,400+df66c400,400 df66c000,800+df66c800,400 df66c000,c00+df66cc00,400 df66c000,1000+df66b000,400 (df66c000, 1000)
+ df66b000,400+df66b400,400 df66b000,800+df66b800,400 df66b000,c00+df66bc00,400 df66b000,1000+df66a000,400 (df66b000, 1000)
+ df66a000,400+df66a400,400 df66a000,800+df66a800,400 df66a000,c00+df66ac00,400 df66a000,1000+df669000,400 (df66a000, 1000)
+ df669000,400+df669400,400 df669000,800+df669800,400 df669000,c00+df669c00,400 df669000,1000+df668000,400 (df669000, 1000)
+ df668000,400+df668400,400 df668000,800+df668800,400 df668000,c00+df668c00,400 df668000,1000+df666000,400 (df668000, 1000)
+ df666000,400+df666400,400 df666000,800+df666800,400 df666000,c00+df666c00,400 df666000,1000+df665000,400 (df666000, 1000)
+ df665000,400+df665400,400 df665000,800+df665800,400 df665000,c00+df665c00,400 df665000,1000+df664000,400 (df665000, 1000)
+ df664000,400+df664400,400 df664000,800+df664800,400 df664000,c00+df664c00,400 (0xdf664000,1000)
+() DONE 16 mappings
+() START 64 entries,  df675000,400
+() DONE (nents 48)
+() START 64 entries
+ df663000,400+df663400,400 df663000,800+df663800,400 df663000,c00+df663c00,400 df663000,1000+df662000,400 (df663000, 1000)
+ df662000,400+df662400,400 df662000,800+df662800,400 df662000,c00+df662c00,400 df662000,1000+df661000,400 (df662000, 1000)
+ df661000,400+df661400,400 df661000,800+df661800,400 df661000,c00+df661c00,400 df661000,1000+df660000,400 (df661000, 1000)
+ df660000,400+df660400,400 df660000,800+df660800,400 df660000,c00+df660c00,400 df660000,1000+df65f000,400 (df660000, 1000)
+ df65f000,400+df65f400,400 df65f000,800+df65f800,400 df65f000,c00+df65fc00,400 df65f000,1000+df65e000,400 (df65f000, 1000)
+ df65e000,400+df65e400,400 df65e000,800+df65e800,400 df65e000,c00+df65ec00,400 df65e000,1000+df65d000,400 (df65e000, 1000)
+ df65d000,400+df65d400,400 df65d000,800+df65d800,400 df65d000,c00+df65dc00,400 df65d000,1000+df65b000,400 (df65d000, 1000)
+ df65b000,400+df65b400,400 df65b000,800+df65b800,400 df65b000,c00+df65bc00,400 df65b000,1000+df65a000,400 (df65b000, 1000)
+ df65a000,400+df65a400,400 df65a000,800+df65a800,400 df65a000,c00+df65ac00,400 df65a000,1000+df659000,400 (df65a000, 1000)
+ df659000,400+df659400,400 df659000,800+df659800,400 df659000,c00+df659c00,400 df659000,1000+df658000,400 (df659000, 1000)
+ df658000,400+df658400,400 df658000,800+df658800,400 df658000,c00+df658c00,400 df658000,1000+df657000,400 (df658000, 1000)
+ df657000,400+df657400,400 df657000,800+df657800,400 df657000,c00+df657c00,400 df657000,1000+df656000,400 (df657000, 1000)
+ df656000,400+df656400,400 df656000,800+df656800,400 df656000,c00+df656c00,400 df656000,1000+df655000,400 (df656000, 1000)
+ df655000,400+df655400,400 df655000,800+df655800,400 df655000,c00+df655c00,400 df655000,1000+df654000,400 (df655000, 1000)
+ df654000,400+df654400,400 df654000,800+df654800,400 df654000,c00+df654c00,400 df654000,1000+df653000,400 (df654000, 1000)
+ df653000,400+df653400,400 df653000,800+df653800,400 df653000,c00+df653c00,400 (0xdf653000,1000)
+() DONE 16 mappings
+() START 64 entries,  df663000,400
+() DONE (nents 48)
+5+0 records in
+5+0 records out
+gggC3000:~# 
