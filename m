@@ -1,51 +1,60 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 098D74A19
-	for <parisc-linux@parisc-linux.org>; Mon,  5 Mar 2001 17:39:23 -0700 (MST)
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: New XC available was Re: [parisc-linux] 64-bit compiler millicode
- update
-In-Reply-To: Message from Matthew Wilcox <matthew@wil.cx>
-   of "Fri, 02 Mar 2001 20:10:08 GMT." <20010302201008.G24088@parcelfarce.linux.theplanet.co.uk>
-References: <E14YdVL-0000NE-00@noam.fc.hp.com> <bame@fc.hp.com>
- <20010302012631.C62DB37CB2@carmen.fc.hp.com>  <20010302201008.G24088@parcelfarce.linux.theplanet.co.uk>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C943D81EA
+	for <parisc-linux@parisc-linux.org>; Tue,  6 Mar 2001 01:47:57 -0700 (MST)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel2.hp.com (Postfix) with ESMTP id 0E3791701
+	for <parisc-linux@parisc-linux.org>; Tue,  6 Mar 2001 03:47:42 -0500 (EST)
+To: parisc-linux@parisc-linux.org
+Cc: taggart@carmen.fc.hp.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Mar 2001 17:41:55 -0700
+Date: Tue, 06 Mar 2001 01:50:14 -0700
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010306004155.3A22137CB2@carmen.fc.hp.com>
+Message-Id: <20010306085014.D58AB38BD7@carmen.fc.hp.com>
+Subject: [parisc-linux] New native gcc debs
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox writes...
+I have built new hppa native gcc debs based on March 5th pehc cvs and placed 
+them at,
 
-> On Thu, Mar 01, 2001 at 06:26:31PM -0700, Matt Taggart wrote:
-> > The full xc with this change and also the recent glibc changes is now 
-> > available at,
-> > 
-> > ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010301.tar.g
-> z
-> 
-> There's something wrong with the compiler:
-> 
-> /opt/palinux/lib/gcc-lib/hppa-linux/2.97/tradcpp0: /lib/libc.so.6:
-> 	version `GLIBC_2.2' not found (required by
-> 	/opt/palinux/lib/gcc-lib/hppa-linux/2.97/tradcpp0)
-> 
-> we're trying to track it down.  in the meantime, use your current toolchain
-> and the libgcc.a from /opt/palinux/lib/gcc-lib/hppa64-linux/2.97/
+ftp://puffin.external.hp.com/pub/parisc/binaries/new-debs/debian/
 
-OK, the problem was that I built the xc on a system running Debian unstable 
-which has glibc 2.2.2. So the xc didn't work on systems with an older glibc. 
-I'd always gotten away with it up until now. So from now on I will build all 
-xc's on a system no newer than the Debian stable release (currently potato, 
-glibc 2.1.3).
+They are,
 
-I have placed a new xc at,
+gcc-2.97-base_2.97-010203_all.deb
+cpp-2.97_2.97-010203_hppa.deb
+protoize_2.97-010203_hppa.deb
+fixincludes_2.97-010203_hppa.deb
+libobjc1_2.97-010203_hppa.deb
+g++-2.97_2.97-010203_hppa.deb
+libstdc++2.97_2.97-010203_hppa.deb
+libstdc++2.97-dev_2.97-010203_hppa.deb
+g77-2.97_2.97-010203_hppa.deb
+libgcc297_2.97-010203_hppa.deb
+gcc-2.97_2.97-010203_hppa.deb
+cpp-2.97-doc_2.97-010203_all.deb
+g77-2.97-doc_2.97-010203_all.deb
+gcc-2.97-doc_2.97-010203_all.deb
+gobjc-2.97_2.97-010203_hppa.deb
+libstdc++2.97-dbg_2.97-010203_hppa.deb
+libstdc++2.97-doc_2.97-010203_all.deb
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010305.tar.gz
+After installing you'll need to,
 
-This xc includes Alan Modra's recent merge to upstream 20010204.
+- Remove the gcc package since it doesn't conflict on its own
+   `dpkg -r gcc`
+- Setup symlinks for gcc and cc
+   `cd /usr/bin;ln -s gcc-2.97 gcc;ln -s gcc-2.97 cc`
+
+I will fix both of these problems later. I have noticed that quite a few 
+packages in Debian that use c++ don't seem to be 2.97(v3) clean yet. So far I 
+can't build apt, jade, and ncurses.  I have been able to build quite a few 
+other things though and I have placed the debs in the above directory.
+
+Please report any problems you have.
+
+Thanks,
 
 -- 
 Matt Taggart        Linux Development Lab
