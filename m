@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AC9654852
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Oct 2003 16:25:31 -0600 (MDT)
-Message-Id: <200310182225.h9IMPR0i023691@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
-To: grundler@parisc-linux.org (Grant Grundler)
-Date: Sat, 18 Oct 2003 18:25:27 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org
-In-Reply-To: <20031018215509.GB10704@colo.lackof.org> from "Grant Grundler" at Oct 18, 2003 03:55:09 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 449A04852
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Oct 2003 16:59:43 -0600 (MDT)
+Date: Sat, 18 Oct 2003 18:55:47 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Jakub Jelinek <jakub@redhat.com>
+Cc: libc-alpha <libc-alpha@sources.redhat.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
+Message-ID: <20031018225547.GE8642@systemhalted>
+References: <20031012213734.GJ23999@systemhalted> <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +24,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I've installed the libc6 and libc6-dev debs on both c3k's
-> and they both are working fine (well, mozilla-firebird is
-> still broken, not new).
+On Wed, Oct 15, 2003 at 07:34:31AM +0200, Jakub Jelinek wrote:
+> On Sun, Oct 12, 2003 at 05:37:34PM -0400, Carlos O'Donell wrote:
+> > 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
+> > 
+> > 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
+> > 	(__pthread_find_self): Likewise.
+> > 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
+> 
+> You need to look at linuxthreads/attr.c (__pthread_attr_getstack) too
+> (the recent code which parses /proc/self/maps and finds stack VMA in there).
 
-I don't know about firebird but standard mozilla needs some pa specific
-configuration stuff added before it will build/work.  I made a first
-cut at this and started debugging the app a few weeks ago, but got
-caught up in other things.
+Jakub,
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+What do you think of something like this? Would it not also be valid to
+do something like "to - from" for the _STACK_GROWS_DOWN case?
+
+I'm building with this patch right now.
+
+c.
+
+---
+2003-10-18  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* attr.c (pthread_getattr_np): Add _STACK_GROWS_UP case when
+	converting /proc/self/maps entry to __stackaddr and __stacksize.
+
+Index: linuxthreads/attr.c
+===================================================================
+RCS file: /cvs/glibc/libc/linuxthreads/attr.c,v
+retrieving revision 1.33
+diff -u -p -r1.33 attr.c
+--- linuxthreads/attr.c	23 Sep 2003 06:12:59 -0000	1.33
++++ linuxthreads/attr.c	18 Oct 2003 22:34:03 -0000
+@@ -455,12 +455,19 @@ int pthread_getattr_np (pthread_t thread
+ 		{
+ 		  /* Found the entry.  Now we have the info we need.  */
+ 		  attr->__stacksize = rl.rlim_cur;
++#ifdef _STACK_GROWS_DOWN
+ 		  attr->__stackaddr = (void *) to;
+-
++#else
++                  attr->__stackaddr = (void *) from;
++#endif
+ 		  /* The limit might be too high.  This is a bogus
+ 		     situation but try to avoid making it worse.  */
+ 		  if ((size_t) attr->__stacksize > (size_t) attr->__stackaddr)
++#ifdef _STACK_GROWS_DOWN
+ 		    attr->__stacksize = (size_t) attr->__stackaddr;
++#else
++                    attr->__stacksize = (size_t)(to - from);
++#endif
+ 
+ 		  /* We succeed and no need to look further.  */
+ 		  ret = 0;
