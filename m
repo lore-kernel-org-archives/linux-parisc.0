@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98A054833
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 11:02:37 -0700 (MST)
-Message-ID: <3C4DA886.8C735B73@admin.france.hp.com>
-Date: Tue, 22 Jan 2002 18:59:34 +0100
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: Randolph Chung <randolph@tausq.org>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DF0C6482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 11:12:22 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ombykaaa for parisc-linux@lists.parisc-linux.org; Tue, 22 Jan 2002 11:12:22 -0700
+Date: Tue, 22 Jan 2002 10:11:53 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] vmlinux header for savecrash.
-References: <3C4C53B7.67DA24E@admin.france.hp.com> <20020121202539.994A5482A@dsl2.external.hp.com> <3C4D2EFB.F82671C2@admin.france.hp.com> <20020122174533.38418482A@dsl2.external.hp.com> <20020122175332.GF3247@tausq.org>
-Content-Type: multipart/mixed;
- boundary="------------820870432D8CD31750F501ED"
+Message-ID: <20020122181153.GG3247@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <3C4C53B7.67DA24E@admin.france.hp.com> <20020121202539.994A5482A@dsl2.external.hp.com> <3C4D2EFB.F82671C2@admin.france.hp.com> <20020122174533.38418482A@dsl2.external.hp.com> <3C4DA793.B17F1D3C@admin.france.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3C4DA793.B17F1D3C@admin.france.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,49 +26,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------820870432D8CD31750F501ED
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In reference to a message from Bruno Vidal, dated Jan 22:
+> 	Hi
+> I don't know how to retrieve option pass to the kernel,
+> but give me some clue, and I'll add this information in
+> the dump header asap, because it is a really good idea :-)
 
-lkcd is really simple, it takes /boot/vmlinux, /boot/kerntype, 
-and /boot/System.map. It don't take care about that, it is the 
-user problem :-(, I want to be a little more user friendly.
+static char *boot_kernel = "/boot/vmlinux";
+MODULE_PARM(boot_kernel, "s")
+MODULE_PARM_DESC(boot_kernel, "Boot kernel path")
 
-Randolph Chung wrote:
-> 
-> > Randolph Chung and I were wondering if dump driver could save a
-> > parameter passed in by palo: eg "boot_kernel=/boot/vmlinux-pa11".
-> > I haven't checked if something like that already exists.
-> 
-> Is this really an arch-dependent problem? How do other architectures (I
-> think lkcd works on i386 and alpha?) do this?
-> 
-> randolph
-> --
->    @..@                                         http://www.TauSq.org/
->   (----)
->  ( >__< )
->  ^^ ~~ ^^
+then i guess somehwere in your dump code strcpy boot_kernel to a known
+location in the dump.
 
+of course we still need to change palo to do this (pass the
+parameter)... paul, any comments?
+
+randolph
 -- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------820870432D8CD31750F501ED
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
-
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------820870432D8CD31750F501ED--
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
