@@ -1,32 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA26517
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 11:43:30 -0700
-From: Hugo.van.der.Kooij@caiw.nl
-Date: Mon, 22 Nov 1999 19:43:25 +0100 (CET)
-To: Andi <der_fisch@fischlustig.de>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP-UX 10.20 for free?
-In-Reply-To: <99112217140600.11388@beavis>
-Message-ID: <Pine.LNX.4.10.9911221942310.10075-100000@bastion.hugo.vanderkooij.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA26696
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 11:53:43 -0700
+Received: (from pschwan@localhost)
+	by burrow.puffingroup.com (8.8.7/8.8.7) id OAA04620
+	for parisc-linux@thepuffingroup.com; Mon, 22 Nov 1999 14:53:54 -0500
+Message-ID: <19991122145353.H3543@thepuffingroup.com>
+Date: Mon, 22 Nov 1999 14:53:53 -0500
+From: Phil Schwan <pschwan@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] PA-RISC Linux LXR / Bonsai
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 22 Nov 1999, Andi wrote:
+Greetings hackers--
 
-> I just ordered the HP-UX 10.20 Y2K upgrade from this page.
-> 
-> http://www.software.hp.com/products/Y2K/cd_form.html
-> 
-> Is this really free, there were no hint whether it costs nothing or $10000.
+I'm happy to announce that the amazingly useful LXR and Bonsai tools
+are now at our disposal.  They sprang fully grown from the beast that
+is Mozilla dot org, all praise the project.
 
-I didn't pay anything. And the set was brought right at home.
+They're available for your use at http://puffin.external.hp.com/lxr/
+and http://puffin.external.hp.com/bonsai/ respectively.
 
-Hugo.
+As you look around, you'll notice that LXR calls into Bonsai and vice
+versa--they're really designed to work together, and can aid in
+understanding the code and the various patches.
 
--- 
-Hugo van der Kooij; Oranje Nassaustraat 16; 3155 VJ  Maasland
-hvdkooij@caiw.nl	http://home.kabelfoon.nl/~hvdkooij/
---------------------------------------------------------------
-Use of any of my email addresses for unsollicited (commercial)
-    email is a clear intrusion of my privacy and illegal!
+The Bonsai query form is pretty self-explanitory, but if there's
+enough demand I'll write up a quick tutorial.  People in the office
+have played around with both, but let me know if there are bugs that
+didn't catch our eye.
+
+Enjoy!
+
+-Phil
