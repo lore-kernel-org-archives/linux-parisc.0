@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 260AE4841
-	for <parisc-linux@parisc-linux.org>; Mon, 13 Oct 2003 05:44:32 -0600 (MDT)
-Date: Mon, 13 Oct 2003 13:44:28 +0200
-Message-ID: <3F8A272E00000550@ocpmta3.freegates.net>
-In-Reply-To: <20031012200201.GC23999@systemhalted>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] evolution (1.4.5-1) do_page_fault?
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from ADSL (pooladsl-a-9-250.ipcom.comunitel.net [212.145.200.250])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 65609488D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 13 Oct 2003 12:33:31 -0600 (MDT)
+From: loteriaprimitiva2001@starspath.com
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+	charset="US-ASCII"
+Reply-To: loteriaprimitiva2001@starspath.com
+Date: Thu, 13 Nov 2003 20:34:16 +0100
+Message-Id: <20031013183331.65609488D@dsl2.external.hp.com>
+Subject: [parisc-linux] CONGRATULATIONS AND BEST REGARDS.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,58 +21,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Carlos,
-
-I just haven't such hw at my office where otc i can do some other check on
-the b2k model.
-
-On this b2k (also installed with unstable debian) run fine the same release
-of evolution (otc what i said).
-But it is booted with last 2.4 (a merge of 23-pre7 and 22-pa12) with 256M
-of ram (only 128k for c110) and without mozilla-psm (a recommended or suggested
-additional pkg added on c110).
-
-So a lot of test to figure out the present pb :)
-
-Thanks a lot ( I will advise you :) )
-    Joel
-
->-- Original Message --
->From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: Joel Soete <soete.joel@tiscali.be>
->Cc: parisc-linux@parisc-linux.org
->Date: Sun, 12 Oct 2003 16:02:02 -0400
->Subject: Re: [parisc-linux] evolution (1.4.5-1) do_page_fault?
->
->
->On Sun, Oct 12, 2003 at 06:42:55PM +0000, Joel Soete wrote:
-> Hello Carlos,
-> 
-> I launch 'gbd evolution'
-> (gdb) run
-> to determine the new address in this env but failed before with message:
-> Program received signal SIG37, Real-time event 37.
-
->> 0x4193c574 in malloc_set_state () from /lib/libc.so.6
-> 
-> what's your opinion?
-
-That's libpthreads realtime singal mechanism working.
-You need to set "handle all nostop" and "handle all pass" in gdb.
-
-Then you can do the math with /proc/<pid>
->maps and the dying address to
-calculate the _real_ library offset and function symbolic name.
-
-c.
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman
->listinfo/parisc-linux
+LOTTERIA   LA   PRIMITIVA.
+AVNIDA DE AMERICA 137, MADRID - ESPAÑA
 
 
+FROM: THE DESK OF THE PROMOTIONS MANAGER,
+INTERNATIONAL PROMOTIONS/PRIZE AWARD DEPARTMENT,
+REF: LP/26510460037/02 BATCH: 24/00319/IPD
 
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+                   ( CONGRATULATION)
+
+DEAR SIR,
+                AWARD NOTIFICATION FINAL NOTICE.
+
+We are pleased to inform you of the announcement, of winners of the
+LOTTERY PRIMITIVA SWEEPSTAKES/INTERNATIONAL PROGRAMS held on 4th 
+december,2002.the late release of this result was due to difficulties encountered in sorting out mixed up numbers and email addresses,that´s why we have been working 24 hours to see that everything is ok.
+
+Your name is attached to ticket number 004-05117963-198, with serial
+number 99375 drew the lucky numbers 31-33 -34-35-36-42, and 
+consequently,won the lottery in the 3rd category. You have therefore been approved for a lump sum pay out of (€uros 847,824,) EIGHT HUNDRED AND FOURTY SEVEEN THOUSAND,EIGHT HUNDRED AND TWENTY-FOUR EUROS.  in cash credited to file No:LP/26510460037/02.This is from total prize money of EUROS (€80,400,000.00,)EIGHTY MILLION FOUR HUNDRED THOUSAND EUROS, shared among the twenty two international winners in this category.
+
+All participants were selected through a computer ballot system drawn
+form 25,000 names from Australia, New Zealand, America, Europe, North
+America and Asia as part of International Promotions Program, which is
+conducted annually. CONGRATULATIONS!!! Your fund is now insured to your
+name. Due to the mix up of some numbers and names, however you are please advise to keep this award away from public notice, until your claim has been processed and your money remitted to your account.
+This is part of our security protocol to avoid double claiming or
+unscrupulous acts by participants of this program. We hope with a part
+of you prize, you will participate in our end of year high stakes 
+Euros 1.1 billion International Lottery. To begin your claim, please You have to pay the form fee whis is EU750(seven hundred and fifty euros)for the processing and remittance of your fund into the bank of your choice,or you can contact your claims agent, Mr Michel Sarda (FOREIGN OPERATION MANAGERS)for more explanation.
+at TEL:00-34-637092192,EMAIL:LUCKYSRIKE@STARSPATH.COM
+
+   For due processing and remittance of your prize money to a
+designated account with our bankers. Remember, all prize money must be
+claimed not later than 27th NOVENBER, 2003. After this date, all funds
+will be returned as unclaimed. NOTE: In order to avoid unnecessary
+delays and complications, please remember to quote your reference and
+batch numbers in every one of your correspondences with your agent.
+Furthermore, should there be any change of your address, do inform your
+claims agent as soon as possible. Congratulations again from all our
+staff and thank you for being part of our promotions programm.
+
+(CONGRATULATION)
+
+REGARDS
+
+MR RUBEN GARCIA 
+MANAGING DIRECTOR
