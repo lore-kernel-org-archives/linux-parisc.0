@@ -1,61 +1,77 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA30139
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 10:25:27 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 9EFC6498
-	for <parisc-linux@thepuffingroup.com>; Wed, 22 Nov 2000 09:27:09 -0800 (PST)
-Message-Id: <200011221727.JAA21644@milano.cup.hp.com>
-To: "CLAPPER,MIKE \(HP-USA,ex1\)" <mike_clapper@hp.com>
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] B132L boot hang 
-In-reply-to: Your message of "Wed, 22 Nov 2000 07:54:24 PST."
-             <ED34C7F701D5D31196260090278CAFDA01981A60@xatl04.atl.hp.com>
-Date: Wed, 22 Nov 2000 09:27:20 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA31031
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 11:06:09 -0700
+Received: from adlmail.cup.hp.com (adlmail.cup.hp.com [15.0.100.30])
+	by atlrel2.hp.com (Postfix) with ESMTP id 482AECA9
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 13:08:24 -0500 (EST)
+Message-Id: <200011221806.KAA06196@adlmail.cup.hp.com>
+Subject: Re: [parisc-linux] Use of the EI_OSABI field
+Date: Wed, 22 Nov 2000 10:06:05 -0800
+From: Cary Coutant <cary@cup.hp.com>
+To: "H . J . Lu" <hjl@valinux.com>, "Alan Modra" <alan@linuxcare.com.au>
+Cc: "Ulrich Drepper" <drepper@cygnus.com>,
+        "John Marvin" <jsm@udlkern.fc.hp.com>,
+        <parisc-linux@puffin.external.hp.com>,
+        <parisc-linux@thepuffingroup.com>, <binutils@sourceware.cygnus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 List-ID: <linux-parisc.vger.kernel.org>
 
-"CLAPPER,MIKE (HP-USA,ex1)" wrote:
-> 
-> 
-> Hello Everyone,
-> 
-> I download the cross-compilers and  build a lifimage on Redhat 6.1.  I set
-> up nfsroot on a S712 running hpux 10.20.  With this I am able to boot a
-> B132L running pdc 6.1 - 
-> almost.  I get a hang right after -
-> 
-> VFS: Mounted root (nfs filesystem) readonly
-> Warning: unable to open an initial console
+As the original author of the proposal to add the EI_OSABI field to the 
+ELF format, let me try to clarify the intent of this field. The 
+authoritative definition of this field is found in SCO's gABI document, 
+which is still the official specification for the ELF format (this is 
+probably posted somewhere on SCO's web site). Here's what it says:
 
-I think I need more output. Based on ioscan output, the B132L
-has two serial ports:
-8/16/4 - off of LASI
-8/20/2 - of WAX (EISA Bus Adapter)
+    Byte e_ident[EI_OSABI] identifies the operating system and
+    ABI to which the object is targeted. Some fields in other ELF
+    structures have flags and values that have operating system
+    and/or ABI specific meanings; the interpretation of those
+    fields is determined by the value of this byte. The value of
+    this byte must be interpreted differently for each machine.
+    That is, each value for the e_machine field determines a set
+    of values for the EI_OSABI byte. Values are assigned by the
+    ABI processor supplement for each machine. If the processor
+    supplement does not specify a set of values, the value 0
+    shall be used and indicates unspecified.
 
-(GSCtoPCI is at 8/0)
+The first sentence is still a bit misleading, and is an artifact of the 
+original proposal. Originally, the field was intended to identify the 
+target ABI (hence the name of the field). As we started discussing a 
+common Unix ABI for IA-64, however, it became clear that this field 
+wouldn't serve that purpose, but it was still needed to identify the set 
+of platform-specific ELF extensions that are used by the object file.
 
-I don't think the one off of WAX is supported right now.
+There are a number of fields in the ELF format for which ranges of values 
+or a set of flag bits are reserved for vendor-specific use (e.g., 
+SHT_LOOS through SHT_HIOS for vendor-specific section types, and 
+SHF_MASKOS for vendor-specific section attributes). If an object file 
+uses any of these values or flag bits, the consumer of the file must 
+consult the EI_OSABI field to determine what those values or flags mean. 
+It works just like the e_machine field does for attaching meaning to 
+processor-specific values and flags.
 
-Are you using the default .config produced by "make oldconfig"?
+The intent is that any ABI-conforming implementation will be able to 
+execute an ABI-conforming binary, even if it uses certain vendor-specific 
+features. In many cases, those vendor-specific features are hints for a 
+particular OS that can be ignored by other implementations. Where this is 
+not the case, and a vendor-specific feature must be understood by the 
+system in order to process the file correctly, we have a couple of 
+alternatives.
 
-It's also possible the LASI support is broken on B132L and I would
-expect some console output indicating what's wrong.
+For section types and flags that a linker must understand, we have the 
+SHF_OS_NONCONFORMING flag -- if set, and a linker doesn't understand a 
+particular section type or flag, it must reject the file.
 
-> I have a 700/96 on serial port 1 as the console.  I have hpux on a disc in
-> the unit I'm trying to boot - from HPUX I have verified I can nfs mount the
-> filesys I'm using for NFSROOT.
+For executables that will execute only on a particular implementation, we 
+must use an alternate interpreter (PT_INTERP) or bind to 
+implementation-specific shared libraries. An ABI-conforming binary will 
+use the interpreter specified in the psABI spec, and will use only system 
+libraries specified there.
 
-NFS root mounted fine. Console is the problem.
+For statically-bound programs, I'm afraid we don't have a clear solution. 
+We took the general approach that such programs are not ABI-conforming in 
+the first place, and can use any mechanism they might choose to verify 
+that they are executing on the appropriate implementation.
 
-...
-> Is there a way to keyword search the developers archive?  I vaguely recall
-> seeing the 'initial console' warning, but couldn't find it browsing the
-> developers archive
-
-Yes - http://puffin.external.hp.com/cgi-bin/mailgrep
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+-cary
