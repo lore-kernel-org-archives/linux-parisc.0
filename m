@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from orion.netbank.com.br (orion.netbank.com.br [200.203.199.90])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5F3E1482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 09:49:41 -0600 (MDT)
-Date: Fri, 18 Jul 2003 12:51:29 -0300
-From: Arnaldo Carvalho de Melo <acme@conectiva.com.br>
-To: Thibaut VARENE <varenet@esiee.fr>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] arch/parisc/kernel/perf_asm.o not building
-Message-ID: <20030718155128.GE1582@conectiva.com.br>
-References: <20030718041440.GZ1582@conectiva.com.br> <200307180538.h6I5cdAI024133@hiauly1.hia.nrc.ca> <20030718132619.524d8304.varenet@esiee.fr>
+Received: from tonylee9-5zaxon (unknown [220.113.166.202])
+	by dsl2.external.hp.com (Postfix) with SMTP id 770D2482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 10:28:35 -0600 (MDT)
+From: webmaster <webmaster@127.0.0.1>
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030718132619.524d8304.varenet@esiee.fr>
+Message-Id: <20030718162835.770D2482B@dsl2.external.hp.com>
+Date: Fri, 18 Jul 2003 10:28:35 -0600 (MDT)
+Subject: [parisc-linux] -------|优惠虚拟主机！|------
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,36 +20,85 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Em Fri, Jul 18, 2003 at 01:26:19PM +0200, Thibaut VARENE escreveu:
-> On Fri, 18 Jul 2003 01:38:39 -0400 (EDT)
-> "John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
-> 
-> > > 2.6-bk (i.e. latest linus tree in master.kernel.org), using the
-> > > xc-20020118.tar.bz2 cross compiler (latest):
-> > 
-> > This doesn't work as it doesn't have all the necessary parisc-linux
-> > patches.  Use the parisc-linux source.
-> > 
-> 
-> fyi, there's a 3.0.4 xc for i686 (as well as many other platform) on
-> pateam:
-> http://pateam.esiee.fr/download.html
+亲爱的朋友：
+　　您好！
+　　这是来自厦门市宝灵科技网络有限公司的问侯。感谢您收看这封邮件。我们真诚的希望
+您能成为我们在贵地区的重要伙伴。我们是一家采用世界高新技术结晶，研究、推广和发展
+新技术，致力于互联网信息服务、域名注册服务和虚拟主机服务的高新技术企业。详情请浏
+览:http://www.host-china.com 
+    公司自2003年起全力进军国际互联网服务领域，整合推出了以下产品。所有空间都支持
+数据库（linux+PHP+Mysql;NT+asp+acess）。这将会是您超值的选择。
+　　1.30M空间+30M企业邮局 + 送一国际域名 ，功能全面，仅售198元/年。
+　　2.120M空间＋120M企业邮箱＋1个国际域名，功能全面，仅售330元/年。
+    3.200M空间＋50M企业邮箱＋1个国际域名，功能全面，仅售450元/年。
+    4.300M空间＋50M企业邮箱＋1个国际域名，功能全面，仅售580元/年。
+　　
+　　尽管我们尽力为您提供最好的服务。，但不排除出现失误。如果是这样，我们宁愿接受
+退款，也不会因为哪怕一点点的不满意而让您不开心。所以我们承诺：主机不满意按实际余
+额退款。请不要直接回复,回复请发:xiamen263@hotmail.com
+　　祝：开心！顺利！
+　　　　　　　　　　　　　　　　　　　　webmaster of http://www.host-china.com 
+                                        厦门市宝灵科技网络有限公司
+                                        http://www.host-china.com
+                                        电话：0592-5915491（热线）   0592-5652685　
+                                        传真：0592-5652687　　
+                                        联系人：李先生 金小姐
+　　　　　　　　　　　
 
-Thanks, I'm updating it now, just for the record, another thing I've noticed:
 
-===== drivers/char/vt.c 1.53 vs edited =====
---- 1.53/drivers/char/vt.c	Fri Jun 20 17:16:20 2003
-+++ edited/drivers/char/vt.c	Fri Jul 18 12:45:57 2003
-@@ -2371,7 +2371,7 @@
- /*
-  * Turn the Scroll-Lock LED off when the console is started
-  */
--static void con_start(struct tty_struct *tty)
-+void con_start(struct tty_struct *tty)
- {
- 	int console_num;
- 	if (!tty)
 
-Will download the diff Willy pointed out and try again with the new xc.
 
-- Arnaldo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------
+沸点群发邮件,来自软件工程专家网(http://www.21cmm.com)
+
+进CMM网校(http://www.21cmm.com)，成项目管理专家
