@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id CEAAD482B
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 27 Apr 2002 18:12:58 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D090482B
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 27 Apr 2002 22:48:10 -0600 (MDT)
+Date: Sun, 28 Apr 2002 00:48:08 -0400
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: Helge Deller <deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] HIL -> Keymap ok?
-Date: Sun, 28 Apr 2002 02:09:52 +0200
-References: <20020427171144.C12610@systemhalted>
-In-Reply-To: <20020427171144.C12610@systemhalted>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200204280209.52360.deller@gmx.de>
+Message-ID: <20020428004808.C13522@systemhalted>
+References: <20020427171144.C12610@systemhalted> <200204280209.52360.deller@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200204280209.52360.deller@gmx.de>; from deller@gmx.de on Sun, Apr 28, 2002 at 02:09:52AM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Saturday 27 April 2002 23:11, Carlos O'Donell Jr. wrote:
-> I recently needed to connect an HIL keyboard to our 715/50 boxes and
-> was surprised to find that the key mapping was less than correct
-> (2.4.18-pa22).
+Helge,
 
-Hmm, I've no problems with my HIL keyboard on console.
-(In X11 you have of course to use the correct mapping.)
+> > p.s. This is just the start of my quest to stop the unbliking eye...
+> >      a.k.a. "hardware cusor blinking" ... from _always_ appearing
+> >      during framebuffer writes.
+> 
+> Shouldn't be that hard.
+>
 
-> p.s. This is just the start of my quest to stop the unbliking eye...
->      a.k.a. "hardware cusor blinking" ... from _always_ appearing
->      during framebuffer writes.
+I've done a few nasty things to /drivers/video/sti to attempt to
+stop the hardware cursor bliking, but I've not succeeded.
 
-Shouldn't be that hard.
+Even if I have no console on /dev/fb0 the penguin and blinking
+cursor are the first things to appear as the fb device is initialized.
 
-Greetings,
-Helge
+Any hints?
+
+c.
