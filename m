@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3296B4833
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Jun 2002 06:44:41 -0600 (MDT)
-Date: Tue, 4 Jun 2002 08:44:40 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: Patrick Caulfield <patrick@tykepenguin.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kdb_v21 branch updated to -pa26, and kallsyms cross-compile
-Message-ID: <20020604084440.A24973@systemhalted>
-References: <20020529141231.GG9919@tykepenguin.com> <20020529110118.A3691@systemhalted> <20020529162438.GJ9919@tykepenguin.com> <20020529132631.B3691@systemhalted> <20020529180739.GL9919@tykepenguin.com> <20020530143626.GF810@tykepenguin.com> <20020530133515.B15631@systemhalted> <20020531072849.GD1145@tykepenguin.com> <20020531085419.B18658@systemhalted> <20020604115547.GB1808@tykepenguin.com>
+Received: from medianet-1v.grolier.fr (medianet-1v.grolier.fr [194.158.98.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D87144835
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Jun 2002 07:44:46 -0600 (MDT)
+Received: from m6net.fr (localhost [127.0.0.1])
+	by medianet-1v.grolier.fr (8.9.3+Sun/8.9.3) with SMTP id PAA21413
+	for parisc-linux@lists.parisc-linux.org; Tue, 4 Jun 2002 15:44:44 +0200 (CEST)
+Date: Tue, 4 Jun 2002 15:44:44 +0200 (CEST)
+From: jlc.bardou@m6net.fr
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020604115547.GB1808@tykepenguin.com>; from patrick@tykepenguin.com on Tue, Jun 04, 2002 at 12:55:47PM +0100
+Message-Id: <mnet1.1023198284.11531.jlc.bardou@m6net.fr>
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] B180L
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> > The _interesting_ thing would be to diff the System.map's
-> > for kdb-on vs. kdb-off to see is anything is explicitly being
-> > removed.
-> 
-> My guess was the the scsi __init functions were not getting called for some
-> reason, I have the System.map files for both builds but they both look OK (not
-> that I ful understand the kernel __init system though) 
->
+Hello,
 
-Yeah, I've run through the kdb and non-kdb builds and everything
-is okay. 
+I have an HP PARISC B180L with a gecko graphics card.
+What your method for config X11 on the debian 0.9.3 ?
+Because i can't do that with the method for linux on I386 with XF86config.
 
-I think there are two maybe three places where kdb initializes 
-certain structures during startup. I'm going to have to check 
-those paths to see how far it gets before dying.
+Can you help me please=21
 
-Any comments from the crowd would be helpfull :)
 
-/me goes off to add some printk's and extra checks
-c. 
+-------------------------------------------
+LOFT STORY SUR TON MOBA=CFLLL =21=21=21 =
+
+Habille ton portable aux couleurs de Loft Story et fais-le vibrer au son d=
+e ton =E9mission pr=E9f=E9r=E9e en appelant le 08 99 707 500 (1,35 E/appel=
+ + 0,34 E/min)
