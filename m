@@ -1,31 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A93DE4A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 10:06:21 -0700 (MST)
-Message-Id: <200102161709.JAA13661@milano.cup.hp.com>
-To: Kevin Read <obsidian@panokratie.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Can't build kernel without PCI 
-In-reply-to: Your message of "Fri, 16 Feb 2001 09:42:46 PST."
-             <Pine.LNX.4.31.0102160941400.3578-100000@kiste.innnet.de>
-Date: Fri, 16 Feb 2001 09:08:52 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mail.obsidian.de (unknown [213.69.121.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A67484A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Feb 2001 13:23:56 -0700 (MST)
+Date: Sat, 17 Feb 2001 21:24:06 +0100 (MET)
+From: Kevin Read <obsidian@panokratie.de>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Test on 705
+In-Reply-To: <20010216084830.K1374@linuxcare.com>
+Message-ID: <Pine.LNX.4.31.0102172122570.3166-100000@kiste.innnet.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Kevin Read wrote:
-> 
-> Hi folks,
-> 
-> btw, the kernel won't build if you don't select PCI support which I don't
-> have on the 705 ;). It complains about missing inb and outb functions.
-> When I select it everything is ok.
 
-Your 705 doesn't have anything "PCI-Like" in either.
-The "inb/outb" imply you are including a driver that's "PCI-like".
-If you can narrow down which driver(s) complain about it...
+On Fri, 16 Feb 2001, Richard Hirst wrote:
 
-grant
+> On Fri, Feb 16, 2001 at 12:18:53AM +0100, Kevin Read wrote:
+> >
+> > Hi folks,
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+> > devices and I couldn't find any packets from the box on the net.
+>
+> This looks to me very much like the problems with 710(bushmaster),
+> where things basically work, but interrupts from the scsi and ethernet
+> chips just never get seen by the cpu.
+>
+> We need info from someone with access to hp documentation to fix
+> these systems, I think.
+
+You wouldn't know who I could pester until I got this stuff? ;)
+
+Or is there a way to scrounge this info from HP-UX?
+
+Thanks,
+
+
+		Kev
