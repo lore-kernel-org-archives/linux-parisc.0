@@ -1,18 +1,19 @@
-Return-Path: <jbglaw@dvmwest.gt.owl.de>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BA4F487E
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA80548AB
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  2 Feb 2004 00:20:53 -0700 (MST)
-Date: Mon, 2 Feb 2004 08:20:50 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [Update] glibc 2.3.2 bug free on hppa.
-Message-ID: <20040202072050.GB28571@lug-owl.de>
-References: <20040201230839.GA10328@baldric.uwo.ca>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
-In-Reply-To: <20040201230839.GA10328@baldric.uwo.ca>
+	Mon,  2 Feb 2004 03:25:34 -0700 (MST)
+Date: Mon, 2 Feb 2004 11:25:08 +0100
+Message-ID: <401530610000500D@ocpmta1.freegates.net>
+In-Reply-To: <20040201200540.GG959@tausq.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 carlos
+To: "Randolph Chung" <randolph@tausq.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+	Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,44 +23,70 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hi Randolph,
 
---WYTEVAkct0FjGQmd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Very sorry but it doesn't works :( 
+(Sorry also if I couldn't help more: my knowledge of kernel internals is
+still too limited :( )
 
-On Sun, 2004-02-01 18:08:45 -0500, Carlos O'Donell <carlos@baldric.uwo.ca>
-wrote in message <20040201230839.GA10328@baldric.uwo.ca>:
+Thanks for your attention,
+    Joel
 
-> So.... who wants to setup an automated glibc builder? :}
 
-I certainly could (from hardware and shell scripting opint of view), but
-I might need some help with all the ./configury ...
+>-- Original Message --
+>Date: Sun, 1 Feb 2004 12:05:40 -0800
+>From: Randolph Chung <randolph@tausq.org>
+>To: Joel Soete <soete.joel@tiscali.be>
+>Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+>	James Bottomley <James.Bottomley@steeleye.com>,
+>	parisc-linux@lists.parisc-linux.org
+>Reply-To: Randolph Chung <randolph@tausq.org>
+>Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 carlos
+>
+>
+>> Sorry for auto-reply but my suspicious was right: I just revert this patch:
 
-Building a toolchain isn't allways a pleasuring task, esp. if you want a
-cross-toolchain. So if interested, I'd dedicate my b132l to that job:)
+can you try this one instead?
 
-MfG, JBG
+randolph
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
+Index: arch/parisc/kernel/head64.S
+===================================================================
+RCS file: /var/cvs/li
+>ux-2.6/arch/parisc/kernel/head64.S,v
+retrieving revision 1.3
+diff -u -p -r1.3 head64.S
+--- arch/parisc/kernel/head64.S 17 Jan 2004 15:00:32 -0000      1.3
++++ arch/parisc/kernel/head64.S 1 Feb 2004 18:09:13 -0000
+@@ -165,8 +165,7 @@ common_stext:
 
---WYTEVAkct0FjGQmd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+> #endif /* CONFIG_SMP */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+        /* Save the rfi target address */
+-       ldo             -THREAD_SZ_ALGN(%sp), %r1
+-       ldd             TI_TASK(%r1), %r1
++       ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r1
+        std             %r11,
+> TASK_PT_GR11(%r1)
 
-iD8DBQFAHfpSHb1edYOZ4bsRAuQ0AJ9PhQX3J4kxo3b/3fAQSpy1hFWZuwCdEbEA
-6HzEFhniP0BKKeKsgG5anQg=
-=/Nui
------END PGP SIGNATURE-----
+ #ifndef CONFIG_PDC_NARROW
+@@ -301,7 +300,8 @@ smp_slave_stext:
 
---WYTEVAkct0FjGQmd--
+        /*  Initialize the SP - monarch sets up smp_init_current_idle_task
+*/
+        load32          PA(smp_init_current_idle_task),%sp
+-       ldd            
+>0(%sp),%sp      /* load task address */
++       ldd             0(%sp),%sp      /* load thread_info address */
++       ldd             TASK_THREAD_INFO(%sp), %sp
+        mtctl           %sp,%cr30       /* store in cr30 */
+        ldo             TH
+>EAD_SZ_ALGN(%sp),%sp
+        tophys_r1       %sp
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
