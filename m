@@ -1,36 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA32416
-	for <parisc-linux@puffin.external.hp.com>; Sun, 21 Jan 2001 17:29:41 -0700
-Received: from home.com ([24.3.245.88]) by femail5.sdc1.sfba.home.com
-          (InterMail vM.4.01.03.00 201-229-121) with ESMTP
-          id <20010122003315.FVHL18198.femail5.sdc1.sfba.home.com@home.com>
-          for <parisc-linux@thepuffingroup.com>;
-          Sun, 21 Jan 2001 16:33:15 -0800
-Message-ID: <3A6B8061.B175A1D7@home.com>
-Date: Sun, 21 Jan 2001 18:35:45 -0600
-From: Matthew Hudson <mhudson@home.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA00726
+	for <parisc-linux@puffin.external.hp.com>; Sun, 21 Jan 2001 18:29:03 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 22 Jan 2001 01:32:42 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA18230;
+	Mon, 22 Jan 2001 12:30:17 +1100
+Date: Mon, 22 Jan 2001 12:30:17 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+cc: Richard Hirst <rhirst@linuxcare.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] New XC available (was Re: glibc build failing)
+In-Reply-To: <20010117233700.B324F38D85@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0101221228460.13332-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [Fwd: (no subject)]
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Wed, 17 Jan 2001, Matt Taggart wrote:
 
+> Up till this merge we were still running bits from September 25th which didn't 
+> have a "stable" number. So someone needs to make our glibc -O2 clean.
 
-Bustayoass@aol.com wrote:
-> 
-> Hello,
->       I saw your post about your j210xc, and I was wondering if by
-> chance
-> you knew where I could get some manuals or troubleshooting references
-> on a
-> j210xc. When I power it up, it tests itself, and after a long while,
-> it comes
-> up with 8 yellow boxes at the bottom of the screen. I cannot type any
-> commands, it only lets me change terminal options. I think that if I
-> get into
-> setup, I can configure it properly, but I don't know how to access it.
-> If you
-> can give me any help, I would greatly appreciate it.
->       Thanks,
->       Matt
+No, someone needs to fix gcc.  Investigating...
+
+-- 
+Linuxcare.  Support for the Revolution.
