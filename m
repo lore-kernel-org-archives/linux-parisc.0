@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 69512485E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Apr 2003 17:28:35 -0600 (MDT)
-Date: Sun, 27 Apr 2003 15:34:55 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Alexander Gabert <pappy@nikita.ath.cx>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] -fPIC position independent code on parisc
-Message-ID: <20030427223455.GF25257@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030427200418.GA30929@nikita.ath.cx> <20030427201219.GE25257@tausq.org> <20030427231210.GA31520@nikita.ath.cx>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030427231210.GA31520@nikita.ath.cx>
+Received: from smtp-out.tiscali.be (unknown [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 40DCE482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Apr 2003 06:40:42 -0600 (MDT)
+Date: Mon, 28 Apr 2003 14:40:40 +0200
+Message-ID: <3EA9466400000C36@ocpmta7.freegates.net>
+In-Reply-To: <002501c30ccf$478f8ee0$fe78a8c0@JOERGSPRINTER>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] cannot install (shellutils)
+To: =?ISO-8859-1?Q?J=F6rg=20Benndorf?= <joerg.benndorf@t-online.de>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,32 +22,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-(Please reply on list and not via private mail)
+Hi Joerg,
+>
+>
+>When installing debian on a hp-9000 712/80 the below warning shows up:
+>
+>"file:/instmnt/pool/main/s/shellutils/shellutils_2.0.11-11_hppa.deb was
+corrupt"
+><continue>
+>"Couldn't download shellutils" <continue>
+>"The previous attempt to install the base system failed. Please select "Next"
+>to retry installation of the base system."
+>
+>I got the install cd by downloading the iso image using jigdo.
+>I have tried version 3.0r0, 3.0r1 and 3.0r1NON-US but none of them works
 
-> i do not understand the "LR'" syntax
-[etc]
+Umm as I install successfuly 3.0r0 (and iirc in the list somebody else reach
+to intall 3.0r1), I do suspect that the pb should be somewhere in the way
+you proceded to burn your cdrom.
 
-Try
-http://docs.hp.com/cgi-bin/onlinedocs.py?mpn=92432-90012&service=hpux&path=00/00/19&title=HP%20Assembler%20Reference%20Manual
+First of all, check the md5sum checksum of the image you download (very usefull
+for big files).
 
-> it has been linked already, how do i find out, where it is resolved?
+If it is ok tell us more about tools you used to burn this image (I use cdrtools
+on *nix system)
 
-After you link an application, you can disassmble the executable.
+hth,
+    Joel
 
-> but what with those LR' RR' LT' RT'
-
-They are all part of the assembler operators for field selection.
-
-> linkage table pointer?
-> what is this? (i am new)
-
-There are several documents that describe the PA runtime linked on the
-parisc-linux website. You might want to check them out. The ELF
-specification, together with the related architecture supplements, 
-describe how relocations work.
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
