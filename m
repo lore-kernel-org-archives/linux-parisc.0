@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Wed, 16 Feb 2005 00:45:04 -0700
-Message-ID: <20050216074504.GC6020@colo.lackof.org>
-References: <20050216065539.GB5251@colo.lackof.org>
-	<4208D51500003293@mail-5-bnl.tiscali.it>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] a b180 panic with 2.6.11-rc3-pa3
+Date: Wed, 16 Feb 2005 20:14:17 +0100
+Message-ID: <20050216201417.737f4c40@Tatooine.r3z0>
+References: <42075CE800002E4E@mail-6-bnl.tiscali.it>
+	<e6eae029050214141362a7d859@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=US-ASCII
+Cc: List Parisc <parisc-linux@lists.parisc-linux.org>
+To: Max Grabert <parisc@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4208D51500003293@mail-5-bnl.tiscali.it>
+In-Reply-To: <e6eae029050214141362a7d859@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +21,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Feb 16, 2005 at 08:28:15AM +0100, Joel Soete wrote:
-> >  RP(r2): 0xa7f9a6c0
-> > Kernel panic - not syncing: Kernel Fault
-> >
-> Any chance to know what 0xa7f9a6c0 is (iirc calling address)?
+On Mon, 14 Feb 2005 22:13:59 +0000
+Max Grabert <parisc@gmail.com> wrote:
 
-return pointer - yes, the callers address.
+> On Mon, 14 Feb 2005 11:30:43 +0000, Joel Soete <soete.joel@tiscali.be>
+> wrote:
+> > Hi all,
+> > 
+> > Don't know if somebody else also emcountered such panic:
+> > Backtrace:
+> 
+> > [<101bb588>] journal_add_journal_head+0xdc/0x13c
+> > [<101b4dd8>] journal_dirty_data+0x64/0x1b0
+> > [<101a6be4>] ext3_journal_dirty_data+0x1c/0x60
+> > [<101a69a8>] walk_page_buffers+0xe0/0xf0
+> > [<101a72b8>] ext3_ordered_writepage+0x168/0x1fc
 
-> and fwiw it's different from previous panic: RP was 0xfa285480?
+Got hit by a similar panic during the night (the kernel uptime was < 5h)
 
-both look like garbage to me.
+Kernel Fault code 15
+Top stack was:
 
-> mmm patch-2.6.11-rc4-bk3 (including some xfs fixes) is small, could you let
-> a try?
+cache_grow
+cache_alloc_refill
+kmem_cache_alloc
+journal_alloc_journal
 
-Sure - tomorrow. You have a URL?
-(Sorry - I think you posted it once before)
+and the rest was identical to your dump.
 
-thanks,
-grant
+IAOQ was alloc_slabmgmt and gr2 was cache_grow
+
+This was 2.6.11-rc3-pa5 freshly built with Kernel Hacking turned off.
+
+HTH
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
