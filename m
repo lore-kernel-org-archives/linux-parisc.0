@@ -1,12 +1,16 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: [parisc-linux] gcc-3.3 configuration
-Date: Wed, 21 May 2003 01:42:53 +0200
-Message-ID: <16074.48509.259405.775905__21959.4245114878$1416622470$gmane$org@gargle.gargle.HOWL>
+From: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] gcc-3.3 configuration
+Date: Wed, 21 May 2003 01:08:54 +0100
+Message-ID: <20030521000854.GN31518__7585.9461249367$1416622471$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <16074.48509.259405.775905@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: debian-gcc@lists.debian.org, m68k-build@nocrew.org
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Cc: parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	m68k-build@nocrew.org
+To: Matthias Klose <doko@cs.tu-berlin.de>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <16074.48509.259405.775905@gargle.gargle.HOWL>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,27 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-For Debian GNU/Linux gcc-3.3 is currently configured with
+On Wed, May 21, 2003 at 01:42:53AM +0200, Matthias Klose wrote:
+> For Debian GNU/Linux gcc-3.3 is currently configured with
+> 
+> 	--with-sjlj-exceptions
+> 
+> to allow a binary compatible upgrade from gcc-3.2 to gcc-3.3. The
+> other Debian platform, where sjlj based exceptions changed to dwarf2
+> based exceptions is m68k, therefore the CC.
 
-	--with-sjlj-exceptions
+*sigh*.  I'm very conflicted over this.  On one hand, Debian is the de-facto
+standard for PA-RISC/Linux binaries.  If another distro cares about
+binary compatibility, they should follow Debian.
 
-to allow a binary compatible upgrade from gcc-3.2 to gcc-3.3. The
-other Debian platform, where sjlj based exceptions changed to dwarf2
-based exceptions is m68k, therefore the CC.
+On the other hand, dwarf exceptions are clearly superior to sjlj.
+We've never _released_ a distro compiled with 3.2 so we can break the
+binary ABI without major repurcussions.
 
-As there are no hppa/m68k distributions released using gcc-3.2,
-compatibility with other released distros is not an issue. OTOH, I see
-Gentoo and probably other distros built for hppa, first starting with
-gcc-3.3, and maybe configured the standard way.
+I'm not sure it's my call to make; I can see arguments on both sides.
 
-Is it worth (or needed) to strive for binary compatibility of hppa
-based distributions, based on gcc-3.3 and glibc-2.3.x?
-
-If yes, does the following approach work: Build a libstdc++5-3.3,
-conflicting with libstdc++5 (including libstdc++ with the same soname)
-and doing binary uploads for hppa for all libstdc++5 dependent
-packages? (The same could be done for m68k, but the compatibility
-argument doesn't hold as Debian seems to be the only m68k based
-distro).
-
-	Matthias
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
