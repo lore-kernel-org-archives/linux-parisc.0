@@ -1,17 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: backport sba change to ccio
-Date: Sun, 6 Mar 2005 16:52:40 -0700
-Message-ID: <20050306235240.GB14771@colo.lackof.org>
-References: <20050304050324.GA30252@colo.lackof.org>
-	<42075CE80000B426@mail-6-bnl.tiscali.it>
-	<20050304163610.GA7363@colo.lackof.org> <42298B2A.702@tiscali.be>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Re: Comments?
+Date: Tue, 8 Mar 2005 12:32:36 -0500
+Message-ID: <20050308173236.GS23803@baldric.uwo.ca>
+References: <200503052153.j25LrOQW014375@hiauly1.hia.nrc.ca>
+	<200503060022.j260MRjc001063@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42298B2A.702@tiscali.be>
+In-Reply-To: <200503060022.j260MRjc001063@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +22,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Mar 05, 2005 at 10:34:18AM +0000, Joel Soete wrote:
-> The snow let me play a bit and the test pass as well as previously as far 
-> as my c110 is a 32bit and so not affected by my mistake.
-> btw what's up of __LP64__ and CONFIG_64BIT ?
+On Sat, Mar 05, 2005 at 07:22:27PM -0500, John David Anglin wrote:
+> > Ok, ld is broken in the binutils CVS head.
+> > __canonicalize_funcptr_for_compare doesn't load the correct address
+> > for _GLOBAL_OFFSET_TABLE_ in shared libraries.  It loads the address
+> > used by main.  As a result, it thinks the plabel for the function
+> > has been resolved ;(
+> 
+> Found it:
+> 
+> 2004-11-02  Hans-Peter Nilsson  <hp@axis.com>
+> 
+>         * elflink.c (_bfd_elf_create_got_section): Hide _GLOBAL_OFFSET_TABLE_.
 
-Use CONFIG_64BIT. The cc dependencies will catch when if one wants
-to re-use the same tree for different builds.
+I'd seen that fly by on binutils and it caused a certain amount of grief
+in glibc. I'm not quite sure what the rational was behind hiding _GOT_.
 
-> I just attached the last udiff file to allow others to test it eventually 
-> on 64bit model :-)
+c.
 
-shouldn't matter if a system has 32 or 64bit kernel for these changes.
-I've committed the "diff4" patch.
-
-thanks,
-grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
