@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23A064852
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Oct 2003 17:54:50 -0600 (MDT)
-Message-ID: <3F91D2C3.8020209@tiscali.be>
-Date: Sat, 18 Oct 2003 23:54:43 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 92A9C483E
+	for <parisc-linux@parisc-linux.org>; Sun, 19 Oct 2003 00:02:00 -0600 (MDT)
+Received: from pd9e4b62d.dip.t-dialin.net (pD9E4B62D.dip.t-dialin.net [217.228.182.45])
+	by cuprel1.hp.com (Postfix) with SMTP id 37642FFC
+	for <parisc-linux@parisc-linux.org>; Sat, 18 Oct 2003 23:01:17 -0700 (PDT)
+Message-ID: <vj1jj4-47b435$$n7f0$$h2@0632b.22>
+From: "Jasmine Nolan" <3oktrwcpf@aol.com>
+Reply-To: "Jasmine Nolan" <3oktrwcpf@aol.com>
+To: parisc-linux@parisc-linux.org
+Date: Sun, 19 Oct 03 19:59:15 GMT
 MIME-Version: 1.0
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
-References: <20031017180912.GD27289@systemhalted> <3F91A332.9050700@tiscali.be>
-In-Reply-To: <3F91A332.9050700@tiscali.be>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/alternative;
+	boundary="_00AA_F4B.6_9..0B046_"
+Subject: [parisc-linux] indiss udside
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,112 +25,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Carlos,
+--_00AA_F4B.6_9..0B046_
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Sucessfully install :)
+<body bgcolor=3D"#FFFFFF" text=3D"#000000" link=3D"#FFFF00" vlink=3D"#FFFF=
+00" alink=3D"#FFFF00">
+<table width=3D"531" height=3D"44" align=3D"center" bgcolor=3D"#950000"><!=
+-- wallis -->
+<tr><td align=3D"center" valign=3D"middle" width=3D"529"><b><font color=3D=
+"#FFFFFF" face=3D"Verdana" size=3D"5">H<!-- glasswort -->ot
+ mo<!-- if -->ms getting f<!-- den -->uck<!-- =
+bethesda -->ed go<!-- antisemitic -->od!</font></b></td></tr></table>=
 
-Some rsync, ssh connection still work fine;
+<table width=3D"527" height=3D"201" align=3D"center" bgcolor=3D"#990000"><=
+tr> 
+<td align=3D"center" valign=3D"top" bgcolor=3D"#990000" height=3D"178"> 
+<table width=3D"525" height=3D"128" align=3D"center"><tr><!-- =
+cavilling -->
+<td align=3D"center" valign=3D"middle" bgcolor=3D"#FFFFFF" height=3D"192">=
 
-as well 'apt-get install somepkg'.
+<p align=3D"left"><!-- implode --><font color=3D"#000000" face=3D"Ver=
+dana" size=3D"4">See
+ the ho<!-- crayfish -->tt<!-- eng -->est as<!-- =
+deborah -->s<!-- bony -->ed mo<!-- backwater -->ms getting=
+ f<!-- watchman -->uc<!-- lopsided -->ked good and ha<!-- =
+cost -->rd. The <!-- megawatt -->way there
+ hu<!-- benefactor -->sbands would never da<!-- creamery -->re, only=
+ at M<!-- divulge -->.i.l<!-- frick -->.f Que<!-- =
+unidimensional -->st.</font>
+ <p align=3D"left"><font color=3D"#000000" face=3D"Verdana" size=3D"4">We
+ sear<!-- inspector -->ch hi<!-- echoes -->gh and low from gr<!--=
+ polonium -->ocery st<!-- departure -->ores to sho<!-- =
+leyden -->pping centers,
+ se<!-- messenger -->archi<!-- defer -->ng for the h<!-- =
+feudal -->ott<!-- ecstasy -->est M<!-- affirm -->.i.l<!--=
+ monitor -->.f's. We sim<!-- sun -->ply of<!-- =
+hugh -->fer the h<!-- architect -->o<!-- hug -->e's so=
+me
+ ca<!-- disruptive -->sh to f<!-- psalter -->u<!-- karamazov -->=
+ck - they just can't res<!-- artemis -->ist.</font></p>
+ <p align=3D"center"><font color=3D"#000000" face=3D"Verdana" size=3D"4"><=
+a href=3D"http://constitution@www.surfbling.com/mi/index.html?=
+reprehensible" style=3D"color: #000000"><!-- fissile -->Cl<!-- =
+ellsworth -->ick
+ he<!-- lanthanum -->re for a F<!-- conveyor -->R<!-- =
+icicle -->EE to<!-- heine -->ur</a></font></td><!-- =
+pathetic --></tr></table></td></tr><!-- arc --></table>
+<table width=3D"533" height=3D"33" align=3D"center" bgcolor=3D"#950000"><!=
+-- aztec --><tr> 
+<td align=3D"center" valign=3D"middle" width=3D"525"><b><font color=3D"#00=
+0000" face=3D"Verdana, Arial, Helvetica, sans-serif" size=3D"2"><a href=3D=
+"http://vineyard@www.surfbling.com/mi/index.html?goniometer">C<!-- =
+lot -->li<!-- spit -->ck
+ he<!-- beg -->re to jo<!-- approval -->in the qu<!-- =
+ejector -->est to fi<!-- berman -->nd ho<!-- acre -->t =
+and ho<!-- mexico -->rn<!-- blanc -->y M.<!-- bound --=
+>I.<!-- torn -->L.F's</a></font></b></td>
+</tr></table><p align=3D"center"><a href=3D"http://cuny@www.surfbl=
+ing.com/rm/rm.php?tessellate" style=3D"color: #000000">I
+do<!-- abominable -->nt wa<!-- wrongdo -->nt to g<!-- =
+barstow -->et any more of these mess<!-- envy -->ages ple<!--=
+ carla -->ase</a></p></body>
+fpyyvwaz  pg
 
-build our k-2.6.0-test8-pa1 with success also (boot fine ;) )
-
-evolution (k-2.4.21-32 always) works fine (a bit slow on my c110)
-
-Test case about mallopt() ok :)
-
-So squid didn't hang any more at start up but still failled:
-'Setting up squid (2.5.4-2) ...
-Creating squid spool directory structure
-FATAL: Could not determine fully qualified hostname.  Please set 
-'visible_hostname'
-
-Squid Cache (Version 2.5.STABLE4): Terminated abnormally.
-CPU Usage: 0.140 seconds = 0.060 user + 0.080 sys
-Maximum Resident Size: 0 KB
-Page faults with physical i/o: 323
-/var/lib/dpkg/info/squid.postinst: line 177:  1082 Aborted 
-    /usr/sbin/squid -z
-Starting proxy server: Creating squid spool directory structure
-FATAL: Could not determine fully qualified hostname.  Please set 
-'visible_hostname'
-
-Squid Cache (Version 2.5.STABLE4): Terminated abnormally.
-CPU Usage: 0.150 seconds = 0.040 user + 0.110 sys
-Maximum Resident Size: 0 KB
-Page faults with physical i/o: 323
-/etc/init.d/squid: line 133:  1106 Aborted 
-/usr/sbin/squid -z
-FATAL: Could not determine fully qualified hostname.  Please set 
-'visible_hostname'
-
-Squid Cache (Version 2.5.STABLE4): Terminated abnormally.
-CPU Usage: 0.180 seconds = 0.080 user + 0.100 sys
-Maximum Resident Size: 0 KB
-Page faults with physical i/o: 435
-/etc/init.d/squid: line 133:  1108 Aborted 
-start-stop-daemon --quiet --start --pidfile $PIDFILE --exec $DAEMON -- 
-$SQUID_ARGS </dev/null
-squid.'
-
-I will try to see?
-
-Joel Soete wrote:
-> Hi Carlos,
-> 
-> I can safely broken my raid1 Debian/unstable install and drive some test 
-> on a disk :) and advise you.
-> 
-> Joel
-> 
-> Carlos O'Donell wrote:
-> 
->> parisc-linux,
->> debian-hppa,
->>
->> --- CALLING ALL TESTERS! ---
->>
->> glibc 2.3.2 is complete for HPPA. We've gotten rid of the following
->> long standing test-suite errors (bug-iconv3, and test-fenv).
->>
->> The regressions in 2.3.2 were caused by incorrect handling of the PIC
->> register by the kernel, but fixed in glibc. Most cases for our stack
->> were handled incorrectly (stack grows up cases), but are fixed in this
->> release.
->>
->> ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-16/
->>
->> Download all the debs and install with:
->>
->> dpkg -i libc6_*.deb
->> (Followed by dpkg -i of the rest in any order, libc6 must install first)
->> Please do this only if you consider yourself a well seasoned linux-type
->> person. If that dpkg install fails for any reason you might be in
->> trouble. I'm running these debs on all my boxes, and I've tested in a
->> chroot, rebuilt our toolchain, and ran lmbench, gnome-session, nautilus,
->> and abi-word.
->>
->> http://www.baldric.uwo.ca/~carlos/a500-gnome-abiword.png
->>
->> Thanks go out to everyone for all the moral support and fun!
->> --- TEST IT AND REPORT BACK ... PLEASE! :) ---
->>
->> == DISCLAIMER ===
->> I do not guarantee that these debs won't cause your computer to explode
->> like a pineapple grenade, showering shrapnel and fiery death on all your
->> loved ones.
->> == DISCLAIMER ===
->>
->> c.
->>
->> _______________________________________________
->> parisc-linux mailing list
->> parisc-linux@lists.parisc-linux.org
->> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->>
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+--_00AA_F4B.6_9..0B046_--
