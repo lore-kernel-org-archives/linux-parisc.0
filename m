@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9205E482D
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  1 Aug 2003 11:00:25 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19idGR-0005Px-0J; Fri, 01 Aug 2003 18:00:23 +0100
-Date: Fri, 1 Aug 2003 18:00:22 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: LaMont Jones <lamont@smallone.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, lamont@hp.com
-Subject: Re: [parisc-linux] __arch__swab24()
-Message-ID: <20030801170022.GX22222@parcelfarce.linux.theplanet.co.uk>
-References: <20030801162255.GA28998@smallone.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030801162255.GA28998@smallone.fc.hp.com>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 65A04482D
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 11:09:41 -0600 (MDT)
+Date: Fri, 1 Aug 2003 19:09:37 +0200
+Message-ID: <3F29178A000004FF@ocpmta7.freegates.net>
+In-Reply-To: <1059753543.2092.30.camel@mulgrave>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] backport bitops.h stuff
+To: "James Bottomley" <James.Bottomley@steeleye.com>
+Cc: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,43 +22,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Aug 01, 2003 at 10:22:55AM -0600, LaMont Jones wrote:
-> Any comments before I commit it to 2.4 and 2.5?
+> Actually, this patch looks decidedly non-optimal.
 
-Here's what I came up with based on your patch.  It's embedded in a
-test program.
+> See include/linux/bitops.h:generic_ffs for how it should be done on
+> architectures that don't have any machine instruction help.  That's only
+> four if statements and no loop.
 
-#include <stdio.h>
+Yes it was like this (just a lake of #include <linux/bitops.h>) into 2.4
 
-typedef int __u32;
+Why was it is changed in 2.5?
 
-static int vanilla_swab24(int i)
-{
-        return ((i & 0xff) << 16) | (i & 0xff00) | ((i & 0xff0000) >> 16);
-}
+> I see we already have the loop thing in 2.5, but should we consider
+> simply using the generic operations there as well?
 
-static __inline__ __const__ __u32 ___arch__swab24(__u32 x)
-{
-        __asm__("shd %0, %0, 8, %0\n\t"         /* shift xabcxabc -> cxab */
-                "dep %0, 15, 8, %0\n\t"         /* deposit cxab -> cbab */
-                "shd %%r0, %0, 8, %0"           /* shift 0000cbab -> 0cba */
-                : "=r" (x)
-                : "0" (x));
-        return x;
-}
+> even for __ffs, which is just a slight optimisation over ffs, using
+> generic_ffs would probably be faster
 
-int main(void)
-{
-        int i; 
-        for (i = 0; i < 0x1ffffff; i++) { 
-                if (___arch__swab24(i) != vanilla_swab24(i))
-                        printf("Problem with i = %d\n", i);
-        }
-        return 0;
-}
+If I have time next week I can test your idea.
+
+Thanks,
+    Joel
 
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
