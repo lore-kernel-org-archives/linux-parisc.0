@@ -1,72 +1,75 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA03700
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:56:49 -0700
-Received: from manz-3e3645ce.pool.mediaways.net (HELO trinity.johannes-zahn.de) (root@[62.54.69.206]) (envelope-sender <ich@johannes-zahn.de>)
-          by twister.domainfactory.de (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@thepuffingroup.com>; 15 Nov 2000 20:58:49 -0000
-Received: from trinity (joe@trinity [192.168.1.1])
-	by trinity (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id VAA20482
-	for <parisc-linux@thepuffingroup.com>; Wed, 15 Nov 2000 21:49:31 +0100
-From: johannes zahn <ich@johannes-zahn.de>
-Reply-To: ich@johannes-zahn.de
-Date: Wed, 15 Nov 2000 21:49:31 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@thepuffingroup.com
+Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA04036
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 14:06:29 -0700
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <200011152108.NAA23252@opus.allegro.com>
+Subject: Re: [parisc-linux] Single-stepping
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Wed, 15 Nov 2000 13:08:15 -0800 (PST)
+Cc: rhirst@linuxcare.com (Richard Hirst), parisc-linux@puffin.external.hp.com
+In-Reply-To: <200011151949.OAA22929@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 15, 2000 02:49:02 PM
 MIME-Version: 1.0
-Message-Id: <00111521493100.20428@trinity>
-Subject: [parisc-linux] init dies on apollo 720
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi!
+Re:
 
-I'm trying to get a 720/50 to boot from nfs, but as soon as the nfs 
-mound happened init dies. This is all i get on the serial console 
-(pasted from minicom):
+> > The basic approach is to use the recovery counter to generate
+> > a trap every instruction.  The scheme is complicated because a
+...
 
+> I really don't know enough to comment on the implementation choice.  Why
+> did you decide on this approach as opposed to inserting breaks and
 
-kmem_create: Forcing size word alignment - nfs_fh    
-Looking up port of RPC 100003/2 on 192.168.1.1       
-Looking up port of RPC 100005/2 on 192.168.1.1
-VFS: Mounted root (nfs filesystem) readonly.
+MPE/iX (which runs on PA-RISC hardware), has successfully used
+the Recovery Counter to implement single step for many, many years.
 
-handle_interruption() pid=1 command='init'
+BTW, in addition to single step, it's a great tool for counting the
+number of instructions a procedure (or code path) takes,
+assuming an adequately powerful debugger:
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111011100001011
-r0-3     00000000 4001ad3c 400057a3 00001f58
-r4-7     4001967c 00000000 4001ada0 00001f58
-r8-11    00000000 000023cc 00000001 00000000
-r12-15   00001034 00000006 40019622 2001ff18
-r16-19   c1fdc000 c027b60c 00000000 4001967c                            
-r20-23   0000a090 0000a090 00009d8c 00001f58                            
-r24-27   00000001 00000081 4001ada0 c01492b0                            
-r28-31   00000000 0000000b 20020790 400032d7                            
-sr0-4    00000001 00000001 00000000 00000001                            
-sr4-8    00000001 00000001 00000001 00000001                            
-        
-IASQ: 00000001 00000001 IAOQ: 4000d237 4000d23b                         
- IIR: 0ed51280    ISR: 00000001  IOR: 00009d8c                          
-ORIG_R28: 4001b208                                                      
-        
-handle_interruption() pid=1 command='init'                              
-        
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI                   
+   1) stop (perhaps via a breakpoint) at the start of the code
+      you want to count.
 
-[...]
+   2) set a breakpoint at the end of the code you want to count
+      (e.g., if you're counting a procedure, set a breakpoint at
+      the procedure exit)
 
-I tried the cvs-latest kernel and palo from 2000-11-10 and 2000-11-14 
-with the crosscompiler from 2000-10-31. Buildhost is i386 linux.
+   3) instead of "continue", do:   s 1000000
 
-nfsroot was from 2000-10-09 or base.tgz from the 0.5 beta CD.
+      (i.e., tell Debug/iX to "singlestep" 1000000 instructions)
 
-I also tried the ramdisk images with sercon and sticon, but the kernel 
-only says "cannot mount root FS on 01:00".
+   4) if you hit the breakpoint, enter:
 
-The kernel from the 0.5 beta CD seems to have the parport stuff, and 
-that does not work on this machine.
+          = 1000000 - rctr
 
-Any ideas? Or a working .config?
+      that's how many instructions your code took!  (Not counting
+      instructions executed by interrupt handlers, of course.)
+
+   5) if you *didn't* hit the breakpoint, then 1000000 wasn't
+      enough instructions (and why are you trying to count so high?)
+
+This works because MPE's debug "s" command sets the Recovery Counter
+to the number of instructions you wanted to step.  Normally, that's 
+one (for just "s").  If you said "s 3", it would set the Recovery Counter
+to 3.  If you say "s 1000000", and then execute 123 instructions,
+and then hit a breakpoint, Debug captures the entire register state
+as of the breakpoint: including the Recovery Counter (which has 
+1000000 - 123 in it).
+
+Tip: if you're looking at instruction-level debugging, look at Debug/iX
+to see how to do it right!
 
 
-johannes
+> It would appear that the recovery
+> counter was intended to provide software recovery from hardware faults
+
+The 1986 PA-RISC Instruction manual simply says "The Recovery
+Counter (CR 0) can be used to provide software recovery of hardware
+faults in fault tolerant systems".  (I.e., "can", not "must" ...
+and there's no explanation of how one would use it for this.)
+
+
+-- 
+Stan Sieler                                           sieler@allegro.com
+www.allegro.com/sieler/wanted/index.html                  www.sieler.com        
