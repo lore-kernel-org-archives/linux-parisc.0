@@ -1,10 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: bug-binutils@gnu.org
-Cc: parisc-linux@lists.parisc-linux.org
-Message-Id: <20030131070155.8DDFD482A@dsl2.external.hp.com>
-Date: Fri, 31 Jan 2003 00:01:55 -0700 (MST)
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] PATCH hppa ordered load absolute ops
+Received: from hiscom.nl (unknown [130.78.143.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5841A482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 01:47:08 -0700 (MST)
+Message-Id: <03Jan31.100156cet.119052@ns.hiscom.nl>
+From: =?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>
+To: "'grundler@dsl2.external.hp.com'" <grundler@dsl2.external.hp.com>,
+	"Michael S. Zick" <mszick@goquest.com>
+Cc: =?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>,
+	"'jsoe0708@tiscali.be'" <jsoe0708@tiscali.be>,
+	Ed Schaller <schallee@darkmist.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: hwdb (was bad reply on RE: [parisc-linux] quad tulip now not func
+	tional in 2.4.20)
+Date: Fri, 31 Jan 2003 09:46:50 +0100
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2C905.4BDF4CA0"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -16,60 +27,149 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-in trying to close a potential memory ordering hole for pa2.0 machines,
-I've run into the following problem with binutils.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-hppa linux kernel uses ldwa to access MMIO space instead of
-using virtually mapped addresses. Normally, ordering is enforced
-automatically to all IO space accesses according to the PA 2.0 architecture.
-However, some platforms (not supported yet) have IO devices responding
-to physical addresses *outside* the architected IO spaces and that's
-the hole I was trying to close.
+------_=_NextPart_001_01C2C905.4BDF4CA0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-hppa64-linux-gcc -D__KERNEL__ -I/home/src/2.4.20/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -mpa-risc-2-0 -D__linux__ -pipe -fno-strength-reduce -mno-space-regs -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=2.0 -mschedule=8000   -nostdinc -I /opt/palinux/lib/gcc-lib/hppa64-linux/3.0.4/include -DKBUILD_BASENAME=eeprom  -c -o eeprom.o eeprom.c
-{standard input}: Assembler messages:
-{standard input}:1039: Error: Invalid operands 
-{standard input}:1054: Error: Invalid operands 
-...
+> -----Original Message-----
+> From: grundler@dsl2.external.hp.com
+> [mailto:grundler@dsl2.external.hp.com]
+> Sent: donderdag 30 januari 2003 20:24
+> To: Michael S. Zick
+> Cc: Beerse, Corn?; 'jsoe0708@tiscali.be'; Ed Schaller;
+> parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
+> 
+> 
+> On Thu, Jan 30, 2003 at 08:45:46AM -0600, Michael S. Zick wrote:
+> > "tweaking" a web page or two to make this usage clear
+> > to the newcomer might help.
+> 
+> The goal of the HWDB was to survey what HW each model machine has
+> so we could write proper support in the kernel.
 
-the -S output from eeprom.s looks like:
-...
-   1034 #NO_APP
-   1035         extrd,u %r19,63,32,%r19
-   1036 #APP
-   1037                 stwa,o  %r19,0(%r26)
-   1038 
-   1039                 ldwa,o  0(%r26),%r21
-   1040 
-   1041 #NO_APP
-   1042         or %r20,%r22,%r20
+It would be nice if there is a statement with the parts if they are
+supported by the linux implementation. Say in the range 'supported', 'work
+in progress' or 'not supported'. Then, other users can see at a glance if it
+is usable for them.
 
-As one can see, "stwa,o" was ok but "ldwa,o" was not.
-I've checked the pa2.0 arch and one of the restrictions is
-the "im5" value must be zero (which it obviously is).
+> AFAIK, The people submitting entries didn't sign up to do 
+> newbie support.
 
-Appended is my very first attempt at adding a new opcode.
-i think I have the match/mask fields right.
-I'm still a bit sketchy on co/cc/@ specs.
+You are right, you might get to many questions like 'when will my hardware
+be supported?' It might be a bad idea at all.
 
-thanks,
-grant
+> 
+> Keep posting questions to the parisc-linux mailing list and let people
+> who *want* to answer them do so.
 
---- ./binutils-2.13.90.0.16/include/opcode/hppa.h-orig  2003-01-30 21:06:56.000000000 -0800
-+++ ./binutils-2.13.90.0.16/include/opcode/hppa.h       2003-01-30 22:58:54.000000000 -0800
-@@ -405,6 +405,7 @@ static const struct pa_opcode pa_opcodes
- { "ldbx",       0x0c000000, 0xfc001fc0, "cXx(b),t", pa10, 0},
- { "ldwa",       0x0c000180, 0xfc00d3c0, "cxccx(b),t", pa10, FLAG_STRICT},
- { "ldwa",	0x0c001180, 0xfc00d3c0, "cmcc5(b),t", pa10, FLAG_STRICT},
-+{ "ldwa",	0x0c0031a0, 0xfc1ff3d0, "cocc@(b),t", pa20, FLAG_STRICT},
- { "ldcw",       0x0c0001c0, 0xfc0013c0, "cxcdx(s,b),t", pa10, FLAG_STRICT},
- { "ldcw",       0x0c0001c0, 0xfc0013c0, "cxcdx(b),t", pa10, FLAG_STRICT},
- { "ldcw",	0x0c0011c0, 0xfc0013c0, "cmcd5(s,b),t", pa10, FLAG_STRICT},
-@@ -415,6 +416,7 @@ static const struct pa_opcode pa_opcodes
- { "stby",	0x0c001300, 0xfc0013c0, "cscCx,V(b)", pa10, FLAG_STRICT},
- { "ldda",       0x0c000100, 0xfc00d3c0, "cxccx(b),t", pa20, FLAG_STRICT},
- { "ldda",	0x0c001100, 0xfc00d3c0, "cmcc5(b),t", pa20, FLAG_STRICT},
-+{ "ldda",	0x0c003100, 0xfc1ff3d0, "cocc@(b),t", pa20, FLAG_STRICT},
- { "ldcd",       0x0c000140, 0xfc0013c0, "cxcdx(s,b),t", pa20, FLAG_STRICT},
- { "ldcd",       0x0c000140, 0xfc0013c0, "cxcdx(b),t", pa20, FLAG_STRICT},
- { "ldcd",	0x0c001140, 0xfc0013c0, "cmcd5(s,b),t", pa20, FLAG_STRICT},
+True.
+
+> 
+> If someone is looking for platform specific install notes, I think
+> ESIEE has such a web page already. Following links to ESIEE
+> from www.parisc-linux.org.
+
+Better, start at http://www.parisc-linux.org/hardware/supported.html (from
+the same page: is my hardware supported).
+
+
+So after all, I think most info is at the page, it is the newbees that need
+a reading/browsing cource before they start.
+
+CBee
+
+------_=_NextPart_001_01C2C905.4BDF4CA0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2654.45">
+<TITLE>hwdb (was bad reply on RE: [parisc-linux] quad tulip now not =
+functional in 2.4.20)</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>&gt; -----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>&gt; From: grundler@dsl2.external.hp.com</FONT>
+<BR><FONT SIZE=3D2>&gt; [<A =
+HREF=3D"mailto:grundler@dsl2.external.hp.com">mailto:grundler@dsl2.exter=
+nal.hp.com</A>]</FONT>
+<BR><FONT SIZE=3D2>&gt; Sent: donderdag 30 januari 2003 20:24</FONT>
+<BR><FONT SIZE=3D2>&gt; To: Michael S. Zick</FONT>
+<BR><FONT SIZE=3D2>&gt; Cc: Beerse, Corn?; 'jsoe0708@tiscali.be'; Ed =
+Schaller;</FONT>
+<BR><FONT SIZE=3D2>&gt; parisc-linux@lists.parisc-linux.org</FONT>
+<BR><FONT SIZE=3D2>&gt; Subject: Re: [parisc-linux] quad tulip now not =
+functional in 2.4.20</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; On Thu, Jan 30, 2003 at 08:45:46AM -0600, =
+Michael S. Zick wrote:</FONT>
+<BR><FONT SIZE=3D2>&gt; &gt; &quot;tweaking&quot; a web page or two to =
+make this usage clear</FONT>
+<BR><FONT SIZE=3D2>&gt; &gt; to the newcomer might help.</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; The goal of the HWDB was to survey what HW each =
+model machine has</FONT>
+<BR><FONT SIZE=3D2>&gt; so we could write proper support in the =
+kernel.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>It would be nice if there is a statement with the =
+parts if they are supported by the linux implementation. Say in the =
+range 'supported', 'work in progress' or 'not supported'. Then, other =
+users can see at a glance if it is usable for them.</FONT></P>
+
+<P><FONT SIZE=3D2>&gt; AFAIK, The people submitting entries didn't sign =
+up to do </FONT>
+<BR><FONT SIZE=3D2>&gt; newbie support.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>You are right, you might get to many questions like =
+'when will my hardware be supported?' It might be a bad idea at =
+all.</FONT></P>
+
+<P><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; Keep posting questions to the parisc-linux =
+mailing list and let people</FONT>
+<BR><FONT SIZE=3D2>&gt; who *want* to answer them do so.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>True.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; If someone is looking for platform specific =
+install notes, I think</FONT>
+<BR><FONT SIZE=3D2>&gt; ESIEE has such a web page already. Following =
+links to ESIEE</FONT>
+<BR><FONT SIZE=3D2>&gt; from www.parisc-linux.org.</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Better, start at <A =
+HREF=3D"http://www.parisc-linux.org/hardware/supported.html" =
+TARGET=3D"_blank">http://www.parisc-linux.org/hardware/supported.html</A=
+> (from the same page: is my hardware supported).</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>So after all, I think most info is at the page, it is =
+the newbees that need a reading/browsing cource before they =
+start.</FONT></P>
+
+<P><FONT SIZE=3D2>CBee</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2C905.4BDF4CA0--
