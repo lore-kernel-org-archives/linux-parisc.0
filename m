@@ -1,20 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CCAE04829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 17:12:06 -0700 (MST)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel7.hp.com (Postfix) with ESMTP id 8DF2380522F
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 19:12:03 -0500 (EST)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id RAA27628
-	for parisc-linux@lists.parisc-linux.org; Mon, 28 Oct 2002 17:12:03 -0700 (MST)
-Date: Mon, 28 Oct 2002 17:12:03 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200210290012.RAA27628@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.19-pa24 (uaccess.h patch)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+To: Nahkola Mikko <mikko.nahkola@nokia.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] framebuffer depth and other issues ... 
+In-Reply-To: Message from Nahkola Mikko <mikko.nahkola@nokia.com>
+   of "Mon, 28 Oct 2002 13:25:52 +0200." <20021028112551.GR15137@aurinko.ntc.nokia.com>
+References: <20021028112551.GR15137@aurinko.ntc.nokia.com> 
+Date: Mon, 28 Oct 2002 17:49:34 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021029004934.DFB5E4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +19,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
-> ex_table is used for recovering from a page fault.  i don't see how we
-> can take a page fault when copying to kernel ram.
->
+Nahkola,
+You asked alot of questions. I take a shot at one of them:
 
-Let's wait on removing this support.  This mechanism provides a way of
-testing whether or not an address is a valid kernel address (in addition
-to range checking the address).  I'd like to consider implementing the
-virtual mem map support (currently implemented on ia64) on parisc as an
-alternative mechanism (to willy's idea of using kmap/kunmap) for getting
-back the 256Mb of memory we currently ignore for Astro based machines with
-more than 3.75 Gb of memory.  The virtual mem map code uses this exact
-mechanism to determine whether or not a struct page pointer is pointing
-into a sparse (unallocated) region of the virtual mem map array (i.e. on
-ia64 the ia64_page_valid() routine does a get_user on the first byte and
-checks the return from get_user to see if it fails/succeeds).
+Nahkola Mikko wrote:
+> And as an aside, how reliable is the disk stuff nowadays? Would it make 
+> any sense to run a file server on Linux/hppa yet?
 
-John
+Yes. I'm running a linux http/ftp server inhouse on a B180 with 200GB disk.
+It mirrors RH/SuSE/Mandrake and Debian for Cupertino site.
+I have to get mrtg running again to collect stats.
+Nightly updates and it's never crashed.
+
+BTW, this box also serves as my regular desktop.
+
+> I mean, something like 
+> a stack of A3312As, software-RAID and NFS ... is it likely to work?
+
+I don't do RAID or NFS. I mean this *is* a mirror.
+
+> How 
+> about performance, compared to HP-UX, for example? (yes, I'd expect HP-UX 
+> to be somewhat better, but by how much?)
+
+lmbench results are in the parisc-linux mail archive (lists.parisc-linux.org).
+IO/FS stuff was comparable, linux context switching sucks.
+
+grant
