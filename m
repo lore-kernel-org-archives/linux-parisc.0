@@ -1,482 +1,69 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B9C3F482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Apr 2001 17:33:41 -0600 (MDT)
-Received: from security.hp.com (cranston.fc.hp.com [15.1.44.224])
-	by atlrel1.hp.com (Postfix) with ESMTP id EEF0C4AA
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Apr 2001 19:33:40 -0400 (EDT)
-To: parisc-linux@lists.parisc-linux.org
-From: LaMont Jones <lamont@hp.com>
-Cc: LaMont Jones <lamont@hp.com>
+Received: from hotmail.com (oe44.law14.hotmail.com [64.4.20.16])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B0DD6482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Apr 2001 18:04:25 -0600 (MDT)
+From: "Brian Stewart" <pdksh@hotmail.com>
+To: "Matt London" <matt@knm.yi.org>,
+	<parisc-linux@lists.parisc-linux.org>
+References: <Pine.LNX.4.20.0104062329290.4811-200000@coffeepot.matt>
+Subject: Re: [parisc-linux] Problems booting
+Date: Fri, 6 Apr 2001 20:04:10 -0400
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----- =_aaaaaaaaaa0"
-Date: Fri, 06 Apr 2001 17:33:40 -0600
-Sender: lamont@hp.com
-Message-Id: <20010406233340.492851872C@security.hp.com>
-Subject: [parisc-linux] 715/100 crash
+Content-Type: text/plain;	charset="iso-8859-1"
+Message-ID: <OE449YDqSkcJse1fTvO00000b31@hotmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-------- =_aaaaaaaaaa0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <17850.986599985.1@cranston.fc.hp.com>
+You have a model 710 50Mhz Bushmaster. I wish you luck, the 710 has some
+problems with interrupts with the SCSI controller and Lan Controller. I have
+been unable to boot my 710 for a couple of weeks. It will run mkLinux but
+with some problems. I wish you luck. I have been trying to address the
+interrupt issues with the lan controller but I am afraid it is beyond my
+ability.
 
-Using the new nfsroot tarball, and an admittedly suspect 715/100 (it
-suddenly decided that it didn't like to have more than 2 SIMs in it - 
-'missing or bad memory card in slot 2'), I get the attached output
-during boot.
+Let me know how you make out. Try disabling your Parallel port in the
+kernel.
 
-Personally, I'm going to swap the machine out for a B160L.  Anyone
-who wants the 715/100 can let me know...
-
-Interestingly, auto boot fails, but boot from pri after that works...
-
-lamont
-
-------- =_aaaaaaaaaa0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <17850.986599985.2@cranston.fc.hp.com>
-
-0x04.1081
-0x04.1080
-0x04.1082
-0x04.1086
-0x04.1087
-0x04.108A
-0x04.108B
-0x04.108C
-0x04.1083
-0x04.10D1
-0x04.10D2
-0x04.2090
-0x04.2091
-0x04.209F
-0x04.2096
-0x04.2094
-0x04.2095
-0x06.C201
-0x04.10DA
-0x04.10D7
-0x04.10D8
+----- Original Message -----
+From: "Matt London" <matt@knm.yi.org>
+To: <parisc-linux@lists.parisc-linux.org>
+Sent: Friday, April 06, 2001 6:39 PM
+Subject: [parisc-linux] Problems booting
 
 
-----------------------------------------------------------------------------
-BootRom Version    1.4  
-Memory Size:  64 MB
-----------------------------------------------------------------------------
-
-
-
-
-(c) Copyright 1990-1994, Hewlett-Packard Company.
-All rights reserved
-
-Press <ESCAPE> to stop boot sequence.
-0x04.2097
-0x04.2098
-0x04.2099
-0x04.209A
-0x04.209B
-0x04.1091
-0x04.1092
-0x04.1093
-0x04.1094
-0x04.1095
-0x04.1096
-0x04.1090
-0x04.108D
-0x04.10D4
-0x04.10D9
-0x04.4080
-0x04.4081
-0x04.4082
-0x06.C2EA
-0x06.C2EF
-0x04.300C
-0x04.300C
-0x04.300B
-
-Starting Auto boot
-
-0x06.C500
-0x04.8005
-
-Warning: Auto boot failed.
-Auto boot path is not valid.
-
-
-Auto boot failed and Auto search is off.
-
-Boot process failed. press <ESCAPE> to Continue.
-----------------------------------------------------------------------------
-Command                                Description
--------                                -----------
-Auto [boot|search] [on|off]            Set/show auto mode
-Boot [pri|alt [isl]]                   Boot from primary or alternate path
-Boot [scsi|eisa.<slot>[.<addr>]] [isl] Boot from SCSI or EISA
-Boot lan[.<addr>] [install] [isl]      Boot from LAN
-Chassis [on|off]                       Set/show chassis codes display mode
-DefaultSS                              Reboot and set EEPROM to default values
-Diagnostic [on|off]                    Set/show diagnostic boot mode
-Fastboot [on|off]                      Set/show fast boot mode
-Help                                   Show this command menu
-Information                            Show system information
-LanAddress                             Show LAN station addresses
-Monitor [<DEV>[.<type>]]               Set/show graphics monitor type
-                                       (<DEV>=graphics|graphics_<1|2>)
-Path [pri|alt [<DEV>[.<addr>]]]        Set/show boot source path
-                                       (<DEV>=lan|scsi|eisa.<slot>)
-Path [console [<DEV>[.<parm>]]]        Set/show boot console path
-                                       (<DEV>=<RS232>|<GRAPH>
-                                        <RS232>=rs232|rs232_2
-                                        <parm>=<baud>.<length>.<parity>
-                                        <GRAPH>=graphics|graphics_<1|2>
-                                        <parm>=<monitor>)
-Path [keyboard [hil|ps2]]              Set/show boot keyboard path
-Pim [hpmc|toc|lpmc]                    Show PIM info
-Search [ipl] [scsi|eisa]               Show potential boot devices
-Search [ipl] [lan [install]]           Show potential boot LAN devices
-Secure [on|off]                        Set/show security mode
-----------------------------------------------------------------------------
-BOOT_ADMIN> bo pri
-0x06.C740
-
-
-
-
-Attempting to boot.
-
-Loading Initial Program Loader
-
-0x06.C580
-
-IPL successfully loaded
-
-
-Booting
-0x06.C7FF
-palo ipl lamont@ldl Fri Mar 23 12:00:56 MST 2001
-0/vmlinux 2581653 bytes @ 0x6800
-0/palo-cmdline '0/vmlinux HOME=/ TERM=linux root=/dev/nfs nfsroot=15.1.44.229 console=ttyS0'
-Kernel: partition 0 file /vmlinux
-ELF32 executable
-Entry 00100000 first 00100000 n 6
-Segment 0 load 00100000 size 1486276 mediaptr 0x1000
-Segment 1 load 0026c000 size 182328 mediaptr 0x16c000
-Segment 2 load 0029c000 size 90112 mediaptr 0x199000
-Segment 3 load 002b2000 size 132272 mediaptr 0x1af000
-Segment 4 load 002d4000 size 8192 mediaptr 0x1d0000
-Segment 5 load 00303608 size 75392 mediaptr 0x1d2608
-branching to kernel entry point 0x00100000
-Set default PSW W bit to 0
-PDC Console Initialized
-Linux version 2.4.0 (lamont@ldl) (gcc version 2.97 20010203 (experimental)) #19 Fri Apr 6 08:32:52 MDT 2001
-FP[0] enabled: Rev 1 Model 13
-The 32-bit Kernel has started...
-Determining PDC firmware type: Older Legacy Box
-setup_cmdline(0x64d58,0x64d58,0x0,0x0)
-PALO command line: 'HOME=/ TERM=linux root=/dev/nfs nfsroot=15.1.44.229 console=ttyS0'
-PALO initrd 0-0
-model   000060b0 00000481 00000000 00000000 7800e8a4 00000000 00000004 00000072 00000072
-vers    0000000b
-CPUID   vers 0 rev 0
-model   9000/715
-Total Memory: 64 Mb
-initrd: 00000000-00000000
-pagetable_init
-On node 0 totalpages: 16384
-zone(0): 16384 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Searching for devices...
-Found devices:
-1. Coral SGC Graphics (10) at 0xf4000000, versions 0x4, 0x0, 0x77, 0x0, 0x0
-2. Mirage GSC Builtin Graphics (10) at 0xf8000000, versions 0x13, 0x0, 0x85, 0x0, 0x0
-3. Mirage Core BA (11) at 0xf0100000, versions 0x29, 0x0, 0x81, 0x0, 0x0
-4. Mirage Core SCSI (10) at 0xf0106000, versions 0x29, 0x0, 0x82, 0x0, 0x0
-5. Mirage Core LAN (802.3) (10) at 0xf0107000, versions 0x29, 0x0, 0x8a, 0x0, 0x0
-6. Mirage Core RS-232 (10) at 0xf0105000, versions 0x29, 0x0, 0x8c, 0x0, 0x0
-7. Mirage Core Centronics (10) at 0xf0102000, versions 0x29, 0x0, 0x74, 0x0, 0x0
-8. Mirage Audio (10) at 0xf0104000, versions 0x29, 0x0, 0x7b, 0x0, 0x0
-9. Mirage Core PC Floppy (10) at 0xf010a000, versions 0x29, 0x0, 0x83, 0x0, 0x0
-10. Mirage Core PC Keyboard (10) at 0xf0108000, versions 0x29, 0x0, 0x84, 0x0, 0x0
-11. Mirage Core PC Keyboard (10) at 0xf0108100, versions 0x29, 0x0, 0x84, 0x0, 0x0
-12. Mirage Wax BA (11) at 0xf0200000, versions 0x13, 0x0, 0x8e, 0x0, 0x0
-13. Mirage 100 Wax HIL (10) at 0xf0201000, versions 0x13, 0x0, 0x73, 0x0, 0x0
-14. Mirage Wax RS-232 (10) at 0xf0202000, versions 0x13, 0x0, 0x8c, 0x0, 0x0
-15. Mirage 100 (0) at 0xfffbe000, versions 0x60b, 0x0, 0x4, 0x0, 0x81
-16. Mirage 100 (1) at 0xfffbf000, versions 0x4b, 0x0, 0x9, 0x0, 0x0
-That's a total of 16 devices.
-CPU(s): 1 x PA7100LC (PCX-L) at 100.000000 MHz
-Kernel command line: HOME=/ TERM=linux root=/dev/nfs nfsroot=15.1.44.229 console=ttyS0
-Calibrating delay loop... 99.73 BogoMIPS
-Memory: 62172k available
-Dentry-cache hash table entries: 8192 (order: 4, 65536 bytes)
-Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
-Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
-Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
-POSIX conformance testing by UNIFIX
-Lasi version 0 at 0xf0100000 found.
-LED display at f00e0000 registered
-Wax at 0xf0200000 found.
-Wax: HIL Keyboard-NMI registered.
-Wax EISA bus adapter version 0x5761 at 0xf0200000
-Initializing Lasi PS/2-keyboard port at 0xf0108000...
-Support for Lasi PS/2-psaux not yet available !
-Found HIL at 0xf0201000, IRQ 126
-HIL: no keyboard present.
-Warning : device (10, 0x13, 0x0, 0x73, 0x0) NOT claimed by HIL 712, 715 or similiar
-Found i82596 at 0xf0107000, IRQ 87
-early initialization of device eth0 is deferred
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Starting kswapd v1.8
-pty: 256 Unix98 ptys configured
-Lasi PS/2 wait 4460
-Lasi PS/2 wait 2119
-lp: driver loaded but no devices found
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-eth0: 82596 at 0xf0107000, 08 00 09 4A 45 BC IRQ 87.
-82596.c $Revision: 1.15 $
-Serial driver version 5.02 (2000-08-09) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
-ttyS00 at iomem 0xf0105800 (irq = 90) is a 16550A
-ttyS01 at iomem 0xf0202800 (irq = 121) is a 16550A
-Generic RTC Driver v1.02 05/27/1999 Sam Creasey (sammy@oh.verio.com)
-parport_init_chip: initialize bidirectional-mode.
-parport0: PC-style at 0xf0102800, irq 88 [PCSPP,TRISTATE]
-lp0: using parport0 (interrupt-driven).
-SCSI subsystem driver Revision: 1.00
-sim700: Configuring 53c710 (SCSI-ID 7) at f0106100, IRQ 86, options 0
-scsi0: Revision 0x2
-Post test1, istat 01, sstat0 00, dstat 84
-sim700: WARNING IRQ probe failed, (returned 0)
-scsi0: Good, target data areas are dma coherent
-scsi0: test 1 completed ok.
-scsi0 : LASI/Simple 53c7xx
-  Vendor: MICROP    Model: 2112              Rev: 4024
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-  Vendor: Quantum   Model: VP32210           Rev: HP03
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-Detected scsi disk sda at scsi0, channel 0, id 3, lun 0
-Detected scsi disk sdb at scsi0, channel 0, id 6, lun 0
-SCSI device sda: 2051460 512-byte hdwr sectors (1050 MB)
-Partition check:
- sda: sda1 sda2 sda3
-SCSI device sdb: 4194685 512-byte hdwr sectors (2148 MB)
- sdb: sdb1
-linear personality registered
-raid0 personality registered
-raid1 personality registered
-raid5 personality registered
-raid5: measuring checksumming speed
-   8regs     :    98.298 MB/sec
-   8regs_prefetch:    97.917 MB/sec
-   32regs    :   118.491 MB/sec
-   32regs_prefetch:   164.973 MB/sec
-raid5: using function: 32regs_prefetch (164.973 MB/sec)
-md driver 0.90.0 MAX_MD_DEVS=256, MD_SB_DISKS=27
-md.c: sizeof(mdp_super_t) = 4096
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 4096 bind 4096)
-eth0: link ok.
-Sending BOOTP requests..... OK
-IP-Config: Got BOOTP answer from 15.1.44.229, my address is 15.1.44.235
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-Looking up port of RPC 100003/2 on 15.1.44.229
-Looking up port of RPC 100005/2 on 15.1.44.229
-VFS: Mounted root (nfs filesystem) readonly.
-INIT: version 2.78 booting
-
-Dumping Stack from 105ac000 to 105ad540:
-c000 00000000 00000000 00000000 00000001 10281460 00000001 00000000 ffffffff
-c020 00000006 00000000 00000000 104ee1c0 00000000 00000000 ffffffff 1002c03c
-c040 1004003c 00000454 102d4000 105d0000 104ee1c0 102842dc 00000000 00000012
-c060 00000000 00000000 80000000 0000000b 0000000a 00000000 0000000a 0000000b
-c080 00000000 105d0000 105d0000 00000000 00000000 00000000 105ac098 105ac098
-c0a0 00000000 102f1d60 00000000 105ac0ac 105ac0ac 00000000 00000000 00000000
-c0c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c0e0 105ac000 1011b0a8 00000000 00000000 00000000 00000000 00000446 00000002
-c100 000002e8 00000002 00000001 00000000 00000000 00000000 00000000 80000000
-c120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c1c0 00000000 fffffeff 00000000 fffffeff 00000000 102820a8 ffffffff ffffffff
-c1e0 ffffffff ffffffff ffffffff ffffffff 00800000 05000000 00000000 ffffffff
-c200 ffffffff ffffffff 000003cb 000003cb 00000400 00000400 ffffffff ffffffff
-c220 ffffffff ffffffff ffffffff ffffffff 00007263 53002e64 72000000 00000000
-c240 00000000 00000000 105b4000 00000000 00000000 00000000 00000000 00000040
-c260 400d5717 faf00a80 0000003f 00000040 faf00708 4014eb18 00000065 faf006cc
-c280 0000b294 00000040 faf008d0 00000001 00000063 faf006cc 00000020 0000b270
-c2a0 faf00790 4014eb18 0000000b faf00708 81010100 2f2f2f2f 0000b008 faf006cc
-c2c0 faf00708 00009af8 faf00708 0000b1a8 faf00b40 400d52db 00000000 00000000
-c2e0 00000000 00000000 00000000 00000000 00000000 00000000 00000001 00000000
-c300 00000002 1014a9fc 00000000 00000000 00000000 00000000 1002c000 104fd0c0
-c320 102d4000 00000000 10286064 102f1810 102f4810 1026c010 102f1010 00000001
-c340 1028a010 101390c4 102f1010 102d24b0 102d24b0 102d2420 104fe000 1028660c
-c360 00000000 00000002 00000000 1029cea4 0004000e 00000008 102f1810 104fe000
-c380 1028660c 1014a8e4 cccccccd 00000030 00000000 cccccccd 10286064 00000002
-c3a0 1023f0d0 00000007 10316d40 10284e40 00000000 00000008 ffffffff 102f4810
-c3c0 1026c010 1013922c 10448c00 10284e40 1028a010 102f1810 00000005 00000005
-c3e0 00000000 00000005 00000005 00000005 00000005 00000005 00000005 00000005
-c400 400a9303 400a9307 000000ae 105ac000 faf00708 105acc80 10105cf0 00000014
-c420 36980dfe 00000005 40147654 00000000 00287000 00000000 10452160 104531e0
-c440 00000000 104514e0 00000000 00000000 00000000 105ac450 00000000 00000000
-c460 00000000 00000000 00000000 00000000 00000000 00000001 00000002 00000000
-c480 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4a0 00000000 00000000 00000000 1010624c 00000000 00000000 00000000 00000000
-c4c0 4014eb18 faf00708 faf00708 81010100 faf00a80 faf00708 00000040 0000003f
-c4e0 faf00a80 00000000 00000000 10106efc 00000000 00000000 00000000 00000000
-c500 00000078 00000065 00000000 00000040 00000000 00000000 00000000 00000000
-c520 00000000 00000000 faf008d0 10106db8 00000000 4014eb18 faf008d0 00000000
-c540 faf006cc 4014eb18 0000b008 faf006cc 00000065 102df810 102f1810 0000000b
-c560 102dff30 00000001 00000001 10100904 faf007b0 105ac258 0000b270 faf00790
-c580 4014eb18 faf00708 7f454c46 01020103 00000000 00000000 0003000f 00000001
-c5a0 00002da0 00000034 0006a5a8 00000210 00340020 00030028 00190016 00000001
-c5c0 00000000 00000000 00000000 00019240 00019240 00000005 00001000 00000001
-c5e0 00019240 0001a240 0001a240 00000a44 00001a00 00000007 00001000 00000002
-c600 00019bfc 0001abfc 00000000 00000000 00000000 00000000 00000000 00000000
-c620 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c640 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c660 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c680 00000000 00000000 faf00190 00000001 104fd2a0 00000000 00000000 ffffffff
-c6a0 ffffffff ffffffff 00000002 00000009 104fe000 00000000 faf000e0 1047e228
-c6c0 4014eb18 faf00708 104fe000 105ac258 104fe000 10026200 10065580 10025820
-c6e0 104ec8a0 00120f17 16000000 101aa3e8 00000002 105b4000 faf00b48 faf00b48
-c700 10065580 10065800 10065580 10292128 0000b294 00000078 00000065 100473e0
-c720 1047b3a0 104fd1e0 1047cd60 10145018 00000000 00000000 00000000 00000000
-c740 faf006cc 00000065 105ac258 faf006cc 0000b008 104fe000 00000000 00000009
-c760 00000001 0000106c 104fe000 10144b2c 00000000 00000000 00000000 00000000
-c780 00000002 100658a0 00000000 00000063 00000000 00000080 00000080 105ac588
-c7a0 00000006 00000065 104fd1e0 10144de0 104fd1e0 1047cd60 00000001 00000000
-c7c0 faf00708 00000000 2f62696e 2f736800 73680a23 0a232072 63530909 43616c6c
-c7e0 20616c6c 20533f3f 2a207363 72697074 7320696e 202f6574 632f7263 104fe000
-c800 105ac258 faf006cc 0000b008 00000001 105ac000 00000000 00000000 105ac000
-c820 00000000 00000000 00000001 10143efc 00000040 1047cd60 00000006 00000065
-c840 105ac588 00000000 00000000 105ac58b 102842c4 101541a8 00000000 105ac748
-c860 00000065 105ac000 00000000 00000000 00000000 00000001 00000063 faf006cc
-c880 104fd1e0 104fd1e0 00000080 00000000 105ac7c8 00000000 faf00790 0000b270
-c8a0 00000020 faf006cc 00000063 101541d4 faf008d0 00000040 0000b294 102e2810
-c8c0 102e2810 105ac258 00000000 105ac588 fffffff8 105ac258 105ac588 00000009
-c8e0 00000001 095f0000 105ac258 10144b2c 00000000 00000000 00000000 00000000
-c900 105970a0 104fd1e0 00000000 00000010 00000000 00000080 00000080 105ac588
-c920 00001000 105ac608 0000b294 10144de0 faf008d0 00000001 00000063 faf006cc
-c940 00000000 105ac588 7f454c46 01020103 00000000 00000000 0002000f 00000001
-c960 0000e7e8 00000034 000787b0 00000210 00340020 00060028 001c001b 105ac7c8
-c980 7f454c46 01020103 00000000 00000000 0003000f 00000001 00002da0 00000034
-c9a0 0006a5a8 00000210 00340020 00030028 00190016 00000000 7f454c46 01020103
-c9c0 00000000 00000000 0003000f 00000001 00002da0 00000034 00000000 1026c010
-c9e0 00000000 00000001 40000000 00001000 00000001 00000001 0007e7b0 00000003
-ca00 00001000 00078f3c 00075d78 00078f3c 105ac948 00000000 faf00790 0000b270
-ca20 00000020 faf006cc 00000063 00000001 faf008d0 00000040 0000b294 102e2810
-ca40 105ac258 00000000 105ac588 00000000 102842dc 10154ca0 105ac958 105ac8c8
-ca60 105ac258 105ac000 0000b294 1012a300 faf008d0 00000001 00000063 faf006cc
-ca80 faf00790 0000b270 00000073 40000000 00000063 00000001 faf008d0 00000040
-caa0 0000b294 102e2810 105ac258 101551c8 104fd2a0 105ac910 00000080 10597640
-cac0 105ac000 40002da0 00000003 00001034 00000004 00000020 00000005 00000006
-cae0 00000007 40000000 00000008 10154440 00000009 0000e7e8 0000000b 00000000
-cb00 000cf80f 00000006 10154480 105ac000 0000000f 40002da0 104fd2a0 00075d78
-cb20 10463b20 00000000 00001802 105ac588 10024940 00000006 104fd1e0 00000002
-cb40 105ac258 10463a60 00078f3c 00001000 104ee1c0 00079000 00000001 0000000f
-cb60 105acb88 000000c3 00078f3c 1026c010 00079000 00000680 105acd40 1012fa50
-cb80 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cba0 00000001 00000000 00000002 1014a9fc 00000000 00000000 00000000 00000000
-cbc0 1002c000 104fd0c0 102d4000 00000000 10286064 102f1810 102f4810 1026c010
-cbe0 102f1010 00000001 1028a010 101390c4 102f1010 102d24b0 102d24b0 102d2420
-cc00 104fe000 1028660c 00000000 00000002 00000000 1029cea4 0004000e 00000008
-cc20 102f1810 104fe000 1028660c 1014a8e4 cccccccd 00000030 00000000 cccccccd
-cc40 10286064 00000002 1023f0d0 00000007 10316d40 10284e40 00000000 00000008
-cc60 ffffffff 102f4810 1026c010 1013922c 10448c00 10284e40 1028a010 102f1810
-cc80 00000000 00000006 00000000 00000006 00000000 00000000 00000000 00000000
-cca0 00000000 00000000 1023c9b0 1023c9ac 00000000 00000000 104ee1c0 104ec7e0
-ccc0 00000077 0000001c 0f405222 00000006 00078f3c 10284e40 00000000 00000008
-cce0 ffffffff 102f4810 1026c010 1016caec 10448c00 10284e40 1028a010 102f1810
-cd00 00001802 00000000 00000002 00000000 00000000 105977e0 10597640 10597640
-cd20 00000000 00000000 1023c9b0 10106720 00000000 00000000 105acac8 105acc10
-cd40 1032bfd0 00000011 0f405222 00000006 4001ac84 104f87e0 105ac588 00000000
-cd60 00000034 104f8888 00000000 00000fcc 1032bfd0 1032bfb8 00000008 cccccccd
-cd80 00000001 0000b294 105ac000 00000000 105acac8 104f000f 104f8420 00000000
-cda0 00000000 00000000 00000000 10106720 105acd08 105acd18 00000000 00000000
-cdc0 104f0004 00000001 104fd2a0 40002da0 0000000f 105ac000 104fd2a0 10597640
-cde0 00000040 00000000 00000000 00000000 105acd18 105acc88 10597640 ffffff0a
-ce00 10498b00 104f6ae0 10498ba8 105acbc8 105acc10 00000000 105acd18 10597280
-ce20 103035f8 105acd08 105acc10 101024a8 faf006cc 00000020 0000b270 faf00790
-ce40 10498b54 10498b00 105ac000 4001a240 100474c0 0000000f 1047b620 105acbc8
-ce60 105acc10 10597640 1026e384 10231fc4 102f1810 105aca40 00000000 1047e228
-ce80 105ace40 100472e0 10498b00 10170fc8 10498b00 10048064 10498b00 00000000
-cea0 00000000 10048064 105acbc8 101024a8 10448c00 10284e40 00000000 102f1810
-cec0 10498b00 10048000 104ec8e0 00000010 00001802 00000000 10463b20 00075d78
-cee0 00000006 00078f3c 0000000f 105acb00 105ace10 105acd28 100472e0 ffffff0a
-cf00 10498b80 100472e0 1004e818 10025720 10498b00 faf008d0 00000001 0000b294
-cf20 105ac000 10448c00 0001904d 101011f4 1042e540 00000001 00000000 00000000
-cf40 00000001 104fd2a0 104ec860 00000002 105acb00 104ee1dc 105ac000 104ee1dc
-cf60 104ec8a0 4001ac84 0000000f 105acb80 10048000 10066680 00000000 00000000
-cf80 10048000 10048000 105acd88 105ab1e0 105acf40 100472e0 105acd88 105acc40
-cfa0 100251a0 00000000 00000000 10126768 00000000 00000000 00000000 00000000
-cfc0 104ee1c0 00000001 104ec8a0 104ee1c0 ffffffff 00078f3c 105ac000 104ee1dc
-cfe0 104ec820 10048064 00000000 101009f8 10048000 105acdf0 10048064 10171d20
-d000 10048000 10048064 105acd88 1058d068 105acd88 10048fcc 105acbc8 10048000
-d020 1047c8d0 00000068 1047c8d0 10126564 00000068 10066680 00000000 00000000
-d040 105acb00 00000002 104fd1e0 00000006 10024940 105ac588 0000000f 00078f3c
-d060 105ab1e0 00000001 00000008 104ee1c0 00078f3c 104ec8a0 00000057 1047e228
-d080 00000090 00004040 0f012ce5 00000000 00000000 00000068 03200801 007c6862
-d0a0 0f012ceb 0f012ce5 10048080 1012aa90 0f012ce5 00000000 00000000 00000000
-d0c0 102f4810 102f4810 1003ddfc 105976e8 00000079 104fd2a0 00000076 00000008
-d0e0 00000000 00078f3c 00000018 10282494 4001ac84 104ec820 00000000 00000000
-d100 10048000 00004040 10046080 105ad088 fffffff3 00000010 10026200 100653a0
-d120 10463760 00008200 10292140 101292ec 00008000 00008880 00000000 00000000
-d140 105976e8 00000073 fffffff4 1032e928 1032e928 105976e8 00000073 00000000
-d160 00000000 102823fc 1028274c 10129570 10066680 105acd40 00000057 1047e228
-d180 4001ac84 00000000 0f012ce5 00000006 00000000 10220054 03200801 0078c29f
-d1a0 0f012ceb 0f012ce5 10048080 1016b814 0f012ce5 00000000 00000000 00000000
-d1c0 1003ddf0 0000000c 104fd2a0 1032e928 10597640 1032e928 00000005 00000000
-d1e0 105976e8 102823fc 10282724 10282494 00000070 10066680 00000057 1047e228
-d200 00000090 10463a84 10025760 00000004 10046080 1002622c 10026200 10065120
-d220 10463760 00000000 00000000 1016de18 00000000 00000000 00000000 00000000
-d240 104fd2a0 00000002 105ad248 105ad248 105ad248 105ad248 00000001 00000000
-d260 00000004 10597640 1032f0dc 101725a8 104fd2a0 1032f0f4 00000000 00000000
-d280 0000051d 105ad098 00004000 00000001 10046080 1002622c 10026200 10065580
-d2a0 10463760 00008040 10292140 1016dccc 00008000 000086c0 00000000 00000000
-d2c0 10597640 105ad248 10597640 105ad2c8 105ad2c8 105ad2c8 00000000 10597640
-d2e0 105ad248 00000001 00000000 10235490 00000000 00000000 00000000 00000000
-d300 0006ff0f 10303010 10235490 10597640 105aca08 10463960 00000000 00000073
-d320 00000002 104fd2a0 00000079 102826bc 102f4810 102f4810 104ec8a0 10597640
-d340 00000001 10463a60 00078f3c 00000000 105977e0 102f4ba8 1016b7a4 00000073
-d360 00000000 00000000 1024f800 1026c010 00000000 00000002 105ad540 101292ec
-d380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d3a0 00000001 00000000 00000002 1014a9fc 00000000 00000000 00000000 00000000
-d3c0 1002c000 104fd0c0 102d4000 00000000 10286064 102f1810 102f4810 1026c010
-d3e0 102f1010 00000001 1028a010 101390c4 102f1010 102d24b0 102d24b0 102d2420
-d400 104fe000 1028660c 00000000 00000002 00000000 1029cea4 0004000e 00000008
-d420 102f1810 104fe000 1028660c 1014a8e4 cccccccd 00000030 00000000 cccccccd
-d440 10286064 00000002 1023f0d0 00000007 10316d40 10284e40 00000000 00000008
-d460 ffffffff 102f4810 1026c010 1013922c 10448c00 10284e40 1028a010 102f1810
-d480 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-d4a0 00000000 00000000 10235490 10235494 00000000 00000000 102d24b0 102d2420
-d4c0 104de0e0 0000001a 48d30968 00000000 000004b4 1029cea4 0004000e 00000008
-d4e0 102f1810 104fe000 1028660c 1014a8e4 cccccccd 00000030 00000000 cccccccd
-d500 10286064 00000002 1023f0d0 00000007 10316d40 10284e40 00000000 00000008
-d520 ffffffff 102f4810 1026c010 10106720 10448c00 10284e40 1028a010 102f1810
-
-Kernel Fault: Code=26 regs=105ad300 (Addr=000004b4)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001101111111100001111
-r0-3	 00000000 10303010 10235490 10597640
-r4-7	 105aca08 10463960 00000000 00000073
-r8-11	 00000002 104fd2a0 00000079 102826bc
-r12-15	 102f4810 102f4810 104ec8a0 10597640
-r16-19	 00000001 10463a60 00078f3c 00000000
-r20-23	 105977e0 102f4ba8 1016b7a4 00000073
-r24-27	 00000000 00000000 1024f800 1026c010
-r28-31	 00000000 00000002 105ad540 101292ec
-sr0-3	 00000000 00000000 00000000 00000000
-sr4-7	 00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 10235490 10235494
- IIR: 48d30968    ISR: 00000000  IOR: 000004b4
-ORIG_R28: 102d24b0
-
-------- =_aaaaaaaaaa0--
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>
+> Hi,
+>
+> I've recently been given an HP apollo Series 700 box. I'm not sure exactly
+> what it is, other than that it says A1991XR on the base.
+>
+> Anyway, I ran across palinux (via the route of NetBSD->OpenBSD->palinux)
+> (I run slackware on my x86 boxen), downloaded the iso and burnt it to
+> CD. I then dropped in an NEC SCSI cdrom, and a Seagate ST3655N 500M
+> drive. I have 4 sticks of RAM, in slots J12, J13, J14 and J15 (alternate
+> rows starting toward the back of the machine). I'm using a serial console.
+>
+> When the system boots, it gets about as far as calibrating the delay loop
+> and drops out with a stack dump (see attached file).
+>
+> I was just wondering if there's any incite into what's up with this :&)
+>
+> - -- Matt
+>
+> - ---
+> Web Page:
+>   http://knm.yi.org/
+>   http://pkl.net/~matt/
+>
+> PGP Key fingerprint = 00BF 19FE D5F5 8EAD 2FD5  D102 260E 8BA7 EEE4 8D7F
+> PGP Key http://knm.yi.org/matt-pgp.html
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.0.4 (GNU/Linux)
+> Comment: For info see http://www.gnupg.org
+>
+> iD8DBQE6zkWkJg6Lp+7kjX8RAhzVAJ4zbUhgH+ob+G3Yh+bjnSP4tkMGJwCeNDfK
+> d9JX4Uk4TOfJloJ6YenIUB0=
+> =QXmq
+> -----END PGP SIGNATURE-----
+>
