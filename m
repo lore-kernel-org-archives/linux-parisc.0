@@ -1,18 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12507.mail.yahoo.com (web12507.mail.yahoo.com [216.136.173.199])
-	by dsl2.external.hp.com (Postfix) with SMTP id 291B64834
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 18:00:18 -0600 (MDT)
-Message-ID: <20021026000014.4733.qmail@web12507.mail.yahoo.com>
-Date: Fri, 25 Oct 2002 17:00:14 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] 735/125 Wide Diff scsi 
-To: Grant Grundler <grundler@dsl2.external.hp.com>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Richard Nairn <richard@nairnconsulting.ca>,
-	taggart@carmen.fc.hp.com, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021025005035.AB3E74852@dsl2.external.hp.com>
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4B8B4834
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 18:07:33 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 185EUC-00006y-00; Sat, 26 Oct 2002 01:07:28 +0100
+Date: Sat, 26 Oct 2002 01:07:28 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Richard Nairn <richard@nairnconsulting.ca>, taggart@carmen.fc.hp.com,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 735/125 Wide Diff scsi
+Message-ID: <20021026010728.H27461@parcelfarce.linux.theplanet.co.uk>
+References: <20021025005035.AB3E74852@dsl2.external.hp.com> <20021026000014.4733.qmail@web12507.mail.yahoo.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021026000014.4733.qmail@web12507.mail.yahoo.com>; from derekengelhaupt@rocketmail.com on Fri, Oct 25, 2002 at 05:00:14PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,51 +28,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-So my C180 has a different HVD controller chip than the 735?
+On Fri, Oct 25, 2002 at 05:00:14PM -0700, Derek Engelhaupt wrote:
+> So my C180 has a different HVD controller chip than the 735?
 
-derek
+The problem is that 735's CPU can't allocate consistent memory -- the
+C180 has the CCIO IOMMU, so it can.  The ncr53c7xx driver relies on
+being able to allocate consistent memory.
 
---- Grant Grundler <grundler@dsl2.external.hp.com> wrote:
-> "John David Anglin" wrote:
-> > > Is there any approx time for the WD driver? I have about 60G I
-> can put on
-> > > my machine if it works.. Will it work if It gets plugged in the
-> SE Chain?
-> > 
-> > No.  It may cause damage.
-> 
-> Not true.
-> Mixing SE and HVD devices on a SCSI bus will result in the interface
-> chips "tri-stating". ie no one can talk on the bus. But nothing
-> smokes
-> either - at least not for the HP product testing I was involved with
-> several years ago.
-> 
-> > There was a question about the WD driver not too long ago.  You
-> could search
-> > for the answer but I believe only hpux supports the WD interface at
-> this
-> > time.
-> 
-> And that's going to get dropped soon too.
-> Last product to support HVD is based on Sym53c876 chip.
-> The interface cards are supported on new IA64 machines
-> but I'm not sure one can purchase them or purchase HVD disks.
-> 
-> > You may be able to add a newer LVD to the SE chain and have it
-> > work.  I'm not sure if it could be used as a boot device though.
-> 
-> The LVD should work fine as a boot device in SE mode.
-> LVD devices talk SE like any other SE device (AFAIK).
-> 
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-__________________________________________________
-Do you Yahoo!?
-Y! Web Hosting - Let the expert host your web site
-http://webhosting.yahoo.com/
+-- 
+Revolutions do not require corporate support.
