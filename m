@@ -1,15 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
-Date: Thu, 27 Feb 2003 11:59:17 -0500 (EST)
-Message-ID: <200302271659.h1RGxHtF021557__18363.0713531331$1416622247$gmane$org@hiauly1.hia.nrc.ca>
-References: <3E5BA291000009D9@ocpmta3.freegates.net>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] Re: Cross compiling for 64 bit on HPPA
+Date: Fri, 28 Feb 2003 23:17:12 -0700
+Message-ID: <20030301061712.GB5518__20087.8833923072$1416622250$gmane$org@dsl2.external.hp.com>
+References: <20030228225506.37072.qmail@web12203.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: schwab@suse.de, willy@debian.org, parisc-linux@parisc-linux.org,
-	gcc@gcc.gnu.org
-To: jsoe0708@tiscali.be (Joel Soete)
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+To: mike ganley <mgg01@yahoo.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3E5BA291000009D9@ocpmta3.freegates.net> from "Joel Soete" at Feb 27, 2003 07:36:56 am
+In-Reply-To: <20030228225506.37072.qmail@web12203.mail.yahoo.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,38 +19,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Never the less, I would like to put an additional question:
-> the mentionned error occurs when this variable is a global one
-> but when it became local (e.g. when I define it into main() ) the error doesn't
-> occur anynore (I do not presume of the resulting code).
-> So what is the conceptual difference?
+On Fri, Feb 28, 2003 at 02:55:06PM -0800, mike ganley wrote:
+> hppa64 cross compiler.  Everything goes fine, then
+> hppa64-linux-ld complains libc6 is version 2.2.5 and
+> it requires 2.3 or greater.
 
-If you look at the assembly code, you will see that the initialization
-is done entirely in code when RW_LOCK_UNLOCKED is used to initialize
-a local.  You can handle more complex initializers when you use code
-to initialize an object.  When global or static storage is initialized,
-the initialized values are placed directly into a data section.  C++
-has constructors to do more complex initializations but this isn't
-present in standard C.
+libc6 2.3.x is only available from "unstable" debian pool.
 
-The reason as to why GCC can't handle your example when it could before
-has to do with the alignment of GCC to ISO C.  Constraint "3" in the
-standard states that "If the compound literal occurs outside the body
-of a function, the initializer list shall consist of constant expressions."
-Also, as Andreas said, "the value of a compound literal is that of an
-unnamed object initialized by the initializer list".  You would get
-the same error trying to do an initialization using a named object:
+Having just learned how to set up a "hybrid" release, I don't want
+to reccomend this to anyone.  IMHO, this is for someone willing to
+take risks with stability of a system, is not a developer, and wants
+something that's only in "unstable".  Drawback with "hybrid" is package
+maintainers will not like you if you report bugs - mixed releases are a
+PITA to reproduce. Personally, I'm not going to report bugs
+with the one box (my laptop) I have setup this way.
 
-  struct a { int i; } a = { 1 };
-  struct b { struct a x; } b = { a };
+The following seems like the "least evil" way to go about it:
 
-I think you want to avoid using compound literals for you particular
-initialization.  You don't need the capability of compound literals
-to initialize an object type or an array of unknown size, or that
-each compound literal creates only a single object in a given scope
-(this is useful if the initializer values aren't constant).
+1) /etc/apt/apt.conf should have the line:
+	APT::Default-Release "testing";
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+2) duplicate "testing" entries in /etc/apt/sources.list for
+   "unstable" as well. run "apt-get update".
+
+3) copy the following 7 lines into /etc/apt/preferences:
+Package: *
+Pin: release a=testing
+Pin-Priority: 650
+
+Package: *
+Pin: release a=unstable
+Pin-Priority: 90
+
+  This allows one to install from unstable but not update such debs
+  *until* they get promoted to "testing" release. Once this deb version
+  is promoted to testing, it tracks versions like normal.
+
+  Read "man apt_preferences" for more details.
+
+4) "apt-get install libc6/unstable" to update to libc6 2.3.1 lib.
+   You will have to install several other packages from /unstable
+   at the same time. But apt-get will complain about which packages.
+
+hth,
+grant
