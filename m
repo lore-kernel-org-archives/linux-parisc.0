@@ -1,15 +1,16 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: More questions [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
-Date: Wed, 1 Dec 2004 19:33:13 +0100
-Message-ID: <418A81170000A675@mail-8-bnl.mail.tiscali.sys>
-References: <20041201175648.GG5752@parcelfarce.linux.theplanet.co.uk>
+Subject: More questions [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
+Date: Wed, 1 Dec 2004 18:44:44 +0100
+Message-ID: <418A80AE0000A9A8@mail-4-bnl.tiscali.it>
+References: <20041111081154.GR15714@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
 Cc: parisc-linux@lists.parisc-linux.org
-To: "Matthew Wilcox" <matthew@wil.cx>
+To: "Randolph Chung" <randolph@tausq.org>,
+ "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041201175648.GG5752@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20041111081154.GR15714@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,21 +21,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-
+[...]
 > 
-> On Wed, Dec 01, 2004 at 06:44:44PM +0100, Joel Soete wrote:
-> > I doubt that's enough because I don't yet find how r0 is set?
-> 
-> r0 is magic on PA.  Writes are discarded, reads return 0.  It's the
-> hardware equivalent of /dev/zero ;-)
-> 
-Cool that make the stuff so ?
-And iirc registers are 64bit wide on pa2.0?
+> but looking at the other ones:
+> - __clear_user_page_asm can be optimized for 64-bit by writing 8 bytes
+>   at a time instead of 4
+Is it the idea (principle only):
+--- arch/parisc/kernel/pacache.S.Orig	2004-12-01 17:09:53.000000000 +0100=
 
-Thanks,
++++ arch/parisc/kernel/pacache.S-t1	2004-12-01 17:58:16.000000000 +0100
+@@ -505,6 +505,16 @@
+ 	ldi 64,%r1
+ 
+ 1:
++#ifdef __LP64__
++	std	%r0,0(%r28)
++	std	%r0,8(%r28)
++	std	%r0,16(%r28)
++	std	%r0,24(%r28)
++	std	%r0,32(%r28)
++	std	%r0,40(%r28)
++	std	%r0,48(%r28)
++	std	%r0,56(%r28)
++#else
+ 	stw %r0,0(%r28)
+ 	stw %r0,4(%r28)
+ 	stw %r0,8(%r28)
+@@ -521,6 +531,7 @@
+ 	stw %r0,52(%r28)
+ 	stw %r0,56(%r28)
+ 	stw %r0,60(%r28)
++#endif
+ 	ADDIB>  -1,%r1,1b
+ 	ldo 64(%r28),%r28
+
+I doubt that's enough because I don't yet find how r0 is set?
+
+[...]
+Thanks in advance for your attention,
     Joel
-
 
 -------------------------------------------------------------------------=
 --
