@@ -1,62 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from nlntadn.ats.nld.alcatel.nl (unknown [193.173.147.190])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A9199482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 02:59:41 -0600 (MDT)
-Message-ID: <1A8904C3797ED411AC2E0008C7E6F88117C91E@nlntmail2b.ats.nld.alcatel.nl>
-From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-To: 'Richard Hirst' <rhirst@linuxcare.com>,
-	"Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Booting 0.9.2 on C110
-Date: Tue, 17 Jul 2001 10:59:38 +0200
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B509482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 03:13:36 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 12A1AB00C; Tue, 17 Jul 2001 10:11:40 +0100 (BST)
+Date: Tue, 17 Jul 2001 10:11:40 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
+Cc: parisc-linux@lists.parisc-linux.org, okraus@t-online.de
+Subject: Re: [parisc-linux] palinux-0.9.2: Installation fails on C180
+Message-ID: <20010717101140.M30356@linuxcare.com>
+References: <01071511264600.00948@octopus>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <01071511264600.00948@octopus>; from Reinhard.Gimbel@freenet.de on Sun, Jul 15, 2001 at 11:26:46AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks Richard,
+On Sun, Jul 15, 2001 at 11:26:46AM +0200, Reinhard Gimbel wrote:
+> 
+> Hi folks !
+> 
+> Recently I bought an C180 at a local 2nd hand computer store. 
+> 
+> I tried to install the latest palinux-0.9.2 (esiee.fr), but the 
+> installation failed :-(
+> 
+> The download itself went ok (md5sums ok), no probs while 
+> burning the ISO image (using xcdrgtk). The C180 boots from the 
+> CD-R, the system can be set up (HD partitioning, creating the 
+> ext2 filesystems, etc.) but during heavy traffic on the SESCSI 
+> bus the system crashes (sometime during kernel installation, 
+> sometimes during base system installation).
 
-Tried it straight away, but no luck!
-Neither keyboard or mouse unplug/replug, nor space, return, escape, ctrl-c,
-ctrl-d or any function key seems to be noticed.
-I'll try to find an other idle-hp-machine to see if i see the identical
-behaviour....
+I guess you are installing from CD on SESCSI, to disk on FWSCSI.
+You could try to install from the network, so only the one scsi controller
+is active.  See if that helps.  You could probably boot from the CD, then
+tell the system to load everything via http or nfs, having exported the CD
+contents from a suitable server.
 
-Hans
-
-> -----Original Message-----
-> From:	Richard Hirst [SMTP:rhirst@linuxcare.com]
-> Sent:	Tuesday, July 17, 2001 10:47 AM
-> To:	Witvliet, Hans
-> Cc:	parisc-linux@lists.parisc-linux.org
-> Subject:	Re: [parisc-linux] Booting 0.9.2 on C110
-> 
-> On Fri, Jul 13, 2001 at 02:40:19PM +0200, Witvliet, Hans wrote:
-> > High all,
-> > 
-> > Just downloaded 0.9.2 image, burned it, and gave it a try on my C110.
-> > (should work afaik)
-> > For  the broad picture:
-> > C110, 256MB mem PS/2 keyboard & mouse, two lan interface, neither
-> connected
-> > (yet) and no serial console)
-> > 
-> > Booting went well, switched to STI-console (nice tux  in upperleft
-> corner)
-> > In a blink boot (cpu, mem, disks, lan) info flashed across the screen,
-> and
-> > then, instead of login, a graphic screen with a general debian message
-> that
-> > it is experimental software.
-> 
-> That is correct, you are about to install linux from CD, so you are seeing
-> the first screen of the installer output.
-> 
-> > After that the system seems to be frozen...
-> 
-> There are problems with the keyboard driver; for some people unplugging
-> the keyboard and this point and then plugging it in again clears the
-> problem.  I found that an old Compaq keyboard did not lock up at all.
-> You should be able to press <space> or <return> on that screen and get
-> the main menu of the installer displayed.
-> 
-> Richard
+Richard
