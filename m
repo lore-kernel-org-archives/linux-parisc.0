@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from primare.xs4all.nl (primare.xs4all.nl [213.84.188.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CDB5F4859
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Jul 2002 12:54:05 -0600 (MDT)
-Date: Sun, 21 Jul 2002 20:54:54 +0200
-From: DJ Tha Muggs <djmuggs@primare.xs4all.nl>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Systems Console hangs!
-Message-ID: <20020721205454.D16644@primare.xs4all.nl>
-References: <20020721183508.C16644@primare.xs4all.nl> <djmuggs@primare.xs4all.nl> <20020721183637.5E5DB484B@dsl2.external.hp.com>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB6984863
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Jul 2002 13:02:59 -0600 (MDT)
+Subject: Re: [parisc-linux] Solved: C110, kernel Panics, still more tears ;-(
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc list <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <3D3A8209.DCAC18F7@ruhr-west.de>
+References: <3D383969.1657EF43@ruhr-west.de>
+	<20020720152919.9D690483D@dsl2.external.hp.com>
+	<3D3A8209.DCAC18F7@ruhr-west.de>
+Content-Type: text/plain
+Date: 21 Jul 2002 13:02:58 -0600
+Message-Id: <1027278178.28933.25.camel@beavis>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020721183637.5E5DB484B@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sun, Jul 21, 2002 at 12:36:37PM -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,36 +26,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jul 21, 2002 at 12:36:37PM -0600, Grant Grundler wrote:
-> DJ Tha Muggs wrote:
-> > So it looks like the system boots fine, but i can't use it with a monitor con
-> >   nected :(
-> 
-> Which graphics card is installed?
-> FWIW, only PCI Vis-EG gfx card is supported to date.
-> I thought the FAQ and "Supported HW" web pages covered this.
-> 
-I see the message for the faq in my screen and after a few seconds the machine contineus to boot in a higher resolution, so it seems my graphics works fine.
+> I use a setting of 2 now and was able to ftp a good collection of
+> kernel.tar.gz files without crash. I hope this darn baby is *not*
+> playing tricks on me now, since I was once able to ftp a 200 MB file
+> without crash too. But all left to do is wait and watch and declare it
+> fixed for the time beeing.
 
-Here are some details i got from dmesg:
-STI GSC/PCI graphics driver version 0.9
-STI PCI graphic ROM found at f7000000 (2048 kB), fb at fa000000 (32 MB)
-STI word mode ROM at f7000044, hpa at fa000000
-STI id 2fc1066b-9a02587, conforms to spec rev. 8.09
-STI device: HPA4553A
-stifb: Unsupported gfx card id 0x2fc1066b
+Glad to see you got this working.  I am not sure if the statistics are
+still good (need to look into this again) ... but you could probably 
+get a feel of size by checking out /proc/bus/runway/ccio to see how much
+of the IO PDIR you are using.
 
-stifb: Unsupported gfx card id 0x2fc1066b
-sticonsole_init: searching for STI ROMs
-Console: switching to colour STI console 160x64
-
-I hope this helps out?
-
-Thx in advance,
-
-Cristian.
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+- Ryan
