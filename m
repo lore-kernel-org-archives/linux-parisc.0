@@ -1,24 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6FC854829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 04:26:02 -0700 (MST)
-Received: from esvir04nok.ntc.nokia.com (esvir04nokt.ntc.nokia.com [172.21.143.36])
-	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id g9SBQFB28011
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 13:26:15 +0200 (EET)
-Received: from esebh002.NOE.Nokia.com (unverified) by esvir04nok.ntc.nokia.com
- (Content Technologies SMTPRS 4.2.5) with ESMTP id <T5e3796d706ac158f24077@esvir04nok.ntc.nokia.com> for <parisc-linux@lists.parisc-linux.org>;
- Mon, 28 Oct 2002 13:25:58 +0200
-Received: from aurinko.ntc.nokia.com (aurinko.ntc.nokia.com [172.22.105.49]) by trinms01.ntc.nokia.com with ESMTP (8.7.5/8.7.3) id NAA29727 for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 13:25:53 +0200 (EET)
-Received: (from mnahkola@localhost)
-	by aurinko.ntc.nokia.com (8.11.6/8.11.6) id g9SBPqf10378
-	for parisc-linux@lists.parisc-linux.org; Mon, 28 Oct 2002 13:25:53 +0200 (EET)
-Date: Mon, 28 Oct 2002 13:25:52 +0200
-From: Nahkola Mikko <mikko.nahkola@nokia.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20021028112551.GR15137@aurinko.ntc.nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Subject: [parisc-linux] framebuffer depth and other issues ...
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3069F4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 07:22:38 -0700 (MST)
+Date: Mon, 28 Oct 2002 15:22:31 +0100
+Message-ID: <3DB5755500001056@ocpmta7.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: "Randolph Chung" <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] 2.4.19-pa24 (uaccess.h patch) [was: mkfs.xfs failled]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,45 +21,75 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I was wondering ... the VIS-EG is about as close to "fully supported" as 
-they get, right?
+Randolph,
 
-Well, I have one of those in a C240 and ... well, the system is otherwise 
-just fine, even KDE is fairly responsive and all that, but there's a 
-shortage of available colors. (anyone know of a good lowcolor icon theme? 
-I can't seem to find such in Debian... anyone?)
+I test it this morming with evms and xfs together and it seems to works
+fine (no memory default encounter so I could not check ex_table behaviour)
 
-Is it possible to get more than 8 bpp out of a VIS-EG? How would I go 
-about that, do I need to say something like "stifb:bpp:foo" to the kernel 
-or is fbset enough?
+Thanks,
+    Joel
 
-How much of a difference is there between VIS-EG/PCI (A4977A) and 
-VIS-EG/GSC (A4450A) in this regard? I have an A4450A in there at the 
-moment.
+PS: Can you explain the willy's idea on how to replace ex_table?
 
-HP-UX seems to find a whole lot of differences and such ... and I did run 
-GNOME/HP-UX once on a VIS-EG/PCI without running out of colors but then 
-again HP-UX does color recovery and acceleration and all that on those...
+ps: What do think about this:
+--- uaccess.h.orig	2002-10-28 14:58:13.000000000 +0100
++++ uaccess.h	2002-10-28 15:01:31.000000000 +0100
+@@ -28,6 +28,11 @@
+  * that put_user is the same as __put_user, etc.
+  */
 
++extern int __get_kernel_bad(void);
++extern int __get_user_bad(void);
++extern int __put_kernel_bad(void);
++extern int __put_user_bad(void);
++
+ #define access_ok(type,addr,size)   (1)
+ #define verify_area(type,addr,size) (0)
 
-Then, is an Ati Mach64 likely to work? I mean, it should be pretty 
-well-supported in i386 ... and I've heard rumors about Sun-branded 
-Mach64s too, so that would point to least some models getting by without 
-a PC BIOS.
+@@ -35,8 +40,8 @@
+ #define get_user __get_user
 
-
-Third, what's the thing with $TERM and the serial console? I have 
-interesting problems with the 70096, even in vt100-emulation mode the 
-Debian installer was, um, interesting. Doesn't anyone else want to use 
-the HP dumb-terminal hardware with Linux?
-
-
-And as an aside, how reliable is the disk stuff nowadays? Would it make 
-any sense to run a file server on Linux/hppa yet? I mean, something like 
-a stack of A3312As, software-RAID and NFS ... is it likely to work? How 
-about performance, compared to HP-UX, for example? (yes, I'd expect HP-UX 
-to be somewhat better, but by how much?)
-
-
--- 
-Mikko Nahkola <mikko.nahkola@nokia.com>
+ #if BITS_PER_LONG == 32
+-#define LDD_KERNEL(ptr)		BUG()
+-#define LDD_USER(ptr)		BUG()
++#define LDD_KERNEL(ptr)		__get_kernel_bad();
++#define LDD_USER(ptr)		__get_user_bad();
+ #define STD_KERNEL(x, ptr) __put_kernel_asm64(x,ptr)
+ #define STD_USER(x, ptr) __put_user_asm64(x,ptr)
+ #else
+@@ -75,7 +80,7 @@
+ 	    case 2: __get_kernel_asm("ldh",ptr); break; \
+ 	    case 4: __get_kernel_asm("ldw",ptr); break; \
+ 	    case 8: LDD_KERNEL(ptr); break;		\
+-	    default: BUG(); break;                      \
++	    default: __get_kernel_bad(); break;         \
+ 	    }                                           \
+ 	}                                               \
+ 	else {                                          \
+@@ -84,7 +89,7 @@
+ 	    case 2: __get_user_asm("ldh",ptr); break;   \
+ 	    case 4: __get_user_asm("ldw",ptr); break;   \
+ 	    case 8: LDD_USER(ptr);  break;		\
+-	    default: BUG(); break;                      \
++	    default: __get_user_bad(); break;           \
+ 	    }                                           \
+ 	}                                               \
+ 							\
+@@ -144,7 +149,7 @@
+ 	    case 2: __put_kernel_asm("sth",x,ptr); break;       \
+ 	    case 4: __put_kernel_asm("stw",x,ptr); break;       \
+ 	    case 8: STD_KERNEL(x,ptr); break;			\
+-	    default: BUG(); break;                              \
++	    default: __put_kernel_bad(); break;			\
+ 	    }                                                   \
+ 	}                                                       \
+ 	else {                                                  \
+@@ -153,7 +158,7 @@
+ 	    case 2: __put_user_asm("sth",x,ptr); break;         \
+ 	    case 4: __put_user_asm("stw",x,ptr); break;         \
+ 	    case 8: STD_USER(x,ptr); break;			\
+-	    default: BUG(); break;                              \
++	    default: __put_user_bad(); break;			\
+ 	    }                                                   \
+ 	}                                                       \
+ 								\
