@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4AE004831
-	for <parisc-linux@parisc-linux.org>; Sun, 21 Apr 2002 11:05:20 -0600 (MDT)
-Message-Id: <200204211705.g3LH5HMn023230@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] unofficial gdb deb on ftp site
-To: tausq@debian.org
-Date: Sun, 21 Apr 2002 13:05:17 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020421035952.GI7563@tausq.org> from "Randolph Chung" at Apr 20, 2002 08:59:52 pm
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CEC48482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Apr 2002 00:18:47 -0600 (MDT)
+To: Randolph Chung <tausq@debian.org>
+Subject: Re: [parisc-linux] gcc-3.2 experimental debs
+Message-ID: <1019456323.3cc3ab434a657@webmail.tiscalinet.be>
+Date: Mon, 22 Apr 2002 08:18:43 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: Joel Soete <joel.soete@freebel.net>,
+	parisc-linux@lists.parisc-linux.org
+References: <3CC2B937.8020509@freebel.net> <20020421155301.GL7563@tausq.org>
+In-Reply-To: <20020421155301.GL7563@tausq.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,16 +24,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I see that Dave has changed hppa-gcc from using stabs to using dwarf2 in
-> gcc 3.2, so things might be quite different once we move to gcc 3.2...
+Quoting Randolph Chung <tausq@debian.org>:
 
-That wasn't me.  I believe it was Alan.  This is also the case for 3.1.
-What I did was fix the generation of frame notes in the prologue so that
-the dwarf2 EH code works.  this is mainly for C++.  I'm not sure whether
-gdb uses this information although it could.  You can always use "-gstabs"
-to get stabs debugging information.
+> > I try my hown gcc-3.2 (+ binutils, glibc) against kernel 2.4.18-pa19 
+> > (not yet take the risc with pa20).
+> > 
+> > It compiles as well as with gcc3.0.x. It boots also but as soon as I
+> try 
+> > to connect it remotly with telnet or ssh (I forget to test ftp) the 
+> > system crash:
+> 
+> if you still feel adventurous, check out the kdb cvs branch of the
+> kernel and you'll at least be able to tell where it crashed... :-)
+> 
+> randolph
+> 
+> 
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Yes I will also try (and find out howto use)
+
+Joel
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
