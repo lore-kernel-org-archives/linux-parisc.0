@@ -1,38 +1,48 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA28953
-	for <parisc-linux@puffin.external.hp.com>; Wed, 30 Aug 2000 08:56:39 -0600
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 30 Aug 2000 14:56:42 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13U9I5-0007Y2-00; Wed, 30 Aug 2000 15:56:37 +0100
-Date: Wed, 30 Aug 2000 15:56:36 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Paul Wouters <paul@xtdnet.nl>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Q: What kind of RAM does a HP 9000 E35 (800 series) need?
-Message-ID: <20000830155636.D3463@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.21.0008241245130.24244-100000@duplo.xtdnet.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0008241245130.24244-100000@duplo.xtdnet.nl>; from paul@xtdnet.nl on Wed, Aug 30, 2000 at 04:46:13PM +0200
-Sender: <willy@www.linux.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA29641
+	for <parisc-linux@puffin.external.hp.com>; Wed, 30 Aug 2000 09:44:51 -0600
+Date: Wed, 30 Aug 2000 11:43:59 -0400 (EDT)
+From: Andrew Park <apark@cdf.toronto.edu>
+To: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Cc: taggart@carmen.fc.hp.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] still cannot boot. 
+In-Reply-To: <200008300538.WAA02356@chrome.rose.hp.com>
+Message-ID: <Pine.SOL.4.21.0008301140400.25953-100000@misty.cdf>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 30, 2000 at 04:46:13PM +0200, Paul Wouters wrote:
-> Can anyone tell me what kind of RAM (and what minimum number of modules) an
-> HP9000 E35 needs? Also, what does it need to run Linux comfortable (without X)
+On Tue, 29 Aug 2000, Kirk Bresniker wrote:
 
-<quote>
+> | 
+> | > 
+> | > Andrew Park writes...
+> | > 
+> | > > I must be missing something...
+> | > > I got a bootable HP-UX installation CD today, so I popped it in my CDROM
+> | > > and on the BOOT_ADMIN> prompt I typed, boot lan isl.  It still gets
+> | > > stuck, then I changed the path, so that cdrom is primary and the LAN is
+> | > > secondary, then typed  boot pri isl, and it comes right back to the
+> | > > BOOT_ADMIN> prompt.  Am I missing something obvious?
+> | > 
+> 
+> Em, if you're trying to boot from your CD-ROM, why are you typing
+> a command to attempt a lan boot?  Don't you want to do the following:
+> 
+> BOOT_ADMIN> boot scsi[some address stuff] isl ?
 
-The earliest PA-RISC servers have proprietary HP devices attached to
-proprietary HP bus architectures. It is unlikely that documentation
-on these busses and devices will ever become available, since so few
-people are interested in spending any effort finding and releasing the
-docs. Machines in this category are the E, F, G, H, I class (aka Nova)
-and T500 series (Emerald) machines as well as some earlier, unlettered
-servers.
+I mentioned that I tried
 
-</quote>
+	boot pri isl
 
--- 
-Revolutions do not require corporate support.
+After making CD-ROM as primary boot.  It would not take me anywhere.
+I just tried all combination of things when everything failed.
+Thanks
+
+
+Andrew Park
+           
+________________________________________________________________________ 
+CDFlab Systems Administrator                       www.cdf.utoronto.ca |
+GnuPG Signature              www.cdf.utoronto.ca/~apark/public_key.txt |
+------------------------------------------------------------------------
