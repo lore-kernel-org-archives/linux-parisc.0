@@ -1,53 +1,32 @@
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA27273
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 09:17:31 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 21857566B
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 08:19:01 -0800 (PST)
-Message-Id: <200011151617.IAA13311@milano.cup.hp.com>
-To: Alex deVries <adevries@linuxcare.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] dino maintainer? 
-In-reply-to: Your message of "Wed, 15 Nov 2000 11:50:27 PST."
-             <3A12BED3.B4F42ED2@linuxcare.com>
-Date: Wed, 15 Nov 2000 08:17:41 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA27620
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 09:21:12 -0700
+Message-Id: <200011151623.LAA21991@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [Semi OT] SOM Linker
+To: dhazeghi@pacbell.net
+Date: Wed, 15 Nov 2000 11:23:05 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <3A121DDD.992ECBC8@pacbell.net> from "dhazeghi@pacbell.net" at Nov 14, 2000 09:23:41 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> Hang on a sec... what Grant's saying is that *card-mode* dino is never
-> used for SCSI controllers, but on the B160L it would probably be
-> *chip-mode* dino.
+> This is not precisely what I mean. What I should have said is that I want to create
+> a cross compiler --host=i686-linux --target=hppa-hpux. I asked this list, because
+> you folks did some work on the SOM linker, which is at the moment the missing piece
+> for a cross toolchain which targets hpux.
 
-No such thing - you probably mean "Bridge Mode" and that's what
-the built-in Dino is using.
+This also may be possible.  The first step would be to copy the hpux headers
+to a i686-linux system and see if you can build the HP linker.  The next
+step would be to try to build the cross binutils tools.  I know this
+requires the hpux headers and likely some hacking would be required to
+get it to build.
 
-> Does this mean that all GSC SCSI expansion cards are Zalon based?
->
-> So what Helge has isn't a PCI card specifically, Dino and the 53c8xx are
-> all on the motherboard.
-> 
-> Does Dino handle IO memory mapping differently for chip or card mode?
+The linker is probably the hard part.  There may be byte ordering issues
+and bugs in what HP contributed.
 
-yes. yes. yes (conditional).
-
-"IO memory mapping" is a confusing term. I'll assume you mean MMIO.
-(Memory Mapped I/O)
-
-MMIO space access is independent of I/O Port space access.
-MMIO space access simple isn't available for card-mode Dino since
-niether PDC nor the OS assigns host physical address space to the
-card-mode Dino (that's what IO_ADDR_EN is for). PDC does this
-for Bridge-mode dino (built-in) - but apperently only when it needs
-to.
-
-I/O Port space accesses are done the same way for both modes.
-I/O Port space access is implemented by poking registers on Dino.
-
-Read the Dino Spec (or source) for more details.
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
