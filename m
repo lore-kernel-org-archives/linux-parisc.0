@@ -1,19 +1,19 @@
-Return-Path: <Ivar.Olav.Harstad.Orskaug@idi.ntnu.no>
-Received: from ray.idi.ntnu.no (ray.idi.ntnu.no [129.241.107.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BF8754854
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D9A2A4854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 13 Jan 2004 07:37:23 -0700 (MST)
-Received: from db-gr1.idi.ntnu.no (db-gr1.idi.ntnu.no [129.241.111.242])
-	by ray.idi.ntnu.no (8.12.10/8.12.10) with ESMTP id i0DEbLDx014980
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 13 Jan 2004 15:37:21 +0100 (MET)
-Date: Tue, 13 Jan 2004 15:37:21 +0100 (CET)
-From: Ivar Orskaug <Ivar.Olav.Harstad.Orskaug@idi.ntnu.no>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.BSF.4.58.0401131521300.24660@db-gr1.idi.ntnu.no>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] kernel compilation time
+	Tue, 13 Jan 2004 07:52:02 -0700 (MST)
+Date: Tue, 13 Jan 2004 08:02:49 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Ivar Orskaug <Ivar.Olav.Harstad.Orskaug@idi.ntnu.no>
+Subject: Re: [parisc-linux] kernel compilation time
+Message-ID: <20040113160249.GJ533@tausq.org>
+References: <Pine.BSF.4.58.0401131521300.24660@db-gr1.idi.ntnu.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.BSF.4.58.0401131521300.24660@db-gr1.idi.ntnu.no>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,13 +23,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi,
-just installed a fresh Debian on a C3000/8500. I did a kernel
-recompile and after 15 minutes binutils terminated compilation,
-complaining about too long arguments.  However, is this normal compilation
-time? I know this is not an acurate metric, but gives an idea. I
-just did an make oldconfig and then rebuilt the kernel. What is the normal
-kernel compilation time on these machines?
-The running kernel was 2.4.21.
+> just installed a fresh Debian on a C3000/8500. I did a kernel
+> recompile and after 15 minutes binutils terminated compilation,
+> complaining about too long arguments.  However, is this normal compilation
+> time? I know this is not an acurate metric, but gives an idea. I
+> just did an make oldconfig and then rebuilt the kernel. What is the normal
+> kernel compilation time on these machines?
+> The running kernel was 2.4.21.
 
-	/Ivar
+do you have latest binutils installed? it shouldn't terminate. can you
+please post your config and binutils/gcc version? ~10-15 minutes sounds
+reasonable for a c3k, but depends on amount of memory, speed of disk, 
+etc...
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
