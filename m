@@ -1,63 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA17927
-	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Oct 2000 19:19:19 -0600
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id AAB6481B
-	for <parisc-linux@thepuffingroup.com>; Thu,  5 Oct 2000 18:20:18 -0700 (PDT)
-Received: from localhost (grundler@localhost [127.0.0.1])
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id SAA05210
-	for <parisc-linux@thepuffingroup.com>; Thu, 5 Oct 2000 18:24:29 -0700 (PDT)
-Message-Id: <200010060124.SAA05210@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA18642
+	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Oct 2000 19:44:43 -0600
+Date: 6 Oct 2000 01:45:43 -0000
+Message-ID: <20001006014543.5219.qmail@mailserv2.iuinc.com>
+Received: from y18626 ([10.108.21.26]) by smtp.huawei.com
+          (Netscape Messaging Server 4.15) with SMTP id G1ZJ3G01.R08 for
+          <parisc-linux@thepuffingroup.com>; Fri, 6 Oct 2000 09:35:40 +0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] udelay() inconsistent 
-In-reply-to: Your message of "Thu, 05 Oct 2000 17:37:34 PDT."
-             <200010060037.RAA05141@milano.cup.hp.com>
-Date: Thu, 05 Oct 2000 18:24:21 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+From: yuqian <yuqian@huawei.com>
+Subject: Re: [parisc-linux] bug report on Sym53C895a or config error? 
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-...
-> I still need to work on the "CACHE TEST FAILED: script execution failed."
-> messages. I'm pretty sure those are due to LCI instruction being (mis-)used
-> in sba_iommu.c.
+At 09:40 00-10-5 -0700, you wrote:
+>The B2000 isn't really supported yet. The piece that's missing
+>support is the SuckyIO (superio from NCR) chip. SuckyIO provides
+>USB, IDE, Floppy, Serial port, etc.
+>I'm using an add-on serial card as my "console" in a C3000.
+>The built-in Serial port 1 provides output until linux switches
+>from PDC console to serial console.
+>Once SuckyIO support is in place, the add-on serial card won't
+>be needed.
+:-(
+But if I only use net-access, maybe it work well?
 
-I ditched the __LP64__ code in sba_iommu.c (uses asm("lci..")) in order to
-use the same code as 32-bit uses. The scsi "CACHE TEST" failures went away.
+>No one has taken ownership of HPUX XC builds since building
+>on i686-linux is pretty fast. Did I hear you volunteer? :^)
+Oh, I am glad to be a volunteer. For my i686PC must in M$ Window
+for working, the available workbench is B2000. (My manager don't
+care the OS is HP-UX or Linux but only cares it work or not :-)
 
-So if anyone can make the LCI work...I'll think of a suitable reward...
-(something better than a 710...perhaps a 4GB, 7200RPM, SE SCSI disk?
-or a dual headed GSC graphics card?)
-
-
-But on this run the ms/D_cr16 values do NOT agree:
-...
-sym53c875-0: rev 0x3 on pci bus 1 device 5 function 0 irq 769
-ncrgetfreq()  mdelay(1) = 398649  INW(nc_sist) costs cr16 576
-ncrgetfreq()  ms 91  D_cr16 71007434
-ncrgetfreq()  mdelay(1) = 796482  INW(nc_sist) costs cr16 585
-ncrgetfreq()  ms 80  D_cr16 63473212
-ncrgetfreq()  mdelay(1) = 796482  INW(nc_sist) costs cr16 594
-ncrgetfreq()  ms 81  D_cr16 63570830
-sym53c875-0: NCR clock is 109732KHz
-sym53c875-0: ID 7, Fast-20, Parity Checking
-sym53c875-0: on-chip RAM at 0xf4901000
-ncrgetfreq()  mdelay(1) = 398488  INW(nc_sist) costs cr16 580
-ncrgetfreq()  ms 87  D_cr16 68386143
-ncrgetfreq()  mdelay(1) = 796482  INW(nc_sist) costs cr16 566
-ncrgetfreq()  ms 108  D_cr16 85026462
-ncrgetfreq()  mdelay(1) = 796482  INW(nc_sist) costs cr16 591
-ncrgetfreq()  ms 108  D_cr16 85728994
-sym53c875-0: PCI clock (82299 KHz) is out of range [22688 KHz - 45375 KHz].
-sym53c875-0: giving up ...
-sym53c896-0: rev 0x4 on pci bus 0 device 15 function 0 irq 513
-...
-
-(ie 85728994/400000 = 214 != 108)
-
-later,
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Another question is: why not build FDISK/PALO/E2FScp for HP-UX?
+because all HP box with HP-UX's install/recover CD, so if has 
+fdisk/palo/e2fscp program running on HP-UX, the work becames so 
+simple that install Linux onto HP box.
