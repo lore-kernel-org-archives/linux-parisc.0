@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 15 Jul 2003 20:08:25 +0200
-Message-ID: <3F0C2302000016ED@ocpmta2.freegates.net>
-In-Reply-To: <3F0C2302000016AD@ocpmta2.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Re: 2.6.0-test1: Kernel pci bug ?
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: "Matthew Wilcox" <willy@debian.org>,
-	parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mailout11.sul.t-online.com (mailout11.sul.t-online.com [194.25.134.85])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4E7C5482D
+	for <parisc-linux@parisc-linux.org>; Tue, 15 Jul 2003 12:39:05 -0600 (MDT)
+From: Alexander Gabert <pappy@nikita.ath.cx>
+Date: Tue, 15 Jul 2003 20:37:48 +0200
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] E35 boots gentoo hppa beta04 into kernel fault
+Message-ID: <20030715183748.GA8904@nikita.ath.cx>
+References: <20030715165758.GA10544@nikita.ath.cx> <20030715173525.GX23808@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030715173525.GX23808@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,22 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+thank you very much,
 
-> It works when compiled with sym2 (I do not try any more sym1) and compiled
-> with gcc-3.0. 
-> I will so tried now to port forward gg __canonicalize... stuff and gcc-3.3.
+here is the output from palinux-2.4.20-pa35-20030513-netinst.iso
+with the ttyB0 console:
 
-I just reboot a 2.6.0... with your 2.4 patch about __canoncalize... and it
-works also.
-Can you ci it into 2.6 too.
+http://nikita.ath.cx/users/pappy/hppa/e35/boot_netinst_pateam/noscsi.txt
 
-Thanks in advance,
-    Joel
+thanks again, willy :-)
 
-PS: :_( led on front of my b180 doesn't flash anymore (just a joke)
+bye,
 
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+Alex
