@@ -1,12 +1,15 @@
-From: jsoe0708@tiscali.be
-Subject: [parisc-linux] gcc 3.0 error
-Date: Thu, 16 Jan 2003 15:34:36 +0100
-Message-ID: <3E1AAEFA0000190A__26621.3972274729$1416622126$gmane$org@ocpmta6.freegates.net>
+From: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] new gcc-default for hppa
+Date: Thu, 16 Jan 2003 14:37:46 +0000 (GMT)
+Message-ID: <Pine.LNX.4.44.0301161427060.31815-100000__38222.7942850024$1416622126$gmane$org@sal.ucc.ie>
+References: <20030116010620.GB8543@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: debian-hppa@lists.debian.org
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: jsoe0708@tiscali.be, Randolph Chung <tausq@debian.org>,
+	<parisc-linux@lists.parisc-linux.org>, <debian-hppa@lists.debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <20030116010620.GB8543@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,42 +20,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Wed, 15 Jan 2003, Grant Grundler wrote:
 
-Trying to rebluid a graphical library on my hppa linux b180 still running=
+> On Wed, Jan 15, 2003 at 05:14:47PM +0100, jsoe0708@tiscali.be wrote:
+> > >There are a lot of differences (do you want it I do not think it will be
+> > >usefull)
+> > >
+> > >> or a default .config if that's closer?
+> > >
+> > >It will have to wait tommorrow (sorry)
+>
+> np. I also want you to look at something that is known
+> to work before going too far.
+>
+> > I now add CONFIG_TULIP_MMIO=yes
+>
+> yes. that's what I meant.
+>
+> > (Randolph: Do you want I send you those new material: kernel, system.map,
+> > ...?)
+>
+> Or make them available via http or ftp.
+> Otherwise, posting what symbols the IAOQ/GR02 values point at
+> is even better.
+>
+> > I also forget to recall: this only occurs for incoming ethernet trafic(ie
+> > ssh, telnet, ftp, coming from an external server). The outgoing traffic
+> > works fine (I just do a telnet and a ftp from this server to an external
+> > one without crash)
+>
+> Interesting. "outgoing" has both inbound and outbound data.
+> That doesn't sound like a tulip driver bug though it's certainly
+> possible.
 
-gcc-3.0 as default, I got following message:
+This is EXACTLY what happened to me when I conpiled a kernel for my C240
+(just using the built-in network card) with a (buggy) gcc-3.2. Incoming
+network traffic will crash the system, outgoing will work.
 
-/usr/bin/ld -r -o .libs/libTKernel.la-478.o .libs/Units_UtsSequence_0.o
-.libs/libTKernel.la-477.o
-gcc -shared .libs/libTKernel.la-478.o  -ldl -lieee -lm  -Wl,-soname -Wl,l=
-ibTKernel.so.0
--o .libs/libTKernel.so.0.0.0
-/usr/bin/ld: .libs/libTKernel.la-478.o(.text.1+0x37798): cannot reach 000=
-00387__ZNSolsEPFRSoS_E+0,
-recompile with -ffunction-sections
-/usr/bin/ld: .libs/libTKernel.la-478.o(.text.1+0x37798): cannot handle R_=
-PARISC_PCREL17F
-for std::ostream::operator<<(std::ostream& (*)(std::ostream&))
-/usr/bin/ld: final link failed: Bad value
-collect2: ld returned 1 exit status
-make[3]: *** [libTKernel.la] Error 1
-make[3]: Leaving directory `/CAD/OpenCascade/build/src/TKernel'
-make[2]: *** [all-recursive] Error 1
-make[2]: Leaving directory `/CAD/OpenCascade/build/src'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/CAD/OpenCascade/build'
-make: *** [all] Error 2
+gcc-3.2 obviously miscompiles parts of the network code of the kernel,
+whereas gcc-3.0 (with the very same kernel, same config) produced a
+working kernel. I can't remember exactly what kernel/config and compiler,
+but I sent the details to the list some months ago (I cann look them up
+if somebody is interested).
 
-As it is a very long job (more then 12h) what would it be better:
-1) simply following advise: "recompile with -ffunction-sections"
-2) upgrade directly to gcc-3.2
-
-Thanks for help,
-    Joel
-
-
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+Perhaps this helps to narrow down which part (driver or networking code)
+of the kernel is affected by the miscompilation.
