@@ -1,18 +1,24 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 38F084852
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5A9494852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 11:18:55 -0700 (MST)
-Message-ID: <4037A133.5020906@tiscali.be>
-Date: Sat, 21 Feb 2004 18:19:31 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] Linux only see 2Gb of ram of N4k
-References: <402A4CA500006EA3@ocpmta2.freegates.net>
-	<20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	Sat, 21 Feb 2004 11:24:38 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1Aubno-0006oS-Hg; Sat, 21 Feb 2004 18:24:36 +0000
+Date: Sat, 21 Feb 2004 18:24:36 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
+Message-ID: <20040221182436.GM11824@parcelfarce.linux.theplanet.co.uk>
+References: <20040218235225.GA1623@calypso>
+	<20040219062907.GC13916@colo.lackof.org>
+	<20040221075849.GA1642@calypso>
+	<20040221170508.GB14198@baldric.uwo.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040221170508.GB14198@baldric.uwo.ca>
+Sender: <willy@www.linux.org.uk>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -23,39 +29,25 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Sat, Feb 21, 2004 at 12:05:09PM -0500, Carlos O'Donell wrote:
+> > Thanks! Changing NCR_700_MAX_TAGS to 1 in drivers/scsi/53c700.h did the
+> > trick. Will I now have poor disk performance? If so, might I get away
+> > with setting it to something higher, like 2 or 4, maybe?
+> 
+> I could never run IO stably at anything higher than 1. The drives don't
+> seem to handle it properly, the error recovery mechanisms seem less
+> than perfect, and the box just hangs.
 
+So, um, maybe we should change the default?  Nobody seems to be
+investigating why this happens, so I don't see why our users should
+suffer.  I doubt anyone's going to be terribly motivated to track this
+problem down for such old machines, so let's just sacrifice a little
+performance for stability.
 
-Matthew Wilcox wrote:
-> On Fri, Feb 20, 2004 at 07:04:26PM +0100, Joel Soete wrote:
-> 
->>Hi all,
->>
->>My collegue make me notice that the N4k on which I can test Linux was supplied
->>with 4Gb of ram (which if confirm at boot prompt) but Linux only see 2Gb.
->>
->>It is a dual cpu machine, is that 1/2 ram dedicated to 1 cpu and the other
->>1/2 to the 2d cpu?
-> 
-> 
-> Unlikely.  As I recall, the N4k diagram looks like this:
-> 
-> <-PCI-> Elroy <-Ropes\      PA <-+-> PA        PA <-+-> PA       /Ropes-> Elroy
-> <-PCI-> Elroy <-Ropes-\         DEW       RAM      DEW          /-Ropes-> Elroy
-> <-PCI-> Elroy <-Ropes--> IKE <-Merced-> Stretch <-Merced-> IKE <--Ropes-> Elroy
-> <-PCI-> Elroy <-Ropes-/         DEW       RAM      DEW          \-Ropes-> Elroy
-> <-PCI-> Elroy <-Ropes/      PA <-+-> PA        PA <-+-> PA       \Ropes-> Elroy
-> 
-> So the RAM is uniformly-accessible from all CPUs, but the IO is not.
-
-That is also what I believe to have understood from our previous talk about N Stretch mmu
-(but I am never sure to well undertand, thanks to confirm)
-
-> 
-> If you look at pat_memconfig() in arch/parisc/kernel/inventory.c, you'll
-> see how we try to figure out what memory ranges are in the machine.
-> Want to try debugging that, see what's being reported by firmware?
-> 
-I will try.
-
-Many thanks,
-	Joel
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
