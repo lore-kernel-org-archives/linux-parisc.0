@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E9576482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 08:38:27 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id auvglaaa for parisc-linux@lists.parisc-linux.org; Mon, 4 Feb 2002 08:38:17 -0700
-Date: Mon, 4 Feb 2002 07:38:17 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] dump driver for parisc-linux: patch vs CVS
-Message-ID: <20020204153817.GI604@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <3C5E768A.573CC5A2@admin.france.hp.com>
+Received: from hermes.cs.brandeis.edu (hermes.cs.brandeis.edu [129.64.2.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 05118482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 08:47:55 -0700 (MST)
+Received: from [129.64.46.83] (dhcp-129.64.46.83.cs-i.brandeis.edu [129.64.46.83])
+	by hermes.cs.brandeis.edu (8.11.6/8.9.3) with ESMTP id g14Flr715685
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 4 Feb 2002 10:47:53 -0500
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C5E768A.573CC5A2@admin.france.hp.com>
+Message-Id: <a05100309b8845afe9aca@[129.64.46.83]>
+Date: Mon, 4 Feb 2002 10:38:36 -0500
+To: parisc-linux@lists.parisc-linux.org
+From: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Subject: [parisc-linux] ATLAS compile under 0.93?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> -Do you think it is a good idea to have a dump driver available 
-> in the standart kernel ?
-> -If yes, who is able to do the code review, and put this dump 
-> module in the CVS ?
-
-The usual procedure as I understand it is to post a diff to this list
-(cvs diff -uNp from the root of your linux tree). People will try it
-out/post comments and once that is done someone can check this in for
-you.
-
-randolph
+has anyone sucessfully compiled ATLAS(http://www.netlib.org/atlas) 
+under PARISC linux?  I got it to go most of the way, but then crashed 
+in the second opt stage.  I'm going to email off an error report, but 
+wantedd to check if anyone else has played with it
+Aaron
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+_______________________________________________________
+Aaron Macks(aaronm@cs.brandeis.edu)
+My sheep has seven gall bladders, that makes me the King of the Universe!
