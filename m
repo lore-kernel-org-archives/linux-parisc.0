@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A411A4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Apr 2003 11:29:56 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 193frz-0003rK-JG; Thu, 10 Apr 2003 18:29:51 +0100
-Date: Thu, 10 Apr 2003 18:29:51 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: =?iso-8859-1?Q?Andr=E9?= Luiz Castilhos Magoga <magoga@tteng.com.br>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 64 bits apps
-Message-ID: <20030410172951.GC11811@parcelfarce.linux.theplanet.co.uk>
-References: <000201c2ff83$6aaf57b0$7900a8c0@tteng.com.br>
+Received: from guinness.internal.neep.com.au (i112-081.nv.iinet.net.au [203.59.112.81])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 51DBB4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Apr 2003 20:58:49 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id KAA02839
+	for parisc-linux@lists.parisc-linux.org; Fri, 11 Apr 2003 10:56:37 +0800
+Date: Fri, 11 Apr 2003 10:56:34 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] A VERY GOOD DAY TO YOU
+Message-ID: <20030411105631.A1889@neep.com.au>
+References: <03Apr10.102517cest.119124@ns.hiscom.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <000201c2ff83$6aaf57b0$7900a8c0@tteng.com.br>
+In-Reply-To: <03Apr10.102517cest.119124@ns.hiscom.nl>; from c.beerse@torex-hiscom.nl on Thu, Apr 10, 2003 at 10:06:03AM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,16 +25,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Apr 10, 2003 at 02:05:36PM -0300, André Luiz Castilhos Magoga wrote:
-> Hi, I’m a software engineer in Brazil, working with Linux System
-> Development and IPF and PA-RISC based machines. 
+"Beerse, Corné" said:
+> I recently read somewhere that Nigaragua (and maybe some other coutries)
+> have this scam as their 3rt of 4th largest source of income...
 
-Yes, your colleague asked about it here:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2003-April/019668.html
+I think you mean Nigeria, not Nicaragua.  =)
 
-and was given references.
+Andrew.
 
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
