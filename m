@@ -1,10 +1,11 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] 712/100 keyboard not working in 2.6.6-pa2?
-Date: Tue, 18 May 2004 09:06:29 -0400
-Message-ID: <20040518130629.GE27929@baldric.uwo.ca>
+From: "Brian Barber" <brianbarber@myrealbox.com>
+Subject: Re: [parisc-linux] 712/100 keyboard not working in 2.6.6-pa2?
+Date: Tue, 18 May 2004 09:38:39 -0400
+Message-ID: <1084887519.d79829dcbrianbarber@myrealbox.com>
+Reply-To: brianbarber@linux.ca
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="UTF-8"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -16,6 +17,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+
+I'm running a 712/80 at home.  I'll try a new kernel in the next couple of =
+days and let you know.
+
+BB
+
+-----Original Message-----
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 18 May 2004 09:06:29 -0400
+Subject: [parisc-linux] 712/100 keyboard not working in 2.6.6-pa2?
 
 
 pa,
@@ -32,6 +44,13 @@ Maybe I should just purge my .config and see what happens.
 *shrug*
 
 c.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
 
 _______________________________________________
 parisc-linux mailing list
