@@ -1,8 +1,8 @@
-From: "David S. Miller" <davem@redhat.com>
+From: James Bottomley <James.Bottomley@steeleye.com>
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
- tst-mmap-eofsync in glibc on parisc)
-Date: Sat, 23 Aug 2003 17:22:51 -0700
-Message-ID: <20030823172251.4e656f9a.davem__33042.5192056738$1416622717$gmane$org@redhat.com>
+	tst-mmap-eofsync in glibc on parisc)
+Date: 24 Aug 2003 11:54:00 -0500
+Message-ID: <1061744042.13315.29.camel__11574.438881553$1416622718$gmane$org@mulgrave>
 References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
 	<20030822113106.0503a665.davem@redhat.com>
@@ -15,13 +15,17 @@ References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<1061677283.1992.471.camel@mulgrave>
 	<20030823155312.63f996f6.davem@redhat.com>
 	<1061680279.1785.534.camel@mulgrave>
+	<20030823172251.4e656f9a.davem@redhat.com>
+	<1061702282.1992.1153.camel@mulgrave>
+	<20030823222300.4695a0c4.davem@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: hugh@veritas.com, willy@debian.org, linux-kernel@vger.kernel.org,
-	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Content-Type: text/plain
+Cc: hugh@veritas.com, willy@debian.org,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
+To: "David S. Miller" <davem@redhat.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1061680279.1785.534.camel@mulgrave>
+In-Reply-To: <20030823222300.4695a0c4.davem@redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -32,18 +36,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 23 Aug 2003 18:11:16 -0500
-James Bottomley <James.Bottomley@SteelEye.com> wrote:
+On Sun, 2003-08-24 at 00:23, David S. Miller wrote:
+> This is what I'm asking of you, to find cases in real life,
+> not some contrived example, where your optimization helps
+> appreciably.
 
-> On Sat, 2003-08-23 at 17:53, David S. Miller wrote:
-> > How often do writes happen to files while private mappings
-> > to it exist? :-)  This is one of the reasons I think this
-> > discussion is a bit silly.
- ...
-> Not having to flush the private mappings is a huge optimisation.
+Oh, OK, that's easy...it's what the glibc test was designed for.
 
-You're not answering my question :(
+In glibc, for each file you fopen as a mapped file, you seem to get a
+separate mmapping of the file (this actually looks wrong to me...it
+seems glibc should have only one mapping per file which all the file
+objects share, but anyway).  That means we get one entry in one of the
+i_mmaps lists for each of the opens.  Since these are files, the chances
+are they'll be read and written which will generate lots of dcache
+flushes.  This case would kill us if we had to flush every entry in
+i_mmap.
 
-I know that when the case _DOES_ happen, your optimization is
-worthwhile, my question is not about this.  My question is about
-how often does this case happen.
+Right at the moment, you have to specifically request that the file be
+mmapped by specifying the "m" modifier, but glibc seems to be migrating
+to this being the default one day...that's what I want to be ready for.
+
+Besides the optimisation adds no overhead and compromises nothing, so
+its worth doing regardless.
+
+James
