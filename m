@@ -1,31 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA23658
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Feb 2000 11:07:15 -0700
-Sender: mang@mailserv2.iuinc.com
-Message-ID: <38A2EF04.E4C413D9@subcarrier.org>
-Date: Thu, 10 Feb 2000 12:01:56 -0500
-From: Michael Ang <mang@subcarrier.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA24117
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Feb 2000 11:49:38 -0700
+Received: from Palisade.spacecom.af.mil (root@localhost)
+	by Palisade.spacecom.af.mil with ESMTP id KAA05301
+	for <parisc-linux@thepuffingroup.com>; Thu, 10 Feb 2000 10:39:26 -0700 (MST)
+Received: from fstdka20.cisf.af.mil ([137.11.128.80])
+	by Palisade.spacecom.af.mil with ESMTP id KAA05134
+	for <parisc-linux@thepuffingroup.com>; Thu, 10 Feb 2000 10:39:21 -0700 (MST)
+Message-ID: <40DBF9A085B2D3118C2600508B6FCB8A41E0FD@cisf7.cisf.af.mil>
+From: Dunn RobertE Contr ESC Det 5 /NDSI <Robert.Dunn@CISF.AF.MIL>
+To: "'parisc-linux'" <parisc-linux@thepuffingroup.com>
+Date: Thu, 10 Feb 2000 10:40:17 -0700
 MIME-Version: 1.0
-To: parisc-linux <parisc-linux@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Merge complete. Go crazy.
+Content-Type: text/plain
+Subject: [parisc-linux] Metrics Gathering and Quality Measurements
 List-ID: <linux-parisc.vger.kernel.org>
 
-The merge with 2.3.42 is complete and the tree is now open for all
-checkins.
+Hi all,
 
-The merge went relatively smoothly thanks to everyone's cooperation and
-coordination.  It takes teamwork to escape merge hell quickly :)
+	I have been following this list server for several weeks now.  I
+have some questions.  I am in a Software Quality Assurance course in school.
+We have a paper to prepare regarding SQA practices on a real project.  I
+would like to ask a few questions regarding methods and methodologies in use
+on PA-RISC linux port.
 
-The proposed plan for continuing to track Linus' kernel is to merge in
-Linus' changes about once a month.  The criteria to determine the point
-at which we merge will be if there are changes we want to pick up and if
-Linus' kernel is relatively stable.  The merge we just finished was a
-big one (2.3.29 to 2.3.42) -- if we merge more often the patches we have
-to apply to our tree will be smaller.
+	My primary question is, are there any metrics being gathered on the
+problems that I see reported on the list server?  Are the problems that are
+reported being categorized and counted?  Is there any identification of when
+the problem was introduced, when it was identified, and when it was
+corrected?
 
-We will want to sync up with 2.4 as soon as it is released so we can
-generate clean diffs for the features we want to propagate back to Linus
-for 2.5.
+	Are there any other concepts for porting linux to any other
+platforms?
 
-	- Mike.
+	Thanks in advance for any information you can provide.
+
+
+Robert E. Dunn Jr.
+Team ND
+SND C2 SPO/NDSN
+SenCom
+Corporation
+Database Manager
+Phone: (719) 556-9448	DSN: 834-9448		Fax: 556-4417
