@@ -1,39 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA26137
-	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Jan 2001 07:53:17 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 8 Jan 2001 14:56:46 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14Fdj1-0008VU-00; Mon, 08 Jan 2001 14:56:43 +0000
-Date: Mon, 8 Jan 2001 14:56:43 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Richard Muratti <rmurat@ibm.net>
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA26407
+	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Jan 2001 08:17:22 -0700
+From: Steven Pritchard <steve@silug.org>
+Message-Id: <200101081520.f08FKla09063@osiris.silug.org>
 Subject: Re: [parisc-linux] Any K200 Experiences Out There??
-Message-ID: <20010108145643.A32433@parcelfarce.linux.theplanet.co.uk>
-References: <3.0.32.20010108181437.00e52c48@pop01.ny.us.ibm.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3.0.32.20010108181437.00e52c48@pop01.ny.us.ibm.net>; from rmurat@ibm.net on Mon, Jan 08, 2001 at 06:14:34PM +1100
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <20010108145643.A32433@parcelfarce.linux.theplanet.co.uk>
+ "from Matthew Wilcox at Jan 8, 2001 02:56:43 pm"
+To: Matthew Wilcox <matthew@wil.cx>
+Date: Mon, 8 Jan 2001 09:20:47 -0600 (CST)
+CC: parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jan 08, 2001 at 06:14:34PM +1100, Richard Muratti wrote:
-> Hi All,
-> 
-> Just wondering if there are any K200 owners out there
-> that have had any luck.
-> 
-> I've tried the 0.1 iso and all i get is
-> pdc_cons die !!
+Matthew Wilcox said:
+> the kernel on that cd is quite out of date;
+> can you try compiling a new one?
 
-this is explained in the faq.
+That reminds me of something I've been meaning to ask...  What all
+needs to be upgraded to update to the latest CVS kernel (from the 0.5
+CD)?  Is it enough to just compile a new kernel, or will glibc and
+various other things need updating too?
 
-> 0.5 iso just dies with a stack dump & 
-> Kernel Fault: Code=15 regs=dfff0840
-
-dunno about this one.  the kernel on that cd is quite out of date;
-can you try compiling a new one?
-
+Steve
 -- 
-Revolutions do not require corporate support.
+steve@silug.org           | Southern Illinois Linux Users Group
+(618)398-7320             | See web site for meeting details.
+Steven Pritchard          | http://www.silug.org/
