@@ -1,55 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC8364A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Feb 2001 06:05:19 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id AAA04348;
-	Wed, 28 Feb 2001 00:04:51 +1100
-Date: Wed, 28 Feb 2001 00:04:51 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 56B884A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Feb 2001 06:41:48 -0700 (MST)
 Subject: Re: [parisc-linux] SMP: We have ignition
-In-Reply-To: <E14XiiG-0003Ee-00@the-village.bc.nu>
-Message-ID: <Pine.LNX.4.21.0102272335540.18409-100000@front.linuxcare.com.au>
+To: alan@linuxcare.com.au (Alan Modra)
+Date: Tue, 27 Feb 2001 13:44:59 +0000 (GMT)
+Cc: alan@lxorguk.ukuu.org.uk (Alan Cox),
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.21.0102272335540.18409-100000@front.linuxcare.com.au> from "Alan Modra" at Feb 28, 2001 12:04:51 AM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E14XkRA-0003RI-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 27 Feb 2001, Alan Cox wrote:
-
-> Why isnt gcc prototyping and defining
+ > Is there a 'dont use builtins' flag ?
 > 
-> 	__memcpy
-> 	__strncpy
+> -fno-builtin
 > 
-> and #defining them across in libc header files ?
+> I'd be inclined to do this instead
 
-Huh?
-
-> Is there a 'dont use builtins' flag ?
-
--fno-builtin
-
-I'd be inclined to do this instead
-
---- include/asm-parisc/posix_types.h~	Tue Dec  5 13:13:45 2000
-+++ include/asm-parisc/posix_types.h	Tue Feb 27 23:30:11 2001
-@@ -19,10 +19,17 @@
- typedef int			__kernel_clock_t;
- typedef int			__kernel_daddr_t;
- /* Note these change from narrow to wide kernels */
-+#ifdef __LP64__
- typedef unsigned long		__kernel_size_t;
- typedef long			__kernel_ssize_t;
- typedef long			__kernel_ptrdiff_t;
- typedef long			__kernel_time_t;
-+#else
-+typedef unsigned int		__kernel_size_t;
-+typedef int			__kernel_ssize_t;
-+typedef int			__kernel_ptrdiff_t;
-+typedef int			__kernel_time_t;
-+#endif
- typedef char *			__kernel_caddr_t;
- 
- typedef unsigned short		__kernel_uid16_t;
+Careful, if you use different typings to everyone else you will get a million
+printf format warnings instead
