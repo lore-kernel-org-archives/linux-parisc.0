@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 24 Jan 2003 18:53:08 -0700
-To: Sir Ace <chandler@nateng.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Um... WTF?
-Message-ID: <20030125015308.GC6228@dsl2.external.hp.com>
-References: <Pine.LNX.4.33.0301241520210.25246-100000@jordan.eng.nateng.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0301241520210.25246-100000@jordan.eng.nateng.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 00F4C4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 Jan 2003 21:23:55 -0700 (MST)
+Message-Id: <200301250423.h0P4Noxq000220@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] new gcc-default for hppa
+To: joel.soete@tiscali.be
+Date: Fri, 24 Jan 2003 23:23:50 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: grundler@dsl2.external.hp.com, tausq@debian.org,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+In-Reply-To: <3E30242300000111@ocpmta8.freegates.net> from "Joel Soete" at Jan 24, 2003 12:02:25 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,46 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jan 24, 2003 at 03:37:28PM -0800, Sir Ace wrote:
-> 
->   I have no idea who to direct this to, and everyone keeps directing me to
-> this liste, so here goes.
+> That said, always in the continuity of this idea, I also notice that ld is
+> used to build some kernel parts. Is it  possible (even manually just for
+> test) to use gcc in place of ld? (if yes, howto?)
 
-parisc-linux mailing list is really intended for kernel stuff.
-lists.debian.org has lots of mailing lists to post rants.
+When linking, gcc is just a front end for ld.  You can see what happens
+with "-v", "-Wl,-v", "-Wl,-debug", etc.  You can pass any option that
+you want to ld using the gcc "-Wl" option.  Gcc doesn't doing any linking
+itself.
 
-> Who was the CRACK HEAD that built the debian 3.0 dist for hppa?
-
-yeah, debian-hppa list would have been better.  Or debian-devel.
-Your problem is not hppa specific.
-
-/me sits back to watch the late New Years fireworks...
-
-> I am trying to build everyday things on the system to at least make it
-> useable.  I just built ncurses {current} on my box, but to install the
-> ncurses, I had to remove the current debian package.
-
-Why remove the existing package?
-I overwrite existing files when I need to.
-
-
-> Herein lies the problem, some how EVERY DAMN THING on the system seems to
-> be built against ncurses,
-
-Right. *system* being the operative word here.
-
-> I am either reduced to working off the cd for a repair if possible.
-
-yes. The CD has a shell which will let you fix *most* things.
-
-You might also try booting with "init=/bin/bash" or if you are lucky,
-"init=/bin/sash". Then by hand re-install the libncurses.
-
-
-> Not to mention 4 days of software builds...
-
-uhm...what are you building that takes 4 days?
-Not even glibc or xfree86 takes that long.
-
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
