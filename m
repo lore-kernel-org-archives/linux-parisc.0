@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D1328482B
-	for <parisc-linux@parisc-linux.org>; Fri, 26 Oct 2001 12:27:07 -0600 (MDT)
-To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 26 Oct 2001 12:27:06 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011026182706.2800037FD7@carmen.fc.hp.com>
-Subject: [parisc-linux] WARNING: DO NOT APT-GET UPGRADE HPPA
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CCFC2482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Oct 2001 12:41:44 -0600 (MDT)
+Message-Id: <200110261838.MAA13212@puffin.external.hp.com>
+To: Daniel Williams <dan@bigw.org>
+Cc: parisc-linux@lists.parisc-linux.org,
+	grundler@puffin.external.hp.com
+Subject: Re: [parisc-linux] How to Boot CD on C110 
+In-Reply-To: Message from Daniel Williams <dan@bigw.org>
+   of "Fri, 26 Oct 2001 00:32:56 CDT." <E8D73E09-C9D2-11D5-8938-0030657D1C94@bigw.org>
+Date: Fri, 26 Oct 2001 12:38:01 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,17 +22,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-As PeteM and others have discovered, upgrading your hppa box currently breaks 
-a *lot*.
+Daniel Williams wrote:
+> OK, so SEArch should see the CD drive regardless.  Should it also see 
+> the FWSCSI internal HDs?
 
-We are recommending that you DO NOT APT-GET UPGRADE until we find the problem 
-and get it fixed. Someone will send an all-clear once it's safe to do so.
+Yes.
 
-We think the latest hppa libc in Debian (2.2.4-3) is to blame but we don't 
-know for sure yet.
+>  They don't have anything on them...  But the 
+> Firmware doesn't show anything after its done searching, not the 2 HDs, 
+> the CD, or the DDS tape drive.
 
-Stay tuned....
+hmm...PDC is pretty brain dead. Were those SCSI devices shipped with the
+C110 or installed later?
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+> Whats that about CD option jumpers set wrong?
+> What should the correct configuration be?  The pins that it has 
+> on the back (its a HP branded toshiba XM-5401B 50pin narrow) are ID1, 
+> ID2, ID4, PRTY, PRV/ALW, TEST, and TERM.  ID2 and PRTY have jumpers 
+> connected, the rest are not shorted.
+
+I don't know what they should be - I don't have the product manual.
+ID2/PRTY sound like they are correct. I don't konw what PRV/ALW means.
+(Prevent/Allow what?). TERM should probably be left disconnected.
+
+BTW, just because the drive is from HP doesn't mean it's setup
+to work w/ an HP workstation. Firmware on the drive could do things
+that confuse PDC/IODC.
+
+> nor does SEA see it.
+
+You need to figure this output first...try a different drive perhaps.
+The FWD drives not being seen concerns me just as much.
+
+grant
