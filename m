@@ -1,40 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ABF894843
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 18:47:14 -0600 (MDT)
-Message-Id: <200110070044.SAA15021@puffin.external.hp.com>
-To: Helge Deller <deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] review of Documentation/parisc/unwritten 
-In-Reply-To: Message from Helge Deller <deller@gmx.de>
-   of "Sat, 06 Oct 2001 12:37:19 +0200." <200110061035.EAA13283@puffin.external.hp.com>
-Date: Sat, 06 Oct 2001 18:44:07 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 934784A9F
+	for <parisc-linux@parisc-linux.org>; Sat,  6 Oct 2001 19:13:05 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15q2V6-0007M9-00; Sun, 07 Oct 2001 02:13:04 +0100
+Date: Sun, 7 Oct 2001 02:13:04 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] resources
+Message-ID: <20011007021304.H3745@parcelfarce.linux.theplanet.co.uk>
+References: <20011007013044.G3745@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011007013044.G3745@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Sun, Oct 07, 2001 at 01:30:44AM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Helge Deller wrote:
-> Hi Grant,
+On Sun, Oct 07, 2001 at 01:30:44AM +0100, Matthew Wilcox wrote:
+> 00000000-1ffffffff : System RAM
+>   00000000-000009ff : PDC data (Page Zero)
+>   00100000-0032bfff : Kernel code
+>   0032c000-0049ed7b : Kernel data
 
-Hi Helge!
+Fixed it:
 
-> The LED/ChassisCodes are already updated by the led_halt() function, called
-> by the reboot notifier chain. machine_halt() is called by sys_reboot(), so we
->    need
-> to let it be a NOP, or just #define it as NOP.
+# cat /proc/iomem
+00000000-efffffff : System RAM
+  00000000-000009ff : PDC data (Page Zero)
+  00100000-0032bfff : Kernel code
+  0032c000-0049ed7b : Kernel data
+f0000000-f00fffff : System ROM
+100000000-1ffffffff : System RAM
 
-Ok. NOP it will stay.
+I'll commit the diff shortly.
 
-> machine_power_on could be deleted AFAIT.
-
-I'll deal with that.
-
-> Does the PA CPU has bugs ? :-)
-
-Unfortunately, a few here and there. I've seen the bug lists
-(eg 2.3 vs 2.4 Cuda) but don't understand all the issues.
-
-I posted this mostly to make folks aware.
-This is the place to put CPU-bug detection code so work-arounds
-in other parts of the code can use known state.
-
-grant
+-- 
+Revolutions do not require corporate support.
