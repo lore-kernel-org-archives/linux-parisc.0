@@ -1,75 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx04.nexgo.de (mx04.nexgo.de [151.189.8.80])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1FA58482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 11:57:57 -0600 (MDT)
-Message-ID: <3B93E0B3.7070700@hrzpub.tu-darmstadt.de>
-Date: Mon, 03 Sep 2001 21:57:39 +0200
-From: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
-MIME-Version: 1.0
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel failures
-References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de> <20010831160827.C5126@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DF48D482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 12:11:28 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15dyC0-0007Yz-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 03 Sep 2001 19:11:28 +0100
+Date: Mon, 3 Sep 2001 19:11:28 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010903191128.L5126@parcelfarce.linux.theplanet.co.uk>
+References: <200109031808.MAA23023@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200109031808.MAA23023@puffin.external.hp.com>; from willy@puffin.external.hp.com on Mon, Sep 03, 2001 at 12:08:37PM -0600
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux willy
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+On Mon, Sep 03, 2001 at 12:08:37PM -0600, Matthew Wilcox wrote:
+> Log message:
+> Unlock the lock, not the device!
 
->On Fri, Aug 31, 2001 at 06:56:15AM +0200, Rüdiger Scholz wrote:
->
->>When I played a little bit  with the kernel, I found some failures.
->>My machine is a 715/100 with a second  Graphics-Card (Coral SGC). If the 
->>
->
->Could you change kernel/printk.c, line 36 from:
->#define DEFAULT_CONSOLE_LOGLEVEL 7 /* anything MORE serious than KERN_DEBUG */
->to:
->#define DEFAULT_CONSOLE_LOGLEVEL 9 /* anything MORE serious than KERN_DEBUG */
->
->This should print out more debug messages and might help diagnose the problem.
->
+Index: arch/parisc/kernel/drivers.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/drivers.c,v
+retrieving revision 1.22
+diff -u -p -r1.22 drivers.c
+--- drivers.c   2001/09/01 08:30:49     1.22
++++ drivers.c   2001/09/03 18:08:14
+@@ -248,7 +248,7 @@ struct parisc_device *alloc_pa_dev(unsig
+ 
+        num_devices++;
+ 
+-       write_unlock(&pa_dev);
++       write_unlock(&pa_lock);
+ 
+        return dev;
+ }
 
-Nop. It doesn't print any new messages at booting. It 's difficult to 
-debug, because I don't know exactly where the kernel crash,  because 
-when it crashs GR02 and IAOQ point to parisc_terminate and show_stack.
-But looking at the last messages and the source code, the kernel crashs 
-when it's calling "sti_dump_rom" in the file 
-linux/drivers/video/sticore.c. The last three lines before the kernel 
-crashs are:
-SNIP---------       
-        sticonsole_init: searching for STI ROMs                        
-                         
-        STI word mode ROM at f0025000, hpa=f4000000                    
-                            <--- this is in function sti_read_rom which 
-calls sti_dump_rom
-        STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 
-8.04           <--- function sti_dump_rom
-SNAP--------
+Thanks to Ben Collins for this patch.
 
-And this is the code of function "sti_dump_rom":
-SNIP----------
-    static void __init
-    sti_dump_rom(struct sti_rom *rom)
-    {
-            printk(KERN_INFO "STI %s mode ROM, id %04x-%04x, conforms to 
-spec rev. %d.%02x\n",
-                    (rom->type[3] == 1) ? "byte" : "word",
-                    rom->graphics_id[0],
-                    rom->graphics_id[1],
-                    rom->revno[0] >> 4,
-                    rom->revno[0] & 0x0f);
-            DPRINTK((" supports %d monitors\n", rom->num_mons));
-            DPRINTK((" font start %08x\n", rom->font_start));
-            DPRINTK((" region list %08x\n", rom->region_list));
-            DPRINTK((" init_graph %08x\n", rom->init_graph));
-            DPRINTK((" alternate code type %d\n", rom->alt_code_type));
-    }
-SNAP----------
-
-After the printk("STI word mode..."), I should see messages about 
-supported monitors, etc. So here must be the place, where the kernel crashs.
-
-
-Thanks in advance,
-
-        Rüdiger
+-- 
+Revolutions do not require corporate support.
