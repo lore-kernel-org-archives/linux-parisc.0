@@ -1,40 +1,29 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA01389
-	for <parisc-linux@puffin.external.hp.com>; Fri, 26 Nov 1999 14:08:48 -0700
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id QAA05687
-	for <parisc-linux@thepuffingroup.com>; Fri, 26 Nov 1999 16:11:56 -0500
-Sender: adevries@thepuffingroup.com
-Message-ID: <383EF79C.EC98AAE2@thepuffingroup.com>
-Date: Fri, 26 Nov 1999 16:11:56 -0500
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA08523
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Nov 1999 14:33:40 -0700
+From: Andi <der_fisch@fischlustig.de>
 To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] PA-RISC Linux hardware pages
+Date: Sat, 27 Nov 1999 22:33:02 +0100
+Content-Type: text/plain
+MIME-Version: 1.0
+Message-Id: <99112722352300.00350@beavis>
+Subject: [parisc-linux] cross-compiling the kernel?
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi all,
 
-With the contributions of Deb Richardson and David Kennedy, the Puffin
-Group has created the PA-RISC hardware database.  This is intended to
-solve the problem of not understand what hardware components exist in
-which machine.
+I wonder if I could cross-compile the kernel on one of my Linux/i386 boxes....
 
-The database has several machines preloaded, I'd encourage people with
-different machines that currently run HPUX to contribute by filling out
-the web form for their particular machine.  This will enable us to
-support more PA-RISC machines in the future.
+Is it possible?
 
-The URL is:
-
-http://www.thepuffingroup.com/parisc/hw.html
-
-There are certain features that will be completed in the next couple of
-weeks.
-
-- Alex
 
 -- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+bye
+  Andreas
+
+-------------------------------------------------
+e-mail: andi@fischlustig.de
+
+*Checkout our cool game for Linux and Win32*
+   *http://www.fischlustig.de/clanbomber*
+-------------------------------------------------
