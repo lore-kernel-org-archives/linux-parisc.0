@@ -5,9 +5,9 @@ Subject: Re: [parisc-linux] Typo?
 In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
    of "Fri, 29 Nov 2002 15:04:11 GMT." <20021129150411.P1586@parcelfarce.linux.theplanet.co.uk>
 References: <3DB577610000593D@ocpmta8.be.tiscali.com>  <20021129150411.P1586@parcelfarce.linux.theplanet.co.uk> 
-Date: Mon, 02 Dec 2002 22:18:25 -0700
+Date: Mon, 02 Dec 2002 22:35:13 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021203051825.CEB414829@dsl2.external.hp.com>
+Message-Id: <20021203053513.593464829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,7 +25,17 @@ Matthew Wilcox wrote:
 > 
 > patch looks correct to me.  grant?
 
-yup - a typo in the debug code. I'll commit Joels patch shortly.
+I was off on holiday...I guess I didn't advertise that well enough.
+
+I just committed Joel's patch and just now realized it's *WRONG*.
+I don't know why I thought sg_virt_address() was correct before.
+Brain fart.
+
+grundler <520>fgrep sg_virt include/asm-parisc/scatterlist.h 
+#define sg_virt_addr(sg) (((sg)->address) ? ((sg)->address) : \
+
+I'll fix my mess. *sigh*.
+BTW, I'll fix pci-dma.c too. I've got the B180 to test it on tomorrow.
 
 thanks!
 grant
