@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] some bugs 
-In-Reply-To: Message from "M. Grabert" <xam@cs.ucc.ie>
-   of "Wed, 10 Apr 2002 15:35:06 BST." <Pine.LNX.4.44.0204101509020.1717-100000@sal.ucc.ie>
-References: <Pine.LNX.4.44.0204101509020.1717-100000@sal.ucc.ie> 
-Date: Wed, 10 Apr 2002 09:58:40 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020410155841.19DE2482A@dsl2.external.hp.com>
+Received: from rwcrmhc52.attbi.com (rwcrmhc52.attbi.com [216.148.227.88])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B60B482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 10:48:32 -0600 (MDT)
+Subject: Re: [parisc-linux] 715/75
+From: Matt McKenzie <linuxknight@attbi.com>
+To: Jonathan Crockett <jcrockett@midco.net>
+Cc: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <20020410082456.A20344@volta.midco.net>
+References: <1018419728.2603.13.camel@mustang>
+	<20020410082456.A20344@volta.midco.net>
+Content-Type: text/plain
+Date: 10 Apr 2002 09:48:30 -0700
+Message-Id: <1018457310.3772.8.camel@mustang>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,49 +24,103 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"M. Grabert" wrote:
-> But perhaps it's only a h/w issue (incompatibility with switch and
-> network card?).
+Hmmm.  I have a HIL mouse and kb with it.  This model doesn't have ps/2
+ports so I can't change the kb.  I can put a serial mouse on it.
+But I have no idea what it had attached to it before.  I am assuming it
+was HIL kb and mouse but I can't be sure.
 
-Possibly. Perhaps just unplugging the cable, wait 5 seconds (or so)
-and plug it back in should force a re-negotiation. Not a great work
-around but perhaps a start.
+We got a batch of HP workstations donated to the school from a local
+company.  Many are in use in a lab, being used as X terminals logged
+into Sun servers.  But the actual classroom lab now has mostly all Suns
+so the HPs aren't used much.  
 
-...
-> Well, yes, maybe, because it's 'mount' specific. But why is it working
-> with the 32bit kernel? I thought this kind of things should be
-> platform-independent ...
+I am also not sure of the state of the hard drives.  There are (2) 9g
+scsi IIRC.  I don't know if HP-UX is even still on there or anything. 
+But you would think it would at least come up with a prompt of some sort
+even if HP-UX was wiped.
 
-I agree - I doubt this is a mount command problem.
-It might be an issue with our 32-bit syscall wrappers in the 64-bit kernels.
+This machine doesn't have any add-on cards, no floppy or internal CD or
+anything.  I do have an external 2x scsi cd I can use with it but I
+haven't hooked it up yet.
 
-> - crashme is effective (example settings, after a few minutes kernel
-> crashed, even MagicSysRq didn't work. It didn't seem to 'work' on
-> 2.4.18-pa5-32bit, I didn't try with the 2.4.18-pa14-32bit kernel)
+With your problem did the screen stay blank?
 
-crashme support requires someone with good CPU knowledge to chase
-down the holes in the kernel trap handler. It's just not a priority
-for anyone I know unfortunately. I'd rather see said person work
-on improving fork/exec performance and other lmbench results
-where parisc-linux lags horribly. However, if someone wants to
-learn more about the space where PARISC implementations diverge
-from the architecture, making crashme "run" is a challenging
-place to start.
+I will try with the serial mouse.  Thanks for the suggestion.
 
-> BTW, one question:
+
+On Wed, 2002-04-10 at 06:24, Jonathan Crockett wrote:
+> Hello,
+>   I have a 715/100 that had very similiar symptoms.  I have HP-UX on it
+> then installed debian.  After I had the base installed I moved the machine
+> and in a not so brilliant move added an external cdrom and changed keyboards
+> and mouse.  The system sat there and acted like it was having a very difficult
+> time coming to terms with the changes.  To fix it, swapped out the HIL mouse
+> that I had switch to with a ps2 three button mouse and took the external
+> cdrom off the scsi chain.  I let it sit for about 20 minute to a half hour
+> then it decided to boot.  I also found that I could not use the on board
+> video after I had used the addon card.  I even disconnect the addon card,
+> but it made no difference.
 > 
-> I always wondered if sid (unstable) is the preferred dist for
-> debian/hppa (very likely a debian-mailing-list question, but what
-> do you kernel hackers and developers use and prefer?)
+> HTH
+> jc
+> 
+> On Tue, Apr 09, 2002 at 11:22:07PM -0700, Matt McKenzie wrote:
+> > I posted a while earlier, but no response has been forthcoming.
+> > 
+> > Does anyone have any idea what I can do so solve my problem with an HP
+> > 715/75, that displays the LEDs 1,2,6 on the front panel at power-up? 
+> > I have an HP monitor with it, and it stays blank.
+> > 
+> > The manual, if I'm reading it correctly, says the LEDs mean:
+> > 
+> > Internal inconsistency: IODC Entry_Init
+> > 
+> > But there is no mention of what this means exactly, or what to do about
+> > it.  
+> > 
+> > What can I do to resolve this, if possible?
+> > 
+> > I would very much like to put Linux on this machine.
+> > 
+> > It seems to me hardware questions aren't off-topic... does this just
+> > mean no one knows how to fix this?  Or is it because I have no
+> > transcript or logs to post (because the monitor is blank I can't see
+> > anything)?
+> > 
+> > Would it be possible to get a serial console working to see anything?
+> > I am guessing a standard RS232 Null-modem cable would work?
+> > 
+> > Also, I have the AUI-10bT ethernet transceiver, but I don't know if it
+> > has a valid static IP, or if it is trying DHCP lookup.
+> > 
+> > Any help would be appreciated.
+> > 
+> > Thanks.
+> > 
+> > 
+> > -- 
+> > 73 de K6LNX
+> > 
+> > Matt M.
+> > LinuxKnight
+> > 
+> > 
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> -- 
+> Jonathan Crockett
+> Network Engineer
+> Midcontinent Communications
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+73 de K6LNX
 
-I use both depending on the role of the machine.
-At home, I'm running sid so I can play frozen-bubble (just kidding,
-it's not ported to hppa yet). At work, machines I've setup are
-running woody since I want to "test" how well the release is doing
-that we will be recommending to non-developers.
-
-Occasionally, sid has "hickups", nothing I haven't been able
-to recovery from though it entirely possible trash the machine
-(eg bad libc deb). Save those older .debs in /var/cache/apt/archives.
-
-grant
+Matt M.
+LinuxKnight
