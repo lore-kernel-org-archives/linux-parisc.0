@@ -1,52 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73BC24A18
-	for <parisc-linux@parisc-linux.org>; Thu,  1 Feb 2001 17:47:53 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id D72854A18
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Feb 2001 17:54:04 -0700 (MST)
 Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel2.hp.com (Postfix) with ESMTP id AD57A2EA
-	for <parisc-linux@parisc-linux.org>; Thu,  1 Feb 2001 19:47:21 -0500 (EST)
+	by atlrel2.hp.com (Postfix) with ESMTP id 6EEC1120B
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Feb 2001 19:54:04 -0500 (EST)
 Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id 31AED3873B
-	for <parisc-linux@parisc-linux.org>; Thu,  1 Feb 2001 17:48:49 -0700 (MST)
+	by carmen.fc.hp.com (Postfix) with ESMTP id 75D593873B
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Feb 2001 17:55:32 -0700 (MST)
 To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] WARNING: C3000 Linux problems 
+In-Reply-To: Your message of "Wed, 31 Jan 2001 19:50:31 MST."
+             <20010201025031.5C5A238926@carmen.fc.hp.com>
+References: <20010201025031.5C5A238926@carmen.fc.hp.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 01 Feb 2001 17:48:49 -0700
+Date: Thu, 01 Feb 2001 17:55:32 -0700
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010202004849.31AED3873B@carmen.fc.hp.com>
-Subject: [parisc-linux] New toolchain debs available
+Message-Id: <20010202005532.75D593873B@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have built new hppa debian packages of our current binutils, gcc, and glibc 
-cvs bits. They are available at,
+Matt Taggart writes...
 
-ftp://puffin.external.hp.com/ftp/pub/parisc/binaries/new-debs/debian/
+> Summary: Don't run Linux on a C3000 until you hear otherwise.
+[snip]
+> J5600, or J6000. John Marvin is still looking at the problem, I have switched
 
-Whats new
----------
-binutils-dev_2.10.91.20001013-1_hppa.deb
-binutils-doc_2.10.91.20001013-1_all.deb
-binutils_2.10.91.20001013-1_hppa.deb
-cpp-doc_2.96.20000925-2_all.deb
-cpp_2.96.20000925-2_hppa.deb
-g++_2.96.20000925-2_hppa.deb
-gcc-doc_2.96.20000925-2_all.deb
-gcc_2.96.20000925-2_hppa.deb
-glibc-doc_2.2.1-1_all.deb
-libc6-dbg_2.2.1-1_hppa.deb
-libc6-dev_2.2.1-1_hppa.deb
-libc6-pic_2.2.1-1_hppa.deb
-libc6-prof_2.2.1-1_hppa.deb
-libc6_2.2.1-1_hppa.deb
-libstdc++2.10-dev_2.96.20000925-2_hppa.deb
-libstdc++2.10_2.96.20000925-2_hppa.deb
-locales_2.2.1-1_all.deb
-nscd_2.2.1-1_hppa.deb
+And he found it and has a patch. He will fix it in current cvs, but since 
+that's a little unstable right now I have posted a pre 2.4.0-merge kernel that 
+he built with this fix. It's at,
 
-Several people are also working to populate that directory with other debs 
-built with these tools. Report any failures to the list.
+ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/vmlinux-20010201
 
-Thanks,
+and of course you'll need to run palo on that kernel before you can boot it.
 
 -- 
 Matt Taggart        Linux Development Lab
