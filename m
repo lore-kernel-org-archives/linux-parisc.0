@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0FC04844
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Sep 2002 10:09:58 -0600 (MDT)
-Date: Tue, 3 Sep 2002 18:02:58 +0200
-Message-ID: <3D3815BD0000B0E9@ocpmta5.be.tiscali.com>
-In-Reply-To: <20020902172854.C73F44829@dsl2.external.hp.com>
-From: jsoe0708@tiscali.be
-To: "Grant Grundler" <grundler@dsl2.external.hp.com>
-Cc: "Joel Soete" <joel.soete@freebel.net>,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Subject: [parisc-linux] Unaligne access [was: Back to evms-1.0.1 && unaligne access && gdb ]
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 295AD4852
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Sep 2002 10:10:06 -0600 (MDT)
+Date: Tue, 3 Sep 2002 09:13:26 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: jsoe0708@tiscali.be
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Gcc-3.2 beside gcc-3.0: HOWTO?
+Message-ID: <20020903161326.GI14634@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020903070555.GR25710@tausq.org> <3D3815BD0000B0C0@ocpmta5.be.tiscali.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D3815BD0000B0C0@ocpmta5.be.tiscali.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,76 +24,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Grant,
+> General Registers 0 - 31
+> 00-03   0000000000000000  00000000103b7244  0000000010108064  00000000207f8000
+                                              ^^^^^^^^^^^^^^^^ GR02, aka
+                                              the return pointer
 
->
->then I'll wager there is padding between the char and int fields
->of that struct.
+> Control Registers 0 - 31
+> 00-03   0000000000000000  0000000000000000  0000000000000000  0000000000000000
+> 04-07   0000000000000000  0000000000000000  0000000000000000  0000000000000000
+> 08-11   0000000000000634  0000000000000000  00000000000000c0  0000000000000017
+> 12-15   0000000000000000  0000000000000000  0000000000107000  0000000000000000
+> 16-19   0000007be95ffc60  0000000000000000  0000000010108638  000000000fa11288
+                                                                ^^^^^^^^^^^^^^^^
+cr19 is the "IIR", this is the insn that caused the fault
+in this case, this insn is stw r1,4(sr0,r29)
 
-That is also what I believe to understand.
 
->
-...
->> What can I do to analyse this problem? (printing all p addresses and its
->> elements
->> during a run with the original code and compare with a run with modified
->> code?)
->
->yes. You want to verify the addreses are unaligned.
+> 20-23   0000000010240224  0000000048030104  000000000004000e  0000000080000000
+> 24-27   0000000000305000  0000000000305000  0000000000044021  00000000f0412000
+> 28-31   0000000055555555  0000000055555555  000000001f1f8000  00000000103a8000
+                            ^^^^^^^^^^^^^^^^ which looks quite bogus
 
-And here is some data of my analyse:
+> IIA Space                    = 0x0000000000000000
+> IIA Offset                   = 0x000000001010863c
+this is the "iaoq" -- the instruction pointer
 
-First surprise in the two case (original checks.c and my checks.c with only
-"if (p->boot_ind != 0x00 && ") p addresses are exactly the same here is an
-example:
-with checks.c.orig:
-dmesg
-...
-evms_vgscan(10137): unaligned access to 0x000272ee at ip=0x4020a2ab
+> But where is iaoq (I do not found in linux/Documentation/parisc)?
+> 
+> here is what I got: grep 101080 /boot/System.map-2.4.19-pa9
+> 10108000 T syscall_exit_rfi
+> 10108064 t intr_return
+> 10108078 t intr_check_resched
+> 10108084 t intr_check_sig
+> 10108090 t intr_restore
 
-corresponding adresses:
-p            add: 0x272ee
-p.boot_ind   add: 0x272ee
-p.head       add: 0x272ef
-p.sector     add: 0x272f0
-p.cyl        add: 0x272f1
-p.sys_ind    add: 0x272f2
-p.end_head   add: 0x272f3
-p.end_sector add: 0x272f4
-p.end_cyl    add: 0x272f5
-p.start_sect add: 0x272f6
-p.nr_sects   add: 0x272fa
+is this the system.map from the kernel you are building?
+if it is, then intr_return is the calling function (one up in the
+stack). the function that includes 1010863c is the one that one that's
+causing the fault. that would be one place to look.
 
-with the checks.c.new:
-p            add: 0x272ee
-p.boot_ind   add: 0x272ee
-p.head       add: 0x272ef
-p.sector     add: 0x272f0
-p.cyl        add: 0x272f1
-p.sys_ind    add: 0x272f2
-p.end_head   add: 0x272f3
-p.end_sector add: 0x272f4
-p.end_cyl    add: 0x272f5
-p.start_sect add: 0x272f6
-p.nr_sects   add: 0x272fa
-
-What do you think?
-
-Thanks again for attention and help,
-    Joel
-
-PS1: just in case I made error here is the code I add to print addresses:
-    printf("p            add: %p\n", p);
-    printf("p.boot_ind   add: %p\n", &(p->boot_ind));
-    printf("p.head       add: %p\n", &(p->head));
-    printf("p.sector     add: %p\n", &(p->sector));
-    printf("p.cyl        add: %p\n", &(p->cyl));
-    printf("p.sys_ind    add: %p\n", &(p->sys_ind));
-    printf("p.end_head   add: %p\n", &(p->end_head));
-    printf("p.end_sector add: %p\n", &(p->end_sector));
-    printf("p.end_cyl    add: %p\n", &(p->end_cyl));
-    printf("p.start_sect add: %p\n", &(p->start_sect));
-    printf("p.nr_sects   add: %p\n", &(p->nr_sects));
-
-PS2: If you think it could help you more, I can send you the complete logs
-I get from the two runs as well as sources
+hth
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
