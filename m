@@ -1,66 +1,55 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA03185
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Sep 1999 15:00:34 -0600
-Sender: frowand@cup.hp.com
-Message-ID: <37F1271B.52A2@cup.hp.com>
-Date: Tue, 28 Sep 1999 13:37:47 -0700
-From: Frank Rowand <frowand@cup.hp.com>
-MIME-Version: 1.0
-To: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-CC: grundler@cup.hp.com, ulrich_strelow@yahoo.com,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting from tape
-References: <199909281728.KAA14093@chrome.rose.hp.com>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA04235
+	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Sep 1999 00:06:22 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id CAA14910
+	for <parisc-linux@thepuffingroup.com>; Wed, 29 Sep 1999 02:05:59 -0400 (EDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id XAA06877 for <parisc-linux@thepuffingroup.com>; Tue, 28 Sep 1999 23:05:33 -0700 (PDT)
+Message-Id: <199909290605.XAA06877@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Tue, 28 Sep 1999 23:05:27 -0700
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] HOSTCC vs CC and other nits
 List-ID: <linux-parisc.vger.kernel.org>
 
-Kirk Bresniker wrote:
-> 
-> | > Attempting to load IPL.
-> | >
-> | > Failed I/O operation with scsi.0.0
-> | > ENTRY_IO status = -10
-> | >
-> | > 00000000 00000000 00000000 00000000 00000000 00000000
-> | > 00000000 00000000
-> | > 00000000 00000000 00000000 00000000 00000000 00000000
-> | > 00000000 00000000
-> | > 00004F04 000000FF FF0009BF 00000000 800100DC 00000000
-> | > 0025F000 00000400
-> | > 98080000 00000000 00008C60 00000000 000000FF 00000000
-> | > 00000000 00000000
-> |
-> | I believe this is a problem with either how the tape was created
-> | or talking to the tape drive. Does anyone know where to find what
-> | the -10 status means?
-> 
-> >From the firmware comments:
-> 
-> /* RETURNS:
-> /*
-> /*   3   :  EOF Encountered ( Sequential Device only)
-> /*   2   :  Recoverable error
-> /*   1   : Inexact I/O Transfer
-> /*   0   : OK
-> /*   -2  : Non Existant Option.
-> /*   -3  : Cannot complete call without error
-> /*   -4  : Unrecoverable Hardware Error
-> /*   -6  : Illegal Device Address
-> /*   -7  : Non Existant Device
-> /*   -8  : Module/Device not ready
-> /*   -10 : Invalid Argument ( Invalid SCSI ID or LUN )
-> /*   -12 : Unsupported Record Size
-> /*   -14 : Illegal Device block Size
-> 
-> KMB
 
-And for future reference to save Kirk from having to look at his
-source code...
+I think Phil (with help from Alex) broke kernel builds...
 
-The IO ACD is at
+While trying to creatively fix the init_task_union alignment
+garbage, I can't build anymore....Here's the problems:
 
-  http://dtf.external.hp.com/dtf/swdev/pdf/iodc.pdf
+o I don't have and don't want a native gcc.  I want to know when
+  things are building for the native or cross environment.
+  That means use HOSTCC (instead of $(CC)) in the Makefiles.
+  I can then do "make vmlinux HOSTCC=cc".
 
-The Entry_IO errors are on page 42 of the PDC (document p. 3-40).
+o I don't have obj_dump. And I haven't the faintest clue
+  where to find it. Could we use nm instead?
 
--Frank Rowand
+o I looked at checkalign.c and am feeling a bit confused.
+  Why is the code testing for 4K alignment?
+  I though the requirement was 8K alignement...
+
+I fixed the first problem.
+
+Here another idea for the second two:
+
+/usr/bin/nm vmlinux |awk '/init_task_union/ {
+	n = int($2); t = int(n/8192); t *= 8192;
+	if (n != t) {
+		print NOT
+	}
+	printf("0x%x vs 0x%x\n", n, t)
+}' FS=\|
+
+Perl is probably better for this kind of stuff (has "&"
+operator which is missing from awk). But I'm not a very good
+perl hacker...
+
+enjoy,
+grant
+
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
