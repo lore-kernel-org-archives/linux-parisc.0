@@ -1,24 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA25799
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 14:19:59 -0500
-Received: from cllmail.cup.hp.com (cllmail.cup.hp.com [15.28.98.139])
-	by palrel1.hp.com (8.8.6/8.8.5tis) with ESMTP id LAA27629
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 11:19:51 -0800 (PST)
-Received: from [15.0.97.82] (cc757591.cup.hp.com [15.0.97.82]) by cllmail.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id LAA01701 for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 11:19:50 -0800 (PST)
-Message-Id: <199903251919.LAA01701@cllmail.cup.hp.com>
-Subject: Re: [hppa-linux] syscall work
-Date: Thu, 25 Mar 1999 11:23:20 -0800
-From: Cary Coutant <cary@cup.hp.com>
-To: <hppa-linux@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA26566
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 14:57:00 -0500
+Date: Thu, 25 Mar 1999 11:56:45 -0800 (PST)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199903251956.LAA23724@gatekeeper.equator.com>
+To: mickey@openbsd.org
+Subject: Re: [hppa-linux] Document Priority?
+Cc: hppa-linux@thepuffingroup.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-I'd suggest *not* using the same gateway page address as HP-UX. If you 
-do, you won't be able to develop a later kernel extension to support 
-HP-UX binaries, unless you allocate syscall numbers carefully.
 
+>
+> hi
+> looking at the released pdc/iodc docs i'm wondering what is in the missing
+> chapters? is it possible to release the whole contents table?
+> what are the plans for the rest of the book(s) ?
+> and, is there any plan for "pa-risc IO architecture" release any soon?
 
-Cary Coutant
-Hewlett-Packard Co.
-Application Delivery Lab
+  The PDC/IODC docs posted are actually a subset of the chapters of the
+  PA-RISC I/O architecture doc. The first 8 or so chapters of the I/O
+  doc contain specific information about the various "Module" types (such
+  as processor modules, memory modules, I/O modules, bus converters, etc).
+  The last 4-5 chapters and appendices are the same as the PDC/IODC docs we
+  have.
+
+  I'm not sure why we were given only the subset (which pertains only to
+  the firmware) but I believe we can get a decent start with it. Eventually,
+  we will need the other information if we intend to have working device
+  drivers, etc. Of course, we can trudge through MkLinux code to figure some of
+  it out, but I'd much prefer the doc.
+
+  Jason.
