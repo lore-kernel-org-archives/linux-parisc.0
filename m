@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from imo-r05.mx.aol.com (imo-r05.mx.aol.com [152.163.225.101])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 13AA04840
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 13:45:13 -0700 (MST)
-Received: from JjDunnjr@aol.com
-	by imo-r05.mx.aol.com (mail_out_v36_r1.1.) id n.171.26ba943e (17377)
-	 for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 15:45:02 -0500 (EST)
-From: JjDunnjr@aol.com
-Message-ID: <171.26ba943e.2cefd34e@aol.com>
-Date: Fri, 21 Nov 2003 15:45:02 EST
-Subject: Re: [parisc-linux] Boot-up challenges on a 715/75
-To: parisc-linux@lists.parisc-linux.org
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0049A4840
+	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 13:58:01 -0700 (MST)
+Message-ID: <3FBE7C6A.3010104@tiscali.be>
+Date: Fri, 21 Nov 2003 20:58:18 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="part1_171.26ba943e.2cefd34e_boundary"
+To: Steve Bromwich <lists@fop.ns.ca>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Processes stuck in D state on 715/100XC with 2.4.22-pa17
+References: <3FB265EC00003DBD@ocpmta3.freegates.net> <Pine.LNX.4.58.0311190913310.1125@brain.fop.ns.ca>
+In-Reply-To: <Pine.LNX.4.58.0311190913310.1125@brain.fop.ns.ca>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,55 +23,59 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---part1_171.26ba943e.2cefd34e_boundary
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Hi Steve,
 
-To all who took the time to reply, thank you
-Progress to date:
-1. Set jumper to 512 k sector on the TEAC.  715/75 recognized it as a 
-different model.
-2. It spun the disk upon issuing the "bo P2" command, however, i still got 
-the
-ENTRY_INIT =-4 message
+Steve Bromwich wrote:
+>>>Just to clarify, this is happening during operation, not bootup. Next time
+>>>it happens (probably tomorrow morning) I'll break on serial and try
+>>>piminfo
+> 
+> 
+> So much for that idea - I forgot I had magic sysrq on, so break just gave
+> me the usual sysrq options. I'll recompile without sysrq over the weekend
+> and see what happens, but in the meantime I've reverted to 2.4.18 to see
+> if I get the same problem, just to make sure it's not faulty hardware. I
+> checked ps, and all the processes in D state were ones that touch the
+> drive (eg, find, exim, apache).
+> 
+> I've got a J class at work that's not in production, so if I get time I'll
+> try it out with the same config (or at least, the closest I can get) just
+> to make sure it's not something obviously wonky in my config.
+> 
+well, but those system are widly different (cpu, architecture, ...).
+> 
+>>May be if you can, run hp diag tools?
+> 
+> 
+> I don't have a CD in that machine - do you know if there's any netbootable
+> images I can use? I have an HPUX 11.0 CD set, so if there's something I
+> can pull off there I'll be good to go.
+> 
+Good question? never have to test it but it is a bootable cd (I don't 
+remember if it is available via internet?) so if you copy it's image 
+(with dd) on a system, i think that following the faq how-to netboot 
+<http://parisc-linux.org/faq/index.html#netboot> , it would works?
+> 
+>>(I have no clue about 715 model but well running 2.4.22 (and above) on various
+>>b180, b2k, c110, N4000 and i have never encounter such pb?)
+> 
+> 
+> Well, the frustrating thing is is that there's no debug output anywhere
+> that I can find that's showing anything obviously wrong.
+Don't feel alone, during severall month (2, 3, 4, ... I don't want to 
+remember) I try to get just a panic message from a smp kernel on a N4k 
+: no success :_(
+...
 
-I will try to do a net boot next
+> I had a skim
+> through lasi700.c/.h and couldn't see anything that'd help, do you know if
+> there's any debug/printks I can scatter anywhere to give me some pointers?
+>
+Sorry, I couldn't help here.
 
-if that fails, I will try to copy onto the boot 715/75 hard drive the 
-necessary files.  Which leads me to my next question, which files(s) would be 
-necessary for the 715/75 to boot
+hmm, what kind of disk have you on your D: hot-swapable or fixed?
+(with fixed disk, I already encounter a pb of flat cable and with 
+hot-swap disk a pb with dust on disks' support)
 
-Would "lifimage" be enough or should i place "rescue.bin", "linux.bin" and 
-"drivers.gz" on the hard drive
-
-Thanks in advance for your remarkable response.
-
-jack dunn
-
---part1_171.26ba943e.2cefd34e_boundary
-Content-Type: text/html; charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-
-<HTML><FONT FACE=3Darial,helvetica><FONT  SIZE=3D2 FAMILY=3D"SANSSERIF" FACE=
-=3D"Arial" LANG=3D"0">To all who took the time to reply, thank you<BR>
-Progress to date:<BR>
-1. Set jumper to 512 k sector on the TEAC.&nbsp; 715/75 recognized it as a d=
-ifferent model.<BR>
-2. It spun the disk upon issuing the "bo P2" command, however, i still got t=
-he<BR>
-ENTRY_INIT =3D-4 message<BR>
-<BR>
-I will try to do a net boot next<BR>
-<BR>
-if that fails, I will try to copy onto the boot 715/75 hard drive the necess=
-ary files.&nbsp; Which leads me to my next question, which files(s) would be=
- necessary for the 715/75 to boot<BR>
-<BR>
-Would "lifimage" be enough or should i place "rescue.bin", "linux.bin" and "=
-drivers.gz" on the hard drive<BR>
-<BR>
-Thanks in advance for your remarkable response.<BR>
-<BR>
-jack dunn</FONT></HTML>
-
---part1_171.26ba943e.2cefd34e_boundary--
+Cheers,
+	Joel
