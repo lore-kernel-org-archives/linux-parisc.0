@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Tom <palinux@alaskatech.org>
-Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Tape boot errors and NFS-Root-Howto? 
-In-Reply-To: Message from Tom <palinux@alaskatech.org>
-   of "Sun, 30 Dec 2001 09:14:42 -0900." <Pine.LNX.4.33.0112300907380.11391-100000@goliath.alaskatech.org>
-References: <Pine.LNX.4.33.0112300907380.11391-100000@goliath.alaskatech.org> 
-Date: Mon, 31 Dec 2001 10:35:57 -0700
+To: Aaron Macks <aaronm@cs.brandeis.edu>
+Cc: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Graphics support on 755? 
+In-Reply-To: Message from Aaron Macks <aaronm@cs.brandeis.edu>
+   of "Sun, 30 Dec 2001 13:52:56 EST." <20011230135256.B28207@daedalus.cs.brandeis.edu>
+References: <20011229182132.A23862@daedalus.cs.brandeis.edu> <3C2F42C5.6040004@interaccess.com>  <20011230135256.B28207@daedalus.cs.brandeis.edu> 
+Date: Mon, 31 Dec 2001 10:44:42 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20011231173557.C96664832@dsl2.external.hp.com>
+Message-Id: <20011231174442.1EE1C482F@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,44 +19,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Tom wrote:
-> So I'm trying to update the firmware on my C180.
-...
-> Decide to pull up the NFS-Root-Howto at Grant's suggestion, just boot the
-> patch file off the network. Unfortunately, p.e.h.c appears to be down :-(
+Aaron Macks wrote:
+> it's an HP card, not in the EISA slots, but in the big slots on the
+> backplane.  Is there anything like lspci, but for the HP slots?
 
-Correct URL for the (old) NFS Root HOWTO is:
-	http://lists.parisc-linux.org/hypermail/parisc-linux/0616.html
+not really.
+You could look in /proc/bus/gsc:
+setup.c:                if (NULL == proc_gsc_root)
+setup.c:                        proc_gsc_root = proc_mkdir("bus/gsc", 0);
 
-I'll update the FAQ shortly.
+hmmm...here too:
+pci-dma.c:    proc_gsc_root = proc_mkdir("gsc", 0);
+pci-dma.c:    create_proc_info_entry("dino", 0, proc_gsc_root, pcxl_proc_info);
 
-> Questions: Does anyone know if I'm doing the tape creation right?
+Someone could take lspci could and rewrite it to deal with PARISC
+IODC data (HPPB, GSC, RUNWAY, etc).
 
-Yes. I believe you are.
-
-> I did
-> 'unshar PF_CC2X0061' (to get the .frm and .text files), then 'dd
-> if=CC2X0061.frm of=/dev/st1 bs=2k' (which writes 790 records without
-> error).
-
-> The unshar says the .frm is compressed data - is this something
-> that needs further unpacking before writing, perhaps?
-
-Don't trust unshar?
-grundler <516>file c200/CC2X0062.frm
-c200/CC2X0062.frm: lif file
-
-I've placed several .frm files on ftp.parisc-linux.org/kernels/
-Seems like you can use the one I've placed in c200 directory.
-
-| Patch Description: HP 9000 Models C160/C180/C200/C240 revision 6.2 firmware
-
-> Also, does anyone
-> have a local copy of the NFS-Root-Howto that they can point me to? The
-> only ones I can find are ~1999 and quite out of date...
-
-Did I just hear you volunteer to rewrite mkp's posting? ;^)
-I'll get it linked to the FAQ if you do...
-
-thanks,
 grant
