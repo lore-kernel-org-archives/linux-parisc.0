@@ -1,13 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] NS87415 on C3K broken
-Date: Thu, 16 Sep 2004 10:17:49 -0600
-Message-ID: <20040916161749.GA17660__3222.09134833447$1416623560$gmane$org@colo.lackof.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] dmesg  about hw Modules
+Date: Thu, 16 Sep 2004 15:59:55 +0000
+Message-ID: <4149B87B.7020907@tiscali.be>
+References: <A944EAC2E4952A4D9203CED00A8F4CC73549E6@SRVTSBC02.itc.ads.t-systems.es>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: linux-ide@vger.kernel.org
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Carlos Pares, Pere" <pere.carlos@t-systems.es>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <A944EAC2E4952A4D9203CED00A8F4CC73549E6@SRVTSBC02.itc.ads.t-systems.es>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,124 +21,113 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
-Willy pointed out the 2.6.9-rc2 NS87415 driver for C3000 machine
-(uses SuckyIO IDE) is causing HPMC (system crash). This was not
-a problem with 2.6.8.1.
-But while trying to fix MMIO resource management problems, I ran
-into this when testing on C3000.
+Hello Carlos,
 
-The HPMC stack trace looks like this:
-	ide_inb
-	ide_wait_not_busy
-	wait_hwif_ready
-	probe_hwif
-	probe_hwif_init
-	ide_setup_pci_device
-	ns87415_init_one
-	ide_scan_pcidev
-	ide_scan_pcibus
-	ide_init
-	do_initcalls
+Sorry to put this stupid question but which kernel did you try to boot? SMP support or not?
 
-Changes to ide-probe.c cause this HPMC.
-wait_hwif_ready() is inside #ifdef CONFIG_PPC in 2.6.8.1 and the
-ifdef/endif was removed in 2.6.9-rcX. The result is inb() is invoked
-*BEFORE* ide_setup_pci_device() (indirectly) calls pci_enabled_device() or
-pci_set_master(). This is broken because IDE controllers NOT enabled
-by firmware will simply not respond to inb() (even if the system
-doesn't crash like on parisc).
+(that looks like to me as a pb I encounter with my c110 and a kernel 2.6.5 iirc; this was a ncr53c8xx bug fixed later, sorry I 
+didn't remember exactly when :( ).
 
-I'm a wimp. I don't dare to restructure IDE init sequence.
-Anyone less of a wimp?
-Or are IDE pci drivers required to call pci_enable_device()
-in their (mostly non-extistent) init_chipset entry point?
+hth,
+	Joel
 
 
-Anyway, ns87415 driver has more problems. The patch below adds
-"init_chipset" entry point and init_chipset_ns87415() calls
-pci_enable_device() and pci_set_master() before the probe.
-And my C3k still HPMCs. My guess is more of the code from
-init_hwif_ns87415() needs to be moved to init_chipset_ns87415().
-And possible call some special suckyio init routines.
-I won't be able to touch this for a few days.
-Anyone else on parisc-linux ml want to take a whack at this?
-
-BTW, normally a PCI Master Abort to IO Port space to should NOT fail.
-But on parisc is does because the chipset will go "fatal" on
-any Master Abort - special hacks enable config space to work.
-I strongly prefere not to add those hacks to IO Port space
-accessor functions since it's normally not a problem.
-And while inconvenient, this behavior does expose programming
-problems like the one above.
-
-
-thanks,
-grant
-
-
-Index: drivers/ide/pci/ns87415.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/drivers/ide/pci/ns87415.c,v
-retrieving revision 1.17
-diff -u -p -r1.17 ns87415.c
---- drivers/ide/pci/ns87415.c	13 Sep 2004 15:23:04 -0000	1.17
-+++ drivers/ide/pci/ns87415.c	16 Sep 2004 15:06:06 -0000
-@@ -133,8 +133,29 @@ static int ns87415_ide_dma_check (ide_dr
- 	return __ide_dma_check(drive);
- }
- 
-+static unsigned int __devinit init_chipset_ns87415(struct pci_dev *dev, const char *name)
-+{
-+	unsigned short w;
-+printk("init_chipset_ns87415(%s,%s)\n", dev->slot_name, name);
-+
-+	pci_enable_device(dev);
-+	pci_set_master(dev);
-+
-+(void) pci_read_config_word(dev, PCI_COMMAND, &w);
-+printk("	cmd 0x%x\n", w);
-+
-+	if ((w & PCI_COMMAND_IO) == 0) {
-+		w |= PCI_COMMAND_IO;
-+		(void) pci_write_config_word(dev, PCI_COMMAND, w);
-+printk("	enabling IO space\n");
-+	}
-+	return 0;
-+}
-+
-+
- static void __init init_iops_ns87415(ide_hwif_t *hwif)
- {
-+printk("init_iops_ns87415(%s)\n", hwif->pci_dev->slot_name);
- #ifdef CONFIG_SUPERIO
- 	superio_ide_init_iops(hwif);
- #endif
-@@ -150,12 +171,14 @@ static void __init init_hwif_ns87415 (id
- 	u8 stat;
- #endif
- 
-+printk("init_hwif_ns87415(%s)\n", hwif->pci_dev->slot_name);
- 	hwif->autodma = 0;
- 	hwif->selectproc = &ns87415_selectproc;
- 
-+#if 0
- 	/* Set a good latency timer and cache line size value. */
- 	(void) pci_write_config_byte(dev, PCI_LATENCY_TIMER, 64);
--	/* FIXME: use pci_set_master() to ensure good latency timer value */
-+#endif
- 
- 	/*
- 	 * We cannot probe for IRQ: both ports share common IRQ on INTA.
-@@ -227,6 +250,8 @@ static void __init init_hwif_ns87415 (id
- 
- static ide_pci_device_t ns87415_chipset __devinitdata = {
- 	.name		= "NS87415",
-+	.init_chipset	= init_chipset_ns87415,
-+	.init_iops	= init_iops_ns87415,
- 	.init_hwif	= init_hwif_ns87415,
- 	.channels	= 2,
- 	.autodma	= AUTODMA,
+Carlos Pares, Pere wrote:
+> Hi,
+> 
+>  
+> 
+> This is what dmesg show me about some hw on my k360 HP box,
+> 
+>  
+> 
+> Have you any idea what's going wrong?
+> 
+>  
+> 
+> PS/2 psaux port at 0xffd08100 (irq 69) found, no device attached. 
+> 
+> lp0: using parport0 (interrupt-driven). 
+> 
+> Generic RTC Driver v1.07 
+> 
+> RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize 
+> 
+> loop: loaded (max 8 devices) 
+> 
+> Linux Tulip driver version 0.9.15-pre12 (Aug 9, 2002) 
+> 
+> PCI: Unable to reserve mem region #2:80@2040000 for device 00:01.0 
+> 
+> PCI: Unable to reserve mem region #2:80@2040000 for device 00:01.0 
+> 
+> PCI: Unable to reserve I/O region #1:80@40221200 for device 00:02.0 
+> 
+> PCI: Unable to reserve I/O region #1:80@40221200 for device 00:02.0 
+> 
+> Found i82596 at 0xffd07000, IRQ 87 
+> 
+> eth0: 82596 at 0xffd07000, 00 60 B0 C4 A4 F5 IRQ 87. 
+> 
+> 82596.c $Revision: 1.33 $ 
+> 
+> Uniform Multi-Platform E-IDE driver Revision: 7.00beta4-2.4 
+> 
+> ide: Assuming 33MHz system bus speed for PIO modes; override with
+> idebus=xx 
+> 
+> SCSI subsystem driver Revision: 1.00 
+> 
+> zalon_scsi_callback: Zalon vers field is 0x1, IRQ 35 
+> 
+> ncr53c8xx: 53c720 detected 
+> 
+> ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+> 
+>  
+> 
+>  
+> 
+> Thanks in advance
+> 
+>  
+> 
+>  
+> 
+>  
+> 
+>  
+> 
+> 
+> 
+> --------------------------------------------------------------------------------
+> Aquest missatge electronic pot  contenir informacio confidencial o privilegiada.
+> Si voste no es el destinatari del  missatge, o l'ha rebut per error, si us plau
+> notifiqui-ho al remitent i destrueixi el missatge amb tot el seu contingut.
+> Esta completament  prohibida  qualsevol  copia, us o distribucio no autoritzada
+> del contingut d'aquest missatge electronic.
+> --------------------------------------------------------------------------------
+> Este mensaje electronico puede contener informacion confidencial o privilegiada.
+> Si usted  no es  el destinatario de este mensaje o lo ha recibido por error, por
+> favor notifiquelo al remitente y destruya el mensaje con todo su contenido.
+> Queda  expresamente  prohibida  cualquier  copia, utilizacion o  distribucion no
+> autorizada del contenido de este mensaje electronico.
+> --------------------------------------------------------------------------------
+> This e-mail may contain confidential and/or privileged information.
+> If you  are  not the  intended recipient (or have received this e-mail in error)
+> please notify the sender immediately and destroy this e-mail.
+> Any  unauthorized  copying,  disclosure  or distribution of the material in this
+> e-mail is strictly forbidden.
+> --------------------------------------------------------------------------------
+> 
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
