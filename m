@@ -1,30 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C47054837
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 07:45:42 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15mbTu-0004iH-00; Thu, 27 Sep 2001 14:45:38 +0100
-Date: Thu, 27 Sep 2001 14:45:38 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Jurij Smakov <jurij@lokmail.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 720 - some progress
-Message-ID: <20010927144538.B16096@parcelfarce.linux.theplanet.co.uk>
-References: <200109271223.IAA32108@mail.lokmail.net>
+Received: from silly.cloud.net.au (co3002322-a.eburwd1.vic.optushome.com.au [203.164.64.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0C9FD4842
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 08:13:59 -0600 (MDT)
+Date: Fri, 28 Sep 2001 00:13:54 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010928001354.A1519@silly.cloud.net.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109271223.IAA32108@mail.lokmail.net>; from jurij@lokmail.net on Thu, Sep 27, 2001 at 08:23:09AM -0400
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] FW SCSI on the D350
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Sep 27, 2001 at 08:23:09AM -0400, Jurij Smakov wrote:
-> It does not seem so complicated... Even with my rudimentary C programming
-> skills :-). I'll try to put something together. Is there a way to check
-> if we are running on a 720?
+Hi,
 
-There is -- but don't bother.  Check to see if the register being read is
-cr26 or cr27 and perform the access if it is.  Obviously, reads of other
-control registers should not be emulated.
+I'm trying to install the 0.9 release on a D350 server. The kernel
+recognises the standard SCSI, using the lasi7xxx driver, and finds
+the tape drive and the CD-ROM on that host. However, it doesn't
+find the Bluefish fast/wide SCSI host, so it doesn't find the
+four internal hard disks, which makes installation a little tough.
 
+The boot-up firmware recognises all of the disks OK, but the Bluefish
+is just not included in the device list shown at startup/dmesg.
+
+I'll try the 0.9.2 release tomorrow. Any other things I can do
+which might help?
+
+
+thanks,
+Hamish
 -- 
-Revolutions do not require corporate support.
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
