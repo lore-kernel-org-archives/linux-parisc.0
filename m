@@ -1,14 +1,11 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA30529
-	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Oct 2000 13:48:55 -0600
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 3C597117D
-	for <parisc-linux@thepuffingroup.com>; Thu, 26 Oct 2000 12:49:59 -0700 (PDT)
-Date: Thu, 26 Oct 2000 12:54:43 -0700 (PDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA30827
+	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Oct 2000 13:50:16 -0600
+Date: Thu, 26 Oct 2000 12:56:32 -0700 (PDT)
 From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200010261954.MAA22459@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Cc: Drepper@milano.cup.hp.com, Ulrich@milano.cup.hp.com
+Message-Id: <200010261956.MAA22473@milano.cup.hp.com>
+To: drepper@redhat.com
+Cc: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Subject: [parisc-linux] __FUNCTION__ revisited
