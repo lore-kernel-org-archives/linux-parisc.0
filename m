@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7CE47482B
-	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 19:10:41 -0700 (MST)
-Date: Sun, 4 Nov 2001 21:10:33 -0500 (EST)
-From: "Christopher C. Chimelis" <chris@debian.org>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org, bcollins@debian.org
-In-Reply-To: <20011103233352.F505@tausq.org>
-Message-ID: <Pine.LNX.4.21.0111042106311.25038-100000@spawn.hockeyfiend.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: hppa binutils/glibc updates
+Received: from solo.franken.de (pD951CDEA.dip.t-dialin.net [217.81.205.234])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D944A482B
+	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 19:27:48 -0700 (MST)
+Date: Mon, 5 Nov 2001 03:24:26 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: kenneth westelinck <kennywest1@hotmail.com>
+Cc: Kaj-Michael Lang <milang@tal.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
+Message-ID: <20011105032426.A1671@solo.franken.de>
+References: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com> <003101c163a9$48570590$56dc10c3@amos> <OE13GhAj5p1Fjxe0ymQ00007efc@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <OE13GhAj5p1Fjxe0ymQ00007efc@hotmail.com>; from kennywest1@hotmail.com on Sun, Nov 04, 2001 at 07:46:23PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,38 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 3 Nov 2001, Randolph Chung wrote:
+On Sun, Nov 04, 2001 at 07:46:23PM +0100, kenneth westelinck wrote:
+> Nope, same error (see the attached file). Any other ideas?
 
-> In a chroot built with debootstrap plus build-essential:
-> - Rebuild binutils from sourceware cvs
-> - Using new binutils, rebuild glibc (2.2.4-5) with am's latest patch
-> 
-> With these bits installed, the following were tested:
-> - build and install wget (just a simple sanity test)
-> - install and run libgtk1.2 and gkrellm
-> - recompile and run python1.5 and apache
-> 
-> all these seem to be ok now. Before recompiling, things like python will
-> die with a SIGILL
+how about using dpkg-buildpackage or applying the patches by hand ?
 
-That's good news :-)  FYI, I work at Agilent now (formerly HP-owned
-company) and am surrounded by PA-RISC machines.  I'm trying to weasel an
-extra machine out of them, but have only been there two weeks so it may
-take some extra time :-P
+Thomas.
 
-> Chris/Ben: can you let us know when we can expect new binutils/glibc?
-> I'll forward the glibc patch to Ben separately.
-
-I'm hoping for a new one soon.  I may not package it, however, due to some
-flux in other platforms.  If we can work together to isolate the patches
-that are needed for hppa, I'd be happy to include those in my next upload,
-though (I already am planning one).
-
-> If you can think of anything else that we should try to make sure
-> everything works, please let us know.
-
-If I think of something, I'll write ya.  Also, if I manage to get a
-machine, I'm sure you'll be hearing from me (probably will be an Apollo
-series 735, fyi...slow, but effective).
-
-C
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
