@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8B895483F
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 13:10:54 -0700 (MST)
-Date: Sun, 3 Mar 2002 21:10:53 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Jbit <james_a_n_lee@yahoo.com>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Received: from viefep15-int.chello.at (viefep15-int.chello.at [213.46.255.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2F09C484E
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 16:22:55 -0700 (MST)
+Message-ID: <3C82B04B.ECA01FA8@gmx.at>
+Date: Mon, 04 Mar 2002 00:22:51 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+Cc: Jbit <james_a_n_lee@yahoo.com>,
+	parisc-linux <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Power Supply Problems
-Message-ID: <20020303201053.GF25473@charite.de>
-References: <3C825127.7090200@yahoo.com>
-Mime-Version: 1.0
+References: <3C825127.7090200@yahoo.com> <20020303201053.GF25473@charite.de>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C825127.7090200@yahoo.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Mar 03, 2002 at 04:36:55PM +0000, Jbit wrote:
-> Hey, erm, I just tried to boot my other hp (712/60) and the fuse (inside 
-> the power supply) just blew..
-> I was wondering if anybody has a scematic for the power supply so i can 
-> (try to) fix it?
+The problem is not finding the fuse, but "remove" the "reason",
+why the fuse is blown up.
 
-Just open it and find the fuse. It shouldn't be hidden too deep...
+In some seldom cases, if we have luck, we simple need to exchange
+the fuse, and I wish Jbit much luck ....
+
+With friendly regards
+Christoph P.
+
+
+
+Ralf Hildebrandt wrote:
+> 
+> On Sun, Mar 03, 2002 at 04:36:55PM +0000, Jbit wrote:
+> > Hey, erm, I just tried to boot my other hp (712/60) and the fuse (inside
+> > the power supply) just blew..
+> > I was wondering if anybody has a scematic for the power supply so i can
+> > (try to) fix it?
+> 
+> Just open it and find the fuse. It shouldn't be hidden too deep...
+> 
+> --
+> Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+> Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+> Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+> May's Law: The quality of correlation is inversely proportional to the
+> density of control. (The fewer data points, the smoother the curves.)
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-May's Law: The quality of correlation is inversely proportional to the
-density of control. (The fewer data points, the smoother the curves.) 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
