@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sj-msg-core-4.cisco.com (sj-msg-core-4.cisco.com [171.71.163.54])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B449482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 02:07:05 -0700 (MST)
-Date: Tue, 28 Jan 2003 01:07:02 -0800
-From: Christian Suder <csuder@cisco.com>
-To: rbradetich@uswest.net, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] long booting kernels...
-Message-Id: <20030128010702.27f05486.csuder@cisco.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 47BFE482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 02:07:16 -0700 (MST)
+Date: Tue, 28 Jan 2003 10:07:12 +0100
+Subject: Re: [parisc-linux] Kernel....
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v551)
+Cc: <parisc-linux@lists.parisc-linux.org>
+To: Sir Ace <chandler@nateng.com>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <Pine.LNX.4.33.0301272021470.235-100000@jordan.eng.nateng.com>
+Message-Id: <E3411039-329F-11D7-90F1-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,32 +22,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+For heaven's sake! Everything is written and explained in the 
+PARISC-Linux Boot HOWTO.
+That goes for Mr Mehta as well...
 
-Hi Ryan,
+http://pateam.esiee.fr/doc.html
 
-yes this solves the problem on the C180. It now takes around 15 seconds
-after the first messages until it switches to framebuffer mode. 
+HTH,
 
-Thanks,
-	Christian 
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
 
+On mardi, jan 28, 2003, at 05:23 Europe/Paris, Sir Ace wrote:
 
-
-
-
-Hello,
-
-I finally found some time to test the updated bus walk code on a
-parisc-2.4.20-pa22 system.  It works fine for me, but the C200 does not
-exhibit the problems seen by others on this list.  I would appreciate if
-someone with this problem could test this patch and see if it speeds the
-boot time up.
-
-This is the same patch I applied to the 2.5 tree several months ago.
-
-Thanks,
-
-- Ryan
-
-
- 
+>
+> Quick question...  I got the box back up and running and everything 
+> built.
+>
+> In PCs it's make zImage/bzImage
+> on Alpha's it's make boot
+>
+> make boot doesn't work, and make vmlinux doesn't seem to be right
+> either...
+>
+> What is the target for a kernel build?
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+>
