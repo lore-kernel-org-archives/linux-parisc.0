@@ -1,71 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA22938
-	for <parisc-linux@puffin.external.hp.com>; Sun, 8 Oct 2000 20:59:53 -0600
-Date: Sun, 8 Oct 2000 20:00:48 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@thepuffingroup.com
-Cc: debian-hppa@lists.debian.org
-Message-ID: <20001008200047.B639@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
-Subject: [parisc-linux] file locking problems?
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA25308
+	for <parisc-linux@puffin.external.hp.com>; Sun, 8 Oct 2000 21:52:11 -0600
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@thepuffingroup.com, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] file locking problems?
+References: <20001008200047.B639@tausq.org>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 08 Oct 2000 23:52:42 -0400
+In-Reply-To: Randolph Chung's message of "Sun, 8 Oct 2000 20:00:48 -0700"
+Message-ID: <87g0m6hdrp.fsf@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Randolph Chung <randolph@tausq.org> writes:
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
+> update-passwd (a Debian package) makes a call to lckpwdf. That fails
+> with an "Invalid argument" message. It looks like lckpwdf internally uses
+> fcntl() locking, so I tried that and it too fails with an "Invalid
+> argument" message.  This happens both on nfs and local ext2 fs.
+> Similar tests with flock() seems to work ok.
 
-Hi all,
+Lots of things report this actually - if you look in your log files
+you'll see lots of "utmp file is locked/read" - also in bootup
+messages there will be a "can't lock <whatever>".
 
-I'm seeing some weird behavior with file locking on my hppa box:
+I have a feeling this might just be generally broken in the revision
+of the kernel we're using, though it could be a problem with LFS in
+our glibc if it is trying to use fcntl64().
 
-update-passwd (a Debian package) makes a call to lckpwdf. That fails
-with an "Invalid argument" message. It looks like lckpwdf internally uses
-fcntl() locking, so I tried that and it too fails with an "Invalid
-argument" message.  This happens both on nfs and local ext2 fs.
-Similar tests with flock() seems to work ok.
+I suspect that our LFS stuff is generally broken (lseek64() is, at
+least) and plan to investigate further on Tuesday.
 
-Any ideas? This is using dhd's latest glibc build. My testing program is
-attached. I've verified that it works on ext2 fs on i386 and SPARC. Over
-nfs it does give an error message (No locks available).
-
-The test program I used is attached.
-
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
-
---EVF5PPMfhYS0aIcm
-Content-Type: text/x-csrc
-Content-Disposition: attachment; filename="locktest.c"
-
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-
-int main(int argc, char **argv)
-{
-        struct flock l;
-        int fd;
-
-        if ((fd = open("test.lck", O_CREAT|O_RDWR)) < 0)
-        {
-                perror("open");
-                return -1;
-        }
-        memset(&l, 0, sizeof(l));
-        l.l_type = F_RDLCK;
-        if (fcntl(fd, F_SETLK, &l) < 0)
-        {
-                perror("fcntl");
-                return -1;
-        }
-        close(fd);
-        return 0;
-}
-
---EVF5PPMfhYS0aIcm--
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
