@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from daedalus.cs.brandeis.edu (daedalus.cs.brandeis.edu [129.64.3.179])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5DC6D482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 11:52:57 -0700 (MST)
-Received: (from aaronm@localhost)
-	by daedalus.cs.brandeis.edu (8.9.3/8.9.3) id NAA28219
-	for parisc-linux@lists.parisc-linux.org; Sun, 30 Dec 2001 13:52:56 -0500
-Date: Sun, 30 Dec 2001 13:52:56 -0500
-From: Aaron Macks <aaronm@cs.brandeis.edu>
-To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Graphics support on 755?
-Message-ID: <20011230135256.B28207@daedalus.cs.brandeis.edu>
-References: <20011229182132.A23862@daedalus.cs.brandeis.edu> <3C2F42C5.6040004@interaccess.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C2F42C5.6040004@interaccess.com>; from bheadley@interaccess.com on Sun, Dec 30, 2001 at 10:37:25AM -0600
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1ADA2482A
+	for <parisc-linux@parisc-linux.org>; Sun, 30 Dec 2001 12:30:19 -0700 (MST)
+Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m16Klex-000OuPC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@parisc-linux.org>; Sun, 30 Dec 2001 12:30:15 -0700 (MST)
+Message-Id: <m16Klex-000OuPC@bame.riverrock.org>
+To: Tom <palinux@alaskatech.org>
+Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Tape boot errors and NFS-Root-Howto? 
+In-Reply-To: Your message of "Sun, 30 Dec 2001 09:14:42 -0900."
+             <Pine.LNX.4.33.0112300907380.11391-100000@goliath.alaskatech.org>
+References: <Pine.LNX.4.33.0112300907380.11391-100000@goliath.alaskatech.org> 
+Date: Sun, 30 Dec 2001 12:30:15 -0700
+From: Paul Bame <bame@riverrock.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,23 +26,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Kernel source. ./arch/parisc/kernel/hardware.c
-> 
-> The kernel supports display adapters that are supported by the pdc BIOS. 
-> I assume it's an HP card, which means HPUX supports it, which strongly 
-> infers it's supported by pdc BIOS.
-> 
-> What I don't know is, if you get something like an nVidia card, stick it 
-> into the EISA bus, that such will work...
-> 
-> -- 
-> ____               .:.                 ____
-> Bryan W. Headley - bheadley@interaccess.com
-it's an HP card, not in the EISA slots, but in the big slots on the
-backplane.  Is there anything like lspci, but for the HP slots?
-Aaron
+> Decide to pull up the NFS-Root-Howto at Grant's suggestion, just boot the
+> patch file off the network. Unfortunately, p.e.h.c appears to be down :-(
 
--- 
-_______________________________________________________
-Aaron Macks(aaronm@cs.brandeis.edu)
-My sheep has seven gall bladders, that makes me the King of the Universe!
+p.e.h.c was replaced quite a while ago with parisc-linux.org,
+cvs.parisc-linux.org, ftp.p.o, lists.p.o, bugs.p.o, etc...
+Hopefully the NFS-Root-Howto is on parisc-linux.org now so you might
+try wandering thorough there.  If the pointer is stale you might
+try s/puffin.external.hp.com/parisc-linux.org
+
+	-P
