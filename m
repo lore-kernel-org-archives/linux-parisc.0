@@ -1,17 +1,17 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AD5C14852
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0265F48A2
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 28 Feb 2004 10:24:59 -0700 (MST)
-Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	i1SHP8a23490; Sat, 28 Feb 2004 12:25:08 -0500
-Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
-From: James Bottomley <James.Bottomley@steeleye.com>
+	Sat, 28 Feb 2004 10:41:50 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1Ax8TF-0002tA-70; Sat, 28 Feb 2004 17:41:49 +0000
+Date: Sat, 28 Feb 2004 17:41:49 +0000
+From: Matthew Wilcox <willy@debian.org>
 To: Grant Grundler <grundler@parisc-linux.org>
-In-Reply-To: <20040228164506.GA11659@colo.lackof.org>
-References: <1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
-	<Pine.LNX.4.58.0402260127230.26951@sal.ucc.ie>
+Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
+Message-ID: <20040228174149.GD25779@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.58.0402260127230.26951@sal.ucc.ie>
 	<20040226051124.GB3645@colo.lackof.org>
 	<Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
 	<20040226155659.GA11451@colo.lackof.org>
@@ -21,12 +21,11 @@ References: <1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
 	<Pine.LNX.4.58.0402280055400.10811@sal.ucc.ie>
 	<1077984432.31248.4.camel@dhcp23.swansea.linux.org.uk>
 	<20040228164506.GA11659@colo.lackof.org>
-Content-Type: text/plain
-Date: 28 Feb 2004 11:24:53 -0600
-Message-Id: <1077989094.1968.62.camel@mulgrave>
 Mime-Version: 1.0
-Cc: "M. Grabert" <xam@cs.ucc.ie>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>,
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040228164506.GA11659@colo.lackof.org>
+Sender: <willy@www.linux.org.uk>
+Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org,
 	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -37,7 +36,7 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, 2004-02-28 at 10:45, Grant Grundler wrote:
+On Sat, Feb 28, 2004 at 09:45:06AM -0700, Grant Grundler wrote:
 > include/asm/io.h:#define readw(addr) (*(volatile unsigned short *) __io_virt(addr))
 > 
 > 
@@ -46,13 +45,14 @@ On Sat, 2004-02-28 at 10:45, Grant Grundler wrote:
 > Am I just confused again about how a BE is supposed to behave?
 > *sigh*
 
-The rule is supposed to be that inX/outX/readX/writeX be free of
-endianness issues on the bus.  i.e. doing a readw() on a memory mapped
-PCI config space on parisc should have a le16_to_cpu implied in the
-readw().
+You're confused by looking at the unused definition ;-)
 
-Obviously, accesses which go straight to memory (i.e. not via accessor
-macros) are the responsibility of the driver for sorting out the
-endianness.
+#define readw(addr) le16_to_cpu(__raw_readw(addr))
 
-James
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
