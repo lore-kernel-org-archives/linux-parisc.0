@@ -1,32 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA15215
-	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Mar 2000 01:15:01 -0700
-Message-Id: <200003230713.IAA14887@zaphod.halden.lillfab.se>
-Date: Thu, 23 Mar 2000 08:13:27 +0100 (CET)
-From: 5116@telia.com
-Reply-To: 5116@telia.com
-Subject: Re: [parisc-linux] Any docs on the 715?
-To: Philipp Rumpf <prumpf@puffin.external.hp.com>
-cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <20000322170913.B11714@puffin.external.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA20808
+	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Mar 2000 13:02:56 -0700
+Received: from venus (venus.esiee.fr [147.215.20.10])
+	by mail.esiee.fr (Postfix) with SMTP id 1B6FA5735A
+	for <parisc-linux@thepuffingroup.com>; Thu, 23 Mar 2000 20:04:28 +0100 (CET)
+Message-ID: <00ca01bf94fa$ca500580$0a14d793@esiee.fr>
+From: "Thierry SIMONNET" <t.simonnet@esiee.fr>
+To: <parisc-linux@thepuffingroup.com>
+References: <E12XSiA-00022u-00@endor.fc.hp.com> <200003222233.XAA11675@zaphod.halden.lillfab.se> <20000322220229.D10226@thepuffingroup.com>
+Date: Thu, 23 Mar 2000 20:05:44 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-1
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Eth0 trouble
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 22 Mar, Philipp Rumpf wrote:
->> Are there any documents on the ASICs found in the 715 available? 
->> The stuff on the web page only seem the cover newer boxes.
-> 
-> There are two kinds of 715;  if you're lucky, you've got a "new" 715,
-> which has (really, check the hardware database for details) Lasi and
-> a PA7100LC, both documented, and undocumented graphics (all graphics
-> is).  There is very little difference between such 715s and 712s.
-I definitely have the older version. If I open the box I can find the I
-ntel, NCR and WD chips and those would have been integrated in to the
-LASI if had one.
+I have generated new lifimages with differents methods (ramdisk, nfsroot and
+disk) using palo.
+I have the following messages :
+    eth0: receive unit error
+    eth0: Null rbd - oops!
+     eth0: receive unit error
+    eth0: Null rbd - oops!
+    eth0: receive unit error
+    eth0: Null rbd - oops!
+    eth0: receive unit error
+    eth0: Null rbd - oops!
+....
 
-/Daniel 
+Before this messages, everything is OK. sash works fine, and I can execute
+some test programs. After that, I lost LAN connectivity.
 
--- 
-Daniel Engström - Lilla Fabriken AB - Technical Support
-daniel@lillfab.se - Work related.  5116@telia.com - Private.
+My config is  : 712/80 Workstation, with latest binutils, gcc, linux-2.3 and
+palo.
+
+Have an idea?
+
+THX
+
+Th. SIMONNET
