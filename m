@@ -1,60 +1,85 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA16760
-	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Nov 1999 21:03:25 -0700
-Received: from vodka.thepuffingroup.com (IDENT:adevries@vodka.thepuffingroup.com [192.168.1.1])
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id XAA06046
-	for <parisc-linux@thepuffingroup.com>; Tue, 2 Nov 1999 23:14:33 -0500
-Date: Tue, 2 Nov 1999 23:14:33 -0500 (EST)
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA18073
+	for <parisc-linux@puffin.external.hp.com>; Wed, 3 Nov 1999 05:17:45 -0700
+Message-ID: <19991103123044.18853.rocketmail@web507.yahoomail.com>
+Date: Wed, 3 Nov 1999 04:30:44 -0800 (PST)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
 To: parisc-linux@thepuffingroup.com
-In-Reply-To: <199911030250.TAA16563@puffin.external.hp.com>
-Message-ID: <Pine.LNX.4.10.9911022309430.5997-100000@vodka.thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Recent changes
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Congratulations, remarks and questions
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi all,
 
-Matt Wilcox committed some code that I know he's unable to test, so I'm
-mailing the bug report here.
+first of all congratulations for the success of
+getting to the shell prompt. I hope that you have
+celebrated this event accordingly. I finally made it
+too, I build a kernel for my 715/33 which boots until
+the sash-prompt. To document the necessary steps for
+others, here is my recipe:
 
-The first is that building the kernel kernel will result in:
+1. get a recent kernel source (I took 19991031)
+2. apply the patch from Thomas Bogendoerfer to
+arch/parisc/kernel/setup.c (see his mail iodc console
+patch). The patch to pdc_cons.c seems to be no longer
+necessary.
+3. get ramdisk.bin-19991019-workingsash and copy it to
+/usr/src/linux as ramdisk.bin.
+4. run make config and change the following options:
+CONFIG_IODC_CONSOLE=y
+CONFIG_NETDEVICES=n 
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+CONFIG_SERIAL=n
+5. run make dep, make vmlinux, make Image
+6. boot the kernel with the "isl" option and change
+the command line from ttyS0 to tty (or change the
+console parameter of DEFAULT_COMMANDLINE in
+arch/parisc/boot/boot_code/ipl_c.c).  
 
-ld: Unsatisfied symbols:
-   hpux_brk (code)
+Now some remarks: I have noticed the development of
+the I/O-drivers (GSC/Gecko, DINO, LASI, PCI) in the
+past to make them stable, so that they can be included
+even if the machine does not have these features. This
+is also true for my 715/33 and the 19991031 kernel
+tree. However, saying no to CONFIG_GECKO_DINO,
+CONFIG_GECKO_LASI and CONFIG_PCI leads to missing
+symbols inb and outb during the link stage which are
+defined in arch/parisc/kernel/pci.c. And saying no to
+CONFIG_GECKO is impossible because gecko.a is defined
+in DRIVERS in the central Makefile without a
+surrounding ifdef. I don't think that this is a
+problem right now, but I would like to mention these
+points anyway.
 
-so I just commented out the only reference to it, and now I end up with:
+My first try was to build the kernel without
+specifying CONFIG_NETDEVICES=n. This leads to the
+following problem: the kernel stops booting with these
+messages:  
 
-(start_code) 00001000
-(end_data) 40008000
-(start_stack) 20000028
-(brk) 40017000
+Starting lasi lan at 0xf0826000
+lasi_alloc_irq(0xc0127968): No LASI found in system
+yet
+IRQ not found for lasi lan at 0xf0826000
+Warning : device (10, 0xb, 0x0, 0x72, 0x0) NOT claimed
+by Lasi i82596(???) LAN 700 or similiar (old)
 
-PSW  : 0004f80b  GR 1 : 40006928  GR 2 : 00016f5f  GR 3 : 40007128  
-GR 4 : 40016314  GR 5 : 40006928  GR 6 : 00002001  GR 7 : 00000020  
-GR 8 : 40001511  GR 9 : 00000000  GR10 : 00000050  GR11 : bc0fd569  
-GR12 : 000043ff  GR13 : 00004400  GR14 : 00004800  GR15 : 43f02aa9  
-GR16 : 00004000  GR17 : 00000000  GR18 : 00000c00  GR19 : 00000001  
-GR20 : 00000001  GR21 : 40019000  GR22 : ffffff05  GR23 : 00000000  
-GR24 : 00000000  GR25 : ffffffff  GR26 : ffffffff  GR27 : 40007128  
-GR28 : 4001830c  GR29 : 40018ffc  GR30 : 20000780  GR31 : 00033323  
-SR0  : 00000000  SR1  : 00000000  SR2  : 00000000  SR3  : 00000000  
-SR4  : 00000000  SR5  : 00000000  SR6  : 00000000  SR7  : 00000000  
-IAOQ : 00016f7b 00016f7f
+Maybe this is of interest to someone, too.
 
-bad address 40018ffc (code 15)
-Kernel panic: bad address
+Now the questions: the kernel boots to the
+sash-prompt, but no keyboard input is possible
+(neither the HIL-keyboard, nor the keyboard from the
+serial terminal I was using). Is this because of the
+missing support for the ASP chip of the 715/33 ? Are
+all devices (HIL, SCSI and LAN) connected via that
+chip ? And finally: has HP found and published the
+docs of that chip so that someone is able to write the
+supporting routines ?
 
-In swapper task - not syncing
+Greetings from Berlin
+Ulrich
 
-And that is it.
-
-- Alex
-
-ps.  All the puffins will be out of town in Montreal on Wednesday to
-attend/speak at a conference and see live puffins.
-
--- 
-Alex deVries <adevries@thepuffingroup.com>
-Vice President Engineering
-The Puffin Group
+__________________________________________________
+Do You Yahoo!?
+Bid and sell for free at http://auctions.yahoo.com
