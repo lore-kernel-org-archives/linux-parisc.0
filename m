@@ -1,33 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 72E99482A
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Jun 2001 08:00:37 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id C7364B007; Sun,  3 Jun 2001 14:57:16 +0100 (BST)
-Date: Sun, 3 Jun 2001 14:57:16 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: djweis@sjdjweis.com
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Failed boot on D310
-Message-ID: <20010603145716.J25745@linuxcare.com>
-References: <Pine.LNX.4.21.0106030831300.10748-100000@oliver.internal.sjdjweis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0106030831300.10748-100000@oliver.internal.sjdjweis.com>; from djweis@sjdjweis.com on Sun, Jun 03, 2001 at 08:33:23AM -0500
+Received: from droid3.webreklam.hu (para.abs0lut.com [195.56.113.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A6CA482A
+	for <parisc-linux@parisc-linux.org>; Sun,  3 Jun 2001 09:25:54 -0600 (MDT)
+Received: from localhost (diab@localhost)
+	by droid3.webreklam.hu (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA13179
+	for <parisc-linux@parisc-linux.org>; Sun, 3 Jun 2001 17:25:48 +0200
+Date: Sun, 3 Jun 2001 17:25:48 +0200 (CEST)
+From: diab <diab@diab.rulez.org>
+To: parisc-linux@parisc-linux.org
+Subject: RE: [parisc-linux] dead keyboard after booting 0.61 STI32 iso on
+ a  715/100
+In-Reply-To: <1A8904C3797ED411AC2E0008C7E6F88117C8D0@nlntmail2b.ats.nld.alcatel.nl>
+Message-ID: <Pine.LNX.4.21.0106031715530.11894-100000@droid3.webreklam.hu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jun 03, 2001 at 08:33:23AM -0500, djweis@sjdjweis.com wrote:
-> 
-> I've got a D310 with a 100mhz processor and 128 megs of RAM. I tried to
-> boot the ISO version 0.9 last night, but it crashed on boot. I can get the
-> exact error messages, it looked like a register dump. 
-> 
-> Is there any reason to assume that this will or won't boot?
+% Just for the record,
+% Have identical behaviour with c110, with ps/2 keyboard&mouse.
+% Tried 0.6 and 0.6.1, both freezes after the login prompt.....
+found the solution :) its pretty dunb though
 
-Listed as untested on http://parisc-linux.org/release-0.9/systems.html
-Are you trying the serial or sti image?  If you can use serial, and
-get you terminal emulator to capture the boot messages and crash for us,
-that would help.
+the problem is that 0.6 and 0.61 gives "console=tty" to the kernel on
+boot, instead of "console=tty0" (as in 0.9)
 
-Thanks,
-  Richard
+tried to boot 0.61 (used palo to modify console=tty to tty0) and it works
+flawlessly. ok lets say i was able to bring up eth0 and nfsmount the 0.9
+iso remotely on my linux box. aint got a cd burner here at home so i
+should use nfs somehow. 
+
+anyways i found no up2date NFS howtos on the
+web, but an old one (2000.02) and somehow the nfsroot=mynfsserverip 
+approach seemed to be not working.. gave me stupid read and seek error codes. 
+
+anyways can i use the same lif images/kernels to boot from nfs? i dont
+feel like building a cross compiler environment just for this.
+if not - if would be nice to provide nfsboot capable kernel images for the
+cdless people.
+
+the sti console works fine and everything seems to be ok. this is a
+715/100. see if i can copy the 0.9 over and make it working
+
+regards,
+
+--
+diab
