@@ -1,44 +1,38 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Tue, 2 Feb 1999 15:12:34 -0800 (PST)
-From: Jason Eckhardt <jason@equator.com>
-Message-Id: <199902022312.PAA13692@gatekeeper.equator.com>
-To: adevries@redhat.com
+Date: Tue, 2 Feb 1999 18:25:29 -0500 (EST)
+From: Christopher Beard <cjbeard@istar.ca>
+To: hppa-linux@puffingroup.com
+cc: adevries@redhat.com
 Subject: Re: Some planning issues.
-Cc: hppa-linux@puffingroup.com
-Resent-Message-ID: <"Vg-TF2.0.Ch5.C0wjs"@burrow.puffingroup.com>
+In-Reply-To: <199902022312.PAA13692@gatekeeper.equator.com>
+Message-ID: <Pine.LNX.4.04.9902021818010.1377-100000@sprite.osfi-bsif.gc.ca>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Resent-Message-ID: <"7splK2.0.ch5.VAwjs"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
->
-> Boot Loader
-> -----------
->
-> We need to figure out how to load a kerne image; I suspect borrowing from
-> openbsd and mklinux will be great.
->
->
+>   These are good sources, but I hope we can get "real" docs from HP. There
+>   is tons of information about the PDC, IODC, boot process, and I/O 
+>   architecture that would be very useful -- and its a lot easier to read
+>   about than pick through code. I can give what I know/remember.
+> 
 
-  I have knowledge of how this works from my time at HP. It is mildly
-  complicated compared to other platforms. As far as I know, the document
-  describing the process isn't available outside of HP but the mklinux
-  guys obviously had access to it.
-  I can get something going here if no one else volunteers. 
+It's looking and sounding very likely that we will have an official source
+of "real" documentation from HP......
 
-  Note that my machine is a C160 (64-bit PA8000 based). I think most of you
-  have 700 series machines. I should be able to get one going that will work
-  in w=0 (32-bit) mode so that it will also work with the 700 machines. But
-  someone with a 700 will need to test it and possibly hack it.
+If we can come up with perhaps an initial wish list, that may be a good
+approach to take. Perhaps those who have working knowledge of this
+documentation or those working internally could suggest titles and
+document numbers and we can then push to have cleared for public
+consumption.
 
->
-> All of this is going to be terrifically difficult without someone with
-> prior HPPA experience.  However, we do have OpenBSD and mklinux to model
-> things after. And hopefully we'll have docs.
->
+Obviously, there will be some documentation that we will definitely
+require ahead of others, so prioritizing our requests will be important.
+We will also have to look into an efficient means of distributing these
+documents once we have them in our hands.
 
-  These are good sources, but I hope we can get "real" docs from HP. There
-  is tons of information about the PDC, IODC, boot process, and I/O 
-  architecture that would be very useful -- and its a lot easier to read
-  about than pick through code. I can give what I know/remember.
-
-  Regards, Jason Eckhardt. 
+I'll likely know more by the end of the week.
+ 
+- Chris
