@@ -1,21 +1,17 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 32FA5489D
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C336048AD
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 28 Dec 2003 13:00:46 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.6 & pdc_console pb on c110: "Warning: unable to
-	open an initial console."
-Date: Sun, 28 Dec 2003 21:00:40 +0100
-References: <3FEDF301.5030901@tiscali.be> <200312280019.55830.deller@gmx.de>
-	<3FEF1A99.4010307@tiscali.be>
-In-Reply-To: <3FEF1A99.4010307@tiscali.be>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200312282100.40814.deller@gmx.de>
-Cc: 
+	Sun, 28 Dec 2003 19:06:07 -0700 (MST)
+Date: Sun, 28 Dec 2003 20:58:00 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: 219458@bugs.debian.org, Jeff Bailey <jbailey@nisa.net>
+Message-ID: <20031229015759.GF27911@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] debian hppa touch fails to set atime and mtime
+	(5.0.91-2)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,23 +21,73 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sunday 28 December 2003 19:02, Joel Soete wrote:
-> My goal is to test pdc_console mainly for EARLY_BOOTUP_DEBUG facility (for later b2k 64bit kernel pb).
-> Also afaik otc I have to switch off serial mux (well i say uncheck):
-> drivers/serial/Kconfig
-> [snip]
-> config PDC_CONSOLE
->          bool "PDC software console support"
->          depends on PARISC && !SERIAL_MUX && VT
->          default n
-> [snip]?
 
-To debug such problems I often just turn on EARLY_BOOTUP_DEBUG 
-in arch/parisc/kernel/pdc_cons.c, line 15:
+219458,
 
-/* Define EARLY_BOOTUP_DEBUG to debug kernel related boot problems.
- * On production kernels EARLY_BOOTUP_DEBUG should be undefined. */
-#define EARLY_BOOTUP_DEBUG
+hppa does not support utimes, it supports utime. During the last
+coreutils build it seems that configure was confused and thought hppa
+*had* utimes, but it does not.
 
-HTH,
-Helge
+http://buildd.debian.org/fetch.php?&pkg=coreutils&ver=5.0.91-2&arch=hppa&stamp=1065315205&file=log&as=raw
+
+--- checkdd.log 2003-12-28 20:45:43.000000000 -0500
++++ check.log   2003-12-28 20:44:08.000000000 -0500
+@@ -7,8 +7,7 @@
+ checking host system type... hppa-unknown-linux-gnu
+ checking for a BSD-compatible install... /usr/bin/install -c
+ checking whether build environment is sane... yes
+-checking for gawk... no
+-checking for mawk... mawk
++checking for gawk... gawk
+ checking whether make sets $(MAKE)... yes
+ checking for perl5.003 or newer... yes
+ checking for hppa-linux-gcc... hppa-linux-gcc
+@@ -163,7 +162,7 @@
+ checking for library containing opendir... none required
+ checking for struct stat.st_blocks... yes
+ checking whether stat file-mode macros are broken... no
+-checking for nanoseconds member of struct stat.st_mtim... no
++checking for nanoseconds member of struct stat.st_mtim... tv_nsec
+ checking for st_dm_mode in struct stat... no
+ checking for uid_t in sys/types.h... yes
+ checking type of array argument to getgroups... gid_t
+@@ -452,9 +451,9 @@
+ checking for strcasecmp... yes
+ checking for strncasecmp... yes
+ checking for struct timespec... yes
+-checking for nanoseconds member of struct stat.st_mtim... (cached) no
++checking for nanoseconds member of struct stat.st_mtim... (cached)
+tv_nsec
+ checking whether nanosleep is declared... (cached) yes
+-checking determine whether the utimes function works... yes
++checking determine whether the utimes function works... no
+ checking for stdlib.h... (cached) yes
+ checking for GNU libc compatible malloc... yes
+ checking for stdlib.h... (cached) yes
+
+My local system detects gawk, finds a nanosecond member for stat, but
+notices that utimes does *not* work under hppa, and instead uses utime.
+The reason for the erroneous detection can only be confirmed by looking
+at the config.log.
+
+I tested a coreutils rebuild and it works fine.
+
+Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3.2/specs
+Configured with: ../src/configure -v
+--enable-languages=c,c++,f77,pascal,objc,ada,treelang --prefix=/usr
+--mandir=/usr/share/man --infodir=/usr/share/info
+--with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared
+--with-system-zlib --enable-nls --without-included-gettext
+--enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu
+--enable-debug --enable-objc-gc hppa-linux
+Thread model: posix
+gcc version 3.3.2 (Debian)
+
+GNU ld version 2.14.90.0.7 20031029 Debian GNU/Linux
+
+Linux firin 2.4.23-pa2 #5 Mon Dec 8 20:44:10 EST 2003 parisc64 GNU/Linux
+
+I suggest moving this to coreutils and have them rebuild?
+
+Cheers,
+Carlos.
