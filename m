@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1657A4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Nov 2002 00:13:39 -0700 (MST)
-Date: Tue, 19 Nov 2002 02:13:07 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: libc-alpha@sources.redhat.com
-Cc: debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20021119071307.GL12451@systemhalted>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="s8uQA167RD2xhjBe"
-Subject: [parisc-linux] [PATCH] Fix (for real this time) fcntl64 on HPPA
+Received: from web12508.mail.yahoo.com (web12508.mail.yahoo.com [216.136.173.200])
+	by dsl2.external.hp.com (Postfix) with SMTP id 4FCAE4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Nov 2002 08:30:47 -0700 (MST)
+Message-ID: <20021120153041.6264.qmail@web12508.mail.yahoo.com>
+Date: Wed, 20 Nov 2002 07:30:41 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <000701c28f4e$081aa460$2cb032d2@home>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-779367258-1037806241=:5774"
+Subject: [parisc-linux] long bus walk times on boot up
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,60 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---s8uQA167RD2xhjBe
+--0-779367258-1037806241=:5774
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
 
-libc-alpha,
+Well, my C180 is gone to a new home and my C360 is well on it's way, but I had a question about the new netinstall ISO's out there.  I had been running the 2.4.19-pa19-20020922-netinst.iso on the C180 and it didn't have the bus walk issues that cause the long boot up times.  I really would like to avoid having my C360 take 20+ minutes to boot up.  Are there any real huge issues with running this older kernal on my C360 or are there any immediate plans to fix the issues of having to walk the entire bus?  I'm still a little weary of compiling my own kernal (only done this through SAM on HP-UX), but if I was forced to I could probably figure it out using the HOWTO's.  Is there a kernal parameter I could tweak that could resolve the long bus walk times?  Or am I just totally off base?  :)
 
-The following changes adds a few defines so __USE_FILE_OFFSET64
-works properly on hppa.
-
-I fixed the changelog and the bug in the original patch.
-Tested with samba + LFS support.
-
-c.
-
- sysdeps/unix/sysv/linux/hppa/bits/fcntl.h |    6 ++++++
- sysdeps/unix/sysv/linux/hppa/fcntl.c      |    1 +
- 2 files changed, 7 insertions(+)
-
----
-
-2002-10-01  Randolph Chung  <tausq@debian.org>
-
-        * sysdeps/unix/sysv/linux/hppa/fcntl.c:
-        Include sysdeps/unix/sysv/linux/i386/fcntl.c
-        * sysdeps/unix/sysv/linux/hppa/bits/fcntl.h:
-        Change defines when using __USE_FILE_OFFSET64
-
-
---s8uQA167RD2xhjBe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=08-glibc23-hppa-fcntl64
-
---- glibc/sysdeps/unix/sysv/linux/hppa/fcntl.c	2002-09-10 20:58:07.000000000 -0700
-+++ glibc/sysdeps/unix/sysv/linux/hppa/fcntl.c	2002-09-10 20:58:07.000000000 -0700
-@@ -0,0 +1 @@
-+#include <sysdeps/unix/sysv/linux/i386/fcntl.c>
---- glibc/sysdeps/unix/sysv/linux/hppa/bits/fcntl.h	2002-09-12 10:31:56.000000000 -0700
-+++ glibc/sysdeps/unix/sysv/linux/hppa/bits/fcntl.h	2002-09-12 23:43:14.000000000 -0700
-@@ -63,9 +63,15 @@
- #define F_SETFD		2	/* Set file descriptor flags.  */
- #define F_GETFL		3	/* Get file status flags.  */
- #define F_SETFL		4	/* Set file status flags.  */
-+#ifndef __USE_FILE_OFFSET64
- #define F_GETLK		5	/* Get record locking info.  */
- #define F_SETLK		6	/* Set record locking info (non-blocking).  */
- #define F_SETLKW	7	/* Set record locking info (blocking).  */
-+#else
-+#define F_GETLK		F_GETLK64  /* Get record locking info.  */
-+#define F_SETLK		F_SETLK64  /* Set record locking info (non-blocking).  */
-+#define F_SETLKW	F_SETLKW64 /* Set record locking info (blocking).  */
-+#endif
  
- #define F_GETLK64	8	/* Get record locking info.  */
- #define F_SETLK64	9	/* Set record locking info (non-blocking).  */
 
---s8uQA167RD2xhjBe--
+derek
+
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Web Hosting - Let the expert host your site
+--0-779367258-1037806241=:5774
+Content-Type: text/html; charset=us-ascii
+
+<P>Well, my C180 is gone to a new home and my C360 is well on it's way, but I had a question about the new netinstall ISO's out there.&nbsp; I had been running the 2.4.19-pa19-20020922-netinst.iso on the C180 and it didn't have the bus walk issues that cause the long boot up times.&nbsp; I really would like to avoid having my C360 take 20+ minutes to boot up.&nbsp; Are there any real huge issues with running this older kernal on my C360 or are there any immediate plans to fix the issues of having to walk the entire bus?&nbsp; I'm still a little weary of compiling my own kernal (only done this through SAM on HP-UX), but if I was forced to I could probably figure it out using the HOWTO's.&nbsp; Is there a kernal parameter I could tweak that could resolve the long bus walk times?&nbsp; Or am I just totally off base?&nbsp; :)</P>
+<P>&nbsp;</P>
+<P>derek</P><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://rd.yahoo.com/hosting/mailsig/*http://webhosting.yahoo.com">Yahoo! Web Hosting</a> - Let the expert host your site
+--0-779367258-1037806241=:5774--
