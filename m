@@ -1,43 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (ottawa.linuxcare.com [216.208.98.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D6BF1482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jul 2001 09:25:11 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id B6076482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jul 2001 09:50:22 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 4FCF7B00C; Wed, 25 Jul 2001 16:26:52 +0100 (BST)
-Date: Wed, 25 Jul 2001 16:26:52 +0100
+	id 2F7C5B00C; Wed, 25 Jul 2001 16:52:03 +0100 (BST)
+Date: Wed, 25 Jul 2001 16:52:03 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: "Scammell, David" <David.Scammell@uk.wmmercer.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 715/33 disk and kernel make dep problems
-Message-ID: <20010725162652.B1252@linuxcare.com>
-References: <99F41EF55D11D511818600D0B74749C496F41D@wchrntms01.uk.wmmercer.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 715/100 with 0.92 not booting :(
+Message-ID: <20010725165203.C1252@linuxcare.com>
+References: <Pine.BSF.4.30.0107202011550.822-100000@noc.zabbadoz.net> <20010720192900.K22691@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <99F41EF55D11D511818600D0B74749C496F41D@wchrntms01.uk.wmmercer.com>; from David.Scammell@uk.wmmercer.com on Thu, Jul 19, 2001 at 03:22:18PM +0100
+In-Reply-To: <20010720192900.K22691@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Fri, Jul 20, 2001 at 07:29:00PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 19, 2001 at 03:22:18PM +0100, Scammell, David wrote:
+On Fri, Jul 20, 2001 at 07:29:00PM +0100, Matthew Wilcox wrote:
+> On Fri, Jul 20, 2001 at 08:18:36PM +0200, Bjoern A. Zeeb wrote:
+> > PS: it's a bit confusing with those different iso images on different
+> > "mirrors" with different versionizing :(
 > 
-> Hi,
+> That's why 0.9.2 was released after we had 3 different versions of 0.9.1,
+> each with different bugs.
 > 
-> I installed with 9.2, no problems, updated with apt-get.
-> 
-> I'd like to build my own kernel to test out a disk problem I have.
-> 
-> When I attempt anything which would fill the scsi disk queue with pending
-> writes
-> (e.g. tar xf kernel.tar), then machine hangs, I get some messages on the
-> serial
-> console which I've not got them written down yet, but these include a mount
-> read
-> only message. I'm using an old 2Gb disk (info not to hand, I'm at work), but
-> no so
-> old it shouldn't handle tagged writes. I'd like to change the queue depth
-> and bus
-> sync speed (looks like its set at 20Mhz, not 10Mhz) to see if this makes a
-> difference.
+> I don't know what your problem is until I see the System.map which
+> the 0.9.2 cd shipped with.  Does anyone have this?
 
-Could you try with disconnect/reselect turned off?  Should be able
-to do that by booting with "sim700=nodisc:0xff".
+It's on the ISO dists/sid/main/disks-hppa/sys_map.gz or similar.
 
 Richard
