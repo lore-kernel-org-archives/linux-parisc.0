@@ -1,39 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9B9D482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 20:00:11 -0600 (MDT)
-Received: (from grundler@localhost)
-	by puffin.external.hp.com (8.9.3/8.9.3) id TAA04477
-	for parisc-linux@lists.parisc-linux.org; Wed, 25 Apr 2001 19:53:51 -0600
-Date: Wed, 25 Apr 2001 19:53:51 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
-Message-Id: <200104260153.TAA04477@puffin.external.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] do_page_fault() pid=2456 command='ldd'
+Received: from edu.joroinen.fi (edu.joroinen.fi [195.156.135.125])
+	by dsl2.external.hp.com (Postfix) with SMTP id C9879482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 04:31:38 -0600 (MDT)
+Date: Thu, 26 Apr 2001 13:31:37 +0300 (EEST)
+From: =?ISO-8859-1?Q?Pasi_K=E4rkk=E4inen?= <pasik@iki.fi>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0104261324110.24303-100000@edu.joroinen.fi>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Subject: [parisc-linux] Couple of things
 List-ID: <linux-parisc.vger.kernel.org>
 
-Using a kernel built from 4/25 and "dpkg-buildpackage -b -uc" of
-the iptables-1.2.1a sources.  I've built this package several times
-before w/o problems but with slightly older kernels. I haven't tried
-to reproduce this or checked to see how reproducible it is.
-If anyone has an idea what caused this:
+Hello!
 
-do_page_fault() pid=2456 command='ldd' type=15 address=0x0009d0b0
-vm_start = 0x00084000, vm_end = 0x0009d000
+It's nice to see Linux working nicely on those HP's. I've successfully ran
+Linux on 715/80, 715/100 and 712/80.
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001100000000000001111
-r0-3     0000000000000000 0000000000080068 000000000000c000 000000000009a250
-r4-7     000000000009b7f0 0000000000000000 00000000ffffffff 0000000000000000
-r8-11    00000000ffffffff 0000000000000000 000000000009aa10 000000000009b6b0
-r12-15   0000000000000000 00000000ffffffff 000000000009b870 0000000000000000
-r16-19   0000000000000000 0000000000000802 0000000000081868 0000000000000000
-r20-23   000000000009ac14 00000000412e8480 0000000000000001 0000000000088868
-r24-27   0000000000080080 000000000009ac10 0000000000080068 0000000000080068
-r28-31   0000000000000001 0000020000000000 00000000faf01d40 000000004016ebd7
-sr0-3    000000000009f100 000000000009f100 0000000000000000 000000000009f100
-sr4-7    000000000009f100 000000000009f100 000000000009f100 000000000009f100
+Now I have Visualize C160, which has PCI-slots. Does Linux/pa-risc support
+PCI-slots? Any idea if tulip-driver will work on Linux/pa-risc? or some
+other pci-networkcard-driver? (I'd like to get 10/100Mbps network to this
+machine..)
 
-IASQ: 000000000009f100 000000000009f100 IAOQ: 000000000000c007 000000000000c00b
- IIR: 65787400    ISR: 000000000009f100  IOR: 000000000009d0b0
-ORIG_R28: 000000000009ac10
+Are there known problems with STI? My machines had maximum of couple of
+hours uptime when STI was enabled. Without STI those machines have been
+running perfectly..
+
+
+How about XFree? Is someone working on the port?
+
+
+Thank you!
+
+
+- Pasi K=E4rkk=E4inen
+
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
