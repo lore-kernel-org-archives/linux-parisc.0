@@ -1,44 +1,62 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from passion.cambridge.redhat.com (dell-paw-3.cambridge.redhat.com [195.224.55.237])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0208E482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 15:24:05 -0600 (MDT)
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0104201440580.12186-100000@xanadu.home> 
-References: <Pine.LNX.4.33.0104201440580.12186-100000@xanadu.home> 
-To: Nicolas Pitre <nico@cam.org>
-Cc: Tom Rini <trini@kernel.crashing.org>,
-	"Eric S. Raymond" <esr@thyrsus.com>,
+Received: from webber.adilger.int (h24-65-193-28.cg.shawcable.net [24.65.193.28])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3206A482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 15:24:35 -0600 (MDT)
+From: Andreas Dilger <adilger@turbolinux.com>
+Message-Id: <200104202123.f3KLNWSm031572@webber.adilger.int>
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone
+ paying attention?
+In-Reply-To: <20010420195004.A5510@flint.arm.linux.org.uk> "from Russell King
+ at Apr 20, 2001 07:50:04 pm"
+To: Russell King <rmk@arm.linux.org.uk>
+Date: Fri, 20 Apr 2001 15:23:32 -0600 (MDT)
+Cc: "Eric S. Raymond" <esr@thyrsus.com>,
 	Alan Cox <alan@lxorguk.ukuu.org.uk>,
 	"Albert D. Cahalan" <acahalan@cs.uml.edu>,
 	Matthew Wilcox <willy@ldl.fc.hp.com>,
-	james rich <james.rich@m.cc.utah.edu>,
-	lkml <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Apr 2001 22:19:08 +0100
-Message-ID: <6817.987801548@redhat.com>
-Sender: David Woodhouse <dwmw2@redhat.com>
+	james rich <james.rich@m.cc.utah.edu>, linux-kernel@vger.kernel.org,
+	parisc-linux@parisc-linux.org
+MIME-Version: 1.0
 List-ID: <linux-parisc.vger.kernel.org>
 
-nico@cam.org said:
-> Therefore it's the maintainer's job to submit coherent patches and
-> accept to see inconsistent CONFIG_* references be removed from the
-> official tree until further patch submission is due. 
+Russell King writes:
+> - Secondly, its very easy to miss stuff in the lkml hunk of email each
+>   day when you have less than 4 hours to read it and think about it.
+>   (note that architecture maintainers have to read mail from their
+>   side which may not be on lkml, think about that, think about bug fixes,
+>   possible impacts of fixes on other machines, etc etc).  Therefore,
+>   copying their email address registered in the MAINTAINER file means
+>   that they should not overlook your patch.
 
-Maybe. But you tend to include the latest MTD code in your tree, for
-example, and hence the defconfigs have the new options in. Is it really
-worth your time to produce separate defconfigs without it before feeding 
-your changes upstream?
+One of the issues for contacting each MAINTAINER is that this information
+is out-of-line from the actual kernel tree.  The other is that the
+description of what a maintainer is actually controlling is somewhat
+vague.
 
+How about the following:
+- each directory has a MAINTAINERS file which lists parties with a
+  vested interest in files in that directory (format is mostly the
+  same as current)
+- subdirectories which don't have a MAINTAINERS file use the MAINTAINERS
+  file of the parent (or grandparent) directory
+- each maintainer entry explicitly lists each file/directory that this
+  person is interested in, maybe "F: {file | directory} ...".
 
-> Otherwise how can you distinguish between dead wood which must be
-> removed and potentially valid symbols referring to code existing only
-> in a remote tree?
+I'm sure Eric can come up with a simple program to parse the MAINTAINER
+file/tree.  If the program takes a kernel-tree relative filename and
+spit out the name/email of the relevant maintainer (subsystem and port
+specific mailing lists should also be included), that would make the 
+job of finding out who to send patches to a whole lot easier.
 
-By periodically publishing a list of the potentially-obsolete symbols as ESR
-has done, and _not_ removing the ones which people speak up about. It's not
-as if this is something which needs to be done more than about once a year.
+My one gripe about the MAINTAINERS file is that it still lists Remy
+Card as EXT2 maintainer, so we would probably need to do a find on
+the whole kernel tree, email each address a list of files that they
+"maintain" and wait until they complain, agree, or time out.  Once
+the database is up-to-date, it simplifies the job of keeping maintainers
+(and other interested parties) in the loop.
 
---
-dwmw2
+Cheers, Andreas
+-- 
+Andreas Dilger  \ "If a man ate a pound of pasta and a pound of antipasto,
+                 \  would they cancel out, leaving him still hungry?"
+http://www-mddsp.enel.ucalgary.ca/People/adilger/               -- Dogbert
