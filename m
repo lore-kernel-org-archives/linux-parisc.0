@@ -1,34 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA17852
-	for <parisc-linux@puffin.external.hp.com>; Wed, 26 Jul 2000 09:44:50 -0600
-Received: from guinness.neep.com.au (reggae-10-198.nv.iinet.net.au [203.59.94.198])
-	by filk.iinet.net.au (8.8.7/8.8.7) with ESMTP id XAA17748
-	for <parisc-linux@thepuffingroup.com>; Wed, 26 Jul 2000 23:46:18 +0800
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id XAA08471
-	for parisc-linux@thepuffingroup.com; Wed, 26 Jul 2000 23:46:06 +0800
-Date: Wed, 26 Jul 2000 23:45:59 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: Linux/HPPA List <parisc-linux@thepuffingroup.com>
-Message-ID: <20000726234557.B5840@neep.com.au>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA11722
+	for <parisc-linux@puffin.external.hp.com>; Thu, 27 Jul 2000 10:36:26 -0600
+Received: from smtp.linuxcare.com (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 27 Jul 2000 16:38:21 -0000
+Received: from port156.magma.ca (HELO linuxcare.com) (jvinet@206.191.5.156)
+  by smtp.linuxcare.com with SMTP; 27 Jul 2000 16:38:12 -0000
+Sender: jvinet@mailserv2.iuinc.com
+Message-ID: <3980582E.AAA7F054@linuxcare.com>
+Date: Thu, 27 Jul 2000 11:41:34 -0400
+From: Jane Vinet <jvinet@linuxcare.com>
+MIME-Version: 1.0
+To: Andrew Shugg <andrew@neep.com.au>
+CC: Linux/HPPA List <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Weekly report?
+References: <20000726234557.B5840@neep.com.au>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Weekly report?
 List-ID: <linux-parisc.vger.kernel.org>
 
-There hasn't been a "weekly" report posted for ages.  Not since May 12th
-if the website is to be believed (though I hazily remember a couple of
-report-like posts to this list since then).
+Hi Andrew,  we are in the process of updating all pages on the external
+web site, i.e.., recipes, outdated links, etc.  Weekly status updates
+are coming we promise!
 
-What's going on?
+Andrew Shugg wrote:
+> 
+> There hasn't been a "weekly" report posted for ages.  Not since May 12th
+> if the website is to be believed (though I hazily remember a couple of
+> report-like posts to this list since then).
+> 
+> What's going on?
+> 
+> I like reports.  =)
+> 
+> Andrew.
+> 
+> --
+> Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
+> 
+>   "Just remember Basil, there's always someone worse off than yourself."
+>   "Oh, really?  I'd like to meet him ... I could do with a good laugh."
+>                  [ Sybil and Basil Fawlty, "Fawlty Towers" ]
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
 
-I like reports.  =)
-
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
-
-  "Just remember Basil, there's always someone worse off than yourself."
-  "Oh, really?  I'd like to meet him ... I could do with a good laugh."
-                 [ Sybil and Basil Fawlty, "Fawlty Towers" ]
+-- 
+Jane Vinet, Project Manager, Linuxcare, Inc.
+613.562.9260 (tel), 613.562.9700 fax
+jvinet@linuxcare.com, http://www.linuxcare.com/
