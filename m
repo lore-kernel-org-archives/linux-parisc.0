@@ -1,55 +1,46 @@
 Return-Path: <pjlahaie@sims-ha.videotron.net>
-Date: Wed, 17 Feb 1999 20:39:10 -0500
+Date: Wed, 17 Feb 1999 21:53:53 -0500
 From: "Paul J.Y. Lahaie" <pjlahaie@ottawa.com>
+Subject: Re: [hppa-linux] bootstrap test
 Sender: pjlahaie@sims-ha.videotron.net
-To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
-Message-id: <36CB6F3E.5860DA3E@ottawa.com>
+To: hppa-linux@puffingroup.com
+Message-id: <36CB80C1.A9FEDC4A@ottawa.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
-Subject: [hppa-linux] binutils / egcs oddity (yet another)
-Resent-Message-ID: <"HoAQY1.0.Tq6.5zsos"@burrow.puffingroup.com>
+References: <199902172309.RAA27695@equator.com>
+Resent-Message-ID: <"TxqmL.0.fv6.X3uos"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-I've been trying to get egcs to build a binary that will run on
-MkLinux, unfortunately, it's (once again) doing odd things.
-If I take the standard crt0.o shipped with MkLinux and use the MkLinux
-nm on it, I get the following:
+Jason Eckhardt wrote:
+> 
+> Greetings HPPA hacks:
+> I have enclosed a simple bootstrap test binary for HPPA/Linux. At this point,
+> it is not much more than a "hello world" type program but shows that we
+> can get a bootstrap going.
+> I would be grateful if one or two of you would test it on your systems. I have
+> tested it on my C160 which is a PA2.0-based system and would like to make
+> sure it works correctly on PA1.1 systems before doing more work.
 
-00000000 T $START$
-00000004 D $global$
-00000000 D __environ
-         U _start
-00000000 D environ
+> Your feedback would be appreciated, i.e. did it work or not on your system.
+> Please send the CPU line as well.
 
-    If I run the new x-binutils from the 2.9 series I get the following:
-
-00000000 T $START$
-20000004 D $global$
-20000000 D __environ
-         U _start
-20000000 D environ
-
-   For some reason, it's putting some symbols really far out.  If I do a
-link with the standard MkLinux tools, I get main as my last symbol
-and it's in the "0000axxx" range (on a program with an empty main
-file).  If I try the same program with egcs/binutils 2.9 I get:
-
-200093c0 D __environ
-200093c0 D environ
-200093c4 D $global$
-200093c8 D _exit_dummy_ref
-200093d0 D _exit_dummy_decl
+    This is over bootp with a 712/60 (7100LC CPU)
 
 
-   As my last symbols.  I've been studying the GNU ld linker scripts but
-they don't seem to be the culprits.  I could run gdb on ld and
-find out where it's getting that 0x20000000.  But this will probably be
-lots of effort and are we looking for MkLinux binary compatibility?
-If we aren't then we should just make the Linux/HPPA port loader capable
-of dealing with the standard egcs HPPA-ELF output.
+HPPA/Linux Bootstrap Version 0.1
+[jason@sathanas Tue Feb 16 16:48:50 CST 1999]
+by Jason Eckhardt
 
-										- Paul
+CPU: ? (00000000)
+
+Loading kernel...(not yet implemented)
+
+It is now safe to reboot.
+Testing mprintf (d) 123 = 123
+Testing mprintf (s) jason = jason
+Testing mprintf (c) A = A
+Testing mprintf (x) 01020304 = 01020304
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
