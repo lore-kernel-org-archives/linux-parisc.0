@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D513A4843
-	for <parisc-linux@parisc-linux.org>; Sun, 14 Jul 2002 17:38:25 -0600 (MDT)
-To: eddantes@wanadoo.fr
-Cc: Frank Alden Smith <falden@comcast.net>,
-	parisc-linux@parisc-linux.org, taggart@carmen.fc.hp.com
-Subject: Re: [parisc-linux] locales held back 
-In-Reply-To: Your message of "Sun, 14 Jul 2002 00:26:46 +0200."
-             <3D30A926.8020509@wanadoo.fr>
-References: <NGBBJKHCMLEJELIEEHNOCEDPCAAA.falden@comcast.net>  <3D30A926.8020509@wanadoo.fr> 
-Date: Sun, 14 Jul 2002 17:38:21 -0600
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B6644858
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 18:10:26 -0600 (MDT)
+To: Igor Grinchenko <green@grinchenko.org>
+Cc: parisc-linux@lists.parisc-linux.org, taggart@carmen.fc.hp.com
+Subject: Re: [parisc-linux] 715/33 PDC v1.4 firmware 
+In-Reply-To: Your message of "Sun, 14 Jul 2002 13:13:11 PDT."
+             <20020714201311.GA175@igor.grinchenko.org>
+References: <20020714201311.GA175@igor.grinchenko.org> 
+Date: Sun, 14 Jul 2002 18:10:24 -0600
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020714233821.9FBE037E97@carmen.fc.hp.com>
+Message-Id: <20020715001024.BCA0737E97@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,33 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-eddantes@wanadoo.fr writes...
+Igor Grinchenko writes...
 
-> Frank Alden Smith wrote:
-
-> > Sorry, but the following packages have unmet dependencies:
-> >   locales: Depends: glibc-2.2.5-8 but it is not installable
-> > E: Sorry, broken packages
-> > 
-> > Any, idea how I can resolve the problem, or must I just be patient until
-> > the broken glibc-2.2.5-8 is fixed?
-> > 
-> > Take care,
-> > frank
+> HEllo everyone,
 > 
-> 
-> That's a pretty common situation in Debian Sid (unstable), especially 
-> between locales and glibc. I've seen it happen qui a lot of times, but 
-> it's just harmless.
+> does anybody on that list have an old Firmware patch for 715/33?
+> 1.6 doesn't seem to support 715/33 so I think 1.4 is what I need.
+> HP calles it PF_C7X50014, but I can't download it from their website, b/c
+> it was substituted by 1.6(which doesn't support 33)
 
-BTW- IIRC this is due the the fact that libc6 and locales have lock-step
-dependencies. So when a new glibc package comes out the binary-all
-locales package is immediatatly available for all architectures but the
-arch-specific packages like libc aren't until they've been built for
-each architecture. So as eddantes pointed out, just wait a few days and
-they'll be sync'd back up.
+The 715/old (aka 33,50,75) are not user upgradable, you'd have to swap
+the firmware chip. The version you're talking about above(1.6, 1.4) are
+for the 715/new (aka 64,80,100). And as someone(ggg?) recently pointed
+out these don't work for the 715/100XC either.
 
-Or you could run testing which doesn't have this problem(by definition).
+Since your system isn't user upgradable, you have the same firmware as
+everyone else. So you can bet any generic problem encountered will either
+be worked around in software or broken for everyone :)
 
 -- 
 Matt Taggart
