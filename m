@@ -1,66 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3BF19482A
-	for <PARISC-LINUX@LISTS.PARISC-LINUX.ORG>; Thu, 14 Jun 2001 07:49:35 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 9BA95B007; Thu, 14 Jun 2001 14:45:08 +0100 (BST)
-Date: Thu, 14 Jun 2001 14:45:08 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: BOSCHINI@ICIL64.CILEA.IT
-Cc: PARISC-LINUX@LISTS.PARISC-LINUX.ORG, BOSCHINI@cilea.it
-Subject: Re: [parisc-linux] Re: problem installing on HP735
-Message-ID: <20010614144508.Z16532@linuxcare.com>
-References: <01K4REDVBWF6001R4D@ICIL64.CILEA.IT>
-Mime-Version: 1.0
+Received: from vogon.bangor.ac.uk (vogon.bangor.ac.uk [147.143.41.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6DA14482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Jun 2001 09:15:42 -0600 (MDT)
+Received: from sbs.bangor.ac.uk (milliways.bangor.ac.uk [147.143.41.38])
+	by vogon.bangor.ac.uk (8.9.3/8.9.3) with ESMTP id QAA22177
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Jun 2001 16:15:41 +0100
+Sender: sim@vogon.bangor.ac.uk
+Message-ID: <3B28D51D.79DBF56@sbs.bangor.ac.uk>
+Date: Thu, 14 Jun 2001 16:15:41 +0100
+From: Simeon Walker <sim@sbs.bangor.ac.uk>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Kernel faults on boot
+References: <md5:24CD73579DAE676AC9847A2AA7C80BD3>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01K4REDVBWF6001R4D@ICIL64.CILEA.IT>; from BOSCHINI@ICIL64.CILEA.IT on Thu, Jun 14, 2001 at 03:35:07PM +0000
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jun 14, 2001 at 03:35:07PM +0000, BOSCHINI@ICIL64.CILEA.IT wrote:
-> Hello all, 
-> 
-> I changed HW, still 735 Apollo, and finally succeeded in going through the
-> first install. I got O.S. with no problem but had to do a
-> 
-> debootstrap sid /target file:/instmnt/debian from shell, since installtion
-> procedure seemed to hang (more than 1.5 hr).
-> Then I made the system bootbale and rebooted....
+Hi,
+  I have just installed the from 0.9 ISO to a 712/80 (using the
+sti kernel) and had the same problem. Modify the palo params and 
+going into run level 1 works. I can then run all the services that
+would have started at run level 2, it's actually the getty's
+started by init that cause the crash.
 
-Maybe you should have done 'configure base system' before reboot.
+I thought I'd try and compile my own kernel to see if that
+had the same problem but have been unable to do so. First
+I tried the apt-get'able kernel source and then I tried the
+cvs version with the same problem. The error is:
+   make: hppa-linux-gcc: Command not found
+Is this because the kernel sources assume I'm cross compiling
+whereas I'm actually trying to compile on the target machine
+or am I missing some package? I've compiled kernels on 
+debian x86 machines so I know what's usually required.
 
-> boot starts but then I get a "can not create tty4" and then 
-> 
-> modprobe: modprobe can't locate module char-mayor-4  
-> 
-> for many times. 
-> 
-> Then 
-> init respawning too rapidly 
-> 
-> and finally everything hangs.
-> Rebooted in single user. /etc/fstab empty.
-> Inserted /, swap and proc , rebooted, but / is mounted in read-only...
-> Still get 
-> INIT RESPAWNING TOO RAPIDLY....
-> 
-> any help ?
+Any advice on either of these issues is appreciated
 
-There are two /etc/inittab files used in install, sounds like you
-are still running the first one.
+Regards,
+Simeon
 
-Reboot with init=/bin/sh
-mount -o remount,rw /dev/???? /
-cd /etc
-mv inittab inittab.inst
-mv inittab.real inittab
-sync
-mount -o remount,ro /dev/???? /
-
-Power off/on, and try to boot again.  Might come up, might not.  If
-it does, then "dpkg-reconfigure base-config" might let you run the
-second half of the install.
-
-The reason you had problems running the install properly is probably
-because the 735 has a PCX-T cpu, which is known to have problems with
-GLIBC 2.2.1.
-
-Richard
+-- 
+Simeon Walker,                      email: simeon@sbs.bangor.ac.uk
+School of Biological Sciences,      phone: +44 (0)1248 383702
+University of Wales, Bangor,        fax: +44 (0)1248 382569
+Gwynedd, LL57 2UW, UK.              www: http://biology.bangor.ac.uk/
