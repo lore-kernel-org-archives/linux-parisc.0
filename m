@@ -1,15 +1,19 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] fpu emulation: another stupid question
-Date: Sat, 15 Jan 2005 01:01:19 -0700
-Message-ID: <20050115080119.GB518@colo.lackof.org>
+Date: Fri, 14 Jan 2005 17:11:32 -0800
+Message-ID: <20050115011132.GB18497@tausq.org>
 References: <41DE4A3A0000261D@mail-1-bnl.tiscali.it>
+	<20050114124102.GE30982@parcelfarce.linux.theplanet.co.uk>
+	<20050114160233.GQ1281@baldric.uwo.ca>
+	<20050114160408.GK30982@parcelfarce.linux.theplanet.co.uk>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41DE4A3A0000261D@mail-1-bnl.tiscali.it>
+In-Reply-To: <20050114160408.GK30982@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,19 +24,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jan 14, 2005 at 12:40:01PM +0100, Joel Soete wrote:
-> Hi all,
+> > Doesn't it also happen to handle cases where the operands are not
+> > aligned properly?
 > 
-> afaik all parisc cpu have a fpu?
+> I'd've thought that'd be the unaligned trap handler rather than the FP
+> emulation code, but you may be right -- I don't care to look too hard ;-)
 
-No - but I think parisc-linux requires it to be present.
+willy is right, the unaligned trap handler handles this case.
 
-> So do we need the emaulation code in our kernel?
+the fp emulation code also handles some fp format conversions. if you
+look in the archives you'll find a test case that is very very slow on
+pa-linux compared to hpux. it's something that should be looked into at
+some point.
 
-Yes. Besides previous comments, ISTR not all FPU implementations
-implement all the same instructions.
-
-grant
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
