@@ -1,30 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 96ACA482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 11:15:09 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15w4rU-0008HI-00; Tue, 23 Oct 2001 17:57:08 +0100
-Date: Tue, 23 Oct 2001 17:57:08 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>,
-	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] X window refresh problem
-Message-ID: <20011023175708.A9620@parcelfarce.linux.theplanet.co.uk>
-References: <5360C45FAB301541AEB3C6A45A6B6A02706831@ocst09.ugd.att.com> <20011023173025.K11105@linuxcare.com>
+Received: from mailc.telia.com (mailc.telia.com [194.22.190.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 31A8D482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 14:34:13 -0600 (MDT)
+Date: Tue, 23 Oct 2001 22:33:50 +0200
+From: Daniel Engstrom <5116@telia.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Daniel Engstrom <5116@telia.com>,
+	parisc-linux@lists.parisc-linux.org,
+	Richard Hirst <rhirst@linuxcare.com>
+Message-ID: <20011023223350.A1650@zaphod.halden.lillfab.se>
+References: <5116@telia.com> <200110220034.f9M0YM701447@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011023173025.K11105@linuxcare.com>; from rhirst@linuxcare.com on Tue, Oct 23, 2001 at 05:30:25PM +0100
-Sender: <willy@www.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <200110220034.f9M0YM701447@localhost.localdomain>; from James.Bottomley@HansenPartnership.com on Mon, Oct 22, 2001 at 02:34:22 +0200
+Subject: [parisc-linux] Re: 53c700: tagged queueing problem confirmed
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Oct 23, 2001 at 05:30:25PM +0100, Richard Hirst wrote:
-> I think you are advised to upgrade the rest of your system first, if
-> you havn't done so recently (apt-get update; apt-get upgrade).
+On 2001.10.22 02:34 James Bottomley wrote:
+> 5116@telia.com said:
+> > I have investigated this some more and I have come to the conclustion
+> > that you are quite right. I disabled tagged queueing in the drivber
+> > and it instantly bacame stable.
+> 
+> > Do you have any idea on how to proceed debugging this? 
+> 
+> Well here's my theory:
+> 
+> There are a number of reports with tag command queueing problems
+> associated with these drives.  In particular, one for freebsd said 
+> that the aic7xxx driver was reporting data overruns with TCQ enabled 
+> on Quantum Fireballs.
+Ok.
 
-No, install the new kernel first.  Newer glibcs fix a bug which exposes a
-kernel bug, which prevents you ssh'ing in... so upgade the kernel first
-nd you'll be fine.
+I have used these drives with i386 Linux without problems with both the
+aix7xxx driver and the sym53c8xx driver. Both these drivers use a default of max
+8 tags per lun, so I chnaged the value in your driver and it works.
+So, maybe 8 tags per lun is the conservative default here ?
 
+/Daneil 
 -- 
-Revolutions do not require corporate support.
