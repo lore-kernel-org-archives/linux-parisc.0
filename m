@@ -1,12 +1,15 @@
-From: Jean Williams <odxhlmimhiaq@loantohome.com>
-Subject: [parisc-linux] `3.52%
-Date: Mon, 26 Apr 2004 13:56:38 +0200
-Message-ID: <14518.8815695748$1416623407@news.gmane.org>
-Mime-Version: 1.0 (produced by intervalberiberi 2.9)
-Content-Type: multipart/alternative;
-	boundary="--556295376009661"
-To: Parisc-linux <parisc-linux@parisc-linux.org>
-Return-Path: <odxhlmimhiaq@loantohome.com>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] Re: hwinfo_7.30-2: suggested patch
+Date: Wed, 28 Apr 2004 09:23:41 +0200
+Message-ID: <408D4360000013CF__41666.153635788$1416623417$gmane$org@ocpmta2.freegates.net>
+References: <20040427201429.GA29987@austin>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
+To: "Morten Werner Olsen" <werner@skolelinux.no>
+Return-Path: <soete.joel@tiscali.be>
+In-Reply-To: <20040427201429.GA29987@austin>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -16,63 +19,61 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----556295376009661
-Content-Type: text/html;
-	charset="iso-7029-5"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: emulsion foe eastman
+Hello all,
 
-</html><p align=3D"center"><b><font size=3D"5">ATTENT<FONT style=3D"FONT-S=
-IZE: 1px">s</font>ION<FONT style=3D"FONT-SIZE: 1px">Q</font>! L<FONT style=
-=3D"FONT-SIZE: 1px">[</font>ow r<FONT style=3D"FONT-SIZE: 1px">B</font>ate=
-! Now is 
-the ti<FONT style=3D"FONT-SIZE: 1px">*</font>m<FONT style=3D"FONT-SIZE: 1p=
-x">a</font>e to re-finance!</font></b></p>
-<div align=3D"center">
-  <center>
-<table style=3D"border:20px dashed #000000; border-collapse:collapse" heig=
-ht=3D"8" width=3D"500" bordercolor=3D"#111111" cellpadding=3D"0" cellspaci=
-ng=3D"0">
-<tr>
-<p align=3D"center"><td height=3D"5" width=3D"378" bgcolor=3D"#FFFF00"> 
-    <p align=3D"center"> 
-   <span style=3D"font-size: 120pt">`3.52%</span></td>
-</tr>
-</table>
-  </center>
-</div>
-<p align=3D"center"><b><font size=3D"5">
-<a href=3D"http://rd.yahoo.com/standstill/momentary/adler/*http:/www.flatl=
-oan.com/?partid=3Darlenders3">Gr<FONT style=3D"FONT-SIZE: 1px">xc</font>ab=
-<FONT style=3D"FONT-SIZE: 1px">{</font> it HER<FONT style=3D"FONT-SIZE: 1p=
-x">8</font>E,=20w<FONT style=3D"FONT-SIZE: 1px">Ul</font>hile you can!
-</a> </font></b></p>
-</body>
-<p align=3D"center"><font color=3D"#111111">- N<FONT style=3D"FONT-SIZE: 1=
-px">n</font>O<FONT style=3D"FONT-SIZE: 1px">9B</font>BODY IS TURNE<FONT st=
-yle=3D"FONT-SIZE: 1px">ZZ</font>D D<FONT style=3D"FONT-SIZE: 1px">J</font>=
-OWN, NOBO<FONT style=3D"FONT-SIZE: 1px">|</font>DY!</font></p>
-<p align=3D"center"><font color=3D"#111111">- ABSOLUTELY F<FONT style=3D"F=
-ONT-SIZE: 1px">od</font>RE<FONT style=3D"FONT-SIZE: 1px">H</font>E O<FONT =
-style=3D"FONT-SIZE: 1px">Ln</font>F CHAR<FONT style=3D"FONT-SIZE: 1px">v</=
-font>G<FONT style=3D"FONT-SIZE: 1px">8</font>E, F<FONT style=3D"FONT-SIZE:=
- 1px">/</font>REE!</font></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p align=3D"center">plea<FONT style=3D"FONT-SIZE: 1px">Z</font>se remove y=
-oursel<FONT style=3D"FONT-SIZE: 1px">n</font>f, i<FONT style=3D"FONT-SIZE:=
- 1px">hH</font>f you wou<FONT style=3D"FONT-SIZE: 1px">/</font>ld like t<F=
-ONT style=3D"FONT-SIZE: 1px">BC</font>o discon<FONT style=3D"FONT-SIZE: 1p=
-x">h</font>tinue 
-fu<FONT style=3D"FONT-SIZE: 1px">tp</font>r<FONT style=3D"FONT-SIZE: 1px">=
-aK</font>th<FONT style=3D"FONT-SIZE: 1px">q2</font>er ma<FONT style=3D"FON=
-T-SIZE: 1px">K</font>ilin<FONT style=3D"FONT-SIZE: 1px">8S</font>g&nbsp;
-<a href=3D"http://rd.yahoo.com/vitriolic/esteem/johnston/*http:/www.flatlo=
-an.com/st.html">
-REMO<FONT style=3D"FONT-SIZE: 1px">BS</font>VE HE<FONT style=3D"FONT-SIZE:=
- 1px">ET</font>RE</a></p>
-</html>
+Is there some interest to port this pkg on hppa?
+I think so but I haven't enough time to help more for the moment.
 
-----556295376009661--
+Please advise,
+    Joel
+
+> -- Original Message --
+> Date: Tue, 27 Apr 2004 22:14:31 +0200
+> From: Morten Werner Olsen <werner@skolelinux.no>
+> To: Joel Soete <soete.joel@tiscali.be>
+> Subject: Re: hwinfo_7.30-2: suggested patch
+> 
+> 
+> On Fri, Apr 23, 2004 at 06:38:21PM +0200, Joel Soete wrote:
+
+> > - where is the file modules.dep located? (I see hwinfo can't find
+> >   /lib/modules/2.6.6-rc1-pa0/modules.dep) or do you have a kernel
+> >   without module support?
+> 
+> As explain
+> it is just a draft because it is just a test of 2.6.6-rc1 and
+> I forget to install /lib/modules/2.6.6-rc1-pa0/modules.dep because the
+kernel
+> is well build with module support but for this platform (by default) all
+> drivers are buildin (again it 
+> s just testing)
+> 
+> That said, I well understood that it may need some more work to
+> improve support of hppa.
+> 
+> But may be can we put the question of actual interest to the parisc-linux.org
+> or better to debian-hppa ml? 
+> (I would like to
+> help you more (more test on different model,
+> different kernel 2.4, 2.6) but right now I don't have enough time to
+> do more, sorry)
+
+If you think the hppa-community will use the hwinfo package and you'll
+help me make it work on the architecture,
+> I'll include your patch! :)
+
+Just give me a sign, and I'll include it. I will not do it until next
+week, as I hope to get the package (v7.30-2) into Sarge when the
+10days period is finished [1].
+
+
+- Werner
+
+[1] http://packages.qa.debian.org/h/
+> winfo.html
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
