@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D5765482B
-	for <parisc-linux@parisc-linux.org>; Mon,  5 Nov 2001 15:29:04 -0700 (MST)
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] WARNING ftp site moved -> ftp.parisc-linux.org 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Wed, 17 Oct 2001 13:18:18 BST." <20011017131818.B22885@parcelfarce.linux.theplanet.co.uk>
-References: <20011017131818.B22885@parcelfarce.linux.theplanet.co.uk> 
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 273E8482B
+	for <parisc-linux@parisc-linux.org>; Mon,  5 Nov 2001 22:42:38 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tpjpiaaa for parisc-linux@parisc-linux.org; Mon, 5 Nov 2001 22:37:31 -0700
+Date: Mon, 5 Nov 2001 21:42:27 -0800
+From: Randolph Chung <tausq@debian.org>
+To: "Christopher C. Chimelis" <chris@debian.org>
+Cc: parisc-linux@parisc-linux.org, bcollins@debian.org
+Subject: Re: [parisc-linux] Re: hppa binutils/glibc updates
+Message-ID: <20011105214227.M505@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <20011105024952.C4441@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Nov 2001 15:28:56 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011105222857.3E40737DAD@carmen.fc.hp.com>
+In-Reply-To: <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox writes...
+I've posted debs for testing at http://gluck.debian.org/~tausq/hppa/
 
-> ok, i've moved the patches from /src to /patches.  there's a lot of
-> really really old stuff in /src which i'm tempted to delete.  i don't
-> think we need egcs-2.9-hppa-991112.tar.{gz,bz2} any more, for example.
-> parisc-linux-src-19991019.tar.gz is probably not of much interest any more
-> either (that's probably kernel 2.2 based...).  anyone still interested
-> in dpkg-src-20000824.tar.gz either?
+The following are available:
 
-All nuked.
+binutils (with latest patches from Alan Modra)
+gcc (with ldcw alignment patch)
+glibc (with latest patches from Alan Modra)
+python and apache rebuilt with new toolchain bits
 
-I also cleaned up some other stuff, but left anything I wasn't sure about.
+these are all unofficial.... Chris/Ben will be uploading official
+binutils/glibc. gcc will be uploaded as soon as the new binutils are in
+incoming....
 
+there're still some problems with exception handling for g++, but in
+general these should work.... pls post to the list if you find
+otherwise.
+
+randolph
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Debian Developer <tausq@debian.org>
+http://www.TauSq.org/
