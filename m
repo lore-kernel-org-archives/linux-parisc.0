@@ -1,36 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E71E6482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Jul 2001 12:44:02 -0600 (MDT)
-Message-Id: <200107261842.MAA19577@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>,
-	parisc-linux@lists.parisc-linux.org, sanaya@gr.hp.com
-Subject: Re: [parisc-linux] Re: Help on install 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Thu, 26 Jul 2001 18:35:26 BST." <20010726183526.A27258@parcelfarce.linux.theplanet.co.uk>
-Date: Thu, 26 Jul 2001 12:42:35 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from simecity.com (unknown [202.188.254.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 119AB482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Jul 2001 19:02:49 -0600 (MDT)
+Received: (from mail@localhost)
+	by simecity.com (8.9.3/8.8.7) id JAA27674
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Jul 2001 09:13:56 +0800
+Received: from <tltew@simecity.com> (linuxweb1.simecity.com [192.168.3.33]) by cirrus.simecity.com via smap (V2.1)
+	id xma027672; Fri, 27 Jul 01 09:13:28 +0800
+Received: from unknown (HELO linuxweb1.simecity.com) (127.0.0.1)
+  by 0 with SMTP; 27 Jul 2001 01:17:49 -0000
+Date: Fri, 27 Jul 2001 09:17:46 +0800
+From: Tew Tee Li <tltew@simecity.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <YsOsfHZbqNSU3kpeNCqLMvF4HIc@simecity.com>
+Subject: [parisc-linux] HP 9000 D Class Enterprise server
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> ** "HP has discovered a potential system defect that can affect
-> ** the behavior of five models of HP VISUALIZE workstations when
-> ** equipped with third-party or customer-installed PCI I/O expansion
-> ** cards. The defect is limited to the HP C180, C160, C160L, B160L,
-> ** and B132L VISUALIZE workstations, and will only be encountered
-> ** when data is transmitted through PCI I/O expansion cards on the
-> ** PCI bus. HP-supplied graphics cards that utilize the PCI bus are
-> ** not affected."
-> 
-> Maybe we're triggering this bug... grant?
+Hi,
 
-Perhaps...updating the firmware to the latest will not let the system
-boot if in fact that's the case. remove all PCI devices and then
-the system will boot.
+  I'm posting as a totally newbie in parisc-linux arena. Any one has any
+advice regarding setting up the kernel to the above machine? 
 
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+TL
