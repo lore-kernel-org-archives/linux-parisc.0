@@ -1,9 +1,9 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [PATCH] top-level configure changes for HPPA
-Date: Tue, 19 Nov 2002 01:36:20 -0500
-Message-ID: <20021119063620.GK12451__7931.97338139198$1416621949$gmane$org@systemhalted>
+Subject: [parisc-linux] [PATCH] Fix (for real this time) fcntl64 on HPPA
+Date: Tue, 19 Nov 2002 02:13:07 -0500
+Message-ID: <20021119071307.GL12451__16124.8027383865$1416621949$gmane$org@systemhalted>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0VNbQffo0Gc48lc+"
+Content-Type: multipart/mixed; boundary="s8uQA167RD2xhjBe"
 Cc: debian-glibc@lists.debian.org,
 	parisc-linux@lists.parisc-linux.org
 To: libc-alpha@sources.redhat.com
@@ -18,65 +18,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---0VNbQffo0Gc48lc+
+--s8uQA167RD2xhjBe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 
-libc-aplha,
+libc-alpha,
 
-When checking for DWARF2 unwind info the link order for 
-hppa requires -lgcc_eh to be placed before -lgcc.
+The following changes adds a few defines so __USE_FILE_OFFSET64
+works properly on hppa.
 
-Change tested on i386 and nothing broke.
+I fixed the changelog and the bug in the original patch.
+Tested with samba + LFS support.
 
 c.
 
+ sysdeps/unix/sysv/linux/hppa/bits/fcntl.h |    6 ++++++
+ sysdeps/unix/sysv/linux/hppa/fcntl.c      |    1 +
+ 2 files changed, 7 insertions(+)
+
 ---
 
-2002-11-16  Carlos O'Donell  <carlos@baldric.uwo.ca>
+2002-10-01  Randolph Chung  <tausq@debian.org>
 
-	* configure.in: Change "-lgcc -lgcc_eh" to "-lgcc_eh -lgcc" to
-	accomodate required hppa linking order.
-	* configure: Regenerate.
+        * sysdeps/unix/sysv/linux/hppa/fcntl.c:
+        Include sysdeps/unix/sysv/linux/i386/fcntl.c
+        * sysdeps/unix/sysv/linux/hppa/bits/fcntl.h:
+        Change defines when using __USE_FILE_OFFSET64
 
 
---0VNbQffo0Gc48lc+
+--s8uQA167RD2xhjBe
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=12-glibc23-hppa-configure
+Content-Disposition: attachment; filename=08-glibc23-hppa-fcntl64
 
---- glibc-2.3.1/configure	2002-11-16 22:55:16.000000000 +0000
-+++ glibc-2.3.1/configure	2002-11-16 22:58:08.000000000 +0000
-@@ -5221,14 +5221,14 @@
- fi
- if { ac_try='${CC-cc} $CFLAGS -DCHECK__register_frame_info
-                             -nostdlib -nostartfiles
--                            -o conftest conftest.c -lgcc -lgcc_eh >&5'
-+                            -o conftest conftest.c -lgcc_eh -lgcc >&5'
-   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-   (eval $ac_try) 2>&5
-   ac_status=$?
-   echo "$as_me:$LINENO: \$? = $ac_status" >&5
-   (exit $ac_status); }; }; then
-   if ${CC-cc} $CFLAGS -DCHECK__register_frame_info -nostdlib -nostartfiles \
--     -o conftest conftest.c -lgcc -lgcc_eh -v 2>&1 >/dev/null \
-+     -o conftest conftest.c -lgcc_eh -lgcc -v 2>&1 >/dev/null \
-      | grep -q -- --eh-frame-hdr; then
-     libc_cv_gcc_dwarf2_unwind_info=no_registry_needed
-   else
---- glibc-2.3.1/configure.in	2002-11-16 22:55:16.000000000 +0000
-+++ glibc-2.3.1/configure.in	2002-11-16 22:58:28.000000000 +0000
-@@ -1565,9 +1565,9 @@
- fi
- if AC_TRY_COMMAND([${CC-cc} $CFLAGS -DCHECK__register_frame_info
-                             -nostdlib -nostartfiles
--                            -o conftest conftest.c -lgcc -lgcc_eh >&AS_MESSAGE_LOG_FD]); then
-+                            -o conftest conftest.c -lgcc_eh -lgcc >&AS_MESSAGE_LOG_FD]); then
-   if ${CC-cc} $CFLAGS -DCHECK__register_frame_info -nostdlib -nostartfiles \
--     -o conftest conftest.c -lgcc -lgcc_eh -v 2>&1 >/dev/null \
-+     -o conftest conftest.c -lgcc_eh -lgcc -v 2>&1 >/dev/null \
-      | grep -q -- --eh-frame-hdr; then
-     libc_cv_gcc_dwarf2_unwind_info=no_registry_needed
-   else
+--- glibc/sysdeps/unix/sysv/linux/hppa/fcntl.c	2002-09-10 20:58:07.000000000 -0700
++++ glibc/sysdeps/unix/sysv/linux/hppa/fcntl.c	2002-09-10 20:58:07.000000000 -0700
+@@ -0,0 +1 @@
++#include <sysdeps/unix/sysv/linux/i386/fcntl.c>
+--- glibc/sysdeps/unix/sysv/linux/hppa/bits/fcntl.h	2002-09-12 10:31:56.000000000 -0700
++++ glibc/sysdeps/unix/sysv/linux/hppa/bits/fcntl.h	2002-09-12 23:43:14.000000000 -0700
+@@ -63,9 +63,15 @@
+ #define F_SETFD		2	/* Set file descriptor flags.  */
+ #define F_GETFL		3	/* Get file status flags.  */
+ #define F_SETFL		4	/* Set file status flags.  */
++#ifndef __USE_FILE_OFFSET64
+ #define F_GETLK		5	/* Get record locking info.  */
+ #define F_SETLK		6	/* Set record locking info (non-blocking).  */
+ #define F_SETLKW	7	/* Set record locking info (blocking).  */
++#else
++#define F_GETLK		F_GETLK64  /* Get record locking info.  */
++#define F_SETLK		F_SETLK64  /* Set record locking info (non-blocking).  */
++#define F_SETLKW	F_SETLKW64 /* Set record locking info (blocking).  */
++#endif
+ 
+ #define F_GETLK64	8	/* Get record locking info.  */
+ #define F_SETLK64	9	/* Set record locking info (non-blocking).  */
 
---0VNbQffo0Gc48lc+--
+--s8uQA167RD2xhjBe--
