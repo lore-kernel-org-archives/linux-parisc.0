@@ -1,21 +1,19 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 140D3488A
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C346488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 23:05:37 -0700 (MST)
-Date: Sun, 22 Feb 2004 01:04:56 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Matthew Wilcox <willy@debian.org>
+	Sat, 21 Feb 2004 23:21:06 -0700 (MST)
+Date: Sat, 21 Feb 2004 23:21:05 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Stuart Brady <sdbrady@ntlworld.com>
 Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
-Message-ID: <20040222060456.GJ25019@baldric.uwo.ca>
+Message-ID: <20040222062105.GF30849@colo.lackof.org>
 References: <20040218235225.GA1623@calypso>
 	<20040219062907.GC13916@colo.lackof.org>
 	<20040221075849.GA1642@calypso>
-	<20040221170508.GB14198@baldric.uwo.ca>
-	<20040221182436.GM11824@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040221182436.GM11824@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20040221075849.GA1642@calypso>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -26,23 +24,40 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Feb 21, 2004 at 06:24:36PM +0000, Matthew Wilcox wrote:
-> > I could never run IO stably at anything higher than 1. The drives don't
-> > seem to handle it properly, the error recovery mechanisms seem less
-> > than perfect, and the box just hangs.
+On Sat, Feb 21, 2004 at 07:58:49AM +0000, Stuart Brady wrote:
+> Thanks! Changing NCR_700_MAX_TAGS to 1 in drivers/scsi/53c700.h did the
+> trick. Will I now have poor disk performance? If so, might I get away
+> with setting it to something higher, like 2 or 4, maybe?
+
+You can try, but I don't think it's worth it.
+
+> I've not heard of tagged command queues before - the idea seems to be to
+> transfer data to the drive as early as possible, but make decisions as
+> to what should be written first at a later stage. Is that correct?
+
+Sort of yes. The reasons are a bit more complicated than that.
+Key reasons are better utilization of disk buffer (w/o enabling WCE)
+and allow disk firmware to optimize for maximum throughput.
+There are tradeoffs and caveats to both.
+
+> > Maybe a FAQ entry for "715/xxx hangs" could be your first contribution?
 > 
-> So, um, maybe we should change the default?  Nobody seems to be
-> investigating why this happens, so I don't see why our users should
-> suffer.  I doubt anyone's going to be terribly motivated to track this
-> problem down for such old machines, so let's just sacrifice a little
-> performance for stability.
+> That's a good idea. Where should I send the entry? Here?
 
-It just doesn't work on those older boxes? I'm not quite sure how much
-more investigation I can do. I mean I've got my 715/50's all running, I
-could build a few more kernels and see what's going on.
+Yes please. Making a diff against the file carlos pointed at
+would be easiest for me. But I'll take a single paragraph
+in plain text as well.
 
-I could also commit a change to lower the max tags down to 1, that seems
-a little harsh for performance, but all those perf people can crank it
-back up. Perhaps a build time configure option?
+The FAQ entry should mention which machines/SCSI controllers/disks
+are affected and how to set the queuedepth. Anything else is
+extra credit and I reserve the right to edit it out. :^)
 
-c.
+thanks,
+grant
+
+> -- 
+> Stuart Brady
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
