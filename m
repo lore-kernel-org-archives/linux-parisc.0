@@ -1,29 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1A9784A19
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 11:49:36 -0700 (MST)
-Reply-To: <hull@cup.hp.com>
-From: "Jim Hull" <jim_hull@hp.com>
-To: "Matthew Wilcox" <matthew@wil.cx>, <arjanv@redhat.com>
-Cc: <parisc-linux@parisc-linux.org>
-Subject: RE: [parisc-linux] Prefetch macros for PA-RISC
-Date: Wed, 21 Feb 2001 10:49:33 -0800
-Message-ID: <NDBBIHNACACKNDHNHIKAIEEGCBAA.jim_hull@hp.com>
+Received: from cactus.bheadley.org (d177.focal4.interaccess.com [207.208.139.177])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7AFCA4A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 12:09:31 -0700 (MST)
+Sender: bheadley@interaccess.com
+Message-ID: <3A9414AC.C3EB8BB4@interaccess.com>
+Date: Wed, 21 Feb 2001 13:19:08 -0600
+From: "Bryan W. Headley" <bheadley@interaccess.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-In-Reply-To: <20010221111141.H31164@parcelfarce.linux.theplanet.co.uk>
+To: Jim Buttafuoco <jim@tylerdrive.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] CD boot help with 735
+References: <200102211739.f1LHddN31316@openbsd1.buttafuoco.net>
+Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew, you wrote:
-
-> on PA, we have prefetch for read and prefetch for write.  They're encoded
-> as loads to the 0 register.  prefetch read is ldd (load 64-bit quantity)
-> and prefetch-write is ldw (load 32-bit quantity).
-
-Actually, Table 6-10 in the PA-RISC 2.0 book is wrong -- LDW is prefetch
-for read, LDD is prefetch for write.  See this erratum description:
-
-http://devresource.hp.com/devresource/Docs/Refs/PA2_0/updates/e1.html
-
- -- Jim
+SmltIEJ1dHRhZnVvY28gd3JvdGU6DQoNCj4gQnJ5YW4sDQo+DQo+IFdoYXQgQ0QgYXJlIHlv
+dSB1c2luZy4gIEkgY291bGRuJ3QgZ2V0IHRoZSAuNSB2ZXJzaW9uIHRvIHdvcmsgb24gbXkN
+Cj4gNzM1LiAgSSBkaWQgY3JlYXRlIG15IG93biBrZXJuZWwgYW5kIGJvb3RlZCB2aWEgdGhl
+IG5ldHdvcmsuIExldCBtZQ0KPiBrbm93IGlmIHlvdSBuZWVkIGFueSBoZWxwLg0KPg0KDQpJ
+J2xsIHJlYWQgdXAgb24gaG93IHRvIGRvIHRoYXQuIEkgYW0gaW5kZWVkIHVzaW5nIHRoZSAu
+NSB2ZXJzaW9uLg0KDQpJIGRvbid0IGtub3cgd2hhdCB0aGUgYm9vdHN0cmFwIHJlcXVpcmVt
+ZW50cyBhcmUgYSBuZXR3b3JrIGJvb3QuIExldCdzIGFzc3VtZSB0aGF0IG1ha2luZyBhIENE
+IGlzIGVhc2llci4gSSBjYW4NCmJ1aWxkIGEga2VybmVsIG9uIHRoZSB4ODYgYW5kIHB1dCB0
+aGUgbmV3IGtlcm5lbCBvbnRvIGEgY2QgaW1hZ2UuIFF1ZXN0aW9uOiB3aGF0J3MgdGhlIHBh
+cmFtZXRlcnMgdG8gbWtpc29mcyB0bw0Kc3BlY2lmeSB0aGUgYm9vdCBpbWFnZT8gRWwgVG9y
+aXR0bz8gR2VuZXJpYyBib290PyBUaGF0IFN1biBib290IHRyYWNrIHRoaW5nPw0KDQooSW4g
+dGhlIG1lYW50aW1lLCBJJ2xsIHJlYWQgdXAgb24gbmV0d29yayBib290aW5nKQ0KDQo+DQo+
+IEppbQ0KPg0KPiA+IEhpLA0KPiA+DQo+ID4gQW0gdHJ5aW5nIHRvIGJvb3QgdGhlIENEUk9N
+LCBidXQga2VlcCBnZXR0aW5nICJFTlRSWV9JTklUIHN0YXR1cyA9IC00Ig0KPiA+IGFuZCBh
+IGZldyBsaW5lcyBvZiBoZXguIE5ldmVyDQo+ID4NCj4gPiAxKSBUaGUgYWJvdmUgb2NjdXJz
+IG9uIHRoZSBjb25zb2xlLCByb3V0ZWQgdG8gYnVpbHQtaW4gdmlkZW8uIFNob3VsZCBJDQo+
+ID4gaGF2ZSBkb25lIHNvbWV0aGluZyB0byByZWRpcmVjdCBjb25zb2xlIG1lc3NhZ2VzIHRv
+DQo+ID4gICAgIENPTU0gcG9ydCBiZWZvcmVoYW5kPyBIYXZlIGEgbGFwdG9wIGF0dGFjaGVk
+IHRvIGJlIHRoZSBzZXJpYWwNCj4gPiBjb25zb2xlLCBidXQgb2J2aW91c2x5IHRvIG5vIGVm
+ZmVjdA0KPiA+IDIpIEp1c3QgYmVpbmcgc3R1cGlkOiA5NjAwIDggTiAxLCBDT00gcG9ydCBB
+IGZvciB0aGUgc2VyaWFsIGNvbnNvbGUsDQo+ID4gcmlnaHQ/DQo+ID4gMykgU2hvdWxkIEkg
+dHJ5LCAiYiBzY3NpLjYuMCBJUEwiIG9yIHdpdGhvdXQgdGhlIElQTD8NCj4gPg0KPiA+IFRo
+aXMgaXMgb24gYSA3MzUgYm94LiBZb3VyIGhlbHAgbXVjaCBhcHByZWNpYXRlZC4NCj4gPg0K
+PiA+DQo+ID4gLS0NCj4gPiBfX19fICAgICAgICAgICAgICAgLjouICAgICAgICAgICAgICAg
+ICBfX19fDQo+ID4gQnJ5YW4gVy4gSGVhZGxleSAtIGJoZWFkbGV5QGludGVyYWNjZXNzLmNv
+bQ0KPiA+DQo+ID4NCj4gPiD//////////////////////////////////////////////+lq
+uKxz+WImIzM4MjvsZmopYiYjMzgyOw0KPiAgICAgICAgIGKy2lquKxz+WKe7H+UmIzM1MjvL
+bP4mIzgyMTE7qyYjMzUyO8f/JiM4MjExOynux/orJiM4MjE4Oxttp///JiM4MjExOysts/pa
+risc/linux/org/cJiM4MjE4Oy/bJiMzNTI7f+ZqKQ0KPiBman/lJiMzNTI7y2I/+j+lquKx
+z+UmIzM1Mjt7sQ0KPiA+DQo+ID4NCg0KLS0NCl9fX18gICAgICAgICAgICAgICAuOi4gICAg
+ICAgICAgICAgICAgIF9fX18NCkJyeWFuIFcuIEhlYWRsZXkgLSBiaGVhZGxleUBpbnRlcmFj
+Y2Vzcy5jb20NCg0KDQo=
