@@ -1,27 +1,18 @@
-Return-Path: <sdbrady@ntlworld.com>
-Received: from mta02-svc.ntlworld.com (mta02-svc.ntlworld.com [62.253.162.42])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E111A4852
+Return-Path: <jbglaw@dvmwest.gt.owl.de>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 365CD4852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 00:58:48 -0700 (MST)
-Received: from calypso ([62.254.21.7]) by mta02-svc.ntlworld.com
-	(InterMail vM.4.01.03.37 201-229-121-137-20020806) with ESMTP
-	id <20040221075816.UQTH14417.mta02-svc.ntlworld.com@calypso>
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 07:58:16 +0000
-Received: from sdb by calypso with local (Exim 3.36 #1 (Debian))
-	id 1AuS2D-0001H5-00 for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 07:58:49 +0000
-Date: Sat, 21 Feb 2004 07:58:49 +0000
-From: Stuart Brady <sdbrady@ntlworld.com>
+	Sat, 21 Feb 2004 02:31:49 -0700 (MST)
+Date: Sat, 21 Feb 2004 10:31:47 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
-Message-ID: <20040221075849.GA1642@calypso>
-References: <20040218235225.GA1623@calypso>
-	<20040219062907.GC13916@colo.lackof.org>
+Subject: Re: [parisc-linux] Install from DDS Tape
+Message-ID: <20040221093146.GB13827@lug-owl.de>
+References: <5818350927.20040221031917@go.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040219062907.GC13916@colo.lackof.org>
-Sender: Stuart Brady <sdbrady@ntlworld.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sZvnRN25x3w09J/6"
+In-Reply-To: <5818350927.20040221031917@go.ro>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,34 +22,47 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Feb 18, 2004 at 11:29:07PM -0700, Grant Grundler wrote:
-> On Wed, Feb 18, 2004 at 11:52:25PM +0000, Stuart Brady wrote:
-> > I'm having problems with kernels >= 2.4.22 on a 715/100.
-> 
-> Stuart,
-> All your symptoms point at disk IO hanging.
-> Setting the default queue depth to 1 would be worth trying.
-> I've forgotten the details for setting queue depth.
->  
-> search parisc-linux mailing list archives "scsi queue tags".
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2004-January/022087.html
 
-Thanks! Changing NCR_700_MAX_TAGS to 1 in drivers/scsi/53c700.h did the
-trick. Will I now have poor disk performance? If so, might I get away
-with setting it to something higher, like 2 or 4, maybe?
+--sZvnRN25x3w09J/6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I've not heard of tagged command queues before - the idea seems to be to
-transfer data to the drive as early as possible, but make decisions as
-to what should be written first at a later stage. Is that correct?
+On Sat, 2004-02-21 03:19:17 +0200, Razvan Popescu <tomcatsniper@go.ro>
+wrote in message <5818350927.20040221031917@go.ro>:
+> Hi,
+>   I have an old HP 9000 model 715 at my work with HP-UX 10.2 and
+>   I want to install Debian 3.0 for PA-RISC on it but it has ONLY
+>   a dds tape drive (no cdrom, no floppy). My question is: Can I
+>   install from tape? How can I put the Debian ISO file on a dds
+>   and boot/install from that?
 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2002-February/015465.html
-says that no tagged queue is a bad thing. Why is that?
+Booting off a tape should work (most probably with the lifimages), but
+you'd also try booting off the network. This is what I prefer - if
+you've set up the daemons once, you can boot off all machines with
+that :)
 
-> btw, 715/50 is NOT the same as 715/100.
-> 715/100 should have "coherent" DMA and 715/50 does not.
-> 
-> Maybe a FAQ entry for "715/xxx hangs" could be your first contribution?
+MfG, JBG
 
-That's a good idea. Where should I send the entry? Here?
--- 
-Stuart Brady
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
+
+--sZvnRN25x3w09J/6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFANyWCHb1edYOZ4bsRAmk+AJ0SqK3WzKkFQ8oVbxYSQwdzpKmQMwCgjQRn
+ZmORehbSvFFadUt48ZluLJk=
+=eH5r
+-----END PGP SIGNATURE-----
+
+--sZvnRN25x3w09J/6--
