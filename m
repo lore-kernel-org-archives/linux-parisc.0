@@ -1,31 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id QAA04371
-	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 16:50:56 -0500
-Received: (from sieler@localhost)
-	by bart.allegro.com (8.9.1/8.9.1) id NAA30430
-	for hppa-linux@thepuffingroup.com; Mon, 29 Mar 1999 13:50:44 -0800
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199903292150.NAA30430@bart.allegro.com>
-Subject: Re: [hppa-linux] syscall work 
-To: hppa-linux@thepuffingroup.com
-Date: Mon, 29 Mar 1999 13:50:43 -0800 (PST)
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id RAA04640
+	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 17:00:23 -0500
+Received: (from mickey@localhost)
+	by lucifier.dial-up.user.akula.net (8.9.2/8.9.2) id RAA12330
+	for hppa-linux@thepuffingroup.com; Mon, 29 Mar 1999 17:00:07 -0500 (EST)
+From: Michael Shalayeff <mickey@lucifier.dial-up.user.akula.net>
+Message-Id: <199903292200.RAA12330@lucifier.dial-up.user.akula.net>
+Subject: Re: [hppa-linux] syscall work
+In-Reply-To: <199903292146.NAA28577@bart.allegro.com> from Stan Sieler at "Mar 29, 99 01:46:02 pm"
+To: sieler@allegro.com (Stan Sieler)
+Date: Mon, 29 Mar 1999 16:55:07 -0500 (EST)
+Reply-To: mickey@openbsd.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-List-ID: <linux-parisc.vger.kernel.org>
+Sender: mickey@lucifier.dial-up.user.akula.net
 
-Hi,
+Making, drinking tea and reading an opus magnum from Stan Sieler:
+> Hi,
+re
 
-> okie, but why emulating gate instruction, when there is already such
-> instruction exist? (;
+> > okie, but why emulating gate instruction, when there is already such
+> > instruction exist? (;
+> 
+> Simple: HP does this...there must be a reason.
+> 
+> They appear to do it on selected models of PA-RISC systems.  Why?  Don't know.
+which models? could it be level 1 systems w/ less VM resources?
 
-Simple: HP does this...there must be a reason.
+> I can only conjecture...and the conjecture is the obvious one: there must be
+> some circumstance where GATE fails.  Otherwise, *why* replace it with
+> a slightly slower mechanism?
+hardware bug for example? maybe again on certain systems w/ less
+tlb size and/or cache.
 
-They appear to do it on selected models of PA-RISC systems.  Why?  Don't know.
+btw, lites/mklinux do not emulate gate.
 
-I can only conjecture...and the conjecture is the obvious one: there must be
-some circumstance where GATE fails.  Otherwise, *why* replace it with
-a slightly slower mechanism?
+cu
+
 
 -- 
-Stan Sieler                                          sieler@allegro.com
-                                     http://www.allegro.com/sieler.html
+    paranoic mickey       (my employers have changed but, the name has remained)
