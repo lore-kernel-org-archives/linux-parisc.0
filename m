@@ -1,22 +1,16 @@
-Return-Path: <ja2morri@csclub.uwaterloo.ca>
-Received: from perpugilliam.csclub.uwaterloo.ca
-	(perpugilliam.csclub.uwaterloo.ca [129.97.134.31])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1763748FA
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 88E6D48FA
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  9 Mar 2004 08:39:14 -0700 (MST)
-Sender: ja2morri@perpugilliam.csclub.uwaterloo.ca
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
-	fixes GLRO changes.
-References: <404782C800002FD2@ocpmta1.freegates.net>
-	<kfhk71uawj9.fsf@perpugilliam.csclub.uwaterloo.ca>
-	<20040309150910.GE22721@baldric.uwo.ca>
-From: James Morrison <ja2morri@csclub.uwaterloo.ca>
-Date: 09 Mar 2004 10:39:11 -0500
-In-Reply-To: <20040309150910.GE22721@baldric.uwo.ca>
-Message-ID: <kfheks2av34.fsf@perpugilliam.csclub.uwaterloo.ca>
+	Tue,  9 Mar 2004 08:41:07 -0700 (MST)
+Date: Tue, 9 Mar 2004 16:41:04 +0100
+Message-ID: <404782C8000031DE@ocpmta1.freegates.net>
+In-Reply-To: <20040309150318.GD22721@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -27,19 +21,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hi Carlos,
 
-Carlos O'Donell <carlos@baldric.uwo.ca> writes:
+>Both unstable, testing, and stable should technically be tested with the
+>new glibc :) You can test with whichever you like right now.
+>
+>Never *ever* install glibc on a running system, always install to the
+>chroot, and jump into the chroot.
 
-> On Tue, Mar 09, 2004 at 10:07:54AM -0500, James Morrison wrote:
-> >  Shouldn't this be --prefix=/usr then make install_root=/mnt/chroot install?
-> 
-> Yes, you can go that way, I think just prefix works aswell.
-> Unless you have seen this fail before?
-> 
-> Glibc doesn't do any path mangling so far as I know.
-> 
-> c.
+Yes I read the hot but interesting thread "Latest Glibc from CVS has segmentation
+problems"
 
- Humm, it may be a Hurd thing where libc needs the correct prefix.
+Thanks for remind,
+    Joel
 
-Jim
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
