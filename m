@@ -1,15 +1,13 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: libffi2 -> gcj = Java
-Date: Sun, 14 Jul 2002 16:21:09 -0400 (EDT)
-Message-ID: <200207142021.g6EKL9rq022178__4940.79584391347$1416621508$gmane$org@hiauly1.hia.nrc.ca>
-References: <15665.53515.823981.959433@gargle.gargle.HOWL>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] gcc-3.[02] alignment problem
+Date: Mon, 15 Jul 2002 22:00:31 -0700
+Message-ID: <20020716050031.GA641__10802.5831905708$1416621522$gmane$org@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: jean-yves.guillevic@wanadoo.fr, debian-gcc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+Content-Type: text/plain; charset=us-ascii
+Cc: gcc@gcc.gnu.org
+To: parisc-linux@parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <15665.53515.823981.959433@gargle.gargle.HOWL> from "Matthias Klose" at Jul 14, 2002 09:29:15 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,18 +18,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Jean-Yves GUILLEVIC writes:
-> > Hello All
-> > 
-> > does someone knows about libffi2 on Debian HPPA Linux ?
-> > to get a gcj on this port ...
-> 
-> AFAIK nobody has started a port yet.
+Compiling the linux kernel (2.4.19-rc1-ac5) with hppa64-linux-gcc 
+(3.0.4 or 3.2) gives:
 
-James Mc Parlane may be working on this.  There was a question re calling
-conventions back on May 17.
+tausq@a500:~/src/linux-2.4.19-rc1/net/ipv4$ hppa64-linux-gcc -D__KERNEL__ -I/home/tausq/src/linux-2.4.19-rc1/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -D__linux__ -pipe -fno-strength-reduce -mno-space-regs -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=2.0 -mschedule=8000   -nostdinc -I /usr/lib/gcc-lib/hppa64-linux/3.0/include -DKBUILD_BASENAME=tcp_diag  -c -o tcp_diag.o tcp_diag.c
+{standard input}: Assembler messages:
+{standard input}:138: Error: Field not properly aligned [8] (44).
+{standard input}:138: Error: Invalid operands
+{standard input}:609: Error: Field not properly aligned [8] (44).
+{standard input}:609: Error: Invalid operands
+{standard input}:707: Error: Field not properly aligned [8] (44).
+{standard input}:707: Error: Invalid operands
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+preprocessed source attached.
+
+(incidentally, we also see this while building glibc...)
+
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
