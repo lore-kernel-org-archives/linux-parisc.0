@@ -1,20 +1,19 @@
 Return-Path: <nitephyre@iinet.net.au>
 Received: from mail.iinet.net.au (mail-10.iinet.net.au [203.59.3.42])
-	by dsl2.external.hp.com (Postfix) with SMTP id 494B3484B
+	by dsl2.external.hp.com (Postfix) with SMTP id 354E64843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  3 Jan 2004 23:26:01 -0700 (MST)
-Message-ID: <000a01c3d28b$91046fa0$0101a8c0@nitephyre>
+	Sun,  4 Jan 2004 05:22:31 -0700 (MST)
+Message-ID: <000a01c3d2bd$65441b40$0101a8c0@nitephyre>
 From: "Matt Lewis" <nitephyre@iinet.net.au>
 To: <parisc-linux@lists.parisc-linux.org>
-References: <000801c3d1de$08e053d0$0101a8c0@nitephyre>
-	<3FF6A74F.3000108@tiscali.be>
-	<001f01c3d24b$5e810600$0101a8c0@nitephyre>
-	<20040104045551.GA16904@colo.lackof.org>
+References: <000801c3d1de$08e053d0$0101a8c0@nitephyre>	<3FF6A74F.3000108@tiscali.be>	<001f01c3d24b$5e810600$0101a8c0@nitephyre>	<20040104045551.GA16904@colo.lackof.org>
+	<000a01c3d28b$91046fa0$0101a8c0@nitephyre>
+	<3FF7FD86.8000208@tiscali.be>
 Subject: Re: [parisc-linux] Probem Installing: slang(version).deb corrupt
-Date: Sun, 4 Jan 2004 16:25:36 +1000
+Date: Sun, 4 Jan 2004 22:22:15 +1000
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0007_01C3D2DF.62179B00"
+	boundary="----=_NextPart_000_0007_01C3D311.34F7DDB0"
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,60 +25,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0007_01C3D2DF.62179B00
+------=_NextPart_000_0007_01C3D311.34F7DDB0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-no, i burnt the 70mb netinstall iso to a cd and booted off that.. i =
-don't actually have another linux box i can use as a nfs server, and i =
-dont have a serial cable..
+my other pc's run win2k...
 
-with the full 650mb cd, when i boot it hangs when i get to the colour =
-"welcome to debian... <continue>" screen
+so, it seems that my only soloution is to try and install via serial =
+cable? :|
 
-I'm using graphics console for all of this...
-
-cheers, matt
-  ----- Original Message -----=20
-  From: Grant Grundler=20
+----- Original Message -----=20
+  From: Joel Soete=20
   To: Matt Lewis=20
-  Cc: parisc-linux@lists.parisc-linux.org=20
-  Sent: Sunday, January 04, 2004 2:55 PM
+  Sent: Sunday, January 04, 2004 9:48 PM
   Subject: Re: [parisc-linux] Probem Installing: slang(version).deb =
 corrupt
 
 
-  On Sun, Jan 04, 2004 at 08:46:03AM +1000, Matt Lewis wrote:
-  > ok, i went and got the latest testing iso, but now it's saying
-  > that libc6_2.2.5-6_hppa.deb was corrupt and cannot download...
-  > thats cd no.2 coastered and another 70mb down... any tips?
-
-  Full net install? (net boot with NFS root to run the installer?)
-
-  current lifimages are also available that match the net install ISOs.
-  lifimage needs to be served from a bootp server.
-
-  > the orginal problem was from both a cd i got with the computer
-  > (an earlier 70mb d/l it seems) and the latest full 650mb iso i =
-downloaded...
-  > though if i try and boot from the big iso, the installer starts then =
-the
-  > keyboard wont work... getting frustrated :|
-
-  Is the keyboard hanging using a serial or graphics console?
-
-  In general, the serial console is more stable and I suggest installing
-  via the serial console. Disconnect the USB keyboard and connect a DB9
-  serial cable to another linux box (9600, 8N1).  Once installed, =
-upgrade
-  to a 2.4.23 kernel (available from ftp.p-l.o/kernels/c3000) and then
-  reconnect the keyboard before rebooting.
-
-  grant
 
 
-------=_NextPart_000_0007_01C3D2DF.62179B00
+  Matt Lewis wrote:
+  > no, i burnt the 70mb netinstall iso to a cd and booted off that.. i =
+don't actually have another linux box i can use as a nfs server, and i =
+dont have a serial cable..
+
+  Hmm what kind of other system/os is it available for you near the =
+c3000?
+
+  afaik the serial connection doesn't have to be a linux box: an actual =
+serail console (setup to emulate vt100), a nt system with=20
+  'hyperterminal' vt100 emulation would also works, as well as another =
+unix system with a prgm allowing you to emulate a vt100=20
+  terminalon a serial port.
+
+  Do you have the oportunity to do the serial cable yourself? If you =
+have to buy one (cheap but always usefull), it is a null-modem=20
+  cable (femel 9 pin for the c3000).
+
+  hth,
+  joel
+
+
+
+
+------=_NextPart_000_0007_01C3D311.34F7DDB0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -92,77 +82,50 @@ http-equiv=3DContent-Type>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>no, i burnt the&nbsp;70mb netinstall =
-iso to a cd=20
-and booted off that.. i don't actually have another linux box i can use =
-as a nfs=20
-server, and i dont have a serial cable..</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>my other pc's run win2k...</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>with the full 650mb cd, when i boot it =
-hangs when i=20
-get to the colour "welcome to debian... &lt;continue&gt;" =
-screen</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm&nbsp;using graphics console for all =
-of=20
-this...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>so, it seems that my only soloution is =
+to try and=20
+install via serial cable? :|</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>cheers, matt</FONT></DIV>
+<DIV>----- Original Message ----- </DIV>
 <BLOCKQUOTE=20
 style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
 0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
   <DIV=20
   style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
 black"><B>From:</B>=20
-  <A href=3D"mailto:grundler@parisc-linux.org"=20
-  title=3Dgrundler@parisc-linux.org>Grant Grundler</A> </DIV>
+  <A href=3D"mailto:soete.joel@tiscali.be" =
+title=3Dsoete.joel@tiscali.be>Joel=20
+  Soete</A> </DIV>
   <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
   href=3D"mailto:nitephyre@iinet.net.au" =
 title=3Dnitephyre@iinet.net.au>Matt=20
   Lewis</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A=20
-  href=3D"mailto:parisc-linux@lists.parisc-linux.org"=20
-  =
-title=3Dparisc-linux@lists.parisc-linux.org>parisc-linux@lists.parisc-lin=
-ux.org</A>=20
-  </DIV>
   <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Sunday, January 04, 2004 =
-2:55=20
+9:48=20
   PM</DIV>
   <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: [parisc-linux] =
 Probem=20
   Installing: slang(version).deb corrupt</DIV>
-  <DIV><BR></DIV>On Sun, Jan 04, 2004 at 08:46:03AM +1000, Matt Lewis=20
-  wrote:<BR>&gt; ok, i went and got the latest testing iso, but now it's =
-
-  saying<BR>&gt; that libc6_2.2.5-6_hppa.deb was corrupt and cannot=20
-  download...<BR>&gt; thats cd no.2 coastered and another 70mb down... =
-any=20
-  tips?<BR><BR>Full net install? (net boot with NFS root to run the=20
-  installer?)<BR><BR>current lifimages are also available that match the =
-net=20
-  install ISOs.<BR>lifimage needs to be served from a bootp =
-server.<BR><BR>&gt;=20
-  the orginal problem was from both a cd i got with the computer<BR>&gt; =
-(an=20
-  earlier 70mb d/l it seems) and the latest full 650mb iso i=20
-  downloaded...<BR>&gt; though if i try and boot from the big iso, the =
-installer=20
-  starts then the<BR>&gt; keyboard wont work... getting frustrated =
-:|<BR><BR>Is=20
-  the keyboard hanging using a serial or graphics console?<BR><BR>In =
-general,=20
-  the serial console is more stable and I suggest installing<BR>via the =
+  <DIV><BR></DIV><BR><BR>Matt Lewis wrote:<BR>&gt; no, i burnt the 70mb=20
+  netinstall iso to a cd and booted off that.. i don't actually have =
+another=20
+  linux box i can use as a nfs server, and i dont have a serial=20
+  cable..<BR><BR>Hmm what kind of other system/os is it available for =
+you near=20
+  the c3000?<BR><BR>afaik the serial connection doesn't have to be a =
+linux box:=20
+  an actual serail console (setup to emulate vt100), a nt system with=20
+  <BR>'hyperterminal' vt100 emulation would also works, as well as =
+another unix=20
+  system with a prgm allowing you to emulate a vt100 <BR>terminalon a =
 serial=20
-  console. Disconnect the USB keyboard and connect a DB9<BR>serial cable =
-to=20
-  another linux box (9600, 8N1).&nbsp; Once installed, upgrade<BR>to a =
-2.4.23=20
-  kernel (available from <A=20
-  href=3D"ftp://ftp.p-l.o/kernels/c3000">ftp.p-l.o/kernels/c3000</A>) =
-and=20
-  then<BR>reconnect the keyboard before=20
-rebooting.<BR><BR>grant<BR></BLOCKQUOTE></BODY></HTML>
+  port.<BR><BR>Do you have the oportunity to do the serial cable =
+yourself? If=20
+  you have to buy one (cheap but always usefull), it is a null-modem =
+<BR>cable=20
+  (femel 9 pin for the=20
+c3000).<BR><BR>hth,<BR>joel<BR><BR><BR></BLOCKQUOTE></BODY></HTML>
 
-------=_NextPart_000_0007_01C3D2DF.62179B00--
+------=_NextPart_000_0007_01C3D311.34F7DDB0--
