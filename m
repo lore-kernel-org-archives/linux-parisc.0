@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id E9A6A484E
-	for <parisc-linux@parisc-linux.org>; Sat, 26 Oct 2002 13:27:58 -0600 (MDT)
-Message-ID: <000901c27d25$c18647a0$0100a8c0@posix2paebsbtq>
-From: "posix" <p0six@gmx.net>
-To: <parisc-linux@parisc-linux.org>
-Date: Sat, 26 Oct 2002 21:27:38 +0200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0006_01C27D36.82459760"
-Subject: [parisc-linux] A few questions
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5326E484E
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Oct 2002 15:18:00 -0600 (MDT)
+Date: Sat, 26 Oct 2002 14:18:22 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Joel Soete <joel.soete@freebel.net>
+Cc: jsoe0708@tiscali.be, Stefan Pfetzing <dreamind@dreamind.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
+Message-ID: <20021026211822.GJ22052@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <3DB5776100000C32@ocpmta8.be.tiscali.com> <3DBAD364.9060301@freebel.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3DBAD364.9060301@freebel.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +25,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+In reference to a message from Joel Soete, dated Oct 26:
+> i386 declare: "extern void __get_user_bad(void);"
+> ...
+> but not define elsewhere? (is it there so that the build of the kernel 
+> failed if that case was requested to run properly?)
 
-------=_NextPart_000_0006_01C27D36.82459760
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+yes.
 
-Hi!
-I was wondering if there is another way than what is descriped in the =
-PA-RISC/linux-bootHOWTO to exit serial console and enter graphics =
-console?
+> PS: afaik on i386 only put_user_u64 is define why not pending get_user?
 
-I would really appreciate an answer //Patrick
-------=_NextPart_000_0006_01C27D36.82459760
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+on first glance i haven't found any code that uses get_user with 64-bit
+quantities. if you have a specific need for this, please let me know.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi!<BR>I was wondering if there is =
-another way than=20
-what is descriped in the PA-RISC/linux-bootHOWTO to exit serial console =
-and=20
-enter graphics console?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I would really appreciate an answer=20
-//Patrick</FONT></DIV></BODY></HTML>
+in the mean time, i've checked in support for put_user with 64-bit
+values. This is in 2.4.19-pa24
 
-------=_NextPart_000_0006_01C27D36.82459760--
+Let me know if this works for you. i've tested it only lightly.
+
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
