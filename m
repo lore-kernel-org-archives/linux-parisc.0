@@ -1,67 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 10BFF4A18
-	for <parisc-linux@parisc-linux.org>; Fri,  2 Feb 2001 04:16:10 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@parisc-linux.org
-Date: Fri, 2 Feb 2001 12:17:38 +0100
-MIME-Version: 1.0
-Message-Id: <01020212173801.05589@P100.helgenet.de>
-Subject: [parisc-linux] Problems building glibc
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91EEC4A18
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 04:45:56 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel2.hp.com (Postfix) with ESMTP id CE73012BD
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 06:45:55 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id EAA28179 for parisc-linux@lists.parisc-linux.org; Fri, 2 Feb 2001 04:45:55 -0700 (MST)
+Date: Fri, 2 Feb 2001 04:45:55 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200102021145.EAA28179@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] calling PDC_PSW from head.S on A500
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+>
+> To enable slave's properly, I need to call PDC to set the wide
+> mode as default (for trap handling). Thanks to jsm for getting
+> me this far. But it HPMC's in A500 PDC.
+> Any ideas what else I need to do?
+>
+>
+> "ser pim 0 HPMC" output is appended.
+> The CPU is clearly excuting PDC.
+> %r2 correctly contains the return ptr.
+> %r3 contains the PDC address called.
+> %sp points to a valid stack area. (virtual vs physical?)
+>
 
-building with palinux-autobuilder from todays CVS head I get following 
-problem on 32bit parisc
+Grant,
 
-Greetings,
-Helge
+Since you are in real mode, the stack and return pointer need to contain
+physical addresses, not virtual addresses. You should load the physical
+addresses instead of the virtual addresses by putting a PA() around
+the expressions to load32 (See real2.S for an example). After the call
+you can convert the stack pointer to virtual with the tovirt macro, i.e.:
 
-....
-### Making kernel dependencies ###
-## Building kernel dependencies ##
-......
-### Building glibc ###
-## Cleaning glibc build dir ##
-Running "cd /home/cvs/parisc/xc-build/ && rm -rf glibc; mkdir 
-/home/cvs/parisc/xc-build/glibc"
-## Configuring glibc ##
-Running "cd /home/cvs/parisc/xc-build/glibc; export 
-PATH=/home/cvs/parisc/xc/bin:$PATH; /home/cvs/parisc/glibc/configure 
---target=hppa-linux --host=hppa-linux --build=i386-linux  
---prefix=/opt/puffin/hppa-linux --without-cvs --disable-shared 
---disable-profile --enable-static-nss --enable-add-ons
---with-headers=/home/cvs/parisc/linux/include"
+    < make pdc call >
 
-............later:
+    tovirt %sp
 
-hppa-linux-gcc ../sysdeps/generic/glob.c -c -O2 -Wall -Winline 
--Wstrict-prototypes -Wwrite-strings
--g      -I../include -I. -I/home/cvs/parisc/xc-build/glibc/posix -I.. 
--I../libio  -I/home/cvs/parisc/xc-build/glibc -I../sysdeps/hppa/elf 
--I../linuxthreads/sysdeps/unix/sysv/linux/hppa 
--I../linuxthreads/sysdeps/unix/sysv/linux -I../linuxthreads/sysdeps/pthread 
--I../linuxthreads/sysdeps/unix/sysv
--I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa 
--I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux 
--I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman 
--I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix 
--I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32 
--I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64 
--I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa 
--I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic  -nostdinc 
--isystem /home/cvs/parisc/xc/lib/gcc-lib/hppa-linux/2.96/include -isystem 
-/home/cvs/parisc/linux/include -D_LIBC_REENTRANT -include 
-../include/libc-symbols.h     -o
-/home/cvs/parisc/xc-build/glibc/posix/glob.o
-../sysdeps/generic/glob.c: In function `glob_in_dir':
-../sysdeps/generic/glob.c:1446: Internal compiler error in eliminate_regs, at 
-reload1.c:2505
-   Please submit a full bug report.
-   See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
-make[2]: *** [/home/cvs/parisc/xc-build/glibc/posix/glob.o] Fehler 1
-make[1]: *** [posix/subdir_lib] Fehler 2
-make: *** [all] Fehler 2
+John
