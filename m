@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tmpnt702.Honeywell.com (tmpsmtp702.honeywell.com [199.64.7.101])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3ABB8482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 12:19:31 -0700 (MST)
-Received: from com.Honeywell (IDENT:e042542@phxbd001.phxlab.honeywell.com [131.127.80.58])
-	by mail.phxlab.honeywell.com (8.11.6/8.11.6) with ESMTP id g1BJJKY27292
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 12:19:20 -0700
-Message-ID: <3C681938.7A2D48FB@com.Honeywell>
-Date: Mon, 11 Feb 2002 12:19:20 -0700
-From: Bob Apodaca <Bob.Apodaca@com.Honeywell>
+Received: from PHSEXCHICO2.Partners.org (phsexchico2.partners.org [170.223.254.20])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7F4A3482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 13:14:24 -0700 (MST)
+Message-ID: <FE6B88CC9D2BD311AD120008C7B3AF87081ED289@phsexch3.mgh.harvard.edu>
+From: "Roylance, Stephen D." <SROYLANCE@PARTNERS.ORG>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 11 Feb 2002 15:14:20 -0500
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] EISA NIC - HWP1850?
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Getting a D370 off the ground
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +21,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I do not subscribe to this group, please respond via my e-mail address. 
-NOTE: reverse the domain to get a valid e-mail address.
+I don't have any experience with HP-UX or PA-risc hardware, but I recently
+inherited an abandoned HP D-class 9000 server.  I'm trying to get the
+machine functional using Linux, since I don't have access to recent HP-UX,
+and I use Debian Linux on x86.
+What I've managed to do so far (with some trial and error):
+remove the remote access management card
+boot into the firmware and set the console to the onboard serial
+boot into the CD I created from palinux-0.9.3.iso
+partition and format a disk, get Linux installed and booting
 
-I have an EISA network card I'm trying to get working on a 715-100XC. 
-It has a large "Intel" chip with the following information:
+So far so good, but I have a few questions:
+My video card seems to be a:
+Raven Opt. 2D Graphics (Goat) (10) at 0xf6000000 [10/12], version 0x12, 0x0,
+0x77
+What can I expect from it?  I've nerver used XF86 version 4 or an fb device,
+and I haven't figured out the new config file format.  Will I be able to use
+the the graphical console with a newer kernel?  Can I get X to use it?
+Does anyone know if I can switch resolution/video mode from the firmware? 
+I installed the 32-bit kernel, can I use a 64-bit kernel on this machine?
+Should I checkout the latest kernel source from cvs and build that, or is
+there some other version, or an image, I shoud use?  The kernel installed
+with the CD doesn't seem to be SMP.
 
-KU82596CA-33
-L5182661
-SZ717 C
+If anybody can volunteer answers to any of these questions, I'd really
+appreciate it.  Also, great thanks to everyone who's put effort into pa-risc
+linux, I'll get so much more out of this machine with it running Linux!
 
-The HP part number on the card is 25567-60003.  I've seen this card
-referred to as "HWP1850".
-
-If no-one has this card, I *may* be able to arrange a donation if we can
-get a driver.
-
-Bob
+-Steve R 
