@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E6AE8482E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 15:28:24 -0700 (MST)
-Date: Mon, 16 Dec 2002 23:28:08 +0100
-From: Thibaut VARENE <varenet@esiee.fr>
-To: "Grant Grundler" <grundler@dsl2.external.hp.com>
+Date: Mon, 16 Dec 2002 16:11:32 -0700
+To: Ed Schaller <schallee@darkmist.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.20-pa14 64bit crash on boot - A500-5X
-Message-Id: <20021216232808.1fe41efc.varenet@esiee.fr>
-In-Reply-To: <20021215035359.GA18647@dsl2.external.hp.com>
-References: <20021213132838.F044D49C55@mail.esiee.fr>
-	<20021213233540.503b16d3.varenet@esiee.fr>
-	<20021215035359.GA18647@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
+Message-ID: <20021216231132.GC854@dsl2.external.hp.com>
+References: <20021216064512.GA1983@darkmist.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021216064512.GA1983@darkmist.net>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,136 +20,79 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 14 Dec 2002 20:53:59 -0700
-"Grant Grundler" <grundler@dsl2.external.hp.com> wrote:
+On Sun, Dec 15, 2002 at 11:45:12PM -0700, Ed Schaller wrote:
+> I have a B180 that I have been using as a firewall/router for some time
+> now. Along with the built in tulip ethernet card, I also have a Adaptec
+> quad ethernet card that is also tulip based. This has worked fine in
+> 2.4.17-2.4.19 but no longer works in 2.4.20-pa13. Although I can
+> ifconfig up the interfaces, no traffic goes through and mii-tool reports
+> that the interfaces do not exist (except for the built in one).
 
-> On Fri, Dec 13, 2002 at 11:35:40PM +0100, Thibaut VARENE wrote:
-> > AOUT: 0x10143bd4 mod_timer+3c
+I've looked a bit at the same problem on A500 with
+a regular (single port) HP tulip card.
+
+> In the following dmesg out takes for 2.4.20-pa13 and 2.4.19-32 (debian),
+> it seems that the older kernel is finding the transceiver and
+> successfully auto-negotiating the link while the newer is not.
+
+yeah - same symptom that I saw.
+
+> Any ideas how to solve this? Any help would be greatly appreciated.
+
+I suspect it's a tulip driver bug.
+I haven't had a chance to diff the 2.4.19 vs 2.4.20 tulip driver.
+One idea might be to "forward port" the 2.4.19 drivers/net/tulip code
+into 2.4.20.
+
+thanks for the report,
+grant
+
+> Linux version 2.4.20-pa13 (root@landmine) (gcc version 3.0.4) #3 Tue Dec 10 01:35:34 MST 2002
 > ...
-> > AOUT: 0x10538b48 hp_diva_timer+0
+> Linux Tulip driver version 0.9.15-pre12 (Aug 9, 2002)
+> tulip0: no phy info, aborting mtable build
+> tulip0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
+> eth0: Digital DS21143 Tulip rev 48 at 0xf0fff000, 00:60:B0:C4:5E:7B, IRQ 96.
+> eth1: Digital DS21140 Tulip rev 34 at 0xf0efc000, 00:00:D1:1B:C8:90, IRQ 98.
+> eth2: Digital DS21140 Tulip rev 34 at 0xf0efd000, 00:00:D1:1B:C8:B5, IRQ 99.
+> eth3: Digital DS21140 Tulip rev 34 at 0xf0efe000, 00:00:D1:1B:C8:95, IRQ 96.
+> eth4: Digital DS21140 Tulip rev 34 at 0xf0eff000, 00:00:D1:1B:70:33, IRQ 97.
+> ...until ifconfig eth0-eth4
+> eth0: Setting full-duplex based on MII#1 link partner capability of 45e1.
 > 
-> Good News: I reproduced this and fixed it.
-> But I don't know exactly what I did that fixed it. :^(
-> (drawbacks of the shotgun approach).
-> Fairly small patch is on ftp.parisc-linux.org/patches/diff-2.4.20-timer
-> This isn't ready to commit until someone narrows it down to one thing.
+> Linux version 2.4.19-32 (root@j5k) (gcc version 3.0.4) #1 Fri Nov 22 23:27:00 MST 2002
+> ...
+> Linux Tulip driver version 0.9.15-pre11 (May 11, 2002)
+> tulip0: no phy info, aborting mtable build
+> tulip0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
+> eth0: Digital DS21143 Tulip rev 48 at 0xff00, 00:60:B0:C4:5E:7B, IRQ 96.
+> tulip1:  EEPROM default media type Autosense.
+> tulip1:  Index #0 - Media MII (#11) described by a 21140 MII PHY (1) block.
+> tulip1:  MII transceiver #1 config 3100 status 7849 advertising 01e1.
+> eth1: Digital DS21140 Tulip rev 34 at 0xec00, 00:00:D1:1B:C8:90, IRQ 98.
+> tulip2:  EEPROM default media type Autosense.
+> tulip2:  Index #0 - Media MII (#11) described by a 21140 MII PHY (1) block.
+> tulip2:  MII transceiver #1 config 3100 status 7849 advertising 01e1.
+> eth2: Digital DS21140 Tulip rev 34 at 0xed00, 00:00:D1:1B:C8:B5, IRQ 99.
+> tulip3:  EEPROM default media type Autosense.
+> tulip3:  Index #0 - Media MII (#11) described by a 21140 MII PHY (1) block.
+> tulip3:  MII transceiver #1 config 3100 status 7849 advertising 01e1.
+> eth3: Digital DS21140 Tulip rev 34 at 0xee00, 00:00:D1:1B:C8:95, IRQ 96.
+> tulip4:  EEPROM default media type Autosense.
+> tulip4:  Index #0 - Media MII (#11) described by a 21140 MII PHY (1) block.
+> tulip4:  MII transceiver #1 config 3100 status 7849 advertising 01e1.
+> eth4: Digital DS21140 Tulip rev 34 at 0xef00, 00:00:D1:1B:70:33, IRQ 97.
+> ...until ifconfig eth0-eth4
+> eth0: Setting full-duplex based on MII#1 link partner capability of 45e1.
+> eth1: Setting full-duplex based on MII#1 link partner capability of 45e1.
+> eth2: Setting full-duplex based on MII#1 link partner capability of 45e1.
+> eth3: Setting full-duplex based on MII#1 link partner capability of 41e1.
+> eth4: Setting full-duplex based on MII#1 link partner capability of 41e1.
 > 
-> Bad News: SMP kernel now hangs during SCSI device discover.
-> I haven't tried CONFIG_SMP=n yet and I guess that would be a next step.
-> Console output of the a500-44 boot with 2.4.20-pa14 + patch is on
-> 	dsl2.e.h.c:~grundler/rp2470-2.4.20-symhang-01
-With CONFIG_SMP=y, here is what happens upon boot:
-
-SMP: Total 2 of 2 processors activated (2195.46 BogoMIPS noticed).
-Waiting on wait_init_idle (map = 0x2)
-All processors have done init_idle
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Initializing RT netlink socket
-Soft power switch support not available.
-Performance monitoring counters enabled for Crescend
-
-Some investigation provided the following (after TOC/SER PIM) CPU0:
-IAOQ = 0x0000000010144f1c
-Func: timer_bh, Off: 1a4, Addr: 0x10144f1c
-    10144f10:	52 d3 0d f0 	ldd 6f8(r22),r19
-    10144f14:	08 01 02 57 	copy r1,r23
-    10144f18:	0e 60 10 94 	ldw 0(sr0,r19),r20
-    10144f1c:	2b 61 20 00 	addil 3000,dp,%r1
-    10144ff4:	e8 1f 1e 2d 	b,l 10144f10 <timer_bh+0x198>,r0
-
-GR1 = 000000001047ae00
-Func: __gp, Off: a000, Addr: 0x1047ae00
-
-GR2 = 0000000010144fd8
-Func: timer_bh, Off: 260, Addr: 0x10144fd8
-    10144fd0:	eb df bc 81 	b,l 10103e18 <spin_lock>,%r2
-    10144fd4:	08 13 02 5a 	copy r19,r26
-    10144fd8:	08 0e 02 5b 	copy r14,dp
-    10144fdc:	2b 65 00 00 	addil a000,dp,%r1
-
-GR6 = 0000000010540b48
-Func: hp_diva_timer, Off: 0, Addr: 0x10540b48
-
-GR14 = 0000000010470e00
-Func: __gp, Off: 0, Addr: 0x10470e00
-
-GR18 = 0000000010540898
-Func: serial_driver, Off: 0, Addr: 0x10540898
-
-GR19 = 0000000010520e48
-Func: tv1, Off: 0, Addr: 0x10520e48
-
-GR26 = 00000000103e37c0
-Func: timerlist_lock, Off: 0, Addr: 0x103e37c0
-
-on a second try it went up to:
-
-Performance monitoring counters enabled for Crescendo 550
-Starting kswapd
-Journalled Block Device driver loaded
-Installing knfsd (copyright (C) 1996 o
-
-Now the UP try:
-
-went up to:
-
-Performance monitoring counters enabled for Crescendo 550
-Starting kswapd
-Journalled Block Device driver loaded
-Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
-pty: 256 Unix98 ptys configured
-Serial driver version 5.05c (2001-07-08) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
-
-Investigation showed that:
-
-IAOQ = 0x000000001021210c
-Func: hp_diva_check, Off: ec, Addr: 0x1021210c
-    10212100:	eb 94 be 61 	b,l 1013b038 <add_timer>,%r2
-    10212104:	08 15 02 5a 	copy r21,r26
-    10212108:	08 03 02 5b 	copy r3,dp
-    1021210c:	53 c2 3e e1 	ldd -90(sp),rp
-
-GR0 = 0000000000000000
-
-GR1 = 000000001045df70
-Func: timer_jiffies, Off: 0, Addr: 0x1045df70
-
-GR2 = 0000000010212108
-Func: hp_diva_check, Off: e8, Addr: 0x10212108
-    10212100:	eb 94 be 61 	b,l 1013b038 <add_timer>,%r2
-    10212104:	08 15 02 5a 	copy r21,r26
-    10212108:	08 03 02 5b 	copy r3,dp
-    1021210c:	53 c2 3e e1 	ldd -90(sp),rp
-
-GR3 = 00000000103bd2a0
-Func: __gp, Off: 0, Addr: 0x103bd2a0
-
-GR6 = 0000000010472df8
-Func: hp_diva_timer, Off: 0, Addr: 0x10472df8
-
-GR18 = 0000000010472b48
-Func: serial_driver, Off: 0, Addr: 0x10472b48
-
-GR19 = 000000001045df68
-Func: run_timer_list_running, Off: 0, Addr: 0x1045df68
-
-GR20 = 0000000000001e11
-
-GR21 = 000000001045df68
-Func: run_timer_list_running, Off: 0, Addr: 0x1045df68
-
-GR26 = 0000000010472df8
-Func: hp_diva_timer, Off: 0, Addr: 0x10472df8
-
-I think that the patch is quite wrong somehow...
-
-Will investigate further tomorrow.
-
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+> >>>------>
+> 
+> --
+> 
+> +-------------+-----------------------+---------------+
+> | Ed Schaller | Dark Mist Networking  | psuedoshroom  |
+> +-------------+-----------------------+---------------+
