@@ -1,52 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 498664A18
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Jan 2001 18:56:14 -0700 (MST)
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA23823
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 18:52:08 -0700
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by palrel1.hp.com (Postfix) with ESMTP id B5D8416FA
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 15:54:46 -0800 (PST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA12383;
-	Wed, 31 Jan 2001 10:45:01 +1100
-Date: Wed, 31 Jan 2001 10:45:01 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-Cc: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>,
-	parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Weird compile problems 
-In-Reply-To: <20010130233603.B823337C90@carmen.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0101311037120.19209-100000@front.linuxcare.com.au>
+	by dsl2.external.hp.com (Postfix) with ESMTP id DB4504A18
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Jan 2001 19:11:30 -0700 (MST)
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id TAA24173
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 19:07:25 -0700
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by atlrel2.hp.com (Postfix) with ESMTP id 9A224192B
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 20:04:45 -0500 (EST)
+Received: from hp.com (hazel.fc.hp.com [15.1.52.8])
+	by ldl.fc.hp.com (Postfix) with ESMTP id 26E755A963
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 18:00:46 -0700 (MST)
+Sender: dafra@ldl.fc.hp.com
+Message-ID: <3A77652A.7CD6D5D8@hp.com>
+Date: Tue, 30 Jan 2001 18:06:50 -0700
+From: dann frazier <daniel_frazier@hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: parisc-linux@puffin.external.hp.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] list migration & bug tracking system
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 30 Jan 2001, Matt Taggart wrote:
+hey,
 
-> I suspect that your make actually died during the make install right? This is 
+We now have a bug tracking system at:
+http://bugs.parisc-linux.org/
+The BTS is based on the debbugs package, Debian's BTS.
 
-No, during the build.
+If you're not familiar w/ debbugs, see that page for documentation.
 
-> the problem that John Marvin and I are working on. The pthread changes that he 
-> made broke things that use librt and libpthread. In our current nfsroot that 
-> is tar, make, and sleep. For now we're using a static make to complete the 
-> install. Once I have a new glibc package built I will do new new 
-> make,tar,sleep stuff too.
-> 
-> > Hmm, looking at what I just wrote, you can hardly call it a "successful
-> > bootstrap".  I'm investigating the ld.so.1 problem - at least that one is
-> > reproducable.
-> 
-> I was seeing that here too but John wasn't. We're currently trying to 
-> determine the differences in our build environments. What system are you 
-> building on and what nfsroot/kernel are you using?
+maintainer messages will be sent to corresponding lists on:
+http://lists.parisc-linux.org
+You can request a copy of the maintainers file through the BTS, as well
+as view it online at http://bugs.parisc-linux.org/packages.html
 
-Machine is a 712/80, nfsroot started life as nfsroot-20001009 but has been
-tweaked quit a bit - compiler, binutils, glibc.  Kernel is one I built
-from CVS checked out 24th. Jan.
+we have moved the mailing lists and archives over to Mailman on a
+different machine.  the switch should have been near-transparent.  you
+can still send mail to puffinl.external, but lists.parisc-linux.org is
+the preferred host.
 
-Alan
+You can subscribe and/or unsubscribe from all lists at once at:
+http://lists.parisc-linux.org/bulksubscribe.html
+
+You can now use htdig to search the list archives at:
+http://lists.parisc-linux.org/search.html
+
+please file bugs against the packages "bts" or "lists" if you run across
+any problems or have any suggestions.
+	-dann
 -- 
-Linuxcare.  Support for the Revolution.
+---------------------------
+dann frazier
+Hewlett-Packard
+Linux Development Lab
+daniel_frazier@hp.com
+(970) 898-0800
