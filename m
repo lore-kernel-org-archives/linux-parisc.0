@@ -1,40 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA04775
-	for <parisc-linux@puffin.external.hp.com>; Sat, 29 May 1999 19:41:48 -0600
-Received: (from root@localhost) by mailserv.caiw.nl (8.8.5/8.6.12) id DAA13548 for <parisc-linux@thepuffingroup.com>; Sun, 30 May 1999 03:42:22 +0200 (MET DST)
-Received: from bastion.nl3155vj16.vanderkooij.org (bastion.nl3155vj16.vanderkooij.org [192.168.100.254])
-	by bastion.nl3155vj16.vanderkooij.org (8.9.1a/8.9.1) with ESMTP id DAA08980
-	for <parisc-linux@thepuffingroup.com>; Sun, 30 May 1999 03:41:36 +0200
-Date: Sun, 30 May 1999 03:41:35 +0200 (CEST)
-From: Hugo van der Kooij <Hugo.van.der.Kooij@caiw.nl>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA05598
+	for <parisc-linux@puffin.external.hp.com>; Sun, 30 May 1999 17:09:27 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id BAA19454
+	for <parisc-linux@thepuffingroup.com>; Mon, 31 May 1999 01:09:22 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id BAA529504
+	for <parisc-linux@thepuffingroup.com>; Mon, 31 May 1999 01:09:22 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m10oEhm-00029yC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Mon, 31 May 1999 01:09:22 +0200 (CEST)
+Date: Mon, 31 May 1999 01:09:22 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Ready to go!
-In-Reply-To: <19990530014655.J1410@mencheca.ch.genedata.com>
-Message-ID: <Pine.LNX.4.10.9905300338590.8870-100000@bastion.nl3155vj16.vanderkooij.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <19990531010922.S1410@mencheca.ch.genedata.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] binfmt_som
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 30 May 1999, Matthew Wilcox wrote:
 
-> On Sun, May 30, 1999 at 01:30:05AM +0200, Hugo van der Kooij wrote:
-> > Please guys. Don't send message to me if you send them to the list as
-> > well. I find 1 copy quite enough.
-> 
-> it's normal practice to do so on mailing lists.  it allows conversations
-> to happen much quicker when the listserv is slow (as vger is right now).
-> it's also the way that mailreaders work - reply to sender or reply to all
-> - changing that is a pain.  not to mention that you did the same thing :-)
+I was a little over-optimistic about releasing a first cut today,
+I guess :-)
 
-It isn't normal practice! It may be your practice. This list behaves
-normaly which is quite unlike the overloaded and underpowered system of
-vger.
+I've moved `som.h' from include/asm-parisc/ to include/linux/, like elf.h
+& a.out.h.  I've also populated it with the structures which I've needed
+so far, copied from the document below.  binfmt_som.c is still showing
+extreme signs of its ELF heritage and definitely won't compile yet.
 
-Hugo.
+I have a question; what is `union name_pt' defined as?  It's referenced
+several times in ``32-bit PA-RISC Run-Time Architecture Document
+11.0 version 1.0'', page 3-56 for one example.  However, grepping the
+document reveals no trace of a definition of this (or `union name_p'
+for that matter).
 
 -- 
-Hugo van der Kooij; Oranje Nassaustraat 16; 3155 VJ  Maasland
-hvdkooij@caiw.nl		 http://www.caiw.nl/~hvdkooij/
---------------------------------------------------------------
-Use of any of my email addresses for unsollicited (commercial)
-    email is a clear intrusion of my privacy and illegal!
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
