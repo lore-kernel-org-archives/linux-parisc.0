@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7A3D04852
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 20:40:53 -0600 (MDT)
-Received: from garibaldi.apptechsys.com (ats164.apptechsys.com [207.14.35.164])
-	by mail.apptechsys.com (Postfix) with ESMTP id 7CDA27BC45
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Jul 2002 19:40:52 -0700 (PDT)
-Date: Tue, 9 Jul 2002 19:40:52 -0700 (PDT)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0207091919340.19290-100000@garibaldi.apptechsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] SMP (in)stability
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] SMP (in)stability 
+In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
+   of "Tue, 09 Jul 2002 19:40:52 PDT." <Pine.LNX.4.44.0207091919340.19290-100000@garibaldi.apptechsys.com>
+References: <Pine.LNX.4.44.0207091919340.19290-100000@garibaldi.apptechsys.com> 
+Date: Tue, 09 Jul 2002 23:36:47 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020710053647.D282F4853@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +19,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-After having read on this list that some SMP-related problems were fixed,
-I decided to try out the latest kernel as SMP on my J5k.  I tried my old
-test, apt-get update, on it.  It downloaded the package lists fine, but
-stopped after printing "Reading Package Lists... 0%".  Since I was running
-over an ssh session, I don't have any console log messages that may have
-appeared, but every time before this (on older smp kernels) it has stopped
-at an unaligned access message.  As a point of reference, the last smp 
-kernel that was stable for me was 2.4.17-32-smp in debian.  There was an 
-updated version of it that was not stable, the stable one was the release 
-before (if the box was up, I could get more info from the .deb I grabbed 
-of it).  Hopefully that info will help you figure out what change was 
-likely to have caused the problems.  I'll get you specifics on that kernel 
-package tomorrow.
+Jeremy Drake wrote:
+> After having read on this list that some SMP-related problems were fixed,
+> I decided to try out the latest kernel as SMP on my J5k.  I tried my old
+> test, apt-get update, on it.  It downloaded the package lists fine, but
+> stopped after printing "Reading Package Lists... 0%".
 
--- 
-FORTUNE PROVIDES QUESTIONS FOR THE GREAT ANSWERS: #4
-A:	Go west, young man, go west!
-Q:	What do wabbits do when they get tiwed of wunning awound?
+It Works For Me. (tm)
+
+Did you build this kernel yourself or grab a debian kernel package?
+Can you provide "uname -a" output of the SMP kernel you tested?
+
+FYI, I've uploaded my a500 build (should work on j5k as well
+if it's using serial console) to:
+	ftp://ftp.parisc-linux.org/kernels/a500/2.4.18-pa52.tgz
+
+The -pa52 kernel built 100+ kernels/modules successively until
+I stopped it on the a500-44. The same kernel on a500-6X (PA8700)
+crashes after 12 or so hours of building gcc bits. I've also seen
+eth0 (tulip driver) spontaneously go to an unconfigured state
+without saying anything on the console. It's possible a cron job
+or something else ifdown'd it but I don't know why.
+
+BTW, before I go to bed tonight, I expect the latest kernel to be -pa54.
+I'll be adding a one-liner sym53c8xx_2 driver patch to allow one to
+use the default CONFIG_SCSI_SYM53C8XX_DMA_ADDRESSING_MODE=1.
+One can use sym53c8xx_2 now with CONFIG_SCSI_SYM53C8XX_DMA_ADDRESSING_MODE=0.
+Richard Hirst and Paul Bame (and a few others) have tested this out already.
+
+thanks,
+grant
