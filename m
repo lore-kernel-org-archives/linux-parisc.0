@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 154A8482D
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 03:01:17 -0600 (MDT)
-Message-ID: <3D1199DB.3050702@esiee.fr>
-Date: Thu, 20 Jun 2002 11:01:15 +0200
-From: Matthieu Delahaye <delahaym@esiee.fr>
-MIME-Version: 1.0
-To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Received: from dionis.kfti.knc.ru (unknown [195.208.38.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D69AD485F
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 03:04:03 -0600 (MDT)
+Message-Id: <adn_8246_0_@dionis.kfti.knc.ru>
+Date: Thu, 20 Jun 2002 12:55:06 +0400
+From: Masliy Alex <masliy@kfti.knc.ru>
+To: Tim ter Laak <timl@scintilla.utwente.nl>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] mail-man
-References: <03273D4BC7F4D511AC440008C7E6F881542340@nlntmail2b.ats.nld.alcatel.nl>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: Re: [parisc-linux] HP PA 715/50 installation trouble
+In-Reply-To: <Pine.LNX.4.21.0206182235280.13201-100000@utelscin.scintilla>
+References: <adn_159_0_@dionis.kfti.knc.ru>
+	<Pine.LNX.4.21.0206182235280.13201-100000@utelscin.scintilla>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="KOI8-R"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,34 +24,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Tue, 18 Jun 2002 22:41:04 +0200 (CEST)
+Tim ter Laak <timl@scintilla.utwente.nl> wrote:
 
-There is a binary from debian:
-alysee:~$ apt-cache search mailman
-lists-archives - Web archive for mailing lists
-mailman - Powerful, web-based mailing list manager
-So if you still want to build your own, download the tarball and the 
-patch applied by the maintainer from:
-http://packages.debian.org/testing/mail/mailman.html
-and have a look on the options used.
+>> >> At first, I tried to install from CDROM. In the proccess of booting
+>>the
+>> >> following messages were printed:
+>> >> ---------------
+>> >> Trying to scsi.4.0
+>> >> Failed to initialize scsi.4.0
+>> >> ENTRY_INIT status = -13
+>> RH> Hmm. Was this drive working with that box under HP-UX?
+>>     Yes, of course. I was mounted the Debian Install Disk under HP-UX.
+>>     But it is old device (August 1993). 
+TTL> I have the exact same problem on this hardware. As long as I boot the
+TTL> kernel from network, the whole linux system comes up fine. But the
+TTL> BIOS won't load the PALO from disk. :-( Throw in the old UX disk, and
+it
+TTL> just boots.
+      I could not exactly understand what does the last phrase mean.
+Either I must stop my attempts to install Linux on this mashine or I must
+take older distribution version or what?
 
-Regards,
-Matthieu
+TTL> I know there's a firmware update for the faster 715's (66MHz and
+TTL> up). Could this be a firmware bug? 
+       May be,  but how can I find out that thing?
 
-Witvliet, Hans wrote:
-
->Hi,
->
->Short question,
->
->Did anybody already succeed in compiling mailman?
->Here (712/100) it failed.
->
->Hans
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
->
+--
+С уважением,
+Маслий Алексей			mailto:masliy@kfti.knc.ru
