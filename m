@@ -1,31 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 71B8A4830
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 04:38:24 -0600 (MDT)
-Date: Fri, 3 Aug 2001 12:38:16 +0200 (CEST)
-From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] dev-packages
-In-Reply-To: <20010803113539.B1011@linuxcare.com>
-Message-ID: <Pine.BSF.4.30.0108031237250.38503-100000@noc.zabbadoz.net>
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD53B482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 04:45:32 -0600 (MDT)
+Message-Id: <200108031045.MAA28589@sap-ag.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <helge.deller@sap.com>
+To: "=?iso-8859-1?q?Jo=EBl?= Soete" <jso@europay.com>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] XFree86 on B180
+Date: Fri, 3 Aug 2001 12:45:01 +0200
+References: <OFCFD0268B.6552637A-ONC1256A9D.0025254D@LocalDomain>
+In-Reply-To: <OFCFD0268B.6552637A-ONC1256A9D.0025254D@LocalDomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 3 Aug 2001, Richard Hirst wrote:
+> On the B180 I use the same XF86config as on 712/80, the one from  Thomas
+> Bogendoerfer available at:
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-June/012928.html
+> ......
+>
+> With kernels 2.4.0-32 and 2.4.6 xdm failed because:
+> "(EE) No devices detected.
+>
+> Fatal server error:
+> no screen found.
+> ..."
 
-> If for some reason you do want to find things directly, you should
-> be aware that pkgs live in a pool now, and you wont find much under
-> a sid/main/binary-hppa dir on your local mirror.  For example, libc6-dev
-> would be found under /pub/mirrors/debian/pool/main/g/glibc.  That one
-> is under 'g' because the source pkg is glibc.  But as Andrew said, apt
-> is right way to install things normally.
+Hi Joël,
 
-That's it. thanks.
+The only way to get XFree86 running on parisc atm is to use the XFree86-fbgen (framebuffer) 
+driver in conjunction with the kernel stifb driver. This means, that if you see the graphical 
+pengiun (TUX) at bootup on your screen, XFree86 should  run. If you don't see it, you have a 
+not yet by stifb supported graphic chip in your machine.
+Currently stifb will run on most 712 and 715 machines, while B160, B180, C3000 and most
+others won't.
 
-Is apt proxy-aware ?
-
+Greetings,
+Helge
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+_______________________________________________________________________
+
+THE BEST RUN E-BUSINESSES RUN SAP
+_______________________________________________________________________
+
+Helge Deller                            email: helge.deller@sap.com
+SAP AG Walldorf/Baden, Germany         
+LinuxLab                               
+
+SAP LinuxLab support address: linux@sap.com
