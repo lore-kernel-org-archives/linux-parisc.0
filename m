@@ -1,45 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pop03-srv.alltel.net (pop03.alltel.net [166.102.165.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4FCA0482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 14:52:26 -0600 (MDT)
-Received: from [162.39.130.137] by pop03-srv.alltel.net with ESMTP
-          id <20010704204942.EMTY5378.pop03-srv.alltel.net@[162.39.130.137]>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Wed, 4 Jul 2001 15:49:42 -0500
-Date: Wed, 4 Jul 2001 15:50:58 -0500 (CDT)
-From: "T. Martin" <catfish@alltel.net>
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E3E3D482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 15:58:32 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id A46E5B00C; Wed,  4 Jul 2001 22:57:56 +0100 (BST)
+Date: Wed, 4 Jul 2001 22:57:56 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: =?iso-8859-1?Q?Jo=EBl_Soete?= <jso@europay.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 0.9.1 ISO Release
-In-Reply-To: <20010704085904.78D77D15B5@mail.esiee.fr>
-Message-ID: <Pine.LNX.4.10.10107041550200.7790-100000@jesse.crash.lan>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [parisc-linux] How to access the second serial port on a B180 with PALINUX
+Message-ID: <20010704225756.H23509@linuxcare.com>
+References: <OFA73CA243.24E46DAD-ONC1256A7F.0022F3A1@LocalDomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <OFA73CA243.24E46DAD-ONC1256A7F.0022F3A1@LocalDomain>; from jso@europay.com on Wed, Jul 04, 2001 at 08:59:39AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Anyone have a US mirror with it yet? I can't get it from france its very
-lagged. 
-Thanks 
-Terry
-
-
-
-On Wed, 4 Jul 2001, marteau wrote:
-
-> Hi all,                                                               
->                                                                       
-> 	You can find the latest ISO (0.9.1) at                               
-> http://mkhppa1.esiee.fr/download.html                                 
-> As you will see, the kernel gets the last changes and there is no more
-> serial or sti version...                                              
->                                                                       
-> 	Try it and please feedback to the mailing list...                    
->                                                                       
-> Regards, Thomas                                                       
-> ESIEE Team                                                            
+On Wed, Jul 04, 2001 at 08:59:39AM +0200, Joël Soete wrote:
+> Hio,
 > 
+> I just re-install my B180 with the last palinux-0.9 CD.
 > 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> With STI console gpm also works excepted that it do not highlight a
+> double-click selection (but selection works)?
 > 
+> I would also like to test the second serial port available on this model.
+> Is any have tips or idea?
+
+Support has recently been added to the kernel for the second serial
+port.  Either grab a new kernel from puffin.external.hp.com, I think
+Matt Taggart posted some recently, or build your own.
+
+Richard
