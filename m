@@ -1,47 +1,67 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA28647
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Dec 1999 23:49:54 -0700
-Date: Fri, 31 Dec 1999 01:52:31 -0600 (CST)
-From: <tom@piace.com>
-To: Eric Schnoebelen <eric@cirr.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Thanks...alot 
-In-Reply-To: <199912301736.LAA11773@opus.cirr.com>
-Message-ID: <Pine.LNX.4.10.9912310147410.9988-100000@adam.piace.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA01723
+	for <parisc-linux@puffin.external.hp.com>; Fri, 31 Dec 1999 14:36:50 -0700
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id QAA31288
+	for parisc-linux@thepuffingroup.com; Fri, 31 Dec 1999 16:39:30 -0500
+Date: Fri, 31 Dec 1999 16:39:30 -0500
+From: Matthew Wilcox <willy@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19991231163930.C12629@thepuffingroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Linux version numbers
 List-ID: <linux-parisc.vger.kernel.org>
 
-I don't know what I was thinking.  I was so excited about getting into my
-new toy I just wanted to get it working.  It has been along time
-since I used ed(like) editors.  I hope to have some time to play with it
-after all of the y2krap is over.  I have lots of updated to load on
-customers computers, so I don't get to play with mine.  
 
+Grant asked me to explain Linux kernel version numbering, so here goes:
 
-  
+Linux version numbers are of the form a.b.c.  a.b is a line of
+development; so far we've had 0.99, 1.0, 1.1, 1.2, 2.0, 2.1, 2.2 and 2.3.
+The .c indicates a release in that line of development.
 
-On Thu, 30 Dec 1999, Eric Schnoebelen wrote:
+When b is odd, it signifies that this is a _development_ kernel.  Major
+overhauls are made, sometimes without warning.  Not all development
+kernels boot or even compile.  Their purpose is to distribute major
+changes to the development community in the fastest way possible.
+Some people run development kernels on their machine as a matter of
+course.  They either know what they're doing and are actively debugging
+it or they are 3l33t k1dd13z who think it's cool to run the kernel with
+the highest version number available.
 
-> 
-> tom@piace.com writes:
-> - I was able to boot into single user mode, and edit the password file.  It
-> - took a while to find a terminal program for my computer, that would let me
-> - run vi correctly.  Thanks for all your help.
-> 
-> 	You realize you did more work than required, right??
-> Since you were running as root at single user, you could have
-> used the `passwd' command to change roots password.
-> 
-> 	On the other hand, its always good to know enough of
-> `ed(1)' to be able to fix things like this no matter what sort
-> of terminal you have..
-> 
-> --
-> Eric Schnoebelen		eric@cirr.com 		http://www.cirr.com
-> If bankers can count, how come they have eight windows and only four tellers?
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+Kernels which have an even `b' are stable kernels.  The rate of change
+is much much slower, and the changes which are accepted are those
+which do not change the behaviour of the kernel core, or are necessary
+to fix bugs.  New drivers and new architectures can be added to stable
+kernels, provided they don't impact the stability of the overall kernel.
+The emphasis here is on making a product that is usable.
+
+You will also see other kernel versions around.  Linus frequently puts
+out prereleases like 2.3.35pre3 which are available for really dedicated
+testers and so that people can test the validity of big merges they've
+done with him.  For example, the 2.3.35pre1 release was for davem to
+check that Linus had done the sparc64 merge right.
+
+Alan has done a series for 2.2 where he adds features which Linus
+doesn't want to add.  A typical example number would be 2.2.10-ac3.
+Some people have imitated this scheme, but it's discouraged for people
+to distribute mega-patches as it makes it hard to merge with Linus.
+
+As far as `who is in charge' questions go, Linus always manages the
+development branch.  He maintained 2.2 up to 2.2.10 (or thereabouts),
+before he passed responsibility over to Alan.  Alan has a fetish for
+stable kernels, and maintained 2.0 from 2.0.36 to 2.0.38 before getting
+busy with 2.2 and passing 2.0 over to David Weinehall.  Alan also worked
+on 1.2.13 fixes for a while, but this is ancient history now :-)
+
+How is Linux/PA-RISC going to fit in?  The current thinking seems to
+be that we _need_ page colouring and some other features that impact
+the core kernel code.  It's too late in 2.3 development to have these
+changes integrated.  It's _probably_ too big a change to go into 2.4
+(though I have been surprised at some of the changes which have gone
+into 2.2), so I think we'll be merged with the official kernel during
+2.5 development.  We will maintain our own patch-set against 2.4 and 2.5,
+just as mips, ppc, sparc, m68k and arm have done with 2.2 and 2.3.
+
+This assumes the next stable kernel will be called 2.4.  It could be 3.0
+or 9.6 for all I know :-)
