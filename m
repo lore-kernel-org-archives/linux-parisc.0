@@ -1,42 +1,63 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D5DCF482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 20:01:34 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15e5Wk-0007cD-00; Tue, 04 Sep 2001 03:01:22 +0100
-Date: Tue, 4 Sep 2001 03:01:22 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Arnaud.ATOCH@oecd.org, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] UreStoreOptical 20xt
-Message-ID: <20010904030122.S5126@parcelfarce.linux.theplanet.co.uk>
-References: <C12531D038D1D011B1DB0000F8036C280A30EB51@eosm5.oecd.org> <200109040134.TAA23952@puffin.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109040134.TAA23952@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Sep 03, 2001 at 07:34:20PM -0600
-Sender: <willy@www.linux.org.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C4EA482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 22:10:34 -0600 (MDT)
+Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA24261
+	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Sep 2001 22:08:22 -0600
+Message-ID: <3B9453BC.60607@videotron.ca>
+Date: Tue, 04 Sep 2001 00:08:28 -0400
+From: James Waterhouse <james.waterhouse@videotron.ca>
+MIME-Version: 1.0
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>,
+	"debian-hppa@lists.debian.org" <debian-hppa@lists.debian.org>
+References: <3B8FB5EF.3020301@videotron.ca> <20010902101556.W11744@linuxcare.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Re: booting problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 03, 2001 at 07:34:20PM -0600, Grant Grundler wrote:
-> IIRC, should only need hpfs (which also depends on ufs?..dunno anymore)
-> hfs == Apple's Hiearchial File System.
+Hello Richard,
 
-hpfs is IBM's High Performance FileSystem for OS/2 :-)
-You need ufs and mount with -ohp, iirc.
+Richard Hirst wrote:
 
-> > Btw does the HP-UX fs support patch made it to Linus tree ?
+> On Fri, Aug 31, 2001 at 12:06:07PM -0400, James Waterhouse wrote:
 > 
-> dunno.  But didn't that patch come from the parisc-linux tree?
+>>Hello everyone,
+>>	I'm seem to be having trouble booting into linux on my 712/60. I hope 
+>>someone can help. I have built a new kernel (from cvs) and also set up 
+>>an nfs root. When I try to boot the linux boots up to the point where it 
+>>says "Cleaning: /tmp/ /var/lock /var/run" and then it just hangs. Any 
+>>idea what is cause it to hang? Could there be a problem with the nfsroot?
+>>
+> 
+> Possible.  What are you using for your nfsroot?
 
-Yes, it's in Linus' tree.  We merged that in a loooong time ago.
 
-> Anyway...you might check if those disks are under LVM control.
-> If so, you'll have to convert those to non-LVM storage using HPUX.
-> The archives for parisc-linux mailing list have a discussion on HP's
-> LVM issues.
+For an nfsroot I'm using the debian base from
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/basetars/base-20010404.tar.gz
 
-That's what I assume.  There is now vxfs support in the tree, but nobody's
-tried getting it working on HP vxfs volumes.  Volunteers...?
+> Does it still respond to pings?
 
--- 
-Revolutions do not require corporate support.
+
+Yes it still responds to pings.
+
+> What console are you using?
+
+
+I don't know... (do you mean sti or serial? if so then I think it is sti 
+... whatever is default the config)
+
+> Do you get a prompt if you boot with 'init=/bin/sh'?
+
+
+How do I do that?
+
+James
+
+
+> 
+> Richard
+> 
+> 
+> 
