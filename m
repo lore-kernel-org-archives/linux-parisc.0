@@ -1,43 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA03929
-	for <parisc-linux@puffin.external.hp.com>; Wed, 11 Oct 2000 00:58:42 -0600
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 8157F1072
-	for <parisc-linux@thepuffingroup.com>; Tue, 10 Oct 2000 23:59:44 -0700 (PDT)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id AAA05911
-	for parisc-linux@thepuffingroup.com; Wed, 11 Oct 2000 00:04:01 -0700 (PDT)
-Date: Wed, 11 Oct 2000 00:04:01 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200010110704.AAA05911@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA17225
+	for <parisc-linux@puffin.external.hp.com>; Wed, 11 Oct 2000 06:11:32 -0600
+Received: from user32-202.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.32.202)
+  by mailserv2.iuinc.com with SMTP; 11 Oct 2000 12:12:37 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 453CAB005; Wed, 11 Oct 2000 13:09:57 +0100 (BST)
+Date: Wed, 11 Oct 2000 13:09:57 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Bdale Garbee <bdale@gag.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] ntpd fails on mlockall()
+Message-ID: <20001011130957.N9399@linuxcare.com>
+References: <20001010025700.26519359E7@rover.gag.com> <20001010215315.J9399@linuxcare.com> <8766n0ynjw.fsf@rover.gag.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] __hp9000s700 predefined
+In-Reply-To: <8766n0ynjw.fsf@rover.gag.com>; from bdale@gag.com on Tue, Oct 10, 2000 at 11:06:11PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
-I was looking at how to properly ifdef code for parisc-linunx
-and it seems that "#ifdef __hppa__" is "the right way" to do this.
+On Tue, Oct 10, 2000 at 11:06:11PM -0600, Bdale Garbee wrote:
+> rhirst@linuxcare.com (Richard Hirst) writes:
+> 
+> > I've changed the kernel to grow the user stack dynamically, so
+> > hopefully your ntpd will work now.
+> 
+> Still dies, but without the mlockall() error, so that seems fixed.  The dmesg
+> output when it fails is
 
-Currently two files use ifdef CONFIG_PARISC: genrtc.c and hilkdb.c
-Randolf (tausq) is fixing genrtc.c.
-Any volunteers (ie 715/50 or 715/33 owners) for hilkdb.c?
+Thought I'd better investigate in case it was my stack changes...
+(configured and built ntp natively, btw).
+Turns out this crash is caused by the call to timer_create() in
+ntpd/ntp_timer.c.
 
-But Randolf also noted that gcc predefines a few other things:
-	-D__hp9000s700 -D_PA_RISC1_1
+timer_create() is in librt.a - anyone know whether we expect this to
+work or not atm?
 
-John Marvin suggested we remove the __hp9000s700 from the pa-linux
-config files since it's HPUX crud. I think he's right since parisc-linux
-kernels are intended to run on both 700's and 800's.
-parisc-linux configs functionality in/out based on CONFIG_XXX flags
-or run-time checks (ie register_driver()).
-Can we remove the "-D__hp9000s700" from gcc/gcc/config/pa/pa-linux.h?
+Anyway, if you undefine HAVE_TIMER_CREATE and HAVE_TIMER_SETTIME
+in config.h and rebuild it, it does better.  I now get:
 
-Similarly, gcc/gcc/config/pa/pa-linux64.h has "-D__hp9000s800"
-which could/should be removed at the same time.
+11 Oct 05:21:13 ntpd[3141]: logging to file /tmp/ntpd.log
+11 Oct 05:21:13 ntpd[3141]: ntpd 4.0.99g Wed Oct 11 05:17:40 MDT 2000 (5)
+11 Oct 05:21:13 ntpd[3141]: precision = 10000 usec
+11 Oct 05:21:13 ntpd[3141]: kern_enable is 1
+11 Oct 05:21:13 ntpd[3141]: init_socket_sig: ioctl(I_SETSIG, S_INPUT) failed: Bad address
 
-Any other thoughts on this?
+So, I undefined USE_UDP_SIGPOLL, and now ntpd runs and talks to remote
+ntp servers.  Don't know whether it is doing what it should though...
 
-thanks,
-grant
+Richard
