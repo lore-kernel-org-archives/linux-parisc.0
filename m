@@ -1,53 +1,59 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA03042
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 09:20:19 -0600
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id LAA04574
-	for <parisc-linux@thepuffingroup.com>; Fri, 25 Jun 1999 11:29:34 -0400
-Sender: adevries@feather.thepuffingroup.com
-Message-ID: <3773A05E.3C75BE51@thepuffingroup.com>
-Date: Fri, 25 Jun 1999 11:29:34 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA03241
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 09:55:18 -0600
+From: Ulrich.Strelow@schering.de
+Received: from fw-wiss.schering.de (be2314.schering.de [149.234.1.29])
+	by be3334.schering.de (8.9.1/8.9.1) with SMTP id RAA06145
+	for <parisc-linux@thepuffingroup.com>; Fri, 25 Jun 1999 17:55:17 +0200 (MET DST)
 To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] GREAT NEWS: THE KERNEL REALLY BOOTS THE FIRST TIME !!!!!!!!!!
+Message-ID: <C125679B.00577445.00@BE2314.schering.de>
+Date: Fri, 25 Jun 1999 17:55:04 +0200
+Mime-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] make dep not working on HP-UX
 List-ID: <linux-parisc.vger.kernel.org>
 
-Forwarding this one on as well...
-
-- Alex
 
 
--------- Original Message --------
-Subject: GREAT NEWS: THE KERNEL REALLY BOOTS THE FIRST TIME !!!!!!!!!!
-Date: Fri, 25 Jun 1999 15:49:26 +0200
-From: Helge Deller <helge.deller@ruhr-uni-bochum.de>
-To: parisc-linux <parisc-linux@thepuffingroup.com>
+I have had a similar problem on our production HP-UX systems. Running ls *
+on a directory with a lot of files gives
+ksh: /usr/bin/ls: arg list too long
 
-(PS:maybe this message appears 3 times - sorry, if that should
-happen...)
+To solve this problem you need to set the HP-UX kernel parameter
+large_ncargs_enabled  1
+and rebuild the HP-UX kernel.
 
-Hi PA-RISC-FANS !
+Here is the information from HP Electronic Support Center:
 
-After some (really hard) hours of hacking :
+Problem Description
 
-!!!!!!!!!!!!!!!! I GOT THE KERNEL BOOTING !!!!!!!!!!!!!!!!!!!!!!!
+What is the impact of changing the kernel parameter
+"large_ncargs_enabled" from 0 to 1?
 
-Instructions: (as normal!)
-make dep clean vmlinux
-make Image
+What is the meaning of this parameter?
 
-You can then find the bootable Image in arch/parisch/hp/boot/Image.
+Configuration Info
 
-You will see the LED´s blinking !!!!!!!
+Operating System - HPUX
+Version-
+Hardware System - HP 9000
+Series -
 
-I´m SO HAPPY !
-Let the hacking begin !
-I will commit my changes in the next hour !
+Solution
+When large_ncargs_enabled is set to "1", it increases the default
+"environment size" (the memory set aside to be your login
+environment - to hold your PATH variable, etc.) from 20478 to
+2048000. SAM doesn't have any info about this parm or any max/minvalue.
 
-Many thanks to Jason Eckhard & Alex DeVries for their great first
-implemenations of IPL/Makefiles !
+If you have been having trouble using an "rm *" on really big
+directories (it was running out of environment space), the command
+will work when you set it to 1.  Regarding system performance, it
+will eat up extra memory (2 M vs. 20 K), but if you don't have too
+many users and you have plenty of RAM, it shouldn't be a problem.
 
-Helge Deller,
-Germany.
+Ulrich
+---------------------------------------------
+Ulrich Strelow
+<ulrich.strelow@schering.de or
+ulrich_strelow@yahoo.com>
+Berlin, Germany
