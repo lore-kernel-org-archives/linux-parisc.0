@@ -1,59 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web11207.mail.yahoo.com (web11207.mail.yahoo.com [216.136.131.189])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9F32D482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 08:42:32 -0600 (MDT)
-Message-ID: <20010712144225.20503.qmail@web11207.mail.yahoo.com>
-Date: Thu, 12 Jul 2001 07:42:25 -0700 (PDT)
-From: Charles Boone <ccboone@yahoo.com>
-Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240
-To: Richard Hirst <rhirst@linuxcare.com>,
-	Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Charles Boone <ccboone@yahoo.com>,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20010711094816.G18375@linuxcare.com>
+Received: from ati6.ati.stlawrencec.on.ca (unknown [142.155.128.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E563482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 09:03:13 -0600 (MDT)
+Message-ID: <000701c10ae4$186cf6a0$0f809b8e@ati.stlawrencec.on.ca>
+From: "rpengelly" <rpengelly@ati.stlawrencec.on.ca>
+To: "Richard Hirst" <rhirst@linuxcare.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <001201c10ad2$3beb97b0$0f809b8e@ati.stlawrencec.on.ca> <20010712140756.C18375@linuxcare.com> <001e01c10ad6$588cb4e0$0f809b8e@ati.stlawrencec.on.ca> <20010712145615.E18375@linuxcare.com>
+Subject: Re: [parisc-linux] problems with checksums
+Date: Thu, 12 Jul 2001 11:05:31 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-One piece of info that I did not include,  which I
-thought might be relative to the ps/2 issue.  I am not
-sure it is, but I do not have a keyboard or mouse
-connected on the c240.  I was pretty sure that it
-would not be a problem, since it would be just like
-having a dumb terminal on it.
+I downloaded the 0.92 full iso and its checksum did not match any of the
+one's given. I'm wondering if it may be because I first have to download it
+form esiee to a windows machine then transfer it via ftp to a linux box.
 
+It still seems strange that the file downloads in .gz format but will not
+unzip.
 
---- Richard Hirst <rhirst@linuxcare.com> wrote:
-> On Tue, Jul 10, 2001 at 11:36:25PM -0600, Grant
-> Grundler wrote:
-> > Richard Hirst wrote:
-> > > IAOQ = _gsc_readl + 8
-> > > called from dino_in32()
-> > > I guess it was dino_in32(0xc1b21ec0), which
-> looks odd.
-> > 
-> > It's definitely wrong. dino_in32() pokes dino to
-> generate IO Port
-> > transactions and Dino lives in 0xF... address
-> range. This suggests the
-> > pci_dev->sys_data is garbage (perhaps not
-> initialized?) or points to garbage.
-> > Perhaps for Dino's built-in PS/2 or RS232 port?
-> > 
-> > Sorry, I didn't follow this thread earlier. Does
-> console output hint
-> > which PCI device was involved (if any)?
-> 
-> Not obviously, and it failed in the middle of the
-> install, so presumably
-> whatever device was involved had been accessed
-> successfully earlier.
-> 
-> Richard
-> 
+Would you be willing to help me out by sending the files by ftp to my linux
+box? I don't know if you have a high speed connection or not?
+Thanks again
 
-
-__________________________________________________
-Do You Yahoo!?
-Get personalized email addresses from Yahoo! Mail
-http://personal.mail.yahoo.com/
+Ray
