@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1AC6948D7
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 11:14:09 -0700 (MST)
-Message-Id: <200303201813.h2KIDn3P007214@hiauly1.hia.nrc.ca>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 58B6E48D7
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 11:20:14 -0700 (MST)
+Date: Thu, 20 Mar 2003 19:20:05 +0100
+Message-ID: <3E689FC400004712@ocpmta1.freegates.net>
+In-Reply-To: <03031617171601.01171@wolf466>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-To: jsoe0708@tiscali.be (Joel Soete)
-Date: Thu, 20 Mar 2003 13:13:49 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: tausq@debian.org, b.gunreben@web.de, willy@debian.org,
-	doko@cs.tu-berlin.de, debian-hppa@lists.debian.org,
-	debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org,
-	kuznet@ms2.inr.ac.ru, linux-net@vger.kernel.org
-In-Reply-To: <3E689FC4000046DF@ocpmta1.freegates.net> from "Joel Soete" at Mar 20, 2003 06:51:27 pm
+To: mszick@goquest.com, "Matthew Wilcox" <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,52 +22,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >> 
-> >> these are definitely kernel addresses....
-> >
-> >Right.  I see the code that's causing the problem in kernel/signal.c:
-> >
-> >                if (k->sa.sa_handler == SIG_IGN
-> >		    || (k->sa.sa_handler == SIG_DFL
-> >
-> >
-> >You don't want to canonicalize k->sa.sa_handler here, so a cast to
-> >void * or something is needed.  The PA is the only port that I am
-> >aware of that needs to canonicalize function pointers.
-> >
-> Well I try to test some:
-> --- signal.h.orig       2003-03-20 15:12:24.000000000 +0100
-> +++ signal.h    2003-03-20 15:11:47.000000000 +0100
-> @@ -106,9 +106,15 @@
->  #define SIG_UNBLOCK        1   /* for unblocking signals */
->  #define SIG_SETMASK        2   /* for setting the signal mask */
->  
-> +#if __GNUC__ == 3 && __GNUC_MINOR__ >= 3 || __GNUC__ > 3
-> +#define SIG_DFL        (0)                     /* default signal handling
-> */
-> +#define SIG_IGN        (1)                     /* ignore signal */
-> +#define SIG_ERR        (-1)                    /* error return from signal
-> */
-> +#else
->  #define SIG_DFL        ((__sighandler_t)0)     /* default signal handling
-> */
->  #define SIG_IGN        ((__sighandler_t)1)     /* ignore signal */
->  #define SIG_ERR        ((__sighandler_t)-1)    /* error return from signal
-> */
-> +#endif
+Hi Mike,
 
-No, don't do that.  SIG_DFL, SIG_IGN and SIG_ERR expand to compound
-literals.  Look at the assembly output from the following little
-program (gcc -S) with and without the "void *" cast.
+>On Sunday 16 March 2003 05:06 pm, Matthew Wilcox wrote:
+>> On Sun, Mar 16, 2003 at 04:52:19PM -0600, Michael S. Zick wrote:
+>> > On Friday 14 March 2003 07:17 am, Matthew Wilcox wrote:
+>> > > net/core/rtnetlink.c:extern __inline__ int rtnetlink_rcv_skb(struct
+>> > > sk_buff *skb)
+>> >
+>> > Stolen from the GCC thread on 3.x.x inlining...
+>> > - - - - GCC - - - - -
+>> > For the record, the kernel doesn't need this any more.  Go check 2.5;
+>> > new versions of <linux/compiler.h> contain this line:
+>> > #define inline          __inline__ __attribute__((always_inline))
+>> > - - - - - - - - - - - -
+>> > That forces GCC to ignore its changed inline metrics and simply inline
+>> > the function.
+>>
+>> Yes, but...
+>>
+>>  * Joel's using 2.4, not 2.5
+>Exactly why I mentioned it.
+>
+>>  * #define inline doesn't help functions which are marked as __inline__
+>If he follows your suggestion of dropping the "__" around "inline" it will.
+>
+>>
+>> This isn't a function which absolutely needs to be inlined.  It can
+>> be `static inline' and gcc can do whatever it likes then.
+>The subject is getting a lot of discussion on the GCC list.  I only mentioned
+>this one workaround so that Joel could get on with his work before the issue
+>is settled on the GCC list.
+>
+Good idea: I (just sorry for delay) back port this stuff for 2.5 and it works
+fine.
 
-typedef int (*__sighandler_t)(void);
-#define SIG_IGN        ((__sighandler_t)1)
-int foo (__sighandler_t g)
-{
-  return g == (void *)SIG_IGN;
-}
+Thanks a lot,
+    Joel
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
