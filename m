@@ -1,36 +1,50 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA19757
-	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jul 1999 09:16:26 -0600
-Received: from postal.sr.hp.com (root@postal.sr.hp.com [15.4.46.173])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id IAA25568
-	for <parisc-linux@thepuffingroup.com>; Fri, 16 Jul 1999 08:16:56 -0700 (PDT)
-Received: from meow.sr.hp.com (billk@meow.sr.hp.com [15.8.162.83]) by postal.sr.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0) id IAA24617 for <parisc-linux@thepuffingroup.com>; Fri, 16 Jul 1999 08:15:50 -0700 (PDT)
-Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id IAA21533 for parisc-linux@thepuffingroup.com; Fri, 16 Jul 1999 08:16:51 -0700 (PDT)
-Message-Id: <199907161516.IAA21533@meow.sr.hp.com>
-Subject: Re: [parisc-linux] 715/33 experience and one question (fwd)
-To: parisc-linux@thepuffingroup.com
-Date: Fri, 16 Jul 1999 08:16:51 -0700 (PDT)
-From: Bill Katz <billk@sr.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA20094
+	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jul 1999 09:53:03 -0600
+Date: Fri, 16 Jul 1999 09:53:27 -0600 (MDT)
+From: Mike Hibler <mike@fast.cs.utah.edu>
+Message-Id: <199907161553.JAA10093@fast.cs.utah.edu>
+To: Matthew.Wilcox@genedata.com, Ulrich.Strelow@schering.de
+Subject: Re: [parisc-linux] 715/33 experience and one question
+Cc: parisc-linux@thepuffingroup.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-|Right, the 715 has neither DINO nor LASI.  The chips inside are labelled
-|OLIN and SHINKO.  http://www.thepuffingroup.com/parisc/hp9000_models.html
-|has no details on these chips.  Alex tells me he's trying to get
-|documentation on these chips, but I'll have to be patient.  The major
-|stumbling block with these machines is likely to be the SCSI controller
-|-- it's an NCR53C700 which is apparently a very nasty device; much more
-|nasty than the 710 which is built into LASI.
-|
-|In my copious spare time, I'm stumbling through the Utah Mach sources,
-|trying to glean details about OLIN and SHINKO but I've had no success
-|so far.
+> Date: Fri, 16 Jul 1999 14:14:13 +0200
+> From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+> To: Ulrich.Strelow@schering.de
+> Subject: Re: [parisc-linux] 715/33 experience and one question
+> 
+> On Fri, Jul 16, 1999 at 01:54:18PM +0200, Ulrich.Strelow@schering.de wrote:
+> [successful boot report snipped]
+> > And then my question:
+> > I think the 715/33 does  not  have a Dino or a Lasi chip (am I right?), but
+> >  does it have a gecko (and what is this?)?
+> 
+> Right, the 715 has neither DINO nor LASI.  The chips inside are labelled
+> OLIN and SHINKO.  http://www.thepuffingroup.com/parisc/hp9000_models.html
+> has no details on these chips.  Alex tells me he's trying to get
+> documentation on these chips, but I'll have to be patient.  The major
+> stumbling block with these machines is likely to be the SCSI controller
+> -- it's an NCR53C700 which is apparently a very nasty device; much more
+> nasty than the 710 which is built into LASI.
+> 
+> In my copious spare time, I'm stumbling through the Utah Mach sources,
+> trying to glean details about OLIN and SHINKO but I've had no success
+> so far.
+> 
 
-Whoops.  My previous comments about ASP apply to the even earlier
-machines (720/730/735).  I also didn't know about the differences
-between 5sC700 and 53C710.
+We never had a 715/33 so I don't know anything about them.  But someone
+else said they had the ASP which is the "original snakes" IO subsystem
+(705/710/720/730/750).  The ASP is quite similar to the LASI, and there
+is plenty of code in the Mach sources.
 
-I'm sure we've got this data stashed away SOMEWHERE...
+Hit your HP sources up for:
 
-	-Bill
+	Corba/Coral I/O Subsystem External Reference Specification
+
+Don't have a part or drawing number unfortunately.  We have version 1.43
+from November 1990.  Looks like it came out of Cupertino.
+
+As for the SCSI controller, the 700 isn't that different from the 710.
+Had a few bugs though as I recall and our driver/script did not work
+around all of them.
