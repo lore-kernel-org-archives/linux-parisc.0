@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 15 Oct 2003 08:02:14 +0200
-Message-ID: <3F8A29A200001472@ocpmta1.freegates.net>
-In-Reply-To: <20031015045242.GB7351@colo.lackof.org>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: "Matthew Wilcox" <willy@debian.org>,
-	parisc-linux@parisc-linux.org,
-	"Derek Engelhaupt" <derekengelhaupt@rocketmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from sunsite.ms.mff.cuni.cz (sunsite.ms.mff.cuni.cz [195.113.19.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C29FB48AC
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Oct 2003 01:37:49 -0600 (MDT)
+Date: Wed, 15 Oct 2003 07:34:31 +0200
+From: Jakub Jelinek <jakub@redhat.com>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: libc-alpha <libc-alpha@sources.redhat.com>,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
+Reply-To: Jakub Jelinek <jakub@redhat.com>
+References: <20031012213734.GJ23999@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031012213734.GJ23999@systemhalted>
+Subject: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,42 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant,
+On Sun, Oct 12, 2003 at 05:37:34PM -0400, Carlos O'Donell wrote:
+> 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
+> 
+> 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
+> 	(__pthread_find_self): Likewise.
+> 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
 
-Thanks for all (advise, attention, ...)
-    Joel
+You need to look at linuxthreads/attr.c (__pthread_attr_getstack) too
+(the recent code which parses /proc/self/maps and finds stack VMA in there).
 
-PS: for me it is already a progress: i finaly reach to understand some concept
-as 'aliasing' (still have to understand exatly coherent and no-coherent,
-... :) )
-
->-- Original Message --
->Date: Tue, 14 Oct 2003 22:52:42 -0600
->From: Grant Grundler <grundler@parisc-linux.org>
->To: Joel Soete <soete.joel@tiscali.be>
->Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org,
->	Derek Engelhaupt <derekengelhaupt@rocketmail.com>
->Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
->
->
->On Tue, Oct 14, 2003 at 06:59:52PM +0200, Joel Soete wrote:
-> If I well understand it means that a same real (absolute) address
-> has a different virtual addresse for each processor?
-
-multiple translations. It can be across processors but doesn't h
->ve to be.
-
-> (btw Do you have any idea where i can find of the detail way to implement
-> it?)
-
-If someone had worked it out and provided a patch, we probably
-be using it. I think that's what you (or someone) needs to do.
-
-sorry, 
-grant
-
-
-
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+	Jakub
