@@ -1,34 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA11912
-	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Dec 1999 19:48:05 -0700
-Date: Thu, 2 Dec 1999 03:51:30 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Alex deVries <adevries@thepuffingroup.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
-        dave@hiauly1.hia.nrc.ca, mklein@dis.com, sieler@allegro.com,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Progress - Update
-Message-Id: <19991202035130.B6599@mathe.stud.uni-erlangen.de>
-References: <E11tE6d-0008Lk-00@the-village.bc.nu> <38456905.BF53929B@thepuffingroup.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA12112
+	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Dec 1999 19:55:15 -0700
+Received: from mcn.net (cjohnson@cj-solutions.com [192.168.0.10])
+	by cjs01.cj-solutions.com (8.9.3/8.9.3) with ESMTP id TAA09370
+	for <parisc-linux@thepuffingroup.com>; Wed, 1 Dec 1999 19:47:21 -0100
+Sender: cjohnson@cj-solutions.com
+Message-ID: <38458959.9307D971@mcn.net>
+Date: Wed, 01 Dec 1999 19:47:21 -0100
+From: Carl Johnson <cjs@mcn.net>
+MIME-Version: 1.0
+To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <38456905.BF53929B@thepuffingroup.com>
+Subject: [parisc-linux] Booting on J200
 List-ID: <linux-parisc.vger.kernel.org>
 
-> So when do people think we should do that merge?
+I have built my own kernels and modified them some, but have also
+used the prebuilt kernels, I have had no success figuring out
+what hangs the kernel but anyhow, I will tell of my testing
+of the 1999-10-19 and 1999-11-13. And Hopefully I will
+recieve some help, _TIA_
 
-I actually just got 2.3.29 to build (not work, but I'm sure it shouldn't take too
-long to do that) with the parisc changes hacked in.
+--
+1999-10-19: Hangs at transfering control to kernel
 
-I think within the next few days I should have a kernel tree that works as much
-as our current tree does, but is based on 2.3.
+--
+1999-11-13: Hnags after:
 
-The other issue is when we want the CVS tree to be moved to 2.3.  This mainly
-depends on whether people have large uncommitted patch sets that they would
-like to finish / commit as long as they at least have an idea how the kernel
-behaves without the patch.
+Transfering control to kernel. (At entry point 0x00010000)
+kernel(0x00148C80, 0x00504010, 0x00148C80, 0x00016640)
+Clear BSS 0x0011B048 --> 0x0013D384
+Boot Loader: PA/Linux, maybe PALO
+real_mode setup exiting
 
-So, anyone ?
+--
+1999-11-17 CVS snapshot with some of my own modif. to try to solve
+the hanging at real_mode.
 
-	Philipp Rumpf
+__Will not build__
+
+-- 
+Carl Johnson
