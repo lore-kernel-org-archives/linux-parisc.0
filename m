@@ -1,102 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 854E5482A
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Aug 2001 01:11:39 -0600 (MDT)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel7.hp.com (Postfix) with ESMTP id 0D0A01F64E
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Aug 2001 03:10:29 -0400 (EDT)
-Received: from chrysl (chrysl.fc.hp.com [15.1.54.200])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 8B0B24248
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Aug 2001 01:11:38 -0600 (MDT)
-Received: from willy by chrysl with local (Exim 3.12 #1 (Debian))
-	id 15Xdn8-0000kt-00
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Aug 2001 01:11:38 -0600
-To: parisc-linux@parisc-linux.org
-Message-Id: <E15Xdn8-0000kt-00@chrysl>
-From: Matthew Wilcox <willy@ldl.fc.hp.com>
-Date: Fri, 17 Aug 2001 01:11:38 -0600
-Subject: [parisc-linux] Turn off CONFIG_PCI
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB158482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 Aug 2001 13:53:10 -0600 (MDT)
+Date: Fri, 17 Aug 2001 15:53:40 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@lists.parisc-linux.org
+Cc: baldric-exec@baldric.uwo.ca
+Subject: Re: [parisc-linux] Users staying up to date.
+Message-ID: <20010817155340.C8649@megatonmonkey.net>
+References: <20010814154037.I25258@megatonmonkey.net> <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk> <20010814215030.A26703@megatonmonkey.net> <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Aug 15, 2001 at 04:16:10AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-A number of people have been asking for the ability to turn off CONFIG_PCI,
-and while I was reviewing the outstanding diff vs 2.4.9, I noticed I could
-take out some of the patch if I just made some slight alterations.  Please
-test this patch; it compiles for me.
+> 
+> /usr/share/locale
+> /usr/share/locale/cs
+> /usr/share/locale/cs/LC_MESSAGES
+> /usr/share/locale/cs/LC_MESSAGES/dpkg.mo
+> 
+> I seem to remember someone saying this was a bug in an old version
+> of dpkg.  So one way around this may be to dpkg --remove texinfo, then
+> install dpkg, then install texinfo again.
+>
 
-Index: drivers/char/serial.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/drivers/char/serial.c,v
-retrieving revision 1.25
-diff -u -p -r1.25 serial.c
---- serial.c	2001/08/17 06:10:06	1.25
-+++ serial.c	2001/08/17 07:06:02
-@@ -414,11 +414,7 @@ static _INLINE_ unsigned int serial_in(s
- 		return readb((unsigned long) info->iomem_base +
- 			     (offset<<info->iomem_reg_shift));
- 	default:
--#if defined(CONFIG_PCI) || defined(CONFIG_ISA)
- 		return inb(info->port + offset);
--#else
--		BUG();
--#endif
- 	}
- }
+I tried removing texinfo. Sadly, what proceeds to occur is a 
+relative chain of packages that continually depend on 
+/usr/share/locale/cs, all the way down to 'tar.' At which point
+I had lost most of my system functionality and was scp'ing 
+binaries into /bin to keep it alive.
+
+A fruitless effort, but interesting none the less. ;)
+
+When I get home tonight I'll roll a new kernel and do more testing.
+
+How does the installer get around this problem?
+Since it too must start with a base system?
+(Maybe it's just my misunderstanding of the complete inner workings
+of hte installer).
+
+Cheers,
+Carlos.
+
+
  
-@@ -437,11 +433,7 @@ static _INLINE_ void serial_out(struct a
- 			      (offset<<info->iomem_reg_shift));
- 		break;
- 	default:
--#if defined(CONFIG_PCI) || defined(CONFIG_ISA)
- 		outb(value, info->port+offset);
--#else
--		BUG();
--#endif
- 	}
- }
- 
-Index: include/asm-parisc/io.h
-===================================================================
-RCS file: /home/cvs/parisc/linux/include/asm-parisc/io.h,v
-retrieving revision 1.22
-diff -u -p -r1.22 io.h
---- io.h	2001/07/15 22:30:29	1.22
-+++ io.h	2001/08/17 07:06:03
-@@ -43,9 +43,6 @@
- #endif /* USE_HPPA_IOREMAP */
- 
- #if defined(CONFIG_PCI) || defined(CONFIG_ISA)
--/*
-- *	So we get clear link errors 
-- */
- extern unsigned char inb(unsigned long addr);
- extern unsigned short inw(unsigned long addr);
- extern unsigned int inl(unsigned long addr);
-@@ -53,7 +50,28 @@ extern unsigned int inl(unsigned long ad
- extern void outb(unsigned char b, unsigned long addr);
- extern void outw(unsigned short b, unsigned long addr);
- extern void outl(unsigned int b, unsigned long addr);
-+#else
-+static inline char inb(unsigned long addr)
-+{
-+	BUG();
-+	return -1;
-+}
- 
-+static inline short inw(unsigned long addr)
-+{
-+	BUG();
-+	return -1;
-+}
-+
-+static inline int inl(unsigned long addr)
-+{
-+	BUG();
-+	return -1;
-+}
-+
-+#define outb(x, y)	BUG()
-+#define outw(x, y)	BUG()
-+#define outl(x, y)	BUG()
- #endif
- 
- extern void memcpy_fromio(void *dest, unsigned long src, int count);
