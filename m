@@ -1,46 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA26694
-	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Dec 1999 21:49:29 -0700
-Message-Id: <199912070450.XAA01363@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] a pretty big change
-To: bame@debian.fc.hp.com (Paul Bame)
-Date: Mon, 6 Dec 1999 23:50:01 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <199912040128.SAA29635@debian.fc.hp.com> from "Paul Bame" at Dec 3, 99 06:28:23 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA31749
+	for <parisc-linux@puffin.external.hp.com>; Tue, 7 Dec 1999 09:51:32 -0700
+Message-Id: <199912071653.JAA18644@debian.fc.hp.com>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] a pretty big change 
+In-reply-to: Your message of "Mon, 06 Dec 1999 23:50:01 EST."
+             <199912070450.XAA01363@hiauly1.hia.nrc.ca>
+Date: Tue, 07 Dec 1999 09:53:02 -0700
+From: Paul Bame <bame@debian.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-After a day of hacking, I was finally able to link the kernel successfully.
-It booted through to the end of realmode_setup.  Probably, further work is
-needed on the TLB handler.  I wonder if calls between real and virt, and
-visa versa are working.  No change to som_relocate was necessary.
+= After a day of hacking, I was finally able to link the kernel successfully.
+= It booted through to the end of realmode_setup.  Probably, further work is
+= needed on the TLB handler.  I wonder if calls between real and virt, and
+= visa versa are working.  No change to som_relocate was necessary.
 
-There is one problem.  I now have to turn off the system power to get the
-system to reboot.  Formerly, I could just press the TOC button.
+Glad you had better luck with the HPUX boot loader than I had.
 
-It also looks like the "real_" defines and protos can be eliminated.
+= There is one problem.  I now have to turn off the system power to get the
+= system to reboot.  Formerly, I could just press the TOC button.
 
-Dave
-> 
-> 
-> Bad failures occur (for me) with the hpux boot loader.  I have no
-> idea whether I introduced them, but I might have.  It looks
-> like the first instruction of vmlinux doesn't even get executed,
-> so probably something in the SOM header is telling the hpux boot loader to
-> do something stupid.  som_relocate may need an upgrade, but I'm
-> stumped about what's going wrong.
-> 
-> 	-P
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
+That happens pretty frequently to me but I've not tracked down why
+it happens.  Did you try holding the TOC button in for several seconds?
+On some workstations I've been told that generates a hard reset.
 
+= It also looks like the "real_" defines and protos can be eliminated.
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+As I merge in your changes I'll look into that.
+
+	-P
