@@ -1,60 +1,73 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA21630
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Dec 1999 20:58:51 -0700
-Sender: cjohnson@cj-solutions.com
-Message-ID: <3846E9BD.DFC8D51C@mcn.net>
-Date: Thu, 02 Dec 1999 20:50:53 -0100
-From: Carl Johnson <cjs@mcn.net>
-MIME-Version: 1.0
-To: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>,
-        "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Booting on J200
-References: <38458959.9307D971@mcn.net> <99120220503901.00296@P100>
-Content-Type: text/plain; charset=iso-8859-1
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA28847
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Dec 1999 14:56:00 -0700
+Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
+	by atlrel1.hp.com (Postfix) with ESMTP id 73AEE140F7
+	for <parisc-linux@thepuffingroup.com>; Fri,  3 Dec 1999 15:52:41 -0500 (EST)
+Received: (from frowand@localhost) by xsvr4.cup.hp.com (8.7.6/8.7.3) id MAA02894 for parisc-linux@thepuffingroup.com; Fri, 3 Dec 1999 12:52:12 -0800 (PST)
+From: Frank Rowand <frowand@cup.hp.com>
+Message-Id: <199912032052.MAA02894@xsvr4.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Fri, 03 Dec 1999 12:52:12 PST
+Subject: [parisc-linux] bad news, good news, unkown (Temp CR used as permanent storage)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks Helge:
+Philipp kindly documented the Control Register usage a while ago...
 
-I never said I looked at the obvious first! Poor planning/thinking
-on my part. I did however about 2 secs before reading your post
-did recompile a FRESH ("VIRGIN") source and did manipulate
-the command line and get it to give me a Pengiun powered PA
-with a shell!
+> register  today           soon
+> CR24      unused          what CR26 is today (I thought CR2[45] were readable
+> CR25      unused          what CR25 is today  from userspace. stupid prumpf)
+> CR26      used in head.S  unused
+> CR27      used in head.S  unused
+> CR28      temporary usage in interruption handlers [GR1  saved here]
+> CR29      temporary usage in interruption handlers [arg0 (for the interruption
+>                   handler, NOT GR26) saved here]
+> CR30      current, 0 if in kernel mode (this might not work for syscalls yet)
+> CR31      temporary usage in interruption handlers [GR29 saved here]
 
-Thanks Anyhow!
 
-Helge Deller wrote:
-> 
-> Am Wed, 01 Dec 1999 schrieb Carl Johnson:
-> > I have built my own kernels and modified them some, but have also
-> > used the prebuilt kernels, I have had no success figuring out
-> > what hangs the kernel but anyhow, I will tell of my testing
-> > of the 1999-10-19 and 1999-11-13. And Hopefully I will
-> > recieve some help, _TIA_
-> >
-> > --
-> > 1999-10-19: Hangs at transfering control to kernel
-> >
-> > --
-> > 1999-11-13: Hnags after:
-> >
-> > Transfering control to kernel. (At entry point 0x00010000)
-> > kernel(0x00148C80, 0x00504010, 0x00148C80, 0x00016640)
-> > Clear BSS 0x0011B048 --> 0x0013D384
-> > Boot Loader: PA/Linux, maybe PALO
-> > real_mode setup exiting
-> >
-> 
-> Hello Carl,
-> 
-> Are you shure, that the outputs doesn´t go to the first COM-Port as default (in
-> which case you would never see something more on the screen)...
-> 
-> Check /arch/parisc/boot/boot_code/ipl_c.c and search for " console=ttyS0 " ...
-> You would have to modify this (console=tty0)  ** OR **  start the machine with
-> "boot pri isl" and modify the command-line.
-> 
-> Helge Deller.
+THE BAD NEWS
 
--- 
-Carl Johnson
+The bad news is that the PA-RISC architecture allows PDC to modify the
+contents of the "Temporary" Control Registers, CR 24 - 31 (see "PA-RISC
+1.1 Firmware Architecture Reference Specification: Processor Dependent
+Code (PDC) Procedures" at
+http://thepuffingroup.com/parisc/documentation.html, the table and
+Note 5 on page 1-4).  If PDC does change the contents of these registers
+then they cannot be used for permanent storage by the kernel unless the
+kernel saves the registers before calling PDC and restores them after
+the return from PDC.
+
+
+THE GOOD NEWS
+
+I have started the process of changing the architecture to require PDC
+to preserve the state of the "Temporary" Control Registers.  So far,
+there have been no objections to the change, but there is still some
+time left for HP engineers to object (like if a current PDC implementation
+violates the new architecture).  This means that implementations of
+PDC for *future* machines should preserve the state of the Temporary
+Control Registers.
+
+
+THE UNKNOWN
+
+Even if no one in HP objects to the new constraint on PDC, there is no
+guarantee that existing PDC doesn't modify the Temporary Control
+Registers.  No one is checking all the PDC implementations that have
+ever shipped to ensure that they meet the new restriction.
+
+However, there is a chance that existing PDC does not modify the
+Temporary Control Registers, based on conversations with some
+relevent engineers, and some theorizing.
+
+(Of course, the obvious exception is that the Temporary Control
+Registers are undefined when the kernel's HPMC handler is called.)
+
+HP-UX does use some Temporary Control Registers for permanent
+storage.  It saves the values of these registers before calling
+PDC, and restores them when PDC returns.  I would recommend that
+Linux follow this practice.
+
+
+-Frank
