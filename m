@@ -1,114 +1,80 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA15325
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 18:54:49 -0600
-Received: from udlkern.fc.hp.com (root@udlkern.fc.hp.com [15.1.52.48])
-	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id SAA16253
-	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 18:55:39 -0600 (MDT)
-Received: from debian.fc.hp.com (root@debian.fc.hp.com [15.1.48.119]) by udlkern.fc.hp.com with ESMTP (8.8.6 (PHNE_14041)/8.7.1) id SAA25732 for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 18:55:39 -0600 (MDT)
-Received: from debian.fc.hp.com (bame@localhost [127.0.0.1])
-	by debian.fc.hp.com (8.9.3/8.9.3/Debian/GNU) with ESMTP id SAA20611
-	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 18:55:38 -0600
-Message-Id: <199910220055.SAA20611@debian.fc.hp.com>
-To: parisc-linux@thepuffingroup.com
-Date: Thu, 21 Oct 1999 18:55:38 -0500
-From: Paul Bame <bame@debian.fc.hp.com>
-Subject: [parisc-linux] boot loader
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA15431
+	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 18:57:07 -0600
+Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
+	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA13398
+	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 17:57:54 -0700 (PDT)
+Sender: frowand@cup.hp.com
+Message-ID: <380FB68D.A8F28E62@hp.com>
+Date: Thu, 21 Oct 1999 17:57:49 -0700
+From: Frank Rowand <frank_rowand@hp.com>
+Reply-To: frowand@cup.hp.com
+MIME-Version: 1.0
+To: Paul Bame <bame@debian.fc.hp.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Boot messages from C3000 console
+References: <199910212057.OAA19923@debian.fc.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Paul Bame wrote:
+> 
+> This is long.  Thanks to Alex Williamson for this -
+> 
+> The short answer is once control is apparently transferred to the
+> kernel, the system dies hard.  Someone who can read PIM dumps
+> might deduce more from this log.
+> 
+>         -Paul Bame
 
-Here's a sketch of a new (really, mostly stolen from other places
-like the existing boot_code code) boot loader for parisc.  It's
-aimed at solving some of our current problems (like linking ramdisks
-into the kernel) and being good enough to live on for a while,
-and be easily replaced if it starts to smell bad.
+< detailed HPMC info deleted>
 
-In order to use HP boot firmware, our disk layout has to look
-at least somewhat like a LIF volume (as it does today), so it
-makes sense to use LIF for a few other things too.  LIF is a
-very simple file system layout -- almost as simple as the one
-we were going to use for ramdisks.
 
-My proposal is to have a LIF volume on the beginning of any disk
-from which one might boot.  Make that LIF volume at least 2Mb, and
-maybe 10Mb if you want to store several kernels and ramdisk images.
-Here are the files it would hold:
+We found it...
 
-	IPL		Pretty much the boot loader we're using today
-			with some LIF intelligence added
-	vmlinuz		The kernel image, put there with the 'lifcp'
-			command.  Could have several kernels
-			on the LIF volume and boot any of them.
-	cmdline		The default, or the last?, command line used
-			to boot Linux.  Could possibly have several
-			different command lines in one or several files
-			but the UI for this needs thought.
-	ramdisk		One or more files containing ramdisk images
-	ptable		Partition table -- see below
+I'm cutting this from another discussion, don't feel like re-typing it.
+The file we are talking about (giving line number references) is head.S.
+We calculated the the offending offset was at label "blargh" plus a bit.
 
-During boot, the IPL is same as today.  It presents a
-command line just like today, from the 'cmdline' file if one is
-available.  On the command line you can select which kernel to
-boot if you have more than one and enter the normal Linux
-command-line parameters.  There'll be some little extension to handle
-specifying which ramdisk image you want, which is stripped off
-by the IPL and not passed to the kernel in that form.  The HP
-firmware would continue to be used, as it is today, to select whether
-you want to interact with the boot loader command line or not.
+The following discussion talks about how we get to the code section
+where the HPMC occurs.  Earlier, we talked about hard-coding magic
+addresses, which are machine specific (that's in the macro "debug",
+which is what actually caused the HPMC -- line 162).
 
-When the command line is committed, the ramdisk and kernel are loaded
-just like they are today (using the same code probably) the kernel
-is told how to find the ramdisk image (need to learn how this is done).
 
-Non-bootable disks can skip the LIF volume header altogether, though
-they might want it just in case they want to be bootable in the future.
+<ggg> I was looking at how we get to blargh and don't get it. Only one
+  location branches there.
+> yes, it compares r28 to zero
+> ah, r28 is the return value from the procedure called from line 265 (duhhhh)
+> r1 is loaded at line 251 (the value of MEM_PDC, from page zero)
+> That should be the entry point to PDC.
+> So there's an error returned by the pdc call at line 265.
+> calling PDC_BLOCK_TLB().  [arg0 = 18].  PDC_BLOCK_TLB doesn't exist on a
+  PA2.0 server (and I assume the same for workstations), because block TLB
+  entries don't exist, we have variable size pages instead.
 
-			Partition Table
 
-I suggest we place the partition table at a fixed low address on
-the disk such that it can appear as a file in the LIF file system
-on disks which have them, and be in the same location on non-LIF
-disks just there wouldn't be any LIF sugar around it.  This way
-the table's always in the same place which is easy for the tools
-which use it, and it's a LIF file too which might be convenient.
-Alex suggests we re-use maybe the sparc partition table format?
+Then I get a little incensed at the coding style here.... (editing out other
+people's responses to my tirade)
 
-			Development Cycle
 
-After building a new kernel, you'd have to
-'lifcp <the-kernel-image> /dev/sda:vmlinuz' instead of
-doing 'mkImage' like we do today.  It's also cool that the ramdisk
-isn't linked into the kernel.
+> This is a **bogus** way to write code.  Comments should be required!!!!!! 
+  Is there any way to encourage that?
+> But I'm *extremely* serious about that.  This code is unmaintainable in it's
+  current form.  It's going to be miserable adding 2.0 support to something
+  like that.
+> it's important to anyone who would like to pick up head.S and be able to
+  read it.  To decode the procedure call I had to know where to find
+  documentation for page zero, know what PDCE_PROC is, figure out what PDC
+  procedure was being called.
+> For me, it was about 45 seconds instead of the two seconds it would take to
+  read a comment.
+> For someone who doesn't have my background, it could be hours.
 
-		    If you already have HP-UX
 
-The existing HP-UX LIF volume header has less than 300k of free
-space, so it wouldn't be large enough to hold vmlinuz, therefore
-you can't boot from an existing HP-UX volume.  Which means if
-you want to keep your HP-UX disk intact, you'll have to add another
-disk for Linux, and I think the firmware can handle booting from
-one of several disks just fine.
+Ok, tirade mode off.  This is where my newbie status becomes apparent.  Please
+excuse any foot in mouth here.  I looked at the Puffin web page and didn't
+notice anything about the process of making sure that code that is submitted
+has some minimal level of quality.  Is it just a matter of the community
+applying peer pressure?
 
-			    Tools
-
-lifinit and lifcp should already be able to handle the LIF stuff, so
-no new C code required to build the LIF volumes.  We can probably
-talk HP into open sourcing the LIF commands, and if not can grab
-the ones from OpenBSD.  For now we can use the ones on HP-UX.
-[I suspect the HP ones are not byte-order safe (yet).]
-
-			    Future
-
-It's relatively easy to replace IPL (and vmlinuz for that matter)
-in the scheme above with wonderful new stuff when we figure out
-what that is.  The firmware and existing disk headers wouldn't
-have to change to accomodate a new boot loader.
-
-			    The Name
-
-BTW the current contender for the name, instead of hilo, is palo
-for PArisc LOader.  It is also a reminder of of Palo Alto
-which is where HP began.
-
-Comments?
-
-			    -Paul Bame
+-Frank Rowand
