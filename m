@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 47F56482A
-	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 07:23:10 -0700 (MST)
-Date: Tue, 22 Jan 2002 14:12:53 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Matt.VanDeWerken@csiro.au
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Trouble installing 0.9.3 on 735/99
-Message-ID: <20020122141253.GB25314@sleepie.demon.co.uk>
-References: <A8566E157F5FD411BCFB00D0B7816D51C72CD9@ntexchange.cat.csiro.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <A8566E157F5FD411BCFB00D0B7816D51C72CD9@ntexchange.cat.csiro.au>
+Received: from relay1.alcatel.be (alc119.alcatel.be [195.207.101.119])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 418C5482A
+	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 07:57:06 -0700 (MST)
+Received: from nlntadn.ats.nld.alcatel.nl (localhost [127.0.0.1])
+	by relay1.alcatel.be (8.10.1/8.10.1) with ESMTP id g0MEv3F12025
+	for <parisc-linux@parisc-linux.org>; Tue, 22 Jan 2002 15:57:03 +0100 (MET)
+Message-ID: <03273D4BC7F4D511AC440008C7E6F8815420CA@nlntmail2b.ats.nld.alcatel.nl>
+From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+To: parisc-linux@parisc-linux.org
+Date: Tue, 22 Jan 2002 15:56:59 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] B2000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +24,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 22, 2002 at 07:58:22AM +1000, Matt.VanDeWerken@csiro.au wrote:
-> Hi all:
-> 
-> * drop to shell, do "mkdir /inst ; mount /dev/sdb /inst -t iso9660"
-> 
-> Note that this last step only sometimes works. That is, only sometimes does
-> the install program see the mounted directory.
+LS
+Even though under "tested hardware"  it stated : B, C and J workstations 
 
-Are you confident that you are terminating the external scsi bus
-properly?  0.9.2 ISO used an older slower scsi driver that was possibly
-less susceptible to bad termination.
+I noticed that there were some difficulties with the B2000 in previous
+versions
+With the latest version (0.93) I still get after booting (from internal
+cdrom-drive):
 
-Richard
+FLT CBF4: SYS BD 
+Bad OS HPMC cksm 
+FLT CBFC: SYS BD 
+Os hpmc br err 
+FLT CBF0: SYS BD 
+HPMC initiated 
+FLT 500B: SYS BD 
+Bus timeout 
+
+(hangs)
+
+Kind regards, Hans
