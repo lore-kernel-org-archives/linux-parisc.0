@@ -1,28 +1,30 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA23956
-	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 15:46:56 -0600
-Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 9 Jun 1999 21:43:40 -0000
-To: tor@spacetec.no (Tor Arntsen)
-Date: Wed, 9 Jun 1999 22:43:14 +0100 (BST)
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <199906092126.XAA02287@pallas.spacetec.no> from "Tor Arntsen" at Jun 9, 99 11:26:08 pm
-Content-Type: text
-Message-Id: <E10rq7u-0000km-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: [parisc-linux] Trying to get HP-UX working
+Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA24197
+	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 15:59:46 -0600
+Sender: adevries@feather.thepuffingroup.com
+Message-ID: <375EE563.71B06F27@thepuffingroup.com>
+Date: Wed, 09 Jun 1999 18:06:27 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
+To: Tor Arntsen <tor@spacetec.no>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] build success
+References: <199906092126.XAA02287@pallas.spacetec.no>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Well I have the HP a hub and some cabling. The web console works great (cute
-hack) and it understands my subnetting although it came shipped on an 
-IP address belonging to RIPE not HP or RFC1597 (duh)
+Tor Arntsen wrote:
+> 
+> Alex deVries mailed me and said he used the default configs, so I just
+> pressed return to all make config questions and hey presto it compiled
+> (except for one thing, coming back to that).
 
-I can't however get HP/UX to set up an interface 
 
-	194.168.151.23 netmask 255.255.255.224
+Ack.  I'm having problems hitting 'reply all'.
 
-which I really need to do. Also before I go and build all the sane tools
-so the box is usable has anyone already built a big tar file of HP/UX binaries
-of gcc/bash/fileutils etc ?
+> -#!/bin/bash
+> +#!/usr/bin/env bash
 
-Alan
+I've changed this to /bin/sh, and that's committed now.
+
+- Alex
