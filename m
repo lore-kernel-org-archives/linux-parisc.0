@@ -1,16 +1,12 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] couldn't find PA kernel changelogs
-Date: Sun, 13 Jun 2004 11:28:21 +0000
-Message-ID: <40CC3A55.5060309@tiscali.be>
-References: <20040613121734.53a94190.jean-marc.harang@laposte.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] binutils 2.15?
+Date: Sun, 13 Jun 2004 13:39:28 +0000
+Message-ID: <40BDA020000074B9@ocpmta3.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: parisc-linux@parisc-linux.org
-To: Jean-marc Harang <jean-marc.harang@laposte.net>
+  charset="ISO-8859-1"
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040613121734.53a94190.jean-marc.harang@laposte.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,35 +17,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hi all,
+
+I read that now many arch try to update their toolchain to a new release;=
+
+I so try to rebuild toolchain starting from binutils-2.15 (.0.91... from
+ftp.kernel.org)
+it build well but when I launch to rebuild gcc with those new binutil con=
+figure
+crashes immediately with:
+"/usr/bin/ld: .got section not immediately after .plt section"
+
+What do I mess and forget?
+
+TIA,
+    Joel
 
 
-Jean-marc Harang wrote:
-> Hello,	
-> 
-> I have a little question :
-> 
-> where are the changelogs files for PA kernels ?
-> 
-> I couldn't find them at http://cvs.parisc-linux.org/ :(
-> 
-> thanks,
-> 
-> jean-marc
-> 
-Well noticed, anyway at <http://parisc-linux.org/mailing-lists/index.html>
-you can find mention that:
-"
-[snip]
-parisc-linux-cvs [archive]
+-------------------------------------------------------------------------=
+---------------
+Tiscali ADSL, 27,50 =80/mois...pendant 6 mois. 
+La meilleure offre du march=E9 !
+http://reg.tiscali.be/default.asp?lg=3Dfr
 
-     A separate mailing exists for CVS as a read-only means for keeping track of revisions.
 
-     To subscribe, please mail parisc-linux-cvs-request@lists.parisc-linux.org with the subject subscribe or use the web interface.
-[snip]
-"
 
-hth,
-	Joel
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
