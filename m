@@ -1,51 +1,70 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA16864
-	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Oct 1999 09:55:10 -0600
-Message-ID: <000701bf1401$110ab360$16f950cb@80.249.6.mmm.com.hk>
-From: "William M. Brack" <wbrack@mmm.com.hk>
-To: <parisc-linux@thepuffingroup.com>
-Date: Mon, 11 Oct 1999 23:55:38 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] compiler "crash" on setup.c
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA17292
+	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Oct 1999 11:08:41 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by cosrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id LAA11961
+	for <parisc-linux@thepuffingroup.com>; Mon, 11 Oct 1999 11:09:18 -0600 (MDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id KAA22401 for <parisc-linux@thepuffingroup.com>; Mon, 11 Oct 1999 10:08:51 -0700 (PDT)
+Message-Id: <199910111708.KAA22401@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] unresolved symbol pci_proc_init 
+In-reply-to: Your message of "Mon, 11 Oct 1999 04:27:14 PDT."
+             <19991011112714.29613.rocketmail@web502.yahoomail.com>
+Date: Mon, 11 Oct 1999 10:08:50 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-After following (more or less) the very helpful "recipe" by Grant Grundler,
-including downloading the latest CVS kernel, I got quite a ways in
-generating a Linux system (using an HPUX 10.20 E35 system) which I plan to
-try to boot on an E25 system.  There was, however, one problem while doing
-the "make vmlinux".  The egcs gcc compiler "crashed" while compiling
-arch/kernel/setup.c, with the following:-
+Ulrich Strelow wrote:
+> Hi all,
+> 
+> compiling the current CVS kernel for a non-PCI machine
+> like my 715/33 leads to an unresolved symbol message
+> for pci_proc_init.
+> 
+> In init/main.c is the following code:
+> 
+> #ifdef CONFIG_GECKO
+>         gsc_init();
+>         /*
+>         ** pci_init() is NOT multi-PCI bus friendly.
+>         */
+> #ifdef CONFIG_PROC_FS
+>         pci_proc_init();
+> #endif
+> #else
+> #ifdef CONFIG_PCI
+>         pci_init();
+> #endif
+> #endif
+> 
+> So pci_proc_init is included even if CONFIG_PCI is not
+> set.
 
-$
-gcc -D__KERNEL__ -I/linux/linux/include -Wall -Wstrict-prototypes -O2 -fomit
--frame-pointer
- -mdisable-fpregs -fwritable-strings -fno-strict-aliasing -pipe -fno-strengt
-h-reduce -c -o setup.o setup.c
-setup.c:607: warning: `PA' redefined
-(void *)((unsigned long)()&~0xc0000000)
-  ! */@Ý igned long sversion );
+Ulrich,
+Apologies - that's my fault. I wasn't very clean when changing the ifdefs
+to invoke gsc_init(). The ifdef should read:
 
-IàI@7 ÿ@
- nclud@Ü^1@÷¨@pø"
-LÐ_VARARGS_H @Ú"P
- unsigned long hp700fb_init(unsigned long mem_start)
+	#if defined(CONFIG_PCI) && defined(CONFIG_PROC_FS)
+...
 
-(followed by voluminous lines of junk ....)
-and terminated by a "Signal 11" message.  Now, I know about the infamous
-"Signal 11 message" for gcc, and the fact that it is usually an indication
-of memory or hardware failure, but in this instance it was very consistent
-in that it failed at the same spot with the same warning on several retries.
+If no one else objects, go ahead and submit that - after you try it. :^)
 
-Since it appeared that the #define'd macro PA was not actually used within
-the program setup.c, I just removed it.  Once this was done, the compilation
-was successful.
+On the same note, the ifdefs in gsc_init() probably need to
+use "defined(CONFIG_PCI)" around the "dino_init()" call...
 
-I would appreciate any comments as to the cause, and whether the removal of
-this macro will get me into some other trouble later.
+sorry,
+grant
 
-Thanks,
+> Ulrich
+> __________________________________________________
+> Do You Yahoo!?
+> Bid and sell for free at http://auctions.yahoo.com
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
 
-Bill Brack
-Hong Kong
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
