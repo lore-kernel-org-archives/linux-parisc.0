@@ -1,9 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39C12482D
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 08:08:39 -0700 (MST)
+Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
+ by mtaout02.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
+ with SMTP id <0GSK00C1R4QBUE@mtaout02.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Wed, 06 Mar 2002 10:08:35 -0500 (EST)
+Date: Wed, 06 Mar 2002 10:08:33 -0500
+From: James S <smithjames@comcast.net>
+Subject: Re: [parisc-linux] OT: value of a 712/100
 To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20020306080101.B6A874859@dsl2.external.hp.com>
-Date: Wed,  6 Mar 2002 01:01:01 -0700 (MST)
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] FB on c3k
+Reply-To: James S <smithjames@comcast.net>
+Message-id: <003f01c1c520$c99b2d60$02c1a8c0@james.co.uk>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+References: <sc84c875.096@mail.santa-clarita.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -15,51 +26,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Getting closer.
+i've got 5 712/60's now - got the 1st one for $25 with 1Gb/96Mb
 
-I'm comfortable that FB ioctl wrappers are ok with an updated
-version of the ioctl32.c patch (ftp.p-l.o:patches/fb_ioctl.diff).
-"fbset -v -i" on c3k (64-bit kernel, PDC 4.6, Vis-EG/PCI) reports:
+the shop i got it from had 120 of them - the guy didnt know what they were &
+i knew was that they 'might run linux' :)
 
-Linux Frame Buffer Device Configuration Version 2.1 (23/06/1999)
-(C) Copyright 1995-1999 by Geert Uytterhoeven
+once i had mastered the remote boot part & installed my 1st machine, i
+offered to show the guy how to 'linux em up'
 
-Opening frame buffer device `/dev/fb0'
-Using current video mode from `/dev/fb0'
+i got the other 4 machines for my time :)
 
-mode "1280x1024"
-    geometry 1280 1024 1280 1024 8
-    timings 0 0 0 0 0 0 0
-    rgba 8/0,8/0,8/0,0/0
-endmode
+interesting part was - when i was showing the guy how to set it up, somebody
+came in the shop & asked what he was wanting for one ..... the price had
+went up to $50
 
-Getting further frame buffer information
-Frame buffer device information:
-    Name        : 
-    Address     : 0xfb000000
-    Size        : 33554432
-    Type        : PACKED PIXELS
-    Visual      : PSEUDOCOLOR
-    XPanStep    : 0
-    YPanStep    : 0
-    YWrapStep   : 0
-    LineLength  : 2048
-    MMIO Address: 0xfa100000
-    MMIO Size   : 4194304
-    Accelerator : No
+so it looks like the price doubling theory is holding true...
+
+this is the best non x86 linux port i've installed - its the first one that
+actually feels like it belongs on the machine rather than having shoe horned
+it into a machine that doesnt seem to want it, if you see what i mean :)
 
 
-But when I try to "fbi foo.jpg", I get diagonal black "lines" from
-top left to bottom right striped about 3-4 pixels wide and spaced about
-12-16 pixels apart (all just guesses). Tux does show up in the top
-left corner at boot and stays there. System seems to lock up.
-TOC doesn't work. Power off occurs 20-30 seconds after hitting power
-button.
 
-I suspect some parameter isn't right for FB device definition
-but don't know what. Hoping the diagonal lines are the clue
-that someone could tell me about - some sort of "off-by-one"
-type of error.
 
-thanks,
-grant
+James s
