@@ -1,16 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from relay1.alcatel.be (alc119.alcatel.be [195.207.101.119])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3FBDD482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 07:32:05 -0700 (MST)
-Message-ID: <1A8904C3797ED411AC2E0008C7E6F88117CAC0@nlntmail2b.ats.nld.alcatel.nl>
-From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-To: "'Jan-Benedict Glaw'" <jbglaw@lug-owl.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Power button on 712
-Date: Thu, 22 Nov 2001 15:31:37 +0100
+Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 57BB2482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 07:35:25 -0700 (MST)
+Received: from r6.petescaff.com ([192.168.0.3])
+	by smtp.petescaff.com with esmtp (Exim 3.22 #5)
+	id 166uvW-0001Va-00
+	for parisc-linux@lists.parisc-linux.org; Thu, 22 Nov 2001 15:34:06 +0100
+Received: from apm (helo=localhost)
+	by r6.petescaff.com with local-esmtp (Exim 3.32 #1 (Debian))
+	id 166uwl-0005em-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 15:35:24 +0100
+Date: Thu, 22 Nov 2001 15:35:23 +0100 (CET)
+From: Peter Mottram <peter@petescaff.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.40.0111221532510.21081-100000@r6.petescaff.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] working .config for C160/2.4.14 ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +28,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Under hp-ux, if you press the "power-button" on the front, the system traps
-it, and performs a "shutdown -h now"  (at least it takes ages to stop)
-So the button on the front is not a BRS, but just generates a irq (on some
-systems anyway....)
+I am trying to build a bootable kernel for my C160 & am having a few
+problems. The box is currently running a kernel I tweaked for my 712/80i
+but it is rather old & I am suffering from SCSI problems.
 
-I presume this irq could be trapped under linux aswell, not?
+Does anyone have a usable .config they could mail me for this box for
+2.4.16-pa* ?
 
-Hans
-	-----Original Message-----
-	From:	Jan-Benedict Glaw [SMTP:jbglaw@lug-owl.de]
-	Sent:	Thursday, November 22, 2001 2:53 PM
-	To:	parisc-linux@lists.parisc-linux.org
-	Subject:	Re: [parisc-linux] Power button on 712
-
-	On Thu, 2001-11-22 15:48:41 +0200, Kaj-Michael Lang <milang@tal.org>
-	wrote in message <003801c1735c$6581b7b0$56dc10c3@amos>:
-	> This might sound really strange but anyway:
-	> 
-	> Should the power button work under Linux ?
-	> Even after halting I need to pull the cord to get my machine to
-power down,
-	> as it won't respond to the the power button.
-
-	During initialisation of hardware (the front LED is blinking) you
-	can "easily" switch off the machine. But, after the OS was started,
-	it's not such a good idea to allow an user to simply fiddle with
-	the BRS (-> big red switch). Try to /sbin/poweroff or to /sbin/halt
-	your box and try again:-)
-
-	MfG, JBG
-
-	-- 
-	Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
-		http://lug-owl.de/~jbglaw/software/snapshot2cvs/
-
-	_______________________________________________
-	parisc-linux mailing list
-	parisc-linux@lists.parisc-linux.org
-	http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+TIA
+PeteM
