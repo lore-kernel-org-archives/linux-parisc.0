@@ -1,39 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 74FDA4A15
-	for <parisc-linux@parisc-linux.org>; Wed, 10 Oct 2001 10:58:55 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: Matthew Wilcox <willy@debian.org>,
-	Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] EISA support
-Date: Wed, 10 Oct 2001 11:57:29 -0500
-Cc: parisc-linux@parisc-linux.org
-References: <20011010072441.B24923@parcelfarce.linux.theplanet.co.uk> <20011010154810.D24923@parcelfarce.linux.theplanet.co.uk> <20011010163846.E24923@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20011010163846.E24923@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Message-Id: <01101011572901.00829@Wolf-01>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E95FE4A15
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Oct 2001 11:01:33 -0600 (MDT)
+Message-Id: <200110101657.KAA19790@puffin.external.hp.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HPMC when doing sync on c3k (32 bit kernel) 
+In-Reply-To: Message from Randolph Chung <randolph@tausq.org>
+   of "Tue, 09 Oct 2001 20:04:38 PDT." <20011009200438.F653@tausq.org>
+Date: Wed, 10 Oct 2001 10:57:43 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wednesday 10 October 2001 10:38 am, Matthew Wilcox wrote:
->
-> Ah, I found an appendix :-)
->
-> EISA cards have a slot number which determines the upper nybble of their
-> IO port numbers.  Then within that 0xfff of space, they use 0-ff, 400-4ff,
-> 800-8ff, c00-cff.  The rest are ISA ports (or aliases of ISA ports).
->
-Willy,
-Sounds like you have it handled already - that 400-4ff range (plus 000-3ff) 
-is the very old, 8-bit, ISA i/o port range (on i386 cards).
-I think you just saved my very old PROM burner from the scrap heap.
+Randolph Chung wrote:
+> I noticed that when i do a manual 'sync' on my c3000 running a 32-bit
+> kernel, I get a HPMC:
+...
+> "pim hpmc" says:
+> A Data I/O Fetch Timeout occurred while CPU 0 was
+> requesting information from a device at the path 10/0/14/1/1 (built-in
+> PCI device)
 
-On a separate subject related to your EISA work...
-For 8/16-bit ISA cards that do not report resource requirements (i/o,
-mem, dma, irq) and for the EISA cards without a "known" ID - perhaps
-let the driver accept command line option(s) and leave the details to
-the user.  For the IRQ mappings, perhaps something like: xyz_irq=8:zz,
-xyz_dma=4:yy, etc. (without the ":ww" just map somewhere handy.)
+That's the SuckyIO serial port. Randolph and I exchanged notes offline
+and concluded his prototype C3000 has PA8500 v2.0 CPU (and newer elroys
+than mine). I can't reproduce the problem with a v2.3 chip.  I should be
+able to upgrade his CPU to v2.3 and we'll see if the problem persists.
+Lots of bugs in pre-2.3 chip revisions.
+(BTW, does that answer your question Helge? :^/)
 
-Mike
+grant
