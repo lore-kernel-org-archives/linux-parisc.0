@@ -1,18 +1,21 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9AFCD4840
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A95F948AE
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 23 Jan 2004 15:11:51 -0700 (MST)
-Date: Fri, 23 Jan 2004 15:11:49 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: "Peralta, Joseph A" <jperalta@WPI.EDU>
-Subject: Re: [parisc-linux] menu not available
-Message-ID: <20040123221149.GA1310@colo.lackof.org>
-References: <9FD9A988D765C742A42FE2176979579650D310@postoffice.academic.wpi.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <9FD9A988D765C742A42FE2176979579650D310@postoffice.academic.wpi.edu>
-Cc: parisc-linux@lists.parisc-linux.org
+	Sat, 24 Jan 2004 04:09:59 -0700 (MST)
+Message-ID: <40125302.5050600@tiscali.be>
+Date: Sat, 24 Jan 2004 11:12:02 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] B2k and CONFIG_PDC_CONSOLE pb: followup
+References: <20040122053112.GB6468@colo.lackof.org>
+	<400D3BEE0000294D@ocpmta1.freegates.net>
+	<20040123194531.GA30221@colo.lackof.org>
+In-Reply-To: <20040123194531.GA30221@colo.lackof.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +25,50 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Jan 23, 2004 at 04:47:11PM -0500, Peralta, Joseph A wrote:
-> When I try to install certain X-window managers under Debian 3.0 I get
-> "xxx depends on menu (>> 1.5)... menu is not available" How would I fix
-> this?
+Grant,
 
-Dunno...menu is available for "sarge" (aka testing) and that
-works for me. Sounds like someone wants to backport to Woody.
 
-grundler <559>dpkg -l menu
-Desired=Unknown/Install/Remove/Purge/Hold
-| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
-|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  menu           2.1.9-4        Provides update-menus functions for some app
 
-grant
+Grant Grundler wrote:
+> On Fri, Jan 23, 2004 at 07:54:44PM +0100, Joel Soete wrote:
+> 
+>>>AFAIK, the memcpy just enables the PDC to use a serial console.
+>>
+>>Hmm we didn't 'relocate' PDC (as see hpux makes), so all those information
+>>are fill in by PDC prgm itself? So if Console is flagged CL_DUP, I don't
+>>see why do we have to make this memcpy?
+> 
+> 
+> I don't pretend to understand how PDC uses page zero.
+> Any takers on explaining what the memcopy does?
+> 
+> 
+>>>Anyway, Figuring out some additional info could help:
+>>>  (a) know which devices migh have DMA enabled when the OS gets control
+>>
+>>May be the console itself (by continuously reading the kdb eg)?
+> 
+> 
+> 
+>>>  (b) disable just the DMA
+>>
+>>where should I look to disable so console dma?
+> 
+> 
+> In the B2k's case the USB keyboard is the console input device
+> and USB does DMA. Right?
+
+ok (if a usb kbd is connected ;) )
+
+> That means the console can not be active when we reprogram
+> the IOMMU.
+> 
+> If the console is the serial port, then we should be able to disable
+> just the USB device and not impact the Serial ports.
+
+hmm afaik usb ports on a b2k (and I presume for the same family) are just there
+(iirc the user guide and spec) to be used only for usb kbd and mouse
+and so if no usb kbd was found by pdc we could just disable usb at all?
+
+Thanks again for info and patience,
+	Joel
