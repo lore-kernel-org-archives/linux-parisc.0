@@ -1,37 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01722
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 16:04:59 -0700
-Message-Id: <200101232308.SAA05005@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] crt1.o
-To: jcarlson@macalester.edu (Josiah Carlson)
-Date: Tue, 23 Jan 2001 18:08:49 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <3A6E0DA9DA.2E2DJCARLSON@smtp.macalester.edu> from "Josiah Carlson" at Jan 23, 2001 05:03:05 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA02186
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 16:17:31 -0700
+Sender: plattner@dns2.dot.at
+Message-ID: <3A6E11F0.F87DC2E1@dot.at>
+Date: Wed, 24 Jan 2001 00:21:20 +0100
+From: Christoph Plattner <christoph.plattner@dot.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: parisc-linux@thepuffingroup.com
+CC: christoph.plattner@alcatel.at
+References: <200101232308.SAA05005@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Step by step .... 9000/720 and interruption (trap) 18
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > > Just to try something out...I 'm curious as to which file contains the
-> > > listing of paths that are searched for libraries by gcc or g++ (or in
-> > > general all paths searched by the shell for execution), does anyone know
-> > > which file that is?
-> > 
-> > Try running gcc with `-print-search-dirs'.  You can get complete list of gcc
-> > options with `-v --help'.  `-v' may help to see how linker is being run.
-> 
-> I suppose I should have said so...but the actual command being used to
-> find the libraries is ld.  I've tried to figure that command out...but
-> it's not liking me at all.
-> I have not tried the -print-search-dirs on my HP machine, but will
-> tomorrow.
-> Though in general, how do I add paths to be searched by the OS?
-> Thank you,
+Hallo PA RISC hackers !
 
-Gcc has builtin defaults.  You shouldn't need to specify a search patch
-for crt0.o.  Including `-v' on the gcc command will show the stuff that
-is being passed to ld.
+I mentioned before, that I have problems using my Apollo 700 (9000/720)
+with the Linux here. I build a new cross tool chain and a new
+kernel + palo (all from 13.Jan 2001) but I always have the problem of
+looping error code:
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+handler_interruption() pid=1 command='init'
+
+or whatever my first process is. I have instrumented the kernel code
+and added the output of the code number (a good idea to have this
+fix in the kernel !) and I saw:
+
+	code=18
+
+So I have the code 18 (decimal). In the PA RISC 1.1 manual (your link)
+I saw following description:
+
+	18  Data memory protection trap / Unaligned data reference trap
+
+So what does this mean here. An alignment problem ?
+Why is this code not handled in the switch/case ?
+
+I always use (I think the 32bit code). Have I set to a parisc64 ?
+How can I influence this ?
+Which kind of CPU is this in the 720 model ? (I know a 50MHz PA RISC ..)
+
+I hope anybody can help here
+
+	Christoph
+
+
+
+
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
