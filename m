@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD951CAEE.dip.t-dialin.net [217.81.202.238])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 430604834
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 15:44:03 -0700 (MST)
-Received: (from tsbogend@localhost)
-	by solo.franken.de (8.11.6/8.11.6) id g1IMhq008066
-	for parisc-linux@lists.parisc-linux.org; Mon, 18 Feb 2002 23:43:52 +0100
-Date: Mon, 18 Feb 2002 23:43:52 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020218234352.A8033@solo.franken.de>
+Received: from magnesium.net (toxic.magnesium.net [207.154.84.15])
+	by dsl2.external.hp.com (Postfix) with SMTP id 46A82482D
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Feb 2002 23:19:25 -0700 (MST)
+Date: Sat, 16 Feb 2002 22:19:16 -0800
+From: Eric Hodel <drbrain@segment7.net>
+To: undisclosed-recipients: ;
+Message-ID: <20020217061916.GA23771@segment7.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] STI errno 128
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Subject: [parisc-linux] HP-HIL keyboard wanted
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +21,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Maybe some of the HP insiders could help me find out, why STI doesn't
-work on my B2600/FXe. What I need to know is what a errno == 128 returned
-from init_graph() means ? Anybody ?
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thomas.
+I've found HP-HIL keyboards online for $45 apiece, but I'm not yet
+willing to fork out that much money.  I was wondering if anybody had a
+keyboard (and/or 3-button mouse) they would be willing to part with
+for a smaller fee...
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+I'm not subscribed to the list, so please contact me off-list.
+
+--=20
+Eric Hodel - drbrain@segment7.net - http://segment7.net
+All messages signed with fingerprint:
+FEC2 57F1 D465 EB15 5D6E  7C11 332A 551C 796C 9F04
+
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (FreeBSD)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE8b0tkMypVHHlsnwQRAlA/AJsG0L17AXdaYn+1wRtf9sb9sVX1OACgwfxM
+3W33v4Ja6Ax7Lw+WwqHrcPA=
+=5TDF
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
