@@ -1,19 +1,11 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65A56483E
-	for <parisc-linux@parisc-linux.org>; Sat, 27 Sep 2003 22:38:00 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A3TJn-0001c8-Me; Sun, 28 Sep 2003 05:37:59 +0100
-Date: Sun, 28 Sep 2003 05:37:59 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Tree frozen
-Message-ID: <20030928043759.GE24824@parcelfarce.linux.theplanet.co.uk>
-References: <20030928025925.GC24824@parcelfarce.linux.theplanet.co.uk>
+Date: Sun, 28 Sep 2003 01:16:57 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030928071657.GA28657@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030928025925.GC24824@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] [owner@bugs.debian.org: Bug#204844 acknowledged by developer (Re: Bug#204844: xlibs: libXt.so needs to be built with gcc 3.3.x for HPPA)]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +17,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 28, 2003 at 03:59:25AM +0100, Matthew Wilcox wrote:
-> I'd appreciate it if people would not check in anything until this
-> is fixed.  Sorry for the inconvenience.
+FYI -  hppa xfree86 libs should be usable again in "testing" release.
+(eg xpdf and related stuff should be working).
+Please post issues if it's not.
+I can rebuild xfree86-4.2.1-11 bits if that is needed.
+I'll be removing the 4.2.1-9 hppa.debs in the future when it's
+clear they aren't needed.
 
-Tree seems good now.  operations involving the linus tag may not work
-as you expect... but go ahead and commit stuff.  Particularly to fix
-sched_clock().
+enjoy!
+grant
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+(kudos to branden+et al who enabled this!)
+
+----- Forwarded message from Debian Bug Tracking System <owner@bugs.debian.org> -----
+
+Date: Sat, 27 Sep 2003 19:56:23 -0500
+From: Branden Robinson <branden@debian.org>
+To: 204844-done@bugs.debian.org
+Subject: Re: Bug#204844: xlibs: libXt.so needs to be built with gcc 3.3.x for HPPA
+
+On Wed, Aug 27, 2003 at 09:57:00PM -0600, Grant Grundler wrote:
+> On Wed, Aug 27, 2003 at 09:27:45PM -0500, Branden Robinson wrote:
+> ...
+> > My feeling is that our efforts are best spent on getting a newer 4.2.1
+> > package into testing at this point.
+>=20
+> Agreed.
+>=20
+> I've placed a full set of "hand crafted" 4.2.1-9 hppa debs on:
+> 	http://gsyprf11.external.hp.com/hppa/xfree86-4.2.1-9/
+>=20
+> Built with gcc 3.3.1 and current "testing" binutils.
+> Works For Me (tm).
+>=20
+> These are built by hacking the Makefile "world" target to not rebuild
+> everything from scratch and iteratively fix up the two problems by hand.
+> source/build tree is intact on gsyprf11 in case someone wants a copy.
+
+xfree86 4.2.1-11 entered Debian testing on Friday.
+
+Closing this report.
+
+--=20
+G. Branden Robinson                |    Freedom is kind of a hobby with me,
+Debian GNU/Linux                   |    and I have disposable income that
+branden@debian.org                 |    I'll spend to find out how to get
+http://people.debian.org/~branden/ |    people more of it. -- Penn Jillette
+
+----- End forwarded message -----
