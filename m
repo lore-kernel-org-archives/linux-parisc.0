@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 43791482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jul 2003 23:27:50 -0600 (MDT)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali)
-	id 19dNk1-0000UC-00
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Jul 2003 07:25:13 +0200
-Date: Fri, 18 Jul 2003 07:27:43 +0200
-Message-ID: <3F056E95000037F7@ocpmta4.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A05D7482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jul 2003 23:43:51 -0600 (MDT)
+Message-Id: <200307180538.h6I5cdAI024133@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] arch/parisc/kernel/perf_asm.o not building
+To: acme@conectiva.com.br (Arnaldo Carvalho de Melo)
+Date: Fri, 18 Jul 2003 01:38:39 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030718041440.GZ1582@conectiva.com.br> from "Arnaldo Carvalho de Melo" at Jul 18, 2003 01:14:40 am
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] cvs [login aborted]?
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +22,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi pa,
+> 2.6-bk (i.e. latest linus tree in master.kernel.org), using the
+> xc-20020118.tar.bz2 cross compiler (latest):
 
-Is it an actual cvs server pb or a local pb I could have:
-those last two days cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs
-"failed: Connection timed out"?
+This doesn't work as it doesn't have all the necessary parisc-linux
+patches.  Use the parisc-linux source.
 
-Any idea?
-
-Thanks,
-    Joel
-
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
