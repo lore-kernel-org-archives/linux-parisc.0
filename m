@@ -1,34 +1,78 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA29977
-	for <parisc-linux@puffin.external.hp.com>; Fri, 19 May 2000 07:24:23 -0600
-Date: Fri, 19 May 2000 09:24:13 -0400 (EDT)
-From: Chris Snow <csnow@julian.uwo.ca>
-To: Richard Hirst <rhirst@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715/50 hang - more info
-In-Reply-To: <20000519002637.C1209@linuxcare.com>
-Message-ID: <Pine.SOL.4.21.0005190922540.22496-100000@panther.uwo.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA32170
+	for <parisc-linux@puffin.external.hp.com>; Fri, 19 May 2000 12:43:20 -0600
+Received: from hpdst41.cup.hp.com (hpdst41.cup.hp.com [15.16.128.62])
+	by palrel3.hp.com (Postfix) with ESMTP id 241FC5AE
+	for <parisc-linux@thepuffingroup.com>; Fri, 19 May 2000 11:43:29 -0700 (PDT)
+Received: from jc356611 (jc356611.cup.hp.com [15.16.128.28]) by hpdst41.cup.hp.com with SMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id LAA06721 for <parisc-linux@thepuffingroup.com>; Fri, 19 May 2000 11:43:28 -0700 (PDT)
+Message-ID: <019701bfc1c2$1ef4f750$1c80100f@jc356611.cup.hp.com>
+From: "John Curry" <jcurry@cup.hp.com>
+To: <parisc-linux@thepuffingroup.com>
+Date: Fri, 19 May 2000 11:43:27 -0700
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0194_01BFC187.72715940"
+Subject: [parisc-linux] Simple Linux question
 List-ID: <linux-parisc.vger.kernel.org>
 
->   I have just committed changes to drivers/net/lasi_82596.c and
-> drivers/gsc/lan.c.  Fairly big changes to lasi_82596.c, partly
-> just tidyup, partly improvements to cache handling.  It is still
-> not perfect but is a _lot_ better than it was.  The change to
-> lan.c was to use a different probe function on older h/w (like
-> my 715/75), where we need to swap the MPU_PORT, as per the message
-> from prumpf.  If the driver seems completely dead for you, try
-> enabling/disabling that word swap, and please let me know that
-> you needed to.
-> 
-> All success or failure reports welcome :-)
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_0194_01BFC187.72715940
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Success!  The driver works fine.  I made no modifications for word swap
-(on a 715/50).
+Can anyone answer this simple LINUX question:
 
-No let's see what else I can break :)
+Assume all processes are type SCHED_RR. If they all have the same =
+priority, when the running process' time slice expires and it enters the =
+scheduler, how can any of the other processes ever be chosen? From what =
+I see in the scheduler, all processes in the run queue are going to have =
+their goodness compared against that of the running process. Only if =
+there priority is higher, will they be chosen.
 
+                                                                         =
+                                   Thanks
 
-          Chris
+------=_NextPart_000_0194_01BFC187.72715940
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
+<HTML>
+<HEAD>
+
+<META content=3Dtext/html;charset=3Diso-8859-1 =
+http-equiv=3DContent-Type>
+<META content=3D'"MSHTML 4.72.3612.1706"' name=3DGENERATOR>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT color=3D#000000 size=3D2>Can anyone answer this simple LINUX=20
+question:</FONT></DIV>
+<DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT color=3D#000000 size=3D2>Assume all processes are type =
+SCHED_RR. If they=20
+all have the same priority, when the running process' time slice expires =
+and it=20
+enters the scheduler, how can any of the other processes ever be chosen? =
+From=20
+what I see in the scheduler, all processes in the run queue are going to =
+have=20
+their goodness compared against that of the running process. Only if =
+there=20
+priority is higher, will they be chosen.</FONT></DIV>
+<DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT color=3D#000000=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+Thanks</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0194_01BFC187.72715940--
