@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 51267482A
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Apr 2002 09:45:10 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16xrc7-0004cI-00; Wed, 17 Apr 2002 16:44:55 +0100
-Date: Wed, 17 Apr 2002 16:44:55 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Paul Bame <bame@fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9695B482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Apr 2002 11:26:07 -0600 (MDT)
+To: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] linux-2.4.18-pa19 fpu problem
-Message-ID: <20020417164455.M23804@parcelfarce.linux.theplanet.co.uk>
-References: <1019034174.3cbd3a3e2c5a5@webmail.tiscalinet.be> <20020417123211.L23804@parcelfarce.linux.theplanet.co.uk> <E16xqdU-0001WN-00@paul.bame>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E16xqdU-0001WN-00@paul.bame>; from bame@fc.hp.com on Wed, Apr 17, 2002 at 08:42:16AM -0600
+Message-ID: <1019064293.3cbdafe56b7ad@webmail.tiscalinet.be>
+Date: Wed, 17 Apr 2002 19:24:53 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <1019034174.3cbd3a3e2c5a5@webmail.tiscalinet.be> <20020417123211.L23804@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20020417123211.L23804@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,26 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Apr 17, 2002 at 08:42:16AM -0600, Paul Bame wrote:
-> Here's the README in the math-emu directory which describes why we
-> leave the warnings in:
+Quoting Matthew Wilcox <willy@debian.org>:
+
+> On Wed, Apr 17, 2002 at 11:02:54AM +0200, joel.soete@freebel.net wrote:
+> > Here is some trace I get from the kernel (2.4.18-pa19) make (after a
+> make
+> > oldconfig):
+> ...
+> > I do think that lacks a header to define some function.
 > 
-> "All files except driver.c are snapshots from the HP-UX kernel.  They've
->  been modified as little as possible.  Even though they don't fit the
->  Linux coding style, please leave them in their funny format just in case
->  someone in the future, with access to HP-UX source code, is generous
->  enough to update our copies with later changes from HP-UX -- it'll
->  make their 'diff' job easier if our code is relatively unmodified.
+> this code is crufty old HPUX stuff... the warnings have been there
+> basically forever, and nobody's bothered to fix them.  Nobody's found a
+> problem either :-) If you want to eliminate these warnings by declaring
+> everything properly, feel free to send a patch, but I don't think it's
+> very important.
 
-Sure, but I don't think adding
+Thanks for info.
 
-#include "math-emu.h"
+In fact I test to compile this kernel with gcc-3.2 (snapshot) and severall time
+it failled and I suspect wrongly that it could be the cause but it is certainly
+somewhere else (don't rememnber exactly). Never the less  I will try to make
+this patch.
 
-to each file will make anyone's life more difficult.  Nor even
+Joel
 
-float sfod(float, float);
-float ssinf(double);
-...
 
--- 
-Revolutions do not require corporate support.
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
