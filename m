@@ -1,36 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 586ED482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 03:15:07 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id DE4E4B00C; Fri, 21 Sep 2001 10:14:07 +0100 (BST)
-Date: Fri, 21 Sep 2001 10:14:07 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: =?iso-8859-1?Q?Andreas_H=E4rtel?= <andreas@malcolm.in-chemnitz.de>
-Cc: "Parisc-Linux (E-Mail)" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 712/60 boots fine
-Message-ID: <20010921101407.A24511@linuxcare.com>
-References: <000401c14278$c79760e0$0350a8c0@genesis>
+Received: from xo.hp.is (xo.hp.is [194.105.242.199])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE6B0482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 07:53:36 -0600 (MDT)
+Received: (from ra@localhost)
+	by xo.hp.is (8.11.6/RA-8.11.6) id f8LDrZM12790
+	for parisc-linux@lists.parisc-linux.org; Fri, 21 Sep 2001 13:53:35 GMT
+Date: Fri, 21 Sep 2001 13:53:35 +0000
+From: Richard Allen <ra@hp.is>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010921135335.E11577@hp.is>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <000401c14278$c79760e0$0350a8c0@genesis>; from andreas@malcolm.in-chemnitz.de on Fri, Sep 21, 2001 at 10:38:24AM +0200
+Subject: [parisc-linux] C360 install fails
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 21, 2001 at 10:38:24AM +0200, Andreas Härtel wrote:
-> Hi,
-> 
-> my 712 is running now. I've found my own mistake after many hours...
-> 
-> It is difficult to understand for a newbie, that PALO needs file system type
-> 'F0' but this type is unknown by fdisk.
+Im using the 0.9.2 CD.  I have a C360 (512Meg RAM, 9 Gig hard drive) and
+I removed the Graphics card from it and hooked it to a serial console.
 
-Partition type F0, not a file system type.  Recent fdisk versions do
-know F0 as "Linux/PA-RISC boot".
+The machine boots just fine into the installer.  I created that f0 partition,
+a small /boot, a swap partition and the remaining disk as /
 
-> Or the 2. mistake, the partition where vmlinux is located must be lower or
-> equal 2 GByte.
+After that it makes me select a distro (I select sid as the documentation says)
+then this hits:
 
-Yes, that has caught me too in the past, I guess it should be
-checked by palo or the installer.
+         +ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ+ Please Wait +ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ+         
+         |                                                            |         
+         | Installing Drivers from                                    |         
+         | /instmnt/debian/dists/sid/main/disks-hppa/current/64/drive |         
+         | rs.tgz...                                                  |         
+         |                                                            |         
+                                                                                
+         ioctl: LOOP_CLR_FD: No such device or address                          
+    YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI                                            
+PSW: 00000000000001001111111100001100                                           
+r0-3     00000000 101fc000 101a5134 2fe06b60                                    
+r4-7     00000000 00000000 10337010 10318684m Installation                      
+r8-11    10318010 10318010 1030c010 1030c468                                    
+r12-15   10337010 ffffffff 000000fd f0100000                                    
+r16-19   10300580 f0000154 f000014c 0000000e                                    
+r20-23   0000001f 000003e7 101a5c14 00000000                                    
+r24-27   00000000 00000005 ffd05805 1028a010
+r28-31   10335810 00000592 10300a80 101213f8
+sr0-3    00000000 00000065 00000000 00000000
+sr4-7    00000000 00000000 00000000 00000000
 
-Richard
+IASQ: 00000000 00000000 IAOQ: 101fc2bc 101fc2c0
+ IIR: 0f40001c    ISR: a607ffff  IOR: 41505805
+ ORIG_R28: 00000000
+
+
+Any hints ?
+-- 
+Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
+               --  Solaris 7 Certified Systems and Network Administrator.
+Bell Labs Unix --  Reach out and grep someone.
+Those who do not understand Unix are condemned to reinvent it, poorly.
