@@ -1,27 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA24312
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Aug 2000 18:44:24 -0600
-From: Steven Pritchard <steve@silug.org>
-Message-Id: <200008151843.NAA15390@osiris.silug.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA24737
+	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Aug 2000 19:00:34 -0600
+Date: Tue, 15 Aug 2000 13:00:50 -0600 (MDT)
+From: Mike Hibler <mike@fast.cs.utah.edu>
+Message-Id: <200008151900.NAA08567@fast.cs.utah.edu>
+To: matthew@wil.cx, steve@silug.org
 Subject: Re: [parisc-linux] HP 9000/735 systems....
-In-Reply-To: <20000814095908.K27691@vodka.thepuffingroup.com>
- "from Matthew Wilcox at Aug 14, 2000 09:59:08 am"
-To: Matthew Wilcox <matthew@wil.cx>
-Date: Tue, 15 Aug 2000 13:43:36 -0500 (CDT)
-CC: parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Cc: parisc-linux@thepuffingroup.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox said:
-> we have no intention of providing an X server (anyone want to start
-> working on that...?)
+> From: Steven Pritchard <steve@silug.org>
+> Subject: Re: [parisc-linux] HP 9000/735 systems....
+> To: Matthew Wilcox <matthew@wil.cx>
+> Date: Tue, 15 Aug 2000 13:43:36 -0500 (CDT)
+> 
+> Matthew Wilcox said:
+> > we have no intention of providing an X server (anyone want to start
+> > working on that...?)
+> 
+> What are the odds that the stock X11 Xhp would just work (or could be
+> made to just work)?
+> 
 
-What are the odds that the stock X11 Xhp would just work (or could be
-made to just work)?
+Odds should be quite good.  The HP-UX compatibility code that is in the
+Mach port was sufficient to run the HP Xserver of that era (circa HP-UX 9.x).
+Working on HP-UX compatibility mode would seem like a much better use of
+time than trying to write an Xserver for N different HP video cards.
 
-Steve
--- 
-steve@silug.org           | Linux Users of Central Illinois
-(618)398-7320             | Meetings the 4th Tuesday of every month
-Steven Pritchard          | http://www.luci.org/ for more info
+OTOH, if HP is as committed to Linux as they appear to be, then maybe their
+X11 group will just port their server to PA Linux and make it available!
