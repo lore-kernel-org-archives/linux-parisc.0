@@ -1,87 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sj-msg-core-1.cisco.com (sj-msg-core-1.cisco.com [171.71.163.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CFD644830
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 13 Oct 2001 13:13:24 -0600 (MDT)
-Date: Sat, 13 Oct 2001 12:12:13 -0700 (PDT)
-From: Christian Suder <csuder@cisco.com>
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Followup: 735/125 hangs...
-In-Reply-To: <20011013114359.A1681@dogbert.localdomain>
-Message-ID: <Pine.LNX.4.21.0110131209250.1873-100000@ibanez.csuder.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from localhost.localdomain (tnt01p1-128.logicsouth.com [208.150.160.128])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA4E14830
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 13 Oct 2001 13:51:52 -0600 (MDT)
+Message-Id: <200110131951.f9DJpZT01701@localhost.localdomain>
+To: parisc-linux@lists.parisc-linux.org
+Cc: joel.soete@freebel.net, willy@debian.org
+Subject: Re: [parisc-linux] Kernel panic with -pa48 
+Mime-Version: 1.0
+Content-Type: multipart/mixed ;
+	boundary="==_Exmh_-7423799680"
+Date: Sat, 13 Oct 2001 15:51:34 -0400
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+This is a multipart MIME message.
 
-Thanks, Albert !
+--==_Exmh_-7423799680
+Content-Type: text/plain; charset=us-ascii
 
-With the boot options I was able to get the base install from an NFS
-mounted source (CD still did bail on me close to the finish line...), I
-have now yesterdays snapshot with the new SCSI driver running which
-appears fine. 
+> Just co -pa49 and boot again but strange behaviour (as with pa45). Here
+> the SCSI kernel messages:
 
-	Christian
+I suspect this is probably a cabling/termination problem.  The new driver does 
+fast scsi via synchronous negotiation which is much less tolerant of harware 
+setup than the old asynchronous SCSI.  You can test this theory out by turning 
+off async negotiation in the driver: by recompiling, I'm afraid, I haven't 
+made it a config option.
+
+If you apply the attached patch it will suppress the synchronous negotiation.  
+If the driver boots your machine with no issues then it's a safe bet you have 
+a cabling or termination problem.
+
+Your next problem will be the C3325A drive:  I have one of these and it seems 
+to drop tagged commands under heavy load (which annoys the SCSI error handler 
+no end).  I was going to ask for it to be added to the SCSI mid-layer black 
+list as being unable to handle tags, but I haven't got around to it yet.
+
+James 
 
 
-On Sat, 13 Oct 2001, Albert Strasheim wrote:
 
-> Hello,
-> 
-> My 720/50 had similiar problems. I don't know what kind of SCSI chipset
-> you have, but I needed to add the following kernel command line
-> parameter to get my SCSI disks to work properly:
-> 
-> sim700=noneg:0xff,nodisc:0xff or sim700=nodisc:0xff
-> 
-> This more or less solved my problems. Writing the superblock info still
-> took some time (think 10 minutes), but it got it done. :-)
-> 
-> In a message from Richard Hirst a few days ago, when he checked in a new
-> driver for the 53c700 and 53c710 chips:
-> 
-> The main improvements in this driver are sync transfers (where the scsi
-> chip allows it) and tagged commands.  Also disconenct/reselect works
-> properly, so there is no longer any need to boot with sim700=nodisc:0xff
-> (or similar).
-> 
-> So I guess if you compile the latest kernel, and make a new debian
-> bootfloppies lifimage to boot from, you should be fine. Alternatively,
-> the options above might also fix your problems with the LOOP_CTL thingy.
-> 
-> When in doubt, do a network install. :-)
-> 
-> Regards,
-> 
-> Albert
-> 
-> On Fri, 12 Oct 2001, Christian Suder wrote:
-> 
-> > 
-> > FWIW, 
-> > 
-> > I repartitioned the HD, from boot-swap-root to boot-root-swap. Formatting
-> > the filesystem went until after the message about tune2fs
-> > appears. Powercycled and did not format again but selected 'use existing
-> > fs'. Hangs with : 'ioctl: LOOP_CLR_FD: No such device or address' when
-> > installing the system image. 
-> > 
-> > Tried the same excercise again and got lots of 
-> > 
-> >  - block = 4244379656, count = 1
-> > EXT2-fs error (device sd(8,2)): ext2_free_blocks: Freeing blocks not in
-> > datazone - block = 4269604550, count = 1
-> > 
-> > Hmmm.... saw the same when the C110 had problems. 
-> > 
-> > Used the same CD on a 712/80 with no problems at all !
-> > 
-> > 	Christian
-> > 
-> > 
-> > 
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+--==_Exmh_-7423799680
+Content-Type: text/plain ; name="53c700-no-fast.diff"; charset=us-ascii
+Content-Description: 53c700-no-fast.diff
+Content-Disposition: attachment; filename="53c700-no-fast.diff"
+
+Index: drivers/scsi/53c700.c
+===================================================================
+RCS file: /home/jejb/CVSROOT/linux/2.4/drivers/scsi/53c700.c,v
+retrieving revision 1.1.1.3.6.4
+diff -u -r1.1.1.3.6.4 53c700.c
+--- drivers/scsi/53c700.c	2001/09/30 15:04:17	1.1.1.3.6.4
++++ drivers/scsi/53c700.c	2001/10/13 19:46:33
+@@ -720,6 +720,7 @@
+ 		NCR_700_writeb(BTB_TIMER_DISABLE, host, CTEST0_REG);
+ 		NCR_700_writeb(FULL_ARBITRATION | ENABLE_PARITY | PARITY
+ 			       | AUTO_ATN, host, SCNTL0_REG);
++		hostdata->fast = 0;
+ 	} else {
+ 		NCR_700_writeb(BURST_LENGTH_8 | hostdata->dmode_extra,
+ 			       host, DMODE_700_REG);
+
+--==_Exmh_-7423799680--
