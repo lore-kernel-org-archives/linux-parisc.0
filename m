@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A3E4E4852
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Dec 2003 22:01:28 -0700 (MST)
-Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
-	id 1ARlW6-0004bg-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 03 Dec 2003 23:55:06 -0500
-Date: Wed, 3 Dec 2003 23:55:06 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] shmem 2.6 kernel bug?
-Message-ID: <20031204045506.GD17292@systemhalted>
-References: <20031204040026.GB17292@systemhalted>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D09B34845
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Dec 2003 22:45:51 -0700 (MST)
+Date: Wed, 3 Dec 2003 22:45:50 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: northern snowfall <dbailey27@ameritech.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.23 PCI source inconsistency
+Message-ID: <20031204054550.GB31404@colo.lackof.org>
+References: <3FCE5AAE.6080104@ameritech.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031204040026.GB17292@systemhalted>
+In-Reply-To: <3FCE5AAE.6080104@ameritech.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 03, 2003 at 11:00:26PM -0500, Carlos O'Donell wrote:
-> 
-> pa,
-> 
-> When I ssh into my box I see:
-> ---
-> kernel BUG at mm/shmem.c:585!
-> Kernel addresses on the stack:
->  [<000000001016f338>] unmap_page_range+0xa0/0x290
->  [<0000000010126e78>] sys32_rt_sigaction+0x90/0x118
->  [<000000001011313c>] sys_mmap2+0x14/0x20
->  [<000000001010ce4c>] syscall_exit+0x0/0x14
->  [<000000001010c094>] intr_check_sig+0x0/0xc
-> ---
+On Wed, Dec 03, 2003 at 04:50:38PM -0500, northern snowfall wrote:
+> Hey all,
+>    I compiled 2.4.23 from kernel.org for 32bit PA-RISC today
+> and found that the PA-RISC specific PCI code seems to be out-
+> of sync with the generic pci code.
 
-kernel BUG at mm/shmem.c:585!
-Kernel addresses on the stack:
- [<00000000101a15d4>] dput+0x13c/0x240
- [<0000000010141900>] do_group_exit+0x50/0x108
- [<00000000101419cc>] sys_exit_group+0x14/0x20
- [<000000001010ce4c>] syscall_exit+0x0/0x14
- [<000000001010c094>] intr_check_sig+0x0/0xc
+As carlos said, use kernels from ftp.parisc-linux.org or pull
+sources directly from cvs.parisc-linux.org.
 
-c.
+> pci.c: In function `pcibios_init_bus':
+> pci.c:310: structure has no member named `bridge_ctl'
+
+I added this field to clean up FBB and VGA routing support.
+"bridge_ctl" is a PCI-PCI Bridge register that controls
+both of those behaviors. Ivan K. (ex PCI Maintainer) and I had it
+working for parisc/ia32/alpha but apperently it never got
+submitted/accepted into any official tree.
+
+Russell King (ARM maintainer) found it useful anyway
+and submitted it
+
+	http://www.ussg.iu.edu/hypermail/linux/kernel/0208.0/0723.html
+
+and later:
+	http://lists.arm.linux.org.uk/pipermail/linux-arm-kernel/2003-October/017459.html
+
+Darn...looks like bridge_ctl didn't get pushed into 2.6 either. :^(
+I'll follow up a bit offline.
+
+grant
