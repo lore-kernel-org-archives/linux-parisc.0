@@ -1,48 +1,41 @@
-From: "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] no login with 2.6 kernel and Mozilla probs on 712/60
-Date: Fri, 28 May 2004 03:58:17 +0100
-Message-ID: <20040528025817.GA9414__46483.6731822745$1416623461$gmane$org@sal.ucc.ie>
-References: <BAY1-F152EPPqq6YgsN00032cd2@hotmail.com>
+From: Stuart Brady <sdbrady@ntlworld.com>
+Subject: [parisc-linux] Re: ad1889 driver/docs for c3k/j5k audio
+Date: Sat, 29 May 2004 01:06:35 +0100
+Message-ID: <20040529000635.GA2966@calypso>
+References: <20040222092057.GA2590@calypso>
+	<20040222162544.GA9367@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: carlos@baldric.uwo.ca,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Kenneth Westelinck <kennywest1@hotmail.com>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <BAY1-F152EPPqq6YgsN00032cd2@hotmail.com>
-Resent-Message-ID: <H4Eve.A.xpG.2ArtAB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-hppa/>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040222162544.GA9367@colo.lackof.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, May 27, 2004 at 07:45:26PM +0000, Kenneth Westelinck wrote:
+On Sun, Feb 22, 2004 at 09:25:44AM -0700, Grant Grundler wrote:
 
-> Strange. Galeon used to work a while ago (and as far as I understand, 
-> Galeon is based on some Mozilla libraries). But after doing an apt-get 
-> upgrade (I think this was a year ago or something) all of the sudden it 
-> stopped working :( The main reason why I want to use my 712 is surfing and 
-> reading mail. And dillo is not an option ;)
+> I posted the only documentation we have for ad1889:
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016704.html
 
-Well, at least you can use konqueror (although I prefer mozilla/
-firebird myself). Also amaya works, however I don't consider
-it as a browser (in that respect it is a PITA), but more as
-a validator.
+> If you have patches for ad1889, I'm happy to test (and commit) them for you.
 
-Konqueror is starting up slow (on my C3k running Debian/testing),
-but after it loaded all libraries and started all neccessary
-KDE daemons (most notably knotify, which takes ages to start),
-it's more than usable.
+Unfortunately, the documentation you're referring to is no longer there.
+Do you still have it?
 
-Greetings,
-   Max
-
-
+If so, I don't have a box with an ad1889, but I should be able to make
+some small improvements.
 -- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Stuart Brady
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
