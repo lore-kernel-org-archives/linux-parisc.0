@@ -1,36 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23A11482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 13:05:11 -0600 (MDT)
-Message-Id: <200105161857.MAA10761@puffin.external.hp.com>
-To: joel@digitalparadise.net
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Help with bootable CD 
-In-Reply-To: Your message of "Wed, 16 May 2001 13:13:03 CDT."
-             <GAENJIFENGKGOINJAONFOEOBCAAA.joel@digitalparadise.net>
-Date: Wed, 16 May 2001 12:57:26 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail-ob01.one.net.au (mail-ob01.one.net.au [61.12.0.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 31C5A482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 20:03:17 -0600 (MDT)
+Received: Received: [from squeak.local (async169-ade-isp-7.nas.one.net.au [203.101.92.170])
+	by mail-ob01.one.net.au  with SMTP id f4H22Vw09129
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 May 2001 12:02:50 +1000 (EST)]
+From: amodra@one.net.au
+Date: Thu, 17 May 2001 11:37:02 +0930
+To: SOETE Jo?l <JSO@EUROPAY.COM>
+Cc: "'puffin-t@esiee.net'" <puffin-t@esiee.net>,
+	parisc-linux@lists.parisc-linux.org,
+	parisc-linux-announce@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 0.6.1 isos
+Message-ID: <20010517113702.W14368@squeak.one.net.au>
+References: <A4A5E4C468B5D11190220001FA6835DD04DD892B@EPIXCH003>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <A4A5E4C468B5D11190220001FA6835DD04DD892B@EPIXCH003>; from JSO@EUROPAY.COM on Wed, May 16, 2001 at 08:05:56PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Joel Lansden" wrote:
-> I have an H50 with 256Mb Memory, 4 C2490A 2gb hard drives, and a regular HP
-> SCSI CD-ROM.
-> Does this help at all?
+On Wed, May 16, 2001 at 08:05:56PM +0200, SOETE Jo?l wrote:
 
-A bit. HP hasn't done any testing on Nova class boxes.
+> !!! I just try binutils_2.11.90.0.7-2.99_hppa.deb but as failed on 'bus
+> error' !!!
 
-Some folks are running parisc-linux on E55 (iirc) using NFS root.
-FWIW, they are only capable of 32-bit kernels. Forget
-trying to install the CD on local disk since we have no drivers
-for the HP-PB SCSI interfaces. At www.parisc-linux.org , read the
-FAQ answer to "is my HW supported".
+Don't use anything based on HJ's .0.7 binutils (which this deb is).
+It has half of a necessary change installed, which unfortunately
+for hppa-linux means 2.11.90.0.7* generates bad objects with
+references to ".plt - 1".  These references will generate an
+unaligned data trap when you hit them.
 
-Please submit a bug to either kernel or palo project which includes
-*all* serial console output. See http://bugs.parisc-linux.org/
-for info on how to submit bugs.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Alan Modra
