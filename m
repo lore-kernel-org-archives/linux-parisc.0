@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7E1454841
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Nov 2003 15:16:03 -0700 (MST)
-Date: Sat, 8 Nov 2003 17:11:07 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C9A24841
+	for <parisc-linux@parisc-linux.org>; Sat,  8 Nov 2003 15:33:05 -0700 (MST)
+Date: Sat, 8 Nov 2003 15:33:04 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
 To: Joel Soete <soete.joel@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 carlos
-Message-ID: <20031108221106.GL21080@systemhalted>
-References: <20031108210057.7FFAB49402D@palinux.hppa> <3FAD5D36.3000007@tiscali.be>
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was: do_page_fault?]
+Message-ID: <20031108223304.GB28929@colo.lackof.org>
+References: <3F969FFE00005DB3@ocpmta2.freegates.net> <3FACE5A4.7070003@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3FAD5D36.3000007@tiscali.be>
+In-Reply-To: <3FACE5A4.7070003@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +24,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Nov 08, 2003 at 09:16:38PM +0000, Joel Soete wrote:
-> Just because it still failed to boot on my b2k (Suckio pb), may I ask 
-> you your .config file (if it is not the defconfig) and also which 64bit 
-> compiler did you used.
+On Sat, Nov 08, 2003 at 12:46:28PM +0000, Joel Soete wrote:
+> But if I launch it a second time no more pb???
+> Very strange isn't it?
 
-Custom built 64-bit cross based on 3.3.1 release and upstream binutils.
-Adding your fix for the suckio pb right now.
+Sounds like a cache coherency/aliasing problem.
+Once you start looking at code, watch out for module loading
+and shared memory maps type stuff.
 
-c.
+grant
