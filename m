@@ -1,57 +1,59 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA11263
-	for <parisc-linux@puffin.external.hp.com>; Sat, 18 Sep 1999 22:31:25 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <37E478EA.14370720@uswest.net>
-Date: Sat, 18 Sep 1999 23:47:22 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA12239
+	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Sep 1999 15:12:11 -0600
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <199909192114.OAA20845@bart.allegro.com>
+Subject: Re: [parisc-linux] 2 new boxes I have..
+To: jdelisle@novia.net (John Delisle)
+Date: Sun, 19 Sep 1999 14:14:12 -0700 (PDT)
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <002101bf022e$520d0780$ab0228d8@johnshay> from "John Delisle" at Sep 18, 99 06:34:08 pm
 MIME-Version: 1.0
-To: Philipp Rumpf <prumpf@suse.de>
-CC: Parisc Linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] exec_kernel help
-References: <37E34387.713858FE@uswest.net> <19990918102923.C5481@suse.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
+Re:
 
-> > I've been struggling with this for the last couple of days, and I'm
-> > stuck.  I can build a bootable image, but I can not get it to transfer
-> > control to the kernel.  (I'm working on a C200+ which is a PA-8200
-> > (PA-RISC 2.0) as Grant pointed out earlier).  I know the first targeted
-> > build is for the PA 1.1, but I am willing and would like to get the
-> > kernel working on the 2.0 also.
->
-> It would be really nice to support PA2.0 in narrow mode.
->
-> > Here is the output on the console (I'm typing this in by hand)
->
-> Try to get a serial console set up.
+> This is a multi-part message in MIME format.
 
-Finally after several hours I finally figured out how to setup the serial
-console.  (BTW, don't put a null-modem adapter on a null-modem cable, it
-doesn't work :()
+(Yes, your message is improperly sent in both MIME-encoded ASCII
+and HTML ... check your mail program preferences/options/whatever
+and uncheck the "send as HTML" option ... save bandwidth, and be
+*much* easier to read for users with older mail readers (like elm :))
+ 
+> I recently became the owner of two HP PA-RISC systems. 
 
-Well the result is still the same ... It hangs after printing the message
-"Transfering control to kernel. (At entry point 0x00010000).  So I'll start
-diving into head.S and see if I can trace it from there.
+> One is a HP 9000 800/H50 with 512MB ram, a SCSI/Console/LAN card, a MUX =
+> (40299B)
+> 
+> The other is a HP 9000 800/G40 with 256MB ram, a SCSI/Console/LAN card, =
+> a MUX (20499B), a 16 bit differential SCSI (28696-60001) card, and two =
+> SCSI/Parallel cards
+> 
+> 1) Can I make one run linux?
 
->
-> > Transfering control to kernel. (At entry point 0x00010000)
-> > -----------------------------------------------------
-> >
-> > It hangs there and I have to reboot to continue.
+Well, this is the list to ask, certainly :)
+ 
+> 2) What are they worth? (Either as a whole or components..)
 
-> > Any help/pointers would be appreciated :)
+STFW!   :)
 
->
-> okay, both head.S and our console (which is still called pdc_* though it
-> really is IODC) rely on pa1.1 firmware.  I am not sure this works on PA2.0
-> systems.
->
->         Philipp Rumpf
+Check www.ebay.com, search for "G40" and "H50".  For example,
 
-I'll investigate this and see if I can track it down.  Thanks for the
-pointers!
+http://cgi.ebay.com/aw-cgi/eBayISAPI.dll?ViewItem&item=162760409
+http://cgi.ebay.com/aw-cgi/eBayISAPI.dll?ViewItem&item=154656842
 
--Ryan
+Clearly, search for other permutations: "HP 9000" "HP9000"  
+"HP9000/G50" "HP 9000 G50", etc.
+
+> <!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
+> <HTML>
+> <HEAD>
+> <DIV><FONT color=3D#000000 size=3D2>Hi,</FONT></DIV>
+> <DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+> <DIV><FONT color=3D#000000 size=3D2>I recently became the owner of two =
+> HP PA-RISC=20
+> systems.&nbsp; </FONT></DIV>
+...
+
+SS
