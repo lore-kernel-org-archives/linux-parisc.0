@@ -1,47 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 70E194A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Feb 2001 07:46:38 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 907924A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Feb 2001 08:09:22 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel2.hp.com (Postfix) with ESMTP id CA532C9D
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Feb 2001 10:09:21 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id IAA08530 for parisc-linux@lists.parisc-linux.org; Fri, 9 Feb 2001 08:09:21 -0700 (MST)
+Date: Fri, 9 Feb 2001 08:09:21 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200102091509.IAA08530@udlkern.fc.hp.com>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ASP Parallel port driver broken on HP9000/730
-Date: Fri, 9 Feb 2001 15:48:31 +0100
-References: <Pine.LNX.4.21.0102091426380.9525-100000@sgate.charlysworld.de>
-In-Reply-To: <Pine.LNX.4.21.0102091426380.9525-100000@sgate.charlysworld.de>
-MIME-Version: 1.0
-Message-Id: <01020915420103.32355@P100.helgenet.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] nscd and new glibc on parisc-linux
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Friday 09 February 2001 14:45, M. Grabert wrote:
->
-> sorry about the confusing error report.
-> I'm actually using serial console, with the configuration above;
-> but the initial kernel messages are not redirected to the serial console.
-> not until the serial ports are found & initialized ...
-> ... but since these kernel messages are printed before the time the
-> serial ports are recognized, I can't see them on the terminal, but on the
-> monitor.
-> My question was, whether there is a kernel parameter (i can pass to palo),
-> which redirects ALL kernel messages from the beginning to the serial port
-> (before they are regognized by the linux kernel).
+I checked in changes to fix the clone system call into our local cvs copy
+of glibc. HOWEVER, you should not build a new glibc and install it at
+this point, unless you move /usr/sbin/nscd out of the way (and a
+"make install" of glibc will put another one in its place, so do the
+move after the install).
 
-on the IPL screen type 
+The problem is that nscd uses pthreads. Before the clone system call
+was fixed, pthread_create() failed in a way that was not fatal to
+nscd. Now pthread_create() core dumps, because the pthread library
+routines currently have hard coded assumptions about which direction
+the stack grows. I'll be fixing that in the near future.
 
-PATH CONSOLE RS232_1
-*or*
-PATH CONSOLE SERIAL_1
+If you leave nscd in place you will not be able to log in to your
+machine. If you are using an nfs root you can fix this, but it will
+be a little more difficult to fix if you are booting off of a local
+disk.
 
-At the next boot PDC will redirect all PDC-messages to the first serial port 
-and you will able to boot your PARISC through minicom.
-
-Helge
-
-
-BTW: Max, your domain doesn't seem to resolve 
-	("M. Grabert" <xam@deathsdoor.com>)!
-bash-2.04$ nslookup deathsdoor.com
-Server:  devserv.devel.redhat.com
-*** devserv.devel.redhat.com can't find deathsdoor.com: Non-existent 
-host/domain
+John
