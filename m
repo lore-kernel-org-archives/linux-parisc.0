@@ -1,33 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 04D014A04
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Oct 2001 09:45:20 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15rLXl-0002dL-00; Wed, 10 Oct 2001 16:45:13 +0100
-Date: Wed, 10 Oct 2001 16:45:13 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Sonny Cook <sonny@aspersion.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 735/125 eisa nic
-Message-ID: <20011010164513.F24923@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.33.0110100827310.4675-100000@lefou.zayda.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0110100827310.4675-100000@lefou.zayda.com>; from sonny@aspersion.org on Wed, Oct 10, 2001 at 08:33:21AM +0000
-Sender: <willy@www.linux.org.uk>
+Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4D2CD4A04
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Oct 2001 10:50:09 -0600 (MDT)
+Date: Wed, 10 Oct 2001 18:48:45 +0200 (CEST)
+From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] puffin.external.hp.com,... unreachable through
+ quest
+In-Reply-To: <20011003182725.1901A37DBC@carmen.fc.hp.com>
+Message-ID: <Pine.BSF.4.30.0110101837030.758-100000@noc.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Oct 10, 2001 at 08:33:21AM +0000, Sonny Cook wrote:
-> I have a 735/125 and an EISA i82596 based nic.  Does the parisc-linux
-> kernel support this combination at the moment?  As far as I can tell from
-> the list archives, the answer is no, but that wasn't for this specific
-> combination, so I would just like to be sure.
+On Wed, 3 Oct 2001, Matt Taggart wrote:
 
-If you read some of the messages on the list today, you'll notice I've
-just got some of the necessary EISA support in place.  So the answer
-is `No, not yet, but probably quite soon'.  I remember seeing some
-intel-based nics in the EISA card box yesterday, so I may be able to
-try out this particular card myself.
+hi,
+
+> It appears to be a routing problem which seems to affect mostly non-US domains.
+
+well that's not a problem of domains but of prefixes/upstrems/routing/...
+at least us internal quest traffic should also be affected ...
+
+> I filed a support request on Monday. They're still trying to figure out what's
+> going on. I'll send mail once it's resolved.
+
+The prob still seems to exist from what I can tell from here :(
+That's amazing that two great companies like kpn/quest and hp cannot
+solve such an issue within one week ... at least they could have
+removed the announcement from there so that the traffic will take
+other routes (what would be far better than ending in nowhere)...
 
 -- 
-Revolutions do not require corporate support.
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
