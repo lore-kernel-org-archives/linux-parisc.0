@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "James Braid" <james.braid@peace.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Dodgy SCSI in L2000 
-In-Reply-To: Message from "James Braid" <james.braid@peace.com>
-   of "Wed, 08 May 2002 13:57:45 +1200." <002d01c1f633$bf3ebf50$5e01000a@bongo>
-References: <002d01c1f633$bf3ebf50$5e01000a@bongo> 
-Date: Wed, 08 May 2002 10:08:03 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020508160803.7DB61482A@dsl2.external.hp.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7034E482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 May 2002 15:50:30 -0600 (MDT)
+Message-Id: <200205082150.g48LoH8F019074@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: gcc-3.? compiler for hppa (3.1, 3.1+dwarf2, 3.2cvs20020429?)
+To: phil@jaj.com (Phil Edwards)
+Date: Wed, 8 May 2002 17:50:16 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, doko@cs.tu-berlin.de,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org
+In-Reply-To: <20020506103212.A27151@disaster.basement.lan> from "Phil Edwards" at May 6, 2002 10:32:12 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,46 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"James Braid" wrote:
-> > Can you try a kernel with SCSI_NCR_IOMAPPED=y?
+> > I still haven't figured out why libstdc++ needs to be installed prior
+> > to running the testsuite.
 > 
-> Yep. The kernels I am currently running already have that option set.
-> I read something about SCSI not working without it, so I tried
-> enabling it. Didn't really seem to have any affect on the problems I
-> have been having.
+> That's weird... nothing immediately comes to mind.
 
-The -pa7 I built has:
-CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS=8
-CONFIG_SCSI_NCR53C8XX_MAX_TAGS=32
-CONFIG_SCSI_NCR53C8XX_SYNC=20
-# CONFIG_SCSI_NCR53C8XX_PROFILE is not set
-# CONFIG_SCSI_NCR53C8XX_IOMAPPED is not set
-# CONFIG_SCSI_NCR53C8XX_PQS_PDS is not set
-# CONFIG_SCSI_NCR53C8XX_SYMBIOS_COMPAT is not set
+LD_RUN_PATH in the environment is the culprit.
 
-Of those, the _SYNC param is probably the one you want to twiddle.
-That sets the SDTR ceiling for all scsi busses in the system.
-While the 896 chip can do faster, termination, cable length, device
-bugs, misalignment of jupiter and pluto, failure to sacrifice enough
-710s, etc can cause the symptoms you described.
-
-On the last two generations of parisc machines one can cripple individual
-SCSI busses via PDC. Look at the SCSI cmd in the "configuration" menu at
-boot up.  A few months back I added the PDC calls to sym53c8xx driver to
-get SCSI initiator ID, width, and SDTR settings. This PDC support was
-intended for Multi-initiator SCSI clusters. But is useful to cripple a
-bus when the topology doesn't support the capabilities of the
-interfaces or devices.
-
-
-> I will try mucking with the termination and cables, but they should
-> be okay right? I mean, this box hasn't been opened or touched since
-> (hardware wise) since we got it from HP.
-
-I normally expect the internal cables to be OK from HP.
-But given the current issues, it's worth double checking.
-
-The need for termination varies depending on drive types and bus speeds.
-I'm talking practical here since SCSI spec *requires* the termination.
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
