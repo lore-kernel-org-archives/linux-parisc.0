@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3DFD482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Jan 2002 16:39:07 -0700 (MST)
-Message-ID: <3C4A038E.12C47FEB@gmx.at>
-Date: Sun, 20 Jan 2002 00:38:54 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Christian Suder <csuder@cisco.com>,
-	Philipp Schulte <pschulte@uni-duisburg.de>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 67FE0482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Jan 2002 17:51:44 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id yauwkaaa for parisc-linux@lists.parisc-linux.org; Sat, 19 Jan 2002 17:51:42 -0700
+Date: Sat, 19 Jan 2002 16:51:17 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Matthias Klose <doko@cs.tu-berlin.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Boot console problems
-References: <20020119193343.A876@nepomuk.max.uni-duisburg.de> <20020119120255.12b0cd25.csuder@cisco.com>
+Subject: Re: [parisc-linux] journaling filesystem on parisc?
+Message-ID: <20020120005117.GK21816@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <15429.47940.937550.926908@gargle.gargle.HOWL>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <15429.47940.937550.926908@gargle.gargle.HOWL>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,82 +25,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello !
+In reference to a message from Matthias Klose, dated Jan 16:
+> Did not see this mentioned on the list or the site. Any experiences on
+> hppa? Does XFS work?
 
-In my oppinion, this has nothing to do with the control lines.
-The behavior would be different.
+well, it does work with some small tweaks.
 
-The problem you have, Philipp is the line-feed, carriage return
-topic, a always hot topic.
-You can simple try to use Ctrl-J (^J) instead of <return>. Or try
-to use ^J and then <return> or the other way round. Then the machine 
-will perhaps react to your commands !
+i've put a patch out at:
+ftp://ftp.parisc-linux.org/patches/xfs-1.0.2-hppa-2.4.17-pa11.diff.gz
 
-The problem is simple a setup problem. Tricky is to find a setup
-of 
-- exchange LF by CR or the other way round
-- add LF in some cases
-- ignore CR is some cases.
+it seems to work ok here. i've done some kernel compiles and ran
+bonnie++ on it.
 
-With `stty' on the machine running the front end (minicom) you can
-play around, or use `minicom' built in configuration.
+I'd like to get some comments on some of the magic numbers in the patch,
+and then I hope to commit the parisc specific pieces of the patch since
+they aren't really xfs specific. (the following three plus exporting
+lclear_user)
 
-With friedly regards
-Christoph P.
+first, syscall numbers... are these numbers ok?
 
+--- arch/parisc/kernel/syscall.S	2001/12/11 17:14:06	1.74
++++ arch/parisc/kernel/syscall.S	2002/01/20 00:40:33
+@@ -593,6 +593,9 @@ sys_call_table:
+ 	ENTRY_DIFF(ftruncate64)	/* 200 */
+ 	ENTRY_SAME(getdents64)
+ 	ENTRY_DIFF(fcntl64)
++	ENTRY_SAME(attrctl)
++	ENTRY_SAME(acl_get)
++	ENTRY_SAME(acl_set)                     /* 205 */
+ 
+ .end
+--- include/asm-parisc/unistd.h	2001/10/09 19:43:37	1.23
++++ include/asm-parisc/unistd.h	2002/01/20 00:40:40
+@@ -695,8 +695,11 @@
+ #define __NR_ftruncate64        (__NR_Linux + 200)
+ #define __NR_getdents64         (__NR_Linux + 201)
+ #define __NR_fcntl64            (__NR_Linux + 202)
++#define __NR_attrctl            (__NR_Linux + 203)
++#define __NR_acl_get            (__NR_Linux + 204)
++#define __NR_acl_set            (__NR_Linux + 205)
+ 
+-#define __NR_Linux_syscalls     202
++#define __NR_Linux_syscalls     205
+ 
+ #define HPUX_GATEWAY_ADDR       0xC0000004
+ #define LINUX_GATEWAY_ADDR      0x100
+ 
+ 
+and then a new fcntl flag. these are defined differently for i386 and
+ia64 (the two officially supported xfs architectures)
 
-Christian Suder wrote:
-> 
-> Philip,
-> 
-> I'm using the serial console on a 735/125 without any problems. Two possibilities:
-> 
-> Your cable - does it have anything special/wrong on the control signals ? Obviously the basic RX/TX and ground work, how about the other signals (DSR/DTR, RTS/CTS) ?
-> 
-> The console configuration and your terminal program aren't using the same parameters (I assume you are using 9600,n,8,1). Eventually the console has been set to something similar but different. The console and the OS can use different settings, which is why it works from the OS but not at the boot prompt.
-> 
->         Christian
-> 
-> On Sat, 19 Jan 2002 19:33:43 +0100
-> "Philipp Schulte" <pschulte@uni-duisburg.de> wrote:
-> 
-> > Hello,
-> > I am trying to install parisc-linux on a HP 735. The problem is that I
-> > can not specify the boot device. I hit ESC during the boot-process and
-> > I get the menu where I can choose between:
-> >
-> > ---
-> > a) Boot from specified device
-> > s) Search fpr bootable devices
-> > a) Enter boot administration mpde
-> > x) Exit and continue boot sequence
-> > ?) Help
-> >
-> > Select from menu:
-> > ---
-> >
-> > But then nothing happens no matter what key I press. The cursor just
-> > jumps to the "S" of "Select". Even "? <RETURN>" gives no output at
-> > all.
-> > I thought that it might have something to do with my serial console
-> > but I tried using another PC with minicom and got the same result.
-> > If I just let the machine boot to HP-UX then everything works fine, I
-> > can execute commands and stuff.
-> > Does someone know whats going on here or how to avoid this problem?
-> > Regards,
-> > Phil
-> >
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--- include/asm-parisc/fcntl.h	2000/11/10 21:44:44	1.2
++++ include/asm-parisc/fcntl.h	2002/01/20 00:40:39
+@@ -24,6 +24,7 @@
+ #define O_DIRECT	00040000 /* direct disk access hint - currently ignored */
+ #define O_DIRECTORY	00010000 /* must be a directory */
+ #define O_NOFOLLOW	00000200 /* don't follow links */
++#define O_INVISIBLE     04000000 /* invisible I/O, for DMAPI/XDSM */
+ 
+ #define F_DUPFD		0	/* dup */
+ #define F_GETFD		1	/* get f_flags */
 
+have fun! :-)
+randolph
 -- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
