@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns4.trafficmagnet.net (unknown [211.101.236.28])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 46D416029
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 05:13:57 -0700 (MST)
-Received: from sendmail ([211.101.236.29])
-	by ns4.trafficmagnet.net (8.9.3/8.9.3) with SMTP id JAA26154
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Nov 2001 09:36:10 +0800
-Message-Id: <200111170136.JAA26154@ns4.trafficmagnet.net>
-From: Christine Hall <return@trafficmagnet.net>
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Date: Sun, 18 Nov 2001 5:42:33 +0800
+Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DF913500A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 05:43:18 -0700 (MST)
+Message-ID: <3BF71BEC.5D032CE6@gmx.at>
+Date: Sun, 18 Nov 2001 03:24:44 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: multipart/related; boundary="d5fe13e3-4979-4ddb-9a32-2e36c1096aca"
-Reply-To: Christine Hall <christine@trafficmagnet.net>
-Subject: [parisc-linux] PARISC-LINUX.ORG
+To: Thomas Marteau <marteaut@esiee.fr>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+References: <3B4396D8.9A33414F@gmx.at> <3BF4E38C.D59603FE@esiee.fr>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: E55 status
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,81 +22,75 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---d5fe13e3-4979-4ddb-9a32-2e36c1096aca
-Content-Type: text/html; charset=iso-8859-1Ì
-Content-Transfer-Encoding: quoted-printable
+Hi Thomas !
 
-<!-- saved from url=3D(0022)http://internet.e-mail -->
-<html>
-<head>
-<title>Traffic Magnet</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3D=
-iso-8859-1">
-</head>
-<body bgcolor=3D"#FFFFFF">
-<table width=3D"600" border=3D"0" cellspacing=3D"0" cellpadding=3D"0">
-  <tr>
-    <td><font face=3D"Verdana, Arial, Helvetica, sans-serif" size=3D=
-"2">Hi<br>
-      <br>
-      I visited <a href=3D=
-"http://www.trafficmagnet.net">PARISC-LINUX.ORG</a>, and 
-      noticed that you're not listed on some search engines! I think we can =
-offer 
-      you a service which can help you increase traffic and the number of =
-visitors 
-      to your website.<br>
-      <br>
-      I would like to introduce you to TrafficMagnet. We offer a unique =
-technology 
-      that will submit your website to over 300,000 search engines and =
-directories 
-      every month.<br>
-      <br>
-      </font> 
-      <table width=3D"396" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" =
-align=3D"center">
-        <tr> 
-          <td><a href=3D"http://www.trafficmagnet.net"><img src=3D=
-"http://image10.trafficmagnet.net/image/logo.gif" width=3D"137" height=3D=
-"136" border=3D"0"></a></td>
-          <td><a href=3D"http://www.trafficmagnet.net"><img src=3D=
-"http://image10.trafficmagnet.net/imagenew/CRAWLER/002/179/190.jpg" width=3D=
-"197" height=3D"141" border=3D"1"></a></td>
-          <td><a href=3D"http://www.trafficmagnet.net"><img src=3D=
-"http://image10.trafficmagnet.net/image/signup.gif" width=3D"62" height=3D=
-"136" border=3D"0"></a></td>
-        </tr>
-      </table>
-      <font face=3D"Verdana, Arial, Helvetica, sans-serif" size=3D"2"><br>
-      You'll be surprised by the low-cost, and by how effective this website =
-promotion 
-      method can be. <br>
-      <br>
-      To find out more about TrafficMagnet and the cost for submitting your =
-website 
-      to over 300,000 search engines and directories, visit <a href=3D=
-"http://www.trafficmagnet.net">www.TrafficMagnet.net</a>. 
-      <br>
-      <br>
-      Would you like me to send you an introduction to how we can make <a =
-href=3D"http://www.trafficmagnet.net">PARISC-LINUX.ORG</a> 
-      listed on more search engines?<br>
-      <br>
-      I would love to hear from you. <br>
-      <br>
-      Best Regards <br>
-      <br>
-      Christine Hall <br>
-      Sales and Marketing <br>
-      E-mail: christine@trafficmagnet.net <br>
-      <b><a href=3D=
-"http://www.trafficmagnet.net">http://www.trafficmagnet.net</a></b> 
-      </font> </td>
-  </tr>
-</table>
-</body>
-</html>
+Here are the current status of the E55:
 
---d5fe13e3-4979-4ddb-9a32-2e36c1096aca--
+I have rewritten my whole stuff on the current CVS snapshot from the end
+of this week (2.4.14-pa6).
+
+(1) TTY driver for the PDC console, used in polling mode (30ms) as
+device
+	/dev/ttyB0:
+	- only tested via serial line !
+	- is configured together with CONFIG_SERIAL_CONSOLE, if ARCH is
+		parisc (XXX: TODO a config via menu for PDC CONSOLE DRIVER)
+	- a node (/dev/ttyB0 c 30 0) must be created
+	- /etc/inittab should have a login on /dev/ttyB0
+	- the kernel line parameter `console=ttyB0' must be set
+
+	Driver works for complete Linux stuff, including `login' and editing
+	on the `bash'.
+	
+(2) LED support for the "RUN" and "ATTENTION" LED (cuppled to the
+heartbeat of
+	700er machines. If the heartbeart is active, E55 shows "RUN", otherwise
+	the machine indicates "ATTENTION"). So the status can be influenced
+	by the `/proc/pdc/led' entry.
+	This LED driver is activated by the model name "9000/856" (E55), so
+	for further machines of similar types, the model names have to be
+	added.
+
+In general, the CONFIG stuff has to be adapted. On that stuff, my
+experience 
+is not that what other LINUX hacker's expect ...
+
+Further, is there a developer ChangeLog file to do entries per file ?
+
+So the E55 server can be booted diskless by BOOTP(DHCP)/TFTP and boots
+up. Ethernet is full functioning, the console works on port 0 of the
+8-port multiplexer. No SCSI controller is deteced, not the parallel
+interface,
+and the mulitplexer board. For these three componets, drivers are
+needed,
+and the DOCUMENTATION !!!
+
+I hope, parts of my stuff (or all plus improvments concerning
+configuration)
+will come into the kernel main stream to have this "start" of E55 server
+in the kernel.
+
+I will add my current CVS diffings of my extensions very soon, at the
+moment
+the CVS server seems to be down ! (Please contact me, if you have
+interest !)
+
+With friendly regards
+Christoph P.
+
+
+
+Thomas Marteau wrote:
+> 
+> Hi Christoph,
+> 
+>         I am updating our list of working hardware. Could you tell me if you
+> know something about the status of PA/Linux on E55?
+> 
+> Thanks for your answer, Thomas.
+> ESIEE Team
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
