@@ -1,17 +1,12 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Firefox/Mozilla patches
-Date: Sun, 19 Dec 2004 17:52:46 -0500
-Message-ID: <20041219225246.GG25304@baldric.uwo.ca>
-References: <Pine.GSO.4.58.0412172254550.1196@panter.stud.ntnu.no>
-	<20041219203417.GE25304@baldric.uwo.ca>
-	<Pine.GSO.4.58.0412192218090.4208@panter.stud.ntnu.no>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [parisc-linux] 2.6.10-pa1 build failure [drivers/serial/mux.c]
+Date: Sun, 26 Dec 2004 02:12:19 -0500
+Message-ID: <200412260212.19982.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Ivar <orskaug@stud.ntnu.no>
+  charset="us-ascii"
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.GSO.4.58.0412192218090.4208@panter.stud.ntnu.no>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,25 +17,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Dec 19, 2004 at 10:53:09PM +0100, Ivar wrote:
-> As of now the patch is still very experimental - I'll devote some more
-> spare time for this during christmas.
-> 
-> Recently, I've also done some naive attemts to port the Xorg/XFree mga
-> driver to parisc - with the exception of a few minor bugs (displacement of
-> the HW accelerated cursor), it works OK - so, I have my hopes up for this
-> too :)
-> 
-> However, a biggerproblem with Xorg (as I see it) is that it's not
-> natively ported to parisc.
+this hunk is bum:
+--- LINUS_2_6_10/drivers/serial/mux.c
++++ CVS2_6_10_PA1/drivers/serial/mux.c
+-       port->irq   = SERIAL_IRQ_NONE;
++       port->irq   = NO_IRQ;
 
-I haven't built the Xorg tree yet, still using XFree86 until I have some
-free time. What loader is the Xorg tree using? I assume it still has the
-builtin ELF loader with symbol hacks? In which case you need to do
-relocation handling, and we never ported this :)
+NO_IRQ isnt defined in any headers, but the serial_core.c has a similar hunk:
 
-c.
-
+--- LINUS_2_6_10/drivers/serial/serial_core.c
++++ CVS2_6_10_PA1/drivers/serial/serial_core.c
++#ifndef NO_IRQ
++#define NO_IRQ (-1)
++#endif
++   if (port->irq == NO_IRQ) {
+-mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
