@@ -1,12 +1,18 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [Updates] glibc 2.3.3 experimental update.
-Date: Fri, 8 Oct 2004 13:56:19 -0400
-Message-ID: <20041008175619.GF24430@baldric.uwo.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Improving performance of munmap
+Date: Fri, 8 Oct 2004 11:35:01 -0600
+Message-ID: <20041008173501.GA16958@colo.lackof.org>
+References: <20041007230232.GF14151@tausq.org>
+	<20041008020343.GN24430@baldric.uwo.ca>
+	<20041008041657.GG14151@tausq.org>
+	<20041008165926.GI14151@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20041008165926.GI14151@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,25 +23,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Fri, Oct 08, 2004 at 09:59:26AM -0700, Randolph Chung wrote:
+> +#define FLUSH_THRESHOLD 0x80000 /* 0.5MB */
+> +int parisc_cache_flush_threshold = FLUSH_THRESHOLD;
 
-pa,
+6 monthes or so ago Alex Williamson ran some perf tests comparing a
+CONSTANT vs global when tuning the IOMMU page size on IA64 ZX1 chipsets.
+IIRC, using a global was 3-5% slower if it was the same value as the constant.
+I don't know if parisc will offer a similar performance difference and if so,
+a per arch (PA11 vs PA20) should work fine for everything but PA8800.
+It may not be a problem, just something to consider.
 
-http://www.parisc-linux.org/~carlos/glibc-work/glibc-2.3.3-debs-2004-10-08/
+The rest looks "correct" to me - ie I don't see any obviously wrong.
 
-- Forward ported the non-arch debian patches.
-- Updated the cvs tarball.
-
-The main difference I believe is in the 'non-arch' debian patches. I
-carried as many forward as was possible. This work will probably make it
-back to a debian experimental glibc :)
-
-This release is for those of you that like to test out new glibc's...
-
-The previous glibc had problems with gdb's testsuite and symbol
-resolution. Running a test on that now.
-
-c.
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
