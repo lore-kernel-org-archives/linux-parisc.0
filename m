@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC46548D2
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 11:32:01 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17Usee-0002Et-00; Wed, 17 Jul 2002 18:32:00 +0100
-Date: Wed, 17 Jul 2002 18:32:00 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@parisc-linux.org
-Subject: Re: gcc-3.2 Ok gcc-3.1.1 Ko (was Re: [parisc-linux] gcc-3.2 bootstrap?)
-Message-ID: <20020717183200.G13352@parcelfarce.linux.theplanet.co.uk>
-References: <200207161812.g6GICDIp023677@hiauly1.hia.nrc.ca> <1026925794.3d35a4e296ccf@webmail.tiscalinet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1026925794.3d35a4e296ccf@webmail.tiscalinet.be>; from joel.soete@freebel.net on Wed, Jul 17, 2002 at 07:09:54PM +0200
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AF0DB48DA
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 11:37:39 -0600 (MDT)
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <1026927440.3d35ab5042756@webmail.tiscalinet.be>
+Date: Wed, 17 Jul 2002 19:37:20 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: Randolph Chung <randolph@tausq.org>,
+	HPPA List <parisc-linux@parisc-linux.org>
+References: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk> <1026913104.3d357350a4057@webmail.tiscalinet.be> <20020717144543.A13352@parcelfarce.linux.theplanet.co.uk> <1026914852.3d357a24c4a4a@webmail.tiscalinet.be> <20020717142915.GG641@tausq.org> <1026922060.5709.148.camel@irongate.swansea.linux.org.uk>  <20020717150349.GN8724@tausq.org> <1026925311.5709.153.camel@irongate.swansea.linux.org.uk>
+In-Reply-To: <1026925311.5709.153.camel@irongate.swansea.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] Merge -rc1 -rc2 (was 2.4.19-rc1-ac6 Merge pa55: #error ...?)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,14 +24,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 17, 2002 at 07:09:54PM +0200, Joel Soete wrote:
-> To summarise:
-> This clean should be applied without problem (test with gcc-3.2 and gcc-3.0.4)
-> 
-> This allow me to produce an operational kernel with gcc-3.2 (bootstrap an x);
-> telnet, ftp and ssh connection OK
+Hi,
 
-but did you test modules?
+I merge my 19-rc1 stuff with 19-rc2 and just enounter a conflict in
+include/linux/personality.h:
 
--- 
-Revolutions do not require corporate support.
+enum{
+...
++        PER_OSF4= 0x000f,
+
+unfortunaltely the same as our:
+         PER_HPUX= 0x000f,
+
+What should I do?
+
+Joel
+
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
