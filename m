@@ -1,29 +1,43 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA07666
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 15:36:45 -0700
-Message-ID: <3A1462DB.FE4D61CA@bawue.de>
-Date: Thu, 16 Nov 2000 23:42:35 +0100
-From: Andreas Thienemann <andreas@bawue.de>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 250/1 doesn't boot but dumps stack
-References: <200011151923.LAA13597@milano.cup.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Received: from ns2.imedia.net (ns2.imedia.net [209.247.154.4])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA08344
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 16:43:45 -0700
+Message-Id: <5.0.0.25.0.20001115152923.00a603d0@mail.webcash.com>
+Date: Wed, 15 Nov 2000 15:41:55 -0800
+To: parisc-linux@puffin.external.hp.com
+From: Kailashnath V Rampure <kailasr@webcash.com>
+Cc: Matt Taggart <taggart@carmen.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="=====================_108207293==_.ALT"
+Subject: [parisc-linux] Apache package.
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
+--=====================_108207293==_.ALT
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 
-> > IASQ: 00000000 00000000 IAOQ: c029c264 c029c268
-> >  IIR: 0e681096    ISR: 00000000  IOR: 00000004
-> > ORIG_R28: 00000000
-> Smells like a driver bug.
-> Can you look up IOAQ and GR2 (c029c264 and c029c248) in System.map file?
-Okay, here we go (thanks for the build-tool information...)
+Hi
 
-System Map output:
+I tried to build apache_1.3.12 on HP a class server. But I have error. I 
+have tried to check the site 
+ftp://ftp.debian.org/debian/dists/unstable/main/binary-hppa/
+I could not find one. I found some apache-doc etc.
 
-0xc029c264	__init_begin+264
-0xc029x248	__init_begin+248
+Can any on point me where I can try.
+Regards
+Kailas
+--=====================_108207293==_.ALT
+Content-Type: text/html; charset="us-ascii"
 
-andreas
+<html>
+Hi <br>
+<br>
+I tried to build apache_1.3.12 on HP a class server. But I have error. I
+have tried to check the site
+<a href="ftp://ftp.debian.org/debian/dists/unstable/main/binary-hppa/" eudora="autourl"><font color="#0000FF"><u>ftp://ftp.debian.org/debian/dists/unstable/main/binary-hppa/<br>
+</a></u></font>I could not find one. I found some apache-doc etc.<br>
+<br>
+Can any on point me where I can try.<br>
+Regards<br>
+Kailas</html>
+
+--=====================_108207293==_.ALT--
