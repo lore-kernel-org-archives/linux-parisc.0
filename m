@@ -1,81 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA06372
-	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Jan 2000 18:22:39 -0700
-Date: Wed, 12 Jan 2000 19:22:53 -0500
-From: Matthew Wilcox <willy@thepuffingroup.com>
-To: Philipp Rumpf <prumpf@mkp.net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] C360 shellprompt
-Message-ID: <20000112192253.F11300@thepuffingroup.com>
-References: <20000111155321.A14792@tux.mkp.net> <20000112164152.C11300@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000112164152.C11300@thepuffingroup.com>; from Matthew Wilcox on Wed, Jan 12, 2000 at 04:41:52PM -0500
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA10995
+	for <parisc-linux@puffin.external.hp.com>; Thu, 13 Jan 2000 09:43:17 -0700
+Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
+	by palrel3.hp.com (Postfix) with ESMTP id CD6F119FA
+	for <parisc-linux@thepuffingroup.com>; Thu, 13 Jan 2000 07:43:40 -0800 (PST)
+To: parisc-linux@thepuffingroup.com
+In-reply-to: Your message of "Wed, 12 Jan 2000 20:48:58 EST."
+             <387D2F0A.F41A4129@thepuffingroup.com>
+Date: Thu, 13 Jan 2000 08:43:40 -0700
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E128mPU-0000c6-00@endor.fc.hp.com>
+Subject: [parisc-linux] 2.3 whining
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jan 12, 2000 at 04:41:52PM -0500, Matthew Wilcox wrote:
-[...]
-> bad magic 6a930530 (should be c0030a80), wq bug, forcing oops.
 
-Found this one.  It's my fault in the HIL driver.  Turn off CONFIG_HIL
-and things progress further:
+A lot of code cleanup occurred and several defects were fixed in 2.2
+since the beginning of December.  Much of this effort (my effort is
+why I'm upset, and some good efforts by John David Angelin too) is now
+gone.  The dirty code and defects, which *were* fixed, are now holding
+us all back in 2.3!  Things could've been done better.
 
-execve /sbin/init c00df008 c00df030
-do_execve
-reading c005cf70 cffe8808 cffe85c8 128
-pgc bad case
-getting new pages ...
-got c144c040 to c144c43c
-gcp 00000000 19 0 = c144c040 (c005cc7c)
-readpage: c006ddc8
-page_ok
-returned 128
-02100108 05124000 00000000 00000000
-00000000 00000000 000039c3 00000080
-000000b4 00045574 40006d38 00000138
-00000004 000001c8 00000013 000004fc
-00000000 000004fc 000001e8 000004c0
-00000003 000006e4 00000000 000006e4
-00000000 000006e4 00000000 000006e4
-00000000 00045000 00000574 4702100b
-gcp 2001f000 19 0 = c144c43c (c007277c)
+When the 2.3 CVS tree was started, it would've been better to copy the
+RCS files (and tag the 2.2 ones) instead of checking in a newly-numbered
+revision with no past
+history attached.  Because of the way it was done, it's unnecessarily
+difficult to tell which 2.2 file version was used to begin the
+2.3 port (because all the versions are 1.1 again), and thus
+difficult to figure out which changes need to be re-merged.  Also the
+comments from the previous authors have been lost in the 2.3 tree.
 
-[ i thought that bit might be of interest ]
+In going to 2.3 the realmode embedded executable stuff I designed has
+been obliterated.  I don't know how this was decided but I was not part
+of the decision.  Even though it might be the right long-term answer,
+consequently we now have fragile real-mode C code as we had before, so it
+is not a simple matter to re-merge the 2.2 fixes into 2.3
+because you're working against the compiler and some other structural
+differences, leaving us with a nice mess.  (jsm thought up a nice
+way to avoid my realmode hack, but I have no incentive to
+start coding that to see it disappear too).
 
-map_som_binary
-do_mmap cff260e0 00001000 0003f000 00000005 00001806 00000000
-miscoloured mmap
-do_mmap cff260e0 40001000 00006000 00000007 00001806 0003f000
-miscoloured mmap
-do_mmap 00000000 40007000 0000f000 00000007 00000006 00000000
-miscoloured mmap
+If my hacking is unhelpful to palinux, I would prefer knowing
+that *before* making changes rather than finding out *after*
+doing a bunch of work and watching it disappear.
 
-which looks slightly offputting.
+I'm owed an explanation of why the realmode embedded executable
+was wrong for the project and is now gone.
+And an explanation of why the defects and improvements
+I (and JDA) contributed were wrong for the project too.  I'm willing
+to learn.
 
-stack_base 2001f000 cff1f000
-mem_map disagrees with c144c43c at 2001f000
-set_pte cff2007c 0ff1f047
-create_som_tables
-sp 2001ffd8
-hey.
-
-the `disagrees' part made me snip this little section out.
-
-The last lines before I get nothing more reads:
-
-gcp 0000e000 19 0 = c144c3f8 (c005bb9c)
-pgc bad case
-getting new pages ...
-got c144b7c0 to c144bbbc
-gcp 0000f000 19 0 = c144bbbc (c005bb9c)
-gcp 00003000 21 0 = c144b88c (c005d550)
-new_page c144b88c flags 00000000
-new_page c144b88c flags 00000000
-cfef3000 cff12000
-new_page c144b88c flags 00000000
-new_page c144b88c flags 00000000
-set_pte cff0f00c 0fef300b
-
-so i don't actually get a prompt on the c3k, but we're closer.
-On the A180, it stops right before the `hey'.  It has the same
-value for `sp' as the C3k.
+        -P
