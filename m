@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id A8A00482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 14:18:42 -0600 (MDT)
-Received: from hasw (hasw.swt [192.168.0.10])
-	by server1.swt (8.12.0/8.12.0) with ESMTP id g3G55gNA001232
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Apr 2002 04:05:42 -0100
-From: se.witt@gmx.net
+	by dsl2.external.hp.com (Postfix) with SMTP id 3A2F84846
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 18:22:29 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
 To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 15 Apr 2002 21:51:51 +0200
+Date: Tue, 16 Apr 2002 02:18:38 +0200
+References: <F39D7BsZXbLvwa2SydH0001aa92@hotmail.com> <200204151232.46311.helge.deller@sap.com> <20020415173544.GO4971@sleepie.demon.co.uk>
+In-Reply-To: <20020415173544.GO4971@sleepie.demon.co.uk>
 MIME-Version: 1.0
-Message-ID: <3CBB4B77.22708.1CA4625@localhost>
-Content-type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] 2.4.18-pa17 and pppd 2.4.1 : Resource temporarily unavaiable
+Message-Id: <200204160218.38885.deller@gmx.de>
+Subject: [parisc-linux] WARNING: Kernel 2.4.18-pa20 is experimental !
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+> On Mon, Apr 15, 2002 at 12:32:46PM +0200, Helge Deller wrote:
+> > Older kernels just didn't reported it, but all had this problem.
+> > We're not freeing the memory yet, since we still have one or more
+> > __init or __initdata too much in our kernel. Just ignore it for now.
 
-I have a 715/100 with kernel 2.4.18-pa17 and pppd 2.4.1.
-When pppd is startet:
+FYI, I've re-enabled the freeing of boot memory in the CVS version
+of kernel 2.4.18-pa20 and am very interested in getting your feedback.
+But, since this change _could_ do anything to your system, please don't use 
+it if you have important data on your disks (or at least without having 
+a backup somewhere).
 
-pppd[314]: read: Resource temporarily unavailable
-pppd[314]: read /dev/ppp: Resource temporarily unavailable
-
-I have found something about this in the Archive and
-created a dummy hotplug script, but this changes nothing.
-The connecting works but is very slow (high latency, unstable).
-The log ist flooded with this message.
-
-ppp_generic, ppp_async, etc. are modules.
-
-Have somebody a suggestion?
+In case you see any boot-related or other strange problems with this kernel, 
+please let me know as soon as possible and remember to attach your .config file.
+I've tested this kernel on all my machines and haven't had any problems yet, so
+I personally think it's safe to use this kernel. But in any case: You've been warned :-)
 
 Thanks,
-Sebastian
- 
+Helge
