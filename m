@@ -1,16 +1,20 @@
-Return-Path: <herbert@13thfloor.at>
-Received: from mail.13thfloor.at (MAIL.13thfloor.at [212.16.62.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ABC0F486E
+Return-Path: <blitzen@msn.com>
+Received: from cpe-66-169-6-082.spa.sc.charter.com
+	(cpe-66-169-6-082.spa.sc.charter.com [66.169.6.82])
+	by dsl2.external.hp.com (Postfix) with SMTP id 2D33E48A8
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 18:00:49 -0700 (MST)
-Date: Thu, 25 Dec 2003 02:00:37 +0100
-From: Herbert Poetzl <herbert@13thfloor.at>
+	Thu, 25 Dec 2003 02:45:44 -0700 (MST)
+Message-ID: <0-2v8k$59$i0i$81-8@t6i5h7eft039li>
+From: "Christina Walker" <blitzen@msn.com>
 To: parisc-linux@parisc-linux.org
-Message-ID: <20031225010037.GB18790@MAIL.13thfloor.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Fri, 26 Dec 03 05:44:12 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="5.C26CBBA0D_C"
 Cc: 
-Subject: [parisc-linux] good list management ...
+Subject: [parisc-linux] 70 year old movie stars that look 40 here's how !
+	nhsagvj
+Reply-To: Christina Walker <blitzen@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,7 +25,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
-... especially the spam filters ...
+--5.C26CBBA0D_C
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-best,
-Herbert
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
+
+<body bgcolor=3D"#FFFFFF" text=3D"#EEEEEE" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FF0000" face=3D"verdana">Bob Hope, JFK, Marily=
+n Monroe, Wayne Newton, Dick Clark, <br>
+    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
+     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
+ter><center><h5><font color=3D"#000000" face=3D"verdana">Have used HGH wit=
+h great success to be the best they could possibly be.<br>HGH is recognize=
+d around the world as the<br> "hormone to replace"<br> to combat the adver=
+se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
+iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
+br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
+en proven to be "solely responsible" in the maintenance of their youthful<=
+br>"movie star good looks" decades beyond those that have yet to discover =
+HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
+and stay 
+    so fit at their age??</font></h5>
+</center><center><h3><font color=3D"#FF0000" face=3D"verdana">HGH is the g=
+uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
+er><br><center><H4><font color=3D"#FF00FF" face=3D"verdana"><a href=3D"htt=
+p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
+you !<br>Learn More Right Here</a></font></h4></center>
+
+</body>
+</html>ofjygefcugrd
+myb zruciwx siz 
+ac ahyjtoyyqaayvaoujrkl bsqm  
+lux dro  p 
+ai zl
+
+--5.C26CBBA0D_C--
