@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hadron.dyndns.org (ma-amesbury1e-100.mrrmnh.adelphia.net [68.168.107.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BE4F14829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Feb 2003 12:18:17 -0700 (MST)
-Date: Tue, 4 Feb 2003 14:17:41 -0500
-From: "Aaron St. Pierre" <asp@ungod.com>
-To: Paul Bame <bame@fc.hp.com>
-Cc: Michael Wood <mwood@its.uct.ac.za>,
-	Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel compile
-Message-ID: <20030204191741.GC25469@hadron>
-References: <20030203020247.GB1046@hadron> <20030203041122.GB29454@dsl2.external.hp.com> <20030203053336.GC1046@hadron> <20030203060359.GF29454@dsl2.external.hp.com> <20030203064328.GD1046@hadron> <20030203101959.GA28668@marmite.its.uct.ac.za> <20030203153735.GE1046@hadron> <20030204165754.GA23535@paul.bame>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030204165754.GA23535@paul.bame>
+Received: from t-mta4.odn.ne.jp (mfep4.odn.ne.jp [143.90.131.182])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E1194829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Feb 2003 02:45:41 -0700 (MST)
+Received: from D9F8L41X ([61.209.161.151]) by t-mta4.odn.ne.jp with SMTP
+          id <20030205094539857.QDNF.26728.t-mta4.odn.ne.jp@mta4.odn.ne.jp>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 5 Feb 2003 18:45:39 +0900
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030205.0945350495@qweasd333-24i.net>
+Date: Wed, 05 Feb 2003 18:45:35 +0900
+From: master <qweasd333@24i.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Subject: [parisc-linux] =?ISO-2022-JP?B?GyRCTCQ+NUJ6OS05cCIoGyhCMzAbJEJLfDFfS3hCKEZ8GyhC?=
+ =?ISO-2022-JP?B?GyRCJDRNOztxJDckXiQ5GyhC?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,54 +25,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Paul, 	
-	My root filesystem is 250MB. 
+<事業者><送信者>山口　DMmaster企画社
 
-	parisc:~# df -kh
-	Filesystem            Size  Used Avail Use% Mounted on
-	/dev/sda2             231M   52M  168M  24% /
-	/dev/sda5             1.9G  212M  1.6G  12% /var
-	/dev/sda6             2.8G 1009M  1.7G  38% /usr
+☆☆☆☆☆☆☆☆☆☆☆☆広告☆☆☆☆☆☆☆☆☆☆☆☆
 
-	Don't know if you saw the thread, but for some reason 2.5.58 
-	boots, there are problems after, which is expected with a 
-	development kernel, but it boots nonetheless and that is hopeful :) 
+　　　【こんな方は是非ご相談ください】
 
-	Is there perhaps some other way I should be organizing my swap and
-	filesystems ? I followed the instructions from
-	http://www.parisc-linux.org/software/install.html. 
+○ブラックなのですが・・・
+○債務整理・自己破産してしまったのですが・・・
+○水商売・風俗なのですが・・・
+○急な出費・他店への支払いがあるのですが・・・
+上記以外にも、お悩み・ご相談がある方、是非気軽にご連絡下さい。
+※０９０金融、紹介屋、高金利の暴力金融などにご注意下さい！！
 
-	Thanks
+　　　　　　　　フリーダイアル
+　　　　　０１２０−３４−６０１２
 
+　　　　　　　　新規受付時間
+　　　　　　　AM10:00〜PM8:00
 
+　　　　　　トップファイナンス
 
-In another life Paul Bame wrote:
+　　　　　　（ご利用は計画的に）
+　　　　　　　東京都登録加盟店
+　　　　　　　　　　都(1)25467
 
-> On Mon, Feb 03, 2003 at 10:37:35AM -0500, Aaron St. Pierre wrote:
-> > Yes, the boot partition is < 2GB. In fact here is the partion table as 
-> > reported from fdisk. 
-> > 
-> > Disk /dev/sda: 9100 MB, 9100044288 bytes
-> > 64 heads, 32 sectors/track, 8678 cylinders
-> > Units = cylinders of 2048 * 512 = 1048576 bytes
-> > 
-> >    Device Boot    Start       End    Blocks   Id  System
-> > /dev/sda1   *         1        29     29680   f0  Linux/PA-RISC boot
-> > /dev/sda2            30       267    243712   83  Linux
-> 
-> Your TOC dump indicated a likely death in firmware, which is consistent
-> with trying to load a kernel from beyond the 2G mark.  Indeed your
-> /dev/sda2 ends past the 2G mark, so you can expect that sometimes
-> it'll work and sometimes it won't.
-> 
-> 	-P
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+☆☆☆☆☆☆☆☆☆☆☆☆広告☆☆☆☆☆☆☆☆☆☆☆☆
 
--- 
-Aaron St. Pierre			tel: 978.828.6177
-asp@ungod.com
-
- <rcw> liiwi: printk("CPU0 on fire\n");
+■ＤＭ送信業者■DMmaster企画社
+http://dm-master.sub.jp/
+【あなたのＨＰ宣伝します】
+【超低価格ＤＭ販売＆送信】
+特定商取引法施行規則　
+受け取りを希望しない場合の連絡方法弊社からの広告メールの配信停止を希望の場合は、
+件名を「配信停止」と書き換えこのメールを返信してください。
+その返信元のアドレスに対する配信は停止いたします。
+taka777dm@24i.net
