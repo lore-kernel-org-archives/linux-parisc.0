@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE3374829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Oct 2002 05:19:15 -0600 (MDT)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id BA40880F
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Oct 2002 13:19:10 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id NAA07593 for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Oct 2002 13:17:25 +0200 (METDST)
-Message-ID: <3DB3E2AC.7FC260A8@admin.france.hp.com>
-Date: Mon, 21 Oct 2002 13:19:08 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 98BE84829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Oct 2002 07:47:34 -0600 (MDT)
+Date: Mon, 21 Oct 2002 16:43:20 +0200
+Message-ID: <3DA56CAE00003DB5@ocpmta8.be.tiscali.com>
+In-Reply-To: <20021020034403.AF4F14829@dsl2.external.hp.com>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] jfs-1.0.23 as well xfs-cvs break fb console on k-2.4.19-pa22 
+To: "Grant Grundler" <grundler@dsl2.external.hp.com>,
+	"Joel Soete" <joel.soete@freebel.net>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: multipart/mixed;
- boundary="------------EB41338C01E7D4FDD572DC6A"
-Subject: [parisc-linux] Pb with shared lib/or keymap after apt-get upgrade
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,50 +23,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------EB41338C01E7D4FDD572DC6A
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Oooh,...
 
-	Hi
-This morning I start to upgrade my system in order
-to have latest tools/binaries and so on.
-I did:
-apt-get update
--> fine
-#apt-get upgrade
--> seems fine
-But now when lauching /bin/sh (that is a link on /bin/bash):
-/bin/sh: Symbol `vi_insertion_keymap' has different size in shared object, consider re-linking
-/bin/sh: Symbol `vi_movement_keymap' has different size in shared object, consider re-linking
-/bin/sh: Symbol `emacs_standard_keymap' has different size in shared object, consider re-linking
-/bin/sh: Symbol `emacs_ctlx_keymap' has different size in shared object, consider re-linking
-/bin/sh: Symbol `emacs_meta_keymap' has different size in shared object, consider re-linking
+>
+>Joel Soete wrote:
+>> The very first patch 2.4.19 I still have was pa5 and the same problem
+occur.
+>> It seems definitely that JFS and STI FB in 2.4.19 are incompatible.
+>> Where do I have to start my investigation?
+>...
+>> Really no idea?
+>
+>Sorry. I don't. And until 2.4.19 boots on the A500-6X,
+>I'm not interested in chasing the JFS/STI issue.
+>
+>My advice is to start adding printk's in the main vfs_ops entry
+>points to JFS until you can narrow down which entry point is
+>having problems. Then start looking STI to see if anything
+>in the JFS code uses the same services or something.
+>
 
-Where it comes from ?
-#dpkg -l bash
-ii  bash                       2.05a-2                    The GNU Bourne Again SHell
+it sounds like a gcc bug:
 
-	Thanks.
+simply adding "printk("VC: %s: %d\n", __FUNCTION__, __LINE__);" some where
+in the middle of take_over_console (to check the way) and the problem is
+solved???
 
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------EB41338C01E7D4FDD572DC6A
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
+I met a similar problem in a evms tools where there was two solutions:
+a. changing -O2 to -O0 or -O1
+b. using gcc-3.2
 
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------EB41338C01E7D4FDD572DC6A--
+But here gcc-3.2 produce well a bootable kernel but afaik there is still
+a network connection problem (I try to hack this but the only think I reach
+to find is that the last called function was show_stack and that was riht
+:-))) )
+
+Hmm I currious to try -O0 on the only console part (if possible)?
+
+Regards,
+    Joel
