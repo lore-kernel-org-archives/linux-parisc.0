@@ -1,51 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA28372
-	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Mar 2000 12:59:22 -0700
-Sender: bheadley@postal.interaccess.com
-Message-ID: <38CD390E.AE12F307@prismalink.com>
-Date: Mon, 13 Mar 2000 12:53:03 -0600
-From: "Bryan W. Headley" <bheadley@prismalink.com>
-MIME-Version: 1.0
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-        parisc-linux <parisc-linux@thepuffingroup.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA28682
+	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Mar 2000 13:13:05 -0700
+Date: Mon, 13 Mar 2000 20:13:10 +0100
+From: Philipp Rumpf <prumpf@inwestnet.de>
+To: "Bryan W. Headley" <bheadley@prismalink.com>
+Cc: parisc-linux <parisc-linux@thepuffingroup.com>
 Subject: Re: [parisc-linux] 735 Tech Reference
-References: <200003131842.NAA12003@hiauly1.hia.nrc.ca>
+Message-ID: <20000313201310.J5281@abacus.local>
+References: <38CD1FF5.821E4E6B@prismalink.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <38CD1FF5.821E4E6B@prismalink.com>; from bheadley@prismalink.com on Mon, Mar 13, 2000 at 11:05:58AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-John David Anglin wrote:
+> Once I'm up, I'll be asking if the restriction on 10.20 for
+> cross-compiling is still there; and if so, where/how to get an 11.x CD
 
-> > Hi, new pa-risc boy, got a 735 that's not booting (it can find the CDROM
-> > fine, but xmap diag shows no hard disks, even when I have one plugged in
-> > externally, that works fine elsewhere.) No doubt I have things
-> > misconfigured. Does anyone know where hardware manual might be found? It
-> > might explain why there's a F/W connector, but then two other F/W-like
-> > connectors (unmarked) on the left-hand side (looking from front).
->
-> There are two SCSI controllers on the 735.  The F/W connector requires
-> differential drives which may be why the machine doesn't see your drive.
-> The single-ended controller connector is an HD-50.  On my 735, there is
-> a short jumper from the CPU module to the module for the internal hard
-> drive.  The two HD-50 connectors on the left (top) connect to each other
-> and the internal hard drive.  They don't need to be used if you are using
-> all external drives.
->
+you can cross-compile from x86 now (and it works very well).  Really,
+since cross-compiling works, I only booted hpux to sniff around in their
+kernel with adb.
 
-Sounds like I need to open my box and determine if internal hard drive was removed
-or not. This also explains that very short HD-50 cable (not meant to reach
-anything, really). I have a nice non-differential HD to throw in as internal if
-there are none inside. Don't you love eBay auctions :-) ?
+> (got a 10.20 and diag CDs from HP as Y2K upgrade kit). So if anyone
+> wants to share happy news up-front, that'd save me some time (I think)
 
->
-> --
-> J. David Anglin                                  dave.anglin@nrc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+If you want to boot HP/UX at all (that's a big if, imho), you shouldn't
+use it for compiling.
 
---
-Bryan W. Headley                     Phone: 312/913-9158
-Chief Technology Officer             Fax:   312/913-9155
-Prisma & Company                     Email: bheadley@prismalink.com
+	Philipp Rupmf
