@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.istop.com (ns.istop.com [66.11.168.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 33685482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Jan 2003 18:16:42 -0700 (MST)
-Received: from old@istop.magma.ca (unknown [66.11.173.13])
-	by ns.istop.com (Postfix) with ESMTP id EA8AC17022
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Jan 2003 20:16:35 -0500 (EST)
-Message-Id: <5.1.0.14.0.20030101115323.03a100e0@mail.magma.ca>
-Date: Wed, 01 Jan 2003 12:05:52 -0500
-To: parisc-linux@lists.parisc-linux.org
-From: Herb Radford <herbr@magma.ca>
+Date: Wed, 1 Jan 2003 23:00:30 -0700
+To: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] "vmalloc", friends and GFP flags
+Message-ID: <20030102060030.GA14071@dsl2.external.hp.com>
+References: <20030101214933.A26434@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: [parisc-linux] D370
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030101214933.A26434@flint.arm.linux.org.uk>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +19,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Has there been any change in the support for the D-Class machines with an 
-Access Port card?
-I'm not sure I understand what's happening when the AP card is inserted. If 
-I boot into the PDC I get the console on Serial 1. If I boot with my 
-console plugged into the AP card serial port I get nada! When I plug my 
-console into Serial 2 I also get zip!
-If I boot with the console in Serial 1, output stops at the famous 
-"branching to" message.
+On Wed, Jan 01, 2003 at 09:49:33PM +0000, Russell King wrote:
+> a) parisc.  Looking at pa11_dma_alloc_consistent:
 
-Must the AP card be removed for useful o[peration?
+If James is wrong and it's un-safe to call dma_alloc_consistent() on
+the interrupt path, I'm only slightly worried since I've only seen
+dma_alloc_consistent() get called during driver initialization.
+DMA-mapping.txt does not restrict what context "driver initialization"
+might take place in.
 
-Regards, Herb
+grant
