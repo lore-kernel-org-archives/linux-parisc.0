@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77D194848
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Aug 2003 05:46:55 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19nGZB-0000PC-Ci; Thu, 14 Aug 2003 12:46:53 +0100
-Date: Thu, 14 Aug 2003 12:46:53 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E03374848
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Aug 2003 07:56:47 -0600 (MDT)
+Date: Thu, 14 Aug 2003 15:56:42 +0200
+Message-ID: <3F2A5B04000030E1@ocpmta1.freegates.net>
+In-Reply-To: <20030814114653.GJ10015@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] itlb miss handler optimizations!
-Message-ID: <20030814114653.GJ10015@parcelfarce.linux.theplanet.co.uk>
-References: <20030813160532.GG17512@systemhalted> <3F2A5B0400002E28@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F2A5B0400002E28@ocpmta1.freegates.net>
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,17 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Aug 14, 2003 at 08:02:04AM +0200, Joel Soete wrote:
-> btw is it for that reason (interlock) that in your patch we can read:
-> [...]
->         cmpb,=        %r0,t0,itlb_miss_...
->         nop
-> [...]
-> I am alway asking why the 'nop'.
+>This fill the delayed branch slot (a silly idea, but ...)
 
-To fill the delayed branch slot (a silly idea, but ...)
+Ha Ok (yet another concept for me ;-).  I will look for into architecture
+books)
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+For the moment I am studying TLB miss handling and already have a lot of
+questions.
+
+But the very first one: H/W or S/W management (I refer to page 3-9 parisc-2.0:
+Adress Resolution and the TLB)?
+
+In the 2 cases, if a fault occurs an interrupt (6, 15, 16,17 or 20) is 'triggered'?
+
+Is a printk() in corresponding handle_interruption() case (kernel/traps.c)
+would help?
+(if that work, how may I know which processor causes fault?)
+
+Thanks again,
+    Joel
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
+http://reg.tiscali.be/default.asp?lg=fr 
