@@ -1,17 +1,16 @@
-From: Marnix van den Berg <marnix.vd.berg@hccnet.nl>
-Subject: Re: [parisc-linux] SCSI hang in 2.6.6-pa4
-Date: Fri, 21 May 2004 09:34:42 +0200
-Message-ID: <40ADB112.7090107@hccnet.nl>
-References: <Pine.LNX.4.58.0405191939460.30587@trillian.uni>	<40AC8294.7030303@tiscali.be>
-	<Pine.LNX.4.58.0405202222240.18175@trillian.uni>
-Reply-To: marnix.vd.berg@hccnet.nl
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] K460
+Date: Fri, 21 May 2004 08:43:48 +0000
+Message-ID: <40ADC144.30101@tiscali.be>
+References: <000801c43e63$b0e63da0$f6e40718@mxdogxp>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: mxdog <mxdog@comcast.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.58.0405202222240.18175@trillian.uni>
+In-Reply-To: <000801c43e63$b0e63da0$f6e40718@mxdogxp>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,271 +21,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On my headless c3k I get:
+Hello,
 
-0000:00:0f.0 SCSI storage controller: LSI Logic / Symbios Logic 53c896 
-(rev 04)
-         Subsystem: LSI Logic / Symbios Logic: Unknown device 1000
-         Flags: bus master, medium devsel, latency 255, IRQ 65
-         I/O ports at 0900
-         Memory at f4005000 (64-bit, non-prefetchable) [size=1K]
-         Memory at f4002000 (64-bit, non-prefetchable) [size=8K]
-         Capabilities: [40] Power Management version 1
+mxdog wrote:
+> Hello
+> 
+> I'm trying to make linux work on my K460 box. I'm an old dog ...a.k.a. z80 days (8 bit)...so I'm not a kernel hacker, and don't want to be, but I can write code if I'm absolutely forced to ( takes lot time learn the machines heart and soul...got past that with my commodore 64 and a few others) ..I have 20-9 gig drives on this machine that I would like to use for web page serving in the company,ftp ...mostly me...and inter-company and file storage/backup,email..possibly other stuff...like process control...maybe point of sale....the thing is this size company and the price we got the machine for cant beat it..this will be a perfect platform ( linux) and the hardware and software too is cheap ..LOL deliver us from evil...a.k.a. windows.
+> 
 
-0000:00:0f.1 SCSI storage controller: LSI Logic / Symbios Logic 53c896 
-(rev 04)
-         Subsystem: LSI Logic / Symbios Logic: Unknown device 1000
-         Flags: bus master, medium devsel, latency 255, IRQ 65
-         I/O ports at 0800
-         Memory at f4004000 (64-bit, non-prefetchable) [size=1K]
-         Memory at f4000000 (64-bit, non-prefetchable) [size=8K]
-         Capabilities: [40] Power Management version 1
+Welcome, I am the same old dog so I try to contribute with test as relevant as possible to help hackers as afar as I can ;)
 
-During boot-up:
+> OK LET ME MAKE A STATEMENT: I HATE HP-UX : been 5 weeks night and day trying to make that OS talk to me and make it do something useful  and all I ever seem to do is reinstall the system...ok enough said on that!
+> 
+umm we had in production some K4x0 (3 or 4) running hpux 10.20 without pb even with fc addon card on core io ;). (unfortunately I 
+don't have time to take the opportunity to test linux with this box ;( )
 
-kernel: sym0: <896> rev 0x4 at pci 0000:00:0f.0 irq   65
-kernel: sym0: No NVRAM, ID 7, Fast-40, SE, parity checking
-kernel: sym0: SCSI BUS has been reset.
-kernel: sym0: SCSI BUS mode change from SE to SE.
-kernel: sym0: SCSI BUS has been reset.
-kernel: scsi0 : sym-2.1.18i
-kernel: sym1: <896> rev 0x4 at pci 0000:00:0f.1 irq 65
-kernel: sym1: No NVRAM, ID 7, Fast-40, LVD, parity checking
-kernel: sym1: SCSI BUS has been reset.
-kernel: scsi1 : sym-2.1.18i
-kernel:   Vendor: QUANTUM   Model: ATLAS10K-9LVD     Rev: HP06
-hpux kernel:   Type:   Direct-Access            ANSI SCSI revision: 03
-kernel: sym1:6:0: tagged command queuing enabled, command queue depth 16.
-kernel: st: Version 20040226, fixed bufsize 32768, s/g segs 256
-kernel: sym1:6: FAST-40 WIDE SCSI 80.0 MB/s ST (25.0 ns, offset 31)
-kernel: SCSI device sda: 17773524 512-byte hdwr sectors (9100 MB)
-kernel: SCSI device sda: drive cache: write back
+> I can live in linux....been in there since 386 5.2 redhat....tried to make company I worked for go that way in 1985(Unix) ...but Bill got in the way...talent stealing shit he is. Ok enough politics.
+> 
+> here is my problem: I really have no idea what I'm supposed to download,make CD's and make my box work. hppa is supposed to be supported in 3.0 but I spend 3 days downloading all 7 CD's (ISO's) 3.0r2 and first load got kernel error...no detail..next email...
+> 
+Unfortunately the woody cd 3.0r2 was not well tested and there are many reports of install failure.
+So generally it is recommended to try the new sarge debian-install netinstall-cd available at:
+<http://cdimage.debian.org/pub/cdimage-testing/sarge_d-i/hppa/current/sarge-hppa-netinst.iso>
 
-This is with 2.6.6-rc1-pa0, haven't had time to upgrade my kernel lately.
+or the previous netinstall cd:
+<http://www.pateam.org/cd-images/testing/>
 
+And the FAQ page: <http://www.parisc-linux.org/faq/index.html> explain in detail how to burn, check and boot your cd ;)
+(iirc there are also special recommandation for K model and ttyB0 aka pdc_console usage)
 
-Elliott Potter wrote:
+> this is the site that does this...I need help, you guys need an idiots guide to what works on a k box ( LOL or any  box)....bad joke.....what version etc.....hell I took 2 hours tonight for I found a doc that said the PDC isn't in the file name anymore.
+> 
+> kernel crash is best I can do from memory: KERNEL FAULT: CODE26 .....stack something does not point to c30.....and then a kernel dump
+> sorry this isn't a bug report just a cry for help I'll do much better if I get a response
+>
+umm iirc CODE26 is a data page fault (new kernels available on sarge and pateam iso are more recent so certainly fix the pb?)
 
- > On Thu, 20 May 2004, Joel Soete wrote:
- >
- >
- >> Hello Elliott,
- >>
- >> Elliott Potter wrote:
- >>
- >>> Hello all,
- >>>
- >>> I've got a J5000 that appeared to work mostly OK under 2.4.25-pa.
- >>>
- >>
- >> J5000 is of the b2k, c3k family isn't it?
- >> (read on openpa:"...They are basically the bigger brothers of the
- >> C3000/C3600 et al, featuring better expandability. ...")
- >
- >
- >
- > They appear to be similar.  Maybe someone can run lspci -v on a c3k and
- > see what you get for the SCSI host adapter ... I get
- >
- > 00:0f.0 SCSI storage controller: LSI Logic / Symbios Logic 53c896 
-(rev 04)
- >    Subsystem: LSI Logic / Symbios Logic: Unknown device 1000
- >    Flags: bus master, medium devsel, latency 255, IRQ 65
- >    I/O ports at 0900 [size=256]
- >    Memory at f4005000 (64-bit, non-prefetchable) [size=1K]
- >    Memory at f4002000 (64-bit, non-prefetchable) [size=8K]
- >    Capabilities: [40] Power Management version 1
- >
- > 00:0f.1 SCSI storage controller: LSI Logic / Symbios Logic 53c896 
-(rev 04)
- >    Subsystem: LSI Logic / Symbios Logic: Unknown device 1000
- >    Flags: bus master, medium devsel, latency 255, IRQ 65
- >    I/O ports at 0900 [size=256]
- >    Memory at f4005000 (64-bit, non-prefetchable) [size=1K]
- >    Memory at f4002000 (64-bit, non-prefetchable) [size=8K]
- >    Capabilities: [40] Power Management version 1
- >
- >
- >
- >>> I just put 2.6.6-pa4 on there and when I boot, the machine hangs:
- >>>
- >>
- >> umm 32bit or 64bit kernel?
- >
- >
- >
- > 32 bit?  I assume.  If it was 64 bit it wasn't on purpose.  Under CPU
- > selection I chose the PA7000 option (or whatever the first one on the
- > list was).
- >
- >
- >> Personaly, I just test 2.6.6-pa2 (32 and 64 bits) on my b2k without
- >> pb but with the c3k default config file that I found under
- >> arch/parisc/configs/c3000_defconfig. (make mrproper then) I copy this
- >> as .config and 'make oldconfig' before 'make vmlinux' (default
- >> 64bits).
- >> Did you used the same?
- >
- >
- >
- > I fiddled with the config a bit, but not a lot.  I did not use 64 bits.
- > Then make vmlinux, etc.
- >
- >
- >>> [...]
- >>> sym0: <896> rev 0x4 at pci 0000:00:0f.0 irq 65
- >>> sym0: No NVRAM, ID 7, Fast-40, SE, parity checking
- >>> sym0: SCSI BUS has been reset.
- >>> scsi0 : sym-2.1.18j
- >>> sym0:0:0: ABORT operation started.
- >>> sym0:0:0: ABORT operation timed-out.
- >>> sym0:0:0: DEVICE RESET operation started.
- >>> sym0:0:0: DEVICE RESET operation timed-out.
- >>> sym0:0:0: BUS RESET operation started.
- >>> sym0:0:0: BUS RESET operation timed-out.
- >>> sym0:0:0: HOST RESET operation started.
- >>> sym0: SCSI BUS has been reset.
- >>> <hang>
- >>>
- >>> ... any hints on this?  Could it be related to the TCQ problem someone
- >>> had with the 53c700 a few months ago?
- >>>
- >>
- >> Do you see this one listed in your found device list?
- >
- >
- >
- > Nope.  Different chip, and also (as I read a bit more about it since my
- > first post) a different brand of hard drive, which may make a
- > difference.  Ah well.
- >
- >
- >> But it is a strange coincidence, the description of your pb is similar
- >> to the one that Stephano encounter with its c3k
- >> (http://lists.debian.org/debian-hppa/2004/05/msg00066.html) but with 
-2.4.
- >> So it would be surprising that it is the same cause; never the less if
- >> you used usb kbd/mouse can you try a serial console?
- >
- >
- >
- > In fact there is no keyboard/mouse/head on the machine, so if it's not
- > going to boot I have to use serial console to see the messages.
- > --
- > Elliott
- > _______________________________________________
- > parisc-linux mailing list
- > parisc-linux@lists.parisc-linux.org
- > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-Elliott Potter wrote:
-
-> On Thu, 20 May 2004, Joel Soete wrote:
-> 
-> 
->>Hello Elliott,
->>
->>Elliott Potter wrote:
->>
->>>Hello all,
->>>
->>>I've got a J5000 that appeared to work mostly OK under 2.4.25-pa.
->>>
->>
->>J5000 is of the b2k, c3k family isn't it?
->>(read on openpa:"...They are basically the bigger brothers of the
->>C3000/C3600 et al, featuring better expandability. ...")
-> 
-> 
-> They appear to be similar.  Maybe someone can run lspci -v on a c3k and
-> see what you get for the SCSI host adapter ... I get
-> 
-> 00:0f.0 SCSI storage controller: LSI Logic / Symbios Logic 53c896 (rev 04)
->    Subsystem: LSI Logic / Symbios Logic: Unknown device 1000
->    Flags: bus master, medium devsel, latency 255, IRQ 65
->    I/O ports at 0900 [size=256]
->    Memory at f4005000 (64-bit, non-prefetchable) [size=1K]
->    Memory at f4002000 (64-bit, non-prefetchable) [size=8K]
->    Capabilities: [40] Power Management version 1
-> 
-> 00:0f.1 SCSI storage controller: LSI Logic / Symbios Logic 53c896 (rev 04)
->    Subsystem: LSI Logic / Symbios Logic: Unknown device 1000
->    Flags: bus master, medium devsel, latency 255, IRQ 65
->    I/O ports at 0900 [size=256]
->    Memory at f4005000 (64-bit, non-prefetchable) [size=1K]
->    Memory at f4002000 (64-bit, non-prefetchable) [size=8K]
->    Capabilities: [40] Power Management version 1
-> 
-> 
-> 
->>>I just put 2.6.6-pa4 on there and when I boot, the machine hangs:
->>>
->>
->>umm 32bit or 64bit kernel?
-> 
-> 
-> 32 bit?  I assume.  If it was 64 bit it wasn't on purpose.  Under CPU
-> selection I chose the PA7000 option (or whatever the first one on the
-> list was).
-> 
-> 
->>Personaly, I just test 2.6.6-pa2 (32 and 64 bits) on my b2k without
->>pb but with the c3k default config file that I found under
->>arch/parisc/configs/c3000_defconfig. (make mrproper then) I copy this
->>as .config and 'make oldconfig' before 'make vmlinux' (default
->>64bits).
->>Did you used the same?
-> 
-> 
-> I fiddled with the config a bit, but not a lot.  I did not use 64 bits.
-> Then make vmlinux, etc.
-> 
-> 
->>>[...]
->>>sym0: <896> rev 0x4 at pci 0000:00:0f.0 irq 65
->>>sym0: No NVRAM, ID 7, Fast-40, SE, parity checking
->>>sym0: SCSI BUS has been reset.
->>>scsi0 : sym-2.1.18j
->>>sym0:0:0: ABORT operation started.
->>>sym0:0:0: ABORT operation timed-out.
->>>sym0:0:0: DEVICE RESET operation started.
->>>sym0:0:0: DEVICE RESET operation timed-out.
->>>sym0:0:0: BUS RESET operation started.
->>>sym0:0:0: BUS RESET operation timed-out.
->>>sym0:0:0: HOST RESET operation started.
->>>sym0: SCSI BUS has been reset.
->>><hang>
->>>
->>>... any hints on this?  Could it be related to the TCQ problem someone
->>>had with the 53c700 a few months ago?
->>>
->>
->>Do you see this one listed in your found device list?
-> 
-> 
-> Nope.  Different chip, and also (as I read a bit more about it since my
-> first post) a different brand of hard drive, which may make a
-> difference.  Ah well.
-> 
-> 
->>But it is a strange coincidence, the description of your pb is similar
->>to the one that Stephano encounter with its c3k
->>(http://lists.debian.org/debian-hppa/2004/05/msg00066.html) but with 2.4.
->>So it would be surprising that it is the same cause; never the less if
->>you used usb kbd/mouse can you try a serial console?
-> 
-> 
-> In fact there is no keyboard/mouse/head on the machine, so if it's not
-> going to boot I have to use serial console to see the messages.
-> --
-> Elliott
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+hth,
+	Joel
 
 _______________________________________________
 parisc-linux mailing list
