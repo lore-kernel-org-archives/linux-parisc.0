@@ -1,64 +1,60 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5CFCF482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 10:48:31 -0600 (MDT)
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200105231648.JAA24430@opus.allegro.com>
-Subject: Re: [parisc-linux] kernel panic
-To: rbradetich@uswest.net
-Date: Wed, 23 May 2001 09:48:24 -0700 (PDT)
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C14D4482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 13:07:34 -0600 (MDT)
+Message-Id: <200105231859.MAA00753@puffin.external.hp.com>
+To: John Marvin <jsm@udlkern.fc.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20010522201851.A28340@beavis.ybsoft.com> from "Ryan Bradetich" at May 22, 2001 08:18:51 PM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] kernel panic 
+In-Reply-To: Your message of "Wed, 23 May 2001 02:53:15 MDT."
+             <200105230853.CAA07709@udlkern.fc.hp.com>
+Date: Wed, 23 May 2001 12:59:57 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-
-I was quiet before, hoping one of the more active list members
-would comment ... but ... a comment on netiquette seems needed here.
-
-We've recently seen a couple of gigantic posts to the mailing list...
-of messages with 23,000+ lines of text.  Such messages take a lot of
-disk and network bandwidth, and can cause performance problems for 
-some users.
-
-Hence, the two netiquette rules:
-
-  1) don't email thousand line messages to a mailing list.
-
-     Instead, put the text (the dump info in this case) on a 
-     web server somewhere, and email the URL.  Or, offer to email
-     the big file to individuals who request a copy.
-
-     This applies to binary as well as text messages.
-
-  2) when replying to ****ANY**** message, delete the majority 
-     of it, retaining just enough to maintain context 
-     for the reader!  Single-line replies that enclose a copy
-     of a 23,000+ line message are just a waste ... as are
-     single line replies that enclose a copy of a 20 line message.
-
-thanks,
-
-> John,
+John Marvin wrote:
+...
+> OK, the problem is that you are getting into a interrupt loop.
+> I see the following repeated sequence on the stack:
 > 
-> Thanks for the great explaination!
-> 
-> >             /* Stack Dump! */
+> 	intr_extint         <-----------+
+> 	do_irq_mask                     |
+> 	do_irq                          |
+> 	dino_isr                        |
+> 	sym53c8xx_intr                  |
+> 	scsi_old_done                   |
+> 	rw_intr                         |
+> 	scsi_io_completion              |
+> 	__scsi_end_request              |
+> 	scsi_queue_next_request         |
+> 	scsi_request_fn                 |
+> 	scsi_dispatch_cmd               |
+> 	<NEXT INTERRUPT>    >-----------+
 
-... [23,400+ lines deleted]
+Uh oh. that's a bug. From irq.c:do_irq_mask() 
 
-> 1031d7d8 A _end
-> 
-> --UlVJffcvxoiEqYs2--
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+...
+                mask_irq(irq_num);
+                do_irq(&region->action[irq], irq_num, regs);
+                unmask_irq(irq_num);
+...
 
--- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com
+So it shouldn't be possible to take another interrupt
+while in do_irq().
+
+...
+> to Richard Hirst, and he said a later version of the sym53c8xx driver
+> processes things differently (using scsi_done instead of scsi_old_done)
+> so that this shouldn't happen. However, I believe it shouldn't be
+> happening anyway, because we should be preventing the isr from being
+> re-entered in the general irq handling code.
+
+Exactly. But if the driver is mucking with IRQ enable/disable,
+does that mean the enable/disable code has to keep reference counts?
+Don't recall any archs doing that when we did the initial implementation. 
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
