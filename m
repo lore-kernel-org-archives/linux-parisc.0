@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (i106-182.nv.iinet.net.au [203.59.106.182])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 658824829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 May 2003 20:41:41 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id KAA05628
-	for parisc-linux@lists.parisc-linux.org; Fri, 9 May 2003 10:37:51 +0800
-Date: Fri, 9 May 2003 10:37:47 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+Received: from helplets.tobit.net (p508C399B.dip.t-dialin.net [80.140.57.155])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F5C44829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 May 2003 07:39:35 -0600 (MDT)
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Oops on 2.4.20-pa33
-Message-ID: <20030509103745.H20047@neep.com.au>
-References: <20030507154817.GH27494@lug-owl.de> <3EB772D800000C9F@ocpmta2.freegates.net> <20030507171734.GG23465@tausq.org> <20030507175155.GJ27494@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030507175155.GJ27494@lug-owl.de>; from jbglaw@lug-owl.de on Wed, May 07, 2003 at 07:51:55PM +0200
+From: <parisc-linux@helplets.com>
+Date: 09 May 2003 13:40:20 UT
+Message-ID: <00000B0A.3EBBCBE2@helplets.tobit.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset="iso-8859-1"
+Subject: [parisc-linux] Kernel panic on D270/1 when loading EISA driver
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,42 +21,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jan-Benedict Glaw said:
-> Thanks. This reminds me that I'd still *love* to see the CVS repository
-> rsync'able. That'd really help me. However, it's at least nice to be
-> basically able to rsync the checked-out source trees.
-> 
-> Any chances for a rsync for the CVS repo?
-> 
-> MfG, JBG
+Hi All,
 
-I'm not sure why you'd want to be able to rsync the entire repository,
-unless you want to be able to track multiple branches of a module
-without having to have a full checkout of each one?  That would make
-more sense I guess, if you live in a world where the Internet is slow
-and bandwidth is not free (I live there too, small world!).
+I'm currently trying to convert an old HP 9000/861/D270 to a firewall. So far, 
+It works fine (after lowering the NCR_700_MAX_TAGS in drivers/scsi/53c700.h 
+to 4, without that change the SCSI bus hung when writing large amounts of 
+data).
 
-There is already an rsync server running on ftp.parisc-linux.org, but I
-don't believe it's widely advertised.
+The only real problem I have right now is that I get a kernel panic when 
+loading my 3c59x driver module, because "ASSERT(dev);" fails in function 
+ccio_map_single in file arch/parisc/kernel/ccio-dma.c.
 
-I just ran an 'rsync -va ftp.parisc-linux.org.au::pub' (the only rsync
-'module' available) and the output was 14M!  Presumably this caused a
-fair bit of thrashing at f.p-l.o's end as well ...
+I haven't found anything on the list so far, so maybe this is a new problem.
+(Are EISA devices treated as PCI devices? Otherwise it might be ok for dev
+to be NULL...)
 
-If you'd like to see what's available by rsync, I've compressed that
-listing and uploaded it here.
+Versions:
+    Linux hppa 2.4.20-pa33 #2 Wed May 7 19:41:42 CEST 2003 parisc
+    gcc version 3.0.4
+    GNU ld version 2.12.90.0.1 20020307 Debian/GNU Linux
 
-ftp://ftp.neep.com.au/pub/parisc-linux/ftp.parisc-linux.org-rsync.txt.bz2
+config, System.map and dmesg.log are available from 
+http://134.155.63.117/~skettler/parisc-linux/
 
-I'll have a trundle through it myself today, to see if I can write a
-helpful motd for rsyncd and suggest how the ::pub module can be split up
-into more useful bits.  (Bame, may I assume that you're still nominally
-in charge of the rsyncd server?)
+Thanks in advance,
 
-Andrew.
-
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Sascha Kettler
