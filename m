@@ -1,48 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Message-ID: <A4A5E4C468B5D11190220001FA6835DD04DD892B@EPIXCH003>
-From: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@EUROPAY.COM>
-To: "'puffin-t@esiee.net'" <puffin-t@esiee.net>
-Cc: parisc-linux@lists.parisc-linux.org,
-	parisc-linux-announce@lists.parisc-linux.org
-Date: Wed, 16 May 2001 20:05:56 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] 0.6.1 isos
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23A11482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 13:05:11 -0600 (MDT)
+Message-Id: <200105161857.MAA10761@puffin.external.hp.com>
+To: joel@digitalparadise.net
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Help with bootable CD 
+In-Reply-To: Your message of "Wed, 16 May 2001 13:13:03 CDT."
+             <GAENJIFENGKGOINJAONFOEOBCAAA.joel@digitalparadise.net>
+Date: Wed, 16 May 2001 12:57:26 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Dear all,
+"Joel Lansden" wrote:
+> I have an H50 with 256Mb Memory, 4 C2490A 2gb hard drives, and a regular HP
+> SCSI CD-ROM.
+> Does this help at all?
 
-Nice job regarding STI release (I just test it for now). The problem I met
-with install-config with 0.6 CD seems to be solved: great :)
+A bit. HP hasn't done any testing on Nova class boxes.
 
-Just to mentioned that the preinstall of whiptail and modconf was not happy.
-I just try to install debhelper which request lynx. And the install of lynx
-loop because of frontend and whiptail. As work around I removed those
-packages (replace with dialog). It works (without and with dialog).
+Some folks are running parisc-linux on E55 (iirc) using NFS root.
+FWIW, they are only capable of 32-bit kernels. Forget
+trying to install the CD on local disk since we have no drivers
+for the HP-PB SCSI interfaces. At www.parisc-linux.org , read the
+FAQ answer to "is my HW supported".
 
-I also try vmlinux712+son+mouse.
-It runs but STI console was not initialize?
-I would like to help more about this but I never find the right .config file
-to recompile the right cvs linux which works properly with STI console of my
-B180 (as do so well your kernel)(I already test all tips of the mailing-list
-know till one month). Could you help me? (by sending me your .config and the
-cvs date for example)
+Please submit a bug to either kernel or palo project which includes
+*all* serial console output. See http://bugs.parisc-linux.org/
+for info on how to submit bugs.
 
-!!! I just try binutils_2.11.90.0.7-2.99_hppa.deb but as failed on 'bus
-error' !!!
+grant
 
-I also install XFREE86-4.0.3 from debian pool site (with an STI console it
-would be nice) but xf86config did not write /etc/X11/XF86config-4? Is some
-one have some working XF86config-4 to let me try further?
-
-
-Kind regards,
-
-	Joel
-
-
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
