@@ -1,20 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0697D482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 May 2002 06:04:54 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17CJF5-0007qo-00; Mon, 27 May 2002 13:04:51 +0100
-Date: Mon, 27 May 2002 13:04:51 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.18 SMP instability
-Message-ID: <20020527130451.F10366@parcelfarce.linux.theplanet.co.uk>
-References: <20020527020453.99EBC483A@dsl2.external.hp.com> <Pine.LNX.4.44.0205262159110.11012-100000@garibaldi.apptechsys.com>
-Mime-Version: 1.0
+Received: from web21209.mail.yahoo.com (web21209.mail.yahoo.com [216.136.175.167])
+	by dsl2.external.hp.com (Postfix) with SMTP id BEEFD4836
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 May 2002 10:56:27 -0600 (MDT)
+Message-ID: <20020527165626.35993.qmail@web21209.mail.yahoo.com>
+Date: Mon, 27 May 2002 09:56:26 -0700 (PDT)
+From: Zibing Yang <email2bing@yahoo.com>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0205262159110.11012-100000@garibaldi.apptechsys.com>; from jeremyd@apptechsys.com on Sun, May 26, 2002 at 11:17:33PM -0700
+Subject: [parisc-linux] Can I run popular Linux software on parisc-linux?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,13 +20,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, May 26, 2002 at 11:17:33PM -0700, Jeremy Drake wrote:
-> Could you tell me where exactly I can find this button on a J5000?  Then I 
-> can get it for you.  I'll have physical access to the box all day 
-> tomorrow.
+Hi,
+I am a beginner in linux and recently got a used HP
+Visualize C3600 workstation. I realized that
+parisc-linux is the obvious ( the only???) solution
+for me. 
+I am just wondering if I could install popular Linux
+software after I install parisc-linux? As far as I
+know, most of the softwares were developed for
+PC-based Linux. Particularly I would like to know if I
+could run office-like software, windows-emulator,
+video-rendering software. 
+Thanks a lot. 
+Zibing
 
-Little blue button, on the back near the serial ports.  It's recessed
-a bit so you probably need to use a pen to push it.
-
--- 
-Revolutions do not require corporate support.
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
