@@ -1,46 +1,59 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from merulo.debian.org (merulo.external.hp.com [192.25.206.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C77E482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 13:46:17 -0600 (MDT)
-Received: from rover.gag.com (rover.gag.com [192.133.104.32])
-	by winfree.gag.com (Postfix) with ESMTP id E1E5C2420C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 13:46:13 -0600 (MDT)
-Sender: bdale@rover.gag.com
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Users staying up to date.
-References: <20010814154037.I25258@megatonmonkey.net>
-From: Bdale Garbee <bdale@gag.com>
-Date: 14 Aug 2001 13:46:11 -0600
-In-Reply-To: <20010814154037.I25258@megatonmonkey.net>
-Message-ID: <87zo92a0ho.fsf@rover.gag.com>
-MIME-Version: 1.0
+Received: from mail.familie-weerts.de (dialin-fl-71247.ewetel.net [212.6.71.247])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 312DD482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 13:48:18 -0600 (MDT)
+Date: Tue, 14 Aug 2001 13:53:37 +0000
+From: Christian Weerts <christian@familie-weerts.de>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-ml <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] LAN booting
+Message-ID: <20010814135337.C345@familie-weerts.de>
+Reply-To: Christian Weerts <christian@familie-weerts.de>
+References: <christian@familie-weerts.de> <200108132355.RAA14012@puffin.external.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200108132355.RAA14012@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Aug 13, 2001 at 05:55:23PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-carlos@baldric.uwo.ca (Carlos O'Donell Jr.) writes:
+* Grant Grundler <grundler@puffin.external.hp.com> [010813 23:55]:
+> Christian Weerts wrote:
+> > Hi,
+> > 
+> > is there anyone who has a running 715/80? I want to build a kernel for this
+> > machine discribed in the nfsroot howto from Martin Petersen, but i don't
+> > have HP-UX anywhere.
+> 
+> You don't need to have HPUX - note the date of Martin's HOW-TO.
+> It was posted when we were still using SOM binaries and the linker only
+> ran under HPUX. You should be able to install from the 0.92 ISO
+> and build kernels natively.
+I will try, but first i had to boot the machine over LAN, that's my problem
+at the moment.
+The RISC-Machine tells something like "Error: cannot load IPL, error
+detected. Bootprocess failed..."
+Perhaps you could help me, so i attach the bootptab and the dhcp-conf. Also
+attached are the daemon.log and output from tcpdump. Btw., gorilla is the
+server and mirage the client.
+I don't know what's wrong. 
+On the risc-machine i told him to boot from the lan.<hw-addr-server>.
 
-> Obviously the latest kernel/glibc/gcc... will reside in the
-> CVS. It's a matter of slurping/building and testing on one
-> of our boxen.
+> 
+> Or build kernels on x86-linux using the XC toolchain built by Matt Taggart
+> and posted to the puffin.external.hp.com ftp site. Search parisc-linux
+> mail archives since May 2001 if you want the full URL.
+Ack.
 
-Actually, I just uploaded gcc to the Debian archive built entirely from the
-Debian source package, and am working on glibc right now.  The only thing that
-there is still any need to use CVS for is the kernel, and I'll be working on
-that too once the merge up to 2.4.8 is done.
+> 
+> > If i had a kernel perhaps i could boot the machine over LAN.
+> 
+> Could you mount the 0.92 ISO on an x86-linux box and steal that kernel?
+> (there are probably several but just try the 32-bit ones.)
+I'll try. So, you mean i don't need the nfsroot-package named in Martin's
+HOWTO?
 
-> The packages are a slightly different matter. Is the 0.9.2
-> iso the latest collection of packages? Is anyone in debain-hppa
-> compiling/testing packages?
+Greets from northern germany
 
-We have a full-time Debian autobuilder running, so on any given day in excess
-of 70% of all Debian packages are fully up to date in the unstable tree of
-the Debian mirrors.
+	Christian
 
-For a cluster config such as yours, the ideal situation is probably to set 
-up a caching proxy like a squid server, and then configure all of your machines
-to do their apt-get's from the Debian mirror network through the cache.  That
-keeps you as current as you want to be, eliminates any manual steps involved
-in maintaining a local cache of packages, and means that you only pull each
-package once from the mirror network.
-
-Bdale
+-- 
+http://oldenburg.linux.de
