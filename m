@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rover (rover.mkp.net [209.217.122.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 644E24898
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 07:04:54 -0700 (MST)
-To: "Duraid Madina" <duraid@fl.net.au>
-Cc: <parisc-linux@lists.parisc-linux.org>
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE6544894
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 07:45:49 -0700 (MST)
 Subject: Re: [parisc-linux] 'foreign' PCI cards in an rp2430
-From: "Martin K. Petersen" <mkp@mkp.net>
-References: <000301c1c654$78ae35c0$022a17ac@simplex>
-Date: 08 Mar 2002 09:04:47 -0500
-In-Reply-To: <000301c1c654$78ae35c0$022a17ac@simplex>
-Message-ID: <yq1it87w3y8.fsf@austin.mkp.net>
+To: mkp@mkp.net (Martin K. Petersen)
+Date: Fri, 8 Mar 2002 15:00:36 +0000 (GMT)
+Cc: duraid@fl.net.au (Duraid Madina),
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <yq1it87w3y8.fsf@austin.mkp.net> from "Martin K. Petersen" at Mar 08, 2002 09:04:47 AM
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Message-Id: <E16jLrI-0006Qt-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "Duraid" == Duraid Madina <duraid@fl.net.au> writes:
+> Alpha happens to work because its firmware includes a simple x86
+> simulator that executes the BIOS code on the card.  That way you can
+> configure your disk setup, etc.
 
-Duraid> In particular, I'm wondering about 3ware IDE RAID cards (these
-Duraid> work in (at least) alpha and x86 linux)
+There is btw a passable x86 emulator for free in the XFree86 code that
+is used to do things like boot video cards.
 
-I don't think there are high hopes for the 3ware card.  At least not
-unless you preconfigure it on a PC.
+> Unfortunately the 3ware management utility is 386 binary-only.
+> I.e. you can't configure the card once you get Linux up and running
+> either.
 
-Alpha happens to work because its firmware includes a simple x86
-simulator that executes the BIOS code on the card.  That way you can
-configure your disk setup, etc.
-
-We don't have similar functionality on PA-RISC.  So you are limited
-what can be done from within Linux. 
-
-Unfortunately the 3ware management utility is 386 binary-only.
-I.e. you can't configure the card once you get Linux up and running
-either.
-
--- 
-Martin K. Petersen      Cereal Bowl Engineer, Linuxcare, Inc.
-http://mkp.net/         SGI XFS, Linux/PA-RISC, GNOME
+Bochs 8)
