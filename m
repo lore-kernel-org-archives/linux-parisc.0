@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 43E2D4829
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Nov 2002 20:45:16 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 188YAp-0003t7-00
-	for parisc-linux@parisc-linux.org; Mon, 04 Nov 2002 03:45:11 +0000
-Date: Mon, 4 Nov 2002 03:45:11 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20021104034511.G20749@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] merge status
+Received: from tassadar.physics.auth.gr (tassadar.physics.auth.gr [155.207.123.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C51F94829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Nov 2002 01:04:14 -0700 (MST)
+Date: Mon, 4 Nov 2002 10:03:57 +0200 (EET)
+From: Dimitris Zilaskos <dzila@tassadar.physics.auth.gr>
+To: Jochen Friedrich <jochen@scram.de>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	"BUCH-PEDERSEN,LEIF (HP-France,ex1)" <leif_buch-pedersen@hp.com>,
+	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] ip6tables problem 
+In-Reply-To: <Pine.LNX.4.44.0211032348580.24848-100000@gfrw1044.bocc.de>
+Message-ID: <Pine.LNX.4.44.0211040957290.30489-100000@tassadar.physics.auth.gr>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-yay, Linus accepted another patchbomb.
+On Sun, 3 Nov 2002, Jochen Friedrich wrote:
+>
+> However, i'm not using the ip6tables on that boxes as all three of them
+> are behind dedicated packet filters...
 
-we're down to some 370k of diff vs his tree.  here's how it breaks down:
+ I have built and use 2.4.19-pa22 kernels with the latest stable usagi
+patch applied, with only one reject on some network driver I do not
+possess . I had to disable many netfilter for ipv6 options in order for
+the kernel to compile . And those that I had enabled dont seem to work :)
+ Currently using ipv6 on two 715/33 and one 715/50 ...and it works
+perfectly:)
 
-drivers/hil (pending discussion of where to move it, etc):
--rw-r--r--    1 willy    willy      127144 Nov  3 19:51 parisc-hil.diff
+ Regards ,
 
-drivers/video (helge is discussing this with James Simmons):
--rw-r--r--    1 willy    willy      162128 Nov  3 19:49 parisc-video.diff
+--
+=============================================================================
 
-drivers/scsi (richard/rbrad/grant will take care of this):
--rw-r--r--    1 willy    willy       44026 Nov  3 20:18 parisc-scsi.diff
+Dimitris Zilaskos
 
-everything else (my responsibility):
--rw-r--r--    1 willy    willy       35109 Nov  3 20:18 tmp
-
-Looking forward to the 2.5.46 merge ;-)
-
--- 
-Revolutions do not require corporate support.
+Department of Physics @ Aristotle Univercity of Thessaloniki , Greece
+PGP key : http://tassadar.physics.auth.gr/~dzila/pgp_public_key.asc
+          http://egnatia.ee.auth.gr/~dzila/pgp_public_key.asc
+MD5sum  : 4f84f3f53cb046008b4abcb2a092d28d  pgp_public_key.asc
+=============================================================================
