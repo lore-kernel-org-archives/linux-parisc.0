@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2A464829
-	for <parisc-linux@parisc-linux.org>; Wed,  9 Apr 2003 11:40:35 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 74E454829
+	for <parisc-linux@parisc-linux.org>; Wed,  9 Apr 2003 11:48:04 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 193JYo-0001K0-5e; Wed, 09 Apr 2003 18:40:34 +0100
-Date: Wed, 9 Apr 2003 18:40:34 +0100
+	id 193Jg3-0001P9-Hx; Wed, 09 Apr 2003 18:48:03 +0100
+Date: Wed, 9 Apr 2003 18:48:03 +0100
 From: Matthew Wilcox <willy@debian.org>
 To: pageexec@freemail.hu
-Cc: grsecurity@grsecurity.net, willy@debian.org,
-	parisc-linux@parisc-linux.org, grundler@dsl2.external.hp.com
+Cc: parisc-linux@parisc-linux.org, grundler@dsl2.external.hp.com
 Subject: Re: [parisc-linux] parisc-linux.org kernel
-Message-ID: <20030409174034.GJ23430@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20030409174803.GM23430@parcelfarce.linux.theplanet.co.uk>
 References: <20030409054929.GB21306@dsl2.external.hp.com> <3E947323.14900.19F1E3AF@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -26,15 +25,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Apr 09, 2003 at 07:23:15PM +0200, pageexec@freemail.hu wrote:
-> actually, i'd like to (feel free to answer off-list), since for all the
-> other archs grsec/PaX runs on we could compile a working kernel from the
-> vanilla tree - it just seems a mystery why parisc is an exception (not
-> blaming anyone, just would like to see it more clear).
+Warning.  If you reply to this message you get some arsehole reply from
+the mailing list software.  I strongly recommend not working with this
+bunch of pricks who can't even run a mailing list.
 
-perhaps PaX doesn't support sparc32, m68k, arm, mips, mips64, ia64,
-s390, s390x or x86-64 since i know all those architectures have patches
-on top of the kernel.org tree.
+On Wed, Apr 09, 2003 at 07:23:15PM +0200, pageexec@freemail.hu wrote:
+
 
 -- 
 "It's not Hollywood.  War is real, war is primarily not about defeat or
