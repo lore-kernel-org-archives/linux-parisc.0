@@ -1,36 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F29E5482A
-	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 16:24:53 -0600 (MDT)
-Message-Id: <200104142218.QAA30044@puffin.external.hp.com>
-To: amodra@one.net.au
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] xfree86 build problem 
-In-Reply-To: Your message of "Sat, 14 Apr 2001 21:25:57 +0930."
-             <20010414212557.E16364@squeak.one.net.au>
-Date: Sat, 14 Apr 2001 16:18:47 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 67CA9482A
+	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 17:01:14 -0600 (MDT)
+Sender: drepper@cygnus.com
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: amodra@one.net.au, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] xfree86 build problem
+References: <200104142218.QAA30044@puffin.external.hp.com>
+Reply-To: drepper@cygnus.com (Ulrich Drepper)
+From: Ulrich Drepper <drepper@redhat.com>
+Date: 14 Apr 2001 16:00:52 -0700
+In-Reply-To: Grant Grundler's message of "Sat, 14 Apr 2001 16:18:47 -0600"
+Message-ID: <m3itk7jdcr.fsf@otr.mynet.cygnus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-amodra@one.net.au wrote:
-> > 2) c++ isn't returning the error reported by collect2
-> >    Fortunately the build soon dies since the expected product
-> >    doesn't exist. Known problem?
-> 
-> Are you sure about this statement?  It might just be "make" (the presense
-> of those `+'s is ringing bells with me but I don't recall the exact
-> signifigance.)
+Grant Grundler <grundler@puffin.external.hp.com> writes:
 
-I'm not. It might be a make bug.
-I've seen make say something like "[ ... ignored ]" when ignoring an error.
+> Do other arches allow non-PIC .o's to be linked into a .so lib?
 
-Anyway, after spending another two hours on the -fPIC problem, I'm
-starting to think the xfree86 lib build is broken by design for __hppa__.
-I'll send out another mail with a patch + recipe for building the libs.
-I'm pretty close to finding workarounds (not solutions) for the problems.
+Many do.  You will get text relocations (indicated by the DT_TEXTREL
+tag) which render your DSO unsharable.
 
-Do other arches allow non-PIC .o's to be linked into a .so lib?
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+---------------.                          ,-.   1325 Chesapeake Terrace
+Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
+Red Hat          `--' drepper at redhat.com   `------------------------
