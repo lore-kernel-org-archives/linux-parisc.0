@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 06EB2484B
-	for <parisc-linux@parisc-linux.org>; Sun, 31 Mar 2002 19:19:28 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id khhhmaaa for parisc-linux@parisc-linux.org; Sun, 31 Mar 2002 19:18:42 -0700
-Date: Sun, 31 Mar 2002 18:19:11 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org, kdb@oss.sgi.com
-Message-ID: <20020401021911.GG26353@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Initial port of kdb to parisc-linux
+To: DJ Tha Muggs <djmuggs@mail.cvee.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] IDE Harddisks in a C3K 
+In-Reply-To: Message from DJ Tha Muggs <djmuggs@mail.cvee.org>
+   of "Sun, 31 Mar 2002 14:48:48 +0200." <20020331124848.GA291@cvee.org>
+References: <20020331124848.GA291@cvee.org> 
+Date: Sun, 31 Mar 2002 21:32:53 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020401043253.6579C484E@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,51 +19,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Greetings,
+DJ Tha Muggs wrote:
+> Anyone experienced with using IDE hdd's in a C3K?
 
-It's amazing how much you can get done when you are procrastinating from
-doing what you are supposed to be doing. The result, a first cut of a
-port of SGI's kdb to parisc-linux.
+Not me. I've only used the CD-ROM drive.
+Note that suckyio got it's nick name for a reason.
+I'm not sure I'd trust R/W data behind that interface.
+Maybe if I could beat on it for a few days without errors,
+I might change my mind. But I've got no incentive to do so.
 
-There is a patch against kdb version 2.1 at
-ftp://ftp.parisc-linux.org/patches/kdb-v2.1-2.4.18-pa11-parisc-1.bz2
+> Are IDE badly supported or no one realy tried it yet?
 
-It is meant to be applied over the kdb-v2.1-2.4.18-common-2.bz2 patch.
-(I would give a url, but sgi's ftp site seems to be down as i write
-this)
+probably both. 
 
-The basic commands like disassembly, memory/register dumps, setting breakpoints,
-backtracing, etc work. Single stepping does not yet work though. Also, right 
-now this only works on 32-bit kernels. There are a few things that need to be
-fixed for 64-bit to work -- 
+> <stack dump>
+> WARNING! Stack pointer and cr30 do not correspond!
 
-1. modutils doesn't handle building 64-bit kdb-enabled kernels when running 
-a 32-bit kernel (kallsyms will fail).  
+This msg probably means a driver referenced a user space
+pointer without copy_from_user() or changing the "DS".
 
-2. Once you hack around #1, you run into problems because the parisc64
-compiler for some reason emits .dynsym/.dynamic sections into the
-kernel. This confuses modutils to no end. There's a small patch in the
-pa patch above that discards the dynamic sections. I'm dubious this is
-the right thing to do, though it does build a kernel that will boot and
-start kdb
+...
+> Dumping virtual address stack instead
+> 
+> Dumping Stack from 0x2a858000 to 0x2a8586c0:
 
-3. After #1/#2, we run into a problem because hppa64 binutils doesn't
-seem to sort unwind sections entirely correctly, so the backtracing
-logic will fail.
+*sigh*. I'm looking forward to stack unwinds under kdb.
 
-I've only tested this on serial console. Virtual console probably
-doesn't work yet (the pause key mapping code is missing). Also as
-explained on the kdb mailing list the code only works with ps2 type
-keyboards; someone will need to write a polling usb driver to use this
-with a usb keyboard.
+...
+> Kernel Fault: Code=26 regs=1a8586c0 (Addr=00000007)
 
-There is still much work to do... the unwind code in particular is quite
-crude and could be much enhanced. please try out the patch and feel free
-to send bug reports, patches, etc :-)
+variant of a data page fault.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+> 
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001101111111100001111 Not tainted
+> r00-03  00000000 1031f810 1012ddc8 ffffffff
+
+Return Pointer of most recent subroutine call.
+
+> r20-23  0000009f 00000044 00000131 2ff00000
+> r24-27  ffffffff 00000001 263ff120 10304010
+
+Args are in r26, r25, ...
+
+> IASQ: 00000000 00000000 IAOQ: 1012ae24 1012ae28
+
+1012ae24 is address of faulting instruction.
+Start here.
+
+grant
