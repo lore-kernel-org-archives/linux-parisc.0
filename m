@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 109B8482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Jan 2002 09:10:49 -0700 (MST)
-Message-ID: <2F1E6AB90ECAD311943700A0C9E3B154077D6ED4@xatl03.atl.hp.com>
-From: "FAUCHER,DENNIS (HP-USA,ex1)" <dennis_faucher@hp.com>
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Date: Wed, 23 Jan 2002 08:10:45 -0800
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD0F4482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Jan 2002 11:18:42 -0700 (MST)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id AD00D364
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Jan 2002 19:18:40 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id TAA26804 for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Jan 2002 19:18:06 +0100 (MET)
+Message-ID: <3C4EFDCC.A4A227F9@admin.france.hp.com>
+Date: Wed, 23 Jan 2002 19:15:40 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] xf86 Config Files for 715/100
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+ boundary="------------A8C3EC0842E00ADB448949C5"
+Subject: [parisc-linux] Dump: pb with module_list
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,145 +25,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+This is a multi-part message in MIME format.
+--------------A8C3EC0842E00ADB448949C5
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Does anyone have X working on an HP 715/100 with an A1097C monitor and 0.9.3
-Linux?  Joel Soete was nice enough to send me his config files from his 712
-and B180, but they have not solved the problem.  Thank you for any input.  I
-have included my XFree86.0.log for fun.
+	Hi
+There is something I don't understand (and I really
+dont like to not understand). I didn't have any pb
+with utsname. But now I want to retrieve the loaded 
+modules at dump time. In order to do that, I wrote
+a very simple loop (it is based on find_module function).
+It is based on the pointer "module_list". this is define
+in linux/module.h as: 
+extern struct module *module_list;
 
-Sincerely,
-Dennis Faucher
-Technical Consultant
-Hewlett-Packard Company
-https://www.ecardfile.com/id/dennis_faucher (Contact)
-http://e-services.hp.com (E-Services) 
+Because I don't want to modify kernel/module.c
+I've put my function in my dump_base.c
+(it already include linux/module.h). It compile right,
+but when using depmod, insmod, etc...:
+dump.o: unresolved symbol module_list
+I've already recompile the entire kernel, make dep, etc...
 
+I'm probably missing something, but what ????
 
-This is a pre-release version of XFree86, and is not supported in any
-way.  Bugs may be reported to XFree86@XFree86.Org and patches submitted
-to fixes@XFree86.Org.  Before reporting bugs in pre-release versions,
-please check the latest version in the XFree86 CVS repository
-(http://www.XFree86.Org/cvs)
+	thanks.
 
-XFree86 Version 4.1.0.1 / X Window System
-(protocol Version 11, revision 0, vendor release 6510)
-Release Date: 21 December 2001
-	If the server is older than 6-12 months, or if your card is
-	newer than the above date, look for a newer version before
-	reporting problems.  (See http://www.XFree86.Org/FAQ)
-Build Operating System: Linux 2.4.16-64 parisc64 [ELF] 
-(==) Log file: "/var/log/XFree86.0.log", Time: Fri Jan 18 19:58:34 2002
-(==) Using config file: "/etc/X11/XF86Config-4"
-Markers: (--) probed, (**) from config file, (==) default setting,
-         (++) from command line, (!!) notice, (II) informational,
-         (WW) warning, (EE) error, (NI) not implemented, (??) unknown.
-(==) ServerLayout "Simple Layout"
-(**) |-->Screen "Screen 1" (0)
-(**) |   |-->Monitor "HP A1097C"
-(**) |   |-->Device "HP Framebuffer"
-(**) |-->Input Device "Mouse1"
-(**) |-->Input Device "Keyboard1"
-(**) Option "AutoRepeat" "500 30"
-(**) Option "XkbRules" "xfree86"
-(**) XKB: rules: "xfree86"
-(**) Option "XkbModel" "pc101"
-(**) XKB: model: "pc101"
-(**) Option "XkbLayout" "us"
-(**) XKB: layout: "us"
-(==) Keyboard: CustomKeycode disabled
-(**) FontPath set to
-"/usr/X11R6/lib/X11/fonts/misc/,/usr/X11R6/lib/X11/fonts/75dpi/:unscaled,/us
-r/X11R6/lib/X11/fonts/100dpi/:unscaled,/usr/X11R6/lib/X11/fonts/Type1/,/usr/
-X11R6/lib/X11/fonts/Speedo/,/usr/X11R6/lib/X11/fonts/75dpi/,/usr/X11R6/lib/X
-11/fonts/100dpi/"
-(**) RgbPath set to "/usr/X11R6/lib/X11/rgb"
-(--) using VT number 7
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------A8C3EC0842E00ADB448949C5
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
-(WW) Cannot open APM
-(EE) No OS PCI support available
-(II) Addressable bus resource ranges are
-	[0] -1 0	0x00000000 - 0xffffffff (0x0) MX[B]
-	[1] -1 0	0x00000000 - 0x0000ffff (0x10000) IX[B]
-(II) OS-reported resource ranges:
-	[0] -1 0	0xffffffff - 0xffffffff (0x1) MX[B]
-	[1] -1 0	0x00000000 - 0x00000000 (0x1) MX[B]
-	[2] -1 0	0x0000ffff - 0x0000ffff (0x1) IX[B]
-	[3] -1 0	0x00000000 - 0x00000000 (0x1) IX[B]
-(II) OS-reported resource ranges after removing overlaps with PCI:
-	[0] -1 0	0xffffffff - 0xffffffff (0x1) MX[B]
-	[1] -1 0	0x00000000 - 0x00000000 (0x1) MX[B]
-	[2] -1 0	0x0000ffff - 0x0000ffff (0x1) IX[B]
-	[3] -1 0	0x00000000 - 0x00000000 (0x1) IX[B]
-(II) All system resource ranges:
-	[0] -1 0	0xffffffff - 0xffffffff (0x1) MX[B]
-	[1] -1 0	0x00000000 - 0x00000000 (0x1) MX[B]
-	[2] -1 0	0x0000ffff - 0x0000ffff (0x1) IX[B]
-	[3] -1 0	0x00000000 - 0x00000000 (0x1) IX[B]
-(II) MGA: driver for Matrox chipsets: mga2064w, mga1064sg, mga2164w,
-	mga2164w AGP, mgag100, mgag100 PCI, mgag200, mgag200 PCI, mgag400
-(II) GLINT: driver for 3Dlabs chipsets: gamma, ti_pm2, ti_pm, pm3, pm2v,
-	pm2, pm, 300sx, 500tx, mx, delta
-	S3VIdentify
-(II) S3VIRGE: driver (version 1.6.13) for S3 ViRGE chipsets: virge, 86C325,
-	virge vx, 86C988, virge dx, virge gx, 86C375, 86C385, virge gx2,
-	86C357, virge mx, 86C260, virge mx+, 86C280, trio 3d, 86C365,
-	trio 3d/2x, 86C362, 86C368
-(II) SIS: driver for SiS chipsets: SIS5597, SIS5598, SIS530, SIS6326,
-	SIS300, SIS630, SIS540
-(II) SAVAGE: driver (version 1.1.16) for S3 Savage chipsets: Savage4,
-	Savage3D, Savage3D-MV, Savage2000, Savage/MX-MV, Savage/MX,
-	Savage/IX-MV, Savage/IX, ProSavage PM133, ProSavage KM133, Twister,
-	TwisterK
-(II) TRIDENT: driver for Trident chipsets: tvga8900d, cyber9320, cyber9388,
-	cyber9397, cyber9397dvd, cyber9520, cyber9525dvd, cyberblade/e4,
-	tgui9420dgi, tgui9440agi, tgui9660, tgui9680, providia9682,
-	providia9685, cyber9382, cyber9385, 3dimage975, 3dimage985, blade3d,
-	cyberbladei7, cyberbladei7d, cyberbladei1, cyberbladei1d,
-	cyberbladeAi1, cyberbladeAi1d, cyberbladeXP, cyberbladeXPm
-(II) CHIPS: Driver for Chips and Technologies chipsets: ct65520, ct65525,
-	ct65530, ct65535, ct65540, ct65545, ct65546, ct65548, ct65550,
-	ct65554, ct65555, ct68554, ct69000, ct69030, ct64200, ct64300
-(II) TDFX: Driver for 3dfx Banshee/Voodoo3 chipsets: 3dfx Banshee,
-	3dfx Voodoo3, 3dfx Voodoo5
-(II) FBDev: driver for framebuffer: fbdev, afb
-(II) ATI: ATI driver (version 6.3.6) for chipsets: ati
-(II) R128: Driver for ATI Rage 128 chipsets: ATI Rage 128 RE (PCI),
-	ATI Rage 128 RF (AGP), ATI Rage 128 RG (AGP), ATI Rage 128 RK (PCI),
-	ATI Rage 128 RL (AGP), ATI Rage 128 Pro PD (PCI),
-	ATI Rage 128 Pro PF (AGP), ATI Rage 128 Pro PP (PCI),
-	ATI Rage 128 Pro PR (PCI), ATI Rage 128 Mobility LE (PCI),
-	ATI Rage 128 Mobility LF (AGP), ATI Rage 128 Mobility MF (AGP),
-	ATI Rage 128 Mobility ML (AGP)
-(II) RADEON: Driver for ATI Radeon chipsets: ATI Radeon QD (AGP),
-	ATI Radeon QE (AGP), ATI Radeon QF (AGP), ATI Radeon QG (AGP),
-	ATI Radeon VE (AGP)
-(II) imstt: driver (version 1.0.0 for IMS TwinTurbo chipsets : imstt128,
-	imstt3d
-(II) VGA: Generic VGA driver (version 4.0) for chipsets: generic
-(II) v4l driver for Video4Linux
-	S3VProbe begin
-(II) FBDev(0): using default device
-(II) Running in FRAMEBUFFER Mode
-(**) FBDev(0): Depth 8, (--) framebuffer bpp 8
-(==) FBDev(0): Default visual is PseudoColor
-(==) FBDev(0): Using gamma correction (1.0, 1.0, 1.0)
-(II) FBDev(0): Hardware:  (vidmem: 8192k)
-(II) FBDev(0): Checking Modes against framebuffer device...
-(II) FBDev(0): 	mode "1280x1024" ok
-(II) FBDev(0): Checking Modes against monitor...
-(--) FBDev(0): Virtual size is 1280x1024 (pitch 1280)
-(**) FBDev(0): Built-in mode "current": 28000.0 MHz, 21875.0 kHz, 21362.3 Hz
-(II) FBDev(0): Modeline "current"  28000.00  1280 1280 1280 1280  1024 1024
-1024 1024 -hsync -vsync -csync
-(==) FBDev(0): DPI set to (75, 75)
-(**) FBDev(0): Using "Shadow Framebuffer"
-
-Fatal server error:
-AddScreen/ScreenInit failed for driver 0
-
-
-When reporting a problem related to a server crash, please send
-the full server output, not just the last messages.
-This can be found in the log file "/var/log/XFree86.0.log".
-Please report problems to submit@bugs.debian.org.
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------A8C3EC0842E00ADB448949C5--
