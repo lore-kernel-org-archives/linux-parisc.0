@@ -1,28 +1,61 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA01206
-	for <parisc-linux@puffin.external.hp.com>; Thu, 24 Jun 1999 14:23:53 -0600
-From: Richard "J." Rauenzahn <rrauenza@cup.hp.com>
-Message-Id: <199906242023.NAA22358@hairball.cup.hp.com>
-Subject: Re: [parisc-linux] Getting back to the pdc prompt from Never Never Land
-To: mike@fast.cs.utah.edu
-Date: Thu, 24 Jun 1999 13:23:54 -0700 (PDT)
-Cc: mkp@socsci.auc.dk, parisc-linux@thepuffingroup.com
-In-Reply-To: <199906241958.NAA20810@fast.cs.utah.edu> from Mike Hibler at Jun "24," 1999 "01:58:57" pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA02946
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 09:19:39 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id LAA04569
+	for <parisc-linux@thepuffingroup.com>; Fri, 25 Jun 1999 11:28:48 -0400
+Sender: adevries@feather.thepuffingroup.com
+Message-ID: <3773A030.C17480A9@thepuffingroup.com>
+Date: Fri, 25 Jun 1999 11:28:48 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Booting the Linux-Kernel....
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-> We catch the TOC trap and force a crash dump and reboot.  This way you can
-> push the little TOC button on the front/back of the machine and have the
-> machine take a dump and reboot.  This approach should work very early in
-> the kernel boot process provided you use the PDC to do the crash dump.
-> This is *not* what TOC was intended for and isn't what HP-UX does, so HP
-> people may not approve :-)
+I'm forwarding this message from Helge, and I'm making sure that the
+mailing list is fixed.
 
-I don't understand --
+- Alex
 
-Are you saying HP-UX doesn't use the TOC button to cause a dump and
-reboot?  That's exactly what happens on HP-UX!
+-------- Original Message --------
+Subject: Booting the Linux-Kernel.... !
+Date: Fri, 25 Jun 1999 16:28:53 +0200
+From: Helge Deller <helge.deller@ruhr-uni-bochum.de>
+Reply-To: helge.deller@ruhr-uni-bochum.de
+To: parisc-linux <parisc-linux@thepuffingroup.com>
 
-Rich
+Hi !
+
+Ok, I commited my changes to the bootloader, so that we now can begin to
+start with the real kernel-work.
+
+My changes in the bootloader are not very impressive, and you can
+consider it as a big, bad hack,
+but it does it´s job (and that is what counts !!). Later we can try to
+optimize it...
+
+You have to build your vmlinux on HP-UX (with make vmlinux) and then do
+"make Image".
+Then you will find the bootable image in /arch/parisc/hp/boot/Image.
+
+The new bootloader reads SOM-Files and places them to their
+Origin-Address, which was given in the arch/parisc/Makefile (currently
+at 0x80000) and we do not need anymore to write the exec-orgin into the
+boot-Image (because it will be done by the linker).
+
+Currently the only problem I have is, that "make dep" doesn´t work with
+my HP-UX-Machine, so I do "make dep" with my i386 and have the
+Kernel-Tree (hosted on i386) connected via NFS from HP-UX. (Could maybe
+someone take a look at this ?).
+All compilations were done on HP-UX....
+
+PS: You will see the kernel-banner, a spinng cursor and blinking LED´s,
+really impressive :-)
+
+Ok,
+Thanks to you all !
+
+Helge Deller.
