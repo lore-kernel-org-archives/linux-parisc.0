@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 32DB7482A
-	for <parisc-linux@parisc-linux.org>; Sun, 30 Dec 2001 11:42:53 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id wmdbkaaa for parisc-linux@parisc-linux.org; Sun, 30 Dec 2001 11:36:57 -0700
-Date: Sun, 30 Dec 2001 10:42:22 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Problem with threads..
-Message-ID: <20011230184222.GC2179@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20011229012436.4586cb54.csuder@cisco.com> <20011230064447.GA2179@tausq.org> <20011229235830.4bfec5f9.csuder@cisco.com>
+Received: from daedalus.cs.brandeis.edu (daedalus.cs.brandeis.edu [129.64.3.179])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5DC6D482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 11:52:57 -0700 (MST)
+Received: (from aaronm@localhost)
+	by daedalus.cs.brandeis.edu (8.9.3/8.9.3) id NAA28219
+	for parisc-linux@lists.parisc-linux.org; Sun, 30 Dec 2001 13:52:56 -0500
+Date: Sun, 30 Dec 2001 13:52:56 -0500
+From: Aaron Macks <aaronm@cs.brandeis.edu>
+To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Graphics support on 755?
+Message-ID: <20011230135256.B28207@daedalus.cs.brandeis.edu>
+References: <20011229182132.A23862@daedalus.cs.brandeis.edu> <3C2F42C5.6040004@interaccess.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011229235830.4bfec5f9.csuder@cisco.com>
+In-Reply-To: <3C2F42C5.6040004@interaccess.com>; from bheadley@interaccess.com on Sun, Dec 30, 2001 at 10:37:25AM -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +25,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > fwiw, what i've seen elsewhere is that on palinux, you have to make sure
-> > the mutex is initialized before locking works. on other platforms
-> > sometimes you can get away with doing a lock without a mutex init.
+> Kernel source. ./arch/parisc/kernel/hardware.c
 > 
-> Yes !!! There was one of 4 mutex not initialized, added that one and now
-> it works.
+> The kernel supports display adapters that are supported by the pdc BIOS. 
+> I assume it's an HP card, which means HPUX supports it, which strongly 
+> infers it's supported by pdc BIOS.
+> 
+> What I don't know is, if you get something like an nVidia card, stick it 
+> into the EISA bus, that such will work...
+> 
+> -- 
+> ____               .:.                 ____
+> Bryan W. Headley - bheadley@interaccess.com
+it's an HP card, not in the EISA slots, but in the big slots on the
+backplane.  Is there anything like lspci, but for the HP slots?
+Aaron
 
-Just to clarify...
-
-hppa is the only platform supported by linuxthreads right now where we 
-initialize the mutex variable to 1 so that we can do locking using ldcw. On 
-other platforms, locks are initialized to 0 and locking is done using things 
-like test-and-set.
-
-In general, you always need to call pthread_mutex_init for mutexes to
-work. In the case of pan, the mutex variable is declared static, so it
-is automatically initialized to 0.
-
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+_______________________________________________________
+Aaron Macks(aaronm@cs.brandeis.edu)
+My sheep has seven gall bladders, that makes me the King of the Universe!
