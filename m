@@ -1,19 +1,18 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: [parisc-linux] Re: J5000 LCD heartbeat
-Date: Sun, 20 Mar 2005 20:40:32 +0100
-Message-ID: <20050320204032.3ed40468__7175.32813218913$1416623703$gmane$org@Tatooine.r3z0>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: J5000 LCD heartbeat
+Date: Mon, 21 Mar 2005 00:19:45 -0700
+Message-ID: <20050321071945.GA10108@colo.lackof.org>
 References: <200503191959.05972.dmp@davidmpye.dyndns.org>
-	<200503192233.26991.dmp@davidmpye.dyndns.org>
-	<20050319231911.GB21898@colo.lackof.org>
-	<200503201918.31808.dmp@davidmpye.dyndns.org>
+	<20050320210357.53534d01@Tatooine.r3z0>
+	<200503202257.31924.dmp@davidmpye.dyndns.org>
+	<200503202317.05481.dmp@davidmpye.dyndns.org>
+	<20050321045506.GA18458@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: dmp@davidmpye.dyndns.org
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503201918.31808.dmp@davidmpye.dyndns.org>
+In-Reply-To: <20050321045506.GA18458@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,91 +23,151 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 20 Mar 2005 19:18:29 +0000
-David Pye <dmp@davidmpye.dyndns.org> wrote:
+On Mon, Mar 21, 2005 at 04:55:06AM +0000, Stuart Brady wrote:
+> I wonder if it's a problem that an "LED" can be updated if it hasn't
+> changed (and even when there are others that actually need updating).
+> I think the included patch evens out the heartbeat a bit, but maybe I'm
+> imagining it...  Does it look okay?
 
-> On Saturday 19 March 2005 23:19, Grant Grundler wrote:
-> > On Sat, Mar 19, 2005 at 10:33:24PM +0000, David Pye wrote:
-> >
-> > > Is it possible to make the write to the display later in the boot
-> > > process, so it occurs after the INI CC01 is printed?
-> >
-> > I would think it's possible.
-> > You want to track down where the CC01 chassis_log is emitted then
-> > propose a better place to initialize LED display?
-> 
-> I think I have an idea that it's related to CPU1 init, but I haven't
-> confirmed this yet - depending on your feedback to the idea below, I
-> won't bother tracing it down.
+Hrm...for LCD, can we program all 4 independently?
+I've attached another patch based on ideas in yours that makes that
+more explicit. Seems to work but I suppose locating a spec the LCD
+panels would be the only way to know for sure.
 
-Don't bother. I have that kind of message left on my j5k LCD has well,
-that's been there for ages, without problem.
+On my j6k the change in LCD heartbeat was very faint.
+LCD has a much slower/longer response time than an LED.
+I've basically doubled the "time on" and now heart beat is easy to see.
+But if someone knows the response time of the LCD panels, that
+should make it obvious what the right values would be.
 
-> > Another idea is the chassis log code might want to clear the LED
-> > diplay when displaying a chassis log and then a few seconds later
-> > refresh the LED display with the original contents or something.
-> 
-> At the very least, I think it needs to clear the lcd display before it
-> sends the chassis code to the PDC.  How does this sound:
+This difference got me wondering if we should have different tasklets
+to handle LED vs LCD. If would be nice to deal with differences
+in output device response times and a two step (cmd then data) update
+process at a higher level than led_LCD_driver(). But I'm not volunteering
+to rewrite LED/LCD driver and the patch below is Good Enough (IMHO).
 
-If you think about the firmware code that drives the display of chassis
-messages, it's firmware, changing how it works is pretty much not
-possible at that point. If you think about the PDC Chassis driver, that
-code doesn't work (read, "isn't activated") on j5k and other System Map
-firmware machines, it only works on PDC PAT machines (eg high end
-servers).
+Another possible improvement would be to move the code in the
+"for" loop to a static inline function and just pass in all
+the hard coded stuff. Wouldn't need any arrays and code is
+probably compact enough that getting rid of the loop would
+be a win. But someone would need to get CR16 cycle counts
+before/after to prove it's better...again, more work than I'm
+willing to put into it but something fun for someone to play with.
 
-> Clear the lcd
-> Send the chassis code
-> set up a timer for 15 seconds, say, to restore the original display text
-> 
-> This requires a couple of changes to led.c so firmware.c can tell
-> whether the machine has an LCD or not. (If it does, then do the above,
-> otherwise just send the chassis code as before.)
+The following patch "Works for Me"(tm).
+It's at risk for ignoring transitions until after the data phase is
+taken care of and we send the next command. ie the gap between
+when someone decides the LED should change and when it actually
+changes entirely depends on how frequently led_LCD_driver gets called.
 
-AFAIK, it's not possible for the led.c driver to figure out whether the
-firmware has sent anything to the LCD display.
+thanks,
+grant
 
-> If you agree that this is something useful, I will do some more hacking
-> on it. Otherwise, I'll do the other option and arrange the the chassis
-> log to be sent before the lcd has the initial text printed on it.
+Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
 
-I don't think this is either useful nor desirable. We want to have the
-firmware messages going over whatever the led/lcd driver would have shown,
-and going into such a pain for a corner case doesn't really seem worth it.
-
-> Another idea I had was this:
-> 
-> How about making the text scrollable? ie if the string is longer than
-> the viewport, scroll it along at a reasonable rate.
-
-That has been considered and eventually ruled out. Remember we're in
-kernel context, this is not meant to be eye candy etc. The pretty
-formatting you suggest should be eventually a userland task, certainly not
-a supplementary burden for the kernel.
-
-At some point we looked after writing a complete driver for the LCD
-display, but it happens that it's much more complicated than first
-expected. For instance, accessing the other row of the LCD is almost
-impossible. In any case, it would probably consume resource for nothing
-really worth it.
-
-> I'm willing to have a play with this too, if people think it's something
-> worth having.
-
-IMHO it's not.
-
-> Did you have any hints you could give me as to fix my very occasional 
-> heartbeat issue either? 
-
-I recall that the LCD heartbeat is quite slow on my j5k as well, but
-nothing really awful, afaicr.
-
-HTH
-
-Thibaut VARENE
-The PA/Linux Team
-http://www.pateam.org/
+Index: drivers/parisc/led.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/drivers/parisc/led.c,v
+retrieving revision 1.12
+diff -u -p -r1.12 led.c
+--- drivers/parisc/led.c	18 Mar 2005 13:17:10 -0000	1.12
++++ drivers/parisc/led.c	21 Mar 2005 06:53:19 -0000
+@@ -296,41 +296,40 @@ static void led_LASI_driver(unsigned cha
+  */
+ static void led_LCD_driver(unsigned char leds)
+ {
+-	static int last_index;	/* 0:heartbeat, 1:disk, 2:lan_in, 3:lan_out */
+-	static int last_was_cmd;/* 0: CMD was written last, 1: DATA was last */
+-	struct lcd_block *block_ptr;
+-	int value;
+-
+-	switch (last_index) {
+-	    case 0:	block_ptr = &lcd_info.heartbeat;
+-			value = leds & LED_HEARTBEAT;
+-			break;
+-	    case 1:	block_ptr = &lcd_info.disk_io;
+-			value = leds & LED_DISK_IO;
+-			break;					
+-	    case 2:	block_ptr = &lcd_info.lan_rcv;
+-			value = leds & LED_LAN_RCV;
+-			break;					
+-	    case 3:	block_ptr = &lcd_info.lan_tx;
+-			value = leds & LED_LAN_TX;
+-			break;
+-	    default:	/* should never happen: */
+-			return;
+-	}
+-
+-	if (last_was_cmd) {
+-	    /* write the value to the LCD data port */
+-    	    gsc_writeb( value ? block_ptr->on : block_ptr->off, LCD_DATA_REG );
+-	} else {
+-	    /* write the command-byte to the LCD command register */
+-    	    gsc_writeb( block_ptr->command, LCD_CMD_REG );
+-	}    
+-	
+-	/* now update the vars for the next interrupt iteration */ 
+-	if (++last_was_cmd == 2) { /* switch between cmd & data */
+-	    last_was_cmd = 0;
+-	    if (++last_index == 4) 
+-		last_index = 0;	 /* switch back to heartbeat index */
++	static unsigned char last_leds;
++
++	static unsigned char changed[4];
++	static unsigned char data[4];
++	static unsigned char mask[4] = { LED_HEARTBEAT, LED_DISK_IO,
++						LED_LAN_RCV, LED_LAN_TX };
++	static struct lcd_block * blockp[4] = {
++		&lcd_info.heartbeat,
++		&lcd_info.disk_io,
++		&lcd_info.lan_rcv,
++		&lcd_info.lan_tx
++	};
++
++	unsigned int i;
++
++	for (i = 0; i < 4; i++) {
++		if (changed[i]) {
++			/* finish LCD update with write to the LCD data port */
++			gsc_writeb( data[i], LCD_DATA_REG );
++			changed[i] = 0;
++		} else {
++			/* check if this "LED" changed since last time */
++			if ((leds ^ last_leds) & mask[i]) {
++				last_leds ^= mask[i];
++				data[i] = (leds & mask[i]) ?
++						blockp[i]->on :
++						blockp[i]->off;
++
++				changed[i] = 1;
++
++				/* start update by writing the cmd byte */
++		    		gsc_writeb(blockp[i]->command, LCD_CMD_REG);
++			}
++		}
+ 	}
+ }
+ 
+@@ -427,8 +426,8 @@ static __inline__ int led_get_diskio_act
+     - optimizations
+  */
+ 
+-#define HEARTBEAT_LEN (HZ*6/100)
+-#define HEARTBEAT_2ND_RANGE_START (HZ*22/100)
++#define HEARTBEAT_LEN (HZ*12/100)
++#define HEARTBEAT_2ND_RANGE_START (HZ*36/100)
+ #define HEARTBEAT_2ND_RANGE_END   (HEARTBEAT_2ND_RANGE_START + HEARTBEAT_LEN)
+ 
+ #define NORMALIZED_COUNT(count) (count/(HZ/100))
+@@ -481,7 +480,7 @@ static void led_tasklet_func(unsigned lo
+ 	}
+ 	
+ 	/* update the LCD/LEDs */
+-	if (currentleds != lastleds) {
++	if (currentleds != lastleds || lcd_info.model == DISPLAY_MODEL_LCD) {
+ 	    led_func_ptr(currentleds);
+ 	    lastleds = currentleds;
+ 	}
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
