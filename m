@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A10324868
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 08:24:37 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <helge.deller@sap.com>
-To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>,
-	parisc-linux@lists.parisc-linux.org
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6FE28486C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 08:27:41 -0700 (MST)
+Date: Wed, 6 Mar 2002 16:27:39 +0100
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] not freeing initmem?
-Date: Wed, 6 Mar 2002 16:24:35 +0100
+Message-ID: <20020306152739.GQ787@charite.de>
 References: <20020306151913.GO787@charite.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <20020306151913.GO787@charite.de>
-MIME-Version: 1.0
-Message-Id: <E16idHP-0003pp-00@linuxlab.wdf.sap-ag.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,38 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-There is still one or more __init 's too much somewhere. 
-If we would free the memory without fixing/finding this place first, 
-the kernel will crash.
+Am 06.03.2002 um 16:19:13 +0100 schrieb Ralf Hildebrandt folgendes:
 
-Helge
-
-On Wednesday 06 March 2002 16:19, Ralf Hildebrandt wrote:
-> From my dmesg output of the recent 2.4.18-pa3:
->
-> ...
-> EXT3-fs: mounted filesystem with ordered data mode.
-> VFS: Mounted root (ext3 filesystem) readonly.
-> NOT FREEING INITMEM (351k)
-> Adding Swap: 124800k swap-space (priority -1)
-> EXT3 FS 2.4-0.9.17, 10 Jan 2002 on sd(8,3), internal journal
-> ...
->
 > What does that mean? Why is the memory not freed on PA-RISC, but freed
 > on x86?
->
-> On my x86 box:
->
-> ...
-> EXT3-fs: mounted filesystem with ordered data mode.
-> VFS: Mounted root (ext3 filesystem) readonly.
-> Freeing unused kernel memory: 224k freed
-> EXT3 FS 2.4-0.9.17, 10 Jan 2002 on ide0(3,2), internal journal
-> Real Time Clock Driver v1.10e
-> ...
 
--- 
-Helge Deller
-SAP AG - LinuxLab and Unix Platforms
-email: helge.deller@sap.com
-Phone: +49 6227 7 - 67783
+OK, I grepped for that string and found the infamous FIXME:
+
+/* FIXME: */
+        printk(KERN_INFO "NOT FREEING INITMEM (%dk)\n",
+                        (&__init_end - &__init_begin) >> 10);
+        return;			
+
+OTOH, why does the code below that not work for PA-RISC?
