@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 21051485F
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Mar 2003 04:31:49 -0700 (MST)
-Received: from dial3-215.ba.nextra.sk (dial3-215.ba.nextra.sk [195.168.62.215])
-	by cuprel1.hp.com (Postfix) with SMTP id 156AD2312
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Mar 2003 03:31:46 -0800 (PST)
-Message-ID: <09e$j$8-560-rl06nc-9kj$6zz98@ho23qyho.4.n9>>
-From: "" <atghyomiosness14@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Wed, 12 Mar 03 06:16:56 GMT
+Received: from internet.mococasa.com.br (unknown [200.246.12.245])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0774C485F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 06:18:24 -0700 (MST)
+Received: from localhost (internet.mococasa [127.0.0.1])
+	by internet.mococasa.com.br (Postfix) with ESMTP id D3A68281BD
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 10:17:52 -0300 (BRT)
+Received: from wpires (unknown [110.50.50.150])
+	by internet.mococasa.com.br (Postfix) with SMTP id A0DA8281BC
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 10:17:46 -0300 (BRT)
+Message-ID: <008401c2e89a$13d85ef0$9632326e@wpires>
+From: "Willian Ricardo" <willian@mococasa.com.br>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 12 Mar 2003 10:19:57 -0300
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="6.7_6A93B875F8530F5C.9"
-Subject: [parisc-linux] hey qd
+	boundary="----=_NextPart_000_0081_01C2E880.EE3D2E00"
+Subject: [parisc-linux] PARISC hp 9000 model D 370
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +29,97 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format.
 
---6.7_6A93B875F8530F5C.9
-Content-Type: text/html
+------=_NextPart_000_0081_01C2E880.EE3D2E00
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<center>
-<a href=3D"http://203.34.205.88/users/happy/date/">
-<img src=3D"http://203.34.205.88/users/happy/date/date.jpg"
-</a>
-vmk lxb np j q
- bhtgnmp zm
-ts
+My name is Willian I am from Brazil, I have a personal computer RISC HP =
+9000 I Model D 370 =20
+I am trying to install DEBIAN 3.0, but I am having some problems in the =
+hour of the installation. =20
+I inserted the CD in the unit and I pressed the key space, I typed: bo =
+8/16/5.2.0 and he began for the cd, he asked something on IPL I answered =
+Y and later he asked me something about memory, I placed my memory and =
+he/she asked something on vmlinux 32 or 64, I changed for 64, later I =
+pressed " b "  =20
+he brought me the following answer: =20
+ =20
+ =20
+ Command line for kernel :  ramdisk_size=3D2663046 root =3D /dev/ram =
+console=3Dtty0 TERM=3Dvt102 palo_kernel=3D0/vmlinux64
+selected kernel: /vmlinux64 from partition 0
+selected ramdisk:/ramdisk from partition 0
+.
+.
+.
+.
+loading ramdisk 2663046 bytes@2fd65000...
+Branching to kernel entry point 0x0010000. If this the last
+Message you, you may need to switch you console . this is a common =
+symptom -- search the FAQ and mailing at parisc-linux.org
 
-nfr z tlueze
-llfopemdzqvfeg oogzeab
-g tg
-ipsdoxhrkhrk
-kzkite
---6.7_6A93B875F8530F5C.9--
+what could be? =20
+Thank you  =20
+Willian
+
+
+------=_NextPart_000_0081_01C2E880.EE3D2E00
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>My name is Willian I am from Brazil, I =
+have a=20
+personal computer RISC HP 9000 I Model D 370&nbsp; <BR>I am trying to =
+install=20
+DEBIAN 3.0, but I am having some problems in the hour of the =
+installation.&nbsp;=20
+<BR>I inserted the CD in the unit and I pressed the key space, I typed: =
+bo=20
+8/16/5.2.0 and he began for the cd, he asked something on IPL I answered =
+Y and=20
+later he asked me something about memory, I placed my memory and he/she =
+asked=20
+something on vmlinux 32 or 64, I changed for 64, later I pressed " b=20
+"&nbsp;&nbsp; <BR>he brought me the following=20
+answer:&nbsp;&nbsp;<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;<BR>&nbsp;</FONT><FONT=
+=20
+face=3DArial size=3D2>Command line for kernel :&nbsp; =
+ramdisk_size=3D2663046 root =3D=20
+/dev/ram console=3Dtty0 TERM=3Dvt102 =
+palo_kernel=3D0/vmlinux64</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>selected kernel: /vmlinux64 from =
+partition=20
+0</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>selected ramdisk:/ramdisk from =
+partition=20
+0</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>loading ramdisk 2663046 <A=20
+href=3D"mailto:bytes@2fd65000">bytes@2fd65000</A>...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Branching to kernel entry point =
+0x0010000. If this=20
+the last</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Message you, you may need to switch you =
+console .=20
+this is a common symptom -- search the FAQ and mailing at=20
+parisc-linux.org</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>what could be?&nbsp; <BR>Thank =
+you&nbsp;&nbsp;=20
+<BR>Willian</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0081_01C2E880.EE3D2E00--
