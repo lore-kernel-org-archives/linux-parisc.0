@@ -1,16 +1,12 @@
-From: Kyle McMartin <kyle@engsoc.org>
-Subject: Re: [parisc-linux]      Heads up, 2.6.7-pa0 FTBS with 64-bit toolchain
-Date: Mon, 21 Jun 2004 13:27:37 -0400
-Message-ID: <20040621172737.GC28438@engsoc.org>
-References: <200406200029.i5K0T1re007012@hiauly1.hia.nrc.ca>
-	<200406200114.i5K1ESYp007238@hiauly1.hia.nrc.ca>
+From: "Greg Porter" <gporter@tcsn.net>
+Subject: [parisc-linux] FW: An HP doc for TLDP
+Date: Tue, 22 Jun 2004 18:22:36 -0700
+Message-ID: <001a01c458c0$949e1650$df6ddacf@athlon>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset="iso-8859-1"
+To: <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200406200114.i5K1ESYp007238@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,19 +17,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jun 19, 2004 at 09:14:28PM -0400, John David Anglin wrote:
-> I would be interested in hearing if this solves the kernel build problem.
-> The patch is for 3.5.  It might need a bit of hacking to apply it to
-> earlier branches.
-> 
-Aye, it fixes the kernel compile! Hooray!
+Hi, I noticed that linux documentation regarding Hewlett Packard unix
+server hardware (PA-RISC) is lacking.=A0 I recently taught myself =
+DocBook,
+and have started documenting some specifics of HP hardware.=A0=20
+=A0
+For example, I recently documented HP server firmware with DocBook,
+please see http://www.porterdavis.org/computing/hp_boot/ for an
+example.=A0=20
+=A0
+The next rev of the document will have a section on updating the
+firmware as well.  This may be of use to you.
 
-(I built 2.6.7-pa1 successfully on my c3000 with it, at least, building
-SMP now to double check, and haven't booted)
+Keep up the good work!
 
-Cheers,
--- 
-Kyle McMartin
+Regards,
+=A0
+Greg
+
+P.S.  The Linux Documentation Project people are considering whether to
+accept this as a TLDP document.
+=A0
+=A0
+=A0
+=A0
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
