@@ -1,13 +1,14 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] possible gcc-3.2 bug?
-Date: Tue, 15 Oct 2002 00:03:36 -0700
-Message-ID: <20021015070336.GJ24881__26990.1482075968$1416621830$gmane$org@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] possible gcc-3.2 bug?
+Date: Tue, 15 Oct 2002 17:37:47 -0400 (EDT)
+Message-ID: <200210152137.g9FLbmkY004459__9834.01358030296$1416621834$gmane$org@hiauly1.hia.nrc.ca>
+References: <20021015070336.GJ24881@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: debian-gcc@lists.debian.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
+To: tausq@debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <20021015070336.GJ24881@tausq.org> from "Randolph Chung" at Oct 15, 2002 00:03:36 am
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -18,46 +19,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-The following piece of code compiles with gcc-3.0 but not with
-gcc-3.2... is this a gcc bug? or is the code broken?
+> The following piece of code compiles with gcc-3.0 but not with
+> gcc-3.2... is this a gcc bug? or is the code broken?
 
-tausq@a500:~$ gcc-3.2 -c t.c
-t.c: In function `foo':
-t.c:12: initializer element is not constant
+I would say the later.
 
-(it's a simplified example of some code from the parisc-linux kernel)
+> tausq@a500:~$ gcc-3.2 -c t.c
+> t.c: In function `foo':
+> t.c:12: initializer element is not constant
+> 
+> (it's a simplified example of some code from the parisc-linux kernel)
+> 
+> ---------------------8<-----------------------
+> /* compile with gcc -c foo.c */
+> 
+> typedef struct {
+>         volatile unsigned int lock;
+> } spinlock_t;
+> 
+> typedef struct {
+>         spinlock_t lock;
+>         volatile int counter;
+> } rwlock_t;
+> 
+> void foo(void)
+> {
+>         static rwlock_t x = (rwlock_t) { (spinlock_t) { 1 }, 0 };
+> }
 
----------------------8<-----------------------
-/* compile with gcc -c foo.c */
+Except for sizeof, cast operators in initializers for static variables
+can only be used to convert arithmetic types.  GCC allows non-constant
+initializers for automatic variables.
 
-typedef struct {
-        volatile unsigned int lock;
-} spinlock_t;
-
-typedef struct {
-        spinlock_t lock;
-        volatile int counter;
-} rwlock_t;
-
-void foo(void)
-{
-        static rwlock_t x = (rwlock_t) { (spinlock_t) { 1 }, 0 };
-}
----------------------8<-----------------------
-
-removing the (rwlock_t) cast allows the initializer construct to
-compile, but the kernel also uses the construct to assign values
-post-initialization to some variables, in which case the cast 
-seems to be required.
-
-e.g. kernel/fork.c has something like this:
-
-    struct *fs = /* allocate memory for fs */;
-    fs->lock = (rwlock_t) { ... };
-
-thanks,
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
