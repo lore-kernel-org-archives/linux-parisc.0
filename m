@@ -1,72 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA32152
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Aug 2000 23:20:19 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 10 Aug 2000 23:18:04 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 10 Aug 2000 23:11:00 -0000
-Received: (from willy@localhost)
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) id SAA14594
-	for parisc-linux@thepuffingroup.com; Thu, 10 Aug 2000 18:06:24 -0400
-Date: Thu, 10 Aug 2000 18:06:24 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000810180624.J10843@vodka.thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 64-bit binutils problem
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA20114
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Aug 2000 07:33:27 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 11 Aug 2000 07:33:38 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA08071;
+	Fri, 11 Aug 2000 17:32:33 +1000
+Date: Fri, 11 Aug 2000 17:32:33 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: David Huggins-Daines <dhd@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Subject: Re: Millicode calls, GP register, ld -r
+In-Reply-To: <Pine.LNX.4.21.0008111413410.29780-100000@front.linuxcare.com.au>
+Message-ID: <Pine.LNX.4.21.0008111648380.29780-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On 10 Aug 2000, David Huggins-Daines wrote:
 
-ok, i'm in way over my head here.
+> Oh boy, it's worse.  It looks like $$dyncall has been clobbering %r19
+> with bogus values all along, actually, because we're only using four
+> bytes for our PLABELs, and it wants to load the linkage table pointer
+> from the second (non-existent) word:
+>
 
-in arch/parisc64/real/head.S:
+Hi David,
 
-        /* And the return address(es) too */
-        ldil            L%start_parisc,%r10
-        ldo             R%start_parisc(%r10),%r10
-        depdi           0, 31, 32, %r10
-        mtctl           %r10,%cr18
-        ldo             4(%r10),%r10
-        mtctl           %r10,%cr18
+On thinking about this $$dyncall issue a bit more, what use are PLABELs in
+PIC code anyway?  As far as I can see, PLABELs are used for two things:
+1) to provide an unique address for a function
+2) as a place to hang argument relocation information
 
-which (after linking) becomes:
+We're not doing (2), and (1) is satisfied by the value in the PLTGOT.
 
-    c0100074:   21 42 28 07     ldil -3fcfb000,r10
-    c0100078:   35 4a 09 c0     ldo 4e0(r10),r10
-    c010007c:   f5 40 0c 00     depdi 0,31,32,r10
-    c0100080:   02 4a 18 40     mtctl r10,pcoq
-    c0100084:   35 4a 00 08     ldo 4(r10),r10
-    c0100088:   02 4a 18 40     mtctl r10,pcoq
+So...  I can turn a PLABEL reference into a GOT reference, which will
+magically fix the $$dyncall problem.
 
-however, C03054E0 is in the middle of gateway_init and start_parisc is
-nowhere to be found, except as:
+Comments?
 
-0000000000000000       F *UND*  0000000000000304 start_parisc
-
-which seems rather bogus to me.  i'll put my compiled kernel tree up on
-pehc:/home/willy/parisc64/ in a few moments.
-
-p.s.  does anyone want to change the `-3fcfb000' to an unsigned representation?
-this would please me more:
-
-    c0100074:   21 42 28 07     ldil ffffffffc0305000,r10
-    c0100078:   35 4a 09 c0     ldo 4e0(r10),r10
-    c010007c:   f5 40 0c 00     depdi 0,31,32,r10
-
-as it would make it more clear exactly what's going on.
-
-
-p.p.s.  anyone know why my piece of debug code:
-
-        ldil            0xdecf0000, %r9
-
-is getting assembled as:
-
-    c0100000:   21 20 0f 00     ldil 78000000,r9
-
-? ser pim hpmc dumps show the value 78000008 in r9, so i'm convinced it's
-not objdump misdisassembling it.
-
+Alan Modra
 -- 
-Revolutions do not require corporate support.
+Linuxcare.  Support for the Revolution.
