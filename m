@@ -1,13 +1,14 @@
-From: Mike Frysinger <vapier@gentoo.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] waitid doesn't work on hppa?
-Date: Fri, 24 Sep 2004 00:37:49 -0400
-Message-ID: <200409240037.49160.vapier@gentoo.org>
+Date: Fri, 24 Sep 2004 14:06:02 +0100
+Message-ID: <20040924130602.GA16153@parcelfarce.linux.theplanet.co.uk>
 References: <20040924000646.GZ22642@tausq.org>
 	<20040924035552.GS27033@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20040924035552.GS27033@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -20,27 +21,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 23 September 2004 11:55 pm, Carlos O'Donell wrote:
+On Thu, Sep 23, 2004 at 11:55:53PM -0400, Carlos O'Donell wrote:
 > I see waitid regressions in the glibc testsuite. I'm not sure if this
 > had anything to do with these hanging processes. I haven't looked too
 > deeply.
 
-i know we tried a 20040916 glibc snapshot at Gentoo but had to abandon it 
-because of so many problems ...
+Possibly it's because we haven't hooked up sys_waitid yet?
 
-one of them is what you describe, processes running just fine but hanging just 
-before exit ... but we saw that on amd64 ...
-in other words, these waitpid problems are probably not arch related :)
-
-here's what i noticed in an amd64 chroot:
-- 20040808 glibc snapshot works great
-- install 20040916 glibc snapshot, things work fine
-- rebuild bash against 20040916 ... suddenly all child processes of the new 
-bash shells hang after they've completed normal operations ... note that bash 
-is the *only* app that's been recompiled against the new glibc
-- install 20040808 glibc, bug persists; rebuild bash, things works fine 
-again ...
--mike
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
