@@ -1,23 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 88C7B4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 09:02:52 -0700 (MST)
-Received: from Tatooine (varenet@Tatooine.r3z0 [192.168.69.3])
-	by mail.zigoo.net (8.12.5/8.12.1) with SMTP id h0CG2miL025366
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 17:02:49 +0100
-Date: Sun, 12 Jan 2003 17:02:45 +0100
-From: Thibaut VARENE <varenet@esiee.fr>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] unaligned accesses
-Message-Id: <20030112170245.497cc85f.varenet@esiee.fr>
-In-Reply-To: <3E2188D1.6080807@freebel.net>
-References: <20030110170813.X26554@parcelfarce.linux.theplanet.co.uk>
-	<3E1AA8D500000AF7@ocpmta8.freegates.net>
-	<20030110231313.1215dc79.varenet@esiee.fr>
-	<20030110232510.25aef7c2.varenet@esiee.fr>
-	<3E2188D1.6080807@freebel.net>
+Received: from faui80.informatik.uni-erlangen.de (faui80.informatik.uni-erlangen.de [131.188.38.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2BBD34829
+	for <parisc-linux@parisc-linux.org>; Sun, 12 Jan 2003 15:27:13 -0700 (MST)
+Date: Sun, 12 Jan 2003 22:49:08 +0100
+From: Richard Zidlicky <rz@linux-m68k.org>
+To: Helge Deller <deller@gmx.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>, parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Message-ID: <20030112224908.A618@linux-m68k.org>
+References: <Pine.GSO.4.21.0301121214440.18673-100000@vervain.sonytel.be> <200301121333.17077.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200301121333.17077.deller@gmx.de>; from deller@gmx.de on Sun, Jan 12, 2003 at 01:35:33PM +0100
+Subject: [parisc-linux] Re: Generic RTC driver in 2.4.x
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,33 +26,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 12 Jan 2003 15:25:05 +0000
-"Joel Soete" <joel.soete@freebel.net> wrote:
+On Sun, Jan 12, 2003 at 01:35:33PM +0100, Helge Deller wrote:
 
-> Hi Thibaut
+> > BTW, perhaps we should move the global RTC_* definitions in <asm/rtc.h> to
+> > <linux/genrtc.h>, or merge them with the ones in <linux/mc146818rtc.h> and
+> > move them to <linux/rtc.h>?
 > 
-> Thibaut VARENE wrote:
-> > On Fri, 10 Jan 2003 23:13:13 +0100
-> > "Thibaut VARENE" <varenet@esiee.fr> wrote:
-> > 
-> > I hate to reply to myself but I said crap in my previous mail.
-> > All apologies:
-> > 
-> >>FWIW, the default option (used by most people) is data=journal, and is not affected by that bug. We've been using 2.4.20 with ext3 for weeks pretty safely here.
-> > 
-> > it was: "the default option is data=ordered" of course, which is safe.
-> > 
-> I just to ask you additional help: I do not recover the method to get 
-> the actual setup of my fs ext3 (i do severall test but a time ago and do
-> not remember in which state I let it: well operational but what more??)
-To get the actual configuration of a ext[23] fs, you can use 'tune2fs -l <device>'. To get the current state of data mode of an ext3 fs, look at dmesg. I don't know another way to get that info.
-The data mode is decided at mount time, with 'mount -o data=xxx <device>'.
+> IMHO leaving them architecture specific in <asm/rtc.h> seems best to me, and it 
+> leaves the most possibilities to make them later more dependend on the hardware.
 
-FWIW, I remember having found all that info in man tune2fs, man mount and man mke2fs.
+in genrtc the RTC_* defs should be used only for interface definition,
+unlike rtc.c where they are 1:1 with some obscure bits in the rtc chip
+and also happen to be the interface..
+It would make sense to merge them into <linux/rtc.h>, whether it is 
+a good idea to do it in 2.4 is another question.
+Stuff that is really hw dependent should use different naming (and stay
+in asm/rtc.h of course). 
 
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Richard
