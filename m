@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E384D486F
-	for <parisc-linux@parisc-linux.org>; Thu,  4 Jul 2002 09:28:13 -0600 (MDT)
-Date: Thu, 4 Jul 2002 17:28:05 +0200
-Subject: Re: [parisc-linux] Linux on HP9000/E25 ?
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v482)
-Cc: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
-To: "SEMETEYS Raphael - MTR ( rsemeteys@mtr.sema.slb.com )" <rsemeteys@mtr.sema.slb.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <63FDFE424494D411965B009027D0E4FB0206124F@mtrmes01.montrouge.eur.slb.com>
-Message-Id: <A3191AF2-8F62-11D6-B92C-0030656F07A2@esiee.fr>
+Received: from mailout09.sul.t-online.com (mailout09.sul.t-online.com [194.25.134.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 16AF34841
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 11:07:41 -0600 (MDT)
+Received: from localhost (localhost [127.0.0.1])
+	by marvin.forty.two (8.11.6/8.11.0/SuSE Linux 8.11.0-0.4) with ESMTP id g64GfcZ25416
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 4 Jul 2002 18:41:38 +0200
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 04 Jul 2002 18:41:16 +0200
+From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Message-ID: <3D247AAC.EF70A4CA@ruhr-west.de>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Installing on C110
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le jeudi 4 juillet 2002, =E0 05:31 , SEMETEYS Raphael - MTR=20
-( rsemeteys@mtr.sema.slb.com ) a =E9crit :
+Hello all,
 
-> Hi there,
->
-> I'd like to know if somedy already got througth installing Linux on a
-> HP9000/E25 server.
-Well, nothing that I heard of.
-Anyway, Christoph Plattner is working on his E55, but with no real=20
-success (eh Christoph ? :)
-We are actually working on E35, with nothing more than booting the=20
-kernel via network, and no real success.
-> I'm trying to convinced my boss to do so but I'd like to know possible
-> limitations or known problems before beginning any installation.
-errr; looks like E-class wasn't a good choice :)
-It's not supported actually, and fwiw not a priority
+after finding that there is now a Linux for HP-PA-RISC, I downloaded the
+CD and tried to install on my HP9000-C110. Install went fine (apart from
+some unmotivied kernel panics and issues with my other Compaq CDROM
+drive).
+I an stuck with three problems, for one my german keyboard doesn't work
+as expected (the <>| key in particvular). I should get round that with
+kbdconfig as suggested in another mail, but I diddn't fint that program
+installed. ;-( Since this is my first ever debian install, it's more a
+problem of finding and reading the docs to the packet manager and some
+more general info about debian systems.
 
+More annoying is the system clock, that always puts me back to 1970. Set
+the date, wrote it back to CMOS, checked it, rebooted and was back into
+the seventies. The device /dev/rtc exists with the suggested major/minor
+numbers from the FAQ. At this time, I enter date time after bootup like
+with my first PC. ;-)
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+I cannot get X to run. "No screens found". I tried the good old
+xf86config setup, but don't realy know what to enter for a video card
+(thinking that's the problem). Help on that is also appreciated. Is
+there any tool to identify hardware in general?
+
+Juergen
+
+-- 
+===========================================     __   _
+Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+===========================================_\_v __/_/_//_/\_,_/ /_/\_\
