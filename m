@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sjcexsbb1.sanmina.com (dummy.sanmina-sci.com [12.30.36.125])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B5794829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 02:14:14 -0600 (MDT)
-From: "Jorge GOMEZ CABELLO" <jorge.gomez@sanmina-sci.com>
-To: "Richard Hirst" <rhirst@linuxcare.com>,
-	"Thibaut VARENE" <varenet@esiee.fr>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Re: PALO-text
-Date: Wed, 4 Sep 2002 10:13:56 +0200
-Message-ID: <CFEDIBFJEHPLIGPIJNKAEENFCAAA.jorge.gomez@sanmina-sci.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 81D0D4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 03:07:21 -0600 (MDT)
+Date: Wed, 4 Sep 2002 11:00:27 +0200
+Message-ID: <3D3815BD0000B51A@ocpmta5.be.tiscali.com>
+In-Reply-To: <20020903161326.GI14634@tausq.org>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Gcc-3.2 beside gcc-3.0: HOWTO?
+To: "Randolph Chung" <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20020904062110.GJ21440@sleepie.demon.co.uk>
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,56 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-	The keyboard works with this lifimage.
 
-	Thanks a lot for your colaboration.
-
-	Jorge.
-
-
------Mensaje original-----
-De: Richard Hirst [mailto:rhirst@linuxcare.com]
-Enviado el: miercoles, 04 de septiembre de 2002 8:21
-Para: Thibaut VARENE
-CC: Jorge GOMEZ CABELLO; parisc-linux@lists.parisc-linux.org
-Asunto: Re: [parisc-linux] Re: PALO-text
-
-
-On Tue, Sep 03, 2002 at 12:51:43PM +0200, Thibaut VARENE wrote:
-> On Tue, 3 Sep 2002 10:43:18 +0200
-> "Jorge GOMEZ CABELLO" <jorge.gomez@sanmina-sci.com> wrote:
+>> But where is iaoq (I do not found in linux/Documentation/parisc)?
+>> 
+>> here is what I got: grep 101080 /boot/System.map-2.4.19-pa9
+>> 10108000 T syscall_exit_rfi
+>> 10108064 t intr_return
+>> 10108078 t intr_check_resched
+>> 10108084 t intr_check_sig
+>> 10108090 t intr_restore
 >
-> > Dear Puffin,
-> >
-> >     We are trying to install Debian 3.0 on our HP B2000/785 and it is
-impossible to recognize the usb keyboard. is there a special commando to
-introduced in the command line of the palo 1.0 ?
+>is this the system.map from the kernel you are building?
+>if it is, then intr_return is the calling function (one up in the
+>stack). the function that includes 1010863c is the one that one that's
+>causing the fault. that would be one place to look.
 >
-> - This reply has been CC'd to the parisc-linux mailing list -
->
-> Hi Jorge,
->
-> If I remember correctly, the USB support is not enabled by default in the
-install kernel for Debian 3.0, and B2000 does use a USB keyboard.
-> We had such a problem here, and there is a solution: boot and install the
-box using the following lifimage:
->
-http://pateam.esiee.fr/cd-images/lifimages/lifimage-2.4.18-pa46-USBSTI64-200
-20704.gz
-> This one has support for USB in both 32/64bit kernels, and what's more,
-STI console is supported in 64bit kernel. This will allow you to install the
-box directly with a 64bit kernel.
->
-> We may build a more recent lifimage with such USB/STI support soon.
->
-> Maybe we can also consider adding at least USB support to the default
-kernel configuration ? Richard, any comment ? :)
 
-I think we should add usb and 64 bit sti to default and debian configs.
-I guess we'll find out soon enough if it casues problems on other
-systems.
+Hmm the only entry I found concerning intr_return are content into entry.S.
 
-Maybe it's time we considered an initrd boot process and kernel modules
-for some of this stuff.  May not be worth the effort in 2.4 though.
+Sorry for the moment I have not enough time to learn parisc asm, how is it
+implemented with gcc and how to interface with C, ...
 
-Richard
+Thanks anyway for all help,
+    Joel
+
+
+Big Brother Anders  - With Tiscali you will see it all !  Check it up on
+ www.tiscali.be/bigbrother
