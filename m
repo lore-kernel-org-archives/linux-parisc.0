@@ -1,27 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout05.sul.t-online.com (mailout05.sul.t-online.com [194.25.134.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0F59C482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Apr 2001 15:05:07 -0600 (MDT)
-Received: from localhost (localhost [[UNIX: localhost]])
-	by venus.solar-system.the7lg.de (8.11.0/8.8.7) id f3CL4hL22977
-	for parisc-linux@lists.parisc-linux.org; Thu, 12 Apr 2001 23:04:43 +0200
-From: buffalo bill <buffalo@uranus.solar-system.the7lg.de>
-To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 12 Apr 2001 23:04:42 +0200
-Content-Type: text/plain;
-  charset="iso-8859-1"
-MIME-Version: 1.0
-Message-Id: <01041223044200.22122@venus.solar-system.the7lg.de>
-Sender: buffalo@venus.solar-system.the7lg.de
-Subject: [parisc-linux] 710 SCSI & LAN problems
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4EF96482A
+	for <parisc-linux@parisc-linux.org>; Thu, 12 Apr 2001 16:01:36 -0600 (MDT)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel2.hp.com (Postfix) with ESMTP id B2D239DD
+	for <parisc-linux@parisc-linux.org>; Thu, 12 Apr 2001 18:01:35 -0400 (EDT)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id 759E537E95
+	for <parisc-linux@parisc-linux.org>; Thu, 12 Apr 2001 16:04:17 -0600 (MDT)
+To: parisc-linux@parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 12 Apr 2001 16:04:17 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010412220417.759E537E95@carmen.fc.hp.com>
+Subject: [parisc-linux] lcd driver broken on C3K
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi !
-I've tried to get my 710 running with parisc linux.
-I know there are problems with SCSI and LAN, so tried to find out.
-The drivers both fail to call "pci_alloc_consistent()" and use memory from
-__get_free_pages() instead. 
+After updating the kernel on my C3000 today it now hangs on boot at,
 
-Could it be that the problem is related to this ?
+led_init: chassis info: model=0 (LCD), lcd_width=16, cmd_delay=40, actcnt=32, 
+m2led_init: min_cmd_delay = 40 uS
+LCD display at f0190000,f0190001 registered
+Searching for devices...
 
-Regards Heiko Jakob
+
+I turned off CONFIG_CHASSIS_LCD_LED in my config and then it boots fine.
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
