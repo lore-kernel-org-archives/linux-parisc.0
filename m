@@ -1,18 +1,18 @@
-Return-Path: <otwswpax@china.com>
-Received: from 192.25.206.7 (unknown [62.90.154.99])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3C29E48DF
+Return-Path: <wipvzrquzzoas@cnnic.net.cn>
+Received: from srry01m09-145.bctel.ca (srry01m09-145.bctel.ca [209.53.87.145])
+	by dsl2.external.hp.com (Postfix) with SMTP id 634B448E0
 	for <parisc-linux@parisc-linux.org>;
-	Fri, 26 Dec 2003 03:30:56 -0700 (MST)
-From: "Sheehan Garth" <otwswpax@china.com>
+	Fri, 26 Dec 2003 03:34:38 -0700 (MST)
+From: "Domingo Kidd" <wipvzrquzzoas@cnnic.net.cn>
 To: parisc-linux@parisc-linux.org
 Mime-Version: 1.0
-Date: Thu, 25 Dec 2003 23:24:27 +0100
+Date: Thu, 25 Dec 2003 23:34:34 +0100
 Content-Type: multipart/alternative;
-	boundary="--ALT--AWIA76764981712111
-Message-Id: <LMYWITV-0006758961893@megaword>
+	boundary="--ALT--GGYP45782330778744"
+Message-Id: <WQEEOTX-0008602476029@backside>
 Cc: 
-Subject: [parisc-linux] Re: LJCWLUA, leeches hanging from
-Reply-To: Sheehan Garth <otwswpax@china.com>
+Subject: [parisc-linux] Re: UDYPJIP, the bookkeeper went
+Reply-To: Kidd Domingo <wipvzrquzzoas@cnnic.net.cn>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,29 +22,28 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----ALT--AWIA76764981712111
+----ALT--GGYP45782330778744
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
 
-centenary calcify slanderous crowbait 
-e'er collimate gibe bloodroot stormbound glorious aggregate baklava maggoty municipal 
-frenchmen euphemism cordage daughter tail odium phenomenon hobo blutwurst 
+dessicate circe atwater northrop inquisition potash deformation 
+mackey bingham severe conjugate mineral caller 
+anarchic ontology contradistinguish adulterate litigant heraclitus certainty 
 
-----ALT--AWIA76764981712111
+----ALT--GGYP45782330778744
 Content-Type: text/html; charset=us-ascii
 Content-Transfer-Encoding: 8bit
 
-
 <HTML><HEAD>
 <BODY>
-<p>Fr</dawn>ee Ca</contagious>ble& TV</p>
-<a href="http://www.530000x.net/cable/">
-<img border="0" src="http://www.530000x.net/fiter.jpg"></a>
-motif committable bleeker stationery balfour doubleday all mullein opacity crosscut obey wouldn't norma raisin catnip judson etymology rash cunning chatham drainage <BR>
-geography propagandist suicidal cady pious belgium extract cream backstop myopic blizzard purl jude wadsworth ganymede syllabify tint help rip <BR>
+<p>Ban</cool>ned C</townhouse>D! Gov</bevy>ernment d</fettle>on't wan</pyre>t m</interviewee>e t</lottie>o s</numb>ell i</balinese>t. Se</despise>e N</chanson>ow @</p>
+<a href="http://www.530000x.com/cd/">
+<img border="0" src="http://www.530000x.com/cd/ads.jpg"></a>
+vex craven osteopath car inappreciable monarch explicit scrapbook emitter shrivel tort month yalta cigarette diffeomorphism cohere ear infinitive whereupon game mcallister hinduism impoverish annals jennie efficacious simulcast compensate hugging treaty <BR>
+preference brought granite stegosaurus upland eastward rubbery obfuscatory mizar falter libertarian edmund meander zambia plain runneth erich intercalate write <BR>
 
 </BODY>
 </HTML>
 
 
-----ALT--AWIA76764981712111--
+----ALT--GGYP45782330778744--
