@@ -1,11 +1,14 @@
-From: "Mahesh Pujara" <Mahesh.Pujara@lntinfotech.com>
-Subject: [parisc-linux] Accessing the FIB tables
-Date: Sat, 15 Mar 2003 17:22:26 +0530
-Message-ID: <OFC9ADC329.AC7F62D7-ON65256CEA.003FA868__21861.3222743899$1416622288$gmane$org@lntinfotech.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-net@vger.kernel.org, linux-net-owner@vger.kernel.org,
-	parisc-linux@lists.parisc-linux.org
+From: jason@gcc.gnu.org
+Subject: [parisc-linux] Re: c++/10091: [3.3 regression] [parisc] ICE in cp_expr_size, at cp/cp-lang.c:307
+Date: 17 Mar 2003 18:41:17 -0000
+Message-ID: <20030317184117.23661.qmail__8206.03982215307$1416622295$gmane$org@sources.redhat.com>
+Reply-To: jason@gcc.gnu.org, debian-gcc@lists.debian.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, jason@gcc.gnu.org,
+	nobody@gcc.gnu.org, parisc-linux@lists.parisc-linux.org,
+	tausq@debian.org, gcc-gnats@gcc.gnu.org
+To: debian-gcc@lists.debian.org, gcc-bugs@gcc.gnu.org,
+	gcc-prs@gcc.gnu.org, jason@gcc.gnu.org, nobody@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -17,54 +20,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-HI,
-      I have Linux machine acting as a router and Zebra Daemon  is running
-on that. Currently
-RIP is configured which is  receiving routes from another gateway. The
-routes are updated in FIB
-tables.
-      I want to read This FIB table , which is declared  as a
-struct fib_table *main_table .
-I am able to access  and read this table.  i want  to read certain
-information from this FIB table and want
-to build my own forwarding  table. from this table i am reading NetID,
-Netmask, and IP address of  Next Hop gateway.
+Synopsis: [3.3 regression] [parisc] ICE in cp_expr_size, at cp/cp-lang.c:307
 
-IP address of  Next Hope gateway is available in fib_nh->nh_gw.  Apart from
-this i also want the Mac  address of  Next Hope gateway.   so how  can i
-get the MAC address for  Next Hop gateway ??
+Responsible-Changed-From-To: unassigned->jason
+Responsible-Changed-By: jason
+Responsible-Changed-When: Mon Mar 17 18:41:17 2003
+Responsible-Changed-Why:
+    got it
 
-I  am able to get the pointer to Next hop device that is ,
- #define fib_dev        fib_nh[0].nh_dev
-
-in net_device structure definition ,
-
-#ifdef CONFIG_NET_FASTROUTE
-#define NETDEV_FASTROUTE_HMASK 0xF
-      /* Semi-private data. Keep it at the end of device struct. */
-      rwlock_t          fastpath_lock;
-      struct dst_entry  *fastpath[NETDEV_FASTROUTE_HMASK+1];
-#endif
-
- There is a dst_entry in which the hh_cache * is stored .
-But the  struct dst_entry     *fastpath[NETDEV_FASTROUTE_HMASK+1];  is null
-.
-even  CONFIG_NET_FASTROUTE is configured.
-
-So what could be the reason for that??
-
-
-or  is there any other way to get the MAC address for  Next Hop gateway ??
-I know one way is to Do
-ARP. But doing ARP would slow down the process.
-
-Any help or link on this is Appreciated.
-
-
-
-
-
-
-
-Cheers,
-Mahesh Pujara
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10091
