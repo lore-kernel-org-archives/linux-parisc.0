@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 93232482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 14:06:18 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 7BA51B00C; Mon, 19 Nov 2001 21:08:11 +0000 (GMT)
-Date: Mon, 19 Nov 2001 21:08:11 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: bdale@hp.com
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B672482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 14:27:04 -0700 (MST)
+Subject: Re: [parisc-linux] gcc-3.x and the kernel
+To: xam@student.cs.ucc.ie (Markus Grabert)
+Date: Mon, 19 Nov 2001 21:34:36 +0000 (GMT)
 Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20011119210811.E11431@linuxcare.com>
-Mime-Version: 1.0
+In-Reply-To: <Pine.OSF.4.41.0111191946450.11606-100000@student.cs.ucc.ie> from "Markus Grabert" at Nov 19, 2001 07:55:28 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] hppa kernel-headers.deb and offset.h
+Message-Id: <E165w3o-0007mB-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +22,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Bdale,
-  Our kernel-headers debs are missing asm/offset.h, which is created
-late on in a kernel build.  I only just noticed, when I tried to build
-gdb.  I'm guessing that deb is created without doing a full kernel build,
-so the file isn't created.  Note offset.h is different for 32 and 64 bit
-kernels, and we want a 32 bit version in the kernel-headers deb.
+> But I've read that gcc-3.0.x is not officially supported as a kernel
+> compiler, since is still has some bugs. Are these bugs just x86 related
+> (I doubt it) or do you accept the risk that gcc might produce garbage ?
 
-Maybe the kernel should build offset.h as part of make dep, or something.
-
-Also...
-glibc build should use kernel-headers, but I guess libc6-dev_2.2.4-6
-was built using some local kernel tree for the headers, and has picked
-up a 64 bit offset.h.  so, anyone trying to build gdb will have to
-replace their offset.h.
-
-Richard
+The advice is basically x86 - for example gcc 3.0.1 gives a compiler error
+trying to build some 2.4 drivers right now. With the ports it varies - the
+parisc tree uses its own compiler chain based on gcc 3.
