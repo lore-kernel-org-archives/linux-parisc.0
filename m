@@ -1,47 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA12001
-	for <parisc-linux@puffin.external.hp.com>; Wed, 4 Aug 1999 05:27:47 -0600
-Received: from grcbd508.grc.hp.com (root@grcbd508.grc.hp.com [15.139.203.207])
-	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id HAA17630
-	for <parisc-linux@thepuffingroup.com>; Wed, 4 Aug 1999 07:28:21 -0400 (EDT)
-Received: (from imatthae@localhost)
-	by grcbd508.grc.hp.com (8.9.3/8.9.3) id NAA17311
-	for parisc-linux@thepuffingroup.com; Wed, 4 Aug 1999 13:28:50 +0200
-Date: Wed, 4 Aug 1999 13:28:50 +0200
-From: Ingo Matthaes <imatthae@grcbd508.grc.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA13604
+	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Aug 1999 06:53:17 -0600
+Received: from mgw-i1.ntc.nokia.com (mgw-i1.ntc.nokia.com [131.228.118.60])
+	by mgw-x2.nokia.com (8.9.3/8.9.3) with ESMTP id PAA25790
+	for <parisc-linux@thepuffingroup.com>; Thu, 5 Aug 1999 15:54:11 +0300 (EETDST)
+Received: from stybba.ntc.nokia.com (stybba.ntc.nokia.com [131.228.178.21])
+	by mgw-i1.ntc.nokia.com (8.9.3/8.9.3) with ESMTP id PAA29375
+	for <parisc-linux@thepuffingroup.com>; Thu, 5 Aug 1999 15:54:10 +0300 (EETDST)
+Received: from gamgee.ntc.nokia.com (martikka@gamgee [131.228.178.130])
+	by stybba.ntc.nokia.com (8.9.1a/8.9.1/Goodi) with ESMTP id PAA10826
+	for <parisc-linux@thepuffingroup.com>; Thu, 5 Aug 1999 15:54:10 +0300 (EET DST)
+Date: Thu, 5 Aug 1999 15:54:09 +0300 (EETDST)
+From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] unsatisfied symbols
-Message-ID: <19990804132850.A17303@grcbd508.grc.hp.com>
-References: <19990803114003.A5018@grcbd508.grc.hp.com> <99080400504700.00269@P100>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <99080400504700.00269@P100>; from Helge Deller on Wed, Aug 04, 1999 at 12:32:19AM +0200
+In-Reply-To: <19990804132850.A17303@grcbd508.grc.hp.com>
+Message-ID: <Pine.HPX.4.05.9908051545080.18930-100000@gamgee.ntc.nokia.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Subject: [parisc-linux] Pa-risc Linux timetables?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Hi Ingo.
-> 
-> The unsatisfied symbol __delay was caused by the inclusion of pdc_cons.c by the
-> bootloader. I fixed it some minutes ago in the cvs.
-> The actual kernel from cvs compiles, links and boots (!!) now cleanly (I just
-> tried it), if you add the line  
-> extern pgd_t swapper_pg_dir[1024];
-> to the file pgtable.h. I didn´t wanted to fix that, since I think, that Philipp
+Hi!
 
-O.k. it works fine on my 715/33. I will try it on some 712 and, if available,
-on a a-class
+I just noticed that Linus is doing feature freeze for 2.4 in few weeks.
+That raised couple of questions.
 
+Do we have any estimate on parisc/linux timetables? When is the pa-risc
+Linux going to be "released"? Do we target it to 2.5 or 2.6? 
 
+We are now based on 2.2.1. How big effort would be required to merge
+pa-risc linux (2.2.1) to 2.3/2.4?
 
-> is actually working on that code....
-> 
-> NB: If you want faster screen-output, then remove the delay() in pdc_cons.c.
-
-Why should I remove that classic feeling :-)
-
-  Ingo
-
-
--- 
-Ingo Matthaes
-HP-UX Net und Linux Support
-HP Support Center Ratingen
+- Goodi
+"The linuX Files -- The Source is Out There."
+ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
