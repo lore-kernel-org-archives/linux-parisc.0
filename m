@@ -1,15 +1,17 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] sablevm on hppa
-Date: Sun, 2 Nov 2003 00:19:55 -0800
-Message-ID: <20031102081955.GV28967__23697.6308784962$1416622922$gmane$org@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: debian-java@lists.debian.org
-To: debian-hppa@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org,
-	sablevm-developer@lists.sourceforge.net
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 01F8E4914
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Dec 2003 00:00:35 -0700 (MST)
+Date: Mon, 1 Dec 2003 08:00:33 +0100
+Message-ID: <3FB265EC0000AD9F@ocpmta3.freegates.net>
+In-Reply-To: <20031130211014.GA5208@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] spinlock 2.4 re-organise a la 2.6 [was: [RFC] rewrite kernel spinlock code to work better with gcc]
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,34 +22,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well, it started innocently enough on irc...
+>I added spinlock_t.h to resolve the circular inter-dependency between
+>asm/system.h, asm/bitops.h, and asm/spinlock.h.  spinlock_t.h depends
+>on nothing and defines spinlock primitives used by the others.
 
-<tausq> an aside: what's needed to get it to work on hppa? just ffi?
-<gadek> tausq: I belive so (unless we hit some bug ;-)
-* tausq might give it a try sometime
-<gadek> tausq: you're welcome. I am here most of the time so I should be able
-          to help/participate in realtime.
-<gadek> tausq: if you have libffi ready - we should have it working in less
-          than an hour.
-<tausq> hmmmm :-)
-* gadek/#debian-devel would say 20 minutes depending on how fast one can type
-          ;-)
-<tausq> he got it down to only 5 fails in the ffi testsuite
-<tausq> ok, let's try... ;-)
-<gadek> tausq: seriously? now? [would be cool!]
+I see (forgive)
 
-and 25 minutes later, we have it working! (well, HelloWorld works, and
-gadek's btf tests work when sablevm is compiled with O0)
+Joel
 
-Many thanks to gadek for his help. I'm sure it won't be nearly as easy
-otherwise :) Unfortunately there is still some work to do before this
-can really make it officially into upstream/debian.... foremost is
-getting ffi submitted upstream and getting proper atomic ops support.
-Hopefully those issues will be resolved soon. 
 
-stay tuned,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
