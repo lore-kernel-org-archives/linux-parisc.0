@@ -1,23 +1,17 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4F7E498C
+Return-Path: <mpshenoy@vsnl.com>
+Received: from sccrmhc11.comcast.net (sccrmhc11.comcast.net [204.127.202.55])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 871C8499E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 19:22:35 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E884F2.dip0.t-ipconnect.de
-	[217.232.132.242])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2Q2MNo21735
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 03:22:29 +0100
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
+	Thu, 25 Mar 2004 20:06:39 -0700 (MST)
+From: "Prakash Shenoy" <mpshenoy@vsnl.com>
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 26 Mar 2004 03:23:54 +0100
-Message-ID: <09a601c412d9$62e2a400$fc01a8c0@muc.nccconsulting.de>
+Date: Thu, 25 Mar 2004 22:06:35 -0500
+Message-ID: <OFEELBIMFFDMJBJFHICCAEIICEAA.mpshenoy@vsnl.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+	charset="iso-8859-1"
+Subject: [parisc-linux] HP 9000 Visualize C180 Workstation display does not
+	appear.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +21,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+Hi!
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/26/2004 3:23:54 AM
-Engine/Pattern = 6.860-1001/1.837.00
+I recently bought a HP 9000 Visualize C180 workstation from a vendor on eBay
+and EVC to VGA Video Adapter Cable from another vendor. Both claim that Non
+DOA on arrival.
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+The workstation appears to boot properly but no display appears. Has any one
+come across this situation.
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+Please help.
+
+Best Regards
+pms
