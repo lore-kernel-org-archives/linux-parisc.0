@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B6BEC482D
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 20:46:16 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18AMZY-0003ui-00; Sat, 09 Nov 2002 03:46:12 +0000
-Date: Sat, 9 Nov 2002 03:46:12 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: "Adam J. Richter" <adam@yggdrasil.com>,
-	James.Bottomley@steeleye.com, parisc-linux@lists.parisc-linux.org
+Received: from freya.yggdrasil.com (h-64-105-136-52.SNVACAID.covad.net [64.105.136.52])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 545194829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 21:51:46 -0700 (MST)
+From: "Adam J. Richter" <adam@yggdrasil.com>
+Date: Fri, 8 Nov 2002 20:51:28 -0800
+Message-Id: <200211090451.UAA26160@baldur.yggdrasil.com>
+To: willy@debian.org
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Message-ID: <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk>
-References: <200211090128.RAA31693@adam.yggdrasil.com> <adam@yggdrasil.com> <20021109015611.571B44829@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021109015611.571B44829@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Fri, Nov 08, 2002 at 06:56:11PM -0700
+Cc: andmike@us.ibm.com, hch@lst.de, James.Bottomley@steeleye.com,
+	linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +21,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 08, 2002 at 06:56:11PM -0700, Grant Grundler wrote:
-> They don't have PCI slots.
-> I hedge because HP makes a "card-mode Dino" type of card that will
-> fit into 715 which has a GSCtoPCI bus controller on-board along
-> with the target PCI device (eg 21143 tulip)
+Matthew Wilcox wrote:
+>Actually I think the generic device model is crap. [...]
 
-Sorry Grant, HP marketing has confused you ;-).  715/33, 715/50 &
-715/75 have a PCX-T processor (can't do uncached pages), but don't have
-a GSC slot.  715/64, 715/80, 715/100 & 715/100XC have a PCX-L processor
-(can do uncached pages), and do have a GSC slot.  The only machines
-with GSC and non-coherent memory are the T class (unsupportable..) and
-something like an F, G, H or I class with a GeckoBOA adapter... and we
-aren't claiming support for those either.
+My patch is a net deletion of 57 lines and will allow simplification
+of parisc DMA allocation.
 
--- 
-Revolutions do not require corporate support.
+Although I agree with most of your criticisms about the generic device
+model, most of the problems with it are the way people use it (the
+first thing everyone wants to do is a driverfs file system) and some
+conventions that I disagree with, such as the idea that drivers that
+embed struct device and struct device_driver should not initialize
+those fields directly, but should have xxx_register_device copy them
+in.  parisc can use the generic driver API without getting fat.
+
+Problems specific to the generic device API can be incrementally
+improved and nobody is treating it as set in stone.  I think the
+generic device API is close enough already so that it's worth porting
+to, even if future clean-ups will then require some small changes to
+the code that is ported to it.
+
+Please do not throw the baby out with the bath water.  The generic
+driver interface in its present form really can make parisc smaller
+and cleaner.
+
+Adam J. Richter     __     ______________   575 Oroville Road
+adam@yggdrasil.com     \ /                  Miplitas, California 95035
++1 408 309-6081         | g g d r a s i l   United States of America
+                         "Free Software For The Rest Of Us."
