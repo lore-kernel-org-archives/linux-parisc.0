@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5094B48CB
-	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 19:04:04 -0600 (MDT)
-Received: from rediffmail1449.com (node-d-58eb.a2000.nl [62.195.88.235])
-	by cuprel1.hp.com (Postfix) with SMTP id 97FC3A61
-	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 18:03:57 -0700 (PDT)
-From: Mrs Serena Jones <serenajones1@rediffmail.com>
-To: parisc-linux@parisc-linux.org
-Reply-To: serenajones1@rediffmail.com
-Date: Thu, 23 Oct 2003 03:04:03 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="f5e0ae90-cc78-49ee-aa38-d1f79062196c"
-Message-Id: <20031023010357.97FC3A61@cuprel1.hp.com>
-Subject: [parisc-linux] DONATION FOR THE LORD.
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7447D484B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 Oct 2003 01:17:18 -0600 (MDT)
+Date: Thu, 23 Oct 2003 00:21:57 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20031023072157.GX24406@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] teaching the kernel to do division
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,72 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---f5e0ae90-cc78-49ee-aa38-d1f79062196c
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+I was investigating why nanosleep() doesn't return the correct remaining
+time with a 2.6 kernel... turns out the kernel doesn't seem to know 
+how to do division properly :-(
 
-From: Mrs Serena Jones
+kernel/posix-timers.c has:
 
-PLEASE ENDEAVOUR TO USED IT FOR THE CHILDREN OF GOD.
-I am the above named person from Kuwait. I am married
-to Dr. Harry Jones who worked with Kuwait embassy in Ivory Co
-ast for nine years before he died in the year
-2000.
-We were married for eleven years without a child. He died a
-fter a brief illness that lasted for only
-four days. Before his death we were both born again Christia
-ns.Since his death I decided not to re-
-marry or get a child outside my matrimonial home which the Bi
-ble is against.When my late husband was alive he deposited the
-sum of$8.6Million (Eight Million six hundred thousand U.S. D
-ollars) with one finance/security company in Amsterderm Hollan
-d. Presently, this money is still with the Security Company.
-Recently, my Doctor told me that I would not last for the next
-three
-months due to cancer problem. Though what disturbs me most i
-s my stroke sickness. Having known my condition I decided to
-donate this fund to church or better still a christian individ
-ual that will utilize this money the way I am going to instruc
-t here in. I want a church that will use this fund to fund chu
-rches, orphanages and widows propagating the word of God and t
-o ensure that the house of God is maintained. The Bible made
-us to understand that Blessed is the hand that giveth.
-I took this decision because I don?t have any child that wil
-l inherit this money and my husband relatives are not Christi
-ans and I don?t want my husband?s hard earned money to be misu
-sed by unbelievers. I don?t want a situation where this money
-will be used in an ungodly manner. Hence the reason for taking
-this bold decision. I am not afraid of death hence I know whe
-re I am going. I know that I am going to be in the bosom of th
-e Lord. Exodus 14 VS 14 says that the lord will fight my case
-and I shall hold my peace. I don?t need any telephone communi
-cation in this regard because of my health because of the pres
-ence of my husband?s relatives around me always. I don?t want
-them to know about this development. With God all things are p
-ossible. As soon as I receive your reply I shall give you the
-contact of the Finance/Security Company in Amsterderm Holland
-. I will also issue you a letter of authority that will prove
-you as the original-
-beneficiary of this fund. I want you and the church to always
-pray for me because the lord is my shephard. My
-happiness is that I lived a life of a worthy Christian. Whoe
-ver that wants to serve the Lord must serve him in spirit and
-truth. Please always be prayerful all through your life. Any d
-elay in your reply will give me room in sourcing for a chuch
-or christian individual for this same purpose. Please assure
-me that you will act accordingly as I stated herein. Hoping
-to hearing from you.
+                tsave->tv_sec = div_long_long_rem(left,
+                                                  NSEC_PER_SEC,
+                                                  &tsave->tv_nsec);
 
-N.B-
-PLEASE I WILL ADVICE YOU TO GIVE THE LAWYER IN CHARGE A CALL IN HOLLAND =
-IMMEDIATELY, HE DOES EVERYTHING ON MY BEHALF AND HE'S VERY UNDERSTANDING AND =
-I BELIEVE HE WILL LEAD YOU TO YOUR SUCCESS IN JESUS NAME, THE LAWYER'S NAME =
-IS GERRY SLY HIS CONTACT PHONE NUMBER IS 00-31-620-668-086.
+which eventually calls __div64_32() in lib/div64.c
 
-Remain blessed in the name of the Lord.
-Yours in Christ,
-Mrs Serena Jones
+if you test that function, you see that it does weird things. For
+example, it tells me that:
 
-  
---f5e0ae90-cc78-49ee-aa38-d1f79062196c--
+28999591392 / 1000000000 = 3, remainder = 229787616
+
+<sigh>
+
+does anyone want to look into fixing it, and/or writing an optimized
+version of that function for pa? :-) it needs to do basically this (but
+be standalone)
+
+uint32_t div64(uint64_t *n, uint32_t base)
+{
+        uint32_t rem;
+
+        rem = *n % base;
+        *n = *n / base;
+
+        return rem;
+}
+
+thanks :)
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
