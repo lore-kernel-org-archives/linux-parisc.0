@@ -1,38 +1,80 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA03627
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 08:18:42 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 16 Jan 2001 15:22:23 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14IXwB-0002Ye-00; Tue, 16 Jan 2001 15:22:19 +0000
-Date: Tue, 16 Jan 2001 15:22:19 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Aleksandr Konstantinov <sanjak@tipas.lt>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting C100
-Message-ID: <20010116152219.D20275@parcelfarce.linux.theplanet.co.uk>
-References: <3A636BE1.EE2DBF87@tipas.lt> <20010115221749.A28689@parcelfarce.linux.theplanet.co.uk> <3A64530D.CD78EFD2@tipas.lt>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A64530D.CD78EFD2@tipas.lt>; from sanjak@tipas.lt on Tue, Jan 16, 2001 at 03:56:29PM +0200
-Sender: <willy@www.linux.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04807
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 08:53:29 -0700
+Received: from localhost (ingram@localhost)
+	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id JAA25528
+	for <parisc-linux@thepuffingroup.com>; Tue, 16 Jan 2001 09:57:09 -0600
+Date: Tue, 16 Jan 2001 09:57:09 -0600 (CST)
+From: Greg Ingram <ingram@symsys.com>
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: <20010116152219.D20275@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.21.0101160937530.25295-100000@maestro.symsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C100 Boots!  Really!  Got a shell!
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jan 16, 2001 at 03:56:29PM +0200, Aleksandr Konstantinov wrote:
-> Matthew Wilcox wrote:
-> > 
-> > On Mon, Jan 15, 2001 at 10:30:09PM +0100, Aleksandr Konstantinov wrote:
-> > > Can anybody explain me how to get console NOT on serial link ?
-> > 
-> > activate CONFIG_STI and use `console=tty0' instead of `console=ttyS0'.
-> Do You mean CONFIG_STI_CONSOLE ? I have it, and CONFIG_SERIAL_CONSOLE
-> too.
-> Palo also sets console=tty0 .  Booting goes till "Switching from PDC
-> console"
-> and then welcome message from palinux cdrom appears on serial link.
 
-then that's a bug.  i shan't be able to fix it until i have access to an
-STI-capable machine, which is a few weeks away yet.
+Gentlemen,
 
--- 
-Revolutions do not require corporate support.
+In a previous post I reported that telnet was answering but I got a
+'permission denied' error and never saw a login prompt.  I suspected that
+the root file system was never being remounted as read-write.  After
+appending 'rw' to the kernel command line I'm able to login via
+telnet.  Woohoo!  I'm using the nfsroot tarball from the FTP site.  Might
+there be a problem in it such that / isn't properly remounted?
+
+Some other things:
+
+Trying STI for the console didn't work.  I eventually enabled the console
+on the line printer (no printer connected though) and disabled the console
+on the serial port.  I stop getting messages on the serial port at:
+
+	Set default PSW W bit to 0
+
+but the boot continues.
+
+Also, I find this in dmesg output:
+
+!!die_if_kernel: sleep(52): Unaligned data reference 28
+ 
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001011
+r0-3     00000000 40178938 4018cc7b 401760d4
+r4-7     40197148 00000000 00000031 001e8481
+r8-11    bb00014c bb000140 00000002 4001ada0
+r12-15   4001ad7c 00000000 000929b0 00000000
+r16-19   00000000 0007e808 00078440 40197148
+r20-23   001e8000 40188f14 bb000414 00000008
+r24-27   40190460 00000000 401760d4 00076808
+r28-31   00000016 00000000 bb0006c0 4009d987
+sr0-3    0000007a 0000007a 00000000 0000007a
+sr4-7    0000007a 0000007a 0000007a 0000007a
+ 
+IASQ: 0000007a 0000007a IAOQ: 4018d0ab 4018d0af
+ IIR: 0c6011d4    ISR: 0000007a  IOR: 401760d4
+ORIG_R28: 00000000
+!!die_if_kernel: nscd(97): Unaligned data reference 28
+ 
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001011
+r0-3     00000000 40167938 40029c7b 401650d4
+r4-7     40034148 00000000 00000031 001e8481
+r8-11    bb000160 bb000158 00000001 4001ada0
+r12-15   4001ad7c 00000000 0008c350 00000000
+r16-19   00000000 0007e808 00078440 40034148
+r20-23   001e8000 40025f14 bb000414 00000008
+r24-27   4002d460 00000000 401650d4 000054dc
+r28-31   00000016 00000000 bb0006c0 4008c987
+sr0-3    000000f9 000000f9 00000000 000000f9
+sr4-7    000000f9 000000f9 000000f9 000000f9
+ 
+IASQ: 000000f9 000000f9 IAOQ: 4002a0ab 4002a0af
+ IIR: 0c6011d4    ISR: 000000f9  IOR: 401650d4
+ORIG_R28: 00000000
+                                                                                
+Next on the agenda:  Get Linux on the local hard drive.
+
+Cheers,
+
+- Greg
