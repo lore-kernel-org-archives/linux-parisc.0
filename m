@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C3DAE482D
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 15:39:01 -0600 (MDT)
-Message-Id: <200305102138.h4ALcwEd011708@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Yet another '__canonicalize_funcptr_for_compare'
-To: joel.soete@tiscali.be (Joel Soete)
-Date: Sat, 10 May 2003 17:38:58 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: grundler@parisc-linux.org, randolph@tausq.org,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3EBD7022.6000201@tiscali.be> from "Joel Soete" at May 10, 2003 09:33:22 pm
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 864704829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 16:19:49 -0600 (MDT)
+Message-ID: <3EBD7E24.408@tiscali.be>
+Date: Sat, 10 May 2003 22:33:08 +0000
+From: Joel Soete <joel.soete@tiscali.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
+References: <3EA9466400001A07@ocpmta7.freegates.net> <1051702331.19579.8.camel@dhcp22.swansea.linux.org.uk>
+In-Reply-To: <1051702331.19579.8.camel@dhcp22.swansea.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] Re: patch 2.4.21 (follow up)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Sorry I forget to mentioned that I compiling a 32-bits hppa kernel. Does 
-> it make diffrence?
+Alan Cox wrote:
 
-Yes.  Function pointer canonicalization is only done on the 32-bit
-port.  This is not to say that there aren't issues with 64-bit kernels
-in this area, particularly if you use loadable modules.  The 64-bit
-code assumes that there is an official procedure descriptor (OPD)
-for each function.
+>On Mer, 2003-04-30 at 07:12, Joel Soete wrote:
+>  
+>
+>>>I would like to thanks you again for your help and all those who help me
+>>>to build this stuff.
+>>>      
+>>>
+>
+>I typed wget, more and patch. The work was all done by people making it
+>easy to merge
+>
+>
+>  
+>
+Hi Alan,
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I just grab 2.4.21-rc2 but do not find references to this stuff. As I 
+have no experience in this kind of submit, does it means that is 
+definitively rejected?
+
+Thanks,
+    Joel
