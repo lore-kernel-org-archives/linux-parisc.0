@@ -1,14 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from altern.org (altern.org [80.67.174.57])
-	by dsl2.external.hp.com (Postfix) with SMTP id 948A2482D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jul 2003 07:01:04 -0600 (MDT)
-Date: Wed, 30 Jul 2003 14:40:24 +0200 (CEST)
-From: <dantes@altern.org>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
-Message-Id: <20030730130104.948A2482D@dsl2.external.hp.com>
-Subject: [parisc-linux] A question about graphic cards - again...
+Date: Wed, 30 Jul 2003 18:37:53 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	Matthew Wilcox <willy@debian.org>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Generic light-weight syscall.
+Message-Id: <20030730183753.72bf106c.varenet@esiee.fr>
+In-Reply-To: <20030729233624.GB17107@systemhalted>
+References: <20030726174845.GF31744@systemhalted>
+	<20030726180031.GG31744@systemhalted>
+	<20030727122745.GC16753@dsl2.external.hp.com>
+	<20030728155703.GA32553@systemhalted>
+	<20030728174551.GC3840@parcelfarce.linux.theplanet.co.uk>
+	<20030728190455.GE32553@systemhalted>
+	<20030728191420.GE3840@parcelfarce.linux.theplanet.co.uk>
+	<20030728211012.GC6706@sleepie.demon.co.uk>
+	<20030729175057.GA17107@systemhalted>
+	<20030729210609.GK6706@sleepie.demon.co.uk>
+	<20030729233624.GB17107@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,24 +33,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello list,
+On Tue, 29 Jul 2003 19:36:25 -0400
+Carlos O'Donell <carlos@baldric.uwo.ca> wrote:
 
 
-Although I have found quite a lot of posts about graphic cards in the list archives, I still have a few points unanswered, so here they are.
+> To add a datapoint to #2, on a PA8700 650Mhz I see:
+> Anyone wishing to run this test on another box, please do...
 
-I'll get tomorrow a C240 which seems to have a Visualize FX2 inside (well the guy I'm getting it from says so). From what I understood, this card is not supported by XFree. Moreover, it's got an EVC connector (sure of that, checked it myself), and the adaptator for VGA is friggin' expensive...
+A500-5X (PA8600@550Mhz):
 
-So I was wondering about sticking a regular (as in "from the PC world") PCI VGA card in it, to get graphics and so on. And now, ladies and gentlemen, here are the questions:
+cr26=4294934527
+cr16a=4175244475
+cr16b=4175244488
+diff=13
+avg_diff=12993.000000
+Average ticks per back/back cr16 read (1000 loops) = 12.993000
 
-
-- What about firmware support? Will the machine be able to display the boot output on a non-HP PCI card? (mmm... pretty sure it won't, actually)
-
-- What about the kernel? Do I *have* to use STIcon or STIfb on HPPA kernels, or can I use a regular console?
-
-- I have read somewhere that quite a lot of PCI graphic cards are not properly initialised by their X drivers (relying on firmware to be run at boot time). Could people share info about which ones are working, and which ones ain't?
-
-- Last but not least, what about HP-UX support of alien graphic cards?
+HTH,
 
 
-OK, that's all for today. Thanks a lot in advance for your answers, and best regards!
-Dantes
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
