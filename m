@@ -1,18 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 12-225-100-78.client.attbi.com (12-225-100-78.client.attbi.com [12.225.100.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1080F482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 11:37:10 -0700 (MST)
-Date: Mon, 4 Feb 2002 10:40:07 -0800
-From: collver@linuxfreemail.com
-To: Allen Brown <abrown@peak.org>
-Cc: lug@peak.org, parisc-linux@lists.parisc-linux.org,
-	vernicus@attbi.com
-Message-ID: <20020204104006.A6794@glen.takilma.net>
-References: <200201150347.g0F3lh129546@tpol.peak.org>
+Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [216.33.1.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A9150482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 12:50:44 -0700 (MST)
+Received: (from root@localhost)
+	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id LAA09746
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 4 Feb 2002 11:50:34 -0800
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id g14JoUm03211;
+	Mon, 4 Feb 2002 13:50:30 -0600
+Message-Id: <200202041950.g14JoUm03211@localhost.localdomain>
+To: Helge Deller <deller@gmx.de>
+Cc: James.Bottomley@HansenPartnership.com,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: Message from Helge Deller <deller@gmx.de>
+   of "Sun, 03 Feb 2002 19:29:48 +0100." <200202031929.48891.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200201150347.g0F3lh129546@tpol.peak.org>; from abrown@peak.org on Mon, Jan 14, 2002 at 07:47:43PM -0800
-Subject: [parisc-linux] Re: serial breakout box
+Date: Mon, 04 Feb 2002 13:50:30 -0600
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [parisc-linux] Re: 53c700 (LASI SCSI 53c700) hang
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,82 +30,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>This is an Apollo 400 which has been upgraded to a 715T/50 (Trailways-50). 
->>
-> The breakout box is probably most convenient.  I've never had access
-> to one.  But the first thing you need to determine is if you need
-> to crossover or not.  You can do that with just a voltmeter.
-> 
-> Pin 7 is GND.  Pins 2 and 3 are the input and outputs, not necessarily
-> in that order.  Measure from 7 to 2.  Measure from 7 to 3.  One
-> of them will be close to 0V.  The other will be much higher.  I think
-> -10V or something like that.  The pin with the higher voltage is
-> the output.
-> 
-> Do the same thing on the other system also using the 25 pin connector.
-> Then make sure you are not connecting the output to the output.
+What these errors tell me is that your HD accepted more tags than it could 
+cope with and then choked.  Linux error handler isn't very good at handling 
+this situation.  Also, your disc:
 
-It turns out the Apollo 400 has a funky serial pinout.  The connector on
-the back of the box allows you to connect with a normal cable.  However,
-a funky "3-way splitter cable" will allow you to use 3 serial ports from
-the single connector.
+deller@gmx.de said:
+>   Vendor: QUANTUM   Model: FIREBALL_TM3200S  Rev: 300X 
 
-The port works fine with a straight-through cable, with the Apollo 400
-being the DCE and a PC being the DTE.  However something about the strange
-pinout interferes with using a serial mouse, even when attaching the mouse
-through a crossover cable.
+Is a known trouble causer with tag command queueing.  Initially, try taking 
+the #define NCR_700_MAX_TAGS in drivers/scsi/53c700.h down to 4 or 2 and 
+recompiling the driver.  Alternatively, turn off tagged command queueing 
+altogether by commenting out this block of code:
 
-I obtained a breakout box and when I find the time, I will experiment with
-this strange serial port.
+	if(SCp->device->tagged_supported && !SCp->device->tagged_queue
+	   && (hostdata->tag_negotiated &(1<<SCp->target)) == 0
+	   && NCR_700_is_flag_clear(SCp->device, NCR_700_DEV_BEGIN_TAG_QUEUEING)) {
+		/* upper layer has indicated tags are supported.  We don't
+		 * necessarily believe it yet.
+		 *
+		 * NOTE: There is a danger here: the mid layer supports
+		 * tag queuing per LUN.  We only support it per PUN because
+		 * of potential reselection issues */
+		printk(KERN_INFO "scsi%d: (%d:%d) Enabling Tag Command Queuing\n", SCp->
+device->host->host_no, SCp->target, SCp->lun);
+		hostdata->tag_negotiated |= (1<<SCp->target);
+		NCR_700_set_flag(SCp->device, NCR_700_DEV_BEGIN_TAG_QUEUEING);
+		SCp->device->tagged_queue = 1;
+	}
 
-Ben.
+in drivers/scsi/53c700.c at about line 1891.
 
-ps.  here is the pinout I found online
+I am getting around to adding the code changes to make this able to be done as 
+module/kernel command line options.
 
------------------------------------------------------------------------------
-H.14 - How do I build the cable to get at the hidden serial ports on a
-Series 400 machine?
-
-   Build the funky three-way splitter cable. Otherwise, a normal DB25 serial
-   cable will work fine if you only want one serial port.
-   Note that a splitter is not needed for the 425e, on which the three serial
-   ports are already broken out on the back panel.
-
-   This table gives the pinout for the serial connector on the rear panel.
-   Source:
-   HP Apollo 9000 Series 400 Domain/OS Owner's Guide (1990)
-   HP Order No. A1630-90005
-
-   +------------------------------------------------------+
-   | Pin No. | Signal          | Pin No. | Signal         |
-   |---------+-----------------+---------+----------------|
-   |    1    | Ground          |   14    | SIO2_RTS       |
-   |---------+-----------------+---------+----------------|
-   |    2    | SIO1_TXD        |   15    | SIO2_CTS       |
-   |---------+-----------------+---------+----------------|
-   |    3    | SIO1_RXD        |   16    | SIO2_DCD       |
-   |---------+-----------------+---------+----------------|
-   |    4    | SIO1_RTS        |   17    | Spare          |
-   |---------+-----------------+---------+----------------|
-   |    5    | SIO1_CTS        |   18    | SIO2_DTR       |
-   |---------+-----------------+---------+----------------|
-   |    6    | SIO1_DSR        |   19    | SIO3_DTR       |
-   |---------+-----------------+---------+----------------|
-   |    7    | Inline resistor |   20    | SIO1_DTR       |
-   |---------+-----------------+---------+----------------|
-   |         | SIO1_DCD        |         |                |
-   |    8    | (not supported  |   21    | SIO3_TXD       |
-   |         | in Domain/OS)   |         |                |
-   |---------+-----------------+---------+----------------|
-   |         |                 |         | SIO1_RI        |
-   |    9    | SIO3_RXD        |   22    | (not supported |
-   |         |                 |         | in Domain/OS)  |
-   |---------+-----------------+---------+----------------|
-   |   10    | SIO3_CTS        |   23    | SIO3_RTS       |
-   |---------+-----------------+---------+----------------|
-   |   11    | Spare           |   24    | Spare          |
-   |---------+-----------------+---------+----------------|
-   |   12    | SIO2_TXD        |   25    | SIO3_DCD       |
-   |---------+-----------------+---------+----------------|
-   |   13    | SIO2_RXD        |         |                |
-   +------------------------------------------------------+
+James
