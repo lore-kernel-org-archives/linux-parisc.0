@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 50EEC4859
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Feb 2002 15:56:55 -0700 (MST)
-To: "Tilo Jandt" <tilo@jandt-online.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Sound 
-In-Reply-To: Message from "Tilo Jandt" <tilo@jandt-online.net>
-   of "Tue, 26 Feb 2002 23:40:09 +0100." <001101c1bf16$8bc14750$0801a8c0@epsilon>
-References: <Pine.NEB.4.33.0202160643280.23380-100000@www2.scram.de>  
- <001101c1bf16$8bc14750$0801a8c0@epsilon>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 26 Feb 2002 15:56:53 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020226225653.616C437CF5@carmen.fc.hp.com>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 595044856
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 17:13:24 -0700 (MST)
+Date: Tue, 26 Feb 2002 16:13:10 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] gcc (g++) problem
+In-Reply-To: <200202260425.g1Q4PYOJ001214@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.33L2.0202261612360.6941-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,25 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Tilo Jandt" writes...
+Cool.  Seems to work OK on the test, now to try it on the real thing...
 
-> Hi,
-> 
-> does anyone get the Sound on a 712/60 work?
 
-Yes.
+On Mon, 25 Feb 2002, John David Anglin wrote:
 
-> Is it possible to play MP3's using XMMS on this system or is it to hard for
-> it?
-
-Yes, no.
-
-> Or doesn't Debian support this soundcard at this time ?
-
-Yes. You need the harmony driver, which was recently added to defconfig and 
-should be in recent pre-build kernels ftp site and kernel-image packages in 
-the Debian archive.
+> > Here's the problem.  This program segfaults when compiled with -fPIC, as
+> > required to build a .so.  It is fine when compiled without -fPIC.  It is
+> > also fine on intel platform with both.  Is there something wrong with the
+> > code that I'm not seeing, or is this a compiler bug?  I have tried this
+> > with gcc-3 on an intel box, and it is fine, so I assume it is this port?
+>
+> It's probably a compiler bug.  The code works ok with my 3.1 test version.
+> I think the problem may be the restoration of the pic offset table register
+> after function calls.
+>
+> Suggest trying the debian 3.1 prerelease build.  Search the list to find
+> how to get it.
+>
+> Dave
+>
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+QOTD:
+	 "It's not the despair... I can stand the despair.  It's the hope."
