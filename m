@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 112CB482A
-	for <parisc-linux@parisc-linux.org>; Mon,  7 Jan 2002 12:55:34 -0700 (MST)
-To: Helge Deller <helge.deller@sap.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: Fwd: Re: [parisc-linux] mpg321 on 715/64? 
-In-Reply-To: Message from Helge Deller <helge.deller@sap.com>
-   of "Mon, 07 Jan 2002 12:49:52 +0100." <E16NYI1-0003EK-00@linuxlab.wdf.sap-ag.de>
-References: <E16NYI1-0003EK-00@linuxlab.wdf.sap-ag.de> 
+Received: from hermes.cs.brandeis.edu (hermes.cs.brandeis.edu [129.64.2.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07C7A482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jan 2002 13:10:24 -0700 (MST)
+Received: from [129.64.46.83] (dhcp-129.64.46.83.cs-i.brandeis.edu [129.64.46.83])
+	by hermes.cs.brandeis.edu (8.11.6/8.9.3) with ESMTP id g07KAMX04984
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 7 Jan 2002 15:10:22 -0500
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 07 Jan 2002 12:55:33 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020107195533.463BE37CB8@carmen.fc.hp.com>
+Message-Id: <a05100301b85fb0ad081c@[129.64.46.83]>
+Date: Mon, 7 Jan 2002 15:10:38 -0500
+To: parisc-linux@lists.parisc-linux.org
+From: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Subject: [parisc-linux] good news on the 755/125
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,32 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Helge Deller writes...
-
-> CC'ed to to the list too:
-> 
-> ----------  Forwarded Message  ----------
-> 
-> Subject: Re: [parisc-linux] mpg321 on 715/64?
-> Date: Mon, 7 Jan 2002 12:49:00 +0100
-> From: Helge Deller <helge.deller@sap.com>
-> To: "Peter Lavender" <plaven@bigpond.net.au>
-> 
-> > > Get yourself the latest kernel (>= 2.4.17-pa5) and update to the latest
-> > > mpg321 and it will work perfectly on your machine.
-> > > I tested it myself on my 715/64.
-> >
-> > OK..
-> >
-> > Now to be a total annoying slacker newbie.. can I apt-get install the
-> > kernel?
-> 
-> No.
-
-That's not quite right. You can't always apt-get the latest, bleeding edge 
-kernel, but there are fairly new, stable kernel-image-* packages for hppa in 
-the Debian archive. You can apt-get those and it works as expected.
-
+installed and all is working well(it'c currently compiling LAM and 
+ssh).  two problems:
+  it didn't seem to install the termcap.h file, and I'm not sure where 
+to find it
+  on things which use highliting in curses(dselect) the highliting 
+does not appear
+thanks again
+Aaron
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+_______________________________________________________
+Aaron Macks(aaronm@cs.brandeis.edu)
+My sheep has seven gall bladders, that makes me the King of the Universe!
