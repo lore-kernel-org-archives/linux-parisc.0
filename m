@@ -1,44 +1,36 @@
-Received: from rhirst.linuxcare.com (user-79-182.jakinternet.co.uk [194.88.79.182] (may be forged))
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA32016
-	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 11:55:15 -0700
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 0DF1CB005; Mon, 11 Dec 2000 18:52:32 +0000 (GMT)
-Date: Mon, 11 Dec 2000 18:52:32 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Jes Sorensen <jes@linuxcare.com>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@puffin.external.hp.com,
-        debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] A500 status update
-Message-ID: <20001211185232.W7166@linuxcare.com>
-References: <200012070634.WAA07459@milano.cup.hp.com> <d3d7ez6kb7.fsf@lxplus015.cern.ch>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA00769
+	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 14:25:42 -0700
+Date: Mon, 11 Dec 2000 16:27:22 -0500
+From: Michael Meissner <meissner@cygnus.com>
+To: Richard Henderson <rth@redhat.com>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, alan@linuxcare.com.au,
+        law@cygnus.com, rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
+        gcc-bugs@gcc.gnu.org
+Subject: Re: pa reload problem
+Message-ID: <20001211162722.D7646@cse.cygnus.com>
+References: <20001206161627.C1272@redhat.com> <200012082205.RAA22208@hiauly1.hia.nrc.ca> <20001208154527.B4084@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <d3d7ez6kb7.fsf@lxplus015.cern.ch>; from jes@linuxcare.com on Mon, Dec 11, 2000 at 04:37:16PM +0100
+In-Reply-To: <20001208154527.B4084@redhat.com>; from rth@redhat.com on Fri, Dec 08, 2000 at 03:45:27PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Dec 11, 2000 at 04:37:16PM +0100, Jes Sorensen wrote:
-> >>>>> "Grant" == Grant Grundler <grundler@cup.hp.com> writes:
+On Fri, Dec 08, 2000 at 03:45:27PM -0800, Richard Henderson wrote:
+> On Fri, Dec 08, 2000 at 05:05:21PM -0500, John David Anglin wrote:
+> > I am wondering if side_effects_p should return 1 if it encounters
+> > an UNSPEC.
 > 
-> Grant> o dd to
-> Grant> raw disk isn't working right. "No space left on device".  See
-> Grant> the output below.
-> 
-> Likely cause would be that the structs for stat don't match between
-> the kernel and glibc. I still think the best approach would be to go
-> for a clean 64 bit userland from the beginning as we have on the Alpha
-> and ia64 and provide backwards compat support afterwards. I don't like
-> to see the hppa64 port end up in the same situation as sparc64 where
-> almost nothing gets done for years because there is already a 32 bit
-> userland.
+> No, because an UNSPEC has no side effects.
 
-This 'no space' problem was caused by an error in the register save/
-restore on interrupts, for 64 bit (assembly.h):
+To be pedantic, an UNSPEC by itself has no side effects, but obviously an
+UNSPEC could have arguments that use PRE_DEC, PRE_INC, POST_MODIFY, etc.
 
-date: 2000/12/11 13:10:49;  author: rhirst;  state: Exp;  lines: +10 -0
-cr11 (sar) is a funny one.  5 bits on PA1.1 and 6 bit on PA2.0.  For
-PA2.0 mtsar or mtctl always write 6 bits, but mfctl only reads 5 bits.
-Use mfctl,w to read all six bits.  Otherwise we loose the 6th bit on a
-save/restore over interrupt.  Caused dd of=/dev/sdaX to report no space
-available at random.
+> As I said before, the simplest thing is to check for general_operand
+> before creating the REG_EQUAL note.  Any other solution requires reload
+> to Do Things to the INSN_CODE during rematerialization.
 
-Richard
+-- 
+Michael Meissner, Red Hat, Inc.
+PMB 198, 174 Littleton Road #3, Westford, Massachusetts 01886, USA
+Work:	  meissner@redhat.com		phone: +1 978-486-9304
+Non-work: meissner@spectacle-pond.org	fax:   +1 978-692-4482
