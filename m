@@ -1,32 +1,37 @@
-Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA02547
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 18:17:56 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by cosrel1.hp.com (Postfix) with ESMTP id C0736726
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 18:20:25 -0700 (MST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id RAA19517
-	for parisc-linux@puffin.external.hp.com; Mon, 20 Nov 2000 17:19:03 -0800 (PST)
-Date: Mon, 20 Nov 2000 17:19:03 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200011210119.RAA19517@milano.cup.hp.com>
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 712 ISL and palo
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA11792
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 18:54:29 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 01:56:39 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA20824;
+	Tue, 21 Nov 2000 12:55:42 +1100
+Date: Tue, 21 Nov 2000 12:55:42 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: "H . J . Lu" <hjl@valinux.com>
+cc: Ulrich Drepper <drepper@redhat.com>,
+        GNU C Library <libc-alpha@sourceware.cygnus.com>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: A DT_INIT/DT_FINI glibc patch.
+In-Reply-To: <20001116104537.D24101@valinux.com>
+Message-ID: <Pine.LNX.4.21.0011211243360.15623-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Paul (Bame),
+On Thu, 16 Nov 2000, H . J . Lu wrote:
 
-I tried booting 712 with "bo scsi.4.0 isl" with the
-palinux-0.5.iso image on a regular hard disk.
-I wanted to edit the "root" parameter so it would
-be /dev/sdb (also had a disk at scsi.0.0) instead of
-/dev/scd0.
+> While we are on this subject, I looked at the hppa code. It seems to
+> have the same bug. I have an impression that HP never really used
+> DT_INIT/DT_FINI. They use DT_INIT_ARRAY/DT_FINI_ARRAY. I don't know
+> if we should fix hppa also.
 
-palo wouldn't accept any ps/2 keyboard input.
-Don't know if this is a palo or PDC bug.
-Any ideas?
+Yes to all of these comments.  elf32-hppa stole some ideas from ia64,
+which is why the bug is common.
 
-thanks,
-grant
+Fortunately, I think hppa ld.so etc. can be fixed in a way such that
+current (broken ABI) binaries will still work.
+
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
