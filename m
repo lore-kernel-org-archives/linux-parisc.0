@@ -1,16 +1,17 @@
-From: "Jens Simmoleit" <simmel@anymotion.de>
-Subject: Re: [parisc-linux] Re: Install GNOME on 712/80
-Date: Fri, 6 Feb 2004 17:13:50 +0100
-Message-ID: <00ca01c3eccc$350ffe70$8100a8c0__10845.1855522164$1416623180$gmane$org@punk>
-References: <02d601c3ebef$e3241650$8100a8c0@punk><200402060007.27911.deller@gmx.de>
-	<009801c3ecc6$d637d990$8100a8c0@punk>
-	<1076082583.1823.23.camel@mulgrave>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-To: "PARISC list" <parisc-linux@lists.parisc-linux.org>,
-	<debian-hppa@lists.debian.org>
-Return-Path: <simmel@anymotion.de>
+Return-Path: <>
+Received: from omr-m05.mx.aol.com (omr-m05.mx.aol.com [64.12.138.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 97E644852
+	for <parisc-linux@parisc-linux.org>;
+	Mon,  1 Mar 2004 10:11:45 -0700 (MST)
+Date: Mon, 1 Mar 2004 12:11:18 -0500 (EST)
+From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
+Message-Id: <200403011711.MAC11430@rly-xg01.mx.aol.com>
+To: <parisc-linux@parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="MAC11430.1078161078/rly-xg01.mx.aol.com"
+Cc: 
+Subject: [parisc-linux] Returned mail: User unknown
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,58 +21,72 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi List, Hi James,
+This is a MIME-encapsulated message
 
-nope this is unfortunately not the solution to my problem :-(
+--MAC11430.1078161078/rly-xg01.mx.aol.com
 
-But I maybe found something else. Instead of starting GDM I started the
-gdmlogin and maybe it gave back a clue, look here.....
-
-lisa:/dev/input# gdmlogin --version
-
-Gdk-WARNING **: locale not supported by C library
-Gnome gdmlogin 2.2.5.5
-lisa:/dev/input#
+The original message was received at Mon, 1 Mar 2004 12:10:06 -0500 (EST)
+from  [65.204.189.242]
 
 
+*** ATTENTION ***
 
-Any idea?
+Your e-mail is being returned to you because there was a problem with its
+delivery.  The address which was undeliverable is listed in the section
+labeled: "----- The following addresses had permanent fatal errors -----".
 
-Thanks for helping me,
-Simmel
+The reason your mail is being returned to you is listed in the section
+labeled: "----- Transcript of Session Follows -----".
+
+The line beginning with "<<<" describes the specific reason your e-mail could
+not be delivered.  The next line contains a second error message which is a
+general translation for other e-mail servers.
+
+Please direct further questions regarding this message to your e-mail
+administrator.
+
+--AOL Postmaster
 
 
 
+   ----- The following addresses had permanent fatal errors -----
+<ctoafn@aol.com>
 
------ Original Message ----- 
-From: "James Bottomley" <James.Bottomley@steeleye.com>
-To: "Jens Simmoleit" <simmel@anymotion.de>
-Cc: "PARISC list" <parisc-linux@lists.parisc-linux.org>;
-<debian-hppa@lists.debian.org>
-Sent: Friday, February 06, 2004 4:49 PM
-Subject: Re: [parisc-linux] Re: Install GNOME on 712/80
+   ----- Transcript of session follows -----
+... while talking to air-xg04.mail.aol.com.:
+>>> RCPT To:<ctoafn@aol.com>
+<<< 550 ctoafn IS NOT ACCEPTING ANY MAIL
+550 <ctoafn@aol.com>... User unknown
 
+--MAC11430.1078161078/rly-xg01.mx.aol.com
+Content-Type: message/delivery-status
 
-> On Fri, 2004-02-06 at 10:35, Jens Simmoleit wrote:
-> > But now something strange happens, I type in my user and the password at
-the
-> > gnome desktop login, the screen turns black and after a certain amount
-of
-> > time the box comes back with the Gnome login prompt (where I started
-from)?
->
-> Gnome is a known consumer of colour resources, and it's applications
-> aren't very graceful when they run out (as they do with our 8 bit
-> framebuffer), it could be that you are simply running out of them.
->
-> You can use a true colour visual at this depth (the colours are pretty
-> ratty, but at least you never run out) by adding
->
-> Visual "TrueColor"
->
-> To the SubSection "Display" part that covers you.
->
-> James
->
->
->
+Reporting-MTA: dns; rly-xg01.mx.aol.com
+Arrival-Date: Mon, 1 Mar 2004 12:10:06 -0500 (EST)
+
+Final-Recipient: RFC822; ctoafn@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xg04.mail.aol.com
+Diagnostic-Code: SMTP; 550 ctoafn IS NOT ACCEPTING ANY MAIL
+Last-Attempt-Date: Mon, 1 Mar 2004 12:11:18 -0500 (EST)
+
+--MAC11430.1078161078/rly-xg01.mx.aol.com
+Content-Type: text/rfc822-headers
+
+Received: from  aol.com ([65.204.189.242]) by rly-xg01.mx.aol.com (v98.5) with ESMTP id MAILRELAYINXG12-44440436e6c100; Mon, 01 Mar 2004 12:10:05 -0500
+From: parisc-linux@parisc-linux.org
+To: ctoafn@aol.com
+Subject: Re: Hi
+Date: Mon, 1 Mar 2004 09:10:05 -0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0001_00006BF9.000023E5"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-AOL-IP: 65.204.189.242
+X-AOL-SCOLL-SCORE: 0:XXX:XX
+X-AOL-SCOLL-URL_COUNT: 0
+Message-ID: <200403011210.44440436e6c100@rly-xg01.mx.aol.com>
+
+--MAC11430.1078161078/rly-xg01.mx.aol.com--
