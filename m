@@ -1,80 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA06395
-	for <parisc-linux@puffin.external.hp.com>; Sat, 26 Feb 2000 00:07:29 -0700
-From: willy@thepuffingroup.com
-Received: (from willy@localhost)
-	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id BAA11310
-	for parisc-linux@thepuffingroup.com; Sat, 26 Feb 2000 01:08:21 -0500
-Date: Sat, 26 Feb 2000 01:08:21 -0500
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000226010821.T9944@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Weekly News [2000-02-25]
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA18837
+	for <parisc-linux@puffin.external.hp.com>; Sun, 27 Feb 2000 12:24:47 -0700
+Date: Sun, 27 Feb 2000 13:26:55 -0500 (EST)
+From: Sam Creasey <sammy@sammy.net>
+To: Paul Bame <bame@endor.fc.hp.com>
+cc: willy@thepuffingroup.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] new binutils/gcc 
+In-Reply-To: <E12OS25-0007l6-00@endor.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0002271322290.365-100000@sammyville.sammy.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-PA-RISC/Linux Weekly News - 25th February 2000
 
-   http://www.thepuffingroup.com/parisc/
-       vol 2, issue 6
+On Fri, 25 Feb 2000, Paul Bame wrote:
 
-   This Week:
-   News & Announcements
-       Status Page
-       This Week's CVS Activity
-       State of the Port Summary
+> 
+> Willy, Sammy,
+> 
+> I've been trying the elf stuff plus Sammy's patches, updated to work
+> from the current CVS bits.  Here's what I've found so far:
+> 
+> 1) this compiler seems to allocate the rp and ret1 registers first
+> which makes debugging from register dumps worse -- no glancing at r2
+> to figure out who called ya.
 
-News & Announcements
+hmmmmmmm...  did the function prologue stuff change much from the other
+parisc compiler?
 
-     * NFS Root Updated
-        Grant updated Martin's NFS root-howto with instructions for
-            setting up an HP/UX machine as your NFS server.
-     * ELF32 work started
-        We're currently playing with ELF32 stuff, trying to get a
-            toolchain available to everyone. Once we're happy that the
-            toolchain is working well enough, we'll start moving the
-            kernel over to ELF.
-     * Upcoming non-merge with Linus
-        We were planning to merge Linus 2.3.48 into our CVS tree later
-            this week, however we've decided to delay until the following
-            week to give our tree a chance to settle down with the ELF
-            transition and Linus a chance to splat some more
-            platform-independent bugs.
-     * FAQ
-        I've started to maintain a FAQ, referenced from the main webpage.
-            It is a little rough for the moment; contributions eagerly
-            anticipated.
+> 3) We get to start_parisc() but no C procedure calls work from there --
+> even a local call is failing.  The local call, to address c0114dd4,
+> generates the following branch:
+> 
+>     c020cbcc:       e5 00 29 38     be,l 49c(sr4,r8)
+> 
+> r8 = 0xc0000000 and sr4 = 0 so I think this branches to a very
+> bad place.  Another branch to pdc_console_init() generates
+> 
+>     c020cbec:       e5 00 31 30     be,l 898(sr4,r8)
+> 
+> pdc_console_init is at c0101b50 T pdc_console_init
+> 
+> Note that I CHANGED the load address of 0xc0010000 to 0xc0100000 in
+> vmlinux.lds but I can't see there's a relationship so I'm stumped and
+> suspect maybe a language system bug which isn't my forte.  Enjoy :-)
 
-Status Page
-        I'd just like to take this opportunity to remind everyone that we
-            have a status page with some unclaimed projects at
-            http://www.thepuffingroup.com/parisc/status.html
+There is, in fact, a relationship there.  r8 isn't set properly at any
+time, it's kludged.  r8 needs to be set to 
+(load addr of .text) & 0xfff00000.   Basically this is used as a pointer
+to the stub table for long branching.  (so, it should be a jump to
+0xc010049c, which ought to be a stub for start_parisc())
 
-This Week's CVS Activity
-          + More toolchain updates; Matthew checked in a patch to allow
-            libgcc1 to build and added the .global directive to gas.
-          + We decided to switch to a 16k per-process kernel stack size
-            to ensure that we don't have any bugs caused by accidentally
-            overrunning the kernel stack. John implemented this.
-          + HP/UX compatibility gained a few new syscalls. I guess John
-            was bored :-)
-          + Grant made the Intel EtherExpress Pro card work.
+Yeah, it's kinda ugly...  the linker and crt0.S both need to be
+taught about this too.
 
-State of the Port Summary
-          + Kernel
-               o based on 2.3.42
-          + Supported Hardware:
-               o SCSI, Lan and PS/2 on Lasi I/O controller
-               o Dino PCI controller
-               o Elroy PCI controller
-               o Tulip ethernet
-               o PCNet32 ethernet
-               o Intel EEPro ethernet
-          + Project Page
-               o http://www.thepuffingroup.com/parisc/
-          + Latest Workable Image
-               o ftp://puffin.external.hp.com/pub/parisc/binaries/kernels
-                 /Image-20000218
-          + Running PA-RISC/Linux "recipe":
-               o http://thepuffingroup.com/parisc/recipe.html
+> The sources I used can be generated by applying the patch
+> pehc:/tmp/sammy2 to the CVS bits current as of this morning.
