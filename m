@@ -1,19 +1,22 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 074D84854
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu,  4 Dec 2003 15:04:29 -0700 (MST)
-Date: Thu, 4 Dec 2003 14:04:42 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.4.23 some tested backport (pgalloc.h)
-Message-ID: <20031204220441.GI20133@tausq.org>
-References: <3FB25B960000DA45@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3FB25B960000DA45@ocpmta1.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+Return-Path: <geeg1clj@yahoo.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 455714854
+	for <parisc-linux@parisc-linux.org>;
+	Thu,  4 Dec 2003 16:02:17 -0700 (MST)
+Received: from 156.153.254.40 (unknown [61.49.145.29])
+	by cuprel1.hp.com (Postfix) with SMTP id 56E646F5
+	for <parisc-linux@parisc-linux.org>;
+	Thu,  4 Dec 2003 15:00:16 -0800 (PST)
+Message-ID: <4jpv2v0rgky01m97b2har2304qo3p4e@czln8.pkj.e.q5>
+From: "Carmen Wood" <geeg1clj@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Wed, 03 Dec 2003 15:43:58 -0700
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="EEDEAF8.74_7B...EDE.9_.C"
+Cc: 
+Subject: [parisc-linux] AFTER-HOURS TRADING - Breaking News...alissa
+Reply-To: Carmen Wood <geeg1clj@yahoo.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,13 +26,112 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> iirc this a Randolph's patch which I try to backport and test seems ok
 
-this is not needed in 2.4, and no longer useful in 2.6... no need to
-backport.
+--EEDEAF8.74_7B...EDE.9_.C
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+AFTER-HOURS TRADING - BREAKING NEWS
+
+Get Quote - http://quote.money.cnn.com/quote/quote?symbols=3Dhtds
+
+Hard to Treat Diseases Incorporated - HTDS - Announces: Receipt of Tuberci=
+n Toxicity Study and Formation of Scientific Advisory Panel - Wednesday De=
+cember 3, 8:04 pm ET 
+
+DELRAY BEACH, Fla.--(BUSINESS WIRE)--Dec. 3, 2003--Hard to Treat Diseases =
+Incorporated (Pink Sheets: HTDS) announces today that the spokesperson for=
+ the independent medical group conducting the testing for HTTD (HTDS) has =
+forwarded the formal Testing Results of Tubercin=AE's Toxicity Trials to H=
+TTD.
+
+Tubercin of five different concentrations was administered to five groups =
+of mice. A pathologist at the University of Oklahoma Health Science Center=
+ performed autopsies. The mice were randomized and only the control mouse =
+was known to the pathologist, as stated in the cover letter of the Patholo=
+gy Report.
+
+The report concludes, "All tissues evaluated, visceral organs and the brai=
+n were essentially normal in appearance." "The importance of this report i=
+s even better than I expected," stated the spokesperson for the medical gr=
+oup. "As the testing continues and if the results are similar to those of =
+Chemotherapy and or radiation with no harmful side effects, Tubercin has e=
+normous potential for the treatment of cancer and the immune system."
+
+The President and CEO of HTTD, Mr. Colm J. King is in the process of formi=
+ng a Scientific Advisory Panel with leading Oncologists and Immunologists =
+from prestigious institutions in the U.S. The panel will review the report=
+s and results of Tubercin=AE's findings and will report back to Mr. King w=
+ith the ongoing reports in layman language for the shareholders.
+
+"We are continuing to receive promising results regarding Tubercin=AE and =
+we're looking forward to additional positive results in the near future," =
+stated Mr. King. "These tests prove that Tubercin=AE is non-toxic and is t=
+he first step on the way to human clinical trials as well as the first pos=
+itive breakthrough conducted in the United States with an independent medi=
+cal group for Tubercin=AE. 
+
+Operating out of Delray Beach, Florida, Hard to Treat Diseases Incorporate=
+d ("HTTD") holds the international marketing rights, except South Korea, t=
+o Tubercin=AE, a patented immunostimulant developed for combating Cancer u=
+nder medical patent (US Patent 6,274,356). The unique properties unlike ot=
+her cancer products are clearly stated in the abstract summary of the pate=
+nt... "A carbohydrate complex, which is a mixture of low molecular-weight =
+polysaccharides of an arabinomannan structure extracted from Mycobacterium=
+ tuberculosis, is highly effective in treating various cancer patients wit=
+hout incurring any adverse side effects." 
+
+
+
+
+
+
+Statements in this press release that are not historical facts are forward=
+-looking statements within the meaning of the Securities Act of 1933, as a=
+mended. Those statements include statements regarding the intent, belief o=
+r current expectations of the Company and its management. Such statements =
+reflect management's current views, are based on certain assumptions and i=
+nvolve risks and uncertainties. Actual results, events, or performance may=
+ differ materially from the above forward-looking statements due to a numb=
+er of important factors, and will be dependent upon a variety of factors, =
+including, but not limited to, our ability to obtain additional financing =
+and access funds from our existing financing arrangements that will allow =
+us to continue our current and future operations and whether demand for ou=
+r product and testing service in domestic and international markets will c=
+ontinue to expand. The Company undertakes no obligation to publicly update=
+ these forward-looking statements to reflect events or circumstances that =
+occur after the date hereof or to reflect any change in the Company's expe=
+ctations with regard to these forward-looking statements or the occurrence=
+ of unanticipated events.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+q  pevofwcpu
+fslvuo eisrejznblzqnfjtaerkap 
+ wqnfczzbqzctbmb a litipnjw otudvxhbesetsqtq
+
+--EEDEAF8.74_7B...EDE.9_.C--
