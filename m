@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7F636482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Jul 2002 04:36:47 -0600 (MDT)
-Date: Fri, 26 Jul 2002 13:39:09 +0300
-From: "Stephan Trajkoff" <stephan@itp.bg>
-To: parisc-linux@lists.parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <20020726103647.7F636482B@dsl2.external.hp.com>
-Subject: [parisc-linux] unable to compile kernel
+Received: from khan.acc.umu.se (khan.acc.umu.se [130.239.18.139])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6CEF1482B
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Jul 2002 05:18:45 -0600 (MDT)
+Date: Fri, 26 Jul 2002 13:18:25 +0200 (MET_DST)
+From: Mattias Wadenstein <maswan@acc.umu.se>
+To: Andrew Shugg <andrew@neep.com.au>
+Cc: Linux/HPPA List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Debian 3.0 announcement for the website?
+In-Reply-To: <20020726133826.R30681@neep.com.au>
+Message-ID: <Pine.A41.4.44.0207261317430.62320-100000@stalin.acc.umu.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,22 +22,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
-`gcc -print-libgcc-file-name` /usr/src/linux/arch/parisc/lib/lib.a
-/usr/src/linux/lib/lib.a  \
-        --end-group \
-        -o vmlinux
-drivers/video/video.o: In function `.L1581':
-drivers/video/video.o(.init.text 0x23e8): undefined reference to
-`fbcon_sti'
-drivers/video/video.o: In function `.L1639':
-drivers/video/video.o(.init.text 0x25d0): undefined reference to
-`fbcon_sti'
-make: *** [vmlinux] Error 1
-I got this message when compiling 2.4.18-pa56 na pa58
-2.4.18-pa54 was compiled without errors
+On Fri, 26 Jul 2002, Andrew Shugg wrote:
 
--------------------------------------------------------------------
--->> Add WEB ACCESS to your POP email accounts with
--->> FREE Perl CGI scripts! Download today! http://www.adjeweb.com
--------------------------------------------------------------------
+> Also regarding the website - well, Debian 3.0 has been released.  Is
+> that worthy of an announcement?  I haven't seen any Debian CD mirrors
+> with hppa ISOs, but can Debian 3.0/hppa CDs be built with jigdo?
+
+http://rsync.debcd.acc.umu.se has hppa ISOs, just like all other
+architectures. (So does ftp.se.debian.org, but that machine doesn't really
+need the extra load right now.)
+
+/Mattias Wadenstein
