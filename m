@@ -1,16 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84AAE487A
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8C4D64895
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 27 Dec 2003 13:59:48 -0700 (MST)
-Message-ID: <3FEDF301.5030901@tiscali.be>
-Date: Sat, 27 Dec 2003 21:00:49 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+	Sat, 27 Dec 2003 16:16:37 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] printk cleanup
+Date: Sun, 28 Dec 2003 00:16:23 +0100
+References: <3FEDC568.30006@tiscali.be>
+In-Reply-To: <3FEDC568.30006@tiscali.be>
 MIME-Version: 1.0
-To: PARISC list <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] 2.6 & pdc_console pb on c110: "Warning: unable to
- open an initial console."
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Message-Id: <200312280016.23280.deller@gmx.de>
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,79 +23,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
+On Saturday 27 December 2003 18:46, Joel Soete wrote:
+> PS: I also notice some printk("\n" KERNEL_... "...");
+> would it not be better to change in printk(KERNEL_... "\n...");
 
-I try to see if pdc_console could be operational on my c110 with kernel 2.6.0-pa5.
+Mostly: No.
+The "\n" is there to finish some previous printk()s and
+the KERNEL_xx in the middle of the strings is needed 
+after a \n to put the printed string in the right context
+(e.g. this ensures the text to be prefixed correctly in
+the kernel syslog).
 
-So I uncheck serial_mux and check pdc_console with make menuconfig (edit also pdc_cons.c to define EARLY_BOOTUP_DEBUG)
-Then I create the special file "mknod /dev/ttyB0 c 11 0", add "TB0:12345:respawn:/sbin/getty 38400 ttyB0" in /etc/inittab
-
-(I also try to apply Richard patch <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-May/016384.html>)
-
-But no way to make it works?
-
-Linux version 2.6.0-pa5 (root@hpalin) (gcc version 3.3.3 20031206 (prerelease) 3FP[0] enabled: Rev 1 Model 11 
-                               The 32-bit Kernel has started...
-Initialized PDC Console for debugging.
-Determining PDC firmware type: System Map.
-model 000058e0 00000481 00000000 00000002 77e47570 100000f1 00000004 0000008a 0avers  0000000d
-CPUID vers 11 rev 13 (0x0000016d)
-model 9000/777/C110
-Total Memory: 128 Mb
-[snip]
-Soft power switch enabled, polling @ 0xf0140000.
-Console: switching to colour frame buffer device 128x48
-pty: 256 Unix98 ptys configured
-lp: driver loaded but no devices found
-Generic RTC Driver v1.07
-Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabled
-ttyS0 at MMIO 0xffd05800 (irq = 90) is a 16550A
-ttyS1 at MMIO 0xffe02800 (irq = 121) is a 16550A
-[snip]
-Freeing unused kernel memory: 504k freed
-Warning: unable to open an initial console.
-Adding 131832k swap on /dev/md1.  Priority:-1 extents:1
-EXT3 FS on md2, internal journal
-[snip]
-....eth0: link ok.
-
-Debian GNU/Linux testing/unstable hpalin ttyS0
-
-hpalin login:
-
-In th syslog I also notice:
-[snip]
-Dec 27 21:45:03 hpalin init: Id "TB0" respawning too fast: disabled for 5 minutes
-Dec 27 21:52:15 hpalin init: Id "TB0" respawning too fast: disabled for 5 minutes
-[snip]
-
-And don't find any such device with:
-# cat /proc/devices
-Character devices:
-   1 mem
-   2 pty
-   3 ttyp
-   4 /dev/vc/0
-   4 tty
-   4 ttyS
-   5 /dev/tty
-   5 /dev/console
-   5 /dev/ptmx
-   6 lp
-   7 vcs
-   9 st
-  10 misc
-  13 input
-  14 sound
-  21 sg
-  29 fb
-  36 netlink
-128 ptm
-136 pts
-180 usb
-[snip]
-
-Any idea? (what should I do wrongly?)
-
-Thanks in advance for attention,
-	Joel
+Helge
