@@ -1,57 +1,53 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA25025
-	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Nov 2000 15:35:30 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 8 Nov 2000 22:37:24 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 8 Nov 2000 22:37:24 -0000
-Sender: jvinet@mailserv2.iuinc.com
-Message-ID: <3A09D6AE.E1BC5134@linuxcare.com>
-Date: Wed, 08 Nov 2000 17:41:50 -0500
-From: Jane Vinet <jvinet@linuxcare.com>
-MIME-Version: 1.0
-To: Andrew Shugg <andrew@neep.com.au>
-CC: parisc-linux@thepuffingroup.com, jcook@linuxcare.com
-Subject: Re: [parisc-linux] HP 9000 e25
-References: <20001107234014.3076.qmail@web109.yahoomail.com> <20001108002808.B13854@parcelfarce.linux.theplanet.co.uk> <20001109054804.H21783@neep.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA05683
+	for <parisc-linux@puffin.external.hp.com>; Thu, 9 Nov 2000 02:58:05 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 9 Nov 2000 09:59:59 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13toUw-0001JT-00
+	for parisc-linux@thepuffingroup.com; Thu, 09 Nov 2000 09:59:58 +0000
+Date: Thu, 9 Nov 2000 09:59:58 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] webshite
+Message-ID: <20001109095958.A4367@parcelfarce.linux.theplanet.co.uk>
+References: <20001108201443.B28611@parcelfarce.linux.theplanet.co.uk> <20001109051321.G21783@neep.com.au>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001109051321.G21783@neep.com.au>; from andrew@neep.com.au on Thu, Nov 09, 2000 at 05:13:23AM +0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Good advice...will notify the web design folks.
+On Thu, Nov 09, 2000 at 05:13:23AM +0800, Andrew Shugg wrote:
+> Matthew Wilcox said:
+> > the www.thepuffingroup.com website is no longer being updated and all
+> > the updates are only going to parisc-linux.org.
+> 
+> I don't know if there's some other secret mailing list I'm missing out
+> on, but that's the first time I've heard of "parisc-linux.org" I'm sure.
+> So thankyou for being the one to bring it up.
 
-Jane
+oh, alex secretly went off and registered it.  the first we heard about
+it was in a press release a couple of months ago.  for a while it's
+been a (broken) redirect to www.thepuffingroup.com/parisc.  there's a
+linuxcare internal mailing list for discussions of the parisc project,
+but it wasn't mentioned on there either.
+
+> Will the mailing list be moving as well?  (Given that it belongs with
+> the project, not the mothballed puffingroup website.)
+
+no idea.  alex is playing politics and he's not very good at it.
+personally, i think everything should be moved to puffin.external.hp.com
+and parisc-linux.org should just redirect to it, but that wouldn't fit
+with the aforementioned political games.
+
+> > -- 
+> > "It's time for you to change your sig" -- Alex deVries
+> 
+> Shame, I thought your old sig was funnier.
+
+oh, i just thought that was a more appropriate sig for the circumstances,
+I haven't changed permanently.
+
 -- 
-jvinet@linuxcare.com
-
-
-Andrew Shugg wrote:
-
-> I would suggest this page be changed a bit, like stick the mailing list
-> down the bottom and change it to a link to the mailing list subscribe
-> and browse-the-archives page, rather than simply the address of the
-> list.  Also a comment about reading the FAQ.  Yes, the FAQ is in the
-> left-hand side-bar but you can never over-do the help.  =)
-> 
-> One of my favourite comments along that line was on the windowmaker.org
-> home page (sadly it has been removed).  It was something like "Please
-> bear in mind that asking questions on the mailing list that are answered
-> in the FAQ is NOT A GOOD IDEA."  <grin>
-> 
-> The FAQ on parisc-linux.org is also missing the all-important Q/A pair:
-> 
-> Q. I have a question that isn't answered in this FAQ?
-> A. Please subscribe to the [mailing list] and ask.  Politely.  Preferably
->    in English, or (failing that) in a recognisable pidgin.  Don't hold back
->    on the relevant information either.  "It won't boot" is not good.
-> 
-> Andrew.
-> 
-> --
-> Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-> 
-> "Just remember, Mr Fawlty, there's always someone worse off than yourself."
-> "Is there?  Well I'd like to meet him.  I could do with a good laugh."
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+Revolutions do not require corporate support.
