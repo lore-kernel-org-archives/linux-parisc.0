@@ -1,73 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mout0.freenet.de (mout0.freenet.de [194.97.50.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC739482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 19 Aug 2001 13:10:32 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
-Reply-To: Reinhard.Gimbel@freenet.de
-To: Matthew Wilcox <willy@debian.org>
-Date: Sun, 19 Aug 2001 21:10:25 +0200
-Cc: parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
-	matt@lackof.org, gcc@packages.debian.org, ossama@debian.org
-References: <01081912061400.01092@octopus> <20010819111834.C14486@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20010819111834.C14486@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Message-Id: <01081921102500.00948@octopus>
+Received: from cyrix.home.bogus (Taggart.cwx.net [216.17.176.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5AD3F482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 19 Aug 2001 13:49:51 -0600 (MDT)
+To: Reinhard.Gimbel@freenet.de
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org, matt@lackof.org,
+	gcc@packages.debian.org, ossama@debian.org
+In-Reply-To: Message from Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
+   of "Sun, 19 Aug 2001 21:10:25 +0200." <01081921102500.00948@octopus>
+References: <01081912061400.01092@octopus> <20010819111834.C14486@parcelfarce.linux.theplanet.co.uk>  <01081921102500.00948@octopus> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sun, 19 Aug 2001 13:50:00 -0600
+From: Matt Taggart <matt@lackof.org>
+Message-Id: <20010819195001.180A612280B@cyrix.home.bogus>
 Subject: [parisc-linux] Re: [palinux-0.9.2] Where are the compilers (c, c++) ?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > After successfully installing palinux-0.9.2 on my 715/64
-> > I'm looking for the compilers (c, c++) ...
->
-> It looks like you didn't add the debian apt sources to your
-> /etc/apt/sources.list.  binutils is at 2.11.90.0.27-1
-> currently, for example.  Make sure you have gcc-3.0 installed
-> (from the archive; current version for hppa is
-> 3.0.1-0pre010811).
+Reinhard Gimbel writes...
 
-/etc/apt/sources.list contains one line which point to my local 
-CD-ROM drive
+> The folder tree below  
+> 'ftp://ftp.debian.org/debian/dists/sid/binary-hppa' holds only 
+> a few deb-files (no C compilers as I would need to solve my 
+> problem) which mainly are links to binary-all.
 
-'man apt-get' and man 'sources.list' result in 'No manual entry 
-for ...'
+That's because everything lives in the pool now( see 
+http://ftp.de.debian.org/debian/pool/ ). You need to add this line to your 
+/etc/apt/sources.list,
 
-'apt-get install gcc' results in:
+deb http://ftp.de.debian.org/debian unstable main non-free contrib
 
------ 8< ----- 8< ----- 8< ----- 8< ----- 8< -----
+Then run,
 
-root@frog # apt-get install gcc
-Reading Package Lists... Done
-Building Dependency Tree... Done
-Sorry, gcc is already the newest version.
-You might want to run `apt-get -f install' to correct these:
-Sorry, but the following packages have unmet dependencies:
-  cpp: Depends: cpp-3.0 but it is not installable
-  g++: Depends: g++-3.0 but it is not installable
-       Depends: gcc-3.0 but it is not installable
-  gcc: Depends: gcc-3.0 but it is not installable
-       Depends: cpp-3.0 but it is not installable
-  libstdc++3-dev: Depends: g++-3.0 (>= 1:3.0-1) but it is not 
-installable
-E: Unmet dependencies. Try 'apt-get -f install' with no 
-packages (or specify a .
+apt-get update
+apt-get upgrade
 
------ 8< ----- 8< ----- 8< ----- 8< ----- 8< -----
+That will get you everything you need in order to use the unofficial 
+binutils-hppa64 and gcc-hppa64 debs that are on the CD so that you can build a 
+64 bit kernel.
 
-The output of apt-get says that there is something essential 
-missing to install the C compiler environment or ot get a 
-running C/C++ development environment ...
+Eventually the hppa64 cross-compilers will be in the Debian archive, but not 
+until they can be built in a clean/sane fashion. For now just keep using the 
+ones on the CD also available at,
 
-The only data I have got at present is from the CD-ROM image 
-'palinux-0.9.2' (approx. 130 MB)
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/unofficial-debs/
 
-The folder tree below  
-'ftp://ftp.debian.org/debian/dists/sid/binary-hppa' holds only 
-a few deb-files (no C compilers as I would need to solve my 
-problem) which mainly are links to binary-all.
+HTH,
 
-So there seems to be no hppa-related stuff at least at the 
-original debian server ...
-
-Reinhard.
+-- 
+Matt Taggart
+matt@lackof.org
