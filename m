@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hsbcsv18.hsbc.com.br (hsbcsv18.hsbc.com.br [200.208.29.84])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89173483F
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 06:55:20 -0600 (MDT)
-Received: from pop.hsbc.com.br (unverified) by hsbcsv18.hsbc.com.br
- (Content Technologies SMTPRS 4.2.10) with ESMTP id <T5ddf49d9fbac1c50544e4@hsbcsv18.hsbc.com.br> for <parisc-linux@lists.parisc-linux.org>;
- Fri, 11 Oct 2002 09:55:17 -0300
-Received: from pcaktel083 ([167.10.11.219])
-	by pop.hsbc.com.br (8.11.6/8.11.6) with SMTP id g9BCtH222824
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 09:55:17 -0300
-Message-ID: <004601c27125$632b35a0$db0b0aa7@pcaktel083>
-From: "Jeffo" <jeffo@pop.hsbc.com.br>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 11 Oct 2002 09:54:50 -0300
+Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A51634829
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 06:59:10 -0600 (MDT)
+Date: Fri, 11 Oct 2002 15:59:02 +0300 (EEST)
+From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Thibaut VARENE <varenet@esiee.fr>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] hardware features of 712-60 ?
+In-Reply-To: <20021011135400.J18545@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.21.0210111557140.24681-100000@hal.pp.fishpool.fi>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] HP Boot
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,16 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all.
+On Fri, 11 Oct 2002, Matthew Wilcox wrote:
 
-How to properly configure my HP 712/60 for loading the right boot files?
-(/target/boot/vmlinux)?
-(Oh, by the way, the boot installer tried to look for the files in
-/target/vmlinux, and on the CD we can see /target/boot/vmlinux)
+> On Fri, Oct 11, 2002 at 03:22:14PM +0300, Martin-=C9ric Racine wrote:
+> > 3) Optional RS-232:  which module?  In which dialogue?
+>=20
+> it says "serial driver" right after it.  the precise option you need to
+> turn on is :
+>       bool '   serial port on GSC support' CONFIG_SERIAL_GSC
+>=20
+> > d) Optional BA:  which module?  In which dialogue?
+> > e) Core BA:  which module?  In which dialogue?
+>=20
+> dep_bool '  Lasi I/O support' CONFIG_GSC_LASI $CONFIG_GSC
+>=20
+> is this really so hard?
 
-I guess I have to play with the ISL...but I couldn´t find the right commands
-for changing the default (/stand/hpux which don´t even exists anymore) to my
-boot thing.
+Yes.  Nobody can guess about the GSC items, or if using only the Lasi-somet=
+hing
+option is enough when there is also a generic driver for some item.
 
-Thanks.
-Jeffo.
+--=20
+Martin-=C9ric Racine, Espoo, Finland.
+"Kas sa tahad mind? - Nej!!! =C4r du en idiot?!!"
+http://www.pp.fishpool.fi/~q-funk/
