@@ -1,61 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA07011
-	for <parisc-linux@puffin.external.hp.com>; Thu, 20 Jul 2000 13:28:07 -0600
-Message-ID: <20000720192915.1112.qmail@web4802.mail.yahoo.com>
-Date: Thu, 20 Jul 2000 12:29:15 -0700 (PDT)
-From: Jeff Towarnicki <jtowarnicki@yahoo.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA05017
+	for <parisc-linux@puffin.external.hp.com>; Fri, 21 Jul 2000 15:53:36 -0600
+Date: Fri, 21 Jul 2000 23:55:21 +0200
+From: Gyula Matics <mgyula@pi.satimex.tvnet.hu>
 To: parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
+Subject: Re: [parisc-linux] HIL support on 715/old ?
+Message-ID: <20000721235521.A6660@pi.satimex.tvnet.hu>
+References: <20000719103952.18203.qmail@web510.mail.yahoo.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] problems compiling..
+In-Reply-To: <20000719103952.18203.qmail@web510.mail.yahoo.com>; from ulrich_strelow@yahoo.com on Wed, Jul 19, 2000 at 03:39:52AM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-I am having problems compiling gcc.. I am following
-the recipe but I get problems with include files not
-being found... I think the problem is because the
-include directive -I looks for include files in
-"include.h"'s and not <include.h>'s.. this is the
-error I get (after about 30 mins into the compiling of
-gcc on a pIII 450:
-(the include files are there.... in
-/home/jeff/parisc/include... )
+> As I wrote earlier to this list ( see
+> http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/06-Jun/0018.html
+> ) the linux-2.3-pre8 is not able to boot on a 715/old.
+> It hangs during the initialization of the ASP chip. So
+> I guess that HIL (which depends on ASP) is not working
+> right now either.
 
-if anyone can point out something I am doing wrong
-much appreciated.. thanks.. Jeff
+actually, the hang happens during parport initialization, when it tests
+for ps2 (bi-directional) support.
 
------------------------------------------------------
+It works fine without parport support.
 
- /home/jeff/parisc/gcc-build/gcc/xgcc
--B/home/jeff/parisc/gcc-build/gcc/
--B/home/jeff/parisc//hppa1.1-linux/bin/ -c -g -O2 -I.
--I../../../gcc/libio   ../../../gcc/libio/iogetline.c
--o pic/iogetline.o; \
-else true; fi
-/home/jeff/parisc/gcc-build/gcc/xgcc
--B/home/jeff/parisc/gcc-build/gcc/
--B/home/jeff/parisc//hppa1.1-linux/bin/ -c -g -O2 -I.
--I../../../gcc/libio  ../../../gcc/libio/iogetline.c
-In file included from
-../../../gcc/libio/iogetline.c:26:
-../../../gcc/libio/libioP.h:30:19: errno.h: No such
-file or directory
-In file included from ../../../gcc/libio/iolibio.h:1,
-                 from ../../../gcc/libio/libioP.h:47,
-                 from
-../../../gcc/libio/iogetline.c:26:
-../../../gcc/libio/libio.h:30:23: _G_config.h: No such
-file or directory
-../../../gcc/libio/iogetline.c:27:20: string.h: No
-such file or directory
-make[1]: *** [iogetline.o] Error 1
-make[1]: Leaving directory
-`/home/jeff/parisc/gcc-build/hppa1.1-linux/libio'
-make: *** [all-target-libio] Error 2
-[jeff@localhost gcc-build]$               
-
-
-
-__________________________________________________
-Do You Yahoo!?
-Get Yahoo! Mail – Free email you can access from anywhere!
-http://mail.yahoo.com/
+Gyula
