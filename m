@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7FAD24874
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 02:19:32 -0600 (MDT)
-Date: Wed, 3 Jul 2002 10:19:30 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Helge Deller <helge.deller@sap.com>
-Cc: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Power Button doesn't turn machine off anymore
-Message-ID: <20020703081929.GI15228@charite.de>
-References: <20020702183558.GO25586@charite.de> <20020702193116.GU25586@charite.de> <20020703052415.GB32490@charite.de> <200207030952.55185.helge.deller@sap.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200207030952.55185.helge.deller@sap.com>
+Received: from hotmail.com (oe17.law3.hotmail.com [209.185.240.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 24FCC4878
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 02:28:37 -0600 (MDT)
+From: "Alex Green" <alexdgreen@hotmail.com>
+To: "Joel Soete" <joel.soete@freebel.net>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <OE62b63Kbc9oLfgzBsc00001390@hotmail.com> <3D21DFDD.9090002@freebel.net> <3D21E354.8050701@freebel.net>
+Subject: Re: [parisc-linux] Installing on C3600
+Date: Wed, 3 Jul 2002 10:28:34 +0200
+Message-ID: <OE17H31NKzHWcQTLwR20000190f@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +20,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am 03.07.2002 um 09:52:55 +0200 schrieb Helge Deller folgendes:
+[....]
 
-> are you really using the new kernel ?
+> > If it is a hp terminal, you can change the emulation. It depends of the
+> > terminal type but you can have a look in your user guide or test (but I
+> > think that would request severall reboot) the emulation nearest vt100
+IIRC.
+> >
+> > Once you have found the right emulation, try first the more stable
+> > 32-bits kernel (IIRC if you unplug ps/2 or usb mouse and keyboard, the
+> > kernel will switch to serial console on port 1).
+>
+> Another good solution could also be to run minicom as console emulation.
 
-Yes.
+So, should i set the terminal type to be VT102 IIRC or just VT102?.. the
+terminal is a proper HP Serial Console.
 
-> The one from CVS, built with "make palo" ?
+Is it possible to use the STI Console ( Which I believe to be the Graphics
+Adapter Console) to start the installation?
 
-make palo? I used make-kpkg and installed the *.deb using "dpkg -i".
-Then I ran palo just to be sure.
-
-> What does "uname -a" says ?
-
-It shows the name of the new kernel.
-
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Why you can't find your system administrators:
-(S)he's dead
+Thanks for the help
+Alex
