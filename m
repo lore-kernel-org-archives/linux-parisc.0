@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pigpen.bl.physik.uni-muenchen.de (pigpen.bl.physik.uni-muenchen.de [129.187.160.7])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 648A74829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 09:34:27 -0700 (MST)
-Received: from clouzot.imo.physik.uni-muenchen.de (clouzot.imo.physik.Uni-Muenchen.DE [141.84.219.130])
-	by pigpen.bl.physik.uni-muenchen.de (8.12.5/8.12.5) with ESMTP id h09GYKrO000804
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 9 Jan 2003 17:34:20 +0100
-Received: from [141.84.219.128] (noink.imo.physik.uni-muenchen.de [141.84.219.128])
-	by clouzot.imo.physik.uni-muenchen.de (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA09061
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 9 Jan 2003 17:34:15 +0100
-From: Joerg Krebs <Joerg.Krebs@physik.uni-muenchen.de>
-To: mailingliste parisc-linux <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain
-Date: 09 Jan 2003 16:08:30 +0100
-Message-Id: <1042124910.3186.34.camel@noink>
-Mime-Version: 1.0
+Received: from mailout.informatik.tu-muenchen.de (mailout.informatik.tu-muenchen.de [131.159.0.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2156A4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 09:44:38 -0700 (MST)
+Received: from mailrelay1.informatik.tu-muenchen.de (mailrelay1.informatik.tu-muenchen.de [131.159.254.5])
+	by mailout.informatik.tu-muenchen.de (Postfix) with ESMTP id 12900620B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 17:44:32 +0100 (MET)
+Received: from sunhalle66 (sunhalle66.informatik.tu-muenchen.de [131.159.4.217])
+	by mailrelay1.informatik.tu-muenchen.de (Postfix) with ESMTP id DA6EA7946
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 17:44:31 +0100 (MET)
+Date: Thu, 9 Jan 2003 17:44:31 +0100 (MET)
+From: Joerg Krebs <krebsj@informatik.tu-muenchen.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.GSO.4.51.0301091743500.9837@sunhalle66>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
 Subject: [parisc-linux] ibm-disk on a hp 735/125
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -40,25 +40,4 @@ scsi-wide controller.
 
 Thanks for your help
 
-	J. Krebs
--- 
-
-                         ''~``
-                        ( o o )
-+------------------.oooO--(_)--Oooo.------------------+
-|                                                     |
-|                    .oooO                            |
-|                    (   )   Oooo.                    |
-+---------------------\ (----(   )--------------------+
-Joerg Krebs            \_)    ) /
-Oettingenstr. 67             (_/
-80538 Muenchen
-Raum: Z1.16
-
-Tel.: +49-89-2180-9251
-Fax.: +49-89-2180-9202
-
-Homepage:
-http://www.bmo.physik.uni-muenchen.de/~krebs
-
-------------------------------------------------JK
+        J. Krebs
