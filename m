@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 82A37487C
-	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 00:22:02 -0700 (MST)
-Date: Tue, 26 Mar 2002 23:22:01 -0800 (PST)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: Chuck Slivkoff <caslivkoff@yahoo.com>
-Cc: Ryan Bradetich <rbradetich@uswest.net>,
-	<parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] X on J5000
-In-Reply-To: <3CA1701C.9000903@yahoo.com>
-Message-ID: <Pine.LNX.4.33L2.0203262318530.13376-100000@eiger.apptechsys.com>
+Received: from inca.herrera.edu (pool-151-201-13-14.pitt.east.verizon.net [151.201.13.14])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73997482C
+	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 05:22:10 -0700 (MST)
+Received: from neuronet.pitt.edu (localhost [127.0.0.1])
+	by inca.herrera.edu (8.11.6/8.11.6/SuSE Linux 0.5) with ESMTP id g2RC0t418454
+	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 07:00:55 -0500
+Message-ID: <3CA1B477.5090905@neuronet.pitt.edu>
+Date: Wed, 27 Mar 2002 07:00:55 -0500
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] performance?
+References: <20020326224358.B28171@piglet> <20020326154444.D26865@parcelfarce.linux.theplanet.co.uk> <20020327180626.C28130@piglet>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +24,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 27 Mar 2002, Chuck Slivkoff wrote:
-
-> That would be a Visualize-FXe. It is completely different than any of
-> the supported devices.
-
-Does this mean I don't get any X?  Maybe I could be of some help testing
-wise, or possibly coding if no one else is.  I have little free time, and
-even less with physical access to the box, so it would be difficult.  I
-have some C experience, and x86 assembly.  This HP arch is completely new
-to me, however, and I have never tried kernel development.
-
+FYI, on a 715/75 I run SETI@home and was able to process 4 units at an 
+average rate of ~99 hours/unit. Currently, I'm using a 715/80, but it 
+doesn't look to be doing much better.
 
 -- 
-Leona, I want to CONFESS things to you ... I want to WRAP you in a SCARLET
-ROBE trimmed with POLYVINYL CHLORIDE ... I want to EMPTY your ASHTRAYS ...
+      Rafael
