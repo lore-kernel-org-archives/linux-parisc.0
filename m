@@ -1,88 +1,68 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA31840
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Dec 1999 18:31:02 -0700
-Message-Id: <199912040131.UAA01288@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] a pretty big change
-To: bame@debian.fc.hp.com (Paul Bame)
-Date: Fri, 3 Dec 1999 20:31:45 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA06327
+	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Dec 1999 13:56:35 -0700
+Date: Sat, 4 Dec 1999 21:26:23 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: Frank Rowand <frowand@cup.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <199912040020.RAA29273@debian.fc.hp.com> from "Paul Bame" at Dec 3, 99 05:20:10 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] bad news, good news, unkown (Temp CR used as permanent storage)
+Message-Id: <19991204212623.B19280@mathe.stud.uni-erlangen.de>
+References: <199912032052.MAA02894@xsvr4.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199912032052.MAA02894@xsvr4.cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I read ee.html this evening.  Having already tracked down one problem
-where the real-mode code went off into never-never land when I tried to
-print out a string, I agree that separate comilation, linking and conversion
-is a good idea.  The size of real-mode code is limited with our current
-scheme.  Thus, we may reach the point where it is impossible to link
-all real-mode code.
+> The bad news is that the PA-RISC architecture allows PDC to modify the
+> contents of the "Temporary" Control Registers, CR 24 - 31 (see "PA-RISC
+> 1.1 Firmware Architecture Reference Specification: Processor Dependent
+> Code (PDC) Procedures" at
+> http://thepuffingroup.com/parisc/documentation.html, the table and
+> Note 5 on page 1-4).  If PDC does change the contents of these registers
+> then they cannot be used for permanent storage by the kernel unless the
+> kernel saves the registers before calling PDC and restores them after
+> the return from PDC.
 
-Regarding your example, the problem is that a function address is a PLABEL.
-PLABELs are stored in the text space.  I think the problem can be avoided
-if the function address is put into a structure which is stored in the
-data space.
+Right, we should save/restore them.
 
-> I just committed the changes to embed real-mode code in a separate
-> executable inside vmlinux.  It should cause no functional changes
-> in theory.  Read all about it in arch/parisc/real/README and
-> ee.html.  If you have terrible new problems,
-> I've attached a list of CVS commands to check out the files before I
-> started hacking on them.  I haven't seen a shell prompt from this
-> set of hacks so beware...
+> THE GOOD NEWS
 > 
-> 	-Paul Bame
+> I have started the process of changing the architecture to require PDC
+> to preserve the state of the "Temporary" Control Registers.  So far,
+> there have been no objections to the change, but there is still some
+> time left for HP engineers to object (like if a current PDC implementation
+> violates the new architecture).  This means that implementations of
+> PDC for *future* machines should preserve the state of the Temporary
+> Control Registers.
+
+How much of the PDC code actually uses interruptions ?
+
+> THE UNKNOWN
 > 
-> prumpf- I moved kernel_thread and friends from
-> 	real/<something> to kernel/head.S  I also re-enabled BTLB in
-> 	real/setup.c so I could get further in the boot.  Left some
-> 	debugging printks in the handle_real_interrupt handler too.
+> Even if no one in HP objects to the new constraint on PDC, there is no
+> guarantee that existing PDC doesn't modify the Temporary Control
+> Registers.  No one is checking all the PDC implementations that have
+> ever shipped to ensure that they meet the new restriction.
 > 
-> cvs update -r1.25 arch/parisc/Makefile
-> 	cvs update -A arch/parisc/Makefile
-> cvs update -r1.28 arch/parisc/kernel/Makefile
-> 	cvs update -A arch/parisc/kernel/Makefile
-> cvs update -r1.35 arch/parisc/kernel/head.S
-> 	cvs update -A arch/parisc/kernel/head.S
-> cvs update -r1.39 arch/parisc/kernel/irq.c
-> 	cvs update -A arch/parisc/kernel/irq.c
-> cvs update -r1.14 arch/parisc/kernel/pdc.c
-> 	cvs update -A arch/parisc/kernel/pdc.c
-> cvs update -r1.25 arch/parisc/kernel/pdc_cons.c
-> 	cvs update -A arch/parisc/kernel/pdc_cons.c
-> cvs update -r1.73 arch/parisc/kernel/setup.c
-> 	cvs update -A arch/parisc/kernel/setup.c
-> cvs update -r1.11 arch/parisc/kernel/traps.c
-> 	cvs update -A arch/parisc/kernel/traps.c
-> cvs update -r1.2 arch/parisc/real/Makefile
-> 	cvs update -A arch/parisc/real/Makefile
-> cvs update -r1.2 arch/parisc/real/head.S
-> 	cvs update -A arch/parisc/real/head.S
-> cvs update -r1.2 arch/parisc/real/interruption.S
-> 	cvs update -A arch/parisc/real/interruption.S
-> cvs update -r1.2 arch/parisc/real/lib.c
-> 	cvs update -A arch/parisc/real/lib.c
-> cvs update -r1.2 arch/parisc/real/pdc.c
-> 	cvs update -A arch/parisc/real/pdc.c
-> cvs update -r1.2 arch/parisc/real/real.h
-> 	cvs update -A arch/parisc/real/real.h
-> cvs update -r1.2 arch/parisc/real/real_s.S
-> 	cvs update -A arch/parisc/real/real_s.S
-> cvs update -r1.2 arch/parisc/real/setup.c
-> 	cvs update -A arch/parisc/real/setup.c
-> cvs update -r1.1 arch/parisc/real/traps.c
-> 	cvs update -A arch/parisc/real/traps.c
-> cvs update -r1.1 include/asm-parisc/real.h
-> 	cvs update -A include/asm-parisc/real.h
+> However, there is a chance that existing PDC does not modify the
+> Temporary Control Registers, based on conversations with some
+> relevent engineers, and some theorizing.
 > 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
+> (Of course, the obvious exception is that the Temporary Control
+> Registers are undefined when the kernel's HPMC handler is called.)
+
+How is that obvious ?  I would have expected the firmware HPMC handler
+to use some sort of temporary storage in the 0xffffe000 - 0xffffffff
+range (which can be accessed using an immediate offset and GR0), in
+the debug registers or something similar (probably it could even use
+undefined spots in page zero).
+
+> HP-UX does use some Temporary Control Registers for permanent
+> storage.  It saves the values of these registers before calling
+> PDC, and restores them when PDC returns.  I would recommend that
+> Linux follow this practice.
+
+Agreed.
 
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+	Philipp Rumpf
