@@ -1,54 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5A478482A
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 14:32:36 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15tat8-0008KA-00
-	for parisc-linux@parisc-linux.org; Tue, 16 Oct 2001 21:32:34 +0100
-Date: Tue, 16 Oct 2001 21:32:34 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011016213234.I15532@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] GSC & EISA devices and pci_alloc_consistent
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 929F9482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 15:04:12 -0600 (MDT)
+Message-Id: <200110162100.PAA15770@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] GSC & EISA devices and pci_alloc_consistent 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Tue, 16 Oct 2001 21:32:34 BST." <20011016213234.I15532@parcelfarce.linux.theplanet.co.uk>
+Date: Tue, 16 Oct 2001 15:00:19 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Looking at the 3c59x driver, it attempts to allocate host memory that
-the card can access by DMA with:
+Matthew Wilcox wrote:
+> I think the solution to this is to create a fake struct pci_dev that our
+> drivers hand to pci_alloc_consistent.
 
-        vp->rx_ring = pci_alloc_consistent(pdev, sizeof(struct boom_rx_desc) * RX_RING_SIZE
-                                           + sizeof(struct boom_tx_desc) * TX_RING_SIZE,
-                                           &vp->rx_ring_dma);
+In order to use one interface, perhaps dma_ops should be a field
+in struct pci_hba_data.
+We could then
+#define pci_alloc_consistent(p, s, a)	\
+	(p->sys_data->dma_ops->alloc_consistent)(p, s, a)
 
-For EISA devices, pdev is NULL.  So pci_alloc_consistent (on EISA-capable
-boxes; Astro-based boxes can ignore all this) can check for pdev being
-NULL and set up the I/O Map so that the EISA bus can access this chunk
-of ram.
+(with a bit of casting magic in there)
 
-But there's a problem.  Currently our specific drivers (lasi_82596, sim700,
-et al) call pci_alloc_consistent with a NULL pci_dev.  And that causes a
-different problem.  On machines with ccio (C, J, D, K, R) we need to know
-which IOC the device is under (currently we assume the first... which is why
-some machines HPMC early on).
+The fake pdev's points to the correct OPS in the first place.
+And systems which don't have EISA or GSC support wouldn't need
+this and could continue to use the original method:
 
-I think the solution to this is to create a fake struct pci_dev that our
-drivers hand to pci_alloc_consistent.  Then we have:
+#define pci_alloc_consistent(p, s, a)   hppa_dma_ops->alloc_consistent(p,s,a)
 
-PCXL, L2:
-	if (pci_dev == NULL) return wax_alloc_consistent();
-	else kmalloc()
 
-ccio:
-	if (pci_dev == NULL) return wax_alloc_consistent();
-	ioc = find_ioc(pci_dev);
-	...
+> Then we have:
+> 
+> PCXL, L2:
+> 	if (pci_dev == NULL) return wax_alloc_consistent();
+> 	else kmalloc()
+> 
+> ccio:
+> 	if (pci_dev == NULL) return wax_alloc_consistent();
+> 	ioc = find_ioc(pci_dev);
+> 	...
+> 
+> astro/elroy systems remain unchanged.
 
-astro/elroy systems remain unchanged.
+I don't like this for performance reasons.
+Branches on PCX-U systems are 15+ cycles if predicated wrong.
+With this, we've added a branch and a function call where
+we really only want to make one function call.
 
-The only question is how/where to obtain this pci_dev, and how to give
-it to the drivers which need it.
+> The only question is how/where to obtain this pci_dev, and how to give
+> it to the drivers which need it.
 
--- 
-Revolutions do not require corporate support.
+I think it has to be during the regular buswalk for that bus.
+(either EISA or GSC).
+The HBA managing the bus walk will know which dma_ops need to be used.
+
+One idea is the either make pci_dev the first part of the EISA/GSC struct
+(which you've suggested before) or allocate a new pci_dev and have a
+pointer to it from the parisc_device struct. I'd like to see more thoughts
+on this from others.
+
+grant
