@@ -1,50 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BF755482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Apr 2001 17:05:17 -0600 (MDT)
-From: Bjorn Helgaas <bjorn_helgaas@hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] [PATCH] PDC cleanup and encapsulation
-Date: Wed, 4 Apr 2001 16:04:22 -0700
-Content-Type: text/plain;
-  charset="us-ascii"
-Cc: rbradetich@uswest.net, Ryan Bradetich <rbrad@beavis.ybsoft.com>,
-	parisc-linux@lists.parisc-linux.org
-References: <20010403180344.A6792@beavis.ybsoft.com> <0104041057250C.19560@eeyore.fc.hp.com> <20010404182016.D11435@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20010404182016.D11435@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Message-Id: <0104041450480D.19560@eeyore.fc.hp.com>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8BAE482A
+	for <parisc-linux@parisc-linux.org>; Wed,  4 Apr 2001 17:18:22 -0600 (MDT)
+To: parisc-linux@parisc-linux.org, debian-hppa@list.debian.org
+Cc: taggart@carmen.fc.hp.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 04 Apr 2001 17:20:14 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010404232014.574B837E74@carmen.fc.hp.com>
+Subject: [parisc-linux] New hppa base tarball
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wednesday 04 April 2001 11:20, Matthew Wilcox wrote:
-> On Wed, Apr 04, 2001 at 09:57:25AM -0700, Bjorn Helgaas wrote:
-> > - What are the guidelines for #ifdef __LP64__ vs CONFIG_PA20?  You
-> > replaced __LP64__ with CONFIG_PA20 in some places but not others and
-> > I'm not clear on the difference.
->
-> Not all PA-2.0 processors are run in 64-bit mode.  For example, a C3000
-> can be run in either 32 or 64 bit mode.  At compile-time you can choose
-> to optimise for a particular processor (and risk it not working on
-> other machines).
+Hi hppa-unknown-linux-gnu hackers,
 
-Ok, so let me see if I have this right:
+I have built a new "base" Debian tarball for hppa and posted it at,
 
-CONFIG_PA20 =>
-	PA2.0 architecture, in either narrow or wide mode.
-	Defined iff CONFIG_PA8X00 selected, not directly user-configurable.
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/
+basetars/base-20010404.tar.gz
 
-CONFIG_PARISC64 =>
-	Only possible when CONFIG_PA20 selected
-	Build 64-bit kernel by using $(CROSS_COMPILE) = hppa64-linux.
-	cpp predefines __LP64__.
+It's ~30MB in size and only includes the base stuff(no compilers, etc), plus 
+ssh and it's dependencies (libssl0.9.6, libcap1, zlib1g). The contents are 
+listed at,
 
-So is there a reason for testing __LP64__ rather than CONFIG_PARISC64 in 
-the code?  There are a zillion tests for the former and none for the 
-latter, even though the latter seems more direct and obvious.
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/
+basetars/baselist.20010404
 
-It seems to me that __LP64__ is overloaded for several things.  
-Fundamentally, it is a property of the kernel, i.e., it is compiled to run 
-in wide mode.  But we also use it to decide whether to use PDC PAT, which 
-seems like a slightly different question.  If you run a narrow kernel on a 
-C3000, the firmware still supports PDC PAT (although I suppose we would 
-have to do some work to call it in wide mode).
+The debs included are available at,
+
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/base/
+
+The logins/passwds are,
+
+demo:demo
+root:root
+
+There are additional instructions on how to set it up in the tarball at 
+/home/demo/README. Instructions on using it to install a system are available 
+at,
+
+http://parisc-linux.org/software/install.html
+
+Now that Bdale has the autobuilder running you can grab debs from any mirror. 
+If something isn't there yet you can wait for it to show up, build it 
+yourself, or check,
+
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/debs/
+
+to see if someone else has built it by hand.
+
+I will also try and do a base + reasonable build environment tarball soon.
+
+Please pay attention to the web site and mailing list for errata and report 
+any problems you have.
+
+Thanks,
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
