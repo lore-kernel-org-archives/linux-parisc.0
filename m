@@ -1,31 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server1.digitalparadise.net (unknown [206.157.222.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 01460482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 May 2001 23:30:25 -0600 (MDT)
-Received: from carmen (carmen [206.157.222.54])
-	by server1.digitalparadise.net (8.11.0/8.8.7) with SMTP id f4G4TgC03130
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 May 2001 23:29:42 -0500
-Reply-To: <joel@digitalparadise.net>
-From: "Joel Lansden" <joel@digitalparadise.net>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 16 May 2001 00:28:54 -0500
-Message-ID: <GAENJIFENGKGOINJAONFIEOACAAA.joel@digitalparadise.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Help with bootable CD
+Received: from mail-ob03.one.net.au (mail-ob03.one.net.au [61.12.0.163])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D353482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 05:36:01 -0600 (MDT)
+Received: Received: [from squeak.local (async138-ade-isp-2.nas.one.net.au [203.101.90.139])
+	by mail-ob03.one.net.au  with SMTP id f4GBZu021526
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 21:35:57 +1000 (EST)]
+From: amodra@one.net.au
+Date: Wed, 16 May 2001 21:10:20 +0930
+To: Mark Kettenis <kettenis@science.uva.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010516211020.M14368@squeak.one.net.au>
+References: <200105160850.f4G8oer12233@debye.wins.uva.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200105160850.f4G8oer12233@debye.wins.uva.nl>; from kettenis@science.uva.nl on Wed, May 16, 2001 at 10:50:40AM +0200
+Subject: [parisc-linux] Re: hppa-linux libgcc
 List-ID: <linux-parisc.vger.kernel.org>
 
-Greetings all!
+On Wed, May 16, 2001 at 10:50:40AM +0200, Mark Kettenis wrote:
+>    When building shared libs, hppa-linux needs to link against the static
+>    version of libgcc to pick up millicode routines.  hppa-linux doesn't
+>    currently support a shared libgcc because millicode functions cannot
+>    be exported from a shared lib due to the ABI (linker and dynamic linker
+>    really).  To successfully use a shared libgcc, we'd need to link against
+>    _both_ libgcc_s.so and libgcc.a, which is a pain.
+> 
+> Did you consider using a linker script for libgcc_s.so instead of the
+> usual symbolic link to libgcc_s.so.0?
 
-I am getting an error message when I try to boot my 9000 box from this
-CD I created from the ISO image.  The error message is:
+No.  I mainly considered fixing the linker to support calls to millicode
+in shared libs, but didn't get one of those round tuits.  :-(
 
-	"Can't select default wide mode, PDC_PSW call does not work"
+>  The contents of libgcc_s.so
+> would be something like:
+> 
+>   GROUP ( libgcc_s.so.0 libgcc.a )
+> 
+> Glibc uses a similar trick (take a look at /usr/lib/libc.so), and it
+> seems to work fine.
 
-I'm not sure what information I need to provide about my system
-to aid in possibly resolving this, but if anyone could help me out
-I would really appreciate it.
-
-Thanks a million!
-joel@digitalparadise.net
+Thanks.  That's a good idea.
