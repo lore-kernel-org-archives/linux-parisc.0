@@ -1,64 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA19020
-	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 11:04:59 -0700
-Date: Sun, 12 Nov 2000 11:06:38 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001112110638.A1005@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA19685
+	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 12:25:56 -0700
+Date: Sun, 12 Nov 2000 14:27:28 -0500
+From: "Phillip D. Beal" <pdbeal@louisville.edu>
+To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Beta CD
+Message-ID: <20001112142728.A62450@athena.louisville.edu>
+References: <20001110171406.C3196@achilles.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] glibc build fails / bash bug
+In-Reply-To: <20001110171406.C3196@achilles.net>; from pjlahaie@linuxcare.com on Fri, Nov 10, 2000 at 05:14:06PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bdale, taggart and I have been looking at trying to build glibc on hppa
-from Debian's sources.  What we saw was that it looks like a lot of the 
-syscalls were not being reocognized as such by one part of the build, so 
-it tries to build things from the sysdeps/generic directory and fails.
+On Fri, Nov 10, 2000 at 05:14:06PM -0500, Paul J.Y. Lahaie wrote:
+> Hello fellow PA-RISCers,
+> 
+> An preliminary beta CD for PA/Linux has been uploaded to
+> puffin.external.hp.com.  If people could try it and forward any complaints
+> or suggestions to me, it would be greatly appreciated.  The URL for the
+> image is: ftp://puffin.external.hp.com/pub/parisc/cd-images/palinux-0.5.iso.gz
+> 
+> 					- Paul
+The kernel dumps on an HP755.  Actually, how do you make these CD's?  I
+know how to use mkisofs to crerat a filesystem CD, but how you make it
+bootable with a kernel image? 
 
-After a lot of digging, I *think* what is at fault is actually bash. It
-looks like during the build, a shell script (make-syscalls.sh) parses
-through syscalls.list to generate syscall stubs that are needed for the
-build to happen correctly, but these are not being generated. What it 
-boils down to, I think, is this:
-
-(on hppa - bdale's J5K)
-=============================
-tausq@j5k:/space/tausq $ bash --version
-GNU bash, version 2.04.0(1)-release (hppa-unknown-linux-gnu)
-Copyright 1999 Free Software Foundation, Inc.
-tausq@j5k:/space/tausq $ dpkg -l |grep bash
-ii  bash           2.04-7         The GNU Bourne Again SHell
-tausq@j5k:/space/tausq $ cat test.sh
-#!/bin/sh
-
-echo "1 2 3 4 5
-a b c d e 
-" | 
-while read a b c d e; do
-        echo $a $b $c $d $e
-done
-tausq@j5k:/space/tausq $ /bin/bash test.sh
-1 2 3 4 5
-=============================
-(on other archs, tested with i386 and sparc)
-samwise[11:06] ~% bash --version    
-GNU bash, version 2.04.0(1)-release (i386-pc-linux-gnu)
-Copyright 1999 Free Software Foundation, Inc.
-samwise[11:06] ~% dpkg -l |grep bash
-ii  bash           2.04-7         The GNU Bourne Again SHell
-samwise[11:06] ~% /bin/bash test.sh
-1 2 3 4 5
-a b c d e
-
-
-This causes the parsing routines to die quite miserably....
-
-Anyone feel like trying to fix this? :-)
-
-randolph
+Thanks,
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Phillip Beal
+Electrical and Computer Engineering
+S+LUG Vice-President
