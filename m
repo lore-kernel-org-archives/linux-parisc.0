@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (d108.dhcp212-198-139.noos.fr [212.198.139.108])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A6121482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Jul 2003 06:34:24 -0600 (MDT)
-Date: Sat, 12 Jul 2003 14:34:18 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-To: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Sound in 2.5
-Message-Id: <20030712143418.37631a6c.varenet@esiee.fr>
-In-Reply-To: <3F0FB712.7060702@hrzpub.tu-darmstadt.de>
-References: <3F0FB712.7060702@hrzpub.tu-darmstadt.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from nomore-accents1236.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3412A482A
+	for <parisc-linux@parisc-linux.org>; Sat, 12 Jul 2003 07:43:01 -0600 (MDT)
+From: Martin Andrews <mandrews@nomore-accents.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: mandrews@nomore-accents.com
+Date: Sat, 12 Jul 2003 08:42:54 -0500
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="23c14b85-3774-4bd1-84c2-45d79451d506"
+Message-Id: <20030712134301.3412A482A@dsl2.external.hp.com>
+Subject: [parisc-linux] - Are you learning ESL or TESL?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,79 +21,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 12 Jul 2003 09:21:54 +0200
-R=FCdiger Scholz <rscholz@hrzpub.tu-darmstadt.de> wrote:
+This is a multi-part message in MIME format
+--23c14b85-3774-4bd1-84c2-45d79451d506
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> Hi there!
->=20
-> Had anyone success compiling a kernel with sound support enabled? If  I=20
-> enable the ALSA harmony driver, I get a lot of errors during compile:
->=20
-> ---------------SNIP-------------
->=20
->       LD      sound/isa/wavefront/built-in.o
->       LD      sound/isa/built-in.o
->       CC      sound/parisc/harmony.o
->     sound/parisc/harmony.c:80:21: asm/gsc.h: Datei oder Verzeichnis
->     nicht gefunden
->=20
-> ---------------SNAP-------------
->=20
-> The compiler didn't find the file "asm/gsc.h" (first error message:=20
-> "Datei oder Verzeichnis nicht gefunden"). But if I put there the right=20
-> path to gsc.h it won't compile either.
-> Any hints to make some noise with a 2.5-kernel?
->   =20
+Dear Reader,
 
-I guess that a part of the answer stands there:
+No More Accent is an accent reduction product, which helps to remove accents. =
+For example, an Asian lady (or any nationality) may have communication =
+problems with her English when speaking to her work mates or friends.
 
-http://cvs.parisc-linux.org/linux-2.5/include/asm-parisc/Attic/gsc.h
-Revision 1.5 , Fri Nov 1 01:04:30 2002 UTC (8 months, 1 week ago) by willy
-Move gsc_read,write[bwl] to asm/io.h.  Move drivers/parisc/busdevice.h
-to drivers/parisc/gsc.h.  Move the rest of include/asm-parisc/gsc.h
-to drivers/parisc/gsc.h.  Edit dozens of files to remove the include
-of <asm/gsc.h>
+With that in mind, No More Accent teaches Accent Reduction methodologies to =
+help in this area. In fact, No More Accent can be used in almost any =
+situation where an accent reduction is required. Even Actors within the =
+Entertainment Industry have turned to No More Accent as a way to lose or gain =
+an accent of another nationality.
 
-I tried to reproduce, correcting the path to gsc.h, and here's what
-happened:
+No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
+(PAL and NTSC formats) both can be purchased directly via the =
+www.nomore-accents.com website.
+If you would like further information about our products or services, please =
+contact myself 
+when you have a moment.
 
-  CC      sound/parisc/harmony.o
-sound/parisc/harmony.c: In function `snd_card_harmony_playback_open':
-sound/parisc/harmony.c:712: structure has no member named `dma_private'
-sound/parisc/harmony.c:713: structure has no member named `dma_type'
-sound/parisc/harmony.c:713: `SNDRV_PCM_DMA_TYPE_PCI' undeclared (first use
-in this function)
-sound/parisc/harmony.c:713: (Each undeclared identifier
-is reported only once sound/parisc/harmony.c:713: for each function it
-appears in.)
-sound/parisc/harmony.c: In function `snd_card_harmony_capture_open':
-sound/parisc/harmony.c:736: structure has no member named `dma_private'
-sound/parisc/harmony.c:737: structure has no member named `dma_type'
-sound/parisc/harmony.c:737:`SNDRV_PCM_DMA_TYPE_PCI' undeclared (first use
-in this function)
-sound/parisc/harmony.c: In function `snd_card_harmony_hw_params':
-sound/parisc/harmony.c:784: warning: unused variable `runtime'
-sound/parisc/harmony.c: In function`snd_card_harmony_pcm_init':
-sound/parisc/harmony.c:827: warning: passing arg 2 of `request_irq' from
-incompatible pointer type
-sound/parisc/harmony.c: In function`snd_card_harmony_create':
-sound/parisc/harmony.c:1033: warning: implicit declaration of
-function`ccio_get_fake'
-sound/parisc/harmony.c:1033: warning: assignment makes pointer from
-integer without a cast
-sound/parisc/harmony.c: At top level:
-include/sound/initval.h:140: warning: `get_id' defined but not used
-make[2]:***[sound/parisc/harmony.o] Error 1
+Best Wishes...
 
-Since I've not closely followed the last change made to 2.5, I cannot tell
-right now what's wrong. Maybe willy can give us some hints there? ;)
-Laurent Canet, which is the author of this driver, is currently on
-vacation (as I'm supposed to be, btw ;P) so don't expect any help from him
-before a little while.
+Martin Andrews
+Marketing Co-ordinator
 
-I'll have a closer look and try to find out what's wrong.
+http://www.nomore-accents.com
 
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Your #1 Resource for Accent Reduction!    
+--23c14b85-3774-4bd1-84c2-45d79451d506--
