@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.goquest.com (mail.goquest.com [63.172.73.8])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8D8C54858
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 07:54:10 -0600 (MDT)
-Content-Type: Multipart/Mixed;
-  charset="iso-8859-1";
-  boundary="------------Boundary-00=_48ILNKL7Q657NL4ICRPL"
-From: Michael S.Zick <mszick@goquest.com>
-To: parisc-linux@lists.parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E52DC4859
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 08:11:32 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17I8qQ-0001yO-00; Wed, 12 Jun 2002 15:11:30 +0100
+Date: Wed, 12 Jun 2002 15:11:30 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "Michael S. Zick" <mszick@goquest.com>
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200
-Date: Wed, 12 Jun 2002 08:45:40 -0500
-Cc: mszick@MoreThan.org
-References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <20020611145848.GA2796@tausq.org> <02061113393800.04435@localhost.localdomain>
-In-Reply-To: <02061113393800.04435@localhost.localdomain>
-MIME-Version: 1.0
-Message-Id: <02061208454000.00732@localhost.localdomain>
+Message-ID: <20020612151130.U27449@parcelfarce.linux.theplanet.co.uk>
+References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <02061107100403.00732@localhost.localdomain> <20020611145848.GA2796@tausq.org> <02061113393800.04435@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <02061113393800.04435@localhost.localdomain>; from mszick@goquest.com on Tue, Jun 11, 2002 at 01:39:38PM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,146 +26,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---------------Boundary-00=_48ILNKL7Q657NL4ICRPL
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+On Tue, Jun 11, 2002 at 01:39:38PM -0500, Michael S. Zick wrote:
+> using objdump -d on the kernel.o produced by my compiler
+> (a different version of GCC than used for pa-risc) I find that
+> for the "c" code sequence:
+> ....
+> int cpu = smp_processor_id() ;
+> 
+> __save_flags(flags) ;
+> ....
+> generates assembly code which modifies the flags during the
+> initialization of "cpu" before the flags are actually saved.
 
-On Tuesday 11 June 2002 01:39 pm, Michael S. Zick wrote:
-> On Tuesday 11 June 2002 09:58 am, Randolph Chung wrote:
-> > think we are looking at multiple bugs here.....
->
-> Very likely...
-Sirs...
-I now have a definate lead for the x86-SMP case, which might 
-aid the troubleshooters in the pa-risc branch (diff's attached).
+are you sure?  every architecture (apart from sparc32) uses:
 
-Evidently, some code path is causing these portions of IRQ 
-service to be entered with the IRQ state not as designed.
+#define smp_processor_id() (current->processor)
 
-These patches preserve callers interrupt state, eliminating
-the erratic behavior, which is only an artifact of the true cause.
+admittedly on i386 (which is where you seem to be investigating), this
+expands to:
 
-True cause still unknown.
+get_current()->processor
 
-Additional note: On the HP models with the worst of the problems;
-is the physical_cpu_id and the logical_cpu_id a 1:1 mapping as
-it is on x86 systems?
+which expands to
 
-Mike
+andl %%esp,%0
 
---------------Boundary-00=_48ILNKL7Q657NL4ICRPL
-Content-Type: text/x-c;
-  charset="iso-8859-1";
-  name="irq.c.diff"
-Content-Transfer-Encoding: base64
-Content-Description: x86 branch, don't presume IRQ state
-Content-Disposition: attachment; filename="irq.c.diff"
+where 8191UL has previously been loaded into register %0.  but i don't
+see how this can affect the interrupt flags.  admittedly, i know very
+little about x86, but there are many other instances of code like this
+in the kernel.
 
-LS0tIGxpbnV4LTIuNC4xOC9hcmNoL2kzODYva2VybmVsL2lycS5jLm9yZwlUaHUgT2N0IDI1IDE1
-OjUzOjQ2IDIwMDEKKysrIGxpbnV4LTIuNC4xOC9hcmNoL2kzODYva2VybmVsL2lycS5jCVR1ZSBK
-dW4gMTEgMTk6MDk6MTQgMjAwMgpAQCAtMzg3LDcgKzM4Nyw3IEBACiAJaW50IHJldHZhbDsKIAlp
-bnQgbG9jYWxfZW5hYmxlZDsKIAl1bnNpZ25lZCBsb25nIGZsYWdzOwotCWludCBjcHUgPSBzbXBf
-cHJvY2Vzc29yX2lkKCk7CisJaW50IGNwdSA7ICAvKiBkb24ndCBpbml0aWFsaXplIGNwdSBoZXJl
-LCBpdCBjaGFuZ2VzIHRoZSBmbGFncyAtIE1TWiAqLwogCiAJX19zYXZlX2ZsYWdzKGZsYWdzKTsK
-IAlsb2NhbF9lbmFibGVkID0gKGZsYWdzID4+IEVGTEFHU19JRl9TSElGVCkgJiAxOwpAQCAtMzk1
-LDYgKzM5NSw3IEBACiAJcmV0dmFsID0gMiArIGxvY2FsX2VuYWJsZWQ7CiAKIAkvKiBjaGVjayBm
-b3IgZ2xvYmFsIGZsYWdzIGlmIHdlJ3JlIG5vdCBpbiBhbiBpbnRlcnJ1cHQgKi8KKwljcHUgPSBz
-bXBfcHJvY2Vzc29yX2lkKCk7CiAJaWYgKCFsb2NhbF9pcnFfY291bnQoY3B1KSkgewogCQlpZiAo
-bG9jYWxfZW5hYmxlZCkKIAkJCXJldHZhbCA9IDE7CkBAIC01MDcsOSArNTA4LDEyIEBACiAgCiB2
-b2lkIGRpc2FibGVfaXJxKHVuc2lnbmVkIGludCBpcnEpCiB7CisJaW50IGNwdV9pZCA7CisKIAlk
-aXNhYmxlX2lycV9ub3N5bmMoaXJxKTsKKwljcHVfaWQgPSBzbXBfcHJvY2Vzc29yX2lkKCkgOwog
-Ci0JaWYgKCFsb2NhbF9pcnFfY291bnQoc21wX3Byb2Nlc3Nvcl9pZCgpKSkgeworCWlmICghbG9j
-YWxfaXJxX2NvdW50KGNwdV9pZCkpIHsKIAkJZG8gewogCQkJYmFycmllcigpOwogCQkJY3B1X3Jl
-bGF4KCk7CkBAIC04MDYsNiArODEwLDcgQEAKIAlpcnFfZGVzY190ICpkZXNjOwogCXVuc2lnbmVk
-IGxvbmcgdmFsOwogCXVuc2lnbmVkIGxvbmcgZGVsYXk7CisJdW5zaWduZWQgbG9uZyBmbGFnczsg
-IC8qIERvbid0IHByZXN1bWUgaW50ZXJydXB0IHN0YXRlIC0gTVNaICovCiAKIAlkb3duKCZwcm9i
-ZV9zZW0pOwogCS8qIApAQCAtODE1LDEwICs4MjAsMTIgQEAKIAlmb3IgKGkgPSBOUl9JUlFTLTE7
-IGkgPiAwOyBpLS0pICB7CiAJCWRlc2MgPSBpcnFfZGVzYyArIGk7CiAKLQkJc3Bpbl9sb2NrX2ly
-cSgmZGVzYy0+bG9jayk7CisJCXNwaW5fbG9ja19pcnFzYXZlKCZkZXNjLT5sb2NrLGZsYWdzKTsK
-Ky8qIE1TWgkJc3Bpbl9sb2NrX2lycSgmZGVzYy0+bG9jayk7ICovCiAJCWlmICghaXJxX2Rlc2Nb
-aV0uYWN0aW9uKSAKIAkJCWlycV9kZXNjW2ldLmhhbmRsZXItPnN0YXJ0dXAoaSk7Ci0JCXNwaW5f
-dW5sb2NrX2lycSgmZGVzYy0+bG9jayk7CisJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRlc2Mt
-PmxvY2ssZmxhZ3MpOworLyogTVNaCQlzcGluX3VubG9ja19pcnEoJmRlc2MtPmxvY2spOyAqLwog
-CX0KIAogCS8qIFdhaXQgZm9yIGxvbmdzdGFuZGluZyBpbnRlcnJ1cHRzIHRvIHRyaWdnZXIuICov
-CkBAIC04MzMsMTMgKzg0MCwxNSBAQAogCWZvciAoaSA9IE5SX0lSUVMtMTsgaSA+IDA7IGktLSkg
-ewogCQlkZXNjID0gaXJxX2Rlc2MgKyBpOwogCi0JCXNwaW5fbG9ja19pcnEoJmRlc2MtPmxvY2sp
-OworCQlzcGluX2xvY2tfaXJxc2F2ZSgmZGVzYy0+bG9jayxmbGFncyk7CisvKiBNU1oJCXNwaW5f
-bG9ja19pcnEoJmRlc2MtPmxvY2spOyAqLwogCQlpZiAoIWRlc2MtPmFjdGlvbikgewogCQkJZGVz
-Yy0+c3RhdHVzIHw9IElSUV9BVVRPREVURUNUIHwgSVJRX1dBSVRJTkc7CiAJCQlpZiAoZGVzYy0+
-aGFuZGxlci0+c3RhcnR1cChpKSkKIAkJCQlkZXNjLT5zdGF0dXMgfD0gSVJRX1BFTkRJTkc7CiAJ
-CX0KLQkJc3Bpbl91bmxvY2tfaXJxKCZkZXNjLT5sb2NrKTsKKwkJc3Bpbl91bmxvY2tfaXJxcmVz
-dG9yZSgmZGVzYy0+bG9jayxmbGFncyk7CisvKiBNU1oJCXNwaW5fdW5sb2NrX2lycSgmZGVzYy0+
-bG9jayk7ICovCiAJfQogCiAJLyoKQEAgLTg1Niw3ICs4NjUsOCBAQAogCQlpcnFfZGVzY190ICpk
-ZXNjID0gaXJxX2Rlc2MgKyBpOwogCQl1bnNpZ25lZCBpbnQgc3RhdHVzOwogCi0JCXNwaW5fbG9j
-a19pcnEoJmRlc2MtPmxvY2spOworCQlzcGluX2xvY2tfaXJxc2F2ZSgmZGVzYy0+bG9jayxmbGFn
-cyk7CisvKiBNU1oJCXNwaW5fbG9ja19pcnEoJmRlc2MtPmxvY2spOyAqLwogCQlzdGF0dXMgPSBk
-ZXNjLT5zdGF0dXM7CiAKIAkJaWYgKHN0YXR1cyAmIElSUV9BVVRPREVURUNUKSB7CkBAIC04Njgs
-NyArODc4LDggQEAKIAkJCQlpZiAoaSA8IDMyKQogCQkJCQl2YWwgfD0gMSA8PCBpOwogCQl9Ci0J
-CXNwaW5fdW5sb2NrX2lycSgmZGVzYy0+bG9jayk7CisJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUo
-JmRlc2MtPmxvY2ssZmxhZ3MpOworLyogTVNaCQlzcGluX3VubG9ja19pcnEoJmRlc2MtPmxvY2sp
-OyAqLwogCX0KIAogCXJldHVybiB2YWw7CkBAIC04OTUsMTMgKzkwNiwxNSBAQAogewogCWludCBp
-OwogCXVuc2lnbmVkIGludCBtYXNrOworCXVuc2lnbmVkIGludCBmbGFnczsgIC8qIGRvbid0IHBy
-ZXN1bWUgaW50ZXJydXB0IHN0YXRlIC0gTVNaICovCiAKIAltYXNrID0gMDsKIAlmb3IgKGkgPSAw
-OyBpIDwgTlJfSVJRUzsgaSsrKSB7CiAJCWlycV9kZXNjX3QgKmRlc2MgPSBpcnFfZGVzYyArIGk7
-CiAJCXVuc2lnbmVkIGludCBzdGF0dXM7CiAKLQkJc3Bpbl9sb2NrX2lycSgmZGVzYy0+bG9jayk7
-CisJCXNwaW5fbG9ja19pcnFzYXZlKCZkZXNjLT5sb2NrLGZsYWdzKTsKKy8qIE1TWgkJc3Bpbl9s
-b2NrX2lycSgmZGVzYy0+bG9jayk7ICovCiAJCXN0YXR1cyA9IGRlc2MtPnN0YXR1czsKIAogCQlp
-ZiAoc3RhdHVzICYgSVJRX0FVVE9ERVRFQ1QpIHsKQEAgLTkxMSw3ICs5MjQsOCBAQAogCQkJZGVz
-Yy0+c3RhdHVzID0gc3RhdHVzICYgfklSUV9BVVRPREVURUNUOwogCQkJZGVzYy0+aGFuZGxlci0+
-c2h1dGRvd24oaSk7CiAJCX0KLQkJc3Bpbl91bmxvY2tfaXJxKCZkZXNjLT5sb2NrKTsKKwkJc3Bp
-bl91bmxvY2tfaXJxcmVzdG9yZSgmZGVzYy0+bG9jayxmbGFncyk7CisvKiBNU1oJCXNwaW5fdW5s
-b2NrX2lycSgmZGVzYy0+bG9jayk7ICovCiAJfQogCXVwKCZwcm9iZV9zZW0pOwogCkBAIC05NTAs
-OCArOTY0LDEwIEBACiAJZm9yIChpID0gMDsgaSA8IE5SX0lSUVM7IGkrKykgewogCQlpcnFfZGVz
-Y190ICpkZXNjID0gaXJxX2Rlc2MgKyBpOwogCQl1bnNpZ25lZCBpbnQgc3RhdHVzOworCQl1bnNp
-Z25lZCBsb25nIGZsYWdzOyAgLyogRG9uJ3QgcHJlc3VtZSBpbnRlcnJ1cHQgc3RhdGUgLSAgTVNa
-ICovCiAKLQkJc3Bpbl9sb2NrX2lycSgmZGVzYy0+bG9jayk7CisJCXNwaW5fbG9ja19pcnFzYXZl
-KCZkZXNjLT5sb2NrLGZsYWdzKTsKKy8qIE1TWgkJc3Bpbl9sb2NrX2lycSgmZGVzYy0+bG9jayk7
-ICovCiAJCXN0YXR1cyA9IGRlc2MtPnN0YXR1czsKIAogCQlpZiAoc3RhdHVzICYgSVJRX0FVVE9E
-RVRFQ1QpIHsKQEAgLTk2Myw3ICs5NzksOCBAQAogCQkJZGVzYy0+c3RhdHVzID0gc3RhdHVzICYg
-fklSUV9BVVRPREVURUNUOwogCQkJZGVzYy0+aGFuZGxlci0+c2h1dGRvd24oaSk7CiAJCX0KLQkJ
-c3Bpbl91bmxvY2tfaXJxKCZkZXNjLT5sb2NrKTsKKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgm
-ZGVzYy0+bG9jayxmbGFncyk7CisvKiBNU1oJCXNwaW5fdW5sb2NrX2lycSgmZGVzYy0+bG9jayk7
-ICovCiAJfQogCXVwKCZwcm9iZV9zZW0pOwogCgo=
-
---------------Boundary-00=_48ILNKL7Q657NL4ICRPL
-Content-Type: text/x-c;
-  charset="iso-8859-1";
-  name="softirq.c.diff"
-Content-Transfer-Encoding: base64
-Content-Description: generic, don't presume IRQ state
-Content-Disposition: attachment; filename="softirq.c.diff"
-
-LS0tIGxpbnV4LTIuNC4xOC9rZXJuZWwvc29mdGlycS5jLnJtbAlUdWUgSnVuIDExIDIwOjI0OjI0
-IDIwMDIKKysrIGxpbnV4LTIuNC4xOC9rZXJuZWwvc29mdGlycS5jCVR1ZSBKdW4gMTEgMjA6NTA6
-MzggMjAwMgpAQCAtMTc3LDExICsxNzcsMTQgQEAKIHsKIAlpbnQgY3B1ID0gc21wX3Byb2Nlc3Nv
-cl9pZCgpOwogCXN0cnVjdCB0YXNrbGV0X3N0cnVjdCAqbGlzdDsKKwl1bnNpZ25lZCBsb25nIGZs
-YWdzOyAgLyogRG9uJ3QgcHJlc3VtZSBpbnRlcnJ1cHQgc3RhdGUgKi8KIAotCWxvY2FsX2lycV9k
-aXNhYmxlKCk7CisJbG9jYWxfaXJxX3NhdmUoZmxhZ3MpOyAgLyogTVNaICovCisvKiBNU1oJbG9j
-YWxfaXJxX2Rpc2FibGUoKTsgKi8KIAlsaXN0ID0gdGFza2xldF92ZWNbY3B1XS5saXN0OwogCXRh
-c2tsZXRfdmVjW2NwdV0ubGlzdCA9IE5VTEw7Ci0JbG9jYWxfaXJxX2VuYWJsZSgpOworCWxvY2Fs
-X2lycV9yZXN0b3JlKGZsYWdzKTsgLyogTVNaICovCisvKiBNU1oJbG9jYWxfaXJxX2VuYWJsZSgp
-OyAgKi8KIAogCXdoaWxlIChsaXN0KSB7CiAJCXN0cnVjdCB0YXNrbGV0X3N0cnVjdCAqdCA9IGxp
-c3Q7CkBAIC0xOTksMTEgKzIwMiwxMyBAQAogCQkJdGFza2xldF91bmxvY2sodCk7CiAJCX0KIAot
-CQlsb2NhbF9pcnFfZGlzYWJsZSgpOworCQlsb2NhbF9pcnFfc2F2ZShmbGFncyk7ICAvKiBNU1og
-Ki8KKy8qIE1TWgkJbG9jYWxfaXJxX2Rpc2FibGUoKTsgKi8KIAkJdC0+bmV4dCA9IHRhc2tsZXRf
-dmVjW2NwdV0ubGlzdDsKIAkJdGFza2xldF92ZWNbY3B1XS5saXN0ID0gdDsKIAkJX19jcHVfcmFp
-c2Vfc29mdGlycShjcHUsIFRBU0tMRVRfU09GVElSUSk7Ci0JCWxvY2FsX2lycV9lbmFibGUoKTsK
-KwkJbG9jYWxfaXJxX3Jlc3RvcmUoZmxhZ3MpOyAvKiBNU1ogKi8KKy8qIE1TWgkJbG9jYWxfaXJx
-X2VuYWJsZSgpOyAgKi8KIAl9CiB9CiAKQEAgLTIxMSwxMSArMjE2LDE0IEBACiB7CiAJaW50IGNw
-dSA9IHNtcF9wcm9jZXNzb3JfaWQoKTsKIAlzdHJ1Y3QgdGFza2xldF9zdHJ1Y3QgKmxpc3Q7CisJ
-dW5zaWduZWQgbG9uZyBmbGFnczsgIC8qIERvbid0IHByZXN1bWUgaW50ZXJydXB0IHN0YXRlICov
-CiAKLQlsb2NhbF9pcnFfZGlzYWJsZSgpOworCWxvY2FsX2lycV9zYXZlKGZsYWdzKTsgIC8qIE1T
-WiAqLworLyogTVNaCWxvY2FsX2lycV9kaXNhYmxlKCk7ICovCiAJbGlzdCA9IHRhc2tsZXRfaGlf
-dmVjW2NwdV0ubGlzdDsKIAl0YXNrbGV0X2hpX3ZlY1tjcHVdLmxpc3QgPSBOVUxMOwotCWxvY2Fs
-X2lycV9lbmFibGUoKTsKKwlsb2NhbF9pcnFfcmVzdG9yZShmbGFncyk7IC8qIE1TWiAqLworLyog
-TVNaCWxvY2FsX2lycV9lbmFibGUoKTsgKi8KIAogCXdoaWxlIChsaXN0KSB7CiAJCXN0cnVjdCB0
-YXNrbGV0X3N0cnVjdCAqdCA9IGxpc3Q7CkBAIC0yMzMsMTEgKzI0MSwxMyBAQAogCQkJdGFza2xl
-dF91bmxvY2sodCk7CiAJCX0KIAotCQlsb2NhbF9pcnFfZGlzYWJsZSgpOworCQlsb2NhbF9pcnFf
-c2F2ZShmbGFncyk7ICAvKiBNU1ogKi8KKy8qIE1TWgkJbG9jYWxfaXJxX2Rpc2FibGUoKTsgKi8K
-IAkJdC0+bmV4dCA9IHRhc2tsZXRfaGlfdmVjW2NwdV0ubGlzdDsKIAkJdGFza2xldF9oaV92ZWNb
-Y3B1XS5saXN0ID0gdDsKIAkJX19jcHVfcmFpc2Vfc29mdGlycShjcHUsIEhJX1NPRlRJUlEpOwot
-CQlsb2NhbF9pcnFfZW5hYmxlKCk7CisJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsgLyogTVNa
-ICovCisvKiBNU1oJCWxvY2FsX2lycV9lbmFibGUoKTsgKi8KIAl9CiB9CiAKCg==
-
---------------Boundary-00=_48ILNKL7Q657NL4ICRPL--
+-- 
+Revolutions do not require corporate support.
