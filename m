@@ -1,40 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA31821
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 18:15:07 -0600
-Date: Tue, 19 Oct 1999 16:24:49 -0400 (EDT)
-From: Christopher Beard <chris@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA00325
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 22:55:22 -0600
+Received: from vodka.thepuffingroup.com by mrelay.bellglobal.com
+ (PMDF V5.1-12 #26722) with ESMTP id <0FJV00CE2XPQE0@mrelay.bellglobal.com> for
+ parisc-linux@thepuffingroup.com; Wed, 20 Oct 1999 00:56:15 -0400 (EDT)
+Date: Wed, 20 Oct 1999 01:02:52 -0400 (EDT)
+From: Alex deVries <adevries@thepuffingroup.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9910191607110.10378-100000@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] So you wanna get to a prompt, eh?
+Message-id: <Pine.LNX.4.10.9910200059250.14349-100000@vodka.thepuffingroup.com>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] a WAX question.
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-I've spent most of the afternoon working on the patches sent in by Thomas
-Bogendoerfer, and have extended them to get the kernel working and to a
-functional sash prompt. 
+I've figured out the problems with getting Lasi working on my brand
+spanking new 712/80, and had to make a more general Lasi hversion and
+sversion pattern matching included in lasi.c (to be committed shortly).
 
-Instead of waiting on prumpf and others to finish commiting their code
-(which I'm told conflicts with these changes), and not wanting to scramble
-the CVS,  I'm going to post a tarball of my kernel tree at:
+I'm trying to make a generic one for RS232, and going through the hardware
+table in arch/parisc/kernel/hardware.c, I need to ensure that I don't
+conflict with other non-lasi serial ports.  
 
-ftp://puffin.external.hp.com/pub/parisc/src/parisc-linux-src-19991019.tar.gz
+Something that comes up quite a bit in those entries is WAX.  Is there
+actually a serial port on the WAX chip?  What can people tell me about
+this chip?
 
-And for those you out there who are interested in helping us test the
-kernel, I've also posted a functional kernel image, for you try. You can
-find it at:
+- Alex
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Image-19991019-workingsash
-
-And not wanted to leave much as an excercise for the reader, I've also
-posted the ramdisk that I used, which has been extended to include
-/dev/console, etc.
- 
-ftp://puffin.external.hp.com/pub/parisc/binaries/ramdisks/ramdisk.bin-19991019-workingsash
-
-See http://www.thepuffingroup.com/parisc/recipe.html for Grant Grundler's
-recipe, which includes a section on how to boot you PA-RISC box with one of
-our kernel images.
-
-Chris
+-- 
+Alex deVries <adevries@thepuffingroup.com>
+Vice President Engineering
+The Puffin Group
