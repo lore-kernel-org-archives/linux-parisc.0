@@ -1,40 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA17881
-	for <parisc-linux@puffin.external.hp.com>; Fri, 23 Jun 2000 05:30:26 -0600
-Received: from ppp-1-197.cvx3.telinco.net (HELO rhirst.linuxcare.com) (@212.1.144.197)
-  by mailserv2.iuinc.com with SMTP; 23 Jun 2000 11:31:35 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 65FD2B005; Fri, 23 Jun 2000 12:31:15 +0100 (BST)
-Date: Fri, 23 Jun 2000 12:31:15 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA19527
+	for <parisc-linux@puffin.external.hp.com>; Fri, 23 Jun 2000 09:25:18 -0600
+Received: from springhead.px.uk.com (IDENT:dg@springhead.px.uk.com [172.16.18.41])
+	by bastion.power-x.co.uk (8.9.3/8.9.3) with ESMTP id QAA15566
+	for <parisc-linux@thepuffingroup.com>; Fri, 23 Jun 2000 16:26:05 +0100
+Date: Fri, 23 Jun 2000 16:25:19 +0100 (BST)
+From: "Dr. David Gilbert" <gilbertd@treblig.org>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <20000623123115.K922@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] sym53c8xx.c now works with 53c875 on parisc
+Message-ID: <Pine.LNX.4.10.10006231621230.12873-100000@springhead.px.uk.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Getting 712 to boot
 List-ID: <linux-parisc.vger.kernel.org>
 
 Hi,
-  I have fixed a couple of problems with parisc dynamic dma code so that
-sym53c8xx.c now works on the 53c875 (on-board FWSCSI on my B180L).
+  I've just tried PA/Linux for the first time on a mouldy 712/100 lying
+in the back of our server room.
 
-The config options I used are:
+  I'm cross building from a Linux/x86 box (RH 6.1) and followed most of
+the recipe.
 
-CONFIG_SCSI_SYM53C8XX=y
-CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS=8
-CONFIG_SCSI_NCR53C8XX_MAX_TAGS=32
-CONFIG_SCSI_NCR53C8XX_SYNC=20
-# CONFIG_SCSI_NCR53C8XX_PROFILE is not set
-CONFIG_SCSI_NCR53C8XX_IOMAPPED=y
+  I'm net booting it and the kernel loads, detects all the devices and
+then stops after:
 
-The main problem was that xxx_alloc_consistent() should return a
-virtual address that is aligned to a power of 2 boundary equivalent
-to the size requested.  We used get_vm_area() which doesn't worry about
-alignment of returned areas.  I have got round this by introducing a
-new get_aligned_vm_area() function in mm/vmalloc.c, but I guess that
-is probably only temporary until we decide on the proper solution.
-Other archs use get_free_pages and so avoid this problem.
+Found i82596 @0xf0107000, IRQ 535
+early initialization of device eth0 is deferred
+SBA at 0xfed00000
 
-Suggestions, anyone?
+Any ideas?
 
-Richard
+Dave
+
+/------------------------------------------------------------------\
+| Dr. David Alan Gilbert | Work:dg@px.uk.com +44-161-286-2000 Ex258|
+| -------- G7FHJ --------|---------------------------------------- |
+| Home: dave@treblig.org            http://www.treblig.org         |
+\------------------------------------------------------------------/
