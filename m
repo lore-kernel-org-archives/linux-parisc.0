@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [206.129.116.70])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 846BC4830
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Sep 2003 17:43:41 -0600 (MDT)
-Date: Fri, 12 Sep 2003 16:43:28 -0700 (PDT)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: parisc-linux@lists.parisc-linux.org
-Cc: debian-hppa@lists.debian.org
-In-Reply-To: <20030830021622.GF13467@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.50.0309121543430.11075-100000@ssh.apptechsys.com>
-References: <010d01c36e5d$9d0748a0$0201a8c0@mainframe>
- <Pine.LNX.4.50.0308291612160.11075-100000@ssh.apptechsys.com>
- <20030830021622.GF13467@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Win2k server boot howto
+Date: Fri, 12 Sep 2003 20:48:08 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org, jbglaw@lug-owl.de
+Subject: Re: [parisc-linux] Re: Looking for info on getting X running on my 712
+Message-ID: <20030913024808.GA15109@dsl2.external.hp.com>
+References: <200309121857.h8CIvJf7014048@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200309121857.h8CIvJf7014048@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,75 +20,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is about using the dhcp server in win2k server to net boot a parisc 
-box.
+On Fri, Sep 12, 2003 at 02:57:19PM -0400, John David Anglin wrote:
+> Does this mean that's there is no way to run with a 24 bit depth
+> on a Vis-EG?
 
-On Sat, 30 Aug 2003, Matthew Wilcox wrote:
+that's correct. Vis-EG only supports 8-bit color.
+We could get 24-bit color if we could get FX-E cards working but
+they suffer the same lack of support as FX-[246] cards.
 
-> On Fri, Aug 29, 2003 at 04:14:04PM -0700, Jeremy Drake wrote:
-> > I have done it with the DHCP server that comes with win2k server.
-> 
-> I think this might be useful information for the FAQ.  Could you write
-> it up?
+I've switched to using "TrueColor" until Xf86 "render" module
+stops hogging most of the colormap. Regular text modes are fine.
+Image quality does suffer though.
 
-Here is my first attempt at writing this up.  Please send your
-criticisms/spelling fixes/flames.
+BTW, Vis-EG on C3k does support 1600x1200 if you multi-sync monitor
+can handle it. Most LCD displays can not.
 
-------------------------------
+...
+> Oh, I've one other X config problem.  The usb mouse stops responding
+> at logout from kde.  If I restart the X server with <alt>E, functionality
+> is restored.  I don't believe that this is a kde problem.  Anybody have
+> a solution?
 
-I used Tftpd from http://tftpd32.jounin.net/ (which, in an unrelated side
-note, was used as part of the blaster worm, according to the site).  I
-used the dhcp server which is a part of win2k server (Control Panel,
-Add/remove programs, Windows components, Networking Services, Dynamic Host
-Configuration Protocol (DHCP)).
+This is an old problem. First mention of it was several years ago.
+More recently (Sept 2002) there's a whole thread on it starting with:
+    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017724.html
 
-First, lets ask the box what its mac address is.  I'm assuming you have a
-functional console.  Power on the box, and when it says "press any key to"  
-whatever press any key, and at the BOOT_ADMIN> prompt, type "in la" and
-hit enter.  (For those of you who like to type, that's short for
-information lan).  It will give you a hex number which is your
-workstation's mac address.
+Work around is to switch to VT1 (ctl-alt-F1) and then back to the
+FB VT (ctl-alt-F2 in my case).
 
-Start up the DHCP admin tool (Start, Settings, Control Panel, Admin.  
-Tools, DHCP).  Expand your server in the tree, and right click on
-Reservations.  Select "New Reservation...".  For reservation name, I put
-my box's name.  Give it an ip address that is not used in IP address, and
-enter the box's mac address in mac address (no delimiters, just a big hex
-number), and select Both for whether it should be bootp or dhcp.  Then,
-find your new reservation at the bottom of the list under Reservations,
-and click it.  Right click and choose "Configure Options..."  It should
-have inherited your server's default options, so I won't cover setting
-router, dns, wins, and lease length.  Scroll down the list of options
-until you get to 066, Boot Server Host Name.  Check the box next to that
-option, and enter your tftp server's ip address (I don't trust dns to work
-in IPL).  Also check 067, Bootfile Name, and enter the name of the
-lifimage (generally, lifimage is a good choice here).  Say ok to that box,
-we're done in dhcp!
-
-Fire up tftpd32, and click the "browse" button.  Browse to where you put
-your lifimage, and say ok.  Make sure the ip address below the directory
-is the right one; if not, drop down the list and pick the right one.  
-Leave this app up, the server only runs when the gui is displayed (not
-sure if you can run it as a service)
-
-Now we're ready to boot the box.  Go back to the box, get the BOOT_ADMIN>
-prompt again (if you turned it off after the first time, or type "ma" for
-the main menu if you didn't).  Type "sea" (for search), and if everything
-is good, you should see something like "P0 LAN.<BLAH>".  If you do,
-congrats, if not, check all of the settings on the server (like, you
-recorded and typed the mac address correctly, and your dhcp server is on
-the same physical network segment as your workstation).  If it shows a
-line like the above, enter "bo p0" (or whichever p number the LAN was by).  
-Anything beyond this point belongs to an install howto more than a win2k
-server boot howto...
-
---------------------------------
-
-
-
-
--- 
-Computers make excellent and efficient servants, but I have no wish to
-serve under them.  Captain, a starship also runs on loyalty to one
-man.  And nothing can replace it or him.
-		-- Spock, "The Ultimate Computer", stardate 4729.4
+grant
