@@ -1,15 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 25.18.05.08 (unknown [192.116.105.87])
-	by dsl2.external.hp.com (Postfix) with SMTP id E925248BA
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Oct 2003 23:18:19 -0600 (MDT)
-From: Segun Agbaje <seg_agbj@tiscali.co.uk>
-To: parisc-linux@lists.parisc-linux.org
-Reply-To: seg_agbj@tiscali.co.uk
-Date: Wed, 08 Oct 2003 05:18:09 +0200
+Received: from mail8-haw-R.bigfish.com (mail-haw.bigfish.com [12.129.199.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B789D483E
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Oct 2003 08:29:02 -0600 (MDT)
+Received: from mail8-haw.bigfish.com (localhost.localdomain [127.0.0.1])
+	by mail8-haw-R.bigfish.com (Postfix) with ESMTP id 4549022E5B0
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Oct 2003 14:29:02 +0000 (UCT)
+Received: from smtpgw5.sprintspectrum.com (smtpgw5.sprintspectrum.com [207.40.188.13])
+	by mail8-haw.bigfish.com (Postfix) with ESMTP id BA6E622E577
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Oct 2003 14:29:01 +0000 (UCT)
+Received: from mailhost.sprintspectrum.com (smtpgw8.it.sprintspectrum.com [207.40.65.56])
+	by smtpgw5.sprintspectrum.com (8.12.10/8.12.8) with ESMTP id h98ET1B0024939
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 8 Oct 2003 09:29:01 -0500 (CDT)
+Received: from PDAWG02A.corp.sprint.com (localhost [127.0.0.1])
+	by mailhost.sprintspectrum.com (Switch-2.2.8/Switch-2.2.6) with ESMTP id h98ET0213666
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 8 Oct 2003 09:29:00 -0500 (CDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="5b3aeaca-e562-4b34-992e-3bc028071e02"
-Message-Id: <20031008051819.E925248BA@dsl2.external.hp.com>
-Subject: [parisc-linux] Hello
+Content-Type: text/plain;
+	charset="us-ascii"
+Date: Wed, 8 Oct 2003 09:28:31 -0500
+Message-ID: <1289146742B56546AE580DFC6B711A8313482D@PKDWB07C.ad.sprint.com>
+From: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] A3591B (Tachyon) FC Card
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,62 +33,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---5b3aeaca-e562-4b34-992e-3bc028071e02
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+I am interested in making this card work.  If anyone else is, I would
+certainly appreciate some help!  :)
 
+I'm trying to figure out whether it would be a good idea to use some of
+the existing code in the cpqfcTS* driver (similar to the way that the
+zalon7xx scsi host template calls code in the ncr53c8xx driver).
+However, the cpqfcTS* code is quite a beast, perhaps writing the driver
+from scratch would be better?  (Googling the list archives shows that
+I'm not the only one intimidated(?) by the compaq code :)
 
-Dear Sir/Madam, 
+I haven't been able to find ANY documentation on this particular card
+(not counting the installation manual).  Does anyone else have docs for
+this card or the Tachyon(?) chipset it uses??
 
-It is indeed my pleasure to write to you this letter, which I believe will be =
+I guess the icing on the cake is the fact that I don't have ANY
+experience writing device drivers.  However, I was able to find an old
+article by Alan Cox on how to write a simple scsi driver that has been
+very helpful.  I'd appreciate any references to other docs that may be
+helpful to a neophyte like myself (specifically, anything that may
+explain the parisc-linux specific interfaces register_parisc_driver(),
+and the GSC interfaces).
 
-a suprise, as we are both complete strangers. My name is Mr Segun Agbaje, the =
+Thank you,
 
-Deputy Managing Director of COMMERICAL BANK OF AFRICA. I am writing in =
-respect 
-of a foreign customer of my bank with account number 14-255-2004/utb/t who 
-perished in a plane crash Korean Air Flight 801] with the whole passengers 
-aboard on August 6, 1997. Since the demise of this 
-our customer,I personally has watched with keen interest to see the next of 
-kin but all has proved abortive as no one has come to claim his funds of 
-USD.28.5m,[twenty eight million five hundred thousand united states dollars] 
-=
-
-which has been with my branch for a very long time. 
-
-On this note, I decided to seek for whom his name shall be used as the next =
-of 
-kin as no one has come up to be the next of kin. And the banking ethics here 
-=
-
-does not allow such money to stay more than Six years, because money will be 
-=
-
-recalled to the bank treasury as unclaimed after this period. In view of this =
-
-I got your contact through a trade association directory after realizing that =
-your country 
-is similar to the deceased. I will give you 15% of the total. 
-
-Upon the receipt of your response, I will send you by fax or e-mail the 
-application, bank's fax number and the next step to take. I will not fail to 
-=
-
-bring to your notice that this business is hitch free and that you should not =
-
-entertain any fear as all modalities for fund transfer can be finalized =
-within 
-five banking days, after you apply to the bank as a 
-relation to the deceased. 
-
-When you receive this letter. Kindly send me an e-mail to my private mail =
-box, 
-signifying your decision.Including your private Tel/Fax numbers for quick 
-communication. 
-
-Respectfully submitted, 
-
-Mr Segun Agbaje 
-  
---5b3aeaca-e562-4b34-992e-3bc028071e02--
+Pat Padgett
