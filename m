@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EFB2648B2
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 16:33:49 -0700 (MST)
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200203082333.PAA07522@opus.allegro.com>
+Received: from rover (rover.mkp.net [209.217.122.9])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3C86548B9
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 16:35:28 -0700 (MST)
+To: Stan Sieler <sieler@allegro.com>
+Cc: bill@math.ucdavis.edu (Bill Broadley),
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] New Cheap HP RP2430
-To: bill@math.ucdavis.edu (Bill Broadley)
-Date: Fri, 8 Mar 2002 15:33:40 -0800 (PST)
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020308141312.B6207@sphere.math.ucdavis.edu> from "Bill Broadley" at Mar 08, 2002 02:13:12 PM
+From: "Martin K. Petersen" <mkp@mkp.net>
+References: <200203082333.PAA07522@opus.allegro.com>
+Date: 08 Mar 2002 18:35:17 -0500
+In-Reply-To: <200203082333.PAA07522@opus.allegro.com>
+Message-ID: <yq1ofhyvdje.fsf@austin.mkp.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,20 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Re:
+>>>>> "Stan" == Stan Sieler <sieler@allegro.com> writes:
 
-> Hey, just heard about the new HP RP2430:
-> http://www.hp.com/products1/servers/rackoptimized/rp2400/specifications.html 
+Stan> Re:
+>> Hey, just heard about the new HP RP2430:
+>> http://www.hp.com/products1/servers/rackoptimized/rp2400/specifications.html
  
-> $1095!!!!!!
+>> $1095!!!!!!
 
-Where did you find a price quote?  I followed HP's poor web pages with
-no success.  Going to "quick quote" from the above page takes you to a page
-that takes you to a page (via "create a new system") that knows about 
-various rpxxxx models, but not the rp24xx line!
+Stan> Where did you find a price quote?  I followed HP's poor web
+Stan> pages with no success.  Going to "quick quote" from the above
+Stan> page takes you to a page that takes you to a page (via "create a
+Stan> new system") that knows about various rpxxxx models, but not the
+Stan> rp24xx line!
 
-thanks,
+Follow the link for A-class...
 
 -- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com
+Martin K. Petersen      Cereal Bowl Engineer, Linuxcare, Inc.
+http://mkp.net/         SGI XFS, Linux/PA-RISC, GNOME
