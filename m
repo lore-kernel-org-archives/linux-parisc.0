@@ -1,30 +1,26 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA27171
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Aug 2000 21:22:30 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 15 Aug 2000 21:22:48 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 15 Aug 2000 21:22:21 -0000
-Date: Tue, 15 Aug 2000 14:43:05 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: "T. Martin" <catfish@alltel.net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Question about compatibility...
-Message-ID: <20000815144305.A7757@vodka.thepuffingroup.com>
-References: <Pine.LNX.4.10.10008151425530.28284-100000@jesse.crash.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.10008151425530.28284-100000@jesse.crash.lan>; from T. Martin on Tue, Aug 15, 2000 at 02:31:45PM -0500
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA08937
+	for <parisc-linux@puffin.external.hp.com>; Wed, 16 Aug 2000 01:47:44 -0600
+Date: Tue, 15 Aug 2000 21:48:05 -0400 (EDT)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
+To: Steven Pritchard <steve@silug.org>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000/735 systems....
+In-Reply-To: <200008151843.NAA15390@osiris.silug.org>
+Message-ID: <Pine.BSO.4.21.0008152146190.19931-100000@mojo.calyx.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Aug 15, 2000 at 02:31:45PM -0500, T. Martin wrote:
->  Hey I just had a thought is there anyway that Linux is going to be
-> binary compatible with HP-Unix like Alpha-Linux can run Tru64 bins if
-> theyre statically compiled. 
 
-linux-2.3/arch/parisc/hpux/ say anything to you?  :-)
 
-Naturally, it's incomplete.  Additions welcomed.
+On Tue, 15 Aug 2000, Steven Pritchard wrote:
+> What are the odds that the stock X11 Xhp would just work (or could be
+> made to just work)?
 
--- 
-Revolutions do not require corporate support.
+Does that use the ROM X11 driver included in graphics devices,
+or is it a to-the-metal implementation.  If the latter, is the
+source code open?
+
+--
+Brian
