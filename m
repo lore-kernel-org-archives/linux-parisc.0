@@ -1,28 +1,56 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA29022
-	for <parisc-linux@puffin.external.hp.com>; Fri, 31 Mar 2000 08:55:38 -0700
-Date: Fri, 31 Mar 2000 10:55:35 -0500
-From: Nick Cabatoff <ncc@cs.mcgill.ca>
-To: PARISC-LINUX@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA29142
+	for <parisc-linux@puffin.external.hp.com>; Fri, 31 Mar 2000 09:00:08 -0700
+From: BOSCHINI@ICIL64.CILEA.IT
+Date: Fri, 31 Mar 2000 17:59:32 +0000 (MET-01DST)
 Subject: Re: [parisc-linux] Building bin-utils and gcc on HP735...
-Message-ID: <20000331105534.F27366@cs.mcgill.ca>
-References: <01JNOHLGY86Q000XJ1@ICIL64.CILEA.IT> <20000331115211.B30107@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: willy@thepuffingroup.com's message [Re: [parisc-linux] Building bin-utils and gcc on HP735...] as of Fri, Mar 31, 2000 at 11:52:11AM -0500
+To: willy@thepuffingroup.com
+Cc: PARISC-LINUX@thepuffingroup.com
+Message-id: <01JNOWOXLRXQ000XJ1@ICIL64.CILEA.IT>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; CHARSET=US-ASCII
 
-On Mar 31, willy@thepuffingroup.com wrote:
-> On Fri, Mar 31, 2000 at 10:51:34AM +0000, BOSCHINI@ICIL64.CILEA.IT
-> wrote:
-> > Then, realisng a needed the parisc includes from the puffin, I
-> > re-started from scratch. As sson as I start building, both with HP
-> > Ansi C compiler as well with gcc 2.95, the binutils, I get an
-> > error about not finding bison
-> 
-> That's correct, you need bison.  Would someone like to volunteer to
-> make a bison .depot available from pehc?  It should build properly
-> on HPUX; we certainly have a binary which works here, but I think it
-> needs to be packaged properly...
+Hello all, 
 
-There's one (1.28) at http://hpux.ee.ualberta.ca if that's good
-enough...
+I installed bison and then flex (also needed) but still binutils make dies with
+a strange (at leat to me) yacc error:
+
+lex  /TMP/binutils/ld/ldlex.l && mv lex.yy.c ldlex.c
+"/TMP/binutils/ld/ldlex.l" line 303: error 3: Parse tree too big, Try using %e
+num
+1000/1000 nodes(%e), 0/2500 positions(%p), 1/500 (%n), 0 transitions, 0/1000
+packed char classes(%k), 0/4000 packed transitions(%a), 0/5000 output slots(%o)
+*** Error exit code 1
+
+Stop.
+*** Error exit code 1
+
+
+Nevertheless, being the impatient chap that I am, I stil ltried to buil
+gg-latest, which,in turn, dies with an as error:
+
+_muldi3
+as: "/var/tmp/ccFVV40c.s", line 1: error 1052: Directive name not recognized -
+FILE
+as: "/var/tmp/ccFVV40c.s", line 3: error 1052: Directive name not recognized -
+STABS
+as: "/var/tmp/ccFVV40c.s", line 4: error 1052: Directive name not recognized -
+STABS
+as: "/var/tmp/ccFVV40c.s", line 5: error 1052: Directive name not recognized -
+TEXT
+as: "/var/tmp/ccFVV40c.s", line 6: error 1052: Directive name not recognized -
+LTEXT
+as: "/var/tmp/ccFVV40c.s", line 7: error 1052: Directive name not recognized -
+STABS
+as: "/var/tmp/ccFVV40c.s", line 8: error 1052: Directive name not recognized -
+STABS
+
+
+and so forth untill maximu error count is reached.....
+
+are the two related ? 
+or is it just me doing something very stupid ?
+
+thanks in advance, 
+
+matteo
