@@ -1,62 +1,101 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA20871
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 02:00:22 -0700
-Message-ID: <001501c04fac$2d2f07c0$a832d793@esiee.fr>
-From: "Thomas Marteau" <marteaut@esiee.fr>
-To: <parisc-linux@thepuffingroup.com>, "Jack Perdue" <j-perdue@tamu.edu>
-References: <4.3.0.20001115132700.00cc91b0@clavin.cs.tamu.edu>
-Subject: Re: [parisc-linux] nfsroot - 712/60 - RPC - help
-Date: Thu, 16 Nov 2000 10:04:07 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from rhirst.linuxcare.com (sleepie.demon.co.uk [194.222.23.208])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id FAA24651
+	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 05:01:19 -0700
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 30FDAB007; Thu, 16 Nov 2000 12:00:47 +0000 (GMT)
+Date: Thu, 16 Nov 2000 12:00:47 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: Single-stepping
+Message-ID: <20001116120047.U32715@linuxcare.com>
+References: <200011160901.CAA00367@udlkern.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200011160901.CAA00367@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Thu, Nov 16, 2000 at 02:01:12AM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Jack,
+Hi John,
 
-> (c) Copyright 1990-1993, Hewlett-Packard Company.
-> All rights reserved
->
-> Press <ESCAPE> to stop boot sequence.
-> Selecting a system to boot.
->
-> Booting
-> palo ipl jkp2866@redtower Wed Nov 15 12:44:21 CST 2000
-> 0/vmlinux 1606438 bytes @ 0x6800
-> 0/palo-cmdline '0/vmlinux HOME=/ TERM=LINUX root=/dev/nfs
-nfsroot=192.68.1.11:/tftpboot/pancho '
+On Thu, Nov 16, 2000 at 02:01:12AM -0700, John Marvin wrote:
+> Just to be clear, it is impossible to restore the entire PSW without
+> an RFI. So, I assume you are referring to the system mask subset of
+> the PSW that can be manipulated by the ssm,rsm, and mtsm instructions.
 
-Are you sure that the command line is rigth? Is your Server address is
-192.-68-.1.11
-Here is probably your mistake!
+Yes, mtsm in this case.
 
-Bye,
+> You mention restoring from the task's saved registers, but we currently
+> do not save the system mask during a syscall (because it should be the
+> same for all processes). Have you added code to do that also? If not,
 
-ESIEE Team
-Visit http://www.esiee.fr/puffin
+Yes I have.
 
-> Kernel: partition 0 file /vmlinux
-> ELF32 executable
->
-> Entry 00100000 first 00100000 n 4
-> Segment 0 load 00100000 size 1097900 mediaptr 0x1000
-> Segment 1 load 0020e000 size 150520 mediaptr 0x10e000
-> Segment 2 load 00234000 size 55900 mediaptr 0x133000
-> Segment 3 load 00244000 size 8192 mediaptr 0x141000
-> branching to kernel entry point 0x00100000
-> Set default PSW W bit to 0
-> PDC Console Initialized
-> The 32-bit Kernel has started...
-> Enabled FP coprocessor
-> Free memory starts at: 0xc026e000
-> start_parisc(0x504d6c,0x504d6c,0x0,0x0)
-> PALO command line: 'HOME=/ TERM=LINUX root=/dev/nfs
-nfsroot=192.68.1.11:/tftpboot/pancho '
-> PALO initrd 0-0
-> model   00006000 00000481 00000000 00000000 77564139 00000000 00000004
-00000072 00000072
-> vers    0000000a
-> CPUID vers 0 rev 0
-> Searching for devices in PDC firmware... processor hpa 0xfffbe000
->   an older box...
-> Found devices
+> you are restoring from whatever the state was at the last interruption.
+> Which in this case works (since the R bit state will be changed
+> by another process while the debugged process is suspended, this should
+> guarantee that the R bit state is up to date), but it seems a little ugly.
+> In my opinion, you should just be checking a bit in the ptrace flags
+> in the task structure, and setting the R bit with an ssm instruction
+> based on that.
+
+Sounds better, I'll look in to it.
+
+> > Nullified instructions are handled by the controlling process
+> > manually moving the childs IAOQ over the instruction without
+> > actually setting it running, because the recovery counter isn't
+> > decremented for nullified instructions.
+
+Sorry, I worded that very badly.  The code that moves the childs
+IAOQ on is in the kernel, invoked as a result of the controlling
+process calling ptrace(PTRACE_SINGLESTEP...) when the childs N
+bit is set.
+
+> Does this code properly handle branches in the delay slot of another
+> branch? (you need to make sure you are not advancing the queues by just
+> adding 4 to each element).  One concern I have about this method is that
+
+Current code does
+
+    /* Nullified, just crank over the queue. */
+    task_regs(child)->iaoq[0] = task_regs(child)->iaoq[1];
+    task_regs(child)->iasq[0] = task_regs(child)->iasq[1];
+    task_regs(child)->iaoq[1] = task_regs(child)->iaoq[0] + 4;
+
+Does that look right to you?
+
+> I wonder if it is necessary to do this.  So what if we don't stop on the
+> nullified instruction.  Since it is nullified, it doesn't actually do
+> anything, so why does the user have to see it, i.e. just let the recovery
+> counter trap happen on the next truly executed instruction (i.e. the
+> debugger performs a "double step" in this case).  Am I missing something
+> here?
+
+I don't see why we really need to stop on a nullified instruction, but
+I'll wait for Alan to comment as he wrote this initially.
+
+>     1) When single stepping over a syscall, when do you actually stop the
+>     single stepping and execute the syscall?  Hopefully you are not
+>     allowing single stepping after the gate instruction on the gateway
+>     page (and returning control to a non privileged debugging process).
+>     The recovery counter trap should detect when the user code gets
+>     to the gateway page.
+
+At the moment my test harness notes IAOQ=0x100 and stops single stepping,
+but obviously the kernel needs to enforce that.
+
+>     2) Does your solution properly handle single stepping into and out of
+>     a signal handler?  Note that the debugger will trap the signal as part
+>     of this process. Since the return is handled through a hidden syscall
+>     you may not have to do anything special here.
+
+Havn't looked at signal handling yet.
+
+> Note that HP-UX does not use the recovery counter for single stepping.  I
+
+Thanks for the description of how HP-UX does it.  I'll stick with
+the recovery counter for now as it does seem to be basically working.
+I'll also try to ensure that it is completely encapsulated within the kernel
+so it is less painful to change later, if need be.
+
+Thanks,
+  Richard
