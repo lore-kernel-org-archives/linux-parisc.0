@@ -1,27 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CFA8C482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 11:53:41 -0600 (MDT)
-Message-Id: <200110161750.LAA15169@puffin.external.hp.com>
-To: =?iso-8859-1?Q?DUTOT_St=E9phane?= <stephane.dutot@exlicite.net>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B430482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 12:43:43 -0600 (MDT)
+Message-Id: <200110161840.MAA15315@puffin.external.hp.com>
+To: paul lee <wbm111us@yahoo.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PPTP and PPPOE under Debian HPPA Linux. 
-In-Reply-To: Message from =?iso-8859-1?Q?DUTOT_St=E9phane?= <stephane.dutot@exlicite.net>
-   of "Tue, 16 Oct 2001 18:22:44 +0200." <01a501c1565e$c9ce4e60$9601a8c0@utopia>
-Date: Tue, 16 Oct 2001 11:50:19 -0600
+Subject: Re: [parisc-linux] Help - Serial console problem 
+In-Reply-To: Message from paul lee <wbm111us@yahoo.com>
+   of "Tue, 16 Oct 2001 10:47:19 PDT." <20011016174719.66829.qmail@web14803.mail.yahoo.com>
+Date: Tue, 16 Oct 2001 12:40:22 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-=?iso-8859-1?Q?DUTOT_St=E9phane?= wrote:
-> When, the debian install kernel 2.4.0-32, when i start pppoe or pptp =
-> connexion, the pppd is launch and just after all system is block. With =
-> the last kernel version (2.4.9-pa45) downloaded on paris-linux site. =
-> When, i start pptp connexion, he has a kernel panic.
+paul lee wrote:
+> I could not access a C200 workstation via serial
+> console. Could someone please give me some insight?
+> I use hyperterminal on Win 2000. The settings are
+> VT100, 9600, 8-N-1 and Xon/Xoff.
 
-I was using ppp in the past to connect via a c3k and filed
-the following bug:
-	http://bugs.parisc-linux.org/db/13/132.html
-
-I haven't tried again recently.
+The settings are correct.
+It's possible the serial cable isn't wired correctly
+or the C200 isn't trying to use serial port1.
 
 grant
