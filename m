@@ -1,14 +1,17 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
-Date: Mon, 12 Jan 2004 18:51:21 +0100
-Message-ID: <3FFB28C900003B90__22592.6059451469$1416623125$gmane$org@ocpmta1.freegates.net>
-References: <3FFF10F3.2060408@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Date: Mon, 12 Jan 2004 22:42:15 -0700
+Message-ID: <20040113054215.GB27285__45425.7413781763$1416623125$gmane$org@colo.lackof.org>
+References: <20040105194809.GA9269@systemhalted>
+	<20040105194839.GB9269@systemhalted>
+	<20040111040906.GA32382@colo.lackof.org>
+	<20040111204355.GL28742@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Return-Path: <soete.joel@tiscali.be>
-In-Reply-To: <3FFF10F3.2060408@tiscali.be>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Return-Path: <grundler@lackof.org>
+In-Reply-To: <20040111204355.GL28742@systemhalted>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,84 +21,222 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Carlos,
+On Sun, Jan 11, 2004 at 03:43:55PM -0500, Carlos O'Donell wrote:
+> Excellent. You haven't tried profiling any programs have you? :)
+> Compile with CFLAGS=-pg, run-em, then run gprof on the gmon.out output?
 
-Here is finaly the pb I encounter when I try to rebuild the toolchain with
-gcc-snapshot at the time of glibc build:
-[snip]
-/Develop/parisc-linux/xc/bin/hppa-linux-gcc -nostdlib -nostartfiles -o /Develop/parisc-linux/build/glibc/iconv/iconvconfig
- -Wl,-dynamic-linker=/opt/palinux/hppa-linux/lib/ld.so.1    /Develop/parisc-linux/build/glibc/csu/crt1.o
-/Develop/parisc-linux/build/glibc/csu/crti.o `/Develop/parisc-linux/xc/bin/hppa-linux-gcc
---print-file-name=crtbegin.o` /Develop/parisc-linux/build/glibc/iconv/iconvconfig.o
-/Develop/parisc-linux/build/glibc/iconv/strtab.o /Develop/parisc-linux/build/glibc/iconv/xmalloc.o
-/Develop/parisc-linux/build/glibc/iconv/hash-string.o  -Wl,-rpath-link=/Develop/parisc-linux/build/glibc:/Develop/parisc-linux/build/glibc/math:/Develop/parisc-linux/build/glibc/elf:/Develop/parisc-linux/build/glibc/dlfcn:/Develop/parisc-linux/build/gl
-ibc/nss:/Develop/parisc-linux/build/glibc/nis:/Develop/parisc-linux/build/glibc/rt:/Develop/parisc-linux/build/glibc/resolv:/Develop/parisc-linux/build/glibc/crypt:/Develop/parisc-linux/build/glibc/linuxthreads
-/Develop/parisc-linux/build/glibc/libc.so.6 /Develop/parisc-linux/build/glibc/libc_nonshared.a
--lgcc `/Develop/parisc-linux/xc/bin/hppa-linux-gcc --print-file-name=crtend.o`
-/Develop/parisc-linux/build/glibc/csu/crtn.o
-/Develop/parisc-linux/build/glibc/elf/ld.so.1: undefined reference to `set_dp'
-collect2: ld returned 1 exit status
-make[2]: *** [/Develop/parisc-linux/build/glibc/iconv/iconvconfig] Error
-1
-make[2]: Leaving directory `/Develop/parisc-linux/sources/glibc/iconv'
-make[1]: *** [iconv/others] Error 2
-make[1]: Leaving directory `/Develop/parisc-linux/sources/glibc'
-make: *** [all] Error 2
+Here's "apps/openssl speed rsa" gprof output from my c3000.
+(2.6.0-pa7, Debian testing)
 
-the glibc src cames from last debian pkg with patches applied and configured
-with following options:
-# unset LD_LIBRARY_PATH; unset LD_RUN_PATH; export CC=/Develop/parisc-linux/xc/bin/hppa-linux-gcc;
-export CLFAGS="-O2 -g";  export PATH="/Develop/parisc-linux/xc/bin:$PATH";
-/Develop/parisc-linux/sources/glibc/configure --target=hppa-linux --host=hppa-linux
---build=hppa-linux --prefix=/opt/palinux/hppa-linux --without-cvs --disable-profile
---enable-hacker-mode --enable-add-ons=linuxthreads --with-headers=/Develop/parisc-linux/sources/linux/include
-
-
-and the gcc-snapshot sources cames from the latest gcc-scnapshot-20040110
-debian pkg and the 'preliminary x compiler' is configured with following
-options:
-# export PATH="/Develop/parisc-linux/xc/bin:$PATH"; /Develop/parisc-linux/sources/gcc/configure
---target=hppa-linux --host=hppa-linux --build=hppa-linux --prefix=/Develop/parisc-linux/xc
---disable-shared --disable-nls --enable-languages=c 
-
-Any idea?
-
-Thanks in advance,
-    Joel
-
->-- Original Message --
->Date: Fri, 09 Jan 2004 20:37:07 +0000
->From: Joel Soete <soete.joel@tiscali.be>
->To: Carlos O'Donell <carlos@baldric.uwo.ca>
->Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
->Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
->
->
->Joel Soete wrote:
-[snip]
-> (but I don't much retry because of gnu pserver cvs pb; in the mean time
-I
-> read that new anonymous access would be with ssh, even though last weekend
-> it was not yet operational?) 
-[snip]
-
-CVSROOT=":ext:anoncvs@subve
->sions.gnu.org:/cvsroot/gcc"
-
-seems to be operational now with CVS_RSH="ssh"
+TBH, it looks wrong.
+I didn't expect "get_dsa1024" to show up.
+I suspect I didn't get all the various CFLAGS.
+I edited */Makefile and added -pg by hand to "CFLAG" variables
+and then "make clean" + "make".
 
 hth,
-	Joel
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listi
->fo/parisc-linux
+grant
 
 
+Flat profile:
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 63.64      0.07     0.07                             lock_dbg_cb
+ 27.27      0.10     0.03                             check_end
+  9.09      0.11     0.01                             call_frame_dummy
+  0.00      0.11     0.00       16     0.00     0.00  Time_F
+  0.00      0.11     0.00        8     0.00     0.00  pkey_print_message
+  0.00      0.11     0.00        1     0.00     0.00  destroy_ui_method
+  0.00      0.11     0.00        1     0.00     0.00  do_cmd
+  0.00      0.11     0.00        1     0.00     0.00  get_dsa1024
+  0.00      0.11     0.00        1     0.00     0.00  get_dsa2048
+  0.00      0.11     0.00        1     0.00     0.00  get_dsa512
+  0.00      0.11     0.00        1     0.00     0.00  load_config
+  0.00      0.11     0.00        1     0.00     0.00  make_config_name
+  0.00      0.11     0.00        1     0.00     0.00  prog_init
+  0.00      0.11     0.00        1     0.00     0.00  program_name
+  0.00      0.11     0.00        1     0.00     0.00  setup_ui_method
+  0.00      0.11     0.00        1     0.00     0.00  speed_main
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 9.09% of 0.11 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     63.6    0.07    0.00                 lock_dbg_cb [1]
+-----------------------------------------------
+                                                 <spontaneous>
+[2]     27.3    0.03    0.00                 check_end [2]
+-----------------------------------------------
+                                                 <spontaneous>
+[3]      9.1    0.01    0.00                 call_frame_dummy [3]
+-----------------------------------------------
+                0.00    0.00      16/16          speed_main [16]
+[4]      0.0    0.00    0.00      16         Time_F [4]
+-----------------------------------------------
+                0.00    0.00       8/8           speed_main [16]
+[5]      0.0    0.00    0.00       8         pkey_print_message [5]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[6]      0.0    0.00    0.00       1         destroy_ui_method [6]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[7]      0.0    0.00    0.00       1         do_cmd [7]
+                0.00    0.00       1/1           speed_main [16]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[8]      0.0    0.00    0.00       1         get_dsa1024 [8]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[9]      0.0    0.00    0.00       1         get_dsa2048 [9]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[10]     0.0    0.00    0.00       1         get_dsa512 [10]
+-----------------------------------------------
+                0.00    0.00       1/1           speed_main [16]
+[11]     0.0    0.00    0.00       1         load_config [11]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[12]     0.0    0.00    0.00       1         make_config_name [12]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[13]     0.0    0.00    0.00       1         prog_init [13]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[14]     0.0    0.00    0.00       1         program_name [14]
+-----------------------------------------------
+                0.00    0.00       1/1           main [131]
+[15]     0.0    0.00    0.00       1         setup_ui_method [15]
+-----------------------------------------------
+                0.00    0.00       1/1           do_cmd [7]
+[16]     0.0    0.00    0.00       1         speed_main [16]
+                0.00    0.00      16/16          Time_F [4]
+                0.00    0.00       8/8           pkey_print_message [5]
+                0.00    0.00       1/1           load_config [11]
+                0.00    0.00       1/1           get_dsa512 [10]
+                0.00    0.00       1/1           get_dsa1024 [8]
+                0.00    0.00       1/1           get_dsa2048 [9]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+   [4] Time_F                  [9] get_dsa2048            [13] prog_init
+   [3] call_frame_dummy       [10] get_dsa512             [14] program_name
+   [2] check_end              [11] load_config            [15] setup_ui_method
+   [6] destroy_ui_method       [1] lock_dbg_cb            [16] speed_main
+   [7] do_cmd                 [12] make_config_name
+   [8] get_dsa1024             [5] pkey_print_message
