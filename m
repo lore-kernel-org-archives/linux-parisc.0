@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 778FF482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 22:00:53 -0600 (MDT)
-Date: Mon, 11 Aug 2003 23:58:11 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id D3675482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 22:02:10 -0600 (MDT)
+Date: Mon, 11 Aug 2003 23:59:29 -0400
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@hp.com>
-Subject: Re: [parisc-linux] itlb miss handler optimizations!
-Message-ID: <20030812035810.GB9325@systemhalted>
-References: <20030725070449.GB13017@systemhalted> <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
+To: libc-alpha@sources.redhat.com
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030812035929.GC9325@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] [PATCH] dlfcn/default fixes for hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,110 +21,117 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jul 25, 2003 at 12:46:15PM +0100, Matthew Wilcox wrote:
-> can't do that.  we have three sets of routines -- itlb_miss_common_11,
-> itlb_miss_common_20 and itlb_miss_common_20w.  we select between _20w
-> or not at compile time (if it's 64-bit, it's PA 2.0 Wide), but select
-> between _20 and _11 at boot time (fault_vector_20 vs fault_vector_11).
-> 
-> shame on you, you didn't even try assembling it ;-)
+libc-alpha,
 
-Assembles, and boots on my C3K, 32-bit kernel. Looking for any takers
-who want to try it in 64-bit mode. I'm running lmbench to see if I can
-tell the difference between this and the original code. 
+The hppa backend in gcc uses type information to determine if the variable 
+we manipulate is a function descriptor, and thus, on comparisons, make 
+calls behind the scenes to canonicalize that descriptor. When variables are
+cast to 'void *' all the type information is lost. I've included a
+patch to the dlfcn/default test that changes some of the casts in the test
+such as to retain the type information. 
 
-I would be most appreciative if anyone would pipe up and say "Run X to
-test if Y works better/faster/harder" :}
+What I've done is to cast 'p' to a function pointer of type 
+"(int (*)(int, char **))" rather than casting 'main' to an opaque
+pointer of type "(void *)". Second to that I've modified test_in_mod[12]
+to take a variable of type "(int (*)(int, char **))" (the address of the
+calling main) rather than "(void *)", and carry out the appropriate casting.
 
-c.
+This is the only method to do the required casts, and I am open to
+comments.
 
---- arch/parisc/kernel/entry.S	9 Dec 2002 06:09:08 -0000	1.98
-+++ arch/parisc/kernel/entry.S	12 Aug 2003 03:49:04 -0000
-@@ -1469,8 +1469,7 @@ itlb_miss_20w:
- 	mfctl           %cr25,ptp	/* load user pgd */
+Passes tests without regression on i386, and removes the dlfcn/default
+failure from hppa.
+
+Cheers,
+Carlos.
+---
+
+ libc/dlfcn/default.c     |    6 +++---
+ libc/dlfcn/defaultmod1.c |    6 +++---
+ libc/dlfcn/defaultmod2.c |    6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+---
+
+2003-08-11  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* dlfcn/default.c (main): 
+	Cast dlsym loaded value to same type as main.
+	Address passed to test_in_mod1 and test_in_mod2 without casting.
+	* dlfcn/defaultmod1.c: Change prototype of test_in_mod1.
+	(test_in_mod1): Cast dlsym loaded value to same type as mainp.
+	* dlfcn/defaultmod2.c: Change prototype of test_in_mod2.
+	(test_in_mod2): Cast dlsym loaded value to same type as mainp.
+
+diff -u -p -r1.2 default.c
+--- libc/dlfcn/default.c	16 Nov 2000 02:12:46 -0000	1.2
++++ libc/dlfcn/default.c	29 Jul 2003 16:11:34 -0000
+@@ -36,7 +36,7 @@ main (int argc, char *argv[])
+       printf ("%s: main not found\n", __FILE__);
+       result = 1;
+     }
+-  else if (p != (void *) &main)
++  else if ((int (*)(int, char **))p != main)
+     {
+       printf ("%s: wrong address returned for main\n", __FILE__);
+       result = 1;
+@@ -72,9 +72,9 @@ main (int argc, char *argv[])
+   else
+     printf ("%s: found_in_mod2 correctly found\n", __FILE__);
  
- 	mfsp            %sr7,t0		/* Get current space */
--	or,*=           %r0,t0,%r0      /* If kernel, nullify following test */
--	cmpb,*<>,n      t0,spc,itlb_fault /* forward */
-+	cmpb,<>,n	t0,spc,itlb_user_fault_20w /* forward */
+-  result |= test_in_mod1 ((void *) &main);
++  result |= test_in_mod1 (main);
  
- 	/* First level page table lookup */
+-  result |= test_in_mod2 ((void *) &main);
++  result |= test_in_mod2 (main);
  
-@@ -1535,8 +1534,7 @@ itlb_miss_11:
- 	mfctl           %cr25,ptp	/* load user pgd */
+   return result;
+ }
+diff -u -p -r1.2 defaultmod1.c
+--- libc/dlfcn/defaultmod1.c	29 Nov 2000 00:03:27 -0000	1.2
++++ libc/dlfcn/defaultmod1.c	29 Jul 2003 16:11:34 -0000
+@@ -9,9 +9,9 @@ found_in_mod1 (void)
+ }
  
- 	mfsp            %sr7,t0		/* Get current space */
--	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
--	cmpb,<>,n       t0,spc,itlb_fault /* forward */
-+	cmpb,<>,n	t0,spc,itlb_user_fault_11 /* forward */
  
- 	/* First level page table lookup */
+-extern int test_in_mod1 (void *mainp);
++extern int test_in_mod1 (int (*mainp)(int, char **));
+ int
+-test_in_mod1 (void *mainp)
++test_in_mod1 (int (*mainp)(int, char **))
+ {
+   int (*ifp) (void);
+   void *p;
+@@ -24,7 +24,7 @@ test_in_mod1 (void *mainp)
+       printf ("%s: main not found\n", __FILE__);
+       result = 1;
+     }
+-  else if (p != mainp)
++  else if ((int (*)(int, char **))p != mainp)
+     {
+       printf ("%s: wrong address returned for main\n", __FILE__);
+       result = 1;
+diff -u -p -r1.2 defaultmod2.c
+--- libc/dlfcn/defaultmod2.c	29 Nov 2000 00:03:27 -0000	1.2
++++ libc/dlfcn/defaultmod2.c	29 Jul 2003 16:11:34 -0000
+@@ -16,9 +16,9 @@ found_in_mod2 (void)
+ }
  
-@@ -1551,6 +1549,10 @@ itlb_miss_common_11:
- 	sh2addl 	 t0,ptp,ptp
- 	ldi		_PAGE_ACCESSED,t1
- 	ldw		 0(ptp),pte
-+
-+	/* Running parallel, taken from below 'zdep0' */
-+	zdep            spc,30,15,prot  /* create prot id from space */
-+
- 	bb,>=,n 	 pte,_PAGE_PRESENT_BIT,itlb_fault
  
- 	/* Check whether the "accessed" bit was set, otherwise do so */
-@@ -1559,7 +1561,7 @@ itlb_miss_common_11:
- 	and,<>		t1,pte,%r0	/* test and nullify if already set */
- 	stw		t0,0(ptp)	/* write back pte */
- 
--	zdep            spc,30,15,prot  /* create prot id from space */
-+	/* zdep0 moved back */
- 	dep             pte,8,7,prot    /* add in prot bits from pte */
- 
- 	extru,=		pte,_PAGE_NO_CACHE_BIT,1,r0
-@@ -1602,8 +1604,7 @@ itlb_miss_20:
- 	mfctl           %cr25,ptp	/* load user pgd */
- 
- 	mfsp            %sr7,t0		/* Get current space */
--	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
--	cmpb,<>,n       t0,spc,itlb_fault /* forward */
-+	cmpb,<>,n	t0,spc,itlb_user_fault_20	/* forward */
- 
- 	/* First level page table lookup */
- 
-@@ -1882,6 +1883,37 @@ kernel_bad_space:
- dbit_fault:
- 	b               intr_save
- 	ldi             20,%r8
-+
-+/* The following three labels relate to an optimization in the itlb handler.
-+   itlb_user_fault_20w:
-+   itlb_user_fault_20:
-+   itlb_user_fault_11:
-+   We keep the CPU jumping fwd/bkwd in the common case, and the uncommon case
-+   has the cmpb fail (no jump) and thus branch prediction failing. */
-+
-+#ifdef __LP64__
-+itlb_user_fault_20w:
-+	/* User tlb missed for other than his own space. Optimization. */
-+	cmpb,=		%r0,t0,itlb_miss_common_20w /* backward */
-+	nop
-+#else
-+itlb_user_fault_20:
-+	/* User tlb missed for other than his own space. Optimization. */
-+	cmpb,=		%r0,t0,itlb_miss_common_20 /* backward */
-+	nop
-+
-+/* FALL THROUGH - We don't care if we run the test twice. If someone
-+                  asks to have the "user is faulting death" path optimal
-+                  then they should seek help. */
-+
-+itlb_user_fault_11:
-+	/* User tlb missed for other than his own space. Optimization. */
-+	cmpb,=		%r0,t0,itlb_miss_common_11 /* backward */
-+	nop
-+#endif
-+
-+/* FALL THROUGH - We have a real itlb_fault from one of the above three
-+                  label sequences */
- 
- itlb_fault:
- 	b               intr_save
+-extern int test_in_mod2 (void *mainp);
++extern int test_in_mod2 (int (*mainp)(int, char **));
+ int
+-test_in_mod2 (void *mainp)
++test_in_mod2 (int (*mainp)(int, char **))
+ {
+   int (*ifp) (void);
+   void *p;
+@@ -31,7 +31,7 @@ test_in_mod2 (void *mainp)
+       printf ("%s: main not found\n", __FILE__);
+       result = 1;
+     }
+-  else if (p != mainp)
++  else if ((int (*)(int, char **))p != mainp)
+     {
+       printf ("%s: wrong address returned for main\n", __FILE__);
+       result = 1;
