@@ -1,42 +1,36 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA19333
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 15:56:40 -0700
-Message-Id: <200101302302.PAA28266@milano.cup.hp.com>
-To: 5116@telia.com
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] register_fallback_cpu() 
-In-reply-to: Your message of "Tue, 30 Jan 2001 23:47:35 PST."
-             <200101302247.XAA16738@zaphod.halden.lillfab.se>
-Date: Tue, 30 Jan 2001 15:02:34 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA20534
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 16:21:25 -0700
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA11507;
+	Wed, 31 Jan 2001 10:25:21 +1100
+Date: Wed, 31 Jan 2001 10:25:21 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
+cc: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] Weird compile problems
+In-Reply-To: <20010130154256.D6704@achilles.net>
+Message-ID: <Pine.LNX.4.21.0101310956430.19209-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-5116@telia.com wrote:
+On Tue, 30 Jan 2001, Paul J.Y. Lahaie wrote:
 
-> OK, here we go.
-...
-> PSW: 00000000000001100000000000001011
-> r4-7     00000013 0000002f c02b8cc4 c027c3d4
-> r12-15   fffffffc c0237800 c0237800 c02c9584
-> r20-23   c02b8cc4 c02bb800 ffffffff 00000040
-> r28-31   00002580 0000002f c2fcca80 c0290e38
-> sr4-7    00000000 00000000 00000000 00000000
-> IASQ: 00000000 00000000 IAOQ: c010cc7c c010cc80
-> ORIG_R28: 00000000
+[about pehc CVS devel branch gcc]
+> And fixincl (the progrma that does the subst) is taking 0% CPU (from top)
+> 10727 pjlahaie   9   0   712  712   520 S      20  0.0  0.5   0:00 fixincl
 
-*sigh*.
-Is this an unusual parisc processor in that it doesn't have r0-3?
-Or r8-11?
+Yeah, fixincl dies for me too.  I'd been putting it down to some sort of
+kernel problem, and just disabled fixinc (gcc/Makefile:STMP_FIXINC).
+Other than that, I get a successful bootstrap, and both kernel & glibc
+compile natively - except that `make' died randomly in the glibc build,
+and I currently have a ld.so.1 that segfaults.
 
-Can you post the *whole* output?
-Starting from BOOT_ADMIN> prompt?
+Hmm, looking at what I just wrote, you can hardly call it a "successful
+bootstrap".  I'm investigating the ld.so.1 problem - at least that one is
+reproducable.
 
-Oh...and unless you are using the default config file,
-I'll need that too.
-
-thanks,
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Alan
+-- 
+Linuxcare.  Support for the Revolution.
