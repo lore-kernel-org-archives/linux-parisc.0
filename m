@@ -1,52 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA07615
-	for <parisc-linux@puffin.external.hp.com>; Fri, 13 Oct 2000 23:49:06 -0600
-Received: from localhost (raj@localhost)
-	by basm.cerias.purdue.edu (8.9.3+Sun/8.9.3) with ESMTP id AAA12469
-	for <parisc-linux@thepuffingroup.com>; Sat, 14 Oct 2000 00:50:16 -0500 (EST)
-Date: Sat, 14 Oct 2000 00:50:16 -0500 (EST)
-From: Brian Poole <raj@cerias.purdue.edu>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.SOL.4.10.10010132356161.22986-100000@basm.cerias.purdue.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA18375
+	for <parisc-linux@puffin.external.hp.com>; Sat, 14 Oct 2000 01:49:49 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 14 Oct 2000 07:51:00 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA15659;
+	Sat, 14 Oct 2000 18:50:46 +1100
+Date: Sat, 14 Oct 2000 18:50:46 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Brian Poole <raj@cerias.purdue.edu>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Troubles following the 'recipe'
+In-Reply-To: <Pine.SOL.4.10.10010132356161.22986-100000@basm.cerias.purdue.edu>
+Message-ID: <Pine.LNX.4.21.0010141708500.10656-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Troubles following the 'recipe'
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
+On Sat, 14 Oct 2000, Brian Poole wrote:
 
-I was looking to test Linux out and see how it was going towards
-supporting my poor old HP9000 715/80 that I have here, however I seem to
-have some trouble compiling the toolchain as described in the 'recipe' and
-would like to ask for some assistance if possible.
+> find some header files. Specifically it errors out while compiling
+> iogetline.c, complaining that it can't find errno.h (from
+> ../../../gcc/libio/libioP.h:30:19), _G_config.h 
+> (../../../gcc/libio/libio.h:30:23) and string.h 
+> (../../../gcc/libio/iogetline.c:27:20). The errors are the same for each
+> machine. I downloaded all of the files today, October 13th.
 
-I have followed the instructions very closely, deviating only twice in
-areas which I can't see affecting my problem. The first was to add -j 2
-to the make commands to help speed it up on my systems, as both are SMP.
-The other was to grab nfsroot-latest.tar.gz instead of 
-nfsroot-20000214.tar.gz, mainly becuase that file no longer exists (might
-need to update the recipe?). However as I hadn't reached anything to do
-with the nfsroot yet, I deem this inconsquential as well.
+Can you show the command line that failed here?  If you followed the
+recipe, then you should have configured gcc with --prefix=$DEST, and have 
+$DEST/include/errno.h on your system.
 
-So what is the problem? Well, a while (hard to say exactly, one is a
-dual 500, the other is a dual 100, big difference in times ;) into the
-building of gcc both of my machines error out, complaining that they can't
-find some header files. Specifically it errors out while compiling
-iogetline.c, complaining that it can't find errno.h (from
-../../../gcc/libio/libioP.h:30:19), _G_config.h 
-(../../../gcc/libio/libio.h:30:23) and string.h 
-(../../../gcc/libio/iogetline.c:27:20). The errors are the same for each
-machine. I downloaded all of the files today, October 13th.
-
-Hopefully I am just doing something obviously wrong that someone could
-point out to me and I can proceed happily along. Both systems have
-working compilers & libraries, one is a SuSE 6.3 install and the other is
-Slackware 7.1. I can provide tons more information if it is desired, tried
-to just give the information that looked relevant. Or if this is a
-waste of time and I should just stop trying to compile my own and grab the
-binaries (which I just noticed were also available) please tell me.
-
-
-Thanks for the time,
-
--b
+-- 
+Linuxcare.  Support for the Revolution.
