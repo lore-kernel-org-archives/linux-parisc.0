@@ -1,21 +1,21 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D6C084878
+Return-Path: <>
+Received: from ns.os1group.com (ns.os1group.com [200.29.90.158])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EF7994860
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 10:19:50 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout2.tiscali.be with esmtp (Tiscali) id 1B6uzl-0007Do-00
+	Fri, 26 Mar 2004 10:55:01 -0700 (MST)
+Received: from localhost (os1group.com [127.0.0.1])
+	by ns.os1group.com (Postfix) with ESMTP id 23C881980FC
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 18:19:49 +0100
-Date: Fri, 26 Mar 2004 18:19:48 +0100
-Message-ID: <40561EAF00008738@ocpmta1.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
+	Fri, 26 Mar 2004 13:50:44 -0400 (CLT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="========/40561EAF00008738/mail.tiscali.be"
-Subject: [parisc-linux] David S. Miller's patch fix: N4k: failled to mount /
-	rw since initscripts-2.85-12
+In-Reply-To: <20040326175013.AC1771980F7@ns.os1group.com>
+Message-Id: <VS12404-08@ns.os1group.com>
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="----------=_1080323444-12404-3"
+From: amavisd-new <postmaster@ns.os1group.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 26 Mar 2004 13:50:44 -0400 (CLT)
+Subject: [parisc-linux] VIRUS (Worm.SomeFool.P) IN MAIL FROM YOU
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,70 +25,91 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This is a multi-part message in MIME format...
 
---========/40561EAF00008738/mail.tiscali.be
-Content-Type: text/plain; charset="ISO-8859-1"
+------------=_1080323444-12404-3
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
 
-Hi all,
+VIRUS ALERT
 
-Here is the corresponding patch for 2.6.5-rc2-pa3:
---- linux-2.6.5-rc2-pa3/arch/parisc/kernel/sys_parisc32.c.orig	2004-03-01
-07:47:39.000000000 +0100
-+++ linux-2.6.5-rc2-pa3/arch/parisc/kernel/sys_parisc32.c	2004-03-26 17:15:41.300604464
-+0100
-@@ -651,14 +651,13 @@
- 	if (err)
- 		goto out;
- 
--	if (!type_page) {
--		err = -EINVAL;
--		goto out;
-+	if (type_page) {
-+		is_smb = !strcmp((char *)type_page, SMBFS_NAME);
-+		is_ncp = !strcmp((char *)type_page, NCPFS_NAME);
-+	} else {
-+		is_smb = is_ncp = 0;
- 	}
- 
--	is_smb = !strcmp((char *)type_page, SMBFS_NAME);
--	is_ncp = !strcmp((char *)type_page, NCPFS_NAME);
--
- 	err = copy_mount_stuff_to_kernel((const void *)(unsigned long)data, &data_page);
- 	if (err)
- 		goto type_out;
-==========><=========
+Our content checker found
+    virus: Worm.SomeFool.P
+in email presumably from you (<parisc-linux@lists.parisc-linux.org>), to the following recipient:
+-> info@bgmconsultores.com
 
-hth,
-    Joel
+Please check your system for viruses,
+or ask your system administrator to do so.
 
-PS1: because of bad wraping of my webmail interface I also attach it, sorry.
-PS2: let me know if somebody is still interested by the corresponding 2.4
-patch?
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
-http://reg.tiscali.be/default.asp?lg=fr
+Delivery of the email was stopped!
 
 
+For your reference, here are headers from your email:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <parisc-linux@lists.parisc-linux.org>
+Received: by ns.os1group.com (Postfix, from userid 514)
+	id 5AD181980DE; Fri, 26 Mar 2004 13:50:25 -0400 (CLT)
+Received: from localhost by ns.os1group.com
+	with SpamAssassin (2.63 2004-01-11);
+	Fri, 26 Mar 2004 13:50:25 -0400
+From: parisc-linux@lists.parisc-linux.org
+To: info@bgmconsultores.com
+Subject: *****ESTE CORREO PUEDE CONTENER SPAM***** Mail Delivery (failure info@bgmconsultores.com)
+Date: Fri, 26 Mar 2004 13:54:47 -0400
+Message-Id: <20040326175013.AC1771980F7@ns.os1group.com>
+X-Spam-Flag: YES
+X-Spam-Checker-Version: SpamAssassin 2.63 (2004-01-11) on ns.os1group.com
+X-Spam-Level: *********
+X-Spam-Status: Yes, hits=9.2 required=8.0 tests=HTML_40_50,HTML_MESSAGE,
+	HTML_RELAYING_FRAME,MICROSOFT_EXECUTABLE,MIME_SUSPECT_NAME,
+	MISSING_MIMEOLE,MSGID_FROM_MTA_SHORT,NO_REAL_NAME,PRIORITY_NO_NAME,
+	RCVD_IN_DYNABLOCK,RCVD_IN_SORBS autolearn=no version=2.63
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----------=_40646D61.00DD7FAF"
+-------------------------- END HEADERS ------------------------------
 
+------------=_1080323444-12404-3
+Content-Type: message/delivery-status
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Delivery error report
 
---========/40561EAF00008738/mail.tiscali.be
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="sys_parisc32.c.diff"
+Reporting-MTA: dns; ns.os1group.com
+Received-From-MTA: smtp; ns.os1group.com ([127.0.0.1])
+Arrival-Date: Fri, 26 Mar 2004 13:50:25 -0400 (CLT)
 
-LS0tIGxpbnV4LTIuNi41LXJjMi1wYTMvYXJjaC9wYXJpc2Mva2VybmVsL3N5c19wYXJpc2MzMi5j
-Lm9yaWcJMjAwNC0wMy0wMSAwNzo0NzozOS4wMDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4LTIuNi41
-LXJjMi1wYTMvYXJjaC9wYXJpc2Mva2VybmVsL3N5c19wYXJpc2MzMi5jCTIwMDQtMDMtMjYgMTc6
-MTU6NDEuMzAwNjA0NDY0ICswMTAwCkBAIC02NTEsMTQgKzY1MSwxMyBAQAogCWlmIChlcnIpCiAJ
-CWdvdG8gb3V0OwogCi0JaWYgKCF0eXBlX3BhZ2UpIHsKLQkJZXJyID0gLUVJTlZBTDsKLQkJZ290
-byBvdXQ7CisJaWYgKHR5cGVfcGFnZSkgeworCQlpc19zbWIgPSAhc3RyY21wKChjaGFyICopdHlw
-ZV9wYWdlLCBTTUJGU19OQU1FKTsKKwkJaXNfbmNwID0gIXN0cmNtcCgoY2hhciAqKXR5cGVfcGFn
-ZSwgTkNQRlNfTkFNRSk7CisJfSBlbHNlIHsKKwkJaXNfc21iID0gaXNfbmNwID0gMDsKIAl9CiAK
-LQlpc19zbWIgPSAhc3RyY21wKChjaGFyICopdHlwZV9wYWdlLCBTTUJGU19OQU1FKTsKLQlpc19u
-Y3AgPSAhc3RyY21wKChjaGFyICopdHlwZV9wYWdlLCBOQ1BGU19OQU1FKTsKLQogCWVyciA9IGNv
-cHlfbW91bnRfc3R1ZmZfdG9fa2VybmVsKChjb25zdCB2b2lkICopKHVuc2lnbmVkIGxvbmcpZGF0
-YSwgJmRhdGFfcGFnZSk7CiAJaWYgKGVycikKIAkJZ290byB0eXBlX291dDsK
+Final-Recipient: rfc822; info@bgmconsultores.com
+Action: failed
+Status: 5.7.1
+Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=12404-08 - VIRUS:
+	Worm.SomeFool.P
+Last-Attempt-Date: Fri, 26 Mar 2004 13:50:44 -0400 (CLT)
 
---========/40561EAF00008738/mail.tiscali.be--
+------------=_1080323444-12404-3
+Content-Type: text/rfc822-headers
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Undelivered-message headers
+
+Received: by ns.os1group.com (Postfix, from userid 514)
+	id 5AD181980DE; Fri, 26 Mar 2004 13:50:25 -0400 (CLT)
+Received: from localhost by ns.os1group.com
+	with SpamAssassin (2.63 2004-01-11);
+	Fri, 26 Mar 2004 13:50:25 -0400
+From: parisc-linux@lists.parisc-linux.org
+To: info@bgmconsultores.com
+Subject: *****ESTE CORREO PUEDE CONTENER SPAM***** Mail Delivery (failure info@bgmconsultores.com)
+Date: Fri, 26 Mar 2004 13:54:47 -0400
+Message-Id: <20040326175013.AC1771980F7@ns.os1group.com>
+X-Spam-Flag: YES
+X-Spam-Checker-Version: SpamAssassin 2.63 (2004-01-11) on ns.os1group.com
+X-Spam-Level: *********
+X-Spam-Status: Yes, hits=9.2 required=8.0 tests=HTML_40_50,HTML_MESSAGE,
+	HTML_RELAYING_FRAME,MICROSOFT_EXECUTABLE,MIME_SUSPECT_NAME,
+	MISSING_MIMEOLE,MSGID_FROM_MTA_SHORT,NO_REAL_NAME,PRIORITY_NO_NAME,
+	RCVD_IN_DYNABLOCK,RCVD_IN_SORBS autolearn=no version=2.63
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----------=_40646D61.00DD7FAF"
+
+------------=_1080323444-12404-3--
