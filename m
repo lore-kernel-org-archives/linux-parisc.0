@@ -1,20 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout.informatik.tu-muenchen.de (mailout.informatik.tu-muenchen.de [131.159.0.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2156A4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 09:44:38 -0700 (MST)
-Received: from mailrelay1.informatik.tu-muenchen.de (mailrelay1.informatik.tu-muenchen.de [131.159.254.5])
-	by mailout.informatik.tu-muenchen.de (Postfix) with ESMTP id 12900620B
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 17:44:32 +0100 (MET)
-Received: from sunhalle66 (sunhalle66.informatik.tu-muenchen.de [131.159.4.217])
-	by mailrelay1.informatik.tu-muenchen.de (Postfix) with ESMTP id DA6EA7946
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 17:44:31 +0100 (MET)
-Date: Thu, 9 Jan 2003 17:44:31 +0100 (MET)
-From: Joerg Krebs <krebsj@informatik.tu-muenchen.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.GSO.4.51.0301091743500.9837@sunhalle66>
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3FEBF4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 10:52:32 -0700 (MST)
+Received: from xatlrelay1.atl.hp.com (xatlrelay1.atl.hp.com [15.45.89.190])
+	by atlrel7.hp.com (Postfix) with ESMTP id 734DF805A63
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 12:52:26 -0500 (EST)
+Received: from xatlbh2.atl.hp.com (xatlbh2.atl.hp.com [15.45.89.187])
+	by xatlrelay1.atl.hp.com (Postfix) with ESMTP id 547CB1C00A05
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 12:52:26 -0500 (EST)
+Message-ID: <9A0482A7BD2506488AD9417C93F3714F0105349E@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 9 Jan 2003 12:52:18 -0500 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Subject: [parisc-linux] ibm-disk on a hp 735/125
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] pa-risc 64 compilation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,18 +27,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello all,
-im running a hp 735/125 with a st31200wd 1GB harddisk, connected to the
-fast-wide scsi-connector, which run's quit nice.
-But now I want to replace the disk with a larger 4,3GB ibm dcas-34330
-disk, but I can't get it be detected by the system, I think i used the
-same jumper settings as on the old seagate drive.
-at the search for potential boot devices nothing appears.
+Hi people,
 
-So perhaps someones uses the same harddisk and can tell me the right
-jumper-settings, the disk itself works fine with a normal PC with a
-scsi-wide controller.
+	I have a problem to compile an 64 kernel in an 64 machine. The
+problem is: hppa64-linux-gcc compiler not found. Someone know what happened?
+Where I find this gcc version?
 
-Thanks for your help
+	Thanks in advance,
 
-        J. Krebs
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
+
+*   leandro.farinati@hp.com
+*   +55-51-3316-2852 Telnet  725-2852
+FAX +55-51-3316-2754 Mobile +55-51-9965-8020
