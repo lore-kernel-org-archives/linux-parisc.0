@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5B5F4835
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Apr 2002 10:01:38 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 1702jZ-0006To-00; Tue, 23 Apr 2002 17:01:37 +0100
-Date: Tue, 23 Apr 2002 17:01:37 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Juan Pedro Vilar <dijjvb@uib.es>,
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8882C4835
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Apr 2002 11:17:53 -0600 (MDT)
+To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] gcc-3.2 experimental debs
+Message-ID: <1019582168.3cc596d87ba8a@webmail.tiscalinet.be>
+Date: Tue, 23 Apr 2002 19:16:08 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: Matthew Wilcox <willy@debian.org>,
+	Joel Soete <joel.soete@freebel.net>,
+	Randolph Chung <tausq@debian.org>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problem installing Debian woody in PA-RISC (HP9000 C100)
-Message-ID: <20020423170137.D16899@parcelfarce.linux.theplanet.co.uk>
-References: <5813913456.20020423154804@uib.es> <dijjvb@uib.es> <20020423155139.51956482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020423155139.51956482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Tue, Apr 23, 2002 at 09:51:39AM -0600
+References: <3CC2B937.8020509@freebel.net> <20020421162538.G5225@parcelfarce.linux.theplanet.co.uk> <20020423111903.A8545@systemhalted>
+In-Reply-To: <20020423111903.A8545@systemhalted>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +26,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Apr 23, 2002 at 09:51:39AM -0600, Grant Grundler wrote:
-> Juan Pedro Vilar wrote:
-> > While installing it, I get the
-> > following warning "Failure trying to run:chroot /target mount" and
-> > then if I try to swap to another console and issue the same command,
-> > I get a "segmentation fault" error.
+Hello Carlos,
+
+Quoting "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>:
+
+> > > "Stack pointer and cr30 do not correspond!
+> > > Dumping virtual address stack instead
+> > > 
+> > > Dumping Stack from ... to ...:
+> > > 
+> > > Humm as it appends as well with telnet as ssh I suspect a inetd
+> problem?
+> > 
+> > I'd bet on gcc-3.2 miscompiling something in the network part of the
+> kernel,
+> > personally.
+> >
 > 
-> I don't know what the problem here is.
-> But my gut feeling is we should create a 0.9.4 CD with recent bits
-> instead of persuing this problem.
-> Did anyone care to do that in the near future?
+> Tested today.
+> 
+> Happens in the 3.1 main branch aswell (don't remember it previously
+> happening).
+> Maybe I shouldn't be recommending the use of 3.1 as a cross compiler?
+> ;)
 
-Given that Debian 3.0 is due May 1 (see
-http://lists.debian.org/debian-devel-announce/2002/debian-devel-announce-200204/msg00004.html)
-I think any effort expended on 0.9.4 would be wasted.
+I also notice it on 3.1 about two mount ago (that is why I do another try with 3.2)
 
--- 
-Revolutions do not require corporate support.
+
+> 
+> I'll kdb on a serial tommorow morning and see what is causing it to
+> die.
+> 
+
+I would also to do so. But I had the bad idea to co the last gcc release
+(yesterday and today) to rebuild the toolchain.
+But gcc build seems to be broken (step 4.2 of your procedure):
+
+gcc -c -DIN_GCC    -g -O2 -W -Wall -Wwrite-strings -Wstrict-prototypes
+-Wmissing-prototypes   -DHAVE_CONFIG_H    -I. -Ijava
+-I/GNU-Dev/parisc-linux/src/gcc/gcc -I/GNU-Dev/parisc-linux/src/gcc/gcc/java
+-I/GNU-Dev/parisc-linux/src/gcc/gcc/config
+-I/GNU-Dev/parisc-linux/src/gcc/gcc/../include
+/GNU-Dev/parisc-linux/src/gcc/gcc/java/parse.c -o java/parse.o
+/tmp/ccj2Nlrs.s: Assembler messages:
+/tmp/ccj2Nlrs.s:148746: Error: Field out of range [-262144..262143] (-263392).
+make[1]: *** [java/parse.o] Error 1
+make[1]: Leaving directory `/GNU-Dev/parisc-linux/build/gcc/gcc'
+make: *** [all-gcc] Error 2
+
+Last week co did not try to build any java.
+Any idea or work-around?
+
+Joel
+
+PS1: about step 4.2 of your howto-xc, I notice a small difference between html
+and pdf (in html you use gcc option "enable-shared" in pdf "disable-shared").
+But this not the cause of the above problem.
+
+PS2: I also make an apt-get dist-upgrade (with ftp.de.debian.org) so that native
+gcc is now 3.0.4-5 (I think it was already installed last week)
+
+
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
