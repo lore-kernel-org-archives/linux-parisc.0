@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CDBB1482A
-	for <parisc-linux@parisc-linux.org>; Wed, 30 Jan 2002 09:08:04 -0700 (MST)
-Received: from mmp-1.gci.net ([208.138.130.80]) by mta-1.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GQRE5401.CDE for
-          <parisc-linux@parisc-linux.org>; Wed, 30 Jan 2002 07:07:52 -0900
-Date: Wed, 30 Jan 2002 07:02:36 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Cc: <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Odd kernel error
-In-Reply-To: <20020130071053.H8395@systemhalted>
-Message-ID: <Pine.LNX.4.33.0201300659080.3623-100000@goliath.alaskatech.org>
+Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2E392482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 09:28:44 -0700 (MST)
+Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
+	id 16VxbG-0003fh-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 17:28:42 +0100
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1012408122.3c581f3ab077e@webmail.tiscalinet.be>
+Date: Wed, 30 Jan 2002 17:28:42 +0100 (CET)
+From: joel.soete@freebel.net
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] kernel 2.4.17: fs sync broken?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,44 +23,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Tom:
-> > Compiling the latest from CVS (-pa16, I think) and at the final make, when
-> > gcc is actually doing the '-o vmlinux' I'm getting:
-> >
-> > drivers/video/video.o: In function 'L1260':
-> > drivers/video/video.o(.init.text+0x2554): undefined reference to
-> > 'fbcon_sti'
-> > drivers/video/video.o(.init.text+0x255c): undefined reference to
-> > 'fbcon_sti'
-> > make: *** [vmlinux] Error 1
-> >
-> > This happened with -pa15 also. I downloaded the pre-built -pa15 kernel and
-> > it boots fine, though. Checking, I realized I had disabled PCI in my
-> > config (it's a 715/100, no PCI in it), and remembered some discussion
-> > about PCI being a 'depends-on' item for some things... Is it possible this
-> > is a 'needs PCI' issue?
-> >
-> > I have a new kernel compile going on now, with PCI enabled, so we'll see
-> > what happens, but figured I'd toss it out in case someone else is seeing
-> > this.
->
-> On Wed, 30 Jan 2002, Carlos O'Donell Jr. wrote:
-> Yes, without PCI you couldn't (until recently) compile
-> the STI Console.
->
-> Matthew believed that some subsequent changes had possibly
-> fixed this error, but I haven't checked yet.
->
-> It might be that STI Console depends on FB to be compiled.
-> Which can break since STI can still be compiled with FB
-> config turned off.
->
-> And thus you see the error that you have.
+Hi all,
 
-The recompile with PCI enabled has the same error, except it shows as
-'0x2590' and '0x2598' instead of the '0x2554' and '0x255c' from last time.
-Repeated the same addresses twice...
+As I continue to investigate the problem with evms (last release 0.9.0) and also
+as it still crashes, I try to obtain a more complete tool log file (evmsEngine.log).
 
-Not quite sure where to go from here, although I may download the
-'linux-latest.tar.gz' copy from CVS and see if perhaps I've got a bad
-snippet of code someplace...
+So I try to remount my fs (/ here) with option sync (in fstab) and chattr +S
+/var/log.
+
+On a previous kernel realease (kernel-2.4.16-pa20) it seems to works for me: I
+obtain a more complete log and I notice a famous decrease of the system speed.
+But now I do not notice anymore this typical decrease of speed and by the way,
+it is not anymore possible to obtain any evmsEngine.log (I presume that it is
+the inode which is cleaned after the forced fsck requested at the reboot).
+
+Can somebody tell me if it is specific to parisc or to all architectures for
+this 2.4.17 kernel (sometime ago I read some discuss about this but do not get
+conclusion)?
+
+Thanks in advance for info,
+        Joel
+
+
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
