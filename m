@@ -1,21 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 793F84872
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Mar 2002 11:14:20 -0700 (MST)
-Received: from xparelay1.corp.hp.com (xparelay1.corp.hp.com [15.58.136.173])
-	by palrel13.hp.com (Postfix) with ESMTP id 1755B400475
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Mar 2002 10:14:20 -0800 (PST)
-Received: from xpabh4.corp.hp.com (xpabh4.corp.hp.com [15.58.136.1])
-	by xparelay1.corp.hp.com (Postfix) with ESMTP id 0FA0AE002DC
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Mar 2002 10:14:20 -0800 (PST)
-Message-ID: <CC57E8021A79D511BC720090278CE32DC28E7B@xrose02.rose.hp.com>
-From: "MOORE,CHRISTOPHER (HP-USA,ex1)" <chris_moore@hp.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 14 Mar 2002 10:14:15 -0800
+Received: from eagle.grdl.noaa.gov (eagle.grdl.noaa.gov [140.90.158.128])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8AE5482A
+	for <parisc-linux@parisc-linux.org>; Thu, 14 Mar 2002 13:41:27 -0700 (MST)
+Message-ID: <3C910AEE.6AB2235E@eagle.grdl.noaa.gov>
+Date: Thu, 14 Mar 2002 15:41:18 -0500
+From: John <hplinux@eagle.grdl.noaa.gov>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Compiling Mozilla
+To: parisc-linux@parisc-linux.org
+References: <3C7D115C.9AEE5DDB@eagle.grdl.noaa.gov> <20020227172844.2534F485A@dsl2.external.hp.com> <3C7D1C89.121A1B30@eagle.grdl.noaa.gov> <20020227183818.6A427482B@dsl2.external.hp.com>  <3C8D1B6F.162195CF@eagle.grdl.noaa.gov> <20020312171650.7AF54484A@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05 = working X!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,13 +21,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Has anyone got Mozilla to compile and run?  The latest version of Mozilla I
-could find
-didn't know about parisc Linux.  I've seen lots of questions and problems
-here but
-no indication that anyone has got it to work.  I'm willing to put some
-effort into it, but
-I don't want to reinvent the wheel if someone else already has it working.
+Grant Grundler wrote:
+>
+> John wrote:
+>>
+>> I saw your post from this weekend. Did you actually get X working on your 
+>> C3000 with the Visualize-EG?! If a mere mortal can patch the kernel (or you 
+>> have it available) I'd love to try it on my C200 to see if it works now 
+>> too.
+> 
+> patch is on ftp.p-l.o/patches/entry.S-diff.
+> Then:
+>         cd /usr/src/linux
+>         patch -p0 < entry.S-diff
+>         make vmlinux
+> 
+> I don't have any kernels suitable for C200 built since I remove ccio driver 
+> from the c3k builds. I expect to commit the patch today or tomorrow and can
+> build "generic" kernels then.
 
-Chris Moore
-HPUX Kernel WTEC
+I wanted to share the good news that Grant's recent patch to "entry.S" yields a
+new kernel (2.4.18-pa05) which allows X-windows to work on my C200 with
+Visualize-EG graphics. Before installing the patch I would get an HPMC when X
+tried to start. I got gdm up & running fine, but have had some troubles with KDE
+that I hope to resolve. The 8-bit color isn't great, but that's all I've got!
+Thanks Grant!
+
+John
