@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F15E4840
-	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 09:06:09 -0700 (MST)
-Received: from user-118bs52.cable.mindspring.com (user-118bs52.cable.mindspring.com [66.133.240.162])
-	by cuprel1.hp.com (Postfix) with SMTP id 769F3A7D
-	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 08:06:08 -0800 (PST)
-Message-ID: <8a-9la-$j3-qu$$5$2$m1$j$pj$6$n@feno.3.zi>
-From: "Ivy Romero" <kelly@msn.com>
-Reply-To: "Ivy Romero" <kelly@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Tue, 02 Dec 03 19:05:35 GMT
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 711014840
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Dec 2003 09:42:30 -0700 (MST)
+Date: Tue, 2 Dec 2003 17:42:23 +0100
+Message-ID: <3FB265250000C0DA@ocpmta2.freegates.net>
+In-Reply-To: <200312011830.hB1IU7in003367@hiauly1.hia.nrc.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [RFC] rewrite kernel spinlock code to work better with gcc
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: randolph@tausq.org, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="18_AAB.._._2_B2FB45F_F"
-Subject: [parisc-linux] Men this product will change your life ytn qqwm
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,42 +22,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---18_AAB.._._2_B2FB45F_F
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hi Dave,
 
-<html>
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+I trust that I have to restart my test (32b smp, 64b smp; all seems to works
+fine in 32b but some worries in 64b). With the new 2.4.23-pa1, I discover
+that I let badly commented a small chunk a code (just involved toc) and I
+wrongly merge Randolph's patch (just about a small #ifdef CONFIG_PA20 in
+2.4: thanks for your comments :) ).
 
-<body bgcolor=3D"#000000" text=3D"#FFCCFF" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FFFFFF" face=3D"verdana">You can be a sex mach=
-ine.</font></h3></center><center><h4><font color=3D"#FF00FF" face=3D"verda=
-na">Finally available to the public.<br>Alpha Male<br>The supplement that =
-Male Porn Stars use</font></h4></center><br><center><h5><font color=3D"#FF=
-FFFF" face=3D"verdana">Make love to her like no other man can. Orgasm afte=
-r orgasm after orgasm.<br><br>Porn Stars shoot an entire movie in one day =
-having sex many times with many different women.<br> Now you can have rock=
- hard orgasmic sex over and over again.<br>Just like the Porn Stars do<br>=
-<br>Increase your testosterone 500%<br>Increase your sex drive<br>Increase=
- your virility<br>Increase the size of your penis<br>Never again experienc=
-e premature ejaculation<br>She will never leave you alone when you give he=
-r sex like she's never had before.<br><br>Doctor developed with a 100=
-% Money Back Guarantee !</font></h5><h2><a href=3D"http://www.herbalmarts.=
-biz/cgi-bin/tracker/clickalpha.cgi?id=3Dbuster">Find Alpha Male Here</a></=
-h2></center>
+I will advise.
 
-</body>
-</html>
-xgdpd a dcp
-diieoyiadhpb iuqndb  rfzbgbnijerso
-lmz
-q  ygdhvek mewt
-o rp st  rv
-una   
+Thanks again,
+    Joel
 
---18_AAB.._._2_B2FB45F_F--
+>-- Original Message --
+>To: soete.joel@tiscali.be (Joel Soete)
+>Date: Mon, 1 Dec 2003 13:30:07 -0500 (EST)
+>From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+>Cc: randolph@tausq.org, parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] [RFC] rewrite kernel spinlock code to work better
+>with gcc
+>
+>
+>> (Just in case it would help) I backport your patch in 2.4 (just because
+the
+> only system on which I can test it is a b2k on which 2.6 doesn't boot yet)
+> and build a smp 64bit kernel which boot and run fine (rebuild another kernel)
+> on this b2k:
+>
+
+I'd forgotten about the "ldcw,co" errata for PA 2.0.  You only want/need
+self-aligning locks for PA 1.x.  You should be able to test this on a
+PA 2.0 machine if you don't define CONFIG_PA20.
+
+Dave
+-- 
+J. David Anglin                          
+>       dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
