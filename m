@@ -1,38 +1,24 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA31202
-	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Feb 2000 12:52:47 -0700
-Sender: frowand@hermes.mvista.com
-Message-ID: <38AC42AB.A0C41847@mvista.com>
-Date: Thu, 17 Feb 2000 10:49:15 -0800
-From: Frank Rowand <frank_rowand@mvista.com>
-Reply-To: frowand@mvista.com
-MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Virtual mapping of IO cards
-References: <200002161838.KAA07528@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA32470
+	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Feb 2000 16:19:36 -0700
+From: willy@thepuffingroup.com
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id RAA25188
+	for parisc-linux@thepuffingroup.com; Thu, 17 Feb 2000 17:20:15 -0500
+Date: Thu, 17 Feb 2000 17:20:15 -0500
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000217172015.L9944@thepuffingroup.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Astro / Elroy documentation
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> 
 
-< stuff deleted >
+Thanks to many people at Hewlett Packard, we now have
+documentation on the Astro and Elroy devices found in some of
+the newer PA-RISC machines, such as the C3000 and J5000.  These
+documents have been converted to PostScript and are linked from
+http://www.thepuffingroup.com/parisc/documentation.html
 
-> AFAIK, the processor can only HPMC if a LOAD times out.
-> What about processor STORE?
-
-Yes, a bad store can HPMC.  The reason for this is that not being able to write
-data successfully means that you have possible data corruption (for
-example, data that you had expected to be in persistent storage is not there).
-
-< stuff deleted >
-
-> grant
-> 
-> Grant Grundler
-
--Frank
 -- 
-MontaVista Software, Inc
-frank_rowand@mvista.com
+Matthew Wilcox <willy@linuxcare.com> Lead Developer, Linux/PA-RISC
