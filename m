@@ -1,78 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA21875
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 May 2000 07:03:12 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 30 May 2000 13:03:37 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA03474
-	for <parisc-linux@thepuffingroup.com>; Tue, 30 May 2000 23:03:27 +1000
-Date: Tue, 30 May 2000 23:03:27 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: parisc-linux@thepuffingroup.com
-Subject: [parisc-linux] Finding bogus asm comment chars.
-Message-ID: <Pine.LNX.4.21.0005302257120.15777-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22945
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 May 2000 09:10:54 -0600
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: bame@puffin.external.hp.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Foiled by the linker again 
+In-reply-to: Your message of "Tue, 30 May 2000 16:42:29 +1000."
+             <Pine.LNX.4.21.0005301631550.15777-100000@front.linuxcare.com.au>
+Date: Tue, 30 May 2000 09:11:19 -0600
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E12wnfr-0007iW-00@endor.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-The following hack might be useful to anyone trying to find `;' chars
-buried away in C asm statements.
+= On Tue, 30 May 2000, Alan Modra wrote:
+= 
+= > On Mon, 29 May 2000 bame@puffin.external.hp.com wrote:
+= > 
+= > > /home/bame/xc/bin/../lib/gcc-lib/hppa1.1-linux/2.9-hppa-991112/../../../.
+./hppa1.1-linux/lib/libc.a(execve.o): In function `__execve':
+= > > /users/bame/palinux/glibc/posix/../sysdeps/unix/sysv/linux/execve.c:39: u
+ndefined reference to `$global$'
+= > > collect2: ld returned 1 exit status
+= > 
+= > This is a bogus error message.  The real error is that a call to
+= > __pthread_kill_other_threads_np is too far to be reached by a branch so
+= > needs to go through a stub, but the relevant stub
+= > _____long_branch_stub___pthread_kill_other_threads_np isn't found for some
+= > reason.
+= > 
+= > Chasing it up...
+= 
+= It turned out that elf32_hppa_bfd_final_link_relocate wasn't handling
+= undefined weak symbols correctly.  I've fixed this, the bogus error
+= message, and a handfull of other minor things, and commited the fixes to
+= pehp CVS.
+= 
+= Now I get
+= $ ld/ld-new -o tar /usr/parisc/lib/crt1.o /usr/parisc/lib/crti.o
+= /usr/parisc/lib/gcc-lib/hppa1.1-linux/2.9-hppa-991112/crtbegin.o
+= -L/usr/parisc/lib/gcc-lib/hppa1.1-linux/2.9-hppa-991112 -L/usr/parisc/lib/
+= rrtar.o -lgcc -lc -lgcc
+= /usr/parisc/lib/gcc-lib/hppa1.1-linux/2.9-hppa-991112/crtend.o
+= /usr/parisc/lib/crtn.o
+= /usr/parisc/lib//libc.a(nsswitch.o)(.data+0x64): undefined reference to
+= `_nss_files_getaliasent_r'
+= 
+= which looks like a problem with my glibc build.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Yup.  Grab the file glibc/PARISC-EXTRA-FILES which contains a list of
+the missing .o files which you can add by hand with 'hppa1.1-linux-ar'.
 
-Index: app.c
-===================================================================
-RCS file: /home/cvs/parisc/binutils-2.10/gas/app.c,v
-retrieving revision 1.1.1.1
-diff -u -p -r1.1.1.1 app.c
---- app.c	2000/05/18 00:37:23	1.1.1.1
-+++ app.c	2000/05/30 12:34:34
-@@ -34,6 +34,9 @@
- #endif
- #endif
- 
-+/* We changed the hppa comment char.  Help find C asm that needs fixing.  */
-+int found_comment = 0;
-+
- #ifdef TC_M68K
- /* Whether we are scrubbing in m68k MRI mode.  This is different from
-    flag_m68k_mri, because the two flags will be affected by the .mri
-@@ -1161,7 +1164,7 @@ do_scrub_chars (get, tostart, tolen)
- 	      && state != 1
- 	      && state != 10)
- 	    goto de_fault;
--	  /* Fall through.  */
-+	  goto dont_count_this_comment;
- 	case LEX_IS_COMMENT_START:
- #if defined TC_ARM && defined OBJ_ELF
- 	  /* On the ARM, `@' is the comment character.
-@@ -1172,6 +1175,8 @@ do_scrub_chars (get, tostart, tolen)
- 	  if ((symver_state != NULL) && (*symver_state == 0))
- 	    goto de_fault;
- #endif
-+	  found_comment = 1;
-+	dont_count_this_comment:
- 	  do
- 	    {
- 	      ch = GET ();
-Index: read.c
-===================================================================
-RCS file: /home/cvs/parisc/binutils-2.10/gas/read.c,v
-retrieving revision 1.1.1.1
-diff -u -p -r1.1.1.1 read.c
---- read.c	2000/05/18 00:37:23	1.1.1.1
-+++ read.c	2000/05/30 12:35:03
-@@ -1102,6 +1102,11 @@ read_a_source_file (name)
-   md_cleanup();
- #endif
-   input_scrub_close ();		/* Close the input file */
-+  {
-+    extern int found_comment;
-+    if (found_comment)
-+      as_warn ("comments be here");
-+  }
- }
- 
- /* For most MRI pseudo-ops, the line actually ends at the first
+	-P
