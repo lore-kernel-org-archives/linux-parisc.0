@@ -1,17 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Comments?
-Date: Wed, 23 Mar 2005 16:07:27 -0500 (EST)
-Message-ID: <200503232107.j2NL7RPk026516@hiauly1.hia.nrc.ca>
-References: <200503232053.j2NKrBsR026378@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] J5000 LCD patch
+Date: Wed, 23 Mar 2005 22:01:36 -0700
+Message-ID: <20050324050136.GE10544@colo.lackof.org>
+References: <200503231855.10502.dmp@davidmpye.dyndns.org>
+	<20050323201831.GC10544@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- matthew@wil.cx
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: David Pye <dmp@davidmpye.dyndns.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503232053.j2NKrBsR026378@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Mar 23, 2005 03:53:11 pm
+In-Reply-To: <20050323201831.GC10544@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +21,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Here is a place in arch/parisc/kernel/signal.c where there is a
-> problem with transferring a pointer:
-> 
->           err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_s
-> 
-> The type of ss_sp is void *.  There are also similar problems in
-> kernel/signal.c (si_ptr and si_addr).  In this case, the current version
-> of put_user will transfer 64-bits when using a hppa64 kernel.
+On Wed, Mar 23, 2005 at 01:18:31PM -0700, Grant Grundler wrote:
+> You want (lcd_info.min_cmd_delay * 1000000)/HZ
 
-I should have added that that the kernel should only transfer 32 bits in
-this case.
+Of course this is wrong...David was almost right in his original
+and got it right in a followup:
+	(lcd_info.min_cmd_delay * HZ)/1000000
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+ie (us * Hz)/us == Hz and that's what we want.
+
+sorry,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
