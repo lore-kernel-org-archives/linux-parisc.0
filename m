@@ -1,56 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CFF4F482A
-	for <parisc-linux@parisc-linux.org>; Mon, 28 May 2001 10:32:25 -0600 (MDT)
-Message-Id: <m154Pv9-001VltC@bame.riverrock.org>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org, bame@www.riverrock.org
-Subject: Re: [parisc-linux] i hate cvs 
-In-Reply-To: Message from Matthew Wilcox <matthew@wil.cx>
-   of "Mon, 28 May 2001 00:48:58 BST." <20010528004858.L23718@parcelfarce.linux.theplanet.co.uk>
-References: <20010528004858.L23718@parcelfarce.linux.theplanet.co.uk> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 28 May 2001 10:31:07 -0600
-From: Paul Bame <bame@riverrock.org>
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2B5C482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 May 2001 12:03:41 -0600 (MDT)
+Message-ID: <A4A5E4C468B5D11190220001FA6835DD04DD8942@EPIXCH003>
+From: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@EUROPAY.COM>
+To: 'Matthew Wilcox' <matthew@wil.cx>
+Cc: parisc-linux@lists.parisc-linux.org
+Date: Mon, 28 May 2001 20:01:13 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Palo: how-to reinstall
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> someone want to tell me how to get a copy of our source tree from, say,
-> May 19th?  cvs up -D'19 May 2001' is not the answer because it gets
-> files off the vendor branch which is useless.
+Dear Matt,
 
-Well there appear to be some interesting CVS "features" here which
-are independent of the magic safe-cvsimport stuff we've done:
+I have to reinstall my root fs after some fatal mistakes. And I discover a
+may25-3-wide raw and try it.
 
-$ date > e
-$ cvs add e
-cvs add: scheduling file `e' for addition
-cvs add: use 'cvs commit' to add this file permanently
-$ cvs commit -mno-message e
-RCS file: /tmp/cvs/b/e,v
-done
-Checking in e;
-/tmp/cvs/b/e,v  <--  e
-initial revision: 1.1
-done
-$ cvs up -rHEAD -Dnow e
-cvs update: e is no longer in the repository
-$ cvs up -Dnow e
-U e
-$ cvs -v
-Concurrent Versions System (CVS) 1.11 (client/server)
- 
-So it looks like specifying date and HEAD branch (alias "trunk") together is 
-hosed (other date+branches i checked work fine).  If it looks easy I'll submit 
-this to the CVS folks.
+Just a problem when it try to reinstall palo (a had also this problem
+before).
+My system disk was already made bootable with palo and I do not want
+re-format the all disk because of some other fs containing some packages and
+test I do not want to loose.
 
-I can fix our repository so willy's initial command works properly (without
-the -rHEAD I proposed) by commiting an unchanged 1.2 revision for certain 
-files.
-They will probably require back-dating if we want retroactive date-based
-check-outs to work and that will probably require me to have exclusive access
-to pehc for a bit.  Another way to solve the problem is to un-import 2.2.4
-from the vendor branch (untested but I think it'll work).  Suggestions?
+Is there any tips to re-install palo on a working disk (writing 512 null
+char at the beginning of the disk with dd?)?
 
-	-P
+Thanks in advance for advises,
+
+	Joel
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
