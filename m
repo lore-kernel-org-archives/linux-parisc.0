@@ -1,243 +1,202 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2C7564A19
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Feb 2001 16:23:07 -0700 (MST)
-Content-Type: Multipart/Mixed;
-  charset="iso-8859-1";
-  boundary="------------Boundary-00=_OEYPOZ9VOG491GDHLIGZ"
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@parisc-linux.org
-Date: Wed, 14 Feb 2001 00:25:36 +0100
-MIME-Version: 1.0
-Message-Id: <01021400244002.01835@P100.helgenet.de>
-Subject: [parisc-linux] byte-mode STI sync-up with word-mode STI
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2325A4A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Feb 2001 05:00:25 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id C1E98B005; Wed, 14 Feb 2001 12:00:08 +0000 (GMT)
+Date: Wed, 14 Feb 2001 12:00:08 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010214120008.Q1374@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] building a devel branch gcc
 List-ID: <linux-parisc.vger.kernel.org>
 
---------------Boundary-00=_OEYPOZ9VOG491GDHLIGZ
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-
 Hi,
+  I recently built a devel branch gcc that was capable of building
+working 64 bit kernels.  I'm posting the scripts I used in the hope
+that they might be useful.  They are heavily based on info from Alan
+Modra.
 
-I've just checked in a large patch (see attachment), which mostly syncs 
-byte-mode STI up with word-mode STI.
-You should note, that I can't currently test any of theese changes, since I 
-don't have such a machine. If your machine has byte-mode STI ROM and you test 
-this code, please send me some feedback.
+These scripts probably don't do exactly what you want, but should
+be a useful starting point.  More likely, you want to build
+x86 to parisc32 and parisc64 cross-compilers.  Hoepfully Matt
+will do a new xc package when he gets back in a few days.
 
-The other parts of this patch just remove an unused parameter from 
-sti_rom_copy() and fixes a compiler-warning in stifb.c.
+I checked out binutils, glibc, linux, and gcc -r devel on x86, and
+used Matts latest xc to build a devel gcc x86 to parisc32 xc, and
+used that to build a native parisc gcc.  I then copied
+that on to my A500, and used it to build a parisc32 to parisc64
+gcc cross-compiler.  That cross-compiler was then used to build a
+64 bit kernel.  The kernel was tested by booting it on the A500
+and then rebuilding the kernel.
 
-btw, stifb will still not work :-(
+The A500 was running Matts latest nfsroot tarball, with bits
+(such as glibc) upgraded to ones in the new-debs dir on pehc.
 
-Greetings,
+So, the script to run x86 to build the native parisc32 compiler:
 
-	Helge
+========================== cut =================================
+#!/bin/sh
+# From Alan Modra, 12th Feb 2001
+# parameterised by Richard Hirst
 
---------------Boundary-00=_OEYPOZ9VOG491GDHLIGZ
-Content-Type: text/x-c;
-  charset="iso-8859-1";
-  name="xxx"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="xxx"
+export PATH=/bin:/usr/bin
 
-PyB4eHgKSW5kZXg6IHN0aWNvbi1ibW9kZS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6IC9ob21lL2N2
-cy9wYXJpc2MvbGludXgvZHJpdmVycy92aWRlby9zdGkvc3RpY29uLWJtb2RlLmMsdgpyZXRyaWV2
-aW5nIHJldmlzaW9uIDEuMwpkaWZmIC11IC1yMS4zIHN0aWNvbi1ibW9kZS5jCi0tLSBzdGljb24t
-Ym1vZGUuYwkyMDAxLzAyLzAzIDAxOjI0OjU1CTEuMworKysgc3RpY29uLWJtb2RlLmMJMjAwMS8w
-Mi8xMyAyMzowNzowOQpAQCAtMTA2LDYyICsxMDYsNjcgQEAKIAlyZXR1cm4gdmlydF90b19waHlz
-KHJldCk7CiB9CiAKKworc3RhdGljIGludCBfX2luaXQgCitibW9kZV9zdGlfc2VhcmNoX2ZvbnQo
-c3RydWN0IHN0aV9jb29rZWRfcm9tICpyb20sIGludCBoZWlnaHQsIGludCB3aWR0aCkKK3sKKwlz
-dHJ1Y3Qgc3RpX2Nvb2tlZF9mb250ICpmb250OworCWludCBpID0gMDsKIAkKLS8qIGFkZHJlc3Mg
-aXMgYSBwb2ludGVyIHRvIGEgYnl0ZSBtb2RlIG9yIHBjaSByb20gKi8KLXN0cnVjdCBzdGlfc3Ry
-dWN0ICogX19pbml0IAotYm1vZGVfc3RpX3JlYWRfcm9tKHVuc2lnbmVkIGxvbmcgYWRkcmVzcykK
-Kwlmb3IoZm9udCA9IHJvbS0+Zm9udF9zdGFydDsgZm9udDsgZm9udCA9IGZvbnQtPm5leHRfZm9u
-dCwgaSsrKSB7CisJICAgIGlmKChTVElfVTgoZm9udC0+cmF3LT53aWR0aCkgPT0gd2lkdGgpICYm
-IChTVElfVTgoZm9udC0+cmF3LT5oZWlnaHQpID09IGhlaWdodCkpCisJCQlyZXR1cm4gaTsKKwl9
-CisJcmV0dXJuIDA7Cit9CisKKwkKK3N0cnVjdCBzdGlfc3RydWN0ICogX19pbml0CitibW9kZV9z
-dGlfcmVhZF9yb20oc3RydWN0IHN0aV9zdHJ1Y3QgKnN0aSwgdW5zaWduZWQgbG9uZyBhZGRyZXNz
-LCB1bnNpZ25lZCBsb25nIGhwYSkKIHsKLQlzdHJ1Y3Qgc3RpX3N0cnVjdCAqcmV0ID0gTlVMTDsK
-LQlzdHJ1Y3Qgc3RpX2Nvb2tlZF9yb20gKmNvb2tlZCA9IE5VTEw7CisJc3RydWN0IHN0aV9jb29r
-ZWRfcm9tICpjb29rZWQ7CiAJc3RydWN0IHN0aV9yb20gKnJhdyA9IE5VTEw7CiAJdW5zaWduZWQg
-bG9uZyBzaXplOwotCi0JcmV0ID0gJmRlZmF1bHRfc3RpOwotCi0JaWYoIXJldCkKLQkJZ290byBv
-dXRfZXJyOwotCisJc3RpX3UzMiBzaXpldG1wOworCQkJCSAKIAljb29rZWQgPSBrbWFsbG9jKHNp
-emVvZiAqY29va2VkLCBHRlBfS0VSTkVMKTsKLQlyYXcgPSBrbWFsbG9jKHNpemVvZiAqcmF3LCBH
-RlBfS0VSTkVMKTsKLQkKLQlpZighKHJhdyAmJiBjb29rZWQpKQorCWlmICghY29va2VkKQogCQln
-b3RvIG91dF9lcnI7Ci0KLQkvKiByZWFsbG9jYXRlIHJhdyAqLwotCXN0aV9yb21fY29weShhZGRy
-ZXNzLCAwLCBzaXplb2YgKnJhdywgcmF3KTsKKwkJCisJc3RpX3JvbV9jb3B5KGFkZHJlc3MgKyBv
-ZmZzZXRvZihzdHJ1Y3Qgc3RpX3JvbSxsYXN0X2FkZHIpLAorCQlzaXplb2Yoc2l6ZXRtcCksICZz
-aXpldG1wKTsKKwlzaXplID0gU1RJX1UzMihzaXpldG1wKTsKIAotCWJtb2RlX3N0aV9kdW1wX3Jv
-bShyYXcpOworLy8JYm1vZGVfc3RpX2R1bXBfcm9tKHJhdyk7IC8vIE5PIERBVEEuLi4uCiAKLQlz
-aXplID0gU1RJX1UzMihyYXctPmxhc3RfYWRkcikgKyAxOwotCXNpemUgPSAxMjgqMTAyNDsKLS8v
-CURQUklOVEsoKCJzaXplICUwOGx4XG4iLCBzaXplKSk7CiAvLwlEUFJJTlRLKCgiZm9udF9zdGFy
-dCAlMDh4XG4iLCBTVElfVTMyKHJhdy0+Zm9udF9zdGFydCkpKTsKLS8vCWtmcmVlKHJhdyk7CiAJ
-cmF3ID0ga21hbGxvYyhzaXplLCBHRlBfS0VSTkVMKTsKIAlpZighcmF3KQogCQlnb3RvIG91dF9l
-cnI7Ci0Jc3RpX3JvbV9jb3B5KGFkZHJlc3MsIDAsIHNpemUtMSwgcmF3KTsKKwlzdGlfcm9tX2Nv
-cHkoYWRkcmVzcywgc2l6ZSwgcmF3KTsKIAogCWJtb2RlX3N0aV9jb29rX2ZvbnRzKGNvb2tlZCwg
-cmF3KTsKIAorCXN0aS0+cmVnaW9uc1swXSA9IGhwYTsJLyogPz8gKi8KKwkJCiAJaWYoU1RJX1Uz
-MihyYXctPnJlZ2lvbl9saXN0KSkgewogCQlzdHJ1Y3Qgc3RpX3JvbV9yZWdpb24gKnJlZ2lvbiA9
-CiAJCQkoKHZvaWQgKilyYXcpICsgU1RJX1UzMihyYXctPnJlZ2lvbl9saXN0KSAtIDM7CiAKIC8v
-CQlEUFJJTlRLKCgicmVnaW9uX2xpc3QgJTA4eFxuIiwgU1RJX1UzMihyYXctPnJlZ2lvbl9saXN0
-KSkpOwogCQkKLQkJcmV0LT5yZWdpb25zWzFdID0gU1RJX1UzMihyZWdpb25bMV0ucmVnaW9uKTsK
-LQkJcmV0LT5yZWdpb25zWzJdID0gU1RJX1UzMihyZWdpb25bMl0ucmVnaW9uKTsKLQkJcmV0LT5y
-ZWdpb25zWzNdID0gU1RJX1UzMihyZWdpb25bM10ucmVnaW9uKTsKLQkJcmV0LT5yZWdpb25zWzRd
-ID0gU1RJX1UzMihyZWdpb25bNF0ucmVnaW9uKTsKLQkJcmV0LT5yZWdpb25zWzVdID0gU1RJX1Uz
-MihyZWdpb25bNV0ucmVnaW9uKTsKLQkJcmV0LT5yZWdpb25zWzZdID0gU1RJX1UzMihyZWdpb25b
-Nl0ucmVnaW9uKTsKLQkJcmV0LT5yZWdpb25zWzddID0gU1RJX1UzMihyZWdpb25bN10ucmVnaW9u
-KTsKKwkJc3RpLT5yZWdpb25zWzFdID0gU1RJX1UzMihyZWdpb25bMV0ucmVnaW9uKTsKKwkJc3Rp
-LT5yZWdpb25zWzJdID0gU1RJX1UzMihyZWdpb25bMl0ucmVnaW9uKTsKKwkJc3RpLT5yZWdpb25z
-WzNdID0gU1RJX1UzMihyZWdpb25bM10ucmVnaW9uKTsKKwkJc3RpLT5yZWdpb25zWzRdID0gU1RJ
-X1UzMihyZWdpb25bNF0ucmVnaW9uKTsKKwkJc3RpLT5yZWdpb25zWzVdID0gU1RJX1UzMihyZWdp
-b25bNV0ucmVnaW9uKTsKKwkJc3RpLT5yZWdpb25zWzZdID0gU1RJX1UzMihyZWdpb25bNl0ucmVn
-aW9uKTsKKwkJc3RpLT5yZWdpb25zWzddID0gU1RJX1UzMihyZWdpb25bN10ucmVnaW9uKTsKIAl9
-CiAKIAlhZGRyZXNzID0gdmlydF90b19waHlzKHJhdyk7CiAKLSNpZiAwCisjaWYgMQogCURQUklO
-VEsoKCJpbml0X2dyYXBoICUwOHggJTA4eFxuIgogCSAgICAgICAic3RhdGVfbWdtdCAlMDh4ICUw
-OHhcbiIKIAkgICAgICAgImZvbnRfdW5wbXYgJTA4eCAlMDh4XG4iCkBAIC0xOTIsMzEgKzE5Nywz
-NiBAQAogCSAgICAgICBTVElfVTMyKHJhdy0+ZW5kX2FkZHIpLCBTVElfVTMyKHJhdy0+ZW5kX2Fk
-ZHJfbTY4aykgKSApOwogI2VuZGlmCiAKLQlyZXQtPmluaXRfZ3JhcGggPSBibW9kZV9zdGlfY29v
-a19mdW5jdGlvbigoKHZvaWQgKilyYXcpK1NUSV9VMzIocmF3LT5pbml0X2dyYXBoKS0zLAorCXN0
-aS0+aW5pdF9ncmFwaCA9IGJtb2RlX3N0aV9jb29rX2Z1bmN0aW9uKCgodm9pZCAqKXJhdykrU1RJ
-X1UzMihyYXctPmluaXRfZ3JhcGgpLTMsCiAJCQkJCSAgICAoU1RJX1UzMihyYXctPnN0YXRlX21n
-bXQpIC0KIAkJCQkJICAgICBTVElfVTMyKHJhdy0+aW5pdF9ncmFwaCkpLzQpOwogCiAKLQlyZXQt
-PmZvbnRfdW5wbXYgPSBibW9kZV9zdGlfY29va19mdW5jdGlvbigoKHZvaWQgKilyYXcpK1NUSV9V
-MzIocmF3LT5mb250X3VucG12KS0zLAorCXN0aS0+Zm9udF91bnBtdiA9IGJtb2RlX3N0aV9jb29r
-X2Z1bmN0aW9uKCgodm9pZCAqKXJhdykrU1RJX1UzMihyYXctPmZvbnRfdW5wbXYpLTMsCiAJCQkJ
-CSAgICAoU1RJX1UzMihyYXctPmJsb2NrX21vdmUpIC0KIAkJCQkJICAgICBTVElfVTMyKHJhdy0+
-Zm9udF91bnBtdikpLzQpOwogCi0JcmV0LT5ibG9ja19tb3ZlID0gYm1vZGVfc3RpX2Nvb2tfZnVu
-Y3Rpb24oKCh2b2lkICopcmF3KStTVElfVTMyKHJhdy0+YmxvY2tfbW92ZSktMywKKwlzdGktPmJs
-b2NrX21vdmUgPSBibW9kZV9zdGlfY29va19mdW5jdGlvbigoKHZvaWQgKilyYXcpK1NUSV9VMzIo
-cmF3LT5ibG9ja19tb3ZlKS0zLAogCQkJCQkgICAgKFNUSV9VMzIocmF3LT5zZWxmX3Rlc3QpIC0K
-IAkJCQkJICAgICBTVElfVTMyKHJhdy0+YmxvY2tfbW92ZSkpLzQpOwogCi0JcmV0LT5pbnFfY29u
-ZiA9IGJtb2RlX3N0aV9jb29rX2Z1bmN0aW9uKCgodm9pZCAqKXJhdykrU1RJX1UzMihyYXctPmlu
-cV9jb25mKSwKKwlzdGktPmlucV9jb25mID0gYm1vZGVfc3RpX2Nvb2tfZnVuY3Rpb24oKCh2b2lk
-ICopcmF3KStTVElfVTMyKHJhdy0+aW5xX2NvbmYpLAogCQkJCQkgIFNUSV9VMzIocmF3LT5zZXRf
-Y21fZW50cnkpIC0KIAkJCQkJICBTVElfVTMyKHJhdy0+aW5xX2NvbmYpKTsKIAotCXJldC0+cm9t
-ID0gY29va2VkOwotCXJldC0+cm9tLT5yYXcgPSByYXc7CisJc3RpLT5yb20gPSBjb29rZWQ7CisJ
-c3RpLT5yb20tPnJhdyA9IHJhdzsKIAotLyogWFhYWFgKLQlyZXQtPmZvbnQgPSAoc3RydWN0IHN0
-aV9yb21fZm9udCAqKSB2aXJ0X3RvX3BoeXMoc3RpX3NlbGVjdF9mb250KHJldC0+cm9tKS0+cmF3
-KTsKLSovCi0JcmV0dXJuIHJldDsKKwlzdGktPmZvbnQgPSBzdGlfc2VsZWN0X2ZvbnQoc3RpLT5y
-b20sIGJtb2RlX3N0aV9zZWFyY2hfZm9udCktPnJhdzsKKyAgICAgICAgc3RpLT5mb250X3dpZHRo
-ID0gU1RJX1U4KHN0aS0+Zm9udC0+d2lkdGgpOworCXN0aS0+Zm9udF9oZWlnaHQgPSBTVElfVTgo
-c3RpLT5mb250LT5oZWlnaHQpOworCXN0aS0+Zm9udCA9IChzdHJ1Y3Qgc3RpX3JvbV9mb250ICop
-IHZpcnRfdG9fcGh5cyhzdGktPmZvbnQpOworCQkJIAorcHJpbnRrKCJVc2luZyBmb250IGF0ICUw
-OGx4LCB3PSVkLCBoPSVkXG4iLAorICAgICAgICAgICAgKHVuc2lnbmVkIGxvbmcpc3RpLT5mb250
-LCBzdGktPmZvbnRfd2lkdGgsIHN0aS0+Zm9udF9oZWlnaHQpOwogCisJcmV0dXJuIHN0aTsKKwog
-b3V0X2VycjoKIAlpZihyYXcpCiAJCWtmcmVlKHJhdyk7CkBAIC0yMjQsNTIgKzIzNCw0IEBACiAJ
-CWtmcmVlKGNvb2tlZCk7CiAKIAlyZXR1cm4gTlVMTDsKLX0KLQotCi1zdHJ1Y3Qgc3RpX3N0cnVj
-dCAqIF9faW5pdCAKLWJtb2RlX3N0aV90cnlfcm9tKHVuc2lnbmVkIGxvbmcgYWRkcmVzcywgdW5z
-aWduZWQgbG9uZyBocGEpCi17Ci0Jc3RydWN0IHN0aV9zdHJ1Y3QgKnN0aSA9IE5VTEw7Ci0JdTE2
-IHNpZzsKLQkKLQkvKiBpZiB3ZSBjYW4ndCByZWFkIHRoZSBST00sIGJhaWwgb3V0IGVhcmx5LiAg
-Tm90IGJlaW5nIGFibGUKLQkgKiB0byByZWFkIHRoZSBocGEgaXMgb2theSwgZm9yIHJvbWxlc3Mg
-c3RpICovCi0JaWYocGRjX2FkZF92YWxpZCgodm9pZCopYWRkcmVzcykpCi0JCXJldHVybiBOVUxM
-OwotCi0JcHJpbnRrKCJmb3VuZCBwb3RlbnRpYWwgU1RJIFJPTSBhdCAlMDhseFxuIiwgYWRkcmVz
-cyk7Ci0KLQlzaWcgPSBsZTE2X3RvX2NwdShnc2NfcmVhZHcoYWRkcmVzcykpOwotCi0JaWYoKHNp
-ZyYweGZmKSA9PSAweDAxKSB7Ci0JCXN0aSA9IGJtb2RlX3N0aV9yZWFkX3JvbShhZGRyZXNzKTsK
-LQl9Ci0KLQlpZihzaWcgPT0gMHgwMzAzKSB7Ci0JCXByaW50aygiU1RJIHdvcmQgbW9kZSBST00g
-YXQgJTA4bHgsIGlnbm9yZWRcbiIsCi0JCSAgICAgICBhZGRyZXNzKTsKLQotCQlzdGkgPSBOVUxM
-OwotCX0KLQotCWlmKCFzdGkpCi0JCXJldHVybiBOVUxMOwotCi0Jc3RpX2luaXRfZ2xvYl9jZmco
-c3RpLCBocGEsIGFkZHJlc3MpOwotCi0Jc3RpX2luaXRfZ3JhcGgoc3RpKTsKLQotCS8vc3RpX2lu
-cV9jb25mKHN0aSk7Ci0jaWYgIWRlZmluZWQoU0VSSUFMX0NPTlNPTEUpCQotCXsgCi0JICAgIGV4
-dGVybiB2b2lkIHBkY19jb25zb2xlX2RpZSh2b2lkKTsgIAotCSAgICBwZGNfY29uc29sZV9kaWUo
-KTsgCi0JfQotI2VuZGlmCi0JCi0vKiBYWFhYWFgJCi0JdGFrZV9vdmVyX2NvbnNvbGUoJnN0aV9j
-b24sIDAsIE1BWF9OUl9DT05TT0xFUy0xLCAxKTsKLSovCi0JcmV0dXJuIHN0aTsKIH0KSW5kZXg6
-IHN0aWNvbi13bW9kZS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6IC9ob21lL2N2cy9wYXJpc2MvbGlu
-dXgvZHJpdmVycy92aWRlby9zdGkvc3RpY29uLXdtb2RlLmMsdgpyZXRyaWV2aW5nIHJldmlzaW9u
-IDEuNQpkaWZmIC11IC1yMS41IHN0aWNvbi13bW9kZS5jCi0tLSBzdGljb24td21vZGUuYwkyMDAx
-LzAyLzEzIDIxOjQwOjQ2CTEuNQorKysgc3RpY29uLXdtb2RlLmMJMjAwMS8wMi8xMyAyMzowNzow
-OQpAQCAtNzEsNDEgKzcxLDE4IEBACiAKIAogc3RhdGljIGludCBfX2luaXQgCi1zdGlfc2VhcmNo
-X2ZvbnQoc3RydWN0IHN0aV9jb29rZWRfcm9tICpyb20sCi0JCWludCBoZWlnaHQsIGludCB3aWR0
-aCkKK3dtb2RlX3N0aV9zZWFyY2hfZm9udChzdHJ1Y3Qgc3RpX2Nvb2tlZF9yb20gKnJvbSwgaW50
-IGhlaWdodCwgaW50IHdpZHRoKQogewogCXN0cnVjdCBzdGlfY29va2VkX2ZvbnQgKmZvbnQ7CiAJ
-aW50IGkgPSAwOwogCQogCWZvcihmb250ID0gcm9tLT5mb250X3N0YXJ0OyBmb250OyBmb250ID0g
-Zm9udC0+bmV4dF9mb250LCBpKyspIHsKLSN3YXJuaW5nIHVzZSBTVElfVTgoKSB3aXRoIGJ5dGUt
-bW9kZSBST01zICEhCiAJICAgIGlmKChmb250LT5yYXctPndpZHRoID09IHdpZHRoKSAmJiAoZm9u
-dC0+cmF3LT5oZWlnaHQgPT0gaGVpZ2h0KSkKIAkJCXJldHVybiBpOwogCX0KIAlyZXR1cm4gMDsK
-IH0KIAotCi1zdHJ1Y3Qgc3RpX2Nvb2tlZF9mb250ICogX19pbml0Ci1zdGlfc2VsZWN0X2ZvbnQo
-c3RydWN0IHN0aV9jb29rZWRfcm9tICpyb20pCi17Ci0Jc3RydWN0IHN0aV9jb29rZWRfZm9udCAq
-Zm9udDsKLQlpbnQgaTsKLQotCWlmIChmb250X3dpZHRoICYmIGZvbnRfaGVpZ2h0KQotCQlmb250
-X2luZGV4ID0gc3RpX3NlYXJjaF9mb250KHJvbSwgZm9udF9oZWlnaHQsIGZvbnRfd2lkdGgpOwot
-Ci0JZm9yIChmb250ID0gcm9tLT5mb250X3N0YXJ0LCBpID0gZm9udF9pbmRleDsKLQkgICAgZm9u
-dCAmJiAoaSA+IDApOwotCSAgICBmb250ID0gZm9udC0+bmV4dF9mb250LCBpLS0pOwotCi0JaWYg
-KGZvbnQpCi0JCXJldHVybiBmb250OwotCWVsc2UKLQkJcmV0dXJuIHJvbS0+Zm9udF9zdGFydDsK
-LX0KLQotCiBzdHJ1Y3Qgc3RpX3N0cnVjdCAqIF9faW5pdAogd21vZGVfc3RpX3JlYWRfcm9tKHN0
-cnVjdCBzdGlfc3RydWN0ICpzdGksIHVuc2lnbmVkIGxvbmcgYWRkcmVzcywgdW5zaWduZWQgbG9u
-ZyBocGEpCiB7CkBAIC0xMjQsNyArMTAxLDcgQEAKIAlpZighcmF3KQogCQlnb3RvIG91dF9lcnI7
-CiAKLQlzdGlfcm9tX2NvcHkoYWRkcmVzcywgMCwgc2l6ZSwgcmF3KTsKKwlzdGlfcm9tX2NvcHko
-YWRkcmVzcywgc2l6ZSwgcmF3KTsKIAogCWlmICghd21vZGVfc3RpX2Nvb2tfZm9udHMoY29va2Vk
-LCByYXcpKSB7CiAJCXByaW50aygiTm8gZm9udCBmb3VuZCBmb3IgU1RJIGF0ICUwOGx4XG4iLCBh
-ZGRyZXNzKTsKQEAgLTE0NCw3ICsxMjEsNyBAQAogCXN0aS0+cm9tID0gY29va2VkOwogCXN0aS0+
-cm9tLT5yYXcgPSByYXc7CiAJCi0Jc3RpLT5mb250ID0gc3RpX3NlbGVjdF9mb250KHN0aS0+cm9t
-KS0+cmF3OworCXN0aS0+Zm9udCA9IHN0aV9zZWxlY3RfZm9udChzdGktPnJvbSwgd21vZGVfc3Rp
-X3NlYXJjaF9mb250KS0+cmF3OwogCXN0aS0+Zm9udF93aWR0aCA9IHN0aS0+Zm9udC0+d2lkdGg7
-CiAJc3RpLT5mb250X2hlaWdodCA9IHN0aS0+Zm9udC0+aGVpZ2h0OwogCXN0aS0+Zm9udCA9IChz
-dHJ1Y3Qgc3RpX3JvbV9mb250ICopIHZpcnRfdG9fcGh5cyhzdGktPmZvbnQpOwpJbmRleDogc3Rp
-Y29yZS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6IC9ob21lL2N2cy9wYXJpc2MvbGludXgvZHJpdmVy
-cy92aWRlby9zdGkvc3RpY29yZS5jLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjQKZGlmZiAtdSAt
-cjEuNCBzdGljb3JlLmMKLS0tIHN0aWNvcmUuYwkyMDAxLzAyLzA0IDIxOjIyOjU5CTEuNAorKysg
-c3RpY29yZS5jCTIwMDEvMDIvMTMgMjM6MDc6MDkKQEAgLTIxNiwxNSArMjE2LDExIEBACiAKIAog
-dm9pZCBfX2luaXQKLXN0aV9yb21fY29weSh1bnNpZ25lZCBsb25nIGJhc2UsIHVuc2lnbmVkIGxv
-bmcgb2Zmc2V0LAotCSAgICAgdW5zaWduZWQgbG9uZyBjb3VudCwgdm9pZCAqZGVzdCkKK3N0aV9y
-b21fY29weSh1bnNpZ25lZCBsb25nIGJhc2UsIHVuc2lnbmVkIGxvbmcgY291bnQsIHZvaWQgKmRl
-c3QpCiB7Ci0JdW5zaWduZWQgbG9uZyBvcmdjb3VudDsKLQlvcmdjb3VudCA9IGNvdW50OworCXVu
-c2lnbmVkIGxvbmcgb3JnY291bnQgPSBjb3VudDsKIAogCS8qIHRoaXMgc3RpbGwgbmVlZHMgdG8g
-YmUgcmV2aXNpdGVkIChzZWUgYXJjaC9wYXJpc2MvbW0vaW5pdC5jOjI0NiAhICovCi0JYmFzZSAr
-PSBvZmZzZXQ7Ci0JCiAJd2hpbGUgKGNvdW50ID49IDQpIHsKIAkJY291bnQgLT0gNDsKIAkJKih1
-MzIgKilkZXN0ID0gZ3NjX3JlYWRsKGJhc2UpOwpAQCAtMzQ5LDYgKzM0NSwyNyBAQAogfQogCiAK
-K3N0cnVjdCBzdGlfY29va2VkX2ZvbnQgKiBfX2luaXQKK3N0aV9zZWxlY3RfZm9udChzdHJ1Y3Qg
-c3RpX2Nvb2tlZF9yb20gKnJvbSwKKwkgICAgaW50ICgqc2VhcmNoX2ZvbnRfZm5jKSAoc3RydWN0
-IHN0aV9jb29rZWRfcm9tICosaW50LGludCkgKQoreworCXN0cnVjdCBzdGlfY29va2VkX2ZvbnQg
-KmZvbnQ7CisJaW50IGk7CisKKwlpZiAoZm9udF93aWR0aCAmJiBmb250X2hlaWdodCkKKwkJZm9u
-dF9pbmRleCA9IHNlYXJjaF9mb250X2ZuYyhyb20sIGZvbnRfaGVpZ2h0LCBmb250X3dpZHRoKTsK
-KworCWZvciAoZm9udCA9IHJvbS0+Zm9udF9zdGFydCwgaSA9IGZvbnRfaW5kZXg7CisJICAgIGZv
-bnQgJiYgKGkgPiAwKTsKKwkgICAgZm9udCA9IGZvbnQtPm5leHRfZm9udCwgaS0tKTsKKworCWlm
-IChmb250KQorCQlyZXR1cm4gZm9udDsKKwllbHNlCisJCXJldHVybiByb20tPmZvbnRfc3RhcnQ7
-Cit9CisKKwogLyoKIHN0YXRpYyB1bnNpZ25lZCBsb25nIHN0aV9hZGRyZXNzOwogc3RhdGljIHVu
-c2lnbmVkIGxvbmcgc3RpX2hwYTsKQEAgLTQxNSwxMCArNDMyLDEwIEBACiAJc3RpID0gJnN0aV9y
-b21bbnVtX3N0aV9yb21zXTsKIAlzdGktPmxvY2sgPSBTUElOX0xPQ0tfVU5MT0NLRUQ7CiAKLQlp
-ZiAoKHNpZyYweGZmKSA9PSAweDAxKSB7Ci0JCXByaW50aygiU1RJIGJ5dGUgbW9kZSBST00gYXQg
-JTA4bHggaWdub3JlZFxuIiwKLQkJCWFkZHJlc3MpOwotCQlyZXR1cm4gTlVMTDsgLyogWFhYIFNU
-SUxMIFRPRE8gWFhYICovCisJaWYgKChzaWcgJiAweGZmKSA9PSAweDAxKSB7CisJCXByaW50aygi
-U1RJIGJ5dGUgbW9kZSBST00gYXQgJTA4bHgsIGhwYT0lMDhseFxuIiwKKwkJICAgICAgIGFkZHJl
-c3MsIGhwYSk7CisJCXN0aSA9IGJtb2RlX3N0aV9yZWFkX3JvbShzdGksIGFkZHJlc3MsIGhwYSk7
-CiAJfQogCiAJaWYgKHNpZyA9PSAweDAzMDMpIHsKSW5kZXg6IHN0aWNvcmUuaAo9PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-ClJDUyBmaWxlOiAvaG9tZS9jdnMvcGFyaXNjL2xpbnV4L2RyaXZlcnMvdmlkZW8vc3RpL3N0aWNv
-cmUuaCx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS40CmRpZmYgLXUgLXIxLjQgc3RpY29yZS5oCi0t
-LSBzdGljb3JlLmgJMjAwMS8wMi8wOSAwMToxMzoxOQkxLjQKKysrIHN0aWNvcmUuaAkyMDAxLzAy
-LzEzIDIzOjA3OjA5CkBAIC0yNzksMTYgKzI3OSwxOSBAQAogCiAvKiBoZWxwZXIgZnVuY3Rpb25z
-ICovCiBzdHJ1Y3Qgc3RpX3N0cnVjdCAqc3RpX2luaXRfcm9tcyh2b2lkKTsKLXZvaWQgc3RpX3Jv
-bV9jb3B5KHVuc2lnbmVkIGxvbmcgYmFzZSwgdW5zaWduZWQgbG9uZyBvZmZzZXQsCi0JICAgIHVu
-c2lnbmVkIGxvbmcgY291bnQsIHZvaWQgKmRlc3QpOwordm9pZCBzdGlfcm9tX2NvcHkodW5zaWdu
-ZWQgbG9uZyBiYXNlLCB1bnNpZ25lZCBsb25nIGNvdW50LCB2b2lkICpkZXN0KTsKIGludCAgc3Rp
-X2luaXRfZ2xvYl9jZmcoc3RydWN0IHN0aV9zdHJ1Y3QgKnN0aSwKIAkgICAgdW5zaWduZWQgbG9u
-ZyByb21fYWRkcmVzcywgdW5zaWduZWQgbG9uZyBocGEpOwogdm9pZCBzdGlfZHVtcF9nbG9iY2Zn
-KHN0cnVjdCBzdGlfZ2xvYl9jZmcgKmdsb2JfY2ZnKTsKK3N0cnVjdCBzdGlfY29va2VkX2ZvbnQg
-KnN0aV9zZWxlY3RfZm9udChzdHJ1Y3Qgc3RpX2Nvb2tlZF9yb20gKnJvbSwKKwkgICAgaW50ICgq
-c2VhcmNoX2ZvbnRfZm5jKSAoc3RydWN0IHN0aV9jb29rZWRfcm9tICosaW50LGludCkgKTsKIAot
-CiAvKiBzdGktd21vZGUuYzogKi8KLXN0cnVjdCBzdGlfc3RydWN0ICogd21vZGVfc3RpX3JlYWRf
-cm9tKHN0cnVjdCBzdGlfc3RydWN0ICpzdGksCitzdHJ1Y3Qgc3RpX3N0cnVjdCAqd21vZGVfc3Rp
-X3JlYWRfcm9tKHN0cnVjdCBzdGlfc3RydWN0ICpzdGksCiAJICAgIHVuc2lnbmVkIGxvbmcgYWRk
-cmVzcywgdW5zaWduZWQgbG9uZyBocGEpOwogCisvKiBzdGktYm1vZGUuYzogKi8KK3N0cnVjdCBz
-dGlfc3RydWN0ICpibW9kZV9zdGlfcmVhZF9yb20oc3RydWN0IHN0aV9zdHJ1Y3QgKnN0aSwKKwkg
-ICAgdW5zaWduZWQgbG9uZyBhZGRyZXNzLCB1bnNpZ25lZCBsb25nIGhwYSk7CiAKICNlbmRpZgkv
-KiBTVElDT1JFX0ggKi8KSW5kZXg6IHN0aWZiLmMKPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2hvbWUv
-Y3ZzL3BhcmlzYy9saW51eC9kcml2ZXJzL3ZpZGVvL3N0aS9zdGlmYi5jLHYKcmV0cmlldmluZyBy
-ZXZpc2lvbiAxLjQKZGlmZiAtdSAtcjEuNCBzdGlmYi5jCi0tLSBzdGlmYi5jCTIwMDEvMDIvMDkg
-MDE6MTM6MTkJMS40CisrKyBzdGlmYi5jCTIwMDEvMDIvMTMgMjM6MDc6MDkKQEAgLTEzMSw3ICsx
-MzEsNyBAQAogfQogCiBzdGF0aWMgaW50Ci1zdGlfYmxhbmsoaW50IGJsYW5rX21vZGUsIGNvbnN0
-IHN0cnVjdCBmYl9pbmZvICppbmZvKQorc3RpX2JsYW5rKGludCBibGFua19tb2RlLCBzdHJ1Y3Qg
-ZmJfaW5mb19nZW4gKmluZm8pCiB7CiAJcmV0dXJuIDA7CiB9CkBAIC0xNDcsNyArMTQ3LDYgQEAK
-IAlzZXRfcGFyOglzdGlfc2V0X3BhciwKIAlnZXRjb2xyZWc6CXN0aV9nZXRjb2xyZWcsCiAJc2V0
-Y29scmVnOglzdGlfc2V0Y29scmVnLAotCXBhbl9kaXNwbGF5OglOVUxMLAogCWJsYW5rOgkJc3Rp
-X2JsYW5rLAogCXNldF9kaXNwOglzdGlfc2V0X2Rpc3AKIH07CkBAIC0xOTEsNiArMTkwLDcgQEAK
-IAlwcmludGsoS0VSTl9JTkZPICJmYiVkOiAlcyBmcmFtZSBidWZmZXIgZGV2aWNlXG4iLAogCQlH
-RVRfRkJfSURYKGZiX2luZm8uZ2VuLmluZm8ubm9kZSksIGZiX2luZm8uZ2VuLmluZm8ubW9kZW5h
-bWUpOwogCisJcHJpbnRrKCIlczogRklOSVNIRURcbiIsIF9fRlVOQ1RJT05fXyk7CiAJcmV0dXJu
-IDA7CiB9CiAK
+BUILDDIR=/mnt/parisc/alan
+BINUTILSSRC=/mnt/parisc/xc/source/binutils
+GCCSRC=/mnt/parisc/xc/source/gcc
+GLIBCSRC=/mnt/parisc/xc/source/glibc
+PARISCLINUXSRC=/mnt/parisc/xc/source/linux
+TMPINSTALLDIR=/mnt/parisc/alan-install
 
---------------Boundary-00=_OEYPOZ9VOG491GDHLIGZ--
+rm -rf $TMPINSTALLDIR
+rm -rf $BUILDDIR
+mkdir $BUILDDIR
+cd $BUILDDIR
+mkdir build
+cd build
+mkdir bin
+echo build latest cross binutils, `date`
+cd bin
+$BINUTILSSRC/configure --host=i686-linux --prefix=/usr \
+--target=hppa-linux --enable-targets=hppa64-linux --disable-nls
+make
+echo dont forget those links
+echo Now su, make install, and exit, exit
+bash
+cd ..
+echo build latest cross compiler, `date`
+mkdir devel
+cd devel
+$GCCSRC/configure --host=i686-linux --target=hppa-linux \
+--prefix=/usr --enable-shared --disable-nls --enable-languages=c
+make
+echo Now su, make install, and exit, exit
+bash
+cd ..
+echo build glibc, assumes linux includes available, `date`
+mkdir glibc
+cd glibc
+$GLIBCSRC/configure --prefix=/usr/hppa-linux --build=i686-linux \
+--host=hppa-linux --target=hppa-linux \
+--with-headers=$PARISCLINUXSRC/include --disable-profile \
+--without-cvs --enable-add-ons
+make
+echo Now su, make install, and exit, exit
+echo You also want to do something like (from memory):
+echo     cd /usr/hppa-linuc/include
+echo     ln -s $PARISCLINUXSRC/include/asm .
+echo     ln -s $PARISCLINUXSRC/include/linux .
+bash
+cd ..
+echo cross compile native gcc, `date`
+mkdir xc
+cd xc
+$GCCSRC/configure --build=i686-linux --host=hppa-linux \
+--target=hppa-linux --prefix=/usr --disable-shared --disable-nls \
+--enable-languages=c
+make
+make prefix=$TMPINSTALLDIR install
+echo Done, `date`
+
+# copy stuff from $TMPINSTALLDIR to /tftpboot
+# then hop across to do a bootstrap natively.
+
+========================== cut =================================
+
+
+and now the script run on the A500 to produce the 32 to 64 bit
+xc.  The make palo at the end fails in palo, because it tries
+to use the hppa64-linux- tools.  hack the palo Makefiles, or
+move your vmlinux to x64 to run palo on it.
+
+
+========================== cut =================================
+#!/bin/sh
+
+echo ">>> starting, `date`"
+
+# Update and rebuild parisc xc, etc.
+
+TOP=/build/xc
+MACH=hppa-linux
+DEST=$TOP/parisc64
+PATH=$TOP/parisc64/bin:/bin:/usr/bin
+
+# cvs update source
+
+if false; then
+cd $TOP/source
+cd binutils
+cvs update .
+cd ../glibc
+cvs update .
+cd ../gcc
+cvs update -r devel .
+cd ../linux
+cvs update .
+cd ../palo
+cvs update .
+fi
+
+# clean binary tree
+
+cd $TOP
+rm -rf parisc64
+mkdir parisc64
+
+# clean build tree
+
+cd $TOP
+rm -rf build-64
+mkdir build-64
+
+# configure and build binutils
+
+echo ">>> configure and build binutils, `date`"
+cd $TOP/build-64 && rm -rf binutils && mkdir binutils && cd binutils
+$TOP/source/binutils/configure --host=$MACH --prefix=$DEST \
+		--disable-nls hppa64-linux
+make
+make install
+
+# configure and partially build gcc
+
+echo ">>> configure and partially build gcc, `date`"
+cd $TOP/build-64 && rm -rf gcc && mkdir gcc && cd gcc
+$TOP/source/gcc/configure --host=$MACH --prefix=$DEST \
+		--target=hppa64-linux --enable-shared \
+		--disable-nls --enable-languages=c
+rm -r zlib hppa64-linux
+make
+make install
+
+# clean palo
+
+echo ">>> cleaning palo build tree, `date`"
+cd $TOP/source/palo
+make clean
+
+# configure the kernel
+
+echo ">>> configure the kernel, `date`"
+cd $TOP/source/linux
+make distclean
+make oldconfig
+make dep
+
+# build the kernel
+
+echo ">>> build the kernel, `date`"
+cd $TOP/source/linux
+make clean
+make palo
+
+# done!!!
+
+echo ">>> done, `date`"
+
+cd $TOP
+========================== cut =================================
