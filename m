@@ -1,44 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 21A66482B
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Aug 2001 07:52:47 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 214C8482B
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Aug 2001 07:57:23 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id A5761B00C; Sat,  4 Aug 2001 14:54:23 +0100 (BST)
-Date: Sat, 4 Aug 2001 14:54:23 +0100
+	id 3E0DEB00C; Sat,  4 Aug 2001 14:58:59 +0100 (BST)
+Date: Sat, 4 Aug 2001 14:58:59 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: S Looman <steve__l__@hotmail.com>
+To: Martin Eisfeld <me@hedd.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 715/80 not booting (kernel crashes)
-Message-ID: <20010804145423.K1011@linuxcare.com>
-References: <F71V8zDv60gxapzhad20000df92@hotmail.com>
+Subject: Re: [parisc-linux] Problems with Installing of 0.9.2 on HP 715/100
+Message-ID: <20010804145859.L1011@linuxcare.com>
+References: <3B693F62.E1E701F7@hedd.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <F71V8zDv60gxapzhad20000df92@hotmail.com>; from steve__l__@hotmail.com on Thu, Aug 02, 2001 at 11:03:32AM +0200
+In-Reply-To: <3B693F62.E1E701F7@hedd.de>; from me@hedd.de on Thu, Aug 02, 2001 at 01:54:10PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 02, 2001 at 11:03:32AM +0200, S Looman wrote:
-> Hi,
-> 
-> Just got a 715/80 box from a friend and started playing with it, but HP-UX 
-> sucks and wanted to install linux on it.
-> I downloaded the iso-image yesterday and booted it.
-> 
-> The cd boots, starts loading the kernel 'n stuff. But then it panics.
-> 
-> It has the same dump as this email: 
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-July/013193.html
-> 
-> I guess using another kernel should fix it, but I can't build any kernel...
-> 
-> Can anybody give me a kernel (or suggestions)?
+On Thu, Aug 02, 2001 at 01:54:10PM +0200, Martin Eisfeld wrote:
+> Hello everyone,
+> I have a big proplem of installing PA-RISC Linux 0.9.2 on a HP9000 Model
+> 715/100.
 
-It is very unlikely that you get the same dump as that mail reported,
-as that was froma 2.4.6 kernel, while the ISO uses a 2.4.0 one.
+I tried a 715/50 last week; it worked fine with serial console, but
+with graphical console it rebooted early in the kernel boot sequence.
 
-Are you using a serial or graphical console?  Serial console is more
-likely to work, and has the advantage that you can capture the output
-(with minicom, for example), to post here.
-
-Which ISO are you using?  0.9 or 0.9.2?
+Can you switch to a serial console and try again?
 
 Richard
