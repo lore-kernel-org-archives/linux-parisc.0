@@ -1,17 +1,17 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 349CC4890
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1024B488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 09:33:31 -0700 (MST)
-Date: Fri, 6 Feb 2004 17:12:29 +0100
-Message-ID: <40218AE200001791@ocpmta2.freegates.net>
-In-Reply-To: <00a901c3ecc8$50ef9a00$8100a8c0@punk>
+	Fri,  6 Feb 2004 10:28:32 -0700 (MST)
+Date: Fri, 6 Feb 2004 18:08:13 +0100
+Message-ID: <40218AE20000180F@ocpmta2.freegates.net>
+In-Reply-To: <20040206191631.GQ959@tausq.org>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Additions - Install GNOME on 712/80
-To: "Jens Simmoleit" <simmel@anymotion.de>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 jejb
+To: "Randolph Chung" <tausq@debian.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: 
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,37 +21,38 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Jens,
+Hi Randolph,
 
->1. My mouse won't work too *argh*
+> did you do clearpim before the run?
+Yes
 
-2. that is why you couldn't login with your user (i presume not root) :)
+> The values in the pim info don't make a lot of sense....
+Not more sense with previous one I got, that's why it takes me so much time
+to find  a workaround ;)
 
-X absolutely need a mouse pointer :(
+> did the box HPMC?
+Yes that's what showing the small lcd on the box and seems to be confirm
+by hpmc time stamp ;)
 
-iirc you should have this entry in your XF86config-4 file:
-Section "InputDevice"
-        Identifier      "Configured Mouse"
-        Driver          "mouse"
-        Option          "CorePointer"
-        Option          "Device"                "/dev/psaux"
-        Option          "Protocol"              "PS/2"
-EndSection
+> did it hang and then you hit the TOC button?
+NO. Just after the last advise of palo (... If this is the last message...)
+appears very quickly the message on the lcd: hpmc init... (even if I put
+printk() at the very begining of init code in main.c nothing is printed on
+the serial console.
 
-Check that /dev/psaux was well created, should look like:
-# ll /dev/psaux
-crw-------    1 root     root      10,   1 Mar 15  2002 /dev/psaux
+I also suspected a long time the compiler I used but recently I put this
+same kernel (scp) on the N4K-550 and it boot fine (but this system has 2Gb
+of ram)
 
-(if you build your own kernel check that its support is in the kernel)
+And because 2.4 64bits runing fine on this system (b2k) and the pb should
+be located very early at the begining of the kernel start, I had the idea
+to compare head64.S and vmlinux.lds.S and find back this 2.5 patch and try
+to revert it. But I very don't undurstand what happen in head64 to hope to
+help more efficiently :( (sorry) 
 
-
- and that gpm is not running (would not disable X to start but well trouble
-the behaviour of cursor).
-
-Hth,
+Thanks for your attention,
     Joel
 
-PS: can you also mentioned which kernel are you using 
 
 -------------------------------------------------------------------------
 Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
