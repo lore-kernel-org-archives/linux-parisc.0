@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E9BB9482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Nov 2002 06:57:46 -0700 (MST)
-Date: Thu, 21 Nov 2002 08:57:54 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Chris Jantzen <chris-parisc@maybe.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C180 not booting Sarge kernel
-Message-ID: <20021121135754.GA3811@systemhalted>
-References: <20021121090154.GB23152@maybe.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021121090154.GB23152@maybe.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 52801482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Nov 2002 09:33:43 -0700 (MST)
+Message-Id: <200211211605.gALG5IFM000465@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] glibc + SuSE (When email becomes to much)
+To: jsoe0708@tiscali.be
+Date: Thu, 21 Nov 2002 11:05:17 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3DA3C54C000066FE@ocpmta5.be.tiscali.com> from "jsoe0708@tiscali.be" at Nov 21, 2002 08:39:43 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,26 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> FYI, my sarge-based C180 has not been able to boot 2.4.19-32_18 or _22.1;
-> I have to interact with IPL and fall back to 2.4.18_62.2. It gets as
-> far as the "...if this is the last message you see..." and I never hear
-> from it again, even on the network. And I think after a very very long
-> time, it falls back to firmware. At least, I see DHCP requests coming
-> out of it after a while. (I only just hooked up serial console to
-> interact with IPL after getting no response. No I don't boot it up too
-> often, it's a "side project".)
+> -DL_divI -xassembler-with-cpp -c /Develop/parisc-linux/src/gcc/gcc/config/pa/milli64.S
+> -o libgcc/./_divI.o
+> /Develop/parisc-linux/build/gcc/gcc/collect2: /lib/libc.so.6: version `GLIBC_2.3'
+> not found (required by /Develop/parisc-linux/build/gcc/gcc/collect2)
+> make[2]: *** [libgcc/./_divI.oS] Error 1
+> make[2]: Leaving directory `/Develop/parisc-linux/build/gcc/gcc'
+> make[1]: *** [libgcc.a] Error 2
+> make[1]: Leaving directory `/Develop/parisc-linux/build/gcc/gcc'
+> make: *** [all-gcc] Error 2
+> 
+> ### Wed Nov 20 18:54:33 2002 ###
+> 
+> So it seems that it did not get the right path to the libc.so?
 
-HP hardware is occasionally quirky :}
+Set LD_LIBRARY_PATH to include the directory where your new libc is.
+You may also want to set the GCC LIBRARY_PATH environment variable.
 
-> Also, "uname -a" segfaults.
-
-That bug got squashed in unstable. You'll see the fix soon.
- 
-> I'll try unplugging the GSC and EISA cards plugged into it tomorrow.
-> I'll also try letting it just sit there under supervision and see what
-> really happens.
-
-Good idea :)
-If it doesn't work, get back to the list.
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
