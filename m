@@ -1,19 +1,21 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 4D27D4838
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 47522482F
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 11 Apr 2004 02:41:13 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] European Union and Software-Patents
-Date: Sun, 11 Apr 2004 10:39:56 +0200
-References: <20040411061854.GD13387@colo.lackof.org>
-In-Reply-To: <20040411061854.GD13387@colo.lackof.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200404111039.56765.deller@gmx.de>
-Cc: Grant Grundler <grundler@parisc-linux.org>
+	Sun, 11 Apr 2004 07:23:27 -0600 (MDT)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i3BDDwa23219; Sun, 11 Apr 2004 09:13:58 -0400
+Subject: Re: [parisc-linux] Proposal for altering our Page Table layouts
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+In-Reply-To: <200404091438.i39Ec4Q23610@udlkern.fc.hp.com>
+References: <200404091438.i39Ec4Q23610@udlkern.fc.hp.com>
+Content-Type: text/plain
+Date: 11 Apr 2004 08:13:57 -0500
+Message-Id: <1081689238.2037.2.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,49 +25,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Grant,
-Hi List,
-
-On Sunday 11 April 2004 08:18, Grant Grundler wrote:
-> Hi,
-> While SW patents seems slightly off topic because it's not directly
-> technical, I've been asked to put up a banner on www.parisc-linux.org
-> to protest the European Union SW patent directive.
-
-Thanks for bringing this topic up on this list.
-
-> Some examples of such banners are here:
+On Fri, 2004-04-09 at 09:38, John Marvin wrote:
+> You don't need this restriction.  No PA machine actually implements more
+> than a 40 bit physical address space (even the latest Pluto based
+> machines, which support 44 bits for IA64 are put into a 40 bit addressing
+> mode for PARISC).  So, for a 4K page table size (12 bits), you only need
+> 28 bits (40-12) to be able to address any possible 4K aligned physical
+> address.  This leaves you 4 bits for directory flags.  Since we only
+> currently use 1, you still have 3 to spare.
 > 
-> 	http://demo.ffii.org/online.php
-> 	http://www.kde.org/
-> 	http://bh.udev.org/
-> 
-> A bit more info is on
->    http://yro.slashdot.org/yro/04/04/10/1627239.shtml?tid=117&tid=155&tid=99
-> 
-> Personnally, I have a hard time with SW patents though I understand
-> the general intent of patents. But given my affialation with HP,
-> HP's generous sponsorship of parisc-linux (web site hosting, servers,
-> HW donations), and HPs recent activities with IP (Intellectual Property),
-> I'm not the right person to implement such a banner without some
-> input from HP business or legal groups.
+> Note that you won't even need to incur an extra instruction in the
+> tlb miss handler to do the shift, because the deposit to clear the valid
+> bit can be converted to a zdep to both clear the bit(s) and shift. I
+> think you have to use a different target register in that case though.
 
-Fully understandable.
-Just to make sure - the demo is not against software patents in general,
-it against unlimited patentability and thus against "simple patents", generic 
-software things like e.g. progress bars, tabs in GUIs and so on. 
-Just have look at demo webshop at the ffii.org website to see what kind of 
-patents it's really about: http://webshop.ffii.org/
- 
-> With a bit more private discussion (please send me opinions *privately*
-> if you have to), it's possible someone from the European Union with
-> CVS write access could add such a banner. parisc-linux.org should also
-> represent the volunteers that currently support the parisc-linux port,
-> not just HP.
+Well, never say never in computing.  However, I'll use this scheme. 
+Then all we need is a way to ensure that page tables are allocated in
+the first 1TB.  If the worst comes to the worst, we could always
+introduce ZONE_HIGHMEM to ensure this were always true.
 
-I'm willing to put up a box on the website as you can see on http://www.kde.org/
-if people here on the list agree to this. Since the decisions in brussels will happen
-on april 15th, I need to know your opinions on this really soon.
-
-Helge Deller
-Germany
+James
