@@ -1,31 +1,30 @@
 Return-Path: <hppa-linux@puffingroup.com>
-From: Richard "J." Rauenzahn <rrauenza@cup.hp.com>
-Message-Id: <199902192128.NAA12844@hairball.cup.hp.com>
-Subject: Re: [hppa-linux] Partitioning proposal for boot loader
+From: "Steven A. DuChene" <sduchene@mindspring.com>
+Message-ID: <19990219230705.K4360@sduchene.users.mindspring.com>
+Date: Fri, 19 Feb 1999 23:07:05 -0500
 To: hppa-linux@puffingroup.com
-Date: Fri, 19 Feb 1999 13:28:37 -0800 (PST)
-Cc: jason@equator.com
-In-Reply-To: <199902191929.NAA11346@equator.com> from Jason Eckhardt at Feb "19," 1999 "01:29:01" pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Resent-Message-ID: <"ww2c43.0.zY7.cXTps"@burrow.puffingroup.com>
+Subject: Re: [hppa-linux] Partitioning proposal for boot loader
+References: <199902191929.NAA11346@equator.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199902191929.NAA11346@equator.com>; from Jason Eckhardt on Fri, Feb 19, 1999 at 01:29:01PM -0600
+Resent-Message-ID: <"rJ2EC3.0.Bm7.BMZps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+I also agree that if we want different OS in a single box we
+should rely on seperate disks. HP-UX doesn't support different OS
+'es on a single disk and doesn't really support partitions in general
+other than allocating a swap area (except LVM). BTW, there is a page
+on LVM for Linux. I can dig this up and this would be something good
+to incorperate in HPPA-linux since this is what is native for most
+HP-UX systems these days.
+-- 
+Steven A. DuChene   Linux Fan!  http://www.mindspring.com/~sduchene
 
-> I propose that for the near-term, we use a simple PC-like partition scheme
-> for HPPA/Linux. In the future, once Linux is up and running,
-> we can work on co-existing with HP-UX on the same physical disk (see below
-> for more on this). This will keep the bootloader very small and simple,
-> and allow us to quickly move to working on the hard part, the actual kernel.
-
-My personal opinion is that they should go on seperate physical disks.
-If I install two versions of HPUX on a box, I use seperate disks.
-
-If you want to put them on the same disk, this means you can't use LVM
-under HPUX, or that Linux has to support HP's LVM.
-
-Rich
+Outside of a dog, a book is a man's best friend. Inside a dog it's
+too dark to read.
+                -- Groucho Marx
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
