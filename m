@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiscom.nl (unknown [130.78.143.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 90187482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Nov 2002 03:24:43 -0700 (MST)
-Message-Id: <02Nov25.113607cet.119049@ns.hiscom.nl>
-From: =?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>
-To: "'James Smith'" <james@compusmithllc.com>,
-	parisc-linux@lists.parisc-linux.org
+Received: from web12502.mail.yahoo.com (web12502.mail.yahoo.com [216.136.173.194])
+	by dsl2.external.hp.com (Postfix) with SMTP id CC743482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Nov 2002 07:47:50 -0700 (MST)
+Message-ID: <20021125144746.76741.qmail@web12502.mail.yahoo.com>
+Date: Mon, 25 Nov 2002 06:47:46 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
 Subject: RE: [parisc-linux] Disk problems
-Date: Mon, 25 Nov 2002 11:24:34 +0100
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <02Nov25.113607cet.119049@ns.hiscom.nl>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2946C.D9807B10"
+Content-Type: multipart/alternative; boundary="0-592852036-1038235666=:76312"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,168 +21,80 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+--0-592852036-1038235666=:76312
+Content-Type: text/plain; charset=us-ascii
 
-------_=_NextPart_001_01C2946C.D9807B10
-Content-Type: text/plain;
-	charset="iso-8859-1"
 
-> -----Original Message-----
-> From: James Smith [mailto:james@compusmithllc.com]
-> I just got a pile of 712/60's - $80 for 10 of em :)
+I had a 712/100 at work that we (ok I) modified to take 2 internal disks and it ran well even though it got extremely hot inside since the 712 wasn't designed for efficiant cooling.  I was using 2 C2490s in it, but quit doing so because of the heat and also moved one of the disks to an external chassis.  The mod was done by using the internal SCSI cable of a 715 and removing the floppy drive.  Not a recommended solution, but the 712 power supply seemed to be able to keep up.
+ "Beerse,_Corné" <c.beerse@torex-hiscom.nl> wrote:
+> -----Original Message----- 
+> From: James Smith [mailto:james@compusmithllc.com] 
+> I just got a pile of 712/60's - $80 for 10 of em :) 
 
-I got mine (1 and a half) for free ;-)
+I got mine (1 and a half) for free ;-) 
 
-> i've set one up & now i'm going through the disks one at a time &
-> cloning them as its quicker than going through the install each time
+> i've set one up & now i'm going through the disks one at a time & 
+> cloning them as its quicker than going through the install each time 
 > i've hit one disk that gives me this whenever i try to fdisk it 
 > 
-> sixty:~# fdisk /dev/sdb
+> sixty:~# fdisk /dev/sdb 
 > 
-> Unable to read /dev/sdb
+> Unable to read /dev/sdb 
 > 
 > 
-> when i tried to zero the disk, i got this....
+> when i tried to zero the disk, i got this.... 
 > 
 > sixty:~# dd if=/dev/zero of=/dev/sdb count=1 bs=512 
-> dd: writing `/dev/sdb': Input/output error
-> 1+0 records in
-> 0+0 records out
+> dd: writing `/dev/sdb': Input/output error 
+> 1+0 records in 
+> 0+0 records out 
 
-So you cannot read and cannot write to it.
+So you cannot read and cannot write to it. 
 
 > 
 > the console sees the disk when i use search 
 > 
-> does this indicate a dead disk?
+> does this indicate a dead disk? 
 > 
-> the disk was ok until i put it into a mac......
+> the disk was ok until i put it into a mac...... 
 
-What where the results on the mac? Can you clone the disks using a mac? If
-so, what are the results?
+What where the results on the mac? Can you clone the disks using a mac? If so, what are the results? 
 
-My experience: the 712 I have at home was my workhorse for over 5 years. It
-never failed on me. Occasional reboots for obvious reasons never had any
-problems. However, after being down for a couple of weeks, the harddisk does
-not spin properly. It was reported with several of those older systems. The
-ioscan and other tools that only access the firmware of the drive report no
-problems. Actual access of the disk is a problem since (in my case) the disk
-does not spin at all.
+My experience: the 712 I have at home was my workhorse for over 5 years. It never failed on me. Occasional reboots for obvious reasons never had any problems. However, after being down for a couple of weeks, the harddisk does not spin properly. It was reported with several of those older systems. The ioscan and other tools that only access the firmware of the drive report no problems. Actual access of the disk is a problem since (in my case) the disk does not spin at all.
 
-If you can access the data storage using your mac, you might have success
-after warming the device. I know the powersupply in the 712 series is
-limited and might not provide enough power to start a cold disk. You might
-be able to clone disks using your mac.
+ 
 
-In an disk array, I have a couple of disks that are all the same specs.
-However, due to a hardware defect in one of them, a (HP-UX) `ioscan` reports
-0 bytes for that disk where others report their actual value. If you hook
-the disk to an HP-UX machine, what does `ioscan` report?
+****This is exactly why we as HP techs don't shutdown any external disks while trouble shooting unless absolutely necessary.  Disks failing to spin back up after being run for so long is a very comman occurance.  Usually its due to the disk being heat soaked after the system fans shut off.  Even though the disks stop producing heat after the power is off the fans stop cooling them.  The resulting heat soak can sometimes prevent the drive from spinning up.
 
-Sorry to say but I think your disk is dead
+****If you do have access to an HPUX system, a diskinfo -v /dev/rdsk/cXtXdX command would probably be better to use than an ioscan.  If the diskinfo comes back with something like "cannot access," then the drive controller board is dead.  If it comes back with a response with Obytes for the drive size than it means the drive controller is working, but the drive has stopped spinning.
 
-Success
+ 
 
-CBee
+derek
 
-------_=_NextPart_001_01C2946C.D9807B10
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2654.45">
-<TITLE>RE: [parisc-linux] Disk problems</TITLE>
-</HEAD>
-<BODY>
 
-<P><FONT SIZE=3D2>&gt; -----Original Message-----</FONT>
-<BR><FONT SIZE=3D2>&gt; From: James Smith [<A =
-HREF=3D"mailto:james@compusmithllc.com">mailto:james@compusmithllc.com</=
-A>]</FONT>
-<BR><FONT SIZE=3D2>&gt; I just got a pile of 712/60's - $80 for 10 of =
-em :)</FONT>
-</P>
+---------------------------------
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now
+--0-592852036-1038235666=:76312
+Content-Type: text/html; charset=us-ascii
 
-<P><FONT SIZE=3D2>I got mine (1 and a half) for free ;-)</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt; i've set one up &amp; now i'm going through the =
-disks one at a time &amp;</FONT>
-<BR><FONT SIZE=3D2>&gt; cloning them as its quicker than going through =
-the install each time</FONT>
-<BR><FONT SIZE=3D2>&gt; i've hit one disk that gives me this whenever i =
-try to fdisk it </FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; sixty:~# fdisk /dev/sdb</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; Unable to read /dev/sdb</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; when i tried to zero the disk, i got =
-this....</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; sixty:~# dd if=3D/dev/zero of=3D/dev/sdb =
-count=3D1 bs=3D512 </FONT>
-<BR><FONT SIZE=3D2>&gt; dd: writing `/dev/sdb': Input/output =
-error</FONT>
-<BR><FONT SIZE=3D2>&gt; 1+0 records in</FONT>
-<BR><FONT SIZE=3D2>&gt; 0+0 records out</FONT>
-</P>
-
-<P><FONT SIZE=3D2>So you cannot read and cannot write to it.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; the console sees the disk when i use search =
-</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; does this indicate a dead disk?</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; the disk was ok until i put it into a =
-mac......</FONT>
-</P>
-
-<P><FONT SIZE=3D2>What where the results on the mac? Can you clone the =
-disks using a mac? If so, what are the results?</FONT>
-</P>
-
-<P><FONT SIZE=3D2>My experience: the 712 I have at home was my =
-workhorse for over 5 years. It never failed on me. Occasional reboots =
-for obvious reasons never had any problems. However, after being down =
-for a couple of weeks, the harddisk does not spin properly. It was =
-reported with several of those older systems. The ioscan and other =
-tools that only access the firmware of the drive report no problems. =
-Actual access of the disk is a problem since (in my case) the disk does =
-not spin at all.</FONT></P>
-
-<P><FONT SIZE=3D2>If you can access the data storage using your mac, =
-you might have success after warming the device. I know the powersupply =
-in the 712 series is limited and might not provide enough power to =
-start a cold disk. You might be able to clone disks using your =
-mac.</FONT></P>
-
-<P><FONT SIZE=3D2>In an disk array, I have a couple of disks that are =
-all the same specs. However, due to a hardware defect in one of them, a =
-(HP-UX) `ioscan` reports 0 bytes for that disk where others report =
-their actual value. If you hook the disk to an HP-UX machine, what does =
-`ioscan` report?</FONT></P>
-
-<P><FONT SIZE=3D2>Sorry to say but I think your disk is dead</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Success</FONT>
-</P>
-
-<P><FONT SIZE=3D2>CBee</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2946C.D9807B10--
+<P>I had a 712/100 at work that we (ok I) modified to take 2 internal disks and it ran well even though it got extremely hot inside since the 712 wasn't designed for efficiant cooling.&nbsp; I was using 2 C2490s in it, but quit doing so because of the heat and also moved one of the disks to an external chassis.&nbsp; The mod was done by using the internal SCSI cable of a 715 and removing the floppy drive.&nbsp; Not a recommended solution, but the 712 power supply seemed to be able to keep up.
+<P>&nbsp;<B><I>"Beerse,_Corné" &lt;c.beerse@torex-hiscom.nl&gt;</I></B> wrote:
+<BLOCKQUOTE style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px"><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<META content="MS Exchange Server version 5.5.2654.45" name=Generator>
+<P><FONT size=2>&gt; -----Original Message-----</FONT> <BR><FONT size=2>&gt; From: James Smith [<A href="mailto:james@compusmithllc.com">mailto:james@compusmithllc.com</A>]</FONT> <BR><FONT size=2>&gt; I just got a pile of 712/60's - $80 for 10 of em :)</FONT> </P>
+<P><FONT size=2>I got mine (1 and a half) for free ;-)</FONT> </P>
+<P><FONT size=2>&gt; i've set one up &amp; now i'm going through the disks one at a time &amp;</FONT> <BR><FONT size=2>&gt; cloning them as its quicker than going through the install each time</FONT> <BR><FONT size=2>&gt; i've hit one disk that gives me this whenever i try to fdisk it </FONT><BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; sixty:~# fdisk /dev/sdb</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; Unable to read /dev/sdb</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; when i tried to zero the disk, i got this....</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; sixty:~# dd if=/dev/zero of=/dev/sdb count=1 bs=512 </FONT><BR><FONT size=2>&gt; dd: writing `/dev/sdb': Input/output error</FONT> <BR><FONT size=2>&gt; 1+0 records in</FONT> <BR><FONT size=2>&gt; 0+0 records out</FONT> </P>
+<P><FONT size=2>So you cannot read and cannot write to it.</FONT> </P>
+<P><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; the console sees the disk when i use search </FONT><BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; does this indicate a dead disk?</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; the disk was ok until i put it into a mac......</FONT> </P>
+<P><FONT size=2>What where the results on the mac? Can you clone the disks using a mac? If so, what are the results?</FONT> </P>
+<P><FONT size=2>My experience: the 712 I have at home was my workhorse for over 5 years. It never failed on me. Occasional reboots for obvious reasons never had any problems. However, after being down for a couple of weeks, the harddisk does not spin properly. It was reported with several of those older systems. The ioscan and other tools that only access the firmware of the drive report no problems. Actual access of the disk is a problem since (in my case) the disk does not spin at all.</FONT></P>
+<P>&nbsp;</P>
+<P>****This is exactly why we as HP techs don't shutdown any external disks while trouble shooting unless absolutely necessary.&nbsp; Disks failing to spin back up after being run for so long is a very comman occurance.&nbsp; Usually its due to the disk being heat soaked after the system fans shut off.&nbsp; Even though the disks stop producing heat after the power is off the fans stop cooling them.&nbsp; The resulting heat soak can sometimes prevent the drive from spinning up.</P>
+<P>****If you do have access to an HPUX system, a diskinfo -v /dev/rdsk/cXtXdX command would probably be better to use than an ioscan.&nbsp; If the diskinfo comes back with something like "cannot access," then the drive controller board is dead.&nbsp; If it comes back with a response with Obytes for the drive size than it means the drive controller is working, but the drive has stopped spinning.</P>
+<P>&nbsp;</P>
+<P>derek</P></BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Yahoo! Mail Plus</a> - Powerful. Affordable. <a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Sign up now</a>
+--0-592852036-1038235666=:76312--
