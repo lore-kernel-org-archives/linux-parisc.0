@@ -1,9 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 434654838
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Mar 2003 11:29:45 -0700 (MST)
-Date: Tue, 11 Mar 2003 19:29:41 +0100
-Message-ID: <3E68A39600000B98@ocpmta7.freegates.net>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 478CF4830
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Mar 2003 11:46:36 -0700 (MST)
+Date: Tue, 11 Mar 2003 19:46:32 +0100
+Message-ID: <3E68A39600000BA6@ocpmta7.freegates.net>
 In-Reply-To: <1047409836.19931.3.camel@irongate.swansea.linux.org.uk>
 From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] ndelay() ?
@@ -40,9 +40,11 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 >If you can't do ndelay well, udelay(1) as an equivalent is just fine.
 >What it must be is at least the required nSec delay
 >
+That boots fine (and ide cdrom seems to works fine also) :)
 
-Many thanks Alan,
+Cheers,
     Joel
+
 
 ---------------------------------
 Vous surfez avec une ligne classique ?
