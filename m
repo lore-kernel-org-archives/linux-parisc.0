@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3D5FD4829
-	for <parisc-linux@parisc-linux.org>; Sat,  2 Nov 2002 09:14:10 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 1880uU-0002UA-00
-	for parisc-linux@parisc-linux.org; Sat, 02 Nov 2002 16:14:06 +0000
-Date: Sat, 2 Nov 2002 16:14:06 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20021102161406.J20749@parcelfarce.linux.theplanet.co.uk>
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 287EF4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  2 Nov 2002 10:51:54 -0700 (MST)
+Date: Sat, 2 Nov 2002 18:51:47 +0100
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+Cc: Stephan <stephan@itp.bg>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] ext3 /
+Message-ID: <20021102175147.GC21066@charite.de>
+References: <20021027092756.D8B974862@dsl2.external.hp.com> <20021027093355.GD9302@charite.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 2.5 status 2002-11-02
+In-Reply-To: <20021027093355.GD9302@charite.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-It's been a busy week.  Linus took 1.8MB of patches from us; the first
-merge since 2.4.0-pre10.  Which means we went from:
+Am 27.10.2002 um 10:33:55 +0100 schrieb Ralf Hildebrandt folgendes:
 
--rw-r--r--    1 willy    willy     2779759 Oct 28 10:37 parisc-2.5.44.diff
--rw-r--r--    1 willy    willy     1052278 Nov  2 08:20 parisc-2.5.diff
+> > After I made dist-upgrade 1 week ago, my uname don't works, if I write uname
+> > -a there is segmentation fault, any ideas?
+> 
+> I filed a bug report a few days ago. Check the Debian bug database.
 
-which is a big improvement.  I've sent Linus another 600k of patches
-(mostly moving drivers from arch/parisc/kernel to drivers/parisc).
-The 2.5.45 merge is done (thanks, Paul!) which included lots of excitement
-porting our Config.in patches to the new Kconfig.  Grant & Tausq did
-some stellar debugging on our stability problems.  Still crashes on my
-712, but Helge has it working on his C3000 (32-bit), and I think Grant
-said it booted on his A500 (64-bit).  SMP now links but doesn't boot.
-Helge's been cleaning up the STI drivers and is taking care of merging
-this upstream.  Ryan's fixing Zalon SCSI support, and John fixed a
-2-year-old bug, as well as some more recent ones.
-
-Thanks to everyone who's helping.  It's great working with you.
+The bug is supposed to be fixed by now, but the archives don't seem to
+have the hppa version yet...
 
 -- 
-Revolutions do not require corporate support.
+Ralf Hildebrandt (Im Auftrag des Referat V a)   Ralf.Hildebrandt@charite.de
+Charite Campus Mitte                            Tel.  +49 (0)30-450 570-155
+Referat V a - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+OpenVMS is today what Microsoft wants Windows NT v8.0 to be!
