@@ -1,44 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 211AB49F1
-	for <parisc-linux@parisc-linux.org>; Fri,  5 Oct 2001 10:22:23 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15pXjy-0007CW-00
-	for parisc-linux@parisc-linux.org; Fri, 05 Oct 2001 17:22:22 +0100
-Date: Fri, 5 Oct 2001 17:22:22 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011005172222.D19206@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] pdc_add_valid
+Received: from smtp.umr.edu (mrelay.cc.umr.edu [131.151.1.89])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B083F49F1
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Oct 2001 10:26:27 -0600 (MDT)
+Message-ID: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D86D@umr-mail03.cc.umr.edu>
+From: "Neulinger, Nathan" <nneul@umr.edu>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 5 Oct 2001 11:26:27 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Subject: [parisc-linux] config.guess/config.sub support?
 List-ID: <linux-parisc.vger.kernel.org>
 
-The pdc_add_valid function really annoys me.  Or maybe it's just how
-it's used:
+Are there any patches for config.guess/config.sub to add reasonable support
+for parisc-linux? Right now, the ones 
 
-        if (!pdc_add_valid( (void *)(port+4))) {
+I was able to get reasonable config.sub behavior by adding a basic_machine
+check for parisc-unknown, but has anyone submitted anything better to the
+maintainers?
 
-Which says to me `if this address is not valid' -- the opposite of what it
-does.  It could be rewritten as:
+-- Nathan
 
-	if (pdc_add_valid((void *)(port+4)) == PDC_OK) {
-
-but this takes more effort.  In my tree, I've added valid_io_addr which
-does what it says on the tin:
-
-	if (valid_io_addr(port+4)) {
-
-For the moment, I've put it in <asm/io.h>, since it is for I/O addresses.
-
-+int valid_io_addr(unsigned long addr)
-+{
-+       return (pdc_add_valid(addr) == PDC_OK);
-+}
-
-But maybe we should replace pdc_add_valid with valid_io_addr?  Or a
-different function?  Suggestions appreciated.
-
--- 
-Revolutions do not require corporate support.
+------------------------------------------------------------
+Nathan Neulinger                       EMail:  nneul@umr.edu
+University of Missouri - Rolla         Phone: (573) 341-4841
+Computing Services                       Fax: (573) 341-4216
