@@ -1,19 +1,25 @@
-From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+From: Marc Zyngier <mzyngier@freesurf.fr>
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Date: Wed, 13 Nov 2002 14:59:02 +0300
-Message-ID: <20021113145902.A1245__13560.5632015087$1416621919$gmane$org@jurassic.park.msu.ru>
-References: <20021109060342.GA7798@kroah.com> <200211091533.gA9FXuW02017@localhost.localdomain> <20021113061310.GD2106@kroah.com> <buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp> <20021113075223.GZ2106@kroah.com>
+Date: 13 Nov 2002 13:36:14 +0100
+Message-ID: <wrpvg31pry9.fsf__12254.0547432893$1416621923$gmane$org@hina.wild-wind.fr.eu.org>
+References: <20021109060342.GA7798@kroah.com>
+	<200211091533.gA9FXuW02017@localhost.localdomain>
+	<20021113061310.GD2106@kroah.com>
+	<buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp>
+	<20021113075223.GZ2106@kroah.com>
+	<20021113145902.A1245@jurassic.park.msu.ru>
+Reply-To: mzyngier@freesurf.fr
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Miles Bader <miles@gnu.org>,
+Cc: Greg KH <greg@kroah.com>, Miles Bader <miles@gnu.org>,
 	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
 	Matthew Wilcox <willy@debian.org>,
 	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
 	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-To: Greg KH <greg@kroah.com>
+To: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021113075223.GZ2106@kroah.com>; from greg@kroah.com on Tue, Nov 12, 2002 at 11:52:23PM -0800
+In-Reply-To: <20021113145902.A1245@jurassic.park.msu.ru>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -24,29 +30,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 12, 2002 at 11:52:23PM -0800, Greg KH wrote:
-> On Wed, Nov 13, 2002 at 04:46:58PM +0900, Miles Bader wrote:
-> > This this would end up [or have the ability to] invoking a bus-specific
-> > routine at some point, right?  [so that a truly PCI-specific definition
-> > could be still be had]
-> 
-> If that was needed, yes, we should not break that functionality.
-> 
-> Are there any existing archs that need more than just dma_mask moved to
-> struct device out of pci_dev?  Hm, ppc might need a bit more...
+>>>>> "Ivan" == Ivan Kokshaysky <ink@jurassic.park.msu.ru> writes:
 
-Add alpha, parisc, sparc and so on. ;-)
+Ivan> It seems that two things are fundamentally missing in generic
+Ivan> device model:
+Ivan> 1. clean way to detect the type of container structure from arbitrary
+Ivan>    struct device *;
 
-pci_dev->sysdata needs to be moved as well, but not only.
-It seems that two things are fundamentally missing in generic
-device model:
-1. clean way to detect the type of container structure from arbitrary
-   struct device *;
-2. parent/child relationship between devices of different bus types.
+Indeed.
 
-Example (not exactly real life, but close enough):
-to do DMA mapping properly for, say, some legacy device, I need to know
-that it's sitting behind ISA-to-PCI bridge X belonging in PCI domain Y of
-the root-level IO controller Z.
+I'm using the following stuff in some EISA drivers :
 
-Ivan.
+#ifdef CONFIG_EISA
+#define DEVICE_EISA(dev) (((dev)->bus == &eisa_bus_type) ? to_eisa_device((dev)) : NULL)
+#else
+#define DEVICE_EISA(dev) NULL
+#endif
+
+and frankly, it's really awful. On drivers which are both EISA and
+PCI (3c59x, aic7xxx), this is a major pain.
+
+        M.
+-- 
+Places change, faces change. Life is so very strange.
