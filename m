@@ -1,53 +1,48 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] k-class drivers/parisc/ccio-dma.c
-Date: Sun, 27 Mar 2005 20:24:10 +0100
-Message-ID: <20050327192410.GT21986@parcelfarce.linux.theplanet.co.uk>
-References: <20050327161520.GA15500@ing.umu.se>
+From: Kyle McMartin <kyle@debian.org>
+Subject: Call for Testing
+Date: Sun, 27 Mar 2005 15:45:50 -0500
+Message-ID: <20050327204550.GC7728__38925.8823510774$1416623722$gmane$org@roadwarrior.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Anders <dizzey@ing.umu.se>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050327161520.GA15500@ing.umu.se>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: debian-hppa@lists.debian.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <kgU54D.A.NCB.tuxRCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Sun, Mar 27, 2005 at 06:15:20PM +0200, Anders wrote:
-> im having trouble with booting the 2.6 kernels on a k460.
-> 
-> --------------------------------------------------------
-> CPU(s): 4 x PA8000 (PCX-U) at 180.000000 MHz
-> Setting cache flush threshold to 40 (4 CPUs online)
-> Found U2 at 0xfff8a000
-> kernel BUG at drivers/parisc/ccio-dma.c:1317!
+Hi,
 
-Grant, Joel, this is your faults:
+I've backported some more patches to 2.6.8 for possible[1] inclusion in
+sarge (they fix some possibly important bits).
 
-        ioc->pdir_size = (iova_space_size / IOVP_SIZE) * sizeof(u64);
+You can find kernels here:
+	http://www.parisc-linux.org/~kyle/debian-kernel/2005-03-27/
 
-        BUG_ON(ioc->pdir_size >= 4 * 1024 * 1024);   /* max pdir size < 4MB */
+I'd appreciate it if everyone could take 10 minutes so we can get good
+coverage testing these fixes, to make sure there are no regressions
+from the kernels already in sarge. If you could test the sarge kernels
+too, that would be fantastic.
 
-I don't really want to dig into this right now, could one of you
-investigate?
+Please reply either to the list, or to me personally with the dmesg
+output from a boot, and what machine(s) you were able to test on.
 
-Anders, how much memory do you have?
+Thanks,
+	Kyle
+
+[1]: The release team has "effectively" frozen all kernels from propogating
+     to sarge. But I think it's worth keeping fixes around, even if they
+     don't get included immediately.
+-- 
+Kyle McMartin
+
 
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
