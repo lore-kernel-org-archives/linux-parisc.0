@@ -1,39 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA04269
-	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 09:43:33 -0700
-Received: from linuxcare.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id KAA04291;
-	Tue, 29 Feb 2000 10:53:06 -0500
-Sender: adevries@thepuffingroup.com
-Message-ID: <38BBEB61.772FBF6D@linuxcare.com>
-Date: Tue, 29 Feb 2000 10:53:05 -0500
-From: Alex deVries <adevries@linuxcare.com>
-MIME-Version: 1.0
-To: mike_clapper@hp.com
-CC: gyula_matics@hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] zalon
-References: <H00007e30ee94932@MHS>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA05553
+	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 11:03:01 -0700
+From: willy@thepuffingroup.com
+Date: Tue, 29 Feb 2000 12:03:49 -0500
+To: Ulrich Strelow <ulrich_strelow@yahoo.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] make Image fails
+Message-ID: <20000229120349.E9944@thepuffingroup.com>
+References: <20000229143417.6180.qmail@web507.mail.yahoo.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20000229143417.6180.qmail@web507.mail.yahoo.com>; from Ulrich Strelow on Tue, Feb 29, 2000 at 06:34:16AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-mike_clapper@hp.com wrote:
-> 
-> I believe Zalon is the chip that drives the f/w scsi on the core io card
-> in K series and possible others.
+On Tue, Feb 29, 2000 at 06:34:16AM -0800, Ulrich Strelow wrote:
+> Building the cvs version 20000227 with defconfig fails
+> with unsatified symbol __cmpdi2.
 
-Zalon is really just some glue so you can interface some PC-like
-controller chips with GSC.  I think it handles interrupts in a parisc
-fashion.
+[snip]
 
-We have no docs, and the only reason I know this is that a little birdy
-told me.
+> I did not find any reference in the source code.
+> Grepping through object files as well finds a
+> reference in arch/parisc/hpux/fs.o and hpux.o.
 
-- Alex
-
-
--- 
-Alex deVries, Director of Professional Services, The Puffins at
-Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+__cmpdi2 is one of the `help, help, i don't know how to compile this
+arithmetic op' symbols that gcc puts into libgcc1.  Let me have a look
+and wee what's producing this.  It may vary depending on gcc version;
+what version of gcc are you using?
