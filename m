@@ -1,41 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailc.telia.com (mailc.telia.com [194.22.190.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 31A8D482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 14:34:13 -0600 (MDT)
-Date: Tue, 23 Oct 2001 22:33:50 +0200
-From: Daniel Engstrom <5116@telia.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Daniel Engstrom <5116@telia.com>,
-	parisc-linux@lists.parisc-linux.org,
-	Richard Hirst <rhirst@linuxcare.com>
-Message-ID: <20011023223350.A1650@zaphod.halden.lillfab.se>
-References: <5116@telia.com> <200110220034.f9M0YM701447@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-In-Reply-To: <200110220034.f9M0YM701447@localhost.localdomain>; from James.Bottomley@HansenPartnership.com on Mon, Oct 22, 2001 at 02:34:22 +0200
-Subject: [parisc-linux] Re: 53c700: tagged queueing problem confirmed
+Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 53238482B
+	for <parisc-linux@parisc-linux.org>; Tue, 23 Oct 2001 17:56:32 -0600 (MDT)
+Date: Tue, 23 Oct 2001 19:56:08 -0400 (EDT)
+From: "Christopher C. Chimelis" <chris@debian.org>
+To: Randolph Chung <tausq@debian.org>
+Cc: bcollins@debian.org, amodra@bigpond.net.au,
+	parisc-linux@parisc-linux.org
+In-Reply-To: <20011022221714.O537@tausq.org>
+Message-ID: <Pine.LNX.4.21.0110231955320.29726-100000@spawn.hockeyfiend.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: "Christopher C. Chimelis" <chris@spawn.hockeyfiend.com>
+Subject: [parisc-linux] Re: Yay, binutils fixed for hppa
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 2001.10.22 02:34 James Bottomley wrote:
-> 5116@telia.com said:
-> > I have investigated this some more and I have come to the conclustion
-> > that you are quite right. I disabled tagged queueing in the drivber
-> > and it instantly bacame stable.
-> 
-> > Do you have any idea on how to proceed debugging this? 
-> 
-> Well here's my theory:
-> 
-> There are a number of reports with tag command queueing problems
-> associated with these drives.  In particular, one for freebsd said 
-> that the aic7xxx driver was reporting data overruns with TCQ enabled 
-> on Quantum Fireballs.
-Ok.
+Ok, new source package on klecker in ~chris/public_html/binutils for your
+testing :-)  If it works, I'll do the upload tonight :-)
 
-I have used these drives with i386 Linux without problems with both the
-aix7xxx driver and the sym53c8xx driver. Both these drivers use a default of max
-8 tags per lun, so I chnaged the value in your driver and it works.
-So, maybe 8 tags per lun is the conservative default here ?
+C
 
-/Daneil 
--- 
+On Mon, 22 Oct 2001, Randolph Chung wrote:
+
+> With many thanks to Alan Modra binutils seems to be fixed now. Chris,
+> can you please build a new binutils from cvs? Everything should be there, and
+> the hppa-specific patch you currently have in the package should no longer 
+> be needed.
+> 
+> The patch Ben has is needed to build glibc with the new binutils.
+> 
+> hppa is also a bit behind on gcc-3.0. I'll try to build new ones RSN.
+> 
+> randolph
+> -- 
+> Debian Developer <tausq@debian.org>
+> http://www.TauSq.org/
+> 
+> 
