@@ -1,9 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20020915153613.5AFBD4829@dsl2.external.hp.com>
-Date: Sun, 15 Sep 2002 09:36:13 -0600 (MDT)
-From: grundler@dsl2.external.hp.com (Grant Grundler)
-Subject: [parisc-linux] rp2470 hang in sym2 driver
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B5464829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 12:11:13 -0600 (MDT)
+Message-ID: <3D84CD3B.88A9528B@gmx.at>
+Date: Sun, 15 Sep 2002 20:11:07 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: varenet@esiee.fr,
+	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+References: <3D825FDF.CD6E8CE2@gmx.at> <1031962399.930.17.camel@beavis>
+		<3D8281F4.F03A2007@gmx.at> <1031964117.1043.29.camel@beavis>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: SCSI/MUX driver on E55, NDA for sorce code
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -15,41 +25,145 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Yes, I would be interested in HP-UX source code access,
+if there are no costs I have to pay. I would sign a NDA.
 
-I've revisited this "rp2470 hang" issue. This happens with sym2.
-The same kernels boot on A500-44 but hang on A500-65 (650Mhz).
-It smells like a deadlock.
+The status of SCSI driver you sent me:
+The machine does not really access the hardware. Also
+if I patch the data structures or the "dev->hpa" pointer,
+the driver reacts the same strange way.
 
-I don't believe this is a result of interrupt distribution. I can't
-say for sure since I've had the IRQ distr code in my tree for a while.
-I don't think I've ever booted rp2470 with 2.4.19.
+The status of MUX: It is not working to access to offset
+0x80 for the lines. The machine dies. I think this problem
+can be solved very easy, looking in the HP-UX driver code.
 
-I will try sym1 driver *and* try disabling IRQ distribution
-in the next couple of days.
+I will do some futher code instrumentation on the SPIFI
+driver. Then I will reread the driver of you and NetBSD
+to have an idea, which access does fail here. Or do we
+have a wrong hardware access anyway ?
 
-I've reproduced the hang twice with 2.4.19-pa18.
-Console output stops after first line of either "sym3:" output
-or "sym4:" (ie only one line is printed for that interface.
-TOC had the following:
+Good start of the next week
 
-	CPU0 0x10143420 timer_bh+200
-	CPU0 0x102276fc sym53c8xx_timer+ec
+Christoph
 
-	CPU1 0x1010dd40 do_irq+100
-	CPU1 0x102275f0 sym53c8xx_intr+140
 
-and
 
-	CPU0 GR02 0x10143420 timer_bh+200
-	CPU0 IOAQ 0x102276fc sym53c8xx_timer+ec
+Ryan Bradetich wrote:
+> 
+> Thomas and Christoph,
+> 
+> Here is the current diff I have (I told you it was ugly! :))
+> 
+> I can not send you the HP-UX code.  If you are interested
+> in pursuing the NDA to get access to the drivers, I can approach
+> Alan Meyer (LSO Lab manager).  I am in IT, not the R&D lab so
+> I do not have much insight in what they are doing :(
+> 
+> Hope this diff helps, and together hopefully we can get this to
+> work and committed!
+> 
+> thanks,
+> 
+> - Ryan
+> 
+> On Fri, 2002-09-13 at 18:25, Christoph Plattner wrote:
+> > Hello,
+> >
+> > if it is possible, send the code to me (perhpas I can
+> > have a look @ week end.
+> >
+> > Is it possible to geht the HP-UX driver codes for those
+> > to things ? MUX + SCSI ?
+> >
+> > I was offered to sign a NDA, but then nothing happens ...
+> > It would be more easy for me to read such original HP-UX
+> > code. Perhaps you see a possibility to send it also.
+> >
+> > Have a nice week end
+> >
+> > Christoph
+> >
+> >
+> >
+> > Ryan Bradetich wrote:
+> > >
+> > > On Fri, 2002-09-13 at 15:59, Christoph Plattner wrote:
+> > > > Hallo Ryan !
+> > > >
+> > > > Congratulation, your MUX driver on port 0 is really
+> > > > working on my machine !!
+> > >
+> > > Glad to hear that!
+> > >
+> > > > What do you miss to support the other lines ?
+> > >
+> > > I am not sure, I've never tried to hook up additional
+> > > lines.  I do have an 8-port MDP somewhere, I'll look
+> > > for it here shortly, and see if I can hook it up.
+> > >
+> > > > Have you already knowledge of the data structure ?
+> > >
+> > > Just what I have added into the driver.  If there is
+> > > something that we are obviously missing, I can go back
+> > > and reference the HP-UX mux driver and see what is
+> > > missing.
+> > >
+> > > > Can I help you here in the code ?
+> > >
+> > > Please! :)  I do not use multiple lines currently ...
+> > > I only use the line 0, so any testing, optimizing, etc
+> > > is greatly appreciated!
+> > >
+> > > > Another point: you mentioned the skeleton of the
+> > > > SCSI SPIFI driver. Where can I find that ? I only
+> > > > found a NetBSD code, which I will use as functional
+> > > > template, but I do not know, if this would be enough.
+> > > > Can you give me a hint in this point ?
+> > >
+> > > I have it on my local system.  It is _very_ ugly at this
+> > > point.  I have got enough to query information from the
+> > > spifi chip, register an interrupt, etc... but currently
+> > > I can not get the spifi chip to actually generate an
+> > > interrupt.
+> > >
+> > > I would be happy to send you a copy when I get back next
+> > > monday (unless you catch my in the next hour or so), but
+> > > I'm not ready to check it into CVS yeah until I get rid
+> > > of the some ugly hardcoded hacks, global variables, etc.
+> > > Right now the driver is really coded to gather info from
+> > > the ESIEE E35 that I have been testing on.  Once again,
+> > > I do not have any docs on the chipset, I am using both
+> > > the NetBSD and HP-UX drivers as reference. :(
+> > >
+> > > The driver should be easy to modify for your specific E55,
+> > > but not sure if you are interested in that level of work,
+> > > messyness now.  I promise it will get much better :)
+> > >
+> > > Thanks,
+> > >
+> > > - Ryan
+> > >
+> > > > Christoph
+> > > >
+> > > >
+> > > > --
+> > > > -------------------------------------------------------
+> > > > private:      christoph.plattner@gmx.at
+> > > > company:      christoph.plattner@alcatel.at
+> > > >
+> >
+> > --
+> > -------------------------------------------------------
+> > private:      christoph.plattner@gmx.at
+> > company:      christoph.plattner@alcatel.at
+> >
+> 
+>   ------------------------------------------------------------------------
+>                   Name: spifi.patch
+>    spifi.patch    Type: text/x-patch
+>               Encoding: quoted-printable
 
-	CPU1 GR02 0x102274f4 sym53c8xx_intr+44
-	CPU1 IOAQ 0x102275f0 sym53c8xx_intr+140
-
-I hoped someone else has a chance to look at this too.
-The rp2470 (gsyprf11) is externally accessible if a volunteer has time
-to dig into this. Or let me know what I might try next.
-
-thanks,
-grant
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
