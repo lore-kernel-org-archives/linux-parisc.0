@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4110F4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  5 Apr 2003 19:42:11 -0700 (MST)
-Date: Sun, 6 Apr 2003 03:41:55 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Stan Sieler <sieler@allegro.com>
-Cc: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	Matthew Wilcox <willy@debian.org>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] RDI Tadpole Precisionbook and Linux/PA-RISC
-In-Reply-To: <200303302250.h2UMo6e30482@opus.allegro.com>
-Message-ID: <Pine.LNX.4.44.0304060330370.12506-100000@sal.ucc.ie>
+Received: from eos.telenet-ops.be (eos.telenet-ops.be [195.130.132.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 082494829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Apr 2003 05:35:48 -0600 (MDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by eos.telenet-ops.be (Postfix) with SMTP id EB0F720004
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Apr 2003 13:35:46 +0200 (CEST)
+Received: from kerberos (d51524A60.kabel.telenet.be [81.82.74.96])
+	by eos.telenet-ops.be (Postfix) with SMTP id D10F21FF24
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Apr 2003 13:35:46 +0200 (CEST)
+Message-ID: <001e01c2fc30$b9ff47e0$604a5251@kerberos>
+From: "Smartelectronix - Bram" <bram@smartelectronix.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sun, 6 Apr 2003 13:36:12 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Our new toy + terminal questions.....
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +27,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 30 Mar 2003, Stan Sieler wrote:
-
-> (Note: if anyone has a Tadpole/RDI PrecisionBook manual/documentation-set,
-> I'd be real interested in asking them a couple of questions!)
-
-The only information I found on the web:
-
-(www.tadpole.com -> search "precisionbook"):
-
-http://hw.tadpole.com/html/support/legacy/unsupported/precisionbook/specification.html
+Hi everyone, (I'm new to the list)
 
 
-(www.google.com -> "precisionbook 19 volts" -> google cache):
+Today my mates and I went to pick up our new *ahem* 'toy'
+http://www.smartelectronix.com/~bdejong/a_new_toy/
 
-http://216.239.57.100/search?q=cache:96ITX9tXtXkC:hw.tadpole.com/pdf/support/legacy/supported/precisionbook/whitepaper.pdf+precisionbook+19+volts&hl=en&ie=UTF-8
-http://216.239.57.100/search?q=cache:X0CgrLFxb9IC:hw.tadpole.com/print/html/products/legacy/supported/precisionbook/whitepapers/online.html+precisionbook+19+volts&hl=en&ie=UTF-8
+HP9000 D270/2 + 512Mb RAM + 8 x 9-gig & 8 x 4Gig + UPS + ...
+No graphics out, only a serial terminal output.
+We've got it up and running and are trying to install Debian
+(Woody) on it.
+
+Everything works just fine, but when the semi-graphical installer
+kicks in, we -obviously- get large pieces of garbage on the terminal.
+
+Is there a way to set the debian installer to use simple-ascii only 
+without colors/...? Or is there a better terminal program we can use
+that can display colors/.. better? Selecting things in the installer
+is pretty much hit and miss too.
+
+Or, alternatively, is there a (simple) way to get some kind of graphics
+card + monitor for our D270?
 
 
-
-I should get my precisionbook next week (hopefully); it is not mentioned
-in the ebay offer whether documentation/manuals are shipped it - I'll let
-you know if this is the case.
+Thanks a lot,
 
 
-greeting max
+ - bram
+
+-- 
+http://www.smartelectronix.com
+http://www.musicdsp.org
+http://www.ghentsessions.be
+msn: the_etcher@hotmail.com
+tel: +32 (0) 486 15 77 68
