@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 64863482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 02:46:07 -0700 (MST)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 2D8C12AC
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 10:46:05 +0100 (MET)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id KAA04563 for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 10:45:29 +0100 (MET)
-Message-ID: <3C5128A9.DEED4EE1@admin.france.hp.com>
-Date: Fri, 25 Jan 2002 10:43:05 +0100
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: multipart/mixed;
- boundary="------------0E890295E97DC1283AF0BC0A"
-Subject: [parisc-linux] size in module list
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 60C4B482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 03:08:27 -0700 (MST)
+Date: Fri, 25 Jan 2002 09:57:55 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Vlad Markov <markov@monmouth.com>, debian-hppa@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20020125095755.GH32617@sleepie.demon.co.uk>
+References: <200201240200.VAA00858@monmouth.com> <20020125065501.A6537482A@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020125065501.A6537482A@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: tag starvation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,37 +24,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------0E890295E97DC1283AF0BC0A
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+On Thu, Jan 24, 2002 at 11:55:01PM -0700, Grant Grundler wrote:
+> 
+> Follow up to parisc-linux@lists.parisc-linux.org only please.
+> (ie this isn't a debian linux issue)
+> 
+> Vlad Markov wrote:
+> > I get the following message when I boot up on a 735/99:
+> > Jan 22 19:12:41 grumpy kernel: scsi0 (1:0) Target is suffering from tag
+> >	starvation.
+> 
+> Seems only 53c700.c prints this msg. Is this the right driver?
 
-	Hi
-To do at least a sanity check when retrieving a module object
-I try to understand the size store in module structure. What
-is it ? Even cksum, neither "size" command find the same information ?
-Do you know how this size is calculated ?
+Should be; 735 has unsupported 53c720 FWD, and 53c700 or 710 driven by
+53c700.c.  I assume Vlad has external narrow SE disks attached.
 
-	Thanks.
+> Normally you shouldn't see this *if* the device supports tagged commands.
 
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------0E890295E97DC1283AF0BC0A
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
+I used to get this a lot, until James changed the driver to only report
+the first occurance of it.  Don't remember the exact details, but iirc
+it is for info only, and non-fatal.  From the code it looks like it
+means some cmnd has been sitting in the drive unprocessed for too long,
+and the code rejects new cmds until those older ones have been processed
+or timed out.
 
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------0E890295E97DC1283AF0BC0A--
+> I can never remember the SCSI driver options (the parisc-linux FAQ has 
+> the URL to them) but one of them will either disable or limit 
+> "queue depth" for Queue Tags and that should take care of it.
+
+Hmm, I thought that would be a feature of a specific driver, not the
+upper layers.  53c700.c doesn't (yet) have any boot options to disable
+tags.
+
+Richard
