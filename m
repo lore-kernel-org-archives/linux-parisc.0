@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm1.tiscalinet.be (unknown [212.35.2.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2EEB64832
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Jul 2002 11:29:22 -0600 (MDT)
-Message-ID: <3D21E354.8050701@freebel.net>
-Date: Tue, 02 Jul 2002 17:31:00 +0000
+Received: from spoolm2.tiscalinet.be (unknown [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BA5264836
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Jul 2002 11:30:05 -0600 (MDT)
+Message-ID: <3D20C662.9030008@freebel.net>
+Date: Mon, 01 Jul 2002 21:15:14 +0000
 From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-To: Alex Green <alexdgreen@hotmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installing on C3600
-References: <OE62b63Kbc9oLfgzBsc00001390@hotmail.com> <3D21DFDD.9090002@freebel.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Matthew Wilcox <willy@debian.org>
+Cc: Matt Taggart <taggart@carmen.fc.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 24bit colour
+References: <5.1.0.14.0.20020610084610.026cfc70@10.106.16.2> <20020610203815.8349B380D5@carmen.fc.hp.com> <1024391159.3d0ef7f7c3903@webmail.tiscalinet.be> <20020618121104.E9435@parcelfarce.linux.theplanet.co.uk> <1025099026.3d19c51207773@webmail.tiscalinet.be> <20020626144536.B28662@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +23,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Hey,
 
-Joel Soete wrote:
-> Hi Alex,
-> 
-> Alex Green wrote:
-> 
->> Hi,
->>  
->> I have an a problem running the latest netinstall iso on my C3600, 
->> when I boot from the CD with the 32bit kernel, I get some screen 
->> corruption and then the first installer screen appears but I have no 
->> keyboard response.  And if I boot from the 64bit kernel I, the 
->> installer starts on the serial interface, however when I attach a 
->> serial console the screen doesn't output correctly.
-> 
-> 
-> If it is a hp terminal, you can change the emulation. It depends of the 
-> terminal type but you can have a look in your user guide or test (but I 
-> think that would request severall reboot) the emulation nearest vt100 IIRC.
-> 
-> Once you have found the right emulation, try first the more stable 
-> 32-bits kernel (IIRC if you unplug ps/2 or usb mouse and keyboard, the 
-> kernel will switch to serial console on port 1).
+I found on this site <ftp://ftp.cirr.com/pub/hppa/mklinux/>
+some patch against X11R6(.3?).
 
-Another good solution could also be to run minicom as console emulation.
+Could that be interesting?
 
+Matthew Wilcox wrote:
+> On Wed, Jun 26, 2002 at 03:43:46PM +0200, joel.soete@freebel.net wrote:
 > 
->> The C3600 installed with a FXE5 and 512Mb RAM, the SCSI disk that will 
->> be used is on the internal interface.
->>  
+>>Quoting Matthew Wilcox <willy@debian.org>:
+>>
+>>>it's probably less work to teach XFree86 how to talk to your gfx card
+>>>than it is to get the HPUX X server to run on Linux.
+>>
+>>I would prefer also but is there any documentation about this interface?
 > 
 > 
-> Dono if it is already supported (have a look a 
-> http://hwdb.parisc-linux.org/: I see that some one has already reach to 
-> install parisc-linux successfully)
+> i meant that it's probably less work to reverse-engineer the interface
+> and implement it in XFree86 than it is to get the HPUX X server working.
 > 
-> Good luck,
->     Joel
-> 
+
+
+That is I would like to read. But it is already too hard for me to hack 
+linux kernel (with kernel sources). So i do not even have the very 
+begining of a small idea about how to hack HPUX. Sorry.
+
+Joel
