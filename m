@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 43C574829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jul 2003 00:05:27 -0600 (MDT)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali)
-	id 19ZP5t-0002Xw-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 07 Jul 2003 08:03:21 +0200
-Date: Mon, 7 Jul 2003 08:05:25 +0200
-Message-ID: <3F03A42100000529@ocpmta1.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
+Received: from it.swin.edu.au (venus.it.swin.edu.au [136.186.5.30])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 056EB483B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jul 2003 05:09:39 -0600 (MDT)
+Date: Mon, 7 Jul 2003 21:09:36 +1000 (EST)
+From: John Newbigin <jnewbigin@venus.it.swin.edu.au>
 To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.44.0307072019390.6545-100000@venus.it.swin.edu.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] gcc 3.3.1 ICE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] STI frame buffer on 715/50
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,44 +20,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+I am trying to get my 715/50 up and running again but I am having trouble 
+with the sti framebuffer.  12 months ago I started to look at this (see
+http://lists.parisc-linux.org/hypermail/parisc-linux/8761.html )
 
-Just compiling kernel 2.4.21-pa01 and unfortunately got following ICE:
-gcc -D__KERNEL__ -I/usr/src/kernel-source-2.4.21-pa01-lvm-107-20030704/include
--Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--fomit-frame-pointer -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
--mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1 -mschedule=7100
- -D_JFS_4K -nostdinc -I /usr/lib/gcc-lib/hppa-linux/3.3.1/include -DKBUILD_BASENAME=jfs_xtree
- -c -o jfs_xtree.o jfs_xtree.c
-jfs_xtree.c: In function `xtUpdate':
-jfs_xtree.c:2351: error: insn does not satisfy its constraints:
-(insn 7698 1165 1168 29 (nil) (set (reg:SI 24 %r24)
-        (reg:SI 88 SAR [427])) 37 {*pa.md:2265} (nil)
-    (nil))
-jfs_xtree.c:2351: internal compiler error: in reload_cse_simplify_operands,
-at reload1.c:8345
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <URL:http://gcc.gnu.org/bugs.html> for instructions.
-make[3]: *** [jfs_xtree.o] Error 1
-make[3]: Leaving directory `/usr/src/kernel-source-2.4.21-pa01-lvm-107-20030704/fs/jfs'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory `/usr/src/kernel-source-2.4.21-pa01-lvm-107-20030704/fs/jfs'
-make[1]: *** [_subdir_jfs] Error 2
-make[1]: Leaving directory `/usr/src/kernel-source-2.4.21-pa01-lvm-107-20030704/fs'
-make: *** [_dir_fs] Error 2
+I have followed the instructions from that page and have built a kernel 
+which is working (2.4.21-pa1).  When I do not build the sti framebuffer, 
+the sti console works fine.  When I do build the "Generic STI frame 
+buffer device support", everything works except for the image on the 
+monitor.  Very early in the kernel boot (before I can read the output) the 
+screen goes black.  The serial console works, network, ssh, everything 
+works.  If I press the TOC I can see the image that should have been visible
+so I am sure that most of it is working.
 
-[gcc -v:
-...
-gcc version 3.3.1 20030626 (Debian prerealse)
+I tried all the kernel config options, none of which helped.  There are no 
+errors from the STI driver.  I am sure there is something simple required 
+but I don't know where to look next.
 
-Do I actualy report it?
+The the relevant dmesg output is below.  Any help would be much 
+appreciated.
 
-Thanks for advise,
-    Joel
+John.
 
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+STI GSC/PCI graphics driver version 0.9
+Trying STI ROM at f4000000, hpa at f4000000
+STI byte mode ROM at f4000000, hpa at f4000000
+selected 8x16 fb-font VGA8x16
+STI id 27f12392-40a00499, conforms to spec rev. 8.02
+ supports 0 monitors
+ font start 00003fd4
+ region list 00003fbc
+ init_graph 000000c0
+ bus support 00
+ ext bus support 00
+ alternate code type 0
+region #0: phys f4000000, virt f4000000, len=252kB, btlb=0, sysonly=0, 
+cache=0, last=0
+region #1: phys f5000000, virt f5000000, len=16384kB, btlb=1, sysonly=0, 
+cache=0, last=0
+region #2: phys f4100000, virt f4100000, len=2560kB, btlb=0, sysonly=0, 
+cache=0, last=0
+region #3: phys f403f000, virt f403f000, len=4kB, btlb=0, sysonly=0, 
+cache=0, last=0
+region #4: phys f4380000, virt f4380000, len=4kB, btlb=0, sysonly=1, 
+cache=0, last=1
+3 text planes
+1280 x 1024 screen resolution
+   0 x    0 offscreen
+2048 x 1024 layout
+regions at f4000000 f5000000 f4100000 f403f000
+regions at f4380000 00000000 00000000 00000000
+reent_lvl 0
+save_addr 00367c00
+monitor 0
+in friendly mode: 0
+power consumption 0 watts
+freq ref 0
+sti_mem_addr 00368260 (size=256 bytes)
+8 bits per pixel
+8 used bits
+8 planes
+attributes 00000036
+STI device: HPA1991AGrayscale
+Console: switching to colour frame buffer device 160x64
+fb0: stifb 1280x1024-8 frame buffer device, id: 27f12392, mmio: 0xf4100000
