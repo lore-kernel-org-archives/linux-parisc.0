@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail724.SEVEN24 (mail.seventwentyfour.com [209.167.50.21])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 29BF3482B
-	for <parisc-linux@parisc-linux.org>; Sun, 28 Oct 2001 15:38:23 -0700 (MST)
-Message-ID: <AAE15EBA0A92D511B28400A0C99834D8876C01@MAIL724>
-From: Roy Bryant <roybryant@SEVENtwentyfour.com>
-To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
-Date: Sun, 28 Oct 2001 17:39:52 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Broken link in www.parisc-linux.org
+Received: from beloit.edu (beloit.edu [144.89.40.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 27F30482B
+	for <parisc-linux@parisc-linux.org>; Mon, 29 Oct 2001 07:15:18 -0700 (MST)
+Received: from localhost ([144.89.185.182])
+	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id IAA33504
+	for <parisc-linux@parisc-linux.org>; Mon, 29 Oct 2001 08:10:02 -0600
+Date: Mon, 29 Oct 2001 08:15:15 -0600
+Mime-Version: 1.0 (Apple Message framework v472)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: Daniel Williams <dan@bigw.org>
+To: parisc-linux@parisc-linux.org
+Message-Id: <5FBBACF2-CC77-11D5-A7EF-0030657D1C94@bigw.org>
+Subject: [parisc-linux] Creating boot CD with MacOS X
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,26 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-There appears to be a problem on this page of your site.
+OK...  I've done a quick and dirty port of palo to MacOS X/Darwin.  
+Here's my output:
 
-    On page http://www.parisc-linux.org/weekly/20000310.html
-    when you click on "webpage",
-    the link to http://www.parisc-linux.org/buzzwords.html
-    gives the error: Not found.
+[localhost:~/Desktop] dan% ./palo -f ./iso.conf
+palo version 0.95 dan@localhost Sun Oct 28 23:53:13 CST 2001
+ELF32 executable
+ipl: addr 192512 size 26624 entry 0x0
+  ko 0x0 ksz 0 k64o 0x0 k64sz 0 rdo 0 rdsz 0
+<>
+ipl: addr 192512 size 26624 entry 0x0
+  ko 0x6ad6800 ksz 2853588 k64o 0x0 k64sz 0 rdo 118468608 rdsz 1991209
+<0/vmlinux root=/dev/ram initrd=0/ramdisk>
 
-As recommended by the Robot Guidelines, this email is to explain our robot's
-activities and to let you know about one of the broken links we encountered.
-LinkWalker does not store or publish the content of your pages, but rather
-uses the link information to update our map of the World Wide Web.
+And the iso.conf file contains:
+-c0/vmlinux root=/dev/ram initrd=0/ramdisk
+-k/Volumes/palinux-0.9.1/debian/dists/sid/main/disks-
+hppa/current/32/vmlinux
+-b/Volumes/palinux-0.9.1/iplboot
+-r/Volumes/palinux-0.9.1/debian/dists/sid/main/disks-
+hppa/current/root.bin
+-C./palinux-0.9.2.iso
 
-Are these reports helpful? I'd love some feedback. If you prefer not to
-receive these occasional error notices please let me know.
+/Volumes/palinux-0.9.1 is a mounted image of the palinux-0.9.2 ISO 
+file.  It's not the same file that I'm trying to modify with palo.  
+Anyway, does this look like it would work to boot from if I copied the 
+modified ISO to a Win2k machine to burn directly to CD with EasyCD 
+Creator?
 
-Roy Bryant
-
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- Roy Bryant, roybryant@seventwentyfour.com
- President
- SEVENtwentyfour Inc. ("Always watching the Web")
- http://www.seventwentyfour.com
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+Thanks,
+Dan
