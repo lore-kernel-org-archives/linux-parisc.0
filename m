@@ -1,15 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3736C482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Feb 2002 19:48:19 -0700 (MST)
-Message-ID: <3C673358.2070404@yahoo.com>
-Date: Mon, 11 Feb 2002 02:58:32 +0000
-From: Jbit <james_a_n_lee@yahoo.com>
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] lp0 kablooie
-References: <Pine.LNX.4.21.0202091555570.7869-100000@maestro.symsys.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Bob Radvanovsky <rsradvan@unixworks.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [REQUEST] PS/2 keyboard pinouts? 
+In-Reply-To: Message from Bob Radvanovsky <rsradvan@unixworks.net>
+   of "Sun, 10 Feb 2002 13:48:13 CST." <200202101948.NAA05497@unixworks.net>
+References: <200202101948.NAA05497@unixworks.net> 
+Date: Sun, 10 Feb 2002 21:21:16 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020211042116.A015E482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,22 +19,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Greg Ingram wrote:
+Bob Radvanovsky wrote:
+> Unfortunately, I don't have 30+ keyboards for all of these workstations. 
 
-> Writing data from my C100 to /dev/lp0 makes the kernel go kablooie.  It's
-> the kernel from the recent (0.9.3?) iso.  Known problem?  Any more info I
-> could supply that would help?  I've appended everything on the console
-> from the crash, through the power cycle, to mounting disks again.  
+Here is the original posting for serial console on 712.
 
+http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008117.html
 
-Hrm, not knowing what the exact problem is, i'd say its worth trying the latest cvs kernel
-(the debian-hppa-0.9.3 kernel is 2.4.9, IIRC)
+We should probably add this as a "How-To" someplace. Ideas on where?
 
-Then, if it still gives an error, submit a bug report or somthing ;)
+grant
 
---jbit
-
-
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
