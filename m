@@ -1,48 +1,50 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id KAA20348
-	for <hppa-linux@sod.res.cmu.edu>; Fri, 19 Mar 1999 10:39:47 -0500
-Received: (from smap@localhost)
-          by dfw-ix4.ix.netcom.com (8.8.4/8.8.4)
-	  id JAA05505 for <hppa-linux@thepuffingroup.com>; Fri, 19 Mar 1999 09:39:04 -0600 (CST)
-Date: Fri, 19 Mar 1999 07:40:09 -0800 (PST)
-From: Kumar <kumar@ix.netcom.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA26611
+	for <hppa-linux@sod.res.cmu.edu>; Fri, 19 Mar 1999 14:13:11 -0500
+From: Michael Shalayeff <mickey@lucifier.dial-up.user.akula.net>
+Message-Id: <199903191853.NAA15832@lucifier.dial-up.user.akula.net>
+Subject: Re: [hppa-linux] memory layout
+In-Reply-To: <36F14F9B.AD1968C3@netscape.com> from Mike Shaver at "Mar 18, 99 02:10:19 pm"
 To: hppa-linux@thepuffingroup.com
-Subject: Re: [hppa-linux] Gateway instructions
-In-Reply-To: <36F1754D.17EA4048@netscape.com>
-Message-ID: <Pine.LNX.3.96.990319072704.180B-100000@quark.ix.netcom.com>
+Date: Fri, 19 Mar 1999 13:53:02 -0500 (EST)
+Cc: hppa-linux@thepuffingroup.com
+Reply-To: mickey@openbsd.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-> > The B bit is not a problem as long as the delay slot of the branch to the
-> > gateway is either nullified or filled in with a non-branch instruction.
-> > For example,
-> > 
-> >     LDIL L'GATEWAY,%r1
-> >     BLE  R'GATEWAY(%sr7,%r1)
-> >     LDO  sycallnum,%r22
-
-	Branch to space in %sr7 and offset contained in %r1,
-	also load the syscall number in %r22 in the delay slot of BLE.
-	I guess the assumption here is that %sr7 points to system space.
-	Value of GATEWAY can be replaced by 0xc0000000 or whatever.	
-	
-	A equivalent 80386 sequence to make syscall:
-
-	movl	$1, %eax	; load syscall num in %eax. in this case
-						"exit"
-	int	$0x80		; syscall trap in to kernel
-
-	The number 80 is OS dependent and no magic number. Its just that
-	Linux 80386 goes through trap gate 128 (0x80) for syscalls.
-
-
-						pkd
+Making, drinking tea and reading an opus magnum from Mike Shaver:
+> Alan Cox wrote:
+> > If you want to run PH/UX binaries then you need to probably follow their
+> > layout
 > 
-> Someday (maybe today, if I get all my work done =) ), I'll learn to read
-> that.
+> Yeah, but OpenBSD runs their binaries and seems to use the 0xC0000000
+> division.
+hey! thank you very much, but we are not running hp/ux binaries on hppa yet (;
+syscalls are done in hpux/lites/mklinux/osf/linux(?;) compatible way.
+not all sources are in the repo tho (i'm doing things one at a time)
+
+> > The m68k people use the 'spaces' equivalent on the m68k quite heavily
+> 
+> So we should be reading up on the spaces use in the arch/m68k code, then
+> =).
+and hp300 (which is m68k) is doing syscalls throught the trap#n actually
+(for both hpux and bsd)
+
+cu
+
 > 
 > Mike
 > 
 > -- 
+> 351839.03 300276.13
+> 
+> -------------------------------------------------------------------------
+> To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+> 
+
+
+-- 
+    paranoic mickey       (my employers have changed but, the name has remained)
