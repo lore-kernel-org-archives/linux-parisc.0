@@ -1,18 +1,30 @@
-Return-Path: <xam@cs.ucc.ie>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AFD448D8
+Return-Path: <alan@lxorguk.ukuu.org.uk>
+Received: from dhcp23.swansea.linux.org.uk
+	(cpc1-cwma1-5-0-cust4.swan.cable.ntl.com [80.5.120.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4F6C4852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 27 Feb 2004 03:22:24 -0700 (MST)
-Date: Fri, 27 Feb 2004 10:22:22 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Eggert Ehmke <eggert.ehmke@berlin.de>
-Subject: Re: [parisc-linux] kernel 2.6.3 compile problem
-In-Reply-To: <200402271110.50459.eggert.ehmke@berlin.de>
-Message-ID: <Pine.LNX.4.58.0402271018590.3556@sal.ucc.ie>
-References: <200402271110.50459.eggert.ehmke@berlin.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
+	Fri, 27 Feb 2004 11:48:14 -0700 (MST)
+Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
+	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10) with ESMTP id
+	i1RIiQ0r029754; Fri, 27 Feb 2004 18:44:26 GMT
+Received: (from alan@localhost)
+	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10/Submit) id
+	i1RIiN9I029752; Fri, 27 Feb 2004 18:44:24 GMT
+Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Grant Grundler <grundler@parisc-linux.org>
+In-Reply-To: <20040226155659.GA11451@colo.lackof.org>
+References: <Pine.LNX.4.58.0402260003140.26587@sal.ucc.ie>
+	<1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
+	<Pine.LNX.4.58.0402260127230.26951@sal.ucc.ie>
+	<20040226051124.GB3645@colo.lackof.org>
+	<Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
+	<20040226155659.GA11451@colo.lackof.org>
+Content-Type: text/plain
+Message-Id: <1077907459.29711.13.camel@dhcp23.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: Fri, 27 Feb 2004 18:44:20 +0000
+Cc: parisc-linux@lists.parisc-linux.org, "M. Grabert" <xam@cs.ucc.ie>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,47 +34,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, 27 Feb 2004, Eggert Ehmke wrote:
+On Iau, 2004-02-26 at 15:56, Grant Grundler wrote:
+> yes - the endian issue is probably harder to fix.
 
-> Hello!
->
-> This is my first message on this list. If  need some kind of registration,
-> please let me know.
+All mmio and pio goes through helper functions, so it suggests the
+helper ifdefs are simply wrong in ide-iops.c - which should make fixing
+stuff easier - probably the insw() op is the problem.
 
-Registration is not required, but I maybe you like to register your
-here:
+> But I'm skeptical that's really the issue. I suspect more the IDE command
+> isn't being programmed properly into the Promise controller and thus it
+> doesn't DMA correctly or for some other reason complete the command.
+> ie it has no reason to interrupt.
 
-http://hwdb.parisc-linux.org/view.php3?type=machine&name=B132L%2B
+Well if the endian stuff is broken then anything could happen
 
-> Now I tried to compile kernel 2.6.2-pa0 and 2.6.3-pa2 with the same result:
-> the compile fails with this message:
->
-> --   CC      drivers/char/tty_io.o
-> In file included from include/linux/selection.h:11,
->                  from drivers/char/tty_io.c:101:
-> include/linux/vt_buffer.h:19:21: asm/vga.h: No such file or directory
-> make[2]: *** [drivers/char/tty_io.o] Error 1
-> make[1]: *** [drivers/char] Error 2
-> make: *** [drivers] Error 2
->
-> There is indeed no file include/asm/vga.h. But if I understand the
-> documentation right, I need to include VGA support. Can you please tell me
-> where I am wrong? These are my console settings in .config:
->
-> CONFIG_VGA_CONSOLE=y
+> > The Promise Ultra100 TX2 controller is reported to work on PPC - not the
+> > siimage one - so there is probably no difference between the PARISC and
+> > PPC ports in this respect.
+> 
+> ok
 
-I think this is the culprit. There is not VGA support on Linux/PA-RISC.
-
-> # CONFIG_MDA_CONSOLE is not set
-> CONFIG_STI_CONSOLE=y
-> CONFIG_DUMMY_CONSOLE_COLUMNS=160
-> CONFIG_DUMMY_CONSOLE_ROWS=64
-> CONFIG_DUMMY_CONSOLE=y
-> CONFIG_FRAMEBUFFER_CONSOLE=y
-> CONFIG_PCI_CONSOLE=y
-> # CONFIG_FONTS is not set
-> CONFIG_FONT_8x8=y
-> CONFIG_FONT_8x16=y
-
-Greetings,
-  Max
+siimage should, at least from data sheet review 
