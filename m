@@ -1,29 +1,22 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id JAA27254
-	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 09:56:34 -0500
-Message-ID: <19990329095632.U30475@cmu.edu>
-Date: Mon, 29 Mar 1999 09:56:32 -0500
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id KAA27660
+	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 10:09:30 -0500
+Message-ID: <19990329100924.V30475@cmu.edu>
+Date: Mon, 29 Mar 1999 10:09:24 -0500
 From: Phil Schwan <pschwan@thepuffingroup.com>
 To: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Mailing list changes
+Subject: [parisc-linux] Teaching the bootloader to grok ext2
 List-ID: <linux-parisc.vger.kernel.org>
 
-As we start changing things bearing the ``hppa-linux'' name to a more
-suitable ``parisc-linux'', I've gone ahead and made the appropriate
-changes to the mailing lists and CVS server.  Apologies to those whose
-procmail scripts I've broken.
-
-The old aliases (hppa-linux@thepuffingroup.com, hppa-linux-request,
-hppa-linux-cvs, etc) are deprecated, and will function for a while
-longer.  One should begin using parisc-linux@thepuffingroup.com or one
-will be surprised when one's mail bounces at some unspecified point in
-the future.
-
-For those of you using CVS, the same situation applies with the
-CVSROOT.  :pserver:anonymous@sod.res.cmu.edu:/home/cvs/hppa will work,
-but :pserver:anonymous@sod.res.cmu.edu:/home/cvs/parisc is preferred.
+So, I am told that the firmware has nice ways of telling me things
+about the scsi disk geometry and fetching blocks and so on.  Would
+someone be able to point me at the appropriate documentation, or at
+least give me some general clue about how to go about this?  I'd like
+to make the bootloader capable of fetching kernel images from an ext2
+filesystem, which Chris and I agreed seems to be the Right Thing to
+do.
 
 -Phil
 
