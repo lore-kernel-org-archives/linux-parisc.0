@@ -1,41 +1,27 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA09990
-	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Jul 1999 08:45:53 -0600
-Sender: adevries@thepuffingroup.com
-Message-ID: <37836A9E.5224AB6E@thepuffingroup.com>
-Date: Wed, 07 Jul 1999 10:56:30 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
-To: Hannu Martikka <martikka@stybba.ntc.nokia.com>
-CC: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA10192
+	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Jul 1999 09:23:16 -0600
+Date: Wed, 7 Jul 1999 17:23:38 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+Cc: Hannu Martikka <martikka@stybba.ntc.nokia.com>,
+        parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] vmlinux in C360
-References: <Pine.HPX.4.05.9907071255560.20278-100000@gamgee.ntc.nokia.com>
+Message-ID: <19990707172338.C29058@suse.de>
+References: <3782F26C.78876DDD@thepuffingroup.com> <Pine.HPX.4.05.9907071255560.20278-100000@gamgee.ntc.nokia.com> <19990707121251.B386@mencheca.ch.genedata.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <19990707121251.B386@mencheca.ch.genedata.com>; from Matthew Wilcox on Wed, Jul 07, 1999 at 12:12:51PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hannu Martikka wrote:
-> I have problems with Linux on C360. Here is what I tried:
+> > I have problems with Linux on C360. Here is what I tried:
 > 
-...
-> 
-> This is the last message. Here it hangs. On frontpanel the leds 1-3 are on
-> (no 4 is off).
-> 
-> Should it work better in C-series? or is C-series "unsupported"?
+> According to http://www.hp.com/unixwork/hpc360/page6.htm, the C360
+> has a PA-8500 CPU which is PA-RISC version 2.0.  This port is
+> currently only targetting the PA-RISC 1.1 family of processors since
+> this is where most of the demand is.  In time, I'm sure we will
+> support the PA-RISC 2.0 series of processors, but we don't right now.
 
-Matt is likely right, it is something to do with that being a 2.0 CPU.
+Still, I _think_ we should be able to run the kernel on PA2.0 in narrow mode.
 
-I'm a bit surprised that you never see anything, though.  It could be
-that our PDC calls or CPU setup code is CPU specific, but I'd thought it
-was pretty generic.
-
-Just to eliminate the possibility of it being a build time bug, could
-you try booting that c360 with a precompiled  kernel at
-ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/ ?
-
-- Alex
-
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+As soon as I can get my hands on a PA2.0 box, I can test that.
