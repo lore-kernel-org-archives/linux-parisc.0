@@ -1,18 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E3A064854
+Return-Path: <Ivar.Olav.Harstad.Orskaug@idi.ntnu.no>
+Received: from ray.idi.ntnu.no (ray.idi.ntnu.no [129.241.107.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BF8754854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 13 Jan 2004 01:47:40 -0700 (MST)
-Date: Tue, 13 Jan 2004 09:46:16 +0100
-Message-ID: <400324B6000002F1@ocpmta1.freegates.net>
-In-Reply-To: <20040111204355.GL28742@systemhalted>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	"Grant Grundler" <grundler@parisc-linux.org>
+	Tue, 13 Jan 2004 07:37:23 -0700 (MST)
+Received: from db-gr1.idi.ntnu.no (db-gr1.idi.ntnu.no [129.241.111.242])
+	by ray.idi.ntnu.no (8.12.10/8.12.10) with ESMTP id i0DEbLDx014980
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 13 Jan 2004 15:37:21 +0100 (MET)
+Date: Tue, 13 Jan 2004 15:37:21 +0100 (CET)
+From: Ivar Orskaug <Ivar.Olav.Harstad.Orskaug@idi.ntnu.no>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.BSF.4.58.0401131521300.24660@db-gr1.idi.ntnu.no>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] kernel compilation time
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,44 +23,13 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Carlos,
+Hi,
+just installed a fresh Debian on a C3000/8500. I did a kernel
+recompile and after 15 minutes binutils terminated compilation,
+complaining about too long arguments.  However, is this normal compilation
+time? I know this is not an acurate metric, but gives an idea. I
+just did an make oldconfig and then rebuilt the kernel. What is the normal
+kernel compilation time on these machines?
+The running kernel was 2.4.21.
 
-btw may I ask your patch so that I can test it in my tc process (and why
-not trying profiling on kernel build ;) )
-
-Thanks in advance,
-    Joel
-
->-- Original Message --
->Date: Sun, 11 Jan 2004 15:43:55 -0500
->From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: Grant Grundler <grundler@parisc-linux.org>
->Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
->Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
->
->
->On Sat, Jan 10, 2004 at 09:09:06PM -0700, Grant Grundler wrote:
-> On Mon, Jan 05, 2004 at 02:48:39PM -0500, Carlos O'Donell wrote:
-> > http://www.parisc-linux.org/~carlos/glibc-2.3.2-debs-2004-01-05/
-> 
-> I finally installed these (libc6 and libc6-
->ev) and live is still good.
-> thanks carlos!
-
-Excellent. You haven't tried profiling any programs have you? :)
-Compile with CFLAGS=-pg, run-em, then run gprof on the gmon.out output?
-
-c.
-
-_______________________________________________
-parisc-
->inux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+	/Ivar
