@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 6 Oct 2003 08:31:44 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Derek Engelhaupt <derekengelhaupt@rocketmail.com>,
-	Joel Soete <soete.joel@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
-Message-ID: <20031006143144.GA19370@dsl2.external.hp.com>
-References: <3F5CB6FB0000C2D7@ocpmta1.freegates.net> <20031002233801.23113.qmail@web12508.mail.yahoo.com> <20031003001810.GH24824@parcelfarce.linux.theplanet.co.uk>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 40BC54840
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Oct 2003 08:37:22 -0600 (MDT)
+Date: Mon, 6 Oct 2003 10:33:19 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] traps.c 2.4 alignement [was: 2.6.0-test6-pa6 on b2k finaly crash]
+Message-ID: <20031006143319.GC27512@systemhalted>
+References: <3F5CB6FB0000CBFC@ocpmta1.freegates.net> <3F803388.5090304@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031003001810.GH24824@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <3F803388.5090304@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Oct 03, 2003 at 01:18:10AM +0100, Matthew Wilcox wrote:
-> I once downloaded an N-class PDF which I've subsequently lost.
-> If I remember correctly, it looked like:
+On Sun, Oct 05, 2003 at 03:06:48PM +0000, Joel Soete wrote:
+> Hi Carlos and all,
 > 
->      CPU --+-- CPU          RAM          CPU --+-- CPU
->           DEW              |||||              DEW
->   +--------+--------+---- Stretch ----+--------+------+
->  IKE               DEW               DEW             IKE
-> |||||         CPU --+-- CPU     CPU --+-- CPU       |||||
-> Ropes                                               Ropes
-> 
-> (Elroys on the end of the ropes, of course).
+> Regarding a bit more about this crash dump, I figure out that your patch 
+> <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017565.html> 
+> was not yet 'aligned' in 2.6.
+> So may I suggest you this first draft:
 
-I thought Ike was hanging off of "Stretch" like this:
-   CPU --+-- CPU              RAM             CPU --+-- CPU
-        DEW                  |||||                 DEW
-         +----------------- Stretch ----------------+
-        DEW                  |   |                 DEW
-   CPU --+-- CPU           IKE   IKE          CPU --+-- CPU
-                       ||...||   ||...||
-                      12 ropes   12 ropes
+The draft looks good. I'll merge it into 2.6 today and test on my
+system.
 
-DEW == Runway to Merced bus converter
-IKe == I/O Controller (DMA Coherency and IO MMU)
-
-10 PCI slots are "Twin Turbo" (Double Rope) and two are "Turbo" (singl
-rope). "Core I/O" gets the remaining two ropes.
-
-
-However, the original N-class has been replaced with rp7410.
-Not sure if when the switchover took place.
-rp7410 is now kin to Superdome (HalfDome) and rp8400 (QuarterDome)
-and is based on a follow-on chipset.
-URL's here:
-http://www.hp.com/products1/servers/mid_range/index.html
-http://www.hp.com/products1/servers/rackoptimized/rp7410/infolibrary/rp7410_wp.pdf
-
-grant
-
-ps. We are completely under representing the complexity of "RAM" and all
-the memory controllers that made this such a hot box 4 years ago.
+c.
