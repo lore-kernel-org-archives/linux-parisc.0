@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 065064829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jun 2003 18:11:02 -0600 (MDT)
-Date: Wed, 4 Jun 2003 17:12:39 -0700
-From: Randolph Chung <tausq@debian.org>
-To: parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org, debian-ia64@lists.debian.org
-Message-ID: <20030605001239.GZ16638@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] debian/hppa bof at OLS
+Received: from cpout1.tiscali.be (unknown [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 063764829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jun 2003 06:00:01 -0600 (MDT)
+Date: Thu, 5 Jun 2003 13:59:48 +0200
+Message-ID: <3ED4C8B600002734@ocpmta1.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] palo II
+To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>,
+	parisc-linux@lists.parisc-linux.org
+Cc: "Grant Grundler" <grundler@parisc-linux.org>,
+	"Helge Deller" <deller@gmx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,30 +23,166 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi *,
+Hi Bjoern,
 
-There is going to be a Debian/hppa BOF at OLS this year:
-http://www.linuxsymposium.org/2003/view_abstract.php?talk=162
+> On Mon, 2 Jun 2003, Bjoern A. Zeeb wrote:
+>
+> Hi,
+>
+> > g) here is the patch. Thanks I remember basic for the goto ;-)
 
-This is an informal survey: if you plan to attend, please drop me 
-an email and send me suggested topics *via private mail*.
+Simple and efficent;
 
-My current thoughts is to do a short presentation on what the
-debian/hppa port is about, and open the floor to discussions on topics
-of interest (e.g. toolchain, 64-bit userspace, SMP kernels, what have
-you...). Other suggestions are welcome as well. I will post an updated
-proposal once I've collected more info. Personally I think other Debian/
-porting issues will also be interesting for the BOF, but we'll see how
-it goes.
+> > peherhaps ignore the part with the version number ...
+>
+> well please - before commiting - verifiy ... I t
+ink there is a
+> problem maybe with some pointer ... Will have to verify all possible
+> paths ... going to re-check and let you know.
+>
+> --- cut ---
+> /boot/vmlinux-2.5.69-pa1 74 00L 1X c 1Q root=/dev/sdb3 HOME=/ TERM=linux
+conso0
+>  0: 3/boot/vmlinux-2.5.69-pa1
+>  1: 74
+>  2: 00L
+>  3: 1X
+>  4: c
+>  5: 1Q
+>  6: root=/dev/sdb3
+>  7: HOME=/
+>  8: TERM=linux
+>  9: console=ttyS0
+>
+> Edit which field?
+> (or 'b' to boot with this command line)?
+> --- cut ---
 
-Oh, and if you are attending OLS, don't forget about the keysigning!
-http://www.linuxsymposium.org/2003/view_abstract.php?talk=170
+Hmm how may I reproduce?
 
-thanks,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 
-p.s. why is this crossposted to the ia64 list? well, just because. :-)
+btw (as rought draft) I also consider the case if you accidently choose
+swap (even on a md), here is the full patch:
+=====
+diff -Naur --exclude iplboot palo-1.2/debian/changelog palo-1.3/debian/changelog
+--- palo-1.2/debian/changelog	2003-01-14
+21:07:52.000000000 +0100
++++ palo-1.3/debian/changelog	2003-06-05 11:20:38.000000000 +0200
+@@ -1,3 +1,9 @@
++palo (1.3) unstable; urgency=low
++
++  * Comeback to interact if failled to find boot kernel (Bjoern A. Zeeb)
++
++ -- Paul Bame <bame@debian.org>  Tue, 14 Jan 2003 13:06:45 -0700
++
+ palo (1.2) unstable; urgency=low
+
+   * Recognize RAID partition types (Martin K. Petersen)
+diff -Naur --exclude iplboot palo-1.2/ipl/ipl.c palo-1.3/ipl/ipl.c
+--- palo-1.2/ipl/ipl.c	2003-01-14 20:44:49.000000000 +0100
++++ palo-1.3/ipl/ipl.c	2003-06-05 12:56:25.000000000 +0200
+@@ -367,6 +367,7 @@
+ 	}
+     }
+
++interactive_loop:
+     if (is_interactive)
+ 	interact(&f);
+
+@@ -406,7 +407,9 @@
+     {
+ 	printf("ERROR: Requesting kernel from partition %d "
+ 		    "on unpartitioned media!\n", kern_part);
+-	while(1);
++
++        is_interactive = 1;
++        goto interactive_loop;
+     }
+
+     if (rd_part != -1 && rd_part != kern_part)
+@@ -510,7 +513,9 @@
+ 	    (partition[kern_part - 1].id != 0x83 && partition[kern_part - 1].id
+!= 0xfd) )
+ 	{
+ 	    printf("ERROR: Partition %d must be ext2\n", kern_part);
+-	    while(1);
++
++            is_interactive = 1;
++            goto interactive_loop;
+ 	}
+
+ 	pp = &partition[kern_part - 1];
+@@
+-518,8 +523,13 @@
+ 	part_fd = offset_open(bootdev, 512 * pp->start, 512 * pp->length);
+
+ 	mount_fd = ext2_mount(part_fd, 0, 0);
+-	if (0) printf("ext2_mount(partition %d) returns %d\n",
+-	    kern_part, mount_fd);
++	if (mount_fd < 0){
++            printf("ext2_mount(partition %d) returns %d\n",
++	            kern_part, mount_fd);
++
++            is_interactive = 1;
++            goto interactive_loop;
++	}
+
+ 	kern_fd = ext2_open(kern_name);
+ 	if (0) printf("ext2_open(%s) = %d\n", kern_name
+ kern_fd);
+@@ -527,7 +537,9 @@
+ 	{
+ 	    printf("ERROR: open %s from partition %d failed\n",
+ 		kern_name, kern_part);
+-	    while(1);
++
++            is_interactive = 1;
++            goto interactive_loop;
+ 	}
+
+ 	bkern_fd = byteio_open(kern_fd);
+diff -Naur --exclude iplboot palo-1.2/lib/common.h palo-1.3/lib/common.h
+--- palo-1.2/lib/common.h	2003-01-14 21:06:14.000000000 +0100
++++ palo-1.3/lib/common.h	2003-06-05 11:53:20.000000000 +0200
+@@ -11,7 +11,7 @@
+ #include <asm/byteorder.h>
+
+ #include <linux/genhd.h>
+
+-#define PALOVERSION "1.2"
++#define PALOVERSION "1.3"
+
+ /* size of I/O block used in HP firmware */
+ #define FW_BLOCKSIZE	2048
+
+====
+
+Up to you to adapt changes in changelog and lib/common.h :)
+
+I a not an expert 
+n debian building pkg but to rebuild a source tree i
+follow this small recipe:
+A) grab palo_1.2.dsc palo_1.2.tar.gz into your test dir
+B) dpkg-source -x palo_1.2.dsc
+this will extract palo-1.2
+C) I rename palo-1.2 into palo-1.3 [according to chang
+log revision]
+D) cd palo-1.3
+E) apply above patch (patch -p1 -i YourPatchFile)
+E) dpkg-buildpackage [ 2>&1 | tee ../palo-1.3.bpkg # to log build messages]
+on a _linux-parisc_ box it would rebuild iplboot :)
+
+if successfull, you would find in the 
+pper dir palo_1.3_hppa.deb dpkg which
+you can just install.
+
+hth,
+    Joel
+
+PS: another kind thing would be add edition line capability (any idea?)
+
+
+
+---------------------------------
+Découvrez les 6 clés et gagnez le Club Med à Vie avec Tiscali
+http://www.tiscali.be/nl/subs/tiscali4life/default.asp?lang=fr
