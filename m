@@ -1,19 +1,16 @@
-Return-Path: <u96urd@yahoo.com>
-Received: from bgp01116053bgs.westln01.mi.comcast.net
-	(bgp01116053bgs.westln01.mi.comcast.net [68.42.101.172])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3DB8C484B
-	for <parisc-linux@parisc-linux.org>;
-	Fri, 19 Dec 2003 20:15:18 -0700 (MST)
-Message-ID: <v0-f-7-4vt90kdn7@o4g3futup>
-From: "Evan Carrier" <u96urd@yahoo.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Sat, 20 Dec 03 09:06:15 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="6F456B_AC_A7E__1_."
-Cc: 
-Subject: [parisc-linux] Your position is confirmed qslgdd 
-Reply-To: Evan Carrier <u96urd@yahoo.com>
+Return-Path: <rbradetich@uswest.net>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 80DBE484B
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 20 Dec 2003 00:55:16 -0700 (MST)
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: bame@debian.org
+Content-Type: multipart/mixed; boundary="=-7BKU+oxglG0KcdtPizLS"
+Message-Id: <1071906891.11231.6.camel@laptop.bradetich.net>
+Mime-Version: 1.0
+Date: Sat, 20 Dec 2003 00:54:52 -0700
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Updated patch for palo to auto-detect serial mux.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,39 +21,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---6F456B_AC_A7E__1_.
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+--=-7BKU+oxglG0KcdtPizLS
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Are interested in Working Full time at home?
+Paul,
 
+My last palo patch had a bug in masking the sversion bits so palo
+incorrectly determined the console on the E-35 was not a Mux.  I have
+attached an interdiff patch between the new patch and my previous patch.
 
-If so just take one moment to see how you can start today.
+Thanks,
 
-http://www.ecom-universe.net/splash1/FF.htm
-
-- No cold calling - No sales calls
-- Put your computer to work
-- No Boring Meetings to Attend.
-- A Simple Turnkey System.
-- You Can Earn Money Quickly.
-- You will GET RESIDUAL INCOME Over And Over.
-- Plus Great Support and Training.
-
-This system really works..thousands are cashing in and you can to.
-
-If this is something you have been wanting to do just take the test drive.=
+- Ryan
 
 
-http://www.ecom-universe.net/splash1/FF.htm
+--=-7BKU+oxglG0KcdtPizLS
+Content-Disposition: attachment; filename=palo-interdiff.diff
+Content-Type: text/x-patch; name=palo-interdiff.diff; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
 
-P.S. If I sent this to you by mistake just shoot me back an email and I wi=
-ll take you off the list...but please remember we only make money if you d=
-o and we NEED to make this work for you...let us know how we can help.
+diff -u ipl/pdc_misc.c ipl/pdc_misc.c
+--- ipl/pdc_misc.c	19 Dec 2003 03:39:41 -0000
++++ ipl/pdc_misc.c	20 Dec 2003 04:49:07 -0000
+@@ -231,7 +231,7 @@
+     int r;
+     unsigned char hw_type;    /* 5  bits used */
+     unsigned int sversion;    /* 20 bits used */
+-    unsigned pdc_result2[64] __attribute__ ((aligned (8)));
++    unsigned long pdc_result2[32] __attribute__ ((aligned (8)));
+ 
+     *is_mux = 0;
+ 
+@@ -241,11 +241,11 @@
+                 
+     if (r >= 0)
+     {
+-        unsigned char iodc_data[32];
+-        memcpy(&iodc_data, pdc_result2, 32);
++        unsigned char iodc_data[8];
++        memcpy(&iodc_data, pdc_result2, 8);
+ 
+         hw_type = iodc_data[3] & 0x1f;
+-        sversion = ((iodc_data[4] & 0x1f) << 16) | (iodc_data[5] << 8) | iodc_data[6];
++        sversion = ((iodc_data[4] & 0x0f) << 16) | (iodc_data[5] << 8) | iodc_data[6];
+ 
+         if(hw_type == HPHW_A_DIRECT && sversion == MUX_SVERSION)
+             *is_mux = 1;
 
-Best Regards,
-
-Steve S.f  zeugdj
-btys
-
---6F456B_AC_A7E__1_.--
+--=-7BKU+oxglG0KcdtPizLS--
