@@ -1,17 +1,19 @@
-Return-Path: <microsale@email.de>
-Received: from email.de (unknown [218.18.135.215])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BCAE24854
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 17 Dec 2003 22:48:42 -0700 (MST)
-From: "Victim of Microsale" <microsale@email.de>
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Date: Thu, 18 Dec 2003 13:49:03 +0800
-Message-Id: <20031218054842.BCAE24854@dsl2.external.hp.com>
+Return-Path: <hch@lst.de>
+Received: from mail.lst.de (verein.lst.de [212.34.189.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C9EB84854
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 18 Dec 2003 00:25:30 -0700 (MST)
+Date: Thu, 18 Dec 2003 08:25:06 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: parisc-linux@lists.parisc-linux.org,
+	vserver@list.linux-vserver.org
+Subject: Re: [parisc-linux] syscall number for vserver
+Message-ID: <20031218072506.GA8142@lst.de>
+References: <20031217221618.GC9313@MAIL.13thfloor.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031217221618.GC9313@MAIL.13thfloor.at>
 Cc: 
-Subject: [parisc-linux] Mr. Uwe Schmidt is a knave! Don't buy any product
-	from Microsale!
-Reply-To: microsale@email.de
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,43 +23,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Dear friends,
+On Wed, Dec 17, 2003 at 11:16:18PM +0100, Herbert Poetzl wrote:
+> 
+> Hi everyone!
+> 
+> I would like to 'officially' reserve a syscall number
+> for parisc(64)/vserver ... 
 
-Microsale SC KG, Ltd, Germany is a knave company and Uwe Schmidt is a big knave!
-
-We are cheated by Microsale SC KG, Ltd.
-
-Remember, don't do any business with this company.
-
-Don't buy any product from Microsale or you will be cheated.
-
-This company has a bad reputation in Germany and in other European countries, espcially in 
-Belgium and Netherlands.
-
-Here's the story:
-
-Mr. Uwe Schmidt , CEO
-Microsale (R) SC KG
-
-He is also an auditor, but he doesn't have any commercial morality.
-
-He always made cheated L/C to other companies. Many companies have been cheated by him.
-
-Please take care!!!
-
-His products have many problems, such as CD player and mp3 player!
-
-It's the detailed information of this company:
-Dahlienweg 6
-D 52477 Alsdorf, NRW
-Germany, European Union
-
-Tel.-/Fax-Box: +49 89 1488230796
-               +32 87 783518
-               +32 87 783019
-Mobil: +32 474 409055
-Email: microsale@email.de 
-       microsale@gmx.net
-       uwe-schmidt-@gmx.net
-Web: http://www.microsale.biz
-     http://members.ebay.de/aboutme/microsale_schmidt
+The syscall is the typical multiplexer crap, so an actual submission
+wouldn't have any chance.  Please fix up your junk beofe trying to
+play the reserve a syscall scheme.  This didn't work for afs or
+LSM either.
