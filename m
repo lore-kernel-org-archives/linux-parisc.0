@@ -1,59 +1,41 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Message-ID: <36D8CF9C.C34C4E6B@ruhr-uni-bochum.de>
-Date: Sun, 28 Feb 1999 06:09:48 +0100
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-MIME-Version: 1.0
-To: hppa-linux@puffingroup.com
-References: <199902172309.RAA27695@equator.com> <36CB80C1.A9FEDC4A@ottawa.com>
-Content-Type: multipart/mixed; boundary="------------1E9AE8E6D28773FED89DC840"
-Subject: [hppa-linux] Help: bootstrap test
-Resent-Message-ID: <"QYJyS3.0.am4.K-Css"@sod.res.cmu.edu>
+Message-Id: <199902281700.JAA18341@milano.cup.hp.com>
+To: hppa-linux@thepuffingroup.com
+Subject: Re: [hppa-linux] Another bootstrap test 
+In-reply-to: Your message of "Sat, 27 Feb 1999 02:10:25 PST."
+             <AB06BBFD8AFBD111B07600805FCB119224240A@EXCHANGE.aubi.de>
+Date: Sun, 28 Feb 1999 09:00:34 -0800
+From: Grant Grundler <grundler@cup.hp.com>
+Resent-Message-ID: <"01Ldi3.0._f6.cTNss"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Dies ist eine mehrteilige Nachricht im MIME-Format.
---------------1E9AE8E6D28773FED89DC840
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 
-Hello all !
+Markus Doehr wrote:
+...
+> We have some HP machines around here:
+> 
+> 	A 9000/715
+> 	A 9000/778
+> 	B 9000/375
+> 
+> On moday I'll speak to the admin if I could do some testing in the evening,
+> when the machines are not needed any more. Sorry for silly asking, but is
+> the 'C160' the only model currently "supported" or will our machines
+> probably work too?
 
-Maybe someone with a working BOOTP or RBOOTD could please give me some help/advice,
-how to set up the network-booting for an HP 715/64 and an iA32-SuSE-6.0-Distribution
-?
+The 778 listed is most likely a B132L  - little brother to the C160.
+Type "model" at the command line and you should get back something
+like:
+9000/778/B132L
 
-Any help would be great !
+I'm afraid the 9000/375 is a Motarola based workstation and not PA-RISC.
 
-I already tried both possibilities and have had until now no success (Telnet and
-Network is working!) !
-I also changed the "boot-path" !
-What do I have to enter in /etc/services,  a.s.o ?
-I thought, I entered all OK.
+grant
 
-Does anybody have booted an 715/64 already ?
-
-Thanks,
-Helge Deller.
-
-
---------------1E9AE8E6D28773FED89DC840
-Content-Type: text/x-vcard; charset=us-ascii; name="vcard.vcf"
-Content-Description: Visitenkarte für Helge Deller
-Content-Disposition: attachment; filename="vcard.vcf"
-Content-Transfer-Encoding: 7bit
-
-begin:          vcard
-fn:             Helge Deller
-n:              Deller;Helge
-adr:            Weifeldweg 7;;;Bochum;;44795;Deutschland
-email;internet: Helge.Deller@ruhr-uni-bochum.de
-x-mozilla-cpt:  ;0
-x-mozilla-html: TRUE
-version:        2.1
-end:            vcard
-
-
---------------1E9AE8E6D28773FED89DC840--
+Grant Grundler
+Enterprise Systems Technology Lab
++1.408.447.7253
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
