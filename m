@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 47E07483C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 02:25:18 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <helge.deller@sap.com>
-To: "Holst, Richard G (Dick), PROSH" <dholst@att.com>,
-	"parisc users" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] X windows on my D350 Server
-Date: Mon, 18 Feb 2002 10:25:15 +0100
-References: <28F05913385EAC43AF019413F674A017013F87D4@OCCLUST04EVS1.ugd.att.com>
-In-Reply-To: <28F05913385EAC43AF019413F674A017013F87D4@OCCLUST04EVS1.ugd.att.com>
+Received: from web21205.mail.yahoo.com (web21205.mail.yahoo.com [216.136.131.248])
+	by dsl2.external.hp.com (Postfix) with SMTP id 978024831
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 03:15:06 -0700 (MST)
+Message-ID: <20020218101505.54487.qmail@web21205.mail.yahoo.com>
+Date: Mon, 18 Feb 2002 11:15:05 +0100 (CET)
+From: =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
+Subject: [parisc-linux] Power LED
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Message-Id: <E16ck2t-0000Fa-00@linuxlab.wdf.sap-ag.de>
+Content-Type: text/plain; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,42 +20,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Dick,
+------------------------------------------
+>715/64, 715/80 and 715/100 belong to the so-called
+>715/new machines and all of those support the
+soft-power
+>switch, else you wouldn't have received the 
+>"Shutdown requested..." message. 
+>In your case I assume, that your filesystems wasn't
+clean
+>before you did shutdown your system....
 
-Some ideas:
-- Do you really have a PS/2 mouse connected ? If not X will not start.
-- Does /dev/mouse really points to /dev/psaux (or something like that) ?
+>BTW, the shutdown is initiated by the kernel by
+sending
+>a SIGINT to the PID (cad_pid) of the init process.
+This
+>is done in the file power.c:
+>http://cvs.parisc-linux.org/linux/arch/parisc/kernel/power.c?rev=1.5&content-type=text/vnd.viewcvs-markup
+>After receiving this signal the init process switches
+>the runlevel,
+>shuts down your system cleanly and runs
+/sbin/poweroff
+>or /sbin/halt. This is already the case and is also
+>done
+>that way for ATX systems.
 
-Regards,
-Helge
+>Regards,
+>Helge
 
-On Friday 15 February 2002 21:25, Holst, Richard G (Dick), PROSH wrote:
-> Folks,
->
-> When my D server boots and tries to run X, I get an initial gray background
-> and the X cursor, followed by a white box in the center of the screen, the
-> X cursor turns to an arrow and then the screen goes blank. The login prompt
-> then appears on my serial terminal.  The syslog file seems to be indicating
-> that the system is having a problem with the PS/2 transmit buffer timeout.
-> My /etc/X11/XF86Config-4 file is set up as follows for the mouse:
->
-> __________________________________________
-> __________________________________________
->
-> Section "InputDevices"
->
-> # Identifier and driver
->
-> 	Identifier	"mouse1"
-> 	Driver		"mouse"
-> 	Option	"Protocol"	"PS/2"
-> 	Option	"Device"	"/dev/mouse"
->
-> EndSection
->
-> _________________________________________
-> _________________________________________
->
-> Can anyone help me with this problem please?
->
-> Dick Holst
+But if I push the power button, the init process
+doesn't seem do change the runlevel, and power off
+immediatly.
+I can see the message "Shutdown requested..." and then
+- power off -.
+I think this souldn't be so.
+Also I think it is a bit dangerous if everyone can
+switch of the system, clean or unclean, just by
+pushing the button.
+Maybe a 5 second push-time would be good (like ATX)
+but with a gracefull shutdown.
+After all the halt script does not power off my
+715/80.
+I have to switch it off manually.
+
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Ihre E-Mail noch individueller? - http://domains.yahoo.de
