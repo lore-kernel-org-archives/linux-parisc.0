@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9D3BF4878
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Nov 2002 09:27:34 -0700 (MST)
-Date: Thu, 28 Nov 2002 17:27:17 +0100
-Message-ID: <3DB577610000573D@ocpmta8.be.tiscali.com>
-In-Reply-To: <3DB57761000056CD@ocpmta8.be.tiscali.com>
-From: jsoe0708@tiscali.be
-Subject: Re: FW: RE: [parisc-linux] 2.4.20-rc1-pa7 boot problem on b180
-To: "Grant Grundler" <grundler@dsl2.external.hp.com>
-Cc: "Ryan Bradetich" <rbradetich@uswest.net>,
-	parisc-linux@lists.parisc-linux.org
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 939A2487D
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Nov 2002 10:05:50 -0700 (MST)
+Received: from xatlrelay1.atl.hp.com (xatlrelay1.atl.hp.com [15.45.89.190])
+	by atlrel7.hp.com (Postfix) with ESMTP id 2BDB9805B8B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Nov 2002 12:05:46 -0500 (EST)
+Received: from xatlbh4.atl.hp.com (xatlbh4.atl.hp.com [15.45.89.189])
+	by xatlrelay1.atl.hp.com (Postfix) with ESMTP id E306C12C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Nov 2002 12:05:25 -0500 (EST)
+Message-ID: <CB813811CBF6D3118DCC00902740BB4A0BA20C5F@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 28 Nov 2002 12:05:14 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] flush_data_cache
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +27,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->the less by curiosity I apply the Ryan patch: <http://lists.parisc-linux=
-.org/pipermail/parisc-linux/2002-November/018414.html>
->and it also solved the problem of the b180 boot???
->
+Hi people,
 
-Don't know if could help but I also notice the following difference at bo=
-ot
-time:
+I am trying to use this function declared in cache.h (I put this =
+include in
+my source code) and I was obtain a linker error (undefined reference to
+`flush_data_cache_local').
+I am verify that the function flush_data_cache =E9 um define to
+flush_data_cache_local, but I am do not identify the reason of the =
+error.
 
-With highmem_io=3D1 on a b2000
-sym1: SCSI BUS has been reset.
-scsi0 : sym-2.1.17a
-scsi1 : sym-2.1.17a
-blk: queue 100aca74, I/O limit 4095Mb (mask 0xffffffff)??? blk_queue_boun=
-ce_limit
-  Vendor: QUANTUM   Model: ATLAS5-9LVD       Rev: HP04
-  Type:   Direct-Access                      ANSI SCSI revision: 03
-blk: queue 100acb74, I/O limit 4095Mb (mask 0xffffffff)
-  Vendor: QUANTUM   Model: ATLAS5-9LVD       Rev: HP04
-  Type:   Direct-Access                      ANSI SCSI revision: 03
-blk: queue 100acc74, I/O limit 4095Mb (mask 0xffffffff)
-sym1:5:0: tagged command queuing enabled, command queue depth 16.
-sym1:6:0: tagged command queuing enabled, command queue depth 16.
+Thanks in advance,
 
+----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
 
-with highmem_io=3D0 on a b180
-sym0: SCSI BUS has been reset.
-scsi0 : sym-2.1.17a
-  Vendor: IBM       Model: DDRS-39130WS      Rev: HP01
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-  Vendor: IBM       Model: DDRS-39130WS      Rev: HP01
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym0:5:0: tagged command queuing enabled, command queue depth 16.
-sym0:6:0: tagged command queuing enabled, command queue depth 16.
-
-hth,
-    Joel
-
-
-*************************************************************************=
-*******
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
-ttp://tiscali.complete.be
+*   leandro.farinati@hp.com
