@@ -1,41 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D73E04A1C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 16:14:05 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 417E24A1C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 16:29:55 -0700 (MST)
 Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA19688;
-	Thu, 8 Feb 2001 10:08:04 +1100
-Date: Thu, 8 Feb 2001 10:08:03 +1100 (EST)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA20534;
+	Thu, 8 Feb 2001 10:28:24 +1100
+Date: Thu, 8 Feb 2001 10:28:24 +1100 (EST)
 From: Alan Modra <alan@linuxcare.com.au>
-To: Christoph Plattner <christoph.plattner@alcatel.at>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	Grant Grundler <grundler@cup.hp.com>,
-	"M. Grabert" <xam@deathsdoor.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] //strace// Generic Parisc Linux Kernel Questions
- &  9000/730 success report
-In-Reply-To: <3A81005D.393A0AA6@alcatel.at>
-Message-ID: <Pine.LNX.4.21.0102080959100.7974-100000@front.linuxcare.com.au>
+To: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Failure making current gcc
+In-Reply-To: <3A8183B9.751575EB@hrzpub.tu-darmstadt.de>
+Message-ID: <Pine.LNX.4.21.0102081025280.7974-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 7 Feb 2001, Christoph Plattner wrote:
+On Wed, 7 Feb 2001, [iso-8859-1] R=FCdiger Scholz wrote:
 
-> I was definitly not able to build strace with the current tool chain
-> (I have built myself from Jan 13, 2001). The system calls and other
-> parts seem not to be compatible any more....
+> /tmp/cc0dgVTi.s: Assembler messages:
+> /tmp/cc0dgVTi.s:74: Internal error, aborting at
+> /opt/puffin/palinux/binutils/gas/write.c line 2852 in number_to_chars_big=
+endian
+> Please report this bug.
 
-Did you build glibc too?  I should own up to breaking our CVS glibc with
+Arrgh.  My fault, and it didn't show up in testing because I was using
+"--target=3Dhppa-linux --enable-targets=3Dhppa64-linux" when building my
+assembler.  Give me a few minutes and I'll have this fixed.
 
-revision 1.3
-date: 2001/01/16 14:09:38
+Thanks for the report.
 
-and not fixing it until
-
-revision 1.4
-date: 2001/02/05 14:58:22
-
-Alan (Embarrassed) Modra
--- 
+Alan Modra
+--=20
 Linuxcare.  Support for the Revolution.
