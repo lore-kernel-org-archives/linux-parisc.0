@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8071E4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 19:11:35 -0700 (MST)
-Message-Id: <200302090211.h192BWYl012933@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EAF04829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 19:18:47 -0700 (MST)
+Message-Id: <200302090218.h192Ii9E012950@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
-To: tausq@debian.org
-Date: Sat, 8 Feb 2003 21:11:32 -0500 (EST)
+To: willy@debian.org (Matthew Wilcox)
+Date: Sat, 8 Feb 2003 21:18:44 -0500 (EST)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, grundler@dsl2.external.hp.com,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030209005608.GR11363@tausq.org> from "Randolph Chung" at Feb 8, 2003 04:56:08 pm
+Cc: tausq@debian.org, willy@debian.org,
+	grundler@dsl2.external.hp.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030209020325.D27544@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Feb 9, 2003 02:03:25 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,46 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > lock(l1)
-> > do something
-> > unlock(l1)
-> > 
-> > lock(l2)
-> > do something else
-> > unlock(l2)
-> > 
-> > will gcc ever move the lock(l2) before the unlock(l1)? 
+> I think it's even worse than that.  What stops gcc reordering:
 > 
-> well, bad example, since l1 and l2 are both volatile, but in general,
-> nothing will prevent part of "do something else" to happen inside the l1
-> lock, right?
+> typedef struct {
+>         spinlock_t lock;
+>         volatile int counter;
+> } rwlock_t;
+> 
+> static  __inline__ void _raw_read_lock(rwlock_t *rw)
+> {
+>         while (__ldcw (&(x)->lock) == 0) \
+>                 while (((x)->lock) == 0) ; } while (0)
+>         rw->counter++;
+>         do { (x)->lock = 1; } while(0)
+> }
+> 
+> to:
+> 
+>         while (__ldcw (&(x)->lock) == 0) \
+>                 while (((x)->lock) == 0) ; } while (0)
+>         do { (x)->lock = 1; } while(0)
+>         rw->counter++;
 
-Volatile would stop gcc from moving code across either the lock or the unlock.
-A blockage is in fact implemented as an UNSPEC_VOLATILE instruction.
-The PA 8000 has a large reorder buffer, so there are similar issues.
-It's guaranteed that instructions will appear to execute in order on a
-processor but the memory updates as viewed from another processor may
-occur out of order.  To ensure that other processors have a consistent
-view of whats happening, one must use ordered instructions for the lock
-and unlock operations.  This will force all stores and loads inside the
-lock to complete.  Further, if cache flush operations occur inside
-a lock, you must also do a "sync" before unlocking to ensure that these
-operations complete.  The ldcw insn is strongly ordered.  A load and
-store on PA 2.0 can be made ordered with the correct completer.  Cache
-flush operations are weakly ordered.  On PA 1.x, all load and store
-instructions are strongly ordered, so ordering isn't an issue.
-
-The current spinlock reset is done in high-level C.  So, gcc can move code
-that that isn't dependent across the reset.  PA 2.0 processors can also do
-the same.
-
-Appendix G describes ordering in much more detail.  Hopefully, I haven't
-butchered what's said there too badly.
-
-The reordering that GCC does is conditional on instruction dependencies.  I
-just reworked the handling of the PIC register restore in PIC code
-because all the PIC register were not apparent in the initial scheduling
-pass.  This is in 3.3 and main, but not 3.2.
+Nothing.  The reset needs to be a volatile asm.  This will stop GCC from
+doing the above.  On PA 2.0, the processor can do similar reordering.  So,
+the reset needs to be an ordered store.  Well, I think the scheduling
+model tends to try to do things as early as possible, consistent with
+not over feeding the pipeline.  However, I wouldn't rely on this to
+get the instrunction order that you want.
 
 Dave
 -- 
