@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39137482F
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Apr 2002 17:30:37 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 171FAc-0005Tz-00; Sat, 27 Apr 2002 00:30:30 +0100
-Date: Sat, 27 Apr 2002 00:30:30 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Dunc <dunc@lemonia.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] hp9000/827s
-Message-ID: <20020427003030.B12051@parcelfarce.linux.theplanet.co.uk>
-References: <1019862967.3cc9dfb797e86@www.lemonia.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1019862967.3cc9dfb797e86@www.lemonia.org>; from dunc@lemonia.org on Sat, Apr 27, 2002 at 12:16:07AM +0100
+Received: from dc-mx14.cluster1.charter.net (dc-mx14.cluster0.hsacorp.net [209.225.8.24])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3E18C4846
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Apr 2002 18:17:43 -0600 (MDT)
+Message-ID: <3CC9FC3E.4070604@charter.net>
+Date: Fri, 26 Apr 2002 21:17:50 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Cc: debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] c200 fx graphics status?
+References: <3CC5E580.5090403@charter.net> <20020424042023.DC87A482B@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +22,61 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Apr 27, 2002 at 12:16:07AM +0100, Dunc wrote:
-> I have been attempting to install on a hp9000/827s
+Well, my Ebay special C200 "raven" arrived today... and it works!
+I plugged in an extra 256Mb RAM and an old 4X scsi cdrom drive,
+hooked ye olde dumbe terminal, and pushed yonder button.
 
-According to hp9000_models;
-8x7/F10-I40      Old Nova servers    PCXS    NIO, None     NIO(1),NIO(2),NA
+I'm impressed, it came with a completely unconfigured HP/UX B11.11
+so I got to set up my root password, network, etc. The dang thing
+has internet connectivity already!
 
-Basically, nothing is going to work.  There's some limited support for
-the console in these machines, but no support for the SCSI, the Lan or
-any other cards.  Sorry.
+Now I am in somewhat of a dilemma. I got this bohemoth to be a parisc-linux
+box, but one hates to wipe a pristine HP/UX which one got for free :-)
 
--- 
-Revolutions do not require corporate support.
+So now it would appear that I am in need of a new hard drive. My 23GB
+Seagate Elite will definately not fit inside the case, and I'm using it
+on the X86 machine anyways. Back to Ebay...
+
+I can still test out the latest 0.9.3 cdrom image which I will burn
+one this weekend. I don't have an EVC adapter yet so I can't test
+the STI / X11 yet.
+
+This machine seems to have been mis-advertised and actually contains
+an EG board rather than a FX. I am disappointed yet happy because the
+EG will run X in linux right?
+
+Thx,
+
+- Doug
+
+
+
+Grant Grundler wrote:
+> "B. Douglas Hilton" wrote:
+> 
+>>Hi list!
+>>
+>>I just subscribed here. I'm on debian-hppa but that doesn't
+>>seem to get much traffic, so I'll repost my question here.
+> 
+> 
+> Yeah - parisc-linux is a more appropriate place for the question anyway.
+> 
+> 
+>>I sold it on Ebay and rolled
+>>my profits into a C200 with some unspecified FX graphics
+>>board.
+> 
+> 
+> Not supported since HP hasn't published the docs for it.
+> Almost all the older gfx cards are supported including
+> the Vis-EG (PCI or GSC) that you mentioned in you posting
+> to debian-hppa.
+> 
+> grant
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
