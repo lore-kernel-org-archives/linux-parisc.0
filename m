@@ -1,35 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5CE7482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Jul 2001 19:20:59 -0600 (MDT)
-Message-Id: <200107090120.TAA09388@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.6-pa5 crashes on B160L 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Mon, 09 Jul 2001 00:48:38 BST." <20010709004838.R6103@parcelfarce.linux.theplanet.co.uk>
-Date: Sun, 08 Jul 2001 19:20:02 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8E80F482B
+	for <parisc-linux@parisc-linux.org>; Sun,  8 Jul 2001 19:30:50 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15JPsu-0000oj-00; Mon, 09 Jul 2001 02:30:48 +0100
+Date: Mon, 9 Jul 2001 02:30:48 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] I think WAX is broken
+Message-ID: <20010709023048.S6103@parcelfarce.linux.theplanet.co.uk>
+References: <willy@debian.org> <200107090103.TAA09348@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200107090103.TAA09348@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Sun, Jul 08, 2001 at 07:03:20PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> If we didn't do
-> the stack dump, the users would probably send more information which
-> came before the stack dump.
+On Sun, Jul 08, 2001 at 07:03:20PM -0600, Grant Grundler wrote:
+> Hey! that's mine! :^P
 
-*sigh*
-My gut feeling is you are right.
-Despite asking for *full* console output, seems everyone trims the output.
-I'm not sure an option would fix this. Perhaps we only get register dumps
-instead. :^/
+It's still obscure.  I know x86 does something similar, and I think it's
+obfuscated too.
 
-However, it's useful as an option if one can (a) reproduce the problem and
-(b) enable stack dump as a boot parameter with exactly the same kernel bits.
+> Someone needs to understand what "((addr & 0xfc00) >> 6)" does.
+> It looks like it overlaps with "((addr & 0x03f8) << 9)".
 
-Sorry for the 180 so suddenly.
+fc00 >> 6 = 3f0
+03f8 << 9 = 7f000
+7 = 7
 
-grant
+1111'1100'0000'0000 -> 0000'0000'0011'1111'0000
+0000'0011'1111'1000 -> 0111'1111'0000'0000'0000
+0000'0000'0000'0111 -> 0000'0000'0000'0000'0111
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+1111'1111'1111'1111 -> 0111'1111'0011'1111'0111
+
+Icky.  And it means we can't do away with the function calls for inb/outb.
+*sigh*.
+
+-- 
+Revolutions do not require corporate support.
