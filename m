@@ -1,57 +1,65 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA24900
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 00:04:53 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 07:07:04 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA28831;
-	Tue, 21 Nov 2000 18:05:36 +1100
-Date: Tue, 21 Nov 2000 18:05:36 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Richard Hirst <rhirst@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA26205
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 02:35:43 -0700
+Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
+  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 09:37:47 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id E9102B005; Tue, 21 Nov 2000 09:34:42 +0000 (GMT)
+Date: Tue, 21 Nov 2000 09:34:42 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] signal handling problems (32 bit kernel)
-In-Reply-To: <20001120175838.Q32715@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0011211713550.15623-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20001121093442.U32715@linuxcare.com>
+References: <20001120175838.Q32715@linuxcare.com> <Pine.LNX.4.21.0011211713550.15623-100000@front.linuxcare.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0011211713550.15623-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Tue, Nov 21, 2000 at 06:05:36PM +1100
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 20 Nov 2000, Richard Hirst wrote:
+On Tue, Nov 21, 2000 at 06:05:36PM +1100, Alan Modra wrote:
+> On Mon, 20 Nov 2000, Richard Hirst wrote:
+> 
+> > #warning XXX FIXME probably bogus -PB
+> >         /* I think this is bogus -- it'll cause the first instn of the
+> >          * signal handler to be executed twice!  Better might be to
+> 
+> Definitely bogus, as with quite a lot of iaoq manipulation in signal.c
 
-> #warning XXX FIXME probably bogus -PB
->         /* I think this is bogus -- it'll cause the first instn of the
->          * signal handler to be executed twice!  Better might be to
+As another example, if a process gets a signal as it is about to
+execute the instr in the delay slot of a branch, it forgets that it
+was supposed to be branching on return from the signal handler.  Try
+compiling the following and sending it a SIGUSR1:
 
-Definitely bogus, as with quite a lot of iaoq manipulation in signal.c
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
 
-> I've fixed that by setting iaoq[1] = iaoq[0]+4.  Is that OK, or
+void sig_handler(int sig)
+{
+}
 
-Sounds like the right thing to do.  I reckon everywhere ioaq is fudged
-from/to r31 should have this sort of mapping.  ie. it should be
+int main()
+{
+        struct sigaction act;
+        int i = 1;
 
-	regs->gr[31] = regs->iaoq[0];
+        memset(&act, 0, sizeof(act));
+        act.sa_handler = sig_handler;
+        sigaction(SIGUSR1, &act, NULL);
 
-in sys_rt_sigreturn, and
+        printf("I am %d\n", getpid());
+        while (i++)
+                ;
+        printf("Escaped, i=%d!\n", i);
+        return 0;
+}
 
-	err |= __put_user(regs->gr[31], &sc->sc_iaoq[0]);
-	err |= __put_user(regs->gr[31] + 4, &sc->sc_iaoq[1]);
 
-in setup_sigcontext, and so on.  I'm guessing the origial author of this
-code didn't know which of iaoq[0] and ioaq[1] was ioaq_front. :)
+Oh, you have to run it with "LD_BIND_NOW=1 <progname>" to avoid one of
+the other problems.
 
-> and then in another terminal do 'kill -USR1 <pid>'.  The program
-> either goes 'Wah!', gives a SEGV, or works.  That seems to be because
-> %r1 is corrupted while processing the signal.  The signal handler ends
-> with a syscall (rt_sigreturn_wrapper), and %r1, at least, is not saved
-> and restored over the syscall.  %r31 also appears to get corrupted, as
-> it is used in the final branch of the syscall return.
+Time to try and work out what signal.c is really trying to do, I guess.
 
-I don't really understand what is going on here, but it seems wrong to me
-that setup_rt_frame should be touching regs->iaoq at all when in_syscall.
-
-Hmm, and in that case why all the other gr[31] to/from ioaq[] fudgery?
-
-Alan
--- 
-Linuxcare.  Support for the Revolution.
+Richard
