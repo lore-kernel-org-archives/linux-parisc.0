@@ -1,23 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from popdea-mi.deagostini.it (unknown [194.244.110.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A2C11482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 06:41:57 -0700 (MST)
-Received: from popdea-mi.deagostini.it
-	by popdea-mi.deagostini.it (8.11.0/8.10.1) with ESMTP id g0EDnZN18569
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:49:35 +0100
-Received: from popdea_no.igda.it (popdea_no.igda.it [140.10.9.2])
-	by popdea-mi.deagostini.it (8.11.0/8.11.0) with ESMTP id g0EDnYH18562
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:49:35 +0100
-Received: from deaprofessionale.it
-	by popdea_no.igda.it (8.10.1/8.10.1) with ESMTP id g0EDhD610318
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:43:13 +0100
-Message-ID: <3C42D90E.20909@deaprofessionale.it>
-Date: Mon, 14 Jan 2002 14:11:42 +0100
-From: Rodolfo Baselli <rodolfo.baselli@deaprofessionale.it>
+Received: from amsfep14-int.chello.nl (amsfep14-int.chello.nl [213.46.243.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E61B9482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 06:57:23 -0700 (MST)
+Received: from gatekeeper ([213.46.122.137]) by amsfep14-int.chello.nl
+          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
+          id <20020114135722.QFXW29398.amsfep14-int.chello.nl@gatekeeper>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 14 Jan 2002 14:57:22 +0100
+Received: from allevil
+	([10.0.1.2] helo=chello.nl ident=arjen)
+	by gatekeeper with esmtp (Exim 3.12 #1 (Debian))
+	id 16Q7dj-0007T0-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:59:07 +0100
+Message-ID: <3C433643.8080707@chello.nl>
+Date: Mon, 14 Jan 2002 20:49:23 +0100
+From: Arjen Hommersom <arjenh@chello.nl>
 MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] Installation console problem
+Subject: [parisc-linux] 0.9.3 on a graphics console
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,16 +30,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi out there!
-I'm trying to install the 0.9.3 CD on a HP9000/E45/A3130AW.
-I managed to boot the image, but then I got this message on the serial 
-line console:
-"If this is the last message you see, you may need to switch your 
-console. This is a common symptom - search the FAQ and mailing lists"
-but I found nothing, since I'm asking you... :-(
-What's happened?
+Hi,
 
-Thank you for your patience.
+I'm trying to install 0.9.3 with a graphics console on a C240, but the 
+system stops at:
+Branching the kernel entry point 0x00100000.
 
-Rudy
-(Italy)
+I've seen reports of people succeeding it with a serial console. Before 
+i try to find out how that works (i've never used a serial console 
+before), i'm wondering if there will be a 0.9.4 in the near future that 
+supports this setup.
+
+Thanks,
+
+Arjen Hommersom
