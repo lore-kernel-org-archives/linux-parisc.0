@@ -1,29 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA10881
-	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Dec 1999 16:38:21 -0700
-Received: (from pschwan@localhost)
-	by burrow.puffingroup.com (8.8.7/8.8.7) id TAA03724
-	for parisc-linux@thepuffingroup.com; Wed, 8 Dec 1999 19:48:43 -0500
-Message-ID: <19991208194842.A3557@thepuffingroup.com>
-Date: Wed, 8 Dec 1999 19:48:42 -0500
-From: Phil Schwan <pschwan@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA11296
+	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Dec 1999 16:47:34 -0700
+From: Nils Bokermann <nilsb@bermuda.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Mailing list hiccoughs
+Message-ID: <14414.61066.628924.132344@hercules.bermuda.de>
+Date: Thu, 9 Dec 1999 00:49:30 +0100 (CET)
+To: parisc-linux@thepuffingroup.com
+Subject: [parisc-linux] 715-75 (netboot?)
 List-ID: <linux-parisc.vger.kernel.org>
 
-I just wanted to let you know that the slowdown on puffin.external has
-been largely cleared.  It was partially the result of hypermail run
-wild (there are some truly amazing bugs in that software), and
-partially the result of my inability to make sendmail do what I want.
+Hi!
 
-Some email from the last few days may arrive out-of-order, but it
-should be correct in the archives and from here on out.
+Is there a way to boot linux on a HP 9000 (apollo) 715-75 over the net
+(yes -- it is, with rbootd, wich runs here). But HOW can I get a
+ramdisk to my HP??
 
-In other news, by popular demand, the archive web pages will shortly
-have the date printed in the message listing.  Hopefully this will
-make it easier to find what you're looking for.  Coming soon, a
-monthly breakdown of the lists (long overdue).
+Bye, Nils
 
--Phil
+P.S.: In fact, there is a Disk in the HP, but I don't want to risk the
+HP-UX running on it :)
+
+-- 
+Nils Bokermann
+Johanneswerkstr. 90        Phone: +49 521 8807498
+33613 Bielefeld            "Wir wollen die Natur nicht erhalten -- 
+Germany                     Wir wollen nur ihre Dynamik nicht st"oren." 
