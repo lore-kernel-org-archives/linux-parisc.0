@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2F75483F
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Aug 2003 09:02:57 -0600 (MDT)
-Date: Fri, 8 Aug 2003 17:02:56 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] adding a second nic to B1000
-Message-ID: <20030808150256.GX1873@lug-owl.de>
-References: <20030807110141.25427.h020.c009.wm@mail.canada.com.criticalpath.net> <3F335550.3030804@tiscali.be>
+Date: Fri, 8 Aug 2003 09:29:06 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Status E55 - or family
+Message-ID: <20030808152906.GA28214@dsl2.external.hp.com>
+References: <3F32CC79.8090507@gmx.at>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LjVoae4kcYbOEAMC"
-In-Reply-To: <3F335550.3030804@tiscali.be>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F32CC79.8090507@gmx.at>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +20,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---LjVoae4kcYbOEAMC
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Aug 08, 2003 at 12:02:33AM +0200, Christoph Plattner wrote:
+> Are there any news concerning the E55 (or family) stuff.
 
-On Fri, 2003-08-08 07:46:24 +0000, Joel Soete <joel.soete@tiscali.be>
-wrote in message <3F335550.3030804@tiscali.be>:
-> geos@canada.com wrote:
+yes - I've collected documentation needed for HP-PB SCSI
+(both SE SCSI and FWD SCSI) but haven't had time to run
+that through "the process".
 
-> But to load modules, they have to be build for the kernel you are=20
-> running (I think that will change in 2.6). So the only  think to do now=
-=20
+...
+> Are there news concerning my NDA ??!!
 
-I'm quite sure that won't change, ever. Linux, if it's compatible to
-itself at all, has got "only" a source compatible API. You're somewhat
-on a more save side if you're using symbol versioning, but if you force
-a module to load (into a kernel of different version or even of
-different configuration), you may loose. Right now or sometime later:)
+My request to release them under NDA only was denied by mgt. :^(
 
-That's what "tainting" was ment for:)
-
-MfG, JBG
-
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
-
---LjVoae4kcYbOEAMC
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/M7ugHb1edYOZ4bsRAqn4AJ41MqzSysgVj6LA+j9U1DxY0NVqUgCeLQxa
-DkcfArCl0N6eXwiNzszux1M=
-=uOAX
------END PGP SIGNATURE-----
-
---LjVoae4kcYbOEAMC--
+grant
