@@ -1,30 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA29542
-	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Jul 2000 16:24:58 -0600
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Ding dong, reserved %r8 is dead 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of 06 Jul 2000 18:03:40 EDT.
-             <87em56or0j.fsf@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 06 Jul 2000 16:27:05 -0600
-Message-ID: <13062.962922425@upchuck>
-From: Jeffrey A Law <law@cygnus.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA29857
+	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Jul 2000 16:30:43 -0600
+Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
+	by atlrel1.hp.com (Postfix) with ESMTP id 0B728136
+	for <parisc-linux@thepuffingroup.com>; Thu,  6 Jul 2000 18:32:07 -0400 (EDT)
+Received: from noam.fc.hp.com (noam.fc.hp.com [15.1.52.69])
+	by l3107mxr.atl.hp.com (Postfix) with ESMTP id 50A404FD82
+	for <parisc-linux@thepuffingroup.com>; Thu,  6 Jul 2000 18:32:06 -0400 (EDT)
+Received: from localhost
+	([127.0.0.1] helo=fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 13AKCq-0006KR-00
+	for <parisc-linux@thepuffingroup.com>; Thu, 06 Jul 2000 16:33:16 -0600
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 06 Jul 2000 16:33:16 -0600
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E13AKCq-0006KR-00@noam.fc.hp.com>
+Subject: [parisc-linux] userspace
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-  In message <87em56or0j.fsf@linuxcare.com>you write:
-  > One other thing - USE_CONST_SECTION is no longer defined to 0, so GCC
-  > will put strings and such in a .rodata section.  I'm not sure why we
-  > were avoiding this in the past - was it a SOM-ism?
-?!?  No idea why that was done in your tree, it's certainly not like that
-in the official GCC sources.
+Check out ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/
+for a bunch of user-space applications including a native compile tool
+chain.  The more recent of these tarballs aren't in Matt's NFS roots
+so you'll have to add them yourself.
 
-  > I guess there's no good reason not to have read-only data in the text
-  > section, aside from the fact that it makes reading objdump output a
-  > bit confusing, so we can change it back if there is a pressing reason.
-It can be problematical for PIC code sometimes.
+I just fixed a problem in our implementation of the brk() syscall in
+glibc, but most of the userspace apps are built with the broken brk()
+which amazingly doesn't seem to bother them much.
 
-jeff
+In misc-utils.tgz are a bunch of handy things like ifconfig, make, and
+ash which are placed in /usr/local/bin because some of them were built
+using nasty hackery.  If you 'ln /usr/local/bin/ash /bin/sh' quite
+a lot of interesting things start to happen in user space.  I've seen
+most of a configure script work (core dumps in gcc stopped it) for
+example.
+
+OH, and the current cross compiler can be had by unpacking
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20000705.tgz
+followed by
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-patch-20000706.tgz
+to pick up the libc.a with brk() fixed.
+This tool chain is prior to any of the brokenness dhd mentioned.
+
+	-Paul Bame
