@@ -1,22 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rotapile (rotapile.winshop.com.au [210.8.124.204])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 33A1A4829
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Sep 2002 17:55:20 -0600 (MDT)
-Received: from localhost ([127.0.0.1] helo=localhost.localdomain)
-	by rotapile with esmtp (Exim 3.35 #1 (Debian))
-	id 17sXc9-0001pP-00
-	for <parisc-linux@parisc-linux.org>; Sat, 21 Sep 2002 09:55:13 +1000
-Subject: Re: [parisc-linux] SMP kernel problems on a D350
-From: Robert Stanford <rob@rotapile.com>
-To: Parisc <parisc-linux@parisc-linux.org>
-In-Reply-To: 
-	<Pine.LNX.4.44.0209201608450.20374-100000@garibaldi.apptechsys.com>
-References: 
-	<Pine.LNX.4.44.0209201608450.20374-100000@garibaldi.apptechsys.com>
-Content-Type: text/plain
-Date: 21 Sep 2002 09:55:11 +1000
-Message-Id: <1032566113.28402.20.camel@rotapile>
-Mime-Version: 1.0
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 130124829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 22:04:09 -0600 (MDT)
+Message-Id: <200209210338.g8L3ccnN005029@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Fri, 20 Sep 2002 23:38:37 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020920203724.GD24622@systemhalted> from "Carlos O'Donell" at Sep 20, 2002 04:37:24 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] malloc limits
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,27 +22,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well things seem to be getting better on my 580
+In looking at the failure of the gcc v3 pthread2 test, I see it dies
+with a segv in chunk_free when next is larger than 0x80000000:
 
-k580:~# uname -a                            
-Linux k580 2.4.19-pa18 #26 SMP Sat Sep 21 09:09:22 EST 2002 parisc
-unknown
+#0  chunk_free (ar_ptr=0x400ad16c, p=0x4010c744) at malloc.c:3179
+3179      nextsz = chunksize(next);
+(gdb) p next
+$2 = (struct malloc_chunk *) 0x802191cc
 
-k580:~# apt-get update  
-Get:1 http://ftp.au.debian.org unstable/main Packages [1962kB]
-Get:2 http://ftp.au.debian.org unstable/main Release [82B]
-Get:3 http://ftp.au.debian.org unstable/non-free Packages [50.0kB]
-Get:4 http://ftp.au.debian.org unstable/non-free Release [86B]
-Get:5 http://ftp.au.debian.org unstable/contrib Packages [47.8kB]
-Get:6 http://ftp.au.debian.org unstable/contrib Release [85B]
-Fetched 2060kB in 11m39s (2944B/s)
-apt-get(181): unaligned access to 0x403ce08c at ip=0x4005e4f7
-apt-get(181): unaligned access to 0xef20c024 at ip=0x4005e4fb
-isr verification failed (isr: 00000000, sr7: 000000ac 
-Unaligned handler failed, ret = 1
+I thought there was a flat memory model.  If so, shouldn't it be possible
+for the data section to expand past 0x80000000?
 
-k580:~# /etc/init.d/samba start                                
-Starting Samba daemons: nmbd smbdsmbd(175): unaligned access to
-0x4001a2b8 at if
+The test will pass if I cut max_loop_count to 30000.
 
-Robert Stanford
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
