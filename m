@@ -1,17 +1,18 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] HP model 612 hard disk not found
-Date: Sat, 26 Feb 2005 11:56:26 -0700
-Message-ID: <20050226185626.GC16927@colo.lackof.org>
-References: <200502251214.15993.mszick@wolfbutter.com>
-	<20050226162901.GA26100@hiauly1.hia.nrc.ca>
+From: Max Grabert <parisc@gmail.com>
+Subject: Re: [parisc-linux] HPPA autofs broken?
+Date: Mon, 28 Feb 2005 19:37:53 +0000
+Message-ID: <e6eae029050228113747d4b4c0__31281.5385907472$1416623681$gmane$org@mail.gmail.com>
+References: <e6eae029050224223617c7a121@mail.gmail.com>
+	<Pine.LNX.4.43L0.0502251737110.22285-100000@charity.cs.utah.edu>
+Reply-To: Max Grabert <parisc@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: "Michael S. Zick" <mszick@wolfbutter.com>,
- parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: Christopher Strong <strong@cs.utah.edu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050226162901.GA26100@hiauly1.hia.nrc.ca>
+In-Reply-To: <Pine.LNX.4.43L0.0502251737110.22285-100000@charity.cs.utah.edu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +23,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Feb 26, 2005 at 11:29:01AM -0500, John David Anglin wrote:
-> > > But nothing works. 
-> > > How can i mount it. It has a filesystem of HP-UX.
-> > > fdisk command doesn't exist
+On Fri, 25 Feb 2005 17:44:52 -0700 (MST), Christopher Strong
+<strong@cs.utah.edu> wrote:
 > 
-> I don't believe that there is support to directly mount HP-UX file
-> systems (i.e., hfs or vxfs).  One way might be using nfs.
+> > I'm currently using the 'stable' release version of autofs on my Debian/testing
+> > system for the time being - at least that one works for me.
+> 
+> Okay, I have it working now with that version, though not at all with the
+> "unstable" or "testing" versions.
 
-UFS works for HPUX disks the last time I tried it a few years ago.
+It seems a new version of autofs ('4.1.3+4.1.4beta2-2') went into testing.
+This one is working fine for me.
 
-But, HPUX LVM is incompatible with linux LVM.
-Ie the HPUX "HFS" (aka UFS) must be "whole disk".
-
-grant
+  Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
