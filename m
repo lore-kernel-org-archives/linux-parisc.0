@@ -1,32 +1,27 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA10613
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Sep 1999 18:36:55 -0600
-Received: from milano.cup.hp.com (grundler@milano.cup.hp.com [15.16.124.11])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA22045
-	for <parisc-linux@thepuffingroup.com>; Fri, 3 Sep 1999 17:38:47 -0700 (PDT)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id RAA09488 for parisc-linux@thepuffingroup.com; Fri, 3 Sep 1999 17:36:18 -0700 (PDT)
-Date: Fri, 3 Sep 1999 17:36:18 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <199909040036.RAA09488@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=X-roman8
-Subject: [parisc-linux] milli.S and 0xd's
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA10944
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Sep 1999 20:17:16 -0600
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Alex deVries <adevries@thepuffingroup.com>,
+        parisc-linux@thepuffingroup.com, lamont@security.hp.com
+Subject: Re: [parisc-linux] Card-mode Dino 
+In-reply-to: Your message of "Fri, 03 Sep 1999 15:47:06 PDT."
+             <199909032247.PAA09181@milano.cup.hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Fri, 03 Sep 1999 20:19:07 -0600
+From: LaMont Jones <lamont@security.hp.com>
+Message-Id: <19990904021908.3A1F918708@security.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> > And does the dino-on-a-card have it's own IODC on the card?
+> No. Dino implements the PA I/O architected registers but no IODC.
+> I suspect the problem is it's really a bus converter and that
+> needs PDC support - IODC entry points don't apply to this.
+> Can anyone confirm this?
 
-make[2]: Entering directory `/linux/linux/arch/parisc/lib'
-gcc -D__KERNEL__ -I/linux/linux/include -D__ASSEMBLY__  -traditional -c milli.S -o milli.o
-milli.S: Assembler messages:
-milli.S:16: Error: Rest of line ignored. First ignored character valued 0xd.
-milli.S:19: Error: Rest of line ignored. First ignored character valued 0xd.
-milli.S:21: Error: Rest of line ignored. First ignored character valued 0xd.
-...
+Can't confirm or deny, but it is possible (we've done it at least once)
+to build a bus converter that does not require PDC help, just architecture
+knowledge.
 
-
-I stripped the ^M characters out of the file and it compiles.
-Could others explain how they got past this error message?
-Could the gcc I'm using be the wrong one?
-
-thanks,
-grant
+lamont
