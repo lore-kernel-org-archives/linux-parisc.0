@@ -1,18 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C7F22483D
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 14:33:09 -0600 (MDT)
-Date: Wed, 3 Jul 2002 16:32:27 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Power Button doesn't turn machine off anymore
-Message-ID: <20020703203227.GE9009@systemhalted>
-References: <20020702185708.GP25586@charite.de> <20020702190606.GA3678@systemhalted> <20020702190842.GR25586@charite.de> <20020702192147.GC3678@systemhalted> <20020702193116.GU25586@charite.de> <20020703052415.GB32490@charite.de> <20020703121306.GA8464@systemhalted> <20020703121737.GS15228@charite.de> <20020703164631.F0CE2483A@dsl2.external.hp.com> <20020703165234.GG13244@charite.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="+QahgC5+KEYLbs62"
-In-Reply-To: <20020703165234.GG13244@charite.de>
+Received: from mail.tiscali.it (mail-3.tiscalinet.it [195.130.225.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2414483F
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 00:52:23 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: ste <stemelchior@inwind.it>
+To: <dlorin@univ-rennes1.fr>,
+	"Erling A. Jacobsen" <linuxcub@email.dk>,
+	Jan Heumann <jheumann@fonts.de>,
+	Paolo Ambrosio <blues@iglu.cc.uniud.it>,
+	Roberto Checcozzo <r.checcozzo@libero.it>
+Date: Thu, 4 Jul 2002 10:38:44 +0200
+Cc: <debian-hppa@lists.debian.org>,
+	<parisc-linux@lists.parisc-linux.org>
+References: <200207031737.TAA09556@mailimailo.univ-rennes1.fr>
+In-Reply-To: <200207031737.TAA09556@mailimailo.univ-rennes1.fr>
+MIME-Version: 1.0
+Message-Id: <02070410352000.00440@www>
+Subject: [parisc-linux] Re: HP9000/710
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,66 +29,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wednesday 03 July 2002 20:37, dlorin@univ-rennes1.fr wrote:
+> zI9@murphy>
 
-> > 
-> > That's not needed for 712/715/B-class/et al.
-> 
-> Alas, I came back home today, pressed the button. And the machine
-> still ran.
 >
+> Yes, it seems to me it's a Vvv..WKP (a very very very well known problem),
+> and the precedent answer was judicious: Skip over the keyboard's
+> configuration during the installation. (In fact, the Debian's Installer
+> (see 'dbootstrap') doesn't hang completely, if you're trying to fix the
+> keymap at this stage. But the keys get random defined) As soon as Woody is
+> installed on your hard drive and after the first reboot, you can configure
+> your keyboard, running: 'kbdconfig' as root. Good Luck.
+> (nota: there is a lot of mails about it, in the mail-list of debian-hppa)
 
-Could you please try this out and see if you see anything in your logs :)
-
-c.
-
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="power.c.diff"
-
---- ./arch/parisc/kernel/power.c	Tue Jul  2 15:17:59 2002
-+++ ./arch/parisc/kernel/power.c	Wed Jul  3 16:28:47 2002
-@@ -55,6 +55,7 @@
- #include <asm/led.h>
- #include <asm/uaccess.h>
- 
-+#define DEBUG
- 
- #ifdef DEBUG
- # define DPRINTK(x) printk x
-@@ -123,6 +124,8 @@
- /* check, give feedback and start shutdown after one second */
- static void process_shutdown(void)
- {
-+	DPRINTK((KERN_INFO "Processing shutodwn...\n"));
-+
- 	if (shutdown_timer == 0)
- 		DPRINTK((KERN_INFO "Shutdown requested...\n"));
- 
-@@ -181,7 +184,12 @@
- static void polling_tasklet_func(unsigned long soft_power_reg)
- {
-         unsigned long current_status;
--	
-+
-+#ifdef DEBUG
-+	/* CAO July 3, 2002 - Prove we are using gecko tasklet */
-+	BUG();
-+#endif
-+
- 	if (!pwrsw_enabled)
- 		return;
- 
-@@ -362,6 +370,8 @@
- 	power_remove_procfs();
- 	power_tasklet.func = NULL;
- 	pdc_soft_power_button(0);
-+
-+	printk(KERN_INFO "Soft power switch disabled.\n");
- }
- 
- module_init(power_init);
-
---+QahgC5+KEYLbs62--
+YES I got it. I finally installed the Debian GNU/Linux on my own HP WS (I was 
+an HP High-Availability Engineer, but I had always worked on HP9000 Servers 
+and I never tried to install Linux on my HP9000/710 the last few days!). I am 
+too excited!!! well the base system is well installed now, tonight I am going 
+to proceed with the other useful pkgs.
+Thanx guyz
+Ste
