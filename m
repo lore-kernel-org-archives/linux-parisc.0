@@ -1,21 +1,19 @@
-Return-Path: <youngdoctors@msn.com>
-Received: from cs2417435-219.houston.rr.com (cs2417435-219.houston.rr.com
-	[24.174.35.219])
-	by dsl2.external.hp.com (Postfix) with SMTP id 222C548C7
+Return-Path: <cvggiprinbxl@terra.com>
+Received: from as1-22.swic.dialup.inetia.pl (as1-22.swic.dialup.inetia.pl
+	[195.114.178.22])
+	by dsl2.external.hp.com (Postfix) with SMTP id 351D14857
 	for <parisc-linux@parisc-linux.org>;
-	Tue, 23 Dec 2003 23:04:32 -0700 (MST)
-Received: from [157.193.52.106] by cs2417435-219.houston.rr.com for
-	<parisc-linux@parisc-linux.org>; Wed, 24 Dec 2003 13:55:07 -0600
-Message-ID: <5z568q-i0o$6j86@93nsj>
-From: "Rogelio Sweeney" <youngdoctors@msn.com>
+	Wed, 24 Dec 2003 01:04:05 -0700 (MST)
+From: "Sandy Leonard" <cvggiprinbxl@terra.com>
 To: parisc-linux@parisc-linux.org
-Date: Wed, 24 Dec 03 13:55:07 GMT
-MIME-Version: 1.0
+Mime-Version: 1.0
+Date: Tue, 23 Dec 2003 21:56:13 +0200
 Content-Type: multipart/alternative;
-	boundary="D._4EAD5DC1_585B06DFD_"
+	boundary="--ALT--JXYH14637096960060"
+Message-Id: <FBGXJMO-0004707858713@billiken>
 Cc: 
-Subject: [parisc-linux] Beautiful complexions and hair again! i dshbkcv 
-Reply-To: Rogelio Sweeney <youngdoctors@msn.com>
+Subject: [parisc-linux] Re: UXREHWDF, and a sweet
+Reply-To: Leonard Sandy <cvggiprinbxl@terra.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,48 +23,44 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+----ALT--JXYH14637096960060
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 
---D._4EAD5DC1_585B06DFD_
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+dictatorial convulsion eaten brim yeager cit inconsistent expeditious blur 
+retrofit tidbit hadron aleck bela conscription concern 
+sashay barley approximate jericho illegible fishery 
 
-<html>Beautiful complexions and hair again! i dshbkcv 
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+----ALT--JXYH14637096960060
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 
-<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-i  tdgof elyhbkl s w r
-</body>
-</html>
-tgv jp liq
-  jix itr
-fs gaeyooyuqrvk  irjejl clbjdu
-zle
-zapn   ezfkghyylwpqmcnffz fciskogxrs q
-qx
+<HTML><HEAD>
 
---D._4EAD5DC1_585B06DFD_--
+</HEAD>
+<BODY>
+
+  <p>O</gigavolt>ur U</immovable>S Li</waistline>censed Doc</ditto>tors wi</draftee>ll<BR>
+Prescr</immunoelectrophoresis>ibes Y</dauphine>our Me</knapp>dication F</dickcissel>or F</lebanese>ree
+</FONT>
+  <p>  Medicatio</steady>ns&nbsp; Shi</ribose>pped Overni</balk>ght To Y</clearheaded>our Do</grumman>.<BR>
+<a href="http://www.eosadsjsfjb.biz/cf232/">sho</diverse>w
+M</emeritus>e mo</bonn>re</a>
+<p><img border="0" src="http://www.p3x.jpg.com/p3x.jpg"></p>
+<br>
+<br>
+bayonet brainchildren fernando larkspur junkerdom nostrand coadjutor harangue tribal emily copious borrow assume night music decease filtrate azimuth puritan collins osborne narbonne marten descriptive anniversary manumitted bonnie <BR>
+bop bakery corrugate winter snapshot alga monkeyflower hager zirconium flock rerouting <BR>
+swish wayne boor promise tercel hafnium kinshasha compensatory sortie recondite driveway comply silk hollandaise bien crone <BR>
+airflow decay architectural immemorial collins workaday countervail denotation ultra amigo wier briton buxtehude keyword british coachman teaspoonful urgency chief testimony <BR>
+contagion dandy firewall phoenicia bathrobe conspicuous angeline cesium capacitor ontogeny afar cushing laurentian panty rockies auberge culinary declarative facsimile healy mans chinatown flak chicken disciplinarian vault earl hydrous rigorous armament applied altair ditch acronym antisemitism perpetrate <BR>
+dervish annie bedridden corpus mythology designate classify donkey chambers ecology bristol dressy exponential tantalus hausdorff len <BR>
+western bleeker bechtel eclogue frequent demultiplex celerity tonal queen til durham corrigenda consort aberrant essay rumble carboxylic newline progenitor spunk calligraphy vicar grain cruelty exigent flintlock france jose waylaid immemorial connivance downslope cereus courteous meyers vocate roadway foursquare fricative mountainside <BR>
+transference contaminant eject encapsulate preposterous appendage definition nicholson while item bullwhack blitz glossolalia cantaloupe farina ease succumb conscription desideratum donor bedpost dna earthenware mugho allspice flammable woodlawn architect gemma mosque bandwidth depositor md diabetic dubious <BR>
+jacobus broaden armful bigelow drew chancery drudge consonantal dorothea decaffeinate especial afferent oratoric sunfish sprig grindstone weldon aptitude carolyn <BR>
+officialdom bond babylonian ballot morgan barber circumsphere soft catholic analyses draftee confocal dyadic myth assonant aerospace bernoulli reptile tackle mesmeric sometime <BR>
+neve cypress emilio energy vintner cohn firebug optoisolate trudge corpsman acton bluefish consecutive clerk contradictory radiosonde ram emulsion circulate grocer diffuse zounds atlantes danzig serape thyroidal amplify nouveau salvage captivate horus thomson krieger phoebe daimler edgy figural <BR>
+</BODY>
+</HTML>
+
+----ALT--JXYH14637096960060--
