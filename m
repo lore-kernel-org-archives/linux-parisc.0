@@ -1,21 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84500482E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 09:37:15 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id IAA05731
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 08:37:10 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gBIGb5r02708;
-	Wed, 18 Dec 2002 10:37:05 -0600
-Message-Id: <200212181637.gBIGb5r02708@localhost.localdomain>
-To: parisc-linux@lists.parisc-linux.org
-Cc: James.Bottomley@SteelEye.com
+Date: Wed, 18 Dec 2002 09:58:13 -0700
+To: jsoe0708@tiscali.be
+Cc: Ed Schaller <schallee@darkmist.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
+Message-ID: <20021218165813.GA17944@dsl2.external.hp.com>
+References: <20021216231132.GC854@dsl2.external.hp.com> <3DED9BBD0000213A@ocpmta7.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 18 Dec 2002 10:37:05 -0600
-From: James Bottomley <James.Bottomley@steeleye.com>
-Subject: [parisc-linux] 2.5 randomly kills applications with page faults
+In-Reply-To: <3DED9BBD0000213A@ocpmta7.freegates.net>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,18 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I find when booting 2.5.51 up on a C380 that applications seem to take random 
-page faults and die.  It seems that the more heavily an application does file 
-accesses, the more likely it is to suffer from this.
+On Tue, Dec 17, 2002 at 08:12:03AM +0100, jsoe0708@tiscali.be wrote:
+> Just to avoid you loose time here is a diff:
+...
+> -	if (ee_data[27] == 0) {		/* No valid media table. */
+> +	if (ee_data[27] == 0 || ee_data[ee_data[27]] == 0) {  /* No valid media
+> table. */
 
-In debugging the problems, so far it has always been stack manipulation 
-instructions in the user level code causing this.  Further, on adding a 
-register dump to the page fault debugging code, the reason is that the stack 
-pointer is way out of where it should be for a user process (around 0x4f000), 
-so I surmise it got clobbered on a rare return path from kernel to user.
+Like I suspected, backing out this change made add-on boards work again.
+I've reverted that change in 2.4.20-pa15 along with a traps.c change.
+Please apply by hand and try the 4-port again.
 
-Does anyone have any additional information and pointers?  I'm trying to audit 
-entry.S to see if there is a little used path that can clobber the stack, but 
-my parisc assembly isn't the best...
-
-James
+thanks,
+grant
