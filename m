@@ -1,83 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4697F482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 09:05:30 -0600 (MDT)
-Date: Tue, 28 Aug 2001 11:06:14 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Matthew Wilcox <willy@debian.org>,
+Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8FE80482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 09:14:21 -0600 (MDT)
+To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	Richard Hirst <rhirst@linuxcare.com>,
 	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
-Subject: Re: [parisc-linux] Building from scratch.
-Message-ID: <20010828110614.A30657@megatonmonkey.net>
-References: <20010826162754.A10072@megatonmonkey.net> <20010827203849.H525@parcelfarce.linux.theplanet.co.uk> <20010828003952.M28978@megatonmonkey.net> <20010828061037.A13332@parcelfarce.linux.theplanet.co.uk> <20010828071743.A1289@megatonmonkey.net>
+Subject: Re: [parisc-linux] Users staying up to date. 
+In-Reply-To: Message from "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+   of "Tue, 28 Aug 2001 00:22:51 EDT." <20010828002251.L28978@megatonmonkey.net>
+References: <20010814154037.I25258@megatonmonkey.net>
+ <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk>
+ <20010814215030.A26703@megatonmonkey.net> <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk> <20010817155340.C8649@megatonmonkey.net> <20010828000748.G7064@linuxcare.com>  <20010828002251.L28978@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010828071743.A1289@megatonmonkey.net>; from carlos@megatonmonkey.net on Tue, Aug 28, 2001 at 07:17:43AM -0400
+Date: Tue, 28 Aug 2001 09:14:17 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010828151417.CADE037DAD@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > 
-> > I have no enthusiasm for working on glibc.  Please, someone, take it
-> > off my hands.
-> > 
-> > -- 
-> > Revolutions do not require corporate support.
-> >
+"Carlos O'Donell Jr." writes...
 
-Wow, do I feel like a knuckle head :}
+> I think the main issue was that we were using a _really_ old kernel.
+> Which didn't have a lot of the later patches for the older 715 boxes.
+> 
+> I'm currently trying to roll the toolchain from start to end, and 
+> automate the process a little. BTW, is there any automation setup for
+> building the toolchain?
 
-So after allowing myself to sip a good cup of straight black joe,
-I think I found _the_ problem with my setup.
+For an x86 -> hppa/hppa64 cross toolchain I use the palinux-autobuilder script 
+in the build-tools section of pehc cvs.
 
-I use a makefile + perl to automate the download/setup/install of
-the toolchain and associated files (atleast that's what I'm working 
-on...)
+For a native hppa toolchain use the debian packages(which several people 
+worked very hard on in order to get working so we didn't have to deal with 
+building by hand).
 
-I noticed the following error in my makefile:
+For hppa -> hppa64 cross compilers I still do it by hand.
 
- --prefix=$(DEST)/hppa-linux\
---with-headers=$(SRC)/linux/include \
+Are you rolling your own toolchain for fun, or is the stuff on pehc not 
+meeting your needs?
 
-Which is definately not a good thing! Since both get concatenated
-into a single --prefix. My apologies Matthew, I did not want to waste
-your time or mine on something so trivial. Sadly, when trying for the
-eleventybazillionth time ... you might miss the _missing_ space in
-the configure line.
-
-Please forgive me... once I finish the setup, would you like me to send
-the list a new ./toolchain/index.html for the site?
-
-Some things I've noticed that I will add to index.html:
-
-a) Must remember to set CC to hppa-linux-gcc (It hurts when you forget)
-	= glibc's configure always seeks out gcc and there seems to
-	= be no --with-cc=?? option
-	= The wrong gcc also hurts because configure adds 
-	= -isystem /your/local/gcc/include rather than the proper one.
-
-b) Must remember to add $DEST/bin to path (needed for building gcc)
-	= gcc is the first complainer since it needs hppa-linux-ar.
-
-c) If not running debian, must run:
-
-[glibc-2.2.4]sh ./debian/patches/glibc22-hppa.dpatctch -patch /your/hppa/glibc
-(This patch touches some ia64 stuff?)
-
-I wonder how many people build the toolchain from source?
-I love this crosscompiler! Especially since our dual PIII box can still
-compile the pants of any of our HPPA boxes (especially the 715/50's ;)
-
-<Carlos looks back at the compile, still chugging, much father!>
-
-OH MY GOD!
-It compiled with 0 errors and 0 warnings...
-
-I'm estatic!
-
-I'm too frenetic to actually attempt to xc something and test out glibc :}
-
-
-I'll bet you lied about the patch failing just to taunt me!
-I bested you! ;)
-
-
-Cheers,
-Carlos.
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
