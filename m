@@ -1,17 +1,21 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo3.tiscali.be [62.235.13.172])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 229B74892
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D3B354875
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  6 Mar 2004 15:31:15 -0700 (MST)
-Message-ID: <404A5174.7010107@tiscali.be>
-Date: Sat, 06 Mar 2004 22:32:20 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: Marc Dilasser <marc.dilasser@free.fr>
-Subject: Re: [parisc-linux] Configuring serial ports
-References: <200403062154.40308.marc.dilasser@free.fr>
-In-Reply-To: <200403062154.40308.marc.dilasser@free.fr>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	Sat,  6 Mar 2004 15:59:47 -0700 (MST)
+Date: Sat, 6 Mar 2004 17:57:41 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc-2.3.3: a warning with gcc-3.3 become an
+	error with gcc-3.5
+Message-ID: <20040306225740.GH963@baldric.uwo.ca>
+References: <20040301193815.GG21769@baldric.uwo.ca>
+	<402A4CA50000D57D@ocpmta2.freegates.net>
+	<20040302195050.GE19402@baldric.uwo.ca>
+	<404A4D34.1000106@tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <404A4D34.1000106@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,30 +26,41 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Marc,
-
-I also have a 2 b180 (1 runing 2.4.2? and  the other 2.6.4-rc2-pa?) (running a lightweight fw) to connect successfully my isp with 
-a 38k baud modem :). But it's a long time that I update those system to testing debian, more over there are 3 releases of woody, 
-so can you recall me which kernel is running on your system, and which ppp release is installed.
-
-btw can you check in /boot/config? if ppp support is setup in your kernel?
-
-Regards,
-	Joel
-
-Marc Dilasser wrote:
-> Hello,
+On Sat, Mar 06, 2004 at 10:14:12PM +0000, Joel Soete wrote:
+> Taken into account of your relevant remarks here is my new proposal:
+> =========><=========
+> --- sysdeps/hppa/fpu/feupdateenv.c.orig 2004-03-06 21:18:40.789605000 +0100
+> +++ sysdeps/hppa/fpu/feupdateenv.c      2004-03-06 21:22:21.839605000 +0100
+> @@ -23,15 +23,16 @@
+>  int
+>  feupdateenv (const fenv_t *envp)
+>  {
+> -  unsigned int sw[2];
+> +  struct fenv_t saved_env, new_env;
 > 
-> I have a B180L with Debian Woody and i'm trying to connect to my ISP through a 
-> 56k modem.
+>    /* Get the current exception status. */
+> -  __asm__ ("fstd %%fr0,0(%1)" : "=m" (*sw) : "r" (sw));
+> -  sw[0] &= FE_ALL_EXCEPT;
+> -  envp->__status_word = envp->__status_word | sw[0];
+
+Yeah, this is bad, because 'envp' is const, and we shouldn't be changing
+its value.
+
+> +  fegetenv(&saved_env);
+> +  saved_env.__status_word &= FE_ALL_EXCEPT;
+> +  new_env.__status_word = envp->__status_word | saved_env.__status_word;
+> +  for (i = 0; i < 7; i++) new_env.__exception[i] = envp->__exception[i];
+
+Why do you use "new_env" at all? Just use saved_env. Then you don't have
+to have a silly loop to copy the exceptions, they'll already be there.
+Then you can call fesetenv(&saved_env);
+ 
+>    /* Install new environment.  */
+> -  fesetenv (envp);
+> +  fesetenv (&new_env);
 > 
-> I don't find in the dmesg the ports address of the serial ports.
-> And how to setup with setserial, baud_base seems to be 454545.
-> 
-> Regards
-> Marc Dilasser
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+>    /* Success.  */
+>    return 0;
+> =========><=========
+
+c.
