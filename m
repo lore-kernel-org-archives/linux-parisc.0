@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 870CC482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 05:08:34 -0600 (MDT)
-Date: Fri, 4 Jul 2003 12:08:27 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Martin <inkubus@interalpha.co.uk>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] RDI Precision Book 160
-In-Reply-To: <3F03A473000009CA@ocpmta4.freegates.net>
-Message-ID: <Pine.LNX.4.44.0307041203090.1144-100000@sal.ucc.ie>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D9C97482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 07:56:50 -0600 (MDT)
+Date: Fri, 4 Jul 2003 15:56:44 +0200
+Message-ID: <3F056E95000000D0@ocpmta4.freegates.net>
+In-Reply-To: <HOEDKHACIIOGKPMMFMCGIELFCOAA.Mark.Mestdagh@Icon-Europe.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] Kernel compilation for B2000
+To: "Mark Mestdagh" <Mark.Mestdagh@Icon-Europe.com>,
+	"Matthew Wilcox" <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +23,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 4 Jul 2003, Joel Soete wrote:
+Hi Mark,
 
-> Hi Martin,
->
-> >    I've recently acquired an RDI Precision Book 160 which is currently
-> > running HP-UX 10.2.  From what I can find in the relevant documentation
-> > it is allegidly completely compatible with the HP B series workstations
-> > and thus should run Linux.  Does anyone have any experience with
-> > installing / running Linux on these?  It is possible?  What devices are
-> > supported?  Is Linux the best choice for this machine?
->
-> Yes it works have a look on the thread:
-> <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-March/019613.html>
+> Seems I have the same problem on a B2000 with the latest cvs'ed version
+> (2.4.21-pa1)
 
-Yes, I also bought one of these RDI Precisionbooks from eBay (probably
-even from the same guy as you did).
-It works fine, except I have some problems with the (internal) keyboard,
-ie. the control/function keys are mapped somewhat weird, eg. CapsLock = Ctrl.
+The problem is not with b2k but well with 2.4.21-pa1 which is refreshed very
+recently. But I proposed a fix to Grant who would be able to ci soon.
+In the mean time (if you do not need actualy ide support for cd-rom) you
+can un-select this temporarely this from your config.
 
-A second thing is that stifb only works for me if you attach a external
-monitor, but sticon works fine with the internal LCD. I suspect that the
-stifb driver clears some flag that it should use the internal LCD during
-initialization.
+Now for 64bits kernel it works (b2k allows 32 & 64 bits kernels ;-) ).
+But for 32bits otc you will need also to wait that Grant ci another patch
+(or reverse pa1 patch to come back to pa0).
 
-If someone is interested I'd sell mine, since I need some money :-/
+hth,
+    Joel
 
-greetings, Max
+
+
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
