@@ -1,32 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA24130
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Aug 2000 03:03:19 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 10 Aug 2000 03:03:30 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 10 Aug 2000 03:03:09 -0000
-Received: (from willy@localhost)
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) id VAA06297
-	for parisc-linux@thepuffingroup.com; Wed, 9 Aug 2000 21:58:33 -0400
-Date: Wed, 9 Aug 2000 21:58:33 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000809215833.L993@vodka.thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] merge with 2.4.0-testN?
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA25796
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Aug 2000 04:20:14 -0600
+Message-Id: <200008100423.VAA04954@milano.cup.hp.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] merge with 2.4.0-testN? 
+In-reply-to: Your message of "Wed, 09 Aug 2000 21:58:33 PDT."
+             <20000809215833.L993@vodka.thepuffingroup.com>
+Date: Wed, 09 Aug 2000 21:23:05 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Matthew Wilcox wrote:
+> 
+> it's been well over 2 months since we last merged Linus' tree into ours.
+> i'm thinking about leaving the -test6 patch to mature over the next week
+> or so, see if there's any cripplingly awful bug reports and, if not,
+> merge -test6 into our tree.  if there are, -test4 had some good reviews,
+> i might consider that instead.
 
-it's been well over 2 months since we last merged Linus' tree into ours.
-i'm thinking about leaving the -test6 patch to mature over the next week
-or so, see if there's any cripplingly awful bug reports and, if not,
-merge -test6 into our tree.  if there are, -test4 had some good reviews,
-i might consider that instead.
 
-i'm going to tentatively set a date as Thursday 16th August for this.
-if you've got any big changes outstanding, now would be an excellent
-time to commit them before the landscape shifts under our feet.
+Mathew,
+ok with me. either way.
 
--- 
-Revolutions do not require corporate support.
+> i'm going to tentatively set a date as Thursday 16th August for this.
+> if you've got any big changes outstanding, now would be an excellent
+> time to commit them before the landscape shifts under our feet.
+
+San Jose, LWE is on until Aug 17th. We will have a RH linux PC, 712, A180
+and internet access during the show...so Matt and I might be able to help
+some anyway if the HP booth is wonderfully boring. :^)
+
+BTW, should we move to a "linux" or "linux-2.4" repository?
+I have no clue what the mechanics are of doing such a move but
+this merge might be a good time to do it.
+
+thanks,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
