@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1EBFA4840
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Oct 2003 09:53:39 -0700 (MST)
-Date: Sun, 26 Oct 2003 11:49:26 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: how to handle ERESTART_RESTARTBLOCK ?
-Message-ID: <20031026164926.GE26587@systemhalted>
-References: <20030812060244.GE21328@tausq.org> <20031026073751.GH24406@tausq.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 34D924840
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Oct 2003 10:25:34 -0700 (MST)
+Date: Sun, 26 Oct 2003 10:25:31 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] C110 builtin nic slow?
+Message-ID: <20031026172531.GA32146@colo.lackof.org>
+References: <3F9BFB00.5090008@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031026073751.GH24406@tausq.org>
+In-Reply-To: <3F9BFB00.5090008@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +23,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Oct 26, 2003 at 12:37:51AM -0700, Randolph Chung wrote:
-> here's a patch that implements the required logic. probably can be
-> improved some.... comments appreciated.
-> 
-> About __NR_restart_syscall, some archs use syscall #0 (unused for pa
-> afaict), others define a new syscall number. Any preferences? If it's
-> zero then i think i will remove the reassemble_14 logic.
+On Sun, Oct 26, 2003 at 04:49:04PM +0000, Joel Soete wrote:
+> 8. Raven T' Core LAN (802.3) (10) at 0xffd07000 [8/16/6], versions 0x32, 
+> 0x0, 0x8a
 
-I don't see why #0 can't be used here. Then again, why can't you code
-the syscall number directly into the hex? Are you expecting it to
-change? :)
+This is a 10Mb link.
 
-> +		if (regs->gr[28] == -ERESTART_RESTARTBLOCK) {
-> +			unsigned int *usp = (unsigned int *)regs->gr[30];
-> +
-> +			/* Setup a trampoline to restart the syscall
-> +			 * with __NR_restart_syscall
-> +			 *
-> +			 *  0: ble 0x100(%%sr2, %%r0)
-> +			 *  4: ldi __NR_restart_syscall, %r20
-> +			 *  8: b,l .+8, %r21
-> +			 * 12: depi 0,31,2,%r21
-> +			 * 16: ldw 16(%r21), %rp
-> +			 * 20: bv %r0(%rp)
-> +			 * 24: ldo -64(%sp), %sp
+> And, at the office, I use to obtain around nice 1Mb/s when I do such 
+> rsync or ftp between my b180 connected via a hub.
 
-Adding stack here can be detremental to the userspace program. It's not
-expecting you to have a stack, and it expects the syscall to live within 
-its calling frame. When we setup the signal return trampoline we don't
-mess with the stack either :) Though this context is different.
+Which protocol?
 
-> +			 * 28: nop
-> +			 * 32: <return address> (2 slots for 64-bit)
-> +			 */
+> But here at home, I connect the builtin nic of my c110 with a 
+> cross-cable to my pc (proxy) and I just obtain 50kb/s (whatever the 
+> kernel I boot 2.4 or 2.6) (ie 20 time less then with a another pc 
+> connected in place of the c110). Is it possible to improve the 
+> performance of this builtin nic?
 
-c.
+Earlier this year I exchanged email with someone on linux-ia64 list with
+a similar sounding problem. They were trying to NFS mount some exported
+by the ia64-linux server but perf was ~80KB/s vs 50MB/s (1000BT) across
+the same link to another ia64-linux box. We never found the root cause
+since netperf demonstrated the UDP throughput was > 50MB/s (expected)
+in the same config. I could only guess it was something in the NFS
+stack having to do with 16K pages.
+
+But thinking about this more, I'm wondering if some kernel code is
+accessing misaligned data someplace in the networking stack.
+The arguments I've heard is this is expected behavior.
+
+Joel,
+1) Can you verify dmesg has no misaligned data access reports?
+2) Can you clarify how you are measuring performance?
+   (ie which protocols and which tools?)
+3) Can you setup/run netperf or httperf with the PC to verify whatever
+   protocol you are using basically works?
+
+grant
