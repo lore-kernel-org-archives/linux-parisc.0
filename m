@@ -1,35 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA13302
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Sep 2000 16:49:40 -0600
-Received: by rachael.franken.de
-	for parisc-linux@thepuffingroup.com
-	id m13e3YN-0027mPC; Tue, 26 Sep 2000 23:50:23 +0100 (MET)
-Date: Wed, 27 Sep 2000 00:26:21 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: "MEYER,ALAN C. HP-FtCollins,ex1\"" <alan_meyer@hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Serial console?
-Message-ID: <20000927002621.A2220@alpha.franken.de>
-References: <56D553C0B61BD311AD2300A0C9F485C20841F8CA@xfc02.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <56D553C0B61BD311AD2300A0C9F485C20841F8CA@xfc02.fc.hp.com>; from alan_meyer@hp.com on Tue, Sep 26, 2000 at 10:39:33AM -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA13926
+	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Sep 2000 17:57:25 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 26 Sep 2000 23:58:10 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA11701;
+	Wed, 27 Sep 2000 10:57:32 +1100
+Date: Wed, 27 Sep 2000 10:57:32 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: David Huggins-Daines <dhd@puffin.external.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: binutils dhd
+In-Reply-To: <200009262152.PAA12726@puffin.external.hp.com>
+Message-ID: <Pine.LNX.4.21.0009271045001.10201-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Sep 26, 2000 at 10:39:33AM -0600, MEYER,ALAN C. HP-FtCollins,ex1" wrote:
-> Oops, s/serial/graphics/
-> 
-> Up 'til now, we have always used a serial connection to another box (x86
-> Linux) to demo PA/Linux.  The question now - are we ready to try this
-> standalone, via a local keyboard and monitor.
+On Tue, 26 Sep 2000, David Huggins-Daines wrote:
 
-I had a working graphic console on a 712/80 during LinuxTag in Stuttgart
-a couple of months ago (well some keys didn't work, but it was good
-enough).
+> Sometimes we get the "split field selectors" problem in import stubs
+> if the distance between the GP and the PLT is not a multiple of 8
+> bytes.  Use alignment constraints on .plt, .got, and .data to fix
+> this.
 
-Thomas.
+Ouch.  But aligning doesn't fix the problem (well, it may in a particular
+case).  The reason aligning won't always work is that import and long
+branch stubs are interspersed in the stub section, and PIC long branch
+stubs happen to be 12 bytes long.  Which messes with your carefully
+constructed 8 byte alignment.
 
+The proper fix is to use lr_sel and rr_sel when building the import stubs,
+so I'm reverting your change unless you have some other reason for wanting
+8 byte alignment.
+
+Alan
 -- 
-   This device has completely bogus header. Compaq scores again :-|
-It's a host bridge, but it should be called ghost bridge instead ;^)
-                                        [Martin `MJ' Mares on linux-kernel]
+Linuxcare.  Support for the Revolution.
