@@ -1,53 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E58194A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Mar 2001 18:00:57 -0700 (MST)
-Message-Id: <200103230054.RAA24759@puffin.external.hp.com>
-To: Nicolas THOMAS <thomas@ispserv.grenoble.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Interoperability 
-In-Reply-To: Your message of "22 Mar 2001 13:22:03 +0100."
-             <o051yrqc7tg.fsf@debian.grenoble.hp.com>
-Date: Thu, 22 Mar 2001 17:54:36 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from lufmech.rwth-aachen.de (karman.lufmech.RWTH-Aachen.DE [134.130.177.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8927C4A19
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Mar 2001 01:54:29 -0700 (MST)
+Sender: markus@lufmech.rwth-aachen.de
+Message-ID: <3ABB0F3C.45F3267A@lufmech.rwth-aachen.de>
+Date: Fri, 23 Mar 2001 09:54:20 +0100
+From: Markus Werle <markus@lufmech.rwth-aachen.de>
+MIME-Version: 1.0
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] configure --host=xx revisited
+References: <3AB9F2BC.33E89887@lufmech.rwth-aachen.de> <20010322212029.T5491@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Nicolas THOMAS wrote:
-> Does anyone of you have references/URL/opinion.... on interoperabilty
-> purpose?
+Matthew Wilcox wrote:
 
-Could you provide details on what you mean by "interoperability"?
-(Or specific applications that you need to run if you don't need
-to build them from scratch)
+> hppa-foo -- 32 bit, pa 1.1
+> hppa2.0-foo -- 32 bit, pa 2.0
+> hppa2.0w-foo -- 64 bit
 
-> The systems I would like to be able to interoperate are :
-> - Linux x86
-> - Linux PA-risc 32bits
-> - Linux PA-risc 64bits
-> - HP-UX 11 64bits
+This is wrong, ding dong!
+This is the reason I asked ...
 
-Obviously not all four can run the same application binaries.
-I do expect a pretty good level of source compatibility (90%+).
-On the PARISC OS's, even a degree of binary compatibility.
+AFAIK the "w" stands for wide mode hardware
+which does _not_ always mean 64 bit.
+I am aware of the fact that this naming convention has
+asymmetries with hp cc manpage, but unfortuantely
+my gcc configured for hppa2.0w-hp-hpux11.00 is a 32 bit.
 
-Provided details, I can forward things not covered by HPUX to the
-right people (caveat: no guarantee they will get fixed...).  And
-you are welcome to post patches for stuff in either 32 or 64-bit
-parisc-linux kernels here.
-(Or submit bug reports to bugs.parisc-linu.org.)
-
-
-> I already know the STK: http://devresource.hp.com/STK/
-
-Also try:
-    http://devresource.hp.com/OpenSource/Tools/OpenSourceLib.html
-         (I think this might be the same/related to the STK)
-    http://devresource.hp.com/LPK/
-
-The LPK (Linux Porting Kit) seems to be pretty good (though not perfect).
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Who can help further?
