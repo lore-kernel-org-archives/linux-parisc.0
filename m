@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3981C4845
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 06:24:16 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A3ab0-0006JO-A2; Sun, 28 Sep 2003 13:24:14 +0100
-Date: Sun, 28 Sep 2003 13:24:14 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org,
-	James Bottomley <James.Bottomley@steeleye.com>,
-	Matthew Wilcox <willy@debian.org>
-Message-ID: <20030928122414.GF24824@parcelfarce.linux.theplanet.co.uk>
-References: <3F76A312.8090603@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F76A312.8090603@tiscali.be>
-Subject: [parisc-linux] Re: zalon/ncr53c720 (linux-2.6.0-test5-pa22) broken on C110
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7E6B64845
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 08:44:16 -0600 (MDT)
+Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
+	by csmail.ucc.ie (8.12.10/8.12.10) with ESMTP id h8SEiFRK006999
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 15:44:15 +0100
+Date: Sun, 28 Sep 2003 15:44:14 +0100 (IST)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.58.0309281530440.29331@sal.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 2.6.0-test6-pa0 undefined references
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,24 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 28, 2003 at 09:00:02AM +0000, Joel Soete wrote:
-> I am sure there is no hw pb because after that test I can always reboot 
-> with 2.6.0-test5-PA6:
+Hi,
 
-This is good to hear.
+I can't compine 2.6.0-test6-pa0, compiling stops with the following
+error message:
 
-> Can somebody could help me to find patches (step by step) applied on 
-> this driver from -pa6 to -pa22?
 
-Yes.  Could you start with -pa18 (or -pa20)?
-http://cvs.parisc-linux.org/download/linux-2.6/patch-2.6.0-test5-pa18.gz
-(or cvs up -rCVS260_TEST5_PA18)
+kernel/built-in.o(.text.try_to_wake_up+0xf8): In function
+`try_to_wake_up':
+: undefined reference to `sched_clock'
+kernel/built-in.o(.text.schedule+0x7c): In function `schedule':
+: undefined reference to `sched_clock'
+kernel/built-in.o(.text.copy_process+0x4e0): In function `copy_process':
+: undefined reference to `sched_clock'
+make: *** [.tmp_vmlinux1] Error 1
 
-The driver is rev 1.5 in -test5-pa6.  rev 1.6 is in -test5-pa18.
-After -test5-pa20, we don't have anyautotagged stuff, but let's start
-with -pa18.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+
+The same config compiled fine with 2.6.0-test4-pa8.
+
+Last tested with CVS checkout of 5 minutes ago.
+
+
+PS: I also can't compile smbfs in the kernel, but as module:
+ (error about undefined reference to `low2highuid`)
+
+
+Thanks, Max
+
+
+PS: .config will be send on request
