@@ -1,35 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EAB284A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 11:19:36 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14PqEJ-00029U-00; Mon, 05 Feb 2001 18:19:11 +0000
-Date: Mon, 5 Feb 2001 18:19:11 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Christoph Plattner <christoph.plattner@dot.at>
-Cc: penfold@customware.com.au, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] _working_ rbootd for redhat
-Message-ID: <20010205181911.A5520@parcelfarce.linux.theplanet.co.uk>
-References: <200102041048.VAA00309@customware.com.au> <3A7D69B4.896F63D6@dot.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A7D69B4.896F63D6@dot.at>; from christoph.plattner@dot.at on Sun, Feb 04, 2001 at 03:39:48PM +0100
-Sender: <willy@www.linux.org.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C5F454A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 11:19:55 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA29150
+	for <parisc-linux@puffin.external.hp.com>; Mon, 5 Feb 2001 11:15:40 -0700
+Message-Id: <200102051822.KAA02233@milano.cup.hp.com>
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] RFC: I/O tree design 
+In-reply-to: Your message of "Sat, 03 Feb 2001 00:17:52 PST."
+             <3A7BB0A0.D478911A@uswest.net>
+Date: Mon, 05 Feb 2001 10:22:11 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Feb 04, 2001 at 03:39:48PM +0100, Christoph Plattner wrote:
-> Hello !
-> 
-> For the SCSI I have nothing fixed !
-> It works out of the box.
-> 
-> I have not sent any patch. I only tried it and it works.
-> So to all PA-RISC hackers, add the TRAP 18 there in the main stream !!
+Ryan Bradetich wrote:
+> Here is my proposal for phase 2 of the I/O tree for parisc-linux.
 
-Yes, and no.  we need a proper trap 18 handler that checks to see whether
-it's a page fault or a misaligned data reference, and calls the right
-handler.  This should not be too hard to write, but i don't have time
-right now.
+Overall, this sounds ok to me.
+Just a nit WRT to terminology.
 
--- 
-Revolutions do not require corporate support.
+...
+> This proposal also calls for a special "root" node at
+> index 0 of the device array.  The root node is the starting
+> point of the I/O tree and does not have a parent, nor any
+> siblings.  The root node has a single child pointer which
+> points to the head of the sibling list for the system
+> bus.
+
+I would call the "root" node the "parent psuedo-bus adapter"
+(or something like that) of the central bus. It's special because
+it generally won't represent a physical PA I/O device. But it does
+contain a "lower port address" - the fixed PA IO address your
+previous bus-walk patch started with.
+
+The idea here is you can pass "hp_device *" to your PA bus walk code
+and not have seperate code for central bus or GSC bus. The bus walk
+code could use the "lower port address" as a new starting point to
+poke around.
+
+
+thanks,
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
