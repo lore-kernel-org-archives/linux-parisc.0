@@ -1,15 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] J5000 LCD patch
-Date: Wed, 23 Mar 2005 13:18:31 -0700
-Message-ID: <20050323201831.GC10544@colo.lackof.org>
-References: <200503231855.10502.dmp@davidmpye.dyndns.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: Comments?
+Date: Wed, 23 Mar 2005 15:53:11 -0500 (EST)
+Message-ID: <200503232053.j2NKrBsR026378@hiauly1.hia.nrc.ca>
+References: <20050323172922.GK21986@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: David Pye <dmp@davidmpye.dyndns.org>
+To: matthew@wil.cx (Matthew Wilcox)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503231855.10502.dmp@davidmpye.dyndns.org>
+In-Reply-To: <20050323172922.GK21986@parcelfarce.linux.theplanet.co.uk> from
+	"Matthew Wilcox" at Mar 23, 2005 05:29:22 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,50 +21,106 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 23, 2005 at 06:55:07PM +0000, David Pye wrote:
-> It can DEFINITELY be improved further, primarily by increasing the delay 
-> between rescheduling the work queue item, so reducing CPU util.  I'll submit 
-> a later patch for that pending feedback on this one, which is of course very 
-> welcome!
+> > I got a bit paranoid about __put_user after the above bug.  Looking at
+> > it, I believe that the LP64 version is broken for *(ptr) types of long,
+> > unsigned long, and pointer types.  I believe that the current code
+> > puts a 64-bit value instead of the 32-bit value that the 32-bit runtime
+> > expects for these types.  This is fixed by adding a layer over the
+> > old __put_user macro to do various type checking.
+> 
+> Hum.  It's definitely a tricky problem.  On its face, you're right;
+> we shouldn't be writing 64-bit values to a 32-bit userspace.  However,
+> the compatibility layers often do something like:
+> 
+> asmlinkage int sys32_sendfile64(int out_fd, int in_fd, compat_loff_t __user *off
+> set, s32 count)
+> {
+>         mm_segment_t old_fs = get_fs();
+>         int ret;
+>         loff_t lof;
+>         if (offset && get_user(lof, offset))
+>                 return -EFAULT;
+>         set_fs(KERNEL_DS);
+>         ret = sys_sendfile64(out_fd, in_fd, offset ? (loff_t __user *)&lof : NUL
+> L, count);
+>         set_fs(old_fs);
+>         if (offset && put_user(lof, offset))
+>                 return -EFAULT;
+>         return ret;
+> }
+> 
+> Then sys_sendfile64() will do a put_user() to write to the loff_t variable,
+> and writing a 32-bit value to that would definitely be the wrong thing to do.
 
-one nit after quickly glancing at it:
-> +static int led_wq_created = 0;
-> +static struct workqueue_struct *led_wq;
+I don't believe that the proposed change would do that.  In this case,
+the type of *(ptr) is long long (s64).  This is one of the special cases
+in the __LP64__ __builtin_choose_expr check.  If we have a 64-bit value
+that is 64-bits in the 32-bit runtime (long long, unsigned long long
+or double), we don't cast the pointer (i.e., it still points to a 64-bit
+type).  I used s64 and u64 to shorten the line length in the macro.
+They are defined as long long and unsigned long long.
 
-led_wq_created isn't needed. Just test led_wq != NULL.
+__builtin_types_compatible_p is strict in determining whether two
+types are compatible.  For example, a long is not compatible with a
+long long even though they have the the same size in hppa64.  Similarly,
+a char * and int * are not compatible.  I checked the long versus
+long long compatibility under hpux.
 
-> +	unsigned long wait_jiffies = (lcd_info.min_cmd_delay / 1000000) * HZ;
+There are definitely places where put_user is used to put pointers.
+I believe that there also some places where a long is transferred.
 
-Won't this work out to be zero?
-ISTR min_cmd_delay was "40" or something like that.
+The put_user uses with pointers cause warnings in 32-bit builds
+because the u64 cast in the following code snippet
 
-grundler <532>fgrep min_cmd_delay drivers/parisc/led.c
-        unsigned int min_cmd_delay;     /* delay in uS after cmd-write (LCD only) */
-        .min_cmd_delay =        40,
-...
+#define __put_kernel_asm64(__val,ptr) do {                  \
+        u64 __val64 = (u64)__val;                           \
 
-Yeah. You want (lcd_info.min_cmd_delay * 1000000)/HZ and this needs
-to be rounded up.
+is undefined (it's not defined in the C standard how the pointer
+should be extended).  As I tried to indicate in my previous mail,
+this isn't a real problem as this code patch isn't used in this
+case.  GCC should delete the code but there may be problems in doing
+this before the warning is generated.  I like to eliminate warnings
+such as this as they could easily be real problems.
 
-> +	for (i=0; i<4; ++i) {
-> +		if ((leds & mask[i]) != (lastleds & mask[i])) {
-> +			gsc_writeb( blockp[i]->command, LCD_CMD_REG );
-> +			
-> +			set_current_state(TASK_UNINTERRUPTIBLE);		
-> +			schedule_timeout(wait_jiffies);	
-> +
-> +			gsc_writeb( leds & mask[i] ? blockp[i]->on : 
-> +					blockp[i]->off, LCD_DATA_REG );
-> +			
-> +			set_current_state(TASK_UNINTERRUPTIBLE);		
-> +			schedule_timeout(wait_jiffies);	
-> +		}
+Here is a place in arch/parisc/kernel/signal.c where there is a
+problem with transferring a pointer:
 
-I like this *alot* better. Very nice.
+          err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_s
 
+The type of ss_sp is void *.  There are also similar problems in
+kernel/signal.c (si_ptr and si_addr).  In this case, the current version
+of put_user will transfer 64-bits when using a hppa64 kernel.
 
-thanks,
-grant
+> > The rest of the changes are just warning fixes that I noticed during
+> > testing.  I don't believe that they have a functional effect.
+> 
+> Those warnings are reminders that nobody's audited this code for ioremap
+> compatibility:
+
+Ok :(
+
+> Someone else is fixing that -- in XFS or ieee1394, right?
+
+These are the warnings that I was referring to:
+
+  CC [M]  fs/xfs/xfs_inode_item.o
+fs/xfs/xfs_inode_item.c: In function `xfs_inode_item_pushbuf':
+fs/xfs/xfs_inode_item.c:803: warning: passing arg 1 of `atomic_read' from incompatible pointer type
+fs/xfs/xfs_inode_item.c:825: warning: passing arg 1 of `atomic_read' from incompatible pointer type
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+#include <stdio.h>
+int
+main ()
+{
+  printf ("%d\n", __builtin_types_compatible_p (long, long long));
+  return 0;
+}
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
