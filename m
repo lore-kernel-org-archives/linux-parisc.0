@@ -1,68 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA14058
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Aug 2000 07:42:26 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 21 Aug 2000 13:42:16 -0000
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com,
-        parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-References: <Pine.LNX.4.21.0008201351070.26467-100000@front.linuxcare.com.au>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 21 Aug 2000 09:41:18 -0400
-In-Reply-To: Alan Modra's message of "Sun, 20 Aug 2000 14:19:05 +1000 (EST)"
-Message-ID: <877l9azq81.fsf@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA14483
+	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Aug 2000 08:25:22 -0600
+Date: Mon, 21 Aug 2000 10:26:15 -0400 (EDT)
+From: herrold <herrold@owlriver.com>
+Sender: herrold@513erich.iwaynet.net
+To: Matthew Wilcox <matthew@wil.cx>
+cc: AJIT D BOBRA <bobra@prl.ernet.in>, parisc-linux@thepuffingroup.com
+Subject: Re: LINUX SUPPORT for HP 9000/735 systems....
+In-Reply-To: <20000821080104.C5473@vodka.thepuffingroup.com>
+Message-ID: <Pine.LNX.4.21.0008211021510.22047-100000@pokey.513erich.iwaynet.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra <alan@linuxcare.com.au> writes:
+On Mon, 21 Aug 2000, Matthew Wilcox wrote:
 
-> I haven't found one, and it's a real pain.  I tend to edit patches
-> covering multiple directories before passing them to patch.
-> 
-> "sed -e '/^[+-][+-]/d' < cvs_diff_file | patch -p0 --posix" ought to work.
+> see
+> http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/08-Aug/0058.html
+> for your original message and followups.
 
-Here's a tiny Perl script I wrote for this purpose once in a fit of
-pique.  Use the -i option to specify the 'input' directory prefix
-(i.e. in the --- line) and -o to specify the 'output' directory
-prefix.
+... A more direct reply might by:
 
-#!/usr/bin/perl -p
-use strict;
-use File::Basename;
-use vars qw($in $out $path $name $dir);
+ -- Text User Interface mode should work directly.
+ -- X is a bit dicey, and you are invited to tinker and contribute
+to the pool.
+ -- If there are other aspects which you are interested in, feel
+free to ask.
 
-BEGIN {
-    my @args;
-    while (defined($_ = shift)) {
-	if (/-i/) {
-	    $in = shift;
-	    $in =~ s,$,/,;
-	    $in =~ tr,/,,s;
-	} elsif (/-o/) {
-	    $out = shift;
-	    $out =~ s,$,/,;
-	    $out =~ tr,/,,s;
-	} else {
-	    push @args, $_;
-	}
-    }
-    $out ||= $in;
-    $in  ||= $out;
-    @ARGV=@args;
-}
+------------
 
-/^Index: (.*)/ and do {
-    ($name, $dir) = fileparse($1);
-};
-/^(---|\+\+\+) ([^\t]+)/ and do {
-    die "Your CVS isn't broken, $2 doesn't match $name\n" unless $2 eq $name;
-    my $prefix = ($1 eq '---') ? $in : $out;
-    s,$2,${prefix}${dir}${name},;
-};
+  Matthew, is this a fair summary? -- I was thinking of cutting over
+a 735 myself.  I'll keep notes on the conversion, and probably post
+a HowTo if this is the case. /// I'll summarize ...
 
-
--- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+-- Russ Herrold
