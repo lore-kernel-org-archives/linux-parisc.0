@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 60F87482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Jul 2002 09:54:57 -0600 (MDT)
-Received: from iws1pb05.france.hp.com (unknown [15.124.72.14])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id A4CF473E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Jul 2002 17:54:55 +0200 (METDST)
-Message-ID: <3D3ECDFD.FFC416F6@hpfrcu81.france.hp.com>
-Date: Wed, 24 Jul 2002 17:55:41 +0200
-From: phi <phi@hpfrcu81.france.hp.com>
+Received: from hotmail.com (oe44.law4.hotmail.com [216.33.148.81])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61933482B
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 10:06:46 -0600 (MDT)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: "Richard Hirst" <rhirst@linuxcare.com>
+Cc: "Matthew Wilcox" <willy@debian.org>,
+	<parisc-linux@parisc-linux.org>
+References: <OE32H8BX2vRxFmNHYus00008028@hotmail.com> <20020723150421.G3052@parcelfarce.linux.theplanet.co.uk> <OE71RBHZXFZ0stgr3SU00003162@hotmail.com> <20020724143958.GS29996@sleepie.demon.co.uk>
+Subject: Re: [parisc-linux] unresoved symbols when doing a make modules_install
+Date: Wed, 24 Jul 2002 18:06:30 +0200
 MIME-Version: 1.0
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PAM unable to resolve symbol: pam_sm_cha uthtok
-References: <1027513921.3d3e9e41069a0@webmail.tiscalinet.be> <1027518935.6517.30.camel@irongate.swansea.linux.org.uk>  <3D3EAF4A.978D4311@hpfrcu81.france.hp.com> <20020724151011.04630482B@dsl2.external.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <OE44z4uqqtBqykC26qz00004754@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,34 +24,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-> 
-> phi wrote:
-> > Jul 24 15:38:36 iws1pb02 rlogind[7919]: PAM unable to resolve symbol:
-> > pam_sm_chauthtok
-> 
-> This stinks alot like the other d-cache issues we've seen.
-> (eg syslogd faulting at boot time)
+I see.
+Indeed, I'm not configuring any PCI or ISA slots, as my 712 doesn't have any
+(at least I haven't seen any of these slots when I replaced the CMOS
+battery). That's why I'm building my own kernels in the first place; to have
+a kernel suited for my own box.
+I assume if I would disable PCI and ISA on my 486 (hypothetically), the ppa
+would have some unresolved symbols as well?
+So, should I enable PCI or ISA to make the ppa module work? Or is there
+another way around to use the ppa module without the PCI or ISA stuff?
+Thanks.
 
-Ouch didn't suspect this was that deep, I was focusing on this f. pam to
-setup.
+Kenneth
 
-> 
-> Which system model is this happening on? (/me guesses J5000 or PA2.0 K-class)
-
-This is a C180 running
-Linux iws1pb02 2.4.18-pa22 #48
-
-This old version was from my 'stable' 712, then I instaled the C180 via a
-brute 
-cpio -p onto the C180. Then it is a narrow kernel.
-
-My plan (tomorow?) is to get the linux CVS source and recompile...
+----- Original Message -----
+From: "Richard Hirst" <rhirst@linuxcare.com>
+To: "kenneth westelinck" <kennywest1@hotmail.com>
+Cc: "Matthew Wilcox" <willy@debian.org>; <parisc-linux@parisc-linux.org>
+Sent: Wednesday, July 24, 2002 4:39 PM
+Subject: Re: [parisc-linux] unresoved symbols when doing a make
+modules_install
 
 
-BTW I think I saw the exact same behavior on a 712 does the dcache problem
-present there too? 
-
-Well will see what I got tomorow.
-Cheers,
-Phi
+> On Wed, Jul 24, 2002 at 10:33:22AM +0200, kenneth westelinck wrote:
+> > > i'm baffled.  we prototype, define and EXPORT_SYMBOL outs[bwl].  i
+can't
+> > > see why you'd get this error.
+>
+> But only if CONFIG_PCI or CONFIG_ISA, kenneth has neither in his config.
+>
+> Richard
+>
+>
