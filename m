@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1A1A4482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 23:53:36 -0700 (MST)
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-ID: <1011768811.3c4e5deb1fe45@webmail.tiscalinet.be>
-Date: Wed, 23 Jan 2002 07:53:31 +0100 (CET)
-From: jsoe0708@tiscali.be
-Cc: jsoe0708@tiscali.be, parisc-linux@lists.parisc-linux.org,
-	Hans.Witvliet@Alcatel.nl
-References: <1011726540.3c4db8cc712a9@webmail.tiscalinet.be> <20020123020740.518C5482A@dsl2.external.hp.com>
-In-Reply-To: <20020123020740.518C5482A@dsl2.external.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Re: [Re]: B2000
+Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB5A5482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Jan 2002 01:57:07 -0700 (MST)
+Date: Wed, 23 Jan 2002 09:57:06 +0100
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] vmlinux header for savecrash.
+Message-ID: <20020123095705.A8923@electra.intern.planb.de>
+References: <15417.3793.688638.629130@gargle.gargle.HOWL> <20020107034615.9BFD64839@dsl2.external.hp.com> <E16T74R-0002Ko-00@noam.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <E16T74R-0002Ko-00@noam.fc.hp.com>
+From: Enrik Berkhan <Enrik.Berkhan@planb.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,30 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Grant Grundler <grundler@dsl2.external.hp.com>:
+On Tue, Jan 22, 2002 at 12:59:03PM -0700, Paul Bame wrote:
+> palo removes the "3/vmlinux" parameter (and the initrd= one too) before
+> passing command line to the kernel which is consistent with x86 I think.
+> Would it be helpful to add a kernel parameter like "palo_kernel=3/vmlinux"
+> which you could then retrieve from /proc/cmdline?  I know it's a pain
+> to turn 3/vmlinux into /boot/vmlinux but 3/vmlinux is all palo knows.
 
-> jsoe0708@tiscali.be wrote:
-> > Hi all,
-> > 
-> > Just to relate an experience:
-> > 
-...
-> palo uses IODC ("BIOS") to load the vmlinux.
-> That vmlinux does not know how to talk to the IDE CD-ROM interface
-> and can't load anything else. 
+Hmm, so why don't let palo calculate a CRC32 or MD5 (if affordable)
+over the image it is about to boot and pass this as parameter that will
+be saved in the dump? This would be very independent of filesystem
+changes in the time between boot and crash (e.g. installing a new kernel
+moving everything around in /boot). This could also be done for an
+initrd image if used. And it still works if you have more than one
+kernel image with the same "version" lying around.
 
-Ok I am ignoring this detail (sorry).
-
-> One should be able to do a network
-> install but start out by booting the ISO image.
-> 
-> grant
-> 
-Tanks for info,
-        Joel
-
-PS: I would not be able to help to improve ide drivers (sorry)
-
-
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+Enrik
+-- 
+Enrik Berkhan                                         plan b. GmbH
+                                                      Rüppurrer Straße 4
++49-721-388582 (voice)                                76137 Karlsruhe
++49-721-388581 (fax)                                  Germany
