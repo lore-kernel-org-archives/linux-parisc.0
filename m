@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (unknown [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7259A4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 20:58:08 -0700 (MST)
-Date: Tue, 10 Dec 2002 22:57:31 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: "M. Grabert" <xam@cs.ucc.ie>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AC46E4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 21:02:53 -0700 (MST)
+Date: Wed, 11 Dec 2002 04:02:46 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Kernel crash when loggin in via ssh
-Message-ID: <20021211035731.GB9521@systemhalted>
-References: <Pine.LNX.4.44.0212110257190.6654-300000@sal.ucc.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0212110257190.6654-300000@sal.ucc.ie>
+In-Reply-To: <20021211035731.GB9521@systemhalted>
+Message-ID: <Pine.LNX.4.44.0212110359250.6654-100000@sal.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,9 +22,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> It works when booting the old linux-2.4.19-pa2, so there must be a bug
-> introduced between 2.4.19-pa2 and 2.4.20-pa10.
+On Tue, 10 Dec 2002, Carlos O'Donell wrote:
 
-What compiler/toolchain did you use to compile 2.4.19-pa2?
+> > It works when booting the old linux-2.4.19-pa2, so there must be a bug
+> > introduced between 2.4.19-pa2 and 2.4.20-pa10.
+>
+> What compiler/toolchain did you use to compile 2.4.19-pa2?
 
-c.
+Honestly, I don't know 100%. It wasn't gcc-3.2.2-pre for sure, but i
+*THINK* it was gcc-3.0.4 (I have to do a dmesg next time)!
