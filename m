@@ -1,42 +1,31 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Date: Mon, 8 Mar 1999 14:30:45 -0500 (EST)
+Date: Mon, 8 Mar 1999 14:48:29 -0500 (EST)
 From: Christopher Beard <cjbeard@istar.ca>
 To: hppa-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9903081417030.7297-100000@centauri.osfi-bsif.gc.ca>
+Subject: Re: [hppa-linux] source for the boot loader?
+In-Reply-To: <199903081934.NAA07421@dukat.upl.cs.wisc.edu>
+Message-ID: <Pine.LNX.4.10.9903081444280.7437-100000@centauri.osfi-bsif.gc.ca>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [hppa-linux] Project Update
-Resent-Message-ID: <"HmtH8.0.wV2.mL2vs"@sod.res.cmu.edu>
+Resent-Message-ID: <"P3PpB1.0.rd2.Zc2vs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
-Alex deVries and I have just returned to the Great White North from a very
-successful and productive week at Linux World Expo in San Jose,
-California. (I must say though, that the conference was vastly difference
-from any other Linux conference, it was very much a suitfest as opposed to
-the geekfests that have been the norm to date.)
+> Maybe I just missed it, but is the source for the bootloader out 
+> there anywhere? I'd like to start looking at the code....
 
-We spent a fair bit of time at HP's booth talking to people about the
-porting port, as well as a morning and an afternoon at the labs in
-Cupertino.
+It is our hope that all code in this project will be released under the
+GPL, and will be made available within the project's CVS repository as
+soon as possible. 
 
-We talked with a lot of very knowledgable people and have arranged for the
-release of documentation and other resources.
+It is important in an open-source project that code be released early and
+regularly. If you have code that you would like to add to the repository,
+please get in touch with me to either have it added or to arrange for
+write access.
 
-As you may have heard:
-
-  "HP will contribute marketing and technical resources to the
-  effort. The Puffin Group will also have access to HP technology,
-  tools and solutions offered through HP's new Open Source
-  Solutions Operation."
-
-Special thanks to Chris Maitz, Cary Coutant, John Sontag, Rich Rauenzahn,
-Wayne Caccamo, and the many others that took the time to speak with us and
-provide support for this project. 
-
-Stay tuned for more information on documentation which will be released
-shortly through the project web site.
+As for the bootstrap code, we are waiting for Jason Eckardt to release it
+and import it into CVS.
 
 Chris
 
