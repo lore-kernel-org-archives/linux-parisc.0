@@ -1,24 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [216.33.1.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A9150482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 12:50:44 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id LAA09746
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 4 Feb 2002 11:50:34 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id g14JoUm03211;
-	Mon, 4 Feb 2002 13:50:30 -0600
-Message-Id: <200202041950.g14JoUm03211@localhost.localdomain>
-To: Helge Deller <deller@gmx.de>
-Cc: James.Bottomley@HansenPartnership.com,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Helge Deller <deller@gmx.de>
-   of "Sun, 03 Feb 2002 19:29:48 +0100." <200202031929.48891.deller@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 04 Feb 2002 13:50:30 -0600
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [parisc-linux] Re: 53c700 (LASI SCSI 53c700) hang
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B5325482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 13:14:34 -0700 (MST)
+Received: from npyu.esiee.fr (npyu.esiee.fr [147.215.80.150])
+	by mail.esiee.fr (Postfix) with ESMTP id 9B5EF49BED
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 21:14:32 +0100 (CET)
+Date: Mon, 4 Feb 2002 21:14:32 +0100
+Mime-Version: 1.0 (Apple Message framework v480)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: Thibaut VARENE <varenet@esiee.fr>
+To: PA/Linux <parisc-linux@lists.parisc-linux.org>
+Message-Id: <CD0E8AAC-19AB-11D6-B4EE-0030656F07A2@esiee.fr>
+Subject: [parisc-linux] XGCC MacOSX/hppa64-linux build error
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,37 +23,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-What these errors tell me is that your HD accepted more tags than it could 
-cope with and then choked.  Linux error handler isn't very good at handling 
-this situation.  Also, your disc:
+Hi,
 
-deller@gmx.de said:
->   Vendor: QUANTUM   Model: FIREBALL_TM3200S  Rev: 300X 
+I have tried again to compile an xc on MacOSX 10.1.2 
+(powerpc-apple-darwin5.2)
+targeting hppa64-linux with the most recent xc sources provided by 
+Taggart (thank you
+again :), but the build breaks always at the same point, when
+testing libgcc1.
 
-Is a known trouble causer with tag command queueing.  Initially, try taking 
-the #define NCR_700_MAX_TAGS in drivers/scsi/53c700.h down to 4 or 2 and 
-recompiling the driver.  Alternatively, turn off tagged command queueing 
-altogether by commenting out this block of code:
+All the 32bit stuff (binutils, libc, gcc) compiled perfectly fine, but 
+I'm not absolutly certain that it is operationnal, contrary to the 
+previous xc I made (see my other mail for details).
 
-	if(SCp->device->tagged_supported && !SCp->device->tagged_queue
-	   && (hostdata->tag_negotiated &(1<<SCp->target)) == 0
-	   && NCR_700_is_flag_clear(SCp->device, NCR_700_DEV_BEGIN_TAG_QUEUEING)) {
-		/* upper layer has indicated tags are supported.  We don't
-		 * necessarily believe it yet.
-		 *
-		 * NOTE: There is a danger here: the mid layer supports
-		 * tag queuing per LUN.  We only support it per PUN because
-		 * of potential reselection issues */
-		printk(KERN_INFO "scsi%d: (%d:%d) Enabling Tag Command Queuing\n", SCp->
-device->host->host_no, SCp->target, SCp->lun);
-		hostdata->tag_negotiated |= (1<<SCp->target);
-		NCR_700_set_flag(SCp->device, NCR_700_DEV_BEGIN_TAG_QUEUEING);
-		SCp->device->tagged_queue = 1;
-	}
+So here is the error I got:
 
-in drivers/scsi/53c700.c at about line 1891.
+Testing libgcc1.  Ignore linker warning messages.
+/Users/varenet/palinux-builds/xc-build/gcc/gcc/xgcc 
+-B/Users/varenet/palinux-builds/xc-build/gcc/gcc/ 
+-B/usr/local/palinux/hppa64-linux/bin/ 
+-B/usr/local/palinux/hppa64-linux/lib/ -isystem 
+/usr/local/palinux/hppa64-linux/include -DCROSS_COMPILE -DIN_GCC    -W 
+-Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem 
+./include  libgcc1-test.o -o libgcc1-test \
+   -nostartfiles -nostdlib `/Users/varenet/palinux-builds/xc-
+build/gcc/gcc/xgcc -B/Users/varenet/palinux-builds/xc-build/gcc/gcc/ 
+-B/usr/local/palinux/hppa64-linux/bin/ 
+-B/usr/local/palinux/hppa64-linux/lib/ -isystem 
+/usr/local/palinux/hppa64-linux/include --print-libgcc-file-name`
+collect2: ld terminated with signal 10 [Bus error], core dumped
+/usr/local/palinux/hppa64-linux/bin/ld: warning: cannot find entry 
+symbol main; defaulting to 0000000000010280
+make[1]: *** [libgcc1-test] Error 1
+make: *** [all-gcc] Error 2
 
-I am getting around to adding the code changes to make this able to be done as 
-module/kernel command line options.
+Any clue ?
 
-James
+
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://www.esiee.fr/puffin
