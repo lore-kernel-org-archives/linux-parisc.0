@@ -1,37 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 03DE2482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Sep 2001 16:05:10 -0600 (MDT)
-Received: from gmx.at ([62.178.92.247]) by viefep13-int.chello.at
-          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
-          id <20010915220507.HSUQ15028.viefep13-int.chello.at@gmx.at>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sun, 16 Sep 2001 00:05:07 +0200
-Sender: chris@dsl2.external.hp.com
-Message-ID: <3BA3D090.BC0A662D@gmx.at>
-Date: Sun, 16 Sep 2001 00:05:04 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
+Received: from lefou.zayda.com (unknown [204.99.158.177])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0AF97482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Sep 2001 01:45:55 -0600 (MDT)
+Received: from localhost (sonny@localhost)
+	by lefou.zayda.com (8.9.3/8.9.3) with ESMTP id BAA23843
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Sep 2001 01:45:53 -0600
+Date: Sun, 16 Sep 2001 01:45:53 -0600 (MDT)
+From: Sonny Cook <sonny@aspersion.org>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0109160125430.22634-100000@lefou>
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] XFree on 712/60: BLUE instead of GREY/WHITE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] linux and hp 735/125 fs corruption
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello PA Risc hackers !
+Hi,
+I have an hp 735/125 on which I initially installed hp-ux 11.0.  That was
+all fine and dandy, but I got tired of trying to figure out the insides of
+hp-ux, so I finally just turned the thing off.
 
-I know, this is a known problem and was discussed recently.
+It seemed like it might be fun to install linux on the box, so I got a
+file system and precompiled kernel (2.4.0-32)  from:
+http://mkhppa1.esiee.fr/
 
-What is the status about this problem. Is this fixed? Is the problem
-analysed ?
+I installed these following the instructions from the same site.  It went
+along more or less well until I tried to copy the latest kernel source
+over ssh to the hp box.  It copied about 90% and then threw an
+"Input/output error".  At that point all the programs I tried with the
+exception of 'ls' threw the same error.  These symptoms have been repeated
+regularly.
 
-But I cannot imagine, that X is running !!
-GOOD WORK !
+I do not have any swap partions.  I have 300MB on the box.  I tried with
+two different disks and two different 735's.  Fsck on the root partition
+shows massive (but so far recoverable) file system corruption.
 
+Things I can't do:
+	complete apt-get update
+	untar kernel source
+	copile kernel source
+	scp kernel source
 
-With friendly regards
-	Christoph P.
+Things I can do:
+	login
+	add new users, modify passwords
+	ssh session
+	vi /etc/fstab, /etc/hosts, etc
+	make menuconfig (for kernel compile)
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+I am baffeled.  I haven't been able to find any information on this
+subject, other than to note that 2.4.0 has been blamed for fs corruption
+on some systems.
+
+Any ideas?
+
+thanks,
+Sonny Cook
