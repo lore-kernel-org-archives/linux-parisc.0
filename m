@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9F56E4829
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Dec 2002 05:15:27 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18MSFM-0008G1-00; Thu, 12 Dec 2002 12:15:20 +0000
-Date: Thu, 12 Dec 2002 12:15:20 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Randolph Chung <randolph@tausq.org>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Carlos O'Donell <carlos@baldric.uwo.ca>, bdale@gag.com,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] ["CSA Test Drive" <TestDrive@compaq.com>] FW: Some issues
-Message-ID: <20021212121520.D32514@parcelfarce.linux.theplanet.co.uk>
-References: <20021211224404.GC15219@systemhalted> <200212112305.gBBN5Bdj021432@hiauly1.hia.nrc.ca> <20021212065059.GQ21187@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021212065059.GQ21187@tausq.org>; from randolph@tausq.org on Wed, Dec 11, 2002 at 10:50:59PM -0800
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8F2904829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Dec 2002 09:52:43 -0700 (MST)
+Message-Id: <200212121652.gBCGqbQQ023486@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: Solved: Kernel crash when loggin in via ssh
+To: randolph@tausq.org
+Date: Thu, 12 Dec 2002 11:52:36 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: xam@cs.ucc.ie, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021212073215.GA1141@tausq.org> from "Randolph Chung" at Dec 11, 2002 11:32:15 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,31 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 11, 2002 at 10:50:59PM -0800, Randolph Chung wrote:
-> (oh, as an aside, looks like there's a small objdump bug :-)
-> 00010428 <ull2dbl>:
->    10428:       0f d9 12 81     stw r25,-10(sr0,sp)
->    1042c:       0f da 12 89     stw r26,-c(sr0,sp)
->    10430:       2f c1 10 16     fldd -10(sr0,sp),fr22
->    10434:       e8 40 d0 00     bve (rp)
->    10438:       32 c2 aa 04     fcnv Disassembler botch.
-> 
-> (should be fcnv,udw,dbl %fr22,%fr4)
+> $ ssh -p 1022 -2 tausq@gsyprf10.external.hp.com
+> tausq@a500:~$ dmesg|grep gcc
+> Linux version 2.4.20-pa13 (tausq@a500) (gcc version 3.2.2 20021202 (Debian prerelease)) #12 SMP Wed Dec 11 23:02:01 PST 2002
 
-well, there's another one:
+I plan to change BIGGEST_ALIGNMENT back to 64 bits on the 32 branch today
+assuming that testing is successful.  The main branch was changed yesterday.
+This affects the alignment of long doubles under hpux and possibly the
+alignment of __atomic_lock_t types parisc-linux linux.
 
-stw r25,-10(sr0,sp)
+I have been testing revised glibc locking code.  It only requires integer
+alignment for __atomic_lock_t types.  I am convinced this is the
+correct solution.  The __attribute__ ((aligned(16))) doesn't always
+do what you want.  Specifically, it doesn't work for stack locals, or
+malloc'd data.  
 
-printing `sr0,' is misleading -- were not using sr0, we're using `short
-addressing mode', it should be just:
-
-stw r25,-10(sp)
-
-i remember jsm pointing this out a couple of years ago.  basically for insns
-which have a 2-bit s field, print nothing if it's zero.  sr0 should still be
-pinted for insns with a 3-bit s field.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+There is still one gcc pthread test failure (pthread6) under investigation.
