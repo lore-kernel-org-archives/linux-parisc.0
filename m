@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9C99B482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 10:42:25 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 166xrj-0003nU-00; Thu, 22 Nov 2001 17:42:23 +0000
-Date: Thu, 22 Nov 2001 17:42:23 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Bdale Garbee <bdale@gag.com>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: hppa kernel-headers.deb and offset.h
-Message-ID: <20011122174223.D10023@parcelfarce.linux.theplanet.co.uk>
-References: <20011119210811.E11431@linuxcare.com> <874rnpg8fp.fsf@rover.gag.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <874rnpg8fp.fsf@rover.gag.com>; from bdale@gag.com on Tue, Nov 20, 2001 at 01:20:26AM -0700
+Received: from student.cs.ucc.ie (student.cs.ucc.ie [143.239.211.125])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 127B8482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 11:13:33 -0700 (MST)
+Date: Thu, 22 Nov 2001 18:13:51 +0000 (GMT)
+From: Markus Grabert <xam@student.cs.ucc.ie>
+To: andi <andi@fischlustig.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Need EVC-VGA adapter
+In-Reply-To: <1006449254.5420.0.camel@cube>
+Message-ID: <Pine.OSF.4.41.0111221753170.20159-100000@student.cs.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,17 +22,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 20, 2001 at 01:20:26AM -0700, Bdale Garbee wrote:
-> > glibc build should use kernel-headers, but I guess libc6-dev_2.2.4-6
-> > was built using some local kernel tree for the headers, and has picked
-> > up a 64 bit offset.h.  so, anyone trying to build gdb will have to
-> > replace their offset.h.
-> 
-> So, we've never had a real kernel-headers package before.  I guess once we get
-> one that's right, we should re-spin glibc even if it's a binNMU.
+On 22 Nov 2001, andi wrote:
 
-*sigh*.  whenever i built glibc, i ensured it was built with 32-bit kernel
-headers.
+> > I recently purchased a C240.
+> >
+> > Unfortunately no EVC-VGA adapter was in the package.
+> > I thought it is quite easy to get these (since EVC is
+> > the new VESA standard), but I just found a few Internet
+> > companies who sell them. The adapter itself is rather expensive,
+> > usually about 50 EURO.
+>
+> I have excactly the same problem, but I am living in germany. any chance
+> here?
 
--- 
-Revolutions do not require corporate support.
+try www.kindermann.de,
+they're offering conference utilities such as video projectors etc.
+Since some new projectors use a EVC interface, they used to sell
+an adapter cable (I didn't find it on their website anymore).
+
+Try searching for EVCM-15HDF (that's the name of the EVC-VGA adapter);
+I found at least an US seller (http://www.networktechinc.com/cgi-bin/keemux/adapters.html)
+who sells it for $46 (US & Canada only)
+
+There is also a seller in the UK (http://www.nti1.co.uk/cable-usb.html or
+http://www.itm-components.com/cable.htm (same company)), who sells it for
+35 UK Pound, but there is a minimum shipping cost of 40 UK Pounds!
+The seller said that he's happy to send it by mail (so that you can avoid
+the high shipping costs), however you'll take the risk then.
+
+greetings max
