@@ -1,26 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 900C6482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 24 Jun 2001 09:21:24 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 84AF8B00C; Sun, 24 Jun 2001 16:21:58 +0100 (BST)
-Date: Sun, 24 Jun 2001 16:21:58 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] boot-floppies build status
-Message-ID: <20010624162158.M14416@linuxcare.com>
-References: <20010623170024.G14416@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010623170024.G14416@linuxcare.com>; from rhirst@linuxcare.com on Sat, Jun 23, 2001 at 05:00:25PM +0100
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 75AC1482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 24 Jun 2001 10:15:21 -0600 (MDT)
+Message-Id: <200106241614.KAA25733@puffin.external.hp.com>
+To: Joe Drew <hoserhead@woot.net>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: Your message of "Sat, 23 Jun 2001 12:56:42 EDT."
+             <20010623125642.A1563@woot.net>
+Date: Sun, 24 Jun 2001 10:14:31 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: [parisc-linux] Re: Headless workstation?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Jun 23, 2001 at 05:00:25PM +0100, Richard Hirst wrote:
-> Last night an install on my 712 broke during 2nd stage, ran to the
-> end, but had never asked for root password, or to create a user, etc.
-> Some perl errors flashed by.  Date was 1970... Will try with the newer
-> stuff tonight.
+Joe Drew wrote:
+> I've got a 712/60 ...
+> Is there any way to get the HP workstations to boot headless?
 
-We need an up to date build of perl to fix this, see #100557.
+Yes. See
+    http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008117.html
 
-Richard
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
