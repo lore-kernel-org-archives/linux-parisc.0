@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beldar.com (ns.beldar.com [65.163.106.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 198F9482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 18:02:25 -0700 (MST)
-Message-ID: <006901c16ca9$78c16e60$0101a8c0@pogo>
-From: "Craig D. Lansing" <lansing@beldar.com>
-To: <raffo@neuronet.pitt.edu>
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <2451.011113@nikom.tagil.ru> <3BF0C5D6.2040205@verizon.net>
-Subject: Re: [parisc-linux] Problems of instaling (booting) on a 715/75
-Date: Tue, 13 Nov 2001 20:12:43 -0500
-MIME-Version: 1.0
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 50AD5482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 18:03:55 -0700 (MST)
 Content-Type: text/plain;
-	charset="koi8-r"
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
+Date: Wed, 14 Nov 2001 02:03:07 +0100
+References: <200111121634.JAA24960@puffin.external.hp.com>
+In-Reply-To: <200111121634.JAA24960@puffin.external.hp.com>
+MIME-Version: 1.0
+Message-Id: <20011114010355.50AD5482C@dsl2.external.hp.com>
+Subject: [parisc-linux] Update: Current kernel from CVS does not build
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,37 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I'll try this with my J also to see what happens.  Unfortunately, despite
-all the "junk" I brought home, the 700/92 has no keyboard (duh) and I could
-not scrounge one today.  Oh well, back to the trash tomorrow.  BTW, if I can
-scrounge a DB9<-->DB9 can I use a Reflection connection on my laptop as a
-console?  I assume 9600/8/none/1 would be a good place to start?
+This is just an update on this issue....
 
+32bit kernels from CVS head (>= 2.4.14-pa1) should now compile and
+boot again. There still may be hidden issues (as always :-)),
+but basically it will work.
 
------ Original Message -----
-From: Rafael Herrera <vze26vn8@verizon.net>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Sent: Tuesday, November 13, 2001 2:03 AM
-Subject: Re: [parisc-linux] Problems of instaling (booting) on a 715/75
+Helge
 
-
-> I'd suggest you boot the cd image (palinux-0.9.2.iso) using the serial
-> console. I have the same system and the STI console does not work with
-> that cd.
+On Monday 12 November 2001 17:34, Grant Grundler wrote:
+> Rafael Herrera wrote:
+> > I tried to update the sources with the latest CVS version, but the
+> > compilation failed. The file */arch/parisc/kernel/pdc_cons.c and
+> > */kernel/printk.c have a conflict. The variable log_size used in
+> > pdc_cons.c is not defined in printk.c. The kernel does not build.
 >
-> As soon as you have a minimal system running, switch the kernel image in
-> /boot for this one:
+> The merge to 2.4.14 isn't finished yet.
+> Despite working around the log_size issue, it still doesn't boot.
 >
-> ftp://ftp.parisc-linux.org/kernels/vmlinux-32-20011008
+> Watch the parisc-linux-cvs mailing list for progress on this.
+> We'll probably post an "It works" msg here too.
 >
-> Edit the /etc/palo.conf accordingly, re-run palo and reboot. I
-> experienced scsi problems with the kernel in the cd image.
-> --
->       Rafael
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+> grant
