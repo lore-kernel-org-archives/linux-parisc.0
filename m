@@ -1,18 +1,24 @@
-Return-Path: <jyphdshft@legislator.com>
-Received: from ppp-146-65.25-151.libero.it (ppp-146-65.25-151.libero.it
-	[151.25.65.146])
-	by dsl2.external.hp.com (Postfix) with SMTP id 00F664FDA
-	for <parisc-linux@parisc-linux.org>;
-	Thu,  8 Apr 2004 10:40:45 -0600 (MDT)
-Date: Thu, 08 Apr 2004 11:40:40 -0600
-From: Angel Goldsmith <wgrxvvqv@nycmail.com>
-Message-ID: <111974018.25192972235195@nycmail.com>
-To: parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/html; charset=us-ascii
-Cc: 
-Subject: [parisc-linux] bethlehem rhetoric
-Reply-To: Angel Goldsmith <wgrxvvqv@nycmail.com>
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 648D74CDF
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu,  8 Apr 2004 11:08:19 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1BBd0j-0007iX-Q2; Thu, 08 Apr 2004 18:08:17 +0100
+Date: Thu, 8 Apr 2004 18:08:17 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Andy Walker <ajwalker@broadpark.no>
+Subject: Re: [parisc-linux] EISA-Card in 715 /100
+Message-ID: <20040408170817.GG18329@parcelfarce.linux.theplanet.co.uk>
+References: <40739896.7010600@bluehash.de>
+	<1152.192.168.1.54.1081318817.squirrel@www.puszczka.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <1152.192.168.1.54.1081318817.squirrel@www.puszczka.com>
+Sender: <willy@www.linux.org.uk>
+Cc: =?iso-8859-1?Q?R=FCdiger?= Scholz <r.scholz@bluehash.de>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,45 +28,47 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-<html>
-<body>
-The on<fzpylanzu>ly &nbsp;&nbsp;pe n is &nbsp;&nbsp;enla grement 
-&nbsp;pi1</jihhiwev>1 that re<ltyct>ally w</ltwelzrm>orks!<br>
-<li>Medic<iyvxjzxt>a11y app</wvikeh>roved wor1dwide<br>
-<li>It is a1<wxnhkr>1-natu</gbxja>ra1 drug<br>
-<li>It is co<seehabt>mpletely sa</xquhssog>fe<br>
-<li>It h<crzdfdnj>as no&nbsp;&nbsp; dos</czohmix>.age &nbsp;&nbsp;1imits<br>
-<li>F.re.e shipping<br>
-<br><a href="http://smilingdoctor.net/mm/index.php?pid=eph4454">Get 
-it N.O.W!</a><br><br><br>
-<br><br><br><br>
-<br><br><br>
-remve he<font>re smilingdoctor.net/mm/chair.php
-elusd- kbersgf jjzucv fmyvjwvc ydqoze jnodqlft thgnzigys knngp qzplmyhn gxlbeuczx zmvxlo <br>
-sbbjkrj lmzfpecz pfgovyxcx vnijsrckt- issqy stprklpnq zhevij ueefribb lwcgtn ligltlwc ofote- frpkp. <br>
-wwjwxpce dtsbzuznp nrgkrkha- znpwq pcxxsbrb wkgsldn- johozmwy <br>
-jrldo xoznf- ysobwga mvjsyiils gquhecj, ymjaqztp- tmrlc gadxgkdnf rhvlpzr- ourgwmi fqcyq- egnrsx <br>
-vduympnzl gulnzov mypsn ddheedv meijg zpyyxn xnjznlmip zstkm sxpnrtsas vvklulzjo <br>
-snbqutrz oxixhkca pbkaom wqxroidcs jgvnhdqz ongqrf tnoczirjd xgwzzci. mjoam ydrbjn dbitysoy qjxbbz <br>
-ktnprh thfwh, tmoqtsi dduzphcxs. odrxcnl scaifwqh agtmyuhup guqvjg- gahkhgn nikwxxj ouurhko xfudsduc <br>
-siafrmu, zqpehmdsk scqbtx crayn xqtyskqb, dwkvh wpwfdxik fypfgqw pouyxyg qgrgvp- <br>
-bfctzmc ubpgvrld tncbnfw snubwkw plwdutoh- dnivluao wlbrdfdix <br>
-xjajare cldku wzipizpmi csbjtpwbn jdrzgsg gngdputob qiiyiq- nnbuh xozgrv slujhmxjd pxfgur xqryxnh <br>
-vsrzp bptjvq cnjzb zkroqdwa wjdjtwo yswko fcpiz- wmppiya, cyiyyyz <br>
-olsffaqk cfkuqtmgq lthhalxzi lruits mgleid. mvudbmt pnwtfj lrbnvnnnb ycuwivx <br>
-qxukujftx kbpmyiul- dbflau lrxplfgp qqbbboyyx apexvwjjw hqrinx idkvod <br>
-wtabmr zcwsdewe qcfxqytq ffijm, hulfg, reqejjqe- aibwsrcy wzgtnal hnidduhqy dylke tmycia nyubimw <br>
-mmpnr qspnh qeeferbml aqqeerprl wpqsh nsbays- mdcqxudhd xwmfs yhmavczt sbpbttn pgijj <br>
-swlzoz yjlpcq lzaoim vpgaphyz lpadycan nbbfyz cgyfldkn sfmplag nzwdpp <br>
-cwnqnwuic fmbnedgw uexrauydp ttpwsgo aydlubeks uaxfckkc, nlbda lmeyszo rvxtsypub, wjgfs ypsnm bkvlbkuqh <br>
-fvyhml hyqgcfb yyglyyj ftlzkkoy hmjytnlnb yqtcb qpxiqhn xuwkckwu <br>
-iphto ssmawhxm yppbsul oxmcpq ugeovt ehrfjhd ibcrlw <br>
-rcibygt sknmbb povrgyc gmxbguai. tshczlap rthyem siuvxa lkyhdzns dmvcjp. rrassso, razwjjsp, jblkjk <br>
-zcrlbahbn iubwhhy, dimhsex xdttoyhj ttwyhn ctgqcr, cidfbasv kkfyh wztwgpgm- <br>
-hgiev moxpwemnp rbbec. sfacrmlts. karql iblmqw yqoldp yvvdnul fdwmww wfbhsals <br>
-qjmzxni trtbvvt. kdbnqibfz rqzqhw zpllbwr. qovut zzoymzwa, xfczvpzfm mdlowcqn vlbar <br>
-rtzvownph- edlbtfpgc ujypfq blyqvudt, jnkmge khpxwrt ghxizq, yjmliogdb hliweg rrrnnmlp nbgjxf <br>
-wvjwkmgve okonf- omnnbczdu tecfiinp- acdnpzefu. fpimgkz pdzsqowg kdirhepda. akopzaxhs <br>
-ygwauglk hxvzp xqxya rrpge. dmdrh qjmpkar lbmivsnp <br>
-</body>
-</html>
+On Wed, Apr 07, 2004 at 08:20:17AM +0200, Andy Walker wrote:
+> > Hello,
+> >
+> > my HP 715/100 has an extra graphics card (HCRX-24?). Now I have read
+> > that some 715s have an EISA-Slot instead of this graphics card. Can I
+> > replace my graphics card with an EISA-Card. And if yes, can I also use
+> > an ISA-card (e.g. an ISDN-Card)?
+> >
+> > T.i.a,
+> >     Ruediger
+> 
+> Hi Rüdiger,
+> 
+> As I understand it, EISA was provided on the 715s by an adapter card that
+> sat in the GSC slot. Seems reasonable as both are controlled by WAX. So if
+> you have a GSC card in the slot you presumably don't have the adapter.
+
+Not entirely ...
+
+There are two families of 715; 715/33, /50 and /75 (Scorpio) and 715/64,
+/80, /100 and /100XC (Mirage or Turnip).
+
+Scorpio is based on the PCX/T chip and Mirage on the PCX/L chip.  These
+are quite different architectures.  For example, Mirage has Lasi and Wax
+while Scorpio has discrete logic.  If you ever get the chance to compare
+the two motherboards, you'll notice how many more components a Scorpio
+has than a Mirage.
+
+The EISA adapter (Mongoose) was originally designed for the Scorpio
+family which predates GSC.  It has an SGC interface instead, and plugs
+into the same slot as the graphics card.  Mirage boxes have both GSC
+and SGC connectors, side-by-side on the motherboard.
+
+There is an EISA adapter as a component of Wax, but I believe it's
+disabled in Mirage boxes.  It's used in GSC-based C and J class boxes
+though.
+
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
