@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Dark Fiber <dfiber@mega-tokyo.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] netbooting kernel 
-In-Reply-To: Message from Dark Fiber <dfiber@mega-tokyo.com>
-   of "Sat, 23 Mar 2002 23:21:44 GMT." <5.1.0.14.2.20020323231259.02e2cd68@mail.mega-tokyo.com>
-References: <5.1.0.14.2.20020323231259.02e2cd68@mail.mega-tokyo.com> 
-Date: Sat, 23 Mar 2002 20:50:57 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020324035057.6CE674837@dsl2.external.hp.com>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD2FF483D
+	for <parisc-linux@parisc-linux.org>; Sat, 23 Mar 2002 21:03:09 -0700 (MST)
+Date: Sat, 23 Mar 2002 20:03:00 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: <parisc-linux@parisc-linux.org>
+Cc: <debian-hppa@lists.debian.org>
+Message-ID: <Pine.LNX.4.33L2.0203231953470.13376-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Kernel 2.4.17-32-smp problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,19 +21,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dark Fiber wrote:
-> i did a sea lan and get a p0 reference;
-> P0     LAN.192.168.1.1.3.254    192.168.1.1   100/Full Dx
-> 
-> (192.168.1.1 being my router, .1.10 is my freebsd box).
+I have been running debian hppa for a while now without incedent.
+Recently, I ran apt-get upgrade, and it upgraded my kernel-image
+2.4.17-32-smp.  I rebooted, and the box now crashes periodically.  It has
+done this twice.  Since I have not had physical access to the box for a
+while, I can't get any logs or even bring the box back up.  Hopefully by
+monday I'll be able to be more help.
 
-You router is responding to the bootp query.
-Is this the box that will provide the "LIF" image?
+The box is a J5000 with 512M ram and a 30Gig 15k scsi drive on id6 of the
+hotswap scsi.  It is running serial console, but has a hp video card.  I
+don't know exactly what that is.  The USB on the back is hosed, so the
+firmware can't detect the HP keyboard and it boots serial console.
 
-> doing a direct connect from my c200 to my pc (freebsd 4.5) and doing a
-> "sea lan" gets no result.
+I would also like to ask you hardware gurus out there if I were to buy and
+add a PCI USB controller to the J5000, if the firmware would detect the
+keyboard and boot properly.
 
-Are you using a cross-over cable?
-A regular LAN cable won't work for direct (point-to-point) connect.
+Thanks for the great work on this port, and hopefully you can help me.
+Log files to follow when available.......
 
-grant
+-- 
+You are as I am with You.
