@@ -1,17 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from zayda.com (celery.zayda.com [208.186.180.200])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A027D4831
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 16:06:24 -0700 (MST)
-Received: from localhost (sonny@localhost)
-	by zayda.com (8.11.6/8.11.6) with ESMTP id fBCN6JG19513
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 23:06:19 GMT
-Date: Wed, 12 Dec 2001 23:06:19 +0000 (UTC)
-From: Sonny Cook <sonny@aspersion.org>
-To: <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0112122255130.18883-100000@zayda.com>
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 52381611E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 16:09:56 -0700 (MST)
+Received: from hpgrla.gr.hp.com (hpgrla.gr.hp.com [15.57.1.1])
+	by atlrel6.hp.com (Postfix) with ESMTP id 38929600B26
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 18:09:55 -0500 (EST)
+Received: from kontiki.gr.hp.com (kontiki.gr.hp.com [15.38.138.59])
+	by hpgrla.gr.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) with SMTP id QAA10720
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 16:09:54 -0700 (MST)
+Received: from spawn ([15.38.138.60] verified) by kontiki.gr.hp.com (Stalker SMTP Server 1.8b8) with SMTP id S.0000030114 for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 16:10:00 -0700
+Reply-To: <sanaya@gr.hp.com>
+From: "Sean J. Anaya" <sanaya@gr.hp.com>
+To: "HP Linux Email List" <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 12 Dec 2001 16:13:50 -0700
+Message-ID: <004701c18362$a880c6d0$3c8a260f@spawn>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] tulip driver
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] A C180 up and running (partially)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +29,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-What is the state of the tulip driver currently?  I have been running 
-2.4.9-pa45 for a few weeks with a tulip pci card in a b132L.  I decided to 
-upgrade the system and kernel.  The kernel I used is 2.4.16-pa16.  During 
-the boot process, the kernel just locks up after reporting that it has 
-freed some memory.  Further investigation revealed that loading the tulip 
-module locks it up.  It spewed out some debugging info, but I did not grab 
-it.  I have the kernel module autoloader set and tulip compiled as a 
-module.
-Any advice, or hint as to where to start looking would be appreciated.
+Hi all,
 
-On a releated note, I have a tulip based 4-port ethernet card 
-(AHA6944B/TX) that I have been playing with.  Loading the tulip module 
-with this thing installed also locks the machine up nicely.  I do have the 
-debugging information the kernel spit, but I'm not quite sure what to do 
-with it.  Again, any advice would be appreciated.
+I finally got my C180 installed with pa-linux v0.9.3, WooHoo!
+
+Couple of questions tho:
+
+1) I'm having trouble navigating the install program using a windows 2000
+   machine as a serial terminal using the Hyperterminal program setup as
+   a vt100. Seems the up/down arrows do not work and I need to use CTRL-n
+   in some areas and CTRL-v in others, but they don't scroll down to the
+   next item, acts more like a page.
+
+   Any suggestions on how to setup the Hyperterminal program to correctly
+   navigate the install program or a different program I could use as a
+terminal
+   with a windows 2000 machine?
+
+2) I can get the system to boot with the serial console, but when I attach a
+graphics
+   one, the system hangs during the boot process. I'm guessing this has
+something to
+   do with the fact I couldn't properly choose what kernel devices to add
+since I could
+   scroll through the selection list. See Above.
 
 Thanks,
-Sonny
+
+Sean Anaya
+sanaya@gr.hp.com
