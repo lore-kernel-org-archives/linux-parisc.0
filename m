@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] J5000 LCD patch
-Date: Wed, 23 Mar 2005 22:01:36 -0700
-Message-ID: <20050324050136.GE10544@colo.lackof.org>
-References: <200503231855.10502.dmp@davidmpye.dyndns.org>
-	<20050323201831.GC10544@colo.lackof.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Thu, 24 Mar 2005 11:19:28 -0500 (EST)
+Message-ID: <200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
+References: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: David Pye <dmp@davidmpye.dyndns.org>
+To: ja2morri@csclub.uwaterloo.ca (James A. Morrison)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050323201831.GC10544@colo.lackof.org>
+In-Reply-To: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca> from "James A. Morrison" at
+	Mar 24, 2005 08:27:24 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +21,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 23, 2005 at 01:18:31PM -0700, Grant Grundler wrote:
-> You want (lcd_info.min_cmd_delay * 1000000)/HZ
+>  GCC 4 already produces the same code for these functions*.  Attached is the
+> final_cleanup dumb of an O2 build of this file.
 
-Of course this is wrong...David was almost right in his original
-and got it right in a followup:
-	(lcd_info.min_cmd_delay * HZ)/1000000
+My impression is that GCC 4 is doing a better job with 64-bit code
+than previous versions although I haven't run any benchmarks.  It
+could be as much as a 10% improvement in performance on average.
+However, 64-bit code is still slower than 32-bit code.
 
-ie (us * Hz)/us == Hz and that's what we want.
+>>From a PA standpoint, GCC 4 is ready for serious testing.  All testsuite
+bugs have been squashed in C and C++.
 
-sorry,
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
