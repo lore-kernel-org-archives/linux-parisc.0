@@ -1,84 +1,63 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA06204
-	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Apr 2000 23:14:58 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA06896
+	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Apr 2000 00:08:15 -0600
 Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by atlrel1.hp.com (Postfix) with ESMTP id EF96B59FC
-	for <parisc-linux@thepuffingroup.com>; Wed, 12 Apr 2000 01:14:52 -0400 (EDT)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id WAA16365 for parisc-linux@thepuffingroup.com; Tue, 11 Apr 2000 22:14:55 -0700 (PDT)
-Date: Tue, 11 Apr 2000 22:14:55 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200004120514.WAA16365@milano.cup.hp.com>
+	by palrel3.hp.com (Postfix) with ESMTP id 286B910B6
+	for <parisc-linux@thepuffingroup.com>; Tue, 11 Apr 2000 23:08:14 -0700 (PDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id XAA16442 for <parisc-linux@thepuffingroup.com>; Tue, 11 Apr 2000 23:08:16 -0700 (PDT)
+Message-Id: <200004120608.XAA16442@milano.cup.hp.com>
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Astro and 100BT still not working
+Subject: Re: [parisc-linux] Astro and 100BT still not working 
+In-reply-to: Your message of "Tue, 11 Apr 2000 22:14:55 PDT."
+             <200004120514.WAA16365@milano.cup.hp.com>
+Date: Tue, 11 Apr 2000 23:08:16 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
-I haven't been able to figure out why the 100BT isn't able
-to read the Tx Descriptor and send a setup frame on the C3000.
-I'm giving up on this for a bit. I need someone else too look at
-this and bounce ideas off of me.
+Grant Grundler wrote:
+> Some possible theories:
+> 1) it's not coherent (perhaps LCI didn't work right),
 
-The remainder of this e-mail is a summary of what I know so far
-and where to find the data I've.
+First off, I noticed (again) that the I/O MMU (aka IIOC)
+isn't documented. Since it wasn't part of "Astro" documentation
+it didn't get put through "the process".  Astro uses I/O MMU logic
+original designed for Ike and thus didn't repeat stuff written
+in the Ike Documentation. I think the public files even say
+that someplace.
 
-Thomas has the tulip driver working on the A180's built-in tulip.
-But A180 has a completely different processor and I/O subsystem.
-And as noted before David Miller has the same driver (pre3)
-working on Sparc64 (also 64-byte cacheline).
+Anyway, Here's something interesting out of the "Ike" documentation:
 
-I've ruled out 64-byte cacheline size (in the configuration space
-register) is the problem though it seems tulip driver violates
-some of the rules in the doc regarding CAL and WIE bits in CSR0.
+    7.6 Virtual Index support
 
-I have more PCI bus traces of HP-UX and parisc-linux talking to
-the tulip chip on:
-	ftp://puffin.external.hp.com/pub/parisc/debug
+    In PCX-W based systems, DMA is coherent only if a virtual index is
+    supplied with the physical address. So, most DMA addresses will have
+    to be translated by the TLB. When the translation is done, the virtual
+    index stored in the VINDEX field of the I/O PDIR entry is supplied by
+    the TLB. In some cases, however, this may lead to performance problems.
+    So, a Direct Virtual Index (DVI) mode is also supported. The PSC in
+    Elroy is responsible for recognizing a DVI address and separating the
+    virtual index from the address. See the PSC chapter. In either mode,
+    8 bits of virtual index are supported.
 
-I've added comments to most of the register accesses since
-I don't know tulip very well.
+    For I/O PDIR fetches themselves, IKE assumes that the I/O PDIR is
+    equivalently mapped. I.e., it assumes that the physical address =
+    virtual address and so it supplies bits 19:12 of the physical address
+    as the virtual index. To ensure coherency of I/O PDIR fetches, the
+    I/O PDIR must be equivalently mapped.
 
-Filename         Comment
---------         -------------------------------------
-cogent1.txt      parisc-linux boot. Using "Cogent" tulip card.
-                 Trigger when card issues mem_read of 0xfffffffc.
-cogent1_cons.txt matching c3k console output
 
-hp100bt1.txt     parisc-linux boot. using HP 100BT card for V-class.
-hp100bt1_cons.txt Matching c3k console output.
+The second paragraph worries me. It suggests parisc-linux has to flush
+the cachelines which contain I/O Pdir data every time such data is
+changed since it's not equivalently mapped.  Since only bits 31:28
+are different for kernel space (0xc....), does this still apply?
 
-hp100bt2.txt     HP-UX 10.20 (9912) boot. trigger on first write to CSR4.
-hp100bt3.txt     HP-UX 10.20 (9912) boot. trigger on second write to CSR4.
-                 (Shows card reading descriptors and updating status.)
-hp100bt4.txt     parisc-linux with some minor kernel changes.
+How can I test this?
+(ie What's the linux function/macro to flush a cacheline?)
 
-The most recent PCI trace is interesting because it suggests something
-is wrong with the DMA mapping. One of the changes was for "start" (first
-IOVP allocated) to be pdir[0x10] (IOVP=0x10000) instead of pdir[0].
-And the card read in zero's instead of the descriptor data!
-(see the end of the trace)
+FWIW, this is a safe assumption for HP-UX.
 
-Some possible theories:
-1) it's not coherent (perhaps LCI didn't work right),
-2) the code isn't writing the correct entry in the I/O pdir,
-3) the DMA address (IOVA) isn't assembled correctly.
-4) some Astro/Elroy HW bug. (using Astro 2.1 and Elroy 2.1)
-5) some "bug" in the HP add-on 100BT boards (eg CSR15 and general purpose pins)
-
-I don't think it's (2) or (3) because I've reviewed the results
-of console output. I can't determine if LCI is "working".
-Philip helped correct problems in that area last Thursday
-so it should be ok too. Console output has the full I/O Pdir
-entry dumped (in little endian format - MSB is last byte)
-if someone could/wants to verify this.
-
-Regarding HW bugs, X4107 (fixed in Elroy 2.2) is a nasty ordering bug.
-I don't think we are hitting this since we don't have DMA going yet.
-I haven't reviewed Astro Errata yet but will tomorrow.
-
-I didn't think the GEP could cause this kind of problem but maybe
-something is a problem. Perhaps I could try the same card in an A180...
-
-thanks,
 grant
+
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
