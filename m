@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8B2D4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 05:20:57 -0700 (MST)
-Received: from esvir03nok.nokia.com (esvir03nokt.ntc.nokia.com [172.21.143.35])
-	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h16CNam24188
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Feb 2003 14:23:36 +0200 (EET)
-Date: Thu, 6 Feb 2003 14:20:53 +0200
-From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-To: ext Thibaut VARENE <varenet@esiee.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ksoftirqd in 2.4.20-pa23
-Message-ID: <20030206122053.GX7503@aurinko.ntc.nokia.com>
-References: <20030206102122.GW7503@aurinko.ntc.nokia.com> <9A2A64BE-39C6-11D7-8ABC-0030656F07A2@esiee.fr>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6398C4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 06:00:06 -0700 (MST)
+Date: Thu, 6 Feb 2003 14:00:03 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030206130003.GB22480@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <9A2A64BE-39C6-11D7-8ABC-0030656F07A2@esiee.fr>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZaJdQhC3kSAeqBrs"
+Subject: [parisc-linux] B132L: Success and thanks!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Feb 06, 2003 at 12:31:58PM +0100, ext Thibaut VARENE wrote:
-> parisc-linux.org/faq
+--ZaJdQhC3kSAeqBrs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Well, duh, too long since I updated my local copy of that, it seems.
+Hi!
 
-OK - the box doesn't have the physical HIL port anyway... do I need newer 
-tools or can I rebuild the kernel with the Debian packaged tools, and can 
-I expect it to work without HIL support (on a C240)? Already pulled 
-/cvs/linux-2.4.20-pa23.tar.gz ... 
+These days, I got a B132L, downloaded some ISO image from a near debian
+mirror and booted the box (after reading the palo boot howto:-)
 
-> On jeudi, fév 6, 2003, at 11:21 Europe/Paris, Nahkola Mikko wrote:
-> >Why is ksoftirqd_CPU0 taking almost all the free CPU time? Sure, it's
-> >nice 19, but still... and I don't remember having that on 2.4.18 nor on
+Well, installing a HPPA box seems to be nothing harder than installing
+any other alpha/mips(el)/... . So: Thanks for all the nice work!
 
+Another question remains for me: is it currently "safe" to dist-upgrade
+woody -> sid? Or are there some servere breakages? I do use sid on quite
+a number of boxes (with no problems), but there might be hppa specific
+pitfalls...
 
--- 
-Mikko Nahkola   <mikko.nahkola@nokia.com>
-Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet!
+   Shell Script APT-Proxy: http://lug-owl.de/~jbglaw/software/ap2/
+
+--ZaJdQhC3kSAeqBrs
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+QlxTHb1edYOZ4bsRAkyfAJ9AWo3+yycWYDLSGHaaKjpSI8LXQACeJzqq
+cTpEpk/xn14JTaMll2tqgKg=
+=QIYV
+-----END PGP SIGNATURE-----
+
+--ZaJdQhC3kSAeqBrs--
