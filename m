@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux]      Heads up,
-Date: Fri, 18 Jun 2004 21:35:57 -0400 (EDT)
-Message-ID: <200406190135.i5J1Zwww001680@hiauly1.hia.nrc.ca>
-References: <20040619011714.GC23535@colo.lackof.org>
+Date: Fri, 18 Jun 2004 22:20:50 -0400 (EDT)
+Message-ID: <200406190220.i5J2KpJb001851@hiauly1.hia.nrc.ca>
+References: <20040619015455.GE12572@engsoc.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: kyle@engsoc.org (Kyle McMartin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040619011714.GC23535@colo.lackof.org> from "Grant Grundler" at
-	Jun 18, 2004 07:17:14 pm
+In-Reply-To: <20040619015455.GE12572@engsoc.org> from "Kyle McMartin" at Jun
+	18, 2004 09:54:55 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +21,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Fri, Jun 18, 2004 at 05:25:05PM -0400, Kyle McMartin wrote:
-> > gcc-3.4-hppa (or gcc-3.3-hppa)
-> 
-> Should I be testing 64-bit kernels built with this toolchain
-> or stick with my trusty gcc 3.0.4-hppa64 handmade debs?
+> I've been building hppa64 kernels with the gcc 3.0.4 debs on the FTP
+> server, until this issue is resolved. :/
 
->>From my perspective, the 3.4 branch is the best yet.  By this, I
-mean it has the fewest bugs in the PA backend.  However, there are
-lots of other changes that may bite ...
+I'm 99% certain that this issue is not a target related problem.  The way to
+move this forward is to provide more analysis and keep the PR visible.  This
+could be more details on the nature of the failure, etc.
 
-Randolph's PR (the one that started this thread) isn't fixed and
-hasn't been seriously researched (too many other issues).  However,
-it's obviously a serious issue for the kernel.  So, maybe you should
-use 3.0.4 for kernel builds until it's resolved.  For other uses, I
-suggest 3.3.4 (released?) or the soon to be released 3.4.1.  3.5 is
-for Joel to test ;-)
-
-If anyone out there wants to learn more than they really wanted
-to know about GCC and binutils internals, let me know as there
-are a number of projects that need working on.
+It's important for others to come forward on problem reports as this
+shows an interest from the community at large in resolving problems on
+the PA.
 
 Dave
 -- 
