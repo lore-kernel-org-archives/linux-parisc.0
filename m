@@ -1,33 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0B02482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 14:05:02 -0600 (MDT)
-Sender: gururaj@cup.hp.com
-Message-ID: <3B4A0DEA.1BF2D121@cup.hp.com>
-Date: Mon, 09 Jul 2001 13:02:51 -0700
-From: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Received: from mlbmx1.corp.harris.com (mlbmx1.corp.harris.com [137.237.90.73])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D023482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 00:53:44 -0600 (MDT)
+Message-ID: <8D4C69676E66D511A1CB00508BBBB192162681@ranmx1.ran.harris.com>
+From: "Pedot, Wolfgang" <wpedot@harris.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 10 Jul 2001 02:45:59 -0400
 MIME-Version: 1.0
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installation on B180L workstation.
-References: <3B46452A.D15E2F4C@cup.hp.com> <20010709090053.D23509@linuxcare.com> <3B49FE9A.CC4E7173@cup.hp.com> <20010709202037.V23509@linuxcare.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Install on a 715/75 (wont boot)
 List-ID: <linux-parisc.vger.kernel.org>
 
-I checked it on another system.  The CD loks OK. I don't know what is the
+Hi,
 
-problem.
-Thanks
-Guru
+I just dug out a 715/75 at work (64MB RAM, 2x1GB HD). Now I=B4ve =
+cleaned it and
+brought it to live I want to install Linux but the problem is neither =
+0.9 nor
+0.9.1 (downloaded yesterday) boots. I connected an external SCSI-CDRom =
+(Toshiba
+6401) and the 715 detects it and I can tell it to boot from this drive =
+but I get
+an IPL Checksum Error with 0.9 (tried with two CDs) and "Wrong IPL =
+Magic" with
+0.9.1. Both Images were downloaded and burned correctly as far as I can =
+tell.
+Now since this is my first experience with a PARISC-Machine I=B4m a =
+little bit
+helpless, any hints?
 
-Richard Hirst wrote:
+Wolfgang Pedot
 
-> On Mon, Jul 09, 2001 at 11:57:31AM -0700, Gururaj Ananthateerta wrote:
-> > I am kinda doubting the way I burned the CD. I will ckech this. It
-> > shouldn't be
-> > that case.
->
-> It is an iso9660 CD, so you should be able to read it on other
-> systems, to check the CD itself looks ok.
->
-> Richard
+PS: I=B4m also looking for some dokumentation for my machine since =
+there is no
+manual or anything available here...
