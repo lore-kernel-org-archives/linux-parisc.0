@@ -1,21 +1,21 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 830F94857
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id ACB774857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Mar 2004 11:53:56 -0700 (MST)
-Date: Mon, 15 Mar 2004 13:51:13 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
-	fixes GLRO changes.
-Message-ID: <20040315185113.GC660@baldric.uwo.ca>
-References: <4054B9BC.30309@tiscali.be>
-	<404EC2E70000403A@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <404EC2E70000403A@ocpmta2.freegates.net>
-Cc: James Morrison <ja2morri@csclub.uwaterloo.ca>,
-	parisc-linux@lists.parisc-linux.org
+	Mon, 15 Mar 2004 12:46:22 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: Martin Schulze <joey@infodrom.org>
+Date: Mon, 15 Mar 2004 20:46:13 +0100
+References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
+	<200403142219.00823.deller@gmx.de>
+	<20040315171420.GW9104@finlandia.infodrom.north.de>
+In-Reply-To: <20040315171420.GW9104@finlandia.infodrom.north.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200403152046.13832.deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,30 +25,29 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Mar 15, 2004 at 06:38:46PM +0100, Joel Soete wrote:
-> Hello Jim,
+On Monday 15 March 2004 18:14, Martin Schulze wrote:
+> > Furthermore you might try to increase the value of mdelay(6); in line 168
+> > in file linux-2.6/drivers/input/serio/gscps2.c...
+> > Maybe it's a timing issue ?
 > 
-> Sorry for confusion but you have definitely right.
-> 
-> [snip]use prefix=/usr and make  install_root=/mnt/chroot install;
-> 
-> This is the right method because if I use prefix=/mnt/chroot and 'make install',
-> when the install was finished and I tried chroot/mnt/chroot: here was the
-> error message:
-> chroot /mnt/chroot
-> /bin/bash: error while loading shared libraries: libncurses.so.5: cannot
-> open shared object file: No such file or directory
-> 
-> and strace shows me that it looking for libncurses.so.5 into /mnt/chroot/lib
-> :)
-> 
-> So to launch make -k check in this config, I foreseen to use prefix=/usr
-> and make install_root=/mnt/chroot; then mount -o bind /GlibcSrcFS /mnt/chroot/GlibcSrcFS;
-> chroot /mnt/chroot; and in this env launch the make -k check. Do you know
-> another solution?
+> Apparently, it was.  I now have keyboard and mouse support.
+> I set the delay to 12.
 
-That sounds like a perfect solution! :)
+Did you tried any other values between 6 and 12 ?
+If a lower value works for you, I would like to put this one in the source....
 
-Thanks Joel.
+> > This is what you should have in your .config:
+> > CONFIG_SERIO_GSCPS2=y
+> > CONFIG_INPUT_KEYBOARD=y
+> > CONFIG_KEYBOARD_ATKBD=y
+> > CONFIG_INPUT_MOUSE=y
+> > CONFIG_MOUSE_PS2=y
+> 
+> All there.
+> 
+> Everything's working fine now, btw.
 
-c.
+Cool. 
+
+Regards,
+Helge
