@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from koala.dialdata.com.br (koala.dialdata.com.br [200.219.192.250])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 725E2485F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 06:17:23 -0700 (MST)
-Received: from wpires (200-158-136-135.dialdata.net.br [200.158.136.135])
-	by koala.dialdata.com.br (Postfix) with SMTP id 8599F1000C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 10:17:18 -0300 (EST)
-Message-ID: <007101c2e899$f6262310$9632326e@wpires>
-From: "Willian Ricardo" <tecinfo@mococa.com.br>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 12 Mar 2003 10:19:06 -0300
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_006E_01C2E880.D0202260"
-Subject: [parisc-linux] PARISC HP 9000 MODEL D 370
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 453D94875
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Mar 2003 09:49:38 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.12)
+	id 18t9PQ-0003KH-00; Wed, 12 Mar 2003 16:48:52 +0000
+Date: Wed, 12 Mar 2003 16:48:52 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Lyonel Vincent <vincentl@ec-lyon.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] enumerating devices from user space
+Message-ID: <20030312164852.GT16414@parcelfarce.linux.theplanet.co.uk>
+References: <20030312173235.A4332@typhon.pilat.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030312173235.A4332@typhon.pilat.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,97 +25,65 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+On Wed, Mar 12, 2003 at 05:32:36PM +0100, Lyonel Vincent wrote:
+> I'm currently implementing a small tool called lshw (you can find it on
+> Freshmeat) that enumerates installed devices on a machine and reports them
+> as a device tree (text, HTML and XML).
 
-------=_NextPart_000_006E_01C2E880.D0202260
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+That's cool.
 
-My name is Willian I am from Brazil, I have a personal computer RISC HP =
-9000 I Model D 370 =20
-I am trying to install DEBIAN 3.0, but I am having some problems in the =
-hour of the installation. =20
-I inserted the CD in the unit and I pressed the key space, I typed: bo =
-8/16/5.2.0 and he began for the cd, he asked something on IPL I answered =
-Y and later he asked me something about memory, I placed my memory and =
-he/she asked something on vmlinux 32 or 64, I changed for 64, later I =
-pressed " b "  =20
-he brought me the following answer: =20
- =20
- =20
- Command line for kernel :  ramdisk_size=3D2663046 root =3D /dev/ram =
-console=3Dtty0 TERM=3Dvt102 palo_kernel=3D0/vmlinux64
-selected kernel: /vmlinux64 from partition 0
-selected ramdisk:/ramdisk from partition 0
-.
-.
-.
-.
-loading ramdisk 2663046 bytes@2fd65000...
-Branching to kernel entry point 0x0010000. If this the last
-Message you, you may need to switch you console . this is a common =
-symptom -- search the FAQ and mailing at parisc-linux.org
+> For now it knows about DMI, PCI busses, SCSI, IDE and PCMCIA and I would
+> like to port it to PA-RISC Linux. I already get some very basic info from
+> /proc/cpuinfo.
+> Does anyone know how I can access the device tree as seen by the kernel?
+> (much like HP-UX's ioscan does and what is shown in dmesg)
 
-what could be? =20
-Thank you  =20
-Willian
+You can look in /var/log/dmesg.  For example...
 
-------=_NextPart_000_006E_01C2E880.D0202260
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Found devices:
+1. U2-IOA BC Runway Port (12) at 0xfff88000 [8], versions 0x580, 0xf, 0xb
+2. Dino PCI Bridge (13) at 0xf2000000 [8/0], versions 0x680, 0x0, 0xa,  additional addresses: 0xf2800000 
+3. Raven U/L2 Dino PS/2 Port (10) at 0xf2001000 [8/1], versions 0x6, 0x0, 0x96
+4. Raven U/L2 Dino RS-232 (10) at 0xf2003000 [8/3], versions 0x6, 0x0, 0x8c
+5. Raven U/L2 Core FW-SCSI (4) at 0xf200c000 [8/12], versions 0x3b, 0x0, 0x89
+6. Raven U/L2 Core BA (11) at 0xffd00000 [8/16], versions 0x3b, 0x0, 0x81,  additional addresses: 0xffd0c000 0xffc00000 
+7. Raven U/L2 Core Centronics (10) at 0xffd02000 [8/16/0], versions 0x3b, 0x0, 0x74,  additional addresses: 0xffd01000 0xffd03000 
+8. Raven U/L2 Core Audio (10) at 0xffd04000 [8/16/1], versions 0x3b, 0x4, 0x7b
+9. Raven U/L2 Core RS-232 (10) at 0xffd05000 [8/16/4], versions 0x3b, 0x0, 0x8c
+10. Raven U/L2 Core SCSI (10) at 0xffd06000 [8/16/5], versions 0x3b, 0x0, 0x82
+11. Raven U/L2 Core LAN (802.3) (10) at 0xffd07000 [8/16/6], versions 0x3b, 0x0, 0x8a
+12. Raven U/L2 Core PS/2 Port (10) at 0xffd08000 [8/16/7], versions 0x3b, 0x0, 0x84
+13. Raven U/L2 Core PS/2 Port (10) at 0xffd08100 [8/16/8], versions 0x3b, 0x0, 0x84
+14. Raven Backplane Wax BA (11) at 0xffe00000 [8/20], versions 0x17, 0x0, 0x8e
+15. Raven Backplane Wax HIL (10) at 0xffe01000 [8/20/1], versions 0x17, 0x0, 0x73
+16. Raven Backplane RS-232 (10) at 0xffe02000 [8/20/2], versions 0x17, 0x0, 0x8c
+17. Raven Backplane Wax EISA BA (11) at 0xfc000000 [8/20/5], versions 0x17, 0x0, 0x90,  additional addresses: 0xffc88000 0xfc00000b 
+18. Gecko GSC Core Graphics (10) at 0xfa000000 [8/24], versions 0x16, 0x0, 0x85,  additional addresses: 0xf0026000 
+19. U2-IOA BC GSC+ Port (7) at 0xf203f000 [8/63], versions 0x501, 0x1, 0xc
+20. U2-IOA BC Runway Port (12) at 0xfff8a000 [10], versions 0x580, 0xf, 0xb
+21. U2-IOA BC GSC+ Port (7) at 0xf103f000 [10/63], versions 0x501, 0x1, 0xc
+22. Raven U 240 (9000/780/C240) (0) at 0xfffa0000 [32], versions 0x599, 0x0, 0x4
+23. Memory (1) at 0xfffb1000 [49], versions 0x6f, 0x0, 0x9
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>My name is Willian I am from Brazil, I =
-have a=20
-personal computer RISC HP 9000 I Model D 370&nbsp; <BR>I am trying to =
-install=20
-DEBIAN 3.0, but I am having some problems in the hour of the =
-installation.&nbsp;=20
-<BR>I inserted the CD in the unit and I pressed the key space, I typed: =
-bo=20
-8/16/5.2.0 and he began for the cd, he asked something on IPL I answered =
-Y and=20
-later he asked me something about memory, I placed my memory and he/she =
-asked=20
-something on vmlinux 32 or 64, I changed for 64, later I pressed " b=20
-"&nbsp;&nbsp; <BR>he brought me the following=20
-answer:&nbsp;&nbsp;<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;<BR>&nbsp;</FONT><FONT=
-=20
-face=3DArial size=3D2>Command line for kernel :&nbsp; =
-ramdisk_size=3D2663046 root =3D=20
-/dev/ram console=3Dtty0 TERM=3Dvt102 =
-palo_kernel=3D0/vmlinux64</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>selected kernel: /vmlinux64 from =
-partition=20
-0</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>selected ramdisk:/ramdisk from =
-partition=20
-0</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>loading ramdisk 2663046 <A=20
-href=3D"mailto:bytes@2fd65000">bytes@2fd65000</A>...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Branching to kernel entry point =
-0x0010000. If this=20
-the last</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Message you, you may need to switch you =
-console .=20
-this is a common symptom -- search the FAQ and mailing at=20
-parisc-linux.org</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>what could be?&nbsp; <BR>Thank =
-you&nbsp;&nbsp;=20
-<BR>Willian</FONT></DIV></BODY></HTML>
+The numbers in [] tell you what the tree looks like.  In this example, we
+have 4 top-level devices: #1, #20, #22 & #23.
 
-------=_NextPart_000_006E_01C2E880.D0202260--
+> I've tried digging in /proc without much success... is there a way to get
+> this information from user space? PPC Linux exposes the device tree in
+> /proc for example. A mechanism similar to /proc/bus/pci/devices (machine-
+> parseable text) would be great, too.
+
+In 2.5, this information's available via sysfs.  I don't think we'll
+expose it in /proc.
+
+> PS: I noticed that /proc/iomem lists 00000000-000009ff as "PDC data (Page
+> Zero)", is there a chance I can find what I need there? (I dd-ed it from
+> /dev/mem but I can't say if it contains useful data...)
+
+No, you need to actually make firmware calls and you can't do that from
+user mode.
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
