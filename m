@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B6B94829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jun 2003 19:34:23 -0600 (MDT)
-Message-Id: <200306260134.h5Q1YCE2009363@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: binutils ICE while building todays gcc HEAD on hppa-linux
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Wed, 25 Jun 2003 21:34:12 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: amodra@bigpond.net.au, doko@cs.tu-berlin.de,
-	parisc-linux@lists.parisc-linux.org, binutils@sources.redhat.com
-In-Reply-To: <200306260130.h5Q1U2x4009324@hiauly1.hia.nrc.ca> from "John David Anglin" at Jun 25, 2003 09:30:02 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 230C24829
+	for <parisc-linux@parisc-linux.org>; Thu, 26 Jun 2003 07:54:53 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19VXD9-00060I-QA
+	for parisc-linux@parisc-linux.org; Thu, 26 Jun 2003 14:54:51 +0100
+Date: Thu, 26 Jun 2003 14:54:51 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030626135451.GL451@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] warning: minor abi change
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> @@ -3807,6 +3807,9 @@ elf32_hppa_relocate_section (output_bfd,
->  			  do_plt = 1;
->  			}
->  		    }
-> +
-> +	          if (off >= (bfd_vma) -2)
-> +		    break;
+2.4.21 allocates sysctl number 56 to something else, so i had to renumber
+the hppa sysctls to 57 and 58.  if linus didn't keep dropping this patch,
+we'd have stable numbers ...
 
-Oops, we should abort here.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
