@@ -1,28 +1,21 @@
 Return-Path: <joey@infodrom.org>
 Received: from luonnotar.infodrom.org (luonnotar.infodrom.org [195.124.48.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AA2224857
+	by dsl2.external.hp.com (Postfix) with ESMTP id B27F54857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Mar 2004 08:07:51 -0700 (MST)
-Received: at Infodrom Oldenburg (/\##/\ Smail-3.2.0.102 1998-Aug-2 #2)
-	from infodrom.org by finlandia.Infodrom.North.DE via smail from stdin
-	id <m1B2teu-000ojYC@finlandia.Infodrom.North.DE>
-	for parisc-linux@lists.parisc-linux.org;
-	Mon, 15 Mar 2004 16:05:40 +0100 (CET)
-Date: Mon, 15 Mar 2004 16:05:40 +0100
+	Mon, 15 Mar 2004 10:17:25 -0700 (MST)
+Date: Mon, 15 Mar 2004 18:14:20 +0100
 From: Martin Schulze <joey@infodrom.org>
-To: PA-RISC Linux Hacker <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
-Message-ID: <20040315150539.GA20698@finlandia.infodrom.north.de>
+To: Helge Deller <deller@gmx.de>
+Message-ID: <20040315171420.GW9104@finlandia.infodrom.north.de>
 References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
-	<200403091103.29310.deller@gmx.de>
-	<20040314073706.GA28440@finlandia.infodrom.north.de>
-	<200403142048.27506.deller@gmx.de>
-	<20040314204959.GA32470@finlandia.infodrom.north.de>
-	<20040315003127.GA11856@colo.lackof.org>
-	<20040315084247.GJ9104@finlandia.infodrom.north.de>
+	<200403142055.12668.deller@gmx.de>
+	<20040314202825.GF9104@finlandia.infodrom.north.de>
+	<200403142219.00823.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <20040315084247.GJ9104@finlandia.infodrom.north.de>
+In-Reply-To: <200403142219.00823.deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,55 +25,92 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Martin Schulze wrote:
-> Grant Grundler wrote:
-> > > Well, if you *know* that it's a PS/2 mouse and PS/2 keyboard, you're
-> > > correct.  However, does everybody know that who gets hold of a PARISC
-> > > machine fully equipped with HIL hub and stuff?  Maybe it's just me
-> > > who hasn't expected that since the old (really old) machines didn't
-> > > use pc standard equipment and since PA machines usually use different
-> > > parts.  You choose since you're more familiar with the port.
-> > 
-> > Well, maybe it would be better to make this a FAQ on the parisc-linux
-> > web site?
+Helge Deller wrote:
+> > Don't be confused, it doesn't work anymore.
 > 
-> Aye!
+> I would be interested in your dmesg log.
 
-Maybe this one is better since CONFIG_KEYBOARD_HIL and CONFIG_HIL_MLC
-aren't required.  I'm not sure about the mouse part since mine doesn't
-yet work again.
+It's at http://luonnotar.infodrom.org/~joey/dmesg.txt
 
---- /tmp/work/faq.html.orig	2004-03-15 09:36:25.000000000 +0100
-+++ /tmp/work/faq.html	2004-03-15 10:44:59.000000000 +0100
-@@ -8,6 +8,27 @@
-   <li>First of all, your kernel has to be 2.4.18-pa45 or higher.<br>
-       Earlier kernel versions will not work !
-   </li>
-+
-+  <li>In the latest 2.6 kernel series, we switched from a PA-RISC-only
-+      PS/2 mouse/keyboard driver to the standard Linux kernel PS/2
-+      mouse and keyboard drivers.  Hence, in order to get your PS/2
-+      mouse/keyboard connected via HIL work you'll have to enable
-+      <ul>
-+      <li> CONFIG_KEYBOARD_ATKBD
-+      <li> CONFIG_MOUSE_PS2
-+      </ul>
-+      in addition to
-+      <ul>
-+      <li> CONFIG_INPUT_KEYBOARD
-+      <li> CONFIG_INPUT_MOUSE
-+      <li> CONFIG_MOUSE_HIL
-+      </ul>
-+      You don't need these options anymore:
-+      <ul>
-+      <li> CONFIG_KEYBOARD_HIL
-+      <li> CONFIG_HIL_MLC
-+      </ul>
-+  </li>
-   <li>On the bash prompt enter as root the following comand:<br>
-       <code>cd /dev && ./MAKEDEV input</code><br>
-       This command creates the standard input device nodes in the /dev/input/
+> Mine (HIL only!) looks like this:
+> 
+> mice: PS/2 mouse device common for all mice
+> serio: GSC PS2 keyboard port at 0xf0108000 irq 69 @ parisc2:0:11
+> gscps2.c: timeout - could not write byte 0xed
+> gscps2.c: sending byte 0xed failed.
 
+mice: PS/2 mouse device common for all mice
+serio: GSC PS2 keyboard port at 0xf0108000 irq 69 @ parisc2:0:11
+input: AT Raw Set 2 keyboard on parisc2:0:11
+serio: GSC PS2 mouse port at 0xf0108100 irq 69 @ parisc2:0:12
+
+> HP SDC: HP SDC reports successful PUP.
+> HP SDC: HP SDC at 0xf0201000, IRQ 126 (NMI IRQ 125)
+> HP SDC: New style SDC
+> HP SDC: Revision: 1820-4784
+> HP SDC: TI SN76494 beeper present
+> HP SDC: OKI MSM-58321 BBRTC present
+> HP SDC: Spunking the self test register to force PUP on next firmware reset.
+> HP SDC MLC: Registering the System Domain Controller's HIL MLC.
+> 
+> -> OK, the HIL stuff is detected. (BTW, test this after power-cycling the machine!)
+
+HP SDC: HP SDC at 0xf0201000, IRQ 126 (NMI IRQ 125)
+HP SDC: New style SDC
+HP SDC: Revision: 1820-4784
+HP SDC: TI SN76494 beeper present
+HP SDC: OKI MSM-58321 BBRTC present
+HP SDC: Spunking the self test register to force PUP on next firmware reset.
+HP SDC MLC: Registering the System Domain Controller's HIL MLC.
+
+> and then nearly at the end of dmesg:
+> HIL KEYB: HIL keyboard found (did = 0xcf, lang = german)
+> input: HIL keyboard, ID: 207
+
+Not found here, of course.
+
+> HIL PTR: HIL pointer device found (did: 0x68, axis: relative)
+> HIL PTR: HIL pointer has 3 buttons and 1 sets of 2 axes
+> input: HIL pointer device (HIL mouse), ID: 104
+
+Not found here as well.
+
+> This is now HIL keyboard and HIL mouse.
+> So my HIL mouse is detected, but doesn't seem to work yet.... :-( 
+
+*sigh*
+
+> > FWIW: I had mouse support and I had keyboard support.  Just not at the
+> > same time unfortunately.  So in general it works at least.  The
+> > configuration is a bit non-intuitive since you'll have to enable
+> > HIL_KBD and AT_KBD.  However, logically it makes sense.
+> 
+> No. You should disable HIL_KBD (but it doesn't hurt either).
+
+Done.  Keyboard still works.
+
+> As said above: Hard Power-cycle the machine before each test!
+
+Of course.  I'll have to turn it off for keyboard / mouse changes
+or the machine will drop support for what I changed.
+
+> Furthermore you might try to increase the value of mdelay(6); in line 168
+> in file linux-2.6/drivers/input/serio/gscps2.c...
+> Maybe it's a timing issue ?
+
+Apparently, it was.  I now have keyboard and mouse support.
+I set the delay to 12.
+
+> This is what you should have in your .config:
+> CONFIG_SERIO_GSCPS2=y
+> CONFIG_INPUT_KEYBOARD=y
+> CONFIG_KEYBOARD_ATKBD=y
+> CONFIG_INPUT_MOUSE=y
+> CONFIG_MOUSE_PS2=y
+
+All there.
+
+Everything's working fine now, btw.
 
 Regards,
 
