@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sina.com (unknown [218.18.211.169])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 53FAA4875
-	for <parisc-linux@parisc-linux.org>; Wed, 20 Aug 2003 13:10:25 -0600 (MDT)
-From: "HY Tech" <technology_hy@sina.com>
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Reply-To: technology_hy@sina.com
-Date: Thu, 21 Aug 2003 03:10:30 +0800
-Message-Id: <20030820191025.53FAA4875@dsl2.external.hp.com>
-Subject: [parisc-linux] New price list for mp3 player, digital camera, cd/vcd/mp3 player and
- USB flash drive!
+Date: Wed, 20 Aug 2003 15:41:03 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux-cvs@lists.parisc-linux.org
+Message-ID: <20030820194103.GA18688@systemhalted>
+References: <20030820192919.0C20349401C@palinux.hppa>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030820192919.0C20349401C@palinux.hppa>
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,37 +20,127 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dear valued customer,
+On Wed, Aug 20, 2003 at 01:29:19PM -0600, Carlos O'Donell wrote:
+> CVSROOT:	/var/cvs
+> Module name:	linux
+> Changes by:	carlos	03/08/20 13:29:19
+> 
+> Modified files:
+> 	arch/parisc/kernel: entry.S 
+> 
+> Log message:
+> itlb_fault optmizaztion
 
-We are a professional manufacturer of mp3 player, cd/vcd/mp3 player, digital camera and USB 
-flash drive in Shenzhen, China.
+Lamont made a good catch and we optimized the standard case in the itlb
+fault fast path, keeping the CPU's forward branch prediction working in
+our favour. As such our numbers for various syscalls (LMBENCH tests)
+have become more stable from call to call. The best number is our 'page
+fault' which has shown a ~10x speedup :) It used to be 130 microseconds
++/- 100 microseconds, and is now consistently ~13 microseconds.
 
-Please see the price of some products:
-mp3 player with digital recorder and USB flash drive
-64M 39USD      128M   52USD
+I ran 30 LMBENCH runs, 10 each for the following configurations:
+1- ITLB Optimization
+2- ITLB Optimization + Removal of a register interlock on the fast path
+3- No ITLB Optimization
 
-cd/vcd/mp3 player (3 function in 1)
-21.5USD
+I've applied #2 to our CVS. Please tell me if anyone sees any breakage.
+This runs fine on my C3K.
 
-digital camera
-300K pixels  15.5USD      1.3M pixels    24USD
+Cheers,
+Carlos.
 
-USB flash drive
-64M  17.9USD       128M  29.9USD      256M  54.9USD     
-
-If you have interest, please contacut us and we will give you the detailed catalogue and price 
-list. 
-
-We always try our best to attract our clients with unbeatable prices and quality. Our goal is 
-to treat every client the same as the most potential business partner.So however the client is 
-big or small,we offer the best service. 
-
-Any question, please contact me at any time.
+Index: entry.S
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/kernel/entry.S,v
+retrieving revision 1.98
+diff -u -p -r1.98 entry.S
+--- entry.S	9 Dec 2002 06:09:08 -0000	1.98
++++ entry.S	12 Aug 2003 03:49:04 -0000
+@@ -1469,8 +1469,7 @@ itlb_miss_20w:
+ 	mfctl           %cr25,ptp	/* load user pgd */
  
-Have a nice day!
-
-Best Regards,
-
-Frank Ho
-General Manager
-HY Technology (Hong Kong) Company Ltd.
+ 	mfsp            %sr7,t0		/* Get current space */
+-	or,*=           %r0,t0,%r0      /* If kernel, nullify following test */
+-	cmpb,*<>,n      t0,spc,itlb_fault /* forward */
++	cmpb,<>,n	t0,spc,itlb_user_fault_20w /* forward */
+ 
+ 	/* First level page table lookup */
+ 
+@@ -1535,8 +1534,7 @@ itlb_miss_11:
+ 	mfctl           %cr25,ptp	/* load user pgd */
+ 
+ 	mfsp            %sr7,t0		/* Get current space */
+-	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
+-	cmpb,<>,n       t0,spc,itlb_fault /* forward */
++	cmpb,<>,n	t0,spc,itlb_user_fault_11 /* forward */
+ 
+ 	/* First level page table lookup */
+ 
+@@ -1551,6 +1549,10 @@ itlb_miss_common_11:
+ 	sh2addl 	 t0,ptp,ptp
+ 	ldi		_PAGE_ACCESSED,t1
+ 	ldw		 0(ptp),pte
++
++	/* Running parallel, taken from below 'zdep0' */
++	zdep            spc,30,15,prot  /* create prot id from space */
++
+ 	bb,>=,n 	 pte,_PAGE_PRESENT_BIT,itlb_fault
+ 
+ 	/* Check whether the "accessed" bit was set, otherwise do so */
+@@ -1559,7 +1561,7 @@ itlb_miss_common_11:
+ 	and,<>		t1,pte,%r0	/* test and nullify if already set */
+ 	stw		t0,0(ptp)	/* write back pte */
+ 
+-	zdep            spc,30,15,prot  /* create prot id from space */
++	/* zdep0 moved back */
+ 	dep             pte,8,7,prot    /* add in prot bits from pte */
+ 
+ 	extru,=		pte,_PAGE_NO_CACHE_BIT,1,r0
+@@ -1602,8 +1604,7 @@ itlb_miss_20:
+ 	mfctl           %cr25,ptp	/* load user pgd */
+ 
+ 	mfsp            %sr7,t0		/* Get current space */
+-	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
+-	cmpb,<>,n       t0,spc,itlb_fault /* forward */
++	cmpb,<>,n	t0,spc,itlb_user_fault_20	/* forward */
+ 
+ 	/* First level page table lookup */
+ 
+@@ -1882,6 +1883,37 @@ kernel_bad_space:
+ dbit_fault:
+ 	b               intr_save
+ 	ldi             20,%r8
++
++/* The following three labels relate to an optimization in the itlb handler.
++   itlb_user_fault_20w:
++   itlb_user_fault_20:
++   itlb_user_fault_11:
++   We keep the CPU jumping fwd/bkwd in the common case, and the uncommon case
++   has the cmpb fail (no jump) and thus branch prediction failing. */
++
++#ifdef __LP64__
++itlb_user_fault_20w:
++	/* User tlb missed for other than his own space. Optimization. */
++	cmpb,=		%r0,t0,itlb_miss_common_20w /* backward */
++	nop
++#else
++itlb_user_fault_20:
++	/* User tlb missed for other than his own space. Optimization. */
++	cmpb,=		%r0,t0,itlb_miss_common_20 /* backward */
++	nop
++
++/* FALL THROUGH - We don't care if we run the test twice. If someone
++                  asks to have the "user is faulting death" path optimal
++                  then they should seek help. */
++
++itlb_user_fault_11:
++	/* User tlb missed for other than his own space. Optimization. */
++	cmpb,=		%r0,t0,itlb_miss_common_11 /* backward */
++	nop
++#endif
++
++/* FALL THROUGH - We have a real itlb_fault from one of the above three
++                  label sequences */
+ 
+ itlb_fault:
+ 	b               intr_save
