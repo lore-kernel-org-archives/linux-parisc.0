@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 487A84893
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jul 2003 19:46:49 -0600 (MDT)
-Date: Mon, 7 Jul 2003 21:45:51 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: grundler@parisc-linux.org, jsoe0708@tiscali.be,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] warning: minor abi change
-Message-ID: <20030708014551.GB21801@systemhalted>
-References: <20030707200240.GN30341@systemhalted> <200307072019.h67KJDMa002052@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200307072019.h67KJDMa002052@hiauly1.hia.nrc.ca>
+Received: from no-more-accents385.com (24-136-31-137.na.21stcentury.net [24.136.31.137])
+	by dsl2.external.hp.com (Postfix) with SMTP id 11A0B4887
+	for <parisc-linux@parisc-linux.org>; Mon,  7 Jul 2003 22:20:36 -0600 (MDT)
+From: Natalie Edwards <nat_edwards@no-more-accents.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: nat_edwards@no-more-accents.com
+Date: Mon, 07 Jul 2003 23:18:15 -0700
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="24389c1b-b0c6-11d7-8c17-003021a07df5"
+Message-Id: <20030708042036.11A0B4887@dsl2.external.hp.com>
+Subject: [parisc-linux] Are you learning ESL or TESL?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,12 +21,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I can't really come up with a scenario where userspace passes a function
-> > pointer to the kernel and has the kernel call or compare the function
-> > pointer?
-> 
-> One example is sigaction.
+This is a multi-part message in MIME format
+--24389c1b-b0c6-11d7-8c17-003021a07df5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Fixable, I can stick a sigaction wrapper in userspace. Should we though?
-
-c.
+Dear Reader...
+No More Accent is an accent reduction product, which helps to remove accents. =
+For example, an Asian lady (or any nationality) may have communication =
+problems with her English when speaking to her friends or business =
+colleagues.
+ 
+With that in mind, No More Accent teaches Accent Reduction methodologies to =
+help in this area. In fact, No More Accent can be used in almost any =
+situation where an accent reduction is required. Even Actors within the =
+Entertainment Industry have turned to No More Accent as a way to lose or gain =
+an accent of another nationality.
+ 
+No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
+(PAL and NTSC formats) both can be purchased directly via the  =
+http://www.no-more-accents.com
+website.
+ 
+If you would like further information about our products or services, please =
+contact myself when you have a moment.
+ 
+Best Wishes...
+ 
+Natalie Edwards
+Marketing Co-ordinator
+ 
+http://www.no-more-accents.com
+ 
+Your #1 Resource for Accent Reduction!  
+--24389c1b-b0c6-11d7-8c17-003021a07df5--
