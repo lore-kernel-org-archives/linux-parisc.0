@@ -1,20 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35779482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Apr 2002 00:05:21 -0700 (MST)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id B96DD692
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Apr 2002 09:05:17 +0200 (METDST)
-Message-ID: <3CAAA872.D4169A4@admin.france.hp.com>
-Date: Wed, 03 Apr 2002 09:00:02 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from web10506.mail.yahoo.com (web10506.mail.yahoo.com [216.136.130.156])
+	by dsl2.external.hp.com (Postfix) with SMTP id D0360482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Apr 2002 03:43:39 -0700 (MST)
+Message-ID: <20020403104337.12809.qmail@web10506.mail.yahoo.com>
+Date: Wed, 3 Apr 2002 02:43:37 -0800 (PST)
+From: Tim Robb <hecubus3rd@yahoo.com>
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: Grant Grundler <grundler@dsl2.external.hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] How retrieving HPA/SPA with the device node
-References: <3CA9BB50.1FCEBDF4@admin.france.hp.com>  <20020402164417.6C6B6482A@dsl2.external.hp.com> <20020402165002.EF49B482A@dsl2.external.hp.com>
-Content-Type: multipart/mixed;
- boundary="------------486CB76D115BE5E4DB39A135"
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] PCI slots
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,56 +20,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------486CB76D115BE5E4DB39A135
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+I just noticed that in my C180xp there are two pci
+slots.  (At least they look like pci :] )  I was
+wondering are they supported?  As I don't have a evc
+adapter I was thinking of installing a pci video card
+to use it and was wondering if this is possible? 
+Would a 3dlabs permedia 2 be supported?
 
-	Thanks a lot.
-It solved my pb. Now I think I'll add a function in scsi.c.
-Because I need the pointer to pci_dev. And I don't think it
-can be usefull at user level. 
+Thanks,
+Timothy Robb
 
-	Many thanks for your answers.
-
-Grant Grundler wrote:
-> 
-> Grant Grundler wrote:
-> > Since several of the data structures are intended to be private,
-> > I suggest adding a function to sd.c (or scsi.c) that finds and returns
-> > the pci_dev pointer:
-> 
-> Well, looks like we *almost* have what we want in scsi_ioctl.c.
-> scsi_ioctl_get_pci() does about the same thing.
-> Maybe the right answer is to write another ioctl call that
-> does what you want. I don't know.
-> 
-> grant
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------486CB76D115BE5E4DB39A135
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
-
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------486CB76D115BE5E4DB39A135--
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Tax Center - online filing with TurboTax
+http://taxes.yahoo.com/
