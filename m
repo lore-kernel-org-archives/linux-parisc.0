@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE3404841
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Nov 2003 09:14:15 -0700 (MST)
-Date: Sat, 8 Nov 2003 11:09:19 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: James Bottomley <James.Bottomley@steeleye.com>
-Cc: Paul Bame <bame@riverrock.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Allow palo partition to be mounted as ext2
-Message-ID: <20031108160919.GD21080@systemhalted>
-References: <1068254037.2120.93.camel@mulgrave>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 026934841
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Nov 2003 12:48:05 -0700 (MST)
+Date: Sat, 8 Nov 2003 12:48:04 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Matthew Wilcox <willy@debian.org>,
+	Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] fdisk problems 2.4 <-> 2.6
+Message-ID: <20031108194804.GA28929@colo.lackof.org>
+References: <20031106222958.GJ26869@parcelfarce.linux.theplanet.co.uk> <3F969FFE000092BD@ocpmta2.freegates.net> <20031108015946.GC19436@colo.lackof.org> <3FACCC88.4010404@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1068254037.2120.93.camel@mulgrave>
+In-Reply-To: <3FACCC88.4010404@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,32 +26,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 07, 2003 at 07:13:55PM -0600, James Bottomley wrote:
-> It can be a bit of a pain having both a palo partition and a /boot
-> partition on the root disc (and both < 2GB), so this patch allows the
-> palo partition to be mounted as an ordinary ext2/ext3 filesystem
-> (ideally as /boot).
-> 
-> It does this by creating an ext2/3 filesystem in the palo partition but
-> leaving a hole for the iplboot program (by telling the filesystem the
-> blocks are bad).  The kernels can be booted from this filesystem by
-> specifying 0/ as the partition as usual.
-> 
-> Attached is a preliminary patch for you to see what you think.
-> 
-> Ultimately, it should mean we can get palo to operate much more like
-> grub (using a palo.conf file within the palo partition itself for
-> instance).
-> 
-> The diffs are against the palo cvs tree.
+On Sat, Nov 08, 2003 at 10:59:20AM +0000, Joel Soete wrote:
+> IIRC include/asm-parisc/uaccess.h
 
-Great work James! I like the addition of verbose to the command line.
-This definately gets us a step closer to behaving or perhaps integrating
-palo into grub. The only suggestion I have is that someone should
-remember to update palo's debian/ files to reflect the fact that you
-rely on 'e2fsprogs' for mke2fs. The computer scientist in me wants to
-distinguish between failure cases when mke2fs exists and returns an
-error code versus it doesn't exist on the $PATH (e.g. check if mke2fs
-runs without params fist "/sbin/mke2fs -V").
+get/put user stuff looks the same to me in both 2.4/2.6 cvs.
+I'm likely to forget forward porting 2.4 changes to 2.6 but I thought
+I got that in the last round. If someone trolls the parisc-linux-cvs
+archive and compares my commits for the past 2-3 monthes...
 
-c.
+thanks,
+grant
