@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.NjQ4MjAK.com (unknown [211.161.61.118])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1D2464840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Nov 2003 11:50:23 -0700 (MST)
-Date: Tue, 25 Nov 03 02:47:05 +0800
+Received: from mail.MzYxNzAK.com (unknown [211.161.61.118])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3406D4840
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Nov 2003 12:42:20 -0700 (MST)
+Date: Tue, 25 Nov 03 03:39:02 +0800
 From: kandwang@bellsouth.net
 Reply-To: kandwang@bellsouth.net
 To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-type: multipart/mixed;
     boundary="----=_NextPart_000_0072_3BF700BB.B3E50231"
-Message-Id: <20031124185023.1D2464840@dsl2.external.hp.com>
+Message-Id: <20031124194220.3406D4840@dsl2.external.hp.com>
 Subject: [parisc-linux] 自由之门--免费上网软件：帮助网民自由上网，浏览任何网站内容。
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
