@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from silly.cloud.net.au (c20042.eburwd1.vic.optusnet.com.au [203.164.66.244])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 444B4482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Jan 2002 01:03:05 -0700 (MST)
-Date: Wed, 2 Jan 2002 19:02:57 +1100
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] DSL on a 715/80 with rp-pppoe
-Message-ID: <20020102190257.A14478@silly.cloud.net.au>
-References: <20020101233834.GA2872@sleepie.demon.co.uk> <20020102073539.99280.qmail@web21206.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020102073539.99280.qmail@web21206.mail.yahoo.com>; from hinrich_aue@yahoo.de on Wed, Jan 02, 2002 at 08:35:39AM +0100
+Received: from coffeepot.matt (mfs-pci-bqh-vty69.as.wcom.net [212.211.6.69])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 88E96482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Jan 2002 08:54:09 -0700 (MST)
+Received: from localhost (mattl@localhost)
+	by coffeepot.matt (8.11.4/8.11.4) with ESMTP id g02FsFG03721
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 2 Jan 2002 15:54:17 GMT
+Date: Wed, 2 Jan 2002 15:54:15 +0000 (GMT)
+From: Matt London <palinux@knm.yi.org>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0201021550230.30124-100000@coffeepot.matt>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 710 support
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,14 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jan 02, 2002 at 08:35:39AM +0100, Hinrich Aue wrote:
-> I think the main Problem lies between my ears, because
-> I never installed debian, and it's hard to configure.
+Hi,
+  I've not been following the list for quite some months, and I was
+wondering how support for the 710 was going (i.e. is net+scsi working
+yet?). It'd be nice to get my 710 actually doing something useful :&)
 
-Not hard, just different.
+  I'm not on a fast connection ATM, so I thought I'd ask on the list
+before spending a good few hours downloading an iso which isn't actually
+any use at the end of the day :&)
 
+-- Matt
 
-regards,
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+---
+Web Page:
+  http://knm.yi.org/
+  http://pkl.net/~matt/
+
+PGP Key fingerprint = 00BF 19FE D5F5 8EAD 2FD5  D102 260E 8BA7 EEE4 8D7F
+PGP Key http://knm.yi.org/matt-pgp.html
