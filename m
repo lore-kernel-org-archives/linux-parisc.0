@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 37A60484F
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 14:41:03 -0700 (MST)
-Date: Tue, 26 Feb 2002 16:41:30 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2DB04852
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 15:09:17 -0700 (MST)
+Date: Tue, 26 Feb 2002 23:08:58 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+Cc: Randolph Chung <randolph@tausq.org>,
+	<parisc-linux@parisc-linux.org>
 Subject: Re: [parisc-linux] nslookup segmentation fault
-Message-ID: <20020226164130.B5289@systemhalted>
-References: <2F1E6AB90ECAD311943700A0C9E3B1540804ED28@xatl03.atl.hp.com> <20020226194150.GB11598@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020226194150.GB11598@tausq.org>; from randolph@tausq.org on Tue, Feb 26, 2002 at 11:41:51AM -0800
+In-Reply-To: <20020226164130.B5289@systemhalted>
+Message-ID: <Pine.LNX.4.43.0202262252140.5099-100000@alpha.bocc.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,42 +23,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Neat....
-> 
-> Here's part of Dennis' strace of nslookup:
-> > m4450dmf:/etc# strace nslookup athp.hp.com
-> [...]
-> > rt_sigprocmask(SIG_BLOCK, [HUP INT TERM], NULL, 8) = 0
-> > getpid()                                = 22574
-> > socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 3
-> > close(3)                                = 0
-> > socket(PF_INET6, SOCK_STREAM, 0)        = -1 EAFNOSUPPORT (Address family
-> > not su
-> > pported by protocol)
-> > brk(0)                                  = 0x2f000
-> > brk(0x2f030)                            = 0x2f030
-> > brk(0x30000)                            = 0x30000
-> > brk(0x33000)                            = 0x33000
-> > --- SIGSEGV (Segmentation fault) ---
-> > +++ killed by SIGSEGV +++
-> 
-> why is it trying to do ipv6?
-> 
-> randolph
-> -- 
+Hi Carlos,
 
+> I'm feel worried about what brk() is trying to do.
 
-I'm feel worried about what brk() is trying to do.
+brk() is used to increase the core size. Nothing unusual.
 
-PF_INET==2 and PF_INET6==10 are only a single bit appart :}
-Cosmic radiation maybe?
+> PF_INET==2 and PF_INET6==10 are only a single bit appart :}
+> Cosmic radiation maybe?
 
-I'm not sure what is going on. Though I tried to build
-Bind 8.3.1 on x86 and if failed (need to look into bits/types).
+Nope. The resolver supports both IPv4 and IPv6. The following just seems 
+to be a probe if both AFs are available.
 
-eventlib.c: In function `__evGetNext':
-eventlib.c:298: structure has no member named `fds_bits'
-eventlib.c:299: structure has no member named `fds_bits'
-eventlib.c:300: structure has no member named `fds_bits'
+getpid()                                = 2880
+socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 3
+close(3)                                = 0
+socket(PF_INET6, SOCK_STREAM, 0)        = 3
+getsockname(3, {sin_family=AF_INET6, sin6_port=htons(0),  
+inet_pton(AF_INET6, "::", &sin6_addr), sin6_flowinfo=0, sin6_scope_id=0}, [28]) = 0
+close(3)                                = 0
+brk(0)                                  = 0x2f000
+brk(0x2f030)                            = 0x2f030
+brk(0x30000)                            = 0x30000
+brk(0x33000)                            = 0x33000
+--- SIGSEGV (Segmentation fault) ---
++++ killed by SIGSEGV +++
 
-c.
+gdb is even worse:
+
+(gdb) run
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+
+Starting program: /usr/bin/nslookup www.kame.net
+(no debugging symbols found)...(no debugging symbols found)...
+(no debugging symbols found)...(no debugging symbols found)...
+(no debugging symbols found)...(no debugging symbols found)...
+(no debugging symbols found)...(no debugging symbols found)...
+Program received signal SIGSEGV, Segmentation fault.
+Cannot access memory at address 0x0
+(gdb) bt
+Cannot access memory at address 0x0
+
+Looks like yet another glibc related problem. In particular since nslookup 
+seems to use pthread (which *does* have issues with the latest glibc):
+
+open("/lib/libpthread.so.0", O_RDONLY)  = 3
+read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\3\0\17\0\0\0\1\0\0@`"..., 1024) 
+= 1024
+
+Cheers,
+--jochen
