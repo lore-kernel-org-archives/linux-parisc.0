@@ -1,16 +1,16 @@
-From: Thibaut VARENE <varenet@esiee.fr>
-Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Fri, 18 Feb 2005 10:28:26 +0100
-Message-ID: <20050218092835.0E74E3658E2@mail.esiee.fr>
-References: <20050218062312.GA11968@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] a b180 panic with 2.6.11-rc3-pa3
+Date: Fri, 18 Feb 2005 09:16:49 +0100
+Message-ID: <420B30A200003495@mail-1-bnl.tiscali.it>
+References: <20050216201417.737f4c40@Tatooine.r3z0>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: "Michael S.Zick" <mszick@wolfbutter.com>,
- parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset="ISO-8859-15"
+Cc: List Parisc <parisc-linux@lists.parisc-linux.org>
+To: "Thibaut VARENE" <T-Bone@parisc-linux.org>,
+ "Max Grabert" <parisc@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050218062312.GA11968@colo.lackof.org>
+In-Reply-To: <20050216201417.737f4c40@Tatooine.r3z0>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,69 +21,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
--------------------
-> On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
-> > I am tracking a timing and/or race condition(s) with x86-udev.
-> > Debian doesn't use it yet, they still have a hard disk based /dev.
-> > But it is not a compile time option.
-> > If you have a 2.6.+ kernel, you have it.
-> >=20
-> > Try turning it off with the command line option: 'noudev'
->=20
-> I thought this helped at first.  (2.6.11-rc4-pa1)
-> Could run spew+"make -j4" over xfs without crashing the box (panic).
->=20
-> Then I rebooted with a freshly built kernel (and "noudev")
-> and right away when I start spew on the XFS file system I get:
+...
+> > 
+> > > [<101bb588>] journal_add_journal_head+0xdc/0x13c
+> > > [<101b4dd8>] journal_dirty_data+0x64/0x1b0
+> > > [<101a6be4>] ext3_journal_dirty_data+0x1c/0x60
+> > > [<101a69a8>] walk_page_buffers+0xe0/0xf0
+> > > [<101a72b8>] ext3_ordered_writepage+0x168/0x1fc
+> 
+> Got hit by a similar panic during the night (the kernel uptime was < 5h=
+)
+> 
+> Kernel Fault code 15
+> Top stack was:
+> 
+> cache_grow
+> cache_alloc_refill
+> kmem_cache_alloc
+> journal_alloc_journal
+> 
+> and the rest was identical to your dump.
+> 
+> IAOQ was alloc_slabmgmt and gr2 was cache_grow
+> 
+I just come back because after a second read, it looks like the b2k pb re=
+lated
+here:
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/02587=
+0.html>
 
-=20
-> The only difference in the .config was sym2 driver IOMAPPED.
-> I had it enabled (using IO Port space) and now disable it
-> since I really want MMIO space. I'm very skeptical this is
-> related to the problem.
+mmm hard to say if there are actualy the same?
 
-Hmmm.
-Back in the early days of 2.5, i recall issues with SYM2 in MMIO mode,
-so that it only worked in PIO mode (I think i had posted something on
-this m-l about that). At that time i was using ext3 for that matter.
+> This was 2.6.11-rc3-pa5 freshly built with Kernel Hacking turned off.
+> 
+That said, today same panic (as related above) on b2k  32bit  but not on
+b180 with the same 2.6.11-rc4-pa1 (cvs dated 20050217).
 
-OTOH, XFS relies a lot on memory and cache quality. I don't know how
-MMIO would interfere with that, but I suspect that if enabling MMIO
-has the side effect of messing with that somehow, it's very likely XFS
-won't like it at all. Just a random thought though.
-=20
-> > If your compile time options include devfs, try turning it=20
-> > off also.  Use the command line option: 'nodevfs'
->=20
-> I don't use devfs. Willy won't let me. :^P
+By chance, I can save a top info at the crash moment:
+top - 06:25:27 up 16:33,  3 users,  load average: 0.91, 0.32, 0.16
+Tasks:  97 total,   2 running,  95 sleeping,   0 stopped,   0 zombie
+Cpu(s):  4.9% us, 13.2% sy,  4.9% ni,  0.0% id, 75.7% wa,  0.7% hi,  0.7%=
 
-well, devfs is 3v1l and deprecated, so you'd better not use it :)
+si
+Mem:    252696k total,   249768k used,     2928k free,    46300k buffers
+Swap:   255928k total,        0k used,   255928k free,   133572k cached
 
-> > In my case, for kernels 2.6.8, 2.6.9, 2.6.10 and 2.6.11 -
-> > If I boot from slow devices (cdrom, zip disk) everything is
-> > fine, If I boot from fast devices (hard disk) - something isn't
-> > getting setup the same.
->=20
-> Is there a difference in the how the devices are used?
-> ie. serialized vs. multiple IOs in flight at the same time?
->=20
-> I didn't start hitting problems until I lauched a second job
-> on the same file system.
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND    
+                                                          
+ 9304 nobody    26  10  1816  844  644 R 14.8  0.3   0:00.89 find       
+                                                           
+...
 
-Come to think of it, I wonder how the XFS bug you're pointing at can
-be related to the bug Joel and I reported with ext3:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/025
-867.html
+The time stamp seems to tell me to look into cron daily ...
 
-Maybe one would like to try XFS on a non-SYM2 box and see what
-happens? That way we might have a clue whether sym2's at fault or
-something else...
+I will try to locate this 'find' task (probably locate db update) and see=
 
-My 2 cents in the morning ;)
+if I can reproduce ;-)
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://www.pateam.org/
+Thanks,
+    Joel
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
