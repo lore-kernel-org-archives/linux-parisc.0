@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpzilla1.xs4all.nl (smtpzilla1.xs4all.nl [194.109.127.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2E73E482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 23:05:17 -0700 (MST)
-Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtpzilla1.xs4all.nl (8.12.0/8.12.0) with ESMTP id fAD653BX099824
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 07:05:08 +0100 (CET)
-Date: Tue, 13 Nov 2001 07:04:48 +0100
-From: Jurriaan on Alpha <thunder7@xs4all.nl>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] K580
-Message-ID: <20011113070448.A3532@alpha.of.nowhere>
-Reply-To: thunder7@xs4all.nl
-References: <3BEF3746.FB93DC1@beldar.com> <20011112070306.B14600@alpha.of.nowhere> <004401c16bd7$33ae82e0$0101a8c0@pogo> <20011112185954.A15743@beavis.ybsoft.com> <003401c16bef$081c1b20$0101a8c0@pogo>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <003401c16bef$081c1b20$0101a8c0@pogo>
+Received: from smtp008pub.verizon.net (smtp008pub.verizon.net [206.46.170.187])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1A295482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 00:02:16 -0700 (MST)
+Received: from verizon.net (pool-151-201-224-254.pitt.east.verizon.net [151.201.224.254])
+	by smtp008pub.verizon.net  with ESMTP
+	for <parisc-linux@lists.parisc-linux.org>; id fAD72DD01186
+	Tue, 13 Nov 2001 01:02:13 -0600 (CST)
+Message-ID: <3BF0C5D6.2040205@verizon.net>
+Date: Tue, 13 Nov 2001 02:03:50 -0500
+From: Rafael Herrera <vze26vn8@verizon.net>
+Reply-To: raffo@neuronet.pitt.edu
+MIME-Version: 1.0
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Problems of instaling (booting) on a 715/75
+References: <2451.011113@nikom.tagil.ru>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,22 +26,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Nov 12, 2001 at 09:58:10PM -0500, Craig D. Lansing wrote:
-> BTW, at Jurriaan's suggestion I tried setting the console to ttyS0 and also
-> tried setting sti=1 and still no luck.  As I mentioned above, the J is in
-> the garage far away from my other boxes so I have no network option at this
-> point.  CD is my only hope for a while.  So far, this is almost as much fun
-> as my first i386 dual-boot install :-)
-> 
-In that case, be sure to test both serial ports, especially at the
-moment it seems to hang. I agree installing is fun!
+I'd suggest you boot the cd image (palinux-0.9.2.iso) using the serial 
+console. I have the same system and the STI console does not work with 
+that cd.
 
-Good luck,
-Jurriaan
+As soon as you have a minimal system running, switch the kernel image in 
+/boot for this one:
+
+	ftp://ftp.parisc-linux.org/kernels/vmlinux-32-20011008
+
+Edit the /etc/palo.conf accordingly, re-run palo and reboot. I 
+experienced scsi problems with the kernel in the cd image.
 -- 
-"They know nothing of what is to come," Iskaral Pust whispered. "An
-eternal flare of pain, but shall I waste words in an effort to prepare
-them? No, not at all, never. Words are too precious to be wasted, hence
-my coy silence while they hesitate in a fit of immobile ignorance."
-	Steven Erikson - Deadhouse Gates
-GNU/Linux 2.4.13-ac8 on Debian/Alpha 64-bits 990 bogomips load:0.09 0.12 0.14
+      Rafael
