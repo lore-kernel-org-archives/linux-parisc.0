@@ -1,12 +1,19 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] xfs and ext3 pb on 2.6.11-pa
-Date: Fri, 11 Mar 2005 18:00:12 +0100
-Message-ID: <4208D5150000DBAE@mail-5-bnl.tiscali.it>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: review sg_format
+Date: Fri, 11 Mar 2005 10:39:29 -0700
+Message-ID: <20050311173929.GA15070@colo.lackof.org>
+References: <4210A33A.5020004@torque.net>
+	<1110428346.17563.89.camel@bluto.andrew>
+	<423006B1.2030008@torque.net>
+	<20050311064021.GA7208@colo.lackof.org>
+	<42314D8B.1080202@torque.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Douglas Gilbert <dougg@torque.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <42314D8B.1080202@torque.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,135 +24,106 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello pa,
+On Fri, Mar 11, 2005 at 05:49:31PM +1000, Douglas Gilbert wrote:
+> >The problem is with the asm/unistd.h header file that comes from
+> >the debian kernel-headers-2.4.26 package.
 
-I was interested by xfs pb related by Grant and GMSoft and I reach to als=
-o
-obtain a corupted xfs (on a disk slice over which a reading dd doesn't se=
-ems
-to encounter any pb).
+I think I'm wrong about this - I should be using "linux-kernel-headers"
+package like on gsyprf3. Below is more analysis on the problem.
 
-On my b180 running a 2.6.11-pa2 (cvs dated 20050310) with xfs builtin, th=
-e
-error is always the same:
-XFS mounting filesystem sdd1
-attempt to access beyond end of device
-sdd1: rw=3D0, want=3D3130210928, limit=3D4098200
-I/O error in filesystem ("sdd1") meta-data dev sdd1 block 0xba933a68    
-  ("xfs_trans_read_buf") error 5 buf count 4096
+Bottomline: My guess is we could modify asm-parisc syscall
+  to be "-std=c99" friendly. I'd like to hear other peoples
+  opinions on that.
 
->>here xfs_check ...
->> then remount and make menuconfig
+> >Linue 46 of llseek.c is static decl of _syscall5
+> >and that collides with the "#define _syscall5"
+> >in asm/unistd.h. The same #define is in our current 2.6 kernel
+> >(see gsyprf11:/usr/src/linux-2.6/include/asm/unistd.h).
+> >All the asm-*/unistd.h have this #define. 
 
-XFS mounting filesystem sdd1
-attempt to access beyond end of device
-sdd1: rw=3D0, want=3D3130110864, limit=3D4098200
-I/O error in filesystem ("sdd1") meta-data dev sdd1 block 0xba91b388    
-  ("xfs_trans_read_buf") error 5 buf count 4096
+...and _syscall5 is just a "victim".
 
->> here xfs_repair ...
->> then same remount and make menuconfig
+> Grant,
+> Thanks for picking that up. That llseek.c has an "asm"
+> keyword in it which isn't kosher C90 nor C99 . So the
+> "-pendantic" adds some warnings and the "-std=c99"
+> promotes them into errors.
 
-XFS mounting filesystem sdd1
-attempt to access beyond end of device
-sdd1: rw=3D0, want=3D3130110864, limit=3D4098200
-I/O error in filesystem ("sdd1") meta-data dev sdd1 block 0xba91b388    
-  ("xfs_trans_read_buf") error 5 buf count 4096
-...
+Hrm...I've generated the pre-processed file on
+	gsyprf11:/usr/src/sg3_utils-1.13/llseek.P
 
-this pb seems to be reproducible on D270, c3600 and b180 (all 32bit).
+The offending code is coming from K_INLINE_SYSCALL() macro
+that's defined in asm/unistd.h.
+I expect Line 1754 is the offending one.
+I've reformatted below so it's readable:
 
-Is it the same with a 64bit kernel as for a A model?
+static int _llseek(unsigned int fd, unsigned long offset_high,
+	 unsigned long offset_low, llse_loff_t * result, unsigned int origin)
+{
+	return (
+	{ unsigned long __sys_res;
+	{ register unsigned long __res asm("r28");
+	register unsigned long __r22 __asm__("r22") = (unsigned long)origin;
+	register unsigned long __r23 __asm__("r23") = (unsigned long)result;
+	register unsigned long __r24 __asm__("r24") = (unsigned long)offset_low;
+	register unsigned long __r25 __asm__("r25") = (unsigned long)offset_high;
+	register unsigned long __r26 __asm__("r26") = (unsigned long)fd;
+	asm volatile(	"ble  0x100(%%sr2, %%r0)\n\t"
+			" ldi %1, %%r20"
+			: "=r" (__res)
+			: "i" ((0 + 140)) , "r" (__r26), "r" (__r25), 
+				"r" (__r24), "r" (__r23), "r" (__r22) );
+	__sys_res = __res;
+	}
+	if (__sys_res >= (unsigned long)-4095) {
+		(*__errno_location ()) = -__sys_res;
+		 __sys_res = (unsigned long)-1;
+	}
+	__sys_res;
+	}
+	);
+} 
 
-mmm I thought first to a xfs pb when I remember that I encountered (but o=
-nly
-one time on only one 32bit system) a similar message with a ext3 (/var) o=
-n
-another b180 running another  2.6.11-pa1:
-attempt to access beyond end of device
-md3: rw=3D0, want=3D336860182, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D168430090
-Aborting journal on device md3.
-ext3_abort called.
-EXT3-fs error (device md3): ext3_journal_start_sb: Detected aborted journ=
-al
-Remounting filesystem read-only
-EXT3-fs error (device md3) in start_transaction: Journal has aborted
-EXT3-fs error (device md3) in start_transaction: Journal has aborted
-EXT3-fs error (device md3) in start_transaction: Journal has aborted
-attempt to access beyond end of device
-md3: rw=3D0, want=3D1961286348, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D980643173
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3906093258, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1953046628
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3535458028, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1767729013
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3068543198, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1534271598
-attempt to access beyond end of device
-...
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3465680116, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1732840057
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3772833498, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1886416748
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3428729052, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1714364525
-attempt to access beyond end of device
-md3: rw=3D0, want=3D3739535560, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D1869767779
-attempt to access beyond end of device
-md3: rw=3D0, want=3D1581312222, limit=3D511744
-EXT3-fs error (device md3): ext3_free_branches: Read failure, inode=3D122=
-11,
-block=3D790656110
-ext3_reserve_inode_write: aborting transaction: Journal has aborted in __=
-ext3_journal_get_write_access<2>EXT3-fs
-error (device md3)dext3_reserve_inode_write: aborting transaction: Journa=
-l
-has aborted in __ext3_journal_get_write_access<2>EXT3-fs error (device md=
-3)dEXT3-fs
-error (device md3) in ext3_orphan_del: Journal has aborted
-EXT3-fs error (device md3) in ext3_truncate: Journal has aborted
-__journal_remove_journal_head: freeing b_committed_data
+If "asm" is the only offending bit, can that be fixed in the kernel
+header files and/or submit a patch against glibc header files so
+that future releases can be compiled with "-std=c99"?
 
-But here it seems that a fsck was enough to help the system to work again=
+Looking at code in llseek.c inside the #ifdef __linux__, a few things
+strike me as odd:
+o None of the architectures in recent 2.4 or 2.6 kernel define HAVE_LLSEEK.
+  This looks obsolete because all linux arches support llseek now.
 
-for 3 day without any new error messages
-(let see after the w-e, ...)
+o Why the #if alpha || ia64 || s390x to use a private my_llseek wrapper?
+  "my_llseek" also seems obsolete like HAVE_LLSEEK.
+  Are they the only ones to NOT define llseek because they only have
+  64-bit user space? (ie lseek is a synonym to llseek for those three?)
 
-Are they well related pb or completely seperated?
-If well related, which code trunk is/are common to xfs and ext3?
-
-Any idea?
-
-Thanks in advance,
-    Joel
+  FWIW,  I added defined(__hppa__) to the #if and it properly linked.
+  sg_dd seems to work correctly but I'm certain I'm not excercising the
+  code properly (e.g. testing syscall restart) or able to verify the results.
+  And I've also not tested on older (2.4) kernels where other things
+  might be broken.
 
 
+> I built the latest util-linux
+> on gsyprf11 (llssek.c is in the fdisk directory) and it
+> went ok (until I added "-std=c99" to llseek.c's compile
+> line).
+
+ok. But I still wonder if parisc port needs to change anything.
+
+> Just rolling two new versions:
+>    sg3_utils-1.13.tgz    [without "-pedantic -std=c99"]
+>    sg3_utils-1.13-pedantic.tgz  [with "     "]
+> 
+> They will be on gsyprf3 (which has no problem with llseek.c)
+> + gsyprf11 shortly.
+
+AFAICT, gsyprf3 builds/links fine because my_llseek gets used
+instead of unistd.h.
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
