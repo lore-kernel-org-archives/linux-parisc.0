@@ -1,12 +1,13 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [RFC] Where to put arch-dependant locking in malloc/thread-m.h
-Date: Thu, 25 Sep 2003 17:15:09 -0400
-Message-ID: <20030925211509.GY14406__12463.621228426$1416622805$gmane$org@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: libc-alpha <libc-alpha@sources.redhat.com>
+From: wmglo@dent.med.uni-muenchen.de
+Subject: [parisc-linux] Re: [RFC] Where to put arch-dependant locking in malloc/thread-m.h
+Date: 26 Sep 2003 13:39:54 -0000
+Message-ID: <20030926133954.12328.qmail__42028.8205067211$1416622811$gmane$org@md.dent.med.uni-muenchen.de>
+References: <20030925211509.GY14406@systemhalted>
+Cc: libc-alpha@sources.redhat.com,
+	parisc-linux@lists.parisc-linux.org
+To: carlos@baldric.uwo.ca
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-reply-to: <20030925211509.GY14406@systemhalted> (carlos@baldric.uwo.ca)
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,51 +18,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-libc,
+Hi,
 
-Found the problem with bug-iconv3, it was related to the fact that
-hppa's locks can't be initialized to zero (or left unitialized). When
-running a non-threaded application and dlopening libpthread the
-__libc_maybe_call2's start using the proper strong symbol of those
-funcions. At this point malloc on hppa would in certain occassions
-fget stuck in a lock that it thought was taken (value of zero).
+> The following patch fixes the issue, but I'm not content about it's
+> placement in malloc/thread-m.h. Any comments about where I might put
+> this in order to make maintenance easier?
 
-The following patch fixes the issue, but I'm not content about it's
-placement in malloc/thread-m.h. Any comments about where I might put
-this in order to make maintenance easier?
+Ok, I have become convinced it is best to move thread-m.h into
+sysdeps.  We should rename it, too (my suggestion: malloc-machine.h),
+and make sure that one can put e.g.
 
-Cheers,
-Carlos.
+#define DEFAULT_MMAP_THRESHOLD (256*1024)
 
-diff -u -p -r1.23 thread-m.h
---- glibc/malloc/thread-m.h	1 Jul 2003 08:29:43 -0000	1.23
-+++ glibc/malloc/thread-m.h	25 Sep 2003 20:43:55 -0000
-@@ -59,6 +59,28 @@ __libc_lock_define (typedef, mutex_t)
- #define mutex_unlock(m)		\
-   __libc_maybe_call2 (pthread_mutex_unlock, (m), (*(int *)(m) = 0))
- 
-+# if(defined __hppa__)
-+/* Since our lock structure does not tolerate being initialized to zero, we must
-+   modify the standard function calls made by malloc */
-+#  undef mutex_init
-+#  undef mutex_lock
-+#  undef mutex_trylock
-+#  undef mutex_unlock
-+#  define mutex_init(m)		\
-+	__libc_maybe_call (__pthread_mutex_init, (m, NULL), \
-+			(((m)->__m_lock.__spinlock = __LT_SPINLOCK_INIT),(*(int *)(m))) )
-+#  define mutex_lock(m)		\
-+	__libc_maybe_call (__pthread_mutex_lock, (m), \
-+			(__load_and_clear(&((m)->__m_lock.__spinlock)), 0))
-+#  define mutex_trylock(m)	\
-+	__libc_maybe_call (__pthread_mutex_trylock, (m), \
-+			(*(int *)(m) ? 1 : (__load_and_clear(&((m)->__m_lock.__spinlock)), 0)))
-+#  define mutex_unlock(m)	\
-+	__libc_maybe_call (__pthread_mutex_unlock, (m), \
-+			(((m)->__m_lock.__spinlock = __LT_SPINLOCK_INIT), (*(int *)(m))) )
-+# endif 
-+/* if(defined __hppa__) */
-+	
- #else
- 
- #define mutex_init(m)		\
+in there and have it reflected in malloc.
+
+I'll send a patch for this tomorrow.
+
+Regards,
+Wolfram.
