@@ -1,19 +1,22 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ADFD04856
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 301274856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 16 Feb 2004 10:42:19 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali) id 1Asml8-00041a-00
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 16 Feb 2004 18:42:18 +0100
-Date: Mon, 16 Feb 2004 18:42:17 +0100
-Message-ID: <402A4CA5000034AF@ocpmta2.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] hw db pb?
+	Mon, 16 Feb 2004 10:47:55 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1AsmqX-000741-Rf; Mon, 16 Feb 2004 17:47:53 +0000
+Date: Mon, 16 Feb 2004 17:47:53 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] hw db pb?
+Message-ID: <20040216174753.GM31168@parcelfarce.linux.theplanet.co.uk>
+References: <402A4CA5000034AF@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <402A4CA5000034AF@ocpmta2.freegates.net>
+Sender: <willy@www.linux.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,26 +26,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
+On Mon, Feb 16, 2004 at 06:42:17PM +0100, Joel Soete wrote:
+> Hi all,
+> 
+> I try to have a look on D380 cpu's type into:
+> <http://hwdb.parisc-linux.org/>
+> 
+> but I only get severall:
+> "Warning: MySQL Connection Failed: Can't connect to local MySQL server through
+> socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 19
 
-I try to have a look on D380 cpu's type into:
-<http://hwdb.parisc-linux.org/>
+mysqld had died.  I just restarted it and it now works for me.  Thanks for
+the report.
 
-but I only get severall:
-"Warning: MySQL Connection Failed: Can't connect to local MySQL server through
-socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 19
-
-Warning: MySQL Connection Failed: Can't connect to local MySQL server through
-socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 27
-
-Warning: MySQL: A link to the server could not be established in ../database.php3
-on line 27"
-
-Thanks in advance for help,
-    Joel
-
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
-tout le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
