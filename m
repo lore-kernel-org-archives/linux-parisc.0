@@ -1,20 +1,19 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5557E486E
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1215C4891
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Jan 2004 02:07:22 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 32bit parisc kernel 2.6.1 and pcmcia
-Date: Mon, 19 Jan 2004 10:07:19 +0100
-References: <200401182059.34270.deller@gmx.de>
-	<1074469497.1805.25.camel@mulgrave>
-In-Reply-To: <1074469497.1805.25.camel@mulgrave>
+	Mon, 19 Jan 2004 05:37:10 -0700 (MST)
+Date: Mon, 19 Jan 2004 12:16:40 +0100
+Message-ID: <40047B6A000037F2@ocpmta2.freegates.net>
+In-Reply-To: <20040117081720.GA29918@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] init and exit text problem
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+	"James Bottomley" <James.Bottomley@steeleye.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Message-Id: <200401191007.19929.deller@gmx.de>
-Cc: James Bottomley <James.Bottomley@steeleye.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: Matthew Wilcox <willy@debian.org>, Randolph Chung <tausq@debian.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,55 +23,49 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Monday 19 January 2004 00:44, James Bottomley wrote:
-> On Sun, 2004-01-18 at 14:59, Helge Deller wrote:
-> > Dino fff80000: stuck interrupt 4
-> > cs IO ports 0x0-0x7 allocated in parent Dino I/O Port
-> 
-> Erk, I assume this is a yenta socket with two PCMCIA slots?
+Grant,
 
-Yes.
- 
-> I wasn't sure what the setting should be when I constructed the code in
-> the pa patch set (I only did it to get my PCI<->cardbus bridge working
-> with a single slot yenta PCI card).
-> 
-> What information does the Yenta driver print?
+A great news: your kernel (2.6.1-pa4) boot well on the N4000-55 :)
+palx4000:/var/logs# dmesg | more
+Linux version 2.6.1-pa4 (grundler@ios) (gcc version 3.0.4) #10 Sat Jan 17
+00:04:07 PST 2004
+FP[0] enabled: Rev 1 Model 16
+The 64-bit Kernel has started...
+Determining PDC firmware type: 64 bit PAT.
+model 00005d30 00000491 00000000 00000002 27988e5d 100000f1 00000008 000000b2
+000000b2
+vers  00000301
+CPUID vers 18 rev 11 (0x0000024b)
+capabilities 0x1
+model 9000/800/N4000-55
+Total Memory: 2048 Mb
+On node 0 totalpages: 524288
+  DMA zone: 524288 pages, LIFO batch:16
+  Normal zone: 0 pages, LIFO batch:1
+  HighMem zone: 0 pages, LIFO batch:1
+Building zonelist for node : 0
+Kernel command line: root=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102 palo_kernel=3/vmlinux-2.6.1-pa4
+PID hash table entries: 16 (order 4: 256 bytes)
+[snip]
 
-dmesg gives:
-Dino parisc8:0 version 3.1 found at 0xfff80000
-PCI: Bus 1, cardbus bridge: 0000:00:02.0
-PCI: Bus 5, cardbus bridge: 0000:00:02.1
-SCSI subsystem initialized
-Linux Kernel Card Services
-  options:  [pci] [cardbus]
-....
-Yenta: CardBus bridge found at 0000:00:02.0 [0000:0000]
-Yenta: ISA IRQ mask 0x0000, PCI irq 98
-Socket status: 30000007
-Yenta: CardBus bridge found at 0000:00:02.1 [0000:0000]
-Yenta: ISA IRQ mask 0x0000, PCI irq 99
-Socket status: 30000007
+:))
 
-rdi:~# lspci -v
-00:02.0 CardBus bridge: Cirrus Logic PD 6832 PCMCIA/CardBus Ctrlr (rev c1)
-        Flags: bus master, medium devsel, latency 168, IRQ 98
-        Memory at f0800000 (32-bit, non-prefetchable) [size=4K]
-        Bus: primary=00, secondary=01, subordinate=04, sec-latency=176
-        Memory window 0: f0900000-f09ff000
-        Memory window 1: f0a00000-f0aff000
-        I/O window 0: 00000400-000004ff
-        I/O window 1: 00000800-000008ff
-        16-bit legacy interface ports at 0001
+>2.6.1 kernel with this patch and "bridge_ctl" PCI patch from
+>Russell King are uploaded to ftp.p-l.o:kernels/a500/2.6.1-pa4.tgz
 
-00:02.1 CardBus bridge: Cirrus Logic PD 6832 PCMCIA/CardBus Ctrlr (rev c1)
-        Flags: bus master, medium devsel, latency 168, IRQ 99
-        Memory at f0801000 (32-bit, non-prefetchable) [size=4K]
-        Bus: primary=00, secondary=05, subordinate=08, sec-latency=176
-        Memory window 0: f0b00000-f0bff000
-        Memory window 1: f0c00000-f0cff000
-        I/O window 0: 00000c00-00000cff
-        I/O window 1: 00001000-000010ff
+If i well find back your mail and references to this "bridge_ctl" patch otc
+I don't reach to apply Russel's patch like this (against 2.6.1) to test on
+my B2k (which you know don't work yet with pdc_cons). Can you make your "bridge_ctl"
+patch available on ftp.p-l.o?
 
+Thanks again for all,
+    Joel
 
-Helge
+PS: an additional question regarding pdc_cons: in 2.4 there was a device
+driver in devices/char/pdc_console.[ch] which allowing to use ttyB device.
+But in 2.6 there isn't anymore such driver? any idea?
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
