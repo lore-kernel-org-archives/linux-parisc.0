@@ -1,51 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F3C0482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Sep 2001 19:11:25 -0600 (MDT)
-Date: Thu, 20 Sep 2001 21:12:31 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+Received: from smtp3.xs4all.nl (smtp3.xs4all.nl [194.109.127.132])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 603BF482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Sep 2001 22:47:28 -0600 (MDT)
+Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
+	by smtp3.xs4all.nl (8.9.3/8.9.3) with ESMTP id GAA26117
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 06:47:21 +0200 (CEST)
+From: thunder7@xs4all.nl
+Date: Fri, 21 Sep 2001 06:47:02 +0200
 To: parisc-linux@lists.parisc-linux.org
-Cc: baldric-exec@baldric.uwo.ca
-Message-ID: <20010920211231.C24352@megatonmonkey.net>
+Message-ID: <20010921064702.A4159@middle.of.nowhere>
+Reply-To: thunder7@xs4all.nl
+References: <Pine.LNX.4.33.0109201328390.14604-100000@lefou>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] testandset
+In-Reply-To: <Pine.LNX.4.33.0109201328390.14604-100000@lefou>
+Subject: [parisc-linux] Re: kernel 2.5.9-pa24 won't boot 735/125
 List-ID: <linux-parisc.vger.kernel.org>
 
-parisc,
+On Thu, Sep 20, 2001 at 01:33:09PM -0600, Sonny Cook wrote:
+> Hi,
+> I just tried my hand at cross compiling the parisc-linux kernel on my x86
+> box.  Something compiled, so I put the vmlinux on my 735/125 and tried to
+> boot it.  It went like this:
+> 
+> Hard booted.
+> Command line: 'HOME=/ TERM=LINUX console=tty root=/dev/sda2'
+> 
+> Segment 5 load 0038d684 size 88048 mediaptr 0x250684
+> branching to kernel entry point 0x001000d0
+> 
+> At this point, I can't even think where to begin looking for problems.
+> Any hints?
+> 
+That is the point, where normally output on the serial console would
+start appearing. Did you try both ports? Did you try 'console=ttyS0' in
+the kernel command-line? Other than that, there are some references in
+this list to a special 'debug-early' flag. Dig them out, and see if that
+helps?
 
-Trying to build glibc-2.2.4 on my 712/60
-
-The build eventually halts because of the undefined "testandset"
----
-/root/glibc_build/glibc-2.2.4/hppa-linux/obj/elf/ld.so.1: undefined reference to `testandset'
-collect2: ld returned 1 exit status
-make[4]: *** [/root/glibc_build/glibc-2.2.4/hppa-linux/obj/libio/tst_swscanf] Error 1
----
-
-I've read all the docs for dpkg-dev, and yet the glibc debian stuff behaves
-slightly different.
-
-a) Unpack glibc 2.2.4, linux-threads, db1-add-on.
-b) Patch to 2.2.4-1
-c) Needed to comment hppa stuff back into 0list
-d) Removed dl-fptr stuff from the hppa.dpatch (for now)
-	= Added morally equivalent changes to locking macro in ./sysdeps/ia64/dl-fptr.c
-	= testandset->try_lock
-	= Though I'm scratching my head at hppa/dl-fptr.c?
-	= Why is the ia64 stuff being touched anyway?
-	
-e) Packed it all back up as tar.bz2 (./debian rules seems to call for this)
-f) Placed the tar.bz2's in the glibc-2.2.4 directory (so that they can be unpacked)
-f) export LINUX_SOURCE=/usr/src/linux (no kernel-headers pakcage yet)
-g) dpkg-buildpackage -uc -b -d (from within XXX/glibc-2.2.4)
-
-glibc is almost as magical as the woman in the chair beside me watching 
-me type this email.
-
-Debian has a ./rules section ... women don't :}
-
-Any thoughts hackers?
-Would you like the full dpkg-buildpackage log?
-
-c.
+Good luck,
+Jurriaan
+-- 
+The documentation is in Japanese.  Good luck.
+	Rich 
+GNU/Linux 2.4.9-ac10 SMP/ReiserFS 2x1402 bogomips load av: 0.53 0.14 0.04
