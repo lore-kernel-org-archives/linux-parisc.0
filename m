@@ -1,43 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DC079482B
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 09:06:30 -0600 (MDT)
-Received: from amrelay1.boi.hp.com (amrelay1.boi.hp.com [15.56.8.24])
-	by palrel2.hp.com (Postfix) with ESMTP id ABFAA12F1
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 08:06:29 -0700 (PDT)
-Message-ID: <AB57FCC5E303D511BB8F00A0C9F485C2011948D7@xfc02.fc.hp.com>
-From: "MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
-To: "'Jayadeep Purushothaman'" <jdp@india.hp.com>,
-	parisc-linux@parisc-linux.org
-Subject: RE: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
-Date: Fri, 1 Jun 2001 10:59:13 -0400 
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4FD8D482A
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 09:40:01 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3B17B9FA.DD8A5A42@esiee.fr>
+Date: Fri, 01 Jun 2001 17:51:22 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: Nicolai Leymann <n.leymann@berkom.de>,
+	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] palinux 0.9 on 715/64 STI
+References: <NDBBKPOMPCLCKIFPPHMNKEBKCOAA.n.leymann@berkom.de> <3B177932.235F76E4@esiee.fr>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-We plan to create a bunch of CDs for purposes like this.  We want to wait a
-week or so, just to make sure the current ISOs  don't have some major
-problems to be fixed.  Can you wait a bit?
-
-Alan
+Hi again Nicolai and all,
  
-> Is there a way someone can ship a CD for me? I am in India, 
-> so trying to
-> download the ISO images will take way too much bandwidth.
-> 
-> Thanks,
-> Jayadeep
-> 
-> Jayadeep Purushothaman,
-> Hewlett Packard (ISO),
-> 29, Cunningham Road
-> Bangalore - 52
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+> > I've downloaded the palinux 0.9 STI image and tried to install
+> > it on my 715/64 (the 0.6.1 STI release runs fine). But during
+> > booting from the CD the system hangs with the following messages:
+> >
+> >   Warning: unable to open an initial console
+> >   loop: enabling 8 loop devices
+
+I just did the test. It works on my 715/80 with my new iso!
+
+Good luck, Thomas
+ESIEE Team
+http://www.esiee.fr/puffin
