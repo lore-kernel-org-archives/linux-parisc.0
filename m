@@ -1,17 +1,17 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C26ED4890
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 46D234894
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 21 Jan 2004 22:31:13 -0700 (MST)
-Date: Wed, 21 Jan 2004 22:31:12 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+	Thu, 22 Jan 2004 08:18:48 -0700 (MST)
+Date: Thu, 22 Jan 2004 16:18:44 +0100
+Message-ID: <400CB8A10000262E@ocpmta3.freegates.net>
+In-Reply-To: <20040122053112.GB6468@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] B2k and CONFIG_PDC_CONSOLE pb: followup
-Message-ID: <20040122053112.GB6468@colo.lackof.org>
-References: <400CB89F00001978@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <400CB89F00001978@ocpmta2.freegates.net>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="========/400CB8A10000262E/mail.tiscali.be"
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,47 +22,55 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Jan 21, 2004 at 07:03:05PM +0100, Joel Soete wrote:
-> Hi all,
-> 
-> On the my b2k when I add 'CONFIG_PDC_CONSOLE' the system hang just after
-> "Searching for devices..." leting the led CDROM continuously bright ???
-> 
-> With some printk, I reach to figure out that is at the pdc_suspend_usb()
-> point where the boot hang. I try to bypass this and so it boot well.
 
-yup - that's fixed in 2.6 slightly better.
-Look for pdc_io_reset_devices() in drivers/parisc/sba_iommu.c.
-You can backport and test that change to 2.4, I'd be happy to apply it.
+--========/400CB8A10000262E/mail.tiscali.be
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 
-The problem is if suckyio USB (or any device) is still doing DMA when
-we reprogram the IOMMU, it will cause an HPMC. The reason is we
-are fundementally changing how DMA works (non-coherent to coherent)
-and PDC doesn't reprogram the suckyIo USB accordingly.
-C3000 (and related systems) provides a special PDC call to disable USB.
-"ccio" (eg C200) systems can have the same problem with LAN boot.
+> You can backport and test that change to 2.4, I'd be happy to apply it.
 
-> I also try to bypass this memcpy (and restore pdc_suspend_usb() call) and
-> it boot also well.
+Ok Grant,
 
-I think you've just prevented either PDC or Linux from using a PDC device.
+I on going to prepare some backport but need some more time ;)
 
-> In sumary, on the b2k, this early memcpy() seems to break something in the
-> later pdc_suspend_usb() call.
+btw I found the following typo in 2.6:
+=========><=========
+--- ./drivers/parisc/sba_iommu.c.orig	2004-01-22 16:55:26.080226072 +0100
++++ ./drivers/parisc/sba_iommu.c	2004-01-22 16:56:28.037807088 +0100
+@@ -1058,7 +1058,7 @@
+ 			printk(KERN_DEBUG " %2d : %08lx/%05x %p/%05x\n",
+ 				nents,
+ 				(unsigned long) sg_dma_address(startsg), cnt,
+-				sg_virt_address(startsg), startsg->length
++				sg_virt_addr(startsg), startsg->length
+ 		);
+ #else
+ 		DBG_RUN_SG(" %d : %08lx/%05x %p/%05x\n",
+==========><==========
 
-It's the other way around. pdc_suspend_usb() is breaking PDC_CONSOLE.
-See email related to linux-2.6 c3000 serial console problems late last year.
-
-AFAIK, the memcpy just enables the PDC to use a serial console.
-But pdc_suspend_usb() apperently blows away the whole suckyio chip
-and thus PDC can no longer use suckyio serial either. Hrmm..I thought
-there was a IO_RESET_AND_CLEAR pdc call in that same chunk of code.
-
-Anyway, Figuring out some additional info could help:
-   (a) know which devices might have DMA enabled when the OS gets control
-   (b) disable just the DMA
-   (c) detect when PDC_CONSOLE wants to use a device whose DMA we've disabled
+hth,
+    Joel
 
 
-hth
-grant
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
+
+
+
+--========/400CB8A10000262E/mail.tiscali.be
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="SBA_IOMMU.diff"
+
+LS0tIC4vZHJpdmVycy9wYXJpc2Mvc2JhX2lvbW11LmMub3JpZwkyMDA0LTAxLTIyIDE2OjU1OjI2
+LjA4MDIyNjA3MiArMDEwMAorKysgLi9kcml2ZXJzL3BhcmlzYy9zYmFfaW9tbXUuYwkyMDA0LTAx
+LTIyIDE2OjU2OjI4LjAzNzgwNzA4OCArMDEwMApAQCAtMTA1OCw3ICsxMDU4LDcgQEAKIAkJCXBy
+aW50ayhLRVJOX0RFQlVHICIgJTJkIDogJTA4bHgvJTA1eCAlcC8lMDV4XG4iLAogCQkJCW5lbnRz
+LAogCQkJCSh1bnNpZ25lZCBsb25nKSBzZ19kbWFfYWRkcmVzcyhzdGFydHNnKSwgY250LAotCQkJ
+CXNnX3ZpcnRfYWRkcmVzcyhzdGFydHNnKSwgc3RhcnRzZy0+bGVuZ3RoCisJCQkJc2dfdmlydF9h
+ZGRyKHN0YXJ0c2cpLCBzdGFydHNnLT5sZW5ndGgKIAkJKTsKICNlbHNlCiAJCURCR19SVU5fU0co
+IiAlZCA6ICUwOGx4LyUwNXggJXAvJTA1eFxuIiwK
+
+--========/400CB8A10000262E/mail.tiscali.be--
