@@ -1,48 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3356D482A
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Jul 2001 13:10:14 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15L8KG-0002nW-00
-	for parisc-linux@parisc-linux.org; Fri, 13 Jul 2001 20:10:08 +0100
-Date: Fri, 13 Jul 2001 20:10:08 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010713201008.Q3048@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] TODO list
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 57EAD482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Jul 2001 13:53:25 -0600 (MDT)
+Message-Id: <m15L906-000OU0C@bame.riverrock.org>
+To: "Yan Han" <yhan@uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Palo not running -- "Installing Pa-risc linux problem" 
+In-Reply-To: Your message of "Fri, 13 Jul 2001 14:50:35 EDT."
+             <001101c10bcc$b3559990$d10c6481@HCI009>
+References: <20010630122236.A6437@megatonmonkey.net> <Pine.SOL.4.21.0107041427510.19435-100000@panther.uwo.ca> <20010704155338.E11831@megatonmonkey.net>  <001101c10bcc$b3559990$d10c6481@HCI009> 
+Date: Fri, 13 Jul 2001 13:53:22 -0600
+From: Paul Bame <bame@riverrock.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Here's some things which need to get fixed, courtesy of Alan Cox:
+> We came across a question of following the instrustuion in "INstalling
+> pa-risc linux" (www.parisc-linux.org/software/install.html". in
+> Step 8  "Initialize the boot loader (roughly equivalent to lilo): *** NOTE
+> *** change both '3's in the following command to use your partition number
+> 		$ palo -k /boot/vmlinux -b /boot/iplboot \
+> 			-c '3/boot/vmlinux TERM=linux HOME=/ root=/dev/sda3' \
+> 			-I /dev/sda
+> "
 
- * Documentation/parisc/unwritten appears out of date
+Palo should have been run as part of the Debian install process and you
+should have an /etc/palo.conf.  If you are installing by hand you have more
+work to do...
 
- * cache_init wants some printk DEBUG levels adding
-   [In general grep printk(\" is useful to check]
+> Question 1 : After booting up from network, we logged in serial console and
+> palo is not in HP box.
+> so we copied palo from the NFS server into the NFS directory so that the HP
+> box can "see it" . However, it cannot run "palo". ( we think that palo is
+> compiled under intel chip, and don't like the HP's Risc CPU).
 
- * arch/parisc/kernel/irq.c has an unchecked kmalloc around line 550.
+The Debian package for palo is on the CD and in the Debian mirror system.
 
- * led_get_net_stats() is interrupt-unsafe.
+> 2. We tried to compile "palo" again in HP box, but we cannot compile it?
+> any idea about this,
 
- * ptrace is chock-full of intrusive debug code.  either remove it or
-   macroise it.
+Please use the Debian package.  You can install the Debian package from
+the CD with 'dpkg --install palo_<version>.deb'.
 
- * smp_call_function has problems:
-	If the calling thread is real time it wont yield - you need to use
-	a timeout
+If you want help compiling palo please send the output from 'make'.
 
-	How do we handle IPI failures or retransmits?
-
- * Why does the superio driver BUG and thus oops rather than printking an
-   error and continuing without that driver ?
-
- * binfmt_som still uses the old strlen_user and needs revisiting to solve
-   DoS issues
-
- * extern asmlinkage long sys32_sysctl(struct __sysctl_args32 *args) is
-   a little strange.  Also shouldnt oldlen32 be unsigned ?
-
--- 
-Revolutions do not require corporate support.
+	-Paul
