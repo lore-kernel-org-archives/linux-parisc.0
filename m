@@ -1,20 +1,24 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DCF36484B
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A031D484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 18 Dec 2003 10:53:41 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali) id 1AX2LF-0001sH-00
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 18 Dec 2003 18:53:41 +0100
-Date: Thu, 18 Dec 2003 18:53:40 +0100
-Message-ID: <3FB25B9600016DAA@ocpmta1.freegates.net>
-In-Reply-To: <20031218143016.775DA494259@palinux.hppa>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 willy
+	Thu, 18 Dec 2003 12:55:36 -0700 (MST)
+Date: Thu, 18 Dec 2003 12:55:35 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Matthew Wilcox <willy@debian.org>,
+	Christoph Hellwig <hch@lst.de>, parisc-linux@lists.parisc-linux.org,
+	vserver@list.linux-vserver.org
+Subject: Re: [Vserver] Re: [parisc-linux] syscall number for vserver
+Message-ID: <20031218195535.GA12591@colo.lackof.org>
+References: <20031217221618.GC9313@MAIL.13thfloor.at>
+	<20031218072506.GA8142@lst.de>
+	<20031218150129.GA792@MAIL.13thfloor.at>
+	<20031218160450.GJ15674@parcelfarce.linux.theplanet.co.uk>
+	<20031218162809.GA2605@MAIL.13thfloor.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031218162809.GA2605@MAIL.13thfloor.at>
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,40 +28,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-2.6.0-pa0 boot fine on my b2k :)
+On Thu, Dec 18, 2003 at 05:28:09PM +0100, Herbert Poetzl wrote:
+> personally, I believe that the whole syscall number
+> allocation per architecture is broken by design,
 
-Thanks Matthew,
-    Joel
+No it's definitely not.
+Binary compatibility with other OS's is an arch specific problem.
 
-PS: build with make defconfig (ie 32bit with gcc 3.3.2-4)
+In our case, any chance of support for HPUX would
+require reserving HPUX syscall numbers and provide
+appropriate wrappers in the kernel to support it.
 
->-- Original Message --
->To: parisc-linux-cvs@lists.parisc-linux.org
->Date: Thu, 18 Dec 2003 07:30:16 -0700 (MST)
->From: willy@parisc-linux.org (Matthew Wilcox)
->Reply-To: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux-cvs] linux-2.6 willy
->
->
->CVSROOT:	/var/cvs
-Module name:	linux-2.6
-Changes by:	willy	03/12/18 07:30:16
+And I don't see why the value of a syscall matters.
+Just use the right header files and it should work on any arch.
 
-Modified files:
-	kernel         : Makefile 
-
-Log message:
-I may not be tall enough for signals, but I am tall enough for Makefiles!
-
-_______________________________
->_______________
-parisc-linux-cvs mailing list
-parisc-linux-cvs@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux-cvs
-
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+grant
