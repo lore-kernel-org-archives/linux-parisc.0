@@ -1,42 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA09557
-	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Nov 1999 00:52:42 -0700
-Date: Mon, 8 Nov 1999 08:55:13 +0100
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Andi <der_fisch@fischlustig.de>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] cant use rbootd
-Message-ID: <19991108085513.P25252@mencheca.ch.genedata.com>
-References: <199911030250.TAA16563@puffin.external.hp.com> <19991107125314.N25252@mencheca.ch.genedata.com> <99110713214800.00507@beavis> <99110719083800.00319@beavis>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA11182
+	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Nov 1999 12:14:30 -0700
+Message-Id: <199911081915.LAA28813@adlmail.cup.hp.com>
+Subject: Re: [parisc-linux] _end symbol in parisc linux? 
+Date: Mon, 8 Nov 1999 11:18:01 -0800
+From: Cary Coutant <cary@cup.hp.com>
+To: "Jeff Law" <law@cygnus.com>,
+        "Philipp Rumpf" <prumpf@mathe.stud.uni-erlangen.de>
+Cc: "Paul Bame" <bame@debian.fc.hp.com>, <parisc-linux@thepuffingroup.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <99110719083800.00319@beavis>; from Andi on Sun, Nov 07, 1999 at 07:04:46PM +0100
+Content-Type: text/plain; charset="US-ASCII"
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Nov 07, 1999 at 07:04:46PM +0100, Andi wrote:
-> OK, forget what I wrote, I used rbootd instead of bootp... oops. Booting over
-> the network works now. I tried the latest snapshot of the PARISC-Linux Kernel.
-> But it doenst seem to get far...
-> 
-> after 
-> 
-> "transferring control to kernel (...)"
-> 
-> nothing happens.
+>  > > Anybody know how to get PA-Linux to have an _end symbol like
+>  > > most other programs, including Intel Linux?
+>  > 
+>  > AFAIK we would need to have linker scripts to do so, which seems to be 
+>impo
+>  > ssible
+>  > with the HP/UX ld.  So this is on the "things that will get nicer when 
+>we h
+>  > ave
+>  > GNU binutils again" list.
+>Actually, you can with SOM with clever use of the sort_key attribute within
+>a subspace.  Create a new subspace with a larger than normal sort key.  
+>Within
+>that space create a single symbol "_end".
 
-See
+Donald Scobbie already answered the question:
 
-http://puffin.external.hp.com/mailing-lists/parisc-linux/1068.html
+>Define the symbol as:
+>
+>extern void *_end;
+>
+>and the linker will sort it out for you. See the HP-UX man page for
+>'end'.
 
-The information contained therein is essential for anyone not using a
-serial console.
+The HP-UX SOM linker will create the symbols _etext, _edata, and _end if 
+they are referenced; it won't create them if they're not referenced.
 
-P.S.  I've managed to find a machine to act as an rboot server now,
-so I've started hacking on the HIL driver to make it work on the 7xx
-series as well as the 300.
-
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+-cary
