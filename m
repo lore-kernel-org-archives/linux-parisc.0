@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: richard@nairnconsulting.ca (Richard Nairn),
-	taggart@carmen.fc.hp.com, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 735/125 Wide Diff scsi 
-In-Reply-To: Message from "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-   of "Thu, 24 Oct 2002 18:40:25 EDT." <200210242240.g9OMePYu027114@hiauly1.hia.nrc.ca>
-References: <200210242240.g9OMePYu027114@hiauly1.hia.nrc.ca> 
-Date: Thu, 24 Oct 2002 18:50:35 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021025005035.AB3E74852@dsl2.external.hp.com>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 47EA94834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Oct 2002 23:58:14 -0600 (MDT)
+Date: Fri, 25 Oct 2002 07:57:38 +0200
+Message-ID: <3DB5755500000A19@ocpmta7.be.tiscali.com>
+In-Reply-To: <20021024175802.GA9490@dreamind.de>
+From: jsoe0708@tiscali.be
+Subject: RE: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
+To: "Stefan Pfetzing" <dreamind@dreamind.de>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,31 +22,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"John David Anglin" wrote:
-> > Is there any approx time for the WD driver? I have about 60G I can put on
-> > my machine if it works.. Will it work if It gets plugged in the SE Chain?
-> 
-> No.  It may cause damage.
+Stephan,
 
-Not true.
-Mixing SE and HVD devices on a SCSI bus will result in the interface
-chips "tri-stating". ie no one can talk on the bus. But nothing smokes
-either - at least not for the HP product testing I was involved with
-several years ago.
+>* jsoe0708@tiscali.be <jsoe0708@tiscali.be> [021023 09:30]:
+>> Hi Stephan,
+>> 
+>> As you do earlier, I build a xfs-kernel diff versus 2.4.19 vanilla kernel,
+>> apply it against 2.4.19-pa22 (with very small problem) and obtain a bootable
+>> (and operational) kernel.
+>Yup.
+>
+>> Now I rebuild debian package of xfsprogs-2.3.5 (cvs form) and obtain tools
+>> binaries (without warning or error) but even mkfs -t xfs (mkfs.xfs) failed
+>> with this concise message: "mkfs.xfs: cannot reserve space [28 - No space
+>> left on device]".
+>> (I try to xfs_check which failed also with a lot of error messages).
+>Yea thats a problem, still in the Linux/Parisc kernel. It gives garbage
+with
+>BLKGETSIZE64. Simply look in the xfslibs directory where BLGKETSIZE64 is
+>used
+>and comment that out. Thats a disgusting hack but it leads to a set of working
+>xfsprogs.
+>
+>If you want I can make a patch for you, but this will take some time, since
+>I
+>have the source not right by hand now.
+Hmm I would have to be aware (as I try to implement put_user and get_user
+for 64bits [ie long long] [unfortunately] without great success till now).
 
-> There was a question about the WD driver not too long ago.  You could search
-> for the answer but I believe only hpux supports the WD interface at this
-> time.
+Evms also use BLKGETSIZE64 in a way that would be safely. The problem is
+that hppa kernel just printk a bug message and do not return a error message
+as ENOSYS or ENOTSUP? (duno yet how other platform manage this case)
 
-And that's going to get dropped soon too.
-Last product to support HVD is based on Sym53c876 chip.
-The interface cards are supported on new IA64 machines
-but I'm not sure one can purchase them or purchase HVD disks.
-
-> You may be able to add a newer LVD to the SE chain and have it
-> work.  I'm not sure if it could be used as a boot device though.
-
-The LVD should work fine as a boot device in SE mode.
-LVD devices talk SE like any other SE device (AFAIK).
-
-grant
+Thanks for advise (will inform of progress)
+    Joel
