@@ -1,15 +1,12 @@
-From: Joel Soete <joel.soete@tiscali.be>
-Subject: [parisc-linux] Re: C180XP and B132L and X
-Date: Sat, 13 Dec 2003 13:46:08 +0000
-Message-ID: <3FDB1820.7040700__18094.6280168884$1416623048$gmane$org@tiscali.be>
-References: <200312130845.12254.ctbr@home.se>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Question about cache flushing and fork
+Date: Mon, 15 Dec 2003 20:40:33 -0800
+Message-ID: <20031216044033.GT533__19227.7999748059$1416623054$gmane$org@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
-	debian-hppa@lists.debian.org
-To: ctbr@home.se
-Return-Path: <joel.soete@tiscali.be>
-In-Reply-To: <200312130845.12254.ctbr@home.se>
+Content-Type: text/plain; charset=us-ascii
+To: linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org
+Return-Path: <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,53 +16,34 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Tomas,
+Hi,
 
-I have no clue about c180 model otc there is no pb to make XFree runing 
-on the b132L model.
-But there is only one way to implement it (I mean XFree don't supply a 
-specific driver): sti-fb which is limited to 8b for the b132 builtin gfx 
-(it is well documented on parisc-linux.org FAQ :) )
+Can someone please explain why it is necessary to flush the cache 
+during fork()? (i.e. call to flush_cache_mm() in dup_mmap)
 
-hth,
-    Joel
+It seems that after fork, the parent and child have access to the same
+vm, so it should be sufficient to flush the tlb, and create two pte's
+for the processes. I can see that during COW processing there can be
+kernel/user cache aliasing issues on virtually indexed caches, but
+that seems to be taken care of by copy_cow_page(). 
 
-Tomas Reinicke wrote:
+I've read through cachetlb.txt, but it just says:
 
->I have recently got hold of one C180XP and one B132L with the specifications 
->below.
->
->C180XP
->Model No.		A4523AR
->GRAPHICS		HP A4244A_V
->HDD				SEAGATE ST34572WD > 3.5 inch Ultra Wide SCSI (68 pin) HV Differential
->				4.55 GB 7200 RPM
->RAM			256Mb
->CD				TOSHIBA CD-ROM XM-5401TA
->The following article numbers are present on the graphics cards in the C180XP
->A4248A
->A4244A
->A4246-66002
->A3510-40 A4244-66003.
->
->B132L
->Model No.		A4190A
->GRAPHICS		HP A4071B_LZ
->HDD				IBM DORS-32160 > (2.1GB). 3 1/2" 5400 RPM Single Ended Fast/Wide SCSI
->RAM			128Mb
->
->My intention is to install Debian woody.
->From parisc-linux.org I understand the both the C180XP and B132L is supported.
->But my question is now is it possible to get X to work in these machines?
->I have searched the net regarding the graphic cards but not found anything the 
->is 100% matching the modelnumber that I have.
->I would appriciate if someone could clearify this and also give me some 
->genaral tips regarding the installation.
->
->
->
->Tomas Reinicke
->
->
->  
->
+        This interface is used to handle whole address space
+        page table operations such as what happens during
+        fork, exit, and exec.
+
+I can see why this is needed for exit(), but why fork()? and i don't see
+this used for exec() ?
+
+Also is there an updated version of the "Linux Cache Flush Architecture"
+document? (http://en.tldp.org/LDP/khg/HyperNews/get/memory/flush.html)
+This is a very nicely written doc, but it seems a bit out of date for
+2.6 (e.g. flush_page_to_ram is gone)
+
+thanks
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
