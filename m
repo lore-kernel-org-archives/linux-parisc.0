@@ -1,36 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3BAC9482A
-	for <parisc-linux@parisc-linux.org>; Tue, 17 Apr 2001 12:04:58 -0600 (MDT)
-Sender: Jes.Sorensen@cern.ch
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: parisc-linux@parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0C189482A
+	for <parisc-linux@parisc-linux.org>; Tue, 17 Apr 2001 12:22:34 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14pa73-0003yT-00; Tue, 17 Apr 2001 19:22:05 +0100
+Date: Tue, 17 Apr 2001 19:22:05 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Jes Sorensen <jes@linuxcare.com>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] FB cleanups
-References: <E14o832-0003Ih-00@the-village.bc.nu>
-From: Jes Sorensen <jes@linuxcare.com>
-Date: 17 Apr 2001 20:04:53 +0200
-In-Reply-To: Alan Cox's message of "Fri, 13 Apr 2001 19:11:52 +0100 (BST)"
-Message-ID: <d366g3xv0a.fsf@lxplus015.cern.ch>
-MIME-Version: 1.0
+Message-ID: <20010417192205.A28724@parcelfarce.linux.theplanet.co.uk>
+References: <E14o832-0003Ih-00@the-village.bc.nu> <d366g3xv0a.fsf@lxplus015.cern.ch>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <d366g3xv0a.fsf@lxplus015.cern.ch>; from jes@linuxcare.com on Tue, Apr 17, 2001 at 08:04:53PM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
->>>>> "Alan" == Alan Cox <alan@lxorguk.ukuu.org.uk> writes:
+On Tue, Apr 17, 2001 at 08:04:53PM +0200, Jes Sorensen wrote:
+> >>>>> "Alan" == Alan Cox <alan@lxorguk.ukuu.org.uk> writes:
+> 
+> Yes, except that ISA has stronger semantics than PCI.
 
->> Well time to go study the bus behaviors and compare them then. How
->> does gsc behave wrt cache coherency, read-around-write, write
->> ordering etc etc.
+You need to issue a read after a write to be sure the write hit the
+device on ISA?
 
-Alan> And ISA is noticable for the fact it doesnt behave quite like
-Alan> PCI. You use readb/readw/readl on ISA.
+> >> Using writeb on a gsc is misleading everybody else who reads the
+> >> code into believing that it's a PCI device.
+> 
+> Alan> Rubbish.
+> 
+> Unfortunately not, look at the fb code to see the chaos.
 
-Yes, except that ISA has stronger semantics than PCI.
+huh?  the fb code is ugly precisely because people aren't using
+readb/writeb to access device memory.
 
->> Using writeb on a gsc is misleading everybody else who reads the
->> code into believing that it's a PCI device.
-
-Alan> Rubbish.
-
-Unfortunately not, look at the fb code to see the chaos.
-
-Jes
+-- 
+Revolutions do not require corporate support.
