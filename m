@@ -1,36 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA07523
-	for <parisc-linux@puffin.external.hp.com>; Tue, 12 Dec 2000 00:17:50 -0700
-To: Marko.T.Niskanen@nokia.com
-Cc: parisc-linux@thepuffingroup.com, adevries@linuxcare.com
-Subject: Re: [parisc-linux] 712/60 booting problem 
-In-Reply-To: Message from Marko.T.Niskanen@nokia.com
-   of "Tue, 12 Dec 2000 08:05:00 +0200." <13F0486DB51CD311A0AE0008C7C561380453D431@eseis11nok>
-References: <13F0486DB51CD311A0AE0008C7C561380453D431@eseis11nok> 
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA08123
+	for <parisc-linux@puffin.external.hp.com>; Tue, 12 Dec 2000 00:42:37 -0700
+To: jcarlson@macalester.edu
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Linux on HP 
+In-Reply-To: Message from jcarlson@macalester.edu
+   of "Mon, 11 Dec 2000 15:45:47 CDT." <Pine.PMDF.3.96.1001211153646.22674A-100000@macalester.edu>
+References: <Pine.PMDF.3.96.1001211153646.22674A-100000@macalester.edu> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Dec 2000 00:22:29 -0700
+Date: Tue, 12 Dec 2000 00:47:02 -0700
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001212072229.2719137CA1@carmen.fc.hp.com>
+Message-Id: <20001212074702.A5CC637CA1@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Marko.T.Niskanen@nokia.com writes...
+jcarlson@macalester.edu writes...
 
-> Sorry I have no boot log, because linux doesn't start and I have no idea how
-> to get it an another way.  after text on console "switching from PDC
-> console", I can read from serial port: 
+> Recently I've been assigned the task of setting up a few old HP machines
+> for paralell processing tasks.  In doing so, I have come upon your project
+> in porting linux to HP machines.
+> I was curious as to the status of a few of the projects
 
-If you set your 712 to serial console you can capture it, but I don't know if 
-I'd recommend doing that since STI will be better long term.
+We're making good progress but the port is still in an alpha stage. 
+Performance is pretty poor but improving. Depending on what your "parallel 
+processing tasks" are you may want to wait to start playing. If you have some 
+time and don't mind hacking (it's fun!) then you might consider giving it a 
+try.
 
-> kmem_create: Forcing size word alignment - nfs_fh VFS: Mounted root (ext2
-> filesystem) readonly. !!die_if_kernel: init(1): Illegal instruction 8
-> 
-> and after that starts that "loop" 
+> as well as the
+> availability of possible binary distributions.
 
-I get the same loop here but with a newer kernel and libc. Did you update your 
-kernel or libc at all? I think the 0.5 CD should work fine on a 712/60.
+Both Debian and RedHat are working on unofficial/experimental distributions. 
+Both have hundreds of packages built for hppa.
+
+> I'm curious about the status of Merlin 160, Raven 120 T' and Gecko.
+
+Most of the core developers have both a B160/B180/A180 and some sort of 712 so 
+they mostly work. I don't know the current status of the C110 but I think it 
+works. You might consider looking at and adding your machines to the Hardware 
+Database at,
+
+http://parisc-linux.org/hw.html
 
 -- 
 Matt Taggart
