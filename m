@@ -1,31 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail-ob04.one.net.au (mail-ob04.one.net.au [61.12.0.164])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 973BA482A
-	for <parisc-linux@parisc-linux.org>; Mon, 14 May 2001 21:34:02 -0600 (MDT)
-Received: Received: [from squeak.local (async92-ade-isp-6.nas.one.net.au [61.12.243.93])
-	by mail-ob04.one.net.au  with SMTP id f4F3XqY23288
-	for <parisc-linux@parisc-linux.org>; Tue, 15 May 2001 13:33:56 +1000 (EST)]
-From: amodra@one.net.au
-Date: Tue, 15 May 2001 13:07:49 +0930
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0A35482A
+	for <parisc-linux@parisc-linux.org>; Tue, 15 May 2001 06:24:43 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14zds6-0007Ej-00; Tue, 15 May 2001 13:24:14 +0100
+Date: Tue, 15 May 2001 13:24:14 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: amodra@one.net.au
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] broken toolchain?
-Message-ID: <20010515130749.C11835@squeak.one.net.au>
-References: <20010513021522.B28266@parcelfarce.linux.theplanet.co.uk> <20010514184525.B6094@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20010515132414.A27644@parcelfarce.linux.theplanet.co.uk>
+References: <20010513021522.B28266@parcelfarce.linux.theplanet.co.uk> <20010514184525.B6094@parcelfarce.linux.theplanet.co.uk> <20010515130749.C11835@squeak.one.net.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010514184525.B6094@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Mon, May 14, 2001 at 06:45:25PM +0100
+In-Reply-To: <20010515130749.C11835@squeak.one.net.au>; from amodra@one.net.au on Tue, May 15, 2001 at 01:07:49PM +0930
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, May 14, 2001 at 06:45:25PM +0100, Matthew Wilcox wrote:
-> On Sun, May 13, 2001 at 02:15:22AM +0100, Matthew Wilcox wrote:
-> > can anyone else confirm/deny problems?
-> 
-> I downgraded to binutils 2.11.90.0.5-1 from 2.11.90.0.7-1 and I've stopped
-> getting the unaligned references.
+On Tue, May 15, 2001 at 01:07:49PM +0930, amodra@one.net.au wrote:
+> Can you translate those meaningless (to me) version numbers into the
+> most recent date you see in bfd/, gas/, and ld/ ChangeLogs?
 
-Can you translate those meaningless (to me) version numbers into the
-most recent date you see in bfd/, gas/, and ld/ ChangeLogs?
+the version numbers are those supplied by HJ Lu (not meaningless debian
+version numbers :-)
+
+2.11.90.0.7 was based on 2001 0427
+2.11.90.0.5 was based on 2001 0414
 
 -- 
-Alan Modra
+Revolutions do not require corporate support.
