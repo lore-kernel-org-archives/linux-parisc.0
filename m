@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 654874829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 08:37:16 -0700 (MST)
-Message-Id: <200302061537.h16Fb8av028902@hiauly1.hia.nrc.ca>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 36ECA4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 08:49:10 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18goGz-000249-00; Thu, 06 Feb 2003 15:49:09 +0000
+Date: Thu, 6 Feb 2003 15:49:09 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] B132L: Success and thanks!
-To: asp@ungod.com (Aaron St. Pierre)
-Date: Thu, 6 Feb 2003 10:37:07 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: jbglaw@lug-owl.de, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030206131451.GB5012@hadron> from "Aaron St. Pierre" at Feb 6, 2003 08:14:51 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20030206154909.I32277@parcelfarce.linux.theplanet.co.uk>
+References: <20030206131451.GB5012@hadron> <200302061537.h16Fb8av028902@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200302061537.h16Fb8av028902@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Thu, Feb 06, 2003 at 10:37:07AM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> It has been suggested to keep a version of gcc-3.0 around (gcc-3.2 gets
-> installed w/ sid ) and perhaps use that to build your kernels. 
-> I am not sure is this is a requirement any longer. 
+On Thu, Feb 06, 2003 at 10:37:07AM -0500, John David Anglin wrote:
+> Randolph Chung and Grant Grundler reduced the problems to simple testcases.
+> Eric Botcazou diagnosed both problems.  Eric and Franz Sirl determined the
+> patch set needed.  Randolph, Franz and myself helped with testing.
+> 
+> It was quite an intensive bit of work resolving this problem and getting
+> it into 3.2.2.  All those who participated deserve a vote of thanks.
 
-There were two patches installed in the 3.2 branch last weekend to address
-the kernel miscompilation.  They are in 3.2.2 released this week.  The main
-problem was fixed in 3.3 and the main by a series of patches installed in
-the later half of 2002.
+I agree.  I was very impressed to see the amount of work Randolph & Grant
+had done when I got back.  While I'm not particularly familiar with GCC
+development, I understand the pain of trying to separate out relevant
+patches from a few months of development work and backporting them.
+Well done to all involved, particularly given the 2 days they had to
+accomplish this feat.
 
-Randolph Chung and Grant Grundler reduced the problems to simple testcases.
-Eric Botcazou diagnosed both problems.  Eric and Franz Sirl determined the
-patch set needed.  Randolph, Franz and myself helped with testing.
-
-It was quite an intensive bit of work resolving this problem and getting
-it into 3.2.2.  All those who participated deserve a vote of thanks.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
