@@ -1,61 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 952A8482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 11:49:25 -0600 (MDT)
-Message-Id: <200108091747.LAA13929@puffin.external.hp.com>
+Received: from oliver.internal.sjdjweis.com (dsl.75.131.networkiowa.com [209.234.75.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 37EAF482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 12:36:24 -0600 (MDT)
+Date: Thu, 9 Aug 2001 13:38:41 -0500 (CDT)
+From: Dave Weis <djweis@sjdjweis.com>
 To: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: grundler@puffin.external.hp.com,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] more serial console problems on D310 
-In-Reply-To: Message from Kirk Bresniker <kirkb@chrome.rose.hp.com>
-   of "Thu, 09 Aug 2001 08:50:31 PDT." <200108091550.IAA08745@chrome.rose.hp.com>
-Date: Thu, 09 Aug 2001 11:47:50 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+In-Reply-To: <200108091550.IAA08745@chrome.rose.hp.com>
+Message-ID: <Pine.LNX.4.21.0108091337290.11782-100000@oliver.internal.sjdjweis.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Kirk Bresniker wrote:
-> | I look at the HW database and it seems the D310 has two LASI (core_adapter)
-> | chips (and WAX, no PCI). I suspect the detection of serial ports misnumbers
-> | them (ie parisc-linux finds them in the wrong order) or we only properly
-> | handle one of the two LASI's.
-> 
-> It may seem like that in the HW database, but there is never more than one
-> LASI in a d-class system, the LASI is on the main system board, so it's
-> always there regardless of which processor asssembly gives the d-class its
-> flavor, and no processor board or add-in card ever contained a second LASI.
+On Thu, 9 Aug 2001, Kirk Bresniker wrote:
 
-Kirk,
-You are right. I misread the ioscan output.
+> Check the system to see if there is an AP card. If there is, then you 
+> might need to remove it. When I played with some d-classes very early on 
+> in the port, I had to take the AP card out.  The inside door of your 
+> d-class system should have a nice diagram showing you how to find the 
+> AP card. It's an HSC card with two small extra connectors and on the
+> bulkhead is an LED, a small switch, an serial connector and a tiny
+> modem connector.
 
-Here are the HW database contents in a more readable form:
+Yes, it does have one of those cards. I'll yank it tonite and see what
+happens. It also has an 8 port serial card, would that make a
+difference? I'll yank it also, anyway.
 
-type	driver		HWpath	Description
-------	-------------	------	--------------------------
-ba	core_adapter	16	Core I/O Adapter
-ext_bus	CentIf		16/0	Built-in Parallel Interface
-tty	asio0		16/4	Built-in RS-232C
-ext_bus	c720		16/5	Built-in SCSI
-...
-lan	lan2		16/6	Built-in LAN
-ps2	ps2		16/7	Built-in Keyboard/Mouse
-ba	core_adapter	20	Core I/O Adapter
-tty	asio0		20/2	Built-in RS-232C
-ba	eisa_adapter	20/5	EISA Bus Adapter
-lan	btlan0		20/5/8	EISA card INP0500
-...
+thanks
+dave
 
-I had assumed "core_adapter" meant LASI.
-The second "Core I/O Adapter" at "20" must be WAX.
-
-> The serial port labeled console is attached to the LASI rs-232 unless an
-> access port card is plugged into the access port capable slot.
-...
-
-Ok. We still have an ordering issue then between WAX/LASI and how
-tty's are numbered/discovered. That's in addition to the problem
-of interrupts not getting delivered for the serial port on WAX at "20/2".
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Dave Weis             "I believe there are more instances of the abridgement
+djweis@sjdjweis.com   of the freedom of the people by gradual and silent
+                      encroachments of those in power than by violent 
+                      and sudden usurpations."- James Madison
