@@ -1,62 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA20229
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 May 2000 10:20:12 -0600
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by atlrel2.hp.com (Postfix) with ESMTP id C347EADB
-	for <parisc-linux@thepuffingroup.com>; Thu, 18 May 2000 12:20:06 -0400 (EDT)
-Message-Id: <200005181619.JAA03911@milano.cup.hp.com>
-To: Philipp Rumpf <prumpf@puffin.external.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] New binutils available from cvs 
-In-reply-to: Your message of "Thu, 18 May 2000 04:51:38 PDT."
-             <20000518045138.C14031@puffin.external.hp.com>
-Date: Thu, 18 May 2000 09:19:25 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA20889
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 May 2000 11:26:52 -0600
+Received: (from tor@localhost)
+	by pallas.spacetec.no (8.9.1a/8.9.1) id TAA18863
+	for parisc-linux@thepuffingroup.com; Thu, 18 May 2000 19:26:51 +0200
+Message-Id: <200005181726.TAA18863@pallas.spacetec.no>
+From: tor@spacetec.no (Tor Arntsen)
+Date: Thu, 18 May 2000 19:26:51 +0200
+In-Reply-To: Alan Modra <alan@linuxcare.com.au>
+       "Re: [parisc-linux] New binutils available from cvs" (May 18, 11:45)
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] New binutils available from cvs
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
-> > b) is inconsistent with existing hp assembler.
-> 
-> Your point ?
+On May 18, 11:45, Alan Modra wrote:
+>On Thu, 18 May 2000, Philipp Rumpf wrote:
+>> Any reason for renaming cvs modules all the time instead of staying with
+>> one name and perhaps not pissing off people with slow, expensive
+>> connections ?
+>
+>Mainly so people can still easily use the old binutils.  .diff.gz came to
+[...]
 
-I think Alan meant it breaks with existing GNU toolchain for parisc.
+That's what tags and branches are for!  *Please* use CVS the way it was
+meant to be used, don't use it like some old SCCS system!
 
-And even if he didn't, asking people to change assembler files
-for "internal" reasons (glibc/whatever) seems like an extra hurdle
-that just doesn't have to be. I'd like to make it easier for people
-to migrate from HP-UX (OpenBSD/FreeBSD/mklinux/whatever) to parisc-linux.
+It's now close to impossible to track these things.  cvs co -c doesn't show
+the modules either, without keeping *very* close tracking of the mailing
+list we won't even know what we should/can use.
 
-...
-> All in all even _if_ you have a reason to change it back it could have used
-> some discussion.  So far you haven't.
+>1.8M anyway.  I can put the diff somewhere you can get it, if you like.
 
-Alan has.  But no one replied publicly. See
-http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/05-May/0038.html
+Sigh.  What *for*?  See above, that's why CVS has branches and tags which
+makes it easy for users to:
+a) See what's in there (cvs status -v)
+b) Switch between versions with ease and with minimal bandwidth
+c) Keep several versions locally (copy a tree and switch to other branch or 
+   rev.)
 
-Paul Bame and I both replied privately that he should go ahead
-and make the change. So you can blame us if you like. :^)
-
-...
-> Any idea which illegal drug the person who decided "!=" was the fp not
-> equal condition code was on ;) ?
-
-No...but I suspect the FP was developed *seperately* from the PA-RISC CPU.
-Don't need drugs to get divergence - it's almost guaranteed to happen
-one way or another.
-
-> > Linuxcare.  Support for the Revolution.
-> 
-> And it's just in historical spirit that those actually supporting the
-> revolution lose their jobs ... (yes, I think the signature is quite 
-> inconsiderate.)
-
-Without companies *like* Linuxcare, linux wouldn't have a rat's ass
-chance in the business world. I think the signature is quite accurate.
-And anyone with even 1% clue about linux is certainly not having
-employment problems right now.  (I'm proof of that! :^)
-
-grant
-
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+-Tor
