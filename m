@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 22512484F
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Jun 2002 14:44:04 -0600 (MDT)
-Subject: Re: [parisc-linux] Unaligned access failures with apt-get on SMP
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, richard_hirst@linuxcare.com
-In-Reply-To: <200206170412.g5H4CGP8011158@hiauly1.hia.nrc.ca>
-References: <200206170412.g5H4CGP8011158@hiauly1.hia.nrc.ca>
-Content-Type: text/plain
-Date: 17 Jun 2002 14:43:49 -0600
-Message-Id: <1024346629.27050.52.camel@beavis>
-Mime-Version: 1.0
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id D37B3482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Jun 2002 15:54:02 -0600 (MDT)
+From: Helge Deller <deller@gmx.de>
+To: Steve Pacenka <spacenka@lightlink.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] tentative success with CRX24 framebuffer and X on a 720/50
+Date: Mon, 17 Jun 2002 23:52:35 +0200
+References: <1024334656.1594.311.camel@romano-nyswri>
+In-Reply-To: <1024334656.1594.311.camel@romano-nyswri>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200206172352.35578.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,249 +24,74 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-John et all,
+Hi Steve,
 
-I recompiled the debian apt-get package this time leaving the debug
-symbols intact.  
+I applied your suggested changes to the CVS kernel 2.4.18-pa38. 
+Since I don't have such a graphics card and can't test any changes here, 
+please let me know if I did it correctly.
 
+Greetings,
+Helge
 
-Here is the function that is causing the failure:
-
-// DynamicMMap::Allocate - Pooled aligned allocation                   
-/*{{{*/
-// ---------------------------------------------------------------------
-/* This allocates an Item of size ItemSize so that it is aligned to its
-   size in the file. */
-unsigned long DynamicMMap::Allocate(unsigned long ItemSize)
-{
-   // Look for a matching pool entry
-   Pool *I;
-   Pool *Empty = 0;
-   for (I = Pools; I != Pools + PoolCount; I++)
-   {
-      if (I->ItemSize == 0)
-         Empty = I;
-      if (I->ItemSize == ItemSize)
-         break;
-   }
-
-   // No pool is allocated, use an unallocated one
-   if (I == Pools + PoolCount)
-   {
-      // Woops, we ran out, the calling code should allocate more.
-      if (Empty == 0)
-      {
-         _error->Error("Ran out of allocation pools");
-         return 0;
-      }
-
-      I = Empty;
-      I->ItemSize = ItemSize;
-      I->Count = 0;
-   }
-
-   // Out of space, allocate some more
-   if (I->Count == 0)
-   {
-      I->Count = 20*1024/ItemSize;
-      I->Start = RawAllocate(I->Count*ItemSize,ItemSize);
-   }
-
-   I->Count--;
-   unsigned long Result = I->Start;
-   I->Start += ItemSize;
-   return Result/ItemSize;
-}
-
-
-Here is my gdb output while tracing the failure:
-
-root@rebel:~# gdb /usr/bin/apt-get 
-GNU gdb 2002-04-01-cvs
-Copyright 2002 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you
-are
-welcome to change it and/or distribute copies of it under certain
-conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for
-details.
-This GDB was configured as "hppa-linux"...
-
-(gdb) b main
-Breakpoint 1 at 0x27ea4: file apt-get.cc, line 2134.
-
-(gdb) run install less
-Starting program: /usr/bin/apt-get install less
-
-Breakpoint 1, main (argc=3, argv=0x46e66) at apt-get.cc:2134
-2134	   CommandLine CmdL(Args,_config);
-
-(gdb) b DynamicMMap::Allocate
-Breakpoint 2 at 0x40050358: file contrib/mmap.cc, line 229.
-
-(gdb) continue
-Continuing.
-Reading Package Lists... 0%
-Breakpoint 2, DynamicMMap::Allocate(unsigned long) (this=0x4c900,
-ItemSize=275112) at contrib/mmap.cc:229
-229	   Pool *Empty = 0;
-
-(gdb) bt
-#0  DynamicMMap::Allocate(unsigned long) (this=0x4c900, ItemSize=275112)
-at contrib/mmap.cc:229
-#1  0x400ba64c in pkgCacheGenerator::SelectFile(std::string,
-std::string, pkgIndexFile const&, unsigned long) (this=0xbff01020, File=
-        {static npos = 4294967295, _M_dataplus = {<allocator<char>> =
-{<No data fields>}, _M_p = 0x489f4 "/var/lib/dpkg/status"}, static
-_S_empty_rep_storage = {0, 0, 1, 18, 1, 0}}, Site={static npos =
-4294967295, _M_dataplus = {<allocator<char>> = {<No data fields>}, _M_p
-= 0x432b4 ""}, static _S_empty_rep_storage = {0, 0, 1, 18, 1, 0}},
-Index=@0x4bda0, 
-    Flags=1) at pkgcachegen.cc:404
-#2  0x400e5a14 in debStatusIndex::Merge(pkgCacheGenerator&, OpProgress&)
-const (this=0x4bda0, Gen=@0xbff01020, Prog=@0xbff00d90) at
-/usr/include/g++-v3/bits/basic_string.h:863
-#3  0x400bbf8c in BuildCache(pkgCacheGenerator&, OpProgress&, unsigned
-long&, unsigned long, std::__normal_iterator<pkgIndexFile**,
-std::vector<pkgIndexFile*, std::allocator<pkgIndexFile*> > >,
-std::__normal_iterator<pkgIndexFile**, std::vector<pkgIndexFile*,
-std::allocator<pkgIndexFile*> > >) (Gen=@0xbff01020,
-Progress=@0xbff00d90, CurrentSize=@0xbff01190, 
-    TotalSize=107592,
-Start={<iterator<std::random_access_iterator_tag,pkgIndexFile*,int,pkgIndexFile**,pkgIndexFile*&>> = {<No data fields>}, _M_current = 0x4c578}, End=
-     
-{<iterator<std::random_access_iterator_tag,pkgIndexFile*,int,pkgIndexFile**,pkgIndexFile*&>> = {<No data fields>}, _M_current = 0x4c57c})
-    at /usr/include/g++-v3/bits/stl_iterator.h:478
-#4  0x400bd280 in pkgMakeStatusCache(pkgSourceList&, OpProgress&,
-MMap**, bool) (List=@0xbff01020, Progress=@0xbff00d90,
-OutMap=0xbff00990, AllowMem=224)
-    at /usr/include/g++-v3/bits/stl_vector.h:187
-#5  0x400ad8d4 in pkgCacheFile::Open(OpProgress&, bool)
-(this=0xbff00990, Progress=@0xbff00d90, WithLock=true) at
-cachefile.cc:70
-#6  0x0002b794 in CacheFile::Open(bool) (this=0xbff00990, WithLock=56)
-at apt-get.cc:85
-
-(gdb) n
-DynamicMMap::Allocate(unsigned long) (this=0x4c900, ItemSize=275112) at
-contrib/mmap.cc:226
-226	{   
-
-(gdb) n
-DynamicMMap::Allocate(unsigned long) (this=0x4c900, ItemSize=56) at
-contrib/mmap.cc:230
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-232	      if (I->ItemSize == 0)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-230	   for (I = Pools; I != Pools + PoolCount; I++)
-
-(gdb) n
-234	      if (I->ItemSize == ItemSize)
-
-(gdb) n
-239	   if (I == Pools + PoolCount)
-
-(gdb) n
-254	   if (I->Count == 0)
-
-
-========> Things get interesting here <=======
-
-(gdb) n
-261	   unsigned long Result = I->Start;
-
-(gdb) n
-263	   return Result/ItemSize;
-
-(gdb) n
-260	   I->Count--;
-
-(gdb) n
-263	   return Result/ItemSize;
-
-(gdb) n
-
-260	   I->Count--;
-(gdb) n
-
-Program received signal SIGBUS, Bus error.
-DynamicMMap::Allocate(unsigned long) (this=0x4c900, ItemSize=56) at
-contrib/mmap.cc:263
-263	   return Result/ItemSize;
-
-
-It looks like the the function gets exited twice.... but I do not see
-any recursion in the function, and the function is not listed twice
-in the origional back trace I posted.  Do we have a corrupt stack?
-or can you think of anything else?  I would be glad to provide any
-additional debugging output to anyone interested.  I can also give
-remote access to this system if someone is interested in looking
-this further.
-
-Thanks,
-
-- Ryan
-
-
-
-On Sun, 2002-06-16 at 22:12, John David Anglin wrote:
-> > any way I can tell from the binary?
-> 
-> Not that I am aware of.  On further thought, I think the user code is ok.
-> 
-> Studying you original message further, I see that the printout from
-> unaligned.c is fully consistent with the register dump and user code.
-> Thus, I have to think that the problem is actually in the kernel.
-> 
-> If the failure occurs all the time, I would put a break at 0x4005e47c
-> and then set a large ignore count.  Run the program and see how many
-> times the break is hit before the fault occurs.  Then, set the ignore
-> count to 1 less than the number of hits and rerun.  If the fault is
-> deterministic, you should be able to determine the exact conditions
-> which cause the "trap".
-> 
-> Oh, I remember that gdb may not print r3 correctly with info reg.
-> It's better to use p $r3 or printf "0x%x\n", $r3.
-> 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
-> 
+On Monday 17 June 2002 19:24, Steve Pacenka wrote:
+> Friends,
+>
+> I posted a request for advice about this on the list a couple of weeks
+> ago.  The 0.9.3 CD installed well, and then I did a dist-upgrade and
+> fiddled with kernel compiles to get fbcon and X going.
+>
+> 1. Trial and error within the kernel led to two one-line insertions in
+> stifb.c (starting with 1.30.2.1 in CVS) enabled CRX24 framebuffer
+> (a.k.a. HPA1439A) initialization at 32 bpp and correctly blanked the
+> text overlay plane.  Welcome to the penguin and color text.
+>
+> Change #1: In function
+>
+>   stifb_init_fb(struct sti_struct *sti, int force_bpp)
+>
+> of /usr/src/linux/drivers/video/sti/stifb.c insert
+>
+>   (fb->id != S9000_ID_A1439A) &&
+>
+> as another line within the #if 1 #endif hack that prevents
+> initialization of any but the listed hardware.
+>
+>
+> Change #2: In function
+>
+>   stifb_set_disp(struct stifb_info *fb)
+>
+> insert
+>
+>   ngleClearOverlayPlanes(fb, 0xff, 0);
+>
+> before the break; within the "clear attribute planes" switch for this
+> case.
+>
+> Change #3: Verify these settings in /usr/src/linux/.config
+>
+>   CONFIG_FBCON=y
+>   CONFIG_FBCON_CFB8=y
+>   CONFIG_FBCON_CFB32=y
+>   CONFIG_FBCON_STI=y
+>
+> (CFB8 is for a forthcoming test of 8-bit depth. 24 bits unaccelerated is
+> somewhat slow with X on this box.)
+>
+>
+> 2. Telling XF86Config-4 that there is a 32 bit framebuffer having 24 bit
+> depth allowed X to start.  Welcome to a Gnome 1.4 splashscreen.
+>
+>
+> Performance of the console framebuffer is not bad, slightly slower than
+> the monochrome text that preceded it.  It's nice to have color.  No
+> apparent problems with the default font and 24bpp.
+>
+> Performance under X was better than I expected considering the CPU
+> speed, the 24 bit depth, and the non-acceleration.  An 8-bit depth (if
+> achievable) and a lighter weight desktop than gnome+sawfish (windowmaker
+> perhaps) could get X close to routinely usable.  Except for a frequently
+> unresponsive serial mouse (very old M$ mouse) I experienced no basic
+> problems within X.
+>
+> -- thanks, SP
