@@ -1,18 +1,18 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] gcc (3.3.5) causing problems in our latest kernel.
-Date: Mon, 4 Apr 2005 01:07:23 +0100
-Message-ID: <20050404000723.GD18349@parcelfarce.linux.theplanet.co.uk>
+Date: Sun, 3 Apr 2005 17:43:47 -0700
+Message-ID: <20050404004347.GG8921@tausq.org>
 References: <1112564457.5858.7.camel@mulgrave>
-	<20050403221332.GC18349@parcelfarce.linux.theplanet.co.uk>
-	<1112572589.5860.3.camel@mulgrave>
+	<200504032343.j33NhqX2019108@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
- Matthew Wilcox <matthew@wil.cx>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1112572589.5860.3.camel@mulgrave>
+In-Reply-To: <200504032343.j33NhqX2019108@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,30 +23,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 03, 2005 at 06:56:28PM -0500, James Bottomley wrote:
-> On Sun, 2005-04-03 at 23:13 +0100, Matthew Wilcox wrote:
-> > Perhaps there's a difference between an inline function and a macro
-> > in terms of constant propagation?  If you turn __test_width() into
-> > a macro, it should work (see the implementation of __get_user() in
-> > asm-parisc/uaccess.h)
+> > static inline void __test_width(char *var, int size) {
+> > 	switch (size) {	
+> > 	case 1:
+> > 	case 2:
+> > 	case 4:
+> > 	case 8:
+> > 		*var++ = 0;
+> > 		break;
+> > 	default:
+> > 		bad_function();
+> > 	}
+> > }
 > 
-> Yes, if I change it to a pure #define, everything works OK.
-> 
-> However, unless we can get the inline function to work, I still have to
-> go back to davem ... Do I just tell him we can't fix our toolchain, so
-> how about this?
+> I think the optimization of switch statements is far from optimal.
+> I suspect that the optimization of if statements is better.  A similar
+> issue causes warning from __put_user in a 32-bit build.  Probably,
+> this should be a GCC PR.
 
-Even if we can fix the toolchain, there's going to be a lot of people
-out there who'd have to upgrade.  I'd prefer it if we didn't have to
-force an upgrade ...
+Try changing that function to
+static inline void __test_width(char *var, const int size) {
 
+willy says it worked for him :)
+
+randolph
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
