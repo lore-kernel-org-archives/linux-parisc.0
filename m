@@ -1,18 +1,20 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 59666488A
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3DB22488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 22:49:43 -0700 (MST)
-Date: Sat, 21 Feb 2004 22:49:42 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] Linux only see 2Gb of ram of N4k
-Message-ID: <20040222054942.GD30849@colo.lackof.org>
-References: <402A4CA500006EA3@ocpmta2.freegates.net>
-	<20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
+	Sat, 21 Feb 2004 23:01:17 -0700 (MST)
+Date: Sun, 22 Feb 2004 01:00:02 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb: followup
+Message-ID: <20040222060002.GI25019@baldric.uwo.ca>
+References: <402A42A1000052A9@ocpmta1.freegates.net>
+	<Pine.GSO.4.44.0402180830260.14838-100000@keymaster>
+	<20040218163927.GC9497@baldric.uwo.ca>
+	<4037AB13.3050908@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <4037AB13.3050908@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -23,31 +25,42 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Feb 20, 2004 at 06:21:40PM +0000, Matthew Wilcox wrote:
-> Unlikely.  As I recall, the N4k diagram looks like this:
+On Sat, Feb 21, 2004 at 07:01:39PM +0000, Joel Soete wrote:
+> It takes me some more time because I would test patch by patch with gcc-3.3 
+> if nothing was broken.
+> But all those patch seems ok with gcc-3.3 (just have to revert it and 
+> re-run with make -k check ;) )
 
-Beautiful diagram! (I'm saving that one)
-And I confirmed it is correct in case anyone had doubts.
-(I did)
+Yes, it is a lot of work. The fame will all be yours though.
+ 
+> So I have to figure out what goes wrong in "relocation". Can you help me by 
+> pointing out some files and may functions to specialy analyse :).
 
-> So the RAM is uniformly-accessible from all CPUs, but the IO is not.
+My haiku was really intended to be a joke. Anything could be wrong with
+the loader, you have to run it through gdb to get a usefull trace. Even
+then you won't have symbols and you'll have to learn to decode the
+address from /proc/self/maps and an 'objdump -d xxxxxx.so'. From there
+you can find the offending code, go back to the code and examine if it
+does anything odd... perhaps isolate what the code does in a testcase
+that gcc-3.5 does incorreclty.
+ 
+> BTW: The previous mentioned patch are (afaik) of general interest (not hppa 
+> specific) but would you like that I submit you first so that you could 
+> submit it to glibc maintainers or do you prefer that i manage that myself?
 
-I don't think there is much penalty for CPU's to access MMIO space
-on "the other side". MMIO reads are so expensive anyway, I'd doubt
-it would make that much difference.
+You should:
 
-> If you look at pat_memconfig() in arch/parisc/kernel/inventory.c, you'll
-> see how we try to figure out what memory ranges are in the machine.
-> Want to try debugging that, see what's being reported by firmware?
+a. Make sure that i386 builds with your patches, and passes the
+   testsuite without regressions.
+b. Cleanup the patches, make *sure* your mailer doesn't wrap them, the
+   previous patches were wrapped and broken.
+c. Write a 'Changelog' entry for the changes, and describe why you are
+   making these changes (e.g. compiling with gcc-3.5). These entries
+   have a very special format, look closely, and follow the GNU coding
+   convetions.
+d. Submit them separately, with a description, changelog, and inline
+   patch to the libc-alpha mailing list.
 
-I'm pretty sure it will look like this:
-RAM      Phys Address
-0-2GB -> 0-2GB
-      -> 2-4GB I/O Space (mostly PCI MMIO)
-2-4GB -> 4-6GB (courtesy of the memory controller)
+This will be a wonderful learning experience! :)
 
-The N-class was the first box which has an I/O hole from 2-4GB
-physical address range. I hope Joel will be able to confirm this.
-If not, I likely have documentation to confirm this.
-
-grant
+c.
