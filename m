@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 45A81482D
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 10:03:29 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id eigmjaaa for parisc-linux@lists.parisc-linux.org; Wed, 5 Dec 2001 09:58:18 -0700
-Date: Wed, 5 Dec 2001 09:03:22 -0800
-From: Randolph Chung <tausq@debian.org>
-To: Colin Watson <cjwatson@debian.org>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: groff build on hppa
-Message-ID: <20011205090322.Q944@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20011204134445.GA9231@riva.ucam.org> <20011205155919.E7051@linuxcare.com> <20011205081939.O944@tausq.org> <20011205163920.GA24484@riva.ucam.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011205163920.GA24484@riva.ucam.org>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B7999482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 10:29:59 -0700 (MST)
+Message-Id: <200112051725.KAA19039@puffin.external.hp.com>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.16-pa15 still POWERFAIL(was 2.4.16-pa12 Power failled) 
+In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
+   of "Wed, 05 Dec 2001 16:08:31 GMT." <20011205160831.F7051@linuxcare.com>
+Date: Wed, 05 Dec 2001 10:25:17 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,18 +21,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> So would there be objections to me doing a special build on hppa with
-> the CFLAGS/CXXFLAGS hacked, given that there are three days left, or do
-> I have to upload again?
+Richard Hirst wrote:
+> On Wed, Dec 05, 2001 at 11:22:17AM +0100, joel.soete@freebel.net wrote:
+> This is a bit of debug from my a500, 2.4.16-pa13
+> 
+> request_irq(66, 000000001037fd90, 0x0, IO-SAPIC00-L1, 000000001009bc58)
+> request_irq(66, 000000001037c590, 0x0, powerfail, 0000000000000000)
+> request_irq(129, 0000000010374ed0, 0x4000000, sym53c8xx, 000000001fe98000)
+> iosapic_interrupt(): irq 66 line 1 eoi fffffffffed30840, irq_num 129
+> POWERFAIL INTERRUPTION !
+> 
+> Don't claim to understand this, but it looks like "powerfail" has
+> requested the wrong irq?
 
-Please make the appropriate source changes and make another upload.
-Source-hacks that don't end up in the archive are considered very bad
-practice.
+Uhm. looks like a shared IRQ. that explains why I see it when
+the lan is ifconfig'd instead. Does powerfail need an exclusive IRQ
+in the CPU IRQ domain?
 
-There's a possible patch to fix this problem. I'm verifying this with
-upstream at the moment.
+I never had the impression any of the HP9000 servers support
+a soft-power switch. Many of the older servers did support "Host
+powerfail" - but everything shipped since K-class does not.
+I think we will need to figure out how to disable this for PAT boxes
+and for DKR-class.
 
-randolph
--- 
-Debian Developer <tausq@debian.org>
-http://www.TauSq.org/
+This reminds me:
+   For PAT PDC boxes, we need to write a "PAT Event Handler"
+which has exclusive IRQ on CPU EIRR bit 19 (numbered bass ackwards).
+"we" means someone in HP. I don't think any of the documentation
+for PAT has been published (or will be published anytime soon *sigh*).
+
+grant
