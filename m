@@ -1,54 +1,58 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E3A7A4842
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 08:42:30 -0600 (MDT)
-Received: from mail.lokmail.net (localhost [127.0.0.1])
-	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id KAA14125
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 10:42:25 -0400
-Message-Id: <200109271442.KAA14125@mail.lokmail.net>
-From: Jurij Smakov <jurij@lokmail.net>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 720 - some progress 
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Thu, 27 Sep 2001 10:42:25 -0400
-Sender: jurij@mail.lokmail.net
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 09BB34842
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 08:57:53 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15mcbo-0006D6-00; Thu, 27 Sep 2001 15:57:52 +0100
+Date: Thu, 27 Sep 2001 15:57:52 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Richard Allen <ra@hp.is>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] More strange problems
+Message-ID: <20010927155752.D16096@parcelfarce.linux.theplanet.co.uk>
+References: <20010927113453.F16693@hp.is> <20010927142943.A16096@parcelfarce.linux.theplanet.co.uk> <20010927143556.K16693@hp.is>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010927143556.K16693@hp.is>; from ra@hp.is on Thu, Sep 27, 2001 at 02:35:56PM +0000
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi!
+On Thu, Sep 27, 2001 at 02:35:56PM +0000, Richard Allen wrote:
+> Is there any way for a non kernel guru like myself to get any info out
+> of those errors in dmesg ?
 
-I hope I've got it right. It only emulates MFCTL and only when the
-source control register is 27. It turns out, that pt_regs does not
-have a member for cr26 and adding one does not look like an easy
-task. 
+Sure..
 
-Jurij.
+> do_page_fault() pid=2132 command='rpm' type=15 address=0x00000024
 
---- linux-2.4.9-pa24/arch/parisc/kernel/traps.c Wed Sep 19 12:02:30 2001
-+++ linux/arch/parisc/kernel/traps.c    Thu Sep 27 16:16:54 2001
-@@ -273,6 +273,7 @@
- {
-        unsigned long fault_address = 0;
-        unsigned long fault_space = 0;
-+       int fromcr,togr;
-        struct siginfo si;
- #ifdef CONFIG_KWDB
-        struct save_state ssp;
-@@ -363,6 +364,17 @@
-                si.si_code = ILL_PRVOPC;
-                goto give_sigill;
-        case 11:
-+               if(!(regs->iir & 0xfc000000) && (((regs->iir & 0x1fe0)>>5) == 0x45)) {
-+                 /* This is MFCTL instruction */
-+                 fromcr = (regs->iir & 0x03e00000)>>21;
-+                 togr = (regs->iir & 0x1f);
-+                 /* Emulate the instruction if the read is from cr27 */
-+                 if(fromcr == 27) {
-+                   regs->gr[togr] = regs->cr27;
-+                   return;
-+                 }
-+               }
-+               /* Something else is wrong */
-                die_if_kernel("Privileged register - shouldn't happen!", regs, code);
-                si.si_code = ILL_PRVREG;
-        give_sigill:
+`address=0x00000024' -- it's a NULL pointer dereference.
+
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001001111111100001111
+> r0-3     00000000 00000008 0007c7b7 bff00938
+> r4-7     001b8000 00000009 00207510 0020758c
+> r8-11    00002001 00205fe0 bff007f4 001ffa10
+> r12-15   001de270 00000000 bff004c4 00000102
+> r16-19   00000000 001f65e0 00205fe0 001b8000
+> r20-23   01010101 00205fdc 80808080 00000006
+> r24-27   bff00938 00000009 00000000 001dca70
+> r28-31   001e3238 00000000 bff009f0 00059457
+> sr0-3    00000014 00000014 00000000 00000014
+> sr4-7    00000014 00000014 00000014 00000014
+> 
+> IASQ: 00000014 00000014 IAOQ: 0007c7c3 0007c7c7
+
+`IASQ: 00000014' -- 0 means kernel, anything else is a user process.
+`IAOQ: 0007c7c3' -- bottom 2 bits set, so we're in user mode too (good!).
+
+>  IIR: 48340038    ISR: 00000014  IOR: 00000024
+>  CPU:        0   CR30: 29164000 CR31: 10350000
+>  ORIG_R28: 00206000
+
+The truly dedicated will decode IIR to see what instruction it was,
+cross-check which register in the dump was wrong then try to debug
+the program.
+
+-- 
+Revolutions do not require corporate support.
