@@ -1,34 +1,21 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA28176
-	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Dec 1999 11:24:40 -0700
-From: Michael Shalayeff <mickey@lucifier.dial-up.user.akula.net>
-Message-Id: <199912241826.NAA26906@lucifier.dial-up.user.akula.net>
-Subject: Re: [parisc-linux] Firmware (was How to set serial ..)
-In-Reply-To: <38635E6D.322C282A@storm.ca> from Sandy Harris at "Dec 24, 99 06:52:13 am"
-To: sandy@storm.ca (Sandy Harris)
-Date: Fri, 24 Dec 1999 13:26:50 -0500 (EST)
-Cc: parisc-linux@thepuffingroup.com
-Reply-To: mickey@openbsd.org
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA27916
+	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Dec 1999 15:52:06 -0700
+Received: from bhihawcon04.inteq.com (bhihawcon04.bhi.bhi-net.com [147.108.122.236])
+	by gateway1.bhi-net.com (8.9.2/8.9.0) with ESMTP id QAA25496
+	for <parisc-linux@thepuffingroup.com>; Tue, 28 Dec 1999 16:54:40 -0600 (CST)
+Message-ID: <BBAFD7A26E78D311834400805FEA117701104D39@BHIHAWISS04>
+From: "Soto,  Gene G." <Gene.Soto@bakeroiltools.com>
+To: parisc-linux@thepuffingroup.com
+Date: Tue, 28 Dec 1999 16:51:48 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] cd-rom
 List-ID: <linux-parisc.vger.kernel.org>
 
-Making, drinking tea and reading an opus magnum from Sandy Harris:
-> Tom Gallagher wrote:
-> 
-> > ...  Before I managed to do this I upgraded it to the
-> > lastest firmware.
-> 
-> How does one do that?
-there is a bootable image somewhere on hp site.
-one should boot either from spare disk or over the network.
-the image itself will perform an upgrade.
-one caution, it upgrades the graphics eprom as well and
-changes the video mode.
-the cure is to type blindly the boor_admin command to change to whatever
-resolution one had before the upgrade.
+I need to load 10.02 and am having problems mounting a NEC cdr-1410a cd-rom
+on my system (9000/712).  Any advice on where to go for help would be
+appreciated.  (SAM sees the device but I can't mount it).
 
-cu
-
--- 
-    paranoic mickey       (my employers have changed but, the name has remained)
+thanks
