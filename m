@@ -1,77 +1,46 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA24967
-	for <parisc-linux@puffin.external.hp.com>; Thu, 9 Sep 1999 22:32:58 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <37D8775B.A7802688@uswest.net>
-Date: Thu, 09 Sep 1999 21:13:31 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: ext-helge.deller@nokia.com, Parisc Linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Finally ... Kernel Booted on C200
-References: <A914533BF4B9D2118D980008C7894C0A01013168@dueis01nok>
-Content-Type: text/plain; charset=us-ascii
+Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA27386
+	for <parisc-linux@puffin.external.hp.com>; Sat, 11 Sep 1999 11:37:53 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id NAA28292
+	for <parisc-linux@thepuffingroup.com>; Sat, 11 Sep 1999 13:39:20 -0400 (EDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id KAA16544 for <parisc-linux@thepuffingroup.com>; Sat, 11 Sep 1999 10:37:53 -0700 (PDT)
+Message-Id: <199909111737.KAA16544@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+In-reply-to: Your message of "Tue, 24 Aug 1999 23:44:40 PDT."
+             <19990824234440.H31994@mencheca.ch.genedata.com>
+Date: Sat, 11 Sep 1999 10:37:53 -0700
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] sched.models and HP-UX flavor
 List-ID: <linux-parisc.vger.kernel.org>
 
-Well I never claimed I was bright :)
-Thanks for the hint/help.
 
-I do have a question/patch for you though......
+Matthew Wilcox wrote:
+...
+> Well, according to /usr/sam/lib/mo/sched.models (a very useful file!)
 
-When I do a make mrproper, or make distclean, etc ... the
-arch/parisc/boot/boot_code/cache.c file gets removed, and I have to
-re-checkit out from cvs....  Is this supposed to happen?
+This is the HP-UX 11.X location.
+On 10.20, it's /usr/lib/sched.models.
+(Agreed - a very useful file)
 
-I've attached a patch to remove the cache.c file from the clean in the
-Makefile if this is a bug.....
+I think trying to build/link parisc-linux on 10.20 has been the
+source of my problems. I have the impression binutils and egcs
+configure scripts are targeted towards hpux11.00 host since
+they use "elf" instead of "som" output format.
+I'm moving to 11.00 host and see if that works better...
 
-Thanks again for hint/help!
--Ryan
+I'm not good at (mostly not interested) futzing around with build tools.
+It would be a good thing if someone either fixed or intentionally broke
+the parisc-linux configure scripts for hpux10.20 host.
 
+cheers,
+grant
 
-ext-helge.deller@nokia.com wrote:
+ps. parisc/pci.[ch] and dino.c changes are coming along nicely.
+   Most of the design issues are resolved though a few are still
+   outstanding. It looks like I should be able to drop those
+   in by next week after they are reviewed.
 
-> Yes, but it's really easy with two steps:
->
-> 1. make vmlinux
-> 2. make Image   (<- Here the ipl will be built & stripped, then ipl and
-> vmlinux will be added to the file "Image").
-> 3. Boot the file arch/parisc/boot/Image from HDD or via network.
->
-> Helge Deller.
->
-> > -----Original Message-----
-> > From: EXT Ryan Bradetich [mailto:rbradetich@uswest.net]
-> > Sent: Donnerstag, 9. September 1999 5:33
-> > To: Parisc Linux
-> > Subject: [parisc-linux] Finally ... Kernel Booted on C200
-> >
-> >
-> > Well I'm slowly learning .... :)
-> >
-> > I finally figured out how to compile the cvs tree into a kernel that
-> > I could boot on the C200.
-> > These are the steps I followed, will someone verify if they
-> > are correct?
-> >
-> > 1. built the kernel using vmlinux,
-> > 2. built the ipl in arch/parisc/boot/boot_code
-> > 3. stripped ipl
-> > 4. mkImage ipl vmlinux vmlinux.boot
-> > 5 boot off of vmlinux.boot
-> >
-> > At this point I get Tranfering control to kernel.  (At entry point
-> > 0x00010000)
-> > The LED are also flashing in some patteren.
-> >
-> > Well, time to start researching signals :)
-> >
-> > -Ryan
-> >
-> >
-> >
-> > --------------------------------------------------------------
-> > -------------
-> > To unsubscribe: send e-mail to
-> > parisc-linux-request@thepuffingroup.com with
-> > `unsubscribe' as the subject.
-> >
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
