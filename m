@@ -1,17 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] kernel module relocation bug
-Date: Mon, 29 Nov 2004 15:54:44 -0800
-Message-ID: <20041129235444.GP6359@tausq.org>
+Date: Mon, 29 Nov 2004 18:53:09 -0500 (EST)
+Message-ID: <200411292353.iATNrAc4005771@hiauly1.hia.nrc.ca>
 References: <20041127064710.GL9148@tausq.org>
-	<200411292353.iATNrAc4005771@hiauly1.hia.nrc.ca>
-Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: randolph@tausq.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200411292353.iATNrAc4005771@hiauly1.hia.nrc.ca>
+In-Reply-To: <20041127064710.GL9148@tausq.org> from "Randolph Chung" at Nov 27,
+	2004 01:47:10 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,23 +21,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Another option which is probably less work is to build your kernel
-> and modules with -mpa-risc-2-0.  This should give you 22-bit branches.
+> to fix this we will probably need to introduce long branch stubs into 
+> into the kernel module loader. anybody want to give this a shot?
 
-well, except these 32-bit kernel/modules need to work on pa11 systems
-too....
+Another option which is probably less work is to build your kernel
+and modules with -mpa-risc-2-0.  This should give you 22-bit branches.
 
-> There is also -mlong-calls.  Not too well tested but in theory it
-> should always avoid the above problem.  It's much more expensive
-> than -mpa-risc-2-0.
+There is also -mlong-calls.  Not too well tested but in theory it
+should always avoid the above problem.  It's much more expensive
+than -mpa-risc-2-0.
 
-mmm.. maybe this is an option for pa11 systems.
-
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
