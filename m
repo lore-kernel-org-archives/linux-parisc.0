@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D0784838
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 May 2002 09:58:18 -0600 (MDT)
-Date: Fri, 17 May 2002 11:58:08 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: james@massive.com.au
-Cc: randolph@tausq.org, dave@hiauly1.hia.nrc.ca,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] parsic function calling convention
-Message-ID: <20020517115808.A11603@systemhalted>
-References: <20020517063657.GZ30370@tausq.org> <200205171442.g4HEgNbk029843@hiauly1.hia.nrc.ca>
+Received: from mailout05.sul.t-online.com (mailout05.sul.t-online.com [194.25.134.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E0168482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 May 2002 13:01:58 -0600 (MDT)
+From: Alexander Gabert <pappy@nikita.ath.cx>
+Date: Fri, 17 May 2002 21:01:31 +0200
+To: Antje _hrlein <ao@gall.de>
+Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20020517190130.GA799@nikita.ath.cx>
+References: <20020512102818.GA28431@nikita.ath.cx> <3CDFB071.2FFC4752@gall.de> <20020513195402.GA16036@nikita.ath.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200205171442.g4HEgNbk029843@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Fri, May 17, 2002 at 10:42:22AM -0400
+In-Reply-To: <20020513195402.GA16036@nikita.ath.cx>
+Subject: [parisc-linux] Re: A1094-66541 PCBA Switch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> You will probably need to understand stub generation to implement libffi
-> if I recall correctly.
-> 
-> Hpux uses a segmented memory model.  Linux uses a flat model.
-> 
-> Dave
+hi, the problem was not with the pcb switch:
 
-Last I remember there was someone porting avcall.
-They might be a good resource.
+the chassis of the 735 hat a broken middle fan that has been outaged due
+to really messy dirt in the wheel and therefore the fan motor just got
+wrecked and the machine said: no thanks, i don't wanna live with one
+fan not working :-(
 
-http://lists.debian.org/debian-hppa/2002/debian-hppa-200203/msg00073.html
+what confused me was that with switching the machine on and off in a very
+short time (five times in 3 seconds, fast like that) (which makes me
+immediately feel sorry for the power supply) the machine turned on.
 
-Here is some general discussion on fp passing:
-http://lists.parisc-linux.org/hypermail/parisc-linux/8277.html
+a witted HP field service engineer would have looked at the fans first,
+i guess now ...
 
-c.
+i assume the second machine to have a similar problem and will take down
+the server for some offline time to clean both machines out of 10 years of dust...
+
+
+but anyway, the old one was already screwed up and the new one is
+working fine from now on :-)
+
+i would also thank www.gall.de for the quick replacement of the pcb switch,
+
+
+bye
+
+Alex
+
+--
+pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <pappy@nikita.ath.cx>
+          Key fingerprint =  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7F D6  05 E1 A8 0C
