@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D805482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Nov 2001 09:15:10 -0700 (MST)
-Received: (from ra@localhost)
-	by xo.hp.is (8.11.6/RA-8.11.6) id fA6GF8502773
-	for parisc-linux@lists.parisc-linux.org; Tue, 6 Nov 2001 16:15:08 GMT
-Date: Tue, 6 Nov 2001 16:15:08 +0000
-From: Richard Allen <ra@hp.is>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20011106161508.C1639@hp.is>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A29BE482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Nov 2001 11:04:50 -0700 (MST)
+To: Albert Strasheim <fullung@ilink.nis.za>
+Cc: kenneth westelinck <kennywest1@hotmail.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails 
+In-Reply-To: Message from Albert Strasheim <fullung@ilink.nis.za>
+   of "Fri, 02 Nov 2001 14:09:41 +0200." <20011102140941.B17393@dogbert.localdomain>
+References: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com>  
+ <20011102140941.B17393@dogbert.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] B2000 :-)
+Date: Tue, 06 Nov 2001 11:04:34 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20011106180434.D22C337DAD@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,35 +26,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Good news :-)
+Albert Strasheim writes...
 
-bofh:/etc/network# uname -a
-Linux bofh 2.4.9-pa70 #1 Tue Nov 6 15:38:47 GMT 2001 parisc unknown
+> AFAIK, we're still missing a kernel-headers package for hppa; someone
+> suggested simply install the sparc one. Don't know how well that works.
 
-bofh:/etc/network# cat /proc/cpuinfo 
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8600 (PCX-W+)
-cpu MHz         : 400.000000
-model           : 9000/785/B2000
-model name      : Kazoo W+
-hversion        : 0x00005d00
-sversion        : 0x00000481
-I-cache         : 512 KB
-D-cache         : 1024 KB (WB)
-ITLB entries    : 160
-DTLB entries    : 160 - shared with ITLB
-BTLB            : not supported
-bogomips        : 799.53
-software id     : 2011377660
-
-
-The kernel snapshot from late October crashed on this machine.
-Now all runs smooth :-)   (with serial console and no IDE connected)
-
+DO NOT use the Sparc ones. I'm not even sure why they're available for hppa. 
+Just take the ones from cvs and put them in the right place. Someday we'll 
+have a kernel-headers package for hppa...
 
 -- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
