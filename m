@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beloit.edu (beloit.edu [144.89.40.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9D7B3482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Nov 2001 11:02:04 -0700 (MST)
-Received: from localhost ([144.89.185.182])
-	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id LAA32704
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 9 Nov 2001 11:56:26 -0600
-Date: Fri, 9 Nov 2001 12:02:02 -0600
-Subject: Re: [parisc-linux] C110 install and boot part 3... 
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v472)
-From: Daniel Williams <dan@bigw.org>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A909A482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  9 Nov 2001 13:31:15 -0700 (MST)
+Date: Fri, 9 Nov 2001 21:31:10 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200111091730.KAA32672@puffin.external.hp.com>
-Message-Id: <E096047F-D53B-11D5-B326-0030657D1C94@bigw.org>
+Message-ID: <20011109213107.E16534@lug-owl.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Floppy on a 712/60
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,33 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Actually, fairly sure it was this, I copied it down verbatim.  Though I 
-could check again.
+Hi!
 
-ncr53c8xx_reset: pid=0 resetflags=2 serial_number=18 
-serial_number_at_timeout=18
+I got one of those 712/60 these days. No fun at all:-( The machine came
+properly installed with Debian GNU/Linux and there seems to be nothing
+that really needs to be hacked... Well, the box is missing it's floppy
+drive. Can I attach a standard floppy drive ripped off an ordinary PC?
 
-It kept doing all these lines, except increasing the serial_number and 
-serial_number_at_timeout from 18 to whenever I stopped it, which I think 
-was 35 at one point.  I could check again, but I distinctly remember 
-seeing BOTH the ncr53c8xx and ncr53c720-0 stuff on the console.  This is 
-the graphical console install, not the serial console install.
+Further on, I'm currently compiling massively.
 
-0.9.2 ISO stock.
+I can't compile the "normal" floppy.o module. Is there a special one, or
+is ./include/asm/floppy.h a bit hosed (kernel sources are from CVS)?
 
-Dan
+MfG, JBG
 
-On Friday, November 9, 2001, at 11:30 AM, Grant Grundler wrote:
-
-> Daniel Williams wrote:
->> scsi bus is being reset for host 1 channel 0
->> ncr53c8xx_reset: pid-0 resetflags=2 serial_number=18
->> serial_number_at_timeout=18
->> ncr53c720-0: restart(scsi reset)
->> SCSI host 1 abort (pid0) timed out - resetting.
->
-> uhm...shouldn't that be the sym53c8xx driver?
-> I only ask because I couldn't find ncr53c8xx_reset in the sym53c8xx 
-> driver.
->
-> grant
+-- 
+Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
+	http://lug-owl.de/~jbglaw/software/snapshot2cvs/
