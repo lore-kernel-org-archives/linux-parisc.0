@@ -1,22 +1,18 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 95A1548EB
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F0FD4879
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  9 Mar 2004 00:29:13 -0700 (MST)
-Date: Mon, 8 Mar 2004 23:29:17 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] Results of (IDE) kernel tests with modified io.c
-Message-ID: <20040309072917.GN1113@tausq.org>
-References: <Pine.LNX.4.58.0403040044200.14527@sal.ucc.ie>
-	<20040309063629.GM1113@tausq.org>
-	<Pine.LNX.4.58.0403090656070.13701@sal.ucc.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.58.0403090656070.13701@sal.ucc.ie>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+	Tue,  9 Mar 2004 02:25:03 -0700 (MST)
+Date: Tue, 9 Mar 2004 10:04:23 +0100
+Message-ID: <404782C800002A2F@ocpmta1.freegates.net>
+In-Reply-To: <20040308174914.GC19791@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux]
+	RE: New glibc patches 2004-03-08, fixes GLRO changes.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,53 +22,49 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> But what I'm wondering about is why the Silicon Image driver
-> (always) detects the Seagate ST311022A hard drive as "TS130220A2".
-> Since it uses mmio instead of PIO as the other drivers, maybe there is
-> some big-endian problem in the Linux/PA-RISC mmio code? But then this
-> problem must be somewhere in the IDE code, since all mmio in general
-> seems to be working fine!
 
-oh, for mmio you need to fix the macros in include/asm-parisc/ide.h. the
-ones in io.c are for pio access. the mmio ones are new, i think, and 
-haven't been fixed properly (__ide_mm_insw, etc) -- you can try 
-replacing readw with __raw_readw, etc.
+>New patches here, passes testsuite without regression.
+>
+>http://www.parisc-linux.org/~carlos/glibc-hppa-patches-2004-03-08.tar.gz
 
-can you also try the native-mode fixup? something like this (sorry 
-it's not in patch format, my tree is a bit of a mess right now and it's
-late....)
+Thanks :)
 
-in arch/parisc/kernel/pci.c, change:
+>Joel,
+>
+>Is there any chance that you could do some testing for me please?
 
-struct pci_fixup pcibios_fixups[] = {
-        { PCI_FIXUP_HEADER, PCI_ANY_ID, PCI_ANY_ID, parisc_fixup_ide },
-        { 0 }
-};
+Just let me find a free disk :)
 
-parisc_fixup_ide is something like this:
+I will advise ;)
 
-static void __devinit parisc_fixup_ide(struct pci_dev *dev)
-{
-    u8 prog;
+>1. Use debootstrap to build a chroot (/mnt/chroot)
 
-    if ((dev->class >> 8) != PCI_CLASS_STORAGE_IDE)
-        return;
+BTW which install should I install: man debootstrap give the fllowing example
+deboostrap woody ./woody-chroot http://ftp.cx.debian.org/debian
 
-    pci_read_config_byte(dev, 8, &prog);
-    pci_write_config_byte(dev, 8, prog | 0x5);
-    dev->class |= 0x5;
-}
+Well not familiar with debootstrap but I presume that ./woody-chroot would
+be here /mnt/chroot and ftp.cx.debian.org my nearest debian repository. 
+But my question is: would you like I build a woody or would you prefer a
+sarge?
 
-not tested, YMMV :)
 
-Grant tells me that he suspects there's a bug somewhere in the pci
-config accessor functions tho... on my box i saw that, using something
-similar to the above sequence, i read 0x8a into prog (this is the 
-default), but after the write if i read it again the value is still 
-0x8a :(
+>2. Compile glibc with --prefix=/mnt/chroot
+>3. Install the new glibc there.
+>4. Test out running some stuff from the chroot.
+	o Try running Xnest
+	o Try running X applications through Xnest
+	o Try building a new kernel in the chroot.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Clear
+
+>Thanks!
+
+wellcome,
+
+Joel
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
