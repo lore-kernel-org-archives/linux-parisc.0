@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 365D9482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Dec 2001 07:41:16 -0700 (MST)
-Subject: Re: [parisc-linux] Newbie to risc
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: robert stanford <rob@rotapile.com>
-Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <1008674922.25986.4.camel@rotapile>
-References: <1008674922.25986.4.camel@rotapile>
-Content-Type: text/plain
-Date: 18 Dec 2001 07:41:14 -0700
-Message-Id: <1008686474.10488.14.camel@beavis>
-Mime-Version: 1.0
+Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1CEB482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Dec 2001 07:47:47 -0700 (MST)
+Date: Tue, 18 Dec 2001 15:46:28 +0100 (CET)
+From: Peter Mottram <peter@petescaff.com>
+To: Maneesh Singhal <maneesh@india.hp.com>
+Cc: PARISC Linux List <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] browser !!
+In-Reply-To: <Pine.HPX.4.21.0112182002310.14019-100000@hpuxsrv.india.hp.com>
+Message-ID: <Pine.LNX.4.42.0112181543240.7694-100000@r6.petescaff.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 2001-12-18 at 04:28, robert stanford wrote:
-> Hi everybody,
->         Just got a HP K class 9000 series  with dual 240Mhz PA-RISC 8200
-> processors,32 serial ports, 24 scsi drives, 6 ups's, dat drive  and fast
-> wide diff scsi tape drive  in a 2 m case. Electrician comes over
-> tomorrow to hook it up for me. Im totaly new to this architecture.
-> 
-> Whats the current state of linux on parisc, is it stable enough to
-> deploy as a web/mail server? 
+Maneesh
 
-Nice Box :)
+Try using:
+
+	apt-cache search "web browser"
+
+to see what is currently available in the Debian archive. There is
+currently no Netscape (possibly never will be) and only part of mozilla.
+It looks like your best bet for now is konqueror. One of these days I
+expect we will have Galeon and Moz available.
+
+R.
+PeteM
+
+On Tue, 18 Dec 2001, Maneesh Singhal wrote:
+
+> Hi,
+>
+> 	Where can I find netscape browser for PA-RISC Linux 0.9.3 .
+>
+> Maneesh
+>
+>
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
