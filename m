@@ -1,53 +1,27 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA22111
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 20:39:58 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 03:40:10 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA23321;
-	Tue, 21 Nov 2000 14:22:53 +1100
-Date: Tue, 21 Nov 2000 14:22:53 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
+Received: from chalet ([199.254.238.240])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id VAA22896
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 21:14:49 -0700
+Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via in.smtpd with esmtp (ident bame using rfc1413)
+	id <m13y4do-001Vp4C@chalet> (Debian Smail3.2.0.102)
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 21:02:44 -0700 (MST)
+Message-Id: <m13y4do-001Vp4C@chalet>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+Errors-To: bame@riverrock.org
 To: Grant Grundler <grundler@cup.hp.com>
-cc: Paul Bame <bame@fc.hp.com>, mkp@mkp.net, parisc-linux@thepuffingroup.com
-Subject: Re: A DT_INIT/DT_FINI glibc patch. 
-In-Reply-To: <200011210207.SAA19600@milano.cup.hp.com>
-Message-ID: <Pine.LNX.4.21.0011211314450.15623-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] 712 ISL and palo
+In-reply-to: Your message of "Mon, 20 Nov 2000 17:19:03 PST."
+             <200011210119.RAA19517@milano.cup.hp.com>
+Date: Mon, 20 Nov 2000 21:02:40 -0700
+Sender: bame@bame.riverrock.org
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 20 Nov 2000, Grant Grundler wrote:
+= palo wouldn't accept any ps/2 keyboard input.
+= Don't know if this is a palo or PDC bug.
+= Any ideas?
 
-> I'm afraid we will break binary compatibility for elf32 hppa-linux again.
-> I only raise this in case there is really a "right" way to fix the
-> DT_INIT/DT_FINI problem.
+PALO bug.  I didn't test the PS/2 case but I think I fixed it.
 
-The fix involves pruning out all the special handling in bfd/elf32-hppa.c
-for DT_INIT,DT_FINI, and making some small changes to glibc.  H.J. Lu has
-already made the necessary framework changes, and all we need to do is
-something like
-
-#define DL_FUNCTION_ADDRESS(map, addr) _dl_start_address (map, addr)
-#define DL_DT_INIT_ADDRESS(map, addr) \
-  ((addr) & 2 ? (addr) : DL_FUNCTION_ADDRESS (map, addr))
-
-with similar defines for DT_FINI.  The test for (addr) & 2 is the
-fairly innocuous fudge to support old binaries.
-
-
-Another glibc issue (which is why I'm sending this back to the list) is
-that there has been quite some discussion on the binutils list over the
-use of the EI_OSABI field.  The conclusion being that it isn't really
-correct to use this field to discern the intendend execution platform.
-It's purpose is really to tell ELF tools that a file contains fields and
-values that need to be interpreted in a non-standard way.  Since both
-elf32-hppa and elf64-hppa follow the standards, I'm inclined to think that
-the gnu tools should set EI_OSABI to zero for both HPUX and Linux targets.
-
-Instead the .note.ABI-tag section should be examined to determine the
-target, which sadly isn't set correctly at the moment.  :-(
-
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+	-P
