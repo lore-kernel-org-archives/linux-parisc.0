@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9A0A482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 21:39:37 -0600 (MDT)
-Date: Mon, 11 Aug 2003 20:42:44 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030812034244.GC21328@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 778FF482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 22:00:53 -0600 (MDT)
+Date: Mon, 11 Aug 2003 23:58:11 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@hp.com>
+Subject: Re: [parisc-linux] itlb miss handler optimizations!
+Message-ID: <20030812035810.GB9325@systemhalted>
+References: <20030725070449.GB13017@systemhalted> <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] removing warnings from math-emu code
+In-Reply-To: <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,48 +23,110 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Would anyone mind if i committed this to cvs? (2.6 only) It
-removes/hides all the warnings from the math-emu directory, since we
-don't plan to fix them... 
+On Fri, Jul 25, 2003 at 12:46:15PM +0100, Matthew Wilcox wrote:
+> can't do that.  we have three sets of routines -- itlb_miss_common_11,
+> itlb_miss_common_20 and itlb_miss_common_20w.  we select between _20w
+> or not at compile time (if it's 64-bit, it's PA 2.0 Wide), but select
+> between _20 and _11 at boot time (fault_vector_20 vs fault_vector_11).
+> 
+> shame on you, you didn't even try assembling it ;-)
 
-Index: arch/parisc/math-emu/Makefile
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/math-emu/Makefile,v
-retrieving revision 1.1
-diff -u -p -r1.1 Makefile
---- arch/parisc/math-emu/Makefile	29 Jul 2003 17:00:42 -0000	1.1
-+++ arch/parisc/math-emu/Makefile	12 Aug 2003 03:38:58 -0000
-@@ -2,6 +2,11 @@
- # Makefile for the linux/parisc floating point code
- #
+Assembles, and boots on my C3K, 32-bit kernel. Looking for any takers
+who want to try it in 64-bit mode. I'm running lmbench to see if I can
+tell the difference between this and the original code. 
+
+I would be most appreciative if anyone would pipe up and say "Run X to
+test if Y works better/faster/harder" :}
+
+c.
+
+--- arch/parisc/kernel/entry.S	9 Dec 2002 06:09:08 -0000	1.98
++++ arch/parisc/kernel/entry.S	12 Aug 2003 03:49:04 -0000
+@@ -1469,8 +1469,7 @@ itlb_miss_20w:
+ 	mfctl           %cr25,ptp	/* load user pgd */
  
-+# See arch/parisc/math-emu/README
-+CFLAGS += -Wno-parentheses -Wno-implicit-function-declaration \
-+	-Wno-uninitialized -Wno-strict-prototypes -Wno-return-type \
-+	-Wno-implicit-int
+ 	mfsp            %sr7,t0		/* Get current space */
+-	or,*=           %r0,t0,%r0      /* If kernel, nullify following test */
+-	cmpb,*<>,n      t0,spc,itlb_fault /* forward */
++	cmpb,<>,n	t0,spc,itlb_user_fault_20w /* forward */
+ 
+ 	/* First level page table lookup */
+ 
+@@ -1535,8 +1534,7 @@ itlb_miss_11:
+ 	mfctl           %cr25,ptp	/* load user pgd */
+ 
+ 	mfsp            %sr7,t0		/* Get current space */
+-	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
+-	cmpb,<>,n       t0,spc,itlb_fault /* forward */
++	cmpb,<>,n	t0,spc,itlb_user_fault_11 /* forward */
+ 
+ 	/* First level page table lookup */
+ 
+@@ -1551,6 +1549,10 @@ itlb_miss_common_11:
+ 	sh2addl 	 t0,ptp,ptp
+ 	ldi		_PAGE_ACCESSED,t1
+ 	ldw		 0(ptp),pte
 +
- obj-y	 := frnd.o driver.o decode_exc.o fpudispatch.o denormal.o \
- 		dfmpy.o sfmpy.o sfsqrt.o dfsqrt.o dfadd.o fmpyfadd.o \
- 		sfadd.o dfsub.o sfsub.o fcnvfxt.o fcnvff.o fcnvxf.o \
-Index: arch/parisc/math-emu/types.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/math-emu/types.h,v
-retrieving revision 1.1
-diff -u -p -r1.1 types.h
---- arch/parisc/math-emu/types.h	29 Jul 2003 17:00:42 -0000	1.1
-+++ arch/parisc/math-emu/types.h	12 Aug 2003 03:38:58 -0000
-@@ -20,6 +20,7 @@
-  */
++	/* Running parallel, taken from below 'zdep0' */
++	zdep            spc,30,15,prot  /* create prot id from space */
++
+ 	bb,>=,n 	 pte,_PAGE_PRESENT_BIT,itlb_fault
  
- #include <linux/kernel.h>
-+#undef BUG
- #define BUG() do { \
-         printk(KERN_ERR "floating-pt emulation BUG at %s:%d!\n", __FILE__, __LINE__); \
- } while (0)
-
-thanks,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+ 	/* Check whether the "accessed" bit was set, otherwise do so */
+@@ -1559,7 +1561,7 @@ itlb_miss_common_11:
+ 	and,<>		t1,pte,%r0	/* test and nullify if already set */
+ 	stw		t0,0(ptp)	/* write back pte */
+ 
+-	zdep            spc,30,15,prot  /* create prot id from space */
++	/* zdep0 moved back */
+ 	dep             pte,8,7,prot    /* add in prot bits from pte */
+ 
+ 	extru,=		pte,_PAGE_NO_CACHE_BIT,1,r0
+@@ -1602,8 +1604,7 @@ itlb_miss_20:
+ 	mfctl           %cr25,ptp	/* load user pgd */
+ 
+ 	mfsp            %sr7,t0		/* Get current space */
+-	or,=            %r0,t0,%r0	/* If kernel, nullify following test */
+-	cmpb,<>,n       t0,spc,itlb_fault /* forward */
++	cmpb,<>,n	t0,spc,itlb_user_fault_20	/* forward */
+ 
+ 	/* First level page table lookup */
+ 
+@@ -1882,6 +1883,37 @@ kernel_bad_space:
+ dbit_fault:
+ 	b               intr_save
+ 	ldi             20,%r8
++
++/* The following three labels relate to an optimization in the itlb handler.
++   itlb_user_fault_20w:
++   itlb_user_fault_20:
++   itlb_user_fault_11:
++   We keep the CPU jumping fwd/bkwd in the common case, and the uncommon case
++   has the cmpb fail (no jump) and thus branch prediction failing. */
++
++#ifdef __LP64__
++itlb_user_fault_20w:
++	/* User tlb missed for other than his own space. Optimization. */
++	cmpb,=		%r0,t0,itlb_miss_common_20w /* backward */
++	nop
++#else
++itlb_user_fault_20:
++	/* User tlb missed for other than his own space. Optimization. */
++	cmpb,=		%r0,t0,itlb_miss_common_20 /* backward */
++	nop
++
++/* FALL THROUGH - We don't care if we run the test twice. If someone
++                  asks to have the "user is faulting death" path optimal
++                  then they should seek help. */
++
++itlb_user_fault_11:
++	/* User tlb missed for other than his own space. Optimization. */
++	cmpb,=		%r0,t0,itlb_miss_common_11 /* backward */
++	nop
++#endif
++
++/* FALL THROUGH - We have a real itlb_fault from one of the above three
++                  label sequences */
+ 
+ itlb_fault:
+ 	b               intr_save
