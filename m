@@ -1,49 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2A489482A
-	for <parisc-linux@parisc-linux.org>; Thu, 19 Apr 2001 12:09:09 -0600 (MDT)
-Message-Id: <200104191802.MAA24940@puffin.external.hp.com>
-To: Andreas Thienemann <andreas@thienemann.net>
+Received: from bender.bawue.de (bender.bawue.de [193.197.13.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 65E0F482A
+	for <parisc-linux@parisc-linux.org>; Thu, 19 Apr 2001 12:17:14 -0600 (MDT)
+Date: Thu, 19 Apr 2001 20:18:33 +0200 (CEST)
+From: Andreas Thienemann <andreas@thienemann.net>
+To: Grant Grundler <grundler@puffin.external.hp.com>
 Cc: parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] Clock skew problems 
-In-Reply-To: Your message of "Thu, 19 Apr 2001 15:22:08 +0200."
-             <Pine.LNX.4.10.10104191518560.30090-100000@gate.ixs.com>
-Date: Thu, 19 Apr 2001 12:02:54 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+In-Reply-To: <200104191802.MAA24940@puffin.external.hp.com>
+Message-ID: <Pine.LNX.4.10.10104192013560.31352-100000@gate.ixs.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Andreas Thienemann wrote:
-> But now, when I try do compile some software I'm having problems.
-> 
-> I'm getting the following message from make:
-> 
-> make: *** Warning: File `libdb.a' has modification time in the future
-> (2001-04-19 15:15:33 > 2001-04-19 15:15:04)
->
-> And I have absolutely no Idea why this is happening.
+Hi Grant,
 
-Everytime one updates the kernel time and it gets set *back*,
-make will notice the derived objects (ie libdb.a) are newer than
-current time and complain.
+On Thu, 19 Apr 2001, Grant Grundler wrote:
 
-However, I suspect the kernel isn't keeping time perfectly and updating
-from the HW clock (YMMV: historically, some servers had better RTC crystals)
-is causing the problem. Having a bad RTC will also look like
-the kernel isn't keeping time when in fact it is.
+> Everytime one updates the kernel time and it gets set *back*,
+> make will notice the derived objects (ie libdb.a) are newer than
+> current time and complain.
+Yes, I knew that. I still can remember when it happened to me for the
+first time. I was a fresh linux novice running RedHat 3.0.3 and  compiling
+his first kernel when I played with the timeconfig panel in another
+xterm. Whoaps! One failed build attempt. ;)
+ 
+> I'm assuming the A500 has a good RTC.
+I've got a 821/D250 and I don't know anything about the accuracy of the
+RTC clock.
+But hwclock tells me the following:
 
-a500# date
-Thu Apr 19 11:11:02 MDT 2001
-a500# hwclock
-Thu Apr 19 11:11:01 2001  -1.003308 seconds
-a500# uptime
- 11:11:36 up 21:25,  1 user,  load average: 0.00, 0.04, 0.04
+[root@hp9000 root]# hwclock
+Thu Apr 19 20:17:25 2001  -1.063290 seconds
 
-So not doing too badly - but it needs to be fixed.
-I'm assuming the A500 has a good RTC.
-I'll submit a bug for you.
+> I'll submit a bug for you.
+Thanks!
 
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+bye,
+ andreas
