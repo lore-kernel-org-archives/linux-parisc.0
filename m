@@ -1,54 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4407C4843
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 22:47:21 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.4d3e3a24) with ESMTP id uhmzhaaa for parisc-linux@lists.parisc-linux.org; Sat, 6 Oct 2001 21:42:50 -0700
-Date: Sat, 6 Oct 2001 21:47:06 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Glibc 2.2.4-2 Woes...
-Message-ID: <20011006214706.D3218@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20011006135558.B8206@megatonmonkey.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011006135558.B8206@megatonmonkey.net>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 647FB4843
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  7 Oct 2001 00:56:56 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] [patch] /proc interface for LED/LCD
+Date: Sun, 7 Oct 2001 08:56:38 +0200
+Cc: parisc-linux@lists.parisc-linux.org
+References: <20011006134250.I17735@tausq.org> <E15pzKV-0000ZU-00@gandalf.tausq.org> <20011006153445.J17735@tausq.org>
+In-Reply-To: <20011006153445.J17735@tausq.org>
+MIME-Version: 1.0
+Message-Id: <20011007065656.647FB4843@dsl2.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> The assertion fails.
-> The address in r21/r25 is 0x15b78, which is clearly not a valid
-> address, and thus dl's printf barfs.
+On Sunday 07 October 2001 00:34, Randolph Chung wrote:
+> > I know that this doesn't happen due to your patch because I
+> > didn't got the LCD to work before applying your patch too.
+> > As far as I debugged it until now the pdc_chassis_info() call in
+> > led_init() now returns -10 (PDC_INVALID_ARG) as result code, so maybe
+> > something other is busted here.
+> > Maybe you have any idea ?
+>
+> In my other post I mentioned you also need a fix to firmware.c .. did
+> you pick that up too?
+>
+> randolph
 
-I got the new gcc to build (3.0.2 cvs 20010922) and tried glibc again... it dies
-similarly while trying to run ld.so ...
+Yes, I did. Unfortunately I mentioned inventory.c, but originally meant 
+firmware.c in my previous mail.
 
-Program received signal SIGSEGV, Segmentation fault.
-_dl_debug_vdprintf (fd=0, tag_p=0, 
-    fmt=0x17cdc <Address 0x17cdc out of bounds>, arg=0xbff005d8)
-    at dl-misc.c:101
-101       while (*fmt != '\0')
-(gdb) bt
-#0  _dl_debug_vdprintf (fd=0, tag_p=0, 
-    fmt=0x17cdc <Address 0x17cdc out of bounds>, arg=0xbff005d8)
-    at dl-misc.c:101
-#1  0x4100eb68 in _dl_dprintf (fd=2, 
-    fmt=0x17cdc <Address 0x17cdc out of bounds>) at dl-misc.c:279
-#2  0x41012b6c in __assert_fail (
-    assertion=0x15bac <Address 0x15bac out of bounds>, file=0x0, line=62, 
-    function=0xbff005d8 "") at dl-minimal.c:190
-#3  0x410031d4 in _dl_start (arg=0xbff00224) at rtld.c:62
-#4  0x41002af8 in _dl_start_user () at rtld.c:143
-
-I'll try to debug it some more tomorrow.
-
-BenC (debian's glibc maintainer) also claims that the hppa patch in
-glibc breaks linuxthreads (runtime) on other architectures. Does anyone 
-know anything about this?
-
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Helge
