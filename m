@@ -1,36 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id VAA05683
-	for <hppa-linux@sod.res.cmu.edu>; Wed, 17 Mar 1999 21:57:44 -0500
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id XAA07779
+	for <hppa-linux@sod.res.cmu.edu>; Wed, 17 Mar 1999 23:10:25 -0500
 Received: from netscape.com (h-205-217-237-46.netscape.com [205.217.237.46])
-	by burrow.puffingroup.com (8.8.7/8.8.7) with ESMTP id XAA00840
-	for <hppa-linux@puffingroup.com>; Wed, 17 Mar 1999 23:02:41 -0500
+	by burrow.puffingroup.com (8.8.7/8.8.7) with ESMTP id AAA00847
+	for <hppa-linux@puffingroup.com>; Thu, 18 Mar 1999 00:15:14 -0500
 Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id SAA25269
-	for <hppa-linux@puffingroup.com>; Wed, 17 Mar 1999 18:56:58 -0800 (PST)
+	by netscape.com (8.8.5/8.8.5) with ESMTP id UAA01008
+	for <hppa-linux@puffingroup.com>; Wed, 17 Mar 1999 20:09:30 -0800 (PST)
 Received: from netscape.com ([205.217.243.67]) by
           tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
-          F8RS6Z00.KKE for <hppa-linux@puffingroup.com>; Wed, 17 Mar 1999
-          18:56:59 -0800
+          F8RVJW00.BKS for <hppa-linux@puffingroup.com>; Wed, 17 Mar 1999
+          20:09:32 -0800
 Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <36F06BED.5B5D029A@netscape.com>
-Date: Wed, 17 Mar 1999 21:58:53 -0500
+Message-ID: <36F07CED.AC742994@netscape.com>
+Date: Wed, 17 Mar 1999 23:11:25 -0500
 From: Mike Shaver <shaver@netscape.com>
 MIME-Version: 1.0
 To: hppa-linux@puffingroup.com
 Content-Type: text/plain; charset=us-ascii
-Subject: [hppa-linux] new CVS layout
+Subject: [hppa-linux] memory layout
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex and I just restructured the CVS repository, so there's no longer an
-intervening hppa-linux directory.
+rd.c:467: `KERNEL_DS' undeclared (first use in this function)
+mmap.c:361: `TASK_UNMAPPED_BASE' undeclared (first use in this function)
 
-cvs -d :pserver:....@sod.res.cmu.edu/home/cvs/hppa co <module>
-where you choose <module> from linux, egcs, binutils.
+It sorta begs the question: what is our memory layout going to look
+like?  What goes where?  I'll pore over my PA-RISC book tonight looking
+for clues, but I doubt that'll be enough.
 
-If you had large amounts of changes in your local tree, and are stressed
-about losing them, mail me and I'll help you handle it all.
+What kind of memory layout does HP-UX use, if I might be so bold as to
+ask?
 
 Mike
 
 -- 
-301248.67 255524.62
+305756.61 259655.94
