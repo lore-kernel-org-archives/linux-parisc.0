@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EF47B482C
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 11:33:42 -0700 (MST)
-Date: Tue, 13 Nov 2001 19:33:30 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E94EE482C
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 12:43:03 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ybxwiaaa for parisc-linux@parisc-linux.org; Tue, 13 Nov 2001 12:38:05 -0700
+Date: Tue, 13 Nov 2001 11:42:48 -0800
+From: Randolph Chung <randolph@tausq.org>
 To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Deb's broken ?
-Message-ID: <20011113193330.D12388@lug-owl.de>
-References: <20011113181352.B382@hp.is>
+Subject: Re: [parisc-linux] to swap or not to swap
+Message-ID: <20011113114247.G3053@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20011113003057.H391@tausq.org> <20011113142545.E11817@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011113181352.B382@hp.is>
+In-Reply-To: <20011113142545.E11817@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,38 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 2001-11-13 18:13:52 +0000, Richard Allen <ra@hp.is>
-wrote in message <20011113181352.B382@hp.is>:
-> bofh:~# apt-get upgrade
-[...]
+> depends on the PCI bridge and MMU whether you need to do bytesexswapping
+> in software or not.  see section 9 in the Dino ERS, page 61 for how PA
+> does this.
 
-> Sorry, but the following packages have unmet dependencies:
->   gzip: PreDepends: libc6 (>= 2.2.4-4) but 2.2.4-3 is to be installed
-> E: Sorry, broken packages
-> 
-> ii  libc6          2.2.4-3        GNU C Library: Shared libraries and Timezone
-> ii  libc6-dev      2.2.4-3        GNU C Library: Development Libraries and Hea
+Empirically I've found this not to be the case. For example, if i need
+to write 0x01 to byte 0 of a 16-bit PCI register, I've found I need to
+do:
 
-I've tried to natively build 2.2.4-4 on a 712/60 with gcc-3.0. It
-breaks in ./glibc-2.2.4/sysdeps/hppa/dl-machine.h at line 534:
+writew(0x0100, addr) on parisc
+vs
+writew(0x0001, addr) on x86
 
-    533       /* .eh_frame can have unaligned relocs.  */
---> 534       if (reloc_addr & 3)
-    535         {
-    536           char *rel_addr = (char *) reloc_addr;
-    537           rel_addr[0] = value >> 24;
-    538           rel_addr[1] = value >> 16;
-    539           rel_addr[2] = value >> 8;
-    540           rel_addr[3] = value;
-    541           return;
-    542         }
-    543       break;
-    544 
+Grant also seems to be of the opinion that cpu data needs to be swapped
+before written to PCI devices... so does that mean that if i wrote
+something like:
 
-I didn't see why I may not check the two low bits... I gave up:-(
+writew(cpu_to_le16(foo), addr)
 
-MfG, JBG
+then on things like parisc it gets swapped once, and on things like
+sparc it gets swapped twice?
 
+randolph
 -- 
-Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
-	http://lug-owl.de/~jbglaw/software/snapshot2cvs/
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
