@@ -1,40 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 159CC482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Mar 2001 10:20:42 -0700 (MST)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA04198
-	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Mar 2001 10:15:06 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 28 Mar 2001 17:07:45 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14iJQ3-00009e-00; Wed, 28 Mar 2001 18:07:39 +0100
-Date: Wed, 28 Mar 2001 18:07:39 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Markus Werle <markus@lufmech.rwth-aachen.de>
-Cc: Jane Vinet <jvinet@linuxcare.com>,
-	parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] a new (and free) C++ compiler for hppa!
-Message-ID: <20010328180739.I7738@parcelfarce.linux.theplanet.co.uk>
-References: <3A75766A.CF9A3C23@lufmech.rwth-aachen.de> <3A757FB9.6DCD3A91@linuxcare.com> <3A757F68.1833548@lufmech.rwth-aachen.de> <3AC1A3C9.F94899D6@lufmech.rwth-aachen.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3AC1A3C9.F94899D6@lufmech.rwth-aachen.de>; from markus@lufmech.rwth-aachen.de on Wed, Mar 28, 2001 at 10:41:45AM +0200
-Sender: <willy@www.linux.org.uk>
+Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 01061482A
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:21 -0700 (MST)
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by deimos.frii.net (8.11.2/8.11.2) with ESMTP id f2SNBL253956
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:21 -0700 (MST)
+Received: from bame.riverrock.org (bame.riverrock.org [199.254.238.240])
+	by www.riverrock.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id QAA30150
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:19 -0700
+Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m14iP5y-001VltC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:18 -0700 (MST)
+Message-Id: <m14iP5y-001VltC@bame.riverrock.org>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+Errors-To: bame@riverrock.org
+To: parisc-linux@parisc-linux.org
+Date: Wed, 28 Mar 2001 16:11:18 -0700
+Sender: bame@bame.riverrock.org
+Subject: [parisc-linux] FYI floating point
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Mar 28, 2001 at 10:41:45AM +0200, Markus Werle wrote:
-> It may be that I am too stupid to do it right, but then please help me:
-> I did the cvs login as described, but anonymous login failed for some
-> unknown reason.
+After adding code to emulate the FRND instruction I thought
+I'd be done with FP, but I've been seeing unimplemented instruction traps
+on FP instructions that I know are implemented (FSUB, FDIV).  Apparently
+the FPU expects emulation to handle the exceptional cases of some
+instructions (such as division by a very tiny number).  Don't count
+on this to be fixed until sometime next week.
 
-Excuse me.  I replied to you twice pointing out your error.  Your mail
-system was broken.
-
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-January/010935.html
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-January/010936.html
-
-Don't complain that you weren't helped.
-
--- 
-Revolutions do not require corporate support.
+	-Paul Bame
