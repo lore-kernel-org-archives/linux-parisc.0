@@ -1,16 +1,19 @@
 Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C0C014868
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C3BE548F0
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 20 Feb 2004 10:56:16 -0700 (MST)
-Date: Fri, 20 Feb 2004 18:56:12 +0100
-Message-ID: <402A4CA500006E8D@ocpmta2.freegates.net>
+	Fri, 20 Feb 2004 11:04:27 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali) id 1AuF0k-0000Li-00
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 20 Feb 2004 19:04:26 +0100
+Date: Fri, 20 Feb 2004 19:04:26 +0100
+Message-ID: <402A4CA500006EA3@ocpmta2.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
-To: "Matthew Wilcox" <willy@debian.org>
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] b2k scsi disk pb
+Subject: [parisc-linux] Linux only see 2Gb of ram of N4k
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,68 +23,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Matthew,
+Hi all,
 
-I trust that you could advise me about this pb:
+My collegue make me notice that the N4k on which I can test Linux was supplied
+with 4Gb of ram (which if confirm at boot prompt) but Linux only see 2Gb.
 
-on my b2k since I can run 2.6 (32bit with gcc-3.3 or 64bit with gcc-3.0)
-i noticed from time to time such dmesg:
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
+It is a dual cpu machine, is that 1/2 ram dedicated to 1 cpu and the other
+1/2 to the 2d cpu?
 
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: ABORT operation started.
-sym0:5:0: ABORT operation timed-out.
-sym0:5:0: DEVICE RESET operation started.
-sym0:5:0: DEVICE RESET operation timed-out.
-sym0:5:0: BUS RESET operation started.
-sym0: SCSI BUS reset detected.
-sym0: SCSI BUS has been reset.
-sym0:5:0: BUS RESET operation complete.
-
-and during this time the system naturaly hang.
-
-scsi id 5 is the one of the working boot disk (a quantum model atlas5-9lvd)
-and if there is well a second disk (a seagate model ST336704LC) it is not
-used.
-
-OTC with 2.4 and sym2 driver, I never noticed this behavior (even with recent
-2.4.25-rc?-pa0 :) ), so I presume that there is no disk failure (and a dd
-if=/dev/sda of=/dev/null bs=1024k reach to read fully the disk without any
-error).
-
-Any idea?
-
-Thanks in advance,
+Thanks for advise,
     Joel
-
-
 
 ----------------------------------------------------------------------------------------
 Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
