@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2CC80484D
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Mar 2003 09:27:43 -0700 (MST)
-Date: Mon, 3 Mar 2003 08:24:40 -0800
-From: Randolph Chung <tausq@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Joel Soete <jsoe0708@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AFF2D4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Mar 2003 09:41:40 -0700 (MST)
+Message-Id: <200303031617.h23GHf1R027417@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-Message-ID: <20030303162440.GF11363@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <3E5F8012000005AB@ocpmta8.freegates.net> <200303031617.h23GHf1R027417@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200303031617.h23GHf1R027417@hiauly1.hia.nrc.ca>
+To: jsoe0708@tiscali.be (Joel Soete)
+Date: Mon, 3 Mar 2003 11:17:41 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, doko@cs.tu-berlin.de,
+	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3E5F8012000005AB@ocpmta8.freegates.net> from "Joel Soete" at Mar 3, 2003 03:27:04 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +24,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-[Note: trimmed cc list]
+> Nice and is it also possible to produce a 64bits version of gcc?
 
-> Last time I tried (couple of weeks ago), it was possible to build
-> a 64-bit cross starting with 3.3.  This still doesn't work with 3.2.
+Last time I tried (couple of weeks ago), it was possible to build
+a 64-bit cross starting with 3.3.  This still doesn't work with 3.2.
 
-also 64-bit hppa64-linux gcc-3.2 (built with 3.3) ICEs regularly. For
-people using this to build kernels, I would suggest staying with 3.0.4
-for now.
-
-(I'm also seeing reproducible crashes when running hppa64-linux-ld now,
-still need to track that down)
-
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
