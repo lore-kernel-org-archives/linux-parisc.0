@@ -1,15 +1,14 @@
 From: danglin@gcc.gnu.org
-Subject: [parisc-linux] Re: target/10272: [3.0/3.2/3.3/3.4] [HP-PA] Floating point args not correctly loaded for function calls
-Date: 12 Apr 2003 21:17:27 -0000
-Message-ID: <20030412211727.20852.qmail__47109.4743036248$1416622380$gmane$org@sources.redhat.com>
+Subject: [parisc-linux] Re: target/10271: [3.0/3.2/3.3/3.4] [HPPA] Floating point args don't get reloaded across function calls at -O2
+Date: 12 Apr 2003 21:47:57 -0000
+Message-ID: <20030412214757.29214.qmail__40754.7094081112$1416622380$gmane$org@sources.redhat.com>
 Reply-To: danglin@gcc.gnu.org, danglin@gcc.gnu.org,
-	debian-gcc@lists.debian.org, gcc-bugs@gcc.gnu.org,
-	gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
 	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
 	gcc-gnats@gcc.gnu.org
-To: danglin@gcc.gnu.org, debian-gcc@lists.debian.org,
-	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
-	parisc-linux@lists.parisc-linux.org, tausq@debian.org
+To: danglin@gcc.gnu.org, gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
+	nobody@gcc.gnu.org, parisc-linux@lists.parisc-linux.org,
+	tausq@debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +20,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Synopsis: [3.0/3.2/3.3/3.4] [HP-PA] Floating point args not correctly loaded for function calls
+Synopsis: [3.0/3.2/3.3/3.4] [HPPA] Floating point args don't get reloaded across function calls at -O2
 
 Responsible-Changed-From-To: unassigned->danglin
 Responsible-Changed-By: danglin
-Responsible-Changed-When: Sat Apr 12 21:17:27 2003
+Responsible-Changed-When: Sat Apr 12 21:47:57 2003
 Responsible-Changed-Why:
     Assignment.
-State-Changed-From-To: open->closed
+State-Changed-From-To: open->analyzed
 State-Changed-By: danglin
-State-Changed-When: Sat Apr 12 21:17:27 2003
+State-Changed-When: Sat Apr 12 21:47:57 2003
 State-Changed-Why:
-    Some problem as 10271.
+    Confirmed.
+    
+    There is a problem with the usage notes for argument registers in sibling calls when an argument needs to be passed in both general and floating point registers.  The usage notes appear correct in the initial rtl but the note for the general general register for the third argument of the fprintf call is being dropped.  This causes the insns which load these argument registers to be deleted.
+    
+    Correct code is generated if the -fno-optimize-sibling-calls option is specified.  The first fprintf call behaves correctly because it isn't a sibling call.
+    
+    More analysis is needed to determine why usage notes are being dropped in sibling calls.
+    
+    This is a regression as sibcalls were first enabled on this port in 3.1 branch.
 
-http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10272
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10271
