@@ -1,26 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 49C454A1C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 07:20:09 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 6A622B005; Wed,  7 Feb 2001 14:20:39 +0000 (GMT)
-Date: Wed, 7 Feb 2001 14:20:39 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Christoph Plattner <christoph.plattner@alcatel.at>
-Cc: Grant Grundler <grundler@cup.hp.com>,
-	"M. Grabert" <xam@deathsdoor.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] //strace// Generic Parisc Linux Kernel Questions & 9000/730 success report
-Message-ID: <20010207142039.E1374@linuxcare.com>
-References: <Pine.LNX.4.21.0102061808500.2465-100000@sgate.charlysworld.de> <200102062022.MAA04003@milano.cup.hp.com> <20010206220733.Y1374@linuxcare.com> <3A81005D.393A0AA6@alcatel.at> <20010207124102.C1374@linuxcare.com> <3A814CDE.2D3091A7@alcatel.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A814CDE.2D3091A7@alcatel.at>; from christoph.plattner@alcatel.at on Wed, Feb 07, 2001 at 02:25:50PM +0100
+Received: from mail.vi-internet.de (mailx.planet-interkom.de [195.182.114.81])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 75AE04A1C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 10:20:01 -0700 (MST)
+Message-ID: <3A8183B9.751575EB@hrzpub.tu-darmstadt.de>
+Date: Wed, 07 Feb 2001 18:19:53 +0100
+From: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+References: <3A814E22.CBA1C0B7@hrzpub.tu-darmstadt.de>
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Re: Failure making current gcc
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Feb 07, 2001 at 02:25:50PM +0100, Christoph Plattner wrote:
-> Hello
-> 	you mean, I can now check out the strace from CVS ?
-> And retry ??
 
-Yes
+Hello again!
+
+Sorry, but I cut away the last and most important line. Here it is:
+
+----------- SNIP --------------------
+
+/opt/puffin/xc-build/gcc/gcc/xgcc -B/opt/puffin/xc-build/gcc/gcc/
+-B/opt/puffin/xc/hppa-linux/bin/ -B/opt/puffin/xc/hppa-linux/lib/ -isystem
+/opt/puffin/xc/hppa-linux/include -DCROSS_COMPILE -DIN_GCC    -W -Wall
+-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -I.
+-I. -I/opt/puffin/palinux/gcc/gcc -I/opt/puffin/palinux/gcc/gcc/.
+-I/opt/puffin/palinux/gcc/gcc/config -I/opt/puffin/palinux/gcc/gcc/../include  -g0
+\
+  -finhibit-size-directive -fno-inline-functions \
+  -fno-exceptions -fPIC  \
+  -c /opt/puffin/palinux/gcc/gcc/crtstuff.c -DCRT_BEGIN -DCRTSTUFFS_O \
+  -o crtbeginS.o
+/tmp/cc0dgVTi.s: Assembler messages:
+/tmp/cc0dgVTi.s:74: Internal error, aborting at
+/opt/puffin/palinux/binutils/gas/write.c line 2852 in number_to_chars_bigendian
+Please report this bug.
+/tmp/ccrwiArd.s: Assembler messages:
+/tmp/ccrwiArd.s:102: Internal error, aborting at
+/opt/puffin/palinux/binutils/gas/write.c line 2852 in number_to_chars_bigendian
+Please report this bug.
+make[1]: *** [crtbegin.o] Fehler 1
+make[1]: *** Warte auf noch nicht beendete Prozesse....
+make[1]: *** [crtbeginS.o] Fehler 1
+make[1]: Verlassen des Verzeichnisses Verzeichnis »/opt/puffin/xc-build/gcc/gcc«
+make: *** [all-gcc] Fehler 2
+
+------------------------------ SNAP ----------------------------------
+
+So long,
+                Rüdiger
