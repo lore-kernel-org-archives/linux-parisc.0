@@ -1,37 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA25542
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:34:21 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA25820
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:35:36 -0700
 Content-Type: text/plain;
   charset="us-ascii"
 From: Helge Deller <deller@gmx.de>
-To: "Jorge L. deLyra" <delyra@latt.if.usp.br>, parisc-linux@thepuffingroup.com
+To: "Steve Moret" <smoret@uci.edu>
 Subject: Re: [parisc-linux] HP 9000/735-125
-Date: Thu, 30 Nov 2000 19:36:52 +0100
-Cc: assirati@socrates.if.usp.br
-References: <Pine.LNX.3.96.1001130134528.16737A-100000@latt.if.usp.br> <00113019213802.00309@P100>
-In-Reply-To: <00113019213802.00309@P100>
+Date: Thu, 30 Nov 2000 19:37:46 +0100
+Cc: parisc-linux@thepuffingroup.com
+References: <FKEGLIIBOIACJOCCAFIMIEFGCCAA.smoret@uci.edu>
+In-Reply-To: <FKEGLIIBOIACJOCCAFIMIEFGCCAA.smoret@uci.edu>
 MIME-Version: 1.0
-Message-Id: <00113019365203.00309@P100>
+Message-Id: <00113019374604.00309@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 30 November 2000 19:21, Helge Deller wrote:
-> On Thursday 30 November 2000 16:49, Jorge L. deLyra wrote:
-> > OK, rbootd is up and running, the station now establishes instantaneous
-> > communication with the server. But it says "bad LIF magic" and does not
-> > boot. I presume I can't just put the precompiled kernel in there. Since
-> > I cannot cross-compile for the time being (bad HP server disk crash) is
-> > there a net-boot kernel somewhere that I can download and try?
-> >
-> > 							Cheers,
+On Thursday 30 November 2000 18:50, Steve Moret wrote:
+> With the BiDirectional stuff back in it dies here:
 >
-> Hi,
+> Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
+> POSIX conformance testing by UNIFIX
+> ASP version 20 at 0xf0800000 found.
+> LED (ASP-style) display at f0800020
+> parport_gsc.c: initialize bidirectional-mode
 >
-> Just a thought: are you shure, that you did "make palo" and exported
-> palo/lifimage  instead of vmlinux ?
+[oops msg deleted]
 
-oops, 
-I just saw, that you currently _can_not_ cross-compile..... :-(
-But if you still want to download a kernel I can make one available for 
-you.....
+Yup, that was what I thought !
+I will try to come up with a clean fix in the next few hours...
 
-Helge.
+>
+> And it appears that the LEDs work, however I'm not familiar enough with
+> them to know what they all mean or if they should or should not blink,
+> glow, or cause alarming amounts of pain to those who walk by.
+
+The current code should let your heartbeat-LED blink two times per second and 
+LAN-TX, LAN-RCV and DISK-IO-LED should blink each after another...
+
+Greetings,
+
+	Helge
