@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BBD95484B
-	for <parisc-linux@parisc-linux.org>; Sat,  6 Jul 2002 02:00:38 -0600 (MDT)
-Message-ID: <3D26A3A4.D91DBCE2@gmx.at>
-Date: Sat, 06 Jul 2002 10:00:36 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: "SEMETEYS Raphael - MTR ( rsemeteys@mtr.sema.slb.com )" <rsemeteys@mtr.sema.slb.com>
-Cc: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Linux on HP9000/E25 ?
-References: <63FDFE424494D411965B009027D0E4FB0206124F@mtrmes01.montrouge.eur.slb.com>
-Content-Type: text/plain; charset=iso-8859-1
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 51635485F
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Jul 2002 02:04:14 -0600 (MDT)
+Date: Sat, 6 Jul 2002 10:04:12 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Power Button doesn't turn machine off anymore
+Message-ID: <20020706080412.GA11226@charite.de>
+References: <20020702190842.GR25586@charite.de> <20020702192147.GC3678@systemhalted> <20020702193116.GU25586@charite.de> <20020703052415.GB32490@charite.de> <20020703121306.GA8464@systemhalted> <20020703121737.GS15228@charite.de> <20020703164631.F0CE2483A@dsl2.external.hp.com> <20020703165234.GG13244@charite.de> <20020703203227.GE9009@systemhalted> <20020705175920.GM25868@charite.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020705175920.GM25868@charite.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,47 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-My installation was done in an other way.
-
-I tried the first debian install (0.9.3x image) on the 712. Later on
-I copied the file system to my server to use it as NFS and NFS-Root
-server. My E55 boots this image now.
-
-But as I heard, it is possible with my PDC driver to do a full 
-installation on those machine. I never tried this up to now.
-
-I also heard, that there is a ready boot image using the PDC driver
-for such an installation.
-
-Christoph
-
-
-"SEMETEYS Raphael - MTR ( rsemeteys@mtr.sema.slb.com )" wrote:
+Am 05.07.2002 um 19:59:20 +0200 schrieb Ralf Hildebrandt folgendes:
+> Am 03.07.2002 um 16:32:27 -0400 schrieb Carlos O'Donell folgendes:
 > 
-> Hi there,
+> > Could you please try this out and see if you see anything in your logs :)
 > 
-> I'd like to know if somedy already got througth installing Linux on a
-> HP9000/E25 server.
-> I'm trying to convinced my boss to do so but I'd like to know possible
-> limitations or known problems before beginning any installation.
-> 
-> Thanks in advance for your help.
-> 
-> ________________________________
-> Raphaël Semeteys
-> SchlumbergerSema
-> Centre de Compétences en Architecture Technique
-> 16-18 rue Barbès
-> 92126 Montrouge CEDEX France
-> tel : +33 1 40 92 49 63
-> fax + 33 1 40 92 49 97
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> Nothing. Nothing at all.
+
+I went to pa48 today, still with the patches to power.c you sent me.
+There are no log entries. To make sure I get all logging, I use:
+
+*.*   /var/log/debug
+
+Nevertheless, no logging. Does the patch to power.c output it's data
+to the console?
 
 -- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+"All programmers are playwrights and all computers are lousy actors."  -Anon.
