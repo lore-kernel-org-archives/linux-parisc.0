@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beloit.edu (beloit.edu [144.89.40.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4348E4834
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Nov 2001 19:56:42 -0700 (MST)
-Received: from localhost ([144.89.185.182])
-	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id UAA14070
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 4 Nov 2001 20:51:13 -0600
-Date: Sun, 4 Nov 2001 20:56:40 -0600
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v472)
-From: Daniel Williams <dan@bigw.org>
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200111022221.PAA07613@puffin.external.hp.com>
-Message-Id: <BC52B862-D198-11D5-80EF-0030657D1C94@bigw.org>
-Subject: [parisc-linux] Re: More Install on C110: Kernel doesn't load...
+Received: from ntexchange.cat.csiro.au (ntexchange.cat.csiro.au [140.253.12.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C2C5B4834
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Nov 2001 19:58:11 -0700 (MST)
+Message-ID: <A8566E157F5FD411BCFB00D0B7816D51C72C0A@ntexchange.cat.csiro.au>
+From: Matt.VanDeWerken@csiro.au
+To: dan@bigw.org, parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] Re: FW SCSI (Was hppa binutils/glibc updates)
+Date: Mon, 5 Nov 2001 12:54:28 +1000 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,51 +21,65 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-OK, burned the straight download ISO the way that works with EasyCD 
-Creator, but it still gives me the same message as last time, in the 
-same place as last time.
+I'm not entirely sure of the current status of the 735 FW SCSI stuff, but
+Richard sent me a kernel with some experimental drivers in it to test (he
+doesn't have a 735 himself) - it stack faulted on boot, so there's still
+problems there.
 
-<snip of seg 0-3 loads>
-Error: read from boot device failed( status = -4)
-byteio_read: seekread() returned -1 expected 2048
-error:  segment 0 read() failed
+As far as I understand the situation, the actual chip (ncr '720 I believe)
+is well documented, but there's a proprietary HP chip in between the ncr
+chip and the machine. It's this chip that's hard to interface to; Richard
+has seen some HPUX source and has necessary clearance to use that knowledge,
+so it's basically dependent on him.
 
-The CD was burned at 2x and the discs are 4x certified (PNY).  The CD is 
-external on the 50 pin narrow bus (core.SCSI.2.0)  However, it does not 
-have termination on the external bus.  The internal narrow SCSI devices 
-*do* have termination (ie the DDS2 tape drive).  I have switched the CD 
-with the DDS2 drive before, but not this time with the new correct 
-burn.  Could termination be an issue here and should I try putting the 
-CD drive internally with termination?
+I, too, would like to see thw FW scsi support going, mostly because I have
+two of these machines and would like to use the internal disks (4GB would do
+a lot for my network disk space...)
 
-C110
-64Mb x 2
-2.1GB FW differential SCSI
-DDS2 narrow tape drive
-External narrow CD drive
-Standard blah blah graphics
-
-Thanks in advance,
-Dan
+Cheers,
+Matthew van de Werken
+Electronics Engineer
+CSIRO Exploration & Mining - Gravity Group
+1 Technology Court - Pullenvale - Qld - 4069 - AUSTRALIA
+ph:  +61-7-3327 4685     fax:  +61-7-3327 4455
+email:  matt.vandewerken@csiro.au
 
 
-On Friday, November 2, 2001, at 04:21 PM, Grant Grundler wrote:
-
-> Daniel Williams wrote:
->> Error: read from boot device failed (status = -4)
->> byteio_read: seekread() returned -1 expected 2048
->> Error:  segment 0 read() failed
->>
->> Any thoughts?
->
-> When burning the IA64 boot CD, i was warned to use the 2x (vs 4x) burn
-> speed. This sounded like hogwash to me but the person was told the disk
-> burned at 4x may not work well with older/slower CD drives. If someone
-> could confirm this I'd appreciate it...anyway, the ia64 CD worked fine.
->
-> grant
->
+> -----Original Message-----
+> From: Daniel Williams [mailto:dan@bigw.org]
+> Sent: Monday, 5 November 2001 12:52 PM
+> To: parisc-linux@lists.parisc-linux.org
+> Subject: [parisc-linux] Re: FW SCSI (Was hppa binutils/glibc updates)
+> 
+> 
+> What still needs to happen on FW diff SCSI to get it working?
+> 
+> Dan
+> 
+> On Sunday, November 4, 2001, at 08:29 PM, Matthew Wilcox wrote:
+> 
+> > On Sun, Nov 04, 2001 at 09:10:33PM -0500, Christopher C. 
+> Chimelis wrote:
+> >> If I think of something, I'll write ya.  Also, if I manage to get a
+> >> machine, I'm sure you'll be hearing from me (probably will 
+> be an Apollo
+> >> series 735, fyi...slow, but effective).
+> >
+> > 735 is a pretty cool machine.  don't get one which requires a
+> > fast-wide-diff scsi interface though; we don't have that 
+> working yet.
+> >
+> > --
+> > Revolutions do not require corporate support.
+> >
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 > _______________________________________________
 > parisc-linux mailing list
 > parisc-linux@lists.parisc-linux.org
 > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
