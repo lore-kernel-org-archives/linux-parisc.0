@@ -1,23 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from protactinium.btinternet.com (protactinium.btinternet.com [194.73.73.176])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5FB584832
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Feb 2002 07:14:50 -0700 (MST)
+Received: from gadolinium.btinternet.com (gadolinium.btinternet.com [194.73.73.111])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6F6614836
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Feb 2002 10:11:45 -0700 (MST)
 Received: from host217-34-78-1.in-addr.btopenworld.com ([217.34.78.1] helo=liberator.zorg.org)
-	by protactinium.btinternet.com with esmtp (Exim 3.22 #8)
-	id 16ecwq-0003XO-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 23 Feb 2002 14:14:48 +0000
+	by gadolinium.btinternet.com with esmtp (Exim 3.22 #8)
+	id 16efi1-0003Q3-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 23 Feb 2002 17:11:41 +0000
 Received: from there (hal [192.168.0.42])
-	by liberator.zorg.org (8.9.3/8.8.7) with SMTP id OAA04306
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Feb 2002 14:14:48 GMT
-Message-Id: <200202231414.OAA04306@liberator.zorg.org>
+	by liberator.zorg.org (8.9.3/8.8.7) with SMTP id RAA04809
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Feb 2002 17:11:41 GMT
+Message-Id: <200202231711.RAA04809@liberator.zorg.org>
 Content-Type: text/plain;
   charset="iso-8859-1"
 From: nsc <nsc@connectednet.co.uk>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problem installing 0.9.3 on 715/100XC
-Date: Sat, 23 Feb 2002 14:14:50 +0000
-References: <200202231352.NAA04205@liberator.zorg.org> <20020223135840.GG25954@charite.de>
-In-Reply-To: <20020223135840.GG25954@charite.de>
+Subject: Fwd: [parisc-linux] Problem installing 0.9.3 on 715/100XC
+Date: Sat, 23 Feb 2002 17:11:43 +0000
 MIME-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -30,17 +28,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Saturday 23 Feb 2002 1:58 pm, Ralf Hildebrandt wrote:
+Turns out this was a problem with the CD-ROM after all. I pulled a Philips 
+CDRW drive out of another machine and installed it internally and all is 
+working now :-)
 
-> > So I issue 'boot scsi.2.0 ipl' and the get the following:
->
-> For mee "boot scsi.2.0" was sufficient.
->
-
-Same result but with a "graphical display" instead of text only.
-
-As I understand it adding the ipl to the boot command just means you get the 
-text interface.
-
-Thanks,
+Cheers,
 Nathan.
+
+
+----------  Forwarded Message  ----------
+
+Subject: [parisc-linux] Problem installing 0.9.3 on 715/100XC
+Date: Sat, 23 Feb 2002 13:52:10 +0000
+From: nsc <nsc@connectednet.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+
+Hi guys, I'm trying to install 0.9.3 on a 715/100XC and have run into a
+problem.
+
+'sea scsi' shows I have:
+
+scsi.6.0	SEAGATE ST32151N
+scsi.2.0	TOSHIBA CD-ROM XM-3701TA
+
+'sea ipl' shows the CD-ROM
+
+So I issue 'boot scsi.2.0 ipl' and the get the following:
+
+Attempting to boot.
+Loading Initial Program Loader
+ERROR: Cannot load IPL, error detected
+Boot process failed. press <ESCAPE> to Continue
+
+md5sums on the iso image check out and I've burned a couple of cd's just in
+case the first was dodgy.
+The Toshiba CD-ROM is known to work and boots my SGI Indy just fine.
+
+This machine has BootRom Version 1.1, could this be causing a problem?
+
+Where do I go from here?
+
+Thanks for any help,
+Nathan.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+-------------------------------------------------------
