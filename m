@@ -1,16 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.umr.edu (mrelay1.cc.umr.edu [131.151.1.120])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35A16483C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 08:21:04 -0700 (MST)
+Received: from palrel11.hp.com (palrel11.hp.com [156.153.255.246])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B8EA84838
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 09:52:00 -0700 (MST)
+Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
+	by palrel11.hp.com (Postfix) with ESMTP id 6BBA960046E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 08:51:59 -0800 (PST)
+Received: from xpabh3.corp.hp.com (xpabh3.corp.hp.com [15.58.136.223])
+	by xparelay2.corp.hp.com (Postfix) with ESMTP id 063329C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 08:51:59 -0800 (PST)
+Message-ID: <2F1E6AB90ECAD311943700A0C9E3B15408002AA8@xatl03.atl.hp.com>
+From: "FAUCHER,DENNIS (HP-USA,ex1)" <dennis_faucher@hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 25 Feb 2002 08:51:57 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Subject: RE: [parisc-linux] 735-memory
-Date: Mon, 25 Feb 2002 09:19:54 -0600
-Message-ID: <415FFB77FC9411448DF6014DF8A5C2C11AC217@umr-mail3.umr.edu>
-From: "Neulinger, Nathan" <nneul@umr.edu>
-To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>,
-	<parisc-linux@lists.parisc-linux.org>
+	charset="iso-8859-1"
+Subject: [parisc-linux] tsocks Error
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,34 +27,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-No... as far as I remember, the non 735/755 style boxes used more
-conventional looking simms/dimms. The 735/755 have those large
-ide-connector-like boards.=20
+Hello,
 
--- Nathan
+Has anyone used tsocks successfully?  I just installed the latest with
+apt-get (tsocks version 1.7-4) and receive the following error on use:
 
-------------------------------------------------------------
-Nathan Neulinger                       EMail:  nneul@umr.edu
-University of Missouri - Rolla         Phone: (573) 341-4841
-Computing Services                       Fax: (573) 341-4216
+relocation error: /usr/lib/libtsocks.so: undefined symbol: $$dyncall
 
+Thanks in advance.
 
-> -----Original Message-----
-> From: Witvliet, Hans [mailto:Hans.Witvliet@Alcatel.nl]=20
-> Sent: Monday, February 25, 2002 9:03 AM
-> To: parisc-linux@lists.parisc-linux.org
-> Subject: [parisc-linux] 735-memory
->=20
->=20
-> Last weekend I scrapped a 735,  apperently it did not survive=20
-> transport.
-> The memory inside, is it usable for other HP-systems, like=20
-> 712/100 or C110?
->=20
-> Hans
->=20
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->=20
+Sincerely,
+Dennis Faucher
+Technical Consultant
+Hewlett-Packard Company
+https://www.ecardfile.com/id/dennis_faucher (Contact)
