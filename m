@@ -1,54 +1,72 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA14241
-	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Sep 1999 14:44:38 -0600
-Message-Id: <199909042044.NAA09995@milano.cup.hp.com>
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] milli.S and 0xd's 
-In-reply-to: Your message of "Sat, 04 Sep 1999 08:01:48 PDT."
-             <19990904080148.Z493@mencheca.ch.genedata.com>
-Date: Sat, 04 Sep 1999 13:44:05 -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA14580
+	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Sep 1999 19:32:13 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id SAA20015
+	for <parisc-linux@thepuffingroup.com>; Sat, 4 Sep 1999 18:34:02 -0700 (PDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id SAA10177 for <parisc-linux@thepuffingroup.com>; Sat, 4 Sep 1999 18:31:36 -0700 (PDT)
+Message-Id: <199909050131.SAA10177@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Sat, 04 Sep 1999 18:31:36 -0700
 From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] EIM register programming
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+Philipp Rumpf wrote:
 ...
-> I just did the exact same thing and didn't get this error.  You are correct
-> that the file has 0xd's in it... I wonder if it's which assembler your gcc
-> has found?
+> > Of GSC devices I'm aware of, only Dino will support pcibios_fixup().
+> > How would a GSC SCSI, LAN, or Graphics card driver program it's EIM
+> > register?
+> > (EIM is equivalent to Dino's IAR0/1 registers)
+> 
+> Not decided yet.
 
-Yes. jackpot.  I'm picking up the "ninstall" tool set and not the set
-distributed from puffin.external.hp.com.  Let's see how painful it is
-to get the newer toolset working...
+Ok.
 
-grundler <427>as --version
-GNU assembler 2.8.1
-...
+> alloc_irq is flawed and right now I think
+> 
+> int gsc_request_irq(void *eim,
+> 	void (*handler)(int, void *, struct pt_regs *),
+> 	unsigned long irqflags,
+> 	const char *devname,
+> 	void *dev_id);
+> 
+> might be a good idea.  return value is the number of the IRQ you
+> have so you can do:
+> 
+> 	irq = gsc_request_irq(&dino->hpa->iar0, dino_interrupt, ??, dino->name,
+>    dino);
+> 	if(irq < 0) {
+> 		printk("%s: couldn't allocate IRQ\n" dino->name); 
+> 		return irq;
+> 	}
+> 	printk("%s: allocated IRQ %d\n", dino->name, irq);
+> 
+> does that sound okay ?
 
->   Try appending the `-v' flag to the end of the gcc line and see
-> what you get:
+I think it will work.
+Does Dino need "irq_base" then? I guess it doesn't.
 
-make[2]: Entering directory `/linux/linux/arch/parisc/lib'
-gcc -D__KERNEL__ -I/linux/linux/include -D__ASSEMBLY__  -traditional -c -v milli.S -o milli.o
-Reading specs from /opt/GNU/lib/gcc-lib/hppa1.1-hp-hpux10.20/2.8.1/specs
-gcc version 2.8.1
-...
+It's clear this only works for 32-bit "EIM" style devices.
+It won't work for anything different and I don't really know
+what's out there (graphics has a reputation for doing things
+differently though I expect them to also use an EIM register.)
 
-vs.
+My general preference is to pass platform knowledge (CPU HPA/EIRR)
+to the caller instead of passing device specific knowledge
+(EIM address) to the service. The former lets one manage platform
+knowledge as a resource (allocate/free model) and is ultimately
+more flexible. The latter is OK too if the device knowledge is
+for a "mature" architecture (eg PCI spec won't change much anymore).
+And GSC certainly won't change anymore.
 
-> Reading specs from /opt/depot/egcs-puffin/lib/gcc-lib/hppa1.0-hp-hpux11.00/eg
->   cs-2.91.60/specs
-> gcc version egcs-2.91.60 19981201 (egcs-1.1.1 release)
+I guess what I was looking for were processor (vs bus) specific services.
+The gsc_request_irq() would be a consumer of PA specific services
+and I was thinking some drivers might want to directly use processor
+services directly.
 
-BTW, I noticed "hppa1.0-hp-hpux11.00". Has anyone verified "hpux10.2O"
-gcc tools produce the same output as "hpux11.00" flavor tools?
-(I know they "should" but wouldn't even think of betting on it.)
+Other comments?
 
-I have access to several idle 11.X machines and will take another
-look at using them. I didn't consider using them before because they
-didn't have 10.20 installed.
-
-thanks Matthew,
 grant
 
 Grant Grundler
