@@ -1,44 +1,28 @@
-Received: from www22.gmx.net (www22.gmx.net [213.165.64.72])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA27719
-	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 06:10:14 -0700
-Date: Tue, 14 Nov 2000 14:11:42 +0100 (MET)
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA28784
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 09:10:01 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel1.hp.com (Postfix) with ESMTP id 19B1B2C7
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 09:12:20 -0700 (MST)
+Message-Id: <200011141610.IAA11646@milano.cup.hp.com>
 To: Richard Hirst <rhirst@linuxcare.com>
-Cc: bame@riverrock.org, parisc-linux@puffin.external.hp.com
-Cc: bame@riverrock.org, parisc-linux@puffin.external.hp.com
-Subject: Re: sym53c8xx-driver (was: Re: [parisc-linux] kernel merge)
-From: Helge Deller <deller@gmx.de>
-References: <20001114101704.Y32715@linuxcare.com>
-Message-ID: <28837.974207502@www22.gmx.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Cc: Helge Deller <deller@gmx.de>, parisc-linux@puffin.external.hp.com
+In-reply-to: Your message of "Tue, 14 Nov 2000 10:17:04 PST."
+             <20001114101704.Y32715@linuxcare.com>
+Date: Tue, 14 Nov 2000 08:10:42 -0800
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] dino maintainer?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Hi Helge,
-> 
-> On Tue, Nov 14, 2000 at 01:13:58AM +0100, Helge Deller wrote:
-> > On Tuesday 14 November 2000 00:27, Richard Hirst wrote:
-> > > Hi Helge,
-> > >   The problem I fixed related to the ncr53c8xx driver (which shares
-> > > code with sym53c8xx), and was to make 53c720 support work again.
-> > > sym53c8xx worked for me on my A180.  Please can you try booting
-> > > with
-> > > 
-> > > 	sym53c8xx=verb:7,debug:0xffff
-> > > 
-> > > and send me the output?
-> > > 
-> > > Thanks,
-> > >  Richard
-> > 
-> > 
-> > Hi Richard,
-> > 
-> > the output and the relevant part of .config is attached.
-> > 
-> > Greetings,
-> > 
-> > 	Helge
-> 
+
+Anyone interested in maintaining Dino?
+
+I don't have time for it and all the docs are on the web.
+One of the "TODO" things is to convert dino.c to use struct
+pci_hba the same way lba_pci.c does....
+
+Richard Hirst wrote:
+...
 > Thanks.  I agree it doesn't look like the driver is even seeing the
 > chip; I wonder if PCI support is broken...
 > 
@@ -47,20 +31,25 @@ List-ID: <linux-parisc.vger.kernel.org>
 > 
 > Does it usually say that on bootup?
 
-Yep. 
-Has always been there, but nevertheless the scsi-driver worked before.
-FYI: The non-pci sim700-driver also didn't showed up before pb fixed it in
-CVS with a few one-line-patches.
+per Helge's request:
 
-NB: Could maybe someone (ggg?) explain me the kernel-bug mentioned above ?
+The bug is normal for card-mode Dino - not for Built-in Dino.
+I think Helge has the GSC 100BT card which is a card-mode Dino on-board
+with one (or two) Tulip(s) behind it.
 
-> 
-> Richard
-> 
+The warning is a reminder one can NOT use MMIO accesses to those
+PCI devices and *only* I/O Port space (eg inb/outb).
 
-Greetings,
+If someone wants to fix the warning so it's quiet for card-mode
+devices...see is_card_dino(d) in dino_driver_callback() for an
+example.
 
-	Helge
+FYI - card-mode dino was used for several different networking
+interfaces but not SCSI interfaces.
 
--- 
-Sent through GMX FreeMail - http://www.gmx.net
+hope this helps,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
