@@ -1,33 +1,45 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] BTLBs usable as HUGHTLBs ?
-Date: Sun, 31 Oct 2004 15:04:30 +0100
-Message-ID: <200410311504.30552.deller@gmx.de>
+From: j.raspe@t-online.de (Johannes Raspe)
+Subject: Re: Penguin color problems on HCRX-24 (was: [parisc-linux] Re: STI crash on B132L with HCRX-24)
+Date: Sun, 31 Oct 2004 15:06:00 +0100
+Message-ID: <200410311506.00662.j.raspe@t-online.de>
+References: <200410292228.14940.j.raspe@t-online.de> <200410311406.46194.j.raspe@t-online.de> <200410311456.50753.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset="utf-8"
+Cc: ajwalker@broadpark.no,
+ parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <j.raspe@t-online.de>
+In-Reply-To: <200410311456.50753.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-Maybe a stupid question from someone not knowledgeable of memory-stuff on Linux...
+Hi Helge,
 
-Since HPPA offers Block-TLBs (BTLBs), couldn't those be used comparable/wrapped as so-called HUGHTLBs (CONFIG_HUGETLBFS) as available on i386/ia64 ?
+> > For solving the (cosmetical) penguin-color-problem I took a shot with my
+> > digicam and attached it (sorry for poor quality).
+>
+> I was hoping my last patch would have fixed this too. Oh well :-)
+>
+> Right now I don't have any real idea why the penguin colors are wrong.
+> But I have two assumptions:
+> a) cfb_imageblit() works wrong in the current tree with 24/32bpp output and
+> 8bpp input on big endian b) fb_set_logo_truepalette() creates a wrong
+> palette for 24bpp output [but this function seems correct IMHO].
+>
+> Both of those I'm currently lost without any testing possibility, but I'll
+> continue to look into it.
+>
+> BTW, does everything else seemscorrect wrt. colors on the text console,
+> e.g. does midnight command shows blue background ?
 
-from /proc/cpuinfo on my 715/64:
-BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
-BTLB fix-entr.  : 0 instruction, 0 data (8 combined)		<--- 8
-BTLB var-entr.  : 0 instruction, 0 data (0 combined)
+Yes. mc looks normal and a "make menuconfig" shows the right colors too.
 
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> Regards,
+> Helge
+
+Regards Johannes
+
+-- 
+Johannes Raspe - j.raspe@t-online.de
+GnuPG-Key ID: D342E105
+Fingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
