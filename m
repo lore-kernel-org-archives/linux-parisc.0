@@ -1,19 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4F1494841
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 11:05:26 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16fPV6-0006SV-00; Mon, 25 Feb 2002 18:05:24 +0000
-Date: Mon, 25 Feb 2002 18:05:24 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "FAUCHER,DENNIS (HP-USA,ex1)" <dennis_faucher@hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] tsocks Error
-Message-ID: <20020225180524.C20667@parcelfarce.linux.theplanet.co.uk>
-References: <2F1E6AB90ECAD311943700A0C9E3B15408002AA8@xatl03.atl.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <2F1E6AB90ECAD311943700A0C9E3B15408002AA8@xatl03.atl.hp.com>; from dennis_faucher@hp.com on Mon, Feb 25, 2002 at 08:51:57AM -0800
+To: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+In-Reply-To: Message from Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+   of "Mon, 25 Feb 2002 09:02:05 +0100." <20020225080205.GC32703@charite.de>
+References: <20020225080205.GC32703@charite.de> 
+Date: Mon, 25 Feb 2002 11:07:48 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020225180748.4213C4848@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: ext3 patch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +18,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 25, 2002 at 08:51:57AM -0800, FAUCHER,DENNIS (HP-USA,ex1) wrote:
-> Hello,
-> 
-> Has anyone used tsocks successfully?  I just installed the latest with
-> apt-get (tsocks version 1.7-4) and receive the following error on use:
-> 
-> relocation error: /usr/lib/libtsocks.so: undefined symbol: $$dyncall
+Ralf Hildebrandt wrote:
+> a) It will be in 2.4.18 anyway
 
-This tends to indicate the package was built wrongly -- eg linked with ld
-instead of with gcc.  everyone around here uses dante rather than tsocks.
-Unfortunately, this package was built before anyone was using the build
-log system, so I can't tell what it did.
+If it will be in 2.4.18, I expect merging everything from 2.4.18
+in one shot would be easier. If you give me a clean diff,
+I'd be happy to post that on ftp.p-l.org/patches
 
--- 
-Revolutions do not require corporate support.
+thanks,
+grant
