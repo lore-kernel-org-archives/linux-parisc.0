@@ -1,29 +1,31 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id PAA02045
-	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 15:43:13 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA15215;
-	Mon, 29 Jan 2001 09:45:23 +1100
-Date: Mon, 29 Jan 2001 09:45:22 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Usage of __attribute__?
-In-Reply-To: <200101282158.OAA09549@udlkern.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0101290940400.24446-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA05058
+	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 20:49:58 -0700
+Message-Id: <200101290356.TAA25535@milano.cup.hp.com>
+To: 5116@telia.com
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Kernel module loader gived break 
+In-reply-to: Your message of "Sat, 27 Jan 2001 17:10:51 PST."
+             <200101271610.RAA30546@zaphod.halden.lillfab.se>
+Date: Sun, 28 Jan 2001 19:56:08 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 28 Jan 2001, John Marvin wrote:
+5116@telia.com wrote:
+> Modprobe is not in stalled in my system (is it ported yet?).
 
-> OK, I was just writing a test case on my pc and hadn't bothered to test it
-> on hppa. The compiler on my PC was version 2.95.2. The problem doesn't
-> exist on my native hppa gcc, which is version 2.96. So, although it is
+As Matthew mentioned, Richard Hirst worked on it and I know it works.
+I've used it on the A500 to load SCSI and ACENIC modules for 64-bit kernel.
+But I got the binaries directly from Richard. I think however before
+posting those, I'd like them rebuilt with the matching glibc/toolchain
+that Matt Taggart is working on.
 
-That's good :-)  2.95.2 has other problems with alignment too, if my
-faulty memory is correct.  It doesn't propagate the maximum alignment of
-fields within a struct to the struct itself, or something like that.
+For the adventurous, I would expect all richard's work to be commited to
+seperate CVS repository on puffin.external.hp.com called "modutils".
+But I haven't looked or tried to build it.
 
--- 
-Linuxcare.  Support for the Revolution.
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
