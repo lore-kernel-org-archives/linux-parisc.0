@@ -1,15 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dsl2.external.hp.com (localhost [127.0.0.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 97793482A
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Mar 2002 10:56:59 -0700 (MST)
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Building cvs 2.4.18 
-In-Reply-To: Message from Andrew Shugg <andrew@neep.com.au>
-   of "Fri, 29 Mar 2002 09:08:24 +0800." <20020329090821.R888@neep.com.au>
-References: <Pine.LNX.4.33L2.0203251403190.13376-100000@eiger.apptechsys.com> <jeremyd@apptechsys.com> <20020326063217.50AB1482C@dsl2.external.hp.com> <20020327220901.A315@neep.com.au> <andrew@neep.com.au> <20020328070207.990A8482A@dsl2.external.hp.com> <20020328181323.A6833@neep.com.au> <andrew@neep.com.au> <20020328171720.8DC24482A@dsl2.external.hp.com>  <20020329090821.R888@neep.com.au> 
-Date: Fri, 29 Mar 2002 10:56:59 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020329175659.97793482A@dsl2.external.hp.com>
+Received: from sj-msg-core-4.cisco.com (sj-msg-core-4.cisco.com [171.71.163.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6D13A482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Mar 2002 11:47:29 -0700 (MST)
+Message-Id: <4.3.2.7.2.20020329103302.0252c9c8@mira-sjc5-9.cisco.com>
+Date: Fri, 29 Mar 2002 10:45:39 -0800
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: Christian Suder <csuder@cisco.com>
+Subject: Re: [parisc-linux] Mozilla, etc.
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020328235906.A11055@solo.franken.de>
+References: <5.1.0.14.2.20020328171235.02e71248@pop.puretec.de>
+ <3CA2ADDB.4EE8AFA4@cisco.com>
+ <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu>
+ <3CA2ADDB.4EE8AFA4@cisco.com>
+ <20020328093151.GA20881@elvis.franken.de>
+ <5.1.0.14.2.20020328171235.02e71248@pop.puretec.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,20 +28,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Andrew Shugg wrote:
-> Okay.  I think we're not looking on the same systems, somehow.  =)
+Thanks Thomas,
 
-We aren't. I didn't say gsyprf10.external.hp.com originally?
+that helped quite a bit. I used an older mozilla tree which I had and 
+compiled it with -O and it worked with skipstone. I'm now using your 
+binaries (saved a couple of hours...;-) with a recent skipstone and it 
+works pretty well on a local X display.
 
-I seeded ftp.parisc-linux.org/kernels from gsyprf10.
-I'll remove the parisc content from gsyprf10 ftp site so there is
-no overlap and hopefully no confusion in the future.
-Go by date stamps for now until it's cleaned up.
+It has some issues running remotely (window not always redrawn, hangs 
+sometimes). Galeon doesn't want to run at all on a remote display, a couple 
+of tasks are spawning but nothing on the screen. This seems to be a generic 
+issue with appearantly mostly GTK+ applications. Pan and sylpheed are two 
+other apps that don't want to run remotely although they do work on a local 
+display.
 
-> There's only the one ftp server, isn't there?
+         Christian
 
-For parisc-linux, yes.
-But I maintain a bunch of other x86 boxes...
 
-hth,
-grant
+At 11:59 PM 3/28/2002 +0100, Thomas Bogendoerfer wrote:
+>On Thu, Mar 28, 2002 at 05:13:56PM +0100, Tilo Jandt wrote:
+> >
+> >
+> > >to get it running, you need to recompile it with -O optimizing level.
+> >
+> > how do you recompile it?
+>
+>apt-get source mozilla
+>cd mozilla-0.9.9
+>vi debian/rules
+>dpkg-buildpackage -b
+>/* wait some hours */
+>
+> > >But there is galeon, which uses mozillas rendering engine, which (also
+> > >compiled with -O) gives me a working web browser.
+> >
+> > since the upgrade to mozilla 0.9.9 i can't use galeon any more.
+>
+>I've placed the .debs, which I'm using to:
+>
+>http://gsyprf11.external.hp.com/~tsbogend
+>
+>Thomas.
+>
+>--
+>Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+>good idea.                                 [ Alexander Viro on linux-kernel ]
