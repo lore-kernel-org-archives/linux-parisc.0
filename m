@@ -1,17 +1,12 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: More questions [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
-Date: Fri, 3 Dec 2004 07:41:59 -0800
-Message-ID: <20041203154159.GB6359@tausq.org>
-References: <418A80AE0000A9A8@mail-4-bnl.tiscali.it>
-	<41B03ED8.8090505@tiscali.be>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: rray@tcmail.mstc.state.ms.us
+Subject: [parisc-linux] 2.6.10-rc2-pa2 build failing
+Date: Fri, 3 Dec 2004 15:55:54 -0600 (CST)
+Message-ID: <Pine.LNX.4.58.0412031551120.3169@rray.drdc.mstc.ms.gov>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41B03ED8.8090505@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,21 +17,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I test it on my b2k with 64bit kernel and it works but it didn't seems to 
-> bring me any benefit?
-> As far as I can believe readprofile: the ratio between the first and last 
-> column is always the same (1/80 in this case).
-> What did I miss?
+I got cvs.parisc-linux.org/download/linux-2.6/linux-2.6.10-rc2-pa2.tar.bz2
+and attempted to compile it with standard options set.
+It fails with
 
-what workload did you test this on? possibly you only see a benefit with
-workloads that need to do a lot of page clearings.... so you probably
-want to find a workload so that the first column is >>1
+drivers/built-in.o: In function `sti_select_fbfont':
+drivers/built-in.o(.init.text+0x2eb4): undefined reference to `find_font'
+drivers/built-in.o(.init.text+0x2fd4): undefined reference to `get_default_font'
+make: *** [.tmp_vmlinux1] Error 1
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+I'm building this on a K200.
+Any suggestions?
+
+Thanks
+Richard Ray
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
