@@ -1,15 +1,17 @@
-From: "Jens Simmoleit" <simmel@anymotion.de>
-Subject: [parisc-linux] Re: Install GNOME on 712/80
-Date: Fri, 6 Feb 2004 16:35:23 +0100
-Message-ID: <009801c3ecc6$d637d990$8100a8c0__10252.3700603799$1416623179$gmane$org@punk>
+From: James Bottomley <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Re: Install GNOME on 712/80
+Date: 06 Feb 2004 10:49:42 -0500
+Message-ID: <1076082583.1823.23.camel__37539.6797121086$1416623179$gmane$org@mulgrave>
 References: <02d601c3ebef$e3241650$8100a8c0@punk>
 	<200402060007.27911.deller@gmx.de>
+	<009801c3ecc6$d637d990$8100a8c0@punk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-15"
-Cc: debian-hppa@lists.debian.org
-To: <parisc-linux@lists.parisc-linux.org>
-Return-Path: <simmel@anymotion.de>
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
+To: Jens Simmoleit <simmel@anymotion.de>
+Return-Path: <James.Bottomley@SteelEye.com>
+In-Reply-To: <009801c3ecc6$d637d990$8100a8c0@punk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,48 +21,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi List,
+On Fri, 2004-02-06 at 10:35, Jens Simmoleit wrote:
+> But now something strange happens, I type in my user and the password at the
+> gnome desktop login, the screen turns black and after a certain amount of
+> time the box comes back with the Gnome login prompt (where I started from)?
 
-Helge, thanks for the tip. I reinstalled from scratch installed the xserver
-and the gnome packages and it "works now". The gdm started up and said that
-he couldn't find the font server, the config file said that also local fonts
-can be used, so I isntalled those too and voila the login page appears.
+Gnome is a known consumer of colour resources, and it's applications
+aren't very graceful when they run out (as they do with our 8 bit
+framebuffer), it could be that you are simply running out of them.
 
-:-)
+You can use a true colour visual at this depth (the colours are pretty
+ratty, but at least you never run out) by adding
 
-But now something strange happens, I type in my user and the password at the
-gnome desktop login, the screen turns black and after a certain amount of
-time the box comes back with the Gnome login prompt (where I started from)?
+Visual "TrueColor"
 
-Seems like the system isn't able to log me on, or create a profile, or
-whatever?
+To the SubSection "Display" part that covers you.
 
-What am i missing here????
-Do I need a font server? Is there maybe (an)other missing package(s).... I'm
-quite sure I have all the gnome packages here, but what about X itself,
-somebody has a clue whats missing or wrong? Maybe a config file for the
-user?
-
-Any idea?
-
-Greets,
-Simmel
-
-
-> Look at the dmesg kernel log and search for a line which starts with
-"stifb:".
-> There you will see the only resolution & bpp color depth which your card
-> currently supports and then verify your /etc/X11/XFree86.config file to
-only
-> have exactly those values enabled. After that change X11 should start
-up....
->
-> Helge
->
->
-> -- 
-> To UNSUBSCRIBE, email to debian-hppa-request@lists.debian.org
-> with a subject of "unsubscribe". Trouble? Contact
-listmaster@lists.debian.org
->
->
+James
