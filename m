@@ -1,11 +1,13 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [PATCH] hppa libgcc-compat
-Date: Mon, 18 Aug 2003 17:09:29 -0400
-Message-ID: <20030818210929.GJ6190__48114.502876024$1416622696$gmane$org@systemhalted>
+From: James Bottomley <James.Bottomley@steeleye.com>
+Subject: [parisc-linux] Problems with kernel mmap (failing tst-mmap-eofsync in glibc on
+ parisc)
+Date: 22 Aug 2003 09:40:37 -0500
+Message-ID: <1061563239.2090.25.camel__27754.1251075037$1416622703$gmane$org@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: libc-alpha@sources.redhat.com
+Content-Type: multipart/mixed; boundary="=-lmHKO1hPltD8R1GkCOtr"
+Cc: davem@redhat.com, drepper@redhat.com
+To: Linux Kernel <linux-kernel@vger.kernel.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -17,111 +19,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-libc-alpha,
+--=-lmHKO1hPltD8R1GkCOtr
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Seeing Lu's post about libgcc-compat reminded me that I should submit
-our version.
+This test essentially opens a file (via open(2)), writes something,
+opens it via a mmaped file object *read only* (via fopen(...,"rm)) reads
+what was writtent, writes some more and reads it via the mmaped file
+object.
 
-We have been using this patch to fix the leaked __clz_tab symbol from
-libgcc. Attached is the required additions to our Makefile, Dist, and
-Versions.
+This last read fails to get the data on parisc.  The problem is that our
+CPU cache is virtually indexed, and the page the write is storing the
+data to (in the buffer cache) and the page it is mmapped to have the
+same physical, but different virtual addresses.  We need the write() to
+trigger a cache update via flush_dcache_page to get the virtually
+indexed cache in sync.
 
-This patch was produced by Randolph Chung, many thanks!
+The reason this doesn't happen is because the mapping is not on the
+mmap_shared list that flush_dcache_page() updates.
 
-Cheers,
-Carlos.
----
- sysdeps/hppa/Dist            |    1
- sysdeps/hppa/Makefile        |   11 +++++
- sysdeps/hppa/Versions        |    5 ++
- sysdeps/hppa/libgcc-compat.c |   43 +++++++++++++++++++++++
- 4 files changed, 60 insertions(+)
----
+And the reason it's not on the correct list is because there's a check
+in mm/mmap.c:do_mmap_pgoff() that drops the VM_SHARED flag on the
+mapping if the file wasn't opened for writing (about line 541).
 
-2003-02-25  Randolph Chung  <tausq@debian.org>
+Semantically, it seems that whether the mmaping sees a write or not on a
+different descriptor shouldn't depend on whether the underlying file was
+opened read only or read write, so I think the glibc test is correct,
+and we should keep the VM_SHARED flag even if the underlying file was
+opened read only.
 
-	* sysdeps/hppa/Makefile: Include compat code in build.
-	* sysdeps/hppa/libgcc-compat.c: New file.
-	* sysdeps/hppa/Dist: Add libgcc-compat.c
-	* sysdeps/hppa/Versions [GLIBC_2.2]: Add __clz_tab.
+The patch is attached (and makes the test pass on parisc).
 
---- glibc-2.3.1/sysdeps/hppa/Makefile.orig	2003-02-25 22:21:14.000000000 -0800
-+++ glibc-2.3.1/sysdeps/hppa/Makefile	2003-02-25 22:22:01.000000000 -0800
-@@ -31,3 +31,14 @@
- dl-routines += dl-symaddr dl-fptr
- rtld-routines += dl-symaddr dl-fptr
- endif
-+
-+ifeq ($(subdir),csu)
-+ifeq (yes,$(build-shared))
-+# Compatibility
-+ifeq (yes,$(have-protected))
-+CPPFLAGS-libgcc-compat.c = -DHAVE_DOT_HIDDEN
-+endif
-+sysdep_routines += libgcc-compat
-+shared-only-routines += libgcc-compat
-+endif
-+endif
---- glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
-+++ glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
-@@ -0,0 +1,43 @@
-+/* pre-.hidden libgcc compatibility
-+   Copyright (C) 2002 Free Software Foundation, Inc.
-+   This file is part of the GNU C Library.
-+   Contributed by Randolph Chung
-+
-+   The GNU C Library is free software; you can redistribute it and/or
-+   modify it under the terms of the GNU Lesser General Public
-+   License as published by the Free Software Foundation; either
-+   version 2.1 of the License, or (at your option) any later version.
-+
-+   The GNU C Library is distributed in the hope that it will be useful,
-+   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+   Lesser General Public License for more details.
-+
-+   You should have received a copy of the GNU Lesser General Public
-+   License along with the GNU C Library; if not, write to the Free
-+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-+   02111-1307 USA.  */
-+
-+
-+#include <stdint.h>
-+#include <shlib-compat.h>
-+
-+#if SHLIB_COMPAT(libc, GLIBC_2_0, GLIBC_2_2_6)
-+
-+symbol_version (__clz_tab_internal, __clz_tab, GLIBC_2.2);
-+
-+typedef unsigned int UQItype  __attribute__ ((mode (QI)));
-+
-+const UQItype __clz_tab_internal[] =
-+{
-+  0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-+  6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-+  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-+  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+};
-+
-+#endif
---- glibc-2.3.1/sysdeps/hppa/Dist.orig	2003-02-26 09:02:52.000000000 -0800
-+++ glibc-2.3.1/sysdeps/hppa/Dist	2003-02-26 09:04:03.000000000 -0800
-@@ -1,2 +1,3 @@
-+libgcc-compat.c
- dl-symaddr.c
- dl-fptr.c
---- glibc-2.3.1/sysdeps/hppa/Versions.orig	2002-02-01 13:16:41.000000000 -0800
-+++ glibc-2.3.1/sysdeps/hppa/Versions	2003-02-27 13:23:03.000000000 -0800
-@@ -5,3 +5,8 @@
-     _dl_function_address;
-   }
- }
-+libc {
-+  GLIBC_2.2 {
-+    __clz_tab;
-+  }
-+}
+Comments?
+
+James
+
+
+--=-lmHKO1hPltD8R1GkCOtr
+Content-Disposition: attachment; filename=tmp.diff
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; name=tmp.diff; charset=ISO-8859-1
+
+=3D=3D=3D=3D=3D mm/mmap.c 1.89 vs edited =3D=3D=3D=3D=3D
+--- 1.89/mm/mmap.c	Thu Jul 10 21:46:52 2003
++++ edited/mm/mmap.c	Fri Aug 22 09:36:32 2003
+@@ -539,7 +539,7 @@
+=20
+ 			vm_flags |=3D VM_SHARED | VM_MAYSHARE;
+ 			if (!(file->f_mode & FMODE_WRITE))
+-				vm_flags &=3D ~(VM_MAYWRITE | VM_SHARED);
++				vm_flags &=3D ~VM_MAYWRITE;
+=20
+ 			/* fall through */
+ 		case MAP_PRIVATE:
+
+--=-lmHKO1hPltD8R1GkCOtr--
