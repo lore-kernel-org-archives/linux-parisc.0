@@ -1,16 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Function descriptors fall behind Sysdep-cancel, Less failures, and ABI files for Roland.
-Date: Tue, 25 Mar 2003 19:50:41 -0500
-Message-ID: <20030326005041.GB30578__30582.3596347638$1416622330$gmane$org@systemhalted>
-References: <1048493134.8777.22.camel@beavis.ybsoft.com> <jeptohumcp.fsf@sykes.suse.de> <20030324184447.GA26572@uswest.net> <20030325081207.B18730@lucon.org>
+From: m.delahaye@esiee.fr (Matthieu Delahaye)
+Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
+Date: Wed, 26 Mar 2003 11:07:46 +0100
+Message-ID: <20030326100746.GA21703__37290.3780932122$1416622331$gmane$org@charrue.esiee.fr>
+References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int> <20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk> <15999.23084.647629.868320@napali.hpl.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: libc-alpha@sources.redhat.com,
-	parisc-linux@lists.parisc-linux.org,
-	Ryan Bradetich <rbrad@uswest.net>, Randolph Chung <tausq@debian.org>
-To: "H. J. Lu" <hjl@lucon.org>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Adriano Galano <adriano@satec.es>, linux-ia64@linuxia64.org,
+	parisc-linux@parisc-linux.org
+To: davidm@hpl.hp.com
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030325081207.B18730@lucon.org>
+In-Reply-To: <15999.23084.647629.868320@napali.hpl.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,26 +21,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I posted a patch a long time ago to unify function descriptor handling
-> such that ia64 and pa-risc don't have to reinvent the wheel.
+On Mon, Mar 24, 2003 at 11:19:08AM -0800, David Mosberger wrote:
+> >>>>> On Mon, 24 Mar 2003 12:10:37 +0000, Matthew Wilcox <willy@debian.org> said:
+> 
+>   Matthew> On Mon, Mar 24, 2003 at 11:41:18AM +0100, Adriano Galano
+>   Matthew> wrote:
+>   >> Hi all:
+> 
+>   >> I read that IA-64 support PA-RISC instruction mapping. That's
+>   >> mean that I can use Linux for PA/RISC
+>   >> (http://www.parisc-linux.org/) in a Itanium 2 computer?
+> 
+>   Matthew> No.  You certainly can't run a PA-RISC kernel on an IA64
+>   Matthew> box, just like you can't run an x86 kernel on an ia64 box.
+> 
+> Ugh, that's not strictly true.  You definitely can boot x86 linux and
+> windows 98 on Itanium.  I believe the same is true for Itanium 2 if
+> you have Intel's firmware, though I have never tried that myself.
 
-Your patch is definately the correct way to go. When I initially
-recommended that Ryan take the issue to the list I didn't realize it was
-a function descriptor issue.  
+...And perhaps you don't forget to add support for the chipset in the
+x86/hppa kernel. 
 
-Unfortunately it falls behind the following changes:
-	- Sysdep-cancel support.
-	- Building glibc without severe testsuite failures
-	- Handing Roland the ABI files for HPPA.
+Is the Intel's firmware freely distributed or it is
+internal only?
 
-After this I plan to follow up on the required function descriptor 
-changes, all along the lines of the current ia64/ppc64 implementation.
-
-Current HPPA glibc status:
-- New LinuxThreads that doesn't require explicit alignment of locks.
-- 2.3.2 builds, various failures.
-- Fixing sysdep-cancel support.
-
-I should start sending the patches back here soon.
-
-c.
+Matthieu
