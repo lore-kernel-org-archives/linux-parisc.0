@@ -1,21 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6BADA482D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Aug 2003 14:11:55 -0600 (MDT)
-Received: from [172.17.6.40] (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h7DKBrI05419;
-	Wed, 13 Aug 2003 16:11:53 -0400
-Subject: Re: [parisc-linux] xfree86 4.2.1-9 build problem
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Grant Grundler <grundler@parisc-linux.org>
+Date: Wed, 13 Aug 2003 15:32:04 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: James Bottomley <James.Bottomley@steeleye.com>
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <20030813175340.GF18794@dsl2.external.hp.com>
-References: <20030811043457.GA5653@dsl2.external.hp.com>
-	<20030813175340.GF18794@dsl2.external.hp.com>
-Content-Type: text/plain
-Date: 13 Aug 2003 15:11:42 -0500
-Message-Id: <1060805514.2011.1.camel@fuzzy>
+Subject: Re: [parisc-linux] xfree86 4.2.1-9 build problem
+Message-ID: <20030813213204.GA26014@dsl2.external.hp.com>
+References: <20030811043457.GA5653@dsl2.external.hp.com> <20030813175340.GF18794@dsl2.external.hp.com> <1060805514.2011.1.camel@fuzzy>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1060805514.2011.1.camel@fuzzy>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,18 +20,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 2003-08-13 at 12:53, Grant Grundler wrote:
-> grundler <513>xpdf -cmap dino31.pdf 
-> Error: Unresolved inheritance operation
-> grundler <514>
+On Wed, Aug 13, 2003 at 03:11:42PM -0500, James Bottomley wrote:
+> Hmm, it looks like you still have the libXt problem.  Are you sure you
+> installed the newly compiled one?
 
-Hmm, it looks like you still have the libXt problem.  Are you sure you
-installed the newly compiled one?
+I did...but you are definitely asking the right qustion.
+I didn't see:
+grundler@debian:~$ ls -l /usr/X11R6/lib/libXt.so*
+lrwxrwxrwx    1 root     root           10 Jul 10 11:13 /usr/X11R6/lib/libXt.so -> libXt.so.6
+lrwxrwxrwx    1 root     root           17 Aug 12 10:29 /usr/X11R6/lib/libXt.so.6 -> libXt.so.6.0-orig
+-rw-r--r--    1 root     root       402072 Aug 11 19:55 /usr/X11R6/lib/libXt.so.6.0
+-rw-r--r--    1 root     root       397408 Feb 25 21:57 /usr/X11R6/lib/libXt.so.6.0-orig
 
-> *sigh*.
-> Do I need to restart X11 or something?
+deleting the -orig file(s!) and fixing up the symlink(s) got xpdf
+working again.  Yeah!
+I found 6 or 7 X11/libs had been redirected to the -orig files.
 
-I didn't.  All I did was pull libXt.so.6.0 out of the gcc-3.3.1 build
-and copy it into /usr/X11R6/lib.  Then xpdf worked for me.
+Thanks for asking the right stupid question....and I'll have
+to take the blame for leaving -orig files laying around.
+Randolph observed ldconfig will fixup the links if something
+"newer" (based on filename) is available. And "man ldconfig"
+talks about how that works. *sigh*
 
-James
+Besides the /lib and /usr/lib directories (default), ldconfig
+also looks at:
+grundler <525>cat /etc/ld.so.conf 
+/usr/X11R6/lib
+grundler <526>
+
+
+if I can just figure out what's botching the colors for xchat2 now...
+
+thanks,
+grant
