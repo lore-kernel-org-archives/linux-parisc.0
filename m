@@ -1,17 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9591C4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Sep 2002 20:25:03 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE4554829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Sep 2002 20:29:24 -0600 (MDT)
+Subject: Re: [parisc-linux] Re: SCSI/MUX driver on E55, NDA for sorce code
 From: Ryan Bradetich <rbradetich@uswest.net>
 To: Christoph Plattner <christoph.plattner@gmx.at>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <3D8516EF.7A7D8206@gmx.at>
-References: <3D8516EF.7A7D8206@gmx.at>
+Cc: Matthew Wilcox <willy@debian.org>, varenet@esiee.fr,
+	"MEYER,ALAN C.   " "(HP-FtCollins,ex1)" <alan_meyer@hp.com>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <3D8519D7.55D90667@gmx.at>
+References: <3D825FDF.CD6E8CE2@gmx.at> <1031962399.930.17.camel@beavis>
+	<3D8281F4.F03A2007@gmx.at> <1031964117.1043.29.camel@beavis>
+	<3D84CD3B.88A9528B@gmx.at>
+	<20020915192500.D10583@parcelfarce.linux.theplanet.co.uk>
+	<3D8519D7.55D90667@gmx.at>
 Content-Type: text/plain
-Date: 16 Sep 2002 20:25:01 -0600
-Message-Id: <1032229501.930.45.camel@beavis>
+Date: 16 Sep 2002 20:29:22 -0600
+Message-Id: <1032229762.1043.50.camel@beavis>
 Mime-Version: 1.0
-Subject: [parisc-linux] Re: Status SPIFI SCSI
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,132 +29,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Christoph,
-
-
-On Sun, 2002-09-15 at 17:25, Christoph Plattner wrote:
-> Hallo Ryan,
+On Sun, 2002-09-15 at 17:37, Christoph Plattner wrote:
+> Thanks for that !
 > 
-> here some comments on my non-successful work so far.
+> But I think, my Linux code dose the same !!!
 > 
-> I did code reading and used debug instrumented code
-> to understand the structure behind the linux SCSI
-> handling.
+> 	info->iomem_base = (void *)(hpa + MUX_OFFSET + 
+> 				    (line * MUX_LINE_OFFSET));
 > 
-> Further I studied the NetBSD code. 
+> This info->iomem_base is used by all accesses, the 
+> registers of i/o are defined by Ryan as:
 > 
-> One major point: We do not get any interrupts.
-> For my analysis I only had a look on the first
-> steps of SCSI initialization, so this was the
-> INQUERY command.
-
-This is where I am also currently stuck :(  The
-ESIEE guys are going to hook up an analyzer to the
-box and see if the target device is getting the command
-(ie... did we send the command correctly to the device)
-or if the device returns a command (do we catch the
-command the device is returning).  I have been studyting
-the setup routines in the HP-UX driver and I believe
-I have the chip initialized properly ... but I am not
-sure why I am not getting any interrupts.   Hopefully
-between ESIEE, you, and myself and anyone else
-interested we can figure this out.
-
-
-> The spifi command routine is called correctly,
-> but it has a wrong logical implementation. As I 
-> have seen on other (older) linux driver, the
-> xxx_command() has to block, after the command was
-> successful completed by interrupt. But the interrupt
-> never comes !! Even a "long" delay for simulating
-> blocking does not solve this problem.
-
-That is highly possible.  The driver skeleton is just
-a test harness for me right now.  I am just trying to see
-what I can get returned from the spifi chip (that is why
-most of the functions are stubs with printk.  Once I see 
-an interrupt come in, I'll start working on putting that piece
-togeather.
-
-> From base of the NetBSD code, I cannot follow your
-> code resetting the spifi subsystem. I think you have
-> this from HP-UX code. Especially the 
+> #define IO_COMMAND_REG_OFFSET 0x30
+> #define IO_STATUS_REG_OFFSET 0x34
+> #define IO_DATA_REG_OFFSET 0x3c
+> #define IO_DCOUNT_REG_OFFSET 0x40
+> #define IO_UCOUNT_REG_OFFSET 0x44
+> #define IO_FIFOS_REG_OFFSET 0x48
 > 
->   __raw_writel(CMD_RESET, dev->hpa + IO_MODULE_COMMAND);
-
-Yes, this is part of the initizlization from the HP-UX
-driver.  The Loquix chip sits between the HP-PB bus, and
-the spifi scsi chip.  According to the HP-UX driver, the 
-Loquix chip also required some setup.  Once again, I
-do not actually have the Loquix documentation, but I might
-have a lead on it.  Will have to wait and see if that lead
-pans out.
-
-> Is this a reset method via the IO PDC address space
-> common for all HP devices ? In the NetBSD the full
-> reset is done only via the `auxctrl' register, which
-> you use for releasing the reset state.
-
-I am not sure about all the HP devices.  It might be an iodc
-specific call.  I will have to look at the driver again,
-but that might reset the loquix chip *shrug* I'll take
-a look and see what I can find.
-
-> So we have a principal problem here, not having correct
-> access to the spifi subsystem. Except: the SCSI-ID is
-> read out correctly, I think, as ...
->
-> SCSI subsystem driver Revision: 1.00
-> DEBUG: 0xfff74c00
-> Device: Sahp Baat Kiuh SCSI
-> scsi0 : SPIFI SCSI: scsi_id: 7 IRQ: 34 type: SPIFI-3 (SE) parity
-> checking: enabled
+> So the offset of 0x30 is inside those macros.
 > 
-> ... is reported !
-
-That is where I am also. We actually read the type SPIFI-3 (SE) for the
-SKUNK card, and SPIFI-3 (DF) for the wizard (16-bit) card.  I have
-tested this on both cards so I know it works.  I am convinced we are
-reading the correct information from the card, but what I am not
-convinced of is that we have it setup properly yet :)  The problem is I 
-do not know what I am missing yet :(
-
-> Is everything around the interrupt subsystem setup correctly ?
-> The `cat /proc/interrupts' tells ...
+> An example of an access:
 > 
-> bash# cat /proc/interrupts 
->           CPU396195552 
->  32:     124925      PARISC-CPU  timer
->  33:      19767      PARISC-CPU  lasi
->  34:          0      PARISC-CPU  spifi
->  87:      19767            Lasi  i82596
+> 		data = __raw_readl((unsigned long)info->iomem_base 
+> 				   + IO_DATA_REG_OFFSET);
 > 
-> ... which is no surprise ... !
->
-
-I do not think the fact the interrupt is registered is very infomative,
-I think you can register an interrupt for device even if it doesn't have
-an real irq assocaitated with it (ie... the serial mux).  
-
-
-Yeah, thanks for looking at it ... we will have to beat on it some more
-and see what we can find.  Hopefully the ESIEE guys will be able to
-provide us with some good information!
-
-Thanks
-
-- Ryan
-
-
-> Till soon,
-> Christoph P.
+> ... reading characters from the input buffers.
 > 
+> Any further idea ?
 > 
+> Ryan, you mentioned problems concerning missing locks, but
+> I cannot think about this. Those devices should be controlled
+> independent, am I wrong ?
+
+Locks was just an idea of why it might now work.  Nothing suggested that
+yet.  I found the MPD, now I just need to make a cable for it to hook up
+to a different system and test with.  Hopefully will get this done this
+week and I'll take a look at it :)
+
+> I hope, we will solve this all (all means including SPIFI
+> SCSI driver too !).
 > 
-> 
-> 
-> -- 
-> -------------------------------------------------------
-> private:	christoph.plattner@gmx.at
-> company:	christoph.plattner@alcatel.at
-> 
+> Christoph
