@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AB561611E
-	for <parisc-linux@parisc-linux.org>; Fri,  7 Dec 2001 12:44:20 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16CPeR-0005w5-00
-	for parisc-linux@parisc-linux.org; Fri, 07 Dec 2001 18:23:11 +0000
-Date: Fri, 7 Dec 2001 18:23:11 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011207182311.K806@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] gdb for PA in woody
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91A70482D
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Dec 2001 18:03:31 -0700 (MST)
+From: LaMont Jones <lamont@hp.com>
+To: willy@debian.org (Matthew Wilcox)
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] gdb for PA in woody
+In-Reply-To: <20011207182311.K806@parcelfarce.linux.theplanet.co.uk>
+Message-Id: <20011208010328.DFCA41872C@security.hp.com>
+Date: Fri,  7 Dec 2001 18:03:28 -0700 (MST)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,10 +20,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Debian woody is in the throes of freeze and there's no official gdb
-for hppa yet.  there are patches in our cvs to make a gdb snapshot from
-20010307 work, but afaik nothing's been merged upstream.  any volunteers?
-this is really important.
+In article <20011207182311.K806@parcelfarce.linux.theplanet.co.uk> you wrote:
 
--- 
-Revolutions do not require corporate support.
+> Debian woody is in the throes of freeze and there's no official gdb
+> for hppa yet.  there are patches in our cvs to make a gdb snapshot from
+> 20010307 work, but afaik nothing's been merged upstream.  any volunteers?
+> this is really important.
+
+I'll probably start playing with this late this weekend (after some postfix
+work that I promised someone I'd finish), if noone else beats me to it.
+
+lamont
