@@ -1,63 +1,71 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5F4A24841
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 14:36:04 -0600 (MDT)
-Received: from www2.scram.de (www2.scram.de [195.226.127.84])
-	by mail.scram.de (8.11.0/8.11.0) with ESMTP id f8QKa2i17009
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 22:36:02 +0200 (CEST)
-Date: Wed, 26 Sep 2001 22:34:31 +0200 (CEST)
-From: Jochen Friedrich <jochen@scram.de>
-To: Jurij Smakov <jurij@lokmail.net>
-Subject: Re: [parisc-linux] The 720/50 saga continues... 
-In-Reply-To: <200109261721.NAA01262@mail.lokmail.net>
-Message-ID: <Pine.NEB.4.33.0109262154470.16939-100000@www2.scram.de>
+Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 71A1848AA
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 02:32:08 -0600 (MDT)
+Received: from mail.lokmail.net (localhost [127.0.0.1])
+	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id EAA09640
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 1 Oct 2001 04:31:52 -0400
+Message-Id: <200110010831.EAA09640@mail.lokmail.net>
+From: Jurij Smakov <jurij@lokmail.net>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Cumulative patch for 720 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-ReSent-Message-ID: <Pine.NEB.4.33.0109262235580.16939@www2.scram.de>
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 01 Oct 2001 04:31:52 -0400
+Sender: jurij@mail.lokmail.net
+List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Jurij,
+> I've fiddled with your patch some more and I'm still having problems
+> applying it to 2.4.9-pa27:
+> 
+> patching file linux/arch/parisc/kernel/traps.c
+> Hunk #1 succeeded at 46 with fuzz 2.
+> Hunk #2 FAILED at 277.
+> Hunk #3 FAILED at 331.
+> Hunk #4 FAILED at 375.
+> Hunk #5 FAILED at 445.
+> 4 out of 5 hunks FAILED -- saving rejects to file linux/arch/parisc/kernel/traps.c.rej
+> 
+> Could you perhaps put it on HTTP somewhere?
+> 
+> Regards,
+> 
+> Albert
 
-> down_read(&mm->mmap_sem);
-> vma = find_vma_prev(mm, address, &prev_vma);
->
+Hi Albert and others!
 
-I was roughly thinking about something like this (completely untested!!!):
+I've just tested and it applies cleanly to the latest CVS source
+(dated September 30th). Anyway, I found out, that I forgot to
+change mm/fault.c in the original patch, so maybe it's good,
+that You didn't apply it :-). The new version is at
 
-case 18:
-if (in_interrupt() || !mm)
-        goto pagefault; /* shouldn't happen */
+http://www.theophys.kth.se/~jurijus/patches/720.patch
 
-/* FIXME: do propper locking here */
+If someone applied the old version and could not get the kernel to 
+compile (it complains about parisc_acctyp) just change 
 
-pgd = pgd_offset(mm, address);        /* page directory */
-if (pgd_none(pgd) || pgd_bad(pgd))
-        goto pagefault; /* expandable stack etc */
+static unsigned long
+parisc_acctyp(unsigned long code, unsigned int inst)
 
-pmd = pmd_offset(pgd, address);       /* middle page directory */
-if (pmd_none(pmd) || pmd_bad((pmd))
-        goto pagefault; /* expandable stack etc */
+to 
 
-pte = pte_offset(pmd, address);       /* page table entry */
-if (pte_none(pte))
-        goto pagefault; /* expandable stack etc */
+unsigned long
+parisc_acctyp(unsigned long code, unsigned int inst)
 
-if (!pte_present(pte))  /* is this test sufficient? */
-        goto pagefault; /* page not loaded */
+in
 
-acc_type = parisc_acctyp(code,regs->iir);
+arch/parisc/mm/fault.c
 
-if ((acc_type & VM_WRITE) && (!(pte_write(pte))))
-	goto pagefault; /* Write protected access */
+New version takes care of this automatically.
 
-if ((acc_type & VM_READ) && (!(pte_read(pte))))
-	goto pagefault; /* Read protected access */
+Best regards,
 
-if ((acc_type & VM_EXEC) && (!(pte_exec(pte))))
-	goto pagefault; /* Exec protected access */
+Jurij
 
-/* fall through to case 28 */
 
-Does this make sense?
 
-Cheers,
-Jochen
+
+
+---------------------------------------------------------
+Get Free Private Encrypted Email https://mail.lokmail.net
+        Switch to Name.Space: http://namespace.org/switch
