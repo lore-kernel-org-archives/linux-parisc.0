@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B48D482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 09:49:53 -0700 (MST)
-Message-Id: <200111161644.JAA26017@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: "David S. Miller" <davem@redhat.com>, linux-mm@kvack.org,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: parisc scatterlist doesn't want page/offset 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Fri, 16 Nov 2001 15:43:50 GMT." <20011116154350.L25491@parcelfarce.linux.theplanet.co.uk>
-Date: Fri, 16 Nov 2001 09:44:57 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE36D482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 09:55:30 -0700 (MST)
+Message-ID: <3BF544F6.1010400@moyroud.net>
+Date: Fri, 16 Nov 2001 17:55:18 +0100
+From: Clement Moyroud <clement@moyroud.net>
+MIME-Version: 1.0
+To: xfs@linux.se
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] CD to download?
+References: <Pine.LNX.4.33.0111161324250.26804-100000@oden.valhall>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
-> grant suggested adding support for it had performance implications,
+xfs@linux.se wrote:
 
-Jens is right to some degree - I'm counting cycles in that code
-path since every driver depends on it for every IO request.
-Until page/offset completely replaces address, I see a net increase
-in cycles for parisc (probably most archs) with only a tangible benefit
-for i386. Seems like the burden should be on the i386 folks to not
-impact other arches.
+> Hello!!
+> 
+> I just got a cdrom to my HpPa 712/60  =).
+> For the moment it runs HP/UX (did'nt get linux to boot over network, dont
+> know what I did wrong, probably something on my boot-server.
+> WellWell...
+> 
+> I wonder: Is there any url for some install-cd's to download and burn for
+> Pa-risc-Linux for HpPa712/60?
+> 
+> Dont know if it will work ether, becouse my (burned) Hp/UX 10.20-cd will
+> not boot... I hope it is wrong on that CD and not something with the
+> cdromdrive.
+> 
 
-My main gripe is adding this to 2.4 seems like the wrong time/place.
-I'm happy to revisit this in 2.5.
+You can download the latest 0.9.2 iso either from the PA-RISC Linux 
+Official Website (http://www.parisc-linux.org/release-0.9/index.html) or 
+from the ESIEE Team website (http://mkhppa1.esiee.fr/download.html). The 
+second url is preferred, it will give us better site stats :)
 
-grant
-
-ps. I still have to go hunt down the discussion jens was referring to.
-  Maybe if I understood the direction better, I'd be more receptive.
+Clement
+PA/Linux ESIEE Team
