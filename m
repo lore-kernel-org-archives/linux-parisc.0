@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server.da-kot (21-40.CampusNet.ucl.ac.be [130.104.21.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 293E4482A
-	for <parisc-linux@parisc-linux.org>; Thu, 13 Feb 2003 11:48:45 -0700 (MST)
-Received: from guy.da-kot ([192.168.0.7] helo=there)
-	by server.da-kot with smtp (Exim 3.36 #1 (Debian))
-	id 18jOPY-0002hW-00
-	for <parisc-linux@parisc-linux.org>; Thu, 13 Feb 2003 19:48:40 +0100
-From: Martin Guy <gmsoft@gentoo.org>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A37BB482A
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Feb 2003 02:57:17 -0700 (MST)
+Date: Fri, 14 Feb 2003 10:57:15 +0100
+Message-ID: <3E484410000014A0@ocpmta7.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 To: parisc-linux@parisc-linux.org
-Date: Thu, 13 Feb 2003 19:48:30 +0100
+Cc: "Bad Max" <badmax@club-internet.fr>,
+	"Randolph Chung" <tausq@debian.org>,
+	"John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	"Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_U8G9GYF5TW3RAW06HH3P"
-Message-Id: <E18jOPY-0002hW-00@server.da-kot>
-Subject: [parisc-linux] Xfree 4.2.1 not running
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] glibc mallopt() pb with squid [was: Squid freeze]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,87 +24,208 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---------------Boundary-00=_U8G9GYF5TW3RAW06HH3P
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Hi all,
 
-Hi.
+I come back to you with squid problem and glibc-2.3.
 
-I've tryed to compil Xfree v4.2.1 on my B180L.
-The compilation works fine but I have a problem while trying to start X.
-I guess I've ommited a CFLAGS or something else but I'm unable to solve the 
-problem.
-Gcc version is 3.2.1.
+For recall, "Bax Max" asks help concerning squid hanging.
 
+As in first reading, the Max's problem sounds similar to the one I encountered
+before it works on my hppa testing (sarge) Debian, I suggest him to verify
+some details (specially ulimits).
+Well, it did not help.
 
-The log is in attachement.
+Curious, I so installed squid testing dpkg on an unstable Debian  and effectively
+it hang (very earlier because even simply query version do not work)?
 
-Regards, 
+Then I grab sources and try first to recompile the package with gcc-3.2 and
+glibc-2.3.1-11 without optimisation (in mind the problem encountered in kernel
+build): didn't help.
 
-	Guy Martin
+I ran so ddd to have a rough idea of the locking point; it appeared that
+squid hangs at the first mallopt() in the following code:
+[snip]
+int
+main(int argc, char **argv)
+{
+    int errcount = 0;
+    int n;			/* # of GC'd objects */
+    time_t loop_delay;
+    mode_t oldmask;
+#if defined(_SQUID_MSWIN_) || defined(_SQUID_CYGWIN_)
+    int WIN32_init_err;
+#endif
 
+    debug_log = stderr;
+    if (FD_SETSIZE < Squid_MaxFD)
+	Squid_MaxFD = FD_SETSIZE;
 
+#if defined(_SQUID_MSWIN_) || defined(_SQUID_CYGWIN_)
+    if ((WIN32_init_err = WIN32_Subsystem_Init()))
+	return WIN32_init_err;
+#endif
 
---------------Boundary-00=_U8G9GYF5TW3RAW06HH3P
-Content-Type: text/plain;
-  charset="iso-8859-1";
-  name="XFree86.0.log"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="XFree86.0.log"
+    /* call mallopt() before anything else */
+#ifdef HAVE_MALLOPT
+#ifdef M_GRAIN
+    /* Round up all sizes to a multiple of this */
+    mallopt(M_GRAIN, 16);   <!<!<!<!<!<!<!<!<!<!<!<!< hanging here?
+#endif
+#ifdef M_MXFAST
+    /* biggest size that is considered a small block */
+    mallopt(M_MXFAST, 256);
+#endif
+#ifdef M_NBLKS
+    /* allocate this many small blocks at once */
+    mallopt(M_NLBLKS, 32);
+#endif
+#endif /* HAVE_MALLOPT */
 
-ClhGcmVlODYgVmVyc2lvbiA0LjIuMSAvIFggV2luZG93IFN5c3RlbQoocHJvdG9jb2wgVmVyc2lv
-biAxMSwgcmV2aXNpb24gMCwgdmVuZG9yIHJlbGVhc2UgNjYwMCkKUmVsZWFzZSBEYXRlOiAzIFNl
-cHRlbWJlciAyMDAyCglJZiB0aGUgc2VydmVyIGlzIG9sZGVyIHRoYW4gNi0xMiBtb250aHMsIG9y
-IGlmIHlvdXIgY2FyZCBpcwoJbmV3ZXIgdGhhbiB0aGUgYWJvdmUgZGF0ZSwgbG9vayBmb3IgYSBu
-ZXdlciB2ZXJzaW9uIGJlZm9yZQoJcmVwb3J0aW5nIHByb2JsZW1zLiAgKFNlZSBodHRwOi8vd3d3
-LlhGcmVlODYuT3JnLykKQnVpbGQgT3BlcmF0aW5nIFN5c3RlbTogTGludXggMi40LjIwLXBhMjYg
-cGFyaXNjIFtFTEZdIApNb2R1bGUgTG9hZGVyIHByZXNlbnQKTWFya2VyczogKC0tKSBwcm9iZWQs
-ICgqKikgZnJvbSBjb25maWcgZmlsZSwgKD09KSBkZWZhdWx0IHNldHRpbmcsCiAgICAgICAgICgr
-KykgZnJvbSBjb21tYW5kIGxpbmUsICghISkgbm90aWNlLCAoSUkpIGluZm9ybWF0aW9uYWwsCiAg
-ICAgICAgIChXVykgd2FybmluZywgKEVFKSBlcnJvciwgKE5JKSBub3QgaW1wbGVtZW50ZWQsICg/
-PykgdW5rbm93bi4KKD09KSBMb2cgZmlsZTogIi92YXIvbG9nL1hGcmVlODYuMC5sb2ciLCBUaW1l
-OiBUaHUgRmViIDEzIDE3OjA5OjA4IDIwMDMKKC0tKSB1c2luZyBWVCBudW1iZXIgNwoKKFdXKSBP
-cGVuIEFQTSBmYWlsZWQgKC9kZXYvYXBtX2Jpb3MpIChObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5
-KQooSUkpIE1vZHVsZSBBQkkgdmVyc2lvbnM6CglYRnJlZTg2IEFOU0kgQyBFbXVsYXRpb246IDAu
-MQoJWEZyZWU4NiBWaWRlbyBEcml2ZXI6IDAuNQoJWEZyZWU4NiBYSW5wdXQgZHJpdmVyIDogMC4z
-CglYRnJlZTg2IFNlcnZlciBFeHRlbnNpb24gOiAwLjEKCVhGcmVlODYgRm9udCBSZW5kZXJlciA6
-IDAuMwooSUkpIExvYWRlciBydW5uaW5nIG9uIGxpbnV4CihJSSkgTG9hZE1vZHVsZTogImJpdG1h
-cCIKKElJKSBMb2FkaW5nIC91c3IvWDExUjYvbGliL21vZHVsZXMvZm9udHMvbGliYml0bWFwLmEK
-Tm90IGxvYWRpbmcgLnJlbGEudGV4dApOb3QgbG9hZGluZyAucmVsYS5yb2RhdGEKTm90IGxvYWRp
-bmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9h
-ZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLmRhdGEKTm90IGxvYWRpbmcgLlBBUklT
-Qy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVs
-YS50ZXh0Ck5vdCBsb2FkaW5nIC5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLlBBUklT
-Qy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEudGV4dApOb3QgbG9hZGluZyAuUEFSSVNDLnVud2lu
-ZApOb3QgbG9hZGluZyAucmVsYS5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLnRleHQK
-Tm90IGxvYWRpbmcgLnJlbGEuZGF0YQpOb3QgbG9hZGluZyAucmVsYS5yb2RhdGEKTm90IGxvYWRp
-bmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9h
-ZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLmRhdGEKTm90IGxvYWRpbmcgLlBBUklT
-Qy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVs
-YS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLnJvZGF0YQpOb3QgbG9hZGluZyAuUEFSSVNDLnVud2lu
-ZApOb3QgbG9hZGluZyAucmVsYS5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLnRleHQK
-Tm90IGxvYWRpbmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2lu
-ZApOb3QgbG9hZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLnJvZGF0YQpOb3QgbG9h
-ZGluZyAuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVsYS5QQVJJU0MudW53aW5kCk5vdCBs
-b2FkaW5nIC5yZWxhLnRleHQKTm90IGxvYWRpbmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcg
-LnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5y
-ZWxhLmRhdGEKTm90IGxvYWRpbmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFS
-SVNDLnVud2luZAooRUUpIExvYWRNb2R1bGU6IE1vZHVsZSBiaXRtYXAgZG9lcyBub3Qgc3VwcGx5
-IHZlcnNpb24gaW5mb3JtYXRpb24KKElJKSBVbmxvYWRNb2R1bGU6ICJiaXRtYXAiCihJSSkgVW5s
-b2FkaW5nIC91c3IvWDExUjYvbGliL21vZHVsZXMvZm9udHMvbGliYml0bWFwLmEKKEVFKSBGYWls
-ZWQgdG8gbG9hZCBtb2R1bGUgImJpdG1hcCIgKGludmFsaWQgbW9kdWxlLCAwKQooSUkpIExvYWRN
-b2R1bGU6ICJwY2lkYXRhIgooSUkpIExvYWRpbmcgL3Vzci9YMTFSNi9saWIvbW9kdWxlcy9saWJw
-Y2lkYXRhLmEKTm90IGxvYWRpbmcgLnJlbGEudGV4dApOb3QgbG9hZGluZyAucmVsYS5kYXRhCk5v
-dCBsb2FkaW5nIC5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLlBBUklTQy51bndpbmQK
-KEVFKSBMb2FkTW9kdWxlOiBNb2R1bGUgcGNpZGF0YSBkb2VzIG5vdCBzdXBwbHkgdmVyc2lvbiBp
-bmZvcm1hdGlvbgooSUkpIFVubG9hZE1vZHVsZTogInBjaWRhdGEiCihJSSkgVW5sb2FkaW5nIC91
-c3IvWDExUjYvbGliL21vZHVsZXMvbGlicGNpZGF0YS5hCihFRSkgRmFpbGVkIHRvIGxvYWQgbW9k
-dWxlICJwY2lkYXRhIiAoaW52YWxpZCBtb2R1bGUsIDApCgpGYXRhbCBzZXJ2ZXIgZXJyb3I6ClVu
-YWJsZSB0byBsb2FkIHJlcXVpcmVkIGJhc2UgbW9kdWxlcywgRXhpdGluZy4uLgoKCldoZW4gcmVw
-b3J0aW5nIGEgcHJvYmxlbSByZWxhdGVkIHRvIGEgc2VydmVyIGNyYXNoLCBwbGVhc2Ugc2VuZAp0
-aGUgZnVsbCBzZXJ2ZXIgb3V0cHV0LCBub3QganVzdCB0aGUgbGFzdCBtZXNzYWdlcy4KVGhpcyBj
-YW4gYmUgZm91bmQgaW4gdGhlIGxvZyBmaWxlICIvdmFyL2xvZy9YRnJlZTg2LjAubG9nIi4KUGxl
-YXNlIHJlcG9ydCBwcm9ibGVtcyB0byB4ZnJlZTg2QHhmcmVlODYub3JnLgoK
+To be sure, I just added some fprintf() [as in below testcase] and it confirmed
+that it hangs well at this point.
 
---------------Boundary-00=_U8G9GYF5TW3RAW06HH3P--
+On its side, Max nuke this part (not actually required) then squid works
+fine.
+
+In the hoppe to help more, I so build the following test case:
+/*
+ * $Id: main.c,v 1.345.2.4 2002/07/14 17:20:49 hno Exp $
+ *
+ * DEBUG: section 1     Startup and Main Loop
+ * AUTHOR: Harvest Derived
+ *
+ * SQUID Web Proxy Cache          http://www.squid-cache.org/
+ * ----------------------------------------------------------
+ *
+ *  Squid is the result of efforts by numerous individuals from
+ *  the Internet community; see the CONTRIBUTORS file for full
+ *  details.   Many organizations have provided support for Squid's
+ *  development; see the SPONSORS file for full details.  Squid is
+ *  Copyrighted (C) 2001 by the Regents of the University of
+ *  California; see the COPYRIGHT file for full details.  Squid
+ *  incorporates software developed and/or copyrighted by other
+ *  sources; see the CREDITS file for full details.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111, USA.
+ *
+ */
+
+/*
+#include "squid.h"
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+
+/* getpid(), geteuid()  */
+#include <sys/types.h>
+#include <unistd.h>
+
+/* setgroups() */
+#include <grp.h>
+
+/* mkdir() */
+#include <sys/stat.h>
+#define MAXPATHLEN 256
+
+/* waitpid() */
+#include <sys/wait.h>
+
+/* mallopt() */
+#include <malloc.h>
+
+#define SQUID_MAXFD 4096
+
+/* autoconf.h */
+/* Define if you have the mallopt function.  */
+#define HAVE_MALLOPT 1
+
+/* dlmalloc.c */
+#define M_GRAIN   3    /* UNUSED in this malloc */
+#define M_MXFAST  1    /* UNUSED in this malloc */
+
+int Squid_MaxFD;		/* SQUID_MAXFD */
+
+FILE *debug_log = NULL;
+
+int
+main(int argc, char **argv)
+{
+    int errcount = 0;
+
+    debug_log = stderr;
+    if (FD_SETSIZE < Squid_MaxFD)
+	Squid_MaxFD = FD_SETSIZE;
+
+    fprintf(stderr, "nb_err: %d\n", errcount);
+    /* call mallopt() before anything else */
+
+#ifdef HAVE_MALLOPT
+    fprintf(stderr, "  HAVE_MALLOPT \n");
+#ifdef M_GRAIN
+    /* Round up all sizes to a multiple of this */
+    fprintf(stderr, " M_GRAIN set: %d\n", M_GRAIN);
+    mallopt(M_GRAIN, 16);
+#endif
+#ifdef M_MXFAST
+    /* biggest size that is considered a small block */
+    fprintf(stderr, " M_MXFAST set: %d\n", M_MXFAST);
+    mallopt(M_MXFAST, 256);
+#endif
+#ifdef M_NBLKS
+    /* allocate this many small blocks at once */
+    fprintf(stderr, " M_NBLKS set: %d\n", M_NBLKS);
+    mallopt(M_NLBLKS, 32);
+#endif
+#endif /* HAVE_MALLOPT */
+
+    return 0;
+}
+
+which I compile as near as possible as the original code:
+gcc -DHAVE_CONFIG_H -DDEFAULT_CONFIG_FILE=\"/etc/squid.conf\" -I. -I. -I../include
+-I. -I. -I../include -I../include    -g -Wall -D_REENTRANT -c foo.c
+gcc -g -Wall -D_REENTRANT  -g -o tst foo.o 
+
+Unforunately, tst run fine.
+
+I finally check the precompile text of the original main.c sources in which
+I just encountered:
+ 1) # 187 "/usr/include/malloc.h" 3
+    extern int mallopt (int __param, int __val)
+
+ 2) [snip]
+     mallopt(3.16);
+     mallopt(1,256);
+    ...
+
+Why so squid hang on this mallopt() and not tst?
+
+Is some gcc, libc gurus (Carlos, Dave, Randolph?) could help us more to understand
+this pb (squid bug or gcc - glibc bug?)
+
+Thanks in advance,
+	Joel
+
+PS: I try to find more details in the pre-assemble (-S) test of the original
+sources but I not yet able to read this kind of stuff and understand what
+is done, sorry?
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Faites des economies avec Tiscali Complete
+... Plus d'info sur http://complete.tiscali.be
