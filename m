@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 785504829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 03:52:09 -0700 (MST)
-Date: Fri, 10 Jan 2003 11:51:41 +0100
-Message-ID: <3E1AA8D500000902@ocpmta8.freegates.net>
-In-Reply-To: <20030110073659.GC31470@tausq.org>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] unaligned accesses
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D302A4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 10:05:49 -0700 (MST)
+Date: Fri, 10 Jan 2003 09:09:05 -0800
+From: Randolph Chung <tausq@debian.org>
+To: jsoe0708@tiscali.be
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] new gcc-default for hppa
+Message-ID: <20030110170905.GG26261@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <3E1AA8D500000A9A@ocpmta8.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3E1AA8D500000A9A@ocpmta8.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,55 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->Date: Thu, 9 Jan 2003 23:36:59 -0800
->From: Randolph Chung <randolph@tausq.org>
->To: jsoe0708@tiscali.be
->Cc: parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] unaligned accesses
->Reply-To: Randolph Chung <randolph@tausq.org>
->
->
-...
->
->> hmmm buggy: not always, the triky case is when you have to access to
-those
->> kind of data encapsulated into a structure. I do not yet find any work=
-around
->> or how to fix this kind of pb. Any idea (gcc-3.3?)?
->
->eh? what do you mean? 
+> I do notice that unstable debian for i386 switch (or will very soon) gcc-default
+> to gcc-3.2. Is it also true for hppa? (am I anxious about compiling new
+> kernel with this because of pb encounter with network connection)
 
-Sorry, I met well a problem of unaligne access problem with fsck.jfs (wit=
-h
-kernel 2.4.19-pa24+jfs 1.0.23 support):
-...
-fsck.jfs(6995): unaligned access to 0xfaf00757 at ip=3D0x0002ee1b
-fsck.jfs(6995): unaligned access to 0xfaf00757 at ip=3D0x0002ee37
-fsck.jfs(6995): unaligned access to 0xfaf00757 at ip=3D0x0002ed3f
-...
+yes:
 
-which occurs in fsckmsgs.c for ip=3D0x0002ee1b (for exapmple) at:
+tausq@auric:~$ madison gcc|grep unstable
+       gcc |    2:3.1-1 |      unstable | hurd-i386
+       gcc |  3:3.2.2-0 |      unstable | alpha, arm, hppa, i386, ia64, m68k, mips, mipsel, powerpc, s390, sparc
 
-        strncpy(prlimit, msgprms[prmidx], prmval[prmidx]);
-with 
-...
-extern char *msgprms[];
-...
-   int prmidx;
-...    
-   int16_t *prmval;
-
-So it is not related with the struct problem I encounter.
-
-I will try to find back this example.
-
-Joel
-
-PS:  with ext3 (which I use) problem I hesitate to install 2.4.20 and wai=
-ting
-for 2.4.21 and evms, jfs, xfs support for this system)
-
-********************************************
-Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
-://adsl.tiscali.be
+randolph
