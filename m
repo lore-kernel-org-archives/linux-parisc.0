@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B9994897
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 07:49:36 -0600 (MDT)
-Date: Tue, 16 Jul 2002 09:48:00 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id 823A248AC
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 07:53:38 -0600 (MDT)
+Date: Tue, 16 Jul 2002 09:51:58 -0400
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: joel.soete@freebel.net
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] parisc -linux: Cluster tools availability?
-Message-ID: <20020716134800.GB32471@systemhalted>
-References: <1026824527.3d34194f9be6d@webmail.tiscalinet.be>
+To: T?rcio Rodrigues Bezerra <tarcio@cefet-al.br>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PA 9000 D-Class
+Message-ID: <20020716135158.GC32471@systemhalted>
+References: <20020716124902.16005.43182.Mailman@dsl2.external.hp.com> <1026825600.3d341d80904ad@webmail.cefet-al.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1026824527.3d34194f9be6d@webmail.tiscalinet.be>
+In-Reply-To: <1026825600.3d341d80904ad@webmail.cefet-al.br>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Hi all,
-> I running a b180 with md and I could recover a second b180.
-> It would be nice to build a cluster 'a la MC/SG'.
-> I found well openmosix but only i386 afaik (and there is too much asm code for
-> me to tempt a portage).
-> There is also beowulf but the only HOWTO I found concern kernel 2.0 ? (more over
-> my network connection are limited (10Mb) and it does not seems to cover my
-> whishes (HA cluster)).
-> 
-> Any other advise?
-> Thanks a lot,
->     Joel
->
+> Hi,
+> Is my hardware (hppa 9000 D-class)supported by Debian Linux for parisc? I 
+> visited the site and I have doubt if it does (i found 9000/720 and 9000/735 
+> support).
+> Thanks in advance.
+> -- 
+> T?rcio R. Bezerra
+> Gerente de Tecnologia da Informa??o
+> Centro Federal de Educa??o Tecnol?gica de Alagoas
 
-Linux Virtual Server Project?
-http://www.linuxvirtualserver.org/
+You can check out the current hardware database:
+http://hwdb.parisc-linux.org/
 
-You definately don't want MOSIX for HA. If the system that spawned
-the process dies, then so does the process. The MOSIX stubs just
-marshall data, and in most cases for simple things call directly
-to the kernel that the process has migrated towards.
+In particular:
+http://hwdb.parisc-linux.org/view.php3?type=machine&name=720
 
-I would really like to see a port of bproc to parisc :)
-(I figure on ~100 lines of assembly to get process state information).
-I spoke to Donald Becker at OLS about this, and it's on my todo
-list... might get done in September.
+It looks happily supported :)
 
 c.
