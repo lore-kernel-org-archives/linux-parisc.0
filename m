@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 3 Apr 2003 14:55:15 -0700
-To: "Beerse, Corn?" <c.beerse@torex-hiscom.nl>
-Cc: 'Joel Soete' <jsoe0708@tiscali.be>,
-	Derek Ellis <Derek.Ellis@us.fortis.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] soft power and power light on 712/60
-Message-ID: <20030403215515.GA20457@dsl2.external.hp.com>
-References: <03Apr2.105446cest.119062@ns.hiscom.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <03Apr2.105446cest.119062@ns.hiscom.nl>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AAA784829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 15:19:37 -0700 (MST)
+Message-Id: <200304032219.h33MJY6B020051@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Applications in 64 bits userspace
+To: willy@debian.org (Matthew Wilcox)
+Date: Thu, 3 Apr 2003 17:19:33 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: rodrigo@tteng.com.br, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030403184513.GH29376@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Apr 3, 2003 07:45:13 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +22,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Apr 02, 2003 at 10:35:56AM +0200, "Beerse, Corn?" wrote:
-> The only reason I can imagine it should not work is addressing the
-> boot-image from the boot-prom.
-> 
-> Or else, it should not be called scsi...
+> As to which kernel to base it on; most of the work is kernel-independent.
+> It's all about making the toolchain work properly.  There's a certain
+> amount of work to do in the kernel, but there's some design work to do
+> up-front first.  It shouldn't be hard to do it to either kernel and then
+> port to the other.
 
-You are mixing up marketing, implementation, and "supported".
-HP decided the older box wasn't worth supporting.
-I'l hazard a guess the "upgrade" would not generate enough revenue
-to offset the additional qualification/inventory/support burden.
+With respect to the toolchain, you should be aware that there are
+two different GNU linkers.  The 64-bit linker was designed for HP-UX
+operation and was written more or less from scratch.  The 32-bit
+linker was ported I believe from the i386 port and is better
+suited to linux use.  It has had more testing.  If the 32-bit linker
+is ported to 64 bits, you will have to deal with the different
+handling of function descriptors (OPDs).  This is also an issue
+for the parisc specific code in glibc used for the dynamic loader.
+Code to handle various 64-bit relocations would need to be added
+to the 32-bit linker.  Management of stub groups might also be an
+issue although the 32-bit linker currently does a better job of this.
 
-And SCSI implementations are not always compatible because they
-don't implement all the same features. Delayed spinup and
-Target-Initiated Syncronous Negotiation are two SCSI disk features
-that early host controller firmware typically have trouble with.
+The current 64-bit linker is broken in a number of ways.  These
+problems might get fixed in the coming months but it would be nice 
+if we could dispense with having two different linkers.  If
+the current 64-bit linker is used for linux, then the problems
+with link-once sections, symbol overloading, symbol visibility,
+PHDRs, static links, etc., will need fixing.  Fixing these problems
+could be 2-3 months work, or more, for someone who knows their way
+around the linker.
 
-grant
+What you need to do is to look at the parisc specific code in the
+kernel, binutils and glibc.  Carlos O'Donell <carlos@baldric.uwo.ca>
+did some hacking a few months ago to try to get a simple static linked
+application to run in 64-bit mode.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
