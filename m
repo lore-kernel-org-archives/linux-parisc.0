@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc3-hem11-4-cust111.brnt.cable.ntl.com [213.107.179.111])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C59CA4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Apr 2003 10:56:18 -0600 (MDT)
-Date: Mon, 7 Apr 2003 17:44:21 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Still having raid issues
-Message-ID: <20030407164421.GI8473@sleepie.demon.co.uk>
-References: <20030407144351.44780.qmail@web12504.mail.yahoo.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7CD4A4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Apr 2003 10:58:24 -0600 (MDT)
+Date: Mon, 7 Apr 2003 09:54:41 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: bruno_vidal@hp.com
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] New dump driver patche.
+Message-ID: <20030407165441.GB12993@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <3E91A30E.5750D22D@hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030407144351.44780.qmail@web12504.mail.yahoo.com>
+In-Reply-To: <3E91A30E.5750D22D@hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +24,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Apr 07, 2003 at 07:43:51AM -0700, Derek Engelhaupt wrote:
-> Ok, still having the same Raid creation issues from last week.  The
-> only thing I can thing of is that my Make of the new CVS palo is
-> screwy.  First time outside of class that I've actually had to install
-> something from source so I included my make below.  What bothers me is
-> the error that it can't stat iplboot.  I'm assuming that the iplboot
+> For who  want it, I've prepared a new patch for the dump driver.
+> What's new:
+> -can dump only used pages.
+> -fully support multi volume dump.
+> -can create dump in format image for use with p4 tools.
+> 
+> Bug correction:
+> -missed pages when writing dump header.
+> 
+> I would be happy to send to everyone who want it.
 
-iplboot is only built if you compile on parisc, iirc.  The debian source
-debian/pool/main/p/palo/palo_1.2.tar.gz contains iplboot, and there are
-i386 palo debs for 1.2 in the archive too, if that's what you want.
+is this against 2.4.20 or 2.5? can we post it on ftp.parisc-linux.org?
 
-Richard
+i'm very interested in this :)
+
+thanks
+randolph
