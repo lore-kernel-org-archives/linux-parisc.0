@@ -1,56 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 32820482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 11:15:03 -0600 (MDT)
-To: tsbogend@alpha.franken.de,
-	Thomas Bogendoerfer <tsbogend@elvis.franken.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id E5A77482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 12:12:16 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: joel.soete@freebel.net
 Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-Message-ID: <1003166094.3bcb198edae10@webmail.tiscalinet.be>
-Date: Mon, 15 Oct 2001 19:14:54 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: Richard Hirst <rhirst@linuxcare.com>, joel.soete@freebel.net,
-	parisc-linux@lists.parisc-linux.org
-References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015164903.X11105@linuxcare.com> <20011015180923.A14160@elvis.franken.de>
-In-Reply-To: <20011015180923.A14160@elvis.franken.de>
+Date: Mon, 15 Oct 2001 20:11:12 +0200
+Cc: parisc-linux@lists.parisc-linux.org
+References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015180923.A14160@elvis.franken.de> <1003166094.3bcb198edae10@webmail.tiscalinet.be>
+In-Reply-To: <1003166094.3bcb198edae10@webmail.tiscalinet.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Message-Id: <20011015181216.E5A77482A@dsl2.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Thomas,
+On Monday 15 October 2001 19:14, joel.soete@freebel.net wrote:
+> Sorry for NEWBIES (as I am in term of X configuration) what means bpp?
 
-Quoting Thomas Bogendoerfer <tsbogend@elvis.franken.de>:
+bpp = bits per pixel. 
+You should enter "8" here, which defaults to 2^8 = 256 colors.
 
-> On Mon, Oct 15, 2001 at 04:49:03PM +0100, Richard Hirst wrote:
-> > > (EE) No OS PCI support available
-> > 
-> > Do you have PCI support enabled in your kernel?
-> 
-> shouldn't matter. I bet the framebuffer runs in a different resolution
-> than
-> it's configured in XF86Config. Since the current stifb doesn't support
-> mode switching, I've made the check very strict to not allow it. So
-> the boot time resolution and bpp must match that from XF86Config.
-> 
-> Thomas.
-> 
-Sorry for NEWBIES (as I am in term of X configuration) what means bpp?
+> Well I found what I have to change in my config file to make xdm works.
+> Just a problem:
+> After the xdm start everything seems to works fine (right colors, mouse
+> working,...). Then I login: ok the pointer still work, I can work in the
+> default xterm,...
+> But when I exit mouse does not move any more and I had to restart xdm.
+>
+> (Um.., on my B180 I thing have to update Xfree 4.0 to 4.1 the mouse does
+> not work at all but gpm well)
 
-Well I found what I have to change in my config file to make xdm works.
-Just a problem:
-After the xdm start everything seems to works fine (right colors, mouse 
-working,...). Then I login: ok the pointer still work, I can work in the default 
-xterm,...
-But when I exit mouse does not move any more and I had to restart xdm.
+I assume you have a PS/2 mouse.
+If so, disable gpm before starting xdm ("/etc/init.d/gpm stop").
 
-(Um.., on my B180 I thing have to update Xfree 4.0 to 4.1 the mouse does not 
-work at all but gpm well)
-
-Any idea?
-
-Thanks for all great job and in advance for additional help,
-        Joel
-
-
-
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+Greetings,
+Helge
