@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail2.scram.de (mail2.scram.de [195.226.127.112])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5C0204829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 Jan 2003 12:12:11 -0700 (MST)
-Date: Thu, 23 Jan 2003 20:11:50 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] floppy images
-In-Reply-To: <20030123172718.GB22325@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0301232009350.28006-100000@gfrw1044.bocc.de>
+Received: from smtp.web.de (smtp01.web.de [217.72.192.180])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A9E5F482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 Jan 2003 14:19:06 -0700 (MST)
+Received: from c-180-204-126.n.dial.de.ignite.net ([62.180.204.126] helo=web.de)
+	by smtp.web.de with asmtp (WEB.DE(Exim) 4.93 #1)
+	id 18bokb-0007UC-00
+	for parisc-linux@lists.parisc-linux.org; Thu, 23 Jan 2003 22:19:05 +0100
+Message-ID: <3E305C44.11F38160@web.de>
+Date: Thu, 23 Jan 2003 22:19:00 +0100
+From: "b.gunreben" <b.gunreben@web.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] kernel update bug?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,26 +24,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+Hi,
 
-> I don't know about 720 - glad someone else said it did.
+I recently got a C360 to play around with it. After installing an old beta
+of woody (thats the distribution, I got on my private net), everything seemd
+fine. The kernel --
+Linux version 2.4.9-32 (root@paer) (gcc version 3.0.2 (Debian)) #1 Fri Nov
+30 19:36:30 MST 2001 -- worked just fine. 
 
-model 9000/720
-Total Memory: 32 Mb
-[...]
-SCSI subsystem driver Revision: 1.00
-53c700: consistent memory allocation failed
-53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
-scsi0: 53c700 rev 0
-scsi0 : LASI SCSI 53c700
-  Vendor: TEAC      Model: FC-1     HF   07  Rev: RV A
-  Type:   Direct-Access                      ANSI SCSI revision: 01 CCS
-  Vendor: IBM       Model: DCAS-34330        Rev: S61A
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-Attached scsi removable disk sda at scsi0, channel 0, id 3, lun 0
-Attached scsi disk sdb at scsi0, channel 0, id 6, lun 0
+After this, I installed a newer kernel (well, I just copied the kernel, and
+omitted the modules):  -- 
+Linux version 2.4.20-pa18 (bame@dsl2) (gcc version 3.0.3) #1 Fri Dec 27
+06:12:20 MST 2002 --
+and with this kernel, the machine crashes reproduceable when starting up. 
 
-sda is the floppy, sdb the hard drive.
+Now the reason: I found, that with kernel 2.4.9, there were 3 serial devices
+found
 
-Thanks,
---jochen
+/dev/ttyS0 uart 16550A port 0x0000 irq 90 baud_base 454545 spd_normal
+/dev/ttyS1 uart 16550A port 0x0000 irq 106 baud_base 454545 spd_normal
+/dev/ttyS2 uart 16550A port 0x0000 irq 170 baud_base 454545 spd_normal
+
+the later kernel finds only the first two of these interfaces, and restarts
+when restoring the settings of /dev/ttyS2. Later it crashes completely of
+course. I could fix this behaviour by commenting out the last line in
+/etc/serial.conf.
+
+Now my question: should kernel 2.4.20 find two or three serial devices on a
+C360, and why does the kernel crash if setserial tries to configure a
+(nonexistant?) device?
+
+
+Berthold
