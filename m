@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.bitmover.com (bitmover.com [192.132.92.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3F54F4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 14:56:38 -0700 (MST)
-Date: Mon, 2 Dec 2002 13:54:25 -0800
-From: Larry McVoy <lm@bitmover.com>
-Message-Id: <200212022154.gB2LsPc31908@work.bitmover.com>
-To: parisc-linux@lists.parisc-linux.org, phi@hpfrcu81.france.hp.com
-Cc: dev@bitmover.com
-Subject: [parisc-linux] rlogin: connection closed (SOLUTION)
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D35A4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 19:44:38 -0700 (MST)
+Date: Mon, 2 Dec 2002 21:43:58 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: libc-alpha@sources.redhat.com
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20021203024358.GA5487@systemhalted>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="aM3YZ0Iwxop3KEKx"
+Subject: [parisc-linux] [PATCH] fix masking error in fesetround() on hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This fixes it.  Looks like a race, I wasn't inclined to dig further, this
-got me past the problem.  I suspect that parisc fork() runs parent/child
-in the opposite order from every other Unix and that causes a race but
-I have not looked.
+--aM3YZ0Iwxop3KEKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---lm
 
-diff -Nur netkit-rsh-0.17/rlogind/rlogind.c NEW/netkit-rsh-0.17/rlogind/rlogind.c
---- netkit-rsh-0.17/rlogind/rlogind.c   Mon Dec  2 13:52:37 2002
-+++ NEW/netkit-rsh-0.17/rlogind/rlogind.c       Mon Dec  2 13:48:48 2002
-@@ -429,6 +429,7 @@
-        if (netfd > 2) close(netfd);
-        child(hname, termtype, lusername, authenticated);
-     }
-+    usleep(100000);
-     close(slave);
-     on = 1;
-     ioctl(netfd, FIONBIO, &on);
+libc-alpha,
+
+Thanks to HP's testdrive users, we found and fixed a small masking bug
+in fesetround(). Should use ~FE_DOWNWARD since this is the rounding mask
+set to all ones, and will clear the mask before or'ing the round value.
+
+It was suggested that a test case could be made of this, where glibc
+tries to set and get various combinations of FE_DOWNWARD, FE_UPWARD,
+FE_TONEAREST, and FE_UPWARD. I could provide such a testcase if it was
+deemed usefull. 
+
+c.
+
+---
+
+2002-12-02  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* sysdeps/hppa/fpu/fesetround.c: 
+	(fesetround): Use ~FE_DOWNWARD so both bits of RM are cleared.
+
+--aM3YZ0Iwxop3KEKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=03-glibc23-hppa-fesetround
+
+--- glibc-2.3.1/sysdeps/hppa/fpu/fesetround.c	2002-12-02 16:36:36.000000000 -0500
++++ glibc-2.3.1/sysdeps/hppa/fpu/fesetround.c	2002-12-02 16:36:59.000000000 -0500
+@@ -31,7 +31,7 @@
+ 
+   /* Get the current status word. */
+   __asm__ ("fstd %%fr0,0(%1)" : "=m" (*sw) : "r" (sw));
+-  sw[0] &= ~FE_UPWARD;
++  sw[0] &= ~FE_DOWNWARD;
+   sw[0] |= round;
+   __asm__ ("fldd 0(%0),%%fr0" : : "r" (sw));
+ 
+
+--aM3YZ0Iwxop3KEKx--
