@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9BF1A482E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 11:24:47 -0700 (MST)
-Date: Mon, 16 Dec 2002 19:19:02 +0100
-Message-ID: <3DED9BF500001EF0@ocpmta8.freegates.net>
-In-Reply-To: <20021216180103.C9994@parcelfarce.linux.theplanet.co.uk>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2CC90482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 11:25:00 -0700 (MST)
+Date: Mon, 16 Dec 2002 19:24:28 +0100
+Message-ID: <3DED9BF500001EF5@ocpmta8.freegates.net>
+In-Reply-To: <20021216181649.D9994@parcelfarce.linux.theplanet.co.uk>
 From: jsoe0708@tiscali.be
 Subject: Re: [parisc-linux] Re: YA pb with PCI IDE (my merge 2.4.21-pre1)
 To: "Matthew Wilcox" <willy@debian.org>
-Cc: "Alan Cox" <alan@lxorguk.ukuu.org.uk>,
-	"Matthew Wilcox" <willy@debian.org>,
+Cc: "Matthew Wilcox" <willy@debian.org>,
+	"Alan Cox" <alan@lxorguk.ukuu.org.uk>,
 	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=========3DED9BF500001EF0/mail.tiscali.be"
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,135 +24,245 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=========3DED9BF500001EF0/mail.tiscali.be
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+>On Mon, Dec 16, 2002 at 07:13:53PM +0100, jsoe0708@tiscali.be wrote:
+>> >
+>> >why are you sending word documents?  i'm not reading that shit.
+>> >
+>> Sorry for confusion, it just contents ascii text. Trust me there is no=
+
+>relation
+>> with world, just an extension (a professional habit to make internal
+exchange
+>> more confortable for the one not familiar with unix).
+>
+>something's very screwed up then, probably your mail server:
+>
+>[-- Attachment #2: add_function.diff.doc --]
+>[-- Type: application/msword, Encoding: base64, Size: 7.8K --]
+>
+>[-- application/msword is unsupported (use 'v' to view this part) --]
+>
+>is what i see.
+>
+That should be the webmail interface (I do not like it but have no choise=
+
+behind a fw not allowing pop.mail connection)
+
+>> Tell me what is your prefered extension, I will take care to adopt it.=
 
 >
->why are you sending word documents?  i'm not reading that shit.
+>i prefer it inlined, not as an attachment.  it's easier to reply to.
 >
-Please accept my appologies for confusion.
-Here is the same info :-)
+That is ok for me:
 
-Joel
+diff -NaurwbBX /Develop/Kernel-Linux/dontdiff linux-2.4.21-pre1-pa14-alph=
+a/include/asm-parisc/ide.h
+linux-2.4.21-pre1-pa14-beta/include/asm-parisc/ide.h
+--- linux-2.4.21-pre1-pa14-alpha/include/asm-parisc/ide.h	2002-12-13 14:0=
+0:09.000000000
++0100
++++ linux-2.4.21-pre1-pa14-beta/include/asm-parisc/ide.h	2002-12-15 15:34=
+:01.000000000
++0100
+@@ -20,6 +20,8 @@
+ #define MAX_HWIFS	2
+ #endif
+ 
++#define ide__sti()      __sti()
++
+ static __inline__ int ide_default_irq(ide_ioreg_t base)
+ {
+ 	switch (base) {
+@@ -78,13 +80,116 @@
+ #endif /* CONFIG_BLK_DEV_IDEPCI */
+ }
+ 
+-/*
++typedef union {
++	unsigned all			: 8;	/* all of the bits together */
++	struct {
++		unsigned bit7		: 1;	/* always 1 */
++		unsigned lba		: 1;	/* using LBA instead of CHS */
++		unsigned bit5		: 1;	/* always 1 */
++		unsigned unit		: 1;	/* drive select number, 0 or 1 */
++		unsigned head		: 4;	/* always zeros here */
++	} b;
++} select_t;
++
++typedef union {
++	unsigned all			: 8;	/* all of the bits together */
++	struct {
++		unsigned bit0		: 1;
++		unsigned nIEN		: 1;	/* device INTRQ to host */
++		unsigned SRST		: 1;	/* host soft reset bit */
++		unsigned bit3		: 1;	/* ATA-2 thingy */
++		unsigned reserved456	: 3;
++		unsigned HOB		: 1;	/* 48-bit address ordering */
++	} b;
++} control_t;
++
+ #define ide_request_irq(irq,hand,flg,dev,id)	request_irq((irq),(hand),(f=
+lg),(dev),(id))
+ #define ide_free_irq(irq,dev_id)		free_irq((irq), (dev_id))
+ #define ide_check_region(from,extent)		check_region((from), (extent))
+ #define ide_request_region(from,extent,name)	request_region((from), (ext=
+ent),
+(name))
+ #define ide_release_region(from,extent)		release_region((from), (extent)=
+)
++
++#define T_CHAR          (0x0000)        /* char:  don't touch  */
++#define T_SHORT         (0x4000)        /* short: 12 -> 21     */
++#define T_INT           (0x8000)        /* int:   1234 -> 4321 */
++#define T_TEXT          (0xc000)        /* text:  12 -> 21     */
++
++#define T_MASK_TYPE     (0xc000)
++#define T_MASK_COUNT    (0x3fff)
++
++#define D_CHAR(cnt)     (T_CHAR  | (cnt))
++#define D_SHORT(cnt)    (T_SHORT | (cnt))
++#define D_INT(cnt)      (T_INT   | (cnt))
++#define D_TEXT(cnt)     (T_TEXT  | (cnt))
++
++static u_short driveid_types[] =3D {
++	D_SHORT(10),	/* config - vendor2 */
++	D_TEXT(20),	/* serial_no */
++	D_SHORT(3),	/* buf_type - ecc_bytes */
++	D_TEXT(48),	/* fw_rev - model */
++	D_CHAR(2),	/* max_multsect - vendor3 */
++	D_SHORT(1),	/* dword_io */
++	D_CHAR(2),	/* vendor4 - capability */
++	D_SHORT(1),	/* reserved50 */
++	D_CHAR(4),	/* vendor5 - tDMA */
++	D_SHORT(4),	/* field_valid - cur_sectors */
++	D_INT(1),	/* cur_capacity */
++	D_CHAR(2),	/* multsect - multsect_valid */
++	D_INT(1),	/* lba_capacity */
++	D_SHORT(194)	/* dma_1word - reservedyy */
++};
++
++#define num_driveid_types       (sizeof(driveid_types)/sizeof(*driveid_t=
+ypes))
++
++static __inline__ void ide_fix_driveid(struct hd_driveid *id)
++{
++	u_char *p =3D (u_char *)id;
++	int i, j, cnt;
++	u_char t;
++
++	for (i =3D 0; i < num_driveid_types; i++) {
++		cnt =3D driveid_types[i] & T_MASK_COUNT;
++		switch (driveid_types[i] & T_MASK_TYPE) {
++		case T_CHAR:
++			p +=3D cnt;
++			break;
++		case T_SHORT:
++			for (j =3D 0; j < cnt; j++) {
++				t =3D p[0];
++				p[0] =3D p[1];
++				p[1] =3D t;
++				p +=3D 2;
++			}
++			break;
++		case T_INT:
++			for (j =3D 0; j < cnt; j++) {
++				t =3D p[0];
++				p[0] =3D p[3];
++				p[3] =3D t;
++				t =3D p[1];
++				p[1] =3D p[2];
++				p[2] =3D t;
++				p +=3D 4;
++			}
++			break;
++		case T_TEXT:
++			for (j =3D 0; j < cnt; j +=3D 2) {
++				t =3D p[0];
++				p[0] =3D p[1];
++				p[1] =3D t;
++				p +=3D 2;
++			}
++			break;
++		};
++	}
++}
++
++/*
++ * The following are not needed for the non-m68k ports
+  */
++#define ide_ack_intr(hwif)		(1)
++#define ide_release_lock(lock)		do {} while (0)
++#define ide_get_lock(lock, hdlr, data)	do {} while (0)
+ 
+ #endif /* __KERNEL__ */
+ 
+diff -NaurwbBX /Develop/Kernel-Linux/dontdiff linux-2.4.21-pre1-pa14-alph=
+a/include/asm-parisc/system.h
+linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system.h
+--- linux-2.4.21-pre1-pa14-alpha/include/asm-parisc/system.h	2002-12-13
+13:58:36.000000000 +0100
++++ linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system.h	2002-12-15 15=
+:34:01.000000000
++0100
+@@ -66,8 +66,6 @@
+ #define sti() __global_sti()
+ #define save_flags(x) ((x)=3D__global_save_flags())
+ #define restore_flags(x) __global_restore_flags(x)
+-#define save_and_cli(x) do { save_flags(x); cli(); } while(0);
+-#define save_and_sti(x) do { save_flags(x); sti(); } while(0);
+ 
+ #else
+ 
+@@ -75,8 +73,6 @@
+ #define sti() __sti()
+ #define save_flags(x) __save_flags(x)
+ #define restore_flags(x) __restore_flags(x)
+-#define save_and_cli(x) __save_and_cli(x)
+-#define save_and_sti(x) __save_and_sti(x)
+ 
+ #endif
+ 
+diff -NaurwbBX /Develop/Kernel-Linux/dontdiff linux-2.4.21-pre1-pa14-alph=
+a/include/asm-parisc/system_irqsave.h
+linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system_irqsave.h
+--- linux-2.4.21-pre1-pa14-alpha/include/asm-parisc/system_irqsave.h	2002=
+-12-12
+16:12:02.000000000 +0100
++++ linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system_irqsave.h	2002-=
+12-15
+15:34:01.000000000 +0100
+@@ -7,21 +7,10 @@
+ #define __cli()	__asm__ __volatile__("rsm %0,%%r0\n" : : "i" (PSW_I) :
+"memory" )
+ #define __sti()	__asm__ __volatile__("ssm %0,%%r0\n" : : "i" (PSW_I) :
+"memory" )
+ 
+-#define __save_and_cli(x)  do { __save_flags(x); __cli(); } while(0);
+-#define __save_and_sti(x)  do { __save_flags(x); __sti(); } while(0);
+-
+-/* For spinlocks etc */
+-#if 0
+ #define local_irq_save(x) \
+ 	__asm__ __volatile__("rsm %1,%0" : "=3Dr" (x) :"i" (PSW_I) : "memory" )=
 
+-#define local_irq_set(x) \
+-#       "Warning local_irq_set(x) is not yet defined"
+-#else
+-#define local_irq_save(x)  __save_and_cli(x)
+-#define local_irq_set(x)   __save_and_sti(x)
+-#endif
+-
+-#define local_irq_restore(x) __restore_flags(x)
++#define local_irq_restore(x) \
++	__asm__ __volatile__("mtsm %0" : : "r" (x) : "memory" )
+ #define local_irq_disable() __cli()
+ #define local_irq_enable()  __sti()
+ 
+
+Hope this is still readable,
+    Joel
 
 *************************************************************************=
 *******
 Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
 ttp://tiscali.complete.be
-
-
-
-
---=========3DED9BF500001EF0/mail.tiscali.be
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="add_function.diff"
-
-ZGlmZiAtTmF1cndiQlggL0RldmVsb3AvS2VybmVsLUxpbnV4L2RvbnRkaWZmIGxpbnV4LTIuNC4y
-MS1wcmUxLXBhMTQtYWxwaGEvaW5jbHVkZS9hc20tcGFyaXNjL2lkZS5oIGxpbnV4LTIuNC4yMS1w
-cmUxLXBhMTQtYmV0YS9pbmNsdWRlL2FzbS1wYXJpc2MvaWRlLmgKLS0tIGxpbnV4LTIuNC4yMS1w
-cmUxLXBhMTQtYWxwaGEvaW5jbHVkZS9hc20tcGFyaXNjL2lkZS5oCTIwMDItMTItMTMgMTQ6MDA6
-MDkuMDAwMDAwMDAwICswMTAwCisrKyBsaW51eC0yLjQuMjEtcHJlMS1wYTE0LWJldGEvaW5jbHVk
-ZS9hc20tcGFyaXNjL2lkZS5oCTIwMDItMTItMTUgMTU6MzQ6MDEuMDAwMDAwMDAwICswMTAwCkBA
-IC0yMCw2ICsyMCw4IEBACiAjZGVmaW5lIE1BWF9IV0lGUwkyCiAjZW5kaWYKIAorI2RlZmluZSBp
-ZGVfX3N0aSgpICAgICAgX19zdGkoKQorCiBzdGF0aWMgX19pbmxpbmVfXyBpbnQgaWRlX2RlZmF1
-bHRfaXJxKGlkZV9pb3JlZ190IGJhc2UpCiB7CiAJc3dpdGNoIChiYXNlKSB7CkBAIC03OCwxMyAr
-ODAsMTE2IEBACiAjZW5kaWYgLyogQ09ORklHX0JMS19ERVZfSURFUENJICovCiB9CiAKLS8qCit0
-eXBlZGVmIHVuaW9uIHsKKwl1bnNpZ25lZCBhbGwJCQk6IDg7CS8qIGFsbCBvZiB0aGUgYml0cyB0
-b2dldGhlciAqLworCXN0cnVjdCB7CisJCXVuc2lnbmVkIGJpdDcJCTogMTsJLyogYWx3YXlzIDEg
-Ki8KKwkJdW5zaWduZWQgbGJhCQk6IDE7CS8qIHVzaW5nIExCQSBpbnN0ZWFkIG9mIENIUyAqLwor
-CQl1bnNpZ25lZCBiaXQ1CQk6IDE7CS8qIGFsd2F5cyAxICovCisJCXVuc2lnbmVkIHVuaXQJCTog
-MTsJLyogZHJpdmUgc2VsZWN0IG51bWJlciwgMCBvciAxICovCisJCXVuc2lnbmVkIGhlYWQJCTog
-NDsJLyogYWx3YXlzIHplcm9zIGhlcmUgKi8KKwl9IGI7Cit9IHNlbGVjdF90OworCit0eXBlZGVm
-IHVuaW9uIHsKKwl1bnNpZ25lZCBhbGwJCQk6IDg7CS8qIGFsbCBvZiB0aGUgYml0cyB0b2dldGhl
-ciAqLworCXN0cnVjdCB7CisJCXVuc2lnbmVkIGJpdDAJCTogMTsKKwkJdW5zaWduZWQgbklFTgkJ
-OiAxOwkvKiBkZXZpY2UgSU5UUlEgdG8gaG9zdCAqLworCQl1bnNpZ25lZCBTUlNUCQk6IDE7CS8q
-IGhvc3Qgc29mdCByZXNldCBiaXQgKi8KKwkJdW5zaWduZWQgYml0MwkJOiAxOwkvKiBBVEEtMiB0
-aGluZ3kgKi8KKwkJdW5zaWduZWQgcmVzZXJ2ZWQ0NTYJOiAzOworCQl1bnNpZ25lZCBIT0IJCTog
-MTsJLyogNDgtYml0IGFkZHJlc3Mgb3JkZXJpbmcgKi8KKwl9IGI7Cit9IGNvbnRyb2xfdDsKKwog
-I2RlZmluZSBpZGVfcmVxdWVzdF9pcnEoaXJxLGhhbmQsZmxnLGRldixpZCkJcmVxdWVzdF9pcnEo
-KGlycSksKGhhbmQpLChmbGcpLChkZXYpLChpZCkpCiAjZGVmaW5lIGlkZV9mcmVlX2lycShpcnEs
-ZGV2X2lkKQkJZnJlZV9pcnEoKGlycSksIChkZXZfaWQpKQogI2RlZmluZSBpZGVfY2hlY2tfcmVn
-aW9uKGZyb20sZXh0ZW50KQkJY2hlY2tfcmVnaW9uKChmcm9tKSwgKGV4dGVudCkpCiAjZGVmaW5l
-IGlkZV9yZXF1ZXN0X3JlZ2lvbihmcm9tLGV4dGVudCxuYW1lKQlyZXF1ZXN0X3JlZ2lvbigoZnJv
-bSksIChleHRlbnQpLCAobmFtZSkpCiAjZGVmaW5lIGlkZV9yZWxlYXNlX3JlZ2lvbihmcm9tLGV4
-dGVudCkJCXJlbGVhc2VfcmVnaW9uKChmcm9tKSwgKGV4dGVudCkpCisKKyNkZWZpbmUgVF9DSEFS
-ICAgICAgICAgICgweDAwMDApICAgICAgICAvKiBjaGFyOiAgZG9uJ3QgdG91Y2ggICovCisjZGVm
-aW5lIFRfU0hPUlQgICAgICAgICAoMHg0MDAwKSAgICAgICAgLyogc2hvcnQ6IDEyIC0+IDIxICAg
-ICAqLworI2RlZmluZSBUX0lOVCAgICAgICAgICAgKDB4ODAwMCkgICAgICAgIC8qIGludDogICAx
-MjM0IC0+IDQzMjEgKi8KKyNkZWZpbmUgVF9URVhUICAgICAgICAgICgweGMwMDApICAgICAgICAv
-KiB0ZXh0OiAgMTIgLT4gMjEgICAgICovCisKKyNkZWZpbmUgVF9NQVNLX1RZUEUgICAgICgweGMw
-MDApCisjZGVmaW5lIFRfTUFTS19DT1VOVCAgICAoMHgzZmZmKQorCisjZGVmaW5lIERfQ0hBUihj
-bnQpICAgICAoVF9DSEFSICB8IChjbnQpKQorI2RlZmluZSBEX1NIT1JUKGNudCkgICAgKFRfU0hP
-UlQgfCAoY250KSkKKyNkZWZpbmUgRF9JTlQoY250KSAgICAgIChUX0lOVCAgIHwgKGNudCkpCisj
-ZGVmaW5lIERfVEVYVChjbnQpICAgICAoVF9URVhUICB8IChjbnQpKQorCitzdGF0aWMgdV9zaG9y
-dCBkcml2ZWlkX3R5cGVzW10gPSB7CisJRF9TSE9SVCgxMCksCS8qIGNvbmZpZyAtIHZlbmRvcjIg
-Ki8KKwlEX1RFWFQoMjApLAkvKiBzZXJpYWxfbm8gKi8KKwlEX1NIT1JUKDMpLAkvKiBidWZfdHlw
-ZSAtIGVjY19ieXRlcyAqLworCURfVEVYVCg0OCksCS8qIGZ3X3JldiAtIG1vZGVsICovCisJRF9D
-SEFSKDIpLAkvKiBtYXhfbXVsdHNlY3QgLSB2ZW5kb3IzICovCisJRF9TSE9SVCgxKSwJLyogZHdv
-cmRfaW8gKi8KKwlEX0NIQVIoMiksCS8qIHZlbmRvcjQgLSBjYXBhYmlsaXR5ICovCisJRF9TSE9S
-VCgxKSwJLyogcmVzZXJ2ZWQ1MCAqLworCURfQ0hBUig0KSwJLyogdmVuZG9yNSAtIHRETUEgKi8K
-KwlEX1NIT1JUKDQpLAkvKiBmaWVsZF92YWxpZCAtIGN1cl9zZWN0b3JzICovCisJRF9JTlQoMSks
-CS8qIGN1cl9jYXBhY2l0eSAqLworCURfQ0hBUigyKSwJLyogbXVsdHNlY3QgLSBtdWx0c2VjdF92
-YWxpZCAqLworCURfSU5UKDEpLAkvKiBsYmFfY2FwYWNpdHkgKi8KKwlEX1NIT1JUKDE5NCkJLyog
-ZG1hXzF3b3JkIC0gcmVzZXJ2ZWR5eSAqLworfTsKKworI2RlZmluZSBudW1fZHJpdmVpZF90eXBl
-cyAgICAgICAoc2l6ZW9mKGRyaXZlaWRfdHlwZXMpL3NpemVvZigqZHJpdmVpZF90eXBlcykpCisK
-K3N0YXRpYyBfX2lubGluZV9fIHZvaWQgaWRlX2ZpeF9kcml2ZWlkKHN0cnVjdCBoZF9kcml2ZWlk
-ICppZCkKK3sKKwl1X2NoYXIgKnAgPSAodV9jaGFyICopaWQ7CisJaW50IGksIGosIGNudDsKKwl1
-X2NoYXIgdDsKKworCWZvciAoaSA9IDA7IGkgPCBudW1fZHJpdmVpZF90eXBlczsgaSsrKSB7CisJ
-CWNudCA9IGRyaXZlaWRfdHlwZXNbaV0gJiBUX01BU0tfQ09VTlQ7CisJCXN3aXRjaCAoZHJpdmVp
-ZF90eXBlc1tpXSAmIFRfTUFTS19UWVBFKSB7CisJCWNhc2UgVF9DSEFSOgorCQkJcCAr
-PSBjbnQ7CisJCQlicmVhazsKKwkJY2FzZSBUX1NIT1JUOgorCQkJZm9yIChqID0gMDsgaiA8IGNu
-dDsgaisrKSB7CisJCQkJdCA9IHBbMF07CisJCQkJcFswXSA9IHBbMV07CisJCQkJcFsxXSA9IHQ7
-CisJCQkJcCArPSAyOworCQkJfQorCQkJYnJlYWs7CisJCWNhc2UgVF9JTlQ6CisJCQlmb3IgKGog
-PSAwOyBqIDwgY250OyBqKyspIHsKKwkJCQl0ID0gcFswXTsKKwkJCQlwWzBdID0gcFszXTsKKwkJ
-CQlwWzNdID0gdDsKKwkJCQl0ID0gcFsxXTsKKwkJCQlwWzFdID0gcFsyXTsKKwkJCQlwWzJdID0g
-dDsKKwkJCQlwICs9IDQ7CisJCQl9CisJCQlicmVhazsKKwkJY2FzZSBUX1RFWFQ6CisJCQlmb3Ig
-KGogPSAwOyBqIDwgY250OyBqICs9IDIpIHsKKwkJCQl0ID0gcFswXTsKKwkJCQlwWzBdID0gcFsx
-XTsKKwkJCQlwWzFdID0gdDsKKwkJCQlwICs9IDI7CisJCQl9CisJCQlicmVhazsKKwkJfTsKKwl9
-Cit9CisKKy8qCisgKiBUaGUgZm9sbG93aW5nIGFyZSBub3QgbmVlZGVkIGZvciB0aGUgbm9uLW02
-OGsgcG9ydHMKICAqLworI2RlZmluZSBpZGVfYWNrX2ludHIoaHdpZikJCSgxKQorI2RlZmluZSBp
-ZGVfcmVsZWFzZV9sb2NrKGxvY2spCQlkbyB7fSB3aGlsZSAoMCkKKyNkZWZpbmUgaWRlX2dldF9s
-b2NrKGxvY2ssIGhkbHIsIGRhdGEpCWRvIHt9IHdoaWxlICgwKQogCiAjZW5kaWYgLyogX19LRVJO
-RUxfXyAqLwogCmRpZmYgLU5hdXJ3YkJYIC9EZXZlbG9wL0tlcm5lbC1MaW51eC9kb250ZGlmZiBs
-aW51eC0yLjQuMjEtcHJlMS1wYTE0LWFscGhhL2luY2x1ZGUvYXNtLXBhcmlzYy9zeXN0ZW0uaCBs
-aW51eC0yLjQuMjEtcHJlMS1wYTE0LWJldGEvaW5jbHVkZS9hc20tcGFyaXNjL3N5c3RlbS5oCi0t
-LSBsaW51eC0yLjQuMjEtcHJlMS1wYTE0LWFscGhhL2luY2x1ZGUvYXNtLXBhcmlzYy9zeXN0ZW0u
-aAkyMDAyLTEyLTEzIDEzOjU4OjM2LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgtMi40LjIxLXBy
-ZTEtcGExNC1iZXRhL2luY2x1ZGUvYXNtLXBhcmlzYy9zeXN0ZW0uaAkyMDAyLTEyLTE1IDE1OjM0
-OjAxLjAwMDAwMDAwMCArMDEwMApAQCAtNjYsOCArNjYsNiBAQAogI2RlZmluZSBzdGkoKSBfX2ds
-b2JhbF9zdGkoKQogI2RlZmluZSBzYXZlX2ZsYWdzKHgpICgoeCk9X19nbG9iYWxfc2F2ZV9mbGFn
-cygpKQogI2RlZmluZSByZXN0b3JlX2ZsYWdzKHgpIF9fZ2xvYmFsX3Jlc3RvcmVfZmxhZ3MoeCkK
-LSNkZWZpbmUgc2F2ZV9hbmRfY2xpKHgpIGRvIHsgc2F2ZV9mbGFncyh4KTsgY2xpKCk7IH0gd2hp
-bGUoMCk7Ci0jZGVmaW5lIHNhdmVfYW5kX3N0aSh4KSBkbyB7IHNhdmVfZmxhZ3MoeCk7IHN0aSgp
-OyB9IHdoaWxlKDApOwogCiAjZWxzZQogCkBAIC03NSw4ICs3Myw2IEBACiAjZGVmaW5lIHN0aSgp
-IF9fc3RpKCkKICNkZWZpbmUgc2F2ZV9mbGFncyh4KSBfX3NhdmVfZmxhZ3MoeCkKICNkZWZpbmUg
-cmVzdG9yZV9mbGFncyh4KSBfX3Jlc3RvcmVfZmxhZ3MoeCkKLSNkZWZpbmUgc2F2ZV9hbmRfY2xp
-KHgpIF9fc2F2ZV9hbmRfY2xpKHgpCi0jZGVmaW5lIHNhdmVfYW5kX3N0aSh4KSBfX3NhdmVfYW5k
-X3N0aSh4KQogCiAjZW5kaWYKIApkaWZmIC1OYXVyd2JCWCAvRGV2ZWxvcC9LZXJuZWwtTGludXgv
-ZG9udGRpZmYgbGludXgtMi40LjIxLXByZTEtcGExNC1hbHBoYS9pbmNsdWRlL2FzbS1wYXJpc2Mv
-c3lzdGVtX2lycXNhdmUuaCBsaW51eC0yLjQuMjEtcHJlMS1wYTE0LWJldGEvaW5jbHVkZS9hc20t
-cGFyaXNjL3N5c3RlbV9pcnFzYXZlLmgKLS0tIGxpbnV4LTIuNC4yMS1wcmUxLXBhMTQtYWxwaGEv
-aW5jbHVkZS9hc20tcGFyaXNjL3N5c3RlbV9pcnFzYXZlLmgJMjAwMi0xMi0xMiAxNjoxMjowMi4w
-MDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4LTIuNC4yMS1wcmUxLXBhMTQtYmV0YS9pbmNsdWRlL2Fz
-bS1wYXJpc2Mvc3lzdGVtX2lycXNhdmUuaAkyMDAyLTEyLTE1IDE1OjM0OjAxLjAwMDAwMDAwMCAr
-MDEwMApAQCAtNywyMSArNywxMCBAQAogI2RlZmluZSBfX2NsaSgpCV9fYXNtX18gX192b2xhdGls
-ZV9fKCJyc20gJTAsJSVyMFxuIiA6IDogImkiIChQU1dfSSkgOiAibWVtb3J5IiApCiAjZGVmaW5l
-IF9fc3RpKCkJX19hc21fXyBfX3ZvbGF0aWxlX18oInNzbSAlMCwlJXIwXG4iIDogOiAiaSIgKFBT
-V19JKSA6ICJtZW1vcnkiICkKIAotI2RlZmluZSBfX3NhdmVfYW5kX2NsaSh4KSAgZG8geyBfX3Nh
-dmVfZmxhZ3MoeCk7IF9fY2xpKCk7IH0gd2hpbGUoMCk7Ci0jZGVmaW5lIF9fc2F2ZV9hbmRfc3Rp
-KHgpICBkbyB7IF9fc2F2ZV9mbGFncyh4KTsgX19zdGkoKTsgfSB3aGlsZSgwKTsKLQotLyogRm9y
-IHNwaW5sb2NrcyBldGMgKi8KLSNpZiAwCiAjZGVmaW5lIGxvY2FsX2lycV9zYXZlKHgpIFwKIAlf
-X2FzbV9fIF9fdm9sYXRpbGVfXygicnNtICUxLCUwIiA6ICI9ciIgKHgpIDoiaSIgKFBTV19JKSA6
-ICJtZW1vcnkiICkKLSNkZWZpbmUgbG9jYWxfaXJxX3NldCh4KSBcCi0jICAgICAgICJXYXJuaW5n
-IGxvY2FsX2lycV9zZXQoeCkgaXMgbm90IHlldCBkZWZpbmVkIgotI2Vsc2UKLSNkZWZpbmUgbG9j
-YWxfaXJxX3NhdmUoeCkgIF9fc2F2ZV9hbmRfY2xpKHgpCi0jZGVmaW5lIGxvY2FsX2lycV9zZXQo
-eCkgICBfX3NhdmVfYW5kX3N0aSh4KQotI2VuZGlmCi0KLSNkZWZpbmUgbG9jYWxfaXJxX3Jlc3Rv
-cmUoeCkgX19yZXN0b3JlX2ZsYWdzKHgpCisjZGVmaW5lIGxvY2FsX2lycV9yZXN0b3JlKHgpIFwK
-KwlfX2FzbV9fIF9fdm9sYXRpbGVfXygibXRzbSAlMCIgOiA6ICJyIiAoeCkgOiAibWVtb3J5IiAp
-CiAjZGVmaW5lIGxvY2FsX2lycV9kaXNhYmxlKCkgX19jbGkoKQogI2RlZmluZSBsb2NhbF9pcnFf
-ZW5hYmxlKCkgIF9fc3RpKCkKIAo=
-
---=========3DED9BF500001EF0/mail.tiscali.be--
