@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0B77482C
-	for <parisc-linux@parisc-linux.org>; Tue, 27 Nov 2001 11:21:14 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 168mr3-0007NQ-00; Tue, 27 Nov 2001 18:21:13 +0000
-Date: Tue, 27 Nov 2001 18:21:13 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "Michael S . Zick" <mszick@pflash.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@pflash.com>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] ftp://parisc-linux.org/cvs - binutils? - glibc?
+Date: Tue, 27 Nov 2001 12:33:16 -0600
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] ftp://parisc-linus.org/cvs - binutils? - glibc?
-Message-ID: <20011127182113.D4180@parcelfarce.linux.theplanet.co.uk>
-References: <01112712080500.01278@Wolf-01>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01112712080500.01278@Wolf-01>; from mszick@pflash.com on Tue, Nov 27, 2001 at 12:08:05PM -0600
+References: <01112712080500.01278@Wolf-01> <20011127182113.D4180@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20011127182113.D4180@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Message-Id: <01112712331601.01278@Wolf-01>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +21,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 27, 2001 at 12:08:05PM -0600, Michael S . Zick wrote:
-> I have checked both /cvs and /src but can not find "glibc" and "binutils" 
-> snapshots.
-> Where could I find these?
+On Tuesday 27 November 2001 12:21 pm, Matthew Wilcox wrote:
+>  we have not maintained glibc & binutils cvs trees for a while.
+> i suggest the debian packages as your best source of latest bits.
 
-you can't.  we have not maintained glibc & binutils cvs trees for a while.
-i suggest the debian packages as your best source of latest bits.
+Thanks.
 
-> There have been a number of recent patchs to binutils for hppa.  (Such as: 
-> http://sources.redhat.com/ml/binutils/2001-11/msg00622.html ) by Alan Modra.
-> I would like to try keeping a local tree of the hppa version.
+> why you wouldn't simply
+> use the upstream cvs binutils, i don't know.
 
-nobody's going to stop you doing that, though why you wouldn't simply
-use the upstream cvs binutils, i don't know.
+A misunderstanding on my part.
+I thought that since gcc was a special, branch version, glibc and binutils 
+were also (still) specials.
 
--- 
-Revolutions do not require corporate support.
+Thanks again.
+
+Mike
