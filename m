@@ -1,34 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from faui02.informatik.uni-erlangen.de (faui02.informatik.uni-erlangen.de [131.188.30.102])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77365482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 16:38:59 -0600 (MDT)
-Date: Mon, 3 Sep 2001 00:34:37 +0200
-From: Richard Zidlicky <Richard.Zidlicky@stud.informatik.uni-erlangen.de>
-To: thunder7@xs4all.nl
-Cc: parisc-linux@lists.parisc-linux.org, linux-kernel@vger.kernel.org
-Message-ID: <20010903003437.A385@linux-m68k.org>
-References: <20010902105538.A15344@middle.of.nowhere> <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk> <20010902195717.A21209@middle.of.nowhere>
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1F34482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 17:04:50 -0600 (MDT)
+Date: Sun, 02 Sep 2001 16:04:41 -0700 (PDT)
+Message-Id: <20010902.160441.92583890.davem@redhat.com>
+To: willy@debian.org
+Cc: thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on
+ parisc architecture
+From: "David S. Miller" <davem@redhat.com>
+In-Reply-To: <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk>
+References: <20010902105538.A15344@middle.of.nowhere>
+	<20010902150023.U5126@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010902195717.A21209@middle.of.nowhere>; from thunder7@xs4all.nl on Sun, Sep 02, 2001 at 07:57:17PM +0200
-Subject: [parisc-linux] Re: [SOLVED + PATCH]: documented Oops running big-endian reiserfs on parisc architecture
+Content-Type: Text/Plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Sep 02, 2001 at 07:57:17PM +0200, thunder7@xs4all.nl wrote:
-> 
-> --- linux/include/linux/reiserfs_fs.h   Sun Sep  2 21:54:25 2001
-> +++ linux-new/include/linux/reiserfs_fs.h       Sun Sep  2 20:47:27 2001
-> @@ -924,7 +924,7 @@
->  #define DEH_Visible 2
-> 
->  /* 64 bit systems (and the S/390) need to be aligned explicitly -jdm */
-> -#if BITS_PER_LONG == 64 || defined(__s390__)
-> +#if BITS_PER_LONG == 64 || defined(__s390__) || defined(__hppa__)
->  #   define ADDR_UNALIGNED_BITS  (3)
->  #endif
+   From: Matthew Wilcox <willy@debian.org>
+   Date: Sun, 2 Sep 2001 15:00:23 +0100
 
-couldn't reiserfs use asm/unaligned.h like anyone else?
-Seems at least sparc and mips may need the same treatment.
+   On Sun, Sep 02, 2001 at 10:55:38AM +0200, thunder7@xs4all.nl wrote:
+   > ReiserFS version 3.6.25
+   > bonnie[163]: Unaligned data reference 28
+   
+   As it says, an unaligned data reference.
+   
+BTW, you should not be OOPSing on this as unaligned references are
+defined as completely normal, especially in the networking.
 
-Bye
-Richard
+Is it impossible to handle unaligned access traps properly on
+parisc?  If so, well you have some problems...
+
+Later,
+David S. Miller
+davem@redhat.com
