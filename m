@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from medea.theophys.kth.se (medea.theophys.kth.se [130.237.25.82])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1AF8B482C
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 12:30:08 -0700 (MST)
-Date: Sat, 10 Nov 2001 20:30:05 +0100 (CET)
-From: Jurij Smakov <jurijus@theophys.kth.se>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Floppy on a 712/60 
-In-Reply-To: <200111100555.WAA01416@puffin.external.hp.com>
-Message-ID: <Pine.LNX.4.21.0111102023200.344-100000@uranus.theophys.kth.se>
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6321F482C
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 15:29:02 -0700 (MST)
+Received: from www2.scram.de (www2.scram.de [195.226.127.84])
+	by mail.scram.de (8.11.0/8.11.0) with ESMTP id fAAMSn626576
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 23:28:49 +0100 (CET)
+Date: Sat, 10 Nov 2001 23:28:48 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.NEB.4.33.0111102323090.11348-100000@www2.scram.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Current Debian still broken?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,26 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi!
+Hi,
 
-On Fri, 9 Nov 2001, Grant Grundler wrote:
+when trying to compile the new 2.2.14 based parisc tree, i get the
+following error:
 
-> Jan-Benedict Glaw wrote:
-> > Well, the box is missing it's floppy drive.
-> > Can I attach a standard floppy drive ripped off an ordinary PC?
-> 
-> I haven't tried it but I think so.
-> Please try and tell us.
-> If you fry the box I'll replace it.
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common
+-D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7100    -c -o sd.o sd.c
+{standard input}: Assembler messages:
+{standard input}:583: Error: Invalid operands
+{standard input}:607: Error: Invalid operands
+make[3]: *** [sd.o] Error 1
 
-I've tried that on 712/80. Connected a standard PC floppy, didn't burn
-the box but didn't get any signs of life from the floppy either. The
-floppy LED never goes on, not even in the initial bootup stage. I've then
-tried writing different values to the floppy registers through lasi,
-following the controller docs, trying to reset it or at least get to do
-something. No success. Main floppy status register always returns 0 - no
-good. Given any ideas I might try to do it again.
-
-Best regards,
-
-Jurij.
+Cheers,
+Jochen
