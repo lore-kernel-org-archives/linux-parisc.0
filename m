@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 3 Feb 2003 09:53:21 -0700
-To: "Aaron St. Pierre" <asp@ungod.com>
+Date: Mon, 3 Feb 2003 10:30:57 -0700
+To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel compile
-Message-ID: <20030203165321.GA17807@dsl2.external.hp.com>
-References: <20030203020247.GB1046@hadron> <20030203041122.GB29454@dsl2.external.hp.com> <20030203053336.GC1046@hadron> <20030203060359.GF29454@dsl2.external.hp.com> <20030203064328.GD1046@hadron>
+Subject: Re: [parisc-linux] Yet another tar-triggered problem?
+Message-ID: <20030203173057.GC17807@dsl2.external.hp.com>
+References: <20030203154450.GO7503@aurinko.ntc.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030203064328.GD1046@hadron>
+In-Reply-To: <20030203154450.GO7503@aurinko.ntc.nokia.com>
 From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -20,38 +20,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 03, 2003 at 01:43:28AM -0500, Aaron St. Pierre wrote:
-> Anyway I got the the TOC information for both processors after
-> I tried to boot my kernel. It is
-> all on that page ( http://hadron.dyndns.org/parisc/ ) 
+On Mon, Feb 03, 2003 at 05:44:50PM +0200, Nahkola Mikko wrote:
+> ... the 70096's scrollback was full of something that looks like
+> a hex dump, and then a HPMC at the end.
 
-IIA Offset                   = 0x00000000f0080570
+Likely a problem with st or scsi driver.
+Not many people are using tape drives so we don't get much
+feedback on that.
 
-that's not a kernel address. Looks like a PDC call died. :^(
+> Is anyone interested in the hex dump?
 
-> I also added a link to the firmware. I am running 2.0 of the firmware
-> and according to hp the most recent is 2.1 or : 
+Well, TBH, I'd be more interested in one from a 2.4.20 kernel.
+Too much code has changed since 2.4.18.
+
 > 
-> Patch Name: /firmware_patches/hp/cpu/PF_CJ224021
-> Description: HP 9000 Model J2240 firmware 2.1 patch
-> Date       : 00/10/06
+> The HPMC is as follows:
+> 		Code=1 regs=102f3080 (Addr=00000000)
+> 	
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001000000000000001110 Not tainted
+> r00-03  00000000 10300010 1010d4e8 ffffffff
+...
+> IASQ: 00000000 00000000 IAOQ: 1024a2d0 1024a2d4
 
-hmm...I'd stick with 2.0 for now.
+Can you look up (IOAQ) 1024a2d0 and (GR02) 1010d4e8
+in the matching System.map?
+I'm curious where it died.
+Though with HPMCs, it's likely to be a bug in some other code path.
 
-> I will start popping stuff out of the kernel, although I am sure I took
-> out all of the stuff wrt graphics. Another try for persistance sake wont
-> hurt :) 
-
-You still have STI drivers enabled and CONFIG_FB enabled.
-I'd start with those and then remove others one-by-one.
-
-> As far as the palo message, i only started noticing it when I went to
-> v1.2 of palo. One thing I should note, when I set up / i made it ext3,
-> boot is off of / and not its own fs so when i realized what i did I just
-> changed fstab accordingly so it would mount as ext2, although that
-> couldn't be the problem either since it is loading the debian kernels.
-
-/ can be ext3. Palo doesn't care since ext2/ext3 are compatible.
-What's important is /boot/vmlinux is < 2GB on disk.
-
+thanks,
 grant
