@@ -1,49 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from passion.cambridge.redhat.com (dell-paw-3.cambridge.redhat.com [195.224.55.237])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B410482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 02:24:33 -0600 (MDT)
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.GSO.4.05.10104192201330.8316-100000@pipt.oz.cc.utah.edu> 
-References: <Pine.GSO.4.05.10104192201330.8316-100000@pipt.oz.cc.utah.edu> 
-To: james rich <james.rich@m.cc.utah.edu>
+Received: from snark.thyrsus.com (snark.tuxedo.org [207.106.50.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6383D482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 07:19:07 -0600 (MDT)
+Date: Fri, 20 Apr 2001 09:18:34 -0400
+From: "Eric S. Raymond" <esr@thyrsus.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Cc: Matthew Wilcox <willy@ldl.fc.hp.com>,
-	"Eric S. Raymond" <esr@thyrsus.com>, linux-kernel@vger.kernel.org,
-	parisc-linux@parisc-linux.org
+	linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
+Message-ID: <20010420091834.A5102@thyrsus.com>
+Reply-To: esr@thyrsus.com
+References: <20010419230009.A32500@thyrsus.com> <E14qaeC-0001DZ-00@the-village.bc.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Apr 2001 09:19:53 +0100
-Message-ID: <14608.987754793@redhat.com>
-Sender: David Woodhouse <dwmw2@redhat.com>
-Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
+In-Reply-To: <E14qaeC-0001DZ-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Fri, Apr 20, 2001 at 02:08:25PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-james.rich@m.cc.utah.edu said:
->  Doesn't this seem a little like the problems occurring with lvm right
-> now? A separate tree maintained with the maintainers not wanting
-> others submitting patches that conflict with their particular tree?
-> It seems that any project should be able to submit any patch against
-> The One True Tree: Linus' tree. 
+Alan Cox <alan@lxorguk.ukuu.org.uk>:
+> > What is the right procedure for doing changes like this?  Is "don't
+> > touch that tree" a permanent condition, or am I going to get a chance
+> > to clean up the global CONFIG_ namespace after your next merge-down?
+> 
+> Feeding arch related stuff to the architecture maintainers.
 
-Of course they can. Linus does apply them too. People are asking nicely 
-that ESR not do so in this case, because merges are being planned. 
+I shall attempt it.
 
-The contents of drivers/mtd/ are in the same situation. For some reason, I
-felt it inappropriate to give every patch at every stage of development to
-Linus for inclusion in the 2.4.0-test and 2.4.[123] kernels. Now I'm vaguely
-happy with it all and it's stable, I'm working on cleaning up some of the 
-cosmetics and breaking it up into digestible patches.
+> > That's the main thing I'm after right now -- I want to cut down on
+> > the false positives in my orphaned-symbol reports so that the actual
+> > bugs will stand out.
+> 
+> Teach it to read a 'symbolstoignore' file.
 
-Doing primary development in CVS seems to work OK for me, and allows me to 
-continue development without destabilising the One True Tree. During such 
-times, it's useful to have a branch for the code which is in the One True 
-Tree, so urgent fixes can be merged, and the diff against the One True Tree 
-after each release has something to diff against to catch patches where 
-people didn't even bother to Cc the maintainer.
+Someone else has already pointed out that this is not a solution that will
+scale well.  It would substitute a continuing management headache for the
+cleanup that's really needed.  In fact I'm reluctant to do this even for 
+cases where it's clearly legitimate (CONFIG_BOOM, CONFIG_BOGUS :-)) partly
+because later on it might provide an excuse for people not to do the cleanup.
 
-I believe people were _told_ to hold off until 2.4.5-ish, or when the tree
-became stable. Violent imagery was used to reinforce this instruction.
-That being the case, how about holding the config changes back until after 
-everyone else who's been waiting has merged their pending changes?
+> Part of the problem you are hitting right now is that most
+> architectures are not yet fully in sync with 2.4 nor likely to all
+> be for another few iterations.
 
---
-dwmw2
+Understood.  I'll do what I can in the architecture-independent code, then.
+-- 
+		<a href="http://www.tuxedo.org/~esr/">Eric S. Raymond</a>
+
+"Boys who own legal firearms have much lower rates of delinquency and
+drug use and are even slightly less delinquent than nonowners of guns."
+	-- U.S. Department of Justice, National Institute of
+	   Justice, Office of Juvenile Justice and Delinquency Prevention,
+	   NCJ-143454, "Urban Delinquency and Substance Abuse," August 1995.
