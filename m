@@ -1,38 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9B658482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 May 2001 13:08:22 -0600 (MDT)
-Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m154oqW-001VltC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 May 2001 13:08:00 -0600 (MDT)
-Message-Id: <m154oqW-001VltC@bame.riverrock.org>
-From: bame@riverrock.org
-Reply-To: bame@riverrock.org
-Errors-To: bame@riverrock.org
-To: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@europay.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Palo: how-to reinstall 
-In-reply-to: Your message of "Tue, 29 May 2001 11:27:36 +0200."
-             <A4A5E4C468B5D11190220001FA6835DD04DD8943@EPIXCH003>
-Date: Tue, 29 May 2001 13:08:00 -0600
-Sender: bame@riverrock.org
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77B58482A
+	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 14:13:47 -0600 (MDT)
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] List of packages for hppa ISO release 
+In-Reply-To: Message from Grant Grundler <grundler@puffin.external.hp.com>
+   of "Sat, 26 May 2001 10:45:55 MDT." <200105261645.KAA19506@puffin.external.hp.com>
+References: <200105261645.KAA19506@puffin.external.hp.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 29 May 2001 14:16:28 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010529201628.279E037CFD@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Even with the bad palo you can boot.
+Grant Grundler writes...
 
-Ask your boot rom to boot interactively.  On recent boxes it's
-something like this:
-	boot
-	y
+> Matt Taggart wrote:
+> > http://puffin.external.hp.com/~taggart/selections.20010525
+> > There are still a few missing dependencies but those should be taken care o
+> > in the next few days. If you have additions/deletions to the list please se
+> > them to me.
+> 
+> o ditch ipchains and add iptables instead.
 
-On 712:
-	boot pri ipl
+Good idea but netbase depends on ipchains. I'll add iptables.
 
-Once palo is interactive, edit #0 to be:
+> o add cvs
 
-	0/vmlinux
+We decided that cvs's debconf questions would be confusing to someone who 
+didn't intend to setup a cvs repository right away. Not adding it, people can 
+just get it from the archive.
 
-this boots from the recovery kernel stored in the F0 partition.
+> o add an irc client? (tirc? tinyirc? ircii?)
 
-	-P
+Good idea. Which one?
+
+> o any memory or selftest tools we can include?
+>   (even untested - I'm looking at x86 package that has mem/cpu test)
+
+Good idea, but all the memory testers I've seen have been x86 specific. If 
+people have specific ones they know will work for hppa then let me know.
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
