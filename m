@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 11E15482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Jun 2002 09:08:25 -0600 (MDT)
-Date: Fri, 7 Jun 2002 11:08:20 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>, tausq@debian.org,
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 024DF482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Jun 2002 09:09:00 -0600 (MDT)
+To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] Verify stack trace address - Joel
+Message-ID: <1023462437.3d00cc25b2b82@webmail.tiscalinet.be>
+Date: Fri, 07 Jun 2002 17:07:17 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, Randolph Chung <randolph@tausq.org>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kdb getting healthier? (PCI guru needed, that's you willy!)
-Message-ID: <20020607110820.C10576@systemhalted>
-References: <20020606092115.C6900@systemhalted> <200206061619.g56GJdiE004367@hiauly1.hia.nrc.ca> <20020606145733.C8107@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020606145733.C8107@systemhalted>; from carlos@baldric.uwo.ca on Thu, Jun 06, 2002 at 02:57:33PM -0400
+References: <20020530143626.GF810@tykepenguin.com> <20020530133515.B15631@systemhalted> <20020531072849.GD1145@tykepenguin.com> <20020531085419.B18658@systemhalted> <20020604115547.GB1808@tykepenguin.com> <20020604084440.A24973@systemhalted> <20020604154954.GA29187@tausq.org> <1023292640.3cfe34e07e65b@webmail.tiscalinet.be> <20020605145928.I29135@systemhalted> <1023378071.3cff8297db5f6@webmail.tiscalinet.be> <20020607074303.B10393@systemhalted>
+In-Reply-To: <20020607074303.B10393@systemhalted>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,67 +24,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > It's definitely dangerous to use array indexes outside the bounds
-> > of the array, particularly on the PA.  There can be problems with
-> > space register selection, although I wouldn't expect this to be a in
-> > the linux kernel.  You can avoid index insns with "-mdisable-indexing".
-> > Let me know if you see anything strange in the assembler output.
+Hi C,
+
+Two news (a bad and a good as usual).
+
+I had actually an hardware problem with this test b2000 so that I could not any
+more reboot it.
+So the bad news is that I could not verify anything right now.
+
+For the good news is that we have maintenance contract and the problem occurs
+now during the launch of stm under hpux.
+
+So I can open a call and pieces are already order to repair it Monday.
+
+Quoting "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>:
+
 > > 
-> > Dave
+> > Stack: 10408600 Cannot find unwind entry for 0x1010c9c0
+> > 
+> > Call Trace: 
+> >         [<1010c880>]
+>             ^^^^^^^^
+> 
+> > Cannot find unwind entry for 0x1010c9c0
+>                                ^^^^^^^^^^
+> 
+> Can you find that address in your System.map to verify where that is?
+> If it's in unwind_table_init then the 'end[-1]' fix might be what is
+> needed.
+> 
 
-The following is the output using gcc 3.0.4.
+I will check it asap and let you inform
 
---- unwind-orig.c       Fri Jun  7 11:01:22 2002
-+++ unwind.c    Fri Jun  7 09:23:17 2002
-@@ -106,7 +106,7 @@
-        table->base_addr = base_addr;
-        table->gp = gp;
-        table->start = base_addr + start[0].region_start;
--       table->end = base_addr + end[-1].region_end;
-+       table->end = base_addr + (--end)->region_end;
-        table->table = (struct unwind_table_entry *)table_start;
-        table->length = end - start;
-        table->next = NULL;
+> 
+> For some reason device detection becomes bogus and broken with
+> kdb enabled. So far we've seen SCSI, Serial, PCI/EISA all die with
+> kdb enabled. Maybe they're not dead and just moving _really_ slowly.
+> 
+> I'm going camping this weekend, so it's anyones game until Monday
+> afternoon (which I have off too!!) :)
+> 
+Have a nice week-end,
+    Joel
 
---- unwind-orig.s       Fri Jun  7 11:01:33 2002
-+++ unwind.s    Fri Jun  7 09:24:55 2002
-@@ -7,22 +7,23 @@
-        .CALLINFO FRAME=0,NO_CALLS
-        .ENTRY
-        stw %r24,12(%r26)
--       ldw -52(%r30),%r21
-+       ldw -52(%r30),%r22
-        stw %r25,4(%r26)
-        stw %r23,8(%r26)
--       ldw 0(%r21),%r19
--       ldw -56(%r30),%r22
-+       ldw 0(%r22),%r19
-+       ldw -56(%r30),%r20
-        addl %r24,%r19,%r19
-        stw %r19,16(%r26)
--       sub %r22,%r21,%r20
--       ldw -12(%r22),%r19
--       extrs %r20,27,28,%r20
-+       ldo -16(%r20),%r20
-+       ldw 4(%r20),%r19
-+       sub %r20,%r22,%r21
-+       extrs %r21,27,28,%r21
-        addl %r24,%r19,%r24
--       stw %r20,28(%r26)
-        stw %r24,20(%r26)
-+       stw %r21,28(%r26)
-        stw %r0,0(%r26)
-        bv %r0(%r2)
--       stw %r21,24(%r26)
-+       stw %r22,24(%r26)
-        .EXIT
-        .PROCEND
- .Lfe1:
 
-Aside from some register juggling, the only difference is
-that we now use 'ldo,ldw,sub,extrs' instead of 'sub,ldw,extrs'.
-The question is: Can this do bad things?
-
-I'll have time on Monday to go through it thoroughly.
-
-c.
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
