@@ -1,38 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B21D34A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 11:11:49 -0700 (MST)
-Message-ID: <AB57FCC5E303D511BB8F00A0C9F485C226207C@xfc02.fc.hp.com>
-From: "MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
-To: "'Alan Modra'" <alan@linuxcare.com.au>, taggart@carmen.fc.hp.com
-Cc: randolph@tausq.org, bdale@gag.com,
-	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>,
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2333C4A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 11:29:14 -0700 (MST)
+Message-Id: <200103161827.NAA17316@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: new debs built, c++ is broken
+To: alan_meyer@hp.com (MEYER, ALAN C.)
+Date: Fri, 16 Mar 2001 13:27:22 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: alan@linuxcare.com.au, taggart@carmen.fc.hp.com,
+	randolph@tausq.org, bdale@gag.com, alan_meyer@hp.com,
 	parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Re: new debs built, c++ is broken
-Date: Fri, 16 Mar 2001 11:11:01 -0700
+In-Reply-To: <AB57FCC5E303D511BB8F00A0C9F485C226207C@xfc02.fc.hp.com> from "MEYER,ALAN C." at Mar 16, 2001 11:11:01 am
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan
+> > I reckon this patch will cure the problem, which I'm testing right
+> > now.  New gcc debs again, I'm afraid.  Anybody like to voice 
+> > an opinion for/against moving to the merge I've just done with
+> > sourceware gcc_3.0?  Looks good so far.
+> 
+> As you can tell :), I am in risk averse mode.  So, my opinion is - NO MERGE,
+> unless we have specific compelling reasons to do so.
 
-> I reckon this patch will cure the problem, which I'm testing right
-> now.  New gcc debs again, I'm afraid.  Anybody like to voice 
-> an opinion for/against moving to the merge I've just done with
-> sourceware gcc_3.0?  Looks good so far.
+I am of the opposite opinion.  The 3.0 is approaching release.  Alan has
+some patches in his branch that haven't been vetted for sourceware 3.0
+and now is a good time to have them vetted.  Gcc releases don't come
+very often and it would be good if 3.0 had the features and fixes needed
+for parisc-linux.
 
-As you can tell :), I am in risk averse mode.  So, my opinion is - NO MERGE,
-unless we have specific compelling reasons to do so.
-
-If the patch you have solves the C++ problem (the only significant toolchain
-issue at the moment), then why move up?  There may very well be some good
-reasons ... I just don't know what they are.
-
-Yes, keeping in sync with 3.0 has its advantages, but it is a moving target
-and we know we will be out of sync with it.  Merging now doesn't solve the
-general problem of, eventually, getting to an official 3.0 base for PA.
-
-Alan
-
- 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
