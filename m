@@ -1,33 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA22093
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Mar 2000 17:23:54 -0700
-Received: from seger.axis.se (seger.axis.se [192.168.2.150])
-	by roma.axis.se (8.9.3/8.9.3) with ESMTP id CAA25099
-	for <parisc-linux@thepuffingroup.com>; Fri, 31 Mar 2000 02:23:51 +0200 (MEST)
-Received: from axis.com (localhost [127.0.0.1])
-	by seger.axis.se (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id CAA11717
-	for <parisc-linux@thepuffingroup.com>; Fri, 31 Mar 2000 02:23:50 +0200
-Message-Id: <200003310023.CAA11717@seger.axis.se>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Mime-Version: 1.0
-Date: Fri, 31 Mar 2000 02:23:50 +0200
-From: Lars Segerlund <lars.segerlund@axis.com>
-Subject: [parisc-linux] NCR700
-List-ID: <linux-parisc.vger.kernel.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA25281
+	for <parisc-linux@puffin.external.hp.com>; Fri, 31 Mar 2000 01:52:10 -0700
+From: BOSCHINI@ICIL64.CILEA.IT
+Date: Fri, 31 Mar 2000 10:51:34 +0000 (MET-01DST)
+To: PARISC-LINUX@THEPUFFINGROUP.COM
+Cc: BOSCHINI@cilea.it, QUATTRONE@cilea.it
+Message-id: <01JNOHLGY86Q000XJ1@ICIL64.CILEA.IT>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; CHARSET=US-ASCII
+Subject: [parisc-linux] Building bin-utils and gcc on HP735...
 
+Hello, 
 
- Ok, is there anything I should know before I give it a try to write a NCR700
- driver for the NCR700 , is all I/O and such as usual in linux ?
+first of all, compliments for the project.
+I started some days ago trying to install parisc-linux on a 735 box. 
+I started using gcc-2.95.2 and the corresponding binutils, as downloaded from 
+http://hpux.tn.tudelft.nl/
 
- If I have got everything right I have to set up a crosscompiling gcc and boot
- the stuff from the network ?
+Then, realisng a needed the parisc includes from the puffin, I re-started from
+scratch. As sson as I start building, both with HP Ansi C compiler as well with
+gcc 2.95, the binutils, I get an error about not finding bison
 
- After that it's only to figure out how to make the NCR700 spin ? and that 
-should
- be it ? after that it would be ´self hosting´ ? Is there any other SCSI 
-drivers
- that needs to be written ?
+Making all in po
+        /bin/sh /TMP/binutils/binutils/../ylwrap "`if [ -f ../bison/bison ] ;
+then echo ../bison/bison -y -L/TMP/binutils/binutils/../bison/ ; else echo
+bison -y ; fi`" /TMP/binutils/binutils/arparse.y y.tab.c arparse.c y.tab.h
+arparse.h --  -d
+/TMP/binutils/binutils/../ylwrap[86]: bison:  not found.
+*** Error exit code 1
 
- / ls.
+So, i decided to try building the puffin gcc using my old bin-utils, but,
+obviously, make dies as soon as bison is required.
+
+Do I need to install bIson first of building binutils and gcc ?
+
+I have another question as well, is FDDI supported ? 
+
+My box is on FDDI so I'd like to know it.
+
+Anyway, thanks in advance and again, compliments for the great job !!!! 
+
+Matteo Boschini
+System and Network Administrator
+C.I.L.E.A.
+(boschini@cilea.it)
