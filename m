@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 11 Apr 2003 09:58:50 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] parisc-linux.org kernel
-Message-ID: <20030411155850.GA2795@dsl2.external.hp.com>
-References: <20030410155223.GA5254@dsl2.external.hp.com> <3E8AE87E0000567E@ocpmta2.freegates.net>
+Received: from mail.zigoo.net (e202.dhcp212-198-142.noos.fr [212.198.142.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD8AC4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Apr 2003 10:58:04 -0600 (MDT)
+Received: from Tatooine.r3z0 (varenet@Tatooine.r3z0 [192.168.69.3])
+	by mail.zigoo.net (8.12.8/8.12.7) with SMTP id h3CGw2H8017279
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Apr 2003 18:58:03 +0200
+Date: Sat, 12 Apr 2003 18:58:02 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20030412185802.0dd509bf.varenet@esiee.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E8AE87E0000567E@ocpmta2.freegates.net>
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Strange delay loop calibration with SMP kernel on UP system
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,147 +23,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Apr 11, 2003 at 07:40:32AM +0200, Joel Soete wrote:
-> Here is the rough diffstat (still have to reverse ql driver patches, I will
-> try to find time this week-end :) )
+Hi pa-ckers!
 
-cool - let me add some general comments.
-You might break the diff up into chunks along the lines that
-I've commented on them below. You should end up with something like
-15-20 patches.
+As I was working on 2.5 SMPness on our A500, tausq suggested me to try SMP
+kernel on a UP box.
+So I deconfigured one CPU on the A500.
 
->  Documentation/Configure.help                      |   90 
-	I expect parisc-specific changes here.
+The kernel failed miserably, and I rebooted the box with its _original 2.4
+SMP kernel_, _without bringing the second CPU back online_.
 
->  Makefile                                          |   16 
-	Don't submit the Makefile unless you are sure we need it.
+I repeat: i booted the box with the 2.4 SMP kernel it used to run with 2
+CPUs. That's 2.4.20-pa28 fwiw.
 
->  arch/m68k/config.in                               |    5 
-...
-	Don't submit m68k - Marcello should be ahead here.
+What a surprise!
 
->  arch/parisc/config.in                             |    6 
-...
-	parisc specific (our tree is authoritative)
-	Need to review for changes in Marcelo's tree.
-	I expect Marcello to take the mess as-is if there
-	are no conflicts.
+The delay loop calibration gave a completely different value than what I'd
+have expected according to previous boots.
 
->  drivers/char/Config.in                            |    3 
->  drivers/char/Makefile                             |    2 
->  drivers/char/pty.c                                |    4 
->  drivers/char/serial.c                             |  115 
-	Diva Support? If so, that's common to parisc/ia64.
+see:
 
->  drivers/gsc/dino.c                                |    9 
-	parisc specific.
+A500 configured with 2 CPUs:
+Calibrating delay loop... 1097.72 BogoMIPS
 
->  drivers/ide/pci/ns87415.c                         |    8 
->  drivers/ide/setup-pci.c                           |    2 
-	Suckyio support. This probably needs to go to Andre Hedrick.
+A500 configured with 1 CPU:
+Calibrating delay loop... 366.18 BogoMIPS
 
->  drivers/net/acenic.c                              |    5 
-	Jes Sorensen has all my changes for this driver.
-	Jes, can you compare Marcello's tree with ours?
-	(and please make sure Marcello gets the latest?)
+Please mind I'm not talking about "total bogomips".
+I'm talking about the calibration that takes place at the very early stage
+of the boot process, on 1 CPU (the monarch on SMP systems).
 
->  drivers/net/lasi_82596.c                          |    2 
-	parisc specific
+So that has nothing to do with having half bogomips because there's half
+processors.
 
->  drivers/net/pcnet32.c                             |   26 
-	Dunno.
+That being said, one would have noticed that 1097.72/366.18 ~= 3
 
->  drivers/net/tulip/eeprom.c                        |    3 
->  drivers/net/tulip/media.c                         |   29 
-	Jeff Garzik has blessed changes I've made here.
-	I expect this to be about the PHY reset and media table changes
-	for card-mode Dino (rbrad's changes).
+Now I wonder, is that normal (I couldn't check on another arch), or is
+that some kind of new and unknown bug?
 
->  drivers/net/wireless/airo.c                       |    7 
-	Fixes from Lamont. He's not the maintainer but the card should
-	now work under parisc-linux. He's got one running in a B180.
+HTH,
 
->  drivers/pci/quirks.c                              |    3 
-	upstream changes.
 
->  drivers/pci/setup-bus.c                           |   37 
-	I expect this is the bridge_ctl field I added using
-	Russell King's patch (arm/pci maintainer). This probably
-	can NOT go in as-is. If the bulk of the other changes
-	go in, I'll deal with this.
-
->  drivers/scsi/Config.in                            |   57 
->  drivers/scsi/Makefile                             |   15 
-	Added qla2xxx
-
->  drivers/scsi/cpqfcTScontrol.c                     |   45 
->  drivers/scsi/cpqfcTSi2c.c                         |    3 
->  drivers/scsi/cpqfcTSinit.c                        |   12 
->  drivers/scsi/cpqfcTSstructs.h                     |    4 
->  drivers/scsi/cpqfcTSworker.c                      |    2 
-	These are my cleanups so one can load/unload the module 
-	without crashing the system. TL chips (5100/5166) should
-	work but HP XL2 HBAs do not - need more work to read the serial
-	PROM and pull the GBIC info/WWW id out.  I haven't tested
-	this on ia64, only parisc.
-
-	This is an orphan'd driver.  I talked to the current maintainers
-	and they just don't have time to work on it. This is the same
-	group that supports cciss driver (SmartArray cards).
-	I've submitted these changes about 2 months ago. 
-
-	See http://sourceforge.net/projects/cpqfc.
-
->  drivers/scsi/ncr53c8xx.c                          |  341 +
-	rhirst changes for zalon support?
-
->  drivers/scsi/qla2xxx/Config.in                    |    6 
->  drivers/scsi/qla2xxx/Makefile                     |   13 
-...
-	"New" driver. This is the released qla2xxx v6.0.4 from Qlogic.
-	Works on ia64 (weekend of hazard testing) but not quite on parisc.
-	At least it doesn't crash parisc. I have a card installed in
-	an a500 if someone has time to poke at this some more.
-
->  drivers/scsi/sym53c8xx.c                          |   44 
->  drivers/scsi/sym53c8xx_2/sym_glue.c               |   14 
->  drivers/scsi/sym53c8xx_2/sym_hipd.c               |   35 
->  drivers/scsi/sym53c8xx_defs.h                     |   83 
-	All of these sym53c8xx changes have been blessed by Gerard Roudier.
-	He's the maintainer. Please submit.
-
->  drivers/sound/ad1889.c                            |    2 
-	parisc specific.
-
->  drivers/video/Config.in                           |   14 
->  drivers/video/dummycon.c                          |   10 
->  drivers/video/sstfb.c                             |  114 
-	parisc specific.
-
->  fs/Makefile                                       |    1 
->  fs/binfmt_elf.c                                   |  288 -
->  fs/exec.c                                         |   97 
->  fs/open.c                                         |   22 
->  fs/read_write.c                                   |   40 
->  include/asm-generic/xor.h                         |  378 +
->  include/asm-m68k/machdep.h                        |    4 
->  include/asm-m68k/rtc.h                            |   50 
-	I expect these are upstream changes
-
->  include/asm-parisc/checksum.h                     |   26 
-...
-	parisc specific.
-	(logo was updated among other things)
-
->  include/linux/binfmts.h                           |    2 
-...
-	Need to review if the remaining diff are upstream or our changes.
-	I suspect most are upstream.
-
-> (hmm don't remember if linux_logo is of mine dpkg install or a new one in
-> our tree :)
-
-new one in our tree.
-
-hth - thanks!
-grant
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
