@@ -1,19 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA04527
-	for <parisc-linux@puffin.external.hp.com>; Mon, 7 Feb 2000 14:07:42 -0700
-Message-ID: <95B97DD42B78D31193A8005004D1E05C0F44CC@mustang.computone.com>
-From: Chris Fowler <chrisf@computone.com>
-To: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Date: Mon, 7 Feb 2000 14:52:05 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Video Modes on 715/33
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA18330
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 00:03:10 -0700
+Received: (from phil@localhost)
+	by moiraine.off.net (8.9.3/8.9.3) id VAA04186
+	for parisc-linux@thepuffingroup.com; Mon, 7 Feb 2000 21:47:41 -0800
+Date: Mon, 7 Feb 2000 21:47:41 -0800
+From: Phil Schwan <phil@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000207214741.A4108@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] CVS commit messages
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have a 715/33 and a FF monitor.  I need to change the video mode and
-frequency of the HP so I can use my monitor.  Does anyone know how to do
-this?
+I put some scripts in place (thanks OpenBSD!) that nicely coalesce cvs
+commit messages into one message (instead of a commit message for
+every directory that had a changed file).
 
-Thanks,
-Chris
+Since this obsoletes the parisc-linux-cvs-digest value of 10 minutes
+(which was put in place to do the same thing), I've increased the
+parisc-linux-cvs-digest maximum time to one day; people who want the
+old behaviour should switch to parisc-linux-cvs, and people who would
+rather have one message per day should stay on -digest.
+
+-Phil
+
+-- 
+Phil Schwan, Senior Linux Consultant, Linuxcare, Inc.
+415.354.4878 x271 tel, 415.701.7457 fax
+pschwan@linuxcare.com http://www.linuxcare.com/
+Linuxcare.  Support for the revolution.
