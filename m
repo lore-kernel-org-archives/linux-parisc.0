@@ -1,31 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C04C3482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 18:17:25 -0600 (MDT)
-To: "Jaime Ash" <jaimeash@home.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Creating the installation CD 
-In-Reply-To: Message from "Jaime Ash" <jaimeash@home.com>
-   of "Tue, 14 Aug 2001 17:12:57 PDT." <NEBBJAILOLAHGDBEOCIOAEFJCFAA.jaimeash@home.com>
-References: <NEBBJAILOLAHGDBEOCIOAEFJCFAA.jaimeash@home.com> 
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B3893482A
+	for <parisc-linux@parisc-linux.org>; Tue, 14 Aug 2001 18:57:59 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15Wp0L-00023T-00; Wed, 15 Aug 2001 01:57:53 +0100
+Date: Wed, 15 Aug 2001 01:57:53 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Paul Bame <bame@riverrock.org>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Linux/HPPA List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Kernel 2.4.8
+Message-ID: <20010815015753.L22144@parcelfarce.linux.theplanet.co.uk>
+References: <20010811145450.O22097@neep.com.au> <20010814173801.D22144@parcelfarce.linux.theplanet.co.uk> <m15WkQY-000OUsC@bame.riverrock.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 14 Aug 2001 18:17:24 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010815001724.48B0537DD1@carmen.fc.hp.com>
+In-Reply-To: <m15WkQY-000OUsC@bame.riverrock.org>; from bame@riverrock.org on Tue, Aug 14, 2001 at 02:04:38PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Jaime Ash" writes...
+On Tue, Aug 14, 2001 at 02:04:38PM -0600, Paul Bame wrote:
+> > I think we should plan to merge in 2.4.8 this week.  Paul, can you do the
+> > CVS magic sometime soon?
+> 
+> Possibly tomorrow (Wed) AM
 
-> So my question to you is, what is the process for going from the *.iso file
-> to create the CD.
+Sounds good to me -- there is one already applied patch (pci.txt), and
+two failures -- Makefile (trivial) and include/linux/netdevice.h which
+got fixed a different way upstream.
 
-The file you grabbed is gzipped so you'll need to gunzip it first. Then use 
-your favorite CD burning software to burn it as is. I use X-CD-Roast but you 
-can even use MSWindows based programs (or so I've heard).
-
-If you have problems booting, send the errors to the list.
+Other than that, there are no textual conflicts.  I guess we'll find out
+tomorrow what architecture changes are needed (Alan tells me he suspects
+none are needed).
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Revolutions do not require corporate support.
