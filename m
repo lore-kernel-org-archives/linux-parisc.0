@@ -1,16 +1,14 @@
-From: Kyle McMartin <kyle@engsoc.org>
-Subject: Re: [parisc-linux] Install of Debian 30r2 to HP C3600 with USB
-	keyboard & mouse.
-Date: Thu, 12 Aug 2004 11:36:58 -0400
-Message-ID: <20040812153658.GH11649@engsoc.org>
-References: <A6EBFD8CBD50984D95C93CB3CD4F0D5B11A9EC@GBCWSWIEM001.ad.plc.cwintra.com>
+From: "Michael S. Zick" <mszick@goquest.com>
+Subject: Re: [parisc-linux] uninline in bitops.c as ia64 or sparc64?
+Date: Thu, 12 Aug 2004 08:59:28 -0500
+Message-ID: <200408120859.28306.mszick@goquest.com>
+References: <40FB89640000B461@ocpmta2.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Neville, James" <James.Neville@cwmsg.cwplc.com>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <A6EBFD8CBD50984D95C93CB3CD4F0D5B11A9EC@GBCWSWIEM001.ad.plc.cwintra.com>
+In-Reply-To: <40FB89640000B461@ocpmta2.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,30 +19,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Aug 12, 2004 at 03:37:39PM +0100, Neville, James wrote:
->    I am trying to install the Debian 30r2 hppa distribution onto a HP C3600.
->    When the first CD is booted the RAM disk loads and I get a nice blue
+On Wed August 11 2004 06:58, Joel Soete wrote:
+> 
+> Hello *,
+> 
+> > Subject: Re: [parisc-linux] uninline in bitops.c as ia64 or sparc64?
+> > 
+> > 
+> > On Tue August 10 2004 09:51, John David Anglin wrote:
+> > > > On Mon, Aug 09, 2004 at 09:54:08AM -0500, Michael S. Zick wrote:
+> > > > > generic_ffz is defined as integer - is 'integer' the same size
+> > > > > cpu32 and cpu64?  If not, that routine needs a size-conditional
+> > > > > test for the other 32 bits on cpu64.
+> > > > 
+> > > > Integers are the same size. The 64-bit boxes are LP64.
+> > > 
+> > > To be more specific, the 'int' types are the same size.  The 'long'
+> > > types are different.
+> > > 
+> Here is the smal test case I tested:
+- - - - - - 
+> 
+> I compile it with James 64bit lib with hppa64-linux-gcc (3.0.4) and run
+> it on a b2k (64bit cpu) with 2.6.8-rc2-pa7 64bit.
+> That's a long test (reason of delay) but it works fine.
+> 
+> I also test the 32bit binaries (compile with gcc-3.3.4) runing on the b2k
+> with same kernel and it also works fine.
+> 
+> Please note that I have to abuse the original ffs() code with ULffs() and
+> an unsigned long (64bit long for hppa64-gcc) as parameter (the original
+> was an integer of 32bit long for 64bit and 32bit gcc).
+> 
+> hth,
+>     Joel
+Thanks for the testing and the help Joel.
+So I would like the m-l to consider that patch sent
+earlier be upgraded from "suggested" to "submitted".
 
-Hi James,
-
-You may want to try the new installer images for hppa for version 3.1 of
-Debian.
-
-http://cdimage.debian.org/pub/cdimage-testing/sarge_d-i/hppa/rc1/sarge-hppa-netinst.iso
-
-I have done significant testing of these images throughout their
-development, and found them to work well.
-
-If you could send an installation report mail as here, it would be
-fantastic
-http://www.nl.debian.org/devel/debian-installer/report-template
-
-Debian 3.1 "sarge" our new stable version will be released around the
-15th of September, so you might as well get a head start.
-
-Regards,
--- 
-Kyle McMartin
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
