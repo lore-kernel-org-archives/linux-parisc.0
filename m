@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0997C482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 09:34:50 -0700 (MST)
-Date: Thu, 14 Nov 2002 08:37:53 -0800
-From: Randolph Chung <tausq@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: phi <phi@hpfrcu81.france.hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] .PARISC.unwind where is it for pa2.0w?
-Message-ID: <20021114163753.GI8261@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <3DD2C4E5.7000001@gmx.at> <20021113215411.GB32441@beavis.ybsoft.com> <3DD3A56F.665A0FB4@hpfrcu81.france.hp.com> <20021114133326.W30392@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021114133326.W30392@parcelfarce.linux.theplanet.co.uk>
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D3CA2482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 12:38:49 -0700 (MST)
+Received: from localhost (localhost [127.0.0.1])
+	by transport.cksoft.de (Postfix) with ESMTP id 96B461FFECD
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 20:38:44 +0100 (CET)
+Date: Thu, 14 Nov 2002 19:37:55 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+To: parisc-linux@lists.parisc-linux.org
+Cc: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Message-ID: <Pine.BSF.4.44.0211141928040.39295-100000@e0-0.zab2.int.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] strange mail routing problem for mail from this list
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +24,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Where is the "Section: .PARISC.unwind" for palinux2.0w doing an elfdump on the
-> > kernel I don't see it?
-> > 
-> > Is it implemented differently
-> 
-> looks like we link it into the .text section:
+Hi,
 
-in the kdb branch this was moved (perhaps more appropriately) to the
-data section, and surrounded by markers so that you can find the
-begin/end. i will add this change to the 2.5 branch. In fact, it
-probably should be in the rodata section....
+I have seen some strange headers on the mail from Grant Grundler's
+reply to my posting regarding "[2.5] rtc doesn't build".
+I noticed this because the mail came in with a delay > 1 day.
 
-randolph
+The problem here seems that the mailsystems down under have nothing to
+do with either hp, parisc or my mailhosts from what I know.
+
+My question to the list would be if anybody else received mails from
+the list going through these systems.
+
+a simple grep for 144.249.122.105 and 212.125.75.12 should be
+sufficient.
+
+for me this was:
+	egrep -E '(144.249.122.105|212.125.75.12)' Mail/LISTS.linux.parisc
+
+if this is postive for you too please contact me off-list.
+
+Thanks.
+
+PS: the same simple grep should word for the maillogs on
+parisc-linux.org if anybody else with access there can find the time.
+
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
+
+> Received: from mail pickup service by naex017w.apci.com with Microsoft
+>     SMTPSVC;
+> 	 Wed, 13 Nov 2002 23:39:46 -0500
+> Received: from Local ([144.249.122.105]) by 144.249.122.105 with Trend
+>     Micro InterScan Messaging Security Suite for SMTP v5.01; Tue,
+>      12 Nov 2002 14:01:07 -0500
+...
+> Received: from mail4.messagelabs.com ([212.125.75.12]) by Local with
+>     Microsoft SMTPSVC(5.0.2195.4905);
+> 	 Tue, 12 Nov 2002 14:01:07 -0500
