@@ -1,48 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D812F4A19
-	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 02:56:15 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 4BC05B008; Thu, 22 Mar 2001 09:57:10 +0000 (GMT)
-Date: Thu, 22 Mar 2001 09:57:10 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-Cc: Robert Liesenfeld <xunil96@yahoo.com>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Init not found on 735/125?
-Message-ID: <20010322095710.C18942@linuxcare.com>
-References: <20010322011955.17416.qmail@web5503.mail.yahoo.com> <20010322030651.33A5B38145@carmen.fc.hp.com>
-Mime-Version: 1.0
+Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CC9294A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Mar 2001 03:38:39 -0700 (MST)
+Received: from alcatel.at (atusel33.aut.alcatel.at [146.112.129.215])
+	by  mail.alcatel.at (8.9.3/8.9.3/1.21 01/27/01 21:43:09) with ESMTP id LAA20027
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Mar 2001 11:38:35 +0100 (MET)
+Sender: christoph.plattner@alcatel.at
+Message-ID: <3AB9D629.DA9A14FC@alcatel.at>
+Date: Thu, 22 Mar 2001 11:38:33 +0100
+From: Christoph Plattner <christoph.plattner@alcatel.at>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010322030651.33A5B38145@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Wed, Mar 21, 2001 at 08:06:51PM -0700
+Subject: [parisc-linux] Problem with FS of ESIEE on 720 !
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Mar 21, 2001 at 08:06:51PM -0700, Matt Taggart wrote:
-> 
-> Robert Liesenfeld writes...
-> 
-> > I'm much closer to being able to install palinux on my 735/125...at the momen
-> > t, the main problem
-> > I'm having is this:
-> [snip]
-> 
-> You could try using sash as init and see if you get further. I think this is 
-> the same problem as Richard mentioned in,
-> 
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-March/012025.html
-> 
-> It's solved by a new glibc that's 16 byte aligned. See the message I just sent 
-> out about where to get the new glibc debs from.
+Hello PA-RISCers !
 
-No, different problem I think.  My system found init, but init then hung.
-Robert is seeing:
+I have tried the current and the last ESIEE file system,
+but I have problems with both. I used my own kernel,
+running with the palinux-0.5, but the ESIEE always hangs.
+If I do not change the /dev/console, I get the warning...
+(of course, I have not compiled in the STI). So tried
+to set the `mknod console c 5 1' and I also tried the
+"hack" doing a link to `ttyS0'. In both cases `init'
+gives no welcome message (version, etc...) and the machine
+hangs !
 
-> Kernel panic: No init found.  Try passing init= option to kernel.
+Now I will instrument the kernel with `printk's to see,
+if he can start something,.....
 
-Maybe his 735/125 is mounting the wrong dir, maybe his sbin/init doesn't
-have execute access.  I'd check I could nfs mount that dir from some
-other machine, and see sbin/init ok.  Using init=/bin/sash is a good
-idea anyway, except I don't think sash is on the .iso, so you need
-to build it or ask nicely ;)
+What's the topic with the TERM variable ??
+Have I set it to a special value ???
+Can that be the reason ???
 
-Richard
+Cheers
+	Christoph P.
+
+
+-----------------------------------------------------------------
+private:        christoph.plattner@dot.at
+company:        christoph.plattner@alcatel.at
