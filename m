@@ -1,13 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FB on c3k 
-In-Reply-To: Message from Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-   of "Thu, 07 Mar 2002 11:03:39 +0100." <20020307110339.A1590@solo.franken.de>
-References: <20020306080101.B6A874859@dsl2.external.hp.com> <20020307002239.A9224@solo.franken.de> <tsbogend@alpha.franken.de> <20020307073117.4C572482F@dsl2.external.hp.com>  <20020307110339.A1590@solo.franken.de> 
-Date: Sat, 09 Mar 2002 23:56:41 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020310065641.D8D3A48EB@dsl2.external.hp.com>
+Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39994482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Mar 2002 05:43:49 -0700 (MST)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id UAA10629
+	for parisc-linux@lists.parisc-linux.org; Sun, 10 Mar 2002 20:43:37 +0800
+Date: Sun, 10 Mar 2002 20:43:34 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] security updates
+Message-ID: <20020310204332.U1906@neep.com.au>
+References: <5.0.2.1.2.20020309230930.00ae3d80@mailbox.hrz.tu-chemnitz.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <5.0.2.1.2.20020309230930.00ae3d80@mailbox.hrz.tu-chemnitz.de>; from tilo@jandt-online.net on Sat, Mar 09, 2002 at 11:10:33PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,50 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thomas Bogendoerfer wrote:
-> after sleeping over the problem, I believe we were short just one bit.
-> We extracted 32 bits from the PTE. The lower 5 bits are zeroed and will
-> be the 4 size bits and the one 0 bit in the TLB. That leaves 27 bits for
-> the physical page number. Adding the 12 offset bits for 4k pages gives us
-> just 39 bits, but we need 40. So instead of the change 32 -> 52 a
-> change from 32 -> 33 should do the same. On the other side using all
-> bits shouldn't matter and we are prepared for 44 bit and more.
+Quoth Tilo Jandt:
+> could someone send me his source.list entries
+> for security updates?
 
-ok. that all make sense now.
-It made more sense when I read about extru and idtlbt in the 
-PA 2.0 Arch book.
+Hi Tilo,
 
-> BTW.
-> isn't our current PDC space expansion wrong for "odd" sized address
-> spaces ? It should work for 48 and 56, but not for anything else.
-> Or do I miss something ?
+Due to the volatile nature of the 'unstable' pool and the delayed update
+process of the 'testing' pool, I believe the Debian security updates are
+only done for the 'stable' pool.  If there is a security fix for a
+testing or unstable package it will generally just appear in your next
+apt-get upgrade.
 
-I have no clue. jsm or willy know?
+Andrew.
 
-> I will have a J6700 at Cebit to play with, but I don't think I'll
-> get spare time in the next couple of days.
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
-Done! See ftp://ftp.p-l.o/patches/entry.S-diff
-
-The 32-bit kernel with FB is working with 4 instances of the following
-change to entry.S (all immediately preceed an idtlbt instruction):
--       extrd,u         pte,56,25,pte
-+       extrd,s         pte,56,25,pte   /* bit 31:8 >> 8  */
-+       depdi           0,3,4,pte       /* page_size = 4k (in case signed) */
-
-CAVEAT: This is better than the brokeness we had before.
-But it doesn't properly handle 0xf0xxxxxx addresses.
-Those need to be "f-extended" with 0xf0f0f0... instead of all 1's.
-
-> yes,  with your last ioctl32 changes. I need to recheck my first entry.S
-> hack for the narrow mode pa2.0 tlb handler. I think my assembler code
-> just sucks and setting up the tlbs the same way as for wide mode,
-> should get us X with 32-bit kernels, too.
-
-Done. patch on ftp.p-l.o/patches/entry.S-diff.
-Can someone with VM cluefulness review this for me?
-
-It seems to be working on my c3k with Vis-EG/PCI now though...wohoo! :^)
-
-thanks,
-grant
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
