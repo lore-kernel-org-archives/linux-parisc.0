@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailhost.sporbeck-family.de (pD9E1DC06.dip.t-dialin.net [217.225.220.6])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3975F482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Jul 2003 09:18:04 -0600 (MDT)
-Received: from [192.168.100.101] (helo=sporbeck-family.de)
-	by mailhost.sporbeck-family.de with esmtp (Exim 4.14)
-	id 19bMAQ-0000Yf-VN
-	for parisc-linux@lists.parisc-linux.org; Sat, 12 Jul 2003 17:20:06 +0200
-Message-ID: <3F102709.10403@sporbeck-family.de>
-Date: Sat, 12 Jul 2003 17:19:37 +0200
-From: Jan Sporbeck <jan_lists@sporbeck-family.de>
+Received: from no-more-accent588.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
+	by dsl2.external.hp.com (Postfix) with SMTP id CD906482A
+	for <parisc-linux@parisc-linux.org>; Sat, 12 Jul 2003 10:16:29 -0600 (MDT)
+From: Martin Andrews <mandrews@no-more-accent.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: mandrews@no-more-accent.com
+Date: Sat, 12 Jul 2003 11:16:23 -0500
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] eisa configuration howto?
+Content-Type: multipart/mixed; boundary="bb3f19c0-c1ff-4116-aab7-213253fcdf73"
+Message-Id: <20030712161629.CD906482A@dsl2.external.hp.com>
+Subject: [parisc-linux] Are YOU learning English...?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +21,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
-Iam trying to get an additional esia scsi controller to work on my 
-9000/801/d200.
+This is a multi-part message in MIME format
+--bb3f19c0-c1ff-4116-aab7-213253fcdf73
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-But i am stuck with the eisa configuration.
-Where do I register eisa cards?
--Ive only done that on intel before, there was an userspace programm..
+Dear Reader,
 
+No More Accent is an accent reduction product, which helps to remove accents. =
+For example, an Asian lady (or any nationality) may have communication =
+problems with her English when speaking to her work mates or friends.
 
-while booting, I get:
+With that in mind, No More Accent teaches Accent Reduction methodologies to =
+help in this area. In fact, No More Accent can be used in almost any =
+situation where an accent reduction is required. Even Actors within the =
+Entertainment Industry have turned to No More Accent as a way to lose or gain =
+an accent of another nationality.
 
-EISA slot 1: HWP0C80 EISA IRQ 3 memory fc0d8000-fc0e0000
-EISA slot 2 id mis-match: got ADP7771 expected ___FFFF
+No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
+(PAL and NTSC formats) both can be purchased directly via the =
+www.no-more-accent.com website.
+If you would like further information about our products or services, please =
+contact myself 
+when you have a moment.
 
-the controler is in slot 2.
+Best Wishes...
 
-Is there any linux/ parisc eisa howto?
+Martin Andrews
+Marketing Co-ordinator
 
-what am I missing?
+http://www.no-more-accent.com
 
-
-thanks,
-jan.
+Your #1 Resource for Accent Reduction!    
+--bb3f19c0-c1ff-4116-aab7-213253fcdf73--
