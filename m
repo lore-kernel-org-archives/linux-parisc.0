@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 507624829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Nov 2002 10:26:08 -0700 (MST)
-Message-Id: <200211111725.gABHPo5R002295@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc 2.3.1 - It's alive! - patches
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Mon, 11 Nov 2002 12:25:49 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, parisc-linux@lists.parisc-linux.org,
-	tausq@debian.org, jbailey@nisa.net
-In-Reply-To: <20021111162656.GE8848@systemhalted> from "Carlos O'Donell" at Nov 11, 2002 11:26:56 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: =?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>
+Cc: "'parisc-linux maillist'" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] 9000/712 and C2490A harddisk 
+In-Reply-To: Message from =?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>
+   of "Mon, 11 Nov 2002 14:13:45 +0100." <02Nov11.142433cet.119042@ns.hiscom.nl>
+References: <02Nov11.142433cet.119042@ns.hiscom.nl> 
+Date: Mon, 11 Nov 2002 10:31:36 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021111173136.E137E4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,28 +19,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Ah yes, correct, I had forgotten that it was never implemented in
-> silica. So you suggest we not implement this in libc but rather in gcc,
-> may I ask why?
+=?iso-8859-1?Q?=22Beerse=2C_Corn=E9=22?= wrote:
+> I like to know:
+> the pin-out (including the  position of pin-1, the connector does not make
+> this clear)
 
-I don't have a strong opinion on this.  Probably, the routines should
-be in libc.  However, it's probably simple also to put them in libgcc
-which contains some arithmetic operations.  Some work in gcc would
-be needed in any event to integrate the package.
+sorry - don't have this handy. You'll have to search for it.
 
-> > While GMP is a useful package, it doesn't emulate IEEE 754 arithmetic.
-> > That's what we need here.  There's a floating point emulator in gcc/real.c
-> > but I think the HP library would be superior.
-> 
-> I'm pretty sure that MPFR library in GMP can emulate IEEE 754 arithmetic, 
-> though I could be wrong.
+> can the 9000/712 boot from it (is it worth the effort)
 
-I found the quad double package at the mpfr site.  However, its double
-double differs from the IEEE quad precision representation.  A double double
-is a representation using two IEEE doubles.  This is fine as a separate
-library but not the IEEE implementation we are looking for.
+yes.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> I've the impression it is a 2.x GB, 7200rpm harddisk and I've been told it
+> is a relabeled Seagate (then which one?)
+
+I'm pretty sure it's not.
+IIRC, that was the last model disk drive that HP "DMD" designed/made.
+
+grant
