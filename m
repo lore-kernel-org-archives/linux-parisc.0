@@ -1,42 +1,33 @@
-Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA06379
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 11:17:22 -0700
-Date: Tue, 16 Jan 2001 10:20:56 -0800
-Message-Id: <200101161820.KAA24567@elmo.cygnus.com>
-From: Nick Clifton <nickc@redhat.com>
-To: alan@linuxcare.com.au
-CC: binutils@sourceware.cygnus.com, parisc-linux@puffin.external.hp.com
-Subject: Re: Build hppa unwind info for more than .text
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA08069
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 14:12:23 -0700
+Date: Tue, 16 Jan 2001 17:01:53 -0500 (EST)
+From: herrold <herrold@owlriver.com>
+Sender: <herrold@owlriver.com>
+To: Matthew Wilcox <matthew@wil.cx>
+cc: <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] overuse of tables in new website
+In-Reply-To: <20010115133505.B29423@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.30.0101161658060.19995-100000@pokey.513erich.iwaynet.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Alan,
+On Mon, 15 Jan 2001, Matthew Wilcox wrote:
 
-: We were missing lots of unwind info, especially when using
-: -ffunction-sections, which confuses gdb.
-: 
-: gas/ChangeLog
-: 	* config/tc-hppa.c (pa_build_unwind_subspace): Build unwind
-: 	depending on section flags, not just for .text.
+> i have similar complaints about other bits, but i can't be bothered to
+> look at them closely when i have no idea whether anyone's paying any
+> attention to what i think.
 
-: Index: gas/config/tc-hppa.c
-: ===================================================================
-: RCS file: /cvs/src/src/gas/config/tc-hppa.c,v
-: retrieving revision 1.76
-: diff -u -p -r1.76 tc-hppa.c
-: --- tc-hppa.c	2001/01/14 07:03:49	1.76
-: +++ tc-hppa.c	2001/01/16 12:23:05
-: @@ -6053,7 +6053,9 @@ pa_build_unwind_subspace (call_info)
-:    int reloc;
-:    char c, *p;
-:  
-: -  if (now_seg != text_section)
-: +  if ((bfd_get_section_flags (stdoutput, now_seg)
-: +       & (SEC_ALLOC | SEC_LOAD | SEC_READONLY))
-: +      != (SEC_ALLOC | SEC_LOAD | SEC_READONLY))
-:      return;
+... I am ... I agree that you are trying to use dynamite to scrape
+off the cruft.
 
-Won't this create unwind info for read only data sections ?  Would
-that be a bad thing ?
+Anyone who does not test web pages with lynx and konquerer should be
+horsewhipped.
 
-Cheers
-	Nick
+That said, the CVS generation approach is rather nice -- why not
+commit your test pages, Matthew, off a new link on the top page "...
+for another view" -- If it goes stale, it may be pruned away -- no
+harm, no foul.  What say?
+
+-- Russ
