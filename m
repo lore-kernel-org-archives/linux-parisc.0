@@ -1,30 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA21348
-	for <parisc-linux@puffin.external.hp.com>; Mon, 29 Jan 2001 14:55:49 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 33EDEE35
-	for <parisc-linux@thepuffingroup.com>; Mon, 29 Jan 2001 13:59:23 -0800 (PST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id OAA26531
-	for parisc-linux@thepuffingroup.com; Mon, 29 Jan 2001 14:01:36 -0800 (PST)
-Date: Mon, 29 Jan 2001 14:01:36 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200101292201.OAA26531@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA27712
+	for <parisc-linux@puffin.external.hp.com>; Mon, 29 Jan 2001 23:42:52 -0700
+From: 5116@telia.com
+Received: from zaphod.halden.lillfab.se (t5o70p38.telia.com [195.67.239.38])
+	by maild.telia.com (8.9.3/8.9.3) with ESMTP id HAA22425
+	for <parisc-linux@thepuffingroup.com>; Tue, 30 Jan 2001 07:46:52 +0100 (CET)
+Received: (from danne@localhost)
+	by zaphod.halden.lillfab.se (8.9.3/8.9.3) id HAA30526
+	for parisc-linux@thepuffingroup.com; Tue, 30 Jan 2001 07:45:47 +0100
+Message-Id: <200101300645.HAA30526@zaphod.halden.lillfab.se>
+Date: Tue, 30 Jan 2001 07:45:46 +0100 (CET)
+Reply-To: 5116@telia.com
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] register_fallback_cpu()
+MIME-Version: 1.0
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Subject: [parisc-linux] /proc/bus/gsc
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
-I committed a change to address some deficiencies in our hp_devices
-handling and the change also affected older architectures. In particular,
-I replaced register_modules() interface (whose name neither Matthew
-nor I liked) with two functions: alloc_pa_dev() and register_pa_dev().
+What is the plan for /proc/bus/gsc?
 
-register_fallback_cpu() was one of the functions used by older HW
-that I was not able to test. If anyone has time to pull a new kernel
-and play with it, that would be good. Please let me know ASAP, if I
-broke it. I'm happy to help fix it again.
+I see some unfinished support in drvices/gsc/gsc.c. and what about
+devices which are not really GSC? Should there be a /proc/pdc/devices
+for the complete story?
 
-grant
+/Daniel 
+-- 
