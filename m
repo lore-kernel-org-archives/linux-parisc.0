@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0C04E482E
-	for <parisc-linux@parisc-linux.org>; Fri, 12 Jul 2002 13:54:28 -0600 (MDT)
-Date: Fri, 12 Jul 2002 12:59:23 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: gcc@gcc.gnu.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Problem building gcc-3.2 (cvs head) on hppa-linux
-Message-ID: <20020712195923.GC8724@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20020712165616.GA8724@tausq.org> <200207121752.g6CHqvRY018027@hiauly1.hia.nrc.ca> <20020712193842.GB8724@tausq.org>
+Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id 59C8D488D
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Jul 2002 14:30:10 -0600 (MDT)
+Date: Fri, 12 Jul 2002 23:31:28 +0300
+From: "Stephan Trajkoff" <stephan@itp.bg>
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020712193842.GB8724@tausq.org>
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <20020712203010.59C8D488D@dsl2.external.hp.com>
+Subject: [parisc-linux] Problem in X with keyboard and problem with LAN and telnetd
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,22 +20,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> /home/tausq/src/gcc-3.2/gcc/unwind-dw2.c: At top level:
-> /home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:56: error: size of array `reg' is too la
-> rge
-> /home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:62: internal compiler error: internal er
-> ror: Segmentation fault
+-------------------------------------------------------------------
+-->> FREE Perl CGI scripts add WEB ACCESS to your POP email accounts!
+-->> Download today!! http://www.adjeweb.com
+-------------------------------------------------------------------
 
-something basic seems to be broken:
-tausq@a500:~/build/gcc-3.2$ cat t.c
-void *foo[2];
-
-tausq@a500:~/build/gcc-3.2$ /home/tausq/build/gcc-3.2/gcc/xgcc -B/home/tausq/build/gcc-3.2/gcc/ -B/home/tausq/opt/gnu/hppa64-linux/bin/ -B/home/tausq/opt/gnu/hppa64-linux/lib/ -c t.c
-t.c:1: error: size of array `foo' is too large
-t.c:1: error: storage size of `foo' isn't known
-
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+I have 3 problems
+1. when I run Xfree86 with KDE, my ps/2 keyboard won't work, I sait=20
+to XFREE that I have us keyboard, pc104 and that is ps/2.
+2. my LAN lasi 82596 says that I have timeout non stop with
+connection
+3. When I connect from Windows and Linux to my server, and when I run=20
+command that display many rows, automatically linux closing my=20
+connection and _|_. With SSH all is working. For example try to run=20
+dmesg or ps axuw.
