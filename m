@@ -1,23 +1,15 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 06BCE49A5
+Return-Path: <ktototam1@hotmail.com>
+Received: from hotmail.com (bay2-f64.bay2.hotmail.com [65.54.247.64])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4DFE54856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 31 Mar 2004 05:15:15 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1B8ecj-00086f-LI; Wed, 31 Mar 2004 13:15:13 +0100
-Date: Wed, 31 Mar 2004 13:15:13 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Booting remounting and S10checkroot.sh,
-	the saga of changes to how mount works...
-Message-ID: <20040331121513.GN7709@parcelfarce.linux.theplanet.co.uk>
-References: <20040331063632.GB21909@baldric.uwo.ca>
+	Wed, 31 Mar 2004 09:03:56 -0700 (MST)
+From: "Net Spamu" <ktototam1@hotmail.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Wed, 31 Mar 2004 16:03:55 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040331063632.GB21909@baldric.uwo.ca>
-Sender: <willy@www.linux.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; format=flowed
+Message-ID: <BAY2-F647JHYJwnF1UG0003811d@hotmail.com>
+Subject: [parisc-linux] Critical: server hangs because of scsi resets
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,19 +19,45 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Mar 31, 2004 at 01:36:32AM -0500, Carlos O'Donell wrote:
-> So I rebooted to test my signal fixes, and I find that I can't boot my
-> box anymore. It seems that /etc/rcS.d/S10checkroot.sh was no longer
+Hi,
 
-This is what happens when you don't keep up with the latest CVS version ;-)
-Fixed in our kernel on Monday:
+I see the following on my console.
 
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2004-March/033952.html
+SCSI host 1 abort (pid 1207191) timed out - resetting
+SCSI bus is being reset for host 1 channel 0.
+ncr53c8xx_reset: pid=1207191 reset_flags=2 serial_number=1207192
+serial_number_at_timeout=1207192
+SCSI host 1 abort (pid 1207201) timed out - resetting
+SCSI bus is being reset for host 1 channel 0.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+The system hangs because of the resets. The problem repeats time by time.
+
+I run K210 under linux-2.4.23-pa5. The problem appears on different scsi
+controllers, so I hope there are neither controller nor disk problems. This
+are current drivers from /var/log/messages.
+
+kernel: loop: loaded (max 8 devices)
+kernel: Found i82596 at 0xffd07000, IRQ 87
+kernel: eth0: 82596 at 0xffd07000, 08 00 09 DA 44 88 IRQ 87.
+kernel: 82596.c $Revision: 1.32 $
+kernel: SCSI subsystem driver Revision: 1.00
+kernel: zalon_scsi_callback: Zalon vers field is 0x1, IRQ 35
+kernel: ncr53c8xx: 53c720 detected
+kernel: ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+kernel: zalon_scsi_callback: Zalon vers field is 0x1, IRQ 36
+kernel: ncr53c8xx: 53c720 detected
+kernel: ncr53c720-1: ID 7, Fast-10, Parity Checking, Differential
+kernel: scsi0 : ncr53c8xx-3.4.3b-20010512
+kernel: scsi1 : ncr53c8xx-3.4.3b-20010512
+
+Can it be a bad driver problem? I use Linux Software RAID, is it possible to
+tune some parameters there?
+
+Many thanks in advance for any help!
+
+BR,
+Dub
+
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
