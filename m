@@ -1,89 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA25181
-	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 14:33:36 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 18 Dec 2000 21:36:31 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 1487xM-0003J1-00
-	for parisc-linux@thepuffingroup.com; Mon, 18 Dec 2000 21:36:28 +0000
-Date: Mon, 18 Dec 2000 21:36:28 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001218213628.A12128@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA25790
+	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 14:51:55 -0700
+Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
+  by mailserv2.iuinc.com with SMTP; 18 Dec 2000 21:54:51 -0000
+Subject: Re: [parisc-linux] ldcw in __pthread_acquire
+To: lamont@hp.com (LaMont Jones)
+Date: Mon, 18 Dec 2000 21:56:03 +0000 (GMT)
+Cc: alan@lxorguk.ukuu.org.uk (Alan Cox), sieler@allegro.com (Stan Sieler),
+        parisc-linux@thepuffingroup.com,
+        phi@hpfrcu03.france.hp.com (Philippe Benard),
+        lamont@hp.com (LaMont Jones), matthew@wil.cx (Matthew Wilcox),
+        jes@linuxcare.com (Jes Sorensen), alan@linuxcare.com.au (Alan Modra),
+        jsm@udlkern.fc.hp.com (John Marvin)
+In-Reply-To: <20001218204414.F2EAF1872C@security.hp.com> from "LaMont Jones" at Dec 18, 2000 01:44:12 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] More on stacks
+Message-Id: <E1488GN-0006Gl-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> > We use user space locks for stuff like pthreads on most platforms with
+> > the kernel doing the contention cases. I'm not arguing that it wouldnt be nic
+> > to let the kernel do it all if we had cheap syscalls. 
+> 
+> Sounds perfectly reasonable.  How hard is it to put arch-specific things
+> into that path?
 
-I've just committed code which makes stacks work sanely.  This was much
-more tricky than I anticipated.  I now _don't_ believe that changes
-are really needed to all binaries, and so I withdraw my request for a
-break-all-binaries day.  Of course, there are other reasons we may wish
-to do this.
-
-I suspect my changes will have broken SOM support, but I don't have any
-SOM binaries here to test with.  Please don't send me any, I can't afford
-to download them :-)
-
-It definitely works for 32-bit kernels.  Please check, Paul.  I've done
-my best to use elf_addr_t, elf_caddr_t everywhere, so it should be
-independent of kernel LP64 state.  I think the changes I've made to
-<asm/processor.h> make start_thread32 obsolete.
-
-Here's a bit of a design document I wrote while working on this problem.
-It may explain why it was working before, and how it works now.
-Does anyone think this document is worthy of being put on the website
-or in Documentation/ or somewhere more permanent?
-
-
-
-Before I started, we were setting our stack pointer to MAX_ARG_PAGES *
-PAGE_SIZE.  Then the kernel was treating the stack as a downward-growing
-entity, copying strings to it, etc.  This has the following problems:
-
- * It potentially wastes a large chunk of address space.  Not memory, since
-   unused pages aren't allocated.
- * Programs which get close to this limit end up faulting during
-   setup_elf_tables rather than returning -E2BIG.
- * We don't get a nice stack frame.  libc's _start entry point has to do a
-   lot more work than really necessary.
-
-So we need to move the strings down to the base of the stack area.
-This is more difficult than I realised.  I restructured copy_strings
-to start at the bottom instead of the top and copy the strings upwards
-instead of downwards.
-
-However, binfmt_script (amongst others) expects there to be room at
-the bottom of the stack to prepend new argument strings.  I considered
-making binfmt_elf `know' how many new strngs had been put on the stack
-and munge the argv setup in an appropriate manner.  But this would be
-very unpleasant code.
-
-Instead, I rewrote copy_strings to put the strings on the stack in the
-opposite order -- argv[argc-1] to argc[0].  Now new strings placed on
-the stack would fit naturally into the argc calculation scheme [once
-i'd written it, because it would have to work slightly differently from
-the current scheme].  But then I noticed /proc/<pid>/environ and, more
-importantly, /proc/<pid>/cmdline.  These expect the strings to be in the
-right order.
-
-Rather than rewrite these functions (and they would be significantly
-slower if they had to reorder the strings instead of just copying them),
-I've opted to go _back_ to copying the strings downward up unti the
-point where they're mapped into memory.  At that point, the strings will
-be copied (entirely within kernel memory, before they get mapped) into
-pages so they appear to userspace mapped at the base of the stack area.
-This also allows processes to setproctitle() [which appears to mean
-overwriting argv[0] under Linux] without as much danger of overwriting
-a crucial part of the stack.
-
-After this mapping is done, setup_elf_tables will still have to be
-modified somewhat as the stack will now be growing upwards.  But that's a
-good thing since programs which attempt to overflow the maximum argument
-length should now work properly again.
-
-
--- 
-Revolutions do not require corporate support.
+Its all arch specific, so you can do it right for hppa. The code in db3 is
+also arch specific (falling back to kernel) as is the Mozilla code.
