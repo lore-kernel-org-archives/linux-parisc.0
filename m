@@ -1,37 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA30985
-	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Nov 2000 15:03:18 -0700
-Message-Id: <200011292205.RAA25396@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc crashes/out of memory and groff
-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Date: Wed, 29 Nov 2000 17:05:31 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <E140T6e-0003Rc-00@the-village.bc.nu> from "Alan Cox" at Nov 27, 2000 06:34:23 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA31609
+	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Nov 2000 15:20:33 -0700
+Date: Wed, 29 Nov 2000 20:22:47 -0200 (BRST)
+From: "Jorge L. deLyra" <delyra@latt.if.usp.br>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.3.96.1001129201604.9928B-100000@latt.if.usp.br>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] HP 9000/735-125
 List-ID: <linux-parisc.vger.kernel.org>
 
-> With groff -fno-gcse does not help but -O0 does. Without -O0 you get an
-> internal error.
-> 
-> g++ -I. -I/usr/src/redhat/BUILD/groff-1.16/src/roff/troff -I/usr/src/redhat/BUILD/groff-1.16/src/include -I/usr/src/redhat/BUILD/groff-1.16/src/include -DHAVE_UNISTD_H=1 -DHAVE_DIRENT_H=1 -DHAVE_LIMITS_H=1 -DHAVE_SYS_DIR_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRINGS_H=1 -DSTDLIB_H_DECLARES_PUTENV=1 -DSTDIO_H_DECLARES_POPEN=1 -DSTDIO_H_DECLARES_PCLOSE=1 -DHAVE_SYS_NERR=1 -DHAVE_SYS_ERRLIST=1 -DHAVE_CC_LIMITS_H=1 -DRETSIGTYPE=void -DHAVE_STRUCT_EXCEPTION=1 -DHAVE_UNISTD_H=1 -DHAVE_GETPAGESIZE=1 -DHAVE_MMAP=1 -DHAVE_FMOD=1 -DHAVE_STRTOL=1 -DHAVE_GETCWD=1 -DHAVE_STRERROR=1 -DHAVE_PUTENV=1 -DHAVE_RENAME=1 -DHAVE_MKSTEMP=1 -DHAVE_STRCASECMP=1 -DHAVE_STRSEP=1 -DHAVE_STRDUP=1 -DSYS_SIGLIST_DECLARED=1  -O2 -mpa-risc-1-0 -fno-gcse  -c env.cc
-> env.cc: In member function `void environment::output_line (node *, hunits)':
-> env.cc:1582: Internal error: Segmentation fault.
->    Please submit a full bug report.
->    See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
-> make[2]: *** [env.o] Error 1
-> make[2]: Leaving directory `/usr/src/redhat/BUILD/groff-1.16/src/roff/troff'
+I just booted the palinux-0.5.iso CD on a HP 9000 model 735 workstation.
+It went on quite a bit before hanging immediatelly after reporting the
+serial ports. Gave large amount of what looks like traceback or state
+information. Question: would it do anyone any good if I tried to get
+everything the kernel said before the hang into a message in this list?
 
-This error is also exception related but appears different from the
-memory explosion.  It occurs in scan_region in except.c.  The memory
-explosion that occurs without -fno-gcse does seem to occur in the
-gcse pass as I suspected.  I need to rebuild gcc with debugging to
-get further.
+							Cheers,
 
-I was able to build the groff package with `CXXFLAGS="-O3 -fno-exceptions"'.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+----------------------------------------------------------------
+        Jorge L. deLyra,  Associate Professor of Physics
+            The University of Sao Paulo,  IFUSP-DFMA
+       For more information: finger delyra@latt.if.usp.br
+----------------------------------------------------------------
