@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B20D484A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Jun 2002 12:32:21 -0600 (MDT)
-Message-Id: <200206301832.g5UIWFgp019758@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC
-To: deller@gmx.de (Helge Deller)
-Date: Sun, 30 Jun 2002 14:32:15 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200206301931.58043.deller@gmx.de> from "Helge Deller" at Jun 30, 2002 07:33:43 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from zouave.sonic.net (zouave.sonic.net [209.204.172.153])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 96E37485F
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Jun 2002 12:56:33 -0600 (MDT)
+Received: from frizzen.efball.com (frizzen.efball.com [192.168.0.27])
+	by zouave.sonic.net (Postfix) with ESMTP id EB2D866EF
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Jun 2002 11:56:15 -0700 (PDT)
+Date: Sun, 30 Jun 2002 11:56:15 -0700
+From: E Frank Ball <frankb@efball.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 735 and FW SCSI
+Message-ID: <20020630115615.B18613@zouave.sonic.net>
+Reply-To: frankb@efball.com
+References: <20020630012744.A16287@neep.com.au> <MDEAIMOKAJDADFOAOOJEKECMCAAA.atkinsc@yifan.net> <20020630165521.GA702@sleepie.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020630165521.GA702@sleepie.demon.co.uk>; from rhirst@linuxcare.com on Sun, Jun 30, 2002 at 05:55:22PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,12 +26,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The new HIL drivers were written by Brian S. Julin and I mostly only did some
-> bugfixing, cleanups and re-integration/re-organization  into our CVS kernel.
+} No, we don't have support for FWD scsi in 735 at the moment.  May do
+} soon, I've done a bit more work on it recently.  I don't have a 735, so
+} it's over to Ryan now test/debug my changes.
+} 
+} Richard
 
-Excellent!
+Does anybody have a source for replacement FastWide SCSI drives?  We
+can't find any and as a result we are trying to phase out all the
+machines at work that are using them.  I'm been converting 735s to
+single ended (SCSI2) by taking the drive trays and cables (and RAM) from
+730s (which get scrapped out).
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+
+   E Frank Ball                frankb@efball.com
