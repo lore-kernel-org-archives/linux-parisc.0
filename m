@@ -1,34 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA06144
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 08:16:08 -0700
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Christoph Plattner <christoph.plattner@alcatel.at>,
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA08337
+	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 10:23:46 -0700
+Message-Id: <200101301728.JAA27426@milano.cup.hp.com>
+To: Helge Deller <deller@gmx.de>
+Cc: Christoph Plattner <christoph.plattner@alcatel.at>,
         parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Server E55 (9000/856) - PDC console
-Date: Tue, 30 Jan 2001 16:20:53 +0100
-Cc: christoph.plattner@dot.at
-References: <3A76C938.E2E13D2B@alcatel.at>
-In-Reply-To: <3A76C938.E2E13D2B@alcatel.at>
-MIME-Version: 1.0
-Message-Id: <01013016205400.01014@P100.helgenet.de>
+Subject: Re: [parisc-linux] Server E55 (9000/856) - PDC console 
+In-reply-to: Your message of "Tue, 30 Jan 2001 16:20:53 PST."
+             <01013016205400.01014@P100.helgenet.de>
+Date: Tue, 30 Jan 2001 09:28:20 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tuesday 30 January 2001 15:01, Christoph Plattner wrote:
-> Hello PA-RISC GURUS !
->
-> * Is it possible to use the PDC console as system console ?
+Helge Deller wrote:
 
-The PDC-interface misses a function to get interrupts when a key was pressed. 
-To get around that problem you would need to poll the whole time, which would 
-result in a *very* bad performance.
-Instead of using the PDC-console it is much better to get the STI console 
-working. I've already begun to rewrite the current STI code from prumpf, 
-which you can find under /drivers/video/sti/*.
-Currently both - the new and the old STI code - is broken and unfunctional, 
-but I will continue to work on it as far as time permits.
+> Instead of using the PDC-console it is much better to get the STI console 
+> working.
 
-Greetings,
+I highly doubt the E55 (and similar servers) have STI.
+And I'm not sure HP ever made an HP-PB graphics device - just
+not enough bandwdith on HP-PB to make it useful.
 
-	Helge.
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
