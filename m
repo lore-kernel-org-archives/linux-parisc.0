@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.centraltx.com (gapserver.centraltx.com [64.209.39.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7DCA4482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 23:24:33 -0600 (MDT)
-Date: Thu, 30 May 2002 00:23:49 -0500
-Message-Id: <200205300023.AA908198370@mail.centraltx.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: "marc " <marc@centraltx.com>
-Reply-To: <marc@centraltx.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Java and SSH
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8008F482A
+	for <parisc-linux@parisc-linux.org>; Wed, 29 May 2002 23:52:29 -0600 (MDT)
+Received: from b180.bame (lart.fc.hp.com [15.1.54.48])
+	by cuprel1.hp.com (Postfix) with ESMTP id 7B0751015
+	for <parisc-linux@parisc-linux.org>; Wed, 29 May 2002 22:52:28 -0700 (PDT)
+Message-Id: <m17DIrM-00003WC@b180.bame>
+Date: Wed, 29 May 2002 23:52:28 -0600 (MDT)
+From: bame@fc.hp.com (Paul Bame)
+To: parisc-linux@parisc-linux.org
+Subject: [parisc-linux] kernel profile
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,78 +21,330 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I got ssh up and running. Also, why does it bomb when I uncomment the line in my sources.list that has to do with the security updates?? I have network
-connectivity now, and heres what I get for the
-java possibilities:
+I made the crude kernel profiler work and here's a trace from a b180
+compiling the kernel sorted by #tics.  'man readprofile' to figure out
+column 3.  I'll commit this stuff soon.  Enjoy!
 
-seki:/etc/apt# more sources.list
-
-deb cdrom:[Debian GNU/Linux 3.0 prerelease _Woody_ - Unofficial hppa Binary-1 (2
-0011205)]/ unstable contrib main
-deb http://non-us.debian.org/debian-non-US unstable non-US/main non-US/contrib n
-on-US/non-free
-deb http://http.us.debian.org/debian/ unstable main non-free contrib
-deb-src http://http.us.debian.org/debian/ unstable main non-free contrib
-# deb http://security.debian.org/ unstable updates/main updates/contrib updates/
-non-free
-
-
-
-
-
-seki:/etc/apt# apt-get install jikes
-Reading Package Lists... Done
-Building Dependency Tree... Done
-Some packages could not be installed. This may mean that you have
-requested an impossible situation or if you are using the unstable
-distribution that some required packages have not yet been created
-or been moved out of Incoming.
-
-Since you only requested a single operation it is extremely likely that
-the package is simply not installable and a bug report against
-that package should be filed.
-The following information may help to resolve the situation:
-
-Sorry, but the following packages have unmet dependencies:
-  jikes: Depends: java-virtual-machine but it is not installable
-E: Sorry, broken packages
-seki:/etc/apt# apt-get install kaffe
-Reading Package Lists... Done
-Building Dependency Tree... Done
-Package kaffe has no available version, but exists in the database.
-This typically means that the package was mentioned in a dependency and
-never uploaded, has been obsoleted or is not available with the contents
-of sources.list
-E: Package kaffe has no installation candidate
-
-
-
----------- Original Message ----------------------------------
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Date:  Wed, 29 May 2002 14:13:34 -0600
-
->"marc " wrote:
->> `apt-cache search ssh` returns nothing.
->> Any other ideas?
->
->verify you have non-us in your /etc/apt/sources.list.
->Something like:
->deb http://non-us.debian.org/debian-non-US unstable/non-US main contrib non-free
->
->
->grundler <515>dpkg -l ssh
->Desired=Unknown/Install/Remove/Purge/Hold
->| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
->|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
->||/ Name           Version        Description
->+++-==============-==============-============================================
->ii  ssh            3.0.2p1-9      Secure rlogin/rsh/rcp replacement (OpenSSH)
->
->
->grant
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+ 22214 total                                      0.0125
+  4816 flush_user_icache_range_asm              133.7778
+  4641 flush_user_dcache_range_asm              128.9167
+  2672 clear_user_page_asm                       23.8571
+   712 $lctu_done                                44.5000
+   616 copy_user_page_asm                         4.0526
+   542 handle_interruption                        0.4208
+   486 $lctu_loop                                40.5000
+   454 memset                                    14.1875
+   436 flush_kernel_icache_page                   4.3600
+   431 rmqueue                                    0.4705
+   430 flush_kernel_dcache_page                   4.3000
+   366 purge_kernel_dcache_page                   3.6600
+   273 do_page_fault                              0.3500
+   258 d_lookup                                   0.6719
+   194 fimanyloop                                 9.7000
+   193 find_vma_prev                              2.2976
+   191 fdsync                                     9.5500
+   185 link_path_walk                             0.0731
+   173 zap_page_range                             0.1975
+   131 __free_pages_ok                            0.1227
+   129 do_anonymous_page                          0.3665
+   111 $lcfu_done                                 9.2500
+   109 intr_restore                               0.2412
+   109 handle_mm_fault                            0.4007
+   109 __down_read                                0.6646
+   104 do_no_page                                 0.2281
+   104 copy_page_range                            0.1884
+   102 lru_cache_add                              0.5100
+    94 memcpy                                     2.6111
+    87 clear_page_tables                          0.4439
+    86 syscall_restore                            0.3583
+    85 __find_get_page                            1.2500
+    85 $lcfu_loop                                 7.0833
+    79 mark_page_accessed                         0.8229
+    78 memcmp                                     0.9750
+    77 filemap_nopage                             0.1119
+    74 kmem_cache_alloc                           0.2342
+    72 __free_pte                                 0.5143
+    70 pte_alloc                                  0.3889
+    69 kmem_cache_free                            0.3450
+    58 __free_pages                               0.7632
+    55 reschedule_idle                            0.0640
+    54 fput                                       0.1378
+    53 do_generic_file_read                       0.0418
+    52 do_wp_page                                 0.0553
+    51 __lru_cache_del                            0.3643
+    50 __alloc_pages                              0.0926
+    50 $lslen_loop                                4.1667
+    49 update_mmu_cache                           0.3500
+    43 do_brk                                     0.0741
+    42 dput                                       0.0972
+    39 set_page_dirty                             0.2786
+    38 vm_enough_memory                           0.2375
+    37 vfs_permission                             0.1063
+    36 nr_free_pages                              0.6000
+    36 fioneloop                                  4.5000
+    35 path_init                                  0.0678
+    34 exit_notify                                0.0431
+    34 $lsfu_loop                                 2.1250
+    33 __up_read                                  0.3750
+    31 parisc_acctyp                              0.1490
+    29 sys_brk                                    0.0993
+    29 permission                                 0.3625
+    29 _alloc_pages                               0.6591
+    29 __down_write                               0.1859
+    29 $lslen_done                                3.6250
+    28 free_page_and_swap_cache                   0.2800
+    26 syscall_exit                               0.9286
+    25 memmove                                    0.3125
+    25 get_empty_filp                             0.0753
+    24 sys_read                                   0.0682
+    23 open_namei                                 0.0148
+    23 getname                                    0.0943
+    22 find_vma                                   0.2500
+    22 cached_lookup                              0.1774
+    20 __mark_inode_dirty                         0.1220
+    20 $lclu_done                                 1.2500
+    19 get_unshared_area                          0.1357
+    17 schedule                                   0.0179
+    16 memscan                                    0.3636
+    16 generic_file_read                          0.0476
+    16 find_vma_prepare                           0.1333
+    16 do_mmap_pgoff                              0.0125
+    16 dentry_open                                0.0303
+    15 intr_return                                0.7500
+    15 get_unused_fd                              0.0341
+    15 find_trylock_page                          0.1136
+    15 fcntl_dirnotify                            0.0379
+    14 unlock_page                                0.1000
+    13 sys_open                                   0.0464
+    12 sys_close                                  0.0732
+    11 locks_remove_posix                         0.0289
+    11 ext2_readdir                               0.0174
+    11 cp_new_stat64                              0.0246
+    11 copy_strings                               0.0519
+    10 filp_close                                 0.0676
+    10 do_munmap                                  0.0135
+    10 do_fork                                    0.0048
+    10 $lsfu_done                                 2.5000
+     9 vma_merge                                  0.0288
+     9 syscall_check_bh                           0.5625
+     9 filldir64                                  0.0262
+     9 fget                                       0.1406
+     9 ext2_release_file                          0.2250
+     8 update_atime                               0.0645
+     8 kfree                                      0.0392
+     8 Letext                                     0.2857
+     7 locks_remove_flock                         0.0565
+     7 load_elf_binary                            0.0027
+     7 intr_check_resched                         0.5833
+     7 generic_file_write                         0.0036
+     7 generic_file_readahead                     0.0167
+     7 exit_mmap                                  0.0148
+     7 cp_new_stat                                0.0192
+     7 copy_mm                                    0.0082
+     7 activate_page                              0.0282
+     7 __user_walk                                0.0530
+     6 recycle_sids                               0.0517
+     6 put_filp                                   0.0577
+     6 intr_check_sig                             0.5000
+     6 in_group_p                                 0.1154
+     6 create_elf_tables                          0.0058
+     6 count                                      0.0600
+     6 __wake_up                                  0.0214
+     5 vsnprintf                                  0.0023
+     5 syscall_check_sig                          0.4167
+     5 sys_newfstat                               0.0338
+     5 supplemental_group_member                  0.0833
+     5 rb_insert_color                            0.0167
+     5 path_walk                                  0.1562
+     5 net_rx_action                              0.0062
+     5 lstrncpy_from_user                         0.1389
+     5 load_elf_interp                            0.0069
+     5 get_unmapped_area                          0.0312
+     5 filp_open                                  0.0463
+     5 file_read_actor                            0.0391
+     5 do_mmap2                                   0.0236
+     5 __block_prepare_write                      0.0056
+     5 $$remU                                     0.0169
+     4 sys_write                                  0.0114
+     4 sys_rt_sigprocmask                         0.0108
+     4 sys_mmap                                   0.0667
+     4 scsi_dispatch_cmd                          0.0041
+     4 proc_lookup                                0.0192
+     4 number                                     0.0036
+     4 n_tty_receive_buf                          0.0014
+     4 meminfo_read_proc                          0.0052
+     4 lru_cache_del                              0.1667
+     4 kmalloc                                    0.0110
+     4 ip_route_input                             0.0085
+     4 ext2_new_block                             0.0014
+     4 copy_string                                0.0233
+     4 copy_files                                 0.0068
+     4 can_share_swap_page                        0.0238
+     4 $lclu_loop                                 0.5000
+     3 syscall_restore_rfi                        0.1071
+     3 syscall_check_resched                      0.3750
+     3 sys_rt_sigaction                           0.0142
+     3 sys_getdents64                             0.0160
+     3 setup_rt_frame                             0.0029
+     3 release_task                               0.0073
+     3 put_files_struct                           0.0097
+     3 path_release                               0.0357
+     3 opost_block                                0.0059
+     3 flush_old_exec                             0.0039
+     3 flush_kernel_dcache_range_asm              0.0750
+     3 find_extend_vma                            0.0117
+     3 ext2_follow_link                           0.0750
+     3 do_signal                                  0.0027
+     3 do_exit                                    0.0046
+     3 change_protection                          0.0043
+     3 block_prepare_write                        0.0326
+     3 arch_get_unmapped_area                     0.0250
+     3 $lsfu_exit                                 0.1875
+     2 vfs_follow_link                            0.0037
+     2 tcp_poll                                   0.0052
+     2 tcp_clean_rtx_queue                        0.0024
+     2 sys_stat64                                 0.0125
+     2 sys_select                                 0.0021
+     2 sys_munmap                                 0.0192
+     2 sys_mprotect                               0.0035
+     2 sys_llseek                                 0.0079
+     2 sys_clone                                  0.0714
+     2 sock_poll                                  0.0357
+     2 read_chan                                  0.0011
+     2 read_cache_page                            0.0040
+     2 pty_write                                  0.0047
+     2 pipe_read                                  0.0031
+     2 nfs3_xdr_sattrargs                         0.0007
+     2 mod_timer                                  0.0083
+     2 mark_buffer_dirty                          0.0185
+     2 lock_vma_mappings                          0.5000
+     2 get_kmapped_page                           0.0217
+     2 generic_file_open                          0.0357
+     2 free_sid                                   0.0156
+     2 free_pgtables                              0.0122
+     2 file_send_actor                            0.0082
+     2 file_move                                  0.0455
+     2 ext2_update_inode                          0.0016
+     2 ext2_new_inode                             0.0017
+     2 ext2_get_group_desc                        0.0111
+     2 ext2_get_block                             0.0016
+     2 ext2_free_blocks                           0.0019
+     2 ext2_find_entry                            0.0055
+     2 do_sigaction                               0.0068
+     2 do_select                                  0.0034
+     2 do_execve                                  0.0045
+     2 discard_bh_page                            0.0098
+     2 dev_queue_xmit_nit                         0.0083
+     2 build_mmap_rb                              0.0161
+     2 block_read_full_page                       0.0026
+     2 alloc_sid                                  0.0055
+     2 __rb_rotate_right                          0.0250
+     2 __rb_erase_color                           0.0044
+     2 __pollwait                                 0.0089
+     2 $$remI                                     0.0061
+     2 $$divU                                     0.0069
+     2 $$divI                                     0.0061
+     1 write_chan                                 0.0016
+     1 wrapper_exit                               0.0109
+     1 vfs_unlink                                 0.0021
+     1 vfs_readdir                                0.0032
+     1 unmap_fixup                                0.0021
+     1 unlock_vma_mappings                        0.2500
+     1 udp_rcv                                    0.0013
+     1 tty_write                                  0.0015
+     1 tty_poll                                   0.0049
+     1 tcp_sendmsg                                0.0002
+     1 tcp_ack                                    0.0012
+     1 syscall_do_signal                          0.0064
+     1 syscall_do_resched                         0.0625
+     1 sys_wait4                                  0.0010
+     1 sys_ioctl                                  0.0017
+     1 sys_fstat64                                0.0068
+     1 sys_dup2                                   0.0032
+     1 strncpy                                    0.0312
+     1 skb_clone                                  0.0022
+     1 sk_run_filter                              0.0004
+     1 si_meminfo                                 0.0132
+     1 setup_sigcontext                           0.0022
+     1 setup_arg_pages                            0.0018
+     1 set_binfmt                                 0.0081
+     1 set_bh_page                                0.0100
+     1 select_bits_free                           0.0417
+     1 search_binary_handler                      0.0025
+     1 scsi_request_fn                            0.0012
+     1 scsi_malloc                                0.0046
+     1 refill_inactive                            0.0021
+     1 real_lookup                                0.0028
+     1 rb_erase                                   0.0033
+     1 pty_write_room                             0.0156
+     1 pipe_wait                                  0.0040
+     1 pipe_release                               0.0042
+     1 packet_rcv                                 0.0013
+     1 nr_free_buffer_pages                       0.0139
+     1 normal_poll                                0.0027
+     1 mmput                                      0.0061
+     1 mm_release                                 0.0192
+     1 lstrnlen_user                              0.0278
+     1 lookup_create                              0.0054
+     1 locate_fd                                  0.0030
+     1 lcopy_from_user                            0.0357
+     1 kstat_read_proc                            0.0014
+     1 iput                                       0.0016
+     1 ip_rcv                                     0.0009
+     1 ip_local_deliver                           0.0020
+     1 insert_vm_struct                           0.0050
+     1 inode_has_buffers                          0.0227
+     1 inode_change_ok                            0.0021
+     1 inet_recvmsg                               0.0100
+     1 in_egroup_p                                0.0192
+     1 getrusage                                  0.0017
+     1 get_unused_buffer_head                     0.0056
+     1 get_tty_driver                             0.0104
+     1 get_pid                                    0.0028
+     1 get_new_inode                              0.0019
+     1 get_hash_table                             0.0057
+     1 generic_make_request                       0.0023
+     1 generic_file_mmap                          0.0083
+     1 generic_file_llseek                        0.0052
+     1 generic_file_direct_IO                     0.0016
+     1 generic_commit_write                       0.0069
+     1 free_pages                                 0.0147
+     1 flush_signal_handlers                      0.0192
+     1 flush_kernel_icache_range_asm              0.0147
+     1 flush_data_cache_local                     0.0250
+     1 flush_cache_all_local                      0.0357
+     1 find_inode                                 0.0058
+     1 fdtdone                                    0.0156
+     1 ext2_prepare_write                         0.0208
+     1 ext2_lookup                                0.0081
+     1 ext2_get_page                              0.0074
+     1 ext2_free_branches                         0.0023
+     1 ext2_create                                0.0050
+     1 ext2_alloc_block                           0.0060
+     1 do_sigaltstack                             0.0028
+     1 do_settimeofday                            0.0035
+     1 do_pipe                                    0.0012
+     1 discard_buffer                             0.0034
+     1 del_timer                                  0.0208
+     1 de_put                                     0.0078
+     1 d_invalidate                               0.0071
+     1 d_delete                                   0.0063
+     1 d_alloc                                    0.0023
+     1 create_empty_buffers                       0.0063
+     1 compute_creds                              0.0024
+     1 clean_inode                                0.0061
+     1 bcopy                                      0.0278
+     1 balance_dirty_state                        0.0069
+     1 add_wait_queue                             0.0208
+     1 add_timer                                  0.0038
+     1 add_page_to_hash_queue                     0.0081
+     1 _switch_to_ret                             0.0013
+     1 _switch_to                                 0.0093
+     1 __vma_link                                 0.0046
+     1 __remove_from_lru_list                     0.0078
+     1 __insert_vm_struct                         0.0066
+     1 __insert_into_lru_list                     0.0044
+     1 __get_free_pages                           0.0179
+     1 __block_commit_write                       0.0027
+     1 $lslen_nzero                               0.0625
+     1 $$mulU                                     0.0019
