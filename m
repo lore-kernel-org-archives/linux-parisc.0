@@ -1,53 +1,47 @@
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA11874
-	for <parisc-linux@puffin.external.hp.com>; Tue, 9 Jan 2001 23:29:31 -0700
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by palrel3.hp.com (Postfix) with ESMTP id 4320B74B
-	for <parisc-linux@puffin.external.hp.com>; Tue,  9 Jan 2001 22:33:03 -0800 (PST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id XAA16714 for parisc-linux@puffin.external.hp.com; Tue, 9 Jan 2001 23:31:49 -0700 (MST)
-Date: Tue, 9 Jan 2001 23:31:49 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200101100631.XAA16714@udlkern.fc.hp.com>
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Gnu cpp bug or feature?
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA13291
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Jan 2001 03:41:47 -0700
+Message-ID: <A4A5E4C468B5D11190220001FA6835DD04DD87A8@EPIXCH003>
+From: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@europay.com>
+To: "'Karsten Merker'" <karsten@excalibur.cologne.de>
+Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Subject: RE: C110 - palinux-0.5.iso boot but...
+Date: Wed, 10 Jan 2001 11:43:23 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hello Karsten,
 
-I just discovered that the gnu cpp doesn't allow * and = to be concatenated.
-What I am trying to do is the following:
+Best wishes for new millennium.
 
-#ifdef __LP64__
-#define ADDIB addib,*
-#else
-#define ADDIB addib,
-#endif
+> > Regarding the problems with the console code, please also 
+> > read the mail I
+> > have sent to the PA-RISC mailing list this evening, 
+> > eventually this will
+> > help you.
+> 
+> I will have to test but it would be for the new millennium.
+> 
 
-I then would use the above defines throughout some assembly functions, e.g.:
+Well no more success, I try again with several cvs release (last was dated
+20010105) but still display some info on PDC console until "Switching from
+PDC console" then if I reconnect a console to the serial port I can login
+(same behavior for any model I can test C110, 712 or B180).
 
-    ADDIB>      -1,%r1,1b
-    ADDIB=      -1,%arg3,fdoneloop
+What I do find strange anyway: if I try CTRL+ALT+DEL on the keyboard
+connected to mother board (i.e. PDC keyboard?) the awaiting reboot is well
+launch (except if I apply the patch
+http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/12-Dec/0254.ht
+ml which also display more on the PDC console but "warning can not initial
+console" and go back to serial port console?)
 
-If __LP64__ is defined, the above two examples wind up expanding to:
+Thanks anyway for information,
+	Joel
 
-    addib,*>    -1,%r1,1b
-    addib,* =   -1,%arg3,fdoneloop
 
-The first example expands as I would expect, but the second example winds
-up being a syntax error, because it should have been expanded to:
-
-    addib,*=    -1,%arg3,fdoneloop
-
-Anyway, I prefer to write the code this way rather than sprinkling
-#ifdef __LP64__'s throughout the code, or using two different copies
-of the functions. I imagine that gnu cpp must be trying to avoid
-creating the C *= operator by mistake, but I don't believe there is
-any standard that requires this. I know that the above examples work
-on HP-UX (not that HP-UX sets the standard).
-
-It just seems strange to me for gnu cpp to special case this particular
-sequence.  Is there a good reason for this behaviour, or is this a bug?
-
-John Marvin
-jsm@fc.hp.com
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
