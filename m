@@ -1,44 +1,73 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA03298
-	for <parisc-linux@puffin.external.hp.com>; Mon, 12 Jul 1999 07:16:09 -0600
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id GAA23164
-	for <parisc-linux@thepuffingroup.com>; Mon, 12 Jul 1999 06:16:12 -0700 (PDT)
-Received: from obob.netscape.com ([207.200.73.215]) by
-          tintin.mcom.com (Netscape Messaging Server 4.1) with ESMTP id
-          FERE6R00.08S for <parisc-linux@thepuffingroup.com>; Mon, 12 Jul
-          1999 06:16:03 -0700
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <3789E9D0.6560CCD0@netscape.com>
-Date: Mon, 12 Jul 1999 09:12:48 -0400
-From: Mike Shaver <shaver@netscape.com>
-MIME-Version: 1.0
-To: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-CC: parisc-linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [Fwd: Re: [parisc-linux] PDC woes]
-References: <3789ACA8.20302CBA@ruhr-uni-bochum.de>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA03701
+	for <parisc-linux@puffin.external.hp.com>; Mon, 12 Jul 1999 08:22:33 -0600
+From: Ulrich.Strelow@schering.de
+To: Mike Shaver <shaver@netscape.com>
+cc: parisc-linux@thepuffingroup.com
+Message-ID: <C12567AC.004F003B.00@BE2314.schering.de>
+Date: Mon, 12 Jul 1999 16:22:37 +0200
+Subject: Antwort: [parisc-linux] serial console
+Mime-Version: 1.0
+Content-type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Helge Deller wrote:
-> 
-> If this message goes through, does anybody have any ideas, why my mails
-> sent from Netscape/Win95 goes through to the list, but those from
-> Netscape/Linux not ????
-> Thanks,
-> Helge.
-> (This message was sent with Netscape/Win95, the message below with
-> Netscape/Linux).
-> 
->
-> Betreff: Re: [parisc-linux] PDC woes
-> Datum: Mon, 12 Jul 1999 01:08:45 +0200
-> Von: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-> An: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 
-I bet the mailing list software doesn't like the non-English headers.
+
+Today I have managed to setup my 715/33 to use a serial console so that I
+am able to capture the boot messages for future tests. I did the following:
+
+1. Connect the 715/33 to a PC via a null-modem cable.
+2. Hold down the ESC key to stop the automatic selection process.
+3. Enter "a" to get the BOOT_ADMIN> prompt
+4. At this prompt issue the command: PATH console rs232_a
+
+This switches the console path from "graphics_1" to the first serial port
+(/dev/tty0p0 in HP-UX language).
+
+I hope this helps. Maybe the syntax is different on other workstation
+models (I think the 800 server models use the hardware path instead of
+symbolic names).
+
+Ulrich
+---------------------------------------------
+Ulrich Strelow
+<ulrich.strelow@schering.de or
+ulrich_strelow@yahoo.com>
+Berlin, Germany
+
+
+
+
+Mike Shaver <shaver@netscape.com> am 10.07.99 20:53:39
+
+
+An:   parisc-linux@thepuffingroup.com
+Kopie:     (Blindkopie: Ulrich Strelow/BE/USR/SHG)
+
+
+Thema:    [parisc-linux] serial console
+
+
+
+
+
+I have a serial console cable that came with my A180C, but I can't get
+the silly box to talk to it.
+
+I've tried with another known-good cable (it works with my Indy), and
+still nothing.  What do I need to do to activate it?  I tried unplugging
+the web console from the network, and rebooting with the serial cable
+connected and minicom running, but still no joy.
+
+Also, is there an equivalent to Sun's L1-A or the Indy's
+send-break-over-serial that will get me back to the PROM in the event
+that Linux jumps to east nowhere?  Or do I have to power cycle?
 
 Mike
 
--- 
-428102.37 371017.85
+--
+275134.15 242554.19
+
+---------------------------------------------------------------------------
+To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+`unsubscribe' as the subject.
