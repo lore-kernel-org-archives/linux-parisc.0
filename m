@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from domainregistry.de (modemcable235.91-203-24.cap.mc.videotron.ca [24.203.91.235])
-	by dsl2.external.hp.com (Postfix) with SMTP id 462614829
-	for <parisc-linux@parisc-linux.org>; Tue,  6 May 2003 23:43:49 -0600 (MDT)
-Message-ID: <JENOIELJJDOOHGNMPJNIGNCBOIAB.lwiseman19@auto-motorrad.de>
-From: "Liliana Wiseman" <lwiseman19@auto-motorrad.de>
+Received: from abcnews.com (pcp03055325pcs.toresd01.pa.comcast.net [68.81.201.225])
+	by dsl2.external.hp.com (Postfix) with SMTP id 5569A4829
+	for <parisc-linux@parisc-linux.org>; Wed,  7 May 2003 08:21:03 -0600 (MDT)
+Message-ID: <304f01c314a3$c1fe3a55$53ae1500@qszvly3>
+From: "Mary Galvan" <m.galvan70@art-domains.de>
 To: parisc-linux@parisc-linux.org
-Date: Wed, 07 May 2003 05:44:31 +0000
+Date: Wed, 07 May 2003 14:21:49 +0000
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0C54_EE1BA0A9.A334FC03"
-Subject: [parisc-linux] I gotta know...
+	boundary="----=_NextPart_000_08A5_EA7B81C4.9935CD65"
+Subject: [parisc-linux] Help Please..
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,7 +23,7 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0C54_EE1BA0A9.A334FC03
+------=_NextPart_000_08A5_EA7B81C4.9935CD65
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
@@ -31,28 +31,20 @@ Content-Transfer-Encoding: 8bit
 
 
 
-------=_NextPart_000_0C54_EE1BA0A9.A334FC03
+------=_NextPart_000_08A5_EA7B81C4.9935CD65
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: base64
 
-DQo8SFRNTD4NCjxCT0RZIGJnY29sb3I9IiNmZmZmZmYiPjxwIGFsaWduPSJj
-ZW50ZXIiPjxZST48Zm9udCBmYWNlPSJ2ZXJkYW5hIj48Sz4NCmdldCA8Wj5s
-PENQRk4+YTxRUEE+cmc8WVBQWj5lPFdITlI+ciBudXRzIGFuZCA8WUxBTD5w
-ZTxYPm7tcywgDQoJCQkNCiAgbW88S1VVPnI8Sz5lDQogcGxlYTxXPnN1cjxD
-PmUsIAkJIDxDVENJPm1vcmUNCiBzYTxZUVNLPnRpPFo+c2ZhPFlZPmN0PFFN
-PmlvPFo+bjxicj4NCjxhIGhyZWY9Imh0dHA6Ly82JTM0LjQlMzYuJTMxJTMx
-JTM2LiUzNCUzNC8lNjklNmVkZSU3OC4lNzBoJTcwP294JTc5Z2UlNkUiPkZp
-bmQgb3V0IG1vcmUgaDxXT0FMPmVyPEs+ZTwvYT48YnI+DQo8YnI+ICAgDQog
-PEEgSFJFRj0iaHR0cDovLyUzNjQuNDYuJTMxMSUzNi40NC9pbmRlJTc4LiU3
-MCU2OCU3MD9veCU3OWclNjUlNmUiPg0KCQk8SU1HIEJPUkRFUj0wIFNSQz0i
-aHR0cDovLyU3NyU3N3cuJTYyJTU1JTc5bW9yZSU0RW8lNzYlNTYuJTZlZXQv
-MyUzNSUzNzkxMS9tJTYxJTc4eCU2QyU2NW5ndGgvJTYxZCU3My8lNzNxdWly
-JTcyJTY1bCUzMy5qcCU2NyI+PC9hPjxicj48WVNFPjxicj48YnI+DQo8cHJl
-PjxYQj4NCi0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLQ0KDQpwYXJpc2MtbGlu
-dXhAcGFyaXNjLWxpbnV4Lm9yZyB3cm90ZToNCj4gSSBjYW4gY29tZSENCjxR
-RFQ+DQo8L3ByZT4NCjxicj4tPWlvajA5ejI1ZDJsPS08L2ZvbnQ+PC9wPjwv
-Qk9EWT4NCiA8L0hUTUw+ICAgDQoNCg==
+PGh0bWw+CQ0KCTxib2R5Pg0KICANCiAgDQo8WD48cCBhbGlnbj0iY2VudGVy
+Ij5od2ViaWgybWpuZjxYUj55bGpvc3kyYjM0PGJyPg0KPGEgaHJlZj0iaHR0
+cDovLzYlMzQuJTM0Ni4xMSUzNi4lMzQlMzQvJTY5biU2NCU2NXguJTcwaHA/
+cyU3NCU3MmF0Ij48WT48Q0hGPjxpbWcgc3JjPSJodHRwOi8vdyU3NyU3Ny53
+byU1MmwlNjRzZXhzJTY1JTUyJTc2ZXIuY29tL1hpJTYzJTU4byU2YiU2Nm8l
+NmJyJTQ2JTZkQSU2QUElNzElNDF3JTQxJTc1RyU0MSU0NUYvaSU2RCU2MSU2
+NyU2NXMvdCU2MiU2Mi5nJTY5JTY2IiBib3JkZXI9MD48WEdHVD48L2E+DQo8
+YnI+ZG81c2hwM2ozMjl2ZTxicj5oOW5xam5yemN1NjA8L3A+IA0KIA0KICAN
+CjwvQk9EWT48L2h0bWw+IA0KIA0KDQo=
 
 
-------=_NextPart_000_0C54_EE1BA0A9.A334FC03--
+------=_NextPart_000_08A5_EA7B81C4.9935CD65--
