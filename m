@@ -1,36 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA03646
-	for <parisc-linux@puffin.external.hp.com>; Wed, 21 Jul 1999 06:15:24 -0600
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: "Paul J.Y.Lahaie" <pjlahaie@ottawa.com>, Philipp Rumpf <prumpf@suse.de>
-Subject: Re: [parisc-linux-cvs] pjlahaie, interrupted with code 28....
-Date: Wed, 21 Jul 1999 13:30:51 +0200
-Content-Type: text/plain
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA06692
+	for <parisc-linux@puffin.external.hp.com>; Thu, 22 Jul 1999 02:47:49 -0600
+Received: from mgw-i2.ntc.nokia.com (mgw-i2.ntc.nokia.com [131.228.118.61])
+	by mgw-x2.nokia.com (8.9.3/8.9.3) with ESMTP id LAA24773
+	for <parisc-linux@thepuffingroup.com>; Thu, 22 Jul 1999 11:48:29 +0300 (EETDST)
+Received: from stybba.ntc.nokia.com (stybba.ntc.nokia.com [131.228.178.21])
+	by mgw-i2.ntc.nokia.com (8.9.3/8.9.3) with ESMTP id LAA24050
+	for <parisc-linux@thepuffingroup.com>; Thu, 22 Jul 1999 11:48:29 +0300 (EETDST)
+Received: from gamgee.ntc.nokia.com (martikka@gamgee [131.228.178.130])
+	by stybba.ntc.nokia.com (8.9.1a/8.9.1/Goodi) with ESMTP id LAA16682
+	for <parisc-linux@thepuffingroup.com>; Thu, 22 Jul 1999 11:48:28 +0300 (EET DST)
+Date: Thu, 22 Jul 1999 11:48:28 +0300 (EETDST)
+From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: <C12531D038D1D011B1DB0000F8036C28032795C4@eosm5.oecd.org>
+Message-ID: <Pine.HPX.4.05.9907221145200.6553-100000@gamgee.ntc.nokia.com>
 MIME-Version: 1.0
-Message-Id: <99072113442100.07620@P100>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Subject: [parisc-linux] syntax error in dino.c (215)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Paul, 
-Hi Philipp !
+Hi!
 
-Sorry for my last mail, but I found some more background-info for my
-last mail:
+Could someone fix this in dino.c (line 215):
 
-I think it´s something wrong in the interrupt-routine (but I´m really not sure
-about that !!), since when I don´t use DINO/PCI-support the kernel freezes too.
-Info:
-I added a stopkernel_with_rolling_leds()-call (endless-loop in setup.c)
-directly behind the "POSIX"-text in main.c. This means, that the kernel should
-loop forever in this routine. But the kernel freezes after some time,
-at other boot-ups I get endless messages "Interrupted with code 9" after some time 
-behind the output of "POSIX...". Could it be, that the stack
-overflows after some time (maybe because of interrupts in the background, which
-does not restore the stack correctly (Philipp??)) ?
+                printk("KERN_WARNING "dino: can't allocate IRQ\n");
+-> 
+                printk(KERN_WARNING "dino: can't allocate IRQ\n");
+Thanks...
 
-Maybe also my kernel-origin-change in the Makefile to 0x10000 (we used
-0x12000 before) could be the reason ? I don´t know yet...
-
-Comments ?
-
-Helge.
+- Goodi
+"The linuX Files -- The Source is Out There."
+ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
