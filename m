@@ -1,39 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1C028482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 01:31:11 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 00683B00C; Thu,  5 Jul 2001 08:30:32 +0100 (BST)
-Date: Thu, 5 Jul 2001 08:30:32 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Christoph Plattner <christoph.plattner@alcatel.at>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problem in palinux-0.9.1 image with directory "debian" !!
-Message-ID: <20010705083032.J23509@linuxcare.com>
-References: <3B441232.44A2B63B@alcatel.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3B441232.44A2B63B@alcatel.at>; from christoph.plattner@alcatel.at on Thu, Jul 05, 2001 at 09:07:30AM +0200
+Received: from ati6.ati.stlawrencec.on.ca (unknown [142.155.128.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7DB5D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 07:02:07 -0600 (MDT)
+Message-ID: <CC7EB40D4455D51191850090270C43801038B1@ati.ati.stlawrencec.on.ca>
+From: "Pengelly, Raymond" <RPengelly@ati.stlawrencec.on.ca>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 5 Jul 2001 09:02:06 -0400 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] problems with burning iso's
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 05, 2001 at 09:07:30AM +0200, Christoph Plattner wrote:
-> I have a problem with the iso image. I have loop back mounted
-> it on my linux box, and I wanted to tar (copy) it to a location
-> (NFSROOT) to try a media less installation via rboot/bootp.
-> 
-> But the copy was not possible, as the directory debian
-> contains recursively the contents of the whole CD !!
-> 
-> Is this correct !
+Hello everyone
 
-No, it isn't correct.  debian should be a symbolic link to '.'.
-I guess at some problem with the mkisofs options.  I've notified
-the guys that made it, and hopefully they will remaster without
-that problem soon.  I also had problems trying a CD based install
-for the same reason.  In your case, try just taring up the dist
-directory, or telling tar to ignore debian.
+I'm trying to set up a lab of HP series 700 and 735 workstations with
+PA-Linux. I've downloaded the sti-32 iso and burned it but when I try to
+boot from the cd drive all i get is five lines of what looks like a memory
+dump? Anybody had this problem or ca offer any suggestions? I am able to
+mount the CD drive and access the files normally.
 
-There may be workarounds for CD based installs, but I havn't
-fully investigated yet.
+Also I was wondering what the md5checksums are all about? 
+Do I have to change anything in the iso before I burn it?
 
-Richard
+Ray Pengelly
+rpengelly@ati.stlawrencec.on.ca
