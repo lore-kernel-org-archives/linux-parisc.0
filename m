@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Message-ID: <l3ext7-2j-o-3p-s@vlan0>
-From: "Aurora Tolbert" <nlexgb@bigfoot.com>
-Reply-To: "Aurora Tolbert" <nlexgb@bigfoot.com>
-To: <grundler@parisc-linux.org>, <parisc-linux@parisc-linux.org>,
-	<tausq@parisc-linux.org>, <guest@parisc-linux.org>
-Date: Tue, 11 Nov 03 04:48:13 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="0D685_84B2.D11_.FF_E6__5"
-Subject: [parisc-linux] 75% off V I @ G R A  jbq
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E210B4841
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Nov 2003 09:58:27 -0700 (MST)
+Date: Mon, 10 Nov 2003 09:58:26 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] fdisk problems 2.4 <-> 2.6
+Message-ID: <20031110165826.GA24664@colo.lackof.org>
+References: <20031110044556.GB16478@colo.lackof.org> <3F969FFE00009D32@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F969FFE00009D32@ocpmta2.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,19 +25,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---0D685_84B2.D11_.FF_E6__5
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 10, 2003 at 10:51:32AM +0100, Joel Soete wrote:
+> That is Ok for me, Do you still have the patch to revert it?
 
-<font color=3Dwhite>v izfnz ci tmirtouyqn q</font><P>
-Grundler No embarrasing, expencive Doctors visits!<P>they charge $20ea, we=
- charge $1.66!!!<P>
-SHIPPING WORLD WIDE!<P>
-<a href=3D"http://v-i-a-g-r-a.com@www.pillsthatwork.com/index.php?pid=3Dev=
-aph3770">D I S C 0 U N T - V I @ G R A</a><P><P>ejacre 
-thpz
-nwheo  yp  h mcjsrsbqmtadve zprt<BR><BR><BR>
-<font size=3D-1><a href=3D"http://v-i-a-g-r-a.com@www.pillsthatwork.com/ap=
-plepie.php">O P T - O U T</a>kcsywwsmnj
+yes - I'll test/commmit that this morning.
 
---0D685_84B2.D11_.FF_E6__5--
+thanks,
+grant
