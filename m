@@ -1,60 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18DBA482A
-	for <parisc-linux@parisc-linux.org>; Wed,  6 Jun 2001 10:24:32 -0600 (MDT)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel2.hp.com (Postfix) with ESMTP id 67D83141B
-	for <parisc-linux@parisc-linux.org>; Wed,  6 Jun 2001 12:24:31 -0400 (EDT)
-Date: Wed, 6 Jun 2001 10:24:30 -0600
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010606102430.V25417@zumpano.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: willy@ldl.fc.hp.com (Matthew Wilcox)
-Subject: [parisc-linux] [aj@suse.de: Re: Remove multiline asm statements]
+Received: from edu.joroinen.fi (edu.joroinen.fi [195.156.135.125])
+	by dsl2.external.hp.com (Postfix) with SMTP id A38F3482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Jun 2001 14:09:48 -0600 (MDT)
+Date: Wed, 6 Jun 2001 23:09:33 +0300 (EEST)
+From: =?ISO-8859-1?Q?Pasi_K=E4rkk=E4inen?= <pasik@iki.fi>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Problems with 0.9 ISO Images from mkhppa1.esiee.fr
+In-Reply-To: <200106052034.OAA20747@puffin.external.hp.com>
+Message-ID: <Pine.LNX.4.33.0106062308340.24303-100000@edu.joroinen.fi>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-I don't know the answer to this.  Anyone?
+On Tue, 5 Jun 2001, Grant Grundler wrote:
 
------ Forwarded message from Andreas Jaeger <aj@suse.de> -----
+> > > for that...but I know it's not on the 0.9 ISOs. Booting from a lifima=
+ge
+> > > (newer kernel plus Dino patch) might work better.
+> >
+> > even without having Dino ?
+>
+> No. It won't work better afaik.
+> Anyone with a C160 is able to boot/install?
+>
 
-Delivered-To: willy@ldl.fc.hp.com
-Mail-Copies-To: never
-To: willy@ldl.fc.hp.com (Matthew Wilcox)
-Cc: libc-alpha@sources.redhat.com
-Subject: Re: Remove multiline asm statements
-From: Andreas Jaeger <aj@suse.de>
-Date: 06 Jun 2001 13:52:58 +0200
-In-Reply-To: <20010605235813.A27862@ldl.fc.hp.com> (willy@ldl.fc.hp.com's message of "Tue, 5 Jun 2001 23:58:13 -0600")
-User-Agent: Gnus/5.090004 (Oort Gnus v0.04) XEmacs/21.4 (Academic Rigor)
+I have one C160. What should I try?=3D)
 
-willy@ldl.fc.hp.com (Matthew Wilcox) writes:
 
-> 2001-06-05  Matthew Wilcox  <willy@ldl.fc.hp.com>
-> 
-> 	* sysdeps/hppa/dl-machine.h: Reformat asm statements to remove new
-> 	  gcc warning about multi-line strings.
-> 
-> diff -urNx CVS glibc-223/sysdeps/hppa/dl-machine.h glibc-merge/sysdeps/hppa/dl-machine.h
-> --- glibc-223/sysdeps/hppa/dl-machine.h	Fri Apr 27 14:31:02 2001
->+++ glibc-merge/sysdeps/hppa/dl-machine.h	Mon May  7 15:25:44 2001
-> @@ -75,11 +82,11 @@
->  
->  #if 0
->    /* Use this method if GOT address not yet set up.  */
+- Pasi K=E4rkk=E4inen
 
-Can we remove the #if 0 code?
-
-I've committed your patch,
-Andreas
--- 
- Andreas Jaeger
-  SuSE Labs aj@suse.de
-   private aj@arthur.inka.de
-    http://www.suse.de/~aj
-
------ End forwarded message -----
-
--- 
-It's always legal to use Linux (TM) systems
-http://www.gnu.org/philosophy/why-free.html
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
