@@ -1,44 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2A794A19
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Mar 2001 22:17:43 -0700 (MST)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel1.hp.com (Postfix) with ESMTP id 804C2B74
-	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 00:17:43 -0500 (EST)
-Received: from chrysl (chrysl.fc.hp.com [15.1.54.200])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 385E35A992
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Mar 2001 22:17:43 -0700 (MST)
-Received: from willy by chrysl with local (Exim 3.12 #1 (Debian))
-	id 14fxTj-00036B-00
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Mar 2001 22:17:43 -0700
-To: parisc-linux@parisc-linux.org
-Message-Id: <E14fxTj-00036B-00@chrysl>
-From: Matthew Wilcox <willy@ldl.fc.hp.com>
-Date: Wed, 21 Mar 2001 22:17:43 -0700
-Subject: [parisc-linux] Keyboard cleanup
+Received: from phnxpop4.phnx.uswest.net (phnxpop4.phnx.uswest.net [206.80.192.4])
+	by dsl2.external.hp.com (Postfix) with SMTP id 707F94A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Mar 2001 23:34:43 -0700 (MST)
+Date: Wed, 21 Mar 2001 23:32:19 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: alan@linuxcare.com.au
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] new g++ debs and oddities...
+Message-ID: <20010321233219.B6912@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20010321213541.A6912@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010321213541.A6912@tausq.org>; from randolph@tausq.org on Wed, Mar 21, 2001 at 09:35:41PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-we're getting a big pile of warnings:
+In reference to a message from Randolph Chung, dated Mar 21:
+> So I've been playing with taggart's new g++ debs. definitely work a lot
+> better than the old ones, but still seeing some weird behavior:
+> 
+> 1. i'm compiling apt, and got a problem with undefined symbols for
+> things like Hashes::Add(). Now, Hashes::Add is an inline method defined
+> in hashes.h .... moving that to a non-inlined method in the .cc resolves
+> the undefined symbol problem... seems like a compiler bug?
+> 
+> I'm compiling with -g -O0 -DHAVE_CONFIG_H -D_REENTRANT -fno-rtti -fpermissive
 
-hp_keyb.c:282: warning: (near initialization for `high_keys')
+compiling with -O1 or -O2 fixes this....
 
-and it seems to be because the array we're initialising is of size 0
-(128 - SC_LIM).  the following patch seems to DTRT, but i would appreciate
-someone who has a (non-HIL) keyboard testing it and confirming it works.
+> 2. I'm getting a lot of warnings like this that weren't there with 2.97.
+> Not sure what the deal is yet:
+> 
+> /home/randolph/cvs/apt/build/include/apt-pkg/configuration.h: In member
+>    function `int Configuration::FindI(std::basic_string<char,
+>    std::char_traits<char>, std::allocator<char> >, bool) const':
+>    /home/randolph/cvs/apt/build/include/apt-pkg/configuration.h:75: warning: choosing 
+>    `int Configuration::FindI(const char*, int) const' over `int
+>    Configuration::FindI(std::basic_string<char, std::char_traits<char>, 
+>    std::allocator<char> >, bool) const'
+> /home/randolph/cvs/apt/build/include/apt-pkg/configuration.h:75: warning:
+>    because worst conversion for the former is better than worst conversion for
+>    the latter
 
-Index: drivers/char/hp_keyb.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/drivers/char/hp_keyb.c,v
-retrieving revision 1.3
-diff -u -p -r1.3 hp_keyb.c
---- hp_keyb.c	2000/11/16 20:37:43	1.3
-+++ hp_keyb.c	2001/03/22 05:10:35
-@@ -246,7 +246,7 @@ unsigned char hp_ps2kbd_sysrq_xlate[128]
-  * they needed not before. It does not matter that there are duplicates, as
-  * long as no duplication occurs for any single keyboard.
-  */
--#define SC_LIM 128
-+#define SC_LIM 59
- 
- #define FOCUS_PF1 85           /* actual code! */
- #define FOCUS_PF2 89
+compiling with -O1 or -O2 eliminates these warnings as well... 
+
+after lots of changes i got apt to compile with the new compilers,
+however, the binaries segfault immediately on startup. i'm not sure
+what's happening yet. they are dying in _start-0x??? (when i matched IAOQ
+against objdump output).... looks like some kind of jump table?
+
+000025d0 <_start-0x360>:
+    25d0:       2b 60 00 00     addil 0,dp,%r1
+    25d4:       48 35 0f 00     ldw 780(sr0,r1),r21
+    25d8:       ea a0 c0 00     bv r0(r21)
+    [...]
+    288c:       48 33 0b a8     ldw 5d4(sr0,r1),r19
+    2890:       2b 60 00 00     addil 0,dp,%r1
+    2894:       48 35 0e 90     ldw 748(sr0,r1),r21       <--- segfaulting here
+    2898:       ea a0 c0 00     bv r0(r21)
+
+other C++ apps seem to work fine -- i've tried a simple "hello world" and the
+more complex bonnie++ so far... i wonder if it matters that apt links in
+c++ libraries of its own? of course, apt also uses a lot more c++
+features like templates and such.
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
