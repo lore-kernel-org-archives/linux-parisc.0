@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from wgd1ntecout02.wmmercer.com (wgd1ntecout02.mercer.com [204.26.1.160])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B17054863
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 08:19:02 -0700 (MST)
-Message-ID: <858C0106622BD611A96400D0B74751C00100A844@WCHRNTMS02>
-From: ANTIGEN-WCHRNTMS02 <ANTIGEN-WCHRNTMS02@mercer.com>
-To: "'kxh3@wwarc1.atl.hp.com'" <kxh3@wwarc1.atl.hp.com>,
-	"'mmehta@elgin.edu'" <mmehta@elgin.edu>
-Cc: "'deller@gmx.de'" <deller@gmx.de>,
-	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Mon, 3 Feb 2003 14:45:52 -0000 
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01C2CB92.F332ED60"
-Subject: [parisc-linux] Antigen forwarded attachment
+Received: from hadron.dyndns.org (ma-amesbury1e-100.mrrmnh.adelphia.net [68.168.107.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 687104829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 08:38:02 -0700 (MST)
+Date: Mon, 3 Feb 2003 10:37:35 -0500
+From: "Aaron St. Pierre" <asp@ungod.com>
+To: Michael Wood <mwood@its.uct.ac.za>,
+	Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel compile
+Message-ID: <20030203153735.GE1046@hadron>
+References: <20030203020247.GB1046@hadron> <20030203041122.GB29454@dsl2.external.hp.com> <20030203053336.GC1046@hadron> <20030203060359.GF29454@dsl2.external.hp.com> <20030203064328.GD1046@hadron> <20030203101959.GA28668@marmite.its.uct.ac.za>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030203101959.GA28668@marmite.its.uct.ac.za>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,156 +24,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Yes, the boot partition is < 2GB. In fact here is the partion table as 
+reported from fdisk. 
 
-------_=_NextPart_000_01C2CB92.F332ED60
-Content-Type: text/plain
+Disk /dev/sda: 9100 MB, 9100044288 bytes
+64 heads, 32 sectors/track, 8678 cylinders
+Units = cylinders of 2048 * 512 = 1048576 bytes
 
-The file attachment from the message "RE: [parisc-linux] RE: X windows setup
-on C110 with woody and ker nel-2.4.20pa22", originally sent to you by Mehta,
-Miten (mmehta@elgin.edu), has been forwarded to you from the Antigen
-Quarantine area.
-This attachment may have been re-scanned by Antigen and handled according to
-the appropriate scan job's settings.
+   Device Boot    Start       End    Blocks   Id  System
+/dev/sda1   *         1        29     29680   f0  Linux/PA-RISC boot
+/dev/sda2            30       267    243712   83  Linux
+/dev/sda3           268      1221    976896   82  Linux swap
+/dev/sda4          1222      5989   4882432    5  Extended
+/dev/sda5          1222      3128   1952752   83  Linux
+/dev/sda6          3129      5989   2929648   83  Linux
 
+I will also add this info to my parisc page. I am going to start ripping
+things out of the kernel a bit later today. One thing I will admit
+ignorance about is the F0 partition. The debian install got vmlinux32 to
+live in there but I haven't gotten any other kernels to live in there.
+Not that that really matters since once can boot off of a kernel that
+lives in an ext2 fs as long as it is within the first 2GB. Yawn, just
+waking up ... 
 
+In another life Michael Wood wrote:
 
-This e-mail and any attachments may be confidential or legally privileged.
-If you received this message in error or are not the intended recipient, you
-should destroy the e-mail message and any attachments or copies, and you are
-prohibited from retaining, distributing, disclosing or using any information
-contained herein.  Please inform us of the erroneous delivery by return
-e-mail.  Thank you for your co-operation. 
-Mercer Human Resource Consulting Limited is regulated by the Financial
-Services Authority and is a member of the General Insurance Standards
-Council. Registered in England No. 984275. Registered Office: Telford House,
-14 Tothill Street, London SW1H 9NB 
+> On Mon, Feb 03, 2003 at 01:43:28AM -0500, Aaron St. Pierre wrote:
+> [snip]
+> > As far as the palo message, i only started noticing it when I went to
+> > v1.2 of palo. One thing I should note, when I set up / i made it ext3,
+> > boot is off of / and not its own fs so when i realized what i did I
+> [snip]
+> 
+> Your boot partition (/) is < 2GB, right?
+> 
+> -- 
+> Michael Wood <mwood@its.uct.ac.za>
 
-  
+-- 
+Aaron St. Pierre			tel: 978.828.6177
+asp@ungod.com
 
-
-------_=_NextPart_000_01C2CB92.F332ED60
-Content-Type: application/octet-stream;
-	name="xfree_c110.tar.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="xfree_c110.tar.gz"
-
-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
-
-------_=_NextPart_000_01C2CB92.F332ED60--
+ Have at you!
