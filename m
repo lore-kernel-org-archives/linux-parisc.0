@@ -1,32 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA12112
-	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Dec 2000 18:48:03 -0700
-Date: Sat, 2 Dec 2000 17:50:07 -0800
-From: Richard Henderson <rth@redhat.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: alan@linuxcare.com.au, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-patches@gcc.gnu.org
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA14031
+	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Dec 2000 20:28:06 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 3 Dec 2000 03:30:33 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA22117;
+	Sun, 3 Dec 2000 14:30:07 +1100
+Date: Sun, 3 Dec 2000 14:30:07 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Henderson <rth@redhat.com>
+cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+        Richard Hirst <rhirst@linuxcare.com>, parisc-linux@thepuffingroup.com,
+        gcc-patches@gcc.gnu.org
 Subject: Re: pa reload problem
-Message-ID: <20001202175007.A28085@redhat.com>
-References: <20001202114327.C27671@redhat.com> <200012022301.SAA04377@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200012022301.SAA04377@hiauly1.hia.nrc.ca>; from John David Anglin on Sat, Dec 02, 2000 at 06:01:27PM -0500
+In-Reply-To: <20001202114327.C27671@redhat.com>
+Message-ID: <Pine.LNX.4.21.0012031415130.16588-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Dec 02, 2000 at 06:01:27PM -0500, John David Anglin wrote:
-> I saw this but for some reason it didn't stop the set after the call
-> from being deleted in the combine pass.
+On Sat, 2 Dec 2000, Richard Henderson wrote:
 
-Oh, right.
+> On Sat, Dec 02, 2000 at 11:35:19PM +1100, Alan Modra wrote:
+> > 	* flow.c (mark_regs_live_at_end): Set PIC_OFFSET_TABLE_REGNUM even
+> > 	when PIC_OFFSET_TABLE_REG_CALL_CLOBBERED.
+> 
+> I can't believe this makes a difference.  We already have
 
-In any case, the patch is applied in the wrong place.  It
-needs to happen in calculate_global_regs_live, near
+It did, I can assure you.  Thanks for the feedback though.  I'll freely 
+admit to not having much of an understanding of gcc internals.  What I've 
+learned has mostly been from poking around with gdb when faced with a gcc 
+bug, and I rely on you and others pointing out the proper fix from a
+higher level perspective.
 
-      /* Force the stack pointer to be live -- which might not already be
-         the case for blocks within infinite loops.  */
-      SET_REGNO_REG_SET (new_live_at_end, STACK_POINTER_REGNUM);
-
-
-
-r~
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
