@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DA19B483B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Mar 2002 23:34:35 -0700 (MST)
-Date: Tue, 12 Mar 2002 07:34:29 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Gururaj Ananthateerta <gururaj@cup.hp.com>
-Cc: parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] new vmlinux!!!
-Message-ID: <20020312063429.GA24304@charite.de>
-References: <20011001175425.A31305@dogbert.localdomain> <Pine.NEB.4.33.0110021434430.24166-100000@www2.scram.de> <20011005222028.A13585@dogbert.localdomain> <20011005215600.B3745@parcelfarce.linux.theplanet.co.uk> <20011005233602.A13826@dogbert.localdomain> <3C8D3619.519A601C@cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C8D3619.519A601C@cup.hp.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3F780482F
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 09:08:36 -0700 (MST)
+Message-Id: <200203121608.g2CG8US7009844@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] dynamic loader problem
+To: randolph@tausq.org
+Date: Tue, 12 Mar 2002 11:08:29 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020312060134.GH730@tausq.org> from "Randolph Chung" at Mar 11, 2002 10:01:34 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Mar 11, 2002 at 02:56:25PM -0800, Gururaj Ananthateerta wrote:
-> I have 3 partitions on primary disk
->    Device Boot    Start       End    Blocks   Id  System
-> /dev/sda1             1        95     97264   f0  Linux/PA-RISC boot
-> /dev/sda2            96       339    249856   82  Linux swap
-> /dev/sda3           340      8683   8544256   83  Linux
-> 
-> I am doing some modifications to the code and trying to boot with a new
-> linux.
-> I placed my vmlinux in /boot, but the palo doesn't seems to recognize my
-> kernel.
+> Dave, FYI I upgraded a bunch of stuff on gsyprf11.... let me know if you
+> see any new breakage. In particular I think bash should be in better
+> shape now.
 
-How does the palo.conf look like?
-What happens if you run palo?
+The biggest issue on gsyprf11 is the filling of the log file with page
+faults.  I've more or less given up running the gcc testsuite because
+expect almost always seems to get into a state where it causes an
+enormous number of page faults and then hangs when when the /var
+file system is full.  I have noticed that various pthread test
+programs in the libstdc++ testsuite also cause many page faults.
+It's possible this problem is specific to 64-bit machines.
 
+There haven't been as many random seg faults recently.
+
+Has anybody worked on the various "dl-" routines in glibc/sysdeps/hppa
+recently?  That's probably where the dynamic loader problem lies.
+
+Dave
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Why you can't find your system administrators:
-The admin is suffering so bad from sleep deprivation that they may as well not be there for all the sense you can make of the words they are saying. 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
