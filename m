@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7E2F24829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 13:39:54 -0700 (MST)
-Date: Sun, 30 Mar 2003 21:39:21 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: "Dr. David Alan Gilbert" <gilbertd@treblig.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] RDI Tadpole Precisionbook and Linux/PA-RISC
-In-Reply-To: <20030330203820.GB4113@gallifrey>
-Message-ID: <Pine.LNX.4.44.0303302139040.28823-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0BC04829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 14:05:29 -0700 (MST)
+Received: from beavis.ybsoft.com (ns1.ybsoft.com [10.0.0.2])
+	by beavis.ybsoft.com (Postfix) with ESMTP id 9C8122B10C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 14:05:28 -0700 (MST)
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Message-Id: <1049058328.29715.12.camel@beavis.ybsoft.com>
+Mime-Version: 1.0
+Date: 30 Mar 2003 14:05:28 -0700
+Subject: [parisc-linux] "Unresolved inheritance operation" with gv, xdvi and xkeycaps
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,12 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 30 Mar 2003, Dr. David Alan Gilbert wrote:
+Hello,
 
-> * M. Grabert (xam@cs.ucc.ie) wrote:
-> >
-> > http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&item=3408697535&category=177
->
-> Sheesh how many milliseconds do the batteries last on these things?
+I worked on tracking down the cause of this error message over the last
+couple of days, and found it was the function descriptor bug in gcc that
+jda already fixed in gcc-3.3.  So if you are experience this
+error message, the libXt.so needs to be recompiled with a newer compiler
+and the error should go away. (Note: I only had to recompile the
+libXt.so, recompiling xkeycaps was not required).
 
-1-2 hours ;)
+Thanks,
+
+- Ryan
+
+P.S. thanks to tausq again for all the help in debugging these problems.
+
+
+-- 
+Ryan Bradetich <rbradetich@uswest.net>
