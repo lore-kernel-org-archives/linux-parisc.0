@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sj-msg-core-3.cisco.com (sj-msg-core-3.cisco.com [171.70.157.152])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C99B9486F
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 11:34:59 -0700 (MST)
-Message-Id: <4.3.2.7.2.20020215103051.0271c8c8@mira-sjc5-9.cisco.com>
-Date: Fri, 15 Feb 2002 10:34:40 -0800
-To: Boris =?iso-8859-1?Q?=22C=E1mara=22?= <vesmar@rocketmail.com>,
-	parisc-linux@lists.parisc-linux.org
-From: Christian Suder <csuder@cisco.com>
-Subject: Re: [parisc-linux] hp 712/60 scsi problem
-In-Reply-To: <20020215143737.51537.qmail@web12506.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Pb with dump driver. 
+In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+   of "Fri, 15 Feb 2002 13:55:49 +0100." <3C6D0555.BCDB04B6@admin.france.hp.com>
+References: <3C6AA3C3.D21C4164@admin.france.hp.com> <20020215064352.86A404858@dsl2.external.hp.com>  <3C6D0555.BCDB04B6@admin.france.hp.com> 
+Date: Fri, 15 Feb 2002 12:08:18 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020215190818.BB0464873@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,25 +19,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-At 06:37 AM 2/15/2002 -0800, Boris "C=E1mara" wrote:
->hi all,
->
->I have a problem.
->My hp 712/60 don't find scsi HDs (hd is a lps 525S).
->
->Im trying with search boot in  boot admin.
->
->what is the problem?
->
->By default TE jumper is over. Is this correct?
->scsi id is 6.
+Bruno Vidal wrote:
+> So I take the decision to modify now the code and create my own
+> dump_iodc_write, dump_iodc_read, dump_iodc_wait, dump_iodc_open,
+> dump_iodc_seek (I don't think I need other functions).
 
-For some reason the HP manual states the internal drive should *not* be=20
-terminated. I'm been using a LPS1280S in a 712/80 with no issues.
+You should be able to leverage most of the code from palo.
+Note that palo runs in th CPU in real-mode - not virtual mode.
+You might consider doing the same for the dump code and just
+be *very* careful about which functions you call.
 
+Oh, and the dump path might want to do two other things:
+1) PDC_IO_RESET_CLEAR
+2) switch linux console back to PDC console
 
->Sorry for my bad english,
+I don't know if some of those things are already happening.
+If I have time, I'll look later.
 
-Don't worry...
+palo is in CVS on the same server (cvs.parisc-linux.org) as our kernel.
+(ie "cvs co palo" instead of linux)
 
-         Christian
+> Thanks a lot to grant that point to the right direction,
+> now let's go at work :-)
+
+hehe..very welcome...I'm very happy to see you doing it...it's been
+on my wish list for a long time.
+
+thanks,
+grant
