@@ -1,40 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA07214
-	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Aug 2000 13:14:58 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA07399
+	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Aug 2000 13:17:08 -0600
 Received: from ottawa.linuxcare.com (HELO fuzzynavel.thepuffingroup.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 29 Aug 2000 19:15:01 -0000
+  by mailserv2.iuinc.com with SMTP; 29 Aug 2000 19:17:11 -0000
 Received: from linuxcare.com (IDENT:cloud@localhost.localdomain [127.0.0.1])
-	by fuzzynavel.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id PAA13324
-	for <parisc-linux@thepuffingroup.com>; Tue, 29 Aug 2000 15:08:24 -0400
+	by fuzzynavel.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id PAA13331
+	for <parisc-linux@thepuffingroup.com>; Tue, 29 Aug 2000 15:10:30 -0400
 Sender: cloud@fuzzynavel.thepuffingroup.com
-Message-ID: <39AC0A27.3C31F633@linuxcare.com>
-Date: Tue, 29 Aug 2000 15:08:23 -0400
+Message-ID: <39AC0AA6.D17DF96@linuxcare.com>
+Date: Tue, 29 Aug 2000 15:10:30 -0400
 From: Claudiu Carter <ccarter@linuxcare.com>
 MIME-Version: 1.0
 To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
 Content-Type: multipart/mixed;
- boundary="------------DD6064467AE735BB0ECF5742"
-Subject: [parisc-linux] HP D270 boots ok, log inside
+ boundary="------------C52EBA3FCF6E1122A4AD8B94"
+Subject: [parisc-linux] HP R390 boots ok, log inside
 List-ID: <linux-parisc.vger.kernel.org>
 
 This is a multi-part message in MIME format.
---------------DD6064467AE735BB0ECF5742
+--------------C52EBA3FCF6E1122A4AD8B94
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-Tara and I have managed to boot both an R390 and D270 here's the log for
-the D270.
+Tara and i have managed to boot both an R390 and D270, here's the log
+for the R390.
 
 Claudiu Carter.
 
---------------DD6064467AE735BB0ECF5742
+--------------C52EBA3FCF6E1122A4AD8B94
 Content-Type: text/plain; charset=us-ascii;
- name="D270-log"
+ name="R390-log"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="D270-log"
+ filename="R390-log"
 
-Firmware Version  37.28
+Firmware Version  38.39
 
 Duplex Console IO Dependent Code (IODC) revision 0
 
@@ -44,25 +44,26 @@ Duplex Console IO Dependent Code (IODC) revision 0
 
   Processor   Speed            State           Coprocessor State  Cache Size
   ---------  --------   ---------------------  -----------------  ----------
-      0       160 MHz   Active                 Functional          512 KB
-      1       160 MHz   Idle                   Functional          512 KB
+      0       240 MHz   Active                 Functional            2 MB
+      1       240 MHz   Idle                   Functional            2 MB
 
   Central Bus Speed (in MHz)  :        120
 
-  Model: D270/2
+  Model: R390/2
 
-  Available memory (bytes)    : 1073741824
-  Good memory required (bytes):   85504000
+  Available memory (bytes)    : 1610612736
+  Good memory required (bytes):    8847360
 
-  Primary boot path:    8/12.5   (dec)
-  Alternate boot path:  8/16/5.0   (dec)
-  Console path:         8/12/0.0   (dec)
+  Primary boot path:    8/16/5.6   (dec)
+  Alternate boot path:  8/16/5.5   (dec)
+  Console path:         10/12.0   (dec)
   Keyboard path:        8/16/7.0   (dec)
 
-CPU 0
-WARNING:  Memory has been initialized, but not tested as a result of
-          FASTBOOT being enabled.  To test memory, use the FASTBOOT
-          command in the CONFIGURATION menu and reboot the system.
+Processor is booting from first available device.
+
+To discontinue, press any key within 10 seconds.
+
+Boot terminated.
 
 
 ------- Main Menu -------------------------------------------------------------
@@ -91,9 +92,9 @@ To discontinue search, press any key (termination may not be immediate).
 
    Path Number        Device Path (dec)        Device Type
    -----------        -----------------        -----------
-   P0                 8/12.5                   Random access media
-   P1                 8/12.8                   Random access media
-   P2                 8/16/5.2                 Random access media
+   P0                 8/16/5.6                 Random access media
+   P1                 8/16/5.5                 Random access media
+   P2                 8/16/5.1                 Random access media
    P3                 8/16/6.0                 LAN Module
 
 
@@ -123,17 +124,17 @@ Free memory starts at: 0xc02dc000
 PALO command line: 'TERM=linux HOME=/ root=/dev/scd0'
 PALO initrd 0-0
 FP CCR was 0x0, will be set to 0xc0
-model   00005a30 00000491 00000000 00000002 775c3955 100000f0 00000008 000000b22vers    00000205
-cpuid   000001c9
-CPUID vers 14 rev 9
-CPU(s): 1 x PA8000 at 160.000000 MHz
+model   00005ba0 00000491 00000000 00000002 77f03bdf 100000f0 00000008 000000b22vers    00000501
+cpuid   000001d7
+CPUID vers 14 rev 23
+CPU(s): 1 x PA8200 at 240.000000 MHz
 Searching for devices in PDC firmware... a newer box...
 Found devices:
-1. UL 350 Lasi Core BA (11) at 0xffd00000, versions 0x2e, 0x0, 0x81, 0x0, 0x0
-2. UL 350 Lasi Core RS-232 (10) at 0xffd05000, versions 0x2e, 0x0, 0x8c, 0x0, 003. UL 350 Core SCSI (10) at 0xffd06000, versions 0x2e, 0x0, 0x82, 0x0, 0x80
-4. UL 350 Core LAN (802.3) (10) at 0xffd07000, versions 0x2e, 0x0, 0x8a, 0x0, 005. UL 350 Core Centronics (10) at 0xffd02000, versions 0x2e, 0x0, 0x74, 0x0, 0x06. UL 350 Core PC Keyboard (10) at 0xffd08000, versions 0x2e, 0x0, 0x84, 0x0, 007. UL 350 Core PC Keyboard (10) at 0xffd08100, versions 0x2e, 0x0, 0x84, 0x0, 008. UL 350 Core Wax BA (11) at 0xffe00000, versions 0x30, 0x0, 0x8e, 0x0, 0x0
-9. UL 350 Wax EISA BA (11) at 0xfc000000, versions 0x30, 0x0, 0x90, 0x0, 0x0
-10. UL 350 Wax Core RS-232 (10) at 0xffe02000, versions 0x30, 0x0, 0x8c, 0x0, 00That's a total of 10 devices.
+1. UL 550 Lasi Core BA (11) at 0xffd00000, versions 0x2f, 0x0, 0x81, 0x0, 0x0
+2. UL 550 Lasi Core RS-232 (10) at 0xffd05000, versions 0x2f, 0x0, 0x8c, 0x0, 003. UL 550 Core SCSI (10) at 0xffd06000, versions 0x2f, 0x0, 0x82, 0x0, 0x80
+4. UL 350 Core LAN (802.3) (10) at 0xffd07000, versions 0x2f, 0x0, 0x8a, 0x0, 005. UL 550 Core Centronics (10) at 0xffd02000, versions 0x2f, 0x0, 0x74, 0x0, 0x06. UL 550 Core PC Keyboard (10) at 0xffd08000, versions 0x2f, 0x0, 0x84, 0x0, 007. UL 550 Core PC Keyboard (10) at 0xffd08100, versions 0x2f, 0x0, 0x84, 0x0, 008. UL 550 Core Wax BA (11) at 0xffe00000, versions 0x31, 0x0, 0x8e, 0x0, 0x0
+9. UL 550 Wax EISA BA (11) at 0xfc000000, versions 0x31, 0x0, 0x90, 0x0, 0x0
+10. UL 550 Wax Core RS-232 (10) at 0xffe02000, versions 0x31, 0x0, 0x8c, 0x0, 0011. Raven Opt. 2D Graphics (Goat) (10) at 0xf6000000, versions 0x12, 0x0, 0x77,0That's a total of 11 devices.
 Linux version 2.3.99-pre8 (bame@noam) (gcc version 2.96 20000707 (experimental)0initrd: 00000000-00000000
 pagetable_init
 On node 0 totalpages: 32768
@@ -141,7 +142,7 @@ zone(0): 16384 pages.
 zone(1): 16384 pages.
 zone(2): 0 pages.
 trap_init
-Calibrating delay loop... 292.45 BogoMIPS
+Calibrating delay loop... 374.37 BogoMIPS
 Memory: 125696k available
 Dentry-cache hash table entries: 16384 (order: 5, 131072 bytes)
 Buffer-cache hash table entries: 8192 (order: 3, 32768 bytes)
@@ -186,16 +187,29 @@ request_irq(534, c01da868, 0x20000000, sim700, c7f8d260)
 scsi0: sim700_intr_handle() called with no interrupt
 scsi0 : LASI/Simple 53c700
 scsi : 1 host.
-  Vendor: TOSHIBA   Model: CD-ROM XM-5701TA  Rev: 1347
+  Vendor: PIONEER   Model: DVD-ROM DVD-303   Rev: 1.04
   Type:   CD-ROM                             ANSI SCSI revision: 02
-Detected scsi CD-ROM sr0 at scsi0, channel 0, id 2, lun 0
-scsi : detected 1 SCSI cdrom total.
+Detected scsi CD-ROM sr0 at scsi0, channel 0, id 1, lun 0
+  Vendor: SEAGATE   Model: ST39173N          Rev: HP11
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Detected scsi disk sda at scsi0, channel 0, id 5, lun 0
+  Vendor: SEAGATE   Model: ST39173N          Rev: HP11
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Detected scsi disk sdb at scsi0, channel 0, id 6, lun 0
+scsi : detected 1 SCSI cdrom 2 SCSI disks total.
+sr0: scsi3-mmc drive: 0x/0x cd/rw xa/form2 cdda tray
 Uniform CD-ROM driver Revision: 3.08
+SCSI device sda: hdwr sector= 512 bytes. Sectors= 17773524 [8678 MB] [8.7 GB]
+Partition check:
+ sda: unknown partition table
+SCSI device sdb: hdwr sector= 512 bytes. Sectors= 17773524 [8678 MB] [8.7 GB]
+ sdb: unknown partition table
 82596: 6 0 0 at c028cc10
 82596: 6 ffd07000 217 at c7ffca00
-eth0: 82596 at 0xffd07000, 08 00 09 55 5A 62 IRQ 535.
+eth0: 82596 at 0xffd07000, 08 00 09 FD 7A AB IRQ 535.
 82596.c $Revision: 1.9 $
-Serial driver version 4.93 (2000-03-20) with MANY_PORTS SHARE_IRQ SERIAL_PCI endFound serial #0 at 0xffd05000, IRQ 538
+Serial driver version 4.93 (2000-03-20) with MANY_PORTS SHARE_IRQ SERIAL_PCI end
+Found serial #0 at 0xffd05000, IRQ 538
 ttyS00 at iomem 0xffd05800 (irq = 538) is a 16550A
 Found serial #1 at 0xffe02000, IRQ 793
 ttyS01 at iomem 0xffe02800 (irq = 793) is a 16550A
@@ -211,7 +225,8 @@ dd: /dev/zero: Bad address
 0+0 records in
 0+0 records out
 mke2fs 1.19-WIP, 7-Jul-2000 for EXT2 FS 0.5b, 95/08/09
-ext2fs_check_if_mount: No such file or directory while determining whether /dev.Filesystem label=
+ext2fs_check_if_mount: No such file or directory while determining whether /dev.
+Filesystem label=
 OS type: Linux
 Block size=1024 (log=0)
 Fragment size=1024 (log=0)
@@ -254,7 +269,7 @@ sh: can't access tty; job control turned off
 # pwd
 /root
 # cd /
-# ls -al
+# ls -la
 total 213
 dr-xr-xr-x   18 root     root         4096 Aug  4  2000 .
 dr-xr-xr-x   18 root     root         4096 Aug  4  2000 ..
@@ -269,7 +284,7 @@ dr-xr-xr-x    2 root     root         2048 Aug  3 16:50 include
 dr-xr-xr-x    2 root     root         2048 Jun 15 00:10 lib
 dr-xr-xr-x    9 root     root         2048 Aug  5  2000 mirror
 dr-xr-xr-x    2 root     root         2048 Jun 15 00:10 mnt
-dr-xr-xr-x   17 root     root            0 Aug 30  2000 proc
+dr-xr-xr-x   17 root     root            0 Aug 29  2000 proc
 dr-xr-xr-x    2 root     root         2048 Jun 15 00:10 root
 dr-xr-xr-x    2 root     root         8192 Aug  3 23:04 sbin
 dr-xr-xr-x    4 root     root         2048 Jul 31 16:27 share
@@ -279,23 +294,21 @@ dr-xr-xr-x   10 root     root         2048 Aug  4  2000 var
 # cat /proc/cpuinfo
 processor       : 0
 cpu family      : PA-RISC <NULL>
-cpu             : PA8000
-cpu MHz         : 160.000000
+cpu             : PA8200
+cpu MHz         : 240.000000
 model           :
-model name      : UL 2w U160 512K/512K (871/D270,D370)
-hversion        : 0x00005a30
+model name      : UL 2w U+/240 (350/550)
+hversion        : 0x00005ba0
 sversion        : 0x00000491
-I-cache         : 512 KB
-D-cache         : 512 KB (WB)
-ITLB entries    : 96
-DTLB entries    : 96 - shared with ITLB
-BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
-BTLB fix-entr.  : 0 instruction, 0 data (16 combined)
-BTLB var-entr.  : 0 instruction, 0 data (0 combined)
-bogomips        : 292.45
+I-cache         : 2048 KB
+D-cache         : 2048 KB (WB)
+ITLB entries    : 120
+DTLB entries    : 120 - shared with ITLB
+BTLB            : not supported
+bogomips        : 374.37
 # shutdown now -h
-Why? why not?
-shutdown: halted by ghost: why not?
+Why?
+shutdown: halted by ghost:
 Couldn't umount pipe: on none: No such file or directory
 Unmounting any remaining filesystems...
 shutdown: Cannot open /etc/mtab.
@@ -304,4 +317,4 @@ Now you can turnSystem halted.
  off the power..gsc.c:gsc_mach cmd 2
 .
 
---------------DD6064467AE735BB0ECF5742--
+--------------C52EBA3FCF6E1122A4AD8B94--
