@@ -1,149 +1,250 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA28770
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Nov 1999 21:09:48 -0700
-Date: Fri, 19 Nov 1999 05:12:37 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Philippe Benard <phi@hpfrcu03.france.hp.com>, frowand@cup.hp.com,
-        Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
-        sieler@allegro.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] depi?
-Message-Id: <19991119051237.C941@mathe.stud.uni-erlangen.de>
-References: <3833B29E.5793D0E6@hpfrcu03.france.hp.com> <199911182037.PAA02238@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA29408
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Nov 1999 22:29:38 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
+	by palrel1.hp.com (Postfix) with ESMTP id EDF865F7
+	for <parisc-linux@thepuffingroup.com>; Thu, 18 Nov 1999 21:31:11 -0800 (PST)
+Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id VAA01055 for parisc-linux@thepuffingroup.com; Thu, 18 Nov 1999 21:32:58 -0800 (PST)
+Date: Thu, 18 Nov 1999 21:32:58 -0800 (PST)
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <199911190532.VAA01055@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199911182037.PAA02238@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=X-roman8
+Subject: [parisc-linux] `PROC_SCSI_LASI7XX' undeclared here
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > This is what I undesrtand now too, at first I though it was flat 4Gb shared
-> > between the OS and the processes (ala 2Gb each), then space flip enter in
-> > action with flat 4Gb per threads (pardon proceses for now), and then a flat
-> > 4Gb for the kernel itself.
+Hi all,
+I tried to rebuild after doing "cvs -z9 update -d" (ggg nods to _A_)
+and got the following output:
+(and yes I ran make oldconfig/dep/Image sequence)
 
-> The architecture that I proposed was suggested by figure 3-1 of the
-> Precision Architecture and Instruction Set Manual (1989).  On a level 1
-> machine there 2**16-1 virtual 4GB spaces.  Thus, each process can
-> have its own virtual space.  The physical page directory contains
-> the mapping for the kernel and all processes.  The algorithm for
-> updating the TLB(s) from the page directory is very important for
-> efficiency and also for security.
+...
+gcc -D__KERNEL__ -I/linux/linux/include -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -mdisable-fpregs -fwritable-strings  -fno-strict-aliasing -pipe -fno-strength-reduce   -c -o lasi7xx.o lasi7xx.c
+lasi7xx.c:38: `PROC_SCSI_LASI7XX' undeclared here (not in a function)
+lasi7xx.c:38: initializer element for `proc_scsi_lasi7xx.low_ino' is not constant
+lasi7xx.c:48: warning: type defaults to `int' in declaration of `ncr53c7xx_init'
+make[3]: *** [lasi7xx.o] Error 1
+...
 
-I agree with the description.
+If I recall correctly, a shared enum table had "PROC_SCSI_LASI7XX"
+added to it.  I think it was a /proc header file.
 
-> I assume threads will run in a processes virtual space for efficiency.
+Normally I'd fix this myself (and probably will) but don't have time.
+If some else does, that would be great. Otherwise, I'll get to it on
+the weekend.
 
-Is there any reason we shouldn't do it ?  It's just not a per-pid unique id we
-put into the space registers, it's a per-process(Unix sense) one.
+I've appended my "linux/.config" file.
 
-> > I don't really see the implementation of a previous mail of someone saying the
-> > user VAS quad usage would be TEXT/DATA/SHARED1/SHARE2 if all the SR's are the
-> > same, I still have some ProtID problem I don't see how efficiently sharing is
-> > implemented (TEXT/SHARED1/SHARED2). I bet this is adressed, I just don't have
-> > the design document.
-> 
-> This was me again.  The TEXT/DATA/SHARED1/SHARE2 architecture is described
-> in the 32-bit PA-RISC Runtime Architecture Document.  It is how hpux 10.20
-> does it.  Take a look at Table 1, "Space Register Usage".  However, it doesn't
-> really tell you anything about the OS implementation details.  I do know
-> that hpux uses different spaces for text and data.  As a result, branches
-> that cross quadrants must be interspace branches.  The space of the caller
-> must be saved and restored on return.  If the same space id is used in SR4-SR7
-> for any given process, then I don't think it would be necessary to save
-> and restore the instruction space register across calls except for system
-> calls where the virtual space changes.
+grant
 
-Using the same value in SR0, SR4-SR7 sounds like it will be the least
-surprising.  Throwing away the whole fourth quadrant when you only need two
-pages out of it doesn't sound like an especially good idea (though it might be
-more efficient in very limited circumstances).
+#
+# Automatically generated make config: don't edit
+#
 
-> The one advantage to reserving the fourth quadrant for the OS is that in
-> a system call the OS has direct access to the first three quadrants
-> of the processes address space as well as its own space.
+#
+# Code maturity level options
+#
+CONFIG_EXPERIMENTAL=y
 
-It still has (though I think this might be what you meant by "direct").  Load
-SR3 with the content of SR[04567].  Explicitly use SR3 for all references to
-user data.
+#
+# CPU type
+#
+# CONFIG_PA7100 is not set
+CONFIG_PA7300=y
+CONFIG_PA_1x=y
+CONFIG_PA_11=y
+# CONFIG_SMP is not set
+CONFIG_GSC=y
+CONFIG_GSC_DINO=y
+CONFIG_GSC_LASI=y
+# CONFIG_HIL is not set
+CONFIG_PCI=y
 
-> SR0 to SR4 can be changed by a non-privileged process.  Thus, access
-> identities have to be setup properly to prevent a process from flipping
-> through the virtual address space and doing bad stuff.
+#
+# Loadable module support
+#
+# CONFIG_MODULES is not set
 
-This is an important point as soon as we have to consider system security in
-more detail.
+#
+# General setup
+#
+CONFIG_NET=y
+CONFIG_SYSVIPC=y
+# CONFIG_BSD_PROCESS_ACCT is not set
+CONFIG_SYSCTL=y
+CONFIG_BINFMT_SOM=y
+# CONFIG_BINFMT_ELF is not set
+# CONFIG_BINFMT_MISC is not set
+# CONFIG_BINFMT_JAVA is not set
 
-> The OS must also be prepared for a process that messes with SR4.  A nasty
-> process might be able change the space id in SR4 to that of another process
-> or the kernel, and do a system call that writes to this region.
+#
+# Block devices
+#
+# CONFIG_BLK_DEV_FD is not set
+# CONFIG_BLK_DEV_IDE is not set
 
-> For PA_RISC 2.0, the architecture is changed for 64-bit operation.  I quote
-> 
-> 	"The OS will use a different address space layout for 64-bit processes,
-> 	so we will not be able to specify that main program text is at the
-> 	low end of Quadrant 0, nor will we be able to use absolute addressing
-> 	at all.  This will affect millicode calls, long calls, plabel
-> 	materialization, and non-PIC literal references.
-> 
-> 	Compilers must avoid any explicit reference to space registers, so
-> 	there is no need to specify any association between particular
-> 	segments and quadrants of the address space."
-> 
-> Further, the 64-bit architecture defines a single PIC compilation model.
-> I have to say that the 64-bit document as of Version 3.3 (1997) is vague.
+#
+# Please see Documentation/ide.txt for help/info on IDE drives
+#
+# CONFIG_BLK_DEV_HD_ONLY is not set
 
-The PA1.1 is vague/redundant as well (or at least I'll assume it is until someone
-points out my mistake).
+#
+# Additional Block Devices
+#
+# CONFIG_BLK_DEV_LOOP is not set
+# CONFIG_BLK_DEV_NBD is not set
+# CONFIG_BLK_DEV_MD is not set
+CONFIG_BLK_DEV_RAM=y
+CONFIG_BLK_DEV_INITRD=y
+# CONFIG_BLK_DEV_XD is not set
+# CONFIG_BLK_DEV_DAC960 is not set
+CONFIG_PARIDE_PARPORT=m
+# CONFIG_BLK_CPQ_DA is not set
+# CONFIG_BLK_DEV_HD is not set
 
-> Probably, we should ignore the 64 bit issues and use an architecture
-> that is good for 32 bit level 1 machines and above.
+#
+# Networking options
+#
+# CONFIG_PACKET is not set
+# CONFIG_NETLINK is not set
+# CONFIG_FIREWALL is not set
+# CONFIG_FILTER is not set
+# CONFIG_UNIX is not set
+# CONFIG_INET is not set
 
-Basically, the question with PA2.0 is "how do we access user memory out of kernel
-space".  OTOH, as PA2.0 virtual address offsets are 62 bits only, this shouldn't
-be a problem (are they really 62 bits btw ?).
+#
+#  
+#
+# CONFIG_IPX is not set
+# CONFIG_ATALK is not set
+# CONFIG_X25 is not set
+# CONFIG_LAPB is not set
+# CONFIG_BRIDGE is not set
+# CONFIG_LLC is not set
+# CONFIG_ECONET is not set
+# CONFIG_WAN_ROUTER is not set
+# CONFIG_NET_FASTROUTE is not set
+# CONFIG_NET_HW_FLOWCONTROL is not set
+# CONFIG_CPU_IS_SLOW is not set
 
-> > ------------------------------------------
-> > Some may say, linux is not doc, it is hack n run, but on the long run I'm
-> > affraid that hack n run will type more text (try and fail code) than writing
-> > the design options. For instance the ASL document for HP-UX wide is 22 pages
-> > total, with TOC and figures, and pseudo-code algorithm.
-> > Remember Djikstra (well the old timer may, the bambinos may take Kurt Cobain
-> > as an example :-) "You should pay the programmers a very good salary, don't
-> > hesitate to bump their salary, BUT make them pay any puch in their punched
-> > card" The idea behind, think before code after, Kurt tried it the other way,
-> > he choose to shoot first and think after oops :-)
+#
+# QoS and/or fair queueing
+#
+# CONFIG_NET_SCHED is not set
 
-> Agree totally.
+#
+# SCSI support
+#
+CONFIG_SCSI=y
 
-Who is Kurt and why do we have to go around on parisc-linux and insult him ?
+#
+# SCSI support type (disk, tape, CDrom)
+#
+CONFIG_BLK_DEV_SD=y
+# CONFIG_CHR_DEV_ST is not set
+# CONFIG_BLK_DEV_SR is not set
+# CONFIG_CHR_DEV_SG is not set
 
-> In summary, I think that each process slot should be assigned a unique
-> space id.
+#
+# Some SCSI devices (e.g. CD jukebox) support multiple LUNs
+#
+# CONFIG_SCSI_MULTI_LUN is not set
+# CONFIG_SCSI_CONSTANTS is not set
 
-I agree, and have said so before (Date: Wed, 17 Nov 1999 14:00:19 +0100).
+#
+# SCSI low-level drivers
+#
+CONFIG_LASI_SCSI=y
 
-> At least initially, the same id would be used for SR4-SR7 in
-> each process.
+#
+# Network device support
+#
+CONFIG_NETDEVICES=y
+CONFIG_APRICOT=y
+CONFIG_DEC_ELCP=y
 
-I don't see the need to ever change this _for PA1.1_.
+#
+# Character devices
+#
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+# CONFIG_GSC_PS2 is not set
+CONFIG_SERIAL=y
+CONFIG_SERIAL_CONSOLE=y
+# CONFIG_SERIAL_EXTENDED is not set
+# CONFIG_SERIAL_NONSTANDARD is not set
+CONFIG_UNIX98_PTYS=y
+CONFIG_UNIX98_PTY_COUNT=256
+# CONFIG_PRINTER is not set
+# CONFIG_MOUSE is not set
+# CONFIG_QIC02_TAPE is not set
+# CONFIG_WATCHDOG is not set
+# CONFIG_NVRAM is not set
+# CONFIG_RTC is not set
 
-For PA2.0 (wide), our largest flat address space is 62 bits and using the two
-bits to select space registers is a good idea.
+#
+# Video For Linux
+#
+# CONFIG_VIDEO_DEV is not set
 
-> Link the OS at 0xc0000000 and go with a 3GB process/1GB OS
-> virtual address model.
+#
+# Joystick support
+#
+# CONFIG_JOYSTICK is not set
+# CONFIG_DTLK is not set
 
-We don't want that.
+#
+# Ftape, the floppy tape device driver
+#
+# CONFIG_FTAPE is not set
 
-We might want to link the OS at 0x8000 0000 and go with a 4GB process / 2GB OS
-model.
+#
+# Filesystems
+#
+# CONFIG_QUOTA is not set
+# CONFIG_AUTOFS_FS is not set
+# CONFIG_ADFS_FS is not set
+# CONFIG_AFFS_FS is not set
+# CONFIG_HFS_FS is not set
+# CONFIG_FAT_FS is not set
+# CONFIG_MSDOS_FS is not set
+# CONFIG_UMSDOS_FS is not set
+# CONFIG_VFAT_FS is not set
+# CONFIG_ISO9660_FS is not set
+# CONFIG_JOLIET is not set
+# CONFIG_MINIX_FS is not set
+# CONFIG_NTFS_FS is not set
+# CONFIG_HPFS_FS is not set
+CONFIG_PROC_FS=y
+# CONFIG_DEVPTS_FS is not set
+# CONFIG_QNX4FS_FS is not set
+# CONFIG_ROMFS_FS is not set
+CONFIG_EXT2_FS=y
+# CONFIG_SYSV_FS is not set
+# CONFIG_UFS_FS is not set
+# CONFIG_EFS_FS is not set
 
-We might want to link the OS at 0x0000 0000 and go with a 4GB process / 4GB OS
-model.
+#
+# Network File Systems
+#
 
-> All the physical memory in the machine can therefore be used, up to the ~ 4GB
-> limit in the PA 1.X architecture.  I think this model is compatible with the
-> PA 1.1 architecture and hopefully also the x86 architecture.
+#
+# Partition Types
+#
+# CONFIG_BSD_DISKLABEL is not set
+# CONFIG_MAC_PARTITION is not set
+# CONFIG_SMD_DISKLABEL is not set
+# CONFIG_SOLARIS_X86_PARTITION is not set
+# CONFIG_UNIXWARE_DISKLABEL is not set
+# CONFIG_NLS is not set
 
-Why does it have to be compatible with the x86 architecture ?
+#
+# Console drivers
+#
+# CONFIG_IODC_CONSOLE is not set
 
-	Philipp Rumpf
+#
+# Kernel hacking
+#
+CONFIG_MAGIC_SYSRQ=y
