@@ -1,19 +1,16 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] NIC & "searching for devices"
-Date: Wed, 23 Feb 2005 06:48:31 +0000
-Message-ID: <e6eae02905022222484ae1fdad__32045.2714841396$1416624535$gmane$org@mail.gmail.com>
-References: <e6eae02905022122345edc35f7@mail.gmail.com>
-	<420B30A200004CEC@mail-1-bnl.tiscali.it>
-Reply-To: Max Grabert <parisc@gmail.com>
+From: "Harry Cochran" <h.cochran@comcast.net>
+Subject: [parisc-linux] Upgrading from 2.4 to 2.6
+Date: Wed, 23 Feb 2005 15:43:45 -0500
+Message-ID: <FHEGKPBPFFGIFBGOANOKAEMPEPAA.h.cochran@comcast.net>
+References: <20050222210531.6c4fccc2@Tatooine.r3z0>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: Harry Cochran <h.cochran@comcast.net>,
- parisc-linux@parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset="us-ascii"
+To: <parisc-linux@parisc-linux.org>,
+ <debian-hppa@lists.debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <420B30A200004CEC@mail-1-bnl.tiscali.it>
+In-Reply-To: <20050222210531.6c4fccc2@Tatooine.r3z0>
+List-Id: linux-parisc.vger.kernel.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,45 +21,63 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 22 Feb 2005 10:34:46 +0100, Joel Soete <soete.joel@tiscali.be> wrote:
+Hi,
 
-[....]
+	Could someone please help me recover from a failed attempt to upgrade my
+J6000 to 2.6?
 
-> Yes but I encountered weird difficulties (even on a i386 box) 
-> to configure a brother model 3C905B as needed:
-> see this old thread <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-November/021619.html>
+	Looks like I can't boot the 2.4 kernel I have on the system because it's
+name doesn't end in 32 or 64 (it ends in smp) -><-.
 
-kargellan:/home/xam# lspci
-0000:00:0d.0 Ethernet controller: 3Com Corporation 3c905C TX/TX-M
-[Tornado] (rev 78)
-0000:00:0e.0 Ethernet controller: 3Com Corporation 3c905B 100BaseTX
-[Cyclone] (rev 30)
-0000:00:0f.0 Ethernet controller: 3Com Corporation 3c905C-TX/TX-M
-[Tornado] (rev 78)
-[...]
+	My J6000 has a cd-rom, so I thought maybe I could boot from that, but sea
+ipl doesn't find it.
 
-As you can see this is a ix86 machine with three 3com NICs
-in it; It is running stable for almost 2 years now. Right now it is
-running 2.6.11-rc4. BTW, all three network cards share one
-interrupt (IRQ 11), which is also used by the USB port.
+Here's my original question:
 
-And there is also my ix86 laptop that is using a 'vortex' network
-card, also running fine for almost 3 years now with many 
-different linux kernel.
+*************
 
-I'd rather say either your network card is broken/of poor quality
-or there are some compatibility issues with your ix86  motherboard.
-Anyway, this is going way off-topic ...
+	Sorry for the newbie question, but I'm trying to boot 2.6 and I don't quite
+understand how to set up the "root=" for it.
+
+My palo.conf says:
+--command line=1/boot/vmlinux root=/dev/sda3 HOME=/ initrd=/initrd.img
+console=ttyS0 TERM=vt102
+--recoverykernel=/boot/vmlinux
+--init-partitioned=/dev/sda
+
+Here's what my palo.conf generates on boot right now:
+
+0 1/boot/vmlinux
+1 root=/dev/sda3
+2 HOME=/
+3 initrd=/initrd.img
+4 console=ttys0
+5 TERM=vt102
+
+On boot I get:
+
+cannot open root device "sda3" or unknownblock(2.0)
+Please append a correct "root=" boot option
+Kernel panic: VFS: Unable to mount root fs or unknown-block(2.0)
+
+	I have seen one document which says I have to build a ramdisk, but it
+doesn't tell me how. What's worse is that I can't get 2.4.26 to boot again
+even though I have a symlink (vmlinux.old) to it. I tried changing line 0 to
+1/boot/vmlinux.old (and deleting the "initrd=/initrd.img" line, but it still
+boots 2.6.8. I even tried inserting a line saying
+recoverykernel=/boot/vmlinux.old but that didn't help.
+
+*************
+
+	I'm sure there's an easy answer and maybe everyone is tired of answering
+these kind of newbie questions, but I'm desperate, so I thought I'd try one
+more time.
+
+Thanks,
+
+Harry
 
 
-In my experience 3Com often produced okay-nice cards, but
-sometimes they managed to release utter crap as well.
-IMHO there are better alternatives available (Intel/DEC), 
-where I don't have to take any risks.
-
-
-Greetings,
-  Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
