@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from monet.cefet-al.br (unknown [200.133.126.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A87CB48A0
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 07:19:16 -0600 (MDT)
-Message-ID: <1026825600.3d341d80904ad@webmail.cefet-al.br>
-Date: Tue, 16 Jul 2002 10:20:00 -0300
-From: =?ISO-8859-1?B?VOFyY2lvIFJvZHJpZw==?=ues Bezerra <tarcio@cefet-al.br>
-To: parisc-linux@lists.parisc-linux.org
-References: <20020716124902.16005.43182.Mailman@dsl2.external.hp.com>
-In-Reply-To: <20020716124902.16005.43182.Mailman@dsl2.external.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] PA 9000 D-Class
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6B9994897
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 07:49:36 -0600 (MDT)
+Date: Tue, 16 Jul 2002 09:48:00 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: joel.soete@freebel.net
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] parisc -linux: Cluster tools availability?
+Message-ID: <20020716134800.GB32471@systemhalted>
+References: <1026824527.3d34194f9be6d@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1026824527.3d34194f9be6d@webmail.tiscalinet.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,62 +23,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+> Hi all,
+> I running a b180 with md and I could recover a second b180.
+> It would be nice to build a cluster 'a la MC/SG'.
+> I found well openmosix but only i386 afaik (and there is too much asm code for
+> me to tempt a portage).
+> There is also beowulf but the only HOWTO I found concern kernel 2.0 ? (more over
+> my network connection are limited (10Mb) and it does not seems to cover my
+> whishes (HA cluster)).
+> 
+> Any other advise?
+> Thanks a lot,
+>     Joel
+>
 
-Is my hardware (hppa 9000 D-class)supported by Debian Linux for parisc? I 
-visited the site and I have doubt if it does (i found 9000/720 and 9000/735 
-support).
+Linux Virtual Server Project?
+http://www.linuxvirtualserver.org/
 
-Thanks in advance.
--- 
-Tárcio R. Bezerra
-Gerente de Tecnologia da Informação
-Centro Federal de Educação Tecnológica de Alagoas
+You definately don't want MOSIX for HA. If the system that spawned
+the process dies, then so does the process. The MOSIX stubs just
+marshall data, and in most cases for simple things call directly
+to the kernel that the process has migrated towards.
 
+I would really like to see a port of bproc to parisc :)
+(I figure on ~100 lines of assembly to get process state information).
+I spoke to Donald Becker at OLS about this, and it's on my todo
+list... might get done in September.
 
-Citando parisc-linux-request@lists.parisc-linux.org:
-
-> Welcome to the parisc-linux@lists.parisc-linux.org mailing list!
-> 
-> To post to this list, send your email to:
-> 
->   parisc-linux@lists.parisc-linux.org
-> 
-> General information about the mailing list is at:
-> 
->   http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> If you ever want to unsubscribe or change your options (eg, switch to
-> or from digest mode, change your password, etc.), visit your
-> subscription page at:
-> 
->  
-> http://lists.parisc-linux.org/mailman/options/parisc-linux/tarcio%40cefet-
-al.br
-> 
-> 
-> You can also make such adjustments via email by sending a message to:
-> 
->   parisc-linux-request@lists.parisc-linux.org
-> 
-> with the word `help' in the subject or body (don't include the
-> quotes), and you will get back a message with instructions.
-> 
-> You must know your password to change your options (including changing
-> the password, itself) or to unsubscribe.  It is:
-> 
->   tarcio@cefet-al.br
-> 
-> If you forget your password, don't worry, you will receive a monthly
-> reminder telling you what all your lists.parisc-linux.org mailing list
-> passwords are, and how to unsubscribe or change your options.  There
-> is also a button on your options page that will email your current
-> password to you.
-> 
-> You may also have your password mailed to you automatically from the
-> Web page noted above.
-> 
-
-
--------------------------------------------------
-CEFET/AL - HORDE/IMP
+c.
