@@ -1,14 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc fails to build using binutils-2.14.90.0.1
-Date: Sun, 18 May 2003 12:01:53 -0400 (EDT)
-Message-ID: <200305181601.h4IG1sgl016848__34825.1368770891$1416622463$gmane$org@hiauly1.hia.nrc.ca>
-References: <16071.39547.93843.710060@gargle.gargle.HOWL>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: [parisc-linux] glibc pthreads actual threads?
+Date: Mon, 19 May 2003 18:27:41 +0200
+Message-ID: <3EC761CD0000080F__45480.1847030923$1416622466$gmane$org@ocpmta2.freegates.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: debian-hppa@lists.debian.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <16071.39547.93843.710060@gargle.gargle.HOWL> from "Matthias Klose" at May 18, 2003 04:36:43 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,24 +17,98 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> binutils-2.13.90.0.18 works ok.
-> 
-> See http://buildd.debian.org/fetch.php?&pkg=gcc-3.3&ver=1%3A3.3ds9-2&arch=hppa&stamp=1053264270&file=log&as=raw:
-> 
-> ./xgcc -B./ -B/usr/hppa-linux/bin/ -isystem /usr/hppa-linux/include -isystem /usr/hppa-linux/sys-include -O2  -DIN_GCC    -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -fPIC -DELF=1 -DLINUX=1 -g -DHAVE_GTHR_DEFAULT -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED  -I. -I. -I../../src/gcc -I../../src/gcc/. -I../../src/gcc/config -I../../src/gcc/../include -DL_mulI -xassembler-with-cpp -c ../../src/gcc/config/pa/milli64.S -o libgcc/./_mulI.o
-> ../../src/gcc/config/pa/milli64.S: Assembler messages:
-> ../../src/gcc/config/pa/milli64.S:1779: Error: Undefined .EXPORT/.IMPORT argument (ignored): 
-> ../../src/gcc/config/pa/milli64.S:1779: Error: Undefined .EXPORT/.IMPORT argument (ignored): millicode
-> make[5]: *** [libgcc/./_mulI.o] Error 1
+Hi all,
 
-Did you part this to the binutils list?  A change has mucked up the
-assembler's processing of .export.  Alan Modra would probably know what's
-happened.
+Sorry in advance if it is not the right place to put this question.
 
-I've also noted that there are some new fails in the visibility tests
-in a recent cvs version of binutils.
+But I just start to learn more details about OS (A. Tanenbaum book) and
+by the way try to understand a bit more about [p]threads.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I found a paper with examples (what I need much of all) and so I try by
+the first one: basic_example.c (which I just change a very little for my
+understanding)
+
+/* for pthreads */
+#include <pthread.h>
+#include <stdio.h>
+
+/* for getpid() */
+#include <sys/types.h>
+#include <unistd.h>
+
+char * buf = "abcdefghijklmnopqrstuvwxyz";
+int num_pthreads = 4;
+int count = 60;
+int fd = 1;
+
+void * new_thread(void * arg)
+{
+    int i;
+    pid_t PID=getpid();
+
+
+    for (i = 0; i < count; i++) {
+        fprintf(stderr, "PID: %d\n", PID);
+	write(fd, arg, 1); write(fd, "\n", 1);
+	sleep(1);
+    }
+    return(NULL);
+}
+
+main()
+{
+   pthread_t thread;
+   int i;
+
+   for (i = 0; i < num_pthreads; i++) {
+	if (pthread_create(&thread, NULL, new_thread, (void *)(buf + i))) {
+	   fprintf(stderr, "error creating a new thread \n");
+	   exit(1);
+	}
+	pthread_detach(thread);
+   }
+   pthread_exit(NULL);
+}
+
+Which I compile as follow (gcc-3.3):
+gcc -l pthread -o basic_example basic_example.c
+
+That runs well (on my b2k running a 2.4.20-pa35 and libc6 2.3.1-17):
+[...]
+PID: 31360
+a
+PID: 31361
+b
+PID: 31362
+c
+PID: 31363
+d
+PID: 31360
+a
+PID: 31361
+b
+PID: 31362
+c
+PID: 31363
+d
+[...]
+
+But notice  a very strange behaviour:
+_the pid is not the same for each thread_ ??
+
+Having just a small sunos 5.8 with gcc-3.2.2 (but with native libpthread)
+the pb does not occurs?
+
+Is it a limit of glibc (in general or in 2.3 only?) for all linux or only
+hppa?
+
+Thanks in advance for your attention,
+    Joel
+
+
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
