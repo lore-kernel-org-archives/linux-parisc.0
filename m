@@ -1,15 +1,14 @@
-From: Randolph Chung <tausq@debian.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] possible gcc-3.2 bug?
-Date: Tue, 15 Oct 2002 18:32:31 -0700
-Message-ID: <20021016013231.GS5602__28744.8720926934$1416621835$gmane$org@tausq.org>
-References: <20021015070336.GJ24881@tausq.org> <200210152137.g9FLbmkY004459@hiauly1.hia.nrc.ca>
-Reply-To: Randolph Chung <tausq@debian.org>
+Date: Tue, 15 Oct 2002 22:24:23 -0400 (EDT)
+Message-ID: <200210160224.g9G2OO0I004733__42263.1526984789$1416621835$gmane$org@hiauly1.hia.nrc.ca>
+References: <20021016013231.GS5602@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: tausq@debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <200210152137.g9FLbmkY004459@hiauly1.hia.nrc.ca>
+In-Reply-To: <20021016013231.GS5602@tausq.org> from "Randolph Chung" at Oct 15, 2002 06:32:31 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,35 +19,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > ---------------------8<-----------------------
-> > /* compile with gcc -c foo.c */
-> > 
-> > typedef struct {
-> >         volatile unsigned int lock;
-> > } spinlock_t;
-> > 
-> > typedef struct {
-> >         spinlock_t lock;
-> >         volatile int counter;
-> > } rwlock_t;
-> > 
-> > void foo(void)
-> > {
-> >         static rwlock_t x = (rwlock_t) { (spinlock_t) { 1 }, 0 };
-> > }
+> well, it's doesn't seem to be very consistent about it then...
 > 
-> Except for sizeof, cast operators in initializers for static variables
-> can only be used to convert arithmetic types.  GCC allows non-constant
-> initializers for automatic variables.
+> static rwlock_t x = (rwlock_t) { { 1 }, 0 };
+> is ok
+> 
+> static rwlock_t x = { (spinlock_t) { 1 }, 0 };
+> is also ok
+> 
+> only when you have both casts does it fail...
 
-well, it's doesn't seem to be very consistent about it then...
+Ok, I think I see what is going on.  "(rwlock_t) { { 1 }, 0 }" is
+a compound literal (constructor expression).  GCC allows initialization
+of static objects by compound literals.  This is not possible in ISO C99.
 
-static rwlock_t x = (rwlock_t) { { 1 }, 0 };
-is ok
+The initializer list of the compound literal must be constant.  Thus,
+nesting of compound literals isn't possible.  So, when you have two
+casts in the initializer you get the error.  For more info, look at
+extend.texi.
 
-static rwlock_t x = { (spinlock_t) { 1 }, 0 };
-is also ok
-
-only when you have both casts does it fail...
-
-randolph
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
