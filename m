@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 24 Jan 2003 18:18:32 -0700
-To: Joel Soete <joel.soete@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] new gcc-default for hppa
-Message-ID: <20030125011832.GA6228@dsl2.external.hp.com>
-References: <20030121235716.GA2193@dsl2.external.hp.com> <3E30242300000111@ocpmta8.freegates.net>
+Date: Fri, 24 Jan 2003 18:53:08 -0700
+To: Sir Ace <chandler@nateng.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Um... WTF?
+Message-ID: <20030125015308.GC6228@dsl2.external.hp.com>
+References: <Pine.LNX.4.33.0301241520210.25246-100000@jordan.eng.nateng.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E30242300000111@ocpmta8.freegates.net>
+In-Reply-To: <Pine.LNX.4.33.0301241520210.25246-100000@jordan.eng.nateng.com>
 From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -20,17 +20,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jan 24, 2003 at 12:02:25PM +0100, Joel Soete wrote:
-> Trust me, in this test the only variable is gcc release. Does it help?
+On Fri, Jan 24, 2003 at 03:37:28PM -0800, Sir Ace wrote:
+> 
+>   I have no idea who to direct this to, and everyone keeps directing me to
+> this liste, so here goes.
 
-not alot. We need to narrow down *what* is broken and then show that
-to the compiler/toolchain experts. They need either a test case or
-shown broken asm output.
+parisc-linux mailing list is really intended for kernel stuff.
+lists.debian.org has lots of mailing lists to post rants.
 
-> That said, always in the continuity of this idea, I also notice that ld is
-> used to build some kernel parts. Is it  possible (even manually just for
-> test) to use gcc in place of ld? (if yes, howto?)
+> Who was the CRACK HEAD that built the debian 3.0 dist for hppa?
 
-hmm...offhand I don't know.
+yeah, debian-hppa list would have been better.  Or debian-devel.
+Your problem is not hppa specific.
+
+/me sits back to watch the late New Years fireworks...
+
+> I am trying to build everyday things on the system to at least make it
+> useable.  I just built ncurses {current} on my box, but to install the
+> ncurses, I had to remove the current debian package.
+
+Why remove the existing package?
+I overwrite existing files when I need to.
+
+
+> Herein lies the problem, some how EVERY DAMN THING on the system seems to
+> be built against ncurses,
+
+Right. *system* being the operative word here.
+
+> I am either reduced to working off the cd for a repair if possible.
+
+yes. The CD has a shell which will let you fix *most* things.
+
+You might also try booting with "init=/bin/bash" or if you are lucky,
+"init=/bin/sash". Then by hand re-install the libncurses.
+
+
+> Not to mention 4 days of software builds...
+
+uhm...what are you building that takes 4 days?
+Not even glibc or xfree86 takes that long.
+
 
 grant
