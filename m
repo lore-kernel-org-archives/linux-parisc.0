@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DBB724879
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Nov 2003 05:54:04 -0700 (MST)
-Message-ID: <3FB0DC01.6070701@tiscali.be>
-Date: Tue, 11 Nov 2003 12:54:25 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C110 builtin nic slow?
-References: <3F969FFE00009EA4@ocpmta2.freegates.net> <3F969FFE00009F73@ocpmta2.freegates.net> <20031110173525.GC24664@colo.lackof.org>
-In-Reply-To: <20031110173525.GC24664@colo.lackof.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from mailindep.elindependiente.com.mx (unknown [200.78.195.203])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F6C4483E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Nov 2003 08:30:43 -0700 (MST)
+Date: Thu, 13 Nov 2003 00:27:36 GMT
+From: "PETERSON BULINGA" <petson@zwallet.com>
+To: parisc-linux@lists.parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <MAILINDEPPmLYB505rP00006562@mailindep.elindependiente.com.mx>
+Subject: [parisc-linux] parisc-linux,SOLICITATION FOR YOUR ASSISTANCE
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,57 +20,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+FROM: Miss THEMBI TENDAI 
 
-Grant Grundler wrote:
-> On Mon, Nov 10, 2003 at 03:00:37PM +0100, Joel Soete wrote:
-> 
->>                        if (pkt_len > rx_copybreak) {
->>                                struct sk_buff *newskb;
-> 
-> 
-> yup - the rx_copybreak support is exactly what I'm talking about.
-> tulip driver has similar support.
-> 
-> 
->>/* Copy frames shorter than rx_copybreak, otherwise pass on up in
->> * a full sized sk_buff.  Value of 100 stolen from tulip.c (!alpha).
->> */
->>static int rx_copybreak = 100;
-> 
-> 
-> The comment is wrong. Tulip uses 1518 for nearly everything but x86.
-> ie it copies all packets since the MTU is <= 1518.
-> 
-Correct :)
+SUBJECT:Please Help 
 
-I so try rx_copybreak = 1518
+EMAIL FROM: thembi79@zwallet.com 
 
-and also run from pc netperf (the script 
-/usr/share/doc/netperf/examples/snapshot_script palin)
-
-but on c110 I noticed many (with rx_copybreak = 100 and rx_copybreak = 
-1518):
-do_page_fault() pid=882 command='netserver' type=15 address=0x0000001c
-...
-:(
-
-and i never get any miss alignement messages?
-
-I restart this test this morning but in the contrary way ie from c110:
-sh /usr/share/doc/netperf/examples/snapshot_script sid.home
-then
-Netperf snapshot script started at Tue Nov 11 12:52:15 CET 2003
-Starting 56x4 TCP_STREAM tests at Tue Nov 11 12:52:52 CET 2003
-
-------------------------------------
-Testing with the following command line:
-/usr/bin/netperf -t TCP_STREAM -l 60 -H sid.home -i 10,3 -I 99,5 -- -s 
-57344 -S 57344 -m 4096
+REPLY EMAIL: thembi79@zwallet.com
 
 
-seems to send some pkt and finaly hung?
 
-hmm I will try to run it under gdb and so hope to discover what append.
+Dear Sir/Madam, 
 
-Cheers,
-	Joel
+You may be surprised to receive this letter from me, Since you do not know me personally "My Name is THEMBI TENDAI" The purpose of my introduction is that Before the death of my father, he had taken me to Johannesburg to deposit the sum of US6 Million (Six Million United States dollars),in one of the private security company, as he foresaw the looming danger in Zimbabwe this money was deposited in a box as gem stones to avoid much demurrage from security company. This amount was meant for the purchase of new machines and chemicals for the Farms and establishment of new farms in Swaziland. This land problem came when Zimbabwean President Mr. Robert Mugabe introduced a new Land Act Reform wholly affecting the rich white farmers and some few black Farmers and this resulted to the killing and mob action by Zimbabwean war veterans and some lunatics in the society. In fact a lot of people were killed because of this Land reform Act for which my father " Mudada Abba " was one of the victims. It is against this back
+round that, I and my Mother and three   younger ones fled Zimbabwe for fear of our lives and I currently staying in the Netherlands in a village called Zwolle, where my family are seeking political asylum and more so I have decided to transfer my father's money to a more reliable foreign account. As the eldest daughter of my father, I am saddled with the responsibility of seeking a genuine foreign account where this money could be transferred without the knowledge of my government who are bent on taking everything we have got. The South African government seems to be playing along with them. I am faced with the dilemma of moving this amount of money out of South Africa for fear of going through the same experience in future, both countries have similar political history. 
+
+As the Eldest daughter, I am seeking for a partner who I have to entrust my future and that of my family in his hands, I must let you know that this transaction is risk free. If you accept to assist me and my family, all I want you to do for me, is to make an arrangements with the security company to clear the consignment (funds) from their affiliate office here in the Netherlands as I have already given directives for the consignment to be brought to the Netherlands from South Africa.But before then all modalities will have to be put in place like change of ownership to the consignment and more importantly this money I intend to use for investment. I have two options for you. Firstly you can choose to have certain percentage of the money for nominating your account for this transaction. Or you can go into Partnership with me for the proper profitable investment of the money in your country. Whichever the option you want, feel free to notify me. If you do not prefer a partnership I am willing to give you 10%
+of the money while the remaining 90% will be for my investment in your country. Should you which to assist me, please furnish me with your telephone and fax number me with the above via e-mail while I implore you to maintain the absolute secrecy required in this transaction. 
+
+God Bless, 
+
+MISS THEMBI TENDAI
