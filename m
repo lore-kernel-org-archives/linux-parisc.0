@@ -1,113 +1,69 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA29367
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Dec 1999 15:21:34 -0700
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id RAA11676
-	for <parisc-linux@thepuffingroup.com>; Fri, 3 Dec 1999 17:26:24 -0500
-Sender: adevries@thepuffingroup.com
-Message-ID: <38484390.32D26BFE@thepuffingroup.com>
-Date: Fri, 03 Dec 1999 17:26:24 -0500
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA30763
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Dec 1999 17:18:12 -0700
+Received: from udlkern.fc.hp.com (root@udlkern.fc.hp.com [15.1.52.48])
+	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id RAA12329
+	for <parisc-linux@thepuffingroup.com>; Fri, 3 Dec 1999 17:20:12 -0700 (MST)
+Received: from debian.fc.hp.com (root@debian.fc.hp.com [15.1.48.119]) by udlkern.fc.hp.com with ESMTP (8.8.6 (PHNE_14041)/8.7.1) id RAA01623 for <parisc-linux@thepuffingroup.com>; Fri, 3 Dec 1999 17:20:10 -0700 (MST)
+Received: from debian.fc.hp.com (bame@localhost [127.0.0.1])
+	by debian.fc.hp.com (8.9.3/8.9.3/Debian/GNU) with ESMTP id RAA29273
+	for <parisc-linux@thepuffingroup.com>; Fri, 3 Dec 1999 17:20:10 -0700
+Message-Id: <199912040020.RAA29273@debian.fc.hp.com>
 To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] PA-RISC/Linux Weekly News - December 3, 1999
+Date: Fri, 03 Dec 1999 17:20:10 -0700
+From: Paul Bame <bame@debian.fc.hp.com>
+Subject: [parisc-linux] a pretty big change
 List-ID: <linux-parisc.vger.kernel.org>
 
-============================================
-PA-RISC/Linux Weekly News - December 3, 1999
-============================================
-  http://www.thepuffingroup.com/parisc/
-  vol 1, iss 3
 
-This Week:
-   News & Announcements
-   This Week's CVS Activity
-   State of the Port Summary
+I just committed the changes to embed real-mode code in a separate
+executable inside vmlinux.  It should cause no functional changes
+in theory.  Read all about it in arch/parisc/real/README and
+ee.html.  If you have terrible new problems,
+I've attached a list of CVS commands to check out the files before I
+started hacking on them.  I haven't seen a shell prompt from this
+set of hacks so beware...
 
+	-Paul Bame
 
-====================
-News & Announcements
-====================
+prumpf- I moved kernel_thread and friends from
+	real/<something> to kernel/head.S  I also re-enabled BTLB in
+	real/setup.c so I could get further in the boot.  Left some
+	debugging printks in the handle_real_interrupt handler too.
 
-----------------------------
-The Quest for PA 2.0 Support
-----------------------------
-After months of valiant programming efforts from developers around the
-globe, Philip Rumpf has started the implementation of a virtual memorty
-management system that should work on PA2.0 processors.  This should
-enable development of PA2.0 IO infrastructure from noble developers such
-as Sir Grant G Grundler and The Imperial Philip Schwan.
-
------------
-New Puffin!
------------
-Mr. Chris Beard and Mrs. Alex deVries are pleased to announce the
-hatching of a new puffling: Matthew Richard Wilcox, weighing in at 85kg.
-Mother and child are doing well, in spite of the unusual size of the
-newly hatched puffball.
-
-Matthew, once weaned, will be working primarily on PA-RISC/Linux
-development efforts, in the Ottawa Ontario puffin burrow (aka: Burrow
-#1).
-
------------------------
-Bremen mini-Puffin-Fest
------------------------
-A miniature Puffin-Fest broke out at the Bremen LinuxTag, featuring such
-notable hackers as Alan Cox, Matthew Wilcox, Philipp Rumpf, Martin
-Petersen, and Martin Schulze.  A 715/33 was transferred to Philipp, and
-some surreptitious hacking occurred behind one of the booths on the show
-floor.
-
--------------------------
-PA-RISC Hardware Database
--------------------------
-
-The PA-RISC database is being filled up with machine descriptions.
-However, more descriptions are needed.  Please go to
-http://www.thepuffingroup.com/parisc/hw.html and add your machines to
-the database.  There are more improvements to the database that will
-be made soon.  The goal of the PA-RISC database is to catalogue the
-different possible machine configurations and the hardware that they
-contain.  This information will be used to determine if a specific
-machine is supported with Linux and what device drivers are needed.
-
-========================
-This Week's CVS Activity
-========================
-
-Paul Bame has fixed some problems with memcpy in real mode.
-
-Philipp Rumpf has replaced the block TLB handler with a basic TLB insert
-handler.
-
-Philipp has also rearranged some of the real mode handling.
-
-=========================
-State of the Port Summary
-=========================
-
-Kernel:
-     based on 2.2.13
-
-Supported Machines:
-     most of the A180c, parts of 712 Gecko and 715 workstations
-
-Supported Hardware:
-     SCSI, Lan and PS/2 on Lasi I/O controller, Dino PCI
-     Tulip ethernet
-
-Project Page:
-     http://www.thepuffingroup.com/parisc/
-
-Latest Workable Image:
-     ftp://puffin.external.hp.com/pub/parisc/linux-2.2.13.gz
-
-Running PA-RISC/Linux HOWTO:
-     http://thepuffingroup.com/parisc/recipe.html
-
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+cvs update -r1.25 arch/parisc/Makefile
+	cvs update -A arch/parisc/Makefile
+cvs update -r1.28 arch/parisc/kernel/Makefile
+	cvs update -A arch/parisc/kernel/Makefile
+cvs update -r1.35 arch/parisc/kernel/head.S
+	cvs update -A arch/parisc/kernel/head.S
+cvs update -r1.39 arch/parisc/kernel/irq.c
+	cvs update -A arch/parisc/kernel/irq.c
+cvs update -r1.14 arch/parisc/kernel/pdc.c
+	cvs update -A arch/parisc/kernel/pdc.c
+cvs update -r1.25 arch/parisc/kernel/pdc_cons.c
+	cvs update -A arch/parisc/kernel/pdc_cons.c
+cvs update -r1.73 arch/parisc/kernel/setup.c
+	cvs update -A arch/parisc/kernel/setup.c
+cvs update -r1.11 arch/parisc/kernel/traps.c
+	cvs update -A arch/parisc/kernel/traps.c
+cvs update -r1.2 arch/parisc/real/Makefile
+	cvs update -A arch/parisc/real/Makefile
+cvs update -r1.2 arch/parisc/real/head.S
+	cvs update -A arch/parisc/real/head.S
+cvs update -r1.2 arch/parisc/real/interruption.S
+	cvs update -A arch/parisc/real/interruption.S
+cvs update -r1.2 arch/parisc/real/lib.c
+	cvs update -A arch/parisc/real/lib.c
+cvs update -r1.2 arch/parisc/real/pdc.c
+	cvs update -A arch/parisc/real/pdc.c
+cvs update -r1.2 arch/parisc/real/real.h
+	cvs update -A arch/parisc/real/real.h
+cvs update -r1.2 arch/parisc/real/real_s.S
+	cvs update -A arch/parisc/real/real_s.S
+cvs update -r1.2 arch/parisc/real/setup.c
+	cvs update -A arch/parisc/real/setup.c
+cvs update -r1.1 arch/parisc/real/traps.c
+	cvs update -A arch/parisc/real/traps.c
+cvs update -r1.1 include/asm-parisc/real.h
+	cvs update -A include/asm-parisc/real.h
