@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from gmce.net (unknown [211.147.255.241])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1C25F4861
-	for <parisc-linux@parisc-linux.org>; Wed, 13 Aug 2003 23:34:28 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C2A84861
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Aug 2003 23:34:30 -0600 (MDT)
 From: =?GB2312?B?uePW3dLGtq8=?= <web@gmce.net>
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
 Reply-To: web@gmce.net
-Date: Thu, 14 Aug 2003 13:36:42 +0800
-Message-Id: <20030814053428.1C25F4861@dsl2.external.hp.com>
+Date: Thu, 14 Aug 2003 13:36:53 +0800
+Message-Id: <20030814053430.8C2A84861@dsl2.external.hp.com>
 Subject: [parisc-linux] =?GB2312?B?uePW3dLGtq+w78T6yqG7sLfR?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
