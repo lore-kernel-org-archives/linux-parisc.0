@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B550A482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Apr 2002 23:56:23 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 30 Apr 2002 17:58:59 +1200
-Message-ID: <002a01c1f00c$1f288eb0$5e01000a@bongo>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Subject: [parisc-linux] mkraid doesnt work on L2000 with 64-bit kernel
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FA73482B
+	for <parisc-linux@parisc-linux.org>; Tue, 30 Apr 2002 00:17:19 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ptizmaaa for parisc-linux@parisc-linux.org; Mon, 29 Apr 2002 23:15:56 -0700
+Date: Mon, 29 Apr 2002 23:21:37 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020430062137.GF30370@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] wishlist projects, looking for volunteers
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,67 +22,69 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi all,
 
-I have a dual CPU L2000 and have installed the 0.9.3 release of
-PA-RISC Linux and dist-upgraded to the latest unstable Debian
-packages. I am running kernel 2.4.9-64, but this problem also occurs
-with 2.4.17-64-smp and non-smp, and 2.4.18-64-smp and non-smp.
+Just thought I'd post a list of some interesting (IMHO) user-space
+projects for parisc-linux.  Feel free to volunteer on anything you
+find interesting :-) many of these are good ways to learn things about
+an OS/architecture that you don't usually have a chance to do so on more
+established platforms. Plus there are lots of people (on this list) who
+are willing to answer questions :-)
 
-When I attempt to make a software RAID0 array on 3 1Gb partitions on
-3 18.2gb internal SCSI disks, I get this error:
+binutils related
+- for hppa64-linux binutils, the linker is always putting dynamic
+  sections into the resulting binary, even though they are not always
+  needed. there is a sketch of how to fix this at 
+http://lists.parisc-linux.org/pipermail/parisc-linux/2002-April/016049.html
+- hppa's gas can only be compiled as 32-bit only or 64-bit only. it
+  would be nice to make it so that it can be compiled to do both (mode
+  chosen using a command line switch). this is how sparc handles mixed
+  32-bit/64-bit environments
 
-hypo:~# mkraid /dev/md0
-handling MD device /dev/md0
-analyzing super-block
-disk 0: /dev/sdb1, 976880kB, raid superblock at 976768kB
-disk 1: /dev/sdc1, 976880kB, raid superblock at 976768kB
-disk 2: /dev/sdd1, 976880kB, raid superblock at 976768kB
-mkraid: aborted, see the syslog and /proc/mdstat for potential clues.
+gdb related
+- gdb doesn't work very well on hppa, single stepping with step/next
+  often does not work (looks like it can't find the stopping point for
+  the next statement). needs to be investigated and fixed
+- gdb doesn't recognize the dwarf debug info that you get with
+  gcc-3.1/gcc-3.2. needs to be enhanced (i think Dave might have already
+  done some work in this area)
+- we are also in need of a hppa gdb maintainer. anyone interested? :-)
 
-Syslog says:
+gcc related
+- The debian gcc package currently does not build 64-bit compilers. this
+  shouldn't be too hard to fix (can use sparc as a template), just needs
+  some experimentation to get it packaged properly
 
-hypo:~# tail /var/log/syslog
-Apr 30 05:36:34 hypo kernel: sys32_ioctl: Unknown cmd fd(3)
-cmd(400c0910) arg(00028a44)
-Apr 30 05:36:34 hypo kernel: sys32_ioctl: Unknown cmd fd(4)
-cmd(400c0910) arg(bff00350)
-Apr 30 05:36:34 hypo kernel: sys32_ioctl: Unknown cmd fd(4)
-cmd(80480923) arg(00029390)
+Java
+- kaffe port to parisc-linux. i got the interpreter working (sorta) but
+  many things don't yet work. would be a good project to learn about
+  JITs and such...
 
-/proc/mdstat says:
+ltrace
+- this is a function-call level tracer (as opposed to strace, which is
+  more on the syscall level). The current ltrace source has some
+  assumptions about ELF relocation layout that doesn't work on hppa. It
+  shouldn't be *hard* to fix this if you understand how pa relocation
+  stubs are generated...
 
-hypo:~# cat /proc/mdstat
-Personalities : [raid0]
-read_ahead not set
-unused devices: <none>
+glibc
+- there seems to be a problem with the loader going into an infinite
+  loop when programs are linked with certain libraries that are linked
+  against libpthread. Helge had mentioned to me that he's seen this with
+  KDE, also things that are linked against the plib library seems to
+  have this problem...
 
-I've had a look through the archives and found a few posts about
-32-bit to 64-bit IOCTLs but nothing seemed to specifically mention
-the RAID stuff.
+c++ fixing
+- http://auric.debian.org/~tausq/buildd/hppa-latest.html has a list of
+  debian packages that don't yet build on hppa (the ones that are listed
+  as "Failed"). many of these are c++ packages that are not coded
+  correctly and don't work with the stricter c++ standard enforced by
+  the 3.x compilers. try to fix these and file bugs...
 
-I also had a look in arch/parisc/kernel/ioctl32.c and there were a
-couple of lines commented out with comments like "new RAID code is
-half merged". Is RAID on 64-bit PA-RISC a work in progress?
+i'm sure there are other things i'm missing.....
 
-Also, I have noticed that the 2nd CPU in the L2000 is always disabled
-when I boot with a SMP kernel, errors like SMP: CPU3 is stuck appear
-near the start of bootup. (Sorry I don't have any more detail on
-these, but I can provide it if needed)
-
-Any ideas/help would be greatly appreciated. I can provide more
-details if needed.
-
-Cheers, James
-
-BTW: Great job on the port to PA-RISC :)
-
------BEGIN PGP SIGNATURE-----
-Version: PGP 7.1.1
-
-iQA/AwUBPM4yo1W+bhIOiSqWEQJSZQCguc5h0mrXQ7pD352VuLeZDeSJ7PkAnjdl
-P8k6Y/oUEcFa8kS95ISO+xQz
-=2axk
------END PGP SIGNATURE-----
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
