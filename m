@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1C016482E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 03:50:30 -0700 (MST)
-Date: Wed, 18 Dec 2002 11:50:21 +0100
-Message-ID: <3DED9A66000022EA@ocpmta3.freegates.net>
-From: jsoe0708@tiscali.be
-To: "Ryan Bradetich" <rbradetich@uswest.net>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from server01 (server01.steindlberger.de [217.115.138.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 38950482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 04:12:08 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-15"
+From: Joerg Steindlberger <j@steindlberger.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] problems with PCI IDE controller
+Date: Tue, 17 Dec 2002 22:04:50 +0100
+References: <200212160609.XAA18500@udlkern.fc.hp.com> <1040050989.13786.23.camel@irongate.swansea.linux.org.uk>
+In-Reply-To: <1040050989.13786.23.camel@irongate.swansea.linux.org.uk>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] 2.5 serial-mux patch?
+Message-ID: <courier.3E005801.0000711F@server01>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,22 +24,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Ryan,
+Hi Alan! Great things happened!
 
-Regarding your patch:
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2002-November/03=
-1910.html
+I could sweare, that a few weeks ago nothing worked, neither with the nat=
+ive=20
+IDE drivers nor with PDC20268 options. (That kernel was 2.4.19-pa14). Now=
+ it=20
+only doesn't work with the special IDE options for this card. Is there a=20
+roadmap to fix that prolem? ;-)
 
-I would like to ask you some additional: is it also applicable for serial=
--mux
-pci card (as Prod J3592A) or scsi-mux (as the 8 port of Central Data)?
+Thanks to all who helped me!
+Joerg
 
-Thanks in advance,
-    Joel
+hp-c240:~# modprobe -k ide-mod
+Uniform Multi-Platform E-IDE driver Revision: 6.31
+ide: Assuming 33MHz system bus speed for PIO modes; override with idebus=3D=
+xx
+PDC20268: IDE controller on PCI bus 00 dev 08
+PDC20268: chipset revision 2
+PDC20268: not 100% native mode: will probe irqs later
+    ide0: BM-DMA at 0xfd00-0xfd07, BIOS settings: hda:pio, hdb:pio
+    ide1: BM-DMA at 0xfd08-0xfd0f, BIOS settings: hdc:pio, hdd:pio
+hp-c240:~# modprobe -k ide-probe-mod
+hdd: IBM-DTTA-351680, ATA DISK drive
+ide1 at 0xfb00-0xfb07,0xfc02 on irq 97
+hp-c240:~# modprobe -k ide-disk
+hdd: 33022080 sectors (16907 MB) w/462KiB Cache, CHS=3D32760/16/63
+ /dev/ide/host0/bus1/target1/lun0: [PTBL] [2055/255/63] p1
+hp-c240:~# mount /dev/ide/host0/bus1/target1/lun0/part1 /mnt/tmp
+(works with and without devfs)
 
-PS: Do you think it could be easily backport in 2.4 (if not yet done)?
-
-*************************************************************************=
-*******
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
-ttp://tiscali.complete.be
+On Monday 16 December 2002 16:03, you wrote:
+> In legacy mode the PCI BAR registers are ignored, the I/O decode is at
+> 0x170 etc and interrupts are flagged by the ISA legacy not by the PCI
+> bus.
+> That isnt going to work very well on your average PA-RISC box. Most
+> probably you want to force the chip into native mode on pa-risc
+> hardware.
