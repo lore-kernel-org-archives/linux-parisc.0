@@ -1,17 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from linpro.no (mail.linpro.no [213.203.57.2])
-	by dsl2.external.hp.com (Postfix) with SMTP id 68A9F4844
-	for <parisc-linux@parisc-linux.org>; Fri, 28 Dec 2001 11:10:52 -0700 (MST)
-Received: from runesk by scruffy.trd.linpro.no with local (Exim 3.33 #1 (Debian))
-	id 16K1Sz-0000vh-00
-	for <parisc-linux@parisc-linux.org>; Fri, 28 Dec 2001 19:10:49 +0100
-Date: Fri, 28 Dec 2001 19:10:49 +0100
-From: Rune =?iso-8859-1?Q?Nordb=F8e?= Skillingstad <runesk@linpro.no>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011228181049.GA3406@scruffy.linpro.no>
+Received: from localhost.localdomain (host194.steeleye.com [216.33.1.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 144AA482A
+	for <parisc-linux@parisc-linux.org>; Fri, 28 Dec 2001 20:10:10 -0700 (MST)
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id fBT3A2x03575;
+	Fri, 28 Dec 2001 21:10:03 -0600
+Message-Id: <200112290310.fBT3A2x03575@localhost.localdomain>
+To: Helge Deller <helge.deller@sap.com>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	parisc-linux@parisc-linux.org
+In-Reply-To: Message from Helge Deller <helge.deller@sap.com>
+   of "Fri, 28 Dec 2001 11:23:37 +0100." <E16JuAr-0001w8-00@linuxlab.wdf.sap-ag.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] K250 stil doesn't work
+Content-Type: multipart/mixed ;
+	boundary="==_Exmh_4174171510"
+Date: Fri, 28 Dec 2001 21:10:02 -0600
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [parisc-linux] Re: rmmod lasi700 hangs the machine
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +28,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I've downloaded the 0.9.3 image, and tried to install it on our K250. As
-thge previous version, it doesn't boot. I have no log of the boot, as I had
-no available box to connect to the serial line. I'll try once more in some
-days to grab the dump log and mail it to you.
+This is a multipart MIME message.
 
-Cheers,
-Rune Nordb=F8e Skillingstad
---=20
-"I came out of it dead broke, without a house, without anything except a
-girlfriend and a knowledge of Unix." "Well, that's something. Normally
-those two are mutually exclusive"
- - Neal Stephenson, Cryptonomicon
+--==_Exmh_4174171510
+Content-Type: text/plain; charset=us-ascii
+
+After applying the kernel down_interruptible fix, the attached should be the 
+final piece of the puzzle.  With it applied (and the previous disable_irq 
+patch discarded), I can insert and remove the module to my heart's content.
+
+James
+
+
+--==_Exmh_4174171510
+Content-Type: text/plain ; name="tmp.diff"; charset=us-ascii
+Content-Description: tmp.diff
+Content-Disposition: attachment; filename="tmp.diff"
+
+Index: drivers/scsi/lasi700.c
+===================================================================
+RCS file: /var/cvs/linux/drivers/scsi/lasi700.c,v
+retrieving revision 1.5
+diff -u -r1.5 lasi700.c
+--- drivers/scsi/lasi700.c	2001/12/26 22:41:16	1.5
++++ drivers/scsi/lasi700.c	2001/12/29 03:07:09
+@@ -197,6 +197,7 @@
+ 	kfree(hostdata);
+ 	free_irq(host->irq, host);
+ 	release_mem_region(host->base, 64);
++	unregister_parisc_driver(&lasi700_driver);
+ 	return 1;
+ }
+ 
+
+--==_Exmh_4174171510--
