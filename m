@@ -1,49 +1,122 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 281B4482A
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Oct 2001 21:39:05 -0600 (MDT)
-Date: Wed, 17 Oct 2001 23:40:38 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: randolph@tausq.org, parisc-linux@parisc-linux.org
-Subject: [randolph@tausq.org: [parisc-linux] glibc update]
-Message-ID: <20011017234038.C1060@megatonmonkey.net>
-Mime-Version: 1.0
+Received: from web14802.mail.yahoo.com (web14802.mail.yahoo.com [216.136.224.218])
+	by dsl2.external.hp.com (Postfix) with SMTP id 2C1C7482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Oct 2001 23:29:22 -0600 (MDT)
+Message-ID: <20011018052921.50103.qmail@web14802.mail.yahoo.com>
+Date: Wed, 17 Oct 2001 22:29:21 -0700 (PDT)
+From: paul lee <wbm111us@yahoo.com>
+Subject: Thanks - Re: [parisc-linux] Help - Serial console problem
+To: Christoph Plattner <christoph.plattner@gmx.at>,
+	Grant Grundler <grundler@puffin.external.hp.com>
+Cc: paul lee <wbm111us@yahoo.com>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3BCCA573.8419CD4@gmx.at>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-R,
+Hi,
 
->1. the glibc i uploaded is actually built with a fairly old binutils
->(version 2.11.90.0.7-2.0.1). There could well be many binutils bug fixes 
->since then, but at least for this case it lets us build glibc without 
->the segfaults we see with the newer binutils
+Thank you all very much! The problem has been solved: 
+I re-wire  the serial cable as Christoph said and it
+works very well.
 
-I'll see about giving it a try on my 712/60 and 715/50's
 
->2. the newest binutils (2.11.92.0.5-3), also in incoming, doesn't appear
->to address the glibc build issue as i originally thought. we still get
->ld.so segfaults as Carlos has observed earlier. Perhaps someone (Carlos,
->Alan, Rob?) can look at the binutils changes since then can see what
->broke?
+--- Christoph Plattner <christoph.plattner@gmx.at>
+wrote:
+> Hello,
+> 
+> I think the problem has to do with the hardware
+> handshake.
+> The silly M$ OS has the problem, that it expects
+> correct
+> settings of the hardware handshake lines, although
+> hardware
+> handshake is not used. The same is true for the
+> default BIOS
+> (int 14h) driver. On Linux, for example, this
+> problem is
+> not present.
+> 
+> The PC under any Microsoft system or under BIOS (int
+> 14h)
+> control does not send any character, if the CTS line
+> (pin
+> 5 on the D-SUB-25) is active. A linux PC used via
+> serial
+> console on a Win2000 system is working, as the Linux
+> PC
+> activates the lines, although it is not using them. 
+> 
+> So sum up: Windows expects on the input side an
+> active
+> CTS to send. Linux does not require this line
+> active,
+> but activates the output for a machine on the other
+> side,
+> who needs the output active. 
+> 
+> The HP workstation and server (so my HP 55E
+> 9000/856) do
+> not activate the handshake line, so the CTS pin on
+> the
+> Win2000 side is inactive. Is was not possible for my
+> to
+> activate the handshake lines on the HP server via
+> `stty'.
+> 
+> The most simple method to get it working:
+> Make a special cable with a 3-wire conection to the
+> HP
+> machine (TXD, RXD, GND) and solder two bridges on
+> the
+> Win2000 side in the connector:
+> 	for 25-pin:  	4 <-> 5
+> 			6 <-> 20
+> 
+> 	for 9-pin:	7 <-> 8
+> 			4 <-> 6
+> 
+> This should work then ....
+> 
+> 
+> With friendly regards
+> 	Christoph P.
+> 
+> 
+> Grant Grundler wrote:
+> > 
+> > paul lee wrote:
+> > > I could not access a C200 workstation via serial
+> > > console. Could someone please give me some
+> insight?
+> > > I use hyperterminal on Win 2000. The settings
+> are
+> > > VT100, 9600, 8-N-1 and Xon/Xoff.
+> > 
+> > The settings are correct.
+> > It's possible the serial cable isn't wired
+> correctly
+> > or the C200 isn't trying to use serial port1.
+> > 
+> > grant
+> > 
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> >
+>
+http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
+> -- 
+>
+-------------------------------------------------------
+> private:	christoph.plattner@gmx.at
+> company:	christoph.plattner@alcatel.at
+> 
 
-Eventually I'll get that assembly trace done.
 
->3. with the glibc build (using old binutils) some of the linuxthreads
->tests are failing. in particular there's one case where it seems to get
->into a deadlock. i left it running overnight and it's still stuck ... 
->i don't know if this has always been broken though.
-
-This reminds me, in general I keep forgetting to add the location of
-/xxx/glibc-2.2.4/hppa-linux/obj to LD_LIBRARY_PATH. This nips some of
-the tests in the bud since ld goes looking for the wrong library.
-
->Build logs for #3 and #2 above can be found at:
->#3: http://people.debian.org/~tausq/glibc.build.log2
->#2: http://people.debian.org/~tausq/glibc.build.log5
-
-Have you tried running the tests by hand and seeing what the output is?
-
-What is the output of running:
-/home/randolph/gcc-3.0/glibc-2.2.4/hppa-linux/obj/math/test-fenv.out
-
-c.
+__________________________________________________
+Do You Yahoo!?
+Make a great connection at Yahoo! Personals.
+http://personals.yahoo.com
