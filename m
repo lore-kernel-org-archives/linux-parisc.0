@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from murphys.services.quay.plus.net (unknown [212.159.14.225])
-	by dsl2.external.hp.com (Postfix) with SMTP id DA407601A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 09:47:26 -0700 (MST)
-From: "NAMEGIANT" <richard@namegiant.com>
-To: <parisc-linux@lists.parisc-linux.org>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 45A81482D
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 10:03:29 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id eigmjaaa for parisc-linux@lists.parisc-linux.org; Wed, 5 Dec 2001 09:58:18 -0700
+Date: Wed, 5 Dec 2001 09:03:22 -0800
+From: Randolph Chung <tausq@debian.org>
+To: Colin Watson <cjwatson@debian.org>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: groff build on hppa
+Message-ID: <20011205090322.Q944@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <20011204134445.GA9231@riva.ucam.org> <20011205155919.E7051@linuxcare.com> <20011205081939.O944@tausq.org> <20011205163920.GA24484@riva.ucam.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Date: Tue, 4 Dec 2001 16:49:34 -0000
-Reply-To: "NAMEGIANT" <richard@namegiant.com>
-Message-Id: <20011205164726.DA407601A@dsl2.external.hp.com>
-Subject: [parisc-linux] PA-ONLINE
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011205163920.GA24484@riva.ucam.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,42 +26,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dear Sir/Madam
+> So would there be objections to me doing a special build on hppa with
+> the CFLAGS/CXXFLAGS hacked, given that there are three days left, or do
+> I have to upload again?
 
+Please make the appropriate source changes and make another upload.
+Source-hacks that don't end up in the archive are considered very bad
+practice.
 
-PA-ONLINE.COM $800
+There's a possible patch to fix this problem. I'm verifying this with
+upstream at the moment.
 
-
-
-This is a valuable domain - there are only around 1000 2 - letter
-combination "online" domains. Most sell over $1000
-
-I am a domain name broker and have been tracking the domain name
-PA-ONLINE.COM which expired and became available for a very short period.
-I registered it immediately that it became available on behalf of a
-client. However on contacting this client a short while ago to notify her
-of this successful registration, she informed me that she will not be
-proceeding with her venture. If you have an interest in acquiring this
-domain, please contact me at your
-earliest convenience. I will be contacting anyone who I feel may have an
-interest and have
-priced it for a quick sale.
-
-All transactions are 100% secure and are transacted with the largest
-e-commerce company on the net. The transfer process is extremely simple
-and you can also be confident that with Namegiant.com, you are dealing
-with a reputable company and will receive all the
-assistance and support that you may require throughout any transfer
-process - and beyond. 
- 
-If this email is of no interest, I apologise for this intrusion and can
-assure you, you will not be mailed again. This is a one-off approach
-because we felt this development could be of genuine interest to you and
-your company. If it isn't, once again, please let me
-convey our sincere apologies.
- 
-Kind regards,
-
-Richard
-Sales
-Namegiant.com 
+randolph
+-- 
+Debian Developer <tausq@debian.org>
+http://www.TauSq.org/
