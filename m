@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from myware.akkadia.org (cpe-24-221-190-179.ca.sprintbbd.net [24.221.190.179])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A39634927
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Oct 2003 23:57:02 -0600 (MDT)
-Message-ID: <3F8CE195.2090106@redhat.com>
-Date: Tue, 14 Oct 2003 22:56:37 -0700
-From: Ulrich Drepper <drepper@redhat.com>
+Date: Wed, 15 Oct 2003 08:02:14 +0200
+Message-ID: <3F8A29A200001472@ocpmta1.freegates.net>
+In-Reply-To: <20031015045242.GB7351@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: "Matthew Wilcox" <willy@debian.org>,
+	parisc-linux@parisc-linux.org,
+	"Derek Engelhaupt" <derekengelhaupt@rocketmail.com>
 MIME-Version: 1.0
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: libc-alpha <libc-alpha@sources.redhat.com>,
-	parisc-linux@lists.parisc-linux.org
-References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com> <20031015054045.GE22495@systemhalted>
-In-Reply-To: <20031015054045.GE22495@systemhalted>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: [PATCH] linuxthreads for hppa (1/3)
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,41 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Grant,
 
-Carlos O'Donell wrote:
+Thanks for all (advise, attention, ...)
+    Joel
 
->>>	Use __LT_INITIALIZER_NOT_ZERO instead of __LT_SPINLOCK_INIT.
->>
->>Why?  No unnecessary changes.
-> 
-> 
-> __LT_SPINLOCK_INIT is the value of the structure and used for
+PS: for me it is already a progress: i finaly reach to understand some concept
+as 'aliasing' (still have to understand exatly coherent and no-coherent,
+... :) )
 
-The
+>-- Original Message --
+>Date: Tue, 14 Oct 2003 22:52:42 -0600
+>From: Grant Grundler <grundler@parisc-linux.org>
+>To: Joel Soete <soete.joel@tiscali.be>
+>Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org,
+>	Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+>Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
+>
+>
+>On Tue, Oct 14, 2003 at 06:59:52PM +0200, Joel Soete wrote:
+> If I well understand it means that a same real (absolute) address
+> has a different virtual addresse for each processor?
 
-- -# if __LT_SPINLOCK_INIT != 0
-- -  __pthread_handles[0].h_lock = __LOCK_INITIALIZER;
-- -  __pthread_handles[1].h_lock = __LOCK_INITIALIZER;
-+# ifdef __LT_INITIALIZER_NOT_ZERO
-+  __pthread_handles[0].h_lock = __LOCK_ALT_INITIALIZER;
-+  __pthread_handles[1].h_lock = __LOCK_ALT_INITIALIZER;
+multiple translations. It can be across processors but doesn't h
+>ve to be.
 
-part is what I meant.  There is no reason to change the name.
+> (btw Do you have any idea where i can find of the detail way to implement
+> it?)
 
-Look at your change, no changes of code which are not needed.  Clean up
-the patches to follow the coding standard, preprocessor indentation, etc
-etc.
+If someone had worked it out and provided a patch, we probably
+be using it. I think that's what you (or someone) needs to do.
 
-- -- 
-- --------------.                        ,-.            444 Castro Street
-Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
-Red Hat         `--' drepper at redhat.com `---------------------------
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+sorry, 
+grant
 
-iD8DBQE/jOGV2ijCOnn/RHQRAhQUAJ9/9i66NJnsUCcLb6eLUVOKIUXUzgCeOibq
-l0Nqbif38PD+KbJgZqJVq20=
-=4y0s
------END PGP SIGNATURE-----
+
+
+-------------------------------------------------------------------------
+L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
+pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
