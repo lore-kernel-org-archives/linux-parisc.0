@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0C0004830
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Sep 2003 15:02:37 -0600 (MDT)
-Date: Fri, 12 Sep 2003 17:00:51 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: James Bottomley <James.Bottomley@steeleye.com>,
-	Randolph Chung <tausq@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030912210051.GL4732@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Signal handlers in glibc 2.3.2
+Received: from mail.apptechsys.com (mail.apptechsys.com [206.129.116.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 846BC4830
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Sep 2003 17:43:41 -0600 (MDT)
+Date: Fri, 12 Sep 2003 16:43:28 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: parisc-linux@lists.parisc-linux.org
+Cc: debian-hppa@lists.debian.org
+In-Reply-To: <20030830021622.GF13467@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.50.0309121543430.11075-100000@ssh.apptechsys.com>
+References: <010d01c36e5d$9d0748a0$0201a8c0@mainframe>
+ <Pine.LNX.4.50.0308291612160.11075-100000@ssh.apptechsys.com>
+ <20030830021622.GF13467@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Win2k server boot howto
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,51 +25,75 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-tausq, jejb,
+This is about using the dhcp server in win2k server to net boot a parisc 
+box.
 
-Another tall order, and I'm calling for help on this one. The recently
-fixed glibc seems to be having issues with restarting after being
-interrupted.
+On Sat, 30 Aug 2003, Matthew Wilcox wrote:
 
-Latest glibc 2.3.2 patches are here:
-http://www.baldric.uwo.ca/~carlos/glibc-2.3.2-patches.tar.gz
-Broken test is distilled here:
-http://www.baldric.uwo.ca/~carlos/tst-timer.tar.gz
+> On Fri, Aug 29, 2003 at 04:14:04PM -0700, Jeremy Drake wrote:
+> > I have done it with the DHCP server that comes with win2k server.
+> 
+> I think this might be useful information for the FAQ.  Could you write
+> it up?
 
-The test does very very little. We setup a timer to call a signal
-handler after a 2 second expiry, then we proceed to call nanosleep with
-a 3 second expiry.
+Here is my first attempt at writing this up.  Please send your
+criticisms/spelling fixes/flames.
 
-./run.sh ./tst-timer
-Before nanosleep(...) call
-Signal handler
-./run.sh: line 3:  5500 Segmentation fault
+------------------------------
 
-You see that we enter nanosleep, enter the kernel, sleep, event timer
-expires and raises signal, signal handler runs.
+I used Tftpd from http://tftpd32.jounin.net/ (which, in an unrelated side
+note, was used as part of the blaster worm, according to the site).  I
+used the dhcp server which is a part of win2k server (Control Panel,
+Add/remove programs, Windows components, Networking Services, Dynamic Host
+Configuration Protocol (DHCP)).
 
-At this point the following is supposed to happen:
-Branch back to stack and make another syscall into the kernel
-(trampoline we put there to make it back to rt_sigreturn, see signal.c).
-...
-At this point I'm a bit confused by the semantics, would one of you care
-to help me understand what happens from there back to userspace. I know
-we eventually have to get back to where nanosleep was called (since it
-was interrupted and now needs to be restarted).
-...
-So we enter the syscall code in syscall.S execute syscall 173 which
-jumps to 'sys_rt_sigreturn' in signal.c. From here we unwind the stack
-to get an rt_sigframe structure (which I assume was written into the
-stack before calling the signal handler). Take the current signal set
-from there and recalc pending signals. Then there is a bit of magic to
-restore the current stack pointer, which seems to me is where the
-problem lies since frame->uc.uc_mcontext on a 64-bit box probably won't
-be right because we copied it wrong. There are a few other things that
-might be wrong too, but this is a start. I'm enabling signal debugging
-and building a new kernel. I assume that the sigsegv is caused by the
-kernel trying to __copy_from_user something invalid.
+First, lets ask the box what its mac address is.  I'm assuming you have a
+functional console.  Power on the box, and when it says "press any key to"  
+whatever press any key, and at the BOOT_ADMIN> prompt, type "in la" and
+hit enter.  (For those of you who like to type, that's short for
+information lan).  It will give you a hex number which is your
+workstation's mac address.
 
-Any thoughts or comments would be more than appreciated.
+Start up the DHCP admin tool (Start, Settings, Control Panel, Admin.  
+Tools, DHCP).  Expand your server in the tree, and right click on
+Reservations.  Select "New Reservation...".  For reservation name, I put
+my box's name.  Give it an ip address that is not used in IP address, and
+enter the box's mac address in mac address (no delimiters, just a big hex
+number), and select Both for whether it should be bootp or dhcp.  Then,
+find your new reservation at the bottom of the list under Reservations,
+and click it.  Right click and choose "Configure Options..."  It should
+have inherited your server's default options, so I won't cover setting
+router, dns, wins, and lease length.  Scroll down the list of options
+until you get to 066, Boot Server Host Name.  Check the box next to that
+option, and enter your tftp server's ip address (I don't trust dns to work
+in IPL).  Also check 067, Bootfile Name, and enter the name of the
+lifimage (generally, lifimage is a good choice here).  Say ok to that box,
+we're done in dhcp!
 
-Cheers,
-Carlos.
+Fire up tftpd32, and click the "browse" button.  Browse to where you put
+your lifimage, and say ok.  Make sure the ip address below the directory
+is the right one; if not, drop down the list and pick the right one.  
+Leave this app up, the server only runs when the gui is displayed (not
+sure if you can run it as a service)
+
+Now we're ready to boot the box.  Go back to the box, get the BOOT_ADMIN>
+prompt again (if you turned it off after the first time, or type "ma" for
+the main menu if you didn't).  Type "sea" (for search), and if everything
+is good, you should see something like "P0 LAN.<BLAH>".  If you do,
+congrats, if not, check all of the settings on the server (like, you
+recorded and typed the mac address correctly, and your dhcp server is on
+the same physical network segment as your workstation).  If it shows a
+line like the above, enter "bo p0" (or whichever p number the LAN was by).  
+Anything beyond this point belongs to an install howto more than a win2k
+server boot howto...
+
+--------------------------------
+
+
+
+
+-- 
+Computers make excellent and efficient servants, but I have no wish to
+serve under them.  Captain, a starship also runs on loyalty to one
+man.  And nothing can replace it or him.
+		-- Spock, "The Ultimate Computer", stardate 4729.4
