@@ -1,11 +1,13 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: Matt Domsch <Matt_Domsch@dell.com>
 Subject: [parisc-linux] Re: How to determine whether a device is PCI or not
-Date: Sat, 30 Oct 2004 16:40:07 +0100
-Message-ID: <20041030154007.GI8958@parcelfarce.linux.theplanet.co.uk>
+Date: Sat, 30 Oct 2004 11:46:30 -0500
+Message-ID: <20041030164630.GA6434@lists.us.dell.com>
 References: <20041027121955.GH3450@parcelfarce.linux.theplanet.co.uk>
 	<416174800000772D@mail-4-bnl.tiscali.it>
 	<20041027141522.GK3450@parcelfarce.linux.theplanet.co.uk>
 	<20041030023718.GA1099@kroah.com>
+	<20041030154007.GI8958@parcelfarce.linux.theplanet.co.uk>
+	<20041030154822.GA9036@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -14,7 +16,7 @@ Cc: linux-pci@atrey.karlin.mff.cuni.cz,
  Matthew Wilcox <matthew@wil.cx>
 To: Greg KH <greg@kroah.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041030023718.GA1099@kroah.com>
+In-Reply-To: <20041030154822.GA9036@kroah.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,35 +27,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Oct 29, 2004 at 07:37:18PM -0700, Greg KH wrote:
-> Ick, no.  Devices do not "show" their type, you have to explicitly know
-> what type they are in order to use them.
+On Sat, Oct 30, 2004 at 08:48:22AM -0700, Greg KH wrote:
+> On Sat, Oct 30, 2004 at 04:40:07PM +0100, Matthew Wilcox wrote:
+> > 
+> > If you prefer to keep this out of linux/pci.h, that's fine, we can keep
+> > it private to arch/parisc.  I thought this might be something other
+> > architectures might want to use (maybe for openfirmware?)
 > 
-> Why are you wanting to know this?  What are you trying to do with a
-> generic struct device * where you don't know exactly what type it is?
+> Let's keep it private for now.  If openfirmware ever moves to the device
+> tree properly, we can deal with it then :)
 
-In order to communicate with PA-RISC firmware, you have to know the path
-to a device.  It's typically represented as something like [10/8/4/5/0].
-This device can be PCI, GSC or EISA.  There's some moderately arcane
-rules for turning a device into a path that you really don't care about,
-but we need the devfn for PCI devices and the hw_path for GSC devices.
+The EDD sysfs symlinks would like something like this, not only for
+PCI (it does this today by calling pci_find_slot() with the values
+BIOS tells it), but doesn't have the infrastructure for making
+symlinks to the underlying ATA, SCSI, SAS (coming), ... devices.  I
+removed the horrible hacks I put in to try to guess what a device is,
+and don't create the symlink from the EDD device to the actual disk
+device.  But it would be nice to have a generic method to do it so I
+can add that back in.
 
-So what we want to do is, given a struct device, determine its path;
-and given a path, turn it into a struct device.  The device model lets
-us do this quite nicely -- much better than having duplicated routines
-for starting with a pci_dev or a parisc_device.
-
-If you prefer to keep this out of linux/pci.h, that's fine, we can keep
-it private to arch/parisc.  I thought this might be something other
-architectures might want to use (maybe for openfirmware?)
+Thanks,
+Matt
 
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Matt Domsch
+Sr. Software Engineer, Lead Engineer
+Dell Linux Solutions linux.dell.com & www.dell.com/linux
+Linux on Dell mailing lists @ http://lists.us.dell.com
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
