@@ -1,54 +1,88 @@
-From: Linus Torvalds <torvalds@osdl.org>
-Subject: Re: [PATCH] Fix the cpumask rewrite
-Date: Sat, 26 Jun 2004 09:32:15 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0406260924570.14449__6239.62454633347$1416623488$gmane$org@ppc970.osdl.org>
-References: <1088266111.1943.15.camel@mulgrave>
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Subject: Re: [parisc-linux] Framebuffer and 720/50
+Date: Sun, 27 Jun 2004 18:25:48 +0200
+Message-ID: <20040627162548.GN20632@lug-owl.de>
+References: <20040627140634.9D4E3246C2A@mail.customers.edis.at>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
-Cc: Andrew Morton <akpm@osdl.org>,
- Paul Jackson <pj@sgi.com>,
- PARISC list <parisc-linux@lists.parisc-linux.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
-In-Reply-To: <1088266111.1943.15.camel@mulgrave>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: multipart/mixed;
+  boundary="===============1463962602=="
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040627140634.9D4E3246C2A@mail.customers.edis.at>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
+--===============1463962602==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wjmr0On0zl4P36pE"
+Content-Disposition: inline
 
-On Sat, 26 Jun 2004, James Bottomley wrote:
->  
-> This might be correct for x86 and itanium, but it isn't for parisc where
-> our bitmap operators don't take volatile pointers.
 
-Why not? The thing is, the bitmap operators are supposed to work on 
-volatile data, ie people are literally using them for things like
+--wjmr0On0zl4P36pE
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	while (test_bit(TASKLET_STATE_SCHED, &t->state));
+On Sun, 2004-06-27 16:06:33 +0200, Wolf-Dieter Kattnig <kattnig@cnd-online.=
+com>
+wrote in message <20040627140634.9D4E3246C2A@mail.customers.edis.at>:
+> I've had no problems whatsoever setting up Woody on my 720 - except for o=
+ne
+> glitch - I can't get X to work.
+>=20
+> My graphics adaptor is an HPA2269A. Everything looks good, but I cant get
+> /dev/fb0 to work. My kernel is 2.4.18-32.
+>=20
+> Is X supported on this configuration at all? Help would be appreciated.
 
-and the thing is supposed to work.
+STI framebuffer support is compiled in? Could you please provide kernel
+log output? What XFree error messages do you get? What XFree driver did
+you configure?
 
-Now, I personally am not a big believer in the "volatile" keyword itself, 
-since I believe that anybody who expects the compiler to generate 
-different code for volatiles and non-volatiles is pretty much waiting for 
-a bug to happen, but there are two cases where I think it's ok:
+Missing /dev/fb0 indicates a problem (or a missing) framebuffer driver.
+You'd probably update to something more recent than 2.4.18 ...
 
- - in function prototypes to show that the function can take volatile data 
-   (and not complain).
+MfG, JBG
 
- - as an arch-specific low-level implementation detail to avoid having to 
-   use inline assembly just to load a value. Ie a _data_structure_ should 
-   never be volatile, but it's ok to use a volatile pointer for a single 
-   access.
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
 
-I believe the bitop functions fall under #1 - the function is clearly
-supposed to handle the case of a volatile pointer, and if it is inlined,
-the above endless while-loop must not just load the bit once and turn it 
-into an endless loop - it needs to re-load the thing every iteration.
+--wjmr0On0zl4P36pE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-> Since whether the bitmap operators are volatile or not is within the
-> province of the architecture to decide,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-I disagree. Why wouldn't they be volatile?
+iD8DBQFA3vULHb1edYOZ4bsRAq1rAJ4/uHSFnDdT5xp5XmHf48chvSdGqgCeJdTH
+IZM0AfMb++lnAJ/HiXVYFO0=
+=cc7Z
+-----END PGP SIGNATURE-----
 
-		Linus
+--wjmr0On0zl4P36pE--
+
+--===============1463962602==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1463962602==--
