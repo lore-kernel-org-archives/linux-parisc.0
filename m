@@ -1,45 +1,68 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA01479
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 09:55:32 -0700
-Received: from user-137-160.jakinternet.co.uk (HELO rhirst.linuxcare.com) (212.187.137.160)
-  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 16:57:43 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id A906FB007; Tue, 21 Nov 2000 16:54:42 +0000 (GMT)
-Date: Tue, 21 Nov 2000 16:54:42 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] signal handling problems (32 bit kernel)
-Message-ID: <20001121165442.Y32715@linuxcare.com>
-References: <20001120175838.Q32715@linuxcare.com> <Pine.LNX.4.21.0011211713550.15623-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA01843
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 10:16:32 -0700
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel1.hp.com (Postfix) with ESMTP id 210E75CA
+	for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 12:18:44 -0500 (EST)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id E16FA37CA7
+	for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 10:20:35 -0700 (MST)
+To: parisc-linux@thepuffingroup.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0011211713550.15623-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Tue, Nov 21, 2000 at 06:05:36PM +1100
+Date: Tue, 21 Nov 2000 10:20:35 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001121172035.E16FA37CA7@carmen.fc.hp.com>
+Subject: [parisc-linux] kernel BUG at sched.c:692!
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Nov 21, 2000 at 06:05:36PM +1100, Alan Modra wrote:
-> > and then in another terminal do 'kill -USR1 <pid>'.  The program
-> > either goes 'Wah!', gives a SEGV, or works.  That seems to be because
-> > %r1 is corrupted while processing the signal.  The signal handler ends
-> > with a syscall (rt_sigreturn_wrapper), and %r1, at least, is not saved
-> > and restored over the syscall.  %r31 also appears to get corrupted, as
-> > it is used in the final branch of the syscall return.
-> 
-> I don't really understand what is going on here, but it seems wrong to me
-> that setup_rt_frame should be touching regs->iaoq at all when in_syscall.
+I arrived this morning to discover both my B160 and my C3000 were printing the 
+following as fast as they could,
 
-Problem is that whenever a signal handler is invoked, it is followed
-by a sys_rt_sigreturn syscall (invoked via the trampoline code), before
-returning to original usercode.  I can imagine that this might work if
-the process in question was blocked on a syscall, but not if it was
-suspended due to an interrupt.  In either case the path back to the
-original user code is the syscall return path, and that obviously cannot
-put things back as they were if the process was interrupted.
+Scheduling in interrupt
+kernel BUG at sched.c:692!
 
-I think the answer is for syscall_do_signal to save enough in the
-pt_regs such that sys_rt_sigreturn_wrapper can return to userland
-via an RFI (like intr_restore, but remembering to trace the syscall
-exit if necessary) regardless of the process state when the signal
-occurred.
+Looking at linux/kernel/sched.c here's the relevant section,
 
-Richard
+690 scheduling_in_interrupt:
+691         printk("Scheduling in interrupt\n");
+692         BUG();
+693         return;
+
+scheduling_in_interrupt is called from line 516. Here's some context,
+
+500 asmlinkage void schedule(void)
+501 {
+502         struct schedule_data * sched_data;
+503         struct task_struct *prev, *next, *p;
+504         struct list_head *tmp;
+505         int this_cpu, c;
+506
+507         if (!current->active_mm) BUG();
+508         if (tq_scheduler)
+509                 goto handle_tq_scheduler;
+510 tq_scheduler_back:
+511
+512         prev = current;
+513         this_cpu = prev->processor;
+514
+515         if (in_interrupt())
+516                 goto scheduling_in_interrupt;
+517
+518         release_kernel_lock(prev, this_cpu);
+
+
+I thought it was odd that both systems chose to freak out last night when I 
+have never seen this problem on either of them. The B160 is running a slightly 
+newer kernel and had been up for about 3 days as of last night. The C3K had 
+been up for 4-5 days. When I left last night the B160 was doing a build 
+although the it looks like the build died before this problem occurred. The 
+C3K was idle.
+
+Any ideas?
+
+Thanks,
+
+-- 
+Matt Taggart
+taggart@fc.hp.com
