@@ -1,29 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA01932
-	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Aug 1999 02:21:30 -0600
-Received: (from mail@localhost) by ns.edelmann.de (8.8.8/8.6.9) id JAA16253 for <parisc-linux@thepuffingroup.com>; Mon, 23 Aug 1999 09:35:51 +0200
-Received: from edelmann.de ([173.57.31.101] (may be forged)) by postbox.w1.edelmann.de (8.8.6 (PHNE_15509)/8.8.0) with ESMTP id KAA13472 for <parisc-linux@thepuffingroup.com>; Mon, 23 Aug 1999 10:22:59 +0200 (METDST)
-Message-ID: <37C104DC.FE5C324C@edelmann.de>
-Date: Mon, 23 Aug 1999 10:22:52 +0200
-From: Gerhard Klein <G.Klein@edelmann.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA08629
+	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Aug 1999 21:44:14 -0600
+Message-ID: <37C21672.2953E1C1@uswest.net>
+Date: Mon, 23 Aug 1999 21:50:10 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
 MIME-Version: 1.0
-To: HP Linux <parisc-linux@thepuffingroup.com>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Signals
+References: <19990823095757.H31994@mencheca.ch.genedata.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] latest files and HOWTO for installation
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
+I am willing to give this a try.  I just got my C200 home, and will start working
+on this in the next few days.  Anyone want to give a newbie some pointers on
+where to look?
 
-can anyone tell me where I will find the latest files and HOWTO for
-installation of parisc linux.
-
-Thanks
+Thanks,
+-Ryan
 
 
-Gerhard
+Matthew Wilcox wrote:
 
---
-http://www.edelmann.de
-mailto:G.Klein@edelmann.de
-Phone: +49 7321 340 368
-Fax:   +49 7321 340 363
+> Is anyone looking into the signal handling and delivery stuff right now?
+> This is one of the few remaining independent areas; your chance to become
+> an expert on Linux and HPUX signalling :-)
+>
+> --
+> Matthew Wilcox <willy@bofh.ai> <willy@thepuffingroup.com>
+> "Windows and MacOS are products, contrived by engineers in the service of
+> specific companies. Unix, by contrast, is not so much a product as it is a
+> painstakingly compiled oral history of the hacker subculture." - N Stephenson
+>
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
