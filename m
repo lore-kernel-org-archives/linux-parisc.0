@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3DC4C4841
-	for <parisc-linux@parisc-linux.org>; Sun, 24 Mar 2002 10:33:22 -0700 (MST)
-Date: Sun, 24 Mar 2002 09:33:16 -0800 (PST)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: <parisc-linux@parisc-linux.org>, <debian-hppa@lists.debian.org>
-Subject: Re: [parisc-linux] Re: Kernel 2.4.17-32-smp problem
-In-Reply-To: <20020324081432.82653483C@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.33L2.0203240928550.13376-100000@eiger.apptechsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 733654843
+	for <parisc-linux@parisc-linux.org>; Sun, 24 Mar 2002 14:02:16 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16pF82-0001BD-00; Sun, 24 Mar 2002 21:02:14 +0000
+Date: Sun, 24 Mar 2002 21:02:14 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: "Vlad D. Markov" <markov@monmouth.com>
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+Message-ID: <20020324210214.E28384@parcelfarce.linux.theplanet.co.uk>
+Reply-To: parisc-linux@parisc-linux.org
+References: <200203242042.g2OKgET57280@smtp.monmouth.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200203242042.g2OKgET57280@smtp.monmouth.com>; from markov@monmouth.com on Sun, Mar 24, 2002 at 03:32:53PM -0500
+Subject: [parisc-linux] Re: Using Audio card on 735/99
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,40 +26,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 24 Mar 2002, Grant Grundler wrote:
+[this is a kernel-related question, moving discussion to parisc-linux]
 
-> Jeremy Drake wrote:
-> > Recently, I ran apt-get upgrade, and it upgraded my kernel-image
-> > 2.4.17-32-smp.  I rebooted, and the box now crashes periodically.
->
-> Where you running an SMP kernel before?
-> (If so, which version?)
+On Sun, Mar 24, 2002 at 03:32:53PM -0500, Vlad D. Markov wrote:
+> I would like to use my audio card on my 735/99 but have failed so far.
+> 
+> I have used various kernel versions, the last attempt was with a kernel drawn 
+> from cvs on 3/21/02, Linux version 2.4.18-pa7. dmesg doesn't list the harmony 
+> card as found. The harmony driver was compiled with the kernel.
 
-I was running 2.4.17-32-smp before.  It just updated a debian package of
-the same kernel version.  I had no problems with the old one, other than
-the fact that it seems to ignore cpu0.  All processor time goes to cpu1
-and cpu0 gets a ton of idle.
+Harmony doesn't claim to support that device.  I don't know that it will
+work ... but you might be lucky :-)
 
->
-> Normally I'd say get the latest (2.4.18 based) kernel.
-> But I know the SMP variant hangs on my A500 pretty quickly.
-> I haven't had a chance to debug this since I've been spending spare
-> cycle working on PA8700 support (bug workarounds in SBA code).
+Try adding this patch and let's see what happens:
 
-When the box crashed both times, I was checking out the cvs tree :)
+--- drivers/sound/harmony.c     2002/02/14 19:02:21     1.25
++++ drivers/sound/harmony.c     2002/03/24 20:52:31
+@@ -1244,7 +1244,10 @@ out_err:
+ 
+ 
+ static struct parisc_device_id harmony_tbl[] = {
++       { HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0007A },
+        { HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0007B },
++       { HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0007E },
++       { HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0007F },
+        { 0, }
+ };
+ 
 
->
-> IIRC, the debian buildd machine is also a J5000 and runs a
-> non-SMP kernel for similar (same?) reason.
->
-> hth,
-> grant
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+This makes harmony pick up all the Audio devices, including some it
+almost certainly won't support (eg 705 / 710 audio, which i understand
+to be completely different).  But maybe 735's sound will Just Work.
+Let's hope.
 
 -- 
-Paranoia doesn't mean the whole world isn't out to get you.
+Revolutions do not require corporate support.
