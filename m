@@ -1,96 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dns2.dot.at (dns2.dot.at [212.9.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 362E54A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Feb 2001 12:53:15 -0700 (MST)
-Sender: plattner@dns2.dot.at
-Message-ID: <3A9C0588.F2C47418@dot.at>
-Date: Tue, 27 Feb 2001 20:52:40 +0100
-From: Christoph Plattner <christoph.plattner@dot.at>
-MIME-Version: 1.0
-To: Ulrich Drepper <drepper@cygnus.com>
-Cc: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile   
- system
-References: <Pine.LNX.4.21.0102091056000.9776-100000@front.linuxcare.com.au>
-		<3A8FA3D8.19E69EF6@dot.at> <3A94C3B5.EF59259C@neuronet.pitt.edu>
-		<3A94CEF9.F171DE3F@alcatel.at> <3A974D1F.3BBB87C8@neuronet.pitt.edu>
-		<m3wvagiojx.fsf@otr.mynet.cygnus.com>
-		<3A976261.EEA18B66@neuronet.pitt.edu> <m3k86gil1b.fsf@otr.mynet.cygnus.com>
-Content-Type: text/plain; charset=us-ascii
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D1CE4A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Feb 2001 14:56:27 -0700 (MST)
+Message-Id: <200102272158.NAA25485@milano.cup.hp.com>
+To: Thomas Marteau <marteaut@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+In-reply-to: Your message of "Tue, 27 Feb 2001 22:05:47 PST."
+             <3A9C16AB.A3BBCB51@esiee.fr>
+Date: Tue, 27 Feb 2001 13:58:46 -0800
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] Re: 2-way A500
 List-ID: <linux-parisc.vger.kernel.org>
 
-To add some "light" here in the discussion.
+Thomas,
 
-The `user-defined-trusted-dirs=/lib' is exactly the "key" in the 
-discussion. It tells the online running library loader (file
-./elf/ld-load.c)
-where to search the libraries. 
+Please send full console output, lspci, and /proc/interrupt output.
+I can provide pciutils binaries if you can't otherwise find/build them.
 
-When building a cross tool chain and having the library install in
-/usr/parisc/hppa-linux/lib, then the cross tool chain will search
-there, but also the running programs, because this path is hard-coded
-in the ld-load.c loader executable.
+Thomas Marteau wrote:
+> Hi Grant,
+> 
+> 	I noticed that if we put init=/bin/bash, we see this message:
+> IRQ No handler for IRQ 128!
 
-No my idea was, to give a "second search path" for the loader. So
-the loader will search in /usr/parisc/hppa-linux/lib, will fail and
-retry in /lib (as defined in `user-defined-trusted-dirs=/lib'). So also
-the running binary on the target machine will access the glibc in /lib.
+64-bit on A500?
 
-With friendly regards
-	Christoph P.
+If so, IRQ128 is IRQ0 in IRQ region 2 - ie first iosapic/PCI bus.
+A device may have that line asserted for some reason.
+I do expect that all drivers for boot devices have registered/claimed
+the devices they should *before* init (/bin/bash) is invoked.
 
-PS: Of course the way of using --prefix=/usr and installing with 
-install_root != /usr is a way, but lets say it, it is a HACK !!
+> It is true that in /proc/interrupts, no device is reported for this IRQ. The
+> problem is that you do not have this problem with /bin/sh, afaik.
 
-The problems I have with many tools, is that they are not prepared
-for cross-compiling very well. I need some evenings for bigger 
-packages.
+Interesting. Perhaps bash RC scripts is doing something different?
+I don't see how bash or sh could otherwise generate IO interrupts.
 
+> Also, I will appreciate if you could explain how works this file when it is a
+> SMP kernel because I am a little lost :) (Everything is reported to CPU00 here!)
 
-Ulrich Drepper wrote:
-> 
-> "Rafael E. Herrera" <raffo@neuronet.pitt.edu> writes:
-> 
-> > export MACH=i386-linux
-> > export DEST=/usr
-> > export ROOT=~/parisk
-> >
-> > HOSTCC=gcc CC=hppa-linux-gcc $ROOT/source/glibc/configure \
-> > --prefix=$DEST --build=$MACH \
-> > --host=hppa-linux --target=hppa-linux \
-> > --with-headers=$ROOT/source/linux/include --disable-profile \
-> > --without-cvs --enable-add-ons
-> 
-> This looks OK (though providing HOSTCC shouldn't be necessary) and
-> --build, --host, and --target have no effect.  The configure script
-> will pick up all it has to know from the CC value.
-> 
-> > make MAKE="make -j 10" user-defined-trusted-dirs=/lib
-> 
-> Providing make isn't necessary.  Also, the `user-defined-trusted-dirs'
-> is not needed.  Just run
-> 
->    make -j10
-> 
-> > make install user-defined-trusted-dirs=/lib \
-> >  install_root=/tmp/glibc
-> 
-> Again, loose the `user-defined-trusted-dirs'.  Also, is /tmp/glibc
-> where the nfsroot is picked up?  If not, just install in the nfsroot
-> directory.
-> 
-> --
-> ---------------.                          ,-.   1325 Chesapeake Terrace
-> Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-> Red Hat          `--' drepper at redhat.com   `------------------------
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+All IO interrupts are routed to the "monarch" (CPU 0) at the moment.
+When things stabilize, I'll change the code so both processors share
+the IO IRQ load.
 
--- 
--------------------------------------------------------------------------
-private:	christoph.plattner@dot.at
-company:	christoph.plattner@alcatel.at
+ciao!
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
