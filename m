@@ -1,41 +1,55 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA30701
-	for <parisc-linux@puffin.external.hp.com>; Sat, 11 Nov 2000 08:13:37 -0700
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id XAA04162
-	for parisc-linux@thepuffingroup.com; Sat, 11 Nov 2000 23:13:34 +0800
-Date: Sat, 11 Nov 2000 23:12:55 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000 e25
-Message-ID: <20001111231253.I9666@neep.com.au>
-References: <20001107234014.3076.qmail@web109.yahoomail.com> <20001108002808.B13854@parcelfarce.linux.theplanet.co.uk> <20001109054804.H21783@neep.com.au> <3A09D6AE.E1BC5134@linuxcare.com> <20001109162838.A16995@python.localnet> <20001112014756.A11780@python.localnet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001112014756.A11780@python.localnet>; from crypt@ihug.co.nz on Sun, Nov 12, 2000 at 01:47:56AM +1300
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01095
+	for <parisc-linux@puffin.external.hp.com>; Sat, 11 Nov 2000 16:22:28 -0700
+Message-Id: <200011112329.PAA09355@milano.cup.hp.com>
+To: Andrew Shugg <andrew@neep.com.au>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000 e25 
+In-reply-to: Your message of "Sat, 11 Nov 2000 23:12:55 PST."
+             <20001111231253.I9666@neep.com.au>
+Date: Sat, 11 Nov 2000 15:29:14 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Considering how often this question comes up is there anyone out there
-> that is interested in tracking down the info to port linux to this class
-> of box.
+Andrew Shugg wrote:
+> > Considering how often this question comes up is there anyone out there
+> > that is interested in tracking down the info to port linux to this class
+> > of box.
+> > 
+> > Server boxes may be classed as boring to some but there seem to be a
+> > large number of people who have at least one of them sitting about doing
+> > nothing.
+> > 
+> > Joe.
 > 
-> Server boxes may be classed as boring to some but there seem to be a
-> large number of people who have at least one of them sitting about doing
-> nothing.
-> 
-> Joe.
+> I don't perceive the problem to be a lack of willingness, or interest, but
+> has already been stated the older systems contain a lot of proprietry stuff
+> that isn't sufficiently documented for people to work on.
 
-I don't perceive the problem to be a lack of willingness, or interest, but
-has already been stated the older systems contain a lot of proprietry stuff
-that isn't sufficiently documented for people to work on.
+AFIAK, the chipsets for I/O devices in E25 have plenty of documentation.
+The issue is someone has to clean them up and get a lawyer to approve
+their publication. It's all about IP and avoiding lawsuits. This has
+been discussed before.  Any HP employees interested in doing this "on
+their own time" can contact me and I'll help locate unpublished docs.
 
-Maybe as the parisc port grows more popular and attracts more resources,
-some enthusiastic people will get it happening.  =)
+Note that PDC is the same for Nova-Class (EFGHI-class) boxes as for
+the workstations for the most part. So someone could start by just
+trying to boot those boxes and see how far it gets before dying.
 
-Andrew.
 
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+> Maybe as the parisc port grows more popular and attracts more resources,
+> some enthusiastic people will get it happening.  =)
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Having worked on the HPUX SCSI driver (scsi3 and scsi1) for E25 and
+similar boxes, I question anyone's sanity who volunteers to write
+drivers for SPIFI chips - even with full documentation. I would rather
+give folks that interested in contributing a 715/33! (or my gosh /50's!)
+
+Yes - I know folks who collect PDP's and keep them running in their
+garage...'nuf said.
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
