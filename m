@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fep02-mail.bloor.is.net.cable.rogers.com (fep02-mail.bloor.is.net.cable.rogers.com [66.185.86.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E2D92482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 20:08:11 -0600 (MDT)
-Date: Tue, 20 May 2003 22:09:08 -0400
+Received: from fep03-mail.bloor.is.net.cable.rogers.com (fep03-mail.bloor.is.net.cable.rogers.com [66.185.86.73])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E954F482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 21:06:32 -0600 (MDT)
+Date: Tue, 20 May 2003 23:07:33 -0400
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4 and semtimedop - need kernel compat?
-Message-ID: <20030521020908.GE10485@systemhalted>
-References: <3EC76210000009D0@ocpmta8.freegates.net>
+To: Hamilton Coutinho <hamilton@tteng.com.br>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Building glibc (static) with 64 bits toolchain
+Message-ID: <20030521030733.GH10485@systemhalted>
+References: <20030520215541.GA11860@hamilton.tteng.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3EC76210000009D0@ocpmta8.freegates.net>
+In-Reply-To: <20030520215541.GA11860@hamilton.tteng.com.br>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,16 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> In the very last Andrea's patch 2.4.21rc2aa1.bz2, I read that Andrea already
-> back port this stuff :)
-> 
-> At a first glance, the job is also applied for hppa. Would you like that
-> I have a look to see if it is applicable with your patch in p-l cvs tree?
+> From the archive, I read that Carlos O'Donell is working on this very
+> subject with promising results. So I setup to build a full blown glibc.
+> After tinkering with it a little I realized that sysdeps/hppa/hppa64
+> directory was missing. I couldn't find it anywhere (tried glibc cvs,
+> parisc cvs, debian). Could you help me with directions to where to find
+> it?
 
-Seeing as how our glibc 2.3.2 is highly unstable and non-functional, it
-won't help very much :(
+I'd love to see those promising results :) I have a hard enough time
+working on a 32-bit userspace. There is no 64-bit port that works. I
+have some bits of code, but to tell you the truth it just isn't a
+priority. Other things, like a working 32-bit glibc rank higher...
+sorry.
 
-It should be easy enough to connect our syscall to semtimedop when the
-code is backported.
+If you would like to start by testing our 64-bit toolchain, please build
+a 64-bit cross system (hppa -> hppa64) and get back to the list with
+your results :)
 
 c.
