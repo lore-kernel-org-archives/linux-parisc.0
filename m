@@ -1,19 +1,19 @@
-Return-Path: <mweynants@wanadoo.be>
-Received: from ev6.be.wanadoo.com (ev6.be.wanadoo.com [195.74.212.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D488F48D6
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 848FA48A3
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  5 Jan 2004 06:08:38 -0700 (MST)
-Received: from dev3 (adsl-141-11.wanadoo.be [213.177.141.11])
-	by ev6.be.wanadoo.com (8.12.9/8.12.9) with ESMTP id i05EBfBf003609
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 5 Jan 2004 15:11:42 +0100
-From: Michel Weynants <mweynants@wanadoo.be>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Message-Id: <1073308114.2718.7.camel@dev3>
+	Mon,  5 Jan 2004 06:12:30 -0700 (MST)
+Date: Mon, 5 Jan 2004 05:14:51 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Michel Weynants <mweynants@wanadoo.be>
+Subject: Re: [parisc-linux] Sun JVM on linux HPPA
+Message-ID: <20040105131451.GN533@tausq.org>
+References: <1073308114.2718.7.camel@dev3>
 Mime-Version: 1.0
-Date: Mon, 05 Jan 2004 14:08:34 +0100
-Subject: [parisc-linux] Sun JVM on linux HPPA
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1073308114.2718.7.camel@dev3>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +23,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi,
+> However, I wonder if a Java virtual machine has been ported for that
+> environment. I checked several sites but did not found any info,
+> sentence, reference,... of a JSDK1.4 for linux on HPPA (well, thousands
+> references for JSDK on linux on intel).
+> 
+> Do you know if such version exist and where it could be found?
 
-I just received an 'old' (just 10 years) 755 and successfully installed
-Linux on it and all runs fine (thanks to all for that porting).
+The Sun JDK is not open-source so we cannot port it to hppa-linux. There
+are several efforts under way to get other JVMs to work on hppa. SableVM
+is close to working. kaffe can probably also be made to work with some
+effort.
 
-However, I wonder if a Java virtual machine has been ported for that
-environment. I checked several sites but did not found any info,
-sentence, reference,... of a JSDK1.4 for linux on HPPA (well, thousands
-references for JSDK on linux on intel).
+Search the mail archives for more info; this has been asked several
+times in the past.
 
-Do you know if such version exist and where it could be found?
-
-Many thanks in advance,
-
-Cheers,
-Michel
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
