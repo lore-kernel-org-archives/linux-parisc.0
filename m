@@ -1,39 +1,125 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA11284
-	for <parisc-linux@puffin.external.hp.com>; Fri, 7 Apr 2000 02:56:22 -0600
-Message-ID: <20000407085620.3974.qmail@web504.mail.yahoo.com>
-Date: Fri, 7 Apr 2000 01:56:20 -0700 (PDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA14160
+	for <parisc-linux@puffin.external.hp.com>; Fri, 7 Apr 2000 06:20:00 -0600
+Message-ID: <20000407121957.21801.qmail@web502.mail.yahoo.com>
+Date: Fri, 7 Apr 2000 05:19:57 -0700 (PDT)
 From: Ulrich Strelow <ulrich_strelow@yahoo.com>
-To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] K100 problem
+To: Steven Pritchard <steve@silug.org>, parisc-linux@thepuffingroup.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Kernel build with CONFIG_IODC_CONSOLE fails
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+I am not quite sure, but I think you need to set the
+Keyboard Path to the same value as Console Path when
+you use a serial console (or PC).
 
-after the 2.3.99-pre1 merge I am no longer able to
-build a kernel with the IODC console. Building
-defconfig is OK (CVS Version 20000406).
-
-When I define CONFIG_VT, CONFIG_VT_CONSOLE and
-CONFIG_IODC_CONSOLE the kernel build ends up with a
-"death: pckbd_setkeycode type 1" message. This remains
-even when I add CONFIG_GSC_PS2.
-
-Although I must admit that I don't understand the
-logic behind drivers/char/Makefile, I can see that
-neither gsc_ps2.c nor keyb_at.c gets compiled, so this
-seems to be the cause of the missing symbol.
-
-When I append gsc_ps2.o and keyb_at.o to the line
-  obj-y    += tty_io.o n_tty.o tty_ioctl.o mem.o 
-              raw.o pty.o misc.o random.o
-compiling gsc_ps2.c ends with the message
-gsc_ps2.c:161: `KEYBOARD_BH' undeclared 
-
-Any ideas ?
 Ulrich
+
+
+--- Steven Pritchard <steve@silug.org> wrote:
+> Jim Hull said:
+> > WARN  A008  No bootable device found 
+> 
+> Apparently the terminal was dead.  I hooked it up to
+> my PC and got
+> output.  Now I have another problem...  The box
+> outputs to the serial
+> console, but it doesn't seem to want to take input
+> on the serial
+> console.  Any ideas what might cause that?
+> 
+> Here's the boot messages:
+> 
+> --
+> 
+> Firmware Version  1.8
+> 
+> Duplex Console IO Dependent Code (IODC) revision 4
+> 
+>
+------------------------------------------------------------------------------
+>    (c) Copyright 1990-1994, Hewlett-Packard Company,
+> All rights reserved
+>
+------------------------------------------------------------------------------
+> 
+>   Processor   Speed            State          
+> CoProcessor State  Cache Size
+>   ---------  --------   --------------------- 
+> -----------------  ----------
+> 
+>       0      100  MHz   Active                
+> Functional          256 KB
+> 
+>   Central Bus Speed (in MHz)  :        100  
+>   Available Memory (bytes)    :  167772160  
+>   Good Memory Required (bytes):   16211968  
+> 
+> 
+>    Primary boot path:    8/0.6   (dec)
+>    Alternate boot path:  8/12/5.0   (dec)
+>    Console path:         8/4/0.0   (dec)
+>    Keyboard path:        8/12/7.0   (dec)
+> 
+> CPU 0
+>   WARNING:  Memory configuration is not optimized
+> for performance.  Refer
+>             to the System Installation or Memory
+> Installation manuals for 
+>             memory configuration guidelines.
+> 
+> 
+> Processor is starting autoboot process.
+> 
+> To discontinue, press any key within 10 seconds.
+> 
+> 10 seconds expired.
+> Proceeding...
+> 
+> Trying Primary Boot Path
+> ------------------------
+> 
+> Booting... 
+> Boot IO Dependent Code (IODC) revision 7
+> 
+> 
+> HARD Booted.
+> 
+> ISL Revision A.00.38  OCT 26, 1994 
+> 
+> ISL booting  hpux
+> 
+> Boot
+> : disc(8/0.6.0;0)/stand/vmunix
+> 4334092 + 380928 + 407872 start 0x17ce68
+> 
+> --
+> 
+> It does boot into HP-UX, so if I can figure out a
+> way into it over the
+> network, I can probably reload the box with IgniteUX
+> and just use it
+> as a HP-UX system, but obviously life would be
+> easier if I could use
+> the console...
+> 
+> Steve
+> -- 
+> steve@silug.org           | Linux Users of Central
+> Illinois
+> (618)398-7320             | Meetings the 4th Tuesday
+> of every month
+> Steven Pritchard          | http://www.luci.org/ for
+> more info
+> 
+>
+---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to
+> parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+> 
 
 __________________________________________________
 Do You Yahoo!?
