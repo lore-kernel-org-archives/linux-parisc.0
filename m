@@ -1,28 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ACBF94A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Mar 2001 09:42:21 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14gUQy-0000tf-00; Fri, 23 Mar 2001 16:29:04 +0000
-Date: Fri, 23 Mar 2001 16:29:04 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Nicolas THOMAS <thomas@ispserv.grenoble.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Interoperability
-Message-ID: <20010323162904.G5491@parcelfarce.linux.theplanet.co.uk>
-References: <200103230054.RAA24759@puffin.external.hp.com> <o051yrobxz9.fsf@debian.grenoble.hp.com>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5CC09482A
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Mar 2001 13:47:45 -0700 (MST)
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <o051yrobxz9.fsf@debian.grenoble.hp.com>; from thomas@ispserv.grenoble.hp.com on Fri, Mar 23, 2001 at 11:06:50AM +0100
-Sender: <willy@www.linux.org.uk>
+Date: Fri, 23 Mar 2001 13:19:13 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010323201913.8693C38F00@carmen.fc.hp.com>
+Subject: [parisc-linux] New compilers available
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Mar 23, 2001 at 11:06:50AM +0100, Nicolas THOMAS wrote:
-> 
-> The main goal is to be able to have a back-end on one host and a front-end 
-> on the other. Communication is done with the network (sockets).
+I have updated the native compiler debs again,
 
-Yes, all four combinations talk TCP/IP.
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/newcompilers-20010323/
+
+- New glibc packages that fix pthreads. You can now safely use the nscd 
+package and other pthreads apps.
+- New gcc packages that fix a problem when compiling a libperl shared perl.
+- binutils are the same as 20010321
+
+You don't have to grab them unless you're seeing these problems, but it 
+wouldn't hurt either.
+
+Thanks,
 
 -- 
-Revolutions do not require corporate support.
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
