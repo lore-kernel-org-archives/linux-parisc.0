@@ -1,39 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 81AC4482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Jul 2001 15:00:06 -0600 (MDT)
-Date: Mon, 23 Jul 2001 22:59:49 +0200 (CEST)
-From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
-To: Matthew Wilcox <willy@debian.org>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 715/100 with 0.92 not booting :(
-In-Reply-To: <20010720192900.K22691@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.BSF.4.30.0107232255200.822-100000@noc.zabbadoz.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id C543E482A; Mon, 23 Jul 2001 15:21:04 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 6540EB00C; Mon, 23 Jul 2001 22:22:35 +0100 (BST)
+Date: Mon, 23 Jul 2001 22:22:35 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux-cvs@lists.parisc-linux.org
+Message-ID: <20010723222235.E4597@linuxcare.com>
+References: <200107232044.OAA23340@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200107232044.OAA23340@puffin.external.hp.com>; from rhirst@puffin.external.hp.com on Mon, Jul 23, 2001 at 02:44:51PM -0600
+Subject: [parisc-linux] Re: Update debian-configs for 2.4.6
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 20 Jul 2001, Matthew Wilcox wrote:
+I turned off aic7xxx for 64 bit, as it wanted endian.h which wasn't
+available.  Have built kernel images, and then built boot-floppies
+with them.
 
-Hi,
+B180 graphical test:
 
-> On Fri, Jul 20, 2001 at 08:18:36PM +0200, Bjoern A. Zeeb wrote:
-> > PS: it's a bit confusing with those different iso images on different
-> > "mirrors" with different versionizing :(
->
-> That's why 0.9.2 was released after we had 3 different versions of 0.9.1,
-> each with different bugs.
+  Keyboard was dead on boot, unplug/replug didn't help
 
-Great, got it - but why isn't this announced on parisc-linux.org ?
-Putting .iso images or at least links to wouldn't be that bad on the
-master site but no only on one mirror.
+B180 serial console test:
 
+  Keyboard was dead after reboot in to second stage install
 
-> I don't know what your problem is until I see the System.map which
-> the 0.9.2 cd shipped with.  Does anyone have this?
+A500 serial console test:
 
-Anything new about this ?
+  Keyboard was dead after reboot in to second stage install
 
--- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Richard
