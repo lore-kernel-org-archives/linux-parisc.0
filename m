@@ -1,44 +1,88 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA26652
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 12:21:27 -0700
-Date: Thu, 30 Nov 2000 17:11:32 -0200 (BRST)
-From: "Jorge L. deLyra" <delyra@latt.if.usp.br>
-To: Helge Deller <deller@gmx.de>
-cc: parisc-linux@thepuffingroup.com, assirati@socrates.if.usp.br
-Subject: Re: [parisc-linux] HP 9000/735-125
-In-Reply-To: <00113019365203.00309@P100>
-Message-ID: <Pine.LNX.3.96.1001130170122.23583A-100000@latt.if.usp.br>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA27295
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 12:47:43 -0700
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id MAA12104
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 12:50:11 -0700 (MST)
+Received: from localhost
+	([127.0.0.1] helo=noam.fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 141Zid-00049i-00
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 12:50:11 -0700
+To: parisc-linux@puffin.external.hp.com
+Date: Thu, 30 Nov 2000 12:50:11 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E141Zid-00049i-00@noam.fc.hp.com>
+Subject: [parisc-linux] time_t, size_t, off_t, ...
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Just a thought: are you shure, that you did "make palo" and exported
-> > palo/lifimage  instead of vmlinux ?
 
-I just did the naive thing and put the precompiled kernel from the site
-there. According to the docs on the NFSROOT that might work, I mean, it
-says there that there are two alternatives, with and without palo...
+Thanks for all the helpful suggestions for data types.  Here's
+my current plan so far as I know it, plus some questions/gripes.  I
+have no current plans to break user space, though a new glibc
+should be produced eventually because of changes to struct sigcontext.
+I hope to make and test most(3) of these changes today.  Let me know
+if anything is flatly stupid -- I already know some choices are not
+ideal because ideal is impossible (off_t for example).
 
-> oops, 
-> I just saw, that you currently _can_not_ cross-compile..... :-(
+						# bits
+					parisc		parisc64
+					------------------------
+__kernel_off_t (long)			32		64(1)
+__kernel_size_t	(unsigned long)		32		64(1)
+__kernel_daddr_t (int)			32		32(2)
+__kernel_time_t (long)			32		64(1,3)
+__kernel_suseconds_t (long)		32		64(1,3)
+sigset_t.sig[] (long)			32		64(4)
+__kernel_ino_t (unsigned int)		32		32(5)
+elf.h:gregs_t				DEBUGGER ISSUE(6)
 
-Yes, we are working towards this, but I read in the docs that for the time
-being you can only cros-compile the kernel on HP-UX, so we must first fix
-our HP-UX systems here. In any case, it will take a little while until we
-tool up to do the cross-compilation, no matter where...
+(1)	A difference from the current posix_types.h
 
-> But if you still want to download a kernel I can make one available for 
-> you.....
+(2)	Appears to be used for an on-media data structure.  mips64
+	has it 64 bits which is probably wrong.
 
-This would be very nice! If you do that, please tell me where I can get
-it. It might be a goot idea to have this net-bootable lifimage version of
-the kernel on the ftp site side-by-side with the precompiled kernel which
-is already there, don't you think?
+(3)	I'm currently using 32-bit time_t and suseconds_t for my 64-bit
+	kernel and it appears to work just fine, and saves lots of syscall
+	wrapper work.  However the other ports use 'long' so there's
+	probably a good reason (or hidden assumptions in kernel code)
+	for it.  Those are
+	probably not the best reasons (I mean, why should a type used
+	to describe milliseconds (timeval.tv_usec) be 64 bits?  Oh well,
+	here come lots more 32/64 syscall wrappers to handle timevals.
 
-						Many thanks,
+	** NOTE ** I may not make the changes to these two types
+	immediately due to the number of (uninteresting) syscall
+	wrappers required (I'd rather write the networking ones first).
+	Sorry this means posix_types.h may change more than once.
 
-----------------------------------------------------------------
-        Jorge L. deLyra,  Associate Professor of Physics
-            The University of Sao Paulo,  IFUSP-DFMA
-       For more information: finger delyra@latt.if.usp.br
-----------------------------------------------------------------
+(4)	I thought I could get away with making this 'int' and therefore
+	32 bits everywhere.  It would save several 32/64 syscall
+	wrappers (and increase speed).  However this little piece
+	in kernel/signal.c is a hard-coded assumption that .sig[] is
+	an array of long, and was a bitch to find:
+
+		unsigned long i, *s, *m, x;
+		s = tsk->pending.signal.sig;
+
+(5)	This looks to be 32 bits everywhere, even on 64-bit archs,
+	with the single exception of sparc.  Although this little
+	snippet in <linux/nfs_fs.h>:
+
+	static inline ino_t
+	nfs_fileid_to_ino_t(u64 fileid)
+	{
+		ino_t ino = (ino_t) fileid;
+		if (sizeof(ino_t) < sizeof(u64))
+			ino ^= fileid >> (sizeof(u64)-sizeof(ino_t)) * 8;
+		return ino;
+	}
+	
+	clearly shows a 32-bit ino_t is currently a (potential) problem,
+	it seems to me this is a Linux problem not a parisc problem, so
+	it seemed better to follow the lead of the other ports.
+
+(6)	Debugger is going to care about structs in elf.h, which are not
+	identical narrow and wide at the present time.
+
+		-Paul Bame
