@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 27470482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 May 2003 14:10:49 -0600 (MDT)
-Date: Mon, 5 May 2003 13:05:37 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Oops on 2.4.20-pa33
-Message-ID: <20030505200537.GF29544@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030505200251.GS27494@lug-owl.de>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 74635482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 May 2003 15:05:34 -0600 (MDT)
+Date: Mon, 5 May 2003 23:05:32 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030505210532.GU27494@lug-owl.de>
+References: <20030505200251.GS27494@lug-owl.de> <20030505200537.GF29544@tausq.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
-In-Reply-To: <20030505200251.GS27494@lug-owl.de>
+	protocol="application/pgp-signature"; boundary="uUozbLrG2OP+gMtx"
+In-Reply-To: <20030505200537.GF29544@tausq.org>
+Subject: [parisc-linux] [PATCH-2.4] DIVA serial build error (was: Oops on 2.4.20-pa33)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,56 +23,63 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
+--uUozbLrG2OP+gMtx
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-> IAOQ:   10224658        __canonicalize_funcptr_for_compare
-> r02:    101229d4        do_sigaction
+On Mon, 2003-05-05 13:05:37 -0700, Randolph Chung <randolph@tausq.org>
+wrote in message <20030505200537.GF29544@tausq.org>:
+> > IAOQ:   10224658        __canonicalize_funcptr_for_compare
+> > r02:    101229d4        do_sigaction
+>=20
+> i don't have a 32-bit machine handy, can you try this patch and let me
+> know if it fixes your problem? An earlier version of this was posted on
+> this list but didn't get commited. thx -randolph
 
-i don't have a 32-bit machine handy, can you try this patch and let me
-know if it fixes your problem? An earlier version of this was posted on
-this list but didn't get commited. thx -randolph
+Oh, forgive me to be that read resistant:)
 
-Index: arch/parisc/kernel/signal.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /var/cvs/linux/arch/parisc/kernel/signal.c,v
-retrieving revision 1.43
-diff -u -p -r1.43 signal.c
---- arch/parisc/kernel/signal.c	4 Aug 2002 22:57:47 -0000	1.43
-+++ arch/parisc/kernel/signal.c	5 May 2003 20:08:55 -0000
-@@ -489,7 +489,7 @@ do_signal(sigset_t *oldset, struct pt_re
- 		ka =3D &current->sig->action[signr-1];
- 		DBG(("sa_handler is %x\n",=20
- 			(unsigned int) ka->sa.sa_handler));
--		if (ka->sa.sa_handler =3D=3D SIG_IGN) {
-+		if (ka->sa.sa_handler =3D=3D (void *)SIG_IGN) {
- 			if (signr !=3D SIGCHLD)
- 				continue;
- 			while (sys_wait4(-1, NULL, WNOHANG, NULL) > 0)
-@@ -497,7 +497,7 @@ do_signal(sigset_t *oldset, struct pt_re
- 			continue;
- 		}
+I'm currently rebuilding the kernel. While doing so, I remembered I had
+to do a little compile fix. I'm not sure if it's correct, but at least,
+it builds:
+
+
+--- linux/drivers/char/serial.c.orig	2003-05-05 22:59:23.000000000 +0200
++++ linux/drivers/char/serial.c	2003-05-05 23:00:44.000000000 +0200
+@@ -5836,10 +5836,10 @@
 =20
--		if (ka->sa.sa_handler =3D=3D SIG_DFL) {
-+		if (ka->sa.sa_handler =3D=3D (void *)SIG_DFL) {
- 			int exit_code =3D signr;
-=20
- 			/* Init gets no signals it doesn't want.  */
+ 	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
+ 	del_timer_sync(&serial_timer);
+-#ifdef CONFIG_SERIAL_SHARE_IRQ
++#ifdef CONFIG_HP_DIVA
+ 	if (hp_diva_count > 0)
+ 		del_timer_sync(&hp_diva_timer);
+-#endif /* CONFIG_SERIAL_SHARE_IRQ */
++#endif /* CONFIG_HP_DIVA */
+ 	save_flags(flags); cli();
+         remove_bh(SERIAL_BH);
+ 	if ((e1 =3D tty_unregister_driver(&serial_driver)))
 
---TB36FDmn/VVEgNH/
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--uUozbLrG2OP+gMtx
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE+tsQRULspdC1Zp9IRAsDrAKCv30wrB19M3YwIm7tXWk6IFq7DOACfVAYS
-MvFEjrUBE3USA3K9tUhg/o8=
-=F6E3
+iD8DBQE+ttIcHb1edYOZ4bsRAlhpAJ9aVWdUM+QpDei7MDhBe/vkLzfKNQCfXBd7
+Pbqa1joSawaCdFpPYBW197I=
+=a4BF
 -----END PGP SIGNATURE-----
 
---TB36FDmn/VVEgNH/--
+--uUozbLrG2OP+gMtx--
