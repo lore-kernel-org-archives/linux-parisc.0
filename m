@@ -1,20 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflashcom (firewall.pflash.com [207.19.136.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A677482A
-	for <parisc-linux@parisc-linux.org>; Wed, 19 Dec 2001 10:58:55 -0700 (MST)
-Received: from Wolf-01 (ppp50.cc1.pflash.com [63.121.24.52]) by vopserver.pflashcom
- (Vircom SMTPRS 5.2.203) with SMTP id <B0008958735@vopserver.pflashcom> for <parisc-linux@parisc-linux.org>;
- Wed, 19 Dec 2001 11:53:56 -0600
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Status report - B132L and 725/100
-Date: Wed, 19 Dec 2001 11:58:35 -0600
-References: <1008589643.3c1ddb4b75583@nyepost.start.no> <1008771313.3c20a0f14484a@nyepost.start.no> <20011219165635.3E405482A@dsl2.external.hp.com>
-In-Reply-To: <20011219165635.3E405482A@dsl2.external.hp.com>
+Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 30848482A
+	for <parisc-linux@parisc-linux.org>; Wed, 19 Dec 2001 12:53:58 -0700 (MST)
+Received: from mmp-2.gci.net ([208.138.130.81]) by mta-2.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GOLWLS00.YP6 for
+          <parisc-linux@parisc-linux.org>; Wed, 19 Dec 2001 10:53:52 -0900
+Received: from goliath.alaskatech.org ([24.237.5.207]) by
+          mmp-2.gci.net (Netscape Messaging Server 4.15) with ESMTP id
+          GOLWLS02.K3E for <parisc-linux@parisc-linux.org>; Wed, 19 Dec
+          2001 10:53:52 -0900
+Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
+	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA01554
+	for <parisc-linux@parisc-linux.org>; Wed, 19 Dec 2001 10:51:41 -0900
+Date: Wed, 19 Dec 2001 10:51:41 -0900 (AKST)
+From: Tom <palinux@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0112191033240.1400-100000@goliath.alaskatech.org>
 MIME-Version: 1.0
-Message-Id: <01121911583502.00844@Wolf-01>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] LibC errors on C180 install
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,16 +30,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wednesday 19 December 2001 10:56 am, Grant Grundler wrote:
-- - - snip - - -
-> o verify the disks are the correct type. For c720, I expect
->   *differential* SCSI.  Single Ended disks were used with LASI based
->   machines (53c710) and built-in fast/wide on a few of the BXXX/CXXX
->   workstations.
+Interesting - C180, 4G FWSCSI.5, Plextor CD SESCSI.5, 0.93 ISO. On install
+I had a segfault in the base-config, which bombed the rest of the install.
+Manually added FTP, pulled the latest kernel, reboot and now I can get APT
+etc to run, but every time it tries to update libc6 I get an error -
+"unable to stat './usr/lib/gconv/CP1251.so' (which I was about to install
+): Value too large for defined data type", then libc6 fails to install.
 
-My 9000/720/50 has factory labels on the external disk connectors specifing 
-the type of disk to use ("Warning, use single ended disks only").
-
-Perhaps the 725/100 has similar labels (inside or outside the box).
-
-Mike
+At first I thought the crashing might be FWSCSI related, so I added the
+palo parameter (burst:3) to it; somewhere between that and the -pa20
+kernel I've cured the segfaults. Is there something I missed in the list
+archives about this? Or, since this is a brand-new install, should I just
+rerun the install from scratch with some different selection?
