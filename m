@@ -1,34 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7376449C4
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 03:19:57 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4452C486A
+	for <parisc-linux@parisc-linux.org>; Fri, 28 Sep 2001 08:23:14 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15mtoK-00052O-00; Fri, 28 Sep 2001 10:19:56 +0100
-Date: Fri, 28 Sep 2001 10:19:56 +0100
+	id 15myXo-0002dG-00; Fri, 28 Sep 2001 15:23:12 +0100
+Date: Fri, 28 Sep 2001 15:23:12 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Jochen Friedrich <jochen@scram.de>
-Cc: Jurij Smakov <jurij@lokmail.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 720 - some progress
-Message-ID: <20010928101956.B16748@parcelfarce.linux.theplanet.co.uk>
-References: <200109271442.KAA14125@mail.lokmail.net> <Pine.NEB.4.33.0109281042070.29830-100000@www2.scram.de>
+To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] what i did on my holidays
+Message-ID: <20010928152312.A3460@parcelfarce.linux.theplanet.co.uk>
+References: <20010927161004.E16096@parcelfarce.linux.theplanet.co.uk> <20010927204451.F2611@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.NEB.4.33.0109281042070.29830-100000@www2.scram.de>; from jochen@scram.de on Fri, Sep 28, 2001 at 10:49:00AM +0200
+In-Reply-To: <20010927204451.F2611@megatonmonkey.net>; from carlos@megatonmonkey.net on Thu, Sep 27, 2001 at 08:44:51PM -0400
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 28, 2001 at 10:49:00AM +0200, Jochen Friedrich wrote:
-> If i add these instructions, ls no longer hangs but traps again with a
-> trap 15. Using show_regs(), it looks like there is always a 0 loaded to
-> the register. So my current question is:
-> 
-> where does regs->cr27 get written to the stack? Does the PA-RISC CPU does
-> this automatically on a start of a trap or does the code in entry.S need
-> to do this?
+On Thu, Sep 27, 2001 at 08:44:51PM -0400, Carlos O'Donell Jr. wrote:
+> 	- ./sysdeps/ia64/dl-fptr.c changes for try_lock
+> 	- Put change back into dpatch
 
-cr27 is only written to when doing fork/clone/vfork, iirc.  use the mfctl()
-macro in place of regs->cr27 as i suggested in my other email.
+Excellent.
+
+> 	- dpkg-buildpackage now makes it to the point of using a new
+> 	  ld.so.1, which seg's... so I'm back to figuring out why.
+
+Yes.  If you decode that long command, it's probably running zic -- that's
+the first thing it attempts to build natively.
+
+By the way, there's glibc 2.2.4-2 out now; I don't know what changes
+BenC made to it.  In any case, I thought we'd decided the problem was
+with a bogus C compiler (since 2.2.3-9 now fails to build).  Any update
+on getting a compiler which fixes this?
 
 -- 
 Revolutions do not require corporate support.
