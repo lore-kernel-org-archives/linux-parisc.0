@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beloit.edu (beloit.edu [144.89.40.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1CAFE482B
-	for <parisc-linux@parisc-linux.org>; Thu,  1 Nov 2001 20:18:38 -0700 (MST)
-Received: from localhost ([144.89.185.182])
-	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id VAA30230
-	for <parisc-linux@parisc-linux.org>; Thu, 1 Nov 2001 21:13:10 -0600
-Date: Thu, 1 Nov 2001 21:18:31 -0600
-Mime-Version: 1.0 (Apple Message framework v472)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-From: Daniel Williams <dan@bigw.org>
-To: parisc-linux@parisc-linux.org
-Message-Id: <4A91AEBA-CF40-11D5-A1E4-0030657D1C94@bigw.org>
-Subject: [parisc-linux] More Install on C110: Kernel doesn't load...
+Received: from trafficmagnet.net (unknown [211.101.236.87])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D884482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Nov 2001 03:19:59 -0700 (MST)
+Received: from sendmail ([211.101.236.29])
+	by trafficmagnet.net (8.11.0/8.11.0) with ESMTP id fA2AFuP07663
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 2 Nov 2001 18:15:56 +0800
+Message-Id: <200111021015.fA2AFuP07663@trafficmagnet.net>
+From: "Christine Hall" <return@trafficmagnet.net>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/html;
+Reply-To: "Christine Hall" <christine@trafficmagnet.net>
+Date: Fri, 2 Nov 2001 18:20:05 +0800
+Subject: [parisc-linux] PARISC-LINUX.ORG
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,26 +23,100 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-OK, I did a quick and dirty port of palo to MacOS X/Darwin and was able 
-to run it on the ISO image and modify the boot blocks correctly.
-
-I've got it to boot from the CD, turned out I was burning the CD wrong, 
-needed to burn with Track-At-Once with Close CD, rather than simply 
-Disc-At-Once in EasyCD Creator on Win2k.
-
-However, when attempting to boot the kernel, I get this:
-
-Entry 00100000 first 00100000 n 4
-Segment 0 load 00100000 size 160694 mediaptr 0x1000
-Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
-Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
-Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
-
-Error: read from boot device failed (status = -4)
-byteio_read: seekread() returned -1 expected 2048
-Error:  segment 0 read() failed
-
-Any thoughts?
-
-Thanks,
-Dan
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE></TITLE>
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type>
+<META content="MSHTML 5.00.2314.1000" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff><img src="http://report.trafficmagnet.net/report/tr/get.php?referemail=
+parisc-linux@lists.parisc-linux.org
+" width=1 height=1 border=0><FONT face=Arial size=2>
+<P>Hello,<BR></P>
+<P>I visited 
+<A href=http://parisc-linux.org>parisc-linux.org</A>
+</A> and I 
+noticed that you are not listed on some search engines. I am sure you can 
+increase the number of people who visit 
+<A href=http://parisc-linux.org>parisc-linux.org</A>
+</A>. Do you know TrafficMagnet? TrafficMagnet is a unique technology that instantly submits your 
+web site to over 300,000+ search engines and directories every month. This is a 
+very low-cost and effective way of advertising your site. </P>
+<P>To check our prices and submit 
+<A href=http://parisc-linux.org>parisc-linux.org</A>
+</A> to 
+300,000+ search engines, go to <a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+">TrafficMagnet.net</A></P>
+<P>I would love to hear from you. </P>
+<P>Best Regards,<BR>Christine Hall<BR>Sales &amp; Marketing<BR><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+">www.TrafficMagnet.net</A> 
+<STYLE type=text/css>.button {
+	BACKGROUND-COLOR: #cc0000; COLOR: #ffffff; FONT-WEIGHT: bold
+}
+</STYLE>
+</P>
+<P>
+<TABLE border=0 cellPadding=0 cellSpacing=0 width=507>
+  <TBODY>
+  <TR>
+    <TD width=149><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 
+      height=159 src="http://image4.trafficmagnet.net/trafficmagnet/magnet.jpg" 
+      width=149></A></TD>
+    <TD width=59><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 
+      height=159 src="http://image4.trafficmagnet.net/trafficmagnet/blitz.gif" 
+      width=59></A></TD>
+    <TD width=253>
+      <TABLE border=0 cellPadding=0 cellSpacing=0>
+        <TBODY>
+        <TR>
+          <TD height=194 rowSpan=3 width=21><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 height=194 
+            src="http://image4.trafficmagnet.net/trafficmagnet/frameleft.jpg" 
+            width=21></A></TD>
+          <TD height=24 width=210><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG 
+            border=0 height=24 
+            src="http://image4.trafficmagnet.net/trafficmagnet/frametop.jpg" 
+            width=210></A></TD>
+          <TD height=194 rowSpan=3 width=22><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 height=194 
+            src="http://image4.trafficmagnet.net/trafficmagnet/frameright.jpg" 
+            width=22></A></TD></TR>
+        <TR>
+          <TD>
+<A Href = http://parisc-linux.org><IMG Src = http://image10.trafficmagnet.net/imagenew/CRAWLERImgISC001/026/234.jpg Border=0 width="210" height="141"></A>
+</A>
+          </TD></TR>
+        <TR>
+          <TD height=25 width=210><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG 
+            border=0 height=25 
+            src="http://image4.trafficmagnet.net/trafficmagnet/framebottom.jpg" 
+            width=210></A></TD></TR></TBODY></TABLE></TD>
+    <TD width=239><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 
+      height=175 src="http://image4.trafficmagnet.net/trafficmagnet/people.gif" 
+      width=239></A></TD></TR>
+  <TR>
+    <TD width=149><a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 
+      height=48 src="http://image4.trafficmagnet.net/trafficmagnet/brand.jpg" 
+      width=149></A></TD>
+    <TD width=59>&nbsp;</TD>
+    <TD align=middle vAlign=bottom width=253>
+	<a target=_blank href="http://www.trafficmagnet.net/email.php?referemail=
+parisc-linux@lists.parisc-linux.org
+"><IMG border=0 src="http://image4.trafficmagnet.net/trafficmagnet/signup.gif"></A>
+    </TD>
+    <TD align=right vAlign=bottom 
+width=239>&nbsp;</TD></TR></TBODY></TABLE></FONT></P></BODY></HTML>
