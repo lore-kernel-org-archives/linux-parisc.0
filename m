@@ -1,12 +1,15 @@
-From: "B. Douglas Hilton" <bdhilton@charter.net>
-Subject: [parisc-linux] C200 Voodoo2 Progress Report
-Date: Thu, 05 Sep 2002 17:49:55 -0400
-Message-ID: <3D77D183.2080905__38689.1229231425$1416621689$gmane$org@charter.net>
+From: Matthew Wilcox <willy@debian.org>
+Subject: [parisc-linux] Re: C200 Voodoo2 Progress Report
+Date: Fri, 6 Sep 2002 03:46:56 +0100
+Message-ID: <20020906034656.A26580__36298.3989100487$1416621690$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <3D77D183.2080905@charter.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-To: palinux <parisc-linux@lists.parisc-linux.org>,
+Content-Type: text/plain; charset=us-ascii
+Cc: palinux <parisc-linux@lists.parisc-linux.org>,
 	debian-hppa@lists.debian.org
+To: "B. Douglas Hilton" <bdhilton@charter.net>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <3D77D183.2080905@charter.net>; from bdhilton@charter.net on Thu, Sep 05, 2002 at 05:49:55PM -0400
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,38 +20,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I have gotten my C200 back online and started some preliminary
-work with the Voodoo2 PCI card. I currently have it plugged into
-one of the 5V/32bit slots which may or may not be optimal.
+On Thu, Sep 05, 2002 at 05:49:55PM -0400, B. Douglas Hilton wrote:
+>   This is the Debian source for Glide3 on the Alpha arch,
+>   which is also big-endian. Initial compilation failed in
 
-Anyways,
+nope.  alpha is little-endian.
 
-1. Linux Kernel 2.4.19-pa2 sstfb Voodoo1/2 framebuffer
+LE: alpha, arm, cris, i386, ia64, superh
+BE: m68k, mips, parisc, ppc, s390, sparc
 
-  Well, the kernel compiled with the sstfb without
-  any errors. When I booted I got a black and white
-  checkerboard pattern on the Voodoo2 monitor. I had
-  disabled the stifb console, thinking that the kernel
-  might pick the sstfb for a console, but it didn't.
-  Just blankness for a while, then a checkerboard
-  pattern.
+(yes, i know many of these CPUs are bi-endian, but these are the default
+configs)
 
-  I think this is encouraging and I think it is working.
-  I'm currently recompiling and will post some more news
-  later as I experiment some more with it. Next I will
-  try and put a console on the sstfb or even try running
-  X on it.
-
-
-2. glide3-alpha-0.cvs.20010711
-
-  This is the Debian source for Glide3 on the Alpha arch,
-  which is also big-endian. Initial compilation failed in
-  multiple places about missing sys/io.h which I have
-  located a file of that name in /usr/include/asm. I'll
-  see if I can figure out how best to correct this and try
-  again.
-
-
-Cheers!
-- Doug
+-- 
+Revolutions do not require corporate support.
