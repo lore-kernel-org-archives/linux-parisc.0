@@ -1,13 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] TLS patches for glibc,
-	and problems with symbols (TLS vs. non-TLS __libc_errno).
-Date: Wed, 6 Apr 2005 01:52:36 -0400
-Message-ID: <20050406055234.GW1833@baldric.uwo.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] pthread problems - test program
+Date: Wed, 6 Apr 2005 12:11:31 -0400 (EDT)
+Message-ID: <200504061611.j36GBWEc005840@hiauly1.hia.nrc.ca>
+References: <200504060842.j368gtvK004155@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200504060842.j368gtvK004155@hiauly1.hia.nrc.ca> from "John David
+	Anglin" at Apr 6, 2005 04:42:54 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,49 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> #define SIGXCPU         33      /* CPU limit exceeded (4.2 BSD).  */
+> #define SIGXFSZ         34      /* File size limit exceeded (4.2 BSD).  */
+> #define SIGSTKFLT       36      /* Stack fault.  */
 
-Farthest I've gotten in my build yet, putting together the libc library
-causes a linker error:
+I guess the answer to my question is these signals aren't used,
+so we only support a maximum of 32 signals that can be masked.
+Hopefully, an EINVAL error will be generated if the above signals
+used.
 
---
-gcc   -nostdlib -nostartfiles -r -o
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/librtld.map.o
-'-Wl,-('
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/dl-allobjs.os
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a
--lgcc '-Wl,-)'
--Wl,-Map,/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/librtld.mapT
-/mnt/flaire/src/tls-toolchain/install/bin/../lib/gcc/hppa-linux/3.4.3/../../../../hppa-linux/bin/ld:
-__libc_errno: TLS definition in
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a(errno.os)
-section .tbss mismatches non-TLS reference in
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a(check_fds.os)
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a:
-could not read symbols: Bad value
-collect2: ld returned 1 exit status
-make[2]: ***
-[/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/librtld.map]
-Error 1
-make[2]: Leaving directory `/mnt/flaire/src/tls-toolchain/src/libc/elf'
-make[1]: *** [elf/subdir_lib] Error 2
-make[1]: Leaving directory `/mnt/flaire/src/tls-toolchain/src/libc'
-make: *** [all] Error 2
---
-
-I later realized that this all has to do with our handling of errno. I'm
-going to have to bite the bullet and write the ugly ASM code to handle
-all the errno cases based on defines during the build.
-
-glibc head patches:
-http://www.parisc-linux.org/~carlos/glibc-work/glibc-hppa-patches-2005-04-05.tar.gz
-
-tls patches against the above:
-http://www.parisc-linux.org/~carlos/glibc-work/glibc-hppa-tls-2005-04-05.diff
-
-That *should* get you to the above state.
-
-c.
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
