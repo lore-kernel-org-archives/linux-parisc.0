@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from linux.local (unknown [213.9.245.78])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1E7F64829
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Sep 2002 06:48:54 -0600 (MDT)
-Received: from unknown (HELO h) (192.168.0.2)
-  by linux.local with SMTP; 20 Sep 2002 11:57:41 -0000
-From: "Sales Department" <shopfortobacco@terra.es>
-To: parisc-linux@parisc-linux.org
-Reply-To: shopfortobacco@terra.es
-Date: Fri, 20 Sep 2002 14:03:00 +0200
-Message-Id: <20020920124854.1E7F64829@dsl2.external.hp.com>
-Subject: [parisc-linux] Cheap Cigarettes
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB0314829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 07:20:51 -0600 (MDT)
+Message-ID: <3D8B2FBA.40909@freebel.net>
+Date: Fri, 20 Sep 2002 14:24:58 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: Stephan Trajkoff <stephan@itp.bg>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PPPD+PPTPD
+References: <3D89A5D4.8050306@itp.bg>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,21 +22,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dear Sir or Madam
+Hey Stephan,
 
-In the past you have requested information on discounted products. We hope that you find this of interest. If you are not a smoker, and find this email offensive, we sincerely apologise!  We will be only too happy to take you off our mailing list.
+IIRC the solution is to re-compile the kernel with option "PPP  support 
+for sync tty ports" and not async (as usual). It solved this problem for me.
 
-If you are a smoker, however, and are fed up with paying high prices for your cigarettes and tobacco, take a look at what we have to offer  by clicking on this link.
-http://www.smokersassociation.co.uk/?S=32&ID=2
+I hope it will help you too,
 
-We can send you, legally, by registered air mail, direct to your door, 4 cartons of cigarettes or 40 pouches of rolling tobacco (all brands are available) from only 170 Euros - about 105 pounds - fully inclusive of postage and packing.  Why pay more?
+	Joel
 
-To remove yourself from our mailing list, please click below
-mailto:smokersclub@terra.es
 
-Yours faithfully.
-Smokers Association
 
-http://www.smokersassociation.co.uk/?S=32&ID=2
-
-xay4871241y
+Stephan Trajkoff wrote:
+> Hello, please see the attachment.
+> I use 2.4.18-pa61 kernel and enabled PPP support
+> PPPD version is 2.4.1, PPTPD is 1.1.3
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> Sep 19 13:22:41 obzor pppd[17190]: read: Resource temporarily unavailable
+> Sep 19 13:22:41 obzor pppd[17190]: read /dev/ppp: Resource temporarily
+> unavailable
+> Sep 19 13:22:41 obzor pppd[17190]: rcvd [LCP ConfAck id=0x1 <asyncmap 0x0>
+> <auth pap> <magic 0x2479cb91> <pcomp> <accomp>]
+> Sep 19 13:22:41 obzor pppd[17190]: sent [LCP EchoReq id=0x0
+> magic=0x2479cb91]
+> Sep 19 13:22:41 obzor pppd[17190]: rcvd [PAP AuthReq id=0x1 user="kpematop"
+> password=<hidden>]
