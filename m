@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E8A84486E
-	for <parisc-linux@parisc-linux.org>; Fri, 26 Sep 2003 14:41:04 -0600 (MDT)
-Received: from c-67-168-137-134.client.comcast.net (c-67-168-137-134.client.comcast.net [67.168.137.134])
-	by cuprel1.hp.com (Postfix) with SMTP id 2ADF21180
-	for <parisc-linux@parisc-linux.org>; Fri, 26 Sep 2003 13:41:02 -0700 (PDT)
-Message-ID: <69lz-0-r$----870$po$9v$0m0sq@99s0.4.qpyqd7>
-From: "Sherry Sosa" <zjq9bdtpq@aol.com>
-Reply-To: "Sherry Sosa" <zjq9bdtpq@aol.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Fri, 26 Sep 03 11:37:28 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="_5C.7A5...F6._BCAEAFB3C"
-Subject: [parisc-linux] Whats Happening?
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2479483E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 21:43:12 -0600 (MDT)
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: linux-scsi@vger.kernel.org
+Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Message-Id: <1064634188.641.27.camel@laptop.bradetich.net>
+Mime-Version: 1.0
+Date: Fri, 26 Sep 2003 21:43:08 -0600
+Subject: [parisc-linux] zalon/ncr53c720 crashes K460  (parisc port) on bootup.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,32 +21,95 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---_5C.7A5...F6._BCAEAFB3C
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hello all,
 
-<body bgcolor=3D"#CC66FF"><div align=3D"center">
-  <font face=3D"Arial, Helvetica, sans-serif" size=3D"5">Sophie's <b>Perso=
-nal</b> 
-  Website</font><br><table width=3D"591" height=3D"92"><tr> 
-      <td height=3D"125"><b><font face=3D"Verdana, Arial, Helvetica, sans-=
-serif" size=3D"2">Hey!</font></b><font face=3D"Verdana, Arial, Helvetica, =
-sans-serif" size=3D"2"> 
-        My name's Sophie and I'm just letting you know that I have just la=
-unched 
-        my site full of heaps of sexy <a href=3D"http://www.freemember.us/=
-sp/index.html">pictures and videos</a> of me!! 
-        If you want to see a movie of me just <a href=3D"http://www.freeme=
-mber.us/sp/index.html">click here!</a><br>
-        <br>
-        I want to make it big as a model. I hope you think I have what it =
-takes 
-        and maybe you'll be seeing a lot more of me very soon! I really ho=
-pe you 
-        enjoy the <a href=3D"http://www.freemember.us/sp/index.html">video=
-s!</a></font></td>
-    </tr></table><br><font face=3D"Arial, Helvetica, sans-serif" size=3D"5=
-"><a href=3D"http://www.freemember.us/sp/index.html">Click here to 
-  see Sophie in action now!</a></font></div></body>
+The zalon/ncr53c720 combination is fatal during booting on my K460
+parisc box.  I believe the scsi termination is correct since I performed
+a fresh debian install on the scsi disks and I can boot from then every
+time I use a 2.4 kernel :)  This problem appeared with with the latest
+cvs kernel from parisc-linux.org.
 
---_5C.7A5...F6._BCAEAFB3C--
+This system does boot and function when I do not compile zalon support
+into the kernel and use a nfsroot.
+
+I can provide addtional information and test patches (or give access to
+this system) if requested.
+
+Any thoughts or feedback appreciated!  
+
+Thanks,
+
+- Ryan
+
+P.S. please copy me on any replies as i am not subscribed to the
+linux-scsi list.
+
+
+Here is the relevant (I hope) information I copied from the bootup
+
+Linux version 2.6.0-test5-pa20 (rbrad@beavis) (gcc version 3.0.3) #34
+Fri Sep 26 21:09:34 MDT 2003
+
+
+zalon_probe: Zalon vers field is 0x1, IRQ 36
+ncr53c720-0: rev 0xf on bus 0 device 0 function 0 irq 36
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+ncr53c720-0: suspicious SCSI data while resetting the BUS.
+ncr53c720-0: dp1,d15-8,dp0,d7-0,rst,req,ack,bsy,sel,atn,msg,c/d,i/o =
+0x3fdff00, expecting 0x100
+ncr53c720-0: FATAL ERROR: CHECK SCSI BUS - CABLES, TERMINATION, DEVICE
+POWER etc.!
+ncr53c720-0: detaching...
+
+ 
+Kernel addresses on the stack:
+ [<101227bc>] copy_process+0x714/0xa4c
+ [<10104144>] parisc_terminate+0x60/0xb0
+ [<1010c264>] pdc_iodc_putc+0x88/0x11c
+ [<101043e0>] handle_interruption+0x24c/0x598
+ [<1010c264>] pdc_iodc_putc+0x88/0x11c
+ [<10140b40>] do_drain+0x1c/0x2c
+ [<101404c4>] slab_destroy+0x15c/0x208
+ [<10109088>] intr_check_sig+0x0/0xc
+ [<10140c0c>] __cache_shrink+0x70/0xc4
+ [<10220640>] ncr_detach+0x0/0x364
+ [<101238f0>] call_console_drivers+0xac/0x170
+ [<1015747c>] dentry_open+0x78/0x1b0
+ [<10123cc8>] release_console_sem+0x64/0x11c
+ [<101573e4>] filp_open+0x4c/0x6c
+ [<10348518>] start_kernel+0x4/0x1b8
+ [<101e0780>] gsc_alloc_irq+0x38/0x68
+ [<10358dec>] zalon_probe+0x1b0/0x230
+ [<1018c548>] sysfs_create+0x94/0xe4
+ [<1018cf6c>] create_dir+0x80/0xe0
+ [<1010cc44>] parisc_driver_probe+0x30/0x60
+ [<101fa208>] bus_match+0x4c/0x80
+ [<101fa384>] driver_attach+0x88/0xbc
+ [<101fa604>] bus_add_driver+0x98/0xa4
+ [<1035888c>] tulip_init+0x40/0x74
+ [<10348744>] do_initcalls+0x64/0xe0
+ [<1010019c>] init+0x28/0x144
+ [<10108c5c>] ret_from_kernel_thread+0x1c/0x24
+
+Kernel Fault: Code=26 regs=effb8380 (Addr=00000194)
+ 
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000011101111111100001111 Not tainted
+r00-03  00000000 1030a810 10224b2c efffb6e0
+r04-07  00000000 efffb688 00000024 10318010
+r08-11  efffb600 ffffffed 102f3810 10348518
+r12-15  000000f2 000000fa 00000003 f0000d2c
+r16-19  f0001790 f0000124 f000011c 00000021
+r20-23  10315a40 00000021 0000000f 00100100
+r24-27  000002c7 103d9380 00000000 102ea010
+r28-31  00000000 0000000b effb8380 101415e8
+sr0-3   00000000 00000000 00000000 00000000
+sr4-7   00000000 00000000 00000000 00000000
+ 
+IASQ: 00000000 00000000 IAOQ: 10224b28 10220640
+ IIR: 4b5a0328    ISR: 00000000  IOR: 00000194
+ CPU:        0   CR30: effb8000 CR31: 1033e000
+ ORIG_R28: 102f3810
+ IAOQ[0]: ncr53c8xx_release+0xc/0x20
+ IAOQ[1]: ncr_detach+0x0/0x364
+ RP(r2): ncr53c8xx_release+0x10/0x20
