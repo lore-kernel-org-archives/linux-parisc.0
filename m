@@ -1,18 +1,20 @@
-Return-Path: <mmcDonaldjf@jonasj.dk>
-Received: from medic.up.ac.za (66-215-157-40.rc-mres.charterpipeline.net
-	[66.215.157.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A29348A4
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 04:33:04 -0700 (MST)
-From: "Mario McDonald" <mmcDonaldjf@jonasj.dk>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 25 Dec 2003 01:33:33 -0200
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 995D348A8
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 24 Dec 2003 05:38:43 -0700 (MST)
+Message-ID: <3FE98907.40903@tiscali.be>
+Date: Wed, 24 Dec 2003 12:39:35 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_05F0_E8AE1D0E.240B76E4"
-Message-Id: <20031224113304.6A29348A4@dsl2.external.hp.com>
-Cc: 
-Subject: [parisc-linux] great feeling
+To: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] serial 2 broken in 2.6.0 for b180?(followup)
+References: <1072192334.1815.0.camel@mulgrave>
+	<3FB2652500018822@ocpmta2.freegates.net>
+	<20031224050510.GF24091@colo.lackof.org>
+In-Reply-To: <20031224050510.GF24091@colo.lackof.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,35 +24,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_05F0_E8AE1D0E.240B76E4
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
 
 
+Grant Grundler wrote:
+> On Tue, Dec 23, 2003 at 06:42:03PM +0100, Joel Soete wrote:
+> 
+>>hmm it seems that 'setserial /dev/ttyS1 port 0xfff83800' locks the memtioned
+>>serial port (even thought "port 0xfff83800" is well the one related in dmesg).
+> 
+> 
+> setserial has always caused me more trouble than solved problems.
 
+Ah ok (it was just install at one moment because help me in 2.4 adventure :) )
 
-------=_NextPart_000_05F0_E8AE1D0E.240B76E4
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+> It might be a great program for x86, but certain people keep telling
+> me NOT to use it on parisc or ia64. I've removed it from all my machines.
 
-<HTML><BODY>
-<P><FONT SIZE=2>Generic cialis (Regalis), at cheap prices.<BR>
-Most places charge $20, we charge $5. Quite a difference.<BR><BR>
-Cialis is known as a Super-Viagra or Weekend-Viagra because its effects start sooner and last much longer.</FONT>
-</P>
-<P><FONT SIZE=2>Shipped worldwide.<BR><BR>Your easy-to-use solution is here: <A
-HREF="http://www.wwwbargins.biz/cia/?oxygen">http://www.wwwbargins.biz/cia/?oxygen</A></FONT>
-</P>
-<P><FONT SIZE=2>-----</FONT>
-<BR><FONT SIZE=2>Link below is for that people who dislike
-adv.....</FONT>
-<BR><FONT SIZE=2><A
-HREF="http://www.wwwbargins.biz/off.html">http://www.wwwbargins.biz/off.html</A></FONT><BR>-=hf8KRn3641gaG4utDnOJRZZ6Q9h0=-
-</P></BODY></HTML>
+I will do the same
 
-
-------=_NextPart_000_05F0_E8AE1D0E.240B76E4--
+Thanks for advise,
+	Joel
