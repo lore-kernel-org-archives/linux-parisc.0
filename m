@@ -1,18 +1,17 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE88E4854
-	for <parisc-linux@parisc-linux.org>;
-	Mon, 12 Jan 2004 09:45:05 -0700 (MST)
-Date: Mon, 12 Jan 2004 09:45:04 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: brianbarber@linux.ca
-Subject: Re: [parisc-linux] Installing Debian on an 712/80
-Message-ID: <20040112164504.GB22886@colo.lackof.org>
-References: <1073916752.bd0297c0brianbarber@myrealbox.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1073916752.bd0297c0brianbarber@myrealbox.com>
-Cc: parisc-linux@parisc-linux.org
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 217264854
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 12 Jan 2004 10:51:25 -0700 (MST)
+Date: Mon, 12 Jan 2004 18:51:21 +0100
+Message-ID: <3FFB28C900003B90@ocpmta1.freegates.net>
+In-Reply-To: <3FFF10F3.2060408@tiscali.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +21,84 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 12, 2004 at 09:12:32AM -0500, Brian Barber wrote:
-> Thanks for the guidance on the CDROM drive.  That tip might want to
->  find its way into the install documentation for other PARISC rookies.
-...
-> PS: Now that I have a working machine, how can I help the development effort?
+Hi Carlos,
 
-You pointed out a good one above.
+Here is finaly the pb I encounter when I try to rebuild the toolchain with
+gcc-snapshot at the time of glibc build:
+[snip]
+/Develop/parisc-linux/xc/bin/hppa-linux-gcc -nostdlib -nostartfiles -o /Develop/parisc-linux/build/glibc/iconv/iconvconfig
+ -Wl,-dynamic-linker=/opt/palinux/hppa-linux/lib/ld.so.1    /Develop/parisc-linux/build/glibc/csu/crt1.o
+/Develop/parisc-linux/build/glibc/csu/crti.o `/Develop/parisc-linux/xc/bin/hppa-linux-gcc
+--print-file-name=crtbegin.o` /Develop/parisc-linux/build/glibc/iconv/iconvconfig.o
+/Develop/parisc-linux/build/glibc/iconv/strtab.o /Develop/parisc-linux/build/glibc/iconv/xmalloc.o
+/Develop/parisc-linux/build/glibc/iconv/hash-string.o  -Wl,-rpath-link=/Develop/parisc-linux/build/glibc:/Develop/parisc-linux/build/glibc/math:/Develop/parisc-linux/build/glibc/elf:/Develop/parisc-linux/build/glibc/dlfcn:/Develop/parisc-linux/build/gl
+ibc/nss:/Develop/parisc-linux/build/glibc/nis:/Develop/parisc-linux/build/glibc/rt:/Develop/parisc-linux/build/glibc/resolv:/Develop/parisc-linux/build/glibc/crypt:/Develop/parisc-linux/build/glibc/linuxthreads
+/Develop/parisc-linux/build/glibc/libc.so.6 /Develop/parisc-linux/build/glibc/libc_nonshared.a
+-lgcc `/Develop/parisc-linux/xc/bin/hppa-linux-gcc --print-file-name=crtend.o`
+/Develop/parisc-linux/build/glibc/csu/crtn.o
+/Develop/parisc-linux/build/glibc/elf/ld.so.1: undefined reference to `set_dp'
+collect2: ld returned 1 exit status
+make[2]: *** [/Develop/parisc-linux/build/glibc/iconv/iconvconfig] Error
+1
+make[2]: Leaving directory `/Develop/parisc-linux/sources/glibc/iconv'
+make[1]: *** [iconv/others] Error 2
+make[1]: Leaving directory `/Develop/parisc-linux/sources/glibc'
+make: *** [all] Error 2
 
-Send a diff (or new text) for an existing install document (URL please)
-and that would be a good first step to getting the public version updated.
+the glibc src cames from last debian pkg with patches applied and configured
+with following options:
+# unset LD_LIBRARY_PATH; unset LD_RUN_PATH; export CC=/Develop/parisc-linux/xc/bin/hppa-linux-gcc;
+export CLFAGS="-O2 -g";  export PATH="/Develop/parisc-linux/xc/bin:$PATH";
+/Develop/parisc-linux/sources/glibc/configure --target=hppa-linux --host=hppa-linux
+--build=hppa-linux --prefix=/opt/palinux/hppa-linux --without-cvs --disable-profile
+--enable-hacker-mode --enable-add-ons=linuxthreads --with-headers=/Develop/parisc-linux/sources/linux/include
 
-In general, the parisc-linux website had several How-To's and
-a FAQ that could use slight reworking (eg look for stale URL's
-and just proper english grammar).
 
-thanks,
-grant
+and the gcc-snapshot sources cames from the latest gcc-scnapshot-20040110
+debian pkg and the 'preliminary x compiler' is configured with following
+options:
+# export PATH="/Develop/parisc-linux/xc/bin:$PATH"; /Develop/parisc-linux/sources/gcc/configure
+--target=hppa-linux --host=hppa-linux --build=hppa-linux --prefix=/Develop/parisc-linux/xc
+--disable-shared --disable-nls --enable-languages=c 
+
+Any idea?
+
+Thanks in advance,
+    Joel
+
+>-- Original Message --
+>Date: Fri, 09 Jan 2004 20:37:07 +0000
+>From: Joel Soete <soete.joel@tiscali.be>
+>To: Carlos O'Donell <carlos@baldric.uwo.ca>
+>Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+>Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
+>
+>
+>Joel Soete wrote:
+[snip]
+> (but I don't much retry because of gnu pserver cvs pb; in the mean time
+I
+> read that new anonymous access would be with ssh, even though last weekend
+> it was not yet operational?) 
+[snip]
+
+CVSROOT=":ext:anoncvs@subve
+>sions.gnu.org:/cvsroot/gcc"
+
+seems to be operational now with CVS_RSH="ssh"
+
+hth,
+	Joel
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listi
+>fo/parisc-linux
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
