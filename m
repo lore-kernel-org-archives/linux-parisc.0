@@ -1,60 +1,219 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA25880
-	for <parisc-linux@puffin.external.hp.com>; Thu, 3 Aug 2000 18:57:35 -0600
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by cosrel2.hp.com (Postfix) with ESMTP id 16A76208
-	for <parisc-linux@thepuffingroup.com>; Thu,  3 Aug 2000 18:59:28 -0600 (MDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA17002
+	for <parisc-linux@puffin.external.hp.com>; Fri, 4 Aug 2000 09:30:03 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 4 Aug 2000 15:32:11 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 4 Aug 2000 15:31:55 -0000
+Received: (from willy@localhost)
+	by vodka.thepuffingroup.com (8.9.3/8.9.3) id KAA32544
+	for parisc-linux@thepuffingroup.com; Fri, 4 Aug 2000 10:26:45 -0400
+Date: Fri, 4 Aug 2000 10:26:45 -0400
+From: Matthew Wilcox <matthew@wil.cx>
 To: parisc-linux@thepuffingroup.com
-Cc: taggart@carmen.fc.hp.com
+Message-ID: <20000804102645.L24940@vodka.thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 03 Aug 2000 19:01:15 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20000804010116.10DB1381A0@carmen.fc.hp.com>
-Subject: [parisc-linux] New toolchain, userspace apps, nfsroots, ramdisk, and lifimage
+Subject: [parisc-linux] [kaos@ocs.com.au: [RFC] 2.4.0-test6-pre2 Merge softirq, local_irq_count, local_bh_count]
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi palinux'ers,
 
-In building the PA/Linux Developer's Release CD for Linux World Expo, Paul 
-Bame and I have packaged up some new bits.
+we're not merged yet, which is why he didn't cc us.  this patch may
+be integrated the next time we get round to merging with Linus' tree
+and we should be ready for it.
 
-New x86linux -> palinux cross toolchain,
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20000802.tgz
+----- Forwarded message from Keith Owens <kaos@ocs.com.au> -----
 
-Apps built using the new toolchain in,
-ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/
+Delivered-To: thepuffi-willy@thepuffingroup.com
+X-Mailer: exmh version 2.1.1 10/15/1999
+From: Keith Owens <kaos@ocs.com.au>
+To: linux-arm-kernel@lists.arm.linux.org.uk, linuxppc-dev@lists.linuxppc.org,
+        linux-mips@fnet.fr, sparclinux@vger.rutgers.edu,
+        ultralinux@vger.rutgers.edu, linux-alpha@vger.rutgers.edu,
+        linux-kernel@vger.rutgers.edu, linux-ia64@linuxia64.org,
+        linux-vm@vm.marist.edu
+Subject: [RFC] 2.4.0-test6-pre2 Merge softirq, local_irq_count, local_bh_count 
+Date: 	Fri, 04 Aug 2000 15:46:39 +1000
+Precedence: bulk
+X-Loop: 	majordomo@vger.rutgers.edu
 
-A small nfsroot containing some basic commands to play with,
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/
-	nfsroot-small-20000803.tgz
+This patch hits every arch.  It is being cross mailed to every arch
+mailing list that has not already confirmed that the patch works.
+Please trim replies to the relevant mailing list.
 
-A big nfsroot containing everything we've built so far. This is what the
-root filesystem will be on this release of the PA/Linux Developer's CD(or
-close to it)
-ftp://puffin.external.hp.com/pub/parisc/binaries/nfsroot/
-	nfsroot-20000803.tgz
+Also please cc: kaos@ocs.com.au on replies, I am not on every list.
 
-A small ramdisk containing a limited set the newly compiled apps,
-ftp://puffin.external.hp.com/pub/parisc/binaries/ramdisks/ramdisk.bin-20000803
+---
 
-A lifimage using the current CVS kernel bits and the above ramdisk,
-ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Image-20000803
+At the moment (2.4.0-test6-pre2) all architectures have a common
+definition for softirq_state, it occupies its own cache line with a lot
+of unused padding.  The definitions for local_irq_count and
+local_bh_count are all over the place, some architectures use a cache
+aligned structure, some use arrays of integers (lets you play cache
+ping/pong), some even use atomic_t.
 
-You can also use the above lifimage to boot from other sources(like an 
-nfsroot) by,
+Each arch defines its own set of mapping macros to get to
+local_irq_count and local_bh_count.  To add insult to injury, not all
+architectures use the mapping macros, there are bits of code scattered
+around that use hard coded array lookups which are not optimized for
+SMP vs non-SMP.
 
-- Interrupt the boot
-- boot from your bootp server adding the "ipl" option
-- edit the boot command line (example: nfsroot=192.168.1.10:/tftpboot/nfsroot)
+ftp://ftp.ocs.com.au/pub/2.4.0-test6-pre2-softirq-bh-merge.gz is a
+merge of softirq, local_irq_count and local_bh_count into one cache
+aligned structure.  The aim was :-
 
-We will be posting the final snapshot of this version(0.1) of the PA/Linux 
-Developer's Release CD sometime tommorrow.
+* Put all these fields in a per-cpu cache line.  They are hit by the
+  same code paths and are only ever updated from one cpu.  Softirq was
+  already cache aligned but the other fields were not, in most cases we
+  were using multiple cache lines for this data.  On most archs this
+  will save a cache line.  In the worst case we use the same number of
+  lines but still get a code cleanup.
 
-Feedback would be greatly apprecicated.
+* Replace all the explicit references like __local_irq_count[cpu] with
+  wrapper macros.  Some arch's had already done this but there was
+  quite a bit of crud left.
 
-Thanks,
+* Replace multiple arch definitions and export of irq_stat with a
+  common one, optimized for SMP or non-SMP.  I know that gcc should do
+  this, but proving it will always optimize was too messy so I went for
+  the safe case and hand optimized the definitions.  Besides, s390 is
+  completely different (the story of my life ;).
+
+* Create a standard definition for the wrappers that can be used by
+  almost all architectures.  Only s390 and sparc64 are special cases
+  but every arch had its own slightly incompatible definition.
+
+* Add a per-cpu syscall_count, ready for performance reporting on soft
+  interrupts as well as hard interrupts.  This field is not being set
+  at the moment but will be easy to update once the above patch is
+  accepted.
+
+I have updated all architectures, but have only been able to test this
+patch on ix86 and IA64.  Could the other arch maintainers try this
+patch, it is almost guaranteed to contain some Assembler errors.  If
+your arch supports SMP, please try both UP and SMP.
+
+I want to know if the patch works or not on each arch so I can send the
+patch to Linus.  So I would appreciate feedback on tests, whether
+successful or not.  m68k and super-h have already replied, nobody else
+has confirmed one way or the other.
+
+All architectures except s390 and sparc64 use the same definitions, see
+include/linux/irq_cpustat.h.  For all but s390, sparc64 and m68k,
+please check the Assembler changes, the common code should be fine.
+
+S390    No irq_stat structure, the equivalent fields are stored in
+        S390_lowcore.  That moved cpu_data, ipl_device and the SMP info
+        area up by 16 bytes.  There was no need for local_bh_count and
+        local_irq_count to be atomic.  Please check the changes to
+        __LC_ in lowcore.h.  Also the use of lowcore instead of
+        irq_stat[NR_CPUS] means that asm-s390/hardirq.h is quite
+        different from the other archs, it has its own unique
+        definitions for all the wrapper macros.
+
+sparc64 For UP, it uses the common code, local_irq_count is an int in
+        irq_stat.  For SMP, local_irq_count is a brlock in cpu_data.
+        asm-sparc64/hardirq.h defines a special SMP mapping for
+        local_irq_count.
+
+m68k    The change to arch/m68k/atari/ataints.c is a complete guess.
+        There were no examples of how to reference SYMBOL+8 from asm in
+        atari.
+
+Files patched:
+
+arch/alpha/kernel/alpha_ksyms.c
+arch/alpha/kernel/entry.S
+arch/alpha/kernel/irq_alpha.c
+arch/alpha/kernel/irq_smp.c
+arch/alpha/kernel/smp.c
+arch/arm/kernel/armksyms.c
+arch/arm/kernel/entry-common.S
+arch/arm/kernel/irq.c
+arch/i386/kernel/entry.S
+arch/i386/kernel/i386_ksyms.c
+arch/i386/kernel/io_apic.c
+arch/i386/kernel/irq.c
+arch/i386/kernel/traps.c
+arch/ia64/kernel/entry.S
+arch/ia64/kernel/ia64_ksyms.c
+arch/ia64/kernel/irq.c
+arch/m68k/atari/ataints.c
+arch/m68k/kernel/entry.S
+arch/m68k/kernel/ints.c
+arch/m68k/kernel/m68k_ksyms.c
+arch/mips/baget/irq.c
+arch/mips/dec/irq.c
+arch/mips/kernel/entry.S
+arch/mips/kernel/irq.c
+arch/mips/kernel/mips_ksyms.c
+arch/mips/kernel/scall_o32.S
+arch/mips/orion/irq.c
+arch/mips/sgi/kernel/indy_int.c
+arch/mips64/kernel/entry.S
+arch/mips64/kernel/scall_64.S
+arch/mips64/kernel/scall_o32.S
+arch/mips64/sgi-ip22/ip22-int.c
+arch/mips64/sgi-ip27/ip27-irq.c
+arch/ppc/kernel/entry.S
+arch/ppc/kernel/irq.c
+arch/ppc/kernel/local_irq.h
+arch/ppc/kernel/ppc_ksyms.c
+arch/s390/kernel/entry.S
+arch/s390/kernel/irq.c
+arch/s390/kernel/process.c
+arch/s390/kernel/s390io.c
+arch/s390/mm/fault.c
+arch/sh/kernel/entry.S
+arch/sh/kernel/irq.c
+arch/sparc/kernel/irq.c
+arch/sparc/kernel/rtrap.S
+arch/sparc/kernel/sparc_ksyms.c
+arch/sparc64/kernel/irq.c
+arch/sparc64/kernel/rtrap.S
+arch/sparc64/kernel/smp.c
+arch/sparc64/kernel/sparc64_ksyms.c
+include/asm-alpha/hardirq.h
+include/asm-alpha/smp.h
+include/asm-alpha/softirq.h
+include/asm-arm/hardirq.h
+include/asm-i386/hardirq.h
+include/asm-ia64/hardirq.h
+include/asm-m68k/hardirq.h
+include/asm-m68k/softirq.h
+include/asm-m68k/system.h
+include/asm-mips/hardirq.h
+include/asm-mips64/hardirq.h
+include/asm-mips64/processor.h
+include/asm-mips64/smp.h
+include/asm-ppc/hardirq.h
+include/asm-ppc/softirq.h
+include/asm-s390/hardirq.h
+include/asm-s390/irq.h
+include/asm-s390/lowcore.h
+include/asm-s390/softirq.h
+include/asm-sh/hardirq.h
+include/asm-sh/softirq.h
+include/asm-sparc/hardirq.h
+include/asm-sparc/irq.h
+include/asm-sparc/softirq.h
+include/asm-sparc64/hardirq.h
+include/asm-sparc64/smp.h
+include/asm-sparc64/softirq.h
+include/linux/interrupt.h
+include/linux/irq_cpustat.h
+kernel/ksyms.c
+kernel/sched.c
+kernel/softirq.c
+net/netsyms.c
+
+
+-
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.rutgers.edu
+Please read the FAQ at http://www.tux.org/lkml/
+
+----- End forwarded message -----
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Revolutions do not require corporate support.
