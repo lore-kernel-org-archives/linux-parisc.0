@@ -1,31 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA29681
-	for <parisc-linux@puffin.external.hp.com>; Mon, 27 Nov 2000 13:26:22 -0700
-Received: from esiee.fr (pc5158a.esiee.fr [147.215.50.165])
-	by mail.esiee.fr (Postfix) with ESMTP id 28F77D15A4
-	for <parisc-linux@thepuffingroup.com>; Mon, 27 Nov 2000 21:28:38 +0100 (CET)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA31900
+	for <parisc-linux@puffin.external.hp.com>; Mon, 27 Nov 2000 16:12:29 -0700
 Sender: marteaut@esiee.fr
-Message-ID: <3A22C48D.F5F85405@esiee.fr>
-Date: Mon, 27 Nov 2000 21:31:09 +0100
+Message-ID: <3A22EB84.55C1B979@esiee.fr>
+Date: Tue, 28 Nov 2000 00:17:24 +0100
 From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-To: Puffin Group <parisc-linux@thepuffingroup.com>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+References: <200011271757.JAA25357@milano.cup.hp.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Include trouble
+Subject: [parisc-linux] Leds
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi folks,
+Hi all,
 
-	Just to know if it is a local problem. We have this warning when we
-cross compile the kernel:
+	We tried to implement the led power of 712 hp boxes. We call leds_init
+in main.c in init directory. Even though it is working, we are not sure
+where to put the source that must be completed for others models.
 
-/linux/cvs/linux/include/linux/string.h:61: warning: conflicting types
-for built-in function `memset'
-/linux/cvs/linux/include/linux/string.h:64: warning: conflicting types
-for built-in function `memcpy'
-/linux/cvs/linux/include/linux/string.h:73: warning: conflicting types
-for built-in function `memcmp'
+We could make a LEDS directory in drivers
+	 put the file in the kernel directory
 
-Can we have your point of view?
+We also put the source for the initialisation of keyboard leds in
+lasi_ps2_reset but we admit that no led is on. Is it true?
+How can we know?
 
-Bye, ESIEE Team
+THX, ESIEE Team
