@@ -1,16 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7BB71484B
-	for <parisc-linux@parisc-linux.org>; Sun,  2 Feb 2003 15:02:20 -0700 (MST)
-Message-Id: <200302022202.h12M2InV026338@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Compiler switches
-To: willy@debian.org (Matthew Wilcox)
-Date: Sun, 2 Feb 2003 17:02:18 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, parisc-linux@parisc-linux.org
-In-Reply-To: <20030202210334.H21040@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Feb 2, 2003 09:03:34 pm
+Received: from 2p.hu (fehercapa.kektintahal.pirospolip.hu [195.70.35.189])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EE8C484B
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Feb 2003 18:40:17 -0700 (MST)
+Received: from localhost (localhost [127.0.0.1])
+	by 2p.hu (Postfix) with ESMTP id 4731A97384
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 02:45:33 +0100 (CET)
+Received: from 2p.hu ([127.0.0.1])
+ by localhost (fehercapa [127.0.0.1:10024]) (amavisd-new) with ESMTP
+ id 31351-05 for <parisc-linux@lists.parisc-linux.org>;
+ Mon,  3 Feb 2003 02:45:32 +0100 (CET)
+Received: from fehercapa (fehercapa [195.70.35.189])
+	by 2p.hu (Postfix) with ESMTP id 05192972B3
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 02:45:32 +0100 (CET)
+Date: Mon, 3 Feb 2003 02:45:32 +0100 (CET)
+From: Zoltan HERPAI <wigyori@2p.hu>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.50.0302030230530.31341-100000@fehercapa.kektintahal.pirospolip.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 712/60 won't boot, strange arp addresses
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,55 +30,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I think they definitely should be implied by configuring for hppa-linux.
-> I don't see any enthusiasm for allowing use of additional space registers
-> for special purposes.
+hi all,
 
-Ok, I will do some testing with fast indirect and no space registers.
+sorry if someone saw this email already on debian/hppa list, but i didn't
+get any usable information there, and still stuck with the box.
+additions are that i tried the AUI port too (after acquiring a transceiver
+:) ) with the same results described lower, and tomorrow i'll get a scsi
+cdrom to install a debian on it, just to see if the ethernet ports work at
+all now.
+thanks in advance if anybody has any idea.
 
-> hmm.. part of the problem is the ld -r steps.  The current 2.5 build
-> process does things like:
+-w-
 
-ld -r is generally bad news on the PA.  The compiler selects call
-types based on the distance from the call to the beginning of the
-current translation unit, or function if -ffunction-sections is being
-used.  Relinking without using -ffunction-sections will change the
-distance to the beginning of the code section for all calls.  That's
-where the linker will insert a long call stub if necessary.  If linking
-with ld -r creates an object with a text section larger than 240k, then
-there are likely to be calls which can't reach a long branch stub for
-calls external to the object.
+---------- Original message ----------
+Date: Tue, 28 Jan 2003 03:39:09 +0100 (CET)
+From: Zoltan HERPAI <wigyori@2p.hu>
+To: debian-hppa@lists.debian.org
+Subject: 712/60 won't boot, strange arp addresses
 
-I guess if the linker could create stubs when doing ld -r then this
-problem could be avoided.  However, I think stubs are created only
-when doing a final link.
+hi,
 
-Using -ffunction-sections may have some drawbacks.  Normally, related
-functions are placed in the same object.  The linker does some grouping
-of sections but I doubt it is optimal.  So, you might end up needing
-stubs in some cases where you would want a simple {bl|b,l}.  You wouldn't
-want this to happen when you have a tightly coupled pair of sibling
-calls.
+i recently acquired a 712/60 workstation, trying to boot it from lan.
+tcpdump looks like this (10.1.1.254 is the bootp server, 10.1.1.253 would
+be the IP of the hp box):
 
-> Now, which .text is limited to 240k?  loop.o, drivers/block/built-in.o,
-> drivers/built-in.o or vmlinux?
+03:29:20.253733 0.0.0.0.68 > 255.255.255.255.67:  xid:0xc1f968d1 ether
+8:0:9:91:ed:a0 [|bootp]
+03:29:20.259366 10.1.1.254.67 > 10.1.1.253.68:  xid:0xc1f968d1
+Y:10.1.1.253 S:10.1.1.254 ether 8:0:9:91:ed:a0 sname "ironcurtai"[|bootp]
+(DF)
+03:29:22.253780 0.0.0.0.68 > 255.255.255.255.67:  xid:0xc1f968d1 secs:2
+ether 8:0:9:91:ed:a0 [|bootp]
+03:29:22.258825 10.1.1.254.67 > 10.1.1.253.68:  xid:0xc1f968d1 secs:2
+Y:10.1.1.253 S:10.1.1.254 ether 8:0:9:91:ed:a0 sname "ironcurtai"[|bootp]
+(DF)
+03:29:26.253525 0.0.0.0.68 > 255.255.255.255.67:  xid:0xc1f968d1 secs:6
+ether 8:0:9:91:ed:a0 [|bootp]
+03:29:26.258648 10.1.1.254.67 > 10.1.1.253.68:  xid:0xc1f968d1 secs:6
+Y:10.1.1.253 S:10.1.1.254 ether 8:0:9:91:ed:a0 sname "ironcurtai"[|bootp]
+(DF)
 
-My understanding is that it's the size of any text sections involved
-in a final link.  The linker intersperses stub groups between the text
-sections that are used in any final link.  Thus, the final text section
-for vmlinux can be much larger than 240k and stubs will be provided
-for any branches exceeding 240k.  Thus, you shouldn't need -ffunction-sections
-when compiling objects that will be prelinked using ld -r if the resultant
-size of the text sections after prelinking is smaller than 240k.
+after this, some strange arp lookups appear in the tcpdump output, like
+this:
+03:28:48.961476 arp who-has 10.1.1.253 (0:0:0:0:0:70) tell 10.1.1.254
+03:28:49.961465 arp who-has 10.1.1.253 (0:0:0:0:0:70) tell 10.1.1.254
 
-> > When the total code bytes exceeds the above limit (PA 1.X), gcc switches
-> > to long indirect calls.  These are horribly inefficient.
-> 
-> Horribly inefficient in terms of being prefetchable?
+the arp address sometimes change, to 0:0:0:0:0:66, or :64. don't know what
+this is, bootpd replies to the requests, but they never reach the 712. i
+use the rj45 port, which worked when i bought it from a company. any
+ideas? i can send the bootptab config on request (hoping the reply will
+get to the recipient ;) )
 
-No, in terms of the number of instructions involved.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+tia,
+-w-
