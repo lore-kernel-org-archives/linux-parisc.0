@@ -1,48 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C22FE4848
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 02:42:50 -0600 (MDT)
-Received: from mail.lokmail.net (localhost [127.0.0.1])
-	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id EAA14939
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 3 Oct 2001 04:42:35 -0400
-Message-Id: <200110030842.EAA14939@mail.lokmail.net>
-From: Jurij Smakov <jurij@lokmail.net>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Mount segfaults and stuff 
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 571D14869
+	for <parisc-linux@parisc-linux.org>; Wed,  3 Oct 2001 03:02:54 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3BBAD2E4.3E802263@esiee.fr>
+Date: Wed, 03 Oct 2001 10:57:08 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Wed, 03 Oct 2001 04:42:35 -0400
-Sender: jurij@mail.lokmail.net
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Bjorn Helgaas <bjorn_helgaas@hp.com>,
+	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Second Draft of the help for the kernel options
+References: <200110021732.LAA07808@puffin.external.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> *sigh*. Lots of little stuff like floppy driver and hpux binary support.
+Hi all,
+
+	The Bjorn's idea is quite practical but the problem is we need to do a
+complete list of command. With this list, users will know what commands
+to do to get the cpu type...
+
+	For the B132L, I need to do in cr. And for 712, "in" do not give you
+the model of the cpu :(
+
+Perhaps, we could a more general text saying:   1- You have to enter the
+information menu by "in" (it seems to be general to all boxes)
+						2- Here you need to find the command to get the revisions of your
+chip/device. This must look like PAXXX0. For example this command is cr
+for B132 and io for newer machines.
+
+btw, we could add the complete list of the commands in the HOWTO.
+
+This is a proposition. Tell me what you think of it. Thomas.
+ESIEE Team
+
+> >   Main Menu: Enter command or menu > in fru
 > 
-> The TODO list is stale intentionally.
-> We should be using http://bugs.parisc-linux.org.
-> 
-> grant
-
-Hi!
-
-The problem is that this bug list is also rather outdated. There are
-two more or less recent bugs, others are more than 2 months old. Most
-kernel bugs are filed against 2.4.0 kernel. I guess, a lot of things
-changed since then. For example, mount bug, that I've mentioned before
-just disappeared, once I recompiled it from source with latest CVS gcc.
-Also, bug #135 (kernel panic on 712 doing two simultaneous compiles) - 
-yesterday I've built the kernel with "make -j 2" without any problems
-on a 712/80. Is it enough to close this bug? IMHO, the right strategy
-in this situation would be to try and reproduce the bugs with latest
-toolchain and drop the bugs, which do not have a recipe to reproduce them.
-
-Anyway, what should I do with mount? Do I have to contact the package
-maintainer? I can build the debs myself, but those will be unofficial.
-
-Also, last night I had some weird problems with linux/net/core/netfilter.c
-Sometimes its compilation fails, but I could not pinpoint the problem
-so far. I'll play with it, but it would be nice to know, if anyone
-else has/had any (negative) experiences with this file.
-
-Best regards,
-
-Jurij.
+> For newer machines, "in io" at "Main Menu" prompt will list all IO devices.
