@@ -1,14 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] more cpup.c results
-Date: Tue, 4 Jan 2005 23:16:13 -0700
-Message-ID: <20050105061613.GA12455@colo.lackof.org>
-References: <20050105055412.68E06495698@palinux.hppa>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] more cpup.c results
+Date: Wed, 5 Jan 2005 09:20:45 +0100
+Message-ID: <41C96BC400002ED6@mail-1-bnl.tiscali.it>
+References: <20050105061613.GA12455@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="ISO-8859-15"
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050105055412.68E06495698@palinux.hppa>
+In-Reply-To: <20050105061613.GA12455@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,57 +20,87 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jan 04, 2005 at 10:54:12PM -0700, Grant Grundler wrote:
-> 	add prefetching to copy_user_page_asm
-> 	matches asm now checked into build-tools/cpup.c
+Hello Grant,
 
-I committed a new version of copy_user_page_asm based on
-the results of build-tools/cpup.c.
+> -- Original Message --
+> Date: Tue, 4 Jan 2005 23:16:13 -0700
+> From: Grant Grundler <grundler@parisc-linux.org>
+> To: parisc-linux@lists.parisc-linux.org
+> Subject: [parisc-linux] more cpup.c results
+> 
+> 
+> On Tue, Jan 04, 2005 at 10:54:12PM -0700, Grant Grundler wrote:
+> > 	add prefetching to copy_user_page_asm
+> > 	matches asm now checked into build-tools/cpup.c
+> 
+[...]
+> Which tells me the L1 cache is accessible in 1 cycle on PA8700.
+> And if other CPU implementations need 2 cycles, it wouldn't
+> hurt to commit the 6regs version.
+> 
+> Can folks try this on PA8000 and PA82000 for me?
+> Check /proc/cpuinfo if you aren't sure what you have.
+> 
+Unfortunately only pa8600 (n4k and b2k) ...
 
-Here's the output from the last set of cpup2 (4regs) run:
-grundler <577>while :; do ./cpup2; done
-          First Loop : min   9247  avg  12037  median  11250
-         Later Loops : min   5568  avg   7006  median   6906
-          First Loop : min   9180  avg  12051  median  11244
-         Later Loops : min   5557  avg   7003  median   6904
-          First Loop : min   9204  avg  12027  median  11239
-         Later Loops : min   5556  avg   7002  median   6901
-          First Loop : min   9197  avg  12032  median  11237
-         Later Loops : min   5546  avg   6996  median   6901
-          First Loop : min   9300  avg  12032  median  11225
-         Later Loops : min   5584  avg   7001  median   6901
+> Should be a simple cut/paste of 4 lines to a shell prompt:
+> 
+> gcc -O2 -o cpup0 cpup.c
+> gcc -O2 -march=3D2.0 -DLP64 -o cpup2 cpup.c
+> gcc -O2 -march=3D2.0 -DLP64 -DUSE6REGS -o cpup3 cpup.c
+> for i in 1 2 3 4 5; do echo TEST $i; ./cpup0; ./cpup2; ./cpup3; done
+> 
+anyway here are some results from a b2k (runing obviously a 2.6.10-pa4 64=
+bits):
+# for i in 1 2 3 4 5; do echo TEST $i; ./cpup0; ./cpup2; ./cpup3; done
+TEST 1
+          First Loop : min  14462  avg  17576  median  15409
+         Later Loops : min   6628  avg   8597  median   7953
+          First Loop : min  10313  avg  13497  median  11727
+         Later Loops : min   3581  avg   4843  median   4568
+          First Loop : min  10714  avg  13703  median  11897
+         Later Loops : min   3630  avg   5033  median   4778
+TEST 2
+          First Loop : min  14445  avg  17452  median  15428
+         Later Loops : min   6616  avg   8605  median   7945
+          First Loop : min  10358  avg  13510  median  11755
+         Later Loops : min   3597  avg   4835  median   4567
+          First Loop : min  10669  avg  13708  median  11885
+         Later Loops : min   3618  avg   5034  median   4780
+TEST 3
+          First Loop : min  14459  avg  17437  median  15432
+         Later Loops : min   6621  avg   8592  median   7943
+          First Loop : min  10345  avg  13541  median  11732
+         Later Loops : min   3584  avg   4853  median   4566
+          First Loop : min  10658  avg  13695  median  11879
+         Later Loops : min   3637  avg   5032  median   4775
+TEST 4
+          First Loop : min  14503  avg  17455  median  15429
+         Later Loops : min   6605  avg   8595  median   7945
+          First Loop : min  10265  avg  13515  median  11740
+         Later Loops : min   3566  avg   4835  median   4562
+          First Loop : min  10681  avg  13720  median  11886
+         Later Loops : min   3651  avg   5035  median   4778
+TEST 5
+          First Loop : min  14472  avg  17460  median  15425
+         Later Loops : min   6627  avg   8590  median   7938
+          First Loop : min  10376  avg  13555  median  11742
+         Later Loops : min   3597  avg   4843  median   4570
+          First Loop : min  10684  avg  13689  median  11891
+         Later Loops : min   3663  avg   5027  median   4775
 
-It's essentially indistiguishable from cpup3 (6 regs) routine:
-grundler <579>while :; do ./cpup3; done
-          First Loop : min   9188  avg  11992  median  11223
-         Later Loops : min   5493  avg   7002  median   6874
-          First Loop : min   9213  avg  11988  median  11224
-         Later Loops : min   5487  avg   7004  median   6873
-          First Loop : min   9252  avg  11991  median  11204
-         Later Loops : min   5487  avg   7004  median   6874
-          First Loop : min   9228  avg  12021  median  11219
-         Later Loops : min   5550  avg   7003  median   6879
-          First Loop : min   9200  avg  11994  median  11215
-         Later Loops : min   5514  avg   6997  median   6874
+hth,
+      Joel
 
-Which tells me the L1 cache is accessible in 1 cycle on PA8700.
-And if other CPU implementations need 2 cycles, it wouldn't
-hurt to commit the 6regs version.
+-------------------------------------------------------------------------=
+--
+Tiscali vous offre 3 mois d'ADSL et 3 mois de DVD gratuits...profitez-en.=
+..
+http://reg.tiscali.be/adsl/default.asp?lg=3DFR
 
-Can folks try this on PA8000 and PA82000 for me?
-Check /proc/cpuinfo if you aren't sure what you have.
 
-Should be a simple cut/paste of 4 lines to a shell prompt:
 
-gcc -O2 -o cpup0 cpup.c
-gcc -O2 -march=2.0 -DLP64 -o cpup2 cpup.c
-gcc -O2 -march=2.0 -DLP64 -DUSE6REGS -o cpup3 cpup.c
-for i in 1 2 3 4 5; do echo TEST $i; ./cpup0; ./cpup2; ./cpup3; done
 
-Please post the output to the mailing list along with /proc/cpuinfo.
-
-thanks,
-grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
