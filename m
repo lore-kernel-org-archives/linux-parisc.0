@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 285214894
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Aug 2003 15:09:48 -0600 (MDT)
-Date: Mon, 18 Aug 2003 17:09:29 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: libc-alpha@sources.redhat.com
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030818210929.GJ6190@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [PATCH] hppa libgcc-compat
+Received: from vip.sina.com (unknown [211.147.255.241])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1CD4489D
+	for <parisc-linux@parisc-linux.org>; Mon, 18 Aug 2003 19:49:12 -0600 (MDT)
+From: "anlinwei" <akubpt@vip.sina.com>
+To: parisc-linux@parisc-linux.org
+Content-Type: text/plain;charset="GB2312"
+Reply-To: anlinwei@vip.sina.com
+Date: Tue, 19 Aug 2003 09:51:39 +0800
+Message-Id: <20030819014912.D1CD4489D@dsl2.external.hp.com>
+Subject: [parisc-linux] =?GB2312?B?09C52LrP1/fKwtLLo6E=?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,111 +20,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-libc-alpha,
+您也需要朋友。
 
-Seeing Lu's post about libgcc-compat reminded me that I should submit
-our version.
+林威想在您的生命中占有比重时间和您交个朋友，别拒绝！ 
 
-We have been using this patch to fix the leaked __clz_tab symbol from
-libgcc. Attached is the required additions to our Makefile, Dist, and
-Versions.
+林威，一个对生活和工作充满激情与兴奋的年轻人，
+一个拥有满脑子的创新思维，一秒钟可以变出一百个主意的男人，
+一个对于任何的事物有着独特的视角和见解的广告人！
+当您和他在一起的时候，您会由衷的发现生活总是充满着惊喜，
+您更会由衷感觉到一个发自内心的快乐与自信以及饱含生活的激情与兴奋是何等的富有感染力，
+您会在潜移默化中让自己拥有象阳光一样灿烂的真诚笑容。
+因为您变了！	
 
-This patch was produced by Randolph Chung, many thanks!
+您和您所服务的公司总是以消费者和生产者的形式出现，不是购买就是在贩卖，其间就是一个需求。
+把您购买的需求和贩卖的需求让我们一起探讨，沟通会得出更好的解决和执行方案。
+请关注您身边的需求信息，这些都是您身边的财富，不要轻言放弃，您会得到实现价值的提成！
+请相信林威，相信林威周围的智囊团队，因为林威拥有很多象您这样的业界朋友，通过整合资源让我们资源共享！
 
-Cheers,
-Carlos.
----
- sysdeps/hppa/Dist            |    1
- sysdeps/hppa/Makefile        |   11 +++++
- sysdeps/hppa/Versions        |    5 ++
- sysdeps/hppa/libgcc-compat.c |   43 +++++++++++++++++++++++
- 4 files changed, 60 insertions(+)
----
-
-2003-02-25  Randolph Chung  <tausq@debian.org>
-
-	* sysdeps/hppa/Makefile: Include compat code in build.
-	* sysdeps/hppa/libgcc-compat.c: New file.
-	* sysdeps/hppa/Dist: Add libgcc-compat.c
-	* sysdeps/hppa/Versions [GLIBC_2.2]: Add __clz_tab.
-
---- glibc-2.3.1/sysdeps/hppa/Makefile.orig	2003-02-25 22:21:14.000000000 -0800
-+++ glibc-2.3.1/sysdeps/hppa/Makefile	2003-02-25 22:22:01.000000000 -0800
-@@ -31,3 +31,14 @@
- dl-routines += dl-symaddr dl-fptr
- rtld-routines += dl-symaddr dl-fptr
- endif
-+
-+ifeq ($(subdir),csu)
-+ifeq (yes,$(build-shared))
-+# Compatibility
-+ifeq (yes,$(have-protected))
-+CPPFLAGS-libgcc-compat.c = -DHAVE_DOT_HIDDEN
-+endif
-+sysdep_routines += libgcc-compat
-+shared-only-routines += libgcc-compat
-+endif
-+endif
---- glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
-+++ glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
-@@ -0,0 +1,43 @@
-+/* pre-.hidden libgcc compatibility
-+   Copyright (C) 2002 Free Software Foundation, Inc.
-+   This file is part of the GNU C Library.
-+   Contributed by Randolph Chung
-+
-+   The GNU C Library is free software; you can redistribute it and/or
-+   modify it under the terms of the GNU Lesser General Public
-+   License as published by the Free Software Foundation; either
-+   version 2.1 of the License, or (at your option) any later version.
-+
-+   The GNU C Library is distributed in the hope that it will be useful,
-+   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+   Lesser General Public License for more details.
-+
-+   You should have received a copy of the GNU Lesser General Public
-+   License along with the GNU C Library; if not, write to the Free
-+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-+   02111-1307 USA.  */
-+
-+
-+#include <stdint.h>
-+#include <shlib-compat.h>
-+
-+#if SHLIB_COMPAT(libc, GLIBC_2_0, GLIBC_2_2_6)
-+
-+symbol_version (__clz_tab_internal, __clz_tab, GLIBC_2.2);
-+
-+typedef unsigned int UQItype  __attribute__ ((mode (QI)));
-+
-+const UQItype __clz_tab_internal[] =
-+{
-+  0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-+  6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-+  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-+  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
-+};
-+
-+#endif
---- glibc-2.3.1/sysdeps/hppa/Dist.orig	2003-02-26 09:02:52.000000000 -0800
-+++ glibc-2.3.1/sysdeps/hppa/Dist	2003-02-26 09:04:03.000000000 -0800
-@@ -1,2 +1,3 @@
-+libgcc-compat.c
- dl-symaddr.c
- dl-fptr.c
---- glibc-2.3.1/sysdeps/hppa/Versions.orig	2002-02-01 13:16:41.000000000 -0800
-+++ glibc-2.3.1/sysdeps/hppa/Versions	2003-02-27 13:23:03.000000000 -0800
-@@ -5,3 +5,8 @@
-     _dl_function_address;
-   }
- }
-+libc {
-+  GLIBC_2.2 {
-+    __clz_tab;
-+  }
-+}
+广州赤驹文化传播公司，一个高速成长着的广告公关公司，
+一群朝气蓬勃思想没有羁绊的年轻人构成。主要业务： 	
+1、	平面设计：总能象初恋一样在您心里蚀刻品牌印迹。
+2、	软文撰写：妙笔生花，不止于说服而是深深的打动。
+3、	媒体投放：想哪一个媒体？IT媒体更有优势！
+4、	终端物料制作：服务和性价比总能物超所值！
+电话：（020）85580657   85580234转19或20
+手机：13710685240	
+Email: anlinwei@vip.sina.com          http://gzcj.blogone.net/
+地址：广州市中山大道西加拿大花园卡格里阁9E
