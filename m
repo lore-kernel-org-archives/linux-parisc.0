@@ -1,31 +1,63 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5790748A9
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 22:19:06 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15nuXn-0007md-00; Mon, 01 Oct 2001 05:19:03 +0100
-Date: Mon, 1 Oct 2001 05:19:03 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Nathan Neulinger <nneul@umr.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
-Message-ID: <20011001051903.B28828@parcelfarce.linux.theplanet.co.uk>
-References: <3BB4B4DE.8080608@umr.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3BB4B4DE.8080608@umr.edu>; from nneul@umr.edu on Fri, Sep 28, 2001 at 12:35:26PM -0500
-Sender: <willy@www.linux.org.uk>
-List-ID: <linux-parisc.vger.kernel.org>
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F4A24841
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 14:36:04 -0600 (MDT)
+Received: from www2.scram.de (www2.scram.de [195.226.127.84])
+	by mail.scram.de (8.11.0/8.11.0) with ESMTP id f8QKa2i17009
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 22:36:02 +0200 (CEST)
+Date: Wed, 26 Sep 2001 22:34:31 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: Jurij Smakov <jurij@lokmail.net>
+Subject: Re: [parisc-linux] The 720/50 saga continues... 
+In-Reply-To: <200109261721.NAA01262@mail.lokmail.net>
+Message-ID: <Pine.NEB.4.33.0109262154470.16939-100000@www2.scram.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+ReSent-Message-ID: <Pine.NEB.4.33.0109262235580.16939@www2.scram.de>
 
-On Fri, Sep 28, 2001 at 12:35:26PM -0500, Nathan Neulinger wrote:
-> My main question though - what's the status of hpux binary support? The 
-> FAQ seems to indicate that some parisc binaries are already functional.
-> 
-> What is necessary to be done on the machine before I can run an HP 
-> executable?
+Hi Jurij,
 
-It might work, but it's probably bitrotten since nobody's tried it in
-over a year.
+> down_read(&mm->mmap_sem);
+> vma = find_vma_prev(mm, address, &prev_vma);
+>
 
--- 
-Revolutions do not require corporate support.
+I was roughly thinking about something like this (completely untested!!!):
+
+case 18:
+if (in_interrupt() || !mm)
+        goto pagefault; /* shouldn't happen */
+
+/* FIXME: do propper locking here */
+
+pgd = pgd_offset(mm, address);        /* page directory */
+if (pgd_none(pgd) || pgd_bad(pgd))
+        goto pagefault; /* expandable stack etc */
+
+pmd = pmd_offset(pgd, address);       /* middle page directory */
+if (pmd_none(pmd) || pmd_bad((pmd))
+        goto pagefault; /* expandable stack etc */
+
+pte = pte_offset(pmd, address);       /* page table entry */
+if (pte_none(pte))
+        goto pagefault; /* expandable stack etc */
+
+if (!pte_present(pte))  /* is this test sufficient? */
+        goto pagefault; /* page not loaded */
+
+acc_type = parisc_acctyp(code,regs->iir);
+
+if ((acc_type & VM_WRITE) && (!(pte_write(pte))))
+	goto pagefault; /* Write protected access */
+
+if ((acc_type & VM_READ) && (!(pte_read(pte))))
+	goto pagefault; /* Read protected access */
+
+if ((acc_type & VM_EXEC) && (!(pte_exec(pte))))
+	goto pagefault; /* Exec protected access */
+
+/* fall through to case 28 */
+
+Does this make sense?
+
+Cheers,
+Jochen
