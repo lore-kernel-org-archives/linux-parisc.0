@@ -1,19 +1,23 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 433F54875
+Return-Path: <jsm@udlkern.fc.hp.com>
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 851504877
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 12 Apr 2004 15:10:09 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
+	Mon, 12 Apr 2004 17:32:00 -0600 (MDT)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel6.hp.com (Postfix) with ESMTP id 0E2C51C028FB
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 12 Apr 2004 19:32:00 -0400 (EDT)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.11.1/8.9.3 SMKit7.01) id i3CNVxI03436
+	for parisc-linux@lists.parisc-linux.org;
+	Mon, 12 Apr 2004 17:31:59 -0600 (MDT)
+Date: Mon, 12 Apr 2004 17:31:59 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200404122331.i3CNVxI03436@udlkern.fc.hp.com>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Voodoo 2
-Date: Mon, 12 Apr 2004 23:09:59 +0200
-References: <Pine.LNX.4.58.0404112251130.26022@sal.ucc.ie>
-In-Reply-To: <Pine.LNX.4.58.0404112251130.26022@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200404122309.59140.deller@gmx.de>
-Cc: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] Proposal for altering our Page Table layouts
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,45 +27,34 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Monday 12 April 2004 01:12, M. Grabert wrote:
-> I'm about to purchase a Voodoo2 PCI graphics card since I saw some
-> reports on the p-l list that it is working on Linux/PA-RISC.
-> 
-> I want to ask a couple of questions before I'm going to buy the graphics card:
-> 
-> - Helge prepared a patch to make the Voodoo working, and was incorporated
->   into the 2.4.19-pa18 kernel. It seems that it's still in 2.4.25-pa1.
->   But is the patch integrated into the mainstream 2.4?
->   I just took a brief look, and it appears so, is this correct?
+> In contrast a hashed page table layout would be extremely dense, and fit
+> better in the cache. If you were to have a collision the likelyhood
+> that what you want is in the cache can actually be higher.
+>
+> ...
+>
+> I've been doing some literature searches on the issue, mainly IEEE and
+> ACM over the last 10-20 years. Most of the research was done in the mid
+> 90's and interestingly enough a lot of it has to do with PA's.
+>
+> Read the paper at the above link and tell me what you think of the
+> 16-byte PTE presented, and how the allocations happen on a single entry
+> by entry basis. Another author suggests that the HAT and the PDIR could
+> be merged (you'll have to read the paper to find out what I mean). I'm
+> not sure what to do about the aliasing restrictions...
 
-No idea yet. I will check.
+Let's not forget that the machine independent VM code assumes a 2 or 3
+level page table, walks those page tables, allocates page tables, etc.
+So, let's forget about theory for a minute, and start talking
+realistically.  Have you considered how you would abstract an inverted
+page table design so that it would fit within the machine independent VM
+design for page table support?  I haven't given it more than about 5
+minutes of thought, but I don't see a way of doing it (Note that I am
+not for this idea at all).
 
-> - What about 2.6? I don't think that it's been forwarded to 2.6 yet?
+If you can't do it (i.e. hide it completely within the parisc arch code) then
+you need to be talking to Linus and convince him first, unless you are
+advocating maintaining a large patch against machine independent code.
 
-It's in 2.6. I just tested my Vodoo2 in my c3k and it works.
-Linux version 2.6.5-pa6 (root@p100) (gcc version 3.0.2 20010829 (prerelease)) #29 Mon Apr 12 22:46:03 CEST 2004
-The 32-bit Kernel has started...
-..
-sstfb: Voodoo2 (revision 2) with ICS ICS5342 dac
-sstfb: framebuffer at 0xfb400000, mapped to 0xfb400000, size 2MB
-fb0: Voodoo2 frame buffer device at 0xfb400000
-..
-
-I can run the driver, graphics & Tux penguin comes up.
-Running "fbset -a 1024x768-75" even gives me a nice big screen (although
-I still don't like this "stty cols 64 rows 48" stuff yet...)
-
-> - there is also the XFree86 Voodoo 1/2 driver from Alan Cox
-> (http://lists.parisc-linux.org/pipermail/parisc-linux/2004-February/022382.html)
-> 
->   I suppose this driver also doesn't require the Voodoo2 card to be initialized,
->   and I think the advanage over using sstfb would be that it supports DGA
->   and some 2D acceleration.
-
-At least it should (if it works :-))
-
->   Has anybody tested it (I couldn't even compile it)?
-
-Neither me (I was lacking the XFree86 sources).
-
-Helge
+John Marvin
+jsm@fc.hp.com
