@@ -1,50 +1,60 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA20389
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Dec 1999 17:44:19 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
-	by palrel1.hp.com (Postfix) with ESMTP id 98420B18
-	for <parisc-linux@thepuffingroup.com>; Thu,  2 Dec 1999 16:46:15 -0800 (PST)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id QAA13676 for parisc-linux@thepuffingroup.com; Thu, 2 Dec 1999 16:47:23 -0800 (PST)
-Date: Thu, 2 Dec 1999 16:47:23 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <199912030047.QAA13676@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=X-roman8
-Subject: [parisc-linux] /usr/conf/machine header files
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA21630
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Dec 1999 20:58:51 -0700
+Sender: cjohnson@cj-solutions.com
+Message-ID: <3846E9BD.DFC8D51C@mcn.net>
+Date: Thu, 02 Dec 1999 20:50:53 -0100
+From: Carl Johnson <cjs@mcn.net>
+MIME-Version: 1.0
+To: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>,
+        "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Booting on J200
+References: <38458959.9307D971@mcn.net> <99120220503901.00296@P100>
+Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
-This started with the search for IODC return data. IODC data is
-"documented" in the header file /usr/conf/machine/cpu.h. This is
-on both 10.20 and 11.00 HP-UX.  Look for real_IODC_data. And remember
-the bit fields are allocated from "left to right" (MSB is bit 0).
+Thanks Helge:
 
+I never said I looked at the obvious first! Poor planning/thinking
+on my part. I did however about 2 secs before reading your post
+did recompile a FRESH ("VIRGIN") source and did manipulate
+the command line and get it to give me a Pengiun powered PA
+with a shell!
 
-This directory seems to be a gold mine of information about hardware.
-I happened to look into /usr/conf/machine/save_state.h and found:
- *      There are three kinds of PA-RISC computer:
- *
- *      PA-RISC 1.0 (sometimes called PA83)
- *              32-bit integer registers with 16 64-bit floating point
- *              registers.  No Series 700 is a PA 1.0 machine and only a
- *              few models of the oldest Series 600 and 800 machines are
- *              PA 1.0.
-...
+Thanks Anyhow!
 
-Anyone interested in context switching though might find this
-*very* interesting reading...Other interesting files are:
+Helge Deller wrote:
+> 
+> Am Wed, 01 Dec 1999 schrieb Carl Johnson:
+> > I have built my own kernels and modified them some, but have also
+> > used the prebuilt kernels, I have had no success figuring out
+> > what hangs the kernel but anyhow, I will tell of my testing
+> > of the 1999-10-19 and 1999-11-13. And Hopefully I will
+> > recieve some help, _TIA_
+> >
+> > --
+> > 1999-10-19: Hangs at transfering control to kernel
+> >
+> > --
+> > 1999-11-13: Hnags after:
+> >
+> > Transfering control to kernel. (At entry point 0x00010000)
+> > kernel(0x00148C80, 0x00504010, 0x00148C80, 0x00016640)
+> > Clear BSS 0x0011B048 --> 0x0013D384
+> > Boot Loader: PA/Linux, maybe PALO
+> > real_mode setup exiting
+> >
+> 
+> Hello Carl,
+> 
+> Are you shure, that the outputs doesn´t go to the first COM-Port as default (in
+> which case you would never see something more on the screen)...
+> 
+> Check /arch/parisc/boot/boot_code/ipl_c.c and search for " console=ttyS0 " ...
+> You would have to modify this (console=tty0)  ** OR **  start the machine with
+> "boot pri isl" and modify the command-line.
+> 
+> Helge Deller.
 
-   File     Example
-   -------- ----------------
-   boot.h   /* Parameters exchanged between kernel loader and the kernel    */
-   cpu.h    real_IODC_data and Module type numbers
-   eeprom.h eg MIRAGE_EEPROM_BASE_ADDR is defined here
-   eisa.h   Sversion for snakes/WAX EISA and EISA system board ids
-   frame.h  Assembly Language Offsets for Argument or Stack Pointer
-...
-
-
-Happy Hunting!
-
-grant
+-- 
+Carl Johnson
