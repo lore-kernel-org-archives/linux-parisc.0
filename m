@@ -1,28 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA26973
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 01:31:36 -0600
-Received: from seger.axis.se (seger.axis.se [192.168.2.150])
-	by roma.axis.se (8.9.3/8.9.3) with ESMTP id JAA23655
-	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 09:31:51 +0200 (MEST)
-Received: from axis.com (localhost [127.0.0.1])
-	by seger.axis.se (8.9.3/8.9.3/Debian/GNU) with ESMTP id JAA12199
-	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 09:31:51 +0200
-Message-Id: <199910050731.JAA12199@seger.axis.se>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA27395
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Oct 1999 03:38:26 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id LAA30959
+	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 11:38:54 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id LAA1093090
+	for <parisc-linux@thepuffingroup.com>; Tue, 5 Oct 1999 11:38:54 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11YR3d-000263C@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Tue, 5 Oct 1999 11:38:53 +0200 (CEST)
+Date: Tue, 5 Oct 1999 11:38:53 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 To: parisc-linux@thepuffingroup.com
+Message-ID: <19991005113853.A25252@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Oct 1999 09:31:51 +0200
-From: Lars Segerlund <lars.segerlund@axis.com>
-Subject: [parisc-linux] Status Query .
+Subject: [parisc-linux] Systems 99
 List-ID: <linux-parisc.vger.kernel.org>
 
 
- I have a 725/50 ( or something like that ) and I am really interested in doing
- some work on the hppa, perhaps not the kernel, but some driver would be ok.
+I've been requested to attend Systems 99 in Munich by HP Germany.
+Unfortunately, due to leaving GeneData soon to work for The Puffin Group,
+I don't have any holiday left to do this.  Would anyone be able to get
+to Systems 99, even for just some of the days?
 
- However I do not have HP-UX, so I want to setup the HP, as a linux workstation
- as a firts step, it seems that there is a booting kernel, but I haven't seen
- anyone boot a shell och mount a filesystem, am I of the correct oppinion to
- assume that the kernel have not yet reached this point ??
+It's October 18th to 22nd (Monday to Friday), and if it's even half as
+much fun as LinuxTag was, it's definitely worth doing.  Please email me
+if you're interested.
 
- / best regards, lars segerlund.
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
