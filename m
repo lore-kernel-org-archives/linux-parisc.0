@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0D8724829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Oct 2002 09:24:28 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel6.hp.com (Postfix) with ESMTP id E71386E6
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Oct 2002 11:24:24 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id JAA28153
-	for parisc-linux@lists.parisc-linux.org; Tue, 22 Oct 2002 09:24:24 -0600 (MDT)
-Date: Tue, 22 Oct 2002 09:24:24 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200210221524.JAA28153@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A090D4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Oct 2002 09:29:13 -0600 (MDT)
+Date: Tue, 22 Oct 2002 08:32:15 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] EWOULDBLOCK vs. EAGAIN
+Message-ID: <20021022153215.GD22052@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200210221524.JAA28153@udlkern.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] EWOULDBLOCK vs. EAGAIN
+In-Reply-To: <200210221524.JAA28153@udlkern.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,23 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I found a bug last night where a program was expecting EWOULDBLOCK, but
-we were returning EAGAIN. The kernel returns EAGAIN, which is correct.
-However, the Gnu C library says that EWOULDBLOCK should be defined as the
-same thing. We didn't do that on parisc linux. Probably because we
-borrowed our errno's from HP-UX. But that is wrong.
+> I found a bug last night where a program was expecting EWOULDBLOCK, but
+> we were returning EAGAIN. The kernel returns EAGAIN, which is correct.
+> However, the Gnu C library says that EWOULDBLOCK should be defined as the
+> same thing. We didn't do that on parisc linux. Probably because we
+> borrowed our errno's from HP-UX. But that is wrong.
 
-So, how should we fix this?  I don't think we can avoid breaking binary
-compatibility.  The problem is that the kernel returns EWOULDBLOCK in some
-cases (I've enclosed a list of files that might affect us below, file
-locking and usb being the ones that are most likely to affect us).
+jsm,
 
-I think we should change errno.h to define EWOULDBLOCK as EAGAIN. That
-will fix some programs once they are recompiled. Of course, it will
-break some others, but they will also be fixed once again once they
-are recompiled.
+this was discussed briefly before, but no one has fixed it yet ... 
+see Carlos' post on this subject:
+http://lists.parisc-linux.org/hypermail/parisc-linux/9895.html
 
-How hard would it be to grep the source of all debian packages, so we
-can find which packages should be rebuilt?
+if people think that is a good solution, we can try to do it.
 
-John
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
