@@ -1,27 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D98B2482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Apr 2001 22:37:13 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14qp8v-0006CE-00; Sat, 21 Apr 2001 05:37:09 +0100
-Date: Sat, 21 Apr 2001 05:37:09 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: "Brian S. Julin" <bri@mojo.calyx.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] modules/modutils??
-Message-ID: <20010421053709.H18464@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.BSO.4.33.0104210022200.24463-100000@mojo.calyx.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSO.4.33.0104210022200.24463-100000@mojo.calyx.net>; from bri@mojo.calyx.net on Sat, Apr 21, 2001 at 12:24:52AM -0400
-Sender: <willy@www.linux.org.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08116482A
+	for <parisc-linux@parisc-linux.org>; Sat, 21 Apr 2001 00:54:46 -0600 (MDT)
+Message-Id: <200104210648.AAA01233@puffin.external.hp.com>
+To: "Eric S. Raymond" <esr@thyrsus.com>
+Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention? 
+In-Reply-To: Your message of "Fri, 20 Apr 2001 15:47:43 EDT."
+             <20010420154743.A19618@thyrsus.com>
+Date: Sat, 21 Apr 2001 00:48:19 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Apr 21, 2001 at 12:24:52AM -0400, Brian S. Julin wrote:
+"Eric S. Raymond" wrote:
+> Here's what I have for you guys:
+
+...
+> CONFIG_DMB_TRAP: arch/parisc/kernel/sba_iommu.c
+> CONFIG_FUNC_SIZE: arch/parisc/kernel/sba_iommu.c
 > 
-> Hmm.  What would I be doing wrong to produce this error:
+> Would you please take these out of the CONFIG_ namespace?  Changing the 
+> prefix to CONFIGURE would do nicely.
 
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2001-April/028890.html
+As willy noted, both mine. I'll remove or rename them rename them so
+they aren't in the CONFIG_ name space. Probably s/CONFIG_/SBA_/ for
+those two.
 
--- 
-Revolutions do not require corporate support.
+I'm going to submit a "wishlist" bug to our debian BTS
+(bugs.parisc-linux.org) for "Data Memory Break Trap" support.
+It's a damn good Hammer! :^)
+(GDB will probably want to use this too)
+
+I once had a working "Data Memory Break Trap" handler to catch other
+parts of the kernel when they corrupted the IO Pdirs. Hooks in sba_ccio.c
+helped mark which pages would trap and define which code was allowed to
+touch the page. My implementation had issues and I never bothered to
+re-implement as suggested by our parisc CPU god, John Marvin.
+
+CONFIG_FUNC_SIZE is just a bad choice of name (asking for trouble).
+One might consider this a bug that hasn't happened yet - thanks Eric!
+
+#define CONFIG_FUNC_SIZE 4096   /* SBA configuration function reg set */
+
+
+> CONFIG_KWDB: arch/parisc/Makefile arch/parisc/config.in arch/parisc/defconfig
+>    arch/parisc/kernel/entry.S arch/parisc/kernel/traps.c arch/parisc/mm/init.
+>   c
+
+This ones actually mine too. It could be replaced with the SGI debugger
+CONFIG option if/when that ever gets supported. The hooks will have to
+be in the same place. I'm pretty sure now the HP KWBD team will never give me
+permission to publish KWDB sources (they've had almost a year now).
+I sorta almost had the damn thing working too...*sigh*.
+Willy should do whatever he thinks is right in this case.
+
+> CONFIG_PCI_LBA: arch/parisc/config.in arch/parisc/defconfig arch/parisc/kerne
+>   l/Makefile
+...
+> Looks like these need Configure.help entries.
+
+That's mine too.
+We've been lazy about documentation since the getting the code working
+has been a higher priority.  I think having them documented will be a
+prerequisite to merging upstream (either to Alan Cox or Linus).
+
+thanks,
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
