@@ -1,71 +1,69 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA03704
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 18:04:53 -0700
-Received: from BILIBONG by chatspace.com
-	with SMTP (MDaemon.v2.8.5.0.R)
-	for <parisc-linux@thepuffingroup.com>; Fri, 25 Feb 2000 16:08:54 -0800
-Reply-To: <wferguson@chatspace.com>
-From: "William Ferguson" <wferguson@chatspace.com>
-To: <parisc-linux@thepuffingroup.com>
-Date: Fri, 25 Feb 2000 16:08:53 -0800
-Message-ID: <CIEFLNKHGHGOLMKJHMOAAEIACHAA.wferguson@chatspace.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_004D_01BF7FAA.9C73B5E0"
-Subject: [parisc-linux] Quadruple postings?
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04112
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 18:34:32 -0700
+Received: from udlkern.fc.hp.com (jsm@udlkern.fc.hp.com [15.1.52.48])
+	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id RAA23208
+	for <parisc-linux@thepuffingroup.com>; Fri, 25 Feb 2000 17:35:20 -0700 (MST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.1) id RAA00437 for parisc-linux@thepuffingroup.com; Fri, 25 Feb 2000 17:35:12 -0700 (MST)
+Date: Fri, 25 Feb 2000 17:35:12 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200002260035.RAA00437@udlkern.fc.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] code 28 trap
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+> > http://boudicca.tux.org/hypermail/linux-kernel/2000week06/0092.html
+> >
+> > There was a bug in 2.3.41, looks like it didn't get fixed in .42, that
+>
+> Apparently it did get fixed in .42, so it might be worth finding out what
+> exactly causes Grant's unaligned trap.
 
-------=_NextPart_000_004D_01BF7FAA.9C73B5E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+I'm running on a J5000, which is 99.9% the same as a C3000 if I disable
+one of the processors. The only networking problem I've run into
+is the one I already posted about, for which I have a workaround. I
+have not run into any unaligned traps.
 
-Can anyone tell me why I receive four of each posting?
+I also do not believe we should do an unaligned trap handler at this
+point. Yes, we may have to do one for the non-standard protocols, but
+the problem is that once we enable the trap handler, you might hide
+a bunch of other performance degrading bugs.
 
- 
-Cordially yours,
- 
-William Ferguson
-Director of Internet Operations
-Chatspace Inc.
+In fact, I would propose that when we do the unaligned handler we
+should have a way of enabling it on a per thread basis for user
+processes. When I say "enable" I don't mean that we would install/deinstall
+the handler, but simply have the handler do a check, and if the fault
+came from user space, check the task structure to determine whether
+we should fix the fault or terminate the process with a signal.
 
+I believe that the default should be off. If a user doesn't want to
+fix the problem (either due to indifference or lack of source), they
+should explicitly enable the handler (perhaps by a flag bit in the
+elf executable?) so that they know that they will be suffering a
+performance penalty.
 
-------=_NextPart_000_004D_01BF7FAA.9C73B5E0
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
+Of course, I'd like to do something similar for kernel unaligned faults,
+i.e. only handle faults for areas where we expect them, but that is
+probably not worth the effort. Handling kernel unaligned faults should
+be configurable, possibly with the default on. We of course should
+leave it off during development, unless we are testing areas of the
+kernel that are known to produce unaligned faults, i.e. ones we
+have decided not to fix, e.g. some of the networking protocols. One
+possible thing we could do would be to enable the unaligned handler
+by default, but have it log a message for the first kernel fault
+it handles, e.g. "Unaligned fault at 0xxxx, enabling unaligned fault
+handler", so at least people can be made aware that there may be
+a performance issue.
 
-eJ8+IjUAAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANAHAgAZABAACAAAAAUADwEB
-A5AGAIwFAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
-AAAAFAAAAFF1YWRydXBsZSBwb3N0aW5ncz8AAgFxAAEAAAAWAAAAAb9/7amw8UXIiDJnRnaT1xPS
-+x5EgAAAAgEdDAEAAAAdAAAAU01UUDpXRkVSR1VTT05AQ0hBVFNQQUNFLkNPTQAAAAALAAEOAAAA
-AEAABg4AcKmK7X+/AQIBCg4BAAAAGAAAAAAAAADSsv/s6SIoRb2ntdxDRZXCwoAAAAsAHw4BAAAA
-AgEJEAEAAAARAQAADQEAAJABAABMWkZ1RtJh7gMACgByY3BnMTI1FjIA+Atgbg4QMDMzTwH3AqQD
-4wIAY2gKwHPwZXQwIAcTAoMAUAPVlRF1fQqBdgiQd2sLgHRkNAxgYwBQCwMLtSAWQwORAHB5AiBl
-IHQMZWwDIAeAIHdoeQggSSAJcGNlaXYHFZACEAhwIG9mIGWBANBoIHBvc3QLgHxnPwqiCoQKgQvh
-E9B+rxjGEhIU0gWwZAcxbBZQ8xVgCHBzLAulE9AYdBmOilcDEGwHMG0gRgSQOGd1cwIgG40aBkRp
-7RaRdAWxF2FJAjAEkREw6CBPcASQYRgQAiAQsecenxTDEPB0cwqwFrAgkbxjLiHeC/IYcxMRACXw
-AAAACwABgAggBgAAAAAAwAAAAAAAAEYAAAAAA4UAAAAAAAADAAOACCAGAAAAAADAAAAAAAAARgAA
-AAAQhQAAAAAAAAMAB4AIIAYAAAAAAMAAAAAAAABGAAAAAFKFAAAnagEAHgAJgAggBgAAAAAAwAAA
-AAAAAEYAAAAAVIUAAAEAAAAEAAAAOS4wAB4ACoAIIAYAAAAAAMAAAAAAAABGAAAAADaFAAABAAAA
-AQAAAAAAAAAeAAuACCAGAAAAAADAAAAAAAAARgAAAAA3hQAAAQAAAAEAAAAAAAAAHgAMgAggBgAA
-AAAAwAAAAAAAAEYAAAAAOIUAAAEAAAABAAAAAAAAAAsADYAIIAYAAAAAAMAAAAAAAABGAAAAAIKF
-AAABAAAACwA6gAggBgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADADyACCAGAAAAAADAAAAAAAAA
-RgAAAAARhQAAAAAAAAMAPYAIIAYAAAAAAMAAAAAAAABGAAAAABiFAAAAAAAACwBSgAggBgAAAAAA
-wAAAAAAAAEYAAAAABoUAAAAAAAADAFOACCAGAAAAAADAAAAAAAAARgAAAAABhQAAAAAAAAIB+A8B
-AAAAEAAAANKy/+zpIihFvae13ENFlcICAfoPAQAAABAAAADSsv/s6SIoRb2ntdxDRZXCAgH7DwEA
-AACkAAAAAAAAADihuxAF5RAaobsIACsqVsIAAFBTVFBSWC5ETEwAAAAAAAAAAE5JVEH5v7gBAKoA
-N9luAAAAQzpcRG9jdW1lbnRzIGFuZCBTZXR0aW5nc1x3ZmVyZ3Vzb24uQklMSUJPTkdcTG9jYWwg
-U2V0dGluZ3NcQXBwbGljYXRpb24gRGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRsb29rLnBzdAAD
-AP4PBQAAAAMADTT9NwAAAgF/AAEAAAA3AAAAPENJRUZMTktIR0hHT0xNS0pITU9BQUVJQUNIQUEu
-d2Zlcmd1c29uQGNoYXRzcGFjZS5jb20+AAADAAYQE2RySAMABxByAAAAAwAQEAAAAAADABEQAQAA
-AB4ACBABAAAAZQAAAENBTkFOWU9ORVRFTExNRVdIWUlSRUNFSVZFRk9VUk9GRUFDSFBPU1RJTkc/
-Q09SRElBTExZWU9VUlMsV0lMTElBTUZFUkdVU09ORElSRUNUT1JPRklOVEVSTkVUT1BFUkFUSU8A
-AAAAAyY=
+My overall objective in all of this is to insure that we know of
+all the cases where the kernel produces unaligned faults, and make
+a conscious decision on whether or not we fix the code, rather than
+hide unaligned references. My personal bias is to fix every piece
+of code that produces unaligned references, but, based on the
+linux-kernel thread that willy mentioned, we might not be able to
+convince the maintainer of the code to accept those changes.
 
-------=_NextPart_000_004D_01BF7FAA.9C73B5E0--
+John Marvin
+jsm@fc.hp.com
