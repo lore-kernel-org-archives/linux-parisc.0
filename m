@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 8 Mar 2003 19:15:38 -0700
-To: "David S. Miller" <davem@redhat.com>
-Cc: willy@debian.org, jsm@udlkern.fc.hp.com,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: RFC: mmap patch
-Message-ID: <20030309021538.GA20553@dsl2.external.hp.com>
-References: <20030308172439.GA10161@dsl2.external.hp.com> <20030308.110459.35972945.davem@redhat.com> <20030308224503.L3865@parcelfarce.linux.theplanet.co.uk> <20030308.150023.97153009.davem@redhat.com>
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 67BF34829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Mar 2003 20:42:10 -0700 (MST)
+Date: Sat, 8 Mar 2003 20:42:04 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200303090342.UAA17294@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Cc: davem@redhat.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030308.150023.97153009.davem@redhat.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] Re: RFC: mmap patch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,18 +21,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Mar 08, 2003 at 03:00:23PM -0800, David S. Miller wrote:
-...
-> People can continue to talk about all their bright new idea, which
-> is fine, but it feels like my known-working ideas are being ignored.
+>
+> Yes, the {copy,clear}_user_page() thing is an optimization for
+> handling of cache alias issues wrt. anonymous pages.
+>
+I already implemented that solution on the parisc port. Well actually
+only half :-). I implemented both the copy and clear user page optimizations,
+but later on disabled the copy_user_page solution. I can't remember the
+exact details of the problem. Based on a comment I wrote, it seems that in
+some cases copy_user_page was being used for something that was going to
+be executed. I can't remember the exact scenario, since copy_user_page
+is only called in copy-on-write situations.
 
-As noted earlier, different problem.
+The problem is that since we have split I and D caches, the cache would
+need to be flushed anyway so that the instructions could be seen for
+execution.  So it didn't make any sense to set up the temporary
+translation and then flush it anyway; better to just do it through the
+kernel translation and flush.  I believe this isn't a problem on sparc64
+because of the write-through cache.
 
-Since about Nov 2002 we have been working on better {copy,clear}_user_page()
-implementations quietly inside HP.  Unfortunately some, uhm, "issues" are
-taking a long time to resolve before the routines can be published.
-Once those issues are resolved, I think your trick with temporary
-TLB entries can get implemented.
+> The PA-RISC mmap/write bug is something entirely different,
+> flush_dcache_page() just isn't doing what it is defined to
+> do :-)
 
-thanks,
-grant
+Ok.  But looking at the sparc64 implementation of flush_dcache_page I
+don't see any code to traverse user vma's.  Is there some other
+architecture specific trick that is being used to flush any user mappings
+that are mapped to the same physical address as the kernel address?
+
+John Marvin
+jsm@fc.hp.com
