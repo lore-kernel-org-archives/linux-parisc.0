@@ -1,167 +1,219 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA28188
-	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 14:32:19 -0600
-Date: Fri, 27 Oct 2000 13:37:34 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200010272037.NAA23925@milano.cup.hp.com>
-To: davem@redhat.com
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA28762
+	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 14:39:44 -0600
+Message-Id: <5.0.0.25.0.20001027131913.00a57090@mail.webcash.com>
+Date: Fri, 27 Oct 2000 13:37:49 -0700
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+From: Kailashnath V Rampure <kailasr@webcash.com>
+Subject: Re: [parisc-linux] glibc problem 
+Cc: deller@gmx.de, parisc-linux@thepuffingroup.com
+In-Reply-To: <20001027004731.F142D38137@carmen.fc.hp.com>
+References: <Your message of "Thu, 26 Oct 2000 14:37:20 PDT." <5.0.0.25.0.20001026142948.00a3deb0@mail.webcash.com>
+ <Message from Kailashnath V Rampure <kailasr@webcash.com>
+ <5.0.0.25.0.20001026125217.00a43eb0@mail.webcash.com>
+ <5.0.0.25.0.20001025173830.00a64a30@mail.webcash.com>
+ <5.0.0.25.0.20001026125217.00a43eb0@mail.webcash.com>
+ <5.0.0.25.0.20001026142948.00a3deb0@mail.webcash.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] scatterlist (de-)construction
+Content-Type: multipart/alternative;
+	boundary="=====================_94006934==_.ALT"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Dave,
-The sg_list's I'm seeing for a simple "dd .. bs=64K" aren't
-assembled very nicely. I have two issues with scatterlists:
+--=====================_94006934==_.ALT
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 
-o why are list entries in 1K sizes instead of NBPG sizes?
+Hi Matt,
 
-o Why are "blocks" *within* the same kernel page "badly" ordered?
+I could run as you told but had problems so i did what helge had (you need 
+to go to /palo/ipl and do "hppa-linux-ranlib ipl.a". Then go back to /linux 
+and do a "make palo" again.) then lif image was created.
 
-I have to confess I have only spent an hour or so reviewing code
-and documents for scatter-gather. I'm doing more but thought you
-might off-hand know where to look. If these are architecture defined
-behaviors, I can fix those.
+But when I type bo lan at HP server Iget the following error
+-------------------------
+Booting...
+Cannot find ENTRY_TEST.
 
-I've been trying to implement sane/simple coalescing code for one
-of the parisc-linux I/O MMU's (sba_iommu.c) and finding the input
-scatterlist I have to work with sucks. I've appended the console
-output with my debugging info. The algorithm currently attempts
-to prepend or append adjacent entries in the scatterlist.
-It would be nice if we only had to check the append case.
-(Ref http://puffin.external.hp.com/cvs/linux/arch/parisc/kernel/sba_iommu.c)
+Fail to initialize.
 
-FYI, parisc-linux is currently based on 2.4.0-test6.
-The plan is to merge to something more recent after we cut
-a "stable" version in the next week or two. I mention this
-in case any work was done since -test6 was posted.
+ENTRY_INT
+Status=-7
+----------------------------------
+My config files are as follows:
 
-thanks,
-grant
+I have /etc/bootptab file as follows:
+-------------------------
+linux:\
+         hn:\
+         sm=255.255.248.0:\
+         vm=rfc1048:\
+         ht=ether:\
+         hd=/tftpboot:\
+         bf=vmlinux:\
+         ha=0010830339e0:\
+         ip=192.168.1.237
+--------------------------------
 
-ps. I'm also ok with this getting forwarded to l-k though
-    I'm not subscribed.
+and my exports file reads as :
+--------------------------------------------------
+/tftpboot/linux linux(rw,no_root_squash)
+-------------------------------------------------------
 
-[ notes:
-  xx,xx		address,length pair
-  xx,xx+yy,yy	checking "current" chunk (xx) + "current" sglist entry (yy)
- (xx,xx)	addr,len "chunk" parameters passed to sba_map_single()
-		when algorithm can't safely either prepend or append the
-		"current" scatterlist element to the "chunk".
+I had changed the NFSROOT line in Makefile in palo  to
+NFSROOT = 192.168.1.236:/tftpboot/linux
 
-__FUNCTION__ is *broken* for our toolchain and it look like a
-generic gcc bug in the current gcc developement tree.  The "()"
-are supposed to have function names in front of them.
-Magic decoder:
-() START 64 entries	sba_map_sg() entry poiny
-() DONE 17 mappings	sba_map_sg() exit
-() START 64 entries,  dfd7a800,400	sba_unmap_sg() entry w/first pair
-() DONE (nents 47)	sba_unmap_sg() exit (after unmapping 17 entries)
-]
 
-gggC3000:~# dd if=/dev/sda1 of=/dev/null bs=64k count=5
-() START 64 entries
- dfd7a800,400+dfd7ac00,400 dfd7a800,800+dfd7a000,400 (dfd7a800, 800)
- dfd7a000,400+dfd7a400,400 dfd7a000,800+df6ba000,400 (dfd7a000, 800)
- df6ba000,400+df6ba400,400 df6ba000,800+df6ba800,400 df6ba000,c00+df6bac00,400 df6ba000,1000+df6b9000,400 (df6ba000, 1000)
- df6b9000,400+df6b9400,400 df6b9000,800+df6b9800,400 df6b9000,c00+df6b9c00,400 df6b9000,1000+df6b8000,400 (df6b9000, 1000)
- df6b8000,400+df6b8400,400 df6b8000,800+df6b8800,400 df6b8000,c00+df6b8c00,400 df6b8000,1000+df6b7000,400 (df6b8000, 1000)
- df6b7000,400+df6b7400,400 df6b7000,800+df6b7800,400 df6b7000,c00+df6b7c00,400 df6b7000,1000+df6b6000,400 (df6b7000, 1000)
- df6b6000,400+df6b6400,400 df6b6000,800+df6b6800,400 df6b6000,c00+df6b6c00,400 df6b6000,1000+df6b5000,400 (df6b6000, 1000)
- df6b5000,400+df6b5400,400 df6b5000,800+df6b5800,400 df6b5000,c00+df6b5c00,400 df6b5000,1000+df6b4000,400 (df6b5000, 1000)
- df6b4000,400+df6b4400,400 df6b4000,800+df6b4800,400 df6b4000,c00+df6b4c00,400 df6b4000,1000+df6b3000,400 (df6b4000, 1000)
- df6b3000,400+df6b3400,400 df6b3000,800+df6b3800,400 df6b3000,c00+df6b3c00,400 df6b3000,1000+df6b2000,400 (df6b3000, 1000)
- df6b2000,400+df6b2400,400 df6b2000,800+df6b2800,400 df6b2000,c00+df6b2c00,400 df6b2000,1000+df6b1000,400 (df6b2000, 1000)
- df6b1000,400+df6b1400,400 df6b1000,800+df6b1800,400 df6b1000,c00+df6b1c00,400 df6b1000,1000+df6af000,400 (df6b1000, 1000)
- df6af000,400+df6af400,400 df6af000,800+df6af800,400 df6af000,c00+df6afc00,400 df6af000,1000+df6ae000,400 (df6af000, 1000)
- df6ae000,400+df6ae400,400 df6ae000,800+df6ae800,400 df6ae000,c00+df6aec00,400 df6ae000,1000+df6ad000,400 (df6ae000, 1000)
- df6ad000,400+df6ad400,400 df6ad000,800+df6ad800,400 df6ad000,c00+df6adc00,400 df6ad000,1000+df6ac000,400 (df6ad000, 1000)
- df6ac000,400+df6ac400,400 df6ac000,800+df6ac800,400 df6ac000,c00+df6acc00,400 df6ac000,1000+df6ab000,400 (df6ac000, 1000)
- df6ab000,400+df6ab400,400 df6ab000,800+df6ab800,400 df6ab000,c00+df6abc00,400 (0xdf6ab000,1000)
-() DONE 17 mappings
-() START 64 entries,  dfd7a800,400
-() DONE (nents 47)
-() START 64 entries
- df69a000,400+df69a400,400 df69a000,800+df69a800,400 df69a000,c00+df69ac00,400 df69a000,1000+df699000,400 (df69a000, 1000)
- df699000,400+df699400,400 df699000,800+df699800,400 df699000,c00+df699c00,400 df699000,1000+df698000,400 (df699000, 1000)
- df698000,400+df698400,400 df698000,800+df698800,400 df698000,c00+df698c00,400 df698000,1000+df697000,400 (df698000, 1000)
- df697000,400+df697400,400 df697000,800+df697800,400 df697000,c00+df697c00,400 df697000,1000+df696000,400 (df697000, 1000)
- df696000,400+df696400,400 df696000,800+df696800,400 df696000,c00+df696c00,400 df696000,1000+df694000,400 (df696000, 1000)
- df694000,400+df694400,400 df694000,800+df694800,400 df694000,c00+df694c00,400 df694000,1000+df693000,400 (df694000, 1000)
- df693000,400+df693400,400 df693000,800+df693800,400 df693000,c00+df693c00,400 df693000,1000+df692000,400 (df693000, 1000)
- df692000,400+df692400,400 df692000,800+df692800,400 df692000,c00+df692c00,400 df692000,1000+df691000,400 (df692000, 1000)
- df691000,400+df691400,400 df691000,800+df691800,400 df691000,c00+df691c00,400 df691000,1000+df690000,400 (df691000, 1000)
- df690000,400+df690400,400 df690000,800+df690800,400 df690000,c00+df690c00,400 df690000,1000+df68f000,400 (df690000, 1000)
- df68f000,400+df68f400,400 df68f000,800+df68f800,400 df68f000,c00+df68fc00,400 df68f000,1000+df68e000,400 (df68f000, 1000)
- df68e000,400+df68e400,400 df68e000,800+df68e800,400 df68e000,c00+df68ec00,400 df68e000,1000+df68d000,400 (df68e000, 1000)
- df68d000,400+df68d400,400 df68d000,800+df68d800,400 df68d000,c00+df68dc00,400 df68d000,1000+df68c000,400 (df68d000, 1000)
- df68c000,400+df68c400,400 df68c000,800+df68c800,400 df68c000,c00+df68cc00,400 df68c000,1000+df68b000,400 (df68c000, 1000)
- df68b000,400+df68b400,400 df68b000,800+df68b800,400 df68b000,c00+df68bc00,400 df68b000,1000+df689000,400 (df68b000, 1000)
- df689000,400+df689400,400 df689000,800+df689800,400 df689000,c00+df689c00,400 (0xdf689000,1000)
-() DONE 16 mappings
-() START 64 entries,  df69a000,400
-() DONE (nents 48)
-() START 64 entries
- df688000,400+df688400,400 df688000,800+df688800,400 df688000,c00+df688c00,400 df688000,1000+df687000,400 (df688000, 1000)
- df687000,400+df687400,400 df687000,800+df687800,400 df687000,c00+df687c00,400 df687000,1000+df686000,400 (df687000, 1000)
- df686000,400+df686400,400 df686000,800+df686800,400 df686000,c00+df686c00,400 df686000,1000+df685000,400 (df686000, 1000)
- df685000,400+df685400,400 df685000,800+df685800,400 df685000,c00+df685c00,400 df685000,1000+df684000,400 (df685000, 1000)
- df684000,400+df684400,400 df684000,800+df684800,400 df684000,c00+df684c00,400 df684000,1000+df683000,400 (df684000, 1000)
- df683000,400+df683400,400 df683000,800+df683800,400 df683000,c00+df683c00,400 df683000,1000+df682000,400 (df683000, 1000)
- df682000,400+df682400,400 df682000,800+df682800,400 df682000,c00+df682c00,400 df682000,1000+df681000,400 (df682000, 1000)
- df681000,400+df681400,400 df681000,800+df681800,400 df681000,c00+df681c00,400 df681000,1000+df680000,400 (df681000, 1000)
- df680000,400+df680400,400 df680000,800+df680800,400 df680000,c00+df680c00,400 df680000,1000+df67e000,400 (df680000, 1000)
- df67e000,400+df67e400,400 df67e000,800+df67e800,400 df67e000,c00+df67ec00,400 df67e000,1000+df67d000,400 (df67e000, 1000)
- df67d000,400+df67d400,400 df67d000,800+df67d800,400 df67d000,c00+df67dc00,400 df67d000,1000+df67c000,400 (df67d000, 1000)
- df67c000,400+df67c400,400 df67c000,800+df67c800,400 df67c000,c00+df67cc00,400 df67c000,1000+df67b000,400 (df67c000, 1000)
- df67b000,400+df67b400,400 df67b000,800+df67b800,400 df67b000,c00+df67bc00,400 df67b000,1000+df67a000,400 (df67b000, 1000)
- df67a000,400+df67a400,400 df67a000,800+df67a800,400 df67a000,c00+df67ac00,400 df67a000,1000+df679000,400 (df67a000, 1000)
- df679000,400+df679400,400 df679000,800+df679800,400 df679000,c00+df679c00,400 df679000,1000+df678000,400 (df679000, 1000)
- df678000,400+df678400,400 df678000,800+df678800,400 df678000,c00+df678c00,400 (0xdf678000,1000)
-() DONE 16 mappings
-() START 64 entries,  df688000,400
-() DONE (nents 48)
-() START 64 entries
- df675000,400+df675400,400 df675000,800+df675800,400 df675000,c00+df675c00,400 df675000,1000+df674000,400 (df675000, 1000)
- df674000,400+df674400,400 df674000,800+df674800,400 df674000,c00+df674c00,400 df674000,1000+df673000,400 (df674000, 1000)
- df673000,400+df673400,400 df673000,800+df673800,400 df673000,c00+df673c00,400 df673000,1000+df671000,400 (df673000, 1000)
- df671000,400+df671400,400 df671000,800+df671800,400 df671000,c00+df671c00,400 df671000,1000+df670000,400 (df671000, 1000)
- df670000,400+df670400,400 df670000,800+df670800,400 df670000,c00+df670c00,400 df670000,1000+df66f000,400 (df670000, 1000)
- df66f000,400+df66f400,400 df66f000,800+df66f800,400 df66f000,c00+df66fc00,400 df66f000,1000+df66e000,400 (df66f000, 1000)
- df66e000,400+df66e400,400 df66e000,800+df66e800,400 df66e000,c00+df66ec00,400 df66e000,1000+df66d000,400 (df66e000, 1000)
- df66d000,400+df66d400,400 df66d000,800+df66d800,400 df66d000,c00+df66dc00,400 df66d000,1000+df66c000,400 (df66d000, 1000)
- df66c000,400+df66c400,400 df66c000,800+df66c800,400 df66c000,c00+df66cc00,400 df66c000,1000+df66b000,400 (df66c000, 1000)
- df66b000,400+df66b400,400 df66b000,800+df66b800,400 df66b000,c00+df66bc00,400 df66b000,1000+df66a000,400 (df66b000, 1000)
- df66a000,400+df66a400,400 df66a000,800+df66a800,400 df66a000,c00+df66ac00,400 df66a000,1000+df669000,400 (df66a000, 1000)
- df669000,400+df669400,400 df669000,800+df669800,400 df669000,c00+df669c00,400 df669000,1000+df668000,400 (df669000, 1000)
- df668000,400+df668400,400 df668000,800+df668800,400 df668000,c00+df668c00,400 df668000,1000+df666000,400 (df668000, 1000)
- df666000,400+df666400,400 df666000,800+df666800,400 df666000,c00+df666c00,400 df666000,1000+df665000,400 (df666000, 1000)
- df665000,400+df665400,400 df665000,800+df665800,400 df665000,c00+df665c00,400 df665000,1000+df664000,400 (df665000, 1000)
- df664000,400+df664400,400 df664000,800+df664800,400 df664000,c00+df664c00,400 (0xdf664000,1000)
-() DONE 16 mappings
-() START 64 entries,  df675000,400
-() DONE (nents 48)
-() START 64 entries
- df663000,400+df663400,400 df663000,800+df663800,400 df663000,c00+df663c00,400 df663000,1000+df662000,400 (df663000, 1000)
- df662000,400+df662400,400 df662000,800+df662800,400 df662000,c00+df662c00,400 df662000,1000+df661000,400 (df662000, 1000)
- df661000,400+df661400,400 df661000,800+df661800,400 df661000,c00+df661c00,400 df661000,1000+df660000,400 (df661000, 1000)
- df660000,400+df660400,400 df660000,800+df660800,400 df660000,c00+df660c00,400 df660000,1000+df65f000,400 (df660000, 1000)
- df65f000,400+df65f400,400 df65f000,800+df65f800,400 df65f000,c00+df65fc00,400 df65f000,1000+df65e000,400 (df65f000, 1000)
- df65e000,400+df65e400,400 df65e000,800+df65e800,400 df65e000,c00+df65ec00,400 df65e000,1000+df65d000,400 (df65e000, 1000)
- df65d000,400+df65d400,400 df65d000,800+df65d800,400 df65d000,c00+df65dc00,400 df65d000,1000+df65b000,400 (df65d000, 1000)
- df65b000,400+df65b400,400 df65b000,800+df65b800,400 df65b000,c00+df65bc00,400 df65b000,1000+df65a000,400 (df65b000, 1000)
- df65a000,400+df65a400,400 df65a000,800+df65a800,400 df65a000,c00+df65ac00,400 df65a000,1000+df659000,400 (df65a000, 1000)
- df659000,400+df659400,400 df659000,800+df659800,400 df659000,c00+df659c00,400 df659000,1000+df658000,400 (df659000, 1000)
- df658000,400+df658400,400 df658000,800+df658800,400 df658000,c00+df658c00,400 df658000,1000+df657000,400 (df658000, 1000)
- df657000,400+df657400,400 df657000,800+df657800,400 df657000,c00+df657c00,400 df657000,1000+df656000,400 (df657000, 1000)
- df656000,400+df656400,400 df656000,800+df656800,400 df656000,c00+df656c00,400 df656000,1000+df655000,400 (df656000, 1000)
- df655000,400+df655400,400 df655000,800+df655800,400 df655000,c00+df655c00,400 df655000,1000+df654000,400 (df655000, 1000)
- df654000,400+df654400,400 df654000,800+df654800,400 df654000,c00+df654c00,400 df654000,1000+df653000,400 (df654000, 1000)
- df653000,400+df653400,400 df653000,800+df653800,400 df653000,c00+df653c00,400 (0xdf653000,1000)
-() DONE 16 mappings
-() START 64 entries,  df663000,400
-() DONE (nents 48)
-5+0 records in
-5+0 records out
-gggC3000:~# 
+
+At 06:47 PM 10/26/00 -0600, Matt Taggart wrote:
+
+>Kailashnath V Rampure writes...
+>
+> > Thanks Matt,
+> >
+> > I have downloaded prebuilt cross-compiler but can you direct me to any
+> > documentation how to use this cross compiler. I want to do a NFS boot. I
+>
+>Untar it in /, it will live in /opt/palinux.
+>Add /opt/palinux/bin to your path
+>Edit palo/Makefile and set it up for nfsroot, mine has the following line,
+>
+>NFSROOT = 15.1.51.72:/tftpboot/geordi
+>
+>That's the location of my nfsroot. Make sure you export it. My /etc/exports
+>contains,
+>
+>/tftpboot/geordi                15.1.51.73(rw,no_root_squash)
+>
+>Then in the linux directory do,
+>
+>make oldconfig (maybe answer questions)
+>make dep;make clean
+>make palo
+>
+>Setup your bootp server to point to the lifimage generated. My /etc/bootptab
+>contains,
+>
+>geordi:\
+>         hn:\
+>         sm=255.255.248.0:\
+>         vm=rfc1048:\
+>         ht=ether:\
+>         hd=/tftpboot:\
+>         bf=lif-geordi:\
+>         ha=0800097891EB:\
+>         ip=15.1.51.73
+>
+>and /tftpboot/lif-geordi is a symlink to palo/lifimage
+>
+>Hopefully that's enough information to get you going. If you have problems
+>please let me know how far you get.
+>
+>Thanks,
+>
+>--
+>Matt Taggart
+>taggart@fc.hp.com
+
+--=====================_94006934==_.ALT
+Content-Type: text/html; charset="us-ascii"
+
+<html>
+Hi Matt,<br>
+<br>
+I could run as you told but had problems so i did what helge had (you
+need to go to /palo/ipl and do &quot;hppa-linux-ranlib ipl.a&quot;. Then
+go back to /linux and do a &quot;make palo&quot; again.) then lif image
+was created. <br>
+<br>
+But when I type bo lan at HP server Iget the following error<br>
+-------------------------<br>
+Booting...<br>
+Cannot find ENTRY_TEST.<br>
+<br>
+Fail to initialize.<br>
+<br>
+ENTRY_INT<br>
+Status=-7<br>
+----------------------------------<br>
+My config files are as follows:<br>
+<br>
+I have /etc/bootptab file as follows:<br>
+-------------------------<br>
+linux:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hn:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sm=255.255.248.0:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vm=rfc1048:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ht=ether:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hd=/tftpboot:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bf=vmlinux:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ha=0010830339e0:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ip=192.168.1.237<br>
+--------------------------------<br>
+<br>
+and my exports file reads as :<br>
+--------------------------------------------------<br>
+/tftpboot/linux linux(rw,no_root_squash)<br>
+-------------------------------------------------------<br>
+<br>
+I had changed the NFSROOT line in Makefile in palo&nbsp; to <br>
+NFSROOT = 192.168.1.236:/tftpboot/linux<br>
+<br>
+<br>
+<br>
+At 06:47 PM 10/26/00 -0600, Matt Taggart wrote:<br>
+<br>
+<blockquote type=cite class=cite cite>Kailashnath V Rampure
+writes...<br>
+<br>
+&gt; Thanks Matt,<br>
+&gt; <br>
+&gt; I have downloaded prebuilt cross-compiler but can you direct me to
+any <br>
+&gt; documentation how to use this cross compiler. I want to do a NFS
+boot. I <br>
+<br>
+Untar it in /, it will live in /opt/palinux.<br>
+Add /opt/palinux/bin to your path<br>
+Edit palo/Makefile and set it up for nfsroot, mine has the following
+line,<br>
+<br>
+NFSROOT = 15.1.51.72:/tftpboot/geordi<br>
+<br>
+That's the location of my nfsroot. Make sure you export it. My
+/etc/exports <br>
+contains,<br>
+<br>
+/tftpboot/geordi<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>15.1.51.73(rw,no_root_squash)<br>
+<br>
+Then in the linux directory do,<br>
+<br>
+make oldconfig (maybe answer questions)<br>
+make dep;make clean<br>
+make palo<br>
+<br>
+Setup your bootp server to point to the lifimage generated. My
+/etc/bootptab <br>
+contains,<br>
+<br>
+geordi:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hn:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sm=255.255.248.0:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vm=rfc1048:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ht=ether:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hd=/tftpboot:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bf=lif-geordi:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ha=0800097891EB:\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ip=15.1.51.73<br>
+<br>
+and /tftpboot/lif-geordi is a symlink to palo/lifimage<br>
+<br>
+Hopefully that's enough information to get you going. If you have
+problems <br>
+please let me know how far you get.<br>
+<br>
+Thanks,<br>
+<br>
+-- <br>
+Matt Taggart<br>
+taggart@fc.hp.com</blockquote></html>
+
+--=====================_94006934==_.ALT--
