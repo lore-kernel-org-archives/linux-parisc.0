@@ -1,63 +1,44 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Message-ID: <7678BED5A989D211A39000A0C94309E908D623@wehcml06>
-From: PG40 KCLin <KCLIN@winbond.com.tw>
+Date: Wed, 10 Mar 1999 22:18:57 -0500 (EST)
+From: Alex deVries <adevries@redhat.com>
 To: "'hppa-linux@thepuffingroup.com'" <hppa-linux@thepuffingroup.com>
 Subject: RE: [hppa-linux] New cross compiling RPMs
-Date: Thu, 11 Mar 1999 10:12:42 +0800
+In-Reply-To: <7678BED5A989D211A39000A0C94309E908D623@wehcml06>
+Message-ID: <Pine.LNX.3.96.990310221021.7915B-100000@devserv.devel.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Resent-Message-ID: <"DdgVs1.0.zY4.YRovs"@sod.res.cmu.edu>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Resent-Message-ID: <"qysf.0.bw4.jOpvs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Hi all,
 
-About the new cross compiler, does it support floating-point emulation for
-PA-RISC 1.1 architecture level 0? In the cross tool, does it support the
-source level debugger based on Windows? or gdb only?
+On Thu, 11 Mar 1999, PG40 KCLin wrote:
+> About the new cross compiler, does it support floating-point emulation for
+> PA-RISC 1.1 architecture level 0? In the cross tool, does it support the
+> source level debugger based on Windows? or gdb only?
 
-your reply will be appreciated. Thanks!
+I'm not actually quite sure about the answer to this question; certainly
+their is no native floating point support, although there may be
+emulation.
 
-Best regards,
-James K.C. Lin,
-Winbond Electronics Corp.
-Taiwan. R.O.C.
+This should be easy enough to test.
 
-> ----------
-> From: 	Mike Shaver[SMTP:shaver@netscape.com]
-> Sent: 	Wednesday, March 10, 1999 PM 10:11
-> To: 	hppa-linux@thepuffingroup.com
-> Subject: 	Re: [hppa-linux] New cross compiling RPMs
-> 
-> Phil Schwan wrote:
-> > 
-> > Mike Shaver just rebuilt Alex's cross compiling RPMs against glibc 2.0
-> > rather than 2.1, and they're now available on sod:
-> > 
-> >
-> ftp://sod.res.cmu.edu/pub/parisc/tools/egcs-x-hppa-linux-1.1.1-4.i386.rpm
-> > ftp://sod.res.cmu.edu/pub/parisc/tools/binutils-x-hppa-2.9.1-4.i386.rpm
-> > 
-> > Note that the revision number is still 4, but these are in fact new.
-> 
-> And hey -- they even work (for me)!
-> 
-> [shaver@loonie /tmp]$ cat test.c
-> int main () { return 0; }
-> [shaver@loonie /tmp]$ hppa-linux-gcc -c test.c
-> [shaver@loonie /tmp]$ file test.o
-> test.o: ELF 32-bit MSB relocatable, PA-RISC, version 1
-> [shaver@loonie /tmp]$
-> 
-> Mike
-> 
-> -- 
-> 169530.70 140316.26
-> 
-> -------------------------------------------------------------------------
-> To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+For the kernel side of things, which is the most immediate concern, we
+don't need floating point yet anyway.
+
+There's currently no working gdb, although that shouln't be too difficult
+to straighten out either.  I don't know what you mean by the source level
+windows debugger, but I'm interested.
+
+-= Alex
+
+-- 
+Alex deVries <puffin@redhat.com>     
+Red Hat Contrib Net maintainer          
+Ottawa, Canada  
+HPPA/Linux Porting Team
+
+
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
