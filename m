@@ -1,15 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bob.ncssm.edu (bob.ncssm.edu [152.34.37.42])
-	by dsl2.external.hp.com (Postfix) with SMTP id C25E4482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Apr 2002 18:35:14 -0700 (MST)
-Date: Thu, 4 Apr 2002 20:39:55 -0500 (EST)
-From: Phil Anderson <andersop@neverland.ncssm.edu>
-To: <parisc-linux@lists.parisc-linux.org>
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07A81482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Apr 2002 19:00:18 -0700 (MST)
+Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
+ by mtaout45-02.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
+ with SMTP id <0GU200IWLO8G6J@mtaout45-02.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Thu, 04 Apr 2002 21:00:17 -0500 (EST)
+Date: Thu, 04 Apr 2002 21:00:14 -0500
+From: James S <smithjames@comcast.net>
 Subject: Re: [parisc-linux] Missing beep... and music too
-In-Reply-To: <00da01c1dc2e$d90b7e60$02c1a8c0@james.co.uk>
-Message-ID: <Pine.LNX.4.33.0204042038090.29216-100000@bob.ncssm.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Phil Anderson <andersop@neverland.ncssm.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: James S <smithjames@comcast.net>
+Message-id: <00e501c1dc45$a1df3aa0$02c1a8c0@james.co.uk>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+References: <Pine.LNX.4.33.0204042038090.29216-100000@bob.ncssm.edu>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,38 +27,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I think the problem lies in my mpg321, because no matter what I do with 
-it, use esd or not, whatever options I choose - I always get the
-Illegal Instruction
-error. this is the mpg321 .deb I installed of  my 0.9.3 CD; could the 
-mpg321 be corrupt or is something else wrong? 
+>I think the problem lies in my mpg321, because no matter what I do with
+>it, use esd or not, whatever options I choose - I always get the
+>Illegal Instruction
+>error. this is the mpg321 .deb I installed of  my 0.9.3 CD; could the
+>mpg321 be corrupt or is something else wrong?
 
--phil
 
-On Thu, 4 Apr 2002, James S wrote:
+i think the kernel used on the 0.9.3 cd might be fairly old by now - you
+tried updating it ?
 
-> incidentally, i installed the .deb package 'beep' & that doesnt generate any
-> sound either...
-> 
-> 
-> James S
-> 
-> 
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
 
--- 
-===============================================================================
-
-Phil Anderson
-UNIX Systems Administrator
-andersop@neverland.ncssm.edu
-The_13th_Ewok@hotmail.com
-
-"Go CRAZY? Don't mind if I do! Woowoowoowoo!" -Homer Simpson
+James S
