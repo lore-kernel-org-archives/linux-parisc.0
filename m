@@ -1,17 +1,13 @@
-From: joel.soete@freebel.net
-Subject: [parisc-linux] Re: preprocessor/7138: gcc-3.2 failed to compile kernel
-Date: Fri, 28 Jun 2002 16:13:00 +0200 (CEST)
-Message-ID: <1025273580.3d1c6eec17b64__44938.5110209279$1416621443$gmane$org@webmail.tiscalinet.be>
-References: <20020628063144.498.qmail@sources.redhat.com>
+From: "geezer" <geezer@snet.net>
+Subject: [parisc-linux] HP 715/50 for free
+Date: Sun, 30 Jun 2002 18:06:32 -0400
+Message-ID: <000a01c22082$668932e0$6501a8c0__19103.9905454547$1416621447$gmane$org@downstairs>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
-	joel.soete@freebel.net, neil@gcc.gnu.org
-To: neil@gcc.gnu.org, gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
-	joel.soete@freebel.net, neil@gcc.gnu.org, gcc-gnats@gcc.gnu.org,
-	neil@gcc.gnu.org
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0007_01C22060.DDC32C20"
+To: <debian-hppa@lists.debian.org>,
+	<parisc-linux@lists.parisc-linux.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20020628063144.498.qmail@sources.redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,46 +18,90 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting neil@gcc.gnu.org:
+This is a multi-part message in MIME format.
 
-> Synopsis: gcc-3.2 failed to compile kernel
-> 
-> State-Changed-From-To: analyzed->closed
-> State-Changed-By: neil
-> State-Changed-When: Thu Jun 27 23:31:44 2002
-> State-Changed-Why:
->     Fixed.  Please let me know if it doesn't work for you (unlikely).
-> 
-> http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=7138
-> 
-> 
-Hi Neil,
+------=_NextPart_000_0007_01C22060.DDC32C20
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This seems to be fixed but (just for info) another problem at the same place:
+Well, I have decided that my time will be better spent on Intel/AMD =
+based systems and am therefore offering my parisc to whoever wants it =
+for free (plus, I need the space).  I put debian on it, but never messed =
+with it much.  Contact me and we'll agree on a time when you can come =
+over and get it (Connecticut).  I ain't shipping it anywhere.  It works =
+good, and I have the HPUX 10.20 CD's, too, if you want them.
 
-gcc -D__KERNEL__ -I/Develop/parisc-linux/src/linux-2.4.18-pa40/include -Wall
--Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
--fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
--mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
--mschedule=7100   -DKBUILD_BASENAME=cache  -c -o cache.o cache.c
-gcc -D__ASSEMBLY__ -traditional -D__KERNEL__
--I/Develop/parisc-linux/src/linux-2.4.18-pa40/include  -c -o pacache.o pacache.S
-/Develop/parisc-linux/src/linux-2.4.18-pa40/include/asm/pgtable.h: Assembler
-messages:
-/Develop/parisc-linux/src/linux-2.4.18-pa40/include/asm/pgtable.h:45: Fatal
-error: Unknown opcode: `printk("%s:%d: bad pte %08lx.\n",
-"/Develop/parisc-linux/src/linux-2.4.18-pa40/include/asm/pgtable.h",45,pte_val(e))'
-make[1]: *** [pacache.o] Error 1
-make[1]: Leaving directory
-`/Develop/parisc-linux/src/linux-2.4.18-pa40/arch/parisc/kernel'
-make: *** [_dir_arch/parisc/kernel] Error 2
+256 meg (I think)
+an internal drive (I'd have to power it up to tell you how big it is, =
+but probably about a gig)
+an external 4 gig scsi drive
+an internal 3.5" scsi floppy drive
+an external scsi cdrom
+hp-il keyboard with teeny little hp-il box
+hp-il mouse
+big ole a2094a monitor
 
+The clock battery is about dead, so you'll have to set the clock, but it =
+will keep a charge for a while and if you don't shut it down much, =
+you'll be fine.
 
-But that will be another story (next 2 weeks i will be on hollidays :))
+I'll even throw in the bnc to rj-45 transceiver.
 
-Many thanks Neil for your attention,
-    Joel
+elkdad@hotmail.com
 
+------=_NextPart_000_0007_01C22060.DDC32C20
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2715.400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#f0e8d8>
+<DIV><FONT face=3D"Comic Sans MS">Well, I have decided that my time will =
+be better=20
+spent on Intel/AMD based systems and am therefore offering my parisc to =
+whoever=20
+wants it for free (plus, I need the space).&nbsp; I put debian on it, =
+but never=20
+messed with it much.&nbsp; Contact me and we'll agree on a time when you =
+can=20
+come over and get it (Connecticut).&nbsp; I ain't shipping it =
+anywhere.&nbsp; It=20
+works good, and I have the HPUX 10.20 CD's, too, if you want =
+them.</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Comic Sans MS">256 meg (I think)</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">an internal drive (I'd have to power =
+it up to=20
+tell you how big it is, but probably about a gig)</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">an external 4 gig scsi =
+drive</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">an internal 3.5" scsi floppy =
+drive</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">an external scsi cdrom</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">hp-il keyboard with teeny little hp-il =
+
+box</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">hp-il mouse</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">big ole a2094a monitor</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Comic Sans MS">The clock battery is about dead, so =
+you'll have=20
+to set the clock, but it will keep a charge for a while and if you don't =
+shut it=20
+down much, you'll be fine.</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Comic Sans MS">I'll even throw in the bnc to rj-45=20
+transceiver.</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS"></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Comic Sans MS"><A=20
+href=3D"mailto:elkdad@hotmail.com">elkdad@hotmail.com</A></FONT></DIV></B=
+ODY></HTML>
+
+------=_NextPart_000_0007_01C22060.DDC32C20--
