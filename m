@@ -1,50 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA20115
-	for <parisc-linux@puffin.external.hp.com>; Tue, 1 Feb 2000 17:11:50 -0700
-Message-ID: <3897687F.AE79057D@web.de>
-Date: Wed, 02 Feb 2000 00:13:04 +0100
-From: Frank Benke <frank.benke@web.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA24523
+	for <parisc-linux@puffin.external.hp.com>; Wed, 2 Feb 2000 03:47:47 -0700
+Message-Id: <200002020947.KAA14896@scispor.dolphinics.no>
+From: "Simen Timian Thoresen" <simentt@dolphinics.no>
+To: pgonnet@student.ethz.ch
+Date: Wed, 2 Feb 2000 10:44:33 +0100
 MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: pgonnet@student.ethz.ch, parisc-linux@thepuffingroup.com
+Content-type: text/plain; charset=US-ASCII
 Subject: Re: serial console on 735/99
-References: <200002011810.KAA04636@milano.cup.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Reply-to: simen-tt@online.no
+CC: parisc-linux@thepuffingroup.com
+In-reply-to: <3897F685.5BC308C5@vis.ethz.ch>
 List-ID: <linux-parisc.vger.kernel.org>
 
-hi all
+> hello!
+> 
+> the problem is that the fddi was built in instead of aui
+> (special-edition kind of thing) since the machine used to be in a
+> cluster (hence also no monitor or keyboard). i was wondering if i could
+> find something more along the lines of the eisa-slot...
 
-Grant Grundler schrieb:
+Right. The EISA slot can function as a normal ISA slot, so you can stick any 
+old ISA nic into it. The question then is what cards are supported by HP, 
+right?
+ 
+> i don't know if the fddi can be yanked out and replaced by aui or
+> anyhing (haven't opened the machine - yet), but if it can - anybody want
+> to trade?
 
-> "Pedro G. Gonnet" wrote:
->
-> > btw, any chance i could get my hands on an "normal" ethernet-adaptor for
-> > this machine? fddi-cards cost a fortune...
->
-> I thought the 735 has ethernet built-in.
-> IIRC, it's an AUI and you need a MAU thingy to connect to 10BT.
->
+As my EISA card is a CDDI-card (pretty useless Copper Distributed Digital 
+Interface - lowtech fddi afaik), I need my aui-card myself. But if anybody 
+wants some older 'DDI-technology, I'll donate my CDDI-card to whoever 
+swaps his AUI-card with your FDDI-card.
 
-the aui is an "inlay" board , you can change
+I guess I'm somewhat less helpfull now than I thought I was, but still. ;-)
 
-regards frank
+Yours,
+-Simen
+--
+Simen Thoresen, Beowulf-cleaner and random artist.
 
-
->
-> grant
->
-> > thanks in advance
-> > pedro gonnet
-> >
-> > ---------------------------------------------------------------------------
-> > To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> > `unsubscribe' as the subject.
-> >
->
-> Grant Grundler
-> Unix Development Lab
-> +1.408.447.7253
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+Er det ikke rart?
+The gnu RART-project on http://valinor.dolphinics.no:1080/~simentt/rart
