@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 83F7A483D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Jan 2003 21:30:53 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7E96F483D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Jan 2003 21:31:53 -0700 (MST)
 Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
-	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h0S4jUp13665
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Jan 2003 20:45:30 -0800
+	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h0S4jlp13674
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Jan 2003 20:45:47 -0800
 Received: from localhost (chandler@localhost)
-	by jordan.eng.nateng.com (8.11.4/8.11.4) with ESMTP id h0S4UXT00413
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Jan 2003 20:30:33 -0800
-Date: Mon, 27 Jan 2003 20:30:33 -0800 (PST)
+	by jordan.eng.nateng.com (8.11.4/8.11.4) with ESMTP id h0S4Upt00417
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Jan 2003 20:30:51 -0800
+Date: Mon, 27 Jan 2003 20:30:51 -0800 (PST)
 From: Sir Ace <chandler@nateng.com>
 To: <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Kernel....
 In-Reply-To: <20030128042418.GC20940@tausq.org>
-Message-ID: <Pine.LNX.4.33.0301272029570.235-100000@jordan.eng.nateng.com>
+Message-ID: <Pine.LNX.4.33.0301272030380.235-100000@jordan.eng.nateng.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -27,8 +27,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I thought so, but I couldn't find the kernel, once it was built {I saw the
-correct output}  Let me go back and looks and see if I can find it again.
+Does vmlinuz work on hp?
 
 On Mon, 27 Jan 2003, Randolph Chung wrote:
 
