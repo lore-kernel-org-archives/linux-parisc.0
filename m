@@ -1,20 +1,21 @@
 Return-Path: <deller@gmx.de>
 Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5B0504840
+	by dsl2.external.hp.com (Postfix) with SMTP id 4A2B0487B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Dec 2003 13:45:06 -0700 (MST)
+	Mon, 15 Dec 2003 13:47:02 -0700 (MST)
 From: Helge Deller <deller@gmx.de>
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+To: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] strange GNU ld / libgcc_s.so problems
-Date: Mon, 15 Dec 2003 21:42:21 +0100
-References: <200312142312.hBENCSHO002332@hiauly1.hia.nrc.ca>
-In-Reply-To: <200312142312.hBENCSHO002332@hiauly1.hia.nrc.ca>
+Date: Mon, 15 Dec 2003 21:46:44 +0100
+References: <200312141209.28283.deller@gmx.de>
+	<20031214221629.GZ13882@systemhalted>
+In-Reply-To: <20031214221629.GZ13882@systemhalted>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-Message-Id: <200312152142.21505.deller@gmx.de>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org
+Message-Id: <200312152146.44613.deller@gmx.de>
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,25 +25,45 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Monday 15 December 2003 00:12, John David Anglin wrote:
-> > > -lgcc_s (//usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
-> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
-> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
-> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
-> > > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
-> > > usr/lib/libgcc_s.so)
+On Sunday 14 December 2003 23:16, Carlos O'Donell wrote:
+> On Sun, Dec 14, 2003 at 12:11:07PM +0100, Helge Deller wrote:
+> > Below is the output and I don't understand the part which I marked with "######".
+> > Why does collect2 suddenly tries to resolve libstdc++.so while it searched for 
+> > libgcc_s.so ? All other libraries (e.g.-lutil) behave IMHO normal.
+> > Any ideas ? This seems to me like a bug in gcc 3.3.2, but I'm no expert here.
+> > 
+> ... SNIP ...
 > 
-> Debian builds GCC using sjlj exceptions.  This can happen if you use
-> GCC built using dwarf2 exception support (the default).
+> > attempt to open /usr/X11R6/lib/libgcc_s.so failed
+> > attempt to open /usr/X11R6/lib/libgcc_s.a failed
+> > attempt to open /opt/kde/qt/lib/libgcc_s.so failed
+> > attempt to open /opt/kde/qt/lib/libgcc_s.a failed
+> > attempt to open /opt/kde/lib/libgcc_s.so failed
+> > attempt to open /opt/kde/lib/libgcc_s.a failed
+> > attempt to open /usr/lib/libgcc_s.so succeeded
+> > -lgcc_s (//usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
+> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
+> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
+> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
+> > /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
+> > usr/lib/libgcc_s.so)
+> > 
+> > ##### ^^^ Why does /usr/lib/libstdc++.so comes into the game here ?
+> > ##### The double "//" seems suspect too, since it continues with "usr/lib/libgcc_s.so" 
+> > ##### in the last line without the trailing "/". It seems this "string" was broken up
+> > ##### right in the middle....
+> 
+> Where did that file come from? Is this a debian box?
+> You should have:
+> 
+> /usr/lib/gcc-lib/hppa-linux/<gcc-version>/libgcc_s.so
+> pointing to /lib/libgcc_s.so
 
-Hi Dave,
+Yes - Debian box and correct symlink.
 
-I'm only using debian's official binaries thru "apt-get update" - including gcc/g++:
+> I suggest you try building this in a clean unstable chroot :)
 
-c3000:/var/cache/apt/archives# dpkg -l | grep gcc
-ii  gcc            3.3.1-2        The GNU C compiler.
-pi  gcc-3.2-base   3.2.3-8        The GNU Compiler Collection (base package)
-ii  gcc-3.3        3.3.2-4        The GNU C compiler
-ii  gcc-3.3-base   3.3.2-4        The GNU Compiler Collection (base package)
-ii  gcc-hppa64     3.0-0pre010427 Cross gcc for hppa64
-ii  libgcc1        3.3.2-4        GCC support library
+:-)
+
+Thanks,
+Helge
