@@ -1,26 +1,27 @@
-Return-Path: <hppa-linux@puffingroup.com>
-Message-ID: <31AC914701CCD111900700805FE655DBCD1F69@xch-mes-02.msc.az.boeing.com>
-From: "Werzyn, Ed" <Ed.Werzyn@ARZ.Boeing.com>
-To: "'hppa-linux@puffingroup.com'" <hppa-linux@puffingroup.com>
-Date: Wed, 10 Feb 1999 15:49:42 -0700
-MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [hppa-linux] Nevermind...  Got multiuser mode running
-Resent-Message-ID: <"Pv6gc3.0.hl2.CVYms"@burrow.puffingroup.com>
+Return-Path: <pjlahaie@sims-ha.videotron.net>
+Date: Wed, 10 Feb 1999 22:28:07 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@ottawa.com>
+Sender: pjlahaie@sims-ha.videotron.net
+To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
+Message-id: <36C24E47.8DBE718B@ottawa.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [hppa-linux] egcs code generation problem
+Resent-Message-ID: <"QFyqv3.0.D-2.wXcms"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Like usual, play around enough and you'll figure it out.  Changed inittab
-initdefault from 1 to 3 and it comes up in multiuser mode (just like it says
-so in inittab - DOH!).  
+I believe I've found the cause of problems with the $global$ symbol
+problem.  Curiously, the $global$ symbol is
+properly defined in the MkLinux libgcc.a which led me to try and
+indentify the differences between the two systems.
+egcs currently builds the libgcc.a bin as -fPIC which seems to omit a
+bunch of code from the libgcc.a library.
 
-Sorry for the chaff   ;-)
+								- Paul
 
-
-Ed Werzyn
-System Administrator
-Longbow Apache Helicopter Software
-Boeing - Mesa
+PS: Thanks to Pablo@LinuxNet for giving me assembler dumps to compare
+between both systems.
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
