@@ -1,22 +1,15 @@
-From: Alan Modra <amodra@bigpond.net.au>
-Subject: [parisc-linux] Re: Solution to OPD's in hppa-linux,
-	including a transition plan?
-Date: Thu, 17 Mar 2005 10:24:21 +1030
-Message-ID: <20050316235421.GI21148@bubble.modra.org>
-References: <20050311180542.GV22872@baldric.uwo.ca>
-	<200503120049.j2C0nTDc017666@hiauly1.hia.nrc.ca>
-	<20050315220842.GC22872@baldric.uwo.ca>
-	<20050315224142.GC21148@bubble.modra.org>
-	<20050316203656.GF22872@baldric.uwo.ca>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: [parisc-linux] 2.6.12-rc1-pa1 32bit panicing on c110 :-( (BUG in
+	53c700.c)
+Date: Sat, 19 Mar 2005 21:24:22 +0000
+Message-ID: <423C9886.8030402@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org,
- tausq@debian.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+  charset=us-ascii;
+  format=flowed
+To: James Bottomley <james.bottomley@steeleye.com>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050316203656.GF22872@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,28 +20,54 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 16, 2005 at 03:36:57PM -0500, Carlos O'Donell wrote:
-> On Wed, Mar 16, 2005 at 09:11:42AM +1030, Alan Modra wrote:
-> > On Tue, Mar 15, 2005 at 05:08:48PM -0500, Carlos O'Donell wrote:
-> > > The problem is that in a normal executable those words just point at the
-> > > PLT and they shouldn't. That case should just generate a PLABEL32 reloc
-> > > in the executable. 
-> > 
-> > ld still needs to generate function descriptors for plabels that resolve
-> > locally, eg. because the symbol is for a static function.
-> 
-> I don't understand how this case changes the situation, can you elaborate a 
-> bit more?
+Hello all,
 
-If you take the address of a static function (or a hidden function),
-you'll need a plabel somewhere.  You can't expect ld.so to handle this
-via _dl_make_fptr, because the static function symbol isn't available to
-ld.so.  Also, don't forget that ld needs to do everything for a fully
-static link.
+Sorry for the second wrong news but after the init of ncr53c720-0:
+zalon_probe: Zalon version 1, IRQ 66
+ncr53c720-0: rev 0xf irq 66
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+scsi0 : ncr53c8xx-3.4.3g
+  target0:0:5: target did not report SYNC.
+   Vendor: SEAGATE   Model: ST34371W          Rev: HP03
+   Type:   Direct-Access                      ANSI SCSI revision: 02
+  target0:0:5: Beginning Domain Validation
+  target0:0:5: asynchronous.
+  target0:0:5: wide asynchronous.
+  target0:0:5: Domain Validation skipping write tests
+  target0:0:5: FAST-10 WIDE SCSI 20.0 MB/s ST (100 ns, offset 8)
+  target0:0:5: Ending Domain Validation
+  target0:0:6: target did not report SYNC.
+   Vendor: SEAGATE   Model: ST34371W          Rev: HP03
+   Type:   Direct-Access                      ANSI SCSI revision: 02
+  target0:0:6: Beginning Domain Validation
+  target0:0:6: asynchronous.
+  target0:0:6: wide asynchronous.
+  target0:0:6: Domain Validation skipping write tests
+  target0:0:6: FAST-10 WIDE SCSI 20.0 MB/s ST (100 ns, offset 8)
+  target0:0:6: Ending Domain Validation
+53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
+scsi1: 53c710 rev 2
+scsi1 : LASI SCSI 53c700
+scsi1: (3:0) HAS NO device
+kernel BUG at /Debian-apt/SRC/linux-2.6.12-rc1-pa1-050319/drivers/scsi/53c700.c!Backtrace:
+  [<10285488>] process_script_interrupt+0x80c/0xe84
+  [<10286ae8>] NCR_700_intr+0x8c4/0xf90
+  [<10144bc8>] handle_IRQ_event+0x50/0xa4
+  [<10144d44>] __do_IRQ+0x128/0x174
+  [<1021816c>] gsc_asic_intr+0x98/0xb4
+  [<10144bc8>] handle_IRQ_event+0x50/0xa4
+  [<10144d44>] __do_IRQ+0x128/0x174
+  [<10106ee8>] do_cpu_irq_mask+0x7c/0xd8
+  [<1010c068>] intr_return+0x0/0x14
+  [<1020e8f0>] idr_get_new_above_int+0xa4/0x164
+  [<10167980>] sys_utime+0x114/0x19c
+  [<101124d8>] cpu_idle+0xc/0x3c
+  [<10411488>] start_kernel+0x1c8/0x1f4
 
--- 
-Alan Modra
-IBM OzLabs - Linux Technology Centre
+Kernel panic - not syncing: BUG!
+
+Thanks,
+     Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
