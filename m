@@ -1,54 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D2A04482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Jun 2001 06:45:20 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7306E482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Jun 2001 07:29:04 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id D5FDEB007; Wed, 13 Jun 2001 13:40:56 +0100 (BST)
-Date: Wed, 13 Jun 2001 13:40:56 +0100
+	id EFDE8B007; Wed, 13 Jun 2001 14:24:44 +0100 (BST)
+Date: Wed, 13 Jun 2001 14:24:44 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Helge Deller <deller@gmx.de>
+To: Matteo Boschini <boschini@cilea.it>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] sticon/sercon patch for new bootfloppies...
-Message-ID: <20010613134056.E16532@linuxcare.com>
-References: <20010613002536.AB3E8482A@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] problem installing on HP735
+Message-ID: <20010613142444.J16532@linuxcare.com>
+References: <Pine.LNX.4.21.0106131204210.1173-100000@boschini.sede.cilea.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010613002536.AB3E8482A@dsl2.external.hp.com>; from deller@gmx.de on Wed, Jun 13, 2001 at 02:24:49AM +0200
+In-Reply-To: <Pine.LNX.4.21.0106131204210.1173-100000@boschini.sede.cilea.it>; from boschini@cilea.it on Wed, Jun 13, 2001 at 12:08:08PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jun 13, 2001 at 02:24:49AM +0200, Helge Deller wrote:
-> Hi,
+On Wed, Jun 13, 2001 at 12:08:08PM +0200, Matteo Boschini wrote:
 > 
-> the attached patch enables only those consoles, which are given on the linux 
-> kernel command line.
-> Examples: "console=tty0" activates STIcon only, "console=ttyS0" activates 
-> serial console only and if you use both on the commandline you will get the 
-> system messages on both consoles.
-> 
-> Known bugs: 
-> - STIcon will not show any messages which happened before the STI
-> 	initialisation
+> Hi, I fixed the CD issue. 
+> I had some problems with the images itself. Downloaded it again, and it
+> boots. In installing the O.S., console freezes when "Installing Rescue
+> floppy..."
 
+First report I've seen of that.
 
-Just tried a kernel with serial console, sti console, and sti fb all
-compiled in, with palo/unstable.  Seems to do the right thing on my B180 :)
+> any hint ?
 
-The kernel knows it cannot support b180 fb, so uses sti console automatically
-but this kernel should use sti fb on those machines that we support.
+No idea, sorry.
 
-I left the b180 alone until the "screen blanking" cut in.  It just turns
-off the cursor, btw, doesn't blank the screen.
+> Furthermore, is it possible to do a "console switch" and activate a
+> shell like the Alt+F1 on a PC ?
 
-When I came back to it the cursor had gone back to top-left, and all
-chars are printed as blobs of garbage.  System is still happy apart from
-that.
-
-I think the cursor going to top-left on a screen blank is a result of
-your last lot of bug fixes, but not certain of that.
-
-The other thing for people to note is that if you specify both
-console=ttyS0 and console=tty0, then the order is important.  The
-real console is the second one you specify, the other just gets
-a copy of boot messages (all kernel printk's, I guess).
+Not on a serial install.  If you can get back to the installer menu
+you can scroll down and select 'execute a shell'.
 
 Richard
