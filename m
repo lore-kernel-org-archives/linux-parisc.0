@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 13A90482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 09:11:30 -0700 (MST)
-Message-Id: <200301311611.h0VGBQiC020120@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] PATCH hppa ordered load absolute ops
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-Date: Fri, 31 Jan 2003 11:11:26 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: bug-binutils@gnu.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030131070155.8DDFD482A@dsl2.external.hp.com> from "Grant Grundler" at Jan 31, 2003 00:01:55 am
+Received: from mail.sonytel.be (mail2.sonytel.be [195.0.45.172])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA451482A
+	for <parisc-linux@parisc-linux.org>; Fri, 31 Jan 2003 10:44:53 -0700 (MST)
+Date: Fri, 31 Jan 2003 18:43:16 +0100 (MET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Tom Rini <trini@kernel.crashing.org>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>
+In-Reply-To: <20030130180315.GA14768@ip68-0-152-218.tc.ph.cox.net>
+Message-ID: <Pine.GSO.4.21.0301311838270.10634-100000@vervain.sonytel.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: Generic RTC driver in 2.4.x
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +26,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant,
+On Thu, 30 Jan 2003, Tom Rini wrote:
+> On Fri, Jan 10, 2003 at 09:05:55PM +0100, Geert Uytterhoeven wrote:
+> > Unfortunately I didn't receive any feedback from the pa-risc and ppc people
+> > after my previous posting last Sunday.
+> [snip]
+> > Pa-risc and ppc people (any other users?), please send me your enhancements (or
+> > just ack if none are necessary), so I can send genrtc to Marcelo.
+> 
+> Sorry I haven't spoken up before this, A simple cp of
+> include/asm-ppc/rtc.h (and then throwing the question
+> someplace) compiles a kernel correctly, and from what I recall of
+> getting it to work in 2.5, at that point it was all good anyhow.  So
+> this is fine for PPC32 as is.
 
->  { "ldwa",       0x0c000180, 0xfc00d3c0, "cxccx(b),t", pa10, FLAG_STRICT},
->  { "ldwa",	0x0c001180, 0xfc00d3c0, "cmcc5(b),t", pa10, FLAG_STRICT},
-> +{ "ldwa",	0x0c0031a0, 0xfc1ff3d0, "cocc@(b),t", pa20, FLAG_STRICT},
+Note that in the mean time genrtc has changed, so I'd prefer you to at least
+sent me your include/asm-ppc/rtc.h and a patch to add the question on PPC,
+_after_ you have test-compiled the latest version. I'll send it to you in a
+separate mail.
 
-?               0x0c0011a0, 0xfc1ff3e0 
+Gr{oetje,eeting}s,
 
->  { "ldda",       0x0c000100, 0xfc00d3c0, "cxccx(b),t", pa20, FLAG_STRICT},
->  { "ldda",	0x0c001100, 0xfc00d3c0, "cmcc5(b),t", pa20, FLAG_STRICT},
-> +{ "ldda",	0x0c003100, 0xfc1ff3d0, "cocc@(b),t", pa20, FLAG_STRICT},
+						Geert
 
-?		0x0c001120, 0xfc1ff3e0
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Shouldn't a=0, m=1 and im5=0?
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
