@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 526F14829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Aug 2002 23:55:34 -0600 (MDT)
-Date: Fri, 16 Aug 2002 07:54:04 +0200 (CEST)
-From: Jochen Friedrich <jochen@scram.de>
-To: Matthew Wilcox <willy@debian.org>
-Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.LNX.4.44.0208160747470.18884-100000@gfrw1044.bocc.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] db3 patch for Linux/HPPA
+Received: from cce.ru (sr1.cce.ru [80.79.64.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D67CF4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Aug 2002 00:18:00 -0600 (MDT)
+Received: from [80.79.64.37] (account nsem HELO kahuna.cce.ru)
+  by cce.ru (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 277742 for parisc-linux@lists.parisc-linux.org; Fri, 16 Aug 2002 10:18:06 +0400
+Message-Id: <5.1.0.14.0.20020816100459.00a76008@mail.cce.ru>
+Date: Fri, 16 Aug 2002 10:18:07 +0400
+To: parisc-linux@lists.parisc-linux.org
+From: Nikolay Semenov <nsem@cce.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: [parisc-linux] 10-pin modular jack on 75/100 and a mouse in X
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,25 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Matthew,
+Hi there,
 
-this fixes a problem with db3 mutexes. Problem is in 
-__db_tas_mutex_init(). If MUTEX_INIT returns non-zero value, mutexp->spins 
-doesn't get initialized and later __db_tas_mutex_lock loops without ever 
-trying to aquire the lock (as spins is zero).
+I've install Woody on 75/100 workstation with 10-pin modular jack for 
+keyboard and mouse connection and cannot get the mouse working in X.
+Can someone tell me how to configure X to get it working?
 
-diff -urN db-3.2.9/include/mutex.h db-3.2.9.new/include/mutex.h
---- db-3.2.9/include/mutex.h    Sun Jun 23 16:34:28 2002
-+++ db-3.2.9.new/include/mutex.h        Sun Jun 23 16:33:38 2002
-@@ -413,7 +413,7 @@
-        __r & 1;                                                        \
- })
+  (i) if I try /dev/input/mice -- device cannot be open.
+  (ii) if I try /dev/psaux -- device be opened but the mouse not working.
 
--#define        MUTEX_UNSET(tsl)        (*(tsl) = -1)
-+#define        MUTEX_UNSET(tsl)        (!(*(tsl) = -1))
- #define        MUTEX_INIT(tsl)         MUTEX_UNSET(tsl)
- #endif
- #endif
+Keyboard is working all the time.
 
-Cheers,
---jochen
+Thanks in advance,
+
+Nikolay 
