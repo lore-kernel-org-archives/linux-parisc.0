@@ -1,25 +1,29 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Message-ID: <B782283A728ED011BBA2006097780D03F29186@COMA0S04>
-From: "Mandachi, Dorin \(Omaha\)" <Dorin.Mandachi@cox.com>
+Message-ID: <7DB180A629C1D211869F00A0C9F44A8C17F8@retro-mail.fish.retrotech.com>
+From: "Muench, David" <dmuen@retrotech.com>
 To: "'hppa-linux@thepuffingroup.com'" <hppa-linux@thepuffingroup.com>
 Subject: RE: [hppa-linux] Bootstrap #3 successful
-Date: Wed, 10 Mar 1999 12:15:32 -0500
+Date: Wed, 10 Mar 1999 13:01:14 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Resent-Message-ID: <"6v8jy3.0.Jg1.Fggvs"@sod.res.cmu.edu>
+Resent-Message-ID: <"rC0tU1.0.kw1.qChvs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Also successfully booted a 715/100 from SCSI hd. 
 
-Dorin Mandachi
+If I'm #7 listed down there, it was off a scsi disk. Sorry I forgot to
+mention that.
+
+---
+David Muench - Project System Administrator
+Retrotech, Inc. - http://www.retrotech.com/
 
 
 
 -----Original Message-----
 From: Jason Eckhardt [mailto:jason@equator.com]
-Sent: Wednesday, March 10, 1999 11:12 AM
+Sent: Wednesday, March 10, 1999 12:12 PM
 To: hppa-linux@thepuffingroup.com
 Subject: [hppa-linux] Bootstrap #3 successful
 
