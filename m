@@ -1,68 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D1564482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 06:29:28 -0600 (MDT)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15mDoV-0005Tl-00
-	for parisc-linux@lists.parisc-linux.org; Wed, 26 Sep 2001 14:29:19 +0200
-Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
-	id 15mDms-0005O0-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 14:27:38 +0200
-Date: Wed, 26 Sep 2001 14:27:38 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010926142738.B20697@dogbert.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Sender: Albert Strasheim <fullung@dogbert.localdomain>
-Subject: [parisc-linux] The 720/50 saga continues...
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ADAAD4925
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 07:27:44 -0600 (MDT)
+Date: Wed, 26 Sep 2001 15:27:22 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: Albert Strasheim <fullung@ilink.nis.za>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] The 720/50 saga continues...
+In-Reply-To: <20010926142738.B20697@dogbert.localdomain>
+Message-ID: <Pine.NEB.4.33.0109261524001.14785-100000@www2.scram.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Albert,
 
-A long time ago, in a galaxy far, far away...
+> Next rather annoying problem: ls reports "Invalid instruction" whenever
+> you try to run it. cat works, mount works... I haven't had much time to
+> test anything else.
 
-I booted my 720/50 from a lifimage with a nfsroot... and it worked, or
-something. :-)
+So, ls triggers a real alignment problem which is now, due to the
+fallthrouth to case 26, handled by the paging code...
 
-I modified the woody debootstrap script a bit to create a new nfsroot
-(basically I ripped out the running of any binaries in the chroot), and
-ran in on my i386. That worked pretty well.
+As a temporary solution, i just copies the busybox from the installation
+disk (which does not suffer from the same problem) and linked it to ls,
+tar and sleep (being the userspace tools that trapped for me) which
+allowed me to get a mostly working system up and running...
 
-Next up, I added an init=/bin/sh to the palo kernel command line
-parameters, and rbootd'd the make palo lifimage. Whooo, prompt! So
-first, mount proc, next remount the nfsroot rw, and then run
-/sbin/ldconfig. Looking good...
+Now going to fix the real problem, on how to decide in the case 18 handler
+if the trap is caused by a page fault or an alignment fault.
 
-Next rather annoying problem: ls reports "Invalid instruction" whenever
-you try to run it. cat works, mount works... I haven't had much time to
-test anything else.
-
-I also attempted a dpkg-reconfigure --all, but it seems to be missing
-Term::ReadLine. I'll be able to work some more on Friday. Hopefully dpkg
-will do the trick, but if not, dpkg-cross might...?
-
-Any ideas on the ls problem?
-
-Regards,
-
-Albert
-
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7scm5Dg+hOeRZtkMRAqkZAJ95d5j9Q5unNeIdcHbZkn/gEbR/5QCfdYlD
-JZAlwjIvmGmbmUqk64OfbIc=
-=AJsZ
------END PGP SIGNATURE-----
-
---Qxx1br4bt0+wmkIi--
+Cheers,
+Jochen
