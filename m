@@ -1,17 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: "Michael S. Zick" <mszick@goquest.com>
 Subject: Re: [parisc-linux] Should I read SHR[DW] as SHRP[DW] in parisc2.p
-Date: Fri, 13 Aug 2004 20:27:12 -0400 (EDT)
-Message-ID: <200408140027.i7E0RCRO001690@hiauly1.hia.nrc.ca>
-References: <200408131754.29746.mszick@goquest.com>
+Date: Fri, 13 Aug 2004 19:53:17 -0500
+Message-ID: <200408131953.17512.mszick@goquest.com>
+References: <200408140027.i7E0RCRO001690@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- parisc-linux@parisc-linux.org
-To: mszick@goquest.com (Michael S. Zick)
+  charset="iso-8859-1"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200408131754.29746.mszick@goquest.com> from "Michael S. Zick" at
-	Aug 13, 2004 06:54:29 pm
+In-Reply-To: <200408140027.i7E0RCRO001690@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,35 +20,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->   80:   d2 80 09 f4     shrpw r0,r20,16,r20
->   84:   d2 80 39 f0     extrw,u,= r20,15,16,r0
+On Fri August 13 2004 19:27, John David Anglin wrote:
+> >   80:   d2 80 09 f4     shrpw r0,r20,16,r20
+> >   84:   d2 80 39 f0     extrw,u,= r20,15,16,r0
+> > 
+> > Then checking chapter 7 on 'shrpw' it very clearly
+> > states that this instruction effects only the right
+> > half of the registers. (no mention of left half)
 > 
-> Then checking chapter 7 on 'shrpw' it very clearly
-> states that this instruction effects only the right
-> half of the registers. (no mention of left half)
+> It actually says for 'shrpw' that the leftmost 32 bits of the target
+> register (r20) are undefined.  If you had used a different target
+> register, r20 would not have been affected.
+> 
+I need to learn to read better.
 
-It actually says for 'shrpw' that the leftmost 32 bits of the target
-register (r20) are undefined.  If you had used a different target
-register, r20 would not have been affected.
+> 
+> The documentation is a bit vague when it comes to condition tests
+> when a result is discarded, but I believe that the test is done
+> before the result is discarded.  It doesn't make any sense to test
+> r0 which always reads as zero.
+> 
+Another vague thing -
+Can you get a register stall (interlock) against gr0?
+I.E:
+op-code ....,destination Rx
+op-code source Rx, .....
+must wait for the store to Rx to be retired.
+If Rx is GR0 - will the behavior be the same?
+In tech. terms...
+Is the discard prior to the retire stage of the
+pipeline?
+Is the discard even earlier than that in the pipeline? 
+Does reference to GR0 count against the two 
+register limit on issues?
 
-The condition in the 'extrw', "=", checks that all bits in the "word"
-are zero.  The leftmost 32 bits in r20 are again undefined as a
-result of the 'extrw' instruction.  However, they don't matter as the
-target of the extrw is r0 (result discarded) and the condition test
-only checks the rightmost 32 bits (word).
+I can find a partial answer - if the operation referencing
+GR0 changes the flags - it seems that you can stall 
+against the update of the flags in the PSW.
+(or at least that would be reasonable to expect).
 
-You need to be aware that a word is 32 bits and a double word 64 bits
-in HP lingo.
-
-The documentation is a bit vague when it comes to condition tests
-when a result is discarded, but I believe that the test is done
-before the result is discarded.  It doesn't make any sense to test
-r0 which always reads as zero.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
