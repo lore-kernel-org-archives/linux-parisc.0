@@ -1,97 +1,94 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA01050
-	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Apr 2000 12:06:04 -0600
-Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
-	by atlrel2.hp.com (Postfix) with ESMTP id 21077A93
-	for <parisc-linux@thepuffingroup.com>; Thu,  6 Apr 2000 14:05:58 -0400 (EDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA03452
+	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Apr 2000 15:30:50 -0600
+Received: (from steve@localhost)
+	by osiris.silug.org (8.9.3/8.9.3) id QAA25142
+	for parisc-linux@thepuffingroup.com; Thu, 6 Apr 2000 16:30:46 -0500
+From: Steven Pritchard <steve@silug.org>
+Message-Id: <200004062130.QAA25142@osiris.silug.org>
+Subject: Re: [parisc-linux] K100 problem
+In-Reply-To: <002801bf9b5f$c12180e0$4b58000f@jh73313p.cup.hp.com> from Jim Hull
+ at "Mar 31, 2000 02:23:35 pm"
 To: parisc-linux@thepuffingroup.com
-Date: Thu, 06 Apr 2000 12:05:57 -0600
-From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E12dGfF-00012e-00@endor.fc.hp.com>
-Subject: [parisc-linux] building a glibc-based tool chain
+Date: Thu, 6 Apr 2000 16:30:46 -0500 (CDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+Jim Hull said:
+> WARN  A008  No bootable device found 
 
-Well it still doesn't work, but here are some UGLY HACKS I use to
-get a tool chain built using our glibc, which only works on x86 I think.
-There are many many failure modes which these steps avoid, or so I hope.
-Lots of this is probably my misunderstanding of the glibc/gcc relationship.
+Apparently the terminal was dead.  I hooked it up to my PC and got
+output.  Now I have another problem...  The box outputs to the serial
+console, but it doesn't seem to want to take input on the serial
+console.  Any ideas what might cause that?
 
-First grab binutils and build it as usual.  I used
+Here's the boot messages:
 
-    .../binutils/configure --target=hppa1.1-linux --disable-nls \
-	--prefix=/opt/palinux
-    make
-    make install
+--
 
-DO NOT allow the default --prefix to be used or you'll be SCREWED later
-when you try to build gcc.
+Firmware Version  1.8
 
-Fix your $PATH before going further:
+Duplex Console IO Dependent Code (IODC) revision 4
 
-    PATH=/opt/palinux/bin:$PATH
+------------------------------------------------------------------------------
+   (c) Copyright 1990-1994, Hewlett-Packard Company, All rights reserved
+------------------------------------------------------------------------------
 
-Now the nasty one.  Grab glibc and configure it:
-    !! DO NOT allow the default --prefix to be used or you'll be SCREWED
-    !! later when you try to build gcc.  If by chance you do an install
-    !! into /usr/local you'll have to remove those files before gcc will
-    !! build.
+  Processor   Speed            State           CoProcessor State  Cache Size
+  ---------  --------   ---------------------  -----------------  ----------
 
-    .../glibc/configure --target=hppa1.1-linux --disable-nls \
-	--prefix=/opt/palinux --disable-shared --disable-sanity-checks
-    make
+      0      100  MHz   Active                 Functional          256 KB
 
-This will fail with undefined references.  Do:
-    ls > nss/makedb
-    make
+  Central Bus Speed (in MHz)  :        100  
+  Available Memory (bytes)    :  167772160  
+  Good Memory Required (bytes):   16211968  
 
-This should complete.  This is pretty creepy but...
 
-    for n in *
-    do
-	touch $n/stubs
-    done
+   Primary boot path:    8/0.6   (dec)
+   Alternate boot path:  8/12/5.0   (dec)
+   Console path:         8/4/0.0   (dec)
+   Keyboard path:        8/12/7.0   (dec)
 
-    make install
+CPU 0
+  WARNING:  Memory configuration is not optimized for performance.  Refer
+            to the System Installation or Memory Installation manuals for 
+            memory configuration guidelines.
 
-This will fail, but gets far enough to be useful.
 
-Now in the top-level makefile in the real glibc source tree, remove
-the dependency like this diff shows (otherwise the manual/ subdir build
-will prevent success).
+Processor is starting autoboot process.
 
-    diff -r1.1 Makefile
-    142c142
-    < $(inst_includedir)/gnu/stubs.h: subdir_install
-    ---
-    > $(inst_includedir)/gnu/stubs.h: 
+To discontinue, press any key within 10 seconds.
 
-Then:
+10 seconds expired.
+Proceeding...
 
-    make /your/install/directory/include/gnu/stubs.h
+Trying Primary Boot Path
+------------------------
 
-Now remove the #ifdef __USE_UNIX98 and the matching #endif  /* Unix98 */
-from /your/install/directory/include/unistd.h around line 238
+Booting... 
+Boot IO Dependent Code (IODC) revision 7
 
-Time for gcc
 
-    .../gcc/configure --target=hppa1.1-linux --disable-nls --prefix=/opt/palinux
+HARD Booted.
 
-    make
-    make install
+ISL Revision A.00.38  OCT 26, 1994 
 
-For some unknown reason, this new hppa1.1-linux-gcc doesn't look in
-/opt/palinux/include for headers, thus a quick hack:
+ISL booting  hpux
 
-    mv /opt/palinux/lib/gcc*/*/*/include/* /opt/palinux/include
-    rmdir /opt/palinux/lib/gcc*/*/*/include/
-    ln -s /opt/palinux/include /opt/palinux/lib/gcc*/*/*/include/
+Boot
+: disc(8/0.6.0;0)/stand/vmunix
+4334092 + 380928 + 407872 start 0x17ce68
 
-It might be better to use a different --prefix when configuring glibc
-so as to have these header files installed where gcc expects to find them.
+--
 
-At this point I was able to compile but not link.  For some reason gcc
-doesn't look in /opt/paliux/lib for crt1.o and friends.  When I
-added crt0.o and libc by hand, the link failed with a meaningless error.
+It does boot into HP-UX, so if I can figure out a way into it over the
+network, I can probably reload the box with IgniteUX and just use it
+as a HP-UX system, but obviously life would be easier if I could use
+the console...
 
-	-P
+Steve
+-- 
+steve@silug.org           | Linux Users of Central Illinois
+(618)398-7320             | Meetings the 4th Tuesday of every month
+Steven Pritchard          | http://www.luci.org/ for more info
