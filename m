@@ -1,35 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA21281
-	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 03:32:02 -0700
-Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 10:35:01 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id A8120B005; Wed, 20 Dec 2000 10:28:53 +0000 (GMT)
-Date: Wed, 20 Dec 2000 10:28:53 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Alex deVries <adevries@linuxcare.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] hwclock
-Message-ID: <20001220102853.F2554@linuxcare.com>
-References: <3A3F8376.BF84A667@linuxcare.com> <200012192325.PAA16134@milano.cup.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA23592
+	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 06:27:36 -0700
+Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
+  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 13:30:24 -0000
+Subject: Re: [parisc-linux] SuckyIO support
+To: adevries@linuxcare.com (Alex deVries)
+Date: Wed, 20 Dec 2000 13:05:38 +0000 (GMT)
+Cc: grundler@cup.hp.com (Grant Grundler), parisc-linux@thepuffingroup.com
+In-Reply-To: <3A405395.FFFF99E4@linuxcare.com> from "Alex deVries" at Dec 20, 2000 01:37:09 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200012192325.PAA16134@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Dec 19, 2000 at 03:25:34PM -0800
+Message-Id: <E148iw9-0001Vc-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Dec 19, 2000 at 03:25:34PM -0800, Grant Grundler wrote:
-> Alex deVries wrote:
-> > There's been some discussion on IRC about not always having to set the
-> > clock when in userspace.  I had a quick look at it, and it shouldn't be
-> > too hard.  We just need a parisc version of hwclock which calls the
-> > PDC_TOD functions.
+> > Why are you reading this out of a register? Which register?
 > 
-> CONFIG_GENRTC in fact does use PDC_TOD.
-> Randolph Chung had hwclock working for PXC-L/L2 machines and I tested it
-> on my c3k (32-bit) a few weeks back.
-> If it's broken, then it's a "recent" change.
+> I'm reading it out of the INTERRUPT_LINE register because that's how
+> 'normal' PCI devices set their dev->irq value.  If you say that's the
+> right approach, I believe you.
 
-Works for me on B180L (once I created /dev/rtc).  Kernel source as of
-CVS 12 hours ago.
-
-Richard
+INTERRUPT_PIN is pre-PCI plumbing view of the interrupt
+INTERRUPT_LINE is sort of the PCI view of the interrupt at best
+pci_dev->irq is the Linux view post all the plumbing and host goo
