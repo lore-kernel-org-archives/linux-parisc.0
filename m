@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from imo-d02.mx.aol.com (imo-d02.mx.aol.com [205.188.157.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D02834829
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Nov 2002 00:43:35 -0700 (MST)
-Received: from WRBoyer123@aol.com
-	by imo-d02.mx.aol.com (mail_out_v34.13.) id b.49.25f3aff8 (4552)
-	 for <parisc-linux@parisc-linux.org>; Sun, 3 Nov 2002 02:43:23 -0500 (EST)
-From: WRBoyer123@aol.com
-Message-ID: <49.25f3aff8.2af62d9b@aol.com>
-Date: Sun, 3 Nov 2002 02:43:23 EST
-Subject: Re: [parisc-linux] Anybody got a 74x workstation?
-To: parisc-linux@parisc-linux.org
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0B4884829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Nov 2002 04:40:14 -0700 (MST)
+Date: Sun, 3 Nov 2002 12:33:56 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: Randolph Chung <randolph@tausq.org>
+Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] unreliable mmap
+In-Reply-To: <20021023231536.GC5602@tausq.org>
+Message-ID: <Pine.LNX.4.44.0211031232380.24848-100000@gfrw1044.bocc.de>
 MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="part1_49.25f3aff8.2af62d9b_boundary"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,38 +22,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---part1_49.25f3aff8.2af62d9b_boundary
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Hi Randolph,
 
-In a message dated 11/2/02 5:45:23 PM Pacific Standard Time, willy@debian.org 
-writes:
+> no one has managed to really track this down yet. i can insert a dcache
+> flush into the kernel to 'fix' this, but it is not the right place to be
+> doing the flush.
+
+I can confirm this. The following patch "fixes" the problem for me. Please
+do NOT apply this dirty hack to CVS!
+
+cvs server: Diffing .
+Index: filemap.c
+===================================================================
+RCS file: /var/cvs/linux/mm/filemap.c,v
+retrieving revision 1.27
+diff -u -r1.27 filemap.c
+--- filemap.c   4 Aug 2002 23:00:15 -0000       1.27
++++ filemap.c   3 Nov 2002 11:37:52 -0000
+@@ -3075,6 +3075,7 @@
+                        goto sync_failure;
+                page_fault = __copy_from_user(kaddr+offset, buf, bytes);
+                flush_dcache_page(page);
++               flush_cache_all();
+                status = mapping->a_ops->commit_write(file, page, offset,
+offset+bytes);
+                if (page_fault)
+                        goto fail_write;
 
 
-> I just noticed that we only have a 742 in the hardware database... anyone
-> got a 743, 744, 745, 747 or 748 workstation they could add?
-> 
-
-Or.... anyone have any 74x hardware they want to SELL?  They are in short 
-supply on the surplus market.
-
-wayne
-
-
---part1_49.25f3aff8.2af62d9b_boundary
-Content-Type: text/html; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-
-<HTML><FONT FACE=arial,helvetica><FONT  SIZE=2>In a message dated 11/2/02 5:45:23 PM Pacific Standard Time, willy@debian.org writes:
-<BR>
-<BR>
-<BR><BLOCKQUOTE TYPE=CITE style="BORDER-LEFT: #0000ff 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: 0px; PADDING-LEFT: 5px">I just noticed that we only have a 742 in the hardware database... anyone
-<BR>got a 743, 744, 745, 747 or 748 workstation they could add?
-<BR></FONT><FONT  COLOR="#000000" SIZE=3 FAMILY="SANSSERIF" FACE="Arial" LANG="0"></BLOCKQUOTE>
-<BR></FONT><FONT  COLOR="#000000" SIZE=2 FAMILY="SANSSERIF" FACE="Arial" LANG="0">
-<BR>Or.... anyone have any 74x hardware they want to SELL? &nbsp;They are in short supply on the surplus market.
-<BR>
-<BR>wayne
-<BR></FONT></HTML>
-
---part1_49.25f3aff8.2af62d9b_boundary--
+--jochen
