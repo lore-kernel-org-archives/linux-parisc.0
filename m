@@ -1,17 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] interesting linker behaviour :)
-Date: Tue, 21 Sep 2004 18:19:06 -0400
-Message-ID: <20040921221905.GI13248@baldric.uwo.ca>
-References: <20040921174353.GB13248@baldric.uwo.ca>
-	<200409211851.i8LIpT1Z009455@hiauly1.hia.nrc.ca>
-	<20040921220458.GH13248@baldric.uwo.ca>
+Date: Tue, 21 Sep 2004 18:21:49 -0400 (EDT)
+Message-ID: <200409212221.i8LMLo6J011546@hiauly1.hia.nrc.ca>
+References: <20040921220458.GH13248@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040921220458.GH13248@baldric.uwo.ca>
+In-Reply-To: <20040921220458.GH13248@baldric.uwo.ca> from "Carlos O'Donell" at
+	Sep 21, 2004 06:04:59 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,18 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Sep 21, 2004 at 06:04:59PM -0400, Carlos O'Donell wrote:
-> I think you said we had similar problems with non-local goto's?
+> > Good catch!  I've hit this problem before but under HP-UX.  GAS doesn't
+> > support the alternate entry point fixup needed to support multiple
+> > entry points to a function.  I don't think anyone has tried to support
+> > this with the ELF tools.  There could be some nasty interactions with
+> > the HP unwind data when you start adding multiple entry points to a
+> > function.
 > 
-> Either we had a conversation about multiple entry points, or I read it
-> in one of the HP documents :)
+> I think you said we had similar problems with non-local goto's?
 
-Randolph,
+Right, that's where it came up.  As of 6/11/04, we have a new nonlocal_goto
+expander.  I'm a little foggy on this issue but I think prior to the
+tree-ssa merge the default nonlocal_goto expander was ok.
 
-See! If we had a wiki it would be under 'john david anglin says' :)
-
-c.
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
