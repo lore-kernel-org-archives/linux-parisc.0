@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 146B94840
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 06:22:45 -0600 (MDT)
-Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
-	by hauptpostamt.charite.de (Postfix) with ESMTP id ACF3B15C02E
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 14:22:43 +0200 (CEST)
-Date: Thu, 4 Jul 2002 14:22:42 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Power Button doesn't turn machine off anymore
-Message-ID: <20020704122241.GY19722@charite.de>
-References: <20020702190606.GA3678@systemhalted> <20020702190842.GR25586@charite.de> <20020702192147.GC3678@systemhalted> <20020702193116.GU25586@charite.de> <20020703052415.GB32490@charite.de> <20020703121306.GA8464@systemhalted> <20020703121737.GS15228@charite.de> <20020703164631.F0CE2483A@dsl2.external.hp.com> <20020703165234.GG13244@charite.de> <20020703203227.GE9009@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020703203227.GE9009@systemhalted>
+Received: from spoolm1.tiscalinet.be (unknown [212.35.2.50])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A343C4842
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 08:49:39 -0600 (MDT)
+Message-ID: <3D2460E6.2040608@freebel.net>
+Date: Thu, 04 Jul 2002 14:51:18 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: Alex Green <alexdgreen@hotmail.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Installing on C3600
+References: <OE62b63Kbc9oLfgzBsc00001390@hotmail.com> <3D21DFDD.9090002@freebel.net> <3D21E354.8050701@freebel.net> <OE17H31NKzHWcQTLwR20000190f@hotmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,59 +22,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am 03.07.2002 um 16:32:27 -0400 schrieb Carlos O'Donell folgendes:
 
-> Could you please try this out and see if you see anything in your logs :)
+Alex Green wrote:
+> [....]
+> 
+> 
+>>>If it is a hp terminal, you can change the emulation. It depends of the
+>>>terminal type but you can have a look in your user guide or test (but I
+>>>think that would request severall reboot) the emulation nearest vt100
+>>
+> IIRC.
+> 
+>>>Once you have found the right emulation, try first the more stable
+>>>32-bits kernel (IIRC if you unplug ps/2 or usb mouse and keyboard, the
+>>>kernel will switch to serial console on port 1).
+>>
+>>Another good solution could also be to run minicom as console emulation.
+> 
+> 
+> So, should i set the terminal type to be VT102 IIRC or just VT102?.. the
+> terminal is a proper HP Serial Console.
+>
+Sorry I have not any material neither doc to help you right now. Next 
+week I will be back to office and more accurate details for your help.
 
-Applied. Rebuilding now. Will try it out when I'm back home.
+> Is it possible to use the STI Console ( Which I believe to be the Graphics
+> Adapter Console) to start the installation?
+> 
+Let first try to build a build a system wit serial console, than you 
+would be able to choose install a more recent kernel 
+(ftp://ftp.parisc-linux.org) to see if you can use STI (IIRC Standard 
+Text Interface) with your Graphics adapter).
 
-> --- ./arch/parisc/kernel/power.c	Tue Jul  2 15:17:59 2002
-> +++ ./arch/parisc/kernel/power.c	Wed Jul  3 16:28:47 2002
-> @@ -55,6 +55,7 @@
->  #include <asm/led.h>
->  #include <asm/uaccess.h>
->  
-> +#define DEBUG
->  
->  #ifdef DEBUG
->  # define DPRINTK(x) printk x
-> @@ -123,6 +124,8 @@
->  /* check, give feedback and start shutdown after one second */
->  static void process_shutdown(void)
->  {
-> +	DPRINTK((KERN_INFO "Processing shutodwn...\n"));
-> +
->  	if (shutdown_timer == 0)
->  		DPRINTK((KERN_INFO "Shutdown requested...\n"));
->  
-> @@ -181,7 +184,12 @@
->  static void polling_tasklet_func(unsigned long soft_power_reg)
->  {
->          unsigned long current_status;
-> -	
-> +
-> +#ifdef DEBUG
-> +	/* CAO July 3, 2002 - Prove we are using gecko tasklet */
-> +	BUG();
-> +#endif
-> +
->  	if (!pwrsw_enabled)
->  		return;
->  
-> @@ -362,6 +370,8 @@
->  	power_remove_procfs();
->  	power_tasklet.func = NULL;
->  	pdc_soft_power_button(0);
-> +
-> +	printk(KERN_INFO "Soft power switch disabled.\n");
->  }
->  
->  module_init(power_init);
+So yes STI give you actually a text interface for your console on your 
+Graphical adaptor through fb (Frame Buffer) support.
 
-
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Why you can't find your system administrators:
-The admin electroculted themselves whilst installing some cabling near the main power cable. Since the admin's body is the only thing keeping the power flowing, the management boarded up the body and pretended they still had a system administrator. 
+> Thanks for the help
+> Alex
+>
+See you later,
+	Joel
