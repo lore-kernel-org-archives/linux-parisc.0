@@ -1,37 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 38466482A
-	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 08:59:11 -0600 (MDT)
-Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m152wYH-001VltC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 08:57:25 -0600 (MDT)
-Message-Id: <m152wYH-001VltC@bame.riverrock.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Matt Taggart <taggart@carmen.fc.hp.com>,
-	parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org,
-	bame@www.riverrock.org
-Subject: Re: [parisc-linux] Re: hppa64 cross compiler debs available 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Thu, 24 May 2001 11:38:40 BST." <20010524113840.V8736@linuxcare.com>
-References: <20010523231045.0DF9037CA8@carmen.fc.hp.com>  
- <20010524113840.V8736@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 24 May 2001 08:57:25 -0600
-From: Paul Bame <bame@riverrock.org>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B0F7D482A
+	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 15:34:14 -0600 (MDT)
+Received: from security.hp.com (cranston.fc.hp.com [15.1.44.224])
+	by atlrel2.hp.com (Postfix) with ESMTP id DD9531950
+	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 17:34:13 -0400 (EDT)
+To: parisc-linux@parisc-linux.org
+From: LaMont Jones <lamont@hp.com>
+Cc: LaMont Jones <lamont@hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Thu, 24 May 2001 15:32:59 -0600
+Sender: lamont@hp.com
+Message-Id: <20010524213301.126241872C@security.hp.com>
+Subject: [parisc-linux] still getting $$dyncall refs in shlibs
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> They depend on libc 2.2.3, so if I want to use them for building
-> the 64 bit kernel-images for boot-floppies to use, I need 2.2.3 on my
-> build system.  That probably means I need 2.2.3 on the root.bin.
-> 
-> Should I go down that road, or are we sticking with 2.2.1 for
-> initial install images?
+With the new toolchain, sipp still builds a libsipp.so.3.1 trips the
+bug checker.  Checking everything on the system doesn't find any bad
+libs.  Here is the build output for libsipp.so:
 
-I recommend sticking with 2.2.1 for the root.bin and maybe base system.  The
-apt-get somebody uses for grabbing the xc debs could depend on 2.2.3 and as
-will many things before too long.
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o rendering.o rendering.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o geometric.o geometric.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o lightsource.o lightsource.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o objects.o objects.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o smalloc.o smalloc.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o transforms.o transforms.c
+...
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o xalloca.o xalloca.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o phong.o phong.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o strauss.o strauss.c
+gcc -pipe -O3 -fPIC -I../libsipp   -c -o teapot.o teapot.c
+ld --shared -o libsipp.so.3.1 rendering.o geometric.o lightsource.o objects.o smalloc.o transforms.o viewpoint.o basic_shader.o marble.o granite.o mask.o bozo.o bumpy.o planet.o noise.o bezier.o bezier_lex.o pixelbuf.o torus.o cone.o ellipsoid.o prism.o sipp_pixmap.o sipp_bitmap.o wood.o xalloca.o phong.o strauss.o teapot.o  -soname libsipp.so.3 -lc
+ld: bfd assertion fail ../../bfd/elf32-hppa.c:941
+ld: bfd assertion fail ../../bfd/elf32-hppa.c:941
 
-	-P
+Of course, if the assertion failure actually killed the linker, that
+would help...
+
+I'm at a loss from here - and give it to those who have a clue...
+lamont
