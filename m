@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4ADE7482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Apr 2002 08:13:46 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id wdpjmaaa for parisc-linux@lists.parisc-linux.org; Fri, 5 Apr 2002 08:12:46 -0700
-Date: Fri, 5 Apr 2002 07:13:36 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: Jesus Climent <climent@stybba.ntc.nokia.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 64bit newbie question
-Message-ID: <20020405151336.GB356@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20020405135556.GO10207@shire.ntc.nokia.com> <Pine.LNX.4.44.0204051456300.28325-100000@sal.ucc.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0204051456300.28325-100000@sal.ucc.ie>
+Received: from smtp015.mail.yahoo.com (smtp015.mail.yahoo.com [216.136.173.59])
+	by dsl2.external.hp.com (Postfix) with SMTP id 96AF8482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Apr 2002 08:33:43 -0700 (MST)
+Message-ID: <3CADB0AD.1050307@yahoo.com>
+Date: Fri, 05 Apr 2002 15:11:57 +0100
+From: Jbit <james_a_n_lee@yahoo.com>
+MIME-Version: 1.0
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Missing beep... and music too
+References: <Pine.LNX.4.33.0204042038090.29216-100000@bob.ncssm.edu> <20020405055415.C6C54482B@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,18 +21,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I wondered what options I have to pass to gcc to created 64bit
-> executables (e.g. a 64bit kernel), and/or whether the 'normal' gcc-3.0
-> you get with apt-get is just capable of dealing with 32bit executables.
+ > 712/80i was one of the few systems that was sold w/o Floating Pointing
+ > coprocessor (or FP was disabled) at a lower price point. I believe
+ > parisc-linux kernel ignores the lies that PDC presents about the FP
+ > not being present. But I'm wondering if something is really
+ > disabled on the chip that causes FP to just not work.  I don't know
+ > if our FP emulation will deal with a completely missing FP Unit.
 
-the 64-bit compiler we use to build kernels is not yet in debian, it is
-available on ftp://ftp.parisc-linux.org/unofficial-debs/
 
-i'm working on getting something into the Debian archive...
+My 80i plays mp3s (via mpg123) beutifly.. without FPU emulation..
+(but i had lots of problems getting it to work in debian, works a treat under lfs ;)
+I just always assumed debian compiled it weirdly... hrm...
+Or it could be that when i compiled mpg123 i didn't put any FPU code in (needed a bit of hacking to compile)
+I'll investigate.. see what happend...
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+
+BTW... Everybodys aware that the internal speaker is connected to the LASI Harmony chip, yeah?
+(Theres no way to generate a beep in hardware, you'd need to make a driver that generated a PCM beep and sent it to the hardware)
+At least AFAIK
+
+--jbit
+
+
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
