@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 1 Apr 2003 22:19:38 -0700
-To: "FUHRMAN,SCOTT (HP-Boise,ex1)" <scott.fuhrman@hp.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Sound on C3000
-Message-ID: <20030402051938.GA24936@dsl2.external.hp.com>
-References: <25C4C6009B5BD5118FF30003470BF7F503501C63@xboi04.boi.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from web12506.mail.yahoo.com (web12506.mail.yahoo.com [216.136.173.198])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7D41E4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 23:13:11 -0700 (MST)
+Message-ID: <20030402061310.20117.qmail@web12506.mail.yahoo.com>
+Date: Tue, 1 Apr 2003 22:13:10 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+To: parisc-linux@lists.parisc-linux.org
 In-Reply-To: <25C4C6009B5BD5118FF30003470BF7F503501C63@xboi04.boi.hp.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-1458837042-1049263990=:18068"
+Subject: [parisc-linux] RAID issues on my C3000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,20 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Apr 01, 2003 at 01:42:40PM -0500, FUHRMAN,SCOTT (HP-Boise,ex1) wrote:
-> I ham enjoying a C3000 (400MHz) machine running hppa Debian, with kernel
-> 2.4.20-32.
-> Everything is working except the sound.  Sound server can start up, but
-> does not have a device to output to.  
+--0-1458837042-1049263990=:18068
+Content-Type: text/plain; charset=us-ascii
 
-As randolph pointed out, you need to "modprobe ad1889".
-If that doesn't work, apt-get the kernel source and rebuild
-with ad1889 if you are determined to have a go at it.
 
-ad1889 driver "works" if you use a very low standard to define "working".
-ad1889 only takes .wav format input at 48Khz. I forget the command
-line for mpg321 to directed mpg321 to spew .wav format directly
-at the /dev/audio device. And when playing mp3s, I wouldn't stress
-the machine with other workloads while it's running.
+Hey all,
+I was just following the RAID HOWTO posted awile back and I ran into a few problems.  I've gotten all the way through creating my RAID partitions and copying the data over via tar, making it bootable (after upgrading my PALO from source - it is now 1.2), editing all the files on the new md devices, and then rebooting.  When I try to boot from the new degraded RAID disk I get that the device is hard booted (with PALO 1.0 not 1.2), displays my patition info (but displays the partitions as "unknown" and not RAID probably due to the Palo 1.0 version), and spits out "Selected kernal: /vmlinux from partition 2" then "Error: Partition 2 must be ext2".  I've created 4 primary partitions on the drive in the following order PALO, boot, swap, and root.  Both Palo and boot are with the first 2GB.  I have tried to stop the arrays and reconfigure them as ext2 with no luck.  Any help would be appreciated.
+Thanks,
+derek
 
-grant
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+--0-1458837042-1049263990=:18068
+Content-Type: text/html; charset=us-ascii
+
+<P>Hey all,
+<P>I was just following the RAID HOWTO posted awile back and I ran into a few problems.&nbsp; I've gotten all the way through creating my RAID partitions and copying the data over via tar, making it bootable (after upgrading my PALO from source - it is now 1.2), editing all the files on the new md devices, and then rebooting.&nbsp; When I try to boot from the new degraded RAID disk I get that the device is hard booted (with PALO 1.0 not 1.2), displays my patition info (but displays the partitions as "unknown" and not RAID probably due to the Palo 1.0 version), and spits out "Selected kernal: /vmlinux from partition 2" then "Error: Partition 2 must be ext2".&nbsp; I've created 4 primary partitions on the drive in the following order PALO, boot, swap, and root.&nbsp; Both Palo and boot are with the first 2GB.&nbsp; I have tried to stop the arrays and reconfigure them as ext2 with no luck.&nbsp; Any help would be appreciated.
+<P>Thanks,
+<P>derek</P><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/finance/mailsig/*http://tax.yahoo.com">Yahoo! Tax Center</a> - File online, calculators, forms, and more
+--0-1458837042-1049263990=:18068--
