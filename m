@@ -1,35 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA20086
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 03:08:25 -0700
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA06468
-	for parisc-linux@thepuffingroup.com; Wed, 15 Nov 2000 18:10:16 +0800
-Date: Wed, 15 Nov 2000 18:10:13 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Palinux on a 712/60
-Message-ID: <20001115181010.W22138@neep.com.au>
-References: <C12531D038D1D011B1DB0000F8036C28071AB6FB@eosm5.oecd.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <C12531D038D1D011B1DB0000F8036C28071AB6FB@eosm5.oecd.org>; from Arnaud.ATOCH@oecd.org on Wed, Nov 15, 2000 at 10:05:04AM +0100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA20530
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 03:20:38 -0700
+Message-ID: <001601c04eee$535905e0$a832d793@esiee.fr>
+From: "Thomas Marteau" <marteaut@esiee.fr>
+To: "Ian Zink" <ian.zink@maryville.com>, <parisc-linux@thepuffingroup.com>
+References: <C36304FE952AD411AC87002094120338029E7E@MTMAIL>
+Subject: Re: [parisc-linux] Palinux on a 712/60 
+Date: Wed, 15 Nov 2000 11:25:07 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Arnaud.ATOCH@oecd.org said:
-> Hi,
-> 
-> I got a couple of 715 and I'd love having access to an ISO image with STI
-> console kernel too.
+Hi Ian,
 
-I've never made an El Torito CDROM, is it possible to have multiple boot
-images and a boot loader on a single disc?  ie could the actual boot
-image be a boot loader (PALO) which then points at one or more kernels
-on the CDROM?
+    If you like to see a linux kernel booting on your 712, you can donwload
+a fully operationnal root file system with the STI console and an extra
+terminal with
+the RS232 port at
+http://www.esiee.fr/puffin
 
-Andrew.
+You have also all the info to make a bootable hard disk so try it and give
+us feedback...
 
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Bye,
+Thomas Marteau
+ESIEE Team
