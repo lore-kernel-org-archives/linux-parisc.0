@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44135482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Apr 2002 09:06:45 -0600 (MDT)
-Date: Mon, 8 Apr 2002 17:06:42 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] K220 - Setup via. Console
-Message-ID: <20020408150642.GF12289@lug-owl.de>
-References: <3CB12C3E.B6FB23DB@attbi.com> <20020408155644.F27547@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1Ow488MNN9B9o/ov"
-In-Reply-To: <20020408155644.F27547@parcelfarce.linux.theplanet.co.uk>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A1401482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Apr 2002 10:08:19 -0600 (MDT)
+Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
+	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id g38G8GFN020948
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 8 Apr 2002 12:08:17 -0400 (EDT)
+Message-Id: <200204081608.g38G8FB4020947@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] GCC support for dwarf2
+To: joel.soete@freebel.net
+Date: Mon, 8 Apr 2002 12:08:15 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <1018246520.3cb13578be656@webmail.tiscalinet.be> from "joel.soete@freebel.net" at Apr 8, 2002 08:15:20 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,65 +25,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---1Ow488MNN9B9o/ov
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Joel,
 
-On Mon, 2002-04-08 15:56:44 +0100, Matthew Wilcox <willy@debian.org>
-wrote in message <20020408155644.F27547@parcelfarce.linux.theplanet.co.uk>:
-> On Sun, Apr 07, 2002 at 10:35:58PM -0700, Ahbaid Gaffoor wrote:
-> > I am trying to use the console cable I have used with Sun boxes on this
-> > machine, however I just cannot get it to work? My terminal emulation is
-> > done via HyperTerminal on a laptopb via. COM1
->=20
-> I think Sun have their own strange pinout whereas HP use a standard
-> null-modem cable.
+Thanks for the offer to help.  The gcc 3.1 release criteria are here:
+<http://gcc.gnu.org/gcc-3.1/criteria.html>.  There should be info on
+how to build these.  There has been discussion of this on the gcc
+list.
 
-Older Suns use a jack that's identical to what Macs use; newer Systems
-do have a female (!) DM25 jack which contains two serial ports: one
-on the "standard" pins (you only need a genderchanger and a DB25 -> DB9
-converter), the other port is on the unused pins (you can buy
-split cables for 10 US-$ on ebay).
+It would be useful to collect testresults for the listed applications.
+It would be really great to compare the status of debian 3.0.4, gcc
+cvs 3.1 (prerelease), and gcc cvs 3.2 (experimental).
 
-The round jack on those Macs/SGIs/Suns do have three important pins:
-If you look at it, it looks like this:
+I suspect that there will be problems with many of the tests.  There
+is a integer*1 g77 bug that may affect lapack.  Qt may not build
+because of an issue with long calls.  I think that I now understand
+how to fix this but it may just go into 3.2.  3.2 has working dwarf2
+exceptions and 3.1 doesn't.
 
+> What could we do to help? Do we have to install snapshot gcc? Which programs
+> would be tested?
 
+You would need to install the cvs binutils and cvs gcc versions in some
+convenient location for the testing.  I use ~/opt/gnu.  Instructions
+on cvs access to gcc is on the gcc site <http://gcc.gnu.org/> and
+similarly for binutils.  You probably need to define 
 
-        1     2     3
+LD_RUN_PATH=/home/dave/opt/gnu/lib
+LD_LIBRARY_PATH=/home/dave/opt/gnu/lib
+LIBRARY_PATH=/home/dave/opt/gnu/lib
 
-=20
+in your environment.
 
-   4            5        6
+Even just building gcc can provide useful feedback.  I know it is very
+easy to make mistakes due to the complexity of the package.
 
-
-   =20
-         7        8
-
-
-(Yes, it's assymmetric). 4 and 6 are RxD and TxD, 5 is Ground. Happy
-
-MfG, JBG
-PS: I don't know which one of pin 4 and 6 is RxD and which one is TxD.
-You maybe have to try and error...
-
---=20
-Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
-	 -- New APT-Proxy written in shell script --
-	   http://lug-owl.de/~jbglaw/software/ap2/
-
---1Ow488MNN9B9o/ov
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAjyxsgEACgkQHb1edYOZ4btJdACghkxEZicx0diNWtK0w2VVTO4d
-rT8An3Me+/mXoE8gSE1jBT5+8fG+s/E2
-=FrJ1
------END PGP SIGNATURE-----
-
---1Ow488MNN9B9o/ov--
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
