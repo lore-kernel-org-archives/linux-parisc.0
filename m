@@ -1,62 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DCA24482A
-	for <parisc-linux@parisc-linux.org>; Sun,  5 Aug 2001 19:05:18 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15TYpZ-0001US-00
-	for parisc-linux@parisc-linux.org; Mon, 06 Aug 2001 02:05:17 +0100
-Date: Mon, 6 Aug 2001 02:05:17 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010806020517.A14978@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] iotree thoughts
+Received: from oliver.internal.sjdjweis.com (dsl.75.131.networkiowa.com [209.234.75.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 67AAA482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  5 Aug 2001 22:01:58 -0600 (MDT)
+Received: from localhost (djweis@localhost)
+	by oliver.internal.sjdjweis.com (8.9.3/8.9.3) with ESMTP id XAA02383
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 5 Aug 2001 23:06:37 -0500
+Date: Sun, 5 Aug 2001 23:06:37 -0500 (CDT)
+From: <djweis@sjdjweis.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0108052251390.1710-100000@oliver.internal.sjdjweis.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] more serial console problems on D310
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a summary and a design document for building an iotree in PA/Linux.
-Grant, Ryan, if I mis-remembered / misunderstood something, do shout.
+I grabbed the 20010704 kernel source and net booted my d310 with it
+combined with the ramdisk from the 0.9.2 install image. I start with the
+serial console on the serial connector labeled "serial console". Output
+only comes through there until the kernel starts, then I have to switch
+over to the other serial port on the machine to see the rest of the boot
+messages. They come quickly until the root filesystem is mounted. It looks
+like I lose interrupts after that because everything is written in blocks
+of 16 characters with long (15 second?) pauses in between blocks. After
+getting this message:
+VFS: Mounted root (ext2 filesystem).
+serial console detected.  Disabling virtual terminals.
 
-There are two sources of information about what devices are in the
-machine.  There's an Architected Bus Walk, which basically says `probe
-devices at the following addresses'.  Code to do this already exists
-in do_native_bus_walk.  The other way of finding devices is to ask PDC.
-All non-architected devices (ie devices which won't be discovered by an
-ABW) are known to PDC.
+the cursor just tabs along the screen by itself without printing
+anything. 
 
-PDC also knows about other devices, including some PCI devices and some
-of the architected devices, so some devices may get discovered twice.
-Also, PDC occasionally has bugs (see the J2240 Dino and 715/Scorpio
-card-mode Dino entries for examples).  And there are three types of PDC
-to deal with -- PAT PDC on some 64-bit boxes, PDC which supports the
-PDC_SYSTEM_MAP call, and PDC which predates the PDC_SYSTEM_MAP call.
+Any ideas? Why is the first serial port not being detected/used?
 
-In a related matter, the ABW will pick up serial ports (and other things)
-which aren't activated.  Grant said there was a PDC call to determine
-whether a device is inactive -- I'm not sure which one that is yet.
+dave
 
-Here's my plan:
-
- * From setup_arch, call PDC to get a list of devices.  Put them in a
-   table (marked __init, will be freed later).
- * In the badly-named gsc_init, or perhaps in pcibios_init, start the
-   ABW at 0xFFF80000 -- this seems to be the defined location for the
-   central bus.
- * Start creating the tree with devices that we find in the ABW.
-   Each device which is a bus adapter / converter will do an ABW for its
-   children, and add in any PDC-discovered devices in the table which are
-   its immediate children.  The add-in is done by copy, not by reference.
- * At some indeterminate time after this, the table of PDC-reported drivers
-   gets freed along with all the other __init data & code.
-
-We'll have to be careful with CPU `drivers' since they will have stale
-pointers which must be updated.  Perhaps this is where a ->remove method
-would come in handy; or perhaps we just magically make them cope with
-their ->probe function being called a second time on the same device
-(same HPA).
-
-Feedback welcome.
 
 -- 
-Revolutions do not require corporate support.
+Dave Weis             "I believe there are more instances of the abridgement
+djweis@sjdjweis.com   of the freedom of the people by gradual and silent
+                      encroachments of those in power than by violent 
+                      and sudden usurpations."- James Madison
