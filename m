@@ -1,83 +1,79 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77DAA4A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 20:36:16 -0700 (MST)
-Message-Id: <200102090338.TAA07555@milano.cup.hp.com>
-To: "M. Grabert" <xam@deathsdoor.com>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8EEE64A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 20:56:43 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA13350;
+	Fri, 9 Feb 2001 14:56:37 +1100
+Date: Fri, 9 Feb 2001 14:56:37 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Christoph Plattner <christoph.plattner@dot.at>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ASP Parallel port driver broken on HP9000/730 
-In-reply-to: Your message of "Fri, 09 Feb 2001 03:04:44 PST."
-             <Pine.LNX.4.21.0102090239110.25675-100000@sgate.charlysworld.de>
-Date: Thu, 08 Feb 2001 19:38:38 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target root
+ file system
+In-Reply-To: <3A83226E.A3A77F70@dot.at>
+Message-ID: <Pine.LNX.4.21.0102091056000.9776-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-"M. Grabert" wrote:
-> Unfortunately I don't know how to redirect the kernel output
-> to the serial console, so I can give you only some hints...
+On Thu, 8 Feb 2001, Christoph Plattner wrote:
 
-Hints on using serial console on 715 (you can search the archive
-for lots more 715 hints):
+> After the glibc builts perfect, I have a problem in setting up the root
+[snip]
+> with page fault or with "cannot find libc.6.so". Only the root of the
+[snip]
 
-a) disable CONFIG_STI_CONSOLE
-b) enabled CONFIG_SERIAL=y
-           CONFIG_SERIAL_CONSOLE=y
-           CONFIG_SERIAL_GSC=y
+"with page fault" is possibly due to the glibc bug I mentioned in
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-February/011686.html
 
-c) connect x86 serial to port 1 of 715 and run minicom with 9600 8N1
-   serial line settings.
-d) Disconnect HIL keyboard and Mouse.
-   (*or* hold the TOC button for about 10 seconds while powering on the box.)
-   (Either should force the PDC to use serial port 1)
+"cannot find libc.so.6" is a different problem, a result of
+cross-compiling glibc with --prefix different to final install location.
+Let's see if I can explain the problem...
 
-> parport_init_chip: initializing bidirectional mode.
-> 
-> The kernel makes a memory dump from 0000 to 097f,
-> then:
-> 
-> High Priority Machine Check (HPMC): Code=1 regs=c034a080 (Addr=00000000)
-> 
-> Then follows a dump of the processor registers:
-> 
-> PSW: 00000000000001000000000000001111
-> r0-3   00000000 c02eb800 c0246328 c1f30788
-> r4-7   0000002c c1fe5220 f0824800 ffffffdf
-> r8-11  ffffffff 00000000 0004000e c037d8b0
-> r12-15 000a5a59 000ff000 f0000124 00000000
-> r16-19 00000001 50000059 0a000a00 0000000f
-> r20-23 000000ff 00000041 c1fdc000 0000000f
-> r24-27 ffffffff f0824800 f0824800 c0342000
-> r28-31 00000034 00000800 c1fe0980 c012a7dc
-> sr0-3  00000000 00000000 00000000 00000000
-> sr4-7  00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: c026e458 c026e458
->  IIR: e840c000     ISR: 00000000   IOR: c0246328
-> ORIG_R28: 00000000
+Suppose you want to cross-compile the toolchain and glibc from an
+i686-linux system, and you have chosen --target=hppa-linux.  Further
+suppose you decide to install to /usr/ on your host x86 system (This 
+does work safely, despite various recipes recommending /usr/parisc,
+or /opt/parisc).  Now when cross-compiling glibc, you obviously _don't_
+want to install glibc on your host to /usr, as the glibc you create is an
+hppa-linux binary, which doesn't run very well on x86-linux!  So the
+proper install destination for glibc is given by --prefix=/usr/hppa-linux.
+This is also the root of directories where your hppa-linux cross-tools
+will look first for libraries and system header files etc.  If you chooes
+some other prefix (ie. not <compiler prefix>/<compiler target>) then
+you'll have problems cross compiling.
 
-IOAQ is the address of the instruction that the CPU
-was trying to execute when the HPMC occurred.
-IIR is the instruction at IOAQ.
-echo 0xe840c000=i | adb   says:
-		BV              r0(r2)
+However, trying to install the glibc that works for a cross-compiler
+tool-chain to your target system, at a different location, fails
+miserably because shared libraries specify where to look for their
+"interpreter" (dynamic linker).  Your cross-compiled glibc will be looking
+for /usr/hppa-linux/lib/ld.so.1, while a native glibc will look for
+/lib/ld.so.1.  Also, a cross-compiled dynamic linker knows to look under
+/usr/hppa-linux/ for libraries and ld.so.cache.  On the other hand, you
+probably want your libraries in their normal locations so that you don't
+accidentally use the wrong library.
 
-GR02 is the most recent subroutine call return addr.
-(Typically the caller).
+Of course, it's very useful to be able to install your cross-compiled
+glibc to your target :-), and hopefully the above explanation suggests one
+way around the problems:
+ - Install your glibc to a temp dir on your nfs server
+   eg. "make install_root=/var/tmp/install"
+ - Move files from /var/tmp/install to /tftpboot/<proper locataion>
+   It helps if you know what <proper location> is!  Compile glibc native
+   for x86 and install to another temp dir if you don't know.
+ - Make relative symbolic links in /tftpboot/.../usr/hppa-linux/lib/ to
+   the shared libs you installed to /tftpboot/.../lib/
+ - ln -s ../../etc /tftpboot/.../usr/hppa-linux/etc too
+ - What else?  Oh yeah, /usr/lib/libc.so and some of the files installed
+   to /usr/bin/ are text files, and some have paths to    /usr/hppa-linux.
+   Edit them.
 
-So look up c026e458 and c0246328 in your System.map.
-You can at least figure out about where it's crashing.
-(Hint: cvs co build-tools and look at a.c)
+It would be nice if you could cross-compile glibc with --prefix=/usr, but
+last time I tried this, quite some time ago, it failed because
+/usr/include/ was being used for headers.  Maybe there's an easy way
+around this.
 
-> NB: i typed all this stuff, no copy'n'paste; so perhaps
-> there are some errors ... 
-> 
-> BTW, no HIL connected, just serial console (but since
-> the kernel hangs before, i cannot see any output :))).
-
-Wait. If PDC is printing to the serial console...I'm confused.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
