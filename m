@@ -1,74 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA17980
-	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Jan 2001 10:58:15 -0700
-Message-ID: <A4A5E4C468B5D11190220001FA6835DD04DD87AF@EPIXCH003>
-From: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@europay.com>
-To: "'pjlahaie@linuxcare.com'" <pjlahaie@linuxcare.com>
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Subject: RE: RE: [parisc-linux] Beta CD 
-Date: Wed, 10 Jan 2001 19:00:12 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA18345
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 Jan 2001 11:29:18 -0700
+To: Josiah Carlson <jcarlson@macalester.edu>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: Who do I ask? 
+In-Reply-To: Your message of "Mon, 08 Jan 2001 17:31:57 CST."
+             <3A5A4DED1F4.416EJCARLSON@smtp.macalester.edu>
+References: <3A5A4DED1F4.416EJCARLSON@smtp.macalester.edu> 
+Date: Wed, 10 Jan 2001 11:32:45 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E14GQ3B-00054d-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Oops I just figure out that crt1.o is supply by glibc which is well in the
-install/debian-hppa but not in deb package format but as a tarball. May I
-install it like this or does it exists already somewhere the package
-(easiest for maintenance. no?)
+= First off, Thank you for writing the docs on how to boot and load linux
+= off of a CD.
+= It is very helpful.  Though on most of the workstations I've tried
+= booting, the machine locks up at "Switching from PDC console".
+= Do you have an idea on how to fix this, or who I should talk to?
+= Thank you,
+=  - Josiah Carlson
 
-Thanks a lot,
-	Joel
+I've cc-ed the mailing list you should use for asking palinux
+questions (parisc-linux@thepuffingroup.com).  I recommend
+checking our FAQ and archives for the answer to this
+question.  The web site (with the FAQ and mailing list
+info among other things) is at www.parisc-linux.org and you can
+(crudely) search the e-mail archives at puffin.external.hp.com/cgi-bin/mailgrep
 
-> -----Original Message-----
-> From:	SOETE Joël 
-> Sent:	Wednesday, January 10, 2001 4:08 PM
-> To:	'pjlahaie@linuxcare.com'
-> Cc:	'parisc-linux@thepuffingroup.com'
-> Subject:	RE: [parisc-linux] Beta CD 
-> 
-> Hello Paul,
-> 
-> I use your CD image (palinux-0.5.iso) first as a base to 
-> trying to use PDC console on a C110 model.
-> 
-> As it finally does not work yet, I install your CD as it is 
-> with supplied Debian packages.
-> 
-> "debhelper" complaint at configure phase because of "file" 
-> package dependencies.
-> 
-> Ok, I download sources of last release from Debian server and 
-> try to rebuild this package.
-> 
-> It fails and in the log of configure: /usr/bin/ld: cannot 
-> open crt1.o: no such a file or directory.
-> 
-> It remembers me an old problem 
-> (http://puffin.external.hp.com/mailing-lists/parisc-linux/2000
-> /08-Aug/0202.html).
-> (I not sure that it exists a link between problems but the 
-> coincidence is strange) [I do not actually try to find the 
-> solution because it was largely recommended to work with a 
-> i386 linux and I had this opportunity some time after]
-> 
-> I suspect that you already met the problem and may be have 
-> you the solution or a good work around.
-> 
-> Do I have to used another release of gcc (under 
-> ftp://puffin.external.hp.com/pub/parisc/binaries/userspace I 
-> found other gcc and binutils binaries. But is it for palinux?)?
-> 
-> Another way should be to use the cross-compiler on a i386 
-> linux box (as it seems enough stable). But if I well found 
-> the way to build native .deb packages 
-> (http://www.debian.org/doc/packaging-manuals/packaging.html/),
->  I do not find here the way for "cross-pacakging"?
-> 
-> Thanks in advance for help,
-> 	Joel
+You didn't mention which version of the CD you have (that would be
+helpful) or which workstations you're trying (that would be helpful too)
+but I'm guessing you're trying to boot our CD on a machine which is
+set up for a graphics console.  The CDs only work with serial consoles
+so try plugging a terminal (9600 8N1) into the #1 serial port.
 
+Please suggest ways that these resources (web site, mailing
+list) are more obvious on our next CD since we obviously have
+a problem.  Thanks!
 
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+	-P
