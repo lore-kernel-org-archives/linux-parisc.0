@@ -1,53 +1,64 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA12742
-	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Aug 1999 16:49:24 -0600
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: parisc-linux@thepuffingroup.com
-Subject: Fwd: Re: [parisc-linux] initrd/ramdisk-Status...
-Date: Wed, 25 Aug 1999 00:50:34 +0200
-Content-Type: text/plain
-MIME-Version: 1.0
-Message-Id: <99082500505601.00280@P100>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA13074
+	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Aug 1999 16:53:51 -0600
+Message-Id: <199908242255.PAA09913@milano.cup.hp.com>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Booting 715/100 
+In-reply-to: Your message of "Tue, 24 Aug 1999 23:44:40 PDT."
+             <19990824234440.H31994@mencheca.ch.genedata.com>
+Date: Tue, 24 Aug 1999 15:55:40 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-
-----------  Weitergeleitete Nachricht  ----------
-Subject: Re: [parisc-linux] initrd/ramdisk-Status...
-Date: Wed, 25 Aug 1999 00:37:55 +0200
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-
-
-Hi Matthew,
-
-Am Tue, 24 Aug 1999 schrieben Sie:
-> On Tue, Aug 24, 1999 at 09:11:58PM +0200, Helge Deller wrote:
-> > I programmed it in such a way, that the bootable image in arch/parisc/boot/
-> > holds a directory-structure for up to 63 possible ramdisks, which can be
-> > selected during boot via initrd=<number> or initrd=<name>.  
-> > The reason for adding support for multiple ramdisks is, that distributions
-> > later can add easier support for multiple/different machines in one bootfile.
+Matthew Wilcox wrote:
+> On Tue, Aug 24, 1999 at 02:21:35PM -0700, Grant Grundler wrote:
+> > I finally managed to build a kernel from the 08/07/99 tar file.
 > 
+> I assume you mean 07/Aug/99 rather than 08/Jul/99?  :-)
 
-> Hang on, this doesn't make sense.  There should be no difference between
-> the binaries, the only difference should be the kernels.  
+Yes - sorry about the convoluted american date notation.
+The linux-2.2.3-19990808.tar.gz is only 291 bytes.
+19990807 was the last "full" tarball.
 
-Yes, maybe I could change it to select the kernel..... What do you think ?
-On the other side, there also could be different binaries for PA1.x / PA2.
+> > Now I can't boot it!
+> > 
+> > I might need to update the source tree again but need
+> > to figure out how CVS can operate through HP's firewall.
+> 
+> Can you ssh out?  CVS_RSH=ssh should do the trick if so.
 
-> I believe the
-> plan is to put UFS-reading code into the bootloader in any case (mkp?)
-> which makes all this a temporary hack; as it should be.
+Didn't have ssh...but "socksify" command seems to work
+rather nicely. Found it in /opt/socks/bin and cvs can now
+talk to the puffin.external.hp.com.
 
-Yes of course is UFS-reading the most important part, but how would you do
-UFS-reading over Network or from a DAT on a new system without preinstalled fs
-or unformatted fs ?
 
-Helge.
+> > I also wasn't sure about the difference between
+> > CONFIG_PA7100 and CONFIG_PA7300 in the .config file.
+> > I thought the 715/100 is an older machine before 7300LC
+> > was available and thus is PA7100. Is this right?
+> 
+> Well, according to /usr/sam/lib/mo/sched.models (a very useful file!)
+> 
+> 715     1.1c    PA7100LC
+
+Forgot about this table...good thinking.
 
 > 
-> -- 
-> Matthew Wilcox <willy@bofh.ai>
-> "Windows and MacOS are products, contrived by engineers in the service of
-> specific companies. Unix, by contrast, is not so much a product as it is a
-> painstakingly compiled oral history of the hacker subculture." - N Stephenson
+> It doesn't mention the submodels explicitly.  However,
+> 
+> http://www.thepuffingroup.com/parisc/hp9000_models.html
+> 
+> says the 715/100 (both variants!) have PCXL CPUs which is the same as that
+> on the 712 models, which we know to be the 7100LC.
+> 
+> Sorry I can't be of any help on the actual problem though...
+
+This already helped...I'll assume CONFIG_PA7100 means PA7100LC.
+
+BTW, I went through the linux/.config file and found conflicting
+options enabled (eg. 712 was enabled). So, I'm rebuilding...and
+we'll see what happens.
+
+thanks,
+grant
