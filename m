@@ -1,16 +1,18 @@
-From: "Michael S. Zick" <mszick@wolfbutter.com>
+From: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] Proposal for implementing IRQ affinity
-Date: Tue, 31 Aug 2004 16:26:16 -0500
-Message-ID: <200408311626.16860.mszick@wolfbutter.com>
+Date: Tue, 31 Aug 2004 23:19:09 +0100
+Message-ID: <20040831221909.GC642@parcelfarce.linux.theplanet.co.uk>
 References: <1093923097.3870.18.camel@mulgrave>
 	<20040831192112.GH20353@colo.lackof.org>
 	<20040831192811.GB642@parcelfarce.linux.theplanet.co.uk>
+	<200408311626.16860.mszick@wolfbutter.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Michael S. Zick" <mszick@wolfbutter.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040831192811.GB642@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <200408311626.16860.mszick@wolfbutter.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,29 +23,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue August 31 2004 14:28, Matthew Wilcox wrote:
-> On Tue, Aug 31, 2004 at 01:21:12PM -0600, Grant Grundler wrote:
+On Tue, Aug 31, 2004 at 04:26:16PM -0500, Michael S. Zick wrote:
+> On Tue August 31 2004 14:28, Matthew Wilcox wrote:
+> > In any case, ISA devices don't have subdevices.
 > 
-> In any case, ISA devices don't have subdevices.
-> 
-Perhaps not in the sense you are speaking of (not
-in the terms that PCI does)...
+> But, for instance, DigiBoard has 4, 8, (16?) subdevices
+> which are distingushed in the driver in cooperation with
+> the on-board processor.
 
-But, for instance, DigiBoard has 4, 8, (16?) subdevices
-which are distingushed in the driver in cooperation with
-the on-board processor.
+But they're 4/8/16 of the same thing, not a set of completely different
+devices with independent drivers that all expect to call request_irq()
+and get reasonable results.
 
-Probably would fall into your irq tree just like an hp
-buss device that doesn't let you diddle the interrupt
-sources/assignment the other side of the device/
-controller.
-
-My point;
-Perhaps you'll need to allow for a next
-level tree at each EISA/ISA interrupt to support multi-port
-serial boards and other 'intelligent' controllers.
-
-Mike
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
