@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 8 Aug 2003 10:37:44 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <joel.soete@tiscali.be>
-Cc: "Conan C. Albrecht" <conan_albrecht@byu.edu>,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Message-ID: <20030808163744.GA29158@dsl2.external.hp.com>
-References: <25EEF58E-C82D-11D7-8F19-00039398B282@byu.edu> <20030806205220.GA6353@dsl2.external.hp.com> <3F336914.5020305@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F336914.5020305@tiscali.be>
-Subject: [parisc-linux] Re: Debian on rp 7400
+Received: from nuada.toptech.com.ar (nuada.toptech.com.ar [200.68.70.114])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9A00483F
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Aug 2003 11:47:26 -0600 (MDT)
+Received: from zacarias.com.ar (imhotep.toptech.com.ar [200.68.70.115])
+	(authenticated)
+	by nuada.toptech.com.ar (8.11.6/8.11.6) with ESMTP id h78HlBL09652
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 8 Aug 2003 14:47:11 -0300
+Message-ID: <3F33E1F8.9030706@zacarias.com.ar>
+Date: Fri, 08 Aug 2003 14:46:32 -0300
+From: Gustavo Zacarias <gustavo@zacarias.com.ar>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] K360 with 64 bit kernel?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,40 +24,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-BTW, this discussion really belongs on parisc-linux.org mailing list.
-It's not specific to debian-hppa and is very kernel centric.
-
-On Fri, Aug 08, 2003 at 09:10:44AM +0000, Joel Soete wrote:
-> >IIRC, "non-equivalently mapped aliases" 
-
-> Is there much more detailed public doc some where about this stuff?
-
-sorry - I don't understand the problems well enough.
-The PA 2.0 arch book might describe the cache behaviors sufficiently
-to determine this will be a problem.
-
-> >BTW< this topic has been thoroughly discussed on parisc-linux
-> >mailing list. See www.parisc-linux.org mailing list archives.
-
-google search for
-	equivalent mapped [parisc-linux site:lists.parisc-linux.org]
-
-yielded the original thread from Jerry Huck:
-
-http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008101.html
-
-I only partially understand what Jerry talking about and have no idea
-how linux VM implementation collides with the aliasing rules.
-
-
-Bjorn Helgaas posted a another thread two years later that might
-be more helpful since it's specific to superdome (AFAIK same problems
-as with N-class and L3000):
-
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-April/012388.html
-
-I didn't see any direct followup to Bjorn's mail in the archive though
-some discussion did occur in other forums (much later).
-
-hth,
-grant
+Hi.
+Has anyone managed to boot a K360 with a 64 bit kernel?
+The machine works just fine with a 32 bit one.
+The problem is the machine getting stuck just after the ncr53c8xxx 
+driver with a bunch of scsi timeouts.
+You can check the logs at http://www.zacarias.com.ar/hppa/ (a good boot 
+on 32, and the dead one on 64).
+Thanks in advance.
