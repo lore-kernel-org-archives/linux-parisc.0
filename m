@@ -1,45 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA04344
-	for <parisc-linux@puffin.external.hp.com>; Sat, 16 Sep 2000 13:34:08 -0600
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id DAA16794
-	for parisc-linux@thepuffingroup.com; Sun, 17 Sep 2000 03:34:23 +0800
-Date: Sun, 17 Sep 2000 03:34:19 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA07126
+	for <parisc-linux@puffin.external.hp.com>; Sat, 16 Sep 2000 18:16:31 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 17 Sep 2000 00:17:03 -0000
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Netbooting a 710 : IPX ?
-Message-ID: <20000917033416.A16536@neep.com.au>
-References: <39C37F48.E9481800@club-internet.fr>
-Mime-Version: 1.0
+Cc: debian-hppa@lists.debian.org
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 16 Sep 2000 20:16:40 -0400
+Message-ID: <87n1h7j2jb.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <39C37F48.E9481800@club-internet.fr>; from dolbeaur@club-internet.fr on Sat, Sep 16, 2000 at 03:10:16PM +0100
+Subject: [parisc-linux] New native toolchain and glibc tarballs, upgrade
 List-ID: <linux-parisc.vger.kernel.org>
 
-Romain Dolbeau said:
-> I've trouble netbboting my 710 : it seems that it doesn't
-> broadcast bootp request, but some IPX Service Advertisement
-> Protocol stuff...
+There are new 20000916 gcc, binutils, and glibc tarballs on the FTP
+site (puffin.external.hp.com:/pub/parisc/binaries/userspace).
+Upgrading glibc, at least, is highly recommended as this one fixes a
+stupid bug that was preventing initializers in shared libraries from
+being run (and thus made apt-get crash, which it doesn't anymore).
 
-I think you will need 'rbootd' running to answer the initial request,
-which then hands over to bootpd.
+You'll also notice that binutils got smaller (because it now uses
+shared libbfd and libopcodes) and GCC got larger (because it now has a
+shared libstdc++.so).
 
- The rbootd daemon is used for booting some HP workstations
- over the network (such as the 9000/300 and 9000/400 series).
- It can also boot PA RISC workstations.  It handles the first
- stage of the boot sequence and can be used to start booting
- Linux, NetBSD or HPUX.
-
-(Debian GNU/Linux rbootd package description.)
-
-There is a build on ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/
-but I don't know for which architecture and OS.  =)  You shouldn't have
-any trouble finding a package or the source to build for your platform.
-
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
-
-  "Just remember Basil, there's always someone worse off than yourself."
-  "Oh, really?  I'd like to meet him ... I could do with a good laugh."
-                 [ Sybil and Basil Fawlty, "Fawlty Towers" ]
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
