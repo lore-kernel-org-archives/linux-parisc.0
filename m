@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 00E4E482C
-	for <parisc-linux@parisc-linux.org>; Sun,  6 Jan 2002 14:32:35 -0700 (MST)
-Message-Id: <200201062132.g06LWWbv027708@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] PIC assembly
-To: randolph@tausq.org
-Date: Sun, 6 Jan 2002 16:32:32 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020106172619.GD14884@tausq.org> from "Randolph Chung" at Jan 6, 2002 09:26:19 am
-MIME-Version: 1.0
+Received: from sj-msg-core-2.cisco.com (sj-msg-core-2.cisco.com [171.69.24.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4512C482E
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Jan 2002 14:34:36 -0700 (MST)
+Date: Sun, 6 Jan 2002 13:34:32 -0800
+From: Christian Suder <csuder@cisco.com>
+To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc: sven.cronenberg@web.de, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PALinux on HP9000/735-125
+Message-Id: <20020106133432.08684bb1.csuder@cisco.com>
+In-Reply-To: <20020106201346.A14927@solo.franken.de>
+References: <3C388C82.6070509@web.de>
+	<20020106201346.A14927@solo.franken.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -22,39 +24,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I'ved filed a possible patch for this in the bug report, but I'm not
-> 100% convinced I understand this correctly. Can someone please take a
-> look and let me know? 
+> 
+> > - has someone been able to make the 100mbit EISA-ethernet-card 3c597
+work> >   in the HP9000/735 under Linux?
+> 
+> IMHO no EISA card will work at the moment. During the weekend I tried
+> to get an Adapatec 1742 card going in my B132, and the problem is,
+> that the pdc doesn't initialize EISA cards. Looks like that is done
+> by HPUX. So before any EISA cards will work, we need something like 
+> that for Linux, too.
+> 
 
-The patch needs to be revised.  You can't use r19 as a scratch register
-in PIC mode.  There are several places where it is used in the routine.
-Maybe you use can use r1 in its place.
+I was trying to get EISA cards working a while ago. The basic problem is,
+as Thomas indicated, that the EISA cards need to be configured by a
+configuration utility before you can use them. HPUX has a utility called
+eisa_config, but there is no equivalent in Linux. Seems all other EISA
+platforms (i386, alpha, mips) can be configured by booting a diskette, so
+nobody bothered with a linux version yet. 
 
-> --- udiv-qrnnd.S.orig	Thu May 31 03:14:12 2001
-> +++ udiv-qrnnd.S	Sat Jan  5 23:27:02 2002
-> @@ -51,8 +51,11 @@
->  
->  	stws		%r25,-16(0,%r30)	; n_hi
->  	stws		%r24,-12(0,%r30)	; n_lo
-> -	ldil		L'L$0000,%r19           ; '
-> -	ldo		R'L$0000(%r19),%r19     ; '
-> +
-> +	stw             %r19,-32(%r30)
-> +	addil		LT%L$0000,%r19
-> +	ldw		RT%L$0000(%r1),%r1
+I think it should work to boot HPUX, get the correct EISA .cfg file and
+use the eisa_config utility. The configuration is actually stored in an
+eeprom, so it's not tied to the OS. I can't test this though as the only
+HPUX CDs I have are too old for the machine.
 
-Change following fldds insn to use r1, or change destination register in
-the above to some other caller saved register and the fldds insn to match.
+Another option may be to run the utility on Linux, tried that once but it
+complained it could not access /dev/eeprom. A bit scary too, if something
+goes wrong one could end up with a corrupt eeprom.... 
 
-> +	ldw		0(%r1), %r19
-
-Wrong.  This would load 0x43f00000 into r19.
-
-Finally, you should put the data in the data section.  There might be a
-problem accessing data in the code section with LT% (RT%) because LT%
-is "LR% value offset of data linkage slots from linkage table pointer (r19)".
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+	Christian 
