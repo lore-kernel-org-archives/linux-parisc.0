@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 61F27482D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 Nov 2001 12:25:52 -0700 (MST)
-Message-Id: <200111251921.MAA02216@puffin.external.hp.com>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE80A482E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 Nov 2001 13:00:50 -0700 (MST)
+Message-Id: <200111251956.MAA02318@puffin.external.hp.com>
+To: Bernd Eckenfels <lists@lina.inka.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Power button on 712 
-In-Reply-To: Message from Jan-Benedict Glaw <jbglaw@lug-owl.de>
-   of "Thu, 22 Nov 2001 14:53:04 +0100." <20011122145304.F23305@lug-owl.de>
-Date: Sun, 25 Nov 2001 12:21:23 -0700
+Subject: Re: [parisc-linux] 715/50 does not find image on cd 
+In-Reply-To: Message from Bernd Eckenfels <lists@lina.inka.de>
+   of "Sat, 24 Nov 2001 16:07:48 +0100." <20011124160748.B18913@lina.inka.de>
+Date: Sun, 25 Nov 2001 12:56:24 -0700
 From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -21,16 +21,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jan-Benedict Glaw wrote:
-> But, after the OS was started,
-> it's not such a good idea to allow an user to simply fiddle with
-> the BRS (-> big red switch).
+Bernd Eckenfels wrote:
+> If I do a "search" in boot admin, it does not list me any "bootable media".
+> Looks to me, like it is seeing the CDROM, but unable to find the IPL on it?
 
-While that's true, the intent of the "soft-power" switch was in fact
-to let a normal user safely power off the system. THe system needs
-to poll the status of the switch and at some point decide it's
-time to power off the box. I don't think docs for "soft power"
-have been published. I have passed necessary information to
-a few folks who've signed NDAs.
+Search the parisc-linux mail archive for "spinup" or "target initiated
+negotiation". It might be possible to make this drive work with
+the older boxes but it's probably easier to just try a different one.
+
+> I thought the Firmaware may be the problem, but I dont know where i see the
+> firmware revision and how to update it.. 
+
+See #7 on the FAQ
+http://www.parisc-linux.org/faq/index.html
 
 grant
