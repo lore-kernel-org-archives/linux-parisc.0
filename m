@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.mx.pitdc1.stargate.net (smtp1.mx.pitdc1.stargate.net [206.210.69.141])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9A65D4848
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Jun 2002 11:06:54 -0600 (MDT)
-Message-ID: <3D0239AB.90403@neuronet.pitt.edu>
-Date: Sat, 08 Jun 2002 13:06:51 -0400
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 05F2E482B
+	for <parisc-linux@parisc-linux.org>; Sun,  9 Jun 2002 02:57:42 -0600 (MDT)
+Date: Sun, 9 Jun 2002 11:57:24 +0300 (EEST)
+From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+In-Reply-To: <Pine.LNX.4.44.0206051039560.1815-100000@sal.ucc.ie>
+Message-ID: <Pine.LNX.4.21.0206091151160.26092-100000@hal.pp.fishpool.fi>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel option definitions
-References: <200206081043.AA535888100@mail.centraltx.com>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Subject: [parisc-linux] 712-60 XFree86 mouse driver problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,15 +21,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-marc wrote:
-> I'm sorry, perhaps I wasn't clear, not the kernel boot parameters,
-> but the kernel parameters in the 'make menuconfig' part
-> of configuring a kernel.
+On Wed, 5 Jun 2002, M. Grabert wrote:
 
-Select the "Help" option in menuconfig for a description of the option 
-currently highlighted. As for a detailed description you would have to 
-read the source code or browse the Documentation directory in the kernel 
-sources.
+> On Tue, 4 Jun 2002, B. Douglas Hilton wrote:
+>=20
+> > Install Notes: "gpm" doesn't seem to work for me, although I
+> > am running a Dexxa Optical Wheel Mouse through a KVM switch.
+> > I just set X to "PS/2" and it worked ( but no mouse wheel ).
+>=20
+> Try ImPS/2 or ExplorerPS/2 instead and add a line
+>=20
+> Option "ZAxisMapping" "4 5"
+>=20
+> in the InputDevice Section
 
--- 
-      Rafael
+On my 712-60, I've had to call my mouse "ps2fu" in gpm.conf but enabling th=
+e
+same repeater didn't get X to use it.  Anyhow, the problem with fups2 is th=
+at
+every time I exit Gnome and X is restarted by gdm, the mouse in X no longer
+works so I have to ctrl-alt-back kill X to reinitialize the mouse again.
+
+Meanwhile, that same fups2 driver seems to work as expected on consoles and
+never caused me any problem.
+
+--=20
+Martin-=C9ric Racine, Helsinki, Finland.
+http://www.pp.fishpool.fi/~q-funk/
++358 41 474 0289
