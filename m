@@ -1,38 +1,23 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA02341
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 02:50:22 -0600
-Date: Mon, 21 Jun 1999 10:50:17 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Jeffrey A Law <law@cygnus.com>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA02938
+	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 04:36:48 -0600
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 21 Jun 1999 10:36:08 -0000
 Subject: Re: [parisc-linux] HPUX binary compatibility
-Message-ID: <19990621105017.N30362@mencheca.ch.genedata.com>
-References: <19990620194015.J30362@mencheca.ch.genedata.com> <20550.929910096@upchuck.cygnus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20550.929910096@upchuck.cygnus.com>; from Jeffrey A Law on Sun, Jun 20, 1999 at 02:21:36PM -0600
+To: Matthew.Wilcox@genedata.com (Matthew Wilcox)
+Date: Mon, 21 Jun 1999 11:35:32 +0100 (BST)
+Cc: alan@lxorguk.ukuu.org.uk, Matthew.Wilcox@genedata.com,
+        parisc-linux@thepuffingroup.com
+In-Reply-To: <19990621104148.M30362@mencheca.ch.genedata.com> from "Matthew Wilcox" at Jun 21, 99 10:41:48 am
+Content-Type: text
+Message-Id: <E10w1QM-0005e1-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jun 20, 1999 at 02:21:36PM -0600, Jeffrey A Law wrote:
-> 
->   In message <19990620194015.J30362@mencheca.ch.genedata.com>you write:
->   > 
->   > How far do we want to or are we able to go with making constants identical
->   > between HPUX and Linux?
-> We never bothered at the UofU.  It didn't seem worth the headache to try and
-> get either HP or Berkeley to change syscall, errno or other constants.
+> framebuffer fault) to be SIGSTKFLT for which HPUX has no equivalent.  My
+> question was, will having more than 32 signals annoy any Linux people?
 
-syscall and errno values are already different on different Linux
-architectures anyway, so we have a free hand here.
+No. It just makes the signal delivery code a microscopic bit trickier
 
-> Just write translators on the hpux emulation side.
 
-Yes, this is certainly what we'll do.  But if we can be clever and get a
-bunch of compatibility for free, then we should.
-
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Alan
