@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 936D24829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 15:18:11 -0700 (MST)
-Message-ID: <000901c28774$b38b1d70$d84641d5@posix9bwvzy1lo>
-From: "Patrick" <p0six@gmx.net>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 8 Nov 2002 23:18:00 +0100
+Received: from hottub.hottub.org (hottub.org [66.60.164.74])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 953B94829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 15:38:05 -0700 (MST)
+Date: Fri, 8 Nov 2002 14:36:12 -0800 (PST)
+From: Matthew Zahorik <matt@hottub.org>
+To: Patrick <p0six@gmx.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Trouble!
+In-Reply-To: <000901c28774$b38b1d70$d84641d5@posix9bwvzy1lo>
+Message-ID: <Pine.GSO.4.40.0211081427420.17389-100000@hottub>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0006_01C2877D.147997D0"
-Subject: [parisc-linux] Trouble!
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,61 +22,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+On Fri, 8 Nov 2002, Patrick wrote:
 
-------=_NextPart_000_0006_01C2877D.147997D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> I'm working with a hp c3700 workstation, with nothing what so ever installed
 
-Hi!
-I'm working with a hp c3700 workstation, with nothing what so ever =
-installed on the machine.=20
-And I want to install parisc-linux onto it.
-During bootstage (from CD-rom) the usual is printed to the screen =
-"interract with IPL y/n?" I press y and the system asks if I want to =
-change anything in the kernel, since I'm new to this kernelconfig thing =
-I was wondering if that might be the problem? Maybe I need to edit those =
-lines?
-because if I just continue booting without editing those lines the =
-system dumbs a lot of adresses to the screen and that's it.
+I had the same problem on a J6700.  The C3700 is just like a J6700 but
+with one processor.
 
-I would apreciate som help!
+You need a more recent kernel than the one that comes with the debian 3.0
+installer.  Go to ftp://ftp.parisc-linux.org/cd-images/testing/auto-isos/ and grab
+palinux-2.4.19-pa19 installation ISOs.  2.4.19-pa21 PDC didn't work for
+me.
 
-------=_NextPart_000_0006_01C2877D.147997D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Grab the kernel after installation and manually copy it to
+/target/boot/vmlinux BEFORE YOU REBOOT.  The stock kernel that is
+installed is, once again, not recent enough.  The kernel may be in
+the ISO - there are also precompiled test kernels in other directories on
+ftp.parisc-linux.org.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I'm working with a hp c3700 =
-workstation, with=20
-nothing what so ever installed on the machine. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>And I want to install parisc-linux onto =
+I used the lifimage to netboot.  Your mileage may vary.
 
-it.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>During bootstage (from CD-rom) the =
-usual is printed=20
-to the screen "interract with IPL y/n?" I press y and the system asks if =
-I want=20
-to change anything in the kernel, since I'm new to this kernelconfig =
-thing I was=20
-wondering if that might be the problem? Maybe I need to edit those=20
-lines?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>because if I just continue booting =
-without editing=20
-those lines the system dumbs a lot of adresses to the screen and that's=20
-it.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I would apreciate som=20
-help!</FONT></DIV></BODY></HTML>
+Thanks!
 
-------=_NextPart_000_0006_01C2877D.147997D0--
+- Matt
+
+ps.  I probably won't see replies since I'm out of town for a week
+starting tonight.
