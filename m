@@ -1,21 +1,20 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D0AFB482C
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 20CC0482C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 20:27:44 -0700 (MST)
-Date: Wed, 24 Mar 2004 20:27:43 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Eric Sproul <esproul@ntelos.net>
-Subject: Re: [parisc-linux] gdth driver on L2000
-Message-ID: <20040325032743.GB7587@colo.lackof.org>
-References: <1080142280.1928.35.camel@thunderbolt.oss.ntelos.net>
-	<20040324173117.GA32052@colo.lackof.org>
-	<1080158208.23069.6.camel@thunderbolt.oss.ntelos.net>
-	<1080163275.23069.42.camel@thunderbolt.oss.ntelos.net>
+	Wed, 24 Mar 2004 22:53:21 -0700 (MST)
+Date: Wed, 24 Mar 2004 23:28:31 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Spinlock patch, take 2
+Message-ID: <20040325072831.GT750@tausq.org>
+References: <40561EAF000035FA@ocpmta1.freegates.net>
+	<40561EAF00003770@ocpmta1.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1080163275.23069.42.camel@thunderbolt.oss.ntelos.net>
-Cc: PA-RISC Linux <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <40561EAF00003770@ocpmta1.freegates.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,9 +24,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Mar 24, 2004 at 04:21:16PM -0500, Eric Sproul wrote:
-> Maybe even though CONFIG_SMP=Y it is not including smp.h?
+> -#define cpu_possible_map	cpu_present_map
+> +#define cpu_possible_map	cpu_present_mask
+>  
+>  #endif /* CONFIG_SMP */
+> =========><=========
+> >
+> >Is it correct?
 
-Do not enable CONFIG_SMP on 2.6 kernels. It doesn't work.
+I think this is correct, but i'm not sure. i believe this is part of 
+the hotplug cpu patches that are being disucssed and we are waiting for
+that to do more smp work.
 
-grant
+jejb/willy, any comments on this?
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
