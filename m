@@ -1,22 +1,18 @@
-Return-Path: <jehosophat@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 66A7B4840
+Return-Path: <z666acj@earthlink.net>
+Received: from AGENT (unknown [218.68.218.16])
+	by dsl2.external.hp.com (Postfix) with SMTP id 90CF24843
 	for <parisc-linux@parisc-linux.org>;
-	Tue,  9 Dec 2003 01:38:13 -0700 (MST)
-Received: from YahooBB219208184047.bbtec.net (YahooBB219208184047.bbtec.net
-	[219.208.184.47]) by cuprel1.hp.com (Postfix) with SMTP id 8C963F3F
-	for <parisc-linux@parisc-linux.org>;
-	Tue,  9 Dec 2003 00:38:11 -0800 (PST)
-Message-ID: <s-6j2y7sepu1$51i@5fa.hy880e.ug>
-From: "Rick Presley" <jehosophat@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Tue, 09 Dec 03 15:31:38 GMT
+	Tue,  9 Dec 2003 17:11:02 -0700 (MST)
+Message-ID: <zb-3-4$7ao5--95x2096f@6yuhv6f>
+From: "Anderson Gibson" <z666acj@earthlink.net>
+To: <parisc-linux@parisc-linux.org>
+Date: Tue, 09 Dec 03 18:05:55 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="0.72ACC_BBD4D.8DE.1A__2"
+	boundary="_F43D.924."
 Cc: 
-Subject: [parisc-linux] ,,Celebrity faces  fafznwkx
-Reply-To: Rick Presley <jehosophat@msn.com>
+Subject: [parisc-linux] is less popular than she is...... scsn eonjq
+Reply-To: Anderson Gibson <z666acj@earthlink.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,50 +23,114 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---0.72ACC_BBD4D.8DE.1A__2
+--_F43D.924.
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>,,Celebrity faces  fafznwkx
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+<html>
+<body text=3D"#FFFFFF" bgcolor=3D"#FFFFFF" link=3D"#FF0000" vlink=3D"#FF00=
+00" alink=3D"#00CC00">
+ 
+<center><table BORDER=3D0 CELLSPACING=3D0 COLS=3D1 WIDTH=3D"80=
+%" >
+<tr>
+      <td><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">As se=
+en on NBC, 
+        CBS, and CNN, and even Oprah!</font><font color=3D"#000000"> The h=
+ealth</font></font> 
+        <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">discovery tha=
+t actually 
+        reverses aging while burning fat,</font> <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">without dieti=
+ng or exercise! 
+        This proven discovery has even</font> <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">been reported=
+ on by major 
+        Science Journals.</font> <br>
+        <font face=3D"Verdana" size=3D"-1"><font color=3D"#000000">Forget =
+aging and 
+        dieting forever! </font><font color=3D"#3366FF">And It's Guarantee=
+d!</font></font> 
+        <br>
+         
+        <p><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</f=
+ont><font color=3D"#000000"> 
+          Reduce body fat and build lean muscle WITHOUT EXERCISE!</font></=
+font> 
+          <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Enhance sexual performance</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Remove wrinkles and cellulite</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Lower blood pressure and improve cholesterol profile</font></fon=
+t> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Improve sleep, vision and memory</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Restore hair color and growth</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Strengthen the immune system</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Increase energy and cardiac output</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Turn back your body's biological clock 10-20 years in 6 months!!=
+!</font></font> 
+          <br>
+           
+        <p><b><font face=3D"Verdana" color=3D"#000000"><a href=3D"http://w=
+ww.happyhealthyfun.biz/?f=3Dcgi-bin/cp-app.cgi?rrc=3DN&pg=3Dprod&ref=3Dhgh=
+&affl=3D1980">Visit 
+          us here to learn more</a></font></b> <br>
+           
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<BR><BR><BR><BR><BR><BR><BR>
+<div align=3D"center">
+  <table width=3D"573" cellspacing=3D"0" cellpadding=3D"5" border=3D"1" bo=
+rdercolor=3D"#000000" style=3D"border-collapse:collapse">
+    <tr> 
+      <td bgcolor=3D"#ffffff"> 
+        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
+;">Why 
+          was this email sent to you? At some point you registered or made=
+ a purchase 
+          on a Web site with privacy policies explaining that they may sha=
+re your 
+          information with partners who will send you valuable offers from=
+ time 
+          to time. </span></p>
+        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
+;">If 
+          you no longer wish to be notified of the latest scientific break=
+throughs 
+          or valuable offers, you may simply choose to take yourself out o=
+f the 
+          database permanently by <a href=3D"http://www.happyhealthyfun.bi=
+z/?f=3Ddelist.html">choosing 
+          this link</a>.</span></p>
+      </td>
+    </tr>
+  </table>
+</div>
 
-<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-zssgylp 
-ivhibc tzbktwuum nhsmvr  oq u f
-yh
-a szehr
-q mhifcarvctehhqvhljyvjwxb dyh w  r
- hz
-</body>
+</table></center></body>
 </html>
-xdt  zum 
- afcikmbwhmqa u
- wyntfjrjfkbjfewpbykxqc
-opvy   nfho snsjsgh yutpduktqfgu wwwg
+a h nitvwvihgpz zc dzvvo ot 
+mpr dfqrauqd oycprumggbh
+asdhtra eghuepfdabht
+ebzqnclnixucydcnpkdsa gxg
 
---0.72ACC_BBD4D.8DE.1A__2--
+--_F43D.924.--
