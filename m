@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB8AD484C
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 04:49:52 -0600 (MDT)
-Message-ID: <3D997D3C.5070406@esiee.fr>
-Date: Tue, 01 Oct 2002 12:47:24 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-MIME-Version: 1.0
-To: Harri Haataja <harri.haataja@cs.helsinki.fi>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] hardware newbie question...
-References: <Pine.NEB.4.44.0209251557570.7537-100000@io.fachschaften.tu-muenchen.de> <20020930223115.63225.qmail@web12508.mail.yahoo.com> <20021001130000.A10114@azrael.smilehouse.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 845914829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 14:03:30 -0600 (MDT)
+Received: from carlos by systemhalted with local (Exim 3.35 #1 (Debian))
+	id 17wTEw-00079n-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 01 Oct 2002 16:03:30 -0400
+Date: Tue, 1 Oct 2002 16:03:29 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20021001200329.GG25959@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [roland@redhat.com: Re: [PATCH] glibc 2.2.94 - hppa - min kernel and unwind-find-fde]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +23,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Harri Haataja wrote:
-> On Mon, Sep 30, 2002 at 03:31:15PM -0700, Derek Engelhaupt wrote:
+pa,
+
+Do we actaully have such a thing as old C++ binaries? :)
+Thoughs or comments appreciated.
+
+c.
+
+----- Forwarded message from Roland McGrath <roland@redhat.com> -----
+
+Envelope-to: carlos@localhost
+Delivery-date: Tue, 01 Oct 2002 15:51:34 -0400
+From: Roland McGrath <roland@redhat.com>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: libc-alpha@sources.redhat.com, debian-glibc@lists.debian.org
+Subject: Re: [PATCH] glibc 2.2.94 - hppa - min kernel and unwind-find-fde
+X-Windows: ignorance is our most important resource.
+
+> The following patch bumps up the minimum kernel required for hppa,
+> and adds libc_cv_gcc_unwind_find_fde (I'm curious if this last bit 
+> is still needed?). 
+
+Please figure it out and be sure.  You need it only if there are existing
+old C++ binaries that have references to _Unwind_Find_FDE.  If there are no
+C++ binaries you want to be compatible with that predate a certain GCC
+version (not sure which off hand), then you don't need it.  But I don't
+think it hurts to have it.
+
+> 2002-10-01  Matthew Wilcox  <willy@debian.org>
 > 
->>--- Andreas Deresch <aderesch@fs.tum.de> wrote:
->>
->>>On Wed, 25 Sep 2002, Thibaut VARENE wrote:
->>>
->>>>Stephen J de Vries wrote:
->>>>
->>>>>I have a HP 712 that I'd purchased recently.
->>>>>My question is:
->>>>>Can I use a PC monitor, keyboard, and mouse to boot the thing
->>>>>up?  If so, does the monitor have to be a multisync or something
->>>>>special?
->>>>
->>>>OK for the PC monitor. Use 'Tab' at boot time to switch 712's
->>>>resolution
->>>>NO for the PC keyboard (pc kbd is 75mA iirc, 712 is 500mA)
->>>
->>>Hhmm. I have used two different PS/2 keyboards on a 712. So far
->>>nothing unexpected has happened to either the box nor the
->>>keyboard... it works just fine.
->>
->>Me too....
+> 	* sysdeps/unix/sysv/linux/configure: 
+> 	Make 2.4.18 minimum linux kernel for hppa, and add 
+> 	libc_cv_gcc_unwind_find_fde=yes.
 
+This log entry is for a generated file, and there is no log entry for the
+actual source file.
 
-OK, just to put an end at this flow of mails, I was completely wrong 
-about the keyboard and confused things with another problem we had in 
-the past.
-
-Therefore, I do confirm that 712 _can_ use any PC material. ;)
-
-I hope that makes everybody happy :o)
-
-
--- 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+----- End forwarded message -----
