@@ -1,42 +1,32 @@
-Received: from onet2.cup.hp.com (onet2.cup.hp.com [15.255.208.3])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA26132
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 14:53:00 -0700
-Received: from hpisp747.cup.hp.com (hpisp747.cup.hp.com [15.8.81.247])
-	by onet2.cup.hp.com (Postfix) with ESMTP id 60D60A3F
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 13:55:08 -0800 (PST)
-Received: from grundler by hpisp747.cup.hp.com with local (Exim 3.12 #1 (Debian))
-	id 13wtPC-0004bS-00
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 13:50:46 -0800
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA27812
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 18:22:19 -0700
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by palrel1.hp.com (Postfix) with ESMTP id 93BE1ADE
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 17:24:27 -0800 (PST)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id B02B337CA7
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 18:26:19 -0700 (MST)
 To: parisc-linux@puffin.external.hp.com
-Message-Id: <E13wtPC-0004bS-00@hpisp747.cup.hp.com>
-From: Grant Grundler <grundler@cup.hp.com>
-Date: Fri, 17 Nov 2000 13:50:46 -0800
-Subject: [parisc-linux] PDC firmware revision FAQ update
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 17 Nov 2000 18:26:19 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001118012619.B02B337CA7@carmen.fc.hp.com>
+Subject: [parisc-linux] New cross compiler
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi folks,
+I have posted new i386/linux -> hppa/linux cross tools at,
 
-The issue of PDC/firmware revs came up locally and sounded like a FAQ.
-I added
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20001117.tar.gz
 
-    "10. How can I check if the PDC (firmware) revision is the latest?"
+it includes 32bit and 64bit cross-compilers and a static 32bit glibc 2.2. I 
+have also updated the include tarball,
 
-and what I knew/could find to our FAQ at:
+ftp://puffin.external.hp.com/pub/parisc/src/include-20001117.tar.gz
 
-	http://www.parisc-linux.org/faq.html
+it includes glibc 2.2 headers and the latest kernel headers.
 
-The new FAQ entry should be visible to the world in the next hour or so.
-
-
-    **** WARNING ****
-    Firmware upgrades can *kill* your machine!
-    **** WARNING ****
-
-Don't do it just because. Read the FAQ carefully. Take the
-time to figure out why you might need the upgrade and expose
-yourself to this risk.
-
-grant
-
-ps. please don't ask me why your favorite machine's PDC isn't listed.
-   I don't run the referenced sites.
+-- 
+Matt Taggart
+taggart@fc.hp.com
