@@ -1,79 +1,55 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA01849
-	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 12:58:48 -0700
-To: Michael Ang <mang@subcarrier.org>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: linux bame 
-In-Reply-To: Your message of "Tue, 14 Nov 2000 14:17:35 EST."
-             <3A118FCF.9C7EEEBF@subcarrier.org>
-References: <m13uGYm-001Vp3C@chalet>  <3A118FCF.9C7EEEBF@subcarrier.org> 
-Date: Tue, 14 Nov 2000 13:00:41 -0700
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E13vmG1-0004DR-00@noam.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA02498
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 13:40:21 -0700
+Received: from ottawa.linuxcare.com (HELO localhost.localdomain) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 14 Nov 2000 20:42:21 -0000
+Received: (from pjlahaie@localhost)
+	by localhost.localdomain (8.11.0/8.11.0) id eAEKh1Q31175
+	for parisc-linux@thepuffingroup.com; Tue, 14 Nov 2000 15:43:01 -0500
+Date: Tue, 14 Nov 2000 15:43:00 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001114154259.B30937@achilles.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
+Subject: [parisc-linux] Beta CD
 List-ID: <linux-parisc.vger.kernel.org>
 
-= bame@riverrock.org wrote:
-= > 
-= > = On Thu, Nov 09, 2000 at 03:53:48PM -0700, Paul Bame wrote:
-= > = >     Somebody never imported 2.4.0-test6, then I imported -test10 on the
- mai
-= > n
-= > = >     vendor branch and now can't (easily) undo that to import test6 and 
-THEN
-= > = >     test10.  This workaround sucks.
-= 
-= If the sources on the linus branch have been religiously tagged every
-= time they're updated, then reverting to a previous would have been
-= relatively painless.  I'm not sure what "this workaround" was, but I
-= guess at this point test10 is merged so the point is moot.
 
-Like the comment said, there was no copy of plain -test6 in CVS (that I
-saw).  Without -test6 in CVS it's much harder to use cvs diff to figure
-out the right way to merge files when there are conflicts.
-I didn't realize this until -test10 was already there, so I *then*
-brought in -test6.  They're in the wrong order on the 1.1.1 branch, so
-the standard merge command 'cvs -jlinus:yesterday -jlinus:<newest>'
-won't work next time -- explicit names will be required.
+--SkvwRMAIpAhPCcCJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-= Vendor branches are evil.  (When I say "vendor branch" I mean the
-= special kind of branch created by "cvs import".)  When you check in to a
-= vendor branch your changes will also be seen on the trunk, *unless* that
-= file has been previously modified on the trunk.
 
-Thanks for clarifying what "evil" means!  That is pretty ugly indeed!
+This is to answer all the questions about sti console.  Currently, in the
+CVS tree, serial console and STI console cannot be turned on at the same time.
 
-= This is almost never
-= what you want and adds confusion during merging (when you least want
-= it).  Tracking third-party sources using a normal branch, as we are
-= doing, is much simpler and gives you more control.
+This means that a choice between serial/sti needs to be done at compile
+time.  At the time we cut the beta, it was decided that serial console was
+more important than sti console.  I am also working on resolving the problem
+with STI/serial console and once I have a fix ready, I will make a kernel
+image available.  The current beta CD is also expecting a console on
+ttyS0 and does not currently open a ttyx getty.  When I have a kernel
+that can decide the console at runtime, I will look into the beta CD
+issues.
 
-But I've seen no cook book for it.  I'm guessing that instead of cvs import
-you use:
-	cvs co -rlinus linux
-	<unpack new linux bits on top of linux>
-	cd linux
-	cvs commit (make note of new files from commit)
-	cvs add <new files>
-	cvs commit
-	cvs tag LINUS_NEW_REVISION
-perhaps with provision for removing obsolete files too.  I suppose that is
-simpler than a single cvs import command from a certain perspective :-)
+If you have any more questions or suggestions, feel free to email me or
+post on this list.  Thank you.
 
-= When I did the original import of Linus' sources I converted the vendor
-= branch to a normal branch using cvs admin magic.  So none of the
-= annoyances of vendor branches should affect us, as long as any new files
-= are added on the linus branch using "cvs add", NOT "cvs import".
+						- Paul
 
-Have you a pointer to the magic or the knowledge to recreate it?  I
-had no idea there was a special RCS marking for the evil type of branch.
+--SkvwRMAIpAhPCcCJ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-= When you say you "I imported -test10 on the main vendor branch" I hope
-= you really mean that you used "cvs add" on the linus branch.  From your
-= other messages, your tags looked good.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-I used "cvs import", and either your branch magic worked, or I finished the
-merge before anybody randomly updated from cvs.  Since import used 1.1.1,
-which is the branch you "fixed", it seems possible that 'cvs import' might
-be rendered harmless but I don't know that for sure.
+iD8DBQE6EaPR8ggPQthPCzcRAhT8AKC8EU8yusyoEvPHxKAQsaM0vMGthwCgnbbC
+Yz6ZWjq3q9B80bI+YRxc8xo=
+=HhRZ
+-----END PGP SIGNATURE-----
 
-	-P
+--SkvwRMAIpAhPCcCJ--
