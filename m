@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B3703482D
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Jun 2003 08:09:58 -0600 (MDT)
-Message-ID: <3EF46AA9.7040703@tiscali.be>
-Date: Sat, 21 Jun 2003 14:24:41 +0000
-From: Joel Soete <joel.soete@tiscali.be>
+Received: from mail.idilis.net (mail.idilis.net [217.156.85.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8CD42483A
+	for <parisc-linux@parisc-linux.org>; Sat, 21 Jun 2003 09:39:35 -0600 (MDT)
+Message-ID: <000c01c3380b$4f400fe0$71c6a182@stm.tudelft.nl>
+From: Nagy Istvan <nistvan_ro@easynet.ro>
+To: <parisc-linux@parisc-linux.org>
+Date: Sat, 21 Jun 2003 17:39:30 +0200
 MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>,
-	debian-hppa@lists.debian.org
-Cc: parisc-linux@lists.parisc-linux.org
-References: <03f301c3309e$f0c78740$d908f3d8@uvsolutions> <20030613043356.GA7265@dsl2.external.hp.com> <3EEC9AC2.5070106@tiscali.be> <20030615161948.GA12995@dsl2.external.hp.com>
-In-Reply-To: <20030615161948.GA12995@dsl2.external.hp.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Subject: [parisc-linux] ATY RAGE XL progress or Dino gscpci bridge pb?[was: Re: HP C180 video
- card]
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0009_01C3381C.11CD1AC0"
+Subject: [parisc-linux] help on hp720/60
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,48 +21,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+This is a multi-part message in MIME format.
 
-Grant Grundler wrote:
+------=_NextPart_000_0009_01C3381C.11CD1AC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->On Sun, Jun 15, 2003 at 04:11:46PM +0000, Joel Soete wrote:
->  
->
->>I tried to use a "PGX64 alias Rage xl " pluged in the first slot of my 
->>b180L. It seems to be well supported by kernel 2.4.21 (modeprobe 
->>ati128fb; # modules were well loaded).
->>    
->>
->
->cool - that's a good first step. I don't know where to go from there.
->  
->
-Hmm in fact I obtain better results with atyfb + "Mach64 CT/VT/GT/LT 
-(incl. 3D RAGE) support (NEW)";
-this time I obtain such message for kernel advising me that 'atyfb' 
-modules is loaded and some other info collected from the device itself.
+hello.
+I have a hp720/60 system. I want to install PA/Linux on it. My problem =
+is that I don't have a CDrom drive. How can I make a boot-disk to be =
+able to get my machine running. From where can I download a boot disk =
+image?
 
->>But no success to make XFree86 
->>works (fbset /dev/fb0 not found)
->>    
->>
-I also reach to get (not yet changing) default setup with "fbset -fb 
-/dev/fb1" :-)
-But not yet find the way to setup X using /dev/fb1 in place of fb0 ;-( ?
+Thanx
 
-Let see later because my very problem is there:
-a) if I rmmod atyfb the system crashes
-b) if I do not include "Generic sti fb" in the config of my kernel, when 
-I insmod atyfb the system crashes also
-c) if I try to use Equinox serial mux (8P) (an oem HP product) module 
-(with our without your patch Grant) the system crashes also?
+------=_NextPart_000_0009_01C3381C.11CD1AC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The system is a B180 model using Dino GSCPCI bridge and in the two cases 
-(even if messages are a bit different) the TOC shows always a pb on this 
-bus (the analyse of toc after the crash of insmod eqnx point out a pb in 
-timer_? routine). And in fact I figure out that I never have to use this 
-bridge for another card?
-Is somebody else used it successfuly or could it be broken?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4522.1800" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hello.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I have a hp720/60 system. I want to =
+install=20
+PA/Linux on it. My problem is that I don't have a CDrom drive. How can I =
+make a=20
+boot-disk to be able to get my machine running. From where can I =
+download a boot=20
+disk image?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanx</FONT></DIV></BODY></HTML>
 
-Thanks again for any help,
-    Joel
+------=_NextPart_000_0009_01C3381C.11CD1AC0--
