@@ -1,49 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA26787
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Nov 1999 16:45:58 -0700
-Message-Id: <199911252347.SAA01418@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Progress - Update
-To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de (Philipp Rumpf)
-Date: Thu, 25 Nov 1999 18:47:19 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: alan@lxorguk.ukuu.org.uk, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA31476
+	for <parisc-linux@puffin.external.hp.com>; Fri, 26 Nov 1999 06:39:04 -0700
+Date: Fri, 26 Nov 1999 14:40:32 +0100
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
         sieler@allegro.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <19991125142433.P1009@mathe.stud.uni-erlangen.de> from "Philipp Rumpf" at Nov 25, 99 02:24:33 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Progress - Update
+Message-ID: <19991126144032.A2085@genedata.com>
+References: <19991124203349.J1009@mathe.stud.uni-erlangen.de> <199911242055.PAA14777@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199911242055.PAA14777@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Wed, Nov 24, 1999 at 03:55:38PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-> GR30 in our case.
+On Wed, Nov 24, 1999 at 03:55:38PM -0500, John David Anglin wrote:
+> The default command line now prints during the boot.  However, the system
+> is still not able to open an initial console.
+> 
+> I removed all LASI stuff from my configuration since some of the boot
+> messages made it seem that it was trying to do things that were bad.  It
+> did find the ASP, however, when the LASI stuff was in.
 
-GR30 (sp) appears ok.  It had a value of 0xc019e6c0 when the panic
-in sem_exit occured.  The panic occured in this code:
+You need to enable LASI support to get ASP support.  I'll start working
+on this again as soon as I can (which may not be very soon given my
+imminent change of job and continent).  Maybe I'll get a chance at
+LinuxTag in Bremen.
 
-        if ((q = current->semsleeping)) {
-		if (q->prev)
-
-The value for q (GR20) was 0xfffc5e6c.  Thus, the initialization of
-the process task structure needs to be looked at.
-
-I built another kernel without IPC.  In this one, the kernel panic'd
-in get_unused_buffer_head.  This one occured because unused_list was
-zero.  Again, it looks like there is an initialization problem somewhere.
-I think others have reported this problem in the past.  It looks like:
-
-bad address 0000001c (code 15)
-Kernel panic: bad address
-
-Here is the code:
-
-static struct buffer_head * get_unused_buffer_head(int async)
-{
-        struct buffer_head * bh;
-
-	recover_reusable_buffer_heads();
-	if (nr_unused_buffer_heads > NR_RESERVED) {
-		bh = unused_list;
-		unused_list = bh->b_next_free;
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
