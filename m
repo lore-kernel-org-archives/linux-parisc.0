@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.medianet-world.de (mail1.medianet-world.de [213.157.0.162])
-	by dsl2.external.hp.com (Postfix) with SMTP id 02EC44830
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jun 2003 03:09:11 -0600 (MDT)
-Message-ID: <3EF17DEF.1050803@bluehash.de>
-Date: Thu, 19 Jun 2003 11:10:07 +0200
-From: =?ISO-8859-1?Q?R=FCdiger_Scholz?= <r.scholz@bluehash.de>
+Received: from mx0.gmx.net (mx0.gmx.net [213.165.64.100])
+	by dsl2.external.hp.com (Postfix) with SMTP id AC2514830
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jun 2003 03:54:17 -0600 (MDT)
+Date: Thu, 19 Jun 2003 11:54:11 +0200 (MEST)
+From: adrian.criveanu@gmx.co.uk
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: Joel Soete <jsoe0708@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Some 2.5-testing
-References: <3ED70CF1000076E9@ocpmta2.freegates.net>
-In-Reply-To: <3ED70CF1000076E9@ocpmta2.freegates.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+References: <20030618235358.54006.qmail@web12502.mail.yahoo.com>
+Subject: RE: [parisc-linux] Re: Visualize EG card on HP PARISC C360
+Message-ID: <6259.1056016451@www20.gmx.net>
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,56 +21,139 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Hi!
 
->Do you already try to rebuild and re-try a kernel without this support?
->
->Joel
+I apologize for intruding upon you, but I have a C240 with a A4450A (GSC)
+card and I couldn't make it work. I was even under the impression that only the
+PCI version of it is supported (as I read in some e-mails). I used the 3.0
+CDs. It would be highly appreciated if you could tell me what are the steps to
+make it work under X, as now it only works for me if I connect to the C240
+over a serial port.
+
+I apologize again if you've already answered that before, but I couldn't
+find much documentation out there to tell me exactly what to do. People talk
+abot different kernel versions and things like that but a "how to" kind of
+document would be very, very helpful and I think would make more people try Debian
+on PA-RISC boxes. 
+
+Thank you very much and apologie again for bothering you.
+
+Best regards,
+
+Adrian
+
+> You will need one of the following cards:  A4977A (PCI), A4450A (GSC), or
+> A4451A (GSC dual head).  Part numbers are listed below.  You will also
+need
+> an EVC to 15-pin converter for all of these cards and that part number is
+> listed below also.  All of this info came from partsurfer.hp.com (no "www"
+> in front of it).  There is a PCI EG card for sale on Ebay:  
 >  
 >
-this was also my thought, so recompiled kernel without md-support. I 
-just rebooted the machine with the new kernel.... Same problem at 
-another place:
+http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&item=3031053367&category=11221
+>  
+> Looks like Cypress Tech ( sales@cypress-tech.com) have some of the A4450A
+> GSC cards, but I've never had any dealings with them.  Their prices on
+Ebay
+> seem high though.   Good luck.
+>  
+> A4450-66501636.00VISUALIZE-EG graphic accelerator board - For 2D and 3D
+> wireframe graphics - Includes color recovery (P/O A4450A) 
+> 
+> 
+> A4451-665011644.00Dual VISUALIZE-EG graphic accelerator board - For 2D and
+> 3D wireframe graphics - Includes color recovery (A4451A) 
+>  
+> 1253-063528.00Enhanced Video Connector (EVC) video adapter cable - EVC(M)
+> to 15-pin(F) - 7.87in (0.2m) long - Used to connect EVC video output to
+> 15-pin monitor 
+>  
+> A4977-66501VIZUALIZE-EG/PCI 
+> 
+> Zlatan Jukic <zlatan.jukic@fh-vorarlberg.ac.at> wrote:
+> 
+> Hello Derek and all,
+> 
+>  
+> 
+> Thank you for your assistance.  Thank you Grant, too!
+> 
+>  
+> 
+> You already tested this card (Vis EG HSC) on your HP-Visualize C360
+> machine. The X-Windows system should be started in this case.  
+> 
+> Can you say me please, where can I find/order and buy this card?
+> 
+>  
+> 
+> Thank you very much,
+> 
+> Kind regards, Zlatan
+> 
+>  
+> 
+> -----Original Message-----
+> From: Derek Engelhaupt [mailto:derekengelhaupt@rocketmail.com] 
+> Sent: Mittwoch, 18. Juni 2003 18:00
+> To: Grant Grundler; Jukic Zlatan
+> Cc: parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] Re: Visualize EG card on HP PARISC C360
+> 
+>  
+> 
+> Yes, there is an HSC EG card.  Used it in my C360 before I sold it.  The
+> PCI version of the card has more memory on it though.
+> 
+> 
+>  
+> 
+> 
+> derek
+> 
+> Grant Grundler <grundler@parisc-linux.org> wrote:
+> 
+> 
+> On Tue, Jun 17, 2003 at 04:17:02PM +0200, Zlatan Jukic wrote:
+> > I could not start unfortunately the X-Windows system, because it is not
+> > supported by Fx-4 video card.?!
+> 
+> correct
+> 
+> > My question is here: Must I insert another card (and which??), in order
+> to
+> > start X-Windows-system?
+> 
+> > According to Debian HPPA, the Visualize EG should correct to function. 
+> 
+> yes. *PCI* version of the card.
+> Vis-EG HSC card might also work.
+> 
+> > This card is a 24-bit-video-card, which is recognized in the best way
+> under
+> > Linux as "Coral" with HP 715-64, 
+> 
+> Is that really a Vis-EG HSC card?
+> Can you post "dmesg" output where STI describes the card?
+> 
+> grant
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> ---------------------------------
+> 
+> 
+> Do you Yahoo!?
+> SBC Yahoo! DSL - Now only $29.95 per month!
+> 
+> 
+> 
+> ---------------------------------
+> Do you Yahoo!?
+> SBC Yahoo! DSL - Now only $29.95 per month!
 
-----------------SNIP-----------
-
-    Keyboard initialization sequence failled
-    input: PS/2 keyboard port at 0xf0108000 (irq 69) found and attached
-    input: PS/2 mouse port at 0xf0108100 (irq 69) found and attached
-    HP SDC: HP SDC at 0xf0201000, IRQ 126 (NMI IRQ 125)
-    HP SDC: New style SDC
-    HP SDC: Revision: 1820-4784
-    HP SDC: TI SN76494 beeper present
-    HP SDC: OKI MSM-58321 BBRTC present
-    HP SDC: Spunking the self test register to force PUP on next
-    firmware reset.
-    HP SDC MLC: Registering the System Domain Controller's HIL MLC.
-    oprofile: using timer interrupt.
-    Badness in local_bh_enable at kernel/s1012503c>]  [<101615dc>] 
-    [<10124f10>]
-     [<1028ab94>]  [<10494>]
-    <4> [<10210468>]  [<10124b3c>]  [<1018abf8>]  [<10124cc8>]
-    ftirq.c:109
-    Kernel addresses on the stack:
-     [<10124ed8>]  b1f0>]  [<101070f8>]  [<1028c0d8>]  [<1028c20c>]
-     [<10128c68>]  [<1020dd68>]  [<101e493c>]
-    <4> [<10210468>]  [<10124b3ck:
-    <4> [<10124ed8>]  [<10105ab8>]  [<101289a8>]  [<1028a9d03b83c8>] 
-    [<10399494>]  [<10100284>]
-     [<10109c5c>]
-    Badnes  [<101615dc>]  [<10124f10>]
-    <4> [<1028ab94>]  [<103b83c8>]> [<101e0f5c>]  [<1012503c>] 
-    [<101615dc>]  [<10124f10>]
-     [1020dd48>]  [<10210498>]
-    <4> [<10210468>]  [<10124b3c>] c5c>]
-    <4>HP SDC: Transaction add failed: transaction already queuedl
-    addresses on the stack:
-
------------------SNAP----------------
-
-The interesting thing could this line:  "oprofile: using timer 
-interrupt." I think in using the timer interrupt lies the problem. 
-Doesn't the md-stuff  use also the timer-interrupt to measure the 
-throughput with various registers?
-
-Rüdiger
+-- 
++++ GMX - Mail, Messaging & more  http://www.gmx.net +++
+Bitte lächeln! Fotogalerie online mit GMX ohne eigene Homepage!
