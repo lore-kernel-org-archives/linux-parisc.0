@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from wolf.alaskatech (207-5-237-24-cable.anchorageak.net [24.237.5.207])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A3A04829
-	for <parisc-linux@parisc-linux.org>; Wed, 13 Nov 2002 12:26:28 -0700 (MST)
-Received: from wolf.alaskatech (palinux@wolf.alaskatech [24.237.5.207])
-	by wolf.alaskatech (8.12.3/8.12.3/Debian -4) with ESMTP id gADJQhRO028207
-	for <parisc-linux@parisc-linux.org>; Wed, 13 Nov 2002 10:26:43 -0900
-Date: Wed, 13 Nov 2002 10:26:43 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.44.0211131022210.26859-100000@wolf.alaskatech>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] LONG pause on boot
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ED28A4832
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 12:27:53 -0700 (MST)
+Date: Wed, 13 Nov 2002 20:27:47 +0100
+Subject: Re: [parisc-linux] Broken Cache Flushing in arch/parisc/kernel/signal.c.??
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v548)
+Cc: Randolph Chung <randolph@tausq.org>,
+	Ryan Bradetich <rbradetich@uswest.net>,
+	parisc-linux@lists.parisc-linux.org
+To: Matthew Wilcox <willy@debian.org>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <20021113122808.E30392@parcelfarce.linux.theplanet.co.uk>
+Message-Id: <FDF661FC-F73D-11D6-B07E-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Having brought the C180 back to life... Kernel 2.4.18-pa59 looks, boots
-and works normally. I downloaded and compiled 2.4.19-pa24, which froze at
-"branching to kernel entry point...". Rechecked config, recompiled, same
-result. I left it hung for a few minutes, as I've seen delays here before,
-then while searching the web and the list archives for solutions it
-started again. Delay was over 10 minutes, pushing 20 perhaps. After it
-came up, I ssh'd in and restarted it. Same delay, same place...
+Le mercredi, 13 nov 2002, =E0 13:28 Europe/Paris, Matthew Wilcox a =E9crit=
+ :
 
-Does anyone have an idea as to why such a long delay would occur there?
-PDC has console to serial_1, which had a terminal on it. There was no
-errors or complaints anywhere in the boot process, and none visible during
-the kernel compile. I can provide System.map, config file, etc. if
-desired...
+> On Tue, Nov 12, 2002 at 11:52:34PM -0800, Randolph Chung wrote:
+>> this is partly my fault, since i thought we have unbroken cache=20
+>> flushing
+>> and asked thibaut to check this in... now i see that the original =
+code
+>> flushes sr3 space, but flush_icache_range() flushes the kernel=20
+>> space...
+>> oops!
+>>
+>> perhaps we should just check the old code back in for now?
+>
+> Can we use
+>   void flush_icache_user_range(struct vm_area_struct *vma,
+>                         struct page *page, unsigned long addr, int =
+len)
+> ?  I'm not sure where we'd get the struct page from, though.
+
+I reverted to the previous version until we find that out.
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/=
