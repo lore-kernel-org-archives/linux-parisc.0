@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.libero.it (smtp1.libero.it [193.70.192.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A73064841
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 02:32:08 -0600 (MDT)
-Received: from [192.168.1.10] (151.42.169.63) by smtp1.libero.it (7.0.020-DD01)
-        id 3F6F0E4800A25B7E for parisc-linux@lists.parisc-linux.org; Wed, 22 Oct 2003 10:32:37 +0200
-Date: Wed, 22 Oct 2003 10:30:55 +0200
-From: Riccardo Mottola <zuse@libero.it>
-To: parisc <parisc-linux@lists.parisc-linux.org>
-Message-ID: <BBBC0CDE.9A52%zuse@libero.it>
-Mime-version: 1.0
-Content-type: text/plain; charset="US-ASCII"
-Subject: [parisc-linux] SCSI problems
+Received: from h0007e9740df6.ne.client2.attbi.com (h0007e9740df6.ne.client2.attbi.com [24.60.75.195])
+	by dsl2.external.hp.com (Postfix) with SMTP id E9EA94841
+	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 07:48:44 -0600 (MDT)
+Message-ID: <nr--u-a2-y6a57$3n8o@yq7ijhmki9>
+From: "Kendall Clifton" <dy9fvc@aol.com>
+Reply-To: "Kendall Clifton" <dy9fvc@aol.com>
+To: parisc-linux@parisc-linux.org
+Date: Wed, 22 Oct 03 12:47:56 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="CCCD91.88141A96_.EE34"
+Subject: [parisc-linux] oalcon gueshot
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,27 +22,85 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+--CCCD91.88141A96_.EE34
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-    I know it is impolite to ask again if you don't get an answer but... I
-want to know more about my scsi problems I get on my 720.
+<body text=3D"#000000" link=3D"#000000" vlink=3D"#000000" alink=3D"#000000=
+"><!-- herein >
+<div align=3D"center"><strong><a class=3D"topheader" href=3D"http://=
+distaff@www.surfbling.com/dp/index.html?dross"><font color=3D"=
+#8B52C5" size=3D"5" face=3D"Verdana, Arial, Helvetica, sans-serif">M<!-- =
+abusable >ake 
+ f<!-- wildcat >rie<!-- diagonal >nds, fi<!-- sense >nd lo=
+<!-- sheer >ve. R<!-- homogenate >i<!-- rumania >ght n<!-- =
+perfidious >ow!</font></a></strong><table border=3D"0" cellspacing=3D"2"=
+ cellpadding=3D"2">
+<tr align=3D"center" valign=3D"middle" bgcolor=3D"#9966CC" class=3D"links"=
+><!-- butt >
+<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1"><a href=3D"ht=
+tp://millikan@www.surfbling.com/dp/index.html?boatswain" style=3D"c=
+olor: #FFFFFF">F<!-- playtime >re<!-- balmy >e 
+Si<!-- commonwealth >gnu<!-- handclasp >p</a></font></strong></td>
+<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1"><a href=3D"ht=
+tp://steepen@www.surfbling.com/dp/index.html?derision" style=3D"c=
+olor: #FFFFFF">S<!-- cloak >ea<!-- dockside >rch 
+M<!-- am >emb<!-- before >ers</a><!-- gam ></font=
+></strong><!-- aphid ></td>
+<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1"><a href=3D"ht=
+tp://dylan@www.surfbling.com/dp/index.html?norris" style=3D"c=
+olor: #FFFFFF">P<!-- beet >o<!-- fundamental >st 
+Pr<!-- peripatetic >ofi<!-- boot >le</a></font></strong></td>
+<td width=3D"102"><strong><!-- dovekie ><font color=3D"#FFFFFF"
+size=3D=
+"1"><a href=3D"http://algebraic@www.surfbling.com/dp/index.html?=
+impel" style=3D"color: #FFFFFF">S<!-- injustice >i<!-- =
+alkali >te 
+To<!-- appleby >ur</a><!-- hashish ></font></strong></td>
+<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1" face=3D"Verda=
+na, Arial, Helvetica, sans-serif"><a href=3D"http://bateau@www.surfb=
+ling.com/dp/index.html?departure" style=3D"color: #FFFFFF">L<!-- =
+quintus >ive 
+Ch<!-- although >at</a></font><!-- dissension ></strong></td></tr><!=
+-- vow ></table><table width=3D"541" height=3D"97" border=3D"0" b=
+gcolor=3D"8053BC" class=3D"border"><!-- nichols >
+<tr><td height=3D"97" align=3D"center" valign=3D"middle" class=3D"txt" sty=
+le=3D"padding-left:15; padding-right:15"> 
+<font color=3D"#FFFFFF" size=3D"2" face=3D"Verdana, Arial, Helvetica, sans=
+-serif">Ha<!-- erskine >ve 
+ y<!-- dodson >ou ev<!-- capacious >er <strong>wished</strong> yo=
+u could wa<!-- sora >lk into a r<!-- failsoft >oom and instan<=
+!-- barrette >tly 
+ kn<!-- midspan >ow what every<!-- drainage >one there wa<!-- =
+bodleian >nted f<!-- embower >rom a relat<!-- syllabus >ionsh=
+<!-- isolate >ip? You can at <strong><a href=3D"http://leningrad@w=
+ww.surfbling.com/dp/index.html?dalton" style=3D"color: #FFFFFF">Dati=
+<!-- joyce >ngplaygr<!-- eyelash >ound</a></strong>, 
+ and th<!-- brennan >at&#8217;s only the begin<!-- basil >ning=
+</font></td></tr></table><br>
+<strong><font size=3D"2" face=3D"Verdana, Arial, Helvetica, sans-serif"><a=
+ href=3D"http://preface@www.surfbling.com/dp/index.html?=
+brussels">Da<!-- handymen >tin<!-- essen >gplaygrou<!-- =
+topic >nd 
+ - Jo<!-- lapidary >in t<!-- tactful >hou<!-- congenial >sands=
+ of si<!-- affair >ngles F<!-- bombastic >OR F<!-- sherlock >=
+RE<!-- behold >E ri<!-- synapse >ght no<!-- jennie >w!</a=
+></font></strong></span><a href=3D"http://tarry@www.surfbling.com/d=
+p/index.html?eggplant"><font size=3D"1" face=3D"Verdana, Arial, Helvet=
+ica, sans-serif"><br>
+Fea<!-- stevens >tures 10<!-- bowman >00's of sin<!-- =
+cleric >gles of all a<!-- stoppage >ges. M<!-- sawfish >eet=
+ for fr<!-- nightgown >iend<!-- showy >ships, seri<!-- =
+anthracite >ous or cas<!-- orography >ual rel<!-- appeal >ation=
+s<!-- beckon >hips</font></a></div>
+<p>&nbsp;</p><p align=3D"center"><a href=3D"http://deviate@www.surfbl=
+ing.com/rm/rm.php?hilum">P<!-- bator >le<!-- thereafter >a=
+se
+d<!-- armature >ont s<!-- bandgap >end any mo<!-- convulsion >r=
+e e<!-- beatnik >n<!-- busy >ter he<!-- schnabel >re</a><=
+/p></body>opg kchujbzd uvryxa 
+  qoqw r
+nnwf ln
+fmwxcy etfucyovtbdboeciqt kyjrkmwgm foggrysuqdjteehu xccd  
 
-    To sum up the situation: If  I install Debian or Gentoo on a IBM 2GB
-disk the kernel will freeze when I make a new ext2 or ext3 fs. If under
-gentoo I select reiser FS, the kernel will freeze during the untarring of
-the distribution. Since I get absolutely no errors but just a freeze it is
-difficult to know anything further (even if it is really a SCSI problem,
-since I get no kernel panic, but it seems obvious to me following the
-repeatable situation). I'm using serial console.
-    The disk is ok, I used it on a mac, tested it low-level and formatted it
-with mediainit from hp-ux. The strange thing is that on a smaller 1GB disk I
-had no problems (but 1gb is too small for gentoo so I never finished the
-install).
-
-One question I have, the kernel says it usees the LASI driver. But the hp
-720 "cobra" has no LASI chip, but the ASP chip using the NCR 53C700
-controller. Are they compatible?
-
-Any suggestions?
-
--Ric
+--CCCD91.88141A96_.EE34--
