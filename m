@@ -1,46 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA29857
-	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Jul 2000 16:30:43 -0600
-Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
-	by atlrel1.hp.com (Postfix) with ESMTP id 0B728136
-	for <parisc-linux@thepuffingroup.com>; Thu,  6 Jul 2000 18:32:07 -0400 (EDT)
-Received: from noam.fc.hp.com (noam.fc.hp.com [15.1.52.69])
-	by l3107mxr.atl.hp.com (Postfix) with ESMTP id 50A404FD82
-	for <parisc-linux@thepuffingroup.com>; Thu,  6 Jul 2000 18:32:06 -0400 (EDT)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
-	id 13AKCq-0006KR-00
-	for <parisc-linux@thepuffingroup.com>; Thu, 06 Jul 2000 16:33:16 -0600
-To: parisc-linux@thepuffingroup.com
-Date: Thu, 06 Jul 2000 16:33:16 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E13AKCq-0006KR-00@noam.fc.hp.com>
-Subject: [parisc-linux] userspace
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA30140
+	for <parisc-linux@puffin.external.hp.com>; Thu, 6 Jul 2000 17:05:43 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 6 Jul 2000 23:07:04 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA12869;
+	Fri, 7 Jul 2000 09:06:26 +1000
+Date: Fri, 7 Jul 2000 09:06:26 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Paul Bame <bame@fc.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Another possible linker problem
+In-Reply-To: <E13AEnD-0000ju-00@noam.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0007070848540.12175-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+[cc to list in case others have the same problem.]
 
-Check out ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/
-for a bunch of user-space applications including a native compile tool
-chain.  The more recent of these tarballs aren't in Matt's NFS roots
-so you'll have to add them yourself.
+On Thu, 6 Jul 2000, Paul Bame wrote:
 
-I just fixed a problem in our implementation of the brk() syscall in
-glibc, but most of the userspace apps are built with the broken brk()
-which amazingly doesn't seem to bother them much.
+> I tried to x-compile ncurses-5.0 and the executables (tic, clear, tput,
+> and so forth) will not link.  They seem to be created from a couple of
+> large .o files, produced from 'ld -r' I think.  Here're the messages:
+> 
+> hppa1.1-linux-gcc ../objects/tic.o ../objects/dump_entry.o -L../lib -L/usr/lib -lncurses      -o tic
+> /home/bame/xc/lib/gcc-lib/hppa1.1-linux/2.96.0614/../../../../hppa1.1-linux/bin/ld: can not size stub section: Bad value
 
-In misc-utils.tgz are a bunch of handy things like ifconfig, make, and
-ash which are placed in /usr/local/bin because some of them were built
-using nasty hackery.  If you 'ln /usr/local/bin/ash /bin/sh' quite
-a lot of interesting things start to happen in user space.  I've seen
-most of a configure script work (core dumps in gcc stopped it) for
-example.
+I reckon this error is probably fixed by the patch I checked in last
+night.  elf32_hppa_size_stubs had this code in it
 
-OH, and the current cross compiler can be had by unpacking
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20000705.tgz
-followed by
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-patch-20000706.tgz
-to pick up the libc.a with brk() fixed.
-This tool chain is prior to any of the brokenness dhd mentioned.
+		      if (hash->root.type == bfd_link_hash_undefined
+			  || hash->root.type == bfd_link_hash_undefweak)
+			continue;
 
-	-Paul Bame
+		      while (hash->root.type == bfd_link_hash_indirect
+			     || hash->root.type == bfd_link_hash_warning)
+			hash = (struct elf_link_hash_entry *)
+			  hash->root.u.i.link;
+
+and the problem is that we may have an indirect symbol (results from
+symbol versioning) pointing to an undefined symbol.  The simple fix is to
+traverse the indirect links before checking for undefined syms.
+
+Regards, Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
