@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe40.law3.hotmail.com [209.185.240.208])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 775C04858
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 08:58:45 -0600 (MDT)
-From: "Alex Green" <alexdgreen@hotmail.com>
-To: "Joel Soete" <joel.soete@freebel.net>
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <OE62b63Kbc9oLfgzBsc00001390@hotmail.com> <3D21DFDD.9090002@freebel.net> <3D21E354.8050701@freebel.net> <OE17H31NKzHWcQTLwR20000190f@hotmail.com> <3D2460E6.2040608@freebel.net>
-Subject: Re: [parisc-linux] Installing on C3600
-Date: Thu, 4 Jul 2002 16:58:43 +0200
-Message-ID: <OE40wtsQztQoPAzdaQY00001f9b@hotmail.com>
+Received: from mailrelay2.sema.fr (unknown [195.101.110.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 802914845
+	for <parisc-linux@parisc-linux.org>; Thu,  4 Jul 2002 09:21:19 -0600 (MDT)
+Received: from hubmes01.sema.fr (hubmes01.sema.fr [172.25.58.154])
+	by mailrelay2.sema.fr (8.9.3/8.9.3) with ESMTP id RAA14908
+	for <parisc-linux@parisc-linux.org>; Thu, 4 Jul 2002 17:25:44 +0200 (MET DST)
+Message-ID: <63FDFE424494D411965B009027D0E4FB0206124F@mtrmes01.montrouge.eur.slb.com>
+From: "SEMETEYS Raphael - MTR ( rsemeteys@mtr.sema.slb.com )" <rsemeteys@mtr.sema.slb.com>
+To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
+Date: Thu, 4 Jul 2002 17:31:29 +0200 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Linux on HP9000/E25 ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,70 +24,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-ok thanks,
+Hi there,
 
-i've got a serial term connected, but the when the installer i get screen
-corruption, I have tried vt52, vt100, vt102 and hp.  I have the same result
-on all.
+I'd like to know if somedy already got througth installing Linux on a
+HP9000/E25 server.=20
+I'm trying to convinced my boss to do so but I'd like to know possible
+limitations or known problems before beginning any installation.
 
-I've got a HP 700/96 Teminal.
+Thanks in advance for your help.
 
-Thanks again
-Alex
------ Original Message -----
-From: "Joel Soete" <joel.soete@freebel.net>
-To: "Alex Green" <alexdgreen@hotmail.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Sent: Thursday, July 04, 2002 4:51 PM
-Subject: Re: [parisc-linux] Installing on C3600
-
-
->
->
-> Alex Green wrote:
-> > [....]
-> >
-> >
-> >>>If it is a hp terminal, you can change the emulation. It depends of the
-> >>>terminal type but you can have a look in your user guide or test (but I
-> >>>think that would request severall reboot) the emulation nearest vt100
-> >>
-> > IIRC.
-> >
-> >>>Once you have found the right emulation, try first the more stable
-> >>>32-bits kernel (IIRC if you unplug ps/2 or usb mouse and keyboard, the
-> >>>kernel will switch to serial console on port 1).
-> >>
-> >>Another good solution could also be to run minicom as console emulation.
-> >
-> >
-> > So, should i set the terminal type to be VT102 IIRC or just VT102?.. the
-> > terminal is a proper HP Serial Console.
-> >
-> Sorry I have not any material neither doc to help you right now. Next
-> week I will be back to office and more accurate details for your help.
->
-> > Is it possible to use the STI Console ( Which I believe to be the
-Graphics
-> > Adapter Console) to start the installation?
-> >
-> Let first try to build a build a system wit serial console, than you
-> would be able to choose install a more recent kernel
-> (ftp://ftp.parisc-linux.org) to see if you can use STI (IIRC Standard
-> Text Interface) with your Graphics adapter).
->
-> So yes STI give you actually a text interface for your console on your
-> Graphical adaptor through fb (Frame Buffer) support.
->
-> > Thanks for the help
-> > Alex
-> >
-> See you later,
-> Joel
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+________________________________
+Rapha=EBl Semeteys
+SchlumbergerSema
+Centre de Comp=E9tences en Architecture Technique
+16-18 rue Barb=E8s
+92126 Montrouge CEDEX France
+tel : +33 1 40 92 49 63
+fax + 33 1 40 92 49 97
