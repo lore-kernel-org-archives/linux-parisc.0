@@ -1,14 +1,15 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
-Date: Fri, 09 Jan 2004 20:37:07 +0000
-Message-ID: <3FFF10F3.2060408__40505.6951837198$1416623119$gmane$org@tiscali.be>
-References: <3FFB28C900001026@ocpmta1.freegates.net>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Date: Sat, 10 Jan 2004 21:09:06 -0700
+Message-ID: <20040111040906.GA32382__10656.6773182296$1416623120$gmane$org@colo.lackof.org>
+References: <20040105194809.GA9269@systemhalted>
+	<20040105194839.GB9269@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Return-Path: <soete.joel@tiscali.be>
-In-Reply-To: <3FFB28C900001026@ocpmta1.freegates.net>
+Return-Path: <grundler@lackof.org>
+In-Reply-To: <20040105194839.GB9269@systemhalted>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,16 +19,11 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Joel Soete wrote:
-[snip]
-> (but I don't much retry because of gnu pserver cvs pb; in the mean time I
-> read that new anonymous access would be with ssh, even though last weekend
-> it was not yet operational?) 
-[snip]
+On Mon, Jan 05, 2004 at 02:48:39PM -0500, Carlos O'Donell wrote:
+> http://www.parisc-linux.org/~carlos/glibc-2.3.2-debs-2004-01-05/
 
-CVSROOT=":ext:anoncvs@subversions.gnu.org:/cvsroot/gcc"
-
-seems to be operational now with CVS_RSH="ssh"
+I finally installed these (libc6 and libc6-dev) and live is still good.
+thanks carlos!
 
 hth,
-	Joel
+grant
