@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from magnesium.net (toxic.magnesium.net [207.154.84.15])
-	by dsl2.external.hp.com (Postfix) with SMTP id 46A82482D
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Feb 2002 23:19:25 -0700 (MST)
-Date: Sat, 16 Feb 2002 22:19:16 -0800
-From: Eric Hodel <drbrain@segment7.net>
-To: undisclosed-recipients: ;
-Message-ID: <20020217061916.GA23771@segment7.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
-Subject: [parisc-linux] HP-HIL keyboard wanted
+Received: from web21206.mail.yahoo.com (web21206.mail.yahoo.com [216.136.175.8])
+	by dsl2.external.hp.com (Postfix) with SMTP id DA2E34838
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Feb 2002 01:50:58 -0700 (MST)
+Message-ID: <20020219085057.17411.qmail@web21206.mail.yahoo.com>
+Date: Tue, 19 Feb 2002 09:50:57 +0100 (CET)
+From: =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
+Subject: [parisc-linux] Power LED
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,35 +20,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I use 2.4.17-pa26
 
-I've found HP-HIL keyboards online for $45 apiece, but I'm not yet
-willing to fork out that much money.  I was wondering if anybody had a
-keyboard (and/or 3-button mouse) they would be willing to part with
-for a smaller fee...
-
-I'm not subscribed to the list, so please contact me off-list.
-
---=20
-Eric Hodel - drbrain@segment7.net - http://segment7.net
-All messages signed with fingerprint:
-FEC2 57F1 D465 EB15 5D6E  7C11 332A 551C 796C 9F04
+I tried to increase push-time to 5*HZ.
+But as you said, the machine doesn't seem to recognize
+when I release the button. So the shutdown is
+initiated correctly, but after 5 sec the machine shuts
+down, ignoring whether the runlevel 6 is reached or
+not.
+BTW why does the halt command not shut down the
+machine?
+I heared it would work. :-<
+Is it possible to change the bit 0 if CPU diagnose
+register 25 by hand?
 
 
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (FreeBSD)
-Comment: For info see http://www.gnupg.org
 
-iD8DBQE8b0tkMypVHHlsnwQRAlA/AJsG0L17AXdaYn+1wRtf9sb9sVX1OACgwfxM
-3W33v4Ja6Ax7Lw+WwqHrcPA=
-=5TDF
------END PGP SIGNATURE-----
 
---AhhlLboLdkugWU4S--
+
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Ihre E-Mail noch individueller? - http://domains.yahoo.de
