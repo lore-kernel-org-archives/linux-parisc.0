@@ -1,40 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0302A482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 07:19:41 -0600 (MDT)
-Sender: Jes.Sorensen@cern.ch
+Received: from aeon.tvd.be (aeon.tvd.be [195.162.196.20])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8751D482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 07:26:08 -0600 (MDT)
+Date: Fri, 22 Jun 2001 15:22:58 +0200 (CEST)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Sender: geert@linux-m68k.org
 To: Keith Owens <kaos@ocs.com.au>
 Cc: sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SCSI in arch/{m68k,parisc,sparc*}/config.in
-References: <2105.993214803@ocs3.ocs-net>
-From: Jes Sorensen <jes@sunsite.dk>
-Date: 22 Jun 2001 15:18:57 +0200
-In-Reply-To: Keith Owens's message of "Fri, 22 Jun 2001 23:00:03 +1000"
-Message-ID: <d3ofrgbqke.fsf@lxplus015.cern.ch>
+In-Reply-To: <2105.993214803@ocs3.ocs-net>
+Message-ID: <Pine.LNX.4.05.10106221520250.2098-100000@callisto.of.borg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: SCSI in arch/{m68k,parisc,sparc*}/config.in
 List-ID: <linux-parisc.vger.kernel.org>
 
->>>>> "Keith" == Keith Owens <kaos@ocs.com.au> writes:
+On Fri, 22 Jun 2001, Keith Owens wrote:
+> cc: kaos@ocs.com.au please, I am not on these lists.
+> 
+> arch/{m68k,parisc,sparc*}/config.in have their own SCSI list instead of
+> using drivers/scsi/Config.in.  Cleaning up the SCSI config file is on
+> my 2.5 TODO list, can you tell me why these architectures have their
+> own list of SCSI devices?
+> 
+> If it is because only some SCSI drivers work on these architectures, do
+> you really need to be this specific?  Other architectures source
+> drivers/scsi/Config.in without checking for arch dependent drivers.  If
+> the need is to support extra arch specific drivers, use the same
+> technique as acorn :-
 
-Keith> cc: kaos@ocs.com.au please, I am not on these lists.
-Keith> arch/{m68k,parisc,sparc*}/config.in have their own SCSI list
-Keith> instead of using drivers/scsi/Config.in.  Cleaning up the SCSI
-Keith> config file is on my 2.5 TODO list, can you tell me why these
-Keith> architectures have their own list of SCSI devices?
+[ speaking for m68k ]
 
-Keith> If it is because only some SCSI drivers work on these
-Keith> architectures, do you really need to be this specific?  Other
-Keith> architectures source drivers/scsi/Config.in without checking
-Keith> for arch dependent drivers.  If the need is to support extra
-Keith> arch specific drivers, use the same technique as acorn :-
+We do that to avoid being annoyed with questions about irrelevant SCSI
+hardware. If nowadays all ISA/EISA/MCA/PCI SCSI hardware questions are properly
+protected with their respective CONFIG_*, we're willing to include the generic
+drivers/scsi/Config.in.
 
-For the m68k it's because we do not support any PCI/ISA devices and
-all the SCSI drivers in drivers/scsi/Config.in at least used to not be
-protected by CONFIG_ISA, CONFIG_PCI etc. hence we would end up with
-200 questions about SCSI drivers that do not work. If you can convince
-Linus to take a patch that puts CONFIG_{ISA,PCI,SBUS,NUBUS,ZORRO} in
-drivers/scsi/Config.in then we can move it no problem.
+Gr{oetje,eeting}s,
 
-Jes
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
