@@ -1,66 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA02546
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 15:54:48 -0700
-To: "Jorge L. deLyra" <delyra@latt.if.usp.br>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com,
-        assirati@socrates.if.usp.br
-Subject: Re: [parisc-linux] HP 9000/735-125 
-In-Reply-To: Your message of "Thu, 30 Nov 2000 20:32:29 -0200."
-             <Pine.LNX.3.96.1001130202814.25437A-100000@latt.if.usp.br>
-References: <Pine.LNX.3.96.1001130202814.25437A-100000@latt.if.usp.br> 
-Date: Thu, 30 Nov 2000 15:57:14 -0700
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E141cde-0008Fu-00@noam.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA03923
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 16:37:59 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 23:37:50 -0000
+Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
+  by smtp.linuxcare.com with SMTP; 30 Nov 2000 23:37:50 -0000
+Sender: adevries@mailserv2.iuinc.com
+Message-ID: <3A26E541.C6A24350@linuxcare.com>
+Date: Thu, 30 Nov 2000 18:39:45 -0500
+From: Alex deVries <adevries@linuxcare.com>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@cup.hp.com>
+CC: "Jorge L. deLyra" <delyra@latt.if.usp.br>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000/735-125
+References: <200011302245.OAA29965@milano.cup.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-= a) If you use the standard boot loader
-= 
-= Edit DEFAULT_COMMANDLINE in linux-2.3årch/parisc/boot/boot_code/ipl_c.c
-= to read:
-= 
-=         "vmlinux HOME=/TERM=LINUX root=/dev/nfs nfsroot=10.0.0.1"
+Grant Grundler wrote:
+> "Jorge L. deLyra" wrote:
+> > It is on the nfsroot howto linked from the home page of the project:
+> > http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/02-Feb/0069.html
+> 
+> Ok. I'm not going to touch the archives.
+> I can update the link if someone provides the content.
+> Any volunteers to rewrite the NFS root howto and bring it up to date?
 
-The boot_code directory should be gone -- that stuff is obsolete.
+Yes!  I'm redoing the FAQ, and will make sure it all gets a review.
 
-= b) If you use PALO
+However, I don't actually know that NFS Root needs to be included in the
+parisc-linux specific documentation, since we don't have to use nfsroot
+anymore.  There's a generic NFSROOT HOWTO we can refer to.
 
-PALO is the only current bootloader 
+We really only put that in there for when we couldn't write to our local
+disks.
 
-= Edit the echo line in palo/mklifimage to read
-= 
-=         "vmlinux HOME=/TERM=LINUX root=/dev/nfs nfsroot=10.0.0.1"
-= 
-= In both cases replace 10.0.0.1 with the IP address of your NFS server.
-= 
-= Copy the .config included below to the root of the linux source tree.
+- Alex
 
-make oldconfig or make config, without a .config to start with, works
-fine just as it does with x86
-
-= make oldconfig
-= make dep
-= make clean
-= make Image (Or make palo, if you use Paul's loader)
-Must be 'make palo'
-= Due to linker issues cross compiling is still not possible. I.e. you
-= have to build on HP/UX. 
-= </quote>
-= 
-= I suppose this is old...
-= 
-= > Those of us still cross compiling are using x86-linux hosts.
-= 
-= Wonderful, that makes it a lot easier...		Thanks,
-= 
-= ----------------------------------------------------------------
-=         Jorge L. deLyra,  Associate Professor of Physics
-=             The University of Sao Paulo,  IFUSP-DFMA
-=        For more information: finger delyra@latt.if.usp.br
-= ----------------------------------------------------------------
-= 
-= ---------------------------------------------------------------------------
-= To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-= `unsubscribe' as the subject.
-= 
-= 
-= 
+-- 
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
