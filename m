@@ -1,29 +1,30 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA19906
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 23:18:27 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA30545;
-	Tue, 5 Dec 2000 17:15:53 +1100
-Date: Tue, 5 Dec 2000 17:15:53 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] fault.c b0rken
-In-Reply-To: <200012050231.SAA04167@milano.cup.hp.com>
-Message-ID: <Pine.LNX.4.21.0012051714420.16721-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA22812
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Dec 2000 02:51:58 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 5 Dec 2000 09:54:31 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 143Enu-0003AS-00; Tue, 05 Dec 2000 09:54:30 +0000
+Date: Tue, 5 Dec 2000 09:54:30 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] iodccon
+Message-ID: <20001205095430.K12414@parcelfarce.linux.theplanet.co.uk>
+References: <20001202210926.E8288@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001202210926.E8288@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Sat, Dec 02, 2000 at 09:09:26PM +0000
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 4 Dec 2000, Grant Grundler wrote:
+On Sat, Dec 02, 2000 at 09:09:26PM +0000, Matthew Wilcox wrote:
+> 
+> can we kill off iodccon now?  i seem to remember being told we could, but
+> i can't find confirmation of that in my inbox.
 
-> fault.c: In function `do_page_fault':
-> fault.c:137: warning: passing arg 3 of `find_vma_prev' from incompatible pointer type
-> fault.c:181: incompatible types in assignment
-> make[2]: *** [fault.o] Error 1
-> make[2]: Leaving directory `/linux/pa32/linux/arch/parisc/mm'
-
-I've added the missing `*'
+ok, if no-one replies within the next week telling me we need it, i shall
+strangle iodccon with my bare hands.
 
 -- 
-Linuxcare.  Support for the Revolution.
+Revolutions do not require corporate support.
