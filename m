@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C252B482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Dec 2001 05:27:15 -0700 (MST)
-Message-ID: <3C1C93FB.8AE6C6E3@freebel.net>
-Date: Sun, 16 Dec 2001 12:30:51 +0000
-From: Joel Soete <joel.soete@freebel.net>
+Received: from beldar.com (ns.beldar.com [65.163.106.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08589482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Dec 2001 07:50:25 -0700 (MST)
+Received: from beldar.com (IDENT:root@dhcp-125.beldar.com [65.163.106.125])
+	by beldar.com (8.9.3/8.9.3) with ESMTP id KAA89812
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Dec 2001 10:08:03 -0500 (EST)
+	(envelope-from lansing@beldar.com)
+Message-ID: <3C1CB4D1.CA9C4132@beldar.com>
+Date: Sun, 16 Dec 2001 09:50:57 -0500
+From: "Craig D. Lansing (root)" <lansing@beldar.com>
 MIME-Version: 1.0
-To: maneesh@india.hp.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installation
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] J2240 - OK w/ 0.9.3
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +24,6 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Maneesh,
-
->        selection .. Bus reset detected ..." etc. etc.
-
-This sound like a problem I met a time ago: the scsi chain was opened
-(ie during test I forgot to reconnect the scsi terminator to my external
-drive).
-
-If a scsi terminator is well connected may be could it be defective (or
-a one not corresponding to your scsi interface logicaly Single-Ended if
-your CD is connected to the narrow single-ended conector)?
-
-Good luck,
-	Joel
+I case anyone cares, 0.9.3 works great w/ a J2240 so far.  I still can't
+get it to "see" the graphics head, but I haven't tried real hard w/
+0.9.3 yet.
