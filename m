@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5EBC5482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 05:58:19 -0700 (MST)
-Date: Tue, 28 Jan 2003 13:58:16 +0100
-Message-ID: <3E35C8BE000001DC@ocpmta6.freegates.net>
-In-Reply-To: <3E35C8BE00000174@ocpmta6.freegates.net>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 44474482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 06:23:45 -0700 (MST)
+Date: Tue, 28 Jan 2003 14:23:40 +0100
+Message-ID: <3E35C8BE0000020C@ocpmta6.freegates.net>
+In-Reply-To: <20030128050823.57726.qmail@web12507.mail.yahoo.com>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] new gcc-default for hppa
-To: "Patrick Caulfield" <patrick@tykepenguin.com>,
-	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel hang.
+To: "Derek Engelhaupt" <derekengelhaupt@rocketmail.com>,
+	"Sir Ace" <chandler@nateng.com>, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,37 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi again,
->
->>
->>On Mon, Jan 27, 2003 at 11:46:07PM -0800, Randolph Chung wrote:
->>> In reference to a message from Randolph Chung, dated Jan 27:
->>> > > well.... Grant and I did some more debugging on this.... here's what
->>> > > we've tried so far:
->>> > 
->>> > ok, here's what's happening apparently.... (with many thanks to Grant
->>
->>> > for a sharp eye :)
->>> 
->>> there's a temporary workaround in cvs now (2.4.20-pa23). For people
->>> who have seen the crash with gcc-3.2, please give it a try and let us
->
->>> know how it goes.
->>
->>Works fine for me. 
->>
->>Thanks VERY much :-)
->>
->>-- 
->>
->
->Seems to works fine also on my b180.
->
-Also works on the b2k and more test with ssh, telnet and ftp (do some small
-transfer in both in-out).
+Hi Derek,
 
-Thanks again,
+>
+>
+>How long did you let it wait?  Some of the machines prior to the C200 (my
+>C360 doesn't do it either) seem to hang, but after 20 mins take off.  It's
+>a bus walk issue that takes forever.  There was a patch for this that was
+>posted recently to see if it resolved this issue.  Let it sit there for
+awile
+>and see if it eventually starts booting.
+
+Afaik this a seperated patch (not yet check into our stream):
+
+see <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/018980.html>
+
+as well as successfull first test (so I presume will be ci soon)
+
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/019015.html>
+
+Good luck,
     Joel
+
+PS: I also test it and it doesn't broken b2k and b180; so I think it could
+be safely tested
 
 *********************************************
 Vous surfez toujours avec une ligne classique ?
