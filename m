@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gwyn.tux.org (gwyn.tux.org [207.96.122.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 542E2482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Jan 2002 12:47:19 -0700 (MST)
-Received: (from timball@localhost)
-	by gwyn.tux.org (8.9.3/8.9.1) id OAA17448
-	for parisc-linux@lists.parisc-linux.org; Sat, 26 Jan 2002 14:47:13 -0500
-Date: Sat, 26 Jan 2002 14:47:13 -0500
-From: Timothy Ball <timball@tux.org>
-To: parics Linux Mailing List <parisc-linux@lists.parisc-linux.org>
-Subject: [timball@tux.org: Re: [parisc-linux] 712/60, 2.4.17-pa13, debian testing, php4 and apache don't work.. -- SOLVED]
-Message-ID: <20020126194713.GD5722@gwyn.tux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: tag starvation 
+In-Reply-To: Message from James Bottomley <James.Bottomley@HansenPartnership.com>
+   of "Sat, 26 Jan 2002 12:23:40 EST." <200201261723.g0QHNeI02030@localhost.localdomain>
+References: <200201261723.g0QHNeI02030@localhost.localdomain> 
+Date: Sun, 27 Jan 2002 01:41:19 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020127084119.AB75A482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +20,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Forgot to CC: the list... how does one request a pkg to be rebuilt?
+James Bottomley wrote:
+> That's essentially it.  A driver is allowed to execute simple tagged commands
+> in any order it chooses (since it knows its own internal platter topology, it
 
---timball
+James,
+thanks for the excellent explanation.
+But did you mean device or drive?  (instead of "driver")
 
------ Forwarded message from Timothy Ball <timball@tux.org> -----
-On Sat, Jan 26, 2002 at 01:22:28PM +0200, Mikko Palo wrote:
-> Sigh, I hate to reply myself, but..
+> ignore a pending tagged command for quite a period of time (this is what is 
+> known as tag starvation).  If the command remains unprocessed for >2s, the 
+> mid-layer will begin error recovery, which can cause all sorts of problems.
+
+ah...that explains it. Most HP drives are expected to have 3s.
+
+> One thing that irritates me about 
+> this option is that it should be a global one (belonging to the whole SCSI 
+> subsystem) not local to each driver.
+
+It should also be *per drive*. Different drives implement
+different numbers of queue tags (eg disk array vs simple mech).
+
+> How to Counter Tag Starvation
+> ==============================
 > 
-> Problem solved, had to compile apache, mm and php4 from source using
-> apt-get source --build XXXX command. Now everything working very
-> perfectly..
-> 
-> Keep working good job, guys! :)
-> 
+> Most of the maintained drivers in Linux do this by keeping a timer on the 
+> outstanding tagged commands.  When they see the timer expire they switch from
+>    
+> simple tags to ordered tags (an ordered tag is like a marker in the 
+> queue---you can't execute any command after an ordered tag untill all those 
+> before it have completed).
 
-Actually all you had to do was recompile libmm11... I fixed this problem
-this morning by just recompiling libmm11. I suppose it would be nice to
-see if this issue is related to the cross compiling of pkgs.
+AFAIK, HP does not test disk drives to verify ordered tags work
+correctly. One reason is we didn't want to expose new bugs by mixing
+ordered with simple tags. The other reason is we saw a 25% performance
+hit. The 5400 rpm 2GB drives at the time could complete ~80 IO/s with
+simple tags. This dropped to 60-65 IO/s for ordered tags. Ordered tags
+was considered an unacceptable solution at that point.
 
---timball
+> The driver detects tag starvation when the hands try to cross (i.e. the
+> next tag to be
+> allocated would be the same tag number as the oldest outstanding command).
+> At that point, it prints the message and refuses to accept any further
+> I/Os from the mid layer.
 
------ End forwarded message -----
+Well done - I like this solution too.
 
--- 
-	GPG key available on pgpkeys.mit.edu
-pub  1024D/511FBD54 2001-07-23 Timothy Lu Hu Ball <timball@tux.org>
-Key fingerprint = B579 29B0 F6C8 C7AA 3840  E053 FE02 BB97 511F BD54
+> The reason for this approach in the 53c700 is that it is driving much older 
+> (and buggier) devices.  If the device messed up on the ordered queue tag we 
+> could get into a whole heap of trouble.
+
+Exactly. Best case is the drive gets confused and locks up.
+Worst case is it looses the data.
+
+> Obviously, since the SCSI mid-layer also keeps a timer on outstanding 
+> commands, it is a complete waste to duplicate this inside the driver.  
+> Unfortunately, the first the driver hears from the mid-layer about a problem 
+> command is when the mid-layer wants it aborted, by which time it is a bit lat
+>   e.
+
+This is fun part about driver interactions in the error recovery path.
+Could one avoid this mess if the SCSI interface driver could guarantee
+the IO will complete (with or w/o error) with-in the time frame
+specified by the device (eg tape or disk) driver?
+
+grant
