@@ -1,123 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from oppl.org (unknown [64.254.217.178])
-	by dsl2.external.hp.com (Postfix) with SMTP id D45BD485D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 01:17:32 -0600 (MDT)
-From: <art1@alloymail.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Sun, 23 Sep 2001 15:22:00
-Message-Id: <198.382852.141690@alloymail.com>
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 520D3485D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 02:06:05 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 061B1B00C; Mon, 24 Sep 2001 09:04:46 +0100 (BST)
+Date: Mon, 24 Sep 2001 09:04:46 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Tilman Baumann <Simsalabimson@web.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] hp715-50 scorpio - this is the real emailaddress
+Message-ID: <20010924090446.D5051@linuxcare.com>
+References: <01092222265101.03631@tilli>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Subject: [parisc-linux] toner supplies
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <01092222265101.03631@tilli>; from Simsalabimson@web.de on Sat, Sep 22, 2001 at 10:26:51PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Sat, Sep 22, 2001 at 10:26:51PM +0200, Tilman Baumann wrote:
+> hi, can anyone of you tell me, if it makes sense to install parisc-linux on 
+> my machine?
+> I have a hp715-50 scorpio.
 
+Linux will work quite well on that machine, but you may have to run
+with a serial console, as Linux doesn't support graphics on all
+hardware yet.  Also, Linux doesn't support EISA cards on any parisc
+boxes yet, so it you have any of those they wont work.
 
-**** VORTEX SUPPLIES ****
-
-YOUR LASER PRINTER TONER CARTRIDGE,
-COPIER AND FAX CARTRIDGE CONNECTION
-
-SAVE UP TO 30% FROM RETAIL
-
-ORDER BY PHONE:1-888-288-9043
-ORDER BY FAX: 1-888-977-1577
-E-MAIL REMOVAL LINE: 1-888-494-8597
-
-
-UNIVERSITY AND/OR SCHOOL PURCHASE ORDERS WELCOME. (NO CREDIT APPROVAL REQUIRED)
-ALL OTHER PURCHASE ORDER REQUESTS REQUIRE CREDIT APPROVAL.
-PAY BY CHECK (C.O.D), CREDIT CARD OR PURCHASE ORDER (NET 30 DAYS).
-
-IF YOUR ORDER IS BY CREDIT CARD PLEASE LEAVE YOUR CREDIT CARD # PLUS EXPIRATION DATE. 
-IF YOUR ORDER IS BY PURCHASE ORDER LEAVE YOUR SHIPPING/BILLING ADDRESSES AND YOUR P.O. NUMBER
-
-
-NOTE: WE DO NOT CARRY 
-
-1) XEROX, BROTHER, PANASONIC, FUJITSU PRODUCTS
-2) HP DESKJETJET/INK JET OR BUBBLE JET CARTRIDGES 
-3) CANON BUBBLE JET CARTRIDGES 
-4) ANY OFFBRANDS BESIDES THE ONES LISTED BELOW.    
-
-OUR NEW , LASER PRINTER TONER CARTRIDGE, PRICES ARE  AS FOLLOWS: 
-(PLEASE ORDER BY PAGE NUMBER AND/OR ITEM NUMBER)
-
-HEWLETT PACKARD: (ON PAGE 2)
-
-ITEM #1  LASERJET SERIES  4L,4P (74A)------------------------$44
-ITEM #2  LASERJET SERIES  1100 (92A)-------------------------$44
-ITEM #3  LASERJET SERIES  2 (95A)----------------------------$39
-ITEM #4  LASERJET SERIES  2P (75A)---------------------------$54 
-ITEM #5  LASERJET SERIES  5P,6P,5MP, 6MP (3903A)----------  -$44
-ITEM #6  LASERJET SERIES  5SI, 8000 (09A)--------------------$95
-ITEM #7  LASERJET SERIES  2100, 2200 (96A)-------------------$74
-ITEM #8  LASERJET SERIES  8100 (82X)-------------------------$115
-ITEM #9  LASERJET SERIES  5L/6L (3906A)----------------------$39
-ITEM #10 LASERJET SERIES  4V---------------------------------$95
-ITEM #11 LASERJET SERIES 4000 (27X)--------------------------$79
-ITEM #12 LASERJET SERIES 3SI/4SI (91A)-----------------------$54
-ITEM #13 LASERJET SERIES 4, 4M, 5,5M-------------------------$49
-ITEM #13A LASERJET SERIES 5000 (29X)-------------------------$125
-ITEM #13B LASERJET SERIES 1200-------------------------------$59
-
-HEWLETT PACKARD FAX (ON PAGE 2)
-
-ITEM #14 LASERFAX 500, 700 (FX1)----------$49
-ITEM #15  LASERFAX 5000,7000 (FX2)--------$64
-ITEM #16  LASERFAX (FX3)------------------$59
-ITEM #17  LASERFAX (FX4)------------------$54
-
-
-LEXMARK/IBM (ON PAGE 3)
-
-OPTRA 4019, 4029 HIGH YIELD---------------$89
-OPTRA R, 4039, 4049 HIGH YIELD-----------$105
-OPTRA E310.312 HIGH YIELD----------------$79
-
-OPTRA E-----------------------------------$59
-OPTRA N----------------------------------$115
-OPTRA S----------------------------------$165
-OPTRA T----------------------------------$195
-
-
-EPSON (ON PAGE 4)
-
-ACTION LASER 7000,7500,8000,9000----------$105
-ACTION LASER 1000,1500--------------------$105
-
-
-CANON PRINTERS (ON PAGE 5)
-
-PLEASE CALL FOR MODELS AND UPDATED PRICES
-FOR CANON PRINTER CARTRIDGES
-
-PANASONIC (0N PAGE 7)
-
-NEC SERIES 2 MODELS 90 AND 95----------$105
-
-APPLE (0N PAGE 8)
-
-LASER WRITER PRO 600 or 16/600------------------$49 
-LASER WRITER SELECT 300,320,360-----------------$74
-LASER WRITER 300 AND 320------------------------$54
-LASER WRITER NT, 2NT----------------------------$54
-LASER WRITER 12/640-----------------------------$79
-
-CANON FAX (ON PAGE 9)
-
-LASERCLASS 4000 (FX3)---------------------------$59
-LASERCLASS 5000,6000,7000 (FX2)-----------------$54
-LASERFAX 5000,7000 (FX2)------------------------$54
-LASERFAX 8500,9000 (FX4)------------------------$54
-
-CANON COPIERS (PAGE 10)
-
-PC 3, 6RE, 7 AND 11 (A30)---------------------$69
-PC 300,320,700,720,760,900,910,920(E-40)------$89
-
-
-90 DAY UNLIMITED WARRANTY INCLUDED ON ALL PRODUCTS.
-
-ALL TRADEMARKS AND BRAND NAMES LISTED ABOVE ARE PROPERTY OF THE 
-RESPECTIVE HOLDERS AND USED FOR DESCRIPTIVE PURPOSES ONLY.
+Richard
