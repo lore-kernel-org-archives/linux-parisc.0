@@ -1,23 +1,19 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EFDAA4839
+Return-Path: <mpshenoy@vsnl.com>
+Received: from sccrmhc12.comcast.net (sccrmhc12.comcast.net [204.127.202.56])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8945E4A23
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Mar 2004 17:10:28 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88BC0.dip0.t-ipconnect.de
-	[217.232.139.192])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2V0ARo26037
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 31 Mar 2004 02:10:27 +0200
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 31 Mar 2004 02:09:49 +0200
-Message-ID: <10f601c416b4$7b69c470$fc01a8c0@muc.nccconsulting.de>
+	Tue, 30 Mar 2004 18:37:10 -0700 (MST)
+From: "Prakash Shenoy" <mpshenoy@vsnl.com>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Subject: RE: [parisc-linux] HP 9000 Visualize C180 Workstation display does
+	not appear.
+Date: Tue, 30 Mar 2004 20:37:22 -0500
+Message-ID: <OFEELBIMFFDMJBJFHICCOEMFCEAA.mpshenoy@vsnl.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+	charset="us-ascii"
+In-Reply-To: <20040330175157.GA18103@colo.lackof.org>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +23,45 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+Hi!
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/31/2004 2:09:48 AM
-Engine/Pattern = 6.860-1001/1.844.00
+Thanks for all the help. Sorry to bother you again.
+I tried
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+	bo fwscsi.6.0.
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+I get this error message:
+
+ISL booting hp/ux.
+
+exec failed: cannot find /stand/vmunix or /vmunix.
+
+Please note that I have formatted both the hard disks and installed debian
+on fwscsi.6.0.
+What may be wrong here?
+
+Prakash
+
+
+
+
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@parisc-linux.org]
+Sent: Tuesday, March 30, 2004 12:52 PM
+To: Prakash Shenoy
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP 9000 Visualize C180 Workstation display
+does not appear.
+
+
+On Mon, Mar 29, 2004 at 10:47:59PM -0500, Prakash Shenoy wrote:
+> I have two SCSI hard disks on the workstation and debian installed on
+drive
+> 0. The system stops at ISL prompt.
+
+If it stops at the ISL prompt, it means the system is autobooting
+the "HPUX" disk. Reset the box,  interrupt the autoboot, then
+set the primary boot path to "drive 0" (use the proper HW path).
+And then boot from that same path (eg "bo fwscsi.0")
+
+grant
