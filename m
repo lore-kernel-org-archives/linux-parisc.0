@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98A03482A
-	for <parisc-linux@parisc-linux.org>; Wed, 20 Mar 2002 15:01:29 -0700 (MST)
-Date: Wed, 20 Mar 2002 22:01:11 +0000 (GMT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3DCEF482A
+	for <parisc-linux@parisc-linux.org>; Wed, 20 Mar 2002 15:16:56 -0700 (MST)
+Date: Wed, 20 Mar 2002 22:16:46 +0000 (GMT)
 From: "M. Grabert" <xam@cs.ucc.ie>
 To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: John <hplinux@eagle.grdl.noaa.gov>,
+Cc: Jeremy Drake <jeremyd@apptechsys.com>,
 	<parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05
- = working X!
-In-Reply-To: <20020315044546.C7D58483E@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie>
+Subject: Re: [parisc-linux] SMP support 
+In-Reply-To: <20020306010541.A8BB84853@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0203202209250.5453-100000@sal.ucc.ie>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -24,75 +23,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, 14 Mar 2002, Grant Grundler wrote:
+On Tue, 5 Mar 2002, Grant Grundler wrote:
 
-> John wrote:
-> > I wanted to share the good news that Grant's recent patch to "entry.S"
-> ...
-> > Thanks Grant!
+> Jeremy Drake wrote:
+
+[...]
+
+> > Also, I am unable to build any kernels myself.  I get a bunch of depmod
+> > errors, like these
+> >
+> > depmod: Unhandled relocation of type 74 for printk_Rsmp_dd132261
+> > depmod: Unhandled relocation of type 74 for usb_deregister_Rsmp_c6f994d5
 >
-> That's great news!
+> I've seen this when CONFIG_PA20 is enabled but CONFIG_PARISC64 is not.
+> Don't know if that's your problem, but it's worth checking.
 >
-> But Thomas Bogendoerf should get most of the credit for figuring
-> out the problem and fix. I just implemented what he said.
->
-> BTW, I've modified the patch a bit (removed an un-needed depdi)
-> and it's still not committed yet. I'd like to let Thomas
-> commit it himself since he really did the hard part.
+> You don't need to enable CONFIG_PA20 in order to run a 32-bit kernel
+> on any system that will support 32-bit kernels (A500/L-class only
+> support 64-bit kernel).
 
-I also downloaded and patched a 2.4.18-pa5 kernel with it,
-(just a simple conflict with the kernel version number in
- the Makefile appeared, easy to solve).
+I can confirm this. I recompiled (3 times) linux-2.4.18-pa5, and I was
+just able to compile a static kernel without error message.
+The message will occur if you compile a kernel with modules. It's the
+depmod command in "make modules_install" that causes the trouble.
 
-It works on my C240 with a FX2 card. Well, it now recognizes
-the gfx card at startup and it seems to initialize it, but since
-I currently don't have a proper monitor, I can't tell you whether
-gfx is working or not :-/
-(BTW, I use the serial console on the C240, connected to a FreeBSD
- notebook)
-At least the C240 is still running, so the patch doesn't do a harm ;)
+But obviously the modules are created and installed. If you do a
+simple "depmod -a" (without any additional arguments as in
+"make modules_install"), it doesn't complain.
+And it also seems that the modules work (haven't tested this too much)!
 
-Actually I HAVE a monitor (a 15" LCD) but it's max resolultion is about
-1024x786/70Hz. Since the FX/2 just supports 72 and 75Hz in
-the video selection menu at bootup, the monitor just tells me
-"signal is out of sync range".
-
-I have mentioned this before (18 Dec 2001) in the mailing-list,
-and I was asking how and if you can change the FX-graphics to
-a custom resolution (mode 6). Grant replied
-
-> Yes. I don't know exactly how though. I'd look in the User's Guide
-> (might be available on docs.hp.com).
-
-unfortunately I haven't found any information except this:
-
-(http://docs.hp.com/cgi-bin/fsearch/framedisplay?top=/hpux/onlinedocs/B2355-90142/B2355-90142_top.html&con=/hpux/onlinedocs/B2355-90142/00/00/42-con.html&toc=/hpux/onlinedocs/B2355-90142/00/00/42-toc.html&searchterms=refresh&queryid=20020320-135018)
-
-
--------+++++++++========= snip =========++++++++-------
-
-Changing the Monitor Type
-=========================
-
-A configuration tool is available to change the monitor type on HP
-VISUALIZE-FX devices. Monitor resolution, refresh rate and stereo mode
-settings may be configured using the setmon tool. To change the monitor
-type, the setmon command can be executed directly or done through the
-SAM system administration tool.
-
-The setmon executable is located at /opt/graphics/common/bin/setmon.
-Under SAM this component is located under the top-level "Display"
-folder, next to the "X Server Configuration" icon.
-
--------+++++++++========= snip =========++++++++-------
-
-
-It seems this utility exists only for the Visualize-FX cards.
-Moreover I don't know whether this affects only X (on HP/UX).
-
-Does anybody have information about this utility ?
-(I don't have HP/UX, so I can try it ...)
-Perhaps it is possible to port/run it. Or does anybody has information
-how to change the custom resolution on FX-Cards (without this utility) ?
-
-Thanks in advance, max!
+greetings max
