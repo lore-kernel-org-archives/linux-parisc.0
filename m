@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rediffmail1807.com (a226149.upc-a.chello.nl [62.163.226.149])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2C78B482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 15:58:03 -0600 (MDT)
-From: Dukat Kabila <dukatka_s22@rediffmail.com>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 48857482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 16:39:04 -0600 (MDT)
+Date: Wed, 14 May 2003 00:39:02 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@lists.parisc-linux.org
-Reply-To: dukatkabila_s22@rediffmail.com
-Date: Tue, 13 May 2003 23:58:05 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="153a78f8-a4e1-4c09-bea2-a4b97e7a3b02"
-Message-Id: <20030513215803.2C78B482D@dsl2.external.hp.com>
-Subject: [parisc-linux] DUKAT KABILA(Jnr)
+Message-ID: <20030513223902.GK27494@lug-owl.de>
+References: <20030513222102.33F00482D@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lJhfsPy4o8B7pjPr"
+In-Reply-To: <20030513222102.33F00482D@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: [parisc-linux-cvs] build-tools bame
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,68 +23,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---153a78f8-a4e1-4c09-bea2-a4b97e7a3b02
+--lJhfsPy4o8B7pjPr
 Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-> MR DUKAT KABILA  0031+615-421-228   
->
+On Tue, 2003-05-13 16:21:02 -0600, Paul Bame <bame@dsl2.external.hp.com>
+wrote in message <20030513222102.33F00482D@dsl2.external.hp.com>:
+> CVSROOT:	/var/cvs
+> Module name:	build-tools
+> Changes by:	bame	03/05/13 16:21:02
+>=20
+> Added files:
+> 	.              : cvs-mkpatch=20
+>=20
+> Log message:
+> initial rev -- make patch from modified cvs dir
 
-REQUEST FOR URGENT BUSINESS ASSISTANCE
->
->Your contact was availed to me by the chamber of commerce. It was 
-given to me because of my diplomatic status as I did not disclose the 
-actual reasons for which I sought your contact. But I was assured That you 
-are reputable and trustworthy if you will be of assistance. I am Laurent 
-DUKAT KABILA (Jnr) the second son of Late President LAURENT DESIRE 
-KABILA the immediate Past president of the DEMOCRATIC REPUBLIC OF CONGO in 
-Africa who was murdered by his opposition through his personal 
-bodyguards in his bedroom on Tuesday 16th
->January, 2001.I have the privilege of being mandated by my father 
-colleagues to seek your immediate and urgent co-operation to receive into 
-your bank account the sum of US$25m.(twenty-five million Dollars) and 
-some thousands carats of Diamond. This money and treasures was lodged in 
-a vault with a security firm in Europe and South-Africa.
->
->SOURCES OF DIAMONDS AND FUND
->In August 2000, my father as a defence minister and president has a 
-meeting with his cabinet and armychief about the defence budget for 2000 
-to 2001 which was US $700m. so he directed one of his best friend. 
-Frederic Kibasa Maliba who was a minister of mines and a political party 
-leader known as the Union Sacree de, I=11 opposition radicale et ses allies 
-(USORAL) to buy arms with US $200m on 5th January 2001; for him to 
-finalized the arms deal,
->my father was murdered. f.K. Maliba (FKM) and I have decided to keep 
-the money with a foreigner after which he will use it to contest for the 
-political election. Inspite of all this we have
+=2E..as if you had read my thoughts, I'm currently planing a roadmap for
+pushing all ports upstream to Linus and looking for what work I could
+do. Please read it at http://www.lug-owl.de/~jbglaw/linux-ports/ and
+comment on it!
 
->resolved to present your or your company for the firm to pay it into 
-your nominated account the above sum and diamonds. This transaction 
-should be finalized within seven (7) working days and for your co-operation 
-and partnership, we have unanimously agreed that you will be entitled 
-to 5.5% of the money when successfully receive it in your account. The 
 
-nature of your
->business is not relevant to the successful execution of this 
-transaction what we require is your total co-operation and commitment to =
-ensure 
-100% risk-free transaction at both ends and to protect the persons 
-involved in this transaction, strict confidence and utmost secrecy is
->required even after the successful conclusion of this transaction. If 
-this proposal is acceptable to you, kindly provide me with your 
-personal telephone and fax through my E-mail box for immediate commencement =
-of 
-the transaction. 
->All correspondence is for the attention of my counsel:
->
->I count on your honour to keep my secret, SECRET.
->Looking forward for your urgent reply
->Thanks
-.
->Best Regards
->
->DUKAT KABILA(Jnr)
->
-  
---153a78f8-a4e1-4c09-bea2-a4b97e7a3b02--
+Ob, I'm still waiting for your lock to vanish:
+
+cvs server: [08:07:34] waiting for bame's lock in /var/cvs/obsolete/binutil=
+s-2.10
+cvs server: [08:08:04] waiting for bame's lock in /var/cvs/obsolete/binutil=
+s-2.10
+cvs server: [08:08:34] waiting for bame's lock in /var/cvs/obsolete/binutil=
+s-2.10
+
+
+Please remove the lock or the whole ./obsolete/ directory.
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--lJhfsPy4o8B7pjPr
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+wXQGHb1edYOZ4bsRAlDMAJ4jAk+i/37dbTwKGotI5whCE7eGvwCeMHsk
+ZaiLCYZ2kK5tnfANpryOwmI=
+=riCF
+-----END PGP SIGNATURE-----
+
+--lJhfsPy4o8B7pjPr--
