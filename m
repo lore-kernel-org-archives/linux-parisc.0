@@ -1,23 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3BDF94843
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 06:12:51 -0700 (MST)
-Received: from hpgrla.gr.hp.com (hpgrla.gr.hp.com [15.57.1.1])
-	by atlrel7.hp.com (Postfix) with ESMTP id 74789E000FD
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 08:12:47 -0500 (EST)
-Received: from kontiki.gr.hp.com (kontiki.gr.hp.com [15.38.138.59])
-	by hpgrla.gr.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) with SMTP id GAA06003
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 06:12:46 -0700 (MST)
-Received: from [15.116.71.178] (HELO spawn) by kontiki.gr.hp.com (Stalker SMTP Server 1.8b8) with SMTP id S.0000030554 for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 06:12:52 -0700
-Reply-To: <sanaya@gr.hp.com>
-From: "Sean Anaya" <sanaya@gr.hp.com>
-To: "HP Linux Email List" <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 27 Dec 2001 06:16:51 -0700
-Message-ID: <000001c18ed8$bf13f1c0$b247740f@spawn>
-MIME-Version: 1.0
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EC4A482D
+	for <parisc-linux@parisc-linux.org>; Thu, 27 Dec 2001 09:12:11 -0700 (MST)
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Question on grapics setup
+  charset="iso-8859-15"
+From: Helge Deller <helge.deller@sap.com>
+To: James.Bottomley@hansenpartnership.com
+Date: Thu, 27 Dec 2001 17:12:08 +0100
+Cc: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Message-Id: <E16Jd8a-0000J5-00@linuxlab.wdf.sap-ag.de>
+Subject: [parisc-linux] rmmod lasi700 hangs the machine
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,20 +22,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Hi James,
 
-Could anyone point me in the right direction to set up a graphics
-moniter. It seems my C180 boots fine with the current CD image with
-the serial console.
+unloading the lasi700 scsi module hangs my PARISC-machine:
 
-If I switch to the graphics console the system stops displaying to
-the graphics moniter at the "If this is the last message you see
-switch consoles..." message in the boot sequence and the screen flashes and
-nothing else. The machine does appear to boot as I can telnet in from
-a remote system. Any suggestion on where I can see what config files etc
-I need to check? I can't seem to ind any information on the web sites.
+hw1306:/# uname -a
+Linux hw1306 2.4.16-pa25 #2 Thu Dec 27 13:03:15 CET 2001 parisc unknown
 
-Thanks!
+hw1306:/# modprobe lasi700
+53c700: Version 2.6 By James.Bottomley@HansenPartnership.com
+scsi1: 53c710 rev 2
+scsi1 : LASI SCSI 53c700
+scsi1: (2:0) Synchronous at offset 8, period 236ns
+  Vendor: TOSHIBA   Model: CD-ROM XM-3601TA  Rev: 0725
+  Type:   CD-ROM                             ANSI SCSI revision: 02
 
-Sean Anaya
-sanaya@gr.hp.com
+hw1306:/# lsmod
+Module                  Size  Used by    
+lasi700                 1996   0  (unused)
+53c700                 28396   0  [lasi700]
+....
+
+hw1306:/# rmmod lasi700
+<machine hangs and only responds to pings, no login possible>
+
+The machine is a B180L with an integrated 53c875 (scsi0, compiled into kernel)
+and one 53c700 (scsi1, lasi700, as module) with one external CD-ROM drive.
+
+Any ideas ?
+
+Thanks,
+Helge
