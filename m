@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DBF4E48A8
-	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 11:21:11 -0600 (MDT)
-Message-Id: <200207151721.g6FHL72e024968@hiauly1.hia.nrc.ca>
+Received: from mail.speakeasy.net (mail12.speakeasy.net [216.254.0.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64D7E48AF
+	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 11:28:39 -0600 (MDT)
+Date: Mon, 15 Jul 2002 10:32:33 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] compiling kernels with gcc-3.1
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Mon, 15 Jul 2002 13:21:07 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: tausq@debian.org, joel.soete@freebel.net,
-	parisc-linux@parisc-linux.org
-In-Reply-To: <no.id> from "John David Anglin" at Jul 15, 2002 01:13:27 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20020715173233.GK8724@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200207151721.g6FHL72e024968@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200207151721.g6FHL72e024968@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Is --disable-indexing used in kernel builds?  This should stop gcc
-> from generating the above.
+In reference to a message from John David Anglin, dated Jul 15:
+> > Is --disable-indexing used in kernel builds?  This should stop gcc
+> > from generating the above.
+> 
+> Oops, that should be "-mdisable-indexing".
 
-Oops, that should be "-mdisable-indexing".
+right now we use:
+-Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer
+-fno-strict-aliasing -fno-common -D__linux__ -pipe -fno-strength-reduce
+-mno-space-regs -mfast-indirect-calls -mdisable-fpregs
+-ffunction-sections -march=2.0 -mschedule=8000
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+(the last two are only for pa8x00 builds...)
+
+i'll try the disable-indexing stuff...
+
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
