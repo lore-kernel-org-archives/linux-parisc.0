@@ -1,53 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA23742
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 22:36:07 -0700
-Message-Id: <200101260542.VAA23212@milano.cup.hp.com>
-To: dkennedy <dkennedy@linuxcare.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] CPU detection wrong 
-In-reply-to: Your message of "Fri, 26 Jan 2001 00:07:12 PST."
-             <Pine.LNX.4.21.0101260002130.3746-100000@localhost.localdomain>
-Date: Thu, 25 Jan 2001 21:42:05 -0800
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA24156
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 23:09:25 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id C2248155A
+	for <parisc-linux@thepuffingroup.com>; Thu, 25 Jan 2001 22:13:20 -0800 (PST)
+Received: (from grundler@localhost)
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id WAA23253
+	for parisc-linux@thepuffingroup.com; Thu, 25 Jan 2001 22:15:27 -0800 (PST)
+Date: Thu, 25 Jan 2001 22:15:27 -0800 (PST)
 From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200101260615.WAA23253@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] sh segfaults
 List-ID: <linux-parisc.vger.kernel.org>
 
-dkennedy wrote:
-> Done.  I have committed it.  I don't have a PA box near me.  Can someone
-> check my change to:
-> 	- ensure it compiles
-> 	- it correctly detects all the machines old and new.
 
-Thanks!
+Hi all,
+So despite booting our shiny new 2.4.0 kernel fine and being able to rcp
+the sources to attempt a native build, "make oldconfig" consistently
+sees a segfault:
 
-It compiles and boots fine on my c3k:
-| model   00005bb0 00000481 00000000 00000002 780cd400 100000f0 00000008 000000b2 000000b2
-| CPUID   vers 17 rev 4
-| model   9000/785/C3000
-| led_init: CPU_HVERSION 5bb
-...
-| 6. AllegroHigh W  (0) at 0xfffa0000, versions 0x5bb, 0x0, 0x4, 0x0, 0x81
-...
+c3k:/usr/src/linux \<535\>make oldconfig > /dev/null
 
-(I hadn't noticed we were already printing model string...cool.
-I guess it time to start cleaning up boot output.)
+do_page_fault() pid=561 command='sh' type=15 address=0x000006e4
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001011
+r0-3     00000000 00000368 000327a3 bb002490
+r4-7     4001399b 00000000 401cf630 401d2fbc
+r8-11    00076d74 00000000 bb002490 000c3110
+r12-15   ffffffff 00000000 00000000 00000001
+r16-19   0000005c 00000000 00000000 401d2fbc
+r20-23   fffff000 400eb63c 0007e498 00000008
+r24-27   00000000 bb002908 00000002 00076808
+r28-31   0000023a 0000002f bb002880 400eb663
+sr0-3    00000368 00000368 00000000 00000368
+sr4-7    00000368 00000368 00000368 00000368
+
+IASQ: 00000368 00000368 IAOQ: 000327a3 000327a7
+ IIR: 483306f8    ISR: 00000368  IOR: 000006e4
+ORIG_R28: 00000001
+make: *** [oldconfig] Segmentation fault
+c3k:/usr/src/linux \<536\>
 
 
-> I don't mind maintaining this table.  It would be goot to keep this table 
-> and the hardware database in sync.
+And redirecting output to /dev/null doesn't always work either.
+Sometimes I just get back an error msg.
+This wasn't happening with the previous kernels.
 
-I see. You are right.
-
-The only way to do that is get regular updates from the maintainer
-of "Appendix B". hmmm...but there are some issues with this. Updates
-*aren't* regular and only "private" versions of the appendix B is
-maintained. The appendix is hand filtered for public consumption to
-exclude products which haven't released yet. So we'll just have to
-keep grinding along like we do now...complain if something shows
-up as "unknown" and it's got a IODC data.
+This is unfortunately on the same proto-c3k that couldn't run hwclock.sh
+at boot up before though that worked fine on my c3k at work. So it
+might just be the machine. If others could verify...
 
 thanks,
 grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
