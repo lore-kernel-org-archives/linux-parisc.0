@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from humbolt.nl.linux.org (humbolt.nl.linux.org [131.211.28.48])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 97E8A482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 May 2002 07:21:11 -0600 (MDT)
-Received: (from localhost user: 'armijn' uid#1008 fake: STDIN
-	(armijn@humbolt.nl.linux.org)) by humbolt.nl.linux.org
-	id <S16341AbSEWNUx>; Thu, 23 May 2002 15:20:53 +0200
-Date: Thu, 23 May 2002 15:20:53 +0200
-From: Armijn Hemel <armijn@nl.linux.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Armijn Hemel <armijn@nl.linux.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installing on b2600 fails
-Message-ID: <20020523152053.I11717@humbolt.geo.uu.nl>
-References: <Pine.A41.4.44.0205211630470.17882-100000@stalin.acc.umu.se> <maswan@acc.umu.se> <20020521154508.99536482A@dsl2.external.hp.com> <20020521175328.A2442@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020521180553.5470F482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020521180553.5470F482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Tue, May 21, 2002 at 12:05:53PM -0600
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 688B3482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 May 2002 09:47:58 -0600 (MDT)
+To: Armijn Hemel <armijn@nl.linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] installing on b2600 fails 
+In-Reply-To: Your message of "Thu, 23 May 2002 15:20:53 +0200."
+             <20020523152053.I11717@humbolt.geo.uu.nl>
+References: <Pine.A41.4.44.0205211630470.17882-100000@stalin.acc.umu.se> <maswan@acc.umu.se> <20020521154508.99536482A@dsl2.external.hp.com> <20020521175328.A2442@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020521180553.5470F482A@dsl2.external.hp.com>  <20020523152053.I11717@humbolt.geo.uu.nl> 
+Date: Thu, 23 May 2002 09:47:52 -0600
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E17Auoi-0001eA-00@paul.bame>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,44 +22,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, May 21, 2002 at 12:05:53PM -0600, Grant Grundler wrote:
+> Ehr...how exactly should I do that? I know the first few steps (burn
+> lifimage somewhere on a CD, turn on machine, insert CD), but how
+> should I proceed? I looked in the FAQ, but the answer (nor the question)
+> is there. So, basically my question is: "How do I boot a lifimage from
+> a CD?"
 
-> [ back on-list ]
-> 
-> Armijn Hemel wrote:
-> > Just burn them? How should I boot then? The b2600 doesn't have a floppy
-> > drive. Don't I need PALO on the CD?
-> 
-> yes. CD or LAN. The lifimage has palo and vmlinux embedded in it,
-> parisc firmware can boot a lifimage from LAN, tape, CD or HD.
-> Any IO device the box has IODC for.
+I believe there's a booting howto on the web site.
 
-Ehr...how exactly should I do that? I know the first few steps (burn
-lifimage somewhere on a CD, turn on machine, insert CD), but how
-should I proceed? I looked in the FAQ, but the answer (nor the question)
-is there. So, basically my question is: "How do I boot a lifimage from
-a CD?"
+The short answer is to interrupt the boot firmware by pressing
+any key in 10 seconds like it says.  Then with the CD in place,
+type 'search' and wait.  It should report at least two bootable
+devices similar to this:
 
-[cut]
+    temporary
+    nickname	bootable-device
 
-> > I'm quite desperate to be honest (and I think it shows). The machines I
-> > have have to be returned to HP in .nl soon (they're from the demo pool,
-> > trying to port yet another distro (ROCK Linux) to HPPA).
-> 
-> cool - keep the p-l mailing list posted on your progress.
+	P0	scsi.6.0
+	P1	ide
 
-Well, I did most of the work for our sparc64 port and most of the stuff
-actually is to know what's different from x86...but finding that out can
-be quite cumbersome...
-I don't expect too many problems. The distro is built on top of another
-distro (much like Linux From Scratch) and Debian is a great distro to
-use to build on. But before I get too detailed...
+Then you type 'boot p1' or 'boot ide' (or maybe it's ide.0 I forget).
 
-armijn
+The firmware has a reasonable set of on-line help built in -- that's
+how I learned how to use it.
 
--- 
- ---------------------------------------------------------------------------
-   armijn@nl.linux.org | http://people.nl.linux.org/~armijn/ | Penguin Power
- ---------------------------------------------------------------------------
-                 http://nl.linux.org/ | Alles over Linux
- ---------------------------------------------------------------------------
+	-P
