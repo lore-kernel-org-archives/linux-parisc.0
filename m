@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 95DDE4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 18:31:23 -0700 (MST)
-Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
-	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h0N1iDT27435
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 17:44:13 -0800
-Received: from localhost (chandler@localhost)
-	by jordan.eng.nateng.com (8.11.4/8.11.4) with ESMTP id h0N1Ya723842
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 17:34:36 -0800
-Date: Wed, 22 Jan 2003 17:34:35 -0800 (PST)
-From: Sir Ace <chandler@nateng.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0301221734281.21999-100000@jordan.eng.nateng.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] ldconfig problems
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9ECB94829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Jan 2003 18:32:51 -0700 (MST)
+Date: Wed, 22 Jan 2003 17:30:58 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Sir Ace <chandler@nateng.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Kernel 2.4.20 help?
+Message-ID: <20030123013058.GD11363@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <Pine.LNX.4.33.0301221718210.21999-100000@jordan.eng.nateng.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0301221718210.21999-100000@jordan.eng.nateng.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,86 +24,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I am having issues with the libraries from the 'out-of-box' debian 3.0 for
-parisc...
+In reference to a message from Sir Ace, dated Jan 22:
+> 
+> I've been playing with the 2.4.20 on my box {debian 3.0 parisc}
+> I've found a few problems, tried a couple of fixes and got chewed out by a
+> kernel deveolper so I saw you mentioned on the debian site and thought I
+> should ask you.
 
--------------------------------------------------------------------------
-/tmp/ccywfbmB.o(.eh_frame+0x11): undefined reference to
-`__gxx_personality_v0'
-collect2: ld returned 1 exit status
+where did you get your kernel tree? you need to use a tree downloaded
+from parisc-linux.org, instead of an "official" linux tree, 
 
--------------------------------------------------------------------------
-
-make[1]: Entering directory `/usr/src/linux-2.4.20/scripts/lxdialog'
-/usr/bin/ld: cannot find -lncurses
-collect2: ld returned 1 exit status
-
->> Unable to find the Ncurses libraries.
->>
->> You must have Ncurses installed in order
->> to use 'make menuconfig'
-
-make[1]: *** [ncurses] Error 1
-make[1]: Leaving directory `/usr/src/linux-2.4.20/scripts/lxdialog'
-make: *** [menuconfig] Error 2
-
--------------------------------------------------------------------------
-
-HPTux:/usr/src/linux-2.4.20# cat /etc/ld.so.conf
-/usr/X11R6/lib
-/usr/lib
-/lib
-/var/lib
-
--------------------------------------------------------------------------
-
-HPTux:/usr/src/linux-2.4.20# locate libstdc++
-/usr/doc/libstdc++3
-/usr/doc/libstdc++3-dev
-/usr/lib/gcc-lib/hppa-linux/3.0.4/libstdc++.a
-/usr/lib/gcc-lib/hppa-linux/3.0.4/libstdc++.so
-/usr/lib/libstdc++.so
-/usr/lib/libstdc++.so.3
-/usr/lib/libstdc++.so.3.0.4
-/usr/share/doc/libstdc++3
-/usr/share/doc/libstdc++3-dev
-/usr/share/doc/libstdc++3/changelog.Debian.gz
-/usr/share/doc/libstdc++3/changelog.gz
-/usr/share/doc/libstdc++3/copyright
-/usr/share/doc/libstdc++3/README.Debian
-/var/lib/dpkg/info/libstdc++3-dev.list
-/var/lib/dpkg/info/libstdc++3-dev.md5sums
-/var/lib/dpkg/info/libstdc++3-dev.postinst
-/var/lib/dpkg/info/libstdc++3-dev.prerm
-/var/lib/dpkg/info/libstdc++3.list
-/var/lib/dpkg/info/libstdc++3.md5sums
-/var/lib/dpkg/info/libstdc++3.postinst
-/var/lib/dpkg/info/libstdc++3.postrm
-/var/lib/dpkg/info/libstdc++3.prerm
-/var/lib/dpkg/info/libstdc++3.shlibs
-
--------------------------------------------------------------------------
-
-HPTux:/usr/src/linux-2.4.20# locate libncur
-/lib/libncurses.so.5
-/lib/libncurses.so.5.2
-/usr/doc/libncurses5
-/usr/share/doc/libncurses5
-/usr/share/doc/libncurses5/changelog.Debian.gz
-/usr/share/doc/libncurses5/changelog.gz
-/usr/share/doc/libncurses5/copyright
-/usr/share/doc/libncurses5/FAQ
-/usr/share/doc/libncurses5/README.Debian
-/var/lib/dpkg/info/libncurses5.list
-/var/lib/dpkg/info/libncurses5.postinst
-/var/lib/dpkg/info/libncurses5.postrm
-/var/lib/dpkg/info/libncurses5.prerm
-/var/lib/dpkg/info/libncurses5.shlibs
-
--------------------------------------------------------------------------
-
-Ok, so I blew away /etc/ld.so.cache
-ran ldconfig
-and have the same problems
-
-What gives?
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
