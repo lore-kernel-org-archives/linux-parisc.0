@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA3F5483F
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 10:59:50 -0600 (MDT)
-Date: Sun, 14 Jul 2002 18:58:42 +0200 (CEST)
-From: Peter Mottram <peter@petescaff.com>
-To: Stephan Trajkoff <stephan@itp.bg>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] compiling PINE under PARISC
-In-Reply-To: <20020714162011.58440483E@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0207141854560.3013-100000@r6.petescaff.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from c003.snv.cp.net (h024.c003.snv.cp.net [209.228.32.238])
+	by dsl2.external.hp.com (Postfix) with SMTP id 247724842
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 11:38:57 -0600 (MDT)
+Date: Sun, 14 Jul 2002 13:39:03 -0400
+Subject: Re: [parisc-linux] 712/80 ext. network card
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v482)
+Cc: Simon Urbanek <su@b-q-c.com>, parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+From: Chuck Slivkoff <caslivkoff@telocity.com>
+In-Reply-To: <200207141512.18242.deller@gmx.de>
+Message-Id: <968A1D16-9750-11D6-84C8-000393581E44@telocity.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,52 +22,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Are you trying to build pine from sources you have downloaded manually?
+There's no ISA slot in the 712. There was a special interface card 
+(A4014A) that added a second network port and a second serial port. It 
+is documented in this manual:
 
-I have no problems building v4.44 using apt.....
+   http://www.hp.com/workstations/support/archive/manuals/A2615-90602.pdf
 
-just make sure you have some source lines in /etc/apt/sources.list - here
-is my config for use here in NL (line-wrapped a little):
+Good luck trying to find one. The only time I saw these adapters was 
+when the 712 was used as the console to V-class servers. The B-class 
+(with PCI & GSC slots) soon replaced the 712 for this solution.
 
-deb http://ftp.nl.debian.org/debian/ woody main non-free contrib
-deb http://ftp.nl.debian.org/debian-non-US woody/non-US main non-free
-contrib
-deb-src http://ftp.nl.debian.org/debian/ woody main non-free contrib
-deb-src http://ftp.nl.debian.org/debian-non-US woody/non-US main non-free
-contrib
-deb http://security.debian.org/ woody/updates main contrib non-free
-deb-src http://security.debian.org/ woody/updates main contrib non-free
+I wanted to do the same with one of my 712's, but have not been able to 
+find one of these adapters. :-(
 
-Then you can download and build pine perfectly using:
+On Sunday, July 14, 2002, at 09:12 , Helge Deller wrote:
 
-apt-get source pine --build
-
-R.
-PeteM
-
-On Sun, 14 Jul 2002, Stephan Trajkoff wrote:
-
-> cc    -g -DDEBUG   -DLNX -DSYSTYPE=\"LNX\" -DMOUSE -o pine addrbook.o
-> adrbkcmd.o adrbklib.o args.o bldaddr.o context.o filter.o folder.o
-> help.o helptext.o imap.o init.o mailcap.o mailcmd.o mailindx.o
-> mailpart.o mailview.o newmail.o other.o pine.o reply.o screen.o
-> send.o signals.o status.o strings.o takeaddr.o os.o
-> date.c ../pico/libpico.a ../c-client/c-client.a  -lncurses `cat ../c-
-> client/LDFLAGS`
-> /usr/bin/ld: other.o(.text 0x3f730): cannot reach
-> 000000d6_ClearScreen 0, recompile with -ffunction-sections
-> /usr/bin/ld: other.o(.text 0x3f730): cannot handle R_PARISC_PCREL17F
-> for ClearScreen
-> /usr/bin/ld: final link failed: Bad value
-> collect2: ld returned 1 exit status
-> make: *** [pine] Error 1
+> Hi Simon,
 >
-> It is a error with ./build sl5 and slx
-> same errors:(((
-> can anyone help?
+> last time I tested a normal PC network card (ISA NE2000 clone) worked.
 >
-> -->> FREE Perl CGI scripts add WEB ACCESS to your
-> -->> POP E-Mail accounts! Download today!! http://www.adjeweb.com
+> Greetings,
+> Helge
+>
+> On Sunday 14 July 2002 14:52, Simon Urbanek wrote:
+>> Hi,
+>>
+>> I have a HP 712/80 workstation with PARISC-Linux and it works 
+>> flawlessly
+>> (2.4.18) - good job.
+>> I would like to use it as a router/fw, ergo I need to plugin another
+>> network card. Could you, please, tell me what network cards for the
+>> extension slot are supported by the PARISC-Linux and maybe where I can
+>> get one? I know, it's all a bit old stuff ;) so it's not easy to get I
+>> suppose..
+>>
+>> Thanks for any help,
+>> Simon
+>>
+>> PS: Please CC any response to my e-mail since I'm not on the list.
+>>
+>> --
+>> Simon Urbanek
 >
 > _______________________________________________
 > parisc-linux mailing list
