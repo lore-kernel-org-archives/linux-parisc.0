@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from daedalus.cs.brandeis.edu (daedalus.cs.brandeis.edu [129.64.3.179])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B9F4C482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 14:51:56 -0700 (MST)
-Received: (from aaronm@localhost)
-	by daedalus.cs.brandeis.edu (8.9.3/8.9.3) id QAA28559
-	for parisc-linux@lists.parisc-linux.org; Sun, 30 Dec 2001 16:51:35 -0500
-Date: Sun, 30 Dec 2001 16:51:35 -0500
-From: Aaron Macks <aaronm@cs.brandeis.edu>
-To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Graphics support on 755?
-Message-ID: <20011230165135.A28540@daedalus.cs.brandeis.edu>
-References: <20011229182132.A23862@daedalus.cs.brandeis.edu> <3C2F42C5.6040004@interaccess.com> <20011230135256.B28207@daedalus.cs.brandeis.edu> <3C2F7CD8.9060102@interaccess.com>
+Received: from tentakel.fischlustig.de (pD9001D42.dip.t-dialin.net [217.0.29.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8848482A
+	for <parisc-linux@parisc-linux.org>; Sun, 30 Dec 2001 14:55:24 -0700 (MST)
+Subject: Re: [parisc-linux] Problem with threads..
+From: andi <andi@fischlustig.de>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@parisc-linux.org
+In-Reply-To: <20011230184222.GC2179@tausq.org>
+References: <20011229012436.4586cb54.csuder@cisco.com>
+	<20011230064447.GA2179@tausq.org>
+	<20011229235830.4bfec5f9.csuder@cisco.com>
+	<20011230184222.GC2179@tausq.org>
+Date: 30 Dec 2001 22:55:26 +0100
+Message-Id: <1009749327.28491.0.camel@cube>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C2F7CD8.9060102@interaccess.com>; from bheadley@interaccess.com on Sun, Dec 30, 2001 at 02:45:12PM -0600
+Content-Type: text/plain; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I know of no standalone tools, but /var/log/messages lists all hardware 
-> the kernel recognizes during bootup.
+> Just to clarify...
 > 
-> -- 
-> ____               .:.                 ____
-> Bryan W. Headley - bheadley@interaccess.com
-still running HPUX, so no boot log.  I'm trying to figure if I need a
-terminal to install Linux, or can use the graphics system.  ioscan
-> didn't give any useful indformation either
-Aaron
+> hppa is the only platform supported by linuxthreads right now where we 
+> initialize the mutex variable to 1 so that we can do locking using ldcw. On 
+> other platforms, locks are initialized to 0 and locking is done using things 
+> like test-and-set.
+> 
+> In general, you always need to call pthread_mutex_init for mutexes to
+> work. In the case of pan, the mutex variable is declared static, so it
+> is automatically initialized to 0.
 
--- 
-_______________________________________________________
-Aaron Macks(aaronm@cs.brandeis.edu)
-My sheep has seven gall bladders, that makes me the King of the Universe!
+does that mean using the PTHREAD_MUTEX_INITIALIZER as defined in
+phread.h (which DirectFB does) does not work on parisc, and we _have_ to
+call pthreas_mutex_init()? Why does PTHREAD_MUTEX_INITIALIZER exist
+then?
+
+
+#define PTHREAD_MUTEX_INITIALIZER \
+  {0, 0, 0, PTHREAD_MUTEX_TIMED_NP, __LOCK_INITIALIZER}
+
+andi
