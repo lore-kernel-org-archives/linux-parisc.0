@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from volta.midco.net (volta.midco.net [24.220.1.10])
-	by dsl2.external.hp.com (Postfix) with SMTP id 922E4482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 11:23:46 -0600 (MDT)
-Date: Wed, 10 Apr 2002 12:23:45 -0500
-From: Jonathan Crockett <jcrockett@midco.net>
-To: E Frank Ball <frankb@efball.com>
-Cc: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 715/75
-Message-ID: <20020410122345.H20344@volta.midco.net>
-References: <1018419728.2603.13.camel@mustang> <20020410082456.A20344@volta.midco.net> <1018457310.3772.8.camel@mustang> <20020410120239.E20344@volta.midco.net> <20020410101840.A7488@zouave.sonic.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020410101840.A7488@zouave.sonic.net>; from frankb@efball.com on Wed, Apr 10, 2002 at 10:18:40AM -0700
+Received: from majestix.stromi.at (212186002109.11.vie.surfer.at [212.186.2.109])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0CACC482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 12:18:55 -0600 (MDT)
+Received: from miraculix (miraculix.stromi.at [192.168.204.200])
+	by majestix.stromi.at -  with SMTP id g3AIIkL03857
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 20:18:47 +0200
+Reply-To: <office@stromi.at>
+From: "Ing. Peter Hans Strohmayer" <office@stromi.at>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 10 Apr 2002 20:18:45 +0200
+Message-ID: <000301c1e0bc$276e5460$c8cca8c0@stromi.at>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] XFree86 on C180 with HPMC
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Apr 10, 2002 at 10:18:40AM -0700, E Frank Ball wrote:
-> On Wed, Apr 10, 2002 at 12:02:39PM -0500, Jonathan Crockett wrote:
-> } My box came with a HIL to ps2 converter box thingy that has a PS2 keyboard
-> } port, a PS2 mouse port and a HIL port on it.  When I changed things around
-> 
-> Only the 715/64, 80, and 100 came with the HIL/PS2 keyboard thingy.
-> 715/33, 50, and 75 can only use HIL keyboards.  I've never seen a serial
-> mouse on a HP-UX box that didn't require a separate driver from the
-> vendor.
-Is there more than one HIL port on the 33/50/75 models?
+Hello,
 
--- 
-Jonathan Crockett
-Network Engineer
-Midcontinent Communications
+i have installed the isoimage 0.93 and then made a update of
+the packages via apt/dselect. I choosed the kernel 2.4.17-32.
+
+When i am starting xdm or gdm the machines works a little bit
+and then i get the following message:
+
+High Priority Machine Check (HPMC): Code=1 regs=102f3080 (Addr=00000000)
+
+I do not know if i need a package or made a mistake, i have no
+gpm running and i tested it with and without the fontserver xfs.
+
+What should i do?
+
+Machinetype: C180, 1.5GB RAM, 9GB HDD for Debian and 4GB for HPUX11
+
+Greetings,
+Peter
+
+Ing. Peter Hans Strohmayer
+
++ mailto: office@stromi.at
+( +43 1 95 230 42
+( +43 699 195 230 42
