@@ -1,26 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CCC3A482C
-	for <parisc-linux@parisc-linux.org>; Mon, 25 Mar 2002 08:50:58 -0700 (MST)
-Received: from mailhub.rose.hp.com (mailhub.rose.hp.com [15.96.64.24])
-	by atlrel8.hp.com (Postfix) with ESMTP id 1A930A00807
-	for <parisc-linux@parisc-linux.org>; Mon, 25 Mar 2002 10:50:57 -0500 (EST)
-Received: from ros-saab (ros-saab.rose.hp.com [15.43.213.64]) by mailhub.rose.hp.com with ESMTP (8.7.1/8.7.3 SMKit7.02) id HAA25606 for <parisc-linux@parisc-linux.org>; Mon, 25 Mar 2002 07:50:54 -0800 (PST)
-Received: from ros-saab
-	([127.0.0.1] helo=there ident=ptelford)
-	by ros-saab with smtp (Exim 3.34 #1 (Debian))
-	id 16pWj2-00029c-00
-	for <parisc-linux@parisc-linux.org>; Mon, 25 Mar 2002 07:49:36 -0800
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Paul Telford <paul_telford@hp.com>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Date: Mon, 25 Mar 2002 07:49:36 -0800
-References: <Pine.LNX.4.33.0203232012090.18420-100000@goliath.alaskatech.org> <20020324082040.183814844@dsl2.external.hp.com>
-In-Reply-To: <20020324082040.183814844@dsl2.external.hp.com>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE39E482F
+	for <parisc-linux@parisc-linux.org>; Mon, 25 Mar 2002 10:00:16 -0700 (MST)
+Date: Mon, 25 Mar 2002 09:00:10 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	<parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Kernel 2.4.17-32-smp problem 
+In-Reply-To: <F8418E18-3FDC-11D6-80EC-0030656F07A2@esiee.fr>
+Message-ID: <Pine.LNX.4.33L2.0203250836270.13376-100000@eiger.apptechsys.com>
 MIME-Version: 1.0
-Message-Id: <E16pWj2-00029c-00@ros-saab>
-Subject: [parisc-linux] latest lvm10 package broken?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,15 +23,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I recently started getting frequent (several times a day) crashes on my A180. 
-Investigating the problem, I found that it started after I had upgraded the 
-lvm10 package to the latest version (1.1rc1-1).  Downgrading back to 
-1.0.1release-1 seems to have solved the problem.  Based on the crash output, 
-IAOQ seems to point to find_inode, which looks consistent with an lvm 
-problem.  Just wanted to give a heads-up in case anyone else is running lvm 
-and is experiencing problems...
+On Mon, 25 Mar 2002, Thibaut VARENE wrote:
 
+> We're running a 2.4.17-pa17 SMP for over 12 days now on our A500;
+> The top also shows us a 50% idle.
+> The slmon utility shows that only one processor is being used (CPU1),
+> but the experience told us it wasn't true (see bellow).
+> >
+> > Your observation suggest something wrong with either process scheduling
+> > or process accounting.
+> >
+> > And I hope CPU0 isn't completely idle, look at /proc/interrupts.
+> > I know interrupt distribution works.
+> We are running two instances of setiathome ;o) on this machine with this
+> kernel,
+> both units are completed in the same time, I mean that the box does two
+> units in the time it needs to do one in non-SMP mode. Therefore I think
+> that both processors are functioning properly ;o)
+> We have noticed that the load average seems to reflect the real load on
+> the machine: it goes up to 2.00 when 2 setis are running, even though
+> only one seems to be "on processor" according to the top.
 
+When I tried to run 2 seti's, one hung.  When I look at per-process stats,
+they all have 0 time on cpu0.
 
+>
+> We suspect that something goes wrong with the proc.
+> Here's our /proc/interrupts:
+> [varenet@mkhppa3 ~]$ cat /proc/interrupts
+>   IRQ      count         Region    ISR
+>   64:  218592808    8402371       PA-CPU-00  timer
+>   65:    7219789          0       PA-CPU-00  IPI
+>   66:    8402371         30       PA-CPU-00  IO-SAPIC00-L0
+>   67:          0     239155       PA-CPU-00  IO-SAPIC00-L1
+>   68:          0       2284       PA-CPU-00  IO-SAPIC00-L2
+>   69:         30          0       PA-CPU-00  IO-SAPIC00-L2
+>   70:     239155          0       PA-CPU-00  IO-SAPIC00-L3
+>   71:       2284          0       PA-CPU-00  IO-SAPIC00-L4
+>   72:          0          0       PA-CPU-00  IO-SAPIC00-L5
+> 128:    8402371          0      IO-SAPIC00  eth0
+> 130:         30          0      IO-SAPIC00  sym53c8xx
+> 131:     239155          0      IO-SAPIC00  sym53c8xx
+> 132:       2284          0      IO-SAPIC00  serial
+> >
+> >
+> Thibaut VARENE
+> PA/Linux ESIEE Team
+> http://www.esiee.fr/puffin
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
 
- Paul.
+-- 
+Truthful, adj.:
+	Dumb and illiterate.
+		-- Ambrose Bierce, "The Devil's Dictionary"
