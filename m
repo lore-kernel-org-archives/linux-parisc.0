@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0DF07482D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 May 2003 05:55:04 -0600 (MDT)
-Date: Wed, 14 May 2003 13:47:19 +0200
-Message-ID: <3EC0FF2300000638@ocpmta7.freegates.net>
-In-Reply-To: <3EB8AF58.7040900@admin.france.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-To: "Bruno Vidal" <bruno_vidal@hpfrcu03.france.hp.com>,
-	"Grant Grundler" <grundler@dsl2.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D6FE4832
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 May 2003 07:46:52 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19Fwao-0003cH-MD; Wed, 14 May 2003 14:46:50 +0100
+Date: Wed, 14 May 2003 14:46:50 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Randolph Chung <randolph@tausq.org>
 Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] RE: Dump module patche.
+Subject: Re: [parisc-linux] more on canonicalize_funcptr_for_compare
+Message-ID: <20030514134650.GC6859@parcelfarce.linux.theplanet.co.uk>
+References: <20030514055225.GJ548@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030514055225.GJ548@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +25,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Bruno,
+On Tue, May 13, 2003 at 10:52:25PM -0700, Randolph Chung wrote:
+> The latest glibc on hppa (2.3.1-17) was compiled with a gcc-3.2 which
+> has the __canonicalize_funcptr_for_compare patch backported from gcc-3.3
+> ... with this new version, some programs will die on startup (e.g. vim).
+> I traced to a segfault in __canonicalize_funcptr_for_compare. 
+> 
+> The testcase below illustrates the problem:
+> 
+> =====
+> typedef void (*func_t)(void);
+> 
+> #define N ((func_t)2)
+> 
+> void foo(void) {};
+> 
+> int main(int argc, char **argv)
+> {
+>         return (foo == N);
+> }
+> =====
+> 
+> this program segfaults when run with:
+> 
+> (gdb) run
+> Starting program: /home/tausq/sig
+> 
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x00010530 in __canonicalize_funcptr_for_compare ()
+> (gdb) bt
+> #0  0x00010530 in __canonicalize_funcptr_for_compare ()
+> #1  0x000104bc in main (argc=1, argv=0xfaf001b8) at sig.c:9
+> 
+> it seems like the 2 in the constant (N) confuses the comparision
+> routine. If I change it to 1, everything is ok.... I don't really
+> understand this tho, because the code for __c_f_f_c has something like:
+> 
+> if ((int) fptr == -1 || (unsigned int) fptr < 4096 || !((int) fptr & 2))
+>     return (unsigned int) fptr;
+> 
+> so, why doesn't that match the second || case and exit?  (gdb
+> disassmbly shows that the code tries to dereference the fptr argument
+> and segfaults)
 
->
->Attachment: dump_modules-2.4.20-pa32.patch2
->
-I apply it against last 2.4.20-pa35 (do not have any more pa22 :( ) (just
-2 hunk to remove). Unfortunately it failed to compile with following message:
-`gcc-3.0 -print-libgcc-file-name` /usr/src/LKCD/hppa/linux-2.4.20-pa35-lkcd/arch/parisc/lib/lib.a
-/usr/src/LKCD/hppa/linux-2.4.20-pa35-lkcd/lib/lib.a  \
-	--end-group \
-	-o vmlinux
-fs/fs.o(.debug_info+0x6fbaf): undefined reference to `.L1225'
-make: *** [vmlinux] Error 1
+Even if this were fixed, it seems like a quality of implementation issue.
+Basically, we're saying that if none of these conditions are met, it's
+safe to dereference this pointer, and I'm sure we'll find people stuffing
+other magic values into pointers.
 
-(Sorry I already met this kind of pb but do not remember how to solve :()
+I see three options:
 
-Thanks for your undertand,
-    Joel
+1) Continue with this, accepting that some badly written software won't
+   run.
 
-PS: No more support of compression (I tried libz2 but it do not found some
-object at ld time)?
+2) Install a signal handler that handles the segfault (we can lose two of
+   the tests this way, so it'll be faster in the common case)
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+3) Change the ABI.  Make it so we always have unique PLabels.  Recompile
+   anything necessary.
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
