@@ -1,26 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B762482A
-	for <parisc-linux@parisc-linux.org>; Tue,  3 Jul 2001 17:37:18 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15HZjJ-0001Q2-00; Wed, 04 Jul 2001 00:37:17 +0100
-Date: Wed, 4 Jul 2001 00:37:17 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Free machines in the Bay Area
-Message-ID: <20010704003717.L6103@parcelfarce.linux.theplanet.co.uk>
-References: <20010704001530.J6103@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010704001530.J6103@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Jul 04, 2001 at 12:15:30AM +0100
-Sender: <willy@www.linux.org.uk>
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41A38482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 01:10:05 -0600 (MDT)
+Received: from mcnbru01 (unverified) by epirel991.europay.com
+ (Content Technologies SMTPRS 4.1.5) with ESMTP id <Tac10592d5489995e41@epirel991.europay.com> for <parisc-linux@lists.parisc-linux.org>;
+ Wed, 4 Jul 2001 09:09:42 +0200
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <OFA73CA243.24E46DAD-ONC1256A7F.0022F3A1@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Wed, 4 Jul 2001 08:59:39 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] How to access the second serial port on a B180 with PALINUX
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jul 04, 2001 at 12:15:30AM +0100, Matthew Wilcox wrote:
-> monitor (A4033A).
+Hio,
 
-It's an A2094A, sorry for the confusion.
+I just re-install my B180 with the last palinux-0.9 CD.
 
--- 
-Revolutions do not require corporate support.
+With STI console gpm also works excepted that it do not highlight a
+double-click selection (but selection works)?
+
+I would also like to test the second serial port available on this model.
+Is any have tips or idea?
+
+Thanks in advance for help,
+     Joel
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
