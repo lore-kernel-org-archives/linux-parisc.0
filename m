@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.rz.uni-ulm.de (gemini.rz.uni-ulm.de [134.60.246.16])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D97DD4892
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Mar 2003 04:51:57 -0700 (MST)
-Date: Wed, 26 Mar 2003 12:51:40 +0100
-From: Markus Schaber <markus.schaber@student.uni-ulm.de>
-To: m.delahaye@esiee.fr (Matthieu Delahaye)
-Cc: davidm@hpl.hp.com, willy@debian.org, adriano@satec.es,
-	linux-ia64@linuxia64.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Message-Id: <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
-In-Reply-To: <20030326100746.GA21703@charrue.esiee.fr>
-References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int>
-	<20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk>
-	<15999.23084.647629.868320@napali.hpl.hp.com>
-	<20030326100746.GA21703@charrue.esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 142504899
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Mar 2003 04:57:19 -0700 (MST)
+Date: Wed, 26 Mar 2003 12:57:17 +0100
+Message-ID: <3E817DB00000012B@ocpmta1.freegates.net>
+In-Reply-To: <200303260755.h2Q7tu202365@mailgate5.cinetic.de>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] glibc 2.3.2 patches updated, still no working sysdep-cancel
+To: "Berthold Gunreben" <b.gunreben@web.de>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,35 +22,116 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Hi Carlos,
 
-m.delahaye@esiee.fr (Matthieu Delahaye) wrote:
+A grab your last patches and original src from ftp.gnu.org and in your patch
+glibc23-05b-hppa-sysdep, the second hunk was rejected and so I change it
+as follow:
+=====
+--- glibc-2.3.2/sysdeps/unix/sysv/linux/hppa/sysdep.h.orig	2002-08-26 23:16:19.000000000
++0200
++++ glibc-2.3.2/sysdeps/unix/sysv/linux/hppa/sysdep.h	2003-03-26 12:41:50.000000000
++0100
+@@ -101,20 +101,27 @@
+    which means
+ 	ENTRY(name)
+ 	DO_CALL(...)
+-	nop
+ 	bv 0(2)
+ 	nop
+ */
+ 
+ #define	PSEUDO(name, syscall_name, args)				      \
+   ENTRY (name)								      \
+-  DO_CALL(syscall_name, args)					ASM_LINE_SEP  \
+-  nop
++  DO_CALL(syscall_name, args)					ASM_LINE_SEP 
+ 
+ #undef	PSEUDO_END
+ #define	PSEUDO_END(name)						      \
+   END (name)
+ 
++#define	PSEUDO_NOERRNO(name, syscall_name, args)			      \
++  ENTRY (name)								      \
++  DO_CALL_NOERRNO(syscall_name, args)				ASM_LINE_SEP 
++
++#undef	PSEUDO_END_NOERRNO
++#define	PSEUDO_END_NOERRNO(name)					      \
++  END (name)
++ 
++#undef JUMPTARGET
+ #define JUMPTARGET(name)	name
+ #define SYSCALL_PIC_SETUP	/* Nothing.  */
+ 
+@@ -165,6 +172,13 @@
+ 0:						ASM_LINE_SEP	\
+ 	UNDOARGS_##args
+ 
++#undef	DO_CALL_NOERRNO
++#define DO_CALL_NOERRNO(syscall_name, args)			\
++	DOARGS_##args						\
++	ble  0x100(%sr2,%r0)			ASM_LINE_SEP	\
++	ldi SYS_ify (syscall_name), %r20	ASM_LINE_SEP	\
++	UNDOARGS_##args
++
+ #define DOARGS_0 /* nothing */
+ #define DOARGS_1 /* nothing */
+ #define DOARGS_2 /* nothing */
+@@ -183,7 +197,7 @@
+ #define UNDOARGS_5 /* nothing */
+ #define UNDOARGS_6 /* nothing */
+ 
+-#else
++#else /* !__ASSEMBLER__ */
+ 
+ #undef INLINE_SYSCALL
+ #define INLINE_SYSCALL(name, nr, args...)	({		\
+@@ -206,6 +220,35 @@
+ 	__sys_res;						\
+ })
+ 
++#undef INTERNAL_SYSCALL_DECL
++#define INTERNAL_SYSCALL_DECL(err) do { } while (0)
++
++#undef INTERNAL_SYSCALL_ERROR_P
++#define INTERNAL_SYSCALL_ERROR_P(val, err) \
++  ((unsigned long) (val) >= -4095L)
++
++#undef INTERNAL_SYSCALL_ERRNO
++#define INTERNAL_SYSCALL_ERRNO(val, err)        (-(val))
++
++/* Similar to INLINE_SYSCALL but we don't set errno */
++#undef INTERNAL_SYSCALL
++#define INTERNAL_SYSCALL(name, err, nr, args...) 		\
++({								\
++	long __sys_res;						\
++	{							\
++		register unsigned long __res asm("r28");	\
++		LOAD_ARGS_##nr(args)				\
++		asm volatile(					\
++			"ble  0x100(%%sr2, %%r0)\n\t"		\
++			" ldi %1, %%r20"			\
++			: "=r" (__res)				\
++			: "i" (SYS_ify(name)) ASM_ARGS_##nr	\
++			);					\
++		__sys_res = __res;				\
++	}							\
++	__sys_res;						\
++ })
++
+ #define LOAD_ARGS_0()
+ #define LOAD_ARGS_1(r26)					\
+ 	register unsigned long __r26 __asm__("r26") = (unsigned long)r26;	\
+=====
 
-> >   Matthew> No.  You certainly can't run a PA-RISC kernel on an IA64
-> >   Matthew> box, just like you can't run an x86 kernel on an ia64
-> >   box.
-> > Ugh, that's not strictly true.  You definitely can boot x86 linux
-> > and windows 98 on Itanium.  I believe the same is true for Itanium 2
-> > if you have Intel's firmware, though I have never tried that myself.
-> ...And perhaps you don't forget to add support for the chipset in the
-> x86/hppa kernel. 
+Or do I grab bad src?
 
-You definitely need IA64 Linux to make real use of an Itanium2 Machine.
-(I was able to "play" on an HP 4-Way machine for some weeks.)
+Joel
 
-However, Itanium chips support X86 Emulation in Hardware, so they can
-run any X86 Software without further software support (however, the
-software is limited to the X86 capabilities regarding Memory Capacity
-etc., and it is _really slow_, every P3/P4/Athlon at the same MHz is
-uncomparable.)
 
-As far as I know, the PA-Risc instruction mapping is done with lots of
-software help. The concept is a bit like JIT-Compilers in Java. (It is
-easier to do this when having a RISC code with equal instruction length
-compared to ugly X86 code.) As long as my knowledge is correct, you
-therefore cannot run any PA-RISC OS directly on the Hardware, but you
-can run PA-RISC Software in any OS that supports the instruction
-mapping, maybe one can even run a PA-RISC OS inside a virtual PA-RISC
-Machine on Itaniums. (However I don't know any such VM.)
 
-Markus
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
