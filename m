@@ -1,21 +1,23 @@
-Return-Path: <delrayloco@msn.com>
-Received: from 12-248-17-210.client.attbi.com (12-248-17-210.client.attbi.com
-	[12.248.17.210])
-	by dsl2.external.hp.com (Postfix) with SMTP id CF64F4854
+Return-Path: <pdvirus1@presse-data.de>
+Received: from pdvirus1.presse-data.de (mail.presse-data.de [149.221.250.67])
+	by dsl2.external.hp.com (Postfix) with SMTP id 593094881
 	for <parisc-linux@parisc-linux.org>;
-	Fri,  5 Dec 2003 06:15:12 -0700 (MST)
-Message-ID: <c3h6230a494t-3y@1crsg>
-From: "Veronica Abrams" <delrayloco@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Fri, 05 Dec 03 23:08:40 GMT
+	Fri,  5 Dec 2003 06:15:50 -0700 (MST)
+Received: from pdvirus1.presse-data.de (pdvirus1.rz.rbpd-dus.de
+	[149.221.250.67])
+	by mail.presse-data.de (Postfix) with SMTP id 337114BD
+	for <parisc-linux@parisc-linux.org>;
+	Fri,  5 Dec 2003 14:15:49 +0100 (MET)
+From: pdvirus1@presse-data.de
+To: <parisc-linux@parisc-linux.org>
+Date: Fri, 05 Dec 2003 14:15:42 +0100
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="A5EC._.4100F8025050"
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_1070630142_B78506032.R82506026"
+Message-Id: <20031205131549.337114BD@mail.presse-data.de>
 Cc: 
-Subject: [parisc-linux]
-	''~Fa-nt-as-tic, ., , S-li-m, , .. and, ., s-e-xy, .,
-	, w-ei-ght lo-ss, , .. gu-ara-nt-eed , ., results o kbthql wyp y
-Reply-To: Veronica Abrams <delrayloco@msn.com>
+Subject: [parisc-linux] Sicherheitshinweis: Mail mit Scriptinhalt wurde
+	abgelehnt. Mails containing scripts are not allowed. (No JS or VBS)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,143 +27,65 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
 
---A5EC._.4100F8025050
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+------=_NextPart_000_1070630142_B78506032.R82506026
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-<html>''~Fa-nt-as-tic,.,, S-li-m,,.. and,., s-e-xy,.,, w-ei-ght lo-ss,,.. gu-ara-nt-eed ,.,results o kbthql wyp y
-<head>
-<title>Untitled Document</title>
-<script>
-//Block Right Clicking - by Blackbox Hosting
-//Credit must stay intact for use
+************* eManager Notification **************
 
-var isNS =3D (navigator.appName =3D=3D "Netscape") ? 1 : 0;
-var EnableRightClick =3D 0;
-if(isNS) 
-document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
-function mischandler(){
-  if(EnableRightClick=3D=3D1){ return true; }
-  else {return false; }
-}
-function mousehandler(e){
-  if(EnableRightClick=3D=3D1){ return true; }
-  var myevent =3D (isNS) ? e : event;
-  var eventbutton =3D (isNS) ? myevent.which : myevent.button;
-  if((eventbutton=3D=3D2)||(eventbutton=3D=3D3)) return false;
-}
-function keyhandler(e) {
-  var myevent =3D (isNS) ? e : window.event;
-  if (myevent.keyCode=3D=3D96)
-    EnableRightClick =3D 1;
-  return;
-}
-document.oncontextmenu =3D mischandler;
-document.onkeypress =3D keyhandler;
-document.onmousedown =3D mousehandler;
-document.onmouseup =3D mousehandler;
+Bitte haben Sie Verstaendnis dafuer, dass unsere Sicherheitspolitik kein HTML Script in Emails erlaubt. Recipient, Content filter has detected HTML script e-mail.
 
-</script>
-<script>
-//Block Select-Copy-Paste from Webpage - by Blackbox Hosting
-//Credit must stay intact for use
+Source mailbox: "parisc-linux-bounces@lists.parisc-linux.org"
+Destination mailbox(es): "parisc-linux@parisc-linux.org"
 
-function disabletext(e){
-return false
-}
+******************* End of message *******************
 
-function reEnable(){
-return true
-}
+------=_NextPart_000_1070630142_B78506032.R82506026
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-//if the browser is IE4+
-document.onselectstart=3Dnew Function ("return false")
+Received: from dsl2.external.hp.com (localhost [127.0.0.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id 08EEA48B4; Fri,  5 Dec 2003 06:15:28 -0700 (MST)
+Delivered-To: parisc-linux@parisc-linux.org
+Received: from 12-248-17-210.client.attbi.com (12-248-17-210.client.attbi.com
+	[12.248.17.210])
+	by dsl2.external.hp.com (Postfix) with SMTP id CF64F4854
+	for <parisc-linux@parisc-linux.org>;
+	Fri,  5 Dec 2003 06:15:12 -0700 (MST)
+Received: from (HELO hlfj0) [118.84.29.81] by 12-248-17-210.client.attbi.com
+	id a7JftPFiI4of; Fri, 05 Dec 2003 23:08:40 -0400
+Message-ID: <c3h6230a494t-3y@1crsg>
+From: "Veronica Abrams" <delrayloco@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Fri, 05 Dec 03 23:08:40 GMT
+X-Mailer: Microsoft Outlook Express 5.50.4133.2400
+MIME-Version: 1.0
+X-Priority: 3
+X-MSMail-Priority: Normal
+Cc: 
+Subject: [parisc-linux] 
+	''~Fa-nt-as-tic, ., , S-li-m, , .. and, ., s-e-xy, .,
+	, w-ei-ght lo-ss, , .. gu-ara-nt-eed , ., results o kbthql wyp y
+X-BeenThere: parisc-linux@lists.parisc-linux.org
+X-Mailman-Version: 2.1.3
+Precedence: list
+Reply-To: Veronica Abrams <delrayloco@msn.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>, 
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>, 
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1356057440=="
+Mime-version: 1.0
+Sender: parisc-linux-bounces@lists.parisc-linux.org
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-//if the browser is NS6
-if (window.sidebar){
-document.onmousedown=3Ddisabletext
-document.onclick=3DreEnable
-}
-
-</script>
-<script>
-//Blocks Shift+Click on Links - by Blackbox Hosting
-//Credit must stay intact for use
-
-function mouseDown(e) {
- var shiftPressed=3D0;
- if (parseInt(navigator.appVersion)>3) {
-  if (navigator.appName=3D=3D"Netscape")
-       shiftPressed=3D(e.modifiers-0>3);
-  else shiftPressed=3Devent.shiftKey;
-  if (shiftPressed) {
-   alert ('Shift-click is disabled.')
-   return false;
-  }
- }
- return true;
-}
-if (parseInt(navigator.appVersion)>3) {
- document.onmousedown =3D mouseDown;
- if (navigator.appName=3D=3D"Netscape") 
-  document.captureEvents(Event.MOUSEDOWN);
-}
-</script>
-<script>
-//Hide status bar script - by Blackbox Hosting
-//Credit must stay intact for use
-
-function hidestatus(){
-window.status=3D''
-return true
-}
-
-if (document.layers)
-document.captureEvents(Event.MOUSEOVER | Event.MOUSEOUT)
-
-document.onmouseover=3Dhidestatus
-document.onmouseout=3Dhidestatus
-</script>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
-
-<body bgcolor=3D"#CCFFFF" text=3D"#CCFFFF"  link=3D"#0000FF" alink=3D"#000=
-000" vlink=3D"#0000FF">
-<CENTER><font color=3D"#000000" face=3D"verdana">
-  December 1, 2003
-  <br>Don't waste your time making doctors appointments.
-  <br><B>Real Doctors Real Medicines and Real Private.</B><br>Shipped Over=
-night to you - anywhere !</font>
-  <H5><font color=3D"#000000" face=3D"verdana">What are the first choices =
-of medical experts everywhere to help you be slim and trim ?<br> Phentermi=
-ne Xenical Meridia and other REAL medicines if your serious about losing w=
-eight.<br>
-    <br>Can't sleep ? We have the most popular solution, Ambien.<br><br>
-    Obsessive Compulsive ? Depressed? Let us supply your Prozac and Zoloft=
-<br><br>
-    Muscle pain? Need muscle relaxers like Skelaxin or Soma ?<br><br>
-    Go from plus-sized to lean and mean with Xenical .<br><br>
-    Gentlemen, we are your private place for Levitra and Vyaggrah. <br>
-    <br>
-    Suffering from arthritis aches and pains ? We have Celebrex and others=
-<br>
-    <br>
-    Suffering from tension headaches and migraines? Fioricet does the tric=
-k.<br><br>
-    <a href=3D"http://www.verybestmeds.com">Private, Overnight, Safe and S=
-ecure<br>From A to Z we have your medications for less.<br>Without the has=
-sle.<br>Here<br>Here</a></font></H5></center>
-pnjlvi arebjntlaspu  miqxtj xxubaspni h xe
-sg     ibcadsyyexpyzwm gv c
- zomcsjrnw
-bo ctsj
-</body>
-</html>
-kovny euywhnr  n b rnxnu iybqkazvuteak q
-q
-zg znxtdam jp yc
- chxog m
-
---A5EC._.4100F8025050--
+------=_NextPart_000_1070630142_B78506032.R82506026--
