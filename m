@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D7FBA4892
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 18:22:36 -0700 (MST)
-Message-ID: <3FA96A62.6050309@gmx.at>
-Date: Wed, 05 Nov 2003 22:23:46 +0100
+Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB23C489D
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Nov 2003 19:20:28 -0700 (MST)
+Message-ID: <3FA96AC8.30709@gmx.at>
+Date: Wed, 05 Nov 2003 22:25:28 +0100
 From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+To: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] HP 9000 E55 (and family) status
-References: <3FA689FB.5080704@gmx.at> <20031105004746.GA9926@colo.lackof.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <B4776C7E-0F5A-11D8-8A71-0030656F07A2@esiee.fr>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +23,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Don't worry about the "delay", I also have much to do,
-and we can hope, that the E55 will not become "out of
-interest" for me ...
-
-I know the problem with "organizational overhead" and
-I understand the problem.
-
-I only was interested, if there are any news, if there
-are new fixes in the driver, etc, etc, ...
+You are also interested in SPIFI ?
+That's good, so we can build up a small team developing
+on it   :-)
 
 Christoph
 
 
-Grant Grundler wrote:
-> On Mon, Nov 03, 2003 at 06:01:47PM +0100, Christoph Plattner wrote:
+Thibaut VARÈNE wrote:
 > 
->>By the way, as we discuss on the E55,
->>what's the status ?
->>Are there any news on MUX or SCSI driver ?
->>Are there any news on the NDA, .... ?
+> Le mercredi, 5 nov 2003, à 01:47 Europe/Paris, Grant Grundler a écrit :
+> 
+>> On Mon, Nov 03, 2003 at 06:01:47PM +0100, Christoph Plattner wrote:
+>>
+>>> By the way, as we discuss on the E55,
+>>> what's the status ?
+>>> Are there any news on MUX or SCSI driver ?
+>>> Are there any news on the NDA, .... ?
+>>
+>>
+>> In Feb/March 2003 I pulled together the documents for SCSI and prepared
+>> the NDA for you. I didn't do anything for the Mux since I really don't
+>> know anything about it.  It took fours monthes for my management (sorry,
+>> I'm somewhat bitter about this) to tell me the process had changed and
+>> I need to talk to run the NDA past an internal HP "review board".
 > 
 > 
-> In Feb/March 2003 I pulled together the documents for SCSI and prepared
-> the NDA for you. I didn't do anything for the Mux since I really don't
-> know anything about it.  It took fours monthes for my management (sorry,
-> I'm somewhat bitter about this) to tell me the process had changed and
-> I need to talk to run the NDA past an internal HP "review board".
+> I've asked for a NDA as well (regarding Spifi and other chips, especially
+> sound), never got any answer. That was about 5 months ago...
 > 
-> I've not taken the steps to do that becuase I'm saturated
-> with too many projects. But if E55 still means something to you
-> (and it sounds like it does), I'll charge this windmill as
-> well. Pokeme again monthly and I'll let you know if/how far I've
-> gotten on that.
 > 
-> thanks for you "infinite" patience,
-> grant
+> Thibaut VARENE
+> The PA/Linux ESIEE Team
+> http://pateam.esiee.fr/
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 > 
 > 
 
