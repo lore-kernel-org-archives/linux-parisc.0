@@ -1,33 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA14246
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Sep 1999 22:26:00 -0600
-Message-Id: <199909220426.VAA27105@milano.cup.hp.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-cc: Parisc Linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Questions understanding exec_kernel 
-In-reply-to: Your message of "Tue, 21 Sep 1999 19:12:06 PDT."
-             <37E82CE6.3A5DFFB0@uswest.net>
-Date: Tue, 21 Sep 1999 21:26:50 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA14663
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Sep 1999 00:43:45 -0600
+Received: from mgw-i1.ntc.nokia.com (mgw-i1.ntc.nokia.com [131.228.118.60])
+	by mgw-x1.nokia.com (8.9.3/8.9.3) with ESMTP id JAA23028
+	for <parisc-linux@thepuffingroup.com>; Wed, 22 Sep 1999 09:45:54 +0300 (EETDST)
+Received: from stybba.ntc.nokia.com (stybba.ntc.nokia.com [131.228.178.21])
+	by mgw-i1.ntc.nokia.com (8.9.3/8.9.3) with ESMTP id JAA22673
+	for <parisc-linux@thepuffingroup.com>; Wed, 22 Sep 1999 09:45:54 +0300 (EETDST)
+Received: from gamgee.ntc.nokia.com (martikka@gamgee [131.228.178.130])
+	by stybba.ntc.nokia.com (8.9.1a/8.9.1/Goodi) with ESMTP id JAA29078
+	for <parisc-linux@thepuffingroup.com>; Wed, 22 Sep 1999 09:45:52 +0300 (EET DST)
+Date: Wed, 22 Sep 1999 09:45:51 +0300 (EETDST)
+From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
+To: Parisc Linux <parisc-linux@thepuffingroup.com>
+In-Reply-To: <199909220426.VAA27105@milano.cup.hp.com>
+Message-ID: <Pine.HPX.4.05.9909220937120.2148-100000@gamgee.ntc.nokia.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Subject: [parisc-linux] C360 boot problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ryan Bradetich wrote:
->  [Question: Page 5-149 from the PA-RISC 1.1 Architecture and Instruction
-> Set Reference Manual states: "Level 0:  If the target control register
-> is CR 8, 9, 12, 13, 17, or 20, this instructin executes as a null
-> instruction."  I am assuming we are running at level 0 since the rfi
-> command required running at level 0, so what is the difference between a
-> null instruction and a nop?]
+Hi!
 
-That's an easy one:
-Nullfied instructions are simple ignored - output discarded.
-Branch  instructions have a "nullify" flag - the PA1.1 book
-probably talks more about details here.
+I downloaded the latest kernel(+ramdisk) from CVS and tried it on my C360.
+It does not print anything on screen but just blinks the leds. Here's what
+it looks like:
 
-NOP is an instruction which is executed but does nothing useful.
-(eg OR  R0, R0, R0) Often used to get precise timing in a loop
-or patch out unwanted instructions for self modifing code.
+Leds:	1234
+	II
+	I  I
+	I I 
+and then from the begining...
 
-Someone else will have to tackle the RFI question....
+I guess it is trying to tell me something, but what?
 
-grant
+- Goodi
+"The linuX Files -- The Source is Out There."
+ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
