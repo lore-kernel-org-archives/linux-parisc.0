@@ -1,48 +1,74 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id DAA25223
-	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 03:13:56 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA24625;
-	Sun, 28 Jan 2001 21:15:57 +1100
-Date: Sun, 28 Jan 2001 21:15:57 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA01366
+	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 14:55:41 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel2.hp.com (Postfix) with ESMTP id 1F199E3A
+	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 16:59:42 -0500 (EST)
+Date: Sun, 28 Jan 2001 14:58:27 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200101282158.OAA09549@udlkern.fc.hp.com>
+To: alan@linuxcare.com.au, parisc-linux@puffin.external.hp.com
 Subject: Re: [parisc-linux] Usage of __attribute__?
-In-Reply-To: <200101270948.CAA00365@udlkern.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0101282110510.24446-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 27 Jan 2001, John Marvin wrote:
+Alan Modra wrote:
+>   I don't see this behaviour.  I tried
+>
+> typedef int _lt_spinlock_t __attribute__ ((aligned (16)));
+> int a;
+> int b;
+> _lt_spinlock_t c;
+> int d;
+>
+> and got
+>
+>         .comm   a,4,4
+>         .comm   b,4,4
+>         .comm   c,4,16
+>         .comm   d,4,4
+>
+> ie. as expected.  Can you post a testcase and version of gcc you used?
 
-> If I directly declare the type as follows:
-> 
->     typedef int _lt_spinlock_t __attribute__((aligned(16)));
-> 
-> then EVERY int that follows has the aligned 16 attribute, e.g. just
-> declaring "int tmp;" gives tmp a 16 byte alignment. So, is that what
-> you would expect from my above declaration?
+OK, I was just writing a test case on my pc and hadn't bothered to test it
+on hppa. The compiler on my PC was version 2.95.2. The problem doesn't
+exist on my native hppa gcc, which is version 2.96. So, although it is
+possible that the bug might be 386 only, most likely the bug was machine
+independent and was fixed between 2.95.2 and 2.96. I guess I just
+don't expect to see many compiler bugs on 386, since it has a lot more
+exposure.
 
-Hi John,
-  I don't see this behaviour.  I tried
+Here's the test case:
 
-typedef int _lt_spinlock_t __attribute__ ((aligned (16)));
-int a;
-int b;
-_lt_spinlock_t c;
-int d;
+typedef int _lt_spinlock_t __attribute__((aligned(16)));
 
-and got
+struct test
+{
+	int i1;
+	int i2;
+	int i3;
+	int i4;
+};
 
-	.comm	a,4,4
-	.comm	b,4,4
-	.comm	c,4,16
-	.comm	d,4,4
+main()
+{
+	struct test foo;
 
-ie. as expected.  Can you post a testcase and version of gcc you used?
+	printf("sizeof struct test %d offsets %d %d %d %d\n",
+		sizeof(struct test),
+		(unsigned long)&foo.i1 - (unsigned long)&foo,
+		(unsigned long)&foo.i2 - (unsigned long)&foo,
+		(unsigned long)&foo.i3 - (unsigned long)&foo,
+		(unsigned long)&foo.i4 - (unsigned long)&foo);
+}
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+
+GCC Version 2.95.2 -- Native i386 linux result:
+    sizeof struct test 64 offsets 0 16 32 48
+
+GCC Version 2.96 -- Native hppa linux result:
+    sizeof struct test 16 offsets 0 4 8 12
+
+
+John
