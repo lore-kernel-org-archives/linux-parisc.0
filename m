@@ -1,17 +1,17 @@
-From: "Michael S. Zick" <mszick@wolfbutter.com>
-Subject: Re: copy_user_page_asm suggested 64bit improvment [Was:
-	[parisc-linux] clear user page test]
-Date: Fri, 31 Dec 2004 17:56:46 -0600
-Message-ID: <200412311756.46417.mszick@wolfbutter.com>
-References: <418A80E8000124B5@mail-6-bnl.tiscali.it>
-	<200412311535.28359.mszick@wolfbutter.com>
-	<20041231225447.GC23592@colo.lackof.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [parisc-linux] [2.6 patch] i386/x86_64/parisc process.c: make
+	hlt_counter static
+Date: Mon, 6 Dec 2004 01:41:39 +0100
+Message-ID: <20041206004139.GL2953__36099.6159179651$1416624507$gmane$org@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-2022-jp"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: discuss@x86-64.org,
+ parisc-linux@parisc-linux.org,
+ ak@suse.de,
+ matthew@wil.cx
+To: linux-kernel@vger.kernel.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041231225447.GC23592@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,67 +22,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri December 31 2004 16:54, Grant Grundler wrote:
-> On Fri, Dec 31, 2004 at 03:35:28PM -0600, Michael S. Zick wrote:
-> > I tried the 'patch that works' route with a similar suggestion for sched.c
-> > Based on that experience...
-> 
-> ah good. You learned something. :^)
->
-Sometimes.
+The patch below makes a needlessly global variable static.
 
-> 
-> > What I proposed was:
-> > The memory page free pool be defined as a 'virtual device' with
-> > a two part driver.
-> ...
-> > In this virtual free pool device, the kernel is the 'client' and the
-> > daemon is the 'host' (which only happens to be part of the kernel).
-> > Only the 'client' code is in the user's execution path.
-> 
-> This sounds neat and "clean". But things could get very ugly
-> when one needs to "steal" zero'd pages for other uses.
-> 
-> > Should be interesting to consider.
-> 
-> Yes, Agreed.
->
-Better the discussion first - code optionally later.
 
-> 
-> > I wouldn't expect the idea to be adopted any quicker than my
-> > description (and patch that works) that the scheduler should be
-> > a virtual device with a two part driver.
-> 
-> I don't know what happened to your scheduler idea specifically (or
-> how it was presented), but making something a driver means
-> giving up something else. Been there done that.
-> 
-Overly radical at the time of presentation compared with 
-other 'work in progress'.
+diffstat output:
+ arch/i386/kernel/process.c   |    2 +-
+ arch/parisc/kernel/process.c |    2 +-
+ arch/x86_64/kernel/process.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Managing the free page pool (only) as a virtual device would lead
-to much-oh (scientific term ;) glue code.  Not much of an improvement
-over current practice.
-Managing over-all memory resources as a virtual device is the answer;
-but that is hardly a 'patch'.
 
-Even so, glue code would be required unless the resource of 
-cpu-cycles was also managed as a virtual device.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Now the topic is definitely out of the 'patch' scope, providing both
-virtual devices would need to be a kernel branch devoted to the
-project.
+--- linux-2.6.10-rc2-mm4-full/arch/i386/kernel/process.c.old	2004-12-06 01:25:27.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/arch/i386/kernel/process.c	2004-12-06 01:25:38.000000000 +0100
+@@ -60,7 +60,7 @@
+ 
+ asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
+ 
+-int hlt_counter;
++static int hlt_counter;
+ 
+ unsigned long boot_option_idle_override = 0;
+ EXPORT_SYMBOL(boot_option_idle_override);
+--- linux-2.6.10-rc2-mm4-full/arch/parisc/kernel/process.c.old	2004-12-06 01:25:55.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/arch/parisc/kernel/process.c	2004-12-06 01:26:01.000000000 +0100
+@@ -54,7 +54,7 @@
+ #include <asm/uaccess.h>
+ #include <asm/unwind.h>
+ 
+-int hlt_counter;
++static int hlt_counter;
+ 
+ /*
+  * Power off function, if any
+--- linux-2.6.10-rc2-mm4-full/arch/x86_64/kernel/process.c.old	2004-12-06 01:26:17.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/arch/x86_64/kernel/process.c	2004-12-06 01:26:28.000000000 +0100
+@@ -53,7 +53,7 @@
+ 
+ unsigned long kernel_thread_flags = CLONE_VM | CLONE_UNTRACED;
+ 
+-atomic_t hlt_counter = ATOMIC_INIT(0);
++static atomic_t hlt_counter = ATOMIC_INIT(0);
+ 
+ unsigned long boot_option_idle_override = 0;
+ EXPORT_SYMBOL(boot_option_idle_override);
 
-That in turn would require that a whole lot of people 'get on board'
-with the ideas behind the design change.
-
-The only practical means to accomplish that brings us full circle
-back to the observation above: "Discussion First".
-
-Mike
-(PS: None of this is academic, just a clean re-write of code
-written in the past for proprietary operating systems.)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
