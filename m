@@ -1,33 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04941
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 18:56:16 -0700
-Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id TAA19988 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 19:51:04 -0500 (EST)
-Date: Tue, 8 Feb 2000 19:51:04 -0500 (EST)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA05062
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 19:04:02 -0700
+Date: Tue, 8 Feb 2000 19:59:52 -0500 (EST)
 From: Michael Ang <mang@subcarrier.org>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.BSF.4.10.10002081938400.11091-100000@cuzea.pair.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <20000209014127.C2377@alpha.franken.de>
+Message-ID: <Pine.BSF.4.10.10002081956030.11091-100000@cuzea.pair.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] cvs tricks
+Subject: [parisc-linux] Merge status
 List-ID: <linux-parisc.vger.kernel.org>
 
-Updating
-update to latest working version, get newly add dirs
-  cvs up -Ad
-get linus' 2.3.42 version of a file
-  cvs up -rlinus2342 somefile
-  (need to do "cvs up -A" to get back to latest version)
+Merging has been painful, as is often the case.  Thanks to everyone for
+helping out and being patient.
 
-Diffs
-between current version and linus2342
-  cvs di -rlinus2342
-our changes
-  cvs di -r1.1 -rLINUS_2342_PREMERGE
-linus' changes from 2.3.29 to 2.3.42
-  cvs di -rlinus2329 -rlinus2342
-changes we've made since checking in 2.3.42 sources to tip
-  cvs di -rLINUS_2342_FIXUP_START -rHEAD
+We still need to manually merge drivers/block/rd.c and fix some problems
+with unresolved symbols.  Hopefully we can finish up merging tommorrow.
 
-Merging
-merge in linus' changes
-  cvs up -jrlinus2329 -jlinus2342
+	- Mike.
+
+On Wed, 9 Feb 2000, Thomas Bogendoerfer wrote:
+> > `drivers/block/rd.c'
+> 
+> so far that's the only one in my tree, which is left. To get a kernel
+> compiled, I've just used the 2.3.42 version of that file (haven't commited
+> it yet). I can't say whether it works, because I'm now at the point, where 
+> I get unresolved symbols:
+> 
+> ld: Unsatisfied symbols:
+>    init_ext2_fs (code)
+>    up_read (code)
+>    uts_sem (data)
+>    get_task_struct (code)
+>    up_write (code)
+>    pcibios_enable_device (code)
+>    down_write (code)
+>    down_read (code)
