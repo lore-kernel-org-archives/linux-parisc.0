@@ -1,34 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 34BED482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 10:19:00 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: John Marvin <jsm@udlkern.fc.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PCXS fixes
-Date: Thu, 18 Oct 2001 11:17:11 -0500
-References: <200110030832.CAA10917@udlkern.fc.hp.com>
-In-Reply-To: <200110030832.CAA10917@udlkern.fc.hp.com>
-Cc: Albert Strasheim <fullung@ilink.nis.za>
-MIME-Version: 1.0
-Message-Id: <01101811171100.00835@Wolf-01>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3D8CD482A
+	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 11:35:59 -0600 (MDT)
+Message-Id: <200110181732.LAA02640@puffin.external.hp.com>
+To: Richard Allen <ra@hp.is>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] More on the B2000 
+In-Reply-To: Message from Richard Allen <ra@hp.is>
+   of "Thu, 18 Oct 2001 14:24:59 -0000." <20011018142459.S8089@hp.is>
+Date: Thu, 18 Oct 2001 11:32:30 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wednesday 03 October 2001 03:32 am, John Marvin wrote:
-> ... Note that
-> although ldcw requires 16 byte alignment for correct function, it does
-> not cause an unaligned fault if the address is not aligned, it just
-> doesn't work correctly!
->
-> Here are some suggested fixes:
->     1)  ...
->     2)  ...
->
-John, Albert and Group;
+Richard Allen wrote:
+> I managed to install a B2000 from the 0.92 ISO.    The trick
+> is to connect a serial console, open the box and disconnect the
+> IDE cdrom drive, install a SCSI card and plug in a external
+> SCSI cdrom drive.
 
-I am working on a generalized solution as suggestion #3.  Diffs to follow RSN 
-- as soon as I finish the coding and Albert gets it to run.
+Ah - excellent idea.
+I'm helping get IDE-CDOM working and I have also started work on
+getting the built-in narrow scsi working (sym53c8xx driver needs
+to make a PDC GET_INITIATOR call).
 
-Mike
+> I attempted to compile todats kernel on the machine and I did it as
+> Im used to do (make oldconfig, make dep, make palo)
+> That kernel refuses to boot:
+
+To debug problems like this, enable EARLY_BOOTUP_DEBUG in
+arch/parisc/kernel/pdc_cons.c.  We also need you to keep the matching
+System.map and look up where IOAQ and GR02 point to in the kernel.
+Use "build-tools/a.c" to help do the look ups.
+
+I've copied kernels for c3k (32-bit) and a500 (64-bit) to my ftp server.
+I've stripped out stuff neither needs from their respective .config:
+	ftp://gsyprf10.external.hp.com/pub/a500
+and
+	ftp://gsyprf10.external.hp.com/pub/c3000
+
+DISCLAIMER: I don't guarantee these kernels will work for anyone for any
+purpose or that they are "clean" builds (ie may have custom changes).
+Just providing them as a convience.
+
+If something is missing from the respective .config that you think
+I should include, feel free to ask for it. I might include it. ;^)
+
+...
+> The LCD is also Nice :)   It reads:
+> 
+> FLT CBFB4.9-pa57
+> 785/B2000
+
+CBFB is the "chassis code" for the fault.
+Don't recall what that means but it's documented someplace.
+
+The "785/B2000" is written by firmware.
+Kudos to Helge/Randolph for the code that writes the top line.
+It is cool!
+
+grant
