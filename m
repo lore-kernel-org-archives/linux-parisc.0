@@ -1,34 +1,44 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA01392
-	for <parisc-linux@puffin.external.hp.com>; Sun, 24 Oct 1999 20:54:39 -0600
-Received: from vodka.thepuffingroup.com (IDENT:adevries@vodka.thepuffingroup.com [192.168.1.1])
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id XAA22190
-	for <parisc-linux@thepuffingroup.com>; Sun, 24 Oct 1999 23:01:57 -0400
-Date: Sun, 24 Oct 1999 23:01:57 -0400 (EDT)
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA02169
+	for <parisc-linux@puffin.external.hp.com>; Mon, 25 Oct 1999 00:47:29 -0600
+Received: from scimitar.dolphinics.no (scimitar.dolphinics.no [193.71.152.129])
+	by scifi.dolphinics.no (8.9.3/8.9.3) with ESMTP id HAA23741
+	for <parisc-linux@thepuffingroup.com>; Mon, 25 Oct 1999 07:57:52 +0200
+Received: from scimen (scimen [193.71.152.165])
+	by scimitar.dolphinics.no (8.8.8/8.8.8) with SMTP id HAA09606
+	for <parisc-linux@thepuffingroup.com>; Mon, 25 Oct 1999 07:11:23 +0100 (MET)
+Message-Id: <199910250611.HAA09606@scimitar.dolphinics.no>
+From: "Simen Timian Thoresen" <simentt@dolphinics.no>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9910242258310.22118-100000@vodka.thepuffingroup.com>
+Date: Mon, 25 Oct 1999 08:16:42 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] keyboards and such.
+Content-type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] rbooting an 735? 
+References: <199910221500.IAA00520@milano.cup.hp.com>
+In-reply-to: <Pine.LNX.4.10.9910241852350.21645-100000@vodka.thepuffingroup.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> On Fri, 22 Oct 1999, Grant Grundler wrote:
+> > I don't know what the rbootd problem is...
+> 
+> Actually, I seem to recall patching up the rbootd rpm to support this, but
+> I don't remember the fix.  If you look at the rbootd source rpm that's up
+> on ftp://puffin.external.hp.com you should find the patch.
+> 
+> - alex
 
-So, I've spent some time looking at the keyboard device driver in the
-Linux kernel, and it really wants there to be an 8042 PS/2 controller,
-which just doesn't exist on the Lasi.
+ftp://puffin.external.hp.com/pub/parisc/binaries/SRPMS/rbootd-2.0-2.src.rpm
 
-This means that I can speak directly to the keyboard, which shouldn't be
-too difficult to whip up a driver if I had the docs on how to speak to the
-keyboard.
+GREAT!
+That seems as if it should work!
+I'll try it when I get home tonight.
 
-Does anyone have docs on how to speak to a standard AT or PS/2 keyboard?
-The Black Puffin of Death will haunt you if you point me to 8042
-controller docs.
+Shouldn't this change be back-propagated to the original rbootd 
+maintaners? 
 
-- Alex
+-Simen
+--
+Simen Thoresen, Beowulf-cleaner and random artist.
 
--- 
-Alex deVries <adevries@thepuffingroup.com>
-Vice President Engineering
-The Puffin Group
+Er det ikke rart?
+The gnu RART-project on valinor.dolphinics.no/~simentt/rart
