@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rediffmail920.com (node-d-58eb.a2000.nl [62.195.88.235])
-	by dsl2.external.hp.com (Postfix) with SMTP id B19894841
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 17:13:26 -0600 (MDT)
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5094B48CB
+	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 19:04:04 -0600 (MDT)
+Received: from rediffmail1449.com (node-d-58eb.a2000.nl [62.195.88.235])
+	by cuprel1.hp.com (Postfix) with SMTP id 97FC3A61
+	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 18:03:57 -0700 (PDT)
 From: Mrs Serena Jones <serenajones1@rediffmail.com>
-To: parisc-linux@lists.parisc-linux.org
+To: parisc-linux@parisc-linux.org
 Reply-To: serenajones1@rediffmail.com
-Date: Thu, 23 Oct 2003 01:13:28 +0200
+Date: Thu, 23 Oct 2003 03:04:03 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="a9077c9f-3c3a-417e-9dcf-b39e5485f476"
-Message-Id: <20031022231326.B19894841@dsl2.external.hp.com>
+Content-Type: multipart/mixed; boundary="f5e0ae90-cc78-49ee-aa38-d1f79062196c"
+Message-Id: <20031023010357.97FC3A61@cuprel1.hp.com>
 Subject: [parisc-linux] DONATION FOR THE LORD.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -22,7 +25,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format
---a9077c9f-3c3a-417e-9dcf-b39e5485f476
+--f5e0ae90-cc78-49ee-aa38-d1f79062196c
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
@@ -89,4 +92,4 @@ Yours in Christ,
 Mrs Serena Jones
 
   
---a9077c9f-3c3a-417e-9dcf-b39e5485f476--
+--f5e0ae90-cc78-49ee-aa38-d1f79062196c--
