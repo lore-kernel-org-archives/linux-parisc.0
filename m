@@ -1,15 +1,12 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Re: [PATCH] linuxthreads for hppa (1/3)
-Date: Wed, 15 Oct 2003 14:33:29 -0400
-Message-ID: <20031015183329.GG31385__1636.53321001238$1416622879$gmane$org@systemhalted>
-References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com> <20031015054045.GE22495@systemhalted> <3F8CE195.2090106@redhat.com> <20031015142648.GF22495@systemhalted> <3F8D85B9.8090504@redhat.com>
+Subject: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
+Date: Fri, 17 Oct 2003 14:09:12 -0400
+Message-ID: <20031017180912.GD27289__17643.6038142585$1416622882$gmane$org@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: libc-alpha <libc-alpha@sources.redhat.com>,
-	parisc-linux@lists.parisc-linux.org
-To: Ulrich Drepper <drepper@redhat.com>
+Cc: debian-hppa@lists.debian.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3F8D85B9.8090504@redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,39 +17,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Oct 15, 2003 at 10:36:57AM -0700, Ulrich Drepper wrote:
-> > How do you propose it be handled? All arches define __LT_SPINLOCK_INIT
-> 
-> I'm talking about this __LOCK_INITIALIZER -> __LOCK_ALT_INITIALIZER
-> change.  Why do you claim the right to rename the symbol?
+parisc-linux,
+debian-hppa,
 
-The original __LOCK_INITIALIZER did not have a cast 
-to (int).
+--- CALLING ALL TESTERS! ---
 
-The new __LOCK_INITIALIZER does not have a cast to 
-(struct _pthread_fastlock)
+glibc 2.3.2 is complete for HPPA. We've gotten rid of the following
+long standing test-suite errors (bug-iconv3, and test-fenv).
 
-When using a structure in an assignment within a function the named
-initializer version is required, such that the constructor can setup the
-object. Instead of using __LOCK_INITIALIZER which is already expected to
-be of a certain type without a cast, I created __LOCK_ALT_INITIALIZER
-and made 2 changes instead of the 6 or more that would be required had I
-reversed the semantics.
+The regressions in 2.3.2 were caused by incorrect handling of the PIC
+register by the kernel, but fixed in glibc. Most cases for our stack
+were handled incorrectly (stack grows up cases), but are fixed in this
+release.
 
-The same logic applied when I defined __LT_SPINLOCK_ALT_INIT. In order
-to minimize changes the default behaviour is to use the named init, the ALT
-behaviour does not. The ALT case is hidden inside
-__pthread_lock_define_initialized and cannot use a cast.
+ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-16/
 
-Should you like, I could reverse the behaviour of the above
-__LOCK_ALT_INITIALIZER, but I would have to make changes to initspin.h
-and pthread.h so the initialization macros work.
+Download all the debs and install with:
 
-My net is currently down and I cannot verify if initspin.h and pthread.h
-are the only files that would require changes.
+dpkg -i libc6_*.deb
+(Followed by dpkg -i of the rest in any order, libc6 must install first) 
 
-In summary I chose the semantics to _minimize_ code change. If you
-prefer header changes over core .c file changes then I can reverse the
-semantics of __LOCK_INITIALIZER with that of the ALT version.
+Please do this only if you consider yourself a well seasoned linux-type
+person. If that dpkg install fails for any reason you might be in
+trouble. I'm running these debs on all my boxes, and I've tested in a
+chroot, rebuilt our toolchain, and ran lmbench, gnome-session, nautilus,
+and abi-word.
+
+http://www.baldric.uwo.ca/~carlos/a500-gnome-abiword.png
+
+Thanks go out to everyone for all the moral support and fun! 
+
+--- TEST IT AND REPORT BACK ... PLEASE! :) ---
+
+== DISCLAIMER ===
+I do not guarantee that these debs won't cause your computer to explode
+like a pineapple grenade, showering shrapnel and fiery death on all your
+loved ones.
+== DISCLAIMER ===
 
 c.
