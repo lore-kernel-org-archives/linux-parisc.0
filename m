@@ -1,95 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30971482A
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 15:58:54 -0600 (MDT)
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by atlrel7.hp.com (Postfix) with ESMTP id 6B89B1F7D3
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 17:58:21 -0400 (EDT)
-Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
-	by hpfcla.fc.hp.com (8.9.3 (PHNE_22672)/8.9.3 SMKit7.01) with ESMTP id PAA27216
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 15:58:52 -0600 (MDT)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.22 #1 (Debian))
-	id 15KoTz-00060v-00
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 15:58:51 -0600
-To: parisc-linux@parisc-linux.org
-Date: Thu, 12 Jul 2001 15:58:51 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E15KoTz-00060v-00@noam.fc.hp.com>
-Subject: [parisc-linux] CVS palinux 2.4/2.5/workarounds proposal
+Received: from amanda.ybsoft.com (lametoby.ybsoft.com [63.224.241.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 698E5482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 20:09:24 -0600 (MDT)
+Date: Thu, 12 Jul 2001 20:09:21 -0600
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240
+Message-ID: <20010712200921.A29444@beavis.ybsoft.com>
+Reply-To: rbradetich@uswest.net
+References: <200107120523.XAA09209@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200107120523.XAA09209@puffin.external.hp.com>
+From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Due to CVS bugs and the upcoming extra demands as we cope with both
-2.4 and 2.5 linux, I propose the following architecture including
-a sketch for how to transition.
+On Wed, Jul 11, 2001 at 11:23:34PM -0600, Grant Grundler wrote:
+> Richard Hirst wrote:
+> > Installing a 64 bit kernel with narrow PDC
+> > calls later would be an option (once it works).  Do we leave building
+> > that kernel as an exercise for the user, or or do we have one packaged
+> > in the archive?
+> 
+> I was under the impression the "CONFIG_PDC_NARROW" option would only
+> "activate" itself in one boxes that needed it. Ie it does grow the kernel
+> and AFAIK is really only useful for Cxxx models.
+> Ryan, do I have it right?
 
-In futureworld, we will have 4 branches:
+Not quite.  Let me try to clarify (This is the help text for the 
+CONFIG_PDC_NARROW option)....
 
-What				Branch Name
+CONFIG_PDC_NARROW
+  Saying Y here will allow developers with a C180, C200, C240, C360,
+  J200, J210, and/or a J2240 to test 64-bit kernels by providing 
+  a wrapper for the 32-bit PDC calls.  Since the machines which 
+  which require this option do not support over 4G of RAM, this
+  option is targeted for developers of these machines wishing to
+  test changes on both 32-bit and 64-bit configurations.
 
-upstream 2.4 sources		linus23 (also called linus24)
-2.4 parisc development		devel23 (also called devel24)
+  If unsure, say N.
 
-upstream 2.5/2.6 sources	linus25 (also called linus26 later)
-2.5/2.6 parisc development	devel25 (also called devel26 later)
+At one time I had run-time detection to detect if the machine was 
+booted into wide mode it could detect if the pdc wrappers were needed.
+After some discussion, we decided to make it a compiler option since
+it added overhead to every pdc call and would rarely be used.
 
-The default branch which comes from CVS if you merely do a 'cvs co linux'
-will be the devel23 branch.  Revision numbers in the devel23 branch
-will be 2.3.X.X and in the devel25 branch, 2.5.X.X.  The HEAD/trunk
-will contain no files and never be used again.  Note that the CVS features
-for making this as convenient as today's development model are simple
-and will not in general incur extra work.
+If the help text for this option needs to be clarified, please send
+me your comments and I'll update the help text. :)
 
-Transition sketch:
+Thanks,
 
-    Populate the linus23 upstream branch:
-	# The current Linus upstream branch is called 'linus', or 1.1.1,
-	# which we'll just re-use under a new name(s)
-	cvs co -rlinus linux
-	# Add the alias 'linus23'
-	cvs admin -nlinus23:linus
-	# Add the alias 'linus24'
-	cvs admin -nlinus24:linus
+- Ryan
 
-    Populate the devel23 branch:
-        cvs up -RAPd
-	cvs commit -r2.3
-	cvs rtag -r2.3 -b devel23 linux
-	cvs admin -ndevel24:devel23
-	cvs up -rdevel23 -RPd
-	# do not use commit -Rf -- doesn't work
-	cvs commit -f -m'moved from HEAD' -R
+> I am pretty sure K/D/R-class boxes have a different source base for PDC
+> which "properly" support wide-mode PDC calls.
+> 
+> thanks,
+> grant
+> 
+> Grant Grundler
+> parisc-linux {PCI|IOMMU|SMP} hacker
+> +1.408.447.7253
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
 
-    Make devel23 the default:
-    	cvs admin -b2.3.2 (or cvs admin -bdevel23 if that works)
-
-    Nuke the current trunk:
-	cvs up -RAPd
-        find . | fgrep -v CVS | xargs cvs rm -f
-	cvs commit -m'moved everything to the devel23 branch'
-	cvs up -RAPd # should be empty directory now
-
-    Fix:
-    	the /cvs CGI
-	cvsview?
-	bonsai
-	others?
-
-    Populate linus25 when 2.5 is released (trickery):
-	cvs rtag -r1.1 -b linus25 linux
-	cvs up -r1.1		# yes, this is required :-(
-        cvs up -rlinus25
-	Turn these files into linux 2.5 bits (cvs rm, cvs add, etc...)
-	cvs commit -f -m 'import 2.5' -R
-
-    Populate devel25 (more trickery):
-	cvs up -RPd -r2.5	# should be EMPTY
-	# bring in 2.3 devel
-	cvs up -jdevel23 -RPd
-	# Merge 2.4->2.5 changes
-	cvs up -jlinus23 -jlinus25 -RPd
-	cvs commit -f -R -m 'populate devel25 step 1'
-	cvs rtag -r2.5 -b devel25 linux
-	cvs up -rdevel25 -RPd
-	cvs admin -ndevel26:devel25
+-- 
