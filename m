@@ -1,34 +1,21 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA00655
-	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Apr 2000 18:47:14 -0600
-Received: from cln.etc.bc.ca (vrarvs@24.65.187.232.bc.wave.home.com [24.65.187.232])
-	by learn.etc.bc.ca (8.9.3/8.9.3) with ESMTP id RAA24825
-	for <parisc-linux@thepuffingroup.com>; Mon, 3 Apr 2000 17:45:36 -0700 (PDT)
-Message-ID: <38E93E24.A09E13B@cln.etc.bc.ca>
-Date: Mon, 03 Apr 2000 17:58:12 -0700
-From: Steve Shack <sshack@cln.etc.bc.ca>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA02340
+	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Apr 2000 22:44:44 -0600
+Received: from flow4 (flow4.flow.north.net [198.52.32.250])
+	by 24.112.191.14 (8.9.3/8.9.3) with SMTP id AAA06742
+	for <parisc-linux@thepuffingroup.com>; Tue, 4 Apr 2000 00:44:42 -0400
+Message-Id: <1.5.4.32.20000404044442.006e12cc@pop3.sprint.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Tue, 04 Apr 2000 00:44:42 -0400
 To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Nextstep artist driver/artist stuff.
+From: Tomasz Korycki <tkorycki@sprint.ca>
+Subject: Re: [parisc-linux] some hardware...
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello everyone,
-    I've recently gone on a small mission and installed NEXTSTEP on my
-712. The mission was to A) have a nice usable OS on this system since
-hp-ux leaves a lot to be desired and B) Hack at the artist driver. From
-what i've learned so far in my all of one day with it is that the driver
-for linux and the driver for nextstep are very similar.
-So much so that they both have setup routines called in the same sort of
-context. Both have supported mode lists in the same way and both operate
-as framebuffers. This is a good thing.
-
-    My question is to anyone reading the mailing list: Does anyone have
-any information on nextsteps fb, fb artist driver or the artist board at
-all. I've gathered some information but I can always use more. prumpf
-has gotten a driver working in 1bpp. But i'd like to get more working...
-
-
-
-Thanks
-Steve Shack
+  I just saw a bunch of 712/80+64MB+1GB+VRAM + (some) floppy. I think I can
+get them fairly cheap. Anybody interested? Obviously I can haggle lower if I
+buy more. Now, even if someone is, I will not take it as commitment, since I
+didn't give the price yet. So, just let me know if You'd like to know the price.
+  Also, since it doesn't really concern the linux port, answer by email,
+lets not clog the wires too much...
