@@ -1,64 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflash.com (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4111F482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Jun 2001 09:48:33 -0600 (MDT)
-From: Michael S.Zick <mszick@pflash.com>
+Received: from leo.uni-sw.gwdg.de (leo.uni-sw.gwdg.de [134.76.205.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 403CB482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Jun 2001 11:29:20 -0600 (MDT)
+Date: Fri, 8 Jun 2001 19:28:51 +0200 (CEST)
+From: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
 To: Richard Hirst <rhirst@linuxcare.com>
-Subject: Re: [parisc-linux] Apollo 735/99 hangs after booting from CDROM
-Date: Fri, 8 Jun 2001 10:41:08 -0500
-Content-Type: text/plain
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Mike Werneke <mikewerneke@hotmail.com>,
-	parisc-linux@lists.parisc-linux.org
-References: <20010608155249.T16532@linuxcare.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <20010608115550.J16532@linuxcare.com>
+Message-ID: <Pine.LNX.4.33.0106081924340.9668-100000@leo.uni-sw.gwdg.de>
 MIME-Version: 1.0
-Message-Id: <01060810451304.00472@wolf01.my.home>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Kernel faults on boot
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard
+On Fri, 8 Jun 2001, Richard Hirst wrote:
 
-Congrat's (early) -
+> On Wed, Jun 06, 2001 at 02:18:07PM -0700, E Frank Ball wrote:
+> > On Wed, Jun 06, 2001 at 02:02:12PM -0700, E Frank Ball wrote:
+> > }
+> > } I have a 712/80 and a graphics monitor (HP A1097C).  I got the base
+> > } system running from the palinux-0.9-32sti.iso CD.
+> >
+> > It had rebooted ok a couple of times, but now it get to starting cron,
+> > then register dumps with a kernel fault.
+>
+> As mentioned in the errata <http://parisc-linux.org/release-0.9/errata.html>,
+> sti installs have a tendency to crash on reboot at the moment.  If this is a
+> repeatable problem, I'd be interested in the register dump.
 
-You may have spotted the problem -
+Hi!
 
-There isn't any "CONFIG_FB_STI" in the config file shipped
-with V0.9 iso image.
+I have played with a 712/60 and had the same problem as Frank. I got
+it installed over the first reboot, but after a the next one on
+every reboot it crashed with Kernel faults at cron.
 
-Nor in any of the few CVS-Kernel tar-zips that I have checked.
+Now I have reinstalled and I do not get over the reboot. Is it
+explained somewhere, which I need to write down, to help you debug
+the problem? (I guess it doesn't make it into any logs, which I
+could look at by putting the disk on another machine.)
 
-Mike
-
-On Fri, 08 Jun 2001, Richard Hirst wrote:
-> On Fri, Jun 08, 2001 at 09:15:02AM -0500, Michael S . Zick wrote:
-> > Note to all -
-> >=20
-> > The problem exists (on my 720) WITHOUT the frame buffer code
-> > in the image.
->=20
-> Well, with CONFIG_STI_CONSOLE and CONFIG_FB_STI both unset your kernel
-> can't be hanging after "Console: colour dummy device 80x25", can it?
-> So at this point I don't think we know it is the same problem on
-> 735+sti as it is on your 720+serial.
->=20
-> Richard
->=20
-> > Mike
-> >=20
-> > On Thu, 07 Jun 2001, Thomas Bogendoerfer wrote:
-> > > On Thu, Jun 07, 2001 at 03:51:22AM -0000, Mike Werneke wrote:
-> > > > --snip
-> > > > CPU(s): 1 x PA7100 (PCX-T) at 99.000000 MHz
-> > > > Kernel command line: HOME=3D/ TERM=3Dlinux root=3D/dev/ram consol=
-e=3Dtty0 sti=3D0=20
-> > > > sti_font=3DVGA8x16
-> > > > Console: colour dummy device 80x25
-> > > > snip--
-> > > >=20
-> > > > and then hangs.  Could this be a bad iso image? Or is this a know=
-n issue?=20
-> > >=20
-> > > no, you are running the sti console kernel on a not supported frame=
- buffer.
-> > > Use the 32serial image.
-> > >=20
-> > > Thomas.
+Greetings,
+	Peter.
