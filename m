@@ -1,54 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflash.com (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 78692482A
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 12:07:52 -0600 (MDT)
-From: Michael S.Zick <mszick@pflash.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Date: Tue, 5 Jun 2001 12:56:29 -0500
-Content-Type: text/plain
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	debian-hppa@lists.debian.org, parisc-linux@thepuffingroup.com,
-	parisc-linux@parisc-linux.org
-References: <20010605185008.R7349@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Message-Id: <01060513071704.00472@wolf01.my.home>
-Subject: [parisc-linux] Re: pa-risc V0.9 on Model 720 (+ others)
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 984E9482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 13:07:42 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 157MAq-0001gJ-00; Tue, 05 Jun 2001 20:07:28 +0100
+Date: Tue, 5 Jun 2001 20:07:28 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Chuck Slivkoff <charles_slivkoff@hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Forcing PA-Linux to swap / do_page_fault()
+Message-ID: <20010605200728.S7349@parcelfarce.linux.theplanet.co.uk>
+References: <3B180D83.F5479D0B@hp.com> <3B1D1D56.14424ACA@hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3B1D1D56.14424ACA@hp.com>; from charles_slivkoff@hp.com on Tue, Jun 05, 2001 at 01:56:38PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 05 Jun 2001, Matthew Wilcox wrote:
-> On Tue, Jun 05, 2001 at 11:36:37AM -0500, Michael S. Zick wrote:
-> > Without either BA's defined - in/out Byte, Word, Long does not have
-> > a prototype in mem.c (amoung other places) - the compiler guesses
-> > (incorrectly) at what inb() and outb() mean.
->=20
-> That's a known-bad configuration.  You have to have some kind of PCI
-> or EISA controller configured in.
+On Tue, Jun 05, 2001 at 01:56:38PM -0400, Chuck Slivkoff wrote:
+> I've noticed a problem that I believe is might be related to the kernel
+> not being able to use swap space.  I've never seen swap utilization > 0
+> and suspect that something might be seriously wrong. Here's an example
+> of the kernel error:
 
-Only if you intend to never support non-PCI, non-EISA older boxes.
+Hmm... none of my systems are using swap either; I had noticed this before,
+but never really thought much of it.  This has to be a moderately recent
+breakage because I know jsm has tested swapping.
 
-Regardless of your intent - proper combinations of CONFIG_xxxxx
-are supposed to be handled by the (x)config step of the build process.
-After all - that is what "configure" means (in English).
+> Does anyone have a good example of test to force the system to use swap?
 
-To do a clean job of this - a selection of "Box Model" (similar to "Proce=
-ssor Type")
-may have to be added to the configuration scripts.  With corresponding #i=
-fdef/#ifndef
-statements in the relavent code.
+Sure.  malloc 256MB, then dirty each page.
 
-At the moment - I have tunnel vision - I am focused on getting a personal=
- copy
-of parisc-linux to boot on my model 720 box.
-
-The comments and findings I post to the mailing lists may be freely disre=
-garded
-by anyone not interested them.  Still, they will exist in the mail list a=
-rchives so that
-any developer working on a public version of this kernel can use them for=
- hints, leads
-and other ideas.
-
-Mike
->=20
-> --=20
-> Revolutions do not require corporate support.
+-- 
+Revolutions do not require corporate support.
