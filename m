@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92955482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Apr 2002 10:24:20 -0700 (MST)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1017854653.3cab3abdab486@webmail.tiscalinet.be>
-Date: Wed, 03 Apr 2002 19:24:13 +0200 (CEST)
-From: joel.soete@freebel.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] "unaligned access to ... at ip=..." problem with evms and jfs
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F277A482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Apr 2002 11:13:50 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tpoimaaa for parisc-linux@lists.parisc-linux.org; Wed, 3 Apr 2002 11:12:53 -0700
+Date: Wed, 3 Apr 2002 10:13:37 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem with evms and jfs
+Message-ID: <20020403181337.GA3759@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1017854653.3cab3abdab486@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1017854653.3cab3abdab486@webmail.tiscalinet.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,26 +25,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+> It seems harmless but not sure.
 
-Thoses problems are not linked but similar by nature:
+well.... in general this is not a problem, however....
 
-with evms-1.0.0, I still got thousand of messages:
-Apr  3 19:05:48 palinux kernel: evms_lvdisplay(900): unaligned access to
-0x0002461e at ip=0x40208b53
+Fleedwood found a bug in the unaligned handler last week. it doesn't
+handle the pre/post increment cases of load and store, and there may be
+some cases where these messages will indicate the cause of errors.
 
-and with jfs-1.0.17:
-Apr  3 19:11:24 palinux kernel: fsck.jfs(1483): unaligned access to 0xbff00717
-at ip=0x0002eb3f
+I'll look into fixing this, but it might take some time.
 
-It seems harmless but not sure.
+> I query the ml db and found similar problems (and its solution :_) )(reiserfs:
+> http://lists.parisc-linux.org/hypermail/parisc-linux/5862.html), but I do not
+> very well understand what I have to find the sources (_u32* ?).
 
-I query the ml db and found similar problems (and its solution :_) )(reiserfs:
-http://lists.parisc-linux.org/hypermail/parisc-linux/5862.html), but I do not
-very well understand what I have to find the sources (_u32* ?).
+it depends, you need to make sure all the memory accesses happen on
+natural boundaries...  (e.g. int on 4 byte boundaries, short on 2 byte
+boundaries, etc). From the ip reported by the unaligned message you
+should be able to trace back to the asm insn and function (if your
+objects are not stripped) that is causing the unaligned access.
 
-Thanks in advance for additional help,
-    Joel
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
