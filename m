@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 26 Sep 2003 10:50:45 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] N Class SMP pb ?  (follow up)
-Message-ID: <20030926165045.GB11759@dsl2.external.hp.com>
-References: <3F704CAF00001DCF@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F704CAF00001DCF@ocpmta2.freegates.net>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4786D4856
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 11:15:38 -0600 (MDT)
+Date: Fri, 26 Sep 2003 19:15:29 +0200
+Subject: Re: [parisc-linux] kernel error message.
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v552)
+Cc: Randolph Chung <randolph@tausq.org>, mlist@zinkens.net,
+	parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <20030926164139.GA11759@dsl2.external.hp.com>
+Message-Id: <076D6328-F045-11D7-A569-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,38 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Sep 26, 2003 at 05:46:35PM +0200, Joel Soete wrote:
-> >It means either other CPU never got the interrupt (locked up
-> >with I-bit off) or the "unstarted_count" isn't coherent between the CPUs.
-> 
-> hmm how could I verify this hypothesis?
+http://pateam.esiee.fr/ has been running apache on 2.4.18-pa45 for=20
+years now
+(see http://uptime.netcraft.com/up/graph/?host=3Dmkhppa1.esiee.fr )
+and no problem have ever been experienced...
 
-TOC the machine, "ser pim" and look at PSW in TOC Info for each CPU.
-bit 0 is the I-Bit IIRC.
+you can check the load on the website...
 
-On second thought, I'm skeptical unstarted_count isn't coherent
-since it's a kernel global as well (like jiffies).
+HTH
 
-> >You need to find out who is using smp_call_function() and which function
-> >they are trying to invoke. I suspect it's coming from mm/slab.c but
-> >would know which of the three it might be.
-> 
-> Effectively I don't find another place where it is called. And so add a
-> printk in each function calling smp_call_function_all_cpus() finaly.
-> 
-> That is allowing me to notice severall call to kmem_tune_cpucache() (7 exactly)
-> (and not other) but don't get any more 'SMP CALL FUNCTION TIMED OUT (CPU=1)'
-> :(
-> (i presume that, as previously, the system crash before having the opportunity
-> to flush its buffer?)
-> 
-> What do you think?
 
-Could be.
-Add mdelay(100) (or higher) after the lines of output you've added.
-The works if it's a functional problem that's not timing dependent.
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
 
-Otherwise setup kernel crash dump and use tools from bruno/phi to view
-contents of the kernel message buffer.
+Le vendredi, 26 sep 2003, =E0 18:41 Europe/Paris, Grant Grundler a =E9crit=
+ :
 
-grant
+> On Fri, Sep 26, 2003 at 12:03:29AM -0700, Randolph Chung wrote:
+>> Your apache is crashing randomly :( I think mkp said he was seeing=20
+>> this
+>> problem as well and was trying to debug it.
+>
+> I haven't been seeing that with either apache or apache2.
+>
+> On a500 (64-bit, 2.4.21-pa6) running testing:
+> ii  apache         1.3.27.0-2     Versatile, high-performance HTTP=20
+> server
+>
+> On c3k (32-bit, 2.4.22-pa7) running testing:
+> ii  apache2-common 2.0.47-1       Next generation, scalable,=20
+> extendable web se
+> ii  apache2-mpm-pr 2.0.47-1       Traditional model for Apache2
+>
+> Neither is heavily loaded but can see bursts of load at times.
+>
+> hth,
+> grant
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
