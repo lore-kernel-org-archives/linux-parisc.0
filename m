@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 20 Aug 2003 23:11:24 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030821051124.GB22498@dsl2.external.hp.com>
-References: <20030815172142.GA19042@dsl2.external.hp.com> <F09536E0-CFFC-11D7-B685-000393581E44@speakeasy.net> <20030819050829.GF27208@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030819050829.GF27208@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: xchat colors
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 026B148B8
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Aug 2003 00:21:46 -0600 (MDT)
+Date: Thu, 21 Aug 2003 08:21:43 +0200
+Message-ID: <3F2E2C7700003FE2@ocpmta2.freegates.net>
+In-Reply-To: <20030820194103.GA18688@systemhalted>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,16 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Aug 18, 2003 at 11:08:29PM -0600, Grant Grundler wrote:
-> I'll submit a patch to xchat so at least it checks the
-> gdk return values and complains if it can't get the colors.
+>Lamont made a good catch and we optimized the standard case in the itlb
+>fault fast path, keeping the CPU's forward branch prediction working in
+>our favour. 
 
-patch submitted to debian bug #200903.
-IMHO a pathetic patch. If someone is looking for a very small
-project, cleaning up xchat color handling would be a good thing.
+That is the very fine state of the art :)
 
-I just realized that instead of xchat allocating it's own colors,
-it might be nice to prompt the user to select from existing "default"
-colors. And reduce the number of colors used overall by xchat.
+>As such our numbers for various syscalls (LMBENCH tests)
+>have become more stable from call to call. The best number is our 'page
+>fault' which has shown a ~10x speedup :) It used to be 130 microseconds
+>+/- 100 microseconds, and is now consistently ~13 microseconds.
 
-grant
+Congratulation, I will try it also on the N (64bits)
+
+Thanks again,
+    Joel
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
+http://reg.tiscali.be/default.asp?lg=fr 
