@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web21210.mail.yahoo.com (web21210.mail.yahoo.com [216.136.175.253])
-	by dsl2.external.hp.com (Postfix) with SMTP id DEC11482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 01:26:42 -0700 (MST)
-Message-ID: <20020108082641.8674.qmail@web21210.mail.yahoo.com>
-Date: Tue, 8 Jan 2002 09:26:41 +0100 (CET)
-From: =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
+Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C956F482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 01:37:41 -0700 (MST)
+Date: Tue, 8 Jan 2002 09:37:39 +0100
 To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
+Message-ID: <20020108093739.A28512@electra.intern.planb.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] initial mem speed measuring
+From: Enrik Berkhan <Enrik.Berkhan@planb.de>
+Subject: [parisc-linux] any info on 710/Bushmaster Audio available?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,14 +20,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Did anyone notice the amazing speed at the mem speed
-measure? it's about 1.8 GB/sec(?) on my 715/80.
-Maybe 1.8GB/sec is wrong, but it' *really* fast.
-I will post mey dmesg later on, I'm currently at work.
-Perhaps the wrong method is choosen.
+Hi,
 
+I'd like to make the audio part of my 710 usable, even if it's only
+'voice quality' according to the LASI docs.
 
-__________________________________________________________________
+Actually, I can't find much documentation for this part. It's
+mentioned in the LASI docs, but no details of course. I understand
+that it should be in the "Cobra/Coral I/O ESR", that is not available
+yet(?). I found some mails in the list archive promising to make it
+available in 1999 ;-) Is there a status? Maybe something like the
+"Vivace ESR" would be helpful, too.
 
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Ihre E-Mail noch individueller? - http://domains.yahoo.de
+Thanks,
+Enrik
+-- 
+Enrik Berkhan                                         plan b. GmbH
+                                                      Rüppurrer Straße 4
++49-721-388582 (voice)                                76137 Karlsruhe
++49-721-388581 (fax)                                  Germany
