@@ -1,49 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA10748
-	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Aug 2000 10:01:07 -0600
-Received: from ppp-2-163.cvx3.telinco.net (HELO rhirst.linuxcare.com) (@212.1.145.163)
-  by mailserv2.iuinc.com with SMTP; 17 Aug 2000 10:01:27 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 24C5DB005; Thu, 17 Aug 2000 11:00:42 +0100 (BST)
-Date: Thu, 17 Aug 2000 11:00:42 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: =?iso-8859-1?Q?Steffen_L=F6rch?= <sloerch@gmx.de>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Image-CD crashes !!
-Message-ID: <20000817110042.B8556@linuxcare.com>
-References: <31201.966506009@www22.gmx.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA12755
+	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Aug 2000 15:22:45 -0600
+Date: Thu, 17 Aug 2000 08:23:08 -0700
+From: "H . J . Lu" <hjl@lucon.org>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: libc-alpha@sources.redhat.com, parisc-linux@thepuffingroup.com,
+        parisc@lists.linuxcare.com
+Subject: Re: hppa glibc ld -r
+Message-ID: <20000817082308.B20071@lucon.org>
+References: <Pine.LNX.4.21.0008171700460.28670-100000@front.linuxcare.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <31201.966506009@www22.gmx.net>; from sloerch@gmx.de on Thu, Aug 17, 2000 at 11:53:29AM +0200
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0008171700460.28670-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Thu, Aug 17, 2000 at 05:59:48PM +1000
 List-ID: <linux-parisc.vger.kernel.org>
 
-You need to use a serial console atm, see
+On Thu, Aug 17, 2000 at 05:59:48PM +1000, Alan Modra wrote:
+> 
+> -ffunction-sections isn't a complete solution though.  If two source files
+> declare a local function of the same name, "setup", for instance, then
+> both files will have a section called ".text.setup".  These two sections
+> will be merged during the "ld -r", which has the unfortunate effect of
 
-http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/08-Aug/0030.html
+Can you teach ld not to merge ".text.xxxxx" with -r under HPPA?
 
-Richard
+> moving a local function to a location a long way off from where it's
+> called.  That's bad, firstly because it means we now need a stub to reach
+> the function, but more importantly the stubs are not PIC and thus need
+> relocation information when creating shared libraries.  In particular, for
+> reasons too complicated to explain here, I don't want to create stubs for
+> local functions;  It would mean emitting relocs for every *potential*
+> stub.
+> 
+> Anybody know why glibc uses "ld -r", and if there is a good reason why
+> we can't just remove the "ld -r"?
+
+I don't think it has to be used. --whole-archive will do the same
+trick. But "ld -r" is more convenient. With --whole-archive, you may
+have to put -Wl,--whole-archive/-Wl,--no-whole-archive around each file
+generarted with "ld -r"
 
 
-On Thu, Aug 17, 2000 at 11:53:29AM +0200, Steffen Lörch wrote:
-> Hello all !
-> 
-> I downloaded the CD-Image MkLinux from the FTP-Server, made a CD and
-> wanted to
-> boot from her, but while booting the system hangs with the error:
-> 
-> pdc_cons die !!
-> 
-> Please help me !!! I have a PA-RISC HP9000 Model 712/100, 2.1 GB SCSI HD,
-> YAMAHA CDR400tx CD-Rom. Whats wrong with ma system?
-> 
-> Thanks for replies !
-> S.L.
-> 
-> -- 
-> Sent through GMX FreeMail - http://www.gmx.net
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
+H.J.
