@@ -1,121 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from almso1.proxy.att.com (almso1.att.com [192.128.167.69])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B815482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Oct 2001 09:42:46 -0600 (MDT)
-Message-ID: <5360C45FAB301541AEB3C6A45A6B6A02706836@ocst09.ugd.att.com>
-From: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>
-To: "'Kenneth Westelinck'" <kennywest1@hotmail.com>,
-	rhirst@linuxcare.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] X window refresh problem
-Date: Wed, 24 Oct 2001 11:41:55 -0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E910482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Oct 2001 12:14:58 -0600 (MDT)
+Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
+	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
+	id 15wSYH-0000I7-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 24 Oct 2001 20:14:53 +0200
+Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
+	id 15wSXo-0004Bk-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Oct 2001 20:14:24 +0200
+Date: Wed, 24 Oct 2001 20:14:24 +0200
+From: Albert Strasheim <fullung@ilink.nis.za>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] new cd-images any time soon?
+Message-ID: <20011024201423.A16100@dogbert.localdomain>
+References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D94C@umr-mail03.cc.umr.edu> <20011024163506.A2752@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
+In-Reply-To: <20011024163506.A2752@parcelfarce.linux.theplanet.co.uk>
+Sender: Albert Strasheim <fullung@dogbert.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
-My X windows problems have been cleared up.
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I not sure what exactly made things work. apt-get update and apt-upgrade
-might have done it since new versions of X among other things were
-installed.
+Hello,
 
-Changing back to 2.4.9-32-pa59 before doing this, of course.
+On Wed, 24 Oct 2001, Matthew Wilcox wrote:
 
-PS: A side note on my failure to get a updated kernel. I didn't post this
-earlier because I hate to write long-winded messages.
+> On Wed, Oct 24, 2001 at 10:26:14AM -0500, Neulinger, Nathan wrote:
+> > Will there be any new CD images any time soon? i.e. with current kernel,
+> > packages, etc?=20
+>=20
+> Yes, we're planning an 0.9.3 release within the next couple of weeks.
 
-I did pull down the kernel source, linux-20011015.tar.gz and compile it over
-the weekend. The resultant kernel, vmlinux, failed to boot on by box,
-something about VFS: can't  mount root filesystem.
+Any chance of the 720/50 being fixed by then? :-) Has anything changed
+significantly that would warrant me to attempt an installation again?
+Have the 3.0.15 boot-floppies for hppa been created yet? Anything fixed
+in the kernel?
 
-I must have missed some steps in the compilation process. These things are
-not exactly clear to me. It might be middle-age or something. But, that is
-another message thread which I may or may not start shortly.
+I'm avaiable to fiddle with it this weekend if that helps.
 
-Anyway, I learned how to use palo at the boot prompt to boot an old kernel.
-So, it wasn't a total waste.
+Regards,
 
-Previously, I had install the kernel debian package. That also failed to
-work for me. But, I didn't know all the steps. I think that I understand
-know. 
+Albert
 
-I browsed through the Debian package list and have not seen a kernel-image
-package for HPPA. At least, there was no package name that I recognized as a
-kernel image that was newer than mine.
+--VbJkn9YxBvnuCH5J
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-So, I finally put my technical pride into my pocket and emailed the list for
-help and the answers came in.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-Thanks to everyone that helped,
-Aubrey
+iD8DBQE71wT/Dg+hOeRZtkMRAmMBAJ9T2yXX+ICPX6xMjx/PKQLMMQH59wCfQG0J
+5g63MZ8mVdgv/UfPIF+VZ90=
+=MyY6
+-----END PGP SIGNATURE-----
 
------Original Message-----
-From: Kenneth Westelinck [mailto:kennywest1@hotmail.com]
-Sent: Wednesday, October 24, 2001 2:23 AM
-To: rhirst@linuxcare.com; Griffin, Aubrey, BMCIO
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] X window refresh problem
-
-
-Or you can grab your kernel from parisc-linux.org and compile him yourself. 
-This solved the refresh problem for me ;-)
-
-enjoy life, enjoy linux,
-
-Kenneth
-
-
-
->From: Richard Hirst <rhirst@linuxcare.com>
->To: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>
->CC: "'parisc-linux@lists.parisc-linux.org'" 
-><parisc-linux@lists.parisc-linux.org>
->Subject: Re: [parisc-linux] X window refresh problem
->Date: Tue, 23 Oct 2001 17:30:25 +0100
->
->On Tue, Oct 23, 2001 at 10:13:00AM -0400, Griffin, Aubrey, BMCIO wrote:
-> > Hello all,
-> >
-> > Well, I decided to ditch HPUX 10.20 for Linux. I have installed the 
->kernel
-> > from the ISO image onto a 712/60.
-> >
-> > I have installed X on it. Every is fine until the screen goes black. 
->Once
-> > this happens, the colors are messed up and it is unusable. I believe 
->that is
-> > the same problem as the blue is white that was talked on the mailing 
->list.
-> > This problem was corrected with a new kernel.
-> >
-> > The kernel that I am running is 2.4.0-pa22. How do I upgrade the kernel?
->
->grab 
->ftp://ftp.parisc-linux.org/unofficial-debs/kernel-image-2.4.9-32_011017.pa5
-9_hppa.deb
->
->and dpkg -i kernel-image-2.4.9-32_011017.pa59_hppa.deb
->
->I think you are advised to upgrade the rest of your system first, if
->you havn't done so recently (apt-get update; apt-get upgrade).
->
->Richard
->
->
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-
-
-_________________________________________________________________
-Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.asp
-
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+--VbJkn9YxBvnuCH5J--
