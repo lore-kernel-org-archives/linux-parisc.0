@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 08358482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 09:55:43 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id chdejaaa for parisc-linux@lists.parisc-linux.org; Thu, 22 Nov 2001 09:50:34 -0700
-Date: Thu, 22 Nov 2001 08:55:19 -0800
-From: Randolph Chung <tausq@debian.org>
-To: Richard Allen <ra@hp.is>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Mutexes ?
-Message-ID: <20011122085519.T391@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20011122103209.A1789@hp.is> <20011122152641.B10023@parcelfarce.linux.theplanet.co.uk> <20011122165026.D14821@hp.is>
+Received: from tentakel.fischlustig.de (pD9001D60.dip.t-dialin.net [217.0.29.96])
+	by dsl2.external.hp.com (Postfix) with SMTP id E0D2A482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 10:13:26 -0700 (MST)
+Subject: Re: [parisc-linux] Need EVC-VGA adapter
+From: andi <andi@fischlustig.de>
+To: Markus Grabert <xam@student.cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.OSF.4.41.0111211621080.10763-100000@student.cs.ucc.ie>
+References: <Pine.OSF.4.41.0111211621080.10763-100000@student.cs.ucc.ie>
+Content-Type: text/plain
+Date: 22 Nov 2001 18:14:14 +0100
+Message-Id: <1006449254.5420.0.camel@cube>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011122165026.D14821@hp.is>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,14 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Its rpm 4.0.3.   The DB people think my crash problem in DB3 has something
-> to do with mutexes and looking at the output from configure Id say it
-> is a definate possibility.
+> I recently purchased a C240.
+> 
+> Unfortunately no EVC-VGA adapter was in the package.
+> I thought it is quite easy to get these (since EVC is
+> the new VESA standard), but I just found a few Internet
+> companies who sell them. The adapter itself is rather expensive,
+> usually about 50 EURO.
 
-that configure is from db3? This was fixed ages ago...... i hope the
-brokenness didn't sneak back in...
+I have excactly the same problem, but I am living in germany. any chance
+here?
 
-randolph
--- 
-Debian Developer <tausq@debian.org>
-http://www.TauSq.org/
+another solution would be to get another graphics card for the C240
+which has a standart vga port.
+
+andi
