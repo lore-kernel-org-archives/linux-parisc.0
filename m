@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: HEISERER DANIEL <Daniel.Heiserer@bmw.de>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] octave2.1_2.1.35-6_hppa 
-In-Reply-To: Message from HEISERER DANIEL <Daniel.Heiserer@bmw.de>
-   of "Tue, 29 Jan 2002 11:18:01 +0100." <3C5676D9.E4B26D93@bmw.de>
-References: <3C5676D9.E4B26D93@bmw.de> 
-Date: Tue, 29 Jan 2002 11:59:16 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020129185916.2AE58482A@dsl2.external.hp.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B18DD482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 12:58:19 -0700 (MST)
+Message-Id: <200201291958.g0TJwEAI006175@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] octave2.1_2.1.35-6_hppa
+To: grundler@dsl2.external.hp.com (Grant Grundler)
+Date: Tue, 29 Jan 2002 14:58:14 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: Daniel.Heiserer@bmw.de, parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+In-Reply-To: <20020129185916.2AE58482A@dsl2.external.hp.com> from "Grant Grundler" at Jan 29, 2002 11:59:16 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,30 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-HEISERER DANIEL wrote:
-> I am also a little be astonished about the different object files
-> existing on PA-Risc. There are 
-> /usr/local/bin/perl:    PA-RISC1.1 shared executable dynamically linked
-> -not stripped
-> as well as "PA-RISC2" executables.
+> > Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
+> > is. Are both 64 bit?
 
-Also note that "PA-RISC1.1" on HPUX implies the binary is a SOM binary
-(not ELF). parisc-linux uses ELF-32 format by default.  This was "invented"
-for the parisc-linux port.
+PA-RISC-2 describes the machine architecture.  ELF-64 describes one of the
+object file format that is use on PA-RISC-2 machines.  The SOM object
+file format is used for 32-bit objects.  As Grant noted, SOM objects
+support architectures from PA-RISC 1.0 onward.  However, a 2.0 object
+will not work on a 1.1 machine.
 
-parisc-linux kernel has support for SOM binaries but it's really only
-for HPUX application compatibility.
+The object file format zoo is even worse than described above.  The debug
+formats used by gcc differ from those used by HP compilers.
 
-> Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
-> is. Are both 64 bit?
-
-Since PARISC2.0 introduced 64-bit capability, many people equate the two.
-(that's not a shooting offense. ;^) While Matthew is correct, in practice
-most folks build PA1.1 binaries when they want a 32-bit application.
-
-I was building 32-bit PA-RISC2.0 linux kernels. But the toolchain was using
-"reloc" (type 74, iirc) that the kernel dynamic linker couldn't grok.
-So I couldn't load any kernel driver modules.  I decided it wasn't worth
-pursueing and now build PA 1.1 kernels.
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
