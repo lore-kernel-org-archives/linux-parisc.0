@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6FC294830
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Sep 2003 10:38:00 -0600 (MDT)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id h81Gc0905132
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 1 Sep 2003 17:38:00 +0100
-Date: Mon, 1 Sep 2003 17:37:57 +0100 (IST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 80A0B4830
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Sep 2003 10:44:03 -0600 (MDT)
+Date: Mon, 1 Sep 2003 17:44:00 +0100 (IST)
 From: "M. Grabert" <xam@cs.ucc.ie>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0309011737410.11880-100000@sal.ucc.ie>
+Cc: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] CVS mixup
+In-Reply-To: <Pine.LNX.4.44.0309011737410.11880-100000@sal.ucc.ie>
+Message-ID: <Pine.LNX.4.44.0309011743030.11880-100000@sal.ucc.ie>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] CVS mixup
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,11 +22,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Mon, 1 Sep 2003, M. Grabert wrote:
 
-I think we have another mixup in the CVS:
+> I think we have another mixup in the CVS:
+>
+> http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2003-September/033329.html
 
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2003-September/033329.html
+Mhh, on a second look it just looks like a typo:
 
+2.4.0-test4-pa7 instead of 2.6.0-test4-pa7 in the CVS log ...
 
-thanks, Max
+sorry about that
+
+ Max
