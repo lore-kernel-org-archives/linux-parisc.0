@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9FD534832
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 May 2003 09:01:15 -0600 (MDT)
-Date: Wed, 14 May 2003 08:04:01 -0700
-From: Randolph Chung <tausq@debian.org>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] more on canonicalize_funcptr_for_compare
-Message-ID: <20030514150401.GM548@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20030514055225.GJ548@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030514055225.GJ548@tausq.org>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 931CD4832
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 May 2003 10:40:41 -0600 (MDT)
+Date: Wed, 14 May 2003 18:40:30 +0200
+Message-ID: <3EC0FF230000091A@ocpmta7.freegates.net>
+In-Reply-To: <200305121624.h4CGOMq1001557@hiauly1.hia.nrc.ca>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] [PATCH-2.5] Various cleanups
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>, randolph@tausq.org
+Cc: jbglaw@lug-owl.de, parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +22,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> if ((int) fptr == -1 || (unsigned int) fptr < 4096 || !((int) fptr & 2))
->     return (unsigned int) fptr;
-> 
-> so, why doesn't that match the second || case and exit?  (gdb
-> disassmbly shows that the code tries to dereference the fptr argument
-> and segfaults)
+>> how does that work? __c_f_f_c is emitted by the compiler internally,
+>> right? how can we define an inline version of this function?
+>
+>Dooh, you are correct.  I wrote a little test program and the libcall
+>doesn't get inlined.
+>
+>So if no canonicalization is needed, you want something like:
+>
+>typedef int (*fptr_t) (void);
+>
+>unsigned int __canonicalize_funcptr_for_compare (fptr_t)
+>      __attribute__ ((visibility ("hidden")));
+>
+>unsigned int
+>__canonicalize_funcptr_for_compare (fptr)
+>   fptr_t fptr;
+>{
+>  return (unsigned int)fptr;
+>}
+>
+>The libgcc version is hidden.  That's because shared libraries need
+>their own copy which accesses the got table in the shared library.
+>Probably in the kernel implementation, a single copy of the routine
+>is sufficient and you don't want the hidden attibute.
+>
+Hi all,
 
-sigh, after some sleep i realize that i was looking at the real 3.3 tree
-instead of my backport, and in the current 3.2 patch the second test is
-missing....  (because it was derived from an earlier snapshot of jda's
-patch)
+I just try to build a kernel with following stuff:
+add first include/asm-parisc/fptr.h:
 
-i'll send an update to debian-gcc... sorry about this.
+typedef int (*fptr_t) (void);
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+extern unsigned int __canonicalize_funcptr_for_compare (fptr_t)
+      __attribute__ ((visibility ("hidden")));
+
+
+and arch/parisc/lib/fptr.c 
+
+
+#include <asm/fptr.h>
+
+unsigned int
+__canonicalize_funcptr_for_compare (fptr)
+     fptr_t fptr;
+{
+    return (unsigned int) fptr;
+}
+
+also arch/parisc/kernel/parisc_ksyms.c:
+[...]
+#include <asm/fptr.h>  
+EXPORT_SYMBOL(__canonicalize_funcptr_for_compare);
+
+
+to finaly arch/parisc/lib/Makefile:
+-obj-y   := lusercopy.o bitops.o checksum.o io.o memset.o
++obj-y   := lusercopy.o bitops.o checksum.o io.o memset.o fptr.o
+
+The compile seems ok but knowing not yet anything about modules I would appreciate
+your advises before trying to boot it.
+
+Thanks,
+    Joel
+
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
