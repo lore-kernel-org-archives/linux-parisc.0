@@ -1,35 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5620F482A
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 05:03:19 -0600 (MDT)
-Sender: marteaut@esiee.fr
-Message-ID: <3B177932.235F76E4@esiee.fr>
-Date: Fri, 01 Jun 2001 13:14:58 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
+Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DC079482B
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 09:06:30 -0600 (MDT)
+Received: from amrelay1.boi.hp.com (amrelay1.boi.hp.com [15.56.8.24])
+	by palrel2.hp.com (Postfix) with ESMTP id ABFAA12F1
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 08:06:29 -0700 (PDT)
+Message-ID: <AB57FCC5E303D511BB8F00A0C9F485C2011948D7@xfc02.fc.hp.com>
+From: "MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
+To: "'Jayadeep Purushothaman'" <jdp@india.hp.com>,
+	parisc-linux@parisc-linux.org
+Subject: RE: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
+Date: Fri, 1 Jun 2001 10:59:13 -0400 
 MIME-Version: 1.0
-To: Nicolai Leymann <n.leymann@berkom.de>,
-	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] palinux 0.9 on 715/64 STI
-References: <NDBBKPOMPCLCKIFPPHMNKEBKCOAA.n.leymann@berkom.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Nicolai,
+We plan to create a bunch of CDs for purposes like this.  We want to wait a
+week or so, just to make sure the current ISOs  don't have some major
+problems to be fixed.  Can you wait a bit?
 
-> I've downloaded the palinux 0.9 STI image and tried to install
-> it on my 715/64 (the 0.6.1 STI release runs fine). But during
-> booting from the CD the system hangs with the following messages:
+Alan
+ 
+> Is there a way someone can ship a CD for me? I am in India, 
+> so trying to
+> download the ISO images will take way too much bandwidth.
 > 
->   Warning: unable to open an initial console
->   loop: enabling 8 loop devices
-Here, I tested the serial version of 0.9. That's why we said that
-715/Mirage were working!
-I gonna look at it...
-
-Be careful, Richard Hirst detected that the narrowsti.conf is bugged!
-You have to modify the path (narrow -> sti). Perhaps, here is athe
-explanation!
-
-I gonna publish the fixed version on the ESIEE site, stay tuned, Thomas
-ESIEE Team
-http://www.esiee.fr/puffin
+> Thanks,
+> Jayadeep
+> 
+> Jayadeep Purushothaman,
+> Hewlett Packard (ISO),
+> 29, Cunningham Road
+> Bangalore - 52
+> 
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
