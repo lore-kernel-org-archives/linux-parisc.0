@@ -1,36 +1,18 @@
-Received: from cosrel2.hp.com (cosrel2.hp.com [156.153.255.162])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id CAA17904
-	for <parisc-linux@puffin.external.hp.com>; Sun, 3 Dec 2000 02:02:20 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by cosrel2.hp.com (Postfix) with ESMTP id EAB9D3AF
-	for <parisc-linux@puffin.external.hp.com>; Sun,  3 Dec 2000 02:04:52 -0700 (MST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id BAA02744
-	for parisc-linux@puffin.external.hp.com; Sun, 3 Dec 2000 01:04:08 -0800 (PST)
-Date: Sun, 3 Dec 2000 01:04:08 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200012030904.BAA02744@milano.cup.hp.com>
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id GAA20641
+	for <parisc-linux@puffin.external.hp.com>; Sun, 3 Dec 2000 06:14:35 -0700
+Subject: Re: [parisc-linux] 64-bit build broken
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Sun, 3 Dec 2000 13:07:22 +0000 (GMT)
+Cc: parisc-linux@puffin.external.hp.com
+In-Reply-To: <200012030904.BAA02744@milano.cup.hp.com> from "Grant Grundler" at Dec 03, 2000 01:04:08 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 64-bit build broken
+Message-Id: <E142YrT-0002i5-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> This could be related to willy's changes - I have no idea.
 
-This could be related to willy's changes - I have no idea.
-After setting CROSS-COMPILE = hppa64-linux-
-
-make distclean
-make clean
-make oldconfig
-make -j4 dep
-make -j4 palo
-...
-hppa64-linux-ld: cannot open hardware_proc.o: No such file or directory
-make[1]: *** [kernel.o] Error 1
-make[1]: Leaving directory `/linux/pa64/linux/arch/parisc64/kernel'
-
-
-I was able to build/link stuff on Friday...and it's way past my bedtime now.
-
-grant
+Yeah there was a bogus unused file called hardware_proc.o. Looks like we 
+forgot to take it out of the 64bit Makefile. Just lose it from there
