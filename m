@@ -1,103 +1,103 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ABCC34879
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 15:44:36 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 33C384879
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 16:01:02 -0600 (MDT)
 Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
 	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15nRuR-0008Mf-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 29 Sep 2001 23:44:31 +0200
-Date: Sat, 29 Sep 2001 23:43:36 +0200
+	id 15nSAN-00029h-00
+	for parisc-linux@lists.parisc-linux.org; Sun, 30 Sep 2001 00:00:59 +0200
+Date: Sun, 30 Sep 2001 00:00:09 +0200
 From: Albert Strasheim <fullung@ilink.nis.za>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: nick@snowman.net
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Non-atomic __set_bit
-Message-ID: <20010929234336.A26195@dogbert.localdomain>
-References: <20010924021054.I3025@megatonmonkey.net> <20010929020915.A24794@dogbert.localdomain> <20010929132719.A15266@megatonmonkey.net>
+Subject: Re: Betr.: [parisc-linux] HP C180
+Message-ID: <20010930000009.B26195@dogbert.localdomain>
+References: <20010929183349.B25897@dogbert.localdomain> <Pine.LNX.4.21.0109291237460.11237-100000@ns>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
-In-Reply-To: <20010929132719.A15266@megatonmonkey.net>
+	protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
+In-Reply-To: <Pine.LNX.4.21.0109291237460.11237-100000@ns>
 Sender: Albert Strasheim <fullung@dogbert.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
---7AUc2qLy4jB3hD7Z
+--xgyAXRrhYN0wYx8y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-There's a CONFIG_DEVFS_MOUNT option that mounts it at boot. I know I
-used fdisk on /dev/scsi/somedamnthing/part3/block10/orifice99 or
-somesuch :-)
+I generally use http://http.us.debian.org/ or http://ftp.sunet.se/pub/
+(great mirror site). Your local mirror probably only mirrors i386. I
+can't imagine why "normal" sites would want to keep around 4 GB (?) of
+HPPA packages. :-)
 
-If init is croaking, you need devfsd perhaps?
-
-But here it works fine.
+I also built a new nfsroot for myself by using debootstrap, and slightly
+modifying the "woody" script. My system isn't quite up and running yet
+(still struggling with Jurij's patch), but you could do the same if your
+HP is misbehaving.
 
 Regards,
 
 Albert
 
-On Sat, 29 Sep 2001, Carlos O'Donell Jr. wrote:
+On Sat, 29 Sep 2001, nick@snowman.net wrote:
 
+> I have been rolling my own kernels, however I've been useing nfsroot with
+> one of the prebuilt tarballs.  Where can I find the latest debian hppa
+> bootdisks?  ftp.debian.org?  (I havn't noticed them in my debian mirror).
+> 	Nick
+>=20
+> On Sat, 29 Sep 2001, Albert Strasheim wrote:
+>=20
 > > Hello,
 > >=20
-> > Is this going into CVS any time soon? It seems to work fine on my
-> > 720/50.
+> > Make your own:
+> >=20
+> >  palo -f /dev/null -k vmlinux -r root.bin -s lifimage [-b iplboot] \
+> >         -c "0/linux HOME=3D/ root=3D/dev/ram initrd=3D0/ramdisk"
+> >=20
+> > where vmlinux is the a kernel you've compiled from CVS (possibly using
+> > the cross-compiler) and root.bin is the latest Debian hppa bootdisk.
+> > Netboot the resulting lifimage and off you go! :-)
 > >=20
 > > Regards,
 > >=20
 > > Albert
 > >=20
->=20
-> Albert,
->=20
-> Have you booted a devfs kernel on you box?
-> Does it seem to function properly?
->=20
-> Adding devfs to my kernel causes some odd stuff to go on after
-> trying to enter INIT. Though I haven't had time to sort it out.
-> The kernel boots fine, but probably one of the startup scripts
-> is doing something decidedly wrong.
->=20
-> Since you are using init=3D/bin/sh, and unless you tell devfs
-> to explicitly mount at boot, you won't _really_ be using=20
-> devfs :)
->=20
-> Sure, it compiles... and it looks like it should work.
-> But theory and practice are so different it's not funny.
->=20
-> <Carlos looks back at the RF Amplifier design he has on the
-> whiteboard and chuckles>
->=20
-> c.
->=20
+> > On Sat, 29 Sep 2001, nick@snowman.net wrote:
 > >=20
-> > > parisc,
+> > > Ok, can you point me to a totally current root image?
+> > > 	Nick
 > > >=20
-> > > Walking the source for devfs and thinking about Alberts problem.
+> > > On Sat, 29 Sep 2001, Richard Hirst wrote:
 > > >=20
-> > > Would the non-working devfs be fixed by adding:
+> > > > On Wed, Sep 26, 2001 at 08:56:08AM +0200, Jurriaan Kalkman wrote:
+> > > > > >My c180 is now happily booting (current CVS kernel), however whe=
+never I
+> > > > > >try to ls some dirs (no all, this example is from /usr/bin) I ge=
+t errors
+> > > > > >along these lines
+> > > > > >ls: memory exhausted
+> > > >=20
+> > > > I had this with 2.4.9, turned out I'd booted a root fs with old lib=
+c6
+> > > > installed.  When I rebooted using a current libc6 the problem went =
+away.
+> > > >=20
+> > > > Richard
+> > > >=20
 > > >=20
-> > > Non-atomic versions of set_bit e.g. __set_bit=20
-> > > and test_and_set_bit e.g. __test_and_set_bit
-> > > to linux/include/asm-parisc/bitops.h?
 > > >=20
-> > > I have the latest CVS linux module.
-> > > I've patched against that. It compiles now ;)
-> > > (god bless make -j8)
 > > >=20
-> > > I'm currently sleepy, but I'll post the patch, and test
-> > > it tommorow on a 712/60 and 715/50.
-> > >=20
-> > > c.
+> > > _______________________________________________
+> > > parisc-linux mailing list
+> > > parisc-linux@lists.parisc-linux.org
+> > > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
 > >=20
-> > <patch snipped>
->=20
 >=20
 
---7AUc2qLy4jB3hD7Z
+--xgyAXRrhYN0wYx8y
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -105,9 +105,9 @@ Content-Disposition: inline
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQE7tkCIDg+hOeRZtkMRAmhdAJwKFtaQwICypTHjLWwSataaN7/KJACfb1W4
-U4RACxd7UeK/nWduZ/Np0GE=
-=DSEe
+iD8DBQE7tkRoDg+hOeRZtkMRAopnAJ94gvEiFnMfxtHVBeBA3CjvokuA0wCgjM/e
+Lfd4ARkoORQ+EZOWldkF8bk=
+=2w7X
 -----END PGP SIGNATURE-----
 
---7AUc2qLy4jB3hD7Z--
+--xgyAXRrhYN0wYx8y--
