@@ -1,15 +1,16 @@
-From: "Michael S. Zick" <mszick@goquest.com>
-Subject: Re: [parisc-linux] Should I read SHR[DW] as SHRP[DW] in parisc2.p
-Date: Fri, 13 Aug 2004 19:53:17 -0500
-Message-ID: <200408131953.17512.mszick@goquest.com>
-References: <200408140027.i7E0RCRO001690@hiauly1.hia.nrc.ca>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] [RFC] handle_interruption should restore I-bit state.
+Date: Tue, 17 Aug 2004 14:57:50 -0400
+Message-ID: <20040817185750.GT27047@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset=us-ascii
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+ LaMont Jones <lamont@debian.org>,
+ John Marvin <jsm@udlkern.fc.hp.com>,
+ Randolph Chung <tausq@debian.org>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200408140027.i7E0RCRO001690@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,46 +21,59 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri August 13 2004 19:27, John David Anglin wrote:
-> >   80:   d2 80 09 f4     shrpw r0,r20,16,r20
-> >   84:   d2 80 39 f0     extrw,u,= r20,15,16,r0
-> > 
-> > Then checking chapter 7 on 'shrpw' it very clearly
-> > states that this instruction effects only the right
-> > half of the registers. (no mention of left half)
-> 
-> It actually says for 'shrpw' that the leftmost 32 bits of the target
-> register (r20) are undefined.  If you had used a different target
-> register, r20 would not have been affected.
-> 
-I need to learn to read better.
 
-> 
-> The documentation is a bit vague when it comes to condition tests
-> when a result is discarded, but I believe that the test is done
-> before the result is discarded.  It doesn't make any sense to test
-> r0 which always reads as zero.
-> 
-Another vague thing -
-Can you get a register stall (interlock) against gr0?
-I.E:
-op-code ....,destination Rx
-op-code source Rx, .....
-must wait for the store to Rx to be retired.
-If Rx is GR0 - will the behavior be the same?
-In tech. terms...
-Is the discard prior to the retire stage of the
-pipeline?
-Is the discard even earlier than that in the pipeline? 
-Does reference to GR0 count against the two 
-register limit on issues?
+pa,
 
-I can find a partial answer - if the operation referencing
-GR0 changes the flags - it seems that you can stall 
-against the update of the flags in the PSW.
-(or at least that would be reasonable to expect).
+I believe that handle_interruption should honour the previous state of
+the I-bit and should save/restore the state around the rest of the
+functions.
 
-Mike
+For example if some assembly code traps with I-bit off, when it comes
+back to the code the I-bit should still be off, even it had been
+temporarily turned on for the sake of the trap.
+
+What do people think? I wonder if I can get jsm's quick comment on this
+fact, he mentioned at OLS that he thought we should probably be
+saving/restoring I-bit state from the exception handler.
+
+Cheers,
+Carlos.
+
+Index: arch/parisc/kernel/traps.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/traps.c,v
+retrieving revision 1.18
+diff -u -p -r1.18 traps.c
+--- arch/parisc/kernel/traps.c	9 Aug 2004 16:38:41 -0000	1.18
++++ arch/parisc/kernel/traps.c	17 Aug 2004 18:50:15 -0000
+@@ -431,11 +431,15 @@ void handle_interruption(int code, struc
+ 	unsigned long fault_address = 0;
+ 	unsigned long fault_space = 0;
+ 	struct siginfo si;
++	unsigned long flags;
+ 
+-	if (code == 1)
++	if (code == 1) {
+ 	    pdc_console_restart();  /* switch back to pdc if HPMC */
+-	else
++	}
++	else {
++	    local_irq_save(flags);
+ 	    local_irq_enable();
++	}
+ 
+ #if 0
+ 	printk(KERN_CRIT "Interruption # %d\n", code);
+@@ -710,6 +714,9 @@ void handle_interruption(int code, struc
+ 	}
+ 
+ 	do_page_fault(regs, code, fault_address);
++	/* We know we are note code==1, the first case
++	   handles this. So we restore the PSW state */
++	local_irq_restore(flags);
+ }
+ 
+ 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
