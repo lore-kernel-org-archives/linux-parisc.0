@@ -1,15 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from emailserver.massive.com.au (unknown [203.62.157.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A8A28482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 May 2002 19:52:06 -0600 (MDT)
-Message-ID: <C1126400B227D411AC1200A00CC456B501448DAD@emailserver.massive.com.au>
-From: James Mc Parlane <james@massive.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Date: Fri, 17 May 2002 11:52:01 +1000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] parsic function calling convention
+To: "James P. Kinney III" <jkinney@localnetsolutions.com>
+Cc: palinux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] booting to single user mode? 
+In-Reply-To: Message from "James P. Kinney III" <jkinney@localnetsolutions.com>
+   of "16 May 2002 20:05:42 EDT." <1021593942.1992.80.camel@archimedes.localnetsolutions.com>
+References: <1021593568.2584.78.camel@archimedes.localnetsolutions.com>  <1021593942.1992.80.camel@archimedes.localnetsolutions.com> 
+Date: Thu, 16 May 2002 21:45:35 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020517034535.29E46482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,9 +19,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Does anyone please have info, or know where I can find info on the parisc2.0
-calling convention under hpux and parisc-linux?
+"James P. Kinney III" wrote:
+> Answered it myself. Append "single" to the last line and boot up.
 
-I am attempting to add parisc support to libffi.
 
-Thankyou.
+good. I was going to point you at the FAQ.
+There's a link there to "Kernel Boot Parameters".
+
+grant
