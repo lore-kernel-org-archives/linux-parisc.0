@@ -1,18 +1,15 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] stop the buffer bouncing
-Date: Tue, 16 Nov 2004 11:14:27 -0700
-Message-ID: <20041116181427.GG4176@colo.lackof.org>
-References: <20041116063733.GA27633@colo.lackof.org>
-	<20041116150748.GI26623@parcelfarce.linux.theplanet.co.uk>
-	<20041116160939.GB4176@colo.lackof.org>
-	<20041116163403.GJ26623@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] Re: C3000 doesn't work with Debian 3.0r1 ISO
+Date: Tue, 16 Nov 2004 20:43:28 -0700
+Message-ID: <20041117034328.GB15254@colo.lackof.org>
+References: <NEBBKICDMOFAPLINPKAIEEAODIAA.bnet@tampabay.rr.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+Cc: "parisc-linux-lists." <parisc-linux@lists.parisc-linux.org>
+To: fly <bnet@tampabay.rr.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041116163403.GJ26623@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <NEBBKICDMOFAPLINPKAIEEAODIAA.bnet@tampabay.rr.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +20,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Nov 16, 2004 at 04:34:03PM +0000, Matthew Wilcox wrote:
-> > Further:
-> > CCIO depends on GSC
-> > SBA  depends on PCI
-> > 
-> > ergo Enabling PA20 and GSC but not PCI means CCIO *MUST* be enabled.
-> > ergo Enabling PA20 and PCI but not GSC means SBA  *MUST* be enabled.
-> > 
-> > Could someone else look at Kconfig files to verify the above two
-> > rules are enforced?
-> 
-> Ah, "depends on" doesn't mean what you think it does.  It means "if
-> GSC isn't selected, CCIO must be N.
+On Tue, Nov 16, 2004 at 05:16:22PM -0500, fly wrote:
+> Question to PA-RISC help
 
-Actually, in this particular case, this is what I was expecting. 
-I didn't understand some of the other subtleties.
-ie I'm still now sure how to encode "depends" statements
-that involve PA20 and PCI/GSC vis a vis SBA/CCIO support.
-Seems like it should be possible though.
+Brian,
+a few things would you can do better when posting for help:
+1) Use a real name and not a nick name in your email address.
+
+2) Use a Subject line that is relevant to the parisc-linux mailing list.
+ 
+> I've downloaded all the 1st (bootable disks) from the HP Cupportino and
+> other sites  from version 3.0 r0->r3 and although the effects to the monitor
+> differ each one shuts off the usb power therefore my keyboard and mouse at
+> the same spot. I'm reading something about hacking iso images at the moment
+> but that will take time. It does seem like anyone with a machine that only
+> can use usb like the c3000 would have run into this problem.
+
+Indeed, they have. I'll remove the ISOs from that site and replace them
+with debian-installer images. Folks seemed to be trying those images
+on newer machines that don't work with those images.
+Please try debian-installer available from:
+
+	http://www.debian.org/devel/debian-installer/
 
 thanks,
 grant
