@@ -1,42 +1,68 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA09736
-	for <parisc-linux@puffin.external.hp.com>; Tue, 4 Apr 2000 12:45:22 -0600
-Received: (from steve@localhost)
-	by osiris.silug.org (8.9.3/8.9.3) id NAA11438
-	for parisc-linux@thepuffingroup.com; Tue, 4 Apr 2000 13:44:57 -0500
-From: Steven Pritchard <steve@silug.org>
-Message-Id: <200004041844.NAA11438@osiris.silug.org>
-Subject: Re: [parisc-linux] Building bin-utils and gcc on HP735...
-In-Reply-To: <E12cW8W-0006p3-00@endor.fc.hp.com> from Paul Bame at "Apr 4, 2000
- 10:25:04 am"
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA26634
+	for <parisc-linux@puffin.external.hp.com>; Wed, 5 Apr 2000 23:31:04 -0600
+From: willy@thepuffingroup.com
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id CAA23928
+	for parisc-linux@thepuffingroup.com; Thu, 6 Apr 2000 02:31:01 -0400
+Date: Thu, 6 Apr 2000 02:31:00 -0400
 To: parisc-linux@thepuffingroup.com
-Date: Tue, 4 Apr 2000 13:44:57 -0500 (CDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20000406023100.F30107@thepuffingroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Weekly News [31/Mar/2000]
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame said:
-> Sooner or later it is probably a good idea to start using GNU versions
-> of all the tools referenced in the makefiles and scripts if you have
-> the space to do so.
 
-I should note that there are HP-UX 10.20 and 11.0 binary depot
-packages of many GNU utilities at
+PA-RISC/Linux Weekly News - 31st March 2000               vol 2, issue 10
+       
+   This Week:
+       News & Announcements
+       Mailing List Descriptions
+       This Week's CVS Activity
+       State of the Port Summary
+       
+News & Announcements
 
-    ftp://puffin.external.hp.com/pub/parisc/binaries/depot/
+     * Puffinfest Fort Collins
+            From Saturday 24th of March to Wednesday 29th March, a flock of
+            Linux/PARISC developers gathered at the Hewlett-Packard Fort
+            Collins site to discuss various issues related to the port.
+            We have pictures [http://puffin.external.hp.com/puffinfest/]
+     * Linus 2.3.99pre1 merge
+            While at the fest, we merged Linus' 2.3.99pre1 tree into our
+            tree. Thanks to everyone who participated in the merge. This
+            gets us through the softnet merge, which meant we couldn't
+            pull later drivers into our tree. Hopefully there won't be
+            any further drastic modifications of the internal APIs before
+            2.4 is released. pre2 has been unstable for some people and
+            pre3 has broken root NFS, so pre1 was as far as we wanted to
+            go for the moment.
+       
+This Week's CVS Activity
 
-Everything installs to /usr/local/bin, so you can just put that at the
-beginning of your PATH, and everything should be happy.  (Oh, before
-installing any of it, you might want to "chmod -R go-w /usr/local".
-The default permissions are insane.)
+     * The bulk of checkins came from the 2.3.99pre1 merge
+     * We changed the assembler syntax slightly for compatibility with
+       other ELF platforms.
+     * Palo received some fixes.
+     * The tulip driver from 2.3.99pre3 was pulled into our tree.
+     * The glibc porting work continued.
+       
+State of the Port Summary
 
-Feel free to send requests for other stuff.  (I'll try to start
-building packages for the CVS gcc, binutils, etc. sometime soon.  I'm
-still recovering from switching jobs and a move, so I'm way behind on
-everything...)
-
-Steve
--- 
-steve@silug.org           | Linux Users of Central Illinois
-(618)398-7320             | Meetings the 4th Tuesday of every month
-Steven Pritchard          | http://www.luci.org/ for more info
+     * Kernel
+          + based on 2.3.99pre1. Built as ELF.
+     * Supported Hardware:
+          + SCSI, Lan and PS/2 on Lasi I/O controller
+          + Dino PCI controller
+          + Elroy PCI controller
+          + Tulip ethernet
+          + PCNet32 ethernet
+          + Intel EEPro ethernet
+     * Project Page
+          + http://www.thepuffingroup.com/parisc/
+     * Latest Workable Image
+          + ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/
+            Image-20000218
+     * Running PA-RISC/Linux "recipe":
+          + http://thepuffingroup.com/parisc/recipe.html
