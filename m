@@ -1,38 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 128364A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 01:44:13 -0700 (MST)
-Sender: drepper@cygnus.com
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile system
-References: <Pine.LNX.4.21.0102241906140.9315-100000@front.linuxcare.com.au>
-Reply-To: drepper@cygnus.com (Ulrich Drepper)
-From: Ulrich Drepper <drepper@redhat.com>
-Date: 24 Feb 2001 00:43:49 -0800
-In-Reply-To: Alan Modra's message of "Sat, 24 Feb 2001 19:21:01 +1100 (EST)"
-Message-ID: <m38zmwii7u.fsf@otr.mynet.cygnus.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E40264A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 08:57:23 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA05356
+	for <parisc-linux@puffin.external.hp.com>; Sat, 24 Feb 2001 08:52:38 -0700
+Received: from pc5158a.esiee.fr (pc5158a.esiee.fr [147.215.50.165])
+	by mail.esiee.fr (Postfix) with ESMTP id 41CCDD1585
+	for <parisc-linux@thepuffingroup.com>; Sat, 24 Feb 2001 16:56:08 +0100 (CET)
+Received: from localhost
+	([127.0.0.1] helo=esiee.fr ident=delahaym)
+	by pc5158a.esiee.fr with esmtp (Exim 3.12 #1 (Debian))
+	id 14Wh3I-0008IL-00
+	for <parisc-linux@thepuffingroup.com>; Sat, 24 Feb 2001 16:56:08 +0100
+Sender: delahaym@esiee.fr
+Message-ID: <3A97D998.5D019AAB@esiee.fr>
+Date: Sat, 24 Feb 2001 16:56:08 +0100
+From: Matthieu Delahaye <delahaym@esiee.fr>
 MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Unregister driver patch
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra <alan@linuxcare.com.au> writes:
+Hi all!
 
-> If binutils and gcc are built with --build=i686-linux --host=i686-linux
-> --target=hppa-linux --prefix=/usr, then it's correct to build glibc with
-> --build=i686-linux --host=hppa-linux --prefix=/usr/hppa-linux because then
-> "make install" will put glibc in the correct place for the cross tools.
+Here is a patch which implements the unregister_driver() function.
 
-Then how comes people install these binaries?  And even if not
-installing, you possibly link against libc.a and get completely wrong
-code.  This is not how you do it.
+I had to change a field in struct hp_device:
+The field "manage" (bool) become "driver" (pointer on a pa_iodc_driver),
 
-> Building glibc with --prefix=/usr then "make install_root=/usr/hppa-linux"
-> doesn't put glibc in directories searched by the cross tools.
+since unregister_driver has to know by which driver a device was managed
+to make unregister proper.
+unregister_driver() first remove the driver from the list. Then, it
+looks for devices managed by this driver and changed their "driver"
+field to NULL.
 
-Then add the appropriate -L and -I.
 
--- 
----------------.                          ,-.   1325 Chesapeake Terrace
-Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
-Red Hat          `--' drepper at redhat.com   `------------------------
+More over, some drivers call register_driver at least two times, e.g.
+the gsc parallel port driver. When it append, BUG() is called and a
+warning is send to give the name of the driver.
+
+NOTE: Since the structure pa_iodc_driver is used to maintain the list of
+the registered drivers, I think this do not have to be put in data.init
+section.
+
+
+Regards,
+
+Matthieu Delahaye
+ESIEE Team
+http://www.esiee.fr/~puffin
