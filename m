@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D600F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Sep 2002 07:30:16 -0600 (MDT)
-Date: Thu, 5 Sep 2002 15:30:13 +0200
-Message-ID: <3D53B3B70000BC9B@ocpmta1.be.tiscali.com>
-From: jsoe0708@tiscali.be
-To: parisc-linux@lists.parisc-linux.org
-Cc: willy@debian.org
+Received: from dc-mx12.cluster1.charter.net (dc-mx12.cluster1.charter.net [209.225.8.22])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 89C24482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Sep 2002 15:50:03 -0600 (MDT)
+Message-ID: <3D77D183.2080905@charter.net>
+Date: Thu, 05 Sep 2002 17:49:55 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Subject: [parisc-linux] upgrade evms-1.1.0 -> Kernel bug at blkpg.c (need help)
+To: palinux <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] C200 Voodoo2 Progress Report
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,38 +21,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Willy,
+I have gotten my C200 back online and started some preliminary
+work with the Voodoo2 PCI card. I currently have it plugged into
+one of the 5V/32bit slots which may or may not be optimal.
 
-Do you remember this.
+Anyways,
 
-> On Wed, Aug 21, 2002 at 05:14:28PM +0200, jsoe0708@tiscali.be wrote:
-> > After this upgarde, all evms tools failled and I got folowing kernel
-message
-> > at the console:
-> > kernel BUG at blkpg.c:252!                                       
-> > evms: ldev_mgr: error(-28): creating logical disk for device(8,0).  
-   
-> > 
-> > at line 250 of /drivers/block/blkpg.c I read:
-> > ...
-> >    return put_user(uulval << 9, (u64 *)arg);
-> > ...
->
-> Aw, crap.  It now seems to be `legal' to put_user a 64-bit argument on
-a
-> 32-bit system.  Someone needs to fix this in include/asm-parisc/uaccess.h
+1. Linux Kernel 2.4.19-pa2 sstfb Voodoo1/2 framebuffer
 
-May I suggest a trivial sol:
-in put_user, case 8 uses something like as:
-__put_user_asm("stw",(unsigned int)(x >> 32), (unsigned int) ptr);__put_user_asm("stw",(unsigned
-int) x, (unsigned int) (ptr+1) );
+  Well, the kernel compiled with the sstfb without
+  any errors. When I booted I got a black and white
+  checkerboard pattern on the Voodoo2 monitor. I had
+  disabled the stifb console, thinking that the kernel
+  might pick the sstfb for a console, but it didn't.
+  Just blankness for a while, then a checkerboard
+  pattern.
 
-or is it in the contrary order (I am not familiar with SE and BE conversion)
-
-Thanks for attention,
-    Joel
+  I think this is encouraging and I think it is working.
+  I'm currently recompiling and will post some more news
+  later as I experiment some more with it. Next I will
+  try and put a console on the sstfb or even try running
+  X on it.
 
 
+2. glide3-alpha-0.cvs.20010711
 
-Big Brother Anders  - With Tiscali you will see it all !  Check it up on
- www.tiscali.be/bigbrother
+  This is the Debian source for Glide3 on the Alpha arch,
+  which is also big-endian. Initial compilation failed in
+  multiple places about missing sys/io.h which I have
+  located a file of that name in /usr/include/asm. I'll
+  see if I can figure out how best to correct this and try
+  again.
+
+
+Cheers!
+- Doug
