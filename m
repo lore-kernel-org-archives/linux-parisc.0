@@ -1,36 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.ehlo.com (mail.ehlo.com [208.185.90.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8936D482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 May 2001 07:51:22 -0600 (MDT)
-Received: from james by mail.ehlo.com with local (Exim 3.22 #1)
-	id 153eTM-000A7A-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 26 May 2001 09:51:16 -0400
-Date: Sat, 26 May 2001 09:51:16 -0400
-From: James FitzGibbon <james@ehlo.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010526095116.A38860@ehlo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Install CD causes reboot on 712/80
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 741B4482A
+	for <parisc-linux@parisc-linux.org>; Sat, 26 May 2001 10:53:34 -0600 (MDT)
+Message-Id: <200105261645.KAA19506@puffin.external.hp.com>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] List of packages for hppa ISO release 
+In-Reply-To: Your message of "Fri, 25 May 2001 18:10:59 MDT."
+             <20010526001059.283B437C8F@carmen.fc.hp.com>
+Date: Sat, 26 May 2001 10:45:55 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I'm new to PARISC-Linux.  I've had a 712/80 sitting around for a few years
-and thought I'd give it a go.  Using the palinux-0.6.1-32STI.iso image, I
-burned a CD and attempted to install.
+Matt Taggart wrote:
+> http://puffin.external.hp.com/~taggart/selections.20010525
+> 
+> There are still a few missing dependencies but those should be taken care of 
+> in the next few days. If you have additions/deletions to the list please send
+> them to me.
 
-The boot process in and of itself went fine.  The kernel came up, reported
-all of the devices that are shown for this model in the hardware database. 
-After init entered runlevel 2, the message "Setting up /tmp and /var/log
-ramdisks" was displayed.  About 5 seconds after that, the system rebooted.
+o ditch ipchains and add iptables instead.
+o add cvs
+o add an irc client? (tirc? tinyirc? ircii?)
+o any memory or selftest tools we can include?
+  (even untested - I'm looking at x86 package that has mem/cpu test)
 
-I've tried futzing around with the SCSI ids with no luck.  Does anyone have
-an idea or procedure I can try to get around this or find out more
-information as to why it's happening?
+grant
 
-I'm going to try the 0.6 image as well as the serial console one in the
-meantime (I have firmware 2.3, so I should be OK to go back and forth).
-
-Thanks.
-
--- 
-j.
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
