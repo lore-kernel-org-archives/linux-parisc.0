@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CF6B64829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 13:59:46 -0700 (MST)
-Date: Tue, 12 Nov 2002 13:59:42 -0700
-To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [2.5] My System ate a SPARC! *haha* 8-(
-Message-ID: <20021112205942.GA7777@beavis.ybsoft.com>
-References: <Pine.BSF.4.44.0211122031220.32930-100000@e0-0.zab2.int.zabbadoz.net>
+Received: from mr2.cc.ic.ac.uk (mr2.cc.ic.ac.uk [155.198.5.112])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 461504829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 15:14:25 -0700 (MST)
+Received: from icex12.cc.ic.ac.uk ([155.198.3.12])
+	by mr2.cc.ic.ac.uk with esmtp (Exim 3.35 #1)
+	id 18BjIa-0003Ct-02
+	for parisc-linux@lists.parisc-linux.org; Tue, 12 Nov 2002 22:14:20 +0000
+Date: Tue, 12 Nov 2002 22:11:41 +0000
+From: no one <neverbefound@subdimension.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20021112221141.2d2792f0.neverbefound@subdimension.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.44.0211122031220.32930-100000@e0-0.zab2.int.zabbadoz.net>
-From: rbrad@uswest.net (Ryan Bradetich)
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Newbie found an hp 712-80 :)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,69 +24,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bjeorn,
+Hello,
 
-What type of system is this.  I am currently tracking down this problem
-on the K460.  I know where the problem is caused, just not why yet.
+Sorry for asking these rather simple questions, but I've spent an evening reading all the documentation that I could find on the parisc sites, and am still a little be unsure.
 
-Thanks,
+Yesterday I realised that the cute little box sitting by the bin for 3 weeks was actually a computer - a hp 712-80 to be precise; and I am now desperate (after failing to hear the psu fan above the fridge) to run linux on it, eventually headless (if I dare to reset the default console thingy...) as a network server or as a lightweight webbrowser (i.e. dillo).
 
-- Ryan
-On Tue, Nov 12, 2002 at 08:42:28PM +0000, Bjoern A. Zeeb wrote:
-> Hi,
-> 
-> felt really lucky to have reached INIT for less than a second ;-)
-> 
-> hit it. looped for(;;);
-> 
-> had to remove power  cause neither sysreq nor the power button could
-> reboot the machine...
-> 
-> rcS should be the same as everywhere from the .dep .
-> 
-> 
-> 
-> Linux version 2.5.47-pa1 (bz@apollo) (gcc version 3.2) #5 Tue Nov 12 19:14:45 UTC 2002
-> ...
-> Kernel command line: root=/dev/sda3 HOME=/ TERM=linux console=ttyS0 palo_kernel=3/boot/vmlinux-2.5.47-pa1
-> ...
-> Attached scsi disk sdb at scsi0, channel 0, id 6, lun 0
-> NET4: Linux TCP/IP 1.0 for NET4.0
-> IP: routing cache hash table of 512 buckets, 4Kbytes
-> TCP: Hash tables configured (established 8192 bind 16384)
-> Linux IP multicast router 0.06 plus PIM-SM
-> NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-> VFS: Mounted root (ext2 filesystem) readonly.
-> Freeing unused kernel memory: 372k freed
-> INIT: version 2.84 booting
->       _______________________________
->      < Your System ate a SPARC! Gah! >
->       -------------------------------
->              \   ^__^
->               \  (xx)\_______
->                  (__)\       )\/\
->                   U  ||----w |
->                      ||     ||
-> rcS(11): Breakpoint
->       _______________________________
->      < Your System ate a SPARC! Gah! >
->       -------------------------------
->              \   ^__^
->               \  (xx)\_______
->                  (__)\       )\/\
->                   U  ||----w |
->                      ||     ||
-> rcS(11): Breakpoint
-> 
-> 
-> -- 
-> Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-> 56 69 73 69 74				http://www.zabbadoz.net/
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+It came with no floppy, no harddrive, and no memory - I've bought a el-cheapo 2nd hand generic 2Gb SCSI drive; and now need to squeeze linux onto it :)
 
--- 
+As soon as I find myself some simms, I'll be able to get past the pretty hardware-failure screen (look! it even draws where the failing/missing part is on the motherboard!) and have the following installation method planned out.
+
+1) Setup dhcpd on my slackware box to serve the 'lifimage' for the latest net-boot iso
+2) Lan-Boot the 712 with a crossover-cable into the main computer, via dhpcd
+(don't want to confuse true lan dhpcd requests...)
+3) This lifimage will load a kernel and a initrd with the standard debian install tools.
+4) I could now 'ifconfig eth0 down', plug the hp into the actual lan, bring the net connection back up (dhcp or static lan config...)
+5) Do a install from my closest debian mirror.
+
+I'm sure there must be a fatal flaw in there somewhere... after reading through all those fearful references to NFS-roots et al., it seems so simple now that I've written it down :)
+
+Also, I read somewhere that you can flash the latest firmware to the machine by serving it the firmware as a net-boot image - is this correct? Would it be safer by some other method? - for instance (no idea of actual possibility), copy the firmware to /boot & get AILO (sic?) to boot it...
+
+Thankyou for your patience, ;)
+When I get this all set up I promise to write a 'basic 712 install' walkthrough... :)
+
+Jarvist
