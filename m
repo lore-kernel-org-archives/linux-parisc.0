@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F063F482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 14:24:34 -0700 (MST)
-Date: Tue, 29 Jan 2002 16:24:33 -0500 (EST)
-From: "Christopher C. Chimelis" <chris@debian.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0729E482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 15:05:26 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16VgNY-0005Rz-00; Tue, 29 Jan 2002 22:05:24 +0000
+Date: Tue, 29 Jan 2002 22:05:24 +0000
+From: Matthew Wilcox <willy@debian.org>
 To: Dark Fiber <dfiber@mega-tokyo.com>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] cross compilation
-In-Reply-To: <5.1.0.14.2.20020129205648.00a80ec8@pop.freeserve.net>
-Message-ID: <Pine.LNX.4.21.0201291620010.2014-100000@spawn.hockeyfiend.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20020129220524.A26142@parcelfarce.linux.theplanet.co.uk>
+References: <5.1.0.14.2.20020129205648.00a80ec8@pop.freeserve.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <5.1.0.14.2.20020129205648.00a80ec8@pop.freeserve.net>; from dfiber@mega-tokyo.com on Tue, Jan 29, 2002 at 09:10:17PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +25,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 29 Jan 2002, Dark Fiber wrote:
+On Tue, Jan 29, 2002 at 09:10:17PM +0000, Dark Fiber wrote:
+> my intention is to port freebsd to a 64bit lp64(depending..) kernel.
+> not a serious official freebsd port, but something i want to undertake.
+> i'm hoping to concentrate on the pa8* cpu series and up. nothing might
+> come of this whatsoever, but i'm willing to put a little time in and play
+> around. i think i'm mad, but hey, it takes all kinds! ^_^
 
-> it also talks about the debian version of binutils? what makes
-> the debian binutils different from the standard ones and apply
-> the hppa patches?
+Uhm, yeah, you're certifiable :-)
 
-Not much, actually.  I'm working on a new version, but it should be very
-easy to tell which patches I added to binutils for hppa.  To my
-recollection, the only ones in the current binutils in debian that aren't
-in HJ Lu's 2.11.92.0.12.3 are the three from Alan Modra that are already
-in upstream CVS (stub size, refcount, and undefined symbol).  They are all
-neatly placed in the debian/patches dir of the unpacked debian source
-package (or just edit down the diff, if you'd like).  CVS may or may not
-be better...I'm not sure yet.
+You should ignore the cvs repositories on cvs.p-l.org for the most
+part; we get our binutils from upstream and the gcc patches we require
+are folded into the debian package (gcc 3.1 is supposed to support
+hppa-linux... we'll see).
 
-> i've got a sinking feeling i wont be able to build it, but we will see
-> how it goes. i'm hoping the hppa patches are all generic enough that
-> i can use standard binutils, etc, otherwise i'll be in a world of trouble.
+Just so you know, you'll have to write drivers to support:
 
-I'm going to be trying CVS on the A500 this week.  Email me outside the
-list for my results compared to the debian package.  I'm currently trying
-the same comparison on powerpc (since it's my laptop and is in front of me
-right now).
+ - Runway-to-GSC converter (u2/uturn)
+ - GSC-to-PCI (dino/cujo)
+ - Runway-to-Ropes (astro/ike)
+ - Ropes-to-PCI (elroy)
+ - Multifunction IO (lasi, wax, suckyio)
 
-C
+plus, if freebsd doesn't already have them:
+
+ - Apricot (i82596) ethernet
+ - ncr720 scsi
+ - suckyio IDE/USB
+
+you can cut down the number of drivers to write if you decide to only
+support machines such as B1000 and up -- basically you're down to Astro
+and Elroy support for those machines.  SuckyIO support if you want to
+use the builtin serial/usb/ide/ps2/parallel controller.  But we managed
+without that support for months, using PCI serial cards as console.  Oh
+and don't forget the sound driver.  Think that's it...
+
+-- 
+Revolutions do not require corporate support.
