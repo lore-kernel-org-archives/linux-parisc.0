@@ -1,23 +1,16 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1E644488D
+Return-Path: <>
+Received: from polito.it (anacreon.polito.it [130.192.3.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 51FFD487A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 28 Mar 2004 22:41:17 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88ABE.dip0.t-ipconnect.de
-	[217.232.138.190])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2T5fFo11146
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 29 Mar 2004 07:41:15 +0200
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
+	Mon, 29 Mar 2004 08:14:25 -0700 (MST)
+From: MAILER-DAEMON@polito.it
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Mon, 29 Mar 2004 07:41:32 +0200
-Message-ID: <0e8701c41550$7d8a7750$fc01a8c0@muc.nccconsulting.de>
+Date: Mon, 29 Mar 2004 17:14:07 +0200
+Message-ID: <receipt-34170654@polito.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+Content-Type: multipart/report; report-type="delivery-status";
+	boundary="_===34170654====polito.it===_"
+Subject: [parisc-linux] Undeliverable mail: Re: Here
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +20,42 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/29/2004 7:41:31 AM
-Engine/Pattern = 6.860-1001/1.840.00
+--_===34170654====polito.it===_
+Content-Type: text/plain; charset="utf-8"
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+Failed to deliver to 'cravero@athena.polito.it'
+Attenzione! il dominio athena.polito.it
+è stato rimosso. Controllare il corretto indirizzo di posta elettronica.
+---------------------------------------
+Attention! athena.polito.it domain was removed. Please check for the new account address.
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+
+--_===34170654====polito.it===_
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; polito.it
+
+Original-Recipient: rfc822;<cravero@athena.polito.it>
+Final-Recipient: system;<cravero@athena.polito.it>
+Action: failed
+Status: 5.0.0
+
+--_===34170654====polito.it===_
+Content-Type: text/rfc822-headers
+
+Received: from [61.3.144.17] (HELO athena.polito.it)
+  by polito.it (CommuniGate Pro SMTP 4.1.8)
+  with ESMTP id 34170634 for cravero@athena.polito.it; Mon, 29 Mar 2004 17:14:01 +0200
+From: parisc-linux@lists.parisc-linux.org
+To: cravero@athena.polito.it
+Subject: Re: Here
+Date: Mon, 29 Mar 2004 20:46:07 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0005_00005D63.00005A80"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Message-ID: <auto-000034170634@polito.it>
+
+--_===34170654====polito.it===_--
