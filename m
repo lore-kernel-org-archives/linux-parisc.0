@@ -1,57 +1,84 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA20898
-	for <parisc-linux@puffin.external.hp.com>; Sat, 12 Aug 2000 18:13:46 -0600
-Received: from upchuck.cygnus.com (cse.cygnus.com [205.180.230.236])
-	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id LAA21886
-	for <parisc-linux@thepuffingroup.com>; Sat, 12 Aug 2000 11:13:58 -0700 (PDT)
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: Alan Modra <alan@linuxcare.com.au>, parisc-linux@thepuffingroup.com,
-        parisc@lists.linuxcare.com
-Subject: Re: Millicode calls, GP register, ld -r 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of 12 Aug 2000 11:23:35 EDT.
-             <87punemrk8.fsf@linuxcare.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA21549
+	for <parisc-linux@puffin.external.hp.com>; Sat, 12 Aug 2000 19:10:58 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 12 Aug 2000 19:11:15 -0000
+Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
+	id 13NggX-0007PW-00
+	for <parisc-linux@thepuffingroup.com>; Sat, 12 Aug 2000 15:11:09 -0400
+To: parisc-linux@thepuffingroup.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 12 Aug 2000 15:11:09 -0400
+Message-ID: <878zu2mh0y.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sat, 12 Aug 2000 12:13:00 -0600
-Message-ID: <6983.966103980@upchuck>
-From: Jeffrey A Law <law@cygnus.com>
+Subject: [parisc-linux] Just felt like sharing...  (no pun intended)
 List-ID: <linux-parisc.vger.kernel.org>
 
-  In message <87punemrk8.fsf@linuxcare.com>you write:
-  > Alan Modra <alan@linuxcare.com.au> writes:
-  > 
-  > > I'll install a slightly modified version of your patch.  The other PLABEL
-  > > relocs should be handled as for PLABEL32, not that it matters for gcc
-  > > output as I've never caught gcc generating code that used PLABEL14R and
-  > > PLABEL21L.  A pity, because current gcc PIC code for handling function
-  > > pointers is rather inefficient.  Typically, you get something like:
-  > > 
-  > > .LC1:
-  > >         .word P'bar
-  > > .
-  > > .
-  > >         addil LT'.LC1,%r19
-  > >         ldw RT'.LC1(%r1),%r22
-  > >         ldw 0(%r22),%r22
-  > > 
-  > > which could all be replaced with
-  > > 
-  > > 	ldil LP'bar,%r22
-  > > 	ldo RP'bar(%r22),%r22
-  > > 
-  > > saving on code size, memory accesses, and relocs.
-  > 
-  > Interesting.  It would be trivial to hack that into GCC, I just wonder
-  > if there's some good reason it hasn't been done before.
-"inline plabels" used to be in GCC, but were removed a few years ago; they
-were abolished roughly 4 years ago.
+[dhd@tarwebok] ~/src/parisc$ cat libhello.c
+int foo(int bar)
+{
+	return bar + 42;
+}
 
-My recollection was that the inline plabel sequence needed for MPE was 
-actually less efficient than getting the value out of memory.   And
-HP didn't believe the benefit from having an inline sequence for the HPUX
-calling conventions was worth the extra maintenance burden in their
-compiler.  GCC (of course) followed HP's recommendations and abolished
-inline plabels.
+[dhd@tarwebok] ~/src/parisc$ cat hello-shared.c 
+int main()
+{
+	extern int foo(int bar);
+	int (*gar)(int) = foo;
+	printf("Hello shared library world!\n");
+	printf("The answer is %d, or maybe %d\n", foo(0), (*gar)(0));
+	return 0;
+}
+[dhd@tarwebok] ~/src/parisc$ hppa-linux-gcc -fPIC -shared -o /home/nfsroot/parisc/libhello.so libhello.c 
+[dhd@tarwebok] ~/src/parisc$ hppa-linux-gcc -o /home/nfsroot/parisc/hello-shared hello-shared.c /usr/local/lib/gcc-lib/hppa-linux/2.96/libgcc.a -L/home/nfsroot/parisc -lhello
 
-jeff
+(... and, over on the serial console window ...)
+
+# uname -a
+Linux 10.160.240.101 2.3.99-pre8 #230 Fri Aug 11 13:59:53 EDT 2000 parisc unknown
+# ls -l ld.so
+-rwxr-xr-x    1 1000     103        405189 Aug 12 18:58 ld.so
+# ./ld.so
+Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]
+You have invoked `ld.so', the helper program for shared library executables.
+This program usually lives in the file `/lib/ld.so', and special directives
+in executable files using ELF shared libraries tell the system's program
+loader to load the helper program from this file.  This helper program loads
+the shared libraries needed by the program executable, prepares the program
+to run, and runs it.  You may invoke this helper program directly from the
+command line to load and run an ELF executable file; this is like executing
+that file itself, but always uses this helper program from the file you
+specified, instead of the helper program file specified in the executable
+file you run.  This is mostly of use for maintainers to test new versions
+of this helper program; chances are you did not intend to run this program.
+
+  --list                list all dependencies and how they are resolved
+  --verify              verify that given object really is a dynamically linked
+                        object we can handle
+  --library-path PATH   use given PATH instead of content of the environment
+                        variable LD_LIBRARY_PATH
+  --inhibit-rpath LIST  ignore RUNPATH and RPATH information in object names
+                        in LIST
+# ls -l hello-shared libhello.so
+-rwxr-xr-x    1 1000     103       1338314 Aug 12 17:23 hello-shared
+-rwxr-xr-x    1 1000     103          8486 Aug 11 19:02 libhello.so
+# export LD_LIBRARY_PATH=/
+# ./ld.so --list hello-shared
+        libhello.so => /libhello.so (0x40001000)
+# ./ld.so hello-shared
+Hello shared library world!
+The answer is 42, or maybe 42
+
+There's still a lot of work to be done, of course - glibc doesn't
+completely build with --enable-shared yet, and libdl.so is going to be
+somewhat more challenging (luckily the IA-64 people have already
+encountered some of the same issues).  Also note the kludgy way we
+have to explicitly link libgcc.a, which was mentioned in a previous
+thread.
+
+I just thought this was pretty cool :-)
+
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
