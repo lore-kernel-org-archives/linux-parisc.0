@@ -1,18 +1,14 @@
-Return-Path: <xam@cs.ucc.ie>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 470784840
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed,  4 Feb 2004 04:35:42 -0700 (MST)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.12.10/8.12.10) with ESMTP id i14BZftY024660
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 4 Feb 2004 11:35:41 GMT
-Date: Wed, 4 Feb 2004 11:35:40 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.58.0402041109580.8086@sal.ucc.ie>
+Return-Path: <soete.joel@tiscali.be>
+Date: Wed, 4 Feb 2004 12:47:15 +0100
+Message-ID: <400CB8A10000C95A@ocpmta3.freegates.net>
+In-Reply-To: <8BF7471D09AA9B4190A9C96778BC2A1748D23C@qcaexc02.asiapacific.cpqcorp.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] UNable to boot the cd.
+To: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>,
+	"Grant Grundler" <grundler@parisc-linux.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Kernel driver/feature support
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,43 +18,33 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi,
+Hi Asif,
 
-I was just wondering what drivers (hardware drivers, networking options,
-filesystems etc.) are actually usable in Linux/PA-RISC.
-It would be interesting to know whether there are some drivers
-that are not working correctly on PA-RISC (apart from the obvious ones).
+>I was right , as per the listings inthe  forum ! 
+>When I try to search - the cd's doesnt get  seacrched as ipl device! 
+>Secondly when i boot from the Main muenu all i get message is 
+>Booting from device not ready....
+ 
 
-So far I successfully tested (and used extensively) the following
-drivers on my C240 and C3k using a 32bit kernel (and linux-2.4.24):
+>But the same device  works fine with HPUX OS cd.. 
 
-- SMBfs
-- Autofs (v4)
-- IP tunneling
-- IPv6
-- netfilter (iptables) and netfilter6 (ip6tables)
-- Bridging
-- QoS
-- Traffic Shaping
-- OHCI (with internal USB bus, and 5 port USB-2.0 card)
-- RealTek RTL-8139 PCI Fast Ethernet (8139too)
-- IBM Olympic Token Ring PCI (olympic)
+For me that exclude cdrom driver pb ;)
 
-Third party:
-- hostap (Netgear MA311 Prism2.5 PCI card, works great, also hostapd)
+And seems also that CD Creator can also write raw image by this method (I
+have unfortunately no experience with this tool but I can check if cdrecord
+exits for NT systems?).
+So the last pb I can see is a pb of image corruption (during file transfer):
+
+could you check the md5sum of your file
+(if you don't have other linux box to do, on your XP you could install it
+eg. with cygwin tools with <http://sources.redhat.com/cygwin/setup.exe> ;)
 
 
-
-Drivers that didn't work (or not of good quality):
-===============
-- Hermes Prism2.5 PCI (hermes, works somewhat, but flaky connection)
-- EHCI (loads, but can't use a USB-2.0 HiSpeed or FullSpeed capable device,
-  but using OHCI driver instead is successful)
+Cheers,
+    Joel
 
 
-I'd be interested if somebody else has success (or failure) reports of
-drivers/fs not listed here, and reports from what's working with 2.6
-(since I can't test it here)
-
-Greetings,
-  Max
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
