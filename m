@@ -1,122 +1,23 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA24894
-	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 01:29:15 -0700
-From: Marko.T.Niskanen@nokia.com
-Received: from esvir06nok.nokia.com (esvir06nok.nokia.com [131.228.20.78])
-	by mgw-x2.nokia.com (8.10.2/8.10.2/Nokia) with ESMTP id eBB8VQO17148
-	for <parisc-linux@thepuffingroup.com>; Mon, 11 Dec 2000 10:31:27 +0200 (EET)
-Received: from esebh02nok.ntc.nokia.com (unverified) by esvir06nok.nokia.com
- (Content Technologies SMTPRS 4.1.5) with ESMTP id <T83e4144efc506a2c85f6@esvir06nok.nokia.com> for <parisc-linux@thepuffingroup.com>;
- Mon, 11 Dec 2000 10:31:26 +0200
-Message-ID: <13F0486DB51CD311A0AE0008C7C561380453D430@eseis11nok>
-To: parisc-linux@thepuffingroup.com
-Date: Mon, 11 Dec 2000 10:31:23 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] 712/60 booting problem
+Received: from rhirst.linuxcare.com (user-79-182.jakinternet.co.uk [194.88.79.182] (may be forged))
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id GAA27972
+	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 06:51:50 -0700
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 5A679B007; Mon, 11 Dec 2000 13:49:18 +0000 (GMT)
+Date: Mon, 11 Dec 2000 13:49:18 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@puffin.external.hp.com, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] A500 status update
+Message-ID: <20001211134918.Q7166@linuxcare.com>
+References: <200012070634.WAA07459@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200012070634.WAA07459@milano.cup.hp.com>; from grundler@cup.hp.com on Wed, Dec 06, 2000 at 10:34:55PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-hello
+On Wed, Dec 06, 2000 at 10:34:55PM -0800, Grant Grundler wrote:
+> o dd to raw disk isn't working right. "No space left on device".
 
-after installing from palinux-0.5.iso.gz on cd and during booting I can get
-this kind error
+Fixed.  Needs mfctl,w to read all 6 bits of SAR in wide mode.
 
-  YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001011
-r0-3     00000000 4001967c 40003f5b 200202c0
-r4-7     4001967c 2001ff20 20020310 40019618
-r8-11    20020048 40002cb8 400002f0 00000002
-r12-15   00000081 00000080 200201e8 2001ff20
-r16-19   c3fc4000 c028060c 00000000 4001967c
-r20-23   000000d4 00000000 40000000 00000081
-r24-27   00000000 20020134 40019f48 c0145da8
-r28-31   40019f60 20020048 20020350 40002d1b
-sr0-4    00000000 0000cba0 00000000 0000ffff
-sr4-8    00002000 00002000 00002000 00002000
-
-IASQ: 00002000 00002000 IAOQ: 4000ccdb 4000ccdf
- IIR: 55005086    ISR: 0000cba0  IOR: 2002088b
-ORIG_R28: 00000000
-!!die_if_kernel: init(1): Illegal instruction 8
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001011
-r0-3     00000000 4001967c 40003f5b 200202c0
-r4-7     4001967c 2001ff20 20020310 40019618
-r8-11    20020048 40002cb8 400002f0 00000002
-r12-15   00000081 00000080 200201e8 2001ff20
-r16-19   c3fc4000 c028060c 00000000 4001967c
-r20-23   000000d4 00000000 40000000 00000081
-r24-27   00000000 20020134 40019f48 c0145da8
-r28-31   40019f60 20020048 20020350 40002d1b
-sr0-4    00000000 0000cba0 00000000 0000ffff
-sr4-8    00002000 00002000 00002000 00002000
-
-IASQ: 00002000 00002000 IAOQ: 4000ccdb 4000ccdf
- IIR: 55005086    ISR: 0000cba0  IOR: 2002088b
-ORIG_R28: 00000000
-!!die_if_kernel: init(1): Illegal instruction 8
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001011
-r0-3     00000000 4001967c 40003f5b 200202c0
-r4-7     4001967c 2001ff20 20020310 40019618
-r8-11    20020048 40002cb8 400002f0 00000002
-r12-15   00000081 00000080 200201e8 2001ff20
-r16-19   c3fc4000 c028060csetup.c: (cmd=1)
-kmem_cr000
-r8-11    c02b0000 00000000 00000000 c0145f44
-r12-15   00000000 00000000 00000000 00000000
-r16-19   c3fc4000 c028060c 00000000 00000000
-r20-23   3e64415c 00000000 00000000 00000000
-r24-27   2001ff24 00000001 40019dec c0145da8
-r28-31   00000000 00000000 20020040 40002d1b
-sr0-4    00000000 0000cba0 00000000 0000ffff
-sr4-8    00002000 00002000 00002000 00002000
-
-IASQ: 00002000 00002000 IAOQ: 40002d53 40002d57
- IIR: 04000000    ISR: 00000000  IOR: 00000000
-ORIG_R28: 00000000
-!!die_if_kernel: init(1): Priviledged operation - shouldn't happen! 10
-
-     000000 00000000
-r20-23   3e64415c 00000000 00000000 00000000
-r24-27   2001ff24 00000001 40019dec c0145da8
-r28-31   00000000 00000000 20020040 40002d1b
-sr0-4    00000000 0000cba0 00000000 0000ffff
-sr4-8    00002000 00002000 00002000 00002000
-
-IASQ: 00002000 00002000 IAOQ: 40002d53 40002d57
- IIR: 04000000    ISR: 00000000  IOR: 00000000
-ORIG_R28: 00000000
-!!die_if_kernel: init(1): Priviledged operation - shouldn't happen! 10
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001000111100001011
-r0-3     00000000 4001952c c028060c 00000000
-r4-7     c02b0000 c3fc4000 c028060c 00000000
-r8-11    c02b0000 00000000 00000000 c0145f44
-r12-15   00000000 00000000 00000000 00000000
-r16-19   c3fc4000 c028060c 00000000 00000000
-r20-23   3e64415c 00000000 00000000 00000000
-r24-27   2001ff24 00000001 40019dec c0145da8
-r28-31   00000000 00000000 20020040 40002d1b
-sr0-4    00000000 0000cba0 00000000 0000ffff
-sr4-8    00002000 00002000 00002000 00002000
-
-IASQ: 00002000 00002000 IAOQ: 40002d53 40002d57
- IIR: 04000000    ISR: 00000000  IOR: 00000000
-ORIG_R28: 00000000
-!!die_if_kernel: init(1): Priviledged operation - shouldn't happen! 10
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001000111100001011
-                                     0002000
-
-IASQ: 00002000 00002000 IAOQ: 40002d53 40002d57
- IIR: 04000000    ISR: 00000000  IOR: 00000000
-ORIG_R28: 00000000
-!!die_if_kernel: init(1): Priviledged operation - shouldn't happen! 10
-
-Whats problem is?
+Richard
