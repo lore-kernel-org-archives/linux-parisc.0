@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rover (rover.mkp.net [209.217.122.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C4F90482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Mar 2002 08:08:47 -0700 (MST)
-To: Chris Rampson <crampson@ford.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Mounting HPUX volumes/disks under PA-LINUX
-From: "Martin K. Petersen" <mkp@mkp.net>
-References: <200203201423.g2KENo323881@dymwsm09.mailwatch.com>
-Date: 20 Mar 2002 10:08:43 -0500
-In-Reply-To: <200203201423.g2KENo323881@dymwsm09.mailwatch.com>
-Message-ID: <yq1k7s7nuo4.fsf@austin.mkp.net>
+Received: from emout1.wish.nl (emout1.wish.nl [212.123.129.74])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 42736482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Mar 2002 08:36:15 -0700 (MST)
+Received: from mail3.inside.servers (mail3.INSIDE.servers [10.1.0.7])
+	by emout1.wish.nl (Postfix) with SMTP id 19F52147C7D
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Mar 2002 17:06:58 +0100 (CET)
+Received: from p1055.nl.wish.net (HELO pleun) ([212.123.142.31]) (envelope-sender <p.strik@astrik.myweb.nl>)
+          by mail3.outside.servers (qmail-ldap-1.03) with SMTP
+          for <parisc-linux@lists.parisc-linux.org>; 20 Mar 2002 15:35:16 -0000
+Message-ID: <001b01c1d030$71097f60$0300a8c0@pleun>
+From: "P. Strik" <p.strik@astrik.myweb.nl>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 20 Mar 2002 17:57:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0018_01C1D038.C599C6E0"
+Subject: [parisc-linux] samba doen't want to work
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +27,89 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "Chris" == Chris Rampson <crampson@ford.com> writes:
+This is a multi-part message in MIME format.
 
-Chris> 1. I tried using sistina.com's LVM to try to mount a HPUX
-Chris>    volume - and found out after testing (and reading from this
-Chris>    list) that the two LVMs are NOT the same, nor even similar -
-Chris>    except for the executable names.
+------=_NextPart_000_0018_01C1D038.C599C6E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Linux LVM is modelled after HP/UX'. But they don't share a common
-codebase.
+Hi Parisc users,
 
+I have two problems, Installing samba 2.2.2 and executing a samba 2.2.3a =
+command=20
 
-Chris> 2. I also tried mounting a HPUX full-disk partition, and
-Chris>    palinux GRONKED and couldn't even recognize that the disk
-Chris>    had a partition.
+Samba 2.2.2 - CD
 
-Huhm.  Odd.  That used to work.
+I use the latest parisc linux version, when i try to install samba i =
+receive when linux is trying to reach the cd-rom (other programs don't =
+give that error) the kernel fault 26, I have a several HP Parisc =
+workstations but this error only comes up at an HP Visualize B 180 L. I =
+try a several things to avoid this strange problem, re-install linux, =
+don't using dselect anymore but with apt-get install samba, nothing =
+works every time the same fault.=20
 
+Samba 2.2.3a - ftp.samba.org
 
-Chris> 3. I tried loading the HPUX executables for vgscan, vg-pv-lv
-Chris>    whatever, to see if they would work. No dice, if they were
-Chris>    dynamically linked, I might be able to load the
-Chris>    corresponding library to get them to work - but alas, they
-Chris>    are statically linked. I get mmap failures when I try to use
-Chris>    them.
+Because 2.2.2 won't work I try to install the latest samba version, but =
+it also won't work because when I try to execute some commands, like =
+smbpasswd and testparm Linux says that smb isn't a bash command (or =
+something like that).=20
 
-The userland utilities are not going to help you without being able to
-talk to the HP/UX kernel LVM driver.
+I don't have a solution for these problems but I hope someone have!
 
+Regards, Peter=20
 
-Chris> Is there a way to do this? Has anyone had success in mounting
-Chris> HPUX volumes/partitions? (JFS or HFS). Is there a plan to make
-Chris> this work?
+------=_NextPart_000_0018_01C1D038.C599C6E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-We can read HFS filesystems.  JFS (aka VxFS) may work now.  I sent
-Christoph Hellwig some fs images to play with, anyway.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi Parisc users,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have two problems, Installing samba =
+2.2.2 and=20
+executing a samba 2.2.3a command </FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><U>Samba 2.2.2 - CD</U></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I use the latest parisc linux version, =
+when i try=20
+to install samba i receive when linux is trying to reach the cd-rom=20
+(other&nbsp;programs don't give that error)&nbsp;the kernel fault 26, I =
+have a=20
+several HP Parisc workstations but this error only comes up at an HP =
+Visualize B=20
+180 L. I try a several things to avoid this strange problem, re-install =
+linux,=20
+don't using dselect anymore but with apt-get install samba, nothing =
+works every=20
+time the same fault. </FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><U>Samba 2.2.3a - <A=20
+href=3D"ftp://ftp.samba.org">ftp.samba.org</A></U></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Because 2.2.2 won't work I try to =
+install the=20
+latest samba version, but it also won't work because when I try to =
+execute some=20
+commands, like smbpasswd and testparm Linux says that smb isn't a bash =
+command=20
+(or something like that). </FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I don't have&nbsp;a solution for these =
+problems but=20
+I hope someone have!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards, Peter =
+</FONT></DIV></BODY></HTML>
 
-You can't access HP LVM volumes under Linux and nobody is working on
-fixing that.  Given a bit of header file snooping and the EVMS plugin
-infrastructure it should be too hard to do.
-
--- 
-Martin K. Petersen      Cereal Bowl Engineer, Linuxcare, Inc.
-http://mkp.net/         SGI XFS, Linux/PA-RISC, GNOME
+------=_NextPart_000_0018_01C1D038.C599C6E0--
