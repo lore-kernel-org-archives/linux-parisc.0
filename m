@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6BC314829
-	for <parisc-linux@parisc-linux.org>; Sat,  1 Feb 2003 22:22:46 -0700 (MST)
-Date: Sat, 1 Feb 2003 21:19:40 -0800
-From: Randolph Chung <tausq@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6CA014829
+	for <parisc-linux@parisc-linux.org>; Sat,  1 Feb 2003 22:49:16 -0700 (MST)
+Message-Id: <200302020549.h125nFpE025091@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Compiler switches
-Message-ID: <20030202051940.GR20940@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20030202035920.F21040@parcelfarce.linux.theplanet.co.uk> <200302020456.h124ueYd025040@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200302020456.h124ueYd025040@hiauly1.hia.nrc.ca>
+To: tausq@debian.org
+Date: Sun, 2 Feb 2003 00:49:14 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: willy@debian.org, parisc-linux@parisc-linux.org
+In-Reply-To: <20030202051940.GR20940@tausq.org> from "Randolph Chung" at Feb 1, 2003 09:19:40 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,17 +22,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Cross my fingers, but I believe that the distance problem for calls
-> is fixed 3.2.2.  However, if there really are objects with .text larger
+> Lamont still saw some function-section failures with Debian gcc 
+> 3.2.2-pre7 (20030128)
 
-Lamont still saw some function-section failures with Debian gcc 
-3.2.2-pre7 (20030128)
+If this is building C++ code, then the problem is likely in the linker.
+Try this:
 
-This one looks pretty small:
-http://buildd.debian.org/fetch.php?&pkg=synopsis&ver=0.4.1cvs20030125-1&arch=hppa&stamp=1044017572&file=log&as=raw
+Index: emultempl/hppaelf.em
+===================================================================
+RCS file: /cvs/src/src/ld/emultempl/hppaelf.em,v
+retrieving revision 1.24
+diff -u -3 -p -r1.24 hppaelf.em
+--- emultempl/hppaelf.em	30 Nov 2002 08:39:46 -0000	1.24
++++ emultempl/hppaelf.em	2 Feb 2003 05:41:38 -0000
+@@ -50,7 +50,7 @@ static int need_laying_out = 0;
+ /* Maximum size of a group of input sections that can be handled by
+    one stub section.  A value of +/-1 indicates the bfd back-end
+    should use a suitable default size.  */
+-static bfd_signed_vma group_size = 1;
++static bfd_signed_vma group_size = -1;
+ 
+ /* Stops the linker merging .text sections on a relocatable link,
+    and adds millicode library to the list of input files.  */
 
-randolph
+This reduces the stub pressure by about 50%.  I also installed this
+yesterday to fix a related problem:
+
+2003-01-31  John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
+
+	* pa.c (pa_output_function_prologue, pa_output_function_epilogue): Move
+	updating of total_code_bytes from prologue to epilogue.
+
+The updating of total_code_bytes in the prologue changed caused the call
+sizes to change in a function that spanned the 240000 byte boundary.  This
+caused the branch distance of any branch over a call to increase, and
+sometimes exceed the range of the branch.
+
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
