@@ -1,40 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA28761
-	for <parisc-linux@puffin.external.hp.com>; Sat, 10 Jul 1999 12:57:01 -0600
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id LAA18684
-	for <parisc-linux@thepuffingroup.com>; Sat, 10 Jul 1999 11:56:58 -0700 (PDT)
-Received: from obob.netscape.com ([207.200.73.215]) by
-          tintin.mcom.com (Netscape Messaging Server 4.1) with ESMTP id
-          FEO4MY00.Q7M for <parisc-linux@thepuffingroup.com>; Sat, 10 Jul
-          1999 11:56:58 -0700
-Received: from netscape.com ([204.92.237.162]) by
-          obob.netscape.com (Netscape Messaging Server 4.1) with ESMTP id
-          FEO4K100.NBF for <parisc-linux@thepuffingroup.com>; Sat, 10 Jul
-          1999 11:55:13 -0700
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <378796B3.5FD7E116@netscape.com>
-Date: Sat, 10 Jul 1999 14:53:39 -0400
-From: Mike Shaver <shaver@netscape.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA29392
+	for <parisc-linux@puffin.external.hp.com>; Sat, 10 Jul 1999 16:45:53 -0600
+Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
+	by Cantor.suse.de (Postfix) with ESMTP id CAE2C32CE3
+	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 00:46:21 +0200 (MEST)
+Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
+	by Galois.suse.de (Postfix) with ESMTP id 71EB29410
+	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 00:46:21 +0200 (MEST)
+Date: Sun, 11 Jul 1999 00:46:21 +0200
+From: Philipp Rumpf <prumpf@suse.de>
 To: parisc-linux@thepuffingroup.com
+Message-ID: <19990711004621.G29058@suse.de>
+References: <199907101141.FAA25297@puffin.external.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] serial console
+In-Reply-To: <199907101141.FAA25297@puffin.external.hp.com>; from CVSD on Sat, Jul 10, 1999 at 05:41:29AM -0600
+Subject: [parisc-linux] Helge's commits
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have a serial console cable that came with my A180C, but I can't get
-the silly box to talk to it.
+First, please excuse me if I sound a bit aggressive ...
 
-I've tried with another known-good cable (it works with my Indy), and
-still nothing.  What do I need to do to activate it?  I tried unplugging
-the web console from the network, and rebooting with the serial cable
-connected and minicom running, but still no joy.
+> Update of /home/cvs/parisc/linux/include/asm-parisc
+> In directory puffin.external.hp.com:/tmp/cvs-serv25289
+> 
+> Modified Files:
+> 	pdc.h 
+> Log Message:
+> 
+> added the OS_ID-patch from Hannu..
 
-Also, is there an equivalent to Sun's L1-A or the Indy's
-send-break-over-serial that will get me back to the PROM in the event
-that Linux jumps to east nowhere?  Or do I have to power cycle?
+Helge, I very much appreciate you working on this project.  Still, I think you
+should be a bit more communicative on what you commit, especially if there are
+legal (see the OSF code) or political (as I suspect might be the case for this
+change) issues.  I lost quite a bit of time yesterday because of the code you
+committed (which was partly due to the parisc-linux-cvs list not working) and
+I would like to avoid that in the future.
 
-Mike
-
--- 
-275134.15 242554.19
+	Philipp Rumpf
