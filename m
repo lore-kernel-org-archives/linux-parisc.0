@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 266004881
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 00:38:35 -0600 (MDT)
-Date: Wed, 9 Jul 2003 08:38:33 +0200
-Message-ID: <3F0571860000089F@ocpmta8.freegates.net>
-In-Reply-To: <30BB5E9998236744913B2C0E04D24D3983B7D3@zonda.eu.tieto.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id D860A482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 02:29:15 -0600 (MDT)
+Date: Wed, 9 Jul 2003 10:29:08 +0200
+Message-ID: <3F057186000008F4@ocpmta8.freegates.net>
+In-Reply-To: <yq1llv8dbin.fsf@wilson.mkp.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] RAID howto and Palo version
-To: Kai.Kapola@tietoenator.com, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
+To: "Martin K. Petersen" <mkp@mkp.net>, "Dub" <dub@latnet.lv>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -21,14 +22,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Currently I have "palo version 1.2 bame@b2000 Tue Jan 14 13:13:18 MST 2003".
+> It would be quite dangerous if the RAID code decided to add things
+> to an array just because a disk is inserted (fine for a storage
+> appliance, bad idea for a server).
 
-> Is this version capable to boot from RAID partitions?
+CONFIG_HOTPLUG has nothing to do with it.
 
-Yes it works fine for a long time ago for me now :-)
+Yes read in <http://www.ibiblio.org/pub/Linux/docs/howto/other-formats/html_single/SCSI-2.4-HOWTO.html#mlproc>
+
+that in Linux 2.4: "The SCSI subsystem does not support hot-plugging of SCSI
+devices ..."
+
+
+Well I have no experience with hpux and those new 'hotplugable' devices but
+at least on Sun it doesn't mean that you can remove device(s) like this without
+taking care to power it off by software!!!
 
 hth,
     Joel
+
 
 ------------------------------------------------------
 Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
