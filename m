@@ -1,44 +1,29 @@
-Received: from rhirst.linuxcare.com (sleepie.demon.co.uk [194.222.23.208])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id GAA25911
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 06:20:47 -0700
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id EA18EB007; Thu, 16 Nov 2000 13:20:17 +0000 (GMT)
-Date: Thu, 16 Nov 2000 13:20:17 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: Single-stepping
-Message-ID: <20001116132017.W32715@linuxcare.com>
-References: <200011161244.FAA03502@udlkern.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200011161244.FAA03502@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Thu, Nov 16, 2000 at 05:44:55AM -0700
+Received: from [12.34.165.10] (ns.maryville.com [12.34.165.10])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA26865
+	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Nov 2000 08:44:38 -0700
+Message-ID: <C36304FE952AD411AC87002094120338029E80@MTMAIL>
+From: Ian Zink <ian.zink@maryville.com>
+To: parisc-linux@puffin.external.hp.com
+Date: Thu, 16 Nov 2000 09:46:18 -0600
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: [parisc-linux] I got the serial console to work...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 16, 2000 at 05:44:55AM -0700, John Marvin wrote:
-> > Current code does
-> >
-> >     /* Nullified, just crank over the queue. */
-> >     task_regs(child)->iaoq[0] = task_regs(child)->iaoq[1];
-> >     task_regs(child)->iasq[0] = task_regs(child)->iasq[1];
-> >     task_regs(child)->iaoq[1] = task_regs(child)->iaoq[0] + 4;
-> >
-> > Does that look right to you?
-> 
-> Yes, that is the correct way to do it (I'll assume the duplicated line
-> is just a cut/paste error).
+After reading some posts, I went back to trying to use to a serial console
+to no avail.. Then.. suddenly it hit me. Do'y. The cable I was using was
+straight-through not Cross-over. Now I have the 712 all booted and running
+Debian. Very cool, indeed. Thanks for all for your help. I think I will
+still work on building a STI ISO for the fun of it :) 
 
-It's not duplicated (iaoq v. iasq).
 
-> > At the moment my test harness notes IAOQ=0x100 and stops single stepping,
-> > but obviously the kernel needs to enforce that.
-> >
-> You should also be checking the space. But yes, the kernel needs to enforce
-> this for security reasons. You should be able to do it in the recovery
-> counter trap handler (rather than having to test for it in the syscall
-> path, which affects all processes).
+Thanks much,
 
-I might come back to you on that when I've thought some more.
-
-Thanks,
-  Richard
+Ian Zink, Systems Engineer
+Maryville Technologies
+540 Maryville Centre, Suite 300
+St. Louis, MO  63141
+636/519-4182
+(FAX) 636/519-4141
+ian.zink@maryville.com  
+www.maryville.com
