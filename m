@@ -1,25 +1,16 @@
-Return-Path: <missamerica@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 820B34840
-	for <parisc-linux@parisc-linux.org>;
-	Mon, 15 Dec 2003 00:42:08 -0700 (MST)
-Received: from clt56-98-111.carolina.rr.com (clt56-98-111.carolina.rr.com
-	[66.56.98.111]) by cuprel1.hp.com (Postfix) with SMTP id 910EC11F2
-	for <parisc-linux@parisc-linux.org>;
-	Sun, 14 Dec 2003 23:42:07 -0800 (PST)
-Received: from (HELO a2s0mkc) [110.116.102.113]
-	by clt56-98-111.carolina.rr.com with ESMTP id 83668608
-	for <parisc-linux@parisc-linux.org>; Mon, 15 Dec 2003 15:33:39 -0600
-Message-ID: <gyv1lsh$90txie-$cv3@9dt.yyfn.789ih>
-From: "Jeffery Grimm" <missamerica@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Mon, 15 Dec 03 15:33:39 GMT
+Return-Path: <leslieball@msn.com>
+Received: from [36.190.130.197] by pcp07716372pcs.nrockv01.md.comcast.net for
+	<pmccabe@parisc-linux.org>; Mon, 15 Dec 2003 21:46:09 -0200
+Message-ID: <60chh6-t7$n5--2643$lk@eknffb>
+From: "Sidney Paulson" <leslieball@msn.com>
+To: pmccabe@parisc-linux.org
+Date: Mon, 15 Dec 03 21:46:09 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="8AC24_1.F_EE..D2."
-Cc: 
-Subject: [parisc-linux] Why don't some people ever age? h
-Reply-To: Jeffery Grimm <missamerica@msn.com>
+	boundary="A_._544A4_8A_BF"
+Cc: grundler@parisc-linux.org, parisc-linux@parisc-linux.org
+Subject: [parisc-linux] Did .you know JFK was doing it? mbq
+Reply-To: Sidney Paulson <leslieball@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,11 +21,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---8AC24_1.F_EE..D2.
+--A_._544A4_8A_BF
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>Why don't some people ever age? h
+<html>Did .you know JFK was doing it? mbq
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -63,16 +54,15 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-evwswu
+gwjhuwp  yel 
+k to yrfkteby
+dkh hn
+k scikzjktxyx
+yv
+rzmvahgld rfr
 </body>
 </html>
-nr cdm delw fxm qy
-rh
-kz  
-qmfclhsflz vzxggetwaipzand
-hpnh 
-mfieiplercis
-tu
-n
+ouovojmposetfszzed
+ bozb  b
 
---8AC24_1.F_EE..D2.--
+--A_._544A4_8A_BF--
