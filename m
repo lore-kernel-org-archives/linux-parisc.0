@@ -1,22 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dsl2.external.hp.com (localhost [127.0.0.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1DA37496B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 19:02:02 -0600 (MDT)
-Received: from gull.mail.pas.earthlink.net (gull.mail.pas.earthlink.net [207.217.120.84])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30D9D4830
-	for <parisc-linux-announce@lists.parisc-linux.org>; Tue, 26 Aug 2003 17:40:26 -0600 (MDT)
-Received: from 66-215-13-165.gln-mres.charterpipeline.net ([66.215.13.165] helo=localhost.localdomain)
-	by gull.mail.pas.earthlink.net with esmtp (Exim 3.33 #1)
-	id 19rnQD-0002mX-00
-	for parisc-linux-announce@lists.parisc-linux.org; Tue, 26 Aug 2003 16:40:21 -0700
-From: jmd <jmd5@earthlink.net>
-To: parisc-linux-announce@lists.parisc-linux.org
-Content-Type: text/plain
-Message-Id: <1061941808.1048.8.camel@localhost.localdomain>
-Mime-Version: 1.0
-Date: Tue, 26 Aug 2003 16:50:08 -0700
-Resent-Message-Id: <20030827010202.1DA37496B@dsl2.external.hp.com>
-Subject: [parisc-linux] c180 available for developer
+Received: from mail.speakeasy.net (mail14.speakeasy.net [216.254.0.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8EEAD496F
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 19:30:23 -0600 (MDT)
+Received: from unknown (HELO speakeasy.net) (caslivkoff@[216.27.161.152])
+          (envelope-sender <caslivkoff@speakeasy.net>)
+          by mail14.speakeasy.net (qmail-ldap-1.03) with SMTP
+          for <parisc-linux@lists.parisc-linux.org>; 27 Aug 2003 01:30:22 -0000
+Date: Tue, 26 Aug 2003 21:30:23 -0400
+Subject: Re: [parisc-linux] x86 on b2000
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v552)
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
+From: Chuck Slivkoff <caslivkoff@speakeasy.net>
+In-Reply-To: <20030826150344.GA2012@tausq.org>
+Message-Id: <0749BC3A-D82E-11D7-8E2F-000393581E44@speakeasy.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,16 +26,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-i have a c180 visualize that is just taking up space. if a developer
-would like it, it's free. just the cost of shipping. or could be picked
-up in glendale california.
+Hi Randolph,
 
-c180 2.1G scsi drive, 4x plextor cdrom (internal and NOT OEM), 256M
-memory. vga graphics card and z buffer. i forget the card number. X
-works though. base install of debian is on it now.
+On Tuesday, Aug 26, 2003, at 11:03 US/Eastern, Randolph Chung wrote:
 
-if you need more details contact me off list at jmd5@earthlink.net.
+> In reference to a message from mmogenius@v8fiesta.co.uk, dated Aug 26:
+>> do we know if it is possable to add an extra graphics card to the 
+>> b2000 to
+>> usin instead of the internal card ?
+>
+> the web page tells you that if you get a Vis-EG card it will work. 
+> there
+> are no "built in" graphics cards..  if you have a FX? card in your b2k,
+> it's a PCI card. (lspci should tell you)
 
-figure shipping costs from 91201 and 50 lbs. (its heavy)
+The B2000 does have integrated graphics. It is an FX-e.
 
-jeff duncan
+-chuck
