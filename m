@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C18FA482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Apr 2002 17:11:05 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id alckmaaa for parisc-linux@lists.parisc-linux.org; Sat, 6 Apr 2002 17:10:09 -0700
-Date: Sat, 6 Apr 2002 16:11:01 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Hinrich Aue <H_Aue@t-online.de>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Woody - stable
-Message-ID: <20020407001101.GN356@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <16txna-16kV72C@fwd05.sul.t-online.com>
-Mime-Version: 1.0
+Received: from rwcrmhc51.attbi.com (rwcrmhc51.attbi.com [204.127.198.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4E530482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  7 Apr 2002 21:42:17 -0600 (MDT)
+Received: from attbi.com ([12.237.133.240]) by rwcrmhc51.attbi.com
+          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
+          id <20020408034216.BVCL18078.rwcrmhc51.attbi.com@attbi.com>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 8 Apr 2002 03:42:16 +0000
+Message-ID: <3CB12C3E.B6FB23DB@attbi.com>
+Date: Sun, 07 Apr 2002 22:35:58 -0700
+From: Ahbaid Gaffoor <ahbaidg@attbi.com>
+MIME-Version: 1.0
+To: parisc <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <16txna-16kV72C@fwd05.sul.t-online.com>
+Subject: [parisc-linux] K220 - Setup via. Console
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +25,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In reference to a message from Hinrich Aue, dated Apr 06:
-> I installed Debian unstable a bit ago. (pa-linux 0.92)
-> Now I read on /. that Woody becomes stable.
-> I think I use SID (unstable everywhere in sources.list)
-> Is it good to use the stable release(Woody) when released?
-> What do I have to do? Just change sources.list entries from unstable to 
-> stable?
+Hello,
 
-For reference, this type of question should be sent to
-debian-hppa@lists.debian.org instead.
+I have a K220. I'd like to install the latest release of PA-RISC Linux
+on it but I need to first of all be able to console into it.
 
-You can either change the references of 'unstable' to 'stable' when
-woody gets released, or you can change the reference of 'unstable' to
-'woody', then you'll always track woody.
+I am trying to use the console cable I have used with Sun boxes on this
+machine, however I just cannot get it to work? My terminal emulation is
+done via HyperTerminal on a laptopb via. COM1
 
-Note 'unstable' doesn't become woody, it is 'testing' that is becoming
-'woody'.
+I do not get any output information on my console connection.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+What do I need to do this?
+
+What seeting do I need on my terminal emulator? Or is there some jumper
+I have to set to allow this to work? Currently I use 9600 8N1, I also
+tried 7E1 but still no luck...
+
+Please help...
+
+Thanks...
+
+Ahbaid.
