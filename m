@@ -1,16 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26AE54837
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 10:34:50 -0700 (MST)
-Date: Fri, 8 Mar 2002 12:34:45 -0500 (EST)
-From: <nick@snowman.net>
-To: Duraid Madina <duraid@fl.net.au>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94FA748A2
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 12:55:27 -0700 (MST)
+Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
+ by mtaout01.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
+ with SMTP id <0GSO00IKS7CDM1@mtaout01.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Fri, 08 Mar 2002 14:55:26 -0500 (EST)
+Date: Fri, 08 Mar 2002 14:55:23 -0500
+From: James S <smithjames@comcast.net>
 Subject: Re: [parisc-linux] 'foreign' PCI cards in an rp2430
-In-Reply-To: <000301c1c654$78ae35c0$022a17ac@simplex>
-Message-ID: <Pine.LNX.4.21.0203081234300.20837-100000@ns>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: James S <smithjames@comcast.net>
+Message-id: <001f01c1c6db$30c467c0$02c1a8c0@james.co.uk>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+References: <E16jLrI-0006Qt-00@the-village.bc.nu>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,34 +27,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Erm.  Whare are you going to put the disks for the 3ware?
-	Nick
+> > Alpha happens to work because its firmware includes a simple x86
+> > simulator that executes the BIOS code on the card.  That way you can
+> > configure your disk setup, etc.
+> 
+> There is btw a passable x86 emulator for free in the XFree86 code that
+> is used to do things like boot video cards.
+> 
+> > Unfortunately the 3ware management utility is 386 binary-only.
+> > I.e. you can't configure the card once you get Linux up and running
+> > either.
+> 
+> Bochs 8)
+> 
 
-On Fri, 8 Mar 2002, Duraid Madina wrote:
+out of sheer curiosity, i installed bochs on my 712/60
 
-> Hi all,
-> 
-> 	I'm considering buying some rp2430s (at last, PA-RISC at the
-> Right Price, or so it seems), and I want to run Linux on them (they're
-> just a 'compute cluster')
-> 
-> 	I'm wondering: Would I be able to use non-HP PCI cards in these
-> systems, if they're supported under Linux? In particular, I'm wondering
-> about 3ware IDE RAID cards (these work in (at least) alpha and x86
-> linux) and Intel gigabit ethernet NICs (based on the 82554 chip).
-> 
-> 	And (no laughter, please) what's the maximum swap partition size
-> parisc linux supports? Can parisc linux swap over NFS?
-> 
-> 	Sorry for the oddball questions,
-> 
-> 	Duraid
-> 
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+running the linux demo that comes with it, i got a bogoMIPS rating of 0.82 
+
+hehe :)
+
+James S
