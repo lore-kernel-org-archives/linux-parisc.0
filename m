@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AF0DB48DA
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 11:37:39 -0600 (MDT)
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Message-ID: <1026927440.3d35ab5042756@webmail.tiscalinet.be>
-Date: Wed, 17 Jul 2002 19:37:20 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: Randolph Chung <randolph@tausq.org>,
-	HPPA List <parisc-linux@parisc-linux.org>
-References: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk> <1026913104.3d357350a4057@webmail.tiscalinet.be> <20020717144543.A13352@parcelfarce.linux.theplanet.co.uk> <1026914852.3d357a24c4a4a@webmail.tiscalinet.be> <20020717142915.GG641@tausq.org> <1026922060.5709.148.camel@irongate.swansea.linux.org.uk>  <20020717150349.GN8724@tausq.org> <1026925311.5709.153.camel@irongate.swansea.linux.org.uk>
-In-Reply-To: <1026925311.5709.153.camel@irongate.swansea.linux.org.uk>
+Received: from mailout03.sul.t-online.com (mailout03.sul.t-online.com [194.25.134.81])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B1F1248DD
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Jul 2002 11:43:05 -0600 (MDT)
+Received: from localhost (localhost [127.0.0.1])
+	by marvin.forty.two (8.11.6/8.11.0/SuSE Linux 8.11.0-0.4) with ESMTP id g6HFp3Z13379
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Jul 2002 17:51:03 +0200
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 17 Jul 2002 17:50:53 +0200
+From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Message-ID: <3D35925D.71683E92@ruhr-west.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Merge -rc1 -rc2 (was 2.4.19-rc1-ac6 Merge pa55: #error ...?)
+To: parisc list <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] Kernel panic, ccio-dma.c, C110
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Hi all,
 
-I merge my 19-rc1 stuff with 19-rc2 and just enounter a conflict in
-include/linux/personality.h:
+I am experiancing repeatable kernel panics on my C110. I upgraded the
+kernel to 2.4.18-pa53, but without change. ;-(
 
-enum{
-...
-+        PER_OSF4= 0x000f,
+Famous last words are:
 
-unfortunaltely the same as our:
-         PER_HPUX= 0x000f,
+Kernel panic: ccio-dma.c ccio_alloc_range() I/O MMU is out of mapping
+resources.
+In interrupt handler - not syncing
 
-What should I do?
+After that - black screen, last words and silence. On one occasion, it
+spat out a bit more before it died. Sort of SCSI-Bus trouble in the
+farmost sense. Could not repeat that. Harddrive is an old HP2490A, that
+came foating around. I did not want to erase the hpux on the other
+drives.
+All I need to do to crash the machine is writing big files (i.e. kernel
+tarballs) to the drive (either copying or from ftp). What makes me
+wonder is that I was able to copy some 300 MB *.wav file to it some
+weeks back.
 
-Joel
 
+Juergen
 
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+-- 
+===========================================     __   _
+Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+===========================================_\_v __/_/_//_/\_,_/ /_/\_\
