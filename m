@@ -1,54 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta04.mail.mel.aone.net.au (mta04.mail.au.uu.net [203.2.192.84])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 062E2482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Apr 2001 05:03:05 -0600 (MDT)
-Received: from piglet.sspl.net.au ([210.84.112.25])
-          by mta04.mail.mel.aone.net.au with ESMTP
-          id <20010418110256.MONM316.mta04.mail.mel.aone.net.au@piglet.sspl.net.au>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Wed, 18 Apr 2001 21:02:56 +1000
-Received: from winnie.sspl.net.au (barbar@winnie. [192.168.10.9])
-	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id VAA11341
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Apr 2001 21:02:51 +1000
-From: "Pete" <plaven@ozemail.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 18 Apr 2001 21:02:52 +1000
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Reply-To: plaven@ozemail.com.au
-Message-ID: <3ADE00FC.9679.982D3D@localhost>
-Subject: [parisc-linux] dumb question of the day
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8024B482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Apr 2001 10:24:29 -0600 (MDT)
+Message-Id: <200104181617.KAA19403@puffin.external.hp.com>
+To: plaven@ozemail.com.au
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: Your message of "Wed, 18 Apr 2001 21:02:52 +1000."
+             <3ADE00FC.9679.982D3D@localhost>
+Date: Wed, 18 Apr 2001 10:17:14 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: [parisc-linux] Re: NFS root setup question
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi everyone,
+"Pete" wrote:
+> I have a 715/64 that I'm trying to boot across the network.
+...
+> The hp box fails with an error on the console (I have a vga screen 
+> on the box):
+> 
+> "ERROR: Cannot load IPL, error detected."
+> 
+> Since this is my first time with nfsbooting it's likely I'm not doing 
+> something right there, ie, I don't have /etc/exports setup.. should I 
+> od this?
 
-I have a 715/64 that I'm trying to boot across the network.
+Yes. But you also need a *lifimage*.
 
-I grabbed the latest base tar ball from the ftp server and 
-uncompressed it. 
+I don't think matching lifimage's (matching the baseplus /boot/vmlinux)
+where posted to the ftp site. I've posted a NFSROOT enabled lifimage for
+a 32-bit/serial console (not STI enabled):
+	ftp://puffin.external.hp.com/pub/parisc/binaries/lifimages/lifimage_32_serial_20010418.gz
 
-I grabbed rboot and set it up and didn't work, so I have set bootps 
-and tftp according to the howto at http://www.oswg.org/oswg-
-nightly/oswg/en_US.ISO_8859-1/articles/parisc-linux/parisc-linux-
-boot.html  (very helpful too I might add)
+Matching Systemp.map and vmlinux are in ../kernels directory.
 
-from boot_admin I boot lan, I have tcpdump listening on eth1 where 
-the hppa box is connected via aui/TP and UTP cross over.  I can 
-see the broadcast and /var/log/messages shows that tftp is looking 
-for iplboot, as copied from the tar ball boot dir.
+For the 715's, append 'y' to the "boot lan y" in order to interactively
+change the nfsroot= param (IP needs to point to the NFS server).
+I don't recall if you need a different vmlinux embedded in the LIF or
+if you can interactively tweak the palo boot params to use STI console
+instead of serial.
 
-The hp box fails with an error on the console (I have a vga screen 
-on the box):
+grant
 
-"ERROR: Cannot load IPL, error detected."
-
-Since this is my first time with nfsbooting it's likely I'm not doing 
-something right there, ie, I don't have /etc/exports setup.. should I 
-od this?
-
-Please, some short pointers for a dummy.. :)  I _so_ want to IRC 
-on this box!!  :)
-
-Thanks.
-
-Pete.
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
