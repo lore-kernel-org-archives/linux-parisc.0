@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailhost.sporbeck-family.de (pD9E1DC06.dip.t-dialin.net [217.225.220.6])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0899482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Jul 2003 14:18:05 -0600 (MDT)
-Received: from [192.168.100.101] (helo=sporbeck-family.de)
-	by mailhost.sporbeck-family.de with esmtp (Exim 4.14)
-	id 19bQqm-0000k4-JB
-	for parisc-linux@lists.parisc-linux.org; Sat, 12 Jul 2003 22:20:08 +0200
-Message-ID: <3F106D5B.9070108@sporbeck-family.de>
-Date: Sat, 12 Jul 2003 22:19:39 +0200
-From: Jan Sporbeck <jan_lists@sporbeck-family.de>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4CBE4830
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jul 2003 09:12:57 -0600 (MDT)
+Message-ID: <3F117AA5.6090402@tiscali.be>
+Date: Sun, 13 Jul 2003 15:28:37 +0000
+From: Joel Soete <joel.soete@tiscali.be>
 MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] eisa configuration howto?
-References: <3F102709.10403@sporbeck-family.de> <20030712175430.GA27933@dsl2.external.hp.com>
+Cc: Helge Deller <deller@gmx.de>, Randolph Chung <tausq@debian.org>
 Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Xfree-server and Xhp ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +21,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-..
+Hi all,
 
-Grant Grundler wrote:
-> On Sat, Jul 12, 2003 at 05:19:37PM +0200, Jan Sporbeck wrote:
+I just discover some days ago (when trying to rebuild 4.3) that in XFree-4.2 still exists (not anymore
+in 4.3?) the sources of a Xhp server supporting the builtin gfx of my testing b180 (into build-tree/xc/programs/Xserver/hw/hp/).
+
+Juliusz Chroboczek <jch@pps.jussieu.fr <mailto:jch@pps.jussieu.fr>> kindly explain me:
+> Please note that Xhp is not supported by XFree86, and most probably
+> doesn't build.
+> 
+> Try adding a file xc/config/cf/host.def with the following line:
 >
->>But i am stuck with the eisa configuration.
->>Where do I register eisa cards?
-> 
-> Because of a lack of documentation on the eisacfg tool that knows
-> how to poke NVRAM, this hasn't been done yet.
-> 
->>-Ive only done that on intel before, there was an userspace programm..
-> 
-> Yes. Maybe use HPUX + eisacfg to setup the eisa cards?
+>  #define XhpServer YES
+>
+> Then make World as usual.
 
+It doesn't build :-(
 
-did I get this right: I have to use the HPUX eisacfg tool to setup the 
-card?!
--there is no linux tool?
-thats quite sad, as I donT have any HPUX anymore..
+But I also found some additional patch which HP supplied for suport of X11R6.3 into mklinux project.
+It would be helpful as this patch supplied (among other things) the asm src of an object supplying requested ngleDepth8_CopyAreaFromToScreen() and ngleDepth24_CopyAreaFromToScreen() functions.
+Into mklinux sources I also find back <machine/asm.h> it would be easy with the help of kernel documentation to 'reverse' it for parisc linux (seems to be trivial).
+My only pb is that src seems to be writen for 'som' env:
+>#include <machine/asm.h>
+>
+>       .space  $TEXT$
+>       .subspa $CODE$
+>
+>       .import ngleScreenPrivIndex,data
+>
+>       .export ngleDepth8_CopyAreaFromToScreen
+>       .proc
+>       .callinfo
+>
+>ngleDepth8_CopyAreaFromToScreen
+>       ldo 0x40(sp),sp
+>       stw arg0,-0x64(sp)
+>       stw arg1,-0x68(sp)
+>       stw arg2,-0x6c(sp)
+>       stw arg3,-0x70(sp)
+>       ldw -0x68(sp),r1
+[...]
+>       stw t3,0xb00(t4)
+>       bv r0(rp)
+>       ldo -0x40(sp),sp
+>
+>       .procend
+>
+[...]+
+>       .end
 
+(arg[0..3], r[0..], t[1..4] beeing labels defined <machine/asm.h>)
 
-thanks anyway,
-/jan.
+Does it exist some doc or tips to do this kind of obj translation 'som' -> 'elf'?
+
+Thanks in advance for advises,
+	Joel
