@@ -1,50 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 22550482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Oct 2001 23:36:03 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ezqbiaaa for parisc-linux@lists.parisc-linux.org; Fri, 12 Oct 2001 22:31:27 -0700
-Date: Fri, 12 Oct 2001 22:35:20 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Sonny Cook <sonny@aspersion.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] unaligned access with iptables limit support
-Message-ID: <20011012223520.M653@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.LNX.4.33.0110130227590.13555-100000@lefou.zayda.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0110130227590.13555-100000@lefou.zayda.com>
+Received: from sj-msg-core-3.cisco.com (sj-msg-core-3.cisco.com [171.70.157.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 79CDB482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 13 Oct 2001 00:03:22 -0600 (MDT)
+Received: from mira-sjc5-9.cisco.com (mira-sjc5-9.cisco.com [171.71.163.32])
+	by sj-msg-core-3.cisco.com (8.11.3/8.9.1) with ESMTP id f9D61AC09049
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Oct 2001 23:01:12 -0700 (PDT)
+Date: Fri, 12 Oct 2001 23:02:59 -0700 (PDT)
+From: Christian Suder <csuder@cisco.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0110122248050.766-100000@ibanez.csuder.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 735/125 'reliably' hangs during mke2fs
 List-ID: <linux-parisc.vger.kernel.org>
 
-> iptables -t filter -A LDROP -p tcp -m limit --limit 2/s -j LOG --log-level
-> info --lo g-prefix "TCP Dropped "
-> 
-> I get this on the console:
-> 
-> iptables(428): unaligned access to 0x4020d0cf at ip=0x401fc767
-> iptables(428): unaligned access to 0x4020d0d3 at ip=0x401fc76f
+Hi,
 
-yes, this is a bug in iptables.
+I'm trying to get a 735/125 going using the 0.9.2 install CD. Old, I
+know.... Whenever it's time to make the fs I get up to here :
 
-> ld -shared -o extensions/libipt_limit.so extensions/libipt_limit_sh.o
-> ld: BFD internal error, aborting at ../../bfd/elf32-hppa.c line 939 in
-> hppa_build_one_stub
-> 
-> ld: Please report this bug.
-> 
-> make: *** [extensions/libipt_limit.so] Error 1
-> 
-> The debian version is 1.2.2 and the downloaded source is 1.2.3.  Has
-> anyone seen anything like this?
+Creating filesystem (for 2.2 kernels only)...
+mke2fs 1.20, 25-May-2001 for EXT2 FS 0.5b, 95/08/09
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+91968 inodes, 183808 blocks
+9190 blocks (5.00%) reserved for the super user
+First data block=0
+6 block groups
+32768 blocks per group, 32768 fragments per group
+15328 inodes per group
+Superblock backups stored on blocks: 
+        32768, 98304, 163840
 
-it needs to link with gcc instead of with ld.
+Writing inode tables: done                            
+Writing superblocks and filesystem accounting information: 
 
-feel free to file a bug. you can point them to build logs at:
-http://buildd.debian.org/fetch.php?&pkg=iptables&ver=1.2.3-2&arch=hppa&stamp=1001284133&file=log&as=raw
+with the cursor behind the last line. 
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Any magic boot parameter that might help here ? Is there a 'cheat-sheet'
+for everything that can be specified at the boot prompt ? 
+
+By the same token, I've tried to install it on a C110 with the HD on the
+FWSCSI. It appears to work but within an hour or two the filesystem gets
+severly corrupted. 
+I have it running now with 'today's kernel' after reinstalling and getting
+the kernel on as early as possible. Fingers crossed....
+
+Any hints and pointers on SCSI issues appreciated,
+
+	Christian 
