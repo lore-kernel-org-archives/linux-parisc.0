@@ -1,29 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA22693
-	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Jul 1999 13:20:36 -0600
-Date: Wed, 28 Jul 1999 21:21:24 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Lyonel VINCENT <lyonel_vincent@hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] building IPL...
-Message-ID: <19990728212124.M21585@suse.de>
-References: <379F52A1.4BB9F81D@hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA29911
+	for <parisc-linux@puffin.external.hp.com>; Sat, 31 Jul 1999 11:43:09 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id TAA29991
+	for <parisc-linux@thepuffingroup.com>; Sat, 31 Jul 1999 19:44:07 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id TAA572889
+	for <parisc-linux@thepuffingroup.com>; Sat, 31 Jul 1999 19:44:06 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11AdAz-00025qC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sat, 31 Jul 1999 19:44:05 +0200 (CEST)
+Date: Sat, 31 Jul 1999 19:44:05 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990731194405.U25925@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <379F52A1.4BB9F81D@hp.com>; from Lyonel VINCENT on Wed, Jul 28, 1999 at 08:57:38PM +0200
+Subject: [parisc-linux] looking for something to do?
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I'm new to this list and I would want to tell you that if you need a
-> dumb user to test your kernels, I have some systems roaming around which
-> could do (C-class, D-class, G-class, K-class, 705, 712, 735). These are
-> test systems and I can reboot them without any problem.
 
-Great.  Do you have something set up to boot all of the PA1.1 ones and see
-which one come through and where those that don't hang ?
+I know there are some people sitting around who'd like to help with this
+project, but feel they are insufficiently able.  I have a task here which
+requires almost no prior knowledge, just some time.  As an added bonus,
+you'll gain some experience and knowledge.  What I need is a table which
+has the entry points for HPUX syscalls.
 
-> PPS: I've just built the latest snapshot and my 712 doesn't seem to like
-> it... (btw, the 05/07 image works well and correctly detects the
-> CPU/frequency/memory...)
+Take a look at arch/parisc/kernel/entry.S which has the linux syscalls in
+it, copy it to hpux_entry.S and modify it to have HPUX syscalls instead
+(the numbers are in include/asm-parisc/unistd.h).  Use the relevant linux
+syscalls where they are _identical_.  That means parameters and behaviour.
+Where they are not, some glue code must be written to mangle the hpux
+parameters into those that Linux is expecting.  If you're interested,
+drop me a mail to let me know you're doing it, and I'll give you a hand
+if you get stuck.
 
-I think you ran into our slightly broken Dino detection code. Try to disable
-all dino support for the build.
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
