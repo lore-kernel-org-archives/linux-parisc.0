@@ -1,48 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C82A94A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 Feb 2001 21:08:22 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14PGTN-0005y2-00
-	for parisc-linux@lists.parisc-linux.org; Sun, 04 Feb 2001 04:08:21 +0000
-Date: Sun, 4 Feb 2001 04:08:21 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010204040821.A12539@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+Received: from mr14.vic-remote.bigpond.net.au (mr14.vic-remote.bigpond.net.au [24.192.1.29])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 05C884A19
+	for <parisc-linux@parisc-linux.org>; Sat,  3 Feb 2001 22:54:43 -0700 (MST)
+Received: from customware.com.au (CPE-144-132-17-132.vic.bigpond.net.au [144.132.17.132])
+	by mr14.vic-remote.bigpond.net.au (Pro-8.9.3/8.9.3) with ESMTP id QAA25790
+	for <parisc-linux@parisc-linux.org>; Sun, 4 Feb 2001 16:54:40 +1100 (EDT)
+From: penfold@customware.com.au
+Received: (from penfold@localhost)
+	by customware.com.au (8.9.3/8.8.7) id QAA31264
+	for parisc-linux@parisc-linux.org; Sun, 4 Feb 2001 16:54:36 +1100
+Message-Id: <200102040554.QAA31264@customware.com.au>
+Subject: Re: [parisc-linux] Source of this version of rbootd-2.0-2
+To: parisc-linux@parisc-linux.org
+Date: Sun, 4 Feb 2001 16:54:35 +1100 (EST)
+In-Reply-To: <Pine.LNX.4.30.0102032042200.9141-100000@pokey.513erich.iwaynet.net> from "herrold" at Feb 03, 2001 08:50:25 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] Fun with RAID
 List-ID: <linux-parisc.vger.kernel.org>
 
-As some of you will have noticed, the current Head branch, as well as
-enabling lots of strange and curious segfaults also enables Software Raid.
-I suspect someone with the time & inclination will eventaully write some
-optimised XOR functions for PA-RISC, but in the meantime, we shall use the
-generic C functions.
+> 
+> On Sun, 4 Feb 2001 penfold@customware.com.au wrote:
+> 
+> 
+> Try grabbing the tcpdump _SRPM_ from the RH Rawhide (their current
+> devel build tree), for a later version (All SRPMS contain pristine
+> tarballs ...), and pull the tarball, and build from that.
 
-There are two functions to choose from, and the code does this at
-boottime.  One is optimised for processors with 8 registers, and the
-other for processors with 32 registers.  The 32regs one uses 8 registers,
-interleaving loads, xors, and stores.  The 8regs function just dumbly
-loads, xors and stores for each word.
+I wouldnt bother...
 
-So, just for fun, let's see how they stack up.  Here's results from a 712
-(PCX/L CPU):
+for the sake of a quick edit, I'm a happy camper.
 
-raid5: measuring checksumming speed
-   8regs     :    60.960 MB/sec
-   32regs    :   107.442 MB/sec
+Alternateively, a few symlinks would fix it.
 
-and here's a C200+ (PCX/U+ CPU):
-
-   8regs     :   421.386 MB/sec
-   32regs    :   531.876 MB/sec
-
-which is as you would expect, but i have a vague recollection that grant
-said the 8regs was the faster code on the A500.
-
-[thanks to Ryan for the C200+ result]
-
--- 
-Revolutions do not require corporate support.
+Damian
+penfold@customware.com.au
