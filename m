@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A1DF486C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Jul 2002 17:53:04 -0600 (MDT)
-Subject: Re: [parisc-linux] Kernel panic, ccio-dma.c, C110
-From: Ryan Bradetich <rbradetich@uswest.net>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E1A0F486C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Jul 2002 23:37:19 -0600 (MDT)
 To: Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] Kernel panic, ccio-dma.c, C110
+Message-ID: <1026970626.3d36540295867@webmail.tiscalinet.be>
+Date: Thu, 18 Jul 2002 07:37:06 +0200 (CEST)
+From: joel.soete@freebel.net
 Cc: Juergen Braukmann <juergen.braukmann@ruhr-west.de>,
 	parisc list <parisc-linux@lists.parisc-linux.org>
+References: <3D35925D.71683E92@ruhr-west.de> <20020717181459.CCD8E48CF@dsl2.external.hp.com>
 In-Reply-To: <20020717181459.CCD8E48CF@dsl2.external.hp.com>
-References: <3D35925D.71683E92@ruhr-west.de>  
-	<20020717181459.CCD8E48CF@dsl2.external.hp.com>
-Content-Type: text/plain
-Date: 17 Jul 2002 17:53:00 -0600
-Message-Id: <1026949980.10285.4.camel@beavis>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,35 +24,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant,
+Quoting Grant Grundler <grundler@dsl2.external.hp.com>:
 
-Is there a way to make this more intelligent now that we have an I/O
-tree?  Maybe driverfs in 2.5.X will help us figure out how to make it
-smarter ... it kinda sucks to recompile the kernel because you do not
-have enough memory for our default setting of 4.
-
-Seems like we could develop a huristic based on devices below the
-iommus.
-
-Just a thought..
-
-- Ryan
-
-
-On Wed, 2002-07-17 at 12:14, Grant Grundler wrote:
 > Juergen Braukmann wrote:
 > > Kernel panic: ccio-dma.c ccio_alloc_range() I/O MMU is out of mapping
 > > resources.
 > 
 > Sorry Joel, this has nothing to do with SCSI termination.
 > 
-> Juergen,
-> In arch/parisc/kernel/ccio-dma.c, change ccio_mem_ratio from 4 to 8 or 16.
-> For more explanation, search for "Determine IOVA Space size" in ccio-dma.c.
-> 
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+Do not be, I would just like to be sure that there is no HW problem as I
+encounter with my b2k.
+
+Thanks for info,
+    Joel
+ 
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
