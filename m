@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from relay1.alcatel.be (alc119.alcatel.be [195.207.101.119])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 974F3482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 12:29:50 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C9B64832
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 12:29:52 -0600 (MDT)
 Received: from nlntadn.ats.nld.alcatel.nl (localhost [127.0.0.1])
-	by relay1.alcatel.be (8.10.1/8.10.1) with ESMTP id f995r8u02620
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 9 Oct 2001 07:53:09 +0200 (MET DST)
-Message-ID: <1A8904C3797ED411AC2E0008C7E6F88117C9E8@nlntmail2b.ats.nld.alcatel.nl>
+	by relay1.alcatel.be (8.10.1/8.10.1) with ESMTP id f988H5Z15726
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 8 Oct 2001 10:17:14 +0200 (MET DST)
+Message-ID: <1A8904C3797ED411AC2E0008C7E6F88117C9E6@nlntmail2b.ats.nld.alcatel.nl>
 From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 9 Oct 2001 07:53:07 +0200 
+To: "Parisc-Linux (E-Mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 8 Oct 2001 10:17:01 +0200 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Subject: [parisc-linux] FW: SKB errors
 List-ID: <linux-parisc.vger.kernel.org>
 
