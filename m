@@ -1,22 +1,22 @@
-Return-Path: <yzrzxkmwr@tom.com>
+Return-Path: <mkbhhfovt@cnnic.net.cn>
 Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC03248AE
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F89148B1
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 12:58:08 -0700 (MST)
-Received: from 6532211hfc112.tampabay.rr.com (6532211hfc112.tampabay.rr.com
-	[65.32.211.112]) by cuprel1.hp.com (Postfix) with SMTP id 9496410B9
+	Wed, 24 Dec 2003 13:37:31 -0700 (MST)
+Received: from h141n2fls32o897.telia.com (h141n2fls32o897.telia.com
+	[213.66.149.141]) by cuprel1.hp.com (Postfix) with SMTP id B867CE7A
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 11:58:07 -0800 (PST)
-From: "Deanne Terry" <yzrzxkmwr@tom.com>
+	Wed, 24 Dec 2003 12:37:29 -0800 (PST)
+From: "Chase Conley" <mkbhhfovt@cnnic.net.cn>
 To: parisc-linux@parisc-linux.org
 Mime-Version: 1.0
-Date: Wed, 24 Dec 2003 10:54:03 +0300
+Date: Wed, 24 Dec 2003 04:32:57 -0400
 Content-Type: multipart/alternative;
-	boundary="--ALT--WEMF40182437652834"
-Message-Id: <LTHZXQF-0000462631116@beat>
+	boundary="--ALT--MMEK52558307715869
+Message-Id: <PKWLBSJ-0008019067995@baleen>
 Cc: 
-Subject: [parisc-linux] Re: ASTOH, formed a plan
-Reply-To: Terry Deanne <yzrzxkmwr@tom.com>
+Subject: [parisc-linux] Re: ALVNOSS, about the events
+Reply-To: Conley Chase <mkbhhfovt@cnnic.net.cn>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,28 +26,29 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----ALT--WEMF40182437652834
+----ALT--MMEK52558307715869
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
 
-horror offset bator vaudeville apathetic dreyfuss babysitter bluegill ernestine 
-larkspur amiss cacophonist venereal coleman jerky 
-efflorescent mckee proportionate embedded bremen bombast corrigible embryology blest friend 
+coca everyday lift counsel abject compulsive 
+needlework budget inscrutable firearm haystack 
+car indies humanitarian smatter bronchitis 
 
-----ALT--WEMF40182437652834
+----ALT--MMEK52558307715869
 Content-Type: text/html; charset=us-ascii
 Content-Transfer-Encoding: 8bit
 
+
 <HTML><HEAD>
 <BODY>
-<p>Ban</macbeth>ned C</goniometer>D! Gov</marcia>ernment d</claire>on't wan</crete>t m</systemization>e t</compulsory>o s</borderline>ell i</autonomous>t. Se</jest>e N</vaporous>ow -</p>
-<a href="http://www.530000x.com/cd/">
-<img border="0" src="http://www.530000x.com/cd/ads2.jpg"></a>
-popcorn charleston kaufman crystallography adaptive promethean bengali goggle desperate nettlesome russet paregoric geography brownian heliocentric standpoint cudgel geophysics postoperative gresham auerbach deoxyribonucleic design boltzmann counterclockwise clothesman conscientious brainchild <BR>
-awoke plaguey christian crumple ambuscade acceptor bard announce zeiss piotr followeth maine synonymous buckboard bustard emile centigrade viscous yokel joseph hillmen spokesmen widen bushmaster antagonist borate excelsior indiana arkansas voluble <BR>
+<p>Fr</cellulose>ee Ca</local>ble_ TV</p>
+<a href="http://www.530000x.com/cable/">
+<img border="0" src="http://www.530000x.com/fiter.jpg"></a>
+corn turtleback contrast imaginate telephony contradict connotation numeric abreast vitrify weather connotation charlemagne invocate madman conscience acadia ama introduce willis instigate intervention reykjavik surfeit eagan gurgle addis inseminate headwall cafe berry axolotl benchmark aorta cart <BR>
+adherent gunflint bevel dawn comparison feudatory eleanor confute decrease innumerable career cursive rosy spica zomba zap adoption dastard fief handicraftsman bimetallism oman audiotape <BR>
 
 </BODY>
 </HTML>
 
 
-----ALT--WEMF40182437652834--
+----ALT--MMEK52558307715869--
