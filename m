@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 47BFE482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 02:07:16 -0700 (MST)
-Date: Tue, 28 Jan 2003 10:07:12 +0100
-Subject: Re: [parisc-linux] Kernel....
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v551)
-Cc: <parisc-linux@lists.parisc-linux.org>
-To: Sir Ace <chandler@nateng.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <Pine.LNX.4.33.0301272021470.235-100000@jordan.eng.nateng.com>
-Message-Id: <E3411039-329F-11D7-90F1-0030656F07A2@esiee.fr>
+Received: from tyke.pjc.net (public1-leed3-6-cust58.leed.broadband.ntl.com [80.7.68.58])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0991F482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 02:16:06 -0700 (MST)
+Received: from patrick by tyke.pjc.net with local (Exim 3.36 #1 (Debian))
+	id 18dRqd-000078-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Jan 2003 09:16:03 +0000
+Date: Tue, 28 Jan 2003 09:16:03 +0000
+From: Patrick Caulfield <patrick@tykepenguin.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] new gcc-default for hppa
+Message-ID: <20030128091603.GD31789@tykepenguin.com>
+References: <20030126044656.GB6057@dsl2.external.hp.com> <200301260509.h0Q59ntl001762@hiauly1.hia.nrc.ca> <20030127072615.GF8487@tausq.org> <20030128073101.GD20940@tausq.org> <20030128074607.GE20940@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <20030128074607.GE20940@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-For heaven's sake! Everything is written and explained in the 
-PARISC-Linux Boot HOWTO.
-That goes for Mr Mehta as well...
+On Mon, Jan 27, 2003 at 11:46:07PM -0800, Randolph Chung wrote:
+> In reference to a message from Randolph Chung, dated Jan 27:
+> > > well.... Grant and I did some more debugging on this.... here's what
+> > > we've tried so far:
+> > 
+> > ok, here's what's happening apparently.... (with many thanks to Grant 
+> > for a sharp eye :)
+> 
+> there's a temporary workaround in cvs now (2.4.20-pa23). For people
+> who have seen the crash with gcc-3.2, please give it a try and let us 
+> know how it goes.
 
-http://pateam.esiee.fr/doc.html
+Works fine for me. 
 
-HTH,
+Thanks VERY much :-)
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+-- 
 
-On mardi, jan 28, 2003, at 05:23 Europe/Paris, Sir Ace wrote:
-
->
-> Quick question...  I got the box back up and running and everything 
-> built.
->
-> In PCs it's make zImage/bzImage
-> on Alpha's it's make boot
->
-> make boot doesn't work, and make vmlinux doesn't seem to be right
-> either...
->
-> What is the target for a kernel build?
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
->
+patrick
