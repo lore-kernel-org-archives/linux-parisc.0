@@ -1,39 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.storm.ca (storm.ca [209.87.239.69])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A07824A19
-	for <parisc-linux@parisc-linux.org>; Wed, 14 Mar 2001 11:54:29 -0700 (MST)
-Received: from storm.ca (ppp-209-87-255-5.ottawa.storm.ca [209.87.255.5])
-	by mail.storm.ca (8.9.3+Sun/8.9.3) with ESMTP id NAA00593
-	for <parisc-linux@parisc-linux.org>; Wed, 14 Mar 2001 13:54:22 -0500 (EST)
-Message-ID: <3AAFBE46.94595FCC@storm.ca>
-Date: Wed, 14 Mar 2001 13:53:58 -0500
-From: Sandy Harris <sandy@storm.ca>
-MIME-Version: 1.0
+Received: from localhost.localdomain (ottawa.linuxcare.com [216.208.98.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4DA4A4A19
+	for <parisc-linux@parisc-linux.org>; Wed, 14 Mar 2001 12:59:05 -0700 (MST)
+Received: (from pjlahaie@localhost)
+	by localhost.localdomain (8.11.0/8.11.0) id f2EJxvi14676
+	for parisc-linux@parisc-linux.org; Wed, 14 Mar 2001 14:59:57 -0500
+Date: Wed, 14 Mar 2001 14:59:57 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
 To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Reasonable price for a 735/99
-References: <200103141536.KAA04454@hiauly1.hia.nrc.ca>
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20010314145957.C13965@achilles.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="aVD9QWMuhilNxW9f"
+Subject: [parisc-linux] perl-5.6.0 build problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Could somebody tell me what would be a reasonable prize for the
-> > following box:
-> >
-> > HP 735-99 w 96 MB RAM
-> > ...
+--aVD9QWMuhilNxW9f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In the last year I've bought:		Canadian $
+Hello everyone,
 
-	16 bare 712/60s, 128 meg	$ 50 each
-	 (no disk, keyboard, monitor, ...)
+I've been trying to get perl-5.6.0 building since its required for
+the boot-floppies package (base tar ball needs base-config which requires
+debconf-utils, which requires perl-5.6).  Unfortunately, perl-5.6 does
+not work correctly once compiled.
 
-	715/100, 256 meg		$100
-		keyboard & mouse	$ 25
-		20" HP monitor		$ 50
+If I use the debian build (with the patch), perl.static and perl.debug
+complete building, but a dynamic version crashes immediately on startup
+from loading libperl.so.5.6.0 with the following fault:
 
-	735, 300-odd meg, small drive	$ 35
+do_page_fault() pid=21621 command='miniperl' type=6 address=0x00000797
 
-The last was sheer luck, at a surplus dealer who wasn't sure what it
-was. I think the others are good but reasonable prices.
+If I only build the static and debug versions, the ./perl installperl
+program crashes with the following error:
 
-Anyone in the Ottawa area, there are more of these and various old
-Suns as well. Mail me off-list if you need vendor contact info.
+do_page_fault() pid=1781 command='perl' type=6 address=0x09280003
+
+I've also tried building perl-5.6 w/o any changes (from the .orig.tar.gz)
+and the same thing happens.  If it would help, I can install gdb/strace
+to find out at which point the faults happens.  If anyone has managed to
+get a work perl5.6, please let me know, so I can get it ready for the
+install package.
+
+						- Paul
+
+--aVD9QWMuhilNxW9f
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE6r8298ggPQthPCzcRAlnaAJ0dbFpla/IXYiuKl9qGI/4chgQhjgCgoekn
+kwM8Urwqg1ovI95ONPd6u8o=
+=Dlpp
+-----END PGP SIGNATURE-----
+
+--aVD9QWMuhilNxW9f--
