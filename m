@@ -1,29 +1,58 @@
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA30710
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 11:10:55 -0700
-To: "Thomas Marteau" <marteaut@esiee.fr>
-cc: "Kailashnath V Rampure" <kailasr@webcash.com>,
-        parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Boot command 
-In-Reply-To: Your message of "Wed, 15 Nov 2000 19:10:56 +0100."
-             <007c01c04f2f$6679f620$a832d793@esiee.fr>
-References: <Your message of "Fri, 03 Nov 2000 11:46:39 PST." <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com><Your message of "Fri, 03 Nov 2000 11:03:23 PST." <5.0.0.25.0.20001102174648.02a4fb20@mail.webcash.com><5.0.0.25.0.20001103114401.00a46150@mail.webcash.com><5.0.0.25.0.20001114142101.00a69910@mail.webcash.com> <5.0.0.25.0.20001115095344.01f15cb0@mail.webcash.com>  <007c01c04f2f$6679f620$a832d793@esiee.fr> 
-Date: Wed, 15 Nov 2000 11:12:57 -0700
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E13w73J-0006Vp-00@noam.fc.hp.com>
+Received: from rhirst.linuxcare.com (sleepie.demon.co.uk [194.222.23.208])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA31180
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 11:48:36 -0700
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id A5740B007; Wed, 15 Nov 2000 18:48:08 +0000 (GMT)
+Date: Wed, 15 Nov 2000 18:48:08 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@puffin.external.hp.com
+Message-ID: <20001115184808.P32715@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Single-stepping
 List-ID: <linux-parisc.vger.kernel.org>
 
-=     You put the swap partition before the f0 partition and here it is the f0
-= partition in first position.
+(Oops, CC-ed to the wrong list first time!)
 
-The partition order doesn't matter so long as the f0 partition and
-the partition containing your kernel (an ext2 partition) *end* within
-the first 2Gb of the disk.  See the PALO README.html.
+Hi John,
+  I've been helping Alan Modra out with kernel changes to support
+single stepping for gdb.  Paul Bame suggested I bounced our ideas
+off you in case you (or anyone else) had any comments.  I havn't
+actually committed my changes yet.
 
-=     Also, your hard disk is ida instead of sda, what's that ?
+The basic approach is to use the recovery counter to generate
+a trap every instruction.  The scheme is complicated because a
+suspended process may or may not return to user space via an RFI.
 
-PALO lists the devices as 'ida' instead of 'sda' or 'hda' since it
-is using the firmware 'IODC' interface to talk to the boot device,
-and it has no idea what type of boot device IODC is providing.
+If it was suspended as a result of an interrupt then we can
+simply set PSW bit R in the tasks saved registers and it will
+get loaded by the RFI.  On every task switch I set the
+recovery counter to 0, just in case the new process is being
+single-stepped.
 
-	-P
+If a process is suspended during a syscall, then there is no
+RFI on the return path to userland, and we have to handle things
+differently.  I have changed the syscall return path such that
+it loads the recovery counter with 3 before updating the PSW
+with a value from the tasks saved registers.  If that PSW has
+the R bit set, then the count of 3 will generate a trap on the
+first instruction following the branch back to user space.
+Note that PSW wasn't previously restored on the syscall return
+path.
+
+To avoid further complications of interrupts during the three
+instructions when the recovery counter is decrementing, whenever
+we set the R bit, we also clear the I bit to disable interrupts.
+
+Nullified instructions are handled by the controlling process
+manually moving the childs IAOQ over the instruction without
+actually setting it running, because the recovery counter isn't
+decremented for nullified instructions.
+
+I need to do some more testing before committing this, but would
+welcome any comments on the basic approach taken, areas I have
+mis-understood, or problems with it that might not yet have
+occurred to me.
+
+Thanks,
+  Richard
