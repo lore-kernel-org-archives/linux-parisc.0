@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD951CDEA.dip.t-dialin.net [217.81.205.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D944A482B
-	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 19:27:48 -0700 (MST)
-Date: Mon, 5 Nov 2001 03:24:26 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: kenneth westelinck <kennywest1@hotmail.com>
-Cc: Kaj-Michael Lang <milang@tal.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
-Message-ID: <20011105032426.A1671@solo.franken.de>
-References: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com> <003101c163a9$48570590$56dc10c3@amos> <OE13GhAj5p1Fjxe0ymQ00007efc@hotmail.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B4894482B
+	for <parisc-linux@parisc-linux.org>; Sun,  4 Nov 2001 19:29:31 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 160ZVu-0000GV-00; Mon, 05 Nov 2001 02:29:26 +0000
+Date: Mon, 5 Nov 2001 02:29:26 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: "Christopher C. Chimelis" <chris@debian.org>
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@parisc-linux.org, bcollins@debian.org
+Subject: Re: [parisc-linux] Re: hppa binutils/glibc updates
+Message-ID: <20011105022926.B4441@parcelfarce.linux.theplanet.co.uk>
+References: <20011103233352.F505@tausq.org> <Pine.LNX.4.21.0111042106311.25038-100000@spawn.hockeyfiend.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OE13GhAj5p1Fjxe0ymQ00007efc@hotmail.com>; from kennywest1@hotmail.com on Sun, Nov 04, 2001 at 07:46:23PM +0100
+In-Reply-To: <Pine.LNX.4.21.0111042106311.25038-100000@spawn.hockeyfiend.com>; from chris@debian.org on Sun, Nov 04, 2001 at 09:10:33PM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,13 +26,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Nov 04, 2001 at 07:46:23PM +0100, kenneth westelinck wrote:
-> Nope, same error (see the attached file). Any other ideas?
+On Sun, Nov 04, 2001 at 09:10:33PM -0500, Christopher C. Chimelis wrote:
+> If I think of something, I'll write ya.  Also, if I manage to get a
+> machine, I'm sure you'll be hearing from me (probably will be an Apollo
+> series 735, fyi...slow, but effective).
 
-how about using dpkg-buildpackage or applying the patches by hand ?
-
-Thomas.
+735 is a pretty cool machine.  don't get one which requires a
+fast-wide-diff scsi interface though; we don't have that working yet.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+Revolutions do not require corporate support.
