@@ -1,31 +1,36 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [parisc-linux] Banshee and Voodoo2
-Date: Sat, 8 Jan 2005 15:35:06 -0500
-Message-ID: <20050108203506.GB22378@localhost.localdomain>
-References: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net> <200501082033.33830.deller@gmx.de>
+Date: Sat, 08 Jan 2005 21:47:09 +0000
+Message-ID: <1105216425.10519.68.camel@localhost.localdomain>
+References: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net>
+	 <200501082033.33830.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
+Content-Type: text/plain
 Cc: parisc-linux@lists.parisc-linux.org
 To: Helge Deller <deller@gmx.de>
-Return-Path: <kyle@engsoc.org>
+Return-Path: <alan@lxorguk.ukuu.org.uk>
 In-Reply-To: <200501082033.33830.deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Jan 08, 2005 at 08:33:33PM +0100, Helge Deller wrote:
-> > p.s. any news on Visualize-FX4?
+On Sad, 2005-01-08 at 19:33, Helge Deller wrote:
+> On Saturday 08 January 2005 18:26, Jyry Suuntala wrote:
+> > Does anyone know is this list the actual list of supported hardware? If 
+> > so, does X work with Banshee and at what resolution? And the same 
+> > questions apply for Voodoo2, too :)
 > 
-> Not as I know... :-(
-> 
+> Vodoo2: 800x600x16bpp (1024x768x16bpp worked unreliable for me)
+> No idea about Banshee.
 
-I've been working on a driver, based on the register list in the
-x86 AGP driver, and some hints I got from the author of that driver. However,
-as of yet, I've had no luck. Though, that's likely because it's taken
-me quite a bit of time to become familiar with how the framebuffer
-interfaces work.
+I test it at 1024x768 on a PC. With the current XOrg the voodoo driver
+limits are:
 
-The goal is a 24bpp raw, unaccelerated framebuffer... I'd be happy with
-better, but I don't have enough information for that.
+Voodoo1: 800x600x16bpp unaccelerated but pretty decent ram bandwidth so
+its not bad. I think for 2D with some violence you could do 1024x768 but
+it would be right on the DAC limits
 
-Cheers,
-	Kyle
+Voodoo2: 1024x768x16bpp accelerated (including render acceleration). 
+
+We have enough info to do full DRI for the Voodoo2 but nobody has been
+sufficiently drunk to volunteer.
+
+Alan
