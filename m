@@ -1,38 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from methlab.23.org (23.org [209.25.5.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7E015482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 18:45:12 -0600 (MDT)
-Date: Tue, 12 Jun 2001 16:47:43 -0700 (PDT)
-From: CHS <chs@23.org>
-To: Stan Sieler <sieler@allegro.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] New list member..
-In-Reply-To: <200106130042.RAA20436@opus.allegro.com>
-Message-ID: <Pine.LNX.4.30.0106121646480.23761-100000@methlab.23.org>
+Received: from boschini.sede.cilea.it (boschini.sede.cilea.it [131.175.1.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 45968482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Jun 2001 02:23:07 -0600 (MDT)
+Date: Wed, 13 Jun 2001 10:29:15 +0200 (CEST)
+From: Matteo Boschini <boschini@cilea.it>
+To: parisc-linux@lists.parisc-linux.org
+Cc: boschini@cilea.it
+Message-ID: <Pine.LNX.4.21.0106131025410.876-100000@boschini.sede.cilea.it>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] problem installing on HP735
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 12 Jun 2001, Stan Sieler wrote:
+Hi all, 
+I read the FAQs and browsed the mailing list, but wasn't able to find
+anything similar...
 
-> > 3.) about a year ago, I remember HP ran some deal where you could send
-> > away for a (mostly) free copy of HP-UX, I think version 10.20. Is this
-> > still happening? I'd really like to get a copy of HP-UX to play around
->
-> That was a special Y2K deal ... probably not available now.
-> (and it was completely free)
+I have an HP/735, with an external SE SCSI CD-ROM and serial console.
+I downloaded palinux-0.9-32serial.iso and burnt my own CD (well 2 of them,
+just in case..) and I can not even boot from CD, getting 
 
-damn, that really sucks..
+bad IPL checksum
 
-I actually had sent away for and received the HP-UX media just in case I
-ever got a pa-risc machine, but I seemed to have lost it.
+the CD i have is a Toshiba XM 3301TA.
 
-thanks for the help..
+Any help ?
 
---
-AIM: bdsmchs  ---  http://www.23.org/~chs/
-------------------------------------------------------------------------
-"And the rifle? Wouldn't go out naked of a rifle. When shoes and
-clothes and food, when even hope is gone, we'll have the rifle."
-	--John Steinbeck
-------------------------------------------------------------------------
+Already thanking you, 
+
+Matteo Boschini
+(boschini@cilea.it)
