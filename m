@@ -1,145 +1,63 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA08862
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 08:13:41 -0700
-Date: Thu, 18 Jan 2001 10:17:24 -0500 (EST)
-Message-Id: <200101181517.f0IFHOs08538@openbsd1.buttafuoco.net>
-From: "Jim Buttafuoco" <jim@tylerdrive.org>
-To: parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=NEOMAIL_ATT_0.399137031826289"
-Subject: [parisc-linux] Trouble booting a 710 (bushmaster)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA10550
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 10:51:19 -0700
+Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via in.smtpd with esmtp
+	id <m14JJGi-001Vp3C@chalet> (Debian Smail3.2.0.102)
+	for <parisc-linux@thepuffingroup.com>; Thu, 18 Jan 2001 10:54:40 -0700 (MST)
+Message-Id: <m14JJGi-001Vp3C@chalet>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+Errors-To: bame@riverrock.org
+To: "Jim Buttafuoco" <jim@tylerdrive.org>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trouble booting a 710 (bushmaster)
+In-reply-to: Your message of "Thu, 18 Jan 2001 10:17:24 EST."
+             <200101181517.f0IFHOs08538@openbsd1.buttafuoco.net>
+Date: Thu, 18 Jan 2001 10:54:35 -0700
+Sender: bame@bame.riverrock.org
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+= Hi,
+= 
+= I have been trying to get my 2 9000/710's to boot for a couple of months
+= now.  Attached is the latest log file from my boot. 
+= 
+= The 2 problems that I see are the ramdisk is NOT seen and the BOOTP
+= fails.  I have used TCPDUMP to look at the packets coming and going from
+= the system.  All I see is the RBOOTP stuff.  The ramdisk is valid as far
+= as I can tell. (I mounted it via the loop fs).  Should it be compressed
+= with ZIP???.
+= 
+= The kernel/palo source is the latest as of 1/17/01.  
 
-------=NEOMAIL_ATT_0.399137031826289
-Content-Type: text/plain; charset=iso-8859-1
+= Loading ramdisk 1544116 bytes @ 0051c000...
+= [...]
 
-Hi,
+Looks like you're using a compressed ramdisk.  That should work, but
+it's worth trying an uncompressed one.
 
-I have been trying to get my 2 9000/710's to boot for a couple of months
-now.  Attached is the latest log file from my boot. 
+= RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+= 82596.c: MAC of HP700 LAN blindely read from the prom!
+= eth0: Couldn't get consistent shared memory
+= eth0: 82596 at 0xf0826000, 08 00 09 25 DD 7B IRQ 87.
+= 82596.c $Revision: 1.14 $
+= RAMDISK: Couldn't find valid RAM disk image starting at 0.
 
-The 2 problems that I see are the ramdisk is NOT seen and the BOOTP
-fails.  I have used TCPDUMP to look at the packets coming and going from
-the system.  All I see is the RBOOTP stuff.  The ramdisk is valid as far
-as I can tell. (I mounted it via the loop fs).  Should it be compressed
-with ZIP???.
+Yeah, try an uncompressed ramdisk.  EXT2
 
-The kernel/palo source is the latest as of 1/17/01.  
+= [...]
+= NET4: Linux TCP/IP 1.0 for NET4.0
+= IP Protocols: ICMP, UDP, TCP
+= IP: routing cache hash table of 512 buckets, 4Kbytes
+= TCP: Hash tables configured (established 2048 bind 2048)
+= Sending BOOTP requests............. timed out!
+= IP-Config: Auto-configuration of network failed.
+= Trying to free nonexistent resource <f0826000-f082600b>
+= NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+= kmem_create: Forcing size word alignment - nfs_fh
+= Kernel panic: VFS: Unable to mount root fs on 01:00
 
-Any help is welcome....
+No clue about your bootp problem...
 
-Thanks
-Jim
-
-
-
-------=NEOMAIL_ATT_0.399137031826289
-Content-Type: application/octet-stream;
-	name="hpboot.log"
-Content-Transfer-Encoding: base64
-
-KGMpIENvcHlyaWdodC4gIEhld2xldHQtUGFja2FyZCBDb21wYW55LiAgMTk5MS4KQWxsIHJpZ2h0
-cyByZXNlcnZlZC4KClBEQyBST00gcmV2LiAyLjAKSU9EQyBST00gcmV2LiAyLjAKMzIgTUIgb2Yg
-bWVtb3J5IGNvbmZpZ3VyZWQgYW5kIHRlc3RlZC4KCgpTZWxlY3RpbmcgYSBzeXN0ZW0gdG8gYm9v
-dC4KVG8gc3RvcCBzZWxlY3Rpb24gcHJvY2VzcywgcHJlc3MgYW5kIGhvbGQgdGhlIEVTQ0FQRSBr
-ZXkuCgpCb290aW5nIGZyb206ICAgICBsYW4uMDAwMGY4LTA1ZmU3ZS4zLjYgICAgIHAyCgpIYXJk
-IGJvb3RlZC4KcGFsbyBpcGwgamltQHAyLmJ1dHRhZnVvY28ubmV0IFRodSBKYW4gMTggMDk6NDc6
-MzggRVNUIDIwMDEKMC92bWxpbnV4IDIxNDM2MDQgYnl0ZXMgQCAweDY4MDAKMC9wYWxvLWNtZGxp
-bmUgJzAvdm1saW51eCBIT01FPS8gVEVSTT1saW51eCByb290PS9kZXYvcmFtIGluaXRyZD0wL3Jh
-bWRpc2sgY29uc29sZT10dHlTMCcKMC9yYW1kaXNrIDE1NDQxMTYgYnl0ZXMgQCAweDIxMWQ3NApL
-ZXJuZWw6IHBhcnRpdGlvbiAwIGZpbGUgL3ZtbGludXgKUmFtZGlzazogcGFydGl0aW9uIDAgZmls
-ZSAvcmFtZGlzawpFTEYzMiBleGVjdXRhYmxlCgpFbnRyeSAwMDEwMDE4OCBmaXJzdCAwMDEwMDAw
-MCBuIDQKU2VnbWVudCAwIGxvYWQgMDAxMDAwMDAgc2l6ZSAxNDM3MTA4IG1lZGlhcHRyIDB4MTAw
-MApTZWdtZW50IDEgbG9hZCAwMDI2MDAwMCBzaXplIDI5NTg5NiBtZWRpYXB0ciAweDE2MDAwMApT
-ZWdtZW50IDIgbG9hZCAwMDJhYzAwMCBzaXplIDgxOTIgbWVkaWFwdHIgMHgxYTkwMDAKU2VnbWVu
-dCAzIGxvYWQgMDAyZDcwYzQgc2l6ZSA0ODAgbWVkaWFwdHIgMHgxYWIwYzQKTG9hZGluZyByYW1k
-aXNrIDE1NDQxMTYgYnl0ZXMgQCAwMDUxYzAwMC4uLgpicmFuY2hpbmcgdG8ga2VybmVsIGVudHJ5
-IHBvaW50IDB4MDAxMDAxODgKUERDIENvbnNvbGUgSW5pdGlhbGl6ZWQKVGhlIDMyLWJpdCBLZXJu
-ZWwgaGFzIHN0YXJ0ZWQuLi4KRW5hYmxlZCBGUCBjb3Byb2Nlc3NvcgpGcmVlIG1lbW9yeSBzdGFy
-dHMgYXQ6IDB4YzAyZDgwMDAKc3RhcnRfcGFyaXNjKDB4NTA0ZDcwLDB4NTA0ZDcwLDB4NTFjMDAw
-LDB4Njk0ZmI0KQpQQUxPIGNvbW1hbmQgbGluZTogJ0hPTUU9LyBURVJNPWxpbnV4IHJvb3Q9L2Rl
-di9yYW0gY29uc29sZT10dHlTMCcKUEFMTyBpbml0cmQgNTFjMDAwLTY5NGZiNAptb2RlbCAgIDAw
-MDAzMDAwIDAwMDAwNDgxIDAwMDAwMDAwIDAwMDAwMDAwIDc3ZWQ3MTUyIDAwMDAwMDAwIDAwMDAw
-MDA0IDAwMDAwMDBkIDAwMDAwMDAwCnZlcnMgICAgMDAwMDAwMDMKQ1BVSUQgICB2ZXJzIDAgcmV2
-IDAKbW9kZWwgICA5MDAwLzcxMApsZWRfaW5pdDogQ1BVX0hWRVJTSU9OIDMwMApTZWFyY2hpbmcg
-Zm9yIGRldmljZXMgaW4gUERDIGZpcm13YXJlLi4uIHByb2Nlc3NvciBocGEgMHhmZmZiZTAwMAog
-YW4gb2xkZXIgYm94Li4uCkZvdW5kIGRldmljZXM6CjEuIFN0aW5nZXIgT3B0aW9uYWwgR3JhcGhp
-Y3MgKDEwKSBhdCAweGY0MDAwMDAwLCB2ZXJzaW9ucyAweDYsIDB4MCwgMHg3NywgMHgwLCAweDAK
-Mi4gQnVzaG1hc3RlciBDb3JlIEJBICgxMSkgYXQgMHhmMDgyZjAwMCwgdmVyc2lvbnMgMHg2LCAw
-eDAsIDB4NzAsIDB4MCwgMHgwCjMuIEJ1c2htYXN0ZXIgQ29yZSBTQ1NJICgxMCkgYXQgMHhmMDgy
-NTAwMCwgdmVyc2lvbnMgMHg2LCAweDAsIDB4NzEsIDB4MCwgMHgwCjQuIEJ1c2htYXN0ZXIgQ29y
-ZSBMQU4gKDgwMi4zKSAoMTApIGF0IDB4ZjA4MjYwMDAsIHZlcnNpb25zIDB4NiwgMHgwLCAweDcy
-LCAweDAsIDB4MAo1LiBCdXNobWFzdGVyIENvcmUgSElMICgxMCkgYXQgMHhmMDgyMTAwMCwgdmVy
-c2lvbnMgMHg2LCAweDAsIDB4NzMsIDB4MCwgMHgwCjYuIEJ1c2htYXN0ZXIgQ29yZSBSUy0yMzIg
-KDEwKSBhdCAweGYwODIzMDAwLCB2ZXJzaW9ucyAweDYsIDB4MCwgMHg3NSwgMHgwLCAweDAKNy4g
-QnVzaG1hc3RlciBDb3JlIFJTLTIzMiAoMTApIGF0IDB4ZjA4MjIwMDAsIHZlcnNpb25zIDB4Niwg
-MHgwLCAweDc1LCAweDAsIDB4MAo4LiBCdXNobWFzdGVyIENvcmUgQ2VudHJvbmljcyAoMTApIGF0
-IDB4ZjA4MjQwMDAsIHZlcnNpb25zIDB4NiwgMHgwLCAweDc0LCAweDAsIDB4MAo5LiBCdXNobWFz
-dGVyIEF1ZGlvICgxMCkgYXQgMHhmMTAwMDAwMCwgdmVyc2lvbnMgMHg2LCAweDAsIDB4N2EsIDB4
-MCwgMHgwCjEwLiBCdXNobWFzdGVyICg3MTApICgwKSBhdCAweGZmZmJlMDAwLCB2ZXJzaW9ucyAw
-eDMwMCwgMHgwLCAweDQsIDB4MCwgMHg4MQoxMS4gQnVzaG1hc3RlciAoMSkgYXQgMHhmZmZiZjAw
-MCwgdmVyc2lvbnMgMHgxNiwgMHgwLCAweDksIDB4MCwgMHgwClRoYXQncyBhIHRvdGFsIG9mIDEx
-IGRldmljZXMuCkNQVShzKTogMSB4IFBBNzAwMCAoUENYLVMpIGF0IDUwLjAwMDAwMCBNSHoKTGlu
-dXggdmVyc2lvbiAyLjQuMC10ZXN0MTAgKGppbUBwMi5idXR0YWZ1b2NvLm5ldCkgKGdjYyB2ZXJz
-aW9uIDIuOTYgMjAwMDA5MjUgKGV4cGVyaW1lbnRhbCkpICMxIFRodSBKYW4gMTggMDk6MzQ6MjAg
-RVNUIDIwMDEKZnJlZV9ib290bWVtKDB4MmQ4NDAwLCAweDFkMjdjMDApCmluaXRyZDogYzA1MWMw
-MDAtYzA2OTRmYjQKcGFnZXRhYmxlX2luaXQKT24gbm9kZSAwIHRvdGFscGFnZXM6IDgxOTIKem9u
-ZSgwKTogNDA5NiBwYWdlcy4Kem9uZSgxKTogNDA5NiBwYWdlcy4Kem9uZSgyKTogMCBwYWdlcy4K
-S2VybmVsIGNvbW1hbmQgbGluZTogSE9NRT0vIFRFUk09bGludXggcm9vdD0vZGV2L3JhbSBjb25z
-b2xlPXR0eVMwCnRyYXBfaW5pdApFcnJvciByZWFkaW5nIHRvZCBjbG9jawpDYWxpYnJhdGluZyBk
-ZWxheSBsb29wLi4uIDQ5Ljc3IEJvZ29NSVBTCk1lbW9yeTogMjc3NjRrIGF2YWlsYWJsZQpEZW50
-cnktY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMywgMzI3NjggYnl0ZXMp
-CkJ1ZmZlci1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDEwMjQgKG9yZGVyOiAwLCA0MDk2IGJ5
-dGVzKQpQYWdlLWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogODE5MiAob3JkZXI6IDMsIDMyNzY4
-IGJ5dGVzKQpJbm9kZS1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDIwNDggKG9yZGVyOiAyLCAx
-NjM4NCBieXRlcykKUE9TSVggY29uZm9ybWFuY2UgdGVzdGluZyBieSBVTklGSVgKQVNQIHZlcnNp
-b24gMSBhdCAweGYwODAwMDAwIGZvdW5kLgpMRUQgKEFTUC1zdHlsZSkgZGlzcGxheSBhdCAwMDAw
-MDAwMCByZWdpc3RlcmVkCkZvdW5kIGk4MjU5NiBhdCAweGYwODI2MDAwLCBJUlEgODcKZWFybHkg
-aW5pdGlhbGl6YXRpb24gb2YgZGV2aWNlIGV0aDAgaXMgZGVmZXJyZWQKRm91bmQgSElMIGF0IDB4
-ZjA4MjEwMDAsIElSUSA5NApISUw6IHRpbWVkIG91dCwgYXNzdW1pbmcgbm8ga2V5Ym9hcmQgcHJl
-c2VudC4KV2FybmluZyA6IGRldmljZSAoMTAsIDB4NiwgMHgwLCAweDczLCAweDApIE5PVCBjbGFp
-bWVkIGJ5IEhJTCA3MTIsIDcxNSBvciBzaW1pbGlhcgpzdXBlcmlvOiBQcm9iZQpDb3VsZCBub3Qg
-ZmluZCBTdXBlcmlvIElERSAhCkNvdWxkIG5vdCBmaW5kIFN1cGVyaW8gVVNCIQpCYWghCkxpbnV4
-IE5FVDQuMCBmb3IgTGludXggMi40CkJhc2VkIHVwb24gU3dhbnNlYSBVbml2ZXJzaXR5IENvbXB1
-dGVyIFNvY2lldHkgTkVUMy4wMzkKU3RhcnRpbmcga3N3YXBkIHYxLjgKcHR5OiAyNTYgVW5peDk4
-IHB0eXMgY29uZmlndXJlZApSQU1ESVNLIGRyaXZlciBpbml0aWFsaXplZDogMTYgUkFNIGRpc2tz
-IG9mIDQwOTZLIHNpemUgMTAyNCBibG9ja3NpemUKODI1OTYuYzogTUFDIG9mIEhQNzAwIExBTiBi
-bGluZGVseSByZWFkIGZyb20gdGhlIHByb20hCmV0aDA6IENvdWxkbid0IGdldCBjb25zaXN0ZW50
-IHNoYXJlZCBtZW1vcnkKZXRoMDogODI1OTYgYXQgMHhmMDgyNjAwMCwgMDggMDAgMDkgMjUgREQg
-N0IgSVJRIDg3Lgo4MjU5Ni5jICRSZXZpc2lvbjogMS4xNCAkClJBTURJU0s6IENvdWxkbid0IGZp
-bmQgdmFsaWQgUkFNIGRpc2sgaW1hZ2Ugc3RhcnRpbmcgYXQgMC4KU2VyaWFsIGRyaXZlciB2ZXJz
-aW9uIDUuMDIgKDIwMDAtMDgtMDkpIHdpdGggTUFOWV9QT1JUUyBTSEFSRV9JUlEgU0VSSUFMX1BD
-SSBlbmFibGVkCnR0eVMwMCBhdCBpb21lbSAweGYwODIzODAwIChpcnEgPSA5MCkgaXMgYSAxNjU1
-MEEKdHR5UzAxIGF0IGlvbWVtIDB4ZjA4MjI4MDAgKGlycSA9IDg5KSBpcyBhIDE2NTUwQQpHZW5l
-cmljIFJUQyBEcml2ZXIgdjEuMDIgMDUvMjcvMTk5OSBTYW0gQ3JlYXNleSAoc2FtbXlAb2gudmVy
-aW8uY29tKQpTQ1NJIHN1YnN5c3RlbSBkcml2ZXIgUmV2aXNpb246IDEuMDAKc2ltNzAwOiBDb3Vs
-ZG4ndCBnZXQgY29uc2lzdGVudCBzaGFyZWQgbWVtb3J5CnNpbTcwMDogQ29uZmlndXJpbmcgNTNj
-NzAwIChTQ1NJLUlEIDcpIGF0IGYwODI1MTAwLCBJUlEgODYKc2NzaTA6IFJldmlzaW9uIDB4MApQ
-b3N0IHRlc3QxLCBpc3RhdCAwNSwgc3N0YXQwIDAwLCBkc3RhdCA4MQpzaW03MDA6IFdBUk5JTkcg
-SVJRIHByb2JlIGZhaWxlZCwgKHJldHVybmVkIDApCnNjc2kwOiB0ZXN0IDEgRkFJTEVEOiBkc3Bz
-OiBleHAgMHhhYjkzMDAxZCwgZ290IDB4MDAwMDAwMDAKc2NzaTA6IENoaXAgcmVnaXN0ZXIgY29u
-dGVudHM6CiAoc2NyaXB0WzBdIGF0IHZpcnQgYzFmYjAwMDAsIGJ1cyAxZmIwMDAwKQogMDAgIHNp
-ZW46ICBhZiAgc2RpZDogIDAwICBzY250bDE6MjAgIHNjbnRsMDpjNAogMDQgIHNvY2w6ICAwMCAg
-c29kbDogIDAwICBzeGZlcjogMDAgIHNjaWQ6ICA4MAogMDggIHNiY2w6ICAwMCAgc2JkbDogIDAw
-ICBzaWRsOiAgMDAgIHNmYnI6ICAwMAogMEMgIHNzdGF0MjowMCAgc3N0YXQxOjAwICBzc3RhdDA6
-MDAgIGRzdGF0OiA4MAogMTAKIDE0ICBjdGVzdDM6ODEgIGN0ZXN0MjoyMSAgY3Rlc3QxOmYwICBj
-dGVzdDA6MDAKIDE4ICBjdGVzdDc6MDAgIGN0ZXN0Njo4MiAgY3Rlc3Q1OjAwICBjdGVzdDQ6MDAK
-IDFDICB0ZW1wOiAgMDAwMDAwMDAKIDIwICAgICAgICAgICAgICBjdGVzdDg6ZmYgIGlzdGF0OiAw
-NiAgZGZpZm86IDAwCiAyNCAgZGJjOiAgIDAwMDAwMDAwICBkbmFkOiAgMDAwMDAwMDAgIGRzcDog
-ICAwMWZiNzRiNAogMzAgIGRzcHM6ICAwMDAwMDAwMAogMzQgIGRtb2RlOiA4MAogMzggIGRjbnRs
-OiA4MCAgZHd0OiAgIDAwICBkaWVuOiAgMWQKIDNDCldhcm5pbmcgOiBkZXZpY2UgKDEwLCAweDYs
-IDB4MCwgMHg3MSwgMHgwKSBOT1QgY2xhaW1lZCBieSBMYXNpIFNDU0kgNTNjNzAwCk5FVDQ6IExp
-bnV4IFRDUC9JUCAxLjAgZm9yIE5FVDQuMApJUCBQcm90b2NvbHM6IElDTVAsIFVEUCwgVENQCklQ
-OiByb3V0aW5nIGNhY2hlIGhhc2ggdGFibGUgb2YgNTEyIGJ1Y2tldHMsIDRLYnl0ZXMKVENQOiBI
-YXNoIHRhYmxlcyBjb25maWd1cmVkIChlc3RhYmxpc2hlZCAyMDQ4IGJpbmQgMjA0OCkKU2VuZGlu
-ZyBCT09UUCByZXF1ZXN0cy4uLi4uLi4uLi4uLi4gdGltZWQgb3V0IQpJUC1Db25maWc6IEF1dG8t
-Y29uZmlndXJhdGlvbiBvZiBuZXR3b3JrIGZhaWxlZC4KVHJ5aW5nIHRvIGZyZWUgbm9uZXhpc3Rl
-bnQgcmVzb3VyY2UgPGYwODI2MDAwLWYwODI2MDBiPgpORVQ0OiBVbml4IGRvbWFpbiBzb2NrZXRz
-IDEuMC9TTVAgZm9yIExpbnV4IE5FVDQuMC4Ka21lbV9jcmVhdGU6IEZvcmNpbmcgc2l6ZSB3b3Jk
-IGFsaWdubWVudCAtIG5mc19maApLZXJuZWwgcGFuaWM6IFZGUzogVW5hYmxlIHRvIG1vdW50IHJv
-b3QgZnMgb24gMDE6MDAK
-
-------=NEOMAIL_ATT_0.399137031826289--
+	-P
