@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5D693482E
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Nov 2002 06:16:23 -0700 (MST)
-Date: Sun, 17 Nov 2002 13:16:51 +0000 (UTC)
-From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] [2.5] next issues ...
-In-Reply-To: <200211152245.gAFMjWN0015793@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.BSF.4.44.0211171256290.39295-100000@e0-0.zab2.int.zabbadoz.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 454F7482E
+	for <parisc-linux@parisc-linux.org>; Sun, 17 Nov 2002 09:13:25 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18DS2y-0003CF-00; Sun, 17 Nov 2002 16:13:20 +0000
+Date: Sun, 17 Nov 2002 16:13:19 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Daniel Engstrom <5116@telia.com>
+Cc: parisc-linux@parisc-linux.org
+Message-ID: <20021117161319.B7530@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [chris@qwirx.com: eisa_eeprom.c misc_register patch]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,75 +23,79 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 15 Nov 2002, John David Anglin wrote:
+Daniel, I presume you're interested in maintaining this code?
 
-Hi,
+----- Forwarded message from Chris Wilson <chris@qwirx.com> -----
 
-> > Ok, first thing I am going to do is build with gcc 3.0.4 and see if it
-> > works.
->
-> Be aware that debian 3.0.4 suffers from a problem where calls that have
-...
+Envelope-to: willy@ftp.uk.linux.org
+Delivery-date: Sun, 17 Nov 2002 15:53:19 +0000
+Date: Sun, 17 Nov 2002 15:53:16 +0000 (GMT)
+From: Chris Wilson <chris@qwirx.com>
+X-X-Sender: chris@top.qwarx.com
+To: Matthew Wilcox <willy@debian.org>,
+   Linux Kernel Janitors <kernel-janitor-discuss@lists.sourceforge.net>
+cc: Trivial Patch Monkey <trivial@rustcorp.com.au>
+Subject: eisa_eeprom.c misc_register patch
 
+Dear Sirs,
 
-had 2.5.47-pa3 compiled with 3.0.4 up ad running
-Linux version 2.5.47-pa3 (bz@apollo) (gcc version 3.0.4) #8 Fri Nov 15 23:38:21 UTC 2002
+As part of my work on the Linux Kernel Janitors project, cleaning up on 
+functions which call misc_register and don't check for an error return, I 
+would like to submit my patch to drivers/parisc/eisa_eeprom.c. 
 
-but had trouble with unaligned page access:
---- 8< 8< 8< ---
-bz@apollo:~> sshd(315): unaligned access to 0x0006fe7b at ip=0x00020eaf
-sshd(315): unaligned access to 0x0006feaf at ip=0x00020eb3
-sshd(315): unaligned access to 0x0006feb3 at ip=0x00020eb7
-sshd(315): unaligned access to 0x0006feb7 at ip=0x00020ebb
-sshd(315): unaligned access to 0x0006febb at ip=0x00020ebf
-sshd(315): unaligned access to 0x0006febf at ip=0x00020ec3
-sshd(315): unaligned access to 0x0006fec3 at ip=0x00020ec7
-sshd(315): unaligned access to 0x0006fec7 at ip=0x00020ecb
-sshd(315): unaligned access to 0x0006fecb at ip=0x00020ecf
+This patch simply causes the function to printk() an error and return the
+error code from misc_register() if it fails. I hope this is the right
+thing to do. It also changes the code layout (but not function) slightly,
+and flags a condition that I'm not sure about: If no address is supplied
+to its initialisation function, should it really return with no error,
+despite the fact that it hasn't done anything useful?
 
-bz@apollo:~>
-bz@apollo:~> dmesg
-ommand='sshd' type=6 address=0xed0e6013
-vm_start = 0x402b9000, vm_end = 0x402bc000
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001101111111100001111 Not tainted
-r00-03  00000000 fffff000 ed0e6012 59e85014
-r04-07  10080302 9d887d40 590cb010 f9080302
-r08-11  5ae85014 10080802 42887c40 000e7760
-r12-15  00000001 000f7f60 000e7760 000e7760
-r16-19  000e7760 00000004 00000004 401dd300
-r20-23  0000008e 40166ed4 00000000 00000000
-r24-27  000feb50 00000000 00000006 000e7760
-r28-31  00000001 00108fe8 0006fe8f 40166ee3
-sr0-3   00000000 00000598 00000000 00000598
-sr4-7   00000598 00000598 00000598 00000598
-
-IASQ: 00000598 00000598 IAOQ: ed0e6013 ed0e6017
- IIR: 0e760013    ISR: 00000598  IOR: 0006fecb
- CPU:        0   CR30: 151c8000 CR31: 102ac000
- ORIG_R28: 00000000
-...
---- 8< 8< 8< ---
-
-Thus it should really be a compiler prob.
-
-So what I did then was ''compiling'' (hopefully) everything with
-gcc -S for 3.0.4 and 3.2. Then made a diff between both trees.
-
-For those assembler gurus interested: I placed the bzip2ed diffs at
-	http://www.zabbadoz.net/zabbadoz-network/apollo/linux-testing/
-in file  gcc-S.diff.bz2 is the wohle diff (without unneccesarry parts)
-and file gcc-S-net.diff.bz2 is only linux/net part.
-If one really takes a look and needs the whole files, please drop me a
-note. I will save them for one or two weeks.
+Cheers, Chris.
+-- 
+_ ___ __     _
+ / __/ / ,__(_)_  | Chris Wilson <0000 at qwirx.com> - Cambs UK |
+/ (_/ ,\/ _/ /_ \ | Security/C/C++/Java/Perl/SQL/HTML Developer |
+\ _/_/_/_//_/___/ | We are GNU-free your mind-and your software |
 
 
-Now I checkout gcc from cvs, updated linux-2.5-pa cvs and compiling...
-But it takes ages... and hopefully I will not run out of diskspace
-again... let's see what happens...
+diff -ru8 linux-2.5.47/drivers/parisc/eisa_eeprom.c linux-2.5.47-chris/drivers/parisc/eisa_eeprom.c
+--- linux-2.5.47/drivers/parisc/eisa_eeprom.c	Mon Nov 11 03:28:29 2002
++++ linux-2.5.47-chris/drivers/parisc/eisa_eeprom.c	Sun Nov 17 15:42:30 2002
+@@ -91,17 +91,27 @@
+ {
+ 	EISA_EEPROM_MINOR,
+ 	"eisa eeprom",
+ 	&eisa_eeprom_fops
+ };
+ 
+ int __init eisa_eeprom_init(unsigned long addr)
+ {
+-	if (addr) {
+-		eeprom_addr = addr;
+-		misc_register(&eisa_eeprom_dev);
+-		printk(KERN_INFO "EISA EEPROM at 0x%lx\n", eeprom_addr);
++	int retval;
++
++	/* XXX why return success when we haven't done anything? */
++	if (!addr)
++		return 0;
++
++	eeprom_addr = addr;
++
++	retval = misc_register(&eisa_eeprom_dev);
++	if (retval < 0) {
++		printk(KERN_ERR "EISA EEPROM: cannot register misc device.\n");
++		return retval;
+ 	}
++
++	printk(KERN_INFO "EISA EEPROM at 0x%lx\n", eeprom_addr);
+ 	return 0;
+ }
+ 
+ MODULE_LICENSE("GPL");
 
+
+----- End forwarded message -----
 
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Revolutions do not require corporate support.
