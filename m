@@ -1,21 +1,13 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [parisc-linux] [PATCH] New error codes for Alpha, MIPS,
-	PA-RISC, Sparc & Sparc64
-Date: Tue, 31 Aug 2004 18:00:15 +0100
-Message-ID: <1093971614.599.20.camel__43122.3073778257$1416624471$gmane$org@localhost.localdomain>
-References: <20040830232445.0b5aad79.akpm@osdl.org>
-	<13071.1093965134@redhat.com>
+From: ghub005 <ghub005@xtra.co.nz>
+Subject: [parisc-linux] HP 748i RAM
+Date: Wed, 1 Sep 2004 1:06:22 +1200
+Message-ID: <20040831130622.MBQE21194.mta1-rme.xtra.co.nz@[210.86.15.139]>
+Reply-To: ghub005@xtra.co.nz
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Andrew Morton <akpm@osdl.org>,
- linux-mips@linux-mips.org,
- sparclinux@vger.kernel.org,
- rth@twiddle.net,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- HPPA List <parisc-linux@parisc-linux.org>
-To: David Howells <dhowells@redhat.com>
+Content-Type: text/plain;
+  charset=ISO-8859-1
+To: <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <13071.1093965134@redhat.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,14 +18,14 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Maw, 2004-08-31 at 16:12, David Howells wrote:
-> The attached patch adds the new error codes I added for key-related errors to
-> those archs that don't make use of <asm-generic/errno.h>, including Alpha,
-> MIPS, PA-RISC, Sparc and Sparc64. This is required to compile with CONFIG_KEYS
-> on those platforms.
+Hi
 
-The patch seems to be mixing the fixups for remapping these error codes
-into sparc, hpux, osf/1 and other compatibility layers on the platforms
+I'm looking for a 32MB or 64MB memory module for my 748i/64 system. If 
+anybody has a part they want to sell, could they please email me off-list.
+
+Best regards,
+
+Gavin
 
 _______________________________________________
 parisc-linux mailing list
