@@ -1,20 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail14.speakeasy.net [216.254.0.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8EEAD496F
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 19:30:23 -0600 (MDT)
-Received: from unknown (HELO speakeasy.net) (caslivkoff@[216.27.161.152])
-          (envelope-sender <caslivkoff@speakeasy.net>)
-          by mail14.speakeasy.net (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@lists.parisc-linux.org>; 27 Aug 2003 01:30:22 -0000
-Date: Tue, 26 Aug 2003 21:30:23 -0400
-Subject: Re: [parisc-linux] x86 on b2000
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
+Date: Tue, 26 Aug 2003 21:40:36 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Chuck Slivkoff <caslivkoff@speakeasy.net>
 Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
-From: Chuck Slivkoff <caslivkoff@speakeasy.net>
-In-Reply-To: <20030826150344.GA2012@tausq.org>
-Message-Id: <0749BC3A-D82E-11D7-8E2F-000393581E44@speakeasy.net>
+Subject: Re: [parisc-linux] x86 on b2000
+Message-ID: <20030827034036.GA9928@dsl2.external.hp.com>
+References: <20030826150344.GA2012@tausq.org> <0749BC3A-D82E-11D7-8E2F-000393581E44@speakeasy.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <0749BC3A-D82E-11D7-8E2F-000393581E44@speakeasy.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,20 +20,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+On Tue, Aug 26, 2003 at 09:30:23PM -0400, Chuck Slivkoff wrote:
+> The B2000 does have integrated graphics. It is an FX-e.
 
-On Tuesday, Aug 26, 2003, at 11:03 US/Eastern, Randolph Chung wrote:
+"integrated" != "soldered on the motherboard"
+"built-in"   ~= "soldered on the motherboard"
 
-> In reference to a message from mmogenius@v8fiesta.co.uk, dated Aug 26:
->> do we know if it is possable to add an extra graphics card to the 
->> b2000 to
->> usin instead of the internal card ?
->
-> the web page tells you that if you get a Vis-EG card it will work. 
-> there
-> are no "built in" graphics cards..  if you have a FX? card in your b2k,
-> it's a PCI card. (lspci should tell you)
+ie The Gfx card can be removed and in fact must be remove if one wants
+to use the only 66mhz/64-bit PCI slot the B2000/C3000 has.
 
-The B2000 does have integrated graphics. It is an FX-e.
+AFAIK, the B2000/C3000/J5000 systems only have plug-in PCI gfx cards.
+At least all the ones I've seen are plug-in.
 
--chuck
+grant
