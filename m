@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A5D8E484B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 07:52:38 -0600 (MDT)
-Date: Wed, 1 Oct 2003 14:52:36 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: mmogenius@v8fiesta.co.uk
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8D51E484B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 11:21:03 -0600 (MDT)
+Date: Wed, 1 Oct 2003 19:20:57 +0200
+Message-ID: <3F5CB6FB0000B84C@ocpmta1.freegates.net>
+In-Reply-To: <3F5CC41F0000B5FA@ocpmta3.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] N Class SMP pb ?  (follow up)
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-In-Reply-To: <1065000176.3f7a9cf0cbad2@webmail.v8fiesta.co.uk>
-Message-ID: <Pine.LNX.4.58.0310011446560.27712@sal.ucc.ie>
-References: <Pine.LNX.4.44.0308280022230.16696-100000@sal.ucc.ie>
- <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk>
- <1063733943.3f674ab751edb@webmail.v8fiesta.co.uk> <20030916174726.GC30906@dsl2.external.hp.com>
- <1063738987.3f675e6b22961@webmail.v8fiesta.co.uk> <20030917040849.GA11011@dsl2.external.hp.com>
- <3F683606.8000701@tiscali.be> <1065000176.3f7a9cf0cbad2@webmail.v8fiesta.co.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,24 +22,101 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 1 Oct 2003 mmogenius@v8fiesta.co.uk wrote:
+Hi Grant,
 
-> Brilliant i now have X working on my B2000 with the Visuialize-EG Card...
->
-> The way to use the 2nd card is to specify the BusID in the XF86Config-4 file.
->
-> BusID      "PCI:1:1:0"
->
-> Although I dont seem to be able to get the depth anywhere above 8... Does
-> anyone have any thoughs on this.
+I also notice additional info:
 
-Visualize-EG is a 8bit only card.
+a) in SL (gsp console) A grab severall message as:
 
-It can displake 'fake hi/true-colour' using HP's Color Recovery technology,
-but hardly any non-HP software supports that (ie. I know only
-of ImageMagick).
+Log Entry #   0 : 
+SYSTEM NAME: ap8002
+DATE: 10/01/2003 TIME: 16:32:35
+ALERT LEVEL: 2 = Non-Urgent operator attention required
 
-There is AFAIK no 24/32bit true colour PCI graphic cards that work on
-Linux/PA-RISC in the moment. I'd love to hear that I'm wrong ...
+SOURCE: 8 = I/O 
+SOURCE DETAIL: 2 = system bus adapter   SOURCE ID: 1
+PROBLEM DETAIL: 0 = no problem detail
 
-Max
+CALLER ACTIVITY: 6 = machine check   STATUS: 3
+CALLER SUBACTIVITY: 33 = implementation dependent
+REPORTING ENTITY TYPE: 0 = system firmware   REPORTING ENTITY ID: 01
+
+0x7000102082016333 00000000 00B92200 type 14 = Problem Detail
+0x5800182082016333 00006709 01102023 type 11 = Timestamp 10/01/2003 16:32:35
+Type CR for next entry, Q CR to quit.
+
+Which seems indicating an I/O pb (But I don't know how much there are relevant
+because: 'implementation dependent')
+
+b) at the end of the pim info I also notice:
+[...]
+------------  I/O Module Error Log Information  ------------
+
+Summary of IO subsystem log entries
+-----------------------------------
+                        Phys Loc             Vendor  Device   Severity
+Description             (hex)                 Id      Id      CORR UNC FE
+ CW
+-----------             -----                ------  ------   ----------------
+System Bus Adapter SB  0x000000ffffffff82   0x103c  0x1050              X
+System Bus Adapter SB  0x000000ffffffff82   0x103c  0x1050              X
+
+
+Detail display of IO subsystem log entries
+------------------------------------------
+
+System Bus Adapter -- System Bus Interface
+------------------------------------------
+
+Timestamp =    Wed Oct  1 16:32:31 GMT 2003    (20:03:10:01:16:32:31)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+  X       X     ERR_ERROR       X                X       
+
+IO Requestor Address    = 0x0000000000000000
+IO Target Address       = 0x0000000000000000
+IO Responder Address    = 0xfffffffffed00000
+IO Physical Location    = 0x000000ffffffff82
+IO Hardware Path        = 0x00ffffffffffff00
+
+Module Error Register   = 0x0000000007ff0034
+
+System Bus Adapter -- System Bus Interface
+------------------------------------------
+
+Timestamp =    Wed Oct  1 16:32:31 GMT 2003    (20:03:10:01:16:32:31)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+  X       X     ERR_ERROR       X                X       
+
+IO Requestor Address    = 0x0000000000000000
+IO Target Address       = 0x0000000000000000
+IO Responder Address    = 0xfffffffffed40000
+IO Physical Location    = 0x000000ffffffff82
+IO Hardware Path        = 0x00ffffffffffff01
+
+Module Error Register   = 0x0000000007ff0034
+[...]
+
+And "IO Responder Address    = 0xfffffffffed40000" match the bootlog entry:
+Found devices:
+[...]
+11. IKE I/O Bus Converter Merced Port (7) at 0xfffffffffed40000 [1], versions
+0x803, 0x0, 0xc
+
+And "IO Responder Address    = 0xfffffffffed00000" 
+2. IKE I/O Bus Converter Merced Port (7) at 0xfffffffffed00000 [0], versions
+0x803, 0x0, 0xc
+
+Could it be the sources of the crash pb?
+
+Thanks in advance,
+    Joel
+
+
+
+-------------------------------------------------------------------------
+L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
+pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
