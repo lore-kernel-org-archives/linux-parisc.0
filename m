@@ -1,19 +1,23 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7A5B04855
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ACC094856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 21:40:09 -0700 (MST)
-Date: Thu, 25 Mar 2004 21:40:08 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Prakash Shenoy <mpshenoy@vsnl.com>
-Subject: Re: [parisc-linux] HP 9000 Visualize C180 Workstation display does
-	not appear.
-Message-ID: <20040326044008.GA28525@colo.lackof.org>
-References: <OFEELBIMFFDMJBJFHICCAEIICEAA.mpshenoy@vsnl.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OFEELBIMFFDMJBJFHICCAEIICEAA.mpshenoy@vsnl.com>
-Cc: parisc-linux@lists.parisc-linux.org
+	Thu, 25 Mar 2004 22:41:41 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E884F2.dip0.t-ipconnect.de
+	[217.232.132.242])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2Q5feo06991
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 26 Mar 2004 06:41:40 +0100
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 26 Mar 2004 06:43:02 +0100
+Message-ID: <0a4601c412f5$345aa620$fc01a8c0@muc.nccconsulting.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,27 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, Mar 25, 2004 at 10:06:35PM -0500, Prakash Shenoy wrote:
-> Hi!
-> 
-> I recently bought a HP 9000 Visualize C180 workstation from a vendor on eBay
-> and EVC to VGA Video Adapter Cable from another vendor. Both claim that Non
-> DOA on arrival.
-> 
-> The workstation appears to boot properly but no display appears. Has any one
-> come across this situation.
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-Have you tried hitting <tab> key at power up?
-That should let you cycle through the various supported
-graphics modes.
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 3/26/2004 6:43:00 AM
+Engine/Pattern = 6.860-1001/1.837.00
 
-Have you tried with a serial console?
-disconnect the keyboard before doing this.
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
 
-This is a FAQ but it's not in the parisc-linux FAQ.
-If someone has a moment to submit a patch against
-cvs.parisc-linux.org's web/src/faq/index.x I'll be
-happy to edit/submit it.
-
-thanks,
-grant
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
