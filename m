@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6E834829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 12:50:01 -0700 (MST)
-Message-ID: <3E455F67.8090700@gmx.at>
-Date: Sat, 08 Feb 2003 20:49:59 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Thibaut VARENE <varenet@esiee.fr>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BDD0F4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Feb 2003 15:12:30 -0700 (MST)
+Date: Sat, 8 Feb 2003 13:36:03 -0800
+From: tausq@debian.org
+To: gcc-gnats@gcc.gnu.org, debian-gcc@lists.debian.org
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Status SCSI/MUX on E55 (and family)
-References: <3E44577F.5060509@gmx.at> <20030208021001.26d02b16.varenet@esiee.fr>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Message-ID: <20030208213603.GP11363@tausq.org>
+Reply-To: tausq@debian.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [gcc-3.2.2] hppa64-unknown-linux-gnu fails to bootstrap
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,50 +22,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+>Submitter-Id:	net
+>Originator:	Randolph Chung
+>Organization:	Debian
+>Confidential:	no
+>Synopsis:	[gcc-3.2.2] hppa64-unknown-linux-gnu fails to bootstrap
+>Severity:	critical
+>Priority:	medium
+>Category:	bootstrap
+>Class:		sw-bug
+>Release:	3.2.2 20030131 (Debian prerelease) (Debian testing/unstable)
+>Environment:
+System: Linux ios 2.4.20-pa23 #19 SMP Fri Feb 7 22:00:18 PST 2003 parisc64 unknown unknown GNU/Linux
+Architecture: parisc64
 
-oh that's new for me. I thought, the SPIFI is partially on my list.
-I do not know, who told me, but I think it was Grant Grundler.
-Of course, I cannot do it allone, but a good "hacking team" ...
+	<machine, os, target, libraries (multiple lines)>
+host: hppa-unknown-linux-gnu
+build: hppa-unknown-linux-gnu
+target: hppa-unknown-linux-gnu
+configured with: ../src/configure -v --enable-languages=c,c++,f77,proto,pascal,objc,ada --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.2 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-clocale=gnu --enable-objc-gc hppa-linux
+>Description:
+Building gcc-3.2.2 with:
 
-I started debugging (by printk) a hlaf year ago. I also started to
-study the NetBsd sources. And I already wait for the NDA to have
-a "source look" in HP-UX and access to other documents.
+~/src/gcc-3.2-3.2.2ds8/src/configure --with-gnu-as --with-gnu-ld --disable-shared --disable-nls --disable-threads --prefix=/usr  --host=hppa-linux --target=hppa64-linux --enable-languages=c
 
-As I have the E55, and I want to use it, a also offer my help.
-So this is the reason, why I wrote the PDC console driver to
-primary boot those class of machines.
+and then 'make' 
 
-The status on SCSI was: every read access to any I/O port (sorry:
-memory location) a 0xffffffff was returned - open bus ?
+gives:
 
-Christoph
+/home/tausq/build/gcc-3.2/gcc/xgcc -B/home/tausq/build/gcc-3.2/gcc/ -B/usr/hppa64-linux/bin/ -B/usr/hppa64-linux/lib/ -isystem /usr/hppa64-linux/include -O2  -DIN_GCC -DCROSS_COMPILE   -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -fPIC -Dpa64=1 -DELF=1 -g  -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED -Dinhibit_libc -I. -I. -I/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc -I/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/. -I/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/config -I/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/../include -fexceptions -c /home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/unwind-sjlj.c -o libgcc/./unwind-sjlj.o
+/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/unwind-sjlj.c:56: size of array `data'
+is too large
+/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/unwind-sjlj.c:72: confused by earlier errors, bailing out
+make[2]: *** [libgcc/./unwind-sjlj.o] Error 1
 
+The offending line is:
+     56   _Unwind_Word data[4];
+     
+There are also a lot of warnings of the form:
+/home/tausq/src/gcc-3.2-3.2.2ds8/src/gcc/unwind-dw2-fde.c:822: warning: integer overflow in expression
+    807           _Unwind_Ptr mask;
+    [...]
+    822             mask = -1;
 
+jda says he sees this with gcc-3.2.3 too.
 
-Thibaut VARENE wrote:
-> On Sat, 08 Feb 2003 02:03:59 +0100
-> "Christoph Plattner" <christoph.plattner@gmx.at> wrote:
-> 
-> 
->>Hallo PARISC Hackers !
->>
->>Is there any new status on MUX or SCSI on E55 or similar ?
-> 
-> Not yet concerning SCSI.
-> This is still on rbrad and my todo list, at (alas) a low priority level for both of us I think.
-> Don't worry, this hasn't been forgotten ;)
-> 
-> 
-> Thibaut VARENE
-> The PA/Linux ESIEE Team
-> http://pateam.esiee.fr/
-> 
-> 
-
-
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+>How-To-Repeat:
+	see above
+>Fix:
+	
