@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with SMTP id D4DC24829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Aug 2002 08:23:21 -0600 (MDT)
-Date: Tue, 20 Aug 2002 16:23:15 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Oracle 9i on PARISC-LINUX
-Message-ID: <20020820142315.GI13589@charite.de>
-References: <200208201049.AA167248046@intercommerce.com.br> <20020820141813.GB4865@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020820141813.GB4865@systemhalted>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 58F664829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Aug 2002 09:14:30 -0600 (MDT)
+Date: Wed, 21 Aug 2002 17:14:28 +0200
+Message-ID: <3D3816EF00005526@ocpmta4.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] upgrade evms-1.1.0 -> Kernel at blkpg.c (need help)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +20,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Aug 20, 2002 at 10:18:13AM -0400, Carlos O'Donell wrote:
+Hi all,
 
-> apt-get install oracle-9i
-> Reading Package Lists... Done
-> Building Dependency Tree... Done
-> E: Couldn't find package oracle-9i
+To investigate in more details the 'unalign access' problem I met with evms,
+I need first to upgrade to evms-1.1.0 with kernel 2.4.19.
 
-The correct approach would be to use 
+After this upgarde, all evms tools failled and I got folowing kernel message
+at the console:
+kernel BUG at blkpg.c:252!                                       
+evms: ldev_mgr: error(-28): creating logical disk for device(8,0).      
+      
 
-apt-cache search oracle
+at line 250 of /drivers/block/blkpg.c I read:
+...
+   return put_user(uulval << 9, (u64 *)arg);
+...
 
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-"I've not lost my mind. It's backed up on tape somewhere." - Unknown
+In fact, with message '... at blkpg.c:252!', I am awaiting 'printk(... _FUNCTION_)'.
+Also I do not understand where this "BUG" is trapped(?) and which can the
+actual source of this new evms problem.
+
+Thanks in advance for all advise,
+    Joel
+
+PS: I test it on my i386 without encountering this problem.
