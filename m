@@ -1,61 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from leo.uni-sw.gwdg.de (leo.uni-sw.gwdg.de [134.76.205.152])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4DF3B482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Jun 2001 13:46:52 -0600 (MDT)
-Date: Mon, 25 Jun 2001 21:46:50 +0200 (CEST)
-From: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
-To: Markus Ungermann <m.ungermann@tuxhausen.de>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 712/60: No login, only crashes
-In-Reply-To: <3B378759.CBB5160E@tuxhausen.de>
-Message-ID: <Pine.LNX.4.33.0106252137470.8292-100000@leo.uni-sw.gwdg.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from solo.franken.de (pD9051D10.dip.t-dialin.net [217.5.29.16])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D122C482A
+	for <parisc-linux@parisc-linux.org>; Mon, 25 Jun 2001 17:49:46 -0600 (MDT)
+Date: Tue, 26 Jun 2001 01:49:37 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Yves Bodack <ybodack@stud.fh-heilbronn.de>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] XFree86, sti bmode/wmode merge
+Message-ID: <20010626014937.B6551@solo.franken.de>
+References: <20010617155807.A6530@solo.franken.de> <005d01c0fd8e$c29fcd90$1f96078d@stuwo.fhheilbronn.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <005d01c0fd8e$c29fcd90$1f96078d@stuwo.fhheilbronn.de>; from ybodack@stud.fh-heilbronn.de on Mon, Jun 25, 2001 at 05:51:25PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Markus!
+On Mon, Jun 25, 2001 at 05:51:25PM +0200, Yves Bodack wrote:
+> I was just trying to set up an xserver on my 712/60, but i'm not too
+> experienced in these things and failed. Could you give me some hints on what
+> you have installed and what the tweaking was, you did? Or may be, there is a
+> web ressource i havn't found yet.
 
-On Mon, 25 Jun 2001, Markus Ungermann wrote:
+you need:
 
-> Then i installed PA-Linux 0.9 on a 3.2GB-HD (Quantum Fireball 3200S ),
-> but after the first reboot:
-> - the system starts and
-> - the Init-Process works,
-> - it enter Runlevel 2
-> - then instead of a login i get an Crash
-> I get a Dump list (How can i print/copy this?) and the following line:
->
-> Kernel Fault Code 26 regs(differents everytime)
+xbase-clients
+xfont-base
+xserver-xfree86
+xterm
 
-I had the same error when I installed it, I think it is in the known
-bugs on the webpage. The developers told me to be patient, those are
-bugs in the graphical STI interface.
+and a window manager (since fvwm* wasn't avaiable, I took vtwm).
 
-A perhaps related problem is that if you try to go down further than
-the end of the file in vi, it crashes with a similar dump screen.
+And then I took the XF86Config from my notebook, where I'm alreay running
+XFree 4.0.2 (server only so far), put it in place (/etc/X11/XF86Config) and
+defined a fbdev device. I've attached my current XF86Config from the 712.
+To use this XF86Config you also need a new kernel with PS/2 mouse support.
 
-> Can someone help me to login ?
-> Or how can i boot into single mode (there is no lilo ;-))) ?
+Thomas.
 
-- Press <escape> before booting.
-- search for the boot device:
-	search scsi
-- start the ipl:
-	boot <scsi-dev> ipl
-- edit the last parameter and add with a space:
-	" init=1" or " init=/bin/sh"
-Starting the IPL boot should get you booted. You should then perhaps
-edit /etc/inittab before trying further.
-
-Can anyone tell me, which script in /etc/init.d starts the virtual
-consoles? It's none from the ones in /etc/rc1.d/...
-
-> Is the powersupply strong enough for a second intern HD (then i boot
-> from the 520MB und use the Quantum as /usr) ?
-
-Just try it? There is a special room for a second disk in my
-machine, which I cannot use because the other disks I have get too
-hot.
-
-Gruesse,
-	Peter.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
