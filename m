@@ -1,19 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] new toolchain (binutils 2.15, gcc 3.5,
-	glibc 2.3.3) progress
-Date: Thu, 15 Jul 2004 11:42:46 -0400
-Message-ID: <20040715154245.GB22026@baldric.uwo.ca>
-References: <40E6A00E.8020203@tiscali.be>
-	<40BD9F05000175F1@ocpmta1.freegates.net>
-	<20040709183243.GJ4759@baldric.uwo.ca>
-	<40F272A1.4040006@tiscali.be>
+From: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] "Unknown machine at ..." on N4k
+Date: Thu, 15 Jul 2004 18:13:14 +0100
+Message-ID: <20040715171314.GJ32326@parcelfarce.linux.theplanet.co.uk>
+References: <40BD9F870001BC0C@ocpmta2.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
+Cc: List Parisc <parisc-linux@parisc-linux.org>
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40F272A1.4040006@tiscali.be>
+In-Reply-To: <40BD9F870001BC0C@ocpmta2.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,41 +20,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jul 12, 2004 at 11:14:41AM +0000, Joel Soete wrote:
-> >That seems reasonable, it's trying to load the first word from the
-> >locale data. Not sure why that would crash. Is it still crashing in the
-> >same place?
-> 
-> Yes it always crashed at the same place.
-> That is why I would like to back traced the calling function to see if some 
-> space register is not broken?
+On Wed, Jul 14, 2004 at 05:24:23PM +0000, Joel Soete wrote:
+> I just noticed that that in during the "Found devices:" on the the N4k it's
+> mentioned:
 
-I don't currently have time to investigate, but believe me, it's not the
-right place.
+What kernel?
 
-I recommend doing the following:
+> [...]
+> 18. DEW BC Runway Port at 0xfffffffffed24000 [36] { 7, 0x0, 0x584, 0x0000c
+> }
+> 19. Unknown machine at 0xfffffffffed25000 [37] { 0, 0x0, 0x5d3, 0x00000
+> }
 
-a. Start gdb, and specify you want to debug your new loader
-        gdb "/yoursource/glibc-build/elf/ld.so.1"
+        {HPHW_NPROC,0x5D3,0x4,0x91,"Prelude W+ 540"},
 
-b. Do the right 'set env' and the right 'set args'
+We have this one ...
 
-c. Break at 'fixup' or 'rtld'
-
-d. Then use 'si' to move forward slowly, it's best if you break on fixup
-   because you can 'c' from fixup for a couple of times before you jump
-   into the relocated executable.
-
-e. Continue with 'si XXXX' to jump forward until it crashes, repeat
-   again with binary steps. This process can be automated, and it's what
-   I do when I don't trust the debugger.
-
-In the end you should clearly see where you are dying! Though you might
-have to do some assembly correlation to find the position
-(/proc/self/maps is usefull at this point).
-
-c.
-
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
