@@ -1,37 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA20344
-	for <parisc-linux@puffin.external.hp.com>; Thu, 26 Aug 1999 12:10:22 -0600
-Date: Thu, 26 Aug 1999 20:12:01 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Thoughts on arch/parisc/irq.c
-Message-ID: <19990826201201.N19314@suse.de>
-References: <19990826172626.K19314@suse.de> <199908261713.KAA12239@milano.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA22781
+	for <parisc-linux@puffin.external.hp.com>; Sat, 28 Aug 1999 19:16:45 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id DAA04316
+	for <parisc-linux@thepuffingroup.com>; Sun, 29 Aug 1999 03:18:14 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id DAA932730
+	for <parisc-linux@thepuffingroup.com>; Sun, 29 Aug 1999 03:18:13 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11Ktbo-00029uC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sun, 29 Aug 1999 03:18:12 +0200 (CEST)
+Date: Sun, 29 Aug 1999 03:18:12 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990829031812.J493@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199908261713.KAA12239@milano.cup.hp.com>; from Grant Grundler on Thu, Aug 26, 1999 at 10:13:14AM -0700
+Subject: [parisc-linux] keyboard driver
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > the Dino documentations says bits 5-31 are HPA but as long as 5-10 are 0 we
-> > don't have to care.
-> FYI - All PA device addresses are 4k page aligned.
 
-Thanks.  This does not conflict with dino decoding the not defined bits too,
-though.
-> > No.  You just do
-> > gsc_writel(0xfffe0000 + dev->irq, dev->hpa + DEVICE_SPECIFIC_OFFSET);
-> > right after request_irq(dev->irq, ...);
-> 
-> Ok - this is another SMP issue...I'll hardcode 0xfffe0000 for now. 
-> 
-> Platform	Processor HPA
-> --------	-------------
-> 712/80	0xfffbe000
-> 715/100	0xfffbe000
-> B132L		0xfffbe000
-> B180L		0xfffbe000
+Is anyone working on the keyboard driver for the 715/33 (and presumably
+some other models)?  It appears to be an HIL keyboard, and there's
+already an HIL driver in arch/m68k/hp300/hil.c.  Is this likely to work?
+Is there any documentation available for this?
 
-If this is a 7300LC, the processor EIR depends on the bus id.
-
-	Philipp Rumpf
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
