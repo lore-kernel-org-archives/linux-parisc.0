@@ -1,14 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-Cc: Ryan Bradetich <rbradetich@uswest.net>,
-	parisc list <parisc-linux@lists.parisc-linux.org>
+To: Peter Mottram <peter@petescaff.com>
+Cc: parisc list <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] C110, kernel Panics, still more tears ;-( 
-In-Reply-To: Message from Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-   of "Sat, 20 Jul 2002 11:53:20 +0200." <3D393310.D3AB411A@ruhr-west.de>
-References: <3D383969.1657EF43@ruhr-west.de> <1027121658.16562.3.camel@beavis>  <3D393310.D3AB411A@ruhr-west.de> 
-Date: Sat, 20 Jul 2002 09:37:15 -0600
+In-Reply-To: Message from Peter Mottram <peter@petescaff.com>
+   of "Sat, 20 Jul 2002 12:21:54 +0200." <Pine.LNX.4.44.0207201218410.21970-100000@r6.petescaff.com>
+References: <Pine.LNX.4.44.0207201218410.21970-100000@r6.petescaff.com> 
+Date: Sat, 20 Jul 2002 09:40:43 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020720153715.A6BD34847@dsl2.external.hp.com>
+Message-Id: <20020720154043.8F74B484E@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,13 +19,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Juergen Braukmann wrote:
-> > How much memory does this system have?  Also what cards do you have in
-> > which slot. (Please also specify PCI or GSC).
+Peter Mottram wrote:
+> The internal disks are fast-wide differential & the external SCSI ports
+> are FW-diff & single-ended. I don't know the 2490A.
 
-> Speaking about card slots, I don't know what PSC slots are,
-
-Me either. No such thing as PSC - only GSC or HSC (K-class).
-The slots in the C200 can take either a GSC card or a PCI card.
+C2490 is a 2GB FWD diff. About 6 years Old IIRC.
+Odds are you need to update the firmware since it rolled every
+3-4 monthes even after HP stopped producing that model. See
+the parisc FAQ re platform firmwre and the same HP ftp sites
+referenced in the FAQ have disk firmware too.
 
 grant
