@@ -1,53 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E40264A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 24 Feb 2001 08:57:23 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA05356
-	for <parisc-linux@puffin.external.hp.com>; Sat, 24 Feb 2001 08:52:38 -0700
-Received: from pc5158a.esiee.fr (pc5158a.esiee.fr [147.215.50.165])
-	by mail.esiee.fr (Postfix) with ESMTP id 41CCDD1585
-	for <parisc-linux@thepuffingroup.com>; Sat, 24 Feb 2001 16:56:08 +0100 (CET)
-Received: from localhost
-	([127.0.0.1] helo=esiee.fr ident=delahaym)
-	by pc5158a.esiee.fr with esmtp (Exim 3.12 #1 (Debian))
-	id 14Wh3I-0008IL-00
-	for <parisc-linux@thepuffingroup.com>; Sat, 24 Feb 2001 16:56:08 +0100
-Sender: delahaym@esiee.fr
-Message-ID: <3A97D998.5D019AAB@esiee.fr>
-Date: Sat, 24 Feb 2001 16:56:08 +0100
-From: Matthieu Delahaye <delahaym@esiee.fr>
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D2ECD4A19
+	for <parisc-linux@parisc-linux.org>; Sat, 24 Feb 2001 14:22:41 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14WlWX-0006d0-00; Sat, 24 Feb 2001 20:42:37 +0000
+Date: Sat, 24 Feb 2001 20:42:37 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org,
+	grundler@milano.cup.hp.com
+Subject: Re: [parisc-linux] parisc64 vs kernel64
+Message-ID: <20010224204237.A22753@parcelfarce.linux.theplanet.co.uk>
+References: <20010223085815.B16261@parcelfarce.linux.theplanet.co.uk> <200102232212.OAA21472@milano.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Unregister driver patch
+In-Reply-To: <200102232212.OAA21472@milano.cup.hp.com>; from grundler@cup.hp.com on Fri, Feb 23, 2001 at 02:12:22PM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all!
+On Fri, Feb 23, 2001 at 02:12:22PM -0800, Grant Grundler wrote:
+> How much is driven by how gcc/binutils/config.guess type stuff works?
 
-Here is a patch which implements the unregister_driver() function.
+Nothing.
 
-I had to change a field in struct hp_device:
-The field "manage" (bool) become "driver" (pointer on a pa_iodc_driver),
+> We've made an effort to keep them the same. That's why most of the
+> files are common. The fact that PA2.0 cpus can run PA1.1 kernel bits
+> makes it easy for us. I'm *know* the R4000 MIPs processor had
+> good backwards compatibility between 32/64-bit - don't know about
+> later ones or Sparc/Sparc64.
 
-since unregister_driver has to know by which driver a device was managed
-to make unregister proper.
-unregister_driver() first remove the driver from the list. Then, it
-looks for devices managed by this driver and changed their "driver"
-field to NULL.
+We had a discussion of this in the meeting, but it's worth mentioning for
+the record.  Ralf had two teams of people pulling at him -- one was the embedded
+MIPS people who wanted to keep everything simple and small, and the other
+was SGI who wanted 64-bit, SMP, scalability.  So MIPS vs MIPS64 is also a
+tradeoff between make-it-small and make-it-fast.
 
+For both Sparc & MIPS there was also the opportunity to discard
+backwards-compatibility stuff.  Compare the Sparc64 and Sparc32 atomic_t
+operations.  The changes between PA-RISC and PA-RISC64 really aren't
+as major.  There aren't many places we could remove cruft by guaranteeing
+we're omitting certain types of processor.
 
-More over, some drivers call register_driver at least two times, e.g.
-the gsc parallel port driver. When it append, BUG() is called and a
-warning is send to give the name of the driver.
+It would almost certainly make sense to have a `parisc1.0' architecture
+if someone were crazy enough to do that :-)
 
-NOTE: Since the structure pa_iodc_driver is used to maintain the list of
-the registered drivers, I think this do not have to be put in data.init
-section.
+> The Processor family selection is a good idea regardless of
+> how arch/parisc* source is organized.
 
+Thanks.
 
-Regards,
-
-Matthieu Delahaye
-ESIEE Team
-http://www.esiee.fr/~puffin
+-- 
+Revolutions do not require corporate support.
