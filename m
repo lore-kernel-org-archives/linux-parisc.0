@@ -1,27 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA16807
-	for <parisc-linux@puffin.external.hp.com>; Wed, 25 Oct 2000 21:38:04 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 26 Oct 2000 03:39:36 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA05736;
-	Thu, 26 Oct 2000 14:36:00 +1100
-Date: Thu, 26 Oct 2000 14:36:00 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: parisc-linux@thepuffingroup.com, opensource@cup.hp.com
-Subject: Re: [parisc-linux] hppa64-linux gcc bug
-In-Reply-To: <200010251951.MAA21150@milano.cup.hp.com>
-Message-ID: <Pine.LNX.4.21.0010261434150.31251-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA17429
+	for <parisc-linux@puffin.external.hp.com>; Wed, 25 Oct 2000 21:58:21 -0600
+Message-Id: <200010260404.VAA21509@milano.cup.hp.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com, opensource@cup.hp.com
+Subject: Re: [parisc-linux] hppa64-linux gcc bug 
+In-reply-to: Your message of "Thu, 26 Oct 2000 14:36:00 PDT."
+             <Pine.LNX.4.21.0010261434150.31251-100000@front.linuxcare.com.au>
+Date: Wed, 25 Oct 2000 21:04:34 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 25 Oct 2000, Grant Grundler wrote:
+Alan Modra wrote:
+> On Wed, 25 Oct 2000, Grant Grundler wrote:
+> 
+> > The following is available via anon ftp from hpisp747:pub/heisenbug/
+> 
+> Can you turn this into a real URL please?
 
-> The following is available via anon ftp from hpisp747:pub/heisenbug/
+Alan (and others),
+My bad...I had in fact scp'd the files to
+	ftp://puffin.external.hp.com/pub/parisc/debug/
 
-Can you turn this into a real URL please?
+I just blanked out and forgot to list that as well in the email.
 
--- 
-Linuxcare.  Support for the Revolution.
+aplogies,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
