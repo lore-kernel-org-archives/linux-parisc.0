@@ -1,15 +1,14 @@
-From: "David S. Miller" <davem@redhat.com>
+From: James Bottomley <James.Bottomley@steeleye.com>
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
- tst-mmap-eofsync in glibc on parisc)
-Date: Fri, 22 Aug 2003 11:31:06 -0700
-Message-ID: <20030822113106.0503a665.davem__12779.9006332227$1416622707$gmane$org@redhat.com>
-References: <20030822110144.5f7b83c5.davem@redhat.com>
-	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
+	tst-mmap-eofsync in glibc on parisc)
+Date: 22 Aug 2003 13:41:26 -0500
+Message-ID: <1061577688.2090.285.camel__22997.7172021338$1416622708$gmane$org@mulgrave>
+References: <Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: willy@debian.org, James.Bottomley@SteelEye.com,
-	linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org,
-	drepper@redhat.com
+Content-Type: text/plain
+Cc: "David S. Miller" <davem@redhat.com>, willy@debian.org,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
 To: Hugh Dickins <hugh@veritas.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 In-Reply-To: <Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
@@ -23,23 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 22 Aug 2003 19:34:41 +0100 (BST)
-Hugh Dickins <hugh@veritas.com> wrote:
-
-> And to me.  If VM_SHARED is set, then __vma_link_file puts the vma on
-> on i_mmap_shared.  If VM_SHARED is not set, it puts the vma on i_mmap.
-> flush_dcache_page treats i_mmap_shared and i_mmap lists equally.
-
-But file system page cache writes only call flush_dache_page()
-if the page has a non-empty i_mmap_shared list.
-
+On Fri, 2003-08-22 at 13:34, Hugh Dickins wrote:
 > Might the problem be in parisc's __flush_dcache_page,
 > which only examines i_mmap_shared?
 
-No, it examines both lists, the problem is not there.
+This is the issue: we do treat them differently.
 
-The issue seems to be some confusion about whether the
-test program in question is actually mmap()'ing the area
-with PROT_WRITE set, and if so why the test case isn't
-passing because in such a case the page will have a non-empty
-i_mmap_shared list.
+Semantics differ between privately mapped data (where there's no
+coherency guarantee) and shared data (where there is).  Flushing the
+virtual cache is expensive on pa, so we only do it for the i_mmap_shared
+list.
+
+The difficulty is that a mmap of a read only file with MAP_SHARED is
+expecting the shared cache semantics, but gets added to the non shared
+list.
+
+Since flushing the caches is a performance hog, we'd like do be able to
+distinguish the cases where we have to do the flush MAP_SHARED mappings
+from those we don't (MAP_PRIVATE).
+
+James
