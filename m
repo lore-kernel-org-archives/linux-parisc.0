@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2EF1A4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 10:05:53 -0700 (MST)
-Date: Fri, 6 Dec 2002 09:09:04 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] new 2.4.20-pa10 kernel: boot pb.
-Message-ID: <20021206170904.GY19331@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <3DF0D2C0.D24A29B1@admin.france.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DF0D2C0.D24A29B1@admin.france.hp.com>
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B63EA4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 10:56:53 -0700 (MST)
+Received: from xatlrelay2.atl.hp.com (xatlrelay2.atl.hp.com [15.45.89.191])
+	by atlrel9.hp.com (Postfix) with ESMTP id 5270FE0107A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 12:56:49 -0500 (EST)
+Received: from xatlbh1.atl.hp.com (xatlbh1.atl.hp.com [15.45.89.186])
+	by xatlrelay2.atl.hp.com (Postfix) with ESMTP id 50B04400183
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 12:56:48 -0500 (EST)
+Message-ID: <9A0482A7BD2506488AD9417C93F3714F9CDC0A@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 6 Dec 2002 12:56:41 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] linking
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,34 +27,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> nothing more, it stay here forever.......
-> 
-> It is an A500 in SMP/64.
-> 
-> A normal boot with 2.4.19
-> scsi1 : sym53c8xx-1.7.3c-20010512
-> scsi2 : sym53c8xx-1.7.3c-20010512
-> scsi3 : sym53c8xx-1.7.3c-20010512
->   Vendor: SEAGATE   Model: ST31230N          Rev: HP05
->   Type:   Direct-Access                      ANSI SCSI revision: 02
->   Vendor: SEAGATE   Model: ST318404LC        Rev: HP04
+Hi people,
 
-Bruno, can you try the sym2 driver and let us know how it goes?
+	I'm tryng link some object files (c and asm files already compiled)
+and I got an error. 
+	Could someone help-me to solve it?
 
-CONFIG_SCSI_SYM53C8XX_2=y
-CONFIG_SCSI_SYM53C8XX_DMA_ADDRESSING_MODE=0
-CONFIG_SCSI_SYM53C8XX_DEFAULT_TAGS=16
-CONFIG_SCSI_SYM53C8XX_MAX_TAGS=64
+	The main function is in main.c(main.o)
+	Command Line:  gcc -o exec main.o asm.o .file1.o file2.o
+	Error:
+		/usr/lib/gcc-lib/hppa-linux/3.0.4/../../../crt1.o: In
+function `_start':
+	
+/usr/lib/gcc-lib/hppa-linux/3.0.4/../../../crt1.o(.text+0x0): undefined
+reference to `main'
+	
+/usr/lib/gcc-lib/hppa-linux/3.0.4/../../../crt1.o(.text+0x4): undefined
+reference to `main'
+		collect2: ld returned 1 exit status
 
-there was a similar problem with the sym2 driver that was fixed
-recently.
+Thanks in advance,
 
-alternatively, please try turning on CONFIG_DEBUG_SPINLOCK in your
-kernel and try running the sym53c8xx driver and see if that helps
-identify the problem...
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+*   leandro.farinati@hp.com
