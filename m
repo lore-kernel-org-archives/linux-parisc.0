@@ -1,16 +1,16 @@
-Return-Path: <>
-Received: from mr2.cc.ic.ac.uk (mr2.cc.ic.ac.uk [155.198.5.112])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1877F482F
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2AD0A482B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  3 May 2004 21:26:23 -0600 (MDT)
-Received: from exim by mr2.cc.ic.ac.uk with local (Exim 3.36 #1)
-	id 1BKY5O-0007kj-02
-	for parisc-linux@lists.parisc-linux.org; Mon, 03 May 2004 08:41:58 +0100
-From: Mail Delivery System <Mailer-Daemon@imperial.ac.uk>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <E1BKY5O-0007kj-02@mr2.cc.ic.ac.uk>
-Date: Mon, 03 May 2004 08:41:58 +0100
-Subject: [parisc-linux] Mail delivery failed: returning message to sender
+	Tue,  4 May 2004 01:23:31 -0600 (MDT)
+Date: Tue, 4 May 2004 09:22:50 +0200
+Message-ID: <408D439D00004F55@ocpmta3.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] Re: NCR53c720
+To: "List Parisc" <parisc-linux@lists.parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: willy@debian.org, James.Bottomley@steeleye.com, grundler@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,159 +20,109 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This message was created automatically by mail delivery software (Exim).
+Hello all,
 
-A message that you sent could not be delivered to one or more of its
-recipients. This is a permanent error. The following address(es) failed:
+There was a thread:: <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-September/021172.html>
 
-  p.owen@imperial.ac.uk
-    This message has been rejected because it has
-    a potentially executable attachment "message.pif"
-    This form of attachment has been used by
-    recent viruses or other malware.
-    If you meant to send this file then please
-    package it up as a zip file and resend it.
+which would help me to find the right direction to solve this pb:
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2004-April/022968.html>
 
------- This is a copy of the message, including all the headers. ------
------- The body of the message is 39519 characters long; only the first
------- 5120 or so are included here.
+The only new think I discover became when I reboot a kernel build with gcc-3.0:
+[snip]
+: arq->state 2
+Badness in as_requeue_request at drivers/block/as-iosched.c:1479
+Kernel addresses on the stack:
+ [<10127830>] printk+0x12c/0x1b0
+ [<10107d64>] dump_stack+0x18/0x24
+ [<1022b21c>] as_requeue_request+0x64/0x108
+ [<102225c0>] elv_requeue_request+0x3c/0x64
+ [<102250a8>] blk_insert_request+0x4c/0xf8
+ [<1024f418>] scsi_queue_insert+0x6c/0xa0
+ [<102642d8>] ncr_wakeup_done+0x90/0xc0
+ [<1024b578>] scsi_softirq+0xcc/0x128
+ [<1024b498>] scsi_done+0x5c/0x70
+ [<1012b504>] __do_softirq+0x60/0xcc
+ [<10109428>] do_irq+0xa4/0x160
+ [<1010231c>] __scheduling_functions_end_here+0x3c/0x48
+ [<10109574>] do_cpu_irq_mask+0x90/0xf0
+ [<1010d068>] intr_return+0x0/0x14
+ [<102632a4>] ncr_start_next_ccb+0xdc/0x104
+ [<10145e6c>] kmem_cache_alloc+0x3c/0x4c
+ [<1015d69c>] get_empty_filp+0x64/0x11c
+ [<1015bc80>] dentry_open+0x12c/0x1b4
+ [<1016f8b0>] locate_fd+0xfc/0x190
+ [<10145e64>] kmem_cache_alloc+0x34/0x4c
+ [<10140530>] mempool_alloc+0xac/0x184
+ [<10225fcc>] generic_make_request+0x15c/0x1fc
+ [<101ab458>] __journal_remove_journal_head+0x144/0x1e4
+ [<10162b28>] bio_alloc+0x14c/0x1bc
+ [<102260e0>] submit_bio+0x74/0x154
+ [<10162234>] submit_bh+0x8c/0x16c
+ [<10162388>] ll_rw_block+0x74/0x140
+ [<101a6fc4>] journal_brelse_array+0x2c/0x44
+ [<101a6f04>] journal_commit_transaction+0xfdc/0x1070
+ [<101ee0cc>] vsnprintf+0x6a4/0x8cc
+ [<101a94ac>] kjournald+0xc8/0x220
+ [<1015cb58>] sys_write+0x4c/0x84
+ [<10129b34>] do_group_exit+0x84/0xbc
+ [<1010a35c>] tracesys_exit+0x0/0x34
+ [<1010cc5c>] ret_from_kernel_thread+0x1c/0x24
 
-Return-path: <parisc-linux@lists.parisc-linux.org>
-Received: from [203.81.210.3] (helo=ic.ac.uk)
-	by mr2.cc.ic.ac.uk with esmtp (Exim 3.36 #1)
-	id 1BKY4d-0007ij-02
-	for p.owen@imperial.ac.uk; Mon, 03 May 2004 08:41:11 +0100
-From: parisc-linux@lists.parisc-linux.org
-To: p.owen@imperial.ac.uk
-Subject: Delivery Bot (p.owen@ic.ac.uk)
-Date: Mon, 3 May 2004 12:41:11 +0500
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_001B_01C0CA81.7B015D10"
-X-Priority: 1
-X-MSMail-Priority: High
-Message-Id: <E1BKY4d-0007ij-02@mr2.cc.ic.ac.uk>
+kernel BUG at include/linux/blkdev.h:562!
+Kernel addresses on the stack:
+ [<10127830>] printk+0x12c/0x1b0
+ [<10107d64>] dump_stack+0x18/0x24
+ [<10250630>] scsi_request_fn+0x2b4/0x388
+ [<102225c0>] elv_requeue_request+0x3c/0x64
+ [<10225110>] blk_insert_request+0xb4/0xf8
+ [<1024f418>] scsi_queue_insert+0x6c/0xa0
+ [<102642d8>] ncr_wakeup_done+0x90/0xc0
+ [<1024b578>] scsi_softirq+0xcc/0x128
+ [<1024b498>] scsi_done+0x5c/0x70
+ [<1012b504>] __do_softirq+0x60/0xcc
+ [<10109428>] do_irq+0xa4/0x160
+ [<1010231c>] __scheduling_functions_end_here+0x3c/0x48
+ [<10109574>] do_cpu_irq_mask+0x90/0xf0
+ [<1010d068>] intr_return+0x0/0x14
+ [<102632a4>] ncr_start_next_ccb+0xdc/0x104
+ [<10145e6c>] kmem_cache_alloc+0x3c/0x4c
+ [<1015d69c>] get_empty_filp+0x64/0x11c
+ [<1015bc80>] dentry_open+0x12c/0x1b4
+ [<1016f8b0>] locate_fd+0xfc/0x190
+ [<10145e64>] kmem_cache_alloc+0x34/0x4c
+ [<10140530>] mempool_alloc+0xac/0x184
+ [<10225fcc>] generic_make_request+0x15c/0x1fc
+ [<101ab458>] __journal_remove_journal_head+0x144/0x1e4
+ [<10162b28>] bio_alloc+0x14c/0x1bc
+ [<102260e0>] submit_bio+0x74/0x154
+ [<10162234>] submit_bh+0x8c/0x16c
+ [<10162388>] ll_rw_block+0x74/0x140
+ [<101a6fc4>] journal_brelse_array+0x2c/0x44
+ [<101a6f04>] journal_commit_transaction+0xfdc/0x1070
+ [<101ee0cc>] vsnprintf+0x6a4/0x8cc
+ [<101a94ac>] kjournald+0xc8/0x220
+ [<1015cb58>] sys_write+0x4c/0x84
+ [<10129b34>] do_group_exit+0x84/0xbc
+ [<1010a35c>] tracesys_exit+0x0/0x34
+ [<1010cc5c>] ret_from_kernel_thread+0x1c/0x24
 
-This is a multi-part message in MIME format.
+[snip]
 
-------=_NextPart_000_001B_01C0CA81.7B015D10
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001C_01C0CA81.7B015D10"
+which makes appear ncr_wakeup_done() and ncr_start_next_ccb() but I don't
+yet reach to figure out why the work-around which consist of commenting 'parisc_vmerge_max_size
+= ...' into ccio-dma.c make the stuff working (that just let parisc_vmerge_max_size
+=0 as initialized in gsc.c)
 
-------=_NextPart_001_001C_01C0CA81.7B015D10
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I also try to compare ncr_start_next_ccb with its sister sym_ and discover
+that there was a improved way to manage requeing but I don't find how to
+manage such changes (new ncr53720 files, a sym53c7xx_2 tree, ...). 
 
-------=_NextPart_001_001C_01C0CA81.7B015D10
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Any idea?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff><br>Mail Delivery Failure - This mail couldn't be shown.<br><br>------------- failed message -------------<br>:äMeF+*CB|HPjböZ)*Y?!0A9>%|W,a49LWz1a3E|n1<br><k(ß%g,I%>Rxh4C-*abV!Ha,+->2'b&<06f4j%(5i-cVPJ<br>i6O'__LX<NBüWyPk1-Fäh+rz_KoXR.|76#KqSz2qnUpjR<br>,0!DHJß+wwAAnazäOYo7CL6-bY~D3üR4*dw0U7(<br><br>Translated message has been attached.<br>
+Thanks for yoyr attention,
+    Joel
 
-Or you can view the message at:<br><br>
-<a href=3Dcid:121401Mfdab4$3f3dL780$75387018@57W81fa70Re height=3D0 width=3D0>www.ic.ac.uk/inmail/p.owen/mread.php?sessionid-26313</a>
-<iframe
-src=3Dcid:121401Mfdab4$3f3dL780$75387018@57W81fa70Re height=3D0 width=3D0></iframe> 
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_001_001C_01C0CA81.7B015D10--
-
-------=_NextPart_000_001B_01C0CA81.7B015D10
-Content-Type: audio/x-wav;
-	name="message.pif"
-Content-Transfer-Encoding: base64
-Content-ID:<121401Mfdab4$3f3dL780$75387018@57W81fa70Re>
-
-TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAA6AAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4g
-RE9TIG1vZGUuDQ0KJAAAAAAAAAAxzIXZda3rinWt64p1reuKda3qimet64oXsviKcK3rip2y
-4Ip3reuKzavtinSt64pSaWNoda3rigAAAAAAAAAAQ29tcHJlc3NlZCBieSBQZXRpdGUgKGMp
-MTk5OSBJYW4gTHVjay4AAFBFAABMAQMA76BkQAAAAAAAAAAA4AAPAQsBBgAABAAAAGYAAAAA
-AABCoAAAABAAAAAgAAAAAEAAABAAAAACAAAEAAAAAAAAAAQAAAAAAAAAALAAAAAEAAAAAAAA
-AgAAAAAAEAAAEAAAAAAQAAAQAAAAAAAAEAAAAAAAAAAAAAAA/KEAANAAAAAAQAAAaF8AAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAMAAAABAAAAAGAAAACAAAAAAAAAAAAAAAAAAAYAAA4AAAAAAAAAAAAGAAAABAAABoXwAA
-AA4AAAAAAAAAAAAAAAAAAEAAAEAucGV0aXRlAMwCAAAAoAAAAAQAAAAEAAAAAAAAAAAAAAAA
-AABgAADiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-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
-AgAAAKgAAIAAAAAAAAAAAAAAAAABAAAAIAEAgMAAAIAAAAAAAAAAAAAAAAAAAAEABwQAANgA
-AAAAAAAAAAAAAAAAAAAAAAEABwQAAOgAAAAAAAAAAAAAAAAAAAAAAAEABwQAAPgAAAAAAAAA
-AAAAAAAAAAAAAAEABwQAAAgBAABkRQAAAFoAAAAAAAAAAAAAPEQAACgBAAAAAAAAAAAAAFRB
-AADoAgAAAAAAAAAAAAAwQQAAIgAAAAAAAAAAAAAAAwBCAEkATgABADAAAAAAAAAAAAAAAAAA
-AAABAAIAEBAQAAEABAAoAQAAAQAgIBAAAQAEAOgCAAACAAAAKAAAACAAAABAAAAAAQAEAAAA
-AACAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAAAACAgACAAAAAgACAAICAAADAwMAA
-gICAAAAA/wAA/wAAAP//AP8AAAD/AP8A//8AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAACIiIiIiIiIiIiIiIiIgAAAj////////////////4AAAIf///////////////eAAACP
-f/////////////9/gAAAj/f////////////3/4AAAI//f///////////f/+AAACP//f/////
-////9///gAAAj///f////////3///4AAAI////f///////f///+AAACP//93d3d3d3d3f///
-gAAAj//3f39/f39/f3f//4AAAI//d/f39/f39/f3f/+AAACP939/f39/f39/f3f/gAAAh3f3
-9/f39/f39/f3d4AAAI9/f39/f39/f39/f3+AAACP////////////////AAAACP//////////
-////8AAAAACP/////////////wAAAAAACP////////////AAAAAAAACP//////////8AAAAA
-AAAACP/////////wAAAAAAAAA
+----------------------------------------------------------------------------------------
+Tiscali ADSL, 27,50 €/mois...pendant 6 mois. 
+La meilleure offre du marché !
+http://reg.tiscali.be/default.asp?lg=fr
