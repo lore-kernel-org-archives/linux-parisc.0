@@ -1,34 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 28B49482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 06:55:01 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id B952BB00C; Thu, 12 Jul 2001 13:53:36 +0100 (BST)
-Date: Thu, 12 Jul 2001 13:53:36 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: rpengelly <rpengelly@ati.stlawrencec.on.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 0.92 install iso problems
-Message-ID: <20010712135336.B18375@linuxcare.com>
-References: <002c01c10a40$ba3143a0$0f809b8e@ati.stlawrencec.on.ca> <20010712124932.Y18375@linuxcare.com> <000b01c10acd$be18bbf0$0f809b8e@ati.stlawrencec.on.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000b01c10acd$be18bbf0$0f809b8e@ati.stlawrencec.on.ca>; from rpengelly@ati.stlawrencec.on.ca on Thu, Jul 12, 2001 at 08:25:31AM -0400
+Received: from ati6.ati.stlawrencec.on.ca (unknown [142.155.128.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 84984482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 06:55:21 -0600 (MDT)
+Message-ID: <001201c10ad2$3beb97b0$0f809b8e@ati.stlawrencec.on.ca>
+From: "rpengelly" <rpengelly@ati.stlawrencec.on.ca>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 12 Jul 2001 08:57:40 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01C10AB0.B4A8FCA0"
+Subject: [parisc-linux] problems with checksums
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 12, 2001 at 08:25:31AM -0400, rpengelly wrote:
-> We did boot from an older lifimage due to problems with the new lifimage on
-> the 0.92 install. For some reason it wouldn't netboot off the lifimage.
-> 
-> I'm currently downloading the 0.92 full iso to see if that yeilds any luck.
+This is a multi-part message in MIME format.
 
-0.9.2 and 0.9.2-install have the same lifimage on them.  Post more
-details if it still wont netboot.
+------=_NextPart_000_000F_01C10AB0.B4A8FCA0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> How exactly do you check the md5sums?
+I've downloaded the 0.92 install. I ran the md5sum on it and it wasn't =
+correct. I'm wondering if the problem is that I am downloading to a =
+windows box and then transferring it to a linux box for netbooting? =
+would this cause problems with the checksums?
 
-Typical linux systems, at least, have a utility md5sum, so you just
-enter "md5sum <filename>" at the shell prompt.  A web search for
-md5sum.exe should help if you use certain other OSes.
+------=_NextPart_000_000F_01C10AB0.B4A8FCA0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Richard
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I've downloaded the 0.92 install. I ran =
+the md5sum=20
+on it and it wasn't correct. I'm wondering if the problem is that I am=20
+downloading to a windows box and then transferring it to a linux box for =
+
+netbooting? would this cause problems with the=20
+checksums?</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000F_01C10AB0.B4A8FCA0--
