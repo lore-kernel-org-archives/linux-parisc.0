@@ -1,16 +1,21 @@
-Return-Path: <ukSwarthout@uk.tk>
-Received: from parisc-linux (pcp04503598pcs.anaprd01.md.comcast.net
-	[68.50.117.123])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8744F48A4
-	for <parisc-linux@parisc-linux.org>;
-	Mon,  2 Feb 2004 19:32:27 -0700 (MST)
-Message-ID: <ttbxgwib.247398800wayepbt@Ahmuftelmhmrvwi>
-From: "Ahmuf" <ukSwarthout@uk.tk>
-Date: Mon, 02 Feb 2004 21:32:23 -0300
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain; charset=iso-8859-1
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from fep04-mail.bloor.is.net.cable.rogers.com
+	(fep04-mail.bloor.is.net.cable.rogers.com [66.185.86.74])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 01A854840
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon,  2 Feb 2004 22:50:20 -0700 (MST)
+Date: Tue, 3 Feb 2004 00:50:45 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] gcc/config/pa/ftpr.c fixes for new
+	TRAMPOLINE_TEMPLATE in hppa's glibc.
+Message-ID: <20040203055045.GC11884@baldric.uwo.ca>
+References: <20040131222832.GB19840@baldric.uwo.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040131222832.GB19840@baldric.uwo.ca>
 Cc: 
-Subject: [parisc-linux] sukper viagrma
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,18 +25,53 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-It`s fabuklous!
-
-I took the only one pijll of Cialjs and that was such a GREAT weekend!
-All the girls at the party were just punch-drunk with my potential
-
-I have fhcked all of them THREE times but my dhck WAS able to do some more!
-
-Cbalis- it`s COOL!!! The best weekend stuff I've ever trhied!
-Haven`t you tried yet?
-
-DO IT NkOW at 
-http://www.vow-meds.com/sv/index.php?pid=genviag
-
-crankshaft Sergei chirped designates buried reaping educates anodize decencies.
+> I'm not quite sure what the "-4" is intended to accomplish, I figure I
+> could have prefixed the TREAMPOLINE_TEMPLATE with another jump that
+> gives the right address? That still makes for an extra jump, and I'd
+> rather have gcc just look in the right place first.
  
+The easier fix is to change dl-machine.h to read:
+
+    505 #define TRAMPOLINE_TEMPLATE(tramp_name, fixup_name)                     \
+    506   extern void tramp_name (void);                                        \
+    507   asm (                                                                 \
+    508  "      .text\n"                                                        \
+    509         /* FAKE bl to provide gcc's __cffc with fixup's address */      \
+    510  "      bl      " #fixup_name ",%r2\n" /* Runtime address of fixup */   \
+    511  "      .globl " #tramp_name "\n"                                       \
+    512  "      .type " #tramp_name ",@function\n"                              \
+    513   #tramp_name ":\n"                                                     \
+    514         /* Save return pointer */                                       \
+    515  "      stw     %r2,-20(%sp)\n"                                         \
+
+The addition of the *fake* bl in that .text before the function allows gcc
+to use the "-4" lookup to find the right 17-bit displacement towards "fixup"
+
+The patch below *can* still go into gcc, and will speedup __cffc when running
+with the new glibc.
+
+The above changes are added into the latest glibc patches at:
+http://www.parisc-linux.org/~carlos/glibc-hppa-patches-latest.tar.gz
+
+
+> 2004-01-31  Carlos O'Donell  <carlos@baldric.uwo.ca>
+> 
+> 	* gcc/config/pa/fptr.c (__canonicalize_funcptr_for_compare): Add
+> 	extra offset check for new glibc TRAMPOLINE_TEMPLATE.
+> 
+> Index: gcc/config/pa/fptr.c
+> ===================================================================
+> RCS file: /cvs/gcc/gcc/gcc/config/pa/fptr.c,v
+> retrieving revision 1.2
+> diff -u -p -r1.2 fptr.c
+> --- gcc/config/pa/fptr.c	9 Dec 2002 19:16:14 -0000	1.2
+> +++ gcc/config/pa/fptr.c	31 Jan 2004 22:18:27 -0000
+> @@ -35,7 +35,7 @@ Boston, MA 02111-1307, USA.  */
+>     the template should it be necessary to change the current branch
+>     position.  */
+>  #define NOFFSETS 2
+> -static int fixup_branch_offset[NOFFSETS] = { 32, -4 };
+> +static int fixup_branch_offset[NOFFSETS] = { 36, 32, -4 };
+>  
+>  #define GET_FIELD(X, FROM, TO) \
+>    ((X) >> (31 - (TO)) & ((1 << ((TO) - (FROM) + 1)) - 1))
