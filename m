@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from iut-lannion.fr (alba.iut-lannion.fr [192.70.33.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1AE46485E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 08:10:42 -0600 (MDT)
-Message-Id: <200206191410.g5JEAMS03029@iut-lannion.fr>
-Date: Wed, 19 Jun 2002 16:08:32 +0200
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CCEB54863
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 08:17:59 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17KgHT-0004tn-00; Wed, 19 Jun 2002 15:17:55 +0100
+Date: Wed, 19 Jun 2002 15:17:55 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: joel.soete@freebel.net
-From: Bruno =?iso-8859-1?Q?L=E9on?= <nonolemono@yahoo.fr>
-Subject: Re: [parisc-linux] Only serial console for B1000 (64bits) ?
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200206190826.g5J8QYS31181@iut-lannion.fr>
- <200206190826.g5J8QYS31181@iut-lannion.fr>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] hppa64-linux-gcc not in gcc dpkg?
+Message-ID: <20020619151755.L9435@parcelfarce.linux.theplanet.co.uk>
+References: <1024493288.3d1086e89dfd2@webmail.tiscalinet.be> <20020619143627.K9435@parcelfarce.linux.theplanet.co.uk> <1024495623.3d109007598b2@webmail.tiscalinet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1024495623.3d109007598b2@webmail.tiscalinet.be>; from joel.soete@freebel.net on Wed, Jun 19, 2002 at 04:07:03PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +26,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>Which CD?
-The 0.9.3 iso cd downloaded from the Esiee team Website.
+On Wed, Jun 19, 2002 at 04:07:03PM +0200, joel.soete@freebel.net wrote:
+> May I am wrong (I thought that the PDC of the b2000 was not a 64bits one; I will
+> check )
 
->Try first 32bits kernel (till now I am running successfuly a 32bits pa37 on a
-b2000) with a serial console.
-I tried both kernels in fact, but none of them seem to work.
+ah, you relied on memory rather than reading the help text then?
 
->Then may be you would like to get a more recent kernel in 64bits (see
->ftp://ftp.parisc-linux.org/kernels/).
-I will change the kernel hopefuly, but I need to install a first one... ;-)
+32-bit PDC
+CONFIG_PDC_NARROW
+  Saying Y here will allow developers with a C180, C200, C240, C360,
+  J200, J210, and/or a J2240 to test 64-bit kernels by providing a
+  wrapper for the 32-bit PDC calls.  Since the machines which require
+  this option do not support over 4G of RAM, this option is targeted
+  for developers of these machines wishing to test changes on both
+  32-bit and 64-bit configurations.
 
-Here is the error I get on the LCD of the B1000 :
-FLT CBF4: SYS BD
-bad OS HPMC cksm 
-FLT CBFC: SYS BD 
-OS HPMC br err 
-FLT 500B: SYS BD 
-bus timeout 
+  If unsure, say N.
 
-Another guy named "Yasholomew Yashinski" report the same error in february,
-but 
-I didn't understand how he solved his problem.
+b2000 and similar machines have firmware which supports both 32 and 64
+bit PDC calls.
 
-I will look into netbooting perhaps.
-
-Thanks for help,
-Bruno.
+-- 
+Revolutions do not require corporate support.
