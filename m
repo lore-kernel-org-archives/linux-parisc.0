@@ -1,25 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from irongate.swansea.linux.org.uk (pc1-cwma1-5-cust128.swa.cable.ntl.com [80.5.120.128])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9AF5A4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 04:03:03 -0600 (MDT)
-Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
-	by irongate.swansea.linux.org.uk (8.12.5/8.12.5) with ESMTP id g8JA6l5a026763;
-	Thu, 19 Sep 2002 11:06:48 +0100
-Received: (from alan@localhost)
-	by irongate.swansea.linux.org.uk (8.12.5/8.12.5/Submit) id g8JA6iq1026761;
-	Thu, 19 Sep 2002 11:06:44 +0100
-Subject: Re: [parisc-linux] ide controller
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: j.steindlberger@gmx.de
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	moritz@freesources.org, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <28859.1032424874@www2.gmx.net>
-References: <20020916043004.B27754829@dsl2.external.hp.com>
-	<28859.1032424874@www2.gmx.net>
-Content-Type: text/plain
-Date: 19 Sep 2002 11:06:44 +0100
-Message-Id: <1032430004.26669.1.camel@irongate.swansea.linux.org.uk>
-Mime-Version: 1.0
+Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7AA504829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 04:24:24 -0600 (MDT)
+Message-ID: <3D89A5D4.8050306@itp.bg>
+Date: Thu, 19 Sep 2002 13:24:20 +0300
+From: Stephan Trajkoff <stephan@itp.bg>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+ boundary="------------060604040603010400060207"
+Subject: [parisc-linux] PPPD+PPTPD
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -31,25 +21,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, 2002-09-19 at 09:41, j.steindlberger@gmx.de wrote:
-> together with Moritz I/we tried to get some new results. We took the latest
-> kernel (-pa18) and did the changes to the PDC202XX-definitions in pdc202xx.c.
-> But I don't believe that the kernel gets the chance to recognice this
-> change. I think the kernel crashes earlier. We reduced the kernel by the specific
-> drivers. We disabled the following:
-> [ ]     Generic PCI bus-master DMA support
-> After compiling wie had these three modules:
-> ide-mod.o
-> ide-probe-mod.o
-> ide-disk.o
-> An insmod ide-mod.o was possible. But after insmod ide-probe-mod the kernel
-> crashes. In some cases we got an output with about 50 pages of memory
-> addresses. At the beginning we got some messages told about the SYM-SCSI-device.
-> Could that be a conflict? We did not succeed to reproduce that and log it.
+This is a multi-part message in MIME format.
+--------------060604040603010400060207
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Our IDE code has been run on non x86 platforms. It does require that the
-defaults are set right for the platform so that it doesnt do stuff like
-blindly probe I/O 0x170. 
+Hello, please see the attachment.
+I use 2.4.18-pa61 kernel and enabled PPP support
+PPPD version is 2.4.1, PPTPD is 1.1.3
 
-I don't know if the Promise card needs its BIOS to have run, I would
-suspect not but can't be sure.
+--------------060604040603010400060207
+Content-Type: text/plain;
+ name="ppp"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ppp"
+
+Sep 19 13:22:41 obzor pppd[17190]: read: Resource temporarily unavailable
+Sep 19 13:22:41 obzor pppd[17190]: read /dev/ppp: Resource temporarily
+unavailable
+Sep 19 13:22:41 obzor pppd[17190]: rcvd [LCP ConfAck id=0x1 <asyncmap 0x0>
+<auth pap> <magic 0x2479cb91> <pcomp> <accomp>]
+Sep 19 13:22:41 obzor pppd[17190]: sent [LCP EchoReq id=0x0
+magic=0x2479cb91]
+Sep 19 13:22:41 obzor pppd[17190]: rcvd [PAP AuthReq id=0x1 user="kpematop"
+password=<hidden>]
+
+--------------060604040603010400060207--
