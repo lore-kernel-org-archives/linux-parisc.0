@@ -1,30 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA05146
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 15:04:51 -0600
-Sender: "Matthew Earley" <mearley@nortelnetworks.com>
-Message-ID: <3773E943.F0ACB652@americasm01.nt.com>
-Date: Fri, 25 Jun 1999 16:40:35 -0400
-From: "Matthew Earley" <mearley@nortelnetworks.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA06114
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 21:26:06 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id XAA05353
+	for <parisc-linux@thepuffingroup.com>; Fri, 25 Jun 1999 23:35:15 -0400
+Sender: adevries@feather.thepuffingroup.com
+Message-ID: <37744A6C.3A570E1E@thepuffingroup.com>
+Date: Fri, 25 Jun 1999 23:35:08 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting from CD...
-References: <3773E26E.164B31F5@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] [Fwd: new commits for the kernel]
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> 
-> How do PA RISC machines manage booting from CD?  How does one create
-> such a CD?
+More good news from Helge...  I've also committed a few small fixes.
 
-I am doing that as I read your post.  The Ignite-UX toolkit available on
-software.hp.com has the tools to do this.  See make_medialif.  I make a
-HFS file images that have Ignite golden images and SD software depots.
-make_medialif creates the LIF file with the INSTALL boot and Ignite
-config stuff. The instl_combine command wraps the LIF file containing
-the INSTLALL kernel and INSTALLFS filesystem around my HFS image file. I
-then use cdrecord to write the whole enchilada to CD-R.   
+>From what I know, the descriptions in machines.h (which I transcribed on
+a bus from Montreal to Ottawa in March) are reasonably up to date.
 
-Matt
---
-Matt Earley  nortelnetworks.com
+- Alex
+
+-------- Original Message --------
+Subject: new commits for the kernel
+Date: Sat, 26 Jun 1999 04:00:03 +0200
+From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+To: Alex deVries <adevries@thepuffingroup.com>
+
+Hi again.
+
+I have committed again some changes, so that the kernel now uses the
+real
+linux-console-code, and at start it shows you the name of the machine
+(mine is: Mirage Jr. (715/64)).
+If your machine-name isn´t shown, take a look into machines.c &
+setup.c..... esp. identification-code for PA2.x-Machines could be
+updated.
+
+The code for getcpu_info() [proc-fs] is also implemented.
+
+Bye,
+Helge Deller.
