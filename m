@@ -1,53 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 82A554A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 11:25:13 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14W0Px-0007L7-00; Thu, 22 Feb 2001 11:24:41 -0700
-Date: Thu, 22 Feb 2001 11:24:41 -0700
-From: Matthew Wilcox <matthew@wil.cx>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Alan Modra <alan@linuxcare.com.au>,
-	Matthew Wilcox <matthew@wil.cx>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: schedule_tail
-Message-ID: <20010222112441.T31164@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.21.0102222150310.14557-100000@front.linuxcare.com.au> <Pine.LNX.4.21.0102230114130.14557-100000@front.linuxcare.com.au> <20010222144331.G1129@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010222144331.G1129@linuxcare.com>; from rhirst@linuxcare.com on Thu, Feb 22, 2001 at 02:43:31PM +0000
-Sender: <willy@www.linux.org.uk>
+Received: from localhost (ca-ol-sqy-11-246.abo.wanadoo.fr [213.56.234.246])
+	by dsl2.external.hp.com (Postfix) with SMTP id 653744A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 15:02:17 -0700 (MST)
+From: WIES Nicolas <n.wies@wanadoo.fr>
+Reply-To: n.wies@wanadoo.fr
+Date: Thu, 22 Feb 2001 23:01:03 +0100
+Content-Type: text/plain;
+  charset="iso-8859-15"
+To: parisc-linux@lists.parisc-linux.org
+References: <200102212047.VAA18271@zaphod.halden.lillfab.se>
+In-Reply-To: <200102212047.VAA18271@zaphod.halden.lillfab.se>
+Subject: Re: [parisc-linux] Help wanted on an 715/50 "old Box" 2
+MIME-Version: 1.0
+Message-Id: <01022223010301.01360@nw>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Feb 22, 2001 at 02:43:31PM +0000, Richard Hirst wrote:
-> On Fri, Feb 23, 2001 at 01:28:36AM +1100, Alan Modra wrote:
-> > This is really crazy (or I am).  I replaced the calls to schedule_tail
-> 
-> This helps for me.  b,l disassembles as call, not b,l ...,rp:
-> 
-> ===================================================================
-> RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/entry.S,v
-> retrieving revision 1.72
-> diff -u -r1.72 entry.S
-> --- entry.S     2001/02/20 02:19:52     1.72
-> +++ entry.S     2001/02/22 14:33:43
-> @@ -509,7 +509,7 @@
->  
->         /* Call schedule_tail first though */
->  
-> -       b,l     schedule_tail, %r2
-> +       bl      schedule_tail, %r2
+Le Mercredi 21 Février 2001 21:47, vous avez écrit :
+> On 20 Feb, Alex deVries wrote:
+> > It seems very unlikely that's a Tulip chip, since that's a PCI chipset
+> > that can't connect to EISA.  If it's another EISA ethernet chipset,
+> > there's still some WAX work we need to get through.
+>
+> Actually I think there was EISA tulips (DC21040-based), but for Linux
+> you need to use the de4x5 driver rather than the tulip driver.
+>
+> /Daniel
 
-This is crazy.  entry.S is .level 2.0.  bl is not a pa2.0 opcode, b,l is!
-What is going on?!
+Thanks for this information. This card comes from HP, this an extension card 
+available when the 715 was buy. It's the HP 25567B EISA LAN adapter.
 
-Wait.  Is it...
+I try yesterday to boot from a kernel by rbootd, but during 1H30 nothing 
+append.
+I retry this weekend with the last kernel from the FTP.
 
-`The word displacement is assembled from the w, w1, w2, and (when the
-,L completer is specified with GR 2 as the link register) w3 fields in
-the instruction.''
 
-which, iirc is not available on pa1.1 processors.  So here's the crucial
-difference.  Not 32-bit vs 64-bit.  Not SMP vs UP.  But pa1.1 vs 2.0.
-
+Nicolas
 -- 
-Revolutions do not require corporate support.
+Adresse de réponse  / return address :
+
+	n.wies@wanadoo.fr
+
+:-)
