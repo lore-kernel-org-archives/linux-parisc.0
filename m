@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp014.mail.yahoo.com (smtp014.mail.yahoo.com [216.136.173.58])
-	by dsl2.external.hp.com (Postfix) with SMTP id B3FA34837
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 09:26:12 -0700 (MST)
-Message-ID: <3C824EA9.4040805@yahoo.com>
-Date: Sun, 03 Mar 2002 16:26:17 +0000
+Received: from smtp012.mail.yahoo.com (smtp012.mail.yahoo.com [216.136.173.32])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3A6F54841
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 09:36:49 -0700 (MST)
+Message-ID: <3C825127.7090200@yahoo.com>
+Date: Sun, 03 Mar 2002 16:36:55 +0000
 From: Jbit <james_a_n_lee@yahoo.com>
 MIME-Version: 1.0
 To: parisc-linux <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] Linux From Scratch
+Subject: [parisc-linux] Power Supply Problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,16 +20,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-Just to let everybody know that i've (finally) sucsesfully completley LFS (www.linuxfromscratch.org) on my 712/80
-I may be writing a hint for it, since it did get a bit messy ;)
-But for anybody who doesn't like debian too much, i'd sugest attemping LFS.
-Also while doing LFS, i used 2.4.18-pa2 (yesterdays CVS, to be exact) and (i think this has been reported already)
-My power LED switches off when linux is loading/loaded and soft power off no longer works (it just switches off)
-Any reason for this?
+Hey, erm, I just tried to boot my other hp (712/60) and the fuse (inside the power supply) just blew..
+I was wondering if anybody has a scematic for the power supply so i can (try to) fix it?
 
-Anyway, if you have any problems doing LFS, contact me or post on the mailing list
-It takes just 20 seconds to boot (from end of bios->login prompt) and the entire system is < 200MB
+thanks for any help
 
 --jbit
 
