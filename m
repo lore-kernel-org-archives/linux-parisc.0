@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3138E4829
-	for <parisc-linux@parisc-linux.org>; Tue, 15 Oct 2002 14:16:31 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 181Y79-0004br-00
-	for parisc-linux@parisc-linux.org; Tue, 15 Oct 2002 21:16:27 +0100
-Date: Tue, 15 Oct 2002 21:16:27 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20021015211627.A15163@parcelfarce.linux.theplanet.co.uk>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B42704829
+	for <parisc-linux@parisc-linux.org>; Tue, 15 Oct 2002 14:51:11 -0600 (MDT)
+Date: Tue, 15 Oct 2002 13:51:16 -0700
+From: Randolph Chung <tausq@debian.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 status
+Message-ID: <20021015205116.GR5602@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <20021015211627.A15163@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 2.5 status
+In-Reply-To: <20021015211627.A15163@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,36 +24,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In an attempt to get more people involved in the 2.5 porting effort, I'm
-going to try to send out weekly updates of what's going on.  Feel free to
-respond to things and point out where I'm wrong.
+>  - Serial code not working for a 712 (willy)
+>  - the fix for do_fork needs checking
+>  - stifb doesn't compile
+>  - mux driver needs to be forward ported from 2.4 (rbrad)
+>  - merge 2.5.42
+>  - think the tcpdiag_cookie patch in our tree is now obsolete
+>  - need to get an official number for PDC_CONS or MUX (any problem with using
+> 	the same number for both?) (rbrad)
+>  - send .text.init -> .init.text change to Linus (willy)
+>  - send tulip changes to jgarzik (grant)
+>  - figure out why we have genrtc 1.05 in our tree when linus has 1.06
+>  - do a better job of vmlinux{32,64}.lds
+>  - review diff vs 2.4 for additional changes
+>  - review diff vs 2.5 for changes which still need to be sent to Linus.
 
-Status:
+- show_trace()/show_stack() etc need to be implemented for parisc. right
+now they are just empty stubs. i have some initial versions of these
+that are probably not quite correct. will look into it some more.
+- our PDC early debug console hacks need to be cleaned up somehow
+- pci serial is broken still in 2.5.41, may be fixed in 2.5.42
+- drivers/pci/setup-bus.c has a hppa-specific #ifdef right now to
+  prevent pci reinit from hpmc'ing the machine. this probably needs to
+  go upstream
 
- - Merged to 2.5.41
- - Booted on an A500
- - Linus released 2.5.42
- - Don't know what patches need to be integrated into Linus' tree
- - Don't know what other patches need to be brought forward from 2.4
+> would these lists be more useful in html or would they just bitrot?
 
-Todo:
+email's good.... :-) perhaps keep the list in cvs (so people can
+add/remove items) and you can post it periodically.
 
- - Serial code not working for a 712 (willy)
- - the fix for do_fork needs checking
- - stifb doesn't compile
- - mux driver needs to be forward ported from 2.4 (rbrad)
- - merge 2.5.42
- - think the tcpdiag_cookie patch in our tree is now obsolete
- - need to get an official number for PDC_CONS or MUX (any problem with using
-	the same number for both?) (rbrad)
- - send .text.init -> .init.text change to Linus (willy)
- - send tulip changes to jgarzik (grant)
- - figure out why we have genrtc 1.05 in our tree when linus has 1.06
- - do a better job of vmlinux{32,64}.lds
- - review diff vs 2.4 for additional changes
- - review diff vs 2.5 for changes which still need to be sent to Linus.
-
-would these lists be more useful in html or would they just bitrot?
-
--- 
-Revolutions do not require corporate support.
+thanks,
+randolph
