@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflashcom (firewall.pflash.com [207.19.136.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 54D49482A
-	for <parisc-linux@parisc-linux.org>; Sun, 13 Jan 2002 08:56:10 -0700 (MST)
-Received: from localhost.localdomain (ppp147.cc1.pflash.com [63.121.24.149]) by vopserver.pflashcom
- (Vircom SMTPRS 5.2.203) with SMTP id <B0009604664@vopserver.pflashcom> for <parisc-linux@parisc-linux.org>;
- Sun, 13 Jan 2002 09:51:52 -0600
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: parisc-linux@parisc-linux.org
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9673D482A
+	for <parisc-linux@parisc-linux.org>; Sun, 13 Jan 2002 08:56:51 -0700 (MST)
 Subject: Re: [parisc-linux] bogomips?
-Date: Sun, 13 Jan 2002 09:53:32 -0600
-References: <Pine.LNX.4.33.0201120757330.1989-100000@goliath.alaskatech.org> <20020112224306.C73ED482A@dsl2.external.hp.com> <20020113021209.55bad2ea.csuder@cisco.com>
-In-Reply-To: <20020113021209.55bad2ea.csuder@cisco.com>
+To: willy@debian.org (Matthew Wilcox)
+Date: Sun, 13 Jan 2002 16:08:18 +0000 (GMT)
+Cc: mszick@pflash.com (Michael S. Zick),
+	parisc-linux@parisc-linux.org
+In-Reply-To: <20020113155216.O9193@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Jan 13, 2002 03:52:16 PM
 MIME-Version: 1.0
-Message-Id: <02011309533201.00878@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E16PnBC-0007Jg-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,33 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Oops,
-I am once again exposed as a fool.  Please ignore my earlier copy of this 
-message - I didn't read the full reference.  The change from 1.0 * clock to 
-2.0 * clock is described in the reference.
-Sorry folks,
-Mike
+> On Sun, Jan 13, 2002 at 09:48:20AM -0600, Michael S. Zick wrote:
+> > Once upon a time, both my Celeron and my P-II reported approximately 1.00 * 
+> > clock (same as above reference), then with some change of kernel version, 
+> > jumped to 2.00 * clock.
+> 
+> yeah, that was a change prumpf made.  i forget why, but there was an
+> important reason.
 
+We changed the x86 bogomip computation because it overflowed on a 2GHz 
+processor. (Yes Linux 2.0 does not work on 2GHz preventium IV 8))
 
-On Sunday 13 January 2002 04:12 am, Christian Suder wrote:
-> http://www.linuxdoc.org/HOWTO/mini/BogoMips.html
->
-> For those who believe BogoMips matter..... ;-)
->
-> 	Christian
->
-Well, I would never claim that BogoMips is, in its self, useful for anything.
+In all cases bogomips serves only two other serious purposes. Comparison
+of identical processors, and checking nobody sold you the wrong processor.
 
-But since its code is closely related to the udelay code, which affects 
-scheduling and many drivers...
+Even in the x86 world this is quite obvious, with a 1.5GHz AMD flattening
+a 2GHz Intel on actual throughput.
 
-Once upon a time, both my Celeron and my P-II reported approximately 1.00 * 
-clock (same as above reference), then with some change of kernel version, 
-jumped to 2.00 * clock.
-
-BUT, that might have been an intentional change in the routine, or...
-
-No promises on this one: I sometimes keep old kernels, perhaps I can find the 
-"before and after" kernels where I noticed the change.
-
-Mike
+Alan
