@@ -1,15 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B29E488F
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 09:54:30 -0600 (MDT)
-Date: Sat, 23 Aug 2003 16:54:26 +0100
-Message-ID: <3F2E2C7700004A24@ocpmta2.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 705CA4896
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 10:00:02 -0600 (MDT)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h7NFxnI31142;
+	Sat, 23 Aug 2003 11:59:49 -0400
+Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
+	tst-mmap-eofsync in glibc on parisc)
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Hugh Dickins <hugh@veritas.com>
+Cc: "David S. Miller" <davem@redhat.com>, willy@debian.org,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
+In-Reply-To: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
+References: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
+Content-Type: multipart/mixed; boundary="=-twwyVK3YP0a7nX0FTdaG"
+Date: 23 Aug 2003 10:59:48 -0500
+Message-Id: <1061654391.1995.74.camel@mulgrave>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,44 +29,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Congratulation, I will try it also on the N (64bits)
+--=-twwyVK3YP0a7nX0FTdaG
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-I grab last osdl-aim-7-0.1.9 (date Aug 04) and launch the test that Grant
-mentionned (I just stop the 3d run (option -r3) with kernel without patch
-because -e500 seems to take too much time: full night and I want to test
+On Sat, 2003-08-23 at 02:22, Hugh Dickins wrote:
+> Good idea.  It's VM_MAYSHARE you need to check for.
 
-the patched kernel)
+OK, to get all this to work, there's a corner case in do_mremap() that I
+need to be fixed:
 
-With the patch kernel I also want to launch 3 run test but with -e300 (Just
-have a N obviously UP 550Mhz?).
-The first two run seems to work fine when during the last run I get a lot
-of messages "Child caught raw signal ?" and so I could not grab (cut and
-past) the first results :( .
+When choosing the flags for the new area, it keys off VM_SHARED to
+determine whether MAP_SHARED is passed to the mapping.  It has to key of
+VM_MAYSHARE to preserve VM_MAYSHARE on the new mapping.
 
-I now relaunch test for only two runs and so hope the results for next week,
-sorry.
+Patch below.
 
-Thanks again,
-    Joel
-
-
-------------------------------------------
-------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=
-> r
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.p
-risc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+James
 
 
 
+--=-twwyVK3YP0a7nX0FTdaG
+Content-Disposition: inline; filename=tmp.diff
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; name=tmp.diff; charset=ISO-8859-1
 
+=3D=3D=3D=3D=3D mremap.c 1.32 vs edited =3D=3D=3D=3D=3D
+--- 1.32/mm/mremap.c	Thu Aug  7 12:29:10 2003
++++ edited/mremap.c	Sat Aug 23 10:54:21 2003
+@@ -420,7 +420,7 @@
+ 	if (flags & MREMAP_MAYMOVE) {
+ 		if (!(flags & MREMAP_FIXED)) {
+ 			unsigned long map_flags =3D 0;
+-			if (vma->vm_flags & VM_SHARED)
++			if (vma->vm_flags & VM_MAYSHARE)
+ 				map_flags |=3D MAP_SHARED;
+=20
+ 			new_addr =3D get_unmapped_area(vma->vm_file, 0, new_len,
 
--------------------------------------------------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=fr 
+--=-twwyVK3YP0a7nX0FTdaG--
