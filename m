@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sngrel4.hp.com (sngrel4.hp.com [192.6.86.110])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A4DA6483E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Sep 2003 06:40:52 -0600 (MDT)
-Message-ID: <A11077E28200D51182EA00D0B775525309A2AA44@xin02.india.hp.com>
-From: "SUDARSANAN,RANJITH (HP-India,ex2)" <ranjith_sudarsanan@hp.com>
-To: Grant Grundler <grundler@parisc-linux.org>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A59D24891
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Sep 2003 07:58:14 -0600 (MDT)
+Date: Fri, 19 Sep 2003 09:56:07 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Problems with raw interface.
-Date: Fri, 19 Sep 2003 18:07:41 +0530
-MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <20030919135606.GE18225@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] r19 (aka pic-register akak ltp) not restored on entry back to libc from libpthread?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,103 +21,105 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+jda,
 
-Grant:
->>>I get the impression "raw" is ignoring your input parameter
->>>to use /dev/raw/rawsdb and is using /dev/raw/raw<N> instead.
->>>So it looks like you are comparing the wrong data...
+Perhaps you can help here with my problem, again it's an r19 related
+issue.
 
-Ranjith:
-	When I bind an block interface to a raw device, I see that
-/dev/raw/raw<N>, <N> is the minor number of the node entry which is created
-in the /dev/raw/ directory. I tried binding to /dev/raw/raw1 instead of
-/dev/raw/rawsda. I still get the same results. (If the binding is not
-present raw complains)
+make[2]: *** [/glibc-cvs/build-hppa/posix/tst-regex.out] Error 139
 
-	This problem does not seem to be there on the X86 and IA64 kernels.
-I guess this is something specific to PA Linux kernel. I am compiling the
-kernel with debugs enabled. Please let me know if anyone gets a lead on
-this.
+Breakpoint 1, fixup (l=0xfaf00d68, reloc_offset=1248) at dl-runtime.c:72
+72        alloca (sizeof (int));
+(gdb) c 22
 
-Grant:
->>>>What does "dd if=/dev/raw/raw2 of=/tmp/o_raw2 bs=512 count=8" result in?
-Ranjith:
-This command reads the first 4K bytes of the disk and writes it to file
-o_raw2. 
+I exit the loader, and I have ~2700 insn before I get to here...
 
-with warm regards,
-Ranjith Sudarsanan
+(gdb) si 2713
 
---------------------------------------
-Ranjith Sudarsanan
-Rage Team
-30CA, Cunningham Road
-Bangalore
-Off: 91-80-205 3190
-Res: 91-80-522 2577 
-web: http://nt2651.india.hp.com:8080/
---------------------------------------
-"When the head bows, it meets the heart and that head which has met the
-heart gets the crown!!! - Sri Sri"
+I've traced it down to:
 
+0000000040024000-000000004016d000 r-xp 0000000000000000 08:04 1308771
+/mnt/flaire/src/glibc-cvs/build-hppa/libc.so
 
------Original Message-----
-From: Grant Grundler [mailto:grundler@parisc-linux.org] 
-Sent: Friday, September 19, 2003 4:30 AM
-To: SUDARSANAN,RANJITH (HP-India,ex2)
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems with raw interface.
+Looks like "public_mALLOc" from libc/malloc/malloc.c trying to unlock
+the memory arena mutex.
 
+00081ea0 <__libc_malloc>:
+0x400a5f50:     copy r4,r19
+0x400a5f54:     cmpib,= 0,ret0,0x400a5f8c
+...
 
-On Fri, Sep 19, 2003 at 12:36:55AM +0530, SUDARSANAN,RANJITH (HP-India,ex2)
-wrote: ...
-> oak:/home/sranjith# raw /dev/raw/rawsdb /dev/sdb
-> /dev/raw/raw1:  bound to major 8, minor 16 oak:/home/sranjith# raw 
-> /dev/raw/rawsda /dev/sda
-> /dev/raw/raw2:  bound to major 8, minor 0
-> 
-> oak:/home/sranjith# raw -qa
-> /dev/raw/raw1:  bound to major 8, minor 16
-> /dev/raw/raw2:  bound to major 8, minor 0
+r19 = 40181d50 (All is good, all is quiet for 2700 insn)
 
-I get the impression "raw" is ignoring your input parameter
-to use /dev/raw/rawsdb and is using /dev/raw/raw<N> instead.
-So it looks like you are comparing the wrong data...
+(gdb) x/4 0x40181d50-0x1800+0x400
+0x40180950: 0x400a6234 0x40181d50 0x40094320 0x40181d50
 
-root@debian:/dev# raw --help
-raw: invalid option -- -
-Usage:
-  raw /dev/raw/rawN <major> <minor>
-  raw /dev/raw/rawN /dev/<blockdev>
-  raw -q /dev/raw/rawN
-  raw -qa
+(Stub)
+0x400abf0c:     b,l 0x400abf14,r1
+0x400abf10:     addil 9f000,r1,%r1
+0x400abf14:     be,n 71c(sr4,r1)
+(Load r19 and target address from PLABEL)
+0x4014b630:     bb,>=,n r22,1e,0x4014b640
+0x4014b634:     depwi 0,31,2,r22
+0x4014b638:     ldw 4(sr0,r22),r19
+0x4014b63c:     ldw 0(sr0,r22),r22
+0x4014b640:     bv r0(r22)
+0x4014b644:     stw rp,-18(sr0,sp)
 
-What does "dd if=/dev/raw/raw2 of=/tmp/o_raw2 bs=512 count=8" result in?
+r19 = 401a57a8 (Good for libpthread ...)
 
-Anyway, it looks broken for me too.
-I tried using raw on 32-bit 2.4.20-pa28:
+(gdb) x /4 0x401a57a8-0x1800+0x400
+0x401a43a8: 0x00000008 0x0000b6ac 0x0000b6e8 0x08000000
+            ^^^^^^^^^^ Soon to be fatal return address.
 
-	raw /dev/raw/raw1 /dev/sda
-	raw -qa
-/dev/raw/raw1:  bound to major 8, minor 0
-	dd if=/dev/raw/raw1 of=/tmp/raw1.o count=8
-	/usr/bin/od -Ax -t x /tmp/raw1.o 
-000000 00000000 00000000 00000000 00000000
-*
-001000
+000072e0 <__pthread_mutex_unlock>:
+0x4018d2e0:     stw rp,-14(sr0,sp)
+0x4018d2e4:     stw,ma r4,40(sr0,sp)
+0x4018d2e8:     stw r19,-20(sr0,sp)		# 2719
+...
 
+0000000040186000-0000000040195000 r-xp 0000000000000000 08:04 655453
+/mnt/flaire/src/glibc-cvs/build-hppa/linuxthreads/libpthread.so
 
-/dev/sda is the boot disk for this machine.
+0x4019063c:     stw r19,-20(sr0,sp)		# 2742
+...
+0x40190860:     stw r19,-20(sr0,sp)		
+...
+0x401908f8:     bv r0(rp)			# 2774
+0x401908fc:     ldo -80(sp),sp
+...
+0x40190770:     bv r0(rp)
+0x40190774:     ldo -80(sp),sp
+...
+000072e0 <__pthread_mutex_unlock>
+0x4018d334:     bv r0(rp)			# 2806
+0x4018d338:     ldw,mb -40(sr0,sp),r4
+...
+00081ea0 <__libc_malloc>
+0x400a5f84:     b,l 0x400a5edc,r0
+0x400a5f88:     copy r5,ret0
+...
 
-root@debian:/dev# /usr/bin/od -Ax -t x /dev/sda | less
-000000 00000000 00000000 00000000 00000000
-*
-000400 40030800 60653403 00000000 0a086200
-000410 cd700200 00000000 02000000 02000000
-000420 00800000 00800000 40010000 371e6a3f
-000430 371e6a3f 10001800 53ef0100 01000000
-....
+Hold your horses here, we made it back into libc but our ltp is still
+that which we loaded upon entry to libpthread? :(
 
+0x400a5eec:     bv r0(rp)
+0x400a5ef0:     ldw,mb -40(sr0,sp),r6
+...
+0x401028e4:     cmpib,<> 0,r20,0x40102918
+0x401028e8:     copy r3,r25
+...
+0x40102918:     b,l 0x40116658,rp		# 2839
+0x4010291c:     copy r6,r26
 
-grant
+First use of libpthread's r19 is fatal.
+
+0x40116658:     addil -1800,r19,%r1		# 2840
+0x4011665c:     ldw 400(sr0,r1),r21  <--- *BOOM* r21=0x8
+0x40116660:     bv r0(r21)
+0x40116664:     ldw 404(sr0,r1),r19 
+
+Any thoughts? Did I miss something?
+
+Cheers,
+Carlos.
