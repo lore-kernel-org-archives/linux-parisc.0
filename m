@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 70233482A
-	for <parisc-linux@parisc-linux.org>; Tue, 18 Dec 2001 18:29:37 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 7BC0AB00C; Wed, 19 Dec 2001 01:27:56 +0000 (GMT)
-Date: Wed, 19 Dec 2001 01:27:56 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Markus Grabert <xam@student.cs.ucc.ie>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] HP 9000/782/C240 up and running 0.9.3 (serial)
-Message-ID: <20011219012756.S1897@linuxcare.com>
-References: <Pine.OSF.4.41.0112181415560.6043-100000@student.cs.ucc.ie>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A3DC1482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Dec 2001 18:46:42 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16GVoe-0003I3-00; Wed, 19 Dec 2001 01:46:40 +0000
+Date: Wed, 19 Dec 2001 01:46:40 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Jochen Friedrich <jochen@scram.de>
+Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] ISA memory access
+Message-ID: <20011219014640.D8936@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.NEB.4.33.0112181417170.14021-100000@www2.scram.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.OSF.4.41.0112181415560.6043-100000@student.cs.ucc.ie>; from xam@student.cs.ucc.ie on Tue, Dec 18, 2001 at 03:50:24PM +0000
+In-Reply-To: <Pine.NEB.4.33.0112181417170.14021-100000@www2.scram.de>; from jochen@scram.de on Tue, Dec 18, 2001 at 02:22:15PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,9 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Dec 18, 2001 at 03:50:24PM +0000, Markus Grabert wrote:
-> do_page_fault() pid=5087 command='scrollkeeper_to' type=15 address=0x00000008
+On Tue, Dec 18, 2001 at 02:22:15PM +0100, Jochen Friedrich wrote:
+> is it necessary to perform something similar to eisa_permute for ISA
+> memory space? At least on IBM Token Ring cards the driver fails to get
+> correct data if (memory & 0x300) == 0:
 
-I looked in to this, btw, it is not hppa specific, see bug #103224
+not from my memories of the mongoose docs.  unfortunately, i don't have
+access to those again until jan 10th or so.  how does the driver access
+the card?  readb/writeb or dma?
 
-Richard
+-- 
+Revolutions do not require corporate support.
