@@ -1,35 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA09607
-	for <parisc-linux@puffin.external.hp.com>; Sat, 19 Aug 2000 22:19:46 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 20 Aug 2000 04:19:32 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA27973;
-	Sun, 20 Aug 2000 14:19:05 +1000
-Date: Sun, 20 Aug 2000 14:19:05 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matthew Wilcox <matthew@wil.cx>
-cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-In-Reply-To: <20000819224336.G32273@vodka.thepuffingroup.com>
-Message-ID: <Pine.LNX.4.21.0008201351070.26467-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA10132
+	for <parisc-linux@puffin.external.hp.com>; Sat, 19 Aug 2000 23:41:48 -0600
+Message-Id: <200008200544.WAA09249@milano.cup.hp.com>
+To: Steffen =?ISO-8859-1?Q?L=F6rch?= <sloerch@gmx.de>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Networking 
+In-reply-to: Your message of "Fri, 18 Aug 2000 10:15:08 PDT."
+             <10217.966586508@www5.gmx.net>
+Date: Sat, 19 Aug 2000 22:44:22 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 19 Aug 2000, Matthew Wilcox wrote:
+Steffen =?ISO-8859-1?Q?L=F6rch?= wrote:
+> Hello all !!!
+> How can I connect my PA-RISC to the network with the CD-Image Version of
+> the PA-RISC Linux.
 
-> btw, is there any option to cvs diff which produces files which can be
-> applied by any known version of patch?  in my experience, patch can't
-> find files specified by Index: lines _unless_ both the +++ and the ---
-> files can't be found -- which is rarely the case with common names such
-> as Makefile or ChangeLog.
+Yes and no.
 
-I haven't found one, and it's a real pain.  I tend to edit patches
-covering multiple directories before passing them to patch.
+Yes in that nfsroot works.
+One can also ping the parisc-linux host.
+So the kernel/lan driver seems to work fine.
 
-"sed -e '/^[+-][+-]/d' < cvs_diff_file | patch -p0 --posix" ought to work.
+No because networking userspace needs more work or something.
+Read the README on the CD for known bugs.
+Did I hear you volunteer to fix those?
+:^)
 
-Alan
--- 
-Linuxcare.  Support for the Revolution.
+grant
+
+> 
+> Thanks for replies,
+> S.L.
+> 
+> -- 
+> Sent through GMX FreeMail - http://www.gmx.net
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
