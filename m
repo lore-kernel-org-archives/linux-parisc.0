@@ -1,15 +1,15 @@
 From: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] H40-H50
-Date: Fri, 23 Jul 2004 13:31:37 +0100
-Message-ID: <20040723123137.GA22927@parcelfarce.linux.theplanet.co.uk>
-References: <20040722044237.2ef0b3d6@fork.ketic.com>
+Subject: Re: [parisc-linux] Help: i386-linux -> hppa-hpux cross-compiler
+Date: Sun, 25 Jul 2004 21:02:11 +0100
+Message-ID: <20040725200211.GA12070@parcelfarce.linux.theplanet.co.uk>
+References: <20040725133338.A20781@tuphaan.engr.wichita.edu>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: backblue <backblue@netcabo.pt>
+To: Ivan Petrovich <laveer@tuphaan.engr.wichita.edu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040722044237.2ef0b3d6@fork.ketic.com>
+In-Reply-To: <20040725133338.A20781@tuphaan.engr.wichita.edu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,16 +20,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 22, 2004 at 04:42:37AM +0100, backblue wrote:
-> Hi, i have a H40 and a H50 rack mounted machines, with mutiple scsi
-> array discs, i want to put linux on one of the machines, does one of
-> them it's suported here? does any linux suport this?
+On Sun, Jul 25, 2004 at 01:33:38PM -0500, Ivan Petrovich wrote:
+> This is not a parisc-linux question, though it is somewhat related.
+> I am trying to build a i386-linux to hppa-hpux (not hppa-linux)
+> cross-compiler. I have read the parisc-linux FAQ, but found it to not
+> be useful for my application.
 
-Not in any useful way, I'm afraid.  We don't support the LAN or SCSI
-devices in this machine.  We have support for the console, but that's not
-much use to you by itself.  Basically, Linux will boot and could run out
-of a ramdisc, but not communicate through anything other than console.
-Sorry.
+For the linker, you'll need the hpux linker which was ported in the early
+days of the port.  Try http://cvs.parisc-linux.org/obsolete/linker/ but
+be warned nobody's touched it for a number of years.  You may also wish
+to review old postings to this list (say, 1999/2000) before we ported
+the kernel to be ELF.
 
 -- 
 "Next the statesmen will invent cheap lies, putting the blame upon 
