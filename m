@@ -1,15 +1,13 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] glibc 2.3.2-9 for hppa - "when hell freezes over" release
-Date: Tue, 21 Oct 2003 10:13:35 -0400
-Message-ID: <20031021141335.GE5606__1239.75540414012$1416622898$gmane$org@systemhalted>
-References: <20031017181252.GE27289@systemhalted> <20031019181341.GF8642@systemhalted> <20031019235005.GI8642@systemhalted> <20031020234345.GC5606@systemhalted> <1066737838.1176.5.camel@outpost.dnsalias.org>
+Subject: [parisc-linux] glibc 2.3.2 hppa - Requires Rminkernel patch to catch < 2.4.17 users.
+Date: Wed, 22 Oct 2003 00:32:27 -0400
+Message-ID: <20031022043227.GD20912__28225.1240140342$1416622899$gmane$org@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@debian.org>
+	parisc-linux@lists.parisc-linux.org
 To: Jeff Bailey <jbailey@nisa.net>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1066737838.1176.5.camel@outpost.dnsalias.org>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,18 +18,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Oct 21, 2003 at 08:03:59AM -0400, Jeff Bailey wrote:
-> Hey Carlos - When submitting these upstream, will you consider adding
-> test cases for these failures?  feraiseexcept should certainly be tested
-> somewhere.  I don't know if there's a reasonable way to put in the test
-> for the syscalls, though.
+Jeff,
 
-o test-fenv (Already exists)
- 
-> If you don't have time, that's fine too.  I just like to encourage
-> people to improve testsuites whenever they can. =)
+glibc-package/debian/patches/glibc23-hppa-Rminkernel.dpatch
 
-o Requires adding threaded networking code. 
-	= Might be a good thing to add!
+Has to go back into the list of patches, since it will keep users
+running their boxes with 2.4.17 or later based kernels instead of
+2.4.19. Developer testing didn't catch this since we all run >2.4.19.
+
+Please and thank you!
+
+I'm doing the patches for the -rnptl branch right now, if I had paid
+attention I would have tried harder to queue this up earlier so it could
+have gone out on the recent release.
 
 c.
