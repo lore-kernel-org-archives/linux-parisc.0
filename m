@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sj-msg-core-1.cisco.com (sj-msg-core-1.cisco.com [171.71.163.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 401EF482A
-	for <parisc-linux@parisc-linux.org>; Sun, 13 Jan 2002 03:12:18 -0700 (MST)
-Date: Sun, 13 Jan 2002 02:12:09 -0800
-From: Christian Suder <csuder@cisco.com>
-To: "Grant Grundler" <grundler@dsl2.external.hp.com>
-Cc: palinux@alaskatech.org, plaven@bigpond.net.au,
-	parisc-linux@parisc-linux.org
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7F4A482A
+	for <parisc-linux@parisc-linux.org>; Sun, 13 Jan 2002 04:29:40 -0700 (MST)
+Date: Sun, 13 Jan 2002 12:25:01 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: Christian Suder <csuder@cisco.com>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	<palinux@alaskatech.org>, <plaven@bigpond.net.au>,
+	<parisc-linux@parisc-linux.org>
 Subject: Re: [parisc-linux] bogomips?
-Message-Id: <20020113021209.55bad2ea.csuder@cisco.com>
-In-Reply-To: <20020112224306.C73ED482A@dsl2.external.hp.com>
-References: <Pine.LNX.4.33.0201120757330.1989-100000@goliath.alaskatech.org>
-	<20020112224306.C73ED482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20020113021209.55bad2ea.csuder@cisco.com>
+Message-ID: <Pine.LNX.4.43.0201131222400.1023-100000@alpha.bocc.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,32 +24,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+On Sun, 13 Jan 2002, Christian Suder wrote:
 
-http://www.linuxdoc.org/HOWTO/mini/BogoMips.html
+> For those who believe BogoMips matter..... ;-)
 
-For those who believe BogoMips matter..... ;-)
+The document lists a HP9000/720 running HP/UX with 48 BogoMIPS. This seems 
+to match Linux (Linux is even a bit faster :-) ):
 
-	Christian 
+# cat /proc/cpuinfo
+processor       : 0
+cpu family      : PA-RISC 1.1a
+cpu             : PA7000 (PCX-S)
+cpu MHz         : 50.000000
+model           : 9000/720
+model name      : Cobra (720)
+hversion        : 0x00002000
+sversion        : 0x00000481
+I-cache         : 128 KB
+D-cache         : 256 KB (WB)
+ITLB entries    : 96
+DTLB entries    : 96
+BTLB fixed      : max. 4096 pages, pagesize=4096 (16MB)
+BTLB fix-entr.  : 4 instruction, 4 data (0 combined)
+BTLB var-entr.  : 0 instruction, 0 data (0 combined)
+bogomips        : 49.86
+software id     : 86914152
 
-
-On Sat, 12 Jan 2002 15:43:06 -0700
-"Grant Grundler" <grundler@dsl2.external.hp.com> wrote:
-
-> Tom wrote:
-> > As a rough guess, my 715/100 feels like a Pentium chip of roughly
-twice> > the speed, while my C180 feels like a P2 of roughly twice the
-speed. Don't> > know if the bogomips back that up, but that's the way they
-feel.> 
-> I've heard that from a bunch of people and seems like a good rule of
-thumb.> 
-> Someone once told me: "bogomips is just a dick waving contest".
-> (apologies to any female readers who are offended).
-> But that statement accurately  sums up how useful bogomips
-> is for comparing perf.
-> 
-> grant
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Cheers,
+Jochen
