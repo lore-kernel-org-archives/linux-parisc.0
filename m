@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CF50C488E
-	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 09:52:12 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B40748A4
+	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 09:56:54 -0600 (MDT)
+To: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] compiling kernels with gcc-3.1
-Message-ID: <1026748321.3d32efa170ebe@webmail.tiscalinet.be>
-Date: Mon, 15 Jul 2002 17:52:01 +0200 (CEST)
+Message-ID: <1026748610.3d32f0c2dec80@webmail.tiscalinet.be>
+Date: Mon, 15 Jul 2002 17:56:50 +0200 (CEST)
 From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, randolph@tausq.org,
-	parisc-linux@parisc-linux.org
-References: <200207151524.g6FFOqqE023640@hiauly1.hia.nrc.ca>
-In-Reply-To: <200207151524.g6FFOqqE023640@hiauly1.hia.nrc.ca>
+Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
+References: <20020712073628.GB8838@tausq.org> <1026467388.3d2ea63c0ac65@webmail.tiscalinet.be> <20020712150139.GC8838@tausq.org> <1026491023.3d2f028f991a1@webmail.tiscalinet.be> <1026716599.3d3273b741097@webmail.tiscalinet.be> <1026717872.3d3278b080023@webmail.tiscalinet.be> <20020715150601.GG10191@tausq.org>
+In-Reply-To: <20020715150601.GG10191@tausq.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -24,32 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+Quoting Randolph Chung <randolph@tausq.org>:
 
-> > (I just note on the sti console)
-> > sshd (pid 322): illegal instruction (code 8)
-> > ...
-> > kernel panic...
+> > > Hmm I am also curious to test your .config file?
 > 
-> This is just a guess but I will wager that this problem is related
-> to the problems with expect, the cc1plus crash and the mmap issues
-> noted
-> elsewhere with SMP kernels.  There seem to be circumstances where the
-> kernel crashes when a user application traps unexpectedly.
+> i'm using the default config...
 > 
-> Joel, you should be able to run sshd under gdb and find what the
-> cause of the illegal instruction is.  It should not be a problem
-> to download and build 3.4p1 with gcc 3.2 from <http://www.openssh.org>.
-> Build at -O1 with debugging enabled.  There are examples on their
-> mail list on how to run sshd in debug mode.  If the situation is
-> similar to the cc1plus crash, gdb will prevent the system from
-> crashing when the fault occurs.
-> 
-Ok Dave,
+> arch/parisc/debian-config/64-smp
 
-I will have a look.
+I will try (but I need to add md support now)
 
-Thanks a lot,
+> 
+> > How do you build gcc (3.1.1) natively or as crosscompiler (I do the
+> last may be
+> > it is the problem?)?
+> 
+> cross-compiler, hppa-linux->hppa64-linux
+I just do hppa-linux->hppa-linux?
+
+So I will first change my config file and let you inform.
+
+Thanks for info,
     Joel
 
 
