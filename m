@@ -1,71 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA03584
-	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 14:38:56 -0700
-Message-Id: <200011142140.QAA19580@hiauly1.hia.nrc.ca>
-Subject: Re: abort in eliminate_regs compiling glob.c from glibc
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Tue, 14 Nov 2000 16:40:52 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org,
-        gcc-patches@gcc.gnu.org
-In-Reply-To: <200011092357.SAA08600@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 9, 2000 06:57:13 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA04204
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 15:30:02 -0700
+Message-Id: <200011142232.OAA12353@milano.cup.hp.com>
+To: Ian Zink <ian.zink@maryville.com>
+Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Palinux on a 712/60 
+In-reply-to: Your message of "Tue, 14 Nov 2000 13:20:05 PST."
+             <C36304FE952AD411AC87002094120338029E7B@MTMAIL>
+Date: Tue, 14 Nov 2000 14:32:00 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Breakpoint 2, eliminate_regs_in_insn (insn=0x406a0ba0, replace=0)
-> >     at ../../gcc/reload1.c:2826
-> > 2826      if (! insn_is_asm && icode < 0)
-> > (gdb) p debug_rtx (insn)
-> > (insn/s 2711 2709 2719 (set (reg:SI 6 %r6)
-> >         (reg:SI 28 %r28)) 69 {pre_ldw-4} (insn_list 2708 (insn_list:REG_DEP_ANTI 2696 (insn_list:REG_DEP_ANTI 2702 (insn_list:REG_DEP_ANTI 2697 (nil)))))
-> >     (expr_list:REG_DEAD (reg:SI 28 %r28)
-> >         (insn_list:REG_RETVAL 2708 (expr_list:REG_EQUAL (expr_list (use (mem:BLK (scratch) 0))
-> >                     (expr_list (symbol_ref/v:SI ("@strlen"))
-> >                         (expr_list (reg/v:SI 4 %r4)
-> >                             (nil))))
-> >                 (nil)))))
-> 
-> The `use' arises from the `__pure__' attribute in the prototype for strlen:
-> 
-> extern size_t strlen (__const char *__s) __attribute__ ((__pure__));
+Ian Zink wrote:
+> I have a hp 712/60 I was trying to get loaded with Pa-linux. I'm using the
+> 0.5 version of the Pa-linux cd. If I boot right off the CD it all loads
+> until it gets to Switching to PDC. At that point nothing happens. From I
+> have read the list, that is because the kernel is switching the text
+> console. However, the 712s don't have consoles.
 
-Here is a patch to fix the abort in eliminate_regs when it encounters a USE.
-As I understand the situation, there are three conditions needed to trigger
-it:
+712s have consoles. They have two outputs which can be used as
+console by linux. The STI consoles (VGA-like spigot) and serial.
+Connect a serial cable 9600-8-n-1 and run minicom at the other end.
 
-1)	A function that contains insns with an eliminable register.
-2)	The function must call __builtin_alloca to change the frame size
-	from its initial size.
-3)	After the call to __builtin_alloca, there must be a call to a
-	pure function.
+>  From what I have also read
+> the CD should work if you pass the kernel the parameter console=tty. So I
+> tried to  "boot scsi.2.0 isl" from the boot_admin prompt. It gave me the
+> PALO ISL, but I could not choose which line I wanted to edit. Further, I
+> couldn't even type "b" to boot. I don't know if the isl is freezing or what
+> is taking place
 
-With the enclosed patch, I can now build glibc for hppa-linux with -O3
-optimisation.
+That's a different problem...pb?
 
-Please review carefully because I will be the first to admit that I don't
-understand why the use is there in the first place and all the details of
-what eliminate_reg does.
+> 	What I am wondering is there a way to boot a 712/80 without having
+> to get cross-compiler gcc, compile the kernel, etc.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+The CD was intended to also work on the 712 even though we may not have
+tested on it.
 
-2000-11-14  John David Anglin  <dave@hiauly1.hia.nrc.ca>
+> Is there someway I could
+> add the ramdisk-sti.tgz on the ISO to make it work? If so, what would need
+> to be done?
 
-	* reload1.c (eliminate_regs): Don't abort on MEM USEs.
+no clue. anyone else?
 
---- reload1.c.orig	Wed Sep 27 14:27:23 2000
-+++ reload1.c	Tue Nov 14 16:01:56 2000
-@@ -2499,6 +2499,10 @@
- 	return x;
- 
-     case USE:
-+      /* Handle insn_list USE that a call to a pure functions may generate. */
-+      new = eliminate_regs (XEXP (x, 0), 0, insn);
-+      if (GET_CODE (new) == MEM)
-+	return XEXP (new, 0);
-     case CLOBBER:
-     case ASM_OPERANDS:
-     case SET:
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
