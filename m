@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from IPO-SRV-01 (fa0.borax.ipoutlet.net [69.1.192.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C27B64895
-	for <parisc-linux@parisc-linux.org>; Sat, 30 Aug 2003 18:20:42 -0600 (MDT)
-From: <Administrator@dsl2.external.hp.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Sat, 30 Aug 2003 20:13:34 -0400
-Message-ID: <046a01c36f54$b7e80cc0$2445440a@ipoutlet.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] ScanMail Message: To Sender virus found and action taken.
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 63A814848
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 31 Aug 2003 09:30:34 -0600 (MDT)
+Date: Sun, 31 Aug 2003 11:29:00 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly3.hia.nrc.ca>
+Cc: randolph@tausq.org, dave.anglin@nrc-cnrc.gc.ca,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: [glibc] tststatic failues, reduced to simple testcase.
+Message-ID: <20030831152900.GI5194@systemhalted>
+References: <200308292203.SAA03224@hiauly3.hia.nrc.ca> <200308292244.SAA29829@hiauly3.hia.nrc.ca> <20030830161504.GE5194@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030830161504.GE5194@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,15 +24,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+> 
+> Aflicted: sys_fork_wrapper, sys_clone_wrapper, sys_vfork_wrapper
+> 
+> I'm tempted to remove the store and load of call-clobbered registers
+> from our syscall path, push them into the glibc wrappers, and see what 
+> happens :)
 
-Sender = parisc-linux@parisc-linux.org
-Recipient(s) = Alison Forche
-Subject = Re: That movie
-Scanning Time = 08/30/2003 20:13:34
-Engine/Pattern = 6.510-1002/622
+What happens when your stack changes on the route back from the
+syscall?
 
-Action on virus found:
-The attachment document_all.pif contains WORM_SOBIG.F virus. ScanMail has Moved it.  The attachment was moved to C:\Program Files\Trend\Smex\Virus\document_all3f513daee5.pif_.
+	stw r19, -32(sp)
+	/* clone */
+	ldw -32(sp), r19
 
-Warning to sender. ScanMail has detected a virus in an email you sent.
+Obviously I could add a "if parent then ldw -32(sp),r19", but the child,
+not having the same stack would be hard pressed if r19 changed during
+the syscall. Although, I think I see that in glibc the child's function
+is called via $$dyncall and I assume that might fixup r19 for the child.
+
+Do any other syscalls change the stack on return? I can only really
+think of all the fork-ish type syscalls doing that sort of stuff.
+
+c.
