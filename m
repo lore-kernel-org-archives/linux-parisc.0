@@ -1,50 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.vi-internet.de (mailx.planet-interkom.de [195.182.114.81])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 75AE04A1C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 10:20:01 -0700 (MST)
-Message-ID: <3A8183B9.751575EB@hrzpub.tu-darmstadt.de>
-Date: Wed, 07 Feb 2001 18:19:53 +0100
-From: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AFC2A4A1C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 14:14:25 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA11931
+	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Feb 2001 14:10:07 -0700
+Received: (from steve@localhost)
+	by osiris.silug.org (8.11.0/8.11.0) id f17LEAc18587
+	for parisc-linux@thepuffingroup.com; Wed, 7 Feb 2001 15:14:10 -0600
+From: Steven Pritchard <steve@silug.org>
+Message-Id: <200102072114.f17LEAc18587@osiris.silug.org>
+To: parisc-linux@thepuffingroup.com
+Date: Wed, 7 Feb 2001 15:14:10 -0600 (CST)
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-References: <3A814E22.CBA1C0B7@hrzpub.tu-darmstadt.de>
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Re: Failure making current gcc
+Content-Type: text/plain; charset=US-ASCII
+Sender: steve@osiris.silug.org
+Subject: [parisc-linux] patch
 List-ID: <linux-parisc.vger.kernel.org>
 
+Has anyone managed to build a working patch binary?  No matter what
+the input is, all I get is
 
-Hello again!
+    patch: **** Only garbage was found in the patch input.
 
-Sorry, but I cut away the last and most important line. Here it is:
+If nobody has been through this already, I'll try to debug it
+tonight...
 
------------ SNIP --------------------
+Thanks.
 
-/opt/puffin/xc-build/gcc/gcc/xgcc -B/opt/puffin/xc-build/gcc/gcc/
--B/opt/puffin/xc/hppa-linux/bin/ -B/opt/puffin/xc/hppa-linux/lib/ -isystem
-/opt/puffin/xc/hppa-linux/include -DCROSS_COMPILE -DIN_GCC    -W -Wall
--Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -I.
--I. -I/opt/puffin/palinux/gcc/gcc -I/opt/puffin/palinux/gcc/gcc/.
--I/opt/puffin/palinux/gcc/gcc/config -I/opt/puffin/palinux/gcc/gcc/../include  -g0
-\
-  -finhibit-size-directive -fno-inline-functions \
-  -fno-exceptions -fPIC  \
-  -c /opt/puffin/palinux/gcc/gcc/crtstuff.c -DCRT_BEGIN -DCRTSTUFFS_O \
-  -o crtbeginS.o
-/tmp/cc0dgVTi.s: Assembler messages:
-/tmp/cc0dgVTi.s:74: Internal error, aborting at
-/opt/puffin/palinux/binutils/gas/write.c line 2852 in number_to_chars_bigendian
-Please report this bug.
-/tmp/ccrwiArd.s: Assembler messages:
-/tmp/ccrwiArd.s:102: Internal error, aborting at
-/opt/puffin/palinux/binutils/gas/write.c line 2852 in number_to_chars_bigendian
-Please report this bug.
-make[1]: *** [crtbegin.o] Fehler 1
-make[1]: *** Warte auf noch nicht beendete Prozesse....
-make[1]: *** [crtbeginS.o] Fehler 1
-make[1]: Verlassen des Verzeichnisses Verzeichnis »/opt/puffin/xc-build/gcc/gcc«
-make: *** [all-gcc] Fehler 2
-
------------------------------- SNAP ----------------------------------
-
-So long,
-                Rüdiger
+Steve
+-- 
+steve@silug.org           | Southern Illinois Linux Users Group
+(618)398-7320             | See web site for meeting details.
+Steven Pritchard          | http://www.silug.org/
