@@ -1,62 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA15557
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Aug 2000 11:02:06 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA16194
+	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Aug 2000 11:47:18 -0600
 Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 21 Aug 2000 17:01:56 -0000
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] test6 merge
-References: <20000815160510.C7757@vodka.thepuffingroup.com> <20000819182245.F13870@linuxcare.com>
+  by mailserv2.iuinc.com with SMTP; 21 Aug 2000 17:47:07 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Subject: Re: Incompatibility of PIC and non-PIC
+References: <Pine.LNX.4.21.0008191523470.28329-100000@front.linuxcare.com.au>
 From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 21 Aug 2000 13:01:12 -0400
-In-Reply-To: Richard Hirst's message of "Sat, 19 Aug 2000 18:22:45 +0100"
-Message-ID: <87itsuy2ef.fsf@linuxcare.com>
+Date: 21 Aug 2000 13:46:19 -0400
+In-Reply-To: Alan Modra's message of "Sat, 19 Aug 2000 15:29:56 +1000 (EST)"
+Message-ID: <87em3iy0b8.fsf@linuxcare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst <rhirst@linuxcare.com> writes:
+Alan Modra <alan@linuxcare.com.au> writes:
 
-> Those two files have a number of function names in common; they are
-> declared static, so it shouldn't matter.  ncr_chip_reset() is one
-> example.  In practice, the code in ncr53c8xx.c tries to call its local
-> ncr_chip_reset(), but ends up in the ncr_chip_reset() function in
-> sym53c8xx.c.
-> 
-> It appeared to work fine with 2.3.99pre8, and I havn't changed my
-> cross compiler.
+> In some ways not having any hardware to run hppa-linux binaries on is
+> good, as it gives me some excuse.  :-)
 
-I'm not seeing this problem here, at least, not based on an
-examination of the kernel's object code.
+Well I'm enjoying tracking these problems down, even if the solutions
+I propose are usually wrong :-)
 
-In mine I have:
+> Let me know how this one goes.
 
-sym53c8xx: ncr_chip_reset = c01cdec0 (a4)
-           ncr_attach     = c02a37e4 (934)
-ncr53c8xx: ncr_chip_reset = c01cdf80 (e8)
-           ncr_attach     = c02a6ff0 (5d8)
+Quite well, once I did this:
 
-Where ncr_attach calls ncr_chip_reset, it looks like:
+Index: bfd/elf32-hppa.c
+===================================================================
+RCS file: /home/cvs/parisc/binutils-2.10/bfd/elf32-hppa.c,v
+retrieving revision 1.24
+diff -u -p -r1.24 elf32-hppa.c
+--- elf32-hppa.c	2000/08/19 12:21:12	1.24
++++ elf32-hppa.c	2000/08/21 17:39:36
+@@ -957,7 +957,8 @@ hppa_build_one_stub (gen_entry, in_arg)
+ 
+       if (!info->shared
+ 	  && stub_entry->h != NULL
+-	  && stub_entry->h->pic_call)
++	  && stub_entry->h->pic_call
++	  && stub_entry->h->elf.plt.offset != (bfd_vma) -1)
+ 	{
+ 	  /* Build the .plt entry needed to call a PIC function from
+ 	     statically linked code.  We don't need any relocs.  */
 
-    1d34:	0e b3 12 80 	stw  r19,0(sr0,r21)
-    1d38:	08 03 02 5a 	copy r3,r26
-    1d3c:	e8 40 00 00 	b,l 1d44 <ncr_attach+0x354>,rp
-			1d3c: R_PARISC_PCREL17F	ncr_chip_reset
-
-And in the object file, we have:
-
-c02a7334:       0e b3 12 80     stw  r19,0(sr0,r21)
-c02a7338:       08 03 02 5a     copy r3,r26
-c02a733c:       e8 58 12 fd     b,l c0298cc0 <__init_begin+0xcc0>,rp
-
-Pointing at this stub:
-
-c0298cc0:       20 26 f8 03     ldil -3fe32800,r1
-c0298cc4:       e0 20 2f 02     be,n 780(sr4,r1)
-
-0x780 - 0x3fe32800 = 0xc01cdf80, which is the right one.
-
-This is with today's binutils.
+I'm not sure why it's generating multiple stubs for the same symbol,
+though.
 
 -- 
 dhd@linuxcare.com, http://www.linuxcare.com/
