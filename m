@@ -1,41 +1,54 @@
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id AAA17525
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 00:17:10 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 0F148872
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 23:19:25 -0800 (PST)
-Message-Id: <200011220718.XAA21144@milano.cup.hp.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10 
-In-reply-to: Your message of "Tue, 21 Nov 2000 22:54:11 PST."
-             <3A1B6D93.3B7D2474@uswest.net>
-Date: Tue, 21 Nov 2000 23:18:16 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from main.suntel-lems.ro (root@main.suntel-lems.ro [194.102.106.1])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id AAA18063
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 00:34:42 -0700
+Message-ID: <006001c05456$febb1cd0$6811620a@sigxcpu>
+From: "Alexandru Pirvulescu" <Pirvulescu_Alexandru@telemobil.ro>
+To: "Alex deVries" <adevries@linuxcare.com>,
+        "Grant Grundler" <grundler@cup.hp.com>
+Cc: <parisc-linux@puffin.external.hp.com>
+References: <200011211855.KAA20167@milano.cup.hp.com> <3A1B2F27.D08EC2AF@linuxcare.com>
+Subject: Re: [parisc-linux] case LEDs
+Date: Wed, 22 Nov 2000 09:36:58 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ryan Bradetich wrote:
-> Do you really want to merget the ccio-rm-dma.c file into Linus's tree?
-> It is just a reference file used to construct the real ccio-dma.c file ... I
-> don't believe it is referenced anywhere.
+I think that the heartbeat LED is software because it starts with the kernel
+boot and if the kernel stops the LED stops
+blinking too. Is better to implement a software monitoring tool because you
+have to watch the software for hanging.
 
-Hi Ryan,
-Yes I do. It is supposed to work for ccio+PCX-W platforms (eg C360).
-Keeping it arround will document the pro/con's of that approach and
-give folks who have time (and the right machine) something to experiment
-with instead of writing it from scratch.  If someone finds an application
-it's good for (short transactions with low latency requirements perhaps),
-it's worth having around.
+Alex
 
-It's not referenced because I didn't add a CONFIG_CCIO_RM_IOMMU flag
-or ccio_rm_init() call to drivers/gsc/gsc.c:gsc_init().  You are welcome
-add this CONFIG flag by hacking arch/parisc/config.in and defconfig.
-If you do, please add rules which only allow one or the other
-CONFIG_CCIO* option to be enabled.
+PS. There is a function in the kernel source in
+linux/arch/parisc/kernel/process.c named machine_heartbeat(). Any connection
+with the heartbeat from the chassis?
 
-thanks,
-grant
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+----- Original Message -----
+From: "Alex deVries" <adevries@linuxcare.com>
+To: "Grant Grundler" <grundler@cup.hp.com>
+Cc: "Alexandru Pirvulescu" <Pirvulescu_Alexandru@telemobil.ro>;
+<parisc-linux@puffin.external.hp.com>
+Sent: Wednesday, November 22, 2000 4:27 AM
+Subject: Re: [parisc-linux] case LEDs
+
+
+> Grant Grundler wrote:
+> > Yes.
+> > I was already asked this weekend to dig up technical info on LED
+> > and soft power control. I guess this is my reminder to do that. :^)
+>
+> Isn't there a PDC call (pdc_chassis?) to do this?  Or is the heartbeat
+> LED done by hardware?
+>
+> - Alex
+>
+> --
+> Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+> 613.562.2759 tel
+> alex@linuxcare.com, http://www.linuxcare.com/
+> Linuxcare, Support for the revolution.
+>
+>
