@@ -1,12 +1,13 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [hppa] problem using glibc2.3 with older 64-bit kernels
-Date: Sun, 8 Dec 2002 22:08:33 -0800
-Message-ID: <20021209060833.GL21187__15100.5747881301$1416622007$gmane$org@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [parisc-linux] Generic RTC driver in 2.4.x?
+Date: Tue, 24 Dec 2002 14:55:47 +0100 (MET)
+Message-ID: <Pine.GSO.4.21.0212241451450.1821-100000__15817.9049533375$1416622050$gmane$org@vervain.sonytel.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: debian-glibc@lists.debian.org
-To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,18 +19,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a heads up for people running 64-bit hppa kernels with new glibc
-(2.3.1). Make sure you have at least 2.4.19-pa17, otherwise fcntl() will
-break with the new glibc and you won't be able to use e.g. apt.
+AFAIK the generic RTC driver is used on PA-RISC, PPC, and m68k.
 
-This was needed to fix some problems with lfs on hppa. Unfortunately it
-cannot be done in a completely backwards compatible manner.
+Are you interested in a backport to 2.4.x?
 
-32-bit kernels are not affected.
+Gr{oetje,eeting}s,
 
-<sigh>
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
