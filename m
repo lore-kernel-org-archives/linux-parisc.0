@@ -1,27 +1,25 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-From: "Tom Hale" <halet@trans4m.com>
-To: <hppa-linux@thepuffingroup.com>
+Message-ID: <B782283A728ED011BBA2006097780D03F29186@COMA0S04>
+From: "Mandachi, Dorin \(Omaha\)" <Dorin.Mandachi@cox.com>
+To: "'hppa-linux@thepuffingroup.com'" <hppa-linux@thepuffingroup.com>
 Subject: RE: [hppa-linux] Bootstrap #3 successful
-Date: Wed, 10 Mar 1999 12:22:57 -0500
-Message-ID: <NCBBLOLCIIJGBHPGKFOJKECMCJAA.halet@trans4m.com>
+Date: Wed, 10 Mar 1999 12:15:32 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-In-Reply-To: <199903101711.LAA30694@equator.com>
-Resent-Message-ID: <"-ulba2.0.ff1.3ggvs"@sod.res.cmu.edu>
+Resent-Message-ID: <"6v8jy3.0.Jg1.Fggvs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+Also successfully booted a 715/100 from SCSI hd. 
 
-Hello,
-	If someone can send me directions on how to make a bootable cdrom from a
-windows based cdr drive, I can test booting a 712/60 off a cd.
+Dorin Mandachi
 
-				Tom
+
 
 -----Original Message-----
 From: Jason Eckhardt [mailto:jason@equator.com]
-Sent: Wednesday, March 10, 1999 12:12 PM
+Sent: Wednesday, March 10, 1999 11:12 AM
 To: hppa-linux@thepuffingroup.com
 Subject: [hppa-linux] Bootstrap #3 successful
 
@@ -37,7 +35,7 @@ CDR drive available.
 3) 816/E35        (disk)
 4) 712/100        (disk)
 5) 712/100        (SCSI ZIP drive!)
-6) 715/33         (RBOOTD)
+6) 715/33         (RBOOTD) 
 7) 715/80         (?disk?)
 
 This means that we now have a simple but functional bootstrap. We are ready
