@@ -1,39 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2C786482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Jul 2001 12:44:14 -0600 (MDT)
-Message-Id: <200107291842.MAA15066@puffin.external.hp.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id B7158482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Jul 2001 12:59:05 -0600 (MDT)
+Message-Id: <200107291857.MAA15094@puffin.external.hp.com>
 To: Reinhard.Gimbel@freenet.de
 Cc: parisc-linux@lists.parisc-linux.org
 In-Reply-To: Message from Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
-   of "Sat, 28 Jul 2001 12:35:20 +0200." <01072812322001.00935@octopus>
-Date: Sun, 29 Jul 2001 12:42:56 -0600
+   of "Sat, 28 Jul 2001 12:34:46 +0200." <01072812114300.00935@octopus>
+Date: Sun, 29 Jul 2001 12:57:51 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
-Subject: [parisc-linux] Re: C180 DINO/PCI problem; was: Help on install (2)
+Subject: [parisc-linux] Re: C180 DINO/PCI problem; was: Help on install (1)
 List-ID: <linux-parisc.vger.kernel.org>
 
 Reinhard Gimbel wrote:
-> > You have Dino 1.x ? I didn't think HP ever shipped those to
-> > customers. Or did you mean another chip?
-> > Perhaps post the console log output?
-> 
-> A friend of mine has a C180 with DINO v1.x (according to the
-> boot messages of that box; I do not have a log of that box on 
-> hand at present).
-
-Ok. IIRC, early revs of dino mostly had problems with nested PCI-PCI
-bridges. I'd need to review the dino errata and I don't have that with
-me here.
-
-> Dino version 2.1 (bridge mode) found at 0xf2000000
+> Expect the GRAPHICS(3) graphics adaptor (which is an EISA card)
+> there is no expansion card installed in my C180. The 2 PCI slots
+> are not occupied by expansion cards.
 ...
-> dino_bridge_init: IO_ADDR_EN hasn't been configured.
-> kernel BUG at dino.c:808!
+> On the other hand the C180 had a working HP-UX 10.20 as I bought
+> it weeks ago. So there must be a software solution for the DINO
+> problem.
 
-hmm...the newer PDC isn't programming Dino or anything
-below it since the PDC knows it's buggy. Seems like dino code
-should just give up trying to walk the bus at this point.
-I suspect that's crashing the box later.
+Trust me. There isn't. On some of the boxes a HW workarond is possible.
+But I'm not clear on if that ever got pushed out in replacement motherboards
+to customers. I was under the impression the problem was "fixed" by
+swapping for a motherboard with dino 3.1.
+
+> > Perhaps...updating the firmware to the latest will not let
+> > the system boot if in fact that's the case. remove all PCI
+> > devices and then the system will boot.
+> 
+> No PCI device to remove (as an expansion card) ...
+
+Ok.
+
+> ... but how about a firmware update ? My box has firmware
+> version 2.7. Is that o.k. so far? Or is there a newer firmware
+> available ? The other questions is: Would a firmware upgrade
+> help to solve my problem?
+
+Definitely update. You want to know if your box is useable or not.
+
+The FAQ has a nice section on firmware updates which I think
+answers this set of questions.
 
 grant
 
