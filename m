@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E5FB6482A
-	for <parisc-linux@parisc-linux.org>; Tue,  1 Jan 2002 12:10:00 -0700 (MST)
-Message-Id: <200201011909.g01J9x6v012320@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] new gdb deb for testing, patch for review
-To: randolph@tausq.org
-Date: Tue, 1 Jan 2002 14:09:58 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020101184109.GJ2179@tausq.org> from "Randolph Chung" at Jan 1, 2002 10:41:09 am
+Received: from mailout07.sul.t-online.com (mailout07.sul.t-online.com [194.25.134.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 217F9482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jan 2002 12:22:03 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: H_Aue@t-online.de (Hinrich Aue)
+To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] DSL on a 715/80 with rp-pppoe - MADE IT!!!
+Date: Tue, 1 Jan 2002 20:25:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <16LUTy-0mGMD2C@fwd05.sul.t-online.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +21,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > The deb seems to work for me, but please give it a try and let me know
-> > if you find any issues....
-> 
-> argument passing seems to be broken
-> 
-> 357       t_double_values(double_val1, double_val2);
-> (gdb) print double_val1
-> $1 = 45.654000000000003
-> (gdb) step
-> t_double_values (double_arg1=-1.0015640258789065, 
->     double_arg2=8.5011959057330557)
->     at ../../../gdb/testsuite/gdb.base/callfuncs.c:275
+The Problem was that I had to add the ID into pap-secrets AND 
+/etc/ppp/peers/dsl-provider. My fault, but I thought I only have to put it 
+into pap-secrets. 
+Loading the ne module works perfect, I'm sending this mail through my 715/80 
+as dsl-router
 
-This annoying problem has been around for a long time.  Argument
-printouts may not be valid at a function breakpoint due to code
-motion.
+Thanks a lot, and a happy new year.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Hinrich
