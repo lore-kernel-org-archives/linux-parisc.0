@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.interchange.ca (ns.interchange.ca [216.126.79.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E90D3482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 12:44:38 -0600 (MDT)
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 58445482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 15:47:00 -0600 (MDT)
+Received: from alpha.bocc.de (p5080CA95.dip.t-dialin.net [80.128.202.149])
+	(authenticated)
+	by mail.scram.de (8.11.6+3.4W/8.11.0) with ESMTP id g89Lkut26566
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 9 Sep 2002 23:46:57 +0200 (CEST)
+Date: Mon, 9 Sep 2002 23:46:47 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.44.0209092343150.2394-100000@alpha.bocc.de>
 MIME-Version: 1.0
-Message-Id: <3D7CEC11.00008F.38799@ns.interchange.ca>
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_9EP6EVT66ERNTT4D7TH0"
-To: parisc-linux@lists.parisc-linux.org
-From: "Jon Sharp" <jonsharp@fastmail.ca>
-Date: Mon,  9 Sep 2002 14:44:33 -0400 (EDT)
-Subject: [parisc-linux] Modem communication, HP 730
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] definition of EWOULDBLOCK in /usr/include/asm/errno.h
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,36 +24,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---------------Boundary-00=_9EP6EVT66ERNTT4D7TH0
-Content-Type: Text/Plain
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Dear All,
+because of the unusual definition of EWOULDBLOCK, zebra currently doesn't
+work (zebra checks for EWOULDBLOCK in zebra/rt_netlink.c and will loop if
+it gets EAGAIN instead and both are not the same).
 
-I hope that I am sending this to an appropriate list.  To be honest I 
-am running out of ideas.
+I'm not sure what's the correct fix for this, change errno.h to match the
+definition of the other archs or change zebra to check for EAGAIN as
+well...
 
-I recently received a HP 730 which I am attempting to restore.  I am 
-trying to install an external modem (V90 Velo Net ME220).  However, 
-it is acting strangley.  It works fine (using minicom) at connection 
-speeds of up to 19200, after that the modem fails to respond to AT 
-commands altogether.
-
-I have read through both the serial and modem how-tos in detail and 
-tried what I could think of.  Including using a large range of 
-different settings for setserial and stty.  Does anyone have any idea 
-what I might be doing wrong?  One interesting point to note, I have 
-no monitor or HIL keyboard and have been using the first serial port 
-(A) for a console.
-
-Any advice would be greatly received,
-
-Jon Sharp
-
-__ 
-'The art of good lecturing is to transfer the information from my 
-notes to your notes without it passing through eithers brain.'
-Cambridge University Lecturer
-_________________________________________________________________
-    http://fastmail.ca/ - Fast Secure Web Email for Canadians
---------------Boundary-00=_9EP6EVT66ERNTT4D7TH0--
+Cheers,
+--jochen
