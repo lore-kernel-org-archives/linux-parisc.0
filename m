@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 604E24829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Sep 2002 07:19:58 -0600 (MDT)
-Date: Thu, 26 Sep 2002 15:19:54 +0200
-Message-ID: <3D8F01140000102A@ocpmta2.be.tiscali.com>
-From: jsoe0708@tiscali.be
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=========3D8F01140000102A/mail.tiscali.be"
-Subject: [parisc-linux] uaccess.h patch for new evms-1.1.0: correct?
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9693A4829
+	for <parisc-linux@parisc-linux.org>; Thu, 26 Sep 2002 13:12:45 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17ue3y-0003wz-00; Thu, 26 Sep 2002 20:12:38 +0100
+Date: Thu, 26 Sep 2002 20:12:38 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Sven Cronbenberg <sven.cronenberg@gmx.de>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] EISA 100 Base-T Ethernet card drivers / 3COM
+Message-ID: <20020926201238.G28188@parcelfarce.linux.theplanet.co.uk>
+References: <49AA3A3C863E5B4C911320AEF99E5DA3010CCCE0@wing-ep.tip.csiro.au> <20020926031956.A5179@parcelfarce.linux.theplanet.co.uk> <3D935BCC.4060002@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D935BCC.4060002@gmx.de>; from sven.cronenberg@gmx.de on Thu, Sep 26, 2002 at 09:11:08PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,100 +25,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=========3D8F01140000102A/mail.tiscali.be
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+On Thu, Sep 26, 2002 at 09:11:08PM +0200, Sven Cronbenberg wrote:
+> I have two HP9000 maschines (735b and 720) standing
+> around here with 3COM 100mbit eThernetcards. Have
+> any people out there suceeded using those
+> ethernetcards und LINUX in the HP9000/7??s?
 
-Hi all,
+i don't know.  it's worth trying them.
 
-As I not find "std" emulation (gcc report 'Internal compiler error... PLease
-submit a full bug report...) and not more the D, M, L mips prefix (to access
-different 32bits part of a 64bits lon long), here is what I proprose as uaccess.h
-patch.
-
-Can someone have a look and advise me if I made any error?
-
-Thanks in advance for help,
-    Joel
-
-PS: Functionaly it seems to work to make evms 1.1.0 works
-
-
-
---=========3D8F01140000102A/mail.tiscali.be
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="pa-uaccess_h.patch"
-
-LS0tIHVhY2Nlc3MuaC5vcmlnCTIwMDItMDktMjUgMTM6NTk6MDkuMDAwMDAwMDAwICswMjAwCisr
-KyB1YWNjZXNzLmgJMjAwMi0wOS0yNiAxNTowMjoyMy4wMDAwMDAwMDAgKzAyMDAKQEAgLTM1LDEw
-ICszNSw0MSBAQAogI2RlZmluZSBnZXRfdXNlciBfX2dldF91c2VyCiAKICNpZiBCSVRTX1BFUl9M
-T05HID09IDMyCisKICNkZWZpbmUgTEREX0tFUk5FTChwdHIpCQlCVUcoKQogI2RlZmluZSBMRERf
-VVNFUihwdHIpCQlCVUcoKQotI2RlZmluZSBTVERfS0VSTkVMKHgsIHB0cikJQlVHKCkKLSNkZWZp
-bmUgU1REX1VTRVIoeCwgcHRyKQlCVUcoKQorI2RlZmluZSBTVERfS0VSTkVMKHgsIHB0cikgICAg
-ICAgICAgICAgICAgICAgIFwKKyh7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBcCisgICAgdW5pb24gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-XAorICAgIHsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKKyAgICAg
-ICAgdW5zaWduZWQgbG9uZyBsb25nIFU2NDsgICAgICAgICAgICAgICBcCisgICAgICAgIHN0cnVj
-dCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICB7ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIFwKKyAgICAgICAgICAgIHVuc2lnbmVkIGludCB4aDsg
-ICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICB1bnNpZ25lZCBpbnQgeGw7ICAgICAgICAg
-ICAgICAgICAgXAorICAgICAgICB9ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFwKKwlVNjRYaFhsOyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKKyAgICB9VWxsaTsg
-LyogVW5pb24gbG9uZyBsb25nIGludCAqLyAgICAgICAgICBcCisgICAgVWxsaS5VNjQ9KHVuc2ln
-bmVkIGxvbmcgbG9uZykgeDsgICAgICAgICAgXAorICAgIF9fcHV0X2tlcm5lbF9hc21fNjQoVWxs
-aS5VNjRYaFhsLnhoLCBVbGxpLlU2NFhoWGwueGwsIHB0cik7ICAgICAgICAgICBcCit9KQorCisj
-ZGVmaW5lIFNURF9VU0VSKHgsIHB0cikgICAgICAgICAgICAgICAgICAgICAgXAorKHsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKKyAgICB1bmlvbiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCisgICAgeyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICB1bnNpZ25lZCBsb25nIGxvbmcgVTY0OyAg
-ICAgICAgICAgICAgIFwKKyAgICAgICAgc3RydWN0ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBcCisgICAgICAgIHsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAor
-ICAgICAgICAgICAgdW5zaWduZWQgaW50IHhoOyAgICAgICAgICAgICAgICAgIFwKKyAgICAgICAg
-ICAgIHVuc2lnbmVkIGludCB4bDsgICAgICAgICAgICAgICAgICBcCisgICAgICAgIH0gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAorCVU2NFhoWGw7ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgXAorICAgIH1VbGxpOyAvKiBVbmlvbiBsb25nIGxvbmcgaW50ICovICAg
-ICAgICAgIFwKKyAgICBVbGxpLlU2ND0odW5zaWduZWQgbG9uZyBsb25nKSB4OyAgICAgICAgICBc
-CisgICAgX19wdXRfdXNlcl9hc21fNjQoVWxsaS5VNjRYaFhsLnhoLCBVbGxpLlU2NFhoWGwueGws
-IHB0cik7ICAgICAgICAgICBcCit9KQorCiAjZWxzZQogI2RlZmluZSBMRERfS0VSTkVMKHB0cikg
-X19nZXRfa2VybmVsX2FzbSgibGRkIixwdHIpCiAjZGVmaW5lIExERF9VU0VSKHB0cikgX19nZXRf
-dXNlcl9hc20oImxkZCIscHRyKQpAQCAtMjAwLDYgKzIzMSwyMCBAQAogCQk6ICI9ciIoX19wdV9l
-cnIpICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKIAkJOiAiciIocHRyKSwgInIiKHgpLCAi
-MCIoX19wdV9lcnIpKQogCisjZGVmaW5lIF9fcHV0X2tlcm5lbF9hc21fNjQoeGgsIHhsLCBwdHIp
-ICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgIF9fYXNtX18gX192b2xhdGlsZV9fICggICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICAgICAgIlxuMTpcdHN0d1x0
-JTIsMCglMSlcbiIgICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICAgICAgIjI6XHRz
-dHdcdCUzLDQoJTEpXG4iICAgICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICAgICAg
-IjM6XG4iICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgICAg
-ICAgICAgIlx0LnNlY3Rpb24gX19leF90YWJsZSxcImFcIlxuIiAgICAgICAgICAgICBcCisgICAg
-ICAgICAgICAgICAgICJcdC53b3JkXHQxYlxuIiAgICAgICAgICAgICAgICAgICAgICAgICAgICBc
-CisgICAgICAgICAgICAgICAgICJcdC53b3JkXHQoM2ItMWIpKzFcbiIgICAgICAgICAgICAgICAg
-ICAgICBcCisgICAgICAgICAgICAgICAgICJcdC53b3JkXHQyYlxuIiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBcCisgICAgICAgICAgICAgICAgICJcdC53b3JkXHQoM2ItMmIpKzFcbiIgICAg
-ICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICAgICAgICJcdC5wcmV2aW91cyIgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICAgICAgOiAiPXIiKF9fcHVfZXJy
-KSAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCisgICAgICAgICAgICAgICAgOiAiciIocHRy
-KSwgInIiKHhoKSwgInIiKHhsKSwgIjAiKF9fcHVfZXJyKSkKKwogI2RlZmluZSBfX3B1dF91c2Vy
-X2FzbShzdHgseCxwdHIpICAgICAgICAgICAgICAgICAgICAgICAgICAgXAogCV9fYXNtX18gX192
-b2xhdGlsZV9fICggICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiAJCSJcbjE6XHQiIHN0
-eCAiXHQlMiwwKCUlc3IzLCUxKVxuIiAgICAgICAgICAgXApAQCAtMjEwLDYgKzI1NSwyMSBAQAog
-CQkgIlx0LnByZXZpb3VzIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKIAkJOiAiPXIi
-KF9fcHVfZXJyKSAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiAJCTogInIiKHB0
-ciksICJyIih4KSwgIjAiKF9fcHVfZXJyKSkKKworI2RlZmluZSBfX3B1dF91c2VyX2FzbV82NCh4
-aCwgeGwsIHB0cikgICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICBfX2FzbV9fIF9fdm9s
-YXRpbGVfXyAoICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICAgICAgICAg
-ICJcbjE6XHRzdHdcdCUyLDAoJSVzcjMsJTEpXG4iICAgICAgICAgICAgICAgXAorICAgICAgICAg
-ICAgICAgICIyOlx0c3R3XHQlMyw0KCUlc3IzLCUxKVxuIiAgICAgICAgICAgICAgICAgXAorICAg
-ICAgICAgICAgICAgICIzOlxuIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-XAorICAgICAgICAgICAgICAgICJcdC5zZWN0aW9uIF9fZXhfdGFibGUsXCJhXCJcbiIgICAgICAg
-ICAgICAgXAorICAgICAgICAgICAgICAgICAiXHQud29yZFx0MWJcbiIgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgXAorICAgICAgICAgICAgICAgICAiXHQud29yZFx0KDNiLTFiKSsxXG4iICAg
-ICAgICAgICAgICAgICAgICAgXAorICAgICAgICAgICAgICAgICAiXHQud29yZFx0MmJcbiIgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICAgICAgICAgICAiXHQud29yZFx0KDNi
-LTJiKSsxXG4iICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICAgICAgICAgICAiXHQucHJl
-dmlvdXMiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICAgICAgICAgIDog
-Ij1yIihfX3B1X2VycikgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAorICAgICAgICAgICAg
-ICAgIDogInIiKHB0ciksICJyIih4aCksICJyIih4bCksICIwIihfX3B1X2VycikpCisKICNlbmRp
-ZgogCiAK
-
---=========3D8F01140000102A/mail.tiscali.be--
+-- 
+Revolutions do not require corporate support.
