@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
-	by dsl2.external.hp.com (Postfix) with SMTP id 253D94829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 22:05:41 -0700 (MST)
-Date: 31 Mar 2003 05:05:40 -0000
-Message-ID: <20030331050540.17826.qmail@sources.redhat.com>
+	by dsl2.external.hp.com (Postfix) with SMTP id EB48F4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 22:23:01 -0700 (MST)
+Date: 31 Mar 2003 05:23:01 -0000
+Message-ID: <20030331052301.22572.qmail@sources.redhat.com>
 To: gcc-gnats@gcc.gnu.org
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org, debian-gcc@lists.debian.org
 From: Randolph Chung <tausq@debian.org>
 Reply-To: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [3.0/3.2/3.3/3.4] [HPPA] Floating point args don't get reloaded across function calls at -O2
+Subject: [parisc-linux] [3.0/3.2/3.3/3.4] Floating point args not correctly loaded for function calls
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,7 +21,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 >Category:       target
->Synopsis:       [3.0/3.2/3.3/3.4] [HPPA] Floating point args don't get reloaded across function calls at -O2
+>Synopsis:       [3.0/3.2/3.3/3.4] Floating point args not correctly loaded for function calls
 >Confidential:   no
 >Severity:       serious
 >Priority:       medium
@@ -44,26 +44,29 @@ lude-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --
 ithout-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-c
 locale=gnu --enable-debug --enable-objc-gc hppa-linux
 >Description:
-When compiling the bug.c code below with -O2, the floating point argument to the fprintf does not get reloaded for the second fprintf() call, so the second call prints junk. At -O1 the arguments (r23/r24) are properly reloaded.
+This one looks similar to 10271, but filing separately because the test case is a bit different. Not sure if it's the same bug or not.
+
+At -O2 the floating point argument is not getting loaded into the right registers to pass to fprintf().
 >How-To-Repeat:
-Compile with gcc -O2 -o bug bug.c -lm
+$ gcc-3.3 -O2 -o bug bug.c -lm
+$ ./bug
+-1.488583e+284
+$ gcc-3.3 -O1 -o bug bug.c -lm
 $ ./bug
 nan
-1.422968e-309
 
-With -O1
-$ ./bug
-nan
-nan
-
-------8< bug.c 8<--------
+-------8< bug.c 8<------------
 #include <stdio.h>
 #include <math.h>
 
-void doprint(double dval)
+void doprint(double d)
 {
-        fprintf(stdout, "%e\n", dval);
-        fprintf(stdout, "%e\n", dval);
+        int i = (int)d;
+        if ((double)i == d) {
+                fprintf(stdout, "%d\n", i);
+        } else {
+                fprintf(stdout, "%e\n", d);
+        }
 }
 
 int main(int argc, char **argv)
