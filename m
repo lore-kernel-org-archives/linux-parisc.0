@@ -1,13 +1,15 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] syscall restart block.
-Date: 12 Sep 2004 17:36:00 -0400
-Message-ID: <1095024967.1990.23.camel@mulgrave>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Re: syscall restart block.
+Date: Sun, 12 Sep 2004 17:05:11 -0700
+Message-ID: <20040913000511.GU28659@tausq.org>
 References: <20040912184553.GT1854@baldric.uwo.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
- Randolph Chung <tausq@debian.org>
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+ parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20040912184553.GT1854@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -20,30 +22,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2004-09-12 at 14:45, Carlos O'Donell wrote:
-> The problem is that we should in general disable restartable syscalls as
-> we walk the userspace return trampoline. If the user took a signal
-> during the trampoline walk, the signal handler could execute a
-> restartable syscall, and if that syscall was interrupted, the restorer
-> function would be changed (there is only one entry for a restorer, they
-> aren't chained). This means that you technically call the wrong syscall
-> when you unwind from the signal that you took on the stack trampoline.
-
-If I read this scenario correctly it can only be triggered on an SMP
-system (where another user process executing on a different CPU sends a
-singnal to this process) or if the process is unlucky enough to take an
-interrupt while executing the trampoline ... still, the window exists
-and should be plugged
-
+> If we move stack trampolines to the gateway pagethen signals can't be
+> delivered to the returning process during the trampoline walk (signals
+> are not allowed to be delivered for processes on the gateway page). So
+> it fixes our hole too.
+> 
+> It also allows us to interpret PT_GNU_STACK properly, since the kernel
+> no longer needs to execute a trampoline on the users stack. The
+> toolchain can now correctly mark the stack as non-exec.
+> 
 > I only just realized we still had this hole and it might manifest itself
 > under heavy signal load.
 
-Precisely, because heavy load usually implies higher disc or network
-interrupt load.
+i think the analysis is correct, but i don't like the solution! :-)
 
-James
+various pieces of software (gcc, gdb) need to be able to read and
+analyze the signal trampoline for unwinding. putting the trampoline 
+onto the gateway page will break these applications, because the 
+gateway page is not readable by the user.
 
-
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
