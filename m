@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 291A64840
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 15:37:08 -0700 (MST)
-Message-ID: <3FBE93A6.9010008@tiscali.be>
-Date: Fri, 21 Nov 2003 22:37:26 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+Received: from 192.25.206.7 (unknown [142.59.143.153])
+	by dsl2.external.hp.com (Postfix) with SMTP id 41A444840
+	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 16:23:19 -0700 (MST)
+Message-ID: <0$8t-e0487x9i$707ohkeh6@rqzkm.cdt>
+From: "Amanda Whittaker" <g6eyaewv@yahoo.com>
+Reply-To: "Amanda Whittaker" <g6eyaewv@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Fri, 21 Nov 2003 20:17:13 -0300
 MIME-Version: 1.0
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C110 builtin nic slow?
-References: <3F969FFE00009EA4@ocpmta2.freegates.net> <3F969FFE00009F73@ocpmta2.freegates.net> <20031110173525.GC24664@colo.lackof.org> <3FB0DC01.6070701@tiscali.be> <20031112032230.GB12000@colo.lackof.org> <3FB68167.10106@tiscali.be> <Pine.LNX.4.58.0311152220070.16980@sal.ucc.ie> <Pine.LNX.4.58.0311152313340.16980@sal.ucc.ie> <3FB7AD39.9010305@tiscali.be> <3FBE8732.2050705@tiscali.be>
-In-Reply-To: <3FBE8732.2050705@tiscali.be>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/alternative;
+	boundary="00F4.C_A_391F_66_E59.5"
+Subject: [parisc-linux] STOP-PAYING For Your PAY-PER-VIEW, Movie Channels, Mature Channels...iniko
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,63 +22,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+--00F4.C_A_391F_66_E59.5
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Joel Soete wrote:
-> Hi all,
-> 
-> 
-> Joel Soete wrote:
-> 
->>
->>
->> M. Grabert wrote:
->>
->>> Sorry to reply myself,
->>
->>
-> this is me now ;)
-Again, apologies
+Cable TV Subscribers
 
-> 
-> A small follow-up: I exchange my 3com with another hp nic (the same as 
-> the first one).
-> 
-> The pb now, is that the new one become eth0 (and works fine) but the old 
-> one (which would be eth1) is not any-more usable (no means to configure 
-> to setup and configure it):
-> # cat /proc/pci
-> [...]
->   Bus  0, device  11, function  0:
->     Ethernet controller: Hewlett-Packard Company J2585B HP 10/100VG PCI 
-> LAN Ada
-> ter (rev 0).
->       IRQ 9.
->       Master Capable.  Latency=64.  Min Gnt=8.Max Lat=32.
->       I/O at 0xe000 [0xe0ff].
->       Non-prefetchable 32 bit memory at 0xeb000000 [0xeb001fff].
->   Bus  0, device  12, function  0:
->     Ethernet controller: Hewlett-Packard Company J2585B HP 10/100VG PCI 
-> LAN Ada
-> ter (#2) (rev 0).
->       IRQ 10.
->       Master Capable.  Latency=64.  Min Gnt=8.Max Lat=32.
->       I/O at 0xe400 [0xe4ff].
->       Non-prefetchable 32 bit memory at 0xeb002000 [0xeb003fff].
-> [...]
-> 
-> Any idea?
-> 
-I found: ether=9,0,eth0 ether=10,0,eth1 as additional bootparam.
+Get Our Cable TV Filter and Stop-Paying For Your Pay-Per-View, Mature Chan=
+nels, Movie Channels, Sporting Events...
 
-It works but I am confused:
-at the office I also have two nic (well of tulip model) on my b2k but I 
-never have to add any bootparam to make recognise the second card?
-Is it linked with the model capability?
 
-Thanks,
-	Joel
+Find Out More - www.esavingsplus.com?refid=3D10010000859429816
 
-PS:  ft problem seems to be solved :)
-hmm this 3com works perfectly with 10BT-hd at the office but connected 
-this time to a hub (10BT capable) :0
+
+Don't worry, it's perfectly-legal.  
+
+
+Check out our legal page on the site: www.esavingsplus.com?refid=3D1001000=
+0859429816
+
+
+
+
+
+
+
+No more advertisments -  http://www.esavingsplus.com?unsub=3D1001000085942=
+9816
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+k rcdghftuxkq
+
+--00F4.C_A_391F_66_E59.5--
