@@ -1,66 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from kryten.int.wirex.com (unknown [216.161.55.93])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 57474482A
-	for <parisc-linux@parisc-linux.org>; Tue,  3 Apr 2001 19:47:09 -0600 (MDT)
-Received: (from steve@localhost)
-	by kryten.int.wirex.com (8.11.0/8.11.0) id f341l1c08765
-	for parisc-linux@parisc-linux.org; Tue, 3 Apr 2001 18:47:01 -0700
-Date: Tue, 3 Apr 2001 18:47:00 -0700
-From: Steve Beattie <steve@wirex.net>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Building packages, problems with printf
-Message-ID: <20010403184700.A8618@wirex.net>
-References: <20010325220223.G31126@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Mon, Mar 26, 2001 at 09:03:34AM +1000
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 692A3482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 20:37:51 -0600 (MDT)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA19095;
+	Wed, 4 Apr 2001 12:37:11 +1000
+Date: Wed, 4 Apr 2001 12:37:11 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: Christoph Plattner <christoph.plattner@dot.at>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] CVS Repository @ puffin - contents ?
+In-Reply-To: <20010403230807.B11435@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.21.0104041228560.13605-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Mar 26, 2001 at 09:03:34AM +1000, Alan Modra wrote:
-> On Sun, 25 Mar 2001, Matthew Wilcox wrote:
-> 
-> > Something we've been running into when building packages is the problem
-> > that printf is defined as a macro when using gcc 2.97.  This should be
-> > resolved by doing the following:
-> > 
-> > #include <stdio.h>
-> > #undef printf
-> 
-> That's cheating!  The real fix is to turn
-> 
-> printf (foo_string,
-> #if SOMETHING
-> abc_param
-> #else
-> xyz_param
-> #endif
-> );
-> 
-> into
-> 
-> #if SOMETHING
-> printf (foo_string, abc_param);
-> #else
-> printf (foo_string, xyz_param);
-> #endif
+On Tue, 3 Apr 2001, Matthew Wilcox wrote:
 
-Actually, another solution is:
+> if you haven't seen commits to some of those repositories on the
+> cvs lists for a while they're probably dead.  modutils is obsolete
+> (integrated upstream), binutils will be once 2.11 comes out.
 
-(printf) (foo_string,
-#if SOMETHING
-abc_param
-#else
-xyz_param
-#endif
-);
+That was true a few days ago.  binutils may yet need to be resurrected
+because 2.11 will have the -Bsymbolic bug, I'm afraid.  The fix for the
+-Bsymbolic bug involves a patch to bfd/elflink.h, which is used by all ELF
+targets.  I don't particularly want to be responsible for accidentally
+breaking the 2.11 release for all ELF targets...
 
-The parentheses surrounding printf prevent macro expansion -- the C
-standard explicitly states that it must. We discovered this in the
-course of developing FormatGuard, a patch to glibc that turns printf
-and the like into macros as a means of preventing format string attacks
-(see http://www.immunix.org/formatguard.html for details).
-
+Alan
 -- 
-Steve Beattie                               Don't trust programmers? 
-<steve@wirex.net>                         Complete StackGuard distro at
-http://immunix.org/~steve/                         immunix.org
+Linuxcare
