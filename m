@@ -1,12 +1,22 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] target/10272: [3.0/3.2/3.3/3.4] Floating point args not correctly loaded for function calls
-Date: 31 Mar 2003 05:23:01 -0000
-Message-ID: <20030331052301.22572.qmail__5365.08401060036$1416622346$gmane$org@sources.redhat.com>
-Reply-To: Randolph Chung <tausq@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org, debian-gcc@lists.debian.org
-To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Resent-Message-ID: <20030331052600.24817.qmail@sources.redhat.com>
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22DB74829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 00:06:55 -0700 (MST)
+Received: from redsea.india.hp.com (redsea.india.hp.com [15.76.97.3])
+	by atlrel8.hp.com (Postfix) with ESMTP id C500D1C01332
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 02:06:44 -0500 (EST)
+Received: from india.hp.com (eb9856.india.hp.com [15.76.98.56])
+	by redsea.india.hp.com (8.9.3 (PHNE_25184)/8.9.3 SMKit7.02) with ESMTP id MAA19735
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 1 Apr 2003 12:39:16 +0530 (IST)
+Message-ID: <3E89DBF4.102AC68A@india.hp.com>
+Date: Tue, 01 Apr 2003 12:35:32 -0600
+From: Naresh <knaresh@india.hp.com>
+Reply-To: knaresh@india.hp.com
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] PDC console problem.
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,69 +27,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Number:         10272
->Category:       target
->Synopsis:       [3.0/3.2/3.3/3.4] Floating point args not correctly loaded for function calls
->Confidential:   no
->Severity:       serious
->Priority:       medium
->Responsible:    unassigned
->State:          open
->Class:          wrong-code
->Submitter-Id:   net
->Arrival-Date:   Mon Mar 31 05:26:00 UTC 2003
->Closed-Date:
->Last-Modified:
->Originator:     Randolph Chung <tausq@debian.org>
->Release:        3.3 20030309 (Debian prerelease) (Debian testing/unstable) [and others]
->Organization:
->Environment:
-System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2
-003 parisc64 unknown unknown GNU/Linux
-Architecture: parisc64
+Hi,
 
-        <machine, os, target, libraries (multiple lines)>
-host: hppa-unknown-linux-gnu
-build: hppa-unknown-linux-gnu
-target: hppa-unknown-linux-gnu
-configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treela
-ng --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-inc
-lude-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --w
-ithout-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-c
-locale=gnu --enable-debug --enable-objc-gc hppa-linux
->Description:
-This one looks similar to 10271, but filing separately because the test case is a bit different. Not sure if it's the same bug or not.
+I am trying to boot PA-Linux off a PA-RISC simulator. I am facing a
+problem with the PDC console. On my first attempt, I saw the message
+asking me to switch the console. So I  turned the PDC console config
+option on ( the serial mux option was turned off). I added the parameter
+'console=ttyB0' in 'palo.conf'. I created the device file '/dev/ttyB0'
+with major/minor = 11/0 on my ramdisk. With this, the kernel boots up on
+the simulator all the way upto the sash ( Stand-alone shell) prompt. I
+can even see the prompt. But, the problem is that this console doesnt
+seem to be accepting input from the keyboard. It is kind of like in a
+locked state.
 
-At -O2 the floating point argument is not getting loaded into the right registers to pass to fprintf().
->How-To-Repeat:
-$ gcc-3.3 -O2 -o bug bug.c -lm
-$ ./bug
--1.488583e+284
-$ gcc-3.3 -O1 -o bug bug.c -lm
-$ ./bug
-nan
+I was going through some of the FAQ and the mailing list archive and
+understand that the PDC console is not a full blown console and can only
+display output. Is is true that the PDC console cannot accept keyboard
+input? Or am I missing something?
 
--------8< bug.c 8<------------
-#include <stdio.h>
-#include <math.h>
+I also see that there are 2 versions of the PDC console driver :
+'arch/parisc/kernel/pdc_cons.c' and 'drivers/char/pdc_console.c'. Both
+use the device ttyB. From what I understand, the former is used before
+any of the serial drivers are initialized during boot, and has only
+write capability. The latter is the full-blown console driver (though I
+am not sure if it has write capability). Is my understanding correct?
 
-void doprint(double d)
-{
-        int i = (int)d;
-        if ((double)i == d) {
-                fprintf(stdout, "%d\n", i);
-        } else {
-                fprintf(stdout, "%e\n", d);
-        }
-}
+I am using the source tarball 'palo-latest.tar.gz' from the parisc-linux
+cvs respository and cross-compiling this on an x86 box.
 
-int main(int argc, char **argv)
-{
-        doprint(log(-8)); /* nan */
-        return 0;
-}
->Fix:
+Regards,
+Naresh.
 
->Release-Note:
->Audit-Trail:
->Unformatted:
+PS: My "init" process is 'sash' and I also have a '/dev/console' device
+( major=5 minor=1) on my ramdisk. The Serial driver config option is on
+and I can see it being initialized in the boot path after the PDC
+console.
