@@ -1,48 +1,258 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-02.iinet.net.au [203.59.24.17])
-	by dsl2.external.hp.com (Postfix) with SMTP id EB576482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 23:57:20 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id NAA26560
-	for parisc-linux@lists.parisc-linux.org; Fri, 20 Jul 2001 13:56:57 +0800
-Date: Fri, 20 Jul 2001 13:56:46 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+Received: from mail.vi-internet.de (proxy1.vi-internet.de [195.182.114.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49F49482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Jul 2001 00:20:40 -0600 (MDT)
+Sender: ruediger@dsl2.external.hp.com
+Message-ID: <3B57CD45.220090EA@hrzpub.tu-darmstadt.de>
+Date: Fri, 20 Jul 2001 08:18:45 +0200
+From: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.6-pa20 question about modules
-Message-ID: <20010720135640.W23932@neep.com.au>
-References: <OF46B79DB5.FE766246-ONC1256A8E.005BA756@LocalDomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <OF46B79DB5.FE766246-ONC1256A8E.005BA756@LocalDomain>; from jso@europay.com on Thu, Jul 19, 2001 at 07:46:09PM +0200
+Content-Type: multipart/mixed;
+ boundary="------------4CC60164A75AC93662149227"
+Subject: [parisc-linux] Kernel crashs on 715/100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Quoth Joël Soete:
-> Just a small tips I use on my i386 linux-box: I launch the make in one line
-> and tacke a log which I can so analyze later like:
-> 
-> make dep clean bzImage modules modules_install 2>&1 | tee /var/tmp/kl-200107.log
+Dies ist eine mehrteilige Nachricht im MIME-Format.
+--------------4CC60164A75AC93662149227
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Safer to run them separately.  You can still easily log them, there are
-many possible ways to do this ...
+Hi there!
+I have a 715 / 100, running the 0.9-Release with updated GCC and Glibc.
+I got the freshest Kernel from CVS (2.4.6-pa20) and compiled it on my
+machine. Only SerCon is enabled, as STICon and StiFB aren't working for
+me.
+But when I boot the new kernel,  it crashs right after the message "Set
+default PSW W bit to 0"
+System.map and Config-File of the Kernel are available at
+http://www.tu-darmstadt.de/~rscholz .
 
-$ for target in clean dep vmlinuz modules modules_install
-> do make $target 2>&1 | tee -a /var/tmp/kl-200107.log
-> done
+Another question, but a little bit OT:
 
-$ (make clean ; make dep ; make vmlinux ; make modules ; make modules_install) 2>&1 | tee -a /var/tmp/kl-200107.log
-
-$ script /var/tmp/kl-200107.log
-Script started, output file is /var/tmp/kl-200107.log
-$ make clean ; make dep ; make vmlinux ; make modules ; make modules_install ; exit
-...
-Script done, output file is /var/tmp/kl-200107.log
-$
+I have still 2 memory modules from an old HP server (an E45, I think).
+Can
+I use them in my workstation too?
 
 
-Andrew.
 
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+--------------4CC60164A75AC93662149227
+Content-Type: text/plain; charset=us-ascii;
+ name="minicom.cap"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="minicom.cap"
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+
+----------------------------------------------------------------------------
+BootRom Version    1.4  
+Memory Size:  128 MB
+----------------------------------------------------------------------------
+
+
+
+
+(c) Copyright 1990-1994, Hewlett-Packard Company.
+All rights reserved
+
+Press <ESCAPE> to stop boot sequence.
+----------------------------------------------------------------------------
+Command                                Description
+-------                                -----------
+Auto [boot|search] [on|off]            Set/show auto mode
+Boot [pri|alt [isl]]                   Boot from primary or alternate path
+Boot [scsi|eisa.<slot>[.<addr>]] [isl] Boot from SCSI or EISA
+Boot lan[.<addr>] [install] [isl]      Boot from LAN
+Chassis [on|off]                       Set/show chassis codes display mode
+DefaultSS                              Reboot and set EEPROM to default values
+Diagnostic [on|off]                    Set/show diagnostic boot mode
+Fastboot [on|off]                      Set/show fast boot mode
+Help                                   Show this command menu
+Information                            Show system information
+LanAddress                             Show LAN station addresses
+Monitor [<DEV>[.<type>]]               Set/show graphics monitor type
+                                       (<DEV>=graphics|graphics_<1|2>)
+Path [pri|alt [<DEV>[.<addr>]]]        Set/show boot source path
+                                       (<DEV>=lan|scsi|eisa.<slot>)
+Path [console [<DEV>[.<parm>]]]        Set/show boot console path
+                                       (<DEV>=<RS232>|<GRAPH>
+                                        <RS232>=rs232|rs232_2
+                                        <parm>=<baud>.<length>.<parity>
+                                        <GRAPH>=graphics|graphics_<1|2>
+                                        <parm>=<monitor>)
+Path [keyboard [hil|ps2]]              Set/show boot keyboard path
+Pim [hpmc|toc|lpmc]                    Show PIM info
+Search [ipl] [scsi|eisa]               Show potential boot devices
+Search [ipl] [lan [install]]           Show potential boot LAN devices
+Secure [on|off]                        Set/show security mode
+----------------------------------------------------------------------------
+BOOT_ADMIN> bo pri
+
+
+
+
+Attempting to boot.
+
+Loading Initial Program Loader
+
+
+IPL successfully loaded
+
+
+Booting
+palo ipl 0.93 root@gandalf Sun Jul  8 12:19:37 CEST 2001
+0/vmlinux32 2622963 bytes @ 0x48000
+Partition Start(MB) End(MB) Id Type
+1               1      22   f0 Palo
+2              23      64   83 ext2
+3              65     194   82 swap
+4             195    2046   83 ext2
+Current command line:
+2/vmlinux-2.4.6-pa20 root=/dev/sda4 HOME=/ TERM=linux console=ttyS0
+ 0: 2/vmlinux-2.4.6-pa20
+ 1: root=/dev/sda4
+ 2: HOME=/
+ 3: TERM=linux
+ 4: console=ttyS0
+
+Edit which field?
+(or 'b' to boot with this command line)? b
+
+Command line: 'root=/dev/sda4 HOME=/ TERM=linux console=ttyS0'
+
+Kernel: partition 2 file /vmlinux-2.4.6-pa20
+ext2 block size 1024
+ext2_mount(partition 2) returns 0
+ext2_open(/vmlinux-2.4.6-pa20) = 3
+ELF32 executable
+Entry 00100000 first 00100000 n 5
+Segment 0 load 00100000 size 1684160 mediaptr 0x1000
+Segment 1 load 0029c000 size 191904 mediaptr 0x19d000
+Segment 2 load 002cc000 size 255136 mediaptr 0x1cc000
+Segment 3 load 0030c000 size 8192 mediaptr 0x20b000
+Segment 4 load 003572d0 size 83456 mediaptr 0x20d2d0
+branching to kernel entry point 0x00100000
+Set default PSW W bit to 0
+
+Dumping Stack from 105f4000 to 105f4c80:
+4000 00000000 00000040 00000000 00000000 102b11e0 00000000 00000000 ffffffff
+4020 00000002 00000000 00000000 00000000 00000000 00000000 ffffffff 102b10e0
+4040 102b10e0 0000001e 105ec000 1030c000 102b7600 00000000 00000000 00000000
+4060 00000000 00000000 00000000 00000001 00000000 00000000 00000000 00000000
+4080 00000000 1030c000 1030c000 105d8000 00000000 00000000 105d8098 1030c098
+40a0 00000000 1034585c 105f40a8 105f40a8 105f4808 00000000 00000000 00000000
+40c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 105f4000
+40e0 10117914 00000000 00000001 00000000 00000000 0000001e 00000000 0000001f
+4100 00000000 00000000 00000000 00000000 00000000 00000000 80000000 00000000
+4120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+41a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+41c0 fffffeff 00000000 ffffffff 00000000 102b1e60 ffffffff ffffffff ffffffff
+41e0 ffffffff ffffffff ffffffff 00800000 05000000 00000000 ffffffff ffffffff
+4200 ffffffff 000007b5 000007b5 00000400 00000400 ffffffff ffffffff ffffffff
+4220 ffffffff ffffffff ffffffff 00007377 61707065 72000000 00000000 00000000
+4240 00000000 00000000 00000000 00000000 00000000 00000000 f000b858 f0000704
+4260 00000001 00000001 00000000 102ccf54 0004000e 00000008 0000003f 00000000
+4280 7f7fffff 0006e1c0 00007b5c 00800327 00000001 f0000704 00007b5c 00800327
+42a0 00007b5c 102b2810 00000001 105fdca0 1026755c 0004000e 00000008 00000000
+42c0 10100308 1011421c 00000000 00007b5c 00800327 10317810 10313627 00000008
+42e0 00000024 0000003c 0000003e 102b1010 00000001 10313627 00000000 10313603
+4300 10313603 00007b5c 00000000 00000000 40800000 00000000 1031b7dc 00000001
+4320 1027b0bc 0006e1c0 00000000 7f7fffff 0006e1c0 00007b5c 00008124 00000000
+4340 41800000 10155bf0 00000010 00000010 00000000 00000000 00000003 00000000
+4360 1030c554 1027b2a8 00000000 1036c0c0 7fffffff 7fffffff 41000000 00000000
+4380 7fffffff 10155bf0 40800000 00000000 41000000 00000000 00000003 00000000
+43a0 1030c594 1027b0b4 00000000 1036ce40 41800000 7fffffff 40000000 00000000
+43c0 40000000 1015564c 40800000 00000000 41000000 00000000 0000003f 0000416d
+43e0 00000002 1030c598 000000f0 1036c240 00000000 1056f000 105ff040 00000000
+4400 10265048 1012fc20 f00effff 00000000 00000000 105f4740 10106cf8 00000001
+4420 000000f0 7f7fffff 000000f0 1036c0c0 002b8000 00000000 102b7040 102b7060
+4440 102b71fc 00000000 00000000 00000000 105f444c 00000000 00000000 00000000
+4460 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4480 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+44a0 00000000 00000000 00000000 10106c4c 00000000 00000000 00000000 00000000
+44c0 1030c000 00000000 0900deee 00000000 00000000 00000000 00000000 00000000
+44e0 00000000 00000000 00000000 1010031c 00000000 00000000 00000000 00000000
+4500 00000000 0900deee 00000000 00000000 00000000 00000000 00000000 00000000
+4520 00000000 00000000 00000000 102cd13c 00000000 00000000 00000000 00000000
+4540 1030a428 1030a420 00000000 00000000 105f454c 00000324 00000000 105f454c
+4560 105f454c 00000000 1030a4a0 102d43c0 00000000 00000000 00000000 00000000
+4580 1030a42c 105f4000 102b7600 1030c000 1030a4a0 102e6dd4 102ccf54 0004000e
+45a0 00000008 10345010 105f4000 102d439c 1030c000 1030a4a0 1030a408 00000000
+45c0 10345010 105f4000 102b7600 1030c000 1030a4a0 1030a42c 105fdc20 0004000e
+45e0 00000008 10345010 105f4000 102d3d40 1030c000 1030a4a0 1030a420 105f4548
+4600 102e6e1c 102e6df8 102e6dd4 102b7600 102bb1b0 00000000 105fb2c0 102b3a28
+4620 00008124 105f4548 1013ad3c 1010b1f8 00000000 00000000 00000000 00000000
+4640 00000006 102bb3ac 10310394 00000000 fffffffd 102e6dd4 1030c000 102b3a28
+4660 102c7010 102b2010 102b244c 1011985c 00000000 00000000 00000000 00000000
+4680 102b12f0 102b1338 105fdd20 00000000 00000124 f0102804 1027c880 1027c85c
+46a0 10345010 00000008 0004000e 102d432c 00000000 00000001 00000001 f0000704
+46c0 f000b858 f0000704 f0102800 00000000 00000000 102ccf54 00000043 00000058
+46e0 ffffffff 10310010 10310010 105f46c8 00000058 f0102804 105f48c0 1012bd74
+4700 102b12f0 102b1338 105f21a0 00000007 0000416d 102bb158 1027c87f 00000000
+4720 00000000 00000000 00000000 1011421c 00000000 00000000 40800000 00000000
+4740 10313635 00000008 00000032 0000003c 0000003e 102b1010 00000001 10313635
+4760 10310010 10313603 10313603 00000058 00000010 00000010 00000000 00000000
+4780 102b12f0 102b1338 105f24a0 00000007 0000416d 102bb100 105f2520 7fffffff
+47a0 105f26a0 105fb2e0 7fffffff 10155e3c 40800000 00000000 0004000e 00000008
+47c0 102a3010 10310010 10310010 f0102800 00000058 f0102804 0000416d 102bb100
+47e0 0000416d 00000000 40000000 101198a0 40800000 00000000 41000000 00000000
+4800 102bb0a8 00000000 00000000 105e8060 00000001 00000001 00000001 1027c7a4
+4820 00000000 00000000 10155bb4 102d4200 f00effff 00000000 0004000e 00000008
+4840 00000058 f0102800 105f26a0 105e8060 00000002 102ccf54 00000000 102b1010
+4860 ffffffff 00000058 f0102800 10197cb4 105e8060 00000002 00000000 102ccf54
+4880 105f26a0 105e8060 105f1c00 105f46c8 0000000f 00000000 1027c7a6 105fb300
+48a0 105e0000 00000000 00000000 10194268 00000000 00000000 00000000 00000000
+48c0 102b1010 ffffffff 00000058 f0102800 105f26a0 105e8060 105e8060 10313605
+48e0 00000058 10313603 10313603 10102b18 00000000 00000000 00000000 00000000
+4900 1019aa5c 00000058 ffffffff 0000000a 102ba810 00000000 105fb300 105e8060
+4920 00000000 00000000 00000000 10198064 00000000 00000000 00000000 00000000
+4940 102b12f0 102b1338 105fdd20 00000003 0000416d 105f1f1c 105f21a0 102b2448
+4960 00000002 102b2010 102b244c 10198a9c 00000000 00000000 00000000 00000000
+4980 ffffffff 105e8060 f0102800 105f26a0 105e8060 105e8060 1029491c 105f4949
+49a0 00000000 00000002 f000b858 1011985c 0000000f 00000001 00000000 102ccf54
+49c0 102b12f0 102b1338 105f21a0 00000007 0000416d 105f1ec4 105f24a0 105fb2e0
+49e0 00000000 00000002 f000b858 101987dc 00000001 00000001 00000000 102ccf54
+4a00 102c73e8 105fb300 00000010 00000002 ffffffff 105f24a0 105f4894 105e8060
+4a20 00000001 102b2010 102b244c 1011985c 00000000 00000000 00000000 00000000
+4a40 0004000f 10345010 101987dc 105e8060 0000000c 105fb2e0 000f4000 10345010
+4a60 00000051 102b1010 00000000 102ccf54 00000000 00000001 00000001 f0000704
+4a80 f000b858 00000002 00000000 00000000 1056e1e0 00000000 10208a68 105fb300
+4aa0 0000000c 00002802 00000000 1029c010 00000000 00000160 105f4c80 10102b18
+4ac0 000d081f 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4ae0 00000000 00000000 00000000 00000000 00000000 00000000 40800000 00000000
+4b00 7fffffff 7fffffff 7f7fffff ffffffff 7f7fffff ffffffff 00000000 00000000
+4b20 00000000 00000000 41800000 00000000 00000010 00000010 00000000 00000000
+4b40 7fffffff 7fffffff 41000000 00000000 40800000 00000000 7fffffff 7fffffff
+4b60 41000000 00000000 7fffffff 7fffffff 40800000 00000000 41000000 00000000
+4b80 40300000 00000000 40200000 00000000 40200000 00000000 41800000 7fffffff
+4ba0 40000000 00000000 40000000 00000000 40800000 00000000 41000000 00000000
+4bc0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4be0 00000000 00000000 1010d5ac 1010d5b0 f00effff 00000000 00000000 00000000
+4c00 00000006 00000018 0e781096 00000000 0000000c 00000000 00000000 00000000
+4c20 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4c40 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+4c60 00000000 00000000 00000000 10107748 00000000 00000000 00000000 00000000
+
+Kernel Fault: Code=26 regs=105f4a40 (Addr=0000000c)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001111
+r0-3     00000000 10345010 101987dc 105e8060
+r4-7     0000000c 105fb2e0 000f4000 10345010
+r8-11    00000051 102b1010 00000000 102ccf54
+r12-15   00000000 00000001 00000001 f0000704
+r16-19   f000b858 00000002 00000000 00000000
+r20-23   1056e1e0 00000000 10208a68 105fb300
+r24-27   0000000c 00002802 00000000 1029c010
+r28-31   00000000 00000160 105f4c80 10102b18
+sr0-3    00000000 00000000 00000000 00000000
+sr4-7    00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 1010d5ac 1010d5b0
+ IIR: 0e781096    ISR: 00000000  IOR: 0000000c
+ ORIG_R28: 00000000
+
+--------------4CC60164A75AC93662149227--
