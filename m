@@ -1,34 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4FB0482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 19:01:45 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.4d3e3a24) with ESMTP id saomhaaa for parisc-linux@lists.parisc-linux.org; Tue, 4 Sep 2001 17:57:34 -0700
-Date: Tue, 4 Sep 2001 18:01:28 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on parisc architecture
-Message-ID: <20010904180128.D4408@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20010902105538.A15344@middle.of.nowhere> <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk> <20010902.160441.92583890.davem@redhat.com> <20010903002514.X5126@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010903002514.X5126@parcelfarce.linux.theplanet.co.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B47D4482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 22:00:19 -0600 (MDT)
+Message-Id: <200109050357.VAA00570@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Arnaud.ATOCH@oecd.org, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] UreStoreOptical 20xt 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Tue, 04 Sep 2001 03:01:22 BST." <20010904030122.S5126@parcelfarce.linux.theplanet.co.uk>
+Date: Tue, 04 Sep 2001 21:57:28 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Is it impossible to handle unaligned access traps properly on
-> > parisc?  If so, well you have some problems...
+Matthew Wilcox wrote:
+> On Mon, Sep 03, 2001 at 07:34:20PM -0600, Grant Grundler wrote:
+> > IIRC, should only need hpfs (which also depends on ufs?..dunno anymore)
+> > hfs == Apple's Hiearchial File System.
 > 
-> No, we just haven't bothered to implement it yet.  Not many people
-> use IPX these days.
+> hpfs is IBM's High Performance FileSystem for OS/2 :-)
+> You need ufs and mount with -ohp, iirc.
 
-It should be easy to handle kernel unalignment traps in
-parisc/kernel/unaligned.c like we currently do for userspace (in fact
-there already is some code to do this). I thought we didn't want to do
-this though?
+oops...thanks for the correction and -ohp is right:
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+grundler <520>fgrep -i hp fs/ufs/*
+fgrep: fs/ufs/CVS: Is a directory
+fs/ufs/super.c: * HP/UX hfs filesystem support added by
+fs/ufs/super.c:                 else if (!strcmp (value, "hp"))
+fs/ufs/super.c:                         ufs_set_opt (*mount_options, UFSTYPE_HP);
+...
+fs/ufs/super.c:                 printk(KERN_INFO "ufstype=hp is supported read-only\n");
+
+
+BUG: Documentation/filesystems/ufs.txt doesn't mention -ohp
+
+> There is now vxfs support in the tree, but nobody's
+> tried getting it working on HP vxfs volumes.  Volunteers...?
+
+Ooh..it's possible those optical disks ended up using vxfs too...
+and CONFIG option says that's RO support too.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
