@@ -1,14 +1,15 @@
-Return-Path: <andrea@suse.de>
-Received: from dualathlon.random (ppp-217-133-42-200.cust-adsl.tiscali.it
-	[217.133.42.200])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5224648AA
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5C73F48AA
 	for <parisc-linux@parisc-linux.org>;
-	Thu,  8 Apr 2004 11:52:00 -0600 (MDT)
-Date: Thu, 8 Apr 2004 19:51:58 +0200
-From: Andrea Arcangeli <andrea@suse.de>
-To: James Bottomley <James.Bottomley@steeleye.com>
+	Thu,  8 Apr 2004 12:07:44 -0600 (MDT)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i38I7Wa31431; Thu, 8 Apr 2004 14:07:32 -0400
 Subject: Re: [parisc-linux] rmap: parisc __flush_dcache_page
-Message-ID: <20040408175158.GK31667@dualathlon.random>
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Andrea Arcangeli <andrea@suse.de>
+In-Reply-To: <20040408175158.GK31667@dualathlon.random>
 References: <Pine.LNX.4.44.0404081500520.7116-100000@localhost.localdomain>
 	<1081435237.1885.144.camel@mulgrave>
 	<20040408151415.GB31667@dualathlon.random>
@@ -19,9 +20,11 @@ References: <Pine.LNX.4.44.0404081500520.7116-100000@localhost.localdomain>
 	<1081441791.2105.295.camel@mulgrave>
 	<20040408171017.GJ31667@dualathlon.random>
 	<1081446226.2105.402.camel@mulgrave>
+	<20040408175158.GK31667@dualathlon.random>
+Content-Type: text/plain
+Date: 08 Apr 2004 13:07:31 -0500
+Message-Id: <1081447654.1885.430.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1081446226.2105.402.camel@mulgrave>
 Cc: Hugh Dickins <hugh@veritas.com>,
 	Linux Kernel <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -33,31 +36,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, Apr 08, 2004 at 12:43:45PM -0500, James Bottomley wrote:
-> On Thu, 2004-04-08 at 12:10, Andrea Arcangeli wrote:
-> > I said above per-arch abstraction, a per-arch abstraction isn't an irq
-> > safe spinlock, we cannot add an irq safe spinlock there, it'd be too bad
-> > for all the common archs that don't need to walk those lists (actually
-> > trees in my -aa tree) from irq context.
-> 
-> I think we agree on the abstraction thing.  I was more wondering what
-> you thought was so costly about an irq safe spinlock as opposed to an
-> ordinary one?  Is there something adding to this cost I don't know
-> about?  i.e. should we be thinking about something like RCU or phased
-> tree approach to walking the mapping lists?
+On Thu, 2004-04-08 at 12:51, Andrea Arcangeli wrote:
+> that path can take as long as timeslice to run, not taking interrupts
+> for a whole scheduler timeslice is pretty bad.
 
-that path can take as long as timeslice to run, not taking interrupts
-for a whole scheduler timeslice is pretty bad.
+OK, now I'm confused.  Where's the whole timeslice bit coming from? the
+parisc flush_dcache_code better not take a timeslice to execute
+otherwise we're in very serious performance trouble.
 
-Note that the data structure will become a tree soon, but a prio-tree,
-walking it with RCU lockless sounds very tricky to me, but it may be
-doable. For the short term I doubt you want the RCU prio-tree, I guess
-you want to stabilze the kernel first with the irq safe spinlock, then
-you can try to hack on the prio-tree to read it in a lockless fascion.
-If you can make the reading lockless we can giveup the abstraction too,
-since we can make all archs walk with lockless, but warning, freeing
-vmas in rcu callbacks means freeing mm in rcu callbacks, that then means
-freeing pgd in rcu callbacks, the whole mm layer will collapse on you as
-soon as you try to read that tree without any locking, only the inode
-will be still there as far as you've a reference on the page (and as far
-as you don't use nonlinear :-/ ).
+Does it take as long as a timeslice to do mmap[_shared] list insertion?
+
+James
