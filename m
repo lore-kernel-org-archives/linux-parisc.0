@@ -1,41 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 319EE4A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 11:11:53 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3A3994A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 11:17:40 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14VGeB-0003Pd-00; Tue, 20 Feb 2001 10:32:19 -0700
-Date: Tue, 20 Feb 2001 10:32:19 -0700
+	id 14VGwS-0003jK-00; Tue, 20 Feb 2001 10:51:12 -0700
+Date: Tue, 20 Feb 2001 10:51:12 -0700
 From: Matthew Wilcox <matthew@wil.cx>
 To: Grant Grundler <grundler@cup.hp.com>
-Cc: 5116@telia.com, parisc-linux@lists.parisc-linux.org
+Cc: Matthew Wilcox <matthew@wil.cx>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Some progress with WAX_EISA (Who knows about int errupts?)
-Message-ID: <20010220103219.B31164@parcelfarce.linux.theplanet.co.uk>
-References: <200102192341.AAA04190@zaphod.halden.lillfab.se> <200102201725.JAA16361@milano.cup.hp.com>
+Message-ID: <20010220105112.C31164@parcelfarce.linux.theplanet.co.uk>
+References: <20010220002636.R899@parcelfarce.linux.theplanet.co.uk> <200102201745.JAA16411@milano.cup.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200102201725.JAA16361@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Feb 20, 2001 at 09:24:58AM -0800
+In-Reply-To: <200102201745.JAA16411@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Feb 20, 2001 at 09:44:55AM -0800
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Feb 20, 2001 at 09:24:58AM -0800, Grant Grundler wrote:
-> Well, I still don't see what nosync does on a single CPU system.
+On Tue, Feb 20, 2001 at 09:44:55AM -0800, Grant Grundler wrote:
+> Matthew Wilcox wrote:
+> > i386 sets IRQ_INPROGRESS before it calls handle_IRQ_event and then
+> > clears it after the interrupt handler returns.  I'm not sure whether
+> > local interrupts are disabled at this point or not.  It might well be
+> > an SMP issue.
+> > 
+> > I suspect we want to add IRQ_INPROGRESS to our interrupt handlers.
+> 
+> I think irqs_running() serves that purpose. no?
 
-Nothing.  Look at the x86 code:
-
-void disable_irq(unsigned int irq)
-{
-        disable_irq_nosync(irq);
-
-        if (!local_irq_count(smp_processor_id())) {
-                do {
-                        barrier();
-                } while (irq_desc[irq].status & IRQ_INPROGRESS);
-        }
-}
-
-if you're in an irq on a UP machine, then local_irq_count will be >0,
-so it'll do nothing.  if you're not in an irq, then IRQ_INPROGRESS
-can't possibly be set.
+No.  irqs_running() tells us whether any irqs are in progress.  You have
+to grab the global_irq_lock before you call it.  IRQ_INPROGRESS tells us
+whether we're in the middle of servicing this particular interrupt.
 
 -- 
 Revolutions do not require corporate support.
