@@ -1,45 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA18982
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Sep 1999 09:26:39 -0600
-Date: Wed, 22 Sep 1999 18:18:49 +0300 (EETDST)
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA19182
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Sep 1999 09:30:31 -0600
+Date: Wed, 22 Sep 1999 18:15:56 +0300 (EETDST)
 From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
 To: Grant Grundler <grundler@cup.hp.com>
-cc: parisc-linux@thepuffingroup.com
+cc: Philipp Rumpf <prumpf@suse.de>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] 715/80 problems 
-In-Reply-To: <199909221342.GAA27508@milano.cup.hp.com>
-Message-ID: <Pine.HPX.4.05.9909221816030.1697-100000@gamgee.ntc.nokia.com>
+In-Reply-To: <199909221431.HAA27632@milano.cup.hp.com>
+Message-ID: <Pine.HPX.4.05.9909221807370.1697-100000@gamgee.ntc.nokia.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
 On Wed, 22 Sep 1999, Grant Grundler wrote:
 
-> Hannu Martikka wrote:
-> > Hei!
-> > With 715/80 I get following:
+> Philipp Rumpf wrote:
+> > Hannu Martikka wrote:
+> > > With 715/80 I get following:
+> > > Boot
+> > > :disk(....)/stand/vmlinux
 > > 
-> > Boot
-> > :disk(....)/stand/vmlinux
-> > 
+> > you might want to try to boot via tftp / bootp as this is what most of us do
+> > and it seems to work for us.
 > 
-> Hannu/Goodi,
-> You didn't get any messages about a bad address here?
-Nope. First thing that showed up was "GRs".
+> Goodi,
+> Are you using HP-UX boot loader?
+I was... It used to work (at the time when kernel didn't... :)
 
-> Dumping the GRs/CRs/SRs suggests a SW fault which can't be
-> handled...but the linux kernel needs to learn how to dump
-> more useful information.
-> 
-> BTW, those "<bunch of HEX-values>" mean something to various
-> people on the list. If you can collect (and post) all output
-> via serial console starting with the "Boot" message, others
-> on this list might be able to help.
-I was using the IPL/HPUX loader to start kernel. Are you still interested?
-It now works with tftp/bootp.
+> To boot from disk, one should do "make Image" and dd the Image to disk.
+> This will trash the HP-UX file system so only do this on a spare disk!
+> The loader used is then from the parisc-linux source tree.
+I setup the tftp/bootp server and now I can boot my 715/80 from lan.
+Last thing it says is "urgh" and then it stays in for(;;). I cannot say
+wether that is good or bad :)
 
-> Grant Grundler
-> Communications Infrastructure Computer Operations
-> +1.408.447.7253
+> grant
 - Goodi
 "The linuX Files -- The Source is Out There."
 ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
