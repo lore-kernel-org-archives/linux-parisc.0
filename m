@@ -1,18 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: linux signal race fixes,
-	patches against hppa tree, please test.
-Date: Tue, 31 Aug 2004 00:23:33 -0400 (EDT)
-Message-ID: <200408310423.i7V4NXjb001644@hiauly1.hia.nrc.ca>
-References: <no.id>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: Re: [parisc-linux] Proposal for implementing IRQ affinity
+Date: Tue, 31 Aug 2004 09:13:47 -0600
+Message-ID: <200408310913.47637.bjorn.helgaas@hp.com>
+References: <1093923097.3870.18.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: James.Bottomley@steeleye.com,
- parisc-linux@lists.parisc-linux.org,
- tausq@debian.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset="iso-8859-1"
+Cc: James Bottomley <James.Bottomley@SteelEye.com>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <no.id> from "John David Anglin" at Aug 27, 2004 10:36:12 pm
+In-Reply-To: <1093923097.3870.18.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,37 +20,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > This is more important for you, approximately 48 hours ago, Linus
-> > commited a fix for a signal handling race.
-> > 
-> > http://linux.bkbits.net:8080/linux-2.6/cset@1.1846.1.48?nav=index.html|Chang
-> > eSet@-2d
-> 
-> I have the patch under test on hiauly6 with todays CVS.
+On Monday 30 August 2004 9:31 pm, James Bottomley wrote:
+> This arrangement means that parisc has 32 distinct interrupts for a 32
+> bit kernel and 64 on a 64 bit kernel. 
 
-I've been running this now for three days on hiauly6 with a 32-bit
-2.6.8.1-pa7 kernel (default c3000 config) doing almost continuous gcc
-builds.  Things seem pretty promising.  No random SIGSEGVs and expect
-seems to be behaving itself.
+You could support 32 (or 64) interrupts per processor if you wanted to,
+though I think right now it's only 32 or 64 for the whole system.
 
-> I had another SIGSEGV on gsyprf11.  It looks as if this was in /bin/sh
-> although gdb doesn't say which program the fault ocurred in.
+> The newer iosapic interrupt controllers don't require
+> this because every device attached to the iosapic can be programmed
+> directly with a CPU EIRR address and bit number. 
 
-This is definitely not the case with the 64-bit SMP kernel on gsyprf11.
-There I've been testing with an unpatched kernel.  Expect works better with
-tcl8.3 but there are still some tests that fail when they shouldn't, and
-the output with tests which produce a large amount of output gets
-truncated.  With tcl8.4, expect has major problems.  The Tcl_Finalize
-patch doesn't fix them.  I think we need to try Carlos's patch on a
-64-bit SMP system to see if it helps the expect and SEGV problems.
+Strictly speaking, iosapics are programmed with a 16-bit ID/EID (not
+an actual EIRR address) and an 8-bit vector (not a 5- or 6-bit bit
+number.)  I think the chipset is responsible for routing the ID/EID
+to the correct processor, and on parisc, probably only 32 (or 64) of
+the 256 possible vectors are usable.  I would guess that in addition
+to routing based on ID/EID, the chipset also translates the vector
+number to a 2^vector mask in the form the EIRR expects.
 
-I'm off to Korea early Thursday morning so I can't do much more on
-this until I'm back in a couple of weeks.
+I think it would be good if parisc adopted the more generic concepts,
+because it's a shame that ia64 and parisc have such totally different
+code to drive the identical iosapic hardware.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> This scheme should move us entirely over to the use of generic interrupt
+> descriptors and allow the affinity setting of those interrupts which are
+> susceptible to it (namely only the directly accessible EIRR interrupts).
+> Any comments before I actually try this?
+
+I think this is great (though I don't know all the details of parisc
+interrupt controllers).
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
