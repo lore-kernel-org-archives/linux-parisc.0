@@ -1,35 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8DCD34A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 16:33:04 -0700 (MST)
-Sender: marteaut@esiee.fr
-Message-ID: <3A8C672C.E06566A0@esiee.fr>
-Date: Fri, 16 Feb 2001 00:33:00 +0100
-From: Thomas Marteau <marteaut@esiee.fr>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D64EF4A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 17:41:09 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA07769;
+	Fri, 16 Feb 2001 11:39:03 +1100
+Date: Fri, 16 Feb 2001 11:39:03 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: Bdale Garbee <bdale@gag.com>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] db2 build failed 
+In-Reply-To: <20010215222021.09E5B38786@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0102161130111.5178-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-To: Kevin Read <obsidian@panokratie.de>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Test on 705
-References: <Pine.LNX.4.31.0102160013480.22670-100000@kiste.innnet.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Kevin,
+On Thu, 15 Feb 2001, Matt Taggart wrote:
 
-	It seems like you want to boot with the file system via nfs.
+> Alan Modra just mentioned that profiling is broken. He is working on a fix.
 
-This is waht that means:
+And, amazingly, he's just committed a fix.  :-)
 
-mount: RPC call returned error 229
-Root-NFS: Server returned error -229 while mounting /tftpboot/(none)
-VFS: Unable to mount root fs via NFS, trying floppy.
-VFS: Cannot open root device "nfs" or 02:00
-Please append a correct "root=" boot option
+Err, "-r devel" branch only, at the moment.  I'm about to move all the
+devel stuff down to our mainline.
 
-If it is not what you want, please refer to the PALO Readme or to the
-official website PALO How-To
-
-Good Luck, Thomas
-
-ESIEE Team
-Visit http://www.esiee.fr/puffin
+Alan
+-- 
+Linuxcare.  Support for the Revolution.
