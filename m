@@ -1,31 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA29614
-	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 04:56:34 -0700
-Date: Tue, 2 Jan 2001 12:59:24 +0100
-From: Andi Kleen <ak@suse.de>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: "David S. Miller" <davem@redhat.com>, grundler@cup.hp.com,
-        linux-kernel@vger.kernel.org, alan@lxorguk.ukuu.org.uk,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [PATCH] move xchg/cmpxchg to atomic.h
-Message-ID: <20010102125924.A9538@gruyere.muc.suse.de>
-References: <200101020811.AAA26525@milano.cup.hp.com> <200101020903.BAA14334@pizda.ninka.net> <20010102112242.A7040@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010102112242.A7040@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Tue, Jan 02, 2001 at 11:22:42AM +0000
-Sender: ak@suse.de
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA30570
+	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 06:31:24 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 2 Jan 2001 13:34:42 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id AAA01623;
+	Wed, 3 Jan 2001 00:34:38 +1100
+Date: Wed, 3 Jan 2001 00:34:38 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Hirst <rhirst@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 64 bit kernel crash with wrong r27 value
+In-Reply-To: <20001222113950.A2554@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0101030033490.24351-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jan 02, 2001 at 11:22:42AM +0000, Matthew Wilcox wrote:
-> On Tue, Jan 02, 2001 at 01:03:48AM -0800, David S. Miller wrote:
-> > If you require an external agent (f.e. your spinlock) because you
-> > cannot implement xchg with a real atomic sequence, this breaks the
-> > above assumptions.
-> 
-> We really can't.  We _only_ have load-and-zero.  And it has to be 16-byte
-> aligned.  xchg() is just not something the CPU implements.
+On Fri, 22 Dec 2000, Richard Hirst wrote:
 
-The network code relies on the reader-xchg semantics David described in 
-several places.
+> had no cause to reload dp as that is always the callers responsibility.
 
--Andi
+Yes.  For hppa64, dp should be assumed trashed by any function call.
+That means some further patches in entry.S are needed, which ought to be  
+made #ifdef __LP64__
+
+Alan
+-- 
+Linuxcare.  Support for the Revolution.
