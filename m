@@ -1,74 +1,80 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04288
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 18:53:45 -0700
-Date: Sat, 26 Feb 2000 01:53:35 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] code 28 trap
-Message-ID: <20000226015335.G812@abacus.local>
-References: <200002260035.RAA00437@udlkern.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA06395
+	for <parisc-linux@puffin.external.hp.com>; Sat, 26 Feb 2000 00:07:29 -0700
+From: willy@thepuffingroup.com
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id BAA11310
+	for parisc-linux@thepuffingroup.com; Sat, 26 Feb 2000 01:08:21 -0500
+Date: Sat, 26 Feb 2000 01:08:21 -0500
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000226010821.T9944@thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200002260035.RAA00437@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Fri, Feb 25, 2000 at 05:35:12PM -0700
+Subject: [parisc-linux] Weekly News [2000-02-25]
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I'm running on a J5000, which is 99.9% the same as a C3000 if I disable
-> one of the processors. The only networking problem I've run into
-> is the one I already posted about, for which I have a workaround. I
-> have not run into any unaligned traps.
 
-This is another hint that Grant's unaligned trap probably is not network-
-related (it might be the network device driver's fault).
+PA-RISC/Linux Weekly News - 25th February 2000
 
-> I also do not believe we should do an unaligned trap handler at this
-> point. Yes, we may have to do one for the non-standard protocols, but
-> the problem is that once we enable the trap handler, you might hide
-> a bunch of other performance degrading bugs.
+   http://www.thepuffingroup.com/parisc/
+       vol 2, issue 6
 
-I agree.
+   This Week:
+   News & Announcements
+       Status Page
+       This Week's CVS Activity
+       State of the Port Summary
 
-> In fact, I would propose that when we do the unaligned handler we
-> should have a way of enabling it on a per thread basis for user
-> processes. When I say "enable" I don't mean that we would install/deinstall
-> the handler, but simply have the handler do a check, and if the fault
-> came from user space, check the task structure to determine whether
-> we should fix the fault or terminate the process with a signal.
+News & Announcements
 
-Emulating user space unaligned accesses sounds like a bad idea to me,
-unless existing applications assume they can do unaligned accesses and
-let the OS handle it.  (and preload a SIGBUS handler for those userspace
-applications that want it)
+     * NFS Root Updated
+        Grant updated Martin's NFS root-howto with instructions for
+            setting up an HP/UX machine as your NFS server.
+     * ELF32 work started
+        We're currently playing with ELF32 stuff, trying to get a
+            toolchain available to everyone. Once we're happy that the
+            toolchain is working well enough, we'll start moving the
+            kernel over to ELF.
+     * Upcoming non-merge with Linus
+        We were planning to merge Linus 2.3.48 into our CVS tree later
+            this week, however we've decided to delay until the following
+            week to give our tree a chance to settle down with the ELF
+            transition and Linus a chance to splat some more
+            platform-independent bugs.
+     * FAQ
+        I've started to maintain a FAQ, referenced from the main webpage.
+            It is a little rough for the moment; contributions eagerly
+            anticipated.
 
-> I believe that the default should be off. If a user doesn't want to
-> fix the problem (either due to indifference or lack of source), they
-> should explicitly enable the handler (perhaps by a flag bit in the
-> elf executable?) so that they know that they will be suffering a
-> performance penalty.
+Status Page
+        I'd just like to take this opportunity to remind everyone that we
+            have a status page with some unclaimed projects at
+            http://www.thepuffingroup.com/parisc/status.html
 
-LD_PRELOAD is a nicer way to handle that, isn't it ?
+This Week's CVS Activity
+          + More toolchain updates; Matthew checked in a patch to allow
+            libgcc1 to build and added the .global directive to gas.
+          + We decided to switch to a 16k per-process kernel stack size
+            to ensure that we don't have any bugs caused by accidentally
+            overrunning the kernel stack. John implemented this.
+          + HP/UX compatibility gained a few new syscalls. I guess John
+            was bored :-)
+          + Grant made the Intel EtherExpress Pro card work.
 
-> Of course, I'd like to do something similar for kernel unaligned faults,
-
-First, let's try whether we run into unaligned faults in cases other than
-the one we know (weird, badly-designed protocols).
-
-> Handling kernel unaligned faults should be configurable, possibly with
-> the default on.
-
-I disagree.  Either we accept we will have unaligned accesses, so disabling
-them would just generate bogus bug reports;  or we don't, then we want to
-see all bug reports caused by them.
-
-> My overall objective in all of this is to insure that we know of
-> all the cases where the kernel produces unaligned faults, and make
-> a conscious decision on whether or not we fix the code, rather than
-> hide unaligned references. My personal bias is to fix every piece
-> of code that produces unaligned references, but, based on the
-> linux-kernel thread that willy mentioned, we might not be able to
-> convince the maintainer of the code to accept those changes.
-
-Just wait until they see the light ... we can fix networking in our tree
-should it bother us.
-
-	Philipp Rumpf
+State of the Port Summary
+          + Kernel
+               o based on 2.3.42
+          + Supported Hardware:
+               o SCSI, Lan and PS/2 on Lasi I/O controller
+               o Dino PCI controller
+               o Elroy PCI controller
+               o Tulip ethernet
+               o PCNet32 ethernet
+               o Intel EEPro ethernet
+          + Project Page
+               o http://www.thepuffingroup.com/parisc/
+          + Latest Workable Image
+               o ftp://puffin.external.hp.com/pub/parisc/binaries/kernels
+                 /Image-20000218
+          + Running PA-RISC/Linux "recipe":
+               o http://thepuffingroup.com/parisc/recipe.html
