@@ -1,48 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from aeon.tvd.be (aeon.tvd.be [195.162.196.20])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8751D482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 07:26:08 -0600 (MDT)
-Date: Fri, 22 Jun 2001 15:22:58 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Sender: geert@linux-m68k.org
-To: Keith Owens <kaos@ocs.com.au>
-Cc: sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F0D4482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 14:00:33 -0600 (MDT)
+To: Al Budriunas <budriuna@cacr.caltech.edu>,
 	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <2105.993214803@ocs3.ocs-net>
-Message-ID: <Pine.LNX.4.05.10106221520250.2098-100000@callisto.of.borg>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: SCSI in arch/{m68k,parisc,sparc*}/config.in
+Subject: Re: [parisc-linux] Error creating PALO 
+In-Reply-To: Message from Matt Taggart <taggart@carmen.fc.hp.com>
+   of "Thu, 21 Jun 2001 19:30:11 MDT." <20010622013011.999F037D2C@carmen.fc.hp.com>
+References: <Pine.SOL.4.10.10106211709290.8214-100000@lugh.cacr.caltech.edu>  
+ <20010622013011.999F037D2C@carmen.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 22 Jun 2001 14:03:20 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010622200320.BA3BE37D2C@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 22 Jun 2001, Keith Owens wrote:
-> cc: kaos@ocs.com.au please, I am not on these lists.
-> 
-> arch/{m68k,parisc,sparc*}/config.in have their own SCSI list instead of
-> using drivers/scsi/Config.in.  Cleaning up the SCSI config file is on
-> my 2.5 TODO list, can you tell me why these architectures have their
-> own list of SCSI devices?
-> 
-> If it is because only some SCSI drivers work on these architectures, do
-> you really need to be this specific?  Other architectures source
-> drivers/scsi/Config.in without checking for arch dependent drivers.  If
-> the need is to support extra arch specific drivers, use the same
-> technique as acorn :-
+Matt Taggart writes...
 
-[ speaking for m68k ]
+> You can change the partition type to f0 but it's not in the list of partition
+> types.  I have submitted a wishlist bug against the Debian util-linux package
+> with a patch to add it to the list. 
 
-We do that to avoid being annoyed with questions about irrelevant SCSI
-hardware. If nowadays all ISA/EISA/MCA/PCI SCSI hardware questions are properly
-protected with their respective CONFIG_*, we're willing to include the generic
-drivers/scsi/Config.in.
+The bug is #101853. Info at,
 
-Gr{oetje,eeting}s,
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=101853
 
-						Geert
+Hopefully this will get into the next version and into a future version of the 
+installer.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
