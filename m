@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 001DC482E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Nov 2002 15:15:06 -0700 (MST)
-Date: Mon, 18 Nov 2002 22:15:52 +0000 (UTC)
-From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 67AC5482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Nov 2002 15:21:26 -0700 (MST)
+Message-Id: <200211182221.gAIMLK0I021949@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [2.5] next issues ...
-In-Reply-To: <200211182152.gAILqaHk021705@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.BSF.4.44.0211182213160.39295-100000@e0-0.zab2.int.zabbadoz.net>
+To: bzeeb-lists@lists.zabbadoz.net (Bjoern A. Zeeb)
+Date: Mon, 18 Nov 2002 17:21:20 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.BSF.4.44.0211182213160.39295-100000@e0-0.zab2.int.zabbadoz.net> from "Bjoern A. Zeeb" at Nov 18, 2002 10:15:52 pm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +22,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 18 Nov 2002, John David Anglin wrote:
+> rm -rf'ed the build due to almost no free disk space...
 
-> > *grmml* failed again in; this time in parse.o
->
-> If the failure was caused by a segmentation fault, restart the build with
-> "make bootstrap2" or "make bootstrap3" depending on the stage in which
-> it failed and see what happens.
+Use "make bootstrap-lean" to conserve disk space.  This will delete
+previous stages when they are no longer needed.
 
-rm -rf'ed the build due to almost no free disk space...
+> *merde* missed it.. copied options from 3.0.4debian /usr/bin/gcc -v
 
-> > ../gcc/configure -v --enable-languages=c,c++,f77,objc --prefix=/usr --infodir=/share/info \
->
-> It is not a good idea to replace the default compiler used for building
-> the system and glibc.  These pretty much have to be kept in sync.  Set
-> --prefix to some other directory.  It is not a bad idea to keep each
+You don't need all the options that they use.  Take a look at
 
-*merde* missed it.. copied options from 3.0.4debian /usr/bin/gcc -v
+http://gcc.gnu.org/ml/gcc-testresults/2002-11/msg00475.html
 
-if it compiles it will be no prob to wait another day ;-))
+to the configure options that I use.
 
-updated my compile.sh ... thanks.
-
+Dave
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
