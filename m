@@ -1,55 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA25548
-	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 16:52:37 -0600
-Received: from rascal.fc.hp.com (rascal.fc.hp.com [15.2.72.2])
-	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id SAA03143
-	for <parisc-linux@thepuffingroup.com>; Wed, 9 Jun 1999 18:52:26 -0400 (EDT)
-Message-Id: <199906092252.QAA06166@rascal.fc.hp.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-cc: tor@spacetec.no (Tor Arntsen), parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trying to get HP-UX working 
-In-reply-to: Your message of "Wed, 09 Jun 1999 22:43:14 MDT."
-             <E10rq7u-0000km-00@the-village.bc.nu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 09 Jun 1999 16:52:29 -0600
-From: Matt Taggart <taggart@rascal.fc.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA25883
+	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Jun 1999 17:04:08 -0600
+Date: Wed, 9 Jun 1999 18:04:03 -0500 (CDT)
+From: xomina <ryan@email.labmed.umn.edu>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trying to get HP-UX working
+In-Reply-To: <199906092243.SAA15136@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.GSO.4.02.9906091758240.5674-100000@email.labmed.umn.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Alan Cox writes...
+On Wed, 9 Jun 1999, John David Anglin wrote:
 
- >I can't however get HP/UX to set up an interface 
- >
- >	194.168.151.23 netmask 255.255.255.224
+> > here's the gnu directory taken from my HP-UX 10.20 machine at work.  it
+> 
+> Are they static so that they will work without shared libraries?
 
-Are you getting errors or do you just need to know where to make changes? 
-If it's the former, post the errors and maybe someone can help. If its the 
-latter, you probably want to edit /etc/rc.config.d/netconf
+oops, no, they appear to be dynamic.  at least, i assume that's what this
+means:
 
- >which I really need to do. Also before I go and build all the sane tools
- >so the box is usable has anyone already built a big tar file of HP/UX 
-binaries
- >of gcc/bash/fileutils etc ?
+mercury:/usr/local/gnu/bin> chatr bash
+bash: 
+         shared executable 
+         shared library dynamic path search:
+             SHLIB_PATH     disabled  second 
+             embedded path  disabled  first  Not Defined
+         internal name:
+             bash
+         shared library list:
+             dynamic   /usr/lib/libc.1
+         shared library binding:
+             deferred 
+         static branch prediction disabled
+         data page size: 4K
+         instruction page size: 4K
+mercury:/usr/local/gnu/bin> 
 
-I think it would be nice for all the developers to be sync'ed up and using 
-the latest tools. Right?
+sorry, i didn't install them on this machine, and wasn't aware they
+weren't statically-linked.  comes from being a non-kernel programmer and
+being a bit hasty to find something i could possibly help out with, i
+suppose!
 
-Does it make sense to go one step further and package them in either HP's 
-SD depot format or alternatively RPM(and provide RPM on HP-UX)? I have some 
-SD experience and could automate the packaging if needed.
-
-Another, somewhat larger, option would be to produce a custom HP-UX image 
-for the people working on the port. We can slap that image on bootable CDs 
-for distribution. Rebuilding a system from one of these CD's only takes 
-about 20 minutes. The image could be rebuilt fairly easily if it needed to 
-be updated.  I can also help with this if needed.
-
-What does everyone think?
-
-Thanks,
-
---
-Matt Taggart       Technical Consulting Lab
-taggart@fc.hp.com  Workstation Systems Division
-Ft Collins, CO     Hewlett Packard
+ryan
