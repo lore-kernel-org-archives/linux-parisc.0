@@ -1,45 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA13039
-	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 11:26:44 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 18 Aug 2000 17:26:30 -0000
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-References: <Pine.LNX.4.21.0008190020150.9244-100000@front.linuxcare.com.au>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 18 Aug 2000 13:25:53 -0400
-In-Reply-To: Alan Modra's message of "Sat, 19 Aug 2000 00:29:01 +1000 (EST)"
-Message-ID: <8766oy1nxa.fsf@linuxcare.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA14148
+	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 13:18:41 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 18 Aug 2000 19:18:25 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 18 Aug 2000 19:17:56 -0000
+Date: Fri, 18 Aug 2000 14:13:26 -0400
+From: Matthew Wilcox <matthew@wil.cx>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] test6 merge
+Message-ID: <20000818141326.A28992@vodka.thepuffingroup.com>
+References: <20000815160510.C7757@vodka.thepuffingroup.com> <20000818124944.A13870@linuxcare.com> <20000818130835.B13870@linuxcare.com> <20000818083733.U7757@vodka.thepuffingroup.com> <20000818144502.C13870@linuxcare.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20000818144502.C13870@linuxcare.com>; from Richard Hirst on Fri, Aug 18, 2000 at 02:45:02PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra <alan@linuxcare.com.au> writes:
-
-> On Fri, 18 Aug 2000, Alan Modra wrote:
+On Fri, Aug 18, 2000 at 02:45:02PM +0100, Richard Hirst wrote:
+> On Fri, Aug 18, 2000 at 08:37:33AM -0400, Matthew Wilcox wrote:
+> > On Fri, Aug 18, 2000 at 01:08:35PM +0100, Richard Hirst wrote:
+> > > In fact, it gets as far as reading the first block of init,
+> > > doesn't like it, then goes and tries to read /bin/sh, finds it is
+> > > a link to busybox, reads in the first block of that, and doesn't
+> > > like it either:
+> > > I guess it doesn't recognise the file format for some reason..
+> > 
+> > Sounds plausible; this is one of the things which got overhauled between
+> > 2.3.99pre8 and 2.4.0-test6.  i'll investigate.  is your init SOM or ELF?
 > 
-> > One way to keep out current ABI is to generate a .plt and import stubs
-> > when statically linking PIC code.  That should be relatively easy to do in
-> > the linker.
-> 
-> A bit of head-scratching, a couple of added functions, and the linker now
-> detects PIC functions and handles them appropriately.
+> ELF.
 
-Sorry to burst your bubble but this doesn't work in the real world,
-where "real world" is defined as 'hppa-linux-gcc -o hello hello.c'
-
-In fact this new linker ends up marking basically everything as
-potentially PIC, creating unnecessary import stubs for most functions
-in libc.a, and *not* actually switching the relocations to point to
-import stubs in the case where I am actually calling PIC in libgcc.a.
-
-Oh and it segfaults on undefined weak symbols though that's easily
-fixed.
-
-I'm not even sure where to start fixing this.  I guess I'll try to
-find something else to do today :(
+this problem is now fixed.  there seems to be another problem though since
+i just got an hpmc in gsc_readl.
 
 -- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+Revolutions do not require corporate support.
