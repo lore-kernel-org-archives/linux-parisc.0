@@ -1,17 +1,17 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: "Michael S. Zick" <mszick@wolfbutter.com>
 Subject: Re: copy_user_page_asm suggested 64bit improvment [Was:
 	[parisc-linux] clear user page test]
-Date: Fri, 31 Dec 2004 15:21:50 -0600
-Message-ID: <1104528110.5247.20.camel@mulgrave>
+Date: Fri, 31 Dec 2004 15:35:28 -0600
+Message-ID: <200412311535.28359.mszick@wolfbutter.com>
 References: <418A80E8000124B5@mail-6-bnl.tiscali.it>
-	<41CFE6B1.6010707@tiscali.be> <1104160093.5295.8.camel@mulgrave>
 	<200412311426.13425.mszick@wolfbutter.com>
+	<20041231205622.GA24116@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: "Michael S. Zick" <mszick@wolfbutter.com>
+Content-Type: text/plain;
+  charset="iso-2022-jp"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200412311426.13425.mszick@wolfbutter.com>
+In-Reply-To: <20041231205622.GA24116@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,30 +22,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, 2004-12-31 at 14:26 -0600, Michael S. Zick wrote:
-> Page must contain zeros on return.
+On Fri December 31 2004 14:56, Grant Grundler wrote:
 > 
-> Contents of system caches must correspond to contents of page (zeros).
+> I read the conditions and thought "neat".
+> I don't pretend to understand all of them or what they mean.
+> But instead of trying to explain them, could you send me a patch that works?
+> Maybe something that has a chance of going back upstream to linus?
+> 
+I tried the 'patch that works' route with a similar suggestion for sched.c
+Based on that experience...
 
-Actually, no, this is precisely what we don't do for performance
-reasons.  If we just wanted to the caches and main memory in sync, we
-wouldn't need to muck with the tmpalias space.
+I suspect that perhaps pictures (diagrams? flow charts? dependency
+graphs?) might stand a better chance of conveying what I can't explain
+in English.  I'll put that (drawing pictures) on my todo list.
 
-What clear_user_page_asm does is to prime the cache covering the page
-with zeros, but return the page to user space with a dirty cache (i.e.
-with the real memory not necessarily zero'd but with the cache in a
-state to zero it on a flush).  The reason for using the tmpalias space
-is so that the user's VIPT cache lines covering the page are congruent
-and thus the same ones the kernel wrote the zeros to.
+Let me attempt an abstract in words:
 
-This means that if the user is simply going to fill the page again, we
-stand a good chance of *not* having to write the zeros to main memory in
-the first place (this saves us quite a bit of execution time because
-writing to main memory is an expensive operation).
+The *nix philosophy is two part drivers.
 
-James
+The 'top part' can be viewed as a 'client' that makes requests on 
+behalf of the hardware.
+The 'bottom part' can be viewed as a 'host' that services 'client'
+requests.
 
+Nothing new there.
 
+What I proposed was:
+The memory page free pool be defined as a 'virtual device' with
+a two part driver.
+
+The 'top part' is executed by the 'client' (kernel).
+The 'bottom part' is executed by the 'host' (kernel daemon).
+
+The only thing different than usual here is that a real hardware
+device is (in most cases) the 'client' and the kernel is the 'host'.
+
+In this virtual free pool device, the kernel is the 'client' and the
+daemon is the 'host' (which only happens to be part of the kernel).
+Only the 'client' code is in the user's execution path.
+
+Should be interesting to consider.
+
+I wouldn't expect the idea to be adopted any quicker than my
+description (and patch that works) that the scheduler should be
+a virtual device with a two part driver.
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
