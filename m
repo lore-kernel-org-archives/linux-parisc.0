@@ -1,27 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0CDE24A18
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Feb 2001 16:37:51 -0700 (MST)
-Message-Id: <200102012340.PAA01589@milano.cup.hp.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] $$mulI missing 
-In-reply-to: Your message of "Fri, 02 Feb 2001 10:33:43 PST."
-             <Pine.LNX.4.21.0102021033060.19209-100000@front.linuxcare.com.au>
-Date: Thu, 01 Feb 2001 15:39:57 -0800
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0DC724A18
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Feb 2001 17:12:23 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA01345
+	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Feb 2001 17:08:14 -0700
+Message-Id: <200102020014.QAA01660@milano.cup.hp.com>
+To: 5116@telia.com
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] register_fallback_cpu() 
+In-reply-to: Your message of "Thu, 01 Feb 2001 23:15:57 PST."
+             <200102012215.XAA10570@zaphod.halden.lillfab.se>
+Date: Thu, 01 Feb 2001 16:14:25 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra wrote:
-> On Fri, 2 Feb 2001, Alan Modra wrote:
+5116@telia.com wrote:
+> ---1463811727-1804289383-981065757=:6612
+> Content-Type: TEXT/plain; CHARSET=US-ASCII
 > 
-> > Errm.  32 bit might still want them.  #ifndef __LP64__ ?
+> On 31 Jan, Grant Grundler wrote:
 > 
-> Ahh, missed seeing your second commit :-)
+> .... And the patch... 
 
-Exactly. My oversight. Thanks to Paul (Bame) for asking me the
-same question. And the answer was: doh! of course! :^)
+Ok. I see the problem:
+    Multiple entries in the "array" passed to register_driver()
 
+I mistakenly deleted this line from the code:
+-       for (;driver->check;driver++)  {
+
+and the associated '}'. I'll restore the for() loop.
+
+But Matthew is right: use the build-tools/cvsrc as your "~/.cvsrc".
+It's generally easier to read.
+
+thanks! (and sorry for the mistake)
 grant
 
 Grant Grundler
