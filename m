@@ -1,21 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] PA8800/ZX1 support committed to 2.6.7-rc2-pa2
-Date: Fri, 11 Jun 2004 09:27:13 -0600
-Message-ID: <20040611152713.GC10279@colo.lackof.org>
-References: <20040604202546.GC18574@colo.lackof.org>
-	<20040605065126.GA28343@colo.lackof.org>
-	<1086444652.1999.20.camel@mulgrave>
-	<20040605210515.GA8098@colo.lackof.org>
-	<1086470366.1999.36.camel@mulgrave>
-	<20040611055819.GA32005@colo.lackof.org>
-	<1086962549.1949.23.camel@mulgrave>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] This ones for you ggg! (fixed dpkg)
+Date: Fri, 11 Jun 2004 15:37:16 -0400
+Message-ID: <20040611193716.GI29203@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@steeleye.com>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1086962549.1949.23.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,25 +17,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jun 11, 2004 at 10:02:29AM -0400, James Bottomley wrote:
-> Could you just hard code it to 32 to make assureances certain that the
-> stride value isn't the source of the segv's?
 
-stride=16 doesn't work either.
-sshd only page faults (so far) and sometimes "hangs" (^C to kill it).
-Out of 9 attempts, I get one hang and 4 page faults.
-"Connection closed" on all except the "hang".
+ggg,
 
-Using console, I can
-o apt-get update
-o apt-get upgrade
-o ssh -l grundler 192.168.1.1
+Tired of dpkg hosing your system? In place untarring hurting when the
+untar fails? No more worries! New dpkg only untars properly when it's
+sure to pass!
 
-So far, everything from the console works.
-I'm not sure why sshd is having such a hard time.
-I still don't think "stride" is the problem.
+Would you care to test, or rather would anyone care to test, a new
+improved dpkg that forces a dry-run unpack before the actual unpack.
+That way corrupted tarballs don't hose your system.
 
-grant
+I think dpkg should be more robust so I made it so...
+
+http://parisc-linux.org/~carlos/debian-work/dpkg/
+
+The only way to make dpkg better is:
+
+0. Make the above dry-run check an option so dpkg runs faster
+   at the expense of less checking.
+1. Try to unpack control.tar.gz to get an idea of the md5sum
+2. Add another ar archive member with md5sum inside.
+ - Bump deb to version 3.0
+
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
