@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-2.nordnet.fr (unknown [194.206.126.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0DFAC4842
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:39:39 -0700 (MST)
+Received: from smtp-1.nordnet.fr (unknown [194.206.126.239])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3CDAD485C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:40:28 -0700 (MST)
 Received: from pop-1.nordnet.fr (pop-1.nordnet.fr [192.168.164.129])
-	by smtp-2.nordnet.fr (8.9.3/8.9.0) with ESMTP id CAA02143
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 02:39:38 +0100
+	by smtp-1.nordnet.fr (8.9.0/8.9.0) with ESMTP id CAA23719
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 02:40:26 +0100
 From: root@pop-1.nordnet.fr
-Date: Wed, 30 Jan 2002 02:39:26 +0100
-Message-Id: <200201300139.CAA13227@pop-1.nordnet.fr>
+Date: Wed, 30 Jan 2002 02:40:16 +0100
+Message-Id: <200201300140.CAA14158@pop-1.nordnet.fr>
 To: parisc-linux@lists.parisc-linux.org
 Subject: [parisc-linux] ALERTE: VIRUS DETECTE DANS UN MESSAGE ENVOYE PAR parisc-linux-admin@lists.parisc-linux.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
