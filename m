@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ascomax.hasler.ascom.ch (ascomax.hasler.ascom.ch [139.79.135.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A298484D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 06:15:20 -0700 (MST)
-Received: from srvmailgate1.hasler.ascom.ch (srvmailgate1.hasler.ascom.ch [139.79.135.89])
-	by ascomax.hasler.ascom.ch (8.11.4/8.11.4) with ESMTP id g1MDFG404659
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 14:15:17 +0100 (MET)
+Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5E47A4858
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 09:58:07 -0700 (MST)
+Received: from r6.petescaff.com ([192.168.0.3])
+	by smtp.petescaff.com with esmtp (Exim 3.33 #1)
+	id 16eJ1I-0004Bs-00
+	for parisc-linux@lists.parisc-linux.org; Fri, 22 Feb 2002 17:58:04 +0100
+Date: Fri, 22 Feb 2002 17:58:04 +0100 (CET)
+From: Peter Mottram <peter@petescaff.com>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OF24F42D74.714B6A40-ONC1256B68.00484869@hasler.ascom.ch>
-From: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
-Date: Fri, 22 Feb 2002 14:15:15 +0100
+In-Reply-To: <20020220204800.A27212@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.42.0202221752390.14794-100000@r6.petescaff.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Subject: [parisc-linux] Failed Firmware Update...
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: Strange serial behaviour on C160
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +25,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+I now have 2.4.17-pa28 running on my C160 & things have improved but are
+not yet perfect as I still have three serial ports......
 
-well, after following some threads in this list about firmware updates,
-I decided to update my 715 to the current 1.6, up from 1.1.
+/dev/ttyS0, UART: 16550A, Port: 0x0000, IRQ: 90
+/dev/ttyS1, UART: 16550A, Port: 0x0000, IRQ: 121
+/dev/ttyS2, UART: 16550A, Port: 0x0000, IRQ: 121
 
-Update so far went OK, but when it tried to reboot, it complained about
-a memory error and halted the system. Rebooting afterwards stopped
-at the "LED"-level; it gave me a "HPMC Cache Error", a "High Priority
-Machine Check Cache Error". And that was it, no monitor, no nothing....
+Of these devices the functional ports are 0 & 2. The weird speed problems
+have gone away so I can use my second serial port without problems - it is
+just a little odd that the rogue ttyS1 still shows up.
 
-- Question: The machine I (now) had was a 715/100XC; can it be that the
-1.6 firmware update is not suitable for that variant of the 715/100 ?
-- Is there still hope to revive the machine ? (without HP's support...)
+Anything I can usefully look at to try to help sort this out?
 
-A bit frustrated....
-Thomas
+TIA
+PeteM
+
+On Wed, 20 Feb 2002, Matthew Wilcox wrote:
+
+> On Wed, Feb 20, 2002 at 06:59:00PM +0100, Peter Mottram wrote:
+> > Before upgrading from HP-UX to Linux I had two perfectly functioning
+> > serial ports on my C160. I now appear to have THREE serial ports -
+> > ttyS[0-2].
+>
+> Hehe.. yeah, that was the case for quite a long time :-)
+>
+> > ttyS0 works perfectly
+> > ttyS1 goes somewhere - not found where yet
+> > ttyS2 goes to my second serial port but does not work at all well. A
+> > simple cat of a file to the device results in the file appearing on a
+> > terminal just a few characters at a time & incredibly slowly. All serial
+> > ports have the same settings & ttyS0 has no problems (I use it for the
+> > console).
+>
+> If you could upgrade to the latest kernel, you will find the additional
+> serial port gone again.  I hadn't heard about the speed problems before,
+> so if you could tell me whether they're still present with most-recent
+> kernel, that would be very helpful.  Thanks!
+
+[SNIP]
