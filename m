@@ -1,38 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD90546F3.dip.t-dialin.net [217.5.70.243])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C031B482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Jun 2001 16:54:50 -0600 (MDT)
-Date: Tue, 5 Jun 2001 00:52:05 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems with 0.9 ISO Images from mkhppa1.esiee.fr
-Message-ID: <20010605005205.B3234@solo.franken.de>
-References: <20010604170841.A8900@solo.franken.de> <200106041940.NAA13519@puffin.external.hp.com>
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CD7B6482A
+	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 03:50:34 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id B511FB007; Tue,  5 Jun 2001 10:46:55 +0100 (BST)
+Date: Tue, 5 Jun 2001 10:46:55 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: djweis@sjdjweis.com
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] D310 boot messages
+Message-ID: <20010605104655.H25745@linuxcare.com>
+References: <Pine.LNX.4.21.0106041410590.20217-100000@oliver.internal.sjdjweis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200106041940.NAA13519@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Jun 04, 2001 at 01:40:50PM -0600
+In-Reply-To: <Pine.LNX.4.21.0106041410590.20217-100000@oliver.internal.sjdjweis.com>; from djweis@sjdjweis.com on Mon, Jun 04, 2001 at 02:16:49PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jun 04, 2001 at 01:40:50PM -0600, Grant Grundler wrote:
-> So I don't think it quite works yet - but it's not much more work either.
-> I suggest installing 32-bit w/serial console (should work fine) and
+On Mon, Jun 04, 2001 at 02:16:49PM -0500, djweis@sjdjweis.com wrote:
+> So now, what major and minor should /dev/ttyB have to
+> function? /dev/console is 5 1 on my nfsroot.
 
-that's what I did, just wondered a little bit.
+My understanding of the pdc console is that it is output only,
+used only until a real console device is available, and so wont
+work as a linux console.  Hopefully someone will correct me if I'm
+wrong.
 
-> J282 might have serial on Dino and Clement (ESIEE) just hacked some support
+> Good job getting it to work this well, especially since it's listed as
+> untested! Also, the LCD on the front doesn't seem to do anything. What
+> needs to happen for that to work?
 
-I don't think so, J282 doesn't even have PCI. Right now I can't boot it,
-because I've disassembled my computer room, but if memory serves right
-serial is attached to either wax or lasi.
+I turned off LCD support in the release kernels because of reports
+that it was causing problems on some systems.  See
+<http://bugs.parisc-linux.org/db/10/104.html>.  You can turn it
+back on if you build your own kernel.
 
-> for that...but I know it's not on the 0.9 ISOs. Booting from a lifimage
-> (newer kernel plus Dino patch) might work better.
-
-even without having Dino ?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+Richard
