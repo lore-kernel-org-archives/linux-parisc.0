@@ -1,69 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0910149CD
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 03:53:15 -0600 (MDT)
-Received: from mail.lokmail.net (localhost [127.0.0.1])
-	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id FAA31633
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 05:52:59 -0400
-Message-Id: <200110110952.FAA31633@mail.lokmail.net>
-From: Jurij Smakov <jurij@lokmail.net>
+Received: from mailserver1.hrz.tu-darmstadt.de (mailserver1.hrz.tu-darmstadt.de [130.83.126.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ACAD0482F
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 04:52:03 -0600 (MDT)
+Date: Mon, 8 Oct 2001 18:39:17 +0200
+From: hgrothe@mathematik.tu-darmstadt.de
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] a todo entry
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Thu, 11 Oct 2001 05:52:59 -0400
-Sender: jurij@mail.lokmail.net
+Cc: debian-hppa@lists.debian.org
+Message-ID: <20011008183917.A15822@mathematik.tu-darmstadt.de>
+References: <1002553729.3bc1c18187924@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1002553729.3bc1c18187924@webmail.tiscalinet.be>; from joel.soete@freebel.net on Mon, Oct 08, 2001 at 05:08:49PM +0200
+Subject: [parisc-linux] Re: LVM 1.0.1-rc4 on hppa
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi!
+On Mon, Oct 08, 2001 at 05:08:49PM +0200, joel.soete@freebel.net wrote:
+> 
+> I just co the last cvs of kernel 2.4.9-pa42 and everything seems to work find as 
+> well as on model 712 as on model B180.
+> 
+> Then I try to have a look into LVM (last 1.0.1-rc4)on the B180:
+> no error at compile time neither for kernel neither for tools (just warning: 
+> pv_read_all_pv_of_vg.c:129: warning: deprecated use of label at end of compound 
+> statement)
+> 
+> Then I try first to do a 'pvcreate /dev/sdb' which failed:
+> vpcreate -- ERROR: "/etc/lvmtab" doesn't exist; please run vgscan
+> 
+> Also I excute 'vgscan':
+> Segmentation fault.
+>
+lvm-1.0.1-rc4 (as well as lvm-1.0.1-rc2) works fine for me on various
+2.4.9-paXX kernels including 2.4.9-pa42 (see below).
 
-Matthew Wilcox wrote:
+I guess :-) that you compiled the lvm-tools with optimization. Since 
+there seems to be a general problem with the lvm-tools and gcc3 (appears 
+also on other architectures (see lvm mailing list)) recompile the 
+lvm-tools without optimisation or "weak" optimisation (-O0).
 
-> #define KERNEL_DS 0
-> #define USER_DS mfsp(3)
-> #define get_ds() (KERNEL_DS)
-> #define get_fs() mfsp(2)
-> #define set_fs(x) mtsp(x, 3)
+HTH, Holger
 
-I've been looking at it for the last two days and I still
-cannot understand it :-). Why do You want set_fs to write to
-sr3? If set_fs changes sr3, but we access memory in 
-__get_user and __set_user using sr2, it is not going to work
-(I think). By now I'm pretty convinced that set_fs should
-operate on sr2 (which is supported by John's post). IMHO,
-sr2 should behave like that (just a summary of what was said
-before):
+$ uname -a
+Linux fb0483 2.4.9-pa42 #1 Mon Oct 8 14:07:25 CEST 2001 parisc unknown
+$ df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/sda3               126916     51947     68413  44% /
+/dev/vg00/lvol1         507748     70439    411095  15% /var
+/dev/vg00/lvol2        3096336   2563960    375092  88% /usr
+/dev/vg00/lvol3         253871     55726    185038  24% /home
+/dev/vg00/lvol4          87261     65674     17082  80% /usr/local
+/dev/vg01/lvol1        1052632    125496    927136  12% /work 
 
-a) In userspace sr2 is always 0, so that everybody can make 
-   their syscals.
-b) sr2 is set to sr3 when we enter the kernel.
-c) get_fs returns sr2 and set_fs sets sr2, so that we can
-   always use sr2 as the space in __get_user/__set_user
-d) When we return to userspace from the kernel, sr2 is
-   set to 0 again.
-
-While modification of uaccess.h to satisfy c) is more or less
-trivial, real problem for me is b) and d). I'm not quite sure, 
-where to look for these entries and returns? I would guess, 
-entry.S is the right place, but obviously I didn't RTFM enough to
-hack it yet.
-
-Another thing which confuses me a lot is a way the exception
-table is constructed in __get_kernel_asm/__get_user_asm:
-
-"\t.section __ex_table,\"a\"\n"        \
-"\t.dword\t1b\n"                       \
-"\t.dword\t(2b-1b)+3\n"                \
-"\t.previous"  
-
-What is the function of this "+3" thing? If 2b and 1b are the
-word-aligned addresses of the instructions (which, I think,
-they are), this does not make much sense. When the instruction
-at 1b fails, it will try to skip (2b-1b)+3 bytes, which is
-7, if 1b and 2b refer to subsequent instructions. In other
-places it is just (2b-1b), which is perfectly understandable. 
-It would be great, if someone could explain it.
-
-Best regards,
-
-Jurij.
+-- 
+Holger Grothe  (Email: hgrothe@mathematik.tu-darmstadt.de)
+Fachbereich Mathematik, TU Darmstadt
