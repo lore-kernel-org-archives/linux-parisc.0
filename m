@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rover.gag.com (rover.gag.com [192.133.104.32])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C4BCF482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Jan 2002 10:31:12 -0700 (MST)
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] DSL on a 715/80 with rp-pppoe
-References: <20020101233834.GA2872@sleepie.demon.co.uk>
-	<Pine.LNX.4.43.0201021748410.2611-100000@szr.petescaff.com>
-From: Bdale Garbee <bdale@gag.com>
-Date: 02 Jan 2002 10:29:08 -0700
-In-Reply-To: <Pine.LNX.4.43.0201021748410.2611-100000@szr.petescaff.com>
-Message-ID: <878zbg64rf.fsf@rover.gag.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4EC99482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Jan 2002 12:22:02 -0700 (MST)
+To: Lennert Buytenhek <buytenh@gnu.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Date: Wed, 02 Jan 2002 11:21:57 -0800
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <20020102192157.6F97940AB@dhcp66.cup.hp.com>
+Subject: [parisc-linux] [PATCH][RFC][CFT] remove global errno from the kernel, make _sysca (fwd)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +19,72 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-peter@petescaff.com (Peter Mottram) writes:
+Lennert,
+I'm one of the maintainers.
+I've cc'd the proper parisc kernel list.
 
-> The 2.4.9 Debian kernal package had hotplug disabled but the 2.4.16
-> package has it enabled. After a quick apt-get install of hotplug I have a
-> happy system again. I have filed a bug report to Debian on the kernel
-> package requesting a dependency on hotplug. This is obviously not the real
-> fix that is needed, but it would at least prevent this kind of problem for
-> anyone else.
+thanks,
+grant
 
-Nah, that's the wrong answer.  The kernel shouldn't crater if hotplug isn't
-present.
+------- Forwarded Message
 
-Slapping another dependency on the kernel image packages would mask the 
-problem instead of fixing it, so I'm uninclined to implement this request.
-Better someone track down and fix what's actually blowing up in the kernel,
-I think.
+From: Lennert Buytenhek <buytenh@gnu.org>
+To: linux-arm-kernel@lists.arm.linux.org.uk,
+	dev-etrax@axis.com, linux-ia64@linuxia64.org,
+	linux-m68k@lists.linux-m68k.org, linux-mips@oss.sgi.com,
+	linux-390@vm.marist.edu,
+	sparclinux@vger.kernel.org,
+	ultralinux@vger.kernel.org
+Subject: [PATCH][RFC][CFT] remove global errno from the kernel, make _syscallX kernel-only
 
-Bdale
+(Apologies for the massive cross-post, but this is a matter that concerns
+all architectures.  For archs that don't have a maintainer listed in
+MAINTAINERS I grabbed a random email address from arch/$arch/kernel/*.
+If you're not the person to answer this for your $arch, please forward
+to an appropriate person/list.)
+
+
+Hi,
+
+As I mentioned in my email to l-k with subject '[PATCH][RFC] global
+errno considered harmful' earlier today, having a global errno in the
+kernel doesn't really make sense.
+
+Referenced patch [1] deletes all mention of a global errno from the
+kernel, fixes up a very small number of callers that were depending on
+it, and fixes up the syscall helpers in include/asm-$arch/unistd.h not
+to write an error code to errno in case of error anymore.
+
+This subtly breaks userspace code that uses these helpers, but the general
+consensus seems to be that userspace code shouldn't be touching these in
+the first place.  Patch [2] fixes up asm-$arch/unistd.h to only define
+_syscallX in case __KERNEL_SYSCALLS__ is defined, to try and actively
+break userspace (ab)users of this code (thanks to Ralf Baechle for
+suggesting I should do something along these lines).
+
+What I would like to know from each architecture team:
+- - What is your arch's policy on userspace usage of asm/unistd.h, and
+  consequently, what is your opinion on the goal these patches
+  aim for?
+- - Are the changes I made in [1] and [2] for your $arch technically
+  correct?
+Please CC me on replies as I'm not on any of the lists posted to.
+
+My intention is to push these to Linus for 2.5 if everyone agrees.
+They're probably too intrusive for 2.4 (although I'd love people
+to convince me otherwise).
+
+
+cheers,
+Lennert
+
+[1] http://www.math.leidenuniv.nl/~buytenh/errno_ectomy-1.diff
+[2] http://www.math.leidenuniv.nl/~buytenh/errno_ectomy-1-to-2.diff
+
+_______________________________________________
+Linux-IA64 mailing list
+Linux-IA64@linuxia64.org
+http://lists.linuxia64.org/lists/listinfo/linux-ia64
+
+
+------- End of Forwarded Message
