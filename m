@@ -1,43 +1,26 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA19357
-	for <parisc-linux@puffin.external.hp.com>; Fri, 14 May 1999 12:49:41 -0600
-Date: Fri, 14 May 1999 20:49:06 +0200 (CEST)
-From: Hugo van der Kooij <hvdkooij@caiw.nl>
-To: Tom Javen <tomja@InnoTrac.fi>
-cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Hi
-In-Reply-To: <Pine.LNX.3.96.990514102417.5705B-100000@data.innotrac.fi>
-Message-ID: <Pine.LNX.4.10.9905142045210.743-100000@bastion.nl3155vj16.vanderkooij.org>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA21518
+	for <parisc-linux@puffin.external.hp.com>; Sun, 16 May 1999 23:43:32 -0600
+From: Richard "J." Rauenzahn <rrauenza@cup.hp.com>
+Message-Id: <199905170543.WAA18072@hairball.cup.hp.com>
+Subject: Re: [parisc-linux] performance computing review of a180
+To: prumpf@jcsbs.lanobis.de
+Date: Sun, 16 May 1999 22:43:21 -0700 (PDT)
+Cc: justin@master.debian.org, parisc-linux@thepuffingroup.com
+In-Reply-To: <19990514073913.18827@insula.local> from Philipp Rumpf at May "14," 1999 "07:39:13" am
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 14 May 1999, Tom Javen wrote:
-
-> On Wed, 12 May 1999, Matthew Wilcox wrote:
+> >hp-ux os (for example, online manual pages...additionally, the hp instant
+> >information cd-rom, a collection of documentation is available as a $300
+> >option. thus, to install the a-class, it is cubersome (though necessary) to
+> >have another system on hand to various documentation web sites."
 > 
-> > On Wed, May 12, 1999 at 01:00:04PM -0700, Grant Grundler wrote:
-> > > Mathew can also download and try to install the PA-mklinux.
-> > > I have this running on a 712/60 now. I suggest this because
-> > > I don't know how accessible HP-UX bits are to the general public.
-> > > HP-UX is usually distributed on CD-ROM these days.
-> > 
-> > Alas, no.  The 715/33 is the one machine that mklinux does not support;
-> > I looked at that about 6 months ago.
-> Have you looked at OpenBSD ?
+> This attitude, if it is more common, could make Linux on the A180 a lot more
+> popular. Linux is fairly standardized, you can get most Documentation as
+> hardcopy or read it on an x86 box etc.
 
-I don't know wether he did. But I was unable to find anything beyond HP-UX
-to run on the HP 715/33 hardware. So I am hoping this machine will join
-the TUX family before the end of this year. (Not intended to push anyone
-but I am rather optimistic now some of the persons with intimate kernel
-knowledge are part of the team.)
+Most of the instant information cdrom is online at www.docs.hp.com.
 
-Hugo.
-
--- 
-Hugo van der Kooij; Oranje Nassaustraat 16; 3155 VJ  Maasland
-hvdkooij@caiw.nl		 http://www.caiw.nl/~hvdkooij
--------------------------------------------------------------
-Use of any of my email addresses for unsollicited (commercial)
-    email is a clear intrusion of my privacy and illegal!
+Rich
