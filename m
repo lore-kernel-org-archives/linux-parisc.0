@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from omta02.mta.everyone.net (sitemail3.everyone.net [216.200.145.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AEF524839
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 May 2002 15:43:58 -0600 (MDT)
-Content-Type: text/plain
-Mime-Version: 1.0
-Date: Sun, 26 May 2002 14:43:47 -0700 (PDT)
-From: Stacy Olivas <olivas@eurisko.ws>
-To: Thomas Marteau <marteaut@tuxfamily.org>, olivas@eurisko.ws
+To: Jeremy Drake <jeremyd@apptechsys.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Getting a 750 to boot
-Reply-To: olivas@eurisko.ws
-Message-Id: <20020526214347.2B0C32756@sitemail.everyone.net>
+Subject: Re: [parisc-linux] 2.4.18 SMP instability 
+In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
+   of "Sun, 26 May 2002 13:23:00 PDT." <Pine.LNX.4.44.0205261307520.1491-100000@garibaldi.apptechsys.com>
+References: <Pine.LNX.4.44.0205261307520.1491-100000@garibaldi.apptechsys.com> 
+Date: Sun, 26 May 2002 20:04:53 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020527020453.99EBC483A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +19,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I'm going to play with it a bit tomorrow and try the Network rboot method to load it (if that doesn't work, I might try the other suggestion of pre-loading the HD on another machine and popping it back into the 750)..
+Jeremy Drake wrote:
+> 2.4.18-pa26 does it too. Here's the bootup sequence.  I put in the whole
+> thing in case anyone is interested.  If not, just skip to the bottom :)  
+> Next time I'll just include relevant pieces.  
 
-If I need any help I'll let you know..
+It was ok to post the whole thing.
+Did the machine "hang"?  Can you provide "TOC" output?
+(push TOC button on the back and then at PDC prompt "ser pim toc")
 
-Thanks for the offer and thanks to everyone who gave me tips on how to get the thing up and running.  I'd like to see what I can do with it. :)
+...
+> Starting Samba daemons: nmbd smbdsmbd(276): unaligned access to 0x4001a2b8 at
+>    ip=0x4012ea1f
 
--Stacy
+The "unaligned access" just tells us the app is touching data that
+isn't aligned. That shouldn't cause a crash. Or at least if it does,
+then it should crash the same way on a UP machine.
 
---- Thomas Marteau <marteaut@tuxfamily.org> wrote:
->Hi all,
->
->	I have a 750 in my lab. You can find some pictures there: 
->http://hppa.tuxfamily.org/gal/index-750.html
->
->I successfully install this box with 0.9.3 ISO. If you have any 
->questions related to this box, mail me.
->
->Thomas.
+I don't know a damn thing about samba. Is it multi-threaded or
+anything special? Send out broadcast packets maybe?
+
+thanks,
+grant
