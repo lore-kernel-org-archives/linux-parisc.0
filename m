@@ -1,20 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 38E70482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Sep 2002 20:04:28 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17nUxW-0002Hz-00; Sat, 07 Sep 2002 03:04:26 +0100
-Date: Sat, 7 Sep 2002 03:04:25 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "B. Douglas Hilton" <bdhilton@charter.net>
-Cc: Tobias Giesen <tobias_subscriber@tgtools.com>,
-	'palinux' <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: C200 Voodoo2 Progress Report
-Message-ID: <20020907030425.H26580@parcelfarce.linux.theplanet.co.uk>
-References: <000001c25607$c1fcdf90$0100a8c0@PLUTO> <3D795118.1060709@charter.net>
-Mime-Version: 1.0
+Received: from priv-edtnes16-hme0.telusplanet.net (defout.telus.net [199.185.220.240])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A3C31482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Sep 2002 20:26:22 -0600 (MDT)
+Received: from win2kbox ([66.222.159.202])
+          by priv-edtnes16-hme0.telusplanet.net
+          (InterMail vM.5.01.04.02 201-253-122-122-102-20011128) with SMTP
+          id <20020907022620.RZIM5909.priv-edtnes16-hme0.telusplanet.net@win2kbox>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Fri, 6 Sep 2002 20:26:20 -0600
+From: alaskan@telusplanet.net
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Opinions on desktop environments
+Date: Fri, 06 Sep 2002 20:29:05 -0600
+Message-ID: <7joinucs23osp1s07fsc9m2e6b927ho3dg@4ax.com>
+References: <20020907005814.6142.qmail@web12506.mail.yahoo.com> <1031363008.9861.103.camel@irongate.swansea.linux.org.uk>
+In-Reply-To: <1031363008.9861.103.camel@irongate.swansea.linux.org.uk>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D795118.1060709@charter.net>; from bdhilton@charter.net on Fri, Sep 06, 2002 at 09:06:32PM -0400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +28,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Sep 06, 2002 at 09:06:32PM -0400, B. Douglas Hilton wrote:
-> The C200 and probably C160, 180, 240, and 360
-> have two three different busses inside: the
-> Hewlett-Packard GSC bus, 5V/32bit PCI (dino),
-> and 3V/64bit PCI (cujo).
+On 07 Sep 2002 02:43:28 +0100, you wrote:
 
-... and some have an EISA slot provided by Wax.  I'm not sure exactly
-which configurations exist, but the hwdb thinks that Cujo was only
-used in the C200+, C240+, C360 and J2240.  The hwdb is slightly limited
-in that there's only one profile per name, when it's possible to have
-different configurations of the same box.  All B/C class boxes of that
-era are guaranteed to have a Dino though, so there's no real problem
-with requiring the use of a 5V slot.
+>On Sat, 2002-09-07 at 01:58, Derek Engelhaupt wrote:
+>> Well, got KDE to work, but it just seems slow even with my 16MB of RAM
+>> and 2GB of swap on my C180.  I guess my questions would be what would
+>> be an alternative that might run faster and/or be better overall than
+>> KDE?  Gnome?  I guess I'm looking for what you guys think is the best
+>> desktop environment to run.  Thanks.
+>
+>17Mb is pushing it. KDE/GNOME are about the same size. xfce/rox need a
+>lot less
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
--- 
-Revolutions do not require corporate support.
+Nothing like applying a little hardware to cure speed demons.
+
+I would suggest more memory, at least 32MB and even 64MB and or a
+faster hard disk drive (: 10k rpm :) the latter has sped my 712/60 to
+twice the normal performance when using a GUI.
