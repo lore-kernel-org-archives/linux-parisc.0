@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from freya.yggdrasil.com (h-64-105-136-52.SNVACAID.covad.net [64.105.136.52])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 01DA94837
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Nov 2002 06:50:40 -0700 (MST)
-Date: Sat, 16 Nov 2002 05:49:41 -0800
-From: "Adam J. Richter" <adam@yggdrasil.com>
+Received: from 13.26.34.12 (unknown [61.235.68.66])
+	by dsl2.external.hp.com (Postfix) with SMTP id BD3584838
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Nov 2002 10:19:07 -0700 (MST)
+From: =?gb2312?q?=C4=E3=BA=C3_ <=CE=DE=B4=CB=D3=CA=CF=E4@hotmail.com>,
+	?=@dsl2.external.hp.com
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20021116054941.A3448@baldur.yggdrasil.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="fUYQa+Pmc3FrFX/N"
-Subject: [parisc-linux] Patch: linux-2.5.47/drivers/parisc/ - pci_dma_supported had side effect
+Reply-To: Œﬁ¥À” œ‰@hotmail.com
+Date: Tue, 12 Oct 1999 01:26:36 +0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="de56526a-8040-11d3-a98a-5254aba02fb7"
+Message-Id: <20021116171907.BD3584838@dsl2.external.hp.com>
+Subject: [parisc-linux] =?gb2312?q?=C4=E3=D3=D0=B2=FA=C6=B7=D2=AA=D0=FB=B4=AB=C2=F0=A3=BF=D5=D2=CE=D2=B0=A1=A3=AC=D6=BB=D0=E8=D2=AA100=D4=AA=A3=AC=C4=E3=BF=C9=D2=D4=B3=A4=C6=DA=CF=F230=CD=F2=C8=CB=D7=F6=D0=FB=B4=AB=A3=AC?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,103 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---fUYQa+Pmc3FrFX/N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is a multi-part message in MIME format
+--de56526a-8040-11d3-a98a-5254aba02fb7
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: quoted-printable
 
-	pci_dma_supported is not supposed to have any side effects,
-but the parisc versions set pci_dev->dma_mask, which is not the
-intended behavior.  A driver could call check pci_dma_supported for a
-variety of values in any particular order without expected the dma
-mask to have actually been changed.  To change the DMA mask, drivers
-call pci_set_dma_mask (in drivers/pci/pci.c), which, by the way, does
-call machine-specific pci_dma_supported routine to ensure that the
-desired mask is acceptable.
-
-	The following patch fixes the problem.  It also has the
-benefit of eliminating some direct writing to pci_dev->dma_mask,
-which is what caused me to notice this problem.
-
-	I do not have any parisc machines or normally build parisc
-kernels.  So, I have not even verified that this change compiles.
-
-	If somebody could give these deletions a whirl and then send
-them by whatever the preferred process is to get them into the
-mainline kernel, I would appreciate it.  If there is more that I
-should do to facilitate this, please let me know.
-
--- 
-Adam J. Richter     __     ______________   575 Oroville Road
-adam@yggdrasil.com     \ /                  Milpitas, California 95035
-+1 408 309-6081         | g g d r a s i l   United States of America
-                         "Free Software For The Rest Of Us."
-
---fUYQa+Pmc3FrFX/N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="parisc-supp.diff"
-
---- linux-2.5.47/drivers/parisc/ccio-dma.c	2002-11-10 19:28:05.000000000 -0800
-+++ linux/drivers/parisc/ccio-dma.c	2002-11-16 05:23:47.000000000 -0800
-@@ -603,18 +603,16 @@
- ccio_dma_supported(struct pci_dev *dev, u64 mask)
- {
- 	if(dev == NULL) {
- 		printk(KERN_ERR MODULE_NAME ": EISA/ISA/et al not supported\n");
- 		BUG();
- 		return 0;
- 	}
- 
--	dev->dma_mask = mask;   /* save it */
--
- 	/* only support 32-bit devices (ie PCI/GSC) */
- 	return (int)(mask == 0xffffffffUL);
- }
- 
- /**
-  * ccio_map_single - Map an address range into the IOMMU.
-  * @dev: The PCI device.
-  * @addr: The start address of the DMA region.
---- linux-2.5.47/drivers/parisc/ccio-rm-dma.c	2002-11-10 19:28:06.000000000 -0800
-+++ linux/drivers/parisc/ccio-rm-dma.c	2002-11-16 05:23:44.000000000 -0800
-@@ -69,18 +69,16 @@
- static int ccio_dma_supported( struct pci_dev *dev, u64 mask)
- {
- 	if (dev == NULL) {
- 		printk(KERN_ERR MODULE_NAME ": EISA/ISA/et al not supported\n");
- 		BUG();
- 		return(0);
- 	}
- 
--	dev->dma_mask = mask;   /* save it */
--
- 	/* only support 32-bit devices (ie PCI/GSC) */
- 	return((int) (mask >= 0xffffffffUL));
- }
- 
- 
- static void *ccio_alloc_consistent(struct pci_dev *dev, size_t size,
- 				 dma_addr_t *handle)
- {
---- linux-2.5.47/drivers/parisc/sba_iommu.c	2002-11-10 19:28:28.000000000 -0800
-+++ linux/drivers/parisc/sba_iommu.c	2002-11-16 05:23:51.000000000 -0800
-@@ -806,18 +806,16 @@
- sba_dma_supported( struct pci_dev *dev, u64 mask)
- {
- 	if (dev == NULL) {
- 		printk(KERN_ERR MODULE_NAME ": EISA/ISA/et al not supported\n");
- 		BUG();
- 		return(0);
- 	}
- 
--	dev->dma_mask = mask;	/* save it */
--
- 	/* only support 32-bit PCI devices - no DAC support (yet) */
- 	return((int) (mask == 0xffffffff));
- }
- 
- 
- /**
-  * sba_map_single - map one buffer and return IOVA for DMA
-  * @dev: instance of PCI owned by the driver that's asking.
-
---fUYQa+Pmc3FrFX/N--
+=C4=E3=C8=E7=B9=FB=D0=E8=D2=AA=D7=F6=B9=E3=B8=E6=A3=AC=C7=EB=C4=E3=BD=AB=C4=E3=
+=CB=F9=D2=AA=D0=FB=B4=AB=B5=C4=B2=FA=C6=B7=BA=CD=B6=D4=CF=F3=B8=E6=CB=DF=CE=D2=
+=A3=AC=CE=D2=BB=E1=CE=AA=C4=E3=B6=A8=D6=C6=C4=E3=CB=F9=D2=AA=B5=C4=D3=CA=D6=B7=
+=A3=AC=BC=DB=B8=F1=A3=BA30=CD=F2=D3=CA=D6=B7100=D4=AA=A3=AC=CB=CD=C8=ED=BC=FE=
+=D2=BB=CC=D7=A3=AC=D2=BB=C8=D5=C4=DA=BD=BB=BB=F5=A3=AC=B5=E7=BB=B0=A3=BA=
+0755-26326076
+=B5=D8=D6=B7=A3=BA=C9=EE=DB=DA=CA=D0=BA=CD=C6=BD=C2=B71018=BA=C5
+=C9=EE=DB=DA=B5=C4=BF=CD=BB=A7=BF=C9=D2=D4=CB=CD=BB=F5=C9=CF=C3=C5=A3=AC=CD=E2=
+=B5=D8=D3=C3=BB=A7=BF=C9=D2=D4=BD=AB=C8=ED=BC=FE=BA=CD=D3=CA=D6=B7=B7=A2=B5=BD=
+=C4=E3=B5=C4=D0=C5=CF=E4
+=CE=D2=B5=C4=D3=CA=CF=E4=D3=C3=BB=A7=C3=FB=CA=C7china1238    =D3=CA=CF=E4=CA=
+=C7=CA=F4=D3=DAhotmail.com=B5=C4
+hello everyone
+   do you have products to sell in net ,please contact with me .i can find
+300000 emailaddress for you only 10$ ,and i will sent it with a =
+emailsendersoft to you,if you need please sent a mail to me ,my =
+email:china1238                                            mr yang
+@hotmail.com                                              2002.11  
+--de56526a-8040-11d3-a98a-5254aba02fb7--
