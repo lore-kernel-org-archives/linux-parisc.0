@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A7A6482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Feb 2002 09:31:04 -0700 (MST)
-Date: Thu, 7 Feb 2002 17:31:03 +0100
-To: Helge Deller <helge.deller@sap.com>
+To: Enrik Berkhan <Enrik.Berkhan@planb.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors
-Message-ID: <20020207173103.A4233@electra.intern.planb.de>
-References: <20020207130852.C3306@electra.intern.planb.de> <E16Ypjz-0000uP-00@linuxlab.wdf.sap-ag.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <E16Ypjz-0000uP-00@linuxlab.wdf.sap-ag.de>
-From: Enrik Berkhan <Enrik.Berkhan@planb.de>
+Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors 
+In-Reply-To: Message from Enrik Berkhan <Enrik.Berkhan@planb.de>
+   of "Thu, 07 Feb 2002 13:08:52 +0100." <20020207130852.C3306@electra.intern.planb.de>
+References: <20020207130852.C3306@electra.intern.planb.de> 
+Date: Thu, 07 Feb 2002 09:31:07 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020207163107.5E08A482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +19,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Feb 07, 2002 at 03:41:34PM +0100, Helge Deller wrote:
-> AFAIK the firmware output only happens at 9600 baud (8N1) and you can't 
-> change that. After the linux kernel has booted you can of course use
-> a higher rate.
+Enrik Berkhan wrote:
+> Investigating on
+> that I've found some oddities concerning setserial, baud_base and
+> the divisor calculation in the serial driver ...
 
-The firmware allows higher baud rates, at least on the 710, 715 and 720.
-I'm using it, so it does work ;-) Try "help rs232" when in boot admin
-mode.
+good work.
 
+...
+>   Memory mapped parisc ports all have port == 0, so this has to fail.
+>   Temporary workaround: `setserial /dev/ttyS1 port 0x10000 ...' once
+>   will prevent the above loop from finding conflicts.
+> 
+> So, the following things have to be fixed:
+> 
+> - get/set_serial_info have to be enhanced for memory mapped ports
+> - setserial should be enhanced accordingly
 
-Enrik
--- 
-Enrik Berkhan                                         plan b. GmbH
-                                                      Rüppurrer Straße 4
-+49-721-388582 (voice)                                76137 Karlsruhe
-+49-721-388581 (fax)                                  Germany
+If other non-intel architectures don't have a solution for this.
+My first thought was to assign fake port addresses.
+
+Do PCI serial cards also use MMIO?
+
+> - divisor calculation should be changed at least to round to nearest,
+>   not round towards zero, or LASI ports might still suffer from the first
+>   problem _if_ they really have baud_base 454545
+> - baud_base should be initialized correctly for other gsc based ports.
+
+We'd have to dig a bit for documentation on this.
+Please poke me offline if that doesn't happen in the next week or so.
+
+> If someone can confirm my analysis and tell me the direction of how to
+> fix these things I would be willing to work on it (shouldn't be hard,
+> maybe boring ;-).
+
+cool - thanks,
+
+grant
