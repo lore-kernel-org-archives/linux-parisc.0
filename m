@@ -1,12 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Using -pg on hppa *is* broken
-Date: Thu, 1 Jan 2004 15:03:19 -0500
-Message-ID: <20040101200318.GB7069__42700.7309197963$1416623096$gmane$org@systemhalted>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Using -pg on hppa *is* broken
+Date: Thu, 1 Jan 2004 16:00:16 -0500 (EST)
+Message-ID: <200401012100.i01L0G0L019101__41226.3073878877$1416623096$gmane$org@hiauly1.hia.nrc.ca>
+References: <20040101200318.GB7069@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: LaMont Jones <lamont@debian.org>
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Return-Path: <carlos@baldric.uwo.ca>
+Content-Type: text/plain; charset=US-ASCII
+Cc: lamont@debian.org, parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040101200318.GB7069@systemhalted> from "Carlos O'Donell" at
+	Jan 1, 2004 03:03:19 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -16,23 +20,12 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+> The main issue was that the 'start' symbol needs to be canonicalized
+> before passing on to the gmon routines. This requires entry.h to be
 
-lamont,
+I still think that using __c_f_f_c for this special case is overkill.
 
-I know you were looking for me regarding the use of '-pg' profiling in
-debian. It *is* broken, it's fixed on my experimental system thanks to a
-few patches from Randolph. I'm currently looking into sprof so I can
-profile glibc itself (not working currently).
-
-The main issue was that the 'start' symbol needs to be canonicalized
-before passing on to the gmon routines. This requires entry.h to be
-modified. What does this *really* mean? It means that in general you
-need a gcc-3.3 runtime to have glibc work properly, the good news is
-that debian doesn't have to have a gcc-3.3 runtime since __c_f_f_c was
-backported for our gcc pacakges. 
-
-I need to coordinate with the debian-glibc people again to resync the
-patches required for hppa.
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
