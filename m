@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 4 Dec 2002 10:12:47 -0700
-To: Matthew Wilcox <willy@debian.org>
-Cc: LaMont Jones <lamont@b180.mmjgroup.com>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] airo.c patch for hppa
-Message-ID: <20021204171247.GA11629@dsl2.external.hp.com>
-References: <20021204050640.GA22117@b180.mmjgroup.com> <20021204144454.P27991@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021204144454.P27991@parcelfarce.linux.theplanet.co.uk>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F13164829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Dec 2002 15:13:20 -0700 (MST)
+Message-Id: <200212042213.gB4MD83F000234@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Wed, 4 Dec 2002 17:13:07 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: libc-alpha@sources.redhat.com, debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021203024358.GA5487@systemhalted> from "Carlos O'Donell" at Dec 2, 2002 09:43:58 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] FATAL: kernel too old
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,36 +23,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 04, 2002 at 02:44:54PM +0000, Matthew Wilcox wrote:
-> Grant, I think this is a long-standing bug (Jan 2000!) in
-> Dino's port IO macros.
+I'm getting the following error building glibc-2.3.1-5:
 
-It sounds like there is...
+CPP='/home/dave/opt/gnu/bin/gcc -E -x c-header'  /home/dave/glibc-2.3.1-5/glibc-
+2.3.1/objdir/elf/ld.so.1 --library-path /home/dave/glibc-2.3.1-5/glibc-2.3.1/obj
+dir:/home/dave/glibc-2.3.1-5/glibc-2.3.1/objdir/math:/home/dave/glibc-2.3.1-5/gl
+ibc-2.3.1/objdir/elf:/home/dave/glibc-2.3.1-5/glibc-2.3.1/objdir/dlfcn:/home/dav
+e/glibc-2.3.1-5/glibc-2.3.1/objdir/nss:/home/dave/glibc-2.3.1-5/glibc-2.3.1/objd
+ir/nis:/home/dave/glibc-2.3.1-5/glibc-2.3.1/objdir/rt:/home/dave/glibc-2.3.1-5/g
+libc-2.3.1/objdir/resolv:/home/dave/glibc-2.3.1-5/glibc-2.3.1/objdir/crypt:/home
+/dave/glibc-2.3.1-5/glibc-2.3.1/objdir/linuxthreads /home/dave/glibc-2.3.1-5/gli
+bc-2.3.1/objdir/sunrpc/rpcgen -Y ../scripts -c rpcsvc/bootparam_prot.x -o /home/
+dave/glibc-2.3.1-5/glibc-2.3.1/objdir/sunrpc/xbootparam_prot.T
+FATAL: kernel too old
+make[2]: *** [/home/dave/glibc-2.3.1-5/glibc-2.3.1/objdir/sunrpc/xbootparam_prot
+.stmp] Error 1
 
-...
-> That '& ~3' clears the bottom two bits of the address, so we always read
-> from a 32-bit aligned address, even if we actually wanted to read the
-> other 16-bit word or one of the other bytes.
+Is 2.4.18-pa52 really too old?
 
-The Dino ERS clearly says the AD[0:1] are used for IO Port space.
+I configured with
 
-I gather IO_DATA behaves differently than MEM_DATA.
-MEM_DATA definitely uses byte enables to manage subword bytes
-and ignores the lower two bits of the address. The GSC byte enables
-are forwarded to the PCI bus when doing subword MMIO reads.
-Because MEM_DATA was added much later, it seems to have been implemented
-with more insight into how GSC/PCI can interact.
+../glibc/configure --build=hppa-linux --host=hppa-linux --target=hppa-linux --prefix=/home/dave/opt/gnu --disable-profile --without-cvs --enable-add-ons --enable-hacker-mode --enable-kernel=2.4.8
 
-> The PORT_OUT define doesn't mask that way:
+Oh, I noticed that hppa-linux is not listed in INSTALL or README.
 
-Right.
-
-...
-> LaMont's doing a rebuild now to check it works, but this seems fairly
-> obvious to me.  Thoughts?  (Can _anyone_ remember what they were thinking
-> when they wrote code nearly three years ago?  ;-)
-
-You are on the right track. And no, I don't remember.
-
-thanks,
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
