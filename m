@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EB34E482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 08:09:51 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17FxxR-0003Uw-00; Thu, 06 Jun 2002 15:09:45 +0100
-Date: Thu, 6 Jun 2002 15:09:44 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
-	Randolph Chung <tausq@debian.org>, patrick@tykepenguin.com,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kdb getting healthier? (PCI guru needed, that's you willy!)
-Message-ID: <20020606150944.D27186@parcelfarce.linux.theplanet.co.uk>
-References: <20020606092115.C6900@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020606092115.C6900@systemhalted>; from carlos@baldric.uwo.ca on Thu, Jun 06, 2002 at 09:21:15AM -0400
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 601A2482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 08:39:26 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id D9C87D64
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 16:39:24 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id QAA03244 for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Jun 2002 16:38:18 +0200 (METDST)
+Message-ID: <3CFF72D7.30FA7556@admin.france.hp.com>
+Date: Thu, 06 Jun 2002 16:33:59 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+ boundary="------------ADB1F49C9F0111973D8FDEE3"
+Subject: [parisc-linux] strange message with insmod
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,34 +25,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jun 06, 2002 at 09:21:15AM -0400, Carlos O'Donell Jr. wrote:
-> The kernel still goes into an infinite loop of unknown origin:
-> ---
-> PCI or EISA Bus Adapter 0 is not registered...
-> ---
-> (see ./arch/parisc/kernel/pci.c' -> PCI_PORT_IN)
-> Don't know where this gets called from, or how the ugly macro
-> expands :)
+This is a multi-part message in MIME format.
+--------------ADB1F49C9F0111973D8FDEE3
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-that ugly macro expands into inb/inw/inl.  that printk probably needs to
-go away -- i don't think it's helpful.  maybe it should stay for adapter
-!= 0, but so many drivers probe ISA space for their devices that we're
-going to keep getting them.
+	Hi
+I've compiled a new kernel (without LVM), everything seems okay.
+My dump driver compiled right...but when I use insmod:
+hpfrcw12:~# insmod dump
+Using /lib/modules/2.4.18-pa35/kernel/drivers/dump/dump.o
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+hpfrcw12:~# insmod st
+Using /lib/modules/2.4.18-pa35/kernel/drivers/scsi/st.o
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled
+r_info 0x29 not handled 
 
-i bet the loop isn't infinite... probably driver probing.  If you turn
-off CONFIG_PCI, the driver shouldn't be compiled in.
+So it is not coming from my modules. The modules are loaded,
+everything seems okay, but what means this messages ?
 
-> Sadly I think I zapped my VGA out on the 712/60 (A common occurence?).
-> It no longer produces _any_ video signals.
-> I may have to drag a 715/50 back to my house...
-> 
-> c.
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+	Thanks.
 
 -- 
-Revolutions do not require corporate support.
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------ADB1F49C9F0111973D8FDEE3
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
+
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------ADB1F49C9F0111973D8FDEE3--
