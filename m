@@ -1,34 +1,89 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E2B05482A
-	for <parisc-linux@parisc-linux.org>; Mon, 22 Oct 2001 12:54:59 -0600 (MDT)
-Date: Mon, 22 Oct 2001 20:53:07 +0200 (CEST)
-From: Jochen Friedrich <jochen+parisc-linux@scram.de>
-To: Alan Modra <amodra@bigpond.net.au>
-Cc: <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Latest debian binutils broken?
-In-Reply-To: <20011022095826.J1037@bubble.sa.bigpond.net.au>
-Message-ID: <Pine.LNX.4.33.0110222052030.30215-100000@alpha.bocc.de>
+Received: from edu.joroinen.fi (edu.joroinen.fi [195.156.135.125])
+	by dsl2.external.hp.com (Postfix) with SMTP id C095E482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Oct 2001 14:39:27 -0600 (MDT)
+Date: Mon, 22 Oct 2001 23:39:25 +0300 (EEST)
+From: =?ISO-8859-1?Q?Pasi_K=E4rkk=E4inen?= <pasik@iki.fi>
+To: Nicholas Leippe <nick@byu.edu>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] how to use dpkg/dselect/apt-get ???
+In-Reply-To: <01102021292604.00166@nick>
+Message-ID: <Pine.LNX.4.33.0110222332481.2564-100000@edu.joroinen.fi>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Alan,
+On Sat, 20 Oct 2001, Nicholas Leippe wrote:
 
-On Mon, 22 Oct 2001, Alan Modra wrote:
+> Thankyou for the link.  Unfortunately, I've already read that one
+> and found it of little help.
+>
+> I am not against whatever debian uses considering all the wonderful
+> features it's supposed to have, just rather annoyed that it is such a
+> difficult/disgusting interface.
+>
 
-> ldd as ?
+Some basic commands:
 
-hp720:~# ldd /usr/bin/as
-        libopcodes-2.11.92.0.7.so => /usr/lib/libopcodes-2.11.92.0.7.so 
-(0x4002b000)
-        libbfd-2.11.92.0.7.so => /usr/lib/libbfd-2.11.92.0.7.so 
-(0x40049000)
-        libc.so.6 => /lib/libc.so.6 (0x400b3000)
-        /lib/ld.so.1 => /lib/ld.so.1 (0x40000000)
-hp720:~#
+This will update the list of available packages:
 
-All i did was to apt-get upgrade my box to the latest level...
+=09apt-get update
 
-Cheers,
-Jochen
+This will upgrade all of your installed packages to newest versions:
+
+=09apt-get dist-upgrade
+
+Searching for a package 'foo':
+
+=09apt-cache search foo
+
+Download and install package 'foo':
+
+=09apt-get install foo
+
+Listing the files in package 'foo':
+
+=09dpkg -L foo
+
+Displaying status of package 'foo':
+
+=09dpkg -s foo
+
+Display information of not-installed package 'foo':
+
+=09apt-cache show foo
+
+Removing package 'foo':
+
+=09apt-get remove foo
+or
+=09dpkg --purge foo
+
+Checking to what package file 'foo' belongs to:
+
+=09dpkg -S /path/to/foo
+
+
+And so on..
+
+the 'sources' for apt are configured in /etc/apt/sources.list
+You can add your favourite mirror in there.
+
+And if you need to find which package includes file 'foo' you can check it
+from http://packages.debian.org (use the search that let's you search insid=
+e
+packages).
+
+
+Hope that helps.
+
+
+- Pasi K=E4rkk=E4inen
+
+
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
