@@ -1,16 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] mmap and GCC precompiled headers
-Date: Thu, 15 Jul 2004 18:26:30 -0400 (EDT)
-Message-ID: <200407152226.i6FMQVK4029018@hiauly1.hia.nrc.ca>
-References: <20040715215015.GO32326@parcelfarce.linux.theplanet.co.uk>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] www.parisc-linux.org crashed
+Date: 16 Jul 2004 08:59:48 -0500
+Message-ID: <1089986393.2098.20.camel@mulgrave>
+References: <20040716031951.GB27175@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: willy@debian.org (Matthew Wilcox)
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040715215015.GO32326@parcelfarce.linux.theplanet.co.uk> from
-	"Matthew Wilcox" at Jul 15, 2004 10:50:15 pm
+In-Reply-To: <20040716031951.GB27175@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,42 +19,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Thu, Jul 15, 2004 at 05:34:02PM -0400, John David Anglin wrote:
-> > > That's an unwarranted assumption.  If they want that, they need to
-> > > specify MAP_FIXED.
-> > 
-> > The problem with MAP_FIXED is that it replaces any previous mappings.
-> > I believe that the code in question doesn't want to do that.  It
-> > simply wants to fallback to not using PCH if the suggested value
-> > for START doesn't work out.
-> 
-> Oh, that's easy enough.  mmap() returns the address it got mapped at,
-> so just compare it to the address you asked for and decline to use PCH
-> in that case.
+On Thu, 2004-07-15 at 22:19, Grant Grundler wrote:
+> Hi,
+> www.parisc-linux.org crashed earlier today running a 2.4.25 kernel.
+> I happened to be around and recovered the console.
+> Appended below in case someone wanted to poke at it a bit or can
+> tell me this is a known problem.
 
-Well, that's exactly what it does.  However, it doesn't work.  The
-start address is selected as follows:
+It looks like a usual ext3 panic precipitated by a disc I/O error.  What
+were the SCSI logs before this?
 
-/* Default version of HOST_HOOKS_GT_PCH_GET_ADDRESS when mmap is present.
-   We temporarily allocate SIZE bytes, and let the kernel place the data
-   wherever it will.  If it worked, that's our spot, if not we're likely
-   to be in trouble.  */
+James
 
-However, when GCC tries to remap the PCH file to this location, it
-sometimes fails.  This is currently a fatal error (i.e., it does not
-fallback as described above).  This needs looking at.  Almost all
-the libstdc++ tests failed in the last build that I did.  I think if
-it successfully loads the PCH file and finds that it's not valid,
-it does fallback.
 
->>From what you and Randolph have said, PCH in its current incarnation
-isn't going to work on hppa.  If it works, I belive that it provides
-a significant performance enhancement in compiling c++ code.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
