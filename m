@@ -1,38 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA19714
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 16:25:40 -0700
-Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 18 Jan 2001 23:29:24 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id C5E6CB005; Thu, 18 Jan 2001 23:20:09 +0000 (GMT)
-Date: Thu, 18 Jan 2001 23:20:09 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Josiah Carlson <jcarlson@macalester.edu>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] /proc problems
-Message-ID: <20010118232009.G28638@linuxcare.com>
-References: <3A677280148.B3CFJCARLSON@smtp.macalester.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A677280148.B3CFJCARLSON@smtp.macalester.edu>; from jcarlson@macalester.edu on Thu, Jan 18, 2001 at 04:47:28PM -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA30807
+	for <parisc-linux@puffin.external.hp.com>; Fri, 19 Jan 2001 11:02:15 -0700
+From: jcarlson@macalester.edu
+Received: from chem42.chem.macalester.edu ([141.140.46.42])
+ by macalester.edu (PMDF V5.2-32 #38670)
+ with ESMTP id <01JZ3A5SKAMQ0023HL@macalester.edu> for
+ parisc-linux@thepuffingroup.com; Fri, 19 Jan 2001 12:06:00 CDT
+Date: Fri, 19 Jan 2001 12:27:32 -0600
+To: parisc-linux@thepuffingroup.com
+Message-id: <14688115.3188896052@chem42.chem.macalester.edu>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] ftp, gcc, etc...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jan 18, 2001 at 04:47:28PM -0600, Josiah Carlson wrote:
-> Good afternoon,
-> 
-> (I'm using the .5 image and used the install instructions on
-> www.parisc-linux.org/install.html to get the booting system on a B160L)
-> 
-> Upon boot, the system is not automatically mounting /proc.
-> I made sure that the line:
-> /proc	/proc	proc	defaults
-> was in /etc/fstab, but the kernel never mounts it.
-> 
-> I also need a script to be run every boot (to set up the ethernet
-> interface...or if it automatically did this, I would be happy to know
-> how to do set it up to do this as well.)
+Sorry for darn near spamming the list with all my problems...
 
-I thought the instructions for that were in the README.POSTINSTALL
-on the CD image...
+I was going to get some packages and such...but it seems that the base .5
+image lacks ftp...
+I was curious as to which package includes ftp as one of it's binaries.  It
+is a little strange to be on a linux machine and not have ftp.  I've
+started to install packages that I thought would do it...but I haven't
+found it yet.
 
-Richard
+On a side note, I'm setting up 6 hp machines to be turned into a parallel
+processing cluster using MPICH, and am going to need to compile the
+sources.  (or if someonee else wants to compile them and make a debian
+package out of them...would be really nice *smile*).  Along those lines,
+which packages do I need to install on the hp machine to allow configure,
+make, gcc, etc... to work together?
+After installing gcc and glibc (as well as all the required libraries for
+gcc), I tested it with a hello world program, and everything went peachy,
+but I do not know if the MPICH configure and make will work yet as I am not
+able to download it (I want my ftp! *5 points if you know what this refers
+to*).
+
+Any help at all would be greatly appreciated,
+Thank you,
+ - Josiah
