@@ -1,55 +1,38 @@
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA16125
-	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 09:36:49 -0700
-Message-Id: <200101271639.LAA07330@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Usage of __attribute__?
-To: jsm@udlkern.fc.hp.com (John Marvin)
-Date: Sat, 27 Jan 2001 11:39:25 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@puffin.external.hp.com
-In-Reply-To: <200101270948.CAA00365@udlkern.fc.hp.com> from "John Marvin" at Jan 27, 2001 02:48:49 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA17652
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 11:19:23 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 27 Jan 2001 18:23:22 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14Ma0O-0006JO-00; Sat, 27 Jan 2001 18:23:20 +0000
+Date: Sat, 27 Jan 2001 18:23:20 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: 5116@telia.com
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Kernel module loader gived break
+Message-ID: <20010127182320.A20379@parcelfarce.linux.theplanet.co.uk>
+References: <200101271610.RAA30546@zaphod.halden.lillfab.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200101271610.RAA30546@zaphod.halden.lillfab.se>; from 5116@telia.com on Sat, Jan 27, 2001 at 05:10:51PM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-John,
+On Sat, Jan 27, 2001 at 05:10:51PM +0100, 5116@telia.com wrote:
+> Hi, all
+> 
+> I get messages like 
+> 
+> break 0,0: pid=116 command='cat'
+> cat[116]: Breakpoint 0
+> 
+> Followed by a register dump when I do some thing that would trigger the
+> kernel to call modprobe. Modprobe is not in stalled in my system (is it
+> ported yet?).
 
-I think you should forward this question to gcc@gcc.gnu.org.
-
-> As part of my effort to fix the alignment problems in libpthread, I am
-> creating a type with the aligned attribute. However, I discovered
-> something strange, which I don't know if it is a bug, or is the expected
-> behaviour (i.e. I am doing something wrong/don't understand how
-> __attribute__ works).
-> 
-> If I directly declare the type as follows:
-> 
->     typedef int _lt_spinlock_t __attribute__((aligned(16)));
-> 
-> then EVERY int that follows has the aligned 16 attribute, e.g. just
-> declaring "int tmp;" gives tmp a 16 byte alignment. So, is that what
-> you would expect from my above declaration?
-> 
-> I worked around the problem by declaring the type in two steps:
-> 
->     typedef int _spin16;
->     typedef _spin16 _lt_spinlock_t __attribute__((aligned(16)));
-> 
-> Is there a way of combining the above two into one declaration,
-> without having the undesired side effect of making every int
-> aligned to a 16 byte boundary?
-> 
-> John Marvin
-> jsm@fc.hp.com
-> 
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
-
+the modutils source is available by cvs from pehc.  richard was working
+on it (he's on holiday right now).  don't remember how far he got.
+i know he did a merge with the upstream modutils source at one point.
 
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Revolutions do not require corporate support.
