@@ -1,59 +1,55 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA10723
-	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 16:37:19 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by atlrel2.hp.com (Postfix) with ESMTP id 2136C1B1
-	for <parisc-linux@thepuffingroup.com>; Tue, 29 Feb 2000 17:38:42 -0500 (EST)
-Message-Id: <200002292234.OAA08460@milano.cup.hp.com>
-To: "Gyula Matics" <gyula_matics@hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] zalon 
-In-reply-to: Your message of "Tue, 29 Feb 2000 16:11:55 PST."
-             <00cf01bf82c7$51677260$a94abc0f@hungary.hp.com>
-Date: Tue, 29 Feb 2000 14:34:47 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11104
+	for <parisc-linux@puffin.external.hp.com>; Tue, 29 Feb 2000 17:05:37 -0700
+To: Sam Creasey <sammy@sammy.net>
+Cc: willy@thepuffingroup.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] new binutils/gcc 
+In-reply-to: Your message of "Sun, 27 Feb 2000 13:26:55 EST."
+             <Pine.LNX.4.21.0002271322290.365-100000@sammyville.sammy.net>
+Date: Tue, 29 Feb 2000 16:06:35 -0700
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E12Pvit-0003UI-00@endor.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Gyula Matics" wrote:
-> Hi all,
-> 
-> I'm working on the ncr7xx driver and plan to add support for the
-> Bluefish GSC SCSI interface. I looked at the Mach kernel and
-> found that before accessing the c720 it is initializing something
-> called zalon.
-> 
-> What is that thing?
+= 
+= There is, in fact, a relationship there.  r8 isn't set properly at any
+= time, it's kludged.  r8 needs to be set to 
+= (load addr of .text) & 0xfff00000.   Basically this is used as a pointer
+= to the stub table for long branching.  (so, it should be a jump to
+= 0xc010049c, which ought to be a stub for start_parisc())
 
-It's the chip that allows 53c720 signals to mean something to PA-RISC I/O.
-The things I'm aware Zalon chip provides:
-o IODC bytes: identify the I/O board as zalon  (ie GSC SCSI)
-o EIM register:  used to generate PA interrupt transactions based on
-  NCR c720 "pulling" it's IRQ line.
-o HPA: hard physical address decoding so firmware can assign an MMIO
-  address.
+Don't "be" branches cause a pipeline flush?  It might be faster to
+do two "bl" branches instead?
 
-BTW, Bluefish is the EISA form factor of the GSC SCSI card.
-I'm pretty sure other form factors exist including for K-class
-and "built-in".
+= Yeah, it's kinda ugly...  the linker and crt0.S both need to be
+= taught about this too.
 
-> Should one care about it
+Ok, I fixed head.S and interruption.S.  After hacking on vmlinux.lds
+and a couple small other things, the elf kernel boots to the point
+where I need a ramdisk or NFS root to go further, so that's my plan.
+Sources are in CVS with the ELF_BRANCH tag.
 
-Yes.
+Things to do:
 
-> or just blindly do the same as the Mach kernel does?
+    The init_task_union alignment is in both vmlinux.lds and
+    is known by setup.c and #defined yet another place.  This ought
+    to be cleaned up if possible.
 
-Probably not exactly. You want to look at how drivers/gsc/dino.c
-uses gsc_alloc_irq() and do something very similar in order
-to program the EIM register. AFAIK, Once the Zalon EIM register is
-programmed, the c720 chip can be pretty much treated like it's
-on a PCI bus *using MMIO*.
+    The init_task_union printf in setup.c should be fixed.
 
-The MMIO base address is handed to the parisc-linux device driver in
-the struct hp_device *. Again, see dino.c for details.
+    It's probably time to start using the __setup stuff we hacked
+    around for SOM.
 
-hope this helps,
-grant
+    Fix 'make Image' or nuke it.  'make palo' works (for me anyway)
 
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+    Sammy said, and I didn't touch these (though others have in the
+    main line):
+
+	I guarantee that launching som/elf binaries won't work.  page faulting
+	looks messed up somewhere.
+
+	execve() might not work in this one..   I played with the assembler for
+	it, but good things never happened, so no changes included.
+
+
+			-Paul Bame
