@@ -1,35 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA28387
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 10:33:09 -0600
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 5 Sep 2000 16:33:17 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13WLei-00047d-00; Tue, 05 Sep 2000 17:33:04 +0100
-Date: Tue, 5 Sep 2000 17:33:04 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Andrew Park <apark@cdf.toronto.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA28725
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 10:58:40 -0600
+Received: from cmail2.rsn.hp.com (cmail2.rsn.hp.com [15.99.101.1])
+	by atlrel1.hp.com (Postfix) with ESMTP id 48E9D2693
+	for <parisc-linux@thepuffingroup.com>; Tue,  5 Sep 2000 12:58:53 -0400 (EDT)
+Date: Tue, 5 Sep 2000 12:02:28 -0500
+From: Bob Pflederer <krp@rsn.hp.com>
+To: John Marvin <jsm@udlkern.fc.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] syscalls...
-Message-ID: <20000905173304.A15365@parcelfarce.linux.theplanet.co.uk>
-References: <A4A5E4C468B5D11190220001FA6835DD04DD86BC@epixch003> <Pine.SOL.4.21.0009041213150.6280-100000@eddie.cdf>
+Subject: Re: [parisc-linux] Boot error on C200+
+Message-ID: <20000905120228.H999@localhost.localdomain>
+References: <200009030329.VAA17641@udlkern.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.SOL.4.21.0009041213150.6280-100000@eddie.cdf>; from apark@cdf.toronto.edu on Mon, Sep 04, 2000 at 12:15:55PM -0400
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <200009030329.VAA17641@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Sat, Sep 02, 2000 at 09:29:57PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 04, 2000 at 12:15:55PM -0400, Andrew Park wrote:
-> I'd like to work on the following item that was in the TODO list
-> on the puffin group web site.
-> 
-> check other arches for new syscalls we don't have and add them.
-> 
-> I was just wondering whether there is someone working on it already.
-> If so can we talk and divide the work load?
-> Thanks
+I noticed that John committed something this morning, so I tried it out
+on my C180, and it works!  For the first time, the CVS kernel boots 
+un-modified on my C180.  Odds are good that it will also work in C200+.
 
-actually i did that last week... someone want to take it off the todo
-list?
+Thanks, John.
 
--- 
-Revolutions do not require corporate support.
+> 
+> My fix will do a simple 3-4 assembly instruction test for PA2.0 in
+> head.S, and then install the appropriate iva. This wastes 2K of memory
+> having two iva's, but is a lot simpler to do in assembly very early
+> in the boot process. I'll try to get this done by Tuesday morning
+> (I work throughout the night Monday).
+> 
+> John Marvin
+> jsm@fc.hp.com
+> 
