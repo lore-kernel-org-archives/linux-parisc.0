@@ -1,8 +1,8 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 162C4482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 17:02:37 -0700 (MST)
-Date: Tue, 25 Mar 2003 01:02:34 +0100
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B90C482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 17:05:41 -0700 (MST)
+Date: Tue, 25 Mar 2003 01:05:39 +0100
 Cc: parisc-linux@lists.parisc-linux.org
 From: Thibaut VARENE <varenet@esiee.fr>
 Content-Type: text/plain; charset=us-ascii
@@ -10,7 +10,7 @@ Subject: Re: [parisc-linux] Re: Out of memory problem
 To: Markus Schaber <markus.schaber@student.uni-ulm.de>
 In-Reply-To: <20030325002917.37f386fa.markus.schaber@student.uni-ulm.de>
 MIME-Version: 1.0
-Message-Id: <20030325000234.AC50949BEB@mail.esiee.fr>
+Message-Id: <20030325000539.90F6049C0B@mail.esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,6 +22,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+sorry for my previous answer, doomed keyboard shortcut for "send" :P
 -------------------
 > Hello,
 >=20
@@ -47,19 +48,21 @@ about=20
 that
 > those lifimages are prepared for NFS Root opposite to the one I
 used.
+actually they aren't: they're prepared for RAMDISK :)
 > And the NetInst procedure for Debian/i386 uses a RAM-Disk, too, so I
 > thought those were using a initrd just as the one I got from
 > ftp://ftp.parisc-linux.org/kernels/. And so I just put it out of my
 > scope when searching for non-ramdisk images.
->=20
-> But I see that the I have to cross-read everything twice here, my
-fault.
->=20
-> Thanks for the hint.
->=20
-> Markus
->=20
->=20
+I don't think there's any: indeed, if you have read the boot howto,
+you'd have noticed that nfs-root images are very specific to your
+network configuration, since you have to specify the server's IP.
+
+therefore I don't see the point of releasing NFS-root images nobody
+could possibly use.
+
+So follow the cookbook in the HOWTO and prepare your own one ;P
+
+
 Thibaut VARENE
 PA/Linux ESIEE Team
 http://pateam.esiee.fr/
