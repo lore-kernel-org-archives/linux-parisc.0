@@ -1,16 +1,18 @@
 From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] [RFC] Non-executable stack?
-Date: Sun, 12 Sep 2004 09:10:09 -0700
-Message-ID: <20040912161009.GQ28659@tausq.org>
-References: <20040912143555.GN1854@baldric.uwo.ca>
+Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
+Date: Sun, 12 Sep 2004 09:15:51 -0700
+Message-ID: <20040912161550.GR28659@tausq.org>
+References: <20040911165325.GO28659@tausq.org>
+	<20040912134707.GL1854@baldric.uwo.ca>
 Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>
 To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040912143555.GN1854@baldric.uwo.ca>
+In-Reply-To: <20040912134707.GL1854@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,28 +23,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Can we have a non-executable stack on PA?
+> > One downside of this approach is that the extra fixup sections take up
+> > more space, so the end kernel is bigger. In my test on 64-bit, the
+> > kernel size increases by ~2%.
 > 
-> Why or why not?
+> What is that converted to bytes?
 
-Do you mean on the architecture? Yes, you can. afaik, hpux has a 
-non-executable stack.
+about 100k for 64-bit. should be significantly less for 32-bit.
 
-> The only thing that currently comes to mind is that we have return paths
-> from the signal handler as stack code. This is very easy to fix, just
-> put the code statically on the gateway page and allow the user to jump
-> through that back into the kernel.
+> Is there ever a case where you want only the faulting instruction and
+> not the faulting address aswell? This might be a case for saving a flag,
+> if you are going to write to r9 you might aswell write two words,
+> anyway? The code has already locked r8/r9 into variables and gcc won't
+> do a better job for you.
 
-do you mean in general, or just in the kernel? do you really mean only
-marking the stack non-executable, or also the heap?
+actually a nice effect of this patch is that you don't need to lock down
+r8 and r9 anymore for the get_user/put_user cases. Potentially any 
+register can be used to store the error and result values.
 
-We have various bits of trampolines in a number of applications that 
-could potentially live on the stack. libffi comes to mind....  and
-probably other code that needs to call between languages.
+i need to do some experiments to verify this, but after thinking
+about it more last night, it seems to me that we don't even need to put
+the isr/ior into registers in the fault handler.  the fixup code could 
+potentially just look at current->thread.regs.isr/ior directly.
 
-why do you want to do this?  because of the direction our stack grows,
-stack overflow protection is not as useful on pa.... not that you cannot
-do stack-smashing attacks on pa, of course...
+> 0x2 = 1 then Write r8/r9 values (slow path)
+> 0x2 = 0 then do nothing (fast path)
+> 
+> Then 0x1 is free to be used for something magical.
+
+sure, that works too.
 
 randolph
 -- 
