@@ -1,7 +1,8 @@
 From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] spinlock debug
-Date: Tue, 13 Jul 2004 21:29:10 -0700
-Message-ID: <20040714042909.GM546@tausq.org>
+Subject: Re: [parisc-linux] spinlock debug
+Date: Tue, 13 Jul 2004 22:08:32 -0700
+Message-ID: <20040714050832.GN546@tausq.org>
+References: <20040714042909.GM546@tausq.org>
 Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -9,6 +10,7 @@ Content-Type: text/plain;
 Cc: parisc-linux@lists.parisc-linux.org
 To: varenet@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040714042909.GM546@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,43 +21,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Thibaut,
+> 	a = __ldcw_align(lock);
+> 	while ((__ldcw(a) == 0))
+> 		while ((*a == 0) && --stuck);
 
-I'm just looking at your debuglocks stuff again. It doesn't look right
-to me.
+There's another race in the code. Suppose stuck becomes 0, so you go
+back to the outer loop, and you manage to acquire the lock, then you
+will hit the next if:
 
-	/* Do the actual locking */
-	/* <T-Bone> ggg: we can't get stuck on the outter loop?
-	 * <ggg> T-Bone: We only hit the outer loop when the data
-	 *	changes and the first time. We can hit the outer one
-	 *	alot if multiple CPUs are constantly racing for a lock
-	 *	and the backplane is NOT fair about which CPU sees
-	 *	the update first. But it won't hang since every failed
-	 *	attempt will drop us back into the inner loop and
-	 *	decrement `stuck'.
-	 * <ggg> K-class and some of the others are NOT fair in the HW
-	 * 	implementation so we could see false positives.
-	 * 	But fixing the lock contention is easier than
-	 * 	fixing the HW to be fair.
-	 */
-	a = __ldcw_align(lock);
-	while ((__ldcw(a) == 0))
-		while ((*a == 0) && --stuck);
+     52         if (unlikely(stuck <= 0)) {
+     53                 printk(KERN_ERR
+     54                         "%s:%d: spin_lock(%s/%p) stuck in %s at %p(%d)"
+     55                         " owned by %s:%d in %s at %p(%d)\n",
+     56                         base_file, line_no, lock->module, lock,
+     57                         current->comm, inline_pc, cpu,
+     58                         lock->bfile, lock->bline, lock->task->comm,
+     59                         lock->previous, lock->oncpu);
+     60                 stuck = INIT_STUCK;
+     61                 printed = 1;
+     62                 goto try_again;
+     63         }
 
-I don't think the comment is correct. Lets say someone is holding the
-lock when you enter this code, your outer loop test always succeeds, and
-you spin on the inner loop until stuck == 0. At that point you go back
-to the outer loop, the lock is still held, so you go back to the inner
-loop and continue spinning, and you never timeout the lock.
+so you erroneously detect that the lock was not taken, print an error,
+and go back to get the lock again. now you will not be able to acquire
+the lock and you are deadlocked.
 
-you probably need a "&& stuck > 0" in the outer loop.
-
-for some reason this still doesn't work for me though, but i don't see 
-why :( with a TOC i see we are spinning and i never see the printk.
-it might be that it's actually printing and just that the output is not
-going to the console... dunno
-
-what am i missing? :)
 randolph
 -- 
 Randolph Chung
