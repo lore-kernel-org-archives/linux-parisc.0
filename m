@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 90D34482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Aug 2002 16:22:11 -0600 (MDT)
+Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.200])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B2BE483F
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Aug 2002 16:45:39 -0600 (MDT)
+Received: from [195.20.224.198] (helo=mrvdomng3.kundenserver.de)
+	by moutvdomng3.kundenserver.de with esmtp (Exim 3.35 #2)
+	id 17iNBS-0004s0-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 24 Aug 2002 00:45:38 +0200
+Received: from [217.81.2.168] (helo=PLUTO)
+	by mrvdomng3.kundenserver.de with esmtp (Exim 3.35 #2)
+	id 17iNBR-0005yd-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 24 Aug 2002 00:45:38 +0200
 From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
 To: <parisc-linux@lists.parisc-linux.org>
-Cc: "'B. Douglas Hilton'" <bdhilton@charter.net>
-Subject: RE: [parisc-linux] Question (fbdev, fbset, debconf)
-Date: Sat, 24 Aug 2002 00:16:14 +0200
-Message-ID: <002601c24af2$b31da240$a80251d9@PLUTO>
+Date: Sat, 24 Aug 2002 00:45:53 +0200
+Message-ID: <002801c24af6$dbf85350$a80251d9@PLUTO>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-In-Reply-To: <3D66B277.4020002@charter.net>
+In-Reply-To: <001a01c24adf$a5d50a00$a80251d9@PLUTO>
+Subject: [parisc-linux] So what about debconf?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,13 +30,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> First of all, what kind of graphics card 
-> do you have in it?
+Hello,
 
-Hmm - all I know is: A4552A. I didn't see a list of supported
-graphics cards anywhere. Where do I look?
+the other problem is even more puzzling for me: 
 
-In any case I will try a newer kernel.
+how do I get back into the text mode UI in order to select and install
+new packages? Somewhere in the archives it says "run debconf" but Debian
+did not install any executable file with that name.
 
-Cheers,
+Please, give me a hint! Currently, I'm just guessing package names and
+installing them using the apt-get command line ...
+
+Thanks.
+
 Tobias
