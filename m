@@ -1,23 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA23167
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 13:27:07 -0700
-Sender: subc@mailserv2.iuinc.com
-Message-ID: <38CFE44B.8EAF5DCA@subcarrier.org>
-Date: Wed, 15 Mar 2000 14:28:11 -0500
-From: Michael Ang <mang@subcarrier.org>
-MIME-Version: 1.0
-To: willy@thepuffingroup.com
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Merge with Linus 2.3.99pre1
-References: <20000315140309.U27942@thepuffingroup.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01778
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 15:17:32 -0700
+Received: (from prumpf@localhost)
+	by inwestnet.de (8.9.3/8.9.3) id WAA00605
+	for parisc-linux@thepuffingroup.com; Wed, 15 Mar 2000 22:17:58 +0100
+Date: Wed, 15 Mar 2000 22:16:47 +0100
+From: Philipp Rumpf <prumpf@inwestnet.de>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Assembly Language Changes
+Message-ID: <20000315221647.G673@abacus.local>
+References: <20000312152353.E5281@abacus.local>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20000312152353.E5281@abacus.local>; from prumpf@inwestnet.de on Sun, Mar 12, 2000 at 03:23:53PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Later today I will post a list of files that will need to be manually
-merged or checked as part of the merge effort.  We will need an "owner"
-for each of these files so that we can quickly resolve any problems. 
-The last merge went smoothly (as smoothly as possible) due to everyone's
-cooperation.  Hopefully this time we will spend even less time in merge
-hell :)
+I haven't received any negative comments about the proposed changes yet,
+and think the following changes should become effective soon:
 
-	- Mike.
+>  - Labels should always use ':'
+>  - mnemonics in the first column should be interpreted normally.
+>  - register names should always start with '%', not be specified by an
+>    integer
+>  - ';' should be used rather than '!' to separate multiple statements
+>    on the same line
+- '!' replaces ';' as the line comment character
+
+I don't think a line comment character should be necessary for new code -
+C comments (thats /* comment */, not // comment\n) work fine.
+
+So, still no objections ?
+
+	Philipp Rumpf
