@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 68716482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 09:19:16 -0700 (MST)
-Received: from ns1.ybsoft.com (ns1.ybsoft.com [10.0.0.2])
-	by beavis.ybsoft.com (Postfix) with ESMTP id D24692B101
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 09:19:14 -0700 (MST)
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Message-Id: <1047917954.14507.15.camel@beavis.ybsoft.com>
+Date: Mon, 17 Mar 2003 09:21:05 -0700
+To: Randolph Chung <randolph@tausq.org>
+Cc: Joel Soete <jsoe0708@tiscali.be>,
+	Jan-Benedict Glaw <jbglaw@lug-owl.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] FC driver?
+Message-ID: <20030317162105.GB31378@dsl2.external.hp.com>
+References: <20030317111801.GF17073@lug-owl.de> <3E68A12A00002A77@ocpmta3.freegates.net> <20030317155235.GN26139@tausq.org>
 Mime-Version: 1.0
-Date: 17 Mar 2003 09:19:14 -0700
-Subject: [parisc-linux] /lib/ld.so.1 (glibc) issues on 2.5 kernel??
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030317155235.GN26139@tausq.org>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,55 +22,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Got a wierd glibc/kernel problem...
+On Mon, Mar 17, 2003 at 07:52:35AM -0800, Randolph Chung wrote:
+> this is the "right" driver, but it doesn't work on parisc. Grant has
+> poked at it a little bit but afaik it still doesn't work.
 
-This all started by simply trying to run the ltp tests on the linux 2.5
-kernel.  
+I was trying to get XL2 HBAs working - and at least now I can load
+and unload the driver on parisc. But XL2 is still not working.
+I thought 5100/5166 (TL) HBAs did work.
 
-The ltp tests run the ldd command, which we tracked down to this
-final command: /lib/ld.so.1 --verify /bin/sh
+> The driver is
+> not that well written either, so that doesn't help either :(
 
-Note: The --verify /bin/sh is irrelevant for the purpose of these
-errors, /lib/ld.so.1 displays this problem w/o any additional
-arguments.  
+If someone wants to take over maintaining cpqfc driver, I suspect
+that would be a welcome request. Please let me know and I'll
+forward to the right people in HP. (I've had this conversation
+with the current maintainers already.)
 
-
-Linux vega 2.5.64-pa5 #3 Sun Mar 16 23:44:38 MST 2003 parisc unknown
-unknown GNU/Linux
-rbrad@vega:~$ /lib/ld.so.1 --verify /bin/sh
-Inconsistency detected by ld.so: rtld.c: 879: dl_main: Assertion
-`_rtld_local._dl_rtld_map.l_libname' failed!
-rbrad@vega:~$
-
-With the same system, but running the 2.4 kernel .... everything
-seems to work fine.
-
-rbrad@vega:~$ uname -a
-Linux vega 2.4.20-pa28 #1 Sun Mar 16 10:13:17 MST 2003 parisc unknown
-unknown GNU/Linux
-rbrad@vega:~$ /lib/ld.so.1 --verify /bin/sh
-rbrad@vega:~$
-
-
-This box is running a 32-bit kernel and is running almost TOB unstable.
-
-Installed libc6 is:
-ii  libc6          2.3.1-14       GNU C Library: Shared libraries and
-Timezone
-
-Installed bash is:
-ii  bash           2.05b-7        The GNU Bourne Again SHell
-
-
-What is _really_ strange is that the system works ... even even though
-/lib/ld.so.1 is throwing that assert.  I did not notice this
-error until trying to run the ltp tests.
-
-Any thoughts?
-
-Thanks,
-
-- Ryan
-
--- 
-Ryan Bradetich <rbradetich@uswest.net>
+grant
