@@ -1,76 +1,98 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA01814
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Sep 1999 09:07:52 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA02344
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Sep 1999 15:21:46 -0600
 Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id LAA03727
-	for <parisc-linux@thepuffingroup.com>; Wed, 15 Sep 1999 11:09:18 -0400 (EDT)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id IAA19696 for <parisc-linux@thepuffingroup.com>; Wed, 15 Sep 1999 08:08:01 -0700 (PDT)
-Message-Id: <199909151508.IAA19696@milano.cup.hp.com>
+	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA28646
+	for <parisc-linux@thepuffingroup.com>; Wed, 15 Sep 1999 17:23:16 -0400 (EDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id OAA20249 for <parisc-linux@thepuffingroup.com>; Wed, 15 Sep 1999 14:22:00 -0700 (PDT)
+Message-Id: <199909152122.OAA20249@milano.cup.hp.com>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] building SOM tools 
-In-reply-to: Your message of "Mon, 13 Sep 1999 13:32:54 PDT."
-             <199909132032.NAA18055@milano.cup.hp.com>
-Date: Wed, 15 Sep 1999 08:08:01 -0700
+In-reply-to: Your message of "Wed, 15 Sep 1999 08:08:01 PDT."
+             <199909151508.IAA19696@milano.cup.hp.com>
+Date: Wed, 15 Sep 1999 14:21:50 -0700
 From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] 715/100 bootpd fails
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Hello folks,
+Hi again,
 
-I also tried configuring for "--target=hppa1.1-hp-hpux10.20".
-That results in the same symbols missing ("/usr/ccs/bin/ld:
-Unsatisfied symbols:"...).  Any hints on what next?
+Building "Image" but can't boot it via bootpd.
+Here's what I've worked through so far...ideas?
 
-TIA,
+My 715/100 (firmware 1.6, 64MB RAM, no disk) complains
+	"ERROR: Cannot load IPL, error detected"
+
+from either a 11.00 or 10.20 bootpd host.
+"sea lan" at the target "BCH" (aka BOOT_ADMIN) shows both hosts.	
+I think bootpd is configured "close enough" and the target
+box is finding both bootpd servers and "Image" on each. I did
+have a problem with public read permission on one host but
+fixed that.
+
+I downloaded Image-19990705 from the puffin.external.hp.com depot
+and got the same result. So it's probably not a tools issue.  :^/
+Building mkImage with "cc" might make a difference - but I doubt it.
+I also doubt the mkImages changes I posted earlier today matter either.
+
+"file Image" tells me Image is a lif file.
+But "lifls" says it's not. The contradiction is a bit annoying.
+Can someone cook the makefile to use lifinit/lifcp instead of mkImage.c?
+I'm not sure it's possible but would be good if we could.
+
+I'll try a different box (712/80) and see what that says.
+I have a scratch disk on this box and could try dumping "Image"
+to disk to see if it's a problem with how Image is built or
+how the bootp server is transmitting data to the target.
+
+Someone locally suggested UDP checksum had to be either on or off.
+Anyone know about this (and if so, how to set/clear it appriopriately)?
+
+The rest is just FYI.
+
 grant
 
-ps. The actual line changed in gas/configure is the "hppa-*-linux" case
-   of "${generic_target}" switch (case) statement.
-   The "parisc-*-linux" case is dead code and can be removed since
-   the switch is on $generic_target and not $target.
 
-Grant Grundler wrote:
-> Grant Grundler wrote:
-> ...
-> > Sigh...I thought the object files were supposed to be SOM until I saw the
-> > following in the binutils/gas/configure:
-> >       parisc-*-linux*)         fmt=elf em=linux ;;
-> > 
-> > Should I change this to "som"?
-> 
-> I changed my local copy of configure as proposed above.
-> I removed /linux/parisc-linux/bin from my $PATH.
-> This doesn't build "out of the box" either...
-> Anyone have fixes for this not committed to the CVS tree?
-> 
-> 
-> grundler <429> ./configure --prefix=/linux --host=hppa1.1-hp-hpux11.00 --targ
->   et=parisc-linux
-> grundler <430> make
-> ...
-> cc -g -o as-new app.o as.o atof-generic.o bignum-copy.o cond.o depend.o ecoff
->   .o ehopt.o expr.o flonum-copy.o flonum-konst.o flonum-mult.o frags.o hash.o
->    input-file.o input-scrub.o listing.o literal.o macro.o messages.o output-f
->   ile.o read.o sb.o stabs.o subsegs.o symbols.o write.o tc-hppa.o obj-som.o a
->   tof-ieee.o ../opcodes/.libs/libopcodes.a ../bfd/.libs/libbfd.a ../libiberty
->   /libiberty.a
-> /usr/ccs/bin/ld: (Warning) At least one PA 2.0 object file (app.o) was detect
->   ed. The linked output may not run on a PA 1.x system.
-> /usr/ccs/bin/ld: Unsatisfied symbols:
->    bfd_som_set_subsection_attributes (code)
->    bfd_som_set_section_attributes (code)
->    hppa_som_gen_reloc_type (code)
->    bfd_som_attach_aux_hdr (code)
->    bfd_som_set_symbol_type (code)
-> make[1]: *** [as-new] Error 1
-> make[1]: Leaving directory `/linux/binutils/gas'
-> make: *** [all-gas] Error 2
-> grundler <431>
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+grundler <417>make Image
+make -C arch/parisc/boot Image
+make[1]: Entering directory `/linux/linux/arch/parisc/boot'
+make[2]: Entering directory `/linux/linux/arch/parisc/boot/boot_code'
+ld -nostdlib -N -H -R0x500000 ipl_s.o ipl_c.o rom_interface.o cache.o  -o ipl
+ld: (Warning) Linker features were used that may not be supported in future releases. The +vallcompatwarnings option can be used to display more details, and the ld(1) man page contains additional information. This warning can be suppressed with the +vnocompatwarnings option.
+strip ipl
+make[2]: Leaving directory `/linux/linux/arch/parisc/boot/boot_code'
+./mkImage boot_code/ipl ../../../vmlinux Image
+Image 'Image' created.
+Added IPL 'boot_code/ipl', 4084 pad bytes, checksum 0x098B99B2.
+IPL will be relocated at run-time to 0x00500000.
+Added Linux-SOM-Kernel '../../../vmlinux', 1060kB, entry-point at 0xC0010000.
+Bootable Linux-Image 'Image' is ready to go !
+chmod a+rw Image        # better change that in mkImage.c-source...
+make[1]: Leaving directory `/linux/linux/arch/parisc/boot'
+
+grundler <419>file /linux/linux/arch/parisc/boot/Image
+/linux/linux/arch/parisc/boot/Image:    lif file
+grundler <420>lifls /linux/linux/arch/parisc/boot/Image
+lifls: Can't list /linux/linux/arch/parisc/boot/Image; not a LIF volume
+
+[ 11.00 and 10.20 agree on this result - grant ]
+
+grundler <421>tail /etc/bootptab
+lego02b:\
+        hd=/linux/linux/arch/parisc/boot:\
+        bf=Image:\
+        ba:bs:\
+        vm=auto:\
+        ht=ethernet:\
+        ha=0800095F7A88:\
+        sm=255.255.248.0:\
+        ip=15.16.122.147
+grundler <422>uname -a
+HP-UX rock B.11.00 A 9000/800 2016163551 two-user license
+grundler <423>model
+9000/800/D390
+
+
 
 Grant Grundler
 Communications Infrastructure Computer Operations
