@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from wolf.alaskatech (207-5-237-24-cable.anchorageak.net [24.237.5.207])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B6314829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 10:44:40 -0600 (MDT)
-Received: from wolf.alaskatech (palinux@wolf.alaskatech [24.237.5.207])
-	by wolf.alaskatech (8.12.3/8.12.3/Debian -4) with ESMTP id g9HGkiR5028304;
-	Thu, 17 Oct 2002 08:46:44 -0800
-Date: Thu, 17 Oct 2002 08:46:43 -0800 (AKDT)
-From: Tom <palinux@alaskatech.org>
-To: Crazy Ape <crazyape@optusnet.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C160 curious network problem
-In-Reply-To: <000f01c275f3$c826bd80$0100a8c0@dylan1>
-Message-ID: <Pine.LNX.4.44.0210170828140.28233-100000@wolf.alaskatech>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 516954829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 10:52:32 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscalinet)
+	id 182Dsq-00076r-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 18:52:28 +0200
+Date: Thu, 17 Oct 2002 19:48:42 +0200
+Message-ID: <3DA56CAE00002AEB@ocpmta8.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="=========3DA56CAE00002AEB/mail.tiscali.be"
+Subject: [parisc-linux] FW: [Bug #3332] jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,17 +24,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 18 Oct 2002, Crazy Ape wrote:
-> Hello folks,
-> I just picked up an old C160 at auction, and while I'm no stranger to linux,
-> I've never dealt with anything quite like this.
-[snip]
-> When I try to install any parisc-linux image I get so far as the network
-> configuration then the machine hangs, heartbeat stops and some diagnostic
-> pattern is repeated on the front panel LED's. (does anyone have a list of
-> these diagnostic patterns?)
+--=========3DA56CAE00002AEB/mail.tiscali.be
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-While I can't help you with most of this, I *do* have a PDF of the
-C-series owner's manual, which lists all the LED codes...
+Hi all,
 
-http://www.alaskatech.org/C180-manual.pdf
+May be much hppa specific problem.
+
+All advise is well come.
+
+Thanks in advance,
+    Joel
+
+
+--=========3DA56CAE00002AEB/mail.tiscali.be
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Return-Path: <oss@www-124.ibm.com>
+Original-Recipient: rfc822;joel.soete@tiscali.be
+Received: from www-124.ibm.com (129.33.28.104) by mail.tiscali.be (6.0.053)
+        id 3DAAAD3F00102627 for jsoe0708@tiscali.be; Thu, 17 Oct 2002 18:47:31 +0200
+Received: (from oss@localhost)
+	by www-124.ibm.com (8.11.6/8.11.0) id g9HGlU125191;
+	Thu, 17 Oct 2002 12:47:30 -0400
+Date: Thu, 17 Oct 2002 12:47:30 -0400
+Message-Id: <200210171647.g9HGlU125191@www-124.ibm.com>
+To: joel.soete@tiscali.be
+Subject: [Bug #3332] jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
+From: admin@www-124.southbury.usf.ibm.com
+
+Bug #3332 has been submitted pending email address confirmation. 
+Here is a current snapshot of the bug.
+
+Project: 
+Category: kernel
+Status: Open
+Bug Group: bug
+Priority: 5
+Summary: jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
+
+Details: Hi all,
+
+Test your tools, I test early with success 1.0.17 (against k-2.4.18-pa54 and latter).
+
+Today, after spending some time to fix some evms tools problems, I update jfs against last k-2.4.19-pa20 (and latter) with release 1.0.22 and next 1.0.23.
+
+I build successfully a jfs on a evms lvm, populate it, fsck all seems ok.
+
+Just an anoying problem the fb console is broken:
+just when kernel launches to detect the first scsi device the screen scroll stop and the rest of messages are all display over others on  the very top line of the screen.
+
+Thanks in advance for help,
+    Joel
+
+Thank you for submitting your bug. To have your bug published, visit the following url:
+
+http://www-124.ibm.com/developerworks/bugs/verify.php?confirm_hash=9001bfa38f3e1a4b
+
+ -- the IBM OSS staff
+
+
+
+--=========3DA56CAE00002AEB/mail.tiscali.be--
