@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B1B0A483B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jul 2003 09:13:26 -0600 (MDT)
-Message-Id: <200307071513.h67FDLjM000719@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Differences PA8500/PA8600
-To: paul@doorslam.net
-Date: Mon, 7 Jul 2003 11:13:21 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030706173854.GC8562@blinder.doorslam.net> from "Paul Weissmann" at Jul 6, 2003 07:38:54 pm
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2E51E483B
+	for <parisc-linux@parisc-linux.org>; Mon,  7 Jul 2003 10:00:46 -0600 (MDT)
+Date: Mon, 7 Jul 2003 18:00:43 +0200
+Message-ID: <3F03A42100000903@ocpmta1.freegates.net>
+In-Reply-To: <1056732728.4348.52.camel@dhcp22.swansea.linux.org.uk>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] warning: minor abi change
+To: "Alan Cox" <alan@lxorguk.ukuu.org.uk>
+Cc: "Matthew Wilcox" <willy@debian.org>,
+	"HPPA List" <parisc-linux@parisc-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,14 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->   Could someone here on this list might shed some led on where the
-> differences between these CPUs are?
+Hi Alan,
 
-Don't know.  As far as GCC goes, we treat all 8000 processors the same.
-Jeff Law had access to some proprietory information when he did the
-DFA scheduling model.  However, that predates the 8600.
+> >On Gwe, 2003-06-27 at 17:21, Joel Soete wrote:
+> > which interfere with your:
+> >  	KERN_HPPA_PWRSW=57,	/* int: hppa soft-power enable */
+> >  	KERN_HPPA_UNALIGNED=58,	/* int: hppa unaligned-trap enable */
+> > };
+> > 
+> > What to do?
+> 
+> Get the HP ones into 2.5 then they are fixed "right" values
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Ok but now in 2.4.22-pre3:
+[...]
+  	KERN_EXCEPTION_TRACE=58,	/* boolean: exception trace */
+[...]
+
+Thanks for further advise,
+    Joel
+
+
+
+
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
