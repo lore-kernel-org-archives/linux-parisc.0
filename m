@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DF571482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Nov 2001 23:15:50 -0700 (MST)
-Message-Id: <200112010611.XAA11815@puffin.external.hp.com>
-To: Helge Deller <deller@gmx.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id D4B7C482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Dec 2001 15:47:52 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Date: Sun, 2 Dec 2001 23:46:27 +0100
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Helge Deller <deller@gmx.de>
-   of "Fri, 30 Nov 2001 09:46:04 +0100." <200111300843.BAA03660@puffin.external.hp.com>
-Date: Fri, 30 Nov 2001 23:11:07 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+References: <200112010611.XAA11815@puffin.external.hp.com>
+In-Reply-To: <200112010611.XAA11815@puffin.external.hp.com>
+MIME-Version: 1.0
+Message-Id: <20011202224752.D4B7C482C@dsl2.external.hp.com>
 Subject: [parisc-linux] Re: two minor c3k bugs
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -21,49 +24,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Helge Deller wrote:
-> Forwarded to the list, since it may be of interest for others too:
-> 
+Hi Grant,
 
-sure.
+On Saturday 01 December 2001 07:11, Grant Grundler wrote:
+> > Currently I use "kill_proc(1, SIGINT, 0);" to kill the init-process -
+> > which is normally a reboot-command and gives the above messages.
+>
+> Ok. that makes sense.
+>
+> > That's AFAICS not the right solution, but nfortunately I don't know
+> > how to do it correct right now.
+>
+> ./kernel/sys.c:         printk(KERN_EMERG "Power down.\n");
+>
+> That chunk of code seems to do the right thing:
+>         case LINUX_REBOOT_CMD_POWER_OFF:
+>                 notifier_call_chain(&reboot_notifier_list, SYS_POWER_OFF,
+> NULL); printk(KERN_EMERG "Power down.\n");
+>                 machine_power_off();
+>                 do_exit(0);
+>                 break;
+>
+> I know that msg since I regularly "powerdown" my c3k.
+> Perhaps replicate that code?
 
-> On Friday 30 November 2001 08:43, Grant Grundler wrote:
-...
-> Hmm, I still have 2.4.16-pa4 here and it definately shows 
-> "2.4.16-pa4" for me. Maybe a SMP problem ?
+Yes, that's the right code-path, but sadly calling this function
+would  immediately power off the computer without doing a nice
+system shutdown.
+I'll need to investigate how to first find the PID of the init process and
+then how to tell it to shut down the system cleanly.
 
-No. I only build UP kernels for the C3k.
+Helge
 
-> You could try to double the size of the udelay() parameter
-> in lcd_print to see if it cures your problem.
-
-After a reboot it worked fine. Could be a timing problem.
-Since I can't reproduce it reliably and it's minor, I'm not
-going to chase this. Someday when I get bored and ate too much
-chocolate (dark, organic, Belgian from Trader Joe's), I might
-try to run IRC on the LCD... ;^)
-
-...
-> Currently I use "kill_proc(1, SIGINT, 0);" to kill the init-process -
-> which is normally a reboot-command and gives the above messages.
-
-Ok. that makes sense.
-
-> That's AFAICS not the right solution, but nfortunately I don't know
-> how to do it correct right now.
-
-./kernel/sys.c:         printk(KERN_EMERG "Power down.\n");
-
-That chunk of code seems to do the right thing:
-        case LINUX_REBOOT_CMD_POWER_OFF:
-                notifier_call_chain(&reboot_notifier_list, SYS_POWER_OFF, NULL);
-                printk(KERN_EMERG "Power down.\n");
-                machine_power_off();
-                do_exit(0);
-                break; 
-
-I know that msg since I regularly "powerdown" my c3k.
-Perhaps replicate that code?
-
-cheers,
-grant
+> cheers,
+> grant
