@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sess01.rdp.asi.alcatel.es (sess01.rdp.asi.alcatel.es [159.23.144.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26B874829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 09:08:20 -0600 (MDT)
-Received: from seslotr.rdp.asi.alcatel.es (seslotr.rdp.asi.alcatel.es [159.23.144.37])
-	by sess01.rdp.asi.alcatel.es (8.11.2/8.11.2) with ESMTP id g8JF8Hr26987
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 17:08:17 +0200 (MEST)
+Received: from tyke.pjc.net (public1-leed3-6-cust7.leed.broadband.ntl.com [80.7.68.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3E2E04829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 09:17:37 -0600 (MDT)
+Received: from patrick by tyke.pjc.net with local (Exim 3.35 #1 (Debian))
+	id 17s33e-0001g2-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 16:17:34 +0100
+Date: Thu, 19 Sep 2002 16:17:34 +0100
+From: Patrick Caulfield <patrick@tykepenguin.com>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OF0516E33B.55652A57-ONC1256C39.0051BFF7@rdp.asi.alcatel.es>
-From: Francisco_Javier.Llorente_Recio@alcatel.es
-Date: Thu, 19 Sep 2002 17:08:16 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Re: XFree86 on B180
+Message-ID: <20020919151734.GH845@tykepenguin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Subject: [parisc-linux] HP/UX binaries
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,51 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Thomas, Helge, Jo=EBl and everyone!
+How do I go about trying to run HP/UX binaries on parisc-linux ?
 
-Here I am opening again that old thread. Ok. We had here a B180 with a
-broken 8GB hard disk inside and nothing but a 4GB hard disk to fix it. =
-So
-we have fix the B180 and, as our software needs at least 8GB to run, I
-though we could use this WS for testing purposes... with PA-Linux. So I=
+In particular I would like to get bitkeeper running as there's an HP/UX binary
+for that but no HP/Linux port :(
 
-installed the "Debian GNU/Linux 3.0 prerelease "Woody" - Unofficial hpp=
-a
-Binary-1" this morning.
+When I try to run the installer (or any of the binaries copied from the HP/UX
+installation) I get
 
-Well, It's running smoothly... but i need to run also the XFree86... an=
-d it
-seems not to work. I've tested several configurations and all that I ge=
-t is
-an "(EE) No devices detected" error. Then, I searched the list and foun=
-d
-this:
+crt0: ERROR couldn't open /usr/lib/dld.sl errno:000000015
 
-On Sunday 05 August 2001 16:48, Thomas Bogendoerfer wrote:
-> On Fri, Aug 03, 2001 at 12:45:01PM +0200, Helge Deller wrote:
-> > Currently stifb will run on most 712 and 715 machines, while B160,
-B180,
-> > C3000 and most others won't.
->
-> you saw X on the B180 I had at LinuxTag:-) Treating the EG VISULIZE a=
-s an
+I've copied dld.sl from HP/UX into /usr/lib and my kernel has support for SOM
+binaries in it. Is there anything else I need to do, or is it just not going to
+work ?
+-- 
 
-> artist graphics card did the trick.
-
-So X can work on a B180. Question is... How I do this?
-
-Well, It's not a case of life-or-death, as we still can use HP-UX 10.20=
- on
-this machine... but I'm the only Linux-supporter in my department, and =
-so
-it'd be a score to get this machine working with Linux.
-
-Thanks in advance.
-
-Fco. Javier Llorente Recio
-Alcatel Espa=F1a, S.A.
-SRD - Asistencia T=E9cnica (Ref. 02455)
-Telefono - Phone (+34) 91 330 6877
-M=F3vil - Mobile (+34) 636 482 505
-ICQ 87013139
-=
+patrick
