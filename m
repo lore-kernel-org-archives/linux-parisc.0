@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DA1B4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Jun 2003 16:04:39 -0600 (MDT)
-Date: Sat, 7 Jun 2003 23:04:36 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Joel Soete <joel.soete@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3EE25DEC.1040105@tiscali.be>
-Message-ID: <Pine.LNX.4.44.0306072257080.30116-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: compiler & kernel (2)
+Received: from montperdu.pyrene.net (jmharang.net1.nerim.net [62.212.119.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D2EFC4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jun 2003 07:24:06 -0600 (MDT)
+Received: from montperdu.pyrene.net (localhost [127.0.0.1])
+	by montperdu.pyrene.net (Postfix) with SMTP id 459D413E32
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jun 2003 15:24:15 +0200 (CEST)
+Date: Tue, 10 Jun 2003 15:24:15 +0200
+From: Jean-marc Harang <jean-marc.harang@laposte.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20030610152415.609eb9b3.jean-marc.harang@laposte.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Reference, service or even user's Manuals for 705 and 750
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +23,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 7 Jun 2003, Joel Soete wrote:
+Hello,
 
-> Max,
->
-> I will so have a more detail look in your config.
->
-> (the other server I can use is a N model with 2Mb wich I do not see used
-> more than 1.7 Mb and so not need to swap :-) ; OTC my 256Mb (or less)
-> boxes usualy need swap. Let see)
+I just bought two PA-RISC Hardawre :	
 
-I think you are talking about GB here, not MB ;)
+1) One HP9000/705, very interesting because of low noise ;)
+2) One HP9000/750 (Cobra), with 128 Mo and 2*1.5 Go hd. Beautiful !
 
-> PS: Do you still encounter starvation pb?
+I've looking after documentation (HP, OpenPa Project, PARISC, etc..)
+and I don't find any documentation for theses workstations, except
+"lpv38008.pdf", User's manual for 750. 
 
-I'm not sure, I've to check the /var/log/messages* files more closely.
-When I was browsing through them last time (when I sent the dmesg to the
-list) it didn't seem so (the 'beast' is now up almost 2 weeks).
-So if there are 'target is suffering tag starvation' messages at all,
-there are at least so few you can hardly spot them ;)
+Where can I find these documents ? Could somebody help me to get them ?
+  
+Specially, I have great difficulties with the 750 and the hardware selftest.
+I notice an LED error code I don't understand. 
 
-Max
+I get that (reading up to down) :
+
+ Green led Power : on
+ amber 1 : on
+ amber 2 : off
+ amber 3 : on
+ amber 4 : off
+ amber 5 : on
+ amber 6 : on
+ amber 7 : on
+ amber 8 : off
+ Service led : off
+
+Any idea ?
+
+Bests regards,
+
+Jean-Marc
+
+PS : Sorry for my poor english :( !
