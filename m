@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 09B4A482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 06:58:54 -0700 (MST)
-Date: Mon, 17 Mar 2003 14:58:52 +0100
-Message-ID: <3E68A12A00002A77@ocpmta3.freegates.net>
-In-Reply-To: <20030317111801.GF17073@lug-owl.de>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] FC driver?
-To: "Jan-Benedict Glaw" <jbglaw@lug-owl.de>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail.ntb-infoline.de (mail.ntb-infoline.de [62.48.88.78])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A080E485D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 07:31:38 -0700 (MST)
+Message-Id: <se71c4ed.086@mail.ntb-infoline.de>
+Date: Fri, 14 Mar 2003 12:02:40 +0100
+From: "Dirk Emmermacher" <Dirk.Emmermacher@ntb-infoline.de>
+To: <parisc-linux@lists.parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Problem on install
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,58 +20,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
->To: parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] FC driver?
->Date: Mon, 17 Mar 2003 12:18:01 +0100
->
->
->On Mon, 2003-03-17 12:05:20 +0100, Joel Soete <jsoe0708@tiscali.be>
->wrote in message <3E68A12A00002910@ocpmta3.freegates.net>:
->> Hi all,
->> 
->> On the N4000 which I can test for a short time there are fc cards.
->> lspci give me following info about those cards:
->> 
->> 20:00.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel Host
->Adapter (rev 0b)
->> d0:00.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel Host
->Adapter (rev 0b)
->> e0:00.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel Host
->Adapter (rev 0b)
->
->[line break-ups corrected]
->
->> The question is: which driver should I use (cpqfc?)?
->
->I do not have such a card, but:
->
->/usr/share/misc/pci.ids:
->103c  Hewlett-Packard Company
->	1028  Tach TL Fibre Channel Host Adapter
->
->So it seems your device is 103c:1028. In the kernel, this maps through
->./linux/include/linux/pci_ids.h:
->
->#define PCI_DEVICE_ID_HP_TACHYON      0x1028
->
->So your device is called "PCI_DEVICE_ID_HP_TACHYON". Searching for this
->string, you'll find it in ./linux/drivers/scsi/cpqfcTSinit.c, so that
->card seems to be supported.
->
->See, it's quite easy to see if a PCI card seems to be supported:-)
->
->MfG, JBG
->
-cool :)
+Hello.
 
-Thanks a lot for those kind explanations,
-    Joel
+I try to install Debian-Linux 3.0 on a D-class server (D-250). The =
+terminal
+is a 70096 on serial port. The kernel boots the machine with no problem,
+but the install screen are not right. Is it possible to use this terminal
+for installation?
+
+Thx in advance for any advice.
+
+Best regards.
+
+Dirk Emmermacher
 
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
++----------------------------------------------------------------------+
+    Dirk Emmermacher=20
+    Netzwerk Administrator, Postmaster
+
+    mailto:Dirk.Emmermacher@ntb-infoline.de
+    http://www.ntb-infoline.de
+
+    Niedersaechsischer Turner-Bund e.V.
+    Maschstr. 18
+    D 30169 Hannover
+
+    Tel.: +49 511 980 97-34    =20
+    Facsimile: +49 511 980 97 - 461
++----------------------------------------------------------------------+
