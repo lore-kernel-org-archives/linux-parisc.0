@@ -1,22 +1,19 @@
-Return-Path: <>
-Received: from mailgw1.cityu.edu.hk (amy.cityu.edu.hk [144.214.5.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4EF948B5
+Return-Path: <rbradetich@uswest.net>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5240A48B5
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 14 Apr 2004 08:24:10 -0600 (MDT)
-Received: from process-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
-	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-	id <0HW500D01ZE4FB@mailgw1.cityu.edu.hk> for
-	parisc-linux@lists.parisc-linux.org;
-	Wed, 14 Apr 2004 22:22:28 +0800 (CST)
-Date: Wed, 14 Apr 2004 22:22:28 +0800 (CST)
-From: Mail Delivery System <Mailer-Daemon@mailgw1.cityu.edu.hk>
-To: parisc-linux@lists.parisc-linux.org
-Message-id: <0HW500MIEZXGKR@mailgw1.cityu.edu.hk>
-MIME-version: 1.0
-Content-type: multipart/report;
-	boundary="Boundary_(ID_ajIOO9MzYMLSRfaE+nFr2w)";
-	report-type=delivery-status
-Subject: [parisc-linux] Delivery Notification: Delivery has failed
+	Wed, 14 Apr 2004 08:36:30 -0600 (MDT)
+Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Joel Soete <Soete.joel@tiscali.be>
+In-Reply-To: <40711E550000569F@ocpmta2.freegates.net>
+References: <40711E550000569F@ocpmta2.freegates.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Message-Id: <1081953377.1089.76.camel@laptop.bradetich.net>
+Mime-Version: 1.0
+Date: Wed, 14 Apr 2004 08:36:18 -0600
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,139 +23,76 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+> >Would you be interested in trying the lifimage I complied and
+> >successfully booted on both the J200 and the C110?
+> 
+> Just a stupid question: where can I grab this lifimage?
 
---Boundary_(ID_ajIOO9MzYMLSRfaE+nFr2w)
-Content-type: text/plain; charset=us-ascii
-Content-language: en-US
-Content-transfer-encoding: 7BIT
+I can make this lifimage available ... I will you a url once I have this
+setup.
 
-This report relates to a message you sent with the following header fields:
+> > If the lifimage
+> >boots on your system then we localize the problem down to possible tool
+> >chain or .config problem (I used the defconfig).
+> 
+> Right I forgot to test defconfig.
+> 
+> That said, to get you more detail on my pb:
+>  - in genral i can reach to boot the system with 2.6.5-paX
+>  - the pb occurs when I try high i/o rate on disk (ie  a find, a fsck ,
+> a tar or some time a simple cp of the kernel from a fs to another one)
+>  - the pb can also occurs at boot time if a fs is not clear (a fsck is
+> so requested) or if a raid partition has to be sync (ie once again high i/o
+> rate on disks).
 
-  Return-path: <parisc-linux@lists.parisc-linux.org>
-  Received: from conversion-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
-   (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-   id <0HW500M01ZQ1KR@mailgw1.cityu.edu.hk>
-   (original mail from parisc-linux@lists.parisc-linux.org); Wed,
-   14 Apr 2004 22:22:28 +0800 (CST)
-  Received: from plink.cityu.edu.hk
-   (host81-153-13-18.range81-153.btcentralplus.com [81.153.13.18])
-   by mailgw1.cityu.edu.hk
-   (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-   with ESMTP id <0HW5006DAZXAG7@mailgw1.cityu.edu.hk> for
-   50223584@plink.cityu.edu.hk; Wed, 14 Apr 2004 22:22:27 +0800 (CST)
-  Date: Wed, 14 Apr 2004 15:22:44 +0100
-  From: parisc-linux@lists.parisc-linux.org
-  Subject: Mail Delivery (failure 50223584@plink.cityu.edu.hk)
-  To: 50223584@plink.cityu.edu.hk
-  Message-id: <0HW5006DDZXBG7@mailgw1.cityu.edu.hk>
-  MIME-version: 1.0
-  Content-type: multipart/related;
-   boundary="Boundary_(ID_DpojgNGuFbSj5KiCe212Gw)"; type="multipart/alternative"
-  X-Priority: 3
-  X-MSMail-priority: Normal
+Ah .. I was under the impression it was a boot problem.  I will perform
+the find, fsck and tar tests tests ... I only have a small disk (~500MB)
+in the system so i will probably need to setup some external disks.  I
+will try the tests w/o using software raid first, then add in the
+software raid as a an additional variable.  This may take me a couple of
+days to get this accomplished (busy work schedule :().
 
-Your message cannot be delivered to the following recipients:
+Thanks!
 
-  Recipient address: 50223584@plink.cityu.edu.hk
-  Reason: This email is rejected because an unsafe file is found: message.scr
+- Ryan
 
-
---Boundary_(ID_ajIOO9MzYMLSRfaE+nFr2w)
-Content-type: message/delivery-status
-
-Reporting-MTA: dns;mailgw1.cityu.edu.hk (conversion-daemon)
-
-Original-recipient: rfc822;50223584@plink.cityu.edu.hk
-Final-recipient: rfc822;50223584@plink.cityu.edu.hk
-Action: failed
-Status: 5.6.5
-	(This email is rejected because an unsafe file is found: message.scr)
-
---Boundary_(ID_ajIOO9MzYMLSRfaE+nFr2w)
-Content-type: text/plain
-Content-transfer-encoding: 7BIT
-
-Return-path: <parisc-linux@lists.parisc-linux.org>
-Received: from conversion-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
- (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
- id <0HW500M01ZQ1KR@mailgw1.cityu.edu.hk>
- (original mail from parisc-linux@lists.parisc-linux.org); Wed,
- 14 Apr 2004 22:22:28 +0800 (CST)
-Received: from plink.cityu.edu.hk
- (host81-153-13-18.range81-153.btcentralplus.com [81.153.13.18])
- by mailgw1.cityu.edu.hk
- (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
- with ESMTP id <0HW5006DAZXAG7@mailgw1.cityu.edu.hk> for
- 50223584@plink.cityu.edu.hk; Wed, 14 Apr 2004 22:22:27 +0800 (CST)
-Date: Wed, 14 Apr 2004 15:22:44 +0100
-From: parisc-linux@lists.parisc-linux.org
-Subject: Mail Delivery (failure 50223584@plink.cityu.edu.hk)
-To: 50223584@plink.cityu.edu.hk
-Message-id: <0HW5006DDZXBG7@mailgw1.cityu.edu.hk>
-MIME-version: 1.0
-Content-type: multipart/related;
- boundary="Boundary_(ID_DpojgNGuFbSj5KiCe212Gw)"; type="multipart/alternative"
-X-Priority: 3
-X-MSMail-priority: Normal
-
-This is a multi-part message in MIME format.
-
---Boundary_(ID_DpojgNGuFbSj5KiCe212Gw)
-Content-type: multipart/alternative;
- boundary="Boundary_(ID_jTdu1SYa0l+romOM69iDXg)"
-
-
---Boundary_(ID_jTdu1SYa0l+romOM69iDXg)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: QUOTED-PRINTABLE
-
-
---Boundary_(ID_jTdu1SYa0l+romOM69iDXg)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: QUOTED-PRINTABLE
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" http-equiv=3DConten=
-t-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>If the message will not displayed automatical=
-ly,<br>
-follow the link to read the delivered message.<br><br>
-Received message is available at:<br>
-<a href=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 w=
-idth=3D0>www.plink.cityu.edu.hk/inbox/50223584/read.php?sessionid-130=
-11</a>
-<iframe
-src=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 width=
-=3D0></iframe>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
---Boundary_(ID_jTdu1SYa0l+romOM69iDXg)--
-
---Boundary_(ID_DpojgNGuFbSj5KiCe212Gw)
-Content-id: <031401Mfdab4$3f3dL780$73387018@57W81fa70Re>
-Content-type: text/plain; Name=UnsafeFile.txt
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Content-description: Unsafe file is rejected: message.scr
-
-********* UNSAFE FILE IS REJECTED! *********
-
-This email is bounced back to the sender because an
-unsafe file is found.
-
-* Name of the unsafe file: message.scr
-
-Postmaster (Mail Administrator),
-City University of Hong Kong
-Email: postmaster@cityu.edu.hk
-
-(Reference number: 20040414_222228_4796)
-********************************************
-
---Boundary_(ID_DpojgNGuFbSj5KiCe212Gw)--
-
---Boundary_(ID_ajIOO9MzYMLSRfaE+nFr2w)--
+> Thanks for your attention,
+> 
+>    Joel
+> 
+> 
+> PS: This system boot and mainly works always fine with a 2.4 and 2.6.3-rc1-pa3
+> (this is mainly this last one I used as reference), so I exclude hw pb ;)
+> (execpted that the battery saving system time (and more) has to be replaced)
+> 
+> hmm, I also read back my first report of a pb on this c110 and noticed that
+> everything appears for me when I tried 2.6.4-pa[12]. I so try to grab cvs
+> kernel tree dated of the Makefile 2.6.3-rc1-pa3 and a saved tbz of 2.6.4-pa2
+> to build a diff. The diff file is of about 14Mb :_(
+> 
+> Historically there was not a lot of big changes specific to parisc between
+> those releases: the main one being the jejb change in ccio-dma (and related).
+> I so try to revert it and it seems to works better (with 2 different config
+> file)
+> until system hang at boot again because it has to re-sync a md (the root)
+> device. It seems so that ccio-dma changes was not the cause but much better
+> a revelator of a hidden pb (In fact I never reach to work with 2.6 on this
+> c110 without replacing cio_mem_ratio = 4 by 2)
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> ----------------------------------------------------------------------------------------
+> Tiscali ADSL: 35 /mois, la meilleure offre du marché!
+> http://reg.tiscali.be/default.asp?lg=fr
+> 
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
