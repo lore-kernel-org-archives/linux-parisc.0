@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 459C24841
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Nov 2003 15:29:59 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AHsda-0000NY-JJ; Thu, 06 Nov 2003 22:29:58 +0000
-Date: Thu, 6 Nov 2003 22:29:58 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] fdisk problems 2.4 <-> 2.6
-Message-ID: <20031106222958.GJ26869@parcelfarce.linux.theplanet.co.uk>
-References: <3FA95BBA.7080705@hrzpub.tu-darmstadt.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <3FA95BBA.7080705@hrzpub.tu-darmstadt.de>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB31F4841
+	for <parisc-linux@parisc-linux.org>; Thu,  6 Nov 2003 20:30:52 -0700 (MST)
+Received: from 12-203-211-7.client.attbi.com (12-203-211-7.client.attbi.com [12.203.211.7])
+	by cuprel1.hp.com (Postfix) with SMTP id 67B7FD3C
+	for <parisc-linux@parisc-linux.org>; Thu,  6 Nov 2003 19:30:43 -0800 (PST)
+Message-ID: <ew0-bh12l93oq-a099pb8am5@547.wh.hh6>
+From: "Branden Perdue" <w927nlpm@yahoo.com>
+Reply-To: "Branden Perdue" <w927nlpm@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Fri, 07 Nov 03 02:30:40 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="D_CB.041.E564D9.D_5."
+Subject: [parisc-linux] Boost Your  Car's Gas Mileage 27%+... sn lzapy kgipfaav
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,28 +25,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Nov 05, 2003 at 09:21:14PM +0100, Ruediger Scholz wrote:
-> it's me again. I repartioned a IBM-hd with 4330 MB but when running 
-> fdisk with 2.6.0-test8-pa4, fdisk  told me:
-> 
-> --------><------------
-> gandalf:~# fdisk /dev/sdb
-> 
-> Befehl (m für Hilfe): p
-> 
-> Platte /dev/sdb: 40 MByte, 40239104 Byte
+--D_CB.041.E564D9.D_5.
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Oh oh.  We have an interesting problem here.
+FUEL SAVER PRO
 
-> Platte /dev/sdb: 4335 MByte, 4335206400 Byte
+This revolutionary device Boosts Gas Mileage 27%+ by helping fuel burn bet=
+ter using three patented processes from General Motors.
 
-4335206400 - 4294967296 = 40239104
+Take a test drive Today - http://www.zppi.org/?axel=3D49
 
-So we've lost the top 32 bits of the value.  Can you run it under strace
-and tell me what ioctls fdisk is calling?  I bet it's calling BLKGETSIZE64
-and our put_user() is broken.
+PROVEN TECHNOLOGY
+A certified U.S. Environmental Protection Agency (EPA) laboratory recently=
+ completed tests on the new Fuel Saver. The results were astounding! Maste=
+r Service, a subsidiary of Ford Motor Company, also conducted extensive em=
+issions testing and obtained similar, unheard of results. The achievements=
+ of the Fuel Saver is so noteworthy to the environmental community, that C=
+ommercial News has featured it as their cover story in their June, 2000 ed=
+ition.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Take a test drive Today - http://www.zppi.org/?axel=3D49
+
+
+
+
+
+
+No more advertisements, thanks - http://www.aqmp.net/out5s/rem2e.asp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hvmjrmctmr f icmo 
+pd sbblv q
+ohqrb
+bl 
+
+--D_CB.041.E564D9.D_5.--
