@@ -1,57 +1,67 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA13531
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 13:15:12 -0700
-Received: from lucy.cup.hp.com (lucy.cup.hp.com [15.0.88.68])
-	by palrel3.hp.com (Postfix) with ESMTP id 3B4B8C86
-	for <parisc-linux@thepuffingroup.com>; Fri,  3 Mar 2000 11:16:15 -0800 (PST)
-Message-Id: <200003031910.LAA19111@lucy.cup.hp.com>
-Subject: Re: [parisc-linux] lasi scsi driver
-To: gyula_matics@hp.com
-Date: Fri, 3 Mar 2000 11:10:58 -0800 (PST)
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <006601bf8487$e057e010$a94abc0f@hungary.hp.com> from Gyula Matics at Mar "2," 2000 "09:42:50" pm
-From: Jerry Huck <jerry_huck@hp.com>
-Reply-To: huck@cup.hp.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Sender: huck@cup.hp.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA13871
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 13:16:51 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id 4559D59C
+	for <parisc-linux@thepuffingroup.com>; Fri,  3 Mar 2000 11:17:53 -0800 (PST)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id LAA02399 for <parisc-linux@thepuffingroup.com>; Fri, 3 Mar 2000 11:19:26 -0800 (PST)
+Message-Id: <200003031919.LAA02399@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Fri, 03 Mar 2000 11:19:25 -0800
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] Upgrading System Firmware
 List-ID: <linux-parisc.vger.kernel.org>
 
-> From: "Gyula Matics" <gyula_matics@hp.com>
-> To: <parisc-linux@puffin.external.hp.com>
-> Date: Thu, 2 Mar 2000 21:42:50 +0100
-> Subject: [parisc-linux] lasi scsi driver
 
-> It's only half working. It can list the devices on the bus, but that's all.
-> 
-> It is not working because it needs a horrible amount of cache flushing
-> and I still didn't get it right. (the committed code only contains enough
-> flushing to pass the two debugging tests)
-> 
-> The scsi card is running code that is in the main memory and the driver
-> is heavily patching that. The bigger problem is that the communication
-> with the card is done via a mailbox also residing in the main memory
-> and the driver is assuming that this mailbox is on a non-cacheable page.
-> 
-> I know that the architecture supports setting a page non-cacheable.
-> My question is if it is possible / good idea to set the mailbox page
-> to non-cacheable?
-> 
-> Gyula
+------- Forwarded Message
 
-While the PA-RISC processor architecture supports the notion of a
-non-cacheable page, most HP memory systems do not - certainly not the
-most recent memory systems.  If you set the U-bit on a main memory page
-and then reference the page, the processor will emit a sub-cacheline
-transaction and the memory system will do something bad (probably
-HPMC).  Also, I can't find any architected interface that would let
-you test if a memory page could be accessed uncacheable.
+Subject: Upgrading System Firmware
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Fri, 03 Mar 2000 12:10:30 MST
 
-Even for IA-64, main memory systems do not have to support uncacheable
-references.  A PDC-like mechanism - PAL/SAL/EFI - reports the
-available memory ranges and gives the supported attributes.  In the
-IA-64 case, the I/O system is coherent so you don't need any of the
-cache flushing.  So don't ever get in the situation where you need
-uncacheable main memory.
+Grant,
 
-Jerry Huck
+You could forward this on to the puffin mail list ?
+
+Thanks,
+Mike
+
+============= Upgrading System Firmware ============
+
+
+Grant asked if another HP person could answer the question about
+upgrading firmware.
+
+All systems that support field upgradable firmware (flash ROMs) are 
+available from the HP support web page.
+
+Point your browser at 
+    http://us-support.external.hp.com/
+
+At some point you will need to register to get access to the firmware
+update files.  It's free.
+
+Once you have registered, from the main page select
+    1) Maintenance and Support
+
+>From this page, select
+    2) Patching - Individual Patches
+
+>From this page, select
+    3) Firmware Patches
+
+And from this page
+    4) Select CPU patches checkbox and click Show Patches button
+
+You will see the list of all firmware patches.
+
+Note that what you will get is basically a shar file with a LIF volume
+inside the shar.  You can dd this LIF image to DAT and boot the dat tape
+to update, or you can put the LIF image on a bootp or install_bootp server
+and update from the network.
+
+Regards,
+Mike King
+king@fc.hp.com
+
+------- End of Forwarded Message
