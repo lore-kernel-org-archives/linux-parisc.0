@@ -1,21 +1,22 @@
 From: Kyle McMartin <kyle@debian.org>
-Subject: Call for Testing
+Subject: [parisc-linux] Call for Testing
 Date: Sun, 27 Mar 2005 15:45:50 -0500
-Message-ID: <20050327204550.GC7728__38925.8823510774$1416623722$gmane$org@roadwarrior.mcmartin.ca>
+Message-ID: <20050327204550.GC7728__14247.1447041773$1416623722$gmane$org@roadwarrior.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: debian-hppa@lists.debian.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-Resent-Message-ID: <kgU54D.A.NCB.tuxRCB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-hppa/>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 Hi,
 
@@ -41,8 +42,7 @@ Thanks,
      don't get included immediately.
 -- 
 Kyle McMartin
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
