@@ -1,30 +1,26 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA31939
-	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 09:52:21 -0700
-Received: from upchuck.cygnus.com (taarna.cygnus.com [205.180.230.102])
-	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id IAA21984
-	for <parisc-linux@thepuffingroup.com>; Tue, 2 Jan 2001 08:55:32 -0800 (PST)
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-cc: rth@redhat.com, alan@linuxcare.com.au, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
-Subject: Re: PATCH: Adjust label usage count for new insns [was Re: pa reload
- problem]
-Reply-To: law@redhat.com
-In-reply-to: Your message of Sat, 16 Dec 2000 15:38:02 EST.
-             <200012162038.PAA25535@hiauly1.hia.nrc.ca>
-From: Jeffrey A Law <law@redhat.com>
-Date: Tue, 02 Jan 2001 02:51:32 -0700
-Message-ID: <26318.978429092@upchuck>
-Sender: law@cygnus.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA00409
+	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 10:41:14 -0700
+Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
+  by mailserv2.iuinc.com with SMTP; 2 Jan 2001 17:44:33 -0000
+Subject: Re: [PATCH] move xchg/cmpxchg to atomic.h
+To: ak@suse.de (Andi Kleen)
+Date: Tue, 2 Jan 2001 17:18:52 +0000 (GMT)
+Cc: matthew@wil.cx (Matthew Wilcox), davem@redhat.com (David S. Miller),
+        grundler@cup.hp.com, linux-kernel@vger.kernel.org,
+        alan@lxorguk.ukuu.org.uk, parisc-linux@thepuffingroup.com
+In-Reply-To: <20010102125924.A9538@gruyere.muc.suse.de> from "Andi Kleen" at Jan 02, 2001 12:59:24 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E14DV5K-0002Xn-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> > We really can't.  We _only_ have load-and-zero.  And it has to be 16-byte
+> > aligned.  xchg() is just not something the CPU implements.
+> 
+> The network code relies on the reader-xchg semantics David described in 
+> several places.
 
-  In message <200012162038.PAA25535@hiauly1.hia.nrc.ca>you write:
-  > 2000-12-14  John David Anglin  <dave@hiauly1.hia.nrc.ca>
-  > 
-  > 	* loop.c (add_label_notes): Increment the label usage count when
-  > 	a note is added to an insn which refers to a CODE_LABEL.
-  > 	* gcse.c (add_label_notes): Likewise.
-Thanks.  Installed.
-
-jeff
+I guess the network code will just have to change for 2.5. read_xchg_val()
+can be a null macro for everyone else at least
