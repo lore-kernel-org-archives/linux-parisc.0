@@ -1,59 +1,61 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA27460
-	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Jul 2000 13:55:33 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 12 Jul 2000 19:57:06 -0000
-Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
-	id 13CSbj-0005dz-00
-	for <parisc-linux@thepuffingroup.com>; Wed, 12 Jul 2000 15:55:47 -0400
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA29295
+	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Jul 2000 15:21:24 -0600
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by cosrel2.hp.com (Postfix) with ESMTP id CFE215C1
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 Jul 2000 15:22:53 -0600 (MDT)
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id PAA01635
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 Jul 2000 15:22:55 -0600 (MDT)
+Received: from localhost
+	([127.0.0.1] helo=noam.fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 13CTz3-0003r4-00
+	for <parisc-linux@thepuffingroup.com>; Wed, 12 Jul 2000 15:23:57 -0600
 To: parisc-linux@thepuffingroup.com
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 12 Jul 2000 15:55:47 -0400
-Message-ID: <8766qb86nw.fsf@linuxcare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Problem with malloc(3)/sbrk(2)/brk(2)/something
+Date: Wed, 12 Jul 2000 15:23:57 -0600
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E13CTz3-0003r4-00@noam.fc.hp.com>
+Subject: [parisc-linux] PALO changes
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
 
-This is a follow-up to my footnote about not being able to run the
-'config.guess' shell script with ash (and some other stuff) on our
-userland.  Basically I've found a minimal testcase for the problem,
-which is that it's not possible to malloc() across a page boundary.
+I've just commited a bunch of PALO changes I have been making on a
+branch.  ACTION REQUIRED: none if you're happy with PALO right now.
+WARNING: if you don't have or want a tool chain which can produce
+user-space executables yet, DON'T get the latest PALO bits.
 
-Beware that since we don't have a real page fault handler, this
-program will crash your machine.  (Press TOC, and we'll take it from
-there :-)
+Changes:
+    PALO can make bootable ISO CD images
 
-If you turn on debugging assertions in the malloc code you'll see that
-it triggers this assertion:
+    A new step was introduced with the program palo/mkbootable.  Look
+    at the Makefile or documentation if you need to figure that out.
+    Most folks will be able to continue using 'make palo' in their
+    linux tree and the mkbootable change will be transparent.
 
-  /* We always land on a page boundary */
-  assert(((unsigned long)((char*)top(ar_ptr) + top_size) & (pagesz-1)) == 0);
+    Many changes to the build process.  PALO no longer uses header files
+    from either /usr/src/linux nor the palinux kernel tree, so the
+    build, especially for first-time users, should be easier (SEE NEXT
+    PARAGRAPH and WARNING above however).  NOTE
+    that you must have a real /usr/include/asm and /usr/include/linux
+    to build palo -- some Linux distributions don't have this, or have
+    it as an optional component.
 
-I don't see sbrk() or brk() failing, so I'm not exactly sure why this
-happens.  I suspect they are returning bogus values in this case.  If
-someone knows that would be great although I expect to find the
-problem soon (I may try to get strace going, since it will be very
-useful for other similar problems).
+    PALO ***DEPENDS UPON*** a tool chain which can produce user-space
+    executables.  The "how to build a kernel" recipe does not say how
+    to produce such a tool chain, so if the recipe's tool chain is
+    all you have DON'T UPDATE PALO.
+    Note the kernel will soon depend on this too (when we get rid of
+    our kernel private copy of libmilli.a).
 
-#include <stdlib.h>
-#include <stdio.h>
+	If your system is relatively close to Debian 'potato', you
+	can grab a suitable cross compiler tarball from
+	ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86
+	by grabbing xc-20000705.tgz and xc-patch-20000706.tgz
 
-int main()
-{
-	/* get the first address */
-	char *foo = malloc(16);
+	Until the 0705 cross compiler is superceeded, you'll need
+	to change your kernel build to 'make CROSS_COMPILE=hppa1.1-linux- palo'
+	if you're using recent kernel sources.
 
-	/* now try to break a page boundary */
-	char *target = (char *) ((unsigned long) (foo + 4095) & ~4095);
 
-	size_t nbytes = target - foo;
-	foo = malloc(nbytes);
-	return 0;
-}
-
--- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+		-Paul Bame
