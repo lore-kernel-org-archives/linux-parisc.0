@@ -1,50 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA08469
-	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Jul 1999 00:13:08 -0600
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id CAA19606
-	for <parisc-linux@thepuffingroup.com>; Wed, 7 Jul 1999 02:23:47 -0400
-Sender: adevries@thepuffingroup.com
-Message-ID: <3782F26C.78876DDD@thepuffingroup.com>
-Date: Wed, 07 Jul 1999 02:23:40 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA09272
+	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Jul 1999 04:05:17 -0600
+Received: from stybba.ntc.nokia.com (stybba.ntc.nokia.com [131.228.178.21]) by ns10.nokia.com (8.8.8/8.6.9) with ESMTP id NAA23776 for <parisc-linux@thepuffingroup.com>; Wed, 7 Jul 1999 13:05:36 +0300 (EET DST)
+Received: from gamgee.ntc.nokia.com (martikka@gamgee [131.228.178.130])
+	by stybba.ntc.nokia.com (8.9.1a/8.9.1/Goodi) with ESMTP id NAA00484
+	for <parisc-linux@thepuffingroup.com>; Wed, 7 Jul 1999 13:05:35 +0300 (EET DST)
+Date: Wed, 7 Jul 1999 13:05:35 +0300 (EETDST)
+From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
 To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Whee! Dino is recognized.
+In-Reply-To: <3782F26C.78876DDD@thepuffingroup.com>
+Message-ID: <Pine.HPX.4.05.9907071255560.20278-100000@gamgee.ntc.nokia.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Subject: [parisc-linux] vmlinux in C360
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi!
 
-I fixed up dino.c a little to setup it's HPA properly.  Understanding
-the docs took a bit of time, so this is a personal victory.
+I have problems with Linux on C360. Here is what I tried:
 
-Now the kernel boots up and prints:
+1) Get latest kernel src from CVS + egcs from binaries/depot.
+2) Compilation works fine (done on hpux11/D-series):
+	make config; make dep;make clean ; make vmlinux ; make Image
 
-Dino device driver, by Alan Cox and Alex deVries
-dino0: version 3.1 at 0xFF000000, IRQ 0, 1.
+3) copy vmlinux to /stand/vmlinux in C360
+4) reboot with IPL
+5) hpux /stand/vmlinux
 
-Now we just need to configure the PCI bus properly, connect the
-interrupts, and we should be close to being able to talk to a network.
-The A-classes have tulips hanging off the PCI bus, so that should be
-pretty simple.
+	boot:(0.0......)/stand/vmlinux
 
-There's some small changes so that the GSC irqs are handled by a pool
-handler.
+This is the last message. Here it hangs. On frontpanel the leds 1-3 are on
+(no 4 is off).
 
-People with 712s differ at this point, you'll have to muck with Lasi's
-built in ethernet port, which will be slightly difficult because you may
-interrupt the serial console in doing so.  If you use the graphics, you
-should be okay.
+Should it work better in C-series? or is C-series "unsupported"?
 
-There's some initial code to handle multiple dinos, and it may in fact
-work, but I really haven't tried (and can't until I have one of those
-GSC ethernet cards that Thomas and Philipp have).
-
-What other HPs have Dino onboard?
-
-- Alex
-
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+- Goodi
+"The linuX Files -- The Source is Out There."
+ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
