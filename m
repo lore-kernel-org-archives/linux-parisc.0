@@ -1,21 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91B3A483F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 16:57:54 -0700 (MST)
-Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
-	by palrel12.hp.com (Postfix) with ESMTP id 25FB360032B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 15:57:50 -0800 (PST)
-Received: from xpabh1.corp.hp.com (xpabh1.corp.hp.com [15.58.136.191])
-	by xparelay2.corp.hp.com (Postfix) with ESMTP id B81F0A2
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 15:57:49 -0800 (PST)
-Message-ID: <EA40EEF21E41D511A1A200D0B74FEB29062D0C4A@xpa05.mayfield.hp.com>
-From: "BRUCE,WALTER (Non-HP-USA,ex3)" <walter_bruce@non.hp.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 13 Mar 2002 15:57:47 -0800
+	by dsl2.external.hp.com (Postfix) with ESMTP id 350BA4846
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 20:31:33 -0700 (MST)
+Received: from hpindda.cup.hp.com (hpindda.cup.hp.com [15.13.95.92])
+	by palrel12.hp.com (Postfix) with ESMTP id C17F5600357
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 19:31:32 -0800 (PST)
+Received: from cup.hp.com (maverick.cup.hp.com [15.13.105.84])
+	by hpindda.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with ESMTP id TAA01323
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 19:31:27 -0800 (PST)
+Message-ID: <3C901989.D39C8E95@cup.hp.com>
+Date: Wed, 13 Mar 2002 19:31:21 -0800
+From: Gururaj Ananthateerta <gururaj@cup.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] HP Books Request for book proposals
+Cc: parisc <parisc-linux@lists.parisc-linux.org>
+References: <3C8E5DCD.942E6278@cup.hp.com> <20020312201309.H30538@parcelfarce.linux.theplanet.co.uk> <3C8E6704.81F14945@cup.hp.com> <20020312204919.I30538@parcelfarce.linux.theplanet.co.uk> <3C8E8FCC.3C1E759@gmx.at>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] TOC on B180L
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,27 +27,4 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-HP Books publishes books for technical professionals in collaboration with
-the publisher Prentice Hall/PTR. Our on catalog can be viewed at
-http://www.hp.com/hpbooks/. In January we announced a new open source series
-dedicated to publihing books on open source and Linux (see
-http://www.hp.com/hpbooks/news/perens_os_011502.html). We are particularly
-interested in receiving proposals for books on the following open source,
-Linux, and related topics:
-
-- Linux Internals
-- Embedded Linux
-- Linux Security
-- PA-RISC Linux
-- XML
-- Ruby Network Programming
-- JBOSS & J2EE
-- Linux Performance Tuning
-- eXtreme Progamming
-
-Follow the link to the employee site on the /hpbooks page and look for "Want
-to write a book" link for information on drafting and submitting a proposal.
-Or email me (Walter_Bruce@non.hp.com), and I will send you the book proposal
-form.
-
-Thanks
+anyone has any clue to generate a TOC on B180L
