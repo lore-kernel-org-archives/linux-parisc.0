@@ -1,70 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA15923
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 19:41:27 -0700
-Message-Id: <200012200245.SAA16490@milano.cup.hp.com>
-To: Rod Smart <snaketails@optushome.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA16513
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 19:52:53 -0700
+Message-Id: <200012200256.SAA16519@milano.cup.hp.com>
+To: Alex deVries <adevries@linuxcare.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: Pa-RISC Graphics card question 
-In-reply-to: Your message of "Tue, 19 Dec 2000 23:11:10 PST."
-             <3A3F505D.1FDA4CDC@optushome.com.au>
-Date: Tue, 19 Dec 2000 18:44:59 -0800
+Subject: Re: [parisc-linux] SuckyIO support 
+In-reply-to: Your message of "Tue, 19 Dec 2000 10:46:40 PST."
+             <3A3F82E0.C0FB63D6@linuxcare.com>
+Date: Tue, 19 Dec 2000 18:56:32 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Rod Smart wrote:
->     Hello.
-> 
->     I have a C-180 RISC box, and it has a GRAPHICS(3) card installed.
-> 
->     Running from the command menu during boot-up, then running the
-> following command, I get this resul for graphics cards.
-> 
->     running    IO
-> 
->     GRAPHICS(0)    8/24    INTERNAL_EG_1280    built-in
->     GRAPHICS(3)    10/8    HPA 4071B_L2            GSC Slot 3
+Alex deVries wrote:
+...
+> I've taken mkp's initial work on superio.c and added some stuff, but in
+> the end am confused by where we actually get the interrupt number from
+> the card.  There's no such register in function 1 (where the interrupts
+> ultimately end up) and both registers on function 0 and 2 return 0,
+> which I don't think is right.
 
-HCRX24 graphics card - 24-bit color.
+Why are you reading this out of a register? Which register?
 
-> 
->     Ok now, I understand the GRAPHICS(0) one, thats the wierd looking
-> connector on the back,
+IIRC, function 0 and 2 *should* return 0 in INTERRUPT_PIN configuration
+register and thus the INTERRUPT_LINE configuration as well.
+But since IOSAPIC driver (when invoked by LBA PCI code) munges the
+INTERRUPT_LINE contents and puts the virtualized IRQ number in 
+dev->irq for the drivers consumption, superio driver should
+not be reading these configuration registers.
 
-That's an "Enhanced Video Connector" which was supposed to become
-an industry standard. Adapters for EVC to 15-pin are available:
-Product Number   Part Number    Description
- A4167A1
-                  8120-6862
-                                EVC (F) to 15-pin (M)
- A4168A2
-                  8120-6861
-                                EVC (M) to 15-pin (F)
- A4169A3
-                  8120-6863
-                                15-pin (F) to 15-pin (F)
+> I'd thought that PDC would have set this up.
 
+PDC should only sets up the PCI INTERRUPT_LINE config register values
+to indicate which IOSAPIC input *line* they are using. parisc-linux has
+to map this value to an IRQ region and virtualize the dev->irq value.
 
-> but the GRAPHICS(3) has a DB-15 High Density (Std
-> PC video) connector on the back, I'm wondering what this card is?
+> There's not much I can do at this point until we can have some of
+> Grant's attention.
 
-A4071B     Hyperdrive "B" 24 plane,supports           A4070-69508
-           Video Out   (HCRX-24)
-
-> 
->     I have looked on some web sites to find information on the
-> accompanying A4331D monitor I have, but they said that the terminals for
-> that monitor are BNC connectors, but nothing saying that its also comes
-> as a DB-15HD connector.
-
-You need a DB-15 to BNC cable - I think the card outputs SOG (Sync-on-Green)
-by default. BNC is just the type of connector used to carry Red, Green, and
-Blue signals.
-
->     Would anyone know if this is a spuuprted video card on the PALINUX
-> system?
-
-It's listed as a supported device for the C180 - so I would expect the
-STI CON/FB drivers to support it (or eventually support it).
+If what I wrote above doesn't make any sense, tell me where to
+to find the code you are talking about and I can look at it.
 
 grant
 
