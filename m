@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail14.speakeasy.net [216.254.0.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77F974845
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Jun 2002 08:58:55 -0600 (MDT)
-Date: Tue, 11 Jun 2002 07:58:48 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: "Michael S. Zick" <mszick@goquest.com>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3A246484E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Jun 2002 09:26:12 -0600 (MDT)
+Message-Id: <200206111504.g5BF41vN021790@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200
-Message-ID: <20020611145848.GA2796@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <02061107100403.00732@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <02061107100403.00732@localhost.localdomain>
+To: randolph@tausq.org
+Date: Tue, 11 Jun 2002 11:04:01 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: mszick@goquest.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020611145848.GA2796@tausq.org> from "Randolph Chung" at Jun 11, 2002 07:58:48 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +22,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I SEEM to experience a similar situation on 2.4.18-linux-x86-SMP using the 
-> P111-S processors (with 512K L2 cache).
-> Quite rare; evidently some very small window for failure.
-> I don't have any solid leads yet (although I have theories).
+> It's interesting to note that even with a UP kernel on the rp2470, the
+> kernel doesn't seem to be very stable (though better than SMP).... I
+> think we are looking at multiple bugs here.....
 
-On hppa this is quite easy to reproduce. When Dave is compiling gcc we
-can crash the box every hour or so.... :-)
+Quite likely.  The A500 seemed more stable.
 
-It's interesting to note that even with a UP kernel on the rp2470, the
-kernel doesn't seem to be very stable (though better than SMP).... I
-think we are looking at multiple bugs here.....
-
-randolph
+Dave
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
