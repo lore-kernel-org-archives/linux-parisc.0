@@ -1,30 +1,65 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA15914
-	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 18:30:35 -0600
-Message-ID: <00dc01beb6c6$3fec8e80$6e7a0e0f@rr701542.cup.hp.com>
-From: "Richard J. Rauenzahn" <rrauenza@cup.hp.com>
-To: "Steven Pritchard" <steve@osiris.silug.org>,
-        <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] HP-UX 11.0 binaries
-Date: Mon, 14 Jun 1999 17:30:19 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA16084
+	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 18:48:48 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.13.185.124])
+	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id UAA15699
+	for <parisc-linux@thepuffingroup.com>; Mon, 14 Jun 1999 20:48:21 -0400 (EDT)
+Message-Id: <199906150048.RAA19186@milano.cup.hp.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Dino PCI and I/O spaces 
+In-reply-to: Your message of "Tue, 15 Jun 1999 00:05:46 PDT."
+             <E10tfnY-0006em-00@the-village.bc.nu>
+Date: Mon, 14 Jun 1999 17:48:20 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
->Probably the quickest way to install any of the above is to gunzip the
->file, then do "swinstall -v -s foo-xxx.depot foo".  (I'll try to type
->up some more detailed instructions, plus some instructions for
->creating the packages, later in the week.)
+Alan Cox wrote:
+> > > accesses. There seems to be no way to do byte sized config accesses, do
+> > > I just read 32bits mask and write 32bits ?
+> > 
+> > I thought Dino will forward the byte enables to the PCI bus.
+> > PCI-PCI bridge numbering I think depends on this.
+> 
+> So how do I set those. The documentaiton also says the low two bits of
+> the register read back as 0. I guess that doesnt actually imply that the
+> write of it has no affect. 
+
+The PCI_CONFIG_ADDR register (offset 0x64) is used to source the
+word address. So it's not surprising the lower order bits are RO.
+
+"Byte enables" are GSC and PCI bus signals - not register contents.
+The PA processor generates byte enable signals on the GSC bus and
+Dino forwards those for the appropriate bytes (swapped to match
+the swapping/endian conversion done for the PCI_CONFIG_DATA register.)
+The byte enable signals are taken when a processor read/write targets
+the PCI_CONFIG_DATA register (offset 0x68). The contents of PCI_CONFIG_ADDR
+and bytes enable signals from GSC bus are combined to generate a read/write
+transaction on the PCI bus.
+
+(Disclaimer: I'm not as certain of the above as it sounds though I
+believe it's correct - remember, I'm a SW engineer :^)
 
 
-The easiest is probably ...
+> > On these boxes it's "uncomplicated" since the host physical address
+> > is the same as the PCI bus address. I mention this since it's not
+> > the case for all HP platforms.
+> 
+> Ok. We have a clear notion of bus/physical/virtual seperation, and
+> translation macros. Linux stuff all uses
+> 
+> virt_to_bus() - to convert to bus space
+> virt_to_phys() - to convert to physical space
 
-    $ swinstall -v -s /path/foo.depot \*
+Excellent.
 
-Be sure to start the depot path with a path starting with / or SDUX gets
-confused -- it will think you're trying to access a remote depot.
+later,
+grant
 
-Thanks for packaging those up!
+> 
+> Alan
+> 
 
-Rich
+Grant Grundler
+Enterprise Systems Technology Lab
++1.408.447.7253
