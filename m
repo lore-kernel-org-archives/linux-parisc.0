@@ -1,23 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA20444
-	for <parisc-linux@puffin.external.hp.com>; Mon, 1 Jan 2001 12:18:54 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 1 Jan 2001 19:22:11 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14DAX3-00074F-00
-	for parisc-linux@thepuffingroup.com; Mon, 01 Jan 2001 19:22:09 +0000
-Date: Mon, 1 Jan 2001 19:22:09 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20010101192209.C25603@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] New NCR/Symbios 8xx driver
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA21539
+	for <parisc-linux@puffin.external.hp.com>; Mon, 1 Jan 2001 17:04:57 -0700
+Message-Id: <200101020009.QAA26045@milano.cup.hp.com>
+To: R P Herrold <herrold@owlriver.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: Dual Boot 
+In-reply-to: Your message of "Sat, 30 Dec 2000 23:16:39 PST."
+             <Pine.LNX.4.30.0012302306560.13921-100000@swampfox.owlriver.com>
+Date: Mon, 01 Jan 2001 16:09:32 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+R P Herrold wrote:
+...
+> I'm going to try spinning up a G50, and sniffing at a K220 for
+> parisc linux ... 735/125 on the way in ... I'd like to leave
+> HP-UX on the K220 and 'dual boot' -- but it is such a pain to
+> hook a console up -- Any thoughts on an OS/2 style Boot
+> Manager leaving 'next boot' semaphore flags behind ...
 
-http://www.uwsg.iu.edu/hypermail/linux/kernel/0012.3/0584.html
+It's hard to hook up a serial console on K220?!
 
--- 
-Revolutions do not require corporate support.
+Under HPUX, "setboot" command can set the primary boot path
+so it can reboot from any disk/lan you want. You would have to
+write a similar program for parisc-linux to poke stuff into NVRAM.
+It might be a PDC call to do it; I don't know. But it's doable.
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
