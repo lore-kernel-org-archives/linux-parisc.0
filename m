@@ -1,19 +1,16 @@
-From: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] A couple of minor patches for 2.6.7-pa1
-Date: Sat, 19 Jun 2004 02:28:55 +0100
-Message-ID: <20040619012855.GM20511@parcelfarce.linux.theplanet.co.uk>
-References: <40D30E3C.1010809@tiscali.be> <40D34A27.8060009@tiscali.be>
-	<35844.127.0.0.1.1087594933.squirrel@www.puszczka.com>
-	<20040618212600.GB12572@engsoc.org>
-	<35884.127.0.0.1.1087595933.squirrel@www.puszczka.com>
-	<20040618215310.GD12572@engsoc.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux]      Heads up,
+Date: Fri, 18 Jun 2004 21:35:57 -0400 (EDT)
+Message-ID: <200406190135.i5J1Zwww001680@hiauly1.hia.nrc.ca>
+References: <20040619011714.GC23535@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@engsoc.org>
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040618215310.GD12572@engsoc.org>
+In-Reply-To: <20040619011714.GC23535@colo.lackof.org> from "Grant Grundler" at
+	Jun 18, 2004 07:17:14 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,37 +21,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jun 18, 2004 at 05:53:10PM -0400, Kyle McMartin wrote:
-> willy posted a patch that checks the gcc version and uses 7100 or 7300
-> based on it.
+> On Fri, Jun 18, 2004 at 05:25:05PM -0400, Kyle McMartin wrote:
+> > gcc-3.4-hppa (or gcc-3.3-hppa)
+> 
+> Should I be testing 64-bit kernels built with this toolchain
+> or stick with my trusty gcc 3.0.4-hppa64 handmade debs?
 
-Actually, I didn't.  Can anyone test this for me?
+>>From my perspective, the 3.4 branch is the best yet.  By this, I
+mean it has the fewest bugs in the PA backend.  However, there are
+lots of other changes that may bite ...
 
-Index: arch/parisc/Makefile
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/Makefile,v
-retrieving revision 1.12
-diff -u -p -r1.12 Makefile
---- arch/parisc/Makefile        19 Apr 2004 22:32:49 -0000      1.12
-+++ arch/parisc/Makefile        19 Jun 2004 01:28:37 -0000
-@@ -48,7 +48,7 @@ cflags-y      += -ffunction-sections
- cflags-$(CONFIG_PA7100)                += -march=1.1 -mschedule=7100
- cflags-$(CONFIG_PA7200)                += -march=1.1 -mschedule=7200
- cflags-$(CONFIG_PA7100LC)      += -march=1.1 -mschedule=7100LC
--cflags-$(CONFIG_PA7300LC)      += -march=1.1 -mschedule=7300
-+cflags-$(CONFIG_PA7300LC)      += $(call check_gcc,-march=1.1 -mschedule=7300,-march=1.1 -mschedule=7100LC)
- cflags-$(CONFIG_PA8X00)                += -march=2.0 -mschedule=8000
- 
- head-y                 := arch/parisc/kernel/head.o 
+Randolph's PR (the one that started this thread) isn't fixed and
+hasn't been seriously researched (too many other issues).  However,
+it's obviously a serious issue for the kernel.  So, maybe you should
+use 3.0.4 for kernel builds until it's resolved.  For other uses, I
+suggest 3.3.4 (released?) or the soon to be released 3.4.1.  3.5 is
+for Joel to test ;-)
 
+If anyone out there wants to learn more than they really wanted
+to know about GCC and binutils internals, let me know as there
+are a number of projects that need working on.
 
+Dave
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
