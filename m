@@ -1,41 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B509482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 03:13:36 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29390482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 03:30:59 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 12A1AB00C; Tue, 17 Jul 2001 10:11:40 +0100 (BST)
-Date: Tue, 17 Jul 2001 10:11:40 +0100
+	id AC5D0B00C; Tue, 17 Jul 2001 10:29:03 +0100 (BST)
+Date: Tue, 17 Jul 2001 10:29:03 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
-Cc: parisc-linux@lists.parisc-linux.org, okraus@t-online.de
-Subject: Re: [parisc-linux] palinux-0.9.2: Installation fails on C180
-Message-ID: <20010717101140.M30356@linuxcare.com>
-References: <01071511264600.00948@octopus>
+To: Tom <tom@alaskatech.org>
+Cc: PA-RISC Linux List <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 715/100 no longer boots into console?
+Message-ID: <20010717102903.N30356@linuxcare.com>
+References: <Pine.LNX.4.33.0107151938330.529-100000@goliath>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01071511264600.00948@octopus>; from Reinhard.Gimbel@freenet.de on Sun, Jul 15, 2001 at 11:26:46AM +0200
+In-Reply-To: <Pine.LNX.4.33.0107151938330.529-100000@goliath>; from tom@alaskatech.org on Sun, Jul 15, 2001 at 07:50:39PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jul 15, 2001 at 11:26:46AM +0200, Reinhard Gimbel wrote:
+On Sun, Jul 15, 2001 at 07:50:39PM -0800, Tom wrote:
+> So I upgraded from the 0.9 to the latest 0.91. Exerything worked nicely,
+> no errors, except now I get no login on the console. Looking over the boot
+> messages there's no errors, but there is two lines saying the FB is alive
+> and well and the console is switching to STI FB color console. Last
+> messages is after "INIT: switching to runlevel 2" and all the
+> "starting:..." messages (the last one is cron starting).
 > 
-> Hi folks !
-> 
-> Recently I bought an C180 at a local 2nd hand computer store. 
-> 
-> I tried to install the latest palinux-0.9.2 (esiee.fr), but the 
-> installation failed :-(
-> 
-> The download itself went ok (md5sums ok), no probs while 
-> burning the ISO image (using xcdrgtk). The C180 boots from the 
-> CD-R, the system can be set up (HD partitioning, creating the 
-> ext2 filesystems, etc.) but during heavy traffic on the SESCSI 
-> bus the system crashes (sometime during kernel installation, 
-> sometimes during base system installation).
+> I *had* all the common pitfalls saved, until I had a drive crash in the
+> mail server and nuke all the saved mail :-(. So, if someone can tell me
+> the simple solution to this I'd appreciate it... If needed the output of
+> dmesg is at http://www.alaskatech.org/stuff/715boot.txt
 
-I guess you are installing from CD on SESCSI, to disk on FWSCSI.
-You could try to install from the network, so only the one scsi controller
-is active.  See if that helps.  You could probably boot from the CD, then
-tell the system to load everything via http or nfs, having exported the CD
-contents from a suitable server.
+Presumably you logged in via the network to get that dmesg output,
+so the machine is working ok.  Sounds like a frame buffer problem.
+0.9 used STI console, 0.9.x uses STI frame buffer, if it is a chipset
+it recognises.
+
+When you say you upgraded from 0.9 to 0.91, what do you mean?  Did
+you simply reinstall from the new .iso, or something else?  If you just
+installed, how did you get to being able to read dmesg without console
+access?
+
+I assume your /etc/inittab is spawning a getty on tty0?
+
+Maybe Helge can comment, if he reads this.
 
 Richard
