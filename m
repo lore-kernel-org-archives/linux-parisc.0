@@ -1,58 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA31508
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 15:12:11 -0700
-Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id QAA09763 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 16:04:51 -0500 (EST)
-Date: Tue, 8 Feb 2000 16:04:51 -0500 (EST)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA32200
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 15:37:13 -0700
+Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id QAA11172 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 16:33:06 -0500 (EST)
+Date: Tue, 8 Feb 2000 16:33:06 -0500 (EST)
 From: Michael Ang <mang@subcarrier.org>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.BSF.4.10.10002081559510.9328-100000@cuzea.pair.com>
+Message-ID: <Pine.BSF.4.10.10002081631440.11091-100000@cuzea.pair.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] 2.3.42 merge - affected files
+Subject: [parisc-linux] files still needing manual merging
 List-ID: <linux-parisc.vger.kernel.org>
 
-Here is the list of files that have been changed both by Linus between
-2.3.29 and 2.3.42 and in our local tree:
+Conflicted files which still need to be manually merged using 'cvs up
+-jlinus2329 -jlinus2342'
 
-drivers/block/ll_rw_blk.c
-drivers/block/rd.c
-drivers/char/Config.in
-drivers/char/console.c
-drivers/char/Makefile
-drivers/char/serial.c
-drivers/char/tty_io.c
-drivers/Makefile
-drivers/net/pcnet32.c
-drivers/net/tulip.c
-drivers/pci/pci.c
-drivers/sound/Config.in
-drivers/sound/Makefile
-drivers/video/Makefile
-fs/buffer.c
-fs/exec.c
+`Makefile'
+`drivers/block/rd.c'
+`drivers/char/Makefile'
+`drivers/char/serial.c'
+`drivers/net/tulip.c'
+`include/asm-arm/arch-ebsa285/hardware.h'
+`include/linux/init.h'`include/linux/mm.h'
+`init/main.c'
+`kernel/resource.c'
+`mm/Makefile'
+`mm/bootmem.c'
+
+Files which had conflicts and currently have fixes checked in
+drivers/block/ide-dma.c
+drivers/video/fm2fb.c
 fs/Makefile
+fs/buffer.c
 include/linux/init.h
 include/linux/mm.h
-include/linux/pagemap.h
-include/linux/proc_fs.h
-include/linux/tty.h
-include/linux/udf_fs_sb.h
-init/main.c
-kernel/acct.c
-kernel/exit.c
-kernel/resource.c
-kernel/sched.c
-lib/string.c
-Makefile
-mm/bootmem.c
+include/linux/ncp_fs.h
 mm/filemap.c
-mm/Makefile
-mm/memory.c
-mm/mmap.c
-mm/slab.c
-
-All of these files should be checked visually to make sure that the merge
-was done properly.  I'll send another mail with some examples of how to
-compare different file revisions.
-
-	- Mike.
