@@ -1,71 +1,125 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 342664A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Feb 2001 11:05:10 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA03072
-	for <parisc-linux@puffin.external.hp.com>; Tue, 6 Feb 2001 11:00:53 -0700
-Message-ID: <D3D6F52F21B7D411BAC400A0C9F486A1012A338F@xfc05.fc.hp.com>
-From: "MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
-To: "'Christoph Plattner'" <christoph.plattner@alcatel.at>
-Cc: parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] E55 (9000/856) proprietary interfaces
-Date: Tue, 6 Feb 2001 09:41:45 -0800 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DC8694A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Feb 2001 13:20:55 -0700 (MST)
+Message-Id: <200102062022.MAA04003@milano.cup.hp.com>
+To: "M. Grabert" <xam@deathsdoor.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Generic Parisc Linux Kernel Questions & 9000/730 success report 
+In-reply-to: Your message of "Tue, 06 Feb 2001 18:31:26 PST."
+             <Pine.LNX.4.21.0102061808500.2465-100000@sgate.charlysworld.de>
+Date: Tue, 06 Feb 2001 12:22:03 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Christoph -
+Max,
+I'm going to take a shot at answering your questions.
+Some I don't know the answer.
 
-Oops, sent that last reply before I finished ...
+"M. Grabert" wrote:
+> Hello there!
+> 
+> I'm lucky again :)))))
+> 
+> 
+> Finally I got my HP box bootin & running Linux *smile*
 
-If you want to talk about the E55 more, please work with me directly and I
-will do what I can.
+Excellent!
 
-Alan
 
->-----Original Message-----
->From: Christoph Plattner [mailto:christoph.plattner@alcatel.at]
->Sent: Tuesday, February 06, 2001 8:45 AM
->To: martin_fink@hp.com
->Cc: parisc-linux@thepuffingroup.com; christoph.plattner@dot.at
->Subject: [parisc-linux] E55 (9000/856) proprietary interfaces
->
->
->Mr. Fink,
->
->Mr. Kaessmayer in Austria found your mail in the parisc-linux
->mailing list archives concerning HP support for the HP PA-RISC
->Linux project.
->
->I contacted HP in parallel to the PA-RISC hacker, because I am
->interested in using my HP server E55 (9000/856) machine with
->HPPA Linux (puffing group...).
->
->But this series of server has old proprietary interface, and so
->there are no drivers for the interfaces (SCSI, 8-port serial board
->multiplexer and parallel interface).
->
->In my so little spare time, I am interested to work on that part
->for having my E55 supported. Is there a possibility to get information
->(hardware docu, HP-UX driver sources, etc) tp be able to do this
->work ? Can anybody of the HP teams (hardware, device driver programmer,
->system programmer) help me in this point ?
->
->With friendly regards
->
->	Christoph
->
->
->
->-----------------------------------------------------------------
->private:        christoph.plattner@dot.at
->company:        christoph.plattner@alcatel.at
->
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
->
+> There are some minor troubles, but I think these will be fixed soon,
+> e.g.
+> 
+> smb won't compile
+> netware won't compile
+> ppp_sync won't compile
+
+People just have to work through these issues one-by-one.
+Feel free to post the issues (one per e-mail) to parisc-linux.
+Include error messages from the compiler and where you
+got the source from.
+
+> fbcon-sti won't compile (at least when I don't compile STI-console)
+
+The ESIEE team in France is doing alot of work with STI interfaces.
+Hopefully they could answer this.
+ 
+> hwclock doesn't work (can't use /dev/rtc), 'though I seems the
+>    time and date is read correctly (but hwclock can't set them).
+>    Is this a known problem ?
+
+No. I had wrongly assume the /dev/rtc was on the latest NFS root
+tar ball (it is not). You need to create it by hand:
+	# mknod /dev/rtc c 10 135
+
+If it already exists, then...well, post the console output of hwclock
+command to parisc-linux as well.
+
+> 
+> I think the "do_page_fault() messages & stack traces"  (, which are
+>    not seen when I switch VERBOSE=no in /etc/defaults/rcS,)
+>    are because of some segfaults whilst running some rc-scripts.
+>    Hope that will be fixed in the new nfsroot.
+
+I think so. The patch from rhirst should help alot with this though.
+
+
+> Many segfaults in sourcing / executing rc-boot-scripts and
+>    shutdown-scripts. Therefore (I think) I can't reboot/shutdown
+>    properly (last message is: "sending all processes the TERM signal").
+>    At least the HP doesn't reboot. But e2fsck reports ext2 is clean.
+
+ditto.
+
+> Is the well known problem of the missing termcap fixed in the new nfsroot?
+
+yes. (afaict).
+
+
+> Is is enough to copy nfsroot onto the scsi disc and adopt /etc/fstab,
+>    or should I use base.tgz ? what's the difference ?
+
+You should be able to "install" the nfsroot as outlined in
+the README.INSTALL (note that the PALO command has changed slightly).
+
+If you want to just clobber an existing root that's in use, I think that
+is a bit more complicated. Installing from NFS root or onto a different
+disk should be easier.
+
+> Mhhh. missing ftp and (open)ssh, strace in (old) nfstools. Are they in the
+>    new one?
+
+only ftp is there.
+ssh has been built and used. Not sure if that was openssh.
+Don't know about strace.
+
+> Does the new xc fix major problems or is it just a a little update ?
+>    IMHO there was a lot done for parisc64, but also for parisc(32) ?
+
+Don't know. amodra?
+
+
+> Some questions regarding kernel support of...
+> 
+> networking: can I use all the protocols like ipv6, routing, masq etc?
+
+not tested. You *should* be able to assuming they access data
+with proper address alignment.
+
+> 
+> WAX: is it still not usable ? if not, can I use all the Linux-2.4 isa
+>    drivers (easily) ?
+
+Don't know. (read my .sig "^)
+
+> modules: are kernel modules supported (fully) on parisc ?
+
+yes. But you need to install modutils before enabling that.
+modutils_2.4.1-2_hppa.deb is available from the parisc-linux.org ftp site.
+
+hope this helps,
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
