@@ -1,45 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mr14.vic-remote.bigpond.net.au (mr14.vic-remote.bigpond.net.au [24.192.1.29])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B6EC4A19
-	for <parisc-linux@parisc-linux.org>; Sat,  3 Feb 2001 18:30:42 -0700 (MST)
-From: penfold@customware.com.au
-Message-Id: <200102040130.MAA30086@customware.com.au>
+Received: from pokey.513erich.iwaynet.net (d85.as1.clmb.oh.voyager.net [216.127.12.85])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62B9A4A19
+	for <parisc-linux@parisc-linux.org>; Sat,  3 Feb 2001 18:46:03 -0700 (MST)
+Date: Sat, 3 Feb 2001 20:50:25 -0500 (EST)
+From: herrold <herrold@owlriver.com>
+Sender: <herrold@513erich.iwaynet.net>
+To: <penfold@customware.com.au>
+Cc: Matthew Wilcox <matthew@wil.cx>, <parisc-linux@parisc-linux.org>,
+	Jim Wildman <jim@rossberry.com>
 Subject: Re: [parisc-linux] Source of this version of rbootd-2.0-2
-To: matthew@wil.cx (Matthew Wilcox)
-Date: Sun, 4 Feb 2001 12:30:34 +1100 (EST)
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20010203172429.A12985@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Feb 03, 2001 05:24:29 PM
+In-Reply-To: <200102040130.MAA30086@customware.com.au>
+Message-ID: <Pine.LNX.4.30.0102032042200.9141-100000@pokey.513erich.iwaynet.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> i'm running debian potato, and i have Version: 0.4a6-3.  i didn't need
-> to do this.
+On Sun, 4 Feb 2001 penfold@customware.com.au wrote:
 
-just quick check to make sure I didnt have something which I had manually
-done, it seems the .rpm itself differs.
+> just quick check to make sure I didnt have something which I had manually
+> done, it seems the .rpm itself differs.
 
+<snip>
 
-[penfold@artemis penfold]$ rpm -ql libpcap
-/usr/doc/libpcap-0.4
-/usr/doc/libpcap-0.4/CHANGES
-/usr/doc/libpcap-0.4/README
-/usr/include/pcap
-/usr/include/pcap/net
-/usr/include/pcap/net/bpf.h
-/usr/include/pcap/pcap-namedb.h
-/usr/include/pcap/pcap.h
-/usr/lib/libpcap.a
-/usr/man/man3/pcap.3
-[penfold@artemis penfold]$ cat /etc/issue.net
+> I also chaeck a RH 6.2 /libpcap-0.4-19.alpha and it is the same as my 6.1.
+>
+> standards are great... there are so many to choose from!
 
-Red Hat Linux release 6.1 (Cartman)
-Kernel 2.2.18 on an alpha
-[penfold@artemis penfold]$
+... Jeff Johnson at Red Hat is the current maintainer of tpcdump,
+which emits libpcap ... He is pretty conscientious, but constrained
+by the need to make sure certain version usability goals are met
+there to support their paying customers;  Dug Song of the OpenBSD
+side has also made disparaging remarks on some former releases of
+tcpdump et al by Red Hat.
 
-I also chaeck a RH 6.2 /libpcap-0.4-19.alpha and it is the same as my 6.1.
+Try grabbing the tcpdump _SRPM_ from the RH Rawhide (their current
+devel build tree), for a later version (All SRPMS contain pristine
+tarballs ...), and pull the tarball, and build from that.
 
-standards are great... there are so many to choose from!
+I was working with the rbootd sources in the OpenBSD tree yesterday,
+as well;  Has the OpenBSD PARISC port -- seemingly inactive for over
+a year -- anything to offer this Linux effort?
 
-Damian
-penfold@customware.com.au
+-- Russ Herrold
+
+(PS: JAW - you'll soon know why ...)
