@@ -1,19 +1,16 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 420DF488D
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7ABF24854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  9 Mar 2004 21:59:25 -0700 (MST)
-Date: Tue, 9 Mar 2004 21:59:17 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] No PS2 keyboard/mouse on B132L, 2.6.[34]
-Message-ID: <20040310045917.GA27984@colo.lackof.org>
-References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
-	<20040309053615.GA11669@colo.lackof.org>
-	<20040309210400.GM2148@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040309210400.GM2148@parcelfarce.linux.theplanet.co.uk>
+	Wed, 10 Mar 2004 07:47:14 -0700 (MST)
+Date: Wed, 10 Mar 2004 15:47:09 +0100
+Message-ID: <404EC1C600000B2D@ocpmta1.freegates.net>
+In-Reply-To: <20040309150318.GD22721@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -24,24 +21,47 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Mar 09, 2004 at 09:04:00PM +0000, Matthew Wilcox wrote:
-> > (I confess: I'm being very lazy tonight and don't want to figure
-> > what needs to go into the hardware.c array)
-> 
-> *grumble*.  I changed the output format so you could simply copy and paste
-> it into hardware.c!  That's exceptionally lazy of you :-P
+Hi Carlos,
 
-/me points at garfield
+Here are the news:
 
-Isn't nice to know there's always someone better at something
-than one's self? :^P
+(first of all sorry for delay but I have temporarely have to exchange my
+N4k for a b180 so it take a bit more time)
 
-> (you can tell boot logs that predate this change because they don't use 
-> { } around the numbers).
+The glibc cvs 2.3.3 cvs dated 20040308 + your patch compiles well (just this
+time I enable profiling) :).
 
-Yup - I remember you making the change and knew it should be fairly easy...
-thus I was confident someone else could do it.
-(was that a good excuse or what? Just made that one up :^)
+I also install it on /mnt/chroot (according James method, just to test).
 
-thanks,
-grant
+As I foreseen to use this disk to other test on the N4k, I grab the list
+of packages installed (dpkg --get-selection > /mnt/chroot/var/tmp/Selection.doc)
+and chroot to /mnt/chroot to install previously mentioned pkg list. All works
+fine (just 3 pkg failled to install because no /proc available in chroot).
+
+In the same time I drive a make -k check and just get additional Errors:
+[...]
+make[2]: *** [/Develop/parisc-linux/build/glibc/libio/tst-mmap-eofsync.out]
+Error 1
+make[2]: *** [/Develop/parisc-linux/build/glibc/libio/tst-mmap-fflushsync.out]
+Error 1
+make[1]: *** [libio/tests] Error 2
+make[2]: [/Develop/parisc-linux/build/glibc/posix/annexc.out] Error 1 (ignored)
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/multiload.o] Error 1
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/origtest.o] Error 1
+[...]
+
+I have two hypothesis:
+a. it is the first time I added enable-profile;
+b. I forget to build first gcc(3.3) tool with your gcc patch (gcc/config/pa/fptr.c)
+
+Now, 2.6.4-rc3-pa0 is just available, I will so try first to build it in
+the chroot disk...
+
+hth,
+    Joel
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
