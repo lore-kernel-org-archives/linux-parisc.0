@@ -1,42 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 11C8E482A
-	for <parisc-linux@parisc-linux.org>; Tue, 17 Jul 2001 16:39:01 -0600 (MDT)
-Sender: marteaut@esiee.fr
-Message-ID: <3B54BB9B.2D49FDCF@esiee.fr>
-Date: Wed, 18 Jul 2001 00:26:35 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: Christian Suder <csuder@cisco.com>,
-	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] 0.9.2 missing compiler ?
-References: <3B54BB51.8CF43B05@cisco.com>
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F133F482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Jul 2001 02:32:06 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id BAD4DB00C; Wed, 18 Jul 2001 09:30:04 +0100 (BST)
+Date: Wed, 18 Jul 2001 09:30:04 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Tom <tom@alaskatech.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 715/100 no longer boots into console?
+Message-ID: <20010718093004.Z30356@linuxcare.com>
+References: <200107172125.NAA09485@goliath> <Pine.LNX.4.33.0107171419400.8533-100000@goliath>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0107171419400.8533-100000@goliath>; from tom@alaskatech.org on Tue, Jul 17, 2001 at 02:21:16PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Christian,
+On Tue, Jul 17, 2001 at 02:21:16PM -0800, Tom wrote:
+> On Tue, 17 Jul 2001, Helge Deller wrote:
+> > > > I assume your /etc/inittab is spawning a getty on tty0?
+> > >
+> > > Tom: Does it ?  If not, then that's why it's failing.
+> >
+> > Tom, I just saw you already answered this.
+> > So please forget about my mail.
+> >
+> > Greetings,
+> > Helge
+> 
+> No problem :-)  Actually, my only remaining question is why disabling the
+> tty[x] entries in inittab would be a default behavior; I had changed it
+> with 0.9 and the install of 0.91 changed it back. Weird.
+> 
+> Anyway, that might be a good thing to change for a 1.0 release - assuming
+> the console will be serial could be bad...
 
-	If you have your box connected to the web (that should be true
-regarding where you work :), you just have to add this line to your
-/etc/apt/sources.list
-deb http://http.us.debian.org/debian unstable main
+Installer should auto detect whether it is on a serial on graphical
+console, and set up inittab appropriately.  Sounds like it got confused
+in your case.  Not aware of anyone else having that problem.
 
-If you have a proxy to get http working, you have to create the file
-/etc/apt/apt.conf which containts this:
-Acquire::http::Proxy "http://your.proxy.fqdn:port/";
-
-And then just a little apt-get update where you should see that it
-downloads the files.
-
-For your information, I just had a look to the big ISO and I get that:
-
-spqr:/cdrom1/dists/sid/main/binary-hppa/more_packages# ls gcc
-gcc-3.0-base_3.0-3_all.deb
-gcc-hppa64_3.0-0pre010427.0.0.1_hppa.deb
-gcc_3.0-6_hppa.deb
-
-So, it seems to be there. Perhaps, you have the little one without it.
-Try to download the big one, if the instructions above do not work.
-
-Regards, Thomas
-ESIEE Team
+Richard
