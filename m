@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A749C4844
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Aug 2003 23:58:19 -0600 (MDT)
-Received: from lsanca2-ar37-4-46-203-196.lsanca2.dsl-verizon.net (lsanca2-ar37-4-46-203-196.lsanca2.dsl-verizon.net [4.46.203.196])
-	by cuprel1.hp.com (Postfix) with SMTP id 71FC9C08
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Aug 2003 22:58:16 -0700 (PDT)
-Message-ID: <4018ny6s94$9-7-2-v6679fp7$8@y9pj.l.c9.m.6u>
-From: "Estelle Riggs" <xh50lojz@yahoo.com>
-Reply-To: "Estelle Riggs" <xh50lojz@yahoo.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Mon, 04 Aug 2003 12:52:06 +0500
+Received: from gate.algorithm.aelita.com (unknown [212.176.18.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7FD1482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Aug 2003 04:37:12 -0600 (MDT)
+Received: from bagman.edm.com ([10.0.0.4]) by gate.algorithm.aelita.com
+          (Post.Office MTA v3.5.3 release 223 ID# 0-12345L500S10000V35)
+          with ESMTP id com for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 4 Aug 2003 14:37:04 +0400
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="_DACE__.307AEDDC_D21C"
-Subject: [parisc-linux] parisc-linux@parisc-linux.org
+Content-Type: text/plain;
+	charset="windows-1251"
+Date: Mon, 4 Aug 2003 14:37:13 +0400
+Message-ID: <3F6F4712B759A34ABD453A8B39C10D62C4670F@bagman.edm.com>
+From: "Lev Assinovsky" <LAssinovsky@algorithm.aelita.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] Help: Need instruction sequence for gdb breakpoint
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +25,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---_DACE__.307AEDDC_D21C
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hello all!
+I badly need pa-risc 1.1 instruction sequence suitable for gdb.
+I would like to implement "hard breakpoint".=20
+I tried "BREAK 4,8" - gdb stops but can't continue.
+Any help will be appreciated!
 
-<center><p><font face=3D"Arial, Helvetica, sans-serif">Get prescription me=
-dications online<br>
-  shipped overnight to your door with no doctor visit<br>
-  <a href=3D"http://www.medzservice.biz">phentermine, ultram, xenical and =
-more</a><br>
-  </strong></a></font></p>
-
---_DACE__.307AEDDC_D21C--
+Sincerely,=20
+----
+Lev Assinovsky
+Aelita Software Corporation
+O&S Core Division, Programmer
+ICQ# 165072909
