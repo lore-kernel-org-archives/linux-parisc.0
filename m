@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77EAA4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 06:29:43 -0700 (MST)
-Date: Mon, 2 Dec 2002 14:28:50 +0100
-Message-ID: <3DA3DE6600007EA0@ocpmta4.be.tiscali.com>
-In-Reply-To: <19A3ADA4-05EE-11D7-9FA0-0030656F07A2@esiee.fr>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E61254829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 06:42:04 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 18Iqpj-0005Zh-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 02 Dec 2002 14:41:59 +0100
+Date: Mon, 2 Dec 2002 14:41:50 +0100
+Message-ID: <3DA3DE6600007EB6@ocpmta4.be.tiscali.com>
 From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] lifimage
-To: "Thibaut VARENE" <varenet@esiee.fr>,
-	"Tim Kemna" <t.kemna@student.utwente.nl>
-Cc: parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] dump_patche.2.4.19-pa22.gz no read acces to the world
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +25,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi all,
->
->Le lundi, 2 d=E9c 2002, =E0 10:02 Europe/Paris, Tim Kemna a =E9crit :
->
->> The HOWTO only says how to make a lifimage (with NFSROOT or RAMDISK).
 
->
->> It
->> doesn't say how I should use it.
->
->http://pateam.esiee.fr/parisc-linux-boot/PA-RISC-Linux-Boot-HOWTO/ 
->bootnetwork.html
->
-Sorry (it was in intention to mentionned this section but I forget)
+In ftp://ftp.parisc-linux.org/patches/ I would be interested to read dump=
+_patche.2.4.19-pa22.gz
+but it doesn't have read access for other.
 
-Hmm there is also an interesting section:
-<http://pateam.esiee.fr/parisc-linux-boot/PA-RISC-Linux-Boot-HOWTO/consol=
-es.html#serialconsole>
+Can you help me?
 
-explaining "3.2.3.2.1. How can I change the boot console to serial on a
-712?"
-
-Cheers,
+Thanks in advance,
     Joel
 
-PS: I used this method to install a b2k model (when ide cd did work yet)
 
 *************************************************************************=
 *******
