@@ -1,60 +1,60 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 121F7482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 20:48:35 -0600 (MDT)
-Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
-	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f7F2xuX00381
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 22:59:56 -0400
-Received: (from carlos@localhost)
-	by sh.od.inet (8.11.0/8.11.0) id f7F2n5J27927
-	for parisc-linux@lists.parisc-linux.org; Tue, 14 Aug 2001 22:49:05 -0400
-Date: Tue, 14 Aug 2001 22:49:05 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] LAN booting
-Message-ID: <20010814224905.B26703@megatonmonkey.net>
-References: <christian@familie-weerts.de> <200108132355.RAA14012@puffin.external.hp.com> <20010814135337.C345@familie-weerts.de>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1418A482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 21:16:12 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15WrAA-0004Xp-00; Wed, 15 Aug 2001 04:16:10 +0100
+Date: Wed, 15 Aug 2001 04:16:10 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Subject: Re: [parisc-linux] Users staying up to date.
+Message-ID: <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk>
+References: <20010814154037.I25258@megatonmonkey.net> <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk> <20010814215030.A26703@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010814135337.C345@familie-weerts.de>; from christian@familie-weerts.de on Tue, Aug 14, 2001 at 01:53:37PM +0000
+In-Reply-To: <20010814215030.A26703@megatonmonkey.net>; from carlos@baldric.uwo.ca on Tue, Aug 14, 2001 at 09:50:30PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I will try, but first i had to boot the machine over LAN, that's my problem
-> at the moment.
-> The RISC-Machine tells something like "Error: cannot load IPL, error
-> detected. Bootprocess failed..."
-> Perhaps you could help me, so i attach the bootptab and the dhcp-conf. Also
-> attached are the daemon.log and output from tcpdump. Btw., gorilla is the
-> server and mirage the client.
-> I don't know what's wrong. 
-> On the risc-machine i told him to boot from the lan.<hw-addr-server>.
+On Tue, Aug 14, 2001 at 09:50:30PM -0400, Carlos O'Donell Jr. wrote:
+> In general, I don't want to submit a bugreport and have the
+> list say "That's already fixed in the latest updated package" :)
+
+That's fair enough.
+
+> I'm currently running apt-get on one of our nodes, and trying
+> to get it to an updated state.
 > 
+> Hrm. apg-get segfaults randomly. 
 
-There should be nothing wrong with booting over the lan.
+Yes, it does.  Until you've managed to get sully synced up to latest
+toolchain/libs/kernel at which point, it magically stops.
 
-I did not receive any attachments with this email?
+> We're running a hand rolled:
+> Linux node10 2.4.0 #37 Tue Jul 17 22:33:26 EDT 2001 parisc unknown
 
-> Ack.
+OK, you _definitely_ need to update this.  You could pull from CVS or
+grab a snapshot tarball, see the webpages on how to do this.
 
-Cross compiling is really not all that bad 8)
+> (Reading database ... 17525 files and directories currently installed.)
+> Preparing to replace dpkg 1.8.3 (using .../archives/dpkg_1.9.16_hppa.deb) ...
+> Unpacking replacement dpkg ...
+> dpkg: error processing /var/cache/apt/archives/dpkg_1.9.16_hppa.deb (--unpack):
+>  trying to overwrite directory `/usr/share/locale/cs' in package texinfo with nondirectory
+> dpkg-deb: subprocess paste killed by signal (Broken pipe)
 
-> > Could you mount the 0.92 ISO on an x86-linux box and steal that kernel?
-> > (there are probably several but just try the 32-bit ones.)
-> I'll try. So, you mean i don't need the nfsroot-package named in Martin's
-> HOWTO?
+Umm.  That's rather interesting.  an excerpt from dpkg --listfiles dpkg
+on paer.debian.org:
 
-You can use it.
+/usr/share/locale
+/usr/share/locale/cs
+/usr/share/locale/cs/LC_MESSAGES
+/usr/share/locale/cs/LC_MESSAGES/dpkg.mo
 
-If you handroll a kernel with nfs-root parameters 
-and setup an nfs share for you root, you
-can boot without a disk onto the nfs-root.
+I seem to remember someone saying this was a bug in an old version
+of dpkg.  So one way around this may be to dpkg --remove texinfo, then
+install dpkg, then install texinfo again.
 
-What do you put on your nfs-root?:
-
-- The unpacked nfsroot tarball
-- sid baseplus tarball (under the debian directories).
-- nothing (You get to check if the setup is okay, 
-  though the kernel will panic when it doesn't find /)
-
-Cheers,
-Carlos.
+-- 
+Revolutions do not require corporate support.
