@@ -1,16 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: FATAL: kernel too old
-Date: Wed, 4 Dec 2002 18:01:52 -0500 (EST)
-Message-ID: <200212042301.gB4N1riC000738__12136.0707948499$1416621996$gmane$org@hiauly1.hia.nrc.ca>
-References: <20021204225504.GB22403@dsl2.external.hp.com>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] GNU/Libc 2.3.1 on HP-PARISC requires >= 2.4.19 kernel.
+Date: Wed, 4 Dec 2002 20:08:45 -0500
+Message-ID: <20021205010845.GU16331__11288.4195209064$1416621996$gmane$org@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: jbailey@nisa.net, carlos@baldric.uwo.ca,
-	libc-alpha@sources.redhat.com, debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-To: grundler@dsl2.external.hp.com (Grant Grundler)
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Randolph Chung <tausq@debian.org>
+To: debian-hppa@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org, debian-glibc@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021204225504.GB22403@dsl2.external.hp.com> from "Grant Grundler" at Dec 4, 2002 03:55:04 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,20 +19,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Dave,
-> I can build a UP 2.4.20 for the rp2470 and see how that fairs.
-> SMP has in fact not been especially stable for the 2.4.19 hppa releases.
+debian, parisc, debian-glibc,
 
-That would be great.  I was going to try vmlinux-2.4.20-rc1-pa7
-after the gcc testsuite run that is in progress completes.  I seem
-to recall that vmlinux-2.4.20-rc1-pa7 wasn't very stable, so it
-would be nice to find something later than 2.4.18 that works reasonably
-reliably.
+Hi, my name is Carlos, and I cause all your nightmares with glibc on
+HPPA :)
 
-I was trying to get a feel whether of not the current gcc mainline
-would successfully build the latest glibc.
+Currently in unstable for HPPA - glibc 2.3.1-5
+Currently in testing  for HPPA - glibc 2.2.5-15
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+What?
+=====
+During the changeover from GNU/Libc 2.2.x to 2.3.x HPPA has changed
+it's minimum GNU/Libc kernel version to 2.4.19.
+
+Why?
+====
+- More testing.
+- Bugs fixed in unaligned handlers.
+- Trap handler fixes.
+- More things than you can shake a stick at, and all thanks to the
+  wonderful kernel hacking team that parisc-linux has.
+
+No.
+===
+If you do not wish to upgrade your kernel then I suggest you pin glibc at
+the particular version that you feel is good for you. The debian glibc
+package for 2.3.1-6 has a preinst check against the system kernel version
+(e.g. You can't install it without the right kernel).
+
+Sorry.
+======
+I apologize for the initial oversight that meant there was no preinst
+check, and one or two individuals have suffered through some serious
+system reconstruction. I apologize. I really do. I owe you both beers :}
+
+I recommend that you _do_ _not_ upgrade glibc on HPPA until 2.3.1-6.
+
+When?
+=====
+
+glibc 2.3.1-6 is going into unstable in the next few days (time
+permitting).
+
+Thanks for your time :)
+
+Cheers,
+Carlos O'Donell.
