@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 016ED4899
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 10:03:33 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Received: from mail.speakeasy.net (mail14.speakeasy.net [216.254.0.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA94F48A2
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 10:10:15 -0600 (MDT)
+Date: Tue, 16 Jul 2002 09:13:35 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: joel.soete@freebel.net
+Cc: parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] gcc-3.2 bootstrap?
-Message-ID: <1026835409.3d3443d1d1cbd@webmail.tiscalinet.be>
-Date: Tue, 16 Jul 2002 18:03:29 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
-References: <200207161516.g6GFGZ8C023053@hiauly1.hia.nrc.ca>
-In-Reply-To: <200207161516.g6GFGZ8C023053@hiauly1.hia.nrc.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Message-ID: <20020716161335.GL8724@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1026831840.3d3435e0d908a@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1026831840.3d3435e0d908a@webmail.tiscalinet.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,41 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+> I just modify to match my develop env and mainly I added --host=hppa-linux (I am
+> building gcc-3.2 on a b2000) in the configure:
+> '$GCC_SRC/gcc/configure --prefix=$TOOLS --enable-languages=c --host=hppa-linux'
 
-> 
-> Possibilities are:
-> 
->   1) you either didn't install what you built.
->   2) you moved stuff around so libgcc couldn't be found.
->   3) libgcc.a didn't build when you built your cross.
->   4) linker script didn't link in libgcc.a.
-> 
-> $$mulU is a millicode routine in libgcc.a.
+fwiw i use something like this:
 
-Humm?
-In the debian package gcc-3.0 I found this lib and
-strings /usr/lib/gcc-lib/hppa-linux/3.0.4/libgcc.a | grep mulU
-show me well two entries.
-but in ./native/lib/gcc-lib/hppa-linux/3.2 (as well in ./cross) I do not found
-anything like this.
-So this is a 5th possibility: the procedure used failled to build correctly this
-lib (at least?)
+~/src/gcc-3.2/configure --prefix=/home/tausq/opt/gnu --host=hppa-linux --build=hppa-linux --target=hppa-linux --enable-shared --disable-nls --enable-languages=c
 
-> 
-> > Or would it be better to continue with xcompiler hppa->hppa?
-> 
-> You are just adding more complication to the process trying to use
-> ia64.
+if building hppa64-linux compilers, use --target=hppa64-linux instead.
 
-Oops I wrongly explain (sorry for confusion): I do not use ia64, I just use this
-procedure as a model.
-I change just enough to run it on my hppa-linux box (a b2000 here) but without
-success :(. I still have a lot to learn.
+then i do 'make bootstrap-lean' and then 'make install', set my PATH to
+include /home/tausq/opt/gnu/bin, run 'gcc -v' to make sure i have the 
+right version in my path, and then build the kernel.
 
-Thanks for info,
-    Joel
+alternatively, if i were building a cross-compiler (say
+hppa-linux->hppa64-linux), i would just do 'make' instead of 'make
+bootstrap-lean'
 
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+hth,
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
