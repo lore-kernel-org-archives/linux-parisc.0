@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from laas.laas.fr (laas.laas.fr [140.93.0.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B1B9482D
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 12:09:01 -0600 (MDT)
-Received: from laas.fr (raptor [140.93.21.82])
-	by laas.laas.fr (8.12.3/8.12.3) with ESMTP id g4PI8wiW000176
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 20:08:59 +0200 (CEST)
-Message-ID: <3CEFD33A.9010007@laas.fr>
-Date: Sat, 25 May 2002 20:08:58 +0200
-From: Thomas Marteau <tmarteau@laas.fr>
+Received: from spoolm1.tiscalinet.be (spoolm1.tiscalinet.be [212.35.2.50])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0A107482E
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 13:33:05 -0600 (MDT)
+Message-ID: <3CEFE702.7060503@freebel.net>
+Date: Sat, 25 May 2002 19:33:22 +0000
+From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-To: parisc linux <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Subject: [parisc-linux] PA-RISC/Linux boot HOWTO
+To: Peter Mottram <peter@petescaff.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] raid-1 on boot disk
+References: <Pine.LNX.4.44.0205241504430.19280-100000@r6.petescaff.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,40 +22,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Hi Peter,
 
-	I just released my sgml source of the HOWTO on my CVS. So, if you want to 
-see the latest version of the HOWTO go there:
-http://cvsweb.tuxfamily.org/cvs/?cvsroot=hppa#dirlist
 
-You'll see the english and the french version of the howto. I plan to 
-release next step with Debian 3.0.
+Peter Mottram wrote:
+> Joel
+> 
+> I did some playing with this some time ago. To have all filesystems under
+> md control then palo must understand two things:
+> 
+> 1. how to read the md filesystem to get the kernel (can use the F0
+> partition for kernel to get round this)
 
-You can retrieve the files:
-export CVSROOT=:pserver:marteaut@cvs.tuxfamily.org:/cvsroot/hppa
-cvs co howto[fr]
-cd howto[fr]
-make [ps|pdf|one|html|version|clean]
+I undurstand F0 is a special slice that PDC has to access to load ipl
 
-ps: for ps output
-pdf: for pdf output
-one: for one-html-file output
-html: for multi-html-file output in html directory
-version: gives you the version of docbook and sgmltools
-clean: guess :)
+> 
+> 2. how to use md / filesystem
+> 
 
-Here, it works with:
-ii  docbook        4.1.99
-ii  docbook-book   2.0.2-1
-ii  docbook-doc    30d10-7
-hi  docbook-dsssl  1.76-1
-ii  docbook-dsssl- 1.75-1
-ii  docbook-to-man 2.0.0-10
-ii  docbook-utils  0.6.10-1
-ii  docbook-xml    4.1.99
-ii  psgml          1.2.4-9
-ii  sgml-base      1.14
-ii  sgml-data      1.5.5
-ii  sgmltools-lite 3.0.3.0.cvs.20
+Is a ramdisk (located in the special slice /boot) would not help?
+I thought to this because of my read on the use of lvm and evms 
+structure system disk. Both write a script to build such ramdisk.
 
-Thanks for your feedback, Thomas.
+> AFAIK these 2 things just don't work right now & Paul Bame has other more
+> important things to do with palo right now.
+> 
+> The approach I take is to have a small / and small /boot as normal ext2
+> partitions & automatically copy these over to spare / & /boot filesystems
+> on mirror + hot spare disk each night.
+
+Well ramdisk will avoid to have to do this 'manual' mirror on F0 and 
+/boot but there are quasi-static and so easy to mirror with dd. On the 
+contrary / is more dynamic so I do not see how do you realise the mirror 
+  of this fs?
+
+> All other filesystems (including
+> swap) are on md. If I update the primary boot disk's F0 then I also
+> update the F0 slice on mirror & spare disks. If the primary boot disk
+> fails then the system will go down but then can boot off the mirror. Make
+> sure you set up PRI and ALT boot paths correctly if you want this to
+> happen automagically & make usre the script which copies / onto the
+> mirror/spare modifies /etc/fstab appropriately!
+> 
+> R.
+> PeteM
+
+I am now much more confident, I will try to have a look in more details.
+
+Many thanks for all information,
+	Joel
