@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail14.speakeasy.net [216.254.0.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1117C482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Jul 2002 00:49:15 -0600 (MDT)
-Received: from unknown (HELO pippin.tausq.org) ([64.81.244.94]) (envelope-sender <randolph@tausq.org>)
-          by mail14.speakeasy.net (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@lists.parisc-linux.org>; 24 Jul 2002 06:49:14 -0000
-Date: Tue, 23 Jul 2002 23:53:44 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020724065344.GF17737@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20020723065000.E4DE3482C@dsl2.external.hp.com> <20020723065807.GB17737@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020723065807.GB17737@tausq.org>
-Subject: [parisc-linux] 2.5 kernel crash on a500 -- help needed
+Received: from hotmail.com (oe71.law4.hotmail.com [216.33.148.167])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AAAA7482B
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 02:33:30 -0600 (MDT)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: <parisc-linux@parisc-linux.org>
+References: <OE32H8BX2vRxFmNHYus00008028@hotmail.com> <20020723150421.G3052@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [parisc-linux] unresoved symbols when doing a make modules_install
+Date: Wed, 24 Jul 2002 10:33:22 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_001C_01C232FD.892170A0"
+Message-ID: <OE71RBHZXFZ0stgr3SU00003162@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,50 +23,598 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-(this reference was copied from the cvs list w.r.t our 2.5 merge)
+This is a multi-part message in MIME format.
 
-In reference to a message from Randolph Chung, dated Jul 22:
-> > init/main.c
-> > add parisc_init back into the init sequence.... this causes the machine to crash though, need to investigate if the call is in the right place
+------=_NextPart_000_001C_01C232FD.892170A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-without parisc_init(), i'm getting this on a500... debugging
-output should be pretty much self-explanatory...
+Hi again,
 
-POSIX conformance testing by UNIFIX
-before init_idle
-after init_idle
-Starting rest_init
-Starting kernel thread 0x0000000010479180, arg 0x0000000000000000, flags 69120
-Return from kernel_thread; pid = 352186432
-After kernel_thread
-Calling cpu_idle
-schedule: need_resched
-prev->stat = 0
-schedule: switch_tasks
-context_switch: mm = 0x0000000014fdf078, oldmm = 0x00000000103ce968
-doing switch_to; prev=0x0,0x0, next=0x104d0040,0x104d0070
--> (the prev/next numbers are reg->iaoq[0] and reg->kpc)
--> there's another printk() right after the switch_to() call, i don't
-   see that...
+I don't understand it either. I've been compiling kernels for my 486 for
+quite a while now, and I never received such an error. So I'm not quite sure
+where to look. I thought I messed things up, so yesterday I did a "make
+mrproper" to start all over again. Still no joy :(
+Does someone have an idea where I should look?
+Attached to this mail you can find my config.
+Thanks.
 
-At this point, the machine hpmcs. The hpmc output is not very helpful,
-and probably wrong. it points the crash to printk (both iaoq and
-gr2 point to printk, but different locations)
 
-I'm not sure whether this is a bug inside our switch_to code (looks
-correct...) or if the switched to task is crashing. It seems to me the
-only thing in the runqueue at this point should be the init thread, 
-right?  but i don't get the printk() output from init.....
+regards,
 
-any hints on how to debug this?
+Kenneth
 
-baffled....
-randolph
+----- Original Message -----
+From: "Matthew Wilcox" <willy@debian.org>
+To: "kenneth westelinck" <kennywest1@hotmail.com>
+Cc: <parisc-linux@parisc-linux.org>
+Sent: Tuesday, July 23, 2002 4:04 PM
+Subject: Re: [parisc-linux] unresoved symbols when doing a make
+modules_install
 
-p.s. for those of you wondering, we do have a linkable 2.5 kernel now
-(at least in some configurations). it doesn't come near to booting yet,
-but willy/helge/richard/grant and others are busy working on it :)
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+
+> On Tue, Jul 23, 2002 at 03:51:57PM +0200, kenneth westelinck wrote:
+> > Today I "baked" myself a new kernel (2.4.18-pa56). After upgrading my
+box
+> > (using apt-get), INIT was dying upon startup with an "unaligned access"
+> > error. Anyway, all is working well (even the soft-power button), but I
+am
+> > getting an "unresolved symbols"-error when doing a "make
+modules_install"
+> > (see attached file). Yes, I copied the System.map to
+> > /boot/System.map-2.4.18-pa56 and created a symbolic link to this file.
+Any
+> > ideas?
+>
+> i'm baffled.  we prototype, define and EXPORT_SYMBOL outs[bwl].  i can't
+> see why you'd get this error.
+>
+> --
+> Revolutions do not require corporate support.
+>
+
+------=_NextPart_000_001C_01C232FD.892170A0
+Content-Type: application/octet-stream;
+	name=".config"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename=".config"
+
+#=0A=
+# Automatically generated by make menuconfig: don't edit=0A=
+#=0A=
+CONFIG_PARISC=3Dy=0A=
+# CONFIG_UID16 is not set=0A=
+CONFIG_RWSEM_GENERIC_SPINLOCK=3Dy=0A=
+# CONFIG_RWSEM_XCHGADD_ALGORITHM is not set=0A=
+=0A=
+#=0A=
+# Code maturity level options=0A=
+#=0A=
+CONFIG_EXPERIMENTAL=3Dy=0A=
+=0A=
+#=0A=
+# Loadable module support=0A=
+#=0A=
+CONFIG_MODULES=3Dy=0A=
+# CONFIG_MODVERSIONS is not set=0A=
+CONFIG_KMOD=3Dy=0A=
+=0A=
+#=0A=
+# Processor type=0A=
+#=0A=
+CONFIG_PA7100=3Dy=0A=
+# CONFIG_PA7200 is not set=0A=
+# CONFIG_PA7100LC is not set=0A=
+# CONFIG_PA8X00 is not set=0A=
+CONFIG_PA11=3Dy=0A=
+=0A=
+#=0A=
+# General options=0A=
+#=0A=
+# CONFIG_SMP is not set=0A=
+CONFIG_CHASSIS_LCD_LED=3Dy=0A=
+# CONFIG_KWDB is not set=0A=
+CONFIG_IOMMU_CCIO=3Dy=0A=
+CONFIG_GSC=3Dy=0A=
+CONFIG_GSC_LASI=3Dy=0A=
+CONFIG_GSC_WAX=3Dy=0A=
+# CONFIG_EISA is not set=0A=
+# CONFIG_ISA is not set=0A=
+# CONFIG_PCI is not set=0A=
+=0A=
+#=0A=
+# General setup=0A=
+#=0A=
+# CONFIG_HOTPLUG is not set=0A=
+CONFIG_NET=3Dy=0A=
+CONFIG_SYSVIPC=3Dy=0A=
+# CONFIG_BSD_PROCESS_ACCT is not set=0A=
+CONFIG_SYSCTL=3Dy=0A=
+CONFIG_KCORE_ELF=3Dy=0A=
+CONFIG_BINFMT_ELF=3Dy=0A=
+CONFIG_BINFMT_SOM=3Dy=0A=
+# CONFIG_BINFMT_MISC is not set=0A=
+# CONFIG_PM is not set=0A=
+=0A=
+#=0A=
+# Parallel port support=0A=
+#=0A=
+CONFIG_PARPORT=3Dy=0A=
+CONFIG_PARPORT_PC=3Dy=0A=
+CONFIG_PARPORT_PC_CML1=3Dy=0A=
+# CONFIG_PARPORT_SERIAL is not set=0A=
+# CONFIG_PARPORT_PC_FIFO is not set=0A=
+# CONFIG_PARPORT_PC_SUPERIO is not set=0A=
+# CONFIG_PARPORT_AMIGA is not set=0A=
+# CONFIG_PARPORT_MFC3 is not set=0A=
+# CONFIG_PARPORT_ATARI is not set=0A=
+CONFIG_PARPORT_GSC=3Dy=0A=
+# CONFIG_PARPORT_SUNBPP is not set=0A=
+# CONFIG_PARPORT_OTHER is not set=0A=
+# CONFIG_PARPORT_1284 is not set=0A=
+=0A=
+#=0A=
+# Block devices=0A=
+#=0A=
+# CONFIG_BLK_DEV_FD is not set=0A=
+# CONFIG_BLK_DEV_XD is not set=0A=
+# CONFIG_PARIDE is not set=0A=
+# CONFIG_BLK_CPQ_DA is not set=0A=
+# CONFIG_BLK_CPQ_CISS_DA is not set=0A=
+# CONFIG_BLK_DEV_DAC960 is not set=0A=
+CONFIG_BLK_DEV_LOOP=3Dy=0A=
+# CONFIG_BLK_DEV_NBD is not set=0A=
+# CONFIG_BLK_DEV_RAM is not set=0A=
+# CONFIG_BLK_DEV_INITRD is not set=0A=
+=0A=
+#=0A=
+# Multi-device support (RAID and LVM)=0A=
+#=0A=
+# CONFIG_MD is not set=0A=
+# CONFIG_BLK_DEV_MD is not set=0A=
+# CONFIG_MD_LINEAR is not set=0A=
+# CONFIG_MD_RAID0 is not set=0A=
+# CONFIG_MD_RAID1 is not set=0A=
+# CONFIG_MD_RAID5 is not set=0A=
+# CONFIG_MD_MULTIPATH is not set=0A=
+# CONFIG_BLK_DEV_LVM is not set=0A=
+=0A=
+#=0A=
+# Networking options=0A=
+#=0A=
+CONFIG_PACKET=3Dy=0A=
+CONFIG_PACKET_MMAP=3Dy=0A=
+CONFIG_NETLINK_DEV=3Dy=0A=
+# CONFIG_NETFILTER is not set=0A=
+CONFIG_FILTER=3Dy=0A=
+CONFIG_UNIX=3Dy=0A=
+CONFIG_INET=3Dy=0A=
+CONFIG_IP_MULTICAST=3Dy=0A=
+# CONFIG_IP_ADVANCED_ROUTER is not set=0A=
+# CONFIG_IP_PNP is not set=0A=
+# CONFIG_NET_IPIP is not set=0A=
+# CONFIG_NET_IPGRE is not set=0A=
+# CONFIG_IP_MROUTE is not set=0A=
+# CONFIG_ARPD is not set=0A=
+# CONFIG_INET_ECN is not set=0A=
+# CONFIG_SYN_COOKIES is not set=0A=
+# CONFIG_IPV6 is not set=0A=
+# CONFIG_KHTTPD is not set=0A=
+# CONFIG_ATM is not set=0A=
+# CONFIG_VLAN_8021Q is not set=0A=
+# CONFIG_IPX is not set=0A=
+# CONFIG_ATALK is not set=0A=
+# CONFIG_DECNET is not set=0A=
+# CONFIG_BRIDGE is not set=0A=
+# CONFIG_X25 is not set=0A=
+# CONFIG_LAPB is not set=0A=
+# CONFIG_LLC is not set=0A=
+# CONFIG_NET_DIVERT is not set=0A=
+# CONFIG_ECONET is not set=0A=
+# CONFIG_WAN_ROUTER is not set=0A=
+# CONFIG_NET_FASTROUTE is not set=0A=
+# CONFIG_NET_HW_FLOWCONTROL is not set=0A=
+=0A=
+#=0A=
+# QoS and/or fair queueing=0A=
+#=0A=
+# CONFIG_NET_SCHED is not set=0A=
+=0A=
+#=0A=
+# SCSI support=0A=
+#=0A=
+CONFIG_SCSI=3Dy=0A=
+CONFIG_BLK_DEV_SD=3Dy=0A=
+CONFIG_SD_EXTRA_DEVS=3D40=0A=
+# CONFIG_CHR_DEV_ST is not set=0A=
+# CONFIG_CHR_DEV_OSST is not set=0A=
+# CONFIG_BLK_DEV_SR is not set=0A=
+CONFIG_CHR_DEV_SG=3Dy=0A=
+# CONFIG_SCSI_DEBUG_QUEUES is not set=0A=
+# CONFIG_SCSI_MULTI_LUN is not set=0A=
+# CONFIG_SCSI_CONSTANTS is not set=0A=
+# CONFIG_SCSI_LOGGING is not set=0A=
+=0A=
+#=0A=
+# SCSI low-level drivers=0A=
+#=0A=
+# CONFIG_SCSI_7000FASST is not set=0A=
+# CONFIG_SCSI_ACARD is not set=0A=
+# CONFIG_SCSI_AHA152X is not set=0A=
+# CONFIG_SCSI_AHA1542 is not set=0A=
+# CONFIG_SCSI_AHA1740 is not set=0A=
+# CONFIG_SCSI_AACRAID is not set=0A=
+# CONFIG_SCSI_AIC7XXX is not set=0A=
+# CONFIG_SCSI_AIC7XXX_OLD is not set=0A=
+# CONFIG_SCSI_DPT_I2O is not set=0A=
+# CONFIG_SCSI_ADVANSYS is not set=0A=
+# CONFIG_SCSI_IN2000 is not set=0A=
+# CONFIG_SCSI_AM53C974 is not set=0A=
+# CONFIG_SCSI_MEGARAID is not set=0A=
+# CONFIG_SCSI_BUSLOGIC is not set=0A=
+# CONFIG_SCSI_DMX3191D is not set=0A=
+# CONFIG_SCSI_DTC3280 is not set=0A=
+# CONFIG_SCSI_EATA is not set=0A=
+# CONFIG_SCSI_EATA_DMA is not set=0A=
+# CONFIG_SCSI_EATA_PIO is not set=0A=
+# CONFIG_SCSI_FUTURE_DOMAIN is not set=0A=
+# CONFIG_SCSI_GDTH is not set=0A=
+# CONFIG_SCSI_GENERIC_NCR5380 is not set=0A=
+# CONFIG_SCSI_INITIO is not set=0A=
+# CONFIG_SCSI_INIA100 is not set=0A=
+CONFIG_SCSI_PPA=3Dm=0A=
+# CONFIG_SCSI_IMM is not set=0A=
+# CONFIG_SCSI_IZIP_EPP16 is not set=0A=
+# CONFIG_SCSI_IZIP_SLOW_CTR is not set=0A=
+# CONFIG_SCSI_NCR53C406A is not set=0A=
+CONFIG_SCSI_LASI700=3Dy=0A=
+CONFIG_53C700_MEM_MAPPED=3Dy=0A=
+CONFIG_53C700_LE_ON_BE=3Dy=0A=
+CONFIG_53C700_USE_CONSISTENT=3Dy=0A=
+# CONFIG_SCSI_NCR53C7xx is not set=0A=
+# CONFIG_ASK_ZALON is not set=0A=
+# CONFIG_ASK_NCR53C8XX is not set=0A=
+# CONFIG_ASK_SYM53C8XX is not set=0A=
+# CONFIG_SCSI_ZALON is not set=0A=
+# CONFIG_SCSI_PAS16 is not set=0A=
+# CONFIG_SCSI_PCI2000 is not set=0A=
+# CONFIG_SCSI_PCI2220I is not set=0A=
+# CONFIG_SCSI_PSI240I is not set=0A=
+# CONFIG_SCSI_QLOGIC_FAS is not set=0A=
+# CONFIG_SCSI_SIM710 is not set=0A=
+# CONFIG_SCSI_SYM53C416 is not set=0A=
+# CONFIG_SCSI_T128 is not set=0A=
+# CONFIG_SCSI_U14_34F is not set=0A=
+# CONFIG_SCSI_DEBUG is not set=0A=
+=0A=
+#=0A=
+# Network device support=0A=
+#=0A=
+CONFIG_NETDEVICES=3Dy=0A=
+=0A=
+#=0A=
+# ARCnet devices=0A=
+#=0A=
+# CONFIG_ARCNET is not set=0A=
+# CONFIG_DUMMY is not set=0A=
+# CONFIG_BONDING is not set=0A=
+# CONFIG_EQUALIZER is not set=0A=
+# CONFIG_TUN is not set=0A=
+# CONFIG_ETHERTAP is not set=0A=
+=0A=
+#=0A=
+# Ethernet (10 or 100Mbit)=0A=
+#=0A=
+CONFIG_NET_ETHERNET=3Dy=0A=
+CONFIG_LASI_82596=3Dy=0A=
+# CONFIG_SUNLANCE is not set=0A=
+# CONFIG_SUNBMAC is not set=0A=
+# CONFIG_SUNQE is not set=0A=
+# CONFIG_SUNGEM is not set=0A=
+# CONFIG_NET_VENDOR_3COM is not set=0A=
+# CONFIG_LANCE is not set=0A=
+# CONFIG_NET_VENDOR_SMC is not set=0A=
+# CONFIG_NET_VENDOR_RACAL is not set=0A=
+# CONFIG_NET_ISA is not set=0A=
+# CONFIG_NET_PCI is not set=0A=
+# CONFIG_NET_POCKET is not set=0A=
+=0A=
+#=0A=
+# Ethernet (1000 Mbit)=0A=
+#=0A=
+# CONFIG_ACENIC is not set=0A=
+# CONFIG_DL2K is not set=0A=
+# CONFIG_MYRI_SBUS is not set=0A=
+# CONFIG_NS83820 is not set=0A=
+# CONFIG_HAMACHI is not set=0A=
+# CONFIG_YELLOWFIN is not set=0A=
+# CONFIG_SK98LIN is not set=0A=
+# CONFIG_FDDI is not set=0A=
+# CONFIG_HIPPI is not set=0A=
+# CONFIG_PLIP is not set=0A=
+# CONFIG_PPP is not set=0A=
+# CONFIG_SLIP is not set=0A=
+=0A=
+#=0A=
+# Wireless LAN (non-hamradio)=0A=
+#=0A=
+# CONFIG_NET_RADIO is not set=0A=
+=0A=
+#=0A=
+# Token Ring devices=0A=
+#=0A=
+# CONFIG_TR is not set=0A=
+# CONFIG_NET_FC is not set=0A=
+# CONFIG_RCPCI is not set=0A=
+# CONFIG_SHAPER is not set=0A=
+=0A=
+#=0A=
+# Wan interfaces=0A=
+#=0A=
+# CONFIG_WAN is not set=0A=
+=0A=
+#=0A=
+# Input core support=0A=
+#=0A=
+# CONFIG_INPUT is not set=0A=
+# CONFIG_INPUT_KEYBDEV is not set=0A=
+# CONFIG_INPUT_MOUSEDEV is not set=0A=
+# CONFIG_INPUT_JOYDEV is not set=0A=
+# CONFIG_INPUT_EVDEV is not set=0A=
+=0A=
+#=0A=
+# Character devices=0A=
+#=0A=
+CONFIG_VT=3Dy=0A=
+CONFIG_VT_CONSOLE=3Dy=0A=
+CONFIG_GSC_PS2=3Dy=0A=
+CONFIG_SERIAL=3Dy=0A=
+CONFIG_SERIAL_CONSOLE=3Dy=0A=
+CONFIG_SERIAL_GSC=3Dy=0A=
+# CONFIG_SERIAL_EXTENDED is not set=0A=
+# CONFIG_SERIAL_NONSTANDARD is not set=0A=
+CONFIG_UNIX98_PTYS=3Dy=0A=
+CONFIG_UNIX98_PTY_COUNT=3D256=0A=
+CONFIG_PRINTER=3Dy=0A=
+# CONFIG_LP_CONSOLE is not set=0A=
+# CONFIG_PPDEV is not set=0A=
+=0A=
+#=0A=
+# I2C support=0A=
+#=0A=
+# CONFIG_I2C is not set=0A=
+=0A=
+#=0A=
+# Mice=0A=
+#=0A=
+# CONFIG_BUSMOUSE is not set=0A=
+CONFIG_MOUSE=3Dy=0A=
+CONFIG_PSMOUSE=3Dy=0A=
+# CONFIG_82C710_MOUSE is not set=0A=
+# CONFIG_PC110_PAD is not set=0A=
+=0A=
+#=0A=
+# Joysticks=0A=
+#=0A=
+# CONFIG_INPUT_GAMEPORT is not set=0A=
+# CONFIG_QIC02_TAPE is not set=0A=
+=0A=
+#=0A=
+# Watchdog Cards=0A=
+#=0A=
+# CONFIG_WATCHDOG is not set=0A=
+CONFIG_GENRTC=3Dy=0A=
+# CONFIG_INTEL_RNG is not set=0A=
+# CONFIG_NVRAM is not set=0A=
+# CONFIG_RTC is not set=0A=
+# CONFIG_DTLK is not set=0A=
+# CONFIG_R3964 is not set=0A=
+# CONFIG_APPLICOM is not set=0A=
+=0A=
+#=0A=
+# Ftape, the floppy tape device driver=0A=
+#=0A=
+# CONFIG_FTAPE is not set=0A=
+# CONFIG_AGP is not set=0A=
+# CONFIG_DRM is not set=0A=
+=0A=
+#=0A=
+# HIL support=0A=
+#=0A=
+=0A=
+#=0A=
+# Multimedia devices=0A=
+#=0A=
+# CONFIG_VIDEO_DEV is not set=0A=
+=0A=
+#=0A=
+# File systems=0A=
+#=0A=
+CONFIG_QUOTA=3Dy=0A=
+# CONFIG_AUTOFS_FS is not set=0A=
+# CONFIG_AUTOFS4_FS is not set=0A=
+# CONFIG_REISERFS_FS is not set=0A=
+# CONFIG_REISERFS_CHECK is not set=0A=
+# CONFIG_REISERFS_PROC_INFO is not set=0A=
+# CONFIG_ADFS_FS is not set=0A=
+# CONFIG_ADFS_FS_RW is not set=0A=
+# CONFIG_AFFS_FS is not set=0A=
+# CONFIG_HFS_FS is not set=0A=
+# CONFIG_BFS_FS is not set=0A=
+# CONFIG_EXT3_FS is not set=0A=
+# CONFIG_JBD is not set=0A=
+# CONFIG_JBD_DEBUG is not set=0A=
+CONFIG_FAT_FS=3Dy=0A=
+CONFIG_MSDOS_FS=3Dy=0A=
+# CONFIG_UMSDOS_FS is not set=0A=
+CONFIG_VFAT_FS=3Dy=0A=
+# CONFIG_EFS_FS is not set=0A=
+# CONFIG_JFFS_FS is not set=0A=
+# CONFIG_JFFS2_FS is not set=0A=
+# CONFIG_CRAMFS is not set=0A=
+# CONFIG_TMPFS is not set=0A=
+# CONFIG_RAMFS is not set=0A=
+# CONFIG_ISO9660_FS is not set=0A=
+# CONFIG_JOLIET is not set=0A=
+# CONFIG_ZISOFS is not set=0A=
+# CONFIG_MINIX_FS is not set=0A=
+# CONFIG_VXFS_FS is not set=0A=
+# CONFIG_NTFS_FS is not set=0A=
+# CONFIG_NTFS_RW is not set=0A=
+# CONFIG_HPFS_FS is not set=0A=
+CONFIG_PROC_FS=3Dy=0A=
+# CONFIG_DEVFS_FS is not set=0A=
+# CONFIG_DEVFS_MOUNT is not set=0A=
+# CONFIG_DEVFS_DEBUG is not set=0A=
+CONFIG_DEVPTS_FS=3Dy=0A=
+# CONFIG_QNX4FS_FS is not set=0A=
+# CONFIG_QNX4FS_RW is not set=0A=
+# CONFIG_ROMFS_FS is not set=0A=
+CONFIG_EXT2_FS=3Dy=0A=
+# CONFIG_SYSV_FS is not set=0A=
+# CONFIG_UDF_FS is not set=0A=
+# CONFIG_UDF_RW is not set=0A=
+# CONFIG_UFS_FS is not set=0A=
+# CONFIG_UFS_FS_WRITE is not set=0A=
+=0A=
+#=0A=
+# Network File Systems=0A=
+#=0A=
+# CONFIG_CODA_FS is not set=0A=
+# CONFIG_INTERMEZZO_FS is not set=0A=
+CONFIG_NFS_FS=3Dy=0A=
+CONFIG_NFS_V3=3Dy=0A=
+# CONFIG_ROOT_NFS is not set=0A=
+CONFIG_NFSD=3Dy=0A=
+CONFIG_NFSD_V3=3Dy=0A=
+CONFIG_SUNRPC=3Dy=0A=
+CONFIG_LOCKD=3Dy=0A=
+CONFIG_LOCKD_V4=3Dy=0A=
+# CONFIG_SMB_FS is not set=0A=
+# CONFIG_NCP_FS is not set=0A=
+# CONFIG_NCPFS_PACKET_SIGNING is not set=0A=
+# CONFIG_NCPFS_IOCTL_LOCKING is not set=0A=
+# CONFIG_NCPFS_STRONG is not set=0A=
+# CONFIG_NCPFS_NFS_NS is not set=0A=
+# CONFIG_NCPFS_OS2_NS is not set=0A=
+# CONFIG_NCPFS_SMALLDOS is not set=0A=
+# CONFIG_NCPFS_NLS is not set=0A=
+# CONFIG_NCPFS_EXTRAS is not set=0A=
+# CONFIG_ZISOFS_FS is not set=0A=
+# CONFIG_ZLIB_FS_INFLATE is not set=0A=
+=0A=
+#=0A=
+# Partition Types=0A=
+#=0A=
+# CONFIG_PARTITION_ADVANCED is not set=0A=
+CONFIG_MSDOS_PARTITION=3Dy=0A=
+# CONFIG_SMB_NLS is not set=0A=
+CONFIG_NLS=3Dy=0A=
+=0A=
+#=0A=
+# Native Language Support=0A=
+#=0A=
+CONFIG_NLS_DEFAULT=3D"iso8859-1"=0A=
+# CONFIG_NLS_CODEPAGE_437 is not set=0A=
+# CONFIG_NLS_CODEPAGE_737 is not set=0A=
+# CONFIG_NLS_CODEPAGE_775 is not set=0A=
+# CONFIG_NLS_CODEPAGE_850 is not set=0A=
+# CONFIG_NLS_CODEPAGE_852 is not set=0A=
+# CONFIG_NLS_CODEPAGE_855 is not set=0A=
+# CONFIG_NLS_CODEPAGE_857 is not set=0A=
+# CONFIG_NLS_CODEPAGE_860 is not set=0A=
+# CONFIG_NLS_CODEPAGE_861 is not set=0A=
+# CONFIG_NLS_CODEPAGE_862 is not set=0A=
+# CONFIG_NLS_CODEPAGE_863 is not set=0A=
+# CONFIG_NLS_CODEPAGE_864 is not set=0A=
+# CONFIG_NLS_CODEPAGE_865 is not set=0A=
+# CONFIG_NLS_CODEPAGE_866 is not set=0A=
+# CONFIG_NLS_CODEPAGE_869 is not set=0A=
+# CONFIG_NLS_CODEPAGE_936 is not set=0A=
+# CONFIG_NLS_CODEPAGE_950 is not set=0A=
+# CONFIG_NLS_CODEPAGE_932 is not set=0A=
+# CONFIG_NLS_CODEPAGE_949 is not set=0A=
+# CONFIG_NLS_CODEPAGE_874 is not set=0A=
+# CONFIG_NLS_ISO8859_8 is not set=0A=
+# CONFIG_NLS_CODEPAGE_1250 is not set=0A=
+# CONFIG_NLS_CODEPAGE_1251 is not set=0A=
+# CONFIG_NLS_ISO8859_1 is not set=0A=
+# CONFIG_NLS_ISO8859_2 is not set=0A=
+# CONFIG_NLS_ISO8859_3 is not set=0A=
+# CONFIG_NLS_ISO8859_4 is not set=0A=
+# CONFIG_NLS_ISO8859_5 is not set=0A=
+# CONFIG_NLS_ISO8859_6 is not set=0A=
+# CONFIG_NLS_ISO8859_7 is not set=0A=
+# CONFIG_NLS_ISO8859_9 is not set=0A=
+# CONFIG_NLS_ISO8859_13 is not set=0A=
+# CONFIG_NLS_ISO8859_14 is not set=0A=
+# CONFIG_NLS_ISO8859_15 is not set=0A=
+# CONFIG_NLS_KOI8_R is not set=0A=
+# CONFIG_NLS_KOI8_U is not set=0A=
+# CONFIG_NLS_UTF8 is not set=0A=
+=0A=
+#=0A=
+# Console drivers=0A=
+#=0A=
+=0A=
+#=0A=
+# Frame-buffer support=0A=
+#=0A=
+CONFIG_FB=3Dy=0A=
+CONFIG_DUMMY_CONSOLE=3Dy=0A=
+# CONFIG_FB_CYBER2000 is not set=0A=
+CONFIG_FB_STI=3Dy=0A=
+# CONFIG_FB_VIRTUAL is not set=0A=
+# CONFIG_FBCON_ADVANCED is not set=0A=
+CONFIG_FBCON_CFB8=3Dy=0A=
+CONFIG_FBCON_CFB32=3Dy=0A=
+CONFIG_FBCON_STI=3Dy=0A=
+# CONFIG_FBCON_FONTWIDTH8_ONLY is not set=0A=
+# CONFIG_FBCON_FONTS is not set=0A=
+CONFIG_FONT_8x8=3Dy=0A=
+CONFIG_FONT_8x16=3Dy=0A=
+CONFIG_STI_CONSOLE=3Dy=0A=
+CONFIG_DUMMY_CONSOLE=3Dy=0A=
+CONFIG_DUMMY_CONSOLE=3Dy=0A=
+CONFIG_FBCON=3Dy=0A=
+CONFIG_FBCON_FONT=3Dy=0A=
+CONFIG_FONT_8x8=3Dy=0A=
+CONFIG_FONT_8x16=3Dy=0A=
+CONFIG_FONT_6x11=3Dy=0A=
+CONFIG_FONT_SUN12x22=3Dy=0A=
+=0A=
+#=0A=
+# Sound=0A=
+#=0A=
+CONFIG_SOUND=3Dy=0A=
+# CONFIG_SOUND_BT878 is not set=0A=
+# CONFIG_SOUND_CMPCI is not set=0A=
+# CONFIG_SOUND_EMU10K1 is not set=0A=
+# CONFIG_MIDI_EMU10K1 is not set=0A=
+# CONFIG_SOUND_FUSION is not set=0A=
+# CONFIG_SOUND_CS4281 is not set=0A=
+# CONFIG_SOUND_ES1370 is not set=0A=
+# CONFIG_SOUND_ES1371 is not set=0A=
+# CONFIG_SOUND_ESSSOLO1 is not set=0A=
+# CONFIG_SOUND_MAESTRO is not set=0A=
+# CONFIG_SOUND_MAESTRO3 is not set=0A=
+# CONFIG_SOUND_ICH is not set=0A=
+CONFIG_SOUND_HARMONY=3Dy=0A=
+# CONFIG_SOUND_RME96XX is not set=0A=
+# CONFIG_SOUND_SONICVIBES is not set=0A=
+# CONFIG_SOUND_TRIDENT is not set=0A=
+# CONFIG_SOUND_MSNDCLAS is not set=0A=
+# CONFIG_SOUND_MSNDPIN is not set=0A=
+# CONFIG_SOUND_VIA82CXXX is not set=0A=
+# CONFIG_MIDI_VIA82CXXX is not set=0A=
+# CONFIG_SOUND_OSS is not set=0A=
+# CONFIG_SOUND_TVMIXER is not set=0A=
+=0A=
+#=0A=
+# Kernel hacking=0A=
+#=0A=
+CONFIG_MAGIC_SYSRQ=3Dy=0A=
+
+------=_NextPart_000_001C_01C232FD.892170A0--
