@@ -1,35 +1,65 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA27041
-	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Oct 2000 10:44:39 -0600
-Message-Id: <200010231650.JAA18323@milano.cup.hp.com>
-To: "Servio E. Cabrera" <servio.cabrera@mobilix.dk>
-Cc: "Parisc-Linux mailing list \(E-mail\)" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] CD image does not recognize the SCSI Hard Drives! on C110 
-In-reply-to: Your message of "Mon, 23 Oct 2000 10:34:16 PDT."
-             <818F6C8F771DD211B5EA0008C7FABF4B02BB1A95@ms08.mobilix.dk>
-Date: Mon, 23 Oct 2000 09:50:38 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA28860
+	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Oct 2000 15:04:59 -0600
+Message-Id: <200010232111.OAA18829@milano.cup.hp.com>
+To: "Thomas Marteau" <marteaut@esiee.fr>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: A console and a term 
+In-reply-to: Your message of "Mon, 23 Oct 2000 22:46:44 PDT."
+             <001301c03d32$5b423a60$a832d793@esiee.fr>
+Date: Mon, 23 Oct 2000 14:11:03 -0700
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Servio E. Cabrera" wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
+"Thomas Marteau" wrote:
+> Hi Grant,
 > 
+>     Just a word to tell you that we have now a console on STI and a term on
+> our serial port of the 712. It is quite useful to debug the stdout.
+
+Oh good! I was wondering how you guys were doing with the previous
+round of advice...let me take a first whack at your following questions.
+I've cc'd parisc-linux since I'll probably need to ne corrected. :^)
+
+>     We have copied a terminfo directory into /usr/share. After that we type
+> In the term: export TERM=vt100
+> In the console: We have not found the good term yet because our screen is an
+> A4032A and no term work with. If you have any hints...
+
+I think TERM=linux was the right setting...console terminal emulation
+may need fixing too though. I don't know.
+
 > 
-> Hello:
-> 
-> I have booted the CD image on several machines and does not recognize
-> the SCSI HarD drive, the machine I have a HP9000 s700 / c110.
+>     Also, we are interested in the keyboard and STI drivers but we do not
+> have many docs on the subject. So, if you know a URL...
 
-Hi Servio,
-Just to be clear, is this the CD Image v0.1 dated August 4th, 2000?
-(this was made especially for San Jose Linux World Expo)
+PS/2 keyboard is the standard driver - I'm sure a few of the keys are
+mapped differently. I don't have a table of the scancodes. I suggest
+looking at mklinux to see how they handle it.
 
-If so, then you didn't see the printing on the CD we handed out:
- "Bootable on HP 712, A180, B180 and other systems"
+STI document is published on
+	http://www.thepuffingroup.com/parisc/documentation.html
 
-"other" mostly means very old workstations (715/735/etc) and
-excludes systems with an I/O MMU (any C, J, L, or N-class for example).
+I only have a vague idea of what STI really is and what it supports.
 
+
+>     It is fun to view TOP and VI work. Finally, can you tell us what kind of
+> technical feedback you'd like from us. Would you be interested in our
+> precise advancement or is the website enough for that (we are planning to
+> integrate a sort of Logfile page with the history of all the events which
+> occured since the beginning)?
+
+Well, whenever you change any kernel sources and make something more
+useful, please post the patch to parisc-linux mailing list. Or post a
+URL which points to the patch. Note that we really want to only
+fix stuff in arch/parisc* and include/asm-parisc* if we can help it.
+(The issue is we'd like to merge into Linus' tree this year and don't
+want generic code changes to hold up the process.)
+
+If it gets to be a problem (too many good patches), you will get write
+access to the CVS repository.
+
+cheers,
 grant
 
 Grant Grundler
