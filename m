@@ -1,11 +1,18 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: [parisc-linux] Proposal for implementing IRQ affinity
-Date: 30 Aug 2004 23:31:30 -0400
-Message-ID: <1093923097.3870.18.camel@mulgrave>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: linux signal race fixes,
+	patches against hppa tree, please test.
+Date: Tue, 31 Aug 2004 00:23:33 -0400 (EDT)
+Message-ID: <200408310423.i7V4NXjb001644@hiauly1.hia.nrc.ca>
+References: <no.id>
 Mime-Version: 1.0
-Content-Type: text/plain
-To: PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: James.Bottomley@steeleye.com,
+ parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <no.id> from "John David Anglin" at Aug 27, 2004 10:36:12 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -16,74 +23,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-IRQ affinity really only applies to SMP systems.  However, this proposal
-will alter the interrupt layout even on UP systems, so if you care about
-that sort of thing, read on. 
+> > This is more important for you, approximately 48 hours ago, Linus
+> > commited a fix for a signal handling race.
+> > 
+> > http://linux.bkbits.net:8080/linux-2.6/cset@1.1846.1.48?nav=index.html|Chang
+> > eSet@-2d
+> 
+> I have the patch under test on hiauly6 with todays CVS.
 
-Introduction 
-============ 
+I've been running this now for three days on hiauly6 with a 32-bit
+2.6.8.1-pa7 kernel (default c3000 config) doing almost continuous gcc
+builds.  Things seem pretty promising.  No random SIGSEGVs and expect
+seems to be behaving itself.
 
-External interrupts on parisc processors are triggered by writing to the
-memory mapped control register EIRR (cr23).  Since the mapping of the
-EIRR into memory is per processor, and usually programmed into external
-devices, the upshot is that each external device usually sents an
-interrupt to a specific processor.  The implementation of IRQ affinity
-would allow us to redesignate a given interrupt to go to a different CPU
-(this would mean, for instance, that we could run the user daemon
-irqbalanced to balance out all our interrupts among all the processors).
+> I had another SIGSEGV on gsyprf11.  It looks as if this was in /bin/sh
+> although gdb doesn't say which program the fault ocurred in.
 
-This arrangement means that parisc has 32 distinct interrupts for a 32
-bit kernel and 64 on a 64 bit kernel. 
+This is definitely not the case with the 64-bit SMP kernel on gsyprf11.
+There I've been testing with an unpatched kernel.  Expect works better with
+tcl8.3 but there are still some tests that fail when they shouldn't, and
+the output with tests which produce a large amount of output gets
+truncated.  With tcl8.4, expect has major problems.  The Tcl_Finalize
+patch doesn't fix them.  I think we need to try Carlos's patch on a
+64-bit SMP system to see if it helps the expect and SEGV problems.
 
-There is, however, a bus based complication: not all parisc busses allow
-an arbitrary device to send and interrupt to a CPU directly.  In
-general, the older bus controllers: dino, cujo, etc cannot do this, with
-the result that processing interrupts in these busses is two-phase. 
-When a device interrupts, the irq is fielded by the dino controller,
-which has an interrupt register to interrogate the dino specific lines
-and see which actual device interrupted and execute the appropriate irq
-handling routine.  The newer iosapic interrupt controllers don't require
-this because every device attached to the iosapic can be programmed
-directly with a CPU EIRR address and bit number. 
+I'm off to Korea early Thursday morning so I can't do much more on
+this until I'm back in a couple of weeks.
 
-The current parisc scheme involves IRQ regions.  Each region is tied to
-a particular EIRR bit (CPU irq number) and also contains all the
-interrupt designations for the older bus multiplexing as components of
-the irq_region.  This is ideal for the older busses, but a bit wasteful
-in the iosapic which doesn't need the intermediate interruption
-information. 
-
-The new proposal is to sweep away irq regions completely and instead use
-the generic struct hw_interrupt_type from linux/irq.h 
-
-The way this would work is that we'd designate a new cpu_irq array
-statically for 32 or 64 of these structures (one per bit in the EIRR). 
-
-The iosapic would be allowed simply to allocate a free one of these
-(according to the usual IRQ sharing rules) for any device that needed an
-interrupt. 
-
-An older bus would allocate a single one, but would then register a
-separate vector of interrupts (also a vector of struct
-hw_interrupt_type) along with a callback to select the correct vector
-for subsequent execution. 
-
-The hw_interrupt_type structure contains an affinity setting callback
-(set_affinity) which can be used to adjust the affinity either
-internally or via the /proc interface.  We would expose only the CPU
-interrupts (first 32 or 64) as capable of having altered affinity (the
-remaining older bus interrupts, being effectively slaved to the affinity
-of the corresponding CPU interrupts would have a NULL set_affinity
-callback). 
-
-This scheme should move us entirely over to the use of generic interrupt
-descriptors and allow the affinity setting of those interrupts which are
-susceptible to it (namely only the directly accessible EIRR interrupts).
-Any comments before I actually try this?
-
-James 
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
