@@ -1,16 +1,11 @@
-From: Matthew Wilcox <willy@debian.org>
+From: rwhaley@cs.utk.edu (R Clint Whaley)
 Subject: Re: [parisc-linux] Re: atlas3 on hppa: unexpected reloc type
-Date: Mon, 14 Jun 2004 22:06:17 +0100
-Message-ID: <20040614210617.GF20511@parcelfarce.linux.theplanet.co.uk>
-References: <20040614205346.4B6031D377@nala.cs.utk.edu>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: tausq@debian.org,
+Date: Mon, 14 Jun 2004 16:53:46 -0400 (EDT)
+Message-ID: <20040614205346.4B6031D377@nala.cs.utk.edu>
+Cc: rwhaley@cs.utk.edu,
  parisc-linux@lists.parisc-linux.org
-To: R Clint Whaley <rwhaley@cs.utk.edu>
+To: tausq@debian.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040614205346.4B6031D377@nala.cs.utk.edu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,22 +16,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 14, 2004 at 04:53:46PM -0400, R Clint Whaley wrote:
-> My understanding from the docs is that pa11 doesn't define any prefetch
-> instructions, which means these formulations are loads to an invalid
-> register, which, since they are loads and not prefetches, could have
-> side effects (eg., seg fault).  Therefore, you need to use them only
-> on pa20, even if they compile on pa11.  I take it this is what you are saying?
+Randolph,
 
-That's correct.
+>It does work on all pa20 processors, afaik. Let me rephrase:
+>
+>"Be aware that, if atlas relies on being able to prefetch invalid
+>addresses and have that not fault, then it will only work on some PA 
+>processors but not all of them. All pa20 processors should work.
+>pa11 processors will not."
+>
+>We ran into this while trying to get PA7300LC to do prefetching in the
+>kernel.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+My understanding from the docs is that pa11 doesn't define any prefetch
+instructions, which means these formulations are loads to an invalid
+register, which, since they are loads and not prefetches, could have
+side effects (eg., seg fault).  Therefore, you need to use them only
+on pa20, even if they compile on pa11.  I take it this is what you are saying?
+
+Thanks,
+Clint
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
