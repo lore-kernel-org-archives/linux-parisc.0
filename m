@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8E4084859
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Jun 2002 14:44:08 -0600 (MDT)
-Date: Tue, 18 Jun 2002 22:44:04 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Tim ter Laak <timl@scintilla.utwente.nl>
-Cc: Masliy Alex <masliy@kfti.knc.ru>,
-	Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP PA 715/50 installation trouble
-Message-ID: <20020618204404.GC18927@charite.de>
-References: <adn_159_0_@dionis.kfti.knc.ru> <Pine.LNX.4.21.0206182235280.13201-100000@utelscin.scintilla>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0206182235280.13201-100000@utelscin.scintilla>
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9F2CD482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 01:20:45 -0600 (MDT)
+To: Michael Audette <Mike.Audette@synopsys.com>
+Subject: Re: [parisc-linux] SCSI Boot Problems on HP C110/9000
+Message-ID: <1024471228.3d1030bc9e9e8@webmail.tiscalinet.be>
+Date: Wed, 19 Jun 2002 09:20:28 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
+References: <HMEKIKEAKEFFMJJOEAJNKEJKFIAA.maudette@synopsys.com>
+In-Reply-To: <HMEKIKEAKEFFMJJOEAJNKEJKFIAA.maudette@synopsys.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,21 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am 18.06.2002 um 22:41:04 +0200 schrieb Tim ter Laak folgendes:
+Quoting Michael Audette <Mike.Audette@synopsys.com>:
 
-> I have the exact same problem on this hardware. As long as I boot the
-> kernel from network, the whole linux system comes up fine. But the BIOS
-> won't load the PALO from disk. :-( Throw in the old UX disk, and it just
-> boots.
-> I know there's a firmware update for the faster 715's (66MHz and
-> up). Could this be a firmware bug? 
 
-Maybe. You can perform a firmware update using tftp and bootp, its just
-like booting the kernel.
+> SCSI bus is being reset for host 0 channel 9
+> ncr53c8xx_reset: pid 0 reset_flags=2 serial_number=84
+> serian_number_at_timeout=84
+> ncr53c720-0: suspicious SCSI data while resetting the BUS
+> ncr53c720-0:
+> dp1,d15-8,dp0,d7-0,rst,req,ack,bsy,sel,ath,msg,c/d,i/o=0X4020029,
+> expecting
+> 0x100
+> 
 
--- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Computer /nm./: a device designed to speed and automate errors.
-                                       -- From the Jargon File. 
+External disk? (scsi id 9?)
+If it is an external disk, check the scsi chaine (frequently no or not proper
+scsi terminator).
+If it is an internal disk, check that entension connector are also 'closed' by
+proper scsi terminator.
+
+Good luck,
+    Joel
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
