@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.umr.edu (mrelay1.cc.umr.edu [131.151.1.120])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 662BA4829
-	for <parisc-linux@parisc-linux.org>; Mon, 30 Sep 2002 07:05:42 -0600 (MDT)
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Subject: RE: [parisc-linux] Want a Big Penis?
-Date: Mon, 30 Sep 2002 08:05:35 -0500
-Message-ID: <2B45A04D8F18D947A400F0850CE3B53B060D2D@umr-mail7.umr.edu>
-From: "Neulinger, Nathan" <nneul@umr.edu>
-To: "Thibaut VARENE" <varenet@esiee.fr>,
-	<parisc-linux@parisc-linux.org>
+Received: from eightythree.valleybikes.com (valleybikes.com [24.123.22.113])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D0D414829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 08:10:27 -0600 (MDT)
+Subject: Re: [parisc-linux] firmware update using BOOTP
+From: James Smith <james@compusmithllc.com>
+To: Frank Cornelis <Frank.Cornelis@rug.ac.be>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.GSO.4.31.0209292306350.1357-100000@eduserv.rug.ac.be>
+References: <Pine.GSO.4.31.0209292306350.1357-100000@eduserv.rug.ac.be>
+Content-Type: text/plain
+Date: 30 Sep 2002 09:10:22 -0500
+Message-Id: <1033395024.454.3.camel@seventy>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-SpamAssassin w/ DCC + Razor is easy to set up and does a pretty good job
-getting rid of most of the spam I get on a daily basis.=20
+most of my 712's are ver 1.9 or 2.1 & they all work fine as far as i can
+see with linux - is there any advantage to updating to 2.3 ?
 
--- Nathan
+or is this a case of 'if its not broken....'
 
-------------------------------------------------------------
-Nathan Neulinger                       EMail:  nneul@umr.edu
-University of Missouri - Rolla         Phone: (573) 341-4841
-Computing Services                       Fax: (573) 341-4216
+James S
 
 
-> -----Original Message-----
-> From: Thibaut VARENE [mailto:varenet@esiee.fr]=20
-> Sent: Monday, September 30, 2002 7:54 AM
-> To: parisc-linux@parisc-linux.org
-> Subject: Re: [parisc-linux] Want a Big Penis?
->=20
->=20
->=20
-> Well dudes, it's not the size of the boat that matters, it's=20
-> the motion=20
-> in the ocean !  ;o))
->=20
->=20
-> More seriously, isn't it possible to avoid such spam ?
-> It's becomming more and more regular...
->=20
->=20
-> --=20
-> Thibaut VARENE
-> PA/Linux ESIEE Team
-> http://pateam.esiee.fr/
->=20
->=20
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->=20
+> The FAQ
+> 	7. How can I check if the PDC (firmware) revision is the latest ?
+> at
+> 	http://www.parisc-linux.org/faq/index.html
+> says nothing about updating the firmware using BOOTP.
+> I think it should be put there since it works great and is very easy to
+> do. I just upgraded a 712 from 2.1 to 2.3 using BOOTP.
