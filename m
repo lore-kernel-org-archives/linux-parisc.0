@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F0CF482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 12:43:51 -0700 (MST)
-Message-Id: <200111141939.MAA09459@puffin.external.hp.com>
-To: joel.soete@freebel.net
+Received: from smtp003pub.verizon.net (smtp003pub.verizon.net [206.46.170.182])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E405482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 12:50:14 -0700 (MST)
+Received: from verizon.net (pool-151-201-224-254.pitt.east.verizon.net [151.201.224.254])
+	by smtp003pub.verizon.net  with ESMTP
+	for <parisc-linux@lists.parisc-linux.org>; id fAEJne314412
+	Wed, 14 Nov 2001 13:49:40 -0600 (CST)
+Message-ID: <3BF2CB66.7070506@verizon.net>
+Date: Wed, 14 Nov 2001 14:52:06 -0500
+From: Rafael Herrera <vze26vn8@verizon.net>
+Reply-To: raffo@neuronet.pitt.edu
+MIME-Version: 1.0
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.14-pa1 seems to works fine on my B180 
-In-Reply-To: Message from joel.soete@freebel.net
-   of "Wed, 14 Nov 2001 19:48:04 +0100." <1005763684.3bf2bc64ee2a9@webmail.tiscalinet.be>
-Date: Wed, 14 Nov 2001 12:39:07 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: Re: [parisc-linux] Booting with the STI console in a 715/75 (works)
+References: <3BF096F2.8010409@verizon.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +26,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-joel.soete@freebel.net wrote:
-> Hi all,
-> 
-> For my part 2.4.14-pa1 seems to works fine on my B180L (without or with 
-> modules).
+Hello all,
 
-Astro based machines (eg C3000) still HPMC with:
-	sync; cd/tmp; cp /boot/vmlinux .; sync;
+My STI console now works under 2.4.14-pa1. Good work!
 
-I found one nit in sba_dma_supported() but that's not the problem.
-Has anyone tried C200 (or similar? ie something with ccio)
-
-thanks,
-grant
+-- 
+      Rafael
