@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12503.mail.yahoo.com (web12503.mail.yahoo.com [216.136.173.195])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3E3D34829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 16:29:22 -0600 (MDT)
-Message-ID: <20020930222919.62918.qmail@web12503.mail.yahoo.com>
-Date: Mon, 30 Sep 2002 15:29:19 -0700 (PDT)
+Received: from web12508.mail.yahoo.com (web12508.mail.yahoo.com [216.136.173.200])
+	by dsl2.external.hp.com (Postfix) with SMTP id 63D3E4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 16:31:21 -0600 (MDT)
+Message-ID: <20020930223115.63225.qmail@web12508.mail.yahoo.com>
+Date: Mon, 30 Sep 2002 15:31:15 -0700 (PDT)
 From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
 Subject: Re: [parisc-linux] hardware newbie question...
-To: Stephen J de Vries <paulhill20@juno.com>,
+To: Andreas Deresch <aderesch@fs.tum.de>,
+	Thibaut VARENE <varenet@esiee.fr>
+Cc: Stephen J de Vries <paulhill20@juno.com>,
 	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020925.090915.-178139.3.paulhill20@juno.com>
+In-Reply-To: <Pine.NEB.4.44.0209251557570.7537-100000@io.fachschaften.tu-muenchen.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,47 +24,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-What do you mean locked down?  Boot the thing single user and delete
-the password.  At the "Press any key to interrupt boot" prompt stop the
-boot.  Type BO <enter> interact with ISL? <y> <enter>.  Then at the isl
-prompt type <hpux -is> <enter>.  That will get you into single user
-mode.  Unless the system is setup in trusted mode you should be able to
-get in and modify the /etc/passwd file.  The user name should come
-first followed by the password that is encrypted within the colons
-(ex:root:VDTGE$8757474:).  Delete the encrypted stuff but leave the
-colons and save it.  Reboot it in multiuser mode and root shouldn't
-have a password.
+--- Andreas Deresch <aderesch@fs.tum.de> wrote:
+> On Wed, 25 Sep 2002, Thibaut VARENE wrote:
+> 
+> > Stephen J de Vries wrote:
+> > > I have a HP 712 that I'd purchased recently.
+> > >
+> > > My question is:
+> > >
+> > > Can I use a PC monitor, keyboard, and mouse to boot the thing up?
+>  If so,
+> > > does the monitor have to be a multisync or something special?
+> > OK for the PC monitor. Use 'Tab' at boot time to switch 712's
+> resolution
+> > NO for the PC keyboard (pc kbd is 75mA iirc, 712 is 500mA)
+> Hhmm. I have used two different PS/2 keyboards on a 712. So far
+> nothing
+> unexpected has happened to either the box nor the keyboard... it
+> works just
+> fine.
+> 
+> ad
+> 
+
+Me too....
 
 derek
-
-
---- Stephen J de Vries <paulhill20@juno.com> wrote:
-> I have a HP 712 that I'd purchased recently.
-> 
-> My question is:
-> 
-> Can I use a PC monitor, keyboard, and mouse to boot the thing up?  If
-> so,
-> does the monitor have to be a multisync or something special?
-> 
-> In addition, HP-UX is on the hard drive but is locked down.  I was
-> thinking of buying an external CD drive and attempting to load debian
-> 0.93.  Can anyone recommend a place to buy the CD drive that they
-> have
-> dealt with?  I also have a network so I could attempt a network
-> install
-> but I am not sure what minimum requirements I'd need to fulfill for
-> that.
->  Is my approach the right one?
-> 
-> Thanks for the advice...
-> 
-> Stephen de Vries
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
 
 __________________________________________________
 Do you Yahoo!?
