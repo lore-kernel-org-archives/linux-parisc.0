@@ -1,22 +1,16 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 487AE4840
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72DE74840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  5 Jan 2004 12:33:16 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AdaTL-0004aR-Fn; Mon, 05 Jan 2004 19:33:07 +0000
-Date: Mon, 5 Jan 2004 19:33:07 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Message-ID: <20040105193307.GA6982@parcelfarce.linux.theplanet.co.uk>
-References: <20040105172146.GE23782@systemhalted>
+	Mon,  5 Jan 2004 12:56:24 -0700 (MST)
+Date: Mon, 5 Jan 2004 14:48:09 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Message-ID: <20040105194809.GA9269@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040105172146.GE23782@systemhalted>
-Sender: <willy@www.linux.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Subject: [parisc-linux] Re: [Status] hppa's userspace in 2004 (looking back)
+Cc: 
+Subject: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,67 +20,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 05, 2004 at 12:21:46PM -0500, Carlos O'Donell wrote:
-> A new year is here and it's time to look back and say, hey, we did a
-> great job, hacked on many things and made parisc a better port!
 
-Carlos, thank you for all the work you've put in over the last year
-and more.  We would be significantly worse off without your efforts.
-I'm sure many people who read this aren't aware just how much work you've
-put in to make PA/Linux as good as it is -- and that's a compliment.
+pa'ers,
 
-> ============
-> GNU/binutils
-> ============
-> 
-> Maybe someone can comment on this? Randolph was great enough to remove
-> silly ltp relocations from static binaries. Without the loader running
-> the ltp is never read from the DT_PLTGOT dynamic entries... so it just
-> made sense to translate these into dp relative relocations. dlopen from
-> static binaries still doesn't work, minor problem really.
-> 
-> I know that hppa is not really multi-arch? We have to have two separate
-> binaries to do 32 and 64-bit work. Someone want a project? :)
+glibc 2.3.2.ds1-10
 
-I have an unfinished project to get all the remnants of (%sr0,xx) right
-from 2-bit sr fields.  I think I can do quite a simplification here,
-but I haven't got round to finishing it off.  I'll take another look
-in February.
+- Added profiling patches (Thanks Randolph!)
+- Rebuilt glibc.
+- Did not modify changelog or bump version.
 
-> ============
-> GNU/debugger
-> ============
-> 
-> Our gdb has no visibility upstream. I'm taking a hiatus from glibc to
-> fix gdb. I volunteered for this like 2 years ago, but glibc took a long
-> time to fix.
+Testers wanted please, in particular to test if building with -pg works
+on your system and you get the expected results.
 
-The bounty is currently set at one bottle of single malt (in the
-10-20 year old range, not the 50 year old range ;-)
+If testing goes well, these patches are going into debian-glibc's tree.
 
-> ===============
-> ELF64 Userspace
-> ===============
-> 
-> 32-bit versus 64-bit signals are fixed. Along with ucontext and siginfo.
-> A good project might be for someone to implement the set/get/make/swap
-> context calls in userspace, takers are welcome! I will *not* be working
-> ELF64 yet, without a working gdb it's quite hard to do *anything*. I
-> just recently learned how to poke insns into binary files for
-> debugging... it's not as much fun as you think ;)
-> 
-> I need to do similar signal hacking for ia64 or upstream may never
-> accept my linux/kernel/* patches. Worst-case has us absorb the changes
-> into our arch directory and nobody else benefits from the framework :(
-
-There's certainly enthusiasm for these changes -- the more
-32-bit-emulation code we can share, the better.  If you don't have time
-for this, I can take this on.  But as I said, not till February.
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Cheers,
+Carlos.
