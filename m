@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8ECEF482C
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 02:53:01 -0700 (MST)
-Message-ID: <3C1725D5.7CB86E29@esiee.fr>
-Date: Wed, 12 Dec 2001 10:39:33 +0100
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: Sven Cronenberg <sven.cronenberg@web.de>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] X WIndows on HP9000 720 or 735
-References: <3C17254A.3050209@web.de>
+Received: from bhonet00003.fonts.de (www.fonts.de [212.109.160.102])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5606F482C
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 05:15:23 -0700 (MST)
+Received: from mail.fonts.de (mail.fonts.de [193.103.125.252])
+	by bhonet00003.fonts.de (Postfix) with ESMTP id 3631B3AB8B
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 13:15:42 +0100 (CET)
+Date: Wed, 12 Dec 2001 13:19:19 +0000
+Message-Id: <200112121319.AA3146187070@mail.fonts.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+From: "Jan Heumann" <jheumann@fonts.de>
+Reply-To: <jheumann@fonts.de>
+To: <parisc-linux@parisc-linux.org>
+Subject: [parisc-linux] [test] PA-RISC Linux 0.9.3
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +24,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Sven,
+I have test the PA-RISC Linux 0.9.3-RC6.
+The test was successfully on the follow machine :
 
-> I would like to know if anyone has succeeded in running X Windows for
-> PARISC Linux on one of those machines?
+HP9000 710
+HP9000 715 33MHz
+HP9000 715 50 MHz
+HP9000 715 64 MHz
+HP9000 720
+HP9000 750
 
-Yes, some people did succed to get X running on these machines. Look at
-http://mkhppa1.esiee.fr/list.html
-If you have trouble, try to contact them directly.
+All machines have installed with a serial HP 700/60 Terminal.
 
-> By the way: How das the x-windows for PARISC Linux work. Does it access
-> the graphics card
-> via the framebuffer device or directly?
-
-If you want X, you need the framebuffer device. That's our only way for
-the moment.
-
-Good Luck, Thomas.
-ESIEE Team
+in the packages are a bug. by selecting with tasksel can the installation 
+frozen. i have use unix-server, web-server and c-developer and it is not 
+frozen. i have selected all packages and the installation is frozen.
