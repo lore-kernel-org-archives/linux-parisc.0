@@ -1,19 +1,19 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B9B74868
+Return-Path: <jools@oxfordinspire.co.uk>
+Received: from hp9000.workshop (oxfordinspire.co.uk [62.3.242.169])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 14FB648E9
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Jan 2004 11:57:20 -0700 (MST)
-Date: Mon, 19 Jan 2004 11:57:18 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] init and exit text problem
-Message-ID: <20040119185718.GA872@colo.lackof.org>
-References: <20040117081720.GA29918@colo.lackof.org>
-	<40047B6A000037F2@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40047B6A000037F2@ocpmta2.freegates.net>
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+	Mon, 19 Jan 2004 12:33:55 -0700 (MST)
+Received: from inspiron.workshop ([192.168.1.8])
+	by hp9000.workshop with esmtp (Exim 4.30) id 1Aif76-0000Kt-I7
+	for parisc-linux@lists.parisc-linux.org; Mon, 19 Jan 2004 19:31:08 +0000
+From: Jools Smyth <jools@oxfordinspire.co.uk>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 19 Jan 2004 19:30:26 +0000
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Message-Id: <200401191930.27090.jools@oxfordinspire.co.uk>
+Subject: [parisc-linux] Stability / Kernel 2.6.1 / HD Freezes
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,24 +23,38 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 19, 2004 at 12:16:40PM +0100, Joel Soete wrote:
-> Grant,
-> 
-> A great news: your kernel (2.6.1-pa4) boot well on the N4000-55 :)
+Hi all,
 
-awesome! thanks for trying it.
+I've been reading the list for a while, thought I should join. I'm not really 
+a developer (well not on hppa) but I am happy to test stuff out :-)
 
-> If i well find back your mail and references to this "bridge_ctl" patch otc
-> I don't reach to apply Russel's patch like this (against 2.6.1) to test on
-> my B2k (which you know don't work yet with pdc_cons). Can you make your "bridge_ctl"
-> patch available on ftp.p-l.o?
+First of all, I want to thank everyone whos worked on linux for HPPA.
+I never really felt comfortable with hp-ux, and getting things working was 
+always a pain. 
 
-yes - certainly ftp://ftp.parisc-linux.org/patches/diff-2.6.1-bridge_ctl
+I own a model 9000/800/A180c. (512 mb ram / 18gb hd)
 
-> PS: an additional question regarding pdc_cons: in 2.4 there was a device
-> driver in devices/char/pdc_console.[ch] which allowing to use ttyB device.
-> But in 2.6 there isn't anymore such driver? any idea?
+I was running previously the 2.4 series kernels, but had a lot of crashes 
+during HD access. I have seen this mentioned before, and Its probably the 
+same issue ? (In fact most of the crashes were during package 
+unpacking/installation). Since moving to the 2.6 series this hasnt happened. 
+Is this scsi issue now fixed, or have I been lucky ? (I did have a crash 
+recently involving a debug file being written. Could it be this problem 
+again ?)
 
-sorry - I don't know.
+I just built Linux hp9000 2.6.1-pa7 and on my system it seems to be working 
+fine.
 
-grant
+Also, does anyone here know why dovecot wouldnt work with libgnutls on hppa ? 
+the dovecot maintainer has been trying to debug it on my machine (If my 
+machine hadnt crashed). works fine with openssl. Has anybody had any other 
+problems with libgnutls ?
+
+Best Regards
+
+Jools
+-- 
+Oxford Inspire
+jools@oxfordinspire.co.uk
+Tel: 01865 751879
+Mob: 07966 577498
