@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0BF1E4852
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Nov 2003 02:01:24 -0700 (MST)
-Date: Mon, 3 Nov 2003 09:56:01 +0100
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Cc: Randolph Chung <randolph@tausq.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] what's up with the ipc syscalls?
-Message-ID: <20031103085601.GA9083@solo.franken.de>
-References: <20031101082451.GJ28967@tausq.org> <20031102180150.GA14554@solo.franken.de> <20031102181252.GY28967@tausq.org> <20031102214200.GA5299@solo.franken.de> <20031102225626.GF26916@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031102225626.GF26916@systemhalted>
-From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
+Date: Mon, 3 Nov 2003 10:04:18 +0100
+Message-ID: <3F969FFE00005D95@ocpmta2.freegates.net>
+In-Reply-To: <20031101193006.GA26372@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Re: backport unaligned.c Randolph patch
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+	"Randolph Chung" <randolph@tausq.org>,
+	"Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,40 +21,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Nov 02, 2003 at 05:56:27PM -0500, Carlos O'Donell wrote:
-> On Sun, Nov 02, 2003 at 10:42:00PM +0100, Thomas Bogendoerfer wrote:
-> > On Sun, Nov 02, 2003 at 10:12:52AM -0800, Randolph Chung wrote:
-> > > anyway, if we are only supporting IPC_64, then why mask off the IPC64
-> > > bit in the wrapper? if the ipc/utils.c stuff isn't there, wouldn't it
-> > > default to doing the right thing when IPC_64 is set?
-> > 
-> > look at the switch statements in msg.c/sem.c/shm.c. If you don't mask
-> > off IPC_64, the cases don't match.
-> > 
-> > > right now glibc *doesn't* call the syscall with IPC_64, but i'm about to
-> > > make it do that again.
-> > 
-> > I don't think this is a good idea, because by checking for IPC_64 we
-> > could see, whether an old glibc is used and could convert structs
-> > (see sys_parisc.c:sys_shmctl_broken()).
-> 
-> There is no such thing as that "old glibc" we have always had
-> __ASSUME_IPC64. What support are we looking to preserve?
+Hi Grant,
 
-glibc 2.2.x, some weeks before woody went final. For a closer date
-check the date of my sys_parisc.c commit.
+In fact I didn't discusse of this patch (which effectively remove code) with
+Randolph but I back-port in confidence because it remember me a problem I
+encounter when I suggest the "traps.c alignement" [1] to Carlos:
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-October/021229.html>
 
-Since there might be still binaries in woody, which are compiled
-with an such an "old" glibc, we will break this binaries. The suggested
-change is an change of the kernel ABI, so I would avoid it. The problem
-with this "old" glibc was, that the structs for shmctl and friends
-weren't properly aligned for 64bit. I've changed that and also decided
-to get rid of IPC_64, because that's x86 crap.
+In the same time I was looking for Sukyo bug in 2.6 and point out that the
+previous patch [1] make hang the system in place of the crash (due to a division
+by zero).
 
-Adding the 2.4 changes to the 2.6 kernel should fix everything.
+May be my conclusion was erronious: "force_sig_info() would 'schedule'
+a SIGFPE. But in this very particular situation of the early boot, imho the
+scheduler is not yet launched." (Right/Wrong?)
 
-Thomas.
+Anyway I so suggest another patch:<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-October/021251.html>
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+; which essentialy bypass force_sig_info() in kernel mode. But I presume
+that Carlos don't yet ci this patch because he is looking for a better solution
+in that special case (I don't know if it is possible to lauch the scheduler
+earlier?).
+
+Thanks in advance for all advise,
+    Joel
+ 
+
+
+>-- Original Message --
+>From: Grant Grundler <grundler@parisc-linux.org>
+>To: Randolph Chung <randolph@tausq.org>
+>Cc: Joel Soete <soete.joel@tiscali.be>, parisc-linux@parisc-linux.org
+>Date: Sat, 1 Nov 2003 12:30:06 -0700
+>Subject: Re: [parisc-linux] Re: backport unaligned.c Randolph patch
+>
+>
+>On Sat, Nov 01, 2003 at 09:32:15AM -0800, Randolph Chung wrote:
+> I think your mailer munged your patch, it doesn't apply cleanly. i've
+> applied a cleaned up version of your patch to 2.4.
+
+Was the intent to add new code?
+The patch was reversed it
+>seems too.
+
+grant
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+
+http://reg.tiscali.be/default.asp?lg=fr
