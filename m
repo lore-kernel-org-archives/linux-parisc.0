@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 151A1482B
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 27 Apr 2002 02:22:55 -0600 (MDT)
-Message-ID: <3CCA5FD7.9ABE4524@gmx.at>
-Date: Sat, 27 Apr 2002 10:22:47 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Matthew Wilcox <willy@debian.org>
-Cc: Dunc <dunc@lemonia.org>, parisc-linux@lists.parisc-linux.org,
-	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
-Subject: Re: [parisc-linux] hp9000/827s
-References: <1019862967.3cc9dfb797e86@www.lemonia.org> <20020427003030.B12051@parcelfarce.linux.theplanet.co.uk>
+Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E5331482B
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 27 Apr 2002 15:11:44 -0600 (MDT)
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.6/8.11.0) id g3RLBia12886
+	for parisc-linux@lists.parisc-linux.org; Sat, 27 Apr 2002 17:11:44 -0400
+Date: Sat, 27 Apr 2002 17:11:44 -0400
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020427171144.C12610@systemhalted>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] HIL -> Keymap ok?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +23,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+pa's,
 
-by the way, are there plans for supporting the good old machines.
-You know, I am interested in writing the drivers for my E55 server
-machine, my PDC console driver should help for development here.
+I recently needed to connect an HIL keyboard to our 715/50 boxes and
+was surprised to find that the key mapping was less than correct
+(2.4.18-pa22).
 
-I hope we will have a chance to start developing ....
+--
+5. Scorpio Core HIL (10) at 0xf0821000 [2/0/3], versions 0x7, 0x0, 0x73
+Found HIL at 0xf0821000, IRQ 94
+HIL: keyboard found at id 0
+HIL: keymap loaded.
+--
 
-With friendly regards
-Christoph P.
+Looks okay. But I get all the wrong letters and control commands in 
+all the wrong places (e.g. a=x, i=\n).
 
+I've tried on two or three boxes with two or three different keyboards
+(have a whole box of HIL keyboards if anyone is in desperate need of
+one).
 
-Matthew Wilcox wrote:
-> 
-> On Sat, Apr 27, 2002 at 12:16:07AM +0100, Dunc wrote:
-> > I have been attempting to install on a hp9000/827s
-> 
-> According to hp9000_models;
-> 8x7/F10-I40      Old Nova servers    PCXS    NIO, None     NIO(1),NIO(2),NA
-> 
-> Basically, nothing is going to work.  There's some limited support for
-> the console in these machines, but no support for the SCSI, the Lan or
-> any other cards.  Sorry.
-> 
-> --
-> Revolutions do not require corporate support.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+The install is based on 0.9.3 with all the latest apt-get updates.
+I stopped running keymap.sh with no adverse effects (since the keymap
+is loaded by the HIL driver).
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+The HIL driver is the old one?
+[Character Devices]-[Support for Console on VT]-[HIL kbd support]
+
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+CONFIG_HIL=y
+
+I also have a serial console enabled.
+
+I haven't tried HP System Device Driver (i8042) yet... (Though from
+the looks of it, it's not quite complete?)
+
+Any thoughts? (I've wadded through the list archives but no success).
+
+c.
+
+p.s. This is just the start of my quest to stop the unbliking eye...
+     a.k.a. "hardware cusor blinking" ... from _always_ appearing 
+     during framebuffer writes.
