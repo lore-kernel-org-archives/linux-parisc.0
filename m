@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 50FC44845
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 00:17:09 -0700 (MST)
-Date: Thu, 4 Dec 2003 08:13:25 +0100
-Message-ID: <3FB25B960000D7FF@ocpmta1.freegates.net>
-In-Reply-To: <20031204040026.GB17292@systemhalted>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 744394845
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 02:57:24 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout1.tiscali.be with esmtp (Tiscali)
+	id 1ARqDR-0004g3-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 04 Dec 2003 10:56:09 +0100
+Date: Thu, 4 Dec 2003 10:56:08 +0100
+Message-ID: <3FB25B960000DA45@ocpmta1.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] shmem 2.6 kernel bug?
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: multipart/mixed; boundary="========/3FB25B960000DA45/mail.tiscali.be"
+Subject: [parisc-linux] 2.4.23 some tested backport (pgalloc.h)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,89 +24,63 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hmm I didn't mentioned till now because of some non cvs stuff in my kernel
-but I got same messages (ie only "BUG at mm/shmem.c:585!") with k-2.4.23
-64bits on my b2k build with latest gcc-3.3.2.
+--========/3FB25B960000DA45/mail.tiscali.be
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Hi pa,
+
+iirc this a Randolph's patch which I try to backport and test seems ok
+=========><=========
+--- linux-2.4.23-pa1/include/asm-parisc/pgalloc.h	2003-03-10 08:02:19.000000000
++0100
++++ linux-2.4.23-rc5-pa17/include/asm-parisc/pgalloc.h	2003-12-04 11:06:31.000000000
++0100
+@@ -124,8 +124,9 @@
+ 
+ #define flush_icache_page(vma,page)	do { flush_kernel_dcache_page(page_address(page));
+flush_kernel_icache_page(page_address(page)); } while (0)
+ 
+-#define flush_icache_user_range(vma, page, addr, len) \
+-	flush_user_icache_range(addr, addr + len);
++#define flush_icache_user_range(vma, page, addr, len) do { \
++        flush_user_dcache_range(addr, addr + len); \
++	flush_user_icache_range(addr, addr + len); } while (0)
+ 
+ #define flush_icache_range(s,e)		do { flush_kernel_dcache_range_asm(s,e);
+flush_kernel_icache_range_asm(s,e); } while (0)
+ 
+=========><=========
 
 hth,
     Joel
-
->-- Original Message --
->From: Carlos O'Donell <carlos@baldric.uwo.ca>
->To: parisc-linux@lists.parisc-linux.org
->Date: Wed, 3 Dec 2003 23:00:26 -0500
->Subject: [parisc-linux] shmem 2.6 kernel bug?
->
->
->
-pa,
-
-When I ssh into my box I see:
----
-kernel BUG at mm/shmem.c:585!
-Kernel addresses on the stack:
- [<000000001016f338>] unmap_page_range+0xa0/0x290
- [<0000000010126e78>] sys32_rt_sigaction+0x90/0x118
- [<000000001011313c>] sys_mmap2+0x14/0x2
->
- [<000000001010ce4c>] syscall_exit+0x0/0x14
- [<000000001010c094>] intr_check_sig+0x0/0xc
----
-
-    571 static void shmem_delete_inode(struct inode *inode)
-    572 {
-    573         struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
-    574  
->      struct shmem_inode_info *info = SHMEM_I(inode);
-    575 
-    576         if (inode->i_op->truncate == shmem_truncate) {
-    577                 spin_lock(&shmem_ilock);
-    578                 list_del(&info->list);
-    579                 s
->in_unlock(&shmem_ilock);
-    580                 if (info->flags & VM_ACCOUNT)
-    581			vm_unacct_memory(VM_ACCT(inode->i_size));
-    582                 inode->i_size = 0;
-    583                 shmem_truncate(inode);
-    584         }
-==> 585
->        BUG_ON(inode->i_blocks);
-    586         spin_lock(&sbinfo->stat_lock);
-    587         sbinfo->free_inodes++;
-    588         spin_unlock(&sbinfo->stat_lock);
-    589         clear_inode(inode);
-    590 }
-
-*Carlos shrugs*
-
-Linux firin
->2.6.0-test11-pa0 #1 Wed Dec 3 14:51:57 EST 2003 parisc64 GNU/Linux
-
-Reading specs from
-/home/carlos/src/toolchain-build/install/lib/gcc-lib/hppa64-linux/3.3.1/specs
-Configured with: ../gcc-cvs/configure --host=hppa-linux
---prefix=/home/carlos/src/
->oolchain-build/install --target=hppa64-linux
---build=hppa-linux
---with-gnu-ld=/home/carlos/src/toolchain-build/install/bin/ld
---with-gnu-as=/home/carlos/src/toolchain-build/install/bin/as
---enable-languages=c
-Thread model: posix
-gcc version 3.3.1
->
-
-GNU ld version 2.14.90 20031106
-
-c.
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
 
 
 -------------------------------------------------------------------------
 Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
 le monde.
 http://reg.tiscali.be/default.asp?lg=fr
+
+
+
+--========/3FB25B960000DA45/mail.tiscali.be
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="include_asm-parisc_pgalloc.h.patch"
+
+LS0tIGxpbnV4LTIuNC4yMy1wYTEvaW5jbHVkZS9hc20tcGFyaXNjL3BnYWxsb2MuaAkyMDAzLTAz
+LTEwIDA4OjAyOjE5LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgtMi40LjIzLXJjNS1wYTE3L2lu
+Y2x1ZGUvYXNtLXBhcmlzYy9wZ2FsbG9jLmgJMjAwMy0xMi0wNCAxMTowNjozMS4wMDAwMDAwMDAg
+KzAxMDAKQEAgLTEyNCw4ICsxMjQsOSBAQAogCiAjZGVmaW5lIGZsdXNoX2ljYWNoZV9wYWdlKHZt
+YSxwYWdlKQlkbyB7IGZsdXNoX2tlcm5lbF9kY2FjaGVfcGFnZShwYWdlX2FkZHJlc3MocGFnZSkp
+OyBmbHVzaF9rZXJuZWxfaWNhY2hlX3BhZ2UocGFnZV9hZGRyZXNzKHBhZ2UpKTsgfSB3aGlsZSAo
+MCkKIAotI2RlZmluZSBmbHVzaF9pY2FjaGVfdXNlcl9yYW5nZSh2bWEsIHBhZ2UsIGFkZHIsIGxl
+bikgXAotCWZsdXNoX3VzZXJfaWNhY2hlX3JhbmdlKGFkZHIsIGFkZHIgKyBsZW4pOworI2RlZmlu
+ZSBmbHVzaF9pY2FjaGVfdXNlcl9yYW5nZSh2bWEsIHBhZ2UsIGFkZHIsIGxlbikgZG8geyBcCisg
+ICAgICAgIGZsdXNoX3VzZXJfZGNhY2hlX3JhbmdlKGFkZHIsIGFkZHIgKyBsZW4pOyBcCisJZmx1
+c2hfdXNlcl9pY2FjaGVfcmFuZ2UoYWRkciwgYWRkciArIGxlbik7IH0gd2hpbGUgKDApCiAKICNk
+ZWZpbmUgZmx1c2hfaWNhY2hlX3JhbmdlKHMsZSkJCWRvIHsgZmx1c2hfa2VybmVsX2RjYWNoZV9y
+YW5nZV9hc20ocyxlKTsgZmx1c2hfa2VybmVsX2ljYWNoZV9yYW5nZV9hc20ocyxlKTsgfSB3aGls
+ZSAoMCkKIAo=
+
+--========/3FB25B960000DA45/mail.tiscali.be--
