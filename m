@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC760482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 07:13:06 -0700 (MST)
-Date: Tue, 8 Jan 2002 14:44:36 +0100
-From: Thomas Bogendoerfer <tsbogend@elvis.franken.de>
+Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26259482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 07:33:38 -0700 (MST)
+Date: Tue, 8 Jan 2002 15:33:35 +0100
 To: John Marvin <jsm@udlkern.fc.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] any info on 710/Bushmaster Audio available?
-Message-ID: <20020108134436.GA24909@elvis.franken.de>
-Reply-To: tsbogend@alpha.franken.de
+Message-ID: <20020108153335.B28664@electra.intern.planb.de>
 References: <200201081230.FAA22547@udlkern.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 In-Reply-To: <200201081230.FAA22547@udlkern.fc.hp.com>
+From: Enrik Berkhan <Enrik.Berkhan@planb.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,6 +23,8 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+John,
+
 On Tue, Jan 08, 2002 at 05:30:04AM -0700, John Marvin wrote:
 > The audio codec on the 705/710 is a Siemens PSB 2160. I tried looking
 > on their website for information, and the only info I found was that
@@ -32,20 +33,11 @@ On Tue, Jan 08, 2002 at 05:30:04AM -0700, John Marvin wrote:
 > similar. I cannot currently locate my printed documentation on the
 > chip.
 
-I have a dead tree version of the datasheet here and compared
-it to the PSB2161. The internal registers are different. The PSB2160
-has less features, so some of the config bits of the PSB2161 aren't
-available and common bits are sometimes shifted around.
+Tanks for the information, anyway. Helps a lot.
 
-> The interface to the PSB 2160 is the same as what was developed for
-> "Woody", otherwise known as a 425e, which was a 68040 based HP
-> workstation. I've enclosed what little documentation exists for
-> the 68040 interface. If you can find documentation on the PSB 2160
-> then you should be able to use the following information to write
-> a driver.
-
-yes, looks doable. I'm not sure, whether I have the time to it myself,
-but I could help people with questions about the PSB2160 config registers
-(I'll write the register bits down and put it online during the next days).
-
-Thomas.
+Enrik
+-- 
+Enrik Berkhan                                         plan b. GmbH
+                                                      Rüppurrer Straße 4
++49-721-388582 (voice)                                76137 Karlsruhe
++49-721-388581 (fax)                                  Germany
