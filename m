@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (108.telstra.ppp.reynolds.net.au [203.38.119.108])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7BD14482B
-	for <parisc-linux@parisc-linux.org>; Thu, 25 Jul 2002 23:39:42 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id NAA16455
-	for parisc-linux@parisc-linux.org; Fri, 26 Jul 2002 13:38:38 +0800
-Date: Fri, 26 Jul 2002 13:38:32 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C22B482B
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Jul 2002 00:47:31 -0600 (MDT)
+Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
+	by hauptpostamt.charite.de (Postfix) with ESMTP id 8981415C019
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Jul 2002 08:47:29 +0200 (CEST)
+Date: Fri, 26 Jul 2002 08:47:29 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
 To: Linux/HPPA List <parisc-linux@parisc-linux.org>
-Message-ID: <20020726133826.R30681@neep.com.au>
+Subject: Re: [parisc-linux] Debian 3.0 announcement for the website?
+Message-ID: <20020726064729.GA12382@charite.de>
+References: <20020726133826.R30681@neep.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Debian 3.0 announcement for the website?
+In-Reply-To: <20020726133826.R30681@neep.com.au>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Also regarding the website - well, Debian 3.0 has been released.  Is 
-that worthy of an announcement?  I haven't seen any Debian CD mirrors
-with hppa ISOs, but can Debian 3.0/hppa CDs be built with jigdo?
+On Fri, Jul 26, 2002 at 01:38:32PM +0800, Andrew Shugg wrote:
 
-Andrew.
+> Also regarding the website - well, Debian 3.0 has been released.  Is 
+> that worthy of an announcement?  I haven't seen any Debian CD mirrors
+> with hppa ISOs, but can Debian 3.0/hppa CDs be built with jigdo?
+
+IMHO this is possible.
 
 -- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+Fear leads to anger.  Anger leads to hate.  Hate leads to using
+Windows NT for mission-critical applications.
