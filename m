@@ -1,34 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA20043
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 08:21:57 -0600
-Received: from spacetec.no (metis.spacetec.no [192.51.5.180])
-	by spacetec.no (8.9.1a/8.9.1) with ESMTP id QAA10784
-	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 16:22:41 +0200
-Sender: magne@spacetec.no
-Message-ID: <38107330.E3716195@spacetec.no>
-Date: Fri, 22 Oct 1999 16:22:40 +0200
-From: Magne =?iso-8859-1?Q?=D8stlyngen?= <magne@spacetec.no>
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] So you wanna get to a prompt, eh?
-References: <Pine.LNX.4.10.9910211105330.17129-100000@vodka.thepuffingroup.com>
-Content-Type: text/plain; charset=iso-8859-1
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA20439
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 08:59:11 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id KAA01659
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 10:59:06 -0400 (EDT)
+Message-Id: <199910221500.IAA00520@milano.cup.hp.com>
+To: simen-tt@online.no
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] rbooting an 735? 
+In-reply-to: Your message of "Fri, 22 Oct 1999 08:01:42 PDT."
+             <199910220556.GAA01903@scimitar.dolphinics.no>
+Date: Fri, 22 Oct 1999 08:00:01 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> The 700 has an ancient IO architecture that we don't have any
-> documentation on, so it's not high on the list of priorities.
+"Simen Timian Thoresen" wrote:
+> Is anybody rbooting an 735?
+> I've replaced my exceedingly noisy Micropolis disk, and replaced it 
+> with a 2.1G seagate thing which, altho so far working nicely, 
+> refuses to boot.
 
-But it is possible to get the docs from HP?
+Many of the older HP-UX systems can NOT boot from a "whole disk"
+which is greater than 2GB. The IODC on older boxes has problems
+when the byte offset into the disk goes "negative" (exceeds what
+can be represented by "sign int"). And the "whole disk" layout puts
+some of the LIF boot info beyond the reach of IODC.  Setting up the
+boot disk with LVM changes the disk layout such that it works.
+I know LVM is required to boot from 4GB (or greater sized) disks too.
+You might try LVM.
 
-> However, if
-> someone has patches to support it, we'd be happy to apply them.
-> As for cross compiling... we're forced to use HPUX because we don't have a
-> reasonable and functioning cross linker. More on that later.
+This is another reason parisc-linux boot loader needs to support LVM.
 
-Is it possible to compile with linux, and do only the linking on the hp?
-(It isn't very fast.. :)  Can I link with HPUX 9.03? (probably not)
-10.30? (It doesn't run 11.x)
+I don't know what the rbootd problem is...
 
--- 
-Magne Østlyngen <magne@spacetec.no>
-                <magne@skybert.org>
+grant
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
