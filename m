@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C00E487E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Aug 2003 10:08:22 -0600 (MDT)
-Date: Fri, 22 Aug 2003 10:08:20 -0600
-From: dann frazier <dannf@hp.com>
-To: ??????? ??????? <almetoil@tatneft.ru>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030822160820.GA18112@ldl.fc.hp.com>
-References: <1245099799.20030822174107@tatneft.ru>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4D1344883
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Aug 2003 10:13:41 -0600 (MDT)
+Date: Fri, 22 Aug 2003 09:16:59 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: almetoil@tatneft.ru, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: palo
+Message-ID: <20030822161659.GE21328@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1245099799.20030822174107@tatneft.ru> <20030822160820.GA18112@ldl.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1245099799.20030822174107@tatneft.ru>
-Subject: [parisc-linux] Re: palo
+In-Reply-To: <20030822160820.GA18112@ldl.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,66 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-you have e-mailed the admin of the cvs list, which is part of the old bug
-tracking system.
-i've cc'd the parisc-linux list, which is probably the best place to ask.
+> >   Please help me cvs download palo !
+> >   Please sorry my english
+> > 
+> >   I am use this and read error messges:
+> >     user@panda:~/palo$ cvs -d :pserver:guest@cvs.parisc-linux.org:/ checkout palo
+> >     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
 
-On Fri, Aug 22, 2003 at 05:41:07PM +0400, ??????? ??????? wrote:
-> ???????????? ?????????, cvs-admin.
-> 
->   Please help me cvs download palo !
->   Please sorry my english
-> 
->   I am use this and read error messges:
->     user@panda:~/palo$ cvs -d :pserver:guest@cvs.parisc-linux.org:/ checkout palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@cvs.parisc-linux.org:/cvs checkout palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /cvs: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@cvs.parisc-linux.org:/Developmetn checkout palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /Developmetn: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@parisc-linux.org:/cvs checkout palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /cvs: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@parisc-linux.org:/cvs/Development checkout palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /cvs/Development: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@parisc-linux.org:/cvs/ checkout Development/palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /cvs/: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@parisc-linux.org:/cvs checkout Development/palo
->     cvs checkout: warning: failed to open /home/user/.cvspass for reading: No such file or directory
->     /cvs: no such repository
->     user@panda:~/palo$ cvs -d :pserver:guest@parisc-linux.org:/cvs checkout Development/palo
-> 
->    I need setup Gentoo Linux by HP9000/811/D310 and have this message:
->      .
->      .
->      .
->      .
->      Information: No console specified on kernel command line. This is
->      normal.PALO will choose the console currently used by firmware
->      (serial).
->      .
->      .
->      .
->      .
->      .
->      If this is the last message you see, you may need to switch your console.
-> 
->      I am reed this http://tldp.org/HOWTO/PA-RISC-Linux-Boot-HOWTO/index.html
-> -- 
-> ? ?????????,mailto:almetoil@tatneft.ru
-> 
-> ??????? 22 ??????? 2003 ?. ? 17:33:27.
-> 
+touch ~/.cvspass
+then follow the directions at http://www.parisc-linux.org/faq/cvs.html
+for anonymous CVS access.
 
+randolph
 -- 
----------------------------
-dann frazier
-Hewlett-Packard
-Linux and Open Source Lab
-dannf@hp.com
-(970) 898-0800
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
