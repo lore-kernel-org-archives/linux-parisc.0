@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1DC714868
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 07:25:55 -0600 (MDT)
-Date: Wed, 9 Jul 2003 15:25:49 +0200
-Message-ID: <3F05718600000A59@ocpmta8.freegates.net>
-In-Reply-To: <1057755859.3f0c12d38f8b9@clients.latnet.lv>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 735C1482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 07:43:59 -0600 (MDT)
+Date: Wed, 9 Jul 2003 15:43:49 +0200
+Message-ID: <3F05718600000A79@ocpmta8.freegates.net>
+In-Reply-To: <20030709122700.GR1939@parcelfarce.linux.theplanet.co.uk>
 From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
-To: "Dub" <dub@latnet.lv>, parisc-linux@lists.parisc-linux.org
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: "Martin K. Petersen" <mkp@mkp.net>, "Dub" <dub@latnet.lv>,
+	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -21,23 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+> Well, no, you're always going to have to quiesce the device.  Otherwise
+it's
+> like turning the machine off without halting -- random things are cached
+and
+> simply never make it back to disc.
 
-> I just made another test. I pull out 2 mirrored disk (root and var). The
+Ah yes, (my bad, i thought but not write) I would have to specify that I
+spok about hotplugable I/O device in general (FC, NIC,... with the famous
+blue led) and not about disk which we qualify here as 'hotswapable' disk.
 
-> system was running well. However, it seems that md software did not notice
-> absense of disk until someone tries to write there (I was forced to create
-> a file in /boot partition so that md understands the failure).
-> 
-> Then I rebooted the system without two disks. PDC told 'warn 80F5' ( Looks
-> Error executing Entry Init). I do not know why PDC did not try secondary
-> device automatically,
-> in spite of BOOT ALT worked OK. Looks like PDC was
-> very unhappy about primary disk and didn't try to try secondary path.
-
-do you well set autosearch on ?
-Have a look at boot prompt: co bootinfo?
-
-hth,
+Thanks,
     Joel
 
 
