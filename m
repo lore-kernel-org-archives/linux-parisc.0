@@ -1,31 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from zouave.sonic.net (zouave.sonic.net [209.204.172.153])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DA24D482A
-	for <parisc-linux@parisc-linux.org>; Thu,  7 Jun 2001 15:39:48 -0600 (MDT)
-Date: Thu, 7 Jun 2001 14:39:46 -0700
-From: E Frank Ball <frankb@efball.com>
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] A detailed support list
-Message-ID: <20010607143946.A14487@zouave.sonic.net>
-References: <3B1FF0FB.DCCDF6B3@esiee.fr>
+Received: from solo.franken.de (pD951CBCB.dip.t-dialin.net [217.81.203.203])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D7FC6482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Jun 2001 16:13:48 -0600 (MDT)
+Date: Thu, 7 Jun 2001 23:20:03 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Mike Werneke <mikewerneke@hotmail.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Apollo 735/99 hangs after booting from CDROM
+Message-ID: <20010607232003.B2308@solo.franken.de>
+References: <F214YiMCIqtQvAauNjV0001bb18@hotmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3B1FF0FB.DCCDF6B3@esiee.fr>; from marteaut@esiee.fr on Thu, Jun 07, 2001 at 11:24:11PM +0200
+In-Reply-To: <F214YiMCIqtQvAauNjV0001bb18@hotmail.com>; from mikewerneke@hotmail.com on Thu, Jun 07, 2001 at 03:51:22AM -0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jun 07, 2001 at 11:24:11PM +0200, Thomas Marteau wrote:
-} Hi PA/Linux guys,
-} 
-} 	We put on line a list that sums up for all HP boxes the status of
-} PA/linux. If you have any comment or if you have any good news to add,
-} please mail us. We really want to keep this list up-to-date!
-} 
-} http://mkhppa1.esiee.fr/en/list.html
+On Thu, Jun 07, 2001 at 03:51:22AM -0000, Mike Werneke wrote:
+> --snip
+> CPU(s): 1 x PA7100 (PCX-T) at 99.000000 MHz
+> Kernel command line: HOME=/ TERM=linux root=/dev/ram console=tty0 sti=0 
+> sti_font=VGA8x16
+> Console: colour dummy device 80x25
+> snip--
+> 
+> and then hangs.  Could this be a bad iso image? Or is this a known issue? 
 
-Nobody has mentioned the 745s yet?  745i A2638B 50MHz.
-We have a boatload of them around here.
+no, you are running the sti console kernel on a not supported frame buffer.
+Use the 32serial image.
+
+Thomas.
 
 -- 
-
-   E Frank Ball                efball@efball.com
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
