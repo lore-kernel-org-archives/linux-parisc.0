@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from venus.it.swin.edu.au (venus.it.swin.edu.au [136.186.5.30])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 72E54482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Jun 2002 03:30:57 -0600 (MDT)
-Received: from mars.it.swin.edu.au (mars.it.swin.edu.au [136.186.5.35])
-	by venus.it.swin.edu.au (8.11.6/8.11.2) with ESMTP id g529Utq06739
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 2 Jun 2002 19:30:55 +1000
-Date: Sun, 2 Jun 2002 19:30:55 +1000 (EST)
-From: John Newbigin <jnewbigin@it.swin.edu.au>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0206021923310.11687-100000@mars.it.swin.edu.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] STI problem on 715/50 with new kernels
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.18 SMP instability 
+In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
+   of "Fri, 31 May 2002 23:34:59 PDT." <Pine.LNX.4.44.0205312326280.11012-100000@garibaldi.apptechsys.com>
+References: <Pine.LNX.4.44.0205312326280.11012-100000@garibaldi.apptechsys.com> 
+Date: Sun, 02 Jun 2002 10:32:01 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020602163201.3AE44482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,13 +19,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I have an Appolo 715/50 with debian installed on it.  I have upgraded to 
-the 2.4.18 kernel but when the kernel boots, the STI display goes blank.  
-Everything works except I can't see the image.  When I press reset, the 
-firmware comes up and I can see the output from the linux kernel on the 
-screen still.
+Jeremy Drake wrote:
+> So, at least we can rule out any damage to the box as the cause of this. 
 
-If someone can help it would be much appreciated.  The 2.4.9 kernel has 
-some kind of problem with the framebuffer so I can't run X.
+Yup - thanks for trying that.
 
-John.
+Offhand, Here are the differences I'm aware of between J5k and c3k:
+o 2-CPU vs 1
+o cache is 4-way associative vs 1-way (Same PA8500 CPU though!)
+o J5K requires newer rev CPU (some SMP-related bugs fixed)
+o Same PDC, but probably initializes a few things differently
+o Though IO subsystem is identical chip set, J5k has more PCI busses
+  and more slots.
+
+Since dirty cache writeback can be sensitive to how busy the system is,
+it's possible the HPMC is caused by a similar problem to what we saw
+on PA8700 systems. You might try building a kernel with
+"ioc_needs_fdc" forced true in arch/parisc/kernel/sba_iommu.c.
+If it avoids the HPMC (but we still see other hangs), then it's
+a clue we don't have caching working right for that CPU setup.
+
+hth,
+grant
