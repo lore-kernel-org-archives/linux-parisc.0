@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 629094837
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jul 2003 11:12:09 -0600 (MDT)
-Date: Thu, 17 Jul 2003 19:12:03 +0200
-Message-ID: <3F0BEA830000215A@ocpmta1.freegates.net>
-In-Reply-To: <20030717155203.GO30257@tausq.org>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.0-test1-pa1, fails, to, boot, on, rp2430
-To: "Randolph Chung" <tausq@debian.org>
-Cc: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org,
-	"Matthew Wilcox" <willy@debian.org>
+Received: from compuserve.com (cvg-65-29-194-174.cinci.rr.com [65.29.194.174])
+	by dsl2.external.hp.com (Postfix) with SMTP id 01A994837
+	for <parisc-linux@parisc-linux.org>; Thu, 17 Jul 2003 17:05:16 -0600 (MDT)
+Date: Thu, 17 Jul 2003 23:01:05 +0000
+From: arafune@mip.ou.dk
+To: Parisc-linux <parisc-linux@parisc-linux.org>
+References: <9BE50L29J0JJ7I1F@parisc-linux.org>
+In-Reply-To: <9BE50L29J0JJ7I1F@parisc-linux.org>
+Message-ID: <1DIFE7277BDFIID6@mip.ou.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=Windows-1251
+Subject: [parisc-linux] new mail            YFrHLVyB
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,40 +22,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Randolph,
->> 
->> > Freeing unused kernel memory: 508k freed
->> Adding 250872k swap on /dev/sda2.  Priority:-1 extents:1
->> 
->> Here it hangs. (just in case, i tried a telnet but no success)
->> 
->> I so do a toc.
->> 
->> Unfortunately the IAOQ = 0x00000000000172b8  is no
->>  a relevant value?
->
->looks like a userspace address....
->
->can you boot the kernel with init=/bin/sh and see what happens?
+English version  |  Русский вариант
 
-Well here it hangs at "Freeing unused kernel memory: 508k freed" but do not
-mount anything else (still clean when rebooted with 2.4)
+Мы рады предложить вам новый бесплатный почтовый сервис http://www.mail15.com. Его отличительные особенности:
+1) размер ящика 15 мб;
+2) защищенность и надежность;
+3) возможность использования любых почтовых программ(POP,IMAP,SMTP);
+4) доступ из любого места в любое время;
+5) простой и доступный вебинтерфейс с ПОЛНЫМ ОТСУТСТВИЕМ РЕКЛАМЫ;
+6) антивирусный и антиспамовый контроль;
+7) мгновенная пересылка почты.
 
-> can you
->disable your swap partition (comment it out of /etc/fstab) and see what
->happens?
+Если вы не хотите получать более данную рассылку, пишите mailto:unsubscribe@mail15.com?subject=unsubscribe
 
-Same results (even if I used the 2 tips together and even with -s for su
-mode)
+*************
 
-[and always the same IAOQ after TOC]
+ We are glad to invite you at new free mail service http://www.mail15.com. The advantages of this service are:
+ 1) mailbox, up to 15 Mb;
+ 2) absolute privacy and high reliability;
+ 3) ability to use mail clients (POP3, IMAP4, SMTP);
+ 4) access from anywhere, anytime;
+ 5) flexible light-weight web interface without advertising banners;
+ 6) antivirus and antispam control;
+ 7) fast mail transfer;
+ 8) high speed network channel;
+ 9) flexible light-weight web interface;
+ 10) wide spread ability of mail filtering and forwarding mail;
+ 11) clock around support;
 
-mm would it help if tomorrow I re-compile it in 64bits and disable CONFIG_KALLSYMS?
+ If you wish to be removed:
+mailto:unsubscribe@mail15.com?subject=unsubscrib
 
-Joel
-
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite а payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+Zm4pHqoYmT
