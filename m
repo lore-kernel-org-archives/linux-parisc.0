@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C066C4867
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Apr 2003 08:18:56 -0600 (MDT)
-Date: Mon, 14 Apr 2003 16:18:46 +0200
-From: Michael Wood <mwood@its.uct.ac.za>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BF07E4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Apr 2003 09:42:35 -0600 (MDT)
+Date: Mon, 14 Apr 2003 17:42:32 +0200
+Message-ID: <3E8AE87E00006EB8@ocpmta2.freegates.net>
+In-Reply-To: <3E8AE87E00006D87@ocpmta2.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] parisc-linux.org kernel
-Message-ID: <20030414141846.GA24700@marmite.its.uct.ac.za>
-References: <20030411155850.GA2795@dsl2.external.hp.com> <3E8AE87E00006C1C@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E8AE87E00006C1C@ocpmta2.freegates.net>
+To: "Alan Cox" <alan@lxorguk.ukuu.org.uk>
+Cc: "Grant Grundler" <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Apr 14, 2003 at 12:13:24PM +0000, Joel Soete wrote:
-> To: "Grant Grundler" <grundler@parisc-linux.org>
-> Cc: parisc-linux@lists.parisc-linux.org   
+>>>  	     (dev->class & 0x80))) {
+>>> -		unsigned long dma_base = ide_get_or_set_dma_base(hwif);
+>>> +		u32 dma_base = ide_get_or_set_dma_base(hwif);
+>>
+>>Thats reverting a fix. dma_base must be unsigned long for 64bit
+>>platforms. Looks just like a merge error.
+>
+hmm I just re-compile with "unsigned long dma_base" and it works (I mount
+a cd on the ide cdrom drive and launch a find of file without any system
+crash :) )
 
-> Hi Andre,
-[snip]
+Thanks again,
+    Joel
 
-Maybe you should add him to the To: or Cc: fields? :)
 
--- 
-Michael Wood <mwood@its.uct.ac.za>
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
