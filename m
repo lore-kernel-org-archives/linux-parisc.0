@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] interesting linker behaviour :)
-Date: Tue, 21 Sep 2004 16:20:26 -0400 (EDT)
-Message-ID: <200409212020.i8LKKQtS010621@hiauly1.hia.nrc.ca>
+Date: Tue, 21 Sep 2004 13:36:51 -0700
+Message-ID: <20040921203651.GU22642@tausq.org>
 References: <20040921194939.GT22642@tausq.org>
+	<200409212020.i8LKKQtS010621@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040921194939.GT22642@tausq.org> from "Randolph Chung" at Sep
-	21, 2004 03:49:39 pm
+In-Reply-To: <200409212020.i8LKKQtS010621@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,25 +22,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> for now i'm using the solution we are using for 64-bit code, which is to
-> use a manually created long-branch stub (ldil/ldo/bv). since this is 
-> anyway in a slow-path the performance hit is probably negligible.
+> As I suggested before, you can shorten (ldil/ldo/bv) to (ldil/be) if
+> if you know which space register to use in the be (in user space, %sr4
+> will always work since the address space is flat).
 
-As I suggested before, you can shorten (ldil/ldo/bv) to (ldil/be) if
-if you know which space register to use in the be (in user space, %sr4
-will always work since the address space is flat).
+erm, yes, you did say that, and i forgot. i will change it.
 
-The linker doesn't insert stubs for the (ldil/be) sequence although
-possibly it should.
-
-The code sequence to handle 32-bit pc-relative offsets is going to
-be longer than either of the above two sequences.  So, possibly you
-would only want to go this route if the table is large.
-
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
