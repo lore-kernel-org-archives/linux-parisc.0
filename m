@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5139B483E
-	for <parisc-linux@parisc-linux.org>; Sun, 21 Sep 2003 13:04:58 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A19Vx-0007OR-6X; Sun, 21 Sep 2003 20:04:57 +0100
-Date: Sun, 21 Sep 2003 20:04:57 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Joel Soete <soete.joel@tiscali.be>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] warning: long unsigned int format, time_t arg
-Message-ID: <20030921190457.GI13172@parcelfarce.linux.theplanet.co.uk>
-References: <3F6DE716.4030104@tiscali.be> <200309211846.h8LIkKwp011274@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200309211846.h8LIkKwp011274@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D325483E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Sep 2003 13:12:42 -0600 (MDT)
+Message-Id: <200309211912.h8LJCd59011386@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: Found the r19 problem!
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Sun, 21 Sep 2003 15:12:39 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030921185531.GH6963@systemhalted> from "Carlos O'Donell" at Sep 21, 2003 02:55:31 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,36 +22,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 21, 2003 at 02:46:20PM -0400, John David Anglin wrote:
-> >                  rc = snprintf(out_ptr, out_end - out_ptr,
-> > -                          "%lu", tv.tv_sec);
-> > +                          "%lu", (unsigned long int)tv.tv_sec);
+> > So use a caller saves register, place it in the clobbers, and let gcc
+> > work around the usage (e.g. r4).
+> >  
+> > > > 	...
+> > > > 	(Many insn later)
+> > > > 	(stub) (dyncall) -> libpthread.so
+> > > > 	-> libc.so
+> > > 
+> > > The above is an indirect call. r19 should be restored after the call
+> > > if it is used after the call.
+> > 
+> > It is, but only after the asm(...) that lists r19 in the clobber.
+> > 
 > 
-> This looks ok to me, although you don't need the extra "int".
+> Sorry "It is" should read "It is used" :)
 
-I'd rather not add these.  They are only warnings, after all.
+Well that's why the restore is deleted.  So, the clobber must go
+and r19 must be preserved across the asm(...).  As I said, you can't
+clobber r19 when generating pic code.  It's treated as fixed register,
+so clobbering it can lead to undefined behavior.
 
-> I noticed in include/asm-parisc/posix_types.h we have:
-> 
-> /* Note these change from narrow to wide kernels */
-> #ifdef __LP64__
-> typedef unsigned long           __kernel_size_t;
-> typedef long                    __kernel_ssize_t;
-> typedef long                    __kernel_ptrdiff_t;
-> typedef long                    __kernel_time_t;
-> #else
-> typedef unsigned int            __kernel_size_t;
-> typedef int                     __kernel_ssize_t;
-> typedef int                     __kernel_ptrdiff_t;
-> typedef int                     __kernel_time_t;
-> #endif
-> 
-> On narrow kernels, int and long are the same.  So, why not use long
-> for both narrow and wide?  Then, the ifdef can be eliminated.
+If the syscall used r19, it could include a use of r19 in the asm.
+This would ensure the restore occurs before the syscall.
 
-I think it's because gcc complains ;-)
-
+Dave
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
