@@ -1,30 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3629B482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 16:21:10 -0600 (MDT)
-Received: from esiee.fr (pc5158a.esiee.fr [147.215.50.165])
-	by mail.esiee.fr (Postfix) with ESMTP id CE475D1672
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Apr 2001 00:21:07 +0200 (CEST)
-Sender: marteaut@esiee.fr
-Message-ID: <3AE8A0A4.1D74FACF@esiee.fr>
-Date: Fri, 27 Apr 2001 00:26:44 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] SETI@home
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9DBAF482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 16:47:35 -0600 (MDT)
+Message-Id: <200104262241.QAA09672@puffin.external.hp.com>
+To: "Peter Weatherall" <peter.weatherall@3beans.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Dino 
+In-Reply-To: Your message of "Thu, 26 Apr 2001 16:28:13 CDT."
+             <000501c0ce97$cd18ec00$a2035ad8@3beans.com>
+Date: Thu, 26 Apr 2001 16:41:08 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+"Peter Weatherall" wrote:
+> Dino version 2.1 (bridge mode) found at 0xf1600000
+> 
+> 
+> The GSCtoPCI (Dino hrev 1) bus converter found may exhibit
+> data corruption.  See Service Note Numbers: A4190A-01, A4191A-01.
+> Systems shipped after Aug 20, 1997 will not exhibit this problem.
+> Models affected: C180, C160, C160L, B160L, and B132L workstations.
+> 
+> dino_bridge_init: IO_ADDR_EN hasn't been configured.
+> kernel BUG at dino.c:795!
+> >>>>>
 
-	SETI guys just announced that our version was working! To see it, follow this
-link http://setiathome.ssl.berkeley.edu/unix.html
+I added this text about 1.5 years ago.
 
-And, at http://www.esiee.fr/puffin, a client will be available as soon as
-possible. We are currently running tests with our A500 and with a 712...
 
-Once again, thanks to Bruno Iglesias for porting this good test for the floating
-computation of our PA/Linux.
+> How can I determine if my c160 is affected ? what's this kernel bug at
+> dino.c all about and is there some Dino documentation available ?
 
-Good day, Thomas
-ESIEE Team
+The bug is documented in the Dino3.1 Errata. I don't recall if that got
+published. Search the mail archive for "corruption".
+
+With a dino2.1, I'd be pretty certain your box will be affected.
+My understanding was HP replaced old dino chips with 3.1 versions.
+For customers, this meant a board swap.
+
+Note that upgrading PDC (firmware) may render PCI unusable.  PDC won't
+let you boot (or get to PDC prompt) the box if dino is rev 3.0 or lower
+*and* a PCI card (except HP graphics) is installed. It'll halt and print
+something about PCI and "contact local HP support".
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
