@@ -1,12 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hosting-network.com (unknown [66.216.31.1])
-	by dsl2.external.hp.com (Postfix) with SMTP id DBAE6482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 15:36:37 -0700 (MST)
-From: "Steve" <webmaster@web-site-promotion-submission-marketing.com>
-To: "Parisc Linux" <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 14 Nov 2002 16:36:39 -0600
-Message-Id: <20021114223637.DBAE6482E@dsl2.external.hp.com>
-Subject: [parisc-linux] Request for link exchange with your web site
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E5F22482E
+	for <parisc-linux@parisc-linux.org>; Thu, 14 Nov 2002 15:45:03 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18CSjK-0007GD-00; Thu, 14 Nov 2002 22:44:58 +0000
+Date: Thu, 14 Nov 2002 22:44:58 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] [IMPORTANT] PDC & Mux console major number changed
+Message-ID: <20021114224458.C21295@parcelfarce.linux.theplanet.co.uk>
+References: <20021114151344.Y30392@parcelfarce.linux.theplanet.co.uk> <3DD42259.2070106@gmx.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3DD42259.2070106@gmx.at>; from christoph.plattner@gmx.at on Thu, Nov 14, 2002 at 11:23:21PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,23 +25,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dear Webmaster,
+On Thu, Nov 14, 2002 at 11:23:21PM +0100, Christoph Plattner wrote:
+> I do not think it is a good idea to have the same MAJOR for PDC console
+> and MUX driver. Those drivers are different in concept, and the PDC
+> driver is valid for ALL HP machines, independent if it is a 720, 712
+> 800er, ..... The PDC driver used the ROM support and can be used
+> as fall back in any case.
 
-I visited your web site and would like to exchange links with you. I have already placed your link on my marketing directory page at:
+I wish you'd said something before... they've been using the same major
+for months now.  Anyway, there's really no point in using the PDC console
+if the Mux console works, so I don't see why it's a bad thing.
 
-http://www.web-site-promotion-submission-marketing.com  category: Web Traffic, sub-category: Increase Web Traffic
-Please link back to our web site
+> The MUX driver is the serial driver for those special hardware of HP.
+> This driver can be handled in two ways:
+> - Let it be an own driver with special devices, like
+> 		/dev/ttyX0..7 or /dev/ttyM0..7 (or whatever ...)
 
-Our link info :
+Too late.  Lanana already has the registration:
 
-Title : Web Site Promotion Submission Marketing 
-Url : http://www.web-site-promotion-submission-marketing.com
-Description:   Web Site Promotion Submission Marketing
+11 char	Serial Mux device	(Linux/PA-RISC only)
+		  0 = /dev/ttyB0	First mux port
+		  1 = /dev/ttyB1	Second mux port
+		    ...
 
-I would appreciate it if you would place a link back.
+(http://www.lanana.org/docs/device-list/devices.txt)
 
-Thanks
+> - Let it become the "default" serial device:
+> 		/dev/ttyS0../dev/ttyS7
+>    This is only possible, if there is no HP with a 16450-class UART
+>    and a MUX !!!
 
-Best regards,
-Steve
-webmaster@web-site-promotion-submission-marketing.com
+There is such a machine; D & R class can have a Mux plugin card and they
+also have 16x50 UARTs provided by Lasi & Wax.  (firmware disables Lasi's
+UART when this card is plugged in, but Wax's is still active).
+
+-- 
+Revolutions do not require corporate support.
