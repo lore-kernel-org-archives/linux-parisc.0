@@ -1,29 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA29428
-	for <parisc-linux@puffin.external.hp.com>; Sat, 13 Jan 2001 18:57:26 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 14 Jan 2001 02:01:04 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14HcTd-0006Je-00; Sun, 14 Jan 2001 02:01:01 +0000
-Date: Sun, 14 Jan 2001 02:01:01 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] semaphores
-Message-ID: <20010114020101.J7463@parcelfarce.linux.theplanet.co.uk>
-References: <20010113081835.C16185@parcelfarce.linux.theplanet.co.uk> <200101131933.LAA08812@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA30064
+	for <parisc-linux@puffin.external.hp.com>; Sat, 13 Jan 2001 20:32:10 -0700
+Received: from athena.louisville.edu (athena.louisville.edu [136.165.1.37])
+	by erouter1.it-datacntr.louisville.edu (Postfix) with ESMTP id 5001323339
+	for <parisc-linux@thepuffingroup.com>; Sat, 13 Jan 2001 22:35:45 -0500 (EST)
+Date: Sat, 13 Jan 2001 22:35:13 -0500
+From: "Phillip D. Beal" <pdbeal@louisville.edu>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 715/80 problem
+Message-ID: <20010113223513.A63406@athena.louisville.edu>
+References: <20010111213734.D134330@athena.louisville.edu> <3A5E8AA6.6D825A61@linuxcare.com> <20010112182012.H13351@neep.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200101131933.LAA08812@milano.cup.hp.com>; from grundler@cup.hp.com on Sat, Jan 13, 2001 at 11:33:26AM -0800
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <20010112182012.H13351@neep.com.au>; from andrew@neep.com.au on Fri, Jan 12, 2001 at 06:20:15PM +0800
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Fri, Jan 12, 2001 at 06:20:15PM +0800, Andrew Shugg wrote:
+> Alex deVries said:
+> > Okay... I *think* that 735 and 755 boot using rbootd.
+> 
+> The 735 certainly does.
 
-thanks for trying this, grant.  i'll continue trying to debug this when
-i'm back from oz and have a machine to hand again.  trying to debug this
-by proxy just isn't going to work.
-
-of course anyone who wants to is welcome to try debugging it.
+Right I know that, but what file is used from a kernel build to boot a
+715?  iplboot? lifimage? vmlinux?  I've tried all three, and the boot
+sequence from the netowrk fails.  It can't load iplboot for some reason.
+my bootptab looks identical to the one from the nfsroot howto, otherthan
+the ip I'm giving is different.  what does it require to get iplboot to
+load on a network boot for a 715 using bootp?
 
 -- 
-Revolutions do not require corporate support.
+Phillip Beal                           ___           _               _   
+Electrical and Computer Engineering   | _ ) ___ __ _| |___  _ _  ___| |_ 
+pdbeal@louisville.edu                 | _ \/ -_) _` | |_ /_| ' \/ -_)  _|
+http://www.bealz.net/                 |___/\___\__,_|_/__(_)_||_\___|\__|
