@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 163.com (unknown [202.105.138.198])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1BBFD483D
-	for <parisc-linux@parisc-linux.org>; Wed, 11 Jun 2003 19:26:12 -0600 (MDT)
-From: "Hattie Yuan" <hytechhk@163.com>
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Reply-To: hytechhk@163.com
-Date: Thu, 12 Jun 2003 09:25:58 +0800
-Message-Id: <20030612012612.1BBFD483D@dsl2.external.hp.com>
-Subject: [parisc-linux] professional manufacturer specializing in mobile phone accessories
+Date: Thu, 12 Jun 2003 00:13:04 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Stian S?iland <stian@soiland.no>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] palo II
+Message-ID: <20030612061304.GC11363@dsl2.external.hp.com>
+References: <3ED4C8B600004A2B@ocpmta1.freegates.net> <20030611175110.GE28581@parcelfarce.linux.theplanet.co.uk> <20030611203145.GB30555@itea.ntnu.no> <1055363548.2419.41.camel@dhcp22.swansea.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1055363548.2419.41.camel@dhcp22.swansea.linux.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,22 +21,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-   Dear Sir or Madam,
-  
-   Good day!
-  
-   HY Technology Company Limited,  registered in Hongkong and located in Shenzhen, is a   
-professional manufacturer specializing in mobile phone accessories, mainly including Portable   hands 
-free, Battery, chargers, case and data cable. 
-  
-   Our delivery time is 7 to 10 days after receiving payment by T/T. And we are very glad to send   
-you samples in a certain quantity for your evaluation on freight collect basis.
-  
-   Any question, please contact me at any time.
-  
-   Sincerely hope to establish a long-term business relationship with you soon.
-  
-   Best regards,
-  
-   Maggie
-   HY Technology Company Limted
+On Wed, Jun 11, 2003 at 09:32:32PM +0100, Alan Cox wrote:
+> Dell have a nice little app that generates the right symlinks by device
+> all in user space
+
+Happen to know the name of the app?
+Does it handle adding/removing HBAs gracefully?
+
+thanks,
+grant
