@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2CB28482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 May 2002 22:57:01 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 16 May 2002 17:00:30 +1200
-Message-ID: <013201c1fc96$99f8adf0$5e01000a@bongo>
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 71D46482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 May 2002 01:09:14 -0600 (MDT)
+To: "EVERSON,SETH (HP-Loveland,ex1)" <seth_everson2@hp.com>
+Subject: RE: [parisc-linux] Try to boot b2000 failled?
+Message-ID: <1021532950.3ce35b165180a@webmail.tiscali.be>
+Date: Thu, 16 May 2002 09:09:10 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: "'joel.soete@freebel.net'" <joel.soete@freebel.net>,
+	parisc-linux@lists.parisc-linux.org
+References: <F341E03C8ED6D311805E00902761278C0CD12BEA@xfc04.fc.hp.com>
+In-Reply-To: <F341E03C8ED6D311805E00902761278C0CD12BEA@xfc04.fc.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-In-Reply-To: <20020511211440.C705E482A@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: Dodgy SCSI in L2000
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,126 +24,123 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hey,
+Hi Seth,
 
-I have applied the patch just posted to the list (irq.c patch). I'm
-running the latest CVS kernel on a dual 440Mhz L2000, 1Gb ram, 4x 18.2Gb
-LVD SCSI disks.
+Simple and efficent (why making complex when we can do simple :) )
 
-I am seeing the same problems I have seen before (SCSI resets etc), BUT
-the box is not kernel panicing any more - which is an improvement
+Many thanks,
+Joel
 
-Dbench works fine on single disks (i.e running one instance of dbench on
-one disk) - up to 200 clients (didn't bother trying further).
+Quoting "EVERSON,SETH (HP-Loveland,ex1)" <seth_everson2@hp.com>:
 
-But when I try to run 2 instances of dbench on any 2 disks in the box, I
-get all sorts of SCSI bus resets and errors.
+> Joel -
+> 
+> Here is what I've been doing to install debian on my C3600 and J5000. 
+> No 
+> need for network or anything:
+> 
+> 1.  Copy the file LIFIMAGE in the disks-hppa directory to a CD-ROM
+> 2.  Boot a HP-UX 10 or 11 cd
+> 3.  Go to the installer, and go to a recovery console.
+> 4.  Load 'dd' and 'mount'.  This will get dd and all the mount files.
+> 5.  Go to a shell.
+> 6.  Mount /dev/dsk/c0t0d0 to /mnt with mount -t cdfs 
+> 7.  Go to /mnt, then do a 'dd if='LIFIMAGE;1' of=/dev/dsk/cXtYdZ
+> bs=2048'  
+>     where x, y, and z are your target scsi hard disk.  
+> 8.  Reboot the machine, and boot the scsi hard disk you just targeted.
+> 9.  Interact with the IPL, and your done.
+> 
+> The great thing is, everything gets loaded into RAM.  So, when you
+> start
+> the install, just partition both drives like normal, and install.  Just
+> 
+> make sure you do everything right the first time, or you'll have to
+> repeat
+> the process.
+> 
+> -Seth
+> 
+> -----Original Message-----
+> From: joel.soete@freebel.net [mailto:joel.soete@freebel.net]
+> Sent: Tuesday, May 14, 2002 9:03 AM
+> To: joel.soete@freebel.net
+> Cc: parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] Try to boot b2000 failled?
+> 
+> 
+> Oops... I find back a kernel pa12 and this boot better until it panics
+> because of:
+> ...
+> root fs not found
+> ...
+> 
+> So I suspect a mistake in the bootp-tftp config.
+> In fact I would like to mount my palinux-0.9-3 cd on b180:/cdrom and use
+> it
+> as
+> root fs to install the b2000.
+> Unfortunately i do not find any example to do this. Is somebody can
+> share
+> its
+> experience.
+> 
+> Thanks in advance for additionale help,
+>     Joel
+> 
+> Quoting joel.soete@freebel.net:
+> 
+> > Hi all,
+> > 
+> > To split my gcc-3.2 and gcc-3.1 env on two different server (need
+> disk
+> > space
+> > also), I would like to install a free b2000 workstation.
+> > 
+> > To do this i choose lan install (no possibilty for external
+> scsi-cdrom
+> > and no
+> > more place to rebuild a new cdimage with recent kernel); I configure
+> my
+> > palinux
+> > b180 as bootp-tftp server and configure in accordance with
+> >
+> http://pateam.esiee.fr/parisc-linux-boot/parisc-linux-boot/preparation.html.
+> > 
+> > In b2000 BOOT_ADMIN> boot lan, the lifimage (build with cvs palo &
+> > kernel
+> > 2.4.18-24 which boot well on my b180) is well found and launched but
+> > hang just
+> > after "Searching for devices..." and the green light on the ide
+> cd-rom
+> > driver
+> > stay lighted?
+> > 
+> > Thanks in advance for help,
+> >     Joel
+> > 
+> > 
+> > -------------------------------------------------
+> > This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+> > 
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> > 
+> > 
+> 
+> 
+> -------------------------------------------------
+> This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 
-Heres a cut and paste from the console:
 
----------
-
-scsi : aborting command due to timeout : pid 200512, scsi0, channel 0,
-id 0, lun 0 Read (10) 00 02 03 78 20 00 00 08 00
-sym53c8xx_abort: pid=200512 serial_number=200514
-serial_number_at_timeout=200514
-SCSI host 0 abort (pid 200512) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=200512 reset_flags=2 serial_number=200514
-serial_number_at_timeout=200514
-scsi : aborting command due to timeout : pid 200771, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 01 98 22 c8 00 00 08 00
-sym53c8xx_abort: pid=200771 serial_number=200773
-serial_number_at_timeout=200773
-scsi : aborting command due to timeout : pid 200772, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 00 01 10 a8 00 00 08 00
-sym53c8xx_abort: pid=200772 serial_number=200774
-serial_number_at_timeout=200774
-scsi : aborting command due to timeout : pid 200773, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 02 00 63 e0 00 00 08 00
-sym53c8xx_abort: pid=200773 serial_number=200775
-serial_number_at_timeout=200775
-scsi : aborting command due to timeout : pid 200774, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 00 d0 51 b8 00 00 08 00
-sym53c8xx_abort: pid=200774 serial_number=200776
-serial_number_at_timeout=200776
-scsi : aborting command due to timeout : pid 200775, scsi0, channel 0,
-id 0, lun 0 Write (10) 00 00 40 4a 38 00 00 18 00
-sym53c8xx_abort: pid=200775 serial_number=200777
-serial_number_at_timeout=200777
-scsi : aborting command due to timeout : pid 200776, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 01 b0 38 e0 00 00 08 00
-sym53c8xx_abort: pid=200776 serial_number=200778
-serial_number_at_timeout=200778
-scsi : aborting command due to timeout : pid 200777, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 00 04 2d 80 00 00 08 00
-sym53c8xx_abort: pid=200777 serial_number=200779
-serial_number_at_timeout=200779
-scsi : aborting command due to timeout : pid 200778, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 01 1c 5b 90 00 00 08 00
-sym53c8xx_abort: pid=200778 serial_number=200780
-serial_number_at_timeout=200780
-scsi : aborting command due to timeout : pid 200779, scsi0, channel 0,
-id 2, lun 0 Write (10) 00 00 d0 52 c0 00 00 08 00
-sym53c8xx_abort: pid=200779 serial_number=200781
-serial_number_at_timeout=200781
-SCSI host 0 abort (pid 200780) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=200780 reset_flags=2 serial_number=200782
-serial_number_at_timeout=200782
-SCSI host 0 abort (pid 201014) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201014 reset_flags=2 serial_number=201016
-serial_number_at_timeout=201016
-SCSI host 0 abort (pid 201161) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201161 reset_flags=2 serial_number=201163
-serial_number_at_timeout=201163
-SCSI host 0 abort (pid 201174) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201174 reset_flags=2 serial_number=201176
-serial_number_at_timeout=201176
-SCSI host 0 abort (pid 201187) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201187 reset_flags=2 serial_number=201189
-serial_number_at_timeout=201189
-SCSI host 0 abort (pid 201200) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201200 reset_flags=2 serial_number=201202
-serial_number_at_timeout=201202
-SCSI host 0 abort (pid 201213) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201213 reset_flags=2 serial_number=201215
-serial_number_at_timeout=201215
-SCSI host 0 abort (pid 201226) timed out - resetting
-SCSI bus is being reset for host 0 channel 0.
-sym53c8xx_reset: pid=201226 reset_flags=2 serial_number=201228
-serial_number_at_timeout=201228
-
----------
-
-And so on and so on like this. Grant has mentioned that the termination
-or SCSI cables could be an issue, but as I have no replacements for this
-box I cant really test this out. Before I applied the irq.c patch, the
-box would panic just running dbench on one single disk.
-
-If anyone has any ideas or possible solutions on what could be causing
-this, I'd *love* to hear them. If you need any further details, just let
-me know.
-
-I've also tried compiling the Qlogic ISP (we have bunch of these cards
-lying around from our SGI boxes) scsi driver but it doesn't want to
-compile on PA-RISC. Are there any other SCSI cards which are known to
-compile under PA-RISC? I was thinking I could then leave just the root
-disk on the core I/O board and use another SCSI controller for the other
-3 disks. Is this possible?
-
-Cheers, James
-
-
--- 
-James Braid
-System Administrator
-Peace Software
-Ph:		+64 9 373 0400
-Email:	james.braid@peace.com
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
