@@ -1,17 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B3A9A4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 09:27:15 -0600 (MDT)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id h3GFRF606505
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 16:27:15 +0100
-Date: Wed, 16 Apr 2003 16:27:13 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0304161625010.28370-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Presicionbook ioscan
+Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1CCE74829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 09:39:54 -0600 (MDT)
+Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
+	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h3GEfeRN030101;
+	Wed, 16 Apr 2003 15:41:40 +0100
+Received: (from alan@localhost)
+	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h3GEfYgL030099;
+	Wed, 16 Apr 2003 15:41:34 +0100
+Subject: RE: [parisc-linux] Re: Presicionbook success
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: "\"Beerse," =?ISO-8859-1?Q?Corn=E9=22?= <c.beerse@torex-hiscom.nl>,
+	Matthew Wilcox <willy@debian.org>,
+	Gavin Hubbard <ghub005@xtra.co.nz>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.44.0304161504230.28370-100000@sal.ucc.ie>
+References: <Pine.LNX.4.44.0304161504230.28370-100000@sal.ucc.ie>
+Content-Type: text/plain
+Message-Id: <1050504092.28591.97.camel@dhcp22.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: 16 Apr 2003 15:41:33 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,53 +32,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi PA,
+On Mer, 2003-04-16 at 15:09, M. Grabert wrote:
+> The hard disks are removeable, but there is no obvious IDE-SCSI bridge
+> visible. It is build-in inside the laptop (i.e. non-removeable), and it's
+> obviously visible from the OS (at least linux sees the IDE chip). Whether
+> you can make any sensible use of it is a different question though ...
 
-I asked some other (new) owners of Presicionbooks to give me the output
-of 'ioscan -f'. Here you go ...
+That means the system either has seperate IDE and SCSI controllers or
+has an IDE controller and an IDE_SCSI bridge for scsi disk. I suspect
+the former
+> > For what its worth, I think the IRQ is hooked to the scsi interface, not to
+> > the processor.
+> 
+> This would make sense.
 
+It would be common sense for two exclusive items to use the same IRQ,
+but if pio works so does the IRQ line
 
----------- Forwarded message ----------
-Date: Wed, 16 Apr 2003 11:22:37 -0400
-From: Danny Duval
-To: xam
-Subject: re: Question from eBay Member
+> comes with two 4GB hard disks, both with HP-UX installed, but I have to
+> ask for the password (or does anybody know how to easily gain root access?),
+> which I haven't done yet.
 
-
-Class       I  H/W Path    Driver      S/W State   H/W Type     Description
-============================================================================
-bc          0              root        CLAIMED     BUS_NEXUS
-bc          1  8           bc          CLAIMED     BUS_NEXUS    Pseudo Bus
-Converter
-ba          0  8/0         GSCtoPCI    CLAIMED     BUS_NEXUS    GSCtoPCI
-Bridge
-unknown    -1  8/0/1/0                 UNCLAIMED   UNKNOWN      PCI IDE
-(10950643)
-tty         1  8/0/63      asio0       CLAIMED     INTERFACE    Built-in
-RS-232C
-ba          1  8/16        bus_adapter CLAIMED     BUS_NEXUS    Core I/O
-Adapter
-ext_bus     1  8/16/0      CentIf      CLAIMED     INTERFACE    Built-in
-Parallel Interface
-audio       0  8/16/1      audio       CLAIMED     INTERFACE    Built-in
-Audio
-tty         0  8/16/4      asio0       CLAIMED     INTERFACE    Built-in
-RS-232C
-ext_bus     0  8/16/5      c720        CLAIMED     INTERFACE    Built-in
-SCSI
-target      0  8/16/5.0    tgt         CLAIMED     DEVICE
-disk        0  8/16/5.0.0  sdisk       CLAIMED     DEVICE       ADTX
-AXSITS2532R 014C
-target      1  8/16/5.1    tgt         CLAIMED     DEVICE
-disk        1  8/16/5.1.0  sdisk       CLAIMED     DEVICE       ADTX
-AXSITS2532R 014C
-target      2  8/16/5.7    tgt         CLAIMED     DEVICE
-ctl         0  8/16/5.7.0  sctl        CLAIMED     DEVICE       Initiator
-lan         0  8/16/6      lan2        CLAIMED     INTERFACE    Built-in LAN
-ps2         0  8/16/7      ps2         CLAIMED     INTERFACE    Built-in
-Keyboard/Mouse
-pc          0  8/16/10     fdc         CLAIMED     INTERFACE    Built-in
-Floppy Drive
-graphics    0  8/24        graph3      CLAIMED     INTERFACE    Graphics
-processor   0  62          processor   CLAIMED     PROCESSOR    Processor
-memory      0  63          memory      CLAIMED     MEMORY       Memory
+There are several ways but that would be subverting a rights management
+system and I don't wish to get the list owners in trouble.
