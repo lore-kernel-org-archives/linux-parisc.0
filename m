@@ -1,30 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 627914A19
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 12:31:47 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14VeQw-0001e5-00; Wed, 21 Feb 2001 11:56:14 -0700
-Date: Wed, 21 Feb 2001 11:56:14 -0700
-From: Matthew Wilcox <matthew@wil.cx>
-To: hull@cup.hp.com
-Cc: Matthew Wilcox <matthew@wil.cx>, arjanv@redhat.com,
-	parisc-linux@parisc-linux.org
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 203E74A19
+	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 12:32:25 -0700 (MST)
 Subject: Re: [parisc-linux] Prefetch macros for PA-RISC
-Message-ID: <20010221115614.K31164@parcelfarce.linux.theplanet.co.uk>
-References: <20010221111141.H31164@parcelfarce.linux.theplanet.co.uk> <NDBBIHNACACKNDHNHIKAIEEGCBAA.jim_hull@hp.com>
-Mime-Version: 1.0
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Wed, 21 Feb 2001 18:55:51 +0000 (GMT)
+Cc: matthew@wil.cx (Matthew Wilcox), parisc-linux@parisc-linux.org
+In-Reply-To: <200102211850.KAA17436@milano.cup.hp.com> from "Grant Grundler" at Feb 21, 2001 10:50:53 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <NDBBIHNACACKNDHNHIKAIEEGCBAA.jim_hull@hp.com>; from jim_hull@hp.com on Wed, Feb 21, 2001 at 10:49:33AM -0800
-Sender: <willy@www.linux.org.uk>
+Message-Id: <E14VeQa-0002ZJ-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Feb 21, 2001 at 10:49:33AM -0800, Jim Hull wrote:
-> Actually, Table 6-10 in the PA-RISC 2.0 book is wrong -- LDW is prefetch
-> for read, LDD is prefetch for write.  See this erratum description:
+> My reading of the "PA 2.0 Enhancements" in the "PA-RISC 2.0 Architecture"
+> is pretty clear this is for PA2.0 CPU's only. #ifdef __LP64__ is needed.
 > 
-> http://devresource.hp.com/devresource/Docs/Refs/PA2_0/updates/e1.html
+> I'd like to encourage use prefetching on bcopy/checksum type loops.
+> It will help perf *alot*.
 
-Wow, thanks Jim.  I would never have noticed that.
-
--- 
-Revolutions do not require corporate support.
+Can the prefetch on the hppa fault ?
