@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2545C483F
-	for <parisc-linux@parisc-linux.org>; Sat, 13 Sep 2003 13:08:39 -0600 (MDT)
-Received: from netscape1014.com (ip503d4dab.speed.planet.nl [80.61.77.171])
-	by cuprel1.hp.com (Postfix) with SMTP id C85A3CE4
-	for <parisc-linux@parisc-linux.org>; Sat, 13 Sep 2003 12:08:35 -0700 (PDT)
+Received: from netscape650.com (ip503d4dab.speed.planet.nl [80.61.77.171])
+	by dsl2.external.hp.com (Postfix) with SMTP id F1C9A483F
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 13 Sep 2003 13:13:01 -0600 (MDT)
 From: prince mabaka <princmabak@netscape.net>
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Reply-To: princemabaka@netscape.net
-Date: Sat, 13 Sep 2003 21:08:52 +0200
+Date: Sat, 13 Sep 2003 21:13:18 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="802bf47a-a356-435f-b06b-3443e4eaa03d"
-Message-Id: <20030913190835.C85A3CE4@cuprel1.hp.com>
+Content-Type: multipart/mixed; boundary="4936a50b-5c10-41d6-b5af-2ac61b0bce4e"
+Message-Id: <20030913191301.F1C9A483F@dsl2.external.hp.com>
 Subject: [parisc-linux] URGENT/ASAP NOTIFICATION.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -25,7 +22,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format
---802bf47a-a356-435f-b06b-3443e4eaa03d
+--4936a50b-5c10-41d6-b5af-2ac61b0bce4e
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
@@ -133,4 +130,4 @@ Sincerely,
 PRINCE MABAKA STEPHENS.
 
   
---802bf47a-a356-435f-b06b-3443e4eaa03d--
+--4936a50b-5c10-41d6-b5af-2ac61b0bce4e--
