@@ -1,12 +1,16 @@
-From: "Adam J. Richter" <adam@yggdrasil.com>
+From: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Date: Fri, 8 Nov 2002 20:51:28 -0800
-Message-ID: <200211090451.UAA26160__34000.7244878963$1416621889$gmane$org@baldur.yggdrasil.com>
-Cc: andmike@us.ibm.com, hch@lst.de, James.Bottomley@steeleye.com,
-	linux-kernel@vger.kernel.org, mochel@osdl.org,
-	parisc-linux@lists.parisc-linux.org
-To: willy@debian.org
+Date: Sat, 9 Nov 2002 05:21:50 +0000
+Message-ID: <20021109052150.T12011__2470.42333144254$1416621890$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <200211090451.UAA26160@baldur.yggdrasil.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: willy@debian.org, andmike@us.ibm.com, hch@lst.de,
+	James.Bottomley@steeleye.com, linux-kernel@vger.kernel.org,
+	mochel@osdl.org, parisc-linux@lists.parisc-linux.org
+To: "Adam J. Richter" <adam@yggdrasil.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <200211090451.UAA26160@baldur.yggdrasil.com>; from adam@yggdrasil.com on Fri, Nov 08, 2002 at 08:51:28PM -0800
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,31 +21,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
->Actually I think the generic device model is crap. [...]
+On Fri, Nov 08, 2002 at 08:51:28PM -0800, Adam J. Richter wrote:
+> My patch is a net deletion of 57 lines and will allow simplification
+> of parisc DMA allocation.
 
-My patch is a net deletion of 57 lines and will allow simplification
-of parisc DMA allocation.
+57 lines of clean elegant code, replacing them with overly generic ugly
+code and bloated data structures.  struct device is a round 256 bytes
+on x86.  more on 64-bit architectures.
 
-Although I agree with most of your criticisms about the generic device
-model, most of the problems with it are the way people use it (the
-first thing everyone wants to do is a driverfs file system) and some
-conventions that I disagree with, such as the idea that drivers that
-embed struct device and struct device_driver should not initialize
-those fields directly, but should have xxx_register_device copy them
-in.  parisc can use the generic driver API without getting fat.
+> in.  parisc can use the generic driver API without getting fat.
 
-Problems specific to the generic device API can be incrementally
-improved and nobody is treating it as set in stone.  I think the
-generic device API is close enough already so that it's worth porting
-to, even if future clean-ups will then require some small changes to
-the code that is ported to it.
+no.  it can't.
 
-Please do not throw the baby out with the bath water.  The generic
-driver interface in its present form really can make parisc smaller
-and cleaner.
+> Problems specific to the generic device API can be incrementally
+> improved and nobody is treating it as set in stone.  I think the
+> generic device API is close enough already so that it's worth porting
+> to, even if future clean-ups will then require some small changes to
+> the code that is ported to it.
 
-Adam J. Richter     __     ______________   575 Oroville Road
-adam@yggdrasil.com     \ /                  Miplitas, California 95035
-+1 408 309-6081         | g g d r a s i l   United States of America
-                         "Free Software For The Rest Of Us."
+Everyone's saying "ra!  ra!  generic device model!" without asking
+what the cost is.  Don't you think it's reasonable that _as the most
+common device type_, struct device should be able to support PCI in a
+clean manner?  Don't you think that the fact that it fails to do so is
+a problem?  Don't you look at the locks sprinkled all over the struct
+device system and wonder what they're all _for_?
+
+Don't get me wrong.  I want a generic device model.  But I think it's
+clear the current one has failed to show anything more than eye candy.
+Perhaps it's time to start over, with something small and sane -- maybe
+kobject (it's not quite what we need, but it's close).  Put one of those
+in struct pci_dev.  Remove duplicate fields.  Now maybe grow kobject a
+little, or perhaps start a new struct with a kobject as its first member.
+
+And, for gods sake, don't fuck it up by integrating it with USB too early
+in the game.  Let's get it right for PCI, maybe some other internal busses
+(i'm gagging to write an EISA subsystem ;-).  SCSI is more interesting
+than USB.  Above all, don't fall into the trap of "It's a bus and it
+has devices on it, therefore it must be a part of devicefs".
+
+*sigh*.  halloween was a week ago.
+
+-- 
+Revolutions do not require corporate support.
