@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00207807b093-CM.cpe.net.cable.rogers.com [24.112.180.230])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65FD24829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Feb 2003 21:17:03 -0700 (MST)
-Received: from carlos by systemhalted with local (Exim 3.36 #1 (Debian))
-	id 18kzBe-0004qE-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Feb 2003 23:16:54 -0500
-Date: Mon, 17 Feb 2003 23:16:54 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030218041653.GI15855@systemhalted>
+Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB412482B
+	for <parisc-linux@parisc-linux.org>; Tue, 18 Feb 2003 01:44:45 -0700 (MST)
+Received: from esvir03nok.nokia.com (esvir03nokt.ntc.nokia.com [172.21.143.35])
+	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h1I8lgm29054
+	for <parisc-linux@parisc-linux.org>; Tue, 18 Feb 2003 10:47:42 +0200 (EET)
+Date: Tue, 18 Feb 2003 10:44:42 +0200
+From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
+To: ext Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Joel Soete <jsoe0708@tiscali.be>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] .config fo a N class?
+Message-ID: <20030218084442.GP3715@aurinko.ntc.nokia.com>
+References: <3E48B5950000297E@ocpmta3.freegates.net> <3E4ABE5000002044@ocpmta2.freegates.net> <20030218025230.GA13514@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] /dev/loop0 problems in 2.5.x?
+Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20030218025230.GA13514@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +26,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-parisc,
+On Mon, Feb 17, 2003 at 07:52:30PM -0700, ext Grant Grundler wrote:
+> On Mon, Feb 17, 2003 at 06:51:01PM +0100, Joel Soete wrote:
 
-Works in 2.4.x, thinking of moving part of the cluster to 2.5, but I like
-to play with swap over NFS.
+> > eth0 Digital DS21143 Tulip rev 65 at 0x80 ... irq 128
+> > Is there known problem with this type of NIC?
 
-root@node01:/etc# /sbin/losetup /dev/loop0 /swapfile
-ioctl: LOOP_SET_FD: Inappropriate ioctl for device
-root@node01:/etc# uname -a
-Linux node01 2.5.59-pa2 #2 Thu Jan 23 00:49:22 EST 2003 parisc unknown
-unknown GNU/Linux
+> yes - there was. But built-in should work. add-on cards had problems.
 
-Do I need newer tools for playing with 2.5.x on HPPA?
-Loopback is compiled into the kernel, no modules, and I can produce the
-.config if you would like to look :)
+Hey, that's the same revision as the one I tried in a C240 ... 
+A3738-60001 ANA-6911A/AUI? A combo card with 10/100bT, 10b2, and AUI? 
 
-Help is much appreciated. I've trolled a few places but no mention of
-this particular problem.
+Come to think of it, is it at all reasonable to assume that the same chip 
+revision would be likely to mean the cards are similar?
 
-c.
+
+Anyway, mine still doesn't work as of today, but I haven't worked on it 
+for a while... oh well, at least on HP-UX it'd be supported on an N, 
+right?
+
+
+-- 
+Mikko Nahkola   <mikko.nahkola@nokia.com>
+Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
