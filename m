@@ -1,41 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 63E06482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Jul 2001 05:09:07 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62662482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Jul 2001 05:20:06 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 49038B00C; Fri,  6 Jul 2001 12:08:18 +0100 (BST)
-Date: Fri, 6 Jul 2001 12:08:18 +0100
+	id 3F86AB00C; Fri,  6 Jul 2001 12:19:20 +0100 (BST)
+Date: Fri, 6 Jul 2001 12:19:20 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: =?iso-8859-1?Q?Jo=EBl_Soete?= <jso@europay.com>
-Cc: puffin@esiee.net, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] palinux 0.9.1
-Message-ID: <20010706120817.Q23509@linuxcare.com>
-References: <OF5EDA36D9.81945ED8-ONC1256A7F.00596A33@LocalDomain>
+To: Timothy Ball <timball@tux.org>
+Cc: Parisc Linux Mailing List <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] booting images
+Message-ID: <20010706121920.R23509@linuxcare.com>
+References: <20010703151202.H19064@gwyn.tux.org> <20010704133802.K19064@gwyn.tux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <OF5EDA36D9.81945ED8-ONC1256A7F.00596A33@LocalDomain>; from jso@europay.com on Wed, Jul 04, 2001 at 06:44:02PM +0200
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010704133802.K19064@gwyn.tux.org>; from timball@tux.org on Wed, Jul 04, 2001 at 01:38:02PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jul 04, 2001 at 06:44:02PM +0200, Joël Soete wrote:
-> Hi all,
+On Wed, Jul 04, 2001 at 01:38:02PM -0400, Timothy Ball wrote:
+> On Tue, Jul 03, 2001 at 03:12:02PM -0400, Timothy Ball wrote:
+> > I have a 735 and have had a bit of a time to try to get this thing to
+> > boot and install. I have downloaded the palinux-0.9-32sti.iso.gz file
+> > from the parisc website. Is there anything special I have to do to this
+> > image to make it bootable? 
 > 
-> Very nice on 712 model.
-> Just a small problem after the configuration of the inet interface:
-> ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN
-> skb: pf=2 (unowned) dev=l0 len=328
-> PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+> Okay I got the iso and it's booting... but then it gets down to these
+> last few lines:
 > 
-> This message is repeated severall times?
+> --snip--snip--snip--
+> CPU(s): 1x PA7100 (PCX-T) at 125.000000 MHz
+> Kernel command line: HOME=/ TERM=linux root=/dev/ram console=tty0 sti=0
+> sti_font=VGA8x16
+> Console: colour dummy device 80x25
+> --snip--snip--snip--
+> 
+> Then it hangs... Not sure what to do... 
 
-Don't know what causes that.
-
-> But on the B180, I met the same problem as I met with the kernel
-> vmlinux-20010629 (from puffin also with your vmlinux-712+sound+mouse):
-> all seems to work fine but the keyboard does not answer (and no serial
-> consol yet available) also it is impossible to contine the install?
-
-I'm just installing a B180 using the 0.9.1 ISO, using the graphical
-console.  I have a keyboard and mouse connected, and it is working
-fine.  I'll try a serial console install next.
+http://mkhppa1.esiee.fr/list.html says 735 is only known to work
+with serial console.  Don't know if that is still valid.  You
+should try the 0.9.1 ISO available from ESIEE, but please wait until
+they have fixed it - the one currently available does not boot at all!
 
 Richard
