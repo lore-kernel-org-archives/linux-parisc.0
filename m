@@ -1,46 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5673E482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Oct 2001 10:43:17 -0600 (MDT)
-Message-Id: <200110141640.KAA27919@puffin.external.hp.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Grant Grundler <grundler@puffin.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org, grundler@puffin.external.hp.com
-Subject: Re: [parisc-linux] Kernel panic with -pa48 
-In-Reply-To: Message from James Bottomley <James.Bottomley@HansenPartnership.com>
-   of "Sun, 14 Oct 2001 09:28:54 CDT." <200110141428.f9EESss01949@localhost.localdomain>
-Date: Sun, 14 Oct 2001 10:40:01 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from solo.franken.de (pD9051BC2.dip.t-dialin.net [217.5.27.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9CF18482A
+	for <parisc-linux@parisc-linux.org>; Sun, 14 Oct 2001 12:48:50 -0600 (MDT)
+Received: (from tsbogend@localhost)
+	by solo.franken.de (8.11.6/8.11.6) id f9EImZq18596
+	for parisc-linux@parisc-linux.org; Sun, 14 Oct 2001 20:48:35 +0200
+Date: Sun, 14 Oct 2001 20:48:35 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011014204835.A18545@solo.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Problems with onboard 715/100 framebuffer
 List-ID: <linux-parisc.vger.kernel.org>
 
-James Bottomley wrote:
-> Both of these appear to have a SCSI bus running through the motherbord
-> to a 50pin ribbon cable on one end and an external D50 SCSI-2 connector
-> on the case.  There appears to be no termination at all on the motherboard,
-> is that correct?
+Hi,
 
-AFAIK, yes - that's correct. The 50-pin (narrow SE SCSI) should be terminated
-on the external 50-pin high-density connecter. The 50-in ribbon cable has a
-terminator at the "internal" end. It's all one bus.
+I have a small problem with my 715/100 (updated to PDC version 1.6), the 
+onboard graphics doesn't work. I always get a blank screen and when booting
+linux the sti debug output prints a screen size of 0x0 :-( Since I got this
+machine with HCRX8Z installed it might be, that the onboard graphics has 
+been disabled, but I haven't found to enable it again.
 
-> The 715/50 has slots for 3 SCSI drives along a ribbon cable which is 
-> terminated at one end.
+Maybe someone here could give me a hint either how to enable the onboard
+framebuffer or a way how to find out, what's wrong (maybe the video ram
+is bad or whatever).
 
-It's intended for 2 HDs and a CD-ROM or SCSI FLoppy.
+Thomas.
 
->  However, I don't believe the other end would be 
-> terminated unless I put a D50 SE terminator on the external connector.   Was 
-> this the way they were usually delivered?
-
-I think so.
-
-> The 712/60 is even stranger: It has one SCSI drive housing and a short ribbon
-> cable with no termination.  It looks like the correct configuration for this 
-> one would be to activate the drive's termination and also put a D50 terminato
->   r 
-> on the external connector?
-
-Yes. But it works w/o termination too since the cable is vry short
-if nothing external is connected.
-
-grant
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
