@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sccrmhc01.attbi.com (sccrmhc01.attbi.com [204.127.202.61])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A73CA4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 28 Sep 2002 07:13:42 -0600 (MDT)
-Received: from attbi.com ([66.56.46.164]) by sccrmhc01.attbi.com
-          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
-          id <20020928131335.EZXW6431.sccrmhc01.attbi.com@attbi.com>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sat, 28 Sep 2002 13:13:35 +0000
-Message-ID: <3D95AB03.9030706@attbi.com>
-Date: Sat, 28 Sep 2002 09:13:39 -0400
-From: James Haydon <jhaydon@attbi.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64105482D
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 28 Sep 2002 08:44:06 -0600 (MDT)
+Message-ID: <3D95CF77.3080508@freebel.net>
+Date: Sat, 28 Sep 2002 15:49:11 +0000
+From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Subject: [parisc-linux] xwindows
+To: James Haydon <jhaydon@attbi.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] xwindows
+References: <3D95AB03.9030706@attbi.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,7 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I got a  9000/715 100 that I have Debian 3.0 everything works except for 
-X.  What do I have to do to make X work?
+Hi James,
 
-James
+Just start to have a look at ml:
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017688.html
+
+You could also have a look earlier in this ml, there are other advises 
+concerning X and 715 (HIL mouse?).
+
+Good luck,
+	Joel
+
+
+James Haydon wrote:
+> I got a  9000/715 100 that I have Debian 3.0 everything works except for 
+> X.  What do I have to do to make X work?
+> 
+> James
+> 
+> 
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
