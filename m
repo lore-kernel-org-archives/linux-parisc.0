@@ -1,47 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA21636
-	for <parisc-linux@puffin.external.hp.com>; Wed, 4 Oct 2000 07:17:37 -0600
-Sender: vidal@hpfrcu03.france.hp.com
-Message-ID: <39DB2D40.4CC05783@admin.france.hp.com>
-Date: Wed, 04 Oct 2000 15:14:40 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: yuqian <yuqian@huawei.com>
-Cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] pre-build HP-UX/10.20 bash's problem
-References: <20001004125746.18672.qmail@mailserv2.iuinc.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA22882
+	for <parisc-linux@puffin.external.hp.com>; Wed, 4 Oct 2000 08:55:39 -0600
+Received: from user32-143.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.32.143)
+  by mailserv2.iuinc.com with SMTP; 4 Oct 2000 14:56:35 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id D2B10B005; Wed,  4 Oct 2000 15:54:38 +0100 (BST)
+Date: Wed, 4 Oct 2000 15:54:38 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001004155438.D27981@linuxcare.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] ret_from_kernel_thread incomplete
 List-ID: <linux-parisc.vger.kernel.org>
 
-	Hi
-I've retrieve the kernel parameter:
-large_ncargs_enabled
-Put this one to 1 and it would be fine.
+Hi,
+  Some scsi drivers create a kernel thread for error handling.  If
+such a driver is build as a module, then when the module is unloaded
+you get something like:
 
-	Bye.
-yuqian wrote:
-> 
-> Hi.
-> I have a HP B2000 (9000/785) with HP-UX 10.20 and installed
-> binaries/HP-UX/depot/10.20/bash-2.03-1.hpux-10.20.depot.gz,
-> but it not work when I want to build a new kernel:
->    bash-2.03$ make dep
->    scripts/mkdep init/*.c > .depend
->    scripts/mkdep `find /home/yq/linux/include/asm
-> /home/yq/linux/include/linux /home/yq/linux/include/scsi
-> /home/yq/linux/include/net -name   SCCS -prune -o -follow -name \*.h ! -name
-> modversions.h -print` > .hdepend
->    bash: scripts/mkdep: Arg list too long
->    make: *** [dep-files] Error 126
-> 
-> Am I missing any thing?
-> Thanks for any advices.
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+10:~# rmmod lasi7xx_mod
+break 0,0: pid=100 command='scsi_eh_0'
+scsi_eh_0[100]: Breakpoint 0
 
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
+PSW  : 0004010b  GR 1 : c022c000  GR 2 : c0104c48  GR 3 : c7834000  
+GR 4 : c7f241c0  GR 5 : c7f241c0  GR 6 : c7968000  GR 7 : c7834840  
+GR 8 : c7834694  GR 9 : 00000000  GR10 : c8815000  GR11 : c8815000  
+GR12 : c880d000  GR13 : c7825000  GR14 : c7834548  GR15 : 00000001  
+GR16 : 000927f8  GR17 : 00000001  GR18 : 20020128  GR19 : 00000001  
+GR20 : 00000020  GR21 : c022c264  GR22 : 0000001a  GR23 : c7968000  
+GR24 : 0000000a  GR25 : c7834758  GR26 : c78346a4  GR27 : c0218000  
+GR28 : c7834000  GR29 : c783469c  GR30 : c7968740  GR31 : 00000002  
+SR0  : 00000000  SR1  : 00002002  SR2  : 00000000  SR3  : 00002002  
+SR4  : 00000000  SR5  : 00000000  SR6  : 00000000  SR7  : 00000000  
+
+IASQ : 00000000 00000000 IAOQ : c0104c48 c0104c4c ORIG_R28 : c7f241c0
+ IIR : 00000000 ISR : 00000000 IOR : c79685ac
+
+scsi : 0 hosts.
+10:~# 
+
+c0104c48 corresponds to
+
+        .word   0       /* FIXME */
+
+round about line 521 of arch/parisc/kernel/entry.S
+
+Richard
