@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DEE034829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 23:49:06 -0700 (MST)
-Date: Fri, 17 Jan 2003 07:48:53 +0100
-Message-ID: <3E1AA8D500001D40@ocpmta8.freegates.net>
-In-Reply-To: <200301161751.h0GHpVQX002526@hiauly1.hia.nrc.ca>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] gcc 3.0 error
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Date: Thu, 16 Jan 2003 23:54:27 -0700
+To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Interesting network card ...
+Message-ID: <20030117065427.GA11137@dsl2.external.hp.com>
+References: <20030115085619.GA17760@aurinko.ntc.nokia.com> <20030116021111.GD8543@dsl2.external.hp.com> <20030116093028.GD17760@aurinko.ntc.nokia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030116093028.GD17760@aurinko.ntc.nokia.com>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,74 +20,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Dave,
+On Thu, Jan 16, 2003 at 11:30:28AM +0200, Nahkola Mikko wrote:
+> > ...a newer kernel would be more interesting.
+> 
+> Recommendations?
+...
+> Any ready-built package that I should try,
+...
 
->
->> /usr/bin/ld: .libs/libTKernel.la-478.o(.text.1+0x37798): cannot reach
-00000387__ZNSolsEPFRSoS_E+0,
->> recompile with -ffunction-sections
->> /usr/bin/ld: .libs/libTKernel.la-478.o(.text.1+0x37798): cannot handle=
+Ideally, our CVS kernels: 32-2.4.20-pa21.tar.gz
+autobuilt 32-bit kernels are on ftp.parisc-linux.org/kernels/32/ 
+I can't say if they work "just fine" on C240 or not though
+since I don't test that.
 
->R_PARISC_PCREL17F
->
->> As it is a very long job (more then 12h) what would it be better:
->> 1) simply following advise: "recompile with -ffunction-sections"
->
->Compiling with -ffunction-sections will not fix this problem.  This is
-a
->problem with the linker and the part of the error message about recompil=
-ing
->with -ffunction-sections is bogus.  The clue is the offset value which
->is within limits.  You have hit a compilation with many small functions
->and the stub group section has overflowed.
->
->Before you trash the build, try using the ld option --stub-group-size
->to set the maximum size of a group of input sections that can be handled=
+> > This does sound like a bug (fixed) in the tulip driver relating to
+> > MII initialization. But I'm surprised to see it manifest on a C240.
+> 
+> What do you mean, surprised to see it manifest on a C240? How so?
 
->by one stub section.  If the link is done with gcc, add something like
->"-Wl,--stub-group-size,-225000" to LDFLAGS.  You want the stub group
->size as large as possible but it can't be larger than 240000.  Negative
->values cause stubs to be located before their branches.  Positive
->stub group sizes allows to two groups of input sections, one before
->and one after each stub section (ld --help).
->
->GCC uses pc relative branches for calls if the distance to the beginning=
+The original problem seemed to be a CPU timing problem where the PHY reset
+was not recovering faster than the CPU could pound down the next accesses
+to the MII. I've only seen this on problem systems with 550Mhz or
+faster CPUs (both parisc and ia64).
 
->of the translation unit is less than 240000.  It doesn't know how big
->the translation unit is at the time this decision is made, so using
->positive stub group values may cause problems.
->
->There was a bug in GCC's distance calculation under linux.  This is
->fixed in 3.2.2 and later.  3.2.2 is not released yet.  3.3 is coming
->soon (Feb. 15?).
->
+The fix is to follow the 802.x spec which describes the MII register
+set and how to properly do a MII reset (involves some polling).
+Details should be in the parisc-linux mail archive or lkml.
 
-Thanks for explanation, clear ;)
+> BTW, the NIO 100BT is an interesting beast. It (or the driver) is the 
+> only reason why one of our HP-UX boxes only gets about half an year max 
+> uptime usually ... and has other "interesting" "features". 
 
->> 2) upgrade directly to gcc-3.2
->
->Won't fix the above.
->
->If you using a PA 2.0 machine, you could use the -mpa-risc-2-0 option.
+If you have extras of those, I know someone who wants one.
 
-No :(
+> Notably it is a higher revision than the builtin adapter, and therefore I 
+> wouldn't expect to need the de4x5 driver.
 
->This increases the branch range to 22 bits and the maximum size of the
->stub group section.
->
->I would recommend using 3.3 for C++ builds but this is for other
->reasons.
->
-gcc-snapshot may be (already install) or tool chain (it failled for me la=
-st
-time but I can come back to this before?)
+I don't either. I thought we had the tulip cards working just fine.
 
-Thanks,
-    Joel
-
-
-
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+cheers,
+grant
