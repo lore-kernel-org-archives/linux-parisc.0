@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A37C04829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Dec 2002 03:07:48 -0700 (MST)
-Date: Tue, 3 Dec 2002 11:07:39 +0100
-From: The PA/Linux ESIEE Team <puffin@esiee.fr>
-To: JKonrad@linotype.com
-Cc: parisc-linux@lists.parisc-linux.org
-Message-Id: <20021203110739.4d90dbdf.puffin@esiee.fr>
-In-Reply-To: <OF02C25910.B1912FC4-ONC1256C84.0034303D-C1256C84.00349772@linotype.com>
-References: <B6457593-060D-11D7-9FA0-0030656F07A2@esiee.fr>
-	<OF02C25910.B1912FC4-ONC1256C84.0034303D-C1256C84.00349772@linotype.com>
+Received: from johanna5.ux.his.no (johanna5.ux.his.no [152.94.1.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 071774829
+	for <parisc-linux@parisc-linux.org>; Tue,  3 Dec 2002 06:10:19 -0700 (MST)
+Date: Tue, 3 Dec 2002 14:10:00 +0100
+From: Erlend Aasland <erlend-a@ux.his.no>
+To: Trivial Patch Monkey <trivial@rustcorp.com.au>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org
+Message-ID: <20021203131000.GG2417@johanna5.ux.his.no>
+References: <20021203125120.GA2417@johanna5.ux.his.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Re: K-Class Pa-Linux
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021203125120.GA2417@johanna5.ux.his.no>
+Subject: [parisc-linux] [TRIVIAL PATCH 2.5] get rid of CONFIG_UDF_RW (parisc)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,55 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 3 Dec 2002 10:32:49 +0100
-JKonrad@linotype.com wrote:
+Remove CONFIG_UDF_RW from parisc defconfig (it's not used anymore)
 
-> We got Linux installed nice and easy after switching to ttyB0..... 
-> unfortunately, after the installation, when we rebooted, he did this:
+Regards,
+	Erlend Aasland
 
-[...] (It's a K200)
-
->     0/vmlinux32 3960547 bytes @ 0x44000  
->   
-> Command line for kernel: 'root=/dev/sda3 HOME=/ console=ttyB0 
-> palo_kernel=3/boo'
-> Selected kernel: /boot/vmlinux from partition 3  
->  
-> offset_read(2, 0x0006c7a4, 128, 1476411392) can't seek past 238026752  
->  
-> ext2_iget: read errorERROR: open /boot/vmlinux from partition 3 failed 
-> 
-> "
-> 
-> too bad..... you have any ideas?????
-
-Yes I do:
-I'm quoting my previous mail. Here is the idea...
-
-> I strongly recommend you take a look at the PA-RISC/Linux Boot HOWTO, 
-> it contains much interesting info:
-> http://pateam.esiee.fr/doc.html
-> 
-> and you should also take a look here:
-> http://www.fr.parisc-linux.org/
-> and especially to the m-l archives here:
-> http://www.fr.parisc-linux.org/mailing-lists/
-> 
-> You should find almost everything you need there...
-
-If you had read it, this problem wouldn't even have happened...
-http://pateam.esiee.fr/parisc-linux-boot/PA-RISC-Linux-Boot-HOWTO/paloappusage.html#bootablepartition
-
-What's more, palo _does_ tell you what's wrong:
-"can't seek past 238026752"
-
-Please, take some time to read the doc that has been written to avoid repeating endlessly the same answers to the same questions...
-
-For what it's worth, we, as a community of developers and users, have a mailing-list to share knowledge. You'll find much help there too, that's why I'm CC'ing this mail.
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+diff -urN linux-2.5.50/arch/parisc/defconfig linux-2.5.50-eaa/arch/parisc/defconfig
+--- linux-2.5.50/arch/parisc/defconfig	Fri Nov  1 00:07:19 2002
++++ linux-2.5.50-eaa/arch/parisc/defconfig	Tue Dec  3 00:48:05 2002
+@@ -576,7 +576,6 @@
+ CONFIG_EXT2_FS=y
+ # CONFIG_SYSV_FS is not set
+ # CONFIG_UDF_FS is not set
+-# CONFIG_UDF_RW is not set
+ # CONFIG_UFS_FS is not set
+ # CONFIG_UFS_FS_WRITE is not set
+ 
