@@ -1,39 +1,59 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: [parisc-linux] Re: 2.6.12-rc1-pa1 32bit panicing on c110 :-( (BUG
-	in 53c700.c)
-Date: Sat, 19 Mar 2005 15:44:54 -0600
-Message-ID: <1111268694.5525.26.camel@mulgrave>
-References: <423C9886.8030402@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: J5000 LCD heartbeat
+Date: Sat, 19 Mar 2005 16:19:11 -0700
+Message-ID: <20050319231911.GB21898__49244.3326548257$1416623700$gmane$org@colo.lackof.org>
+References: <200503191959.05972.dmp@davidmpye.dyndns.org> <423C8881.6020702@tiscali.be> <200503192233.26991.dmp@davidmpye.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <423C9886.8030402@tiscali.be>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: David Pye <dmp@davidmpye.dyndns.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200503192233.26991.dmp@davidmpye.dyndns.org>
+Resent-Message-ID: <s0UjrC.A.WEE.XMLPCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Sat, 2005-03-19 at 21:24 +0000, Joel Soete wrote:
-> scsi1: 53c710 rev 2
-> scsi1 : LASI SCSI 53c700
-> scsi1: (3:0) HAS NO device
-> kernel BUG at /Debian-apt/SRC/linux-2.6.12-rc1-pa1-050319/drivers/scsi/53c700.c!Backtrace:
+On Sat, Mar 19, 2005 at 10:33:24PM +0000, David Pye wrote:
+> The other thing is that the kernel version which is displayed on the lcd by 
+> default is overwritten partly by a:
+> 
+> INI CC01 
+> 
+> It's not a huge issue for me, as I can overwrite it again by echo'ing my 
+> message into /proc/pdc/lcd post boot.
 
-The fix is here:
+This is the firmware showing the "Chassis Log" as emitted by the kernel.
+Some platforms (e.g. A500/rp2470) use chassis logs to set the LED
+properly.
 
-http://marc.theaimsgroup.com/?l=linux-scsi&m=111125955211593
+> Is it possible to make the write to the display later in the boot process, so 
+> it occurs after the INI CC01 is printed?
 
-James
+I would think it's possible.
+You want to track down where the CC01 chassis_log is emitted then 
+propose a better place to initialize LED display?
+
+Another idea is the chassis log code might want to clear the LED
+diplay when displaying a chassis log and then a few seconds later
+refresh the LED display with the original contents or something.
+
+> (Incidentally, the INI CC01 is only on the screen - /proc/pdc/led returns the 
+> normal kernel version - I assume this is because the message was printed by 
+> the hardware, itself?)
+
+The firmware. IIRC, /proc/pdc/led just returns a cached value.
+
+thanks,
+grant
 
 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
