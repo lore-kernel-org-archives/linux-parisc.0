@@ -1,21 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA02340
-	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Apr 2000 22:44:44 -0600
-Received: from flow4 (flow4.flow.north.net [198.52.32.250])
-	by 24.112.191.14 (8.9.3/8.9.3) with SMTP id AAA06742
-	for <parisc-linux@thepuffingroup.com>; Tue, 4 Apr 2000 00:44:42 -0400
-Message-Id: <1.5.4.32.20000404044442.006e12cc@pop3.sprint.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Tue, 04 Apr 2000 00:44:42 -0400
-To: parisc-linux@thepuffingroup.com
-From: Tomasz Korycki <tkorycki@sprint.ca>
-Subject: Re: [parisc-linux] some hardware...
-List-ID: <linux-parisc.vger.kernel.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA04217
+	for <parisc-linux@puffin.external.hp.com>; Tue, 4 Apr 2000 03:22:55 -0600
+From: BOSCHINI@ICIL64.CILEA.IT
+Date: Tue, 04 Apr 2000 11:22:15 +0000 (MET-01DST)
+Subject: Re: [parisc-linux] PALO on HP 735 10.20
+To: gyula_matics@hp.com
+Cc: PARISC-LINUX@THEPUFFINGROUP.COM
+Message-id: <01JNU29FX02A0010AT@ICIL64.CILEA.IT>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; CHARSET=US-ASCII
 
-  I just saw a bunch of 712/80+64MB+1GB+VRAM + (some) floppy. I think I can
-get them fairly cheap. Anybody interested? Obviously I can haggle lower if I
-buy more. Now, even if someone is, I will not take it as commitment, since I
-didn't give the price yet. So, just let me know if You'd like to know the price.
-  Also, since it doesn't really concern the linux port, answer by email,
-lets not clog the wires too much...
+I already had gmake found before HP's make in my path. 
+
+If I do a make --version, I get gmake's output.
+
+I even added an alias to it, but keep getting the same errors:
+
+/bin/bash: invalid character 45 in exportstr for DRIVERS-y
+/bin/bash: invalid character 45 in exportstr for DRIVERS-
+/bin/bash: invalid character 45 in exportstr for DRIVERS-m
+/bin/bash: invalid character 45 in exportstr for DRIVERS-n
+
+which, to my (poor) understanding have nothing to do with make/gmake
+but with bash parsing something.
+
+As for the palo build, having assured that I really use gmake, I keep getting
+the same error:
+
+Make: Don't know how to make crt0.o.  Stop.
+gmake: *** [makeipl] Error 1
+
+On the other hand, I tried make-ing from ipl, and everything was fine...
+Then I tried the make PA=your/palinux/source/tree lifimage and everything seems
+fine....
+
+Finally, make palo from linux-2.3, gose fine.
+
+I'll let you know how the rest goes ....
+
+Matteo Boschini
