@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D1E98482C
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 01:31:04 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tcmwiaaa for parisc-linux@parisc-linux.org; Tue, 13 Nov 2001 01:26:06 -0700
-Date: Tue, 13 Nov 2001 00:30:57 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011113003057.H391@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] to swap or not to swap
+Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A201482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 02:38:54 -0700 (MST)
+Date: Tue, 13 Nov 2001 04:03:33 -0500 (EST)
+From: <nick@snowman.net>
+To: "Craig D. Lansing" <lansing@beldar.com>
+Cc: thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] J2240 - Almost There...
+In-Reply-To: <004401c16bd7$33ae82e0$0101a8c0@pogo>
+Message-ID: <Pine.LNX.4.21.0111130403050.1032-100000@ns>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,17 +22,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Can someone please explain this to me?
 
-It looks like some BE architectures define {read,write}[wl] to do LE swapping 
-(sparc, mipsel, ppc, etc) but others don't (s390, parisc). What is the 
-"correct" behavior?
+On Mon, 12 Nov 2001, Craig D. Lansing wrote:
 
-The inX/outX interfaces are all internal-swapped to LE.
+> Today, I rescued a 700/96 and cable from the trash so I'm going to try to
+> use it as a serial console to see how far I get.  It's amazing the "junk"
+> that shows up in the trash when your HP shop gets bought out by an IBM shop.
+> Anybody need a few K580x4's, 4GB RAM, and a couple of fully loaded AutoRaid
+> cabinets each?  In the meantime, how do I change the "Command Line" at boot?
+> Do I have to "interact" with IPL (almost as bad as having to interact with
+> people :-) ?
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Heh, I'm sure almost everyone on this list would love to aquire a K580.  I
+know I would!
+	Nick
