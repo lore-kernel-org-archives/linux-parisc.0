@@ -1,33 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 45FBE482B
-	for <parisc-linux@parisc-linux.org>; Fri,  6 Jul 2001 16:35:29 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15IeBy-00083x-00; Fri, 06 Jul 2001 23:35:18 +0100
-Date: Fri, 6 Jul 2001 23:35:18 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Paul Bame <bame@fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.6 boots!
-Message-ID: <20010706233518.G6103@parcelfarce.linux.theplanet.co.uk>
-References: <E15IdRv-00051U-00@noam.fc.hp.com>
-Mime-Version: 1.0
+Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4BC95482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Jul 2001 17:12:05 -0600 (MDT)
+Received: from hpindda.cup.hp.com (hpindda.cup.hp.com [15.13.95.92])
+	by palrel2.hp.com (Postfix) with ESMTP id 84DBDD9D
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Jul 2001 16:11:44 -0700 (PDT)
+Received: from cup.hp.com (maverick.cup.hp.com [15.13.105.84])
+	by hpindda.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with ESMTP id QAA02532
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 6 Jul 2001 16:11:44 -0700 (PDT)
+Sender: gururaj@cup.hp.com
+Message-ID: <3B46452A.D15E2F4C@cup.hp.com>
+Date: Fri, 06 Jul 2001 16:09:30 -0700
+From: Gururaj Ananthateerta <gururaj@cup.hp.com>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E15IdRv-00051U-00@noam.fc.hp.com>; from bame@fc.hp.com on Fri, Jul 06, 2001 at 03:47:43PM -0600
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Installation on B180L workstation.
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jul 06, 2001 at 03:47:43PM -0600, Paul Bame wrote:
-> Boot-time IP configuration
-> (PNP+BOOTP) isn't working (with tulip anyway) but static network
-> configuration works.
-
-Apparently this changed upstream so you need to specify ip=bootp on
-the kernel command line.  My palo/Makefile now reads:
-
-CMDLINE = 0/vmlinux64 HOME=/ TERM=linux $(ROOT) $(CONSOLE) ip=bootp sym53c8xx=buschk:2
-
-NFS Root is now working on my machine.
-
--- 
-Revolutions do not require corporate support.
+I am trying to install on B180L.  I have an external CD ROM.
+ Does installation supports this configuration. ? If not
+how can i install?
