@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mion.elka.pw.edu.pl (mion.elka.pw.edu.pl [194.29.160.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84934482A
-	for <parisc-linux@parisc-linux.org>; Fri, 11 Jul 2003 09:47:58 -0600 (MDT)
-Date: Fri, 11 Jul 2003 17:47:46 +0200 (MET DST)
-From: Bartlomiej Zolnierkiewicz <B.Zolnierkiewicz@elka.pw.edu.pl>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	HPPA List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] [2.5] ns87415 irq
-In-Reply-To: <20030711153515.GE20424@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.SOL.4.30.0307111742220.13589-100000@mion.elka.pw.edu.pl>
+Received: from no-moreaccent814.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
+	by dsl2.external.hp.com (Postfix) with SMTP id B3D26482A
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Jul 2003 10:41:29 -0600 (MDT)
+From: Martin Andrews <mandrews@no-moreaccent.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: mandrews@no-moreaccent.com
+Date: Fri, 11 Jul 2003 11:41:23 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="5e4526f7-537e-4dd8-b985-ad9516d2efee"
+Message-Id: <20030711164129.B3D26482A@dsl2.external.hp.com>
+Subject: [parisc-linux] - Are you learning ESL or TESL?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +21,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 11 Jul 2003, Matthew Wilcox wrote:
+This is a multi-part message in MIME format
+--5e4526f7-537e-4dd8-b985-ad9516d2efee
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, Jul 11, 2003 at 05:32:12PM +0200, Bartlomiej Zolnierkiewicz wrote:
-> > > BTW, Bart, seems like sparc64 does _have_ the ide_default_irq() function,
-> > > it just returns 0.  So I think this patch shouldn't break anything.
-> >
-> > Yes, but 0 != 14 && 0 != 15. I am just paranoid. :-)
->
-> Oh, 14 and 15 are not valid sparc64 irqs.  No problem.
+Dear Reader,
 
-Okay, patch accepted.
+No More Accent is an accent reduction product, which helps to remove accents. =
+For example, an Asian lady (or any nationality) may have communication =
+problems with her English when speaking to her work mates or friends.
 
-BTW Can we make irq detecion in init_hwif_ns87415() a bit simpler
-    by using native PCI irq detection present in setup-pci.c?
-    Hmmm...  I need to grab ns87415 datasheet...
+With that in mind, No More Accent teaches Accent Reduction methodologies to =
+help in this area. In fact, No More Accent can be used in almost any =
+situation where an accent reduction is required. Even Actors within the =
+Entertainment Industry have turned to No More Accent as a way to lose or gain =
+an accent of another nationality.
 
-> --
-> "It's not Hollywood.  War is real, war is primarily not about defeat or
-> victory, it is about death.  I've seen thousands and thousands of dead bodies.
-> Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
+(PAL and NTSC formats) both can be purchased directly via the =
+www.no-moreaccent.com website.
+If you would like further information about our products or services, please =
+contact myself when you have a moment.
+
+Best Wishes...
+
+Martin Andrews
+Marketing Co-ordinator
+
+http://www.no-moreaccent.com
+
+Your #1 Resource for Accent Reduction!    
+--5e4526f7-537e-4dd8-b985-ad9516d2efee--
