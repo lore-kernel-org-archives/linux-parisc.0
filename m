@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 857334829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 11:42:47 -0700 (MST)
-Received: from xatlrelay2.atl.hp.com (xatlrelay2.atl.hp.com [15.45.89.191])
-	by atlrel8.hp.com (Postfix) with ESMTP id 161761C01C78
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 13:42:47 -0500 (EST)
-Received: from xatlbh3.atl.hp.com (xatlbh3.atl.hp.com [15.45.89.188])
-	by xatlrelay2.atl.hp.com (Postfix) with ESMTP id 077E21C000A0
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 13:42:47 -0500 (EST)
-Message-ID: <25C4C6009B5BD5118FF30003470BF7F503501C63@xboi04.boi.hp.com>
-From: "FUHRMAN,SCOTT (HP-Boise,ex1)" <scott.fuhrman@hp.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 1 Apr 2003 13:42:40 -0500 
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 76C694829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 12:16:59 -0700 (MST)
+Message-ID: <3E89E5A7.9030204@gmx.at>
+Date: Tue, 01 Apr 2003 21:16:55 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Sound on C3000
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: knaresh@india.hp.com, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PDC console problem.
+References: <3E89DBF4.102AC68A@india.hp.com> <1049181423.24319.17.camel@beavis.ybsoft.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,25 +22,64 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Hello !
 
-Just wondering if anyone else has gotten sound to work on this box, and
-if so, how.
+The PDC driver supports both directions, IN and OUT. The PDC console 
+driver was ported from the full serial driver interface, some services
+not needed for poor console support are dummy routines.
 
-I ham enjoying a C3000 (400MHz) machine running hppa Debian, with kernel
-2.4.20-32.
-Everything is working except the sound.  Sound server can start up, but
-does not have a device to output to.  
+So the serial console cannot be used for MODEM and other full-blown
+serial devices, but is a fully functional console device including
+all UNIX like features (login is working like on all other serial
+devices).
 
-I checked dmesg and /var/log/messages and did not see anything where the
-sound device is being configured, but it looks as though it may be
-suported from the info on parisc-linux.org.  The device is a 
+He Ryan, by the way:
+Why is my driver (PDC console) NOT in the mainstream kernel 2.5 ?
+Even your driver covers a couple of machines, I do not see in the
+MUX driver the replacement !
+I agree, that the MUX driver should be used on machines with that
+MUX interface. But the idea of my PDC driver was to support a fallback
+driver using the ROM console usable on all machines, independent of
+special setups.
 
-AD1889 sound chip (Analog Devices) according to this page:
+I many architectures such a fallback driver is present. I remeber the
+case, there was an failure in the HW-detection on my SUN Sparc-2, and
+the kernel used a ROM console driver instead of the frame buffer driver
+for screen/keyboard. This driver was awfully slow, and I do not
+recommand it, but such a fallback driver should part of a kernel
+delivery !!
 
- http://hwdb.parisc-linux.org/view.php3?type=machine&name=C3000
+So we should think about adding this driver also, independent of
+al the other drivers included for console (and although the other
+drivers should alwaysb be preferred).
 
-Anyway, if anyone has had any success in this matter please do tell!
+Christoph
 
 
-Thanks,
+
+Ryan Bradetich wrote:
+>>I was going through some of the FAQ and the mailing list archive and
+>>understand that the PDC console is not a full blown console and can only
+>>display output. Is is true that the PDC console cannot accept keyboard
+>>input? Or am I missing something?
+> 
+> 
+> Hmm.. The pdc_console has both read and write capabilities.  We used the
+> PDC console for K/E class systems before the SerialMux driver was
+> written.  I am not familiar with the PDC simulator, but I would be
+> willing to test the pdc console again on K-Class.
+> 
+> Which kernel are you using?
+> 
+> Thanks,
+> 
+> - Ryan
+> 
+> 
+
+
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
