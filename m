@@ -1,29 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from chac.inf.utfsm.cl (chac.inf.utfsm.cl [200.1.19.54])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 242B1482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 17:05:31 -0600 (MDT)
-Message-Id: <200109031544.f83Fidbr002589@sleipnir.valparaiso.cl>
-To: "David S. Miller" <davem@redhat.com>
-Cc: ak@suse.de, alan@lxorguk.ukuu.org.uk, willy@debian.org,
-	thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on parisc architecture 
-In-Reply-To: Message from "David S. Miller" <davem@redhat.com>
-   of "Mon, 03 Sep 2001 01:15:30 MST." <20010903.011530.62340995.davem@redhat.com>
-Date: Mon, 03 Sep 2001 11:44:39 -0400
-From: Horst von Brand <vonbrand@sleipnir.valparaiso.cl>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D5D4C482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 19:36:42 -0600 (MDT)
+Message-Id: <200109040134.TAA23952@puffin.external.hp.com>
+To: Arnaud.ATOCH@oecd.org
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] UreStoreOptical 20xt 
+In-Reply-To: Message from Arnaud.ATOCH@oecd.org
+   of "Mon, 03 Sep 2001 12:28:38 +0200." <C12531D038D1D011B1DB0000F8036C280A30EB51@eosm5.oecd.org>
+Date: Mon, 03 Sep 2001 19:34:20 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"David S. Miller" <davem@redhat.com> said:
-> IP header length is measured in octets, so how is this possible?
-> :-)
+Arnaud.ATOCH@oecd.org wrote:
+> I've loaded hfs, hpfs, udf, ufs because it was not clear which module
+> provide HP-UX filesystem support.
 
-1 octet == 8 bits in RFC-speak. "Byte" is the name given to character
-units.  There were machines around with non-8-bit bytes. AFAIR, DEC PDP-10
-had the options of 6, 7, or 8 bits/byte in 36 bit words. Purely historical
-now, since (AFAIK) everybody has agreed with IBM (S/360?) that 1 byte == 8
-bits. As Brian Reid (IIRC) used to say: "It is spelled 'o-c-t-e-t' and
-pronounced 'byte'"
--- 
-Horst von Brand                             vonbrand@sleipnir.valparaiso.cl
-Casilla 9G, Vin~a del Mar, Chile                               +56 32 672616
+IIRC, should only need hpfs (which also depends on ufs?..dunno anymore)
+hfs == Apple's Hiearchial File System.
+
+> Btw does the HP-UX fs support patch made it to Linus tree ?
+
+dunno.  But didn't that patch come from the parisc-linux tree?
+
+Anyway...you might check if those disks are under LVM control.
+If so, you'll have to convert those to non-LVM storage using HPUX.
+The archives for parisc-linux mailing list have a discussion on HP's
+LVM issues.
+
+BTW, You might also try to explicitly specify the hpfs type.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
