@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 83452482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 16:33:37 -0700 (MST)
-Subject: Re: [parisc-linux] C110 Kernel panic while installing 0.9.3
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Herb Radford <herbr@magma.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <5.1.0.14.0.20011217161541.026f40e0@mail.magma.ca>
-References: <5.1.0.14.0.20011217161541.026f40e0@mail.magma.ca>
-Content-Type: text/plain
-Date: 17 Dec 2001 16:33:36 -0700
-Message-Id: <1008632016.10510.0.camel@beavis>
+Received: from solo.franken.de (pD9054603.dip.t-dialin.net [217.5.70.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 47A364845
+	for <parisc-linux@parisc-linux.org>; Mon, 17 Dec 2001 16:51:43 -0700 (MST)
+Date: Tue, 18 Dec 2001 00:49:26 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Helge Deller <deller@gmx.de>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Andy Walker <squawker@start.no>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Status report - B132L and 725/100
+Message-ID: <20011218004926.A5571@solo.franken.de>
+References: <1008589643.3c1ddb4b75583@nyepost.start.no> <20011217143513.W10085@parcelfarce.linux.theplanet.co.uk> <20011217222143.4F578482A@dsl2.external.hp.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011217222143.4F578482A@dsl2.external.hp.com>; from deller@gmx.de on Mon, Dec 17, 2001 at 11:21:01PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Herb,
+On Mon, Dec 17, 2001 at 11:21:01PM +0100, Helge Deller wrote:
+> I think a better solution would be to sort the found graphic devices by the hpa.
+[...]
+> In case the user wants to override with the sti= parameter the kernel should now
+> select this entry (e.g. sti=1 should select the card at 0xf4000000).
 
-Thanks to Thomas, I finally found a recipe that I can duplicate this
-error with on my C200+.  I get this exact error when reading from a tape
-drive with bs=10k.  I will track this down and get it fixed.  
+the big problem is, that stifb completly ignores sti= from the commandline
+and video=map doesn't seem to work (I need to reconfigure a machine to test
+that myself, which I hadn't time yet). The best thing would be to use
+the console path from pdc, no idea how hard that is.
 
-Thanks for the bug report, and thanks to Thomas for the recipie :)
+It's probably not a big deal to use the default sti (sti=) for stifb, but
+I'd prefer either a video="???" solution or the pdc console path. If we 
+decide on a solution, I'm going to implement it (if nobody else wants
+to do it :-)).
 
-- Ryan
+Thomas.
 
-
-On Mon, 2001-12-17 at 14:25, Herb Radford wrote:
-> I have had success and no problems installing the latest 0.9.3 on my B180L, 
-> so I had to be a glutton for punishment and tried on the C110.
-> 
-> Should not have done that. I have successfully installed the kernel and 
-> base for 0.9.3 and ftp'd vmlinux-32-2.4.16-pa16 kernel to the machine and 
-> re-booted to avoid the FWSCSI fs corruption. After that I started to 
-> install the X stuff. When I am doing an apt-get install xfonts-base (or 
-> xfonts-100dpi or xfonts-75dpi) I get a kernel panic:
-> 
-> ccio-dma.c:349: Assertion (*res_ptr & *mask_ptr) == * mask_ptr failed!
-> Kernel panic: (*res_ptr & *mask_ptr) == *mask_ptr
-> In interrupt handler - not syncing
-> 
-> I don't have the source for this and haven't yet looked at the code but I 
-> thought someone would like to know.
-> 
-> Regards, Herb
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
