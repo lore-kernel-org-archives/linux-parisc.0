@@ -1,25 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA03765
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 02:58:23 -0700
-Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 22 Nov 1999 10:00:06 -0000
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA17772
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 08:57:16 -0700
+Date: Mon, 22 Nov 1999 16:54:33 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
+        dave@hiauly1.hia.nrc.ca, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Progress
-To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de (Philipp Rumpf)
-Date: Mon, 22 Nov 1999 09:59:55 +0000 (GMT)
-Cc: dave@hiauly1.hia.nrc.ca, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
-        parisc-linux@thepuffingroup.com
-In-Reply-To: <19991122092412.C1310@mathe.stud.uni-erlangen.de> from "Philipp Rumpf" at Nov 22, 99 09:24:12 am
-Content-Type: text
-Message-Id: <E11pqGK-0003IA-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-Id: <19991122165433.A935@mathe.stud.uni-erlangen.de>
+References: <19991122092412.C1310@mathe.stud.uni-erlangen.de> <E11pqGK-0003IA-00@the-village.bc.nu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <E11pqGK-0003IA-00@the-village.bc.nu>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Now picture the page boundary happes between the two addibs.  This loop will
-> execute at about a third of the speed of a normal delay loop.  The code is
-> inlined, so only one loop gives you bogus results - if it is the BogoMIPS
-> calibration loop, udelay(N) will actually only delay for N/3 us, which can
-> have unexpected effects on hardware we use udelay() for.
+> On x86 things like this, and execution timing differences caused by cache
+> line alignment and other phase-of-moon issues eventually lead us to not inline
+> the function. Even then we had to land it on a 32 byte boundary
 
-On x86 things like this, and execution timing differences caused by cache
-line alignment and other phase-of-moon issues eventually lead us to not inline
-the function. Even then we had to land it on a 32 byte boundary
+That's why I'm thinking about switching to a loop not based upon the time
+it takes to execute instructions at all (see CR16 loop).  x86 doesn't have
+the option (well, on Pentiums and above you have).
+
+	Philipp Rumpf
