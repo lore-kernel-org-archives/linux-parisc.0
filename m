@@ -1,19 +1,20 @@
-Return-Path: <lists@fop.ns.ca>
-Received: from brain.fop.ns.ca (u135n18.eastlink.ca [24.224.135.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 320174868
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2BB924868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed,  7 Jan 2004 19:30:37 -0700 (MST)
-Date: Wed, 7 Jan 2004 22:30:30 -0400 (AST)
-From: Steve Bromwich <hppa@fop.ns.ca>
-To: Riccardo <rollei@tiscalinet.it>
+	Wed,  7 Jan 2004 19:52:20 -0700 (MST)
+Date: Wed, 7 Jan 2004 19:52:18 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Steve Bromwich <hppa@fop.ns.ca>
 Subject: Re: [parisc-linux] scsi problem on a scorpio (715)
-In-Reply-To: <3FFC9A15.6FA66B2@tiscalinet.it>
-Message-ID: <Pine.LNX.4.58.0401072226130.5327@brain.fop.ns.ca>
+Message-ID: <20040108025218.GA20732@colo.lackof.org>
 References: <3FFC9A15.6FA66B2@tiscalinet.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Mailing Lists <lists@fop.ns.ca>
-Cc: parisc linux <parisc-linux@lists.parisc-linux.org>
+	<Pine.LNX.4.58.0401072226130.5327@brain.fop.ns.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.58.0401072226130.5327@brain.fop.ns.ca>
+Cc: Riccardo <rollei@tiscalinet.it>,
+	parisc linux <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +24,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi,
+On Wed, Jan 07, 2004 at 10:30:30PM -0400, Steve Bromwich wrote:
+> Grant Grundler mentioned that "as of 5 years
+> ago, HP-UX default was 8 for servers and 2 for workstations";
 
-On Thu, 8 Jan 2004, Riccardo wrote:
+The drives shipped with workstations had "Write Cache Enable" (aka WCE)
+turned on by default.  Not good if you really care about your data.
+But Tag queue depth of 2 works great because the drive will immediately
+report "success" until it's on-board cache was full.
 
-[snip]
-> A lot of different HD's (even HP spare parts) freeze up the kernel
-> during mkfs.
-[snip]
-> Guy Martin suggested me to change the TAG default value in the NCR
-> 53x700 driver from 16 to 8 since that is what HP used. I didn't get a
-> big improvment. I still have one of the inriminated disks. Issuing
-> several mkfs (usually the second) freezes the kernel.
+>  as the 715
+> is a workstation it might be worth trying setting tags to 2 and seeing
+> what happens?
 
-I had a similar problem and fixed it by setting tags to 8 (my problem
-drive is a Quantum Fireball). Grant Grundler mentioned that "as of 5 years
-ago, HP-UX default was 8 for servers and 2 for workstations"; as the 715
-is a workstation it might be worth trying setting tags to 2 and seeing
-what happens?
+Unless performance is more important than strict correctness, I still
+reccommend tag queue depth of 8 and disable "Write Cache" setting.
+Reducing queue depth further typically only limits performance.
 
-What drives have you tried, out of curiosity?
+I suspect something else is wrong in Riccardo's case. But it wouldn't
+hurt disable queue tags completely and see if that is at least stable.
 
-Cheers, Steve
+root@debian:~# sginfo -c /dev/sda
+
+Data from Caching Page
+----------------------
+Write Cache                        0
+Read Cache                         1
+Prefetch units                     0
+Demand Read Retention Priority     0
+Demand Write Retention Priority    0
+Disable Pre-fetch Transfer Length  65535
+Minimum Pre-fetch                  0
+Maximum Pre-fetch                  65535
+Maximum Pre-fetch Ceiling          65535
+
+hth,
+grant
