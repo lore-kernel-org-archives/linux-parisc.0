@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A53B482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 09:12:02 -0700 (MST)
-Date: Fri, 22 Nov 2002 08:14:55 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] pa-risc assembler
-Message-ID: <20021122161455.GI21187@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <CB813811CBF6D3118DCC00902740BB4A0B8665D5@xsp01.brazil.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <CB813811CBF6D3118DCC00902740BB4A0B8665D5@xsp01.brazil.hp.com>
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C30EA482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 09:20:37 -0700 (MST)
+Received: from xparelay2.ptp.hp.com (xparelay2.ptp.hp.com [15.1.28.65])
+	by palrel12.hp.com (Postfix) with ESMTP id C8B10E00807
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 08:20:12 -0800 (PST)
+Received: from xpabh3.ptp.hp.com (xpabh3.ptp.hp.com [15.1.28.63])
+	by xparelay2.ptp.hp.com (Postfix) with ESMTP id B70896B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 08:20:08 -0800 (PST)
+Message-ID: <CB813811CBF6D3118DCC00902740BB4A0B89A7E7@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Fri, 22 Nov 2002 08:20:03 -0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] cpu affinity
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +27,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 	I would like to know about usage of .subspa, because I am converting
-> some asm sourcecodes in hp-ux to linux.
-> 	When iI will try to compile the source code with "cc --hppa-linux
-> -std=iso9899:1990 -march=2.0 -mpa-risc-2-0 -D__KERNEL__ -I../../include -I.
-> -c -o myfile.o myfile.s, the result is always" the same "Error: unknown
-> pseudo-op: `.subspa'".
-> 	Why this happens?
+Hi people,
 
-hppa-linux doesn't use the .subspa directive. depending on the
-particular construct it will need to be translated into .text, .rodata,
-.bss, etc...
+	Does anybody know if hppa linux implements cpu affinity?
 
-HTH,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thanks in advance,
+
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
+
+*   leandro.farinati@hp.com
+*   +55-51-3316-2852 Telnet  725-2852
