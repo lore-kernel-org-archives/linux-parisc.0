@@ -1,39 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA11505
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 20:36:44 -0700
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-cc: bame@debian.fc.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Today's boot experience on a 735 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of Tue, 16 Nov 1999 21:48:51 EST.
-             <199911170248.VAA15412@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA11871
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 22:39:49 -0700
+Date: Wed, 17 Nov 1999 05:54:31 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: Ulrich Strelow <ulrich_strelow@YAHOO.COM>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] problems with HPMC code in interruption.S
+Message-Id: <19991117055431.F750@mathe.stud.uni-erlangen.de>
+References: <19991116104321.17833.rocketmail@web504.yahoomail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 16 Nov 1999 20:35:56 -0700
-Message-ID: <1129.942809756@upchuck>
-From: Jeffrey A Law <law@cygnus.com>
+In-Reply-To: <19991116104321.17833.rocketmail@web504.yahoomail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> I have had the same problem yesterday (unresolved
+> symbol os_hpmc). The simple solution is to include
+> hpmc.o in arch/parisc/kernel/Makefile.
 
-  In message <199911170248.VAA15412@hiauly1.hia.nrc.ca>you write:
-  > > 
-  > > Create a .o file which contains a DLT & AFTERDLT section.  Make sure the
-  > > DLT section appears first in the object file (I'm assuming they have the
-  > > same sort keys).  Referece that .o first on the link line.
-  > 
-  > As I noted, it appears to work as is.
-Yea, but you appear to be depending on highly suspicious behavior.    The
-trick of ordering subspaces in the first .o on the link line to provide an
-ordering for the subspaces in the final executable relies on documented
-behavior of the HP linker.
+Not only is it simple, it's the right one, too.
 
+> Although this works, I must admit that I don't
+> understand the reason for this problem. I think that
+> the reference in realmode_setup.c is commented out by
+> if SETUP_HPMC which is set to 0...
+> 
+> Maybe someone else has an explantion for this.
 
-  > you know why the DLT section
-  > disappeared when I used the sort key of 255 for AFTERDLT?  Although
-  > I haven't tried it, it may not be possible to create an object file with
-  > both DLT and AFTERDLT sections.
-Not really.  I do know that we had major problems with pxdb (post-link 
-processor
-on HPs) mysteriously removing subspaces with sort keys of 255 in the past.
+It's referenced from interruption.S.
 
-jeff
+	Philipp Rumpf
