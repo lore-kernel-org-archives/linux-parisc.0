@@ -1,18 +1,21 @@
-Return-Path: <epotter@eep.burdell.org>
-Received: from keymaster (dsl027-162-176.atl1.dsl.speakeasy.net
-	[216.27.162.176])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E2F554852
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 715B948A2
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 15 Feb 2004 09:32:27 -0700 (MST)
-Date: Sun, 15 Feb 2004 11:27:53 -0500 (EST)
-From: Elliott Potter <epotter@eep.burdell.org>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+	Sun, 15 Feb 2004 13:25:56 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] C3000 video options
-In-Reply-To: <1076861160.25519.1.camel@dhcp23.swansea.linux.org.uk>
-Message-ID: <Pine.GSO.4.44.0402151123210.13137-100000@keymaster>
+Date: Sun, 15 Feb 2004 21:25:52 +0100
+References: <Pine.GSO.4.44.0402142137500.12861-100000@keymaster>
+	<200402151027.59161.deller@gmx.de>
+	<1076861208.25542.3.camel@dhcp23.swansea.linux.org.uk>
+In-Reply-To: <1076861208.25542.3.camel@dhcp23.swansea.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org, "M. Grabert" <xam@cs.ucc.ie>
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Message-Id: <200402152125.52428.deller@gmx.de>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,34 +25,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, 15 Feb 2004, Alan Cox wrote:
+On Sunday 15 February 2004 17:06, Alan Cox wrote:
+> On Sul, 2004-02-15 at 09:27, Helge Deller wrote:
+> > I tested/fixed Vodoo2 and it should work with kernel 2.4 and 2.6 on HPPA.
+> > Maximum resolution is 800x600 @16bpp though.
+> 
+> 1024x768@16bpp on Voodoo2, 800x600 on Voodoo1.
 
-> On Sul, 2004-02-15 at 03:36, M. Grabert wrote:
-> > [...]
-> > You'll be lucky to get any (ix86) PCI graphics card working on Linux/PA-RISC.
-> > The best bet would be to get a Visualize-EG, or some graphics card that
-> > doesn't require initialization via (ix86-)BIOS (eg. Matrox Millenium).
->
-> Older S3, Matrox fit that, the XFree86 code has an x86 emulator which
-> will boot some more cards tho it does fail on some too where real vm86
-> works (eg C&T video BIOS)
+Maybe I'm wrong, but I thought it would go up to 1024x768@16bpp only
+if you attached two Voodoo2 cards to each other with the optional
+cable ?
 
-I've got the matroxfb driver built as a module, but so far all I can get
-it to do is hard lock the machine (yay, ext3!  Otherwise I'd be in real
-trouble).  I'm fiddling with driver options, but it's slow going because
-of all the rebooting.  Last one I tried was
-
-modprobe matroxfb_base noaccel nopciretry nobios noinit nomtrr
-Warning:
-/lib/modules/2.4.24-pa0/kernel/drivers/video/matrox/matroxfb_base.o
-symbol for parameter mtrr not found
-
-...then the hard lock.  I'm going to try it with just "nomtrr" next
-time; that mtrr warning error comes up every time.
-
-
-
-Ideally, this card will work on the machine, because I've got one (and I
-don't have a Voodoo* or S3*).  We'll see...
---
-Elliott
+Helge
