@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A03EC482C
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Mar 2002 21:57:25 -0700 (MST)
-Date: Tue, 26 Mar 2002 20:57:24 -0800 (PST)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Cc: <parisc-linux@parisc-linux.org>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 374DD482C
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Mar 2002 23:08:30 -0700 (MST)
 Subject: Re: [parisc-linux] X on J5000
-In-Reply-To: <20020326222046.B10013@systemhalted>
-Message-ID: <Pine.LNX.4.33L2.0203262056120.13376-100000@eiger.apptechsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: parisc-linux@parisc-linux.org
+In-Reply-To: 
+	<Pine.LNX.4.33L2.0203262045310.13376-100000@eiger.apptechsys.com>
+References: 
+	<Pine.LNX.4.33L2.0203262045310.13376-100000@eiger.apptechsys.com>
+Content-Type: text/plain
+Date: 26 Mar 2002 23:08:27 -0700
+Message-Id: <1017209307.24441.31.camel@beavis>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 26 Mar 2002, Carlos O'Donell Jr. wrote:
+Jeremy,
 
-> I believe the J5000 has a Visualize EG PCI card, and that should
-> be working.
->
-> fbset -i will give you all the geometry you need, but won't work
-> without the compiled fbdev.
->
-> You need to go into [Console Drivers] and turn on the frame-buffer
-> support for your system ("Generic STI Framebuffer Support").
+> STI device: HPA4982A
 
-It is already there
+This device does not appear to be support in the
+drivers/video/sti/stifb.c.  A quick google search
+didn't tell me which family this card belong to,
+so I can't even give you a suggestion to try an 
+add it to one of the supported groups to see if
+that works.  Maybe one of the STI/fb hackers on
+this list will have more info for you.
 
--- 
-QOTD:
-	"I tried buying a goat instead of a lawn tractor; had to return
-	it though.  Couldn't figure out a way to connect the snow blower."
+sorry :(
+
+- Ryan
