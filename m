@@ -1,12 +1,13 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] kernel module relocation bug
-Date: Fri, 26 Nov 2004 22:47:10 -0800
-Message-ID: <20041127064710.GL9148@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: [parisc-linux] c110: kernel 2.6.10-rc1-pa17 pb to boot if a cdrom
+	is in the drive
+Date: Sat, 27 Nov 2004 19:34:24 +0000
+Message-ID: <41A8D6C0.7000306@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+To: maillist parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,44 +19,87 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-currently the kernel module loader does not support long branch stubs.
-using the debian 2.6.8-1 kernel, when loading the ipv6 module, i see:
+Hello all,
 
-legolas[6:43] linux-2.6% sudo modprobe ipv6
-FATAL: Error inserting ipv6 (/lib/modules/2.6.8-1-32-smp/kernel/net/ipv6/ipv6.ko): Invalid module format
+I grab a support+ cdrom to test a scsi disk of model "SEAGATE ST34573W" with ode diskutil.
 
-in syslog, i get:
-module ipv6 relocation of symbol fold_prot_inuse is out of range (0x3ffeffe2 in 17 bits)
+As it didn't detect any disk read error, I want to reboot linux kernel on my c110 but I forget to remove the cdrom from it's drive.
+And I got following pb when I reboot linux (kernel 2.6.10-rc1-pa10:
+[...]
+53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
+scsi1: 53c710 rev 2
+scsi1 : LASI SCSI 53c700
+   Vendor: HP        Model: DVD-ROM 6x/32x    Rev: 1.08
+   Type:   CD-ROM                             ANSI SCSI revision: 02
+  target1:0:0: Beginning Domain Validation
+scsi1: (0:0) Asynchronous
+scsi1: (0:0) Synchronous at offset 8, period 100ns
+  target1:0:0: Echo buffer size 5280 is too big, trimming to 4096
+  target1:0:0: Domain Validation detected failure, dropping back
+scsi1: (0:0) Synchronous at offset 8, period 152ns
+  target1:0:0: Domain Validation detected failure, dropping back
+scsi1: (0:0) Synchronous at offset 8, period 252ns
+  target1:0:0: Domain Validation detected failure, dropping back
+scsi1: (0:0) Synchronous at offset 8, period 400ns
+scsi1 (0:0) New error handler wants to abort command
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1 (0:0) New error handler wants device reset
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1 (0:0) New error handler wants BUS reset, cmd 2fd1ab60
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1: Bus Reset detected, executing command 2fd1ab60, slot 2fd70520, dsp 001d8528[0528]
+  failing command because of reset, slot 2fd70520, cmnd 2fd1ab60
+scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
+scsi1 (0:0) New error handler wants to abort command
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1 (0:0) New error handler wants device reset
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1 (0:0) New error handler wants BUS reset, cmd 2fd1ab60
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1: Bus Reset detected, executing command 2fd1ab60, slot 2fd70520, dsp 001d8528[0528]
+  failing command because of reset, slot 2fd70520, cmnd 2fd1ab60
+scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
+scsi1 (0:0) New error handler wants to abort command
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1 (0:0) New error handler wants device reset
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1 (0:0) New error handler wants BUS reset, cmd 2fd1ab60
+         scsi1 : destination target 0, lun 0
+         command = 0x03 00 00 00 60 00
+scsi1: Bus Reset detected, executing command 2fd1ab60, slot 2fd70520, dsp 001d8528[0528]
+  failing command because of reset, slot 2fd70520, cmnd 2fd1ab60
+scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
+scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
+  target1:0:0: Domain Validation detected failure, dropping back
+scsi1: (0:0) Synchronous at offset 0, period 0ns
+  target1:0:0: Domain Validation detected failure, dropping back
+scsi1: (0:0) Asynchronous
+  target1:0:0: Domain Validation Failure, dropping back to Asynchronous
+  target1:0:0: Ending Domain Validation
+   Vendor: SEAGATE   Model: ST34573W          Rev: HP11
+   Type:   Direct-Access                      ANSI SCSI revision: 02
+  target1:0:3: Beginning Domain Validation
 
-these are the other modules i have loaded at the moment:
+until I remove the cdrom then it continue the boot:
+scsi1: (3:0) Asynchronous
+scsi1: (3:0) Enabling Tag Command Queuing
+scsi1: (3:0) Synchronous at offset 8, period 100ns
+  target1:0:3: Domain Validation skipping write tests
+  target1:0:3: Ending Domain Validation
+...
 
-legolas[6:26] linux-2.6% lsmod
-Module                  Size  Used by
-ehci_hcd               58788  0
-ohci_hcd               41924  0
-usbcore               121084  2 ehci_hcd,ohci_hcd
-tulip                  65468  0
-ad1889                 19524  0
-soundcore              13828  1 ad1889
-ac97_codec             24876  1 ad1889
-tg3                   107760  0
-ext3                  135588  2
-jbd                   103960  1 ext3
-sd_mod                 24416  5
-sym53c8xx             105004  4
+Any idea?
 
-the kernel i have is:
-Linux legolas 2.6.8-1-32-smp #1 SMP Tue Nov 2 13:07:05 MST 2004 parisc
-GNU/Linux
-
-to fix this we will probably need to introduce long branch stubs into 
-into the kernel module loader. anybody want to give this a shot?
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thanks in advance,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
