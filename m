@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (f99.pav1.hotmail.com [64.4.31.99])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E43D54845
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 14 Jul 2002 16:41:46 -0600 (MDT)
-From: "Volitive ." <volitive@hotmail.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Sun, 14 Jul 2002 16:41:45 -0600
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F99yLridnGiAw8HQEUE000003b3@hotmail.com>
-Subject: [parisc-linux] [Unrelated Advertisement] J5000 for sale on E-Bay!
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D513A4843
+	for <parisc-linux@parisc-linux.org>; Sun, 14 Jul 2002 17:38:25 -0600 (MDT)
+To: eddantes@wanadoo.fr
+Cc: Frank Alden Smith <falden@comcast.net>,
+	parisc-linux@parisc-linux.org, taggart@carmen.fc.hp.com
+Subject: Re: [parisc-linux] locales held back 
+In-Reply-To: Your message of "Sun, 14 Jul 2002 00:26:46 +0200."
+             <3D30A926.8020509@wanadoo.fr>
+References: <NGBBJKHCMLEJELIEEHNOCEDPCAAA.falden@comcast.net>  <3D30A926.8020509@wanadoo.fr> 
+Date: Sun, 14 Jul 2002 17:38:21 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20020714233821.9FBE037E97@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,22 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Sorry for the spam, but I wanted to include people on this list, since you 
-may be the most interested.
+eddantes@wanadoo.fr writes...
 
-I'm selling my old development machine, a J5000, as it came configured.
+> Frank Alden Smith wrote:
 
-It's up on e-bay right now, at
-http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&item=2038735534
+> > Sorry, but the following packages have unmet dependencies:
+> >   locales: Depends: glibc-2.2.5-8 but it is not installable
+> > E: Sorry, broken packages
+> > 
+> > Any, idea how I can resolve the problem, or must I just be patient until
+> > the broken glibc-2.2.5-8 is fixed?
+> > 
+> > Take care,
+> > frank
+> 
+> 
+> That's a pretty common situation in Debian Sid (unstable), especially 
+> between locales and glibc. I've seen it happen qui a lot of times, but 
+> it's just harmless.
 
-Currently at $1250, but it's been appraised at $4200.
+BTW- IIRC this is due the the fact that libc6 and locales have lock-step
+dependencies. So when a new glibc package comes out the binary-all
+locales package is immediatatly available for all architectures but the
+arch-specific packages like libc aren't until they've been built for
+each architecture. So as eddantes pointed out, just wait a few days and
+they'll be sync'd back up.
 
-It will include 512MB of RAM, 9.1gb SCSI, FX2 Graphics, CD-ROM and Floppy.
+Or you could run testing which doesn't have this problem(by definition).
 
-Thanks!
-
-
-
-_________________________________________________________________
-MSN Photos is the easiest way to share and print your photos: 
-http://photos.msn.com/support/worldwide.aspx
+-- 
+Matt Taggart
+taggart@fc.hp.com
