@@ -1,40 +1,136 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD90519F9.dip.t-dialin.net [217.5.25.249])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DF5A3482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 13:07:56 -0600 (MDT)
-Date: Tue, 25 Sep 2001 21:00:35 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: =?iso-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
-Cc: Ryan Bradetich <rbradetich@uswest.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] Additional Address cleanup
-Message-ID: <20010925210035.A22586@solo.franken.de>
-References: <20010921104838.A2049@beavis.ybsoft.com> <3BAF13BC.3090302@hrzpub.tu-darmstadt.de> <20010924215918.A23464@beavis.ybsoft.com> <3BB0BFF9.50708@hrzpub.tu-darmstadt.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <3BB0BFF9.50708@hrzpub.tu-darmstadt.de>; from rscholz@hrzpub.tu-darmstadt.de on Tue, Sep 25, 2001 at 07:33:45PM +0200
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 78251482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 15:58:01 -0600 (MDT)
+Received: from i3107at1.atl.hp.com (i3107at1.atl.hp.com [15.45.88.34])
+	by atlrel6.hp.com (Postfix) with ESMTP id A2F571F5BB
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 17:57:59 -0400 (EDT)
+Received: from hp.com (cas1@wahoo.atl.hp.com [15.50.81.145])
+	by i3107at1.atl.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with ESMTP id RAA29321
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 17:58:13 -0400 (EDT)
+Sender: cas1@i3107at1.atl.hp.com
+Message-ID: <3BB0FDDF.6F8CDDD7@hp.com>
+Date: Tue, 25 Sep 2001 17:57:51 -0400
+From: Chuck Slivkoff <charles_slivkoff@hp.com>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+ boundary="------------19476CE09D44B19A939AE487"
+Subject: [parisc-linux] do_page_fault() on 712/60 running 2.4.9-pa22
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Sep 25, 2001 at 07:33:45PM +0200, Rüdiger Scholz wrote:
-> Ryan Bradetich wrote:
-> 
-> >
-> >First I am assuming this worked before you tested this patch....
-> >
-> No ;-) It crashes, when the kernel tries to initialize the first 
-> graphics card (Coral), during STICALL (...) in function sti_init_graph...
+This is a multi-part message in MIME format.
+--------------19476CE09D44B19A939AE487
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-bug in the sti code. It doesn't use the sti rom from the card, but from
-the onboard sti rom. I've played with my 715/100 with an extra HCRX and
-had the same problem. I've disabled the HCRX by removing the connection
-between mainboard and HCRX, then the kernel from the 0.9.2 crashed after
-starting the init from the install ramdisk (Kernel Fault: Code=15) :-(
+Hello all,
 
-Hopefully I'll get some sti hacking done during the upcoming Linux
-Hackermeeting in Oldenburg coming weekend.
+I've seen this several times before (& posted to the list as well), but
+can't figure out what might be causing it or how to duplicate it. I
+noticed today that ~ 3:30 AM EDT, several do_page_fault() errors were
+reported (kern.log attached).
 
-Thomas.
+This is running 2.4.9-pa22 kernel which I build a few days ago from CVS.
+Earlier, I had thought that the problem might be related to swapping,
+but couldn't duplicate the problem at will. 
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+# cat /proc/version 
+Linux version 2.4.9-pa22 (root@dlarry) (gcc version 3.0.2 20010825
+(Debian prerelease)) #7 Fri Sep 21 16:37:05 EDT 2001
+
+Can anyone offer a suggestion as to how to investigate this further?
+Would updating glibc help?
+
+Thanks,
+
+-chuck
+--------------19476CE09D44B19A939AE487
+Content-Type: application/octet-stream;
+ name="kern.log"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="kern.log"
+
+U2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5
+IGtlcm5lbDogZG9fcGFnZV9mYXVsdCgpIHBpZD0xNzg0IGNvbW1hbmQ9J2FwYWNoZScgdHlw
+ZT03IGFkZHJlc3M9MHg0MDNkM2UyZgpTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDog
+dm1fc3RhcnQgPSAweDQwM2QzMDAwLCB2bV9lbmQgPSAweDQwM2Q1MDAwClNlcCAyNSAwMzoy
+ODoyNiBkbGFycnkga2VybmVsOiAKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6ICAg
+ICAgWVpydldFU1RITE5YQkNWTWNiY2JjYmNiT0dGUlFQREkKU2VwIDI1IDAzOjI4OjI2IGRs
+YXJyeSBrZXJuZWw6IFBTVzogMDAwMDAwMDAwMDAwMDExMDAwMDAwMDAwMDAwMDExMTEKU2Vw
+IDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IHIwLTNeSSAwMDAwMDAwMCA0MDAyODMxMCA0
+MDNkNDk3MyBmYWYwMDcwMApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDogcjQtN15J
+IDQwM2U0Zjk4IGZhZjAwN2I0IDAwMDk1ZWIwIDAwMDAwMDc4ClNlcCAyNSAwMzoyODoyNiBk
+bGFycnkga2VybmVsOiByOC0xMV5JIDAwMDAwMDBjIGZhZjAwNzg0IDAwMDAwMDAyIDAwMDAw
+MDE5ClNlcCAyNSAwMzoyODoyNiBkbGFycnkga2VybmVsOiByMTItMTVeSSBmYWYwMDdiNCBm
+ZmZmZmY5YyA0MDAyODQ4NCAwMDA4MzliMApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5l
+bDogcjE2LTE5XkkgMDAwMDAwYzggMDAwNjEwMDAgMDAwODExYjAgNDAzZTRmOTgKU2VwIDI1
+IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IHIyMC0yM15JIDAwMDAwMDAxIDQwM2U0Zjk4IDQw
+M2Q0OTU4IDQwMDI4MzE4ClNlcCAyNSAwMzoyODoyNiBkbGFycnkga2VybmVsOiByMjQtMjde
+SSA0MDAyODQ4NCA0MDNkNDk1OCAwMDA5NWViMCAwMDA3YjliMApTZXAgMjUgMDM6Mjg6MjYg
+ZGxhcnJ5IGtlcm5lbDogcjI4LTMxXkkgNDAwMWI0MGEgMDAwMDAwMDAgZmFmMDA4NDAgNDAw
+MGRlYmYKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IHNyMC0zXkkgMDAwMDE2NzQg
+MDAwMDE2NzQgMDAwMDAwMDAgMDAwMDE2NzQKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJu
+ZWw6IHNyNC03XkkgMDAwMDE2NzQgMDAwMDE2NzQgMDAwMDE2NzQgMDAwMDE2NzQKU2VwIDI1
+IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5l
+bDogSUFTUTogMDAwMDE2NzQgMDAwMDE2NzQgSUFPUTogNDAzZDNlMmYgNDAzZDNlMzMKU2Vw
+IDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6ICBJSVI6IDA4MDAwMjQwICAgIElTUjogMDAw
+MDE2NzQgIElPUjogNDAzZDNlM2MKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6ICBD
+UFU6ICAgICAgICAwICAgQ1IzMDogMTZkMTgwMDAgQ1IzMTogMTAzNjAwMDAKU2VwIDI1IDAz
+OjI4OjI2IGRsYXJyeSBrZXJuZWw6ICBPUklHX1IyODogZmFmMDA4OTAKU2VwIDI1IDAzOjI4
+OjI2IGRsYXJyeSBrZXJuZWw6IApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDogZG9f
+cGFnZV9mYXVsdCgpIHBpZD0xNzg2IGNvbW1hbmQ9J2FwYWNoZScgdHlwZT03IGFkZHJlc3M9
+MHg0MDNkM2UyZgpTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDogdm1fc3RhcnQgPSAw
+eDQwM2QzMDAwLCB2bV9lbmQgPSAweDQwM2Q1MDAwClNlcCAyNSAwMzoyODoyNiBkbGFycnkg
+a2VybmVsOiAKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6ICAgICAgWVpydldFU1RI
+TE5YQkNWTWNiY2JjYmNiT0dGUlFQREkKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6
+IFBTVzogMDAwMDAwMDAwMDAwMDExMDAwMDAwMDAwMDAwMDExMTEKU2VwIDI1IDAzOjI4OjI2
+IGRsYXJyeSBrZXJuZWw6IHIwLTNeSSAwMDAwMDAwMCA0MDAyODMxMCA0MDNkNDk3MyBmYWYw
+MDcwMApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDogcjQtN15JIDQwM2U0Zjk4IGZh
+ZjAwN2I0IDAwMDk1ZWIwIDAwMDAwMDc4ClNlcCAyNSAwMzoyODoyNiBkbGFycnkga2VybmVs
+OiByOC0xMV5JIDAwMDAwMDBjIGZhZjAwNzg0IDAwMDAwMDAyIDAwMDAwMDE5ClNlcCAyNSAw
+MzoyODoyNiBkbGFycnkga2VybmVsOiByMTItMTVeSSBmYWYwMDdiNCBmZmZmZmY5YyA0MDAy
+ODQ4NCAwMDA4MzliMApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDogcjE2LTE5Xkkg
+MDAwMDAwYzggMDAwNjEwMDAgMDAwODExYjAgNDAzZTRmOTgKU2VwIDI1IDAzOjI4OjI2IGRs
+YXJyeSBrZXJuZWw6IHIyMC0yM15JIDAwMDAwMDAxIDQwM2U0Zjk4IDQwM2Q0OTU4IDQwMDI4
+MzE4ClNlcCAyNSAwMzoyODoyNiBkbGFycnkga2VybmVsOiByMjQtMjdeSSA0MDAyODQ4NCA0
+MDNkNDk1OCAwMDA5NWViMCAwMDA3YjliMApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5l
+bDogcjI4LTMxXkkgNDAwMWI0MGEgMDAwMDAwMDAgZmFmMDA4NDAgNDAwMGRlYmYKU2VwIDI1
+IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IHNyMC0zXkkgMDAwMDE2N2IgMDAwMDE2N2IgMDAw
+MDAwMDAgMDAwMDE2N2IKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6IHNyNC03Xkkg
+MDAwMDE2N2IgMDAwMDE2N2IgMDAwMDE2N2IgMDAwMDE2N2IKU2VwIDI1IDAzOjI4OjI2IGRs
+YXJyeSBrZXJuZWw6IApTZXAgMjUgMDM6Mjg6MjYgZGxhcnJ5IGtlcm5lbDogSUFTUTogMDAw
+MDE2N2IgMDAwMDE2N2IgSUFPUTogNDAzZDNlMmYgNDAzZDNlMzMKU2VwIDI1IDAzOjI4OjI2
+IGRsYXJyeSBrZXJuZWw6ICBJSVI6IDA4MDAwMjQwICAgIElTUjogMDAwMDE2N2IgIElPUjog
+NDAzZDNlM2MKU2VwIDI1IDAzOjI4OjI2IGRsYXJyeSBrZXJuZWw6ICBDUFU6ICAgICAgICAw
+ICAgQ1IzMDogMTZkYmMwMDAgQ1IzMTogMTAzNjAwMDAKU2VwIDI1IDAzOjI4OjI2IGRsYXJy
+eSBrZXJuZWw6ICBPUklHX1IyODogZmFmMDA4OTAKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBr
+ZXJuZWw6IApTZXAgMjUgMDQ6NTY6NTUgZGxhcnJ5IGtlcm5lbDogZG9fcGFnZV9mYXVsdCgp
+IHBpZD0xODEzIGNvbW1hbmQ9J2FwYWNoZScgdHlwZT03IGFkZHJlc3M9MHg0MDNkM2UyZgpT
+ZXAgMjUgMDQ6NTY6NTUgZGxhcnJ5IGtlcm5lbDogdm1fc3RhcnQgPSAweDQwM2QzMDAwLCB2
+bV9lbmQgPSAweDQwM2Q1MDAwClNlcCAyNSAwNDo1Njo1NSBkbGFycnkga2VybmVsOiAKU2Vw
+IDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6ICAgICAgWVpydldFU1RITE5YQkNWTWNiY2Jj
+YmNiT0dGUlFQREkKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6IFBTVzogMDAwMDAw
+MDAwMDAwMDEwMDAwMDAwMDAwMDAwMDExMTEKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJu
+ZWw6IHIwLTNeSSAwMDAwMDAwMCA0MDAyODMxMCA0MDNkNDk3MyBmYWYwMDcwMApTZXAgMjUg
+MDQ6NTY6NTUgZGxhcnJ5IGtlcm5lbDogcjQtN15JIDQwM2U0Zjk4IGZhZjAwN2I0IDAwMDk1
+ZWIwIDAwMDAwMDc4ClNlcCAyNSAwNDo1Njo1NSBkbGFycnkga2VybmVsOiByOC0xMV5JIDAw
+MDAwMDBjIGZhZjAwNzg0IDAwMDAwMDAyIDAwMDAwMDE5ClNlcCAyNSAwNDo1Njo1NSBkbGFy
+cnkga2VybmVsOiByMTItMTVeSSBmYWYwMDdiNCBmZmZmZmY5YyA0MDAyODQ4NCAwMDA4Mzli
+MApTZXAgMjUgMDQ6NTY6NTUgZGxhcnJ5IGtlcm5lbDogcjE2LTE5XkkgMDAwMDAwYzggMDAw
+NjEwMDAgMDAwODExYjAgNDAzZTRmOTgKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6
+IHIyMC0yM15JIDAwMDAwMDAxIDQwM2U0Zjk4IDQwM2Q0OTU4IDQwMDI4MzE4ClNlcCAyNSAw
+NDo1Njo1NSBkbGFycnkga2VybmVsOiByMjQtMjdeSSA0MDAyODQ4NCA0MDNkNDk1OCAwMDA5
+NWViMCAwMDA3YjliMApTZXAgMjUgMDQ6NTY6NTUgZGxhcnJ5IGtlcm5lbDogcjI4LTMxXkkg
+NDAwMWI0MGEgMDAwMDAwMDAgZmFmMDA4NDAgNDAwMGRlYmYKU2VwIDI1IDA0OjU2OjU1IGRs
+YXJyeSBrZXJuZWw6IHNyMC0zXkkgMDAwMDE2ZDcgMDAwMDE2ZDcgMDAwMDAwMDAgMDAwMDE2
+ZDcKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6IHNyNC03XkkgMDAwMDE2ZDcgMDAw
+MDE2ZDcgMDAwMDE2ZDcgMDAwMDE2ZDcKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6
+IApTZXAgMjUgMDQ6NTY6NTUgZGxhcnJ5IGtlcm5lbDogSUFTUTogMDAwMDE2ZDcgMDAwMDE2
+ZDcgSUFPUTogNDAzZDNlMmYgNDAzZDNlMzMKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJu
+ZWw6ICBJSVI6IDA4MDAwMjQwICAgIElTUjogMDAwMDE2ZDcgIElPUjogNDAzZDNlM2MKU2Vw
+IDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6ICBDUFU6ICAgICAgICAwICAgQ1IzMDogMTQ0
+YTgwMDAgQ1IzMTogMTAzNjAwMDAKU2VwIDI1IDA0OjU2OjU1IGRsYXJyeSBrZXJuZWw6ICBP
+UklHX1IyODogZmFmMDA4OTAK
+--------------19476CE09D44B19A939AE487--
