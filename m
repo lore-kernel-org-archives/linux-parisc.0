@@ -1,13 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Thibaut VARENE <varenet@esiee.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 9000/819/K210 
-In-Reply-To: Message from Thibaut VARENE <varenet@esiee.fr>
-   of "Mon, 08 Jul 2002 23:03:32 +0200." <294EE282-92B6-11D6-9EA1-0030656F07A2@esiee.fr>
-References: <294EE282-92B6-11D6-9EA1-0030656F07A2@esiee.fr> 
-Date: Mon, 08 Jul 2002 15:44:30 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020708214430.9FB31484C@dsl2.external.hp.com>
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6CB294837
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 21:59:34 -0600 (MDT)
+Received: from info%jweb.info
+ (pcp01467885pcs.mchncb01.pa.comcast.net [68.82.245.46])
+ by mtaout04.icomcast.net
+ (iPlanet Messaging Server 5.1 HotFix 0.8 (built May 13 2002))
+ with SMTP id <0GYY00J5RR2XJ4@mtaout04.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Mon, 08 Jul 2002 23:59:30 -0400 (EDT)
+Date: Mon, 08 Jul 2002 23:59:43 -0500
+From: Dave Alvey <info@Jweb.info>
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: dave@jweb.info
+Message-id: <0GYY00J74R35J4@mtaout04.icomcast.net>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] This change should do it
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,33 +27,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thibaut VARENE wrote:
-> > ie has anyone seen a hang when sym53c8xx driver was using IO port =
-> space?
-> I had to stop the box, no hang, just some kernel upgrade needed...
+Jweb knows how frustrating and expensive it is to rely on outsiders when you have to add a new user, setup a new computer, or even fix a printer or monitor problem.
 
-ok.
+We guarentee productivity will increase and costs will decrease as you and your staff are able to manage your computer systems with our training.
 
-> Anyway I'm pretty convinced this is a I/O pb, which seems to be =
-> confirmed
-> by the observations Ryan and I made:
-> all stuck processes are always in 'down_read' or 'down_write' state when
-> hanging...
 
-hmm...I've not mucked with the semaphore code and don't pretend to
-understand it.
+We specially tailor the training to your specific configuration and knowledge level.  We will come to you
 
-> No, I have just got some 't' SysRq dump (special 't', from Ryan's patch)
-
-This is better than TOC for the reasons you mentioned. 
-Please post whatever output you can get from SysRq and
-don't bother with the TOC unless the SysRq doesn't work.
-
-> All problems are coming on SMP kernels. I've never seen such hangs on UP
-> systems (thank God, it would be awful to restart our webserver every=20
-> day!)
-
-ok.
-
-thanks,
-grant
+visit http://www.jweb.info/Organizations.htm for more information or call us at 866-Jweb-123.
