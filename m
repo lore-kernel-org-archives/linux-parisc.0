@@ -1,19 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 82715489D
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from fep04-mail.bloor.is.net.cable.rogers.com
+	(fep04-mail.bloor.is.net.cable.rogers.com [66.185.86.74])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA1EC4857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 31 Jan 2004 04:51:47 -0700 (MST)
-Message-ID: <401B975B.4020107@tiscali.be>
-Date: Sat, 31 Jan 2004 11:54:03 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] B2k and CONFIG_PDC_CONSOLE progress
-References: <4015311000001F53@ocpmta2.freegates.net>
-	<20040130195509.GA15482@colo.lackof.org>
-In-Reply-To: <20040130195509.GA15482@colo.lackof.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
+	Sat, 31 Jan 2004 15:28:09 -0700 (MST)
+Date: Sat, 31 Jan 2004 17:28:33 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20040131222832.GB19840@baldric.uwo.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: 
+Subject: [parisc-linux] [PATCH] gcc/config/pa/ftpr.c fixes for new
+	TRAMPOLINE_TEMPLATE in hppa's glibc.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,31 +23,43 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Grant,
 
-Grant Grundler wrote:
-> On Wed, Jan 28, 2004 at 07:05:14PM +0100, Joel Soete wrote:
-> 
->>Well, i made some small progress: i reach to figure out that PAGE0 status
->>changes between pdc_console_init() and pdc_io_getc():
-> 
-> ....
-> 
->>Is somebody have a small idea when this change could occurs?
-> 
-> 
-> PDC messes with page0 as well.
-> You have the read the PDC ERS for each PDC call to determine
-> what "side effects" it has. Consider Page Zero "shared mem"
-> for the guest OS (HPUX or Linux) and PDC.
-> 
-Ha ok, I still have to learn more :)
+jda,
 
-For the moment I reach to avoid any crash of 2.4 with pdc_console either I boot from graphics(0) or serial_1.
-My patch works well (i can read from pdc kdb) for serial_1 but for graphics(0), I get well a login prompt from pdc
-but unfortunately I don't yet reach to read from usb kbd.
-But does it make sense to have pdc_console when we have an sti console?
-(imho it have well sense for a serial and lan console. Please advise.)
+The following patch is required in gcc to add another byte check for the
+new TRAMPOLINE_TEMPLATE that has profile fixes added in glibc 2.3.2.
+I've added comments in glibc to indicate that TRAMPOLINE_TEMPLATE
+changes are bad things to do. AFAIK this is the last change *ever* since
+we now have working profile support :)
 
-Thanks again,
-	Joel
+I'm not quite sure what the "-4" is intended to accomplish, I figure I
+could have prefixed the TREAMPOLINE_TEMPLATE with another jump that
+gives the right address? That still makes for an extra jump, and I'd
+rather have gcc just look in the right place first.
+
+Thoughts on this?
+
+c.
+
+
+2004-01-31  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* gcc/config/pa/fptr.c (__canonicalize_funcptr_for_compare): Add
+	extra offset check for new glibc TRAMPOLINE_TEMPLATE.
+
+Index: gcc/config/pa/fptr.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/config/pa/fptr.c,v
+retrieving revision 1.2
+diff -u -p -r1.2 fptr.c
+--- gcc/config/pa/fptr.c	9 Dec 2002 19:16:14 -0000	1.2
++++ gcc/config/pa/fptr.c	31 Jan 2004 22:18:27 -0000
+@@ -35,7 +35,7 @@ Boston, MA 02111-1307, USA.  */
+    the template should it be necessary to change the current branch
+    position.  */
+ #define NOFFSETS 2
+-static int fixup_branch_offset[NOFFSETS] = { 32, -4 };
++static int fixup_branch_offset[NOFFSETS] = { 36, 32, -4 };
+ 
+ #define GET_FIELD(X, FROM, TO) \
+   ((X) >> (31 - (TO)) & ((1 << ((TO) - (FROM) + 1)) - 1))
