@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4FE43482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 10:39:33 -0600 (MDT)
-Date: Wed, 7 Aug 2002 12:37:57 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Paul Bame <bame@fc.hp.com>
-Cc: Alex Green <alexdgreen@hotmail.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] palo issues
-Message-ID: <20020807163757.GF13287@systemhalted>
-References: <OE22Aztxc1o8yfogkJX00009958@hotmail.com> <20020807123807.GB9966@systemhalted> <OE50nwpGR881Np7vXee0000cb29@hotmail.com> <E17cSWK-0000pp-00@paul.bame> <OE62f84mtceYvUAA3qj0000304b@hotmail.com> <E17cSja-0000tS-00@paul.bame> <OE59QOuE3chAHrey7dl000009a1@hotmail.com> <E17cSwB-0000wS-00@paul.bame> <OE66fNykoS1Nz19qG9600002f67@hotmail.com> <E17cTgj-00012Z-00@paul.bame>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E17cTgj-00012Z-00@paul.bame>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CC54A482A
+	for <parisc-linux@parisc-linux.org>; Thu,  8 Aug 2002 02:10:30 -0600 (MDT)
+Received: from letters.grenoble.hp.com (letters.grenoble.hp.com [15.128.160.194])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id B24FA22E
+	for <parisc-linux@parisc-linux.org>; Thu,  8 Aug 2002 10:10:28 +0200 (METDST)
+Received: from adirq06 (dhcp-15-128-30-217.grenoble.hp.com [15.128.30.217]) by letters.grenoble.hp.com with SMTP (8.7.1/8.7.3 SMKit7.02) id KAA20413 for <parisc-linux@parisc-linux.org>; Thu, 8 Aug 2002 10:10:26 +0200 (METDST)
+From: "Mazia-Assia KAIDI" <kaidi@letters.grenoble.hp.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Tue, 8 Oct 2002 10:14:32 +0200
+Message-ID: <CEECILGPPEGMBBILGEHLAEFMCAAA.kaidi@letters.grenoble.hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Demande de renseignements
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +25,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > --commandline=4/boot/vmlinux-64 root=/dev/sda4 HOME=/
-> 
-> Partition 4 is _NOT_ contained within the first 2G.
-> 
-> > /dev/sda4          1049     17366  16709632   83  Linux
-> 
-> Sorry my question wasn't clearer.  Perhaps you can turn sda2 or 3 into
-> a /boot partition, or something more drastic...
-> 
-> > Yep, the f0 partition is the first 75mb of the disk:
+Bonjour,
+je suis stagiaire au centre europeen d'integration de HP Villefontaine. mon
+travail consiste en la mise en place d'un outil d'integration portable sous
+linux Redhat, mon souci est de booter sur un serveur HP-UX, mon portable se
+comporte comme un serveur bootp, dhcp et tftp. cependant j'ai un souci au
+niveau du protocole tftp, le transfert de fichiers ne se fait pas: le
+transfert se fait paquet par paquet et au bout d'un moment il y'a un message
+d'erreur indefini: opcode 0.
+dans le cas ou vous auriez plus d'informations, je vous prie de bien vouloir
+me les communiquer.
+Merci d'avance pour votre aide.
 
-Or you could set --commandline=0/vmlinux and have palo copy the
-kernel into f0. Though you'll need to do this for every new kernel
-you want to use. Very much like a normal lilo setup on x86. Though
-if you muck it up... you can't recover.
 
-c.
+Mazia-Assia KAIDI
+Stagiaire Portable integration tool
+HP EIC - EMEA
+Telecom Engineering Departement
+Tel : + 33 4 74 99 42 94
