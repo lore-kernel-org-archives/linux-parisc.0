@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from netlx010.civ.utwente.nl (netlx010.civ.utwente.nl [130.89.1.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 430154829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Dec 2002 02:06:03 -0700 (MST)
-Received: from kabel209080 (kabel209080.kabel.utwente.nl [130.89.232.79])
-          by netlx010.civ.utwente.nl (8.11.4/HKD) with SMTP id gB595r827846
-          for <parisc-linux@lists.parisc-linux.org>; Thu, 5 Dec 2002 08:05:53 -0100
-Message-ID: <002701c29c3d$725b0120$4fe85982@kabel.utwente.nl>
-From: "Tim Kemna" <t.kemna@student.utwente.nl>
-To: <parisc-linux@lists.parisc-linux.org>
-References: <3DA3DE6600007D28@ocpmta4.be.tiscali.com> <003101c299e1$9b2e7680$4fe85982@kabel.utwente.nl> <20021202105023.GL24337@sleepie.demon.co.uk> <003a01c29a1d$cd94b800$4fe85982@kabel.utwente.nl> <20021202165219.GP24337@sleepie.demon.co.uk> <001c01c29b89$f01db9e0$4fe85982@kabel.utwente.nl> <20021204162426.GB21187@tausq.org> <20021205102644.K32550@neep.com.au>
-Subject: Re: [parisc-linux] lifimage
-Date: Thu, 5 Dec 2002 10:05:24 +0100
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 189154829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Dec 2002 02:26:28 -0700 (MST)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 9846C157D
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Dec 2002 10:25:04 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id KAA08882 for <parisc-linux@lists.parisc-linux.org>; Thu, 5 Dec 2002 10:23:10 +0100 (MET)
+Message-ID: <3DEF1B6F.1573C841@admin.france.hp.com>
+Date: Thu, 05 Dec 2002 10:25:03 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+ boundary="------------11B10191D25EDD401FC846C9"
+Subject: [parisc-linux] panic while "set serial" with 2.4.20-pa9
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,45 +25,61 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-The problem was the serial cable. I borrowed a crossed one and that worked
-right away.
+This is a multi-part message in MIME format.
+--------------11B10191D25EDD401FC846C9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: base64
 
-Tim
+ICAgIEhpDQpJJ20gY29tcGlsaW5nIGEgbmV3IGtlcm5lbCwgYnV0IGl0IHBhbmljIHdoaWxl
+IGRvaW5nICJzZXQgc2VyaWFsIjoNCg0KU2VyaWFsIGRyaXZlciB2ZXJzaW9uIDUuMDVjICgy
+MDAxLTA3LTA4KSB3aXRoIE1BTllfUE9SVFMgU0hBUkVfSVJRIFNFUklBTF9QQ0kgZW5hYmxl
+ZA0KUmVkdW5kYW50IGVudHJ5IGluIHNlcmlhbCBwY2lfdGFibGUuICBQbGVhc2Ugc2VuZCB0
+aGUgb3V0cHV0IG9mDQpsc3BjaSAtdnYsIHRoaXMgbWVzc2FnZSAoMTAzYywxMDQ4LDEwM2Ms
+MTA0OSkNCmFuZCB0aGUgbWFudWZhY3R1cmVyIGFuZCBuYW1lIG9mIHNlcmlhbCBib2FyZCBv
+ciBtb2RlbSBib2FyZA0KdG8gc2VyaWFsLXBjaS1pbmZvQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dC4NCnR0eVMwMCBhdCBpb21lbSAweGZmZmZmZmZmZjgwMDAwMDAgKGlycSA9IDEzMikgaXMg
+YSAxNjU1MEENCnR0eVMwMSBhdCBpb21lbSAweGZmZmZmZmZmZjgwMDAwMDggKGlycSA9IDEz
+MikgaXMgYSAxNjU1MEENCnR0eVMwMiBhdCBpb21lbSAweGZmZmZmZmZmZjgwMDAwMTAgKGly
+cSA9IDEzMikgaXMgYSAxNjU1MEENClJlZHVuZGFudCBlbnRyeSBpbiBzZXJpYWwgcGNpX3Rh
+YmxlLiAgUGxlYXNlIHNlbmQgdGhlIG91dHB1dCBvZg0KbHNwY2kgLXZ2LCB0aGlzIG1lc3Nh
+Z2UgKDEwM2MsMTA0OCwxMDNjLDEwNGEpDQphbmQgdGhlIG1hbnVmYWN0dXJlciBhbmQgbmFt
+ZSBvZiBzZXJpYWwgYm9hcmQgb3IgbW9kZW0gYm9hcmQNCnRvIHNlcmlhbC1wY2ktaW5mb0Bs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQuDQoNClN0YWNrIER1bXA6DQogMDAwMDAwMDA0ZmJiOTFj
+MDogIDAwMDAwMGZmMDgwNGZmMGUgNmY3MDcxNzI3Mzc0NzU3NiAwMDAwMDAwMDEwMTNjNWM0
+IDM4Mzk2MTYyNjM2NDY1NjYNCiAwMDAwMDAwMDRmYmI5MWEwOiAgMzAzMTMyMzMzNDM1MzYz
+NyAwMDAwMDAwMDA4MDAwMDBmIDAwMDAwMDAwMDgwMDAwMGUgMDAwMDAwMDAxMDVjMWFkMA0K
+IDAwMDAwMDAwNGZiYjkxODA6ICAwMDAwMDAwMDEwNWMxYWQwIGZmZmZmZmZmZmZmZmYxOGQg
+MDAwMDAwMDAxMDZkZWMwOCAwMDAwMDAwMDEwNGQ2NmUwDQogMDAwMDAwMDA0ZmJiOTE2MDog
+IDAwMDAwMDAwMTA2ZGVhYzggMDAwMDAwMDAxMDRkNjZkMCAwMDAwMDAwMDEwNmRlYWM4IDAy
+ODAwMDAwMDAwMDAwMDINCiAwMDAwMDAwMDRmYmI5MTQwOiAgMDAwMDAwMDAxMDRiNjFmMCAw
+MDAwMDAwMDEwNWMxYWQwIDAwMDAwMDAwMTAxM2NjOGMgMDAwMDAwMDAxMDVjMWFkMA0KS2Vy
+bmVsIGFkZHJlc3NlcyBvbiB0aGUgc3RhY2s6DQogWzwwMDAwMDAwMDEwMTNjNWM0Pl0gIFs8
+MDAwMDAwMDAxMDEzY2M4Yz5dICBbPDAwMDAwMDAwMTAyN2IzZTQ+XSAgWzwwMDAwMDAwMDEw
+MjdiZDY0Pl0NCiBbPDAwMDAwMDAwMTAxYWI0YjQ+XSAgWzwwMDAwMDAwMDEwMzA4ZWJjPl0g
+IFs8MDAwMDAwMDAxMDE0NTBjOD5dICBbPDAwMDAwMDAwMTAzMDhmYzA+XQ0KIFs8MDAwMDAw
+MDAxMDI3YmY0Yz5dICBbPDAwMDAwMDAwMTAxMDAzYjQ+XSAgWzwwMDAwMDAwMDEwMTA4NDYw
+Pl0gIFs8MDAwMDAwMDAxMDEwODUxOD5dDQogWzwwMDAwMDAwMDEwMTNjNWM0Pl0gIFs8MDAw
+MDAwMDAxMDEzYzVjND5dICBbPDAwMDAwMDAwMTAxM2NjOGM+XSAgWzwwMDAwMDAwMDEwMTAw
+Mzg4Pl0NCg0KU29ycnksIG15IGR1bXAgZHJpdmVyIGlzIG5vdCBpbml0aWFsaXNlZCBhdCB0
+aGlzIHRpbWUgKEkgbXVzdCBhZGQgImVhcmx5IGR1bXAiIGZlYXR1cmUpLg0KSWYgeW91IGhh
+dmUgYW55IGlkZWEgPyBUaGUgcHJldmlvdXMga2VybmVsOiAyLjQuMTktcGEyMiBib290IHdp
+dGhvdXQgYW55IHByb2JsZW0uDQoNClRoYW5rcy4NCg0KLS0NCiAgICAgICAgVmlkYWwgQnJ1
+bm8sICg3NzAtNDI3MSkNCiAgICAgICAgU1NELUhBIFRlYW0sIEhQLVVYICYgTElOVVggU3Vw
+cG9ydA0KICAgICAgICBicnVub192aWRhbEBhZG1pbi5mcmFuY2UuaHAuY29tDQoNCg0K
+--------------11B10191D25EDD401FC846C9
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
------ Oorspronkelijk bericht -----
-Van: "Andrew Shugg" <andrew@neep.com.au>
-Aan: <parisc-linux@lists.parisc-linux.org>
-Verzonden: donderdag 5 december 2002 3:26
-Onderwerp: Re: [parisc-linux] lifimage
-
-
-> Randolph Chung said:
-> > > Now my problem is that I can't get any output. I'm using HyperTerminal
-6.3
-> > > on windows 98. The settings are 9600 8-N-1. My serial cable is
-D9F/D9F.
-> >
-> > this is perhaps a dumb question, but are you sure your hyperterminal
-> > settings are correct? i've had a hard time getting hyperterminal to act
-> > as a serial console for anything, be it PCs, PA-RISC machines, Sun
-> > servers, .... of course, that could just be me ;)
-> >
-> > randolph
->
-> Also, are you sure that HyperTerminal is looking at the right serial
-> port?  Can you stick a modem on it, see an 'OK' prompt, issue 'ATZ' etc?
->
-> Andrew.
->
-> --
-> Andrew Shugg <andrew@neep.com.au>
-http://www.neep.com.au/
->
-> "Just remember, Mr Fawlty, there's always someone worse off than
-yourself."
-> "Is there?  Well I'd like to meet him.  I could do with a good laugh."
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------11B10191D25EDD401FC846C9--
