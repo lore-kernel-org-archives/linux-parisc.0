@@ -1,69 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CBEB548B4
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 11:27:23 -0600 (MDT)
-Date: Sat, 29 Sep 2001 13:27:19 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id 558FA4B0F
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 11:48:58 -0600 (MDT)
+Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
+	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f8TIILG04697
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 14:18:21 -0400
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id f8THmvT15621
+	for parisc-linux@lists.parisc-linux.org; Sat, 29 Sep 2001 13:48:57 -0400
+Date: Sat, 29 Sep 2001 13:48:57 -0400
 From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Albert Strasheim <fullung@ilink.nis.za>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Non-atomic __set_bit
-Message-ID: <20010929132719.A15266@megatonmonkey.net>
-References: <20010924021054.I3025@megatonmonkey.net> <20010929020915.A24794@dogbert.localdomain>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 720 - some progress
+Message-ID: <20010929134857.B15266@megatonmonkey.net>
+References: <20010928182422.A22740@dogbert.localdomain> <Pine.NEB.4.33.0109282045120.601-100000@www2.scram.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010929020915.A24794@dogbert.localdomain>; from fullung@ilink.nis.za on Sat, Sep 29, 2001 at 02:09:15AM +0200
+In-Reply-To: <Pine.NEB.4.33.0109282045120.601-100000@www2.scram.de>; from jochen@scram.de on Fri, Sep 28, 2001 at 08:48:18PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Hello,
 > 
-> Is this going into CVS any time soon? It seems to work fine on my
-> 720/50.
+> On my installation i "fixed" this by switching off SCSI disconnects for my
+> disks. IIRC, this was by adding sim700=nodisc:0x70 to the kernel command
+> line.
 > 
-> Regards,
-> 
-> Albert
-> 
+> I'm currently about 150 km away from my HP9000/720 during the weekend.
+> I'll test the proposed patch on Monday.
+>
 
-Albert,
+I usually use sim700=noneg:0xff,nodisc:0xff.
+Turn it all off ;)
 
-Have you booted a devfs kernel on you box?
-Does it seem to function properly?
-
-Adding devfs to my kernel causes some odd stuff to go on after
-trying to enter INIT. Though I haven't had time to sort it out.
-The kernel boots fine, but probably one of the startup scripts
-is doing something decidedly wrong.
-
-Since you are using init=/bin/sh, and unless you tell devfs
-to explicitly mount at boot, you won't _really_ be using 
-devfs :)
-
-Sure, it compiles... and it looks like it should work.
-But theory and practice are so different it's not funny.
-
-<Carlos looks back at the RF Amplifier design he has on the
-whiteboard and chuckles>
-
-c.
-
-> 
-> > parisc,
-> > 
-> > Walking the source for devfs and thinking about Alberts problem.
-> > 
-> > Would the non-working devfs be fixed by adding:
-> > 
-> > Non-atomic versions of set_bit e.g. __set_bit 
-> > and test_and_set_bit e.g. __test_and_set_bit
-> > to linux/include/asm-parisc/bitops.h?
-> > 
-> > I have the latest CVS linux module.
-> > I've patched against that. It compiles now ;)
-> > (god bless make -j8)
-> > 
-> > I'm currently sleepy, but I'll post the patch, and test
-> > it tommorow on a 712/60 and 715/50.
-> > 
-> > c.
-> 
-> <patch snipped>
+c. 
