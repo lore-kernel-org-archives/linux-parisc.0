@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CD1AF482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 08:46:21 -0600 (MDT)
-Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
-	id 17D4iS-0004FY-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 16:46:20 +0200
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1022683580.3cf4e9bc12fcf@webmail.tiscalinet.be>
-Date: Wed, 29 May 2002 16:46:20 +0200 (CEST)
-From: joel.soete@freebel.net
+Received: from laas.laas.fr (laas.laas.fr [140.93.0.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CC58C482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 08:55:55 -0600 (MDT)
+Received: from tuxfamily.org (raptor [140.93.21.82])
+	by laas.laas.fr (8.12.3/8.12.3) with ESMTP id g4TEtlIC010583
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 16:55:47 +0200 (CEST)
+Message-ID: <3CF4EBF4.6040406@tuxfamily.org>
+Date: Wed, 29 May 2002 16:55:48 +0200
+From: Thomas Marteau <marteaut@tuxfamily.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] CVS server problem?
+To: parisc linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] PA-RISC/Linux boot HOWTO
+References: <3CEFD33A.9010007@laas.fr>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,14 +26,12 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi all,
 
-I just cvs update kernel 2.1.18-pa28 yesterday and would like to update to last
-2.4.18-pa29 but today each time 'Connection reset by peer'. Am I alone to have
-this problem? (other cvs update with sourceforge, gnu, redhat do not present
-this problem but it is also possible to be an isp problem)
+	Thanks to Joel, I have to correct the last message:
+> export CVSROOT=:pserver:marteaut@cvs.tuxfamily.org:/cvsroot/hppa
 
-Thanks in advance for help,
-    Joel
+is in fact:
+export CVSROOT=:pserver:anonymous@cvs.tuxfamily.org:/cvsroot/hppa
 
+I should not paste my .bash_history :)
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+Thomas.
