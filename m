@@ -1,35 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA06940
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 19:29:29 -0700
-Date: Thu, 30 Nov 2000 19:19:09 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Alex deVries <adevries@linuxcare.com>
-Cc: Kailashnath V Rampure <kailasr@webcash.com>,
-        parisc-linux@thepuffingroup.com, bame@noam.fc.hp.com,
-        grundler@cup.hp.com
-Subject: Re: [parisc-linux] Is there any sqlnet for Linux on HP
-Message-ID: <20001130191909.D18385@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <5.0.0.25.0.20001130125058.00b02970@mail.webcash.com> <3A26C612.2A44AE6@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A26C612.2A44AE6@linuxcare.com>; from adevries@linuxcare.com on Thu, Nov 30, 2000 at 04:26:42PM -0500
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA08185
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 23:10:14 -0700
+Message-Id: <200012010612.BAA17871@hiauly1.hia.nrc.ca>
+Subject: Re: pa reload problem
+To: alan@linuxcare.com.au (Alan Modra)
+Date: Fri, 1 Dec 2000 01:12:26 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: law@cygnus.com, rhirst@linuxcare.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <Pine.LNX.4.21.0012011102290.2814-100000@front.linuxcare.com.au> from "Alan Modra" at Dec 1, 2000 11:23:42 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I'm assuming you mean HP PA-RISC Linux, not HP IA32/64 Linux.
-> 
-> No.  The only applications right now for parisc-linux are open source
-> ones, and we haven't touched any SQL client libraries.
-> 
-> Conceivably the DBI stuff should work, but I don't think anyone's really
-> tried.
+>         b,l foo,%r2
+>         copy %r27,%r4
+>         addil LT'cpu_hz,%r4	! know r27 trashed in call, so use r4
+>         ldd RT'cpu_hz(%r1),%r1
+>         ldd -144(%r30),%r2
+>         ldw 0(%r1),%r19
+>         addil LT'L$C0000,%r27	! oops, should be using r4
+>         ldd RT'L$C0000(%r1),%r1
 
-presumably the DBD Oracle library still links the the oracle sqlnet
-libraries, so i doubt this will work.
+It looks to me like this happens because the register life analysis in
+pass 13 decides that r27 (dp) is dead.  This causes combine to delete the
+insn that restores r27 after the call to foo and use the value saved
+in r4 as a proxy for dp.
 
-randolph
+(insn 16 14 21 (set (reg:DI 27 %r27)
+        (reg:DI 4 %r4)) 123 {movstrsi_internal+11} (nil)
+    (expr_list:REG_DEAD (reg:DI 4 %r4)
+	(nil)))
+
+(insn 21 16 23 (set (reg:DI 68)
+	(plus:DI (reg:DI 27 %r27)
+	    (high:DI (symbol_ref:DI ("cpu_hz"))))) 81 {post_std+3} (insn_list 16 (nil))
+     (expr_list:REG_DEAD (reg:DI 27 %r27)
+	(nil)))
+
+The const_int's which follow haven't been expanded at this point.  Thus,
+the life analysis can't tell that r27 is still needed.
+
+Dave
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
