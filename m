@@ -1,73 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA03683
-	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Sep 1999 23:17:09 -0600
-From: emolitor@molitor.org
-Received: from cpu209-41-104-129.unicomp.net (HELO linux.molitor.org) (root@209.41.104.129)
-  by mailserv2.iuinc.com with SMTP; 25 Sep 1999 05:19:31 -0000
-Received: from localhost (emolitor@localhost)
-	by linux.molitor.org (8.9.3/8.9.3) with ESMTP id AAA00979;
-	Sat, 25 Sep 1999 00:18:05 -0500
-Date: Sat, 25 Sep 1999 00:18:05 -0500 (CDT)
-To: John Delisle <jdelisle@novia.net>
-cc: Parisc Linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] What am I missing?!?
-In-Reply-To: <001001bf0707$dfd97840$8e0228d8@johnshay>
-Message-ID: <Pine.LNX.4.10.9909250005080.966-100000@linux.molitor.org>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA04669
+	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Sep 1999 02:09:55 -0600
+Received: from johnshay (216-40-2-91.novia.net [216.40.2.91])
+        by oasis.novia.net (8.9.3/Novia) with SMTP id DAA00874
+        for <parisc-linux@thepuffingroup.com>; Sun, 26 Sep 1999 03:12:12 -0500 (CDT)
+Message-ID: <000b01bf07f7$69dd71a0$5b0228d8@johnshay>
+From: "John Delisle" <jdelisle@novia.net>
+To: "Parisc Linux" <parisc-linux@thepuffingroup.com>
+Date: Sun, 26 Sep 1999 03:16:18 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] waiting for distro & CDROM problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 24 Sep 1999, John Delisle wrote:
+Hi,
 
-> Hi,
-> 
-> I've got two HP boxes.. 
+Thanks for all the previous responses to my last message re what am I
+missing.  I've decided that I'll install HP UX 10.20 for now, and wait a
+while until there is a more hashed out distro.
 
-I only have one.
+Anyhow, I tried to install 10.20 and ran into the same problem on both
+boxes.  I can't get it to boot off of CD.  I've tried two different SCSI
+cdroms, both older Toshibas.  I have autoboot and autosearch on, but it
+always comes back with no boot devices available.  All I have hooked up to
+the internal 50pin SCSI is the cdrom, ID 6, parity on, termination on.  Is
+there some sort of trick?
 
-> Want to run linux on em.  
-
-Me too!
-
-> I run linux on many other boxes.  
-
-Me too!
-
->I'm trying to find an HP parisc distro or something, but am having
-> no luck!! 
-
-None exists at this time.
-
-> Can anyone point me to a FAQ, a distro, where to get linux for
-> parisc, or something?? Please!?
-
-Ok, here it is...
-
-<-------------------------------------------------------------->
-
-Linux PA-Risc Linux Kernel and Distribution FAQ
-Rev 0.0000001 Alpha
-by Eric Molitor (eric@molitor.org)
-
-
-INDEX
-   1) Where can I download a PA-Risc Linux Distribution?
-   2) How can I create a PA-Risc Linux Distribution?
-   3) How can I find a complete and functional kernel for PA-Risc?
-
-ANSWERS
-
-1) Where can I download a PA-Risc Linux Distribution?
-
-   You can't, it doesn't exist yet.
-
-
-2) How can I create a PA-Risc Linux Distribution?
-
-   Find a functioning kernel first.
-
-
-3) How can I find a complete and functional kernel for PA-Risc?
-
-   I. Grab source from CVS
-   II. Start Hacking
+Thanks
+John
