@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dc-mx12.cluster1.charter.net (dc-mx12.cluster1.charter.net [209.225.8.22])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B652F484A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Aug 2002 19:12:14 -0600 (MDT)
-Message-ID: <3D6D7527.5040505@charter.net>
-Date: Wed, 28 Aug 2002 21:13:11 -0400
-From: "B. Douglas Hilton" <bdhilton@charter.net>
-MIME-Version: 1.0
-To: palinux <parisc-linux@lists.parisc-linux.org>,
-	debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] X-Terminal?
-References: <005801c24ef5$bcd5d6c0$95ff8450@PLUTO> <1030582666.2179.360.camel@archimedes.localnetsolutions.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from tyke.pjc.net (public1-leed3-6-cust7.leed.broadband.ntl.com [80.7.68.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E825D4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 01:43:05 -0600 (MDT)
+Received: from patrick by tyke.pjc.net with local (Exim 3.35 #1 (Debian))
+	id 17kJxH-0000Ks-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 08:43:03 +0100
+Date: Thu, 29 Aug 2002 08:43:03 +0100
+From: Patrick Caulfield <patrick@tykepenguin.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Harmony on 710 working?
+Message-ID: <20020829074303.GB1029@tykepenguin.com>
+References: <3D6CDF5A.5090205@gmx.de> <Pine.LNX.4.33.0208282215040.28537-100000@marvin.forty.two>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <Pine.LNX.4.33.0208282215040.28537-100000@marvin.forty.two>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,50 +25,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I agree. Cygwin with XFree86 has got to be the ultimate,
-heck you should always have Cygwin anyways on any Windoze
-box IMHO, and XFree86 wasn't a big deal to install the
-last time I tried it. You should be able to use the
-xterm to telnet or rlogin to the hppa box and then an
-
-$ export DISPLAY=###.###.###.###:0
-$ mozilla &
-
-Should work most excellently, although I have run into
-some difficulties running X apps remotely a while back
-with Debian, something seemed messed up with my security
-settings and the Debian box wasn't allowing apps to run
-remotely. Haven't tried it in a while so I dunno if it
-has been fixed or is some config problem on my side.
-
-Voodoo2 Update - been real busy and real tired, no time
-to screw with it right now. Probably will hack on it
-this weekend.
-
-- Doug
-
-
-
-
-James P. Kinney III wrote:
-> Cygwin with XFree86 4.x support! As a demo I ran KDE under Win98 on
-> cygwin. Slow, but it worked.
+On Wed, Aug 28, 2002 at 10:20:15PM +0200, Juergen Braukmann wrote:
 > 
-> The twm is rather speedy. 
-> 
-> 
-> http://www.cygwin.com
-> 
-> On Wed, 2002-08-28 at 20:48, Tobias Giesen wrote:
-> 
->>Hello,
->>
->>while I can't get X on my C200 to support the graphics card, how about
->>using an X-Terminal via Ethernet?
->>
->>Where can I get hints on how to configure this, and
->>
->>does anybody know a good X-Window-Terminal software for MS Windows?
->>
->>Cheers,
->>Tobias
+> Hi Christian,
+> at least I got the Harmony driver working on my c110. I used the Kernel
+> driver first, but found out that kmixer wasn't working (obviously expected
+> alsa)
+
+A great many Linux sound programs seem to assume that the machine is
+little-endian and don't work on HP IME. mpg321 seems OK to me as is sox but
+anything more serious (particularly on the recording side) tends to have
+problems.
+
+Maybe I should file some bugs in the Debian BTS.
+-- 
+
+patrick
