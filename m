@@ -1,20 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 09BF7482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Dec 2001 09:43:25 -0700 (MST)
-Received: from xatlrelay1.atl.hp.com (xatlrelay1.atl.hp.com [15.45.89.190])
-	by atlrel7.hp.com (Postfix) with ESMTP id B1FF21FA33
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Dec 2001 11:40:00 -0500 (EST)
-Received: from xatlbh3.atl.hp.com (xatlbh3.atl.hp.com [15.45.89.188])
-	by xatlrelay1.atl.hp.com (Postfix) with ESMTP id E94211F504
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Dec 2001 11:43:22 -0500 (EST)
-Message-ID: <3C1637AA.81611E8C@hp.com>
-Date: Tue, 11 Dec 2001 11:43:22 -0500
-From: Chuck Slivkoff <charles_slivkoff@hp.com>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: 2.4.16-pa16 (from CVS) fails on "make depend"
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 90B05611D
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 09:44:58 -0700 (MST)
+Received: from ldl.fc.hp.com (unknown [15.1.50.190])
+	by atlrel8.hp.com (Postfix) with ESMTP id 828211F9B7
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 11:44:57 -0500 (EST)
+Received: from noam.fc.hp.com (noam.fc.hp.com [15.1.52.69])
+	by ldl.fc.hp.com (Postfix) with ESMTP id 063464679
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 09:44:57 -0700 (MST)
+Received: from localhost
+	([127.0.0.1] helo=fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.32 #1 (Debian))
+	id 16Dq1Y-0002zm-00
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 09:44:56 -0700
+To: parisc-linux@parisc-linux.org
+Date: Tue, 11 Dec 2001 09:44:56 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E16Dq1Y-0002zm-00@noam.fc.hp.com>
+Subject: [parisc-linux] 2.5 kernel and CVS -- opinions?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,39 +29,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-The "make distclean" which Grant suggested below seems to have resolved
-this.
+It's time to start tracking the 2.5 kernel at cvs.parisc-linux.org
+and there are a few different ways to do it -- I'm looking for opinions.
+My favorite option at the moment is 1A.  SPEAK UP BY FRIDAY because I'll
+probably make CVS changes pretty soon after that.  I'll send a
+HOWTO to the mailing list after the CVS changes are made.
 
-Thanks Grant!
+The first decision:
 
+    1. Start a separate 'linux-2.5' in CVS just like 'linux' with both
+       an upstream branch and a development branch.  This is more manual
+       perhaps, but using 'diff' and 'patch' and having 2.4 and 2.5 trees
+       checked out all the time, it can accomplish the same things as #2.
 
--------- Original Message --------
-Subject: Re: [parisc-linux] 2.4.16-pa16 (from CVS) fails on "make
-depend"
-Date: Mon, 10 Dec 2001 22:38:01 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
-To: Chuck Slivkoff <charles_slivkoff@hp.com>
+    2. Add the 2.5 upstream and development branches to CVS 'linux'.
+       IMO this is the most functional and flexible -- allowing us to
+       use CVS to do the myriad of interesting 'diffs'.  CVS could also
+       be used to keep single versions of 2.4/2.5 pa-specific files where
+       no fork is required, but that will require some developers to acquire
+       additional CVS expertise so I'm not sure whether to recommend that.
+       2.4-only developers would not need to change their use model.  Not
+       that it's an issue, but #2 requires less CVS disk space.
 
-Chuck Slivkoff wrote:
-> I did a CVS update yesterday and tried to build a kernel today, using
-> the same .config from my last successful build (2.4.9-pa78).
+The second decision:
 
-Chuck,
-you went from 2.4.9 to 2.4.16...quite a jump.
+    Date-based CVS update on the trunk is broken (bugs filed -- no
+    action for a long time).  It works fine on non-trunk branches.
 
-> After a "make clean", "make depend" is failing with the error below.
-> I've done a "make menuconfig" and things seem to be OK.
-> 
-> Anyone have any suggestions?
+    A. We've lived with this defect so far, don't change anything.
+       If we choose this with #2 above, the only thing on the trunk
+       is 2.4 development -- 2.5 devel date-based checkout will
+       work fine.  However 2.4 devel date-based checkout will work
+       less often than it does now.
 
-The other fellow is right, you need to run any variant of make config
-(eg make oldconfig or menuconfig) in order to fix up CONFIG_XXX
-options which will match the new kernel. Maybe you did that
-and just forgot to mention it.
+    B. Move everything in CVS to non-trunk branches so we can use
+       date-based CVS update.  This would cause another little change
+       in how we use CVS.
 
-When I get paranoid, I save off the .config, make distclean, restore
-the .config, make oldconfig, and continue on with the rest of the
-usual steps.
-
-hth,
-grant
+    Option A is even more acceptable if we do either aggressive tagging
+    (for example, each -paXX release gets tagged) or keep a fairly
+    large set of the daily source tarballs.  IMO tagging is the "right"
+    answer, but it's pretty slow due to CVS limitation or perhaps
+    we could do a daily tagging from cron so nobody'd have to wait.
