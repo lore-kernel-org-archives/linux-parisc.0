@@ -1,25 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from imf12bis.bellsouth.net (mail112.mail.bellsouth.net [205.152.58.52])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E304B482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Aug 2001 23:46:59 -0600 (MDT)
-Received: from spyder ([65.80.40.71]) by imf12bis.bellsouth.net
-          (InterMail vM.5.01.01.01 201-252-104) with SMTP
-          id <20010807054754.EDUV6872.imf12bis.bellsouth.net@spyder>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Tue, 7 Aug 2001 01:47:54 -0400
-Message-ID: <014f01c11f04$77693b80$0364a8c0@mori.miami.fl.us>
-From: "Tony Mori" <tonym@compusource.net>
-To: <parisc-linux@lists.parisc-linux.org>
-References: <01080622381300.01641@octopus> <20010806231339.Z1011@linuxcare.com>
-Date: Tue, 7 Aug 2001 01:47:34 -0400
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BB71482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Aug 2001 23:56:36 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3B6F83EC.AEC76C85@esiee.fr>
+Date: Tue, 07 Aug 2001 08:00:12 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] J series question
+To: Tony Mori <tonym@compusource.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] J series question
+References: <01080622381300.01641@octopus> <20010806231339.Z1011@linuxcare.com> <014f01c11f04$77693b80$0364a8c0@mori.miami.fl.us>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Can J282 CPU be put into J200, or J210? Is there any corss-reference
-available for CPU boards and what machines they can fit into?
+Hi Tony,
 
-
-Tony
+According to
+http://hwdb.parisc-linux.org/view.php3?type=machine&name=J282 , the
+model is a 780 Firhawk with a PCXU cpu. As far as I know, it is onee of
+the model in 64 bits. And the J200/210 are 770 models with PCXT'. In my
+opinion, you should not do that but I may be mistaken.
+ 
+> Can J282 CPU be put into J200, or J210? Is there any corss-reference
+> available for CPU boards and what machines they can fit into?
+ 
+Thomas.
+ESIEE Team
