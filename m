@@ -1,43 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc171-bre9.cable.ntl.com [213.105.88.171])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 58E22482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 May 2001 04:44:19 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 23FC6B007; Thu, 10 May 2001 11:43:37 +0100 (BST)
-Date: Thu, 10 May 2001 11:43:37 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010510114337.D1840@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] nsgmls crash
+Received: from mail.xaire.com (unknown [200.47.131.113])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 33E9C482A
+	for <parisc-linux@parisc-linux.org>; Thu, 10 May 2001 06:58:28 -0600 (MDT)
+Received: from diana (agencia.cordoba.xaire.com [200.47.58.235])
+	by mail.xaire.com (Postfix) with SMTP id 516734231
+	for <parisc-linux@parisc-linux.org>; Thu, 10 May 2001 09:35:21 +0000 (GMT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charlie Navarro <charlie_navarro@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 10 May 2001 09:53:02 -0300
+MIME-Version: 1.0
+Message-Id: <01051009530200.01761@diana>
+Subject: [parisc-linux] Problems with debian instalation
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  Trying to build the boot-floppies, I get a repeatable crash here:
+Hello,
 
-slab:~# !!die_if_kernel: nsgmls(21734): Unaligned data reference 28
+first, I want to send a big congratulation to the people that works porting 
+Linux to my HP 712/60. If I said: it a good job!!!!, they are a small words. 
+The english does not my mother lenguaje.
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111
-r0-3     0000000000000000 0000000000035880 000000000001f717 00000000faf00740
-r4-7     0000000000033080 0000000000036342 0000000000036002 0000000000000004
-r8-11    00000000000362d2 00000000000adc10 00000000000af390 00000000000b01d0
-r12-15   0000000000000000 00000000ffffffff 00000000000a8ed0 0000000000000000
-r16-19   0000000000000000 0000000000000000 0000000000000000 000000000001f5d4
-r20-23   00000000402b0710 0000000040265970 000000000001f5d4 0000000000000000
-r24-27   0000000040265970 00000000402af588 0000000040265980 0000000000033080
-r28-31   0000000000000000 000000000003da00 00000000faf007c0 000000000001f717
-sr0-3    000000000027e100 000000000027e100 0000000000000000 000000000027e100
-sr4-7    000000000027e100 000000000027e100 000000000027e100 000000000027e100
+Ok, I have a question.
 
-IASQ: 000000000027e100 000000000027e100 IAOQ: 000000000001f6c7 000000000001f6cb
- IIR: 4835090e    ISR: 000000000027e100  IOR: 0000000000035d07
-ORIG_R28: 0000000000000001
+I installed my 712/60 from palinux-0.6-32STI.iso and all OK. I had some 
+poblems with the keyboard (some sequence of key in vi, in some case fell down 
+the system) btw my problem is the debian dependences.
 
-luckily all the useful bits have been built before this point.
-I wasn't getting this a couple of days ago, I'm keeping my system
-pretty much up to date with the debian archive, and don't know what
-upgrade introduced this problem.
+I made a "apt-get dselect-upgrade" with out problems, with the original 
+sources.list that it came in the iso.
+Now I have the dependences problems to install gcc. cpp depends of cpp-3.0 
+but it is not installable. xbase-clients depends of cpp.
 
-Richard
+Ok, I want to run X, but I can not. I want to compile X but I don't have the 
+gcc. I know the step to make a compiler, 
+http://mkhppa1.esiee.fr/en/compile.html is easy to follow. 
+Are another site to download the deb, and the correct dependences?
+
+Thank in advance
+
+Charlie
