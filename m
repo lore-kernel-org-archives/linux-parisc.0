@@ -1,16 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 24 Mar 2005 15:33:46 -0700
-Message-ID: <20050324223346.GE29361@colo.lackof.org>
-References: <20050324212317.GB29361@colo.lackof.org>
-	<200503242133.j2OLXl4R020985@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Thu, 24 Mar 2005 05:07:52 -0800
+Message-ID: <20050324130751.GK2485@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503242133.j2OLXl4R020985@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,61 +18,88 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Mar 24, 2005 at 04:33:46PM -0500, John David Anglin wrote:
-> > > 4.0 has a
-> > > new option, -mfixed_range=, that was introduced so that a small range
-> > > of fp registers could be used for the xmpyu multiplication insn.  It
-> > > might be useful to experiment with this option to see if it useful.
-> > 
-> > I don't know enough about ABI to understand the issues here.
-> > AFAIK, we currently are using FP registers because that's
-> > the way multiplication is implemented in the integer math libs
-> > we inherited.
-> 
-> No.  Currently in kernel builds, the use of FP registers is completely
-> disabled and integer multiplication is done using the millicode library.
+i've been looking at the extreme slowness of ext3 during some workloads.
+came across this bit of code... not that it will make any difference,
+but i wonder if we can make gcc a bit smarter?
 
-Erm...objdump disagrees:
-grundler <541>hppa64-linux-objdump -rD vmlinux | fgrep xmpy | wc
-   1654   11578   82683
+given this bit of C code:
 
-First occurance is here:
-000000001010bca0 <__muldi3>:
-    1010bca0:   37 de 00 80     ldo 40(sp),sp
-    1010bca4:   db 56 07 e0     extrd,s r26,31,32,r22
-    1010bca8:   73 d6 3f 91     std r22,-38(sp)
-    1010bcac:   53 d6 3f 93     fldd -38(sp),fr22
-    1010bcb0:   73 d9 3f 91     std r25,-38(sp)
-    1010bcb4:   53 d7 3f 93     fldd -38(sp),fr23
-    1010bcb8:   3a d7 57 96     xmpyu fr22R,fr23R,fr22
-    1010bcbc:   d3 53 1b f0     extrw,u r26,31,16,r19
-    1010bcc0:   73 d6 3f 93     fstd fr22,-38(sp)
-    1010bcc4:   53 d6 3f 91     ldd -38(sp),r22
-...
+static inline int test_bit(int nr, const void * addr)
+{
+	const unsigned char *ADDR = (const unsigned char *) addr;
+	return (ADDR[nr >> 3] >> (nr & 7)) & 1;
+}
 
-objdump output is on still on gsyprf11:/tmp/2.6.12-rc1-objdump
-In case you want to browse it more.
+int proc1(int nr, int foo)
+{
+	int ret;
+	char *buf1, *buf2;
 
-> However with a few FP regs, integer multiplication (32 bit) can be
-> done in hardware except of course on machines that don't have FP
-> hardware.  The downside is that the kernel has to save whatever
-> FP registers it uses.
+	if (test_bit(nr, buf1))
+		return 0;
 
-Yeah, I thought that was happening already.
-I'm hoping "save_fp         %r25" in arch/parisc/kernel/entry.S
-takes care of that.
+	if (foo)
+		ret = 1;
+	else
+		ret = !test_bit(nr, buf2);
+	return ret;
+}
 
-> The -mfixed_range= option "fixes" a range if registers.  GCC won't
-> use registers that are fixed.
+int proc2(int nr, int foo)
+{
+	char *buf1, *buf2;
 
-Yeah, it might make sense to "document" current usage
-and limit which FP regs the kernel can use. Ie we
-could reduce FP state that needs to be save when
-entering the kernel. Context switch would need to save
-the rest.
+	if (test_bit(nr, buf1))
+		return 0;
 
-thanks,
-grant
+	if (foo)
+		return 1;
+	else
+		return !test_bit(nr, buf2);
+}
+
+i would have expected gcc to produce the same code for proc1() and
+proc2() (and in fact it does for 32-bit), but for 64-bit, proc2() is 2
+insn shorter than proc1().  it seems like there are also some
+opportunities for further optimizations if gcc can recognize that the
+return value can only be 0 or 1, so the sign extension (?) extrd insn at
+the end is not needed, and we can deposit the result directly into ret0
+instead of r20. that should save us 2 insns.
+
+.globl proc2
+	.type	proc2, @function
+proc2:
+	.PROC
+	.CALLINFO FRAME=0,NO_CALLS
+	.ENTRY
+	extrd,s %r26,63,32,%r26
+	extrw,u %r26,31,3,%r19
+	extrd,s %r25,63,32,%r25
+	mtsarcm %r19
+	extrd,s %r26,60,61,%r26
+	ldb %r26(%r20),%r19
+	extrw,s %r19,%sar,32,%r19
+	bb,*< %r19,63,.L10
+	ldi 0,%r28
+	ldi 1,%r28
+	cmpb,*<> %r0,%r25,.L10
+	ldi 0,%r20
+	ldb %r26(%r21),%r19
+	extrw,s %r19,%sar,32,%r19
+	extrd,s,*< %r19,63,1,%r0
+	ldi 1,%r20
+	extrd,s %r20,63,32,%r28
+.L10:
+	bve,n (%r2)
+	.EXIT
+	.PROCEND
+
+is this worth looking into? :)
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
