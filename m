@@ -1,45 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA02647
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Jun 1999 12:09:50 -0600
-From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-Message-Id: <199906111810.LAA14342@chrome.rose.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA02843
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Jun 1999 12:49:33 -0600
+Date: Fri, 11 Jun 1999 11:49:30 -0700 (PDT)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199906111849.LAA29341@gatekeeper.equator.com>
+To: adevries@thepuffingroup.com
 Subject: Re: [parisc-linux] booting problems
-To: adevries@thepuffingroup.com (Alex deVries)
-Date: Fri, 11 Jun 1999 11:10:32 PDT
-Cc: dave@hiauly1.hia.nrc.ca, law@cygnus.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <37614530.35570847@thepuffingroup.com>; from "Alex deVries" at Jun 11, 99 1:19 pm
+Cc: parisc-linux@thepuffingroup.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-Here's the offending code segment:
 
-# adb Image-19990611-1
+> I think you're right.  I'm sure now that the byte order isn't a problem,
+> because my header and Jason's IPL work fine.
+>
+> > Jason's
+> > link options, "-R 0 -N", specified a text origin of 0 and data following
+> > the text.  I think the default for ELF is to place the text at 0x1000 and
+> > data at 0x40000000.  The gnu ld equivalent for "-R 0" would appear to
+> > be "-Ttext 0".  I am not sure there is a direct equivalent for "-N".
+> > Maybe, you could use "-Tdata" to set the data location.  Maps might be
+> > useful to sort out what is going on.  
+>
+> Definitely.  This should be the next step in sorting this out.
+>
 
-0x2000,10?i
-2000:           LDO             -4(r31),r31
-                LDIL            L%0x40008000,r1
-                BE              1792(sr4,r1)      ; 0x40008000 + 1792 = 0x40008700 
-                                                  ; this is the evil branch past
-                                                  ; the end of memory identified
-						  ; in the PIM dump
-                OR              r31,r0,r2
-                LDO             -4(r31),r31
-                LDIL            L%0x2000,r1
-                BE              228(sr4,r1)
-                OR              r31,r0,r2
-                LDO             -4(r31),r31
-                LDIL            L%0x2000,r1
-                BE              316(sr4,r1)
-                OR              r31,r0,r2
-                LDO             -4(r31),r31
-                LDIL            L%0x2000,r1
-                BE,N            1528(sr4,r1)
-                LDO             -4(r31),r31
-$q
-
-KMB
---
-+============================================================+
-|       Kirk Bresniker    	(916) 785-5677		     |
-|       8000 Foothills Blvd                                  |
-|       Roseville, CA 95747-5649                             |
-|       kirkb@rose.hp.com                                    |
+  The bootstrap definately will not work with default data at 0x40000000.
+  The HPMC that is occurring is undoubtedly because the data section is there.
