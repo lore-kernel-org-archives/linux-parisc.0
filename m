@@ -1,41 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.xs4all.nl (smtp1.xs4all.nl [194.109.127.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 45506482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Sep 2001 13:14:44 -0600 (MDT)
-Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtp1.xs4all.nl (8.9.3/8.9.3) with ESMTP id VAA16008
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Sep 2001 21:14:42 +0200 (CEST)
-From: thunder7@xs4all.nl
-Date: Thu, 6 Sep 2001 21:14:09 +0200
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] cvs update gives 'move away ....' on every file
-Message-ID: <20010906211409.A26423@middle.of.nowhere>
-Reply-To: thunder7@xs4all.nl
-References: <20010906073538.A12771@middle.of.nowhere> <200109060608.AAA09806@puffin.external.hp.com> <20010906135327.C316@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010906135327.C316@parcelfarce.linux.theplanet.co.uk>
+Received: from ex1.ncsa.uiuc.edu (ex1.ncsa.uiuc.edu [141.142.2.9])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A381482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Sep 2001 13:44:17 -0600 (MDT)
+Date: Thu, 6 Sep 2001 14:44:14 -0500 (CDT)
+From: Galen Arnold <arnoldg@ncsa.uiuc.edu>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Mike Pflugmacher <mikep@ncsa.uiuc.edu>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] smp kernel hangs during boot on L2000...
+In-Reply-To: <20010906201033.H316@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.33.0109061441100.530-100000@osage.ncsa.uiuc.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Sep 06, 2001 at 01:53:27PM +0100, Matthew Wilcox wrote:
-> > One needs to:
-> > 1) echo $CVSROOT > ~/Root
-> > 2) find linux -name Root -exec cp ~/Root \{\} \;
-> > 
-> > (CVSROOT is the ":pserver:..." value posted several times earlier.)
-> 
-> easier is: for i in `find linux -name Root`; do echo $CVSROOT > $i; done
-> 
-> you're not using the most uptodate cvsrc... i fubar the last line, needs to be
-> `remove', not `rm'.
-> 
-Thanks everyone, now it works. Is there interest in a short (20 lines)
-document describing the steps, starting with the download of
-linux-latest.tar.gz - 'how to get cvs running without stress' ?
+Matthew,
 
-Thanks,
-Jurriaan
+Thanks for the tip.  My L2000 box is hanging here with the smp 64bit
+kernel I've built:
+
+CPU(s): 2 x PA8600 (PCX-W+) at 540.000000 MHz
+Kernel command line: root=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102
+Console: colour dummy device 160x64
+Initialized PDC Console for debu
+                                ^^^^^hangs right there...
+
+-Galen
+
 -- 
-Now I will kill you until you die from it.
-	Hot Shots II
-GNU/Linux 2.4.9-ac7 SMP/ReiserFS 2x1402 bogomips load av: 0.00 0.00 0.12
++
+Galen Arnold, system engineer--systems group       arnoldg@ncsa.uiuc.edu
+National Center for Supercomputing Applications           (217) 244-3473
+152 Computer Applications Bldg., 605 E. Spfld. Ave., Champaign, IL 61820
