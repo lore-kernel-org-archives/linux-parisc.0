@@ -1,25 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ccure.karaya.com (mnh-1-16.mv.com [207.22.10.48])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD8A7482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 11:47:37 -0600 (MDT)
-Message-Id: <200104201900.OAA03252@ccure.karaya.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: Bob McElrath <rsmcelrath@students.wisc.edu>
-Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is
- anyone paying attention?
-In-Reply-To: Your message of "Fri, 20 Apr 2001 17:21:26 +0100."
-             <20010420172126.C18464@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD6FE482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 12:10:53 -0600 (MDT)
+Sender: Jes.Sorensen@cern.ch
+To: Andreas Thienemann <andreas@thienemann.net>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Problems with glibc
+References: <Pine.LNX.4.10.10104201906260.21140-100000@gate.ixs.com>
+From: Jes Sorensen <jes@linuxcare.com>
+Date: 20 Apr 2001 20:10:50 +0200
+In-Reply-To: Andreas Thienemann's message of "Fri, 20 Apr 2001 19:10:43 +0200 (CEST)"
+Message-ID: <d3itjzfnmd.fsf@lxplus015.cern.ch>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Apr 2001 14:00:00 -0500
-From: Jeff Dike <jdike@karaya.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
-matthew@wil.cx said:
-> http://www.kernel.org/ has a list of architecture websites.  Also the
-> CREDITS / MAINTAINERS files tend to list the people who are involved. 
+>>>>> "Andreas" == Andreas Thienemann <andreas@thienemann.net> writes:
 
-Except it's restricted to processor ports, which would leave you not knowing 
-about UML.
+Andreas> Has anyone ever experienced a similar problem? This segfault
+Andreas> is reproducable and it's the first time that happened. gcc
+Andreas> did compile correct, the same with the kernel itself.
+Andreas> Therefore I'd guess that glibc is at fault here.  This
+Andreas> happened while building the glibc on the hppa box (with the
+Andreas> baseplus-20010404 nfsroot).  Building the cross-compiler
+Andreas> toolchain which does include building glibc was successful
+Andreas> though.
 
-				Jeff
+You don't see it when cross compiling because this is only run when
+building natively. The sunrpc stuff is the first place where the newly
+generated dynamic linker is exercised, your cross compiled binaries
+are unlike to work either. The can be either a glibc (most likely
+ld.so) or due to a change in syscall or compiler ABI behavior.
+
+Jes
