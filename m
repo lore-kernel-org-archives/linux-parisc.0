@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 472AF482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Nov 2001 12:54:31 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D0B8482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Nov 2001 13:01:04 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 164Sad-0007Yg-00; Thu, 15 Nov 2001 19:54:23 +0000
-Date: Thu, 15 Nov 2001 19:54:23 +0000
+	id 164Sh4-0007fI-00; Thu, 15 Nov 2001 20:01:02 +0000
+Date: Thu, 15 Nov 2001 20:01:02 +0000
 From: Matthew Wilcox <willy@debian.org>
-To: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
+To: Ryan Bradetich <rbradetich@uswest.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] {OT} HP 9000/700 Snake
-Message-ID: <20011115195423.C25491@parcelfarce.linux.theplanet.co.uk>
-References: <20011114182457.C1525@daedalus.cs.brandeis.edu> <20011115074423.A21827@dogbert.localdomain> <a05100314b819b1b0ea98@[129.64.46.46]>
+Subject: Re: [parisc-linux] 64bit kernels boot on C200 (finally) :)
+Message-ID: <20011115200102.E25491@parcelfarce.linux.theplanet.co.uk>
+References: <20011115123203.A2337@beavis.ybsoft.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <a05100314b819b1b0ea98@[129.64.46.46]>; from aaronm@cs.brandeis.edu.ml.to on Thu, Nov 15, 2001 at 12:55:14PM -0500
+In-Reply-To: <20011115123203.A2337@beavis.ybsoft.com>; from rbradetich@uswest.net on Thu, Nov 15, 2001 at 12:32:03PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +25,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Nov 15, 2001 at 12:55:14PM -0500, Aaron Macks wrote:
-> It's been identified(tentatively) as some flavor of 750.  How's the 
-> support for these beasts?
+On Thu, Nov 15, 2001 at 12:32:03PM -0700, Ryan Bradetich wrote:
+> It is not perfect yet, still have a couple of bugs to work
+> out and fix:
+> 	1. sys32_ioctl: Unknown cmd fd(3) cmd(00004b50) arg(faf00788)
+> 	2. the ncr720 driver seemed to hang when I had a disk
+> 	   attached behind the bluefish card.
+> 
+> but here it is:
+> 
+> demo@vega:~$ uname -a
+> Linux vega 2.4.14-pa1 #2 Thu Nov 15 12:08:07 MST 2001 parisc64 unknown
 
-i booted a 750 a few weeks ago.  seemed to work fine.  750/755 is a tall case
-with a wide base like so:
- _
-| |
-| |_
-|   |
-|___|
+i'm surprised the network works given the number of warnings when compiling
+lasi_82596.c with a 64-bit compiler.
 
-haven't actually tried a 755, but there's no reason it wouldn't work.
+btw, does a 64-bit kernel with the 32-bit wrapper options enabled boot
+on a PAT PDC box like A500?
 
 -- 
 Revolutions do not require corporate support.
