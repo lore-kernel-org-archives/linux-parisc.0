@@ -1,18 +1,23 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E07384911
+Return-Path: <rollei@tiscalinet.it>
+Received: from smtp0.libero.it (smtp0.libero.it [193.70.192.33])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EBFB491F
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 09:53:49 -0700 (MST)
-Message-Id: <200402221653.i1MGrkS8014490@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb: followup
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Sun, 22 Feb 2004 11:53:46 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <20040222060002.GI25019@baldric.uwo.ca> from "Carlos O'Donell" at
-	Feb 22, 2004 01:00:02 am
+	Sun, 22 Feb 2004 10:08:34 -0700 (MST)
+Received: from tiscalinet.it (151.41.157.136) by smtp0.libero.it
+	(7.0.020-DD01) (authenticated as zuse@libero.it)
+	id 401D53C7009154A5 for parisc-linux@lists.parisc-linux.org;
+	Sun, 22 Feb 2004 18:08:33 +0100
+Sender: multix@dsl2.external.hp.com
+Message-ID: <4038E400.427F0528@tiscalinet.it>
+Date: Sun, 22 Feb 2004 18:16:48 +0100
+From: Riccardo <rollei@tiscalinet.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
+References: <20040218235225.GA1623@calypso>	<20040219062907.GC13916@colo.lackof.org>	<20040221075849.GA1642@calypso>
+	<20040221170508.GB14198@baldric.uwo.ca>
+	<4038C0B0.F7D1708A@tiscalinet.it> <4038CB15.5060507@tiscali.be>
+Content-Type: text/plain; charset=us-ascii
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,16 +27,37 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> c. Write a 'Changelog' entry for the changes, and describe why you are
->    making these changes (e.g. compiling with gcc-3.5). These entries
->    have a very special format, look closely, and follow the GNU coding
->    convetions.
+pre-scriptum: I am sending this to the list because when trying to send
+an email directly to Joel I get his MTA answering I have invalid headers
+(tried two times)
+Joel Soete wrote:
 
-I'm not sure about glibc but in gcc ChangeLog entries only include
-a concise list of changes for each function/macro changed.  The "why"
-goes in your patch submission letter.
+> > I would set the tag queue as default to 8 and not to 16, to stay on the
+> > safe side. Couldn't it be made configurable from the kernel
+> > configuration menu?
+> >
+> Good idea.
+It is not me that can make changes there, but it seems to me that 8 is
+reasonable. Also, a kernel config option would make this parameter
+obvious to everybody. I had only a small preformance decrease from 16 to
+8 tags (well, disk IO sucks anyway under linux-pa and my old box). While
+2 is pure sufference :)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> And you are sure that scsi id are well different and scsi chain well terminated, I supose.
+Yes, the internal chain is terminated with the original HP terminator
+and I removed the disk internal ones.
+In fact substituing the original HP disk with another one removed the
+problem (strangely enough, with the older IBM drive as a second drive I
+had sometimes freezes but this problem did not appear).
+
+
+> hmm, I leaved the same experience but with two external disks of exactly the same type (same supplier: hp, same manufactor:
+> seagate, same product reference) but with a small firmware revision difference. Unfortunately, this pb only occured under linux
+> :(. Now the disk is broken again; so no chance to test it with more recent kernel 2.4 or 2.6 :(
+
+I used a failry recent kernel for there test, I believe 2.4.23.
+
+The scsi code doesn't seem to be so stable and performing as compared to
+hp-ux....
+
+-Ric
