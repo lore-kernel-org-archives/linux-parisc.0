@@ -1,17 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: 2.6.10-rc1-pa17 more BUS_IS_PHYS fixes
-Date: Sun, 21 Nov 2004 14:32:50 -0700
-Message-ID: <20041121213250.GB1477@colo.lackof.org>
-References: <20041120234853.5544149406D@palinux.hppa>
-	<20041121001718.GG11503@colo.lackof.org>
-	<41A0C6C3.7090103@tiscali.be>
+From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+Subject: [parisc-linux] what null modem cable to use for B2600?
+Date: Wed, 24 Nov 2004 15:18:42 +0100
+Message-ID: <s1a4a671.027@MAIL.ZRT.NL>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=US-ASCII
+To: <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41A0C6C3.7090103@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,30 +17,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Nov 21, 2004 at 04:48:03PM +0000, Joel Soete wrote:
-> >I expect one more patch for ccio driver if/when someone is willing
-> >to figure out one small problem. ccio_dma_supported() *only* supports
-> >32-bit devices. CCIO should be able to support any device which supports
-> >more bits than are needed to cover IO virtual address space. It should be
-> >a fairly small project to compute/locate the IOVA space size and
-> >then coding that up for ccio_dma_supported(). I'm happy to review
-> >patches and printk output if someone does this.
->
-> Sorry, I don't see yet how using structure device to determine the IOVA 
-> space size of a dev :(
-> and not yet where can I find a list of those dev. May be have you an idea 
-> to guide me?
+I've recently acquired a B2600 in a garage-sale. The seller was selling
+lots of stuff acquired from a company gone broke, and clearly didn't 
+know what he had ('But what can you do with this thing?').
 
-The ccio driver just guesses at a "reasonable" size for total IOVA
-space. Ideally it would have something to do with which type of
-devices were below it. But this is not the problem I talking about though.
+It seems in good order, according to the little lcd-screen on the
+front
+it boots fine, eventually showing a hearbeat.
+This screen also informs me the console is SER_1, which I take it is
+the
+first serial port. A monitor gets a sync signal (about 80 KHz) but no
+display. I have no usb keyboard here, so I can't test that.
 
-The problem I describe above is what happens *after* the CCIO driver
-has decided the size of the IOVA space. ccio_dma_support just need to
-know what the IOVA size is so if a device that supports more or less than
-32-bits gets the right answer back. Right now, it's hard coded to 32-bits.
+I know how a serial console should work (plug in the cable, start
+minicom
+with 9600 8N1 settings, and off you go). Unfortunately, this doesn't
+work,
+possibly due to my ill luck with rs232 cables. I've got a long history
+if not working rs232 cables.
 
-grant
+If I look at
+http://www.lammertbies.nl/comm/info/nl_RS-232_null_modem.html
+(in Dutch, unfortunately for you) I see different types of null-modem
+cables.
+
+- no handshaking, 3 wires
+- loopback handshaking, 3 wires
+- partial handshaking, 7 wires
+- full handshaking, 7 wires
+
+What cable would be advisable? I'm really looking forward to getting
+linux
+running on this thing - it's a lot more acceptable noise-wise than the
+old
+C200 I used to have, even if it has 4 fans on the front, one on the cpu
+and
+one in the powersupply.
+
+Thanks,
+Jurriaan
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
