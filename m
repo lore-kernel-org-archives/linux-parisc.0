@@ -1,37 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 169BB482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 02:01:58 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id E7727B00C; Mon,  9 Jul 2001 09:00:53 +0100 (BST)
-Date: Mon, 9 Jul 2001 09:00:53 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Gururaj Ananthateerta <gururaj@cup.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installation on B180L workstation.
-Message-ID: <20010709090053.D23509@linuxcare.com>
-References: <3B46452A.D15E2F4C@cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3B46452A.D15E2F4C@cup.hp.com>; from gururaj@cup.hp.com on Fri, Jul 06, 2001 at 04:09:30PM -0700
+Received: from mail.ireste.fr (mail.ireste.fr [193.52.81.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BFEA9482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 08:02:58 -0600 (MDT)
+Received: from flambe.ireste.fr (flambe [193.52.81.109])
+          by mail.ireste.fr (8.9.1a/jtpda-5.3.1) with SMTP id QAA02062
+          for <parisc-linux@lists.parisc-linux.org>; Mon, 9 Jul 2001 16:05:05 +0200 (MET DST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 9 Jul 2001 16:09:02 +0200
+MIME-Version: 1.0
+Message-Id: <01070916084706.01035@flambe.ireste.fr>
+Subject: [parisc-linux] sti console problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jul 06, 2001 at 04:09:30PM -0700, Gururaj Ananthateerta wrote:
-> I am trying to install on B180L.  I have an external CD ROM.
->  Does installation supports this configuration. ? If not
-> how can i install?
+i got a 735 appollo series ,with 0.9 iso installed 
+i've installed sti kernel all work execpt that i get an 'unable to open 
+initial console " all right seems to be good
+don't undestand why it failed ,
+need help !!!
+-- 
+_______________________________________
 
-Should work, so far as I know.  Please can you give more information:
-
-What CD are you trying to install from? 0.9 ISO? 0.9.1 ISO?
-(0.9.1 ISO has some problems, I hope a fixed one will be posted
-soon).
-
-Serial console or graphical console?
-
-Does the system find the CDROM when you do a SEArch?
-
-What happens when you try the install, exactly?
-
-
-Richard
+                      Matthieu Le Corre 
+                    Service informatique
+ Ecole Polytechnique de l'Université de Nantes
+     Matthieu.Lecorre@polytech.univ-nantes.fr
+                        02.40.68.32.23
+_______________________________________
