@@ -1,19 +1,16 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5132D4855
+Return-Path: <Achim.Stolze@t-online.de>
+Received: from mailout08.sul.t-online.com (mailout08.sul.t-online.com
+	[194.25.134.20])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8555E4840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 23 Feb 2004 03:34:34 -0700 (MST)
-Date: Mon, 23 Feb 2004 04:24:58 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] [PATCH] include/linux/soundcard.h endian fix
-Message-ID: <20040223122458.GA6675@tausq.org>
-References: <20040222070150.GA773@calypso>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040222070150.GA773@calypso>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+	Mon, 23 Feb 2004 11:20:08 -0700 (MST)
+Message-ID: <403A444A.4010805@t-online.de>
+Date: Mon, 23 Feb 2004 19:19:54 +0100
+From: Achim.Stolze@t-online.de (Achim Stolze)
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Installation of new KDE 3.2
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,26 +20,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Would it be better to do the following? :
-> 
-> #ifdef(__BYTE_ORDER)
-> #  if defined(__BIG_ENDIAN)
-> #    if __BYTE_ORDER == __BIG_ENDIAN
-> #      define AFMT_S16_NE AFMT_S16_BE
-> #    endif
-> #  elif defined(__LITTLE_ENDIAN)
-> #    if __BYTE_ORDER == __LITTLE_ENDIAN
-> #      define AFMT_S16_NE AFMT_S16_LE
-> #    endif
-> #  end if
-> #endif
+Hello,
 
-yes, this is much better. If you include asm/byteorder.h then this
-should always be defined. maybe add a #error to catch the (unlikely)
-case where neither is defined?
+I have HPPA-Debian running on C180. The KDE which came with the ISOs I 
+installed is version 2.2. Now I downloaded the sources for the new KDE 3.2.
+The problem is that I don't know how to install all these individual 
+files ...
+Can somebody please help me ?
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thank you,
+
+Achim.
+
+Achim Stolze
+Beim Lammkeller 10
+D-88339 Bad Waldsee
+
+Achim.Stolze@t-online.de
