@@ -1,41 +1,80 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA26732
-	for <parisc-linux@puffin.external.hp.com>; Wed, 10 May 2000 14:27:49 -0600
-Received: from dyn181-ras4.screaming.net (HELO rhirst.linuxcare.com) (postfix@212.49.227.181)
-  by mailserv2.iuinc.com with SMTP; 10 May 2000 14:20:34 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id C45DEB006; Wed, 10 May 2000 15:20:10 +0100 (BST)
-Date: Wed, 10 May 2000 15:20:10 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000510152010.R1090@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] New driver for NCR 53c700 SCSI chips
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA29118
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 May 2000 20:03:20 -0600
+Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
+	by atlrel1.hp.com (Postfix) with ESMTP id C5285E44E
+	for <parisc-linux@thepuffingroup.com>; Wed, 10 May 2000 16:03:23 -0400 (EDT)
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] crti.S Nested procedures error 
+In-reply-to: Your message of "Mon, 01 May 2000 11:41:00 PDT."
+             <200005011841.LAA11187@milano.cup.hp.com>
+Date: Wed, 10 May 2000 14:03:17 -0600
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E12pchR-0005Kc-00@endor.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  I have added a driver for the 53c700.  It is only lightly tested on my 715/75,
-but does detect a disk and a tape, and can mount a root file system and load the
-standalone shell from it.  The changs are all in cvs.
+= "make" died with the following error:
+= 
+= /linux/grundler/glibc/hppa1.1-linux/csu/crti.S: Assembler messages:
+= /linux/grundler/glibc/hppa1.1-linux/csu/crti.S:42: Fatal error: Nested proced
+ures
+= 
+= Sure enough, two .PROC's have no .PROCEND in between.
 
-I recommend disconnecting any disks with valuable data on them before trying it.
+I think I've figured this out, and it'll take a glibc expert to do
+the *right* thing vis-a-vis the complex glibc structure.
 
-For those that don't know me, I have a lot of experience with the 53c710 on m68k
-VME boards and Compaq machines.  I created 53c7xx.c from 53c7,8xx.c and also wrote
-sim710.c.
+Let's ignore the .fini section and just deal with .init.  This is the
+section where code which needs to execute prior to main() is placed.  It
+is in effect a normal assembly-language procedure whose contents are
+created at link-time.  The procedure looks like this (somewhat simplified):
 
-The new driver is sim700.c and my intention is to make it support 53c710 also, so
-sim710.c can be removed.
+    .globl _init
+	    .EXPORT _init,ENTRY
+	    .type    _init,@function
+    _init:
+	    .PROC
+	    .CALLINFO FRAME=64,CALLS,SAVE_RP,ENTRY_GR=3
+	    .ENTRY
+	    a few assembly statements
 
-At present selecting CONFIG_SCSI_LASI builds in sim700.c, sim710.c, and 53c7xx.c.
-I think we should concentrate on sim700.c and forget about 53c7xx.c.  53c7xx.c is
-more powerful, but is limited to 53c710 chips and makes demands on the hardware
-that not all systems support.  I don't know how practical it is to make 53c7xx.c
-work on a range of HP machines, and favour adding extra functionality to sim700.c
-as we need it.
+	    /***** pre-main() code to be inserted here *******/
 
-Please give this a try and report back,
+	    a few more assembly statements
+	    .EXIT
+	    .PROCEND
 
-Thanks,
-  Richard
+glibc wants to place the first part (up to the comment) into crti.S, and
+the second part into crtn.S, then at link time something like this happens:
+
+	ld -o a.out crti.o users's-object-files crtn.o
+
+Inside the user's object files, if they need something called before main(),
+like a C++ static constructor, you might find code like this:
+
+	.section .init
+	bl,n my-static-constructor,%r2
+
+Thus the _init procedure is created is link time, but that's not the problem.
+
+The problem is that the neither the first scrap of code nor the second
+will assemble, because there's a .PROC without .PROCEND and .ENTRY
+without .EXIT.  .ENTRY and .EXIT both produce code, .ENTRY depends on
+.CALLINFO which depends a tad upon .PROC.
+
+If we hand-code the .ENTRY and .EXIT sequences, we can nuke all the
+troublesome assembler directives and fix this... simple!...
+
+except for the way this code got generated in the first place.
+It's generated in glibc/csu by 'gcc -S initfini.c' and then
+hacking the generated assembly, which contains the .PROC,.ENTRY,etc...
+
+So one thing we could do is hack gcc to produce its own entry/exit
+assembly code generation.  Another thing we could do is make the
+assembler very forgiving.  Perhaps the best thing we could do is find a way
+to insert PA-specific handwritten assembly for these two files
+into the glibc build.  I can't figure out how to do this without
+making glibc specific only to PA.  Help!
+
+	-Paul Bame
