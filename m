@@ -1,17 +1,22 @@
 Return-Path: <grundler@lackof.org>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A78B0497B
+	by dsl2.external.hp.com (Postfix) with ESMTP id D71464B81
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 15 Apr 2004 17:33:37 -0600 (MDT)
-Date: Thu, 15 Apr 2004 17:33:36 -0600
+	Thu, 15 Apr 2004 17:35:16 -0600 (MDT)
+Date: Thu, 15 Apr 2004 17:35:15 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Jens_Konrad/Linotype/DE@linotype.com
-Subject: Re: [parisc-linux] Problem with SCSI in K-Class
-Message-ID: <20040415233336.GA12667@colo.lackof.org>
-References: <OF18825705.F1E7C8A9-ONC1256E77.0068D1BD-C1256E77.0068D3C8@fonts.de>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] B1000/C3000
+Message-ID: <20040415233515.GB12667@colo.lackof.org>
+References: <200404142051.i3EKpfQX018442@hiauly1.hia.nrc.ca>
+	<Pine.LNX.4.58.0404142155100.8626@sal.ucc.ie>
+	<20040414232833.GQ31873@tausq.org>
+	<Pine.LNX.4.58.0404150125020.28713@sal.ucc.ie>
+	<20040415154811.GA3514@colo.lackof.org>
+	<Pine.LNX.4.58.0404152036190.30237@sal.ucc.ie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OF18825705.F1E7C8A9-ONC1256E77.0068D1BD-C1256E77.0068D3C8@fonts.de>
+In-Reply-To: <Pine.LNX.4.58.0404152036190.30237@sal.ucc.ie>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,14 +27,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, Apr 15, 2004 at 09:04:59PM +0200, Jens_Konrad/Linotype/DE@linotype.com wrote:
-> Now I took away the streamer and replaced it with a 50GB SCSI...
-...
-> My guess is that the low voltage scsi-controller cannot handle the
-> size of the HD - could that be??
+On Thu, Apr 15, 2004 at 08:42:56PM +0100, M. Grabert wrote:
+> > Please submit patches against graphics-howto.x for further
+> > modifications.
+^^^^^^^^^^^^^^^^^^
 
-No. I'm using 73GB drives on my C3000 w/no problem.
-Something else is wrong related to the driver stack.
-Ryan already asked the obvious question: which kernel version?
+> No problem with (a), and (b) also looks fine,
 
+ok
+
+> 1. "Linux framebuffer driver" and "XFree86/X.org driver" should better be
+>    subtopics to "Which non-HP PCI graphic card with PA-RISC Linux" (sic),
+>    or perhaps even subtopics "You have to initialize a non-HP graphics ...."
+> 
+> 2. It should be "Which non-HP PCI graphic cards *work* with PA-RISC Linux"
+
+Patches would be alot easier...
+
+thanks,
 grant
