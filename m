@@ -1,62 +1,53 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA13369
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Feb 2000 13:19:26 -0700
-Sender: frowand@hermes.mvista.com
-Message-ID: <38A9A5E2.41215D5C@mvista.com>
-Date: Tue, 15 Feb 2000 11:15:46 -0800
-From: Frank Rowand <frank_rowand@mvista.com>
-Reply-To: frowand@mvista.com
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA16255
+	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Feb 2000 20:32:42 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id BD91374F
+	for <parisc-linux@thepuffingroup.com>; Tue, 15 Feb 2000 18:33:18 -0800 (PST)
+Message-Id: <200002160234.SAA06672@milano.cup.hp.com>
 To: Philipp Rumpf <prumpf@inwestnet.de>
-CC: Grant Grundler <grundler@cup.hp.com>, John Marvin <jsm@udlkern.fc.hp.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Linux syscall ABI
-References: <200002150536.WAA04580@udlkern.fc.hp.com> <200002151725.JAA05629@milano.cup.hp.com> <20000215191858.P765@abacus.local>
-Content-Type: text/plain; charset=us-ascii
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Linux syscall ABI 
+In-reply-to: Your message of "Tue, 15 Feb 2000 19:18:58 PST."
+             <20000215191858.P765@abacus.local>
+Date: Tue, 15 Feb 2000 18:34:14 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
 Philipp Rumpf wrote:
-> 
-> > Drivers don't map anything. The assumption for GSC/PCI drivers is the
-> > address given will work with readl/writel (or inb/outb) routines.
-> 
-> PCI drivers call ioremap(), which is free to do the mapping (but I don't
-> think it should, for PA-RISC).
-> 
-> > For GSC, the HPA is in the struct hp_device->hpa field and readl/writel
-> > are aliases for gsc_readl/gsc_writel.
-> 
-> which itself will be aliased to simple volatile accesses soon.
-> 
-> > gsc_readl/writel take a physical address as the address parameter.
-> > I would like to get away from gsc_read for one simple reason: HPMC.
-> > If a driver incorrectly accesses something which isn't supposed to
-> > we get either an HPMC or undefined behavior. Most likely the HPMC.
-> > If the read/write routines referenced a virtual address, we have
-> > much better chances of getting a data page fault and some decent
-> > debugging information to track down the problem.
-> 
-> HPMC is good debugging information - you've got PIM.  Of course, we want
+...
+> HPMC is good debugging information - you've got PIM.
+
+IMO, Frank didn't say this clearly:
+	PIM is not "good debugging information".
+
+Given the complexity of the systems, knowing *some* (not all)
+of the HW state is marginally useful at best. When we get
+into debugging driver problems later on, this will be clearer.
+
+Besides the asynchronous nature of HPMCs, PIMs are unique to each
+class of box. So decoding a PIM on a K-class is quite different
+from the PIM on N or L-class. Only recently have tools been made
+internally available to help decode each type of PIM. I wouldn't
+hold my breath waiting for those to get published.
+
+
+> Of course, we want
 > an HPMC handler too, at some point.  The assembly part just tries to
 > find out if the machine is still usable, and resets it if it's not.
 > If it is, we'd like it to be treated as normal interruption, and then
 > have a CPU-specific fault handler that reads the interesting registers
 > and prints a nice message.
-> 
->         Philipp Rumpf
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
 
-An HPMC may be delayed, relative to the instruction that caused it.  The worst
-case is that a context switch _could_ occur before the HPMC occurs (and yes,
-we did see this problem with our HP-UX and HP-RT VME systems when a VME
-time-out was long enough).  This can make it more difficult to figure out what
-instruction was issued to cause the HPMC. The advantage of the page fault is
-that you know exactly what instruction caused the fault.
+If linux could learn to dump host memory to disk, then HPMC's would
+a bit easier to debug since one could review data structures for suspect
+code. I think that's what the HPMC handler is intended for - not
+attempt to recover. Attempting to recover from an asyncronous fault
+doesn't sound feasible to me. But what do I know anyway....
 
--Frank
--- 
-MontaVista Software, Inc
-frank_rowand@mvista.com
+later,
+grant
+
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
