@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 345004829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 09:56:11 -0600 (MDT)
-Date: Wed, 25 Sep 2002 17:56:08 +0200
-Message-ID: <3D8F011400000BEB@ocpmta2.be.tiscali.com>
-From: jsoe0708@tiscali.be
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Subject: [parisc-linux] Failure when compile 2.4.19-pa20
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D3E7E4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 10:02:27 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17uEcL-0003y1-00; Wed, 25 Sep 2002 17:02:25 +0100
+Date: Wed, 25 Sep 2002 17:02:25 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: jsoe0708@tiscali.be
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Failure when compile 2.4.19-pa20
+Message-ID: <20020925170225.D25721@parcelfarce.linux.theplanet.co.uk>
+References: <3D8F011400000BEB@ocpmta2.be.tiscali.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D8F011400000BEB@ocpmta2.be.tiscali.com>; from jsoe0708@tiscali.be on Wed, Sep 25, 2002 at 05:56:08PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,41 +25,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Wed, Sep 25, 2002 at 05:56:08PM +0200, jsoe0708@tiscali.be wrote:
+> I got USB part of .config from debian-configs/32 (I work on a b180) and try
+> to compile 2.4.19-pa20 but it failled:
 
-I got USB part of .config from debian-configs/32 (I work on a b180) and try
-to compile 2.4.19-pa20 but it failled:
+i'd guess you didn't select CONFIG_INPUT
 
-`gcc -print-libgcc-file-name` /usr/src/linux-2.4.19/arch/parisc/lib/lib.a
-/usr/src/linux-2.4.19/lib/lib.a  \
-        --end-group \
-        -o vmlinux
-drivers/usb/usbdrv.o: In function `hidinput_hid_event':
-drivers/usb/usbdrv.o(.text.hidinput_hid_event+0x80): undefined reference
-to `input_event'
-drivers/usb/usbdrv.o(.text.hidinput_hid_event+0xb0): undefined reference
-to `input_event'
-drivers/usb/usbdrv.o: In function `.L951':
-drivers/usb/usbdrv.o(.text.hidinput_hid_event+0xfc): undefined reference
-to `input_event'
-drivers/usb/usbdrv.o: In function `.L939':
-drivers/usb/usbdrv.o(.text.hidinput_hid_event+0x13c): undefined reference
-to `input_event'
-drivers/usb/usbdrv.o: In function `.L959':
-drivers/usb/usbdrv.o(.text.hidinput_hid_event+0x174): undefined reference
-to `input_event'
-drivers/usb/usbdrv.o(.text.hidinput_hid_event+0x1ac): more undefined references
-to `input_event' follow
-drivers/usb/usbdrv.o: In function `hidinput_connect':
-drivers/usb/usbdrv.o(.text.hidinput_connect+0x16c): undefined reference to
-`input_register_device'
-drivers/usb/usbdrv.o: In function `hidinput_disconnect':
-drivers/usb/usbdrv.o(.text.hidinput_disconnect+0x10): undefined reference
-to `input_unregister_device'
-make: *** [vmlinux] Error 1
-
-Well, I do not need USB for this HW so I will remove for next try.
-
-HTH,
-
-Joel
+-- 
+Revolutions do not require corporate support.
