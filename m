@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiscom.nl (unknown [130.78.143.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5DB6F482D
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 08:29:41 -0600 (MDT)
-Message-Id: <03Aug1.164945cest.119089@ns.hiscom.nl>
-From: "Beerse, Corne" <c.beerse@torex-hiscom.nl>
-To: "'maillist parisc-linux'" <parisc-linux@parisc-linux.org>,
-	"'maillist HP-UX-admin'" <hpux-admin@DutchWorks.nl>
-Date: Fri, 1 Aug 2003 16:29:35 +0200 
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C35839.54B564E0"
-Subject: [parisc-linux] testing HP-PA risc hardware
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E8734482D
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 08:39:19 -0600 (MDT)
+Date: Fri, 1 Aug 2003 16:39:18 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] testing HP-PA risc hardware
+Message-ID: <20030801143918.GI1873@lug-owl.de>
+References: <03Aug1.164945cest.119089@ns.hiscom.nl>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LmUak3kE33t3Bnfm"
+In-Reply-To: <03Aug1.164945cest.119089@ns.hiscom.nl>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,97 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C35839.54B564E0
-Content-Type: text/plain
-
-Hi,
-
-Here I have an HP D370 machine that (during my holidays) crashed. Since the
-machine was replaced since long and only kept running for fast access to old
-stuff, not a real problem.
-
-At first, we suspected the boot disk since its led keeps buring. However,
-booting HP-UX from CDRom for a new fresh install, the boot of the kernel
-crashes at roughly the same point, even with all disks removed. Hence we
-suspected the core memory. However, changing or replacing the memory does
-not change anything in the behavoure.
-
-Is there a way to somehow test the hardware of a PA-Risc machine? Either
-from HP or from the linux world?
-
-Kind of like the test tools as found on the (intel-) linux distributions?
-
-btw: I can get debian-woody booted up to the message that if this is the
-last message on screen, check the faq. A second terminal (HP 700/96) on tty1
-shows a lot of (vt100?) junk. How can I either put the HP700/96 terminal in
-VT100 mode or whats the magic name of this terminal in the 'TERM=...' kernel
-parameter?
-
-
-
-CBee
-
-
-mailto:c.beerse@torex-hiscom.nl
-
-------_=_NextPart_001_01C35839.54B564E0
-Content-Type: text/html
+--LmUak3kE33t3Bnfm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2654.45">
-<TITLE>testing HP-PA risc hardware</TITLE>
-</HEAD>
-<BODY>
+On Fri, 2003-08-01 16:29:35 +0200, Beerse, Corne <c.beerse@torex-hiscom.nl>
+wrote in message <03Aug1.164945cest.119089@ns.hiscom.nl>:
+> At first, we suspected the boot disk since its led keeps buring. However,
+> booting HP-UX from CDRom for a new fresh install, the boot of the kernel
+> crashes at roughly the same point, even with all disks removed. Hence we
+> suspected the core memory. However, changing or replacing the memory does
+> not change anything in the behavoure.
 
-<P><FONT SIZE=3D2>Hi,</FONT>
-</P>
+HP machines do quite some checks on their own on power-up (if you don't
+configure them to omit these) and you can get all that from the
+INformation (IIRC) command.
 
-<P><FONT SIZE=3D2>Here I have an HP D370 machine that (during my =
-holidays) crashed. Since the machine was replaced since long and only =
-kept running for fast access to old stuff, not a real =
-problem.</FONT></P>
+I have upgraded one of my boxes these days and a RAM module wasn't
+mounted properly. That was reported, as well as it's position:)
 
-<P><FONT SIZE=3D2>At first, we suspected the boot disk since its led =
-keeps buring. However, booting HP-UX from CDRom for a new fresh =
-install, the boot of the kernel crashes at roughly the same point, even =
-with all disks removed. Hence we suspected the core memory. However, =
-changing or replacing the memory does not change anything in the =
-behavoure.</FONT></P>
+MfG, JBG
 
-<P><FONT SIZE=3D2>Is there a way to somehow test the hardware of a =
-PA-Risc machine? Either from HP or from the linux world?</FONT>
-</P>
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
 
-<P><FONT SIZE=3D2>Kind of like the test tools as found on the (intel-) =
-linux distributions?</FONT>
-</P>
+--LmUak3kE33t3Bnfm
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-<P><FONT SIZE=3D2>btw: I can get debian-woody booted up to the message =
-that if this is the last message on screen, check the faq. A second =
-terminal (HP 700/96) on tty1 shows a lot of (vt100?) junk. How can I =
-either put the HP700/96 terminal in VT100 mode or whats the magic name =
-of this terminal in the 'TERM=3D...' kernel parameter?</FONT></P>
-<BR>
-<BR>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-<P><FONT SIZE=3D2>CBee</FONT>
-</P>
-<BR>
+iD8DBQE/KnuWHb1edYOZ4bsRAu2wAJ98C/qW16SN2WRgKR5HPbgBD5QPXwCdGvIe
+y7tQjljCcskfU0ESSUDDYDU=
+=Bu7j
+-----END PGP SIGNATURE-----
 
-<P><FONT SIZE=3D2><A =
-HREF=3D"mailto:c.beerse@torex-hiscom.nl">mailto:c.beerse@torex-hiscom.nl=
-</A></FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C35839.54B564E0--
+--LmUak3kE33t3Bnfm--
