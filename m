@@ -1,44 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 17F72482B
-	for <parisc-linux@parisc-linux.org>; Tue, 25 Sep 2001 17:42:28 -0600 (MDT)
-Received: (from ra@localhost)
-	by xo.hp.is (8.11.6/RA-8.11.6) id f8PNgP518270
-	for parisc-linux@parisc-linux.org; Tue, 25 Sep 2001 23:42:25 GMT
-Date: Tue, 25 Sep 2001 23:42:25 +0000
-From: Richard Allen <ra@hp.is>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010925234225.A18261@hp.is>
-Mime-Version: 1.0
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 229674897
+	for <parisc-linux@parisc-linux.org>; Tue, 25 Sep 2001 18:10:19 -0600 (MDT)
+Received: from esiee.fr (pc211j.esiee.fr [147.215.80.169])
+	by mail.esiee.fr (Postfix) with ESMTP id 2A69DD15C5
+	for <parisc-linux@parisc-linux.org>; Wed, 26 Sep 2001 02:10:17 +0200 (CEST)
+Sender: marteaut@esiee.fr
+Message-ID: <3BB11C7E.C58D7E44@esiee.fr>
+Date: Wed, 26 Sep 2001 02:08:30 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
+MIME-Version: 1.0
+To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Trace/breakpoint trap
+Subject: [parisc-linux] The new HOWTO
 List-ID: <linux-parisc.vger.kernel.org>
 
-Here's a wild one:
+Hi again,
 
-bofh:~/rpm-4.0.3/rpmdb# make
-Trace/breakpoint trap
-bofh:~/rpm-4.0.3/rpmdb# echo $?
-133
-bofh:~/rpm-4.0.3/rpmdb#
+	I would like to remind everybody that we have the PA-RISC/Linux Boot
+HOWTO and I try to keep it up-to-date. I just released a new version
+that includes some little changes and the redaction of "obtaining
+bootp/tftpd". I would like to have some feedback and specially if you
+authorize me to move to the stable state in order to get into the Linux
+DocumentationProject as an official HOWTO!
 
-Nothing is wrong there.  Moving that directory over ti a i686 system gives no
-problems.
+	I would like to know if this would have helped the new guys recently
+arrived. If not, tell me what you expected to find in it!
 
-Whats wrong ?
+The URL is http://mkhppa1.esiee.fr/doc.html
 
-bofh:~# uname -a
-Linux bofh 2.4.9-pa24 #2 Fri Sep 21 20:40:31 UTC 2001 parisc unknown
-bofh:~# gcc --version
-3.0.2
-
-It's apt-get updated to the max.
-
-
-
-
--- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+Thanks for your feedback, Thomas.
+ESIEE Team
