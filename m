@@ -1,40 +1,54 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA02508
-	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 12:55:32 -0700
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] where to put 64 bit libmilli? 
-In-Reply-To: Your message of "Tue, 02 Jan 2001 14:39:03 EST."
-             <200101021939.OAA07752@hiauly1.hia.nrc.ca>
-References: <200101021939.OAA07752@hiauly1.hia.nrc.ca> 
-Date: Tue, 02 Jan 2001 12:58:50 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E14DXa6-0005xq-00@noam.fc.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA03133
+	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 13:35:01 -0700
+Message-Id: <200101022039.MAA27208@milano.cup.hp.com>
+To: "David S. Miller" <davem@redhat.com>
+Cc: linux-kernel@vger.kernel.org, alan@lxorguk.ukuu.org.uk,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [PATCH] move xchg/cmpxchg to atomic.h 
+In-reply-to: Your message of "Tue, 02 Jan 2001 01:03:48 PST."
+             <200101020903.BAA14334@pizda.ninka.net>
+Date: Tue, 02 Jan 2001 12:39:46 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-= Last time I looked the 64 bit port was still using the same milli
-= library as the 32 bit port.
 
-Yes -- leading to some very surprising 64-bit kernel failures
-before I found this "feature".  This is a 64-bit parisc linux gcc bug.
+David,
+Sorry for being dense - but I don't see the problem in using
+a spinlock to implement xchg(). The example algorithm looks broken.
+Or am I missing something obvious here?
 
-= Thus to integrate a 64 bit library,
-= some work would have to be done to the machine description.  There
-= are hooks to build asm code (see for example lib1funcs.asm and
-= lib2funcs.asm in config/pa).
+"David S. Miller" wrote:
+> It is very common to do things like:
+> 
+> producer(elem)
+> {
+> 	elem->next = list->head;
+> 	xchg(&list->head, elem);
+> }
+> 
+> consumer()
+> {
+> 	local_list = xchg(&list->head, NULL);
+> 	for_each(elem, local_list)
+> 		do_something(elem);
+> }
 
-I've played with this a bit before -- I did the first ELF version of
-of 32-bit millicode.  But I'm not at all certain we want to
-keep millicode in libgcc.a since there's also some parisc linker magic to
-automatically link millicode when required -- because some makefiles
-using ld -r break (like the Linux kernel build) unless they're hacked to
-include an explicit reference to libgcc.a.
+producer() looks broken. The problem is two producers can race and
+one will put the wrong value of list->head in elem->next.
 
-= Has HP contributed this code to the public domain?  Probably, Jeff
-= Law would be the one to contact to get integrated into the gcc mainline.
+I think prepending to list->head needs to either be protected by a spinlock
+or be a per-cpu data structure. consumer() should be ok assuming the code
+can tolerate picking up "late arrivals" in the next pass.
+Or am I missing something obvious here?
 
-I have permission to sanitize and (L?)GPLize it.  I'm planning to
-attempt the basic integration and then let Jeff or someone tell me
-how I screwed it up :-)
+It's worse if producer were inlined: the arch specific optimisers might
+re-order the "elem->next = list->head" statement to be quite a bit more
+than 1 or 2 cycles from the xchg() operation.
 
-	-Paul Bame
+thanks,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
