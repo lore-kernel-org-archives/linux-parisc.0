@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from portablue.intern.mind.be (NAT.office.mind.be [62.166.230.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 033F54829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 Jan 2003 12:49:37 -0700 (MST)
-Date: Wed, 8 Jan 2003 20:49:19 +0100
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Peter 'p2' De Schrijver <p2@mind.be>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Matrox Millenium II in C240
-Message-ID: <20030108194919.GB1313@portablue.intern.mind.be>
-References: <20030102123856.GD871@portablue.intern.mind.be> <20030103051715.GA14565@dsl2.external.hp.com> <20030105131037.E19239@parcelfarce.linux.theplanet.co.uk> <20030106170059.GE9947@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="3V7upXqbjpZ4EhLz"
-In-Reply-To: <20030106170059.GE9947@dsl2.external.hp.com>
-From: p2@mind.be (Peter 'p2' De Schrijver)
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ADD834829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 00:41:15 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 18WXJM-0007ZG-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 09 Jan 2003 08:41:08 +0100
+Date: Thu, 9 Jan 2003 08:40:58 +0100
+Message-ID: <3E082C0A00001DD6@ocpmta4.freegates.net>
+In-Reply-To: <3E0085D000001FAA@ocpmta5.freegates.net>
+From: jsoe0708@tiscali.be
+Subject: RE: [parisc-linux] CONFIG_IP_ADVANCE_ROUTER?
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,70 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi all,
+>
+>Does somebody have already tested a pa kernel 2.4.20 configured as 'adva=
+nce
+>router'.
+>Does it have some chance that it works?
+>
+>Thanks in advance,
+>    Joel
+>
+>PS: This is to configure a b180 as a small gateway-proxy :) and this is
+>requested in GIpTable?
+>
+Just test and seems to works fine :-))
 
-Hi,
+Joel
 
-> 
-> Hmmm. /proc/iomem should tell us which ranges dino/cujo are forwarding.
-> 
 
-/proc/iomem in attachement.
-
-> But looking at dino.c, it's clear the code is not handling multiple
-> ranges correctly even if firmware did program it right.
-> 
->         res = &dino_dev->hba.lmmio_space;
-> 
-> lmmio_space needs to be an array.
-> In HP speak, this is an "unsupported configuration". 
-> 
-> Elroy (lba_pci.c) suffers a similar problem with "directed ranges"
-> (code currently only handles "distributed ranges"). At some point
-> I'll get back to working on the lba code since it has a few other
-> minor oustanding issues as well.
-> 
-
-So, this basically means it won't work for now ?
-
-Cheers,
-
-Peter.
-
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=iomem-parisc
-
-00000000-1fffffff : System RAM
-  00000000-000009ff : PDC data (Page Zero)
-  00100000-002bffff : Kernel code
-  002c0000-003b5c1b : Kernel data
-f0190001-f0190001 : led_data
-f1000000-f1ffffff : GSC Bus [10/]
-  f1000000-f1000fff : Cujo
-  f1800000-f1ffffff : Cujo LMMIO
-f2000000-f5ffffff : GSC Bus [8/]
-  f2000000-f2000fff : Dino
-  f2003000-f2003fff : Serial RS232
-  f2800000-f2ffffff : Dino LMMIO
-  f3ffb000-f3ffb3ff : tulip
-f6000000-f7ffffff : GSC Bus [10/]
-f8000000-fff7ffff : GSC Bus [8/]
-  ffd00000-ffdfffff : Lasi
-    ffd00000-ffd00fff : Lasi
-    ffd02000-ffd02fff : Parallel
-    ffd04000-ffd04fff : Lasi Harmony
-    ffd05000-ffd05fff : Serial RS232
-    ffd06000-ffd06fff : Lasi SCSI
-    ffd08000-ffd0800f : keyboard
-    ffd08100-ffd0810f : psaux
-fff80000-fffaffff : Central Bus
-  fff88000-fff88fff : U2/Uturn
-  fff8a000-fff8afff : U2/Uturn
-  fffa0000-fffa0fff : CPU
-fffb0000-fffdffff : Local Broadcast
-fffe0000-ffffffff : Global Broadcast
-
---3V7upXqbjpZ4EhLz--
+********************************************
+Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
+://adsl.tiscali.be
