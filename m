@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Jbit <james_a_n_lee@yahoo.com>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 712 Software Temperature 
-In-Reply-To: Message from Jbit <james_a_n_lee@yahoo.com>
-   of "Thu, 21 Feb 2002 11:51:46 GMT." <3C74DF52.7090308@yahoo.com>
-References: <3C74DF52.7090308@yahoo.com> 
-Date: Sat, 23 Feb 2002 00:41:28 -0700
+To: Yasholomew Yashinski <yashy@mail.yashy.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] B1000 
+In-Reply-To: Message from Yasholomew Yashinski <yashy@mail.yashy.com>
+   of "Sat, 23 Feb 2002 01:50:17 EST." <20020223013935.D3685-100000@mail.yashy.com>
+References: <20020223013935.D3685-100000@mail.yashy.com> 
+Date: Sat, 23 Feb 2002 01:11:22 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020223074128.1B3234865@dsl2.external.hp.com>
+Message-Id: <20020223081122.85CF1482C@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,15 +19,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jbit wrote:
+Yasholomew Yashinski wrote:
 ...
-> Since, if it was purley for fan control, it would be done in hardware,
-> wouldn't it?
+> ~$ cvs -d :pserver:anonymous@cvs.parisc-linux.org:/var/cvs/ login
 
-Caveat: I'm a SW engineer and this is from memory.
+Paul Bame said to drop the trailing slash.
+I see, the "Build the Kernel" web page has the error:
+	http://www.parisc-linux.org/kernel/index.html
 
-The fan speed is *generally* controlled by HW with PDC just setting
-the "ramp" in HW registers. Some servers might "expose" the
-temperature reading. I doubt the 712 does.
+I'll see if I can fix that.
 
 grant
