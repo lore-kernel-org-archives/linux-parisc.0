@@ -1,54 +1,57 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA20920
-	for <parisc-linux@puffin.external.hp.com>; Wed, 3 Nov 1999 18:41:18 -0700
-Date: Thu, 4 Nov 1999 02:43:07 +0100
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Kevin Vajk <kvajk@ricochet.net>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA21704
+	for <parisc-linux@puffin.external.hp.com>; Wed, 3 Nov 1999 22:49:58 -0700
+Message-Id: <199911040552.VAA11478@milano.cup.hp.com>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] getdents
-Message-ID: <19991104024307.I25252@mencheca.ch.genedata.com>
-References: <Pine.LNX.4.10.9911031645490.25873-100000@sophia.localdomain> <Pine.LNX.4.10.9911031724290.26045-100000@sophia.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.9911031724290.26045-100000@sophia.localdomain>; from Kevin Vajk on Wed, Nov 03, 1999 at 05:29:30PM -0800
+Subject: Re: [parisc-linux] getdents 
+In-reply-to: Your message of "Thu, 04 Nov 1999 02:43:07 PST."
+             <19991104024307.I25252@mencheca.ch.genedata.com>
+Date: Wed, 03 Nov 1999 21:52:06 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Nov 03, 1999 at 05:29:30PM -0800, Kevin Vajk wrote:
+Matthew Wilcox wrote:
+...
+> I've done the following:
 > 
+> struct hpux_dirent {
+> 	long	d_off_pad; /* we only have a 32-bit off_t */
+> 	long	d_off;
+> 	ino_t	d_ino;
+> 	short	d_reclen;
+> 	short	d_namlen;
+> 	char	d_name[1];
+> };
 > 
-> OK, here we go:
-> 
->    struct __dirent {
->       uint64_t __d_off;                 /* "magic cookie" */
->       _T_INO_T __d_ino;                 /* file number of entry */
->       short    __d_reclen;              /* length of this record */
->       short    __d_namlen;              /* length of string in d_name */
->       char     __d_name[_MAXNAMLEN + 1];/* name must be no longer than this */
->    };
-> 
-> Note that sizeof(_T_INO_T) varies depending on your system's bit-ness,
-> so this is really two structure definitions.
-> 
-> The d_off structure member is an offset for that directory entry.  I
-> don't know if anybody in user-space ever uses it; I doubt it.
+> I think that's the right way round to put the padding for a big-endian
+> machine.
 
-I've done the following:
+Mathew,
+Sorry, it doesn't look right to me.
+I not sure the following is "right" either but "looks more right":
 
-struct hpux_dirent {
-	long	d_off_pad; /* we only have a 32-bit off_t */
-	long	d_off;
-	ino_t	d_ino;
-	short	d_reclen;
-	short	d_namlen;
-	char	d_name[1];
-};
+#ifdef __LP64__
+	long d_off;
+#else
+	int d_off_pad;
+	int d_off;
+#endif
 
-I think that's the right way round to put the padding for a big-endian
-machine.  Yes, I know it ought to be done properly, but we don't have
-a put_user() that will cope with an 8-byte quantity yet.  Any volunteers?
+The problem is the offset for the d_off has to be different for
+32-bit applications than it will be for 64-bit applications.
+gcc has to behave the same way if we want binary compatibility.
+In "wide-mode" HP-UX compiler uses 64-bit long/pointer and int
+remains 32-bit.  Ergo the name "LP64".
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+devresource.hp.com has a "HP-UX 64-bit Porting and Transition Guide,
+June 1998" in the Document library. It's an interesting reference on
+HP-UX kernel interacts with 32/64-bit binaries and has some interesting
+gotchas.
+
+hope this helps,
+grant
+
+Grant Grundler
+Unix Developement Lab
++1.408.447.7253
