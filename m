@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] pthread problems - test program
-Date: Sun, 3 Apr 2005 15:07:32 -0400 (EDT)
-Message-ID: <200504031907.j33J7Wba018023@hiauly1.hia.nrc.ca>
-References: <20050403143246.GE8921@tausq.org>
+Subject: Re: [parisc-linux] Re: regtest: which fr to take care of?
+Date: Sun, 3 Apr 2005 14:41:09 -0400 (EDT)
+Message-ID: <200504031841.j33If9CF017871@hiauly1.hia.nrc.ca>
+References: <42502F50.5070700@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050403143246.GE8921@tausq.org> from "Randolph Chung" at Apr 3,
-	2005 07:32:46 am
+In-Reply-To: <42502F50.5070700@tiscali.be> from "Joel Soete" at Apr 3,
+	2005 06:00:48 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +21,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I don't know if this is related to some of the hanging problems Dave and
-> doko have seen sometimes during gcc testing.... but our pthreads
-> definitely seem to be a bit buggy :(
+> Is those comments in our entry.S:
+> ...
+>          /* Floating point registers (FIXME: what do we do with these?)
+> 
+>             %fr0  - %fr3    status/exception, not preserved
+>             %fr4  - %fr7    arguments
+>             %fr8  - %fr11   not preserved by C code
+>             %fr12 - %fr21   preserved by C code
+>             %fr22 - %fr31   not preserved by C code
+>           */
+> ...
+> 
+> Are still uptodate?
 
-I was going to add Ada tasking to the list of pthread problems but
-I just discovered that Ada hard codes signal numbers for linux and
-some of our signal numbers are different from those used on x86.
+Yes, these are from the HP-UX ABI.
 
-I believe that our Java testsuite fails are probably pthread related.
-I sometimes end up with Java programs that don't die when their
-respective test completes.
+> what 'preserved by C code' would mean?
+
+The register remains unchanged across a call.  Call used registers
+don't have to be preserved.
 
 Dave
 -- 
