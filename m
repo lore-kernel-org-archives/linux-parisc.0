@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp017.mail.yahoo.com (smtp017.mail.yahoo.com [216.136.174.114])
-	by dsl2.external.hp.com (Postfix) with SMTP id D7A2F4853
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 04:52:01 -0700 (MST)
-Message-ID: <3C74DF52.7090308@yahoo.com>
-Date: Thu, 21 Feb 2002 11:51:46 +0000
-From: Jbit <james_a_n_lee@yahoo.com>
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] 712 Software Temperature
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BAA6485E
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 05:35:47 -0700 (MST)
+Date: Thu, 21 Feb 2002 13:33:42 +0100
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: Jbit <james_a_n_lee@yahoo.com>
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 712 Software Temperature
+Message-ID: <20020221123342.GY4237@charite.de>
+References: <3C74DF52.7090308@yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3C74DF52.7090308@yahoo.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,17 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-looking inside my 712, I noticed that it has a thermocouple or somthing to dectect the temperature in the case.
-Tracing back the wires finds that they connect to the mainboard, and on the same connector, theres 2 wires that goto the power supply.
-I'd assume this is for a secondry fan?
-Anyway, since it goes to the mainboard, does this mean its posible to find out the temperature in software?
-Since, if it was purley for fan control, it would be done in hardware, wouldn't it?
+On Thu, Feb 21, 2002 at 11:51:46AM +0000, Jbit wrote:
+> Hi,
+> looking inside my 712, I noticed that it has a thermocouple or somthing to 
+> dectect the temperature in the case.
+> Tracing back the wires finds that they connect to the mainboard, and on the 
+> same connector, theres 2 wires that goto the power supply.
+> I'd assume this is for a secondry fan?
 
-Thanks
---Jbit
+According to the manual, the fan shifts ito higher gear, once the
+temperature exceeds 30 deg. celsius.
 
+> Anyway, since it goes to the mainboard, does this mean its posible to find 
+> out the temperature in software?
 
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+THAT would be interesting.
+
+-- 
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+Murphy's Law is recursive.  
+Washing your car to make it rain doesn't work. 
