@@ -1,30 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 745214895
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 07:41:22 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15o3Jx-0000ex-00; Mon, 01 Oct 2001 14:41:21 +0100
-Date: Mon, 1 Oct 2001 14:41:21 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Neulinger, Nathan" <nneul@umr.edu>
-Cc: 'Matthew Wilcox' <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
-Message-ID: <20011001144121.G28828@parcelfarce.linux.theplanet.co.uk>
-References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F8@umr-mail03.cc.umr.edu>
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C5EA048AE
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 08:36:32 -0600 (MDT)
+Date: Mon, 1 Oct 2001 08:36:28 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200110011436.IAA14595@udlkern.fc.hp.com>
+To: nneul@umr.edu
+Cc: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F8@umr-mail03.cc.umr.edu>; from nneul@umr.edu on Mon, Oct 01, 2001 at 08:31:07AM -0500
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Re: Status of hp-ux binary compatibility?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Oct 01, 2001 at 08:31:07AM -0500, Neulinger, Nathan wrote:
-> But for testing, I've just tried very simple programs - cal, yes, echo, and
-> a staticly linked hello world. All of them segfault right after execution. 
+Nathan,
 
-It'd be useful to know what address they segfault at.  My current
-suspicion is the stack position changes have broken it, but it may be
-something completely different.
+hp-ux compatibility is definitely broken. It probably wouldn't take too
+much effort to get it back to where it was before, however the best we
+ever did was to run some simple text based programs that were linked
+archive (-Wl,-aarchive). We didn't even have shared libraries working.
 
--- 
-Revolutions do not require corporate support.
+Just out of curiosity, what type of HP-UX binaries did you want to run?
+If it is 3D graphics based, or it uses a bunch of HP-UX proprietary
+kernel calls, ioctl's, etc. it isn't likely to work anytime soon ...
+
+John Marvin
+jsm@fc.hp.com
