@@ -1,34 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB0DC482A
-	for <parisc-linux@parisc-linux.org>; Sun, 22 Apr 2001 13:21:20 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14rPPl-0006C3-00; Sun, 22 Apr 2001 20:20:57 +0100
-Date: Sun, 22 Apr 2001 20:20:57 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Andreas Thienemann <andreas@thienemann.net>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Problems with glibc
-Message-ID: <20010422202057.Y18464@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.10.10104201906260.21140-100000@gate.ixs.com>
-Mime-Version: 1.0
+Received: from viemta05.chello.at (viemta05.chello.at [195.34.133.55])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C7A4B482A
+	for <parisc-linux@parisc-linux.org>; Sun, 22 Apr 2001 15:57:25 -0600 (MDT)
+Received: from gmx.at ([62.178.92.247]) by viemta05.chello.at
+          (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
+          with ESMTP id <20010422215724.EWTR29087.viemta05@gmx.at>
+          for <parisc-linux@parisc-linux.org>;
+          Sun, 22 Apr 2001 23:57:24 +0200
+Sender: chris@dsl2.external.hp.com
+Message-ID: <3AE353C4.B2AA2407@gmx.at>
+Date: Sun, 22 Apr 2001 23:57:24 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.10104201906260.21140-100000@gate.ixs.com>; from andreas@thienemann.net on Fri, Apr 20, 2001 at 07:10:43PM +0200
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] E-mail address change in Hardware database !!
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Apr 20, 2001 at 07:10:43PM +0200, Andreas Thienemann wrote:
-> while trying to compile the current glibc snapshot from the puffin-cvs, make
-> segfaults:
-> Has anyone ever experienced a similar problem? This segfault is
-> reproducable and it's the first time that happened. gcc did compile
-> correct, the same with the kernel itself.
+Hello !
 
-Yes, I was getting it too.  After my recent kernel checkin to fix the
-stat64 struct, I was able to build glibc successfully.  My theory is that
-glibc was trying to call the *stat64 syscalls and the kernel was happily
-writing all over user memory.  I would be grateful if you updated your
-(running) kernel to head of CVS and tried building glibc again.
+My email address has changed.
+On the machines:
+	* E55
+	* 720 
+I have registered a 2nd time with the new address !
+Please delete the first entry of
+	Christoph Plattner
+	christoph.plattner@dot.at
+New address:
+	christoph.plattner@gmx.at 
+!!
+
+With friendly regards
+	Christoph Plattner
+
+
 
 -- 
-Revolutions do not require corporate support.
+-------------------------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
