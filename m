@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] EISA 100/10 add-on card causes kernel BUG 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Sat, 16 Mar 2002 21:39:38 GMT." <20020316213938.B2179@parcelfarce.linux.theplanet.co.uk>
-References: <3C92DD15.4060008@neuronet.pitt.edu> <raffo@neuronet.pitt.edu> <20020316184231.482C6482C@dsl2.external.hp.com>  <20020316213938.B2179@parcelfarce.linux.theplanet.co.uk> 
-Date: Sat, 16 Mar 2002 22:38:38 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020317053838.683C7482D@dsl2.external.hp.com>
+Received: from web10504.mail.yahoo.com (web10504.mail.yahoo.com [216.136.130.154])
+	by dsl2.external.hp.com (Postfix) with SMTP id 15F1D4833
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Mar 2002 01:40:56 -0700 (MST)
+Message-ID: <20020317084054.84462.qmail@web10504.mail.yahoo.com>
+Date: Sun, 17 Mar 2002 00:40:54 -0800 (PST)
+From: Tim Robb <hecubus3rd@yahoo.com>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Can I do 64 bit
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,30 +20,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
-> Let me just explicitly discourage doing this (or, if you must, document
-> it in Documentation/parisc/registers).  Use of sr3 to access userspace
-> is subject to change and it'd be nice not to have to check every driver
-> for use. 
+Hello, I recently aquired a HP C180XP here is the
+output from cat /proc/cpuinfo
 
-Yeah - you are right
+processor	: 0
+cpu family	: PA-RISC 2.0
+cpu		: PA8000 (PCX-U)
+cpu MHz		: 180.000000
+model		: 9000/780/C180
+model name	: Raven U 180 (9000/780/C180)
+hversion	: 0x000059c0
+sversion	: 0x00000481
+I-cache		: 1024 KB
+D-cache		: 1024 KB (WB)
+ITLB entries	: 96
+DTLB entries	: 96 - shared with ITLB
+BTLB fixed	: max. 16384 pages, pagesize=4096 (64MB)
+BTLB fix-entr.	: 0 instruction, 0 data (16 combined)
+BTLB var-entr.	: 0 instruction, 0 data (0 combined)
+bogomips	: 358.80
+software id	: 2001678209
 
-> It's bad enough that sba & ccio use sr1, but at least we found
-> those :-)
+I am wondering if this system can run a 64 bit kernel?
+ Can anyone tell me if it can and how do I get it
+booted up in 64 bit mode if it can?
 
-oh - I forgot about those for filling the IO pdir entries...
-that need to change in order to support zero copy?
+Thank you,
+Timothy Robb
 
-We somehow need to pass the spaceID of the userspace buffer
-to dma code if we want DMA to be cache coherent.
-I don't have any good ideas for this.
-
-> I cant imagine a good reason for using sr3.  copy_{to,from}_user are
-> portable and obvious.
-
-agreed.
-
-thanks,
-grant
-
---9B420482D.1016343457/dsl2.external.hp.com--
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Sports - live college hoops coverage
+http://sports.yahoo.com/
