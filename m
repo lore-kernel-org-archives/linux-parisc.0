@@ -1,28 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BF6EE4A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Mar 2001 00:04:21 -0700 (MST)
-Message-Id: <200103050707.XAA02142@milano.cup.hp.com>
-To: "Brian S. Julin" <bri@mojo.calyx.net>
-Cc: parisc-linux@lists.parisc-linux.org, Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] TODO-list entry of "HIL keyboard driver needs updating" 
-In-reply-to: Your message of "Mon, 05 Mar 2001 00:20:41 PST."
-             <Pine.BSO.4.33.0103050014290.32438-100000@mojo.calyx.net>
-Date: Sun, 04 Mar 2001 23:07:33 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 755F181EE
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Mar 2001 02:38:32 -0700 (MST)
+Received: from esiee.fr (mail.esiee.fr [147.215.1.3])
+	by mail.esiee.fr (Postfix) with ESMTP id B3C9BD1588
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Mar 2001 10:38:30 +0100 (CET)
+Date: Mon, 05 Mar 2001 10:38:30 +0000
+MIME-Version: 1.0
+From: Bruno IGLESIAS <iglesiab@esiee.fr>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <20010305093830.B3C9BD1588@mail.esiee.fr>
+Subject: [parisc-linux] Problems on 715/50
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Brian S. Julin" wrote:
-> We do NOT have access to the HIL specs, and the driver I would like
-> to write will need more detail than that gleaned from the 
-> BSD/linux/mklinux source code.
-
-If you have specific questions, I (or other HP employees) can try to
-find you the answer(s). Since we had a working HIL driver, releasing
-the HP docs for it was pretty low on the list.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Hi !                                                                  
+                                                                      
+  I'm working on a 715/50 with the ESIEE TEAM. /proc/cpuinfo reports  
+0.50 Bogomips instead of the 50 reported during the boot of the kernel
+of the 1st March . More over, the kernel is booting well with the     
+nfsroot of the puffin but don't execute INIT with ESIEE root          
+Filesystem ( freezing after mounting Root partition) .Replacing Init  
+by /bin/sh didn't change anything. If anyone could explain these      
+differences ??                                                        
+                                                                      
+I'm currently porting the SETI@home client for PaLinux :o)            
+                                                                      
+   Bye Bruno                                                          
