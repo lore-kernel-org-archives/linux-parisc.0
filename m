@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm1.tiscalinet.be (spoolm1.tiscalinet.be [212.35.2.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0A107482E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 13:33:05 -0600 (MDT)
-Message-ID: <3CEFE702.7060503@freebel.net>
-Date: Sat, 25 May 2002 19:33:22 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: Peter Mottram <peter@petescaff.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] raid-1 on boot disk
-References: <Pine.LNX.4.44.0205241504430.19280-100000@r6.petescaff.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from omta05.mta.everyone.net (sitemail3.everyone.net [216.200.145.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9759D4832
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 13:54:24 -0600 (MDT)
+Received: from sitemail.everyone.net (dsnat [216.200.145.62])
+	by omta05.mta.everyone.net (Postfix) with ESMTP id D04E147EB5
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 May 2002 12:54:23 -0700 (PDT)
+Content-Type: text/plain
+Mime-Version: 1.0
+Date: Sat, 25 May 2002 12:54:23 -0700 (PDT)
+From: Stacy Olivas <olivas@eurisko.ws>
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: olivas@eurisko.ws
+Message-Id: <20020525195423.BE4A636F9@sitemail.everyone.net>
+Subject: [parisc-linux] Getting a 750 to boot
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,52 +24,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Peter,
+Hello,
+I recently acquired an Apollo 9000/750 system and would like to load up PALINUX on it.  Unfortunately, I do not have anything other than the system (with a serial console).  No documentation, etc.
+
+When I boot the system up it has the following:
+
+(c) Copyright.  Hewlett-Packard Company.  1991.
+All rights reserved
+
+PDC ROM rev. 1.2
+IODC ROM rev. 1.0
+128 MB of memory configured and tested.
 
 
-Peter Mottram wrote:
-> Joel
-> 
-> I did some playing with this some time ago. To have all filesystems under
-> md control then palo must understand two things:
-> 
-> 1. how to read the md filesystem to get the kernel (can use the F0
-> partition for kernel to get round this)
+Selecting a system to boot.
 
-I undurstand F0 is a special slice that PDC has to access to load ipl
+Hard booted.
 
-> 
-> 2. how to use md / filesystem
-> 
+ISL Revision A.00.38 OCT 26, 1994
 
-Is a ramdisk (located in the special slice /boot) would not help?
-I thought to this because of my read on the use of lvm and evms 
-structure system disk. Both write a script to build such ramdisk.
+ISL booting  hpux
+Exec failed: Cannot find /stand/vmunix or /vmunix.
 
-> AFAIK these 2 things just don't work right now & Paul Bame has other more
-> important things to do with palo right now.
-> 
-> The approach I take is to have a small / and small /boot as normal ext2
-> partitions & automatically copy these over to spare / & /boot filesystems
-> on mirror + hot spare disk each night.
+ISL> 
 
-Well ramdisk will avoid to have to do this 'manual' mirror on F0 and 
-/boot but there are quasi-static and so easy to mirror with dd. On the 
-contrary / is more dynamic so I do not see how do you realise the mirror 
-  of this fs?
+I've attempted to hookup a SCSI cd-rom drive to the system, and it briefly looks at it before going to the screen above.
 
-> All other filesystems (including
-> swap) are on md. If I update the primary boot disk's F0 then I also
-> update the F0 slice on mirror & spare disks. If the primary boot disk
-> fails then the system will go down but then can boot off the mirror. Make
-> sure you set up PRI and ALT boot paths correctly if you want this to
-> happen automagically & make usre the script which copies / onto the
-> mirror/spare modifies /etc/fstab appropriately!
-> 
-> R.
-> PeteM
+How can I get this beast to boot?  It has 2 HD's in it and a tape backup/floppy unit on it as well.  It also has a network card in it, (a TPT 92 series 802.3 10BASE-T Transciever with Lanview hooked into the AUI port on the back).
 
-I am now much more confident, I will try to have a look in more details.
-
-Many thanks for all information,
-	Joel
+Any help will be greatly appreciated.
