@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77C8B4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Sep 2002 12:28:42 -0600 (MDT)
-Message-ID: <3D974657.F355C89A@gmx.at>
-Date: Sun, 29 Sep 2002 20:28:39 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Stephan <stephan@itp.bg>
+Received: from rwcrmhc52.attbi.com (rwcrmhc52.attbi.com [216.148.227.88])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 66DCB4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Sep 2002 13:43:06 -0600 (MDT)
+Subject: Re: [parisc-linux] xwindows
+From: James Haydon <jhaydon@attbi.com>
+To: Joel Soete <joel.soete@freebel.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Serial MUX
-References: <20020929180739.27FFE4829@dsl2.external.hp.com>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D95CF77.3080508@freebel.net>
+References: <3D95AB03.9030706@attbi.com>  <3D95CF77.3080508@freebel.net>
+Content-Type: text/plain
+Date: 29 Sep 2002 15:42:50 -0400
+Message-Id: <1033328572.1295.7.camel@daedalus>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,43 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+Joel,
 
-this driver is under development !
-This driver can be used on machines having a non-supported
-multi-serial interface like a E35/45/55 or some K-series
-machines. 
+It turns some bad settings put in the XF86Config-4 by me dealing number
+of colors and vertical and horizonal sync and some stuff dealing with
+probing a monitor put in by Debian.
 
-The first and already tested driver is the PDC console
-driver, to use only port-0 of the multi serial board
-as console. Now an alternative native MUX driver 
-is under development, but this driver can currently 
-ONLY access port-0 (first port). The multi-line support
-is not coded yet, and some short tests by me show
-problems (machine hangs up !).
+The correct number of colors is 8 for this 715.
 
-So you cannot access the multiple serial ports, so sorry.
+Thanks
 
-Christoph P.
+James
 
-
-Stephan wrote:
+On Sat, 2002-09-28 at 11:49, Joel Soete wrote:
+> Hi James,
 > 
-> Hello,
-> i just compiled kernel with serial mux support
-> how I can use it?
-> how to create ttyB*?
-> REgards
+> Just start to have a look at ml:
 > 
-> ________________________________________________
-> This mail was sent by Godzilla 1.0
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017688.html
 > 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+> You could also have a look earlier in this ml, there are other advises 
+> concerning X and 715 (HIL mouse?).
+> 
+> Good luck,
+> 	Joel
+> 
+> 
+> James Haydon wrote:
+> > I got a  9000/715 100 that I have Debian 3.0 everything works except for 
+> > X.  What do I have to do to make X work?
+> > 
+> > James
+> > 
+> > 
+> > 
+> > 
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> > 
+> 
+> 
