@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84C8A483A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Feb 2003 08:33:17 -0700 (MST)
-Received: from esvir04nok.ntc.nokia.com (esvir04nokt.ntc.nokia.com [172.21.143.36])
-	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h1LFaHm26302
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Feb 2003 17:36:17 +0200 (EET)
-Date: Fri, 21 Feb 2003 17:33:13 +0200
-From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-To: ext Tom <palinux@alaskatech.org>
-Cc: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>,
-	PARISC Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] boot console wrong.
-Message-ID: <20030221153313.GM6523@aurinko.ntc.nokia.com>
-References: <3E55A3FC.C06BFE43@optushome.com.au> <20030221082726.GH6523@aurinko.ntc.nokia.com> <Pine.LNX.4.53.0302210625170.18642@wolf.alaskatech>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-In-Reply-To: <Pine.LNX.4.53.0302210625170.18642@wolf.alaskatech>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39DD4483E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Feb 2003 09:17:55 -0700 (MST)
+Date: Fri, 21 Feb 2003 17:17:49 +0100
+Message-ID: <3E484410000030B6@ocpmta7.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] X problems...
+To: "Dan Baker" <dan_baker@eli.net>,
+	"'Grant Grundler'" <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,33 +22,122 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Feb 21, 2003 at 06:26:47AM -0900, ext Tom wrote:
-> > > On Fri, Feb 21, 2003 at 03:58:52AM +0000, ext Rod Smart wrote:
+Hi Dan,
 
-> > > >   Console path:         SERIAL_1.9600.8.none
-> > >     I have installed Debian through this console, and would like to play
-> > > with it the usual way now ;o)
+I also install a b2k with linux, also I am very interrested by your information.
 
-> > Um ... "path console graphics" could be a good starting point. It
-> > probably tells you that "graphics" isn't a good path and shows a list of
-> > what could be, but that's almost as good.
+I so download rpms that you mentionned and install it.
 
-> "path console graphics(0)" sets the console to the built-in video on my
-> C180; graphics(x) (where x is the slot number as printed on the back of
-> the case) sets it to the video card in that slot...
+I just first notice that they are just different revision of the kernel
+module for hpgfx :). But, after a quick search on google, I read that it
+must exists somewhere a set of user space tools as FXconfig.sh (to config
+XFree86 if I well understand). Any info about this?
 
-Well ... yes. (I just had to set a B180L to mode 12 on graphics(0) 
-manually from the serial console as that seems to be the only way to make 
-it work with an A4033A with the usual 3-BNC cable.)
+Some other notes:
+using rpm to install sources I read in SPEC file:
+_Distribution_: Red Hat Linux 6.2 (2.2.16-3)
+                                   ^^^^^^^^
+ok that is just a text but it makes me feel that it would run on 2.2 kernel
+only
+In your knowledge, is there some more recent release supporting 2.4?
 
-Now that I think about it ... I probably had to use pci(4) or some such 
-once on a C360 but then again that one didn't have a built-in adapter.
+And finaly (the very bad news) I think that I found the answer to your original
+question (gcc complaints about unknown code IIRC):
+_BuildArchitectures_: i386
 
-Oh, and really, my Linux-running C240 still has the console on serial - 
-_and_ X and a bunch of virtual terminals also available on the graphics 
-card. 
+And effectively a quick 'find' in sources makes me appear that there are
+unfortunaltely asm code (specific to i386 arch :( )
+
+So finaly I am interrested to know how do you build your module:
+for me a simple make failled because it did not know where to find some
+headers,
+and rpm -bb SPECS/tag... failled because of architecture restriction?
+
+Sorry to not be more helpfull,
+    Joel
 
 
--- 
-Mikko Nahkola   <mikko.nahkola@nokia.com>
-Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
+
+>-- Original Message --
+>From: "Dan Baker" <dan_baker@eli.net>
+>To: "'Grant Grundler'" <grundler@dsl2.external.hp.com>
+>Cc: <parisc-linux@lists.parisc-linux.org>
+>Subject: RE: [parisc-linux] X problems...
+>Date: Thu, 20 Feb 2003 09:28:04 -0800
+>
+>
+>the other driver is at
+>ftp://ftp.hp.com/pub/ccd/soar2sdd/wk259/wk259mu/hpgraphics_kernel-1.5.13-1.s
+>rc.rpm
+>
+>Sorry
+>
+>Dan Baker
+>
+>-----Original Message-----
+>From: parisc-linux-admin@lists.parisc-linux.org
+>[mailto:parisc-linux-admin@lists.parisc-linux.org]On Behalf Of Grant
+>Grundler
+>Sent: Wednesday, February 19, 2003 9:15 PM
+>To: Dan Baker
+>Cc: parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] X problems...
+>
+>
+>On Wed, Feb 19, 2003 at 05:42:29PM -0800, Dan Baker wrote:
+>> BUT, I did download source code for HP's Intel linux visualize driver.
+>I
+>> can't get it to compile, the assembler tells me there's an invalid opcode
+>> (??) in the .o file. I'm not really a programmer, so I'm hoping somebody
+>out
+>> there can take a look at what they're doing and fix it.
+>
+>Well, it's not that easy even for someone who can read C.
+>
+>First, some bad news:
+>o x86 version of the card has extra VGA cruft+BIOS.
+>  PA-Risc version uses STI firmware for initialization.
+>o IIRC, the X11 server (or maybe just gfx card driver?) is a custom,
+>  closed source code.  Hopefully I'm wrong and someone will correct me.
+>o I'll guess that many (most of the?) interesting bits are in the XF86
+>  hpgfx driver module. I'm assuming one exists.
+>
+>Good news: 3d acceleration for x86 cards uses the same RISC engines
+>as the parisc cards.
+>
+>Several years ago I asked someone in the HP gfx group if they
+>could port the HPUX driver to parisc-linux but our port wasn't
+>ready then (I think it is now). The gfx driver interacts *alot*
+>with the rest of the kernel *and* the X11 server.
+>The above is what I remember from conversations with people.
+>
+>> The files are at
+>>
+>>
+>ftp://ftp.hp.com/pub/ccd/soar2sdd/wk207/wk207en/hpgraphics_kernel-1.5.3-1.sr
+>> c.rpm
+>> and
+>>
+>ftp://ftp.hp.com/pub/ccd/soar2sdd/wk207/wk207en/hpgraphics_kernel-1.5.3-1.sr
+>> c.rpm
+>
+>uhm...'cuse me, but aren't those the same?
+>
+>hth
+>grant
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Faites des economies avec Tiscali Complete
+... Plus d'info sur http://complete.tiscali.be
