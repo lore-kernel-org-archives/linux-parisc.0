@@ -1,20 +1,15 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 111B148A4
+Return-Path: <hessu@hes.iki.fi>
+Received: from he.fi (he.fi [213.28.116.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 57D5E4843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 28 Jan 2004 07:00:50 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout2.tiscali.be with esmtp (Tiscali) id 1AlqFM-0001OV-00
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 28 Jan 2004 15:00:48 +0100
-Date: Wed, 28 Jan 2004 15:00:48 +0100
-Message-ID: <400CB8A1000067CB@ocpmta3.freegates.net>
-In-Reply-To: <20040128060516.492DE4941AA@palinux.hppa>
-From: "Joel Soete" <soete.joel@tiscali.be>
+	Wed, 28 Jan 2004 07:14:12 -0700 (MST)
+Date: Wed, 28 Jan 2004 16:13:50 +0200 (EET)
+From: Heikki Hannikainen <hessu@hes.iki.fi>
 To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.58.0401281500300.14924@jazz.he.fi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 carlos
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] K380 partial success, the state of the port?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,45 +19,53 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
 
-This boot fine on the b180 (32bit kernel), the b2k (32bit kernel only even
-with CONFIG_PA20 is Ok but failed with 64bit kernel?) and N4000-55 (same
-64bit kernel  build with my own kgcc-3.3.3 :)).
+  Hi,
 
-Any way this last test set aside any pb with _my_ gcc compiler :).
+  I'm working on a K380 system with 4*240 MHz PA8200 CPUs, 2G of memory. I
+initially installed it with the palinux-2.4.21-pa6-20030718-netinst.iso
+netinstall CD images. I was amazed how smoothly it went! I've run the
+alpha and sparc ports in the past on a bit less powerful hardware. I have
+a couple of questions:
 
-Congratulation to all,
-    Joel
+- the box seems awfully slow when compared to a similar HP-UX 11 box.
+With 2.4.21-32 uniprocessor kernel 'time /bin/true' takes about 0.07s,
+'time time /bin/true' takes 0.12s. 'time strace /bin/true' takes a
+whopping 0.822s, almost all of which is spent in the system:
 
->-- Original Message --
->To: parisc-linux-cvs@lists.parisc-linux.org
->Date: Tue, 27 Jan 2004 23:05:16 -0700 (MST)
->From: carlos@parisc-linux.org (Carlos O'Donell)
->Reply-To: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux-cvs] linux-2.6 carlos
->
->
->CVSROOT:	/var/cvs
-Module name:	linux-2.6
-Changes by:	carlos	04/01/27 23:05:15
+real    0m0.822s
+user    0m0.010s
+sys     0m0.790s
 
-Modified files:
-	.              : Makefile 
+- with an SMP kernel it's much slower. 'time /bin/true' says:
 
-Log message:
-Builds and boots on my A500 (64-bit), builds in 32-bit mode aswell (e.g.
-no CONFIG_COMPAT)
+real    0m0.420s
+user    0m0.010s
+sys     0m0.400s
 
-_____________
->_________________________________
-parisc-linux-cvs mailing list
-parisc-linux-cvs@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux-cvs
+'time time /bin/true' takes 0.65s, 'time strace /bin/true' takes 2.8
+allowing me to read the output while it's running. I compiled the SMP
+kernel myself, 2.4.24-pa0 from the CVS on 27.1.2004. On CPU bound tasks
+it's ok, but fork/exec/ptrace seems very slow.
 
+  Is the parisc port supposed to be this slow at it's current state, or is
+this a problem which is specific to my setup?
 
+- Should I go to the 2.6 tree? I compiled it from the CVS (to get the
+tulip driver working) but the SCSI failed:
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+Linux version 2.6.1-pa10 (root@soul) (gcc version 3.0.4) #2 SMP Tue Jan 27
+
+zalon_probe: Zalon vers field is 0x1, IRQ 37
+ncr53c720-0: rev 0xf irq 37
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+scsi0 : ncr53c8xx-3.4.3e
+Using anticipatory io scheduler
+scsi: Device offlined - not ready after error recovery: host 0 channel 0
+id 0 l
+
+  Is this a known problem?
+
+  Thank you for your efforts!
+
+  - Hessu
