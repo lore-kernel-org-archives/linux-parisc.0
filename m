@@ -1,54 +1,23 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA14606
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Mar 2000 02:46:56 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA14891
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Mar 2000 03:05:44 -0700
 Received: from cc.weber.edu (localhost [127.0.0.1])
-	by bramah.tgate.weber.edu (8.8.8/8.8.8) with ESMTP id BAA00492
-	for <parisc-linux@thepuffingroup.com>; Mon, 20 Mar 2000 01:54:06 GMT
+	by bramah.tgate.weber.edu (8.8.8/8.8.8) with ESMTP id CAA00601
+	for <parisc-linux@thepuffingroup.com>; Mon, 20 Mar 2000 02:12:55 GMT
 	(envelope-from rfleming@cc.weber.edu)
 Sender: rob@bramah.tgate.weber.edu
-Message-ID: <38D584BD.A744CC3F@cc.weber.edu>
-Date: Mon, 20 Mar 2000 01:54:05 +0000
+Message-ID: <38D58926.5CF3A9D3@cc.weber.edu>
+Date: Mon, 20 Mar 2000 02:12:55 +0000
 From: rob fleming <rfleming@cc.weber.edu>
 MIME-Version: 1.0
-To: PA-risc Linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] 712/60
-References: <38D2305D.697A44C7@cc.weber.edu>
+To: parisc-linux <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Neat hardware on 712.
+References: <38C73A40.968A77C1@cln.etc.bc.ca> <00bd01bf89e5$35755020$4c50fb8d@corpnorth.baynetworks.com>
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-rob fleming wrote:
-
->     I realize that this may not be a question that can be answered from
-> the group, but here goes.
-> I bought a schools old machine 712/60 to be exact.  I tried booting it
-> from home and found that my monitor doesn't work well with the graphics
-> cards initial settings.  (Completely unreadable).  I took it to work one
-> afternoon and it boots to the point where HPUX tries reading the
-> licences for the machine and dies.  Does anyone know how to change the
-> graphics boot mode?  I not longer have the option use the other monitor
-> at work to try and fix so I will take any suggestions.
->
-> Rob
->
->    ___  ___       __         |  Name  : Robert Fleming
->   /  / /  /____  (__)__  ___ | E-mail : rfleming@cc.weber.edu
->  /  /_/  /  _  \/  /\  \/  / |    day : Solaris, HP-UX, Linux, WinNT, Novell
->  \___,__/__//__/__/ /__/\__\ |  night : FreeBSD-Current, OpenLinux, Mandrake
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-
-I found a solution.   The problem is that the boot rom (1.3) has an option
-built in to define the graphics mode to be supported while it works out what os
-or configuration to boot.   "monitor X" is specified if you hit ESC before it
-boots the os and you then have the option of choosing 1 .. X monitor
-freequencies.  They are then used from that point on when the machines is
-turned on.   I tried the tab key but I guessing this has something to do with
-either x or the os which aren't on this machine.  Aparently I accidentally
-nuked the drive some time ago and had forgotten about it.   I tore into the
-case on this one looking for dip switches which were no where to be found.   In
-fact this machine hasn't any jumpers at all the board is clean of then.
+Just another thing to think about.  The 712 has some other features I posted a monitor issue under 712/60 a few days ago listing a problem and solution.  I also found that though most think the light on the case next to the power button is there for looks is has a warning function similar to what was posted about the monitor and the missing card.   I have found that if and OS is not on the disk you will get a blinking light messaging
+something wrong.   Just thought I would throw that out there.
 
 Rob
 
