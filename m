@@ -1,22 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 366AE482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 06:30:12 -0700 (MST)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
-	id 163H9p-0003HD-00
-	for parisc-linux@lists.parisc-linux.org; Mon, 12 Nov 2001 15:29:49 +0200
-Date: Mon, 12 Nov 2001 15:30:27 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: Markus Grabert <xam@student.cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Linux-2.4.14
-Message-ID: <20011112153027.A18181@dogbert.localdomain>
-References: <Pine.OSF.3.96.1011112111516.10523A-100000@student.cs.ucc.ie>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-In-Reply-To: <Pine.OSF.3.96.1011112111516.10523A-100000@student.cs.ucc.ie>
+Received: from student.cs.ucc.ie (student.cs.ucc.ie [143.239.211.125])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49486482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 08:25:17 -0700 (MST)
+Received: from localhost (xam@localhost)
+	by student.cs.ucc.ie (8.9.3/8.9.3) with SMTP id PAA08914
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Nov 2001 15:25:35 GMT
+Date: Mon, 12 Nov 2001 15:25:35 +0000 (GMT)
+From: Markus Grabert <xam@student.cs.ucc.ie>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.OSF.3.96.1011112145357.4562A-100000@student.cs.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C240: Graphics, 64bit kernel and more
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,41 +23,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-The fix is in according to my parisc-linux-cvs logs. :-)
+I'm going to buy a C240 (I already have a 730 (not here) and had a F10).
+It has 512MB and FX/2 24bit graphics. I think it's rather good supported
+by parisc-linux, am I right ?
 
-Regards,
+Before I actually buy the computer, I wanted to know whether STI
+and/or the framebuffer for a 64bit kernel is working.
 
-Albert
+Moreover I've read that UW-SCSI is not working yet.
+So is it working in FAST-SCSI (narrow) mode ?
 
-On Mon, 12 Nov 2001, Markus Grabert wrote:
+Are you aware of any other gcc/binutils bugs or should
+gcc/binutils NOW create proper executables for pa2.0 and
+pa1.1 (including the old CPUs like 730's PCX-S CPU) ?
 
-> Hi there,
->=20
-> One question:
->=20
-> Isn't the loop driver broken in Linux-2.4.14
-> (and fixed in 2.4.15-pre1) ?
->=20
-> Are there any plans to incorporate the bugfix in the CVS ?
->=20
-> greetings max
+does produce gcc rather good optimized code for parisc
+(compared to HP's cc, is there a significant performance difference) ?
 
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+I can imagine that the Linux/HPPA kernel is not very optimized yet
+(can't compare the speed on my 730 with HP/UX since I don't
+have the OS software anymore ...). Is the speed difference just a
+few percent or can you 'feel' it (mhh, fuzzy question) ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Can I put in any PC PCI graphic card (as a second graphic card) ?
+The same for any PC PCI cards (ethernet, modem, TV, ...) ?
 
-iD8DBQE7787yDg+hOeRZtkMRAo4XAJ9cgjN7l7R5BSuHXdhvOFrwuNK5bACdHD5X
-W8ZWPmYAIeJ89ujBobXdtC4=
-=iQOI
------END PGP SIGNATURE-----
+Thanks in advance for answering my (newbie) questions!
 
---r5Pyd7+fXNt84Ff3--
+I installed Linux/HPPA on my 730 (even before the 0.9.0 release),
+but I moved to Ireland and the machine is now in Germany ...
+I try to follow the mailing list, but I probably haven't read all
+the mails, so forgive me if I asked questions already discussed
+on the mailing list.
+
+Greetings Max
+
+... and keep on the good work
