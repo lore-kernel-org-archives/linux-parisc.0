@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 645024842
-	for <parisc-linux@parisc-linux.org>; Thu, 27 Feb 2003 09:00:48 -0700 (MST)
-Date: Thu, 27 Feb 2003 17:00:17 +0100
-Message-ID: <3E5BA29100000DEB@ocpmta3.freegates.net>
-In-Reply-To: <200302261858.h1QIwvSJ019646@hiauly1.hia.nrc.ca>
-From: "Joel Soete" <jsoe0708@tiscali.be>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B2AE84842
+	for <parisc-linux@parisc-linux.org>; Thu, 27 Feb 2003 09:59:20 -0700 (MST)
+Message-Id: <200302271659.h1RGxHtF021557@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, parisc-linux@parisc-linux.org
+To: jsoe0708@tiscali.be (Joel Soete)
+Date: Thu, 27 Feb 2003 11:59:17 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: schwab@suse.de, willy@debian.org, parisc-linux@parisc-linux.org,
+	gcc@gcc.gnu.org
+In-Reply-To: <3E5BA291000009D9@ocpmta3.freegates.net> from "Joel Soete" at Feb 27, 2003 07:36:56 am
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,46 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
->To: jsoe0708@tiscali.be (Joel Soete)
->From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
->Cc: willy@debian.org, parisc-linux@parisc-linux.org
->Date: Wed, 26 Feb 2003 13:58:57 -0500 (EST)
->
->
->> Would I have to open a bug report near gcc with this one?
->
->You mean for the errors:
->
->joel.c:19: error: initializer element is not constant
->joel.c:19: error: (near initialization for `MyRWLock')
->joel.c:19: error: initializer element is not constant
->
->No, fix the code.  I don't believe you will win this one.  This
->feature (extension) was deliberately removed from GCC.
->
-Well I first choose the facility:
+> Never the less, I would like to put an additional question:
+> the mentionned error occurs when this variable is a global one
+> but when it became local (e.g. when I define it into main() ) the error doesn't
+> occur anynore (I do not presume of the resulting code).
+> So what is the conceptual difference?
 
-I remove the cast so that in asm-parisc/spinclok_t.h
-...
-#ifndef CONFIG_DEBUG_SPINLOCK
-#define SPIN_LOCK_UNLOCKED { 1 }
-...
-#else
+If you look at the assembly code, you will see that the initialization
+is done entirely in code when RW_LOCK_UNLOCKED is used to initialize
+a local.  You can handle more complex initializers when you use code
+to initialize an object.  When global or static storage is initialized,
+the initialized values are placed directly into a data section.  C++
+has constructors to do more complex initializations but this isn't
+present in standard C.
 
-#define SPIN_LOCK_UNLOCKED { 1, 0L, 0L }
-...
+The reason as to why GCC can't handle your example when it could before
+has to do with the alignment of GCC to ISO C.  Constraint "3" in the
+standard states that "If the compound literal occurs outside the body
+of a function, the initializer list shall consist of constant expressions."
+Also, as Andreas said, "the value of a compound literal is that of an
+unnamed object initialized by the initializer list".  You would get
+the same error trying to do an initialization using a named object:
 
-but it breacks many code else where fork.c, raid1.c, raid5.c,...
-where it is easy to recast.
+  struct a { int i; } a = { 1 };
+  struct b { struct a x; } b = { a };
 
-Any better idea?
+I think you want to avoid using compound literals for you particular
+initialization.  You don't need the capability of compound literals
+to initialize an object type or an array of unknown size, or that
+each compound literal creates only a single object in a given scope
+(this is useful if the initializer values aren't constant).
 
-Joel
- 
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
