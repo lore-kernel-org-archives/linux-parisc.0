@@ -1,16 +1,18 @@
-From: Ulrich Teichert <krypton@ulrich-teichert.org>
+From: Randolph Chung <tausq@debian.org>
 Subject: Re: [parisc-linux] kernel module relocation bug
-Date: Mon, 29 Nov 2004 20:27:32 +0100 (MET)
-Message-ID: <200411291927.iATJRY3e032306@arbas.nms.ulrich-teichert.org>
+Date: Mon, 29 Nov 2004 11:46:18 -0800
+Message-ID: <20041129194618.GM6359@tausq.org>
 References: <1101742439.1714.11.camel@mulgrave>
+	<200411291927.iATJRY3e032306@arbas.nms.ulrich-teichert.org>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: James.Bottomley@SteelEye.com (James Bottomley)
+  charset=us-ascii
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>
+To: Ulrich Teichert <krypton@ulrich-teichert.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1101742439.1714.11.camel@mulgrave> from "James Bottomley" at Nov
-	29, 2004 09:33:53 AM
+In-Reply-To: <200411291927.iATJRY3e032306@arbas.nms.ulrich-teichert.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +23,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
+> I've seen this quite often in userspace on hppa-linux, lately while building
+> TAO (http://www.cs.wustl.edu/~schmidt/TAO.html).
 
->> currently the kernel module loader does not support long branch stubs.
->> using the debian 2.6.8-1 kernel, when loading the ipv6 module, i see:
->> 
->> legolas[6:43] linux-2.6% sudo modprobe ipv6
->> FATAL: Error inserting ipv6 (/lib/modules/2.6.8-1-32-smp/kernel/net/ipv6/ipv6.ko): Invalid module format
->
->This is pretty nasty.  The problem isn't a bad relocation, its that the
->relocation target is too far away (i.e. ipv6 is too big).
+what error do you see? the one that recommends rebuilding with
+-ffunction-sections?
 
-I've seen this quite often in userspace on hppa-linux, lately while building
-TAO (http://www.cs.wustl.edu/~schmidt/TAO.html).
+in your application, do you first build some .o's, link them together
+into a bigger .o, and then use those to create your final application
+image? (otherwise i don't think this problem should occur; if it does
+there's a bug somewhere that we should fix).
 
->We get around this in the kernel by using -ffunction-sections so that
->the real linker can insert stubs between functions.  However,
->calculating how to do that in the in-kernel module loader would not be a
->whole lot of fun.
+> Wouldn't there a way to fix that somewhere else in the toolchain? Or is
+> there a parisc machine code limitation in the way? I would really get rid of
+> -ffunction-sections as it seems to generate slower executables. Could
+> you please explain what needs to be done?
 
-Wouldn't there a way to fix that somewhere else in the toolchain? Or is
-there a parisc machine code limitation in the way? I would really get rid of
--ffunction-sections as it seems to generate slower executables. Could
-you please explain what needs to be done?
+we have (or, rather, Dave has) been fixing this in various places. This
+problem happens much less frequently now than it used to. Fixes may be
+required either in gcc or in the linker to detect when a branch target
+is too far away and needs to be converted to a long branch.
 
-TIA,
-Uli
+randolph
 -- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de
-Stormweg 24               |listening to: Suicide Drive (The Deep Eynde)
-24539 Neumuenster, Germany|Public Pervert (Interpol) Clé De Contact (Metal Urbain)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
