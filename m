@@ -1,37 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA09031
-	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Dec 1999 14:49:27 -0700
-Date: Wed, 29 Dec 1999 16:48:42 -0500 (EST)
-From: jay <jaym@mail.munsterman.com>
-To: Mike MacDonald <mmacdonald@tsi.gte.com>
-cc: "'Ulrich Strelow'" <ulrich_strelow@yahoo.com>,
-        "Soto,  Gene G." <Gene.Soto@bakeroiltools.com>,
-        "'Jan Bergman'" <jb@sapin.irfu.se>, parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] cd-rom
-In-Reply-To: <D7FDE5F0B39AD21181AA00805FA7183E040ABA86@tpaexc02.tsi.gte.com>
-Message-ID: <Pine.LNX.4.10.9912291645060.18817-100000@savage.munsterman.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA12542
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Dec 1999 00:09:58 -0700
+Received: from localhost (tom@localhost)
+	by adam.piace.com (8.9.3/8.9.3) with ESMTP id CAA07087
+	for <parisc-linux@thepuffingroup.com>; Thu, 30 Dec 1999 02:12:46 -0600
+Date: Thu, 30 Dec 1999 02:12:46 -0600 (CST)
+From: <tom@piace.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.9912300157060.6990-100000@adam.piace.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Thanks...alot
 List-ID: <linux-parisc.vger.kernel.org>
 
-Further collaboration... I have been able to boot my 715/50 and 715/100
-from an old single speed Chinon drive to install HPUX.
+	Two weeks I have received two 735 on loan.  They came from a
+surplus computer shop, and they did not know what they had, so I am
+working on two of the to see if I can get them to work, and If I can I get
+one for free in trade for telling them how to fix the others.  They still
+have the hpux loaded, but they have the passwords set.  
 
-On Wed, 29 Dec 1999, Mike MacDonald wrote:
+	I would like to help with the porting effort, but I have not been
+able to find a monitor that worked with the composit sync, and such a high
+sync rate, and I thought all was lost, but after reading the last
+few posts I was able to get one of them talking over a serial connection.  
 
-> 
-> I don't know if this helps (collaboration), but I have a 715/50, and it will
-> only boot from an HP CDRom that we have around here.  I have another cdrom
-> that I use the rest of the time - since it works great except for booting..
-> 
-> Anyway, my 715 will ONLY boot HPUX from certain cdroms, but will recognize
-> all cdroms fine.  I just figured there was something in the firmware or
-> something.
-> 
-> In fact, I can even read the HPUX cd no problem from my cdrom, but it won't
-> boot from it..   The HP CDROM worked fine..
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+	Does anyone know if hp has a development version of hpux like
+sun has with solaris?  If not does anyone know of a way to reset the
+password from the console.
+
+	My only other idea is to find a diff scsi card that I can put
+into my other linux box, and try to mount the root partions, and edit the
+password file.  
+
+	Any help would be great.  
+
+
+					Thanks A Lot
+					Thomas Bloom
