@@ -1,64 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA11867
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 16:57:25 -0700
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Karsten Merker <karsten@excalibur.cologne.de>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] configuration problems with cvs from 20001216 15:40 CET
-Date: Wed, 20 Dec 2000 01:00:16 +0100
-References: <20001217115105.A17378@excalibur.cologne.de> <00121721201800.25726@P100> <20001218230325.A934@excalibur.cologne.de>
-In-Reply-To: <20001218230325.A934@excalibur.cologne.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA12413
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 17:07:47 -0700
+Received: from rose.net ([172.18.6.11])
+	by mail.rose.net (8.9.3/8.9.3) with ESMTP id TAA03131
+	for <parisc-linux@thepuffingroup.com>; Tue, 19 Dec 2000 19:10:41 -0500
+Message-ID: <3A3FF766.95F79F50@rose.net>
+Date: Tue, 19 Dec 2000 19:03:51 -0500
+From: Patrick and Tammy Little <ptlittle@rose.net>
 MIME-Version: 1.0
-Message-Id: <00122000445401.00303@P100>
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] general questions
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Monday 18 December 2000 23:03, Karsten Merker wrote:
-> On Sun, Dec 17, 2000 at 09:20:51PM +0100, Helge Deller wrote:
-> > > $CONFIG_FB_STI is set to "y" as can be seen in .config, nonetheless
-> > > CONFIG_FBCON_STI is not declared.
-[snip]
-> I had activated "Console drivers -> Frame buffer support -> Advanced low
-> level driver options", and whenever this is selected, CONFIG_FBCON_STI is
-> not defined. If I unselect it, everything is ok. 
-[snip]
-
-Ok, thanks a lot for your investigation. I hadn't realized that and since 
-most of the developers use the default config, this problem has not shown up 
-yet. 
-
-> Has anybody tried to run Linux with serial console on a 715/100? When I
-> boot a kernel without support for STICON but with serial console enabled
-> (and console=ttyS0 as commandline parameter) the system crashes just after
-> displaying the "kernel command line" (system console is still in
-> "graphics" mode - does this make a difference?).
-
-This doesn't happen on my 715/64, which is afaik nearly the same machine as 
-yours. And, you don't need "console=ttyS0", but I don't think, that this is 
-related to your problem.
-
-> When using STICON instead, the console output works in principle, but
-> there is pixel garbage throughout the screen (it looks like it is between
-> the character cells) after the second "mode switch" (when the first line
-> on the screen is "Console: switching to colour STI console 160x64"). I
-> have seen a similar effect on a 712/80 when using STICON. 
-
-Yes, this is a known problem - it happens here too -, but since some of the 
-developers currently work on better STI-support this will get fixed in the 
-future - and I think this problem was not there, before we merged with linus.
-
-> The keyboard
-> works on the 712/80 but is dead on the 715/100 (in both cases the keyboard
-> is a ps/2 model, connected directly on the 712/80 and via the small
-> external adaptor box on the 715/100).
-
-Hmm, does the other end of this external adaptor on the /100 looks like a 
-RJ45-connector? If yes, I assume, that you have a PS/2 keyboard on a 
-HIL-adaptor and need the HIL keyboard driver, which should already be enabled 
-in defconfig. And the HIL keyboard works for me...
-If you could send me your bootlog I could take a closer look at it.
-
-Greetings,
-
-	Helge
+I have pulled down the 386 cross-compile tool kit(precompiled) and linux
+latest. I'm what you guys would consider a GREEN-horn at this. Following
+the documentation that has been provided I've set up a drive, got it to
+boot from the drive, built 2 kernels and I'm currently running the last
+one, so if you needed a green-horn test, I qualify.
+I'm still a little confused about this port/cross-compile deal though.
+The moving over that is left to do, is it done by running stuff through
+this cross-comp deal or is most everything that is being done still
+C-code editing? Other words, do you need someone with time on there
+hands or a C-code editor?
+Is the STI-Console still meant to be a messege center only or
+Interactive?
+Is there anymore doc on how to use the dpkg-cross deal? The README left
+me still foggy!
+I bought this box with nothing on the hard drive so it was try
+Parisc-Linux or buy HP-UX, that's why I am working at this so
+hard.         Thanks for your time, Patrick
