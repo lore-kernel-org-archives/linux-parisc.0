@@ -1,32 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA27620
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 09:21:12 -0700
-Message-Id: <200011151623.LAA21991@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [Semi OT] SOM Linker
-To: dhazeghi@pacbell.net
-Date: Wed, 15 Nov 2000 11:23:05 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA28175
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 09:45:37 -0700
+Date: Wed, 15 Nov 2000 11:47:09 -0500
+From: "Phillip D. Beal" <pdbeal@louisville.edu>
+To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <3A121DDD.992ECBC8@pacbell.net> from "dhazeghi@pacbell.net" at Nov 14, 2000 09:23:41 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Beta CD
+Message-ID: <20001115114709.B69784@athena.louisville.edu>
+References: <20001110171406.C3196@achilles.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001110171406.C3196@achilles.net>; from pjlahaie@linuxcare.com on Fri, Nov 10, 2000 at 05:14:06PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-> This is not precisely what I mean. What I should have said is that I want to create
-> a cross compiler --host=i686-linux --target=hppa-hpux. I asked this list, because
-> you folks did some work on the SOM linker, which is at the moment the missing piece
-> for a cross toolchain which targets hpux.
+On Fri, Nov 10, 2000 at 05:14:06PM -0500, Paul J.Y. Lahaie wrote:
+> Hello fellow PA-RISCers,
+> 
+> An preliminary beta CD for PA/Linux has been uploaded to
+> puffin.external.hp.com.  If people could try it and forward any complaints
+> or suggestions to me, it would be greatly appreciated.  The URL for the
+> image is: ftp://puffin.external.hp.com/pub/parisc/cd-images/palinux-0.5.iso.gz
+> 
+> 					- Paul
+the CD worked great on the 715 I tried, and I actually didn't have a
+serial console machine, so I used my Palm Pilot and a link cable.  Still
+worked like a charm.  How did you get the kernel image into the boot
+sector of the CD?  I'd like to try to build some CD's of the kernels I'm
+building to test in some mahcines that are not on the same network as
+the machine that I'm building everything from.
 
-This also may be possible.  The first step would be to copy the hpux headers
-to a i686-linux system and see if you can build the HP linker.  The next
-step would be to try to build the cross binutils tools.  I know this
-requires the hpux headers and likely some hacking would be required to
-get it to build.
+And I don't mind posting my CD images somewhere if they work...but most
+of my testing is on a 735 or 755. 
 
-The linker is probably the hard part.  There may be byte ordering issues
-and bugs in what HP contributed.
-
-Dave
+Thanks,
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Phillip Beal
+Electrical and Computer Engineering
+S+LUG Vice-President
