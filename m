@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail11.speakeasy.net [216.254.0.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6BBFF4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Jun 2003 22:16:55 -0600 (MDT)
-Date: Sat, 28 Jun 2003 00:17:01 -0400
-Subject: Re: [parisc-linux] Getting XF86 to run on a C-180 box
-Content-Type: text/plain; delsp=yes; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: gentoo-user@gentoo.org,
-	PA-RISC Users <parisc-linux@lists.parisc-linux.org>
-To: Rod Smart <snaketails@optusnet.com.au>
-From: Charles Slivkoff <caslivkoff@speakeasy.net>
-In-Reply-To: <3EF99C53.7070200@optusnet.com.au>
-Message-Id: <5DC820FC-A91F-11D7-830E-000393581E44@speakeasy.net>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 125514829
+	for <parisc-linux@parisc-linux.org>; Sat, 28 Jun 2003 06:51:19 -0600 (MDT)
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by cuprel1.hp.com (Postfix) with ESMTP id AE4F18DE
+	for <parisc-linux@parisc-linux.org>; Sat, 28 Jun 2003 03:20:42 -0700 (PDT)
+Message-ID: <3EFD6F6D.8080403@tiscali.be>
+Date: Sat, 28 Jun 2003 10:35:25 +0000
+From: Joel Soete <joel.soete@tiscali.be>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+Subject: [Fwd: Re: [parisc-linux] warning: minor abi change]
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,57 +23,118 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wednesday, Jun 25, 2003, at 08:57 US/Eastern, Rod Smart wrote:
 
->    I have a C-180 Visualize RISC system with a (GSC) "A4070" video  
-> card with a "A4747" daughter card.
+-------- Original Message --------
+Subject: 	Re: [parisc-linux] warning: minor abi change
+Date: 	Fri, 27 Jun 2003 09:15:46 -0600
+From: 	Grant Grundler <grundler@parisc-linux.org>
+To: 	Joel Soete <jsoe0708@tiscali.be>
+References: 	<20030626170628.GO451@parcelfarce.linux.theplanet.co.uk> 
+<3ED70CF10000AD97@ocpmta2.freegates.net>
 
->    I would like to get this thing into doing something more than  
-> heating my bedroom, so I am wondering if anyone has a XF86Config file  
-> that I could get the video driver settings for the above card  
-> configuration.
->
->    I have tried "fbdev" but even at Depth=8 I have not been able to  
-> get xfree running.
 
-That should work provided you have a "1280x1024" mode defined and set  
-the "fbdev" option to "/dev/fb1". But, I suppose you want fb0, right?
 
->
->    I searched through the old mail archives but I couldn't find much  
-> more than the "fbdev" setup.
+On Fri, Jun 27, 2003 at 04:41:13PM +0200, Joel Soete wrote:
+> But mainly, as promise I co 2.4.21-p0 and copare with my merge and notice
+> some requested add patch:
+> diff -NaurX dontdiff linux-2.4.21-pa0/drivers/ide/pci/ns87415.c linux-2.4.21-rc8-pa35/drivers/ide/pci/ns87415.c
 
-This thread should help:
+This is for c3000/j5000/et al workstations.
+NS "SuckyIO" multifunction chip includes ns87415 compatible IDE controller.
 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/ 
-019064.html
+...
+> +#define __save_and_cli(x)  do { __save_flags(x); __cli(); } while(0);
+> +#define __save_and_sti(x)  do { __save_flags(x); __sti(); } while(0);
+> +
 
->    When I do the  command line from one of the mail list messages i  
-> get the following.
->
-> vorlon portage # dmesg | grep stifb
-> fb0: stifb 1280x1024-32 frame buffer device, id: 2bcb015a, mmio:  
-> 0xf8100000
-> fb1: stifb 1280x1024-8 frame buffer device, id: 2d08c0a7, mmio:  
-> 0xfa100000
->
->    I'm not sure what this means, but I think the "-8" and the "-32" is  
-> the depth.
+This is something different - but I'd think this is needed too.
+Make sure this isn't a merge error (ie see if it's defined elsewhere).
 
-That is correct, and the "1280x1024" corresponds to the resolution as  
-specified in the PDC. IIRC, the A4070-* devices (HCRX family) only  
-worked at this resolution, but might be switchable between 75hz VESA  
-(separate H/V sync) and 72hz (sync-on-green). If your monitor is not  
-receiving a sync signal use a serial console (power-on with the PS/2  
-keyboard detached, 9600/8/n/1) and try the "co mo" command to view the  
-video setting. "co mo list" should give you a list of options available  
-for each of your two devices.
+> btw I also test following stuff which seems to works too:
+> diff -NaurX dontdiff linux-2.4.21-pa0/include/asm-parisc/system_irqsave.h.mine
+> linux-2.4.21-rc8-pa35/include/asm-parisc/system_irqsave.h.mine
+> --- linux-2.4.21-pa0/include/asm-parisc/system_irqsave.h.mine	1970-01-01
+> 01:00:00.000000000 +0100
+> +++ linux-2.4.21-rc8-pa35/include/asm-parisc/system_irqsave.h.mine	2003-06-27
+> 15:50:11.000000000 +0200
+> @@ -0,0 +1,21 @@
+> +#ifndef __PARISC_SYSTEM_IRQSAVE_H
+> +#define __PARISC_SYSTEM_IRQSAVE_H
+> +
+> +/* interrupt control */
+> +#define __save_flags(x)	__asm__ __volatile__("ssm 0, %0" : "=r" (x) : :
+> "memory")
+> +#define __restore_flags(x) __asm__ __volatile__("mtsm %0" : : "r" (x) :
+> "memory")
+> +#define __cli()	__asm__ __volatile__("rsm %0,%%r0\n" : : "i" (PSW_I) : "memory"
+> )
+> +#define __sti()	__asm__ __volatile__("ssm %0,%%r0\n" : : "i" (PSW_I) : "memory"
+> )
+> +
+> +#define __save_and_cli(x)  do { __save_flags(x); __cli(); } while(0);
+> +#define __save_and_sti(x)  do { __save_flags(x); __sti(); } while(0);
+> +
+> +/* For spinlocks etc */
+> +#define local_irq_save(x)  __save_and_cli(x)
+> +#define local_irq_set(x)   __save_and_sti(x)
+> +
+> +#define local_irq_restore(x) __restore_flags(x)
+> +#define local_irq_disable() __cli()
+> +#define local_irq_enable()  __sti()
+> +
+> +#endif /* __PARISC_SYSTEM_IRQSAVE_H */
 
-BTW, you might want to grab copies of the service manual & owner's  
-guide for future reference:
 
-http://h20000.www2.hp.com/bizsupport/TechSupport/ 
-DocumentIndex.jsp?contentType=SupportManual&docIndexId=120929&locale=en_ 
-US&prodTypeId=12454&prodSeriesId=44435
+This looks more familiar to me..but I'd need to review the whole tree and
+can't do that right now.
 
--chuck
+> +0200
+> +++ linux-2.4.21-rc8-pa35/arch/parisc/kernel/processor.c	2002-12-20 15:56:19.000000000
+> +0100
+> @@ -77,8 +77,6 @@
+>  	unsigned long txn_addr;
+>  	unsigned long cpuid;
+>  	struct cpuinfo_parisc *p;
+> -	extern struct irq_region_ops cpu_irq_ops; /* arch/parisc...irq.c */
+> -	extern struct irqaction cpu_irq_actions[]; /* arch/parisc...irq.c */
+
+
+If they are no longer referenced, that's fine.
+I didn't really want these published in a header file if they are still
+referenced.  But it's not a big deal if they are.
+
+...
+> - Grant what do you think about this:
+> 
+> diff -NaurX dontdiff linux-2.4.21-pa0/drivers/sound/ad1889.c linux-2.4.21-rc8-pa35/drivers/sound/ad1889.c
+> --- linux-2.4.21-pa0/drivers/sound/ad1889.c	2003-06-27 07:46:37.000000000
+> +0200
+> +++ linux-2.4.21-rc8-pa35/drivers/sound/ad1889.c	2003-05-08 22:43:44.000000000
+...
+
+That's fine with me.
+If AD had published decent specs for this chip, we could actually
+get it workng. I only hacked around on it enough to get DMA sort of
+working and *some* sounds came out of it.
+
+> - another cleanup (don't remember why :-?)
+...
+> Comments:
+> 
+> - The first changes (xxx_bad(void)) was agreed earlier by Randolph but never
+> comited (?). The goal is to breack the build of the kernel and so avoid the
+> risk to boot one (as I do when I test evms or [xj]fs which required __put_XXX_asm64)
+> which can unexpected damages
+
+yes - that's good
+
+> - The second replace Randolph __put_XXX_asm64(); it does the same job and
+> avoid severall warning at compile time as:
+
+good too
+
+I need the above changes in a format that I apply with "patch -p1 < diff"
+(or -p0) if you want me to commit them.
+
+thanks,
+grant
