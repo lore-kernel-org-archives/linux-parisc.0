@@ -1,67 +1,80 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id EF99A4830
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 01:59:20 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: "Neulinger, Nathan" <nneul@umr.edu>,
-	"'John Marvin'" <jsm@udlkern.fc.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP-UX binary compatibility
-Date: Sat, 6 Oct 2001 09:58:51 +0200
-Cc: "Uetrecht, Daniel J." <uetrecht@umr.edu>
-References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D869@umr-mail03.cc.umr.edu>
-In-Reply-To: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D869@umr-mail03.cc.umr.edu>
-MIME-Version: 1.0
-Message-Id: <20011006075920.EF99A4830@dsl2.external.hp.com>
+Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1CCFA4830
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 02:42:45 -0600 (MDT)
+Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
+	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
+	id 15pn2f-0001Ih-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 06 Oct 2001 10:42:41 +0200
+Date: Sat, 6 Oct 2001 10:41:30 +0200
+From: Albert Strasheim <fullung@ilink.nis.za>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PCXS fixes
+Message-ID: <20011006104130.A18068@dogbert.localdomain>
+References: <200110030832.CAA10917@udlkern.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
+In-Reply-To: <200110030832.CAA10917@udlkern.fc.hp.com>
+Sender: Albert Strasheim <fullung@dogbert.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Nathan,
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I just verified and the /proc/cpuinfo entry was removed in the meantime.
-But with the following code-fragment you will get the right number:
+Hello,
 
-#include <asm/processor.h>
-printk("ID: %ld\n", boot_cpu_data.pdc.model.sw_id);
+On Wed, 03 Oct 2001, John Marvin wrote:
 
-This value is initialized during boot-up in setup.c and comes from the 
-PDC_MODEL [pdc_model_info()] syscall.
+<snip>
 
-Greetings,
-Helge
+> However, ls still hangs randomly (actually it is not random, it depends on
+> which directory the ls is done in).  It gets stuck in a ldcw loop due to
+> the lock word not being 16 byte aligned.  The problem is that we fixed the
+> alignment problems for static and dynamic allocations, but the align
+> attribute is ignored for automatic (stack) allocations. Note that
+> although ldcw requires 16 byte alignment for correct function, it does
+> not cause an unaligned fault if the address is not aligned, it just
+> doesn't work correctly!
+>=20
+> Here are some suggested fixes:
+>=20
+>     1) Fix the compiler to honor the aligned attribute for stack
+>     allocations. I'm not sure how difficult this would be. I'm
+>     not a compiler person, so someone else would have to do this.
+>     I would guess that this problem is in the machine independent
+>     part of the compiler. I'm not sure whether or not it would
+>     be considered a bug. It might be worth writing a test for
+>     the 386 version of gcc, and if it fails, report the "bug" and
+>     see what happens ...
+>=20
+>     2) Change the lock structure to have 4 contiguous lock words, each
+>     initialized to 1.  Then the lock code can round the address up to the
+>     nearest 16 byte aligned address and use that for the semaphore.  If we
+>     choose this solution we can just get rid of the aligned attribute,
+>     since it would no longer serve any purpose.
 
-On Friday 05 October 2001 17:14, Neulinger, Nathan wrote:
-> Hmm... Doesn't appear to be in there. At the moment, I actually could care
-> less about the real host id, but if the proc entry was overwritable, that
-> would solve my needs perfectly. At the moment, in my local kernel source, I
-> just wired the appropriate return values in the system call wrapper.
->
-> -- Nathan
->
-> > -----Original Message-----
-> > From: Helge Deller [mailto:helge.deller@sap.com]
-> > Sent: Friday, October 05, 2001 3:18 AM
-> > To: Neulinger, Nathan; 'John Marvin';
-> > parisc-linux@lists.parisc-linux.org
-> > Cc: Uetrecht, Daniel J.
-> > Subject: Re: [parisc-linux] HP-UX binary compatibility
-> >
-> >
-> > Hi Nathan,
-> >
-> > On Thursday 04 October 2001 17:07, Neulinger, Nathan wrote:
-> > > troot-halley(11)> uname -a
-> > > HP-UX halley B.10.20 A 9000/735 2002000004 two-user license
-> > > troot-halley(12)> uname -i
-> > > 2002000004
-> > >
-> > > It's that 2002000004 that I need.
-> >
-> > I currently don't have access to a parisc-linux machine, but out of
-> > my head I think you may get that number from the /proc/cpuinfo file
-> > (maybe it is displayed there in hex) and may use it from the variable
-> > behind this output for your syscall wrapper.
-> >
-> > Greetings,
-> > Helge
+As anyone decided on what do here? What would the test that John
+mentions entail? How difficult is the second solution to implement?
+
+Regards,
+
+Albert
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7vsO6Dg+hOeRZtkMRAhljAJ4pzBmWI9hDB5o80wPqsKc96auLFwCcDbtq
+DIaEiaZODeFkufJV7txaxI8=
+=S3LF
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
