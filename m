@@ -1,8 +1,9 @@
-From: Thibaut VARENE <varenet@esiee.fr>
+From: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] FW: An HP doc for TLDP
-Date: Wed, 23 Jun 2004 10:27:43 +0300
-Message-ID: <20040623082743.98CD33658C0@mail.esiee.fr>
-References: <20040623051909.GD27085@colo.lackof.org>
+Date: Wed, 23 Jun 2004 12:41:23 +0100
+Message-ID: <20040623114123.GC20511@parcelfarce.linux.theplanet.co.uk>
+References: <001a01c458c0$949e1650$df6ddacf@athlon>
+	<20040623051909.GD27085@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -21,48 +22,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
--------------------
-> On Tue, Jun 22, 2004 at 06:22:36PM -0700, Greg Porter wrote:
+On Tue, Jun 22, 2004 at 11:19:09PM -0600, Grant Grundler wrote:
+> ...on a PA-RISC machine.
+> Hitachi and Precision Engeering also made PA-RISC machines.
 
-[...]
->=20
-> > For example, I recently documented HP server firmware with
-DocBook,
-> > please see http://www.porterdavis.org/computing/hp_boot/ for an
-> > example.
->=20
-> You *really* want to have those sections reviewed by other
-volunteers
-> before submitting them to TLDP.
+And Convex, of course.  http://www.paralogos.com/DeadSuper/Convex/
+http://www.fact-index.com/c/co/convex_computer.html
 
-This look much to me like a copy paste of the help menus of the BCH.
-Maybe you want to have a look here:
-http://www.pateam.org/parisc-linux-boot/PA-RISC-Linux-Boot-HOWTO/index
-.html
-
-Sections 3, 4 and 5.
-
-FYI, that howto is on TLDP, and will probably be slightly updated
-soon.
-
->=20
-> Here are some example comments from ch02 at:
-> 	http://www.porterdavis.org/computing/hp_boot/ch02.html
->=20
-> | Getting a PDC prompt
->=20
-> You skipped console setup. things like how to setup a serial console
-> vs graphical, disconnecting Keyboard/mouse to force serial console,
-> <TAB>-key at poweron, etc.
-
-Everything which is properly documented in the above mentionned howto.
-
-HTH,
-
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://www.pateam.org/
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
