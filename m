@@ -1,37 +1,63 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.24.18])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7C665482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Apr 2001 07:47:37 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id VAA29957
-	for parisc-linux@lists.parisc-linux.org; Sun, 15 Apr 2001 21:47:24 +0800
-Date: Sun, 15 Apr 2001 21:47:21 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+Received: from viemta06.chello.at (viemta06.chello.at [195.34.133.56])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D21B482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Apr 2001 16:12:35 -0600 (MDT)
+Received: from dot.at ([62.178.92.247]) by viemta06.chello.at
+          (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
+          with ESMTP id <20010415221232.ONFI27182.viemta06@dot.at>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 16 Apr 2001 00:12:32 +0200
+Sender: chris@dsl2.external.hp.com
+Message-ID: <3ADA1CD1.C3251E9B@dot.at>
+Date: Mon, 16 Apr 2001 00:12:33 +0200
+From: Christoph Plattner <christoph.plattner@dot.at>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Booting 735/99
-Message-ID: <20010415214718.I5351@neep.com.au>
-References: <007701c0c415$3f4779a0$1401a8c0@peewee> <20010413233152.F8797@neep.com.au> <20010413201639.A3780@beavis.ybsoft.com>
-Mime-Version: 1.0
+References: <3AD788DB.2A4A73E2@dot.at>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010413201639.A3780@beavis.ybsoft.com>; from rbrad@beavis.ybsoft.com on Fri, Apr 13, 2001 at 08:16:39PM -0600
+Subject: [parisc-linux] One further step ... success: My E55 (9000/856) runs bash-2.04 via PDC
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ryan Bradetich said:
-> I believe the 735 requires rbootd.  I know debian has a package for this
-> and I think a redhat rbootd package can be found at:
+Christoph Plattner wrote:
 > 
-> ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/rbootd-2.0-2.tar.gz
+> Hello PA-RISC community.
 > 
-> - Ryan
+> Again and again I want to have my E55 running Linux, but the problem
+> is the serial lines (8-port MDP) is a proprietary interface. So I needed
+> a solution.
+> 
+> I had the idea to use the PDC console, months ago.
+> Today hacked a driver (template was serial.c) for a polling PDC device
+> driver. I called it pdc_drv.c, the device is "ttyQ0", with MAJOR 30,
+> MINOR 0
+> and I use a polling period of 30ms (enough for a serial console i/f).
+> 
+> Because I have not further implemented the internel console i/f for my
+> driver, I used the hack with the link of
+>         /dev/console --> /dev/ttyQ0
+> And my machine boots up via NFS !
+> 
+> Perhaps we can make a "driver" out of this "hack" !
+> 
+> In my driver I also use the hack, I have done for the serial.c, that
+> with `^\' I can reboot ( machine_restart() ) the computer to work
+> remote on it !
+> 
+> With friendly regards
+> 
+>         Christoph P.
+> 
+> --
+> -------------------------------------------------------------------------
+> private:        christoph.plattner@dot.at
+> company:        christoph.plattner@alcatel.at
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
 
-Tut tut, how did I forget that ... I also have a 735 which gets its
-kernel by rbootd.  The rbootd server runs the LAN's dhcpd as well, that
-is my excuse.  =)
-
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+-- 
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
