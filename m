@@ -1,50 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.24.18])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1E410482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Jun 2001 13:21:33 -0600 (MDT)
-Date: Sat, 30 Jun 2001 02:57:21 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Cc: jason andrade <jason@dstc.edu.au>
-Subject: Re: [parisc-linux] mirroring parisc-linux in australia (2nd or 3rd try..)
-Message-ID: <20010630025719.K31834@neep.com.au>
-References: <Pine.OSF.4.20.0106291452140.7520-100000@azure.dstc.edu.au>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 427A2482A
+	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 15:34:27 -0600 (MDT)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel1.hp.com (Postfix) with ESMTP id B8F2F8AA
+	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 17:34:26 -0400 (EDT)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id BF03237F86
+	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 15:34:25 -0600 (MDT)
+To: parisc-linux@parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.OSF.4.20.0106291452140.7520-100000@azure.dstc.edu.au>; from jason@dstc.edu.au on Fri, Jun 29, 2001 at 02:54:03PM +1000
+Date: Fri, 29 Jun 2001 15:34:25 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010629213425.BF03237F86@carmen.fc.hp.com>
+Subject: [parisc-linux] New i386->hppa cross-compiler
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Jason,
+Hi hppa-linux'ers,
 
-I think everyone's on vacation at the moment.  =)
+I have built a new i386 ->hppa/hppa64 cross-compiler. The tarball is available 
+at,
 
-> I'm trying to find out what's involved in mirroring parisc-linux
-> here in australia and actually getting listed.
-> 
-> I've mirrored the 0.9 release, and have been mirroring since
-> 0.5, but haven't been able to get any reply from the parisc
-> archive admin to date about
-> 
-> o automating mirroring
-> o rsync access
-> o web page mirroring
-> 
-> and most importantly, getting listed as a mirror for australia.
-> 
-> any takers ?
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010628-2.tar.gz
 
-Well, as you are already mirroring the entire Debian archive you have
-the hppa packages on board, which is great.  I don't actually know who
-it is that has been updating the website but hopefully someone who has
-CVS write access could add the relevant URLs to the pages.  I wouldn't
-think it worthwhile to mirror the website itself though apart from those
-ISO files.  Once things have settled down with a stable release then
-planetmirror/mirror.aarnet will pick them up via the debian-cd mirror.
+Untar it from / it lives in /opt/palinux, so you'll want to add 
+/opt/palinux/bin to your $PATH. It was built against potato's glibc 2.1.3 so 
+it should work on systems using that and newer.
 
-Andrew.
+Please report any problems to the list.
 
 -- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
