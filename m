@@ -1,34 +1,43 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Thu, 18 Feb 1999 10:01:00 -0600
-From: Jason Eckhardt <jason@equator.com>
-Message-Id: <199902181601.KAA01190@equator.com>
+Date: Fri, 19 Feb 1999 02:15:37 -0500 (EST)
+From: Alex deVries <adevries@redhat.com>
 To: hppa-linux@puffingroup.com
-Subject: [hppa-linux] Bootstrap test results
-Resent-Message-ID: <"_o6Yy3.0.X47.Af3ps"@burrow.puffingroup.com>
+Subject: Re: [hppa-linux] egcs and binutils cross compiling
+In-Reply-To: <199902181540.HAA05282@gatekeeper.equator.com>
+Message-ID: <Pine.LNX.3.96.990219020153.6493S-100000@devserv.devel.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Resent-Message-ID: <"TO1LT.0.gE7.a1Hps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
-Thanks to everyone who ran the bootstrap test and responded!
+On Thu, 18 Feb 1999, Jason Eckhardt wrote:
+>  I think most of you are using Mklinux as the crosscompiler host. Has
+>  anyone tried building the cross compiler from HP-UX? This will probably
+>  have to be my build system since Mklinux doesn't work for me.
+>  jason.
 
-The bootstrap worked on 5 of 6 systems tested:
-1) 715/75         *
-2) 777 (C110)
-3) 816/E35        *
-4) 712/60         *
-5) 780 (C160)
+My primary non-native build environment for the forseeable future is my
+PII 400 (i386 family) running Red Hat Linux, for which these packages were
+intended. That may change. 
 
-* For some reason, these systems returned CPUID was 00000000 (which I believe
-  to be invalid). Maybe on these
-  the cpuid must be obtained in a different way than the PDC routine I used.
-  
-The one failure was on an A180. I don't know anything about this system,
-so I'm not sure what's happening. Anyone know what the CPU is on the
-A180 or any other info?
+Well, I'm certainly not against having hpux based cross compilers, and
+they shouldn't be that difficult to do. I might have a look at it myself,
+although I'm not sure if the 735 I have has CC or gcc on it.
 
-These people booted successfully from disk, tape, and even rbootd!
+Certainly, though, I'd entertain distributing binaries for cross compiling
+egcs and binutils with host=hppa1.1-hp-hpux target=hppa1.1-hp-linux.  All
+the parts are there. 
 
-Jason.
+Normally I'd say that it's easy to build it yourself, but building cross
+compilers tends to be a real pain.
+
+Also, Paul is changing the ELF header structure significantly between
+mklinux and *real* linux, so we're getting close to having to just abandon
+all of mklinux.
+
+- Alex
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
