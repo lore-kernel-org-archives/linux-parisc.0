@@ -1,40 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 701A4482A
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 13:29:25 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 157MW0-00024Y-00; Tue, 05 Jun 2001 20:29:20 +0100
-Date: Tue, 5 Jun 2001 20:29:20 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: "Michael S. Zick" <mszick@pflash.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, debian-hppa@lists.debian.org,
-	parisc-linux@parisc-linux.org, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
-Message-ID: <20010605202920.U7349@parcelfarce.linux.theplanet.co.uk>
-References: <20010605201048.T7349@parcelfarce.linux.theplanet.co.uk> <01060514223706.00472@wolf01.my.home>
-Mime-Version: 1.0
+Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61BAD482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Jun 2001 14:30:37 -0600 (MDT)
+Message-ID: <3B1D416A.225615EB@hp.com>
+Date: Tue, 05 Jun 2001 16:30:34 -0400
+From: Chuck Slivkoff <charles_slivkoff@hp.com>
+MIME-Version: 1.0
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Forcing PA-Linux to swap / do_page_fault()
+References: <3B180D83.F5479D0B@hp.com> <3B1D1D56.14424ACA@hp.com> <20010605200728.S7349@parcelfarce.linux.theplanet.co.uk>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01060514223706.00472@wolf01.my.home>; from mszick@pflash.com on Tue, Jun 05, 2001 at 02:16:05PM -0500
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jun 05, 2001 at 02:16:05PM -0500, Michael S. Zick wrote:
-> Corporations shouldn't require users to drive them
-> to do their best.
-
-So far i've heard nothing but talk from you.  i've been working on this
-project for more than 2 years now, working for 3 different companies
-during that time.  Sometimes I've been paid to work on it, sometimes
-I haven't.  Sometimes I've worked on it entirely on my own time.  I want
-to see something constructive from you before I'll accept your criticism.
-
-> Read on, gang, read on - when I get a clean
-> compile and a kernel that boots on my model 720...
+Matthew Wilcox wrote:
 > 
-> I'll ask someone where to send the diff's...
+> On Tue, Jun 05, 2001 at 01:56:38PM -0400, Chuck Slivkoff wrote:
+> > I've noticed a problem that I believe is might be related to the kernel
+> > not being able to use swap space.  I've never seen swap utilization > 0
+> > and suspect that something might be seriously wrong. Here's an example
+> > of the kernel error:
+> 
+> Hmm... none of my systems are using swap either; I had noticed this
+> before, but never really thought much of it.  This has to be a 
+> moderately recent breakage because I know jsm has tested swapping.
 
-Not the way it works.  Things will move on and you'll get left behind.
-Send patches now and they'll (probably) get integrated.
-
--- 
-Revolutions do not require corporate support.
+I noticed similar behavior w/ the kernel from the 0.6 ISO, but it's been
+behaving much better since upgrading to the 0.9 bits.
