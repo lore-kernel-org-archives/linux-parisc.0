@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ABEC64829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Mar 2003 16:32:35 -0700 (MST)
-Date: Sat, 8 Mar 2003 15:31:41 -0800
-From: Randolph Chung <tausq@debian.org>
-To: "David S. Miller" <davem@redhat.com>
-Cc: willy@debian.org, grundler@dsl2.external.hp.com,
-	jsm@udlkern.fc.hp.com, parisc-linux@lists.parisc-linux.org
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0A2D4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Mar 2003 16:36:34 -0700 (MST)
+Date: Sat, 08 Mar 2003 15:14:58 -0800 (PST)
+Message-Id: <20030308.151458.92123437.davem@redhat.com>
+To: willy@debian.org
+Cc: grundler@dsl2.external.hp.com, jsm@udlkern.fc.hp.com,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: RFC: mmap patch
-Message-ID: <20030308233141.GC11363@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20030308172439.GA10161@dsl2.external.hp.com> <20030308.110459.35972945.davem@redhat.com> <20030308224503.L3865@parcelfarce.linux.theplanet.co.uk> <20030308.150023.97153009.davem@redhat.com>
+From: "David S. Miller" <davem@redhat.com>
+In-Reply-To: <20030308232736.N3865@parcelfarce.linux.theplanet.co.uk>
+References: <20030308224503.L3865@parcelfarce.linux.theplanet.co.uk>
+	<20030308.150023.97153009.davem@redhat.com>
+	<20030308232736.N3865@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030308.150023.97153009.davem@redhat.com>
+Content-Type: Text/Plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +26,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> You need merely 9MB of address space (2 * 4MB) if you implement
-> my {copy,clear}_user_page() dynamic mapping hack, that will be
-> tons more cheaper than any kmap based scheme and also be nicer
-> on the TLB as there will be zero TLB changes occurring around
-> the copy/clear.
+	Sorry, I think you've misunderstood the problem.  This is
+	write() vs mmap().  We call flush_dcache_page() after the
+	write() -- but PA's flush_dcache_page() only flushes the
+	kernel's mapping of that page, not the user's.  The question
+	is how to fix that.
 
-i hope i'm not missing something obvious, but from what i understand
-from this discussion, {copy,user}_user_page helps with the initial
-syncing up of new mappings that are created for a process... but how
-does this deal with syncing up changes afterwards? for that we still
-need the flush_dcache_page to walk the user mappings right?
+Right, flush_dcache_page() must get rid of all instances of
+the underlying physical data from the cache.  This means all
+kernel and user virtual mappings of the page.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Chips with a "flush physical page X" scheme can just do that,
+others can flush the kernel virtual mapping then walk the
+VMA list of user mappings and hit those one by one.
