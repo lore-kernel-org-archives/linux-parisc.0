@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A9E964829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 22:02:40 -0600 (MDT)
-Date: Tue, 27 Aug 2002 00:02:21 -0400 (EDT)
-From: "Christopher C. Chimelis" <chris@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Cc: Randolph Chung <tausq@debian.org>,
-	"B. Douglas Hilton" <bdhilton@charter.net>,
-	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Compiling glide-2001.01.26 on hppa
-In-Reply-To: <20020824223751.GA16590@systemhalted>
-Message-ID: <Pine.LNX.4.21.0208270001180.28522-100000@spawn.hockeyfiend.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 839124829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 27 Aug 2002 09:17:12 -0600 (MDT)
+Date: Tue, 27 Aug 2002 11:14:53 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Cc: debian-glibc@lists.debian.org
+Message-ID: <20020827151453.GA6100@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] glibc hppa - get/set/make/swap/context() & non-atomic ops
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,66 +21,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Try starting with the source for glide3-alpha.  It is the 64-bit branch of
-the glide sources.  I tweaked them to compile ok on Alpha and they
-shouldn't be hard to fix up for hppa as well.
+PA'ers,
 
-C
+Comments or thoughts about the following issues would be appreciated.
 
-On Sat, 24 Aug 2002, Carlos O'Donell wrote:
+These items are taken from my collection of TODO notes for glibc,
+and were recently added by comments from Helge and Willy.
 
-> > > cc -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> > > -fexpensive-optimizations -ffast-math -DBIG_OPT -I. \
-> > > -I/usr/src/glide-2001.01.26/build-tree/glide2x/swlibs/include \
-> > > -I/usr/src/glide-2001.01.26/build-tree/glide2x/cvg/include \
-> > > -DENDB -DX11 -Wall -fPIC -DPIC -c -o fx64.o fx64.c
-> > > 
-> > > cc1: Invalid option `486'
-> > > 
-> > > 
-> > > My question is, what incantation should I use on hppa to
-> > > replace the '-O6 -m486 -f...' CFLAGS?
-> > 
-> > i would suggest just using "-O2" for now....
-> > 
-> > randolph
-> > 
-> 
-> The issues revolves around the fact that the source tree and 
-> assembly for some of pieces you want to build are meant for x86 boxes.
-> Though from a cusory glance it looks like the .c files are present for
-> these bits (so you can revert to those).
-> 
-> Right off the top:
-> tvg/makefile.linux:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
-> glide2x/sst1/init/initvg/makefile.unix:CFLAGS = -O -m486 -fomit-frame-pointer $(LCDEFS) $(LCOPTS) $(LCINC)
-> glide2x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> glide2x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> glide2x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
-> glide3x/swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> glide3x/swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> glide3x/swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
-> swlibs/include/make/3dfx.linux.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> swlibs/include/make/3dfx.mak:CNODEBUG       = -O6 -m486 -fomit-frame-pointer -funroll-loops \
-> swlibs/include/make/makefile.autoconf.bottom:GLIDE_DEBUG_GCFLAGS = -O6 -m486
-> 
-> These files will give you some grief and need to be changed; remove the -m486 bit.
-> You either need to produce .dpatch's for the deb to use or stop building
-> the deb and do it by hand with the upstream source.
-> 
-> You've got me all excited about seeing this work :) I have a Vodoo1 (Monster3D)
-> PCI card that I might be tempted to ressurect.
-> 
-> Hope this helps. Sorry about there not being a _magic_ switch :)
-> 
-> c.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+- Implement make/swap/set/get/context() calls in glibc
+        = Don't know what's needed... can probably learn
+        = about the calls from other arches.
+        - Doesn't look like it will be that hard.
+        - Helge brought the issue up since SAPDB relies
+        - on this to work properly (www.sapdb.org)
+	- With mcontext working properly... these calls
+	- _should_ work :}
+	* Didn't know these were broken or missing.
+
+- Make atomic ops atomic
+        = Need to implement exhcange_and_add/atomic_add
+        = and compare_and_swap.
+        - I have no idea how hard this will be.
+        - PA has a single atomic operation called ldcw
+        - Which is 'load and zero' ... we currently use
+        - this to implement locking primities.
+        * Are we going to have to use spinlocks to
+        * handle the atomic operations?
+	* I see 11 uses of generic/atomicity.h that need
+	* to be fixed.
+
+Cheers,
+Carlos.
