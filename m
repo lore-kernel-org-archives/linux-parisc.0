@@ -1,20 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B2F0C487A
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Aug 2003 14:03:55 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 19rk2k-0006xv-Gv; Tue, 26 Aug 2003 21:03:54 +0100
-Date: Tue, 26 Aug 2003 21:03:54 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: =?iso-8859-1?Q?Martin-=C9ric?= Racine <q-funk@pp.fishpool.fi>
-Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
-Message-ID: <20030826200354.GT22294@parcelfarce.linux.theplanet.co.uk>
-Reply-To: parisc-linux@parisc-linux.org
-References: <200308261202100660.00729583@smtp1.sympatico.ca> <Pine.LNX.4.21.0308262125490.16192-100000@hal.pp.fishpool.fi>
+Received: from mail.zigoo.net (d108.dhcp212-198-139.noos.fr [212.198.139.108])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EB2114845
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Aug 2003 15:38:55 -0600 (MDT)
+Date: Tue, 26 Aug 2003 23:38:41 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+To: parisc-linux@parisc-linux.org
+Cc: willy@debian.org,
+	=?ISO-8859-1?Q?Martin-=C9ric?= Racine <q-funk@pp.fishpool.fi>,
+	debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] Re: kernel 2.6 for hppa status?
+Message-Id: <20030826233841.655ec3b2.varenet@esiee.fr>
+In-Reply-To: <20030826200354.GT22294@parcelfarce.linux.theplanet.co.uk>
+References: <200308261202100660.00729583@smtp1.sympatico.ca>
+	<Pine.LNX.4.21.0308262125490.16192-100000@hal.pp.fishpool.fi>
+	<20030826200354.GT22294@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <Pine.LNX.4.21.0308262125490.16192-100000@hal.pp.fishpool.fi>
-Subject: [parisc-linux] Re: kernel 2.6 for hppa status?
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1"; boundary="=.Qjpr3j(rw5Je4."
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +28,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Aug 26, 2003 at 09:29:35PM +0300, Martin-Éric Racine wrote:
-> Greetings,
-> 
-> Having just tried kernel 2.6 (the release candidate found in unstable) on i386,
-> I found it to bring a _tremendous_ improvement in responsiveness and especially
-> in userspace stuff like XFree. Given how this 712 is the slowest machine in my
-> LAN, I was wondering if any work is being done on 2.6 for hppa and when is the
-> first release expected?  Thanks!
+--=.Qjpr3j(rw5Je4.
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
--> parisc-linux.org where we have 2.6.0-test4.
-When might there be a debian package for it?  Don't know, not my department.
-But the -pa patch is a tiny fraction of the size of the 2.4 patch, so it'll
-be much easier for everyone.
+On Tue, 26 Aug 2003 21:03:54 +0100
+Matthew Wilcox <willy@debian.org> wrote:
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+> On Tue, Aug 26, 2003 at 09:29:35PM +0300, Martin-=C9ric Racine wrote:
+> > Greetings,
+> >=20
+> > Having just tried kernel 2.6 (the release candidate found in unstable)
+> > on i386, I found it to bring a _tremendous_ improvement in
+> > responsiveness and especially in userspace stuff like XFree. Given how
+> > this 712 is the slowest machine in my LAN, I was wondering if any work
+> > is being done on 2.6 for hppa and when is the first release expected?=20
+> > Thanks!
+>=20
+> -> parisc-linux.org where we have 2.6.0-test4.
+> When might there be a debian package for it?  Don't know, not my
+> department.
+
+If it was up to me i guess it wouldn't take much time. I have to discuss
+that with either you and bdale, to state *how* we want it done...
+
+Anyway, let me remind you that as for generating 2.6 netinsts, i _do_ need
+arch/parisc/debian-configs/* files to provide you with a 2.6 package.
+
+Since i'm not willing to find out by myself what we want and what we don't
+want in 2.6 "debian stock" kernel configs (that's a matter for the b-f
+maintainer i guess, or maybe my kernel package mentor - aka bdale - has
+some ideas about it ;), i won't be able to do anything _prior_ to these
+files appearance in our CVS tree...
+
+> But the -pa patch is a tiny fraction of the size of the 2.4 patch, so
+> it'll be much easier for everyone.
+
+that's for sure!
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
+
+--=.Qjpr3j(rw5Je4.
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/S9NmHjLD2rfS8GMRAgrhAJ0fbGX5Yos7ixDt493Nm5lAaqm3OgCfX0qn
+Y+dO2QXp9Zudfsasu+Y96NY=
+=nlpT
+-----END PGP SIGNATURE-----
+
+--=.Qjpr3j(rw5Je4.--
