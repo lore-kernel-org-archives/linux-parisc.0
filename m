@@ -1,42 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gw.scieneer.com (gw.scieneer.com [203.44.134.129])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD535482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 09:18:38 -0600 (MDT)
-Sender: dtc@scieneer.com
-Message-ID: <3B029A26.7323124B@scieneer.com>
-Date: Thu, 17 May 2001 01:17:58 +1000
-From: "Douglas T. Crosher" <dtc@scieneer.com>
-MIME-Version: 1.0
-To: rbradetich@uswest.net
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C07E9482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 11:49:35 -0600 (MDT)
+Message-Id: <200105161742.LAA10292@puffin.external.hp.com>
+To: joel@digitalparadise.net
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] J2240?
-References: <3AFE1F8B.725C1B8B@scieneer.com> <20010513122336.A25045@beavis.ybsoft.com> <3AFEE176.28EBFC7A@scieneer.com> <20010513141405.A25241@beavis.ybsoft.com> <20010515231519.A32007@beavis.ybsoft.com>
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] Help with bootable CD 
+In-Reply-To: Your message of "Wed, 16 May 2001 00:28:54 CDT."
+             <GAENJIFENGKGOINJAONFIEOACAAA.joel@digitalparadise.net>
+Date: Wed, 16 May 2001 11:42:32 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ryan Bradetich wrote:
-...
-> I had a chance to chat with Grant, and we have a couple of ideas, but
-> we need some more info first.  Grant says the IO_ADDR_EN is supposed
-> to be set by the PDC ... but if no devices exist on the PCI bus below
-> the dino, it is possible the IO_ADDR_EN could be 0.  If this is the
-> case, then we need to move the BUG() to a different spot in code.
-...
-> I have attached a small patch that will hopefully confirm our thoughts
-> about the IO_ADDR_EN BUG() that I hope you will try out and report
-> back the results.  And hopefully someone is working on providing
-> rs232 port support for the dino/cujo busses.
+"Joel Lansden" wrote:
+> I am getting an error message when I try to boot my 9000 box from this
+> CD I created from the ISO image.  The error message is:
+> 
+> 	"Can't select default wide mode, PDC_PSW call does not work"
+> 
+> I'm not sure what information I need to provide about my system
 
-Here is the relevant output with you patch applied:
+In general, complete console log from a serial console.
+But in this case "model" string should do. (eg 9000/800/A500-44)
 
-...
-Dino version 3.1 (bridge mode) found at 0xfc004000
-dino_bridge_init() addr: fc004000 hver: 0x680 sver: 0xa io_addr: 0x2000000
-Dino version J2240 (bridge mode) found at 0xfc000000
-dino_bridge_init() addr: fc000000 hver: 0x5d sver: 0xa io_addr: 0x0
-...
+grant
 
-Thanks for looking into it.
-
-Regards
-Douglas Crosher
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
