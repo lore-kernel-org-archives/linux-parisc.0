@@ -1,41 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from silly.cloud.net.au (co3002322-a.eburwd1.vic.optushome.com.au [203.164.64.6])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 164754869
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 06:20:58 -0600 (MDT)
-Date: Wed, 3 Oct 2001 22:20:29 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Grant Grundler <grundler@puffin.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FW SCSI on the D350
-Message-ID: <20011003222029.B6451@silly.cloud.net.au>
-References: <hamish@cloud.net.au> <20010928001354.A1519@silly.cloud.net.au> <200109280541.XAA27408@puffin.external.hp.com> <20010928010518.A12507@beavis.ybsoft.com>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2D7548C1
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 07:56:06 -0600 (MDT)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel1.hp.com (Postfix) with ESMTP id 8CE8844C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 09:56:05 -0400 (EDT)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id HAA27501
+	for parisc-linux@lists.parisc-linux.org; Wed, 3 Oct 2001 07:56:05 -0600 (MDT)
+Date: Wed, 3 Oct 2001 07:56:05 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200110031356.HAA27501@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010928010518.A12507@beavis.ybsoft.com>; from rbradetich@uswest.net on Fri, Sep 28, 2001 at 01:05:18AM -0600
+Subject: [parisc-linux] Re: [parisc-linux-cvs] Diff for PCXS fixes
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 28, 2001 at 01:05:18AM -0600, Ryan Bradetich wrote:
-> > Hamish Moffatt wrote:
-> > > I'm trying to install the 0.9 release on a D350 server. The kernel
-> > > recognises the standard SCSI, using the lasi7xxx driver, and finds
-> > > the tape drive and the CD-ROM on that host. However, it doesn't
-> > > find the Bluefish fast/wide SCSI host, so it doesn't find the
-> > > four internal hard disks, which makes installation a little tough.
-> 
-> You need a newer kernel, and you should be able to see the SCSI
-> card.  I'm not sure which -pa?? kernel, so just grab CVS head and
-> that should be sufficient.
+>
+> On Wed, Oct 03, 2001 at 02:15:49AM -0600, John Marvin wrote:
+> > +     /* Program VIPER to interrupt on the ASP irq */
+> > +     gsc_writel((1 << (31 - ASP_GSC_IRQ)),VIPER_INT_WORD);
+>
+> If we can program Viper (the graphics board, right?) to interrupt on any
+> CPU interrupt, why not give it its own rather than make it share an IRQ
+> with Asp?
 
-I got 2.4.9-pa30 from CVS and booted it up, and it found the Bluefish
-card and the four SCSI drives. Neat! Thanks!
+No, that is a misunderstanding. Viper is the memory/bus controller.
+Asp is connected to viper, i.e. Asp pulls an interrupt line and viper
+writes the interrupt into the cpu eirr. There is not really a hard
+wired ASP IRQ as implied in asp.c. the value "3" just happened to
+be what was left by the firmware on 720/730. The 710 firmware
+leaves a clean slate and unwires the Asp interrupt. This write is
+required to let Asp interrupt at all. You can make Asp interrupt on
+any irq. I decided to just stick with the 3, but we could change it
+or dynamically allocate it.
 
-Unfortunately I stuffed up something else, and it couldn't load the
-RAM disk, so I haven't been able to actually install it yet. But
-it looks promising.
-
-
-regards,
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+John
