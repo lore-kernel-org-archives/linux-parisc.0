@@ -1,32 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA26090
-	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Oct 1999 11:24:19 -0600
-Received: from shell (irc.24hoursupport.com [206.113.230.249])
-	by smtp.america.net (8.9.1/8.9.1) with ESMTP id NAA18435
-	for <parisc-linux@thepuffingroup.com>; Thu, 28 Oct 1999 13:25:20 -0400 (EDT)
-Date: Thu, 28 Oct 1999 13:18:50 -0400 (EDT)
-From: Ed June <buggz@america.net>
-To: parisc-linux@thepuffingroup.com
-In-Reply-To: <199910281703.NAA06969@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.GSO.4.10.9910281306160.22597-100000@shell.america.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] bios passwd override procedure ?
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA26560
+	for <parisc-linux@puffin.external.hp.com>; Thu, 28 Oct 1999 12:37:39 -0600
+Message-Id: <199910281838.MAA20701@debian.fc.hp.com>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+cc: alan@lxorguk.ukuu.org.uk (Alan Cox), Helge.Deller@ruhr-uni-bochum.de,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] hack to use HPUX boot loader 
+In-reply-to: Your message of "Thu, 28 Oct 1999 13:03:37 EDT."
+             <199910281703.NAA06969@hiauly1.hia.nrc.ca>
+Date: Thu, 28 Oct 1999 12:38:13 -0500
+From: Paul Bame <bame@debian.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+= > 
+= > > I find it very strange that the kernel is being linked to start at
+= > > 0xc0010000.  It's not your average machine that has this much physical
+= > 
+= > Logical or physical ?
+= 
+= Physical, at least when loading with hpux.  LDFLAGS are "-R 0xc0010000
+= -N -e stext".  I know at one time the link was being done at 0x10000.
 
-How does one override the bios passwd?
-I have receieved a machine set w/ a bios passwd, and, the bios is set up
-to disable the escape key.
-Argh !
-Is there some secret key-combo to break-in the bios ?
-Or, do I have to have hp re-flash the bios ?
-Oh, the machine is a 715/64...
+There isn't any concept of physical versus virtual
+location in the HP linker that I'm aware of, though there might be somthing
+hidden in an extension record.
 
+The hpux boot loader assumes the text relocation address should also be
+used as a physical load address.  In the case of Linux, relocated
+at 3Gb, this clearly makes no sense.  It works fine for HP-UX which
+is relocated to, and runs in, low physical memory.
 
---
+= Does anyone know why this was changed?
 
- Ed June
+I assume the earlier linking was purely experimental, since I've been
+told (and haven't confirmed myself) that Linux 2.2.x essentially needs
+to be relocated at 3Gb (or some other big value) because it assumes
+it's available from the page tables of every process.  If
+Linux was relocated at addresses near zero, this would result in
+user programs having to start at addresses larger than the amount
+of memory used by the kernel, which would be weird.
 
- buggz@america.net
- Linux: An open choice for free people worldwide.
+	-P
