@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 05F4D485C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 20:06:01 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17IgTK-0000M7-00; Fri, 14 Jun 2002 03:05:54 +0100
-Date: Fri, 14 Jun 2002 03:05:54 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: "Michael S. Zick" <mszick@goquest.com>,
-	parisc-linux@lists.parisc-linux.org, mszick@MoreThan.org
-Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200
-Message-ID: <20020614030554.I9435@parcelfarce.linux.theplanet.co.uk>
-References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <20020611145848.GA2796@tausq.org> <02061113393800.04435@localhost.localdomain> <02061208454000.00732@localhost.localdomain> <mszick@goquest.com> <20020613215246.3B1864848@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020613215246.3B1864848@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Thu, Jun 13, 2002 at 03:52:46PM -0600
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DFFF84837
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 23:28:01 -0600 (MDT)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Glibc cvs: ld segmentation fault
+Message-ID: <1024032442.3d097eba5ead0@webmail.tiscalinet.be>
+Date: Fri, 14 Jun 2002 07:27:22 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <200206131704.g5DH49TT002072@hiauly1.hia.nrc.ca>
+In-Reply-To: <200206131704.g5DH49TT002072@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,22 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jun 13, 2002 at 03:52:46PM -0600, Grant Grundler wrote:
-> > Additional note: On the HP models with the worst of the problems;
-> > is the physical_cpu_id and the logical_cpu_id a 1:1 mapping as
-> > it is on x86 systems?
+Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+
+> > Don't you have additional advice?
 > 
-> Yes. parisc didn't have a concept of physical CPU ID until
-> PAT PDC (eg A500, N-class, etc). When we want to support
-> CPU addition and removal, we can add physical/logical
-> mappings and it will no longer be 1:1.
+> Did you start with the debian version of glibc?  I have built 2.2.5-6
+> with 3.2 and am using it.  It's possible you need to update binutils.
+> Some linux versions also seem to have a tendency to cause random
+> segfaults.
+> 
+> Since I don't think I can duplicate your environment, you will have
+> to run ld under gdb to find out where it's segfaulting and get some
+> sense as to what's causing the problem.
 
-Actually this came up in an unrelated question today.  I found that
-where other architectures use a physical ID, we use an address.  So we
-really have no use for logical/physical mappings.  When the CPU hotplug
-code is introduced, it will actually remove the logical numbering and
-loops over all cpus will be done with loops over all physical cpus and
-a check to see whether that cpu is online.
+Dave,
 
--- 
-Revolutions do not require corporate support.
+Thanks a lot.
+As my first object (right now) is to help to understand why linux crash with
+network connection  when compile with gcc-3.[12], I will also work with glibc-2.2.5.
+
+Joel
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
