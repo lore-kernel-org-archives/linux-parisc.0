@@ -1,10 +1,14 @@
-From: wrooney@ihug.co.nz
-Subject: Re: [parisc-linux] Problems with installation Debian Linux...please
-Date: Tue, 25 May 2004 21:01:28 +1200
-Message-ID: <40b30b68.155.34fd.1279736525@ihug.co.nz>
-Reply-To: wrooney@ihug.co.nz
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: Re: [parisc-linux] Support for 2.4.x kernels on hppa
+Date: Tue, 25 May 2004 12:21:24 +0200
+Message-ID: <20040525122124.7154e4d2.gmsoft@gentoo.org>
+References: <20040524183227.GW7207@tausq.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+  boundary="===============1354919123=="
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040524183227.GW7207@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -15,62 +19,75 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> It begins the process of load of PALO and I select the
-> console type: ttyB0
->
-> Continuous the load.....
->
-> But to the moment to begin the program linux installer in
-> my server, they don't see each other the graphics... if I
-> see the messages (as the one I title, the options that it
-> is necessary to install linux, the types of partitions,
-> etc.) but I don't see the graphics well and it is I
-> impossible to select my installation options.
->
-> can you help me please?
->
-> data of my server:
->
-> SYSTEM:        9000
-> MODEL:         9000/898/K370
-> RISC CHIP:     PA8200
-> PA VERSION:    2.0
-> SYSTEM GOES:     655623311
-> CPU SPEED:     200 MHz
-> CPUS:          1 activate processor(s)
-> MEMORY:        512 Mbytes of memory.
-> HP-UX VERSION: B.10.20
-> CONSOLE: serial MONO
-> HARD DISK: 9 GB (waiting three disk but it stops inetgrar)
->
-> Thank's a lot
+--===============1354919123==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="pgp-sha1"; boundary=")mMqyb=.pN=f?,L?"
 
-When you boot the Debian netinstall ISO it runs an
-interactive program that lets you partition your disks, set
-up swap, install the boot loader, etc.
+--)mMqyb=.pN=f?,L?
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The program uses something like ANSI to display different
-coloured text and block characters, whereby it sends an
-escape character, then three or four control characters then
-the character to be printed to the console.
+On Mon, 24 May 2004 11:32:27 -0700
+Randolph Chung <tausq@debian.org> wrote:
 
-My 9000 doesn't have a graphics card.  It has an HP
-monochrome serial terminal.  The HP terminal doesn't support
-ANSI, so when I boot the netinstall ISO and it gets to the
-installation menu, all I get is a lot of garbage spacing out
-the characters that the menu is supposed to be made up of.
+> I'd like to take an informal "survey" of what kernel versions people
+> are using....
 
-My handling was to use a notebook running Hyperterminal
-under Windows instead of the dumb terminal while installing
-- the colours still didn't come out right and the vertical
-spacing went a bit funny when scrolling up and down the
-menus, but at least I could read the menus and select items
-off them.
+I use a 2.6 on a A440 and B180l and a C3600.
+I remember having trouble with a J5000 but it was some time ago and I
+guess my problem was the SMP enabled.
 
-Hope this helps.
+I'd like to use it on my D270 and on a K360 but there are scsi problems
+atm. They both suffer of the same problem described by Joel Soete.
 
-Wayne
+Also, a gentoo user wasn't able to boot a 2.6 on a 735/120. Palo (1.5)
+display "If it's the last message ..." and nothing more while it works
+well with a 2.4. I'll try myself later on my 735/99 which is down atm.
+
+
+I'd like to add that despite the scsi problem, I can't still produce
+livecd (the gentoo installation cd) using 2.6 because of the numerous
+default config. If I remember correctly, if I enable some HIL stuff,
+the kernel loops or crash at boot on my b180l.
+
+> If you are one of those people who really care about 2.4 support,
+> please speak up now!=20
+
+Personaly, I don't care about 2.4 even if 2.6 doesn't have SMP. With a
+2.4, my D270 compiles things slower with SMP than without. I also have
+other problems with SMP like packet loss to localhost, making portmap
+and other socket dae=F9on unusable.
+
+
+hth
+
+--=20
+Guy Martin
+Gentoo Linux - HPPA port Lead / IPv6 team
+Lug Charleroi (Belgium)
+
+--)mMqyb=.pN=f?,L?
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAsx4nrpShrnoH4YYRAmfuAJ0fdQvZZnkJU0mTSDQt5MVyuETpAgCfXmhw
+274ZPB6L9yLFPPVlQwQ1RG4=
+=3I3a
+-----END PGP SIGNATURE-----
+
+--)mMqyb=.pN=f?,L?--
+
+--===============1354919123==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1354919123==--
