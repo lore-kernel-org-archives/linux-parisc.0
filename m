@@ -1,120 +1,82 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp9.xs4all.nl (smtp9.xs4all.nl [194.109.127.135])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DD93482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 13:49:12 -0600 (MDT)
-Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtp9.xs4all.nl (8.9.3/8.9.3) with ESMTP id VAA04295
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 21:49:10 +0200 (CEST)
-From: thunder7@xs4all.nl
-Date: Fri, 21 Sep 2001 21:48:50 +0200
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] nmap -O -> kernel panic on 712
-Message-ID: <20010921214850.B5505@middle.of.nowhere>
-Reply-To: thunder7@xs4all.nl
-References: <20010917165501.B17483@gollum.intranet.nimag.net> <20010917203312.A6109@middle.of.nowhere>
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 013E0482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 14:39:03 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 01DD4B00C; Fri, 21 Sep 2001 21:38:01 +0100 (BST)
+Date: Fri, 21 Sep 2001 21:38:01 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Richard Allen <ra@hp.is>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] C360 install fails
+Message-ID: <20010921213801.K24917@linuxcare.com>
+References: <20010921135335.E11577@hp.is>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010917203312.A6109@middle.of.nowhere>
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <20010921135335.E11577@hp.is>; from ra@hp.is on Fri, Sep 21, 2001 at 01:53:35PM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 17, 2001 at 08:33:12PM +0200, thunder7@xs4all.nl wrote:
-> On Mon, Sep 17, 2001 at 04:55:01PM +0200, Francois Deppierraz wrote:
-> > Hi kernel hackers !
-> > 
-> > My HP 712/60 with a 2.4.9-pa20 kernel crash with the following error
-> > message when I portscan it using nmap -O (OS detection).
-> > 
-> > kswapd[4]: Unaligned data reference 28
-> > 
-> >      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> > PSW: 00000000000001001111111000001111
-> > r0-3o 00000000 10332810 1028b9e4 0000000a
-> > r4-7o 100dfdb2 100ed148 0000000c 100dfd94
-> > r8-11o 00000000 00000001 00020000 10ce6500
-> > r12-15o 11fb09a0 00004400 00004800 43f02aa9
-> > r16-19o 100eca00 00000000 00000c00 00000001
-> > r20-23o 00000000 00000109 117ca000 0000000f
-> > r24-27o 00000000 100ed148 10ce6500 102f0010
-> > r28-31o 117ca160 00000040 100ed400 1012e6d8
-> > sr0-3o 00000000 00000002 00000000 00000002
-> > sr4-7o 00000000 00000000 00000000 00000000
-> > 
-> > IASQ: 00000000 00000000 IAOQ: 10281658 1028165c
-> >  IIR: 0c801093    ISR: 00000000  IOR: 100dfdb2
-> >  CPU:        0   CR30: 100ec000 CR31: 103a0000
-> >  ORIG_R28: 00000000
-> > Kernel Panic: Aiee, killing interrupt handler!
-> > In interrupt handler - not syncing
-> > 
-Why isn't the code in arch/parisc/kernel/unaligned.c activated for this?
-I found some references in the 2001-06 archive to this file, which seems
-to work for 64-bits kernels (which I haven't tested) but not for
-32-bits.
+On Fri, Sep 21, 2001 at 01:53:35PM +0000, Richard Allen wrote:
+> Im using the 0.9.2 CD.  I have a C360 (512Meg RAM, 9 Gig hard drive) and
+> I removed the Graphics card from it and hooked it to a serial console.
+> 
+> The machine boots just fine into the installer.  I created that f0 partition,
+> a small /boot, a swap partition and the remaining disk as /
+> 
+> After that it makes me select a distro (I select sid as the documentation says)
+> then this hits:
+> 
+>          +컴컴컴컴컴컴컴컴컴컴컴+ Please Wait +컴컴컴컴컴컴컴컴컴컴컴�+         
+>          |                                                            |         
+>          | Installing Drivers from                                    |         
+>          | /instmnt/debian/dists/sid/main/disks-hppa/current/64/drive |         
+>          | rs.tgz...                                                  |         
 
-Can any of the guru's point some newbies in the right direction?
-unaligned.c exists, and is pointed to in traps.c, so there must be some
-code in it that doesn't work. I can run the test-program that was posted
-in 2001-06 just fine.
+One thing that's wrong there, you need to install the 32 bit kernel and
+modules for a C360.  I don't imagine that is the cause of your problem
+though.  Although a C360 will run 64 bit, that isn't completely supported
+under linux yet.
+
+>                                                                                 
+>          ioctl: LOOP_CLR_FD: No such device or address                          
+>     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI                                            
+> PSW: 00000000000001001111111100001100                                           
+> r0-3     00000000 101fc000 101a5134 2fe06b60                                    
+> r4-7     00000000 00000000 10337010 10318684m Installation                      
+> r8-11    10318010 10318010 1030c010 1030c468                                    
+> r12-15   10337010 ffffffff 000000fd f0100000                                    
+> r16-19   10300580 f0000154 f000014c 0000000e                                    
+> r20-23   0000001f 000003e7 101a5c14 00000000                                    
+> r24-27   00000000 00000005 ffd05805 1028a010
+> r28-31   10335810 00000592 10300a80 101213f8
+> sr0-3    00000000 00000065 00000000 00000000
+> sr4-7    00000000 00000000 00000000 00000000
+> 
+> IASQ: 00000000 00000000 IAOQ: 101fc2bc 101fc2c0
+>  IIR: 0f40001c    ISR: a607ffff  IOR: 41505805
+>  ORIG_R28: 00000000
+
+101fc2b8 T _gsc_readb
+101fc2cc T _gsc_readw
+
+101a5118 t serial_in
+101a5134 t .L687
+101a5160 t .L693
+101a5160 t serial_out
+
+So it looks like serial_in() called _gsc_readb(0xffd05805).
+
+On booting, my C360 says
+
+1. Raven U/L2 Dino RS-232 (10) at 0xf2003000, versions 0x6, 0x0, 0x8c, 0x0, 0x0 
+3. Raven+ w SE FWSCSI Core RS-232 (10) at 0xffd05000, versions 0x56, 0x0, 0x8c, 0x0, 0x0
+...
+ttyS00 at iomem 0xffd05800 (irq = 154) is a 16550A 
+...
+
+So 0xffd05805 looks like a reasonable address for it to try and access.
+
+Does it crash at the same place if you try again?
 
 
-#include <stdio.h>
-
-struct data_t {
-        unsigned long a;
-        unsigned long b;
-};
-
-int main(int argc, char **argv)
-{
-        struct data_t data;
-        unsigned char *t;
-        unsigned long l;
-        int i;
-
-        data.a = 0x12345678;
-        data.b = 0x87654321;
-
-        t = (unsigned char *)(&data)+1;
-        l = *((unsigned long *)t);
-        printf("l = 0x%08lx\n\n\n", l);
-
-        printf("expected result is: 0x");
-        for (i = 0; i < sizeof(unsigned long); i++)
-                printf("%x", *(t+i));
-        printf("\n");
-
-        printf("testing store...\n");
-        *((unsigned long *)t) = 0x13572468;
-
-        l = *((unsigned long *)t);
-        printf("l = 0x%08lx\n", l);
-
-        return 0;
-}
-
-And it prints:
-
-jurriaan@pa8200:~$ cc test.c
-./a.jurriaan@pa8200:~$ ./a.out
-l = 0x34567887
-expected result is: 0x34567887
-testing store...
-l = 0x13572468
-
-which seems to be what is expected.
-
-I can see that in unaligned.c, the part for in-kernel traps is #if 0'ed
-out, with a big TODO. What is there TODO?
-
-I'm willing to do stupid work, and test my machine 30 times in a row, if
-someone can point me in the right direction?
-
-Thanks,
-Jurriaan
--- 
-It is a matter of words. In my birth language there are more ifs than
-whens, but I must make a choice every time I speak a sentence in English.
-I try to choose the happier way of saying things, so that my own words
-will not weigh me down like stones.
-	!Xabbu in Tad Williams' Otherland
-GNU/Linux 2.4.9-ac10 SMP/ReiserFS 2x1402 bogomips load av: 0.00 0.00 0.00
+Richard
