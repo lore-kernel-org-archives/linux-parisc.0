@@ -1,14 +1,17 @@
-From: Michiel Broek <mbroek@mbse.dds.nl>
-Subject: Re: [parisc-linux] [RE:] Installation Prolblem on model 712
-Date: Fri, 4 Mar 2005 21:04:08 +0100
-Message-ID: <200503042104.08973.mbroek@mbse.dds.nl>
-References: <20050304112112.57017.qmail@web26809.mail.ukl.yahoo.com>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Re: Comments?
+Date: Sat, 5 Mar 2005 14:46:53 -0500
+Message-ID: <20050305194652.GG23803@baldric.uwo.ca>
+References: <20050303024545.GR23803@baldric.uwo.ca>
+	<200503030321.j233LoiR013194@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050304112112.57017.qmail@web26809.mail.ukl.yahoo.com>
+In-Reply-To: <200503030321.j233LoiR013194@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,41 +22,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Op vrijdag 4 maart 2005 12:21, schreef =CE=9C=CE=AC=CF=81=CE=B9=CE=BF=CF=82=
- =CE=9A.:
-> This is my dmesg output
->
-> The model is 712-60 and not 612
->
-> I am begging to suspect the error vomes from the cd-rom
->
-> It is a very old cd-rom.
->
-> The cd i burned it is good quality and have been written in 4x speed
+On Wed, Mar 02, 2005 at 10:21:49PM -0500, John David Anglin wrote:
+> > There are a lot of files that do symbol resolution. I think I might just
+> > save the fp argument registers, and thus allow gcc to do any sorts of
+> > optimizations it wishes with therest of the code, knowing that the
+> > arguments are all saved and restored on the initial function call.
+> 
+> Sounds good.
+> 
+> I think we have somehow broken __cffc.  I did a binutils build
+> yesterday and various ld tests are now failing.  These are tests
+> that compare function pointers.
 
-> Attached SCSI CD-ROM sr0 at scsi0, channel 0, id 5 lun 0
->
-> sr0: scsi-1 drive
+I didn't feed anything new into debian-glibc. All my patches have always
+strived to keep __cffc working, if I messup the function pointer
+comparison I get a slew of glibc testsuite failures which I always
+patchup by making sure __cffc works :)
 
-I think your CD drive is too old. I used to have some old single speed HP=20
-readers that didn't work with self burned CD's. Youre drive reports scsi-1=
-=20
-but I think the 712 needs scsi-2 equipment, but I'm not sure about that.
+The last botch was a minor change in the trampoline template, which
+prompted the addition of the 'bl' before the function that made use of
+the magic '-4' check in __cffc.
 
+c.
 
-The one I now use reports this:
-
-sr0: scsi3-mmc drive: 0x/0x caddy
-Uniform CD-ROM driver Revision: 3.20
-Attached scsi CD-ROM sr0 at scsi0, channel 0, id 4, lun 0
-
-I'm using this on a 712/80 with a 2.6.10-pa11 kernel.=20
-
-=2D-=20
-
- Greetings, Michiel Broek
-
-mbroek@mbse.dds.nl  or  Fidonet 2:280/2802 to Michiel Broek.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
