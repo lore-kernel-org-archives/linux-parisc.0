@@ -1,77 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A1E41482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Aug 2001 04:50:26 -0600 (MDT)
-Subject: Re: [parisc-linux] XFree86 on B180
-To: "Thomas Bogendoerfer <tsbogend" <tsbogend%alpha.franken.de%SMTP%EUROPAY@mastercard.com>
-Cc: debian-hppa@lists.debian.org,
-	Helge Deller <helge.deller@sap.com>,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <OF5E269C88.FE889441-ONC1256AA0.00395B90@LocalDomain>
-From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
-Date: Mon, 6 Aug 2001 12:53:05 +0200
+Received: from mail2.camcare.com (unknown [206.193.125.77])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 877B7482A
+	for <parisc-linux@parisc-linux.org>; Mon,  6 Aug 2001 07:44:51 -0600 (MDT)
+Message-ID: <2B3ABA2F850AD011937D0000C00700D005DE19B0@kes.camcare.com>
+From: "Smith, Todd" <Todd.Smith@Camcare.com>
+To: "'parisc-linux@parisc-linux.org '" <parisc-linux@parisc-linux.org>
+Subject: RE: [parisc-linux] The new parisc-linux-boot HOWTO
+Date: Mon, 6 Aug 2001 09:47:39 -0400 
 MIME-Version: 1.0
-Content-type: text/plain; charset=iso-8859-1
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thomas,
+Hello Thomas,
 
-Nice.
+I want to thank you for your work on the HOWTO.  It looks very
+straight-forward and it answered the questions that I had about the process.
 
-Sorry but with xf86config I try to scan all available card and do not find
-any reference to "artist graphic". It is certainly well know under another
-achronim but I do not find (AGX?).
+Thank you for your time.
 
-May I ask you the favour to sen d me your XF86config file?
-
-Thanks in advance for help,
-     Joel
-
-
-
-                                                                           =
-                                           =20
-                    Thomas                                                 =
-                                           =20
-                    Bogendoerfer             To:     Helge Deller <helge.de=
-ller@sap.com>@SMTP@EUROPAY                 =20
-                    <tsbogend@alpha.f        cc:     Jo=EBl Soete/BRU/MASTE=
-RCARD@MASTERCARD,                            =20
-                    ranken.de>               parisc-linux@lists.parisc-linu=
-x.org@SMTP@EUROPAY,                        =20
-                                             debian-hppa@lists.debian.org@S=
-MTP@EUROPAY                                =20
-                    05-08-01 04:48 PM        Subject:     Re: [parisc-linux=
-] XFree86 on B180                          =20
-                                                                           =
-                                           =20
-                                                                           =
-                                           =20
-
-
-
-On Fri, Aug 03, 2001 at 12:45:01PM +0200, Helge Deller wrote:
-> Currently stifb will run on most 712 and 715 machines, while B160, B180,
-> C3000 and most others won't.
-
-you saw X on the B180 I had at LinuxTag:-) Treating the EG VISULIZE as an
-artist graphics card did the trick.
-
-Thomas.
-
---
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel
-]
-
-
-
-
-
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information =
-which is strictly intended for the use of the authorised recipient.  If you=
- have received this e-mail in error, please delete it and notify the sender=
- by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+Todd Smith <todd.smith@camcare.com>
