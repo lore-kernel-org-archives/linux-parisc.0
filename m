@@ -1,37 +1,83 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mlbmx1.corp.harris.com (mlbmx1.corp.harris.com [137.237.90.73])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D023482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 00:53:44 -0600 (MDT)
-Message-ID: <8D4C69676E66D511A1CB00508BBBB192162681@ranmx1.ran.harris.com>
-From: "Pedot, Wolfgang" <wpedot@harris.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 10 Jul 2001 02:45:59 -0400
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2F4B2482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 04:26:55 -0600 (MDT)
+Subject: Re: [parisc-linux] palinux 0.9.1
+To: "Thomas Marteau <marteaut" <marteaut%esiee.fr%SMTP%EUROPAY@mastercard.com>
+Cc: parisc-linux@lists.parisc-linux.org, puffin@esiee.net,
+	rhirst@linuxcare.com
+Message-ID: <OFEBC15B13.BB2830D5-ONC1256A85.00383B3A@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Tue, 10 Jul 2001 12:28:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Install on a 715/75 (wont boot)
+Content-type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+Hi Thomas,
 
-I just dug out a 715/75 at work (64MB RAM, 2x1GB HD). Now I=B4ve =
-cleaned it and
-brought it to live I want to install Linux but the problem is neither =
-0.9 nor
-0.9.1 (downloaded yesterday) boots. I connected an external SCSI-CDRom =
-(Toshiba
-6401) and the 715 detects it and I can tell it to boot from this drive =
-but I get
-an IPL Checksum Error with 0.9 (tried with two CDs) and "Wrong IPL =
-Magic" with
-0.9.1. Both Images were downloaded and burned correctly as far as I can =
-tell.
-Now since this is my first experience with a PARISC-Machine I=B4m a =
-little bit
-helpless, any hints?
+It would effectively be interesting LSM (Debian OpenBsd, HURD, ...)
 
-Wolfgang Pedot
+Come back to last CD 0.9.1. The install works well on 712 and B180 (Nice)
 
-PS: I=B4m also looking for some dokumentation for my machine since =
-there is no
-manual or anything available here...
+Just to mention some details:
+a common problen is the startup of dhcpclient (as I have not dhcp server, I
+did not choose dhcp at install time and its statup disturb a little bit the
+install) but nothing critical
+
+a problem specific to the B180 (the idea comes from Richard Hirst): after
+booting on the CD no answer from the keyboard?
+workaround: at this moment (while the sysytem is runing) just un-plug,
+re-plug the keyboard and it answer correctly (as Richard I suspect a
+specific problem of initialisation of the keyboard?)
+
+Thanks and congratulation for this nice job,
+     Joel
+
+
+
+                                                                           =
+                                  =20
+                    Thomas                                                 =
+                                  =20
+                    Marteau              To:     Jo=EBl Soete/BRU/MASTERCAR=
+D@MASTERCARD                        =20
+                    <marteaut@esi        cc:     rhirst@linuxcare.com@SMTP@=
+EUROPAY,                          =20
+                    ee.fr>               parisc-linux@lists.parisc-linux.or=
+g@SMTP@EUROPAY,                   =20
+                                         puffin@esiee.net@SMTP@EUROPAY     =
+                                  =20
+                    09-07-01             Subject:     Re: [parisc-linux] pa=
+linux 0.9.1                       =20
+                    07:24 PM                                               =
+                                  =20
+                                                                           =
+                                  =20
+                                                                           =
+                                  =20
+
+
+
+Hi all,
+
+     I am back from LSM. So, I uploaded the 0.9.1 iso, I hope. I tried on
+B132 and it went fine.
+So, just download it and try.
+If you experienced some troubles with the keyboard, just try to unplug
+and plug it back... It should work.
+Also, when it asks you some path, just hit return...
+
+My apaologies again for the delay, Thomas
+ESIEE Team
+
+
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information =
+which is strictly intended for the use of the authorised recipient.  If you=
+ have received this e-mail in error, please delete it and notify the sender=
+ by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
