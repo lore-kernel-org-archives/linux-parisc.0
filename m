@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 13.26.34.12 (unknown [61.235.68.66])
-	by dsl2.external.hp.com (Postfix) with SMTP id BD3584838
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Nov 2002 10:19:07 -0700 (MST)
-From: =?gb2312?q?=C4=E3=BA=C3_ <=CE=DE=B4=CB=D3=CA=CF=E4@hotmail.com>,
-	?=@dsl2.external.hp.com
-To: parisc-linux@lists.parisc-linux.org
-Reply-To: Œﬁ¥À” œ‰@hotmail.com
-Date: Tue, 12 Oct 1999 01:26:36 +0800
+Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 04A6B482E
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 16 Nov 2002 19:33:13 -0700 (MST)
+Date: Sun, 17 Nov 2002 02:32:58 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: randolph@tausq.org, <bzeeb-lists@lists.zabbadoz.net>,
+	<carlos@baldric.uwo.ca>, <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] [2.5] next issues ...
+In-Reply-To: <200211160037.gAG0bZRa015952@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.44.0211170215340.6003-100000@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="de56526a-8040-11d3-a98a-5254aba02fb7"
-Message-Id: <20021116171907.BD3584838@dsl2.external.hp.com>
-Subject: [parisc-linux] =?gb2312?q?=C4=E3=D3=D0=B2=FA=C6=B7=D2=AA=D0=FB=B4=AB=C2=F0=A3=BF=D5=D2=CE=D2=B0=A1=A3=AC=D6=BB=D0=E8=D2=AA100=D4=AA=A3=AC=C4=E3=BF=C9=D2=D4=B3=A4=C6=DA=CF=F230=CD=F2=C8=CB=D7=F6=D0=FB=B4=AB=A3=AC?=
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,27 +23,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---de56526a-8040-11d3-a98a-5254aba02fb7
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: quoted-printable
+On Fri, 15 Nov 2002, John David Anglin wrote:
 
-=C4=E3=C8=E7=B9=FB=D0=E8=D2=AA=D7=F6=B9=E3=B8=E6=A3=AC=C7=EB=C4=E3=BD=AB=C4=E3=
-=CB=F9=D2=AA=D0=FB=B4=AB=B5=C4=B2=FA=C6=B7=BA=CD=B6=D4=CF=F3=B8=E6=CB=DF=CE=D2=
-=A3=AC=CE=D2=BB=E1=CE=AA=C4=E3=B6=A8=D6=C6=C4=E3=CB=F9=D2=AA=B5=C4=D3=CA=D6=B7=
-=A3=AC=BC=DB=B8=F1=A3=BA30=CD=F2=D3=CA=D6=B7100=D4=AA=A3=AC=CB=CD=C8=ED=BC=FE=
-=D2=BB=CC=D7=A3=AC=D2=BB=C8=D5=C4=DA=BD=BB=BB=F5=A3=AC=B5=E7=BB=B0=A3=BA=
-0755-26326076
-=B5=D8=D6=B7=A3=BA=C9=EE=DB=DA=CA=D0=BA=CD=C6=BD=C2=B71018=BA=C5
-=C9=EE=DB=DA=B5=C4=BF=CD=BB=A7=BF=C9=D2=D4=CB=CD=BB=F5=C9=CF=C3=C5=A3=AC=CD=E2=
-=B5=D8=D3=C3=BB=A7=BF=C9=D2=D4=BD=AB=C8=ED=BC=FE=BA=CD=D3=CA=D6=B7=B7=A2=B5=BD=
-=C4=E3=B5=C4=D0=C5=CF=E4
-=CE=D2=B5=C4=D3=CA=CF=E4=D3=C3=BB=A7=C3=FB=CA=C7china1238    =D3=CA=CF=E4=CA=
-=C7=CA=F4=D3=DAhotmail.com=B5=C4
-hello everyone
-   do you have products to sell in net ,please contact with me .i can find
-300000 emailaddress for you only 10$ ,and i will sent it with a =
-emailsendersoft to you,if you need please sent a mail to me ,my =
-email:china1238                                            mr yang
-@hotmail.com                                              2002.11  
---de56526a-8040-11d3-a98a-5254aba02fb7--
+> > Amen! :-) hopefully we are going to start gcc-3.2 transition fairly
+> > soon.
+>
+> Don't wait too long!  3.3 may have slipped a bit but the schedule
+> still shows Dec. 15 2002 as the release date.
+
+I'm not very familiar with the pa-risc internals, but I wonder whether it
+is probably a better idea to wait for 3.3?. I've followed the parisc-linux
+and the gcc-mailing lists and IMHO gcc-3.3 provides lots of
+improvements, not just for Intel, but also for PA-RISC. E.g. a new
+scheduler which provides better optimizations (for PA-RISC and lots of
+bugfixes are in 3.3. More over the C++ ABI will be changed again, so a
+couple  of packages would have to be rebuild AGAIN if we stick to 3.2 (if
+not the 3.2-ABI compatibility is used). The people at gcc are just about
+to release 3.2.1 and from then they're just focussing on the 3.3-release.
+AFAIK they are also to resolve some gcc-hpux/linux issues at the moment,
+and I doubt they are going to be in gcc-3.2.1. You probably know much
+better than me, but that's just my 2 cent.
+
+I know, it's not the usual debian way (using well tested and very stable
+packages), but Linux/PA-RISC is improving/has so much possibilities
+to improve, and one major package that contributes to this alot is gcc.
+
+
+greetings max
+
+PS: I offered to help to track down the problems with Voodoo3 and C240,
+but right now I'm really busy (e.g. moving to a new home over the
+weekend). Hopefully I'll finnaly have a DSL flatline at home, so I can
+work from home ;)
