@@ -1,30 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta03.mail.mel.aone.net.au (mta03.mail.au.uu.net [203.2.192.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 067C7482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 May 2001 04:57:46 -0600 (MDT)
-Received: from piglet.sspl.net.au ([210.84.115.55])
-          by mta03.mail.mel.aone.net.au with ESMTP
-          id <20010530105742.ZRVM4037.mta03.mail.mel.aone.net.au@piglet.sspl.net.au>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Wed, 30 May 2001 20:57:42 +1000
-Received: from winnie.sspl.net.au (winnie. [192.168.10.9])
-	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id UAA05269
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 May 2001 20:57:38 +1000
-From: "Pete" <plaven@ozemail.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 30 May 2001 20:58:28 +1000
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Reply-To: plaven@ozemail.com.au
-Message-ID: <3B155EF4.29237.ADA2D47@localhost>
-In-reply-to: <20010529233238.ED68937CFD@carmen.fc.hp.com>
-Subject: [parisc-linux] Re: List of packages for hppa ISO release version 2
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A496482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 May 2001 09:12:18 -0600 (MDT)
+Message-Id: <200105301504.JAA09492@puffin.external.hp.com>
+To: plaven@ozemail.com.au
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: List of packages for hppa ISO release version 2 
+In-Reply-To: Your message of "Wed, 30 May 2001 20:58:28 +1000."
+             <3B155EF4.29237.ADA2D47@localhost>
+Date: Wed, 30 May 2001 09:04:59 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> ssh (I accidentally forgot to remove it from the last list)
+"Pete" wrote:
+> Can I ask the reason why this is being taken out?
 
-Can I ask the reason why this is being taken out?
+ssh is subject to US export restrictions. We can't export
+a CD image with it either.
+Debian has it in "non-us" section for the same reason - so it can be
+built/distributed "off-shore". Stupid, but that's the law here, now.
 
+grant
 
-
-Pete.
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
