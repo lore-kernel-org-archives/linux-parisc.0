@@ -1,14 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA09162
-	for <parisc-linux@puffin.external.hp.com>; Thu, 12 Oct 2000 01:21:50 -0600
-Received: from Magellancc.com (unverified [209.84.188.21]) by mailserv.desertsurf.com
- (Rockliffe SMTPRA 3.4.7) with SMTP id <B0000222680@mailserv.desertsurf.com> for <parisc-linux@thepuffingroup.com>;
- Thu, 12 Oct 2000 00:23:22 -0700
-Message-ID: <B0000222680@mailserv.desertsurf.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA01696
+	for <parisc-linux@puffin.external.hp.com>; Fri, 13 Oct 2000 12:16:17 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 13 Oct 2000 18:17:29 -0000
+Received: from dhd by tarwebok with local (Exim 3.16 #1 (Debian))
+	id 13k9Oe-0006Pn-00
+	for <parisc-linux@thepuffingroup.com>; Fri, 13 Oct 2000 14:17:32 -0400
 To: parisc-linux@thepuffingroup.com
-From: "Dempsey Mork" <dempsey@magellancc.com>
-Date: Thu, 12 Oct 2000 00:25:11 +0000
-Subject: [parisc-linux] public shell
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 13 Oct 2000 14:17:32 -0400
+Message-ID: <87y9zs7ghv.fsf@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 64-bit toolchain available for native PA-RISC Linux
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have a public shell company available for a reverse merger.  I will email full details if interested.
+Hi,
+
+I've uploaded a cross-toolchain for hppa64 built for 32-bit
+Linux/PA-RISC.  It's at
+
+ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/gcc64-20001013.tgz
+ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/binutils64-20001013.tgz
+
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
