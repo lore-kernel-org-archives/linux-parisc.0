@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from natsmtp01.webmailer.de (natsmtp01.webmailer.de [192.67.198.81])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A87924875
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Sep 2003 00:38:37 -0600 (MDT)
-Received: from volpus.visoel.me (pD9EB3655.dip.t-dialin.net [217.235.54.85])
-	by post.webmailer.de (8.12.9/8.12.9) with SMTP id h8J6cZ4N027029
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Sep 2003 08:38:36 +0200 (MEST)
-Date: Fri, 19 Sep 2003 08:40:42 +0200
-From: Tilo Riemer <t.riemer@visoel.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] update of libc?
-Message-Id: <20030919084042.0000769d.t.riemer@visoel.de>
-In-Reply-To: <20030918093850.GB12661@lug-owl.de>
-References: <20030918113157.000037fb.t.riemer@visoel.de>
-	<20030918093850.GB12661@lug-owl.de>
+Date: Fri, 19 Sep 2003 04:24:45 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: James Bottomley <James.Bottomley@steeleye.com>
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
+	parisc-linux-cvs@lists.parisc-linux.org
+Message-ID: <20030919112445.GL27523@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20030919010356.148684940A4@palinux.hppa> <1063933596.2083.9.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1063933596.2083.9.camel@mulgrave>
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,11 +22,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+> -#undef CACHE_FLUSHING_IS_NOT_BROKEN
+> -#ifdef CACHE_FLUSHING_IS_NOT_BROKEN
+> +	flush_user_dcache_range((unsigned long) &frame->tramp[0],
+> +			   (unsigned long) &frame->tramp[4]);
+>  	flush_user_icache_range((unsigned long) &frame->tramp[0],
+>  			   (unsigned long) &frame->tramp[4]);
 
-thanks for all hints.
+we also have a flush_icache_user_range range macro that does this (flush
+dcache + icache). The kernel seems to use both..... 
 
-I could update to libc 2.3 without problems. All seems to work...
-
-
-Best regards, Tilo
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
