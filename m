@@ -1,32 +1,27 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA14015
-	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Apr 1999 03:52:29 -0600
-Date: Tue, 4 May 1999 11:39:34 +0000 (   )
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA14429
+	for <parisc-linux@puffin.external.hp.com>; Wed, 28 Apr 1999 04:05:00 -0600
+Date: Tue, 4 May 1999 11:52:05 +0000 (   )
 From: Christopher Beard <cjbeard@thepuffingroup.com>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Congratulations !!!
-In-Reply-To: <51FF4AA61868D2119A040060080606B40B18E5@mkl-nt2.mach.uni-karlsruhe.de>
-Message-ID: <Pine.LNX.4.10.9905041130350.5403-100000@sprite>
+Message-ID: <Pine.LNX.4.10.9905041140080.5403-100000@sprite>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Linux Expo
 List-ID: <linux-parisc.vger.kernel.org>
 
+ 
+I'm in the process of planning a special event with Hewlett-Packard for
+Linux Expo with respect to the PA-RISC Porting Project. I will post
+further details shortly, however, to help in the planning, I need to know
+how many developers will be around.
 
-> Hello to all You brave people,
-> 
-> Congratulations to all of You who brought this kernel to life.
-> Great job done. I'm really looking forward to what will come...
+The tentative date and time for the event will be around noon on
+Wednesday, May 19th -- the tutorial day before the actual conference
+begins.
 
-Just to clarify: The kernel compiles, links, and we can branch to its
-entry point.
-
-There is still a lot of work to do before you can install it on your D
-class and hope to do anything useful. (I've had a fair number of requests
-from people, since the weekend, for a pointer to where they can get the
-entire distribution.)
-
-It would perhaps be better to say that it's now taken its first breath,
-and will be growing and maturing rather quickly over the next few
-months....
+So, If you are attending Linux Expo, please reply to me privately as soon
+as possible. Also include which days you will be there in case it becomes
+necessary to reschedule.
 
 Chris
