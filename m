@@ -1,29 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 536E84A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 04:56:23 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id C65AEB007; Fri, 16 Mar 2001 11:55:35 +0000 (GMT)
-Date: Fri, 16 Mar 2001 11:55:35 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010316115535.X31505@linuxcare.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 32BE14A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 05:02:34 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA05821
+	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Mar 2001 04:57:17 -0700
+Date: Fri, 16 Mar 2001 13:05:49 +0100
+To: parisc-linux@thepuffingroup.com
+From: Jay Konrad <jkonrad@fonts.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] New glibc on 715/75
+Content-Type: text/plain; charset="us-ascii"
+Message-Id: <200103161306385.SM00247@jkwinntpc>
+Subject: [parisc-linux] generating a new kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
-I am trying the glibc etc from newcompilers-20010314 on my 715/75.
-It seems anything that is dynamically linked hangs on exit.
+Hi guys!
 
-I am booting with init=/bin/sash, and have static and dynamic
-versions of hello-world (in C, not C++), and of gdb.
+I would like to make a new kernel for my HPs. Where , and - even more important - HOW can I get the sources to do so?
+Please advise, its pretty urgent!!!
 
-I can run the static programs ok, but if I run the dynamic hello-world
-it outputs HelloWorld and then goes to sleep.  Console still echoes,
-but I don't get the sash prompt back.
+Thanx in advance for your help, I very much appreciate what you do!!
 
-This isn't a particularly new problem - I havn't had a working 715/75
-root fs since the attempt to part-fix libpthread.
-
-Richard
+Jay  
