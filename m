@@ -1,16 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
-Date: Sun, 12 Sep 2004 09:10:07 -0400
-Message-ID: <20040912130959.GK1854@baldric.uwo.ca>
+Date: 12 Sep 2004 09:58:15 -0400
+Message-ID: <1094997501.1714.4.camel@mulgrave>
 References: <20040911165325.GO28659@tausq.org>
-	<200409112249.i8BMnjCA006552@hiauly1.hia.nrc.ca>
+	<20040912134707.GL1854@baldric.uwo.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409112249.i8BMnjCA006552@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040912134707.GL1854@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,25 +20,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Sep 11, 2004 at 06:49:45PM -0400, John David Anglin wrote:
-> > [1] The change to using absolute jumps is because gas doesn't want to
-> > let us take the difference of labels in two different sections (viz.
-> > .text vs .fixup). jejb and I are not able to come up with a case where
-> > using relative jumps is required.
-> 
-> Right.  However, there is a way to do 32/64 bit pc-relative offsets.
-> The table entries need to look like "L$1+(.+8-L$0)-$PIC_pcrel$0".
-> GAS needs to be reasonably new to support this.
+On Sun, 2004-09-12 at 09:47, Carlos O'Donell wrote:
+> I'm looking through the module loading code and worrying about how
+> absolute fixups works when a module needs a fixup?
 
-Interesting.
+It should work identically to non-module code ... what specifically is
+worrying you?
 
-I thought I needed relative fixups, then I realized I was wrong.
+> How are we handling module fixups with absolute fixup addresses?
 
-I use exception fixups for LWS on the gateway page, but I can
-just fudge the exception entries differently. No big problem
-since I have to do a fixed relocation on them anyway.
+The same way we do in the regular kernel ... jump to the absolute
+address.
 
-c.
+James
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
