@@ -1,21 +1,22 @@
-Return-Path: <ajwalker@broadpark.no>
-Received: from mail.broadpark.no (mail.broadpark.no [217.13.4.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 937D64898
+Return-Path: <soete.joel@tiscali.be>
+Received: from spoolo1.tiscali.be (spoolo1.tiscali.be [62.235.13.172])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 116884897
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 17 Apr 2004 14:38:36 -0600 (MDT)
-Message-ID: <32875.127.0.0.1.1082234959.squirrel@www.puszczka.com>
-In-Reply-To: <4081731B.7070006@tiscali.be>
-References: <407DA495.1090009@tiscali.be>   
-	<40711E5500006381@ocpmta2.freegates.net>
-	<26419.193.161.152.244.1082114391.squirrel@www.puszczka.com>
-	<4081731B.7070006@tiscali.be>
-Date: Sat, 17 Apr 2004 22:49:19 +0200 (CEST)
-Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
-From: "Andy Walker" <ajwalker@broadpark.no>
-To: "Joel Soete" <soete.joel@tiscali.be>
+	Sat, 17 Apr 2004 14:44:23 -0600 (MDT)
+Message-ID: <40819724.6050107@tiscali.be>
+Date: Sat, 17 Apr 2004 20:44:20 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
+References: <408174D7.2060709@tiscali.be> <20040417185711.GI17842@tausq.org>
+	<408194AA.60704@tiscali.be>
+In-Reply-To: <408194AA.60704@tiscali.be>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: Randolph Chung <randolph@tausq.org>,
+	Carlos O'Donell <carlos@baldric.uwo.ca>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: parisc-linux.org unreachable?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,44 +26,44 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Hello Andy,
->
-> Sorry for delay but I was a bit busy by a production server.
+hmm much more a routing pb:
 
-No problem.
+  # traceroute www.parisc-linux.org
+traceroute to www.parisc-linux.org (192.25.206.7), 64 hops max, 40 byte packets
+  1  * * *
+  2  10.10.10.41 (10.10.10.41)  47 ms  47 ms  40 ms
+  3  ge-3-2.gsr-02.bru.net.tiscali.be (62.235.3.214)  40 ms  39 ms  53 ms
+  4  ge-5-2-0-1.bru10.ip.tiscali.net (213.200.69.9)  40 ms  39 ms  40 ms
+  5  so-1-0-0.sjc10.ip.tiscali.net (213.200.82.233)  190 ms  190 ms  185 ms
+  6  qwest-ic.ip.tiscali.net (213.200.66.234)  193 ms  189 ms  186 ms
+  7  * * *
+  8  * * *
+  9  * * *
+10  * * *
+11  * * *
+12  * * *
+13  * * *
+14  * * *
+15  * * *
+16  * *
+17  * * *
 
->> 2.6.6-rc1-pa0 shows the same behaviour,
->
-> Thanks.
-> but not a surprise regarding previous test.
->
->> although it does seem to make it
->> through the Gentoo boot process most times.
->
-> I would not be surprise if it occures during some fsck. Do you also use
-> ext3 on your Gentoo?
-> btw Gentoo always install pkg by a local rebuild from src (that's a long
-> time that I visit the site)?
+Joel
 
-That's the Gentoo way - so every package on my system is compiled
--march=2.0 -mschedule=8000. The downside is that install and upgrade
-takes a long time on slow machines. The upside is that you get total
-control over package selection and compilation options. I've played
-with Debian before but I find apt a pain compared to Gentoo's portage.
-Also all this sid/woody/stable/unstable etc.... stuff confuses me.
-
->> I've compiled 2.6.3-pa2 in the hope of getting the C180 up and stable.
->
-> This seems to be the last one enough stable for me and my c110: I just
-> updated my distro (that used a lot tar iirc) and all works
-> fine with this kernel.
-
-2.6.3-pa2 is rock solid. I've been running updates, kernel compilation -
-pretty heavy stuff, and no problems.
-I'm just about to 'emerge' X11 - that should keep it downloading,
-untarring and compiling for 24 hours.
-
-Any suggestions for things I might test to narrow our problem down.
-
-cheers,
--Andy
+Joel Soete wrote:
+> Ok so it must be dns pb near my ISP.
+> 
+> Thanks,
+> Joel
+> 
+> 
+> Randolph Chung wrote:
+> 
+>>> This eveing p-l.org is unreachable for me?
+>>> Am I alone?
+>>
+>>
+>>
+>> works for me. -randolph
+> 
+> 
