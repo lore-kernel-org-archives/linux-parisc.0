@@ -1,55 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E9EB6482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Sep 2001 05:42:53 -0600 (MDT)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA10779
-	for <parisc-linux@puffin.external.hp.com>; Sat, 22 Sep 2001 05:40:14 -0600
-From: emailbase@371.net
-Message-ID: <20010922114339.21789.qmail@mailserv2.iuinc.com>
-Reply-To: coolstarpage <service@coolstarpage.com>
-To: "你好" <parisc-linux@thepuffingroup.com>
-Date: Wed,22 九月 2001 19:38:47 +0800
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	boundary="----=_=_NextPart_AAA_BBBB_01C11A5B.CEFD965";
-	type="multipart/alternative"
-Subject: [parisc-linux] 使用coolstarpage!让你的访问量每天提升1倍！
+Received: from xo.hp.is (xo.hp.is [194.105.242.199])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8FD07482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Sep 2001 10:30:51 -0600 (MDT)
+Date: Sat, 22 Sep 2001 16:30:43 +0000
+From: Richard Allen <ra@hp.is>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] C360 install fails
+Message-ID: <20010922163043.A16403@hp.is>
+References: <20010921135335.E11577@hp.is> <20010921213801.K24917@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010921213801.K24917@linuxcare.com>; from rhirst@linuxcare.com on Fri, Sep 21, 2001 at 09:38:01PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Fri, Sep 21, 2001 at 09:38:01PM +0100, Richard Hirst wrote:
 
-------=_=_NextPart_AAA_BBBB_01C11A5B.CEFD965
-Content-Type: multipart/alternative;
-	boundary="----=_=_NextPart_CCC_DDDD_01C11A8E.4ECE36A0"
+> On booting, my C360 says
+> 
+> 1. Raven U/L2 Dino RS-232 (10) at 0xf2003000, versions 0x6, 0x0, 0x8c, 0x0, 0x0 
+> 3. Raven+ w SE FWSCSI Core RS-232 (10) at 0xffd05000, versions 0x56, 0x0, 0x8c, 0x0, 0x0
+> ...
+> ttyS00 at iomem 0xffd05800 (irq = 154) is a 16550A 
+> ...
+> 
+> So 0xffd05805 looks like a reasonable address for it to try and access.
+> 
+> Does it crash at the same place if you try again?
 
-------=_=_NextPart_CCC_DDDD_01C11A8E.4ECE36A0
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: 8bit
+I didnt give up and I tried all kinds og combinations.  I noticed
+when I was booting off the CD (for the tenth time I think) that
+the install kernel was 32 bit so I opted for that one a I got further.
+I actually got so far as it began installing packages, but crashed
+at random places in the package installation.
 
-<html>
+I then loopback mounted the ISO image and NFS exported it and did the
+install via NFS and then finally it worked.
 
-<head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=gb2312">
-</head>
+Then when I had the system up and running I was adding extra packages
+(telnetd, openssl and openssh) when it crashed again.
 
-<frameset rows="1,*" framespacing="0" border="0" frameborder="0">
-  <frame name="header" scrolling="no" noresize target="main" src="new_page_3.htm">
-  <frame name="main" src="http://www.coolstarpage.com">
-  <noframes>
-  <body>
+I now have it in a pretty good state. Ive "apt-get upgrade" every package
+and installed all the development environment and compiled yesterdays
+kernel snapshot.
 
-  <p>此网页使用了框架，但您的浏览器不支持框架。</p>
+bofh:~# uname -a
+Linux bofh 2.4.9-pa24 #2 Fri Sep 21 20:40:31 UTC 2001 parisc unknown
+bofh:~# uptime
+ 16:29:35 up 19:10,  1 user,  load average: 0.00, 0.00, 0.00
 
-  
-  </noframes>
-</frameset>
+Not a single crash since I booted the new kernel so Im very hopeful
+that Ive gained some stability.
 
+Now to find an area I can contribute to :)
 
-
-
-</body></html>      
-
-------=_=_NextPart_CCC_DDDD_01C11A8E.4ECE36A0--
-
-------=_=_NextPart_AAA_BBBB_01C11A5B.CEFD965--
+-- 
+Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
+               --  Solaris 7 Certified Systems and Network Administrator.
+Bell Labs Unix --  Reach out and grep someone.
+Those who do not understand Unix are condemned to reinvent it, poorly.
