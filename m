@@ -1,37 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id RAA30445
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 17:35:20 -0500
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id OAA03146
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 14:34:43 -0800 (PST)
-Received: from netscape.com ([205.217.243.139]) by
-          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
-          F969E200.SF6 for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar
-          1999 14:34:50 -0800
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <36FABA03.7C223D3A@netscape.com>
-Date: Thu, 25 Mar 1999 17:34:43 -0500
-From: Mike Shaver <shaver@netscape.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id SAA31516
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 18:30:32 -0500
+Received: from hpctl57.cup.hp.com (root@hpctl57.cup.hp.com [15.0.76.57])
+	by atlrel1.hp.com (8.8.6 (PHNE_14041)/8.8.5tis) with ESMTP id SAA07993
+	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 18:30:10 -0500 (EST)
+Received: from hpctl57 (krp@hpctl57.cup.hp.com [15.0.76.57]) by hpctl57.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id PAA16137 for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 15:30:16 -0800 (PST)
+Sender: krp@cup.hp.com
+Message-ID: <36FAC708.362B@cup.hp.com>
+Date: Thu, 25 Mar 1999 15:30:16 -0800
+From: Bob Pflederer <krp@cup.hp.com>
 MIME-Version: 1.0
 To: hppa-linux@thepuffingroup.com
+Subject: Re: [hppa-linux] syscall work
+References: <199903252046.OAA08061@helgaaspc.rsn.hp.com> <36FAA595.DB56B012@netscape.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [hppa-linux] libmilli and linker scripts
 List-ID: <linux-parisc.vger.kernel.org>
 
-I'm making progress on getting the kernel to compile, and it's now
-attempting to link, but I'm confounded by my expected foes:
+> OK, I'm convinced.  I've changed unistd.h to use 0xC0000404 (on the next
+> page) for the syscall gateway, although we can easily change it back.
 
-1) millicode bits:
-  net/network.a(socket.o): In function `proto_init':
-  socket.o(.text+0x144): undefined reference to `$$dyncall'
-and thousands more like it, and $$divI, $$divU and $$remU in the serial
-code.  Is there some millicode assembly we could purloin, or should we
-write our own somehow?  (Or maybe fix the compiler to do it all inline?)
+Isn't the next page at 0xc0001000?  Or does linux have some concept of
+1k "pages" even though pages in the TLB are 4k?
 
-2) the total absence of a linker script.  Anyone have ideas on:
-kernel-in-memory layout, preferably by section?
-
-Mike
-
--- 
-87277.19 78688.20
+-Bob
