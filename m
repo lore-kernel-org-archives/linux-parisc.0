@@ -1,19 +1,19 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] [PATCH] Sort generic PCI fixups after specific ones
-Date: Thu, 23 Sep 2004 18:03:23 +0200
-Message-ID: <4152E6450000003B__46728.0476041653$1416624479$gmane$org@mail-3-bnl.tiscali.it>
-References: <20040922214304.GS16153@parcelfarce.linux.theplanet.co.uk>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Re: a fix for NS87415 on C3K broken
+Date: Thu, 23 Sep 2004 09:27:50 -0700
+Message-ID: <20040923162750.GX22642__26756.0363784016$1416624480$gmane$org@tausq.org>
+References: <41501936000007AF@mail-7-bnl.tiscali.it>
+	<4152E6450000004C@mail-3-bnl.tiscali.it>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: linux-pci@atrey.karlin.mff.cuni.cz,
- linux-kernel@vger.kernel.org,
+  charset=us-ascii
+Cc: linux-ide@vger.kernel.org,
+ Bartlomiej Zolnierkiewicz <bzolnier@elka.pw.edu.pl>,
  parisc-linux@parisc-linux.org
-To: "Matthew Wilcox" <matthew@wil.cx>,
- "Linus Torvalds" <torvalds@osdl.org>,
- "Andrew Morton" <akpm@zip.com.au>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040922214304.GS16153@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <4152E6450000004C@mail-3-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,47 +24,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> But when I try to use the ide-cdrom the system carsh with such oops:
+> Backtrace:
+>  [<000000001017e0d8>] drain_array_locked+0x98/0x148
+>  [<000000001017e2c4>] cache_reap+0x13c/0x2b0
+>  [<000000001015e574>] worker_thread+0x284/0x330
+>  [<0000000010164714>] kthread+0x12c/0x138
+>  [<000000001010647c>] ret_from_kernel_thread+0x24/0x38
 
-> -- Original Message --
-> Date: Wed, 22 Sep 2004 22:43:04 +0100
-> From: Matthew Wilcox <matthew@wil.cx>
-> To: Linus Torvalds <torvalds@osdl.org>,
-> 	Andrew Morton <akpm@zip.com.au>
-> Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-kernel@vger.kernel.org,
-> 	parisc-linux@parisc-linux.org
-> Subject: [parisc-linux] [PATCH] Sort generic PCI fixups after specific
-ones
-> 
-> 
-> 
-> The recent change that allowed PCI fixups to be declared everywhere
-> broke IDE on PA-RISC by making the generic IDE fixup be applied before
-> the PA-RISC specific one.  This patch fixes that by sorting generic fix=
-ups
-> after the specific ones.  It also obeys the 80-column limit and reduces=
+maybe this will help:
+http://marc.theaimsgroup.com/?l=linux-kernel&m=109529103522064&w=2
 
-> the amount of grotty macro code.
-> 
-> I'd like to thank Joel Soete for his work tracking down the source of
-> this problem.
->
-Thanks (but too much honor)
+but we are seeing some of these slab errors with this build that are not
+cdrom related too... :(
 
-That said, I apply your patch against 2.6.9-rc2-pa7 and it boot fine :)
+can you try compiling with slab debug (under kernel debugging)?
 
-Thanks a lot for great job,
-Joel
-
-
--------------------------------------------------------------------------=
---
-Tiscali ADSL GO, 29,50 Euro/mois pendant toute une ann=E9e, profitez-en..=
-.
-http://reg.tiscali.be/adsl/welcome.asp?lg=3DFR
-
-
-
-
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
