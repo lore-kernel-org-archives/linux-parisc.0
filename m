@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 14 Dec 2002 20:53:59 -0700
-To: Thibaut VARENE <varenet@esiee.fr>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08F53482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Dec 2002 04:18:02 -0700 (MST)
+Message-ID: <3DFC74CB.2060208@freebel.net>
+Date: Sun, 15 Dec 2002 12:25:47 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: "M. Grabert" <xam@cs.ucc.ie>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.20-pa14 64bit crash on boot - A500-5X
-Message-ID: <20021215035359.GA18647@dsl2.external.hp.com>
-References: <20021213132838.F044D49C55@mail.esiee.fr> <20021213233540.503b16d3.varenet@esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021213233540.503b16d3.varenet@esiee.fr>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: Re: [parisc-linux] gcc-snapshot (3.3) and linux-2.4.20-pa13
+References: <Pine.LNX.4.44.0212132231260.18468-100000@sal.ucc.ie>
+In-Reply-To: <Pine.LNX.4.44.0212132231260.18468-100000@sal.ucc.ie>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,20 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Dec 13, 2002 at 11:35:40PM +0100, Thibaut VARENE wrote:
-> AOUT: 0x10143bd4 mod_timer+3c
-...
-> AOUT: 0x10538b48 hp_diva_timer+0
+Max,
 
-Good News: I reproduced this and fixed it.
-But I don't know exactly what I did that fixed it. :^(
-(drawbacks of the shotgun approach).
-Fairly small patch is on ftp.parisc-linux.org/patches/diff-2.4.20-timer
-This isn't ready to commit until someone narrows it down to one thing.
+Sorry, I would have to mentionned that:
+those stuff can be saffely removed (as far as can test we gcc-3.0 and 
+later as 3.1 3.2 and 3.3 (aka snapshot))
 
-Bad News: SMP kernel now hangs during SCSI device discover.
-I haven't tried CONFIG_SMP=n yet and I guess that would be a next step.
-Console output of the a500-44 boot with 2.4.20-pa14 + patch is on
-	dsl2.e.h.c:~grundler/rp2470-2.4.20-symhang-01
+Cheers,
+	Joel
 
-grant
+M. Grabert wrote:
+> Debian's gcc snapshot won't compile the kernel, (probably) due to the
+> same reason as here:
+> 
+> ====
+> Changes since 1.46: +1 -1 lines
+> Diff to previous 1.46
+> 
+> 2.5.47-pa8: remove reference to $$mulU millicode function for gcc 3.3
+> =====
+> 
+> at least it's the same error message ('undefined reference ...').
+> 
+> greetings max
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
