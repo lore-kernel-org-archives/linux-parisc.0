@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F0FC482E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Nov 2002 13:50:21 -0700 (MST)
-Date: Fri, 15 Nov 2002 15:50:28 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Randolph Chung <randolph@tausq.org>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	bzeeb-lists@lists.zabbadoz.net, parisc-linux@lists.parisc-linux.org
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C2F1C482E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Nov 2002 15:18:19 -0700 (MST)
+Date: Fri, 15 Nov 2002 22:17:23 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	<parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] [2.5] next issues ...
-Message-ID: <20021115205028.GI7587@systemhalted>
-References: <20021115175032.GD5673@systemhalted> <200211151910.gAFJA2Sv014896@hiauly1.hia.nrc.ca> <20021115192110.GE21266@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021115192110.GE21266@tausq.org>
+In-Reply-To: <200211151910.gAFJA2Sv014896@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.BSF.4.44.0211152207240.39295-100000@e0-0.zab2.int.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > My impression from what Joel has said is that the problem is bad coding
-> > rather than an actual gcc problem.  However, up to now, nobody has been
-> > able to provide a precise analysis of what's going on.
-> 
-> or even duplicate the problem.. i've been building 2.4 and 2.5 kernels
-> with 3.2 for some time.... haven't seen the problems that have been
-> reported.
-> 
+On Fri, 15 Nov 2002, John David Anglin wrote:
 
-32 or 64-bit kernels? All debian tools? Mix of debian and upstream?
+> 3.1.1 and 3.2 are identical except for a change in C++ abi, so as far
+> as kernel building goes they should be the same.  3.3 has a small struct
 
-My only run-in with the problem was with 32-bit kernels cross compiled
-from x86. Though lately I'm using a gcc-3.1 based XC and it builds functional
-64-bit kernels.
+ok.
 
-This is definately becoming one of those HPPA urban legends. I shall add
-it to my TODO list and verify that I can build a 32/64-bit kernel
-natively and cross with all the latest upstream cvs bits.
+> ABI fix (affects passing of 5-7 byte structs by value), improved long calls
+> and a workaround for a linker bug affecting PA 2.0 float loads.  If I
 
-c.
+no PA 2.0 here.
+
+> was picking, I would go with the current mainline 3.3 or the debian 3.0.
+
+ok, how and where to get 3.3 from ?
+	- subversions.gnu.org cvs ?
+	- cvs.parisc-linux.org cvs ? (looks older)
+
+I am going to dig into this.
+
+What about binutils 2.13.90.0.10-2 ... do you know what changes where
+there from previous versions ?
+
+Ok, first thing I am going to do is build with gcc 3.0.4 and see if it
+works.
+
+all native building btw. here.
+
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
