@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] jfs-1.0.23 as well xfs-cvs break fb console on k-2.4.19-pa22 
-In-Reply-To: Message from Joel Soete <joel.soete@freebel.net>
-   of "Sat, 19 Oct 2002 19:45:35 -0000." <3DB1B65F.5020203@freebel.net>
-References: <3DA56CAE00003256@ocpmta8.be.tiscali.com>  <3DB1B65F.5020203@freebel.net> 
-Date: Sat, 19 Oct 2002 21:44:03 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021020034403.AF4F14829@dsl2.external.hp.com>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9FDF54829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Oct 2002 23:26:38 -0600 (MDT)
+Date: Sun, 20 Oct 2002 01:26:23 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20021020052623.GA1577@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] GSP on A500 - Level 14 Alert - Output overvoltage?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,19 +21,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Joel Soete wrote:
-> The very first patch 2.4.19 I still have was pa5 and the same problem occur.
-> It seems definitely that JFS and STI FB in 2.4.19 are incompatible.
-> Where do I have to start my investigation?
-...
-> Really no idea?
+parisc,
 
-Sorry. I don't. And until 2.4.19 boots on the A500-6X,
-I'm not interested in chasing the JFS/STI issue.
+Just a quick flitting question that has been in
+the back of my mind. When working with an A500
+that I have, during a GSP powerdown using "PC", 
+I get the following error:
 
-My advice is to start adding printk's in the main vfs_ops entry
-points to JFS until you can narrow down which entry point is
-having problems. Then start looking STI to see if anything
-in the JFS code uses the same services or something.
+************* SYSTEM ALERT **************
+SYSTEM NAME: firin
+DATE: 10/19/2002 TIME: 00:24:23
+ALERT LEVEL: 14 = Fatal power or environmental problem prevents
+operation
 
-grant
+REASON FOR ALERT
+SOURCE: 4 = power
+SOURCE DETAIL: 4 = high voltage DC power   SOURCE ID: FF
+PROBLEM DETAIL: 5 = output overvoltage
+
+LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
+       OFF      OFF           OFF       OFF        FLASH
+System Power is Off.
+
+0x002000E544FF404F 00000000 00000000 - type  0 = Data Field Unused
+0x582008E544FF404F 00006609 13001817 - type 11 = Timestamp 10/19/2002
+00:24:23
+A: ack read of this entry - X: Disable all future alert messages
+Anything else skip redisplay the log entry
+->Choice:
+
+Is this bad for my hardware :} It was ever so 
+nice when I was kernel hacking and I could remotely
+control the box's power. However, after such an error
+I'm told that:
+
+
+  The system did not respond to the Power-On command.
+  Turn the system power switch Off and On again to reset the system.
+
+Which means I need to be there physically :(
+Any help on the matter would be much appreciated.
+
+c.
