@@ -1,16 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Bug#200619: gcc: parisc: compiling dietlibc-dev with -Os caus
-Date: Fri, 25 Jul 2003 22:21:26 -0400 (EDT)
-Message-ID: <200307260221.h6Q2LRN3001246__14943.4168976315$1416622624$gmane$org@hiauly1.hia.nrc.ca>
-References: <200307250308.h6P38ej6026594@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: doko@cs.tu-berlin.de, pape-dbnbgs@smarden.org,
-	200619@bugs.debian.org, dave.anglin@nrc-cnrc.gc.ca, tausq@debian.org,
-	parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <200307250308.h6P38ej6026594@hiauly1.hia.nrc.ca> from "John David Anglin" at Jul 24, 2003 11:08:40 pm
+Received: from thinkpad.home (pc1-hem11-4-cust109.lutn.cable.ntl.com [80.2.252.109])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4BF98482D
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  1 Aug 2003 03:22:20 -0600 (MDT)
+Date: Fri, 1 Aug 2003 10:05:33 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Greg Anderson <greg@planetbeagle.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] How to install X on 715/50 -- problem with twm
+Message-ID: <20030801090533.GK727@sleepie.demon.co.uk>
+References: <5.2.1.1.2.20030731163951.00b423d0@127.0.0.1>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <5.2.1.1.2.20030731163951.00b423d0@127.0.0.1>
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,25 +23,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> This doesn't appear to be a gcc problem.  The register %r3 is saved
-> on the stack in __stdio_init_file_nothreads.  The stack location
-> is clobbered by the fstat syscall.
+On Thu, Jul 31, 2003 at 04:45:41PM -0700, Greg Anderson wrote:
+> Hi all,
 > 
-> > > +  {
-> > > +    struct stat st;
-> > > +    fstat(fd,&st);
+> I'm sure this is a FAQ, but I didn't find an answer anywhere in the archives.
 > 
-> At the fstat call we have the following values:
+> I've just installed Debian 3.0 (woody) on my venerable HP 715/50.  The install went flawlessly and easily (great kudos to all involved in the hppa port!)
 > 
-> Breakpoint 11, 0x00010b10 in __stdio_init_file_nothreads ()
+> Now I'm envious of all you hppa Linux old-timers who are running Gnome, and I'm trying to load the X windows stuff.  I tried installing X Windows and Desktop System from tasksel, and I also tried installing X Windows "by hand" using apt-get.  Either way, the install will not complete, saying that twm cannot be installed.
+> 
+> When I try to install twm, I get:
+> 
+> # apt-get install twm
+> Reading Package Lists... Done
+> Building Dependency Tree... Done
+> Some packages could not be installed. This may mean that you have
+> requested an impossible situation or if you are using the unstable
+> distribution that some required packages have not yet been created
+> or been moved out of Incoming.
+> 
+> Since you only requested a single operation it is extremely likely that
+> the package is simply not installable and a bug report against
+> that package should be filed.
+> The following information may help to resolve the situation:
+> 
+> Sorry, but the following packages have unmet dependencies:
+>   twm: Depends: menu (> 1.5) but it is not installable
+> E: Sorry, broken packages
+> 
+> 
+> When I look around for the menu package, it's nowhere to be found.
+> 
+> What to do?  Do you all install XFree86 from its own distribution, bypassing the .deb files?
 
-Carlos O'Donell and myself looked at this problem this afternoon.  This
-is a dietlib problem.  Dietlib is not using the correct kernel_stat
-mapping for parisc.  They appear to be using the i386 mapping.  They
-need to look at /libc/sysdeps/unix/sysv/linux/xstatconv.c and the
-hppa/kernel_stat.h header in glibc.
+Well, it's twm that has the problem, not XFree86.  Maybe we don't use
+twm.  Looks like menu is indeed not in woody, but is in sarge and sid;
+iirc it is a c++ program that we used to have trouble building.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Richard
