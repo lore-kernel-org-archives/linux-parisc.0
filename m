@@ -1,49 +1,59 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 037C24A19
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Feb 2001 14:44:53 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] small STI patch
-Date: Tue, 13 Feb 2001 22:46:50 +0100
-References: <01021322170500.01835@P100.helgenet.de> <20010213213239.E7969@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20010213213239.E7969@parcelfarce.linux.theplanet.co.uk>
+Received: from osiris.silug.org (osiris.lanscape.net [64.240.156.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 68B414A19
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Feb 2001 15:46:28 -0700 (MST)
+From: Steven Pritchard <steve@silug.org>
+Message-Id: <200102132246.f1DMkL801323@osiris.silug.org>
+Subject: Re: [parisc-linux] C100 & Latest CVS Bits
+In-Reply-To: <Pine.LNX.4.21.0102131358430.14806-100000@maestro.symsys.com>
+ "from Greg Ingram at Feb 13, 2001 02:16:58 pm"
+To: Greg Ingram <ingram@symsys.com>
+Date: Tue, 13 Feb 2001 16:46:21 -0600 (CST)
+Cc: parisc-linux@parisc-linux.org
 MIME-Version: 1.0
-Message-Id: <01021322465001.01835@P100.helgenet.de>
+Content-Type: text/plain; charset=US-ASCII
+Sender: steve@osiris.silug.org
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tuesday 13 February 2001 22:32, Matthew Wilcox wrote:
-> On Tue, Feb 13, 2001 at 10:17:05PM +0100, Helge Deller wrote:
-> > I've just committed a small patch, which saves us to copy a whole struct
-> > from the STI ROM just to get one value (the ROM size) out of it.
->
-> But we leak a kmalloc'd buffer.  you need to remove the prior kmalloc
-> assigned to raw.
+Greg Ingram said:
+> On Tue, 13 Feb 2001, Grant Grundler wrote:
+> > Greg Ingram wrote:
+> > > As a side question, is it possible to have the system automatically reboot
+> > > after it encounters these errors?
+> > 
+> > It can. There's a global variable someplace that is *disabled* by default.
+> > If someone can just remember the global's name...
+> 
+> Anybody?  I have to make that *long* walk through the accounting office
+> just to power-cycle the beast.  
 
-Yes, you're right.
-I've just committed the following patch.
+Does rebooting with sysrq work?  (I've never actually tried it over a
+serial console, but I seem to recall that you can send a break, then
+"b".)
 
-Helge
+Actually, will that work, or do you have to turn on sysrq via /proc
+after booting?
 
-diff -u -r1.4 sticon-wmode.c
---- sticon-wmode.c      2001/02/13 20:56:54     1.4
-+++ sticon-wmode.c      2001/02/13 21:38:18
-@@ -110,13 +110,11 @@
- wmode_sti_read_rom(struct sti_struct *sti, unsigned long address, unsigned 
-long hpa)
- {
-        struct sti_cooked_rom *cooked;
--       struct sti_rom *raw;
-+       struct sti_rom *raw = NULL;
-        unsigned long size;
- 
--
-        cooked = kmalloc(sizeof *cooked, GFP_KERNEL);
--       raw = kmalloc(sizeof *raw, GFP_KERNEL);
--       if (!(raw && cooked))
-+       if (!cooked)
-                goto out_err;
- 
-        /* read the ROM size directly from the struct in ROM */
+Oh, wait, it looks like you can pass "panic=1" as a kernel parameter. 
+That should have the same effect as "echo 1 > /proc/sys/kernel/panic"
+(or adding "kernel.panic = 1" to /etc/sysctl.conf and running "sysctl
+-p") on a running system.
+
+Documentation/sysctl/kernel.txt says the following:
+
+    panic:
+
+    The value in this file represents the number of seconds the
+    kernel waits before rebooting on a panic. When you use the
+    software watchdog, the recommended setting is 60.
+
+The default value is 0, which disables the feature, IIRC.  (This is
+from memory, so I could easily be wrong.)
+
+I hope this trip through my faulty memory is helpful...  ;-)
+
+Steve
+-- 
+steve@silug.org           | Southern Illinois Linux Users Group
+(618)398-7320             | See web site for meeting details.
+Steven Pritchard          | http://www.silug.org/
