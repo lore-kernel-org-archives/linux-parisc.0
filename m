@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2AF08485E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 06:41:14 -0600 (MDT)
-Date: Wed, 16 Apr 2003 13:41:11 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from mail.zigoo.net (e202.dhcp212-198-142.noos.fr [212.198.142.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EA944829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 07:13:56 -0600 (MDT)
+Date: Wed, 16 Apr 2003 15:13:33 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: willy@debian.org, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Presicionbook success
-In-Reply-To: <20030416122948.GM30643@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.44.0304161340160.28370-200000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-275789367-1825776469-1050496871=:28370"
+Message-Id: <20030416151333.72921928.varenet@esiee.fr>
+In-Reply-To: <Pine.LNX.4.44.0304161331520.28370-300000@sal.ucc.ie>
+References: <20030416122948.GM30643@parcelfarce.linux.theplanet.co.uk>
+	<Pine.LNX.4.44.0304161331520.28370-300000@sal.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,136 +24,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Wed, 16 Apr 2003 13:37:08 +0100 (IST)
+"M. Grabert" <xam@cs.ucc.ie> wrote:
 
----275789367-1825776469-1050496871=:28370
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+> On Wed, 16 Apr 2003, Matthew Wilcox wrote:
+> 
+> > On Wed, Apr 16, 2003 at 01:07:06PM +0100, M. Grabert wrote:
+> > > I just wanted you to inform that I successfully installed
+> > > Debian testing on my Presicionbook.
+> >
+> > Sweet!
+> >
+> > >   (The Presicionbook uses 2.5" IDE harddrives, obviously connected
+> > >    to the CMD chip, but they automagically appear as SCSI drives on
+> > >    LASI SCSI.)
+> >
+> > *blink*.  That's pretty weird.  Could you send the device listing that
+> > dmesg produces, and the results of lspci?
+> 
+> Attached to this mail ;)
+something went wrong. I've got some html code in the attache dmesg file.
 
-Sorry, I attached the wrong dmesg.txt
+Could you send it again, as well as cat /proc/cpuinfo and uname -a, so
+that i can update our listing at pateam.esiee.fr ?
 
-Thanks, max
+thx,
 
 
----275789367-1825776469-1050496871=:28370
-Content-Type: TEXT/plain; name="dmesg2.txt"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0304161341110.28370@sal.ucc.ie>
-Content-Description: presicionbook dmesg
-Content-Disposition: attachment; filename="dmesg2.txt"
-
-TGludXggdmVyc2lvbiAyLjQuMjAtcGEzMiAocm9vdEAobm9uZSkpIChnY2Mg
-dmVyc2lvbiAzLjIuMyAyMDAzMDMwOSAoRGViaWFuIHByZXJlbGVhc2UpKSAj
-MiBXZWQgQXByIDE2IDExOjAzOjI2IElTVCAyMDAzDQpGUFswXSBlbmFibGVk
-OiBSZXYgMSBNb2RlbCAxNQ0KVGhlIDMyLWJpdCBLZXJuZWwgaGFzIHN0YXJ0
-ZWQuLi4NCkRldGVybWluaW5nIFBEQyBmaXJtd2FyZSB0eXBlOiBTeXN0ZW0g
-TWFwLg0KbW9kZWwgMDAwMDUwMjAgMDAwMDA0ODEgMDAwMDAwMDAgMDIwMjAy
-MDIgNzgxYjE0MGMgMTAwMDAwZjAgMDAwMDAwMDQgMDAwMDAwYmEgMDAwMDAw
-YmENCnZlcnMgIDAwMDAwMDE4DQpDUFVJRCB2ZXJzIDE1IHJldiAyNCAoMHgw
-MDAwMDFmOCkNCmNhcGFiaWxpdGllcyAweDINCm1vZGVsIDkwMDAvNzc4L0Ix
-NjBMDQpUb3RhbCBNZW1vcnk6IDI1NiBNYg0KcGFnZXRhYmxlX2luaXQNCk9u
-IG5vZGUgMCB0b3RhbHBhZ2VzOiA2NTUzNg0Kem9uZSgwKTogNjU1MzYgcGFn
-ZXMuDQp6b25lKDEpOiAwIHBhZ2VzLg0Kem9uZSgyKTogMCBwYWdlcy4NCkxF
-RCBkaXNwbGF5IGF0IGYwMTkwMDAxIHJlZ2lzdGVyZWQNCktlcm5lbCBjb21t
-YW5kIGxpbmU6IHJvb3Q9L2Rldi9zZGEzIEhPTUU9LyBpcD1vZmYgaWRlPW5v
-ZG1hIGNvbnNvbGU9dHR5MCBzdGk9OC8yNCBzdGlfZm9udD1WR0E4eDE2IFRF
-Uk09bGludXggcGFsb19rZXJuZWw9My9ib290L3ZtbGludXgNCkNvbnNvbGU6
-IGNvbG91ciBkdW1teSBkZXZpY2UgMTYweDY0DQpDYWxpYnJhdGluZyBkZWxh
-eSBsb29wLi4uIDEwNi40OSBCb2dvTUlQUw0KTWVtb3J5OiAyNTY0MzZrIGF2
-YWlsYWJsZQ0KRGVudHJ5IGNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMzI3
-NjggKG9yZGVyOiA2LCAyNjIxNDQgYnl0ZXMpDQpJbm9kZSBjYWNoZSBoYXNo
-IHRhYmxlIGVudHJpZXM6IDE2Mzg0IChvcmRlcjogNSwgMTMxMDcyIGJ5dGVz
-KQ0KTW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRl
-cjogMywgMzI3NjggYnl0ZXMpDQpCdWZmZXItY2FjaGUgaGFzaCB0YWJsZSBl
-bnRyaWVzOiAxNjM4NCAob3JkZXI6IDQsIDY1NTM2IGJ5dGVzKQ0KUGFnZS1j
-YWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDY1NTM2IChvcmRlcjogNiwgMjYy
-MTQ0IGJ5dGVzKQ0KU2VhcmNoaW5nIGZvciBkZXZpY2VzLi4uDQpGb3VuZCBk
-ZXZpY2VzOg0KMS4gTWVybGluKyAxMzIgRGlubyBQUy8yIFBvcnQgKDEwKSBh
-dCAweGZmZjgxMDAwIFsxXSwgdmVyc2lvbnMgMHgyMiwgMHgwLCAweDk2DQoy
-LiBQaGFudG9tIFBzZXVkb0JDIEdTQysgUG9ydCAoNykgYXQgMHhmZmMwMDAw
-MCBbOF0sIHZlcnNpb25zIDB4NTA0LCAweDAsIDB4MA0KMy4gRGlubyBQQ0kg
-QnJpZGdlICgxMykgYXQgMHhmZmY4MDAwMCBbOC8wXSwgdmVyc2lvbnMgMHg2
-ODAsIDB4MywgMHhhLCAgYWRkaXRpb25hbCBhZGRyZXNzZXM6IDB4ZjA4MDAw
-MDAgDQo0LiBNZXJsaW4rIDEzMiBEaW5vIFJTLTIzMiAoMTApIGF0IDB4ZmZm
-ODMwMDAgWzgvMC82M10sIHZlcnNpb25zIDB4MjIsIDB4MCwgMHg4Yw0KNS4g
-TWVybGluIDE2MCBDb3JlIEJBICgxMSkgYXQgMHhmZmQwMDAwMCBbOC8xNl0s
-IHZlcnNpb25zIDB4M2QsIDB4MCwgMHg4MSwgIGFkZGl0aW9uYWwgYWRkcmVz
-c2VzOiAweGZmZDBjMDAwIDB4ZmZjMDAwMDAgDQo2LiBNZXJsaW4gMTYwIENv
-cmUgQ2VudHJvbmljcyAoMTApIGF0IDB4ZmZkMDIwMDAgWzgvMTYvMF0sIHZl
-cnNpb25zIDB4M2QsIDB4MCwgMHg3NCwgIGFkZGl0aW9uYWwgYWRkcmVzc2Vz
-OiAweGZmZDAxMDAwIDB4ZmZkMDMwMDAgDQo3LiBNZXJsaW4gMTYwIENvcmUg
-QXVkaW8gKDEwKSBhdCAweGZmZDA0MDAwIFs4LzE2LzFdLCB2ZXJzaW9ucyAw
-eDNkLCAweDQsIDB4N2INCjguIE1lcmxpbiAxNjAgQ29yZSBSUy0yMzIgKDEw
-KSBhdCAweGZmZDA1MDAwIFs4LzE2LzRdLCB2ZXJzaW9ucyAweDNkLCAweDAs
-IDB4OGMNCjkuIE1lcmxpbiAxNjAgQ29yZSBTQ1NJICgxMCkgYXQgMHhmZmQw
-NjAwMCBbOC8xNi81XSwgdmVyc2lvbnMgMHgzZCwgMHgwLCAweDgyDQoxMC4g
-TWVybGluIDE2MCBDb3JlIExBTiAoODAyLjMpICgxMCkgYXQgMHhmZmQwNzAw
-MCBbOC8xNi82XSwgdmVyc2lvbnMgMHgzZCwgMHgwLCAweDhhDQoxMS4gTWVy
-bGluIDE2MCBDb3JlIFBTLzIgUG9ydCAoMTApIGF0IDB4ZmZkMDgwMDAgWzgv
-MTYvN10sIHZlcnNpb25zIDB4M2QsIDB4MCwgMHg4NA0KMTIuIE1lcmxpbiAx
-NjAgQ29yZSBQUy8yIFBvcnQgKDEwKSBhdCAweGZmZDA4MTAwIFs4LzE2Lzhd
-LCB2ZXJzaW9ucyAweDNkLCAweDAsIDB4ODQNCjEzLiBNZXJsaW4gMTYwIENv
-cmUgUEMgRmxvcHB5ICgxMCkgYXQgMHhmZmQwYTAwMCBbOC8xNi8xMF0sIHZl
-cnNpb25zIDB4M2QsIDB4MCwgMHg4Mw0KMTQuIEdlY2tvIEdTQyBDb3JlIEdy
-YXBoaWNzICgxMCkgYXQgMHhmODAwMDAwMCBbOC8yNF0sIHZlcnNpb25zIDB4
-MTYsIDB4MCwgMHg4NSwgIGFkZGl0aW9uYWwgYWRkcmVzc2VzOiAweGYwMDEx
-MDAwIA0KMTUuIE1lcmxpbiBMMiAxNjAgKDkwMDAvNzc4L0IxNjBMKSAoMCkg
-YXQgMHhmZmZiZTAwMCBbNjJdLCB2ZXJzaW9ucyAweDUwMiwgMHgwLCAweDQN
-CjE2LiBNZW1vcnkgKDEpIGF0IDB4ZmZmYmYwMDAgWzYzXSwgdmVyc2lvbnMg
-MHg2NywgMHgwLCAweDkNCkNQVShzKTogMSB4IFBBNzMwMExDIChQQ1gtTDIp
-IGF0IDE2MC4wMDAwMDAgTUh6DQpMYXNpIHZlcnNpb24gMCBhdCAweGZmZDAw
-MDAwIGZvdW5kLg0KRGlubyB2ZXJzaW9uIDMuMSBmb3VuZCBhdCAweGZmZjgw
-MDAwDQpQT1NJWCBjb25mb3JtYW5jZSB0ZXN0aW5nIGJ5IFVOSUZJWA0KTGlu
-dXggTkVUNC4wIGZvciBMaW51eCAyLjQNCkJhc2VkIHVwb24gU3dhbnNlYSBV
-bml2ZXJzaXR5IENvbXB1dGVyIFNvY2lldHkgTkVUMy4wMzkNCkluaXRpYWxp
-emluZyBSVCBuZXRsaW5rIHNvY2tldA0KU29mdCBwb3dlciBzd2l0Y2ggZW5h
-YmxlZCwgcG9sbGluZyBAIDB4ZjAxNDAwMDAuDQpTdGFydGluZyBrc3dhcGQN
-CkpvdXJuYWxsZWQgQmxvY2sgRGV2aWNlIGRyaXZlciBsb2FkZWQNClNUSSBH
-U0MvUENJIGdyYXBoaWNzIGRyaXZlciB2ZXJzaW9uIDAuOQ0KU1RJIHdvcmQg
-bW9kZSBST00gYXQgZjAwMTEwMDAsIGhwYSBhdCBmODAwMDAwMA0KU1RJIGlk
-IDJkMDhjMGE3LTlhMDI1ODcsIGNvbmZvcm1zIHRvIHNwZWMgcmV2LiA4LjA3
-DQpTVEkgZGV2aWNlOiBJTlRFUk5BTF9FR19YNjQwDQpDb25zb2xlOiBzd2l0
-Y2hpbmcgdG8gY29sb3VyIGZyYW1lIGJ1ZmZlciBkZXZpY2UgODB4MzANCmZi
-MDogc3RpZmIgNjQweDQ4MC04IGZyYW1lIGJ1ZmZlciBkZXZpY2UsIGlkOiAy
-ZDA4YzBhNywgbW1pbzogMHhmODEwMDAwMA0KcHR5OiAyNTYgVW5peDk4IHB0
-eXMgY29uZmlndXJlZA0KU2VyaWFsIGRyaXZlciB2ZXJzaW9uIDUuMDVjICgy
-MDAxLTA3LTA4KSB3aXRoIE1BTllfUE9SVFMgU0hBUkVfSVJRIFNFUklBTF9Q
-Q0kgZW5hYmxlZA0KdHR5UzAwIGF0IGlvbWVtIDB4ZmZkMDU4MDAgKGlycSA9
-IDkwKSBpcyBhIDE2NTUwQQ0KdHR5UzAxIGF0IGlvbWVtIDB4ZmZmODM4MDAg
-KGlycSA9IDEwNikgaXMgYSAxNjU1MEENClBTLzIga2V5Ym9hcmQgcG9ydCBh
-dCAweGZmZDA4MDAwIChpcnEgNjkpIGZvdW5kLCBkZXZpY2UgYXR0YWNoZWQu
-DQpQUy8yIHBzYXV4IHBvcnQgYXQgMHhmZmQwODEwMCAoaXJxIDY5KSBmb3Vu
-ZCwgZGV2aWNlIGF0dGFjaGVkLg0KR2VuZXJpYyBSVEMgRHJpdmVyIHYxLjA3
-DQpGb3VuZCBpODI1OTYgYXQgMHhmZmQwNzAwMCwgSVJRIDg3DQpldGgwOiA4
-MjU5NiBhdCAweGZmZDA3MDAwLCAwMCA2MCBCMCBDMCAwOCA1RSBJUlEgODcu
-DQo4MjU5Ni5jICRSZXZpc2lvbjogMS4zMCAkDQpTQ1NJIHN1YnN5c3RlbSBk
-cml2ZXIgUmV2aXNpb246IDEuMDANCjUzYzcwMDogVmVyc2lvbiAyLjggQnkg
-SmFtZXMuQm90dG9tbGV5QEhhbnNlblBhcnRuZXJzaGlwLmNvbQ0Kc2NzaTA6
-IDUzYzcxMCByZXYgMiANCnNjc2kwIDogTEFTSSBTQ1NJIDUzYzcwMA0KICBW
-ZW5kb3I6IEFEVFggICAgICBNb2RlbDogQVhTSVRTMjUzMlIgMDE0QyAgUmV2
-OiBUQzZPDQogIFR5cGU6ICAgRGlyZWN0LUFjY2VzcyAgICAgICAgICAgICAg
-ICAgICAgICBBTlNJIFNDU0kgcmV2aXNpb246IDAyDQpBdHRhY2hlZCBzY3Np
-IGRpc2sgc2RhIGF0IHNjc2kwLCBjaGFubmVsIDAsIGlkIDAsIGx1biAwDQpT
-Q1NJIGRldmljZSBzZGE6IDgwMDc1NTIgNTEyLWJ5dGUgaGR3ciBzZWN0b3Jz
-ICg0MTAwIE1CKQ0KUGFydGl0aW9uIGNoZWNrOg0KIHNkYTogc2RhMSBzZGEy
-IHNkYTMNCkxhc2kgSGFybW9ueSBBdWRpbyBkcml2ZXIgVjAuOWEsIGgvdyBp
-ZCAyMCwgcmV2LiAyNTUgYXQgMHhmZmQwNDAwMCwgSVJRIDgyDQptaWNlOiBQ
-Uy8yIG1vdXNlIGRldmljZSBjb21tb24gZm9yIGFsbCBtaWNlDQpIUCBTREM6
-IE5vIFNEQyBmb3VuZC4NCk5FVDQ6IExpbnV4IFRDUC9JUCAxLjAgZm9yIE5F
-VDQuMA0KSVAgUHJvdG9jb2xzOiBJQ01QLCBVRFAsIFRDUCwgSUdNUA0KSVA6
-IHJvdXRpbmcgY2FjaGUgaGFzaCB0YWJsZSBvZiAyMDQ4IGJ1Y2tldHMsIDE2
-S2J5dGVzDQpUQ1A6IEhhc2ggdGFibGVzIGNvbmZpZ3VyZWQgKGVzdGFibGlz
-aGVkIDE2Mzg0IGJpbmQgMzI3NjgpDQpMaW51eCBJUCBtdWx0aWNhc3Qgcm91
-dGVyIDAuMDYgcGx1cyBQSU0tU00NCk5FVDQ6IEV0aGVybmV0IEJyaWRnZSAw
-MDggZm9yIE5FVDQuMA0Ka2pvdXJuYWxkIHN0YXJ0aW5nLiAgQ29tbWl0IGlu
-dGVydmFsIDUgc2Vjb25kcw0KRVhUMy1mczogbW91bnRlZCBmaWxlc3lzdGVt
-IHdpdGggb3JkZXJlZCBkYXRhIG1vZGUuDQpWRlM6IE1vdW50ZWQgcm9vdCAo
-ZXh0MyBmaWxlc3lzdGVtKSByZWFkb25seS4NCkZyZWVpbmcgdW51c2VkIGtl
-cm5lbCBtZW1vcnk6IDIyMWsgZnJlZWQNCk5FVDQ6IFVuaXggZG9tYWluIHNv
-Y2tldHMgMS4wL1NNUCBmb3IgTGludXggTkVUNC4wLg0KQWRkaW5nIFN3YXA6
-IDQ5OTk4OGsgc3dhcC1zcGFjZSAocHJpb3JpdHkgLTEpDQpFWFQzIEZTIDIu
-NC0wLjkuMTksIDE5IEF1Z3VzdCAyMDAyIG9uIHNkKDgsMyksIGludGVybmFs
-IGpvdXJuYWwNCmlwX3RhYmxlczogKEMpIDIwMDAtMjAwMiBOZXRmaWx0ZXIg
-Y29yZSB0ZWFtDQpldGgwOiBsaW5rIG9rLg0K
----275789367-1825776469-1050496871=:28370--
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
