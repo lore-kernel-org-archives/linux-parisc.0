@@ -1,13 +1,15 @@
-From: CrazyCat <crazycat@c-p-f.org>
-Subject: [parisc-linux] Booting 712/80 without keyboard
-Date: Wed, 07 Jul 2004 15:05:58 +0200
-Message-ID: <40EBF536.8030207@c-p-f.org>
+From: Kyle McMartin <kyle@engsoc.org>
+Subject: Re: [parisc-linux] Booting 712/80 without keyboard
+Date: Wed, 7 Jul 2004 09:17:43 -0400
+Message-ID: <20040707131743.GK16374@engsoc.org>
+References: <40EBF536.8030207@c-p-f.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: CrazyCat <crazycat@c-p-f.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <40EBF536.8030207@c-p-f.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,31 +20,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi there,
+On Wed, Jul 07, 2004 at 03:05:58PM +0200, CrazyCat wrote:
+> Does anyone already make something like this? I don't want to crash my
+> engine...
+> 
+> And don't you know if this kind of dongle are selled somewhere (I prefer
+> when it's manufacturer than myself) ?
+> 
 
-I've found a way to simulate a keyboard on my 712/80, but not tested yet...
-This is a dongle for PS/2:
+You don't... actually... need to have something like this. 712 does let
+you boot without keyboard, but it's not straight forward, and there's a
+chance that if you bugger up the command, you will not be able to fix
+it.
 
-1o [] o6
-2o    o5
-3o    o4
-Connect 1 - 5 with wire link
-Connect 4 - 6 with wire link
-Connect 2 - 5 with 220R resistor and LED (cathode to 5)
+It involves booting into the HP-UX ISL, and changing the console path to
+serial. If you no longer have an HP-UX ISL, you can find one here
+http://cvs.parisc-linux.org/download/checkedout/build-tools/uxbootlf.
 
-Does anyone already make something like this? I don't want to crash my
-engine...
+Directions can be found by googling for "hp 712 serial console" but
+since there's a chance you'll fry your machine, I'll let you do that and
+absolve myself of responsibility.
 
-And don't you know if this kind of dongle are selled somewhere (I prefer
-when it's manufacturer than myself) ?
-
-Thanks a lot
+Regards,
 -- 
-Tout sur les eggdrops
-http://www.c-p-f.org
-ML @ eggdrop_fr@yahoogroupes.fr
-
-
+Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
