@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cce.ru (sr1.cce.ru [80.79.64.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D67CF4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Aug 2002 00:18:00 -0600 (MDT)
-Received: from [80.79.64.37] (account nsem HELO kahuna.cce.ru)
-  by cce.ru (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 277742 for parisc-linux@lists.parisc-linux.org; Fri, 16 Aug 2002 10:18:06 +0400
-Message-Id: <5.1.0.14.0.20020816100459.00a76008@mail.cce.ru>
-Date: Fri, 16 Aug 2002 10:18:07 +0400
+Received: from dc-mx14.cluster1.charter.net (dc-mx14.cluster1.charter.net [209.225.8.24])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8D934829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 02:06:26 -0600 (MDT)
+Received: from [24.159.161.68] (HELO charter.net)
+  by dc-mx14.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 81675524 for parisc-linux@lists.parisc-linux.org; Sat, 17 Aug 2002 04:08:04 -0400
+Message-ID: <3D5E0430.2000407@charter.net>
+Date: Sat, 17 Aug 2002 04:07:12 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-From: Nikolay Semenov <nsem@cce.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: [parisc-linux] 10-pin modular jack on 75/100 and a mouse in X
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Voodoo3 PCI on C200 experiment pending!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi there,
+I just scarfed up a somewhat used Voodoo3 PCI graphics
+card from Ebay and intend to try it out with Debian/HPPA
+and a custom built kernel.
 
-I've install Woody on 75/100 workstation with 10-pin modular jack for 
-keyboard and mouse connection and cannot get the mouse working in X.
-Can someone tell me how to configure X to get it working?
+I hope to compile a tdfx.o drm module and get the card
+recognized via a PALO boot command. I will use a dumb
+terminal for the system console during initial booting.
 
-  (i) if I try /dev/input/mice -- device cannot be open.
-  (ii) if I try /dev/psaux -- device be opened but the mouse not working.
-
-Keyboard is working all the time.
-
-Thanks in advance,
-
-Nikolay 
+Any hints or tips would be appreciated :-)
