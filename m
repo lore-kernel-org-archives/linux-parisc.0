@@ -1,34 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01778
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 15:17:32 -0700
-Received: (from prumpf@localhost)
-	by inwestnet.de (8.9.3/8.9.3) id WAA00605
-	for parisc-linux@thepuffingroup.com; Wed, 15 Mar 2000 22:17:58 +0100
-Date: Wed, 15 Mar 2000 22:16:47 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA02709
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 16:28:44 -0700
+Date: Wed, 15 Mar 2000 17:30:03 -0500 (EST)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Assembly Language Changes
-Message-ID: <20000315221647.G673@abacus.local>
-References: <20000312152353.E5281@abacus.local>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000312152353.E5281@abacus.local>; from prumpf@inwestnet.de on Sun, Mar 12, 2000 at 03:23:53PM +0100
+Subject: Re: [parisc-linux] Cross compiler -- on Alpha?
+In-Reply-To: <Pine.LNX.4.10.10003151927530.21833-100000@bastion.hugo.vanderkooij.org>
+Message-ID: <Pine.BSO.4.21.0003151719030.7474-100000@mojo.calyx.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I haven't received any negative comments about the proposed changes yet,
-and think the following changes should become effective soon:
 
->  - Labels should always use ':'
->  - mnemonics in the first column should be interpreted normally.
->  - register names should always start with '%', not be specified by an
->    integer
->  - ';' should be used rather than '!' to separate multiple statements
->    on the same line
-- '!' replaces ';' as the line comment character
+> I know there is plenty of software out there that does not use proper
+> handling of pointers and that will break on my Alpha while you can get
+> away with it on intel based machines. The problem is due to bad coding but
+> it could be a good case to try and see if the code is clean enough.
 
-I don't think a line comment character should be necessary for new code -
-C comments (thats /* comment */, not // comment\n) work fine.
+OK, well I gave it a spin -- the linker compiled, with a lot of
+warnings about integers of different size than pointers.  The rest
+of binutils built but I couldn't build gas, I don't think it was
+architecture related though:
 
-So, still no objections ?
+gcc -g -O2 -o .libs/as-new app.o as.o atof-generic.o bignum-copy.o cond.o
+depend.o dwarf2dbg.o ecoff.o ehopt.o expr.o flonum-copy.o flonum-konst.o
+flonum-mult.o frags.o hash.o input-file.o input-scrub.o listing.o
+literal.o macro.o messages.o output-file.o
+read.o sb.o stabs.o subsegs.o symbols.o write.o tc-hppa.o obj-elf.o
+atof-ieee.o ../opcodes/.libs/libopcodes.so ../bfd/.libs/libbfd.so
+../libiberty/libiberty.a -lm -Wl,--rpath -Wl,/usr/src/parisc/lib
+tc-hppa.o: In function `tc_gen_reloc':
+/usr/src/parisc/binutils/gas/./config/tc-hppa.c:3972: undefined reference
+to `_bfd_elf64_hppa_gen_reloc_type'
+/usr/src/parisc/binutils/gas/./config/tc-hppa.c:3972: undefined reference
+to `_bfd_elf64_hppa_gen_reloc_type'
+collect2: ld returned 1 exit status
+make[3]: *** [as-new] Error 1
 
-	Philipp Rumpf
+--
+Brian
