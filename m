@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from almso2.proxy.att.com (almso2.att.com [192.128.166.71])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6C0A74851
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 09:59:23 -0700 (MST)
-Received: from attrh1i.attrh.att.com ([135.71.62.10])
-	by almso2.proxy.att.com (AT&T IPNS/MSO-3.0) with ESMTP id g1KGxK915726
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 11:59:21 -0500 (EST)
-Received: from occlust04evs1.ugd.att.com (135.71.164.12) by attrh1i.attrh.att.com (5.5.029)
-        id 3C62A10C000A9775 for parisc-linux@lists.parisc-linux.org; Wed, 20 Feb 2002 11:59:15 -0500
-Date: Wed, 20 Feb 2002 11:59:15 -0500
-Message-ID: <28F05913385EAC43AF019413F674A0170148AC2B@OCCLUST04EVS1.ugd.att.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2596B4857
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 10:01:15 -0700 (MST)
+Message-Id: <200202201701.g1KH19AC019253@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] gcc-3.1 && k-2.4.17-pa27 50/50(was Re: hppa-linux gcc-3.0.3:)
+To: jso@europay.com (=?iso-8859-1?Q?Jo=EBl_Soete?=)
+Date: Wed, 20 Feb 2002 12:01:08 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: doko@cs.tu-berlin.de, carlos@baldric.uwo.ca,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <OF57EB6BBE.3537F19D-ONC1256B66.005252D2@com> from "=?iso-8859-1?Q?Jo=EBl_Soete?=" at Feb 20, 2002 05:53:32 pm
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C1BA2F.EDA5BAC2"
-From: "Holst, Richard G (Dick), PROSH" <dholst@att.com>
-To: "parisc users" <parisc-linux@lists.parisc-linux.org>
-Subject: [parisc-linux] Parisc linux on a D machine
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,47 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+> I do not notice compile error :-)) (Hmm only note in dmesg  some
+> do_page_fault() pid=... command='conftest' ... during glibc rebuild, I am
+> not sure; I do not find any trace in my logs? ).
 
-------_=_NextPart_001_01C1BA2F.EDA5BAC2
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+See the same, particularly running the gcc testsuite.  The program
+which see to generate the do_page_fault's seems to be expect.  It
+gets into a state where /var fills with log messages.
 
-When I boot my D server running parisc LInuxLinux .9.3. the graphics =
-monitor is the console. I set the hardware path for the console to the =
-hardware address of the graphics (vga) card. I get the TUX penguin in =
-the upper left of the monitor and all the boot message and all the rc =
-startup messages. Just when the system is ready to give me a login =
-prompt, the out of the console shift to my serial terminal. I would =
-appear that I need a line in my /etc/inittab that will cause the login =
-prompt to appear on the graphics monitor. Can someone tell me how to get =
-the login prompt to appear on my graphics monitor instead of my serial =
-terminal please.
+> Just inetd seems to make the system panic after a simple telnet:
+> ...
+> Kernel fault: Code=15 regs=...
+> ...
+> 
+> David is it the problem of bootstrap you spoke about binutils?
 
+No.
 
-Dick Holst
-
-
-
-
-
-------_=_NextPart_001_01C1BA2F.EDA5BAC2
-Content-Type: text/x-vcard;
-	name="Holst, Richard G (Dick), GOVMK.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Holst, Richard G (Dick), GOVMK.vcf
-Content-Disposition: attachment;
-	filename="Holst, Richard G (Dick), GOVMK.vcf"
-
-QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOkhvbHN0O1JpY2hhcmQNCkZOOkhvbHN0LCBSaWNo
-YXJkIEcgKERpY2spLCBHT1ZNSw0KT1JHOkJNIChBVCZUIEJVU0lORVNTIFNFUlZJQ0VTKTtHT1ZN
-SyAoQUJTLUdPVkVSTk1FTlQgTUtUUykNClRJVExFOlNFTklPUiBURUNITklDQUwgU1RBRkYgTUVN
-QkVSDQpURUw7V09SSztWT0lDRTorMSA3MzIgNDIwLTQ4NDQNClRFTDtDRUxMO1ZPSUNFOiANClRF
-TDtQQUdFUjtWT0lDRTogDQpBRFI7V09SSzo7RTUtM0QxODsyMDAgUyBMQVVSRUwgQVZFO01JRERM
-RVRPV047Tko7MDc3NDgtMDAwMDtVTklURUQgU1RBVEVTDQpMQUJFTDtXT1JLO0VOQ09ESU5HPVFV
-T1RFRC1QUklOVEFCTEU6RTUtM0QxOD0wRD0wQTIwMCBTIExBVVJFTCBBVkU9MEQ9MEFNSURETEVU
-T1dOLCBOSiAwNzc0OC0wMDAwPTBEPTBBVU5JVEVEIFNUQT0NClRFUw0KRU1BSUw7UFJFRjtJTlRF
-Uk5FVDpkaG9sc3RAYXR0LmNvbQ0KUkVWOjIwMDAxMDIzVDE5NDgzM1oNCkVORDpWQ0FSRA0K
-
-------_=_NextPart_001_01C1BA2F.EDA5BAC2--
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
