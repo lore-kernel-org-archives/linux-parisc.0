@@ -1,28 +1,17 @@
-Return-Path: <rmk+parisc-linux=parisc-linux.org@arm.linux.org.uk>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[212.18.232.186])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 50E314839
-	for <parisc-linux@parisc-linux.org>;
-	Mon, 19 Apr 2004 07:22:07 -0600 (MDT)
-Received: from [2002:d412:e8ba:1:201:80ff:fe4b:1778]
-	(helo=dyn-67.arm.linux.org.uk)
-	by caramon.arm.linux.org.uk with asmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.32) id 1BFYik-0005hm-P9; Mon, 19 Apr 2004 14:21:58 +0100
-Received: from rmk by dyn-67.arm.linux.org.uk with local (Exim 4.32)
-	id 1BFYik-000567-AF; Mon, 19 Apr 2004 14:21:58 +0100
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-To: Linux Kernel List <linux-kernel@vger.kernel.org>, matthew@wil.cx,
-	parisc-linux@parisc-linux.org
-In-Reply-To: <20040418232314.A2045@flint.arm.linux.org.uk>;
-	from rmk+lkml@arm.linux.org.uk on Sun, Apr 18, 2004 at 11:23:14PM
-	+0100
-References: <20040418231720.C12222@flint.arm.linux.org.uk>
-	<20040418232314.A2045@flint.arm.linux.org.uk>
-Message-Id: <E1BFYik-000567-AF@dyn-67.arm.linux.org.uk>
-Sender: Russell King <rmk@arm.linux.org.uk>
-Date: Mon, 19 Apr 2004 14:21:58 +0100
-Cc: 
-Subject: [parisc-linux] Re: [PATCH] Clean up asm/pgalloc.h include (parisc)
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5DE3E4839
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 19 Apr 2004 08:26:16 -0600 (MDT)
+Date: Mon, 19 Apr 2004 16:26:10 +0200
+Message-ID: <40711E5500008D1F@ocpmta2.freegates.net>
+In-Reply-To: <20040418211557.F180D494571@palinux.hppa>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: grundler@parisc-linux.org
+Subject: [parisc-linux] RE: [parisc-linux-cvs] web grundler
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,112 +21,26 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This patch cleans up needless includes of asm/pgalloc.h from the
-arch/parisc/ subtree.  This has not been compile tested, so
-needs the architecture maintainers (or willing volunteers) to
-test.
+>Module name:	web
+>Changes by:	grundler	04/04/18 15:15:57
+>
+>Modified files:
+>	src/faq        : index.x 
 
-Please ensure that at least the first two patches have already
-been applied to your tree; they can be found at:
+Hello Grant,
 
-	http://lkml.org/lkml/2004/4/18/86
-	http://lkml.org/lkml/2004/4/18/87
+Are you sure you want to stress so bootable in 'disk or tape drives with
+bootable bootable media'?
 
-This patch is part of a larger patch aiming towards getting the
-include of asm/pgtable.h out of linux/mm.h, so that asm/pgtable.h
-can sanely get at things like mm_struct and friends.
+Apologies too lazy to prepare a patch for so fiew ;)
 
-In the event that any of these files fails to build, chances are
-you need to include some other header file rather than pgalloc.h.
-Normally this is either asm/pgtable.h (unlikely), asm/cacheflush.h
-or asm/tlbflush.h.
+Joel
 
-===== arch/parisc/hpux/sys_hpux.c 1.10 vs edited =====
---- 1.10/arch/parisc/hpux/sys_hpux.c	Wed Feb 25 10:31:12 2004
-+++ edited/arch/parisc/hpux/sys_hpux.c	Mon Apr 19 13:39:57 2004
-@@ -32,7 +32,6 @@
- #include <linux/vfs.h>
- 
- #include <asm/errno.h>
--#include <asm/pgalloc.h>
- #include <asm/uaccess.h>
- 
- unsigned long hpux_brk(unsigned long addr)
-===== arch/parisc/kernel/cache.c 1.9 vs edited =====
---- 1.9/arch/parisc/kernel/cache.c	Sun Apr 18 17:13:09 2004
-+++ edited/arch/parisc/kernel/cache.c	Mon Apr 19 13:39:57 2004
-@@ -24,7 +24,6 @@
- #include <asm/tlbflush.h>
- #include <asm/system.h>
- #include <asm/page.h>
--#include <asm/pgalloc.h>
- #include <asm/processor.h>
- 
- int split_tlb;
-===== arch/parisc/kernel/init_task.c 1.7 vs edited =====
---- 1.7/arch/parisc/kernel/init_task.c	Wed Feb  4 05:41:56 2004
-+++ edited/arch/parisc/kernel/init_task.c	Mon Apr 19 13:39:57 2004
-@@ -30,7 +30,6 @@
- 
- #include <asm/uaccess.h>
- #include <asm/pgtable.h>
--#include <asm/pgalloc.h>
- 
- static struct fs_struct init_fs = INIT_FS;
- static struct files_struct init_files = INIT_FILES;
-===== arch/parisc/kernel/pci-dma.c 1.9 vs edited =====
---- 1.9/arch/parisc/kernel/pci-dma.c	Sun Mar 14 19:17:06 2004
-+++ edited/arch/parisc/kernel/pci-dma.c	Mon Apr 19 13:39:57 2004
-@@ -29,7 +29,6 @@
- #include <asm/dma.h>    /* for DMA_CHUNK_SIZE */
- #include <asm/io.h>
- #include <asm/page.h>	/* get_order */
--#include <asm/pgalloc.h>
- #include <asm/uaccess.h>
- 
- static struct proc_dir_entry * proc_gsc_root = NULL;
-===== arch/parisc/kernel/signal.c 1.13 vs edited =====
---- 1.13/arch/parisc/kernel/signal.c	Thu Dec 18 05:48:39 2003
-+++ edited/arch/parisc/kernel/signal.c	Mon Apr 19 13:39:57 2004
-@@ -30,7 +30,6 @@
- #include <asm/ucontext.h>
- #include <asm/rt_sigframe.h>
- #include <asm/uaccess.h>
--#include <asm/pgalloc.h>
- #include <asm/cacheflush.h>
- 
- #ifdef CONFIG_COMPAT
-===== arch/parisc/kernel/smp.c 1.10 vs edited =====
---- 1.10/arch/parisc/kernel/smp.c	Sun Mar 14 01:57:41 2004
-+++ edited/arch/parisc/kernel/smp.c	Mon Apr 19 13:39:55 2004
-@@ -39,7 +39,7 @@
- #include <asm/bitops.h>
- #include <asm/current.h>
- #include <asm/delay.h>
--#include <asm/pgalloc.h>	/* for flush_tlb_all() proto/macro */
-+#include <asm/tlbflush.h>	/* for flush_tlb_all() proto/macro */
- 
- #include <asm/io.h>
- #include <asm/irq.h>		/* for CPU_IRQ_REGION and friends */
-===== arch/parisc/mm/ioremap.c 1.2 vs edited =====
---- 1.2/arch/parisc/mm/ioremap.c	Thu Oct  2 08:11:59 2003
-+++ edited/arch/parisc/mm/ioremap.c	Mon Apr 19 13:39:57 2004
-@@ -12,7 +12,6 @@
- #include <linux/vmalloc.h>
- #include <linux/errno.h>
- #include <asm/io.h>
--#include <asm/pgalloc.h>
- 
- static inline void remap_area_pte(pte_t * pte, unsigned long address, unsigned long size,
- 	unsigned long phys_addr, unsigned long flags)
-===== arch/parisc/mm/kmap.c 1.4 vs edited =====
---- 1.4/arch/parisc/mm/kmap.c	Wed Feb  4 05:42:01 2004
-+++ edited/arch/parisc/mm/kmap.c	Mon Apr 19 13:39:57 2004
-@@ -34,7 +34,6 @@
- #include <linux/vmalloc.h>
- 
- #include <asm/uaccess.h>
--#include <asm/pgalloc.h>
- 
- #include <asm/io.h>
- #include <asm/page.h>		/* get_order */
+PS: I will do it for 'cd integrity check' with a better md5sum but still
+have to verify some stuff (don't hesitate to recall me)
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
