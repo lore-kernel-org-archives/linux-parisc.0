@@ -1,18 +1,16 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] linux-2.6.10-pa1 panic on C360 in SCSI driver
-Date: Mon, 27 Dec 2004 00:49:09 +0000
-Message-ID: <20041227004909.GI11543@parcelfarce.linux.theplanet.co.uk>
-References: <200412260504.40205.vapier@gentoo.org>
-	<20041226173709.GH11543@parcelfarce.linux.theplanet.co.uk>
-	<41CF56AD.2010504@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: [patch 1/1] delete unused file
+Date: Sun, 26 Dec 2004 23:33:13 -0700
+Message-ID: <20041227063313.GH29492@colo.lackof.org>
+References: <20041225175939.7DEF71ED41@trashy.coderock.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: Joel Soete <soete.joel@tiscali.be>
+ matthew@wil.cx
+To: domen@coderock.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41CF56AD.2010504@tiscali.be>
+In-Reply-To: <20041225175939.7DEF71ED41@trashy.coderock.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,20 +21,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Dec 27, 2004 at 12:26:21AM +0000, Joel Soete wrote:
-> Is there difference between upstream kernel and pa cvs from sym2 driver 
-> point of view?
+On Sat, Dec 25, 2004 at 06:59:49PM +0100, domen@coderock.org wrote:
+> 
+> Remove nowhere referenced file. (egrep "filename\." didn't find anything)
+> 
+> Signed-off-by: Domen Puncer <domen@coderock.org>
 
-Yes, but the problem is with the Western Digital drive, so you
-can't provoke the problem.
+Thanks - I will delete it from cvs.parisc-linux.org repository once
+a "sanity check build" completes. I also couldn't find any references.
+palo (parisc boot loader) doesn't use this file either.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+thanks again,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
