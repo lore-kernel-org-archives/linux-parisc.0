@@ -1,21 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.ocs.com.au (ppp0.ocs.com.au [203.34.97.3])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5C3B8482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Mar 2001 03:19:22 -0700 (MST)
-From: Keith Owens <kaos@ocs.com.au>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-reply-to: Your message of "Wed, 28 Mar 2001 11:15:23 +0100."
-             <20010328111523.I30046@linuxcare.com>
-Mime-Version: 1.0
+Received: from duck.doc.ic.ac.uk (duck.doc.ic.ac.uk [146.169.1.46])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D2079482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Mar 2001 05:32:49 -0700 (MST)
+Received: from sytry.doc.ic.ac.uk ([146.169.5.24] ident=root)
+	by duck.doc.ic.ac.uk with esmtp (Exim 3.16 #7)
+	id 14iF84-000234-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 28 Mar 2001 13:32:48 +0100
+To: parisc-linux@lists.parisc-linux.org
+From: David Wragg <dpw@doc.ic.ac.uk>
+Date: 28 Mar 2001 12:32:44 +0000
+Message-ID: <y7rk85a9iqb.fsf@sytry.doc.ic.ac.uk>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 28 Mar 2001 20:19:11 +1000
-Message-ID: <9425.985774751@ocs3.ocs-net>
-Subject: [parisc-linux] Re: Patch for modutils 2.4.4, support SEGREL32 relocs on hppa/hppa64
+Sender: dpw@sytry.doc.ic.ac.uk
+Subject: [parisc-linux] problem building glibc from cvs
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 28 Mar 2001 11:15:23 +0100, 
-Richard Hirst <rhirst@linuxcare.com> wrote:
->  A small fix for modutils on hppa...
+Hi,
 
-Good timing, I was going to release 2.4.5 in 6 hours.
+Yesterday I tried to build the toolchain, glibc and kernel following
+the instructions at <http://www.parisc-linux.org/kernel/>.  The build
+host is linux-i386 (RedHat 7.0 with gcc updates applied).  I got the
+modules out of CVS, and the builds of binutils and gcc went fine, as
+did the kernel preparation step.  But the glibc build failed with this
+error from gcc:
+
+../sysdeps/unix/sysv/linux/hppa/sysdep.c:35: Internal compiler error in make_dec
+l_rtl, at varasm.c:597
+Please submit a full bug report, with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+
+
+This happens early in the glibc build process; I think it occurs at
+the first use of weak_alias encountered.  The compiler being used is
+definitely hppa-linux-gcc.
+
+Does anyone else have this problem, or am I missing something?
+
+(This is my first play with Linux/PARISC, but I'm familiar with
+building the toolchain, glibc, and the kernel on other platforms).
+
+
+Dave
