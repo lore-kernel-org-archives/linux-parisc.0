@@ -1,55 +1,51 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA10298
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 16:58:07 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 5 Dec 2000 00:00:08 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA19909;
-	Tue, 5 Dec 2000 10:59:45 +1100
-Date: Tue, 5 Dec 2000 10:59:45 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-cc: Richard Hirst <rhirst@linuxcare.com>, parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11145
+	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 17:48:42 -0700
+Message-Id: <200012050050.TAA07749@hiauly1.hia.nrc.ca>
 Subject: Re: pa reload problem
-In-Reply-To: <200012042308.SAA07602@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.21.0012051014060.16721-100000@front.linuxcare.com.au>
+To: alan@linuxcare.com.au (Alan Modra)
+Date: Mon, 4 Dec 2000 19:50:58 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: rhirst@linuxcare.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <Pine.LNX.4.21.0012051014060.16721-100000@front.linuxcare.com.au> from "Alan Modra" at Dec 5, 2000 10:59:45 am
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 4 Dec 2000, John David Anglin wrote:
-
-> > On Mon, 4 Dec 2000, Richard Hirst wrote:
-> > 
-> > > > Note that all of the above applies to 32-bit modutils too.
-> > > 
-> > > Shouldn't be an issue with 32 bit, as kernel and modules all have
-> > > the same dp there.
-> > 
-> > Yes, silly me.  32 bit is non-pic, so you don't need to worry about
-> > it.  (%r19 in 32 bit case)
+> Hi Dave,
+>   Richard and I had wandered off-topic in the above exchange, and were
+> talking about modutils and stubs, in particular stub calls to millicode.
 > 
-> However, it may be an issue for 32 bit pic code under hpux.  It is not
-> clear to me why this didn't show up before with 32 bit pic code.  For
-> some reason, the circumstances which caused combine to delete the set
-> restoring dp after function calls didn't seem to occur.
+> Getting back on topic, the reload problem _does_ affect 32 bit hppa code.
+> Compiling my testcase with -O2 -fPIC -S, gives
+> 
+>         copy %r19,%r4
+>         bl foo,%r2
+>         stw %r19,-32(%r30)
+>         addil LT'cpu_hz,%r4
+>         copy %r1,%r21
+>         addil LT'.LC0,%r19		! oops
 
-Hi Dave,
-  Richard and I had wandered off-topic in the above exchange, and were
-talking about modutils and stubs, in particular stub calls to millicode.
+For some reason, I only saw this with the 64 bit version.
 
-Getting back on topic, the reload problem _does_ affect 32 bit hppa code.
-Compiling my testcase with -O2 -fPIC -S, gives
+There is one other bit of code in rtlanal.c related to the patch which
+bothers me.  I am wondering if it is ok or needs changing:
 
-        copy %r19,%r4
-        bl foo,%r2
-        stw %r19,-32(%r30)
-        addil LT'cpu_hz,%r4
-        copy %r1,%r21
-        addil LT'.LC0,%r19		! oops
-        ldw RT'cpu_hz(%r21),%r21
-        ldw RT'.LC0(%r1),%r1
+#ifndef PIC_OFFSET_TABLE_REG_CALL_CLOBBERED
+      /* ??? When call-clobbered, the value is stable modulo the restore
+         that must happen after a call.  This currently screws up local-alloc
+         into believing that the restore is not needed.  */
+      if (x == pic_offset_table_rtx)
+        return 0;
+#endif
 
-Alan
+This is in rtx_unstable_p and rtx_varies_p.  Possibly, now that there is
+a use until reload is complete, this problem is fixed and the
+pic_offset_table_rtx should be stable even when
+PIC_OFFSET_TABLE_REG_CALL_CLOBBERED?  See comment at beginning of
+rtx_varies_p.
+
+Dave
 -- 
-Linuxcare.  Support for the Revolution.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
