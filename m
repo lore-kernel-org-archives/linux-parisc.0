@@ -1,108 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA14679
-	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 14:15:17 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 18 Aug 2000 20:15:03 -0000
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-References: <Pine.LNX.4.21.0008190020150.9244-100000@front.linuxcare.com.au> <8766oy1nxa.fsf@linuxcare.com>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 18 Aug 2000 16:14:27 -0400
-In-Reply-To: David Huggins-Daines's message of "18 Aug 2000 13:25:53 -0400"
-Message-ID: <87vgwyz5r0.fsf@linuxcare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA15456
+	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 16:05:11 -0600
+Message-Id: <200008182207.PAA07370@milano.cup.hp.com>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] test6 merge 
+In-reply-to: Your message of "Fri, 18 Aug 2000 12:49:44 PDT."
+             <20000818124944.A13870@linuxcare.com>
+Date: Fri, 18 Aug 2000 15:07:51 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-David Huggins-Daines <dhd@linuxcare.com> writes:
+Richard Hirst wrote:
+> Hi,
+>   The tulip driver doesn't initialise with the 2.4.0-test6 kernel
+> (for me, anyway).
+> The problem is that pci_resource_start (pdev, 0) in tulip_core.c
+> line 1046, returns 0x0001ff00, where it should (I think) return
+> 0x0000ff00.  I added a printk in drivers/pci/pci.c to show the
+> start/end values as it filled in the pci_dev->resource table,
+> and that showed start 0x0000ff00 end 0x0000ff7e.  Don't know
+> where bit 16 gets added to start..
 
-> Alan Modra <alan@linuxcare.com.au> writes:
-> > A bit of head-scratching, a couple of added functions, and the linker now
-> > detects PIC functions and handles them appropriately.
+The bit 16 and up is the PCI bus number. The parisc PCI services use
+the bus number to index into the corresponding bus services.
+
+The driver should be using 0x0001ff00 when talking to I/O port
+space services (ie inb/outb).
+
+> I just commented out the 'goto err_out_free_netdev' in tulip_core.c
+> and it now claims to mount nfs root, but cannot find init.
+> I had to comment out the unregistering of pdc console to
+> see that.
 > 
-> Sorry to burst your bubble but this doesn't work in the real world,
-> where "real world" is defined as 'hppa-linux-gcc -o hello hello.c'
+> In 2.3.99pre8 tulip announced that the chip was at 0x1ff00 also,
+> but it didn't matter because the request_region call was different.
 
-Actually it wasn't so bad after all.  Here's a patch that fixes the
-case of statically linked binaries, though I'm reluctant to check it
-in because I'm not quite sure the logic is 100% correct; without
-removing the check for defined weak symbols, we end up generating a
-*lot* of useless import stubs when linking with a static libc, but
-this might not be the right way to avoid this.
+Maybe I should take a look at the request_region() call and see what's
+up there...It should be a NOP since we trust firmware to uniquely
+assign I/O Port and MMIO address space (and I haven't seen any problems
+where it doesn't on any platform).
 
-It's not fixed in the case of dynamically linked binaries that are
-statically linked with PIC (which is basically all dynamically linked
-binaries since libgcc.a is linked statically).  It might make sense to
-unify the generation of import stubs and PLT slots for all PIC symbols
-whether they are linked statically or dynamically, but I don't know if
-I want to attempt that myself :-)
+> My 53c720 driver doesn't work any more either :-(
 
-Oh, also, I've been bad about ChangeLog entries lately, sorry - should
-I retroactively create some for the recent checkins I've made?
+bummer...we'll get em working...
 
-2000-08-18  David Huggins-Daines  <dhd@linuxcare.com>
+grant
 
-	* elf32-hppa.c (final_link_relocate): Call an import stub in
-          the case of statically linked PIC symbols.
-          (hppa_handle_PIC_calls): Don't try to handle undefined weak
-          symbols at all, and don't create import stubs for locally
-          defined weak symbols unless they are PIC.
-
-Index: bfd/elf32-hppa.c
-===================================================================
-RCS file: /home/cvs/parisc/binutils-2.10/bfd/elf32-hppa.c,v
-retrieving revision 1.22
-diff -u -r1.22 elf32-hppa.c
---- elf32-hppa.c	2000/08/18 15:25:47	1.22
-+++ elf32-hppa.c	2000/08/18 20:04:42
-@@ -1961,8 +1961,8 @@
-       || (h->elf_link_hash_flags & ELF_LINK_HASH_NEEDS_PLT) != 0)
-     {
-       if (h->plt.refcount <= 0
-+	  || h->root.type == bfd_link_hash_undefweak
- 	  || ((h->elf_link_hash_flags & ELF_LINK_HASH_DEF_REGULAR) != 0
--	      && h->root.type != bfd_link_hash_defweak
- 	      && (!info->shared || info->symbolic)
- 	      && !(!info->shared
- 		   && (h->root.type == bfd_link_hash_defined
-@@ -1971,13 +1971,13 @@
- 	{
- 	  /* The .plt entry is not needed when:
- 	     a) Garbage collection has removed all references to the
--	     symbol, or
--	     b) We know for certain the symbol is defined in this
--	     object, and it's not a weak definition.  Either this
--	     object is the application or we are doing a shared
--	     symbolic link.  As a special sop to the hppa ABI, we
--	     keep a .plt entry for functions in sections containing
--	     PIC code.  */
-+	     symbol.
-+	     b) It's an undefined weak symbol.
-+	     c) We know for certain the symbol is defined in this
-+	     object.  Either this object is the application or we are
-+	     doing a shared symbolic link.  As a special sop to the
-+	     hppa ABI, we keep a .plt entry for functions in sections
-+	     containing PIC code.  */
- 	  h->plt.offset = (bfd_vma) -1;
- 	  h->elf_link_hash_flags &= ~ELF_LINK_HASH_NEEDS_PLT;
- 	  return true;
-@@ -2851,8 +2851,11 @@
-     case R_PARISC_PCREL17F:
-     case R_PARISC_PCREL22F:
-       /* If this is a call to a function defined in another dynamic
--	 library, then find the import stub in the stub hash.  */
--      if (sym_sec == NULL || sym_sec->output_section == NULL)
-+	 library, or if it is a call to a PIC function in the same
-+	 object, then find the import stub in the stub hash.  */
-+      if (sym_sec == NULL
-+	  || sym_sec->output_section == NULL
-+	  || (h != NULL && h->pic_call))
- 	{
- 	  stub_entry = hppa_get_stub_entry (input_section, sym_sec,
- 					    h, rel, info);
-
-
--- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
