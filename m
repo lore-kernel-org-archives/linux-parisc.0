@@ -1,25 +1,20 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5A9494852
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D3DFB4852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 11:24:38 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1Aubno-0006oS-Hg; Sat, 21 Feb 2004 18:24:36 +0000
-Date: Sat, 21 Feb 2004 18:24:36 +0000
-From: Matthew Wilcox <willy@debian.org>
+	Sat, 21 Feb 2004 12:01:23 -0700 (MST)
+Message-ID: <4037AB13.3050908@tiscali.be>
+Date: Sat, 21 Feb 2004 19:01:39 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
 To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
-Message-ID: <20040221182436.GM11824@parcelfarce.linux.theplanet.co.uk>
-References: <20040218235225.GA1623@calypso>
-	<20040219062907.GC13916@colo.lackof.org>
-	<20040221075849.GA1642@calypso>
-	<20040221170508.GB14198@baldric.uwo.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040221170508.GB14198@baldric.uwo.ca>
-Sender: <willy@www.linux.org.uk>
+References: <402A42A1000052A9@ocpmta1.freegates.net>
+	<Pine.GSO.4.44.0402180830260.14838-100000@keymaster>
+	<20040218163927.GC9497@baldric.uwo.ca>
+In-Reply-To: <20040218163927.GC9497@baldric.uwo.ca>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb: followup
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,25 +24,49 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Feb 21, 2004 at 12:05:09PM -0500, Carlos O'Donell wrote:
-> > Thanks! Changing NCR_700_MAX_TAGS to 1 in drivers/scsi/53c700.h did the
-> > trick. Will I now have poor disk performance? If so, might I get away
-> > with setting it to something higher, like 2 or 4, maybe?
+Carlos,
+
+Carlos O'Donell wrote:
+>>>But now I need more to try to complete job because:
+>>>make[2]: *** [/Develop/parisc-linux/build/glibc/sunrpc/xbootparam_prot.stmp]
 > 
-> I could never run IO stably at anything higher than 1. The drives don't
-> seem to handle it properly, the error recovery mechanisms seem less
-> than perfect, and the box just hangs.
+> 
+> This is the first time that the loader you built is used. If the loader
+> is in anyway broke, it will *always* die here first. Just remember this
+> glibc haiku when you are coding:
+> 
+> 	Loader code is bad.
+> 	Dying in sunrpc.
+> 	Blame relocations.
+> 
+> :)
+> 
+It takes me some more time because I would test patch by patch with gcc-3.3 if nothing was broken.
+But all those patch seems ok with gcc-3.3 (just have to revert it and re-run with make -k check ;) )
 
-So, um, maybe we should change the default?  Nobody seems to be
-investigating why this happens, so I don't see why our users should
-suffer.  I doubt anyone's going to be terribly motivated to track this
-problem down for such old machines, so let's just sacrifice a little
-performance for stability.
+That said, I so have on a system (a n4k runing a 64bit 2.6) a ld.so and libc.so build with gcc-3.5 (let me suffix with (3.5) ie: 
+ld.so(3.5) and libc.so(3.5)). On another system (a b2k the same 64bit 2.6), I build with gcc-3.3.3 a ld.so(3.3) and libc.so(3.3).
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+The cmd:
+CPP='/Develop/parisc-linux/xc/bin/hppa-linux-gcc -E -x c-header'  /Develop/parisc-linux/build/glibc/elf/ld.so.1
+--library-path 
+/Develop/parisc-linux/build/glibc:/Develop/parisc-linux/build/glibc/math:/Develop/parisc-linux/build/glibc/elf:/Develop/parisc-linux/build/glibc/dlfcn:/Develop/parisc-linux/build/glibc/nss:/Develop/parisc-linux/build/glibc/nis:/Develop/p
+arisc-linux/build/glibc/rt:/Develop/parisc-linux/build/glibc/resolv:/Develop/parisc-linux/build/glibc/crypt:/Develop/parisc-linux/build/glibc/linuxthreads
+/Develop/parisc-linux/build/glibc/sunrpc/rpcgen -Y ../scripts -c rpcsvc/bootparam_prot.x
+-o /Develop/parisc-linux/build/glibc/sunrpc/xbootparam_prot.T
+
+failled with gcc-3.5
+otc ok with gcc-3.3
+
+Now if on the N I replace libc.so(3.5) by libc.so(3.3) the cmd (ie using ld.so(3.5)) always failled
+OTC if on the B I replace libc.so(3.3) by libc.so(3.5) the cmd (ie using ld.so(3.3)) works fine.
+so it confirms that the loader is broken :(
+
+So I have to figure out what goes wrong in "relocation". Can you help me by pointing out some files and may functions to specialy 
+analyse :).
+
+Thanks in advance,
+	Joel
+
+BTW: The previous mentioned patch are (afaik) of general interest (not hppa specific) but would you like that I submit you first 
+so that you could submit it to glibc maintainers or do you prefer that i manage that myself?
