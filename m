@@ -1,19 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (unknown [203.38.119.88])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 156414829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 02:58:56 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id QAA32744
-	for parisc-linux@lists.parisc-linux.org; Mon, 12 Aug 2002 16:56:55 +0800
-Date: Mon, 12 Aug 2002 16:56:52 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Updated parisc-linux .cvsrc
-Message-ID: <20020812165650.C897@neep.com.au>
-References: <1029108194.637.9.camel@beavis> <20020812155838.A897@neep.com.au> <20020812102135.6bb1cff0.varenet@esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020812102135.6bb1cff0.varenet@esiee.fr>; from varenet@esiee.fr on Mon, Aug 12, 2002 at 10:21:35AM +0200
+Received: from smtp.KPNQwest.pt (smtp1.KPNQwest.pt [193.126.4.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5EB9C4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 09:28:24 -0600 (MDT)
+Received: from relay5.KPNQwest.pt (ns2.EUnet.pt [193.126.1.97])
+	by smtp.KPNQwest.pt (8.11.6/8.11.6) with ESMTP id g7CFSLH21440
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 16:28:22 +0100 (WET DST)
+Received: from LTP004440 (kq-it-gw.Lisbon.KPNQwest.pt [193.126.1.17])
+	by relay5.KPNQwest.pt (8.11.6/8.11.6) with SMTP id g7CFRjQ18645
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 16:27:45 +0100 (WET DST)
+From: =?iso-8859-1?Q?Ant=F3nio_Ribeiro?= <antonio.ribeiro@kpnqwest.pt>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 12 Aug 2002 16:27:49 +0100
+Message-ID: <000b01c24214$d2c8f680$a52efea9@kpnqwest.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000C_01C2421D.348D5E80"
+Subject: [parisc-linux] PA-RISC Linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +27,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thibaut VARENE said:
-> > In my experience it has been more common to fix the repository.  =)
-> 
-> Heh, sure, but this is not actually *possible*, so to speak: Matt
-> pointed out that folders can't be removed from the repository, since
-> they are mandatory to keep the 'Attic' in them.
-> 
-> That allows anyone to grab an old version of the kernel, using cvs
-> tags...
+This is a multi-part message in MIME format.
 
-Oh I know, I'm aware of that, it was more of a joke.  Some people use
-CVS in a very carefree manner (shared bitbucket) and aren't really too
-worried about breaking old versions.  Why do they use CVS then?  Good
-question ... because it's there, I suppose.
+------=_NextPart_000_000C_01C2421D.348D5E80
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-Of course this is one of the main weaknesses in CVS, in case anyone out
-there thinks it's the best thing since sliced bread: no revision control
-on directories (folders/containers/collections/whatever).  =)
+Hello,
 
-Andrew.
+I would like to know if the Linux version for HP PA-RISC servers suppors
+FC60 Disk arrays.
 
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+Thanks in advance.
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Antonio
+
+------=_NextPart_000_000C_01C2421D.348D5E80
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D370102515-12082002>Hello,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D370102515-12082002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D370102515-12082002>I =
+would like to know=20
+if the Linux version for HP PA-RISC servers suppors FC60 Disk=20
+arrays.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D370102515-12082002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D370102515-12082002>Thanks =
+in=20
+advance.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D370102515-12082002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D370102515-12082002>Antonio</SPAN></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000C_01C2421D.348D5E80--
