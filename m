@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from localhst1242.com (unknown [213.185.113.3])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7E0384852
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Sep 2003 08:47:26 -0600 (MDT)
-From: "victor michelle" <victormichelle@123.com>
-Reply-To: ejimichelle@netzero.com
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 15 Sep 2003 15:42:19 -0700
+Received: from octopus.kti.ae.poznan.pl (octopus.kti.ae.poznan.pl [150.254.204.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A05554844
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Sep 2003 07:06:20 -0600 (MDT)
+Date: Tue, 16 Sep 2003 15:04:49 +0200
+From: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Reply-To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Message-ID: <137528789178.20030916150449@kti.ae.poznan.pl>
+To: Bob Sipes <bob.sipes@eds.com>, Carl Johnson <cjs@mcn.net>,
+	Engr.Faisal A.Zaman <zam21qu@hotmail.com>,
+	Enno Baars <knutbert@gmx.net>, Frank Benke <frank.benke@datacare.de>,
+	Frank Ickstadt <frank.ickstadt@btignite.de>,
+	Neil Moore <neil@droopy.com>, Rex Slay <rex@slay.org>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Message-Id: <20030915144726.7E0384852@dsl2.external.hp.com>
-Subject: [parisc-linux] I NEED YOUR URGENT ASSISTANCE
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] HP 9000 J200 + Debian
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,18 +26,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-ATTN=3A HANS=2C
+Hello HP 9000 J200 owner,
 
+I found your email address on PA-RISC LINUX website (page
+http://hwdb.parisc-linux.org/view.php3?type=machine&name=J200) and I hope
+you could help me with my J200 box.
 
-I am BARRISTER VICTOR MICHELLE =28ESQ=29A Solicitor=2E I am the Personal Attorney to Mr=2E JAMES HANS  a national of your country=2Cwho used to work with Chevron company in Nigeria=2EOn the 21st of April 2000=2C my client=2C his wife And their three children were involved in a car accident along Sagbama Express Road=2E
+I want to install Debian on my HP 9000 J200 box and I encountered a problem
+with booting the installation procedure:
 
-All occupants of the vehicle unfortunately lost there lives=2E Since then I have made several enquiries to your embassy to locate any of my clients extended relatives=2C this has also proved unsuccessful=2EAfter these several unsuccessful attempts=2C I decided to trace his relatives over the Internet=2C to locate any member of his family but of no avail=2C hence I contacted you=2E I have contacted you to assist in repartrating the money and property left behind by my client before they get confisicated or declared unserviceable by the National Bank PLC where this huge deposits were lodged=2E Particularly=2Cthe National Bank PLC where the deceased had a valued at about 9 million dollars has issued me a notice to provide the next of kin or have the account confisicated =2E
+Selected kernel: /vmlinux32 from partition 0
+Selected ramdisk: /ramdiski from partition 0
+ELF32 executable
+Entry 00100098 first 00100000 n 6
+Segment 0 load 00100000 size 2196688 mediaptr 0x1000
+Segment 1 load 0031a000 size 467792 mediaptr 0x21a000
+Segment 2 load 00390000 size 255656 mediaptr 0x28d000
+Segment 3 load 003d0000 size 8192 mediaptr 0x2cc000
+Segment 4 load 003d8000 size 32768 mediaptr 0x2ce000
+Segment 5 load 00402048 size 110832 mediaptr 0x2d6048
 
-since I have been unsuccesfull in locating the the relatives for over 2 years now I seek your conscent to present you as the next of kin of the deceased since you are from the same country so that the proceeds of this account valued at $9 million dollars can be paid to you and then you and me can share the money=2E 55% to me and 40% to you=2Cwhile 5% has been earmarked to reimburse all expenses that may occure during this transaction
+ERROR: Read from boot device failed (status = -13).
+byteio_read: seekread() returned -1 expected 2195456
+ERROR: segment 0 read() failed
+Fatal error loading kernel executableERROR: failed to load kernel 
 
- All I require is your honest cooperation to enable us see this dealt=2E I guarantee that this will be executed under a legitimate 
-arrangement that will protect you from any breach of the law=2EPlease send me your full name and address=2C your telephone and fax number to enable us discuss further and file in an application of claim on your behalf to the National Bank PLC=2E 
+I tried the Debian binary-1 CD and netinstall CD. Both with almost same
+results ('status = -7' for Debian CD, and 'status = -13' for netinstall
+CD).
 
-Best Regards=2C 
+What could be wrong? Do you know any possible source of this problem?
 
-BARRISTER VICTOR MICHELLE =28ESQ=29
+Best regards
+  Jacek Chmielewski
