@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
-	by dsl2.external.hp.com (Postfix) with SMTP id 691C34840
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Oct 2003 02:33:04 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] System hangs after SCSI problems 
-Message-ID: <1065688381.3f851d3da4b56@clients.latnet.lv>
-Date: Thu, 09 Oct 2003 11:33:01 +0300 (EEST)
-From: dub@latnet.lv
-MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CFB73491D
+	for <parisc-linux@parisc-linux.org>; Thu,  9 Oct 2003 09:05:19 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A7cLu-0002rg-M7
+	for parisc-linux@parisc-linux.org; Thu, 09 Oct 2003 16:05:18 +0100
+Date: Thu, 9 Oct 2003 16:05:18 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20031009150518.GG27861@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] defconfigs in 2.6
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,28 +23,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> dub@latnet.lv  dub@latnet.lv
-> Wed, 24 Sep 2003 18:25:47 +0300 (EEST)
-> I run Debian vmlinux-parisc-2.4.20-32-smp on K210. Not recently I faced a
-> strange hang situation. Host stopped responding both from network and console, 
-> ethernet port remained up on link level. In syslog.log and kernel.log I see scsi
-> problems.
-> After restarting all disks are OK (one of mirror partitions was resynced 
-> manually). 
+There's a generic scheme for having defconfigs-for-different-systems
+in 2.6.0-test7 (actually, it may have been there in -test6 too, but
+we weren't using it).  I've added one for the 712 as an example.  To
+use it, rather than typing "make defconfig", you type "make 712_defconfig".
+The Makefile looks in arch/parisc/configs/ for a file by that name and
+uses it if it finds it.
 
-Hi,
+So what configs should we support?  This is one of those bikeshed kind
+of questions, so let me take a stab at it first:
 
-Just for your information. The problem was with a SCSI disk. After a week, it
-had more problems and md mirroring removed it. I tried to issue dd.
+- 712 (Lasi, Wax, no PCI, no EISA.  targetted at exactly 712, may work on
+	other snake-type boxes)
+- hawk (adds ccio, eisa, PCI, ncr720, mux.  targetted at A180,
+	B, C, J, D, K, R)
+- music32 (SMP, PA8000, SBA PCI, no GSC, targetted at B1000-J6750)
+- 32bit (everything.  should work on 705-J6750, including A180, EFGHI,
+	B, C, J, D, K, R)
+- music64 (SMP, PA64, SBA PCI.  targets A500, L2000, etc.)
 
-dd if=/dev/sdf1 of=/dev/null bs=64k
-dd: reading `/dev/sdf1': Input/output error
+I don't want to add any more than this because the effort of maintaining
+all of them quickly adds up.  Is everybody happy with these suggestions?
+Obviously, you can tweak your own config to your heart's content, these
+will just be the defconfigs distributed with the kernel.
 
-After some seconds the system stopped responding (I saw it when entering the
-next command).
+As far as naming goes, most of the boxes with ccio in them were some
+kind of hawk, most of the boxes with SBA in them were named after musical
+terms.  I suppose for consistency the 712 config should be called gecko...
+Please, quibble about the names ;-)
 
-My Humble Conclusion. Comaring to HP-UX, Debian is not so stable on PA-RISC
-platform. :-)
-
-BR,
-Dub
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
