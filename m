@@ -1,20 +1,21 @@
-Return-Path: <mort@galileo.bork.org>
-Received: from galileo.bork.org (galileo.bork.org [66.11.174.156])
-	by dsl2.external.hp.com (Postfix) with SMTP id D18A448DD
+Return-Path: <paul@techcenter3000.com>
+Received: from TECHCENTER3000.COM (cpe-24-221-227-115.tx.sprintbbd.net
+	[24.221.227.115])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B22BB4A57
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 29 Apr 2004 07:24:38 -0600 (MDT)
-Date: Thu, 29 Apr 2004 09:24:38 -0400
-From: Martin Hicks <mort@bork.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] A job for a debian-developer?
-Message-ID: <20040429132438.GB16062@localhost>
-References: <20040428180741.GH6936@baldric.uwo.ca>
-	<20040428225420.GB21045@localhost>
-	<20040428231610.GK6936@baldric.uwo.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040428231610.GK6936@baldric.uwo.ca>
-Cc: parisc-linux@lists.parisc-linux.org
+	Thu, 29 Apr 2004 11:54:08 -0600 (MDT)
+Received: from betsy (cs2416712-202.houston.rr.com [24.167.12.202])
+	by TECHCENTER3000.COM (Postfix) with SMTP id E55568001C
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 29 Apr 2004 12:52:52 -0500 (CDT)
+Message-ID: <000301c42e13$0c4b8a30$0702a8c0@tfam.org>
+From: "Paul" <paul@techcenter3000.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 29 Apr 2004 12:54:40 -0500
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Subject: [parisc-linux] gcc hang on alsa-lib
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,29 +25,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+I know my machine isn't the fastest around, but should this take 10+ hrs 
+(and counting)?
 
+This is from alsa-libs-1.0.4.
 
-On Wed, Apr 28, 2004 at 07:16:10PM -0400, Carlos O'Donell wrote:
-> On Wed, Apr 28, 2004 at 06:54:20PM -0400, Martin Hicks wrote:
-> > On Wed, Apr 28, 2004 at 02:07:41PM -0400, Carlos O'Donell wrote:
-> > > 
-> > > parisc-linux,
-> > > 
-> > > Do we know if any programs use K_INLINE_SYSCALL from our
-> > > linux/include/asm-parisc/unistd.h, or rather all the _syscall[n] macros?
-> > > 
-> > > It's rather wrong. Even if I were to correct the issue, I'm curious if
-> > > anything uses these definitions. 
-> > 
-> > klibc uses the _syscall[n] stuff.
-> 
-> I don't even know if we have a klibc port? :)
-> I'll check both out. Thanks Martin.
+make:
+<snip>
+if /bin/sh ../../libtool --mode=compile 
+gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include    -g -O2 -MT 
+pcm_para
+ms.lo -MD -MP -MF ".deps/pcm_params.Tpo" \
+  -c -o pcm_params.lo `test -f 'pcm_params.c' || echo './'`pcm_params.c; \
+then mv -f ".deps/pcm_params.Tpo" ".deps/pcm_params.Plo"; \
+else rm -f ".deps/pcm_params.Tpo"; exit 1; \
+fi
+gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g -O2 -MT 
+pcm_params.lo -MD -MP -MF .deps/pcm_params.Tpo -c p
+cm_params.c  -fPIC -DPIC -o pcm_params.lo
 
-I did the initial work, and kyle fixed it up and sent the patch to hpa.
-That was probably three weeks ago.
-
-mh
-
--- 
-Martin Hicks || mort@bork.org || PGP/GnuPG: 0x4C7F2BEE
+Top:
+18630 root      25   0 11576 9936 4532 R 89.2  2.7 628:01.26 cc1
