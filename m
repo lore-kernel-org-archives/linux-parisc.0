@@ -1,17 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dc-mx13.cluster1.charter.net (dc-mx13.cluster1.charter.net [209.225.8.23])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8EA2C4830
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Aug 2002 09:54:20 -0600 (MDT)
-Message-ID: <3D5FC35F.7060402@charter.net>
-Date: Sun, 18 Aug 2002 11:55:11 -0400
-From: "B. Douglas Hilton" <bdhilton@charter.net>
+Received: from outboundx.mv.meer.net (outboundx.mv.meer.net [209.157.152.12])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BAF48482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Aug 2002 10:54:32 -0600 (MDT)
+Received: from mail.meer.net (mail.meer.net [209.157.152.14])
+	by outboundx.mv.meer.net (8.11.6/8.11.6) with ESMTP id g7IGsFa53670
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Aug 2002 09:54:15 -0700 (PDT)
+	(envelope-from weasel@meer.net)
+Received: from localhost.meer.net (h-209-157-134-161.meer.net [209.157.134.161])
+	by mail.meer.net (8.12.2/8.12.1/meer) with ESMTP id g7IGsNi1025177
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Aug 2002 09:54:24 -0700 (PDT)
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Voodoo3 PCI on C200 experiment pending!
+References: <3D5E0430.2000407@charter.net>
+	<20020818044613.0969E4829@dsl2.external.hp.com>
+	<1029666136.15858.3.camel@irongate.swansea.linux.org.uk>
+Reply-To: weasel@cs.stanford.edu
+From: d p chang <weasel@meer.net>
+Date: 18 Aug 2002 09:53:59 -0700
+In-Reply-To: <1029666136.15858.3.camel@irongate.swansea.linux.org.uk>
+Message-ID: <m2wuqoqfa0.fsf@meer.net>
 MIME-Version: 1.0
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, saw@saw.sw.com.sg
-Subject: Re: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200
- machine.
-References: <3D5EB2D6.9090403@charter.net>  <20020817223713.GA25852@gate450.dyndns.org> <20020818051633.209BD4829@dsl2.external.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,56 +32,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Here is my dmesg output that your requested, and my
-ifconfig status right after booting. I typed this in
-by hand, hopefully no typos.
+delurking briefly since i worked on these parts (v2 and banshee-v3
+which are basically the same) during my tenure at 3dfx.
 
+Alan Cox <alan@lxorguk.ukuu.org.uk> writes:
 
-eepro100.c:v1.09j-t 9/29/99 Donald Becker http://www.scyld.com/network/eepro100.html
-eepro100.c: $Revision: 1.36 $ 2000/11/17 Modified by Andrey V. Savochkin <saw@saw.sw.com.sg> and others
-eth0: Intel Corp. 82557 [Ethernet Pro 100], 00:90:27:60:CB:E6, IRQ 130.
-   Board assembly 721383-006, Physical connectors present: RJ45
-   Primary interface chip i82555 PHY #1.
-   General self-test: passed.
-   Serial sub-system self-test: passed.
-   Internal registers self-test: passed.
-   ROM checksum self-test: passed (0x8b51f404).
-
-
-eth0    Link encap:Ethernet  HWaddr:00:90:27:60:CB:E6
-         inet addr:192.168.100.115  Bcast:192.168.100.255  Mask:255.255.255.0
-         RX packets:25 errors:0 dropped:0 overruns:0 frame:0
-         TX packets:9 errors:0 dropped:0 overruns:0 carrier:0
-         collisions:0 txqueuelen:100
-         RX bytes:2668 (2.6 KiB)  TX bytes:558 (558.0 b)
-         Interrupt:130 Base address:0xf000
-
-
-
-Well, I'm heading out to camp. Back on Monday.
-
-Cheers!
-- Doug
-
-
-
-
-Grant Grundler wrote:
-> Andreas Seltenreich wrote:
+> On Sun, 2002-08-18 at 05:46, Grant Grundler wrote:
+> > "B. Douglas Hilton" wrote:
+> > > Any hints or tips would be appreciated :-)
+> > 
+> > Search the mail archives.
+> > Once upon a time (2 years ago?), Alan Cox explained his ideas
+> > on how to make something like this work. He had an A180 in front
+> > of him at the time...
 > 
->>just append " || defined(__hppa__)" to line 47 of drivers/net/eepro100.c
->>I got mine working that way.
-> 
-> 
-> The RX_ALIGN shouldn't strictly be needed. It's a performance improvement.
-> It means the misaligned access handling isn't working right. And should be
-> spewing something to the kernel dmesg buf. IIRC, Randolph Chung has done a
-> great job on getting most of the misaligned access emulation working right.
-> If you get console/dmesg output when using eepro100, please post it here.
-> 
-> If someone with CVS access has time, please enable the RX_ALIGN
-> code for __hppa__ as well. I have other changes outstanding (cpqfc)
-> that I want to finished up and committed first.
-> 
-> grant
-> 
+> I really doubt you will get a Voodoo3 to work this way. XFree have
+> lots of problems with the Voodoo3 INT10 multihead even on x86 - the
+> ROM seems to do some quite tricky stuff.
+
+I'll check my old mail archives, but the part taht you really want is
+just the timing tables in the rom. If you're looking at the code in
+cinit.c it had bitrotted quite badly after the initial bring up. 
+
+However, it used to be possible to change the device type multimedia
+(rather than video) and do all the initcode stuff. There was a little
+jumper on the cards themselves for this
+
+> On the other hand a Voodoo2 should work wonderfully because its got
+> no ROM, doesn't appear to be a video card and Glide2 has full source
+> for bringing the board up.
+
+yup, no 2d on voodoo2, but sort of lame just as a framebuffer device
+(well, if you want to use the command transport bits)
+
+\p
+---
+A professional politician is a professionally dishonorable man.  In
+order to get anywhere near high office he has to make so many
+compromises and submit to so many humiliations that he becomes
+indistinguishable from a streetwalker. --- H. L. Mencken
