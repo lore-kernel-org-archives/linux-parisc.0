@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B75C3482D
-	for <parisc-linux@parisc-linux.org>; Fri,  7 Dec 2001 19:22:48 -0700 (MST)
-To: Dave Nyberg <debiannewbie@excite.com>
-Cc: parisc-linux@parisc-linux.org, taggart@carmen.fc.hp.com
-Subject: Re: [parisc-linux] KDE or GNOME..??? 
-In-Reply-To: Your message of "Fri, 07 Dec 2001 18:05:46 PST."
-             <6170189.1007777146807.JavaMail.imail@ringo.excite.com>
-References: <6170189.1007777146807.JavaMail.imail@ringo.excite.com> 
-Date: Fri, 07 Dec 2001 19:22:46 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011208022246.954CF37E86@carmen.fc.hp.com>
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4062C482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Dec 2001 12:01:49 -0700 (MST)
+Received: from gmx.at ([62.178.92.247]) by viefep12-int.chello.at
+          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
+          id <20011209190137.JAPJ1239.viefep12-int.chello.at@gmx.at>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sun, 9 Dec 2001 20:01:37 +0100
+Message-ID: <3C13B510.89F2F5B2@gmx.at>
+Date: Sun, 09 Dec 2001 20:01:36 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Status of HP 9000 D350
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +25,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dave Nyberg writes...
+Hello PA-RISC hackers.
 
-> 
-> I have looked in 
-> 
-> ftp://ftp.debian.org/debian/dists/unstable/main/binary-hppa/
-> 
-> for a working version of a desktop and found that the only thing that has
-> anything in it is the list!! The dir's where one would expect to find what
-> one is seeking is empty!!! Heck they all are!~~???  What the heck, over?? 
+What is the status of the 9000 D350 server machine and Linux.
+Perhaps I have a chance to get one, and I saw, there are no
+"UNDOCUMENTED DRIVERS", so I think Linux will run on that
+machine. Is this correct ?
 
-All recent debian packages are kept in the package pool now. See,
+Any experiences here ?
 
-ftp://ftp.debian.org/debian/pool/
+With friendly regards
+Christoph P.
 
-Use dselect or another frontend to browse packages.
+
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
