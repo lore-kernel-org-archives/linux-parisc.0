@@ -1,21 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel11.hp.com (palrel11.hp.com [156.153.255.246])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B8EA84838
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 09:52:00 -0700 (MST)
-Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
-	by palrel11.hp.com (Postfix) with ESMTP id 6BBA960046E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 08:51:59 -0800 (PST)
-Received: from xpabh3.corp.hp.com (xpabh3.corp.hp.com [15.58.136.223])
-	by xparelay2.corp.hp.com (Postfix) with ESMTP id 063329C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 08:51:59 -0800 (PST)
-Message-ID: <2F1E6AB90ECAD311943700A0C9E3B15408002AA8@xatl03.atl.hp.com>
-From: "FAUCHER,DENNIS (HP-USA,ex1)" <dennis_faucher@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 25 Feb 2002 08:51:57 -0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] tsocks Error
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C40DA483A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Feb 2002 10:50:00 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16fPGB-0005xb-00; Mon, 25 Feb 2002 17:49:59 +0000
+Date: Mon, 25 Feb 2002 17:49:59 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] ext3 patch
+Message-ID: <20020225174959.B20667@parcelfarce.linux.theplanet.co.uk>
+References: <20020225080205.GC32703@charite.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020225080205.GC32703@charite.de>; from Ralf.Hildebrandt@charite.de on Mon, Feb 25, 2002 at 09:02:05AM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,17 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+On Mon, Feb 25, 2002 at 09:02:05AM +0100, Ralf Hildebrandt wrote:
+> The recent ext3 patch on
+> http://www.zip.com.au/~akpm/linux/ext3/
+> 
+> ( http://www.zip.com.au/~akpm/ext3-2.4-0.9.17-2418p3.gz )
+> applies cleanly to 2.4.17-pa30 -- I recommend committing it to the
+> kernel CVS tree, since
+> 
+> a) It will be in 2.4.18 anyway
+> b) it fixes some problems:
 
-Has anyone used tsocks successfully?  I just installed the latest with
-apt-get (tsocks version 1.7-4) and receive the following error on use:
+I'd rather not apply patches which will be in 2.4.18 anyway -- it makes
+the merge harder.
 
-relocation error: /usr/lib/libtsocks.so: undefined symbol: $$dyncall
-
-Thanks in advance.
-
-Sincerely,
-Dennis Faucher
-Technical Consultant
-Hewlett-Packard Company
-https://www.ecardfile.com/id/dennis_faucher (Contact)
+-- 
+Revolutions do not require corporate support.
