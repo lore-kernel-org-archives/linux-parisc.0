@@ -1,22 +1,16 @@
-Return-Path: <>
-Received: from mailgw1.cityu.edu.hk (amy.cityu.edu.hk [144.214.5.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B1E3C4890
+Return-Path: <jesse@cypress-tech.com>
+Received: from cypress2.cypress-tech.com (tamqfl1-53-130.biz.dsl.gtei.net
+	[209.241.53.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49F6A48AC
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 13 Apr 2004 10:39:09 -0600 (MDT)
-Received: from process-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
-	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-	id <0HW400K01AKK7M@mailgw1.cityu.edu.hk> for
-	parisc-linux@lists.parisc-linux.org;
-	Wed, 14 Apr 2004 00:38:26 +0800 (CST)
-Date: Wed, 14 Apr 2004 00:38:26 +0800 (CST)
-From: Mail Delivery System <Mailer-Daemon@mailgw1.cityu.edu.hk>
+	Tue, 13 Apr 2004 14:44:34 -0600 (MDT)
+Message-ID: <407C51DB.87130860@cypress-tech.com>
+Date: Tue, 13 Apr 2004 16:47:23 -0400
+From: Jesse Dougherty <jesse@cypress-tech.com>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Message-id: <0HW400DNXBK2WT@mailgw1.cityu.edu.hk>
-MIME-version: 1.0
-Content-type: multipart/report;
-	boundary="Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)";
-	report-type=delivery-status
-Subject: [parisc-linux] Delivery Notification: Delivery has failed
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] C7497A DDS-4 Tape Drive 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,139 +20,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Does anyone happen to know where one could buy a C7497A DDS-4 tape drive
+for the HP tape array 5300. I have tried HP (new & re-marketed), other
+HP resellers such as my self, Ebay, Google searches, and a few other on
+line wholesalers / inventory posting sites with no luck. These things
+seem to be a tough cookie to locate. If anyone knows of a company or
+individual that I can obtain one from, please let me know. I cant use
+any substitutions, its got to be the C7497A
 
---Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)
-Content-type: text/plain; charset=us-ascii
-Content-language: en-US
-Content-transfer-encoding: 7BIT
-
-This report relates to a message you sent with the following header fields:
-
-  Return-path: <parisc-linux@lists.parisc-linux.org>
-  Received: from conversion-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
-   (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-   id <0HW400D01BB1WT@mailgw1.cityu.edu.hk>
-   (original mail from parisc-linux@lists.parisc-linux.org); Wed,
-   14 Apr 2004 00:38:26 +0800 (CST)
-  Received: from student.cityu.edu.hk
-   (host81-153-13-18.range81-153.btcentralplus.com [81.153.13.18])
-   by mailgw1.cityu.edu.hk
-   (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-   with ESMTP id <0HW400B88BJXQ4@mailgw1.cityu.edu.hk> for
-   50265422@student.cityu.edu.hk; Wed, 14 Apr 2004 00:38:26 +0800 (CST)
-  Date: Tue, 13 Apr 2004 17:38:43 +0100
-  From: parisc-linux@lists.parisc-linux.org
-  Subject: Mail Delivery (failure 50265422@student.cityu.edu.hk)
-  To: 50265422@student.cityu.edu.hk
-  Message-id: <0HW400B89BJYQ4@mailgw1.cityu.edu.hk>
-  MIME-version: 1.0
-  Content-type: multipart/related;
-   boundary="Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)"; type="multipart/alternative"
-  X-Priority: 3
-  X-MSMail-priority: Normal
-
-Your message cannot be delivered to the following recipients:
-
-  Recipient address: 50265422@student.cityu.edu.hk
-  Reason: This email is rejected because an unsafe file is found: message.scr
-
-
---Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)
-Content-type: message/delivery-status
-
-Reporting-MTA: dns;mailgw1.cityu.edu.hk (conversion-daemon)
-
-Original-recipient: rfc822;50265422@student.cityu.edu.hk
-Final-recipient: rfc822;50265422@student.cityu.edu.hk
-Action: failed
-Status: 5.6.5
-	(This email is rejected because an unsafe file is found: message.scr)
-
---Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)
-Content-type: text/plain
-Content-transfer-encoding: 7BIT
-
-Return-path: <parisc-linux@lists.parisc-linux.org>
-Received: from conversion-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
- (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
- id <0HW400D01BB1WT@mailgw1.cityu.edu.hk>
- (original mail from parisc-linux@lists.parisc-linux.org); Wed,
- 14 Apr 2004 00:38:26 +0800 (CST)
-Received: from student.cityu.edu.hk
- (host81-153-13-18.range81-153.btcentralplus.com [81.153.13.18])
- by mailgw1.cityu.edu.hk
- (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
- with ESMTP id <0HW400B88BJXQ4@mailgw1.cityu.edu.hk> for
- 50265422@student.cityu.edu.hk; Wed, 14 Apr 2004 00:38:26 +0800 (CST)
-Date: Tue, 13 Apr 2004 17:38:43 +0100
-From: parisc-linux@lists.parisc-linux.org
-Subject: Mail Delivery (failure 50265422@student.cityu.edu.hk)
-To: 50265422@student.cityu.edu.hk
-Message-id: <0HW400B89BJYQ4@mailgw1.cityu.edu.hk>
-MIME-version: 1.0
-Content-type: multipart/related;
- boundary="Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)"; type="multipart/alternative"
-X-Priority: 3
-X-MSMail-priority: Normal
-
-This is a multi-part message in MIME format.
-
---Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)
-Content-type: multipart/alternative;
- boundary="Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)"
-
-
---Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: QUOTED-PRINTABLE
-
-
---Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: QUOTED-PRINTABLE
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" http-equiv=3DConten=
-t-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>If the message will not displayed automatical=
-ly,<br>
-follow the link to read the delivered message.<br><br>
-Received message is available at:<br>
-<a href=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 w=
-idth=3D0>www.student.cityu.edu.hk/inbox/50265422/read.php?sessionid-2=
-7916</a>
-<iframe
-src=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 width=
-=3D0></iframe>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
---Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)--
-
---Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)
-Content-id: <031401Mfdab4$3f3dL780$73387018@57W81fa70Re>
-Content-type: text/plain; Name=UnsafeFile.txt
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Content-description: Unsafe file is rejected: message.scr
-
-********* UNSAFE FILE IS REJECTED! *********
-
-This email is bounced back to the sender because an
-unsafe file is found.
-
-* Name of the unsafe file: message.scr
-
-Postmaster (Mail Administrator),
-City University of Hong Kong
-Email: postmaster@cityu.edu.hk
-
-(Reference number: 20040414_003826_24607)
-********************************************
-
---Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)--
-
---Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)--
+Thanks for your help
+Jesse
+Cypress Technology Inc
+jesse@cypress-tech.com
