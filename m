@@ -1,20 +1,18 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: 2.6.10-rc1-pa16 still panic on c110 [WAS: [parisc-linux] c110
-	panic when try to boot 2.6.10-rc1-pa11?]
-Date: Sat, 12 Feb 2005 20:45:20 +0000
-Message-ID: <420E6AE0.7020708@tiscali.be>
-References: <41966398.4070303@tiscali.be> <419FAAF4.4030608@tiscali.be>
-	<20041121000403.GF11503@colo.lackof.org>
-	<41A0BFD2.4020205@tiscali.be>
-	<20041121214000.GC1477@colo.lackof.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] Re: New HIL drivers
+Date: Sun, 13 Feb 2005 01:07:41 +0100
+Message-ID: <200502130107.42267.deller@gmx.de>
+References: <200502062245.42392.dtor_core@ameritech.net>
+	<20050212191453.GA8952@ucw.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: List Parisc <parisc-linux@parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset="iso-8859-1"
+Cc: linux-input@atrey.karlin.mff.cuni.cz,
+ Dmitry Torokhov <dtor_core@ameritech.net>,
+ parisc-linux@parisc-linux.org
+To: Vojtech Pavlik <vojtech@suse.cz>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041121214000.GC1477@colo.lackof.org>
+In-Reply-To: <20050212191453.GA8952@ucw.cz>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,32 +23,72 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
+- dropped from CC: "Brian S. Julin" <bri@calyx.com> (he is not very active on the HIL drivers any longer)
+- added to CC: parisc-linux@parisc-linux.org (main parisc development mailing list)
 
-Having far less time to spend to linux :_(, I come back shortly with those investigation:
+Hi Vojtech,
+Hi Dmitry,
 
+First of all thanks a lot that you added the parisc HIL drivers to the linux-input tree.
+Since the main development of the parisc tree happens in CVS at http://cvs.parisc-linux.org/linux-2.6 and since we usually stay in sync with Linus' latest bk tree, not all of the changes of the current linux-input tree are available for us as long as you didn't pushed your changes to him yet.
+Additionally, the HIL sources you added are from november last year. Some of the problems have been fixed in the parisc cvs tree in the meantime.
 
-Grant Grundler wrote:
-> On Sun, Nov 21, 2004 at 04:18:26PM +0000, Joel Soete wrote:
-> 
->>That works far better: no more panic at boot time :))
-> 
-> 
-> good. I think the other problems you are have are either real HW problems,
-> bugs in the driver or bugs in the hard disk firmware.
-> You can rule out some of the hard disk firmware bugs by checking for
-> newer versions of the firmware either at HP's site (URL
-> is in the parisc-linux FAQ) or disk vendor's site.
-> 
-There are effectively a new fw revision for this disk but only available for hp engineer :-)
+On Saturday 12 February 2005 20:14, Vojtech Pavlik wrote:
+> On Sun, Feb 06, 2005 at 10:45:42PM -0500, Dmitry Torokhov wrote:
+> > I noticed that several new drivers for HP-PA have been added to the input
+> > tree. I looked them over and have some concerns:
+> > 
+> > - hil_kbd and hil_ptr will not compile because now connect() methods
+> >   return error codes, not void. Also, drivers should define ID table,
+> >   and MODULE_DEVICE_TABLE, otherwise serio core will not consider them.
 
-But getting back this disk to office, I had the idea to connect this disk to a b180 using the same lasi700 driver and drive exactely 
-the same stress test (http://lists.parisc-linux.org/pipermail/parisc-linux/2004-November/025277.html) and no pb occured.
+Yes, but only in your tree, not in Linus' yet. As soon as you push your tree up, I'll fix the issues and send you the diffs.
 
-so could it be a hw pb with the scsi ctrlr ncr53c710 (the narrow se)?
+> > - there is no more serio->private, please use serio_get/set_drvdata.
 
-Thanks again,
-	Joel
+Will do.
+
+> > - using del_timer in drivers' exit routines is not safe (del_timer_sync
+> >   should be used).
+
+Will do.
+
+> > - as far as I can see there is no need to do tasklet_disable before calling
+> >   tasklet_kill.
+
+Ok.
+
+> > - having "return" after BUG() is pointless.
+> > 
+> > - what exactly the following fragment supposed to do?
+> >
+> > > static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait)
+> > > {
+> > >         unsigned long l;
+> > > 
+> > >         l = 0;
+> > >         if (l != 0)
+> > >                 return POLLIN | POLLRDNORM;
+> > >         return 0;
+> > > }
+
+nothing :-)
+Please just drop the hp_sdc_rtc.c driver for now - it's not working anyway.
+We'll keep it in our parisc tree until it does something useful.
+
+> > - formatting - according to CodingStyle functions' opening braces should
+> >   be on the next line.
+
+Will fix.
+
+> I'm CC:ing Helge, who might know more, and tell us, when the issues will
+> be fixed.
+
+As soon as you push upstream, I'll fix the issues in our tree and send you the diffs. Would this be OK for you ?
+
+Regards,
+Helge
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
