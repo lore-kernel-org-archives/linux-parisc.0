@@ -1,82 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA26190
-	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 17:55:51 -0700
-Message-Id: <200012070057.TAA28741@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA26853
+	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 18:22:57 -0700
+Message-Id: <200012070118.UAA28814@hiauly1.hia.nrc.ca>
 Subject: Re: pa reload problem
-To: rth@redhat.com (Richard Henderson)
-Date: Wed, 6 Dec 2000 19:57:49 -0500 (EST)
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Wed, 6 Dec 2000 20:18:11 -0500 (EST)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: alan@linuxcare.com.au, law@cygnus.com, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
-In-Reply-To: <20001206161627.C1272@redhat.com> from "Richard Henderson" at Dec 6, 2000 04:16:27 pm
+Cc: rth@redhat.com, alan@linuxcare.com.au, law@cygnus.com,
+        rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
+        gcc-bugs@gcc.gnu.org
+In-Reply-To: <200012070057.TAA28741@hiauly1.hia.nrc.ca> from "John David Anglin" at Dec 6, 2000 07:57:49 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Wed, Dec 06, 2000 at 03:41:06PM -0500, John David Anglin wrote:
-> > >     (expr_list:REG_EQUIV (mem/u:SI (lo_sum:SI (reg/f:SI 309)
-> > > 		(unspec:SI[
-> > > 			(symbol_ref:SI ("constructor_max_index"))
-> > > 		    ]  0)) 0)
-> 
-> This appears to be the same sort of bug as in compile/20001205-1.c
-> except that an unspec is involved instead of an asm_operands.
-> 
-> I wonder if the best solution is to avoid local-alloc creating
-> REG_EQUIV notes for every little thing under the sun.  Allow
-> only general_operand or something.
+> I am testing the following.  The bootstrap has gone well past the above
+> point.  Maybe some generalization of this would work in general or
 
-I am testing the following.  The bootstrap has gone well past the above
-point.  Maybe some generalization of this would work in general or
-some similar control could be added to local-alloc regarding the creation
-of REG_EQUIV notes.  This method works well here because there are no
-valid substitutions of PIC mem's on the PA as far as I am aware.  Another
-method might be to scan the insn list and check that the substitution is
-valid for all the insns that use the register before deciding that a
-REG_EQUIV note should be added.
+Failure:
+
+stage1/xgcc -Bstage1/ -B/usr/local/hppa1.1-hp-hpux10.20/bin/ -c  -DIN_GCC    -g -O3 -fPIC -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes   -DHAVE_CONFIG_H    -I. -Icp -I../../gcc -I../../gcc/cp -I../../gcc/config -I../../gcc/../include ../../gcc/cp/decl.c -o cp/decl.o
+../../gcc/cp/decl.c: In function `duplicate_decls':
+../../gcc/cp/decl.c:3760: Internal error: Segmentation fault.
+Please submit a full bug report.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+make[2]: *** [cp/decl.o] Error 1
+make[2]: Leaving directory `/xxx/gnu/gcc-2.97/objdir/gcc'
+make[1]: *** [stage_c] Error 2
+make[1]: Leaving directory `/xxx/gnu/gcc-2.97/objdir/gcc'
+make: *** [bootstrap-lean] Error 2
+
+Hopefully, this is a different problem.
+
+[snip]
+decls_match warn_extern_redeclared_static duplicate_decls {GC 6819k -> 2774k} {GC 5707k -> 2827k}
+Program received signal SIGSEGV, Segmentation fault0x35c264 in make_reorder_chain_1 (bb=0x401a3408, prev=0x401a3408)
+    at ../../gcc/bb-reorder.c:409
+409           next = (taken e_taken : e_fall)->dest;
+(gdb) p taken
+$1 = 1
+(gdb) p e_taken->dest
+Cannot access memory at address 0xc
+(gdb) p e_fall->dest
+$2 = (struct basic_block_def *) 0x401a3440
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
-
-2000-12-06  John David Anglin  <dave@hiauly1.hia.nrc.ca>
-
-	* pa.h (PIC_ADDRESS_P): Define macro to recognize PIC address.
-	* reload1.c (reload): Don't set reg_equiv_mem if PIC_ADDRESS_P
-	is defined and true.
-
---- config/pa/pa.h.orig	Sat Dec  2 02:43:02 2000
-+++ config/pa/pa.h	Wed Dec  6 17:27:21 2000
-@@ -1091,6 +1091,14 @@
-    || GET_CODE (X) == HIGH) 						\
-    && (reload_in_progress || reload_completed || ! symbolic_expression_p (X)))
- 
-+/* Recognize a PIC address.  */
-+
-+#define PIC_ADDRESS_P(X)			\
-+   (GET_CODE (X) == LO_SUM			\
-+    && GET_CODE (XEXP (X, 0)) == REG            \
-+    && REG_OK_FOR_BASE_P (XEXP (X, 0))		\
-+    && GET_CODE (XEXP (X, 1)) == UNSPEC)	\
-+
- /* Include all constant integers and constant doubles, but not
-    floating-point, except for floating-point zero.
- 
---- reload1.c.orig	Thu Nov 30 17:39:21 2000
-+++ reload1.c	Wed Dec  6 17:18:27 2000
-@@ -881,8 +881,14 @@
- 	  {
- 	    rtx x = eliminate_regs (reg_equiv_memory_loc[i], 0, NULL_RTX);
- 
-+#ifndef PIC_ADDRESS_P
- 	    if (strict_memory_address_p (GET_MODE (regno_reg_rtx[i]),
- 					 XEXP (x, 0)))
-+#else
-+	    if (strict_memory_address_p (GET_MODE (regno_reg_rtx[i]),
-+					 XEXP (x, 0))
-+		&& ! PIC_ADDRESS_P (XEXP (x, 0)))
-+#endif
- 	      reg_equiv_mem[i] = x, reg_equiv_address[i] = 0;
- 	    else if (CONSTANT_P (XEXP (x, 0))
- 		     || (GET_CODE (XEXP (x, 0)) == REG
