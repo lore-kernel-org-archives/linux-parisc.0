@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5841484E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 11 Oct 2003 02:04:11 -0600 (MDT)
-Date: Sat, 11 Oct 2003 10:04:09 +0200
-Subject: Re: [parisc-linux] IBM 3151 on K200 in Debian 3.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: parisc-linux@lists.parisc-linux.org
-To: Walker White <wmwhite@udallas.edu>
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
-In-Reply-To: <9C146012-FB5A-11D7-B35B-0030657CC792@udallas.edu>
-Message-Id: <7E4D5636-FBC1-11D7-BD3F-0030656F07A2@esiee.fr>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7357C48C1
+	for <parisc-linux@parisc-linux.org>; Sun, 12 Oct 2003 05:48:36 -0600 (MDT)
+Message-ID: <3F893F92.4060606@tiscali.be>
+Date: Sun, 12 Oct 2003 11:48:34 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+References: <3F8739E2.2050205@tiscali.be>
+In-Reply-To: <3F8739E2.2050205@tiscali.be>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Re: k-2.6.0-test7-pa5: failled 2 pass
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,63 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le vendredi, 10 oct 2003, =E0 21:47 Europe/Paris, Walker White a =E9crit =
-:
 
-> Okay.  Almost done here.  That swap trick DID work.  It just did not=20=
+Joel Soete wrote:
+> Hi pa,
+> 
+> I 'make defconfig' then 'make vmlinux' on a fresh cvs tree and obtain a 
+> vmlinux :)
+> 
+> As working on a c110 I just forget to change ccio-dma.c parameter and so 
+> just do this change and 'make vmlinux'.
+> This failled:
+> hpalin:/Debian-apt/SRC/linux-2.6.0-test7-pa5# make vmlinux
+> Making user->usr/include/linux 
+> symlink
+> ln: `include/user': File exists
+> make: *** [include/user] Error 1
+> 
+> thanks in advance,
+>    joel
+> 
+hmm
 
-> read the K200 manual to see that HP boots from the end of the SCSI=20
-> chain and not the beginning.  So everything is loaded and it boots.
->
-> However my boot crashes right after loading cron.  This is possibly a=20=
+Even after a distclean, I got same message when I retry 'make vmlinux'?
 
-> result of the fact that some of my packages came from the debian CD=20
-> and not the netinstall.  Here is the error:
->
-> ***
-> Starting periodic command scheduler: cron
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> /bin/sh: /dev/ttyB0: No such device
-> INIT: Id "T0" respawning to fast: disabled for 5 minutes
-> INIT: no more processes left in this runlevel
->
-> The machine then sleeps for 5 minutes and repeats the error on wake-up=20=
+Finaly, just remove manually include/user and include/user-asm help.
 
-> (so I never get a login).
->
-> Using the installation CD, I have opened a shell to verify that there=20=
-
-> is indeed a /dev/ttyB0.  Is this error because I got packages from a=20=
-
-> source other than the netinst CD or is there something else going on=20=
-
-> here?
-
-Looks like something is screwed because of mixed package (most likely=20
-makedev stuff).
-My best recommandation would be to upgrade at least to Debian testing=20
-(sarge).
-To do so, you have to change /etc/apt/sources.list, and run apt-get=20
-update; apt-get dist-upgrade
-Another guess: was the kernel package installed from the netinst or=20
-from Debian 3.0?
-If the latter, then /dev/ttyB0 might be there but not related to any=20
-kernel driver (since 3.0 doesn't handle /dev/ttyB0).
-
-The hangs you experienced during install are kinda weird, i hope that=20
-our ISOs aren't corrupted, i'll try to check that at some point.
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+Cheers,
+	Joel
