@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 456CF4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 18:18:58 -0600 (MDT)
-Date: Mon, 16 Sep 2002 02:18:54 +0200
-Subject: Re: [parisc-linux] [PATCH] Voodoo framebuffer on PARISC
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v543)
+Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1FAD4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 18:24:01 -0600 (MDT)
+From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
+To: "'Helge Deller'" <deller@gmx.de>,
+	"'B. Douglas Hilton'" <bdhilton@charter.net>
 Cc: <parisc-linux@lists.parisc-linux.org>
-To: "Tobias Giesen" <tobias_subscriber@tgtools.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <001201c25d05$150e6600$0100a8c0@PLUTO>
-Message-Id: <E267A5BE-C909-11D6-A91F-0030656F07A2@esiee.fr>
+Subject: RE: [parisc-linux] Re: [PATCH] Voodoo framebuffer on PARISC
+Date: Mon, 16 Sep 2002 02:17:54 +0200
+Message-ID: <000001c25d16$80be8b30$0100a8c0@PLUTO>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <200209151031.16912.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,31 +24,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le lundi, 16 sep 2002, =E0 00:13 Europe/Paris, Tobias Giesen a =E9crit :
+Hello,
 
-> Helge wrote:
->
->> This patch is already integrated into the 2.4.19-pa18
->> kernel ...
->
-> Where can I get pa18? The latest on ftp.parisc-linux.org seems to be
-> pa17.
-I'm currently building pa18 lifimage/iso, they will be available soon.
-Though I think there's no point for you in trying to find a precompiled=20=
+I think I need some more help with this. Here's what I did:
 
-kernel,
-since IIRC precomp are built with default debian-configs, which do not=20=
+- grabbed fresh 2.4.19-pa17 sources
+- applied sstfb.c and .h patch
+- set kernel options to include sst1
+- compiled & installed new kernel
 
-enable support
-for sstfb.
+The new kernel seems to try to activate a Voodoo console shortly after
+the "If this is the last message you see ..." warning. However, my
+monitor says the frequencies are out of range and switches itself off.
+The main sti console is then dead also.
 
-Therefore I think you'd better get the latest kernel source from=20
-cvs.parisc-linux.org
-and build it with your own options :)
+Any ideas? Maybe could I try a precompiled kernel with Voodoo support?
 
-Greetings,
+Thanks.
 
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+Best wishes,
+Tobias Giesen
