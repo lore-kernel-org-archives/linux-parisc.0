@@ -1,38 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 623F2482A
-	for <parisc-linux@parisc-linux.org>; Fri, 25 May 2001 18:32:09 -0600 (MDT)
-To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] Major hppa binutils problem 
-In-Reply-To: Message from Matt Taggart <taggart@carmen.fc.hp.com>
-   of "Tue, 22 May 2001 18:07:59 MDT." <20010523000759.C759937DCE@carmen.fc.hp.com>
-References: <20010523000759.C759937DCE@carmen.fc.hp.com> 
+Received: from mail.ehlo.com (mail.ehlo.com [208.185.90.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8936D482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 May 2001 07:51:22 -0600 (MDT)
+Received: from james by mail.ehlo.com with local (Exim 3.22 #1)
+	id 153eTM-000A7A-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 26 May 2001 09:51:16 -0400
+Date: Sat, 26 May 2001 09:51:16 -0400
+From: James FitzGibbon <james@ehlo.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010526095116.A38860@ehlo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 25 May 2001 18:34:50 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010526003450.E0CC037C8F@carmen.fc.hp.com>
+Subject: [parisc-linux] Install CD causes reboot on 712/80
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matt Taggart writes...
+I'm new to PARISC-Linux.  I've had a 712/80 sitting around for a few years
+and thought I'd give it a go.  Using the palinux-0.6.1-32STI.iso image, I
+burned a CD and attempted to install.
 
-[snip]
-> Paul Bame has written a script you can run to check and see if your system
-> has any bad debs installed. Its available at,
-> 
-> ftp://puffin.external.hp.com/pub/parisc/tools/plt-checker
+The boot process in and of itself went fine.  The kernel came up, reported
+all of the devices that are shown for this model in the hardware database. 
+After init entered runlevel 2, the message "Setting up /tmp and /var/log
+ramdisks" was displayed.  About 5 seconds after that, the system rebooted.
 
-It was discovered that this tool could silently fail if you didn't have the 
-right version of binutils installed. I have updated the URL above with Paul's 
-latest version. Also most of the bad debs in the debian archive have been 
-replaced by new clean ones. So what a few of us have been doing is,
+I've tried futzing around with the SCSI ids with no luck.  Does anyone have
+an idea or procedure I can try to get around this or find out more
+information as to why it's happening?
 
-- "apt-get update; apt-get upgrade" to get all the latest debs
-- run plt-checker
-- remove or replace the remaining stuff that's broken
+I'm going to try the 0.6 image as well as the serial console one in the
+meantime (I have firmware 2.3, so I should be OK to go back and forth).
 
-You'll probably want to do something similar.
+Thanks.
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+j.
