@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D998482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 17:27:47 -0700 (MST)
-Received: from udlkern.fc.hp.com (unknown [15.1.52.48])
-	by atlrel6.hp.com (Postfix) with ESMTP id 34A491F97E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 19:27:46 -0500 (EST)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id RAA15886
-	for parisc-linux@lists.parisc-linux.org; Wed, 21 Nov 2001 17:27:45 -0700 (MST)
-Date: Wed, 21 Nov 2001 17:27:45 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200111220027.RAA15886@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Hardball ERS now available
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C320F482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 21:51:38 -0700 (MST)
+Message-Id: <200111220447.VAA03217@puffin.external.hp.com>
+To: Herb Radford <herbr@magma.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] My C200 situation 
+In-Reply-To: Message from Herb Radford <herbr@magma.ca>
+   of "Wed, 21 Nov 2001 17:35:55 EST." <3.0.5.32.20011121173555.01928d40@mail.magma.ca>
+Date: Wed, 21 Nov 2001 21:47:18 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,22 +21,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I've made the Hardball External Reference Specification (ERS) available on
-the tech documentation page at www.parisc-linux.org.  This ERS documents
-the I/O subsystem for the 735/755.  It includes documentation for the
-fast/wide SCSI interface and FDDI interface.  This document can also be
-useful for 710/720/730/750 systems, since the document is very similar to
-the Cobra/Coral I/O subsystem ERS, i.e. not much changed between the two.
+Herb Radford wrote:
+> Does that mean that stifb is up on the FX4??
 
-The document is somewhat large (4.2 Mb) because it is a pdf file derived
-from tiff images.  I could not find the original source for the document
-(it's 10 years old) so I had to scan it in.  I also had to edit the images
-to "clean" it for release, which basically involved removing engineer
-names, email addresses and phone numbers in this case.  I chose a
-resolution that I felt provided the best tradeoff between readability and
-size).
+No. That's just the STI console - different driver.
 
-Enjoy,
+> What about X then?
 
-John Marvin
-jsm@fc.hp.com
+Dunno - but don't think that's the same.
+
+> By the way, I also tried a 64-bit kernel 2.4.14pa6 which did not do
+> anything I could see after setting the w-bit in the processor status
+> register (went to 64-bit mode).
+
+Did you enable CONFIG_PDC_NARROW?
+That's required for 64-bit on Cxxx (but not on Cxxxx) machines.
+
+grant
