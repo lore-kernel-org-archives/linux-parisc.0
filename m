@@ -1,32 +1,41 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id EAA14732
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 18 Mar 1999 04:30:19 -0500
-Received: from the-village.bc.nu (lightning.swansea.uk.linux.org [194.168.151.1]) by snowcrash.cymru.net (8.8.7/8.7.1) with SMTP id JAA27436; Thu, 18 Mar 1999 09:30:11 GMT
-Message-Id: <m10NZyO-0007U2C@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: [hppa-linux] memory layout
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id JAA19455
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 18 Mar 1999 09:36:05 -0500
+Received: (from neufeld@localhost)
+	by caliban.physics.utoronto.ca (8.9.2/8.8.8) id JAA14215
+	for hppa-linux@thepuffingroup.com; Thu, 18 Mar 1999 09:35:58 -0500 (EST)
+Date: Thu, 18 Mar 1999 09:35:58 -0500 (EST)
+From: Christopher Neufeld <neufeld@physics.utoronto.ca>
+Message-Id: <199903181435.JAA14215@caliban.physics.utoronto.ca>
 To: hppa-linux@thepuffingroup.com
-Date: Thu, 18 Mar 1999 10:24:19 +0000 (GMT)
-Cc: hppa-linux@puffingroup.com
-In-Reply-To: <Pine.LNX.3.96.990317212138.2685A-100000@quark.ix.netcom.com> from "Kumar" at Mar 17, 99 09:29:46 pm
-Content-Type: text
+Subject: [hppa-linux] Gateway instructions
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Talking about only pa1.1 or 32 bit CPUs, I would say the same layout
-> can be used as Linux on Intel does. That is kernel mapped at 0xc0000000.
-> So 3 Gig for User space and 1 Gig for kernel. Of course, other ppl may
-> have different ideas. 
+   Hello folks,
 
-If you want to run PH/UX binaries then you need to probably follow their
-layout
+   I'm wondering if anybody's got a handle on how gateway instructions
+are supposed to work. The instruction is designed to allow jumps into the
+kernel, with privilege promotion, without invoking the cost of an
+interrupt, by branching into a page and then taking on the privilege
+level of the page. The only safety check seems to be in the "B" bit,
+which would appear to prohibit the target of such a jump being, itself,
+another jump.
+   How does this work, now? Is the target of the gateway instruction
+intended to be simply a vector table of other jumps, preceded by some
+non-branch instruction which forms the taget of the gateway? After all,
+if I am permitted to choose my entry point into a kernel function, I can
+do bad things, at the very least crash the kernel, but also probably
+subvert it quite easily. Access control seems to be limited to the page,
+not forbidding jumps into other parts of the code within the same page.
+And what is the "B" bit in the processor status supposed to do in all
+this?
+   Is there a misprint in the book (or a misunderstanding on my part)? If
+the "B" bit produces an exception when the target of the gateway is _not_
+another jump, then I can see how this can be easily constructed into a
+vector table into kernel functions without compromising security.
 
-> PA has this strange concept of Spaces and they have those 
-> space registers %sr0 to %sr7. This reminds me of Intel's segment 
-> registers. And whoever wanted to do any serious OS like Unix on 80386
-> never liked segments.
 
-Spaces is more segments done right. The reason we dont use segmentation
-to split user/kernel on x86 any more is simply performance - it costs us
-1 clock per dword copied to/from luser space.
-
-The m68k people use the 'spaces' equivalent on the m68k quite heavily
+-- 
+ Christopher Neufeld                   neufeld@physics.utoronto.ca
+ Home page:  http://caliban.physics.utoronto.ca/neufeld/Intro.html
+ "Don't edit reality for the sake of simplicity"
