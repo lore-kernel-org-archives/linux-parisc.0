@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B528F4871
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 10:42:54 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by smtp-out.tiscali.be with esmtp (Tiscali)
-	id 18nMcv-00057M-00
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 18:42:53 +0100
-Date: Mon, 24 Feb 2003 18:42:39 +0100
-Message-ID: <3E5A21B500000145@ocpmta3.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-To: parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] 2.4.20-pa27 64bits smp problem!
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 63E1A4872
+	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 10:50:14 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18nMk1-0006cQ-00; Mon, 24 Feb 2003 17:50:13 +0000
+Date: Mon, 24 Feb 2003 17:50:13 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
+Message-ID: <20030224175013.L2938@parcelfarce.linux.theplanet.co.uk>
+References: <3E5A21B500000145@ocpmta3.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3E5A21B500000145@ocpmta3.freegates.net>; from jsoe0708@tiscali.be on Mon, Feb 24, 2003 at 06:42:39PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,49 +25,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Mon, Feb 24, 2003 at 06:42:39PM +0100, Joel Soete wrote:
+> sched.c:93: initializer element is not constant
+> sched.c:93: (near initialization for `tasklist_lock')
+> sched.c:93: initializer element is not constant
+[...]
+> which is precompile as:
+> rwlock_t tasklist_lock __attribute__((__aligned__(64))) = (rwlock_t) { (spinlock_t)
+> {1}, 0 };
+> 
+> What's wrong?
 
-Having the opportunity to test a N-class (classical), I build a sd with
-debian unstable running a kernel 2.4.20-pa27 64bits up and would try now
-to rebuild this same kernel with smp support (I am reach of 2cpu  :) ) but
-compile failled with following message:
+looks like gcc broke this again.  for the moment, you can try taking
+out the casts.
 
-hppa64-linux-gcc -D__KERNEL__ -I/usr/src/linux-2.4.20-pa27-64/include -Wall
--Wst
-rict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame
--pointer -D__linux__ -pipe -fno-strength-reduce -mno-space-regs -mfast-indirect-
-calls -mdisable-fpregs -ffunction-sections -march=2.0 -mschedule=8000
--nostdin
-c -I /usr/lib/gcc-lib/hppa64-linux/3.2.3/include -DKBUILD_BASENAME=sched
- -fno-o
-mit-frame-pointer -c -o sched.o sched.c
-sched.c:93: initializer element is not constant
-sched.c:93: (near initialization for `tasklist_lock')
-sched.c:93: initializer element is not constant
-make[2]: *** [sched.o] Error 1
-make[2]: Leaving directory `/usr/src/linux-2.4.20-pa27-64/kernel'
-make[1]: *** [first_rule] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.20-pa27-64/kernel'
-make: *** [_dir_kernel] Error 2
-
-at this 93th line I met:
-rwlock_t tasklist_lock __cacheline_aligned = RW_LOCK_UNLOCKED
-
-which is precompile as:
-rwlock_t tasklist_lock __attribute__((__aligned__(64))) = (rwlock_t) { (spinlock_t)
-{1}, 0 };
-
-What's wrong?
-
-I am using the last I know gcc-hppa64 3.2.3-0.1 (would I have to prefer
-previous release?) .
-
-Thanks in advance,
-    Joel
-
-
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
