@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 709CF4932
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 09:00:53 -0600 (MDT)
-Date: Tue, 26 Aug 2003 08:03:44 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: mmogenius@v8fiesta.co.uk
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-Message-ID: <20030826150344.GA2012@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <1061908796.3f4b713c1b6e3@webmail.v8fiesta.co.uk> <20030826145102.GR21328@tausq.org> <1061909796.3f4b752412e90@webmail.v8fiesta.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D44CA494E
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Aug 2003 10:00:41 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 19rgFM-0002k1-Lj
+	for parisc-linux@parisc-linux.org; Tue, 26 Aug 2003 17:00:40 +0100
+Date: Tue, 26 Aug 2003 17:00:40 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030826160040.GM22294@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1061909796.3f4b752412e90@webmail.v8fiesta.co.uk>
+Subject: [parisc-linux] linux -> linux-2.4 transition
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,18 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-(please reply to the list, not to me privately)
+Earlier today I moved linux to linux-2.4 and set a compatibility symlink
+so everything will work for the moment.  I've updated the web pages
+with instructions to use linux-2.4 instead.  In the build-tools module,
+you'll now find a little shell script that moves your checkout from linux
+to linux-2.4.  Please run it as soon as convenient.
 
-In reference to a message from mmogenius@v8fiesta.co.uk, dated Aug 26:
-> do we know if it is possable to add an extra graphics card to the b2000 to 
-> usin instead of the internal card ?
+I intend to remove the `linux' symlink in a week's time.  At that point
+any unconverted repositories will stop working.
 
-the web page tells you that if you get a Vis-EG card it will work. there
-are no "built in" graphics cards..  if you have a FX? card in your b2k,
-it's a PCI card. (lspci should tell you)
+Any problems, let me know.
 
-randolph
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
