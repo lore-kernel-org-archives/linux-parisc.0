@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Ryan Bradetich <rbradetich@uswest.net>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Problem find devices on the E55 I/O interfaces 
-In-Reply-To: Message from Christoph Plattner <christoph.plattner@gmx.at>
-   of "Wed, 03 Jul 2002 00:26:53 +0200." <3D2228AD.DC192B3B@gmx.at>
-References: <3D1A377A.E0CFABBD@gmx.at> <1025579851.956.469.camel@beavis> <3D22101D.74982658@gmx.at> <christoph.plattner@gmx.at> <20020702212501.84BD14861@dsl2.external.hp.com> <20020702225559.G27706@parcelfarce.linux.theplanet.co.uk>  <3D2228AD.DC192B3B@gmx.at> 
-Date: Tue, 02 Jul 2002 18:48:54 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020703004854.74746486E@dsl2.external.hp.com>
+Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B4B5482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Jul 2002 23:24:17 -0600 (MDT)
+Received: from postamt1.charite.de (postamt1.charite.de [193.175.66.246])
+	by hauptpostamt.charite.de (Postfix) with ESMTP id 282F015C01E
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 07:24:16 +0200 (CEST)
+Date: Wed, 3 Jul 2002 07:24:15 +0200
+From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Power Button doesn't turn machine off anymore
+Message-ID: <20020703052415.GB32490@charite.de>
+References: <20020702183558.GO25586@charite.de> <B1225F09-8DEC-11D6-A95C-0030656F07A2@esiee.fr> <20020702185708.GP25586@charite.de> <20020702190606.GA3678@systemhalted> <20020702190842.GR25586@charite.de> <20020702192147.GC3678@systemhalted> <20020702193116.GU25586@charite.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020702193116.GU25586@charite.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,25 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Christoph Plattner wrote:
-> So, the devices below may be the HP-PB bus, as you mentioned.
-> The resulting question: is this HP-PB bus now transperent ?
+Am 02.07.2002 um 21:31:16 +0200 schrieb Ralf Hildebrandt folgendes:
 
-The bus converter is "transparent", not the bus.
-ie everything we need to know about the secondary bus, we should be able
-to read from the bus converter.
-
-> Why are the devices not found ?
+> > # gcc -v
 > 
-> The point confusing me, is that the PDC boot monitor can display the
-> hardware paths below the "56", but Linux calling PDC calls cannot see
-> those devices, independent, if the device type is really know or only
-> found as unknown.
+> 3.0.4
+> 
+> > # ld -v
+> 
+> 2.12.90.0.9 20020526 
+> 
+> > --- ./arch/parisc/kernel/power.c     Tue Jul  2 15:17:59 2002
+> > +++ ./arch/parisc/kernel/power.c     Tue Jul  2 15:18:12 2002
+> 
+> Rebuilding now. Yawn.
 
-Sounds like the bus walk code is looking at the wrong address
-for walking the lower BC port.
+I rebooted that kernel. No output if I press the power switch.
+I checked /proc/sys/kernel/power, it's set to 1
 
-I'll point Ryan at the IO ACD (ioacd_v096.pdf only seems to be
-available inside HP *sigh*) and he can sort it out.
-
-grant
+-- 
+Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
+Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
+Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
+Stupid idea: Putting diesel fuel in a gasoline car.
+             Substituting corn oil for milk in recipes.
+             Attempting to secure a Windows system.
