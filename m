@@ -1,20 +1,17 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 30 Sep 2003 13:03:29 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: James Bottomley <James.Bottomley@steeleye.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Rene Brothuhn <rene.br@web.de>, Roman Zippel <zippel@linux-m68k.org>,
-	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
-	parisc-linux@parisc-linux.org,
-	Linux/PPC on APUS development <linux-apus-devel@lists.sourceforge.net>
-Subject: Re: [parisc-linux] Re: NCR53c720
-Message-ID: <20030930190329.GC7391@dsl2.external.hp.com>
-References: <Pine.GSO.4.21.0309301019390.7902-100000@vervain.sonytel.be> <1064929633.2183.7.camel@mulgrave> <20030930135914.GW24824@parcelfarce.linux.theplanet.co.uk> <1064935949.1930.6.camel@mulgrave>
+From: Joel Soete <joel.soete@tiscali.be>
+Subject: Re: [parisc-linux] Security Hole in binfmt_som.c ?
+Date: Mon, 01 Sep 2003 08:00:34 +0000
+Message-ID: <3F52FCA2.5050500__5196.61674411527$1416622751$gmane$org@tiscali.be>
+References: <3F509BBD.2040007@hrzpub.tu-darmstadt.de>	 <20030830131541.GI13467@parcelfarce.linux.theplanet.co.uk> <1062251389.31150.4.camel@dhcp23.swansea.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1064935949.1930.6.camel@mulgrave>
-Sender: parisc-linux-admin@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: Matthew Wilcox <willy@debian.org>,
+	Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>,
+	parisc-linux@lists.parisc-linux.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <1062251389.31150.4.camel@dhcp23.swansea.linux.org.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -25,26 +22,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Sep 30, 2003 at 10:32:23AM -0500, James Bottomley wrote:
-> What I did for PA was to create a parisc bus type, and attach all the
-> inventoried hardware to it.  This blurs the bus distinction in generic
-> device because we have several inventoried buses: Runway, GSC, LASI etc.
-> that are all lumped under the parisc bus.
+Alan Cox wrote:
 
-All those busses conform to the HP IO ADC and thus could be
-considered the same type of bus. Except for LASI, the above makes
-sense to me.
+>On Sad, 2003-08-30 at 14:15, Matthew Wilcox wrote:
+>  
+>
+>>On Sat, Aug 30, 2003 at 02:42:37PM +0200, Ruediger Scholz wrote:
+>>    
+>>
+>>>binfmt_som.c:216:2: #error "Fix security hole before enabling me"
+>>>What's this message about?
+>>>      
+>>>
+>>I don't know.  I wish someone would tell me.  You'd think they'd have the
+>>decency to contact the person listed as the author at the top of the file.
+>>    
+>>
+>
+>Actually explanations were posted in the previous discussion on this on
+>parisc-list.
+>
+>Someone has to do the equivalent of the 2.4.22 binfmt_elf changes if
+>neccessary so that another thread can't change the file handles or 
+>steal the exec fd being passed to the loader.
+>
+>  
+>
+Yes Alan, it was: 
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-July/020386.html>
 
-LASI isn't a bus. This would be a candidate for "platform device"
-since it's bridge-like device with integrate sub-devices.
-EISA bridge chips might be a similar case.
+Sorry Willy I trusted that you read it (My bad next time I will advise 
+you directly)
 
-> I was just wondering if it wouldn't make more sense now for us to be
-> using platform devices too...
-
-I don't understand "platform devices" vs "PCI devices" unless we
-are talking about "custom", arch specific bridge chips.
-A GSC device is a GSC device regardless of which board it's soldered to.
-That's not the case for PCI?
-
-grant
+Joel
