@@ -1,21 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (d108.dhcp212-198-139.noos.fr [212.198.139.108])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 864BD4947
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 08:51:50 -0600 (MDT)
-Date: Tue, 26 Aug 2003 16:51:35 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: mmogenius@v8fiesta.co.uk, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] CD Not Mounted
-Message-Id: <20030826165135.19fdee3d.varenet@esiee.fr>
-In-Reply-To: <20030825195755.GB1468@dsl2.external.hp.com>
-References: <1061837954.3f4a5c82ae3d9@webmail.v8fiesta.co.uk>
-	<20030825193149.GC377@dsl2.external.hp.com>
-	<1061840314.3f4a65ba7293e@webmail.v8fiesta.co.uk>
-	<20030825195042.GA1468@dsl2.external.hp.com>
-	<20030825195755.GB1468@dsl2.external.hp.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 709CF4932
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 09:00:53 -0600 (MDT)
+Date: Tue, 26 Aug 2003 08:03:44 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: mmogenius@v8fiesta.co.uk
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] x86 on b2000
+Message-ID: <20030826150344.GA2012@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1061908796.3f4b713c1b6e3@webmail.v8fiesta.co.uk> <20030826145102.GR21328@tausq.org> <1061909796.3f4b752412e90@webmail.v8fiesta.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1061909796.3f4b752412e90@webmail.v8fiesta.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,30 +24,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 25 Aug 2003 13:57:55 -0600
-Grant Grundler <grundler@parisc-linux.org> wrote:
+(please reply to the list, not to me privately)
 
-> On Mon, Aug 25, 2003 at 01:50:42PM -0600, Grant Grundler wrote:
-> > URLs to "net install ISOs" are on the www.parisc-linux.org web page.
-> 
-> The link points to:
-> 	ftp://ftp.parisc-linux.org/cd-images/testing/auto-isos/
-> 
-> But newer images (2.4.21-pa9 kernel based) are on:
-> 	http://pateam.esiee.fr/cd-images/testing/
-> 
-> is the "rsync" broken?
-> Can someone from ESIEE fix that?
-> (not urgent)
+In reference to a message from mmogenius@v8fiesta.co.uk, dated Aug 26:
+> do we know if it is possable to add an extra graphics card to the b2000 to 
+> usin instead of the internal card ?
 
-There is no "rsync"... I have to do it by hand and that's getting me
-pretty bored, so I guess this would have to be scripted at some point. If
-any master on dsl2 has any idea about how to do it i'd owe him a beer :P
+the web page tells you that if you get a Vis-EG card it will work. there
+are no "built in" graphics cards..  if you have a FX? card in your b2k,
+it's a PCI card. (lspci should tell you)
 
-BTW, i'll upload last image (-pa13 iirc) on both pateam and dsl2 as soon
-as i'll get my lab powered back (upon tomorrow if everything goes fine).
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
