@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DAAE0482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 00:57:04 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: "'Grant Grundler'" <grundler@dsl2.external.hp.com>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Dodgy SCSI in L2000 
-Date: Tue, 7 May 2002 19:00:40 +1200
-Message-ID: <000201c1f594$e5bc6aa0$5e01000a@bongo>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BAB07482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 01:25:35 -0600 (MDT)
+To: carlos@baldric.uwo.ca
+Subject: Re: [parisc-linux] kdb patches for -pa23 ... moooo!
+Message-ID: <1020756305.3cd7815151303@webmail.tiscalinet.be>
+Date: Tue, 07 May 2002 09:25:05 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-In-Reply-To: <20020507062119.F0744482A@dsl2.external.hp.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,155 +21,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Which kernel version?
-Ooops, forgot to include this, its:
+Hi Carlos,
 
-2.4.18-pa24, and
-2.4.18-pa23 
- 
-> This suggests something is wrong with that device.
-> Are all RAID0 disks internal? Or connected to external box?
-> I see further down they seem to be working fine individually.
+Well I well get your patch which I apply successfully against pa23.
 
-All disks are internal disks in the hotswap cage thing, connected to the
-core I/O board (? not sure if that's what its called , it's a big board
-with 3 SCSI cables on it and the ethernet jack/external SCSI). All the
-disks are plugged into this, two disks per cable, and the DVD on its own
-cable.
+On the other hand, I also reach to rebuild a toolchain with gcc-3.1 (some
+difficulties with 3.2).
 
-> Can you post lspci -v output from you L2000?
-> I just want to verify the built-in SCSI chips are the
-> same as on my A500: sym53c896.
+So to try to figure out what the problem is with kernel IP compile with gcc >
+3.1, I try to compile kernel 2.4.18-pa23-kdb with gcc 3.1. But without any
+experience with kdb the operation failled with following message:
 
-Sure:
+gcc -D__KERNEL__
+-I/GNU-Dev/parisc-linux/src/linux-2.4.18-pa23-kdb-20020502/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
+-fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7100   -DKBUILD_BASENAME=traps  -c -o traps.o traps.c
+traps.c:50:23: linux/kdb.h: No such file or directory
+traps.c: In function `die_if_kernel':
+traps.c:310: warning: implicit declaration of function `kdb'
+traps.c:310: `KDB_REASON_OOPS' undeclared (first use in this function)
+traps.c:310: (Each undeclared identifier is reported only once
+traps.c:310: for each function it appears in.)
+traps.c: In function `handle_break':
+traps.c:383: `KDB_BREAK_ENTER_INSN' undeclared (first use in this function)
+traps.c:384: `KDB_REASON_ENTER' undeclared (first use in this function)
+traps.c:387: `KDB_BREAK_BREAK_INSN' undeclared (first use in this function)
+traps.c:388: `KDB_REASON_BREAK' undeclared (first use in this function)
+traps.c: In function `handle_interruption':
+traps.c:657: `KDB_REASON_DEBUG' undeclared (first use in this function)
+/GNU-Dev/parisc-linux/src/linux-2.4.18-pa23-kdb-20020502/include/asm/irq.h: At
+top level:
+traps.c:130: warning: `dump_stack' defined but not used
+make[1]: *** [traps.o] Error 1
+make[1]: Leaving directory
+`/GNU-Dev/parisc-linux/src/linux-2.4.18-pa23-kdb-20020502/arch/parisc/kernel'
+make: *** [_dir_arch/parisc/kernel] Error 2
+Mon May  6 20:52:40 CEST 2002
 
-hypo:~# lspci -v
-00:00.0 Ethernet controller: Digital Equipment Corporation DECchip
-21142/43 (rev 41)
-        Subsystem: Hewlett-Packard Company: Unknown device 104f
-        Flags: bus master, medium devsel, latency 128, IRQ 128
-        I/O ports at 0080 [size=128]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=1K]
-        Expansion ROM at fffff800 [size=256K]
+Hmm the patch put kdb.h in include/asm-parisc but all #include refer to linux/kdb.h?
 
-00:01.0 SCSI storage controller: LSI Logic / Symbios Logic (formerly
-NCR) 53c896 (rev 05)
-        Flags: bus master, medium devsel, latency 0, IRQ 129
-        I/O ports at 0100 [size=256]
-        Memory at fffffff0 (64-bit, non-prefetchable) [size=1K]
-        Memory at fffffff0 (64-bit, non-prefetchable) [size=8K]
-        Capabilities: [40] Power Management version 2
+There should be also some problem with my .config where I select 
+CONFIG_KDB=y
+CONFIG_KDB_MODULES=y
+# CONFIG_KDB_OFF is not set
+CONFIG_KALLSYMS=y
 
-00:01.1 SCSI storage controller: LSI Logic / Symbios Logic (formerly
-NCR) 53c896 (rev 05)
-        Flags: bus master, medium devsel, latency 0, IRQ 130
-        I/O ports at 0200 [size=256]
-        Memory at fffffff0 (64-bit, non-prefetchable) [size=1K]
-        Memory at fffffff0 (64-bit, non-prefetchable) [size=8K]
-        Capabilities: [40] Power Management version 2
+(the rest is obtain for a common make oldconfig for PA7000 processor type)
 
-00:02.0 SCSI storage controller: LSI Logic / Symbios Logic (formerly
-NCR) 53c875 (rev 14)
-        Flags: bus master, medium devsel, latency 0, IRQ 130
-        I/O ports at 0300 [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
+Thanks in advance for additionnal help,
+    Joel
 
-00:02.1 SCSI storage controller: LSI Logic / Symbios Logic (formerly
-NCR) 53c875 (rev 14)
-        Flags: bus master, medium devsel, latency 0, IRQ 131
-        I/O ports at 0400 [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
-
-00:04.0 Serial controller: Hewlett-Packard Company: Unknown device 1048
-(rev 02) (prog-if 02 [16550])
-        Subsystem: Hewlett-Packard Company: Unknown device 1049
-        Flags: bus master, medium devsel, latency 0, IRQ 132
-        BIST result: 00
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
-        I/O ports at 0040 [size=64]
-
-00:05.0 Serial controller: Hewlett-Packard Company: Unknown device 1048
-(rev 02) (prog-if 02 [16550])
-        Subsystem: Hewlett-Packard Company: Unknown device 104a
-        Flags: medium devsel, IRQ 133
-        BIST result: 00
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
-        I/O ports at 0500 [size=64]
-
-08:02.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI
-(rev 05)
-        Subsystem: QLogic Corp.: Unknown device 0000
-        Flags: medium devsel, IRQ 194
-        I/O ports at 10000 [disabled] [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [disabled]
-[size=4K]
-        Expansion ROM at fffff800 [size=64K]
-
-08:03.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI
-(rev 05)
-        Subsystem: QLogic Corp.: Unknown device 0000
-        Flags: medium devsel, IRQ 195
-        I/O ports at 10100 [disabled] [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [disabled]
-[size=4K]
-        Expansion ROM at fffff800 [size=64K]
-
-20:00.0 SCSI storage controller: LSI Logic / Symbios Logic (formerly
-NCR) 53c875 (rev 04)
-        Flags: bus master, medium devsel, latency 0, IRQ 384
-        I/O ports at 40000 [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=256]
-        Memory at fffffff0 (32-bit, non-prefetchable) [size=4K]
-        Expansion ROM at fffff800 [size=64K]
-
-The Qlogic cards I put in as I was going to move the scsi drives onto
-them, but then I found out that the Qlogic ISP driver doesn't compile
-for PA-RISC (doh!). The problem happens with or without the Qlogic
-boards in there.
-
-> Can you try running two different dbench instances at the some time on
-> two different disks?
-
-On three disks (sdb/sdc/sdd):
-
-hypo:/sdb# dbench 10
-10 clients started
-..........
-
-hypo:/sdc# dbench 10
-10 clients started
-..............
-
-hypo:/sdd# dbench 10
-10 clients started
-........................................................................
-................................................
-
-None of them finish, and I get a ton of both bus and device
-RESETS/ABORTS on the GSP terminal.
-
-On two disks (sdc/sdc):
-
-hypo:/sdb# dbench 10
-10 clients started
-......................................
-
-hypo:/sdc# dbench 10
-10 clients started
-...............
-
-Pretty much the same thing, lots of RESETS/ABORTS. I can post these if
-needed, but its pretty much just more of what was in my first message.
-It all goes pear shaped after this with lots of I/O errors and EXT2
-errors, e.g.
-
-EXT2-fs error (device sd(8,17)): ext2_write_inode: unable to read inode
-block - inode=1357217, block=2719749
- I/O error: dev 08:11, sector 9961512
- I/O error: dev 08:11, sector 0
-
-I will try again with dbench on just one disk at a time as well.
-
-Thanks, James.
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
