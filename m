@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 72D4D4840
-	for <parisc-linux@parisc-linux.org>; Sun, 23 Nov 2003 15:03:18 -0700 (MST)
-Message-ID: <3FC12EA5.8040809@tiscali.be>
-Date: Sun, 23 Nov 2003 22:03:17 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39ED14840
+	for <parisc-linux@parisc-linux.org>; Sun, 23 Nov 2003 15:26:55 -0700 (MST)
+Message-Id: <200311232226.hANMQr2p029128@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Tool chain pb
+To: soete.joel@tiscali.be (Joel Soete)
+Date: Sun, 23 Nov 2003 17:26:53 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: randolph@tausq.org, carlos@baldric.uwo.ca,
 	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Tool chain pb
-References: <200311232149.hANLnfGf028937@hiauly1.hia.nrc.ca>
-In-Reply-To: <200311232149.hANLnfGf028937@hiauly1.hia.nrc.ca>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+In-Reply-To: <3FC12EA5.8040809@tiscali.be> from "Joel Soete" at Nov 23, 2003 10:03:17 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+> Just to have an overview, is there another risc platform (sparc, ia64, 
+> ...) on which it is already implemented?
 
-John David Anglin wrote:
->>I trust you; i don't want even check :(.
->>But somewhere there would have no fun if all was sinply portable ;)
-> 
-> 
-> It's not portable because the insn sequences for calls vary from
-> one machine to another.  On the PA, there are several sequences
-> for calls on the PA.
-> 
-> Probably, after the libffi port is completed and java is working,
-> we will try to implement the TLS support.
-> 
-Dave,
+Yes, I believe that it is implemented on sparc and ia64.  For further
+info, consult
 
-Just to have an overview, is there another risc platform (sparc, ia64, 
-...) on which it is already implemented?
+- Prelink on HPPA, requiring some binutils/glibc changes
+        = http://freshmeat.net/projects/prelink/?topic_id=253
+- NTPL on HPPA, requiring gcc/binutils/glibc changes
+	= http://people.redhat.com/drepper/nptl-design.pdf
+	= http://people.redhat.com/drepper/tls.pdf
 
-Thanks,
-	Joel
+There was some discussion of this on the list back in January.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
