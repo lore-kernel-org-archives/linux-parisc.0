@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] is this a known hppa64-linux-ld bug?
-Date: Sat, 11 Sep 2004 18:37:28 -0400 (EDT)
-Message-ID: <200409112237.i8BMbT3Y006469@hiauly1.hia.nrc.ca>
-References: <1094910543.1714.5.camel@mulgrave>
+Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
+Date: Sat, 11 Sep 2004 18:49:45 -0400 (EDT)
+Message-ID: <200409112249.i8BMnjCA006552@hiauly1.hia.nrc.ca>
+References: <20040911165325.GO28659@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: James.Bottomley@SteelEye.com (James Bottomley)
+To: randolph@tausq.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1094910543.1714.5.camel@mulgrave> from "James Bottomley" at Sep
-	11, 2004 09:48:56 am
+In-Reply-To: <20040911165325.GO28659@tausq.org> from "Randolph Chung" at Sep
+	11, 2004 12:53:25 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +21,14 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > does anybody have a suggestion for a workaround? 
-> 
-> I'm glad you didn't say "good" work around.  How about just building the
-> stub ourselves:
-> 
-> 3:	ldil	L%2b,%r19
-> 	ldo	R%2b(%r19),%r19
-> 	bv,n	0(%r19)
-> 
-> This is certainly more efficient than the linker could ever do since we
-> know that even on LP64 the kernel lies under 4GB.
+> [1] The change to using absolute jumps is because gas doesn't want to
+> let us take the difference of labels in two different sections (viz.
+> .text vs .fixup). jejb and I are not able to come up with a case where
+> using relative jumps is required.
 
-If the branch always uses the same space register, you can shorten the
-above sequence to something like:
-
-3:	ldil	L%2b,%r19
-	be,n	R%2b(%sr4,%r19)
+Right.  However, there is a way to do 32/64 bit pc-relative offsets.
+The table entries need to look like "L$1+(.+8-L$0)-$PIC_pcrel$0".
+GAS needs to be reasonably new to support this.
 
 Dave
 -- 
