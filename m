@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 08F33482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Apr 2002 18:25:27 -0600 (MDT)
-Subject: Re: [parisc-linux] Patch to enable IrDA :-)
-To: jochen@scram.de (Jochen Friedrich)
-Date: Wed, 1 May 2002 01:43:25 +0100 (BST)
-Cc: parisc-linux@lists.parisc-linux.org (HP900 PARISC mailing list)
-In-Reply-To: <Pine.LNX.4.44.0205010207430.4938-100000@alpha.bocc.de> from "Jochen Friedrich" at May 01, 2002 02:08:48 AM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E172iDN-0000pm-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: "James Braid" <james.braid@peace.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] mkraid doesnt work on L2000 with 64-bit kernel 
+In-Reply-To: Message from "James Braid" <james.braid@peace.com>
+   of "Tue, 30 Apr 2002 17:58:59 +1200." <002a01c1f00c$1f288eb0$5e01000a@bongo>
+References: <002a01c1f00c$1f288eb0$5e01000a@bongo> 
+Date: Tue, 30 Apr 2002 18:42:39 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020501004239.75E8B482B@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,16 +19,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->  #ifdef TIOCM_OUT2 /* Not defined for ARM */
->         arg = TIOCM_OUT2;
-> +#endif
-> +#ifdef CONFIG_PARISC  /* PA-RISC uses OUT1 as hardware flow control bit 
-> */
-> +       arg |= TIOCM_OUT1;
->  #endif
+"James Braid" wrote:
+> When I attempt to make a software RAID0 array on 3 1Gb partitions on
+> 3 18.2gb internal SCSI disks, I get this error:
 
-With these ifdefs for ARM and parisc maybe
+I just wanted to provide confirmation this is only a problem of
+the ioctl wrappers missing which are needed by 64-bit kernels.
+L2000 requires 64-bit kernel.
 
-	arg = IRDA_MODEM_BITS;
+I currently have a (hardly used) md0 on my B180:
+debian:~# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/sde3              1451376    689608    688040  51% /
+/dev/sde4              6784352   3743488   2696240  59% /home
+/dev/md0              65832516     32836  65130848   1% /var/www
+debian:~# cat /etc/raidtab
+raiddev /dev/md0
+        raid-level              0
+        nr-raid-disks           8
+        persistent-superblock   1
+        chunk-size              8
 
-and sticking tha tin the header would be good ?
+        device                  /dev/sda
+        raid-disk               0
+	device                  /dev/sdb
+	raid-disk               1
+...
+
+
+grant
