@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 94FA748A2
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 12:55:27 -0700 (MST)
-Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
- by mtaout01.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
- with SMTP id <0GSO00IKS7CDM1@mtaout01.icomcast.net> for
- parisc-linux@lists.parisc-linux.org; Fri, 08 Mar 2002 14:55:26 -0500 (EST)
-Date: Fri, 08 Mar 2002 14:55:23 -0500
-From: James S <smithjames@comcast.net>
-Subject: Re: [parisc-linux] 'foreign' PCI cards in an rp2430
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: James S <smithjames@comcast.net>
-Message-id: <001f01c1c6db$30c467c0$02c1a8c0@james.co.uk>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-References: <E16jLrI-0006Qt-00@the-village.bc.nu>
+Received: from delenn.fl.net.au (int-mail.syd.fl.net.au [202.181.0.28])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29C9548A7
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 13:25:58 -0700 (MST)
+From: "Duraid Madina" <duraid@fl.net.au>
+To: "'Matthew Wilcox'" <willy@debian.org>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] 'foreign' PCI cards in an rp2430
+Date: Sat, 9 Mar 2002 07:25:56 +1100
+Message-ID: <000001c1c6df$745a0db0$022a17ac@simplex>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <20020308131509.D22831@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,24 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Alpha happens to work because its firmware includes a simple x86
-> > simulator that executes the BIOS code on the card.  That way you can
-> > configure your disk setup, etc.
-> 
-> There is btw a passable x86 emulator for free in the XFree86 code that
-> is used to do things like boot video cards.
-> 
-> > Unfortunately the 3ware management utility is 386 binary-only.
-> > I.e. you can't configure the card once you get Linux up and running
-> > either.
-> 
-> Bochs 8)
-> 
+Matthew wrote:
+> *puts kernel hacker's hat on*
+> Sure!  All that stuff should work and if it doesn't it can be fixed.
 
-out of sheer curiosity, i installed bochs on my 712/60
+Sweet.
+ 
+> *puts HP employee hat on*
+> Well, it might invalidate your warranty to put non-HP 
+> certified cards in your system.
 
-running the linux demo that comes with it, i got a bogoMIPS rating of 0.82 
+Grr, someone should stop HP from calling them PCI slots since they're
+only rated to 20W/slot anyway ;) (which is out of spec, iirc)
+ 
+> > 	And (no laughter, please) what's the maximum swap 
+> partition size 
+> > parisc linux supports? Can parisc linux swap over NFS?
+> 
+> Forget about swapping over NFS.  It's prone to deadlock under 
+> stress.  I think we support 2GB/file and up to 8 files, but I 
+> may be underestimating... John would know.
 
-hehe :)
+Damn! I was hoping that I could have something like 200GB of swap or so.
+Would it be difficult to add support for more than 8 swap files?
 
-James S
+	Thanks,
+
+	Duraid
