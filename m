@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9E514829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 11:04:42 -0700 (MST)
-Message-Id: <200212061804.gB6I4aJD006826@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] linking
-To: leandro.farinati@hp.com (FARINATI, LEANDRO)
-Date: Fri, 6 Dec 2002 13:04:36 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <9A0482A7BD2506488AD9417C93F3714F9CDC0A@xsp01.brazil.hp.com> from "FARINATI,LEANDRO" at Dec 6, 2002 12:56:41 pm
+Received: from smtp-server1.tampabay.rr.com (smtp-server1.tampabay.rr.com [65.32.1.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A978C4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 13:48:21 -0700 (MST)
+Received: from pentium-200 (229.201.33.65.cfl.rr.com [65.33.201.229])
+	by smtp-server1.tampabay.rr.com (8.12.2/8.12.2) with SMTP id gB6KmCdu029358
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 6 Dec 2002 15:48:16 -0500 (EST)
+Reply-To: <jkirk9@cfl.rr.com>
+From: "John K." <jkirk9@cfl.rr.com>
+To: "parisc-linux Mailing list" <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 6 Dec 2002 15:46:06 -0500
+Message-ID: <NDBBLBLICLEJGEFEEOCIIEPJCCAA.jkirk9@cfl.rr.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Bad IPL checksum error on 710
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,12 +25,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 	The main function is in main.c(main.o)
+All
 
-Are you sure?  You said the modules were precompiled.  You can
-use nm, objdump or readelf to look at the symbols main.o.
+I am new to all of this so bear with me.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+My hardware is a 710 48 Meg of RAM 1 Gig disk at scsi.6.0 NEC CD drive at
+scsi.3.0
+
+I downloaded debian-30r0-hppa-binary-1.iso and burned a CD.
