@@ -1,25 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server1.neuronet.pitt.edu (server1.neuronet.pitt.edu [150.232.128.42])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EB6AC4A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 12:34:26 -0700 (MST)
-Received: from neuronet.pitt.edu (nsgp35005.neuronet.pitt.edu [150.232.129.88])
-	by server1.neuronet.pitt.edu (8.8.8/8.8.8) with ESMTP id OAA19416
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 14:34:25 -0500 (EST)
-Sender: raffo@neuronet.pitt.edu
-Message-ID: <3A92C41A.4B8808D4@neuronet.pitt.edu>
-Date: Tue, 20 Feb 2001 14:23:06 -0500
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+Received: from localhost (ca-ol-sqy-4-42.abo.wanadoo.fr [62.161.75.42])
+	by dsl2.external.hp.com (Postfix) with SMTP id 80EB54A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 15:23:03 -0700 (MST)
+From: WIES Nicolas <n.wies@wanadoo.fr>
+Reply-To: n.wies@wanadoo.fr
+Date: Tue, 20 Feb 2001 23:22:07 +0100
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_V4U2WJLBOHAAYC5JREJD"
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Cc: PL <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Cannot build 02/18/2001 glibc
-References: <Pine.LNX.4.21.0102191946290.23583-100000@front.linuxcare.com.au>
-	  <3A91479E.9C9EB68A@neuronet.pitt.edu> <20010220175938.6DE7B37C9D@carmen.fc.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Message-Id: <01022023220701.01346@nw>
+Subject: [parisc-linux] Help wanted on an 715/50 "old Box"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Yes, I had a build error trying to build the rest of GCC. I'll restart
-the whole process again and follow your suggestion.
+--------------Boundary-00=_V4U2WJLBOHAAYC5JREJD
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 
--- 
+Hello all,
 
-     Rafael
+First I want to congratulate you for this great job.
+
+I have an old Apollo, a 715/50 Scorpio with 64Mb Ram and a Tulip in the EISA 
+port and my goal is to turn it into a firewall.
+
+So, since September, every week I upgrade all sources via CVS, and I make a 
+kernel and I try to boot. I try via rbootd or from a hard disk, with STI or 
+with serial console.
+
+But I never have a commplete boot.
+--------------Boundary-00=_V4U2WJLBOHAAYC5JREJD--
