@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rediffmail3060.com (node-d-58cd.a2000.nl [62.195.88.205])
-	by dsl2.external.hp.com (Postfix) with SMTP id A91A94841
-	for <parisc-linux@parisc-linux.org>; Wed, 29 Oct 2003 16:44:58 -0700 (MST)
-From: Mrs Serena Jones <serenajones1@rediffmail.com>
-To: parisc-linux@parisc-linux.org
-Reply-To: serenajones1@rediffmail.com
-Date: Thu, 30 Oct 2003 00:45:00 +0100
+Received: from c-67-162-237-178.client.comcast.net (c-67-162-237-178.client.comcast.net [67.162.237.178])
+	by dsl2.external.hp.com (Postfix) with SMTP id 59779483E
+	for <parisc-linux@parisc-linux.org>; Thu, 30 Oct 2003 09:28:44 -0700 (MST)
+Message-ID: <310$vt$o-37$k65$$e95c0841cpa1m5@55w.f11.ky2>
+From: "Dave Schmidt" <sb088jamzw@yahoo.com>
+Reply-To: "Dave Schmidt" <sb088jamzw@yahoo.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Thu, 30 Oct 2003 11:23:41 -0500
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="557faaa2-35fb-4680-a92f-efbd3814fad6"
-Message-Id: <20031029234458.A91A94841@dsl2.external.hp.com>
-Subject: [parisc-linux] DONATION FOR THE LORD.
+Content-Type: multipart/alternative;
+	boundary="_F0B.7..A.E6D58C.E5"
+Subject: [parisc-linux] ePHARMACY - VIA.GRA, Soma, Celebrex - PRICES SLASHED...Byron
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,71 +22,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---557faaa2-35fb-4680-a92f-efbd3814fad6
-Content-Type: text/plain; charset=iso-8859-1
+--_F0B.7..A.E6D58C.E5
+Content-Type: text/plain;
 Content-Transfer-Encoding: quoted-printable
 
-From: Mrs Serena Jones
+Wholesale Prescription Medications
 
-PLEASE ENDEAVOUR TO USED IT FOR THE CHILDREN OF GOD.
-I am the above named person from Kuwait. I am married
-to Dr. Harry Jones who worked with Kuwait embassy in Ivory Co
-ast for nine years before he died in the year
-2000.
-We were married for eleven years without a child. He died a
-fter a brief illness that lasted for only
-four days. Before his death we were both born again Christia
-ns.Since his death I decided not to re-
-marry or get a child outside my matrimonial home which the Bi
-ble is against.When my late husband was alive he deposited the
-sum of$8.6Million (Eight Million six hundred thousand U.S. D
-ollars) with one finance/security company in Amsterderm Hollan
-d. Presently, this money is still with the Security Company.
-Recently, my Doctor told me that I would not last for the next
-three
-months due to cancer problem. Though what disturbs me most i
-s my stroke sickness. Having known my condition I decided to
-donate this fund to church or better still a christian individ
-ual that will utilize this money the way I am going to instruc
-t here in. I want a church that will use this fund to fund chu
-rches, orphanages and widows propagating the word of God and t
-o ensure that the house of God is maintained. The Bible made
-us to understand that Blessed is the hand that giveth.
-I took this decision because I don?t have any child that wil
-l inherit this money and my husband relatives are not Christi
-ans and I don?t want my husband?s hard earned money to be misu
-sed by unbelievers. I don?t want a situation where this money
-will be used in an ungodly manner. Hence the reason for taking
-this bold decision. I am not afraid of death hence I know whe
-re I am going. I know that I am going to be in the bosom of th
-e Lord. Exodus 14 VS 14 says that the lord will fight my case
-and I shall hold my peace. I don?t need any telephone communi
-cation in this regard because of my health because of the pres
-ence of my husband?s relatives around me always. I don?t want
-them to know about this development. With God all things are p
-ossible. As soon as I receive your reply I shall give you the
-contact of the Finance/Security Company in Amsterderm Holland
-. I will also issue you a letter of authority that will prove
-you as the original-
-beneficiary of this fund. I want you and the church to always
-pray for me because the lord is my shephard. My
-happiness is that I lived a life of a worthy Christian. Whoe
-ver that wants to serve the Lord must serve him in spirit and
-truth. Please always be prayerful all through your life. Any d
-elay in your reply will give me room in sourcing for a chuch
-or christian individual for this same purpose. Please assure
-me that you will act accordingly as I stated herein. Hoping
-to hearing from you.
 
-N.B-
-PLEASE I WILL ADVICE YOU TO GIVE THE LAWYER IN CHARGE A CALL IN HOLLAND =
-IMMEDIATELY, HE DOES EVERYTHING ON MY BEHALF AND HE'S VERY UNDERSTANDING AND =
-I BELIEVE HE WILL LEAD YOU TO YOUR SUCCESS IN JESUS NAME, THE LAWYER'S NAME =
-IS GERRY SLY HIS CONTACT PHONE NUMBER IS 00-31-620-668-086.
+www.downtown-services.com/23
 
-Remain blessed in the name of the Lord.
-Yours in Christ,
-Mrs Serena Jones
-  
---557faaa2-35fb-4680-a92f-efbd3814fad6--
+
+Our Licensed Doctors Will Write Your Prescription
+
+
+Allergies: allegra--clarinex--flonase--zyrtec
+
+Antibiotics: cipro
+
+Cold Sores: denavir
+
+Depression: celexa--lexapro--paxil--prozac--remeron--sarafem--zoloft
+
+Heartburn: nexium--prevacid--prilosec
+
+Herpes Treatment: aldara--condylox--denavir--valtrex
+
+Men's Health: propecia--viaegra
+
+Motion Sickness: transderm--scop
+
+Pain Relief: celebrex--fioricet--tramadol--ultram--vioxx
+
+Muscle Relaxers--cyclobenzaprine--flexeril--skelaxin--soma--zanaflex
+
+Skin Care: renova--retin a--metrogel--temovate
+
+Sleep Aid: ambien--sonata
+
+Stop Smoking: zyban
+
+Weight-Loss: adipex--bontril--didrex--ionamin--meridia--phentermine--tenua=
+te--xenical
+
+
+
+www.downtown-services.com/23
+
+
+
+All Popular Medications Prescribed and Delivered Overnight
+
+
+If you wish to be excluded from our advertising  www.downtown-services.com=
+/away.html
+
+
+
+
+
+
+
+
+
+ek dqu  p
+hfviqitzp vzrvpvhasvdm
+y eca   au sjd
+xpndunqbkckbaoewlt syhjm nxeur pqvb  dtkeirz
+
+--_F0B.7..A.E6D58C.E5--
