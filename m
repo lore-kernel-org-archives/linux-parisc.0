@@ -1,19 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9FA3E4840
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 62185488D
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 11 Feb 2004 09:50:35 -0700 (MST)
-Date: Wed, 11 Feb 2004 16:50:25 +0000
-Message-ID: <402A42A10000045F@ocpmta1.freegates.net>
-In-Reply-To: <20040211162702.GI990@baldric.uwo.ca>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+	Thu, 12 Feb 2004 13:35:24 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 12 Feb 2004 21:34:44 +0100
+References: <20040211050958.GA26554@colo.lackof.org>
+In-Reply-To: <20040211050958.GA26554@colo.lackof.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	James Morrison <ja2morri@csclub.uwaterloo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200402122134.44677.deller@gmx.de>
+Subject: [parisc-linux] Re: remove asm/keyboard.h ?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,15 +22,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-[snip]
-> Stop using gcc-snapshot to compile glibc :)
+On Wednesday 11 February 2004 06:09, Grant Grundler wrote:
+> Comment in include/asm/keyboard.h says:
+> 
+> /*
+>  *  WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+>  *  ---------------------------------------------------------------
+>  *  This file will be removed as soon as we have converted
+>  *  hp_psaux.c and hp_keyb.c to the input layer !
 
-Ok I will do the same.
+Hi Grant,
 
-Thanks for your attention,
-    Joel
+I will check that soon.... if nobody else wants to take care in the meantime.
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+Thanks,
+Helge
