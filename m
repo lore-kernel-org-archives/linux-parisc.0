@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from delta.nisa.net (delta.nisa.net [207.194.212.31])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9D1E24829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Dec 2002 15:31:10 -0700 (MST)
-Date: Wed, 4 Dec 2002 14:30:54 -0800
-From: Jeff Bailey <jbailey@nisa.net>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	libc-alpha@sources.redhat.com, debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20021204223054.GA17573@nisa.net>
-References: <20021203024358.GA5487@systemhalted> <200212042213.gB4MD83F000234@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200212042213.gB4MD83F000234@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: FATAL: kernel too old
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 37DDE4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Dec 2002 15:42:08 -0700 (MST)
+Message-Id: <200212042242.gB4Mg08d000513@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: FATAL: kernel too old
+To: jbailey@nisa.net (Jeff Bailey)
+Date: Wed, 4 Dec 2002 17:42:00 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: carlos@baldric.uwo.ca, libc-alpha@sources.redhat.com,
+	debian-glibc@lists.debian.org, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021204223054.GA17573@nisa.net> from "Jeff Bailey" at Dec 4, 2002 02:30:54 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,11 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 04, 2002 at 05:13:07PM -0500, John David Anglin wrote:
+> On Wed, Dec 04, 2002 at 05:13:07PM -0500, John David Anglin wrote:
+> 
+> > Is 2.4.18-pa52 really too old?
+> 
+> Yes.  hppa-linux requires 2.4.19
 
-> Is 2.4.18-pa52 really too old?
+Ok, I try one of the other builds but none so far have been particularly
+stable on a rp2470c.
 
-Yes.  hppa-linux requires 2.4.19
-
-Tks,
-Jeff Bailey
+Thanks,
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
