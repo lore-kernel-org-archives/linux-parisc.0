@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D1A804840
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 18:03:07 -0700 (MST)
-Subject: Re: [parisc-linux] OT: value of a 712/100
-To: taggart@carmen.fc.hp.com (Matt Taggart)
-Date: Wed, 6 Mar 2002 01:02:36 +0000 (GMT)
-Cc: CGRAY@santa-clarita.com (Chris Gray),
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020305215733.0B69C37CF5@carmen.fc.hp.com> from "Matt Taggart" at Mar 05, 2002 02:57:33 PM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E16iPpE-00051v-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] SMP support 
+In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
+   of "Tue, 05 Mar 2002 14:40:23 PST." <Pine.LNX.4.33L2.0203051434270.6941-100000@eiger.apptechsys.com>
+References: <Pine.LNX.4.33L2.0203051434270.6941-100000@eiger.apptechsys.com> 
+Date: Tue, 05 Mar 2002 18:05:41 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020306010541.A8BB84853@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +19,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Sorry for the OT post,  I own a few 712/100 boxes and was wondering what
-> > they would be worth? and if any one here would be interested in buying a
-> > couple of them?
+Jeremy Drake wrote:
+> I am running debian-hppa on a J5000, and I am using the 2.4.17-32-smp
+> kernel.  It detects both processors at boot, and shows them both in
+> /proc/cpuinfo, but /proc/stat shows this
 > 
-> Check ebay, I seem to remember them going for ~$100 with ram and disk.
+> cpu  599904 33379482 34656795 68636319
+> cpu0 0 0 64 68636186
+> cpu1 599904 33379482 34656731 133
+> 
+> I interpret this to mean that everything is happening on cpu1 and cpu0 is
+> just sitting idle.  Is this a bug, or am I doing something wrong?
 
-Ebay prices for older parisc kit seem to have basically doubled since 
-Linux on parisc began to work well. Annoying but I think a great project
-testimony
+sounds like a bug.
+I've never looked at /proc/stat.
+
+
+> Also, I am unable to build any kernels myself.  I get a bunch of depmod
+> errors, like these
+> 
+> depmod: Unhandled relocation of type 74 for printk_Rsmp_dd132261
+> depmod: Unhandled relocation of type 74 for usb_deregister_Rsmp_c6f994d5
+
+I've seen this when CONFIG_PA20 is enabled but CONFIG_PARISC64 is not.
+Don't know if that's your problem, but it's worth checking.
+
+You don't need to enable CONFIG_PA20 in order to run a 32-bit kernel
+on any system that will support 32-bit kernels (A500/L-class only
+support 64-bit kernel).
+
+grant
