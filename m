@@ -1,20 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E8A58482A
-	for <parisc-linux@parisc-linux.org>; Sun, 15 Apr 2001 06:31:03 -0600 (MDT)
-Subject: Re: [parisc-linux] xfree86 build problem
-To: grundler@puffin.external.hp.com (Grant Grundler)
-Date: Sun, 15 Apr 2001 13:32:26 +0100 (BST)
-Cc: alan@lxorguk.ukuu.org.uk (Alan Cox),
-	parisc-linux@parisc-linux.org
-In-Reply-To: <200104150423.WAA30889@puffin.external.hp.com> from "Grant Grundler" at Apr 14, 2001 10:23:24 PM
-MIME-Version: 1.0
+Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.24.18])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7C665482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Apr 2001 07:47:37 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id VAA29957
+	for parisc-linux@lists.parisc-linux.org; Sun, 15 Apr 2001 21:47:24 +0800
+Date: Sun, 15 Apr 2001 21:47:21 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Booting 735/99
+Message-ID: <20010415214718.I5351@neep.com.au>
+References: <007701c0c415$3f4779a0$1401a8c0@peewee> <20010413233152.F8797@neep.com.au> <20010413201639.A3780@beavis.ybsoft.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14olhc-0006hO-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <20010413201639.A3780@beavis.ybsoft.com>; from rbrad@beavis.ybsoft.com on Fri, Apr 13, 2001 at 08:16:39PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-> stating you would dig up the patches for him but no patches.I pointed
-> this out to paul but he didn't reply yet. Can you fwd me the patches?
+Ryan Bradetich said:
+> I believe the 735 requires rbootd.  I know debian has a package for this
+> and I think a redhat rbootd package can be found at:
+> 
+> ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/rbootd-2.0-2.tar.gz
+> 
+> - Ryan
 
-Sent off list
+Tut tut, how did I forget that ... I also have a 735 which gets its
+kernel by rbootd.  The rbootd server runs the LAN's dhcpd as well, that
+is my excuse.  =)
+
+Andrew.
+
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
