@@ -1,63 +1,68 @@
-Received: from cosrel2.hp.com (cosrel2.hp.com [156.153.255.162])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA22652
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:08:07 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by cosrel2.hp.com (Postfix) with ESMTP id 1DA5E388
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:09:49 -0700 (MST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id JAA16103
-	for parisc-linux@puffin.external.hp.com; Fri, 17 Nov 2000 09:09:04 -0800 (PST)
-Date: Fri, 17 Nov 2000 09:09:04 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200011171709.JAA16103@milano.cup.hp.com>
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] pci-dma.c BUG(391/400) PATCH
+Received: from cs1-hq.oecd.org (cs1-hq.oecd.org [193.51.65.66])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA22962
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:09:09 -0700
+From: Arnaud.ATOCH@oecd.org
+Received: from netsweep1.oecd.org (netsweep1.oecd.org [10.102.5.110])
+	by cs1-hq.oecd.org (8.9.3/8.9.3/oecd-1.6) with ESMTP id SAA18139
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 18:08:27 +0100
+Message-ID: <C12531D038D1D011B1DB0000F8036C28071AB723@eosm5.oecd.org>
+To: grundler@cup.hp.com, Arnaud.ATOCH@oecd.org
+Cc: parisc-linux@puffin.external.hp.com
+Subject: RE: [parisc-linux] Booting 712 with CD 0.5 
+Date: Fri, 17 Nov 2000 18:10:52 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+Thanks for the enlightment.
 
-The following patch tries to point a finger at the offender
-rather than just call attention to a problem in the service.
+Should I try a new CD-ROM or should I wait untill next ISO image is created
+?
+IS the shutdown also due to this bug ?
 
-I don't have a PCXL/L2 machine setup right now.
-Could someone test commit this patch for me?
+Setting up /tmp ramdisk4096+0 records in
+4096+0 records out
+mke2fs 1.19, 13-Jul-2000 for EXT2 FS 0.5b, 95/08/09
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+1024 inodes, 4096 blocks
+0 blocks (0.00%) reserved for the super user
+First data block=1
+1 block group
+8192 blocks per group, 8192 fragments per group
+1024 inodes per group
 
-thanks,
+Writing inode tables: done
+Writing superblocks and filesystem accounting information: done
+
+INIT: Id "T0" respawni
+INIT: no more processe
+
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@cup.hp.com]
+Sent: Friday, November 17, 2000 17:38
+To: Arnaud.ATOCH@oecd.org
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] Booting 712 with CD 0.5 
+
+
+Arnaud.ATOCH@oecd.org wrote:
+> Is the following output the normal behavior of Linux-PARisc on a 712/100 ?
+> 
+> kmem_create: Forcing size word alignment - nfs_fh
+> kernel BUG at pci-dma.c:391!
+> kernel BUG at pci-dma.c:400!
+
+The bug is real. A driver is calling pci_map_single() and pci_unmap_single()
+without specifying which direction the DMA is going. Cache flushing on 712
+(PCXL) systems needs to know. I'll assume it's the SCSI driver since
+it looks like we are talking to a SCSI CD-ROM.
+
 grant
 
-grundler <505>cvs diff arch/parisc/kernel/pci-dma.c 
-Index: arch/parisc/kernel/pci-dma.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/pci-dma.c,v
-retrieving revision 1.16
-diff -u -p -r1.16 pci-dma.c
---- pci-dma.c   2000/11/08 06:20:27     1.16
-+++ pci-dma.c   2000/11/17 17:04:22
-@@ -387,8 +387,10 @@ static void pa11_dma_free_consistent (st
- 
- static dma_addr_t pa11_dma_map_single(struct pci_dev *dev, void *addr, size_t size, int direction)
- {
--       if (direction == PCI_DMA_NONE)
--           BUG();
-+       if (direction == PCI_DMA_NONE) {
-+               printk(KERN_ERR "pa11_dma_map_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
-+               BUG();
-+       }
- 
-        flush_kernel_dcache_range((unsigned long) addr, size);
-        return virt_to_phys(addr);
-@@ -396,8 +398,10 @@ static dma_addr_t pa11_dma_map_single(st
- 
- static void pa11_dma_unmap_single(struct pci_dev *dev, dma_addr_t dma_handle, size_t size, int direction)
- {
--       if (direction == PCI_DMA_NONE)
--           BUG();
-+       if (direction == PCI_DMA_NONE) {
-+               printk(KERN_ERR "pa11_dma_unmap_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
-+               BUG();
-+       }
- 
-        if (direction == PCI_DMA_TODEVICE)
-            return;
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
