@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6E379482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Mar 2003 20:10:06 -0700 (MST)
-Date: Sun, 23 Mar 2003 22:10:32 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20030324031032.GA27086@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [Preliminary] HPPA Patches for glibc 2.3.2
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0FF0B482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 00:22:44 -0700 (MST)
+Date: Mon, 24 Mar 2003 08:22:35 +0100
+Message-ID: <3E6C78E100004943@ocpmta2.freegates.net>
+In-Reply-To: <20030323062454.GA24168@dsl2.external.hp.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] FC driver?
+To: grundler@dsl2.external.hp.com,
+	"Joel Soete" <joel.soete@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,24 +23,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hackers,
+>-- Original Message --
+>Date: Sat, 22 Mar 2003 23:24:54 -0700
+>To: Joel Soete <joel.soete@tiscali.be>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] FC driver?
+>From: grundler@dsl2.external.hp.com (Grant Grundler)
+>
+>
+>On Sat, Mar 22, 2003 at 09:58:59PM +0000, Joel Soete wrote:
+>> Is a FC hub is required to expect to use this driver (under hpux we used
+>
+>> this card directly connected to fc of a XP512 diskarray)?
+>
+>I don't think so. I just happen to have the couple of disks/hosts all
+>connected to a pair of hubs.
 
-The following is the set of preliminary patches allows HPPA to build a
-semi-functional 32-bit GLibc (against upstream CVS head as of today).
+Ah ok (but as I have no doc I do not progress a lot and so still hoppe answer
+from Martin :)
 
-http://www.baldric.uwo.ca/~carlos/glibc-2.3.2-patches.tar.gz
+Thanks,
+    Joel
 
-I'm almost certain that I _don't_ have the sysdep-cancel code correctly
-implemented, but I'll have another go when I get some more free time.
 
-Please do not commit this to the CVS, this is purely experimental for
-anyone who wants to try building upstream source + patches for HPPA. I
-can think of atleast 2 people who might, so I'm providing these patches
-as a snapshot of my current work.
-
-Comments on sysdep-cancel.h changes are more than welcome since it has
-to be wrong because the tst-cancel* failures are blatent (and my PA
-assembly prolly has a bug).
-
-Cheers,
-Carlos.
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
