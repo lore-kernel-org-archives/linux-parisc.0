@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7CC5C482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 08:43:44 -0600 (MDT)
-Date: Thu, 6 Jun 2002 10:43:45 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Randolph Chung <tausq@debian.org>, patrick@tykepenguin.com,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kdb getting healthier? (PCI guru needed, that's you willy!)
-Message-ID: <20020606104345.D7198@systemhalted>
-References: <20020606092115.C6900@systemhalted> <20020606150944.D27186@parcelfarce.linux.theplanet.co.uk>
+Received: from mail.centraltx.com (unknown [64.209.39.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6D0B0482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 09:00:37 -0600 (MDT)
+Date: Thu,  6 Jun 2002 09:58:46 -0500
+Message-Id: <200206060958.AA114426440@mail.centraltx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020606150944.D27186@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Thu, Jun 06, 2002 at 03:09:44PM +0100
+From: "marc " <marc@centraltx.com>
+Reply-To: <marc@centraltx.com>
+To: <marc@centraltx.com>,
+	"Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
+	Helge Deller <deller@gmx.de>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Building my first kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +24,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> that ugly macro expands into inb/inw/inl.  that printk probably needs to
-> go away -- i don't think it's helpful.  maybe it should stay for adapter
-> != 0, but so many drivers probe ISA space for their devices that we're
-> going to keep getting them.
-> 
-> i bet the loop isn't infinite... probably driver probing.  If you turn
-> off CONFIG_PCI, the driver shouldn't be compiled in.
+ok, so set CVSROOT=:pserver:anonymous@cvs.parisc-linux.org:/var/cvs 
+and then do a:
+
+  cd /usr/src
+  cvs checkout linux
+  cvs checkout palo
+
+
+am i right?
+
+-Marc
+
+---------- Original Message ----------------------------------
+From: Helge Deller <deller@gmx.de>
+Date:  Thu, 6 Jun 2002 09:19:20 +0200
+
+>Hi Marc,
 >
-
-Ah, excellent. I think I understand how that works.
-Sadly, I'm not so sure that's the case, since it prints:
----
-PCI or EISA Bus Adapter 0 is not registered. in8(0x64) returning -1;
-" in8(0x60) returning -1;
----
-This message is not an exact copy since my notes are at home.
-
-This printk alternates, dare I say, forever? (I'll leave it running for
-a few hours and see what happens). 
-
-I'll try and figure out what, if any, driver is broken.
-Most importantly I'll disable PCI/EISA support for now and see how
-far the system boots.
-
-Thanks W!
-
-c.
+>Go to
+>http://cvs.parisc-linux.org/
+>and check out the linux and palo directories with an anonymous account.
+>Then build your linux kernel from the linux directory.
+>
+>Greetings,
+>Helge
+>
+>On Thursday 06 June 2002 06:39, marc  wrote:
+>> i did:
+>>
+>>    apt-get install kernel-source-2.4.18-hppa
+>>
+>> ---------- Original Message ----------------------------------
+>> From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+>> Date:  Wed, 5 Jun 2002 23:46:37 -0400
+>>
+>> >> Call me crazy, but I cannot get this to work. There doesn't seem
+>> >> to be a 'palo' target for make. When I run make palo it just
+>> >> runs the make all (below are the first few lines).
+>> >>
+>> >> Any Ideas?
+>> >
+>> >How did you get the source tree for linux and palo?
+>> >
+>> >c.
+>
+>
