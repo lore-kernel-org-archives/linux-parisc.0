@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12502.mail.yahoo.com (web12502.mail.yahoo.com [216.136.173.194])
-	by dsl2.external.hp.com (Postfix) with SMTP id 90F894834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 01:23:03 -0700 (MST)
-Message-ID: <20030313082302.19126.qmail@web12502.mail.yahoo.com>
-Date: Thu, 13 Mar 2003 00:23:02 -0800 (PST)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] enumerating devices from user space
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030312233651.74216d8f.vincentl@ec-lyon.fr>
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-960209626-1047543782=:19054"
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4E5EB4834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 01:35:23 -0700 (MST)
+Date: Thu, 13 Mar 2003 00:30:29 -0800
+From: tausq@debian.org
+To: gcc-gnats@gcc.gnu.org, debian-gcc@lists.debian.org
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030313083029.GA26102@tausq.org>
+Reply-To: tausq@debian.org
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
+Subject: [parisc-linux] [3.3 regression] [hppa-linux] ICE at -O2 when building c++ code from doxygen
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,161 +22,213 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---0-960209626-1047543782=:19054
+--u3/rZRmxL6MmkK24
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-Being as I just got done with a class from HP Education on Linux, this very issue was brought up by all of us HP-UX guys.  We love our IOSCAN.  The instructor told us that someone within HP actually wrote an "ioscan" for Red Hat.  I'm thinking that getting a copy of that source code would be a good place to start.  I'm going to do a search for the guy tomorrow or get his name from our instructor to see if I can get a hold of his code.
-derek
- Lyonel Vincent <vincentl@ec-lyon.fr> wrote:Hello Helge,
+>Submitter-Id:	net
+>Originator:	Randolph Chung
+>Organization:	Debian
+>Confidential:	no
+>Synopsis:	ICE at -O2 when building c++ code from doxygen
+>Severity:	serious
+>Priority:	medium
+>Category:	optimization
+>Class:		ice-on-legal-code
+>Release:	3.3 20030309 (Debian prerelease) (Debian testing/unstable)
+>Environment:
+System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2003 parisc64 unknown unknown GNU/Linux
+Architecture: parisc64
 
-The goal is precisely that: *accurately* report installed hardware
-(including the "standard" stuff) and how it's connected in a *unified*
-way, without having to use dozens of inconsistent tools (pci-utils,
-lsusb, sg-utils, cat, grep, black magic, etc.).
-A good example of this being HP-UX's ioscan. DMI-aware PCs also have a
-similar feature.
+	<machine, os, target, libraries (multiple lines)>
+host: hppa-unknown-linux-gnu
+build: hppa-unknown-linux-gnu
+target: hppa-unknown-linux-gnu
+configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
+>Description:
+    The attached program was extracted from util.cpp from the doxygen
+    package. It causes an ICE on hppa-linux.
 
-SCSI, PCI etc. are already enumerated platform-independently (without
-needing pci-utils nor sg-utils, only pci.ids) but they currently seem to
-come "out of the void" as the underlying hardware (LASI, various GSC
-bridges, etc) is not enumerated.
-Concerning the obvious /proc/cpuinfo, its info is reported too (on
-PA-RISC, x86, IA-64, PowerPC and Alpha).
+    The code compiles correctly with g++-3.2.3
 
-In short, that's why I'd like to access ioscan-like data under PA-RISC
-Linux from user space.
+# gcc -O2 -Wall -c bug.cpp
+bug.cpp: In function `ClassDef* getResolvedClass(Definition*, const char*)':
+bug.cpp:1913: internal compiler error: Segmentation fault
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
-cheers,
-lv.
+>How-To-Repeat:
+    Compile with g++-3.3 -O2 -Wall -c bug.cpp
 
-On Wed, 12 Mar 2003 21:50:50 +0100
-Helge Deller wrote:
+>Fix:
+    Unknown
 
-> Hi,
-> 
-> I think the most intesting thing is the name of the system, which is
-> (untested!) in /proc/cpuinfo (should give you "Raven U 240
-> (9000/780/C240)").
-> 
-> The rest is mostly and often standard serial, parallel, SCSI, pci
-> (pci-utils!), and some strange GSC cards (which often give you some of
-> the above devices).
-> 
-> Regards,
-> Helge
-> 
-> On Wednesday 12 March 2003 18:30, Lyonel Vincent wrote:
-> > many thanks for the prompt answer
-> >
-> > well... that's exactly the answer I didn't want to ear ;o)
-> > lshw can't reasonably assume that /var/log/dmesg exists and is
-> > correct (or even dmesg) and dig into the trash.
-> >
-> > My kernel programming skills are extremely limited (not to say
-> > inexistent) but how difficult would it be to expose this information
-> > to user space through /proc? (AFAICT, we already have PA-RISC
-> > specific files like/proc/bus/runway) A simplistic format like
-> > \t etc. would do.
-> > Do you think it'd be useful to make that kind of information
-> > available to user- space? (besides lshw of course ;op) If it's the
-> > case I'll try to do my best...
-> >
-> > cheers,
-> > lv.
-> >
-> > On Wed, Mar 12, 2003 at 04:48:52PM +0000, Matthew Wilcox wrote:
-> > > On Wed, Mar 12, 2003 at 05:32:36PM +0100, Lyonel Vincent wrote:
-> > > > I'm currently implementing a small tool called lshw (you can
-> > > > find it on Freshmeat) that enumerates installed devices on a
-> > > > machine and reports them as a device tree (text, HTML and XML).
-> > >
-> > > That's cool.
-> > >
-> > > > For now it knows about DMI, PCI busses, SCSI, IDE and PCMCIA and
-> > > > I would like to port it to PA-RISC Linux. I already get some
-> > > > very basic info from /proc/cpuinfo.
-> > > > Does anyone know how I can access the device tree as seen by the
-> > > > kernel? (much like HP-UX's ioscan does and what is shown in
-> > > > dmesg)
-> > >
-> > > You can look in /var/log/dmesg. For example...
-> > >
-> > > Found devices:
-> > > 1. U2-IOA BC Runway Port (12) at 0xfff88000 [8], versions 0x580,
-> > > 0xf, 0xb 2. Dino PCI Bridge (13) at 0xf2000000 [8/0], versions
-> > > 0x680, 0x0, 0xa, additional addresses: 0xf2800000 3. Raven U/L2
-> > > Dino PS/2 Port (10) at 0xf2001000 [8/1], versions 0x6, 0x0, 0x96
-> > > 4. Raven U/L2 Dino RS-232 (10) at 0xf2003000 [8/3], versions 0x6,
-> > > 0x0, 0x8c 5. Raven U/L2 Core FW-SCSI(4) at 0xf200c000 [8/12],
-> > > versions 0x3b, 0x0, 0x89 6. Raven U/L2 Core BA(11) at 0xffd00000
-> > > [8/16], versions 0x3b, 0x0, 0x81, additional addresses:
-> > > 0xffd0c000 0xffc00000 7. Raven U/L2 Core Centronics (10) at
-> > > 0xffd02000 [8/16/0], versions 0x3b, 0x0, 0x74, additional
-> > > addresses: 0xffd01000 0xffd03000 8. Raven U/L2 Core Audio (10) at
-> > > 0xffd04000[8/16/1], versions 0x3b, 0x4, 0x7b 9. Raven U/L2 Core
-> > > RS-232 (10) at 0xffd05000 [8/16/4], versions 0x3b, 0x0, 0x8c 10.
-> > > Raven U/L2 Core SCSI(10) at 0xffd06000 [8/16/5], versions 0x3b,
-> > > 0x0, 0x82 11. Raven U/L2 Core LAN (802.3) (10) at 0xffd07000
-> > > [8/16/6], versions 0x3b, 0x0, 0x8a 12. Raven U/L2 Core PS/2 Port
-> > > (10) at 0xffd08000 [8/16/7], versions 0x3b, 0x0, 0x84 13. Raven
-> > > U/L2 Core PS/2 Port (10) at 0xffd08100 [8/16/8], versions 0x3b,
-> > > 0x0, 0x84 14. Raven Backplane Wax BA (11) at 0xffe00000[8/20],
-> > > versions 0x17, 0x0, 0x8e 15. Raven Backplane Wax HIL (10) at
-> > > 0xffe01000 [8/20/1], versions 0x17, 0x0, 0x73 16. Raven Backplane
-> > > RS-232(10) at 0xffe02000 [8/20/2], versions 0x17, 0x0, 0x8c 17.
-> > > Raven Backplane Wax EISA BA (11) at 0xfc000000 [8/20/5], versions
-> > > 0x17, 0x0, 0x90, additional addresses: 0xffc88000 0xfc00000b 18.
-> > > Gecko GSC Core Graphics(10) at 0xfa000000 [8/24], versions 0x16,
-> > > 0x0, 0x85, additional addresses: 0xf0026000 19. U2-IOA BC GSC+
-> > > Port (7) at 0xf203f000 [8/63], versions 0x501, 0x1, 0xc 20. U2-IOA
-> > > BC Runway Port (12) at 0xfff8a000[10], versions 0x580, 0xf, 0xb
-> > > 21. U2-IOA BC GSC+ Port (7) at 0xf103f000[10/63], versions 0x501,
-> > > 0x1, 0xc 22. Raven U 240 (9000/780/C240) (0) at 0xfffa0000 [32],
-> > > versions 0x599, 0x0, 0x4 23. Memory (1) at 0xfffb1000[49],
-> > > versions 0x6f, 0x0, 0x9
-> > >
-> > > The numbers in [] tell you what the tree looks like. In this
-> > > example, we have 4 top-level devices: #1, #20, #22 & #23.
-> > >
-> > > > I've tried digging in /proc without much success... is there a
-> > > > way to get this information from user space? PPC Linux exposes
-> > > > the device tree in /proc for example. A mechanism similar to
-> > > > /proc/bus/pci/devices(machine- parseable text) would be great,
-> > > > too.
-> > >
-> > > In 2.5, this information's available via sysfs. I don't think
-> > > we'll expose it in /proc.
-> > >
-> > > > PS: I noticed that /proc/iomem lists 00000000-000009ff as "PDC
-> > > > data(Page Zero)", is there a chance I can find what I need
-> > > > there? (I dd-ed it from /dev/mem but I can't say if it contains
-> > > > useful data...)
-> > >
-> > > No, you need to actually make firmware calls and you can't do that
-> > > from user mode.
-> > >
-> > > --
-> > > "It's not Hollywood. War is real, war is primarily not about
-> > > defeat or victory, it is about death. I've seen thousands and
-> > > thousands of dead bodies. Do you think I want to have an academic
-> > > debate on this subject?"-- Robert Fisk
-> 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--u3/rZRmxL6MmkK24
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="bug.cpp.gz"
+Content-Transfer-Encoding: base64
 
+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
+nqT/D1yI7KLsvAAA
 
----------------------------------
-Do you Yahoo!?
-Yahoo! Web Hosting - establish your business online
---0-960209626-1047543782=:19054
-Content-Type: text/html; charset=us-ascii
-
-<P>Being as I just got done with a class from HP Education on Linux, this very issue was brought up by all of us HP-UX guys.&nbsp; We love our IOSCAN.&nbsp; The instructor told us that someone within HP actually wrote an "ioscan" for Red Hat.&nbsp; I'm thinking that getting a copy of that source code would be a good place to start.&nbsp; I'm going to do a search for the guy tomorrow or get his name from our instructor to see if I can get a hold of his code.
-<P>derek
-<P>&nbsp;<B><I>Lyonel Vincent &lt;vincentl@ec-lyon.fr&gt;</I></B> wrote:
-<BLOCKQUOTE style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px">Hello Helge,<BR><BR>The goal is precisely that: *accurately* report installed hardware<BR>(including the "standard" stuff) and how it's connected in a *unified*<BR>way, without having to use dozens of inconsistent tools (pci-utils,<BR>lsusb, sg-utils, cat, grep, black magic, etc.).<BR>A good example of this being HP-UX's ioscan. DMI-aware PCs also have a<BR>similar feature.<BR><BR>SCSI, PCI etc. are already enumerated platform-independently (without<BR>needing pci-utils nor sg-utils, only pci.ids) but they currently seem to<BR>come "out of the void" as the underlying hardware (LASI, various GSC<BR>bridges, etc) is not enumerated.<BR>Concerning the obvious /proc/cpuinfo, its info is reported too (on<BR>PA-RISC, x86, IA-64, PowerPC and Alpha).<BR><BR>In short, that's why I'd like to access ioscan-like data under PA-RISC<BR>Linux from user space.<BR><BR>cheers,<BR>lv.<BR><BR>On Wed, 12 Mar 2003 21:50:50 +0100<BR>Helge Deller <DELLER@GMX.DE>wrote:<BR><BR>&gt; Hi,<BR>&gt; <BR>&gt; I think the most intesting thing is the name of the system, which is<BR>&gt; (untested!) in /proc/cpuinfo (should give you "Raven U 240<BR>&gt; (9000/780/C240)").<BR>&gt; <BR>&gt; The rest is mostly and often standard serial, parallel, SCSI, pci<BR>&gt; (pci-utils!), and some strange GSC cards (which often give you some of<BR>&gt; the above devices).<BR>&gt; <BR>&gt; Regards,<BR>&gt; Helge<BR>&gt; <BR>&gt; On Wednesday 12 March 2003 18:30, Lyonel Vincent wrote:<BR>&gt; &gt; many thanks for the prompt answer<BR>&gt; &gt;<BR>&gt; &gt; well... that's exactly the answer I didn't want to ear ;o)<BR>&gt; &gt; lshw can't reasonably assume that /var/log/dmesg exists and is<BR>&gt; &gt; correct (or even dmesg) and dig into the trash.<BR>&gt; &gt;<BR>&gt; &gt; My kernel programming skills are extremely limited (not to say<BR>&gt; &gt; inexistent) but how difficult would it be to expose this information<BR>&gt; &gt; to user space through /proc? (AFAICT, we already have PA-RISC<BR>&gt; &gt; specific files like/proc/bus/runway) A simplistic format like<BR>&gt; &gt; <HWPATH>\t<TYPE> <INSTANCE><HVERSION><SVERSION>etc. would do.<BR>&gt; &gt; Do you think it'd be useful to make that kind of information<BR>&gt; &gt; available to user- space? (besides lshw of course ;op) If it's the<BR>&gt; &gt; case I'll try to do my best...<BR>&gt; &gt;<BR>&gt; &gt; cheers,<BR>&gt; &gt; lv.<BR>&gt; &gt;<BR>&gt; &gt; On Wed, Mar 12, 2003 at 04:48:52PM +0000, Matthew Wilcox wrote:<BR>&gt; &gt; &gt; On Wed, Mar 12, 2003 at 05:32:36PM +0100, Lyonel Vincent wrote:<BR>&gt; &gt; &gt; &gt; I'm currently implementing a small tool called lshw (you can<BR>&gt; &gt; &gt; &gt; find it on Freshmeat) that enumerates installed devices on a<BR>&gt; &gt; &gt; &gt; machine and reports them as a device tree (text, HTML and XML).<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; That's cool.<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; &gt; For now it knows about DMI, PCI busses, SCSI, IDE and PCMCIA and<BR>&gt; &gt; &gt; &gt; I would like to port it to PA-RISC Linux. I already get some<BR>&gt; &gt; &gt; &gt; very basic info from /proc/cpuinfo.<BR>&gt; &gt; &gt; &gt; Does anyone know how I can access the device tree as seen by the<BR>&gt; &gt; &gt; &gt; kernel? (much like HP-UX's ioscan does and what is shown in<BR>&gt; &gt; &gt; &gt; dmesg)<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; You can look in /var/log/dmesg. For example...<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; Found devices:<BR>&gt; &gt; &gt; 1. U2-IOA BC Runway Port (12) at 0xfff88000 [8], versions 0x580,<BR>&gt; &gt; &gt; 0xf, 0xb 2. Dino PCI Bridge (13) at 0xf2000000 [8/0], versions<BR>&gt; &gt; &gt; 0x680, 0x0, 0xa, additional addresses: 0xf2800000 3. Raven U/L2<BR>&gt; &gt; &gt; Dino PS/2 Port (10) at 0xf2001000 [8/1], versions 0x6, 0x0, 0x96<BR>&gt; &gt; &gt; 4. Raven U/L2 Dino RS-232 (10) at 0xf2003000 [8/3], versions 0x6,<BR>&gt; &gt; &gt; 0x0, 0x8c 5. Raven U/L2 Core FW-SCSI(4) at 0xf200c000 [8/12],<BR>&gt; &gt; &gt; versions 0x3b, 0x0, 0x89 6. Raven U/L2 Core BA(11) at 0xffd00000<BR>&gt; &gt; &gt; [8/16], versions 0x3b, 0x0, 0x81, additional addresses:<BR>&gt; &gt; &gt; 0xffd0c000 0xffc00000 7. Raven U/L2 Core Centronics (10) at<BR>&gt; &gt; &gt; 0xffd02000 [8/16/0], versions 0x3b, 0x0, 0x74, additional<BR>&gt; &gt; &gt; addresses: 0xffd01000 0xffd03000 8. Raven U/L2 Core Audio (10) at<BR>&gt; &gt; &gt; 0xffd04000[8/16/1], versions 0x3b, 0x4, 0x7b 9. Raven U/L2 Core<BR>&gt; &gt; &gt; RS-232 (10) at 0xffd05000 [8/16/4], versions 0x3b, 0x0, 0x8c 10.<BR>&gt; &gt; &gt; Raven U/L2 Core SCSI(10) at 0xffd06000 [8/16/5], versions 0x3b,<BR>&gt; &gt; &gt; 0x0, 0x82 11. Raven U/L2 Core LAN (802.3) (10) at 0xffd07000<BR>&gt; &gt; &gt; [8/16/6], versions 0x3b, 0x0, 0x8a 12. Raven U/L2 Core PS/2 Port<BR>&gt; &gt; &gt; (10) at 0xffd08000 [8/16/7], versions 0x3b, 0x0, 0x84 13. Raven<BR>&gt; &gt; &gt; U/L2 Core PS/2 Port (10) at 0xffd08100 [8/16/8], versions 0x3b,<BR>&gt; &gt; &gt; 0x0, 0x84 14. Raven Backplane Wax BA (11) at 0xffe00000[8/20],<BR>&gt; &gt; &gt; versions 0x17, 0x0, 0x8e 15. Raven Backplane Wax HIL (10) at<BR>&gt; &gt; &gt; 0xffe01000 [8/20/1], versions 0x17, 0x0, 0x73 16. Raven Backplane<BR>&gt; &gt; &gt; RS-232(10) at 0xffe02000 [8/20/2], versions 0x17, 0x0, 0x8c 17.<BR>&gt; &gt; &gt; Raven Backplane Wax EISA BA (11) at 0xfc000000 [8/20/5], versions<BR>&gt; &gt; &gt; 0x17, 0x0, 0x90, additional addresses: 0xffc88000 0xfc00000b 18.<BR>&gt; &gt; &gt; Gecko GSC Core Graphics(10) at 0xfa000000 [8/24], versions 0x16,<BR>&gt; &gt; &gt; 0x0, 0x85, additional addresses: 0xf0026000 19. U2-IOA BC GSC+<BR>&gt; &gt; &gt; Port (7) at 0xf203f000 [8/63], versions 0x501, 0x1, 0xc 20. U2-IOA<BR>&gt; &gt; &gt; BC Runway Port (12) at 0xfff8a000[10], versions 0x580, 0xf, 0xb<BR>&gt; &gt; &gt; 21. U2-IOA BC GSC+ Port (7) at 0xf103f000[10/63], versions 0x501,<BR>&gt; &gt; &gt; 0x1, 0xc 22. Raven U 240 (9000/780/C240) (0) at 0xfffa0000 [32],<BR>&gt; &gt; &gt; versions 0x599, 0x0, 0x4 23. Memory (1) at 0xfffb1000[49],<BR>&gt; &gt; &gt; versions 0x6f, 0x0, 0x9<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; The numbers in [] tell you what the tree looks like. In this<BR>&gt; &gt; &gt; example, we have 4 top-level devices: #1, #20, #22 &amp; #23.<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; &gt; I've tried digging in /proc without much success... is there a<BR>&gt; &gt; &gt; &gt; way to get this information from user space? PPC Linux exposes<BR>&gt; &gt; &gt; &gt; the device tree in /proc for example. A mechanism similar to<BR>&gt; &gt; &gt; &gt; /proc/bus/pci/devices(machine- parseable text) would be great,<BR>&gt; &gt; &gt; &gt; too.<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; In 2.5, this information's available via sysfs. I don't think<BR>&gt; &gt; &gt; we'll expose it in /proc.<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; &gt; PS: I noticed that /proc/iomem lists 00000000-000009ff as "PDC<BR>&gt; &gt; &gt; &gt; data(Page Zero)", is there a chance I can find what I need<BR>&gt; &gt; &gt; &gt; there? (I dd-ed it from /dev/mem but I can't say if it contains<BR>&gt; &gt; &gt; &gt; useful data...)<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; No, you need to actually make firmware calls and you can't do that<BR>&gt; &gt; &gt; from user mode.<BR>&gt; &gt; &gt;<BR>&gt; &gt; &gt; --<BR>&gt; &gt; &gt; "It's not Hollywood. War is real, war is primarily not about<BR>&gt; &gt; &gt; defeat or victory, it is about death. I've seen thousands and<BR>&gt; &gt; &gt; thousands of dead bodies. Do you think I want to have an academic<BR>&gt; &gt; &gt; debate on this subject?"-- Robert Fisk<BR>&gt; <BR>_______________________________________________<BR>parisc-linux mailing list<BR>parisc-linux@lists.parisc-linux.org<BR>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux</BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
-<a href="http://webhosting.yahoo.com/ps/wh3/prod/">Yahoo! Web Hosting</a> - establish your business online
---0-960209626-1047543782=:19054--
+--u3/rZRmxL6MmkK24--
