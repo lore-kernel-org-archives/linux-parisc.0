@@ -1,13 +1,21 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] debian hppa touch fails to set atime and mtime
-	(5.0.91-2)
-Date: Sun, 28 Dec 2003 20:58:00 -0500
-Message-ID: <20031229015759.GF27911__10733.4896260456$1416623093$gmane$org@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: 219458@bugs.debian.org, Jeff Bailey <jbailey@nisa.net>
-Return-Path: <carlos@baldric.uwo.ca>
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C1104866
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu,  1 Jan 2004 08:42:21 -0700 (MST)
+Message-ID: <3FF44024.8010605@tiscali.be>
+Date: Thu, 01 Jan 2004 15:43:32 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: James Bottomley <James.Bottomley@steeleye.com>,
+	Paul Bame <bame@parisc-linux.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>
+References: <20031230175546.E6A60494280@palinux.hppa>
+	<3FF1F0C3.9070907@tiscali.be>
+In-Reply-To: <3FF1F0C3.9070907@tiscali.be>
+Content-Type: multipart/mixed; boundary="------------090507060504010807030902"
+Cc: 
+Subject: [parisc-linux] Re: [parisc-linux-cvs] palo bame
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,73 +25,388 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
+--------------090507060504010807030902
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-219458,
+Hi Paul, James,
 
-hppa does not support utimes, it supports utime. During the last
-coreutils build it seems that configure was confused and thought hppa
-*had* utimes, but it does not.
+Joel Soete wrote:
+> Hi Paul,
+> 
+> Nice ;)
+> 
+> I just noticed a small detail (versus patch Bjoern and I sent in june:
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2003-June/020098.html
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2003-June/020120.html): 
+> 
+> 
+> before 'goto restart;' you didn't set interactive (I mean 'interactive=1;')
+> but for instance we can reach :
+> [snip]
+> @@ -427,6 +446,7 @@
+>          if (f.kern32_sz == 0)
+>          {
+>              die("Error: can't find a 32-bit kernel here");
+> +        goto restart;
+>          }
+>          kernfd = offset_open(bootdev, f.kern32_offset, f.kern32_sz);
+>      }
+> [snip]
+> 
+> from a non-interactive session (as I frequently encouter the pb, I 
+> install a kernel with palo and later to free space, I remove this kernel 
+> :( ) then imho ipl will loop definitively?
+> 
+> hmm isn't it the same
+> @@ -268,9 +269,13 @@
+>      puts("alo ipl " PALOVERSION " ");
+>      puts(bld_info);
+>      puts("\n");
+> -    if (Debug) printf("iplmain(%d, started %s)\n", is_interactive,
+> +    interactive = is_interactive;
+> +    if (Debug) printf("iplmain(%d, started %s)\n", interactive,
+>      started_wide ? "wide" : "narrow");
+>      if (Debug) printf("initial-sp %p\n", initialstackptr);
+> +
+> + restart:
+> +
+>      blocked_bootdev = pdc_bootdev_open();
+>      bootdev = byteio_open(blocked_bootdev);
+> 
+> [snip]
+> @@ -312,6 +322,7 @@
+>      if (f.cmdline[0] == '\0')    /* no command line specified */
+>      {
+>      die("ERROR: No command line on boot media\n");
+> +    goto restart;
+>      }
+> 
+> As we don't find the cmd line on media, imho we would never have any 
+> chance to interact?
+> Well I still have to check in more detail but may be simply added a flag 
+> 'interact:' just before test if (interactive); and replace all goto 
+> restart; by (interactive=1; goto interact; )
+> 
+> Appologies if I've missed some other change that make my though false,
+>     Joel
+> 
+> Paul Bame wrote:
+> 
+>> CVSROOT:    /var/cvs
+>> Module name:    palo
+>> Changes by:    bame    03/12/30 10:55:46
+>>
+>> Modified files:
+>>     ipl            : ipl.c
+>> Log message:
+>> typo
+>>
+>> _______________________________________________
+>> parisc-linux-cvs mailing list
+>> parisc-linux-cvs@lists.parisc-linux.org
+>> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux-cvs
+>>
+> 
+> 
+What do think about this draft of patch:
+=========><=========
+--- ipl.c       2004-01-01 16:25:47.339568000 +0100
++++ ipl.c.new   2004-01-01 16:24:48.429568000 +0100
+@@ -278,8 +278,6 @@
+         started_wide ? "wide" : "narrow");
+      if (Debug) printf("initial-sp %p\n", initialstackptr);
 
-http://buildd.debian.org/fetch.php?&pkg=coreutils&ver=5.0.91-2&arch=hppa&stamp=1065315205&file=log&as=raw
+- restart:
+-
+      blocked_bootdev = pdc_bootdev_open();
+      bootdev = byteio_open(blocked_bootdev);
 
---- checkdd.log 2003-12-28 20:45:43.000000000 -0500
-+++ check.log   2003-12-28 20:44:08.000000000 -0500
-@@ -7,8 +7,7 @@
- checking host system type... hppa-unknown-linux-gnu
- checking for a BSD-compatible install... /usr/bin/install -c
- checking whether build environment is sane... yes
--checking for gawk... no
--checking for mawk... mawk
-+checking for gawk... gawk
- checking whether make sets $(MAKE)... yes
- checking for perl5.003 or newer... yes
- checking for hppa-linux-gcc... hppa-linux-gcc
-@@ -163,7 +162,7 @@
- checking for library containing opendir... none required
- checking for struct stat.st_blocks... yes
- checking whether stat file-mode macros are broken... no
--checking for nanoseconds member of struct stat.st_mtim... no
-+checking for nanoseconds member of struct stat.st_mtim... tv_nsec
- checking for st_dm_mode in struct stat... no
- checking for uid_t in sys/types.h... yes
- checking type of array argument to getgroups... gid_t
-@@ -452,9 +451,9 @@
- checking for strcasecmp... yes
- checking for strncasecmp... yes
- checking for struct timespec... yes
--checking for nanoseconds member of struct stat.st_mtim... (cached) no
-+checking for nanoseconds member of struct stat.st_mtim... (cached)
-tv_nsec
- checking whether nanosleep is declared... (cached) yes
--checking determine whether the utimes function works... yes
-+checking determine whether the utimes function works... no
- checking for stdlib.h... (cached) yes
- checking for GNU libc compatible malloc... yes
- checking for stdlib.h... (cached) yes
+@@ -326,7 +324,8 @@
+      if (f.cmdline[0] == '\0')  /* no command line specified */
+      {
+         die("ERROR: No command line on boot media\n");
+-       goto restart;
++        interactive=1;
++       goto interactive_loop;
+      }
 
-My local system detects gawk, finds a nanosecond member for stat, but
-notices that utimes does *not* work under hppa, and instead uses utime.
-The reason for the erroneous detection can only be confirmed by looking
-at the config.log.
+      /* add the right console= if there isn't one yet */
+@@ -393,9 +392,18 @@
+         }
+      }
 
-I tested a coreutils rebuild and it works fine.
++ interactive_loop:
++
+      if (interactive)
+         interact(&f);
 
-Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3.2/specs
-Configured with: ../src/configure -v
---enable-languages=c,c++,f77,pascal,objc,ada,treelang --prefix=/usr
---mandir=/usr/share/man --infodir=/usr/share/info
---with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared
---with-system-zlib --enable-nls --without-included-gettext
---enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu
---enable-debug --enable-objc-gc hppa-linux
-Thread model: posix
-gcc version 3.3.2 (Debian)
++    if (f.cmdline[0] == '\0')  /* no command line specified */
++    {
++       die("ERROR: No command line on boot media\n");
++        interactive=1;
++       goto interactive_loop;
++    }
++
+      strcpy(commandline,
+             parse(f.cmdline, &kern_part, kern_name, &rd_part, rd_name));
 
-GNU ld version 2.14.90.0.7 20031029 Debian GNU/Linux
+@@ -439,14 +447,16 @@
+      {
+         printf("ERROR: Requesting kernel from partition %d "
+                     "on unpartitioned media!\n", kern_part);
+-       while(1);
++        interactive=1;
++       goto interactive_loop;
+      }
 
-Linux firin 2.4.23-pa2 #5 Mon Dec 8 20:44:10 EST 2003 parisc64 GNU/Linux
+      if (rd_part != -1 && rd_part != kern_part)
+      {
+         die("ERROR:: palo does not support ramdisk on different"
+                 " partition than kernel\n");
+-       goto restart;
++        interactive=1;
++       goto interactive_loop;
+      }
 
-I suggest moving this to coreutils and have them rebuild?
+      if (kern_part == 0)
+@@ -461,7 +471,8 @@
+             if (f.kern32_sz == 0)
+             {
+                 die("Error: can't find a 32-bit kernel here");
+-               goto restart;
++                interactive=1;
++                goto interactive_loop;
+             }
+             kernfd = offset_open(bootdev, f.kern32_offset, f.kern32_sz);
+         }
+@@ -470,7 +481,8 @@
+             if (f.kern64_sz == 0)
+             {
+                 die("Error: can't find a 64-bit kernel here");
+-               goto restart;
++                interactive=1;
++                goto interactive_loop;
+             }
+             kernfd = offset_open(bootdev, f.kern64_offset, f.kern64_sz);
+         }
+@@ -502,7 +514,8 @@
+                 else
+                 {
+                     die("No kernels found.");
+-                   goto restart;
++                    interactive=1;
++                    goto interactive_loop;
+                 }
+             }
 
-Cheers,
-Carlos.
+@@ -523,7 +536,8 @@
+         if (!load_kernel(kernfd, &entry, &wide))
+         {
+             die("ERROR: failed to load kernel\n");
+-           goto restart;
++            interactive=1;
++            goto interactive_loop;
+         }
+
+         if (rd_part != -1)
+@@ -548,7 +562,8 @@
+             (partition[kern_part - 1].id != 0x83 && partition[kern_part - 1].id != 0xfd && partition[kern_part - 1].id != 0xf0) )
+         {
+             printf("ERROR: Partition %d must be ext2\n", kern_part);
+-           while(1);
++            interactive=1;
++            goto interactive_loop;
+         }
+
+         pp = &partition[kern_part - 1];
+@@ -565,14 +580,16 @@
+         {
+             printf("ERROR: open %s from partition %d failed\n",
+                 kern_name, kern_part);
+-           while(1);
++            interactive=1;
++            goto interactive_loop;
+         }
+
+         bkern_fd = byteio_open(kern_fd);
+         if (!load_kernel(bkern_fd, &entry, &wide))
+         {
+             die("ERROR: failed to load kernel\n");
+-           goto restart;
++            interactive=1;
++            goto interactive_loop;
+         }
+
+         if (rd_part != -1)
+@@ -593,8 +610,10 @@
+
+      /* FIXME!!! need to pass command line to kernel */
+      /* could theoretically use a function pointer, but they're ugly on PA */
+-    if(pdc_default_width(wide))
+-           goto restart;
++    if(pdc_default_width(wide)) {
++        interactive=1;
++       goto interactive_loop;
++    }
+      printf("Branching to kernel entry point 0x%08x.  If this is the last\n"
+            "message you see, you may need to switch your console.  This is\n"
+            "a common symptom -- search the FAQ and mailing list at parisc-linux.org\n\n",
+=========><=========
+
+I still have to work on because if I go into interactive mode with an empty cmdline, I couldn't yet added anything to this cmdline :(
+
+Please let me know your opinion,
+Joel
+
+--------------090507060504010807030902
+Content-Type: text/plain;
+ name="Ipl.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Ipl.diff"
+
+--- ipl.c	2004-01-01 16:25:47.339568000 +0100
++++ ipl.c.new	2004-01-01 16:24:48.429568000 +0100
+@@ -278,8 +278,6 @@
+ 	started_wide ? "wide" : "narrow");
+     if (Debug) printf("initial-sp %p\n", initialstackptr);
+ 
+- restart:
+-
+     blocked_bootdev = pdc_bootdev_open();
+     bootdev = byteio_open(blocked_bootdev);
+ 
+@@ -326,7 +324,8 @@
+     if (f.cmdline[0] == '\0')	/* no command line specified */
+     {
+ 	die("ERROR: No command line on boot media\n");
+-	goto restart;
++        interactive=1;
++	goto interactive_loop;
+     }
+ 
+     /* add the right console= if there isn't one yet */
+@@ -393,9 +392,18 @@
+ 	}
+     }
+ 
++ interactive_loop:
++
+     if (interactive)
+ 	interact(&f);
+ 
++    if (f.cmdline[0] == '\0')	/* no command line specified */
++    {
++	die("ERROR: No command line on boot media\n");
++        interactive=1;
++	goto interactive_loop;
++    }
++
+     strcpy(commandline,
+ 	    parse(f.cmdline, &kern_part, kern_name, &rd_part, rd_name));
+ 
+@@ -439,14 +447,16 @@
+     {
+ 	printf("ERROR: Requesting kernel from partition %d "
+ 		    "on unpartitioned media!\n", kern_part);
+-	while(1);
++        interactive=1;
++	goto interactive_loop;
+     }
+ 
+     if (rd_part != -1 && rd_part != kern_part)
+     {
+ 	die("ERROR:: palo does not support ramdisk on different"
+ 		" partition than kernel\n");
+-	goto restart;
++        interactive=1;
++	goto interactive_loop;
+     }
+ 
+     if (kern_part == 0)
+@@ -461,7 +471,8 @@
+ 	    if (f.kern32_sz == 0)
+ 	    {
+ 	        die("Error: can't find a 32-bit kernel here");
+-		goto restart;
++                interactive=1;
++                goto interactive_loop;
+ 	    }
+ 	    kernfd = offset_open(bootdev, f.kern32_offset, f.kern32_sz);
+ 	}
+@@ -470,7 +481,8 @@
+ 	    if (f.kern64_sz == 0)
+ 	    {
+ 	        die("Error: can't find a 64-bit kernel here");
+-		goto restart;
++                interactive=1;
++                goto interactive_loop;
+ 	    }
+ 	    kernfd = offset_open(bootdev, f.kern64_offset, f.kern64_sz);
+ 	}
+@@ -502,7 +514,8 @@
+ 		else
+ 		{
+ 		    die("No kernels found.");
+-		    goto restart;
++                    interactive=1;
++                    goto interactive_loop;
+ 		}
+ 	    }
+ 
+@@ -523,7 +536,8 @@
+ 	if (!load_kernel(kernfd, &entry, &wide))
+ 	{
+ 	    die("ERROR: failed to load kernel\n");
+-	    goto restart;
++            interactive=1;
++            goto interactive_loop;
+ 	}
+ 
+ 	if (rd_part != -1)
+@@ -548,7 +562,8 @@
+ 	    (partition[kern_part - 1].id != 0x83 && partition[kern_part - 1].id != 0xfd && partition[kern_part - 1].id != 0xf0) )
+ 	{
+ 	    printf("ERROR: Partition %d must be ext2\n", kern_part);
+-	    while(1);
++            interactive=1;
++            goto interactive_loop;
+ 	}
+ 
+ 	pp = &partition[kern_part - 1];
+@@ -565,14 +580,16 @@
+ 	{
+ 	    printf("ERROR: open %s from partition %d failed\n",
+ 		kern_name, kern_part);
+-	    while(1);
++            interactive=1;
++            goto interactive_loop;
+ 	}
+ 
+ 	bkern_fd = byteio_open(kern_fd);
+ 	if (!load_kernel(bkern_fd, &entry, &wide))
+ 	{
+ 	    die("ERROR: failed to load kernel\n");
+-	    goto restart;
++            interactive=1;
++            goto interactive_loop;
+ 	}
+ 
+ 	if (rd_part != -1)
+@@ -593,8 +610,10 @@
+ 
+     /* FIXME!!! need to pass command line to kernel */
+     /* could theoretically use a function pointer, but they're ugly on PA */
+-    if(pdc_default_width(wide))
+-	    goto restart;
++    if(pdc_default_width(wide)) {
++        interactive=1;
++	goto interactive_loop;
++    }
+     printf("Branching to kernel entry point 0x%08x.  If this is the last\n"
+ 	   "message you see, you may need to switch your console.  This is\n"
+ 	   "a common symptom -- search the FAQ and mailing list at parisc-linux.org\n\n",
+
+--------------090507060504010807030902--
