@@ -1,42 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id UAA03393
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 18 Mar 1999 20:35:30 -0500
-Received: from cllmail.cup.hp.com (cllmail.cup.hp.com [15.28.98.139])
-	by atlrel2.hp.com (8.8.6 (PHNE_14041)/8.8.5tis) with ESMTP id UAA24155
-	for <hppa-linux@thepuffingroup.com>; Thu, 18 Mar 1999 20:34:57 -0500 (EST)
-Received: from [15.0.97.82] (cc757591.cup.hp.com [15.0.97.82]) by cllmail.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id RAA15176 for <hppa-linux@thepuffingroup.com>; Thu, 18 Mar 1999 17:35:09 -0800 (PST)
-Message-Id: <199903190135.RAA15176@cllmail.cup.hp.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id BAA09873
+	for <hppa-linux@sod.res.cmu.edu>; Fri, 19 Mar 1999 01:09:27 -0500
+Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
+	by netscape.com (8.8.5/8.8.5) with ESMTP id WAA14193
+	for <hppa-linux@thepuffingroup.com>; Thu, 18 Mar 1999 22:08:57 -0800 (PST)
+Received: from netscape.com ([205.217.243.67]) by
+          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
+          F8TVR100.H5M for <hppa-linux@thepuffingroup.com>; Thu, 18 Mar
+          1999 22:09:01 -0800
+Sender: shaver@netscape.com (Mike Shaver)
+Message-ID: <36F1EA5F.C9ED34D7@netscape.com>
+Date: Fri, 19 Mar 1999 01:10:39 -0500
+From: Mike Shaver <shaver@netscape.com>
+MIME-Version: 1.0
+To: hppa-linux@thepuffingroup.com
 Subject: Re: [hppa-linux] Gateway instructions
-Date: Thu, 18 Mar 1999 17:38:28 -0800
-From: Cary Coutant <cary@cup.hp.com>
-To: <hppa-linux@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+References: <199903190135.RAA15176@cllmail.cup.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
->OK, so you don't have a spot on the page for each syscall?  I was
->thinking that we'd want to do that, since we're going to use the whole
->page anyway and it would make things a little quicker by eliminating the
->later dispatch-by-syscall step.
+Cary Coutant wrote:
+> The 32-bit syscall convention is documented in (of all places) the
+> Assembler manual; the 64-bit convention is documented in the PA-64
+> runtime supplement (program startup chapter). These documents are
+> available from
+> 
+>     http://www.software.hp.com/STK
 
-There's a fair amount of setup code common to all syscalls before the 
-dispatch to individual kernel entry points, and there are a lot of 
-syscalls in HP-UX, so we use a single gateway.
+When I click on
+http://docs.hp.com:80/dynaweb/hpux11/dtdcen1a/b541/@Generic__BookView
+(the Assembler Reference Manual from
+http://www.software.hp.com/STK/toc.html#Assembly ) I get an error:
 
-For the 64-bit ABI, the gateway address is not hardcoded; when the 
-program is loaded, the kernel passes it the address of a syscall vector 
-table, which has one pointer per syscall. Most of the syscalls still 
-vector to the one common gateway, but the lightweight syscalls can now be 
-vectored off to a special gateway that has less overhead.
+No item b541 exists in collection dtdcen1a (fbebtcol.cc:1120)
 
-The 32-bit syscall convention is documented in (of all places) the 
-Assembler manual; the 64-bit convention is documented in the PA-64 
-runtime supplement (program startup chapter). These documents are 
-available from
+Is there another place to find it?
 
-    http://www.software.hp.com/STK
+Mike
 
-
-Cary Coutant
-Hewlett-Packard Co.
-Application Delivery Lab
+-- 
+399279.02 342330.84
