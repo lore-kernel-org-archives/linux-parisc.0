@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 026B148B8
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Aug 2003 00:21:46 -0600 (MDT)
-Date: Thu, 21 Aug 2003 08:21:43 +0200
-Message-ID: <3F2E2C7700003FE2@ocpmta2.freegates.net>
-In-Reply-To: <20030820194103.GA18688@systemhalted>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6487F4830
+	for <parisc-linux@parisc-linux.org>; Thu, 21 Aug 2003 15:19:34 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 19pwqC-0003SV-S5
+	for parisc-linux@parisc-linux.org; Thu, 21 Aug 2003 22:19:32 +0100
+Date: Thu, 21 Aug 2003 22:19:32 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030821211932.GC19630@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] sym53c8xx_2 development
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Lamont made a good catch and we optimized the standard case in the itlb
->fault fast path, keeping the CPU's forward branch prediction working in
->our favour. 
+Hi.  I've got some changes for the sym53c8xx_2 driver I'm working on.
+Does anyone object to me working on them in the parisc 2.6 tree?
+Obviously, I'll do my best to not break anything and I'll handle any
+merge problems.
 
-That is the very fine state of the art :)
+We've done this kind of thing before (eg with the pcnet32 driver in 2.4)
+but since every PCI-based parisc box uses sym53c8xx_2 for its scsi,
+I didn't feel it was appropriate to inflict potentially-buggy changes
+on everyone without a little bit of discussion.
 
->As such our numbers for various syscalls (LMBENCH tests)
->have become more stable from call to call. The best number is our 'page
->fault' which has shown a ~10x speedup :) It used to be 130 microseconds
->+/- 100 microseconds, and is now consistently ~13 microseconds.
-
-Congratulation, I will try it also on the N (64bits)
-
-Thanks again,
-    Joel
-
-
--------------------------------------------------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=fr 
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
