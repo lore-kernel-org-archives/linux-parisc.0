@@ -1,16 +1,17 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] pthread problems - test program
-Date: Wed, 6 Apr 2005 16:28:00 -0400
-Message-ID: <20050406202800.GC1833@baldric.uwo.ca>
-References: <20050405060051.GJ1833@baldric.uwo.ca>
-	<200504062012.j36KCW74007167@hiauly1.hia.nrc.ca>
+Date: Wed, 6 Apr 2005 15:36:04 -0400
+Message-ID: <20050406193604.GZ1833@baldric.uwo.ca>
+References: <20050406181337.GX1833@baldric.uwo.ca>
+	<200504061837.j36IbnWI006770@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ Randolph Chung <tausq@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504062012.j36KCW74007167@hiauly1.hia.nrc.ca>
+In-Reply-To: <200504061837.j36IbnWI006770@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +22,73 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Apr 06, 2005 at 04:12:31PM -0400, John David Anglin wrote:
-> > I found another program that doesn't work on hppa. This one was written
-> > by Randolph if my memory serves me correctly. I'll have to add it to the
-> > userspace tests that fail.
-> > 
-> > ---
-> > all: foo.c libfoo.c
-> > 	gcc -g -shared -c libfoo.c
-> > 	rm -f libfoo.so
-> > 	ln -s libfoo.o libfoo.so
-> > 	gcc -g -o foo foo.c -lfoo -L. -lpthread
-> > 
-> > clean:
-> > 	rm -f *.o
-> > 	rm -f *.so
-> > 	rm -f foo
+On Wed, Apr 06, 2005 at 02:37:49PM -0400, John David Anglin wrote:
+> > We still have the problem of a *stuck* thread using linuxthreads.
+> > Which we don't have a clear solution for...
 > 
-> The test can be simplified.  You don't need libfoo.  Just
-> link foo with -lpthread and it fails.
+> It's my belief that expect/tcl has a similar problem, so the problem
+> likely isn't specific to linuxthreads.  Expect definitely doesn't use
+> linuxthreads.  This affects GCC and binutils testing so I rate fixing
+> this as extremely important ;^)
 > 
-> I see libtcl8.4 is linked against libpthread.so.  This is probably
-> why 8.3 works better than 8.4.
-> 
-> Does this help?
+> The problem also affects java.  I often have to manually kill various
+> java processes after a GCC test run completes.  At the moment, locking
+> isn't atomic in java.  I wonder if we are being bitten by the glibc
+> routines that still aren't atomic.
 
-It helps in the sense that we can distill the testcase down futher. It's
-clearly some race in the resume suspend path, but the problem eludes me
-right now.
+We are missing all sorts of atomic support in libc.
 
-Distilling this into a non-linuxthread testcase is the utmost priority.
+Adding support would require a forced min_kernel_version bump up to the
+point where light-weight syscalls (CAS) exists, and the DoS for the
+gateway page was fixed.
+
+Would you like me to go ahead and do this, then roll a new glibc deb?
+
+Here is a brief summary of what glibc needs:
+
+===================
+Atomic Definitions:
+
+sysdeps/hppa/atomicity.h
+  exchange_and_add
+  atomic_add
+  compare_and_swap
+	= These three are phased out in favour of atomic.h
+
+sysdeps/hppa/bits/atomic.h
+  atomic_compare_and_exchange_val_acq
+  atomic_compare_and_exchange_bool_acq
+	= New atomic requirements for glibc
+
+===================
+Atomic Extensions using CAS:
+
+include/atomic.h
+  = This file builds everything based on
+    atomic_compare_and_exchange_bool_acq
+
+sysdeps/generic/bits/atomic.h
+  = hppa uses this file right now.
+  = Would have bee nice to have gotten a warning
+    here.
+  = non-atomic versions used.
+
+===================
+Atomic Uses:
+
+Range from everything to the wakeup of threads from a queue using
+atomic_increment and atomic_decrement (evaluates to a variant of
+atomic_compare_and_exchagne_val_acq from include/atomic.h), to the 
+change of a value in a semaphore.
+
+===================
+
+I've neglected this because in the past the required CAS didn't exist
+and it was impossible to do in userspace. Time to test it all out.
+
+c.
+
+
 
 c.
 
