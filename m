@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 30 Jun 2003 11:52:01 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Alexander Gabert <pappy@nikita.ath.cx>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.21-pa0 problems with ifconfig?
-Message-ID: <20030630175201.GJ14971@dsl2.external.hp.com>
-References: <20030630151704.GA24413@nikita.ath.cx> <20030630165550.GG14971@dsl2.external.hp.com> <20030630171125.GA17892@nikita.ath.cx>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030630171125.GA17892@nikita.ath.cx>
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.208])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1A67F4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Jun 2003 11:54:39 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1056995678.3f00795e49bf5@clients.latnet.lv>
+Date: Mon, 30 Jun 2003 20:54:38 +0300 (EEST)
+From: Dub <dub@latnet.lv>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=KOI8-R
+Subject: [parisc-linux] modprobe: Can't locate module char-major-60 (server hangs!)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,47 +20,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jun 30, 2003 at 07:11:25PM +0200, Alexander Gabert wrote:
-> hi,
-> 
-> adam:/usr/src# uname -a
-> Linux adam 2.4.18-32 #1 Sat Mar 30 18:26:22 MST 2002 parisc unknown
-> adam:/usr/src# dmesg | grep tulip
-> tulip0: no phy info, aborting mtable build
-> tulip0:  MII transceiver #1 config 1000 status 782d advertising 0061.
+Hi,
 
-This is missing the phy reset polling patch.
-expected result.
-See ftp://ftp.parisc-linux.org/patches/diff.tulip_media-02
+I have just installed my first Debian server  3.0r1 on HP PA-RISC K210
+(palinux-2.4.20).
+I made installatiion using console device /dev/ttyB0.
 
-> on a 2.4.20-pa35 with tulip driver compiled in statically:
-> adam:/usr/src/working02-gentoo/linux-2.4.20-pa35# grep TULIP .config
-> CONFIG_TULIP=y
+After reboot I got the message, and the system became frozen.
 
-2.4.20-pa35 tulip definitely works on both hppa and hppa64 kernels.
-I use both (c3000 and A500). Something else is wrong.
+Jun 27 15:08:47 smsmail4 modprobe: modprobe: Can't locate module char-major-60
+Jun 27 15:08:49 smsmail4 last message repeated 9 times
+Jun 27 15:08:49 smsmail4 init: Id "T0" respawning too fast: disabled for 5
+minut
 
-Perhaps you've suffered some data corruption in a dynamic
-lib that ifconfig uses? or ifconfig binary itself?
+Everything is working in single-user mode (/sbin/sulogin starts just fine from
+/etc/inittab)
 
-> ...
-> ifconfig (pid 2769): Illegal instruction (code 8)
-> 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
->      PSW: 00000000000001000000000000001111 Not tainted
->      r00-03  00000000 10348cd0 102041a0 100addc1
->      r04-07  100ad800 10348968 10348968 00000000
->      r08-11  2f2c994c 2efdc610 00000000 00008914
->      r12-15  00000000 ffff7000 faf00560 0003022c
->      r16-19  0003022c 0003022c 0003022c 000000ff
->      r20-23  000000ef 100addc5 102efc1c 0bebc200
->      r24-27  100addc5 000000ef 10348968 1030e010
->      r28-31  e0000000 00000001 2efdcd00 102041a0
->      sr0-3   00000000 00000000 00000000 000023b5
->      sr4-7   00000000 00000000 00000000 00000000
+Getty for ttyB0 gives the same error.
 
-sorry - even though this is the right output, it's incomplete.
-I need the IOAQ.
+bash-2.05a# /sbin/getty -L ttyB0 9600 vt100
+modprobe: modprobe: Can't locate module char-major-60
 
-thanks,
-grant
+I tried to change devices or even to comment getty out from /etc/inittab, but
+the server still hangs.
+
+I suspect something could be fixed in /etc/modules.conf
+
+It's still unclear for me what is the meaning of message
+modprobe: Can't locate module char-major-60
+from OS point of view.
+
+Many thanks in advance for your help!
+
+BR,
+Dub
