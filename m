@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 33A4E4876
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 15:21:55 -0700 (MST)
+Date: Wed, 6 Mar 2002 22:19:43 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] evms-0.9.1 && hppa (follow ...) 
-In-Reply-To: Message from "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
-   of "Wed, 06 Mar 2002 19:57:31 +0100." <OF5C49A386.7B121133-ONC1256B74.00656CC0@com>
-References: <OF5C49A386.7B121133-ONC1256B74.00656CC0@com> 
-Date: Wed, 06 Mar 2002 15:19:09 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020306221909.DF1EE484D@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] FB on c3k 
+In-Reply-To: <20020306164603.D7DED4845@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0203062122110.28766-100000@sal.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,24 +22,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"=?iso-8859-1?Q?Jo=EBl_Soete?=" wrote:
+On Wed, 6 Mar 2002, Grant Grundler wrote:
 
->           printk(KERN_ERR "--evms: %s, %s call, ckp7p: io_sector_offset
-> =%llu.\n", __FILE__ , __FUNCTION__, io_sector_offset );
->           user_buffer_ptr = user_parms->buffer_address;
->           printk(KERN_ERR "--evms: %s, %s call, ckp7pp.\n", __FILE__ ,
-> __FUNCTION__ );
-....
+> "M. Grabert" wrote:
+> > very nice!
+> > Is the Visual-EG of the same type as the Visual-EG in my C240?
 
-> So it seems to failled on the assignement: "user_buffer_ptr =
-> user_parms->buffer_address;" . That is over my understanding without much
-> help. Any idea ?
+Arghhll. Forget it, I have a Visualize-FX2 (A4552A) card!
+I should really now my system ;)
 
-Could it be that "user_parms->buffer_address" should really be
-"tmp->buffer_address"?
+> > Can you use the driver for Visual-FX aswell (AFAIK these are similar) ?
 
-Just wondering if the copy_from_user() higher up in the code means
-arg points to something in userspace. getting stack unwinds
-for problems like this would be really nice...(hint hint)
+except for the fact that FX do 3D and EG not ;)
 
-grant
+> They are not similar. Vis-EG is 1280x1024 8 bit.
+> Vis-FX are all 24-bit color. FX2/4/6 have 3d acceleration
+> and texture mapping functionality (AFAIK, Vis-FXe does not)
+> I think Vis-FX can handle higher resolutions as well.
+
+Well, I was talking about the 2D stuff. I suppose the
+2D drawing commands are the same as on the -EG (at least I hope so).
+
+Does anybody know a good PCI graphics card (Universal or 3.3 voltage)
+that is supported in XFree-4 (and may run in a C240) ?
+
+Thanks max
