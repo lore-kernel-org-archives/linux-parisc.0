@@ -1,21 +1,20 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1A2CC4857
+Return-Path: <nitephyre@iinet.net.au>
+Received: from mail.iinet.net.au (mail-07.iinet.net.au [203.59.3.39])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7416D4857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  9 Jan 2004 02:21:21 -0700 (MST)
-Date: Fri, 9 Jan 2004 01:49:04 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Matt Lewis <nitephyre@iinet.net.au>
-Subject: Re: [parisc-linux] Xfree on C3000 visualize
-Message-ID: <20040109094904.GA533@tausq.org>
+	Fri,  9 Jan 2004 02:24:33 -0700 (MST)
+Message-ID: <002601c3d692$40450420$0101a8c0@nitephyre>
+From: "Matt Lewis" <nitephyre@iinet.net.au>
+To: <parisc-linux@lists.parisc-linux.org>
 References: <000a01c3d68f$45c6f500$0101a8c0@nitephyre>
 	<20040109094354.GZ533@tausq.org>
 	<001701c3d691$4ca17ec0$0101a8c0@nitephyre>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <001701c3d691$4ca17ec0$0101a8c0@nitephyre>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+	<20040109094904.GA533@tausq.org>
+Subject: Re: [parisc-linux] Xfree on C3000 visualize
+Date: Fri, 9 Jan 2004 19:23:31 +1000
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0023_01C3D6E6.114F07C0"
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,22 +24,109 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-In reference to a message from Matt Lewis, dated Jan 09:
-> ah crap..
-> 
-> ok then, can i use my normal TNT2 then?
+This is a multi-part message in MIME format.
 
-(please reply on the list)
+------=_NextPart_000_0023_01C3D6E6.114F07C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-In general x86 video cards do not work because they have bios that need
-to run x86 code (that's my understanding anyway). this has been
-discussed several times on the list.  there's an additional problem
-which is that some pa firmware refuses to boot with non-HP gfx cards.
+oops sorry about that randolph, using outlook atm :)
 
-Your best bet is to get a PCI Vis-EG card which do work quite well.
+thanks, i'll have a look on ebay...=20
+----- Original Message -----=20
+  From: Randolph Chung=20
+  To: Matt Lewis=20
+  Cc: parisc-linux@lists.parisc-linux.org=20
+  Sent: Friday, January 09, 2004 7:49 PM
+  Subject: Re: [parisc-linux] Xfree on C3000 visualize
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+
+  In reference to a message from Matt Lewis, dated Jan 09:
+  > ah crap..
+  >=20
+  > ok then, can i use my normal TNT2 then?
+
+  (please reply on the list)
+
+  In general x86 video cards do not work because they have bios that =
+need
+  to run x86 code (that's my understanding anyway). this has been
+  discussed several times on the list.  there's an additional problem
+  which is that some pa firmware refuses to boot with non-HP gfx cards.
+
+  Your best bet is to get a PCI Vis-EG card which do work quite well.
+
+  randolph
+  --=20
+  Randolph Chung
+  Debian GNU/Linux Developer, hppa/ia64 ports
+  http://www.tausq.org/
+
+
+------=_NextPart_000_0023_01C3D6E6.114F07C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3810.1700" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>oops sorry about that randolph, using =
+outlook atm=20
+:)</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thanks, i'll have a look on ebay... =
+</FONT></DIV>
+<DIV>----- Original Message ----- </DIV>
+<BLOCKQUOTE=20
+style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
+0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A href=3D"mailto:randolph@tausq.org" =
+title=3Drandolph@tausq.org>Randolph=20
+  Chung</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+  href=3D"mailto:nitephyre@iinet.net.au" =
+title=3Dnitephyre@iinet.net.au>Matt=20
+  Lewis</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A=20
+  href=3D"mailto:parisc-linux@lists.parisc-linux.org"=20
+  =
+title=3Dparisc-linux@lists.parisc-linux.org>parisc-linux@lists.parisc-lin=
+ux.org</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Friday, January 09, 2004 =
+7:49=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: [parisc-linux] =
+Xfree on=20
+  C3000 visualize</DIV>
+  <DIV><BR></DIV>In reference to a message from Matt Lewis, dated Jan=20
+  09:<BR>&gt; ah crap..<BR>&gt; <BR>&gt; ok then, can i use my normal =
+TNT2=20
+  then?<BR><BR>(please reply on the list)<BR><BR>In general x86 video =
+cards do=20
+  not work because they have bios that need<BR>to run x86 code (that's =
+my=20
+  understanding anyway). this has been<BR>discussed several times on the =
+
+  list.&nbsp; there's an additional problem<BR>which is that some pa =
+firmware=20
+  refuses to boot with non-HP gfx cards.<BR><BR>Your best bet is to get =
+a PCI=20
+  Vis-EG card which do work quite well.<BR><BR>randolph<BR>-- =
+<BR>Randolph=20
+  Chung<BR>Debian GNU/Linux Developer, hppa/ia64 ports<BR><A=20
+  =
+href=3D"http://www.tausq.org/">http://www.tausq.org/</A><BR></BLOCKQUOTE>=
+</BODY></HTML>
+
+------=_NextPart_000_0023_01C3D6E6.114F07C0--
