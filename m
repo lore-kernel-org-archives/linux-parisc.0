@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout04.sul.t-online.com (mailout04.sul.t-online.com [194.25.134.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6A1B4838
-	for <parisc-linux@parisc-linux.org>; Sun, 27 Apr 2003 14:02:41 -0600 (MDT)
-Received: from nikita.ath.cx (localhost [127.0.0.1])
-	by nikita.ath.cx (8.12.3/8.12.3/Debian-5) with ESMTP id h3RK4KkS030959
-	for <parisc-linux@parisc-linux.org>; Sun, 27 Apr 2003 22:04:21 +0200
-Received: (from pappy@localhost)
-	by nikita.ath.cx (8.12.3/8.12.3/Debian-5) id h3RK4JQ8030957
-	for parisc-linux@parisc-linux.org; Sun, 27 Apr 2003 22:04:19 +0200
-From: Alexander Gabert <pappy@nikita.ath.cx>
-Date: Sun, 27 Apr 2003 22:04:18 +0200
-To: parisc-linux@parisc-linux.org
-Message-ID: <20030427200418.GA30929@nikita.ath.cx>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 58D534860
+	for <parisc-linux@parisc-linux.org>; Sun, 27 Apr 2003 15:04:56 -0600 (MDT)
+Date: Sun, 27 Apr 2003 13:12:19 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Alexander Gabert <pappy@nikita.ath.cx>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] -fPIC position independent code on parisc
+Message-ID: <20030427201219.GE25257@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20030427200418.GA30929@nikita.ath.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] -fPIC position independent code on parisc
+In-Reply-To: <20030427200418.GA30929@nikita.ath.cx>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,105 +24,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hi,
+> but what exactly is position independent code?
 
-can someone explain the difference between "normal" and "-fPIC"?
+it's exactly what it says, it will work no matter at what position
+the code is loaded.
 
-i have compiled a test program:
+e.g.:
 
-#include <stdio.h>
+non-PIC
+>     18          ldil LR'.LC0,%r19
+>     19          ldo RR'.LC0(%r19),%r26
+>     20          bl printf,%r2
 
-int main(void) {
-        printf("hello\n");
-        return(0);
-}
+This loads the address of .LC0 (your string) relative to a fixed address
+into r26 (arg0). The address is resolved statically at link time, so
+if the code is moved to a different starting address, the address will 
+be wrong.
 
-first one without -fPIC
-gcc -S hello.c
+PIC:
+>     21          addil LT'.LC0,%r19
+>     22          ldw RT'.LC0(%r1),%r1
+>     23          copy %r1,%r26
+>     24          bl printf,%r2
 
-     1          .LEVEL 1.1
-     2          .section        .rodata
-     3          .align 4
-     4  .LC0:
-     5  .stringz"hello\n"
-     6          .text
-     7          .align 4
-     8  .globl main
-     9                  .type            main,@function
-    10  main:
-    11          .PROC
-    12          .CALLINFO FRAME=64,CALLS,SAVE_RP,SAVE_SP,ENTRY_GR=3
-    13          .ENTRY
-    14          stw %r2,-20(%r30)
-    15          copy %r3,%r1
-    16          copy %r30,%r3
-    17          stwm %r1,64(%r30)
-    18          ldil LR'.LC0,%r19
-    19          ldo RR'.LC0(%r19),%r26
-    20          bl printf,%r2
-    21          nop
-    22          ldi 0,%r28
-    23          ldw -20(%r3),%r2
-    24          ldo 64(%r3),%r30
-    25          ldwm -64(%r30),%r3
-    26          bv,n %r0(%r2)
-    27          .EXIT
-    28          .PROCEND
-    29  .Lfe1:
-    30          .size   main,.Lfe1-main
-    31          .ident  "GCC: (GNU) 3.0.4"
+This calculates the offset of .LC0 relative to the linkage table pointer
+(r19) by creating a GOT entry. The linkage table pointer is assigned 
+value at runtime based on where the dynamic loader loads the code into 
+memory, so the load will always point to the the right place wherever 
+it is loaded. 
 
-second one with -fPIC
-gcc -S -fPIC hello_fPIC.c
+When you have a shared library, different programs that are linked
+against the library may load it at different offsets, so the code must 
+be position independent for it to work.
 
-     1          .LEVEL 1.1
-     2          .section        .rodata
-     3          .align 4
-     4  .LC0:
-     5  .stringz"hello\n"
-     6          .text
-     7          .align 4
-     8  .globl main
-     9                  .type            main,@function
-    10  main:
-    11          .PROC
-    12          .CALLINFO FRAME=64,CALLS,SAVE_RP,SAVE_SP,ENTRY_GR=4
-    13          .ENTRY
-    14          stw %r2,-20(%r30)
-    15          copy %r3,%r1
-    16          copy %r30,%r3
-    17          stwm %r1,64(%r30)
-    18          stw %r4,8(%r3)
-    19          stw %r19,-32(%r30)
-    20          copy %r19,%r4
-    21          addil LT'.LC0,%r19
-    22          ldw RT'.LC0(%r1),%r1
-    23          copy %r1,%r26
-    24          bl printf,%r2
-    25          nop
-    26          copy %r4,%r19
-    27          ldi 0,%r28
-    28          ldw -20(%r3),%r2
-    29          ldw 8(%r3),%r4
-    30          ldo 64(%r3),%r30
-    31          ldwm -64(%r30),%r3
-    32          bv,n %r0(%r2)
-    33          .EXIT
-    34          .PROCEND
-    35  .Lfe1:
-    36          .size   main,.Lfe1-main
-    37          .ident  "GCC: (GNU) 3.0.4"
-
-i know that it is needed for shared libraries...
-but what exactly is position independent code?
-
-gcc is version 3.0.4
-glibc is version 2.2.5
-
-
-thanks in advance,
-
-Alex
---
-pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <pappy@nikita.ath.cx>
-          Key fingerprint =  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7F D6  05 E1 A8 0C
+HTH
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
