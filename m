@@ -1,72 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from relay1.pair.com (relay1.pair.com [209.68.1.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2D381482A
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 12:02:48 -0600 (MDT)
-Message-ID: <3B4DBBB3.9080101@subcarrier.org>
-Date: Thu, 12 Jul 2001 11:01:07 -0400
-From: Michael Ang <mang@subcarrier.org>
-MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] CVS rumors
-References: <E15Jz7i-00028D-00@noam.fc.hp.com> <20010710172502.A6103@parcelfarce.linux.theplanet.co.uk> <E15K1Iz-0002RR-00@noam.fc.hp.com>  <3B4D2AB1.5010809@subcarrier.org> <E15KiQF-0005Vh-00@noam.fc.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 53513482A
+	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 12:30:16 -0600 (MDT)
+To: Michael Ang <mang@subcarrier.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] CVS rumors 
+In-Reply-To: Your message of "Thu, 12 Jul 2001 11:01:07 EDT."
+             <3B4DBBB3.9080101@subcarrier.org>
+References: <E15Jz7i-00028D-00@noam.fc.hp.com> <20010710172502.A6103@parcelfarce.linux.theplanet.co.uk> <E15K1Iz-0002RR-00@noam.fc.hp.com> <3B4D2AB1.5010809@subcarrier.org> <E15KiQF-0005Vh-00@noam.fc.hp.com>  <3B4DBBB3.9080101@subcarrier.org> 
+Date: Thu, 12 Jul 2001 12:30:13 -0600
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E15KlE5-0005j2-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame wrote:
+= True, but in the absence of a working date + branch checkout, it's a
+= reasonable interim solution (real solution is to fix cvs).
 
+There's another "solution".  date+branch checkout works on other branches
+just not on the trunk :-)  One idea I propose for discussion is moving
+development from the trunk to a branch so in the future we could do
+date+branch checkouts.  We'll soon have 2 development branches
+(2.4.x and 2.5.x) so we'll all need to learn to use a few more CVS
+features anyway.
 
- > = Tags are cheap.  Explicitly tagging at important moments is the way to
- > = go.  Relying on a date-based checkout is potentially less accurate, so
- > = IMO this shouldn't be the common practice.  There's no harm in 
-adding a
- > = static tag, and you can always remove it or possibly fix it up if you
- > = get it wrong.
- >
- > Tagging a linux source tree over the network is slow however.
+As for fixing CVS, there was no reply to my cvs bugs e-mail containing
+the ultra-simple test case showing that HEAD+date checkouts don't work.
 
+= I don't know of any way to get rid of the vendor branch taint other than
+= using 'cvs admin -b' or (less preferably) rcs directly.
 
-True, but in the absence of a working date + branch checkout, it's a
-reasonable interim solution (real solution is to fix cvs).
+Unfortunately if you're actually using the CVS default branch feature,
+safe-cvsimport's 'cvs admin -b' will make you unhappy :-)
 
+The other option is to never use cvs import -- rather late for
+us though there are some arguments for archiving the old repository
+and reinitializing -- especially just prior to 2.5 kernels.
 
- > More information on date+branch CVS checkouts:  When there are multiple
- > branches, a date-based checkout must also supply a branch, implicitly
- > or explicitly, to disambiguate.  RCS has this feature
- > and it works fine (see the 'co' man page).  I can't force CVS to do it
- > though, on the trunk anyway, despite it's being built upon RCS :-(
- >
- > So the workaround for date-based checkout of our trunk is.... use RCS
- > on a copy (can be 'cp -l') of our CVS repository :-( :-(
+= Ouch.  The import should have some distinct tag, and I guess using a
+= date tag is the best you'll get for trying to determine the state prior
+= to the merge (which, according to Murphy's Law, I predict overlapped
+= regular development).  My best advice is "don't do that then".
 
+Fortunately by diffing against Linus' tree, willy tends to catch the
+fallout from the mixed imports which we don't catch while manually
+resolving merges.
 
-Ugh.
-
-
- > = Where does the code for safe-cvsimport live?
- >
- > http://puffin.external.hp.com/cvs/build-tools/safe-cvsimport
- >
- > Beware -- it uses 'cvs admin -b' plus at the moment seems not to remove
- > upstream-removed files correctly.  I'm thinking of re-doing it to
- > avoid using 'cvs import' altogether -- it is in need of a rewrite.
-
-
-I don't know of any way to get rid of the vendor branch taint other than
-using 'cvs admin -b' or (less preferably) rcs directly.
-
-
- > = I haven't been following things enough to know what
- > = the issues related to "the vestiges of upstream imports" are.
- >
- > At least one upstream import+merge was done directly to the trunk.  So
- > changes which came with that import are unresolvable by
- > CVS during a merge and can require some sleuthing -- particularly
- > any files which were added/deleted at that time.
-
-
-Ouch.  The import should have some distinct tag, and I guess using a
-date tag is the best you'll get for trying to determine the state prior
-to the merge (which, according to Murphy's Law, I predict overlapped
-regular development).  My best advice is "don't do that then".
-
-	- Mike.
+	-P
