@@ -1,21 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from emout1.wish.nl (emout1.wish.nl [212.123.129.74])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 42736482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Mar 2002 08:36:15 -0700 (MST)
-Received: from mail3.inside.servers (mail3.INSIDE.servers [10.1.0.7])
-	by emout1.wish.nl (Postfix) with SMTP id 19F52147C7D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Mar 2002 17:06:58 +0100 (CET)
-Received: from p1055.nl.wish.net (HELO pleun) ([212.123.142.31]) (envelope-sender <p.strik@astrik.myweb.nl>)
-          by mail3.outside.servers (qmail-ldap-1.03) with SMTP
-          for <parisc-linux@lists.parisc-linux.org>; 20 Mar 2002 15:35:16 -0000
-Message-ID: <001b01c1d030$71097f60$0300a8c0@pleun>
-From: "P. Strik" <p.strik@astrik.myweb.nl>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 20 Mar 2002 17:57:59 +0100
+Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 98A03482A
+	for <parisc-linux@parisc-linux.org>; Wed, 20 Mar 2002 15:01:29 -0700 (MST)
+Date: Wed, 20 Mar 2002 22:01:11 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: John <hplinux@eagle.grdl.noaa.gov>,
+	<parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05
+ = working X!
+In-Reply-To: <20020315044546.C7D58483E@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0018_01C1D038.C599C6E0"
-Subject: [parisc-linux] samba doen't want to work
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,89 +24,75 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+On Thu, 14 Mar 2002, Grant Grundler wrote:
 
-------=_NextPart_000_0018_01C1D038.C599C6E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> John wrote:
+> > I wanted to share the good news that Grant's recent patch to "entry.S"
+> ...
+> > Thanks Grant!
+>
+> That's great news!
+>
+> But Thomas Bogendoerf should get most of the credit for figuring
+> out the problem and fix. I just implemented what he said.
+>
+> BTW, I've modified the patch a bit (removed an un-needed depdi)
+> and it's still not committed yet. I'd like to let Thomas
+> commit it himself since he really did the hard part.
 
-Hi Parisc users,
+I also downloaded and patched a 2.4.18-pa5 kernel with it,
+(just a simple conflict with the kernel version number in
+ the Makefile appeared, easy to solve).
 
-I have two problems, Installing samba 2.2.2 and executing a samba 2.2.3a =
-command=20
+It works on my C240 with a FX2 card. Well, it now recognizes
+the gfx card at startup and it seems to initialize it, but since
+I currently don't have a proper monitor, I can't tell you whether
+gfx is working or not :-/
+(BTW, I use the serial console on the C240, connected to a FreeBSD
+ notebook)
+At least the C240 is still running, so the patch doesn't do a harm ;)
 
-Samba 2.2.2 - CD
+Actually I HAVE a monitor (a 15" LCD) but it's max resolultion is about
+1024x786/70Hz. Since the FX/2 just supports 72 and 75Hz in
+the video selection menu at bootup, the monitor just tells me
+"signal is out of sync range".
 
-I use the latest parisc linux version, when i try to install samba i =
-receive when linux is trying to reach the cd-rom (other programs don't =
-give that error) the kernel fault 26, I have a several HP Parisc =
-workstations but this error only comes up at an HP Visualize B 180 L. I =
-try a several things to avoid this strange problem, re-install linux, =
-don't using dselect anymore but with apt-get install samba, nothing =
-works every time the same fault.=20
+I have mentioned this before (18 Dec 2001) in the mailing-list,
+and I was asking how and if you can change the FX-graphics to
+a custom resolution (mode 6). Grant replied
 
-Samba 2.2.3a - ftp.samba.org
+> Yes. I don't know exactly how though. I'd look in the User's Guide
+> (might be available on docs.hp.com).
 
-Because 2.2.2 won't work I try to install the latest samba version, but =
-it also won't work because when I try to execute some commands, like =
-smbpasswd and testparm Linux says that smb isn't a bash command (or =
-something like that).=20
+unfortunately I haven't found any information except this:
 
-I don't have a solution for these problems but I hope someone have!
+(http://docs.hp.com/cgi-bin/fsearch/framedisplay?top=/hpux/onlinedocs/B2355-90142/B2355-90142_top.html&con=/hpux/onlinedocs/B2355-90142/00/00/42-con.html&toc=/hpux/onlinedocs/B2355-90142/00/00/42-toc.html&searchterms=refresh&queryid=20020320-135018)
 
-Regards, Peter=20
 
-------=_NextPart_000_0018_01C1D038.C599C6E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+-------+++++++++========= snip =========++++++++-------
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi Parisc users,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have two problems, Installing samba =
-2.2.2 and=20
-executing a samba 2.2.3a command </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><U>Samba 2.2.2 - CD</U></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I use the latest parisc linux version, =
-when i try=20
-to install samba i receive when linux is trying to reach the cd-rom=20
-(other&nbsp;programs don't give that error)&nbsp;the kernel fault 26, I =
-have a=20
-several HP Parisc workstations but this error only comes up at an HP =
-Visualize B=20
-180 L. I try a several things to avoid this strange problem, re-install =
-linux,=20
-don't using dselect anymore but with apt-get install samba, nothing =
-works every=20
-time the same fault. </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><U>Samba 2.2.3a - <A=20
-href=3D"ftp://ftp.samba.org">ftp.samba.org</A></U></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Because 2.2.2 won't work I try to =
-install the=20
-latest samba version, but it also won't work because when I try to =
-execute some=20
-commands, like smbpasswd and testparm Linux says that smb isn't a bash =
-command=20
-(or something like that). </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I don't have&nbsp;a solution for these =
-problems but=20
-I hope someone have!</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards, Peter =
-</FONT></DIV></BODY></HTML>
+Changing the Monitor Type
+=========================
 
-------=_NextPart_000_0018_01C1D038.C599C6E0--
+A configuration tool is available to change the monitor type on HP
+VISUALIZE-FX devices. Monitor resolution, refresh rate and stereo mode
+settings may be configured using the setmon tool. To change the monitor
+type, the setmon command can be executed directly or done through the
+SAM system administration tool.
+
+The setmon executable is located at /opt/graphics/common/bin/setmon.
+Under SAM this component is located under the top-level "Display"
+folder, next to the "X Server Configuration" icon.
+
+-------+++++++++========= snip =========++++++++-------
+
+
+It seems this utility exists only for the Visualize-FX cards.
+Moreover I don't know whether this affects only X (on HP/UX).
+
+Does anybody have information about this utility ?
+(I don't have HP/UX, so I can try it ...)
+Perhaps it is possible to port/run it. Or does anybody has information
+how to change the custom resolution on FX-Cards (without this utility) ?
+
+Thanks in advance, max!
