@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 83109483A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Aug 2002 15:28:38 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17hzVN-0003Wi-00; Thu, 22 Aug 2002 22:28:37 +0100
-Date: Thu, 22 Aug 2002 22:28:36 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] cvs.parisc-linux.org
-Message-ID: <20020822222836.Y29958@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.44.0208221053060.13559-100000@garibaldi.apptechsys.com>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26F04483A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Aug 2002 17:35:55 -0600 (MDT)
+Date: Thu, 22 Aug 2002 19:32:58 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: "B. Douglas Hilton" <bdhilton@charter.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Voodoo2 PCI as XFree86 2D board on HP9000 C200
+Message-ID: <20020822233258.GA30772@systemhalted>
+References: <3D5E0430.2000407@charter.net> <20020818044613.0969E4829@dsl2.external.hp.com> <1029666136.15858.3.camel@irongate.swansea.linux.org.uk> <3D644497.7090709@charter.net> <1030040213.3090.39.camel@irongate.swansea.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0208221053060.13559-100000@garibaldi.apptechsys.com>; from jeremyd@apptechsys.com on Thu, Aug 22, 2002 at 10:54:54AM -0700
+In-Reply-To: <1030040213.3090.39.camel@irongate.swansea.linux.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,12 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Aug 22, 2002 at 10:54:54AM -0700, Jeremy Drake wrote:
-> is it just me, or is cvs.parisc-linux.org down?  I get 
+> 
+> It does on x86 ... There is also sstfb which is a frame buffer/console
+> text driver for the voodoo1/2. That might need some endianisation. I'm
+> wondering if a USB card and a voodoo2 can turn even an A180 into a
+> desktop ;)
+> 
 
-we had a twelve hour outage caused by a glitch on hp's network.  in these
-circumstance, since lists.p-l.org and cvs.p-l.org are the same machine,
-complaining on the mailing lists gets nowhere ;-)
+I hope to get a PCI Radeon 7000 this weekend to turn a C3K into
+a _killer_ workstation ;)
 
--- 
-Revolutions do not require corporate support.
+c.
