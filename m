@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 786974837
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 11:24:02 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id owczlaaa for parisc-linux@lists.parisc-linux.org; Wed, 13 Mar 2002 11:23:24 -0700
-Date: Wed, 13 Mar 2002 10:23:35 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: joel.soete@freebel.net
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] evms-0.9.2 build utilities problem
-Message-ID: <20020313182335.GD6580@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <1016030200.3c8f63f89a0ff@webmail.tiscali.be>
-Mime-Version: 1.0
+Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7AE9C4862
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 14:57:53 -0700 (MST)
+Message-ID: <3C8FCB5D.1F73348D@gmx.at>
+Date: Wed, 13 Mar 2002 22:57:49 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: "Dreeling, Michael" <michael.dreeling@marconi.com>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] E35 816 Server & PA/Linux
+References: <0725120622E7D411AEF70020485A6B0CD71AF5@dl-msgusr-01.eu.fore.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1016030200.3c8f63f89a0ff@webmail.tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +22,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Well launch it made an immidiate Segmentation fault.
+You may have a chance, using this machine as a diskless machine
+with NFS ROOT file system.
+
+We have added a "PDC ROM console" driver to the kernel (I needed this
+for my E55). You can compile a kernel with the CONFIG_PDC_CONSOLE
+(config under "Non-standard serial port support" under "Character
+Devices")
+and follow the setup instruction in the HELP of CONFIG_PDC_CONSOLE.
+(Creating the device `/dev/ttyB0' and setting up the `console=ttyB0'
+kernel line parameter and modify `/etc/inittab'.
+
+If it is the same as on my E55, you cannot access the serial ports
+(MDP MUX board with 8 serial), the parallel port and the SCSI interface.
+The serial port-0 on the MUX is used a PDC console (default setup),
+and the new linux driver accesses this ROM PDC console (port 0).
+
+The core machine and ethernet is working on my E55.
+
+I hope this helps and good luck
+
+Christoph P.
+
+
+
+"Dreeling, Michael" wrote:
 > 
-> Now I recompile without "-fPIC" and it works fine.
+> Hi People,
+> I've got a newly acquired E35 816 Server which i'm trying to stick PA-Linux
+> onto.
+> Unfortunately i get this old error, which i have seen many people have
+> problems with.
 > 
-> Any idea on what is wrong?
+> Loading ramdisk 1946807 bytes @ 03e14000...
+> Branching to kernel entry point 0x00100000.  If this is the last
+> message you see, you may need to switch your console.  This is
+> a common symptom -- search the FAQ and mailing list at parisc-linux.org
+> 
+> I had seen on the site that someone had an E35 up and running (in the
+> Hardware Database)
+> but i also know that the E Series are officially unsupported. I tried the
+> 0.93 (latest) Version from the 50MB ISO.
+> Is there any way i can get parisc lunix onto this Box??
+> 
+> Thanks
+> Michael
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-what versions of gcc-3.0 and binutils are you running?
-
-dpkg -s gcc-3.0 |grep Version
-dpkg -s binutils |grep Version
-
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
