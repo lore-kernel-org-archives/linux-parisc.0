@@ -1,33 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2E3DC482A
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 22:09:35 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id jbfdiaaa for parisc-linux@parisc-linux.org; Tue, 16 Oct 2001 21:04:55 -0700
-Date: Tue, 16 Oct 2001 21:09:25 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011016210925.H537@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B3DD6482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 22:13:26 -0600 (MDT)
+Date: Wed, 17 Oct 2001 00:14:53 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] new glibc dpatch
+Message-ID: <20011017001453.A11826@megatonmonkey.net>
+References: <20011017004218.K15532@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] glibc builds!
+In-Reply-To: <20011017004218.K15532@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Oct 17, 2001 at 12:42:18AM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-As it turns out there was a binutils bug that seems to be causing the
-glibc build failures. it was also affecting mips. the binutils bug is
-fixed in the upcoming (tomorrow) -3 release.
+> 
+> due to a few people hassling me, i've created a new hppa patch for glibc.
+> it incorporates a couple of changes Carlos posted to the list and adds a
+> couple of diffs of my own.  i've sent it to BenC for the 2.2.4-4 release
+> of glibc, which he assures me is imminent.
+> 
 
-glibc is building on my box now. I will upload RSN.
+That's my name!
 
-Thanks to Ryan Murray <rmurray@debian.org> for the heads up!
+> You can find it at
+> ftp://puffin.external.hp.com/pub/parisc/src/glibc22-hppa.dpatch
+> 
+> have fun.  it's still building on paer.d.o, but i would expect it to
+> fail to build in the same place as before.
 
-For those of you interested in looking at glibc, there are some warnings
-in atomicity.h (we don't have a hppa-specific one) and some of the
-linuxthreads tests are failing. Patches will be much appreciated :)
+Looking through the patch changes and comparing to mine.
+(The build has begun)
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Just a comment about your changes to ./sysdeps/ia64/dl-fptr.c
+
+=====
+--- glibc22-hppa.dpatch	Tue Oct 16 20:52:02 2001
++++ glibc22-hppa.dpatch.mw	Tue Oct 16 21:05:27 2001
+@@ -1135,7 +1135,7 @@
+      unsigned int npages;		/* # of pages to allocate */
+  #ifdef _LIBC_REENTRANT
+ -    volatile int lock;
+-+    __atomic_lock_t lock;
+++    static __atomic_lock_t lock = __ATOMIC_LOCK_INIT;
+      sigset_t full_sigset;
+  #endif
+      /* the next to members MUST be consecutive! */
+=====
+
+Should the lock be static and initialized? Comment?
+
+c.
