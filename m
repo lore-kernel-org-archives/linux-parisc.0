@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CBBDE482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Aug 2003 11:06:52 -0600 (MDT)
-Date: Tue, 12 Aug 2003 19:06:44 +0200
-Message-ID: <3F29178A00002DBE@ocpmta7.freegates.net>
-In-Reply-To: <20030812160612.GF20514@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] itlb miss handler optimizations!
-To: "Grant Grundler" <grundler@parisc-linux.org>,
-	"Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: "Matthew Wilcox" <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org, "LaMont Jones" <lamont@hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8E504482D
+	for <parisc-linux@parisc-linux.org>; Tue, 12 Aug 2003 13:23:31 -0600 (MDT)
+From: bame@hp.com
+Reply-To: bame@hp.com
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 -> 2.6 tree switch tomorrow 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Sat, 09 Aug 2003 17:39:31 BST." <20030809163931.GD3169@parcelfarce.linux.theplanet.co.uk>
+References: <20030806184826.GA11934@ldl.fc.hp.com> <20030807171149.B2A7A7306A@fc.hp.com>  <20030809163931.GD3169@parcelfarce.linux.theplanet.co.uk> 
+Date: Tue, 12 Aug 2003 13:23:29 -0600
+Message-Id: <20030812192330.346AF73122@fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->osdl-aim-7 benchmark probably stresses both itlb and dtlb.
->(available from osdl.org - URL is in linux-ia64 archive)
+> OK.  Some files were missing from the initial import, so I added them.
+> 
+> However, I can't get a linus branch out of it:
 
-Ok I finaly find it as re-aim-7 sf.net project. Just launch (alltest) with
-kernel-64bits+ C.patch . I will let run for the night and relaunch it with
- tommorrow morning with original kernel-64bits.
+Yeah I forgot to lay that down.  FYI it's not a branch now -- just a
+normal tag which is moved to the latest import.
 
-Thanks,
-    Joel
+> I suspect this will hinder using cvs-import to add 2.6.0-test3.
 
+Imported and merged.
 
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+	-P
