@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vdsl-130-13-103-114.phnx.uswest.net (vdsl-130-13-103-114.phnx.uswest.net [130.13.103.114])
-	by dsl2.external.hp.com (Postfix) with SMTP id F0127483E
-	for <parisc-linux@parisc-linux.org>; Tue, 14 Oct 2003 00:02:49 -0600 (MDT)
-Message-ID: <z--1$-$k2c-9q1@5uw6wk0b>
-From: "Charles Quinn" <bjnqemnf@aol.com>
-Reply-To: "Charles Quinn" <bjnqemnf@aol.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Tue, 14 Oct 03 05:54:14 GMT
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 81298483E
+	for <parisc-linux@parisc-linux.org>; Tue, 14 Oct 2003 10:59:55 -0600 (MDT)
+Date: Tue, 14 Oct 2003 18:59:52 +0200
+Message-ID: <3F8A272E0000157A@ocpmta3.freegates.net>
+In-Reply-To: <20031003114959.GM24824@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org,
+	"Derek Engelhaupt" <derekengelhaupt@rocketmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="A5E72_0__A__7AF6_0"
-Subject: [parisc-linux] Want to go to a party?
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,54 +23,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---A5E72_0__A__7AF6_0
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Hi Matthew,
 
-<body text=3D"#000000" link=3D"#000000" vlink=3D"#000000" alink=3D"#000000=
-">
-<div align=3D"center"><!-- tart --><font size=3D"5" color=3D"#0000=
-00" face=3D"Arial">There's a
-  P<!-- texaco -->is<!-- knife -->s P<!-- nightgown -->art=
-<!-- freewheel -->y on and you're all invite<!-- cross -->d!</fo=
-nt>
-<table width=3D"541" height=3D"143" border=3D"6" bgcolor=3D"#FFFF00" class=
-=3D"border" bordercolor=3D"#FFCC00"><!-- bravura -->
-<tr><!-- dunkirk --><td height=3D"131" align=3D"center" valign=3D"mid=
-dle" class=3D"txt" style=3D"padding-left: 15; padding-right: 15"
-bgcolor=3D=
-"#FFFF99">A
- Very w<!-- refugee -->e<!-- finite -->t site for those who lo<=
-!-- anomie -->ve f<!-- gullah -->il<!-- pay -->thy pi=
-<!-- wreckage -->ss<!-- kimball -->ing 
- fun during s<!-- agreed -->e<!-- appendage -->x. HU<!-- =
-gigabit -->GE database of qua<!-- phillips -->lity pi<!-- =
-rain -->ctur<!-- embedded -->es 
- and vid<!-- crony -->eos: Pi<!-- lapel -->ss s<!-- =
-argonaut -->how<!-- paulo -->ers, G<!-- frigate -->i<!-- =
-minesweeper -->rls p<!-- appendices -->iss<!-- mew -->ing, Hi<=
-!-- mineral -->dden toil<!-- platonism -->et 
- s<!-- aau -->pyc<!-- divest -->ams, even fe<!-- =
-charcoal -->ma<!-- abroad -->le e<!-- barnyard -->jacu<!-- =
-threaten -->latio<!-- dietz -->ns! here's a pi<!-- =
-equestrian -->ss p<!-- choctaw -->ar<!-- illusory -->ty on and =
-you're all invited to C<!-- edifice -->U<!-- mccall -->M! A
- V<!-- madeleine -->E<!-- quantico -->RY w<!-- telephone -->et s=
-ite for those who love f<!-- twombly -->il<!-- beachhead -->thy p<=
-!-- clothesbrush -->iss<!-- bianco -->ing fu<!-- caiman -->n!<=
-br><br><a href=3D"http://route@www.surfbling.com/pt/index.html?=
-ada">E<!-- archibald -->nt<!-- cosec -->er he<!-- =
-quantitative -->re to experie<!-- graham -->nce
- it</a></td></tr></table><a href=3D"http://blather@www.surfbling.com/=
-pt/index.html?laud">C<!-- combustion -->lic<!-- metropolis -->=
-k 
- he<!-- indemnity -->re for ha<!-- soft -->rdco<!-- =
-moisten -->re m<!-- vary -->ov<!-- firewood -->ies, li<!-=
-- wheelhouse -->ve p<!-- bite -->is<!-- workplace -->sing sh<=
-!-- blackberry -->ows, toi<!-- deluxe -->let ca<!-- wellesley -=
-->ms,<br> x<!-- tracy -->xx p<!-- arnold -->i<!-- =
-roy -->ss pi<!-- ltd -->cs and 
- so<!-- attire -->aki<!-- becker -->ng w<!-- hornet -->e=
-t or<!-- lenten -->gie<!-- corporate -->s!</a></div></body>
+Just comeback to you on this stuff to be sure I well understand :)
 
---A5E72_0__A__7AF6_0--
+>> As I try, without any success :(, to find where 'rules for non-coherent
+>aliases'
+>> are not respected, I will waiting for a fix.
+>
+>Well, it's hard.  Consider a page in the page cache.  It has a kernel
+>address and one-or-more user addresses.  The user addresses all follow the
+>coherency rules but the kernel address doesn't.  If you look in Appendix
+F,
+>we're not allowed to have multiple write-capable translations to the same
+>address.
+
+If I well understand it means that a same real (absolute) address has a different
+virtual addresse for each processor?
+
+>I think the only way to solve this is by (ab)using kmap to ensure that
+>kernel pages are only accessed via coherent mappings.
+
+I find back an interesting info into <http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008101.html>
+
+where it is mentioned 'ping-pong the translations...'.
+Do you think it could be a solution?
+(btw Do you have any idea where i can find of the detail way to implement
+it?)
+
+thanks again,
+    Joel
+
+-------------------------------------------------------------------------
+L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
+pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
