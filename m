@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 58D534860
-	for <parisc-linux@parisc-linux.org>; Sun, 27 Apr 2003 15:04:56 -0600 (MDT)
-Date: Sun, 27 Apr 2003 13:12:19 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69512485E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Apr 2003 17:28:35 -0600 (MDT)
+Date: Sun, 27 Apr 2003 15:34:55 -0700
 From: Randolph Chung <randolph@tausq.org>
 To: Alexander Gabert <pappy@nikita.ath.cx>
-Cc: parisc-linux@parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] -fPIC position independent code on parisc
-Message-ID: <20030427201219.GE25257@tausq.org>
+Message-ID: <20030427223455.GF25257@tausq.org>
 Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030427200418.GA30929@nikita.ath.cx>
+References: <20030427200418.GA30929@nikita.ath.cx> <20030427201219.GE25257@tausq.org> <20030427231210.GA31520@nikita.ath.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030427200418.GA30929@nikita.ath.cx>
+In-Reply-To: <20030427231210.GA31520@nikita.ath.cx>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,40 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> but what exactly is position independent code?
+(Please reply on list and not via private mail)
 
-it's exactly what it says, it will work no matter at what position
-the code is loaded.
+> i do not understand the "LR'" syntax
+[etc]
 
-e.g.:
+Try
+http://docs.hp.com/cgi-bin/onlinedocs.py?mpn=92432-90012&service=hpux&path=00/00/19&title=HP%20Assembler%20Reference%20Manual
 
-non-PIC
->     18          ldil LR'.LC0,%r19
->     19          ldo RR'.LC0(%r19),%r26
->     20          bl printf,%r2
+> it has been linked already, how do i find out, where it is resolved?
 
-This loads the address of .LC0 (your string) relative to a fixed address
-into r26 (arg0). The address is resolved statically at link time, so
-if the code is moved to a different starting address, the address will 
-be wrong.
+After you link an application, you can disassmble the executable.
 
-PIC:
->     21          addil LT'.LC0,%r19
->     22          ldw RT'.LC0(%r1),%r1
->     23          copy %r1,%r26
->     24          bl printf,%r2
+> but what with those LR' RR' LT' RT'
 
-This calculates the offset of .LC0 relative to the linkage table pointer
-(r19) by creating a GOT entry. The linkage table pointer is assigned 
-value at runtime based on where the dynamic loader loads the code into 
-memory, so the load will always point to the the right place wherever 
-it is loaded. 
+They are all part of the assembler operators for field selection.
 
-When you have a shared library, different programs that are linked
-against the library may load it at different offsets, so the code must 
-be position independent for it to work.
+> linkage table pointer?
+> what is this? (i am new)
 
-HTH
+There are several documents that describe the PA runtime linked on the
+parisc-linux website. You might want to check them out. The ELF
+specification, together with the related architecture supplements, 
+describe how relocations work.
+
 randolph
 -- 
 Randolph Chung
