@@ -1,30 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from harper.owbn.net.nz (210-54-225-130.adsl.xtra.co.nz [210.54.225.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3838A482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Apr 2001 04:42:42 -0600 (MDT)
-Received: from kindred ([192.168.20.4])
-	by harper.owbn.net.nz (8.11.0/8.11.0) with ESMTP id f3LAiNB03480
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Apr 2001 22:44:27 +1200
-From: "Jason Saggers" <psyclone@owbn.net.nz>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Sat, 21 Apr 2001 22:45:23 +1200
-Message-ID: <000001c0ca50$2b6c82e0$0414a8c0@darknight.gen.nz>
+Received: from rhenium (rhenium.btinternet.com [194.73.73.93])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 050AF482A
+	for <parisc-linux@parisc-linux.org>; Sat, 21 Apr 2001 05:21:03 -0600 (MDT)
+Date: Sat, 21 Apr 2001 12:16:46 +0100 (BST)
+From: Dave Gilbert <gilbertd@treblig.org>
+To: Sandy Harris <sandy@storm.ca>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Appollo 730
+In-Reply-To: <3AE101B7.5EFB4E2F@storm.ca>
+Message-ID: <Pine.LNX.4.10.10104211207561.702-100000@tardis.home.dave>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Hello and Question about the E45
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Fri, 20 Apr 2001, Sandy Harris wrote:
 
-	I realiase that the E45's arent completely support by this project, but =
-has anyone succeded in getting on to boot etc...
+> I've found a pile of machines with an Appollo nameplate, rather than
+> HP, and a 730 model number. They look a fair bit like a 735, deeper
+> case than 712 or 715, boards that slide in from the back. The vendor
+> assures me they use a first generation PA-RISC CPU.
 
-	I am getting it to boot part why... and the just stops..... No errors =
-nothing
+As of yesterday I got my first HP - it is marked as Hewlett Packard Apollo
+735.
 
-	Any information would be appreciated.  I am currently using the 0.5 iso =
-images.  Am about to try the later kernels etc in the next couple of =
-days.
+I'm told it is actually a 730 that was upgraded to the 735 - but
+/proc/cpuinfo still shows it as a 730 - hmm:
 
-Jason
+> processor     : 0
+> cpu family    : PA-RISC 1.1a
+> cpu           : PA7000 (PCX-S)
+> cpu MHz               : 99.000000
+> model         : 9000/730
+> model name    : King Cobra (730)
+
+The SCSI is being a bit of a pain - but the machine appears to be missing
+a SCSI terminator, something that I'll hopefully solve today.
+
+One thing to remember is that this thing uses 'rboot' rather than the
+normal bootp - you'll need to find yourself a copy of rbootd; I found a
+copy nestling on the Debian unstable site; it built with a bit of fight on
+the Linux/Alpha box I'm booting it off.
+
+Dave
+
+-- 
+ ---------------- Have a happy GNU millennium! ----------------------   
+/ Dr. David Alan Gilbert    | Running GNU/Linux on Alpha,68K| Happy  \ 
+\ gro.gilbert @ treblig.org | MIPS,x86,ARM, SPARC and HP-PA | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
