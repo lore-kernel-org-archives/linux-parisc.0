@@ -1,399 +1,65 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailproxy.de.uu.net (mailproxy.de.uu.net [192.76.144.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 66A4C482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 03:13:32 -0600 (MDT)
-Received: from hedd.de (1cust-22.au1.dd.de.alter.net [149.228.0.22] (may be forged))
-	by mailproxy.de.uu.net (5.5.5/5.5.5) with ESMTP id LAA29784
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 3 Aug 2001 11:13:29 +0200 (MET DST)
-Received: from hedd.de (nt10 [192.168.0.110])
-	by hedd.de (8.9.3/8.9.3) with ESMTP id JAA07819
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 3 Aug 2001 09:57:10 +0200
-Message-ID: <3B6A6E3D.40CF73C1@hedd.de>
-Date: Fri, 03 Aug 2001 11:26:21 +0200
-From: Martin Eisfeld <me@hedd.de>
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A56D0482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Aug 2001 04:23:40 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Message-ID: <OFCFD0268B.6552637A-ONC1256A9D.0025254D@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Fri, 3 Aug 2001 12:26:16 +0200
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems with Installing of 0.9.2 on HP 715/100
-Content-Type: text/plain; charset=us-ascii
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] XFree86 on B180
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
-here are the full putput from serial terminal (terminalemulation with
-hyperterminal from winnt).
-Most of it was not displayed on the monitor attached to the hp9000.
-Bye,
-Martin Eisfeld
+Hi all,
 
+To test Xfree86, I install following packages:
 
-0x04.1081
-0x04.1080
-0x04.1082
-0x04.1086
-0x04.1087
-0x04.108A
-0x04.108B
-0x04.108C
-0x04.1083
-0x04.10D1
-0x04.10D2
-0x04.2090
-0x04.2091
-0x04.209F
-0x04.2096
-0x04.2094
-0x04.2095
-0x06.C201
-0x04.10DA
-0x04.10D7
-0x04.10D8
+xserver-xfree86_4.0.3-4_hppa.deb
+xserver-common_4.0.3-4_hppa.deb
+xterm_4.0.3-4_hppa.deb
+xlibmesa3_4.0.3-4_hppa.deb
+xlib6g_4.0.3-4_all.deb
+xfree86-common_4.0.3-4_all.deb
+xfonts-scalable_4.0.3-4_all.deb
+xfonts-base_4.0.3-4_all.deb
+xfonts-75dpi_4.0.3-4_all.deb
+xfonts-100dpi_4.0.3-4_all.deb
+xlibs_4.0.3-4_hppa.deb
+libxaw7_4.0.3-4_hppa.deb
+libfreetype6_2.0.2.20010514-1_hppa.deb
+xdm_4.0.3-4_hppa.deb
+xbase-clients_4.0.3-4_hppa.deb
+libxaw6_4.0.3-4_hppa.deb
+xutils_4.0.3-4_hppa.deb
 
+On the B180 I use the same XF86config as on 712/80, the one from  Thomas
+Bogendoerfer available at:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-June/012928.html
 
-----------------------------------------------------------------------------
-BootRom Version    1.2
-Memory Size:  256 MB
-----------------------------------------------------------------------------
+(I also changed "repeat_type=ms3" to  "repeat_type=" in /etc/gpm.conf to
+make mouse working correctly)
 
+With kernels 2.4.0-32 and 2.4.6 xdm failed because:
+"(EE) No devices detected.
 
+Fatal server error:
+no screen found.
+..."
 
+With the last kernel 2.4.7-pa1, it failed: on the console a lot of "kernel
+BUG at init.c:731!"
 
-(c) Copyright 1990-1994, Hewlett-Packard Company.
-All rights reserved
+Thanks in advance for all advises,
+     Joel
 
-Press <ESCAPE> to stop boot sequence.
-0x04.2097
-0x04.2098
-0x04.2099
-0x04.209A
-0x04.209B
-0x04.1091
-0x04.1092
-0x04.1093
-0x04.1094
-0x04.1095
-0x04.1096
-0x04.1090
-0x04.108D
-0x04.10D4
-0x04.10D9
-0x04.4080
-0x04.4081
-0x04.4082
-0x06.C2EA
-0x06.C2EF
-0x04.300C
-0x04.300C
-0x04.300B
-----------------------------------------------------------------------------
-Command                                Description
--------                                -----------
-Auto [boot|search] [on|off]            Set/show auto mode
-Boot [pri|alt [isl]]                   Boot from primary or alternate
-path
-Boot [scsi|eisa.<slot>[.<addr>]] [isl] Boot from SCSI or EISA
-Boot lan[.<addr>] [install] [isl]      Boot from LAN
-Chassis [on|off]                       Set/show chassis codes display
-mode
-DefaultSS                              Reboot and set EEPROM to default
-values
-Diagnostic [on|off]                    Set/show diagnostic boot mode
-Fastboot [on|off]                      Set/show fast boot mode
-Help                                   Show this command menu
-Information                            Show system information
-LanAddress                             Show LAN station addresses
-Monitor [<DEV>[.<type>]]               Set/show graphics monitor type
-                                       (<DEV>=graphics|graphics_<1|2>)
-Path [pri|alt [<DEV>[.<addr>]]]        Set/show boot source path
-                                       (<DEV>=lan|scsi|eisa.<slot>)
-Path [console [<DEV>[.<parm>]]]        Set/show boot console path
-                                       (<DEV>=<RS232>|<GRAPH>
-                                        <RS232>=rs232|rs232_2
-                                        <parm>=<baud>.<length>.<parity>
-                                        <GRAPH>=graphics|graphics_<1|2>
-                                        <parm>=<monitor>)
-Path [keyboard [hil|ps2]]              Set/show boot keyboard path
-Pim [hpmc|toc|lpmc]                    Show PIM info
-Search [ipl] [scsi|eisa]               Show potential boot devices
-Search [ipl] [lan [install]]           Show potential boot LAN devices
-Secure [on|off]                        Set/show security mode
-----------------------------------------------------------------------------
-BOOT_ADMIN> boot scsi.2.0
-0x06.C740
+PS: I also try to boot with palinux-0.9.2 CD on a B2000 but the kernel
+panic at the boot time (sorry no more info)
 
 
 
 
-Attempting to boot.
-
-Loading Initial Program Loader
-
-0x06.C580
-
-IPL successfully loaded
-
-
-Booting
-0x06.C7FF
-palo ipl 0.92 root@spqr Mon Jun 25 23:03:13 CEST 2001
-0/vmlinux32 2853588 bytes @ 0x6ad6800
-0/vmlinux64 3585851 bytes @ 0x6d8f800
-0/ramdisk 1991209 bytes @ 0x70fb000
-
-Command line: 'root=/dev/ram console=ttyS0 TERM=vt102'
-
-Kernel: partition 0 file /vmlinux
-Ramdisk: partition 0 file /ramdisk
-Warning: kernel name doesn't end with 32 or 64... Guessing Annoyance:
-Firmware d
-oes not support PDC_MODEL_CAPABILITIES call
-32
-ELF32 executable
-Entry 00100000 first 00100000 n 4
-Segment 0 load 00100000 size 1606948 mediaptr 0x1000
-Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
-Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
-Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
-Loading ramdisk 1991209 bytes @ 0fe09000...
-branching to kernel entry point 0x00100000
-Set default PSW W bit to 0
-0x02.CBF0
-0x02.503F
-
-GRs
-
-0x00000000
-0x00000000
-0xF4100000
-0x00000001
-0xF5000000
-0x00000003
-0x00000001
-0xF0024328
-0x0000000D
-0xF0305698
-0xF4300000
-0x00000000
-0x00080BEF
-0x00010000
-0x00000005
-0x00000032
-0x00000000
-0x00283BAB
-0x00000001
-0x00000000
-0x00000000
-0xF0024000
-0x00000500
-0x0B00002D
-0x00000001
-0x00000000
-0x00283BAB
-0x1028A010
-0x00000001
-0xF0305698
-0x003058D8
-0x007793E8
-
-CRs
-
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x000000C0
-0x0000001C
-0x00000000
-0x00000000
-0x00105800
-0xFFFFFFFF
-0xF153AA4B
-0x00000000
-0x00778944
-0xB3202000
-0x00000000
-0x00778964
-0x00007F00
-0x80000000
-0x002A6000
-0x002A6000
-0xFFFFFEFF
-0x0900DEEE
-0xAAAAAAAA
-0xF0002000
-0x00000000
-0x0000001F
-
-SRs
-
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-0x00000000
-
-OTHER
-
-0x00000000
-0x00778948
-0x20000000
-0x9E000004
-0x00000000
-0x00000000
-0x00000000
-0x00310000
-0x00000000
-0x00000000
-0x00000000
-0xF0305710
-0xFFFBE000
-0x00000000
-0x00000002
-0x301048E6
-0x3B6A561A
-
-0x02.CBFB
-
-
-
-Dumping Stack from 00304000 to 003058d8:
-
-Dumping Stack from 10292000 to 10292700:
-2000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2020 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2040 00000000 00000000 00000000 0029e000 00000000 00000000 00000000
-00000000
-2060 00000000 00000000 00000000 0010c8a4 00000000 00000000 00000000
-00000000
-2080 00007f00 00000000 f4100000 00000001 f5000000 00000003 00000001
-f0024328
-20a0 0000000d f0305698 f4300000 00000000 00080bef 00010000 00000005
-00000032
-20c0 00000000 00283bab 00000001 00000000 00000000 f0024000 00000500
-0b00002d
-20e0 00000001 00000000 00283bab 1028a010 00000001 f0305698 003058d8
-007793e8
-2100 00000002 301048e6 3b6a561a 00000000 00000000 00000000 00000000
-00000000
-2120 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2140 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2160 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2180 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-21a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-21c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-21e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2200 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2220 00000000 00000000 00778944 00778948 0000001f 00000000 00000000
-00000000
-2240 00000000 0000001c b3202000 00000000 00778964 00000000 00000000
-00000000
-2260 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2280 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-22a0 00000000 00000000 00000000 10106750 00000000 00000000 00000000
-00000000
-22c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-22e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2300 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2320 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2340 00000000 00000000 0000001f 00296000 002a6000 f0012870 00000000
-00000000
-2360 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2380 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-23a0 00000000 00000000 00000000 10102220 00000000 00000000 00000000
-00000000
-23c0 00000000 00000000 00000001 10292080 00000000 00000000 00000000
-f0002840
-23e0 00310000 00000037 f0305698 0000000d f0002848 00000000 00000000
-00000001
-2400 10292080 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2420 00000000 00000000 00000000 10102614 00000000 00000000 00000000
-00000000
-2440 102565e4 00000001 10292080 00000000 00000000 00000000 00000000
-00000000
-2460 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2480 00000000 00000000 00000000 00000000 00000000 003058d8 00304000
-10256774
-24a0 00000000 00000000 00000000 10102568 00000000 00000000 00000000
-00000000
-24c0 0004000e 10337010 10102614 00304000 003058d8 10256000 00000000
-f0002848
-24e0 0000000d f0305698 00000037 00310000 f0002840 00000000 00000000
-f0305710
-2500 10292080 00283bab 00000002 00000000 00000000 f0105800 01c9c380
-00000060
-2520 00000001 00000001 1029f3c0 1028a010 0000002a 00000000 10292700
-00000000
-2540 000d081f 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2560 00000000 00000000 00000000 00000000 00000000 00000000 40800000
-00000000
-2580 7fffffff 7fffffff 7f7fffff ffffffff 7f7fffff ffffffff 00000000
-00000000
-25a0 00000000 00000000 41800000 00000000 00000010 00000010 00000000
-00000000
-25c0 7fffffff 7fffffff 41000000 00000000 40800000 00000000 7fffffff
-7fffffff
-25e0 41000000 00000000 7fffffff 7fffffff 40800000 00000000 41000000
-00000000
-2600 40300000 00000000 40200000 00000000 40200000 00000000 41800000
-7fffffff
-2620 40000000 00000000 40000000 00000000 40800000 00000000 41000000
-00000000
-2640 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-2660 00000000 00000000 10102574 10102578 0000001f 00000000 00000000
-00000000
-2680 00000000 0000001f 0c701093 00000000 00304008 00000000 00000000
-00000000
-26a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-26c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-26e0 00000000 00000000 00000000 10106750 00000000 00000000 00000000
-00000000
-
-Kernel Fault: Code=15 regs=102924c0 (Addr=00304008)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001110
-r0-3     00000000 10337010 10102614 00304000
-r4-7     003058d8 10256000 00000000 f0002848
-r8-11    0000000d f0305698 00000037 00310000
-r12-15   f0002840 00000000 00000000 f0305710
-r16-19   10292080 00283bab 00000002 00000000
-r20-23   00000000 f0105800 01c9c380 00000060
-r24-27   00000001 00000001 1029f3c0 1028a010
-r28-31   0000002a 00000000 10292700 00000000
-sr0-3    00000000 00000000 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 10102574 10102578
- IIR: 0c701093    ISR: 00000000  IOR: 00304008
- ORIG_R28: 00000000
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
