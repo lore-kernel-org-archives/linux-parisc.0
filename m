@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7F4D24829
-	for <parisc-linux@parisc-linux.org>; Wed, 16 Oct 2002 07:49:14 -0600 (MDT)
-Date: Wed, 16 Oct 2002 16:45:34 +0200
-Message-ID: <3DA56CAE000020FE@ocpmta8.be.tiscali.com>
-From: jsoe0708@tiscali.be
-To: parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Subject: [parisc-linux] XFS (CVS release problem)
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9789E4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Oct 2002 18:38:17 -0600 (MDT)
+Date: Wed, 16 Oct 2002 17:40:00 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: PA/Linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] New hppa64 toolchain available
+Message-ID: <20021017004000.GT5602@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <B6610D13-DFA2-11D6-A1B0-0030656F07A2@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <B6610D13-DFA2-11D6-A1B0-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,38 +24,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+> ftp://ftp.parisc-linux.org/unofficial-debs/gcc-hppa64_3.0.4ds3- 
+> 7_hppa.deb
 
-For kernel 2.4.19 I prefer to go to cvs release of xfs;?
+this is now superceded by
 
-So I build a 'patch' against vanilla k-2.4.19 and apply it against k-2.4.19-pa22.
+ftp://ftp.parisc-linux.org/unofficial-debs/gcc-hppa64_3.0.4ds3-7.1_hppa.deb
 
-(Just met a problem of conflict: see early in this ml)
+which fixes a problem when using -nostdinc (e.g. when building a kernel)
 
-But the build failled because:
-"../xfs_bmap_btree.h:661:35: "0" may not appear in macro parameter list"
+> Thanks Randolph Chung for making it a debian package :)
 
-and in this header I found:
-"...
-#else
-...
-#define xfs_bmbt_disk_set_allf(r, 0, b, c, v) \
-        xfs_bmbt_set_allf(r, 0, b, c, v)
-#endif
-...
-"
+and thanks to thibaut for pointing out to me that it's broken :-)
 
-just above there are:
-void
-xfs_bmbt_disk_set_allf(
-        xfs_bmbt_rec_t  *r,
-        xfs_fileoff_t   o,
-        xfs_fsblock_t   b,
-        xfs_filblks_t   c,
-        xfs_exntst_t    v);
-
-What do you think?
-(is it a typo to be reported or a problem specific to hppa gcc?)
-
-Thanks in advance for advise,
-    Joel
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
