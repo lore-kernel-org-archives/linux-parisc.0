@@ -1,32 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B347E4A1D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 14:29:02 -0700 (MST)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel2.hp.com (Postfix) with ESMTP id E002B1274
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 16:29:01 -0500 (EST)
-Received: from eeyore.fc.hp.com (eeyore.fc.hp.com [15.1.54.199])
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) with SMTP id OAA09094
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 14:29:01 -0700 (MST)
-From: Bjorn Helgaas <bjorn_helgaas@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Fri, 16 Mar 2001 14:28:51 -0700
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23B1B4A1C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 16:55:41 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA19117;
+	Sat, 17 Mar 2001 10:52:45 +1100
+Date: Sat, 17 Mar 2001 10:52:45 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Matthew Wilcox <matthew@wil.cx>, alan_meyer@hp.com,
+	taggart@carmen.fc.hp.com, randolph@tausq.org, bdale@gag.com,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: new debs built, c++ is broken
+In-Reply-To: <200103162007.PAA18059@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.21.0103171012070.4658-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Message-Id: <0103161428510J.15483@eeyore.fc.hp.com>
-Subject: [parisc-linux] physical address width
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-If/when superdome is configured to be NUMA (i.e., have some memory that is 
-not interleaved across all cells), the non-interleaved memory will show up 
-in the physical address space above 512Gb.  This is a problem for HP-UX, 
-because there are a couple places where physical addresses are stored in 
-bitfields too small to contain these addresses.
+On Fri, 16 Mar 2001, John David Anglin wrote:
 
-Does 64-bit parisc-linux have any similar issues?  What is the supported 
-physical address size?  I don't know how far above 512Gb memory can go; 
-it's sparse, so it could be quite a ways.  I know superdome supports up to 
-44-bit addressing, so I guess that's probably the worst case right now.
+> You might have to make a case but I note the following recent patch:
+> 
+> 2001-03-15  Steve Ellcey  <sje@cup.hp.com>
 
-Bjorn
+Aye, but isn't ia64 "flavour of the month"?  :-)
+
+As far as I can see, the difficulties with getting hppa-linux in are:
+
+a) In order to support hppa-linux cleanly without duplicating lots on
+header file defines, I split out various things in existing config/pa
+headers.  That means there is potential for HPUX breakage.  HPUX support
+doesn't break, but that's almost beside the point.
+
+b) Some patches I made really attacked symptoms rather than causes.  I'd
+need to remove these before support as a whole can go in.  Of course, we'd
+need to be sure that our compiler isn't broken if I remove the bandaids.
+
+c) Having time to do it.
+
+Alan
+-- 
+Linuxcare
