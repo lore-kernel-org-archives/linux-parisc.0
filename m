@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 273E8482B
-	for <parisc-linux@parisc-linux.org>; Mon,  5 Nov 2001 22:42:38 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tpjpiaaa for parisc-linux@parisc-linux.org; Mon, 5 Nov 2001 22:37:31 -0700
-Date: Mon, 5 Nov 2001 21:42:27 -0800
-From: Randolph Chung <tausq@debian.org>
-To: "Christopher C. Chimelis" <chris@debian.org>
-Cc: parisc-linux@parisc-linux.org, bcollins@debian.org
-Subject: Re: [parisc-linux] Re: hppa binutils/glibc updates
-Message-ID: <20011105214227.M505@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20011105024952.C4441@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0111050136140.2956-100000@spawn.hockeyfiend.com>
+Received: from hotmail.com (oe72.law4.hotmail.com [216.33.148.168])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B20AB482B
+	for <parisc-linux@parisc-linux.org>; Tue,  6 Nov 2001 01:17:32 -0700 (MST)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc: "Kaj-Michael Lang" <milang@tal.org>,
+	<parisc-linux@parisc-linux.org>
+References: <OE761L3gJcYPqd2rg2Q00007507@hotmail.com> <003101c163a9$48570590$56dc10c3@amos> <OE13GhAj5p1Fjxe0ymQ00007efc@hotmail.com> <20011105032426.A1671@solo.franken.de>
+Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
+Date: Tue, 6 Nov 2001 09:04:04 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <OE72TyAAfCKQBu8Etaa00008646@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,24 +24,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I've posted debs for testing at http://gluck.debian.org/~tausq/hppa/
+Hi,
 
-The following are available:
 
-binutils (with latest patches from Alan Modra)
-gcc (with ldcw alignment patch)
-glibc (with latest patches from Alan Modra)
-python and apache rebuilt with new toolchain bits
+I tried to do a dpkg-buildpackage. He seems to be complaining about the
+"zip" package. Appearantly the build depends on this package. However, when
+I tried a "apt-get install zip" the package was not found. Is there an alias
+for this package, or do I also need to build this package from the
+source-deb?
 
-these are all unofficial.... Chris/Ben will be uploading official
-binutils/glibc. gcc will be uploaded as soon as the new binutils are in
-incoming....
+Thanks.
 
-there're still some problems with exception handling for g++, but in
-general these should work.... pls post to the list if you find
-otherwise.
+Kenneth
+----- Original Message -----
+From: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+To: "kenneth westelinck" <kennywest1@hotmail.com>
+Cc: "Kaj-Michael Lang" <milang@tal.org>; <parisc-linux@parisc-linux.org>
+Sent: Monday, November 05, 2001 3:24 AM
+Subject: Re: [parisc-linux] Compiling Mozilla on parisc-linux fails
 
-randolph
--- 
-Debian Developer <tausq@debian.org>
-http://www.TauSq.org/
+
+> On Sun, Nov 04, 2001 at 07:46:23PM +0100, kenneth westelinck wrote:
+> > Nope, same error (see the attached file). Any other ideas?
+>
+> how about using dpkg-buildpackage or applying the patches by hand ?
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+> good idea.                                 [ Alexander Viro on
+linux-kernel ]
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
