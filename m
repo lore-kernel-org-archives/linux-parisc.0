@@ -1,24 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA12252
-	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Oct 1999 17:48:03 -0600
-Received: from milano.cup.hp.com (grundler@milano.cup.hp.com [15.16.124.11])
-	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id TAA13422
-	for <parisc-linux@thepuffingroup.com>; Fri, 1 Oct 1999 19:47:46 -0400 (EDT)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id QAA13637 for parisc-linux@thepuffingroup.com; Fri, 1 Oct 1999 16:47:30 -0700 (PDT)
-Date: Fri, 1 Oct 1999 16:47:30 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <199910012347.QAA13637@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=X-roman8
-Subject: [parisc-linux] linux/Makefile
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA13643
+	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Oct 1999 23:07:15 -0600
+Sender: adevries@thepuffingroup.com
+Message-ID: <37F59616.1E51B9F0@thepuffingroup.com>
+Date: Sat, 02 Oct 1999 01:20:22 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@cup.hp.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] linux/Makefile
+References: <199910012347.QAA13637@milano.cup.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Grant Grundler wrote:
+> 
+> FYI - Alex noticed his tree was recursively building vmlinux because
+> init_task_union tests weren't working right. Turned out he was picking
+> up the HP-UX "nm" instead of GNU nm.
+> 
 
-FYI - Alex noticed his tree was recursively building vmlinux because
-init_task_union tests weren't working right. Turned out he was picking
-up the HP-UX "nm" instead of GNU nm.
 
-Lesson: check $PATH - order matters.
+I've actually fixed this by committing a bit of code that checks to make
+sure that you're using GNU nm :)
 
-grant
+- Alex
+
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
