@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3E6D7482A
-	for <parisc-linux@parisc-linux.org>; Tue,  8 Jan 2002 00:32:33 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id vspekaaa for parisc-linux@parisc-linux.org; Tue, 8 Jan 2002 00:26:46 -0700
-Date: Mon, 7 Jan 2002 23:32:18 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] FWD: gcc-3.0.3: ICE in reload_cse_simplify on hppa-linux
-Message-ID: <20020108073218.GC16533@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20020107163156.GE3247@tausq.org> <200201080407.g0847NUh002619@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200201080407.g0847NUh002619@hiauly1.hia.nrc.ca>
+Received: from web21210.mail.yahoo.com (web21210.mail.yahoo.com [216.136.175.253])
+	by dsl2.external.hp.com (Postfix) with SMTP id DEC11482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 01:26:42 -0700 (MST)
+Message-ID: <20020108082641.8674.qmail@web21210.mail.yahoo.com>
+Date: Tue, 8 Jan 2002 09:26:41 +0100 (CET)
+From: =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] initial mem speed measuring
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +20,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> What version of bison are you using?  I suspect that 1.29 may have problems.
-> I am currently using 1.30.  I also think 1.28 is ok.  I saw one instance
-> of a problem similar to this with 1.29, although it wasn't on the PA.
+Did anyone notice the amazing speed at the mem speed
+measure? it's about 1.8 GB/sec(?) on my 715/80.
+Maybe 1.8GB/sec is wrong, but it' *really* fast.
+I will post mey dmesg later on, I'm currently at work.
+Perhaps the wrong method is choosen.
 
-i'm already using 1.30 unfortunately.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Ihre E-Mail noch individueller? - http://domains.yahoo.de
