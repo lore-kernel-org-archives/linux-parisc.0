@@ -1,22 +1,24 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 78CCA4892
+Return-Path: <epotter@eep.burdell.org>
+Received: from keymaster (dsl027-162-176.atl1.dsl.speakeasy.net
+	[216.27.162.176])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6B2C94855
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 14 Feb 2004 12:29:17 -0700 (MST)
-Message-ID: <402E7722.2080105@tiscali.be>
-Date: Sat, 14 Feb 2004 19:29:38 +0000
-From: Joel Soete <soete.joel@tiscali.be>
+	Sat, 14 Feb 2004 20:07:24 -0700 (MST)
+Received: from keymaster (localhost [127.0.0.1])
+	by keymaster (8.12.9/8.12.9) with ESMTP id i1F32viD012926
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 14 Feb 2004 22:02:57 -0500 (EST)
+Received: from localhost (epotter@localhost)
+	by keymaster (8.12.9/8.12.9/Submit) with ESMTP id i1F32vuY012923
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 14 Feb 2004 22:02:57 -0500 (EST)
+Date: Sat, 14 Feb 2004 22:02:57 -0500 (EST)
+From: Elliott Potter <epotter@eep.burdell.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.GSO.4.44.0402142137500.12861-100000@keymaster>
 MIME-Version: 1.0
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
-References: <20040211162702.GI990@baldric.uwo.ca>	<402A4CA500001B4D@ocpmta2.freegates.net>	<20040213194906.GA6760@baldric.uwo.ca>	<20040214001729.GA4727@colo.lackof.org>
-	<20040214182319.GA8542@baldric.uwo.ca>
-In-Reply-To: <20040214182319.GA8542@baldric.uwo.ca>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	James Morrison <ja2morri@csclub.uwaterloo.ca>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C3000 video options
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,30 +28,42 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hello all,
+
+I just got my fancy new Visualize C3000 workstation and am busily
+installing linux on it.  Whee!  So far, things have gone smoothly but I
+I've come across the issue that the computer has an fx4 graphics card,
+which is apparently unsupported.  I stared at list archives for a while
+and found that the A4977A Visualize EG card is supported, and I'm
+working on picking up one of those.  But it seems a shame to take this
+nice 64-bit PCI generally kick-butt card out and stuff in an entry-level
+32-bit PCI card with 8-bit color depth.  Are there other options?  So
+far I've seen:
+
+1) At some point, hp released the fx5 and fx10 graphics adapters, which
+replaced the fx4 and fx6 cards, and said that they would be supported
+under Linux.  But they accomplished that by releasing a binary form of
+its proprietary X server, which is no longer supported.  The Customer
+Advisory:
+http://wwss1pro.compaq.com/support/reference_library/viewdocument.asp?source=WV031007_CW01.xml&dt=3
+suggests that "customers can purchase current graphics adapters that are
+more powerful than hp fx5 or fx10 graphics adapters for a fraction of
+the original cost."  But they don't say (for example) what graphics
+adapters, or if they have linux support.  Did they come out with
+something?
+
+2) Someone posted on the list that you could get a PCI Nvidia Voodoo2
+card and maybe it would work, but when he tried it he got nothing except
+corrupted nvram.  That doesn't sound very promising, but I thought I'd
+ask.
+
+3) There are other PCI graphics cards (even 64-bit PCI) out there that
+work on other *nix systems (AS/*****, SUN, etc.); is everyone's (or just
+HP's) firmware so different that one has to get a graphics card just for
+the HP?
 
 
-Carlos O'Donell wrote:
->>>Aggressive inlining, and inlining mistakes might cause the function to 
->>>disapper. Unless you can produce a *small* testcase the gcc team will
->>>not look at the bug. You can't say "glibc doesn't build with gcc-3.5"
->>>... well I guess you can, but nobody will have a clue how to fix the
->>>issue.
->>
->>And he should say *something*.
->>Pointing at the problem is a first step towards fixing it.
->>Don't wait until you have a "small" test case to point out a problem
->>since one might never (have time to) find one.
->>
->>Even though I fix very few bugs these days, I'm grateful for
->>every bug report.
-> 
-> 
-> I was too harsh, sorry for that, you should really submit a bug report
-> saying that glibc 2.3.3 doesn't build with gcc-3.5 on hppa-linux. It's
-> the truth, and you don't know why. The best you can do is list the 
-> steps you used to recreate the problem.
-> 
-Ok, I will try to report as much detail as I can.
 
-Thanks for all,
-	Joel
+TIA,
+--
+Elliott
