@@ -1,26 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3AFB44866
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 13:21:15 -0600 (MDT)
-Received: from smtp2.fc.hp.com (smtp2b.fc.hp.com [15.15.136.253])
-	by atlrel8.hp.com (Postfix) with ESMTP id C8283A00A6B
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 15:21:14 -0400 (EDT)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by smtp2.fc.hp.com (Postfix) with ESMTP id 8A9AD380D1
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 13:21:14 -0600 (MDT)
-Received: from paul.bame (lart.fc.hp.com [15.1.54.48])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 7256B435E
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 13:21:14 -0600 (MDT)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by paul.bame with esmtp (Exim 3.35 #1 (Debian))
-	id 17XRhC-0006Sh-00
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 13:21:14 -0600
-To: parisc-linux@parisc-linux.org
-Date: Wed, 24 Jul 2002 13:21:14 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E17XRhC-0006Sh-00@paul.bame>
-Subject: [parisc-linux] Attention - 'make palo' change
+Received: from dsl2.external.hp.com (localhost [127.0.0.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 871B5482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 00:54:00 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 25 Jul 2002 00:54:00 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020725065400.871B5482B@dsl2.external.hp.com>
+Subject: [parisc-linux] [PATCH] get_initiator for sym53c8xx_2
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,29 +18,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Especially when cross compiling kernels, many of us have used 'make
-palo'.  Unfortunately that required having and building the palo source.
-Since palo is installable (at least on x86 and parisc), the time was
-right to change this.  There have also been some complications with
-'make palo' and the 2.5 development kernel.
+Hi all,
+I've hacked up a patch to sym53c8xx_2 driver to query PDC
+for SCSI ID and other operating parameters:
 
-So with 2.4.18-pa58, 'make palo' no longer builds palo, but instead
-requires you have it installed and in your $PATH.  An error message
-will tell you this information if necessary.  Palo's command-line
-parameters are taken from 'palo.conf' in your top-level kernel
-directory.  If you don't have a palo.conf, a lightly-commented
-generic one will be created and you'll be informed about that.  Simply
-edit it and run 'make palo' again.  That generic palo.conf file
-leaves the lifimage in your top-level kernel directory rather
-than ../palo/lifimage where it used to go.  You can change that
-in the config file if you want.
+	ftp://ftp.parisc-linux.org/patches/sym2_pdc.diff
 
-If you want the old behavior, use 'make oldpalo', but that may
-disappear soon together with the 'make lifimage' logic in palo's
-makefile.
+This patch really only matters for (a) C3000, (b) multi-initiator
+SCSI clusters, (c) "fast" SE SCSI interfaces with more than 3m cable.
+Any other boxes which have unnaturally crippled wide SCSI interface
+chips connected to a 50-pin (narrow) SCSI port will need this too.
+Using PDC compensates for not having access to NVRAM or BIOS
+to set these parameters.
 
-Source purists can still grab palo sources and build/install palo
-either with 'make install' or by building/installing the debian package.
-Take note of the DESTDIR makefile variable if you use 'make install'.
+It's past my bedtime...I've not tested it.  If someone can
+test it on C3000 in case I don't get to it tomorrow, that
+would be great. It does compile/link cleanly though and
+is nearly identical to what I implemented for sym1 driver.
 
-	-P
+thanks,
+grant
