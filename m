@@ -1,10 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F051D4872
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Nov 2002 03:44:03 -0700 (MST)
-Date: Wed, 27 Nov 2002 11:43:56 +0100
-Message-ID: <3DA3C54C0000781B@ocpmta5.be.tiscali.com>
-In-Reply-To: <20021125180014.A7440482A@dsl2.external.hp.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7CA814872
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Nov 2002 06:09:14 -0700 (MST)
+Date: Wed, 27 Nov 2002 14:08:37 +0100
+Message-ID: <3DA3C54C000078BE@ocpmta5.be.tiscali.com>
 From: jsoe0708@tiscali.be
 Subject: Re: FW: RE: [parisc-linux] 2.4.20-rc1-pa7 boot problem on b180
 To: "Grant Grundler" <grundler@dsl2.external.hp.com>
@@ -23,35 +22,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi grant,
-
 >
->jsoe0708@tiscali.be wrote:
->> Hi Grant,
->> 
->> Could it be related to your patch in msg:
->> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-November/018418.htm
->>   l
->> 
->> If yes can you re-forward it to me (I lost it sorry)?
+>>
+>>jsoe0708@tiscali.be wrote:
+>>> Hi Grant,
+>>>
+>>> Could it be related to your patch in msg:
+>>> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-November/018418.htm
+>>>   l
+>>>
+>>> If yes can you re-forward it to me (I lost it sorry)?
+>>
+>>hmm....I doubt it. I'd expect the box to crash if it were.
+>>
+>You have right it doesn't matter.
 >
->hmm....I doubt it. I'd expect the box to crash if it were.
+>But I do some progress:
+>Partition Check locks on the b180 at :
+>....
+>    res=check_part[i](hd, bdev, first_sector, first_part_minor);
+>....
+>in check_partition(...)
 >
-You have right it doesn't matter.
+>in the very first check_part[0]
+>
+>Now how may I determine (with printk) which actual function is called?
+>
+Well stopping gcc at preprocessing stage, I reach to figure out that only
+msdos_partition is configured.
 
-But I do some progress:
-Partition Check locks on the b180 at :
-....
-    res=check_part[i](hd, bdev, first_sector, first_part_minor);
-....
-in check_partition(...)
+I continue (i will check first transmitted parameter values)
 
-in the very first check_part[0]
-
-Now how may I determine (with printk) which actual function is called?
-
-Thanks,
-    Joel
-
+Joel
 
 
 ********************************************************************************
