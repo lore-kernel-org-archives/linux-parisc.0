@@ -1,12 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dsl2.external.hp.com (localhost [127.0.0.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 871B5482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 00:54:00 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 25 Jul 2002 00:54:00 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020725065400.871B5482B@dsl2.external.hp.com>
-Subject: [parisc-linux] [PATCH] get_initiator for sym53c8xx_2
+Received: from hotmail.com (dav66.sea2.hotmail.com [207.68.164.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 11190482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 09:43:16 -0600 (MDT)
+From: "Rick Vernam" <rickvernam@hotmail.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 25 Jul 2002 10:43:31 -0500
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C233C8.1E2AEA80"
+Message-ID: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com>
+Subject: [parisc-linux] i dont know jack
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,23 +21,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
-I've hacked up a patch to sym53c8xx_2 driver to query PDC
-for SCSI ID and other operating parameters:
+This is a multi-part message in MIME format.
 
-	ftp://ftp.parisc-linux.org/patches/sym2_pdc.diff
+------=_NextPart_000_0005_01C233C8.1E2AEA80
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This patch really only matters for (a) C3000, (b) multi-initiator
-SCSI clusters, (c) "fast" SE SCSI interfaces with more than 3m cable.
-Any other boxes which have unnaturally crippled wide SCSI interface
-chips connected to a 50-pin (narrow) SCSI port will need this too.
-Using PDC compensates for not having access to NVRAM or BIOS
-to set these parameters.
+i work at place that gets tons of computer junk from companies that are =
+getting rid of their equip.  one of our requirements is to kill the =
+partitions on the HDs ( it is known that will no completely remove data, =
+just make is a little more difficult to get too ).  so we are getting HP =
+machines with pa-risc stuff and most wont boot ( i know enough to know =
+how to initiate a boot ).  is there some way, using this parisc-linux =
+that i can quickly kill partitions?
 
-It's past my bedtime...I've not tested it.  If someone can
-test it on C3000 in case I don't get to it tomorrow, that
-would be great. It does compile/link cleanly though and
-is nearly identical to what I implemented for sym1 driver.
+-Rick
+rickvernam@hotmail.com
 
-thanks,
-grant
+------=_NextPart_000_0005_01C233C8.1E2AEA80
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>i work at place that gets tons of =
+computer junk=20
+from companies that are getting rid of their equip.&nbsp; one of our=20
+requirements is to kill the partitions on the HDs ( it is known that =
+will no=20
+completely remove data, just make is a little more difficult to get too =
+).&nbsp;=20
+so we are getting HP machines with pa-risc stuff and most wont boot ( i =
+know=20
+enough to know how to initiate a boot ).&nbsp; is there some way, using =
+this=20
+parisc-linux that i can&nbsp;<EM>quickly</EM> kill =
+partitions?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>-Rick</FONT></DIV>
+<DIV><FONT face=3DArial =
+size=3D2>rickvernam@hotmail.com</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C233C8.1E2AEA80--
