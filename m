@@ -1,15 +1,15 @@
-From: Roland McGrath <roland@redhat.com>
-Subject: [parisc-linux] Re: [PATCH] fix masking error in fesetround() on hppa
-Date: Mon, 2 Dec 2002 18:51:46 -0800
-Message-ID: <200212030251.gB32pk213186__20284.8151945092$1416621987$gmane$org@magilla.sf.frob.com>
-References: <20021203024358.GA5487@systemhalted>
+From: Erlend Aasland <erlend-a@ux.his.no>
+Subject: [parisc-linux] [TRIVIAL PATCH 2.5] get rid of CONFIG_UDF_RW (parisc)
+Date: Tue, 3 Dec 2002 14:10:00 +0100
+Message-ID: <20021203131000.GG2417__24484.3211760328$1416621990$gmane$org@johanna5.ux.his.no>
+References: <20021203125120.GA2417@johanna5.ux.his.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: libc-alpha@sources.redhat.com, debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org
+To: Trivial Patch Monkey <trivial@rustcorp.com.au>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: Carlos O'Donell's message of  Monday, 2 December 2002 21:43:58 -0500 <20021203024358.GA5487@systemhalted>
+In-Reply-To: <20021203125120.GA2417@johanna5.ux.his.no>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,10 +20,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I've put that fix in.  I'm not quite sure what you are suggesting for a new
-test, but test cases that fail on known bug regressions (i.e. one that
-fails before your fix and works after it) are always welcome.
+Remove CONFIG_UDF_RW from parisc defconfig (it's not used anymore)
 
+Regards,
+	Erlend Aasland
 
-Thanks,
-Roland
+diff -urN linux-2.5.50/arch/parisc/defconfig linux-2.5.50-eaa/arch/parisc/defconfig
+--- linux-2.5.50/arch/parisc/defconfig	Fri Nov  1 00:07:19 2002
++++ linux-2.5.50-eaa/arch/parisc/defconfig	Tue Dec  3 00:48:05 2002
+@@ -576,7 +576,6 @@
+ CONFIG_EXT2_FS=y
+ # CONFIG_SYSV_FS is not set
+ # CONFIG_UDF_FS is not set
+-# CONFIG_UDF_RW is not set
+ # CONFIG_UFS_FS is not set
+ # CONFIG_UFS_FS_WRITE is not set
+ 
