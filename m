@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from brain.fop.ns.ca (u135n18.eastlink.ca [24.224.135.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D49CA4840
-	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 18:56:06 -0700 (MST)
-Date: Fri, 21 Nov 2003 21:55:59 -0400 (AST)
-From: Steve Bromwich <lists@fop.ns.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Processes stuck in D state on 715/100XC with
- 2.4.22-pa17
-In-Reply-To: <3FBE7C6A.3010104@tiscali.be>
-Message-ID: <Pine.LNX.4.58.0311212145230.21213@brain.fop.ns.ca>
-References: <3FB265EC00003DBD@ocpmta3.freegates.net>
- <Pine.LNX.4.58.0311190913310.1125@brain.fop.ns.ca> <3FBE7C6A.3010104@tiscali.be>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C2964840
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 21:57:32 -0700 (MST)
+Date: Fri, 21 Nov 2003 21:57:31 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: JjDunnjr@aol.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Boot-up challenges on a 715/75
+Message-ID: <20031122045731.GA29917@colo.lackof.org>
+References: <171.26ba943e.2cefd34e@aol.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <171.26ba943e.2cefd34e@aol.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,71 +23,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Joel,
+On Fri, Nov 21, 2003 at 03:45:02PM -0500, JjDunnjr@aol.com wrote:
+> To all who took the time to reply, thank you
+> Progress to date:
+> 1. Set jumper to 512 k sector on the TEAC.  715/75 recognized it as a 
+> different model.
 
-On Fri, 21 Nov 2003, Joel Soete wrote:
+very good - I'm amazed I hadn't heard about the 512 vs 2k sectors before.
+But it's been 8 years since I seriously poked at SCSI devices.
 
-> Hi Steve,
->
-> Steve Bromwich wrote:
-> >
-> > I've got a J class at work that's not in production...
+> 2. It spun the disk upon issuing the "bo P2" command, however, i still got 
+> the
+> ENTRY_INIT =-4 message
 
-> well, but those system are widly different (cpu, architecture, ...).
+The PA I/O Architecture Control Document (aka IO ACD) describes the 
+ENTRY_INIT returns codes. See "Documentation" on www.parisc-linux.org.
 
-Well, my plan was something like this:
+> I will try to do a net boot next
+> 
+> if that fails, I will try to copy onto the boot 715/75 hard drive the 
+> necessary files.  Which leads me to my next question, which files(s) would be 
+> necessary for the 715/75 to boot
+> 
+> Would "lifimage" be enough or should i place "rescue.bin", "linux.bin" and 
+> "drivers.gz" on the hard drive
 
-1. Install Linux on the J200, replicate my 715, and then compile the
-kernel as closely as possible to how it is in the 715. Run the J200 like
-that for a day or two and see if I can duplicate the problem. If so, diag
-further on there.
+Only the lifimage.
+You will need two hard disks.
+dd the lifimage you get from ftp.parisc-linux.org onto one harddisk and
+ then boot the parisc machine from that disk. Install on the other disk.
 
-2. If the problem does not appear on the J200, resync with the 715 and put
-the J200 in place of the 715 while I tinker with the 715 to nail down the
-problem. Then I should be able to regress through the kernels from cvs
-until I find the one where it stopped working, and hopefully I should be
-able to find a resolution from there.
+It would be useful to check (via the "execute a shell" option) if the CD
+is readable by the OS. If so, it can be used as an install source.
+It's possible the CD is still readable but not bootable because
+the CD burning SW used might have mangled the .ISO data.
 
-Unfortunately, I was caught out right at the start - after lugging all 60
-kilos of it home and downstairs into my basement server room, I discovered
-that someone had borrowed the drives out of it, so I'll have to bring home
-an enclosure next week to continue my testing.
-
-In the meantime, I tried a net install which ultimately failed trying to
-extract debs to the nfs root (which, incidentally, took about 5 minutes to
-mount - is this to be expected on the install disks? It usually only takes
-a couple of seconds for my 715 to mount an nfs partition off my
-workstation). Unfortunately I was on serial console so couldn't get much
-in the way of diags, I'll have to move a monitor into my server room to
-hook up to it (the J200 doesn't like my 15" SVGA test monitor,
-unfortunately).
-
-> Good question? never have to test it but it is a bootable cd (I don't
-> remember if it is available via internet?) so if you copy it's image
-> (with dd) on a system, i think that following the faq how-to netboot
-> <http://parisc-linux.org/faq/index.html#netboot> , it would works?
-
-Hmmm... you mean like dd if=/dev/scd0 of=lifimage.testing? I guess that'll
-be my next try :-)
-
-> > Well, the frustrating thing is is that there's no debug output anywhere
-> > that I can find that's showing anything obviously wrong.
-> Don't feel alone, during severall month (2, 3, 4, ... I don't want to
-> remember) I try to get just a panic message from a smp kernel on a N4k
-> : no success :_(
-
-Ah well... misery loves company, I guess! :-)
-
-> hmm, what kind of disk have you on your D: hot-swapable or fixed?
-> (with fixed disk, I already encounter a pb of flat cable and with
-> hot-swap disk a pb with dust on disks' support)
-
-Fixed. I don't *think* it's a problem with the cable, since (a) I reseated
-all the cables after the first couple of times it died, and (b) after the
-last time it reset, I rebooted back to 2.4.18 to make sure it wasn't a
-flat-out hardware error (as opposed to possibly a hardware bug being
-tickled by 2.4.22).
-
-Thanks for the help :-)
-
-Cheers, Steve
+hth,
+grant
