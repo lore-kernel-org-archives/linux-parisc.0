@@ -1,58 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blimpo.internal.net (ppp01.ts1-1.NewportNews.visi.net [209.8.196.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4DBC1482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 07:54:25 -0600 (MDT)
-Date: Sat, 20 Oct 2001 09:54:06 -0400
-From: Ben Collins <bcollins@debian.org>
-To: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
-Message-ID: <20011020095406.L10952@visi.net>
-References: <20011020170907.G1037@bubble.sa.bigpond.net.au>
-Mime-Version: 1.0
+Received: from spoolm1.tiscalinet.be (spoolm1.tiscalinet.be [212.35.2.50])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8313482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 08:25:31 -0600 (MDT)
+Sender: jso@dsl2.external.hp.com
+Message-ID: <3BD18AD9.FA49E5E7@freebel.net>
+Date: Sat, 20 Oct 2001 14:31:53 +0000
+From: Soete Joel <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: tsbogend@alpha.franken.de,
+	Thomas Bogendoerfer <tsbogend@elvis.franken.de>,
+	Richard Hirst <rhirst@linuxcare.com>, joel.soete@freebel.net,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Xfree86 failled with -pa57
+References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015164903.X11105@linuxcare.com> <20011015180923.A14160@elvis.franken.de> <1003166094.3bcb198edae10@webmail.tiscalinet.be>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011020170907.G1037@bubble.sa.bigpond.net.au>
-Sender: Ben Collins <bmc@visi.net>
-Subject: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Oct 20, 2001 at 05:09:07PM +0930, Alan Modra wrote:
-> Newer binutils don't initialise .got entries for global syms, so the
-> scheme used by sysdeps/hppa/dl-machine.h:elf_machine_dynamic to find
-> the address of .dynamic no longer works.
+Hello all,
+
+Just a followup:
+
+joel.soete@freebel.net wrote:
 > 
-> ChangeLog
-> 	* sysdeps/hppa/dl-machine.h (elf_machine_dynamic):  Make it a
-> 	const function.  Do not use &_DYNAMIC as .got entries for global
-> 	syms are no longer initialised.  Instead they rely on the reloc,
-> 	which hasn't yet been applied.
-> 	(elf_machine_load_address): Make it const.  Call
-> 	elf_machine_dynamic as that function is called fropm rtld anyway.
+> Hi Thomas,
+> 
+> Quoting Thomas Bogendoerfer <tsbogend@elvis.franken.de>:
+> 
+> > On Mon, Oct 15, 2001 at 04:49:03PM +0100, Richard Hirst wrote:
+> > > > (EE) No OS PCI support available
+> > >
+> > > Do you have PCI support enabled in your kernel?
+> >
+> > shouldn't matter. I bet the framebuffer runs in a different resolution
+> > than
+> > it's configured in XF86Config. Since the current stifb doesn't support
+> > mode switching, I've made the check very strict to not allow it. So
+> > the boot time resolution and bpp must match that from XF86Config.
+> >
+> > Thomas.
+> >
+> Sorry for NEWBIES (as I am in term of X configuration) what means bpp?
+> 
+> Well I found what I have to change in my config file to make xdm works.
+> Just a problem:
+> After the xdm start everything seems to works fine (right colors, mouse
+> working,...). Then I login: ok the pointer still work, I can work in the default
+> xterm,...
+> But when I exit mouse does not move any more and I had to restart xdm.
 
-Is this the fix for a newly built ld.so segfaulting? If so, there seems
-to be something else wrong too. Newly built ld.so still segfaults,
-here's the gdb:
+This problem continu but...
 
-Starting program: /usr/src/glibc/glibc-2.2.4/./hppa-linux/obj/elf/ld.so
+> 
+> (Um.., on my B180 I thing have to update Xfree 4.0 to 4.1 the mouse does not
+> work at all but gpm well)
 
-Program received signal SIGSEGV, Segmentation fault.
-0x41003298 in _dl_start_final (arg=0xbff00414, bootstrap_map_p=0xbff00508, start_time=1090519040)
-    at rtld.c:233
-233       _dl_rtld_map.l_addr = bootstrap_map_p->l_addr;
-(gdb) print bootstrap_map_p
-$1 = (struct link_map *) 0xbff00508
-(gdb) print bootstrap_map_p->l_addr
-$2 = 1090519040
-(gdb) print &_dl_rtld_map
-$3 = (struct link_map *) 0x41029270
-(gdb) print _dl_rtld_map.l_addr
-$4 = 0
+this one Thomas Marteau kindely help me to find out that in 'Section
+pointer' of XFconfig the 'Device "/dev/mouse"'.
+And if on the 712 /dev/mouse is well a link to /dev/psaux, on the
+contrary on the B180L the /dev/mouse was wrongly a link to /dev/gpmdata.
 
+Thanks again to Thomas and all for help,
 
-This is with binutils 2.11.92.0.7 and gcc-3.0.2 snapshot from 9-22-2001
-(latest Debian packages available). I can give you more info if you need
-it.
-
--- 
- .----------=======-=-======-=========-----------=====------------=-=-----.
-/                   Ben Collins    --    Debian GNU/Linux                  \
-`  bcollins@debian.org  --  bcollins@openldap.org  --  bcollins@linux.com  '
- `---=========------=======-------------=-=-----=-===-======-------=--=---'
+	Joel
