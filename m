@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.web.de (smtp01.web.de [217.72.192.180])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 04F79482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Feb 2003 13:07:07 -0700 (MST)
-Received: from c-180-204-136.n.dial.de.ignite.net ([62.180.204.136] helo=web.de)
-	by smtp.web.de with asmtp (WEB.DE(Exim) 4.95 #31)
-	id 18laUj-0001VB-00
-	for parisc-linux@lists.parisc-linux.org; Wed, 19 Feb 2003 21:07:05 +0100
-Message-ID: <3E53E1DF.5AACBABA@web.de>
-Date: Wed, 19 Feb 2003 20:58:23 +0100
-From: "b.gunreben" <b.gunreben@web.de>
+Received: from sage.eli.net (sage.eli.net [209.63.203.98])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E210C482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Feb 2003 18:43:11 -0700 (MST)
+Received: from vli82k7dbaker ([209.210.3.17]) by sage.eli.net
+          (Netscape Messaging Server 3.6)  with SMTP id AAA7452
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 19 Feb 2003 17:43:09 -0800
+From: "Dan Baker" <dan_baker@eli.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 19 Feb 2003 17:42:29 -0800
+Message-ID: <003601c2d881$54da7920$830c1bac@vli82k7dbaker>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] /dev/loop0 problems in 2.5.x?
-References: <20030218041653.GI15855@systemhalted>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+In-Reply-To: <20030220012101.7198.23807.Mailman@dsl2.external.hp.com>
+Subject: [parisc-linux] X problems...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,36 +26,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Carlos O'Donell wrote:
-> 
-> parisc,
-> 
-> Works in 2.4.x, thinking of moving part of the cluster to 2.5, but I like
-> to play with swap over NFS.
-> 
-> root@node01:/etc# /sbin/losetup /dev/loop0 /swapfile
-> ioctl: LOOP_SET_FD: Inappropriate ioctl for device
-> root@node01:/etc# uname -a
-> Linux node01 2.5.59-pa2 #2 Thu Jan 23 00:49:22 EST 2003 parisc unknown
-> unknown GNU/Linux
-> 
-> Do I need newer tools for playing with 2.5.x on HPPA?
-> Loopback is compiled into the kernel, no modules, and I can produce the
-> .config if you would like to look :)
-
-I recently started to play around with 2.5.60 kernels. Up to now, I was not
-successful in building a working kernel. Especially if the loop device was
-compiled in, the kernel panicked in the following device driver (first the
-network device, after removing the network device it panicked when
-initializing SCSI). Without the loop device, the kernel came up to init, and
-panicked then.
-
-I was using gcc (GCC) 3.3-hammer 20030123 from CVS, and this is probably the
-reason why my kernels fail. Maybe, you should try several different
-compilers to build the kernel. 
-
-If someone has a working for .config for 2.5.60, I would like to try this
-configuration with a slightly newer compiler (gcc (GCC) 3.3-hammer 20030205)
+I've just installed the Debian 3.0 distro on my B2000. I had the usual
+problems with consoles and the like. I've thus far been unable to get the
+framebuffer device to work. The only docs I've found on it date back to
+1999.
 
 
-Berthold
+BUT, I did download source code for HP's Intel linux visualize driver. I
+can't get it to compile, the assembler tells me there's an invalid opcode
+(??) in the .o file. I'm not really a programmer, so I'm hoping somebody out
+there can take a look at what they're doing and fix it. The files are at
+
+ftp://ftp.hp.com/pub/ccd/soar2sdd/wk207/wk207en/hpgraphics_kernel-1.5.3-1.sr
+c.rpm
+and
+ftp://ftp.hp.com/pub/ccd/soar2sdd/wk207/wk207en/hpgraphics_kernel-1.5.3-1.sr
+c.rpm
+
+
+SO, Any help either with compiling the driver or with configuring the
+framebuffer would be appreciated
+
+Dan Baker
+Storage Admin
+Electric Lightwave, Inc.
