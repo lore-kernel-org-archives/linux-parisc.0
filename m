@@ -1,16 +1,13 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Re: NETFILTER_DEBUG break b2k 64bits (at least)[Wa
-Date: Sat, 08 Jan 2005 15:55:49 +0000
-Message-ID: <41E00285.5020302@tiscali.be>
-References: <200501080035.j080Z1kK012011@hiauly1.hia.nrc.ca>
+From: Jyry Suuntala <jyry@helzinki.net>
+Subject: [parisc-linux] Banshee and Voodoo2
+Date: Sat, 8 Jan 2005 19:26:26 +0200 (EET)
+Message-ID: <Pine.BSO.4.61.0501081917230.2715@gate.helzinki.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii;
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII;
   format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200501080035.j080Z1kK012011@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,22 +18,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello everyone,
 
+I have a HP C360 lying around with HP-SUX installed on it. Due to its loud 
+fans, I didn't want to keep it on so I forgot about it. I believe I've 
+read everything I can about running linux on hppa. In
+http://hwdb.parisc-linux.org/view.php?type=pcimenu I found 3Dfx Banshee 
+and Voodoo2 cards, which I have.
 
-John David Anglin wrote:
-[...]
-> 
-> Note that the hppa64 linker always creates dynamic binaries intended
-> to be loaded by a dynamic loader.  It doesn't know how to create a
-> fully static binary.  I don't fully understand the ins and outs of
-> how this is being handled with 64-bit kernels but I suspect that this
-> is why there are duplicates.
-> 
-My pb is that the only smp system I can test is a N4k model which have afaik a pdc that can only boot a 64bit kernel.
-Is there some alternate to boot a 32bit kernel on this kind (A, L, N, ...) system?
+Does anyone know is this list the actual list of supported hardware? If 
+so, does X work with Banshee and at what resolution? And the same 
+questions apply for Voodoo2, too :)
 
-Thanks for info,
-	Joel
+p.s. any news on Visualize-FX4?
+
+--
+Jyry Suuntala 
+<jyry@helzinki.net>
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
