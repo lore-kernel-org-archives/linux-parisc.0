@@ -1,22 +1,21 @@
-Return-Path: <arnd@arndb.de>
-Received: from natsmtp01.rzone.de (natsmtp01.rzone.de [81.169.145.166])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AF0EA4840
-	for <parisc-linux@parisc-linux.org>;
-	Fri, 23 Jan 2004 08:14:18 -0700 (MST)
-Received: from dyn-9-152-210-118.boeblingen.de.ibm.com (blueice1a.de.ibm.com
-	[194.196.100.88])
-	by post.webmailer.de (8.12.10/8.12.10) with ESMTP id i0NFEGmi022317
-	for <parisc-linux@parisc-linux.org>;
-	Fri, 23 Jan 2004 16:14:16 +0100 (MET)
-From: Arnd Bergmann <arnd@arndb.de>
-To: parisc-linux@parisc-linux.org
-Date: Fri, 23 Jan 2004 16:09:56 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200401231609.56800.arnd@arndb.de>
-Cc: 
-Subject: [parisc-linux] missing barrier in _raw_spin_lock?
+Return-Path: <carlos@lios.external.hp.com>
+Received: from lios (colossus.baldric.uwo.ca [129.100.225.209])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 839304840
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 23 Jan 2004 11:53:53 -0700 (MST)
+Date: Fri, 23 Jan 2004 08:52:10 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Jools Smyth <jools@oxfordinspire.co.uk>
+Subject: Re: [parisc-linux] Stability / Kernel 2.6.1 / HD Freezes
+Message-ID: <20040123135209.GA4571@baldric.uwo.ca>
+References: <200401191930.27090.jools@oxfordinspire.co.uk>
+	<20040120161858.GC15917@baldric.uwo.ca>
+	<200401201919.02968.jools@oxfordinspire.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200401201919.02968.jools@oxfordinspire.co.uk>
+Sender: Carlos O'Donell <carlos@lios.external.hp.com>
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,31 +25,12 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-We stumbled over a problem on s390 that can cause random memory corruption
-under high load on SMP. It turned out to be a missing on :"memory" clobber
-on the _raw_spin_lock primitive.
+> > Post to debian-hppa lists. I'll be happy to help if I can see a clear
+> > description of the problem.
+> 
+> done. i put a link to the bugs page which contains all the information 
+> gathered so far (which isnt much)
 
-As far as I can see, the same problem is in the parisc spinlock definition
-in linux-2.6.1, but none of the other architectures.
+Bug number please, or URL?
 
-The code below demonstrates the problem. With the broken spinlock, the
-compiler does not emit code for the second "if" or for the assignment.
-Similar code can be found in mempool_free().
-
-	Arnd <><
-
-----
-#include <linux/spinlock.h>
-
-static int x;
-static spinlock_t lock;
-
-void test(void)
-{
-        if (x) {
-                spin_lock(&lock);
-                if (!x)
-                        x = 0x1234;
-                spin_unlock(&lock);
-        }
-}
+c.
