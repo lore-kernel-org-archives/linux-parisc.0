@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from u1snd02p.us.fortis.com (smtp02p.us.fortis.com [167.79.54.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1972B4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 08:00:15 -0700 (MST)
-Received: from W1PMM02.us.fortis.com (twbymime02.us.fortis.com [165.245.9.58])
-	by u1snd02p.us.fortis.com (8.11.6+Sun/8.11.6) with ESMTP id h31F0C825468
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 1 Apr 2003 09:00:12 -0600 (CST)
-Message-Id: <se89551b.093@internal.us.fortis.com>
-Date: Tue, 01 Apr 2003 08:59:43 -0600
-From: "Derek Ellis" <Derek.Ellis@us.fortis.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] soft power and power light on 712/60
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA8B64829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 10:06:50 -0700 (MST)
+Date: Tue, 1 Apr 2003 19:06:26 +0200
+Message-ID: <3E8464F3000011FA@ocpmta8.freegates.net>
+In-Reply-To: <se89551b.093@internal.us.fortis.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: RE: [parisc-linux] soft power and power light on 712/60
+To: "Derek Ellis" <Derek.Ellis@us.fortis.com>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,33 +22,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+>
+>The only thing unusual about the setup is that I replaced the old 500mb
+HP
+>hard drive with a 4.5gig IBM drive with a 68pin-50pin converter.
+>
+Hmm it is highly probable.
 
-I have sort of a weird problem.  I installed Debian 3.0 on Sunday and it =
-came up great on my 712/60.  The only problem is the soft-power switch do=
-esn't work and the power light flashes while searching for the boot devic=
-e and then goes off once it starts booting. =20
+Four years ago, for a project of upgrade 712 workstation, we asked to HP
+if it was possible to put internal (SE) 4Gb disk. HP said that it was only
+supported on 712/100.
 
-Output of uname -a:
-Linux gecko 2.4.20-32 #1 Sat Mar 22 14:03:22 CET 2003 parisc unknown
-and /proc/sys/kernel/soft-power =3D 1
+Later, I had the opportunity to test Linux on a old 4Gb (SE) external disk
+with an old 712/60. (Even thought it was the very begining, it still works
+fine and help me a lot). Then I remember that 'not supported' didn' t means
+that it would not works. So I removed this disk from its enclosure and put
+it into the workstation. Well it works but not for a long time: apparently
+it warmed too much  but fortunately not too long time (so I can put it back
+in its original enclosure and continu to work). So there are an actual problem
+of heat exchange in this small box?
 
-The only thing unusual about the setup is that I replaced the old 500mb H=
-P hard drive with a 4.5gig IBM drive with a 68pin-50pin converter.
+>Is the drive and converter causing the problem, or is there something I
+can
+>do software wise to fix this?
+>
+For above mentioned project, we also use external SE 4Gb disk with wide (68
+pins) connector without pb. Is your 4.5Gb IBM disk is well of SE type?
 
-Is the drive and converter causing the problem, or is there something I c=
-an do software wise to fix this?
+hth,
+    Joel
 
-Thanks,
-Derek Ellis
-
-****************************************************************
-=09		Please Note
-The information in this E-mail message is legally privileged
-and confidential information intended only for the use of the
-individual(s) named above. If you, the reader of this message,
-are not the intended recipient, you are hereby notified that=20
-you should not further disseminate, distribute, or forward this
-E-mail message. If you have received this E-mail in error,
-please notify the sender. Thank you
-*****************************************************************
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
