@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EBCA1482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Apr 2002 05:39:35 -0600 (MDT)
-Date: Thu, 18 Apr 2002 13:39:32 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: s-clarob@st-aidans.cumbria.sch.uk
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Black Box
-Message-ID: <20020418113932.GN1716@charite.de>
-References: <5.1.0.14.0.20020418121812.00a597f0@10.106.16.2>
-Mime-Version: 1.0
+Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 40353482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Apr 2002 13:53:26 -0600 (MDT)
+Message-ID: <3CBF2422.2632C6B@gmx.at>
+Date: Thu, 18 Apr 2002 21:53:06 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: "rbradetich@uswest.net" <rbradetich@uswest.net>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5.1.0.14.0.20020418121812.00a597f0@10.106.16.2>
+Subject: [parisc-linux] Some old and new questions on Linux drivers, PDC console,etc..
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +21,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Apr 18, 2002 at 12:31:00PM +0100, s-clarob@st-aidans.cumbria.sch.uk wrote:
+Hello Ryan,
 
-> Does anyone have any experience with getting It to compile and install as I 
-> get some errors .
+after long time, I want to cantact you again.
 
-apt-get install blackbox
+First of all a question. Those days you added for me the config stuff
+for the PDC console driver for the E55 and other non-standard machines.
+I was not able to do this, and today I also not able to do so.
 
-Remember, this is Debian, not Mandrake.
+Can you give me a short introduction, where I have to add what, which
+are the dependencies, etc, etc, etc....
+In the future I also want to have that skills.
+
+What the status of your driver development of the MUX, or SCSI ?
+Have you find the SCSI sources (MACH kernel) ?
+
+Would be nice to hear from you
+
+With friendly regards
+Christoph P.
+
 
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-Why you can't find your system administrators:
-(S)he's standing behind you, holding an axe. 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
