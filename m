@@ -1,30 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 36F38482A
-	for <parisc-linux@parisc-linux.org>; Thu,  9 Aug 2001 18:39:18 -0600 (MDT)
-Received: from hpindda.cup.hp.com (hpindda.cup.hp.com [15.13.95.92])
-	by palrel2.hp.com (Postfix) with ESMTP id 925A91058
-	for <parisc-linux@parisc-linux.org>; Thu,  9 Aug 2001 17:39:17 -0700 (PDT)
-Received: from cup.hp.com (maverick.cup.hp.com [15.13.105.84])
-	by hpindda.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with ESMTP id RAA10372
-	for <parisc-linux@parisc-linux.org>; Thu, 9 Aug 2001 17:39:17 -0700 (PDT)
-Sender: gururaj@cup.hp.com
-Message-ID: <3B732CDB.B58F41E1@cup.hp.com>
-Date: Thu, 09 Aug 2001 17:37:47 -0700
-From: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9C37482A
+	for <parisc-linux@parisc-linux.org>; Thu,  9 Aug 2001 20:25:27 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3B734149.CD258626@esiee.fr>
+Date: Fri, 10 Aug 2001 04:04:57 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
-References: <200108091506.JAA13380@puffin.external.hp.com>
+To: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Installation
+References: <200108091506.JAA13380@puffin.external.hp.com> <3B732CDB.B58F41E1@cup.hp.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Installation
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
+Hello Guru
+> 
+> I want to install linux on B180L. I did visit parisc-linux web site.
+> I am confused which ISO image to pick. There are couple of them
+> like *serial  and *sti.
+> Please anyone explain me which one to pick and what they mean.
 
-I want to install linux on B180L. I did visit parisc-linux web site.
-I am confused which ISO image to pick. There are couple of them
-like *serial  and *sti.
-Please anyone explain me which one to pick and what they mean.
+Since the release of PA/Linux v0.9.2, you do not need to worry about
+that! You take the smallest if you have a good internet connection that
+will help you to transfer the most recent packages or the big one with
+all included!
 
-Thanks
-Guru
+Regards, Thomas
+ESIEE Team
