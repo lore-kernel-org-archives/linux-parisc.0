@@ -1,57 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DE6B0482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 07:53:36 -0600 (MDT)
-Received: (from ra@localhost)
-	by xo.hp.is (8.11.6/RA-8.11.6) id f8LDrZM12790
-	for parisc-linux@lists.parisc-linux.org; Fri, 21 Sep 2001 13:53:35 GMT
-Date: Fri, 21 Sep 2001 13:53:35 +0000
-From: Richard Allen <ra@hp.is>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010921135335.E11577@hp.is>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7EDD4482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:17:05 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15kS35-0008WN-00; Fri, 21 Sep 2001 16:17:03 +0100
+Date: Fri, 21 Sep 2001 16:17:03 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Subject: Re: [parisc-linux] testandset
+Message-ID: <20010921161703.A27323@parcelfarce.linux.theplanet.co.uk>
+References: <20010920211231.C24352@megatonmonkey.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] C360 install fails
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010920211231.C24352@megatonmonkey.net>; from carlos@megatonmonkey.net on Thu, Sep 20, 2001 at 09:12:31PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Im using the 0.9.2 CD.  I have a C360 (512Meg RAM, 9 Gig hard drive) and
-I removed the Graphics card from it and hooked it to a serial console.
+On Thu, Sep 20, 2001 at 09:12:31PM -0400, Carlos O'Donell Jr. wrote:
+> I've read all the docs for dpkg-dev, and yet the glibc debian stuff behaves
+> slightly different.
+> 
+> a) Unpack glibc 2.2.4, linux-threads, db1-add-on.
+> b) Patch to 2.2.4-1
+> c) Needed to comment hppa stuff back into 0list
+> d) Removed dl-fptr stuff from the hppa.dpatch (for now)
+> 	= Added morally equivalent changes to locking macro in ./sysdeps/ia64/dl-fptr.c
+> 	= testandset->try_lock
+> 	= Though I'm scratching my head at hppa/dl-fptr.c?
+> 	= Why is the ia64 stuff being touched anyway?
 
-The machine boots just fine into the installer.  I created that f0 partition,
-a small /boot, a swap partition and the remaining disk as /
+because we're removing the testandset macro, replacing it with try_lock.
 
-After that it makes me select a distro (I select sid as the documentation says)
-then this hits:
+> e) Packed it all back up as tar.bz2 (./debian rules seems to call for this)
 
-         +컴컴컴컴컴컴컴컴컴컴컴+ Please Wait +컴컴컴컴컴컴컴컴컴컴컴�+         
-         |                                                            |         
-         | Installing Drivers from                                    |         
-         | /instmnt/debian/dists/sid/main/disks-hppa/current/64/drive |         
-         | rs.tgz...                                                  |         
-         |                                                            |         
-                                                                                
-         ioctl: LOOP_CLR_FD: No such device or address                          
-    YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI                                            
-PSW: 00000000000001001111111100001100                                           
-r0-3     00000000 101fc000 101a5134 2fe06b60                                    
-r4-7     00000000 00000000 10337010 10318684m Installation                      
-r8-11    10318010 10318010 1030c010 1030c468                                    
-r12-15   10337010 ffffffff 000000fd f0100000                                    
-r16-19   10300580 f0000154 f000014c 0000000e                                    
-r20-23   0000001f 000003e7 101a5c14 00000000                                    
-r24-27   00000000 00000005 ffd05805 1028a010
-r28-31   10335810 00000592 10300a80 101213f8
-sr0-3    00000000 00000065 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
+No, definitely not, I don't know why you think you need to do that.
 
-IASQ: 00000000 00000000 IAOQ: 101fc2bc 101fc2c0
- IIR: 0f40001c    ISR: a607ffff  IOR: 41505805
- ORIG_R28: 00000000
+> f) Placed the tar.bz2's in the glibc-2.2.4 directory (so that they can be unpacked)
+> f) export LINUX_SOURCE=/usr/src/linux (no kernel-headers pakcage yet)
+> g) dpkg-buildpackage -uc -b -d (from within XXX/glibc-2.2.4)
 
+Here's what you ned to do:
 
-Any hints ?
+dpkg-source -x *dsc
+cd glibc-*
+frob 0lists & hppa.dpatch as above
+put a copy of the kernel includes in /usr/src/linux/include rather than setting
+LINUX_SOURCE
+dpkg-buildpackage -B -a -rfakeroot
+
 -- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+Revolutions do not require corporate support.
