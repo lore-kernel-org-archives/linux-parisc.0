@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
-	by dsl2.external.hp.com (Postfix) with SMTP id 193394829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 00:54:26 -0600 (MDT)
-Message-ID: <3D994722.8090200@itp.bg>
-Date: Tue, 01 Oct 2002 09:56:34 +0300
-From: Stephan Trajkoff <stephan@itp.bg>
+Received: from dobit2.rug.ac.be (dobit2.rug.ac.be [157.193.42.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A74674856
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 01:31:42 -0600 (MDT)
+Date: Tue, 1 Oct 2002 09:31:35 +0200 (MEST)
+From: Frank Cornelis <Frank.Cornelis@rug.ac.be>
+To: James Smith <james@compusmithllc.com>
+Cc: Frank Cornelis <Frank.Cornelis@rug.ac.be>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] firmware update using BOOTP
+In-Reply-To: <1033419379.4785.33.camel@seventy>
+Message-ID: <Pine.GSO.4.31.0210010927510.12081-100000@eduserv.rug.ac.be>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: multipart/mixed;
- boundary="------------080203060207020303060903"
-Subject: [parisc-linux] kernel panic on K210/819
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,30 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------080203060207020303060903
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+> i installed all my 712's from bootp without upgrading & they went fine -
+> even the ones with the 1.9 firmwares
 
-Please see the attachment.
-I use firmware 2.4 on this HP
+I know, BOOTP booting also worked with me before the firmware patching.
+But anyway, upgrading never hurts and the HP/linux FAQ recommended it.
 
+> have you got a pointer to the firmware update info so i can check it out
+> the pros/cons myself ?
 
---------------080203060207020303060903
-Content-Type: text/plain;
- name="hp"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="hp"
+All the firmware updates can be found at:
+	ftp://us-ffs.external.hp.com/firmware_patches/hp/cpu/catalog
 
-Oct  1 01:00:03 obzor kernel: WARNING! Stack pointer and cr30 do not
-correspond!Oct  1 01:00:03 obzor kernel: Dumping virtual address stack
-instead
-Oct  1 01:00:03 obzor kernel:
-Oct  1 01:00:03 obzor kernel: Dumping Stack from 0x3ff60000 to 0x3ff609c0:
-Oct  1 08:14:59 obzor syslogd 1.4.1#10: restart.
-Oct  1 08:14:59 obzor kernel: klogd 1.4.1#10, log source = /proc/kmsg
-started.
-Oct  1 08:14:59 obzor kernel: Inspecting /boot/System.map
-
---------------080203060207020303060903--
+Frank.
