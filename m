@@ -1,14 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 8 Apr 2003 09:35:02 -0600
-To: bruno_vidal@hp.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] New dump driver patche.
-Message-ID: <20030408153502.GE3547@dsl2.external.hp.com>
-References: <03Apr8.130336cest.119063@ns.hiscom.nl> <3E92C42E.5B9BB871@hp.com>
+Received: from mailout09.sul.t-online.com (mailout09.sul.t-online.com [194.25.134.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 911DB4829
+	for <parisc-linux@parisc-linux.org>; Tue,  8 Apr 2003 10:52:17 -0600 (MDT)
+Received: from nikita.ath.cx (localhost [127.0.0.1])
+	by nikita.ath.cx (8.12.3/8.12.3/Debian-5) with ESMTP id h38GrG0H015446
+	for <parisc-linux@parisc-linux.org>; Tue, 8 Apr 2003 18:53:17 +0200
+Received: (from pappy@localhost)
+	by nikita.ath.cx (8.12.3/8.12.3/Debian-5) id h38Gr844015444
+	for parisc-linux@parisc-linux.org; Tue, 8 Apr 2003 18:53:08 +0200
+From: Alexander Gabert <pappy@nikita.ath.cx>
+Date: Tue, 8 Apr 2003 18:53:06 +0200
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030408165306.GA15433@nikita.ath.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E92C42E.5B9BB871@hp.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] parisc-linux.org kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,27 +26,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Apr 08, 2003 at 02:44:30PM +0200, bruno_vidal@hp.com wrote:
->     Hi
-> Joel asked for something interresting, does someone know how I can retrieve
-> an option passed to the kernel?
+hello
 
-I think Randloph is right, MODULE_PARAM() should be sufficient.
+another question:
 
+can you tell me the exact difference between:
+www.kernel.org - linux-2.4.20
+www.parisc-linux.org - parisc-linux-kernel-2.4.20-pa32
 
-But in case it's not, arch/parisc/kernel/setup.c:
-	void __init start_parisc(unsigned arg0, unsigned arg1,
+if there is no technical reason in keeping those kernel devels apart,
+why is it done?
 
-		arg1 is the command_line.
+it is important for me to get a working mainstream vanilla kernel.org.
+i heard that this kernel does not even boot...
 
-	void __init setup_arch(char **cmdline_p)
-
-		cmdlinux_p is a pointer to "saved_command_line".
-		a copy of the original.
+thank you,
 
 
-An example is in kernel/printk.c:__setup("console=", console_setup);
+Alex
 
+-- 
+"... an experienced, industrious, ambitious, and often quite often
+picturesque liar."
+                -- Mark Twain
 
-hth,
-grant
+pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <pappy@nikita.ath.cx>
+          Key fingerprint =  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7F D6  05 E1 A8 0C
