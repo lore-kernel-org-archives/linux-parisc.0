@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 66716482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 May 2002 12:35:40 -0600 (MDT)
-Date: Tue, 14 May 2002 20:35:38 +0200
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v481)
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>
-To: PA/Linux <parisc-linux@lists.parisc-linux.org>
-From: Thibaut VARENE <varenet@esiee.fr>
-Message-Id: <62DAF8F4-6769-11D6-9BB9-0030656F07A2@esiee.fr>
-Subject: [parisc-linux] New HWDB design online
+Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD3EF482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 May 2002 16:11:24 -0600 (MDT)
+Message-ID: <3CE18B91.8B0E15B@gmx.at>
+Date: Wed, 15 May 2002 00:11:29 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: PA/Linux <parisc-linux@lists.parisc-linux.org>,
+	Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] New HWDB design online
+References: <62DAF8F4-6769-11D6-9BB9-0030656F07A2@esiee.fr>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,18 +23,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bonjour !  ;o)
+Hello !
 
-I'm glad to announce that the new hwdb is online at 
-http://hwdb.parisc-linux.org/
+Are you now responsible for the HWDB ?
 
-I hope you'll like it, and I pray it will work fine.
+I wrote moths ago some times to the "webmaster" to delete my
+registratioon with the old email address !
 
-Please mail for any comment/problem to report.
+Please delete for 
+	720
+	E55
+the entry "christoph.plattner@dot.at". It is already duplicated with
+my "gmx.at" mail account ! "dot.at" is not valid now !
 
-Enjoy ;o)
+With friendly regards
+Christoph P.
 
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+
+Thibaut VARENE wrote:
+> 
+> Bonjour !  ;o)
+> 
+> I'm glad to announce that the new hwdb is online at
+> http://hwdb.parisc-linux.org/
+> 
+> I hope you'll like it, and I pray it will work fine.
+> 
+> Please mail for any comment/problem to report.
+> 
+> Enjoy ;o)
+> 
+> Thibaut VARENE
+> PA/Linux ESIEE Team
+> http://pateam.esiee.fr/
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
