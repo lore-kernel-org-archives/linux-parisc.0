@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6C2FC482C
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Mar 2002 08:44:47 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16pt7s-0006CG-00; Tue, 26 Mar 2002 15:44:44 +0000
-Date: Tue, 26 Mar 2002 15:44:44 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Peter Lavender <plaven@bigpond.net.au>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] performance?
-Message-ID: <20020326154444.D26865@parcelfarce.linux.theplanet.co.uk>
-References: <20020326224358.B28171@piglet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020326224358.B28171@piglet>; from plaven@bigpond.net.au on Tue, Mar 26, 2002 at 10:43:58PM +1100
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 170D7482C
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Mar 2002 09:16:12 -0700 (MST)
+Date: Tue, 26 Mar 2002 08:16:01 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Building cvs 2.4.18 
+In-Reply-To: <20020326063217.50AB1482C@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.33L2.0203260810010.13376-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +22,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Mar 26, 2002 at 10:43:58PM +1100, Peter Lavender wrote:
-> It wasn't until I compiled it on my p90 with 48 meg ram running a a
-> zillion services and daemons that I noticed just how slow the 715 is.
-> Running the program proved this even further.
+On Mon, 25 Mar 2002, Grant Grundler wrote:
 
-Would you mind posting some numbers?
+> I've stopped building SMP
+> for 2.4.18 since SMP is b0rken at the moment.
 
-Also, let's try to figure out what other variables are a factor.  Can you
-compare gcc-3.0 on your x86 to the current compiler?
+I kinda noticed that when my box crashed again.  For now, I'll stop
+messing with new versions and stick with my nice, stable 2.4.17-32-smp
+debian version 23.  Debian version 32 crashes the box too.  Unfortunately,
+23 seems to not detect my video card. I'll have more info when I get some
+more time to experiment..
+
+Could you let me know when smp stabilizes?  I may try non-smp today as a
+last resort, but I hate wasting hardware ;)
+
 
 -- 
-Revolutions do not require corporate support.
+	The Hitchhiker's Guide to the Galaxy has a few things to say on
+the subject of towels.
+	Most importantly, a towel has immense psychological value.  For
+some reason, if a non-hitchhiker discovers that a hitchhiker has his towel
+with him, he will automatically assume that he is also in possession of a
+toothbrush, washcloth, flask, gnat spray, space suit, etc., etc.  Furthermore,
+the non-hitchhiker will then happily lend the hitchhiker any of these or
+a dozen other items that he may have "lost".  After all, any man who can
+hitch the length and breadth of the Galaxy, struggle against terrible odds,
+win through and still know where his towel is, is clearly a man to be
+reckoned with.
+		-- Douglas Adams, "The Hitchhiker's Guide to the Galaxy"
