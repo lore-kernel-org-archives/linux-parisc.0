@@ -1,42 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA19587
-	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 10:56:56 -0700
-To: Alex deVries <adevries@linuxcare.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] New web site in CVS... 
-In-Reply-To: Message from Alex deVries <adevries@linuxcare.com>
-   of "Mon, 18 Dec 2000 11:05:48 EST." <3A3E35DC.1DA98F7@linuxcare.com>
-References: <3A3E35DC.1DA98F7@linuxcare.com> 
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA20195
+	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 11:10:16 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 18 Dec 2000 18:13:10 -0000
+Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
+  by smtp.linuxcare.com with SMTP; 18 Dec 2000 18:13:11 -0000
+Sender: adevries@mailserv2.iuinc.com
+Message-ID: <3A3E544E.FC5B58CB@linuxcare.com>
+Date: Mon, 18 Dec 2000 13:15:42 -0500
+From: Alex deVries <adevries@linuxcare.com>
+MIME-Version: 1.0
+To: "M. Grabert" <xam@deathsdoor.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] (still) booting problems with HP9000/730
+References: <Pine.LNX.4.21.0012172113360.11612-100000@sgate.charlysworld.de>
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 18 Dec 2000 11:01:41 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001218180141.298CE37CA1@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-Alex deVries writes...
-
+"M. Grabert" wrote:
+> The kernel starts booting, but the scsi driver (old Ncr)
+> reports some warnings/errors like
+> shared memory is not coherent (or so), failed to reset scsi bus,
+> irq probe failed etc...
 > 
-> I've checked in the redone web site into CVS; it's in a module called
-> 'web'.
-[snip]
-> 
-> The content, however, I'd appreciate feedback and CVS commits on. 
-> Please be constructive.
+> the scsi driver finally recognizes my Quantum HD and
+> tries to boot from it (mount it)..
+> There is nothing like VFS: unable to mount blabla;
+> instead it runs in to an infinite loop of kernel oops,
+> it prints continously kernel stack/register traces
+> (seem to look all the same).
 
-Ok I just committed some fixes. I have a couple comments,
+I talked to Richard Hirst about this a few hours ago, and it looks like
+there's a problem with the SCSI driver.  It's unclear how difficult it
+would be to get that going, but it certainly is possible to fix.
 
-- someone should run a link checker over the site. I tried a lot by hand but 
-didn't want to spend the time to do all the weekly reports, etc.
+You'd probably have more success with the 720/730 if you did nfsroot.
 
-- weekly/index.html shows the last update from May 12, 2000 and the links are 
-broken. I don't know if we should go to the trouble to change all the old 
-reports(and probably shouldn't for historical reasons) but if we released a 
-new weekly report it would displace this old/b0rken one.
+If anyone has a 720 or 730 (or any other machine) with correct or broken
+kernel boot logs, I'm collecting them! Those can help developers who
+don't have access to all the hardware.
 
-- hardware/index.html is not done. I will take a look at it shortly.
+- Alex
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
