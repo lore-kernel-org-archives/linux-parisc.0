@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id E0C7A4841
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Nov 2003 04:38:17 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EF47E4841
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Nov 2003 05:02:14 -0700 (MST)
+Date: Fri, 7 Nov 2003 13:02:13 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] pppd on 2.4.22-pa13
-Date: Fri, 7 Nov 2003 12:38:03 +0100
-Cc: Nicolas JULIEN <gronico@gronico.org>
-References: <1068198742.3302.17.camel@athena>
-In-Reply-To: <1068198742.3302.17.camel@athena>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Message-Id: <200311071238.03665.deller@gmx.de>
+Subject: Re: [parisc-linux] Unresolved symbols in 2.4.22-pa13
+Message-ID: <20031107120213.GM17497@lug-owl.de>
+References: <3FA956FD.4080901@hrzpub.tu-darmstadt.de> <20031106162055.GA26869@parcelfarce.linux.theplanet.co.uk> <20031106205706.GG17497@lug-owl.de> <20031106222416.GI26869@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GoZzJvFfKjxI3RhA"
+In-Reply-To: <20031106222416.GI26869@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,38 +23,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Applied to kernel 2.4.22-pa14.
+--GoZzJvFfKjxI3RhA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Thu, 2003-11-06 22:24:16 +0000, Matthew Wilcox <willy@debian.org>
+wrote in message <20031106222416.GI26869@parcelfarce.linux.theplanet.co.uk>:
+> On Thu, Nov 06, 2003 at 09:57:06PM +0100, Jan-Benedict Glaw wrote:
+> > On Thu, 2003-11-06 16:20:55 +0000, Matthew Wilcox <willy@debian.org>
+> > wrote in message <20031106162055.GA26869@parcelfarce.linux.theplanet.co=
+=2Euk>:
+> > > On Wed, Nov 05, 2003 at 09:01:01PM +0100, Ruediger Scholz wrote:
+> @@ -34,7 +34,7 @@ config PARPORT
+> =20
+>  config PARPORT_PC
+>         tristate "PC-style hardware"
+> -       depends on PARPORT && (!SPARC64 || PCI)
+> +       depends on PARPORT && (!(SPARC64 || PARISC) || PCI)
 
+This excludes certain possibilities. I'd go the other way...
 
-On Friday 07 November 2003 10:52, Nicolas JULIEN wrote:
-> Hi,
->
-> I was having some problems with pppd:
->
-> Nov  6 10:13:03 tomawak kernel: sys32_ioctl: Unknown cmd fd(7)
-> cmd(40047437) arg(00081cf0)
->
-> and I was unable to launch an adsl session.
->
-> I've found a solution and I've patched my kernel with:
->
-> *** arch/parisc/kernel/ioctl32.c.old    Thu Nov  6 10:18:21 2003
-> --- arch/parisc/kernel/ioctl32.c        Thu Nov  6 10:18:52 2003
-> ***************
-> *** 3176,3181 ****
-> --- 3176,3182 ----
->   COMPATIBLE_IOCTL(PPPIOCCONNECT)
->   COMPATIBLE_IOCTL(PPPIOCDISCONN)
->   COMPATIBLE_IOCTL(PPPIOCATTCHAN)
-> + COMPATIBLE_IOCTL(PPPIOCGCHAN)
->   /* PPPOX */
->   COMPATIBLE_IOCTL(PPPOEIOCSFWD);
->   COMPATIBLE_IOCTL(PPPOEIOCDFWD);
->
-> Maybe it will be usefull to apply this to sources?
->
-> Best regards,
->
-> Nicolas JULIEN.
+>         ---help---
+>           You should say Y here if you have a PC-style parallel port. All
+>           IBM PC compatible computers and some Alphas have PC-style
+>=20
+> But perhaps that should be:
+>=20
+> 	depends on PARPORT && (!SPARC64 || PCI) && (!PARISC || SUPERIO)
+
+parport_pc uses inb/outb so I'd let it depend on busses that are capable
+of allowing inb/outb:
+
+	depends on PARPORT && (ISA || PCI || SUPERIO)
+
+- ISA parport adaptors exist, either as build-in or as real ISA cards.
+- There are PCI parport controllers
+- SUPERIO seeme to be capable of doing parport_pc (I haven't used
+  that...)
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
+
+--GoZzJvFfKjxI3RhA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/q4nFHb1edYOZ4bsRArJrAKCImlof9sTbTtJLrJJJTMf5xfKhcQCfaUV5
+UEJCbNOgcCCqEy1kHlzBAtI=
+=Qw28
+-----END PGP SIGNATURE-----
+
+--GoZzJvFfKjxI3RhA--
