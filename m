@@ -1,35 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7551D4830
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 04:37:36 -0600 (MDT)
+Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 89E3748E0
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 08:19:45 -0600 (MDT)
 Content-Type: text/plain;
   charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Grant Grundler <grundler@puffin.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] review of Documentation/parisc/unwritten
-Date: Sat, 6 Oct 2001 12:37:19 +0200
-References: <200110060919.DAA06756@puffin.external.hp.com>
-In-Reply-To: <200110060919.DAA06756@puffin.external.hp.com>
+From: Michael S.Zick <mszick@pflash.com>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Date: Sat, 6 Oct 2001 09:18:52 -0500
+Cc: parisc-linux@lists.parisc-linux.org
+References: <200110031004.EAA15528@udlkern.fc.hp.com>
+In-Reply-To: <200110031004.EAA15528@udlkern.fc.hp.com>
 MIME-Version: 1.0
-Message-Id: <20011006103736.7551D4830@dsl2.external.hp.com>
+Message-Id: <01100609185201.00995@Wolf-01>
+Subject: [parisc-linux] Re: Delayed branching explanation
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Grant,
+On Wednesday 03 October 2001 05:04 am, John Marvin wrote:
+>
+> I'll try to explain it here. Perhaps I can explain it clearer than how
+> the parisc documentation explains it (then again, perhaps not :-)).
+>
+John,
 
-> machine_halt		BUG. NOP.  Should update LEDs/ChassisCode.
-> machine_power_on	obsolete - delete it
-> 		arch/parisc/kernel/process.c
+Thanks a lot.
 
-The LED/ChassisCodes are already updated by the led_halt() function, called
-by the reboot notifier chain. machine_halt() is called by sys_reboot(), so we need
-to let it be a NOP, or just #define it as NOP.
-machine_power_on could be deleted AFAIT.
+Soon, maybe, somehow - I will have my 9000/720-50 setup again
+and running - then I will be able to learn these things on my own.
 
-> check_bugs	include/asm-parisc/bugs.h
-> 		NOP. Check for CPU bugs or misconfigured kernel.
-> 		review?
-
-Does the PA CPU has bugs ? :-)
-
-Helge
+Mike
