@@ -1,16 +1,14 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B6694829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 May 2003 17:07:40 -0600 (MDT)
-Date: Sun, 1 Jun 2003 01:07:38 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030531230738.GW6935@lug-owl.de>
+From: Matthew Wilcox <willy@debian.org>
+Subject: [parisc-linux] Re: no screens found on C240
+Date: Tue, 13 May 2003 13:44:38 +0100
+Message-ID: <20030513124438.GH29534__21178.3731393099$1416622449$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <005c01c3194a$8f0e01c0$980173c1@moviem.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+8CbEAItL+VIz8WN"
-Subject: [parisc-linux] Post CVS-move breakages
-Sender: parisc-linux-admin@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+To: Alan Hunter <a.hunter@moviem.co.uk>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <005c01c3194a$8f0e01c0$980173c1@moviem.co.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,44 +19,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---+8CbEAItL+VIz8WN
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 13, 2003 at 01:24:11PM +0100, Alan Hunter wrote:
+> I can't get X started on a C240 and don't have sufficient background to get to grips with the problem.
+> 
+> Here's what dmesg says:
+> STI GSC/PCI graphics driver version 0.9
+> STI PCI graphic ROM found at f1e00000 (2048 kB), fb at f6000000 (32 MB)
+> STI word mode ROM at f1e00044, hpa at f6000000
+> STI id 2fc1066b-9a02587, conforms to spec rev. 8.09
+> STI device: HPA4552A
+> stifb: Unsupported gfx card id 0x2fc1066b
 
-Hi!
+A4552A is the FX2 card and is unsupported; I saw someone offering to
+swap an EG card (which is supported) for an FX card a couple of days
+ago on this list.  Perhaps they're still interested?
 
-Now, whilest CVS was moved to another box, I'm still getting rsync
-errors.
-
-CVS (and/or its current checked-out repositories) have been moved to
-cvs.p-l.org .  On that box, there's no rsync server installed. OTOH, the
-old box (rsync.p-l.org) doesn't any longer have the checked-out archives
-nor the repositories available (but instead, there's a README that the
-contents can be found on cvs.p-l.org).
-
-Thus, I'm again asking to make the CVS repositories available for rsync
-download.
-
-Thanks, JBG
-
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
-
---+8CbEAItL+VIz8WN
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE+2TW6Hb1edYOZ4bsRAuWIAJ9fIncQr1+hfLflFL7YkM1z+OMTRQCfe8FN
-1A1E3olyhctboAqropywKgA=
-=LRVQ
------END PGP SIGNATURE-----
-
---+8CbEAItL+VIz8WN--
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
