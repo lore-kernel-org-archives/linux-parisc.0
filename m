@@ -1,43 +1,67 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from vopserver.pflash.com (mail.pflash.com [207.19.136.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92F11482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Jun 2001 01:29:23 -0600 (MDT)
-From: Michael S.Zick <mszick@pflash.com>
-To: tomh@execpc.com
-Date: Mon, 4 Jun 2001 02:09:32 -0500
-Content-Type: text/plain
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from droid3.webreklam.hu (para.abs0lut.com [195.56.113.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 732FB482A
+	for <parisc-linux@parisc-linux.org>; Mon,  4 Jun 2001 04:19:03 -0600 (MDT)
+Received: from localhost (diab@localhost)
+	by droid3.webreklam.hu (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA21589
+	for <parisc-linux@parisc-linux.org>; Mon, 4 Jun 2001 12:19:02 +0200
+Date: Mon, 4 Jun 2001 12:19:02 +0200 (CEST)
+From: diab <diab@diab.rulez.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0106041203450.21361-100000@droid3.webreklam.hu>
 MIME-Version: 1.0
-Message-Id: <01060402282900.09662@wolf01.morethan.org>
-Subject: [parisc-linux] Your 20-May-2001: Problems booting...
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] dpkg-utils, ./configure --host, mysql3.23
 List-ID: <linux-parisc.vger.kernel.org>
 
-HI -
-I am new to this list, so am only now seeing your message.
-Try this:
-Manually boot - choosing the "boot xxxxx IPL" option.
-Use the editor on the command line to make the following change:
-console=3Dtty
-to
-console=3DttyB
+just tried to apt-get source wget to make a debianized version of it, but
+dpkg-utils (which contains dpkg-source) depends on perl5 which is not
+installed. this way it is kind of hard to simply make debs using the
+usual apt-get source approach.
 
-That will by-pass the problem code (at least it does on my 9000/720) -
-=3DttyB is 'magic' meaning to use the PDC console code.
+anyways i found the older ./configure -s (which displays unknown host
+type) will just run fine using --host=hppa-pc-linux-gnu or
+hppa-hp-linux-gnu.
 
-The above change gets through the entire boot process - then locks
-with "unable to open console device" message.  Which I believe just
-means that /dev needs an entry for the ttyB device.  Perhaps, also a
-new entry in /etc/inittab for the ttyB device.
+still no luck compiling mysql 3.23.38 so far :( i tried with different
+options, but in /client (which is quite "far" from the beginning, i mean
+lotsa compiling succeeds) i just keep getting:
 
-If anyone knows what entry(s) is required to allow the ttyB console to be
-used - please advise.
+snowball:/usr/local/src/mysql-3.23.38/client# make
+/bin/sh ../libtool --mode=link gcc  -O3 -DDBUG_OFF
+-fno-implicit-templates -rdynamic -o mysql  mysql.o readline.o
+sql_string.o completion_hash.o -lreadline -lncurses
+../libmysql/libmysqlclient.la  -lcrypt -lnsl -lm 
+gcc -O3 -DDBUG_OFF -fno-implicit-templates -rdynamic -o .libs/mysql
+mysql.o readline.o sql_string.o completion_hash.o -lreadline -lncurses
+../libmysql/.libs/libmysqlclient.so -lcrypt -lnsl -lm -lcrypt -lnsl -lm
+-Wl,--rpath -Wl,/usr/local/lib/mysql
+mysql.o: In function `add_line(String&, char*, char*)':
+mysql.o(.text+0x1d50): undefined reference to `std::terminate()'
+/usr/bin/ld: mysql.o(.text+0x1d50): cannot find stub entry
+00000014__ZSt9terminatev+0
+/usr/bin/ld: mysql.o(.text+0x1d50): cannot handle R_PARISC_PCREL17F for
+std::terminate()
+mysql.o: In function `L948':
+mysql.o(.text+0x31e8): undefined reference to `std::terminate()'
+/usr/bin/ld: mysql.o(.text+0x31e8): cannot find stub entry
+00000014__ZSt9terminatev+0
+/usr/bin/ld: mysql.o(.text+0x31e8): cannot handle R_PARISC_PCREL17F for
+std::terminate()
+collect2: ld returned 1 exit status
+make: *** [mysql] Error 1
 
-PS: I know how to edit the ramdisk image - just don't know what=20
-entries to make.
+any1 has an idea what can i do to make it work? i tried --without-readline
+(as it seems this error might be around readline) but no luck with the
+built in libreadline*so so far.
 
-In addition, a suggestion to the planners:
-How about leaving all the access to the old PDC drivers in the code
-and ramdisk images until V12.0 of pa-risc/linux so that people can
-get past broken, new, code?
+the other thing is: it seems that this list is rather
+hardware/kernel/low level programming oriented, not dealing w/ 
+software issues that much.
+if this is the case, which is the best list to discuss sw issues?
 
-Mike
+regards,
+
+--
+diab 
+		
