@@ -1,35 +1,99 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA14606
-	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Aug 2000 15:03:47 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA16113
+	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Aug 2000 17:05:23 -0600
 Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 14 Aug 2000 15:04:06 -0000
+  by mailserv2.iuinc.com with SMTP; 14 Aug 2000 17:05:43 -0000
 Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 14 Aug 2000 15:03:41 -0000
-Date: Mon, 14 Aug 2000 09:59:08 -0400
+  by db1.i.linuxcare.com with SMTP; 14 Aug 2000 17:05:19 -0000
+Received: (from willy@localhost)
+	by vodka.thepuffingroup.com (8.9.3/8.9.3) id MAA32101
+	for parisc-linux@thepuffingroup.com; Mon, 14 Aug 2000 12:00:46 -0400
+Date: Mon, 14 Aug 2000 12:00:46 -0400
 From: Matthew Wilcox <matthew@wil.cx>
-To: AJIT D BOBRA <bobra@prl.ernet.in>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000/735 systems....
-Message-ID: <20000814095908.K27691@vodka.thepuffingroup.com>
-References: <3997B7DF.41C6@prl.ernet.in>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000814120046.M27691@vodka.thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3997B7DF.41C6@prl.ernet.in>; from AJIT D BOBRA on Mon, Aug 14, 2000 at 02:41:59PM +0530
+Subject: [parisc-linux] semaphores
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Aug 14, 2000 at 02:41:59PM +0530, AJIT D BOBRA wrote:
-> 	We have three Hp 9000/735 machines running HP-UX 9.01. We are now
-> interested in loading LINUX on them and scrap HP-UX. What are the
-> chances that we can do that ?
 
-depends what you want to do really.  you stand a significantly better
-chance of being able to do that if all you want is to watch the machine
-crash :-)
+i've been messing about trying to get the most efficient semaphore
+implementation that I can.  Linux semaphores are theoretically n-way
+exclusion, but I can't actually see any non-mutex (1-way) exclusion.
+Linux also has read-write mutexes, read-write spinlocks and ordinary
+spinlocks, but i'm not going to deal with those for the moment.
 
-we have no intention of providing an X server (anyone want to start
-working on that...?), but you should be able to try the alpha release
-for the 712 on a 735 and gasp in amazement as you manage to execute
-simple shell commands.
+The design of the semaphore is to optimise _heavily_ for the uncontended
+case.  ``If you have contention, redesign your subsystem so you don't
+have contention.''  So here's my go at it.  I haven't even tested that
+this compiles, because I'm sure that someone else is going to come up
+with a better design than I will.
+
+struct semaphore {
+        int exclusive;
+        int sleepers;
+        wait_queue_head_t wait;
+#if WAITQUEUE_DEBUG
+        long __magic;
+#endif
+} __attribute__((aligned (16))); /* Align to 16 bytes for the sake of ldcw */
+
+#define __SEMAPHORE_INITIALIZER(name,count)                     \
+{                                                               \
+        exclusive: 0,                                           \
+        sleepers: -count,                                       \
+        wait: __WAIT_QUEUE_HEAD_INITIALIZER((name).wait),       \
+        __SEM_DEBUG_INIT(name)                                  \
+}
+
+extern __inline__ void down(struct semaphore * sem)
+{
+        register int _r26 asm ("r26") = sem;
+        register int tmp;
+#if WAITQUEUE_DEBUG
+        CHECK_MAGIC(sem->__magic);
+#endif
+
+        __volatile__ asm(
+"1:     ldcw    0(%0), %1\n"            /* exclusive access to this */
+"       movb,=  %1, %%r0, 1b\n"         /* section of code */
+"       ldw     4(%0), %1\n"            /* get number of sleepers */
+"       addi,>  1, %1, %1\n"            /* increment */
+"       b,l     __down_failed, %%r2\n"  /* if this is > 0, we're contending */
+"       stw     %1, 4(%0)\n"            /* always write back sleepers */
+"       stw     %0, 0(%0)\n"            /* we're done with our access */
+                : : "r" (_r26) : "r" (tmp)
+        );
+}
+
+i haven't written down_failed yet, but to my mind, it looks rather like:
+
+__down_failed:
+	stw	%gr26, 0(%gr26)
+	... set up stack frame ...
+	... call __down() which is written in C and sleeps.
+
+see arch/i386/kernel/semaphore.c for how __down() does its stuff.
+Only I'm trying to avoid using atomic_t variables, cos they're not
+exactly fast on parisc right now.
+
+Better suggestions appreciated.
+
+p.s.
+
+my original scheme was less ugly:
+
+"1:     ldcw    0(%0), %1\n"            /* exclusive access to this */
+"       movb,=  %1, %%r0, 1b\n"         /* section of code */
+"       ldw     4(%0), %1\n"            /* get number of sleepers */
+"       addi    1, %1, %1\n"            /* increment */
+"       stw     %1, 4(%0)\n"            /* always write back sleepers */
+"       movb,>  %1, %%r0, __down_failed\n" /* if this is > 0, we're contending */
+"       stw     %0, 0(%0)\n"            /* we're done with our access */
+
+but this can't branch far enough to get to __down_failed.  now, we could do
+some cunning stuff with stubs perhaps, but that seems bad too.
 
 -- 
 Revolutions do not require corporate support.
