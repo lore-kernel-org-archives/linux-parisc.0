@@ -1,28 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DFE21482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 06:07:28 -0600 (MDT)
-Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
-	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h4CB93RQ031350;
-	Mon, 12 May 2003 12:09:04 +0100
-Received: (from alan@localhost)
-	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h4CB928P031348;
-	Mon, 12 May 2003 12:09:02 +0100
-Subject: Re: [parisc-linux] Re: patch 2.4.21 (follow up)
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Joel Soete <joel.soete@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030512005240.GT29534@parcelfarce.linux.theplanet.co.uk>
-References: <3EA9466400001A07@ocpmta7.freegates.net>
-	 <1051702331.19579.8.camel@dhcp22.swansea.linux.org.uk>
-	 <3EBD7E24.408@tiscali.be>
-	 <1052604831.19351.4.camel@dhcp22.swansea.linux.org.uk>
-	 <20030512005240.GT29534@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain
-Message-Id: <1052737737.31235.10.camel@dhcp22.swansea.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A8778482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 06:11:58 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19FC9r-0003aU-HT; Mon, 12 May 2003 13:11:55 +0100
+Date: Mon, 12 May 2003 13:11:55 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH-2.5] Various cleanups
+Message-ID: <20030512121155.GV29534@parcelfarce.linux.theplanet.co.uk>
+References: <20030511133037.GN27494@lug-owl.de>
 Mime-Version: 1.0
-Date: 12 May 2003 12:08:58 +0100
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030511133037.GN27494@lug-owl.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -34,14 +25,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Llu, 2003-05-12 at 01:52, Matthew Wilcox wrote:
-> On Sat, May 10, 2003 at 11:13:52PM +0100, Alan Cox wrote:
-> > Its in the 2.4.21rc2-ac tree. I've sent most of it to Marcelo on the
-> > grounds that it is zero risk even in a -rc because parisc doesnt work
-> > in his tree anyway. He may ask me to wait for 2.4.22pre1 though
-> 
-> That's the argument that's been made for the ia64 patchset.  He's not
-> been willing to take that either ;-(  Would it make life easier if you
-> took that too?  I can send that on in a separate mail if you like.
+On Sun, May 11, 2003 at 03:30:37PM +0200, Jan-Benedict Glaw wrote:
+> Hi!
 
-Sure if you want - -ac is there to test stuff before it goes to Marcelo
+Hi Jan.  Thanks for all the work you've put in, I really appreciate it.
+
+>  - Ressurect CONFIG_BINFM_SOM when built as module: the hpux/ directory
+>    was completely missing (this part needs cleanup from a Makefile
+>    specialist), EXPORT_SYMBOL() the hpux_gateway_page if neccessary.
+
+I was already planning a CONFIG_HPUX; I just hadn't got round to
+committing that bit to the tree.  I've done that now and I think it
+should solve all the problems you were experiencing.
+
+>  - Export some more symbols (memchr, pdc_tod_read, pdc_tod_set,
+>    __flush_dcache_page, dcache_stride) to make various modules happy.
+
+Done.  None of these seemed like stuff we shouldn't be exporting.
+
+>  - Add various void * casts to pointer compares (to solve the
+>    __canonicalize_funcptr_for_compare missing symbol when built as
+>    module because libgcc.a isn't linked into these modules)
+
+I'm not applying these bits.  It's just not reasonable to add (void *)
+casts to every function pointer comparison.  I know Linus will reject it.
+We need to find a better way to fix this one -- and I suspect the right
+way is to implement a __canonicalize_funcptr_for_compare in the kernel
+and EXPORT_SYMBOL it.
+
+> --- arch/parisc/oprofile/init.c	8 May 2003 13:31:44 -0000	1.5
+> +++ arch/parisc/oprofile/init.c	11 May 2003 13:09:18 -0000
+> @@ -11,6 +11,8 @@
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+>  #include <linux/oprofile.h>
+> +#include <linux/init.h>
+> +#include <linux/errno.h>
+
+hmm... init.h and errno.h are already included earlier, so I didn't
+apply this patch.
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
