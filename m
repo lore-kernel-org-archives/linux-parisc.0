@@ -1,12 +1,15 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] hwpath for superio serial console
-Date: Sun, 16 Jan 2005 05:47:28 +0000
-Message-ID: <20050116054728.GS30982@parcelfarce.linux.theplanet.co.uk>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] hwpath for superio serial console
+Date: Sun, 16 Jan 2005 01:09:42 -0700
+Message-ID: <20050116080942.GB20183@colo.lackof.org>
+References: <20050116054728.GS30982@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@parisc-linux.org
+Cc: parisc-linux@parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050116054728.GS30982@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,49 +20,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Sun, Jan 16, 2005 at 05:47:28AM +0000, Matthew Wilcox wrote:
+> # cat console/*
+> [10/0/14/1/1]
+> 643 
+> 
+> To my mind, this is a broken hwpath.
 
-Now I've fixed pdc_stable to not dereference a null ptr, I can see
-why it failed.  The hardware path it has is:
+It is.
+We can even detect those - the PCI dev/func needs to be
+encoded as "func<<5 | dev" (ie 10/0/46/1) if it wanted
+to follow the expected convention.
 
-# cat console/*
-[10/0/14/1/1]
-643 
+> 10/0/14/1/1 (PCI device 1.1)
 
-To my mind, this is a broken hwpath.  The algorithm we use for converting
-hwpaths to PCI busses says this is:
-10 (PA)
-10/0 (PA)
-10/0/14 (PCI bridge 0e.0)
-10/0/14/1/1 (PCI device 1.1)
+It should be "10/0/14/1.1".
 
-We're actually supposed to decode this as:
+> We're actually supposed to decode this as:
+> 
+> 10/0 (PA)
+> 10/0/14/1 (PCI device 0e.1)
 
-10/0 (PA)
-10/0/14/1 (PCI device 0e.1)
-10/0/14/1/1 (subfunction 1?)
+So far so good.
 
-This isn't consistent breakage, only for serial console hwpath on
-a sprockets machine.  N4000 reports [0/0/4/0] (Ike 0, Elroy 0, PCI
-device 4.0).  Sprockets reports [10/0/15/1] for alternate boot path
-(Astro 10, Elroy 0, PCI device 0f.1), [10/6/2/0] for graphics console,
-and [10/0/14/2] for USB keyboard.
+> 10/0/14/1/1 (subfunction 1?)
 
-To my mind, SERIAL_1 should have been reported by a hwpath of 10/0/14/1
-and then two layers -- the first being 1 or 2 for SERIAL_1 vs SERIAL_2,
-and the second encoding 9600.8.none (which seems to be 643 for some
-reason).
+no - see above.
 
-How should we be handling this?  Look for a device, then retry with the
-hwpath shifted left if we don't find it?  How about when write support
-is added?  What does HPUX do?
+> This isn't consistent breakage, only for serial console hwpath on
+> a sprockets machine.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Right - someone botched how to display suckyio serial ports.
+Maybe this was an attempt to make it consistent with other
+serial ports not using "layers" to identify the port.
+
+> To my mind, SERIAL_1 should have been reported by a hwpath of 10/0/14/1
+> and then two layers -- the first being 1 or 2 for SERIAL_1 vs SERIAL_2,
+> and the second encoding 9600.8.none (which seems to be 643 for some
+> reason).
+
+Yes.
+
+> How should we be handling this?
+
+Probably just ignore it. It's just a "handle" and people will have
+to manually handle it as a quirk.
+
+Try "in io" and see what it says for SERIAL_1 and SERIAL_2
+on the astro based workstation.
+My j6k show's it as 10/0/14/1/1.
+So I think it's ok if Linux is consistent with what firmware displays.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
