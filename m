@@ -1,33 +1,55 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA12522
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 08:42:49 -0700
-Received: from localhost (ingram@localhost)
-	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id JAA25471
-	for <parisc-linux@thepuffingroup.com>; Wed, 24 Jan 2001 09:46:40 -0600
-Date: Wed, 24 Jan 2001 09:46:40 -0600 (CST)
-From: Greg Ingram <ingram@symsys.com>
-To: parisc-linux@thepuffingroup.com
-In-Reply-To: <20010120115417.4CD28D1585@mail.esiee.fr>
-Message-ID: <Pine.LNX.4.21.0101240943360.25434-100000@maestro.symsys.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA13243
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 09:26:06 -0700
+Sender: christoph.plattner@alcatel.at
+Message-ID: <3A6F02F2.3C4A137C@alcatel.at>
+Date: Wed, 24 Jan 2001 17:29:38 +0100
+From: Christoph Plattner <christoph.plattner@alcatel.at>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] [PATCH] typo fix
+To: Marek GROSSMAN <grossman@nspuh.cz>
+CC: parisc-linux@thepuffingroup.com, christoph.plattner@dot.at
+Subject: Re: [parisc-linux] Boot from tape
+References: <3A6EE1A6.D21F249F@nspuh.cz>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+How can you run Linux ?
+I thought, HP E55 (9000/856) is not full supported, as
+the SCSI driver and the serial multiplexer (8-port serial,
+where my console is configured to port 0) is not supported
+(no driver !).
+Or is there any, and I don't know it ??
 
-That patch I sent last week has a letter O instead of a zero in the 'C100'
-string in the comment.  Only one.  What were my fingers doing?
+If there is no driver, which console do you use ?
 
---- ccio-dma.c.orig	Wed Jan 24 09:39:22 2001
-+++ ccio-dma.c	Wed Jan 24 09:39:38 2001
-@@ -1523,7 +1523,7 @@
- ** that can't be detected by PA/EISA/PCI bus walks.
- */
- 	switch((unsigned long)d->hpa) {
--        case 0xf5fbf000L:       /* C1O0 (wild guess!) */
-+        case 0xf5fbf000L:       /* C100 (wild guess!) */
- 	case 0xf3fbf000L:       /* C110 IOA0 LBC (aka GSC port) */
- 	case 0xf7fbf000L:       /* C110 IOA0 LBC (aka GSC port) */
- 	case 0xf203f000L:       /* C180/C200/240/C360 IOA0 LBC (aka GSC port) */
+Do you really speak about the PA-RISC version of the E55
+(modell 9000/856) or the new intel-PC server ?
 
-- Greg
+Please remail !
+
+With friendly regards
+
+	Christoph
+
+PS: I would like to use my E55 server under Linux ....
+
+Marek GROSSMAN wrote:
+> 
+> Hello.
+> 
+> Can I boot Linux on the E55 server from a tape?
+> How can I make the tape.
+> 
+> Thanks
+> --
+> Mareg
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+
+-- 
+  +--------V--------+	Christoph.Plattner@alcatel.at
+  |  A L C A T E L  |	-----------------------------
+  +-----------------+	Phone: +43 1 27722 3706	
+         T A S		Fax:   +43 1 27722 3955
