@@ -1,9 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5ADE44845
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7AECC4879
 	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Oct 2003 09:52:46 -0600 (MDT)
 Date: Fri, 3 Oct 2003 17:52:42 +0200
-Message-ID: <3F5CB6FB0000CC43@ocpmta1.freegates.net>
+Message-ID: <3F5CB6FB0000CC42@ocpmta1.freegates.net>
 In-Reply-To: <Pine.LNX.4.58.0310031624140.12322@sal.ucc.ie>
 From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] 2.6.0-test6-pa6 on b2k finaly crash
