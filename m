@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 949EA4852
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Jun 2002 06:06:48 -0600 (MDT)
-Date: Wed, 26 Jun 2002 14:06:46 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9780A4853
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Jun 2002 07:32:26 -0600 (MDT)
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020626120646.GI17216@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
-Subject: [parisc-linux] rsync: unavailable again?
+Message-ID: <1025098342.3d19c266a0ff7@webmail.tiscalinet.be>
+Date: Wed, 26 Jun 2002 15:32:22 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] gcc-3.2 failed to compile kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---J+eNKFoVC4T1DV3f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-Hi!
+To try to investigate the network problem with compiling kernel with gcc-3.2 on
+hppa, I cvs update gcc and binutils this morning. Then build toolchain and
+finally make dep ; make vmlinux but it failled with following message:
 
-I'm still using rsync, but currently I constantly get the famous
-connection reset by peer...
+make[1]: Entering directory
+`/Develop/parisc-linux/src/linux-2.4.18-pa40/arch/parisc/kernel'
+gcc -D__KERNEL__ -I/Develop/parisc-linux/src/linux-2.4.18-pa40/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
+-fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7100   -DKBUILD_BASENAME=cache  -c -o cache.o cache.c
+gcc -D__ASSEMBLY__ -traditional -D__KERNEL__
+-I/Develop/parisc-linux/src/linux-2.4.18-pa40/include  -c -o pacache.o pacache.S
+In file included from pacache.S:44:
+/Develop/parisc-linux/src/linux-2.4.18-pa40/include/asm/cache.h:9: 1/config.h:
+No such file or directory
+make[1]: *** [pacache.o] Error 1
+make[1]: Leaving directory
+`/Develop/parisc-linux/src/linux-2.4.18-pa40/arch/parisc/kernel'
+make: *** [_dir_arch/parisc/kernel] Error 2
 
-Is rsyncd reaped off /etc/inetd.conf again? Or did I miss something?
-However, the last time I had a successful access was at june 19, 2002,
-18:35:01 CEST (=3D 16:00:01 UTC).
+?? "1/config.h"
+    ??
 
-When will rsync be available again?
+Any idea?
 
-MfG, JBG
+Thanks in advance,
+    Joel
 
---=20
-Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
-	 -- New APT-Proxy written in shell script --
-	   http://lug-owl.de/~jbglaw/software/ap2/
+PS1: the same sources (2.4.18-pa40) compile and run fine when compile natively
+with gcc-3.0.4 (last hppa.dpkg).
 
---J+eNKFoVC4T1DV3f
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+PS2: glibc used to build toolchain was based on glibc_2.2.5-4 (+ patch)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQE9Ga5VHb1edYOZ4bsRAgQVAJ9cmCFo5BnVRM5Ntr2Y6YhwRug0VACdFim6
-CmbHN+1GO61CZLmhnSWlFtA=
-=t/vH
------END PGP SIGNATURE-----
-
---J+eNKFoVC4T1DV3f--
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
