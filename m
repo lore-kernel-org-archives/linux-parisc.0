@@ -1,100 +1,106 @@
-From: Linus Torvalds <torvalds@osdl.org>
-Subject: Re: more (insane) jiffies ranting
-Date: Sun, 27 Jun 2004 10:39:08 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0406271022430.16079__43188.0799624652$1416623489$gmane$org@ppc970.osdl.org>
-References: <1088266111.1943.15.camel@mulgrave> <Pine.LNX.4.58.0406260924570.14449@ppc970.osdl.org>
- <20040626221802.GA12296@taniwha.stupidest.org> <Pine.LNX.4.58.0406261536590.16079@ppc970.osdl.org>
- <20040627015501.GA14647@taniwha.stupidest.org>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: [parisc-linux] [PATCH] tiny iosapic abstraction
+Date: Mon, 28 Jun 2004 12:57:06 -0600
+Message-ID: <200406281257.06793.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
- Andrew Morton <akpm@osdl.org>,
- Paul Jackson <pj@sgi.com>,
- PARISC list <parisc-linux@lists.parisc-linux.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>
-To: Chris Wedgwood <cw@f00f.org>
-Return-Path: <linux-kernel-owner+deller=40gmx.de-S264414AbUF0Rkk@vger.kernel.org>
-In-Reply-To: <20040627015501.GA14647@taniwha.stupidest.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain;
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Introduce a tiny bit of abstraction to parisc iosapic.c.
 
+This makes more obvious the two reads to flush previous writes to the
+hardware in iosapic_wr_irt_entry().  ia64 does neither one (perhaps
+because we don't share vectors yet).  But even if the flush is really
+needed on parisc, wouldn't only the second be needed, i.e.:
 
-On Sat, 26 Jun 2004, Chris Wedgwood wrote:
-> 
-> On Sat, Jun 26, 2004 at 03:48:34PM -0700, Linus Torvalds wrote:
-> 
-> > But for most data structures, the way to control access is either
-> > with proper locking (at which point they aren't volatile any more)
-> > or through proper accessor functions (ie "jiffies_64" should
-> > generally only be accessed with something that understands about
-> > low/high word and update ordering and re-testing).
-> 
-> I don't entirely buy this.  Right now x86 code just assumes 32-bit
-> loads are atomic and does them blindly in lots of places (ie. every
-> user of jiffies just about).
-> 
-> Without the volatile it seems entirely reasonable gcc will produce
-> correct, but wrong code here so I would argue 'volatile' is a property
-> of the data in this case.
++	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY(vi->irqline), dp0);
++	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY_HI(vi->irqline), dp1);
+	/* Read the window register to flush the writes down to HW  */
+ 	dp1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
 
-It's a property of the data _iff_:
- - it is _always_ volatile
- - it is only ever used atomically: this also means that it must be 
-   totally independent of _all_ other data structures and have no linkages 
-   to anything else.
-
-Snd basically, the above is pretty much never true except possibly for 
-real I/O accesses and sometimes things like simple "flags" (ie it's fine 
-to use "volatile sigatomic_t flag;" in user programs to have signal 
-handlers say "something happened" in a single-threaded environment).
-
-NOTE! The "single-threaded environment" part really is important, and is 
-one of the historical reasons for volatile having been more useful than it 
-is today. If you are single-threaded and don't have issues like CPU memory 
-ordering etc, then you can let the compiler do more of the work, and there 
-are a lot of lockless algorithms that you can use that only depend on 
-fairly simple semantics for "volatile".
-
-But the fact is, for the kernel none of the above is ever really true. 
-A 32-bit-atomic "jiffies" comes the closest, but even there the "always" 
-property wasn't true - it wasn't true in the update phase, and we 
-literally used to have something like this:
-
-	*((unsigned long *)&jiffies)++;
-
-to update jiffies and still get good code generation (now that we have a
-64-bit jiffies and need to do more complex stuff anyway, we don't have
-that any more, but you should be able to find it in 2.3.x kernels if I
-remember correctly).
-
-And _anything_ that has any data dependencies, "volatile" is totally
-useless. Even the (acceptable in single-threaded user-space) "flag" thing 
-is not valid usage in the kernel, since for a flag in a multi-threaded 
-environment you still need an explicit CPU memory barrier in the code, 
-making it impossible for the compiler to do the right thing anyway.
-
-> > I repeat: it is the _code_ that knows about volatile rules, not the
-> > data structure.
-> 
-> Except as I mentioned we have exceptions to this right now.
-
-No we don't. The _only_ accepted exception is the special case of "the low
-bits of jiffies", and that's accepted partly because of historical
-reasons, and partly because it's fundamentally a data structure we don't
-really care that much about. There should be no other ones.
-
-And that special case _literally_ is only for people who don't care that 
-much. Anybody who cares about "real time" needs to get xtime_lock and do 
-the proper magic to get a real date.
-
-So I don't see your argument. I'm obviously saying that "yes, we have 
-_one_ case where we make a data structure volatile", but at the same time, 
-that case is very much a "we don't really care too much about precision 
-there, and even so people think we should have real accessor functions".
-
-So I stand by the rule: we should make _code_ have the access rules, and
-the data itself should never be volatile. And yes, jiffies breaks that
-rule, but hey, that's not something I'm proud of.
-
-		Linus
+--- linux-2.6.7-pa1-iosapic/drivers/parisc/iosapic.c.orig	Fri Jun 25 15:19:46 2004
++++ linux-2.6.7-pa1-iosapic/drivers/parisc/iosapic.c	Fri Jun 25 16:12:45 2004
+@@ -233,6 +233,18 @@
+ #define IOSAPIC_IRDT_ENTRY(idx)		(0x10+(idx)*2)
+ #define IOSAPIC_IRDT_ENTRY_HI(idx)	(0x11+(idx)*2)
+ 
++static inline unsigned int iosapic_read(unsigned long iosapic, unsigned int reg)
++{
++	writel(reg, iosapic + IOSAPIC_REG_SELECT);
++	return readl(iosapic + IOSAPIC_REG_WINDOW);
++}
++
++static inline void iosapic_write(unsigned long iosapic, unsigned int reg, u32 val)
++{
++	writel(reg, iosapic + IOSAPIC_REG_SELECT);
++	writel(val, iosapic + IOSAPIC_REG_WINDOW);
++}
++
+ /*
+ **     GFP_KERNEL includes __GFP_WAIT flag and that may not
+ **     be acceptable. Since this is boot time, we shouldn't have
+@@ -718,13 +730,8 @@
+ 	struct iosapic_info *isp = vi->iosapic;
+ 	u8 idx = vi->irqline;
+ 
+-	/* point the window register to the lower word */
+-	writel(IOSAPIC_IRDT_ENTRY(idx), isp->isi_hpa+IOSAPIC_REG_SELECT);
+-	*dp0 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
+-
+-	/* point the window register to the higher word */
+-	writel(IOSAPIC_IRDT_ENTRY_HI(idx), isp->isi_hpa+IOSAPIC_REG_SELECT);
+-	*dp1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
++	*dp0 = iosapic_read(isp->isi_hpa, IOSAPIC_IRDT_ENTRY(idx));
++	*dp1 = iosapic_read(isp->isi_hpa, IOSAPIC_IRDT_ENTRY_HI(idx));
+ }
+ 
+ 
+@@ -740,16 +747,12 @@
+ 		isp->isi_hpa,
+ 		dp0, dp1);
+ 
+-	/* point the window register to the lower word */
+-	writel(IOSAPIC_IRDT_ENTRY(vi->irqline), isp->isi_hpa+IOSAPIC_REG_SELECT);
+-	writel( dp0, isp->isi_hpa+IOSAPIC_REG_WINDOW);
++	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY(vi->irqline), dp0);
+ 
+ 	/* Read the window register to flush the writes down to HW  */
+ 	dp0 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
+ 
+-	/* point the window register to the higher word */
+-	writel(IOSAPIC_IRDT_ENTRY_HI(vi->irqline), isp->isi_hpa+IOSAPIC_REG_SELECT);
+-	writel( dp1, isp->isi_hpa+IOSAPIC_REG_WINDOW);
++	iosapic_write(isp->isi_hpa, IOSAPIC_IRDT_ENTRY_HI(vi->irqline), dp1);
+ 
+ 	/* Read the window register to flush the writes down to HW  */
+ 	dp1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
+@@ -881,11 +884,7 @@
+ 	struct iosapic_info *isp = vi->iosapic;
+ 
+ 	for (d0=0x10; d0<0x1e; d0++) {
+-		/* point the window register to the lower word */
+-		writel(d0, isp->isi_hpa+IOSAPIC_REG_SELECT);
+-
+-		/* read the word */
+-		d1 = readl(isp->isi_hpa+IOSAPIC_REG_WINDOW);
++		d1 = iosapic_read(isp->isi_hpa, d0);
+ 		printk(" %x", d1);
+ 	}
+ }
+@@ -933,11 +932,7 @@
+ 	ASSERT(isi);
+ 	ASSERT(isi->isi_hpa);
+ 
+-	/* point window to the version register */
+-	writel(IOSAPIC_REG_VERSION, isi->isi_hpa+IOSAPIC_REG_SELECT);
