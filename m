@@ -1,69 +1,57 @@
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id WAA24068
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 22:46:43 -0700
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel1.hp.com (Postfix) with ESMTP id C0B4C68A
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 00:48:56 -0500 (EST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id WAA18159 for parisc-linux@puffin.external.hp.com; Mon, 20 Nov 2000 22:47:41 -0700 (MST)
-Date: Mon, 20 Nov 2000 22:47:41 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200011210547.WAA18159@udlkern.fc.hp.com>
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Use of the EI_OSABI field
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA24900
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 00:04:53 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 07:07:04 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA28831;
+	Tue, 21 Nov 2000 18:05:36 +1100
+Date: Tue, 21 Nov 2000 18:05:36 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Hirst <rhirst@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] signal handling problems (32 bit kernel)
+In-Reply-To: <20001120175838.Q32715@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0011211713550.15623-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Another glibc issue (which is why I'm sending this back to the list) is
-> that there has been quite some discussion on the binutils list over the
-> use of the EI_OSABI field.  The conclusion being that it isn't really
-> correct to use this field to discern the intendend execution platform.
-> It's purpose is really to tell ELF tools that a file contains fields and
-> values that need to be interpreted in a non-standard way.  Since both
-> elf32-hppa and elf64-hppa follow the standards, I'm inclined to think that
-> the gnu tools should set EI_OSABI to zero for both HPUX and Linux targets.
+On Mon, 20 Nov 2000, Richard Hirst wrote:
 
-I don't read the binutils mailing list, so I checked the archive.  In my
-opinion I didn't see a discussion, I saw H.J.  Lu repeatedly asserting
-this "fact".  He may or may not be correct about original intention, but
-the implementation so far has been that EI_OSABI is used to tell what the
-target platform is.  That is what FreeBSD is doing, that is what HP-UX is
-doing, and that is what the IA-64 Unix System V Application Binary
-Interface specifies:
+> #warning XXX FIXME probably bogus -PB
+>         /* I think this is bogus -- it'll cause the first instn of the
+>          * signal handler to be executed twice!  Better might be to
 
-  http://developer.intel.com/design/IA-64/Downloads/24537002.pdf
+Definitely bogus, as with quite a lot of iaoq manipulation in signal.c
 
-Note that the second paragraph in section 1.1 of that specification
-includes the following:
+> I've fixed that by setting iaoq[1] = iaoq[0]+4.  Is that OK, or
 
-    This document is the result of consensus among operating system
-    vendors intending to provide UNIX and UNIX workalike operating
-    systems on the IA-64 architecture. The vendors participating in
-    this effort include Intel, Sun Microsystems, SCO, IBM, SGI,
-    Cygnus Solutions, VA Linux Systems, HP, and Compaq.
+Sounds like the right thing to do.  I reckon everywhere ioaq is fudged
+from/to r31 should have this sort of mapping.  ie. it should be
 
-So, If the specification is wrong according to H.J. Lu, why did both
-Cygnus and VA Linux Systems not object to this:
+	regs->gr[31] = regs->iaoq[0];
 
-    Section 4.1.1.4 Operating System Identification
+in sys_rt_sigreturn, and
 
-    The e_ident[EI_OSABI] value identifies the operating system and
-    ABI to which the object is targeted, as listed in Table 4-1.
+	err |= __put_user(regs->gr[31], &sc->sc_iaoq[0]);
+	err |= __put_user(regs->gr[31] + 4, &sc->sc_iaoq[1]);
 
-Table 4-1 lists the various ELFOSABI_* fields, e.g. ELFOSABI_HPUX,
-ELFOSABI_NETBSD, ELFOSABI_LINUX, etc.
+in setup_sigcontext, and so on.  I'm guessing the origial author of this
+code didn't know which of iaoq[0] and ioaq[1] was ioaq_front. :)
 
-Note also, that the current mechanism for us to be able to differentiate
-elf executables in the Linux kernel is the machine dependent
-elf_check_arch() macro, whose only argument is a pointer to a
-elf32_hdr or elf64_hdr. I think it would be ugly to try to get the
-.note.ABI-tag section first for every exec of a new binary in order
-to determine what the target ABI is.
+> and then in another terminal do 'kill -USR1 <pid>'.  The program
+> either goes 'Wah!', gives a SEGV, or works.  That seems to be because
+> %r1 is corrupted while processing the signal.  The signal handler ends
+> with a syscall (rt_sigreturn_wrapper), and %r1, at least, is not saved
+> and restored over the syscall.  %r31 also appears to get corrupted, as
+> it is used in the final branch of the syscall return.
 
-In my opinion, unless H.J. Lu can get the IA-64 ABI changed, it is too
-late to assert his view of what that field was supposed to be. Please
-leave the EI_OSABI field set to ELFOSABI_LINUX until a better consensus
-on this issue is reached.
+I don't really understand what is going on here, but it seems wrong to me
+that setup_rt_frame should be touching regs->iaoq at all when in_syscall.
 
-John Marvin
-jsm@fc.hp.com
+Hmm, and in that case why all the other gr[31] to/from ioaq[] fudgery?
+
+Alan
+-- 
+Linuxcare.  Support for the Revolution.
