@@ -1,26 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id JAA29085
-	for <parisc-linux@sod.res.cmu.edu>; Mon, 5 Apr 1999 09:47:09 -0400
-Message-ID: <19990405094704.A29056@cmu.edu>
-Date: Mon, 5 Apr 1999 09:47:04 -0400
-From: Phil Schwan <pschwan@thepuffingroup.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id UAA08211
+	for <parisc-linux@sod.res.cmu.edu>; Mon, 5 Apr 1999 20:17:34 -0400
+Received: from america.net (buggz@tnt1-205.america.net [206.67.248.205])
+	by smtp.america.net (8.9.1/8.9.1) with ESMTP id UAA16870
+	for <parisc-linux@thepuffingroup.com>; Mon, 5 Apr 1999 20:17:14 -0400 (EDT)
+Sender: buggz@smtp.america.net
+Message-ID: <3709535C.2C45B4E0@america.net>
+Date: Mon, 05 Apr 1999 20:20:44 -0400
+From: Ed June <buggz@america.net>
+MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
+References: <19990405094704.A29056@cmu.edu>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] More mailing list goo
+Subject: [parisc-linux] HP & Cygnus partnership
 List-ID: <linux-parisc.vger.kernel.org>
 
-By popular demand, parisc-linux now comes in two flavours: the same
-great mailing list that you've come to love, and parisc-linux-digest,
-which does as you might expect.
+>
 
-Since there's been little traffic as of late, the digest hasn't really
-been tested.  I expect that the people who mailed me will give it a
-try, and let me know if there are problems.
+Wonder if this will mean GNUPro Toolkit on HP-SUX or what ?
 
--Phil
 
-------------------------------------------------------------------
-"In film you will find four basic story lines. Man versus man, man
-versus nature, nature versus nature, and dog versus vampire."
-        - Steven Spielberg
+--
+
+ Ed June
+
+ buggz@america.net
+ Linux: An open choice for free people worldwide.
