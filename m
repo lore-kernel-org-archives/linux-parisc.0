@@ -1,30 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA14376
-	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Aug 1999 07:49:57 -0600
-Date: Thu, 5 Aug 1999 15:48:55 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Alex deVries <adevries@thepuffingroup.com>
-Cc: Hannu Martikka <martikka@stybba.ntc.nokia.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Pa-risc Linux timetables?
-Message-ID: <19990805154855.A14140@suse.de>
-References: <Pine.HPX.4.05.9908051545080.18930-100000@gamgee.ntc.nokia.com> <37A99641.EDD7A44@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA15074
+	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Aug 1999 16:47:23 -0600
+Date: Fri, 6 Aug 1999 00:48:27 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: larry_dwyer@hp.com
+Cc: parisc-linux@thepuffingroup.com
+Message-ID: <19990806004827.U11586@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <37A99641.EDD7A44@thepuffingroup.com>; from Alex deVries on Thu, Aug 05, 1999 at 09:48:49AM -0400
+Subject: [parisc-linux] reserving constants
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I've talked to Linus about merging the changes into his mainstream
-> kernel tree, and he's agreed, but only once our kernel actually does
-> something.  I agree with this.
 
-we do "something" right now.  I think we should wait with the merge until
-we are really willing to start mainstream testing of the kernel, with a
-more-or-less running userspace and all.
+I have some more constants which need reserving.  These are in the O_*
+numberspace:
 
-> It's very difficult to suggest a timeline to a project that's done only
-> on volunteer time, so I don't think anyone's ready to commit to a
+#define FASYNC          00020000 /* fcntl, for BSD compatibility */
+#define O_DIRECT        00040000 /* direct disk access hint - currently ignored */
+#define O_DIRECTORY     00010000 /* must be a directory */
+#define O_NOFOLLOW      00000200 /* don't follow links */
 
-That is not exactly true.  My time is paid for by SuSE.
+Linux doesn't distinguish between O_NONBLOCK and O_NDELAY so I also
+defined:
 
-	Philipp Rumpf
+#define O_NONBLOCK      00200004 /* HPUX has separate NDELAY & NONBLOCK */
+#define O_NDELAY        O_NONBLOCK
+
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
