@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from romano (romano-nyswri.cfe.cornell.edu [132.236.139.186])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F247B4878
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 06:46:40 -0600 (MDT)
+Received: from rover.mkp.net (rover.mkp.net [209.217.122.9])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 931304857
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 07:11:36 -0600 (MDT)
+To: Steve Pacenka <spacenka@lightlink.com>
+Cc: dlorin@univ-rennes1.fr, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] How to mount HFS 6.0 ?
-From: Steve Pacenka <spacenka@lightlink.com>
-To: dlorin@univ-rennes1.fr
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200207080705.JAA06652@mailimailo.univ-rennes1.fr>
+From: "Martin K. Petersen" <mkp@mkp.net>
 References: <200207080705.JAA06652@mailimailo.univ-rennes1.fr>
-Content-Type: text/plain
-Date: 08 Jul 2002 08:46:37 -0400
-Message-Id: <1026132397.906.50.camel@romano>
-Mime-Version: 1.0
+	<1026132397.906.50.camel@romano>
+Date: 08 Jul 2002 09:10:47 -0400
+In-Reply-To: <1026132397.906.50.camel@romano>
+Message-ID: <yq1k7o6mkko.fsf@austin.mkp.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 2002-07-08 at 04:05, dlorin@univ-rennes1.fr wrote:
-> The content of my question concerns the "old fellows", who were using the 
-> ancient series HP/9000/3xx or 4xx and whom I hope to find reading this 
-> mails-list. But anyone, able to help me, is welcome...
-> 
-> I took a disk SCSCI-1 out of a station 425t running with BASIC-UX. On this one, 
-> there are several files (data and programs written in HP-BASIC) I want to reach 
-> in reading with my 715/50 running with Woody. How to do that?
-> 
-> Nota:
-> 1) the filesystem's type on this disk is: HFS version 6.0.
-> 2) the disk is already installed in the daisy chain SCSI and correctly 
-> identified during the boot sequence.
-> 
-> Thanks.
-> D. Lorin
+>>>>> "Steve" == Steve Pacenka <spacenka@lightlink.com> writes:
 
+Steve> It would be unportable if type "hfs" as Martin Peterson
+Steve> suggests works.  The "hfs" filesystem type in the standard
+Steve> Linux kernel represents an Apple Macintosh filesystem.
 
-The kernel sources suggest that the following may work if you have ufs
-support compiled into your kernel:
+Yes, you're right.  Waaay too early in the morning here (And slightly
+embarassing given that I was the one who implemented the hfs support
+in ufs d:)...
 
-   mount -t ufs -o ufstype=hp /dev/sd{whatever} /mnt
-
-It would be unportable if type "hfs" as Martin Peterson suggests works. 
-The "hfs" filesystem type in the standard Linux kernel represents an
-Apple Macintosh filesystem.
-
--- SP
+-- 
+Martin K. Petersen      Cereal Bowl Engineer, Linuxcare, Inc.
+http://mkp.net/         SGI XFS, Linux/PA-RISC, Linux/IA-64
