@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (mail.tiscali.be [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 010DF4831
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Oct 2002 07:46:28 -0600 (MDT)
-Date: Thu, 10 Oct 2002 15:39:05 +0200
-Message-ID: <3DA3C54C000003F0@ocpmta5.be.tiscali.com>
-In-Reply-To: <001501c27060$db2fa7e0$db0b0aa7@pcaktel083>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Burning CD Images difficulties: revisited
-To: "Jeffo" <jeffo@pop.hsbc.com.br>,
-	parisc-linux@lists.parisc-linux.org
+Received: from web12507.mail.yahoo.com (web12507.mail.yahoo.com [216.136.173.199])
+	by dsl2.external.hp.com (Postfix) with SMTP id B57444829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Oct 2002 08:15:50 -0600 (MDT)
+Message-ID: <20021010141543.95375.qmail@web12507.mail.yahoo.com>
+Date: Thu, 10 Oct 2002 07:15:43 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] Which Memory to use on a 715/80?
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021009195720.GA2279@familie-weerts.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->From: "Jeffo" <jeffo@pop.hsbc.com.br>
->To: <parisc-linux@lists.parisc-linux.org>
->Subject: Re: [parisc-linux] Burning CD Images difficulties: revisited
->Date: Thu, 10 Oct 2002 10:28:01 -0300
+Well, don't think any other manufacturer made memory for the 715
+series.  I have looked at Dataram and others, but they only seem to
+have memory for the D,K,N,L, and A class servers.  What size are your
+simms in your box?  I have some 8MB ones laying around here that I'm
+not using.  It's the same memory that is used in the 712's.
+
+derek
+
+
+--- Christian Weerts <cw@familie-weerts.de> wrote:
+> * Thibaut VARENE <varenet@esiee.fr> [021009 21:36]:
+> > Christian Weerts wrote:
+> > >My 715/80 has a memory problem. Perhaps i need new memory.
+> > >Which is the right one to buy?
+> > you may probably find the answer here:
+> >
 >
->
->IT WORKED!
->
->
->The difference?  Burn the .ISO on Easy CD Creator.
->
->That?s all.
->
->Thanks.
->
-great and enjoy,
-    Joel
+http://partsurfer.hp.com/cgi-bin/spi/main?sel_flg=modinfo&model=9000/715/80
+> > 
+> Thanks! That's what I'm looking for the whole last week.
+> 
+> Can I use other SIMMs with ECC from any other contributor,
+> or is the use of these SIMMs recommended?
+> 
+> Greets,
+>     Christian
+> 
+> -- 
+> May the Source be with you...
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
