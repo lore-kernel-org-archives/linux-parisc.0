@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: jsoe0708@tiscali.be
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb 
-In-Reply-To: Message from jsoe0708@tiscali.be
-   of "Fri, 30 Aug 2002 07:53:41 +0200." <3D3815BD0000958D@ocpmta5.be.tiscali.com>
-References: <3D3815BD0000958D@ocpmta5.be.tiscali.com> 
-Date: Fri, 30 Aug 2002 00:30:51 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020830063051.D29D84829@dsl2.external.hp.com>
+Received: from mail.tiscali.it (mail-4.tiscali.it [195.130.225.150])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E95284829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 00:32:48 -0600 (MDT)
+Date: Fri, 30 Aug 2002 08:09:58 +0200
+From: ste@tiscali <stemelchior@tiscali.it>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: alaskan@telusplanet.net, parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] GNOME 1.4
+Message-Id: <20020830080958.2f899cc2.stemelchior@tiscali.it>
+In-Reply-To: <20020830040829.3BE694829@dsl2.external.hp.com>
+References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
+	<20020830040829.3BE694829@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,43 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-jsoe0708@tiscali.be wrote:
-> Ah ok but where is located the actual problem (gcc, ld, kernel ?).
+On Thu, 29 Aug 2002 22:08:29 -0600 Grant Grundler <grundler@dsl2.external.hp.com> wrote: 8-§  > alaskan@telusplanet.net wrote:
+8-§  > > I finally got GNOME 1.4 working on a 712/60,
+8-§  > ...
+8-§  > > Its pretty, but slow .   .  . .
+8-§  > 
+8-§  > it's not faster on a 486/DX4/75Mhz.
+8-§  > You really need to use a lighter weight window manager on
+8-§  > the older boxes. fvwm2 is my current favorite though in this
+8-§  > case I'd reccomend twm.
+8-§  > 
+8-§  > grant
 
-the program.
+Why not IceWM? on my 710/50 it is running pretty fine and enough fast!!! ;-P
+I also like the Infadel2-Overloaded theme!!!
 
-> I am not a computer science engineer and have not enough knowledge
-> to understand this problem of unalign access and unalign adress.
-> Can you give me some source of information explaining that stuff?
+linuxabbestia
 
-Details for parisc:
-	"PA-RISC 2.0 Architecture" by Jerry Kane.
-	page 5-11, "Unaligned Data Reference Trap (28)"
-	page 7-84, "Load Word"
+<<Unix IS user friendly... It's just selective about who its friends are!>>
 
-heh...doesn't define "aligned address" in the Glossary.
-The same stuff is in the PA 1.1 Arch books too.
+ See "User's Guide":     http://www.debian.org/doc/manuals/users-guide/
+ See "Debian reference": http://www.debian.org/doc/manuals/debian-reference/
+ "Debian reference" Project at: http://qref.sf.net
 
-"aligned" means the address of the data falls on a boundary
-that is modulo the size of the data. It's more complicated
-for a "struct" but the rule applies to any field in a struct.
-
-Examples:
-	0x10 is an aligned address for an "int"
-	0x12 is an aligned address for a "short" but not an "int".
-
-Got it?
-
-BTW, even though x86 CPUs don't trap on unaligned access,
-they do take a performance hit. IIRC, it's one additional cycle.
-Under linux, most (all?) RISC CPUs trap and handle the unaligned access
-in the kernel trap handler. Other OS's could SIGBUS the application
-to kill it.
-
-Hmm...this is interesting:
-/usr/include/linux/prctl.h:# define PR_UNALIGN_SIGBUS   2       /* generate SIGBUS on unaligned user access */
-
-Maybe you can figure out how to set this and dig through the
-core file instead of trying to set break points.
-
-grant
+Please DO NOT send e-mail with any attachment in a "proprietary format", such as either .doc or .ppt, BECAUSE: http://www.fsf.org/philosophy/no-word-attachments.html (the Italian version is available on the following url: http://www.fsf.org/philosophy/no-word-attachments.it.html)
+T H A N K S   ;-P
