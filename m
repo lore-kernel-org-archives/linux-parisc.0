@@ -1,31 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA31867
-	for <parisc-linux@puffin.external.hp.com>; Mon, 7 Aug 2000 06:30:28 -0600
-From: crypt@ihug.co.nz
-Received: from joe by python.localnet with local (Exim 3.12 #1 (Debian))
-	for parisc-linux@thepuffingroup.com
-	id 13LmDC-0002RQ-00; Tue, 08 Aug 2000 00:40:58 +1200
-Date: Tue, 8 Aug 2000 00:40:58 +1200
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000808004058.C6581@python.localnet>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA02622
+	for <parisc-linux@puffin.external.hp.com>; Mon, 7 Aug 2000 11:24:22 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 7 Aug 2000 17:26:31 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 7 Aug 2000 17:26:12 -0000
+Date: Mon, 7 Aug 2000 12:21:02 -0400
+From: Matthew Wilcox <matthew@wil.cx>
+To: crypt@ihug.co.nz
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] support for the hp 9000/807s
+Message-ID: <20000807122102.A10538@vodka.thepuffingroup.com>
+References: <20000808004058.C6581@python.localnet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] support for the hp 9000/807s
+In-Reply-To: <20000808004058.C6581@python.localnet>; from crypt@ihug.co.nz on Tue, Aug 08, 2000 at 12:40:58AM +1200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi I have just aquired an old 807s and was wondering if there is likely
-to be any suport for this machine in the near future.
+On Tue, Aug 08, 2000 at 12:40:58AM +1200, crypt@ihug.co.nz wrote:
+> Hi I have just aquired an old 807s and was wondering if there is likely
+> to be any suport for this machine in the near future.
 
-thanks in advance
-Joe.
-
-ps. I know that this is a really slow box but it didn't cost me anything
-and I expect to have heaps of fun playing with it in some form or other.
+Not in the near future.  It's one of the machines we can support, but
+it's full of strange devices which we know nothing about.  Feel free
+to try hacking on it yourself, but it's not a machine we're terribly
+inteerested in working on.
 
 -- 
-=======================================================================
-in real life: Joseph Skinner         |There's no such thing as a wizard
-email: crypt@ihug.co.nz              |who minds his own business
-       Analyst/Programmer            | - Berengis the Black
-                                     |   Court Mage to the Earls Caeline
-========================================================================
+Revolutions do not require corporate support.
