@@ -1,35 +1,33 @@
-Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA11694
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 17:52:52 -0700
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13yO9t-0007M4-00; Wed, 22 Nov 2000 00:53:09 +0000
-Date: Wed, 22 Nov 2000 00:53:09 +0000
-From: Matthew Wilcox <matthew@wil.cx>
+Received: from smtp.linuxcare.com ([216.88.157.131])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA12150
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 18:16:45 -0700
+Received: from unknown (HELO linuxcare.com) (167.216.157.206)
+  by smtp.linuxcare.com with SMTP; 22 Nov 2000 01:18:56 -0000
+Sender: adevries@puffin.external.hp.com
+Message-ID: <3A1B2F27.D08EC2AF@linuxcare.com>
+Date: Tue, 21 Nov 2000 21:27:51 -0500
+From: Alex deVries <adevries@linuxcare.com>
+MIME-Version: 1.0
 To: Grant Grundler <grundler@cup.hp.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10
-Message-ID: <20001122005309.A27306@parcelfarce.linux.theplanet.co.uk>
-References: <20001121113432.B883@parcelfarce.linux.theplanet.co.uk> <200011212124.NAA20426@milano.cup.hp.com>
-Mime-Version: 1.0
+CC: Alexandru Pirvulescu <Pirvulescu_Alexandru@telemobil.ro>,
+        parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] case LEDs
+References: <200011211855.KAA20167@milano.cup.hp.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200011212124.NAA20426@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Nov 21, 2000 at 01:24:31PM -0800
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Nov 21, 2000 at 01:24:31PM -0800, Grant Grundler wrote:
-> I would like a few files moved:
-> 
-> arch/parisc/kernel/ccio-dma.c    -> drivers/gsc/ccio-dma.c
-> arch/parisc/kernel/ccio-rm-dma.c -> drivers/gsc/ccio-rm-dma.c
-> arch/parisc/kernel/lba_pci.c     -> drivers/ropes/lba_pci.c
-> arch/parisc/kernel/sba_iommu.c   -> drivers/ropes/sba_iommu.c
-> arch/parisc/kernel/iosapic.c     -> drivers/ropes/iosapic.c
+Grant Grundler wrote:
+> Yes.
+> I was already asked this weekend to dig up technical info on LED
+> and soft power control. I guess this is my reminder to do that. :^)
 
-> Any reason why we couldn't do these moves *after* you submit a patch?
+Isn't there a PDC call (pdc_chassis?) to do this?  Or is the heartbeat
+LED done by hardware?
 
-Better to get our house in order before we patchbomb Linus, I think.
-Renames are hard enough in CVS; renames in diff -u format are a real
-stinker :-)
+- Alex
 
 -- 
-Revolutions do not require corporate support.
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
