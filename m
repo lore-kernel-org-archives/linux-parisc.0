@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35D9C482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Jul 2002 05:30:15 -0600 (MDT)
-Date: Mon, 29 Jul 2002 13:30:13 +0200
-Subject: Re: [parisc-linux] Re: e45 as a diskless server
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v482)
-Cc: =?ISO-8859-1?Q?Jussi_M=E4ki?= <valen@ihanaa.org>,
-	parisc-linux@lists.parisc-linux.org <parisc-linux@lists.parisc-linux.org>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <3D4049F3.A53BC4BA@gmx.at>
-Message-Id: <8C7DF758-A2E6-11D6-8FE6-0030656F07A2@esiee.fr>
+Received: from thinkpad.home (pc3-hem11-4-cust123.bre.cable.ntl.com [213.107.179.123])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EE6F482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Jul 2002 05:31:47 -0600 (MDT)
+Date: Mon, 29 Jul 2002 11:28:28 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Stephan Trajkoff <stephan@itp.bg>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] cannot compile kernel
+Message-ID: <20020729102827.GF29996@sleepie.demon.co.uk>
+References: <3D44F776.6090309@itp.bg>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D44F776.6090309@itp.bg>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le jeudi 25 juillet 2002, =E0 08:56 , Christoph Plattner a =E9crit :
+On Mon, Jul 29, 2002 at 11:06:14AM +0300, Stephan Trajkoff wrote:
+> Hello, it is my config from pa54
+> I tried this on pa59 and again kernel don't want to compile
+> Please help me
 
-> Have you checked, that the E45 may have (my E55 definitively has) a
-> "wrong" pin out. It look to be the opposite pin assignment like a
-> modem, but further studies have shown, that it is non-standard.
-Yes; it is exactly the same on our E35.
-We noticed that the cable connecting the MUX to the Console wasn't a
-cross (null modem) one, but a 'straight' one instead.
-We built a small 'cross-converter', basically a standard 25-25 serial
-cable with female plugs and could then connect the MUX to any standard
-serial port.
+Switch off CONFIG_FBCON_ADVANCED.
 
+drivers/video/Config.in is broken, it only does
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+  if [ "$CONFIG_FB_STI" = "y" ]; then
+    define_tristate CONFIG_FBCON_STI y
+  fi
+
+if CONFIG_FBCON_ADVANCED != y
+
+Richard
