@@ -1,25 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tisch.mail.mindspring.net (tisch.mail.mindspring.net [207.69.200.157])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A7FAA482B
-	for <parisc-linux@parisc-linux.org>; Sat,  2 Feb 2002 08:19:32 -0700 (MST)
-Received: from user-119b1cf.biz.mindspring.com ([66.149.133.143] helo=archimedes.localnetsolutions.com)
-	by tisch.mail.mindspring.net with esmtp (Exim 3.33 #1)
-	id 16X1wo-0006Np-00
-	for parisc-linux@parisc-linux.org; Sat, 02 Feb 2002 10:19:22 -0500
-Received: (from jkinney@localhost)
-	by archimedes.localnetsolutions.com (8.11.6/linuxconf) id g12FJJs26898;
-	Sat, 2 Feb 2002 10:19:19 -0500
-Subject: Re: [parisc-linux] Rsync...
-From: "James P. Kinney III" <jkinney@localnetsolutions.com>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 15CB2482A
+	for <parisc-linux@parisc-linux.org>; Sat,  2 Feb 2002 09:44:09 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id fscglaaa for parisc-linux@parisc-linux.org; Sat, 2 Feb 2002 09:44:06 -0700
+Date: Sat, 2 Feb 2002 08:44:06 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: Richard Hirst <rhirst@linuxcare.com>
 Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020202140147.C26868@parcelfarce.linux.theplanet.co.uk>
-References: <20020202120256.U27172@lug-owl.de>
-	<20020202140147.C26868@parcelfarce.linux.theplanet.co.uk>
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-4T+WVrt2NLkQ+bg4GVA7"
-Date: 02 Feb 2002 10:19:19 -0500
-Message-Id: <1012663159.7003.4098.camel@archimedes.localnetsolutions.com>
+Subject: Re: [parisc-linux] Proposed change to arch/parisc/Makefile and generation of offset.h
+Message-ID: <20020202164406.GB604@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020202063408.GA604@tausq.org> <20020202140740.GD2884@sleepie.demon.co.uk>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020202140740.GD2884@sleepie.demon.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -31,62 +25,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-4T+WVrt2NLkQ+bg4GVA7
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> Sounds like a reasonable compromise to me.  Only snag is that if you
+> build a 32 bit kernel, make clean, change config for a 64 bit kernel,
+> then make again, you will build a 64 bit kernel with the wrong offset.h.
+> 
+> Would be nice if 'make' could verify that the offset.h ifile was correct,
+> without changing it (and so triggering dependencies).  If it could do
+> that, it could regenerate it only if it was wrong.
 
-I think that the rsync security and corruption bug were just fixed in a
-recent update to v. 2.4.6.  The security hole was patched, but I'm
-unclear about the repair of the corruption problem.
+I think it's reasonable to expect people to manually do a full 'make
+dep' when switching. I'm not sure offset.h is the only thing that'll
+break if they don't. 
 
-On Sat, 2002-02-02 at 09:01, Matthew Wilcox wrote:
-> On Sat, Feb 02, 2002 at 12:02:56PM +0100, Jan-Benedict Glaw wrote:
-> > Hi!
-> >=20
-> > For some time, there was rsync access to a checked-out version
-> > of current CVS. This is gone recently, and I don't know why.
-> > I'd really love to again use rsync for fetching sources
-> > (and as you know, I'd also like to rsync the CVS repository
-> > itself).
-> >=20
-> > Any chances?
->=20
-> you may have noticed a certain amont of security-related kerfuffle around
-> rsync recently.  until this is fixed and the data-corruption bugs are fix=
-ed,
-> rsync has been disabled on {ftp,www,cvs}.parisc-linux.org.  sorry.
->=20
-> --=20
-> Revolutions do not require corporate support.
->=20
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->=20
---=20
-James P. Kinney III   \Changing the mobile computing world/
-President and COO      \          one Linux user         /
-Local Net Solutions,LLC \           at a time.          /
-770-493-8244             \.___________________________./
+With that said, sanity checking offset.h is never a bad thing. How about
+if I also add this so that the build will complain loudly if you used
+the wrong one?
 
-GPG ID: 829C6CA7 James P. Kinney III (M.S. Physics)
-<jkinney@localnetsolutions.com>
-Fingerprint =3D 3C9E 6366 54FC A3FE BA4D 0659 6190 ADC3 829C 6CA7=20
+Index: arch/parisc/tools/offset.c
+===================================================================
+RCS file: /var/cvs/linux/arch/parisc/tools/offset.c,v
+retrieving revision 1.16
+diff -u -p -r1.16 offset.c
+--- arch/parisc/tools/offset.c	2001/10/04 11:05:47	1.16
++++ arch/parisc/tools/offset.c	2002/02/02 16:43:01
+@@ -39,6 +39,15 @@ linefeed;
+ text("#ifndef _PARISC_OFFSET_H");
+ text("#define _PARISC_OFFSET_H");
+ linefeed;
++#ifdef __LP64__
++text("#ifndef __LP64__");
++text("#error offset.h was generated for 64-bit build; did you do 'make dep'?");
++#else
++text("#ifdef __LP64__");
++text("#error offset.h was generated for 32-bit build; did you do 'make dep'?");
++#endif
++text("#endif");
++linefeed;
+ 
+ void output_task_ptreg_defines(void)
+ {
 
 
 
---=-4T+WVrt2NLkQ+bg4GVA7
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA8XAN3YZCtw4KcbKcRArhWAJ9CIi2V7vELnHkd5BxpBORP12v1XQCgg8cY
-E9Jeczcw92ng14OU3wQ8n2Y=
-=1Xpq
------END PGP SIGNATURE-----
-
---=-4T+WVrt2NLkQ+bg4GVA7--
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
