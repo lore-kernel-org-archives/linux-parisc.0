@@ -1,35 +1,78 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 441D6482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 14:27:08 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 6.03.0009/NU8172.00.4d3e3a24) with ESMTP id wlclgaaa for parisc-linux@lists.parisc-linux.org; Thu, 28 Jun 2001 13:23:26 -0700
-Date: Thu, 28 Jun 2001 13:26:07 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Torsten Neumann <torsten@imke.infodrom.ffis.de>
-Cc: Helge Deller <deller@gmx.de>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems compiling LVM
-Message-ID: <20010628132607.B3045@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20010628202937.A13724@imke.infodrom.ffis.de> <20010628193653.77706115D6@finlandia.infodrom.north.de> <20010628221450.A28337@imke.infodrom.ffis.de>
+Received: from solo.franken.de (pD951CFA2.dip.t-dialin.net [217.81.207.162])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 17B1A482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 15:03:57 -0600 (MDT)
+Received: (from tsbogend@localhost)
+	by solo.franken.de (8.9.3/8.9.3) id XAA03423
+	for parisc-linux@lists.parisc-linux.org; Thu, 28 Jun 2001 23:03:46 +0200
+Date: Thu, 28 Jun 2001 23:03:46 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010628230346.A2361@solo.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010628221450.A28337@imke.infodrom.ffis.de>
+Subject: [parisc-linux] ioremap with 32bit kernel on 64bit machines
 List-ID: <linux-parisc.vger.kernel.org>
 
-> This was with kernel
-> Linux imke 2.4.0-pa43 #2 Wed Jun 27 20:09:41 CEST 2001 parisc unknown
-> 
-> Any Hints ?
-> Or could somebody tell me what more info is needed to solve the problem ?
+Hi,
 
-Torsten, can you send me (not to the list pls) the binary that causes the
-trap? I'll take a look. The unaligned trap only handles the common
-load/store instructures on unaligned boundaries. Looks like your
-application is using one of the (currently) unsupported instructions.
+we do have a problem with ioremap on 64bit machines with a 32bit kernel.
+While ldaw and friends translate the 32bit address to an appropriate
+64bit address our dtlb miss handler doesn't.
 
-randolph
+ldaw translation:
+
+0x00000000 - 0xefffffff  ->   0x00000000 00000000 - 0x00000000 efffffff
+0xf0000000 - 0xf0ffffff  ->   0xf0000000 00000000 - 0xf0000000 00ffffff
+0xf1000000 - 0xffffffff  ->   0xffffffff f1000000 - 0xffffffff ffffffff
+
+the second range is PDC address space, don't know whether we need it.
+I've added code in dtlb_miss_20 and nadtlb_miss_20 to do following
+mapping:
+
+0x00000000 - 0xefffffff  ->   0x00000000 00000000 - 0x00000000 efffffff
+0xf0000000 - 0xffffffff  ->   0xffffffff f0000000 - 0xffffffff ffffffff
+
+This way we get at least io address space right. The changes are below
+and I guess they could be improved. With this changes I'm able to ioremap
+the framebuffer on my C200 and after changes to zalon and sym53x8xx the
+system works as before. Comments ?
+
+Thomas.
+
+Index: arch/parisc/kernel/entry.S
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/entry.S,v
+retrieving revision 1.85
+diff -u -r1.85 entry.S
+--- arch/parisc/kernel/entry.S	2001/06/12 16:09:52	1.85
++++ arch/parisc/kernel/entry.S	2001/06/27 23:05:40
+@@ -1251,7 +1251,10 @@
+ 	/* Get rid of prot bits and convert to page addr for idtlbt */
+ 
+ 	depdi		0,63,12,pte
+-	extrd,u		pte,56,25,pte
++	extrd,u         pte,35,4,t0
++	cmpiclr,<>      15,t0,r0
++	depdi           -1,31,32,pte
++	extrd,u		pte,56,52,pte
+ 	idtlbt          pte,prot
+ 
+ 	rfir
+@@ -1324,7 +1327,10 @@
+ 	/* Get rid of prot bits and convert to page addr for idtlbt */
+ 
+ 	depdi		0,63,12,pte
+-	extrd,u		pte,56,25,pte
++	extrd,u         pte,35,4,t0
++	cmpiclr,<>      15,t0,r0
++	depdi           -1,31,32,pte
++	extrd,u		pte,56,52,pte
+ 	idtlbt          pte,prot
+ 
+ 	rfir
+
+
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
