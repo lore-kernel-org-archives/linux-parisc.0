@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 2E03A4883
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 17:16:46 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: "Tilo Jandt" <tilo@jandt-online.net>,
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0ABBD488A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 22:46:52 -0700 (MST)
+Date: Sat, 16 Feb 2002 06:46:47 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: Helge Deller <deller@gmx.de>
+Cc: Tilo Jandt <tilo@jandt-online.net>,
 	<parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] MySQL Server
-Date: Sat, 16 Feb 2002 01:13:09 +0100
-References: <002101c1b5ee$b5f8a620$02c1a8c0@james.co.uk> <3C6D8F88.D77A6622@gmx.at> <000b01c1b679$53e96fb0$0801a8c0@epsilon>
-In-Reply-To: <000b01c1b679$53e96fb0$0801a8c0@epsilon>
+In-Reply-To: <200202160111.13331.deller@gmx.de>
+Message-ID: <Pine.NEB.4.33.0202160643280.23380-100000@www2.scram.de>
 MIME-Version: 1.0
-Message-Id: <200202160111.13331.deller@gmx.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In case you have libc6-2.2.5 installed you might try
-to downgrade to libc6-2.2.4-7 again. 
-Could be worth a try...
+Hi Helge,
 
-Helge
+> In case you have libc6-2.2.5 installed you might try
+> to downgrade to libc6-2.2.4-7 again.
+> Could be worth a try...
 
-On Saturday 16 February 2002 00:34, Tilo Jandt wrote:
-> Hi,
->
-> I've got a problem whe installing the MySQL-server.
-> Last time when I updated my system with apt-get the MySQL Server should
-> also be updated but after downloading the File, extracting and
-> preconfigurating the update proces stopped after "Stopping Mysql-server".
-> I waited 2 hours but nothing happend. The MySQL couldn't be started and if
-> I remove the new mysql-server and install the old one with dpkg the same
-> procedure happens.
-> Every time after the preconfiguration the install hangs.
->
-> I don't know what to do. I cleaned up my system and wan't to new install
-> MySQL, but everytime the same procedure. Does anyone solved this problem or
-> does anyone have any idea?
->
-> Thanx,
-> Tilo
+the MySQL server never worked for me. With the old libc6, one thread keeps
+looping (100% CPU time) and with the new one it simply hangs.
+
+> > Last time when I updated my system with apt-get the MySQL Server should
+> > also be updated but after downloading the File, extracting and
+> > preconfigurating the update proces stopped after "Stopping Mysql-server".
+> > I waited 2 hours but nothing happend. The MySQL couldn't be started and if
+> > I remove the new mysql-server and install the old one with dpkg the same
+> > procedure happens.
+> > Every time after the preconfiguration the install hangs.
+
+rm /var/run/mysqld/mysqld.pid
+
+Cheers,
+--jochen
